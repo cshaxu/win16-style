@@ -1,7 +1,7 @@
 #define _WIN32_WINNT 0x0A00
 #include <windows.h>
 #include <stdio.h>
-#include "lib-win32/style-common/global_window.h"
+#include "lib-style/common/global_window.h"
 
 static const WCHAR property[]=L"StyleGlobalWindowTest.Attached";
 static BOOL marker_on_apply,marker_on_remove;

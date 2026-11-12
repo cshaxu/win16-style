@@ -1,5 +1,5 @@
 #include "print_extended.h"
-#include "print_ranges.h"
+#include "lib-style/common/print_ranges.h"
 #include <wchar.h>
 #define RANGE_CONTROL 9002
 #define APPLY_CONTROL 9001
@@ -97,7 +97,7 @@ static BOOL read_ranges(HWND window,state *s)
     s->count=0;
     if(SendDlgItemMessageW(window,1058,BM_GETCHECK,0,0)!=BST_CHECKED)return TRUE;
     WCHAR text[512];if(!GetWindowTextW(s->edit,text,512))return FALSE;
-    return ntw16s_parse_print_ranges(text,s->minimum,s->maximum,s->ranges,s->capacity,&s->count);
+    return style_print_ranges_parse(text,s->minimum,s->maximum,s->ranges,s->capacity,&s->count);
 }
 static DWORD input_flags(HWND window,const state *s)
 {
@@ -203,7 +203,7 @@ BOOL NAME(EX_TYPE *p,PRINT_TYPE print,HRESULT *result) \
 { \
     if(!p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || (p->Flags & ~(PD_NOPAGENUMS|PD_NOSELECTION|PD_NOWARNING|PD_NOCURRENTPAGE|PD_CURRENTPAGE|PD_HIDEPRINTTOFILE|PD_DISABLEPRINTTOFILE|PD_PRINTTOFILE|PD_COLLATE|PD_PAGENUMS|PD_SELECTION|PD_RETURNDC|PD_RETURNIC|PD_USEDEVMODECOPIESANDCOLLATE))!=0 || ((p->Flags&PD_SELECTION) && (p->Flags&(PD_NOSELECTION|PD_PAGENUMS|PD_CURRENTPAGE))) || ((p->Flags&PD_CURRENTPAGE) && (p->Flags&(PD_NOCURRENTPAGE|PD_PAGENUMS))) || ((p->Flags&PD_PRINTTOFILE) && (p->Flags&(PD_HIDEPRINTTOFILE|PD_DISABLEPRINTTOFILE))) || p->Flags2 || p->ExclusionFlags || p->hDC || (!!p->hDevMode != !!p->hDevNames) || (p->hDevMode && p->hDevMode==p->hDevNames) || !global_available(p->hDevMode) || !global_available(p->hDevNames) || ((p->Flags & PD_PAGENUMS) ? (!p->nPageRanges || p->nPageRanges>p->nMaxPageRanges || (p->Flags & PD_NOPAGENUMS)) : p->nPageRanges!=0) || (!(p->Flags & PD_NOPAGENUMS) && (!p->lpPageRanges || !p->nMaxPageRanges || p->nMaxPageRanges>MAX_RANGES || !p->nMinPage || p->nMaxPage>65535 || p->nMinPage>p->nMaxPage)) || !p->nCopies || p->nCopies>32767 || p->lpCallback || p->nPropertyPages || p->lphPropertyPages || p->nStartPage!=START_PAGE_GENERAL)return FALSE; \
     state s={0};s.input_flags=p->Flags;s.minimum=p->nMinPage;s.maximum=p->nMaxPage;s.capacity=p->nMaxPageRanges;s.ansi=IS_ANSI; \
-    if(p->nPageRanges){if(!ntw16s_format_print_ranges(p->lpPageRanges,p->nPageRanges,p->nMinPage,p->nMaxPage,s.initial,512))return FALSE;}else wsprintfW(s.initial,L"%lu",p->nMinPage);TYPE d={0};d.lStructSize=sizeof(d);d.hwndOwner=p->hwndOwner;d.Flags=(p->Flags & ~(DWORD)(PD_CURRENTPAGE|PD_NOCURRENTPAGE) & ((p->Flags & PD_RETURNDC)?~(DWORD)PD_RETURNIC:~(DWORD)0))|PD_ENABLEPRINTHOOK;d.lpfnPrintHook=HOOK;d.lCustData=(LPARAM)&s;d.nMinPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMinPage);d.nMaxPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMaxPage);d.nFromPage=p->nPageRanges?(WORD)p->lpPageRanges[0].nFromPage:d.nMinPage;d.nToPage=p->nPageRanges?(WORD)p->lpPageRanges[0].nToPage:d.nMinPage;d.nCopies=(WORD)p->nCopies; \
+    if(p->nPageRanges){if(!style_print_ranges_format(p->lpPageRanges,p->nPageRanges,p->nMinPage,p->nMaxPage,s.initial,512))return FALSE;}else wsprintfW(s.initial,L"%lu",p->nMinPage);TYPE d={0};d.lStructSize=sizeof(d);d.hwndOwner=p->hwndOwner;d.Flags=(p->Flags & ~(DWORD)(PD_CURRENTPAGE|PD_NOCURRENTPAGE) & ((p->Flags & PD_RETURNDC)?~(DWORD)PD_RETURNIC:~(DWORD)0))|PD_ENABLEPRINTHOOK;d.lpfnPrintHook=HOOK;d.lCustData=(LPARAM)&s;d.nMinPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMinPage);d.nMaxPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMaxPage);d.nFromPage=p->nPageRanges?(WORD)p->lpPageRanges[0].nFromPage:d.nMinPage;d.nToPage=p->nPageRanges?(WORD)p->lpPageRanges[0].nToPage:d.nMinPage;d.nCopies=(WORD)p->nCopies; \
     if(p->hDevMode){d.hDevMode=clone_global(p->hDevMode);if(!d.hDevMode)return FALSE;} \
     if(p->hDevNames){d.hDevNames=clone_global(p->hDevNames);if(!d.hDevNames){if(d.hDevMode)GlobalFree(d.hDevMode);return FALSE;}} \
     BOOL ok=print(&d);DWORD error=ok?0:CommDlgExtendedError(); \

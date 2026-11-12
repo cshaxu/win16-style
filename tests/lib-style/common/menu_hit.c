@@ -1,4 +1,4 @@
-#include "lib-win32/style-common/menu_hit.h"
+#include "lib-style/common/menu_hit.h"
 
 int main(void)
 {

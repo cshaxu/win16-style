@@ -7,7 +7,7 @@ src/run16s-exe/       x64 CLI / 首次启动
 src/ntw16s-dll/       双位宽 renderer / interception / injection
 src/demo-exe/         x64 原生示例
 src/lib-win32/        内部 Win32 静态库：托盘、Win16 公共/窗口/控件/对话框、进程挂钩
-src/lib-win32/style-common/  不依赖具体样式的窗口输入协议
+src/lib-style/common/  不依赖具体样式的窗口输入、生命周期和对话框基础机制
 tests/run16s-exe/     启动契约测试
 tests/ntw16s-dll/     双位宽 DLL 单元及生命周期测试
 tests/demo-exe/       原生 demo 边界测试

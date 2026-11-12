@@ -32,13 +32,15 @@
 
 ## 首批审计发现
 
-- `style-common/global_window` 已通过产品适配表承载全局窗口应用、移除和
-  切换；它可迁入样式共享层，但回滚与实际恢复是不同的验证项。
+- 现有全局窗口机制通过产品适配表承载应用、移除和切换；回滚与实际恢复
+  是不同的验证项。该机制已在当前工作区迁入 `lib-style/common`，发布状态
+  及验证以 CURRENT 和本 S 交付记录为准。
 - `win16-window-uwp/frame_layout` 直接使用 Win16 几何与命中测试；宿主、
   生命周期可审计抽象，几何和按钮外观不能整文件冒充通用。
 - `win16-control/scroll_track` 包含 Win3.1 的拖拽、取消及重复语义；应把
   可配置的通用机制和这些明确的风格策略分开，不能直接作为 Win2000 行为。
-- `win16-dialog/print_ranges` 的页码解析、格式化没有 Win16 绘制依赖，是
-  可供迁移审查的候选；调用位置和失败契约仍须保留与测试。
+- 原 `win16-dialog/print_ranges` 的页码解析、格式化没有 Win16 绘制依赖；
+  当前工作区已迁入独立 `style-dialog-common` 静态库，并由 Win16 对话框
+  和独立测试调用，发布状态及验证以 CURRENT 和本 S 交付记录为准。
 - 文件路径初始全集见 [S1 清单](../history/M0-T26-S1-initial-inventory.md)；
   这只是冻结范围，逐文件调用、测试和目标归属尚未完成。

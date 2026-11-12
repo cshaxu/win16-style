@@ -23,7 +23,7 @@ static BOOL parse_pass(const WCHAR *text,DWORD minimum,DWORD maximum,
         ++p;
     }
 }
-BOOL ntw16s_parse_print_ranges(const WCHAR *text,DWORD minimum,DWORD maximum,
+BOOL style_print_ranges_parse(const WCHAR *text,DWORD minimum,DWORD maximum,
                                PRINTPAGERANGE *output,DWORD capacity,DWORD *count)
 {
     DWORD length=0;if(!text || !output || !count || !capacity || minimum>maximum)return FALSE;
@@ -31,7 +31,7 @@ BOOL ntw16s_parse_print_ranges(const WCHAR *text,DWORD minimum,DWORD maximum,
     return parse_pass(text,minimum,maximum,output,capacity,count);
 }
 
-BOOL ntw16s_format_print_ranges(const PRINTPAGERANGE *ranges,DWORD count,DWORD minimum,DWORD maximum,
+BOOL style_print_ranges_format(const PRINTPAGERANGE *ranges,DWORD count,DWORD minimum,DWORD maximum,
                                 WCHAR *output,DWORD capacity)
 {
     if(!ranges || !count || !output || !capacity || minimum>maximum)return FALSE;

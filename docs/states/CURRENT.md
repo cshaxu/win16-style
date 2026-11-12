@@ -10,7 +10,7 @@
 | --- | --- |
 | Identifier Mode | New；T25 按用户决定有限收口，T26 从 S1 开始。 |
 | Admission And Approval | 用户要求把 Win16 中跨年代可用的外框、控件、对话框以及 Win32/UWP/WinUI 机制抽离至 lib-style，并准入下一 T。 |
-| Objective | 冻结全部相关生产组件、调用与测试清单，区分风格无关机制及各年代专属行为，确定分批迁移和实际复用契约。 |
+| Objective | 冻结全部相关生产组件、调用与测试清单，区分风格无关机制及各年代专属行为，确定分批迁移和实际复用契约；按用户要求对已确认单元同步实施。 |
 | Non-goals | 审计不宣称已支持未实现的主题或控件；不改变既有挂钩权限与用户体验。 |
 | Reference Baseline | T25 S8 P13 已发布包及有限收口记录；保留既有 Win16 与 Win2000 行为。 |
 | Candidate Proposal | docs/proposals/style-library-reorganization.md，结合本次明确扩展的窗口、控件、对话框和现代框架范围。 |
@@ -42,6 +42,9 @@
 ## Technical Baseline
 
 T26 S1 已冻结首批 272 个相关文件路径，见[初始清单](../history/M0-T26-S1-initial-inventory.md)；逐项依赖、调用方、测试和迁移归属审计仍在进行，未宣称完成。
+
+T26 S1 首批共享基础已发布，双位宽聚焦测试通过，但 Win2000 DWM 生命周期
+测试两侧失败，完整回归及视觉验收未完成；证据见[记录](../history/M0-T26-S1-shared-foundation.md)。
 
 S8 P13 对齐 Win16 的原生绘制消息防护并修复 Win2000 重绘覆盖，双位宽受控
 消息测试及发布后直接探针通过；状态栏曾出现一次未解释偏差，真实鼠标和用户

@@ -464,7 +464,7 @@
       "path": "src/ntw16s-dll/global/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7337b2126916eea7d5b2c41f96d79787d81e4bded911b9c869f0225c889a635e",
+      "sha256": "3cfd2dd7dba568d57c650cab7398720438c3e7388287813eb1a4e61d12938fb5",
       "disposition": "authored",
       "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics; T21 S13 attached-window acknowledgement candidate; T21 S13 hidden ordinary-window global stop regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -1202,7 +1202,7 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "5f177d1fb9e18e9f7a326e3eb114e7027062970b9594045785c3bd711ee2366b",
+      "sha256": "b8f631846d53ac180bc506cef838f0df68541c024da1e55d4c5537d9d0547500",
       "disposition": "authored",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL TEdit/TListBox wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored, repository MIT"
@@ -1346,7 +1346,7 @@
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "82582f9e81044bf6f6a00198c91973b330d0602a8c0096ed3fac93009d03ea5d",
+      "sha256": "9ccea72d820194fb24b533a6e47fa87a32ca80201244a75896dca972eed5c1c0",
       "disposition": "authored",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1562,7 +1562,7 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "17073827380f68ebfeb686653c3f36abc517d9cbc99ee8fd2bd3aaa8415b11f2",
+      "sha256": "8adfbb3ac1a645e9950b75a3806c800c0914d423b62119ca59464a40a70600af",
       "disposition": "authored",
       "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
@@ -3413,28 +3413,28 @@
       "notice": "Project-authored test; no imported code or resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/print_ranges.c",
+      "path": "src/lib-style/common/print_ranges.c",
       "source": null,
       "source_blob": null,
-      "sha256": "40162659540b4b3583863c93cea2f65b4e680bcd962c75c4368bcabdd12b35d6",
+      "sha256": "ae7a79cd68c80b50de313d97a171fc64df2d1a73d7c96b77d225138e49c79890",
       "disposition": "authored",
       "review": "T20 S1 experimental print page range parser and bounded regression; T21 S23 shared dialog library extraction",
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/print_ranges.h",
+      "path": "src/lib-style/common/print_ranges.h",
       "source": null,
       "source_blob": null,
-      "sha256": "2ca83be061944276cc10707fda5c3eb730ce62cfe394d40f9324a428142e5cd0",
+      "sha256": "d5f361385e6d6162542dd3693c35a5fcbd79e09fef1dc16a32bee9011dc62cfc",
       "disposition": "authored",
       "review": "T20 S1 experimental print page range parser and bounded regression; T21 S23 shared dialog library extraction; T24 S1 removed forwarding header src/ntw16s-dll/injection/print_ranges.h SHA256 11adea3811df7ed1325b691606eb8968fc8dba4f48bee2eca5f3dc698bcafc1c",
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "tests/ntw16s-dll/print_ranges.c",
+      "path": "tests/lib-style/common/print_ranges.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3c71efe19ac134e9a289cd99d55d7ce44746274b7d62277779f5cb93cf1973c5",
+      "sha256": "65d4c32ded21ab619aa4d5d792776630b6b13534e18d1bc0d808c8255aab1edf",
       "disposition": "authored",
       "review": "T20 S1 experimental print page range parser and bounded regression",
       "notice": "Project-authored code; no imported resources"
@@ -3443,7 +3443,7 @@
       "path": "src/lib-win32/win16-dialog/print_extended.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ba64e10fd0f67881c83cdb63758bbed565089ece58b34447429116ff81594ee9",
+      "sha256": "e1924745c9a84db397283b71d6a272e538834c5bdef5b39959373ebba68cab04",
       "disposition": "authored",
       "review": "T20 S1 bounded extended print dialog bridge; T21 S23 shared dialog library extraction; T24 S1 quality refactor",
       "notice": "Project-authored C code; no imported resources"
@@ -4030,7 +4030,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "8eac07008b22bfa60597df9582f13314c905fd4c25b48cce6ce67d1284c5b5a8",
+      "sha256": "04dc8873ee6b0d83e0c66bfd45248796480d9c4eee8e017d458fbb8d6a63b715",
       "review": "T21 S22 standalone whole-archive linkage and original glyph smoke test"
     },
     {
@@ -4057,7 +4057,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "ca7f0d9e8e4e2705001879b562d553c325787e801540c5e4cab70229c6dd1c74",
+      "sha256": "38ec69579a4e3922d77a091d9e777b798b464b5a5b907a9d544bac00b735b96d",
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
@@ -4118,7 +4118,7 @@
       "path": "tests/lib/win16-dialog/dialog_link.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2ee7ae72dc1790bbbacc40115829692c38a8fa4535d20abdba27c29b096d5ca5",
+      "sha256": "00352656b1ad43dafb6334e0b0c98b5e723415208e561a6b7c52024a489f5ce3",
       "disposition": "authored",
       "review": "T21 S23 independent whole-library link and page range test",
       "notice": "Project-authored C17; project MIT license"
@@ -4820,7 +4820,7 @@
       "path": "src/lib-win32/win16-window/frame_message.c",
       "source": null,
       "source_blob": null,
-      "sha256": "83e9fe37eb6cba62174fc5684e6e911cabf3d2edba5eb935f2ad246366a0f544",
+      "sha256": "d91e12e359b940b6222ed5bb1fb9ca87d966ebd562fabe5bf67b57641b7fa5dc",
       "disposition": "authored",
       "review": "T21 S24 extract nonclient frame presentation message handling",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5108,7 +5108,7 @@
       "path": "src/lib-win32/win16-window/frame_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "014a64e0e79476c8f784d2c5bb5c9a17b79ae742a499fef882469ecf4a40406e",
+      "sha256": "71d9f04ddd122b39a4d3a8301c4aec9a4de7ba3d74cfc0d194f5ed2c963c8ace",
       "disposition": "authored",
       "review": "T21 S24 extract frame lifecycle; T23 S1 preserve documented DWM rendering state on removal; T23 S4 console and Terminal window adaptation and native tests",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5306,7 +5306,7 @@
       "path": "src/lib-win32/win16-window/frame_dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4261a2f1ccb278c519411d1ed67c72db8093d99a02cbcfe229ced434579f50e6",
+      "sha256": "55e6b88e6696be8949f66c5126a7416ec9f8f207169573829a0b5d3eda683139",
       "disposition": "authored",
       "review": "T21 S24 extracted frame message dispatch from project-authored src/ntw16s-dll/win16_style.c",
       "notice": "Project-authored source; existing resource and provenance notices retained"
@@ -5315,7 +5315,7 @@
       "path": "src/lib-win32/win16-window/frame_dispatch.h",
       "source": null,
       "source_blob": null,
-      "sha256": "5f98e92e3e4f064751b7fab88461335570f49684c6117622ab2891a20565dd8b",
+      "sha256": "6146e01c8f42b6f61a7eabc8e6b615ca76ada48154ad61c0c675f613d34c8a26",
       "disposition": "authored",
       "review": "T21 S24 extracted frame message dispatch from project-authored src/ntw16s-dll/win16_style.c",
       "notice": "Project-authored source; existing resource and provenance notices retained"
@@ -6548,7 +6548,7 @@
       "path": "src/ntw2ks-dll/controls.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b2d2cea75a7f5b17fa7f87c1bc8cd1a50bda0c06d43e5d571a1942fd48cfba24",
+      "sha256": "3a5ca6f2147c8b8283dd78585431ffcaa6917182abf6b03d0288d3d2a57b5f01",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -6575,7 +6575,7 @@
       "path": "src/ntw2ks-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "79743210c7d1349a8fac8d25ec6519c144e4e3136006c003e457cc9efdb66ebd",
+      "sha256": "06ff6975ac26b859d40fa66f6378d5f71148a0357d01a615b11542069a1626df",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -6638,7 +6638,7 @@
       "path": "src/ntwshk-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "caaff8619d945b2bff432873d0a0707c05f9ddb473e7d53d8acba4427bfe089c",
+      "sha256": "cb7e25e7b90dc74aeaf77eaf0e2720def7e6b954365ed3d015c2983e668bcfb9",
       "disposition": "authored",
       "review": "T25 S2 shared runtime and native verification",
       "notice": "Project-authored; no imported artwork"
@@ -6728,7 +6728,7 @@
       "path": "src/lib-win32/win2k-window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1cfd8e1a4a5cab234f7c2ac6f3bdfff7c366a7af8b484d2adb12a936b47990cb",
+      "sha256": "ac0230f98560c49d067e7b848086f9c9d48100be684b1422e568331ad00e588a",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6779,7 +6779,7 @@
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "src/lib-win32/style-common/menu_hit.h",
+      "path": "src/lib-style/common/menu_hit.h",
       "source": null,
       "source_blob": null,
       "sha256": "54a8bbc4106eadb3c7da7dec105ebf1f2ac6cbe93909d7a8627dd49eb531ee2c",
@@ -6788,10 +6788,10 @@
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "tests/lib-win32/style-common/menu_hit.c",
+      "path": "tests/lib-style/common/menu_hit.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6b412ea700bcc8399e725037cfac81cecda0d15bae5d6d87cc603cabb117d0e9",
+      "sha256": "87996fd56880cd22d6e4e61383a38c0517fd78d0e45c3ffdae4aa592341b66eb",
       "disposition": "authored",
       "review": "T25 S4 shared custom menu input protocol and test",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6800,13 +6800,13 @@
       "path": "tests/lib-win32/win2k-window/frame_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7d35d3089a6df3113a86eca1653eaafc69089906eb2c2bced80f2c8f33121c2e",
+      "sha256": "924121f05e5443d8d716d40db8be0771a5b1f4de244f94c0612b43358ef1beac",
       "disposition": "authored",
       "review": "T25 S8 frame lifecycle test",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "src/lib-win32/style-common/dwm.h",
+      "path": "src/lib-style/common/dwm.h",
       "source": null,
       "source_blob": null,
       "sha256": "dc446af8cb5f5635cae67b4961282d2d5769414a857447f81d412b9647b815e5",
@@ -6815,7 +6815,7 @@
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "src/lib-win32/style-common/global_window.c",
+      "path": "src/lib-style/common/global_window.c",
       "source": null,
       "source_blob": null,
       "sha256": "64c5087d1c062ac7fa0eae09a463f67d46e5e8baeba0de942d81f8d8ce1e3356",
@@ -6824,7 +6824,7 @@
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "src/lib-win32/style-common/global_window.h",
+      "path": "src/lib-style/common/global_window.h",
       "source": null,
       "source_blob": null,
       "sha256": "7cf447fa0f2453117b41cf8c3732730784963a4800d57d040f7096e5819e3f14",
@@ -6833,16 +6833,16 @@
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "tests/lib-win32/style-common/global_window.c",
+      "path": "tests/lib-style/common/global_window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1833e918b306b62abcbc5d63c9a8543bfd17dc117bb2b958fc4aa41f45e04721",
+      "sha256": "4d81dc808f9291bbb57aab24fde23916f6e901f7933b51e3af6addc1fd726030",
       "disposition": "authored",
       "review": "T25 S8 shared style global window lifecycle",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "tests/lib-win32/style-common/win16_dwm_restore.c",
+      "path": "tests/lib-style/common/win16_dwm_restore.c",
       "source": null,
       "source_blob": null,
       "sha256": "754aebb44a49aee52d998ce66ea863c74ac6f687bb85af87c34a8060d1f0f8f7",
@@ -6851,7 +6851,7 @@
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "src/lib-win32/style-common/frame.h",
+      "path": "src/lib-style/common/frame.h",
       "source": null,
       "source_blob": null,
       "sha256": "9dedbee44a605cfa05028e609e398fd50e60490258b8bca972b6e7c5cc27c0ac",
@@ -6908,7 +6908,7 @@
       "path": "tests/ntw2ks-dll/window_style_race.c",
       "source": null,
       "source_blob": null,
-      "sha256": "41e4e92e551efce934fe4b3fe09a9847f27e1e08e72371de19b844e10c890300",
+      "sha256": "6bfccae66c20974f91003e57bad4fd4a3020d9b532d42a5e65d7f132be9f3528",
       "disposition": "authored",
       "review": "T25 S8 shared window lifecycle race",
       "notice": "Project-authored native C; no imported artwork"

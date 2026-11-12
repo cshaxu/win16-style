@@ -4,7 +4,7 @@
 #include <string.h>
 #include <wchar.h>
 #include <dlgs.h>
-#include "lib-win32/win16-dialog/print_ranges.h"
+#include "lib-style/common/print_ranges.h"
 #include "lib-win32/win16-dialog/print_classic.h"
 #include "lib-win32/win16-dialog/file_contract.h"
 #include "lib-win32/win16-dialog/file_helpers.h"
@@ -370,8 +370,8 @@ int main(void)
 {
     if(!test_hidden_dialog_files())return 41;
     PRINTPAGERANGE ranges[2];DWORD count=0;WCHAR formatted[32];
-    if(!ntw16s_parse_print_ranges(L"1-3,5",1,9,ranges,2,&count) || count!=2)return 1;
-    if(!ntw16s_format_print_ranges(ranges,count,1,9,formatted,32) || lstrcmpW(formatted,L"1-3,5"))return 2;
+    if(!style_print_ranges_parse(L"1-3,5",1,9,ranges,2,&count) || count!=2)return 1;
+    if(!style_print_ranges_format(ranges,count,1,9,formatted,32) || lstrcmpW(formatted,L"1-3,5"))return 2;
     PRINTDLGA print_a={0},copy_a={0};PRINTDLGW print_w={0},copy_w={0};
     if(win16_dialog_print_prepare_a(NULL,&copy_a))return 37;
     print_a.lStructSize=sizeof(print_a);print_a.Flags=PD_PAGENUMS;print_a.lpfnPrintHook=fake_print_hook;

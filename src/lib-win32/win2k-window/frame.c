@@ -1,9 +1,9 @@
 #include "frame.h"
 #include "caption.h"
 #include "system_menu.h"
-#include "lib-win32/style-common/menu_hit.h"
-#include "lib-win32/style-common/dwm.h"
-#include "lib-win32/style-common/frame.h"
+#include "lib-style/common/menu_hit.h"
+#include "lib-style/common/dwm.h"
+#include "lib-style/common/frame.h"
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <oleacc.h>

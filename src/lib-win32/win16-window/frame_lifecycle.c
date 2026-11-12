@@ -2,7 +2,7 @@
 #include "frame_layout.h"
 #include "frame_dispatch.h"
 #include "../win16-common/font.h"
-#include "lib-win32/style-common/dwm.h"
+#include "lib-style/common/dwm.h"
 #include <dwmapi.h>
 
 BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creating,const void *owner,const BOOL *cancelled,const win16_control_frame_lifecycle_services *v)

@@ -4,7 +4,7 @@
 #include <commctrl.h>
 #include <stdio.h>
 #include "ntw2ks-dll/window.h"
-#include "lib-win32/style-common/global_window.h"
+#include "lib-style/common/global_window.h"
 
 static BOOL attached(HWND window){return Ntw2ksWindowAttached(window);}
 static BOOL active(DWORD cookie){return cookie==42;}

@@ -3,7 +3,7 @@
 #include "frame_message.h"
 #include "frame_input.h"
 #include "menu_message.h"
-#include "lib-win32/style-common/frame.h"
+#include "lib-style/common/frame.h"
 typedef struct win16_control_frame_dispatch_services {
     const win16_control_frame_message_services *message;
     const win16_control_frame_input_services *input;

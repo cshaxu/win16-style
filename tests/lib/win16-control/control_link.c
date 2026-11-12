@@ -6,7 +6,7 @@
 #include "lib-win32/win16-common/font.h"
 #include "lib-win32/win16-window/frame_layout.h"
 #include "lib-win32/win16-window/frame_view.h"
-#include "lib-win32/style-common/frame.h"
+#include "lib-style/common/frame.h"
 #include "lib-win32/win16-window/frame_state.h"
 #include "lib-win32/win16-control/control_state.h"
 #include "lib-win32/win16-control/control_class.h"

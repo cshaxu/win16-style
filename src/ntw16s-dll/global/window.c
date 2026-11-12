@@ -1,7 +1,7 @@
 #include "ntw16s-dll/global/window.h"
 #include "ntw16s-dll/attachment.h"
 #include "ntw16s-dll/global/session.h"
-#include "lib-win32/style-common/global_window.h"
+#include "lib-style/common/global_window.h"
 #include "lib-win32/process-global/module.h"
 #include <wchar.h>
 

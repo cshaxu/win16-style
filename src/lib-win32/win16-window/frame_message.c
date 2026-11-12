@@ -2,7 +2,7 @@
 #include "frame_layout.h"
 #include "frame_view.h"
 #include "../win16-common/present.h"
-#include "lib-win32/style-common/frame.h"
+#include "lib-style/common/frame.h"
 #include <commctrl.h>
 
 BOOL win16_control_frame_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM lp,const win16_control_frame_message_services *v,LRESULT *result)

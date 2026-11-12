@@ -1,7 +1,7 @@
 #define _WIN32_WINNT 0x0A00
 #include <windows.h>
 #include <stdio.h>
-#include "lib-win32/style-common/global_window.h"
+#include "lib-style/common/global_window.h"
 
 typedef BOOL (__cdecl *window_op)(HWND);
 static window_op attach16,attached16,remove16;
