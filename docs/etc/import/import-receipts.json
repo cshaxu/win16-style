@@ -6179,7 +6179,7 @@
       "path": "tests/integration/uwp_tray.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5d0200ab2afd5230d84ef349a4e0e45b8ef9434fd5a2065d1dd218b082c58ac3",
+      "sha256": "2f51f09520df903c7d7a3de6673fe28349cac23687bf2a854f22e7fce1cd0af4",
       "disposition": "authored",
       "review": "T22 S1 P38 opt-in published tray controller UWP integration; native menu input and owned targets",
       "notice": "Project-authored pure C test; no imported artwork"
@@ -6728,7 +6728,7 @@
       "path": "src/lib-win32/win2k-window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "69ded3554e69579d5c20b6792949b9efc3a92d1621ac4248aacaad6c82e821e4",
+      "sha256": "1904d0fd0644d5a2e2eb6ddaf5b8039ea93b01ca21b855ff60eb6cac92dee718",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6854,7 +6854,7 @@
       "path": "src/lib-win32/style-common/frame.h",
       "source": null,
       "source_blob": null,
-      "sha256": "6555feca07db324154fd96f22e53f58aa5e14d46cc282577b25e64168611bfd2",
+      "sha256": "61499aa207b0645bf9bd05531a3a7702b5336562c24c1fd65ec85b4dbd0dafae",
       "disposition": "authored",
       "review": "T25 S8 shared window restoration",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6890,7 +6890,7 @@
       "path": "tests/ntw16s-dll/global_style_bridge.c",
       "source": null,
       "source_blob": null,
-      "sha256": "14e9676521867fe206e3d9614b3cfca1c647c46e017306f21d45c20c3dd44784",
+      "sha256": "e3a79a511d9122018a61bab01a47e4cf77a21ed4bb111b1dc3b5feaae8a3a546",
       "disposition": "authored",
       "review": "T25 S8 shared global style bridge",
       "notice": "Project-authored C; no external source or artwork copied"

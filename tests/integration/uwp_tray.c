@@ -278,6 +278,24 @@ static BOOL frame_pixels(frame_target *targets,COLORREF pixels[2],const char *st
         if(targets[i].real_app){RECT rect;HDC dc=GetWindowDC(targets[i].window);
             if(!dc || !GetWindowRect(targets[i].window,&rect)){if(dc)ReleaseDC(targets[i].window,dc);return FALSE;}
             value=GetPixel(dc,(rect.right-rect.left)/2,10);ReleaseDC(targets[i].window,dc);
+            MENUBARINFO bar={.cbSize=sizeof(bar)};POINT client={0,0};
+            if(GetMenuBarInfo(targets[i].window,OBJID_MENU,0,&bar) && ClientToScreen(targets[i].window,&client))
+                printf("FRAME_GEOMETRY %s index=%u menu=%ld,%ld,%ld,%ld client_origin=%ld,%ld outer=%ld,%ld,%ld,%ld\n",
+                    stage,i,bar.rcBar.left,bar.rcBar.top,bar.rcBar.right,bar.rcBar.bottom,client.x,client.y,
+                    rect.left,rect.top,rect.right,rect.bottom);
+            if(!lstrcmpA(stage,"win2k")){DWORD_PTR ignored=0;
+                if(!SendMessageTimeoutW(targets[i].window,WM_NCPAINT,1,0,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,1000,&ignored))return FALSE;
+                Sleep(100);
+                HDC client_dc=GetDC(targets[i].window);RECT area;BOOL clean=FALSE;
+                if(client_dc && GetClientRect(targets[i].window,&area)){
+                    int x=min(200,(area.right-1)/2);clean=area.right>0 && area.bottom>=16;printf("CLIENT_BAND index=%u x=%d",i,x);
+                    for(int y=0;y<16 && y<area.bottom;++y){COLORREF pixel=GetPixel(client_dc,x,y);
+                        printf(" %06lx",(unsigned long)pixel);if(pixel!=RGB(0,128,0))clean=FALSE;}
+                    putchar('\n');
+                }
+                if(client_dc)ReleaseDC(targets[i].window,client_dc);
+                if(!clean)return FALSE;
+            }
         }else if(!SendMessageTimeoutW(targets[i].window,WM_APP+82,0,0,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,1000,&value))return FALSE;
         if(value==CLR_INVALID)return FALSE;
         pixels[i]=(COLORREF)value;

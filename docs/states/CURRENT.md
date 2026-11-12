@@ -40,6 +40,9 @@ M0 T25 S7 按有限范围收口，见[记录](../history/M0-T25-S7-P13-closure.m
 
 ## Technical Baseline
 
+S8 P11 修复 Windows 2000 重绘时原生菜单覆盖客户区；正式 Solitaire 像素对照和
+双位宽回归通过，真实鼠标回归受自动审批限制，等待用户验收。见[记录](../history/M0-T25-S8-P11-menu-redraw.md)。
+
 S8 P10 缩短停止时对未返回加载器的等待；发布包的双位宽六方向和快速改选
 测试通过，实际耗时和遗留限制见[交付记录](../history/M0-T25-S8-P10-switch-latency.md)。
 用户手动验收仍待完成。
