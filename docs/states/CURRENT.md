@@ -4,6 +4,12 @@
 
 用户决定以现有实际成果有限收口 T25，未完成的 S8 验证和 S10 最终审计不计通过；原 S9 去重已明确并入 T26，遗留范围见[T25 收口记录](../history/M0-T25-owner-closure.md)。准入 T26，抽离跨风格通用机制并整理样式库。
 
+第十九批同快照候选已发布并完成针对性测试。当前范围和未通过项见下方技术基线。
+
+滚动条键盘命令映射已从 Win16 控件迁入公共 scroll-state，原调用路径和行为保持不变。双位宽映射边界测试及 Win16 控件夹具通过；已纳入第十九批，Win2000 滚动条接入尚未实现。
+
+现代外框表面子类的引用、消息转发和销毁脱离已进一步并入公共宿主，Win16 保留输入命中及菜单策略。双位宽公共宿主重入、表面销毁、安装回滚与 Win16 隐藏窗口回归通过；该改动已纳入第十九批，真实可见宿主仍未验证。
+
 ## M0 T26 S1 Packet
 
 | Field | Required record |
@@ -36,285 +42,35 @@
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 1
-- Last verified remote delivery: M0 T26 S1 P38，`4f689aab`。
+- Last verified remote delivery: M0 T26 S1 P39，`7c84e91d`。
 - Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
 
 ## Technical Baseline
 
-无生产调用的自制文件夹对话框与专属测试已移除，实际 Shell 文件夹路径保留；见[记录](../history/M0-T26-S1-remove-unused-folder.md)。
-
-主题句柄并发追踪已拆到公共样式库，由 Win16 调用；其他风格尚未接入，见[记录](../history/M0-T26-S1-theme-track.md)。
-
-UWP 系统菜单的命令状态及临时动作事务已抽离，实际其他风格接入尚未验证；见[记录](../history/M0-T26-S1-uwp-menu.md)。
-
-发布版全局窗口直接工作进程的双位宽附着、绘制和恢复通过；跨风格探针 x64 状态栏对齐出现一次失败，见[记录](../history/M0-T26-S1-global-worker-retest.md)。
-
-Win16 和 Win2000 系统菜单已共用项目读取和校验；样式绘制及完整交互验证边界见[记录](../history/M0-T26-S1-menu-snapshot.md)。
-
-控件创建作用域的生命周期已抽离并由 Win16 路径调用；Win2000 调用仍待审计，见[记录](../history/M0-T26-S1-control-scope.md)及[原边界审计](../history/M0-T26-S1-control-scope-audit.md)。
-
-Win2000 DWM 恢复问题的直接附着及延迟消息对照已复现；根因仍未确认，见[调查](../history/M0-T26-S1-win2k-dwm-investigation.md)。
-
-T26 S1 已共享打印设备资源处理，实际打印机与其他风格接入尚未验证；见[记录](../history/M0-T26-S1-print-resources.md)。
-
-T26 S1 已索引 28 个 Win16/Win2000 窗口与 UWP 源文件；直接引用及未完成的共享边界见[窗口索引](../history/M0-T26-S1-window-index.md)。
-
-T26 S1 已补充 UWP 目标管理失败重试、停止超时和目标退出测试；范围见[记录](../history/M0-T26-S1-uwp-global-lifecycle.md)。
-
-T26 S1 已共享 UWP 全局目标队列、身份和生命周期，宿主及会话策略由产品提供；测试和沙箱限制见[记录](../history/M0-T26-S1-uwp-global.md)。
-
-T26 S1 已共享 UWP 钩子消息校验、重入保护与结果回传，Win16 绘制仍在产品侧；见[记录](../history/M0-T26-S1-uwp-hook.md)。
-
-T26 S1 已共享 UWP 目标校验、位宽检查和线程分发事务；产品保留动作策略，见[记录](../history/M0-T26-S1-uwp-dispatch.md)。
-
-T26 S1 已补充 UWP 重绘和激活回调内取消的双位宽检查；边界见[记录](../history/M0-T26-S1-uwp-repaint-reentry.md)。
-
-T26 S1 已抽离 UWP 重绘调度及取消机制；调度边界和测试限制见[记录](../history/M0-T26-S1-uwp-repaint.md)。
-
-T26 S1 已共享控件嵌套重绘抑制并合并编辑框重复逻辑；验证与限制见[记录](../history/M0-T26-S1-control-redraw.md)。
-
-T26 S1 已移除窗口几何空包装并共享 XAML 子窗口识别；测试与限制见[记录](../history/M0-T26-S1-frame-xaml.md)。
-
-T26 S1 已共享控件协议识别和绑定生命周期；属性命名变化、并存限制及发布后测试见[记录](../history/M0-T26-S1-control-protocol.md)。
-
-T26 S1 已索引 55 个 Win16 控件源文件与直接测试引用，并验证现有控件协议清理；混合机制与未覆盖项见[控件索引](../history/M0-T26-S1-control-index.md)。
-
-T26 S1 已共享经典文件路径、Shell 项及隐藏文件枚举，产品保留私有消息；见[记录](../history/M0-T26-S1-classic-file-helpers.md)。
-
-T26 S1 已共享经典文件对话框显示、Shell 文件夹适配与活动控件同步；边界及验证见[记录](../history/M0-T26-S1-classic-bridge.md)。
-
-T26 S1 已共享旧式文件对话框 COM 接口适配器，保留调用方的回退策略；验证与边界见[记录](../history/M0-T26-S1-dialog-interfaces.md)。
-
-T26 S1 已迁移文件对话框事件、现代选择器及旧式 Shell 文件夹通用调用；范围、测试和剩余混合代码见[对话框审计](../history/M0-T26-S1-dialog-audit.md)。
-
-T26 S1 已冻结首批 272 个相关文件路径，见[初始清单](../history/M0-T26-S1-initial-inventory.md)；逐项依赖、调用方、测试和迁移归属审计仍在进行，未宣称完成。
-
-T26 S1 首批共享基础已发布，双位宽聚焦测试通过，但 Win2000 DWM 生命周期
-测试两侧失败，完整回归及视觉验收未完成；证据见[记录](../history/M0-T26-S1-shared-foundation.md)。
-
-T26 S1 样式库及组件测试已迁至 `lib-style`，同批包发布后的双位宽 22 项
-聚焦检查通过；实际 UWP 程序、物理输入和旧有 DWM 恢复问题仍未覆盖，见[记录](../history/M0-T26-S1-style-layout.md)。
-
-T26 S1 已共享 Win16/Win2000 菜单助记键、键盘动作及指针切换判断；发布后
-双位宽 18 项消息测试通过，完整跟踪器及物理交互仍未统一或验收，见[记录](../history/M0-T26-S1-menu-input.md)。
-
-T26 S1 已抽离 UWP 原生标题选择与全屏 UIA 服务；发布后 11 项聚焦检查通过，
-真实 UWP 激活和全屏调用尚未验证，见[记录](../history/M0-T26-S1-uwp-native.md)。
-
-T26 S1 已抽离 UWP 窗口发现和关联校验，发布后 13 项聚焦检查通过；真实
-UWP 激活与实际 WinUI 应用仍未覆盖，见[记录](../history/M0-T26-S1-uwp-target.md)。
-
-T26 S1 已共享经典文件对话框契约和 Shell 结果转换；发布后双位宽 14 项
-聚焦检查通过，Win2000 对话框尚未实现，见[记录](../history/M0-T26-S1-classic-file.md)。
-
-T26 S1 已统一 Win16 和 Win2000 的弹出菜单方向键判定；发布后双位宽
-18 项聚焦检查通过，完整菜单跟踪器仍未合并，见[记录](../history/M0-T26-S1-menu-arrows.md)。
-
-T26 S1 已抽离缓冲呈现和窗口打印遍历；发布后双位宽 14 项聚焦检查通过，
-仪器化真实绘制测试因禁止隔离桌面未运行，见[记录](../history/M0-T26-S1-present.md)。
-
-T26 S1 已抽离同线程主题状态、覆盖及恢复机制；发布后双位宽 14 项聚焦检查
-通过，Win2000 尚未接入，历史主题恢复有限制，见[记录](../history/M0-T26-S1-theme-state.md)。
-
-T26 S1 已将风格模块定位、校验与入口解析移入 `lib-win32/style`；发布后双位宽
-12 项聚焦检查通过，包含正式 DLL 的窗口切换桥接，见[记录](../history/M0-T26-S1-style-companion.md)。
-
-T26 S1 已抽离窗口线程派发机制；发布后双位宽 12 项聚焦检查通过，包括
-自建跨进程目标，真实 UWP 应用未覆盖，见[记录](../history/M0-T26-S1-window-dispatch.md)。
-
-T26 S1 已共享 UWP 宿主坐标与位图缓存；双位宽聚焦检查通过，完整外框
-生命周期与旧版均以错误 5 失败，原因未明，见[记录](../history/M0-T26-S1-uwp-surface.md)。
-
-T26 S1 已共享 UWP 分层表面提交；双位宽 16 项聚焦检查通过。完整外框
-测试仍失败，已定位到跨进程相邻窗口的 `SetWindowPos` 返回错误 5，原因
-未明，见[记录](../history/M0-T26-S1-uwp-present.md)。
-
-S8 P13 对齐 Win16 的原生绘制消息防护并修复 Win2000 重绘覆盖，双位宽受控
-消息测试及发布后直接探针通过；状态栏曾出现一次未解释偏差，真实鼠标和用户
-视觉验收未完成。共享菜单跟踪及可配置 Win2000 滚动条仍未完成，见[记录](../history/M0-T25-S8-P13-shared-frame-redraw.md)。
-
-S8 P12 复核 Solitaire 底部状态栏：一次跨进程采样出现 19 像素差距，五轮重复未
-复现；双位宽受控窗口通过，底部视觉效果仍待用户确认。见[记录](../history/M0-T25-S8-P12-status-layout-audit.md)。
-
-S8 P11 修复 Windows 2000 重绘时原生菜单覆盖客户区；正式 Solitaire 像素对照和
-双位宽回归通过，真实鼠标回归受自动审批限制，等待用户验收。见[记录](../history/M0-T25-S8-P11-menu-redraw.md)。
-
-S8 P10 缩短停止时对未返回加载器的等待；发布包的双位宽六方向和快速改选
-测试通过，实际耗时和遗留限制见[交付记录](../history/M0-T25-S8-P10-switch-latency.md)。
-用户手动验收仍待完成。
-
-S8 P9 修复旧全局样式仍附着时直接拒绝切换的问题，六方向发布包附着与移除回归
-通过；Win2000 → Win16 后的像素复测和用户验收仍待完成，见[交付记录](../history/M0-T25-S8-P9-style-transitions.md)。
-
-S8 P8 修复全局切换时托盘选项变灰：三项始终可用，后台串行收敛到用户最后选择。
-双位宽同批构建已发布并完成正式包辅助功能切换回归；实际鼠标连续点击及用户验收
-待完成，恢复和失败范围见[交付记录](../history/M0-T25-S8-P8-tray-always-enabled.md)。
-
-S8 P7 候选八文件已发布，发布后的双位宽受控检查通过；正式包托盘交互、真实全局
-切换和 DWM 恢复仍未通过，范围和测试目录见[交付记录](../history/M0-T25-S8-P7-global-style-candidate.md)。
-此前管理员全局切换测试使用混合候选，不能代替正式包验证。首次干净构建的 x86
-测试替身链接遗漏已修复；第二次双位宽干净构建通过。S8 与 T25 继续开放。
-
-S8 P5 按用户纠正全局选择、样式去重和最终审计的顺序，见[记录](../history/M0-T25-S8-P5-plan-correction.md)。
-
-S8 P6 审计现有全局流程及 Win2000 恢复缺口，见[记录](../history/M0-T25-S8-P6-global-path-audit.md)。
-
-S8 P1 冻结最终审计覆盖清单，见[记录](../history/M0-T25-S8-P1-audit-scope.md)。
-
-S8 P2 核对外框实现与证据，见[记录](../history/M0-T25-S8-P2-frame-audit.md)。
-
-S8 P3 验证自有双位宽窗口真实鼠标菜单切换，见[记录](../history/M0-T25-S8-P3-physical-menu.md)。
-
-S8 P4 核对遗留项范围与实际鼠标验证证据，见[记录](../history/M0-T25-S8-P4-debt-scope.md)。
-
-S7 P13 按有限范围收口并准入 S8，见[记录](../history/M0-T25-S7-P13-closure.md)。
-
-S7 P1 检查实际扫雷、Solitaire 和双位宽传播，见[记录](../history/M0-T25-S7-P1-real-apps.md)。
-
-S7 P2 验证两种样式的 CLI 失败回滚及 Win16 回归，见[记录](../history/M0-T25-S7-P2-cli-rollback.md)。
-
-S7 P3 验证启动事务失败后目标退出，见[记录](../history/M0-T25-S7-P3-process-cleanup.md)。
-
-S7 P4 在真实 CLI 失败后检查目标进程快照，见[记录](../history/M0-T25-S7-P4-cli-process-cleanup.md)。
-
-S7 P5 检查实际记事本与 demo 并审计样式移除边界，见[记录](../history/M0-T25-S7-P5-apps-and-restore.md)。
-
-S7 P6 审计 Win2000 恢复及后续共享生命周期边界，见[记录](../history/M0-T25-S7-P6-restore-boundary.md)。
-
-S7 P7 验证 64 位无菜单实际程序，见[记录](../history/M0-T25-S7-P7-charmap.md)。
-
-S7 P8 验证实际 Delphi 程序的窗口外框，见[记录](../history/M0-T25-S7-P8-delphi-window.md)。
-
-S7 P9 验证跨位宽父子窗口实际附着与标题绘制，见[记录](../history/M0-T25-S7-P9-propagated-frames.md)。
-
-S7 P10 在当前桌面验证双位宽真实鼠标标题按钮，见[记录](../history/M0-T25-S7-P10-physical-caption-buttons.md)。
-
-S7 P11 在当前桌面验证双位宽真实鼠标移动和拉伸，见[记录](../history/M0-T25-S7-P11-physical-frame-drag.md)。
-
-S7 P12 验证系统版本信息窗口的外框，见[记录](../history/M0-T25-S7-P12-winver-window.md)。
-
-S6 P1 验证双位宽连续尺寸变化的几何与有限采样，见[记录](../history/M0-T25-S6-P1-resize-cycle.md)。
-
-S6 P2 验证重复最大化和还原，见[记录](../history/M0-T25-S6-P2-zoom-cycle.md)。
-
-S6 P3 区分线程激活与前台窗口，见[记录](../history/M0-T25-S6-P3-activation-foreground.md)。
-
-S6 P4 验证尺寸变化后的自然消息重绘，见[记录](../history/M0-T25-S6-P4-natural-resize.md)。
-
-S6 P5 按有限技术范围收口并准入 S7，见[记录](../history/M0-T25-S6-P5-closure.md)。
-
-已发布基线为五组件、八产品文件；纯 C17、MinGW GCC、Ninja 和 ccache。T25 S5 P9 八文件已发布于项目 assets 根目录与 O:/winnt，摘要和验证范围见[交付记录](../history/M0-T25-S5-P9-caption-command-order.md)。历史状态见[T24 工作快照](../history/M0-T24-S1-working-log.md)和[原状态快照](../history/M0-T24-current-state-archive.md)。
-
-S4 P32 补充扩展打印窗口双位宽取消路径验证，见[审计记录](../history/M0-T25-S4-P32-print-ex-audit.md)；没有产品二进制变更。
-
-S4 P33 补充普通窗口动态移除和恢复标题栏验证，见[审计记录](../history/M0-T25-S4-P33-style-transition.md)。
-
-S4 P34 接入初始无标题、运行时添加标题的顶层窗口，见[交付记录](../history/M0-T25-S4-P34-caption-added.md)。
-
-S4 P35 以发布版复测两个实际程序窗口，见[审计记录](../history/M0-T25-S4-P35-published-real-window.md)。
-
-S4 P36 补充实际窗口模拟激活与失焦颜色采样，见[审计记录](../history/M0-T25-S4-P36-real-activation.md)。
-
-S4 P37 准备双窗口激活探针；可见桌面切换受限，未运行真实输入检查，见[记录](../history/M0-T25-S4-P37-activation-environment.md)。
-
-S4 P38 验证标题帮助按钮命中与命令转发，见[记录](../history/M0-T25-S4-P38-help-button.md)。
-
-S4 P39 检查发布版自建普通窗口的 DC 画面，见[记录](../history/M0-T25-S4-P39-visual-window.md)。
-
-S4 P40 发现常见默认配置下可缩放外框度量差距，后续几何修复须协调客户区、菜单和命中，见[记录](../history/M0-T25-S4-P40-frame-metric.md)。
-
-S4 P41 测量双位宽固定与可缩放窗口的边框及菜单几何，见[记录](../history/M0-T25-S4-P41-frame-baseline.md)。
-
-S4 P42 修正普通可缩放窗口的经典外框几何，见[交付记录](../history/M0-T25-S4-P42-frame-geometry.md)。
-
-S4 P43 修正移动后系统图标边缘的命中回归，见[交付记录](../history/M0-T25-S4-P43-system-icon-hit.md)。
-
-S4 P44 修正系统图标覆盖菜单顶部，系统菜单实时选中绘制及部分输入测试仍有未解决结果，见[交付记录](../history/M0-T25-S4-P44-icon-clip.md)。
-
-S4 P45 修正私有桌面系统菜单首次实时选中色，真实输入和完整 DPI 仍待验证，见[交付记录](../history/M0-T25-S4-P45-system-menu-idle.md)。
-
-S4 P46 验证程序触发的系统菜单选中项切换，见[记录](../history/M0-T25-S4-P46-menu-selection.md)。
-
-S4 P47 验证带横纵滚动条窗口的外框位置与命中，见[记录](../history/M0-T25-S4-P47-scroll-geometry.md)。
-
-S4 P48 验证标题按钮消息路径的拖离取消及后续最大化，见[记录](../history/M0-T25-S4-P48-button-cancel.md)。
-
-S4 P49 验证可缩放工具窗口的标题、边框和命中，见[记录](../history/M0-T25-S4-P49-tool-resize.md)。
-
-S4 P50 检查计算器、录音机与扫雷的实际窗口；录音机退出超时未计通过，见[记录](../history/M0-T25-S4-P50-real-dialog-apps.md)。
-
-S4 P51 修复应用自定义透明／错误／无命中结果被覆盖，见[交付记录](../history/M0-T25-S4-P51-custom-hit.md)。
-
-S4 P52 修复 Solitaire 创建窗口期间尺寸消息过早导致的启动崩溃，见[交付记录](../history/M0-T25-S4-P52-solitaire-startup.md)。
-
-S4 P53 调整标题图标背景并请求启动后的客户区重绘；用户环境的菜单残影待复验，见[交付记录](../history/M0-T25-S4-P53-caption-icon-repaint.md)。
-
-S4 P54 修复菜单悬停覆盖和标题右侧残影；用户提供的原版配色及按钮比例仍待对齐，见[交付记录](../history/M0-T25-S4-P54-menu-overlap.md)。
-
-S4 P55 根据用户提供的原版截图调整按钮尺寸、位置及配色；真实鼠标最大化仍需调查，见[交付记录](../history/M0-T25-S4-P55-reference-caption.md)。
-
-S4 P56 处理按钮快速再次点击产生的双击消息，真实鼠标已复测；一次探针首次按下未命中仍未解释，见[交付记录](../history/M0-T25-S4-P56-caption-double-click.md)。
-
-S4 P57 借鉴 Win16 的中性菜单命中处理，阻止系统原生菜单浮现，见[交付记录](../history/M0-T25-S4-P57-neutral-menu-hit.md)。
-
-S4 P58 将两种样式共用的菜单输入协议提取至 style-common，见[交付记录](../history/M0-T25-S4-P58-style-common-menu.md)。
-
-S4 P59 依据原版源码与用户对物理宽度的选择调整边框，见[交付记录](../history/M0-T25-S4-P59-physical-border.md)。
-
-S4 P60 按原版截图及源码调整标题按钮上、右间距，见[交付记录](../history/M0-T25-S4-P60-caption-inset.md)。
-
-S4 P61 用发布版复核双位宽标题按钮真实鼠标输入，见[记录](../history/M0-T25-S4-P61-caption-input.md)。
-
-S4 P62 对照原版修正标题渐变下的分隔线，见[交付记录](../history/M0-T25-S4-P62-caption-separator.md)。
-
-S4 P63 验证双位宽同线程窗口实际激活及标题颜色，见[记录](../history/M0-T25-S4-P63-window-activation.md)。
-
-S4 P64 按活动包要求审计已覆盖范围与限制，见[记录](../history/M0-T25-S4-P64-scope-audit.md)。
-
-S4 P65 检查双位宽标题命令与系统菜单选中状态，见[记录](../history/M0-T25-S4-P65-system-commands.md)。
-
-S4 P66 增加 DPI 感知窗口测试并在 144 DPI 实测，见[记录](../history/M0-T25-S4-P66-aware-dpi.md)。
-
-S4 P67 对照无图标对话框和失活窗口标题，见[记录](../history/M0-T25-S4-P67-dialog-caption-reference.md)。
-
-S4 P68 补充系统对话框类和普通窗口失活图标验证，见[记录](../history/M0-T25-S4-P68-real-dialog-icon.md)。
-
-S4 P69 验证系统对话框显式提供专用图标的情况，见[记录](../history/M0-T25-S4-P69-dialog-custom-icon.md)。
-
-S4 P70 修正窗口失活时的菜单文字颜色，见[交付记录](../history/M0-T25-S4-P70-inactive-menu.md)。
-
-S4 P71 在实际 Solitaire About 场景验证失活菜单，见[记录](../history/M0-T25-S4-P71-solitaire-about.md)。
-
-S4 P72 用真实鼠标验证禁用的标题按钮，见[记录](../history/M0-T25-S4-P72-disabled-buttons.md)。
-
-S5 P1 验证系统菜单基线，记录真实键盘超时及用户禁止隔离桌面的约束，见[记录](../history/M0-T25-S5-P1-system-menu-baseline.md)。
-
-S5 P2 在当前桌面验证程序键盘消息驱动的系统菜单选中绘制，见[记录](../history/M0-T25-S5-P2-menu-keyboard.md)。
-
-S5 P3 排除用简单投递 Escape 消息替代真实键盘的无效对照，见[记录](../history/M0-T25-S5-P3-escape-message-control.md)。
-
-S5 P4 记录当前桌面原生按键探针的无效负对照，见[记录](../history/M0-T25-S5-P4-escape-input-control.md)。
-
-S5 P5 修正按钮按下期间关闭命令被禁用时的误发送，见[交付记录](../history/M0-T25-S5-P5-disabled-close-command.md)。
-
-S5 P6 在不使用隔离桌面的条件下验证双位宽加载与传播，见[记录](../history/M0-T25-S5-P6-direct-launch-regression.md)。
-
-S5 P7 验证标题栏上下文菜单消息入口，见[记录](../history/M0-T25-S5-P7-caption-context-menu.md)。
-
-S5 P8 验证系统菜单取消消息，见[记录](../history/M0-T25-S5-P8-menu-cancel.md)。
-
-S5 P9 修复标题按钮系统命令的同步顺序，见[交付记录](../history/M0-T25-S5-P9-caption-command-order.md)。
-
-S5 P10 复核实际应用及创建失败，见[记录](../history/M0-T25-S5-P10-real-app-regression.md)。
-
-S5 P11 对照启动环境并验证实际 Solitaire，见[记录](../history/M0-T25-S5-P11-solitaire-environment.md)。
-
-S5 P12 修正实际程序采样的裁剪和 DPI 上下文，见[记录](../history/M0-T25-S5-P12-real-app-dpi.md)。
-
-S5 P13 检查 Solitaire 关于对话框与失活主窗口，见[记录](../history/M0-T25-S5-P13-solitaire-dialog.md)。
-
-S5 P14 验证标题按钮捕获丢失及取消，见[记录](../history/M0-T25-S5-P14-button-capture-loss.md)。
-
-S5 P15 区分应用菜单切换与真实 Escape，见[记录](../history/M0-T25-S5-P15-menu-switch.md)。
-
-S5 P17 按有限技术范围收口并准入 S6，见[记录](../history/M0-T25-S5-P17-closure.md)。
+- **活动范围**：T25 S9 去重已并入 T26。当前 S1 仍需完成全部窗口、控件、对话框、Win32/UWP/WinUI 生产入口与测试的分类、迁移次序和覆盖审计；不把已迁移的局部当作 T26 完成。
+- **覆盖台账**：当前生产与测试目录的盘点、已审证据和待审边界见[台账](../history/M0-T26-S1-coverage-ledger.md)；目录统计不是逐文件审计结论。
+- **当前发布**：第十九批双位宽同快照候选已发布至 `assets` 与 `O:\winnt`，八文件摘要一致。构建、针对性回归、明确失败与未覆盖范围见[候选记录](../history/M0-T26-S1-shared-candidate-19.md)；候选未正式验收，S1/T26 未收口。
+- **其他已发布共享**：同进程窗口钩子分发、现代窗口缩放边缘命中、普通/现代外框光标映射、现代宿主类名核验、Win2000 系统菜单公共缓冲及滚动条公共位置映射已发布；相关验证见各历史候选记录。后者不表示 Win2000 滚动条已实现。
+- **第八批新增共享**：普通、单参数和消息框入口的调用骨架由 Win16 和 Win2000 共用；真实窗口回调异常及 Win2000 打印夹具仍未通过，见[对话框复核](../history/M0-T26-S1-dialog-current-review.md)。现代窗口表面刷新生命周期由公共组件负责，真实宿主仍未覆盖，见[表面记录](../history/M0-T26-S1-uwp-surface.md)。同线程子窗口遍历由公共组件负责，产品保留风格和目标策略，见[接入复核](../history/M0-T26-S1-product-adapter-review.md)。
+- **第十批新增共享**：Win16 和 Win2000 系统菜单 `WM_PRINT` 的窗口/客户区坐标偏移已共用；双位宽自建窗口及实际系统菜单增量验证通过，见[菜单坐标记录](../history/M0-T26-S1-menu-coordinate.md)。
+- **第九批新增共享**：普通 Win16 和 Win2000 启动入口已共用公共启动事务；双位宽事务及两种风格各四种父子位宽组合的自建传播测试通过，见[接入复核](../history/M0-T26-S1-product-adapter-review.md)。XAML 工作区边缘保护及普通、现代外框的工作区交集计算已共享，公共及 Win16 自建外框测试双位宽通过，见[外框记录](../history/M0-T26-S1-frame-xaml.md)。
+- **公共组件边界**：Win16/Win2000 样式目录已迁入 `lib-style`；窗口、控件、对话框及现代宿主的部分通用机制由 `lib-style/common`、`lib-style/uwp` 和 `lib-win32/style` 提供。公共主题状态由现有共享 DLL 统一承载，Win16 与 Win2000 控件有实际调用；系统原有主题仅能恢复已观察到的请求。轻量导入、控制台懒加载、v5/v6、重入与原生异常的双位宽自建回归见候选记录和[主题审计](../history/M0-T26-S1-theme-lifecycle-review.md)。
+- **尚未通过**：Win2000 移除外框后 DWM 状态未恢复；同机 Git HEAD 基线亦复现，见[调查](../history/M0-T26-S1-win2k-dwm-investigation.md)。同进程 UWP 分发修复已发布并通过聚焦测试；自建跨进程真实钩子返回 126，UWP 全局自建目标策略准入返回 5，实际 UWP/WinUI 宿主和真实全局会话未验证，分别见[分发记录](../history/M0-T26-S1-uwp-dispatch.md)和[全局记录](../history/M0-T26-S1-uwp-global.md)。这些不是通过项。
+- **第十一批新增共享**：创建作用域待处理窗口记录已移入 `lib-win32/style` 并被 Win16 实际接入；双位宽公共和产品创建回归见[记录](../history/M0-T26-S1-creation-pending.md)。Win2000 尚未接入此创建机制。
+- **第十一批新增共享**：原生颜色下拉与日期控件身份核验已从 Win16 绘制中拆入公共控件库；双位宽原生正负例及 Win16 产品回归见[记录](../history/M0-T26-S1-native-combo-identity.md)。
+- **第十一批新增共享**：状态栏身份核验已迁入公共控件库，框架别名由调用方提供；双位宽 v5/v6 和 Win16 产品回归见[记录](../history/M0-T26-S1-status-identity.md)。
+- **第十一批新增共享**：颜色对话框模板与色块识别已并入公共对话框库，Win16 保留具体绘制策略，空的私有对话框库已删除；双位宽产品回归见[记录](../history/M0-T26-S1-color-dialog-common.md)。
+- **第十二批新增共享**：同模块、同线程子窗口与类过程身份核验已由公共窗口组件提供并接入 Win16 VCL 路径；见[记录](../history/M0-T26-S1-owned-child-identity.md)及第十二批发布后测试。
+- **控件生命周期复核**：逐项记录已共享和仍依赖 Win16 状态/字体的入口，见[记录](../history/M0-T26-S1-control-lifetime-review.md)。
+- **第十二批新增共享**：控件子类按所有权移除已并入公共控件作用域并被 Win16 轨迹条、工具栏和报告控件使用；见[记录](../history/M0-T26-S1-owned-subclass.md)及第十二批发布后测试。
+- **第十二批新增共享**：旧式字体对话框组合框资格检查已迁入公共控件，Win16 提供类别策略；公共测试及正式发布版字体对话框 A/W 确认和取消双位宽通过，见[候选记录](../history/M0-T26-S1-shared-candidate-12.md)。
+- **现代外框待拆分**：脱离、重入引用、所有者/标题/表面安装事务及所有者、标题通用消息分派已由公共宿主接管；第十四批同快照自建测试通过，表面输入与风格策略仍需审计，真实宿主与回滚条件见[现代外框审计](../history/M0-T26-S1-modern-frame-audit.md)。
+- **菜单弹出路径复核**：两种风格已共用输入、快照与呈现基础；选中状态和嵌套生命周期仍有不同契约，具体可拆边界见[局部审计](../history/M0-T26-S1-menu-scope-review.md)。
+- **普通外框生命周期复核**：位置恢复与 DWM 操作已有共享基础，安装事务、状态和消息分派仍须按两种风格各自契约拆分；见[局部审计](../history/M0-T26-S1-frame-lifecycle-review.md)。
+- **第十五批新增共享与修复**：全局窗口样式适配去掉三个转发函数，Win2000 非客户区漏掉的公共菜单重叠刷新已修复；非客户区滚动条轴选择和 DC 管理移入公共组件并由 Win16 使用。双位宽测试和真实全局及 Win2000 控件边界见[候选记录](../history/M0-T26-S1-shared-candidate-15.md)。
+- **第十六批新增共享**：状态栏标准消息的字体和快照失效判定、原生分栏与文本快照采集已移入公共状态栏组件并由 Win16 使用；双位宽回归见[候选记录](../history/M0-T26-S1-shared-candidate-16.md)。
+- **第十七批新增共享**：轨迹条和工具栏的自绘通知来源校验、XAML 图标消息的样式位暂存与恢复已归入公共组件，Win16 实际接入；双位宽回归和真实宿主限制见[候选记录](../history/M0-T26-S1-shared-candidate-17.md)。
+- **第十三批新增共享**：原生及 VB5/VB6 控件类身份与别名已从 Win16 控件层移入公共样式层，Win16 的绘制资格保留；双位宽回归及限制见[候选记录](../history/M0-T26-S1-shared-candidate-13.md)。
+- **剩余实现**：对话框与窗口创建作用域仍有两组产品入口，生命周期和错误处理不同，须按[复核记录](../history/M0-T26-S1-dialog-current-review.md)继续拆分并验证；现有索引不等于所有函数已审完。Win2000 控件外观、所有目标种类和真实应用的完整覆盖仍未证明。
+- **执行约束**：不使用 computer-use，不创建或切换隔离桌面；保留源码与资源声明，不依赖或修改兄弟仓库。先发布再进行产品包测试；清理本次临时构建、测试副本和发布备份，保留必要证据。提交推送及远端复核尚未完成。
+- **历史记录**：此前完整状态文字保存在[基线历史日志](../history/M0-T26-S1-baseline-log.md)；其中旧的“未发布”等状态可能已被本基线及候选记录取代。

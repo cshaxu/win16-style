@@ -1,8 +1,9 @@
-#include "dc_geometry.h"
+#include "lib-style/common/dc_geometry.h"
 #include "special_paint.h"
 #include "basic_paint.h"
 #include "scroll_assets.h"
 #include "../common/control_protocol.h"
+#include "../common/bitmap.h"
 #include "control_class.h"
 #include "control_state.h"
 #include "choice_paint.h"
@@ -10,41 +11,34 @@
 #include <commctrl.h>
 #include <vssym32.h>
 
-typedef struct spin_dib {HDC dc;HBITMAP bitmap;HGDIOBJ old;DWORD *pixels;} spin_dib;
-static void spin_dib_close(spin_dib *d)
-{ SelectObject(d->dc,d->old);DeleteObject(d->bitmap);DeleteDC(d->dc); }
-static BOOL spin_dib_open(HDC source,int width,int height,spin_dib *d)
+static BOOL spin_dib_open(HDC source,int width,int height,style_bitmap *d)
 {
-    BITMAPINFO info={0};info.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);info.bmiHeader.biWidth=width;
-    info.bmiHeader.biHeight=-height;info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;info.bmiHeader.biCompression=BI_RGB;
-    d->dc=CreateCompatibleDC(source);if(!d->dc)return FALSE;
-    d->bitmap=CreateDIBSection(source,&info,DIB_RGB_COLORS,(void**)&d->pixels,NULL,0);
-    if(!d->bitmap){DeleteDC(d->dc);return FALSE;}
-    d->old=SelectObject(d->dc,d->bitmap);
-    if(!d->old || d->old==HGDI_ERROR){DeleteObject(d->bitmap);DeleteDC(d->dc);return FALSE;}
+    SIZE size={width,height};if(!style_bitmap_ensure(d,source,size))return FALSE;
     int saved=SaveDC(source);BOOL ok=FALSE;
     if(saved){SetViewportOrgEx(source,0,0,NULL);SetWindowOrgEx(source,0,0,NULL);SelectClipRgn(source,NULL);
         ok=BitBlt(d->dc,0,0,width,height,source,0,0,SRCCOPY);GdiFlush();RestoreDC(source,saved);}
-    if(!ok){spin_dib_close(d);return FALSE;}return TRUE;
+    if(!ok){style_bitmap_dispose(d);return FALSE;}return TRUE;
 }
 BOOL win16_control_spin_snapshot(HDC dc,int width,int height,const POINT pt[2],DWORD *background,BYTE *valid)
 {
-    spin_dib d={0};if(!spin_dib_open(dc,width,height,&d))return FALSE;
+    style_bitmap d={0};if(!spin_dib_open(dc,width,height,&d))return FALSE;
+    const DWORD *pixels=(const DWORD *)d.pixels;
     for(int y=pt[0].y;y<pt[1].y;y++)for(int x=0;x<width;x++){
-        int at=y*64+x;background[at]=d.pixels[y*width+x]&0x00ffffff;valid[at]=1;
+        int at=y*64+x;background[at]=pixels[y*width+x]&0x00ffffff;valid[at]=1;
     }
-    spin_dib_close(&d);return TRUE;
+    style_bitmap_dispose(&d);return TRUE;
 }
 BOOL win16_control_spin_compose(HWND window,HDC dest,int x,int y,int width,int height,HDC source,
     int source_width,int source_height,const RECT halves[2],const int states[2],const DWORD *background,DWORD *original)
 {
-    spin_dib d={0};if(!spin_dib_open(source,source_width,source_height,&d))return FALSE;
-    for(int j=y;j<y+height;j++)for(int i=x;i<x+width;i++)original[j*64+i]=d.pixels[j*source_width+i];
-    for(int half=0;half<2;half++)if(!win16_style_bitbtn_face(window,d.dc,&halves[half],NULL,states[half]==3?ODS_SELECTED:0)){spin_dib_close(&d);return FALSE;}
+    style_bitmap d={0};if(!spin_dib_open(source,source_width,source_height,&d))return FALSE;
+    DWORD *pixels=(DWORD *)d.pixels;
+    for(int j=y;j<y+height;j++)for(int i=x;i<x+width;i++)original[j*64+i]=pixels[j*source_width+i];
+    for(int half=0;half<2;half++)if(!win16_style_bitbtn_face(window,d.dc,&halves[half],NULL,states[half]==3?ODS_SELECTED:0)){style_bitmap_dispose(&d);return FALSE;}
     GdiFlush();for(int j=y;j<y+height;j++)for(int i=x;i<x+width;i++){
-        int at=j*64+i;if((original[at]&0x00ffffff)!=background[at])d.pixels[j*source_width+i]=original[at];
+        int at=j*64+i;if((original[at]&0x00ffffff)!=background[at])pixels[j*source_width+i]=original[at];
     }
-    BOOL copied=BitBlt(dest,x,y,width,height,d.dc,x,y,SRCCOPY);spin_dib_close(&d);return copied;
+    BOOL copied=BitBlt(dest,x,y,width,height,d.dc,x,y,SRCCOPY);style_bitmap_dispose(&d);return copied;
 }
 
 BOOL win16_control_black_frame(HDC dc,const RECT *bounds,const RECT *clip)
@@ -156,7 +150,7 @@ void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int heig
 {
     HWND w=WindowFromDC(dc);RECT client;POINT origin,viewport;BITMAP bitmap={0};HMODULE owner=NULL;
     if(!w || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() || !attached(w) ||
-       !ntw16s_vb_class(w,L"ThunderRT6Data") || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)caller,&owner) ||
+       !style_control_vb_class(w,L"ThunderRT6Data") || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)caller,&owner) ||
        owner!=GetModuleHandleW(L"MSVBVM60.DLL") ||
        !GetClientRect(w,&client) || client.right<70 || !((GetDpiForWindow(w)==96 && client.bottom==22) || (GetDpiForWindow(w)==144 && client.bottom==29)) || rop!=SRCCOPY || sx || sy || height!=13 || sh!=13 || width!=sw || (y!=(client.bottom-13)/2 && y!=(client.bottom-13)/2+1) ||
        GetMapMode(dc)!=MM_TEXT || GetLayout(dc)!=0 || !GetWindowOrgEx(dc,&origin) || origin.x || origin.y ||
@@ -226,9 +220,9 @@ static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *a
     const UINT allowed=DFCS_BUTTONPUSH|DFCS_PUSHED|DFCS_INACTIVE|DFCS_ADJUSTRECT|DFCS_CHECKED;
     if(type!=DFC_BUTTON || !(flags&DFCS_BUTTONPUSH) || (flags&~allowed) ||
             !ntw16s_report_paint_target(dc,w) || !ntw16s_vb_graphical_button(*w) ||
-            ((flags&DFCS_CHECKED) && !ntw16s_vb_class(*w,L"ThunderRT6OptionButton") &&
-             !ntw16s_vb_class(*w,L"ThunderRT6CheckBox") && !ntw16s_vb5_class(*w,L"ThunderRT5CheckBox") &&
-             !ntw16s_vb5_class(*w,L"ThunderRT5OptionButton")) ||
+            ((flags&DFCS_CHECKED) && !style_control_vb_class(*w,L"ThunderRT6OptionButton") &&
+             !style_control_vb_class(*w,L"ThunderRT6CheckBox") && !style_control_vb5_class(*w,L"ThunderRT5CheckBox") &&
+             !style_control_vb5_class(*w,L"ThunderRT5OptionButton")) ||
             !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)address,&caller) ||
             caller!=(HMODULE)GetClassLongPtrW(*w,GCLP_HMODULE) ||
             !GetWindowSubclass(*w,proc,(UINT_PTR)proc,&value))return NULL;
@@ -246,6 +240,6 @@ BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,
 {
     HWND w;RECT client;control_style *s=graphical_target(dc,type,flags,address,&w,proc);
     if(!s || !rect || !GetClientRect(w,&client) || !EqualRect(rect,&client) ||
-            !win16_control_pixel_viewport(dc))return FALSE;
+            !style_dc_pixel_viewport(dc))return FALSE;
     return win16_control_graphical_face(w,dc,rect,flags,&s->palette);
 }

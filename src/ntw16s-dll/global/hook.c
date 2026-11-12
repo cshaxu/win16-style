@@ -28,25 +28,6 @@ static BOOL CALLBACK check_process(PINIT_ONCE once,void *parameter,void **contex
     free(image);return TRUE;
 }
 
-static BOOL eligible(HWND w)
-{
-    WCHAR name[64];DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-    if(!GetClassNameW(w,name,ARRAYSIZE(name)))return FALSE;
-    if(style&WS_CHILD)return TRUE;
-    return (style&WS_CAPTION)==WS_CAPTION && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_TOOLWINDOW|WS_EX_LAYERED));
-}
-typedef struct child_action {LPARAM action;DWORD style;} child_action;
-static BOOL CALLBACK children(HWND w,LPARAM value)
-{
-    const child_action *action=(const child_action *)value;
-    DWORD process=0;DWORD thread=GetWindowThreadProcessId(w,&process);
-    if(process==GetCurrentProcessId() && thread==GetCurrentThreadId()){
-        if(action->style!=NTW16S_GLOBAL_STYLE_16)return TRUE;
-        if(action->action==NTW16S_GLOBAL_APPLY && eligible(w))(void)ntw16s_global_window_apply_style(w,action->style);
-        else if(action->action==NTW16S_GLOBAL_REMOVE)(void)ntw16s_global_window_remove_style(w,action->style);
-    }
-    return TRUE;
-}
 LRESULT CALLBACK Ntw16sGlobalHook(int code,WPARAM a,LPARAM b)
 {
     DWORD saved=GetLastError();
@@ -56,7 +37,7 @@ LRESULT CALLBACK Ntw16sGlobalHook(int code,WPARAM a,LPARAM b)
         UINT control=RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL);
         BOOL visible=message->message==WM_SHOWWINDOW && message->wParam;
         if(process==GetCurrentProcessId() && thread==GetCurrentThreadId() && control &&
-           ((visible && eligible(message->hwnd)) || message->message==control)){
+           ((visible && ntw16s_global_window_eligible(message->hwnd)) || message->message==control)){
             WCHAR name[NTW16S_GLOBAL_NAME_CAP];entering=TRUE;
             if(ntw16s_global_name(name,ARRAYSIZE(name))){
                 HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
@@ -70,21 +51,19 @@ LRESULT CALLBACK Ntw16sGlobalHook(int code,WPARAM a,LPARAM b)
                     LONG phase=s->phase;BOOL control_ok=message->message==control && (DWORD)message->wParam==s->cookie;
                     if(phase==NTW16S_GLOBAL_ACTIVE && (visible || (control_ok && message->lParam==NTW16S_GLOBAL_APPLY)) && ntw16s_global_late_schedule(s->cookie)){
                         HMODULE pinned=NULL;
-                        if(eligible(message->hwnd) && GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
+                        if(ntw16s_global_window_eligible(message->hwnd) && GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
                                 (LPCWSTR)(void *)&Ntw16sGlobalHook,&pinned)){
-                            child_action action={NTW16S_GLOBAL_APPLY,s->style};
                             BOOL attached=ntw16s_global_window_apply_style(message->hwnd,s->style),text_changed=FALSE;
                             if(s->style==NTW16S_GLOBAL_STYLE_16 && attached && !ntw16s_global_vb_text(message->hwnd,&text_changed) && text_changed)
                                 RedrawWindow(message->hwnd,NULL,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN);
-                            EnumChildWindows(message->hwnd,children,(LPARAM)&action);
+                            ntw16s_global_window_children(message->hwnd,TRUE,s->style);
                             if(s->phase!=NTW16S_GLOBAL_ACTIVE){
-                                action.action=NTW16S_GLOBAL_REMOVE;EnumChildWindows(message->hwnd,children,(LPARAM)&action);
+                                ntw16s_global_window_children(message->hwnd,FALSE,s->style);
                                 (void)ntw16s_global_window_remove_style(message->hwnd,s->style);
                             }
                         }
                     }else if(phase==NTW16S_GLOBAL_STOPPING && control_ok && message->lParam==NTW16S_GLOBAL_REMOVE){
-                        child_action action={NTW16S_GLOBAL_REMOVE,s->style};
-                        EnumChildWindows(message->hwnd,children,(LPARAM)&action);
+                        ntw16s_global_window_children(message->hwnd,FALSE,s->style);
                         (void)ntw16s_global_window_remove_style(message->hwnd,s->style);
                     }
                 }

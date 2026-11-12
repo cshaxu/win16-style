@@ -8,6 +8,24 @@ static HRESULT observe(HWND w,LPCWSTR app,LPCWSTR ids)
     (void)w;++calls;lstrcpynW(app_seen,app?app:L"<null>",64);
     lstrcpynW(ids_seen,ids?ids:L"<null>",64);return S_OK;
 }
+static HRESULT routed(HWND w,LPCWSTR app,LPCWSTR ids)
+{return style_theme_intercept(w,app,ids,observe);}
+static HRESULT nested_native(HWND w,LPCWSTR app,LPCWSTR ids)
+{
+    HRESULT result=observe(w,app,ids);
+    if(SUCCEEDED(result))result=style_theme_set(w,L"Nested",NULL,observe);
+    return result;
+}
+static HRESULT routed_nested(HWND w,LPCWSTR app,LPCWSTR ids)
+{return style_theme_intercept(w,app,ids,nested_native);}
+static HRESULT nested_empty(HWND w,LPCWSTR app,LPCWSTR ids)
+{
+    HRESULT result=observe(w,app,ids);
+    if(SUCCEEDED(result))result=style_theme_set(w,L"",L"",observe);
+    return result;
+}
+static HRESULT routed_empty(HWND w,LPCWSTR app,LPCWSTR ids)
+{return style_theme_intercept(w,app,ids,nested_empty);}
 int main(void)
 {
     HWND w=CreateWindowW(L"STATIC",L"",WS_POPUP,0,0,40,40,NULL,NULL,GetModuleHandleW(NULL),NULL);
@@ -24,7 +42,25 @@ int main(void)
         !lstrcmpW(ids_seen,L"<null>") && calls==4;
     ok=ok && style_theme_stage(w);style_theme_cancel_stage(w);
     ok=ok && !style_theme_retained(w) && style_theme_capture(w) && style_theme_terminal(w,NULL);
+    ok=ok && style_theme_capture(w) && SUCCEEDED(style_theme_set(w,L"Before",NULL,observe)) &&
+        style_theme_suppress(w,&owner,routed);
+    style_theme_remove(w,&owner,observe);
+    ok=ok && !lstrcmpW(app_seen,L"Before");
+    ok=ok && style_theme_capture(w) && style_theme_suppress(w,&owner,routed_nested);
+    style_theme_remove(w,&owner,observe);
+    ok=ok && !lstrcmpW(app_seen,L"Nested");
+    ok=ok && style_theme_capture(w) && style_theme_suppress(w,&owner,nested_native);
+    style_theme_remove(w,&owner,observe);
+    ok=ok && !lstrcmpW(app_seen,L"Nested");
+    ok=ok && style_theme_capture(w) && SUCCEEDED(style_theme_set(w,L"Before",NULL,observe)) &&
+        style_theme_suppress(w,&owner,nested_empty);
+    style_theme_remove(w,&owner,observe);
+    ok=ok && !lstrcmpW(app_seen,L"") && !lstrcmpW(ids_seen,L"");
+    ok=ok && style_theme_capture(w) && SUCCEEDED(style_theme_set(w,L"Before",NULL,observe)) &&
+        style_theme_suppress(w,&owner,routed_empty) && style_theme_owned(w,&owner) && !style_theme_owned(w,&other);
+    style_theme_remove(w,&owner,observe);
+    ok=ok && !lstrcmpW(app_seen,L"") && !lstrcmpW(ids_seen,L"") && !style_theme_owned(w,&owner);
     DestroyWindow(w);
     if(!ok)return 2;
-    puts("STYLE THEME PASS stage=1 suppress=1 latest_restore=1 ownership=1 cancel=1");return 0;
+    puts("STYLE THEME PASS stage=1 suppress=1 latest_restore=1 ownership=1 cancel=1 routed=1 nested=1 empty=1");return 0;
 }

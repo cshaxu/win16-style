@@ -23,6 +23,9 @@ static BOOL arrow_test(void)
 
 int main(void)
 {
+    if(!style_menu_popup_observation(WM_WINDOWPOSCHANGING) || !style_menu_popup_observation(WM_WINDOWPOSCHANGED) ||
+       !style_menu_popup_observation(WM_NCPAINT) || !style_menu_popup_observation(WM_PRINT) ||
+       style_menu_popup_observation(WM_PAINT) || style_menu_popup_observation(WM_DESTROY))return 8;
     if(style_menu_neutral_hit(HTMENU)!=HTBORDER || style_menu_neutral_hit(HTCLIENT)!=HTCLIENT ||
        style_menu_neutral_hit(HTTRANSPARENT)!=HTTRANSPARENT)return 1;
     if(style_menu_route_click(WM_NCLBUTTONDOWN,HTBORDER,TRUE)!=HTMENU ||

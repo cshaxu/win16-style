@@ -1,11 +1,18 @@
 /* Native patch/abort/trampoline test in this expendable test process only. */
 #include "../../src/lib-win32/process-hook/startup_hooks.h"
+#include "../../src/lib-win32/style/startup.h"
 #include <stdio.h>
 #include <string.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"STARTUP HOOK FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
 typedef DWORD (WINAPI *process_id)(void);
 static process_id real_id;
 static DWORD WINAPI replacement(void){return 0x42424242u;}
+static DWORD prepare(void *context)
+{
+    DWORD error=process_hook_startup_attach(&real_id,(void *)replacement);
+    if(error)return error;
+    return *(const BOOL *)context?ERROR_CANCELLED:ERROR_SUCCESS;
+}
 int main(void)
 {
     DWORD actual=GetCurrentProcessId();process_id initial;
@@ -30,10 +37,12 @@ int main(void)
     CHECK(process_hook_startup_attach(&slots[88],(void *)replacement)==ERROR_INSUFFICIENT_BUFFER && slots[88]()==0x1068u);
     process_hook_startup_abort();for(unsigned i=0;i<89;++i)CHECK(slots[i]==(process_id)(code+i*32+8) && slots[i]()==0x1010u+i);
     CHECK(VirtualFree(code,0,MEM_RELEASE));puts("STARTUP_CAPACITY_OK slots=88 overflow89=1 abort_restored=89");
-    CHECK(!process_hook_startup_begin());
-    CHECK(!process_hook_startup_attach(&real_id,(void *)replacement));
-    CHECK(!process_hook_startup_commit());
+    BOOL fail=TRUE;
+    CHECK(win32_style_startup(prepare,&fail)==ERROR_CANCELLED);
+    CHECK(real_id==initial && real_id()==actual && GetCurrentProcessId()==actual);
+    fail=FALSE;CHECK(!win32_style_startup(prepare,&fail));
     CHECK(GetCurrentProcessId()==0x42424242u && real_id()==actual);
+    puts("STYLE STARTUP NATIVE PASS prepare_failure_rollback=1 commit=1");
     CHECK(process_hook_startup_begin()==ERROR_INVALID_STATE);
     CHECK(process_hook_startup_commit()==ERROR_INVALID_STATE);
     printf("C STARTUP HOOK PASS width=%u native export/abort/trampoline/commit\n",(unsigned)(sizeof(void *)*8));

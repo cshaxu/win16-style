@@ -10,7 +10,7 @@ void win16_control_vb_paint_begin(ntw16s_vb_paint *scope,HWND w,UINT message,ntw
     if(message==WM_PAINT || message==WM_PRINT || message==WM_PRINTCLIENT || message==WM_ERASEBKGND){
         scope->native_previous=native_current;scope->native_window=w;scope->native_active=TRUE;native_current=scope;
     }
-    BOOL edit=ntw16s_vb_edit(w);
+    BOOL edit=style_control_vb_edit(w);
     /* Native EDIT also draws synchronously during text, selection and focus
      * messages. Keep that real USER path inside the same bounded scope. */
     if(message!=WM_PAINT && message!=WM_PRINT && message!=WM_PRINTCLIENT && !edit)return;
@@ -18,8 +18,8 @@ void win16_control_vb_paint_begin(ntw16s_vb_paint *scope,HWND w,UINT message,ntw
     scope->previous=current;scope->active=TRUE;scope->fonts=fonts;current=scope;
     /* An attached non-VB child is a barrier during nested WM_PRINT. */
     scope->label_only=ntw16s_vb_picture(w) || user_label_target(w);
-    if(ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || scope->label_only ||
-            (ntw16s_vb_class(w,L"ThunderRT6FormDC") || ntw16s_vb5_class(w,L"ThunderRT5Form")))scope->window=w;
+    if(style_control_vb_frame(w) || style_control_vb_edit(w) || scope->label_only ||
+            (style_control_vb_class(w,L"ThunderRT6FormDC") || style_control_vb5_class(w,L"ThunderRT5Form")))scope->window=w;
 }
 void ntw16s_vb_paint_end(ntw16s_vb_paint *scope)
 {

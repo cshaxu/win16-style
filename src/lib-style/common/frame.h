@@ -2,11 +2,24 @@
 #define STYLE_COMMON_FRAME_H
 #include <windows.h>
 #include <oleacc.h>
+#include <commctrl.h>
 
 #define STYLE_NCUAHDRAWCAPTION 0x00ae
 #define STYLE_NCUAHDRAWFRAME   0x00af
 #define STYLE_UAHDRAWMENU     0x0091
 #define STYLE_UAHDRAWMENUITEM 0x0092
+
+/* Standard USER hit codes use the same resize cursors for each style. */
+static inline LPCWSTR style_frame_resize_cursor(int hit)
+{
+    switch(hit){
+    case HTLEFT: case HTRIGHT:return (LPCWSTR)IDC_SIZEWE;
+    case HTTOP: case HTBOTTOM:return (LPCWSTR)IDC_SIZENS;
+    case HTSIZE: case HTTOPLEFT: case HTBOTTOMRIGHT:return (LPCWSTR)IDC_SIZENWSE;
+    case HTTOPRIGHT: case HTBOTTOMLEFT:return (LPCWSTR)IDC_SIZENESW;
+    default:return (LPCWSTR)IDC_ARROW;
+    }
+}
 
 static inline BOOL style_frame_suppress_native_theme(UINT message,BOOL iconic,BOOL has_menu)
 {
@@ -70,6 +83,57 @@ static inline BOOL style_frame_xaml_bridge(HWND w,BOOL visible_only)
     return FALSE;
 }
 
+/* Let XAML process WM_GETICON/WM_SETICON without a native caption redraw.
+ * The caller retains its state during synchronous window-message reentry. */
+static inline BOOL style_frame_xaml_icon(HWND w,UINT message,WPARAM wp,LPARAM lp,
+    BOOL *updating,const BOOL *detached,LRESULT *result)
+{
+    LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
+    if(*updating || (style&WS_CHILD) || !(style&WS_DLGFRAME) || !style_frame_xaml_bridge(w,FALSE))return FALSE;
+    *updating=TRUE;SetLastError(0);
+    LONG_PTR old=SetWindowLongPtrW(w,GWL_STYLE,style&~WS_DLGFRAME);
+    if(old || !GetLastError()){
+        if(*detached || !IsWindow(w)){
+            if(IsWindow(w)){
+                SetWindowLongPtrW(w,GWL_STYLE,GetWindowLongPtrW(w,GWL_STYLE)|WS_DLGFRAME);
+                *result=DefSubclassProc(w,message,wp,lp);
+            }
+            *updating=FALSE;return TRUE;
+        }
+        *result=DefSubclassProc(w,message,wp,lp);DWORD error=GetLastError();
+        if(IsWindow(w)){
+            LONG_PTR current=GetWindowLongPtrW(w,GWL_STYLE);
+            SetWindowLongPtrW(w,GWL_STYLE,current|WS_DLGFRAME);
+            if(!*detached)SetWindowPos(w,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|
+                SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+        }
+        *updating=FALSE;SetLastError(error);return TRUE;
+    }
+    *updating=FALSE;return FALSE;
+}
+
+/* Only replace the output on a successful intersection. Callers decide
+ * whether failure means native geometry or an unsupported surface. */
+static inline BOOL style_frame_work_area(HWND window,const RECT *outer,RECT *visible)
+{
+    MONITORINFO monitor={.cbSize=sizeof(monitor)};RECT intersection;
+    if(!GetMonitorInfoW(MonitorFromWindow(window,MONITOR_DEFAULTTONEAREST),&monitor) ||
+       !IntersectRect(&intersection,outer,&monitor.rcWork))return FALSE;
+    *visible=intersection;return TRUE;
+}
+
+/* A composed window near the work-area edge can lose its native title if
+ * preserving client coordinates would move the outer frame off-screen. */
+static inline BOOL style_frame_keep_outer(HWND window,const RECT *wanted,const RECT *client)
+{
+    RECT outer;MONITORINFO monitor={.cbSize=sizeof(monitor)};
+    if(!wanted || !client || (GetWindowLongPtrW(window,GWL_STYLE)&WS_CHILD) ||
+       !style_frame_xaml_bridge(window,FALSE) || !GetWindowRect(window,&outer) ||
+       !GetMonitorInfoW(MonitorFromRect(&outer,MONITOR_DEFAULTTONEAREST),&monitor))return FALSE;
+    return (outer.top>=monitor.rcWork.top && wanted->top-client->top<monitor.rcWork.top) ||
+           (outer.left>=monitor.rcWork.left && wanted->left-client->left<monitor.rcWork.left);
+}
+
 static inline void style_frame_changed(HWND window)
 {
     SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
@@ -88,5 +152,10 @@ static inline void style_restore_client(HWND window,const RECT *wanted)
     SetWindowPos(window,NULL,origin.x,origin.y,
         outer.right-outer.left+(wanted->right-wanted->left)-(current.right-current.left),
         outer.bottom-outer.top+(wanted->bottom-wanted->top)-(current.bottom-current.top),SWP_NOZORDER|SWP_NOACTIVATE);
+}
+static inline void style_frame_changed_restore(HWND window,const RECT *client,BOOL normal)
+{
+    style_frame_changed(window);
+    if(normal && IsWindow(window))style_restore_client(window,client);
 }
 #endif

@@ -13,7 +13,7 @@ void win16_control_frame_state_enter_menu(style_window *s)
 }
 void win16_control_frame_state_exit_menu(style_window *s)
 {
-    win16_style_menu_restore_depth(s->menu_depth,&s->menu_items);
+    style_menu_restore_depth(s->menu_depth,&s->menu_items);
     /* A failed inner entry must not pop the outer successful scope. */
     if(s->menus && s->menus->depth==s->menu_depth)win16_control_frame_state_end_menu(s);
     if(s->menu_depth)--s->menu_depth;
@@ -26,7 +26,7 @@ void win16_control_frame_state_end_menu(style_window *s)
 void win16_control_frame_state_dispose(style_window *s)
 {
     while(s->menus)win16_control_frame_state_end_menu(s);
-    win16_style_menu_restore(&s->menu_items);
+    style_menu_restore(&s->menu_items);
     if(s->title_font)DeleteObject(s->title_font);
     win16_style_system_release(s->menu_font);
     free(s);

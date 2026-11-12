@@ -1,4 +1,5 @@
 #include "control_scope.h"
+#include "message_observer.h"
 #include <stdlib.h>
 #include <stdint.h>
 
@@ -17,7 +18,7 @@ style_control_scope *style_control_scope_begin(HWND root,size_t size,
     if(size>SIZE_MAX-sizeof(style_control_scope)){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return NULL;}
     style_control_scope *scope=calloc(1,sizeof(*scope)+size);
     if(!scope){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return NULL;}
-    if(!*scopes){*hook=SetWindowsHookExW(WH_CALLWNDPROCRET,observer,NULL,GetCurrentThreadId());
+    if(!*scopes){*hook=style_message_observer_begin(observer);
         if(!*hook){free(scope);return NULL;}}
     scope->root=root;scope->next=*scopes;*scopes=scope;return scope;
 }
@@ -27,7 +28,7 @@ BOOL style_control_scope_end(style_control_scope *scope,style_control_scope **sc
     while(*link && *link!=scope)link=&(*link)->next;
     if(!scope || !*link){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     *link=scope->next;scope->detached=TRUE;
-    if(!*scopes){UnhookWindowsHookEx(*hook);*hook=NULL;}
+    if(!*scopes){style_message_observer_end(*hook);*hook=NULL;}
     if(!scope->calls)free(scope);
     return TRUE;
 }
@@ -41,3 +42,12 @@ void *style_control_scope_data(style_control_scope *scope){return scope->data;}
 void style_control_scope_retain(style_control_scope *scope){++scope->calls;}
 void style_control_scope_release(style_control_scope *scope)
 {if(!--scope->calls && scope->detached)free(scope);}
+void style_control_scope_observe(style_control_scope *scopes,const CWPRETSTRUCT *message,
+    void (*created)(style_control_scope *,const CWPRETSTRUCT *,void *),void *context)
+{
+    if(message->message==WM_NCDESTROY)style_control_scope_root_destroyed(scopes,message->hwnd);
+    else if(message->message==WM_CREATE && message->lResult!=-1){
+        style_control_scope *scope=style_control_scope_find(scopes,message->hwnd);
+        if(scope){style_control_scope_retain(scope);created(scope,message,context);style_control_scope_release(scope);}
+    }
+}

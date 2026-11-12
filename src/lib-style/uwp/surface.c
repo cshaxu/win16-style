@@ -1,5 +1,40 @@
 #include "surface.h"
-#include <stdint.h>
+#include "lib-style/common/frame.h"
+
+BOOL style_uwp_surface_refresh(const style_uwp_surface_view *view)
+{
+    if(*view->detached || *view->updating)return !*view->detached;
+    if(!*view->surface)return TRUE;
+    if(IsIconic(view->owner) || !IsWindowVisible(view->owner)){
+        ShowWindow(*view->surface,SW_HIDE);return TRUE;
+    }
+    *view->updating=TRUE;
+    RECT outer,hole;BOOL ok=view->geometry(view->context,&outer,&hole);
+    if(ok){
+        SIZE size={outer.right-outer.left,outer.bottom-outer.top};
+        ok=style_bitmap_ensure(view->bitmap,NULL,size);
+        if(ok){
+            ZeroMemory(view->bitmap->pixels,(SIZE_T)size.cx*(SIZE_T)size.cy*4);
+            view->paint(view->context,view->bitmap->dc);
+            ok=style_uwp_surface_present(view->owner,*view->surface,&outer,&hole,view->bitmap,view->detached);
+        }
+    }
+    if(!ok && !*view->detached)ShowWindow(*view->surface,SW_HIDE);
+    *view->updating=FALSE;return ok && !*view->detached;
+}
+
+LRESULT style_uwp_resize_margin_hit(LRESULT hit,POINT point,const RECT *outer,
+    const RECT *client,SIZE corner,BOOL sizeable)
+{
+    if(hit!=HTBORDER || !outer || !client || !sizeable)return hit;
+    if(point.x<client->left)return point.y<corner.cy?HTTOPLEFT:
+        point.y>=outer->bottom-corner.cy?HTBOTTOMLEFT:HTLEFT;
+    if(point.x>=client->right)return point.y<corner.cy?HTTOPRIGHT:
+        point.y>=outer->bottom-corner.cy?HTBOTTOMRIGHT:HTRIGHT;
+    if(point.y>=client->bottom)return point.x<corner.cx?HTBOTTOMLEFT:
+        point.x>=outer->right-corner.cx?HTBOTTOMRIGHT:HTBOTTOM;
+    return hit;
+}
 
 BOOL style_uwp_frame_bounds(HWND window,HWND title,RECT *outer,RECT *content,BOOL *zoomed)
 {
@@ -9,9 +44,8 @@ BOOL style_uwp_frame_bounds(HWND window,HWND title,RECT *outer,RECT *content,BOO
        !IsWindowVisible(title) || !GetWindowRect(title,&title_rect)))return FALSE;
     *zoomed=IsZoomed(window);
     if(*zoomed){
-        MONITORINFO monitor={.cbSize=sizeof(monitor)};RECT visible;
-        if(!GetMonitorInfoW(MonitorFromWindow(window,MONITOR_DEFAULTTONEAREST),&monitor) ||
-           !IntersectRect(&visible,outer,&monitor.rcWork))return FALSE;
+        RECT visible;
+        if(!style_frame_work_area(window,outer,&visible))return FALSE;
         *outer=visible;
     }
     POINT origin={0,0};ClientToScreen(window,&origin);
@@ -27,31 +61,8 @@ BOOL style_uwp_frame_bounds(HWND window,HWND title,RECT *outer,RECT *content,BOO
     return TRUE;
 }
 
-void style_uwp_bitmap_dispose(style_uwp_bitmap *s)
-{
-    if(s->old_bitmap)SelectObject(s->dc,s->old_bitmap);
-    if(s->bitmap)DeleteObject(s->bitmap);
-    if(s->dc)DeleteDC(s->dc);
-    s->dc=NULL;s->bitmap=NULL;s->old_bitmap=NULL;s->pixels=NULL;
-}
-BOOL style_uwp_bitmap_ensure(style_uwp_bitmap *s,SIZE size)
-{
-    if(s->dc && size.cx==s->size.cx && size.cy==s->size.cy)return TRUE;
-    if(size.cx<=0 || size.cy<=0 || (SIZE_T)size.cx>SIZE_MAX/4/(SIZE_T)size.cy){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    style_uwp_bitmap_dispose(s);
-    BITMAPINFO info={0};info.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-    info.bmiHeader.biWidth=size.cx;info.bmiHeader.biHeight=-size.cy;
-    info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;
-    s->dc=CreateCompatibleDC(NULL);
-    if(s->dc)s->bitmap=CreateDIBSection(s->dc,&info,DIB_RGB_COLORS,(void **)&s->pixels,NULL,0);
-    if(!s->bitmap){style_uwp_bitmap_dispose(s);return FALSE;}
-    s->old_bitmap=SelectObject(s->dc,s->bitmap);s->size=size;
-    if(!s->old_bitmap || s->old_bitmap==HGDI_ERROR){s->old_bitmap=NULL;style_uwp_bitmap_dispose(s);return FALSE;}
-    return TRUE;
-}
-
 BOOL style_uwp_surface_present(HWND owner,HWND surface,const RECT *outer,
-    const RECT *hole,style_uwp_bitmap *bitmap,const BOOL *detached)
+    const RECT *hole,style_bitmap *bitmap,const BOOL *detached)
 {
     SIZE size=bitmap->size;GdiFlush();
     for(int y=0;y<size.cy;++y){

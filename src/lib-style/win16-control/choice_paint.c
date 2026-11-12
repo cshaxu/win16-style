@@ -1,4 +1,4 @@
-#include "dc_geometry.h"
+#include "lib-style/common/dc_geometry.h"
 #include "choice_paint.h"
 #include "control_class.h"
 #include "control_glyphs.h"
@@ -8,7 +8,7 @@ BOOL win16_control_checklist_target(HDC dc,HDC expected,HWND window,HWND parent,
 {
     HMODULE module=NULL;
     if(!r || dc!=expected || !identity(window) || GetParent(window)!=parent ||
-        WindowFromDC(dc)!=window || !win16_control_pixel_viewport(dc) ||
+        WindowFromDC(dc)!=window || !style_dc_pixel_viewport(dc) ||
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             (const WCHAR *)address,&module) || module!=(HMODULE)GetClassLongPtrW(window,GCLP_HMODULE))return FALSE;
     int dpi=(int)GetDpiForWindow(window);
@@ -54,7 +54,7 @@ static BOOL vb_checklist_unchanged(HWND w,HDC dc,HWND parent,DWORD style,DWORD e
 {
     return IsWindow(w) && WindowFromDC(dc)==w && GetParent(w)==parent &&
         (DWORD)GetWindowLongPtrW(w,GWL_STYLE)==style && (DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE)==ex &&
-        IsWindowEnabled(w)==enabled && ntw16s_vb_checklist_class(w);
+        IsWindowEnabled(w)==enabled && style_control_vb_checklist_class(w);
 }
 BOOL win16_control_vb_checklist(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,DWORD rop,const void *address)
 {
@@ -66,9 +66,9 @@ BOOL win16_control_vb_checklist(HDC dc,int x,int y,int width,int height,HDC sour
         GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap)!=sizeof(bitmap) ||
         bitmap.bmWidth!=44 || bitmap.bmHeight!=11 ||
         !(w=WindowFromDC(dc)) || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
-        !ntw16s_vb_checklist_class(w) ||
+        !style_control_vb_checklist_class(w) ||
         ((dpi=GetDpiForWindow(w))!=96 && dpi!=144) ||
-        !win16_control_pixel_viewport(dc) ||
+        !style_dc_pixel_viewport(dc) ||
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             (const WCHAR *)address,&caller) || caller!=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE))return FALSE;
     style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
@@ -81,8 +81,8 @@ BOOL win16_control_vb_checklist(HDC dc,int x,int y,int width,int height,HDC sour
     if(HIWORD(hit)==0 && vb_checklist_unchanged(w,dc,parent,style,ex,enabled) &&
         SendMessageW(w,LB_GETITEMRECT,(WPARAM)index,(LPARAM)&item)!=LB_ERR &&
         vb_checklist_unchanged(w,dc,parent,style,ex,enabled) &&
-        x==item.left+(ntw16s_vb5_class(w,L"ThunderRT5ListBox")?0:2) &&
-        (dpi==144?(ntw16s_vb5_class(w,L"ThunderRT5ListBox")?
+        x==item.left+(style_control_vb5_class(w,L"ThunderRT5ListBox")?0:2) &&
+        (dpi==144?(style_control_vb5_class(w,L"ThunderRT5ListBox")?
             (item.bottom-item.top==23 && y==item.top+6):
             (item.bottom-item.top==22 && y==item.top+5)):y==item.top+2) &&
         item.right-x>=width && item.bottom-y>=height){

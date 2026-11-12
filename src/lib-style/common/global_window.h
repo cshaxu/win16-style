@@ -19,4 +19,7 @@ BOOL style_global_window_managed(HWND window);
 BOOL style_global_window_apply(HWND window,const style_global_window_ops *ops);
 BOOL style_global_window_remove(HWND window,const style_global_window_ops *ops);
 BOOL style_global_window_transition(HWND window,const style_global_window_ops *selected,const style_global_window_ops *other);
+/* Enumerate descendants owned by this GUI thread. A NULL parent follows
+ * EnumChildWindows semantics. The visitor chooses policy and may stop. */
+BOOL style_global_window_visit_children(HWND parent,BOOL (*visit)(HWND,void *),void *context);
 #endif

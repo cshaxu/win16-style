@@ -22,9 +22,15 @@ int main(void)
     CHECK(AppendMenuW(menu,MF_STRING,1,L"&File"));
     CHECK(AppendMenuW(menu,MF_OWNERDRAW,2,(LPCWSTR)(UINT_PTR)1));
     HWND window=CreateWindowW(L"STATIC",L"",WS_OVERLAPPEDWINDOW,20,20,240,160,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(window);
+    RECT outer;POINT expected={0,0},offset={-1,-1};
+    CHECK(GetWindowRect(window,&outer) && ClientToScreen(window,&expected));
+    expected.x-=outer.left;expected.y-=outer.top;
+    CHECK(style_menu_client_offset(window,TRUE,&offset) && offset.x==expected.x && offset.y==expected.y);
+    CHECK(style_menu_client_offset(NULL,FALSE,&offset) && offset.x==0 && offset.y==0);
+    CHECK(!style_menu_client_offset(NULL,TRUE,&offset));
     ShowWindow(window,SW_SHOWNOACTIVATE);UpdateWindow(window);start=GetTickCount();
     CHECK(SetTimer(window,1,50,poll_menu));
     TrackPopupMenu(menu,TPM_RETURNCMD|TPM_NONOTIFY,40,40,0,window,NULL);
     KillTimer(window,1);DestroyMenu(menu);DestroyWindow(window);CHECK(checked && passed);
-    puts("MENU_SNAPSHOT_OK text=1 geometry=1 ownerdraw=1 cancel=1");return 0;
+    puts("MENU_SNAPSHOT_OK text=1 geometry=1 ownerdraw=1 cancel=1 client_offset=1");return 0;
 }

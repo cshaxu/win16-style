@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include "../../src/lib-style/win16-window/menu_paint.h"
-#include "lib-style/win16-common/menu_layout.h"
+#include "lib-style/common/classic_menu_layout.h"
 #include <limits.h>
 static int save_calls, fail_save;
 static int WINAPI test_save_dc(HDC dc)
@@ -41,28 +41,28 @@ int wmain(int argc,WCHAR **argv)
     CHECK(desktop && SetThreadDesktop(desktop));
     wc.lpfnWndProc=DefWindowProcW;wc.hInstance=GetModuleHandleW(NULL);wc.lpszClassName=L"StyleDCFailure";
     CHECK(RegisterClassW(&wc));
-    {HMENU menu=CreatePopupMenu();win16_style_menu_item *items=NULL;MENUITEMINFOW info={.cbSize=sizeof(info)};LRESULT result;
+    {HMENU menu=CreatePopupMenu();style_menu_item *items=NULL;MENUITEMINFOW info={.cbSize=sizeof(info)};LRESULT result;
         CHECK(menu && AppendMenuW(menu,MF_STRING,1,L"&Close\tAlt+F4"));
         CHECK(AppendMenuW(menu,MF_STRING|MF_DISABLED,2,L"&Disabled"));
         info.fMask=MIIM_DATA;info.dwItemData=1234;CHECK(SetMenuItemInfoW(menu,0,TRUE,&info));
-        CHECK(win16_style_menu_prepare(menu,&items,0));
+        CHECK(style_menu_prepare(menu,&items,0));
         info.fMask=MIIM_DATA|MIIM_FTYPE;CHECK(GetMenuItemInfoW(menu,0,TRUE,&info));
         CHECK((info.fType&MFT_OWNERDRAW) && info.dwItemData!=1234);
-        CHECK(win16_style_menu_char(items,menu,L'c',&result) && result==MAKELRESULT(0,MNC_EXECUTE));
-        CHECK(win16_style_menu_char(items,menu,L'd',&result) && result==MAKELRESULT(0,MNC_IGNORE));
+        CHECK(style_menu_char(items,menu,L'c',&result) && result==MAKELRESULT(0,MNC_EXECUTE));
+        CHECK(style_menu_char(items,menu,L'd',&result) && result==MAKELRESULT(0,MNC_IGNORE));
         CHECK(CheckMenuItem(menu,1,MF_BYCOMMAND|MF_CHECKED)!=(UINT)-1);
         {HMENU other=CreatePopupMenu();MENUITEMINFOW edit={.cbSize=sizeof(edit)};
             CHECK(other && AppendMenuW(other,MF_STRING,3,L"&Other"));
-            CHECK(win16_style_menu_prepare(other,&items,0));
-            win16_style_menu_restore_popup(menu,&items);
+            CHECK(style_menu_prepare(other,&items,0));
+            style_menu_restore_popup(menu,&items);
             info.fMask=MIIM_DATA;CHECK(GetMenuItemInfoW(menu,0,TRUE,&info) && info.dwItemData==1234);
-            CHECK(win16_style_menu_char(items,other,L'o',&result) && result==MAKELRESULT(0,MNC_EXECUTE));
+            CHECK(style_menu_char(items,other,L'o',&result) && result==MAKELRESULT(0,MNC_EXECUTE));
             edit.fMask=MIIM_STRING;edit.dwTypeData=L"&Renamed";CHECK(SetMenuItemInfoW(menu,0,TRUE,&edit));
-            CHECK(win16_style_menu_prepare(menu,&items,0));
-            CHECK(win16_style_menu_char(items,menu,L'r',&result) && result==MAKELRESULT(0,MNC_EXECUTE));
-            CHECK(win16_style_menu_char(items,menu,L'c',&result) && result==MAKELRESULT(0,MNC_IGNORE));
-            win16_style_menu_restore_popup(other,&items);CHECK(DestroyMenu(other));}
-        win16_style_menu_restore(&items);CHECK(!items);
+            CHECK(style_menu_prepare(menu,&items,0));
+            CHECK(style_menu_char(items,menu,L'r',&result) && result==MAKELRESULT(0,MNC_EXECUTE));
+            CHECK(style_menu_char(items,menu,L'c',&result) && result==MAKELRESULT(0,MNC_IGNORE));
+            style_menu_restore_popup(other,&items);CHECK(DestroyMenu(other));}
+        style_menu_restore(&items);CHECK(!items);
         info.fMask=MIIM_DATA|MIIM_FTYPE|MIIM_STATE;CHECK(GetMenuItemInfoW(menu,0,TRUE,&info));
         CHECK(!(info.fType&MFT_OWNERDRAW) && info.dwItemData==1234 && (info.fState&MFS_CHECKED));
         CHECK(DestroyMenu(menu));
@@ -70,29 +70,29 @@ int wmain(int argc,WCHAR **argv)
     {
         POINT origin={10,20},point;SIZE sizes[]={{30,20},{40,25},{20,20}};
         UINT flags[]={0,0,MFT_RIGHTJUSTIFY};RECT items[3];int height;
-        CHECK(win16_style_menu_arrange(origin,120,sizes,flags,3,items,&height));
+        CHECK(style_classic_menu_arrange(origin,120,sizes,flags,3,items,&height));
         CHECK(height==25 && items[0].left==10 && items[1].left==40 && items[2].left==110);
         CHECK(items[0].bottom==45 && items[2].right==130);
         flags[1]=MFT_RIGHTJUSTIFY;flags[2]=0;
-        CHECK(win16_style_menu_arrange(origin,120,sizes,flags,3,items,&height));
+        CHECK(style_classic_menu_arrange(origin,120,sizes,flags,3,items,&height));
         CHECK(items[1].left==70 && items[2].left==110);
         flags[1]=0;flags[2]=MFT_RIGHTJUSTIFY;
-        CHECK(win16_style_menu_arrange(origin,120,sizes,flags,3,items,&height));
-        point.x=110;point.y=20;CHECK(win16_style_menu_hit(items,3,point)==2);
-        point.x=100;CHECK(win16_style_menu_hit(items,3,point)==-1);
-        point.x=130;CHECK(win16_style_menu_hit(items,3,point)==-1);
-        CHECK(win16_style_menu_arrange(origin,60,sizes,flags,3,items,&height));
+        CHECK(style_classic_menu_arrange(origin,120,sizes,flags,3,items,&height));
+        point.x=110;point.y=20;CHECK(style_classic_menu_hit(items,3,point)==2);
+        point.x=100;CHECK(style_classic_menu_hit(items,3,point)==-1);
+        point.x=130;CHECK(style_classic_menu_hit(items,3,point)==-1);
+        CHECK(style_classic_menu_arrange(origin,60,sizes,flags,3,items,&height));
         CHECK(height==45 && items[1].top==40 && items[2].top==40 && items[2].right==70);
         flags[1]=MFT_MENUBREAK;
-        CHECK(win16_style_menu_arrange(origin,120,sizes,flags,3,items,&height));
+        CHECK(style_classic_menu_arrange(origin,120,sizes,flags,3,items,&height));
         CHECK(height==45 && items[1].top==40 && items[2].left==110);
-        CHECK(win16_style_menu_arrange(origin,10,sizes,flags,3,items,&height));
+        CHECK(style_classic_menu_arrange(origin,10,sizes,flags,3,items,&height));
         CHECK(height==65 && items[0].right==20 && items[2].top==65);
-        CHECK(win16_style_menu_arrange(origin,10,NULL,NULL,0,NULL,&height) && height==0);
-        CHECK(!win16_style_menu_arrange(origin,0,sizes,flags,3,items,&height));
-        origin.x=LONG_MAX;CHECK(!win16_style_menu_arrange(origin,120,sizes,flags,3,items,&height));
+        CHECK(style_classic_menu_arrange(origin,10,NULL,NULL,0,NULL,&height) && height==0);
+        CHECK(!style_classic_menu_arrange(origin,0,sizes,flags,3,items,&height));
+        origin.x=LONG_MAX;CHECK(!style_classic_menu_arrange(origin,120,sizes,flags,3,items,&height));
         origin.x=0;origin.y=LONG_MAX;
-        CHECK(!win16_style_menu_arrange(origin,120,sizes,flags,3,items,&height));
+        CHECK(!style_classic_menu_arrange(origin,120,sizes,flags,3,items,&height));
         printf("PASS menu bar layout: wrap, break, right alignment, clipping, hit boundaries and overflow\n");
     }
     w=CreateWindowW(wc.lpszClassName,L"DC preservation",WS_OVERLAPPEDWINDOW,0,0,320,200,NULL,NULL,wc.hInstance,NULL);

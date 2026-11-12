@@ -4,7 +4,6 @@
 BOOL win16_control_measure_window(HWND window,const UINT *dpi,HFONT *menu_font,const BOOL *detached,
     const RECT *outer,win16_style_layout *layout);
 BOOL win16_control_frame_hit_test(HWND window,const win16_style_layout *layout,LPARAM point,LRESULT *result);
-BOOL win16_control_frame_keep_outer(HWND window,const RECT *wanted,const win16_style_layout *layout);
 typedef HRESULT (WINAPI *win16_control_set_window_attribute)(HWND,DWORD,LPCVOID,DWORD);
 void win16_control_frame_activate(HWND window,const BOOL *detached,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute);
 void win16_control_frame_restore(HWND window,const BOOL *pending,const BOOL *policy_saved,const DWORD *old_policy,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute);

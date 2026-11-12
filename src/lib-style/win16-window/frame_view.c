@@ -1,6 +1,7 @@
 #include "frame_view.h"
 #include "frame_paint.h"
 #include "menu_bar.h"
+#include "lib-style/common/present.h"
 #include <windowsx.h>
 
 void win16_control_frame_button_press(HWND w,const win16_control_frame_button_view *s,int hit)
@@ -80,19 +81,11 @@ void win16_control_paint_frame(HWND w,const win16_control_frame_view *view,HDC t
  * become visible as separate drawing operations. */
 static void paint_buffered(HWND w,const win16_control_frame_view *view,HDC dc,const RECT *bounds)
 {
-    HDC memory=CreateCompatibleDC(dc);HBITMAP bitmap=NULL,old=NULL;BOOL ready=FALSE;
-    int width=bounds->right-bounds->left,height=bounds->bottom-bounds->top;
-    if(memory)bitmap=CreateCompatibleBitmap(dc,width,height);
-    if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
-    if(old && old!=(HBITMAP)HGDI_ERROR &&
-        BitBlt(memory,0,0,width,height,dc,bounds->left,bounds->top,SRCCOPY) &&
-        SetWindowOrgEx(memory,bounds->left,bounds->top,NULL)){
-        win16_control_paint_frame(w,view,memory);
-        if(!*view->detached)ready=BitBlt(dc,bounds->left,bounds->top,width,height,memory,bounds->left,bounds->top,SRCCOPY);
-    }
-    if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
-    if(bitmap)DeleteObject(bitmap);
-    if(memory)DeleteDC(memory);
+    style_present_buffer buffer;BOOL ready=FALSE;
+    if(style_present_buffer_begin(&buffer,dc,bounds)){
+        win16_control_paint_frame(w,view,buffer.memory);
+        ready=style_present_buffer_end(&buffer,!*view->detached);
+    }else (void)style_present_buffer_end(&buffer,FALSE);
     if(!ready && !*view->detached)win16_control_paint_frame(w,view,dc);
 }
 

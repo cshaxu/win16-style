@@ -1,4 +1,4 @@
-#include "dc_geometry.h"
+#include "lib-style/common/dc_geometry.h"
 #include "vcl_native_paint.h"
 #include "basic_paint.h"
 #include "special_paint.h"
@@ -6,7 +6,7 @@
 #include <commctrl.h>
 
 void win16_control_vcl_inplace_draw(const win16_control_vcl_paint_view *v,HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address,BOOL drop)
-{HMODULE caller=NULL;RECT client;if(!*v->candidate || *v->detached || !dc || !r || part!=1 || (state!=1 && state!=3) || !IsWindowEnabled(v->window) || !v->identity(v->window,*v->owner,*v->parent) || (!drop && v->lookup(v->window,*v->owner,*v->parent)) || WindowFromDC(dc)!=v->window || !GetClientRect(v->window,&client) || r->right!=client.right || r->top!=client.top || r->bottom!=client.bottom || r->left<client.left || r->right<=r->left || r->right-r->left>client.bottom-client.top || !win16_control_pixel_viewport(dc) || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=*v->owner)return;
+{HMODULE caller=NULL;RECT client;if(!*v->candidate || *v->detached || !dc || !r || part!=1 || (state!=1 && state!=3) || !IsWindowEnabled(v->window) || !v->identity(v->window,*v->owner,*v->parent) || (!drop && v->lookup(v->window,*v->owner,*v->parent)) || WindowFromDC(dc)!=v->window || !GetClientRect(v->window,&client) || r->right!=client.right || r->top!=client.top || r->bottom!=client.bottom || r->left<client.left || r->right<=r->left || r->right-r->left>client.bottom-client.top || !style_dc_pixel_viewport(dc) || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=*v->owner)return;
  if(drop && state!=1)return;
  int saved=SaveDC(dc);if(!saved)return;int u=max(1,MulDiv(1,(int)GetDpiForWindow(v->window),96));int left=(r->left+r->right-7*u)/2,top=(r->top+r->bottom-9*u)/2;
  if(drop && (left<r->left+u || top<r->top+u || left+7*u>r->right-u || top+9*u>r->bottom-u)){RestoreDC(dc,saved);return;}

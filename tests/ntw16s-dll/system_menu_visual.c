@@ -6,7 +6,7 @@
 #include <wchar.h>
 #include "lib-style/win2k-window/system_menu.h"
 static HMENU system_menu;static HWND popup;static UINT before_type,seen_type;static ULONG_PTR before_data,seen_data;static BOOL seen,checked,selected,custom;static COLORREF sample=CLR_INVALID,live_sample=CLR_INVALID;static unsigned idles,custom_draws;static BOOL hover,hover_checked,hover_preserved,win2k_paint,win2k_live,win2k_glyph,win2k_default;static unsigned glyph_rows;static BOOL default_changed;
-static BOOL cancel_test,cancel_sent,cancel_timed_out;
+static BOOL cancel_test,cancel_sent,cancel_timed_out,native_string;
 static BOOL win2k_switch,switch_done,win2k_keyboard,key_sent,win2k_context;static int sampled_index=-1,first_index=-1;static COLORREF first_live=CLR_INVALID;
 static BOOL CALLBACK find_popup(HWND w,LPARAM unused){(void)unused;WCHAR cls[32];MENUBARINFO mbi={.cbSize=sizeof(mbi)};if(IsWindowVisible(w)&&GetClassNameW(w,cls,32)&&!lstrcmpW(cls,L"#32768")&&GetMenuBarInfo(w,OBJID_CLIENT,0,&mbi)&&mbi.hMenu==system_menu){popup=w;return FALSE;}return TRUE;}
 static BOOL sample_menu(void){
@@ -15,7 +15,8 @@ static BOOL sample_menu(void){
     for(int i=0;i<count;++i){MENUITEMINFOW m={.cbSize=sizeof(m),.fMask=MIIM_STATE};if(GetMenuItemInfoW(system_menu,(UINT)i,TRUE,&m)&&(m.fState&MFS_HILITE)){selected_index=i;break;}}
     sampled_index=selected_index;
     if(selected_index<0||!GetMenuItemRect(NULL,system_menu,(UINT)selected_index,&row)||!GetWindowRect(popup,&window))return FALSE;
-    if(win2k_live&&!custom){POINT point={row.left+4,(row.top+row.bottom)/2};ScreenToClient(popup,&point);
+    if((win2k_live&&!custom)||native_string){POINT point={row.left+4,(row.top+row.bottom)/2};ScreenToClient(popup,&point);
+        if(native_string)RedrawWindow(popup,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
         HDC live=GetDC(popup);if(live){live_sample=GetPixel(live,point.x,point.y);ReleaseDC(popup,live);}}
 
     int width=window.right-window.left,height=window.bottom-window.top;if(width<=0||height<=0||width>2048||height>2048)return FALSE;
@@ -56,7 +57,7 @@ static LRESULT CALLBACK proc(HWND w,UINT m,WPARAM a,LPARAM b){
     if(m==WM_ENTERIDLE&&a==MSGF_MENU){++idles;
         /* Model a host retaining native string presentation, as modern Notepad
          * does. Leave item data intact for the adapter's normal cleanup. */
-        if(hover&&!hover_checked){int count=GetMenuItemCount(system_menu);
+        if((hover||native_string)&&!hover_checked){int count=GetMenuItemCount(system_menu);
             for(int i=0;i<count;++i){MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_FTYPE};
                 if(GetMenuItemInfoW(system_menu,(UINT)i,TRUE,&item)){item.fType&=~MFT_OWNERDRAW;SetMenuItemInfoW(system_menu,(UINT)i,TRUE,&item);}}
         }
@@ -99,7 +100,8 @@ static LRESULT CALLBACK proc(HWND w,UINT m,WPARAM a,LPARAM b){
 int wmain(int argc,WCHAR **argv){
     if(argc!=2)return 2;
     cancel_test=!lstrcmpW(argv[1],L"native-cancel")||!lstrcmpW(argv[1],L"win2k-cancel");
-    custom=!lstrcmpW(argv[1],L"custom")||!lstrcmpW(argv[1],L"win2k-custom");hover=!lstrcmpW(argv[1],L"hover")||!lstrcmpW(argv[1],L"win2k-hover");win2k_paint=!lstrcmpW(argv[1],L"win2k-paint");win2k_glyph=!lstrcmpW(argv[1],L"win2k-glyph");win2k_default=!lstrcmpW(argv[1],L"win2k-default");win2k_switch=!lstrcmpW(argv[1],L"win2k-switch");win2k_keyboard=!lstrcmpW(argv[1],L"win2k-keyboard");win2k_context=!lstrcmpW(argv[1],L"win2k-context");win2k_live=!lstrcmpW(argv[1],L"win2k-cancel")||win2k_switch||win2k_keyboard||win2k_context||win2k_glyph||win2k_default||!lstrcmpW(argv[1],L"win2k-live")||!lstrcmpW(argv[1],L"win2k-hover")||!lstrcmpW(argv[1],L"win2k-custom");if(!cancel_test&&!custom&&!hover&&!win2k_paint&&!win2k_live&&lstrcmpW(argv[1],L"normal"))return 2;
+    native_string=!lstrcmpW(argv[1],L"native-string");
+    custom=!lstrcmpW(argv[1],L"custom")||!lstrcmpW(argv[1],L"win2k-custom");hover=!lstrcmpW(argv[1],L"hover")||!lstrcmpW(argv[1],L"win2k-hover");win2k_paint=!lstrcmpW(argv[1],L"win2k-paint");win2k_glyph=!lstrcmpW(argv[1],L"win2k-glyph");win2k_default=!lstrcmpW(argv[1],L"win2k-default");win2k_switch=!lstrcmpW(argv[1],L"win2k-switch");win2k_keyboard=!lstrcmpW(argv[1],L"win2k-keyboard");win2k_context=!lstrcmpW(argv[1],L"win2k-context");win2k_live=!lstrcmpW(argv[1],L"win2k-cancel")||win2k_switch||win2k_keyboard||win2k_context||win2k_glyph||win2k_default||!lstrcmpW(argv[1],L"win2k-live")||!lstrcmpW(argv[1],L"win2k-hover")||!lstrcmpW(argv[1],L"win2k-custom");if(!cancel_test&&!custom&&!hover&&!native_string&&!win2k_paint&&!win2k_live&&lstrcmpW(argv[1],L"normal"))return 2;
     WNDCLASSW cls={.lpfnWndProc=proc,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"Win16SysMenuWitness"};if(!RegisterClassW(&cls))return 4;
     HMENU bar=CreateMenu(),sub=CreatePopupMenu();if(!bar||!sub||!AppendMenuW(sub,MF_STRING,42,L"Item")||!AppendMenuW(bar,MF_POPUP,(UINT_PTR)sub,L"&File"))return 5;
     HWND w=CreateWindowW(cls.lpszClassName,L"System menu witness",WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN,30,30,360,200,NULL,bar,cls.hInstance,NULL);if(!w)return 5;
@@ -114,11 +116,12 @@ int wmain(int argc,WCHAR **argv){
     BOOL intact=GetMenuItemInfoW(system_menu,0,TRUE,&i)&&i.fType==before_type&&i.dwItemData==before_data;
     BOOL style=sample==((win2k_paint||win2k_live)?RGB(0,0,128):RGB(164,200,240));printf("SYSTEM_MENU bits=%u custom=%d seen=%d unchanged=%d checked=%d selected=%d blue=%d sample=%06lx idles=%u custom_draws=%u\n",(unsigned)(sizeof(void*)*8),custom,seen,seen_type==before_type&&seen_data==before_data&&intact,checked,selected,style,(DWORD)sample,idles,custom_draws);
     if(win2k_live&&!custom)printf("WIN2K SYSTEM LIVE sample=%06lx\n",(unsigned long)live_sample);
+    if(native_string)printf("WIN16 SYSTEM STRING LIVE sample=%06lx\n",(unsigned long)live_sample);
     if(win2k_glyph)printf("WIN2K SYSTEM GLYPHS rows=%u\n",glyph_rows);
     if(win2k_default)printf("WIN2K SYSTEM DEFAULT changed=%d\n",default_changed);
     if(win2k_switch)printf("WIN2K SYSTEM SWITCH changed=%d first=%06lx second=%06lx\n",switch_done && sampled_index!=first_index,(unsigned long)first_live,(unsigned long)live_sample);
     if(win2k_keyboard)printf("WIN2K SYSTEM KEYBOARD changed=%d first=%06lx second=%06lx\n",switch_done && sampled_index!=first_index,(unsigned long)first_live,(unsigned long)live_sample);
     if(cancel_test)printf("SYSTEM CANCEL sent=%d timed_out=%d\n",cancel_sent,cancel_timed_out);
-    DestroyWindow(w);return (!cancel_test || (cancel_sent && !cancel_timed_out))&&(!win2k_live||custom||live_sample==RGB(0,0,128))&&(!win2k_glyph||glyph_rows==4)&&(!win2k_default||default_changed)&&(!(win2k_switch||win2k_keyboard)||(switch_done && sampled_index!=first_index && first_live==RGB(0,0,128)))&&seen&&seen_type==before_type&&seen_data==before_data&&intact&&selected&&(custom?custom_draws>0:(!lstrcmpW(argv[1],L"native-cancel") || style))&&(!hover||(hover_checked&&hover_preserved))?0:1;
+    DestroyWindow(w);return (!cancel_test || (cancel_sent && !cancel_timed_out))&&(!win2k_live||custom||live_sample==RGB(0,0,128))&&(!native_string||live_sample==RGB(164,200,240))&&(!win2k_glyph||glyph_rows==4)&&(!win2k_default||default_changed)&&(!(win2k_switch||win2k_keyboard)||(switch_done && sampled_index!=first_index && first_live==RGB(0,0,128)))&&seen&&seen_type==before_type&&seen_data==before_data&&intact&&selected&&(custom?custom_draws>0:(!lstrcmpW(argv[1],L"native-cancel") || style))&&(!hover||(hover_checked&&hover_preserved))?0:1;
 }
 

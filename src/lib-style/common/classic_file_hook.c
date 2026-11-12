@@ -1,0 +1,22 @@
+/* Classic file template initialization and message adaptation. */
+#include "classic_file_hook.h"
+#include "lib-style/common/classic_file_helpers.h"
+#include <dlgs.h>
+
+void style_classic_file_initialized(HWND window,void (*chrome)(HWND))
+{
+    WCHAR dialog_class[32],list_class[32];HWND list=GetDlgItem(window,lst2);
+    if(list && GetParent(list)==window && GetClassNameW(window,dialog_class,ARRAYSIZE(dialog_class)) &&
+        !lstrcmpW(dialog_class,L"#32770") && GetClassNameW(list,list_class,ARRAYSIZE(list_class)) &&
+        !lstrcmpiW(list_class,L"ListBox"))chrome(window);
+}
+
+UINT_PTR style_classic_file_hook(HWND window,UINT message,WPARAM wparam,LPARAM lparam,
+    BOOL resolve_links,void (*chrome)(HWND))
+{
+    (void)lparam;
+    if(message==WM_INITDIALOG)chrome(window);
+    if(message==WM_COMMAND&&LOWORD(wparam)==IDOK&&resolve_links)style_classic_file_resolve_link(window);
+    return 0;
+}
+

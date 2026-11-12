@@ -2,8 +2,6 @@
 #define WIN16_CONTROL_MENU_ITERATION_H
 #include "frame_state.h"
 #include "../win16-common/layout.h"
-BOOL win16_control_menu_owner_mark(HWND,const void *,LPCWSTR,HANDLE);
-BOOL win16_control_menu_owner_eligible(HWND,LPCWSTR,HANDLE);
 typedef struct menu_frame {
     HWND window;
     RECT button;

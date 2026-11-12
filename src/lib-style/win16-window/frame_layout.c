@@ -9,13 +9,7 @@
 BOOL win16_control_frame_set_cursor(HWND w,WPARAM target,LPARAM hit)
 {
     if(!IsIconic(w) && (HWND)target==w && (short)LOWORD(hit)>HTCLIENT){
-        LPCWSTR cursor=IDC_ARROW;
-        switch((short)LOWORD(hit)){
-        case HTLEFT: case HTRIGHT: cursor=IDC_SIZEWE;break;
-        case HTTOP: case HTBOTTOM: cursor=IDC_SIZENS;break;
-        case HTSIZE: case HTTOPLEFT: case HTBOTTOMRIGHT: cursor=IDC_SIZENWSE;break;
-        case HTTOPRIGHT: case HTBOTTOMLEFT: cursor=IDC_SIZENESW;break;
-        }
+        LPCWSTR cursor=style_frame_resize_cursor((short)LOWORD(hit));
         SetCursor(LoadCursorW(NULL,cursor));return TRUE;
     }
     return FALSE;
@@ -31,16 +25,7 @@ void win16_control_frame_activate(HWND w,const BOOL *detached,const RECT *client
 void win16_control_frame_restore(HWND w,const BOOL *pending,const BOOL *policy_saved,const DWORD *old_policy,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute)
 {
     if(IsWindow(w) && !*pending && *policy_saved)style_dwm_policy(w,set_attribute,*old_policy);
-    if(IsWindow(w) && !*pending){style_frame_changed(w);if(normal && IsWindow(w))style_restore_client(w,client);}
-}
-BOOL win16_control_frame_keep_outer(HWND w,const RECT *wanted,const win16_style_layout *layout)
-{
-    RECT outer;MONITORINFO monitor={.cbSize=sizeof(monitor)};
-    if(!wanted || !layout || (GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) ||
-       !style_frame_xaml_bridge(w,FALSE) ||
-       !GetWindowRect(w,&outer) || !GetMonitorInfoW(MonitorFromRect(&outer,MONITOR_DEFAULTTONEAREST),&monitor))return FALSE;
-    return (outer.top>=monitor.rcWork.top && wanted->top-layout->client.top<monitor.rcWork.top) ||
-           (outer.left>=monitor.rcWork.left && wanted->left-layout->client.left<monitor.rcWork.left);
+    if(IsWindow(w) && !*pending)style_frame_changed_restore(w,client,normal);
 }
 BOOL win16_control_frame_hit_test(HWND w,const win16_style_layout *l,LPARAM lp,LRESULT *result)
 {
@@ -60,11 +45,7 @@ BOOL win16_control_frame_hit_test(HWND w,const win16_style_layout *l,LPARAM lp,L
 BOOL win16_control_measure_window(HWND w,const UINT *dpi,HFONT *menu_font,const BOOL *detached,const RECT *outer,win16_style_layout *l)
 {
     RECT visible=*outer;BOOL zoom=IsZoomed(w);int dx,dy;
-    if(zoom){
-        MONITORINFO monitor={.cbSize=sizeof(monitor)};RECT intersection;
-        if(GetMonitorInfoW(MonitorFromWindow(w,MONITOR_DEFAULTTONEAREST),&monitor) &&
-            IntersectRect(&intersection,outer,&monitor.rcWork))visible=intersection;
-    }
+    if(zoom)(void)style_frame_work_area(w,outer,&visible);
     if(!win16_style_measure(visible.right-visible.left,visible.bottom-visible.top,
         *dpi,(DWORD)GetWindowLongPtr(w,GWL_STYLE),
         (DWORD)GetWindowLongPtr(w,GWL_EXSTYLE),zoom,l))return FALSE;

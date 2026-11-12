@@ -18,14 +18,14 @@ BOOL win16_control_menu_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM
         /* Application-owned items retain their existing mnemonic handler. */
         *result=DefSubclassProc(w,msg,wp,lp);
         if(!s->detached && HIWORD(*result)==MNC_IGNORE)
-            win16_style_menu_char(s->menu_items,(HMENU)lp,(WCHAR)LOWORD(wp),result);
+            style_menu_char(s->menu_items,(HMENU)lp,(WCHAR)LOWORD(wp),result);
         return TRUE;
     case WM_INITMENUPOPUP:
         /* Restore application-owned data before the owner refreshes items. */
-        win16_style_menu_restore_popup((HMENU)wp,&s->menu_items);
+        style_menu_restore_popup((HMENU)wp,&s->menu_items);
         *result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached && !win16_style_menu_prepare((HMENU)wp,&s->menu_items,s->menu_depth))
-            win16_style_menu_restore_popup((HMENU)wp,&s->menu_items);
+        if(!s->detached && !style_menu_prepare((HMENU)wp,&s->menu_items,s->menu_depth))
+            style_menu_restore_popup((HMENU)wp,&s->menu_items);
         if(!s->detached && HIWORD(lp)){
             if(s->menus)win16_style_menu_system(s->menus->scope,(HMENU)wp,s->menu_font,s->dpi);
             s->system_menu=TRUE;paint(w,s,HTSYSMENU);

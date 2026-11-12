@@ -10,7 +10,7 @@ int win16_control_menu_bar_item_screen(HWND w,const win16_style_layout *l,HFONT 
     if(close)*close=FALSE;
     GetWindowRect(w,&r);point.x=GET_X_LPARAM(lp)-r.left;point.y=GET_Y_LPARAM(lp)-r.top;
     if(win16_style_bar_read_for_window(w,GetMenu(w),font,dpi,origin,l->menu.right-l->menu.left,&bar)){
-        item=win16_style_menu_hit(bar.rects,bar.count,point);
+        item=style_classic_menu_hit(bar.rects,bar.count,point);
         if(close && item>=0 && bar.items[item].control==HBMMENU_SYSTEM && bar.items[item].popup){
             UINT state=GetMenuState(bar.items[item].popup,SC_CLOSE,MF_BYCOMMAND);
             *close=state!=(UINT)-1 && !(state&(MF_DISABLED|MF_GRAYED));
@@ -91,7 +91,7 @@ int win16_control_menu_bar_hit_screen(HWND w,const win16_style_layout *layout,
     if(!PtInRect(&layout->menu,point))return -3;
     origin.x=layout->menu.left;origin.y=layout->menu.top;
     if(!win16_style_bar_read_for_window(w,GetMenu(w),font,dpi,origin,layout->menu.right-layout->menu.left,&bar))return -3;
-    hit=win16_style_menu_hit(bar.rects,bar.count,point);win16_style_bar_free(&bar);
+    hit=style_classic_menu_hit(bar.rects,bar.count,point);win16_style_bar_free(&bar);
     return hit<0?-3:hit;
 }
 void win16_style_bar_free(win16_style_bar *bar)
@@ -146,7 +146,7 @@ BOOL win16_style_bar_read_for_window(HWND owner,HMENU menu,HFONT font,UINT dpi,P
         ++n;
     }
     bar->count=n;
-    ok=win16_style_menu_arrange(origin,width,sizes,flags,bar->count,bar->rects,&bar->height);
+    ok=style_classic_menu_arrange(origin,width,sizes,flags,bar->count,bar->rects,&bar->height);
 done:
     if(dc)DeleteDC(dc);
     free(sizes);

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
+#include <uxtheme.h>
 #include "ntw16s-dll/injection/intercept.h"
 #include "ntw16s-dll/injection/late_process.h"
 #include "ntw16s-dll/global/session.h"
@@ -12,13 +13,19 @@ ntwshk_context ntw16s_process_context;
 static volatile LONG running=1,ticks,style_registrations;
 static BOOL chain_titles,fail_titles;
 static volatile LONG first_windows,second_windows;
+static volatile LONG first_themes,second_themes;
 static __typeof__(&CreateWindowExW) first_create_window,second_create_window;
+static __typeof__(&SetWindowTheme) first_set_theme,second_set_theme;
 #define WINDOW_ARGUMENTS DWORD ex,LPCWSTR cls,LPCWSTR title,DWORD style,int x,int y,int width,int height,HWND parent,HMENU menu,HINSTANCE instance,LPVOID param
 #define WINDOW_VALUES ex,cls,title,style,x,y,width,height,parent,menu,instance,param
 static HWND WINAPI first_window(WINDOW_ARGUMENTS)
 {InterlockedIncrement(&first_windows);return first_create_window(WINDOW_VALUES);}
 static HWND WINAPI second_window(WINDOW_ARGUMENTS)
 {InterlockedIncrement(&second_windows);return second_create_window(WINDOW_VALUES);}
+static HRESULT WINAPI first_theme(HWND window,LPCWSTR application,LPCWSTR ids)
+{InterlockedIncrement(&first_themes);return first_set_theme(window,application,ids);}
+static HRESULT WINAPI second_theme(HWND window,LPCWSTR application,LPCWSTR ids)
+{InterlockedIncrement(&second_themes);return second_set_theme(window,application,ids);}
 /* The ordinary-startup backend is not linked into this isolated fixture. */
 DWORD process_hook_startup_attach(void *slot,void *replacement)
 {(void)slot;(void)replacement;return ERROR_NOT_SUPPORTED;}
@@ -30,15 +37,17 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
     InterlockedIncrement(&style_registrations);
     if(fail_titles)return ERROR_ACCESS_DENIED;
     if(!chain_titles)return NO_ERROR;
-    second_create_window=CreateWindowExW;return (LONG)attach(&second_create_window,(void *)second_window);
+    second_create_window=CreateWindowExW;LONG error=(LONG)attach(&second_create_window,(void *)second_window);
+    if(!error){second_set_theme=SetWindowTheme;error=(LONG)attach(&second_set_theme,(void *)second_theme);}
+    return error;
 }
 LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
 LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
 LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
 static DWORD WINAPI background(void *p)
 {(void)p;while(InterlockedCompareExchange(&running,0,0)){InterlockedIncrement(&ticks);Sleep(1);}return 0;}
-static process_hook_late_patch first_hooks[4];
-static process_hook_late_patch *first_items[4];
+static process_hook_late_patch first_hooks[5];
+static process_hook_late_patch *first_items[5];
 static process_hook_late_batch first_batch;
 static DWORD first_prepare(void *slot,void *replacement)
 {return process_hook_late_batch_prepare(&first_batch,slot,replacement);}
@@ -82,6 +91,8 @@ int wmain(int argc,WCHAR **argv)
         if(!error)error=process_hook_propagation_attach_as_user_w(first_prepare);
         first_create_window=CreateWindowExW;
         if(!error)error=first_prepare(&first_create_window,(void *)first_window);
+        first_set_theme=SetWindowTheme;
+        if(!error)error=first_prepare(&first_set_theme,(void *)first_theme);
         error=process_hook_late_batch_commit(&first_batch,error,100,1);
         if(error){printf("LATE PREEXISTING initial=%lu\n",error);return 2;}
         BYTE before_w[16],before_a[16];memcpy(before_w,(const void *)CreateProcessW,sizeof(before_w));
@@ -97,11 +108,14 @@ int wmain(int argc,WCHAR **argv)
         BOOL created=probe && WaitForSingleObject(probe,5000)==WAIT_OBJECT_0 && GetExitCodeThread(probe,&result) && !result;
         if(probe)CloseHandle(probe);
         HWND window=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,0,0,100,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
+        InterlockedExchange(&first_themes,0);InterlockedExchange(&second_themes,0);
+        HRESULT theme=window?SetWindowTheme(window,L"Explorer",NULL):E_FAIL;
+        BOOL theme_chained=SUCCEEDED(theme) && first_themes==1 && second_themes==1;
         if(window)DestroyWindow(window);
         BOOL chained=window && first_windows==1 && second_windows==1;
-        printf("LATE PREEXISTING bits=%u initial=0 status=%lu unchanged=%d create=%d original_install=%ld style=%ld chained=%d rollback=%d\n",
-               (unsigned)(sizeof(void *)*8),status,unchanged,created,first_installs,style_registrations,chained,rollback);
-        return !status && unchanged && created && first_installs==1 && style_registrations==4 && chained && rollback?0:1;
+        printf("LATE PREEXISTING bits=%u initial=0 status=%lu unchanged=%d create=%d original_install=%ld style=%ld chained=%d theme_chain=%d rollback=%d\n",
+               (unsigned)(sizeof(void *)*8),status,unchanged,created,first_installs,style_registrations,chained,theme_chained,rollback);
+        return !status && unchanged && created && first_installs==1 && style_registrations==4 && chained && theme_chained && rollback?0:1;
     }
     if(argc==2 && !wcscmp(argv[1],L"existing")){
         BYTE before_w[16],before_a[16];memcpy(before_w,(const void *)CreateProcessW,sizeof(before_w));memcpy(before_a,(const void *)CreateProcessA,sizeof(before_a));

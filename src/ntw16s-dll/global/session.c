@@ -14,12 +14,11 @@ BOOL ntw16s_global_name(WCHAR *name,DWORD capacity)
 }
 BOOL ntw16s_global_owner_alive(const ntw16s_global_session *s)
 {
-    DWORD low=0,high=0;BOOL result=FALSE;
+    BOOL result;
     if(!s || s->magic!=NTW16S_GLOBAL_MAGIC || s->version!=NTW16S_GLOBAL_VERSION || !s->owner_pid || !s->cookie)return FALSE;
     HANDLE process=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,s->owner_pid);
     if(!process)return FALSE;
-    if(WaitForSingleObject(process,0)==WAIT_TIMEOUT && win32_process_global_birth(process,&low,&high) &&
-       low==s->owner_birth_low && high==s->owner_birth_high)result=TRUE;
+    result=win32_process_global_alive(process,s->owner_birth_low,s->owner_birth_high);
     CloseHandle(process);return result;
 }
 BOOL ntw16s_global_session_matches(const ntw16s_global_session *s,DWORD cookie,DWORD style)

@@ -41,9 +41,9 @@ DWORD WINAPI ntw16s_global_thread_worker(void *parameter)
        !ntw16s_global_owner_alive(session)){error=ERROR_ACCESS_DENIED;goto done;}
     owner=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE,FALSE,session->owner_pid);
     if(!owner){error=GetLastError();goto done;}
-    DWORD low=0,high=0;
-    if(!win32_process_global_birth(owner,&low,&high) || low!=session->owner_birth_low ||
-       high!=session->owner_birth_high || WaitForSingleObject(owner,0)!=WAIT_TIMEOUT){error=ERROR_INVALID_STATE;goto done;}
+    if(!win32_process_global_alive(owner,session->owner_birth_low,session->owner_birth_high)){
+        error=ERROR_INVALID_STATE;goto done;
+    }
 #ifdef NTW16S_BUILD
     /* Global fallback already runs this worker in the target outside DllMain.
      * Retain the module permanently while any installed trampoline can run. */

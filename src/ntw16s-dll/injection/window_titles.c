@@ -1,13 +1,16 @@
 #include "../../lib-style/win16-control/text_policy.h"
-#include "../../lib-style/win16-window/menu_iteration.h"
-#include "../../lib-style/win16-dialog/print_classic.h"
-#include "../../lib-style/win16-dialog/chrome.h"
+#include "lib-style/common/menu_owner.h"
+#include "lib-style/common/classic_print_contract.h"
+#include "lib-style/common/classic_dialog_controls.h"
+#include "lib-style/common/message_observer.h"
+#include "lib-style/common/dialog_hook.h"
 #include "intercept.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "../../lib-win32/process-hook/unwind.h"
 #include "lib-style/common/theme_track.h"
+#include "lib-style/common/theme_state.h"
 #include "lib-style/win16-control/theme_kind.h"
-#include "../../lib-style/win16-dialog/print_extended.h"
+#include "lib-style/common/print_extended.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/attachment.h"
 #include "ntw16s-dll/native_api.h"
@@ -69,7 +72,7 @@ static BOOL CALLBACK bind_titles(PINIT_ONCE once,void *parameter,void **context)
 static const WCHAR menu_owner_property[]=L"Win16Style.T18.MenuOwner";
 static int menu_owner_marker;
 static void mark_menu_owner(HWND w,const void *caller)
-{(void)win16_control_menu_owner_mark(w,caller,menu_owner_property,(HANDLE)&menu_owner_marker);}
+{(void)style_menu_owner_mark(w,caller,L"TPUtilWindow",menu_owner_property,(HANDLE)&menu_owner_marker);}
 
 typedef struct title_scope { ntw16s_creation_scope *creation;DWORD failure;BOOL enabled; } title_scope;
 static BOOL begin_titles(title_scope *scope,BOOL modal)
@@ -134,15 +137,14 @@ static PROCESS_HOOK_UNWIND_FUNCTION HWND WINAPI window_band(DWORD ex,LPCWSTR cls
     SetLastError(error);return result;
 }
 
+#define TITLE_DIALOG_BEGIN(state,incoming) ((void)(incoming),begin_titles((state),TRUE))
+#define TITLE_DIALOG_PREPARE(state,incoming) ((void)(state),(void)(incoming))
+#define TITLE_DIALOG_FINISH(state,modal,result,error,fail) do { \
+    if((state)->failure){if(!(modal) && (result))DestroyWindow((HWND)(result)); \
+        (result)=(fail);(error)=(state)->failure;} \
+} while(0)
 #define DIALOG_HOOK(NAME,TYPE,RET,MODAL,FAIL) \
-static __typeof__(&NAME) real_##NAME; \
-static PROCESS_HOOK_UNWIND_FUNCTION RET WINAPI hook_##NAME(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param) \
-{ process_hook_unwind_scope unwind;title_scope scope;RET result=FAIL;DWORD error=ERROR_SUCCESS; \
-  if(!begin_titles(&scope,TRUE))return FAIL; \
-  PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(instance,name,parent,proc,param);error=GetLastError(); \
-  } PROCESS_HOOK_UNWIND_END(unwind); \
-  if(scope.failure){if(!(MODAL)){if(result)DestroyWindow((HWND)result);}result=FAIL;error=scope.failure;} \
-  SetLastError(error);return result; }
+    STYLE_DIALOG_HOOK(NAME,(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param),(instance,name,parent,proc,param),RET,FAIL,MODAL,title_scope,TITLE_DIALOG_BEGIN,TITLE_DIALOG_PREPARE,end_titles,TITLE_DIALOG_FINISH)
 DIALOG_HOOK(CreateDialogParamA,LPCSTR,HWND,FALSE,NULL)
 DIALOG_HOOK(CreateDialogParamW,LPCWSTR,HWND,FALSE,NULL)
 DIALOG_HOOK(CreateDialogIndirectParamA,LPCDLGTEMPLATEA,HWND,FALSE,NULL)
@@ -155,14 +157,11 @@ DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,TRUE,-1)
 /* Find/Replace are modeless common dialogs.  Their internal dialog creation
  * can bypass exported CreateDialog hooks, so keep the ordinary creation scope
  * active around the public entry point and return the original HWND. */
+#define TITLE_PARAM_FINISH(state,rollback,result,error,fail) do { \
+    if((state)->failure){rollback;(result)=(fail);(error)=(state)->failure;} \
+} while(0)
 #define SIMPLE_DIALOG_HOOK(NAME,PARAM,RET,FAIL,CLEANUP) \
-static __typeof__(&NAME) real_##NAME; \
-static PROCESS_HOOK_UNWIND_FUNCTION RET WINAPI hook_##NAME(PARAM parameters) \
-{ process_hook_unwind_scope unwind;title_scope scope;RET result=FAIL;DWORD error=ERROR_SUCCESS; \
-  if(!begin_titles(&scope,TRUE))return FAIL; \
-  PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
-  } PROCESS_HOOK_UNWIND_END(unwind); \
-  if(scope.failure){CLEANUP;result=FAIL;error=scope.failure;} SetLastError(error);return result; }
+    STYLE_DIALOG_HOOK(NAME,(PARAM parameters),(parameters),RET,FAIL,CLEANUP,title_scope,TITLE_DIALOG_BEGIN,TITLE_DIALOG_PREPARE,end_titles,TITLE_PARAM_FINISH)
 SIMPLE_DIALOG_HOOK(FindTextA,FINDREPLACEA *,HWND,NULL,if(result)DestroyWindow(result))
 SIMPLE_DIALOG_HOOK(FindTextW,FINDREPLACEW *,HWND,NULL,if(result)DestroyWindow(result))
 SIMPLE_DIALOG_HOOK(ReplaceTextA,FINDREPLACEA *,HWND,NULL,if(result)DestroyWindow(result))
@@ -173,20 +172,15 @@ SIMPLE_DIALOG_HOOK(ReplaceTextW,FINDREPLACEW *,HWND,NULL,if(result)DestroyWindow
  * the application's hook and FIND/COMDLG argument addresses untouched. */
 static LRESULT CALLBACK font_dialog_return(int code,WPARAM wparam,LPARAM lparam)
 {
-    if(code>=0 && lparam){
-        const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)lparam;
-        if(m->message==WM_INITDIALOG){
-            if(win16_dialog_is_font_template(m->hwnd))
-                ntw16s_font_dialog_chrome(m->hwnd);
-        }
-    }
+    const CWPRETSTRUCT *message=style_message_dialog_initialized(code,lparam);
+    if(message && style_classic_font_template(message->hwnd))ntw16s_font_dialog_chrome(message->hwnd);
     return CallNextHookEx(NULL,code,wparam,lparam);
 }
 typedef struct font_dialog_scope {title_scope title;HHOOK hook;} font_dialog_scope;
 static void font_dialog_end(void *value)
 {
     font_dialog_scope *scope=value;
-    if(scope->hook)UnhookWindowsHookEx(scope->hook);
+    style_message_observer_end(scope->hook);
     end_titles(&scope->title);
 }
 #define FONT_DIALOG_HOOK(NAME, TYPE) \
@@ -194,7 +188,7 @@ static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { process_hook_unwind_scope unwind;font_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope.title,TRUE))return FALSE; \
-  if(scope.title.enabled)scope.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,font_dialog_return,NULL,GetCurrentThreadId()); \
+  if(scope.title.enabled)scope.hook=style_message_observer_begin(font_dialog_return); \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,font_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.title.failure){result=FALSE;error=scope.title.failure;} SetLastError(error);return result; }
@@ -215,11 +209,11 @@ static void color_dialog_end(void *value)
 }
 static LRESULT CALLBACK color_dialog_return(int code,WPARAM wparam,LPARAM lparam)
 {
-    if(code>=0 && lparam){
-        const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)lparam;
-        if(m->message==WM_INITDIALOG){
-            win16_dialog_color_initialized(m->hwnd,color_dialog_found,color_dialog_remove_surface);
-        }
+    const CWPRETSTRUCT *message=style_message_dialog_initialized(code,lparam);
+    if(message && style_classic_color_template(message->hwnd)){
+        const int ids[]={720,721,710,702,709};
+        color_dialog_found(message->hwnd);
+        style_classic_color_controls(message->hwnd,ids,ARRAYSIZE(ids),color_dialog_remove_surface);
     }
     return CallNextHookEx(NULL,code,wparam,lparam);
 }
@@ -229,7 +223,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { process_hook_unwind_scope unwind;color_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope.base.title,TRUE))return FALSE; \
   scope.previous=active_color_dialog;active_color_dialog=&scope; \
-  if(scope.base.title.enabled)scope.base.hook=SetWindowsHookExW(WH_CALLWNDPROCRET,color_dialog_return,NULL,GetCurrentThreadId()); \
+  if(scope.base.title.enabled)scope.base.hook=style_message_observer_begin(color_dialog_return); \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,color_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.base.title.failure){result=FALSE;error=scope.base.title.failure;} SetLastError(error);return result; }
@@ -239,6 +233,9 @@ COLOR_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW)
 
 /* A no-op print hook selects the system's traditional PrintDlg layout.
  * Preserve caller-owned customization and less common flag contracts unchanged. */
+static UINT_PTR CALLBACK classic_print_hook(HWND w,UINT m,WPARAM a,LPARAM b)
+{(void)w;(void)m;(void)a;(void)b;return 0;}
+#define CLASSIC_PRINT_FLAGS (PD_ALLPAGES|PD_SELECTION|PD_PAGENUMS|PD_NOSELECTION|PD_NOPAGENUMS|PD_COLLATE|PD_PRINTTOFILE|PD_RETURNDC|PD_RETURNIC|PD_NOWARNING|PD_USEDEVMODECOPIESANDCOLLATE|PD_DISABLEPRINTTOFILE|PD_HIDEPRINTTOFILE|PD_NONETWORKBUTTON)
 #define PRINT_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
@@ -246,15 +243,16 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
   if(!begin_titles(&scope,TRUE))return FALSE; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { \
     TYPE copy; \
-    if(scope.enabled && win16_dialog_print_prepare_##SUFFIX(parameters,&copy)) { \
+    if(scope.enabled && style_classic_print_prepare_##SUFFIX(parameters,&copy,CLASSIC_PRINT_FLAGS,classic_print_hook)) { \
       result=real_##NAME(&copy);error=GetLastError(); \
-      win16_dialog_print_result_##SUFFIX(parameters,&copy); \
+      style_classic_print_result_##SUFFIX(parameters,&copy); \
     } else { result=real_##NAME(parameters);error=GetLastError(); } \
   } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.failure){result=FALSE;error=scope.failure;}SetLastError(error);return result; }
 PRINT_HOOK(PrintDlgA,PRINTDLGA,a)
 PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
 #undef PRINT_HOOK
+#undef CLASSIC_PRINT_FLAGS
 
 /* Synchronous common dialogs also create their own internal windows. */
 SIMPLE_DIALOG_HOOK(PageSetupDlgA,PAGESETUPDLGA *,BOOL,FALSE,(void)0)
@@ -268,8 +266,8 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters)
     if(!scope.enabled || !BRIDGE(parameters,PRINT,&result)){result=real_##NAME(parameters);}error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result; }
-PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,ntw16s_print_extended_a,real_PrintDlgA)
-PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,ntw16s_print_extended_w,real_PrintDlgW)
+PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,style_print_extended_a,real_PrintDlgA)
+PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,style_print_extended_w,real_PrintDlgW)
 #undef PRINT_EXTENDED_HOOK
 
 /* Property sheets may create internal pages without public DialogBox calls. */
@@ -300,13 +298,7 @@ TASK_DIALOG_HOOK(TaskDialogIndirect,(const TASKDIALOGCONFIG *config,int *button,
  * calling an exported DialogBox entry. Keep its API/return contract and use
  * the same bounded creation scope as the other modal entry points. */
 #define MESSAGE_HOOK(NAME,PARAMETERS,ARGUMENTS) \
-static __typeof__(&NAME) real_##NAME; \
-static PROCESS_HOOK_UNWIND_FUNCTION int WINAPI hook_##NAME PARAMETERS \
-{ process_hook_unwind_scope unwind;title_scope scope;int result=0;DWORD error=ERROR_SUCCESS; \
-  if(!begin_titles(&scope,TRUE))return 0; \
-  PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { result=real_##NAME ARGUMENTS;error=GetLastError(); \
-  } PROCESS_HOOK_UNWIND_END(unwind); \
-  if(scope.failure){result=0;error=scope.failure;} SetLastError(error);return result; }
+    STYLE_DIALOG_HOOK(NAME,PARAMETERS,ARGUMENTS,int,0,(void)0,title_scope,TITLE_DIALOG_BEGIN,TITLE_DIALOG_PREPARE,end_titles,TITLE_PARAM_FINISH)
 MESSAGE_HOOK(MessageBoxA,(HWND owner,LPCSTR text,LPCSTR caption,UINT type),(owner,text,caption,type))
 MESSAGE_HOOK(MessageBoxW,(HWND owner,LPCWSTR text,LPCWSTR caption,UINT type),(owner,text,caption,type))
 MESSAGE_HOOK(MessageBoxExA,(HWND owner,LPCSTR text,LPCSTR caption,UINT type,WORD language),(owner,text,caption,type,language))
@@ -324,7 +316,7 @@ static __typeof__(&EnableScrollBar) real_enable_scroll;
 static HRESULT WINAPI hook_set_theme(HWND w,LPCWSTR application,LPCWSTR ids)
 {
     if(!InterlockedCompareExchange(&style_ready,0,0))return real_set_theme(w,application,ids);
-    return Ntw16sSetWindowTheme(w,application,ids);
+    return style_theme_intercept(w,application,ids,ntw16s_native_set_window_theme);
 }
 static BOOL eligible_scroll(HWND w)
 {
@@ -642,7 +634,7 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
     BOOL color=FALSE;HWND dialog=active_color_dialog?active_color_dialog->dialog:NULL;HMODULE origin=NULL;
     if(rect&&dialog&&edge==EDGE_SUNKEN&&flags==(BF_RECT|BF_ADJUST)&&WindowFromDC(dc)==dialog&&
        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)__builtin_return_address(0),&origin)&&origin==GetModuleHandleW(L"comdlg32.dll")){
-        color=win16_dialog_color_swatch_edge(dialog,dc,rect);
+        color=style_classic_color_swatch(dialog,dc,rect);
     }
     if(eligible || controlbar || color)original=*rect;
     SetLastError(incoming);BOOL result=real_DrawEdge(dc,rect,edge,flags);DWORD error=GetLastError();
@@ -697,7 +689,7 @@ static void popup_owner_end(void *data)
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_TrackPopupMenu(HMENU m,UINT flags,int x,int y,int reserved,HWND w,const RECT *r)
 {
  process_hook_unwind_scope unwind;popup_owner_scope scope={w,FALSE};DWORD incoming=GetLastError(),error;BOOL result;
- if(win16_control_menu_owner_eligible(w,menu_owner_property,(HANDLE)&menu_owner_marker))
+ if(style_menu_owner_eligible(w,menu_owner_property,(HANDLE)&menu_owner_marker))
      scope.installed=win16_style_menu_owner_install_created(w,&scope,NULL);
  PROCESS_HOOK_UNWIND_BEGIN(unwind,popup_owner_end,&scope);
  SetLastError(incoming);result=real_TrackPopupMenu(m,flags,x,y,reserved,w,r);error=GetLastError();

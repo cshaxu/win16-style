@@ -1,5 +1,7 @@
 #include "system_menu.h"
 #include "lib-style/common/menu_snapshot.h"
+#include "lib-style/common/menu_input.h"
+#include "lib-style/common/present.h"
 #include <oleacc.h>
 #include <commctrl.h>
 #include <stdlib.h>
@@ -52,9 +54,7 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     if(normal)SelectObject(dc,normal);
     SetBkMode(dc,TRANSPARENT);
     POINT origin={0,0};
-    if(window_coordinates){RECT outer;if(GetWindowRect(popup,&outer) && ClientToScreen(popup,&origin)){
-        origin.x-=outer.left;origin.y-=outer.top;
-    }else valid=FALSE;}
+    if(!style_menu_client_offset(popup,window_coordinates,&origin))valid=FALSE;
     for(int i=0;valid && i<count;++i){
         RECT r=rows[i].rect;MapWindowPoints(NULL,popup,(POINT *)&r,2);OffsetRect(&r,origin.x,origin.y);
         BOOL selected=(rows[i].state&MFS_HILITE)!=0;
@@ -93,7 +93,17 @@ static void popup_paint(HWND window,menu_scope *scope,HDC target,BOOL window_coo
 {
     if(scope->detached || !scope->menu)return;
     HDC dc=target?target:GetDC(window);if(!dc)return;
-    BOOL painted=win2k_system_menu_paint(window,scope->menu,dc,window_coordinates);
+    BOOL painted=FALSE;
+    RECT client;
+    if(!target && GetClientRect(window,&client)){
+        style_present_buffer buffer;
+        BOOL ready=style_present_buffer_begin(&buffer,dc,&client);
+        if(ready)painted=win2k_system_menu_paint(window,scope->menu,buffer.memory,FALSE);
+        BOOL committed=style_present_buffer_end(&buffer,ready && painted && !scope->detached);
+        painted=painted && committed;
+    }
+    if(!painted && !scope->detached)
+        painted=win2k_system_menu_paint(window,scope->menu,dc,window_coordinates);
     if(!target)ReleaseDC(window,dc);
     if(painted && !target && !scope->detached){scope->selection=selected_item(scope->menu);scope->painted=TRUE;}
 }
@@ -123,10 +133,9 @@ static LRESULT CALLBACK menu_message(int code,WPARAM wp,LPARAM lp)
 {
     if(code>=0 && lp && scopes){
         const CWPSTRUCT *event=(const CWPSTRUCT *)lp;
-        if(event->message==WM_WINDOWPOSCHANGING || event->message==WM_WINDOWPOSCHANGED || event->message==WM_NCPAINT || event->message==WM_PRINT){
-            WCHAR name[16];MENUBARINFO info={.cbSize=sizeof(info)};menu_scope *scope=scopes;
-            if(scope->menu && !scope->popup && GetClassNameW(event->hwnd,name,ARRAYSIZE(name)) && !wcscmp(name,L"#32768") &&
-               GetMenuBarInfo(event->hwnd,OBJID_CLIENT,0,&info) && info.hMenu==scope->menu &&
+        if(style_menu_popup_observation(event->message)){
+            menu_scope *scope=scopes;
+            if(scope->menu && !scope->popup && style_menu_popup_is(event->hwnd,scope->menu) &&
                SetWindowSubclass(event->hwnd,menu_popup_proc,(UINT_PTR)menu_popup_proc,(DWORD_PTR)scope))scope->popup=event->hwnd;
         }
     }

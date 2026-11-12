@@ -1,12 +1,13 @@
 #include "vcl_identity.h"
 #include "control_class.h"
+#include "lib-win32/style/window_identity.h"
 #include <commctrl.h>
 
 /* Editable VCL combos are bound only to the original same-runtime parent. */
 BOOL win16_control_combo_identity(HWND w,HWND parent)
 {
-    WCHAR name[64],real[64];DWORD pid=0,style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
-    return owner && parent && GetParent(w)==parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() && GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner && (style&WS_CHILD) && ((style&3)==CBS_SIMPLE || (style&3)==CBS_DROPDOWN || (style&3)==CBS_DROPDOWNLIST) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE)) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TComboBox") || (!lstrcmpW(name,L"TDBComboBox") && (style&3)==CBS_DROPDOWN)) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && (!lstrcmpW(name,real) || !lstrcmpiW(real,L"COMBOBOX"));
+    WCHAR name[64],real[64];DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    return win32_style_window_owned_child(w,owner,parent) && ((style&3)==CBS_SIMPLE || (style&3)==CBS_DROPDOWN || (style&3)==CBS_DROPDOWNLIST) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE)) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TComboBox") || (!lstrcmpW(name,L"TDBComboBox") && (style&3)==CBS_DROPDOWN)) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && (!lstrcmpW(name,real) || !lstrcmpiW(real,L"COMBOBOX"));
 }
 
 /* Same-runtime VCL buttons witness the registered BUTTON procedure in paint. */
@@ -14,10 +15,8 @@ BOOL win16_control_group_button_identity(HWND w)
 {
     WCHAR name[64],real[64],parent_name[64];HWND parent=GetParent(w);
     HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),pid=0;
-    if(!(owner && parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
-        GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() &&
-        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner && (style&WS_CHILD) &&
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+    if(!(win32_style_window_owned_child(w,owner,parent) &&
         !(style&(BS_BITMAP|BS_ICON|BS_PUSHLIKE)) && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real)))return FALSE;
     if(!lstrcmpW(name,L"TCheckBox"))return (style&BS_TYPEMASK)==BS_3STATE;
@@ -30,8 +29,8 @@ BOOL win16_control_group_button_identity(HWND w)
 
 BOOL win16_control_grid_identity(HWND w,HMODULE owner,HWND parent)
 {
-    WCHAR name[64],real[64];DWORD pid=0,style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    return owner && parent && GetParent(w)==parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+    WCHAR name[64],real[64];DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    return owner && parent && GetParent(w)==parent && win32_style_window_current_thread(w) &&
         GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
         (style&WS_CHILD) && (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) &&
@@ -47,46 +46,33 @@ BOOL win16_control_grid_identity(HWND w,HMODULE owner,HWND parent)
 
 BOOL win16_control_vcl_toolbar_identity(HWND w,HMODULE owner,HWND parent)
 {
-    WCHAR name[64],real[64],pn[64];DWORD pid=0,style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    return owner && parent && GetParent(w)==parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
-        GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
-        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner && (style&WS_CHILD) &&
+    WCHAR name[64],real[64],pn[64];DWORD ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    return win32_style_window_owned_child(w,owner,parent) &&
         !(ex&(WS_EX_CLIENTEDGE|WS_EX_STATICEDGE|WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TToolBar") &&
         RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TToolBar") &&
         GetClassNameW(parent,pn,ARRAYSIZE(pn)) && !lstrcmpW(pn,L"TControlBar");
 }
 
-static BOOL vcl_owned_child(HWND w,HMODULE owner,HWND parent)
-{
-    DWORD pid=0;
-    return w && parent && owner && IsWindow(w) && GetParent(w)==parent &&
-        GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
-        GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() &&
-        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
-        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner &&
-        (GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD);
-}
-
 BOOL win16_control_inplace_identity(HWND w,HMODULE owner,HWND parent)
-{WCHAR name[64],real[64],pname[64];return vcl_owned_child(w,owner,parent) && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) && IsWindowUnicode(w) && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TInplaceEditList") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name) && GetClassNameW(parent,pname,ARRAYSIZE(pname)) && !lstrcmpW(pname,L"TValueListEditor");}
+{WCHAR name[64],real[64],pname[64];return win32_style_window_owned_child(w,owner,parent) && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) && IsWindowUnicode(w) && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TInplaceEditList") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name) && GetClassNameW(parent,pname,ARRAYSIZE(pname)) && !lstrcmpW(pname,L"TValueListEditor");}
 
 BOOL win16_control_lookup_identity(HWND w,HMODULE owner,HWND parent)
-{WCHAR name[64],real[64];return vcl_owned_child(w,owner,parent) && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE) && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TDBLookupComboBox") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name);}
+{WCHAR name[64],real[64];return win32_style_window_owned_child(w,owner,parent) && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE) && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TDBLookupComboBox") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name);}
 
 BOOL win16_control_inplace_or_lookup(HWND w,HMODULE owner,HWND parent)
 {return win16_control_inplace_identity(w,owner,parent) || win16_control_lookup_identity(w,owner,parent);}
 
 BOOL win16_control_lookup_popup_identity(HWND w,HWND source,HWND source_parent,HMODULE owner)
-{WCHAR name[64],real[64];DWORD pid=0,style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);return w && source && owner && owner==GetModuleHandleW(NULL) && IsWindow(w) && win16_control_lookup_identity(source,owner,source_parent) && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() && GetParent(w)==GetAncestor(source,GA_ROOT) && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner && (style&WS_POPUP) && (style&WS_BORDER) && !(style&WS_CHILD) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TPopupDataList") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real);}
+{WCHAR name[64],real[64];DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);return w && source && owner && owner==GetModuleHandleW(NULL) && IsWindow(w) && win16_control_lookup_identity(source,owner,source_parent) && win32_style_window_current_thread(w) && GetParent(w)==GetAncestor(source,GA_ROOT) && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner && (style&WS_POPUP) && (style&WS_BORDER) && !(style&WS_CHILD) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TPopupDataList") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real);}
 
 BOOL win16_control_nav_identity(HWND w,HMODULE owner,HWND parent)
-{WCHAR name[64],real[64];return vcl_owned_child(w,owner,parent) && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TDBNavigator") || !lstrcmpW(name,L"TMediaPlayer")) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real);}
+{WCHAR name[64],real[64];return win32_style_window_owned_child(w,owner,parent) && !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TDBNavigator") || !lstrcmpW(name,L"TMediaPlayer")) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real);}
 
 BOOL win16_control_bit_identity(HWND w,HMODULE owner)
 {
-    WCHAR name[64],real[64];DWORD pid=0,style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-    return owner && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+    WCHAR name[64],real[64];DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+    return owner && win32_style_window_current_thread(w) &&
         (style&WS_CHILD) && (style&BS_TYPEMASK)==BS_OWNERDRAW &&
         !(GetWindowLongPtrW(w,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
         GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId() &&
@@ -99,8 +85,8 @@ BOOL win16_control_bit_identity(HWND w,HMODULE owner)
 BOOL win16_control_checklist_identity(HWND w)
 {
     WCHAR name[64],real[64];DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-    DWORD ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE),pid=0;
-    return GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+    DWORD ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    return win32_style_window_current_thread(w) &&
         GetWindowThreadProcessId(GetParent(w),NULL)==GetCurrentThreadId() &&
         (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==GetModuleHandleW(NULL) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"THintCheckListBox") &&
@@ -116,7 +102,7 @@ BOOL win16_control_vb_data_role(HWND w,HWND parent)
     return parent && GetParent(w)==parent && (style&(WS_CHILD|WS_BORDER))==(WS_CHILD|WS_BORDER) &&
         (style&WS_CAPTION)!=WS_CAPTION && !(style&(WS_THICKFRAME|WS_HSCROLL|WS_VSCROLL)) &&
         !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_TOOLWINDOW|WS_EX_LAYERED)) &&
-        (GetDpiForWindow(w)==96 || GetDpiForWindow(w)==144) && ntw16s_vb_class(w,L"ThunderRT6Data");
+        (GetDpiForWindow(w)==96 || GetDpiForWindow(w)==144) && style_control_vb_class(w,L"ThunderRT6Data");
 }
 
 BOOL win16_control_vb_user_edge_role(HWND w,HWND parent)
@@ -125,7 +111,7 @@ BOOL win16_control_vb_user_edge_role(HWND w,HWND parent)
     return parent && GetParent(w)==parent && (style&WS_CHILD) &&
         (style&WS_CAPTION)!=WS_CAPTION && !(style&(WS_THICKFRAME|WS_HSCROLL|WS_VSCROLL)) &&
         !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_TOOLWINDOW|WS_EX_LAYERED)) &&
-        (ntw16s_vb_class(w,L"ThunderRT6UserControlDC") || ntw16s_vb5_class(w,L"ThunderRT5UserControl"));
+        (style_control_vb_class(w,L"ThunderRT6UserControlDC") || style_control_vb5_class(w,L"ThunderRT5UserControl"));
 }
 
 BOOL win16_control_vb_user_edge_identity(HWND w,HWND parent)
@@ -133,34 +119,29 @@ BOOL win16_control_vb_user_edge_identity(HWND w,HWND parent)
 
 BOOL win16_control_box_identity(HWND w,HMODULE owner,HWND parent)
 {
-    WCHAR name[64],real[64];WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc_owner=NULL;
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    return owner && parent && IsWindow(w) && GetParent(w)==parent &&
-        GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() && GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() &&
-        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner &&
+    WCHAR name[64],real[64];
+    DWORD ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    return win32_style_window_owned_child(w,owner,parent) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TScrollBox") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) &&
-        IsWindowUnicode(w) && (style&WS_CHILD) && (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) &&
-        GetClassInfoExW(owner,name,&c) && c.lpfnWndProc &&
-        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc_owner) && proc_owner==owner;
+        IsWindowUnicode(w) && (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) &&
+        win32_style_class_procedure_owned(owner,name);
 }
 
 BOOL win16_control_controlbar_identity(HWND w,const win16_control_controlbar_view *a)
 {
- WCHAR name[64],real[64];DWORD pid=0;WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc_owner=NULL;HWND parent=GetParent(w);DWORD ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+ WCHAR name[64],real[64];HWND parent=GetParent(w);DWORD ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
  return a && !*a->detached && !*a->retired && IsWindow(w) && parent && parent==*a->parent &&
-  GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() && GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() &&
+  win32_style_window_current_thread(w) && GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() &&
   (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==*a->owner && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==*a->owner &&
   GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TControlBar") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) &&
   IsWindowUnicode(w) && (GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) &&
-  GetClassInfoExW(*a->owner,name,&c) && c.lpfnWndProc && GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc_owner) && proc_owner==*a->owner;
+  win32_style_class_procedure_owned(*a->owner,name);
 }
 
 
 BOOL win16_control_cool_class_owner(HMODULE owner)
 {
-    WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc=NULL;
-    return owner && GetClassInfoExW(owner,L"TCoolBar",&c) && c.lpfnWndProc &&
-        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc) && proc==owner;
+    return owner && win32_style_class_procedure_owned(owner,L"TCoolBar");
 }
 
 BOOL win16_control_rich_identity(HWND w,const win16_control_rich_view *a)
@@ -200,7 +181,7 @@ void win16_control_vcl_classify(HWND w,DWORD original_style,BOOL ready,HMODULE o
         RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name);
     v->bit_candidate=ready && win16_control_bit_identity(w,owner);
     v->inplace_candidate=ready && win16_control_inplace_or_lookup(w,owner,GetParent(w));
-    v->nav_candidate=ready && (owner==GetModuleHandleW(NULL) || ntw16s_class_is(w,L"TMediaPlayer")) && win16_control_nav_identity(w,owner,GetParent(w));
+    v->nav_candidate=ready && (owner==GetModuleHandleW(NULL) || style_control_class_is(w,L"TMediaPlayer")) && win16_control_nav_identity(w,owner,GetParent(w));
     v->group_frame_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TGroupBox") || !lstrcmpW(name,L"TRadioGroup")) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name);
     v->panel_frame_candidate=ready && GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TPanel") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,name);
     v->group_button_candidate=ready && win16_control_group_button_identity(w);
@@ -214,14 +195,14 @@ void win16_control_vcl_classify(HWND w,DWORD original_style,BOOL ready,HMODULE o
 
 void win16_control_vcl_classify_extra(HWND w,DWORD original_style,BOOL ready,HMODULE owner,win16_control_vcl_extra_candidates *v)
 {
-    v->cool_candidate=ready && (original_style&WS_CHILD) && ntw16s_class_is(w,L"TCoolBar") && win16_control_cool_class_owner(owner) && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
+    v->cool_candidate=ready && (original_style&WS_CHILD) && style_control_class_is(w,L"TCoolBar") && win16_control_cool_class_owner(owner) && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
     v->box_candidate=ready && win16_control_box_identity(w,owner,GetParent(w));
-    v->controlbar_candidate=ready && ntw16s_class_is(w,L"TControlBar") && owner && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
-    v->rich_month=ntw16s_class_is(w,L"TMonthCalendar");
-    v->rich_hotkey=ntw16s_class_is(w,L"THotKey");
-    v->rich_popup=ntw16s_class_is(w,L"TPopupListbox");
-    v->rich_unicode=v->rich_popup || v->rich_month || v->rich_hotkey || ntw16s_class_is(w,L"TRichEdit");
-    v->rich_candidate=ready && (v->rich_unicode || ntw16s_class_is(w,L"TRichEditURL")) && owner && GetParent(w) &&
+    v->controlbar_candidate=ready && style_control_class_is(w,L"TControlBar") && owner && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
+    v->rich_month=style_control_class_is(w,L"TMonthCalendar");
+    v->rich_hotkey=style_control_class_is(w,L"THotKey");
+    v->rich_popup=style_control_class_is(w,L"TPopupListbox");
+    v->rich_unicode=v->rich_popup || v->rich_month || v->rich_hotkey || style_control_class_is(w,L"TRichEdit");
+    v->rich_candidate=ready && (v->rich_unicode || style_control_class_is(w,L"TRichEditURL")) && owner && GetParent(w) &&
         (v->rich_popup?(owner==GetModuleHandleW(NULL) && win16_control_inplace_identity(GetParent(w),owner,GetParent(GetParent(w))) && (original_style&WS_BORDER) && (original_style&WS_VSCROLL) && !(original_style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))):((HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner && (v->rich_month || (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE))));
     v->vb_user_edge=win16_control_vb_user_edge_role(w,GetParent(w));
     v->vb_data_edge=win16_control_vb_data_role(w,GetParent(w));
@@ -231,7 +212,7 @@ void win16_control_vcl_classify_extra(HWND w,DWORD original_style,BOOL ready,HMO
      * generic child frame may use the ordinary frame path. */
     v->vb_mdi_child=(original_style&WS_CAPTION)==WS_CAPTION &&
         (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_MDICHILD) &&
-        (ntw16s_vb5_class(w,L"ThunderRT5Form") || ntw16s_vb_class(w,L"ThunderRT6FormDC")) &&
-        ntw16s_class_is(GetParent(w),L"MDIClient") &&
+        (style_control_vb5_class(w,L"ThunderRT5Form") || style_control_vb_class(w,L"ThunderRT6FormDC")) &&
+        style_control_class_is(GetParent(w),L"MDIClient") &&
         (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==GetModuleHandleW(L"user32.dll");
 }

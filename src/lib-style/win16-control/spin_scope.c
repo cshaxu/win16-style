@@ -2,6 +2,7 @@
 #include "spin_identity.h"
 #include "special_paint.h"
 #include "../common/control_protocol.h"
+#include "../common/clip.h"
 #include <string.h>
 
 void win16_control_spin_buffers_clear(spin_draw_scope *s)
@@ -68,7 +69,7 @@ void win16_control_spin_theme(spin_draw_scope *s,HDC dc,int part,int state,const
     pt[0]=(POINT){rect->left,rect->top};pt[1]=(POINT){rect->right,rect->bottom};
     if(!LPtoDP(dc,pt,2) || pt[0].x!=0 || pt[1].x!=client.right || pt[0].y<0 || pt[1].y>client.bottom ||
        pt[1].y<=pt[0].y || !((pt[0].y==0 && pt[1].y<client.bottom) || (pt[0].y>0 && pt[1].y==client.bottom)))return;
-    if(!win16_control_spin_full_clip(dc,pt))return;
+    if(!style_clip_covers(dc,pt))return;
     if(!s->buffers){s->buffers=HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,sizeof(*s->buffers));if(!s->buffers)return;}
     if(s->snapshot_dc!=dc || s->snapshot_bitmap!=GetCurrentObject(dc,OBJ_BITMAP)){
         s->snapshot_dc=dc;s->snapshot_bitmap=GetCurrentObject(dc,OBJ_BITMAP);

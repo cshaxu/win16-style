@@ -1,6 +1,7 @@
 #include "lib-style/win16-control/scroll_layout.h"
 #include "lib-style/win16-control/scroll_native.h"
 #include "lib-style/win16-control/scroll_track.h"
+#include "lib-style/common/scroll_state.h"
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,12 +37,14 @@ static void tracking_tests(void)
     CHECK(win16_scroll_list_axis_owned(NULL,OBJID_VSCROLL,fake_info));
     CHECK(win16_scroll_list_axis_owned(NULL,OBJID_HSCROLL,fake_info));
     CHECK(!win16_scroll_edit_thumb_messages(NULL,OBJID_VSCROLL,fake_info));
-    CHECK(win16_scroll_disabled(NULL,OBJID_CLIENT)==ESB_DISABLE_BOTH);
+    CHECK(style_scroll_disabled(NULL,OBJID_CLIENT)==ESB_DISABLE_BOTH);
     WNDCLASSW cls={.lpfnWndProc=action_parent,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"S24ScrollActionTest"};
     CHECK(RegisterClassW(&cls)!=0);
     HWND parent=CreateWindowExW(0,cls.lpszClassName,L"",WS_OVERLAPPED,0,0,100,100,NULL,NULL,cls.hInstance,NULL);
     HWND child=parent?CreateWindowExW(0,L"SCROLLBAR",L"",WS_CHILD|SBS_VERT,0,0,20,60,parent,NULL,cls.hInstance,NULL):NULL;
     CHECK(parent && child);
+    EnableWindow(child,FALSE);CHECK(style_scroll_disabled(child,OBJID_CLIENT)==ESB_DISABLE_BOTH);
+    EnableWindow(child,TRUE);
     CHECK(win16_scroll_control_layout(child,fake_info,&from_native));
     CHECK(from_native.vertical && from_native.first.bottom-from_native.first.top==20);
     BOOL action_detached=FALSE,reporting=FALSE,frame=FALSE,edit=FALSE,list=FALSE;
@@ -134,8 +137,8 @@ int main(void)
     CHECK(l.thumb.top==112 && l.thumb.bottom==129);
     CHECK(win16_scroll_measure(&v,TRUE,&vga,0,100,100,&l));
     CHECK(l.thumb.top==187 && l.thumb.bottom==204);
-    CHECK(win16_scroll_position(&l,36)==0 && win16_scroll_position(&l,187)==100);
-    CHECK(win16_scroll_position(&l,INT_MIN)==0 && win16_scroll_position(&l,INT_MAX)==100);
+    CHECK(style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,36)==0 && style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,187)==100);
+    CHECK(style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,INT_MIN)==0 && style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,INT_MAX)==100);
     for(length=2;length<=400;++length){
         LONG previous=LONG_MIN;v.bottom=v.top+length;r.right=r.left+length;
         for(p=-101;p<=101;++p){
@@ -152,7 +155,7 @@ int main(void)
         if(l.thumb_fits){
             previous=LONG_MIN;
             for(p=l.minimum_pixel-1;p<=l.minimum_pixel+l.travel+1;++p){
-                LONG position=win16_scroll_position(&l,p);
+                LONG position=style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,p);
                 CHECK(position>=-100 && position<=100 && position>=previous);previous=position;
             }
         }
@@ -160,9 +163,9 @@ int main(void)
     v.bottom=220;
     CHECK(win16_scroll_measure(&v,TRUE,&vga,LONG_MIN,LONG_MAX,LONG_MAX,&l));
     CHECK(l.thumb.top==187);
-    CHECK(win16_scroll_position(&l,36)==LONG_MIN && win16_scroll_position(&l,187)==LONG_MAX);
+    CHECK(style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,36)==LONG_MIN && style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,187)==LONG_MAX);
     CHECK(win16_scroll_measure(&v,TRUE,&vga,5,5,500,&l) && l.position==5);
-    CHECK(win16_scroll_position(&l,100)==5);
+    CHECK(style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,100)==5);
     CHECK(!win16_scroll_measure(&v,TRUE,&vga,1,0,0,&l));
     CHECK(!win16_scroll_measure(NULL,TRUE,&vga,0,100,0,&l));
     v.top=LONG_MIN;v.bottom=LONG_MAX;

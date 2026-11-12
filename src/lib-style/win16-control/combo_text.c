@@ -1,4 +1,5 @@
 #include "combo_text.h"
+#include "lib-style/common/control_scope.h"
 #include "../win16-common/font.h"
 
 /* Keep native-painter borrowed font returns alive through reentrant setters.
@@ -42,9 +43,9 @@ LRESULT win16_control_combo_text_message(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PT
 }
 void win16_control_combo_text_unbind(control_style *s,BOOL terminal,SUBCLASSPROC combo_proc)
 {
-    HWND edit=s->combo_edit;DWORD_PTR data;
+    HWND edit=s->combo_edit;
     if(!s->combo_bound)return;
-    BOOL owned=edit && GetWindowSubclass(edit,combo_proc,(UINT_PTR)combo_proc,&data) && data==(DWORD_PTR)s;
+    BOOL owned=style_control_subclass_owned(edit,combo_proc,(UINT_PTR)combo_proc,s);
     if(owned && !RemoveWindowSubclass(edit,combo_proc,(UINT_PTR)combo_proc))return;
     s->combo_edit=NULL;s->combo_bound=FALSE;--s->calls;
     if(owned && !terminal && IsWindow(edit)){

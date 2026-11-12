@@ -1,11 +1,33 @@
 #ifndef STYLE_UWP_MENU_H
 #define STYLE_UWP_MENU_H
 #include <windows.h>
+#include "lib-style/common/menu_snapshot.h"
 
 typedef struct style_uwp_menu_state {
     UINT saved[5];
     BOOL disabled[5];
 } style_uwp_menu_state;
+
+/* USER may temporarily own menu animation; do not modify an already layered popup. */
+static inline void style_uwp_menu_present(HWND window,HMENU menu,HWND *presented)
+{
+    if(GetWindowThreadProcessId(window,NULL)!=GetCurrentThreadId() ||
+       !style_menu_popup_is(window,menu))return;
+    LONG_PTR ex=GetWindowLongPtrW(window,GWL_EXSTYLE);
+    if(ex&WS_EX_LAYERED)return;
+    *presented=window;
+    SetLastError(0);SetWindowLongPtrW(window,GWL_EXSTYLE,ex|WS_EX_LAYERED);
+    if(GetLastError() || !SetLayeredWindowAttributes(window,0,255,LWA_ALPHA)){
+        SetWindowLongPtrW(window,GWL_EXSTYLE,ex);*presented=NULL;return;
+    }
+    RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW);
+}
+static inline void style_uwp_menu_unpresent(HWND window,HMENU menu)
+{
+    MENUBARINFO info={.cbSize=sizeof(info)};
+    if(GetMenuBarInfo(window,OBJID_CLIENT,0,&info) && info.hMenu==menu)
+        SetWindowLongPtrW(window,GWL_EXSTYLE,GetWindowLongPtrW(window,GWL_EXSTYLE)&~WS_EX_LAYERED);
+}
 
 /* All calls belong to the menu owner's GUI thread. The caller keeps the menu
  * alive and restores its state only while it is still the owner's system menu. */

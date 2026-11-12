@@ -7,6 +7,13 @@ typedef enum style_menu_key_action {
     STYLE_MENU_KEY_LEAVE, STYLE_MENU_KEY_OPEN
 } style_menu_key_action;
 
+/* Popup windows become discoverable during these native notifications. */
+static inline BOOL style_menu_popup_observation(UINT message)
+{
+    return message==WM_WINDOWPOSCHANGING || message==WM_WINDOWPOSCHANGED ||
+        message==WM_NCPAINT || message==WM_PRINT;
+}
+
 static inline style_menu_key_action style_menu_key(WPARAM key)
 {
     switch(key){

@@ -17,7 +17,7 @@ typedef struct style_window {
     int pressed,bar_selected,bar_direction,bar_hover;
     BOOL bar_keyboard;
     HWND bar_focus;
-    win16_style_menu_item *menu_items;
+    style_menu_item *menu_items;
     menu_loop *menus;
     unsigned menu_depth;
     DWORD old_policy;

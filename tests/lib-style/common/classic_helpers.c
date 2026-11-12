@@ -3,6 +3,14 @@
 int main(void)
 {
     WCHAR root[MAX_PATH],out[MAX_PATH];
+    OPENFILENAMEW input={.lStructSize=sizeof(input),.lpstrFile=L"C:\\folder\\file.txt",.Flags=OFN_ALLOWMULTISELECT},adjusted={0};
+    if(!style_classic_file_folder_adjust(&input,out,MAX_PATH,&adjusted) || lstrcmpW(out,L"C:\\folder") ||
+       adjusted.lpstrFile!=out || adjusted.nMaxFile!=MAX_PATH || adjusted.Flags!=input.Flags)return 6;
+    input.lpstrFile=L"C:\\file.txt";
+    if(!style_classic_file_folder_adjust(&input,out,MAX_PATH,&adjusted) || lstrcmpW(out,L"C:\\"))return 7;
+    input.lpstrFile=L"\\\\server\\share\\file.txt";
+    if(!style_classic_file_folder_adjust(&input,out,MAX_PATH,&adjusted) || lstrcmpW(out,L"\\\\server\\share") ||
+       style_classic_file_folder_adjust(&input,out,4,&adjusted))return 8;
     if(style_classic_file_folder(NULL,out,MAX_PATH)) return 1;
     if(!GetTempPathW(MAX_PATH,root) || root[1]!=L':' || root[2]!=L'\\') return 2;
     root[3]=0;

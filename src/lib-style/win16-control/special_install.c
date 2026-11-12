@@ -78,7 +78,7 @@ BOOL win16_control_special_grid_install(HWND w,const win16_style_palette *palett
     /* Owner-drawn lists use the shared frame scrollbar painter but may not
      * have the ordinary control attachment's theme lease. Common-controls
      * theme animations can otherwise repaint over that scrollbar later. */
-    if(ntw16s_list_class(w) && !v->theme_retained(w)){
+    if(style_control_list_class(w) && !v->theme_retained(w)){
         if(!v->theme_capture(w))result=FALSE;
         else {s->list_theme_owned=TRUE;if(!v->theme_enable(w,s))result=FALSE;}
     }

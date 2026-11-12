@@ -27,3 +27,14 @@ Both widths also passed 17 component tests, two published-launcher probes and
 two direct protocol workers: 44 focused checks including the manager test.
 The shared manager archives have no unresolved Win16, Win2000 or product-private
 symbols. This does not establish real UWP host or full global-mode acceptance.
+# 当前补充回归
+
+在普通桌面直接运行公共样式测试集，x86/x64 各 48 项；其中
+`core/style-dispatch` 与 `core/style-uwp-global` 在两种位宽失败，
+`core/style-present-print` 首次因未设置自有捕获目录无法运行，补齐目录后
+双位宽通过。其余 45 项每个位宽通过；不能把失败项计作通过。
+
+补充只读诊断表明，UWP 全局自建目标在策略准入返回错误 5，队列与应用调用
+均未发生；这不同于跨进程窗口钩子返回 126，不能断言两者原因相同。测试原先
+在失败时也硬编码打印重试、超时及目标退出为 1，现改为仅在完整序列通过时
+输出 `full_sequence=1`；两种位宽当前均输出 0。真实全局会话未据此验证。

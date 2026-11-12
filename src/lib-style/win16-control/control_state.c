@@ -19,7 +19,7 @@ void win16_control_state_dispose(control_style *s)
 BOOL win16_control_state_prepare_font(HWND w,control_style *s,UINT m,WPARAM *a,BOOL native_font,HFONT *previous,HFONT *outbound)
 {
     if(!s->frame_scrollbars && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT) &&
-            (native_font || ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_button(w) || ntw16s_vb_combo(w) || ntw16s_vb_list(w))){
+            (native_font || style_control_vb_frame(w) || style_control_vb_edit(w) || style_control_vb_button(w) || style_control_vb_combo(w) || style_control_vb_list(w))){
         HFONT source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
         if(!s->detached && source!=s->original_font){
             HFONT replacement=native_font?win16_style_system_acquire(source):win16_style_vb_font_acquire(source);
@@ -35,7 +35,7 @@ BOOL win16_control_state_prepare_font(HWND w,control_style *s,UINT m,WPARAM *a,B
     }
     if(m==WM_SETFONT && !s->frame_scrollbars && !s->combo_passthrough){
         HFONT original=win16_style_system_source((HFONT)*a);
-        BOOL vb=ntw16s_vb_frame(w) || ntw16s_vb_edit(w) || ntw16s_vb_button(w) || ntw16s_vb_combo(w) || ntw16s_vb_list(w);
+        BOOL vb=style_control_vb_frame(w) || style_control_vb_edit(w) || style_control_vb_button(w) || style_control_vb_combo(w) || style_control_vb_list(w);
         HFONT replacement=vb?win16_style_vb_font_acquire(original):win16_style_system_acquire(original);
         *previous=s->font;s->original_font=original;
         s->font=replacement?replacement:original;

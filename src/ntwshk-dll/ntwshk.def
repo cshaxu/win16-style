@@ -29,3 +29,14 @@ EXPORTS
     ntwshk_run_helper
     ntwshk_system_print_host_a
     ntwshk_system_print_host_w
+    style_theme_capture
+    style_theme_stage
+    style_theme_commit
+    style_theme_cancel_stage
+    style_theme_terminal
+    style_theme_suppress
+    style_theme_retained
+    style_theme_owned
+    style_theme_remove
+    style_theme_set
+    style_theme_intercept

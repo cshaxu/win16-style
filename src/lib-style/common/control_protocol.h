@@ -6,6 +6,13 @@
  * are private to this linked module and reject a foreign property value.
  * Initialized native controls may be checked at creation or late attachment. */
 typedef struct style_control_protocol style_control_protocol;
+/* Recognize an exact class registered by an already-loaded runtime module. */
+static inline BOOL style_control_runtime_class(HWND window,const WCHAR *name,const WCHAR *module)
+{
+    WCHAR actual[64];HMODULE runtime=GetModuleHandleW(module);
+    return runtime && (HMODULE)GetClassLongPtrW(window,GCLP_HMODULE)==runtime &&
+        GetClassNameW(window,actual,ARRAYSIZE(actual)) && !lstrcmpiW(actual,name);
+}
 style_control_protocol *style_control_protocol_bind(HWND);
 /* Internal: owner is accepted only after the actual EDIT forwarding witness. */
 style_control_protocol *style_control_protocol_bind_verified_edit(HWND,HMODULE);
@@ -23,6 +30,8 @@ style_control_protocol *style_control_protocol_bind_verified_report(HWND,HMODULE
 BOOL style_control_protocol_runtime_trackbar(HWND);
 style_control_protocol *style_control_protocol_acquire(HWND);
 BOOL style_control_protocol_is(HWND,const WCHAR *);
+/* Recognize a registered superclass of the requested native class. */
+BOOL style_control_native_superclass(HWND,const WCHAR *);
 HMODULE style_control_protocol_list_module(HWND);
 HMODULE style_control_protocol_tree_module(HWND);
 HMODULE style_control_protocol_updown_module(HWND);

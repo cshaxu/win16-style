@@ -4,6 +4,7 @@
 #include "lib-win32/process-hook/propagate.h"
 #include "lib-win32/process-hook/startup_hooks.h"
 #include "ntwshk-dll/system_process.h"
+#include "lib-win32/style/startup.h"
 
 void ntwshk_run_helper(void);
 DWORD ntw2ks_controls_attach(void);
@@ -16,17 +17,17 @@ static BOOL accept_a(LPCSTR app,LPSTR command,void *unused)
 static DWORD install(HANDLE child,process_hook_create_w create,void *unused)
 {(void)unused;return ntwshk_install(child,&context,create);}
 
-static DWORD prepare_hooks(void)
+static DWORD prepare_hooks(void *unused)
 {
+    (void)unused;
     const process_hook_propagation_ops ops={active,accept_w,accept_a,install,NULL};
-    DWORD error=process_hook_startup_begin();if(error)return error;
+    DWORD error=ERROR_SUCCESS;
     if(context.flags&NTWSHK_POLICY_PROPAGATE){
         error=process_hook_propagation_attach(process_hook_startup_attach,&ops);
         if(!error)error=process_hook_propagation_attach_as_user_w(process_hook_startup_attach);
     }
     if(!error && (context.flags&NTWSHK_POLICY_STYLE))error=ntw2ks_controls_attach();
-    if(error){process_hook_startup_abort();return error;}
-    return process_hook_startup_commit();
+    return error;
 }
 
 void CALLBACK Ntw2ksFinishHelper(HWND window,HINSTANCE instance,LPSTR command,INT show)
@@ -44,7 +45,7 @@ BOOL WINAPI DllMain(HINSTANCE instance,DWORD reason,LPVOID reserved)
         if(!error && found && _wcsicmp(context.module,L"ntw2ks"))error=ERROR_INVALID_DATA;
         if(!error && found && (context.flags&NTWSHK_POLICY_GLOBAL_SESSION))error=ERROR_INVALID_DATA;
         if(!error && found)error=process_hook_stage_restore();
-        if(!error && found)error=prepare_hooks();
+        if(!error && found)error=win32_style_startup(prepare_hooks,NULL);
         if(error){SetLastError(error);return FALSE;}
     }
     return TRUE;

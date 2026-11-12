@@ -16,7 +16,7 @@
 #include "lib-style/win16-control/list_paint.h"
 #include "lib-style/win16-control/theme_kind.h"
 #include "lib-style/common/theme_state.h"
-#include "lib-style/win16-control/custom_draw.h"
+#include "lib-style/common/control_custom_draw.h"
 #include "lib-style/win16-control/text_policy.h"
 #include <dwmapi.h>
 #include <stdlib.h>
@@ -37,7 +37,7 @@ static HRESULT WINAPI test_frame_policy(HWND w,DWORD attr,LPCVOID value,DWORD si
 {(void)w;if(attr!=DWMWA_NCRENDERING_POLICY || size!=sizeof(DWORD))return E_INVALIDARG;frame_policy_value=*(const DWORD *)value;++frame_policy_calls;return S_OK;}
 static int draw_parts;
 static BOOL custom_supported(HWND w){(void)w;return TRUE;}
-static BOOL custom_part(HWND w,const NMCUSTOMDRAW *draw,const win16_style_palette *p)
+static BOOL custom_part(HWND w,const NMCUSTOMDRAW *draw,const void *p)
 {(void)w;(void)draw;(void)p;++draw_parts;return TRUE;}
 static HRESULT test_native_theme(HWND w,LPCWSTR app,LPCWSTR ids)
 {if(!w && app && ids && !lstrcmpW(app,L"Test") && !lstrcmpW(ids,L"Demo"))++theme_calls;return S_FALSE;}
@@ -139,13 +139,13 @@ int main(void)
     win16_style_default_palette(&palette);
     NMCUSTOMDRAW custom={0};BOOL custom_active=FALSE;
     custom.dwDrawStage=CDDS_PREPAINT;
-    if(win16_control_custom_draw_after(NULL,&custom,&custom_active,FALSE,CDRF_SKIPDEFAULT,&palette,custom_supported,custom_part)!=CDRF_SKIPDEFAULT || custom_active)return 26;
-    if(win16_control_custom_draw_after(NULL,&custom,&custom_active,FALSE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=(CDRF_NOTIFYITEMDRAW|CDRF_NOTIFYPOSTPAINT) || !custom_active)return 27;
+    if(style_control_custom_draw_after(NULL,&custom,&custom_active,FALSE,CDRF_SKIPDEFAULT,&palette,custom_supported,custom_part)!=CDRF_SKIPDEFAULT || custom_active)return 26;
+    if(style_control_custom_draw_after(NULL,&custom,&custom_active,FALSE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=(CDRF_NOTIFYITEMDRAW|CDRF_NOTIFYPOSTPAINT) || !custom_active)return 27;
     custom.dwDrawStage=CDDS_ITEMPREPAINT;
-    if(win16_control_custom_draw_after(NULL,&custom,&custom_active,FALSE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=CDRF_DODEFAULT || draw_parts)return 28;
-    if(win16_control_custom_draw_after(NULL,&custom,&custom_active,TRUE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=CDRF_SKIPDEFAULT || draw_parts!=1)return 29;
+    if(style_control_custom_draw_after(NULL,&custom,&custom_active,FALSE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=CDRF_DODEFAULT || draw_parts)return 28;
+    if(style_control_custom_draw_after(NULL,&custom,&custom_active,TRUE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=CDRF_SKIPDEFAULT || draw_parts!=1)return 29;
     custom.dwDrawStage=CDDS_POSTPAINT;
-    if(win16_control_custom_draw_after(NULL,&custom,&custom_active,TRUE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=CDRF_DODEFAULT || custom_active)return 30;
+    if(style_control_custom_draw_after(NULL,&custom,&custom_active,TRUE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=CDRF_DODEFAULT || custom_active)return 30;
     if(palette.face!=RGB(192,192,192) || palette.edge!=RGB(0,0,0))return 1;
     for(int i=WIN16_SCROLL_UP;i<=WIN16_SCROLL_RIGHT_DISABLED;++i)
         if(!win16_control_scroll_glyph((enum win16_control_scroll_asset)i))return 2;
@@ -201,19 +201,19 @@ int main(void)
     const DWORD separator_styles[]={SS_ETCHEDHORZ,SS_ETCHEDVERT,SS_ETCHEDFRAME,SS_LEFT};
     for(unsigned i=0;i<ARRAYSIZE(separator_styles);++i){
         HWND child=CreateWindowW(L"STATIC",L"",WS_CHILD|separator_styles[i],0,0,10,10,window,NULL,GetModuleHandleW(NULL),NULL);
-        if(!child || ntw16s_is_separator(child)!=(i<3)){DestroyWindow(window);return 107;}
+        if(!child || style_control_is_separator(child)!=(i<3)){DestroyWindow(window);return 107;}
         DestroyWindow(child);
     }
     HWND edit=CreateWindowW(L"EDIT",L"",WS_CHILD|SS_ETCHEDHORZ,0,0,10,10,window,NULL,GetModuleHandleW(NULL),NULL);
-    if(!edit || ntw16s_is_separator(edit)){DestroyWindow(window);return 108;}
+    if(!edit || style_control_is_separator(edit)){DestroyWindow(window);return 108;}
     DestroyWindow(edit);puts("CONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1");
     HWND classic_combo=CreateWindowExW(0,L"COMBOBOX",L"",WS_CHILD|CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS,
         0,0,80,80,window,(HMENU)(INT_PTR)1136,GetModuleHandleW(NULL),NULL);
-    if(!classic_combo || !win16_control_common_dialog_combo_valid(classic_combo,window) ||
-       win16_control_common_dialog_combo_valid(classic_combo,NULL)){
+    if(!classic_combo || !style_control_dialog_combo_valid(classic_combo,window,style_control_is_combo) ||
+       style_control_dialog_combo_valid(classic_combo,NULL,style_control_is_combo)){
         DestroyWindow(window);return 42;}
     SetWindowLongPtrW(classic_combo,GWLP_ID,1135);
-    if(win16_control_common_dialog_combo_valid(classic_combo,window)){DestroyWindow(window);return 43;}
+    if(style_control_dialog_combo_valid(classic_combo,window,style_control_is_combo)){DestroyWindow(window);return 43;}
     DestroyWindow(classic_combo);
     control_style *font_state=win16_control_state_create();HFONT old_font=NULL,outbound_font=NULL;
     HFONT application_font=(HFONT)GetStockObject(SYSTEM_FONT);WPARAM font_parameter=(WPARAM)application_font;

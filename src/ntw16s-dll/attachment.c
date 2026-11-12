@@ -18,12 +18,16 @@
 #include "../lib-style/win16-control/status_frame.h"
 #include "../lib-style/win16-control/status_font.h"
 #include "../lib-style/win16-control/status_text.h"
-#include "../lib-style/win16-control/status_identity.h"
+#include "lib-style/common/control_status.h"
 #include "../lib-style/win16-control/vcl_identity.h"
 #include "../lib-style/win16-control/attachment_state.h"
 #include "../lib-style/win16-control/vcl_extra_frame.h"
 #include "../lib-style/win16-control/month_paint.h"
 #include "../lib-style/win16-window-uwp/frame.h"
+#include "lib-style/common/message_observer.h"
+#include "lib-win32/style/window_hook.h"
+#include "lib-win32/style/window_identity.h"
+#include "lib-win32/style/creation_pending.h"
 #include "../lib-win32/process-hook/unwind.h"
 #include "status_theme.h"
 #include "../lib-style/win16-control/month_text.h"
@@ -42,7 +46,7 @@
 /* This coordinator composes the one existing renderer. It observes only
  * creation inside explicit caller scopes; it never scans a desktop or infers
  * task policy from an owner, title, executable name or a process-wide switch. */
-typedef struct pending_window {struct pending_window *next;HWND window;DWORD style;BOOL settled,installed;} pending_window;
+typedef win32_style_creation_pending pending_window;
 struct ntw16s_creation_scope {
     struct ntw16s_creation_scope *previous;
     DWORD thread;
@@ -85,7 +89,7 @@ static LRESULT CALLBACK creation_subclass(HWND w,UINT message,WPARAM a,LPARAM b,
         DWORD error=GetLastError();creation_dialog_observer(w);SetLastError(error);
     }
     if(message==WM_NCDESTROY || message==WM_INITDIALOG ||
-        (message==WM_CREATE && !ntw16s_class_is(w,L"#32770")))
+        (message==WM_CREATE && !style_control_class_is(w,L"#32770")))
         RemoveWindowSubclass(w,creation_subclass,(UINT_PTR)creation_subclass);
     return result;
 }
@@ -133,13 +137,13 @@ void ntw16s_bit_theme_frame(HDC dc,int part,const RECT *rect,const RECT *clip,co
 static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address,BOOL drop)
 {
     static_paint_scope *s=static_paint;if(!s)return;
-    const win16_control_vcl_paint_view v={s->window,&s->owner->inplace_candidate,&s->owner->detached,&s->owner->inplace_verified,&s->owner->inplace_owner,&s->owner->inplace_parent,win16_control_inplace_or_lookup,win16_control_lookup_identity,ntw16s_class_is};
+    const win16_control_vcl_paint_view v={s->window,&s->owner->inplace_candidate,&s->owner->detached,&s->owner->inplace_verified,&s->owner->inplace_owner,&s->owner->inplace_parent,win16_control_inplace_or_lookup,win16_control_lookup_identity,style_control_class_is};
     win16_control_vcl_inplace_draw(&v,dc,part,state,r,clip,address,drop);
 }
 void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {
     static_paint_scope *s=static_paint;if(!s)return;
-    const win16_control_vcl_paint_view v={s->window,&s->owner->nav_candidate,&s->owner->detached,&s->owner->nav_verified,&s->owner->nav_owner,&s->owner->nav_parent,win16_control_nav_identity,NULL,ntw16s_class_is};
+    const win16_control_vcl_paint_view v={s->window,&s->owner->nav_candidate,&s->owner->detached,&s->owner->nav_verified,&s->owner->nav_owner,&s->owner->nav_parent,win16_control_nav_identity,NULL,style_control_class_is};
     win16_control_vcl_nav_draw(&v,dc,part,state,r,clip,address);
 }
 BOOL ntw16s_inplace_paint(HDC dc)
@@ -148,9 +152,9 @@ void ntw16s_inplace_button(HDC dc,int part,int state,const RECT *r,const RECT *c
 void ntw16s_inplace_dropdown(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address){inplace_draw(dc,part,state,r,clip,address,TRUE);}
 static BOOL status_identity(HWND w,attachment *a,HMODULE *native)
 {
-    if(!a)return win16_control_status_identity(w,NULL,native);
-    const win16_control_status_identity_view view={&a->status_candidate,&a->detached,&a->status_witness_owner,&a->status_parent};
-    return win16_control_status_identity(w,&view,native);
+    if(!a)return style_control_status_identity(w,NULL,native);
+    const style_control_status_view view={&a->status_candidate,&a->detached,&a->status_witness_owner,&a->status_parent,L"TStatusBar"};
+    return style_control_status_identity(w,&view,native);
 }
 
 static BOOL status_frame_identity(HWND w,void *owner,HMODULE *native)
@@ -285,7 +289,7 @@ HFONT ntw16s_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,const voi
     if(!s || !s->active || !s->cancelled || *s->cancelled || !static_paint || static_paint->window!=s->window)return NULL;
     return win16_control_static_text_font(dc,text,count,flags,address,s->window,s->native_module);
 }
-#define class_is ntw16s_class_is
+#define class_is style_control_class_is
 static BOOL vcl_frame_owned(HWND w,void *owner){return lookup(w)==owner;}
 static BOOL vcl_frame_current(win16_control_vcl_frame_scope *scope){return static_paint && &static_paint->frame==scope;}
 static void group_frame_drawn(void *context)
@@ -450,13 +454,13 @@ static PROCESS_HOOK_UNWIND_FUNCTION LRESULT status_print_dispatch(attachment *a,
 {status_print_unwind state={a,paint,prior,spin_prior,FALSE,static_paint!=NULL};process_hook_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;
  PROCESS_HOOK_UNWIND_BEGIN(unwind,status_print_end,&state);SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);error=GetLastError();state.completed=TRUE;PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;}
 static BOOL color_identity(HWND w,attachment *a,COMBOBOXINFO *info)
-{const win16_control_native_combo_view v={&a->detached,&a->color_parent,&a->color_witness_owner};return win16_control_color_identity(w,&v,info);}
+{const style_control_native_combo_view v={&a->detached,&a->color_parent,&a->color_witness_owner};return style_control_color_identity(w,&v,info);}
 static void color_button(HWND w,attachment *a,HDC dc,const RECT *dirty)
-{const win16_control_native_combo_view v={&a->detached,&a->color_parent,&a->color_witness_owner};win16_control_color_button(w,&v,dc,dirty);}
+{const style_control_native_combo_view v={&a->detached,&a->color_parent,&a->color_witness_owner};win16_control_color_button(w,&v,dc,dirty);}
 static BOOL date_identity(HWND w,attachment *a,DATETIMEPICKERINFO *info)
-{const win16_control_native_combo_view v={&a->detached,&a->date_parent,&a->date_witness_owner};return win16_control_date_identity(w,&v,info);}
+{const style_control_native_combo_view v={&a->detached,&a->date_parent,&a->date_witness_owner};return style_control_date_identity(w,&v,info);}
 static void date_button(HWND w,attachment *a,HDC dc,const RECT *dirty)
-{const win16_control_native_combo_view v={&a->detached,&a->date_parent,&a->date_witness_owner};win16_control_date_button(w,&v,dc,dirty);}
+{const style_control_native_combo_view v={&a->detached,&a->date_parent,&a->date_witness_owner};win16_control_date_button(w,&v,dc,dirty);}
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status||a->spin,color=a->color_candidate||a->date_candidate;(void)id;
@@ -466,7 +470,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     ++a->calls;
     const win16_attachment_guard_services guards={lookup,mdi_identity,cool_identity,Ntw16sWindowRemove};
     win16_attachment_guard_cool(w,m,a,&guards);
-    if(a->status)win16_control_status_invalidate(m,&a->status_font.invalid,&a->status_epoch);
+    if(a->status)style_control_status_invalidate(m,&a->status_font.invalid,&a->status_epoch);
     status_draw_scope scope={0},*prior=status_current;
     spin_draw_scope spin_scope={0},*spin_prior=spin_current;
     BOOL spin_message=win16_attachment_spin_message(a,m);
@@ -478,10 +482,10 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     if(prior && prior->window!=w)status_current=NULL;
     if(painting){
         scope.previous=status_current;scope.owner=a;scope.window=w;scope.dc=m==WM_PAINT?NULL:(HDC)p;scope.epoch=a->status_epoch;
-        const win16_control_status_snapshot_view snapshot={a,&a->detached,&a->status_epoch,scope.epoch,
+        const style_control_status_snapshot_view snapshot={a,&a->detached,&a->status_epoch,scope.epoch,
             &scope.native,&scope.simple,&scope.simple_length,scope.simple_text,&scope.text_count,scope.text_panes,
             &scope.count,scope.panes,status_frame_identity};
-        win16_control_status_snapshot(w,&snapshot);
+        style_control_status_snapshot(w,&snapshot);
         status_current=&scope;
     }
     win16_attachment_guard_roles(w,m,a,&guards);
@@ -640,8 +644,7 @@ static BOOL install_created(HWND w,DWORD original_style)
 }
 BOOL __cdecl Ntw16sWindowAttach(HWND w)
 {
-    DWORD process=0;
-    if(!w || GetWindowThreadProcessId(w,&process)!=GetCurrentThreadId() || process!=GetCurrentProcessId()){
+    if(!w || !win32_style_window_current_thread(w)){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
     if(lookup(w)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
@@ -649,28 +652,29 @@ BOOL __cdecl Ntw16sWindowAttach(HWND w)
     if(!lookup(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     return TRUE;
 }
+static DWORD window_thread_perform(const CWPSTRUCT *message)
+{
+    DWORD error=0;HMODULE pinned=NULL;BOOL ok=FALSE;
+    if(!win32_style_window_current_thread(message->hwnd))
+        return ERROR_INVALID_THREAD_ID;
+    SetLastError(0);
+    if(message->wParam==NTW16S_WINDOW_THREAD_REMOVE)ok=Ntw16sWindowRemove(message->hwnd);
+    else if(Ntw16sWindowAttached(message->hwnd))ok=TRUE;
+    else if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
+              (PCWSTR)(uintptr_t)Ntw16sWindowThreadHook,&pinned))ok=Ntw16sWindowAttach(message->hwnd);
+    if(!ok)error=GetLastError()?GetLastError():ERROR_GEN_FAILURE;
+    return error;
+}
 LRESULT CALLBACK Ntw16sWindowThreadHook(int code,WPARAM wp,LPARAM lp)
 {
     static _Thread_local BOOL busy;
-    const CWPSTRUCT *message=(const CWPSTRUCT *)lp;
     DWORD saved=GetLastError();
-    if(code>=0 && message && !busy &&
-       message->message==RegisterWindowMessageW(NTW16S_WINDOW_THREAD_MESSAGE) &&
-       (message->wParam==NTW16S_WINDOW_THREAD_ATTACH || message->wParam==NTW16S_WINDOW_THREAD_REMOVE) &&
+    const CWPSTRUCT *message=win32_style_window_hook_match(code,lp,busy,NTW16S_WINDOW_THREAD_MESSAGE);
+    if(message && (message->wParam==NTW16S_WINDOW_THREAD_ATTACH || message->wParam==NTW16S_WINDOW_THREAD_REMOVE) &&
        (HWND)message->lParam==message->hwnd){
-        DWORD pid=0,error=0;HMODULE pinned=NULL;BOOL ok=FALSE;
         busy=TRUE;
-        if(GetWindowThreadProcessId(message->hwnd,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId())
-            error=ERROR_INVALID_THREAD_ID;
-        else {
-            SetLastError(0);
-            if(message->wParam==NTW16S_WINDOW_THREAD_REMOVE)ok=Ntw16sWindowRemove(message->hwnd);
-            else if(Ntw16sWindowAttached(message->hwnd))ok=TRUE;
-            else if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
-                      (PCWSTR)(uintptr_t)Ntw16sWindowThreadHook,&pinned))ok=Ntw16sWindowAttach(message->hwnd);
-            if(!ok)error=GetLastError()?GetLastError():ERROR_GEN_FAILURE;
-        }
-        SetPropW(message->hwnd,NTW16S_WINDOW_THREAD_RESULT,(HANDLE)(uintptr_t)((ULONGLONG)error+1));
+        DWORD error=window_thread_perform(message);
+        win32_style_window_hook_finish(message->hwnd,NTW16S_WINDOW_THREAD_RESULT,error);
         busy=FALSE;
     }
     LRESULT result=CallNextHookEx(NULL,code,wp,lp);SetLastError(saved);return result;
@@ -680,10 +684,8 @@ static LRESULT CALLBACK creation_before(int code,WPARAM p,LPARAM l)
     ntw16s_creation_scope *scope=current;DWORD saved=GetLastError();
     if(code==HCBT_CREATEWND && scope && scope->enabled){
         const CBT_CREATEWNDW *create=(const CBT_CREATEWNDW *)l;
-        pending_window *pending=calloc(1,sizeof(*pending));
+        pending_window *pending=win32_style_creation_add(&scope->pending,(HWND)p,(DWORD)create->lpcs->style);
         if(!pending){scope->result.failure=ERROR_NOT_ENOUGH_MEMORY;return 1;}
-        pending->window=(HWND)p;pending->style=(DWORD)create->lpcs->style;
-        pending->next=scope->pending;scope->pending=pending;
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
         if(!creation_return_hook && !SetWindowSubclass((HWND)p,creation_subclass,(UINT_PTR)creation_subclass,0)){
             scope->result.failure=GetLastError()?GetLastError():ERROR_GEN_FAILURE;return 1;
@@ -699,12 +701,6 @@ static LRESULT CALLBACK creation_before(int code,WPARAM p,LPARAM l)
         }
     }
     SetLastError(saved);return CallNextHookEx(NULL,code,p,l);
-}
-static pending_window *take_pending(ntw16s_creation_scope *scope,HWND w)
-{
-    pending_window **link=&scope->pending,*found;
-    while(*link && (*link)->window!=w)link=&(*link)->next;
-    found=*link;if(found)*link=found->next;return found;
 }
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
 static LRESULT creation_observe(int code,WPARAM p,LPARAM l,BOOL synthetic)
@@ -726,7 +722,7 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
         if(created && class_is(m->hwnd,L"#32770")){
             SetLastError(saved);return result;
         }
-        if(m->message==WM_NCDESTROY){pending_window *pending=take_pending(scope,m->hwnd);style_theme_cancel_stage(m->hwnd);free(pending);}
+        if(m->message==WM_NCDESTROY){pending_window *pending=win32_style_creation_take(&scope->pending,m->hwnd);style_theme_cancel_stage(m->hwnd);free(pending);}
         /* Some dialogs show themselves and run a nested loop inside
          * WM_INITDIALOG. Its return may be delayed until the application exits.
          * A completed first-show notification is also a safe boundary, but
@@ -742,8 +738,7 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
                 (style&WS_CAPTION)==WS_CAPTION && class_is(m->hwnd,L"#32770");
             if(first_show){
                 for(;owner;owner=owner->previous){
-                    pending_window *pending=owner->pending;
-                    while(pending && pending->window!=m->hwnd)pending=pending->next;
+                    pending_window *pending=win32_style_creation_find(owner->pending,m->hwnd);
                     if(owner->enabled && pending && !pending->settled)break;
                 }
                 first_show=owner!=NULL;
@@ -753,10 +748,9 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
             if(!first_show)owner=scope;
             pending_window *pending;
             if(first_show){
-                pending=owner->pending;
-                while(pending && pending->window!=m->hwnd)pending=pending->next;
+                pending=win32_style_creation_find(owner->pending,m->hwnd);
                 if(pending)pending->settled=TRUE;
-            }else pending=take_pending(owner,m->hwnd);
+            }else pending=win32_style_creation_take(&owner->pending,m->hwnd);
             /* A first-show attachment has already completed this creation.
              * In particular, do not undo an explicit removal by attaching
              * again when the delayed initializer finally returns. */
@@ -767,10 +761,7 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
             BOOL already=lookup(m->hwnd)!=NULL;
             BOOL installed=style_theme_commit(m->hwnd) && install_created(m->hwnd,style);
             if(installed){
-                if(first_show){
-                    for(pending_window *record=owner->pending;record;record=record->next)
-                        if(record==pending && record->window==m->hwnd){record->installed=TRUE;break;}
-                }
+                if(first_show && win32_style_creation_contains(owner->pending,pending,m->hwnd))pending->installed=TRUE;
                 if(!already && lookup(m->hwnd))++owner->result.installed;
             }else{
                 DWORD error=GetLastError();
@@ -811,7 +802,7 @@ ntw16s_creation_scope *__cdecl Ntw16sCreationBegin(BOOL enabled)
         creation_before_hook=SetWindowsHookExW(WH_CBT,creation_before,NULL,GetCurrentThreadId());
         if(!creation_before_hook){free(scope);return NULL;}
 #ifndef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-        creation_return_hook=SetWindowsHookExW(WH_CALLWNDPROCRET,creation_return,NULL,GetCurrentThreadId());
+        creation_return_hook=style_message_observer_begin(creation_return);
         if(!creation_return_hook){DWORD error=GetLastError();UnhookWindowsHookEx(creation_before_hook);creation_before_hook=NULL;free(scope);SetLastError(error);return NULL;}
 #endif
     }
@@ -821,7 +812,7 @@ ntw16s_creation_scope *__cdecl Ntw16sCreationBegin(BOOL enabled)
         creation_return_hook=NULL;scope->suspended_return_hook=TRUE;
     }
     if(!dialog && !creation_return_hook){
-        creation_return_hook=SetWindowsHookExW(WH_CALLWNDPROCRET,creation_return,NULL,GetCurrentThreadId());
+        creation_return_hook=style_message_observer_begin(creation_return);
         if(!creation_return_hook){DWORD error=GetLastError();if(!current){UnhookWindowsHookEx(creation_before_hook);creation_before_hook=NULL;}free(scope);SetLastError(error);return NULL;}
         scope->owns_return_hook=TRUE;
     }
@@ -846,15 +837,15 @@ BOOL __cdecl Ntw16sCreationEnd(ntw16s_creation_scope *scope,ntw16s_creation_resu
 #endif
         style_theme_cancel_stage(pending->window);free(pending);}
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-    if(scope->owns_return_hook){UnhookWindowsHookEx(creation_return_hook);creation_return_hook=NULL;}
+    if(scope->owns_return_hook){style_message_observer_end(creation_return_hook);creation_return_hook=NULL;}
     if(scope->suspended_return_hook){
-        creation_return_hook=SetWindowsHookExW(WH_CALLWNDPROCRET,creation_return,NULL,GetCurrentThreadId());
+        creation_return_hook=style_message_observer_begin(creation_return);
         if(!creation_return_hook){DWORD error=GetLastError()?GetLastError():ERROR_GEN_FAILURE;
             if(result && !result->failure)result->failure=error;
             if(current && !current->result.failure)current->result.failure=error;}
     }
 #endif
-    if(!current){if(creation_return_hook)UnhookWindowsHookEx(creation_return_hook);creation_return_hook=NULL;
+    if(!current){style_message_observer_end(creation_return_hook);creation_return_hook=NULL;
         UnhookWindowsHookEx(creation_before_hook);creation_before_hook=NULL;}
     free(scope);return TRUE;
 }

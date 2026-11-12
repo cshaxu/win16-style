@@ -45,17 +45,6 @@ BOOL win16_scroll_measure(const RECT *bar,BOOL vertical,
     return TRUE;
 }
 
-LONG win16_scroll_position(const win16_scroll_layout *l,int thumb_origin)
-{
-    int64_t pixels,range;
-    if(!l)return 0;
-    if(l->travel<=0)return l->minimum;
-    pixels=(int64_t)thumb_origin-l->minimum_pixel;
-    pixels=max(0,min((int64_t)l->travel,pixels));
-    range=(int64_t)l->maximum-l->minimum;
-    return (LONG)(l->minimum+(pixels*range+l->travel/2)/l->travel);
-}
-
 win16_scroll_part win16_scroll_hit(const win16_scroll_layout *l,POINT point,UINT disabled)
 {
     LONG pixel,thumb_start,thumb_end;

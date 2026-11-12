@@ -55,6 +55,13 @@ BOOL win32_process_global_birth(HANDLE process,DWORD *low,DWORD *high)
     if(!GetProcessTimes(process,&creation,&exit,&kernel,&user))return FALSE;
     *low=creation.dwLowDateTime;*high=creation.dwHighDateTime;return TRUE;
 }
+BOOL win32_process_global_alive(HANDLE process,DWORD low,DWORD high)
+{
+    DWORD actual_low=0,actual_high=0;
+    return process && WaitForSingleObject(process,0)==WAIT_TIMEOUT &&
+        win32_process_global_birth(process,&actual_low,&actual_high) &&
+        actual_low==low && actual_high==high;
+}
 
 BOOL win32_process_global_desktop_key(DWORD *session,ULONGLONG *fingerprint)
 {

@@ -6,6 +6,14 @@
 #include <string.h>
 #include <wchar.h>
 
+BOOL style_classic_file_folder_adjust(const OPENFILENAMEW *original,WCHAR *folder,size_t capacity,OPENFILENAMEW *adjusted)
+{
+    if(!original->lpstrFile || wcslen(original->lpstrFile)>=capacity)return FALSE;
+    wcscpy(folder,original->lpstrFile);WCHAR *slash=wcsrchr(folder,L'\\');if(!slash)return FALSE;
+    if(slash==folder+2)slash[1]=0;else *slash=0;
+    *adjusted=*original;adjusted->lpstrFile=folder;adjusted->nMaxFile=(DWORD)capacity;return TRUE;
+}
+
 static BOOL old_dialog_folder(HWND window,WCHAR *out,size_t capacity,BOOL for_shortcut)
 {
     HWND list=GetDlgItem(window,lst2);WCHAR cls[32]=L"";

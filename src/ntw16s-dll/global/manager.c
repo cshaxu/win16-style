@@ -22,12 +22,6 @@ static BOOL test_allowed(DWORD pid){return pid==test_pid||(test_second_pid&&pid=
 #include <wchar.h>
 #include <stdint.h>
 
-static BOOL uwp_host_image(PCWSTR image,PCWSTR windows)
-{
-    WCHAR expected[MAX_PATH];
-    int n=swprintf(expected,ARRAYSIZE(expected),L"%ls\\System32\\ApplicationFrameHost.exe",windows);
-    return n>0&&(size_t)n<ARRAYSIZE(expected)&&!_wcsicmp(image,expected);
-}
 static BOOL uwp_active(void *context)
 {return ntw16s_global_policy_active((DWORD)(uintptr_t)context);}
 static DWORD uwp_change(const style_uwp_target *target,PCWSTR dll,BOOL apply,void *context)
@@ -324,7 +318,7 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
         MANAGER_WORKERS,sizeof(manager_entry),&ops,m,3000);
     if(error)goto fail;
     if(machine==IMAGE_FILE_MACHINE_AMD64 && m->session->style==NTW16S_GLOBAL_STYLE_16){
-        const style_uwp_global_services uwp_services={IMAGE_FILE_MACHINE_AMD64,uwp_host_image,uwp_active,uwp_change,uwp_report,(void *)(uintptr_t)m->session->cookie};
+        const style_uwp_global_services uwp_services={IMAGE_FILE_MACHINE_AMD64,style_uwp_host_image,uwp_active,uwp_change,uwp_report,(void *)(uintptr_t)m->session->cookie};
         error=style_uwp_global_start(&m->policy,m->dll_path,desktop,m->quit,m->stop,&uwp_services,&m->uwp);
         if(error)goto fail;
     }

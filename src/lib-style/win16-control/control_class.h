@@ -3,39 +3,16 @@
 #include <windows.h>
 #include <commctrl.h>
 #include "../common/control_protocol.h"
-/* Private framework classification. A name alone is insufficient: only the
- * exact observed intrinsic classes registered by their loaded VB5/6 runtime are aliases.
- * No LoadLibrary, object-layout inspection or application-name special case. */
-static inline BOOL ntw16s_vb_runtime_class(HWND w,const WCHAR *name,const WCHAR *module)
-{
-    WCHAR actual[64];HMODULE runtime=GetModuleHandleW(module);
-    return runtime && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==runtime &&
-        GetClassNameW(w,actual,ARRAYSIZE(actual)) && !lstrcmpiW(actual,name);
-}
-static inline BOOL ntw16s_vb_class(HWND w,const WCHAR *name)
-{return ntw16s_vb_runtime_class(w,name,L"MSVBVM60.DLL");}
-static inline BOOL ntw16s_vb5_class(HWND w,const WCHAR *name)
-{return ntw16s_vb_runtime_class(w,name,L"MSVBVM50.DLL");}
-static inline BOOL ntw16s_vb_checkbox(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6CheckBox") || ntw16s_vb5_class(w,L"ThunderRT5CheckBox");}
-static inline BOOL ntw16s_vb_option(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6OptionButton") || ntw16s_vb5_class(w,L"ThunderRT5OptionButton");}
-static inline BOOL ntw16s_vb_combo(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6ComboBox") || ntw16s_vb5_class(w,L"ThunderRT5ComboBox") || ntw16s_vb5_class(w,L"ThunderRT5DriveListBox");}
-static inline BOOL ntw16s_vb_list(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6ListBox") || ntw16s_vb_class(w,L"ThunderRT6FileListBox") || ntw16s_vb_class(w,L"ThunderRT6DirListBox") || ntw16s_vb5_class(w,L"ThunderRT5ListBox") || ntw16s_vb5_class(w,L"ThunderRT5FileListBox") || ntw16s_vb5_class(w,L"ThunderRT5DirListBox");}
-static inline BOOL ntw16s_vb_drive(HWND w)
-{return ntw16s_vb5_class(w,L"ThunderRT5DriveListBox");}
-static inline BOOL ntw16s_vb_directory(HWND w)
-{return ntw16s_vb5_class(w,L"ThunderRT5DirListBox") || ntw16s_vb_class(w,L"ThunderRT6DirListBox");}
-static inline BOOL ntw16s_vb_checklist_class(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6ListBox") || ntw16s_vb5_class(w,L"ThunderRT5ListBox");}
+#include "../common/control_native_combo.h"
+#include "../common/control_class.h"
+/* Style-specific eligibility for native and VB controls. */
+
 static inline BOOL ntw16s_vb_checklist_owner(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
     UINT dpi=GetDpiForWindow(w);
     return (style&WS_CHILD) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
-        (dpi==96 || dpi==144) && ntw16s_vb_checklist_class(w) &&
+        (dpi==96 || dpi==144) && style_control_vb_checklist_class(w) &&
         (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS|LBS_MULTIPLESEL|LBS_EXTENDEDSEL|LBS_NODATA))==
             (LBS_OWNERDRAWFIXED|LBS_HASSTRINGS|LBS_MULTIPLESEL);
 }
@@ -46,20 +23,16 @@ static inline BOOL ntw16s_vb_owner_file(HWND w)
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
     if(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING))return FALSE;
     if(ntw16s_vb_checklist_owner(w))return TRUE;
-    if(ntw16s_vb_directory(w))return (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_HASSTRINGS))==(LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS);
-    return ntw16s_vb_drive(w) && (style&(3|CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE|CBS_HASSTRINGS))==(CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS);
+    if(style_control_vb_directory(w))return (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA|LBS_HASSTRINGS))==(LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS);
+    return style_control_vb_drive(w) && (style&(3|CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE|CBS_HASSTRINGS))==(CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS);
 }
-static inline BOOL ntw16s_vb_scroll(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6HScrollBar") || ntw16s_vb_class(w,L"ThunderRT6VScrollBar") || ntw16s_vb5_class(w,L"ThunderRT5HScrollBar") || ntw16s_vb5_class(w,L"ThunderRT5VScrollBar");}
-/* The runtime retains Value/Click/group behavior, independent of style bits. */
-static inline BOOL ntw16s_vb_button(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6CommandButton") || ntw16s_vb5_class(w,L"ThunderRT5CommandButton") || ntw16s_vb_checkbox(w) || ntw16s_vb_option(w);}
+
 static inline BOOL ntw16s_vb_plain_choice(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=style&BS_TYPEMASK;
     if(style&(BS_PUSHLIKE|BS_ICON|BS_BITMAP))return FALSE;
-    if(ntw16s_vb_option(w))return type==BS_RADIOBUTTON || type==BS_AUTORADIOBUTTON;
-    return ntw16s_vb_checkbox(w) && (type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_3STATE || type==BS_AUTO3STATE);
+    if(style_control_vb_option(w))return type==BS_RADIOBUTTON || type==BS_AUTORADIOBUTTON;
+    return style_control_vb_checkbox(w) && (type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_3STATE || type==BS_AUTO3STATE);
 }
 /* VB graphical selection controls are not owner-drawn applications: the
  * runtime retains Value/Click/grouping while USER exposes its button face as
@@ -70,98 +43,28 @@ static inline BOOL ntw16s_vb_graphical_choice(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=style&BS_TYPEMASK;
     if(!(style&BS_PUSHLIKE))return FALSE;
-    if(ntw16s_vb_option(w))return type==BS_RADIOBUTTON || type==BS_AUTORADIOBUTTON;
-    return ntw16s_vb_checkbox(w) &&
+    if(style_control_vb_option(w))return type==BS_RADIOBUTTON || type==BS_AUTORADIOBUTTON;
+    return style_control_vb_checkbox(w) &&
         (type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_3STATE || type==BS_AUTO3STATE);
 }
-/* USER identifies standard superclasses independently of the registered name.
- * Limit the fallback to the standard protocols implemented by this renderer;
- * arbitrary T-prefixed/custom classes are not aliases. */
-static inline BOOL ntw16s_native_superclass(HWND w,const WCHAR *expected)
-{
-    WCHAR registered[64],real[64];
-    return GetClassNameW(w,registered,ARRAYSIZE(registered)) && lstrcmpiW(registered,expected) &&
-        RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpiW(real,expected);
-}
-/* Only the actual native EDIT named by this runtime combo's public relation.
- * No extra window search or transient HFONT replacement in the application. */
-static inline BOOL ntw16s_vb_combo_edit(HWND w)
-{
-    HWND parent=GetParent(w);WCHAR name[32];COMBOBOXINFO info={.cbSize=sizeof(info)};
-    WNDCLASSEXW native={.cbSize=sizeof(native)};HMODULE owner=NULL;
-    if(!parent || !ntw16s_vb_combo(parent) || GetWindowThreadProcessId(parent,NULL)!=GetCurrentThreadId() ||
-        GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
-        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpiW(name,L"EDIT") ||
-        !GetClassInfoExW(NULL,L"EDIT",&native) ||
-        GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native.cbWndExtra)return FALSE;
-    BOOL resolved=GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            (const WCHAR *)(UINT_PTR)native.lpfnWndProc,&owner);
-    HMODULE registered=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
-    if(!resolved || owner!=registered){
-        /* The class descriptor can expose an A/W dispatch thunk (for example
-         * in NTDLL) rather than the HWND's native USER class procedure. */
-        WNDPROC actual=(WNDPROC)(UINT_PTR)GetClassLongPtrW(w,GCLP_WNDPROC);
-        if(native.hInstance || registered!=GetModuleHandleW(L"USER32.DLL"))return FALSE;
-        if(actual!=native.lpfnWndProc &&
-            (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                (const WCHAR *)(UINT_PTR)actual,&owner) || owner!=registered))return FALSE;
-    }
-    return GetComboBoxInfo(parent,&info) && info.hwndCombo==parent && info.hwndItem==w;
-}
-static inline BOOL ntw16s_class_is(HWND w,const WCHAR *expected)
-{
-    WCHAR name[64];
-    if(!lstrcmpiW(expected,L"SysTabControl32") || !lstrcmpiW(expected,L"SysHeader32") || !lstrcmpiW(expected,L"SysTreeView32") || !lstrcmpiW(expected,L"msctls_progress32") || !lstrcmpiW(expected,L"msctls_trackbar32") || !lstrcmpiW(expected,L"msctls_updown32"))
-        return style_control_protocol_is(w,expected);
-    if(GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,expected))return TRUE;
-    if((!lstrcmpiW(expected,L"BUTTON") || !lstrcmpiW(expected,L"EDIT") ||
-        !lstrcmpiW(expected,L"STATIC") || !lstrcmpiW(expected,L"COMBOBOX") ||
-        !lstrcmpiW(expected,L"LISTBOX") || !lstrcmpiW(expected,L"SCROLLBAR")) &&
-        ntw16s_native_superclass(w,expected))return TRUE;
-    if(!lstrcmpiW(expected,L"BUTTON") && (ntw16s_vb_button(w) || (ntw16s_vb_class(w,L"ThunderRT6Frame") || ntw16s_vb5_class(w,L"ThunderRT5Frame"))))return TRUE;
-    if(!lstrcmpiW(expected,L"COMBOBOX") && ntw16s_vb_combo(w))return TRUE;
-    if(!lstrcmpiW(expected,L"LISTBOX") && ntw16s_vb_list(w))return TRUE;
-    if(!lstrcmpiW(expected,L"SCROLLBAR") && ntw16s_vb_scroll(w))return TRUE;
-    if(!lstrcmpiW(expected,L"EDIT"))return ntw16s_vb_class(w,L"ThunderRT6TextBox") || ntw16s_vb5_class(w,L"ThunderRT5TextBox") || style_control_protocol_is(w,expected);
-    return style_control_protocol_is(w,expected);
-}
-static inline BOOL ntw16s_is_static(HWND w){return ntw16s_class_is(w,L"STATIC");}
-static inline BOOL ntw16s_is_edit(HWND w){return ntw16s_class_is(w,L"EDIT");}
-static inline BOOL ntw16s_is_combo(HWND w){return ntw16s_class_is(w,L"COMBOBOX");}
-static inline BOOL ntw16s_is_scroll(HWND w){return ntw16s_class_is(w,L"SCROLLBAR");}
-static inline BOOL ntw16s_is_link(HWND w)
-{return ntw16s_class_is(w,L"SysLink");}
-static inline BOOL ntw16s_is_tab(HWND w)
-{return ntw16s_class_is(w,WC_TABCONTROLW);}
-static inline BOOL ntw16s_is_header(HWND w){return ntw16s_class_is(w,WC_HEADERW);}
-static inline BOOL ntw16s_is_separator(HWND w)
-{
-    DWORD type=(DWORD)GetWindowLongPtrW(w,GWL_STYLE)&SS_TYPEMASK;
-    return ntw16s_is_static(w) && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME;
-}
-static inline BOOL ntw16s_list_class(HWND w)
-{WCHAR name[16];return ntw16s_class_is(w,L"LISTBOX") || (GetClassNameW(w,name,16) && !lstrcmpiW(name,L"ComboLBox"));}
 
-static inline BOOL ntw16s_vb_frame(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6Frame") || ntw16s_vb5_class(w,L"ThunderRT5Frame");}
 static inline BOOL ntw16s_vb_picture(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
     return (style&WS_CHILD) && (style&WS_CAPTION)!=WS_CAPTION && !(style&WS_THICKFRAME) &&
         !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
-        (ntw16s_vb_class(w,L"ThunderRT6PictureBoxDC") || ntw16s_vb5_class(w,L"ThunderRT5PictureBox"));
+        (style_control_vb_class(w,L"ThunderRT6PictureBoxDC") || style_control_vb5_class(w,L"ThunderRT5PictureBox"));
 }
 static inline BOOL ntw16s_vb_graphical_button(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
     return (style&WS_CHILD) && (style&BS_TYPEMASK)==BS_OWNERDRAW &&
         !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
-        (ntw16s_vb_class(w,L"ThunderRT6CommandButton") || ntw16s_vb5_class(w,L"ThunderRT5CommandButton") ||
-         (ntw16s_vb_class(w,L"ThunderRT6OptionButton") || ntw16s_vb_class(w,L"ThunderRT6CheckBox") ||
-          ntw16s_vb5_class(w,L"ThunderRT5CheckBox") || ntw16s_vb5_class(w,L"ThunderRT5OptionButton")));
+        (style_control_vb_class(w,L"ThunderRT6CommandButton") || style_control_vb5_class(w,L"ThunderRT5CommandButton") ||
+         (style_control_vb_class(w,L"ThunderRT6OptionButton") || style_control_vb_class(w,L"ThunderRT6CheckBox") ||
+          style_control_vb5_class(w,L"ThunderRT5CheckBox") || style_control_vb5_class(w,L"ThunderRT5OptionButton")));
 }
-static inline BOOL ntw16s_vb_edit(HWND w)
-{return ntw16s_vb_class(w,L"ThunderRT6TextBox") || ntw16s_vb5_class(w,L"ThunderRT5TextBox");}
+
 static inline UINT ntw16s_button_type(HWND w,DWORD style)
-{return ntw16s_vb_frame(w)?BS_GROUPBOX:(style&BS_TYPEMASK);}
+{return style_control_vb_frame(w)?BS_GROUPBOX:(style&BS_TYPEMASK);}
 #endif

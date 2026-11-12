@@ -1,4 +1,4 @@
-#include "dc_geometry.h"
+#include "lib-style/common/dc_geometry.h"
 #include "status_text.h"
 #include <string.h>
 
@@ -7,7 +7,7 @@ BOOL win16_control_status_theme_prepare(ntw16s_status_theme_scope *t,const win16
     HMODULE caller=NULL;HWND from;BOOL pane=FALSE;
     if(!s || !s->owner || !*s->candidate || s->simple || *s->detached || s->epoch!=*s->owner_epoch ||
        !dc || !text || !rect || part || state || (flags&(DT_RTLREADING|DT_MODIFYSTRING|DT_CALCRECT)) ||
-       !IsWindowEnabled(s->window) || !s->identity(s->window,s->owner,NULL) || !win16_control_pixel_viewport(dc) ||
+       !IsWindowEnabled(s->window) || !s->identity(s->window,s->owner,NULL) || !style_dc_pixel_viewport(dc) ||
        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=s->native)return TRUE;
     from=WindowFromDC(dc);if(s->dc?dc!=s->dc:from!=s->window)return TRUE;
     for(unsigned i=0;i<s->text_count;++i){RECT p=s->text_panes[i];if(rect->left>=p.left && rect->left<p.right && rect->right<=p.right && rect->right>rect->left && rect->top<p.bottom && rect->bottom>p.top){pane=TRUE;break;}}
@@ -22,7 +22,7 @@ HFONT win16_control_status_text_font(const win16_control_status_text_view *s,ntw
     HMODULE caller=NULL;HWND from;
     if(token)*token=NULL;
     if(!token || !s || !s->owner || !*s->candidate || *s->detached || s->epoch!=*s->owner_epoch ||
-       !dc || !text || (flags&(DT_RTLREADING|DT_MODIFYSTRING)) || !win16_control_pixel_viewport(dc) || !s->identity(s->window,s->owner,NULL) || !IsWindowEnabled(s->window) ||
+       !dc || !text || (flags&(DT_RTLREADING|DT_MODIFYSTRING)) || !style_dc_pixel_viewport(dc) || !s->identity(s->window,s->owner,NULL) || !IsWindowEnabled(s->window) ||
        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=GetModuleHandleW(L"uxtheme.dll"))return NULL;
     from=WindowFromDC(dc);if(s->dc?dc!=s->dc:from!=s->window)return NULL;
     if(count< -1)return NULL;

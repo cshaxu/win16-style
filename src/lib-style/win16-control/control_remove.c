@@ -19,7 +19,7 @@ BOOL win16_control_remove(HWND w,const win16_control_remove_services *v)
     s->detached=TRUE;ntw16s_updown_retire(&s->updown);BOOL track=s->track_window!=NULL;v->trackbar_unbind(s);v->toolbar_unbind(s);v->combo_text_unbind(s,FALSE);v->detach_combo_list(s);
     if(s->list_theme_owned){s->list_theme_owned=FALSE;v->theme_remove(w,s);}
     if(s->font && IsWindow(w) && !s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
-    if(IsWindow(w) && ntw16s_is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
+    if(IsWindow(w) && style_control_is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
         SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
     v->scroll_caret_destroy(w,s);
     if(s->list_suppression && !s->list_redraw_off)SendMessageW(w,WM_SETREDRAW,TRUE,0);
@@ -28,7 +28,7 @@ BOOL win16_control_remove(HWND w,const win16_control_remove_services *v)
     if(!--s->calls)win16_control_state_dispose(s);
     if(track && IsWindow(w))SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
     RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
-    if(ntw16s_is_scroll(w) && GetFocus()==w)SendMessageW(w,WM_SETFOCUS,0,0);
+    if(style_control_is_scroll(w) && GetFocus()==w)SendMessageW(w,WM_SETFOCUS,0,0);
     return TRUE;
 }
 BOOL win16_control_terminal(HWND w,const win16_control_remove_services *v)

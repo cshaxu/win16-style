@@ -43,7 +43,7 @@ LRESULT win16_control_edit_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
             services->client_border(w,s,(m==WM_PRINT || m==WM_PRINTCLIENT)?(HDC)a:NULL);
         if(!s->detached && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
             {services->scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
-             if(ntw16s_vb_edit(w) || ntw16s_native_superclass(w,L"EDIT") ||
+             if(style_control_vb_edit(w) || style_control_native_superclass(w,L"EDIT") ||
                 (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE))services->border(w,s,m==WM_PRINT?(HDC)a:NULL);}
         else if(!s->detached && (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL ||
             m==EM_LINESCROLL || m==WM_SETTEXT || m==WM_KEYDOWN || m==WM_CHAR))

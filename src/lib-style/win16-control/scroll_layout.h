@@ -20,9 +20,6 @@ typedef enum win16_scroll_part {
 BOOL win16_scroll_measure(const RECT *bar,BOOL vertical,
     const win16_scroll_metrics *metrics,LONG minimum,LONG maximum,LONG position,
     win16_scroll_layout *layout);
-/* Maps a thumb-origin pixel, not the pointer itself. Tracking must preserve
- * its initial grab offset and apply the original outside-track cancel rule. */
-LONG win16_scroll_position(const win16_scroll_layout *layout,int thumb_origin);
 win16_scroll_part win16_scroll_hit(const win16_scroll_layout *layout,POINT point,
     UINT disabled_arrows);
 #endif

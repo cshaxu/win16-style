@@ -68,7 +68,7 @@ int main(int argc,char **argv)
         SetWindowPos(baseline,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
         TITLEBARINFOEX base_title={.cbSize=sizeof(base_title)};SendMessageW(baseline,WM_GETTITLEBARINFOEX,0,(LPARAM)&base_title);
         DwmGetWindowAttribute(baseline,DWMWA_NCRENDERING_ENABLED,&native_after,sizeof(native_after));DestroyWindow(baseline);}
-    BOOL resized_restore=FALSE;
+    BOOL resized_restore=FALSE,resized_after_move=FALSE;
     baseline=CreateWindowW(cls.lpszClassName,L"Custom frame DWM",WS_OVERLAPPEDWINDOW,80,80,240,160,NULL,NULL,instance,NULL);
     if(baseline){ShowWindow(baseline,SW_SHOWNOACTIVATE);UpdateWindow(baseline);
         SetWindowSubclass(baseline,resize_frame,1,0);mode=DWMNCRP_DISABLED;
@@ -77,7 +77,12 @@ int main(int argc,char **argv)
         RemoveWindowSubclass(baseline,resize_frame,1);mode=DWMNCRP_ENABLED;
         DwmSetWindowAttribute(baseline,DWMWA_NCRENDERING_POLICY,&mode,sizeof(mode));
         SetWindowPos(baseline,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
-        DwmGetWindowAttribute(baseline,DWMWA_NCRENDERING_ENABLED,&resized_restore,sizeof(resized_restore));DestroyWindow(baseline);}
+        DwmGetWindowAttribute(baseline,DWMWA_NCRENDERING_ENABLED,&resized_restore,sizeof(resized_restore));
+        RECT before_move;if(GetWindowRect(baseline,&before_move))
+            SetWindowPos(baseline,NULL,before_move.left+5,before_move.top+8,
+                before_move.right-before_move.left-10,before_move.bottom-before_move.top-14,SWP_NOZORDER|SWP_NOACTIVATE);
+        DwmGetWindowAttribute(baseline,DWMWA_NCRENDERING_ENABLED,&resized_after_move,sizeof(resized_after_move));
+        DestroyWindow(baseline);}
     HWND window=CreateWindowW(cls.lpszClassName,L"Frame lifecycle",WS_OVERLAPPEDWINDOW,
                               80,80,420,260,NULL,NULL,instance,NULL);
     if(!window)return 2;
@@ -126,7 +131,7 @@ int main(int argc,char **argv)
                  !Ntw2ksWindowRemove(bare) && GetLastError()==ERROR_NOT_FOUND;
     if(bare)DestroyWindow(bare);
     DestroyWindow(window);UnregisterClassW(cls.lpszClassName,instance);
-    printf("WIN2K NATIVE DWM before=%d after=%d custom_frame_restore=%d\n",native_before,native_after,resized_restore);
+    printf("WIN2K NATIVE DWM before=%d after=%d custom_frame_restore=%d after_move=%d\n",native_before,native_after,resized_restore,resized_after_move);
     printf("WIN2K DWM AFTER REMOVE immediate=%d status=%08lx\n",immediate,(unsigned long)immediate_status);
     printf("WIN2K WINDOW AFTER REMOVE style=%08lx ex=%08lx\n",(unsigned long)style_after,(unsigned long)ex_after);
     printf("WIN2K DWM STAGES attach=%d pump=%d policy_after_pump=%llu\n",after_attach,after_pump,(unsigned long long)captured_after_pump);

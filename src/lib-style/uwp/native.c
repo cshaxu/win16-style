@@ -4,18 +4,26 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <wchar.h>
+#include "lib-win32/style/window_identity.h"
 
-static BOOL class_is(HWND window,PCWSTR name)
-{WCHAR value[80];return GetClassNameW(window,value,ARRAYSIZE(value))&&!wcscmp(value,name);}
+void style_uwp_application_menu(HWND frame,void *auxiliary)
+{
+    HWND child=(HWND)auxiliary;RECT r;
+    if(GetParent(child)!=frame || !IsWindowVisible(child) ||
+       !win32_style_window_class(child,L"ApplicationFrameTitleBarWindow") || !GetClientRect(child,&r))return;
+    LPARAM point=MAKELPARAM(r.right/2,r.bottom/2);
+    PostMessageW(child,WM_LBUTTONDOWN,MK_LBUTTON,point);
+    PostMessageW(child,WM_LBUTTONUP,0,point);
+}
 HWND style_uwp_title(HWND frame,HWND *auxiliary)
 {
     HWND best=NULL;LONG width=0;*auxiliary=NULL;
     for(HWND child=GetWindow(frame,GW_CHILD);child;child=GetWindow(child,GW_HWNDNEXT)){
         RECT r;
-        if(IsWindowVisible(child)&&class_is(child,L"ApplicationFrameTitleBarWindow")&&GetWindowRect(child,&r)&&r.right-r.left>width){best=child;width=r.right-r.left;}
+        if(IsWindowVisible(child)&&win32_style_window_class(child,L"ApplicationFrameTitleBarWindow")&&GetWindowRect(child,&r)&&r.right-r.left>width){best=child;width=r.right-r.left;}
     }
     for(HWND child=GetWindow(frame,GW_CHILD);child;child=GetWindow(child,GW_HWNDNEXT))
-        if(child!=best&&IsWindowVisible(child)&&class_is(child,L"ApplicationFrameTitleBarWindow")){
+        if(child!=best&&IsWindowVisible(child)&&win32_style_window_class(child,L"ApplicationFrameTitleBarWindow")){
             if(*auxiliary)return NULL;
             *auxiliary=child;
         }
@@ -24,7 +32,7 @@ HWND style_uwp_title(HWND frame,HWND *auxiliary)
 static HRESULT fullscreen_pattern(HWND window,IUIAutomationInvokePattern **pattern)
 {
     *pattern=NULL;
-    if(!class_is(window,L"ApplicationFrameTitleBarWindow"))return E_INVALIDARG;
+    if(!win32_style_window_class(window,L"ApplicationFrameTitleBarWindow"))return E_INVALIDARG;
     IUIAutomation2 *automation=NULL;IUIAutomationElement *title=NULL,*button=NULL;
     HRESULT hr=CoCreateInstance(&CLSID_CUIAutomation8,NULL,CLSCTX_INPROC_SERVER,&IID_IUIAutomation2,(void**)&automation);
     if(SUCCEEDED(hr))hr=IUIAutomation2_put_ConnectionTimeout(automation,1000);
@@ -59,7 +67,7 @@ static BOOL request_valid(const fullscreen_request *r)
     DWORD pid=0;
     return GetWindowThreadProcessId(r->frame,&pid)==r->thread&&pid==GetCurrentProcessId()&&
         GetParent(r->title)==r->frame&&GetWindowThreadProcessId(r->title,NULL)==r->thread&&
-        class_is(r->frame,L"ApplicationFrameWindow")&&class_is(r->title,L"ApplicationFrameTitleBarWindow");
+        win32_style_window_class(r->frame,L"ApplicationFrameWindow")&&win32_style_window_class(r->title,L"ApplicationFrameTitleBarWindow");
 }
 static DWORD WINAPI fullscreen_worker(void *parameter)
 {

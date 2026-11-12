@@ -1,5 +1,6 @@
 #include "list_paint.h"
 #include "basic_paint.h"
+#include "lib-style/common/text_metrics.h"
 #include <stdlib.h>
 #include <limits.h>
 
@@ -8,16 +9,15 @@ LRESULT win16_control_set_list_tabs(HWND w,const win16_control_tabstops_view *s,
 {
     int *pixels=NULL,average,i;LRESULT result;
     if(count>INT_MAX || (count && !values) || count>((size_t)-1)/sizeof(int))return FALSE;
-    if(count){HDC dc;HFONT old;TEXTMETRICW tm;SIZE size;
+    if(count){HDC dc;HFONT old;TEXTMETRICW tm;
         pixels=malloc((size_t)count*sizeof(int));if(!pixels)return FALSE;
         dc=GetDC(w);if(!dc){free(pixels);return FALSE;}
         old=SelectObject(dc,*s->font);
         if(!GetTextMetricsW(dc,&tm)){SelectObject(dc,old);ReleaseDC(w,dc);free(pixels);return FALSE;}
         average=tm.tmAveCharWidth;
         if(tm.tmPitchAndFamily&TMPF_FIXED_PITCH){
-            if(!GetTextExtentPoint32W(dc,L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",52,&size)){
+            if(!style_text_alphabet_average(dc,&average)){
                 SelectObject(dc,old);ReleaseDC(w,dc);free(pixels);return FALSE;}
-            average=((size.cx/26)+1)/2;
         }
         SelectObject(dc,old);ReleaseDC(w,dc);
         for(i=0;i<(int)count;++i){LONGLONG value=((LONGLONG)((const int *)values)[i]*average+2)/4;

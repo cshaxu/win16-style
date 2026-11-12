@@ -26,8 +26,9 @@ BOOL win16_style_trackbar_runtime_border(HWND w,const NMCUSTOMDRAW *draw,const w
     FrameRect(draw->hdc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
     RestoreDC(draw->hdc,saved);return TRUE;
 }
-BOOL win16_style_trackbar_part(HWND w,const NMCUSTOMDRAW *draw,const win16_style_palette *palette)
+BOOL win16_style_trackbar_part(HWND w,const NMCUSTOMDRAW *draw,const void *context)
 {
+    const win16_style_palette *palette=context;
     if(!draw->hdc || (draw->dwItemSpec!=TBCD_CHANNEL && draw->dwItemSpec!=TBCD_THUMB) ||
         !win16_style_trackbar_supported(w))return FALSE;
     RECT r=draw->rc,client;

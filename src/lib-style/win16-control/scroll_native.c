@@ -1,21 +1,17 @@
 #include "scroll_native.h"
+#include "lib-style/common/scroll_state.h"
 BOOL win16_scroll_control_layout(HWND w,win16_scroll_info_fn get_info,win16_scroll_layout *layout)
 {
-    RECT r;SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
-    UINT dpi=GetDpiForWindow(w);
-    if(!GetClientRect(w,&r) || !get_info(w,SB_CTL,&info))return FALSE;
+    RECT r;SCROLLINFO info;UINT dpi;
+    if(!style_scroll_control_read(w,get_info,&r,&info,&dpi))return FALSE;
     return win16_scroll_measure_native(&r,(GetWindowLongPtrW(w,GWL_STYLE)&SBS_VERT)!=0,dpi,&info,layout);
 }
 BOOL win16_scroll_embedded_layout(HWND w,LONG object,win16_scroll_info_fn get_info,
     win16_scroll_layout *layout,POINT *screen_origin)
 {
     BOOL vertical=object==OBJID_VSCROLL;
-    SCROLLBARINFO bar={.cbSize=sizeof(bar)};SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
-    RECT r;UINT dpi=GetDpiForWindow(w);
-    if(!GetScrollBarInfo(w,vertical?OBJID_VSCROLL:OBJID_HSCROLL,&bar) || (bar.rgstate[0]&STATE_SYSTEM_INVISIBLE) ||
-        !get_info(w,vertical?SB_VERT:SB_HORZ,&info))return FALSE;
-    SetRect(&r,0,0,bar.rcScrollBar.right-bar.rcScrollBar.left,bar.rcScrollBar.bottom-bar.rcScrollBar.top);
-    screen_origin->x=bar.rcScrollBar.left;screen_origin->y=bar.rcScrollBar.top;
+    SCROLLINFO info;RECT r;UINT dpi;
+    if(!style_scroll_embedded_read(w,object,get_info,&r,screen_origin,&info,&dpi))return FALSE;
     return win16_scroll_measure_native(&r,vertical,dpi,&info,layout);
 }
 BOOL win16_scroll_embedded_input(HWND w,const win16_scroll_embedded_view *v,UINT m,WPARAM a,LPARAM b)
@@ -48,7 +44,7 @@ BOOL win16_scroll_embedded_input(HWND w,const win16_scroll_embedded_view *v,UINT
         if(s->track->active || !IsWindowEnabled(w) || !v->layout(w,object,&layout,&origin))return TRUE;
         point.x=(short)LOWORD(b)-origin.x;point.y=(short)HIWORD(b)-origin.y;
         limit=layout.bar;{int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));InflateRect(&limit,4*u,u);}
-        if(!win16_scroll_begin(s->track,&layout,win16_scroll_disabled(w,object),point,&limit,&actions))return TRUE;
+        if(!win16_scroll_begin(s->track,&layout,style_scroll_disabled(w,object),point,&limit,&actions))return TRUE;
         epoch=++*s->epoch;*s->object=object;*v->previous_capture=GetCapture();
         if(*v->previous_capture!=w)SetCapture(w);
         if(*s->detached || *s->epoch!=epoch)return TRUE;
@@ -61,7 +57,7 @@ BOOL win16_scroll_embedded_input(HWND w,const win16_scroll_embedded_view *v,UINT
         if(m==WM_TIMER){if(!GetCursorPos(&point))return TRUE;}
         else{point.x=(short)LOWORD(b);point.y=(short)HIWORD(b);ClientToScreen(w,&point);}
         point.x-=origin.x;point.y-=origin.y;
-        win16_scroll_motion(s->track,&layout,win16_scroll_disabled(w,object),point,m==WM_TIMER,&actions);
+        win16_scroll_motion(s->track,&layout,style_scroll_disabled(w,object),point,m==WM_TIMER,&actions);
         win16_scroll_apply_actions(w,s,&actions,*s->epoch);return TRUE;
     }
     if(m==WM_LBUTTONUP || m==WM_CANCELMODE || m==WM_CAPTURECHANGED){
@@ -78,7 +74,7 @@ BOOL win16_scroll_control_input(HWND w,const win16_scroll_input_view *v,UINT m,W
         if(!IsWindowEnabled(w) || s->track->active || !v->layout(w,&layout))return TRUE;
         /* USER18:17AE uses 4*CXBORDER, CYBORDER as drag tolerance. */
         limit=layout.bar;{int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));InflateRect(&limit,4*unit,unit);}
-        if(!win16_scroll_begin(s->track,&layout,win16_scroll_disabled(w,OBJID_CLIENT),point,&limit,&actions))return TRUE;
+        if(!win16_scroll_begin(s->track,&layout,style_scroll_disabled(w,OBJID_CLIENT),point,&limit,&actions))return TRUE;
         epoch=++*s->epoch;SetFocus(w);
         if(*s->detached || epoch!=*s->epoch || !s->track->active)return TRUE;
         SetCapture(w);
@@ -89,7 +85,7 @@ BOOL win16_scroll_control_input(HWND w,const win16_scroll_input_view *v,UINT m,W
     if(m==WM_MOUSEMOVE || (m==WM_TIMER && *s->timer && a==*s->timer)){
         if(s->track->active && v->layout(w,&layout)){
             if(m==WM_TIMER){if(!GetCursorPos(&point) || !ScreenToClient(w,&point))return TRUE;}
-            win16_scroll_motion(s->track,&layout,win16_scroll_disabled(w,OBJID_CLIENT),point,m==WM_TIMER,&actions);
+            win16_scroll_motion(s->track,&layout,style_scroll_disabled(w,OBJID_CLIENT),point,m==WM_TIMER,&actions);
             win16_scroll_apply_actions(w,s,&actions,*s->epoch);
         }return TRUE;
     }
@@ -99,11 +95,7 @@ BOOL win16_scroll_control_input(HWND w,const win16_scroll_input_view *v,UINT m,W
     if(m==WM_MOUSELEAVE)return TRUE;
     if(m==WM_KEYDOWN){UINT command;
         if(!IsWindowEnabled(w))return TRUE;
-        switch(a){case VK_LEFT:case VK_UP:command=SB_LINEUP;break;
-        case VK_RIGHT:case VK_DOWN:command=SB_LINEDOWN;break;
-        case VK_PRIOR:command=SB_PAGEUP;break;case VK_NEXT:command=SB_PAGEDOWN;break;
-        case VK_HOME:command=SB_TOP;break;case VK_END:command=SB_BOTTOM;break;
-        default:return FALSE;}
+        if(!style_scroll_key_command(a,&command))return FALSE;
         ZeroMemory(&actions,sizeof(actions));actions.timer_ms=WIN16_SCROLL_KEEP_TIMER;
         actions.count=1;actions.notices[0].command=command;actions.repaint=TRUE;*v->key=TRUE;
         win16_scroll_apply_actions(w,s,&actions,*s->epoch);return TRUE;
@@ -115,26 +107,12 @@ BOOL win16_scroll_control_input(HWND w,const win16_scroll_input_view *v,UINT m,W
     }
     return FALSE;
 }
-void win16_scroll_stop_timer(HWND w,UINT_PTR *timer)
-{if(*timer){KillTimer(w,*timer);*timer=0;}}
-void win16_scroll_release_capture(HWND w,HWND *slot,BOOL list,BOOL edit,BOOL frame)
-{
-    HWND previous=*slot;*slot=NULL;
-    /* Restore borrowed combo capture only while the original owner is valid;
-     * never take capture back from an unrelated window. */
-    if(GetCapture()==w){
-        if((list || edit || frame) && previous && IsWindow(previous) &&
-            GetWindowThreadProcessId(previous,NULL)==GetCurrentThreadId()){
-            if(previous!=w)SetCapture(previous);
-        }else ReleaseCapture();
-    }
-}
 void win16_scroll_finish(HWND w,const win16_scroll_actions_view *s,HWND *previous,BOOL cancel)
 {
     win16_scroll_actions actions;unsigned epoch=*s->epoch;
     if(!s->track->active)return;
-    win16_scroll_end(s->track,cancel,&actions);win16_scroll_stop_timer(w,s->timer);
-    win16_scroll_release_capture(w,previous,*s->list,*s->edit,*s->frame);
+    win16_scroll_end(s->track,cancel,&actions);style_scroll_stop_timer(w,s->timer);
+    style_scroll_release_capture(w,previous,*s->list || *s->edit || *s->frame);
     win16_scroll_apply_actions(w,s,&actions,epoch);
 }
 void win16_scroll_apply_actions(HWND w,const win16_scroll_actions_view *s,
@@ -143,7 +121,7 @@ void win16_scroll_apply_actions(HWND w,const win16_scroll_actions_view *s,
     UINT i;BOOL reporting=*s->reporting;LONG previous=*s->report;
     if(*s->detached || *s->epoch!=epoch)return;
     if(actions->timer_ms!=WIN16_SCROLL_KEEP_TIMER){
-        win16_scroll_stop_timer(w,s->timer);
+        style_scroll_stop_timer(w,s->timer);
         if(actions->timer_ms && s->track->active)
             *s->timer=SetTimer(w,(UINT_PTR)s->track,actions->timer_ms,NULL);
     }
@@ -196,14 +174,6 @@ BOOL win16_scroll_edit_thumb_messages(HWND w,LONG object,win16_scroll_info_fn ge
     if(lines<=0 || lines>=0xffff)return FALSE;
     if(object==OBJID_HSCROLL && !win16_scroll_horizontal_thumb_messages(w,get_info))return FALSE;
     return TRUE;
-}
-UINT win16_scroll_disabled(HWND w,LONG object)
-{
-    SCROLLBARINFO info={.cbSize=sizeof(info)};UINT disabled=0;
-    if(!IsWindowEnabled(w) || !GetScrollBarInfo(w,object,&info))return ESB_DISABLE_BOTH;
-    if(info.rgstate[1]&STATE_SYSTEM_UNAVAILABLE)disabled|=ESB_DISABLE_LTUP;
-    if(info.rgstate[5]&STATE_SYSTEM_UNAVAILABLE)disabled|=ESB_DISABLE_RTDN;
-    return disabled;
 }
 void win16_scroll_caret_destroy(HWND w,const win16_scroll_caret_view *s)
 {

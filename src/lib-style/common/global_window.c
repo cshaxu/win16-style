@@ -1,4 +1,5 @@
 #include "global_window.h"
+#include "lib-win32/style/window_identity.h"
 #include <commctrl.h>
 #include <stdlib.h>
 
@@ -10,13 +11,24 @@ typedef struct global_window {
 static LRESULT CALLBACK global_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static const WCHAR managed_property[]=L"StyleCommon.GlobalWindow";
 
+typedef struct child_visit {BOOL (*visit)(HWND,void *);void *context;} child_visit;
+static BOOL CALLBACK visit_child(HWND window,LPARAM parameter)
+{
+    const child_visit *visitor=(const child_visit *)parameter;
+    return !win32_style_window_current_thread(window) || visitor->visit(window,visitor->context);
+}
+BOOL style_global_window_visit_children(HWND parent,BOOL (*visit)(HWND,void *),void *context)
+{
+    if(!visit){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    child_visit visitor={visit,context};return EnumChildWindows(parent,visit_child,(LPARAM)&visitor);
+}
+
 BOOL style_global_window_managed(HWND window)
 {return GetPropW(window,managed_property)!=NULL;}
 
 static BOOL local(HWND window)
 {
-    DWORD process=0;DWORD thread=GetWindowThreadProcessId(window,&process);
-    if(!thread || process!=GetCurrentProcessId() || thread!=GetCurrentThreadId()){
+    if(!win32_style_window_current_thread(window)){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
     return TRUE;

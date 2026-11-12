@@ -11,4 +11,6 @@ DWORD win32_process_global_desktop_status(DWORD thread_id);
 BOOL win32_process_global_desktop_key(DWORD *session,ULONGLONG *fingerprint);
 /* Borrowed process handle; returns its immutable creation timestamp. */
 BOOL win32_process_global_birth(HANDLE process,DWORD *low,DWORD *high);
+/* Borrowed process handle; match both liveness and creation timestamp. */
+BOOL win32_process_global_alive(HANDLE process,DWORD low,DWORD high);
 #endif

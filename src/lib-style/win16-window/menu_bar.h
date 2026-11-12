@@ -1,7 +1,7 @@
 #ifndef WIN16_STYLE_MENU_BAR_H
 #define WIN16_STYLE_MENU_BAR_H
 #include "menu_paint.h"
-#include "../win16-common/menu_layout.h"
+#include "lib-style/common/classic_menu_layout.h"
 #include "../win16-common/layout.h"
 typedef struct win16_style_bar_item {
     WCHAR *text;

@@ -5,6 +5,9 @@
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"UWP_TARGET_FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
 int main(void)
 {
+    CHECK(style_uwp_host_image(L"c:\\windows\\system32\\APPLICATIONFRAMEHOST.EXE",L"C:\\Windows"));
+    CHECK(!style_uwp_host_image(L"C:\\Other\\System32\\ApplicationFrameHost.exe",L"C:\\Windows"));
+    CHECK(!style_uwp_host_image(L"C:\\Windows\\System32\\Other.exe",L"C:\\Windows"));
     HINSTANCE instance=GetModuleHandleW(NULL);
     WNDCLASSW frame_class={.lpfnWndProc=DefWindowProcW,.hInstance=instance,.lpszClassName=L"ApplicationFrameWindow"};
     WNDCLASSW core_class={.lpfnWndProc=DefWindowProcW,.hInstance=instance,.lpszClassName=L"Windows.UI.Core.CoreWindow"};

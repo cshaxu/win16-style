@@ -13,6 +13,10 @@ void style_theme_cancel_stage(HWND window);
 BOOL style_theme_terminal(HWND window,const void *owner);
 BOOL style_theme_suppress(HWND window,const void *owner,style_native_theme_fn native_theme);
 BOOL style_theme_retained(HWND window);
+BOOL style_theme_owned(HWND window,const void *owner);
 void style_theme_remove(HWND window,const void *owner,style_native_theme_fn native_theme);
 HRESULT style_theme_set(HWND window,LPCWSTR application,LPCWSTR ids,style_native_theme_fn native_theme);
+/* Intercepted native entry; distinguishes the suppression call from an
+ * application call made synchronously by the native implementation. */
+HRESULT style_theme_intercept(HWND window,LPCWSTR application,LPCWSTR ids,style_native_theme_fn native_theme);
 #endif

@@ -1,7 +1,10 @@
 #include "frame.h"
 #include "frame_layout.h"
 #include "lib-style/uwp/surface.h"
+#include "lib-style/uwp/host.h"
 #include "lib-style/uwp/menu.h"
+#include "lib-style/common/frame.h"
+#include "lib-win32/style/window_identity.h"
 #include "lib-style/win16-window/frame_view.h"
 #include "lib-style/win16-common/font.h"
 #include "lib-style/win16-window/menu_message.h"
@@ -13,14 +16,13 @@
 typedef struct frame_action { win16_uwp_frame_action value; UINT command; } frame_action;
 
 typedef struct uwp_frame {
-    HWND window,title,surface;
-    unsigned calls;
-    BOOL detached,updating,active,hot,tracking;
+    style_uwp_host host;
+    BOOL updating,active,hot,tracking;
     BOOL no_menu,no_keyboard;
     int pressed,no_selection;
     UINT dpi;
     HFONT title_font,menu_font;
-    style_uwp_bitmap bitmap;
+    style_bitmap bitmap;
     win16_style_layout layout;
     style_window *menu;
     HWND menu_window;
@@ -28,14 +30,11 @@ typedef struct uwp_frame {
     frame_action actions[];
 } uwp_frame;
 
-static LRESULT CALLBACK owner_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
-static LRESULT CALLBACK surface_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
-static LRESULT CALLBACK title_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
+static BOOL surface_message(void *,HWND,UINT,WPARAM,LPARAM,LRESULT *);
 
 static BOOL local(HWND w)
 {
-    DWORD pid=0;
-    if(GetWindowThreadProcessId(w,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId()){
+    if(!win32_style_window_current_thread(w)){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
     return TRUE;
@@ -43,46 +42,41 @@ static BOOL local(HWND w)
 static uwp_frame *lookup(HWND w)
 {
     DWORD_PTR value=0;
-    return GetWindowSubclass(w,owner_proc,(UINT_PTR)owner_proc,&value)?(uwp_frame *)value:NULL;
+    return GetWindowSubclass(w,style_uwp_host_owner_proc,(UINT_PTR)style_uwp_host_owner_proc,&value)?
+        (uwp_frame *)((style_uwp_host *)value)->context:NULL;
 }
-static void release(uwp_frame *s)
+static void dispose(void *context)
 {
-    if(--s->calls || !s->detached)return;
-    style_uwp_bitmap_dispose(&s->bitmap);
+    uwp_frame *s=context;
+    style_bitmap_dispose(&s->bitmap);
     if(s->title_font)DeleteObject(s->title_font);
     s->menu->menu_font=NULL; /* The frame owns the font lease. */
     win16_control_frame_state_dispose(s->menu);
     win16_style_system_release(s->menu_font);
     free(s);
 }
-static BOOL detach(uwp_frame *s)
+static void before_title_remove(void *context)
 {
-    if(s->detached)return TRUE;
-    if(!RemoveWindowSubclass(s->window,owner_proc,(UINT_PTR)owner_proc))return FALSE;
-    s->detached=TRUE;
+    uwp_frame *s=context;
     if(s->tracking)EndMenu();
-    if(s->title)RemoveWindowSubclass(s->title,title_proc,(UINT_PTR)title_proc);
+}
+static void after_title_remove(void *context)
+{
+    uwp_frame *s=context;
     s->menu->detached=TRUE;
     while(s->menu->menus)win16_control_frame_state_end_menu(s->menu);
-    win16_style_menu_restore(&s->menu->menu_items);
-    HWND surface=s->surface;s->surface=NULL;
-    if(surface){
-        if(GetCapture()==surface)ReleaseCapture();
-        RemoveWindowSubclass(surface,surface_proc,(UINT_PTR)surface_proc);
-        DestroyWindow(surface);
-    }
-    return TRUE;
+    style_menu_restore(&s->menu->menu_items);
 }
 static BOOL geometry(uwp_frame *s,RECT *outer)
 {
     RECT content;BOOL zoomed;
-    if(!style_uwp_frame_bounds(s->window,s->title,outer,&content,&zoomed))return FALSE;
+    if(!style_uwp_frame_bounds(s->host.owner,s->host.title,outer,&content,&zoomed))return FALSE;
     SIZE size={outer->right-outer->left,outer->bottom-outer->top};
-    UINT dpi=GetDpiForWindow(s->window);
-    if(!win16_uwp_frame_layout(size,dpi,(DWORD)GetWindowLongPtrW(s->window,GWL_STYLE),zoomed,content,&s->layout))return FALSE;
-    if(dpi!=s->dpi && !win16_control_refresh_frame_fonts(s->window,&s->dpi,&s->title_font,&s->menu_font))return FALSE;
+    UINT dpi=GetDpiForWindow(s->host.owner);
+    if(!win16_uwp_frame_layout(size,dpi,(DWORD)GetWindowLongPtrW(s->host.owner,GWL_STYLE),zoomed,content,&s->layout))return FALSE;
+    if(dpi!=s->dpi && !win16_control_refresh_frame_fonts(s->host.owner,&s->dpi,&s->title_font,&s->menu_font))return FALSE;
     s->menu->dpi=s->dpi;s->menu->menu_font=s->menu_font;
-    return !s->detached;
+    return !s->host.detached;
 }
 static BOOL cached_layout(HWND w,void *context,win16_style_layout *layout)
 {(void)w;*layout=((uwp_frame *)context)->layout;return TRUE;}
@@ -90,26 +84,25 @@ static void colors(void *context,win16_style_palette *palette)
 {(void)context;win16_style_default_palette(palette);}
 static void no_scrollbars(HWND w,HDC dc,const win16_style_palette *palette)
 {(void)w;(void)dc;(void)palette;}
-static BOOL refresh(uwp_frame *s)
+static BOOL refresh_geometry(void *context,RECT *outer,RECT *hole)
 {
-    if(s->detached || s->updating)return !s->detached;
-    if(!s->surface)return TRUE;
-    if(IsIconic(s->window) || !IsWindowVisible(s->window)){ShowWindow(s->surface,SW_HIDE);return TRUE;}
-    s->updating=TRUE;
-    RECT outer;BOOL ok=geometry(s,&outer);
-    if(ok){
-        SIZE size={outer.right-outer.left,outer.bottom-outer.top};ok=style_uwp_bitmap_ensure(&s->bitmap,size);
-        if(ok){
-            ZeroMemory(s->bitmap.pixels,(SIZE_T)size.cx*(SIZE_T)size.cy*4);
-            win16_control_frame_view view={s,&s->detached,&s->active,&s->menu_font,&s->title_font,&s->dpi,
-                &s->no_selection,&s->no_menu,&s->no_keyboard,&s->pressed,&s->hot,cached_layout,colors,no_scrollbars};
-            win16_control_paint_frame(s->window,&view,s->bitmap.dc);
-            RECT hole=s->layout.client;
-            ok=style_uwp_surface_present(s->window,s->surface,&outer,&hole,&s->bitmap,&s->detached);
-        }
-    }
-    if(!ok && !s->detached)ShowWindow(s->surface,SW_HIDE);
-    s->updating=FALSE;return ok&&!s->detached;
+    uwp_frame *s=context;
+    if(!geometry(s,outer))return FALSE;
+    *hole=s->layout.client;return TRUE;
+}
+static void refresh_paint(void *context,HDC dc)
+{
+    uwp_frame *s=context;
+    win16_control_frame_view view={s,&s->host.detached,&s->active,&s->menu_font,&s->title_font,&s->dpi,
+        &s->no_selection,&s->no_menu,&s->no_keyboard,&s->pressed,&s->hot,cached_layout,colors,no_scrollbars};
+    win16_control_paint_frame(s->host.owner,&view,dc);
+}
+static BOOL refresh(void *context)
+{
+    uwp_frame *s=context;
+    const style_uwp_surface_view view={s->host.owner,&s->host.surface,&s->host.detached,&s->updating,
+        &s->bitmap,s,refresh_geometry,refresh_paint};
+    return style_uwp_surface_refresh(&view);
 }
 static LRESULT point_hit(uwp_frame *s,LPARAM point)
 {
@@ -118,43 +111,32 @@ static LRESULT point_hit(uwp_frame *s,LPARAM point)
 }
 static LPARAM screen_point(uwp_frame *s,LPARAM point)
 {
-    POINT p={GET_X_LPARAM(point),GET_Y_LPARAM(point)};ClientToScreen(s->surface,&p);
+    POINT p={GET_X_LPARAM(point),GET_Y_LPARAM(point)};ClientToScreen(s->host.surface,&p);
     return MAKELPARAM(p.x,p.y);
 }
 static void invoke(uwp_frame *s,int hit)
 {
     UINT command=hit==HTMINBUTTON?SC_MINIMIZE:hit==HTMAXBUTTON?
-        (IsZoomed(s->window)?SC_RESTORE:SC_MAXIMIZE):SC_KEYMENU;
-    PostMessageW(s->window,WM_SYSCOMMAND,command,command==SC_KEYMENU?L' ':0);
+        (IsZoomed(s->host.owner)?SC_RESTORE:SC_MAXIMIZE):SC_KEYMENU;
+    PostMessageW(s->host.owner,WM_SYSCOMMAND,command,command==SC_KEYMENU?L' ':0);
 }
 static void menu_present(uwp_frame *s,HWND window)
 {
-    if(s->detached || !s->tracking || s->menu_window)return;
-    WCHAR name[16];MENUBARINFO info={.cbSize=sizeof(info)};
-    if(GetWindowThreadProcessId(window,NULL)!=GetCurrentThreadId() ||
-       !GetClassNameW(window,name,ARRAYSIZE(name)) || wcscmp(name,L"#32768") ||
-       !GetMenuBarInfo(window,OBJID_CLIENT,0,&info) || info.hMenu!=GetSystemMenu(s->window,FALSE))return;
-    LONG_PTR ex=GetWindowLongPtrW(window,GWL_EXSTYLE);
-    if(ex&WS_EX_LAYERED)return; /* USER may still own its menu animation. */
-    s->menu_window=window;
-    SetLastError(0);SetWindowLongPtrW(window,GWL_EXSTYLE,ex|WS_EX_LAYERED);
-    if(GetLastError() || !SetLayeredWindowAttributes(window,0,255,LWA_ALPHA)){
-        SetWindowLongPtrW(window,GWL_EXSTYLE,ex);s->menu_window=NULL;return;
-    }
-    RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW);
+    if(s->host.detached || !s->tracking || s->menu_window)return;
+    style_uwp_menu_present(window,GetSystemMenu(s->host.owner,FALSE),&s->menu_window);
 }
 static void system_menu(uwp_frame *s)
 {
-    if(s->tracking || s->detached)return;
-    HMENU menu=GetSystemMenu(s->window,FALSE);RECT surface;
-    if(!menu || !GetWindowRect(s->surface,&surface))return;
+    if(s->tracking || s->host.detached)return;
+    HMENU menu=GetSystemMenu(s->host.owner,FALSE);RECT surface;
+    if(!menu || !GetWindowRect(s->host.surface,&surface))return;
     s->tracking=TRUE;
-    SendMessageW(s->window,WM_INITMENU,(WPARAM)menu,0);
-    if(s->detached){s->tracking=FALSE;return;}
+    SendMessageW(s->host.owner,WM_INITMENU,(WPARAM)menu,0);
+    if(s->host.detached){s->tracking=FALSE;return;}
     /* TrackPopupMenu does not apply the root window's system-command states.
      * Add only temporary restrictions; retain application-disabled commands. */
     style_uwp_menu_state menu_state;
-    style_uwp_menu_restrict(s->window,menu,&menu_state);
+    style_uwp_menu_restrict(s->host.owner,menu,&menu_state);
     BOOL actions_ready=TRUE;
     for(unsigned i=0;i<s->action_count;++i){
         frame_action *action=&s->actions[i];
@@ -165,17 +147,15 @@ static void system_menu(uwp_frame *s)
     /* Never present a replacement menu with a required action missing. */
     if(actions_ready){
         s->no_menu=TRUE;refresh(s);
-        if(!s->detached)command=TrackPopupMenuEx(menu,TPM_LEFTALIGN|TPM_TOPALIGN|TPM_RETURNCMD|TPM_NOANIMATION,
+        if(!s->host.detached)command=TrackPopupMenuEx(menu,TPM_LEFTALIGN|TPM_TOPALIGN|TPM_RETURNCMD|TPM_NOANIMATION,
             surface.left+s->layout.system.left,surface.top+s->layout.system.bottom,
-            s->surface,NULL);
+            s->host.surface,NULL);
     }
     if(s->menu_window){
-        MENUBARINFO info={.cbSize=sizeof(info)};
-        if(GetMenuBarInfo(s->menu_window,OBJID_CLIENT,0,&info) && info.hMenu==menu)
-            SetWindowLongPtrW(s->menu_window,GWL_EXSTYLE,GetWindowLongPtrW(s->menu_window,GWL_EXSTYLE)&~WS_EX_LAYERED);
+        style_uwp_menu_unpresent(s->menu_window,menu);
         s->menu_window=NULL;
     }
-    if(!s->detached && GetSystemMenu(s->window,FALSE)==menu)style_uwp_menu_restore(menu,&menu_state);
+    if(!s->host.detached && GetSystemMenu(s->host.owner,FALSE)==menu)style_uwp_menu_restore(menu,&menu_state);
     for(unsigned i=0;i<s->action_count;++i){
         frame_action *action=&s->actions[i];
         if(!action->command)continue;
@@ -184,23 +164,22 @@ static void system_menu(uwp_frame *s)
         action->command=0;
     }
     s->tracking=FALSE;s->no_menu=FALSE;
-    if(!s->detached){
+    if(!s->host.detached){
         refresh(s);
-        if(!s->detached && command){
-            if(selected<s->action_count)s->actions[selected].value.invoke(s->window,s->actions[selected].value.context);
-            else PostMessageW(s->window,WM_SYSCOMMAND,command,0);
+        if(!s->host.detached && command){
+            if(selected<s->action_count)s->actions[selected].value.invoke(s->host.owner,s->actions[selected].value.context);
+            else PostMessageW(s->host.owner,WM_SYSCOMMAND,command,0);
         }
     }
 }
 static void surface_menu_button(HWND w,style_window *menu,int hit)
 {(void)w;(void)menu;(void)hit;}
-static LRESULT CALLBACK surface_proc(HWND w,UINT message,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+static BOOL surface_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,LRESULT *output)
 {
-    uwp_frame *s=(uwp_frame *)data;LRESULT result=0;BOOL handled=TRUE;(void)id;++s->calls;
-    if(s->detached){result=DefSubclassProc(w,message,a,b);release(s);return result;}
+    uwp_frame *s=context;LRESULT result=0;BOOL handled=TRUE;
     if(message==WM_ENTERMENULOOP)win16_control_frame_state_enter_menu(s->menu);
     if(win16_control_menu_message(w,s->menu,message,a,b,surface_menu_button,&result)){
-        release(s);return result;
+        *output=result;return TRUE;
     }
     switch(message){
     case WM_ENTERIDLE:if(a==MSGF_MENU)menu_present(s,(HWND)b);break;
@@ -209,27 +188,23 @@ static LRESULT CALLBACK surface_proc(HWND w,UINT message,WPARAM a,LPARAM b,UINT_
         POINT point;
         if(!GetCursorPos(&point)||!ScreenToClient(w,&point)){handled=FALSE;break;}
         int hit=(int)win16_uwp_frame_hit(&s->layout,point);
-        PCWSTR cursor=IDC_ARROW;
-        if(hit==HTLEFT||hit==HTRIGHT)cursor=IDC_SIZEWE;
-        else if(hit==HTTOP||hit==HTBOTTOM)cursor=IDC_SIZENS;
-        else if(hit==HTTOPLEFT||hit==HTBOTTOMRIGHT)cursor=IDC_SIZENWSE;
-        else if(hit==HTTOPRIGHT||hit==HTBOTTOMLEFT)cursor=IDC_SIZENESW;
+        PCWSTR cursor=style_frame_resize_cursor(hit);
         SetCursor(LoadCursorW(NULL,cursor));
         result=TRUE;break;
     }
     case WM_NCHITTEST:result=HTCLIENT;break; /* The window region excludes client content. */
     case WM_LBUTTONDOWN: {
-        int hit=(int)point_hit(s,b);SetForegroundWindow(s->window);
-        if(s->detached)break;
+        int hit=(int)point_hit(s,b);SetForegroundWindow(s->host.owner);
+        if(s->host.detached)break;
         if(hit==HTSYSMENU || hit==HTMINBUTTON || hit==HTMAXBUTTON){s->pressed=hit;s->hot=TRUE;SetCapture(w);refresh(s);}
         else if(hit==HTCAPTION || (hit>=HTLEFT && hit<=HTBOTTOMRIGHT))
-            SendMessageW(s->window,WM_NCLBUTTONDOWN,(WPARAM)hit,screen_point(s,b));
+            SendMessageW(s->host.owner,WM_NCLBUTTONDOWN,(WPARAM)hit,screen_point(s,b));
         break;
     }
     case WM_LBUTTONDBLCLK: {
         int hit=(int)point_hit(s,b);
-        if(hit==HTSYSMENU)PostMessageW(s->window,WM_SYSCOMMAND,SC_CLOSE,0);
-        else if(hit==HTCAPTION && (GetWindowLongPtrW(s->window,GWL_STYLE)&WS_MAXIMIZEBOX))invoke(s,HTMAXBUTTON);
+        if(hit==HTSYSMENU)PostMessageW(s->host.owner,WM_SYSCOMMAND,SC_CLOSE,0);
+        else if(hit==HTCAPTION && (GetWindowLongPtrW(s->host.owner,GWL_STYLE)&WS_MAXIMIZEBOX))invoke(s,HTMAXBUTTON);
         break;
     }
     case WM_RBUTTONUP:
@@ -240,57 +215,37 @@ static LRESULT CALLBACK surface_proc(HWND w,UINT message,WPARAM a,LPARAM b,UINT_
         break;
     case WM_LBUTTONUP:
         if(s->pressed){int hit=s->pressed;BOOL act=point_hit(s,b)==hit;s->pressed=0;s->hot=FALSE;
-            ReleaseCapture();if(!s->detached){refresh(s);if(act&&!s->detached)invoke(s,hit);}}
+            ReleaseCapture();if(!s->host.detached){refresh(s);if(act&&!s->host.detached)invoke(s,hit);}}
         break;
     case WM_CANCELMODE:
     case WM_CAPTURECHANGED:
         if(s->pressed){s->pressed=0;s->hot=FALSE;if(GetCapture()==w)ReleaseCapture();refresh(s);}
         break;
-    case WM_NCDESTROY:s->surface=NULL;detach(s);handled=FALSE;break;
     default:handled=FALSE;break;
     }
-    if(!handled)result=DefSubclassProc(w,message,a,b);
-    release(s);return result;
+    *output=result;return handled;
 }
 static void menu_button(HWND w,style_window *menu,int hit)
 {
     (void)hit;uwp_frame *s=lookup(w);
-    if(s&&!s->detached){s->no_menu=menu->system_menu;refresh(s);}
+    if(s&&!s->host.detached){s->no_menu=menu->system_menu;refresh(s);}
 }
-static LRESULT CALLBACK title_proc(HWND w,UINT message,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+static BOOL owner_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,LRESULT *result)
 {
-    uwp_frame *s=(uwp_frame *)data;(void)id;++s->calls;
-    if(message==WM_NCDESTROY)detach(s);
-    LRESULT result=DefSubclassProc(w,message,a,b);
-    if(!s->detached&&(message==WM_WINDOWPOSCHANGED||message==WM_SHOWWINDOW))refresh(s);
-    release(s);return result;
-}
-static LRESULT CALLBACK owner_proc(HWND w,UINT message,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
-{
-    uwp_frame *s=(uwp_frame *)data;(void)id;++s->calls;
-    if(message==WM_NCDESTROY)detach(s);
-    LRESULT result=0;BOOL handled=FALSE;
-    if(!s->detached && message==WM_CANCELMODE && s->tracking)EndMenu();
-    if(!s->detached && message==WM_SYSCOMMAND &&
+    uwp_frame *s=context;
+    if(!s->host.detached && message==WM_CANCELMODE && s->tracking)EndMenu();
+    if(!s->host.detached && message==WM_SYSCOMMAND &&
        (((a&0xfff0)==SC_KEYMENU && (b==L' '||b==0)) || (a&0xfff0)==SC_MOUSEMENU)){
-        system_menu(s);release(s);return 0;
+        system_menu(s);*result=0;return TRUE;
     }
-    if(!s->detached){
+    if(!s->host.detached){
         if(message==WM_ENTERMENULOOP)win16_control_frame_state_enter_menu(s->menu);
-        handled=win16_control_menu_message(w,s->menu,message,a,b,menu_button,&result);
+        return win16_control_menu_message(w,s->menu,message,a,b,menu_button,result);
     }
-    if(!handled)result=DefSubclassProc(w,message,a,b);
-    if(!s->detached){
-        switch(message){
-        case WM_NCACTIVATE:s->active=(BOOL)a;refresh(s);break;
-        case WM_ACTIVATE:s->active=LOWORD(a)!=WA_INACTIVE;refresh(s);break;
-        case WM_WINDOWPOSCHANGED:case WM_SIZE:case WM_SHOWWINDOW:
-        case WM_DPICHANGED:case WM_SETTEXT:case WM_THEMECHANGED:refresh(s);break;
-        default:break;
-        }
-    }
-    release(s);return result;
+    return FALSE;
 }
+static void owner_activation(void *context,UINT message,WPARAM value)
+{uwp_frame *s=context;s->active=message==WM_NCACTIVATE?(BOOL)value:LOWORD(value)!=WA_INACTIVE;}
 static BOOL apply_actions(HWND w,HWND title,const win16_uwp_frame_action *actions,unsigned count)
 {
     /* There are 256 available 16-aligned command slots below SC_SIZE. */
@@ -305,18 +260,14 @@ static BOOL apply_actions(HWND w,HWND title,const win16_uwp_frame_action *action
     win16_style_default_palette(&s->menu->palette);
     s->action_count=count;
     for(unsigned i=0;i<count;++i)s->actions[i].value=actions[i];
-    s->window=w;s->title=title;s->calls=1;s->no_selection=-1;s->active=GetForegroundWindow()==w;
-    if(!SetWindowSubclass(w,owner_proc,(UINT_PTR)owner_proc,(DWORD_PTR)s)){win16_control_frame_state_dispose(s->menu);free(s);return FALSE;}
-    if(title && !SetWindowSubclass(title,title_proc,(UINT_PTR)title_proc,(DWORD_PTR)s)){
-        DWORD error=GetLastError();detach(s);release(s);SetLastError(error);return FALSE;
-    }
-    s->surface=CreateWindowExW(WS_EX_LAYERED|WS_EX_TOOLWINDOW|WS_EX_NOACTIVATE,L"STATIC",L"",
-        WS_POPUP|SS_NOTIFY,0,0,1,1,w,NULL,GetModuleHandleW(NULL),NULL);
-    if(s->detached && s->surface){DestroyWindow(s->surface);s->surface=NULL;}
-    BOOL ok=!s->detached && s->surface && SetWindowSubclass(s->surface,surface_proc,(UINT_PTR)surface_proc,(DWORD_PTR)s) && refresh(s);
-    DWORD error=ok?0:GetLastError();
-    if(!ok){detach(s);if(!error)error=ERROR_NOT_SUPPORTED;}
-    release(s);SetLastError(error);return ok;
+    s->host=(style_uwp_host){.owner=w,.title=title,.surface_message=surface_message,.context=s,
+        .owner_message=owner_message,.owner_activation=owner_activation,
+        .before_title_remove=before_title_remove,.after_title_remove=after_title_remove,
+        .dispose=dispose,.calls=1};
+    s->no_selection=-1;s->active=GetForegroundWindow()==w;
+    BOOL ok=style_uwp_host_start(&s->host,refresh);
+    DWORD error=GetLastError();
+    style_uwp_host_release(&s->host);SetLastError(error);return ok;
 }
 BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const win16_uwp_frame_action *actions,unsigned count)
 {
@@ -333,10 +284,10 @@ BOOL win16_uwp_frame_remove(HWND w)
 {
     if(!local(w))return FALSE;
     uwp_frame *s=lookup(w);if(!s){SetLastError(ERROR_NOT_FOUND);return FALSE;}
-    ++s->calls;BOOL ok=detach(s);release(s);return ok;
+    style_uwp_host_retain(&s->host);BOOL ok=style_uwp_host_detach(&s->host);style_uwp_host_release(&s->host);return ok;
 }
 HWND win16_uwp_frame_surface(HWND w)
 {
     if(!local(w))return NULL;
-    uwp_frame *s=lookup(w);return s&&!s->detached?s->surface:NULL;
+    uwp_frame *s=lookup(w);return s&&!s->host.detached?s->host.surface:NULL;
 }

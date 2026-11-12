@@ -49,16 +49,25 @@ int wmain(int argc,WCHAR **argv)
     }
     DWORD pid=0;if(window)GetWindowThreadProcessId(window,&pid);
     win32_process_global_policy policy;style_uwp_global *manager=NULL;HANDLE quit=NULL,stop=NULL;int result=4;
-    if(!window||pid!=process.dwProcessId||win32_process_global_policy_init(&policy))goto done;
+    DWORD policy_error=window && pid==process.dwProcessId?win32_process_global_policy_init(&policy):ERROR_INVALID_WINDOW_HANDLE;
+    if(policy_error){printf("UWP_GLOBAL_SETUP window=%d pid_match=%d policy=%lu\n",window!=NULL,pid==process.dwProcessId,(unsigned long)policy_error);goto done;}
     quit=CreateEventW(NULL,TRUE,FALSE,NULL);stop=CreateEventW(NULL,TRUE,FALSE,NULL);
     entered=CreateEventW(NULL,TRUE,FALSE,NULL);gate=CreateEventW(NULL,TRUE,FALSE,NULL);
     if(!quit||!stop||!entered||!gate)goto done;
     WORD machine=sizeof(void *)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386;
+    DWORD host_pid=0,host_thread=GetWindowThreadProcessId(window,&host_pid);
+    win32_process_global_identity identity;
+    DWORD admission=win32_process_global_policy_inspect(&policy,window,host_pid,host_thread,machine,&identity,host_allowed);
+    if(admission)printf("UWP_GLOBAL_ADMISSION error=%lu\n",(unsigned long)admission);
     const style_uwp_global_services services={machine,host_allowed,active,change,NULL,&policy};
     DWORD error=style_uwp_global_start(&policy,image,GetThreadDesktop(GetCurrentThreadId()),quit,stop,&services,&manager);
     fail_apply=1;
-    if(error || !style_uwp_global_observe(manager,window) || style_uwp_global_wait_idle(manager,5000))goto done;
+    if(error){printf("UWP_GLOBAL_START error=%lu\n",(unsigned long)error);goto done;}
+    if(!style_uwp_global_observe(manager,window)){printf("UWP_GLOBAL_OBSERVE error=%lu\n",(unsigned long)GetLastError());goto done;}
+    error=style_uwp_global_wait_idle(manager,5000);
+    if(error){printf("UWP_GLOBAL_WAIT error=%lu\n",(unsigned long)error);goto done;}
     LONG queued=0,ready=0,failed=0;style_uwp_global_stats_read(manager,&queued,&ready,&failed);
+    printf("UWP_GLOBAL_FIRST queued=%ld ready=%ld failed=%ld applies=%ld\n",queued,ready,failed,applies);
     if(queued||ready||failed!=1||applies!=1)goto done;
     if(!style_uwp_global_observe(manager,window)||style_uwp_global_wait_idle(manager,5000))goto done;
     queued=ready=failed=0;style_uwp_global_stats_read(manager,&queued,&ready,&failed);
@@ -97,5 +106,5 @@ done:
     if(entered)CloseHandle(entered);
     if(gate)CloseHandle(gate);
     CloseHandle(process.hThread);CloseHandle(process.hProcess);
-    printf("UWP_GLOBAL_SHARED result=%d apply=%ld remove=%ld fail_retry=1 stop_retry=1 timeout=1 target_exit=1\n",result,applies,removes);return result;
+    printf("UWP_GLOBAL_SHARED result=%d apply=%ld remove=%ld full_sequence=%d\n",result,applies,removes,result==0);return result;
 }

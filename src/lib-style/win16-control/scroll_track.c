@@ -1,4 +1,5 @@
 #include "scroll_track.h"
+#include "lib-style/common/scroll_state.h"
 #include <stdint.h>
 #include <string.h>
 
@@ -47,7 +48,7 @@ void win16_scroll_motion(win16_scroll_track *t,const win16_scroll_layout *l,
             min((int64_t)l->minimum_pixel+l->travel,desired));
         else pixel=t->initial_pixel;
         if(pixel!=t->pixel){
-            LONG position=win16_scroll_position(l,pixel);
+            LONG position=style_scroll_position(l->minimum_pixel,l->travel,l->minimum,l->maximum,pixel);
             a->repaint=TRUE;t->pixel=pixel;
             if(position!=t->position){
                 t->position=position;a->count=1;

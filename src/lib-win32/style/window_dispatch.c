@@ -8,7 +8,10 @@ DWORD win32_style_window_dispatch(HWND window,DWORD thread,PCWSTR module_path,
     HMODULE module=LoadLibraryExW(module_path,NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
     if(!module)return GetLastError();
     HOOKPROC callback=(HOOKPROC)(uintptr_t)GetProcAddress(module,hook_export);
-    HHOOK hook=callback?SetWindowsHookExW(WH_CALLWNDPROC,callback,module,thread):NULL;
+    if(!callback){DWORD error=GetLastError();FreeLibrary(module);return error;}
+    DWORD process=0,window_thread=GetWindowThreadProcessId(window,&process);
+    HMODULE hook_module=window_thread==thread && process==GetCurrentProcessId()?NULL:module;
+    HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROC,callback,hook_module,thread);
     DWORD error=hook?0:GetLastError();
     if(hook){
         RemovePropW(window,result_property);DWORD_PTR ignored=0;

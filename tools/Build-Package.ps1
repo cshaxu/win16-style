@@ -48,6 +48,8 @@ try{
     try{
         & python (Join-Path $clean 'tools/check_process_global_boundary.py') --self-test
         if($LASTEXITCODE){throw 'Public process boundary gate failed'}
+        & python (Join-Path $clean 'tools/check_style_boundary.py') --self-test
+        if($LASTEXITCODE){throw 'Public style boundary gate failed'}
         & python (Join-Path $clean 'tools/verify_source_manifest.py') --self-test
         if($LASTEXITCODE){throw 'Snapshot source gate failed'}
         & python (Join-Path $clean 'tools/verify_resource_identity.py') --self-test
@@ -72,6 +74,13 @@ try{
             foreach($archive in $archives){$arguments+=@('--archive',(Join-Path $tree "$arch/$archive"))}
             & python (Join-Path $clean 'tools/check_process_global_boundary.py') @arguments
             if($LASTEXITCODE){throw "Public process binary boundary gate failed: $arch"}
+            $styleArchives=@('libstyle-companion.a','libstyle-control-common.a','libstyle-dialog-common.a',
+                'libstyle-bitmap.a','libstyle-global-window.a','libstyle-menu-items.a','libstyle-present.a','libstyle-theme-state.a','libstyle-theme-track.a',
+                'libstyle-uwp-dispatch.a','libstyle-uwp-global.a','libstyle-uwp-hook.a','libstyle-uwp-native.a','libstyle-uwp-repaint.a')
+            $styleArguments=@('--self-test','--nm',$nm)
+            foreach($archive in $styleArchives){$styleArguments+=@('--archive',(Join-Path $tree "$arch/$archive"))}
+            & python (Join-Path $clean 'tools/check_style_boundary.py') @styleArguments
+            if($LASTEXITCODE){throw "Public style binary boundary gate failed: $arch"}
             $dependencies=& ninja -C (Join-Path $tree $arch) -t deps
             if($LASTEXITCODE){throw 'Dependency trace failed'}
             $dependencies | Set-Content (Join-Path $scratch "$arch-deps.txt") -Encoding utf8

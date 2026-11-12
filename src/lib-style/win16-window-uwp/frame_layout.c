@@ -1,4 +1,5 @@
 #include "frame_layout.h"
+#include "lib-style/uwp/surface.h"
 
 BOOL win16_uwp_frame_layout(SIZE outer,UINT dpi,DWORD style,BOOL maximized,
     RECT content,win16_style_layout *l)
@@ -28,14 +29,5 @@ BOOL win16_uwp_frame_layout(SIZE outer,UINT dpi,DWORD style,BOOL maximized,
 LRESULT win16_uwp_frame_hit(const win16_style_layout *l,POINT p)
 {
     LRESULT hit=win16_style_hit(l,p);
-    if(hit!=HTBORDER || !l || !l->sizeable)return hit;
-    /* Native invisible sizing margins can be wider than the classic border.
-     * Keep their resize semantics rather than leaving a dead input band. */
-    if(p.x<l->client.left)return p.y<l->corner.cy?HTTOPLEFT:
-        p.y>=l->outer.bottom-l->corner.cy?HTBOTTOMLEFT:HTLEFT;
-    if(p.x>=l->client.right)return p.y<l->corner.cy?HTTOPRIGHT:
-        p.y>=l->outer.bottom-l->corner.cy?HTBOTTOMRIGHT:HTRIGHT;
-    if(p.y>=l->client.bottom)return p.x<l->corner.cx?HTBOTTOMLEFT:
-        p.x>=l->outer.right-l->corner.cx?HTBOTTOMRIGHT:HTBOTTOM;
-    return hit;
+    return l?style_uwp_resize_margin_hit(hit,p,&l->outer,&l->client,l->corner,l->sizeable):hit;
 }

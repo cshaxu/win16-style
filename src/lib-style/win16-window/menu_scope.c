@@ -2,6 +2,8 @@
 #include "menu_paint.h"
 #include "frame_paint.h"
 #include "lib-style/common/menu_snapshot.h"
+#include "lib-style/common/menu_input.h"
+#include "lib-style/common/present.h"
 #include <commctrl.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -115,29 +117,24 @@ static void paint_system(HWND w,popup *p,HDC target,BOOL window_coordinates)
     style_menu_row *rows=calloc((size_t)count,sizeof(*rows));if(!rows){p->painting=FALSE;return;}
     HDC dc=target?target:GetDC(w);if(!dc){free(rows);p->painting=FALSE;return;}
     int saved=SaveDC(dc);win16_style_menu_columns columns={0};BOOL valid=saved!=0;
-    POINT delta={0,0};if(valid&&window_coordinates){RECT wr;if(!GetWindowRect(w,&wr)||!ClientToScreen(w,&delta))valid=FALSE;else{delta.x-=wr.left;delta.y-=wr.top;}}
+    POINT delta={0,0};if(valid&&!style_menu_client_offset(w,window_coordinates,&delta))valid=FALSE;
     for(int i=0;valid&&i<count;++i){
         if(!style_menu_read_row(menu,(UINT)i,&rows[i],&p->detached))valid=FALSE;
         else if(!(rows[i].type&MFT_SEPARATOR)&&!win16_style_menu_columns_read(dc,font,dpi,rows[i].text,&columns))valid=FALSE;
     }
     /* Compose the popup before presenting it; clearing each row directly on
      * the screen exposes blank text/background between GDI calls. */
-    RECT client;HDC memory=NULL,output=dc;HBITMAP bitmap=NULL,old=NULL;
+    RECT client;HDC output=dc;style_present_buffer buffer;BOOL attempted=FALSE;
     if(valid&&!target&&GetClientRect(w,&client)){
-        memory=CreateCompatibleDC(dc);
-        if(memory)bitmap=CreateCompatibleBitmap(dc,client.right,client.bottom);
-        if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
-        if(old&&old!=(HBITMAP)HGDI_ERROR&&BitBlt(memory,0,0,client.right,client.bottom,dc,0,0,SRCCOPY))dc=memory;
+        attempted=TRUE;
+        if(style_present_buffer_begin(&buffer,dc,&client))dc=buffer.memory;
     }
     for(int i=0;valid&&i<count&&!p->detached;++i){RECT r=rows[i].rect;
         MapWindowPoints(NULL,w,(POINT *)&r,2);OffsetRect(&r,delta.x,delta.y);
         UINT state=0;if(rows[i].state&MFS_HILITE)state|=ODS_SELECTED;if(rows[i].state&MFS_DISABLED)state|=ODS_DISABLED;if(rows[i].state&MFS_CHECKED)state|=ODS_CHECKED;
         (void)win16_style_menu_text_columns(dc,&r,font,dpi,&p->palette,rows[i].text,state,(rows[i].type&MFT_SEPARATOR)?WIN16_STYLE_MENU_SEPARATOR:WIN16_STYLE_MENU_ROW,rows[i].submenu,&columns);
     }
-    if(dc==memory&&!p->detached)BitBlt(output,0,0,client.right,client.bottom,memory,0,0,SRCCOPY);
-    if(old&&old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
-    if(bitmap)DeleteObject(bitmap);
-    if(memory)DeleteDC(memory);
+    if(attempted)(void)style_present_buffer_end(&buffer,dc==buffer.memory&&!p->detached);
     if(saved)RestoreDC(output,saved);
     if(!target)ReleaseDC(w,output);
     free(rows);
@@ -189,8 +186,7 @@ static LRESULT CALLBACK popup_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,D
 static LRESULT CALLBACK popup_message(int code,WPARAM a,LPARAM b)
 {
     const CWPSTRUCT *message=(const CWPSTRUCT *)b;
-    if(code>=0 && current && (message->message==WM_WINDOWPOSCHANGING || message->message==WM_WINDOWPOSCHANGED ||
-        message->message==WM_NCPAINT || message->message==WM_PRINT)){
+    if(code>=0 && current && style_menu_popup_observation(message->message)){
         HWND w=message->hwnd;WCHAR name[32]={0};DWORD_PTR existing;
         if(GetClassNameW(w,name,32) && !wcscmp(name,L"SysShadow"))suppress_shadow(w,message->message,message->lParam);
         else if(!wcscmp(name,L"#32768") && !GetWindowSubclass(w,popup_proc,(UINT_PTR)popup_proc,&existing)){

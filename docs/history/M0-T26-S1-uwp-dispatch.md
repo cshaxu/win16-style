@@ -27,3 +27,7 @@ current test thread; the separate existing window-dispatch test covers a
 test-owned child process. The clean shared dispatch archives have no unresolved
 Win16, Win2000 or product-private symbols. Real UWP host, cross-architecture
 targets and alternate-style integration remain unverified.
+
+## 后续分阶段对照
+
+当前工作区探针在 32/64 位均显示 DLL 加载和导出解析成功；向同进程线程传模块句柄时 `SetWindowsHookExW` 返回 126，空句柄可成功，故共享分发器已仅对同进程目标选空句柄。同线程及同进程另一 GUI 线程的分发均通过。自建跨进程探针在映射盘、沙箱临时目录及沙箱外本机临时目录均返回 126；沙箱外映射盘对照亦返回 126。以上只能排除这些单一因素，不能断言操作系统策略或真实 UWP 宿主的根因。沙箱外临时探针已清理。当前修复未发布。

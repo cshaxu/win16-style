@@ -3,6 +3,8 @@
 #include "lib-win32/process-global/queue.h"
 #include "lib-win32/process-global/registry.h"
 #include <stdio.h>
+#include <string.h>
+#include <wchar.h>
 typedef struct observed {DWORD pid,thread;unsigned count,found;BOOL stop;} observed;
 static BOOL observe(DWORD pid,DWORD thread,void *context)
 {
@@ -25,8 +27,9 @@ static BOOL remove_marked(void *owner,void *context)
 {(void)context;return *(int *)owner!=0;}
 static void count_removed(void *owner,void *context)
 {(void)owner;++*(unsigned *)context;}
-int main(void)
+int main(int argc,char **argv)
 {
+    if(argc==2 && !strcmp(argv[1],"--exit"))return 0;
     win32_process_global_queue q={0};win32_process_global_queue_node a={0},b={0};
     if(win32_process_global_queue_pop(&q))return 7;
     win32_process_global_queue_push(&q,&a);win32_process_global_queue_push(&q,&b);
@@ -48,6 +51,17 @@ int main(void)
     if(!GetProcessTimes(GetCurrentProcess(),&created,&exited,&kernel,&user) ||
        !win32_process_global_birth(GetCurrentProcess(),&low,&high) || low!=created.dwLowDateTime || high!=created.dwHighDateTime)return 22;
     if(win32_process_global_birth(NULL,&low,&high) || GetLastError()!=ERROR_INVALID_PARAMETER)return 23;
+    if(!win32_process_global_alive(GetCurrentProcess(),low,high) ||
+       win32_process_global_alive(GetCurrentProcess(),low^1,high) ||
+       win32_process_global_alive(NULL,low,high))return 26;
+    WCHAR executable[MAX_PATH],command[MAX_PATH+16];STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
+    if(!GetModuleFileNameW(NULL,executable,ARRAYSIZE(executable)) ||
+       swprintf(command,ARRAYSIZE(command),L"\"%ls\" --exit",executable)<0 ||
+       !CreateProcessW(executable,command,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&startup,&child))return 27;
+    DWORD wait=WaitForSingleObject(child.hProcess,5000),child_low=0,child_high=0;
+    BOOL dead=wait==WAIT_OBJECT_0 && win32_process_global_birth(child.hProcess,&child_low,&child_high) &&
+        !win32_process_global_alive(child.hProcess,child_low,child_high);
+    CloseHandle(child.hThread);CloseHandle(child.hProcess);if(!dead)return 28;
     observed o={GetCurrentProcessId(),GetCurrentThreadId(),0,0,FALSE};
     DWORD before=0,after=0;
     if(win32_process_global_threads(0,NULL,NULL)!=ERROR_INVALID_PARAMETER)return 1;

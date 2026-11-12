@@ -14,11 +14,11 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     if(GetWindowSubclass(w,services->control_proc,(UINT_PTR)services->control_proc,&existing)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
     if(tabbed){
-        if(!ntw16s_list_class(w) || !(style&LBS_USETABSTOPS) || (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))){
+        if(!style_control_list_class(w) || !(style&LBS_USETABSTOPS) || (style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))){
             SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
         if((tab_count && !tabs) || (size_t)tab_count>((size_t)-1)/sizeof(int)){
             SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    }else if(!frame_bars && (!win16_control_supported(w,common_dialog_combo_pending) || ntw16s_is_edit(w)!=edit)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    }else if(!frame_bars && (!win16_control_supported(w,common_dialog_combo_pending) || style_control_is_edit(w)!=edit)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     s=win16_control_state_create();if(!s)return FALSE;
     s->creation_owner=creation_owner;
     s->header_pressed=-1;
@@ -30,7 +30,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
         CopyMemory(s->tab_positions,tabs,(size_t)tab_count*sizeof(int));s->tab_count=tab_count;}
     s->edit_border=edit && original_border;
     s->frame_scrollbars=frame_bars;
-    s->common_dialog_combo=!frame_bars && w==common_dialog_combo_pending && win16_control_common_dialog_combo_valid(w,GetParent(w));
+    s->common_dialog_combo=!frame_bars && w==common_dialog_combo_pending && style_control_dialog_combo_valid(w,GetParent(w),style_control_is_combo);
     s->common_dialog_parent=s->common_dialog_combo?GetParent(w):NULL;
     s->file_owner=!frame_bars && (ntw16s_vb_owner_file(w) || s->common_dialog_combo);s->combo_passthrough=services->combo_candidate(w);
     if(!frame_bars){s->original_font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
@@ -45,7 +45,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     /* Child attachment and WM_SETFONT can synchronously remove/destroy us.
      * Retain this attempt until its result is known, just like a callback. */
     ++s->calls;
-    if(!frame_bars && ntw16s_is_combo(w) && !s->file_owner){
+    if(!frame_bars && style_control_is_combo(w) && !s->file_owner){
         COMBOBOXINFO info={.cbSize=sizeof(info)};
         if(!services->get_combo_info(w,&info) || !services->install_control(info.hwndList,palette)){
             if(!s->detached)services->remove_control(w);
@@ -56,7 +56,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
         s->combo_list=info.hwndList;
         if(GetWindowSubclass(info.hwndList,services->control_proc,(UINT_PTR)services->control_proc,&existing))
             ((control_style *)existing)->owner=s;
-        BOOL native_edit=ntw16s_vb_combo(w) && info.hwndItem!=w && ntw16s_vb_combo_edit(info.hwndItem);
+        BOOL native_edit=style_control_vb_combo(w) && info.hwndItem!=w && style_control_combo_edit(info.hwndItem,style_control_vb_combo);
         if(s->detached)goto installed;
         if(native_edit){
             HFONT source=(HFONT)SendMessageW(info.hwndItem,WM_GETFONT,0,0);
@@ -76,7 +76,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     }
     if(!frame_bars){if(s->combo_passthrough && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_DROPDOWNLIST){HFONT replacement=win16_style_system_acquire(s->original_font);s->font=replacement?replacement:s->original_font;}
         if(!s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
-        if(!s->detached && ntw16s_is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
+        if(!s->detached && style_control_is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
             SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
         if(!s->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);}
 installed:
@@ -88,7 +88,7 @@ installed:
 BOOL win16_control_dialog_combo_install(HWND w,const void *owner,HWND *pending,const win16_control_dialog_combo_services *v)
 {
     HWND previous=*pending;
-    if(!win16_control_common_dialog_combo_valid(w,GetParent(w))){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!style_control_dialog_combo_valid(w,GetParent(w),style_control_is_combo)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     *pending=w;
     BOOL result=v->install(w,NULL,FALSE,FALSE,FALSE,-1,NULL,owner,NULL);
     *pending=previous;

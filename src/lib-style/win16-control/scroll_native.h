@@ -22,7 +22,6 @@ BOOL win16_scroll_embedded_layout(HWND window,LONG object,win16_scroll_info_fn g
 BOOL win16_scroll_horizontal_thumb_messages(HWND window,win16_scroll_info_fn get_info);
 BOOL win16_scroll_list_axis_owned(HWND window,LONG object,win16_scroll_info_fn get_info);
 BOOL win16_scroll_edit_thumb_messages(HWND window,LONG object,win16_scroll_info_fn get_info);
-UINT win16_scroll_disabled(HWND window,LONG object);
 typedef struct win16_scroll_actions_view {
     void *context;
     BOOL *detached,*reporting,*frame,*edit,*list;
@@ -34,10 +33,8 @@ typedef struct win16_scroll_actions_view {
     void (*nonclient)(HWND,void *,HDC);
     void (*caret)(HWND,void *);
 } win16_scroll_actions_view;
-void win16_scroll_stop_timer(HWND window,UINT_PTR *timer);
 void win16_scroll_apply_actions(HWND window,const win16_scroll_actions_view *view,
     const win16_scroll_actions *actions,unsigned epoch);
-void win16_scroll_release_capture(HWND window,HWND *previous,BOOL list,BOOL edit,BOOL frame);
 void win16_scroll_finish(HWND window,const win16_scroll_actions_view *view,HWND *previous,BOOL cancel);
 typedef struct win16_scroll_input_view {
     win16_scroll_actions_view actions;

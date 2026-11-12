@@ -16,7 +16,8 @@ static LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM wp,LPARAM lp
 
 int wmain(int argc,WCHAR **argv)
 {
-    CHECK(argc==2);
+    CHECK(argc==2 || (argc==3 && !lstrcmpW(argv[2],L"--direct")));
+    BOOL direct=argc==3;
     HMODULE dll=LoadLibraryW(argv[1]);
     CHECK(dll);
     HOOKPROC callback=(HOOKPROC)(uintptr_t)GetProcAddress(dll,"Ntw16sWindowThreadHook");
@@ -30,27 +31,30 @@ int wmain(int argc,WCHAR **argv)
     HWND other=CreateWindowW(wc.lpszClassName,L"two",WS_OVERLAPPEDWINDOW,
         0,0,400,300,NULL,NULL,wc.hInstance,NULL);
     CHECK(first && other && !attached(first) && !attached(other));
-    HHOOK hook=SetWindowsHookExW(WH_CALLWNDPROC,callback,dll,GetCurrentThreadId());
-    CHECK(hook);
+    HHOOK hook=direct?NULL:SetWindowsHookExW(WH_CALLWNDPROC,callback,dll,GetCurrentThreadId());
+    CHECK(direct || hook);
     UINT message=RegisterWindowMessageW(NTW16S_WINDOW_THREAD_MESSAGE);
     CHECK(message);
-    SendMessageW(first,message,NTW16S_WINDOW_THREAD_ATTACH,(LPARAM)other);
+    CWPSTRUCT event={.hwnd=first,.message=message,.wParam=NTW16S_WINDOW_THREAD_ATTACH,.lParam=(LPARAM)other};
+#define DISPATCH() do {if(direct){SetLastError(0x3456);callback(0,0,(LPARAM)&event);CHECK(GetLastError()==0x3456);}else SendMessageW(event.hwnd,event.message,event.wParam,event.lParam);} while(0)
+    DISPATCH();
     CHECK(!attached(first) && !attached(other));
     CHECK(!GetPropW(first,NTW16S_WINDOW_THREAD_RESULT));
-    SendMessageW(first,message,NTW16S_WINDOW_THREAD_ATTACH,(LPARAM)first);
+    event.lParam=(LPARAM)first;DISPATCH();
     CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)==1);
     CHECK(attached(first) && !attached(other));
     RemovePropW(first,NTW16S_WINDOW_THREAD_RESULT);
-    SendMessageW(first,message,NTW16S_WINDOW_THREAD_ATTACH,(LPARAM)first);
+    DISPATCH();
     CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)==1 && attached(first));
     RemovePropW(first,NTW16S_WINDOW_THREAD_RESULT);
-    SendMessageW(first,message,NTW16S_WINDOW_THREAD_REMOVE,(LPARAM)first);
+    event.wParam=NTW16S_WINDOW_THREAD_REMOVE;DISPATCH();
     CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)==1);
     CHECK(!attached(first) && !attached(other));
-    CHECK(UnhookWindowsHookEx(hook));
+    if(hook)CHECK(UnhookWindowsHookEx(hook));
     DestroyWindow(first);
     DestroyWindow(other);
     FreeLibrary(dll);
-    printf("window-thread PASS width=%u\n",(unsigned)(8*sizeof(void *)));
+    printf("window-thread PASS width=%u direct=%d\n",(unsigned)(8*sizeof(void *)),direct);
+#undef DISPATCH
     return 0;
 }

@@ -10,7 +10,8 @@ static const style_global_window_ops ops={
 };
 typedef BOOL (__cdecl *window_op)(HWND);
 static INIT_ONCE win2k_once=INIT_ONCE_STATIC_INIT;
-static window_op win2k_attached,win2k_apply,win2k_remove;
+static style_global_window_ops win2k_ops={.active=ntw16s_global_policy_active,
+    .control=NTW16S_GLOBAL_CONTROL,.query=NTW16S_GLOBAL_QUERY,.acknowledgement=NTW16S_GLOBAL_ATTACHED};
 static BOOL CALLBACK load_win2k(PINIT_ONCE once,void *parameter,void **result)
 {
     (void)once;(void)parameter;(void)result;
@@ -18,14 +19,9 @@ static BOOL CALLBACK load_win2k(PINIT_ONCE once,void *parameter,void **result)
     FARPROC entries[ARRAYSIZE(names)];
     if(!win32_style_companion((const void *)&load_win2k,
         sizeof(void *)==8?L"ntw2ks64.dll":L"ntw2ks32.dll",names,entries,ARRAYSIZE(entries),1))return FALSE;
-    win2k_attached=(window_op)(void *)entries[0];win2k_apply=(window_op)(void *)entries[1];
-    win2k_remove=(window_op)(void *)entries[2];return TRUE;
+    win2k_ops.attached=(window_op)(void *)entries[0];win2k_ops.apply=(window_op)(void *)entries[1];
+    win2k_ops.remove=(window_op)(void *)entries[2];return TRUE;
 }
-static BOOL win2k_is_attached(HWND window){return win2k_attached(window);}
-static BOOL win2k_attach(HWND window){return win2k_apply(window);}
-static BOOL win2k_detach(HWND window){return win2k_remove(window);}
-static const style_global_window_ops win2k_ops={win2k_is_attached,win2k_attach,win2k_detach,
-    ntw16s_global_policy_active,NTW16S_GLOBAL_CONTROL,NTW16S_GLOBAL_QUERY,NTW16S_GLOBAL_ATTACHED};
 static const style_global_window_ops *style_ops(DWORD style)
 {
     if(style==NTW16S_GLOBAL_STYLE_16)return &ops;
@@ -48,6 +44,23 @@ BOOL ntw16s_global_window_apply_style(HWND window,DWORD style)
 }
 BOOL ntw16s_global_window_remove_style(HWND window,DWORD style)
 {const style_global_window_ops *selected=style_ops(style);return selected && style_global_window_remove(window,selected);}
+BOOL ntw16s_global_window_eligible(HWND window)
+{
+    WCHAR name[64];DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
+    if(!GetClassNameW(window,name,ARRAYSIZE(name)))return FALSE;
+    if(style&WS_CHILD)return TRUE;
+    return (style&WS_CAPTION)==WS_CAPTION && !(GetWindowLongPtrW(window,GWL_EXSTYLE)&(WS_EX_TOOLWINDOW|WS_EX_LAYERED));
+}
+typedef struct child_action {BOOL apply;DWORD style;} child_action;
+static BOOL child_window(HWND window,void *value)
+{
+    const child_action *action=value;
+    if(action->apply && ntw16s_global_window_eligible(window))(void)ntw16s_global_window_apply_style(window,action->style);
+    else if(!action->apply)(void)ntw16s_global_window_remove_style(window,action->style);
+    return TRUE;
+}
+void ntw16s_global_window_children(HWND window,BOOL apply,DWORD style)
+{child_action action={apply,style};(void)style_global_window_visit_children(window,child_window,&action);}
 BOOL ntw16s_global_window_attached(HWND window)
 {return style_global_window_attached(window,&ops);}
 BOOL ntw16s_global_window_apply(HWND window)

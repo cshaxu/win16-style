@@ -1,4 +1,5 @@
 #include "font.h"
+#include "lib-style/common/bitmap.h"
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
@@ -112,7 +113,7 @@ HFONT win16_style_system_source(HFONT font)
 static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOOL isolated)
 {
     HDC original=NULL,src=NULL,dst=NULL;HFONT base=NULL,font=NULL;
-    HBITMAP a=NULL,b=NULL;HGDIOBJ oa=NULL,ob=NULL,of=NULL,oo=NULL;
+    HBITMAP a=NULL;HGDIOBJ oa=NULL,of=NULL,oo=NULL;style_bitmap rendered={0};
     BYTE *data=NULL;DWORD *pixels=NULL;HANDLE resource=NULL;DWORD count=0;
     TEXTMETRICW tm,system;char face[32],actual[32];BOOL ok=FALSE;
     unsigned cursor=118+225*4,sum=0,maxwidth=0;system_variant *v=NULL;
@@ -132,16 +133,15 @@ static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOO
     if(tm.tmHeight<1 || tm.tmHeight>64)goto done;
     data=calloc(65536,1);v=calloc(1,sizeof(*v));if(!data || !v)goto done;
     wsprintfA(face,"Win16 System %08lX",(DWORD)InterlockedIncrement(&variant_serial));
-    src=CreateCompatibleDC(NULL);dst=CreateCompatibleDC(NULL);
+    src=CreateCompatibleDC(NULL);
     a=CreateBitmap(128,64,1,1,NULL);
-    BITMAPINFO info={.bmiHeader={.biSize=sizeof(BITMAPINFOHEADER),.biWidth=128,
-        .biHeight=-64,.biPlanes=1,.biBitCount=32,.biCompression=BI_RGB}};
-    b=CreateDIBSection(NULL,&info,DIB_RGB_COLORS,(void **)&pixels,NULL,0);
+    SIZE dimensions={128,64};
+    if(style_bitmap_ensure(&rendered,NULL,dimensions)){dst=rendered.dc;pixels=(DWORD *)rendered.pixels;}
     base=CreateFontW(16,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,ANSI_CHARSET,
         OUT_RASTER_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,L"System");
-    if(!src || !dst || !a || !b || !base)goto done;
-    oa=SelectObject(src,a);ob=SelectObject(dst,b);of=SelectObject(src,base);
-    if(!oa || !ob || !of || !GetTextMetricsW(src,&system) ||
+    if(!src || !dst || !a || !base)goto done;
+    oa=SelectObject(src,a);of=SelectObject(src,base);
+    if(!oa || !of || !GetTextMetricsW(src,&system) ||
         !GetTextFaceA(src,32,actual) || strcmp(actual,"System") || system.tmHeight<1 || system.tmHeight>64)goto done;
     /* Menu typography has its own proportional contract. Control variants
      * continue to use the application font metrics above, without changes. */
@@ -187,13 +187,11 @@ done:
     if(oo)SelectObject(original,oo);
     if(of)SelectObject(src,of);
     if(oa)SelectObject(src,oa);
-    if(ob)SelectObject(dst,ob);
     if(base)DeleteObject(base);
     if(a)DeleteObject(a);
-    if(b)DeleteObject(b);
     if(original)DeleteDC(original);
     if(src)DeleteDC(src);
-    if(dst)DeleteDC(dst);
+    style_bitmap_dispose(&rendered);
     free(data);
     if(ok && resource){v->source=source;v->menu_dpi=menu_dpi;v->preserve_strokes=preserve_strokes;v->isolated=isolated;v->font=font;v->resource=resource;v->refs=1;v->next=variants;variants=v;return font;}
     free(v);

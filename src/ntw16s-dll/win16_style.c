@@ -14,6 +14,8 @@
 #include "../lib-style/win16-window/frame_input.h"
 #include "../lib-style/win16-window/frame_layout.h"
 #include "lib-style/common/present.h"
+#include "lib-style/common/frame.h"
+#include "lib-win32/style/window_identity.h"
 #include "../lib-style/win16-window/menu_bar.h"
 #include "../lib-style/win16-window/menu_items.h"
 #include "../lib-style/win16-window/menu_scope.h"
@@ -57,7 +59,7 @@ static style_window *state(HWND w)
 
 static BOOL local_window(HWND w)
 {
-    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
+    if(!win32_style_window_current_thread(w)){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
     return TRUE;
@@ -147,7 +149,7 @@ static BOOL refresh_font(HWND w,style_window *s)
 static void activate_frame(HWND w,style_window *s,const RECT *client,BOOL normal)
 {
     win16_style_layout l;
-    s->keep_outer=normal && client && layout(w,s,&l) && !s->detached && win16_control_frame_keep_outer(w,client,&l);
+    s->keep_outer=normal && client && layout(w,s,&l) && !s->detached && style_frame_keep_outer(w,client,&l.client);
     if(!s->detached)win16_control_frame_activate(w,&s->detached,client,normal&&!s->keep_outer,DwmSetWindowAttribute);
 }
 

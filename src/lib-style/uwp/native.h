@@ -4,6 +4,8 @@
 
 /* auxiliary is required; returned handles are borrowed from the host. */
 HWND style_uwp_title(HWND frame,HWND *auxiliary);
+/* GUI-thread menu callback; auxiliary is a borrowed title-bar child. */
+void style_uwp_application_menu(HWND frame,void *auxiliary);
 /* Caller initializes COM and must not be the target GUI thread. S_FALSE means
  * the native title does not offer a full-screen invocation. */
 HRESULT style_uwp_fullscreen_available(HWND title);

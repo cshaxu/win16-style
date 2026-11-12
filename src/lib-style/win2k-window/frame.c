@@ -4,6 +4,8 @@
 #include "lib-style/common/menu_input.h"
 #include "lib-style/common/dwm.h"
 #include "lib-style/common/frame.h"
+#include "lib-style/common/bitmap.h"
+#include "lib-win32/style/window_identity.h"
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <oleacc.h>
@@ -206,18 +208,11 @@ static void paint_button(HDC target,const RECT *rect,UINT state)
 {
     int width=rect->right-rect->left,height=rect->bottom-rect->top;
     if(width<=0 || height<=0)return;
-    BITMAPINFO bitmap={0};
-    bitmap.bmiHeader.biSize=sizeof(bitmap.bmiHeader);
-    bitmap.bmiHeader.biWidth=width;bitmap.bmiHeader.biHeight=-height;
-    bitmap.bmiHeader.biPlanes=1;bitmap.bmiHeader.biBitCount=32;
-    bitmap.bmiHeader.biCompression=BI_RGB;
-    HDC memory=CreateCompatibleDC(target);void *bits=NULL;
-    if(!memory)return;
-    HBITMAP surface=CreateDIBSection(target,&bitmap,DIB_RGB_COLORS,&bits,NULL,0);
-    if(surface && bits){
-        HGDIOBJ old=SelectObject(memory,surface);
+    style_bitmap bitmap={0};SIZE size={width,height};
+    if(style_bitmap_ensure(&bitmap,target,size)){
+        HDC memory=bitmap.dc;
         RECT local={0,0,width,height};
-        if(old && old!=HGDI_ERROR && DrawFrameControl(memory,&local,DFC_CAPTION,state)){
+        if(DrawFrameControl(memory,&local,DFC_CAPTION,state)){
             static const int indices[]={COLOR_3DFACE,COLOR_3DSHADOW,COLOR_3DDKSHADOW,COLOR_3DLIGHT};
             static const COLORREF values[]={RGB(212,208,200),RGB(128,128,128),RGB(0,0,0),RGB(212,208,200)};
             DWORD from[ARRAYSIZE(indices)],to[ARRAYSIZE(indices)];
@@ -226,15 +221,13 @@ static void paint_button(HDC target,const RECT *rect,UINT state)
                 from[i]=(DWORD)GetRValue(c)<<16 | (DWORD)GetGValue(c)<<8 | GetBValue(c);
                 to[i]=(DWORD)GetRValue(v)<<16 | (DWORD)GetGValue(v)<<8 | GetBValue(v);
             }
-            GdiFlush();DWORD *pixels=bits;
+            GdiFlush();DWORD *pixels=(DWORD *)bitmap.pixels;
             for(int i=0;i<width*height;++i)for(unsigned j=0;j<ARRAYSIZE(indices);++j)
                 if((pixels[i]&0xffffff)==from[j]){pixels[i]=to[j];break;}
             BitBlt(target,rect->left,rect->top,width,height,memory,0,0,SRCCOPY);
         }
-        if(old && old!=HGDI_ERROR)SelectObject(memory,old);
     }
-    if(surface)DeleteObject(surface);
-    DeleteDC(memory);
+    style_bitmap_dispose(&bitmap);
 }
 
 static void paint_border(HDC dc,int width,int height,int thickness)
@@ -531,7 +524,12 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
     if(!IsIconic(window) && compact_enabled(window) && message==WM_NCPAINT){
         HRGN region=style_frame_native_region(window,wp);
         if(region){DefSubclassProc(window,message,(WPARAM)region,lp);DWORD error=GetLastError();
-            DeleteObject(region);if(IsWindow(window))paint(window);SetLastError(error);return 0;}
+            DeleteObject(region);
+            if(IsWindow(window)){
+                paint(window);
+                if(IsWindow(window) && compact_enabled(window))style_invalidate_native_menu_overlap(window);
+            }
+            SetLastError(error);return 0;}
     }
     if(message && message==atomic_load(&frame_message)){
         if(RemovePropW(window,pending_property))recalculate_frame(window);
@@ -651,8 +649,7 @@ static LRESULT CALLBACK pending_frame_proc(HWND window,UINT message,WPARAM wp,LP
 
 BOOL win2k_frame_attach(HWND window)
 {
-    DWORD pid=0;
-    if(!window || GetWindowThreadProcessId(window,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId())return FALSE;
+    if(!window || !win32_style_window_current_thread(window))return FALSE;
     LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
     if((style&WS_CHILD) || GetPropW(window,frame_property))return FALSE;
     if((style&WS_CAPTION)!=WS_CAPTION)
@@ -678,8 +675,7 @@ BOOL win2k_frame_attach(HWND window)
 
 BOOL win2k_frame_attached(HWND window)
 {
-    DWORD pid=0;
-    if(!window || GetWindowThreadProcessId(window,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId()){
+    if(!window || !win32_style_window_current_thread(window)){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
     return GetPropW(window,frame_property)!=NULL;
@@ -687,8 +683,7 @@ BOOL win2k_frame_attached(HWND window)
 
 BOOL win2k_frame_remove(HWND window)
 {
-    DWORD pid=0;
-    if(!window || GetWindowThreadProcessId(window,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId()){
+    if(!window || !win32_style_window_current_thread(window)){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
     if(!GetPropW(window,frame_property)){
@@ -712,7 +707,6 @@ BOOL win2k_frame_remove(HWND window)
         HRESULT status=style_dwm_policy(window,DwmSetWindowAttribute,policy);
         if(FAILED(status)){SetLastError(HRESULT_CODE(status));return FALSE;}
     }
-    style_frame_changed(window);
-    if(normal && IsWindow(window))style_restore_client(window,&client);
+    style_frame_changed_restore(window,&client,normal);
     return TRUE;
 }

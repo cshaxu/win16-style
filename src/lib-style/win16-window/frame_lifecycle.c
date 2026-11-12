@@ -95,7 +95,7 @@ BOOL win16_control_frame_remove(HWND w,const win16_control_frame_lifecycle_servi
     s->detached=TRUE;
     if(!menu_only)v->control_remove(w,s);
     while(s->menus)win16_control_frame_state_end_menu(s);
-    win16_style_menu_restore(&s->menu_items);
+    style_menu_restore(&s->menu_items);
     if(!menu_only){
         if(s->bar_keyboard)v->leave_bar(w,s,TRUE);
         if(s->pressed && GetCapture()==w)ReleaseCapture();

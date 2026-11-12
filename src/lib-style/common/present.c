@@ -1,8 +1,30 @@
 #include "present.h"
 
+BOOL style_present_buffer_begin(style_present_buffer *buffer,HDC target,const RECT *bounds)
+{
+    ZeroMemory(buffer,sizeof(*buffer));buffer->target=target;buffer->bounds=*bounds;
+    int width=bounds->right-bounds->left,height=bounds->bottom-bounds->top;
+    buffer->memory=CreateCompatibleDC(target);
+    if(buffer->memory)buffer->bitmap=CreateCompatibleBitmap(target,width,height);
+    if(buffer->bitmap)buffer->old=(HBITMAP)SelectObject(buffer->memory,buffer->bitmap);
+    return buffer->old && buffer->old!=(HBITMAP)HGDI_ERROR &&
+        BitBlt(buffer->memory,0,0,width,height,target,bounds->left,bounds->top,SRCCOPY) &&
+        SetWindowOrgEx(buffer->memory,bounds->left,bounds->top,NULL);
+}
+BOOL style_present_buffer_end(style_present_buffer *buffer,BOOL commit)
+{
+    RECT *r=&buffer->bounds;BOOL ready=FALSE;
+    if(commit)ready=BitBlt(buffer->target,r->left,r->top,r->right-r->left,r->bottom-r->top,
+                           buffer->memory,r->left,r->top,SRCCOPY);
+    if(buffer->old && buffer->old!=(HBITMAP)HGDI_ERROR)SelectObject(buffer->memory,buffer->old);
+    if(buffer->bitmap)DeleteObject(buffer->bitmap);
+    if(buffer->memory)DeleteDC(buffer->memory);
+    return ready;
+}
+
 void style_present(HWND w,const style_present_view *view,HDC target)
 {
-    RECT dirty,client;HDC memory=NULL;HBITMAP bitmap=NULL,old=NULL;BOOL ready=FALSE;
+    RECT dirty,client;style_present_buffer buffer;BOOL ready=FALSE;
     BOOL group;int target_saved=0;
     if(!target || GetClipBox(target,&dirty)==ERROR || !GetClientRect(w,&client) ||
         !IntersectRect(&dirty,&dirty,&client))return;
@@ -16,12 +38,8 @@ void style_present(HWND w,const style_present_view *view,HDC target)
                 MapWindowPoints(NULL,w,(POINT *)&r,2);
                 ExcludeClipRect(target,r.left,r.top,r.right,r.bottom);}
     }
-    memory=CreateCompatibleDC(target);
-    if(memory)bitmap=CreateCompatibleBitmap(target,dirty.right-dirty.left,dirty.bottom-dirty.top);
-    if(bitmap)old=(HBITMAP)SelectObject(memory,bitmap);
-    if(old && old!=(HBITMAP)HGDI_ERROR &&
-        BitBlt(memory,0,0,dirty.right-dirty.left,dirty.bottom-dirty.top,target,dirty.left,dirty.top,SRCCOPY) &&
-        SetWindowOrgEx(memory,dirty.left,dirty.top,NULL)){
+    if(style_present_buffer_begin(&buffer,target,&dirty)){
+        HDC memory=buffer.memory;
         if(group){HWND parent=GetParent(w);POINT origin={0,0};int saved=SaveDC(memory);
             SetDCBrushColor(memory,view->background);FillRect(memory,&client,(HBRUSH)GetStockObject(DC_BRUSH));
             if(saved && parent){MapWindowPoints(w,parent,&origin,1);
@@ -30,12 +48,10 @@ void style_present(HWND w,const style_present_view *view,HDC target)
             if(saved)RestoreDC(memory,saved);
         }
         if(!*view->detached)view->paint(w,view->context,memory);
-        if(!*view->detached)ready=BitBlt(target,dirty.left,dirty.top,dirty.right-dirty.left,
-            dirty.bottom-dirty.top,memory,dirty.left,dirty.top,SRCCOPY);
+        ready=style_present_buffer_end(&buffer,!*view->detached);
+    }else{
+        (void)style_present_buffer_end(&buffer,FALSE);
     }
-    if(old && old!=(HBITMAP)HGDI_ERROR)SelectObject(memory,old);
-    if(bitmap)DeleteObject(bitmap);
-    if(memory)DeleteDC(memory);
     if(!ready && !*view->detached)view->paint(w,view->context,target);
     if(target_saved)RestoreDC(target,target_saved);
 }

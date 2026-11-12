@@ -36,8 +36,9 @@ BOOL win16_style_toolbar_supported(HWND w)
 }
 static void fill(HDC dc,const RECT *r,COLORREF color)
 {SetDCBrushColor(dc,color);FillRect(dc,r,GetStockObject(DC_BRUSH));}
-BOOL win16_style_toolbar_part(HWND w,const NMCUSTOMDRAW *draw,const win16_style_palette *palette)
+BOOL win16_style_toolbar_part(HWND w,const NMCUSTOMDRAW *draw,const void *context)
 {
+    const win16_style_palette *palette=context;
     LRESULT count;TBBUTTON item;WCHAR text[512];RECT rect,client,inner;int index=-1,saved,unit;HFONT source,font,old;
     if(!draw || !draw->hdc || !palette || draw->dwDrawStage!=CDDS_ITEMPREPAINT || !win16_style_toolbar_supported(w) ||
         !GetClientRect(w,&client))return FALSE;

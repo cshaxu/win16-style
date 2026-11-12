@@ -1,5 +1,6 @@
 #include "control_lifetime.h"
 #include "spin_identity.h"
+#include "lib-style/common/control_scope.h"
 #include "../win16-common/font.h"
 #include <commctrl.h>
 
@@ -44,26 +45,12 @@ void win16_control_finish_message(HWND w,control_style *s,UINT m,LPARAM b,HWND s
 
 BOOL win16_control_updown_acquire(void *owner,SUBCLASSPROC proc)
 {
-    control_style *s=owner;DWORD_PTR value;
-    if(s->detached || !GetWindowSubclass(s->updown.window,proc,(UINT_PTR)proc,&value) || value!=(DWORD_PTR)s)return FALSE;
+    control_style *s=owner;
+    if(s->detached || !style_control_subclass_owned(s->updown.window,proc,(UINT_PTR)proc,s))return FALSE;
     ++s->calls;return TRUE;
 }
 void win16_control_updown_release(void *owner)
 {control_style *s=owner;if(!--s->calls && s->detached)win16_control_state_dispose(s);}
-void win16_control_trackbar_unbind(control_style *s,SUBCLASSPROC proc)
-{
-    DWORD_PTR value;
-    if(s->track_parent && GetWindowSubclass(s->track_parent,proc,(UINT_PTR)s->track_window,&value) &&
-        value==(DWORD_PTR)s)RemoveWindowSubclass(s->track_parent,proc,(UINT_PTR)s->track_window);
-    s->track_parent=NULL;s->track_internal=FALSE;
-}
-void win16_control_toolbar_unbind(control_style *s,SUBCLASSPROC proc)
-{
-    DWORD_PTR value;
-    if(s->toolbar_parent && GetWindowSubclass(s->toolbar_parent,proc,(UINT_PTR)s->toolbar_window,&value) &&
-        value==(DWORD_PTR)s)RemoveWindowSubclass(s->toolbar_parent,proc,(UINT_PTR)s->toolbar_window);
-    s->toolbar_parent=NULL;s->toolbar_internal=FALSE;
-}
 void win16_control_scrollbars_paint(HWND w,HDC target,const win16_style_palette *palette,SUBCLASSPROC proc,
     void (*paint)(HWND,control_style *,HDC))
 {

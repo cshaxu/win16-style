@@ -7,7 +7,8 @@
 #include "../../lib-win32/process-hook/unwind.h"
 #include "lib-style/common/classic_file_helpers.h"
 #include "lib-style/common/classic_file_contract.h"
-#include "../../lib-style/win16-dialog/file_hook.h"
+#include "lib-style/common/classic_file_hook.h"
+#include "lib-style/common/message_observer.h"
 #include <dlgs.h>
 #include <commdlg.h>
 #include <shlobj.h>
@@ -25,12 +26,12 @@ static BOOL (WINAPI *native_save_w)(LPOPENFILENAMEW);
 /* The OS may also create an old-style template for callers with their own
  * hooks. Observe its initialized controls without replacing the caller hook. */
 static void old_dialog_initialized(HWND window)
-{win16_dialog_file_initialized(window,ntw16s_old_dialog_chrome);}
+{style_classic_file_initialized(window,ntw16s_old_dialog_chrome);}
 #ifndef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
 static LRESULT CALLBACK old_dialog_return(int code,WPARAM wparam,LPARAM lparam)
 {
-    if(code>=0 && lparam){const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)lparam;
-        if(m->message==WM_INITDIALOG)old_dialog_initialized(m->hwnd);}
+    const CWPRETSTRUCT *message=style_message_dialog_initialized(code,lparam);
+    if(message)old_dialog_initialized(message->hwnd);
     return CallNextHookEx(NULL,code,wparam,lparam);
 }
 #endif
@@ -41,19 +42,19 @@ typedef struct old_dialog_scope {HHOOK hook;BOOL resolve_links;struct old_dialog
 } old_dialog_scope;
 static _Thread_local old_dialog_scope *active_file_dialog;
 static void old_dialog_end(void *value)
-{old_dialog_scope *scope=value;active_file_dialog=scope->previous_active;if(scope->hook)UnhookWindowsHookEx(scope->hook);
+{old_dialog_scope *scope=value;active_file_dialog=scope->previous_active;style_message_observer_end(scope->hook);
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
     ntw16s_creation_dialog_observer(scope->previous);
 #endif
 }
 static UINT_PTR CALLBACK old_dialog_hook(HWND window,UINT message,WPARAM wparam,LPARAM lparam)
-{return win16_dialog_file_hook(window,message,wparam,lparam,
+{return style_classic_file_hook(window,message,wparam,lparam,
     active_file_dialog && active_file_dialog->resolve_links,ntw16s_old_dialog_chrome);}
 
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
 #define NTW16S_OLD_DIALOG_OBSERVER(scope) ((scope).previous=ntw16s_creation_dialog_observer(old_dialog_initialized))
 #else
-#define NTW16S_OLD_DIALOG_OBSERVER(scope) ((scope).hook=SetWindowsHookExW(WH_CALLWNDPROCRET,old_dialog_return,NULL,GetCurrentThreadId()))
+#define NTW16S_OLD_DIALOG_OBSERVER(scope) ((scope).hook=style_message_observer_begin(old_dialog_return))
 #endif
 #define BRIDGE(name, structure, suffix, original, extra_flags) \
     typedef struct name##_call {structure *value;BOOL result;DWORD incoming,error;} name##_call; \

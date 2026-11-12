@@ -42,3 +42,19 @@ visual acceptance remain unverified. Both published destinations matched:
 
 T26 S1 remains open, including full inventory, actual cross-style adapters and
 the previously reported Win2000 DWM restoration problem.
+
+## 公共表面刷新生命周期
+
+候选七之后，位图准备、隐藏、重入保护、绘制回调和分层表面提交由
+`style_uwp_surface_refresh` 协调；Win16 通过回调提供几何、颜色、字体和
+绘制，仍负责其外框附着和释放。公共接口不依赖 Win16，后续风格可以提供
+各自的绘制实现；目前尚无 Win2000 UWP 调用方。
+
+双位宽增量构建通过。公共测试以实际自建窗口验证几何失败、重入保护和
+绘制期间解除；受控 API 替身另验证成功提交、提交失败时隐藏及重入行为，
+原有透明区域与资源所有权测试通过。它们不能证明真实分层窗口提交或
+UWP/WinUI 宿主效果。随后以自建分层窗口执行真实提交时，x86/x64 均返回
+错误 5，测试分别明确输出 `native_present=0` 和 SKIP；真实提交不计通过。
+随后用当前增量构建直接运行完整 Win16 UWP 外框的 `--private-worker` 分支
+（不创建或切换桌面），两个位宽均在第 82 行返回错误 5，与先前基线的
+第一个附着失败一致；完整外框生命周期仍未验证。此改动尚未干净构建或发布。

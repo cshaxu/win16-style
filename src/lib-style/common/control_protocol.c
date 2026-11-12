@@ -1,9 +1,17 @@
 #include "control_protocol.h"
+#include "lib-win32/style/window_identity.h"
 #include <commctrl.h>
 #include <shlwapi.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <wchar.h>
+
+BOOL style_control_native_superclass(HWND window,const WCHAR *expected)
+{
+    WCHAR registered[64],real[64];
+    return GetClassNameW(window,registered,ARRAYSIZE(registered)) && lstrcmpiW(registered,expected) &&
+        RealGetWindowClassW(window,real,ARRAYSIZE(real)) && !lstrcmpiW(real,expected);
+}
 
 struct style_control_protocol {
     struct style_control_protocol *next;
@@ -113,9 +121,9 @@ void style_control_protocol_release(style_control_protocol *b)
 }
 static style_control_protocol *bind_protocol(HWND w,HMODULE verified_owner,unsigned verified_role)
 {
-    WCHAR name[64];unsigned role;DWORD process;WNDCLASSEXW native_class={.cbSize=sizeof(native_class)};
+    WCHAR name[64];unsigned role;WNDCLASSEXW native_class={.cbSize=sizeof(native_class)};
     HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE),toolbar_native=NULL;
-    if(GetWindowThreadProcessId(w,&process)!=GetCurrentThreadId() || process!=GetCurrentProcessId() ||
+    if(!win32_style_window_current_thread(w) ||
         !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) ||
         !GetClassNameW(w,name,ARRAYSIZE(name)) || GetPropW(w,key))return NULL;
     /* No prefix aliases or private VCL object/procedure decoding. All roles
