@@ -552,7 +552,7 @@ static void report_unbind(attachment *a)
 static const win16_attachment_lifecycle_services lifecycle_services={lookup,cool_identity,mdi_identity,controlbar_identity,rich_identity,
     ntw16s_vb_user_label_target,attachment_proc,report_unbind,cool_unbind,win16_style_frame_remove_owned,
     win16_style_control_remove_owned,ntw16s_theme_remove,win16_style_frame_terminal,win16_style_control_terminal,
-    win16_control_theme_terminal,release,win16_style_scrollbars_paint};
+    style_theme_terminal,release,win16_style_scrollbars_paint};
 BOOL __cdecl Ntw16sWindowAttached(HWND w)
 {return win16_attachment_attached(w,&lifecycle_services);}
 void __cdecl Ntw16sScrollChanged(HWND w)
@@ -691,10 +691,10 @@ static LRESULT CALLBACK creation_before(int code,WPARAM p,LPARAM l)
 #endif
         if(class_is((HWND)p,L"LISTBOX") || class_is((HWND)p,L"ComboLBox") ||
            (class_is((HWND)p,L"EDIT") && (pending->style&ES_MULTILINE))){
-            if(!win16_control_theme_capture((HWND)p)){
+            if(!style_theme_capture((HWND)p)){
                 scope->result.failure=GetLastError();return 1;
             }
-        }else if((pending->style&WS_CHILD) && !win16_control_theme_stage((HWND)p)){
+        }else if((pending->style&WS_CHILD) && !style_theme_stage((HWND)p)){
             scope->result.failure=GetLastError();return 1;
         }
     }
@@ -726,7 +726,7 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
         if(created && class_is(m->hwnd,L"#32770")){
             SetLastError(saved);return result;
         }
-        if(m->message==WM_NCDESTROY){pending_window *pending=take_pending(scope,m->hwnd);win16_control_theme_cancel_stage(m->hwnd);free(pending);}
+        if(m->message==WM_NCDESTROY){pending_window *pending=take_pending(scope,m->hwnd);style_theme_cancel_stage(m->hwnd);free(pending);}
         /* Some dialogs show themselves and run a nested loop inside
          * WM_INITDIALOG. Its return may be delayed until the application exits.
          * A completed first-show notification is also a safe boundary, but
@@ -765,7 +765,7 @@ static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
                 (DWORD)GetWindowLongPtrW(m->hwnd,GWL_STYLE);
             if(pending){style=pending->style;if(!first_show)free(pending);}
             BOOL already=lookup(m->hwnd)!=NULL;
-            BOOL installed=win16_control_theme_commit(m->hwnd) && install_created(m->hwnd,style);
+            BOOL installed=style_theme_commit(m->hwnd) && install_created(m->hwnd,style);
             if(installed){
                 if(first_show){
                     for(pending_window *record=owner->pending;record;record=record->next)
@@ -844,7 +844,7 @@ BOOL __cdecl Ntw16sCreationEnd(ntw16s_creation_scope *scope,ntw16s_creation_resu
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
         if(IsWindow(pending->window))RemoveWindowSubclass(pending->window,creation_subclass,(UINT_PTR)creation_subclass);
 #endif
-        win16_control_theme_cancel_stage(pending->window);free(pending);}
+        style_theme_cancel_stage(pending->window);free(pending);}
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
     if(scope->owns_return_hook){UnhookWindowsHookEx(creation_return_hook);creation_return_hook=NULL;}
     if(scope->suspended_return_hook){

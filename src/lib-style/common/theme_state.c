@@ -4,17 +4,6 @@
 #include <stdlib.h>
 #include <wchar.h>
 
-int win16_control_theme_kind(LPCWSTR name)
-{
-    WCHAR safe[9];SIZE_T got=0;
-    if(!name || !ReadProcessMemory(GetCurrentProcess(),name,safe,7*sizeof(WCHAR),&got) || got!=7*sizeof(WCHAR))
-        return WIN16_CONTROL_THEME_OTHER;
-    if(safe[6]==0 && !lstrcmpiW(safe,L"BUTTON"))return WIN16_CONTROL_THEME_BUTTON;
-    if(!ReadProcessMemory(GetCurrentProcess(),name,safe,sizeof(safe),&got) || got!=sizeof(safe))return WIN16_CONTROL_THEME_OTHER;
-    if(safe[8]==0 && !lstrcmpiW(safe,L"COMBOBOX"))return WIN16_CONTROL_THEME_COMBOBOX;
-    return safe[8]==0 && !lstrcmpiW(safe,L"TEXTGLOW")?WIN16_CONTROL_THEME_TEXTGLOW:WIN16_CONTROL_THEME_OTHER;
-}
-
 typedef struct theme_state {
     struct theme_state *next;HWND window;BOOL staged;
     WCHAR *application,*ids;
@@ -36,11 +25,11 @@ static void release(theme_state *s)
 static LRESULT CALLBACK theme_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     theme_state *s=(theme_state *)data;LRESULT result;(void)id;++s->calls;
-    if(m==WM_NCDESTROY)(void)win16_control_theme_terminal(w,NULL);
+    if(m==WM_NCDESTROY)(void)style_theme_terminal(w,NULL);
     result=DefSubclassProc(w,m,p,l);
     release(s);return result;
 }
-BOOL win16_control_theme_capture(HWND w)
+BOOL style_theme_capture(HWND w)
 {
     theme_state *s;
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
@@ -53,7 +42,7 @@ BOOL win16_control_theme_capture(HWND w)
 }
 /* A framework may replace its InitWndProc during WM_NCCREATE. Do not put a
  * native subclass in that temporary chain just to record early theme calls. */
-BOOL win16_control_theme_stage(HWND w)
+BOOL style_theme_stage(HWND w)
 {
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;}
     if(state(w))return TRUE;
@@ -66,18 +55,18 @@ static void unstage(theme_state *s)
     if(*link)*link=s->next;
     s->next=NULL;s->staged=FALSE;
 }
-BOOL win16_control_theme_commit(HWND w)
+BOOL style_theme_commit(HWND w)
 {
     theme_state *s=state(w);if(!s || !s->staged)return TRUE;
     if(!SetWindowSubclass(w,theme_proc,(UINT_PTR)theme_proc,(DWORD_PTR)s))return FALSE;
     unstage(s);return TRUE;
 }
-void win16_control_theme_cancel_stage(HWND w)
+void style_theme_cancel_stage(HWND w)
 {
     theme_state *s=state(w);if(!s || !s->staged)return;
     unstage(s);++s->calls;s->detached=TRUE;release(s);
 }
-BOOL win16_control_theme_terminal(HWND w,const void *owner)
+BOOL style_theme_terminal(HWND w,const void *owner)
 {
     theme_state *s;
     s=state(w);if(!s || (owner && s->owner!=owner))return TRUE;
@@ -88,7 +77,7 @@ BOOL win16_control_theme_terminal(HWND w,const void *owner)
     ++s->calls;s->detached=TRUE;release(s);
     return TRUE;
 }
-BOOL win16_control_theme_enable(HWND w,const void *owner,win16_control_native_theme_fn native_theme)
+BOOL style_theme_suppress(HWND w,const void *owner,style_native_theme_fn native_theme)
 {
     theme_state *s=state(w);HRESULT result;
     if(!s){SetLastError(ERROR_INVALID_STATE);return FALSE;}
@@ -99,16 +88,16 @@ BOOL win16_control_theme_enable(HWND w,const void *owner,win16_control_native_th
     if(FAILED(result)){SetLastError(HRESULT_CODE(result));return FALSE;}
     return TRUE;
 }
-BOOL win16_control_theme_retained(HWND w)
+BOOL style_theme_retained(HWND w)
 {theme_state *s=state(w);return s && s->active;}
-void win16_control_theme_remove(HWND w,const void *owner,win16_control_native_theme_fn native_theme)
+void style_theme_remove(HWND w,const void *owner,style_native_theme_fn native_theme)
 {
     theme_state *s=state(w);if(!s || s->owner!=owner)return;
     ++s->calls;if(s->staged)unstage(s);else RemoveWindowSubclass(w,theme_proc,(UINT_PTR)theme_proc);s->detached=TRUE;
     if(s->active)native_theme(w,s->application,s->ids);
     release(s);
 }
-HRESULT win16_control_theme_set(HWND w,LPCWSTR application,LPCWSTR ids,win16_control_native_theme_fn native_theme)
+HRESULT style_theme_set(HWND w,LPCWSTR application,LPCWSTR ids,style_native_theme_fn native_theme)
 {
     theme_state *s;WCHAR *app_copy=NULL,*id_copy=NULL;HRESULT result;unsigned epoch;
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() || !(s=state(w)))

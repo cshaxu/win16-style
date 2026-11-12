@@ -14,7 +14,8 @@
 #include "lib-style/win16-control/attachment_state.h"
 #include "lib-style/win16-control/fileowner_message.h"
 #include "lib-style/win16-control/list_paint.h"
-#include "lib-style/win16-control/theme_state.h"
+#include "lib-style/win16-control/theme_kind.h"
+#include "lib-style/common/theme_state.h"
 #include "lib-style/win16-control/custom_draw.h"
 #include "lib-style/win16-control/text_policy.h"
 #include <dwmapi.h>
@@ -133,7 +134,7 @@ int main(void)
     if(!owned->title_font || !owned->menu_font){win16_control_frame_state_dispose(owned);return 35;}
     HFONT former_title=owned->title_font;win16_control_frame_state_dispose(owned);
     LOGFONTW disposed;if(GetObjectW(former_title,sizeof(disposed),&disposed))return 36;
-    if(win16_control_theme_set(NULL,L"Test",L"Demo",test_native_theme)!=S_FALSE || theme_calls!=1)return 23;
+    if(style_theme_set(NULL,L"Test",L"Demo",test_native_theme)!=S_FALSE || theme_calls!=1)return 23;
     win16_style_palette palette;
     win16_style_default_palette(&palette);
     NMCUSTOMDRAW custom={0};BOOL custom_active=FALSE;

@@ -24,6 +24,10 @@ add_library(style-present STATIC src/lib-style/common/present.c)
 target_include_directories(style-present PUBLIC src)
 target_compile_definitions(style-present PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-present PUBLIC user32 gdi32)
+add_library(style-theme-state STATIC src/lib-style/common/theme_state.c)
+target_include_directories(style-theme-state PUBLIC src)
+target_compile_definitions(style-theme-state PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_link_libraries(style-theme-state PUBLIC user32 comctl32)
 add_library(style-global-window STATIC src/lib-style/common/global_window.c)
 target_include_directories(style-global-window PUBLIC src)
 target_compile_definitions(style-global-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -74,7 +78,7 @@ add_library(win16-control STATIC
   src/lib-style/win16-control/choice_view.c src/lib-style/win16-control/vb_text.c
   src/lib-style/win16-control/special_paint.c
   src/lib-style/win16-control/month_text.c src/lib-style/win16-control/scroll_native.c
-  src/lib-style/win16-control/theme_state.c src/lib-style/win16-control/updown_adapter.c
+  src/lib-style/win16-control/theme_kind.c src/lib-style/win16-control/updown_adapter.c
   src/lib-style/win16-control/custom_draw.c src/lib-style/win16-control/spin_identity.c
   src/lib-style/win16-control/control_state.c src/lib-style/win16-control/list_message.c
   src/lib-style/win16-control/edit_message.c src/lib-style/win16-control/basic_message.c
@@ -93,7 +97,7 @@ add_library(win16-control STATIC
   src/lib-style/win16-control/attachment_guard.c)
 target_include_directories(win16-control PUBLIC src/lib-style/win16-control)
 target_compile_definitions(win16-control PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-control PUBLIC win16-common user32 gdi32 comctl32 uxtheme)
+target_link_libraries(win16-control PUBLIC style-theme-state win16-common user32 gdi32 comctl32 uxtheme)
 add_library(style-dialog-common STATIC src/lib-style/common/print_ranges.c src/lib-style/common/classic_file_contract.c src/lib-style/common/classic_shell_item.c)
 target_include_directories(style-dialog-common PUBLIC src)
 target_compile_definitions(style-dialog-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -270,6 +274,10 @@ if(BUILD_TESTING)
   target_include_directories(core-style-present-fault PRIVATE src)
   target_link_libraries(core-style-present-fault PRIVATE user32 gdi32)
   add_test(NAME core/style-present-fault COMMAND $<TARGET_FILE:core-style-present-fault>)
+  add_executable(core-style-theme-state tests/lib-style/common/theme_state.c)
+  add_dependencies(core-style-theme-state ntw16s-subclass)
+  target_link_libraries(core-style-theme-state PRIVATE style-theme-state "${subclass_import}")
+  add_test(NAME core/style-theme-state COMMAND $<TARGET_FILE:core-style-theme-state>)
   add_executable(core-style-present tests/lib-style/common/present.c)
   target_link_libraries(core-style-present PRIVATE style-present)
   add_test(NAME core/style-present COMMAND $<TARGET_FILE:core-style-present>)
@@ -895,6 +903,7 @@ if(BUILD_TESTING)
   add_test(NAME core/scroll-native COMMAND ${test_driver} --name core/scroll-native -- $<TARGET_FILE:core-scroll-native>)
   set_tests_properties(core/menu-dispatch core/edit-clipboard core/control-present core/dc-failure core/scroll-native PROPERTIES TIMEOUT 100 RUN_SERIAL TRUE)
   add_executable(core-theme-stage tests/ntw16s-dll/theme_stage.c src/ntw16s-dll/native_api.c)
+  target_include_directories(core-theme-stage PRIVATE src)
   target_compile_definitions(core-theme-stage PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-theme-stage PRIVATE "${subclass_import}" user32 gdi32 comctl32 uxtheme)
   add_dependencies(core-theme-stage ntw16s-subclass)

@@ -302,7 +302,7 @@ static const win16_control_managed_services managed_services={control_proc,win16
 void win16_style_frame_scrollbars_palette_owned(HWND w,const win16_style_palette *palette,const void *owner)
 {win16_control_managed_frame_scrollbars_palette_owned(w,palette,owner,&managed_services);}
 static const win16_control_special_services special_services={control_proc,trackbar_notify,toolbar_notify,updown_acquire,win16_control_updown_release,
-    win16_style_frame_scrollbars_install_owned,win16_style_control_remove_owned,win16_control_theme_retained,win16_control_theme_capture,ntw16s_theme_enable};
+    win16_style_frame_scrollbars_install_owned,win16_style_control_remove_owned,style_theme_retained,style_theme_capture,ntw16s_theme_enable};
 BOOL win16_style_updown_install_created(HWND w,const win16_style_palette *p,const void *owner,const BOOL *cancelled)
 {return win16_control_special_updown_install(w,p,owner,cancelled,&special_services);}
 BOOL win16_style_trackbar_install_created(HWND w,const win16_style_palette *p,const void *owner,const BOOL *cancelled)
@@ -337,7 +337,7 @@ BOOL win16_style_edit_install(HWND w,BOOL original_border,const win16_style_pale
 BOOL win16_style_edit_scrollbars_enable(HWND w)
 {return win16_control_managed_edit_scrollbars_enable(w,&managed_services);}
 static const win16_control_remove_services control_remove_services={control_proc,scroll_finish,trackbar_unbind,toolbar_unbind,
-    combo_text_unbind,detach_combo_list,ntw16s_theme_remove,win16_control_theme_terminal,scroll_caret_destroy,
+    combo_text_unbind,detach_combo_list,ntw16s_theme_remove,style_theme_terminal,scroll_caret_destroy,
     scroll_stop_timer,scroll_release_capture,terminal_combo_list};
 BOOL win16_style_control_remove(HWND w)
 {return win16_control_remove(w,&control_remove_services);}

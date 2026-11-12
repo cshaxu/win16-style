@@ -11,7 +11,7 @@ static void stage_free(void *p){if(!p)return;for(unsigned i=0;i<count;++i)if(own
 #define calloc stage_calloc
 #define free stage_free
 #define _wcsdup stage_dup
-#include "../../src/lib-style/win16-control/theme_state.c"
+#include "../../src/lib-style/common/theme_state.c"
 #include "../../src/ntw16s-dll/theme.c"
 #undef calloc
 #undef free
@@ -30,22 +30,22 @@ static int worker(int argc,WCHAR **argv)
     WNDCLASSW c={0};c.lpfnWndProc=owner_proc;c.hInstance=GetModuleHandleW(NULL);c.lpszClassName=L"StageOwnership";CHECK(RegisterClassW(&c));
     HWND w=CreateWindowW(c.lpszClassName,L"stage",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,c.hInstance,NULL);CHECK(w);
     WNDPROC before=(WNDPROC)GetWindowLongPtrW(w,GWLP_WNDPROC);
-    CHECK(win16_control_theme_stage(w) && count==1 && staged && (WNDPROC)GetWindowLongPtrW(w,GWLP_WNDPROC)==before);
+    CHECK(style_theme_stage(w) && count==1 && staged && (WNDPROC)GetWindowLongPtrW(w,GWLP_WNDPROC)==before);
     CHECK(SUCCEEDED(Ntw16sSetWindowTheme(w,L"Explorer",L"Window")) && count==3);
     CHECK(!wcscmp(observed_app,L"Explorer") && !wcscmp(observed_ids,L"Window"));
     fail_next=TRUE;CHECK(Ntw16sSetWindowTheme(w,L"Other",NULL)==E_OUTOFMEMORY && count==3);
     CHECK(!wcscmp(state(w)->application,L"Explorer"));
-    CHECK(win16_control_theme_commit(w) && !staged && count==3);
+    CHECK(style_theme_commit(w) && !staged && count==3);
     const void *owner=&api;CHECK(ntw16s_theme_enable(w,owner));CHECK(!wcscmp(observed_app,L"") && !wcscmp(observed_ids,L""));
     CHECK(SUCCEEDED(Ntw16sSetWindowTheme(w,L"Other",NULL)) && count==2);
     CHECK(!wcscmp(observed_app,L"") && !wcscmp(state(w)->application,L"Other"));
     ntw16s_theme_remove(w,owner);CHECK(!state(w) && !staged && !count);
     CHECK(!wcscmp(observed_app,L"Other") && !wcscmp(observed_ids,L"<null>") && SendMessageW(w,WM_APP+7,0,0)==0x514 &&
         CallWindowProcW((WNDPROC)GetWindowLongPtrW(w,GWLP_WNDPROC),w,WM_APP+7,0,0)==CallWindowProcW(before,w,WM_APP+7,0,0));
-    fail_next=TRUE;CHECK(!win16_control_theme_stage(w) && GetLastError()==ERROR_NOT_ENOUGH_MEMORY && !count && !staged);
-    CHECK(win16_control_theme_stage(w));win16_control_theme_cancel_stage(w);CHECK(!count && !staged && !state(w));
-    CHECK(win16_control_theme_stage(w));CHECK(win16_control_theme_terminal(w,NULL));CHECK(!count && !staged && !state(w));
-    CHECK(win16_control_theme_stage(w) && win16_control_theme_commit(w));CHECK(DestroyWindow(w));CHECK(!count && !staged);
+    fail_next=TRUE;CHECK(!style_theme_stage(w) && GetLastError()==ERROR_NOT_ENOUGH_MEMORY && !count && !staged);
+    CHECK(style_theme_stage(w));style_theme_cancel_stage(w);CHECK(!count && !staged && !state(w));
+    CHECK(style_theme_stage(w));CHECK(style_theme_terminal(w,NULL));CHECK(!count && !staged && !state(w));
+    CHECK(style_theme_stage(w) && style_theme_commit(w));CHECK(DestroyWindow(w));CHECK(!count && !staged);
     CHECK(UnregisterClassW(c.lpszClassName,c.hInstance));
     printf("THEME_STAGE_OWNERSHIP_OK bits=%u calls=%u allocations=0 early_proc_unchanged=1 commit=1 cancel=1 terminal=1 fail_alloc=1 latest_theme_restored=1\n",(unsigned)(sizeof(void *)*8),native_calls);return 0;
 }
