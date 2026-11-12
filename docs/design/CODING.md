@@ -9,6 +9,7 @@ src/demo-exe/         x64 原生示例
 src/lib-win32/        内部 Win32 静态库：托盘、进程管理和挂钩等基础能力
 src/lib-style/        各年代样式组件及可跨风格共享的样式机制
 src/lib-style/common/  不依赖具体样式的窗口输入、生命周期和对话框基础机制
+src/lib-style/uwp/    不依赖具体样式的 UWP 原生宿主能力
 tests/run16s-exe/     启动契约测试
 tests/ntw16s-dll/     双位宽 DLL 单元及生命周期测试
 tests/demo-exe/       原生 demo 边界测试
@@ -60,7 +61,7 @@ boundary. No unimplemented theme-dispatch framework is introduced here.
 
 T22 S1 native title actions: the frame library copies an optional action array;
 labels and contexts are borrowed until removal. Menu commands are temporary,
-collision-checked and removed before callbacks. Product `uwp/native` selects
+collision-checked and removed before callbacks. Shared `lib-style/uwp/native` selects
 the witnessed native title and queries/invokes its full-screen UIA provider.
 Coordinator queries run outside the target GUI thread; menu invocation uses
 an independent MTA worker with a module reference. OLEAUT32 is an OS dependency,

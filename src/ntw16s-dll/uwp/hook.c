@@ -1,5 +1,5 @@
 #include "hook.h"
-#include "native.h"
+#include "lib-style/uwp/native.h"
 #include "lib-style/win16-window-uwp/frame.h"
 #include <stdint.h>
 #include <wchar.h>
@@ -17,11 +17,11 @@ static void application_menu(HWND frame,void *context)
 }
 static BOOL apply_frame(HWND frame,BOOL fullscreen)
 {
-    HWND auxiliary=NULL,title=ntw16s_uwp_title(frame,&auxiliary);
+    HWND auxiliary=NULL,title=style_uwp_title(frame,&auxiliary);
     if(!title){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     win16_uwp_frame_action actions[2];unsigned count=0;
     if(auxiliary)actions[count++]=(win16_uwp_frame_action){L"Application menu...",application_menu,auxiliary};
-    if(fullscreen)actions[count++]=(win16_uwp_frame_action){L"Toggle full screen",ntw16s_uwp_fullscreen,title};
+    if(fullscreen)actions[count++]=(win16_uwp_frame_action){L"Toggle full screen",style_uwp_fullscreen,title};
     return win16_uwp_frame_apply_actions(frame,title,actions,count);
 }
 LRESULT CALLBACK Ntw16sUwpFrameHook(int code,WPARAM parameter,LPARAM message)

@@ -7,7 +7,7 @@
 
 static BOOL class_is(HWND window,PCWSTR name)
 {WCHAR value[80];return GetClassNameW(window,value,ARRAYSIZE(value))&&!wcscmp(value,name);}
-HWND ntw16s_uwp_title(HWND frame,HWND *auxiliary)
+HWND style_uwp_title(HWND frame,HWND *auxiliary)
 {
     HWND best=NULL;LONG width=0;*auxiliary=NULL;
     for(HWND child=GetWindow(frame,GW_CHILD);child;child=GetWindow(child,GW_HWNDNEXT)){
@@ -46,7 +46,7 @@ static HRESULT fullscreen_pattern(HWND window,IUIAutomationInvokePattern **patte
     if(automation)IUIAutomation2_Release(automation);
     return hr;
 }
-HRESULT ntw16s_uwp_fullscreen_available(HWND title)
+HRESULT style_uwp_fullscreen_available(HWND title)
 {
     if(GetWindowThreadProcessId(title,NULL)==GetCurrentThreadId())return RPC_E_WRONG_THREAD;
     IUIAutomationInvokePattern *pattern=NULL;HRESULT hr=fullscreen_pattern(title,&pattern);
@@ -70,17 +70,17 @@ static DWORD WINAPI fullscreen_worker(void *parameter)
     if(hr==S_OK)hr=request_valid(r)?IUIAutomationInvokePattern_Invoke(pattern):E_INVALIDARG;
     if(pattern)IUIAutomationInvokePattern_Release(pattern);
     if(SUCCEEDED(initialized))CoUninitialize();
-    if(hr!=S_OK)OutputDebugStringW(L"run16s: native UWP full-screen action unavailable or failed\n");
+    if(hr!=S_OK)OutputDebugStringW(L"style: native UWP full-screen action unavailable or failed\n");
     free(r);FreeLibraryAndExitThread(module,(DWORD)hr);
 }
-void ntw16s_uwp_fullscreen(HWND frame,void *title)
+void style_uwp_fullscreen(HWND frame,void *title)
 {
     fullscreen_request *r=calloc(1,sizeof(*r));
-    if(!r){OutputDebugStringW(L"run16s: UWP full-screen request allocation failed\n");return;}
+    if(!r){OutputDebugStringW(L"style: UWP full-screen request allocation failed\n");return;}
     *r=(fullscreen_request){frame,(HWND)title,GetCurrentThreadId(),NULL};
     if(!request_valid(r)||!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
-        (PCWSTR)(uintptr_t)ntw16s_uwp_fullscreen,&r->module)){free(r);return;}
+        (PCWSTR)(uintptr_t)style_uwp_fullscreen,&r->module)){free(r);return;}
     HANDLE thread=CreateThread(NULL,0,fullscreen_worker,r,0,NULL);
     if(thread)CloseHandle(thread);
-    else {FreeLibrary(r->module);free(r);OutputDebugStringW(L"run16s: UWP full-screen worker creation failed\n");}
+    else {FreeLibrary(r->module);free(r);OutputDebugStringW(L"style: UWP full-screen worker creation failed\n");}
 }

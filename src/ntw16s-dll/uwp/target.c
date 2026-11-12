@@ -1,6 +1,6 @@
 #include "target.h"
 #include "hook.h"
-#include "native.h"
+#include "lib-style/uwp/native.h"
 #include "lib-win32/process-image/image.h"
 #include <dwmapi.h>
 #include <stdint.h>
@@ -50,9 +50,9 @@ DWORD ntw16s_uwp_target_change(const ntw16s_uwp_target *app,PCWSTR path,BOOL app
     if(machine!=IMAGE_FILE_MACHINE_AMD64)return ERROR_NOT_SUPPORTED;
     WPARAM action=NTW16S_UWP_REMOVE;
     if(apply){
-        HWND auxiliary=NULL,title=ntw16s_uwp_title(app->frame,&auxiliary);
+        HWND auxiliary=NULL,title=style_uwp_title(app->frame,&auxiliary);
         if(!title)return ERROR_NOT_SUPPORTED;
-        HRESULT capability=ntw16s_uwp_fullscreen_available(title);
+        HRESULT capability=style_uwp_fullscreen_available(title);
         if(FAILED(capability))return (DWORD)capability;
         action=capability==S_OK?NTW16S_UWP_APPLY_FULLSCREEN:NTW16S_UWP_APPLY;
     }

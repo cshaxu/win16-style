@@ -6044,7 +6044,7 @@
       "path": "src/ntw16s-dll/uwp/hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "29ec66992e8abf4104c8a2e2cd19b96970ee75decaebd411fd08d2aaa11cf70b",
+      "sha256": "f4724262090c4d9e6b42c1459747810f999733ea9c410068549751cc58cfe5bf",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6104,28 +6104,28 @@
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
-      "path": "src/ntw16s-dll/uwp/native.c",
+      "path": "src/lib-style/uwp/native.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b2d353aca82db9141452edf750a136fb6a37cbe884587553448fc3acde1a63ef",
+      "sha256": "546e5dc1578df855b50bb37907cd21cda6f4361cc90559525c3e284218bf6c3c",
       "disposition": "authored",
       "review": "T22 S1 native UWP title actions; original pure C implementation using system UI Automation, no external code copied",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
-      "path": "src/ntw16s-dll/uwp/native.h",
+      "path": "src/lib-style/uwp/native.h",
       "source": null,
       "source_blob": null,
-      "sha256": "7cf6b65de167e4a0cb87cf8b8c169608e51c1e9b8ddbb4186deed20300b625b5",
+      "sha256": "27739da6440176def44f54cd8d3bd7b1310b45b62c7a80ae1a5e4215ed377a24",
       "disposition": "authored",
       "review": "T22 S1 native UWP title actions; original pure C implementation using system UI Automation, no external code copied",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
-      "path": "tests/ntw16s-dll/uwp/native.c",
+      "path": "tests/lib-style/uwp/native.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4e4687b4ce8cd6cfcf16a18a18cf6f769cfbb791a48ee53b076b707a488cbd96",
+      "sha256": "f017eb7589fba3849eb3e4f6a95bc1583710b0211d5c395787e20a57a32fc117",
       "disposition": "authored",
       "review": "T22 S1 native UWP title actions; original pure C implementation using system UI Automation, no external code copied",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6152,7 +6152,7 @@
       "path": "src/ntw16s-dll/uwp/target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6231670d4d1aa7fa4802c54ffc25df3553ad7bb381dcd8fcb21d80cd18acbb39",
+      "sha256": "cc15ca4338ca32d5a040a2faa03e298ab95f97b19ddf9a694d7a29dca92e3575",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"
