@@ -9,6 +9,7 @@
 | `print_ranges` | `print_ranges.c` |
 | `classic_file_contract`, `classic_shell_item` | `classic_file.c`; `tests/lib-style/win16-dialog/dialog_link.c` |
 | `theme_state` | `theme_state.c`; `tests/ntw16s-dll/theme_stage.c` |
+| `theme_track` | `theme_track.c` (handle aliases, concurrent open/close, capacity and cancellation) |
 | `file_events` | `file_events.c`; `tests/lib-style/win16-dialog/dialog_link.c` |
 | `modern_file_dialog` | `modern_file_dialog.c`; `tests/lib-style/win16-dialog/dialog_link.c` (argument validation) |
 | `classic_shell_folder` | `tests/lib-style/win16-dialog/dialog_link.c` (product linkage; interactive browser not covered) |

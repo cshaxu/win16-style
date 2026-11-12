@@ -43,19 +43,19 @@ static void poison(HTHEME h)
     theme_record *r = find_record(h);
     if (!r) r = free_record();
     if (!r) { disable_tracking(); return; }
-    *r = (theme_record){h, 0, TRUE, TRUE, NTW16S_THEME_OTHER};
+    *r = (theme_record){h, 0, TRUE, TRUE, 0};
 }
-ntw16s_theme_ticket ntw16s_theme_open_begin(void)
+style_theme_track_ticket style_theme_track_open_begin(void)
 {
     AcquireSRWLockExclusive(&lock);
-    ntw16s_theme_ticket t = {epoch, !closing && !opening && !disabled, NULL};
+    style_theme_track_ticket t = {epoch, !closing && !opening && !disabled, NULL};
     if (opening == UINT_MAX) disable_tracking();
     else ++opening;
     advance(); t.epoch = epoch;
     ReleaseSRWLockExclusive(&lock);
     return t;
 }
-void ntw16s_theme_open_end(ntw16s_theme_ticket t, HTHEME h, int kind)
+void style_theme_track_open_end(style_theme_track_ticket t, HTHEME h, int kind)
 {
     AcquireSRWLockExclusive(&lock);
     if (!opening) disable_tracking();
@@ -78,13 +78,13 @@ void ntw16s_theme_open_end(ntw16s_theme_ticket t, HTHEME h, int kind)
     }
     advance(); ReleaseSRWLockExclusive(&lock);
 }
-void ntw16s_theme_open_cancel(void)
+void style_theme_track_open_cancel(void)
 {
     AcquireSRWLockExclusive(&lock);
     if (opening) --opening;
     disable_tracking(); advance(); ReleaseSRWLockExclusive(&lock);
 }
-void ntw16s_theme_close_begin(HTHEME h)
+void style_theme_track_close_begin(HTHEME h)
 {
     AcquireSRWLockExclusive(&lock);
     if (closing == UINT_MAX) disable_tracking();
@@ -96,21 +96,21 @@ void ntw16s_theme_close_begin(HTHEME h)
     }
     ReleaseSRWLockExclusive(&lock);
 }
-void ntw16s_theme_close_end(HTHEME h, BOOL success)
+void style_theme_track_close_end(HTHEME h, BOOL success)
 {
     AcquireSRWLockExclusive(&lock);
     if (!closing) disable_tracking();
     else { if (!success && h && !disabled) poison(h); --closing; }
     advance(); ReleaseSRWLockExclusive(&lock);
 }
-ntw16s_theme_ticket ntw16s_theme_begin(HTHEME h,int kind)
+style_theme_track_ticket style_theme_track_begin(HTHEME h,int kind)
 {
     AcquireSRWLockShared(&lock);
     theme_record *r = find_record(h);
-    ntw16s_theme_ticket t = {epoch, !disabled && !closing && !opening && r && r->kind==kind && !r->ambiguous, h};
+    style_theme_track_ticket t = {epoch, !disabled && !closing && !opening && r && r->kind==kind && !r->ambiguous, h};
     ReleaseSRWLockShared(&lock); return t;
 }
-BOOL ntw16s_theme_end(HTHEME h,ntw16s_theme_ticket t,int kind)
+BOOL style_theme_track_end(HTHEME h,style_theme_track_ticket t,int kind)
 {
     AcquireSRWLockShared(&lock);
     theme_record *r = find_record(h);

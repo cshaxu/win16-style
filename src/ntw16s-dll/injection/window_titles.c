@@ -5,7 +5,8 @@
 #include "intercept.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "../../lib-win32/process-hook/unwind.h"
-#include "theme_track.h"
+#include "lib-style/common/theme_track.h"
+#include "lib-style/win16-control/theme_kind.h"
 #include "../../lib-style/win16-dialog/print_extended.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/attachment.h"
@@ -546,8 +547,8 @@ static void theme_end(void *data)
 {
     theme_unwind *scope=data;
     if (!scope->active) return;
-    if (scope->closing) ntw16s_theme_close_end(scope->handle,FALSE);
-    else ntw16s_theme_open_cancel();
+    if (scope->closing) style_theme_track_close_end(scope->handle,FALSE);
+    else style_theme_track_open_cancel();
     scope->active=FALSE;
 }
 
@@ -555,10 +556,10 @@ static void theme_end(void *data)
 static PROCESS_HOOK_UNWIND_FUNCTION HTHEME WINAPI hook_##NAME PARAMETERS \
 { \
     DWORD entry=GetLastError(),error;HTHEME h;process_hook_unwind_scope unwind; \
-    theme_unwind scope={TRUE,FALSE,NULL};ntw16s_theme_ticket ticket=ntw16s_theme_open_begin(); \
+    theme_unwind scope={TRUE,FALSE,NULL};style_theme_track_ticket ticket=style_theme_track_open_begin(); \
     PROCESS_HOOK_UNWIND_BEGIN(unwind,theme_end,&scope); \
     SetLastError(entry);h=real_##NAME ARGUMENTS;error=GetLastError(); \
-    ntw16s_theme_open_end(ticket,h,h?win16_control_theme_kind(name):NTW16S_THEME_OTHER);scope.active=FALSE; \
+    style_theme_track_open_end(ticket,h,h?win16_control_theme_kind(name):WIN16_CONTROL_THEME_OTHER);scope.active=FALSE; \
     PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return h; \
 }
 THEME_OPEN_HOOK(OpenThemeData,(HWND w,LPCWSTR name),(w,name))
@@ -568,10 +569,10 @@ THEME_OPEN_HOOK(OpenThemeDataForDpi,(HWND w,LPCWSTR name,UINT dpi),(w,name,dpi))
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_CloseThemeData(HTHEME h)
 {
     DWORD entry=GetLastError(),error;HRESULT result;process_hook_unwind_scope unwind;
-    theme_unwind scope={TRUE,TRUE,h};ntw16s_theme_close_begin(h);
+    theme_unwind scope={TRUE,TRUE,h};style_theme_track_close_begin(h);
     PROCESS_HOOK_UNWIND_BEGIN(unwind,theme_end,&scope);
     SetLastError(entry);result=real_CloseThemeData(h);error=GetLastError();
-    ntw16s_theme_close_end(h,SUCCEEDED(result));scope.active=FALSE;
+    style_theme_track_close_end(h,SUCCEEDED(result));scope.active=FALSE;
     PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 void ntw16s_modern_spin_dc_created(HDC,HDC);
@@ -652,20 +653,20 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
 }
 static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int state,const RECT *rect,const RECT *clip)
 {
-    DWORD entry=GetLastError();ntw16s_theme_ticket ticket=ntw16s_theme_begin(theme,NTW16S_THEME_BUTTON);
-    ntw16s_theme_ticket combo={0};if(ntw16s_inplace_paint(dc))combo=ntw16s_theme_begin(theme,NTW16S_THEME_COMBOBOX);
-    ntw16s_theme_ticket glow=ntw16s_theme_begin(theme,NTW16S_THEME_TEXTGLOW);
+    DWORD entry=GetLastError();style_theme_track_ticket ticket=style_theme_track_begin(theme,WIN16_CONTROL_THEME_BUTTON);
+    style_theme_track_ticket combo={0};if(ntw16s_inplace_paint(dc))combo=style_theme_track_begin(theme,WIN16_CONTROL_THEME_COMBOBOX);
+    style_theme_track_ticket glow=style_theme_track_begin(theme,WIN16_CONTROL_THEME_TEXTGLOW);
     BOOL textglow=part==1 && state==0 && glow.eligible;
     if(!textglow)ntw16s_modern_spin_theme_begin(dc,rect);
     BOOL drawn=ntw16s_updown_draw_theme(theme,dc,part,state,rect,clip,__builtin_return_address(0));
     SetLastError(entry);if(drawn)return S_OK;
     HRESULT result=real_DrawThemeBackground(theme,dc,part,state,rect,clip);DWORD error=GetLastError();
-    if(textglow && !ntw16s_theme_end(theme,glow,NTW16S_THEME_TEXTGLOW))ntw16s_modern_spin_theme_begin(dc,NULL);
-    if(SUCCEEDED(result) && ntw16s_theme_end(theme,ticket,NTW16S_THEME_BUTTON)){
+    if(textglow && !style_theme_track_end(theme,glow,WIN16_CONTROL_THEME_TEXTGLOW))ntw16s_modern_spin_theme_begin(dc,NULL);
+    if(SUCCEEDED(result) && style_theme_track_end(theme,ticket,WIN16_CONTROL_THEME_BUTTON)){
         ntw16s_nav_theme(dc,part,state,rect,clip,__builtin_return_address(0));
         ntw16s_inplace_button(dc,part,state,rect,clip,__builtin_return_address(0));
         ntw16s_modern_spin_theme(dc,part,state,rect,clip,__builtin_return_address(0));}
-    if(SUCCEEDED(result) && combo.eligible && ntw16s_theme_end(theme,combo,NTW16S_THEME_COMBOBOX))ntw16s_inplace_dropdown(dc,part,state,rect,clip,__builtin_return_address(0));
+    if(SUCCEEDED(result) && combo.eligible && style_theme_track_end(theme,combo,WIN16_CONTROL_THEME_COMBOBOX))ntw16s_inplace_dropdown(dc,part,state,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result) && part==1 && state==0)ntw16s_status_frame(dc,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_bit_theme_frame(dc,part,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_month_arrow(theme,dc,part,state,rect,clip,__builtin_return_address(0));

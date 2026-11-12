@@ -1409,7 +1409,7 @@
       "path": "src/ntw16s-dll/injection/window_titles.c",
       "source": "src/nthook32-dll/window_titles.cpp",
       "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
-      "sha256": "26f73733efab74198aaa8bb0b703cb523c3fb0b3edf80e332db10a5a030dca93",
+      "sha256": "b858feb01ae1c7addac746b67abdcf0cf54fe96bd090e58de89226f5c53caa5f",
       "disposition": "adapt",
       "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T20 S1 common find/replace creation scope; T21 S13 unified late style hooks and stop semantics; T24 S1 unify simple common dialog scope hooks; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
@@ -2963,30 +2963,30 @@
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/injection/theme_track.c",
+      "path": "src/lib-style/common/theme_track.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0c7be37960c5872e26a7edd56df1f910ee145e18cbe4fb2292d874060c616724",
+      "sha256": "80c0ac8aef4a70be378a72bee37cb68b5e4917cd7286dabbf2112a53eb9032bf",
       "disposition": "authored",
-      "review": "T18 S64 P110 project-authored modern SpinButton theme tracking and native regression; T18 S64 P130 witnessed combo theme and dropdown arrow",
+      "review": "T18 S64 P110 project-authored modern SpinButton theme tracking and native regression; T18 S64 P130 witnessed combo theme and dropdown arrow; T26 S1 extracted style-independent tracker",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/ntw16s-dll/injection/theme_track.h",
+      "path": "src/lib-style/common/theme_track.h",
       "source": null,
       "source_blob": null,
-      "sha256": "723faf83150a9535a0c602401b58bfb7076a6b81f7cde87d485e7bb2051c1784",
+      "sha256": "738b0c4dbb2c67cb1364625b9b88ebd24bf239effee5ea142e8d816c06f3a10b",
       "disposition": "authored",
-      "review": "T18 S64 P110 project-authored modern SpinButton theme tracking and native regression; T18 S64 P130 witnessed combo theme and dropdown arrow",
+      "review": "T18 S64 P110 project-authored modern SpinButton theme tracking and native regression; T18 S64 P130 witnessed combo theme and dropdown arrow; T26 S1 extracted style-independent tracker",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "tests/ntw16s-dll/theme_track.c",
+      "path": "tests/lib-style/common/theme_track.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b67705d4408e14c9f018daa8923a619edc8526a0bf7521209c7edc22ed1acadd",
+      "sha256": "f45cbe649121a4a4ec87528d0294afbd4904609e539665bd5d963d336fe77f0a",
       "disposition": "authored",
-      "review": "T18 S64 P110 project-authored modern SpinButton theme tracking and native regression; T18 S64 P130 witnessed combo theme and dropdown arrow",
+      "review": "T18 S64 P110 project-authored modern SpinButton theme tracking and native regression; T18 S64 P130 witnessed combo theme and dropdown arrow; T26 S1 extracted style-independent tracker",
       "notice": "Project-authored source; no imported code or resources"
     },
     {
