@@ -16,7 +16,6 @@ LONG ntw16s_attach_folder_dialogs(void);
 LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *));
 BOOL ntw16s_modern_dialog_active(void);
 HRESULT ntw16s_dialog_style_scope(HRESULT (*callback)(void *),void *context);
-BOOL ntw16s_old_dialog_folder(HWND window,PWSTR path,size_t capacity);
 void ntw16s_old_dialog_chrome(HWND window);
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
 struct ntw16s_creation_scope;

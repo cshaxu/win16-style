@@ -1,11 +1,11 @@
-#include "hidden_files.h"
+#include "lib-style/common/classic_hidden_files.h"
 #include <dlgs.h>
 #include <wchar.h>
 #include <string.h>
 
 /* Experimental: refresh only the file list, never the process directory.
  * Folder navigation and full Shell filtering are not yet implemented. */
-void win16_dialog_hidden_files(HWND w,WCHAR **filter,BOOL (*folder_path)(HWND,PWSTR,size_t))
+void style_classic_hidden_files(HWND w,WCHAR **filter,BOOL (*folder_path)(HWND,PWSTR,size_t))
 {
     HWND files=GetDlgItem(w,lst1),filters=GetDlgItem(w,cmb1);WCHAR folder[MAX_PATH];
     if(!files || !filters || !folder_path(w,folder,ARRAYSIZE(folder)))return;
@@ -32,9 +32,4 @@ void win16_dialog_hidden_files(HWND w,WCHAR **filter,BOOL (*folder_path)(HWND,PW
         if(!end)break;
         spec=end+1;
     }
-}
-void win16_dialog_hidden_schedule(HWND w,BOOL enabled)
-{
-    if(enabled){UINT refresh=RegisterWindowMessageW(L"Win16Style.T20.HiddenFilesRefresh");
-        if(refresh)PostMessageW(w,refresh,0,0);}
 }

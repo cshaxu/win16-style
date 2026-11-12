@@ -5,7 +5,7 @@
 #include "intercept.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "../../lib-win32/process-hook/unwind.h"
-#include "../../lib-style/win16-dialog/file_helpers.h"
+#include "lib-style/common/classic_file_helpers.h"
 #include "lib-style/common/classic_file_contract.h"
 #include "../../lib-style/win16-dialog/file_hook.h"
 #include <dlgs.h>

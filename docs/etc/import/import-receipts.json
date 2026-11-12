@@ -1400,7 +1400,7 @@
       "path": "src/ntw16s-dll/injection/intercept.h",
       "source": "src/nthook32-dll/intercept.h",
       "source_blob": "b9b7ea48abb2548f2c980db63896321d079a80cd",
-      "sha256": "bf05edc6173b2b11730b127d40594db85b7cefd9e1f857db03c306741023368e",
+      "sha256": "f1557cf2b0c68406d58d643b6809c0f58ac49a4ba21ea93e70c31374af37fbfa",
       "disposition": "adapt",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T20 S1 common-dialog bridge and version; T21 S13 reusable late initializer and process-detour adapter; T21 S13 unified late style hooks and stop semantics; T24 S1 quality refactor; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
@@ -3056,7 +3056,7 @@
       "path": "src/ntw16s-dll/injection/file_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "feeddfd42a164110b4e144828a64040fd65a413f867c5f3aa0b4e7ea130a7616",
+      "sha256": "ef1381bea8d2a37e6d7ce92446ef6658b6c05fda2c62b5256b188a29e2d09266",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics; T25 S2 shared runtime extraction",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -3218,7 +3218,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f5425142d25fd6162bb39ba9c749a08c00ebc625655fd832a8a1138000957e2b",
+      "sha256": "95b6877b7b078fbca70ab5e084ceaf0b208a7f361f58fb13b8539e2d10ff056f",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics; T25 S2 shared runtime extraction",
       "notice": "Project-authored; no imported code or resources"
@@ -4118,25 +4118,25 @@
       "path": "tests/lib-style/win16-dialog/dialog_link.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ae08a1c3b38f514dfb322eb784e26a9c7afa238c3a7cfdc733919e46fb8ee527",
+      "sha256": "469eb415cc0ce3a9d780d61efab584f8c4d863fa6fa681032537dd8b6fbc83b7",
       "disposition": "authored",
       "review": "T21 S23 independent whole-library link and page range test",
       "notice": "Project-authored C17; project MIT license"
     },
     {
-      "path": "src/lib-style/win16-dialog/file_helpers.c",
+      "path": "src/lib-style/common/classic_file_helpers.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c1e079cceacae52d97bf310008e09fc6253bf81755c35ad2cf21bfcc132f06e8",
+      "sha256": "a376c6f714f339567316192e67ae6e15cacde7d7324fa3ea4469be9892a1d6a1",
       "disposition": "authored",
       "review": "T21 S23 extraction of existing old file dialog helpers",
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/file_helpers.h",
+      "path": "src/lib-style/common/classic_file_helpers.h",
       "source": null,
       "source_blob": null,
-      "sha256": "2987ea9ced74628b6ccce4274cac917f9c9c3797d4fd5da9a2547ffba2486f81",
+      "sha256": "8149bd720445e7be0cc4fc133ec3a495b30423083d6addfdd9107728c17496aa",
       "disposition": "authored",
       "review": "T21 S23 extraction of existing old file dialog helpers",
       "notice": "Project-authored code; no imported resources"
@@ -4397,7 +4397,7 @@
       "path": "src/lib-style/win16-dialog/classic_folder.c",
       "source": null,
       "source_blob": null,
-      "sha256": "205cc53575d5413acea41fb8628c29110b1b12a9eb44217c7db35e5d89a0777e",
+      "sha256": "b5d69328b56d1d098fa3b4f8b75ff8937ca78b2517fceaaa906ef36b7435435f",
       "disposition": "authored",
       "review": "T21 S23 extract classic folder message handling with caller-owned state",
       "notice": "Project-authored code; no imported resources"
@@ -4415,7 +4415,7 @@
       "path": "src/lib-style/win16-dialog/file_hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9d385add8407cc0df599c366ff319e924c72af92b420a9e57e4d87179e51371e",
+      "sha256": "c275bb717d695a2c4962a46fe2c10f9f0604c1fcdef3cd1c87b555000b9b99b3",
       "disposition": "authored",
       "review": "T21 S23 extract file dialog message handling",
       "notice": "Project-authored code; no imported resources"
@@ -4469,7 +4469,7 @@
       "path": "src/lib-style/win16-dialog/proxy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4c7d360949541905477e8811fbe3976a4a098ff8304e5f2b08a332355630100d",
+      "sha256": "810fffe78cb6519396ec58dde218a1cb1ee6e8ecd147f3548aed1b9804143a5a",
       "disposition": "authored",
       "review": "T21 S23 move COM proxy identity and lifetime to dialog library",
       "notice": "Project-authored code; no imported resources"
@@ -4943,19 +4943,19 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-style/win16-dialog/hidden_files.c",
+      "path": "src/lib-style/common/classic_hidden_files.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6d4b626e29316884be4a5a30886a9c42c299db7da4a7bb12c5e7663086db919a",
+      "sha256": "37f4db5f1be2d4256e7175d8975da8b7e0e429c4107234250991f1c334d4b75b",
       "disposition": "authored",
       "review": "T21 S24 extract experimental classic dialog hidden file adaptation",
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-style/win16-dialog/hidden_files.h",
+      "path": "src/lib-style/common/classic_hidden_files.h",
       "source": null,
       "source_blob": null,
-      "sha256": "c20bf1ab974b0e306d2e3fd928f7eafaa16372af965207dac89f4b7c659d103a",
+      "sha256": "563ea12a7eb51d8c71da84d310ebce6c64647f5e8497cf285045e833da5a1474",
       "disposition": "authored",
       "review": "T21 S24 extract experimental classic dialog hidden file adaptation",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4982,7 +4982,7 @@
       "path": "src/lib-style/win16-dialog/classic_events.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cd2102ad42964afb8a46d38803039d1b324b654c3ff80d1e28b4a66873dba2b8",
+      "sha256": "613c938325b65e2732befea8510df04cb34d11a299c92fe6b6030129d89fe7b8",
       "disposition": "authored",
       "review": "T21 S24 extract classic dialog event adaptation",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -7154,6 +7154,15 @@
       "sha256": "b24fba5d7820bba3c0b1089a9f293ad2761c8f64d756f531e30f2d49a29b96ba",
       "disposition": "authored",
       "review": "T26 S1 common classic dialog bridge test",
+      "notice": "Project-authored C test; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/common/classic_helpers.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1ed1af7fd3ec1cdc0412505afee54ed171e353c91ab6bd337d8d212d5e810e14",
+      "disposition": "authored",
+      "review": "T26 S1 shared classic dialog helper native test",
       "notice": "Project-authored C test; no imported artwork"
     }
   ]

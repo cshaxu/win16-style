@@ -1,6 +1,6 @@
 /* Classic file template initialization and message adaptation. */
 #include "file_hook.h"
-#include "file_helpers.h"
+#include "lib-style/common/classic_file_helpers.h"
 #include <dlgs.h>
 
 void win16_dialog_file_initialized(HWND window,void (*chrome)(HWND))
@@ -16,7 +16,7 @@ UINT_PTR win16_dialog_file_hook(HWND window,UINT message,WPARAM wparam,LPARAM lp
 {
     (void)lparam;
     if(message==WM_INITDIALOG)chrome(window);
-    if(message==WM_COMMAND&&LOWORD(wparam)==IDOK&&resolve_links)win16_dialog_resolve_file(window);
+    if(message==WM_COMMAND&&LOWORD(wparam)==IDOK&&resolve_links)style_classic_file_resolve_link(window);
     return 0;
 }
 

@@ -7,7 +7,7 @@
 #include "lib-style/common/print_ranges.h"
 #include "lib-style/win16-dialog/print_classic.h"
 #include "lib-style/common/classic_file_contract.h"
-#include "lib-style/win16-dialog/file_helpers.h"
+#include "lib-style/common/classic_file_helpers.h"
 #include "lib-style/common/modern_file_dialog.h"
 #include "lib-style/common/classic_shell_item.h"
 #include "lib-style/common/dialog_v2.h"
@@ -15,7 +15,7 @@
 #include "lib-style/common/classic_com_show.h"
 #include "lib-style/win16-dialog/proxy.h"
 #include "lib-style/common/classic_browse.h"
-#include "lib-style/win16-dialog/hidden_files.h"
+#include "lib-style/common/classic_hidden_files.h"
 #include "lib-style/win16-dialog/hook_state.h"
 #include "lib-style/win16-dialog/classic_events.h"
 #include "lib-style/common/file_events.h"
@@ -57,7 +57,7 @@ static BOOL test_hidden_dialog_files(void)
     combo=CreateWindowW(L"COMBOBOX",L"",WS_CHILD|CBS_DROPDOWNLIST,0,0,40,40,parent,(HMENU)(INT_PTR)cmb1,GetModuleHandleW(NULL),NULL);
     if(!list || !combo || SendMessageW(combo,CB_ADDSTRING,0,(LPARAM)L"Text")!=0 || SendMessageW(combo,CB_SETCURSEL,0,0)==CB_ERR)goto done;
     WCHAR filters[]=L"Text\0*.txt\0\0";WCHAR *filter=filters;
-    win16_dialog_hidden_files(parent,&filter,hidden_folder);win16_dialog_hidden_files(parent,&filter,hidden_folder);
+    style_classic_hidden_files(parent,&filter,hidden_folder);style_classic_hidden_files(parent,&filter,hidden_folder);
     ok=SendMessageW(list,LB_GETCOUNT,0,0)==1 && SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)L"hidden.txt")!=LB_ERR && filter==filters;
 done:
     if(parent)DestroyWindow(parent);
@@ -125,20 +125,20 @@ static BOOL test_classic_list_target(void)
     parent=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,0,0,80,80,NULL,NULL,GetModuleHandleW(NULL),NULL);
     if(parent)list=CreateWindowExW(0,L"LISTBOX",L"",WS_CHILD|LBS_HASSTRINGS,0,0,40,40,parent,(HMENU)(INT_PTR)lst2,GetModuleHandleW(NULL),NULL);
     if(!list || FAILED(SHCreateItemFromParsingName(dir,NULL,&IID_IShellItem,(void **)&folder)))goto done;
-    selected=win16_dialog_classic_list_target(parent,folder);if(selected)goto done;
+    selected=style_classic_file_list_target(parent,folder);if(selected)goto done;
     if(SendMessageW(list,LB_ADDSTRING,0,(LPARAM)root)==LB_ERR)goto done;
-    SendMessageW(list,LB_SETCURSEL,0,0);selected=win16_dialog_classic_list_target(parent,folder);
+    SendMessageW(list,LB_SETCURSEL,0,0);selected=style_classic_file_list_target(parent,folder);
     if(!selected || FAILED(IShellItem_GetDisplayName(selected,SIGDN_FILESYSPATH,&path)) || lstrcmpiW(path,root))goto done;
     WCHAR resolved[MAX_PATH];
-    if(!ntw16s_old_dialog_folder(parent,resolved,ARRAYSIZE(resolved)) || lstrcmpiW(resolved,root) ||
-       ntw16s_old_dialog_folder(parent,resolved,4))goto done;
+    if(!style_classic_file_folder(parent,resolved,ARRAYSIZE(resolved)) || lstrcmpiW(resolved,root) ||
+       style_classic_file_folder(parent,resolved,4))goto done;
     if(SendMessageW(list,LB_ADDSTRING,0,(LPARAM)L"..")<0)goto done;
     SendMessageW(list,LB_SETCURSEL,1,0);
-    if(ntw16s_old_dialog_folder(parent,resolved,ARRAYSIZE(resolved)))goto done;
+    if(style_classic_file_folder(parent,resolved,ARRAYSIZE(resolved)))goto done;
     IShellItem_Release(selected);selected=NULL;
     if(root[0]==L'Z' || root[0]==L'z')wrong[0]=L'Y';
     SendMessageW(list,LB_RESETCONTENT,0,0);SendMessageW(list,LB_ADDSTRING,0,(LPARAM)wrong);SendMessageW(list,LB_SETCURSEL,0,0);
-    selected=win16_dialog_classic_list_target(parent,folder);ok=selected==NULL;
+    selected=style_classic_file_list_target(parent,folder);ok=selected==NULL;
 done:
     if(path)CoTaskMemFree(path);
     if(selected)IShellItem_Release(selected);
@@ -155,26 +155,26 @@ static BOOL test_classic_entry_targets(void)
     if(parent)edit=CreateWindowExW(0,L"EDIT",L".",WS_CHILD,0,0,40,20,parent,(HMENU)(INT_PTR)edt1,GetModuleHandleW(NULL),NULL);
     if(parent)combo=CreateWindowExW(0,L"COMBOBOX",L"",WS_CHILD|CBS_DROPDOWNLIST,0,20,40,40,parent,(HMENU)(INT_PTR)cmb2,GetModuleHandleW(NULL),NULL);
     if(!edit || !combo || FAILED(SHCreateItemFromParsingName(dir,NULL,&IID_IShellItem,(void **)&folder)))goto done;
-    if(!win16_dialog_classic_typed_target(parent,folder,&item) || !item)goto done;
+    if(!style_classic_file_typed_target(parent,folder,&item) || !item)goto done;
     int order=1;if(FAILED(IShellItem_Compare(item,folder,SICHINT_CANONICAL,&order)) || order)goto done;
     IShellItem_Release(item);item=NULL;
     WCHAR drive_relative[4]={dir[0],L':',L'.',0};
     PCWSTR folder_inputs[]={dir+2,drive_relative};
     for(unsigned i=0;i<ARRAYSIZE(folder_inputs);++i){
         SetWindowTextW(edit,folder_inputs[i]);
-        if(!win16_dialog_classic_typed_target(parent,folder,&item) || !item ||
+        if(!style_classic_file_typed_target(parent,folder,&item) || !item ||
            FAILED(IShellItem_Compare(item,folder,SICHINT_CANONICAL,&order)) || order)goto done;
         IShellItem_Release(item);item=NULL;
     }
     SetWindowTextW(edit,L"this-folder-does-not-exist-4ff47fc7");
-    if(!win16_dialog_classic_typed_target(parent,folder,&item) || item)goto done;
-    if(win16_dialog_classic_drive_target(parent,&index,&selected_combo))goto done;
+    if(!style_classic_file_typed_target(parent,folder,&item) || item)goto done;
+    if(style_classic_file_drive_target(parent,&index,&selected_combo))goto done;
     drive[0]=dir[0];drive[1]=L':';drive[2]=0;
     if(SendMessageW(combo,CB_ADDSTRING,0,(LPARAM)drive)==CB_ERR)goto done;
-    SendMessageW(combo,CB_SETCURSEL,0,0);item=win16_dialog_classic_drive_target(parent,&index,&selected_combo);
+    SendMessageW(combo,CB_SETCURSEL,0,0);item=style_classic_file_drive_target(parent,&index,&selected_combo);
     if(!item || index!=0 || selected_combo!=combo)goto done;
     IShellItem_Release(item);item=NULL;
-    SetWindowTextW(edit,path);item=win16_dialog_classic_overwrite_target(parent,folder,NULL);
+    SetWindowTextW(edit,path);item=style_classic_file_overwrite_target(parent,folder,NULL);
     if(!item || FAILED(IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&actual)) || lstrcmpiW(actual,path))goto done;
     CoTaskMemFree(actual);actual=NULL;IShellItem_Release(item);item=NULL;
     PCWSTR name=wcsrchr(path,L'\\');name=name?name+1:path;
@@ -183,12 +183,12 @@ static BOOL test_classic_entry_targets(void)
     if(swprintf(relative,ARRAYSIZE(relative),L"%lc:%ls",dir[0],name)<0)goto done;
     PCWSTR file_inputs[]={path+2,relative};
     for(unsigned i=0;i<ARRAYSIZE(file_inputs);++i){
-        SetWindowTextW(edit,file_inputs[i]);item=win16_dialog_classic_overwrite_target(parent,folder,NULL);
+        SetWindowTextW(edit,file_inputs[i]);item=style_classic_file_overwrite_target(parent,folder,NULL);
         if(!item || FAILED(IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&actual)) || lstrcmpiW(actual,path))goto done;
         CoTaskMemFree(actual);actual=NULL;IShellItem_Release(item);item=NULL;
     }
     wcscpy(basename,name);WCHAR *dot=wcsrchr(basename,L'.');if(!dot || _wcsicmp(dot,L".tmp"))goto done;
-    *dot=0;SetWindowTextW(edit,basename);item=win16_dialog_classic_overwrite_target(parent,folder,L"tmp");
+    *dot=0;SetWindowTextW(edit,basename);item=style_classic_file_overwrite_target(parent,folder,L"tmp");
     if(!item || FAILED(IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&actual)) || lstrcmpiW(actual,path))goto done;
     ok=TRUE;
 done:

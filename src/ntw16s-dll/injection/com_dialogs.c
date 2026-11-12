@@ -1,7 +1,7 @@
 /* Per-object adapter for the common file dialog.  The system COM object still
  * validates configuration; simple filesystem requests use the classic dialog. */
 #define COBJMACROS
-#include "../../lib-style/win16-dialog/hidden_files.h"
+#include "lib-style/common/classic_hidden_files.h"
 #include "../../lib-style/win16-dialog/hook_state.h"
 #include "../../lib-style/win16-dialog/classic_events.h"
 #include "intercept.h"
@@ -9,7 +9,7 @@
 #include "../../lib-win32/process-hook/unwind.h"
 #include "lib-style/common/classic_shell_item.h"
 #include "lib-style/common/classic_file_contract.h"
-#include "../../lib-style/win16-dialog/file_helpers.h"
+#include "lib-style/common/classic_file_helpers.h"
 #include "lib-style/common/dialog_customize.h"
 #include "lib-style/common/file_events.h"
 #include "lib-style/common/dialog_ole_window.h"
@@ -162,9 +162,10 @@ static PROCESS_HOOK_UNWIND_FUNCTION void classic_initial_events(HWND w,file_prox
 #endif
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_HIDDEN
 static void classic_hidden_files(HWND w,file_proxy *p)
-{win16_dialog_hidden_files(w,&p->filter,ntw16s_old_dialog_folder);}
+{style_classic_hidden_files(w,&p->filter,style_classic_file_folder);}
 static void classic_hidden_schedule(HWND w,file_proxy *p)
-{win16_dialog_hidden_schedule(w,p && p->classic_hidden);}
+{if(p && p->classic_hidden){UINT refresh=RegisterWindowMessageW(L"Win16Style.T20.HiddenFilesRefresh");
+    if(refresh)PostMessageW(w,refresh,0,0);}}
 
 #endif
 static const win16_dialog_classic_message_services classic_messages={

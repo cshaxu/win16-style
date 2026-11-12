@@ -2,7 +2,7 @@
 #define COBJMACROS
 #include "proxy.h"
 #include "lib-style/common/classic_file_contract.h"
-#include "file_helpers.h"
+#include "lib-style/common/classic_file_helpers.h"
 #include <dlgs.h>
 #include <stdio.h>
 #include <wchar.h>
@@ -164,7 +164,7 @@ HRESULT win16_dialog_proxy_extension(win16_dialog_proxy *p,LPCWSTR value)
 void win16_dialog_proxy_capture_folder(win16_dialog_proxy *p,BOOL experimental_events)
 {
     WCHAR path[MAX_PATH];IShellItem *item=NULL;
-    HRESULT hr=ntw16s_old_dialog_folder(p->active_window,path,ARRAYSIZE(path))?
+    HRESULT hr=style_classic_file_folder(p->active_window,path,ARRAYSIZE(path))?
         SHCreateItemFromParsingName(path,NULL,&IID_IShellItem,(void **)&item):E_FAIL;
     if(p->live_folder)IShellItem_Release(p->live_folder);
     p->live_folder=item;p->live_folder_error=hr;

@@ -1,5 +1,5 @@
 #define COBJMACROS
-#include "file_helpers.h"
+#include "lib-style/common/classic_file_helpers.h"
 #include <dlgs.h>
 #include <shlobj.h>
 #include <shobjidl.h>
@@ -28,7 +28,7 @@ static BOOL old_dialog_folder(HWND window,WCHAR *out,size_t capacity,BOOL for_sh
 }
 /* Let the system finish validation and produce offsets/buffer errors after a
  * regular file shortcut is resolved. Other link forms retain native handling. */
-void win16_dialog_resolve_file(HWND window)
+void style_classic_file_resolve_link(HWND window)
 {
     WCHAR path[MAX_PATH]=L"",target[MAX_PATH]=L"";
     DWORD saved=GetLastError();
@@ -61,7 +61,7 @@ done:
 /* The old template exposes its displayed path as an ancestor list. Never
  * substitute the process current directory: any thread can change it while
  * the dialog remains open. Reject unfamiliar representations instead. */
-BOOL ntw16s_old_dialog_folder(HWND window,PWSTR path,size_t capacity)
+BOOL style_classic_file_folder(HWND window,PWSTR path,size_t capacity)
 {
     if(!window || !path || !capacity)return FALSE;
     path[0]=0;
@@ -70,7 +70,7 @@ BOOL ntw16s_old_dialog_folder(HWND window,PWSTR path,size_t capacity)
 
 
 /* Return an owned item for a valid old-dialog folder-list selection. */
-IShellItem *win16_dialog_classic_list_target(HWND w,IShellItem *folder)
+IShellItem *style_classic_file_list_target(HWND w,IShellItem *folder)
 {
     HWND list=GetDlgItem(w,lst2);if(!list || !folder)return NULL;
     LRESULT selected=SendMessageW(list,LB_GETCURSEL,0,0);
@@ -99,7 +99,7 @@ IShellItem *win16_dialog_classic_list_target(HWND w,IShellItem *folder)
     return target;
 }
 
-BOOL win16_dialog_classic_typed_target(HWND w,IShellItem *folder,IShellItem **out)
+BOOL style_classic_file_typed_target(HWND w,IShellItem *folder,IShellItem **out)
 {
     *out=NULL;
     HWND edit=GetDlgItem(w,edt1);int length=edit?GetWindowTextLengthW(edit):-1;
@@ -152,7 +152,7 @@ BOOL win16_dialog_classic_typed_target(HWND w,IShellItem *folder,IShellItem **ou
     return TRUE;
 }
 
-IShellItem *win16_dialog_classic_drive_target(HWND w,LRESULT *selected,HWND *combo_out)
+IShellItem *style_classic_file_drive_target(HWND w,LRESULT *selected,HWND *combo_out)
 {
     HWND combo=GetDlgItem(w,cmb2);LRESULT index=combo?SendMessageW(combo,CB_GETCURSEL,0,0):CB_ERR;
     LRESULT length=index==CB_ERR?CB_ERR:SendMessageW(combo,CB_GETLBTEXTLEN,(WPARAM)index,0);
@@ -167,7 +167,7 @@ IShellItem *win16_dialog_classic_drive_target(HWND w,LRESULT *selected,HWND *com
     *selected=index;*combo_out=combo;return target;
 }
 
-IShellItem *win16_dialog_classic_overwrite_target(HWND w,IShellItem *folder,PCWSTR extension)
+IShellItem *style_classic_file_overwrite_target(HWND w,IShellItem *folder,PCWSTR extension)
 {
     WCHAR entered[32768],path[32768];HWND edit=GetDlgItem(w,edt1);
     int length=edit?GetWindowTextW(edit,entered,ARRAYSIZE(entered)):0;

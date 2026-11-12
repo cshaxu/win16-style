@@ -1,7 +1,7 @@
 /* Classic folder template behavior; the caller owns thread and unwind state. */
 #include "classic_folder.h"
 #include "folder_create.h"
-#include "file_helpers.h"
+#include "lib-style/common/classic_file_helpers.h"
 #include <dlgs.h>
 #include <wchar.h>
 #include <stdio.h>
@@ -27,7 +27,7 @@ UINT_PTR win16_dialog_classic_folder_hook(HWND window,UINT message,WPARAM wparam
         OPENFILENAMEW *ofn=(OPENFILENAMEW *)lparam;
         win16_dialog_classic_folder_context *ctx=(win16_dialog_classic_folder_context *)ofn->lCustData;
         SetPropW(window,L"Win16s.FolderBridge",ctx);
-        (void)ntw16s_old_dialog_folder(window,ctx->classic_current,ARRAYSIZE(ctx->classic_current));
+        (void)style_classic_file_folder(window,ctx->classic_current,ARRAYSIZE(ctx->classic_current));
         if(ctx->experimental)ctx->classic_window=window;
         if(ctx->ok_label)SetDlgItemTextW(window,IDOK,ctx->ok_label);
         if(ctx->cancel_label)SetDlgItemTextW(window,IDCANCEL,ctx->cancel_label);
@@ -65,7 +65,7 @@ UINT_PTR win16_dialog_classic_folder_hook(HWND window,UINT message,WPARAM wparam
         if(selection && message==selection && (wparam==lst2 || wparam==cmb2)){
             win16_dialog_classic_folder_context *ctx=GetPropW(window,L"Win16s.FolderBridge");
             if(ctx){WCHAR folder[MAX_PATH];
-                if(ntw16s_old_dialog_folder(window,folder,ARRAYSIZE(folder)))lstrcpynW(ctx->classic_current,folder,ARRAYSIZE(ctx->classic_current));
+                if(style_classic_file_folder(window,folder,ARRAYSIZE(folder)))lstrcpynW(ctx->classic_current,folder,ARRAYSIZE(ctx->classic_current));
                 else ctx->classic_current[0]=0;}
         }
     }

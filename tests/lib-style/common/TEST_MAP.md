@@ -13,3 +13,4 @@
 | `classic_shell_folder` | `tests/lib-style/win16-dialog/dialog_link.c` (product linkage; interactive browser not covered) |
 | `dialog_primary`, `dialog_v2`, `dialog_customize`, `dialog_ole_window` | `dialog_adapter.c`; `tests/lib-style/win16-dialog/dialog_link.c`; `tests/lib-style/win16-dialog/dialog_chrome.c` |
 | `classic_com_show`, `classic_browse`, `classic_file_live` | `classic_bridge.c`; `tests/lib-style/win16-dialog/dialog_link.c`; `tests/lib-style/win16-dialog/dialog_chrome.c` |
+| `classic_file_helpers`, `classic_hidden_files` | `classic_helpers.c`; `tests/lib-style/win16-dialog/dialog_link.c` |
