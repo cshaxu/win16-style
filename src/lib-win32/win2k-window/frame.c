@@ -531,6 +531,18 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
 {
     (void)ref;
     DWORD incoming=GetLastError();
+    if(compact_enabled(window) && style_frame_suppress_native_theme(message,IsIconic(window),GetMenu(window)!=NULL)){
+        SetLastError(incoming);return 0;
+    }
+    if(!IsIconic(window) && compact_enabled(window) && message==WM_NCACTIVATE){
+        SetPropW(window,frame_property,(HANDLE)(uintptr_t)(wp?2:1));paint(window);
+        SetLastError(incoming);return TRUE;
+    }
+    if(!IsIconic(window) && compact_enabled(window) && message==WM_NCPAINT){
+        HRGN region=style_frame_native_region(window,wp);
+        if(region){DefSubclassProc(window,message,(WPARAM)region,lp);DWORD error=GetLastError();
+            DeleteObject(region);if(IsWindow(window))paint(window);SetLastError(error);return 0;}
+    }
     if(message && message==atomic_load(&frame_message)){
         if(RemovePropW(window,pending_property))recalculate_frame(window);
         SetLastError(incoming);return 0;

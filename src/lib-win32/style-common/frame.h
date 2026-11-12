@@ -3,6 +3,47 @@
 #include <windows.h>
 #include <oleacc.h>
 
+#define STYLE_NCUAHDRAWCAPTION 0x00ae
+#define STYLE_NCUAHDRAWFRAME   0x00af
+#define STYLE_UAHDRAWMENU     0x0091
+#define STYLE_UAHDRAWMENUITEM 0x0092
+
+static inline BOOL style_frame_suppress_native_theme(UINT message,BOOL iconic,BOOL has_menu)
+{
+    if(iconic)return FALSE;
+    if(message==STYLE_NCUAHDRAWCAPTION || message==STYLE_NCUAHDRAWFRAME)return TRUE;
+    return has_menu && (message==STYLE_UAHDRAWMENU || message==STYLE_UAHDRAWMENUITEM);
+}
+
+/* The frame and optional scrollbar painters are supplied by the style. */
+static inline void style_frame_ncpaint(HWND window,WPARAM update,void *context,
+    void (*paint)(HWND,void *,HDC),void (*buffered)(HWND,void *,HDC))
+{
+    if(update!=1 && update){
+        HRGN region=CreateRectRgn(0,0,0,0);HDC dc=NULL;
+        if(region && CombineRgn(region,(HRGN)update,NULL,RGN_COPY)!=ERROR){
+            dc=GetDCEx(window,region,DCX_WINDOW|DCX_INTERSECTRGN|DCX_CACHE);
+            if(dc){buffered(window,context,dc);ReleaseDC(window,dc);region=NULL;}
+        }
+        if(region)DeleteObject(region);
+        if(!dc)paint(window,context,NULL);
+    }else {HDC dc=GetWindowDC(window);if(dc){buffered(window,context,dc);ReleaseDC(window,dc);}}
+}
+
+/* Keep native non-client services, including scrollbars, outside our client. */
+static inline HRGN style_frame_native_region(HWND window,WPARAM incoming)
+{
+    RECT outer,client;POINT origin={0,0};
+    if(!GetWindowRect(window,&outer) || !GetClientRect(window,&client) || !ClientToScreen(window,&origin))return NULL;
+    OffsetRect(&client,origin.x,origin.y);
+    HRGN region=CreateRectRgnIndirect(&outer),inside=CreateRectRgnIndirect(&client);
+    if(!region || !inside){if(region)DeleteObject(region);if(inside)DeleteObject(inside);return NULL;}
+    int combined=CombineRgn(region,region,inside,RGN_DIFF);DeleteObject(inside);
+    if(combined!=ERROR && incoming && incoming!=1)combined=CombineRgn(region,region,(HRGN)incoming,RGN_AND);
+    if(combined==ERROR){DeleteObject(region);return NULL;}
+    return region;
+}
+
 /* USER can redraw its original menu after a custom frame has moved it. */
 static inline void style_invalidate_native_menu_overlap(HWND window)
 {

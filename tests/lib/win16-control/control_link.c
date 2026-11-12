@@ -6,6 +6,7 @@
 #include "lib-win32/win16-common/font.h"
 #include "lib-win32/win16-window/frame_layout.h"
 #include "lib-win32/win16-window/frame_view.h"
+#include "lib-win32/style-common/frame.h"
 #include "lib-win32/win16-window/frame_state.h"
 #include "lib-win32/win16-control/control_state.h"
 #include "lib-win32/win16-control/control_class.h"
@@ -237,7 +238,7 @@ int main(void)
     tabs_detached=TRUE;
     if(!win16_control_set_list_tabs(window,&tabs_view,0,0) || tabs_count!=2 || forwarded_tabs!=2){free(tabs_positions);DestroyWindow(window);return 22;}
     free(tabs_positions);
-    int frame_paints=0;win16_control_frame_ncpaint(window,1,&frame_paints,test_frame_paint,test_frame_paint);
+    int frame_paints=0;style_frame_ncpaint(window,1,&frame_paints,test_frame_paint,test_frame_paint);
     if(frame_paints!=1){DestroyWindow(window);return 18;}
     if(win16_control_frame_set_cursor(window,(WPARAM)window,MAKELPARAM(HTCLIENT,0)) ||
        win16_control_frame_set_cursor(window,0,MAKELPARAM(HTLEFT,0)) ||

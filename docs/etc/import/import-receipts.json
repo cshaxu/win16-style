@@ -3985,7 +3985,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "9ab27c487d2c8c767fc787fb9b796b408822c8803d174970908f2cc2b57f18b9",
+      "sha256": "1c15f37cd2b0cfa4a69c42b12150ee56a5d5642070eb72eca4006b8c898bfed2",
       "review": "T21 S22 extraction of existing frame presentation with caller-owned state; T21 S22 buffered frame/menu/button presentation extraction; T24 S1 unify buffered frame, menu and button paint"
     },
     {
@@ -3994,7 +3994,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "ad89ea8b187165e8c1f260f7717fdc8924a648d3adca3a991ca8135c9723107a",
+      "sha256": "6748a2c8636037c3dade81b965871c350be5dcc616d61368008746b78efb6ddb",
       "review": "T21 S22 extraction of existing frame presentation with caller-owned state; T21 S22 buffered frame/menu/button presentation extraction"
     },
     {
@@ -4030,7 +4030,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "555e7acff9900b72d5a39c85507426ae2e907473d1f4d211840618a0a182c674",
+      "sha256": "8eac07008b22bfa60597df9582f13314c905fd4c25b48cce6ce67d1284c5b5a8",
       "review": "T21 S22 standalone whole-archive linkage and original glyph smoke test"
     },
     {
@@ -4820,7 +4820,7 @@
       "path": "src/lib-win32/win16-window/frame_message.c",
       "source": null,
       "source_blob": null,
-      "sha256": "23ef86109816747bfda8a64702578eab7e5c4de4b1429d5a0708515bf828d709",
+      "sha256": "83e9fe37eb6cba62174fc5684e6e911cabf3d2edba5eb935f2ad246366a0f544",
       "disposition": "authored",
       "review": "T21 S24 extract nonclient frame presentation message handling",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5315,7 +5315,7 @@
       "path": "src/lib-win32/win16-window/frame_dispatch.h",
       "source": null,
       "source_blob": null,
-      "sha256": "c3594646308177b23fbc73ace951031c79b940f879b7d9c60107dbebd2e7c8e4",
+      "sha256": "5f98e92e3e4f064751b7fab88461335570f49684c6117622ab2891a20565dd8b",
       "disposition": "authored",
       "review": "T21 S24 extracted frame message dispatch from project-authored src/ntw16s-dll/win16_style.c",
       "notice": "Project-authored source; existing resource and provenance notices retained"
@@ -6179,7 +6179,7 @@
       "path": "tests/integration/uwp_tray.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2f51f09520df903c7d7a3de6673fe28349cac23687bf2a854f22e7fce1cd0af4",
+      "sha256": "94876d3ec07a2e88bfc4ef86ca7f959568cb5d34e2985fa5bd9c5171f5d2fbdc",
       "disposition": "authored",
       "review": "T22 S1 P38 opt-in published tray controller UWP integration; native menu input and owned targets",
       "notice": "Project-authored pure C test; no imported artwork"
@@ -6728,7 +6728,7 @@
       "path": "src/lib-win32/win2k-window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1904d0fd0644d5a2e2eb6ddaf5b8039ea93b01ca21b855ff60eb6cac92dee718",
+      "sha256": "1cfd8e1a4a5cab234f7c2ac6f3bdfff7c366a7af8b484d2adb12a936b47990cb",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6746,7 +6746,7 @@
       "path": "tests/ntw2ks-dll/frame_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5dc6f4c678fc19babce0627d37470e9ab2f34f6b39996eb7973188c673e0f267",
+      "sha256": "3a801c7fcdff89053f1689dcd5d2800d5cb7f11306ca6d26aefeadc9dc23e923",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6854,7 +6854,7 @@
       "path": "src/lib-win32/style-common/frame.h",
       "source": null,
       "source_blob": null,
-      "sha256": "61499aa207b0645bf9bd05531a3a7702b5336562c24c1fd65ec85b4dbd0dafae",
+      "sha256": "9dedbee44a605cfa05028e609e398fd50e60490258b8bca972b6e7c5cc27c0ac",
       "disposition": "authored",
       "review": "T25 S8 shared window restoration",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6890,7 +6890,7 @@
       "path": "tests/ntw16s-dll/global_style_bridge.c",
       "source": null,
       "source_blob": null,
-      "sha256": "799d89ed69bffdeb335b0e9e9c2010d367e95cd881742703bf6a02b6c58cb799",
+      "sha256": "1c494afa75cbbbec2d2787e6927fecadea2b7c0d2bc845eb07860d44aa1584e4",
       "disposition": "authored",
       "review": "T25 S8 shared global style bridge",
       "notice": "Project-authored C; no external source or artwork copied"

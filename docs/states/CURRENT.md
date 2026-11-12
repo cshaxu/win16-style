@@ -40,6 +40,10 @@ M0 T25 S7 按有限范围收口，见[记录](../history/M0-T25-S7-P13-closure.m
 
 ## Technical Baseline
 
+S8 P13 对齐 Win16 的原生绘制消息防护并修复 Win2000 重绘覆盖，双位宽受控
+消息测试及发布后直接探针通过；状态栏曾出现一次未解释偏差，真实鼠标和用户
+视觉验收未完成。共享菜单跟踪及可配置 Win2000 滚动条仍未完成，见[记录](../history/M0-T25-S8-P13-shared-frame-redraw.md)。
+
 S8 P12 复核 Solitaire 底部状态栏：一次跨进程采样出现 19 像素差距，五轮重复未
 复现；双位宽受控窗口通过，底部视觉效果仍待用户确认。见[记录](../history/M0-T25-S8-P12-status-layout-audit.md)。
 

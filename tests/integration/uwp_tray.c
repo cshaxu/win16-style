@@ -284,8 +284,10 @@ static BOOL frame_pixels(frame_target *targets,COLORREF pixels[2],const char *st
                     stage,i,bar.rcBar.left,bar.rcBar.top,bar.rcBar.right,bar.rcBar.bottom,client.x,client.y,
                     rect.left,rect.top,rect.right,rect.bottom);
             if(!lstrcmpA(stage,"win2k")){DWORD_PTR ignored=0;
+                if(!SendMessageTimeoutW(targets[i].window,WM_NCACTIVATE,TRUE,0,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,1000,&ignored))return FALSE;
                 if(!SendMessageTimeoutW(targets[i].window,WM_NCPAINT,1,0,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,1000,&ignored))return FALSE;
-                Sleep(100);
+                if(!SendMessageTimeoutW(targets[i].window,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(200,30),SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,1000,&ignored) ||
+                   !SendMessageTimeoutW(targets[i].window,WM_LBUTTONUP,0,MAKELPARAM(200,30),SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,1000,&ignored))return FALSE;
                 HDC client_dc=GetDC(targets[i].window);RECT area;BOOL clean=FALSE;
                 if(client_dc && GetClientRect(targets[i].window,&area)){
                     int x=min(200,(area.right-1)/2);clean=area.right>0 && area.bottom>=16;printf("CLIENT_BAND index=%u x=%d",i,x);

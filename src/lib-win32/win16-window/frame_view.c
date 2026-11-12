@@ -33,20 +33,6 @@ BOOL win16_control_frame_button_cancel(HWND w,const win16_control_frame_button_v
     return TRUE;
 }
 
-void win16_control_frame_ncpaint(HWND w,WPARAM wp,void *context,
-    void (*paint)(HWND,void *,HDC),void (*buffered)(HWND,void *,HDC))
-{
-    if(wp!=1 && wp){
-        /* GetDCEx takes ownership of the copied update region. */
-        HRGN region=CreateRectRgn(0,0,0,0);HDC dc=NULL;
-        if(region && CombineRgn(region,(HRGN)wp,NULL,RGN_COPY)!=ERROR){
-            dc=GetDCEx(w,region,DCX_WINDOW|DCX_INTERSECTRGN|DCX_CACHE);
-            if(dc){buffered(w,context,dc);ReleaseDC(w,dc);region=NULL;}
-        }
-        if(region)DeleteObject(region);
-        if(!dc)paint(w,context,NULL);
-    }else {HDC dc=GetWindowDC(w);if(dc){buffered(w,context,dc);ReleaseDC(w,dc);}}
-}
 void win16_control_paint_frame(HWND w,const win16_control_frame_view *view,HDC target)
 {
     win16_style_layout l;

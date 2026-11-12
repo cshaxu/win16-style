@@ -2,13 +2,9 @@
 #include "frame_layout.h"
 #include "frame_view.h"
 #include "../win16-common/present.h"
+#include "lib-win32/style-common/frame.h"
 #include <commctrl.h>
 
-/* Observed host non-client draw messages; payloads remain uninterpreted. */
-#define STYLE_NCUAHDRAWCAPTION 0x00ae
-#define STYLE_NCUAHDRAWFRAME   0x00af
-#define STYLE_UAHDRAWMENU     0x0091
-#define STYLE_UAHDRAWMENUITEM 0x0092
 BOOL win16_control_frame_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM lp,const win16_control_frame_message_services *v,LRESULT *result)
 {
     switch(msg){
@@ -38,16 +34,15 @@ BOOL win16_control_frame_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARA
         return TRUE;
     }
     case WM_NCPAINT:
-        win16_control_frame_ncpaint(w,wp,s,v->paint_callback,v->buffered_callback);return TRUE;
+        style_frame_ncpaint(w,wp,s,v->paint_callback,v->buffered_callback);return TRUE;
     case WM_SETCURSOR:
         if(!win16_control_frame_set_cursor(w,wp,lp))return FALSE;
         *result=TRUE;return TRUE;
     case STYLE_NCUAHDRAWCAPTION:
     case STYLE_NCUAHDRAWFRAME:
-        return !IsIconic(w);
     case STYLE_UAHDRAWMENU:
     case STYLE_UAHDRAWMENUITEM:
-        return !IsIconic(w) && GetMenu(w)!=NULL;
+        return style_frame_suppress_native_theme(msg,IsIconic(w),GetMenu(w)!=NULL);
     case WM_NCACTIVATE:
         s->active=(BOOL)wp;if(IsIconic(w))return FALSE;
         *result=TRUE;v->paint(w,s,NULL);return TRUE;

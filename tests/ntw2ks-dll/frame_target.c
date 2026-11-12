@@ -908,11 +908,21 @@ int wmain(int argc,WCHAR **argv)
         POINT hp={horz.rcScrollBar.left+4,(horz.rcScrollBar.top+horz.rcScrollBar.bottom)/2};
         BOOL hits=got && SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(vp.x,vp.y))==HTVSCROLL &&
             SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(hp.x,hp.y))==HTHSCROLL;
-        printf("WIN2K SCROLL GEOMETRY bits=%u got=%d separate=%d hits=%d client=%ld,%ld,%ld,%ld vertical=%ld,%ld,%ld,%ld horizontal=%ld,%ld,%ld,%ld\n",
-               (unsigned)(sizeof(void*)*8),got,separate,hits,client.left-outer.left,client.top-outer.top,client.right-outer.left,client.bottom-outer.top,
+        SendMessageW(w,WM_NCPAINT,1,0);HDC scroll_dc=GetWindowDC(w);BOOL vertical_painted=FALSE,horizontal_painted=FALSE;
+        if(scroll_dc && got){RECT bars[]={vert.rcScrollBar,horz.rcScrollBar};BOOL *painted[]={&vertical_painted,&horizontal_painted};
+            for(unsigned i=0;i<ARRAYSIZE(bars);++i){COLORREF first=CLR_INVALID;
+                for(int y=1;y<bars[i].bottom-bars[i].top-1;y+=3)for(int x=1;x<bars[i].right-bars[i].left-1;x+=3){
+                    COLORREF color=GetPixel(scroll_dc,bars[i].left-outer.left+x,bars[i].top-outer.top+y);
+                    if(color==CLR_INVALID)continue;
+                    if(first==CLR_INVALID)first=color;else if(color!=first)*painted[i]=TRUE;
+                }}
+        }
+        if(scroll_dc)ReleaseDC(w,scroll_dc);
+        printf("WIN2K SCROLL GEOMETRY bits=%u got=%d separate=%d hits=%d painted=%d,%d client=%ld,%ld,%ld,%ld vertical=%ld,%ld,%ld,%ld horizontal=%ld,%ld,%ld,%ld\n",
+               (unsigned)(sizeof(void*)*8),got,separate,hits,vertical_painted,horizontal_painted,client.left-outer.left,client.top-outer.top,client.right-outer.left,client.bottom-outer.top,
                vert.rcScrollBar.left-outer.left,vert.rcScrollBar.top-outer.top,vert.rcScrollBar.right-outer.left,vert.rcScrollBar.bottom-outer.top,
                horz.rcScrollBar.left-outer.left,horz.rcScrollBar.top-outer.top,horz.rcScrollBar.right-outer.left,horz.rcScrollBar.bottom-outer.top);
-        DestroyWindow(w);return separate && hits?0:3;
+        DestroyWindow(w);return separate && hits && vertical_painted && horizontal_painted?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--zoom-cycle")){
         HMENU menu=CreateMenu(),popup=CreatePopupMenu();if(!menu || !popup)return 2;

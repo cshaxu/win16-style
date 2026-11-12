@@ -24,8 +24,9 @@ static BOOL client_top_clean(HWND window)
 static BOOL footer_aligned(HWND window)
 {
     RECT client,child;POINT origin={0,0};
-    return footer && GetClientRect(window,&client) && ClientToScreen(window,&origin) && GetWindowRect(footer,&child) &&
-           child.bottom==origin.y+client.bottom;
+    if(!footer || !GetClientRect(window,&client) || !ClientToScreen(window,&origin) || !GetWindowRect(footer,&child))return FALSE;
+    printf("FOOTER child_bottom=%ld client_bottom=%ld\n",child.bottom,origin.y+client.bottom);
+    return child.bottom==origin.y+client.bottom;
 }
 int main(void)
 {
@@ -52,9 +53,17 @@ int main(void)
     if(overlap_exists){OffsetRect(&client_rect,client_origin.x,client_origin.y);
         overlap_exists=IntersectRect(&overlap,&client_rect,&native_menu.rcBar);}
     ValidateRect(window,NULL);SendMessageW(window,WM_NCPAINT,1,0);
-    BOOL refreshed=!overlap_exists || GetUpdateRect(window,&update,FALSE);
-    if(overlap_exists)printf("OVERLAP screen=%ld,%ld,%ld,%ld origin=%ld,%ld update=%ld,%ld,%ld,%ld\n",overlap.left,overlap.top,overlap.right,overlap.bottom,client_origin.x,client_origin.y,update.left,update.top,update.right,update.bottom);
+    BOOL refreshed=GetUpdateRect(window,&update,FALSE),clean_immediate=client_top_clean(window);
+    if(overlap_exists)printf("OVERLAP screen=%ld,%ld,%ld,%ld origin=%ld,%ld update=%d\n",overlap.left,overlap.top,overlap.right,overlap.bottom,client_origin.x,client_origin.y,refreshed);
     UpdateWindow(window);BOOL clean_after=client_top_clean(window);
+    BOOL click_clean=TRUE;
+    for(unsigned i=0;i<6 && click_clean;++i){
+        SendMessageW(window,WM_NCACTIVATE,(WPARAM)(i&1),0);
+        SendMessageW(window,WM_NCPAINT,1,0);
+        SendMessageW(window,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(180,30));
+        SendMessageW(window,WM_LBUTTONUP,0,MAKELPARAM(180,30));
+        click_clean=client_top_clean(window);
+    }
     BOOL remove2k=ntw16s_global_window_remove_style(window,NTW16S_GLOBAL_STYLE_2K) && GetPropW(window,L"Win2kStyle.Frame")==NULL;
     BOOL apply16=ntw16s_global_window_apply_style(window,NTW16S_GLOBAL_STYLE_16) && Ntw16sWindowAttached(window);
     BOOL remove16=ntw16s_global_window_remove_style(window,NTW16S_GLOBAL_STYLE_16) && !Ntw16sWindowAttached(window);
@@ -74,7 +83,7 @@ int main(void)
                     Ntw16sWindowAttached(window) && !GetPropW(window,L"Win2kStyle.Frame");
     if(takeover16)(void)ntw16s_global_window_remove_style(window,NTW16S_GLOBAL_STYLE_16);
     DestroyWindow(window);UnregisterClassW(cls.lpszClassName,instance);
-    printf("GLOBAL STYLE BRIDGE bits=%u apply2k=%d switch16=%d switch2k=%d client_clean=%d clean_after=%d footer=%d overlap=%d refreshed=%d remove2k=%d apply16=%d remove16=%d reverse=%d existing=%d takeover=%d existing2k=%d takeover16=%d\n",
-           (unsigned)(sizeof(void *)*8),apply2k,switched16,switched2k,client_clean,clean_after,footer_ok,overlap_exists,refreshed,remove2k,apply16,remove16,reverse,existing,takeover,existing2k,takeover16);
-    return apply2k && switched16 && switched2k && client_clean && clean_after && footer_ok && refreshed && remove2k && apply16 && remove16 && reverse && takeover && takeover16?0:3;
+    printf("GLOBAL STYLE BRIDGE bits=%u apply2k=%d switch16=%d switch2k=%d client_clean=%d immediate=%d clean_after=%d click_clean=%d footer=%d overlap=%d refreshed=%d remove2k=%d apply16=%d remove16=%d reverse=%d existing=%d takeover=%d existing2k=%d takeover16=%d\n",
+           (unsigned)(sizeof(void *)*8),apply2k,switched16,switched2k,client_clean,clean_immediate,clean_after,click_clean,footer_ok,overlap_exists,refreshed,remove2k,apply16,remove16,reverse,existing,takeover,existing2k,takeover16);
+    return apply2k && switched16 && switched2k && client_clean && clean_immediate && clean_after && click_clean && footer_ok && remove2k && apply16 && remove16 && reverse && takeover && takeover16?0:3;
 }
