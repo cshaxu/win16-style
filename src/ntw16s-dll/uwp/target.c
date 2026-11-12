@@ -2,46 +2,10 @@
 #include "hook.h"
 #include "lib-style/uwp/native.h"
 #include "lib-win32/process-image/image.h"
-#include <dwmapi.h>
 #include <stdint.h>
-#include <wchar.h>
-
-static BOOL class_is(HWND w,PCWSTR expected)
-{WCHAR name[80];return GetClassNameW(w,name,ARRAYSIZE(name))&&!wcscmp(name,expected);}
-static BOOL CALLBACK core_window(HWND w,LPARAM data)
+DWORD ntw16s_uwp_target_change(const style_uwp_target *app,PCWSTR path,BOOL apply)
 {
-    ntw16s_uwp_target *app=(ntw16s_uwp_target *)data;DWORD pid=0;GetWindowThreadProcessId(w,&pid);
-    if((!app->pid||pid==app->pid)&&class_is(w,L"Windows.UI.Core.CoreWindow")){
-        HWND root=GetAncestor(w,GA_ROOT);DWORD cloaked=1;
-        if(root!=w&&class_is(root,L"ApplicationFrameWindow")&&IsWindowVisible(root)&&
-           SUCCEEDED(DwmGetWindowAttribute(root,DWMWA_CLOAKED,&cloaked,sizeof(cloaked)))&&!cloaked){app->pid=pid;app->core=w;app->frame=root;return FALSE;}
-    }
-    return TRUE;
-}
-static BOOL CALLBACK top_window(HWND w,LPARAM data)
-{core_window(w,data);if(!((ntw16s_uwp_target *)data)->frame)EnumChildWindows(w,core_window,data);return !((ntw16s_uwp_target *)data)->frame;}
-BOOL ntw16s_uwp_target_find(DWORD pid,ntw16s_uwp_target *target)
-{
-    if(!target||!pid){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    *target=(ntw16s_uwp_target){.pid=pid};EnumWindows(top_window,(LPARAM)target);
-    return target->frame!=NULL;
-}
-BOOL ntw16s_uwp_target_window(HWND window,ntw16s_uwp_target *target)
-{
-    if(!target||!window)return FALSE;
-    *target=(ntw16s_uwp_target){0};
-    HWND root=GetAncestor(window,GA_ROOT);
-    if(!class_is(root,L"ApplicationFrameWindow"))return FALSE;
-    core_window(window,(LPARAM)target);
-    if(!target->frame)EnumChildWindows(root,core_window,(LPARAM)target);
-    return target->frame!=NULL;
-}
-DWORD ntw16s_uwp_target_change(const ntw16s_uwp_target *app,PCWSTR path,BOOL apply)
-{
-    if(!app||!path||!*path||!class_is(app->core,L"Windows.UI.Core.CoreWindow")||
-       !class_is(app->frame,L"ApplicationFrameWindow")||GetAncestor(app->core,GA_ROOT)!=app->frame)return ERROR_INVALID_WINDOW_HANDLE;
-    DWORD core_pid=0;GetWindowThreadProcessId(app->core,&core_pid);
-    if(core_pid!=app->pid)return ERROR_INVALID_WINDOW_HANDLE;
+    if(!app||!path||!*path||!style_uwp_target_valid(app))return ERROR_INVALID_WINDOW_HANDLE;
     DWORD host_pid=0,thread=GetWindowThreadProcessId(app->frame,&host_pid),error;
     HANDLE host=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION,FALSE,host_pid);
     if(!host)return GetLastError();

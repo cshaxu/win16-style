@@ -61,8 +61,8 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
     ntw16s_global_manager *m=(ntw16s_global_manager *)context;
     if(m->session->phase!=NTW16S_GLOBAL_ACTIVE || pid==m->session->owner_pid || pid==m->session->host_pid)return;
 #ifdef NTW16S_GLOBAL_MANAGER_TEST
-    if(test_pid&&!test_allowed(pid)){ntw16s_uwp_target target;
-        if(!window||!ntw16s_uwp_target_window(window,&target))return;
+    if(test_pid&&!test_allowed(pid)){style_uwp_target target;
+        if(!window||!style_uwp_target_window(window,&target))return;
         if(!test_allowed(target.pid)){printf("UWP_TEST_FILTER skipped_pid=%lu allowed=%lu\n",target.pid,test_pid);return;}}
 #endif
     if(window&&ntw16s_uwp_global_observe(m->uwp,window))return;

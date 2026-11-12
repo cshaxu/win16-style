@@ -57,8 +57,8 @@ static void CALLBACK events(HWINEVENTHOOK hook,DWORD event,HWND window,LONG obje
     (void)hook;(void)thread;
     if(object!=OBJID_WINDOW||child!=CHILDID_SELF||!observed_pid)return;
     if(event!=EVENT_OBJECT_SHOW&&event!=EVENT_OBJECT_PARENTCHANGE&&event!=EVENT_OBJECT_UNCLOAKED)return;
-    DWORD pid=0;GetWindowThreadProcessId(window,&pid);ntw16s_uwp_target target;
-    if(pid!=observed_pid&&(!ntw16s_uwp_target_window(window,&target)||target.pid!=observed_pid))return;
+    DWORD pid=0;GetWindowThreadProcessId(window,&pid);style_uwp_target target;
+    if(pid!=observed_pid&&(!style_uwp_target_window(window,&target)||target.pid!=observed_pid))return;
     WCHAR cls[80]={0};GetClassNameW(window,cls,ARRAYSIZE(cls));
     printf("WINDOW_EVENT event=%lx time=%lu pid=%lu hwnd=%p root=%p visible=%d class=%ls\n",
         (unsigned long)event,time,pid,(void*)window,(void*)GetAncestor(window,GA_ROOT),IsWindowVisible(window),cls);
@@ -98,8 +98,8 @@ int wmain(int argc,WCHAR **argv)
     if(GetLastError()==ERROR_ALREADY_EXISTS){CloseHandle(mapping);puts("SKIP existing global session");return 77;}
     ntw16s_global_session *s=MapViewOfFile(mapping,FILE_MAP_ALL_ACCESS,0,0,sizeof(*s));
     HANDLE stop=CreateEventW(NULL,TRUE,FALSE,stop_name),application=NULL,second_application=NULL;
-    ntw16s_uwp_target second_target={0};HWND second_surface=NULL;
-    ntw16s_global_manager *global=NULL;ntw16s_uwp_target target={0};BOOL ok=FALSE;DWORD error=0;
+    style_uwp_target second_target={0};HWND second_surface=NULL;
+    ntw16s_global_manager *global=NULL;style_uwp_target target={0};BOOL ok=FALSE;DWORD error=0;
     HRESULT hr=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);BOOL com=SUCCEEDED(hr);
     HWINEVENTHOOK event_hook=SetWinEventHook(EVENT_OBJECT_CREATE,EVENT_OBJECT_UNCLOAKED,NULL,events,0,0,WINEVENT_OUTOFCONTEXT);
     if(!s||!stop||!com)goto done;
@@ -136,7 +136,7 @@ int wmain(int argc,WCHAR **argv)
     if(!application||!GetProcessTimes(application,&birth,&a,&b,&c)||CompareFileTime(&birth,&start)<0){if(application)CloseHandle(application);application=NULL;goto done;}
     if(command&&error)goto done;
     ULONGLONG deadline=GetTickCount64()+10000;
-    while(!ntw16s_uwp_target_find(pid,&target)&&GetTickCount64()<deadline){
+    while(!style_uwp_target_find(pid,&target)&&GetTickCount64()<deadline){
         MsgWaitForMultipleObjects(0,NULL,FALSE,20,QS_ALLINPUT);
         MSG message;while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}
     }
@@ -152,7 +152,7 @@ int wmain(int argc,WCHAR **argv)
         if(!second_application||!GetProcessTimes(second_application,&birth,&a,&b,&c)||CompareFileTime(&birth,&start)<0){if(second_application)CloseHandle(second_application);second_application=NULL;goto done;}
         ntw16s_global_manager_test_second(second_pid);
         deadline=GetTickCount64()+10000;
-        while(!ntw16s_uwp_target_find(second_pid,&second_target)&&GetTickCount64()<deadline){
+        while(!style_uwp_target_find(second_pid,&second_target)&&GetTickCount64()<deadline){
             MsgWaitForMultipleObjects(0,NULL,FALSE,20,QS_ALLINPUT);
             MSG message;while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}
         }

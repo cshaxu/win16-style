@@ -13,7 +13,7 @@
 typedef struct frame_entry {
     win32_process_global_queue_node queue;
     struct frame_entry *next;
-    ntw16s_uwp_target target;
+    style_uwp_target target;
     win32_process_global_identity host_identity;
     HANDLE application,host;
     DWORD result;
@@ -81,8 +81,8 @@ DWORD ntw16s_uwp_global_start(const win32_process_global_policy *policy,PCWSTR d
 }
 BOOL ntw16s_uwp_global_observe(ntw16s_uwp_global *g,HWND window)
 {
-    ntw16s_uwp_target target;
-    if(!g||g->owner!=GetCurrentThreadId()||!ntw16s_uwp_target_window(window,&target))return FALSE;
+    style_uwp_target target;
+    if(!g||g->owner!=GetCurrentThreadId()||!style_uwp_target_window(window,&target))return FALSE;
     AcquireSRWLockExclusive(&g->lock);
     frame_entry **link=&g->frames,*found=NULL;
     while(*link){

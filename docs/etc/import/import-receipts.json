@@ -311,7 +311,7 @@
       "path": "src/ntw16s-dll/global/manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e2ee38469150d11d38ecef4989a8523c7bc3d6c3f3835d38412c8715bbbb419c",
+      "sha256": "c2650f2d68e0b9f37dd4f28c86cb63f4353a82b3b8545258512ccc29fafbb05c",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle; T21 S42 direct public discovery calls; T21 S42 product adapter directory cleanup; T22 S1 P32 shared UWP target coordination and window-scoped global admission; T24 S1 quality refactor",
       "notice": "Project-authored C"
@@ -6062,7 +6062,7 @@
       "path": "src/run16s-exe/uwp.c",
       "source": null,
       "source_blob": null,
-      "sha256": "24a332ff290cd6636fd2f747d81e37788dbd928e2cce0b50cd0082961ff14ea8",
+      "sha256": "2c09838dd0364842857b53ce37f1681d912ba62609c3c0f00fd67892ec8e75bb",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T22 S1 P32 shared UWP target coordination and window-scoped global admission",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6134,7 +6134,7 @@
       "path": "src/ntw16s-dll/uwp/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ef5a97edc5850085dc079cd1aabf698eab744e89eedb84225ff3d1f8d0070871",
+      "sha256": "7e2dda66132fc339e5fdef318913483000aac313666a03d3ab43982b5990c7e0",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"
@@ -6152,7 +6152,7 @@
       "path": "src/ntw16s-dll/uwp/target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cc15ca4338ca32d5a040a2faa03e298ab95f97b19ddf9a694d7a29dca92e3575",
+      "sha256": "c6584ecf3799ee68cb0cda7391461dcdf51e19701335d3509660c3d910a86f12",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"
@@ -6161,7 +6161,7 @@
       "path": "src/ntw16s-dll/uwp/target.h",
       "source": null,
       "source_blob": null,
-      "sha256": "8c266cd531f1f6e3bd722c071f318227d418bb2857e9c687a6ccbdd3972fefc1",
+      "sha256": "41d5c134d0962d9f4eced8f6528fd54e6f80588229c430336a6054dde3c89fa4",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"
@@ -6170,7 +6170,7 @@
       "path": "tests/ntw16s-dll/uwp/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6da5391b1cbac8db6491197cb20734c7978a257537ed8266b779bc10295a63ef",
+      "sha256": "1f49aaac05eda16d4616dd1b37573db4008431f4becdeccf3eef0b7a43a89cfe",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"
@@ -6930,6 +6930,33 @@
       "disposition": "authored",
       "review": "T25 S8 pending loader stop lifecycle",
       "notice": "Project-authored native C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/uwp/target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "8cceeb722da522ab59d1dfc2c6e7fb1c011b92c51ac39919c3361b115c72fcbb",
+      "disposition": "authored",
+      "review": "T26 S1 extract style-neutral UWP target discovery from existing product coordinator",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/uwp/target.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6eb2a1f08f07c349a9c5b06b6964e46f0c644cc8e90aa988a49e9782a2c54b93",
+      "disposition": "authored",
+      "review": "T26 S1 extract style-neutral UWP target discovery from existing product coordinator",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/uwp/target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d884b5a281d32e41468d9932fd154a5a97a55cf3f78c85882c1733d921fbd143",
+      "disposition": "authored",
+      "review": "T26 S1 extract style-neutral UWP target discovery from existing product coordinator",
+      "notice": "Project-authored C; no imported artwork"
     }
   ]
 }

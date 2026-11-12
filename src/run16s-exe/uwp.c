@@ -34,7 +34,7 @@ BOOL run16s_uwp_calculator_image(PCWSTR image)
     }
     return FALSE;
 }
-static DWORD install(const ntw16s_uwp_target *app)
+static DWORD install(const style_uwp_target *app)
 {
     WCHAR path[32768];DWORD length=GetModuleFileNameW(NULL,path,ARRAYSIZE(path));
     if(!length||length>=ARRAYSIZE(path))return ERROR_INSUFFICIENT_BUFFER;
@@ -47,7 +47,7 @@ static DWORD activate(PCWSTR app_id,PCWSTR arguments,BOOL wait,DWORD *created_pi
     if(created_pid)*created_pid=0;
     if(!app_id||!wcschr(app_id,L'!'))return ERROR_INVALID_PARAMETER;
     HRESULT hr=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(hr))return (DWORD)hr;
-    IApplicationActivationManager *manager=NULL;ntw16s_uwp_target app={0};FILETIME start;
+    IApplicationActivationManager *manager=NULL;style_uwp_target app={0};FILETIME start;
     GetSystemTimeAsFileTime(&start);
     hr=CoCreateInstance(&CLSID_ApplicationActivationManager,NULL,CLSCTX_LOCAL_SERVER,
         &IID_IApplicationActivationManager,(void **)&manager);
@@ -66,7 +66,7 @@ static DWORD activate(PCWSTR app_id,PCWSTR arguments,BOOL wait,DWORD *created_pi
     if(!error){
         ULONGLONG deadline=GetTickCount64()+10000;
         do{
-            if(ntw16s_uwp_target_find(app.pid,&app))break;
+            if(style_uwp_target_find(app.pid,&app))break;
             DWORD wait=MsgWaitForMultipleObjects(1,&process,FALSE,50,QS_ALLINPUT);
             if(wait==WAIT_OBJECT_0){error=ERROR_PROCESS_ABORTED;break;}
             if(wait==WAIT_FAILED){error=GetLastError();break;}
