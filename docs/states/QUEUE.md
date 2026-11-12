@@ -9,11 +9,11 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 
 | 顺序 | T 候选 | 前置完成条件 | 核心交付/任务级退出条件 |
 | --- | --- | --- | --- |
-| 1 | [样式库与通用接入重组](../proposals/style-library-reorganization.md) | 当前活动工作完成或按用户指令转移；准入前审计依赖与行为 | 将 Win16/Win2000 样式库迁至 `src/lib-style`；通用样式接入机制整理至 `src/lib-win32/style` 并由两种样式共享，验证既有行为与交付。 |
+| — | 当前无已排序候选 | — | — |
 
 [Windows 2000 经典风格调研与准备](../proposals/windows-2000-classic.md)已由用户准入；活动状态见 CURRENT。
 
-上述重组是用户指定的下一个 T 候选，尚未准入或分配编号。[现代桌面混合窗口适配](../proposals/modern-desktop-window-style.md)已按用户要求有限收口，证据见 CURRENT。
+[样式库与通用接入重组](../proposals/style-library-reorganization.md)已准入，活动状态见 CURRENT。[现代桌面混合窗口适配](../proposals/modern-desktop-window-style.md)已按用户要求有限收口，证据见 CURRENT。
 
 [代码质量治理](../proposals/code-quality-governance.md)已按用户决定有限收口，未完成事项见 CURRENT 及 TODO。
 

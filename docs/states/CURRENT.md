@@ -2,41 +2,42 @@
 
 ## Current Work
 
-M0 T25 S7 按有限范围收口，见[记录](../history/M0-T25-S7-P13-closure.md)。用户明确纠正：S8 是全局风格选择，S9 是 Win16/Win2000 重复代码合并，S10 才是最终审计。此前误将 S8 作为最终审计，P1–P4 保留为前期证据，未完成的键盘、连续闪烁、跨屏 DPI、完整包矩阵及样式恢复不得计通过。T25 保持开放，现按用户确认继续 S8。
+用户决定以现有实际成果有限收口 T25，未完成的 S8 验证、S9 去重和 S10 最终审计不计通过；遗留范围见[T25 收口记录](../history/M0-T25-owner-closure.md)。准入 T26，抽离跨风格通用机制并整理样式库。
 
-## M0 T25 S8 Packet
+## M0 T26 S1 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；用户更正仍在进行的 S8 范围，保留已使用的 P 序号。 |
-| Admission And Approval | 用户明确指定 S8 为 --global 风格选择，S9 为两套样式去重，S10 为最终审计。 |
-| Objective | 在全局托盘提供互斥、可取消的 Win16 和 Win2000 样式选择，并实现对应启用、切换、停用及尽力恢复。 |
-| Non-goals | 不扩展 UWP、WinUI、应用自绘客户区或控件内部的 Win2000 支持；不把停用称为物理卸载。 |
-| Reference Baseline | S5 P9 八文件发布包；S7 P13 有限技术收口及其列出的遗留项。 |
-| Candidate Proposal | docs/proposals/windows-2000-classic.md 中用户确认的 S8 全局选择，S9 去重、S10 审计排在后续。 |
-| Files And ABI Surface | run16s 托盘与全局控制器、ntw16s/ntw2ks 全局适配及窗口恢复、共享进程能力和对应测试。 |
-| Applicable Rules | M0；纯 C17、MinGW GCC、Ninja、ccache；八文件同批交付。 |
-| Verification | 验证互斥选择、重复点击停用、切换、现有与新目标、双位宽、失败和清理；普通启动与 Win16 全局行为回归。 |
-| Expected Markers | 分开报告选择、全局启用、接入、样式应用、停用、恢复和实际卸载能力；失败与跳过明确记录。 |
-| Asset Needs | 保留图形资源与来源声明；实际应用只读使用，不复制或修改样本。 |
-| Reporting Requirements | 区分消息、真实输入、实际程序、前台焦点、各 DPI、用户视觉验收与未覆盖范围。 |
-| Stop Conditions | 不创建或切换隔离桌面；不改变系统安全设置、目标文件或兄弟仓库。 |
-| Exit Criteria | 实现并验证两种全局风格的选择、切换和停用，按规范构建、发布、测试、提交、推送和远端复核；恢复与卸载限制如实报告。 |
-| Original Owner Request | 实现 Windows 2000 经典窗口样式；用户随后明确 S8 全局选择、S9 去重和 S10 最终审计。 |
-| Similar-Issue Sweep | 检查现有托盘状态机、全局会话、目标接入、双位宽传播、样式附着和恢复，不建立重复控制路径。 |
+| Identifier Mode | New；T25 按用户决定有限收口，T26 从 S1 开始。 |
+| Admission And Approval | 用户要求把 Win16 中跨年代可用的外框、控件、对话框以及 Win32/UWP/WinUI 机制抽离至 lib-style，并准入下一 T。 |
+| Objective | 冻结全部相关生产组件、调用与测试清单，区分风格无关机制及各年代专属行为，确定分批迁移和实际复用契约。 |
+| Non-goals | 审计不宣称已支持未实现的主题或控件；不改变既有挂钩权限与用户体验。 |
+| Reference Baseline | T25 S8 P13 已发布包及有限收口记录；保留既有 Win16 与 Win2000 行为。 |
+| Candidate Proposal | docs/proposals/style-library-reorganization.md，结合本次明确扩展的窗口、控件、对话框和现代框架范围。 |
+| Files And ABI Surface | 样式库、通用样式机制、产品适配、CMake、全部相应测试及来源声明；审计先不改公开 ABI。 |
+| Applicable Rules | M0；纯 C17、MinGW GCC、Ninja、ccache；现有八文件同批交付。 |
+| Verification | 静态生产依赖及调用方盘点、来源与测试映射；迁移后验证两种风格实际调用、双位宽及适用框架回归。 |
+| Expected Markers | 每一项列明旧位置、分类、目标组件、调用方、迁移顺序及验证；未覆盖明确保留。 |
+| Asset Needs | 保留原始图形资源及来源声明，不依赖或修改兄弟仓库。 |
+| Reporting Requirements | 分别报告已共享、待迁移、风格专属和未验证能力；不把目录移动当作代码复用。 |
+| Stop Conditions | 不创建或切换隔离桌面，不使用 computer-use；不改系统安全设置或兄弟仓库。 |
+| Exit Criteria | 审计覆盖全部相关生产入口和测试，形成可执行的迁移次序、明确边界及 S 序列，完成规范验证与远端复核。 |
+| Original Owner Request | 收口 T25；把 Win16 中可用于 Win2000、XP、Vista、Win7 的外框、控件、对话框及 Win32/UWP/WinUI 通用能力抽离到 lib-style。 |
+| Similar-Issue Sweep | 检查现有 style-common、Win16/Win2000 样式模块、产品适配及共享进程入口，避免重复机制和风格反向依赖。 |
 
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 25
+- Last allocated T: 26
 - Last allocated Td S: 19
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
+- Last allocated T26 S: 1
 - Last verified remote delivery: M0 T25 S4 P73，`826503cf6fb16f2da7fad130a829118d65a6a4c3`。
-- Open task: M0 T25 S8；全局 Win16/Win2000 风格选择。
+- Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
 
 ## Technical Baseline
 
