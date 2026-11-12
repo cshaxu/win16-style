@@ -21,3 +21,12 @@ A temporary x64 diagnostic called `DwmSetWindowAttribute` with
 source was removed after the run. This observation does not establish the
 underlying Windows behavior or a safe fix. Do not mark DWM restoration or
 T26's cross-style lifecycle migration complete on this evidence.
+
+Additional x64 instrumented comparisons independently bypassed the Win2000
+caption painter, the custom `WM_NCCALCSIZE` adjustment, the `WM_NCPAINT`
+branch and native-theme message suppression. Each individual bypass still
+returned 3 with DWM disabled after removal. A combined painter and layout
+bypass returned 0, but changes two behaviors at once and does not establish a
+cause or a viable fix. These comparisons are not pixel acceptance. All four
+temporary diagnostic gates were removed and the incremental x64 target was
+rebuilt from the unchanged source.

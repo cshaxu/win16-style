@@ -41,6 +41,8 @@
 
 ## Technical Baseline
 
+控件创建作用域的生命周期和 Win16 策略边界已审计，共享实现及 Win2000 调用尚待完成；见[记录](../history/M0-T26-S1-control-scope-audit.md)。
+
 Win2000 DWM 恢复问题的直接附着及延迟消息对照已复现；根因仍未确认，见[调查](../history/M0-T26-S1-win2k-dwm-investigation.md)。
 
 T26 S1 已共享打印设备资源处理，实际打印机与其他风格接入尚未验证；见[记录](../history/M0-T26-S1-print-resources.md)。
