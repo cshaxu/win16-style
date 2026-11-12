@@ -15,7 +15,10 @@ static BOOL menu_has(controller *state,BOOL a,BOOL b)
     HMENU menu=make_menu(state);if(!menu)return FALSE;
     BOOL result=GetMenuItemCount(menu)==3 &&
         !!(GetMenuState(menu,MENU_ENABLE,MF_BYCOMMAND)&MF_CHECKED)==!!a &&
-        !!(GetMenuState(menu,MENU_ENABLE_2K,MF_BYCOMMAND)&MF_CHECKED)==!!b;
+        !!(GetMenuState(menu,MENU_ENABLE_2K,MF_BYCOMMAND)&MF_CHECKED)==!!b &&
+        !(GetMenuState(menu,MENU_ENABLE,MF_BYCOMMAND)&(MF_DISABLED|MF_GRAYED)) &&
+        !(GetMenuState(menu,MENU_ENABLE_2K,MF_BYCOMMAND)&(MF_DISABLED|MF_GRAYED)) &&
+        !(GetMenuState(menu,MENU_EXIT,MF_BYCOMMAND)&(MF_DISABLED|MF_GRAYED));
     DestroyMenu(menu);return result;
 }
 static BOOL wait_stopped(controller *state,DWORD *code)
@@ -33,6 +36,13 @@ int main(void)
     if(!menu_has(&state,FALSE,FALSE))return 3;
     action(MENU_ENABLE,&state);
     if(!state.worker || !state.busy || state.enabled)return 4;
+    if(!menu_has(&state,TRUE,FALSE))return 14;
+    action(MENU_ENABLE_2K,&state);
+    if(!state.stopping || !menu_has(&state,FALSE,TRUE))return 15;
+    action(MENU_ENABLE,&state);
+    if(!menu_has(&state,TRUE,FALSE) || !wait_stopped(&state,&code) || code)return 16;
+    worker_stopped(&state,code);
+    if(!state.worker || state.style!=NTW16S_GLOBAL_STYLE_16)return 17;
     state.enabled=TRUE;state.busy=FALSE;
     if(!menu_has(&state,TRUE,FALSE))return 5;
     action(MENU_ENABLE_2K,&state);

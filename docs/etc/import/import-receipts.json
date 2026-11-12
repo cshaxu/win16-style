@@ -86,7 +86,7 @@
       "path": "src/run16s-exe/tray_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "108a4852bf5d489e11b78f18089234b2e9c1df9792c22d65fc2a527064e21a8d",
+      "sha256": "8795eb50e6b9e0cdb7b8a2539216f4fcb13a7a511c7ecde053064932ba04350b",
       "disposition": "authored",
       "review": "T21 S19 tray control using existing global session; T21 S20 tray library split; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored C orchestration; no imported hook implementation"
@@ -6179,7 +6179,7 @@
       "path": "tests/integration/uwp_tray.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4d3fbccfbe0f5c65e855cd1557e4d214d1598325f4245f975fe2787985cc9e72",
+      "sha256": "c554195e18b2659595330847fccd09bcccc18af235a29273cba0f80382586482",
       "disposition": "authored",
       "review": "T22 S1 P38 opt-in published tray controller UWP integration; native menu input and owned targets",
       "notice": "Project-authored pure C test; no imported artwork"
@@ -6899,7 +6899,7 @@
       "path": "tests/run16s-exe/tray_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cdd450ee35d16f9c25a592ea9715781989f573e32cb665c5fa366911138cc0aa",
+      "sha256": "41824afa8355e8c9a9a32579e601c91e1fb9beee31db052d992271ad41a3ecd5",
       "disposition": "authored",
       "review": "T25 S8 global style lifecycle and tray selection tests",
       "notice": "Project-authored native C; no imported artwork"

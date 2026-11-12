@@ -30,6 +30,17 @@ static BOOL wait_ready(void)
     }while(GetTickCount64()<end);
     return FALSE;
 }
+static BOOL wait_session_stopped(void)
+{
+    WCHAR name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];
+    if(!ntw16s_global_name(name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return FALSE;
+    ULONGLONG end=GetTickCount64()+20000;
+    do{HANDLE event=OpenEventW(SYNCHRONIZE,FALSE,request);
+        if(!event)return GetLastError()==ERROR_FILE_NOT_FOUND;
+        CloseHandle(event);Sleep(50);
+    }while(GetTickCount64()<end);
+    return FALSE;
+}
 static BOOL stop_owned_controller(void)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];
@@ -120,7 +131,8 @@ static BOOL CALLBACK find_menu(HWND window,LPARAM unused)
     if(pid==controller_pid&&IsWindowVisible(window)&&!wcscmp(name,L"#32768"))menu_window=window;
     return TRUE;
 }
-static BOOL choose(BOOL expected_checked,BOOL exit_menu)
+/* expected: 0 = neither, 1 = Win16, 2 = Win2000; item: 0..2. */
+static BOOL choose_item(unsigned expected,unsigned item)
 {
     menu_window=NULL;
     if(!PostMessageW(tray,WM_APP+53,1,WM_RBUTTONUP))return FALSE;
@@ -130,17 +142,26 @@ static BOOL choose(BOOL expected_checked,BOOL exit_menu)
     DWORD_PTR result=0;
     if(!SendMessageTimeoutW(menu_window,0x01e1,0,0,SMTO_ABORTIFHUNG,500,&result))return FALSE;
     HMENU menu=(HMENU)result;UINT state=GetMenuState(menu,1001,MF_BYCOMMAND);
-    printf("MENU checked=%d disabled=%d expected=%d exit=%d\n",!!(state&MF_CHECKED),!!(state&(MF_GRAYED|MF_DISABLED)),expected_checked,exit_menu);
-    if(state==0xffffffffu||GetMenuItemCount(menu)!=3||!!(state&MF_CHECKED)!=expected_checked||(!exit_menu&&(state&(MF_GRAYED|MF_DISABLED)))){
+    UINT state2k=GetMenuState(menu,1003,MF_BYCOMMAND);
+    WCHAR first[64]={0},second[64]={0},third[64]={0};
+    printf("MENU win16_checked=%d win2k_checked=%d disabled=%d expected=%d exit=%d\n",
+        !!(state&MF_CHECKED),!!(state2k&MF_CHECKED),!!(state&(MF_GRAYED|MF_DISABLED)),expected,item==2);
+    if(state==0xffffffffu||state2k==0xffffffffu||GetMenuItemCount(menu)!=3||
+       !GetMenuStringW(menu,0,first,ARRAYSIZE(first),MF_BYPOSITION)||
+       !GetMenuStringW(menu,1,second,ARRAYSIZE(second),MF_BYPOSITION)||
+       !GetMenuStringW(menu,2,third,ARRAYSIZE(third),MF_BYPOSITION)||
+       lstrcmpW(first,L"Enable Win16 Style")||lstrcmpW(second,L"Enable Windows 2000 Style")||lstrcmpW(third,L"Exit")||
+       !!(state&MF_CHECKED)!=(expected==1)||!!(state2k&MF_CHECKED)!=(expected==2)||
+       (item!=2&&((state|state2k)&(MF_GRAYED|MF_DISABLED)))){
         PostMessageW(menu_window,WM_CANCELMODE,0,0);return FALSE;
     }
     MENUITEMINFOW info={.cbSize=sizeof(info),.fMask=MIIM_FTYPE|MIIM_STATE};
-    GetMenuItemInfoW(menu,exit_menu?2:0,TRUE,&info);
+    GetMenuItemInfoW(menu,item,TRUE,&info);
     printf("MENU_TYPE type=%x state=%x\n",info.fType,info.fState);
     IAccessible *accessible=NULL;
     HRESULT hr=AccessibleObjectFromWindow(menu_window,OBJID_CLIENT,&IID_IAccessible,(void **)&accessible);
     if(SUCCEEDED(hr)){
-        VARIANT child;VariantInit(&child);V_VT(&child)=VT_I4;V_I4(&child)=exit_menu?3:1;
+        VARIANT child;VariantInit(&child);V_VT(&child)=VT_I4;V_I4(&child)=(LONG)item+1;
         BSTR name=NULL,action=NULL;VARIANT state;VariantInit(&state);LONG count=0;
         IAccessible_get_accChildCount(accessible,&count);
         HRESULT name_hr=IAccessible_get_accName(accessible,child,&name);
@@ -154,6 +175,8 @@ static BOOL choose(BOOL expected_checked,BOOL exit_menu)
     }
     printf("MENU_ACCESSIBLE hr=%lx\n",(unsigned long)hr);return SUCCEEDED(hr);
 }
+static BOOL choose(BOOL expected_checked,BOOL exit_menu)
+{return choose_item(expected_checked?1u:0u,exit_menu?2u:0u);}
 static void cleanup(application *app)
 {
     if(!app->process)return;
@@ -161,13 +184,42 @@ static void cleanup(application *app)
     if(WaitForSingleObject(app->process,3000)!=WAIT_OBJECT_0){TerminateProcess(app->process,ERROR_TIMEOUT);WaitForSingleObject(app->process,1000);}
     CloseHandle(app->process);
 }
+typedef struct frame_target {PROCESS_INFORMATION process;HWND window;} frame_target;
+static BOOL frame_start(frame_target *target,PCWSTR image,unsigned index)
+{
+    WCHAR title[80],command[32768];STARTUPINFOW startup={.cb=sizeof(startup)};
+    if(swprintf(title,ARRAYSIZE(title),L"PublishedTray-%lu-%u",GetCurrentProcessId(),index)<0 ||
+       swprintf(command,ARRAYSIZE(command),L"\"%ls\" %ls",image,title)<0 ||
+       !CreateProcessW(image,command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&target->process))return FALSE;
+    ULONGLONG end=GetTickCount64()+10000;
+    do{target->window=FindWindowW(L"Win16GlobalE2ETarget",title);if(target->window)return TRUE;
+       if(WaitForSingleObject(target->process.hProcess,0)==WAIT_OBJECT_0)break;
+       pump(30);}while(GetTickCount64()<end);
+    return FALSE;
+}
+static BOOL frame_wait(frame_target *target,UINT message,int expected)
+{
+    ULONGLONG end=GetTickCount64()+20000;
+    do{DWORD_PTR value=0;if(SendMessageTimeoutW(target->window,message,0,0,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,500,&value) &&
+       (int)value==expected)return TRUE;
+       pump(30);}while(GetTickCount64()<end);
+    return FALSE;
+}
+static void frame_cleanup(frame_target *target)
+{
+    if(target->window && IsWindow(target->window))PostMessageW(target->window,WM_CLOSE,0,0);
+    if(target->process.hProcess){if(WaitForSingleObject(target->process.hProcess,3000)!=WAIT_OBJECT_0){
+        TerminateProcess(target->process.hProcess,ERROR_TIMEOUT);WaitForSingleObject(target->process.hProcess,1000);}
+        CloseHandle(target->process.hThread);CloseHandle(target->process.hProcess);}
+}
 int wmain(int argc,WCHAR **argv)
 {
     BOOL dpi_set=SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     BOOL menu_only=argc==4&&!wcscmp(argv[3],L"--menu-only");
+    BOOL styles=argc==6&&!wcscmp(argv[3],L"--styles");
     BOOL window_events=argc==4&&!wcscmp(argv[3],L"--window-events");
     BOOL toggle=window_events||(argc==4&&!wcscmp(argv[3],L"--toggle"));
-    if(argc!=3&&!menu_only&&!toggle){puts("SKIP opt-in executable and log path required");return 77;}
+    if(argc!=3&&!menu_only&&!toggle&&!styles){puts("SKIP opt-in executable and log path required");return 77;}
     if(!_wfreopen(argv[2],L"w",stdout))return 1;
     setvbuf(stdout,NULL,_IONBF,0);
     printf("DPI_SET ok=%d awareness=%d\n",dpi_set,(int)GetAwarenessFromDpiAwarenessContext(GetThreadDpiAwarenessContext()));
@@ -180,14 +232,18 @@ int wmain(int argc,WCHAR **argv)
     HDESK input=OpenInputDesktop(0,FALSE,DESKTOP_READOBJECTS);WCHAR desktop[80]={0};
     if(input){GetUserObjectInformationW(input,UOI_NAME,desktop,sizeof(desktop),&bytes);CloseDesktop(input);}
     if(wcscmp(desktop,L"Default")||!GetForegroundWindow()){puts("SKIP normal input desktop required");return 77;}
-    if(FindWindowW(L"LibTrayWindow",L"Win16 Style")||image_present(L"CalculatorApp.exe")||image_present(L"ScanApp.exe")){
+    if(FindWindowW(L"LibTrayWindow",L"Win16 Style")||
+       (!menu_only&&!styles&&(image_present(L"CalculatorApp.exe")||image_present(L"ScanApp.exe")))){
         puts("SKIP existing controller or target");return 77;
     }
     HRESULT hr=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(hr))return 1;
     POINT pointer;BOOL restore_pointer=GetCursorPos(&pointer);
-    application apps[2]={0};PROCESS_INFORMATION process={0};BOOL ok=FALSE,enabled=FALSE;
+    application apps[2]={0};frame_target frames_test[3]={0};PROCESS_INFORMATION process={0};BOOL ok=FALSE,enabled=FALSE;
     HANDLE output=INVALID_HANDLE_VALUE,input_handle=INVALID_HANDLE_VALUE;
-    if(!menu_only&&(!activate(&apps[0],L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App")||styled(&apps[0])))goto done;
+    if(styles && (!frame_start(&frames_test[0],argv[4],0)||!frame_start(&frames_test[1],argv[5],1)))goto done;
+    if(styles && (!frame_wait(&frames_test[0],WM_APP+71,0)||!frame_wait(&frames_test[1],WM_APP+71,0)||
+                  !frame_wait(&frames_test[0],WM_APP+81,0)||!frame_wait(&frames_test[1],WM_APP+81,0)))goto done;
+    if(!menu_only&&!styles&&(!activate(&apps[0],L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App")||styled(&apps[0])))goto done;
     WCHAR command[33000];if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --global",argv[1])<0)goto done;
     WCHAR log_path[32768];if(swprintf(log_path,ARRAYSIZE(log_path),L"%ls.controller.log",argv[2])<0)goto done;
     SECURITY_ATTRIBUTES security={.nLength=sizeof(security),.bInheritHandle=TRUE};
@@ -206,7 +262,27 @@ int wmain(int argc,WCHAR **argv)
     NOTIFYICONIDENTIFIER icon={.cbSize=sizeof(icon),.hWnd=tray,.uID=1};RECT rect={0};
     hr=Shell_NotifyIconGetRect(&icon,&rect);
     printf("TRAY pid=%lu hwnd=%p icon_hr=%lx rect=%ld,%ld,%ld,%ld\n",controller_pid,(void *)tray,(unsigned long)hr,rect.left,rect.top,rect.right,rect.bottom);
+    if(FAILED(hr)||rect.right<=rect.left||rect.bottom<=rect.top)puts("TRAY_ICON_LOCATION_UNVERIFIED");
     if(menu_only)goto exit_tray;
+    if(styles){
+        if(!choose_item(0,0))goto done;
+        enabled=TRUE;
+        if(!wait_ready()||!frame_wait(&frames_test[0],WM_APP+71,1)||!frame_wait(&frames_test[1],WM_APP+71,1))goto done;
+        pump(500);if(!choose_item(1,1))goto done;
+        if(!frame_wait(&frames_test[0],WM_APP+81,1)||!frame_wait(&frames_test[1],WM_APP+81,1)||
+           !frame_wait(&frames_test[0],WM_APP+71,0)||!frame_wait(&frames_test[1],WM_APP+71,0))goto done;
+        puts("PUBLISHED_STYLES_SWITCH_2K_PASS");
+        if(!frame_start(&frames_test[2],argv[5],2)||!frame_wait(&frames_test[2],WM_APP+81,1))goto done;
+        puts("PUBLISHED_STYLES_NEW_WINDOW_PASS");if(!wait_ready())goto done;
+        pump(500);if(!choose_item(2,0))goto done;
+        for(unsigned i=0;i<ARRAYSIZE(frames_test);++i)
+            if(!frame_wait(&frames_test[i],WM_APP+81,0)||!frame_wait(&frames_test[i],WM_APP+71,1))goto done;
+        puts("PUBLISHED_STYLES_SWITCH_16_PASS");if(!wait_ready())goto done;
+        pump(500);if(!choose_item(1,0))goto done;
+        for(unsigned i=0;i<ARRAYSIZE(frames_test);++i)if(!frame_wait(&frames_test[i],WM_APP+71,0))goto done;
+        if(!wait_session_stopped())goto done;
+        enabled=FALSE;puts("PUBLISHED_STYLES_DISABLE_PASS");goto exit_tray;
+    }
     if(styled(&apps[0])||!choose(FALSE,FALSE))goto done;
     enabled=TRUE;if(!wait_style(&apps[0],TRUE))goto done;
     puts("EXISTING_UWP_STYLED");
@@ -253,7 +329,9 @@ exit_tray:
 done:
     if(process.hProcess){DWORD code=MAXDWORD;GetExitCodeProcess(process.hProcess,&code);printf("CONTROLLER_EXIT before_cleanup=%lu\n",code);}
     if(process.hProcess&&WaitForSingleObject(process.hProcess,0)==WAIT_TIMEOUT){
-        if(enabled&&tray){if(stop_owned_controller()){wait_style(&apps[0],FALSE);if(apps[1].frame)wait_style(&apps[1],FALSE);enabled=FALSE;}}
+        if(enabled&&tray){if(stop_owned_controller()){
+            if(!styles){wait_style(&apps[0],FALSE);if(apps[1].frame)wait_style(&apps[1],FALSE);}
+            enabled=FALSE;}}
         if(tray)choose(enabled,TRUE);
         if(WaitForSingleObject(process.hProcess,5000)!=WAIT_OBJECT_0){TerminateProcess(process.hProcess,ERROR_TIMEOUT);WaitForSingleObject(process.hProcess,1000);}
     }
@@ -261,7 +339,7 @@ done:
     if(process.hProcess)CloseHandle(process.hProcess);
     if(output!=INVALID_HANDLE_VALUE)CloseHandle(output);
     if(input_handle!=INVALID_HANDLE_VALUE)CloseHandle(input_handle);
-    cleanup(&apps[1]);cleanup(&apps[0]);CoUninitialize();
+    cleanup(&apps[1]);cleanup(&apps[0]);for(unsigned i=0;i<ARRAYSIZE(frames_test);++i)frame_cleanup(&frames_test[i]);CoUninitialize();
     if(restore_pointer)SetCursorPos(pointer.x,pointer.y);
-    printf("UWP_TRAY_%s mode=%s enabled_at_cleanup=%d\n",ok?"PASS":"FAIL",menu_only?"menu-exit":toggle?"toggle-resident":"enable-shutdown",enabled);return ok?0:1;
+    printf("UWP_TRAY_%s mode=%s enabled_at_cleanup=%d\n",ok?"PASS":"FAIL",styles?"published-styles":menu_only?"menu-exit":toggle?"toggle-resident":"enable-shutdown",enabled);return ok?0:1;
 }

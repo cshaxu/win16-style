@@ -15,8 +15,8 @@ static HMENU make_menu(void *value)
 {
     controller *state=(controller *)value;
     HMENU menu=CreatePopupMenu();if(!menu)return NULL;
-    UINT flags16=MF_STRING|((state->enabled && state->style==NTW16S_GLOBAL_STYLE_16)?MF_CHECKED:MF_UNCHECKED)|(state->busy?MF_GRAYED:0);
-    UINT flags2k=MF_STRING|((state->enabled && state->style==NTW16S_GLOBAL_STYLE_2K)?MF_CHECKED:MF_UNCHECKED)|(state->busy?MF_GRAYED:0);
+    UINT flags16=MF_STRING|(state->next_style==NTW16S_GLOBAL_STYLE_16?MF_CHECKED:MF_UNCHECKED);
+    UINT flags2k=MF_STRING|(state->next_style==NTW16S_GLOBAL_STYLE_2K?MF_CHECKED:MF_UNCHECKED);
     if(!AppendMenuW(menu,flags16,MENU_ENABLE,L"Enable Win16 Style") ||
        !AppendMenuW(menu,flags2k,MENU_ENABLE_2K,L"Enable Windows 2000 Style") ||
        !AppendMenuW(menu,MF_STRING,MENU_EXIT,L"Exit")){
@@ -44,34 +44,42 @@ static BOOL session_ready(controller *state)
     if(s)UnmapViewOfFile(s);
     CloseHandle(mapping);return ready;
 }
+static void reconcile(controller *state)
+{
+    if(!state->worker){
+        if(state->next_style!=STYLE_NONE && !start_worker(state,state->next_style)){
+            state->next_style=STYLE_NONE;MessageBeep(MB_ICONERROR);
+        }
+        return;
+    }
+    if(state->stopping || state->style==state->next_style)return;
+    HANDLE request=OpenEventW(EVENT_MODIFY_STATE,FALSE,state->request_name);
+    if(!request)return;
+    BOOL sent=SetEvent(request);CloseHandle(request);
+    if(!sent){MessageBeep(MB_ICONERROR);return;}
+    state->stopping=TRUE;state->busy=TRUE;
+}
 static void action(unsigned command,void *value)
 {
     controller *state=(controller *)value;
     if(command==MENU_EXIT)ExitProcess(0);
-    if((command!=MENU_ENABLE && command!=MENU_ENABLE_2K) || state->busy)return;
+    if(command!=MENU_ENABLE && command!=MENU_ENABLE_2K)return;
     DWORD selected=command==MENU_ENABLE?NTW16S_GLOBAL_STYLE_16:NTW16S_GLOBAL_STYLE_2K;
-    if(!state->enabled){if(!start_worker(state,selected))MessageBeep(MB_ICONERROR);return;}
-    HANDLE request=OpenEventW(EVENT_MODIFY_STATE,FALSE,state->request_name);
-    if(!request){MessageBeep(MB_ICONERROR);return;}
-    BOOL sent=SetEvent(request);CloseHandle(request);
-    if(!sent){MessageBeep(MB_ICONERROR);return;}
-    state->next_style=selected==state->style?STYLE_NONE:selected;
-    state->stopping=TRUE;state->busy=TRUE;
+    state->next_style=state->next_style==selected?STYLE_NONE:selected;
+    reconcile(state);
 }
 static void worker_stopped(controller *state,DWORD code)
 {
-    DWORD next=state->next_style;state->next_style=STYLE_NONE;
     state->stopping=FALSE;state->enabled=FALSE;state->busy=FALSE;
-    if(code){MessageBeep(MB_ICONERROR);return;}
-    if(next!=STYLE_NONE && (!state->parent || WaitForSingleObject(state->parent,0)==WAIT_TIMEOUT))
-        if(!start_worker(state,next))MessageBeep(MB_ICONERROR);
+    if(code){state->next_style=STYLE_NONE;MessageBeep(MB_ICONERROR);return;}
+    if(!state->parent || WaitForSingleObject(state->parent,0)==WAIT_TIMEOUT)reconcile(state);
 }
 #ifdef RUN16S_TRAY_TEST
 static LRESULT test_control(WPARAM request,void *value)
 {
     controller *state=(controller *)value;
-    if(request==1 && !state->busy)action(MENU_ENABLE,state);
-    else if(request==6 && !state->busy)action(MENU_ENABLE_2K,state);
+    if(request==1)action(MENU_ENABLE,state);
+    else if(request==6)action(MENU_ENABLE_2K,state);
     else if(request==2)action(MENU_EXIT,state);
     else if(request==3)return (state->enabled?1:0)|(state->busy?2:0)|((state->enabled && state->style==NTW16S_GLOBAL_STYLE_2K)?4:0);
     else if(request==4){
@@ -79,8 +87,8 @@ static LRESULT test_control(WPARAM request,void *value)
         BOOL valid=GetMenuItemCount(menu)==3 && GetMenuStringW(menu,0,first,ARRAYSIZE(first),MF_BYPOSITION) &&
             GetMenuStringW(menu,1,second,ARRAYSIZE(second),MF_BYPOSITION) && GetMenuStringW(menu,2,third,ARRAYSIZE(third),MF_BYPOSITION) &&
             !lstrcmpW(first,L"Enable Win16 Style") && !lstrcmpW(second,L"Enable Windows 2000 Style") && !lstrcmpW(third,L"Exit") &&
-            !!(GetMenuState(menu,MENU_ENABLE,MF_BYCOMMAND)&MF_CHECKED)==!!(state->enabled && state->style==NTW16S_GLOBAL_STYLE_16) &&
-            !!(GetMenuState(menu,MENU_ENABLE_2K,MF_BYCOMMAND)&MF_CHECKED)==!!(state->enabled && state->style==NTW16S_GLOBAL_STYLE_2K);
+            !!(GetMenuState(menu,MENU_ENABLE,MF_BYCOMMAND)&MF_CHECKED)==(state->next_style==NTW16S_GLOBAL_STYLE_16) &&
+            !!(GetMenuState(menu,MENU_ENABLE_2K,MF_BYCOMMAND)&MF_CHECKED)==(state->next_style==NTW16S_GLOBAL_STYLE_2K);
         DestroyMenu(menu);return valid;
     }else if(request==5){
         ICONINFO info={0};BITMAP bitmap={0};if(!GetIconInfo(state->icon,&info))return 0;
@@ -126,6 +134,7 @@ int run16s_tray_global(HANDLE parent)
         if(state.worker && state.busy && !state.stopping && session_ready(&state)){
             state.enabled=TRUE;state.busy=FALSE;
         }
+        if(state.worker && !state.stopping)reconcile(&state);
     }
     if(state.worker){HANDLE request=OpenEventW(EVENT_MODIFY_STATE,FALSE,state.request_name);
         if(request){SetEvent(request);CloseHandle(request);}
