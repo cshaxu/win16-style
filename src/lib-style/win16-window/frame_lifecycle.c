@@ -91,7 +91,7 @@ BOOL win16_control_frame_remove(HWND w,const win16_control_frame_lifecycle_servi
     if(!menu_only){normal=!IsIconic(w)&&!IsZoomed(w);style_client_screen(w,&client);}
     if(!RemoveWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc))return FALSE;
     ++s->calls;
-    if(!menu_only)win16_control_frame_cancel_repaint(s);
+    if(!menu_only)style_uwp_repaint_cancel(&s->xaml);
     s->detached=TRUE;
     if(!menu_only)v->control_remove(w,s);
     while(s->menus)win16_control_frame_state_end_menu(s);
@@ -122,7 +122,7 @@ BOOL win16_control_frame_terminal(HWND w,const win16_control_frame_lifecycle_ser
     if(!RemoveWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc)){
         SetLastError(ERROR_INVALID_STATE);return FALSE;
     }
-    ++s->calls;win16_control_frame_cancel_repaint(s);s->detached=TRUE;
+    ++s->calls;style_uwp_repaint_cancel(&s->xaml);s->detached=TRUE;
     while(s->menus)win16_control_frame_state_end_menu(s);
     if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
     return TRUE;

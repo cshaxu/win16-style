@@ -46,6 +46,10 @@ add_library(win16-common STATIC
 target_include_directories(win16-common PUBLIC src/lib-style/win16-common)
 target_compile_definitions(win16-common PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win16-common PUBLIC style-present user32 gdi32 comctl32 uxtheme)
+add_library(style-uwp-repaint STATIC src/lib-style/uwp/repaint.c)
+target_include_directories(style-uwp-repaint PUBLIC src)
+target_compile_definitions(style-uwp-repaint PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_link_libraries(style-uwp-repaint PUBLIC user32 comctl32)
 add_library(win16-window STATIC
   src/lib-style/win16-window/menu_paint.c
   src/lib-style/win16-window/menu_bar.c src/lib-style/win16-window/menu_bar_paint.c
@@ -58,7 +62,7 @@ add_library(win16-window STATIC
   src/lib-style/win16-window/frame_state.c)
 target_include_directories(win16-window PUBLIC src/lib-style/win16-window PRIVATE src)
 target_compile_definitions(win16-window PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-window PUBLIC win16-common user32 gdi32 comctl32 uxtheme)
+target_link_libraries(win16-window PUBLIC style-uwp-repaint win16-common user32 gdi32 comctl32 uxtheme)
 add_library(win16-window-uwp STATIC
   src/lib-style/win16-window-uwp/frame.c
   src/lib-style/win16-window-uwp/frame_layout.c)
@@ -799,6 +803,9 @@ if(BUILD_TESTING)
   add_executable(core-style-modern-file tests/lib-style/common/modern_file_dialog.c)
   target_link_libraries(core-style-modern-file PRIVATE style-dialog-common)
   add_test(NAME core/style-modern-file COMMAND $<TARGET_FILE:core-style-modern-file>)
+  add_executable(core-style-uwp-repaint tests/lib-style/uwp/repaint.c)
+  target_link_libraries(core-style-uwp-repaint PRIVATE style-uwp-repaint)
+  add_test(NAME core/style-uwp-repaint COMMAND $<TARGET_FILE:core-style-uwp-repaint>)
   add_executable(core-style-control-redraw tests/lib-style/common/control_redraw.c)
   target_include_directories(core-style-control-redraw PRIVATE src)
   target_link_libraries(core-style-control-redraw PRIVATE user32 comctl32)

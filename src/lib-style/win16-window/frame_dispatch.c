@@ -4,54 +4,16 @@
 #include "lib-style/common/menu_input.h"
 #include <commctrl.h>
 #include <windowsx.h>
-static BOOL queue_repaint(HWND,style_window *);
-static LRESULT CALLBACK repaint_proc(HWND timer,UINT msg,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR data)
+static void repaint_retain(void *context){++((style_window *)context)->calls;}
+static void repaint_release(void *context)
+{style_window *s=context;if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);}
+static void repaint_activate(HWND owner,void *context)
 {
-    style_window *s=(style_window *)data;
-    (void)id;
-    if(msg==WM_TIMER && wp==(UINT_PTR)s){
-        KillTimer(timer,(UINT_PTR)s);s->xaml_repaint_pending=FALSE;
-        ++s->calls;
-        if(s->xaml_waiting){
-            HWND owner=s->xaml_repaint_owner;
-            if(!style_frame_xaml_bridge(owner,TRUE) && GetTickCount64()<s->xaml_deadline && queue_repaint(owner,s)){
-                if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
-                return 0;
-            }
-            s->xaml_waiting=FALSE;s->pending_frame=FALSE;
-            RECT client;BOOL normal=!IsIconic(owner)&&!IsZoomed(owner);
-            style_client_screen(owner,&client);s->xaml_activate(owner,s,&client,normal);
-        }else{
-            s->xaml_repainting=TRUE;
-            SendMessageW(s->xaml_repaint_owner,WM_NCPAINT,1,0);
-            s->xaml_repainting=FALSE;
-        }
-        if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
-        return 0;
-    }
-    return DefSubclassProc(timer,msg,wp,lp);
+    style_window *s=context;s->pending_frame=FALSE;
+    RECT client;BOOL normal=!IsIconic(owner)&&!IsZoomed(owner);
+    style_client_screen(owner,&client);s->xaml_activate(owner,s,&client,normal);
 }
-void win16_control_frame_cancel_repaint(style_window *s)
-{
-    if(s->xaml_repaint_window){
-        KillTimer(s->xaml_repaint_window,(UINT_PTR)s);
-        DestroyWindow(s->xaml_repaint_window);
-        s->xaml_repaint_window=NULL;s->xaml_repaint_pending=FALSE;s->xaml_waiting=FALSE;
-    }
-}
-static BOOL queue_repaint(HWND w,style_window *s)
-{
-    if(!s->xaml_repaint_window){
-        HWND timer=CreateWindowExW(0,L"STATIC",L"",0,0,0,0,0,HWND_MESSAGE,NULL,GetModuleHandleW(NULL),NULL);
-        if(!timer)return FALSE;
-        if(s->detached || !IsWindow(w)){DestroyWindow(timer);return FALSE;}
-        if(!SetWindowSubclass(timer,repaint_proc,(UINT_PTR)repaint_proc,(DWORD_PTR)s)){DestroyWindow(timer);return FALSE;}
-        if(s->detached || !IsWindow(w)){DestroyWindow(timer);return FALSE;}
-        s->xaml_repaint_owner=w;s->xaml_repaint_window=timer;
-    }
-    if(!SetTimer(s->xaml_repaint_window,(UINT_PTR)s,30,NULL))return FALSE;
-    s->xaml_repaint_pending=TRUE;return TRUE;
-}
+static const style_uwp_repaint_services repaint_services={repaint_retain,repaint_release,repaint_activate};
 LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM lp,
     const win16_control_frame_dispatch_services *v)
 {
@@ -74,11 +36,11 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     }
     if(s->pending_frame && msg!=WM_SHOWWINDOW && msg!=WM_NCDESTROY)goto forward;
     if(msg==WM_SHOWWINDOW && s->pending_frame){
-        if(s->xaml_waiting){if(!wp)win16_control_frame_cancel_repaint(s);goto forward;}
+        if(s->xaml.waiting){if(!wp)style_uwp_repaint_cancel(&s->xaml);goto forward;}
         if(wp && style_frame_xaml_bridge(w,FALSE)){
-            s->xaml_waiting=TRUE;s->xaml_deadline=GetTickCount64()+2000;s->xaml_activate=v->message->activate;
-            if(queue_repaint(w,s))goto forward;
-            s->xaml_waiting=FALSE;
+            s->xaml.waiting=TRUE;s->xaml.deadline=GetTickCount64()+2000;s->xaml_activate=v->message->activate;
+            if(style_uwp_repaint_queue(w,&s->xaml,&s->detached,s,&repaint_services))goto forward;
+            s->xaml.waiting=FALSE;
             if(s->detached)goto done;
         }
     }
@@ -123,9 +85,9 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
         result=DefSubclassProc(w,msg,wp,lp);
         /* Coalesce a burst of XAML background erases into one frame refresh.
          * Classic windows do not schedule this additional paint. */
-        if(!s->detached && !s->xaml_repainting && !s->xaml_repaint_pending && !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) &&
+        if(!s->detached && !s->xaml.repainting && !s->xaml.pending && !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) &&
            style_frame_xaml_bridge(w,FALSE)){
-            (void)queue_repaint(w,s);
+            (void)style_uwp_repaint_queue(w,&s->xaml,&s->detached,s,&repaint_services);
         }
         break;
     case WM_SHOWWINDOW:
