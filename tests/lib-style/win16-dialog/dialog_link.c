@@ -10,8 +10,8 @@
 #include "lib-style/win16-dialog/file_helpers.h"
 #include "lib-style/common/modern_file_dialog.h"
 #include "lib-style/common/classic_shell_item.h"
-#include "lib-style/win16-dialog/v2.h"
-#include "lib-style/win16-dialog/primary.h"
+#include "lib-style/common/dialog_v2.h"
+#include "lib-style/common/dialog_primary.h"
 #include "lib-style/win16-dialog/com_show.h"
 #include "lib-style/win16-dialog/proxy.h"
 #include "lib-style/win16-dialog/browse.h"
@@ -68,8 +68,8 @@ done:
 }
 static UINT_PTR CALLBACK fake_print_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {(void)w;(void)message;(void)wp;(void)lp;return 0;}
-static void *observed_owner;static win16_dialog_v2_operation observed_op;static ULONG_PTR observed_a,observed_b;
-static HRESULT fake_v2_call(void *owner,win16_dialog_v2_operation op,ULONG_PTR a,ULONG_PTR b)
+static void *observed_owner;static style_dialog_v2_operation observed_op;static ULONG_PTR observed_a,observed_b;
+static HRESULT fake_v2_call(void *owner,style_dialog_v2_operation op,ULONG_PTR a,ULONG_PTR b)
 {observed_owner=owner;observed_op=op;observed_a=a;observed_b=b;return S_FALSE;}
 static HRESULT fake_v2_query(void *owner,REFIID iid,void **out)
 {(void)iid;*out=owner;return S_OK;}
@@ -494,13 +494,13 @@ int main(void)
     BOOL proxy_ok=test_proxy_lifetime();
     CoUninitialize();
     if(!multi_ok || !cleaned || !proxy_ok)return 32;
-    int owner=0;BOOL unsupported=FALSE;WCHAR *cancel_label=NULL;win16_dialog_v2 adapter;
-    const win16_dialog_customize_services identity={fake_v2_query,fake_v2_ref,fake_v2_ref};
-    win16_dialog_v2_init(&adapter,&owner,NULL,&unsupported,&cancel_label,&identity,fake_v2_call);
+    int owner=0;BOOL unsupported=FALSE;WCHAR *cancel_label=NULL;style_dialog_v2 adapter;
+    const style_dialog_identity_services identity={fake_v2_query,fake_v2_ref,fake_v2_ref};
+    style_dialog_v2_init(&adapter,&owner,NULL,&unsupported,&cancel_label,&identity,fake_v2_call);
     if(IFileDialog2_SetFileTypes(&adapter.iface,2,specs)!=S_FALSE || observed_owner!=&owner ||
-       observed_op!=V2_TYPES || observed_a!=2 || observed_b!=(ULONG_PTR)specs)return 22;
-    if(IFileDialog2_SetOkButtonLabel(&adapter.iface,L"OK")!=S_FALSE || observed_op!=V2_LABEL || observed_b!=TRUE)return 23;
-    if(IFileDialog2_Close(&adapter.iface,E_FAIL)!=S_FALSE || observed_op!=V2_CLOSE || (HRESULT)observed_a!=E_FAIL)return 24;
+       observed_op!=STYLE_DIALOG_V2_TYPES || observed_a!=2 || observed_b!=(ULONG_PTR)specs)return 22;
+    if(IFileDialog2_SetOkButtonLabel(&adapter.iface,L"OK")!=S_FALSE || observed_op!=STYLE_DIALOG_V2_LABEL || observed_b!=TRUE)return 23;
+    if(IFileDialog2_Close(&adapter.iface,E_FAIL)!=S_FALSE || observed_op!=STYLE_DIALOG_V2_CLOSE || (HRESULT)observed_a!=E_FAIL)return 24;
     if(IFileDialog2_AddRef(&adapter.iface)!=7 || IFileDialog2_Release(&adapter.iface)!=7)return 25;
     IFileDialog2Vtbl native_vtable={.SetCancelButtonLabel=fake_cancel_label};
     IFileDialog2 native_dialog={.lpVtbl=&native_vtable};adapter.native=&native_dialog;
@@ -511,19 +511,19 @@ int main(void)
     fake_cancel_result=S_OK;
     if(IFileDialog2_SetCancelButtonLabel(&adapter.iface,L"Second")!=S_OK || !cancel_label || lstrcmpW(cancel_label,L"Second"))return 47;
     if(IFileDialog2_SetCancelButtonLabel(&adapter.iface,NULL)!=S_OK || cancel_label || unsupported)return 48;
-    if(!win16_dialog_proxy_iid(&IID_IFileOpenDialog,FALSE) ||
-       win16_dialog_proxy_iid(&IID_IFileOpenDialog,TRUE) ||
-       !win16_dialog_proxy_iid(&IID_IFileSaveDialog,TRUE) ||
-       win16_dialog_proxy_iid(&IID_IFileSaveDialog,FALSE) ||
-       win16_dialog_proxy_iid(&IID_IStream,FALSE) || win16_dialog_proxy_iid(NULL,FALSE))return 36;
-    win16_dialog_primary primary;IShellItemArray *items=NULL;
-    win16_dialog_primary_init(&primary,&owner,NULL,&unsupported,FALSE,&identity,fake_v2_call);
+    if(!style_dialog_proxy_iid(&IID_IFileOpenDialog,FALSE) ||
+       style_dialog_proxy_iid(&IID_IFileOpenDialog,TRUE) ||
+       !style_dialog_proxy_iid(&IID_IFileSaveDialog,TRUE) ||
+       style_dialog_proxy_iid(&IID_IFileSaveDialog,FALSE) ||
+       style_dialog_proxy_iid(&IID_IStream,FALSE) || style_dialog_proxy_iid(NULL,FALSE))return 36;
+    style_dialog_primary primary;IShellItemArray *items=NULL;
+    style_dialog_primary_init(&primary,&owner,NULL,&unsupported,FALSE,&identity,fake_v2_call);
     IFileOpenDialog *open=(IFileOpenDialog *)&primary;
     if(IFileOpenDialog_AddRef(open)!=7 || IFileOpenDialog_GetResults(open,&items)!=S_FALSE ||
-       observed_owner!=&owner || observed_op!=V2_PRIMARY_GET_RESULTS || observed_a!=(ULONG_PTR)&items)return 26;
-    win16_dialog_primary_init(&primary,&owner,NULL,&unsupported,TRUE,&identity,fake_v2_call);
+       observed_owner!=&owner || observed_op!=STYLE_DIALOG_V2_PRIMARY_GET_RESULTS || observed_a!=(ULONG_PTR)&items)return 26;
+    style_dialog_primary_init(&primary,&owner,NULL,&unsupported,TRUE,&identity,fake_v2_call);
     IFileSaveDialog *save=(IFileSaveDialog *)&primary;
-    if(IFileSaveDialog_Close(save,E_FAIL)!=S_FALSE || observed_op!=V2_PRIMARY_CLOSE || (HRESULT)observed_a!=E_FAIL)return 27;
+    if(IFileSaveDialog_Close(save,E_FAIL)!=S_FALSE || observed_op!=STYLE_DIALOG_V2_PRIMARY_CLOSE || (HRESULT)observed_a!=E_FAIL)return 27;
     IShellItem *show_result=NULL;IShellItemArray *show_results=NULL;BOOL show_completed=TRUE;
     win16_dialog_com_show_state show_state={.owner=&owner,.result=&show_result,.results=&show_results,
         .completed=&show_completed,.session_active=no_session,.show_native=fallback_show};

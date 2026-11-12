@@ -1,15 +1,15 @@
 /* IFileDialog2 facade; owner supplies stateful operations and COM identity. */
 #define COBJMACROS
-#include "v2.h"
-#include "common_methods.h"
+#include "lib-style/common/dialog_v2.h"
+#include "lib-style/common/dialog_common_methods.h"
 #include "lib-style/common/classic_file_contract.h"
-#define V2_CALL(p,op,a,b) ((p)->call((p)->owner,V2_##op,(ULONG_PTR)(a),(ULONG_PTR)(b)))
+#define STYLE_DIALOG_V2_CALL(p,op,a,b) ((p)->call((p)->owner,STYLE_DIALOG_V2_##op,(ULONG_PTR)(a),(ULONG_PTR)(b)))
 
-WIN16_DIALOG_COMMON(v2,IFileDialog2,win16_dialog_v2,p->native,GET_SELECTION,CLOSE,V2_CALL)
+STYLE_DIALOG_COMMON(v2,IFileDialog2,style_dialog_v2,p->native,GET_SELECTION,CLOSE,STYLE_DIALOG_V2_CALL)
 
 static HRESULT STDMETHODCALLTYPE v2_SetCancelButtonLabel(IFileDialog2 *This, LPCWSTR pszLabel)
 {
-    win16_dialog_v2 *p=(win16_dialog_v2 *)This;
+    style_dialog_v2 *p=(style_dialog_v2 *)This;
     HRESULT hr=IFileDialog2_SetCancelButtonLabel(p->native,pszLabel);if(FAILED(hr))return hr;
     WCHAR *copy=NULL;
     if(!style_dialog_copy_text(pszLabel,&copy)){*p->unsupported=TRUE;return hr;}
@@ -19,7 +19,7 @@ static HRESULT STDMETHODCALLTYPE v2_SetCancelButtonLabel(IFileDialog2 *This, LPC
 
 static HRESULT STDMETHODCALLTYPE v2_SetNavigationRoot(IFileDialog2 *This, IShellItem *psi)
 {
-    win16_dialog_v2 *p=(win16_dialog_v2 *)This;*p->unsupported=TRUE;return IFileDialog2_SetNavigationRoot(p->native ,psi);
+    style_dialog_v2 *p=(style_dialog_v2 *)This;*p->unsupported=TRUE;return IFileDialog2_SetNavigationRoot(p->native ,psi);
 }
 
 static IFileDialog2Vtbl v2_vtable={
@@ -54,8 +54,8 @@ static IFileDialog2Vtbl v2_vtable={
     v2_SetNavigationRoot
 };
 
-void win16_dialog_v2_init(win16_dialog_v2 *adapter,void *owner,IFileDialog2 *native,BOOL *unsupported,
-    WCHAR **cancel_label,const win16_dialog_customize_services *identity,win16_dialog_v2_call call)
+void style_dialog_v2_init(style_dialog_v2 *adapter,void *owner,IFileDialog2 *native,BOOL *unsupported,
+    WCHAR **cancel_label,const style_dialog_identity_services *identity,style_dialog_v2_call call)
 {
     adapter->iface.lpVtbl=&v2_vtable;adapter->owner=owner;adapter->native=native;
     adapter->unsupported=unsupported;adapter->cancel_label=cancel_label;adapter->identity=identity;adapter->call=call;

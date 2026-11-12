@@ -51,7 +51,7 @@ ULONG win16_dialog_proxy_release(win16_dialog_proxy *p)
 static HRESULT identity_query(void *owner,REFIID id,void **out){return win16_dialog_proxy_query(owner,id,out);}
 static ULONG identity_add(void *owner){return win16_dialog_proxy_add(owner);}
 static ULONG identity_release(void *owner){return win16_dialog_proxy_release(owner);}
-static const win16_dialog_customize_services identity_services={identity_query,identity_add,identity_release};
+static const style_dialog_identity_services identity_services={identity_query,identity_add,identity_release};
 
 HRESULT win16_dialog_proxy_query(win16_dialog_proxy *p,REFIID id,void **out)
 {
@@ -63,17 +63,17 @@ HRESULT win16_dialog_proxy_query(win16_dialog_proxy *p,REFIID id,void **out)
     }
     if(IsEqualIID(id,&IID_IOleWindow)){
         if(!p->ole_native){HRESULT hr=IFileDialog_QueryInterface(p->native,id,(void **)&p->ole_native);if(FAILED(hr))return hr;}
-        win16_dialog_ole_window_init(&p->ole,p,p->ole_native,&p->active_window,&identity_services);
+        style_dialog_ole_window_init(&p->ole,p,p->ole_native,&p->active_window,&identity_services);
         *out=&p->ole.iface;win16_dialog_proxy_add(p);return S_OK;
     }
     if(IsEqualIID(id,&IID_IFileDialog2)){
         if(!p->v2_native){HRESULT hr=IFileDialog_QueryInterface(p->native,id,(void **)&p->v2_native);if(FAILED(hr))return hr;}
-        win16_dialog_v2_init(&p->v2,p,p->v2_native,&p->unsupported,&p->cancel_label,&identity_services,p->dispatch);
+        style_dialog_v2_init(&p->v2,p,p->v2_native,&p->unsupported,&p->cancel_label,&identity_services,p->dispatch);
         *out=&p->v2.iface;win16_dialog_proxy_add(p);return S_OK;
     }
     if(IsEqualIID(id,&IID_IFileDialogCustomize)){
         if(!p->custom_native){HRESULT hr=IFileDialog_QueryInterface(p->native,id,(void **)&p->custom_native);if(FAILED(hr))return hr;}
-        win16_dialog_customize_init(&p->custom,p,p->custom_native,&p->unsupported,&identity_services);
+        style_dialog_customize_init(&p->custom,p,p->custom_native,&p->unsupported,&identity_services);
         *out=&p->custom.iface;win16_dialog_proxy_add(p);return S_OK;
     }
     HRESULT hr=IFileDialog_QueryInterface(p->native,id,out);
@@ -83,14 +83,14 @@ HRESULT win16_dialog_proxy_query(win16_dialog_proxy *p,REFIID id,void **out)
     return hr;
 }
 
-win16_dialog_proxy *win16_dialog_proxy_new(IUnknown *original,BOOL save,win16_dialog_v2_call dispatch,BOOL experimental_events)
+win16_dialog_proxy *win16_dialog_proxy_new(IUnknown *original,BOOL save,style_dialog_v2_call dispatch,BOOL experimental_events)
 {
     IFileDialog *native=NULL;IUnknown *variant=NULL;
     if(FAILED(IUnknown_QueryInterface(original,&IID_IFileDialog,(void **)&native)))return NULL;
     if(FAILED(IUnknown_QueryInterface(original,save?&IID_IFileSaveDialog:&IID_IFileOpenDialog,(void **)&variant))){IFileDialog_Release(native);return NULL;}
     win16_dialog_proxy *p=HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,sizeof(*p));
     if(!p){IUnknown_Release(variant);IFileDialog_Release(native);return NULL;}
-    win16_dialog_primary_init(&p->primary,p,variant,&p->unsupported,save,&identity_services,dispatch);
+    style_dialog_primary_init(&p->primary,p,variant,&p->unsupported,save,&identity_services,dispatch);
     p->save=save;p->refs=1;p->native=native;p->variant=variant;p->dispatch=dispatch;
     if(experimental_events)(void)IFileDialog_GetFolder(native,&p->initial_default);
     return p;

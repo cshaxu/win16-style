@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <dlgs.h>
 #include "lib-style/win16-dialog/chrome.h"
-#include "lib-style/win16-dialog/ole_window.h"
+#include "lib-style/common/dialog_ole_window.h"
 #include "lib-style/win16-dialog/classic_folder.h"
 #include "lib-style/win16-dialog/file_hook.h"
 #include "lib-style/win16-dialog/file_live.h"
@@ -47,8 +47,8 @@ int main(void)
     if(!list||!plain||!combo){DestroyWindow(parent);return 16;}
     const win16_dialog_chrome_services services={fake_grid,fake_scroll,fake_remove,fake_combo};
     win16_dialog_old_chrome(parent,&services);win16_dialog_font_chrome(parent,&services);
-    win16_dialog_ole_window adapter;HWND active=parent,actual=NULL;
-    win16_dialog_ole_window_init(&adapter,NULL,NULL,&active,NULL);
+    style_dialog_ole_window adapter;HWND active=parent,actual=NULL;
+    style_dialog_ole_window_init(&adapter,NULL,NULL,&active,NULL);
     HRESULT missing=IOleWindow_GetWindow(&adapter.iface,NULL);
     HRESULT current=IOleWindow_GetWindow(&adapter.iface,&actual);
     HWND edit=CreateWindowExW(0,L"EDIT",L"*.*",WS_CHILD,0,0,20,20,parent,(HMENU)(INT_PTR)1152,GetModuleHandleW(NULL),NULL);

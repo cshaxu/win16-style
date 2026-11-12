@@ -11,3 +11,4 @@
 | `file_events` | `file_events.c`; `tests/lib-style/win16-dialog/dialog_link.c` |
 | `modern_file_dialog` | `modern_file_dialog.c`; `tests/lib-style/win16-dialog/dialog_link.c` (argument validation) |
 | `classic_shell_folder` | `tests/lib-style/win16-dialog/dialog_link.c` (product linkage; interactive browser not covered) |
+| `dialog_primary`, `dialog_v2`, `dialog_customize`, `dialog_ole_window` | `dialog_adapter.c`; `tests/lib-style/win16-dialog/dialog_link.c`; `tests/lib-style/win16-dialog/dialog_chrome.c` |

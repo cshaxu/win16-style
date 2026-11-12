@@ -3,24 +3,24 @@
 #include <windows.h>
 #include <shobjidl.h>
 #include <commdlg.h>
-#include "primary.h"
-#include "ole_window.h"
-#include "customize.h"
+#include "lib-style/common/dialog_primary.h"
+#include "lib-style/common/dialog_ole_window.h"
+#include "lib-style/common/dialog_customize.h"
 #include "lib-style/common/file_events.h"
-#include "v2.h"
+#include "lib-style/common/dialog_v2.h"
 typedef struct win16_dialog_proxy {
-    win16_dialog_primary primary;
+    style_dialog_primary primary;
     LONG refs;
     BOOL save, unsupported, completed;
     BOOL classic_hidden;
     IFileDialog *native;
     IUnknown *variant;
-    win16_dialog_ole_window ole;
+    style_dialog_ole_window ole;
     IOleWindow *ole_native;
     HWND active_window;
-    win16_dialog_v2 v2;
+    style_dialog_v2 v2;
     IFileDialog2 *v2_native;
-    win16_dialog_customize custom;
+    style_dialog_customize custom;
     IFileDialogCustomize *custom_native;
     IShellItem *result;
     IShellItem *live_folder;
@@ -40,9 +40,9 @@ typedef struct win16_dialog_proxy {
     WCHAR *pending_folder;
     UINT filter_index;
     struct style_dialog_event_adapter *events;
-    win16_dialog_v2_call dispatch;
+    style_dialog_v2_call dispatch;
 } win16_dialog_proxy;
-win16_dialog_proxy *win16_dialog_proxy_new(IUnknown *,BOOL,win16_dialog_v2_call,BOOL);
+win16_dialog_proxy *win16_dialog_proxy_new(IUnknown *,BOOL,style_dialog_v2_call,BOOL);
 ULONG win16_dialog_proxy_add(win16_dialog_proxy *);
 ULONG win16_dialog_proxy_release(win16_dialog_proxy *);
 HRESULT win16_dialog_proxy_query(win16_dialog_proxy *,REFIID,void **);

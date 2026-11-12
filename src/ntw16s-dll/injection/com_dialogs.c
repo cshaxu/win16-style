@@ -10,11 +10,11 @@
 #include "lib-style/common/classic_shell_item.h"
 #include "lib-style/common/classic_file_contract.h"
 #include "../../lib-style/win16-dialog/file_helpers.h"
-#include "../../lib-style/win16-dialog/customize.h"
+#include "lib-style/common/dialog_customize.h"
 #include "lib-style/common/file_events.h"
-#include "../../lib-style/win16-dialog/ole_window.h"
-#include "../../lib-style/win16-dialog/v2.h"
-#include "../../lib-style/win16-dialog/primary.h"
+#include "lib-style/common/dialog_ole_window.h"
+#include "lib-style/common/dialog_v2.h"
+#include "lib-style/common/dialog_primary.h"
 #include "../../lib-style/win16-dialog/com_show.h"
 #include "../../lib-style/win16-dialog/file_live.h"
 #include "../../lib-style/win16-dialog/com_hook.h"
@@ -33,7 +33,7 @@ static HRESULT (WINAPI *native_create)(REFCLSID,LPUNKNOWN,DWORD,REFIID,LPVOID *)
 static HRESULT (WINAPI *native_create_ex)(REFCLSID,IUnknown *,DWORD,COSERVERINFO *,DWORD,MULTI_QI *);
 static HRESULT (WINAPI *native_class_object)(REFCLSID,DWORD,LPVOID,REFIID,LPVOID *);
 static _Thread_local unsigned native_creation_depth;
-static HRESULT v2_dispatch(void *,win16_dialog_v2_operation,ULONG_PTR,ULONG_PTR);
+static HRESULT v2_dispatch(void *,style_dialog_v2_operation,ULONG_PTR,ULONG_PTR);
 static ULONG event_owner_add(void *owner){return win16_dialog_proxy_add(owner);}
 static ULONG event_owner_release(void *owner){return win16_dialog_proxy_release(owner);}
 static const style_dialog_event_services event_services={event_owner_add,event_owner_release};
@@ -275,7 +275,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT proxy_show(file_proxy *p,HWND owner)
 #else
 static HRESULT proxy_show(file_proxy *p,HWND owner){return proxy_show_impl(p,owner);}
 #endif
-static HRESULT v2_dispatch(void *owner,win16_dialog_v2_operation op,ULONG_PTR a,ULONG_PTR b)
+static HRESULT v2_dispatch(void *owner,style_dialog_v2_operation op,ULONG_PTR a,ULONG_PTR b)
 {
     const win16_dialog_proxy_dispatch_services services={proxy_show,proxy_advise,proxy_unadvise,proxy_set_folder};
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
@@ -310,7 +310,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI bridge_create(REFCLSID clsid,
     PROCESS_HOOK_UNWIND_END(unwind);
     if(FAILED(original_hr)||!out||!*out||outer||nested||ntw16s_modern_dialog_active())return original_hr;
     BOOL save=IsEqualCLSID(clsid,&CLSID_FileSaveDialog),open=IsEqualCLSID(clsid,&CLSID_FileOpenDialog);
-    if(!(save||open)||!win16_dialog_proxy_iid(iid,save))return original_hr;
+    if(!(save||open)||!style_dialog_proxy_iid(iid,save))return original_hr;
     proxy_replace(iid,out,save);return original_hr;
 }
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI bridge_create_ex(REFCLSID clsid,IUnknown *outer,DWORD context,
@@ -326,7 +326,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI bridge_create_ex(REFCLSID cls
     if(!(save||open))return original_hr;
     IUnknown *original=NULL;
     for(DWORD i=0;i<count;++i){if(SUCCEEDED(results[i].hr) && results[i].pItf){
-        if(!win16_dialog_proxy_iid(results[i].pIID,save))return original_hr;
+        if(!style_dialog_proxy_iid(results[i].pIID,save))return original_hr;
         if(!original)original=results[i].pItf;
     }}
     if(!original)return original_hr;
@@ -364,7 +364,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT STDMETHODCALLTYPE factory_create(ICl
     ++native_creation_depth;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=IClassFactory_CreateInstance(factory->native,outer,iid,out);}
     PROCESS_HOOK_UNWIND_END(unwind);
-    if(FAILED(original_hr)||outer||!out||!*out||ntw16s_modern_dialog_active()||!win16_dialog_proxy_iid(iid,factory->save))return original_hr;
+    if(FAILED(original_hr)||outer||!out||!*out||ntw16s_modern_dialog_active()||!style_dialog_proxy_iid(iid,factory->save))return original_hr;
     proxy_replace(iid,out,factory->save);return original_hr;
 }
 static HRESULT STDMETHODCALLTYPE factory_lock(IClassFactory *self,BOOL lock)

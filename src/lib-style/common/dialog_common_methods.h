@@ -1,8 +1,8 @@
-#ifndef WIN16_DIALOG_COMMON_METHODS_H
-#define WIN16_DIALOG_COMMON_METHODS_H
+#ifndef STYLE_DIALOG_COMMON_METHODS_H
+#define STYLE_DIALOG_COMMON_METHODS_H
 /* Shared IFileDialog methods have identical behavior, but require each
  * interface's correctly typed COM function pointers. */
-#define WIN16_DIALOG_COMMON(PREFIX,IFACE,ADAPTER,NATIVE,SELECTION,CLOSE_OP,CALL) \
+#define STYLE_DIALOG_COMMON(PREFIX,IFACE,ADAPTER,NATIVE,SELECTION,CLOSE_OP,CALL) \
 static HRESULT STDMETHODCALLTYPE PREFIX##_QueryInterface(IFACE *This, REFIID riid, void **ppvObject) \
 { \
     ADAPTER *p=(ADAPTER *)This;return p->identity->query(p->owner,riid,ppvObject); \

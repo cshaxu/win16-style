@@ -1,29 +1,29 @@
 /* In-process COM customization facade; owner retains identity and lifetime. */
 #define COBJMACROS
-#include "customize.h"
+#include "lib-style/common/dialog_customize.h"
 
 static HRESULT STDMETHODCALLTYPE custom_QueryInterface(IFileDialogCustomize *This, REFIID riid, void **ppvObject)
 {
-    win16_dialog_customize *p=(win16_dialog_customize *)This;return p->services->query(p->owner,riid,ppvObject);
+    style_dialog_customize *p=(style_dialog_customize *)This;return p->services->query(p->owner,riid,ppvObject);
 }
 
 static ULONG STDMETHODCALLTYPE custom_AddRef(IFileDialogCustomize *This)
 {
-    win16_dialog_customize *p=(win16_dialog_customize *)This;return p->services->add(p->owner);
+    style_dialog_customize *p=(style_dialog_customize *)This;return p->services->add(p->owner);
 }
 
 static ULONG STDMETHODCALLTYPE custom_Release(IFileDialogCustomize *This)
 {
-    win16_dialog_customize *p=(win16_dialog_customize *)This;return p->services->release(p->owner);
+    style_dialog_customize *p=(style_dialog_customize *)This;return p->services->release(p->owner);
 }
 
 /* Setters disable classic bridging before dispatch; getters do so only on success. */
 #define CUSTOM_SET(name, signature, args) \
 static HRESULT STDMETHODCALLTYPE custom_##name signature \
-{win16_dialog_customize *p=(win16_dialog_customize *)This;*p->unsupported=TRUE;return IFileDialogCustomize_##name args;}
+{style_dialog_customize *p=(style_dialog_customize *)This;*p->unsupported=TRUE;return IFileDialogCustomize_##name args;}
 #define CUSTOM_GET(name, signature, args) \
 static HRESULT STDMETHODCALLTYPE custom_##name signature \
-{win16_dialog_customize *p=(win16_dialog_customize *)This;HRESULT hr=IFileDialogCustomize_##name args; \
+{style_dialog_customize *p=(style_dialog_customize *)This;HRESULT hr=IFileDialogCustomize_##name args; \
  if(SUCCEEDED(hr)){*p->unsupported=TRUE;}return hr;}
 
 CUSTOM_SET(EnableOpenDropDown, (IFileDialogCustomize *This, DWORD dwIDCtl), (p->native ,dwIDCtl))
@@ -89,8 +89,8 @@ static IFileDialogCustomizeVtbl custom_vtable={
     custom_SetControlItemText
 };
 
-void win16_dialog_customize_init(win16_dialog_customize *adapter,void *owner,IFileDialogCustomize *native,
-    BOOL *unsupported,const win16_dialog_customize_services *services)
+void style_dialog_customize_init(style_dialog_customize *adapter,void *owner,IFileDialogCustomize *native,
+    BOOL *unsupported,const style_dialog_identity_services *services)
 {
     adapter->iface.lpVtbl=&custom_vtable;adapter->owner=owner;adapter->native=native;
     adapter->unsupported=unsupported;adapter->services=services;
