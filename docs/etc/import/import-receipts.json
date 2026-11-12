@@ -4178,33 +4178,6 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/folder_create.c",
-      "source": null,
-      "source_blob": null,
-      "sha256": "0985e6f5099196a786b37db24c07e64abcbabfa605a8dfd546ba8aaa60f1633b",
-      "disposition": "authored",
-      "review": "T21 S23 extraction of existing folder creation dialog",
-      "notice": "Project-authored code; no imported resources"
-    },
-    {
-      "path": "src/lib-style/win16-dialog/folder_create.h",
-      "source": null,
-      "source_blob": null,
-      "sha256": "81a2a98aa3ad93260a8ba30d9cb9c156a52d8cc220a9da178de2a6d18955c27c",
-      "disposition": "authored",
-      "review": "T21 S23 extraction of existing folder creation dialog",
-      "notice": "Project-authored code; no imported resources"
-    },
-    {
-      "path": "tests/lib-style/win16-dialog/dialog_folder_create.c",
-      "source": null,
-      "source_blob": null,
-      "sha256": "61cf2f23eb5533d9b55fc2f2e4930a4cfafd5176f17570300535f00343320108",
-      "disposition": "authored",
-      "review": "T21 S23 self-owned folder dialog library regression",
-      "notice": "Project-authored test; no imported resources"
-    },
-    {
       "path": "src/lib-style/common/classic_shell_folder.c",
       "source": null,
       "source_blob": null,
@@ -4262,7 +4235,7 @@
       "path": "tests/lib-style/win16-dialog/dialog_chrome.c",
       "source": null,
       "source_blob": null,
-      "sha256": "59a70e2d6633b98c4bbe5523aa75cd60f8e9056d9f2addeb040b7fb4acec8e2f",
+      "sha256": "46254fe780acd13e3ed10226edcd6a00342ec02eaaa5350b4151d88846645ce6",
       "disposition": "authored",
       "review": "T21 S23 classic dialog control presentation adapter regression",
       "notice": "Project-authored test; no imported resources"
@@ -4391,24 +4364,6 @@
       "sha256": "70ecf98f3605e9f9c35d8ce92cec70be57c497d87051ac22ea66a024bc8e75aa",
       "disposition": "authored",
       "review": "T21 S23 extract Shell browse layout planning and selection callback",
-      "notice": "Project-authored code; no imported resources"
-    },
-    {
-      "path": "src/lib-style/win16-dialog/classic_folder.c",
-      "source": null,
-      "source_blob": null,
-      "sha256": "b5d69328b56d1d098fa3b4f8b75ff8937ca78b2517fceaaa906ef36b7435435f",
-      "disposition": "authored",
-      "review": "T21 S23 extract classic folder message handling with caller-owned state",
-      "notice": "Project-authored code; no imported resources"
-    },
-    {
-      "path": "src/lib-style/win16-dialog/classic_folder.h",
-      "source": null,
-      "source_blob": null,
-      "sha256": "52fbebf1f66c10f60398cb290866da675b2ae8803bc72eb4d1c07719f61427fd",
-      "disposition": "authored",
-      "review": "T21 S23 extract classic folder message handling with caller-owned state",
       "notice": "Project-authored code; no imported resources"
     },
     {

@@ -118,7 +118,7 @@ add_library(style-dialog-common STATIC src/lib-style/common/print_resources.c sr
 target_include_directories(style-dialog-common PUBLIC src)
 target_compile_definitions(style-dialog-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-dialog-common PUBLIC shell32 ole32 uuid user32 gdi32 comdlg32)
-add_library(win16-dialog STATIC src/lib-style/win16-dialog/print_extended.c src/lib-style/win16-dialog/folder_create.c src/lib-style/win16-dialog/chrome.c src/lib-style/win16-dialog/classic_folder.c src/lib-style/win16-dialog/file_hook.c src/lib-style/win16-dialog/com_hook.c src/lib-style/win16-dialog/proxy.c src/lib-style/win16-dialog/proxy_dispatch.c src/lib-style/win16-dialog/print_classic.c src/lib-style/win16-dialog/hook_state.c src/lib-style/win16-dialog/classic_events.c)
+add_library(win16-dialog STATIC src/lib-style/win16-dialog/print_extended.c src/lib-style/win16-dialog/chrome.c src/lib-style/win16-dialog/file_hook.c src/lib-style/win16-dialog/com_hook.c src/lib-style/win16-dialog/proxy.c src/lib-style/win16-dialog/proxy_dispatch.c src/lib-style/win16-dialog/print_classic.c src/lib-style/win16-dialog/hook_state.c src/lib-style/win16-dialog/classic_events.c)
 target_include_directories(win16-dialog PUBLIC src/lib-style/win16-dialog)
 target_compile_definitions(win16-dialog PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win16-dialog PUBLIC style-dialog-common user32 gdi32 comdlg32 shell32 ole32 uuid)
@@ -1698,7 +1698,6 @@ if(BUILD_TESTING)
 
   component_test(core-win16-dialog-chrome tests/lib-style/win16-dialog/dialog_chrome.c core/win16-dialog-chrome win16-dialog)
 
-  component_test(core-win16-dialog-folder-create tests/lib-style/win16-dialog/dialog_folder_create.c core/win16-dialog-folder-create win16-dialog)
 
   component_test(core-win16-dialog-link tests/lib-style/win16-dialog/dialog_link.c core/win16-dialog-link "-Wl,--whole-archive" win16-dialog "-Wl,--no-whole-archive")
 

@@ -4,7 +4,6 @@
 #include <dlgs.h>
 #include "lib-style/win16-dialog/chrome.h"
 #include "lib-style/common/dialog_ole_window.h"
-#include "lib-style/win16-dialog/classic_folder.h"
 #include "lib-style/win16-dialog/file_hook.h"
 #include "lib-style/common/classic_file_live.h"
 #include "lib-style/win16-dialog/com_hook.h"
@@ -14,17 +13,13 @@ static BOOL fake_grid(HWND w,const void *owner){(void)w;++grids;grid_owner=owner
 static BOOL fake_scroll(HWND w){(void)w;++scrolls;return FALSE;}
 static BOOL fake_remove(HWND w,const void *owner){(void)w;++removes;if(owner!=grid_owner)same_owner=FALSE;return TRUE;}
 static BOOL fake_combo(HWND w,const void *owner){(void)w;(void)owner;++combos;return TRUE;}
-static UINT_PTR CALLBACK fake_folder_hook(HWND w,UINT message,WPARAM wp,LPARAM lp)
-{(void)w;(void)message;(void)wp;(void)lp;return 0;}
 static INT_PTR CALLBACK fake_dialog_proc(HWND w,UINT message,WPARAM wp,LPARAM lp)
 {(void)w;(void)message;(void)wp;(void)lp;return FALSE;}
-static int chrome_calls,observer_calls;
+static int chrome_calls;
 static void fake_chrome(HWND w){(void)w;++chrome_calls;}
 static int color_found,color_removed;static BOOL color_order=TRUE;
 static void fake_color_found(HWND w){(void)w;++color_found;}
 static void fake_color_remove(HWND w){(void)w;if(!color_found)color_order=FALSE;++color_removed;}
-static UINT_PTR fake_observer(HWND w,UINT message,WPARAM wp,LPARAM lp,void *context)
-{(void)w;(void)message;(void)wp;(void)lp;if(context==&observer_calls)++observer_calls;return 0;}
 static int com_attached,com_detached,com_selected,com_navigated,com_before,com_after,com_owner;
 static void fake_com_attach(void *owner,HWND w,OPENFILENAMEW *ofn){(void)w;(void)ofn;if(owner==&com_owner)++com_attached;}
 static PCWSTR fake_com_label(void *owner,int which){(void)owner;return which==0?L"Use":which==1?L"Stop":L"Name";}
@@ -55,21 +50,7 @@ int main(void)
     HWND label=CreateWindowExW(0,L"STATIC",L"",WS_CHILD,0,0,20,20,parent,(HMENU)(INT_PTR)1090,GetModuleHandleW(NULL),NULL);
     HWND cancel=CreateWindowExW(0,L"BUTTON",L"Cancel",WS_CHILD,0,0,20,20,parent,(HMENU)(INT_PTR)IDCANCEL,GetModuleHandleW(NULL),NULL);
     if(!edit||!label||!cancel){DestroyWindow(parent);return 19;}
-    win16_dialog_classic_folder_context context={0};context.run_message=WM_APP+50;context.file_label=L"Folder test:";
-    context.experimental=TRUE;context.observer=fake_observer;context.observer_context=&observer_calls;
-    OPENFILENAMEW ofn={0};ofn.lCustData=(LPARAM)&context;
-    win16_dialog_classic_folder_hook(parent,WM_INITDIALOG,0,(LPARAM)&ofn,&context,fake_chrome);
-    win16_dialog_classic_folder_hook(parent,context.run_message,0,0,&context,fake_chrome);
-    WCHAR label_text[64],edit_text[64];GetWindowTextW(label,label_text,64);GetWindowTextW(edit,edit_text,64);
-    BOOL initialized=chrome_calls==1 && context.classic_window==parent && GetPropW(parent,L"Win16s.FolderBridge")==&context &&
-        GetDlgItem(parent,0x5717)!=NULL && !lstrcmpW(label_text,L"Folder test:") && !lstrcmpW(edit_text,L"[Select current folder]");
-    win16_dialog_classic_folder_context prepared_context={0};OPENFILENAMEW prepared_ofn;WCHAR file[MAX_PATH],path[MAX_PATH];
-    HRESULT prepared=win16_dialog_classic_folder_prepare(&prepared_context,&prepared_ofn,file,parent,NULL,L"C:\\Windows",NULL,NULL,NULL,fake_folder_hook);
-    BOOL prepare_ok=prepared==S_OK && prepared_ofn.lpfnHook==fake_folder_hook && prepared_ofn.lCustData==(LPARAM)&prepared_context &&
-        !lstrcmpW(file,L"C:\\Windows\\[Select current folder]");
-    HRESULT finished=win16_dialog_classic_folder_finish(TRUE,0,file,path,MAX_PATH);
-    BOOL finish_ok=finished==S_OK && !lstrcmpW(path,L"C:\\Windows") &&
-        win16_dialog_classic_folder_finish(FALSE,0,file,path,MAX_PATH)==HRESULT_FROM_WIN32(ERROR_CANCELLED);
+    SetWindowTextW(edit,L"[Select current folder]");
     HWND filter_combo=CreateWindowExW(0,L"COMBOBOX",L"",WS_CHILD|CBS_DROPDOWNLIST,0,0,20,100,parent,(HMENU)(INT_PTR)cmb1,GetModuleHandleW(NULL),NULL);
     if(!filter_combo){DestroyWindow(parent);return 24;}
     SendMessageW(filter_combo,CB_ADDSTRING,0,(LPARAM)L"First");SendMessageW(filter_combo,CB_ADDSTRING,0,(LPARAM)L"Second");
@@ -106,10 +87,8 @@ int main(void)
         !lstrcmpW(after_navigation,L"[Select current folder]") && !proxy.classic_navigating;
     if(saved_name)CoTaskMemFree(saved_name);
     RemovePropW(parent,L"Win16S.Test.Proxy");
-    win16_dialog_classic_folder_hook(parent,WM_NCDESTROY,0,0,&context,fake_chrome);
-    BOOL released=!context.classic_window && !GetPropW(parent,L"Win16s.FolderBridge") && observer_calls==2;
     DestroyWindow(parent);
-    if(!initialized || !released || !prepare_ok || !finish_ok || !live_ok || !com_ok || !folder_state_ok || !nav_ok)return 20;
+    if(!live_ok || !com_ok || !folder_state_ok || !nav_ok)return 20;
     struct {DLGTEMPLATE dialog;WORD menu,window_class,title;} template={0};template.dialog.style=WS_POPUP;
     HWND dialog=CreateDialogIndirectParamW(GetModuleHandleW(NULL),&template.dialog,NULL,fake_dialog_proc,0);
     if(!dialog)return 21;

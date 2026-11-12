@@ -36,10 +36,12 @@
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 1
-- Last verified remote delivery: M0 T26 S1 P37，`b0c18ff2`。
+- Last verified remote delivery: M0 T26 S1 P38，`4f689aab`。
 - Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
 
 ## Technical Baseline
+
+无生产调用的自制文件夹对话框与专属测试已移除，实际 Shell 文件夹路径保留；见[记录](../history/M0-T26-S1-remove-unused-folder.md)。
 
 主题句柄并发追踪已拆到公共样式库，由 Win16 调用；其他风格尚未接入，见[记录](../history/M0-T26-S1-theme-track.md)。
 
