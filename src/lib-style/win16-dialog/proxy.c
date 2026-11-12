@@ -29,7 +29,7 @@ ULONG win16_dialog_proxy_add(win16_dialog_proxy *p){return (ULONG)InterlockedInc
 ULONG win16_dialog_proxy_release(win16_dialog_proxy *p)
 {
     LONG refs=InterlockedDecrement(&p->refs);
-    if(!refs){win16_dialog_events_release(p->native,&p->events);if(p->result)IShellItem_Release(p->result);
+    if(!refs){style_dialog_events_release(p->native,&p->events);if(p->result)IShellItem_Release(p->result);
         if(p->live_folder)IShellItem_Release(p->live_folder);
         if(p->live_selection)IShellItem_Release(p->live_selection);
         if(p->initial_default)IShellItem_Release(p->initial_default);

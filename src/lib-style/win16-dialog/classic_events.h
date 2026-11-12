@@ -11,7 +11,7 @@ typedef struct win16_dialog_classic_message_services {
     BOOL events_enabled,hidden_enabled;
     BOOL (*list_changing)(HWND,win16_dialog_proxy *),(*typed_changing)(HWND,win16_dialog_proxy *);
     BOOL (*drive_changing)(HWND,win16_dialog_proxy *),(*overwrite_check)(HWND,win16_dialog_proxy *);
-    HRESULT (*event_dispatch)(win16_dialog_proxy *,enum classic_event_kind,IShellItem *);
+    HRESULT (*event_dispatch)(win16_dialog_proxy *,enum style_classic_event_kind,IShellItem *);
     UINT_PTR (*file_ok)(win16_dialog_proxy *,OPENFILENAMEW *);
     FDE_SHAREVIOLATION_RESPONSE (*share)(win16_dialog_proxy *,IShellItem *);
     void (*initial)(HWND,win16_dialog_proxy *,PCWSTR);
@@ -22,8 +22,8 @@ BOOL win16_dialog_classic_command(win16_dialog_proxy *,HWND,WPARAM,UINT_PTR *,co
 BOOL win16_dialog_classic_before(win16_dialog_proxy *,HWND,UINT,WPARAM,UINT_PTR *,const win16_dialog_classic_message_services *);
 void win16_dialog_classic_selection(win16_dialog_proxy *,HWND,WPARAM,const win16_dialog_classic_message_services *);
 BOOL win16_dialog_classic_after(win16_dialog_proxy *,HWND,UINT,LPARAM,UINT_PTR *,const win16_dialog_classic_message_services *);
-typedef HRESULT (*win16_dialog_owned_event_fn)(win16_dialog_proxy *,enum classic_event_kind,IShellItem *,WCHAR *);
-typedef HRESULT (*win16_dialog_event_fn)(win16_dialog_proxy *,enum classic_event_kind,IShellItem *);
+typedef HRESULT (*win16_dialog_owned_event_fn)(win16_dialog_proxy *,enum style_classic_event_kind,IShellItem *,WCHAR *);
+typedef HRESULT (*win16_dialog_event_fn)(win16_dialog_proxy *,enum style_classic_event_kind,IShellItem *);
 typedef void (*win16_dialog_navigate_fn)(HWND,win16_dialog_proxy *,PCWSTR);
 typedef struct win16_dialog_navigation_scope {
     win16_dialog_proxy *proxy;WCHAR *folder,*filename;BOOL experimental;

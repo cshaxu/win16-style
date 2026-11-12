@@ -3182,7 +3182,7 @@
       "path": "src/ntw16s-dll/injection/modern_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "202fa873771a601af7d49281163eb773deec201bb2b32006f80b78a38488c00b",
+      "sha256": "35d14906b1a6792fbd24e55cb75200f09010965084f46ba0300c2c51f4dcf32b",
       "disposition": "authored",
       "review": "T20 S1 public modern dialog API and demo comparison under development",
       "notice": "Project-authored; no imported code or resources"
@@ -3218,7 +3218,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f708ad76e6baa5c2bb7e9a068f20cc1a028256e7718aed899af44dd01ce7674f",
+      "sha256": "37e9555ebfbdac1b646a357be33e1f4cefa31920c1f2f171961cc61841f76ece",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics; T25 S2 shared runtime extraction",
       "notice": "Project-authored; no imported code or resources"
@@ -4118,7 +4118,7 @@
       "path": "tests/lib-style/win16-dialog/dialog_link.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c637c702c20057d190d070fe085fe61fb15026c52786d8a3c45eda9ede605b2e",
+      "sha256": "822e8cd1fb366280a5bedf923275a74b1ebfbda120c811d1c1cccd871ce61f0d",
       "disposition": "authored",
       "review": "T21 S23 independent whole-library link and page range test",
       "notice": "Project-authored C17; project MIT license"
@@ -4160,19 +4160,19 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/modern.c",
+      "path": "src/lib-style/common/modern_file_dialog.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ce2826a08ef13bf84a8c401be82a8fbda60895cacde13f4d345108d1bae43afb",
+      "sha256": "8ce1bcfd4e1afb2dca9e05fbfa60fef624085588697620c7988f23c8a6331e97",
       "disposition": "authored",
       "review": "T21 S23 extraction of explicit modern dialog behavior; DLL retains depth and public ABI",
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/modern.h",
+      "path": "src/lib-style/common/modern_file_dialog.h",
       "source": null,
       "source_blob": null,
-      "sha256": "df8c5f47bf2759486234db2123ceb5cd618e372eecbd63d6e2a5dc26da68e3b5",
+      "sha256": "84ebd2b9b240f01db0a3a09ba4d07cde3ad9662771239f96612388520d1194b0",
       "disposition": "authored",
       "review": "T21 S23 extraction of explicit modern dialog behavior; DLL retains depth and public ABI",
       "notice": "Project-authored code; no imported resources"
@@ -4205,19 +4205,19 @@
       "notice": "Project-authored test; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/shell_folder.c",
+      "path": "src/lib-style/common/classic_shell_folder.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5e187a51bf8e8f6cc12221a2ed497932ff236a028d9a0c03b5dc9403139c2b57",
+      "sha256": "29dbd04b2212897cf1a902ff99a49c917a369fbc7bde80fb590325f2298afb98",
       "disposition": "authored",
       "review": "T21 S23 extraction of existing Shell folder selection adapter",
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/shell_folder.h",
+      "path": "src/lib-style/common/classic_shell_folder.h",
       "source": null,
       "source_blob": null,
-      "sha256": "0e6074160f305f6a103bb287dd15318ed5d552381669ade4ce4f142ff0632a94",
+      "sha256": "ec17ace9c4142856d89adc279cc14fe55e45dd6a4d2e961eb607e1625056d4aa",
       "disposition": "authored",
       "review": "T21 S23 extraction of existing Shell folder selection adapter",
       "notice": "Project-authored code; no imported resources"
@@ -4286,19 +4286,19 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/events.c",
+      "path": "src/lib-style/common/file_events.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8d87a1b364307af26f16e0e7f896dcee4a2539e31093f73d59f403d3b6b0489e",
+      "sha256": "43350e1529aa3fddd317f6091fa6d5399bff2357bcea791f116428de2fee4a1c",
       "disposition": "authored",
       "review": "T21 S23 extraction of COM event facade with weak owner callbacks",
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/events.h",
+      "path": "src/lib-style/common/file_events.h",
       "source": null,
       "source_blob": null,
-      "sha256": "59d4fd197c0e5f40d91d4f6c124cf3f5d1566743825ca2dfe0b372c7f5089a57",
+      "sha256": "2ea5befd1047e4f63532ee49ef0613907670879adbed346d3eb25827383722dc",
       "disposition": "authored",
       "review": "T21 S23 extraction of COM event facade with weak owner callbacks",
       "notice": "Project-authored code; no imported resources"
@@ -4361,7 +4361,7 @@
       "path": "src/lib-style/win16-dialog/com_show.c",
       "source": null,
       "source_blob": null,
-      "sha256": "aac66c466ed185f7cb8211e02177273ec378564cad8ee65830f20cb49ae08f58",
+      "sha256": "4613a8024c6770e40ea74e3a9091d55da7fcba3c50925d764328a2ae937aa59c",
       "disposition": "authored",
       "review": "T21 S23 move COM dialog display orchestration into dialog library",
       "notice": "Project-authored code; no imported resources"
@@ -4469,7 +4469,7 @@
       "path": "src/lib-style/win16-dialog/proxy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1d09fabc197b5d5863708f8c3fbd5c48a45db302c7d55e01f5129f2b07478d49",
+      "sha256": "1443c2a5a90ba0d596b6c8a19527080e2078a851893dd24485c4137720b9b37d",
       "disposition": "authored",
       "review": "T21 S23 move COM proxy identity and lifetime to dialog library",
       "notice": "Project-authored code; no imported resources"
@@ -4478,7 +4478,7 @@
       "path": "src/lib-style/win16-dialog/proxy.h",
       "source": null,
       "source_blob": null,
-      "sha256": "7a88a3e8b4566115b368f8d64e5bebd02a0122d2a89c0ae0e5e4195bbec4f087",
+      "sha256": "f1022372259f00daeb8a16fa9345a83a42e11f4b41d3eec2bed8350e94013d31",
       "disposition": "authored",
       "review": "T21 S23 move COM proxy identity and lifetime to dialog library",
       "notice": "Project-authored code; no imported resources"
@@ -4982,7 +4982,7 @@
       "path": "src/lib-style/win16-dialog/classic_events.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1a08163ad5cdde97c93e76393c6780aca1849a793c410f4ae28b03df05da798e",
+      "sha256": "cd2102ad42964afb8a46d38803039d1b324b654c3ff80d1e28b4a66873dba2b8",
       "disposition": "authored",
       "review": "T21 S24 extract classic dialog event adaptation",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4991,7 +4991,7 @@
       "path": "src/lib-style/win16-dialog/classic_events.h",
       "source": null,
       "source_blob": null,
-      "sha256": "5c596b16e0f682710fd6576f96aad1806be210c0f932436f499b3af5c0f44cab",
+      "sha256": "43facdaf518cfbe512fbede41094de5a4ab522a30641ba1215552f0cb89cb405",
       "disposition": "authored",
       "review": "T21 S24 extract classic dialog event adaptation",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -7119,6 +7119,24 @@
       "disposition": "authored",
       "review": "T26 S1 shared layered surface ownership and failure paths",
       "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/common/file_events.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1fc9f3d37f10875a757dc375b0d8f0199d090111d29709311fe442cff297480b",
+      "disposition": "authored",
+      "review": "T26 S1 shared COM file-dialog events and reentrant snapshot fixture",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/common/modern_file_dialog.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7fe417737bf20bf8ed8ddffaac457d6eac6dd237e9008ee775b32cbb19ad8490",
+      "disposition": "authored",
+      "review": "T26 S1 common dialog standalone native test",
+      "notice": "Project-authored C test; no imported artwork"
     }
   ]
 }

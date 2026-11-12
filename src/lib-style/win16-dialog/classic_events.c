@@ -109,11 +109,11 @@ void win16_dialog_classic_selection(win16_dialog_proxy *p,HWND w,WPARAM wp,const
     if(!p)return;
     if(wp==lst2 || wp==cmb2){win16_dialog_proxy_capture_folder(p,v->events_enabled);
         if(v->events_enabled){if(wp==cmb2){HWND drives=GetDlgItem(w,cmb2);p->classic_drive_index=drives?SendMessageW(drives,CB_GETCURSEL,0,0):CB_ERR;}
-            if(p->events)(void)v->event_dispatch(p,CLASSIC_FOLDER_CHANGED,NULL);}
-    }else if(v->events_enabled && wp==lst1){win16_dialog_proxy_capture_selection(w,p);if(p->events)(void)v->event_dispatch(p,CLASSIC_SELECTION_CHANGED,NULL);}
+            if(p->events)(void)v->event_dispatch(p,STYLE_CLASSIC_FOLDER_CHANGED,NULL);}
+    }else if(v->events_enabled && wp==lst1){win16_dialog_proxy_capture_selection(w,p);if(p->events)(void)v->event_dispatch(p,STYLE_CLASSIC_SELECTION_CHANGED,NULL);}
     else if(v->events_enabled && wp==cmb1){FILEOPENDIALOGOPTIONS options=0;
         if(p->events && (p->filter || FAILED(IFileDialog_GetOptions(p->native,&options)) || !(options&FOS_PICKFOLDERS)))
-            (void)v->event_dispatch(p,CLASSIC_TYPE_CHANGED,NULL);}
+            (void)v->event_dispatch(p,STYLE_CLASSIC_TYPE_CHANGED,NULL);}
 }
 BOOL win16_dialog_classic_after(win16_dialog_proxy *p,HWND w,UINT message,LPARAM lp,UINT_PTR *result,const win16_dialog_classic_message_services *v)
 {
@@ -141,7 +141,7 @@ void win16_dialog_navigation_run(HWND w,PCWSTR key,win16_dialog_navigation_scope
     win16_dialog_proxy *p=scope->proxy;
     if(scope->experimental && p->events){IShellItem *destination=NULL;
         HRESULT hr=SHCreateItemFromParsingName(scope->folder,NULL,&IID_IShellItem,(void **)&destination);
-        if(SUCCEEDED(hr))hr=changing(p,CLASSIC_FOLDER_CHANGING,destination,NULL);
+        if(SUCCEEDED(hr))hr=changing(p,STYLE_CLASSIC_FOLDER_CHANGING,destination,NULL);
         if(hr!=S_OK || p->pending_folder || !IsWindow(w) || GetPropW(w,key)!=p)return;
     }
     win16_dialog_proxy_navigate_contents(w,p,key,scope->folder,&scope->filename,scope->experimental);
@@ -163,7 +163,7 @@ void win16_dialog_initial_run(HWND w,PCWSTR key,win16_dialog_initial_scope *scop
     win16_dialog_proxy *p=scope->proxy;
     (void)IShellItem_GetDisplayName(scope->item,SIGDN_FILESYSPATH,&scope->path);
     IShellItem_AddRef(scope->item);p->classic_initializing=TRUE;
-    HRESULT changing=changing_owned(p,CLASSIC_FOLDER_CHANGING,scope->item,NULL);
+    HRESULT changing=changing_owned(p,STYLE_CLASSIC_FOLDER_CHANGING,scope->item,NULL);
     p->classic_initializing=scope->initializing;
     if(changing!=S_OK && !p->pending_folder && p->initial_default && IsWindow(w) && GetPropW(w,key)==p){
         PWSTR fallback=NULL;
@@ -174,9 +174,9 @@ void win16_dialog_initial_run(HWND w,PCWSTR key,win16_dialog_initial_scope *scop
         if(p->pending_folder)CoTaskMemFree(p->pending_folder);
         p->pending_folder=scope->path;scope->path=NULL;navigate(w,p,key);
     }else if(IsWindow(w) && GetPropW(w,key)==p && p->events)
-        (void)dispatch(p,CLASSIC_FOLDER_CHANGED,NULL);
+        (void)dispatch(p,STYLE_CLASSIC_FOLDER_CHANGED,NULL);
     if(IsWindow(w) && GetPropW(w,key)==p && p->events && p->filter)
-        (void)dispatch(p,CLASSIC_TYPE_CHANGED,NULL);
+        (void)dispatch(p,STYLE_CLASSIC_TYPE_CHANGED,NULL);
 }
 void win16_dialog_initial_cleanup(void *data)
 {

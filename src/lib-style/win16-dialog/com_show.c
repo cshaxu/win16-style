@@ -2,7 +2,7 @@
 #define COBJMACROS
 #include "com_show.h"
 #include "lib-style/common/classic_file_contract.h"
-#include "shell_folder.h"
+#include "lib-style/common/classic_shell_folder.h"
 #include "lib-style/common/classic_shell_item.h"
 #include <wchar.h>
 
@@ -35,9 +35,9 @@ HRESULT win16_dialog_com_show(win16_dialog_com_show_state *p,HWND owner)
             if(folder_path)CoTaskMemFree(folder_path);
             return p->show_native(p->owner,owner);
         }
-        WCHAR selected[32768];win16_dialog_shell_folder_call call={.owner=owner,.title=*p->title,.initial=folder_path,
+        WCHAR selected[32768];style_classic_shell_folder_call call={.owner=owner,.title=*p->title,.initial=folder_path,
             .result=selected,.capacity=ARRAYSIZE(selected)};
-        hr=p->scope(win16_dialog_shell_folder_show,&call);if(folder_path)CoTaskMemFree(folder_path);
+        hr=p->scope(style_classic_shell_folder_show,&call);if(folder_path)CoTaskMemFree(folder_path);
         if(p->experimental_events && FAILED(hr) && *p->classic_close_pending)return *p->classic_close_result;
         if(FAILED(hr))return hr;
         if(p->experimental_events && p->has_events(p->owner) && *p->completed && *p->result)return S_OK;

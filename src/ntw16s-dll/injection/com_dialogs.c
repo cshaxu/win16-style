@@ -11,7 +11,7 @@
 #include "lib-style/common/classic_file_contract.h"
 #include "../../lib-style/win16-dialog/file_helpers.h"
 #include "../../lib-style/win16-dialog/customize.h"
-#include "../../lib-style/win16-dialog/events.h"
+#include "lib-style/common/file_events.h"
 #include "../../lib-style/win16-dialog/ole_window.h"
 #include "../../lib-style/win16-dialog/v2.h"
 #include "../../lib-style/win16-dialog/primary.h"
@@ -36,43 +36,43 @@ static _Thread_local unsigned native_creation_depth;
 static HRESULT v2_dispatch(void *,win16_dialog_v2_operation,ULONG_PTR,ULONG_PTR);
 static ULONG event_owner_add(void *owner){return win16_dialog_proxy_add(owner);}
 static ULONG event_owner_release(void *owner){return win16_dialog_proxy_release(owner);}
-static const win16_dialog_event_services event_services={event_owner_add,event_owner_release};
+static const style_dialog_event_services event_services={event_owner_add,event_owner_release};
 static HRESULT proxy_advise(file_proxy *p,IFileDialogEvents *target,DWORD *cookie)
-{return win16_dialog_events_advise(p->native,&p->events,p,target,cookie,&event_services);}
+{return style_dialog_events_advise(p->native,&p->events,p,target,cookie,&event_services);}
 static HRESULT proxy_unadvise(file_proxy *p,DWORD cookie)
-{return win16_dialog_events_unadvise(p->native,&p->events,cookie);}
+{return style_dialog_events_unadvise(p->native,&p->events,cookie);}
 
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-typedef struct classic_event_call {file_proxy *proxy;win16_dialog_event_snapshot snapshot;} classic_event_call;
+typedef struct classic_event_call {file_proxy *proxy;style_dialog_event_snapshot snapshot;} classic_event_call;
 static void classic_event_cleanup(void *data)
 {
-    classic_event_call *call=data;win16_dialog_event_snapshot_free(&call->snapshot);win16_dialog_proxy_release(call->proxy);
+    classic_event_call *call=data;style_dialog_event_snapshot_free(&call->snapshot);win16_dialog_proxy_release(call->proxy);
 }
-static PROCESS_HOOK_UNWIND_FUNCTION HRESULT classic_event_dispatch(file_proxy *p,enum classic_event_kind kind,IShellItem *item)
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT classic_event_dispatch(file_proxy *p,enum style_classic_event_kind kind,IShellItem *item)
 {
     classic_event_call call={.proxy=p};
-    if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return E_OUTOFMEMORY;
+    if(!style_dialog_event_snapshot_init(p->events,&call.snapshot))return E_OUTOFMEMORY;
     win16_dialog_proxy_add(p);process_hook_unwind_scope unwind;HRESULT result=S_OK;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
-    result=win16_dialog_event_dispatch(&call.snapshot,p,kind,item);
+    result=style_dialog_event_dispatch(&call.snapshot,p,kind,item);
     PROCESS_HOOK_UNWIND_END(unwind);return result;
 }
 static PROCESS_HOOK_UNWIND_FUNCTION FDE_OVERWRITE_RESPONSE classic_overwrite_dispatch(file_proxy *p,IShellItem *item)
 {
     classic_event_call call={.proxy=p};FDE_OVERWRITE_RESPONSE result=FDEOR_DEFAULT;
-    if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return result;
+    if(!style_dialog_event_snapshot_init(p->events,&call.snapshot))return result;
     win16_dialog_proxy_add(p);process_hook_unwind_scope unwind;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
-    result=win16_dialog_event_overwrite(&call.snapshot,p,item);
+    result=style_dialog_event_overwrite(&call.snapshot,p,item);
     PROCESS_HOOK_UNWIND_END(unwind);return result;
 }
 static PROCESS_HOOK_UNWIND_FUNCTION FDE_SHAREVIOLATION_RESPONSE classic_share_dispatch(file_proxy *p,IShellItem *item)
 {
     classic_event_call call={.proxy=p};FDE_SHAREVIOLATION_RESPONSE result=FDESVR_DEFAULT;
-    if(!win16_dialog_event_snapshot_init(p->events,&call.snapshot))return result;
+    if(!style_dialog_event_snapshot_init(p->events,&call.snapshot))return result;
     win16_dialog_proxy_add(p);process_hook_unwind_scope unwind;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,classic_event_cleanup,&call);
-    result=win16_dialog_event_share(&call.snapshot,p,item);
+    result=style_dialog_event_share(&call.snapshot,p,item);
     PROCESS_HOOK_UNWIND_END(unwind);return result;
 }
 typedef struct classic_owned_event {IShellItem *item;WCHAR *path;} classic_owned_event;
@@ -83,7 +83,7 @@ static void classic_owned_event_cleanup(void *data)
 }
 /* Takes the Shell-item reference. A path, if supplied, stays owned by the
  * caller on normal return and is reclaimed here during exceptional unwind. */
-static PROCESS_HOOK_UNWIND_FUNCTION HRESULT classic_dispatch_owned(file_proxy *p,enum classic_event_kind kind,IShellItem *item,WCHAR *path)
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT classic_dispatch_owned(file_proxy *p,enum style_classic_event_kind kind,IShellItem *item,WCHAR *path)
 {
     classic_owned_event owned={item,path};process_hook_unwind_scope unwind;HRESULT hr;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,classic_owned_event_cleanup,&owned);
@@ -118,7 +118,7 @@ static UINT_PTR classic_folder_observe(HWND,UINT,WPARAM,LPARAM,void *);
 static const WCHAR folder_message_name[]=L"Win16Style.T20.ComSetFolder";
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
 static HRESULT classic_changing_owned(file_proxy *p,IShellItem *item)
-{return classic_dispatch_owned(p,CLASSIC_FOLDER_CHANGING,item,NULL);}
+{return classic_dispatch_owned(p,STYLE_CLASSIC_FOLDER_CHANGING,item,NULL);}
 static BOOL classic_list_changing(HWND w,file_proxy *p)
 {return win16_dialog_list_changing(w,p,classic_changing_owned);}
 static BOOL classic_typed_changing(HWND w,file_proxy *p)
@@ -229,7 +229,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION UINT_PTR classic_event_file_ok(file_proxy *p
     IShellItem *item=p->result;HRESULT hr;
     win16_dialog_classic_result_scope result={p,item,p->results,TRUE};process_hook_unwind_scope unwind;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,win16_dialog_classic_result_cleanup,&result);
-    hr=classic_event_dispatch(p,CLASSIC_OK,NULL);
+    hr=classic_event_dispatch(p,STYLE_CLASSIC_OK,NULL);
     result.revoke=hr==S_FALSE || FAILED(hr);
     PROCESS_HOOK_UNWIND_END(unwind);return result.revoke?1:0;
 }

@@ -6,7 +6,7 @@
 #include "primary.h"
 #include "ole_window.h"
 #include "customize.h"
-#include "events.h"
+#include "lib-style/common/file_events.h"
 #include "v2.h"
 typedef struct win16_dialog_proxy {
     win16_dialog_primary primary;
@@ -39,7 +39,7 @@ typedef struct win16_dialog_proxy {
     WCHAR *title,*filter,*extension,*ok_label,*cancel_label,*file_label;
     WCHAR *pending_folder;
     UINT filter_index;
-    struct event_adapter *events;
+    struct style_dialog_event_adapter *events;
     win16_dialog_v2_call dispatch;
 } win16_dialog_proxy;
 win16_dialog_proxy *win16_dialog_proxy_new(IUnknown *,BOOL,win16_dialog_v2_call,BOOL);

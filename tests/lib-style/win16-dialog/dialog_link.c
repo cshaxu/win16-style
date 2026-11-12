@@ -8,7 +8,7 @@
 #include "lib-style/win16-dialog/print_classic.h"
 #include "lib-style/common/classic_file_contract.h"
 #include "lib-style/win16-dialog/file_helpers.h"
-#include "lib-style/win16-dialog/modern.h"
+#include "lib-style/common/modern_file_dialog.h"
 #include "lib-style/common/classic_shell_item.h"
 #include "lib-style/win16-dialog/v2.h"
 #include "lib-style/win16-dialog/primary.h"
@@ -18,7 +18,7 @@
 #include "lib-style/win16-dialog/hidden_files.h"
 #include "lib-style/win16-dialog/hook_state.h"
 #include "lib-style/win16-dialog/classic_events.h"
-#include "lib-style/win16-dialog/events.h"
+#include "lib-style/common/file_events.h"
 
 static void *browse_argument;static UINT browse_flags;static BOOL browse_validate;
 static PIDLIST_ABSOLUTE WINAPI fake_browse_a(LPBROWSEINFOA info)
@@ -91,29 +91,29 @@ static BOOL test_event_dispatch(void)
 {
     IFileDialogEventsVtbl vtable={0};vtable.OnFileOk=fake_event_ok;vtable.OnFolderChanging=fake_event_changing;
     vtable.OnOverwrite=fake_event_overwrite;vtable.OnShareViolation=fake_event_share;
-    IFileDialogEvents target={.lpVtbl=&vtable};event_adapter first={.owner=(void *)1,.target=&target},other={.owner=(void *)2,.target=&target};
-    event_adapter *entries[]={&other,&first};win16_dialog_event_snapshot snapshot={entries,2};
+    IFileDialogEvents target={.lpVtbl=&vtable};style_dialog_event_adapter first={.owner=(void *)1,.target=&target},other={.owner=(void *)2,.target=&target};
+    style_dialog_event_adapter *entries[]={&other,&first};style_dialog_event_snapshot snapshot={entries,2};
     fake_event_owner=(IFileDialog *)(UINT_PTR)1;fake_event_calls=0;fake_event_result=S_FALSE;
-    if(win16_dialog_event_dispatch(&snapshot,(void *)1,CLASSIC_OK,NULL)!=S_FALSE || fake_event_calls!=1)return FALSE;
+    if(style_dialog_event_dispatch(&snapshot,(void *)1,STYLE_CLASSIC_OK,NULL)!=S_FALSE || fake_event_calls!=1)return FALSE;
     fake_event_result=E_NOTIMPL;
-    if(win16_dialog_event_dispatch(&snapshot,(void *)1,CLASSIC_FOLDER_CHANGING,NULL)!=S_OK || fake_event_calls!=2)return FALSE;
+    if(style_dialog_event_dispatch(&snapshot,(void *)1,STYLE_CLASSIC_FOLDER_CHANGING,NULL)!=S_OK || fake_event_calls!=2)return FALSE;
     fake_event_result=E_FAIL;
-    if(win16_dialog_event_dispatch(&snapshot,(void *)1,CLASSIC_FOLDER_CHANGING,NULL)!=E_FAIL || fake_event_calls!=3)return FALSE;
+    if(style_dialog_event_dispatch(&snapshot,(void *)1,STYLE_CLASSIC_FOLDER_CHANGING,NULL)!=E_FAIL || fake_event_calls!=3)return FALSE;
     fake_event_result=S_OK;
-    if(win16_dialog_event_overwrite(&snapshot,(void *)1,NULL)!=FDEOR_ACCEPT ||
-       win16_dialog_event_share(&snapshot,(void *)1,NULL)!=FDESVR_REFUSE || fake_event_calls!=5)return FALSE;
+    if(style_dialog_event_overwrite(&snapshot,(void *)1,NULL)!=FDEOR_ACCEPT ||
+       style_dialog_event_share(&snapshot,(void *)1,NULL)!=FDESVR_REFUSE || fake_event_calls!=5)return FALSE;
     fake_event_result=E_FAIL;
-    return win16_dialog_event_overwrite(&snapshot,(void *)1,NULL)==FDEOR_DEFAULT &&
-        win16_dialog_event_share(&snapshot,(void *)1,NULL)==FDESVR_DEFAULT && fake_event_calls==7;
+    return style_dialog_event_overwrite(&snapshot,(void *)1,NULL)==FDEOR_DEFAULT &&
+        style_dialog_event_share(&snapshot,(void *)1,NULL)==FDESVR_DEFAULT && fake_event_calls==7;
 }
 static BOOL test_event_snapshot(void)
 {
-    event_adapter first={0},second={0};win16_dialog_event_snapshot snapshot={0};
+    style_dialog_event_adapter first={0},second={0};style_dialog_event_snapshot snapshot={0};
     first.refs=second.refs=1;first.next=&second;
-    if(!win16_dialog_event_snapshot_init(&first,&snapshot))return FALSE;
+    if(!style_dialog_event_snapshot_init(&first,&snapshot))return FALSE;
     BOOL ok=snapshot.count==2 && snapshot.items[0]==&second && snapshot.items[1]==&first && first.refs==2 && second.refs==2;
     first.next=NULL;second.owner=NULL;
-    win16_dialog_event_snapshot_free(&snapshot);
+    style_dialog_event_snapshot_free(&snapshot);
     return ok && first.refs==1 && second.refs==1 && !snapshot.items && !snapshot.count;
 }
 static BOOL test_classic_list_target(void)
@@ -323,7 +323,7 @@ static BOOL test_classic_messages(void)
     win16_dialog_classic_message_services v={0};
     if(win16_dialog_classic_command(&p,NULL,MAKEWPARAM(lst2,LBN_DBLCLK),&result,&v))return FALSE;
     v.events_enabled=TRUE;v.list_changing=classic_reject;v.typed_changing=classic_reject;v.drive_changing=classic_reject;
-    v.overwrite_check=classic_reject;v.file_ok=classic_fileok_test;p.events=(event_adapter *)(UINT_PTR)1;
+    v.overwrite_check=classic_reject;v.file_ok=classic_fileok_test;p.events=(style_dialog_event_adapter *)(UINT_PTR)1;
     if(!win16_dialog_classic_command(&p,NULL,MAKEWPARAM(lst2,LBN_DBLCLK),&result,&v) || result!=1 || classic_reject_calls!=1)return FALSE;
     if(!win16_dialog_classic_command(&p,NULL,IDOK,&result,&v) || classic_reject_calls!=2)return FALSE;
     p.classic_navigating=TRUE;if(win16_dialog_classic_command(&p,NULL,IDOK,&result,&v))return FALSE;p.classic_navigating=FALSE;
@@ -337,10 +337,10 @@ static BOOL test_classic_messages(void)
     puts("CLASSIC_MESSAGE_OK reject=1 navigating=1 fileok=1 hidden=1");return TRUE;
 }
 static int classic_owned_calls,classic_changed_calls,classic_type_calls,classic_navigate_calls;
-static HRESULT classic_owned_test(win16_dialog_proxy *p,enum classic_event_kind kind,IShellItem *item,WCHAR *path)
-{(void)p;(void)path;if(kind!=CLASSIC_FOLDER_CHANGING || !item)return E_FAIL;++classic_owned_calls;IShellItem_Release(item);return S_OK;}
-static HRESULT classic_dispatch_test(win16_dialog_proxy *p,enum classic_event_kind kind,IShellItem *item)
-{(void)p;(void)item;if(kind==CLASSIC_FOLDER_CHANGED)++classic_changed_calls;else if(kind==CLASSIC_TYPE_CHANGED)++classic_type_calls;return S_OK;}
+static HRESULT classic_owned_test(win16_dialog_proxy *p,enum style_classic_event_kind kind,IShellItem *item,WCHAR *path)
+{(void)p;(void)path;if(kind!=STYLE_CLASSIC_FOLDER_CHANGING || !item)return E_FAIL;++classic_owned_calls;IShellItem_Release(item);return S_OK;}
+static HRESULT classic_dispatch_test(win16_dialog_proxy *p,enum style_classic_event_kind kind,IShellItem *item)
+{(void)p;(void)item;if(kind==STYLE_CLASSIC_FOLDER_CHANGED)++classic_changed_calls;else if(kind==STYLE_CLASSIC_TYPE_CHANGED)++classic_type_calls;return S_OK;}
 static void classic_navigate_test(HWND w,win16_dialog_proxy *p,PCWSTR key)
 {(void)w;(void)p;(void)key;++classic_navigate_calls;}
 static BOOL test_classic_navigation(void)
@@ -358,7 +358,7 @@ static BOOL test_classic_navigation(void)
     HWND window=CreateWindowW(L"STATIC",L"",WS_POPUP,0,0,10,10,NULL,NULL,GetModuleHandleW(NULL),NULL);
     if(!window){IShellItem_Release(item);return FALSE;}
     if(!SetPropW(window,key,&p)){DestroyWindow(window);IShellItem_Release(item);return FALSE;}
-    p.live_folder=item;p.events=(event_adapter *)(UINT_PTR)1;p.filter=L"filter";
+    p.live_folder=item;p.events=(style_dialog_event_adapter *)(UINT_PTR)1;p.filter=L"filter";
     win16_dialog_initial_scope initial={&p,item,NULL,FALSE};IShellItem_AddRef(item);
     win16_dialog_initial_run(window,key,&initial,classic_owned_test,classic_navigate_test,classic_dispatch_test);
     BOOL ok=classic_owned_calls==1 && classic_changed_calls==1 && classic_type_calls==1 && !classic_navigate_calls && !p.classic_initializing;
@@ -556,6 +556,6 @@ int main(void)
     browse_w.ulFlags=browse_base|BIF_BROWSEFORCOMPUTER;
     if(win16_dialog_browse_w(&browse_w,fake_browse_w,TRUE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument!=&browse_w)return 39;
     if(win16_dialog_browse_w(NULL,fake_browse_w,TRUE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument)return 40;
-    if(win16_dialog_show_modern(NULL,1,NULL,0,NULL)!=E_INVALIDARG)return 35;
+    if(style_dialog_show_modern(NULL,1,NULL,0,NULL)!=E_INVALIDARG)return 35;
     puts("WIN16_DIALOG_STANDALONE_LINK_OK ranges=1 file_contract=1 modern_invalid=1");return 0;
 }

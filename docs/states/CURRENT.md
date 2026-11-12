@@ -36,10 +36,12 @@
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 1
-- Last verified remote delivery: M0 T25 S4 P73，`826503cf6fb16f2da7fad130a829118d65a6a4c3`。
+- Last verified remote delivery: M0 T26 S1 P16，`d108bad6`。
 - Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
 
 ## Technical Baseline
+
+T26 S1 已迁移文件对话框事件、现代选择器及旧式 Shell 文件夹通用调用；范围、测试和剩余混合代码见[对话框审计](../history/M0-T26-S1-dialog-audit.md)。
 
 T26 S1 已冻结首批 272 个相关文件路径，见[初始清单](../history/M0-T26-S1-initial-inventory.md)；逐项依赖、调用方、测试和迁移归属审计仍在进行，未宣称完成。
 

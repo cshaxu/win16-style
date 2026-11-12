@@ -1,7 +1,7 @@
 /* Modern dialog behavior, called by an owning module that supplies its scope. */
 #define COBJMACROS
 #define INITGUID
-#include "modern.h"
+#include "lib-style/common/modern_file_dialog.h"
 #include <shlobj.h>
 #include <shobjidl.h>
 #include <wchar.h>
@@ -11,8 +11,8 @@ typedef struct modern_show {IFileDialog *dialog;HWND owner;} modern_show;
 static HRESULT show_scoped(void *value)
 { modern_show *show=value;return IFileDialog_Show(show->dialog,show->owner); }
 
-HRESULT win16_dialog_show_modern(HWND owner, UINT kind, PWSTR path, DWORD capacity,
-    const win16_dialog_modern_services *services)
+HRESULT style_dialog_show_modern(HWND owner, UINT kind, PWSTR path, DWORD capacity,
+    const style_dialog_modern_services *services)
 {
     if (!path || !capacity || kind < 1 || kind > 3) return E_INVALIDARG;
     path[0] = L'\0';
