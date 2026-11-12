@@ -36,10 +36,12 @@
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 1
-- Last verified remote delivery: M0 T26 S1 P17，`69a2c4d2`。
+- Last verified remote delivery: M0 T26 S1 P18，`065a8d59`。
 - Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
 
 ## Technical Baseline
+
+T26 S1 已共享经典文件对话框显示、Shell 文件夹适配与活动控件同步；边界及验证见[记录](../history/M0-T26-S1-classic-bridge.md)。
 
 T26 S1 已共享旧式文件对话框 COM 接口适配器，保留调用方的回退策略；验证与边界见[记录](../history/M0-T26-S1-dialog-interfaces.md)。
 

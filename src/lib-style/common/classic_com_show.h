@@ -1,9 +1,11 @@
-#ifndef WIN16_DIALOG_COM_SHOW_H
-#define WIN16_DIALOG_COM_SHOW_H
+#ifndef STYLE_CLASSIC_COM_SHOW_H
+#define STYLE_CLASSIC_COM_SHOW_H
 #include <windows.h>
 #include <shobjidl.h>
 #include <commdlg.h>
-typedef struct win16_dialog_com_show_state {
+/* State, results and callback services are caller-owned for the entire call.
+ * This implements the existing classic bridge and native-fallback contract. */
+typedef struct style_classic_com_show_state {
     void *owner; IFileDialog *native; BOOL save;
     BOOL *unsupported,*completed; IShellItem **result; IShellItemArray **results;
     WCHAR **title,**filter,**extension,**ok_label,**cancel_label,**file_label;
@@ -14,6 +16,6 @@ typedef struct win16_dialog_com_show_state {
     BOOL (*has_events)(void *);
     HRESULT (*show_native)(void *,HWND);
     HRESULT (*scope)(HRESULT (*)(void *),void *);
-} win16_dialog_com_show_state;
-HRESULT win16_dialog_com_show(win16_dialog_com_show_state *state,HWND owner);
+} style_classic_com_show_state;
+HRESULT style_classic_com_show(style_classic_com_show_state *state,HWND owner);
 #endif

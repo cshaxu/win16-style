@@ -15,8 +15,8 @@
 #include "lib-style/common/dialog_ole_window.h"
 #include "lib-style/common/dialog_v2.h"
 #include "lib-style/common/dialog_primary.h"
-#include "../../lib-style/win16-dialog/com_show.h"
-#include "../../lib-style/win16-dialog/file_live.h"
+#include "lib-style/common/classic_com_show.h"
+#include "lib-style/common/classic_file_live.h"
 #include "../../lib-style/win16-dialog/com_hook.h"
 #include "../../lib-style/win16-dialog/proxy.h"
 #include "../../lib-style/win16-dialog/proxy_dispatch.h"
@@ -241,7 +241,7 @@ static HRESULT proxy_show_impl(file_proxy *p,HWND owner)
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
     p->classic_close_pending=FALSE;
 #endif
-    win16_dialog_com_show_state state={
+    style_classic_com_show_state state={
         .owner=p,.native=p->native,.save=p->save,.unsupported=&p->unsupported,.completed=&p->completed,
         .result=&p->result,.results=&p->results,.title=&p->title,.filter=&p->filter,.extension=&p->extension,
         .ok_label=&p->ok_label,.cancel_label=&p->cancel_label,.file_label=&p->file_label,
@@ -254,7 +254,7 @@ static HRESULT proxy_show_impl(file_proxy *p,HWND owner)
         .experimental_hidden=TRUE,.classic_hidden=&p->classic_hidden,
 #endif
     };
-    return win16_dialog_com_show(&state,owner);
+    return style_classic_com_show(&state,owner);
 }
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
 typedef struct classic_show_scope {file_proxy *proxy;BOOL completed;} classic_show_scope;

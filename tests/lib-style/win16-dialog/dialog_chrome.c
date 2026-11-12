@@ -6,7 +6,7 @@
 #include "lib-style/common/dialog_ole_window.h"
 #include "lib-style/win16-dialog/classic_folder.h"
 #include "lib-style/win16-dialog/file_hook.h"
-#include "lib-style/win16-dialog/file_live.h"
+#include "lib-style/common/classic_file_live.h"
 #include "lib-style/win16-dialog/com_hook.h"
 #include "lib-style/win16-dialog/proxy.h"
 static int grids,scrolls,removes,combos;static const void *grid_owner;static BOOL same_owner=TRUE;
@@ -75,10 +75,10 @@ int main(void)
     SendMessageW(filter_combo,CB_ADDSTRING,0,(LPARAM)L"First");SendMessageW(filter_combo,CB_ADDSTRING,0,(LPARAM)L"Second");
     SendMessageW(filter_combo,CB_SETCURSEL,1,0);
     WCHAR *filter_text=L"test",*live_name=NULL;UINT filter_index=0;
-    HRESULT live_filter=win16_dialog_live_get_filter(NULL,&active,&filter_text,&filter_index);
-    HRESULT live_name_hr=win16_dialog_live_get_name(NULL,&active,&live_name);
+    HRESULT live_filter=style_classic_file_live_get_filter(NULL,&active,&filter_text,&filter_index);
+    HRESULT live_name_hr=style_classic_file_live_get_name(NULL,&active,&live_name);
     BOOL live_ok=live_filter==S_OK && filter_index==2 && live_name_hr==S_OK && live_name &&
-        !lstrcmpW(live_name,L"[Select current folder]") && win16_dialog_live_get_name(NULL,&active,NULL)==E_POINTER;
+        !lstrcmpW(live_name,L"[Select current folder]") && style_classic_file_live_get_name(NULL,&active,NULL)==E_POINTER;
     if(live_name)CoTaskMemFree(live_name);
     const win16_dialog_com_hook_services com_services={L"Win16S.Test.Navigation",fake_com_attach,fake_com_label,fake_com_detach,
         fake_com_command,fake_com_before,fake_com_selection,fake_com_navigate,fake_com_after};

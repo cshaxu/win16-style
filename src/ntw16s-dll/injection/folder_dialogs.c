@@ -3,7 +3,7 @@
 #include "intercept.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "../../lib-style/win16-dialog/chrome.h"
-#include "../../lib-style/win16-dialog/browse.h"
+#include "lib-style/common/classic_browse.h"
 #include "ntw16s-dll/controls.h"
 #include <shlobj.h>
 static PIDLIST_ABSOLUTE (WINAPI *native_browse_a)(LPBROWSEINFOA);
@@ -21,9 +21,9 @@ void ntw16s_font_dialog_chrome(HWND window)
 {win16_dialog_font_chrome(window,&dialog_chrome_services);}
 
 static PIDLIST_ABSOLUTE WINAPI browse_a(LPBROWSEINFOA info)
-{return win16_dialog_browse_a(info,native_browse_a,ntw16s_process_session_active());}
+{return style_classic_browse_a(info,native_browse_a,ntw16s_process_session_active());}
 static PIDLIST_ABSOLUTE WINAPI browse_w(LPBROWSEINFOW info)
-{return win16_dialog_browse_w(info,native_browse_w,ntw16s_process_session_active());}
+{return style_classic_browse_w(info,native_browse_w,ntw16s_process_session_active());}
 LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;

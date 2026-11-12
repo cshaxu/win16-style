@@ -1,6 +1,6 @@
 /* Common-dialog display and result conversion. The caller owns state and scopes. */
 #define COBJMACROS
-#include "com_show.h"
+#include "lib-style/common/classic_com_show.h"
 #include "lib-style/common/classic_file_contract.h"
 #include "lib-style/common/classic_shell_folder.h"
 #include "lib-style/common/classic_shell_item.h"
@@ -12,7 +12,7 @@ static HRESULT classic_show(void *data)
     classic_call *call=data;call->selected=call->save?GetSaveFileNameW(call->ofn):GetOpenFileNameW(call->ofn);
     call->error=call->selected?0:CommDlgExtendedError();return S_OK;
 }
-HRESULT win16_dialog_com_show(win16_dialog_com_show_state *p,HWND owner)
+HRESULT style_classic_com_show(style_classic_com_show_state *p,HWND owner)
 {
     FILEOPENDIALOGOPTIONS flags=0;
     if(*p->result){IShellItem_Release(*p->result);*p->result=NULL;}

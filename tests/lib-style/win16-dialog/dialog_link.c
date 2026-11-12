@@ -12,9 +12,9 @@
 #include "lib-style/common/classic_shell_item.h"
 #include "lib-style/common/dialog_v2.h"
 #include "lib-style/common/dialog_primary.h"
-#include "lib-style/win16-dialog/com_show.h"
+#include "lib-style/common/classic_com_show.h"
 #include "lib-style/win16-dialog/proxy.h"
-#include "lib-style/win16-dialog/browse.h"
+#include "lib-style/common/classic_browse.h"
 #include "lib-style/win16-dialog/hidden_files.h"
 #include "lib-style/win16-dialog/hook_state.h"
 #include "lib-style/win16-dialog/classic_events.h"
@@ -525,37 +525,37 @@ int main(void)
     IFileSaveDialog *save=(IFileSaveDialog *)&primary;
     if(IFileSaveDialog_Close(save,E_FAIL)!=S_FALSE || observed_op!=STYLE_DIALOG_V2_PRIMARY_CLOSE || (HRESULT)observed_a!=E_FAIL)return 27;
     IShellItem *show_result=NULL;IShellItemArray *show_results=NULL;BOOL show_completed=TRUE;
-    win16_dialog_com_show_state show_state={.owner=&owner,.result=&show_result,.results=&show_results,
+    style_classic_com_show_state show_state={.owner=&owner,.result=&show_result,.results=&show_results,
         .completed=&show_completed,.session_active=no_session,.show_native=fallback_show};
-    if(win16_dialog_com_show(&show_state,(HWND)(UINT_PTR)123)!=E_ABORT || show_completed ||
+    if(style_classic_com_show(&show_state,(HWND)(UINT_PTR)123)!=E_ABORT || show_completed ||
        observed_owner!=&owner || observed_a!=123)return 28;
     UINT browse_base=BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE|BIF_EDITBOX|BIF_VALIDATE;
-    struct {UINT input;BOOL callback;win16_dialog_browse_mode mode;UINT output;} plans[]={
-        {browse_base,TRUE,WIN16_BROWSE_NATIVE,browse_base},
-        {browse_base,FALSE,WIN16_BROWSE_REWRITE,BIF_RETURNONLYFSDIRS},
-        {browse_base|BIF_NONEWFOLDERBUTTON,FALSE,WIN16_BROWSE_VALIDATE,BIF_RETURNONLYFSDIRS|BIF_EDITBOX|BIF_VALIDATE},
-        {BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE,FALSE,WIN16_BROWSE_REWRITE,BIF_RETURNONLYFSDIRS},
-        {BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE|BIF_NONEWFOLDERBUTTON,FALSE,WIN16_BROWSE_REWRITE,BIF_RETURNONLYFSDIRS},
-        {browse_base|BIF_BROWSEFORCOMPUTER,FALSE,WIN16_BROWSE_NATIVE,browse_base|BIF_BROWSEFORCOMPUTER},
-        {browse_base&~BIF_VALIDATE,FALSE,WIN16_BROWSE_REWRITE,BIF_RETURNONLYFSDIRS},
-        {browse_base&~BIF_VALIDATE,TRUE,WIN16_BROWSE_NATIVE,browse_base&~BIF_VALIDATE}};
+    struct {UINT input;BOOL callback;style_classic_browse_mode mode;UINT output;} plans[]={
+        {browse_base,TRUE,STYLE_CLASSIC_BROWSE_NATIVE,browse_base},
+        {browse_base,FALSE,STYLE_CLASSIC_BROWSE_REWRITE,BIF_RETURNONLYFSDIRS},
+        {browse_base|BIF_NONEWFOLDERBUTTON,FALSE,STYLE_CLASSIC_BROWSE_VALIDATE,BIF_RETURNONLYFSDIRS|BIF_EDITBOX|BIF_VALIDATE},
+        {BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE,FALSE,STYLE_CLASSIC_BROWSE_REWRITE,BIF_RETURNONLYFSDIRS},
+        {BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE|BIF_NONEWFOLDERBUTTON,FALSE,STYLE_CLASSIC_BROWSE_REWRITE,BIF_RETURNONLYFSDIRS},
+        {browse_base|BIF_BROWSEFORCOMPUTER,FALSE,STYLE_CLASSIC_BROWSE_NATIVE,browse_base|BIF_BROWSEFORCOMPUTER},
+        {browse_base&~BIF_VALIDATE,FALSE,STYLE_CLASSIC_BROWSE_REWRITE,BIF_RETURNONLYFSDIRS},
+        {browse_base&~BIF_VALIDATE,TRUE,STYLE_CLASSIC_BROWSE_NATIVE,browse_base&~BIF_VALIDATE}};
     for(unsigned i=0;i<sizeof(plans)/sizeof(plans[0]);++i){
-        win16_dialog_browse_plan plan=win16_dialog_plan_browse(plans[i].input,plans[i].callback);
+        style_classic_browse_plan plan=style_classic_plan_browse(plans[i].input,plans[i].callback);
         if(plan.mode!=plans[i].mode || plan.flags!=plans[i].output)return 33;
     }
-    win16_dialog_folder_selection selection={0};
-    win16_dialog_folder_selection_callback(NULL,BFFM_VALIDATEFAILEDW,0,(LPARAM)&selection);
+    style_classic_folder_selection selection={0};
+    style_classic_folder_selection_callback(NULL,BFFM_VALIDATEFAILEDW,0,(LPARAM)&selection);
     if(!selection.invalid || selection.selected)return 34;
     BROWSEINFOA browse_a={0};browse_a.ulFlags=browse_base;
-    if(win16_dialog_browse_a(&browse_a,fake_browse_a,FALSE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument!=&browse_a || browse_flags!=browse_base)return 36;
-    if(win16_dialog_browse_a(&browse_a,fake_browse_a,TRUE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument==&browse_a || browse_flags!=BIF_RETURNONLYFSDIRS || browse_a.ulFlags!=browse_base)return 37;
+    if(style_classic_browse_a(&browse_a,fake_browse_a,FALSE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument!=&browse_a || browse_flags!=browse_base)return 36;
+    if(style_classic_browse_a(&browse_a,fake_browse_a,TRUE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument==&browse_a || browse_flags!=BIF_RETURNONLYFSDIRS || browse_a.ulFlags!=browse_base)return 37;
     BROWSEINFOW browse_w={0};browse_w.ulFlags=browse_base|BIF_NONEWFOLDERBUTTON;browse_validate=TRUE;
-    PIDLIST_ABSOLUTE retained=win16_dialog_browse_w(&browse_w,fake_browse_w,TRUE);browse_validate=FALSE;
+    PIDLIST_ABSOLUTE retained=style_classic_browse_w(&browse_w,fake_browse_w,TRUE);browse_validate=FALSE;
     if(!retained || browse_argument==&browse_w || browse_flags!=(BIF_RETURNONLYFSDIRS|BIF_EDITBOX|BIF_VALIDATE) || browse_w.ulFlags!=(browse_base|BIF_NONEWFOLDERBUTTON))return 38;
     CoTaskMemFree(retained);
     browse_w.ulFlags=browse_base|BIF_BROWSEFORCOMPUTER;
-    if(win16_dialog_browse_w(&browse_w,fake_browse_w,TRUE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument!=&browse_w)return 39;
-    if(win16_dialog_browse_w(NULL,fake_browse_w,TRUE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument)return 40;
+    if(style_classic_browse_w(&browse_w,fake_browse_w,TRUE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument!=&browse_w)return 39;
+    if(style_classic_browse_w(NULL,fake_browse_w,TRUE)!=(PIDLIST_ABSOLUTE)(UINT_PTR)1 || browse_argument)return 40;
     if(style_dialog_show_modern(NULL,1,NULL,0,NULL)!=E_INVALIDARG)return 35;
     puts("WIN16_DIALOG_STANDALONE_LINK_OK ranges=1 file_contract=1 modern_invalid=1");return 0;
 }
