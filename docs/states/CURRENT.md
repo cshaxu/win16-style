@@ -42,7 +42,7 @@
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 1
-- Last verified remote delivery: M0 T26 S1 P39，`7c84e91d`。
+- Last verified remote delivery: M0 T26 S1 P40，`15aad9f0`。
 - Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
 
 ## Technical Baseline
