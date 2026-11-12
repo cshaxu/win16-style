@@ -77,7 +77,7 @@ static BOOL WINAPI observed_blt(HDC dc,int x,int y,int cx,int cy,HDC from,int sx
 #include "lib-style/win16-control/combo_paint.c"
 #include "lib-style/win16-control/scroll_paint.c"
 #include "lib-style/win16-control/special_paint.c"
-#include "lib-style/win16-common/present.c"
+#include "lib-style/common/present.c"
 #undef FillRect
 #undef SaveDC
 #undef BitBlt

@@ -8,4 +8,3 @@ separate `tests/lib-style/win16-window/window_link.c` adapter.
 | Source family | Native test adapter |
 | --- | --- |
 | `layout`, `font`, `palette` | `common_link.c`; `tests/ntw16s-dll/font_layout.c` |
-| `present` | `tests/lib-style/win16-control/control_print.c` |

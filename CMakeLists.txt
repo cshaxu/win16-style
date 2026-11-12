@@ -20,6 +20,10 @@ add_library(style-uwp-native STATIC src/lib-style/uwp/native.c src/lib-style/uwp
 target_include_directories(style-uwp-native PUBLIC src)
 target_compile_definitions(style-uwp-native PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-uwp-native PUBLIC user32 ole32 oleaut32 uuid dwmapi)
+add_library(style-present STATIC src/lib-style/common/present.c)
+target_include_directories(style-present PUBLIC src)
+target_compile_definitions(style-present PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_link_libraries(style-present PUBLIC user32 gdi32)
 add_library(style-global-window STATIC src/lib-style/common/global_window.c)
 target_include_directories(style-global-window PUBLIC src)
 target_compile_definitions(style-global-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -34,11 +38,10 @@ target_include_directories(lib-tray PUBLIC src/lib-win32/tray)
 target_link_libraries(lib-tray PUBLIC user32 shell32)
 add_library(win16-common STATIC
   src/lib-style/win16-common/layout.c src/lib-style/win16-common/menu_layout.c
-  src/lib-style/win16-common/font.c src/lib-style/win16-common/palette.c
-  src/lib-style/win16-common/present.c)
+  src/lib-style/win16-common/font.c src/lib-style/win16-common/palette.c)
 target_include_directories(win16-common PUBLIC src/lib-style/win16-common)
 target_compile_definitions(win16-common PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-common PUBLIC user32 gdi32 comctl32 uxtheme)
+target_link_libraries(win16-common PUBLIC style-present user32 gdi32 comctl32 uxtheme)
 add_library(win16-window STATIC
   src/lib-style/win16-window/menu_paint.c
   src/lib-style/win16-window/menu_bar.c src/lib-style/win16-window/menu_bar_paint.c
@@ -263,6 +266,13 @@ if(BUILD_TESTING)
   add_executable(core-win16-dwm-restore tests/lib-style/common/win16_dwm_restore.c)
   target_include_directories(core-win16-dwm-restore PRIVATE src)
   target_link_libraries(core-win16-dwm-restore PRIVATE ntw16s user32 dwmapi)
+  add_executable(core-style-present-fault tests/lib-style/common/present_fault.c)
+  target_include_directories(core-style-present-fault PRIVATE src)
+  target_link_libraries(core-style-present-fault PRIVATE user32 gdi32)
+  add_test(NAME core/style-present-fault COMMAND $<TARGET_FILE:core-style-present-fault>)
+  add_executable(core-style-present tests/lib-style/common/present.c)
+  target_link_libraries(core-style-present PRIVATE style-present)
+  add_test(NAME core/style-present COMMAND $<TARGET_FILE:core-style-present>)
   add_executable(core-style-menu-input tests/lib-style/common/menu_input.c)
   add_executable(core-style-global-window tests/lib-style/common/global_window.c)
   add_dependencies(core-style-global-window ntw16s-subclass)
@@ -1575,7 +1585,7 @@ if(BUILD_TESTING)
 
   component_test(core-win16-dialog-link tests/lib-style/win16-dialog/dialog_link.c core/win16-dialog-link "-Wl,--whole-archive" win16-dialog "-Wl,--no-whole-archive")
 
-  component_test(core-win16-control-print tests/lib-style/win16-control/control_print.c core/win16-control-print win16-control)
+  component_test(core-style-present-print tests/lib-style/common/present_print.c core/style-present-print style-present)
 
   add_test(NAME core/runtime COMMAND ${test_driver} --name core/runtime -- $<TARGET_FILE:core-runtime>)
   add_test(NAME core/runtime-native COMMAND ${test_driver} --name core/runtime-native -- $<TARGET_FILE:core-runtime> --native)

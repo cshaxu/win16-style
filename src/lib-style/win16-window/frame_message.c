@@ -1,7 +1,7 @@
 #include "frame_message.h"
 #include "frame_layout.h"
 #include "frame_view.h"
-#include "../win16-common/present.h"
+#include "lib-style/common/present.h"
 #include "lib-style/common/frame.h"
 #include <commctrl.h>
 
@@ -51,7 +51,7 @@ BOOL win16_control_frame_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARA
     case WM_PRINT:
         if((lp&PRF_CHECKVISIBLE) && !IsWindowVisible(w))return TRUE;
         if(lp&PRF_NONCLIENT)v->paint(w,s,(HDC)wp);
-        if(!s->detached)win16_control_print_client_and_children(w,&s->detached,(HDC)wp,lp);
+        if(!s->detached)style_print_client_and_children(w,&s->detached,(HDC)wp,lp);
         return TRUE;
     case WM_SETTEXT:
         *result=DefSubclassProc(w,msg,wp,lp);

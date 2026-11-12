@@ -22,7 +22,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib-style/win16-control/combo_paint.h"
 #include "../lib-style/win16-control/scroll_paint.h"
 #include "../lib-style/win16-control/special_paint.h"
-#include "../lib-style/win16-common/present.h"
+#include "lib-style/common/present.h"
 #include "../lib-style/win16-control/choice_paint.h"
 #include "../lib-style/win16-control/choice_view.h"
 #include "../lib-style/win16-control/spin_identity.h"
@@ -215,8 +215,8 @@ static BOOL present_group(HWND w,void *context)
 static void present_control(HWND w,control_style *s,HDC target,void (*painter)(HWND,control_style *,HDC))
 {
     present_context context={s,painter};
-    const win16_control_present_view view={&s->detached,&s->palette,&context,present_painter,NULL,present_group};
-    win16_control_present(w,&view,target);
+    const style_present_view view={&s->detached,s->palette.light,&context,present_painter,NULL,present_group};
+    style_present(w,&view,target);
 }
 
 /* Original LBSetTabStops stores set-time pixels. GdiGetCharDimensions uses

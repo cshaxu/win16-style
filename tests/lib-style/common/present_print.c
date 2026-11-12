@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
-#include "lib-style/win16-common/present.h"
+#include "lib-style/common/present.h"
 
 static HWND root,child,owned;
 static BOOL detached,detach_on_erase;
@@ -32,11 +32,11 @@ int main(void)
     if(screen)ReleaseDC(NULL,screen);
     HGDIOBJ old=bitmap?SelectObject(dc,bitmap):NULL;if(!dc || !bitmap || !old || old==HGDI_ERROR)return 3;
     count=0;
-    win16_control_print_client_and_children(root,&detached,dc,PRF_NONCLIENT|PRF_CLIENT|PRF_CHILDREN|PRF_OWNED|PRF_ERASEBKGND);
+    style_print_client_and_children(root,&detached,dc,PRF_NONCLIENT|PRF_CLIENT|PRF_CHILDREN|PRF_OWNED|PRF_ERASEBKGND);
     if(count!=4 || events[0]!='E' || events[1]!='C' || events[2]!='H' || events[3]!='O'){
         fprintf(stderr,"PRINT_ORDER_FAIL count=%u events=%.*s\n",count,(int)(count<sizeof(events)?count:sizeof(events)),events);return 4;}
     count=0;detach_on_erase=TRUE;
-    win16_control_print_client_and_children(root,&detached,dc,PRF_CLIENT|PRF_CHILDREN|PRF_OWNED|PRF_ERASEBKGND);
+    style_print_client_and_children(root,&detached,dc,PRF_CLIENT|PRF_CHILDREN|PRF_OWNED|PRF_ERASEBKGND);
     if(count!=1 || events[0]!='E' || !detached)return 5;
     SelectObject(dc,old);DeleteObject(bitmap);DeleteDC(dc);
     DestroyWindow(owned);DestroyWindow(root);UnregisterClassW(cls.lpszClassName,instance);

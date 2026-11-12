@@ -1,6 +1,6 @@
 #include "present.h"
 
-void win16_control_present(HWND w,const win16_control_present_view *view,HDC target)
+void style_present(HWND w,const style_present_view *view,HDC target)
 {
     RECT dirty,client;HDC memory=NULL;HBITMAP bitmap=NULL,old=NULL;BOOL ready=FALSE;
     BOOL group;int target_saved=0;
@@ -23,7 +23,7 @@ void win16_control_present(HWND w,const win16_control_present_view *view,HDC tar
         BitBlt(memory,0,0,dirty.right-dirty.left,dirty.bottom-dirty.top,target,dirty.left,dirty.top,SRCCOPY) &&
         SetWindowOrgEx(memory,dirty.left,dirty.top,NULL)){
         if(group){HWND parent=GetParent(w);POINT origin={0,0};int saved=SaveDC(memory);
-            SetDCBrushColor(memory,view->palette->light);FillRect(memory,&client,(HBRUSH)GetStockObject(DC_BRUSH));
+            SetDCBrushColor(memory,view->background);FillRect(memory,&client,(HBRUSH)GetStockObject(DC_BRUSH));
             if(saved && parent){MapWindowPoints(w,parent,&origin,1);
                 OffsetViewportOrgEx(memory,-origin.x,-origin.y,NULL);
                 SendMessageW(parent,WM_PRINTCLIENT,(WPARAM)memory,PRF_CLIENT);}
@@ -63,7 +63,7 @@ static BOOL CALLBACK print_child(HWND child,LPARAM data)
 /* Custom nonclient geometry cannot delegate native frame printing. Preserve
  * DWP's frame/client/child ordering using the public HWND/DC boundaries.
  * See the S4 print audit for the original xxxDWPPrint reference. */
-void win16_control_print_client_and_children(HWND w,const BOOL *detached,HDC dc,LPARAM flags)
+void style_print_client_and_children(HWND w,const BOOL *detached,HDC dc,LPARAM flags)
 {
     RECT wr,client;POINT origin={0,0};int saved;print_children children;
     if(!GetWindowRect(w,&wr) || !GetClientRect(w,&client) || !ClientToScreen(w,&origin))return;
