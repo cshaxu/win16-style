@@ -6152,7 +6152,7 @@
       "path": "src/ntw16s-dll/uwp/target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3798f0acff2439e4fa1d1682036e22fa4794305b731086c56cc64486ed645b26",
+      "sha256": "3f43c3e7cf662e9bdbfdb52e19a5b76cb8664d74f23a714fda19326861bab5b9",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"
@@ -7226,6 +7226,33 @@
       "sha256": "8aa71d20d849cc4dabded08685c2d5d764e2a6745af6592bc2cfeb162bbb34fa",
       "disposition": "authored",
       "review": "T26 S1 shared UWP repaint scheduler and native test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/uwp/dispatch.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2da0ecc975839a347733cdfc95ffec61f27e47f8c1a733ea6a3a693ab7d83e24",
+      "disposition": "authored",
+      "review": "T26 S1 shared UWP target dispatch and native test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/uwp/dispatch.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0fa77408b66b60b84c2da2534a61f5d0a50b3ac9db57624c3a550ccd0c383feb",
+      "disposition": "authored",
+      "review": "T26 S1 shared UWP target dispatch and native test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/uwp/dispatch.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "faeaf7eae25aeb3a3c11d1271ac11acb60ac736f848d9693b8225a476e7cc2ef",
+      "disposition": "authored",
+      "review": "T26 S1 shared UWP target dispatch and native test",
       "notice": "Project-authored C; no imported artwork"
     }
   ]
