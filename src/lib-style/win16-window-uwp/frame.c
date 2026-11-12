@@ -1,5 +1,6 @@
 #include "frame.h"
 #include "frame_layout.h"
+#include "lib-style/uwp/surface.h"
 #include "lib-style/win16-window/frame_view.h"
 #include "lib-style/win16-common/font.h"
 #include "lib-style/win16-window/menu_message.h"
@@ -18,11 +19,7 @@ typedef struct uwp_frame {
     int pressed,no_selection;
     UINT dpi;
     HFONT title_font,menu_font;
-    HDC dc;
-    HBITMAP bitmap;
-    HGDIOBJ old_bitmap;
-    BYTE *pixels;
-    SIZE size;
+    style_uwp_bitmap bitmap;
     win16_style_layout layout;
     style_window *menu;
     HWND menu_window;
@@ -47,17 +44,10 @@ static uwp_frame *lookup(HWND w)
     DWORD_PTR value=0;
     return GetWindowSubclass(w,owner_proc,(UINT_PTR)owner_proc,&value)?(uwp_frame *)value:NULL;
 }
-static void free_bitmap(uwp_frame *s)
-{
-    if(s->old_bitmap)SelectObject(s->dc,s->old_bitmap);
-    if(s->bitmap)DeleteObject(s->bitmap);
-    if(s->dc)DeleteDC(s->dc);
-    s->dc=NULL;s->bitmap=NULL;s->old_bitmap=NULL;s->pixels=NULL;
-}
 static void release(uwp_frame *s)
 {
     if(--s->calls || !s->detached)return;
-    free_bitmap(s);
+    style_uwp_bitmap_dispose(&s->bitmap);
     if(s->title_font)DeleteObject(s->title_font);
     s->menu->menu_font=NULL; /* The frame owns the font lease. */
     win16_control_frame_state_dispose(s->menu);
@@ -84,31 +74,9 @@ static BOOL detach(uwp_frame *s)
 }
 static BOOL geometry(uwp_frame *s,RECT *outer)
 {
-    RECT content,title;
-    if(!GetWindowRect(s->window,outer) || !GetClientRect(s->window,&content))return FALSE;
-    if(s->title && (!IsWindow(s->title) || GetParent(s->title)!=s->window ||
-       !IsWindowVisible(s->title) || !GetWindowRect(s->title,&title)))return FALSE;
-    BOOL zoomed=IsZoomed(s->window);
-    if(zoomed){
-        MONITORINFO monitor={.cbSize=sizeof(monitor)};RECT visible;
-        if(!GetMonitorInfoW(MonitorFromWindow(s->window,MONITOR_DEFAULTTONEAREST),&monitor) ||
-           !IntersectRect(&visible,outer,&monitor.rcWork))return FALSE;
-        *outer=visible;
-    }
-    POINT origin={0,0};ClientToScreen(s->window,&origin);OffsetRect(&content,origin.x-outer->left,origin.y-outer->top);
-    /* This adapter covers only the native title band. Arbitrary XAML controls
-     * elsewhere remain outside its region and input path. */
-    /* The host can restrict its title child to the right-hand caption buttons;
-     * its bottom still defines the shared title strip above XAML content. */
-    if(s->title){
-        if(title.left<origin.x || title.right!=outer->left+content.right || title.bottom<=origin.y)return FALSE;
-        content.top=title.bottom-outer->top;
-    }
+    RECT content;BOOL zoomed;
+    if(!style_uwp_frame_bounds(s->window,s->title,outer,&content,&zoomed))return FALSE;
     SIZE size={outer->right-outer->left,outer->bottom-outer->top};
-    if(zoomed){
-        RECT bounds={0,0,size.cx,size.cy};
-        if(!IntersectRect(&content,&content,&bounds))return FALSE;
-    }
     UINT dpi=GetDpiForWindow(s->window);
     if(!win16_uwp_frame_layout(size,dpi,(DWORD)GetWindowLongPtrW(s->window,GWL_STYLE),zoomed,content,&s->layout))return FALSE;
     if(dpi!=s->dpi && !win16_control_refresh_frame_fonts(s->window,&s->dpi,&s->title_font,&s->menu_font))return FALSE;
@@ -121,21 +89,6 @@ static void colors(void *context,win16_style_palette *palette)
 {(void)context;win16_style_default_palette(palette);}
 static void no_scrollbars(HWND w,HDC dc,const win16_style_palette *palette)
 {(void)w;(void)dc;(void)palette;}
-static BOOL bitmap(uwp_frame *s,SIZE size)
-{
-    if(s->dc && size.cx==s->size.cx && size.cy==s->size.cy)return TRUE;
-    if(size.cx<=0 || size.cy<=0 || (SIZE_T)size.cx>SIZE_MAX/4/(SIZE_T)size.cy){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    free_bitmap(s);
-    BITMAPINFO info={0};info.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-    info.bmiHeader.biWidth=size.cx;info.bmiHeader.biHeight=-size.cy;
-    info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;
-    s->dc=CreateCompatibleDC(NULL);
-    if(s->dc)s->bitmap=CreateDIBSection(s->dc,&info,DIB_RGB_COLORS,(void **)&s->pixels,NULL,0);
-    if(!s->bitmap){free_bitmap(s);return FALSE;}
-    s->old_bitmap=SelectObject(s->dc,s->bitmap);s->size=size;
-    if(!s->old_bitmap || s->old_bitmap==HGDI_ERROR){s->old_bitmap=NULL;free_bitmap(s);return FALSE;}
-    return TRUE;
-}
 static BOOL refresh(uwp_frame *s)
 {
     if(s->detached || s->updating)return !s->detached;
@@ -144,15 +97,15 @@ static BOOL refresh(uwp_frame *s)
     s->updating=TRUE;
     RECT outer;BOOL ok=geometry(s,&outer);
     if(ok){
-        SIZE size={outer.right-outer.left,outer.bottom-outer.top};ok=bitmap(s,size);
+        SIZE size={outer.right-outer.left,outer.bottom-outer.top};ok=style_uwp_bitmap_ensure(&s->bitmap,size);
         if(ok){
-            ZeroMemory(s->pixels,(SIZE_T)size.cx*(SIZE_T)size.cy*4);
+            ZeroMemory(s->bitmap.pixels,(SIZE_T)size.cx*(SIZE_T)size.cy*4);
             win16_control_frame_view view={s,&s->detached,&s->active,&s->menu_font,&s->title_font,&s->dpi,
                 &s->no_selection,&s->no_menu,&s->no_keyboard,&s->pressed,&s->hot,cached_layout,colors,no_scrollbars};
-            win16_control_paint_frame(s->window,&view,s->dc);GdiFlush();
+            win16_control_paint_frame(s->window,&view,s->bitmap.dc);GdiFlush();
             RECT hole=s->layout.client;
             for(int y=0;y<size.cy;++y){
-                BYTE *row=s->pixels+(SIZE_T)y*(SIZE_T)size.cx*4;
+                BYTE *row=s->bitmap.pixels+(SIZE_T)y*(SIZE_T)size.cx*4;
                 if(y<hole.top || y>=hole.bottom){for(int x=0;x<size.cx;++x)row[(SIZE_T)x*4+3]=255;}
                 else{
                     for(int x=0;x<hole.left;++x)row[(SIZE_T)x*4+3]=255;
@@ -166,7 +119,7 @@ static BOOL refresh(uwp_frame *s)
                 if(ok && SetWindowRgn(s->surface,region,FALSE))region=NULL;else ok=FALSE;
                 if(region)DeleteObject(region);
                 POINT at={outer.left,outer.top},source={0,0};BLENDFUNCTION blend={AC_SRC_OVER,0,255,AC_SRC_ALPHA};
-                if(ok)ok=UpdateLayeredWindow(s->surface,NULL,&at,&size,s->dc,&source,0,&blend,ULW_ALPHA);
+                if(ok)ok=UpdateLayeredWindow(s->surface,NULL,&at,&size,s->bitmap.dc,&source,0,&blend,ULW_ALPHA);
                 if(ok){
                     HWND above=GetWindow(s->window,GW_HWNDPREV);
                     if(above==s->surface)above=GetWindow(s->surface,GW_HWNDPREV);
