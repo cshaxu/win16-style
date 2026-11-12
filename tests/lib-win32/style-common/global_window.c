@@ -31,8 +31,11 @@ int main(void)
     BOOL repeated=!style_global_window_remove(window,&ops) && GetLastError()==ERROR_NOT_FOUND;
     BOOL reattached=style_global_window_apply(window,&other) && style_global_window_remove(window,&other);
     BOOL failed=!style_global_window_apply(window,&failing) && GetLastError()==ERROR_ACCESS_DENIED && !style_global_window_managed(window);
+    BOOL rollback=style_global_window_apply(window,&ops) &&
+                  !style_global_window_transition(window,&failing,&ops) && GetLastError()==ERROR_ACCESS_DENIED &&
+                  attached(window) && style_global_window_attached(window,&ops) && style_global_window_remove(window,&ops);
     DestroyWindow(window);UnregisterClassW(cls.lpszClassName,instance);
-    printf("STYLE GLOBAL WINDOW bits=%u installed=%d query=%d mismatch=%d removed=%d repeated=%d reattached=%d marker=%d failed_cleanup=%d\n",
-           (unsigned)(sizeof(void *)*8),installed,query,mismatch,removed,repeated,reattached,marker_on_apply && marker_on_remove,failed);
-    return installed && query && mismatch && removed && repeated && reattached && marker_on_apply && marker_on_remove && failed?0:3;
+    printf("STYLE GLOBAL WINDOW bits=%u installed=%d query=%d mismatch=%d removed=%d repeated=%d reattached=%d marker=%d failed_cleanup=%d rollback=%d\n",
+           (unsigned)(sizeof(void *)*8),installed,query,mismatch,removed,repeated,reattached,marker_on_apply && marker_on_remove,failed,rollback);
+    return installed && query && mismatch && removed && repeated && reattached && marker_on_apply && marker_on_remove && failed && rollback?0:3;
 }

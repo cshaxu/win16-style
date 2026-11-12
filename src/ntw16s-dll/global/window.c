@@ -53,18 +53,14 @@ static const style_global_window_ops *style_ops(DWORD style)
 }
 BOOL ntw16s_global_window_apply_style(HWND window,DWORD style)
 {
-    const style_global_window_ops *selected=style_ops(style),*previous=NULL;
+    const style_global_window_ops *selected=style_ops(style),*other=NULL;
     if(!selected)return FALSE;
-    if(style==NTW16S_GLOBAL_STYLE_2K && Ntw16sWindowAttached(window))previous=&ops;
+    if(style==NTW16S_GLOBAL_STYLE_2K)other=&ops;
     else if(style==NTW16S_GLOBAL_STYLE_16 && GetModuleHandleW(sizeof(void *)==8?L"ntw2ks64.dll":L"ntw2ks32.dll")){
-        previous=style_ops(NTW16S_GLOBAL_STYLE_2K);
-        if(!previous)return FALSE;
-        if(!previous->attached(window))previous=NULL;
+        other=style_ops(NTW16S_GLOBAL_STYLE_2K);
+        if(!other)return FALSE;
     }
-    if(previous && style_global_window_attached(window,previous)){SetLastError(ERROR_BUSY);return FALSE;}
-    if(previous && !previous->remove(window))return FALSE;
-    if(style_global_window_apply(window,selected))return TRUE;
-    DWORD error=GetLastError();if(previous)(void)previous->apply(window);SetLastError(error);return FALSE;
+    return style_global_window_transition(window,selected,other);
 }
 BOOL ntw16s_global_window_remove_style(HWND window,DWORD style)
 {const style_global_window_ops *selected=style_ops(style);return selected && style_global_window_remove(window,selected);}

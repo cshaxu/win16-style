@@ -30,6 +30,21 @@ static BOOL wait_ready(void)
     }while(GetTickCount64()<end);
     return FALSE;
 }
+static BOOL wait_ready_style(DWORD style)
+{
+    WCHAR name[NTW16S_GLOBAL_NAME_CAP];if(!ntw16s_global_name(name,ARRAYSIZE(name)))return FALSE;
+    ULONGLONG end=GetTickCount64()+90000;
+    do{HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
+        ntw16s_global_session *s=mapping?MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*s)):NULL;
+        BOOL ready=s && s->magic==NTW16S_GLOBAL_MAGIC && s->version==NTW16S_GLOBAL_VERSION &&
+            s->owner_pid==controller_pid && s->phase==NTW16S_GLOBAL_ACTIVE && s->ready && s->style==style;
+        if(s)UnmapViewOfFile(s);
+        if(mapping)CloseHandle(mapping);
+        if(ready)return TRUE;
+        Sleep(50);
+    }while(GetTickCount64()<end);
+    return FALSE;
+}
 static BOOL wait_session_stopped(void)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];
@@ -205,6 +220,14 @@ static BOOL frame_wait(frame_target *target,UINT message,int expected)
        pump(30);}while(GetTickCount64()<end);
     return FALSE;
 }
+static BOOL frame_pixels(frame_target *targets,COLORREF pixels[2],const char *stage)
+{
+    for(unsigned i=0;i<2;++i){DWORD_PTR value=CLR_INVALID;
+        if(!SendMessageTimeoutW(targets[i].window,WM_APP+82,0,0,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,1000,&value) || value==CLR_INVALID)return FALSE;
+        pixels[i]=(COLORREF)value;
+    }
+    printf("CAPTION_PIXELS %s x86=%06lx x64=%06lx\n",stage,(unsigned long)pixels[0],(unsigned long)pixels[1]);return TRUE;
+}
 static void frame_cleanup(frame_target *target)
 {
     if(target->window && IsWindow(target->window))PostMessageW(target->window,WM_CLOSE,0,0);
@@ -238,7 +261,7 @@ int wmain(int argc,WCHAR **argv)
     }
     HRESULT hr=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);if(FAILED(hr))return 1;
     POINT pointer;BOOL restore_pointer=GetCursorPos(&pointer);
-    application apps[2]={0};frame_target frames_test[3]={0};PROCESS_INFORMATION process={0};BOOL ok=FALSE,enabled=FALSE;
+    application apps[2]={0};frame_target frames_test[3]={0};COLORREF pixels16[2],pixels2k[2],pixels_return[2];PROCESS_INFORMATION process={0};BOOL ok=FALSE,enabled=FALSE;
     HANDLE output=INVALID_HANDLE_VALUE,input_handle=INVALID_HANDLE_VALUE;
     if(styles && (!frame_start(&frames_test[0],argv[4],0)||!frame_start(&frames_test[1],argv[5],1)))goto done;
     if(styles && (!frame_wait(&frames_test[0],WM_APP+71,0)||!frame_wait(&frames_test[1],WM_APP+71,0)||
@@ -267,21 +290,33 @@ int wmain(int argc,WCHAR **argv)
     if(styles){
         if(!choose_item(0,0))goto done;
         enabled=TRUE;
-        if(!wait_ready()||!frame_wait(&frames_test[0],WM_APP+71,1)||!frame_wait(&frames_test[1],WM_APP+71,1))goto done;
-        pump(500);if(!choose_item(1,1))goto done;
+        if(!wait_ready()||!frame_wait(&frames_test[0],WM_APP+71,1)||!frame_wait(&frames_test[1],WM_APP+71,1)||
+           !frame_pixels(frames_test,pixels16,"win16"))goto done;
+        pump(500);if(!choose_item(1,1)||!wait_ready_style(NTW16S_GLOBAL_STYLE_2K))goto done;
         if(!frame_wait(&frames_test[0],WM_APP+81,1)||!frame_wait(&frames_test[1],WM_APP+81,1)||
-           !frame_wait(&frames_test[0],WM_APP+71,0)||!frame_wait(&frames_test[1],WM_APP+71,0))goto done;
+           !frame_wait(&frames_test[0],WM_APP+71,0)||!frame_wait(&frames_test[1],WM_APP+71,0)||
+           !frame_pixels(frames_test,pixels2k,"win2k")||pixels16[0]==pixels2k[0]||pixels16[1]==pixels2k[1])goto done;
         puts("PUBLISHED_STYLES_SWITCH_2K_PASS");
         if(!frame_start(&frames_test[2],argv[5],2)||!frame_wait(&frames_test[2],WM_APP+81,1))goto done;
         puts("PUBLISHED_STYLES_NEW_WINDOW_PASS");if(!wait_ready())goto done;
-        pump(500);if(!choose_item(2,0))goto done;
+        pump(500);if(!choose_item(2,0)||!wait_ready_style(NTW16S_GLOBAL_STYLE_16))goto done;
         for(unsigned i=0;i<ARRAYSIZE(frames_test);++i)
             if(!frame_wait(&frames_test[i],WM_APP+81,0)||!frame_wait(&frames_test[i],WM_APP+71,1))goto done;
+        if(!frame_pixels(frames_test,pixels_return,"win16-after-win2k")||
+           pixels_return[0]==pixels2k[0]||pixels_return[1]==pixels2k[1])goto done;
         puts("PUBLISHED_STYLES_SWITCH_16_PASS");if(!wait_ready())goto done;
         pump(500);if(!choose_item(1,0))goto done;
         for(unsigned i=0;i<ARRAYSIZE(frames_test);++i)if(!frame_wait(&frames_test[i],WM_APP+71,0))goto done;
         if(!wait_session_stopped())goto done;
-        enabled=FALSE;puts("PUBLISHED_STYLES_DISABLE_PASS");goto exit_tray;
+        enabled=FALSE;puts("PUBLISHED_STYLES_DISABLE_16_PASS");pump(500);
+        if(!choose_item(0,1))goto done;
+        enabled=TRUE;
+        if(!wait_ready_style(NTW16S_GLOBAL_STYLE_2K))goto done;
+        for(unsigned i=0;i<ARRAYSIZE(frames_test);++i)if(!frame_wait(&frames_test[i],WM_APP+81,1))goto done;
+        puts("PUBLISHED_STYLES_NORMAL_TO_2K_PASS");pump(500);if(!choose_item(2,1))goto done;
+        for(unsigned i=0;i<ARRAYSIZE(frames_test);++i)if(!frame_wait(&frames_test[i],WM_APP+81,0))goto done;
+        if(!wait_session_stopped())goto done;
+        enabled=FALSE;puts("PUBLISHED_STYLES_DISABLE_2K_PASS");goto exit_tray;
     }
     if(styled(&apps[0])||!choose(FALSE,FALSE))goto done;
     enabled=TRUE;if(!wait_style(&apps[0],TRUE))goto done;

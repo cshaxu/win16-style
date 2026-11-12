@@ -10,12 +10,17 @@
 #define CREATE_HIDDEN (WM_APP+79)
 #define SHOW_HIDDEN (WM_APP+80)
 #define QUERY_STYLE_2K (WM_APP+81)
+#define QUERY_CAPTION_PIXEL (WM_APP+82)
 static HINSTANCE instance;
 static unsigned clicks;
 static const WCHAR cls[]=L"Win16GlobalE2ETarget";
 typedef BOOL (__cdecl *hit_fn)(HWND,LPARAM,LRESULT *);
 static LRESULT CALLBACK window_proc(HWND w,UINT message,WPARAM a,LPARAM b)
 {
+    if(message==QUERY_CAPTION_PIXEL){
+        RECT rect;HDC dc=GetWindowDC(w);if(!dc || !GetWindowRect(w,&rect)){if(dc)ReleaseDC(w,dc);return CLR_INVALID;}
+        COLORREF color=GetPixel(dc,(rect.right-rect.left)/2,10);ReleaseDC(w,dc);return (LRESULT)color;
+    }
     if(message==QUERY_STYLE_2K)return GetPropW(w,L"Win2kStyle.Frame")!=NULL;
     if(message==QUERY_STYLE){
         HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");

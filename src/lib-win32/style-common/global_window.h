@@ -18,4 +18,5 @@ BOOL style_global_window_attached(HWND window,const style_global_window_ops *ops
 BOOL style_global_window_managed(HWND window);
 BOOL style_global_window_apply(HWND window,const style_global_window_ops *ops);
 BOOL style_global_window_remove(HWND window,const style_global_window_ops *ops);
+BOOL style_global_window_transition(HWND window,const style_global_window_ops *selected,const style_global_window_ops *other);
 #endif

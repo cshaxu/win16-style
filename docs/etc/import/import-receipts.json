@@ -383,7 +383,7 @@
       "path": "tests/integration/global_mode_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "34eb652b2befd07af1414fab6580c3663ebfa29de813689616aaff8a099443b5",
+      "sha256": "e8d05c6b16192deb83fa831ae8c0bbb3f1942e7af0ef0a33457beb0362be2a9e",
       "disposition": "authored",
       "review": "T21 S3 global controller and private-desktop integration; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture; T21 S13 hidden ordinary-window global stop regression; T21 S13 verify hidden windows shown after stop",
       "notice": "Project-authored source; no imported code or resources"
@@ -464,7 +464,7 @@
       "path": "src/ntw16s-dll/global/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "48cdea8b9abe493e213d31af1f0aa9fd72fcc71e161bd7a1d73a30a68d71cb22",
+      "sha256": "7337b2126916eea7d5b2c41f96d79787d81e4bded911b9c869f0225c889a635e",
       "disposition": "authored",
       "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics; T21 S13 attached-window acknowledgement candidate; T21 S13 hidden ordinary-window global stop regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -6179,7 +6179,7 @@
       "path": "tests/integration/uwp_tray.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c554195e18b2659595330847fccd09bcccc18af235a29273cba0f80382586482",
+      "sha256": "66c4eaab9f6b9a0ca6bf3b57801e5f533659a219fbce1fed841495b1a9f38b33",
       "disposition": "authored",
       "review": "T22 S1 P38 opt-in published tray controller UWP integration; native menu input and owned targets",
       "notice": "Project-authored pure C test; no imported artwork"
@@ -6818,7 +6818,7 @@
       "path": "src/lib-win32/style-common/global_window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "85ae0cca88a46b13f9c303a97bdb8acc371769052521e34188b6da91ea1c5569",
+      "sha256": "64c5087d1c062ac7fa0eae09a463f67d46e5e8baeba0de942d81f8d8ce1e3356",
       "disposition": "authored",
       "review": "T25 S8 shared style global window lifecycle",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6827,7 +6827,7 @@
       "path": "src/lib-win32/style-common/global_window.h",
       "source": null,
       "source_blob": null,
-      "sha256": "46148c8406ddfe5b51b17775a2d68ac377b52a72642c357e25150c188dcc5623",
+      "sha256": "7cf447fa0f2453117b41cf8c3732730784963a4800d57d040f7096e5819e3f14",
       "disposition": "authored",
       "review": "T25 S8 shared style global window lifecycle",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6836,7 +6836,7 @@
       "path": "tests/lib-win32/style-common/global_window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f781edfa0feef994234bf9281514c38fb067ae472f1ce4defe68f7ec988f0ba4",
+      "sha256": "1833e918b306b62abcbc5d63c9a8543bfd17dc117bb2b958fc4aa41f45e04721",
       "disposition": "authored",
       "review": "T25 S8 shared style global window lifecycle",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6890,7 +6890,7 @@
       "path": "tests/ntw16s-dll/global_style_bridge.c",
       "source": null,
       "source_blob": null,
-      "sha256": "19d4031843a1b7aadc85e597f4b2fcea91863a3cecff7835333a9611761b06cd",
+      "sha256": "14e9676521867fe206e3d9614b3cfca1c647c46e017306f21d45c20c3dd44784",
       "disposition": "authored",
       "review": "T25 S8 shared global style bridge",
       "notice": "Project-authored C; no external source or artwork copied"

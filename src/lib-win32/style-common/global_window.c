@@ -88,3 +88,15 @@ BOOL style_global_window_remove(HWND window,const style_global_window_ops *ops)
     if(!state->detached)state->removing=FALSE;
     release(state);SetLastError(error);return removed;
 }
+BOOL style_global_window_transition(HWND window,const style_global_window_ops *selected,const style_global_window_ops *other)
+{
+    if(!local(window))return FALSE;
+    if(!selected || (other && (!other->attached || !other->apply || !other->remove))){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    BOOL previous=other && other!=selected && other->attached(window);
+    BOOL managed=previous && style_global_window_attached(window,other);
+    if(previous && !style_global_window_remove(window,other))return FALSE;
+    if(style_global_window_apply(window,selected))return TRUE;
+    DWORD error=GetLastError();
+    if(previous){if(managed)(void)style_global_window_apply(window,other);else (void)other->apply(window);}
+    SetLastError(error);return FALSE;
+}
