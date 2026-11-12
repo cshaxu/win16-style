@@ -16,3 +16,4 @@
 | `classic_file_helpers`, `classic_hidden_files` | `classic_helpers.c`; `tests/lib-style/win16-dialog/dialog_link.c` |
 | `control_protocol` | `control_protocol.c`; `tests/ntw16s-dll/control_protocol_owner.c` (direct worker); control integration probes |
 | `frame` XAML child detection | `frame_xaml.c`; Win16 frame integration |
+| `control_redraw` | `control_redraw.c`; Win16 list/combo/edit integration |

@@ -44,8 +44,6 @@ void win16_control_state_dispose(control_style *state);
 BOOL win16_control_state_prepare_font(HWND window,control_style *state,UINT message,WPARAM *parameter,BOOL native_font,HFONT *previous,HFONT *outbound);
 typedef void (*win16_control_state_painter)(HWND,control_style *,HDC);
 typedef void (*win16_control_state_present)(HWND,control_style *,HDC,win16_control_state_painter);
-BOOL win16_control_state_can_suppress_redraw(HWND window,const control_style *state);
-LRESULT win16_control_state_call_native(HWND window,control_style *state,UINT message,WPARAM wparam,LPARAM lparam,BOOL suppress);
 LRESULT win16_control_combo_message(HWND window,control_style *state,UINT message,WPARAM wparam,LPARAM lparam,win16_control_state_present present,win16_control_state_painter paint);
 LRESULT win16_control_tab_message(HWND window,control_style *state,UINT message,WPARAM wparam,LPARAM lparam,win16_control_state_present present,win16_control_state_painter paint);
 LRESULT win16_control_header_message(HWND window,control_style *state,UINT message,WPARAM wparam,LPARAM lparam,win16_control_state_present present,win16_control_state_painter paint);

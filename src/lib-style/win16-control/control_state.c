@@ -1,3 +1,4 @@
+#include "lib-style/common/control_redraw.h"
 #include "control_state.h"
 #include "../win16-common/font.h"
 #include "control_class.h"
@@ -44,19 +45,6 @@ BOOL win16_control_state_prepare_font(HWND w,control_style *s,UINT m,WPARAM *a,B
     }
     return TRUE;
 }
-/* WM_SETREDRAW(TRUE) sets WS_VISIBLE; don't bracket an application-hidden control. */
-BOOL win16_control_state_can_suppress_redraw(HWND w,const control_style *s)
-{return !s->list_redraw_off && (s->list_suppression || (GetWindowLongPtrW(w,GWL_STYLE)&WS_VISIBLE));}
-
-LRESULT win16_control_state_call_native(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,BOOL suppress)
-{
-    if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
-    LRESULT result=DefSubclassProc(w,m,a,b);
-    if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
-        DefSubclassProc(w,WM_SETREDRAW,TRUE,0);
-    return result;
-}
-
 LRESULT win16_control_combo_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,win16_control_state_present present,win16_control_state_painter paint)
 {
     LRESULT result=0;
@@ -67,8 +55,8 @@ LRESULT win16_control_combo_message(HWND w,control_style *s,UINT m,WPARAM a,LPAR
     else {BOOL affects=m==CB_SETCURSEL || m==CB_SHOWDROPDOWN || m==WM_COMMAND || m==WM_ENABLE ||
             m==WM_SETFONT || m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_KEYDOWN ||
             m==WM_LBUTTONDOWN || m==WM_LBUTTONUP;
-        BOOL suppress=win16_control_state_can_suppress_redraw(w,s) && affects;
-        result=win16_control_state_call_native(w,s,m,a,b,suppress);
+        BOOL suppress=style_control_redraw_can_suppress(w,s->list_redraw_off,s->list_suppression) && affects;
+        result=style_control_redraw_call(w,m,a,b,suppress,&s->list_suppression,&s->detached,&s->list_redraw_off);
         if(!s->detached && !s->list_suppression && !s->list_redraw_off && affects)
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);}
     return result;

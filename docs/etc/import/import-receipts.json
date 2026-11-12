@@ -4604,7 +4604,7 @@
       "path": "src/lib-style/win16-control/control_state.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fff51887a4b212a307790e1be748c2abfc7c5b754ee6483bba8a4992e4c32120",
+      "sha256": "80bd3d085d020272bc92b440e58cbff06b787427f4d9a046a87bd5a19e757cbc",
       "disposition": "authored",
       "review": "T21 S24 extract control presentation state and resource ownership",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4613,7 +4613,7 @@
       "path": "src/lib-style/win16-control/control_state.h",
       "source": null,
       "source_blob": null,
-      "sha256": "ca5eb909b42d7f154261b03d12516e783b1f8fb6c4cd447ac9afbe82f0c3aa31",
+      "sha256": "cccb65a997d5cbabebc7a62577cf79da8678b9754c5373757d64cb74ccff4e78",
       "disposition": "authored",
       "review": "T21 S24 extract control presentation state and resource ownership",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4622,7 +4622,7 @@
       "path": "src/lib-style/win16-control/list_message.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d59687c010b8c275f47b7693eea79c2ebfdbff575b995469e672b1ba26d76145",
+      "sha256": "e8d1ea9bdcbe2cc8f607a0983e2139903a220f6571ff42d1393490bd0521d83f",
       "disposition": "authored",
       "review": "T21 S24 extract list presentation message handling with borrowed window callbacks",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4640,7 +4640,7 @@
       "path": "src/lib-style/win16-control/edit_message.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0f284d9fd2d537c1162ccba633d9ff7d2d1150f657d4f442d767695ea1af6357",
+      "sha256": "d73a524c2128c5fd7141e52edfdd6f24502e99d7c83956151df45f096ecf7a61",
       "disposition": "authored",
       "review": "T21 S24 extract edit presentation message handling with borrowed window callbacks",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4658,7 +4658,7 @@
       "path": "src/lib-style/win16-control/basic_message.c",
       "source": null,
       "source_blob": null,
-      "sha256": "395e494a857b4a9167cd2a50463d53358dfcbf8800f64c0498d0bc6b958dbc6b",
+      "sha256": "dcc28d05c0ee5c2f845a050135f4a3498e2d4f00c34398cf5f8323e573380b69",
       "disposition": "authored",
       "review": "T21 S24 extract button and static presentation messages with borrowed paint callbacks",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -7182,6 +7182,24 @@
       "disposition": "authored",
       "review": "T26 S1 shared frame XAML child detection test",
       "notice": "Project-authored C test; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/control_redraw.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a1972fc9f97c30de8673fb711dc6c47de8e0b0b6282d571e2f81e492631a881e",
+      "disposition": "authored",
+      "review": "T26 S1 shared nested control redraw mechanism and test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/common/control_redraw.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e70b647b1c043cf5b04f6bcba343945617ad9d6ccd9f67e1aad6a8a83b8d8004",
+      "disposition": "authored",
+      "review": "T26 S1 shared nested control redraw mechanism and test",
+      "notice": "Project-authored C; no imported artwork"
     }
   ]
 }

@@ -1,3 +1,4 @@
+#include "lib-style/common/control_redraw.h"
 #include "edit_message.h"
 #include "control_class.h"
 #include <commctrl.h>
@@ -27,16 +28,15 @@ LRESULT win16_control_edit_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
             return result;
         }
         if(s->edit_scrollbars && m==WM_SETREDRAW)s->list_redraw_off=!a;
-        {BOOL suppress=s->edit_scrollbars && win16_control_state_can_suppress_redraw(w,s) &&
+        {BOOL suppress=s->edit_scrollbars && style_control_redraw_can_suppress(w,s->list_redraw_off,s->list_suppression) &&
             (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL || m==EM_LINESCROLL || m==WM_SETTEXT ||
             m==EM_REPLACESEL || m==EM_UNDO || m==WM_UNDO || m==WM_KEYDOWN || m==WM_CHAR ||
             (m==WM_MOUSEMOVE && GetCapture()==w && (a&MK_LBUTTON)) || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP);
-        if(suppress && s->list_suppression++==0)DefSubclassProc(w,WM_SETREDRAW,FALSE,0);
+        if(suppress)style_control_redraw_begin(w,&s->list_suppression);
         int native_dc=(m==WM_PRINT || m==WM_PRINTCLIENT)?SaveDC((HDC)a):0;
         result=DefSubclassProc(w,m,a,b);
         if(native_dc)RestoreDC((HDC)a,native_dc);
-        if(suppress && --s->list_suppression==0 && !s->detached && !s->list_redraw_off)
-            DefSubclassProc(w,WM_SETREDRAW,TRUE,0);
+        if(suppress)style_control_redraw_end(w,&s->list_suppression,&s->detached,&s->list_redraw_off);
         if(suppress && !s->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW);
         }
         if(!s->detached && (m==WM_PRINTCLIENT || (m==WM_PRINT && (b&PRF_CLIENT)) || m==WM_PAINT || m==WM_ENABLE))
