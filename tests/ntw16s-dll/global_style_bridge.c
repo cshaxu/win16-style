@@ -4,8 +4,11 @@
 #include "ntw16s-dll/global/session.h"
 #include "ntw16s-dll/attachment.h"
 
+static HWND footer;
 static LRESULT CALLBACK procedure(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
+    if(message==WM_SIZE && footer){RECT client;if(GetClientRect(window,&client))
+        MoveWindow(footer,0,max(0,client.bottom-20),client.right,20,TRUE);}
     if(message==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(window,&ps);HBRUSH brush=CreateSolidBrush(RGB(0,128,0));
         if(brush){FillRect(dc,&ps.rcPaint,brush);DeleteObject(brush);}EndPaint(window,&ps);return 0;}
     return DefWindowProcW(window,message,wp,lp);
@@ -18,6 +21,12 @@ static BOOL client_top_clean(HWND window)
     for(int y=0;y<12 && clean;++y)for(int x=10;x<150;++x){COLORREF color=GetPixel(dc,x,y);if(color!=RGB(0,128,0)){printf("DIRTY x=%d y=%d color=%06lx\n",x,y,(unsigned long)color);clean=FALSE;break;}}
     ReleaseDC(window,dc);return clean;
 }
+static BOOL footer_aligned(HWND window)
+{
+    RECT client,child;POINT origin={0,0};
+    return footer && GetClientRect(window,&client) && ClientToScreen(window,&origin) && GetWindowRect(footer,&child) &&
+           child.bottom==origin.y+client.bottom;
+}
 int main(void)
 {
     HINSTANCE instance=GetModuleHandleW(NULL);
@@ -28,6 +37,7 @@ int main(void)
     HMENU menu=CreateMenu(),file=CreatePopupMenu(),help=CreatePopupMenu();
     if(!menu || !file || !help || !AppendMenuW(file,MF_STRING,1,L"Item") || !AppendMenuW(help,MF_STRING,2,L"About") ||
        !AppendMenuW(menu,MF_POPUP,(UINT_PTR)file,L"Game") || !AppendMenuW(menu,MF_POPUP,(UINT_PTR)help,L"Help") || !SetMenu(window,menu))return 2;
+    footer=CreateWindowW(L"STATIC",L"Status",WS_CHILD|WS_VISIBLE,0,0,10,20,window,NULL,instance,NULL);if(!footer)return 2;
     ShowWindow(window,SW_SHOWNOACTIVATE);UpdateWindow(window);pump();
     BOOL apply2k=ntw16s_global_window_apply_style(window,NTW16S_GLOBAL_STYLE_2K) &&
                  GetPropW(window,L"Win2kStyle.Frame")!=NULL && !Ntw16sWindowAttached(window);
@@ -35,7 +45,7 @@ int main(void)
                     Ntw16sWindowAttached(window) && !GetPropW(window,L"Win2kStyle.Frame");
     BOOL switched2k=ntw16s_global_window_apply_style(window,NTW16S_GLOBAL_STYLE_2K) &&
                     !Ntw16sWindowAttached(window) && GetPropW(window,L"Win2kStyle.Frame")!=NULL;
-    pump();UpdateWindow(window);BOOL client_clean=client_top_clean(window);
+    pump();UpdateWindow(window);BOOL client_clean=client_top_clean(window),footer_ok=footer_aligned(window);
     MENUBARINFO native_menu={.cbSize=sizeof(native_menu)};POINT client_origin={0,0};RECT client_rect,overlap,update;
     BOOL overlap_exists=GetMenuBarInfo(window,OBJID_MENU,0,&native_menu) && GetClientRect(window,&client_rect) &&
         ClientToScreen(window,&client_origin);
@@ -64,7 +74,7 @@ int main(void)
                     Ntw16sWindowAttached(window) && !GetPropW(window,L"Win2kStyle.Frame");
     if(takeover16)(void)ntw16s_global_window_remove_style(window,NTW16S_GLOBAL_STYLE_16);
     DestroyWindow(window);UnregisterClassW(cls.lpszClassName,instance);
-    printf("GLOBAL STYLE BRIDGE bits=%u apply2k=%d switch16=%d switch2k=%d client_clean=%d clean_after=%d overlap=%d refreshed=%d remove2k=%d apply16=%d remove16=%d reverse=%d existing=%d takeover=%d existing2k=%d takeover16=%d\n",
-           (unsigned)(sizeof(void *)*8),apply2k,switched16,switched2k,client_clean,clean_after,overlap_exists,refreshed,remove2k,apply16,remove16,reverse,existing,takeover,existing2k,takeover16);
-    return apply2k && switched16 && switched2k && client_clean && clean_after && refreshed && remove2k && apply16 && remove16 && reverse && takeover && takeover16?0:3;
+    printf("GLOBAL STYLE BRIDGE bits=%u apply2k=%d switch16=%d switch2k=%d client_clean=%d clean_after=%d footer=%d overlap=%d refreshed=%d remove2k=%d apply16=%d remove16=%d reverse=%d existing=%d takeover=%d existing2k=%d takeover16=%d\n",
+           (unsigned)(sizeof(void *)*8),apply2k,switched16,switched2k,client_clean,clean_after,footer_ok,overlap_exists,refreshed,remove2k,apply16,remove16,reverse,existing,takeover,existing2k,takeover16);
+    return apply2k && switched16 && switched2k && client_clean && clean_after && footer_ok && refreshed && remove2k && apply16 && remove16 && reverse && takeover && takeover16?0:3;
 }

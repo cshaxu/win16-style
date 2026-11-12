@@ -40,6 +40,9 @@ M0 T25 S7 按有限范围收口，见[记录](../history/M0-T25-S7-P13-closure.m
 
 ## Technical Baseline
 
+S8 P12 复核 Solitaire 底部状态栏：一次跨进程采样出现 19 像素差距，五轮重复未
+复现；双位宽受控窗口通过，底部视觉效果仍待用户确认。见[记录](../history/M0-T25-S8-P12-status-layout-audit.md)。
+
 S8 P11 修复 Windows 2000 重绘时原生菜单覆盖客户区；正式 Solitaire 像素对照和
 双位宽回归通过，真实鼠标回归受自动审批限制，等待用户验收。见[记录](../history/M0-T25-S8-P11-menu-redraw.md)。
 

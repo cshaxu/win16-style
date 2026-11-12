@@ -6890,7 +6890,7 @@
       "path": "tests/ntw16s-dll/global_style_bridge.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e3a79a511d9122018a61bab01a47e4cf77a21ed4bb111b1dc3b5feaae8a3a546",
+      "sha256": "799d89ed69bffdeb335b0e9e9c2010d367e95cd881742703bf6a02b6c58cb799",
       "disposition": "authored",
       "review": "T25 S8 shared global style bridge",
       "notice": "Project-authored C; no external source or artwork copied"
