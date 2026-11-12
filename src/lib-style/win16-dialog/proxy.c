@@ -1,7 +1,7 @@
 /* File-dialog COM identity and lifetime; caller supplies UI dispatch. */
 #define COBJMACROS
 #include "proxy.h"
-#include "file_contract.h"
+#include "lib-style/common/classic_file_contract.h"
 #include "file_helpers.h"
 #include <dlgs.h>
 #include <stdio.h>
@@ -131,7 +131,7 @@ HRESULT win16_dialog_proxy_title(win16_dialog_proxy *p,LPCWSTR text)
 {
     HRESULT hr=IFileDialog_SetTitle(p->native,text);if(FAILED(hr))return hr;
     WCHAR *copy=NULL;
-    if(!win16_dialog_copy_text(text,&copy)){p->unsupported=TRUE;return E_OUTOFMEMORY;}
+    if(!style_dialog_copy_text(text,&copy)){p->unsupported=TRUE;return E_OUTOFMEMORY;}
     if(p->title)CoTaskMemFree(p->title);
     p->title=copy;return hr;
 }
@@ -142,14 +142,14 @@ HRESULT win16_dialog_proxy_label(win16_dialog_proxy *p,LPCWSTR text,BOOL ok_butt
     HRESULT hr=ok_button?IFileDialog_SetOkButtonLabel(p->native,text):IFileDialog_SetFileNameLabel(p->native,text);
     if(FAILED(hr))return hr;
     WCHAR *copy=NULL;
-    if(!win16_dialog_copy_text(text,&copy)){p->unsupported=TRUE;return hr;}
+    if(!style_dialog_copy_text(text,&copy)){p->unsupported=TRUE;return hr;}
     WCHAR **slot=ok_button?&p->ok_label:&p->file_label;if(*slot)CoTaskMemFree(*slot);*slot=copy;return hr;
 }
 HRESULT win16_dialog_proxy_types(win16_dialog_proxy *p,UINT count,const COMDLG_FILTERSPEC *items)
 {
     HRESULT hr=IFileDialog_SetFileTypes(p->native,count,items);if(FAILED(hr))return hr;
     WCHAR *filter=NULL;
-    if(!win16_dialog_format_filters(count,items,&filter)){p->unsupported=TRUE;return hr;}
+    if(!style_dialog_format_filters(count,items,&filter)){p->unsupported=TRUE;return hr;}
     if(p->filter)CoTaskMemFree(p->filter);
     p->filter=filter;p->filter_index=1;return hr;
 }
@@ -157,7 +157,7 @@ HRESULT win16_dialog_proxy_extension(win16_dialog_proxy *p,LPCWSTR value)
 {
     HRESULT hr=IFileDialog_SetDefaultExtension(p->native,value);if(FAILED(hr))return hr;
     WCHAR *copy=NULL;
-    if(!win16_dialog_copy_text(value,&copy)){p->unsupported=TRUE;return hr;}
+    if(!style_dialog_copy_text(value,&copy)){p->unsupported=TRUE;return hr;}
     if(p->extension)CoTaskMemFree(p->extension);
     p->extension=copy;return hr;
 }

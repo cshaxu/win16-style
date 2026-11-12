@@ -6,7 +6,7 @@
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "../../lib-win32/process-hook/unwind.h"
 #include "../../lib-style/win16-dialog/file_helpers.h"
-#include "../../lib-style/win16-dialog/file_contract.h"
+#include "lib-style/common/classic_file_contract.h"
 #include "../../lib-style/win16-dialog/file_hook.h"
 #include <dlgs.h>
 #include <commdlg.h>
@@ -63,10 +63,10 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
 { \
     if(!ntw16s_process_session_active())return original(value); \
     structure local;structure *passed=value; \
-    BOOL eligible=win16_dialog_file_prepare_##suffix(value,&local,extra_flags,old_dialog_hook); \
+    BOOL eligible=style_classic_file_prepare_##suffix(value,&local,extra_flags,old_dialog_hook); \
     if(eligible)passed=&local; \
     DWORD incoming=GetLastError(); \
-    old_dialog_scope observer={0};observer.resolve_links=win16_dialog_file_resolve_links(eligible,(extra_flags),eligible && value->lpstrFilter,eligible?value->Flags:0); \
+    old_dialog_scope observer={0};observer.resolve_links=style_classic_file_resolve_links(eligible,(extra_flags),eligible && value->lpstrFilter,eligible?value->Flags:0); \
     observer.previous_active=active_file_dialog;active_file_dialog=&observer;NTW16S_OLD_DIALOG_OBSERVER(observer); \
     process_hook_unwind_scope unwind;name##_call call={passed,FALSE,incoming,ERROR_SUCCESS}; \
     HRESULT status; \
@@ -74,7 +74,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
     } PROCESS_HOOK_UNWIND_END(unwind); \
     BOOL result=call.result;DWORD error=call.error; \
     if(FAILED(status)){result=FALSE;error=HRESULT_CODE(status);} \
-    if(eligible)win16_dialog_file_result_##suffix(value,&local); \
+    if(eligible)style_classic_file_result_##suffix(value,&local); \
     SetLastError(error);return result; \
 }
 BRIDGE(bridge_open_a, OPENFILENAMEA, a, native_open_a, OFN_NODEREFERENCELINKS)

@@ -1,7 +1,7 @@
 #define COBJMACROS
 #include "classic_events.h"
 #include "file_helpers.h"
-#include "shell_item.h"
+#include "lib-style/common/classic_shell_item.h"
 #include "hook_state.h"
 #include <wchar.h>
 #include <string.h>
@@ -61,11 +61,11 @@ BOOL win16_dialog_classic_prepare_result(win16_dialog_proxy *p,OPENFILENAMEW *of
         if(length==ofn->nMaxFile)return FALSE;
         WCHAR *copy=CoTaskMemAlloc((length+1)*sizeof(WCHAR));if(!copy)return FALSE;
         memcpy(copy,ofn->lpstrFile,(length+1)*sizeof(WCHAR));
-        hr=win16_dialog_multi_result(copy,ofn->nFileOffset,(ofn->Flags&OFN_NODEREFERENCELINKS)!=0,&p->result,&p->results,&p->completed);CoTaskMemFree(copy);
+        hr=style_classic_multi_result(copy,ofn->nFileOffset,(ofn->Flags&OFN_NODEREFERENCELINKS)!=0,&p->result,&p->results,&p->completed);CoTaskMemFree(copy);
         item=p->result;
     }else hr=p->save?SHCreateItemFromParsingName(ofn->lpstrFile,NULL,&IID_IShellItem,(void **)&item):
-        win16_dialog_open_item(ofn->lpstrFile,(ofn->Flags&OFN_NODEREFERENCELINKS)!=0,&item);
-    if(p->save && hr==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))hr=win16_dialog_save_item(ofn->lpstrFile,&item);
+        style_classic_open_item(ofn->lpstrFile,(ofn->Flags&OFN_NODEREFERENCELINKS)!=0,&item);
+    if(p->save && hr==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))hr=style_classic_save_item(ofn->lpstrFile,&item);
     if(FAILED(hr))return FALSE;
     p->result=item;p->completed=TRUE;return TRUE;
 }

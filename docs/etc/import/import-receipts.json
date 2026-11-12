@@ -3056,7 +3056,7 @@
       "path": "src/ntw16s-dll/injection/file_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "342095cc43443291273c21a5ddaf992cda69667450ed284827a2070e7e7f457c",
+      "sha256": "feeddfd42a164110b4e144828a64040fd65a413f867c5f3aa0b4e7ea130a7616",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics; T25 S2 shared runtime extraction",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -3218,7 +3218,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6b88d841b682a33cbeb4df2c791efeec64ad7095e585368042701c45b18e63e4",
+      "sha256": "f708ad76e6baa5c2bb7e9a068f20cc1a028256e7718aed899af44dd01ce7674f",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics; T25 S2 shared runtime extraction",
       "notice": "Project-authored; no imported code or resources"
@@ -4118,7 +4118,7 @@
       "path": "tests/lib-style/win16-dialog/dialog_link.c",
       "source": null,
       "source_blob": null,
-      "sha256": "36ee661359ebf39f730e65f288bee9c40307d1e8c5861720f460518c871a0919",
+      "sha256": "c637c702c20057d190d070fe085fe61fb15026c52786d8a3c45eda9ede605b2e",
       "disposition": "authored",
       "review": "T21 S23 independent whole-library link and page range test",
       "notice": "Project-authored C17; project MIT license"
@@ -4142,19 +4142,19 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/file_contract.c",
+      "path": "src/lib-style/common/classic_file_contract.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f281cf41e2bdf5547602f576c9011b1bd74e0a090e1f9498c529be4066941145",
+      "sha256": "98be4f6de881e604b71911ed4cb402122011896ad707a4ead6cd52eec552ee09",
       "disposition": "authored",
       "review": "T21 S23 extraction of existing file-dialog contract",
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/file_contract.h",
+      "path": "src/lib-style/common/classic_file_contract.h",
       "source": null,
       "source_blob": null,
-      "sha256": "0ec4624c1953745695321c850458f2979c6b25a7f6817d6b596769b9ba86a632",
+      "sha256": "be52265fb87ad40d2909fd0769ee0d355e2c6551b3bf91f481d17d541fc1e84a",
       "disposition": "authored",
       "review": "T21 S23 extraction of existing file-dialog contract",
       "notice": "Project-authored code; no imported resources"
@@ -4223,19 +4223,19 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/shell_item.c",
+      "path": "src/lib-style/common/classic_shell_item.c",
       "source": null,
       "source_blob": null,
-      "sha256": "573fcf0a684acd88c3b2529eea01b25069684989627c5a3e7d4a6ac2d05bf02d",
+      "sha256": "af12eff1e4aa6c658e3161249ae3a348f31032dda16e8dccc91434d68c029e68",
       "disposition": "authored",
       "review": "T21 S23 extraction of selected Shell item conversion",
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-style/win16-dialog/shell_item.h",
+      "path": "src/lib-style/common/classic_shell_item.h",
       "source": null,
       "source_blob": null,
-      "sha256": "146b13f16def796ea441fdb4345f885aae3b1bdc707f9951858662dd7c1c4b2d",
+      "sha256": "50ce970337a3f746e19802a443dc38403dd925ab1a9fb56e1634abe80cc25203",
       "disposition": "authored",
       "review": "T21 S23 extraction of selected Shell item conversion",
       "notice": "Project-authored code; no imported resources"
@@ -4325,7 +4325,7 @@
       "path": "src/lib-style/win16-dialog/v2.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b8ed8ac21010a22aa40ccc3c04573497564f8d0e59ad1a5d17d7ebd25c171afa",
+      "sha256": "2e21c4197e68bce9b3b89cb60165f111798e569f4f94ec5d35a615cc072bca7f",
       "disposition": "authored",
       "review": "T21 S23 extract IFileDialog2 facade with owner operations; T24 S1 share typed common methods across dialog interfaces",
       "notice": "Project-authored code; no imported resources"
@@ -4361,7 +4361,7 @@
       "path": "src/lib-style/win16-dialog/com_show.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b77ffd05a4d9cecc45da27378c3475ea056ddb427bae8a25e317e7d9fd07b683",
+      "sha256": "aac66c466ed185f7cb8211e02177273ec378564cad8ee65830f20cb49ae08f58",
       "disposition": "authored",
       "review": "T21 S23 move COM dialog display orchestration into dialog library",
       "notice": "Project-authored code; no imported resources"
@@ -4469,7 +4469,7 @@
       "path": "src/lib-style/win16-dialog/proxy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ca3e69b8713d392284513cd4e817c28ac8945773cb8147667aaca0789349c193",
+      "sha256": "1d09fabc197b5d5863708f8c3fbd5c48a45db302c7d55e01f5129f2b07478d49",
       "disposition": "authored",
       "review": "T21 S23 move COM proxy identity and lifetime to dialog library",
       "notice": "Project-authored code; no imported resources"
@@ -4982,7 +4982,7 @@
       "path": "src/lib-style/win16-dialog/classic_events.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8f5ebe87d2c7ec2604578dfdca7859bdc69151f7153fe956dc4d8ee992dfe602",
+      "sha256": "1a08163ad5cdde97c93e76393c6780aca1849a793c410f4ae28b03df05da798e",
       "disposition": "authored",
       "review": "T21 S24 extract classic dialog event adaptation",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -6956,6 +6956,15 @@
       "sha256": "d884b5a281d32e41468d9932fd154a5a97a55cf3f78c85882c1733d921fbd143",
       "disposition": "authored",
       "review": "T26 S1 extract style-neutral UWP target discovery from existing product coordinator",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/common/classic_file.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b90eb673fbe42af0605361cfcbddde62919529c923bb9050f4f6399a6414684d",
+      "disposition": "authored",
+      "review": "T26 S1 standalone classic file contract and Shell result integration",
       "notice": "Project-authored C; no imported artwork"
     }
   ]

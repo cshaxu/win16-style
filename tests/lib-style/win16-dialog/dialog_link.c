@@ -6,10 +6,10 @@
 #include <dlgs.h>
 #include "lib-style/common/print_ranges.h"
 #include "lib-style/win16-dialog/print_classic.h"
-#include "lib-style/win16-dialog/file_contract.h"
+#include "lib-style/common/classic_file_contract.h"
 #include "lib-style/win16-dialog/file_helpers.h"
 #include "lib-style/win16-dialog/modern.h"
-#include "lib-style/win16-dialog/shell_item.h"
+#include "lib-style/common/classic_shell_item.h"
 #include "lib-style/win16-dialog/v2.h"
 #include "lib-style/win16-dialog/primary.h"
 #include "lib-style/win16-dialog/com_show.h"
@@ -382,31 +382,31 @@ int main(void)
     print_w.lStructSize=sizeof(print_w);print_w.Flags=PD_RETURNDC;
     if(!win16_dialog_print_prepare_w(&print_w,&copy_w))return 41;
     win16_dialog_print_result_w(&print_w,&copy_w);if(print_w.Flags&PD_ENABLEPRINTHOOK)return 42;
-    if(!win16_dialog_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,TRUE,0) ||
-       win16_dialog_file_resolve_links(FALSE,OFN_NODEREFERENCELINKS,TRUE,0) ||
-       win16_dialog_file_resolve_links(TRUE,0,TRUE,0) ||
-       win16_dialog_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,FALSE,0) ||
-       win16_dialog_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,TRUE,OFN_NOVALIDATE) ||
-       win16_dialog_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,TRUE,OFN_NODEREFERENCELINKS))return 105;
+    if(!style_classic_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,TRUE,0) ||
+       style_classic_file_resolve_links(FALSE,OFN_NODEREFERENCELINKS,TRUE,0) ||
+       style_classic_file_resolve_links(TRUE,0,TRUE,0) ||
+       style_classic_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,FALSE,0) ||
+       style_classic_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,TRUE,OFN_NOVALIDATE) ||
+       style_classic_file_resolve_links(TRUE,OFN_NODEREFERENCELINKS,TRUE,OFN_NODEREFERENCELINKS))return 105;
     OPENFILENAMEA a={0},al={0};OPENFILENAMEW w={0},wl={0};
-    if(win16_dialog_file_prepare_a(NULL,&al,0,NULL))return 3;
+    if(style_classic_file_prepare_a(NULL,&al,0,NULL))return 3;
     a.lStructSize=sizeof(a);a.Flags=OFN_EXPLORER|OFN_READONLY;SetLastError(0x1234);
-    if(!win16_dialog_file_prepare_a(&a,&al,0,NULL) || (al.Flags&OFN_EXPLORER) ||
+    if(!style_classic_file_prepare_a(&a,&al,0,NULL) || (al.Flags&OFN_EXPLORER) ||
         !(al.Flags&OFN_ENABLEHOOK) || !(al.Flags&OFN_LONGNAMES) || GetLastError()!=0x1234)return 4;
     al.Flags=(al.Flags&~OFN_READONLY)|OFN_EXTENSIONDIFFERENT;al.nFilterIndex=2;al.nFileOffset=5;al.nFileExtension=8;
-    win16_dialog_file_result_a(&a,&al);
+    style_classic_file_result_a(&a,&al);
     if((a.Flags&OFN_READONLY) || !(a.Flags&OFN_EXTENSIONDIFFERENT) || !(a.Flags&OFN_EXPLORER) ||
         a.nFilterIndex!=2 || a.nFileOffset!=5 || a.nFileExtension!=8)return 5;
-    a.Flags=OFN_ALLOWMULTISELECT;if(win16_dialog_file_prepare_a(&a,&al,0,NULL))return 6;
-    a.Flags=0;a.FlagsEx=1;if(win16_dialog_file_prepare_a(&a,&al,0,NULL))return 7;
+    a.Flags=OFN_ALLOWMULTISELECT;if(style_classic_file_prepare_a(&a,&al,0,NULL))return 6;
+    a.Flags=0;a.FlagsEx=1;if(style_classic_file_prepare_a(&a,&al,0,NULL))return 7;
     w.lStructSize=OPENFILENAME_SIZE_VERSION_400W;w.Flags=OFN_NODEREFERENCELINKS;
-    if(win16_dialog_file_prepare_w(&w,&wl,0,NULL) ||
-       !win16_dialog_file_prepare_w(&w,&wl,OFN_NODEREFERENCELINKS,NULL) ||
+    if(style_classic_file_prepare_w(&w,&wl,0,NULL) ||
+       !style_classic_file_prepare_w(&w,&wl,OFN_NODEREFERENCELINKS,NULL) ||
        wl.lStructSize!=sizeof(wl))return 8;
     wl.nFilterIndex=3;wl.nFileOffset=4;wl.nFileExtension=6;wl.Flags|=OFN_READONLY;
-    win16_dialog_file_result_w(&w,&wl);
+    style_classic_file_result_w(&w,&wl);
     if(!(w.Flags&OFN_READONLY)||w.nFilterIndex!=3||w.nFileOffset!=4||w.nFileExtension!=6)return 9;
-    w.lStructSize=1;if(win16_dialog_file_prepare_w(&w,&wl,0,NULL))return 10;
+    w.lStructSize=1;if(style_classic_file_prepare_w(&w,&wl,0,NULL))return 10;
     struct {DWORD fos,ofn;} map[]={
         {FOS_ALLOWMULTISELECT,OFN_ALLOWMULTISELECT},{FOS_OVERWRITEPROMPT,OFN_OVERWRITEPROMPT},
         {FOS_NOCHANGEDIR,OFN_NOCHANGEDIR},{FOS_PATHMUSTEXIST,OFN_PATHMUSTEXIST},
@@ -414,33 +414,33 @@ int main(void)
         {FOS_NOREADONLYRETURN,OFN_NOREADONLYRETURN},{FOS_NOTESTFILECREATE,OFN_NOTESTFILECREATE},
         {FOS_NODEREFERENCELINKS,OFN_NODEREFERENCELINKS}};
     DWORD base=OFN_HIDEREADONLY|OFN_LONGNAMES|OFN_ENABLEHOOK;
-    if(win16_dialog_com_file_flags(0)!=base)return 11;
+    if(style_classic_com_file_flags(0)!=base)return 11;
     for(unsigned i=0;i<sizeof(map)/sizeof(map[0]);++i)
-        if(win16_dialog_com_file_flags(map[i].fos)!=(base|map[i].ofn))return 12;
-    if(!win16_dialog_com_can_bridge(S_OK,FOS_FORCEFILESYSTEM,FALSE,FALSE,FALSE,FALSE,FALSE) ||
-       win16_dialog_com_can_bridge(E_FAIL,0,FALSE,FALSE,FALSE,FALSE,FALSE) ||
-       win16_dialog_com_can_bridge(S_OK,FOS_ALLOWMULTISELECT,FALSE,FALSE,FALSE,FALSE,FALSE) ||
-       win16_dialog_com_can_bridge(S_OK,0,TRUE,FALSE,FALSE,FALSE,FALSE) ||
-       win16_dialog_com_can_bridge(S_OK,0,FALSE,TRUE,FALSE,FALSE,FALSE) ||
-       win16_dialog_com_can_bridge(S_OK,FOS_NODEREFERENCELINKS,FALSE,FALSE,TRUE,FALSE,FALSE) ||
-       win16_dialog_com_can_bridge(S_OK,FOS_FORCESHOWHIDDEN,FALSE,FALSE,FALSE,FALSE,FALSE) ||
-       !win16_dialog_com_can_bridge(S_OK,FOS_FORCESHOWHIDDEN,FALSE,FALSE,FALSE,FALSE,TRUE) ||
-       win16_dialog_com_can_bridge(S_OK,FOS_FORCESHOWHIDDEN|FOS_PICKFOLDERS,FALSE,FALSE,FALSE,FALSE,TRUE) ||
-       win16_dialog_com_can_bridge(S_OK,FOS_SHAREAWARE,FALSE,FALSE,FALSE,TRUE,FALSE) ||
-       !win16_dialog_com_can_bridge(S_OK,FOS_SHAREAWARE,FALSE,TRUE,FALSE,TRUE,FALSE))return 13;
+        if(style_classic_com_file_flags(map[i].fos)!=(base|map[i].ofn))return 12;
+    if(!style_classic_com_can_bridge(S_OK,FOS_FORCEFILESYSTEM,FALSE,FALSE,FALSE,FALSE,FALSE) ||
+       style_classic_com_can_bridge(E_FAIL,0,FALSE,FALSE,FALSE,FALSE,FALSE) ||
+       style_classic_com_can_bridge(S_OK,FOS_ALLOWMULTISELECT,FALSE,FALSE,FALSE,FALSE,FALSE) ||
+       style_classic_com_can_bridge(S_OK,0,TRUE,FALSE,FALSE,FALSE,FALSE) ||
+       style_classic_com_can_bridge(S_OK,0,FALSE,TRUE,FALSE,FALSE,FALSE) ||
+       style_classic_com_can_bridge(S_OK,FOS_NODEREFERENCELINKS,FALSE,FALSE,TRUE,FALSE,FALSE) ||
+       style_classic_com_can_bridge(S_OK,FOS_FORCESHOWHIDDEN,FALSE,FALSE,FALSE,FALSE,FALSE) ||
+       !style_classic_com_can_bridge(S_OK,FOS_FORCESHOWHIDDEN,FALSE,FALSE,FALSE,FALSE,TRUE) ||
+       style_classic_com_can_bridge(S_OK,FOS_FORCESHOWHIDDEN|FOS_PICKFOLDERS,FALSE,FALSE,FALSE,FALSE,TRUE) ||
+       style_classic_com_can_bridge(S_OK,FOS_SHAREAWARE,FALSE,FALSE,FALSE,TRUE,FALSE) ||
+       !style_classic_com_can_bridge(S_OK,FOS_SHAREAWARE,FALSE,TRUE,FALSE,TRUE,FALSE))return 13;
     const COMDLG_FILTERSPEC specs[]={{L"Text",L"*.txt"},{L"All",L"*.*"}};
     const WCHAR expected[]={L'T',L'e',L'x',L't',0,L'*',L'.',L't',L'x',L't',0,L'A',L'l',L'l',0,L'*',L'.',L'*',0,0};
     WCHAR *serialized=NULL;
-    if(!win16_dialog_format_filters(2,specs,&serialized) || !serialized ||
+    if(!style_dialog_format_filters(2,specs,&serialized) || !serialized ||
        memcmp(serialized,expected,sizeof(expected)))return 14;
     CoTaskMemFree(serialized);serialized=NULL;
     const COMDLG_FILTERSPEC bad[]={{NULL,L"*.txt"}};
-    if(win16_dialog_format_filters(1,bad,&serialized) || serialized)return 15;
-    if(!win16_dialog_format_filters(0,NULL,&serialized) || !serialized || serialized[0])return 16;
+    if(style_dialog_format_filters(1,bad,&serialized) || serialized)return 15;
+    if(!style_dialog_format_filters(0,NULL,&serialized) || !serialized || serialized[0])return 16;
     CoTaskMemFree(serialized);
     WCHAR *copy=(WCHAR *)(UINT_PTR)1;
-    if(!win16_dialog_copy_text(NULL,&copy) || copy)return 17;
-    if(!win16_dialog_copy_text(L"A\x4e2d",&copy) || !copy || lstrcmpW(copy,L"A\x4e2d"))return 18;
+    if(!style_dialog_copy_text(NULL,&copy) || copy)return 17;
+    if(!style_dialog_copy_text(L"A\x4e2d",&copy) || !copy || lstrcmpW(copy,L"A\x4e2d"))return 18;
     CoTaskMemFree(copy);
     WCHAR temp[MAX_PATH],unused[MAX_PATH];IShellItem *item=NULL;PWSTR selected=NULL;
     if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 19;
@@ -455,7 +455,7 @@ int main(void)
     if(!test_classic_entry_targets()){CoUninitialize();return 39;}
     if(!test_capture_selection()){CoUninitialize();return 37;}
     if(!GetTempPathW(MAX_PATH,temp) || !GetTempFileNameW(temp,L"w16",0,unused) || !DeleteFileW(unused))return 20;
-    HRESULT item_hr=win16_dialog_save_item(unused,&item);
+    HRESULT item_hr=style_classic_save_item(unused,&item);
     if(SUCCEEDED(item_hr))item_hr=IShellItem_GetDisplayName(item,SIGDN_FILESYSPATH,&selected);
     BOOL same=SUCCEEDED(item_hr) && selected && !lstrcmpiW(selected,unused) && GetFileAttributesW(unused)==INVALID_FILE_ATTRIBUTES;
     if(selected)CoTaskMemFree(selected);
@@ -481,7 +481,7 @@ int main(void)
         if(f==INVALID_HANDLE_VALUE)break;
         have_second=TRUE;CloseHandle(f);
         BOOL completed=FALSE;DWORD count_items=0;
-        HRESULT multi=win16_dialog_multi_result(input,(WORD)(wcslen(root)+1),FALSE,&single,&multiple,&completed);
+        HRESULT multi=style_classic_multi_result(input,(WORD)(wcslen(root)+1),FALSE,&single,&multiple,&completed);
         if(SUCCEEDED(multi) && multiple)multi=IShellItemArray_GetCount(multiple,&count_items);
         multi_ok=SUCCEEDED(multi) && completed && count_items==2;
     } while(0);

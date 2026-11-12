@@ -1,9 +1,9 @@
 /* Common-dialog display and result conversion. The caller owns state and scopes. */
 #define COBJMACROS
 #include "com_show.h"
-#include "file_contract.h"
+#include "lib-style/common/classic_file_contract.h"
 #include "shell_folder.h"
-#include "shell_item.h"
+#include "lib-style/common/classic_shell_item.h"
 #include <wchar.h>
 
 typedef struct classic_call {OPENFILENAMEW *ofn;BOOL save;BOOL selected;DWORD error;} classic_call;
@@ -19,7 +19,7 @@ HRESULT win16_dialog_com_show(win16_dialog_com_show_state *p,HWND owner)
     if(*p->results){IShellItemArray_Release(*p->results);*p->results=NULL;}*p->completed=FALSE;
     if(!p->session_active())return p->show_native(p->owner,owner);
     HRESULT hr=IFileDialog_GetOptions(p->native,&flags);
-    if(!win16_dialog_com_can_bridge(hr,flags,*p->unsupported,p->has_events(p->owner),p->save,
+    if(!style_classic_com_can_bridge(hr,flags,*p->unsupported,p->has_events(p->owner),p->save,
         p->experimental_events,p->experimental_hidden))return p->show_native(p->owner,owner);
     if(p->experimental_hidden)*p->classic_hidden=(flags&FOS_FORCESHOWHIDDEN)!=0;
     WCHAR file[32768]=L"";PWSTR value=NULL;IShellItem *folder=NULL;PWSTR folder_path=NULL;
@@ -48,7 +48,7 @@ HRESULT win16_dialog_com_show(win16_dialog_com_show_state *p,HWND owner)
     OPENFILENAMEW ofn={0};ofn.lStructSize=sizeof(ofn);ofn.hwndOwner=owner;
     ofn.lpstrFile=file;ofn.nMaxFile=ARRAYSIZE(file);ofn.lpstrInitialDir=folder_path;ofn.lpstrTitle=*p->title;
     ofn.lpstrFilter=*p->filter?*p->filter:L"All files\0*.*\0\0";ofn.nFilterIndex=*p->filter_index?*p->filter_index:1;ofn.lpstrDefExt=*p->extension;
-    ofn.Flags=win16_dialog_com_file_flags(flags);ofn.lpfnHook=p->classic_hook;ofn.lCustData=(LPARAM)p->owner;
+    ofn.Flags=style_classic_com_file_flags(flags);ofn.lpfnHook=p->classic_hook;ofn.lCustData=(LPARAM)p->owner;
     classic_call call={&ofn,p->save,FALSE,0};
     hr=p->scope(classic_show,&call);if(folder_path)CoTaskMemFree(folder_path);
     if(FAILED(hr))return hr;
@@ -62,11 +62,11 @@ HRESULT win16_dialog_com_show(win16_dialog_com_show_state *p,HWND owner)
             if(*p->results){IShellItemArray_Release(*p->results);*p->results=NULL;}
             *p->completed=FALSE;
         }
-        return win16_dialog_multi_result(file,ofn.nFileOffset,(flags&FOS_NODEREFERENCELINKS)!=0,p->result,p->results,p->completed);
+        return style_classic_multi_result(file,ofn.nFileOffset,(flags&FOS_NODEREFERENCELINKS)!=0,p->result,p->results,p->completed);
     }
     if(p->experimental_events && *p->result){IShellItem_Release(*p->result);*p->result=NULL;*p->completed=FALSE;}
-    hr=p->save?SHCreateItemFromParsingName(file,NULL,&IID_IShellItem,(void **)p->result):win16_dialog_open_item(file,(flags&FOS_NODEREFERENCELINKS)!=0,p->result);
-    if(p->save && hr==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))hr=win16_dialog_save_item(file,p->result);
+    hr=p->save?SHCreateItemFromParsingName(file,NULL,&IID_IShellItem,(void **)p->result):style_classic_open_item(file,(flags&FOS_NODEREFERENCELINKS)!=0,p->result);
+    if(p->save && hr==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))hr=style_classic_save_item(file,p->result);
     if(SUCCEEDED(hr))*p->completed=TRUE;
     return hr;
 }

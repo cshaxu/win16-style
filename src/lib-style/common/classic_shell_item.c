@@ -1,11 +1,11 @@
 /* Resolve selected Shell items while preserving shortcut policy. */
 #define COBJMACROS
-#include "shell_item.h"
+#include "lib-style/common/classic_shell_item.h"
 #include <shlobj.h>
 #include <wchar.h>
 #include <stdio.h>
 
-HRESULT win16_dialog_link_target_id(PCWSTR path,PIDLIST_ABSOLUTE *target)
+HRESULT style_classic_link_target_id(PCWSTR path,PIDLIST_ABSOLUTE *target)
 {
     *target=NULL;const WCHAR *extension=wcsrchr(path,L'.');
     if(!extension || lstrcmpiW(extension,L".lnk"))return S_FALSE;
@@ -20,10 +20,10 @@ HRESULT win16_dialog_link_target_id(PCWSTR path,PIDLIST_ABSOLUTE *target)
     if(SUCCEEDED(hr) && !*target)return E_FAIL;
     return hr;
 }
-HRESULT win16_dialog_open_item(PCWSTR path,BOOL keep_link,IShellItem **item)
+HRESULT style_classic_open_item(PCWSTR path,BOOL keep_link,IShellItem **item)
 {
     PIDLIST_ABSOLUTE target=NULL;
-    if(!keep_link && win16_dialog_link_target_id(path,&target)==S_OK){
+    if(!keep_link && style_classic_link_target_id(path,&target)==S_OK){
         HRESULT hr=SHCreateItemFromIDList(target,&IID_IShellItem,(void **)item);
         CoTaskMemFree(target);return hr;
     }
@@ -48,7 +48,7 @@ static HRESULT STDMETHODCALLTYPE bind_set(IFileSystemBindData *self,const WIN32_
 static HRESULT STDMETHODCALLTYPE bind_get(IFileSystemBindData *self,WIN32_FIND_DATAW *data)
 {if(!data)return E_POINTER;*data=((bind_data *)self)->data;return S_OK;}
 static IFileSystemBindDataVtbl bind_vtable={bind_query,bind_add,bind_release,bind_set,bind_get};
-HRESULT win16_dialog_save_item(PCWSTR path,IShellItem **item)
+HRESULT style_classic_save_item(PCWSTR path,IShellItem **item)
 {
     bind_data *data=HeapAlloc(GetProcessHeap(),HEAP_ZERO_MEMORY,sizeof(*data));if(!data)return E_OUTOFMEMORY;
     data->iface.lpVtbl=&bind_vtable;data->refs=1;data->data.dwFileAttributes=FILE_ATTRIBUTE_NORMAL;
@@ -59,12 +59,12 @@ HRESULT win16_dialog_save_item(PCWSTR path,IShellItem **item)
     IFileSystemBindData_Release(&data->iface);return hr;
 }
 
-HRESULT win16_dialog_multi_result(WCHAR *file,WORD offset,BOOL keep_link,
+HRESULT style_classic_multi_result(WCHAR *file,WORD offset,BOOL keep_link,
     IShellItem **result,IShellItemArray **results,BOOL *completed)
 {
     size_t length=wcslen(file);
     if(offset==0 || offset>length || file[offset-1]!=L' '){
-        HRESULT hr=win16_dialog_open_item(file,keep_link,result);
+        HRESULT hr=style_classic_open_item(file,keep_link,result);
         if(SUCCEEDED(hr))*completed=TRUE;
         return hr;
     }
@@ -79,7 +79,7 @@ HRESULT win16_dialog_multi_result(WCHAR *file,WORD offset,BOOL keep_link,
         if(written<0 || (size_t)written>=ARRAYSIZE(path)){hr=HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER);break;}
         WCHAR normalized[32768];DWORD n=GetLongPathNameW(path,normalized,ARRAYSIZE(normalized));
         PCWSTR selected=n && n<ARRAYSIZE(normalized)?normalized:path;
-        hr=keep_link?S_FALSE:win16_dialog_link_target_id(selected,&ids[count]);
+        hr=keep_link?S_FALSE:style_classic_link_target_id(selected,&ids[count]);
         if(hr!=S_OK)hr=SHParseDisplayName(selected,NULL,&ids[count],0,NULL);
         if(FAILED(hr))break;
         ++count;if(!end)break;token=end+1;

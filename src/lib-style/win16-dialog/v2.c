@@ -2,7 +2,7 @@
 #define COBJMACROS
 #include "v2.h"
 #include "common_methods.h"
-#include "file_contract.h"
+#include "lib-style/common/classic_file_contract.h"
 #define V2_CALL(p,op,a,b) ((p)->call((p)->owner,V2_##op,(ULONG_PTR)(a),(ULONG_PTR)(b)))
 
 WIN16_DIALOG_COMMON(v2,IFileDialog2,win16_dialog_v2,p->native,GET_SELECTION,CLOSE,V2_CALL)
@@ -12,7 +12,7 @@ static HRESULT STDMETHODCALLTYPE v2_SetCancelButtonLabel(IFileDialog2 *This, LPC
     win16_dialog_v2 *p=(win16_dialog_v2 *)This;
     HRESULT hr=IFileDialog2_SetCancelButtonLabel(p->native,pszLabel);if(FAILED(hr))return hr;
     WCHAR *copy=NULL;
-    if(!win16_dialog_copy_text(pszLabel,&copy)){*p->unsupported=TRUE;return hr;}
+    if(!style_dialog_copy_text(pszLabel,&copy)){*p->unsupported=TRUE;return hr;}
     if(*p->cancel_label)CoTaskMemFree(*p->cancel_label);
     *p->cancel_label=copy;return hr;
 }
