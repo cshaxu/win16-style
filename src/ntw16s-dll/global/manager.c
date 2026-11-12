@@ -2,9 +2,9 @@
 #include "ntw16s-dll/global/attach.h"
 #include "ntw16s-dll/global/session.h"
 #include "ntw16s-dll/global/process.h"
-#include "ntw16s-dll/uwp/global.h"
-#ifdef NTW16S_GLOBAL_MANAGER_TEST
+#include "lib-style/uwp/global.h"
 #include "ntw16s-dll/uwp/target.h"
+#ifdef NTW16S_GLOBAL_MANAGER_TEST
 #include <stdio.h>
 static DWORD test_pid,test_second_pid;
 void ntw16s_global_manager_test_filter(DWORD pid){test_pid=pid;test_second_pid=0;}
@@ -20,6 +20,26 @@ static BOOL test_allowed(DWORD pid){return pid==test_pid||(test_second_pid&&pid=
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
+#include <stdint.h>
+
+static BOOL uwp_host_image(PCWSTR image,PCWSTR windows)
+{
+    WCHAR expected[MAX_PATH];
+    int n=swprintf(expected,ARRAYSIZE(expected),L"%ls\\System32\\ApplicationFrameHost.exe",windows);
+    return n>0&&(size_t)n<ARRAYSIZE(expected)&&!_wcsicmp(image,expected);
+}
+static BOOL uwp_active(void *context)
+{return ntw16s_global_policy_active((DWORD)(uintptr_t)context);}
+static DWORD uwp_change(const style_uwp_target *target,PCWSTR dll,BOOL apply,void *context)
+{(void)context;return ntw16s_uwp_target_change(target,dll,apply);}
+static void uwp_report(const style_uwp_target *target,DWORD error,void *context)
+{
+    (void)context;
+#ifdef NTW16S_GLOBAL_MANAGER_TEST
+    printf("UWP_TARGET_RESULT pid=%lu frame=%p error=%lu\n",target->pid,(void*)target->frame,error);
+#endif
+    if(error&&error!=ERROR_CANCELLED){WCHAR text[128];swprintf(text,ARRAYSIZE(text),L"run16s: UWP global frame %p failed (%lu)\n",(void*)target->frame,error);OutputDebugStringW(text);}
+}
 
 #define MANAGER_WORKERS 4u
 typedef struct manager_entry {
@@ -32,7 +52,7 @@ struct ntw16s_global_manager {
     win32_process_global_engine engine;
     WCHAR *dll_path;WORD machine;DWORD owner_thread;
     win32_process_global_monitor *process_monitor;
-    ntw16s_uwp_global *uwp;
+    style_uwp_global *uwp;
 };
 
 static BOOL expired(win32_process_global_target *target,void *context)
@@ -65,7 +85,7 @@ static void discovered(HWND window,DWORD pid,DWORD thread_id,void *context)
         if(!window||!style_uwp_target_window(window,&target))return;
         if(!test_allowed(target.pid)){printf("UWP_TEST_FILTER skipped_pid=%lu allowed=%lu\n",target.pid,test_pid);return;}}
 #endif
-    if(window&&ntw16s_uwp_global_observe(m->uwp,window))return;
+    if(window&&style_uwp_global_observe(m->uwp,window))return;
     win32_process_global_engine_submit(&m->engine,pid,thread_id,window);
 }
 /* Snapshot and per-process scan order live in the public component; identity,
@@ -193,7 +213,7 @@ DWORD ntw16s_global_manager_wait_idle(ntw16s_global_manager *m,DWORD timeout)
     DWORD error=win32_process_global_engine_wait_idle(&m->engine,timeout);
     if(error)return error;
     ULONGLONG now=GetTickCount64();
-    return ntw16s_uwp_global_wait_idle(m->uwp,now<deadline?(DWORD)(deadline-now):0);
+    return style_uwp_global_wait_idle(m->uwp,now<deadline?(DWORD)(deadline-now):0);
 }
 BOOL ntw16s_global_manager_tracks(ntw16s_global_manager *m,DWORD pid,DWORD thread_id)
 {
@@ -207,7 +227,7 @@ void ntw16s_global_manager_stats_read(ntw16s_global_manager *m,ntw16s_global_man
     if(!m)return;
     win32_process_global_engine_stats stats;win32_process_global_engine_stats_read(&m->engine,&stats);
     s->queued=stats.queued;s->active=stats.active;s->failed=stats.failed;s->overflow=stats.overflow;
-    ntw16s_uwp_global_stats_read(m->uwp,&s->queued,&s->active,&s->failed);
+    style_uwp_global_stats_read(m->uwp,&s->queued,&s->active,&s->failed);
 }
 static DWORD close_target(win32_process_global_target *target,void *context,ULONGLONG deadline)
 {
@@ -235,7 +255,7 @@ DWORD ntw16s_global_manager_stop(ntw16s_global_manager *m,DWORD timeout)
     if(m->discover.hook){DWORD error=win32_process_global_window_stop(&m->discover);if(error){fwprintf(stderr,L"run16s: global discovery stop failed (%lu)\n",error);return error;}}
     DWORD close_error=win32_process_global_engine_stop(&m->engine,timeout,close_target,m);
     if(close_error){fwprintf(stderr,L"run16s: global targets stop failed (%lu)\n",close_error);return close_error;}
-    if(m->uwp){close_error=ntw16s_uwp_global_stop(m->uwp,timeout);if(close_error){fwprintf(stderr,L"run16s: global UWP stop failed (%lu)\n",close_error);return close_error;}m->uwp=NULL;}
+    if(m->uwp){close_error=style_uwp_global_stop(m->uwp,timeout);if(close_error){fwprintf(stderr,L"run16s: global UWP stop failed (%lu)\n",close_error);return close_error;}m->uwp=NULL;}
     if(m->session)UnmapViewOfFile(m->session);
     if(m->mapping)CloseHandle(m->mapping);
     if(m->stop)CloseHandle(m->stop);
@@ -304,7 +324,8 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
         MANAGER_WORKERS,sizeof(manager_entry),&ops,m,3000);
     if(error)goto fail;
     if(machine==IMAGE_FILE_MACHINE_AMD64 && m->session->style==NTW16S_GLOBAL_STYLE_16){
-        error=ntw16s_uwp_global_start(&m->policy,m->dll_path,desktop,m->quit,m->stop,m->session->cookie,&m->uwp);
+        const style_uwp_global_services uwp_services={IMAGE_FILE_MACHINE_AMD64,uwp_host_image,uwp_active,uwp_change,uwp_report,(void *)(uintptr_t)m->session->cookie};
+        error=style_uwp_global_start(&m->policy,m->dll_path,desktop,m->quit,m->stop,&uwp_services,&m->uwp);
         if(error)goto fail;
     }
     error=win32_process_global_window_start_ex(&m->discover,discovered,m,

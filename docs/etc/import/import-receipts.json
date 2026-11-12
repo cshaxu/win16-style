@@ -311,7 +311,7 @@
       "path": "src/ntw16s-dll/global/manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c2650f2d68e0b9f37dd4f28c86cb63f4353a82b3b8545258512ccc29fafbb05c",
+      "sha256": "befc7177b288eb34bc1ebc5f20f1032d8bea2b4bcf958dd2f33e2fca13f111c4",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle; T21 S42 direct public discovery calls; T21 S42 product adapter directory cleanup; T22 S1 P32 shared UWP target coordination and window-scoped global admission; T24 S1 quality refactor",
       "notice": "Project-authored C"
@@ -6131,19 +6131,19 @@
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
-      "path": "src/ntw16s-dll/uwp/global.c",
+      "path": "src/lib-style/uwp/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7e2dda66132fc339e5fdef318913483000aac313666a03d3ab43982b5990c7e0",
+      "sha256": "1424ddce0aa69f58effaca8e23c072aef7548157ff8a0a2797b61fa1d1897c1a",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"
     },
     {
-      "path": "src/ntw16s-dll/uwp/global.h",
+      "path": "src/lib-style/uwp/global.h",
       "source": null,
       "source_blob": null,
-      "sha256": "c6aad8d8be64bfb89bfd986b552dc14ec88b08f0481dee01f61a35ae6d3ca12e",
+      "sha256": "130de15ef68913623018ed02a484e824a27e8e94a4cc99aed726eee8049b62cd",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"
@@ -7280,6 +7280,15 @@
       "sha256": "8df42b1176cf82954f3e9b4e2553e71384ce389fa9a59b8452781c00794de5eb",
       "disposition": "authored",
       "review": "T26 S1 shared UWP hook protocol and native fixture",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/uwp/global.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d63b0d848dc9fb91eb03f7fa5c6e627e735c8912833c9b629c58b3f3a752f366",
+      "disposition": "authored",
+      "review": "T26 S1 shared UWP target manager native test",
       "notice": "Project-authored C; no imported artwork"
     }
   ]

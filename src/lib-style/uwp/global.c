@@ -1,14 +1,10 @@
 #include "global.h"
 #include "target.h"
-#include "ntw16s-dll/global/session.h"
 #include "lib-win32/process-global/dispatch.h"
 #include "lib-win32/process-global/queue.h"
 #include <objbase.h>
 #include <stdlib.h>
 #include <wchar.h>
-#ifdef NTW16S_GLOBAL_MANAGER_TEST
-#include <stdio.h>
-#endif
 
 typedef struct frame_entry {
     win32_process_global_queue_node queue;
@@ -19,22 +15,17 @@ typedef struct frame_entry {
     DWORD result;
     BOOL queued,working,applied;
 } frame_entry;
-struct ntw16s_uwp_global {
+struct style_uwp_global {
     const win32_process_global_policy *policy;
     PCWSTR dll;
-    DWORD cookie,owner;
+    DWORD owner;
+    style_uwp_global_services services;
     SRWLOCK lock;
     frame_entry *frames;
     win32_process_global_queue queue;
     win32_process_global_dispatch_pool pool;
     HANDLE work,idle;
 };
-static BOOL host_image(PCWSTR image,PCWSTR windows)
-{
-    WCHAR expected[MAX_PATH];
-    int n=swprintf(expected,ARRAYSIZE(expected),L"%ls\\System32\\ApplicationFrameHost.exe",windows);
-    return n>0&&(size_t)n<ARRAYSIZE(expected)&&!_wcsicmp(image,expected);
-}
 static BOOL alive(const frame_entry *e)
 {
     DWORD pid=0;
@@ -47,39 +38,35 @@ static void release_entry(frame_entry *e)
 {if(e->application)CloseHandle(e->application);if(e->host)CloseHandle(e->host);free(e);}
 static BOOL execute(void *context)
 {
-    ntw16s_uwp_global *g=context;
+    style_uwp_global *g=context;
     AcquireSRWLockExclusive(&g->lock);
     frame_entry *e=(frame_entry *)win32_process_global_queue_pop(&g->queue);
     if(e){e->queued=FALSE;e->working=TRUE;}
     ReleaseSRWLockExclusive(&g->lock);
     if(!e)return FALSE;
     DWORD error=ERROR_CANCELLED;
-    if(ntw16s_global_policy_active(g->cookie)&&alive(e)){
+    if(g->services.active(g->services.context)&&alive(e)){
         HRESULT hr=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);
-        if(SUCCEEDED(hr)){error=ntw16s_uwp_target_change(&e->target,g->dll,TRUE);CoUninitialize();}
+        if(SUCCEEDED(hr)){error=g->services.change(&e->target,g->dll,TRUE,g->services.context);CoUninitialize();}
         else error=(DWORD)hr;
     }
-    HWND frame=e->target.frame;
-#ifdef NTW16S_GLOBAL_MANAGER_TEST
-    printf("UWP_TARGET_RESULT pid=%lu frame=%p error=%lu\n",e->target.pid,(void*)frame,error);
-#endif
+    if(g->services.report)g->services.report(&e->target,error,g->services.context);
     AcquireSRWLockExclusive(&g->lock);e->result=error;e->applied=!error;e->working=FALSE;
     if(!g->queue.head)SetEvent(g->idle);
     ReleaseSRWLockExclusive(&g->lock);
-    if(error&&error!=ERROR_CANCELLED){WCHAR text[128];swprintf(text,ARRAYSIZE(text),L"run16s: UWP global frame %p failed (%lu)\n",(void*)frame,error);OutputDebugStringW(text);}
     return TRUE;
 }
-DWORD ntw16s_uwp_global_start(const win32_process_global_policy *policy,PCWSTR dll,
-    HDESK desktop,HANDLE quit,HANDLE stop,DWORD cookie,ntw16s_uwp_global **result)
+DWORD style_uwp_global_start(const win32_process_global_policy *policy,PCWSTR dll,
+    HDESK desktop,HANDLE quit,HANDLE stop,const style_uwp_global_services *services,style_uwp_global **result)
 {
-    if(!result||!policy||!dll||!desktop||!quit||!stop||!cookie)return ERROR_INVALID_PARAMETER;
+    if(!result||!policy||!dll||!desktop||!quit||!stop||!services||!services->active||!services->change||!services->host_image)return ERROR_INVALID_PARAMETER;
     *result=calloc(1,sizeof(**result));if(!*result)return ERROR_NOT_ENOUGH_MEMORY;
-    ntw16s_uwp_global *g=*result;g->policy=policy;g->dll=dll;g->cookie=cookie;g->owner=GetCurrentThreadId();
+    style_uwp_global *g=*result;g->policy=policy;g->dll=dll;g->services=*services;g->owner=GetCurrentThreadId();
     g->work=CreateEventW(NULL,FALSE,FALSE,NULL);if(!g->work)return GetLastError();
     g->idle=CreateEventW(NULL,TRUE,TRUE,NULL);if(!g->idle)return GetLastError();
     return win32_process_global_dispatch_pool_start(&g->pool,1,desktop,quit,stop,g->work,execute,g,3000);
 }
-BOOL ntw16s_uwp_global_observe(ntw16s_uwp_global *g,HWND window)
+BOOL style_uwp_global_observe(style_uwp_global *g,HWND window)
 {
     style_uwp_target target;
     if(!g||g->owner!=GetCurrentThreadId()||!style_uwp_target_window(window,&target))return FALSE;
@@ -93,7 +80,7 @@ BOOL ntw16s_uwp_global_observe(ntw16s_uwp_global *g,HWND window)
     }
     if(!found){
         DWORD pid=0,thread=GetWindowThreadProcessId(target.frame,&pid);win32_process_global_identity identity;
-        DWORD error=win32_process_global_policy_inspect(g->policy,target.frame,pid,thread,IMAGE_FILE_MACHINE_AMD64,&identity,host_image);
+        DWORD error=win32_process_global_policy_inspect(g->policy,target.frame,pid,thread,g->services.machine,&identity,g->services.host_image);
         if(!error){
             found=calloc(1,sizeof(*found));
             if(found){
@@ -110,7 +97,7 @@ BOOL ntw16s_uwp_global_observe(ntw16s_uwp_global *g,HWND window)
     }
     ReleaseSRWLockExclusive(&g->lock);return TRUE;
 }
-DWORD ntw16s_uwp_global_wait_idle(ntw16s_uwp_global *g,DWORD timeout)
+DWORD style_uwp_global_wait_idle(style_uwp_global *g,DWORD timeout)
 {
     if(!g)return ERROR_SUCCESS;
     if(g->owner!=GetCurrentThreadId())return ERROR_INVALID_THREAD_ID;
@@ -124,7 +111,7 @@ DWORD ntw16s_uwp_global_wait_idle(ntw16s_uwp_global *g,DWORD timeout)
         MSG message;while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}
     }
 }
-void ntw16s_uwp_global_stats_read(ntw16s_uwp_global *g,LONG *queued,LONG *active,LONG *failed)
+void style_uwp_global_stats_read(style_uwp_global *g,LONG *queued,LONG *active,LONG *failed)
 {
     if(!g)return;
     AcquireSRWLockShared(&g->lock);
@@ -135,7 +122,7 @@ void ntw16s_uwp_global_stats_read(ntw16s_uwp_global *g,LONG *queued,LONG *active
     }
     ReleaseSRWLockShared(&g->lock);
 }
-DWORD ntw16s_uwp_global_stop(ntw16s_uwp_global *g,DWORD timeout)
+DWORD style_uwp_global_stop(style_uwp_global *g,DWORD timeout)
 {
     if(!g||g->owner!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
     ULONGLONG deadline=GetTickCount64()+timeout;
@@ -144,7 +131,7 @@ DWORD ntw16s_uwp_global_stop(ntw16s_uwp_global *g,DWORD timeout)
         frame_entry *e=g->frames;
         if(e->applied&&alive(e)){
             if(GetTickCount64()>=deadline)return ERROR_TIMEOUT;
-            error=ntw16s_uwp_target_change(&e->target,g->dll,FALSE);
+            error=g->services.change(&e->target,g->dll,FALSE,g->services.context);
             if(error&&error!=ERROR_NOT_FOUND)return error;
         }
         g->frames=e->next;release_entry(e);
