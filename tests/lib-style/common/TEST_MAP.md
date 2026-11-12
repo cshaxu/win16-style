@@ -17,3 +17,4 @@
 | `control_protocol` | `control_protocol.c`; `tests/ntw16s-dll/control_protocol_owner.c` (direct worker); control integration probes |
 | `frame` XAML child detection | `frame_xaml.c`; Win16 frame integration |
 | `control_redraw` | `control_redraw.c`; Win16 list/combo/edit integration |
+| `print_resources` | `print_resources.c`; Win16 PrintDlgEx integration |

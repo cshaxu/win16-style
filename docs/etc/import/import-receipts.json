@@ -3443,7 +3443,7 @@
       "path": "src/lib-style/win16-dialog/print_extended.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e1924745c9a84db397283b71d6a272e538834c5bdef5b39959373ebba68cab04",
+      "sha256": "e62758a374c7d2c10682bcd0351a2de6fd502acbf3dec718b735516c4b0101c1",
       "disposition": "authored",
       "review": "T20 S1 bounded extended print dialog bridge; T21 S23 shared dialog library extraction; T24 S1 quality refactor",
       "notice": "Project-authored C code; no imported resources"
@@ -7289,6 +7289,33 @@
       "sha256": "c9398aceb985642deb5c99bfa00469321bb1680809add9a99b68180c68009035",
       "disposition": "authored",
       "review": "T26 S1 shared UWP target manager native test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/print_resources.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "32fc8224df8299a0de63403b3e9a6208ab3f00b9507321aa55593f7c4b292b72",
+      "disposition": "authored",
+      "review": "T26 S1 shared printer resource helpers and native test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/print_resources.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c14cfc2b9dbf05a509a2ec65b7eefae318fc0cd164271805f003ac39e5edc2d6",
+      "disposition": "authored",
+      "review": "T26 S1 shared printer resource helpers and native test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/common/print_resources.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6087029eb164beeebb009c923e28566d201c12e41d8597777593797e5140b188",
+      "disposition": "authored",
+      "review": "T26 S1 shared printer resource helpers and native test",
       "notice": "Project-authored C; no imported artwork"
     }
   ]

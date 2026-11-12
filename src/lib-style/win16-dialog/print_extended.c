@@ -1,5 +1,6 @@
 #include "print_extended.h"
 #include "lib-style/common/print_ranges.h"
+#include "lib-style/common/print_resources.h"
 #include <wchar.h>
 #define RANGE_CONTROL 9002
 #define APPLY_CONTROL 9001
@@ -19,78 +20,6 @@ static void free_print_result(state *s,HDC dc,HGLOBAL mode,HGLOBAL names)
     if(mode)GlobalFree(mode);
     if(names)GlobalFree(names);
     free_snapshot(s);
-}
-static BOOL global_available(HGLOBAL memory)
-{if(!memory)return TRUE;UINT flags=GlobalFlags(memory);return flags!=GMEM_INVALID_HANDLE && !(flags & GMEM_LOCKCOUNT);}
-static HGLOBAL clone_global(HGLOBAL original)
-{
-    SIZE_T size=original?GlobalSize(original):0;void *src=size?GlobalLock(original):NULL;
-    HGLOBAL copy=src?GlobalAlloc(GMEM_MOVEABLE,size):NULL;void *dst=copy?GlobalLock(copy):NULL;
-    if(!dst){if(src)GlobalUnlock(original);if(copy)GlobalFree(copy);return NULL;}
-    CopyMemory(dst,src,size);GlobalUnlock(copy);GlobalUnlock(original);return copy;
-}
-/* Apply is captured before PrintDlg commits the print-to-file selection. */
-static HGLOBAL clone_file_devnames(HGLOBAL original,BOOL ansi)
-{
-    SIZE_T bytes=original?GlobalSize(original):0,unit=ansi?1:sizeof(WCHAR);
-    SIZE_T offset=(bytes+unit-1)/unit,extra=6*unit;
-    if(bytes<sizeof(DEVNAMES) || offset>65535 || offset*unit>SIZE_MAX-extra)return NULL;
-    const void *src=GlobalLock(original);if(!src)return NULL;
-    HGLOBAL result=GlobalAlloc(GMEM_MOVEABLE,offset*unit+extra);void *dst=result?GlobalLock(result):NULL;
-    if(dst){CopyMemory(dst,src,bytes);((DEVNAMES *)dst)->wOutputOffset=(WORD)offset;
-        if(ansi)CopyMemory((BYTE *)dst+offset,"FILE:",6);
-        else CopyMemory((WCHAR *)dst+offset,L"FILE:",6*sizeof(WCHAR));
-        GlobalUnlock(result);}
-    else if(result){GlobalFree(result);result=NULL;}
-    GlobalUnlock(original);return result;
-}
-static HDC create_dc(void *mode,DEVNAMES *names,BOOL ansi,DWORD flags)
-{
-    if(ansi){
-        if(flags & PD_RETURNDC)return CreateDCA((char*)names+names->wDriverOffset,(char*)names+names->wDeviceOffset,(char*)names+names->wOutputOffset,mode);
-        if(flags & PD_RETURNIC)return CreateICA((char*)names+names->wDriverOffset,(char*)names+names->wDeviceOffset,(char*)names+names->wOutputOffset,mode);
-    }else{
-        if(flags & PD_RETURNDC)return CreateDCW((WCHAR*)names+names->wDriverOffset,(WCHAR*)names+names->wDeviceOffset,(WCHAR*)names+names->wOutputOffset,mode);
-        if(flags & PD_RETURNIC)return CreateICW((WCHAR*)names+names->wDriverOffset,(WCHAR*)names+names->wDeviceOffset,(WCHAR*)names+names->wOutputOffset,mode);
-    }
-    return NULL;
-}
-static void set_copies(void *data,BOOL ansi,short copies,BOOL collate)
-{
-    short value=collate?DMCOLLATE_TRUE:DMCOLLATE_FALSE;
-    if(ansi){DEVMODEA *mode=data;mode->dmCopies=copies;mode->dmCollate=value;}
-    else{DEVMODEW *mode=data;mode->dmCopies=copies;mode->dmCollate=value;}
-}
-/* PrintDlgEx embeds the requested copy count in the returned printer DC.
- * The legacy PrintDlg DC can omit it even when nCopies is returned correctly. */
-static HDC create_print_dc(HGLOBAL mode,HGLOBAL names,BOOL ansi,DWORD copies,DWORD flags)
-{
-    if(!copies || copies>32767)return NULL;
-    HGLOBAL dc_mode=clone_global(mode);if(!dc_mode)return NULL;
-    void *data=GlobalLock(dc_mode);DEVNAMES *dn=names?GlobalLock(names):NULL;HDC dc=NULL;
-    if(data && dn){
-        set_copies(data,ansi,(short)copies,(flags&PD_COLLATE)!=0);
-        dc=create_dc(data,dn,ansi,flags);
-    }
-    if(data)GlobalUnlock(dc_mode);
-    if(dn)GlobalUnlock(names);
-    GlobalFree(dc_mode);return dc;
-}
-/* Old PrintDlg may return application-managed copies even when the driver
- * flag was requested, especially for collated copies. Convert that result
- * before passing the device mode back through the PrintDlgEx interface. */
-static BOOL normalize_driver_copies(HGLOBAL mode,BOOL ansi,WORD *copies,DWORD *flags)
-{
-    if(!mode || !copies || !*copies || *copies>32767 || !flags)return FALSE;
-    if(*copies>1 || (*flags&PD_COLLATE)){
-        SIZE_T needed=ansi?offsetof(DEVMODEA,dmCollate)+sizeof(((DEVMODEA *)0)->dmCollate):
-            offsetof(DEVMODEW,dmCollate)+sizeof(((DEVMODEW *)0)->dmCollate);
-        if(GlobalSize(mode)<needed)return FALSE;
-        void *data=GlobalLock(mode);if(!data)return FALSE;
-        set_copies(data,ansi,(short)*copies,(*flags&PD_COLLATE)!=0);
-        GlobalUnlock(mode);
-    }
-    *copies=1;*flags &= ~(DWORD)PD_COLLATE;return TRUE;
 }
 static BOOL read_ranges(HWND window,state *s)
 {
@@ -113,15 +42,15 @@ static BOOL save_snapshot(HWND window,state *s)
 {
     BOOL translated=FALSE;DWORD copies=GetDlgItemInt(window,1154,&translated,FALSE);if(!translated || !copies || copies>32767 || !read_ranges(window,s))return FALSE;
     DWORD flags=input_flags(window,s);
-    HGLOBAL mode=clone_global(*s->live_mode),names=(flags&PD_PRINTTOFILE)?clone_file_devnames(*s->live_names,s->ansi):clone_global(*s->live_names),dc_mode=clone_global(*s->live_mode);
+    HGLOBAL mode=style_print_clone_global(*s->live_mode),names=(flags&PD_PRINTTOFILE)?style_print_clone_file_devnames(*s->live_names,s->ansi):style_print_clone_global(*s->live_names),dc_mode=style_print_clone_global(*s->live_mode);
     if(!mode || !names || !dc_mode){if(mode)GlobalFree(mode);if(names)GlobalFree(names);if(dc_mode)GlobalFree(dc_mode);return FALSE;}
     void *mode_data=GlobalLock(mode),*dc_data=GlobalLock(dc_mode);DEVNAMES *dn=GlobalLock(names);HDC dc=NULL;
     BOOL ready=mode_data && dc_data && dn;
     if(ready){
         BOOL driver_copies=(flags&PD_USEDEVMODECOPIESANDCOLLATE)!=0;
-        set_copies(mode_data,s->ansi,driver_copies?(short)copies:1,driver_copies && (flags&PD_COLLATE));
-        set_copies(dc_data,s->ansi,(short)copies,(flags&PD_COLLATE)!=0);
-        dc=create_dc(dc_data,dn,s->ansi,flags);
+        style_print_set_copies(mode_data,s->ansi,driver_copies?(short)copies:1,driver_copies && (flags&PD_COLLATE));
+        style_print_set_copies(dc_data,s->ansi,(short)copies,(flags&PD_COLLATE)!=0);
+        dc=style_print_create_dc(dc_data,dn,s->ansi,flags);
     }
     if(mode_data)GlobalUnlock(mode);
     if(dc_data)GlobalUnlock(dc_mode);
@@ -201,24 +130,24 @@ static UINT_PTR CALLBACK print_hook_w(HWND w,UINT m,WPARAM wp,LPARAM lp)
 #define PRINT_EXTENDED(NAME,EX_TYPE,TYPE,PRINT_TYPE,HOOK,IS_ANSI) \
 BOOL NAME(EX_TYPE *p,PRINT_TYPE print,HRESULT *result) \
 { \
-    if(!p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || (p->Flags & ~(PD_NOPAGENUMS|PD_NOSELECTION|PD_NOWARNING|PD_NOCURRENTPAGE|PD_CURRENTPAGE|PD_HIDEPRINTTOFILE|PD_DISABLEPRINTTOFILE|PD_PRINTTOFILE|PD_COLLATE|PD_PAGENUMS|PD_SELECTION|PD_RETURNDC|PD_RETURNIC|PD_USEDEVMODECOPIESANDCOLLATE))!=0 || ((p->Flags&PD_SELECTION) && (p->Flags&(PD_NOSELECTION|PD_PAGENUMS|PD_CURRENTPAGE))) || ((p->Flags&PD_CURRENTPAGE) && (p->Flags&(PD_NOCURRENTPAGE|PD_PAGENUMS))) || ((p->Flags&PD_PRINTTOFILE) && (p->Flags&(PD_HIDEPRINTTOFILE|PD_DISABLEPRINTTOFILE))) || p->Flags2 || p->ExclusionFlags || p->hDC || (!!p->hDevMode != !!p->hDevNames) || (p->hDevMode && p->hDevMode==p->hDevNames) || !global_available(p->hDevMode) || !global_available(p->hDevNames) || ((p->Flags & PD_PAGENUMS) ? (!p->nPageRanges || p->nPageRanges>p->nMaxPageRanges || (p->Flags & PD_NOPAGENUMS)) : p->nPageRanges!=0) || (!(p->Flags & PD_NOPAGENUMS) && (!p->lpPageRanges || !p->nMaxPageRanges || p->nMaxPageRanges>MAX_RANGES || !p->nMinPage || p->nMaxPage>65535 || p->nMinPage>p->nMaxPage)) || !p->nCopies || p->nCopies>32767 || p->lpCallback || p->nPropertyPages || p->lphPropertyPages || p->nStartPage!=START_PAGE_GENERAL)return FALSE; \
+    if(!p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || (p->Flags & ~(PD_NOPAGENUMS|PD_NOSELECTION|PD_NOWARNING|PD_NOCURRENTPAGE|PD_CURRENTPAGE|PD_HIDEPRINTTOFILE|PD_DISABLEPRINTTOFILE|PD_PRINTTOFILE|PD_COLLATE|PD_PAGENUMS|PD_SELECTION|PD_RETURNDC|PD_RETURNIC|PD_USEDEVMODECOPIESANDCOLLATE))!=0 || ((p->Flags&PD_SELECTION) && (p->Flags&(PD_NOSELECTION|PD_PAGENUMS|PD_CURRENTPAGE))) || ((p->Flags&PD_CURRENTPAGE) && (p->Flags&(PD_NOCURRENTPAGE|PD_PAGENUMS))) || ((p->Flags&PD_PRINTTOFILE) && (p->Flags&(PD_HIDEPRINTTOFILE|PD_DISABLEPRINTTOFILE))) || p->Flags2 || p->ExclusionFlags || p->hDC || (!!p->hDevMode != !!p->hDevNames) || (p->hDevMode && p->hDevMode==p->hDevNames) || !style_print_global_available(p->hDevMode) || !style_print_global_available(p->hDevNames) || ((p->Flags & PD_PAGENUMS) ? (!p->nPageRanges || p->nPageRanges>p->nMaxPageRanges || (p->Flags & PD_NOPAGENUMS)) : p->nPageRanges!=0) || (!(p->Flags & PD_NOPAGENUMS) && (!p->lpPageRanges || !p->nMaxPageRanges || p->nMaxPageRanges>MAX_RANGES || !p->nMinPage || p->nMaxPage>65535 || p->nMinPage>p->nMaxPage)) || !p->nCopies || p->nCopies>32767 || p->lpCallback || p->nPropertyPages || p->lphPropertyPages || p->nStartPage!=START_PAGE_GENERAL)return FALSE; \
     state s={0};s.input_flags=p->Flags;s.minimum=p->nMinPage;s.maximum=p->nMaxPage;s.capacity=p->nMaxPageRanges;s.ansi=IS_ANSI; \
     if(p->nPageRanges){if(!style_print_ranges_format(p->lpPageRanges,p->nPageRanges,p->nMinPage,p->nMaxPage,s.initial,512))return FALSE;}else wsprintfW(s.initial,L"%lu",p->nMinPage);TYPE d={0};d.lStructSize=sizeof(d);d.hwndOwner=p->hwndOwner;d.Flags=(p->Flags & ~(DWORD)(PD_CURRENTPAGE|PD_NOCURRENTPAGE) & ((p->Flags & PD_RETURNDC)?~(DWORD)PD_RETURNIC:~(DWORD)0))|PD_ENABLEPRINTHOOK;d.lpfnPrintHook=HOOK;d.lCustData=(LPARAM)&s;d.nMinPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMinPage);d.nMaxPage=(WORD)(p->Flags & PD_NOPAGENUMS?1:p->nMaxPage);d.nFromPage=p->nPageRanges?(WORD)p->lpPageRanges[0].nFromPage:d.nMinPage;d.nToPage=p->nPageRanges?(WORD)p->lpPageRanges[0].nToPage:d.nMinPage;d.nCopies=(WORD)p->nCopies; \
-    if(p->hDevMode){d.hDevMode=clone_global(p->hDevMode);if(!d.hDevMode)return FALSE;} \
-    if(p->hDevNames){d.hDevNames=clone_global(p->hDevNames);if(!d.hDevNames){if(d.hDevMode)GlobalFree(d.hDevMode);return FALSE;}} \
+    if(p->hDevMode){d.hDevMode=style_print_clone_global(p->hDevMode);if(!d.hDevMode)return FALSE;} \
+    if(p->hDevNames){d.hDevNames=style_print_clone_global(p->hDevNames);if(!d.hDevNames){if(d.hDevMode)GlobalFree(d.hDevMode);return FALSE;}} \
     BOOL ok=print(&d);DWORD error=ok?0:CommDlgExtendedError(); \
-    if(ok && (p->Flags & (PD_RETURNDC|PD_RETURNIC)) && (!d.hDC || ((p->Flags & PD_RETURNDC) && d.nCopies>1))){HDC replacement=create_print_dc(d.hDevMode,d.hDevNames,IS_ANSI,d.nCopies,d.Flags|p->Flags); \
+    if(ok && (p->Flags & (PD_RETURNDC|PD_RETURNIC)) && (!d.hDC || ((p->Flags & PD_RETURNDC) && d.nCopies>1))){HDC replacement=style_print_create_print_dc(d.hDevMode,d.hDevNames,IS_ANSI,d.nCopies,d.Flags|p->Flags); \
         if(!replacement){free_print_result(&s,d.hDC,d.hDevMode,d.hDevNames);*result=E_FAIL;return TRUE;} \
         if(d.hDC){DeleteDC(d.hDC);}d.hDC=replacement;} \
-    if(ok && (p->Flags & PD_USEDEVMODECOPIESANDCOLLATE) && !normalize_driver_copies(d.hDevMode,IS_ANSI,&d.nCopies,&d.Flags)){free_print_result(&s,d.hDC,d.hDevMode,d.hDevNames);*result=E_FAIL;return TRUE;} \
-    if(ok && (!global_available(p->hDevMode) || !global_available(p->hDevNames))){free_print_result(&s,d.hDC,d.hDevMode,d.hDevNames);*result=E_FAIL;return TRUE;} \
+    if(ok && (p->Flags & PD_USEDEVMODECOPIESANDCOLLATE) && !style_print_normalize_driver_copies(d.hDevMode,IS_ANSI,&d.nCopies,&d.Flags)){free_print_result(&s,d.hDC,d.hDevMode,d.hDevNames);*result=E_FAIL;return TRUE;} \
+    if(ok && (!style_print_global_available(p->hDevMode) || !style_print_global_available(p->hDevNames))){free_print_result(&s,d.hDC,d.hDevMode,d.hDevNames);*result=E_FAIL;return TRUE;} \
     if(ok){if(p->hDevMode)GlobalFree(p->hDevMode);if(p->hDevNames)GlobalFree(p->hDevNames);p->hDevMode=d.hDevMode;p->hDevNames=d.hDevNames;p->hDC=d.hDC;p->Flags=(d.Flags & ~(PD_ENABLEPRINTHOOK|PD_RETURNDC|PD_RETURNIC))|(p->Flags & (PD_RETURNDC|PD_RETURNIC|PD_NOCURRENTPAGE));if(s.current_selected)p->Flags=(p->Flags & ~(DWORD)(PD_SELECTION|PD_PAGENUMS))|PD_CURRENTPAGE;p->nCopies=d.nCopies;p->nPageRanges=s.count;if(s.count)CopyMemory(p->lpPageRanges,s.ranges,s.count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_PRINT;free_snapshot(&s);*result=S_OK;return TRUE;} \
     if(d.hDC)DeleteDC(d.hDC); \
     if(d.hDevMode)GlobalFree(d.hDevMode); \
     if(d.hDevNames)GlobalFree(d.hDevNames); \
     if(s.failed){free_snapshot(&s);return FALSE;} \
     if(error){free_snapshot(&s);*result=E_FAIL;return TRUE;} \
-    if(s.applied && (!global_available(p->hDevMode) || !global_available(p->hDevNames))){free_snapshot(&s);*result=E_FAIL;return TRUE;} \
+    if(s.applied && (!style_print_global_available(p->hDevMode) || !style_print_global_available(p->hDevNames))){free_snapshot(&s);*result=E_FAIL;return TRUE;} \
     if(s.applied){if(p->hDevMode)GlobalFree(p->hDevMode);if(p->hDevNames)GlobalFree(p->hDevNames);p->hDevMode=s.applied_mode;p->hDevNames=s.applied_names;p->hDC=s.applied_dc;p->Flags=s.flags;p->nCopies=s.copies;p->nPageRanges=s.applied_count;if(s.applied_count)CopyMemory(p->lpPageRanges,s.applied_ranges,s.applied_count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_APPLY;} \
     else p->dwResultAction=PD_RESULT_CANCEL; \
     *result=S_OK;return TRUE; \
