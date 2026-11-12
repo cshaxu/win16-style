@@ -6989,7 +6989,7 @@
       "path": "src/lib-style/win16-control/theme_kind.c",
       "source": null,
       "source_blob": null,
-      "sha256": "348d377e523f6f5bad4656887b0eaa916d7dba6bb340b2ca68301b76723b6d48",
+      "sha256": "5d373e8e069764094be7f09630521fd2b625d57d0c27482e31bfaa50d8ac34d7",
       "disposition": "authored",
       "review": "T26 S1 split existing Win16 theme classification",
       "notice": "Project-authored C; no imported artwork"

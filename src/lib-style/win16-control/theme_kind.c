@@ -10,4 +10,3 @@ int win16_control_theme_kind(LPCWSTR name)
     if(safe[8]==0 && !lstrcmpiW(safe,L"COMBOBOX"))return WIN16_CONTROL_THEME_COMBOBOX;
     return safe[8]==0 && !lstrcmpiW(safe,L"TEXTGLOW")?WIN16_CONTROL_THEME_TEXTGLOW:WIN16_CONTROL_THEME_OTHER;
 }
-
