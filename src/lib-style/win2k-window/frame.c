@@ -1,7 +1,7 @@
 #include "frame.h"
 #include "caption.h"
 #include "system_menu.h"
-#include "lib-style/common/menu_hit.h"
+#include "lib-style/common/menu_input.h"
 #include "lib-style/common/dwm.h"
 #include "lib-style/common/frame.h"
 #include <commctrl.h>
@@ -111,9 +111,7 @@ static LRESULT CALLBACK menu_filter(int code,WPARAM wp,LPARAM lp)
            message->message==WM_LBUTTONDOWN || message->message==WM_NCLBUTTONDOWN){
             POINT point={GET_X_LPARAM(message->lParam),GET_Y_LPARAM(message->lParam)};
             int item=menu_item_at(active_menu->window,point,NULL);
-            BOOL down=message->message==WM_LBUTTONDOWN || message->message==WM_NCLBUTTONDOWN;
-            if(item>=0 && (item!=active_menu->selected || (down && active_menu->armed))){
-                active_menu->target=item==active_menu->selected?-1:item;
+            if(style_menu_pointer(message->message,item,active_menu->selected,-1,-1,active_menu->armed,&active_menu->target)){
                 message->message=WM_NULL;EndMenu();
             }
         }
@@ -382,18 +380,14 @@ static BOOL menu_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
     if(message==WM_SYSCOMMAND && (wp&0xfff0)==SC_KEYMENU && lp && lp!=L' ' && compact_enabled(window)){
         HMENU menu=GetMenu(window);int count=menu?GetMenuItemCount(menu):0;WCHAR key=(WCHAR)lp;
-        CharUpperBuffW(&key,1);
         for(int i=0;i<count;++i){
             WCHAR text[512]={0};MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STRING|MIIM_STATE,
                 .dwTypeData=text,.cch=ARRAYSIZE(text)-1};
             if(!GetMenuItemInfoW(menu,(UINT)i,TRUE,&item) || (item.fState&MFS_DISABLED))continue;
-            for(WCHAR *p=text;*p;++p)if(*p==L'&' && p[1]){
-                WCHAR candidate=*++p;if(candidate==L'&')continue;CharUpperBuffW(&candidate,1);
-                if(candidate==key){
-                    RECT r;if(!GetMenuItemRect(window,menu,(UINT)i,&r))return TRUE;
-                    offset_menu(window,&r);
-                    return menu_input(window,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2));
-                }
+            if(style_menu_mnemonic(text,key,FALSE)){
+                RECT r;if(!GetMenuItemRect(window,menu,(UINT)i,&r))return TRUE;
+                offset_menu(window,&r);
+                return menu_input(window,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2));
             }
         }
         return FALSE;
@@ -452,9 +446,10 @@ static BOOL menu_keyboard_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
     if(message==WM_KILLFOCUS){leave_menu_keyboard(window,FALSE);return FALSE;}
     if(message==WM_NCLBUTTONDOWN){leave_menu_keyboard(window,FALSE);return FALSE;}
     if(message!=WM_KEYDOWN && message!=WM_SYSKEYDOWN)return FALSE;
-    if(wp==VK_ESCAPE || wp==VK_F10){leave_menu_keyboard(window,TRUE);return TRUE;}
-    if(wp==VK_LEFT || wp==VK_RIGHT){
-        int count=GetMenuItemCount(menu),direction=wp==VK_LEFT?-1:1,index=(int)selected-1;
+    style_menu_key_action action=style_menu_key(wp);
+    if(action==STYLE_MENU_KEY_LEAVE){leave_menu_keyboard(window,TRUE);return TRUE;}
+    if(action==STYLE_MENU_KEY_PREVIOUS || action==STYLE_MENU_KEY_NEXT){
+        int count=GetMenuItemCount(menu),direction=action==STYLE_MENU_KEY_PREVIOUS?-1:1,index=(int)selected-1;
         for(int step=1;step<=count;++step){int next=(index+direction*step+count*step)%count;
             MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE};
             if(GetMenuItemInfoW(menu,(UINT)next,TRUE,&item) && !(item.fState&MFS_DISABLED)){
@@ -463,7 +458,7 @@ static BOOL menu_keyboard_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
             }}
         return TRUE;
     }
-    if(wp==VK_DOWN || wp==VK_RETURN){
+    if(action==STYLE_MENU_KEY_OPEN){
         RECT r;if(GetMenuItemRect(window,menu,(UINT)(selected-1),&r)){
             offset_menu(window,&r);
             menu_input(window,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2));

@@ -1,6 +1,6 @@
 #include "frame_dispatch.h"
 #include "frame_layout.h"
-#include "lib-style/common/menu_hit.h"
+#include "lib-style/common/menu_input.h"
 #include <commctrl.h>
 #include <windowsx.h>
 static BOOL queue_repaint(HWND,style_window *);

@@ -1,5 +1,6 @@
 #include "frame_input.h"
 #include "menu_bar.h"
+#include "lib-style/common/menu_input.h"
 #include <commctrl.h>
 #include <windowsx.h>
 
@@ -9,9 +10,10 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
     switch(msg){
     case WM_KEYDOWN:
         if(s->bar_keyboard){
-            if(wp==VK_LEFT || wp==VK_RIGHT){v->select(w,s,wp==VK_LEFT?-1:1);return TRUE;}
-            if(wp==VK_ESCAPE || wp==VK_F10){v->leave(w,s,TRUE);return TRUE;}
-            if(wp==VK_DOWN || wp==VK_RETURN){v->open(w,s,s->bar_selected);return TRUE;}
+            style_menu_key_action action=style_menu_key(wp);
+            if(action==STYLE_MENU_KEY_PREVIOUS || action==STYLE_MENU_KEY_NEXT){v->select(w,s,action==STYLE_MENU_KEY_PREVIOUS?-1:1);return TRUE;}
+            if(action==STYLE_MENU_KEY_LEAVE){v->leave(w,s,TRUE);return TRUE;}
+            if(action==STYLE_MENU_KEY_OPEN){v->open(w,s,s->bar_selected);return TRUE;}
         }
         return FALSE;
     case WM_KILLFOCUS:

@@ -1,5 +1,5 @@
 #include "frame_layout.h"
-#include "lib-style/common/menu_hit.h"
+#include "lib-style/common/menu_input.h"
 #include "lib-style/common/dwm.h"
 #include "lib-style/common/frame.h"
 #include <dwmapi.h>

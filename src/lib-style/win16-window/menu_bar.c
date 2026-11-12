@@ -1,4 +1,5 @@
 #include "menu_bar.h"
+#include "lib-style/common/menu_input.h"
 #include <stdlib.h>
 #include <string.h>
 #include <windowsx.h>
@@ -20,12 +21,10 @@ int win16_control_menu_bar_item_screen(HWND w,const win16_style_layout *l,HFONT 
 }
 int win16_control_menu_bar_mnemonic(const win16_style_bar *bar,WCHAR key)
 {
-    int index=-1;CharUpperBuffW(&key,1);
+    int index=-1;
     for(UINT i=0;i<bar->count && index<0;++i){const WCHAR *text=bar->items[i].text;
         if(bar->items[i].state&MFS_DISABLED)continue;
-        for(;*text && *text!=L'\t';++text)if(*text==L'&' && text[1]){
-            WCHAR letter=*++text;if(letter==L'&')continue;CharUpperBuffW(&letter,1);
-            if(letter==key){index=(int)i;break;}}
+        if(style_menu_mnemonic(text,key,TRUE))index=(int)i;
     }
     return index;
 }
@@ -33,16 +32,11 @@ void win16_control_menu_input(MSG *m,const win16_control_menu_input_view *v)
 {
     if((m->message==WM_KEYDOWN || m->message==WM_SYSKEYDOWN) &&
        m->wParam==VK_ESCAPE && *v->active==*v->root)*v->escape=TRUE;
-    if(v->hit && (m->message==WM_LBUTTONDOWN || m->message==WM_NCLBUTTONDOWN)){
+    if(v->hit && (m->message==WM_LBUTTONDOWN || m->message==WM_NCLBUTTONDOWN ||
+                  m->message==WM_MOUSEMOVE || m->message==WM_NCMOUSEMOVE)){
         POINT p={GET_X_LPARAM(m->lParam),GET_Y_LPARAM(m->lParam)};
         int hit=v->hit(v->hit_context,p);
-        if(hit!=-3){*v->target=hit==*v->selected?-3:hit;
-            m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();}
-    }
-    if(v->hit && (m->message==WM_MOUSEMOVE || m->message==WM_NCMOUSEMOVE)){
-        POINT p={GET_X_LPARAM(m->lParam),GET_Y_LPARAM(m->lParam)};
-        int hit=v->hit(v->hit_context,p);
-        if(hit!=-3 && hit!=*v->selected){*v->target=hit;
+        if(style_menu_pointer(m->message,hit,*v->selected,-3,-3,TRUE,v->target)){
             m->message=WM_NULL;m->wParam=0;m->lParam=0;EndMenu();}
     }
     if((m->message==WM_KEYDOWN || m->message==WM_SYSKEYDOWN) &&

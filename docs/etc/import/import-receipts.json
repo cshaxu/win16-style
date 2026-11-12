@@ -932,7 +932,7 @@
       "path": "src/lib-style/win16-window/menu_bar.c",
       "source": "src/ntw16s-dll/menu_bar.c",
       "source_blob": "8dea689873ff121dce171c1e89d4b8ac93375ffd",
-      "sha256": "9c1930a791b6d2f6346891f09b187c391ccb8f2b3c28afc07023c2010a3c382e",
+      "sha256": "adbe1090bf9bebaf0d890a80a9af1e04d77700f18832c4e8cfe6e30d8239d6c3",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T21 S22 library migration",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -4057,7 +4057,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "38ec69579a4e3922d77a091d9e777b798b464b5a5b907a9d544bac00b735b96d",
+      "sha256": "eb5a91ba2b45e6eb4749dd9475e229a15979c96f2e5090eb8855de2b8a75d063",
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
@@ -4838,7 +4838,7 @@
       "path": "src/lib-style/win16-window/frame_input.c",
       "source": null,
       "source_blob": null,
-      "sha256": "11cc7af916129e10e9f222865d52fef3b75c4920f9701ff672d3ab24f3a14fdd",
+      "sha256": "206a0c8f95f1b972aa4de7b203516c3caca0bc8678b26312b6edbd826bcaf45f",
       "disposition": "authored",
       "review": "T21 S24 extract in-process frame and menu input styling",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5306,7 +5306,7 @@
       "path": "src/lib-style/win16-window/frame_dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "55e6b88e6696be8949f66c5126a7416ec9f8f207169573829a0b5d3eda683139",
+      "sha256": "5cb21477725ceeeec7855a5fb513f9821750878dbece610d6cd628bec2a99e05",
       "disposition": "authored",
       "review": "T21 S24 extracted frame message dispatch from project-authored src/ntw16s-dll/win16_style.c",
       "notice": "Project-authored source; existing resource and provenance notices retained"
@@ -6728,7 +6728,7 @@
       "path": "src/lib-style/win2k-window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ac0230f98560c49d067e7b848086f9c9d48100be684b1422e568331ad00e588a",
+      "sha256": "6a02ae291fa8d7566823f374c59238641dd2f4ec92941a665b84f1a7c05d4c6c",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6779,19 +6779,19 @@
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "src/lib-style/common/menu_hit.h",
+      "path": "src/lib-style/common/menu_input.h",
       "source": null,
       "source_blob": null,
-      "sha256": "54a8bbc4106eadb3c7da7dec105ebf1f2ac6cbe93909d7a8627dd49eb531ee2c",
+      "sha256": "779d257a0ba57b488f9b9e574bfdd6ff436ba4a5394822124081f73fff179f56",
       "disposition": "authored",
       "review": "T25 S4 shared custom menu input protocol and test",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "tests/lib-style/common/menu_hit.c",
+      "path": "tests/lib-style/common/menu_input.c",
       "source": null,
       "source_blob": null,
-      "sha256": "87996fd56880cd22d6e4e61383a38c0517fd78d0e45c3ffdae4aa592341b66eb",
+      "sha256": "395c53fbbee4f845fb5df1c7947fa11ca9ef1a0222c1ec7b7598486262bfe78e",
       "disposition": "authored",
       "review": "T25 S4 shared custom menu input protocol and test",
       "notice": "Project-authored C; no external source or artwork copied"
