@@ -40,6 +40,10 @@ M0 T25 S7 按有限范围收口，见[记录](../history/M0-T25-S7-P13-closure.m
 
 ## Technical Baseline
 
+S8 P10 缩短停止时对未返回加载器的等待；发布包的双位宽六方向和快速改选
+测试通过，实际耗时和遗留限制见[交付记录](../history/M0-T25-S8-P10-switch-latency.md)。
+用户手动验收仍待完成。
+
 S8 P9 修复旧全局样式仍附着时直接拒绝切换的问题，六方向发布包附着与移除回归
 通过；Win2000 → Win16 后的像素复测和用户验收仍待完成，见[交付记录](../history/M0-T25-S8-P9-style-transitions.md)。
 

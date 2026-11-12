@@ -214,7 +214,10 @@ static DWORD close_target(win32_process_global_target *target,void *context,ULON
     manager_entry *e=(manager_entry *)target;(void)context;
     DWORD worker=WAIT_OBJECT_0,loader=WAIT_OBJECT_0;
     if(e->attach.start.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;worker=WaitForSingleObject(e->attach.start.thread,left);}
-    if(e->attach.load.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;loader=WaitForSingleObject(e->attach.load.thread,left);}
+    if(e->attach.load.thread){
+        ULONGLONG now=GetTickCount64();DWORD left=worker==WAIT_OBJECT_0?0:now<deadline?(DWORD)(deadline-now):0;
+        loader=WaitForSingleObject(e->attach.load.thread,left);
+    }
     if(loader==WAIT_TIMEOUT && worker==WAIT_OBJECT_0){
         DWORD abandoned=win32_process_global_load_abandon(&e->attach.load);
         if(!abandoned)fwprintf(stderr,L"run16s: global target %lu/%lu loader still running; remote path retained until target exit\n",target->pid,target->thread_id);
@@ -264,11 +267,12 @@ DWORD ntw16s_global_manager_test_abandon(void)
     win32_process_global_registry_insert(&m->engine.targets.registry,&entry->target.registry_node,
                                          GetCurrentProcessId(),m->owner_thread,&entry->target);
     m->engine.targets.count=1;
-    DWORD stopped=ntw16s_global_manager_stop(m,0);SetEvent(go);
+    ULONGLONG before=GetTickCount64();DWORD stopped=ntw16s_global_manager_stop(m,2000);
+    ULONGLONG elapsed=GetTickCount64()-before;SetEvent(go);
     DWORD wait=WaitForSingleObject(watch,3000),code=1;if(wait==WAIT_OBJECT_0)GetExitCodeThread(watch,&code);
     if(stopped)(void)ntw16s_global_manager_stop(m,3000);
     CloseHandle(watch);CloseHandle(go);BOOL freed=VirtualFree(memory,0,MEM_RELEASE);
-    return !stopped && wait==WAIT_OBJECT_0 && !code && freed?ERROR_SUCCESS:ERROR_INVALID_STATE;
+    return !stopped && elapsed<1000 && wait==WAIT_OBJECT_0 && !code && freed?ERROR_SUCCESS:ERROR_INVALID_STATE;
 setup_failed:
     {DWORD error=GetLastError();if(watch){SetEvent(go);WaitForSingleObject(watch,3000);CloseHandle(watch);}
      if(entry->attach.load.process)CloseHandle(entry->attach.load.process);

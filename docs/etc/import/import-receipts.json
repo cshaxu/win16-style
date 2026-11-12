@@ -311,7 +311,7 @@
       "path": "src/ntw16s-dll/global/manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0a42350de2e348cf3990b4aff1e0bff64a8a8f9c5a2ac992807ecdade39e84d2",
+      "sha256": "e2ee38469150d11d38ecef4989a8523c7bc3d6c3f3835d38412c8715bbbb419c",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle; T21 S42 direct public discovery calls; T21 S42 product adapter directory cleanup; T22 S1 P32 shared UWP target coordination and window-scoped global admission; T24 S1 quality refactor",
       "notice": "Project-authored C"
@@ -6179,7 +6179,7 @@
       "path": "tests/integration/uwp_tray.c",
       "source": null,
       "source_blob": null,
-      "sha256": "66c4eaab9f6b9a0ca6bf3b57801e5f533659a219fbce1fed841495b1a9f38b33",
+      "sha256": "5d0200ab2afd5230d84ef349a4e0e45b8ef9434fd5a2065d1dd218b082c58ac3",
       "disposition": "authored",
       "review": "T22 S1 P38 opt-in published tray controller UWP integration; native menu input and owned targets",
       "notice": "Project-authored pure C test; no imported artwork"
