@@ -7286,7 +7286,7 @@
       "path": "tests/lib-style/uwp/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d63b0d848dc9fb91eb03f7fa5c6e627e735c8912833c9b629c58b3f3a752f366",
+      "sha256": "c9398aceb985642deb5c99bfa00469321bb1680809add9a99b68180c68009035",
       "disposition": "authored",
       "review": "T26 S1 shared UWP target manager native test",
       "notice": "Project-authored C; no imported artwork"

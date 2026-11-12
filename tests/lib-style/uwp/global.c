@@ -2,11 +2,25 @@
 #include <stdio.h>
 #include <wchar.h>
 static const WCHAR frame_class[]=L"ApplicationFrameWindow",core_class[]=L"Windows.UI.Core.CoreWindow";
-static volatile LONG applies,removes;
+static volatile LONG applies,removes,fail_apply,fail_remove,block_apply;
+static HANDLE entered,gate;
 static BOOL host_allowed(PCWSTR image,PCWSTR windows){(void)windows;return image && *image;}
 static BOOL active(void *context){return context!=NULL;}
 static DWORD change(const style_uwp_target *target,PCWSTR dll,BOOL apply,void *context)
-{if(!target||!dll||!context)return ERROR_INVALID_PARAMETER;if(apply)InterlockedIncrement(&applies);else InterlockedIncrement(&removes);return 0;}
+{
+    if(!target||!dll||!context)return ERROR_INVALID_PARAMETER;
+    if(apply){
+        InterlockedIncrement(&applies);
+        if(InterlockedExchange(&fail_apply,0))return ERROR_ACCESS_DENIED;
+        if(InterlockedCompareExchange(&block_apply,0,0)){
+            SetEvent(entered);if(WaitForSingleObject(gate,5000)!=WAIT_OBJECT_0)return ERROR_TIMEOUT;
+        }
+    }else{
+        InterlockedIncrement(&removes);
+        if(InterlockedExchange(&fail_remove,0))return ERROR_ACCESS_DENIED;
+    }
+    return ERROR_SUCCESS;
+}
 static LRESULT CALLBACK proc(HWND w,UINT m,WPARAM a,LPARAM b)
 {if(m==WM_CLOSE){DestroyWindow(w);PostQuitMessage(0);return 0;}return DefWindowProcW(w,m,a,b);}
 static int child(PCWSTR title)
@@ -36,23 +50,52 @@ int wmain(int argc,WCHAR **argv)
     DWORD pid=0;if(window)GetWindowThreadProcessId(window,&pid);
     win32_process_global_policy policy;style_uwp_global *manager=NULL;HANDLE quit=NULL,stop=NULL;int result=4;
     if(!window||pid!=process.dwProcessId||win32_process_global_policy_init(&policy))goto done;
-    quit=CreateEventW(NULL,TRUE,FALSE,NULL);stop=CreateEventW(NULL,TRUE,FALSE,NULL);if(!quit||!stop)goto done;
+    quit=CreateEventW(NULL,TRUE,FALSE,NULL);stop=CreateEventW(NULL,TRUE,FALSE,NULL);
+    entered=CreateEventW(NULL,TRUE,FALSE,NULL);gate=CreateEventW(NULL,TRUE,FALSE,NULL);
+    if(!quit||!stop||!entered||!gate)goto done;
     WORD machine=sizeof(void *)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386;
     const style_uwp_global_services services={machine,host_allowed,active,change,NULL,&policy};
     DWORD error=style_uwp_global_start(&policy,image,GetThreadDesktop(GetCurrentThreadId()),quit,stop,&services,&manager);
+    fail_apply=1;
     if(error || !style_uwp_global_observe(manager,window) || style_uwp_global_wait_idle(manager,5000))goto done;
     LONG queued=0,ready=0,failed=0;style_uwp_global_stats_read(manager,&queued,&ready,&failed);
-    if(queued||ready!=1||failed||applies!=1)goto done;
-    if(!style_uwp_global_observe(manager,window)||style_uwp_global_wait_idle(manager,5000)||applies!=1)goto done;
-    SetEvent(stop);if(style_uwp_global_stop(manager,5000))goto done;manager=NULL;
-    if(removes!=1)goto done;
+    if(queued||ready||failed!=1||applies!=1)goto done;
+    if(!style_uwp_global_observe(manager,window)||style_uwp_global_wait_idle(manager,5000))goto done;
+    queued=ready=failed=0;style_uwp_global_stats_read(manager,&queued,&ready,&failed);
+    if(queued||ready!=1||failed||applies!=2)goto done;
+    if(!style_uwp_global_observe(manager,window)||style_uwp_global_wait_idle(manager,5000)||applies!=2)goto done;
+    fail_remove=1;SetEvent(stop);
+    if(style_uwp_global_stop(manager,5000)!=ERROR_ACCESS_DENIED || removes!=1)goto done;
+    if(style_uwp_global_stop(manager,5000))goto done;
+    manager=NULL;
+    if(removes!=2)goto done;
+    ResetEvent(stop);block_apply=1;
+    if(style_uwp_global_start(&policy,image,GetThreadDesktop(GetCurrentThreadId()),quit,stop,&services,&manager) ||
+       !style_uwp_global_observe(manager,window) || WaitForSingleObject(entered,5000)!=WAIT_OBJECT_0)goto done;
+    if(style_uwp_global_wait_idle(manager,10)!=ERROR_TIMEOUT)goto done;
+    SetEvent(stop);if(style_uwp_global_stop(manager,10)!=ERROR_TIMEOUT)goto done;
+    SetEvent(gate);if(style_uwp_global_stop(manager,5000))goto done;
+    manager=NULL;block_apply=0;
+    if(applies!=3 || removes!=3)goto done;
+    ResetEvent(stop);
+    if(style_uwp_global_start(&policy,image,GetThreadDesktop(GetCurrentThreadId()),quit,stop,&services,&manager) ||
+       !style_uwp_global_observe(manager,window) || style_uwp_global_wait_idle(manager,5000))goto done;
+    if(applies!=4)goto done;
+    PostMessageW(window,WM_CLOSE,0,0);
+    if(WaitForSingleObject(process.hProcess,5000)!=WAIT_OBJECT_0)goto done;
+    window=NULL;SetEvent(stop);if(style_uwp_global_stop(manager,5000))goto done;
+    manager=NULL;
+    if(removes!=3)goto done;
     result=0;
 done:
+    if(gate)SetEvent(gate);
     if(manager){if(stop)SetEvent(stop);if(style_uwp_global_stop(manager,5000))result=5;}
     if(window)PostMessageW(window,WM_CLOSE,0,0);
     if(WaitForSingleObject(process.hProcess,5000)!=WAIT_OBJECT_0){TerminateProcess(process.hProcess,1);WaitForSingleObject(process.hProcess,1000);result=6;}
     if(quit)CloseHandle(quit);
     if(stop)CloseHandle(stop);
+    if(entered)CloseHandle(entered);
+    if(gate)CloseHandle(gate);
     CloseHandle(process.hThread);CloseHandle(process.hProcess);
-    printf("UWP_GLOBAL_SHARED result=%d apply=%ld remove=%ld\n",result,applies,removes);return result;
+    printf("UWP_GLOBAL_SHARED result=%d apply=%ld remove=%ld fail_retry=1 stop_retry=1 timeout=1 target_exit=1\n",result,applies,removes);return result;
 }
