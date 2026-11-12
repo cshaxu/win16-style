@@ -41,6 +41,8 @@
 
 ## Technical Baseline
 
+Win2000 DWM 恢复问题的直接附着及延迟消息对照已复现；根因仍未确认，见[调查](../history/M0-T26-S1-win2k-dwm-investigation.md)。
+
 T26 S1 已共享打印设备资源处理，实际打印机与其他风格接入尚未验证；见[记录](../history/M0-T26-S1-print-resources.md)。
 
 T26 S1 已索引 28 个 Win16/Win2000 窗口与 UWP 源文件；直接引用及未完成的共享边界见[窗口索引](../history/M0-T26-S1-window-index.md)。
