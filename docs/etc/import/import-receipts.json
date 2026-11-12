@@ -6152,7 +6152,7 @@
       "path": "src/ntw16s-dll/uwp/target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c6584ecf3799ee68cb0cda7391461dcdf51e19701335d3509660c3d910a86f12",
+      "sha256": "3798f0acff2439e4fa1d1682036e22fa4794305b731086c56cc64486ed645b26",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import",
       "notice": "Project-authored C; original resource bytes unchanged"
@@ -7046,6 +7046,42 @@
       "sha256": "ed27f3dd92c527855f43d934d84109baf2f46909b8e3e5fad82f023f2bacca57",
       "disposition": "authored",
       "review": "T26 S1 shared sibling style module resolution and owned fixture",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/style/window_dispatch.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e33885779e161eb93caa160879c2d9a507f2348dc822048c75086d3468135f6b",
+      "disposition": "authored",
+      "review": "T26 S1 extract existing window-thread dispatch and owned process fixture",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32/style/window_dispatch.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "199f49510e6be3913f4245ae6236212ad4a644a443bcfaaff5c4fbff4866ce02",
+      "disposition": "authored",
+      "review": "T26 S1 extract existing window-thread dispatch and owned process fixture",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-win32/style/window_dispatch.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a9facfda370e6525345a3aca767ed20d7241cf4e6c9ad907ba6364d2e5fccd95",
+      "disposition": "authored",
+      "review": "T26 S1 extract existing window-thread dispatch and owned process fixture",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-win32/style/window_dispatch_fixture.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "cb287188bf0aa8a825b2219b1d75d79ed2dd180298c29276056fe19a750636ca",
+      "disposition": "authored",
+      "review": "T26 S1 extract existing window-thread dispatch and owned process fixture",
       "notice": "Project-authored C; no imported artwork"
     }
   ]
