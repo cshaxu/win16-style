@@ -1013,7 +1013,7 @@
       "path": "src/lib-style/win16-window/menu_scope.c",
       "source": "src/ntw16s-dll/menu_scope.c",
       "source_blob": "b27da79667d1dce3f17336721ef7c6be06fc18f7",
-      "sha256": "b34d866c518fc98e46b222f7e571b9a4a15c54932e712cfa3d5f5b2f12d20d14",
+      "sha256": "7f690fc19dcb0dd0100fa791b355b04788cdbe823500a834a1950b4f18244bc8",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S3 scoped USER SysShadow suppression and actual popup border/shadow regression; T21 S22 unchanged same-thread popup scope migration; T23 S1 native system-menu hover buffering and unchanged-selection regression",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -6764,7 +6764,7 @@
       "path": "src/lib-style/win2k-window/system_menu.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cef33bfaf26556e2298b49cd588d1cf96f871d93553dbfb86afcaf15449a0a85",
+      "sha256": "5df950efe42bcfd5d5648ddee245ce2962178a6b8a00f54bd8b5ff65adafb5f8",
       "disposition": "authored",
       "review": "T25 S4 Win2000 system menu presentation candidate",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -7344,6 +7344,24 @@
       "review": "T26 S1 shared control creation scope lifetime",
       "notice": "Project-authored C; no imported artwork",
       "sha256": "d1892a433c71fada3eeb4073a1a9b116dff017ffa4c64cecf32a5db8c01e4138"
+    },
+    {
+      "path": "src/lib-style/common/menu_snapshot.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T26 S1 shared system menu row snapshot",
+      "notice": "Project-authored C; no imported artwork",
+      "sha256": "5903d919a231ef1e66410f61196aaa9935027c667b44a2699efbb10caa956dcd"
+    },
+    {
+      "path": "tests/lib-style/common/menu_snapshot.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T26 S1 shared system menu row snapshot",
+      "notice": "Project-authored C; no imported artwork",
+      "sha256": "f61067ba90fc49ceafce06cd6bf2ad3104a6736ff288e6e7ab0b6a150dd0d7bb"
     }
   ]
 }

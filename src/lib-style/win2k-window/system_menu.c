@@ -1,16 +1,9 @@
 #include "system_menu.h"
+#include "lib-style/common/menu_snapshot.h"
 #include <oleacc.h>
 #include <commctrl.h>
 #include <stdlib.h>
 #include <wchar.h>
-
-typedef struct menu_row {
-    RECT rect;
-    WCHAR text[512];
-    UINT type,state;
-    HBITMAP bitmap;
-    BOOL submenu;
-} menu_row;
 
 static void system_glyph(HDC dc,const RECT *row,HBITMAP bitmap,int unit,COLORREF color)
 {
@@ -42,17 +35,10 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     if(!popup || !menu || !dc || !GetMenuBarInfo(popup,OBJID_CLIENT,0,&info) || info.hMenu!=menu)return FALSE;
     int count=GetMenuItemCount(menu);
     if(count<1 || count>64)return FALSE;
-    menu_row *rows=calloc((size_t)count,sizeof(*rows));if(!rows)return FALSE;
+    style_menu_row *rows=calloc((size_t)count,sizeof(*rows));if(!rows)return FALSE;
     BOOL valid=TRUE;
     for(int i=0;i<count;++i){
-        MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_FTYPE|MIIM_STRING|MIIM_STATE|MIIM_BITMAP|MIIM_SUBMENU,
-            .dwTypeData=rows[i].text,.cch=ARRAYSIZE(rows[i].text)-1};
-        if(!GetMenuItemInfoW(menu,(UINT)i,TRUE,&item) || (item.fType&MFT_OWNERDRAW) ||
-           item.cch>=ARRAYSIZE(rows[i].text)-1 ||
-           (item.hbmpItem && item.hbmpItem!=HBMMENU_POPUP_CLOSE && item.hbmpItem!=HBMMENU_POPUP_RESTORE &&
-            item.hbmpItem!=HBMMENU_POPUP_MINIMIZE && item.hbmpItem!=HBMMENU_POPUP_MAXIMIZE) ||
-           !GetMenuItemRect(NULL,menu,(UINT)i,&rows[i].rect)){valid=FALSE;break;}
-        rows[i].type=item.fType;rows[i].state=item.fState;rows[i].bitmap=item.hbmpItem;rows[i].submenu=item.hSubMenu!=NULL;
+        if(!style_menu_read_row(menu,(UINT)i,&rows[i],NULL)){valid=FALSE;break;}
     }
     int saved=valid?SaveDC(dc):0;
     if(!saved){free(rows);return FALSE;}

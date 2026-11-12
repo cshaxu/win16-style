@@ -1,6 +1,7 @@
 #include "menu_scope.h"
 #include "menu_paint.h"
 #include "frame_paint.h"
+#include "lib-style/common/menu_snapshot.h"
 #include <commctrl.h>
 #include <stdlib.h>
 #include <wchar.h>
@@ -111,17 +112,13 @@ static void paint_system(HWND w,popup *p,HDC target,BOOL window_coordinates)
     HMENU menu=s->system;HFONT font=s->font;UINT dpi=s->dpi;p->painting=TRUE;
     if(!GetMenuBarInfo(w,OBJID_CLIENT,0,&info)||p->detached||info.hMenu!=menu){p->painting=FALSE;return;}
     int count=GetMenuItemCount(menu);if(p->detached||count<1||count>64){p->painting=FALSE;return;}
-    typedef struct system_row {WCHAR text[512];RECT rect;UINT type,state;BOOL submenu;} system_row;
-    system_row *rows=(system_row *)calloc((size_t)count,sizeof(*rows));if(!rows){p->painting=FALSE;return;}
+    style_menu_row *rows=calloc((size_t)count,sizeof(*rows));if(!rows){p->painting=FALSE;return;}
     HDC dc=target?target:GetDC(w);if(!dc){free(rows);p->painting=FALSE;return;}
     int saved=SaveDC(dc);win16_style_menu_columns columns={0};BOOL valid=saved!=0;
     POINT delta={0,0};if(valid&&window_coordinates){RECT wr;if(!GetWindowRect(w,&wr)||!ClientToScreen(w,&delta))valid=FALSE;else{delta.x-=wr.left;delta.y-=wr.top;}}
-    for(int i=0;valid&&i<count;++i){MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_FTYPE|MIIM_STRING|MIIM_BITMAP|MIIM_SUBMENU|MIIM_STATE,.dwTypeData=rows[i].text,.cch=ARRAYSIZE(rows[i].text)-1};
-        if(!GetMenuItemInfoW(menu,(UINT)i,TRUE,&item)||p->detached||(item.fType&MFT_OWNERDRAW)||item.cch>=ARRAYSIZE(rows[i].text)-1 ||
-           (item.hbmpItem && item.hbmpItem!=HBMMENU_POPUP_CLOSE && item.hbmpItem!=HBMMENU_POPUP_RESTORE && item.hbmpItem!=HBMMENU_POPUP_MINIMIZE && item.hbmpItem!=HBMMENU_POPUP_MAXIMIZE))valid=FALSE;
-        else if(!GetMenuItemRect(NULL,menu,(UINT)i,&rows[i].rect)||p->detached)valid=FALSE;
-        else if(!(item.fType&MFT_SEPARATOR)&&!win16_style_menu_columns_read(dc,font,dpi,rows[i].text,&columns))valid=FALSE;
-        else{rows[i].type=item.fType;rows[i].state=item.fState;rows[i].submenu=item.hSubMenu!=NULL;}
+    for(int i=0;valid&&i<count;++i){
+        if(!style_menu_read_row(menu,(UINT)i,&rows[i],&p->detached))valid=FALSE;
+        else if(!(rows[i].type&MFT_SEPARATOR)&&!win16_style_menu_columns_read(dc,font,dpi,rows[i].text,&columns))valid=FALSE;
     }
     /* Compose the popup before presenting it; clearing each row directly on
      * the screen exposes blank text/background between GDI calls. */

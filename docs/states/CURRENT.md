@@ -36,10 +36,12 @@
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 1
-- Last verified remote delivery: M0 T26 S1 P33，`56e88402`。
+- Last verified remote delivery: M0 T26 S1 P34，`114f5265`。
 - Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
 
 ## Technical Baseline
+
+Win16 和 Win2000 系统菜单已共用项目读取和校验；样式绘制及完整交互验证边界见[记录](../history/M0-T26-S1-menu-snapshot.md)。
 
 控件创建作用域的生命周期已抽离并由 Win16 路径调用；Win2000 调用仍待审计，见[记录](../history/M0-T26-S1-control-scope.md)及[原边界审计](../history/M0-T26-S1-control-scope-audit.md)。
 
