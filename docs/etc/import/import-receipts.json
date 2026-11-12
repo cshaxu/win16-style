@@ -2,7 +2,7 @@
   "schema": 1,
   "files": [
     {
-      "path": "src/lib-win32/win16-common/palette.h",
+      "path": "src/lib-style/win16-common/palette.h",
       "source": null,
       "source_blob": null,
       "sha256": "f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36",
@@ -11,7 +11,7 @@
       "notice": "Project-authored C interface; no imported artwork"
     },
     {
-      "path": "src/lib-win32/win16-common/control_api.h",
+      "path": "src/lib-style/win16-common/control_api.h",
       "source": null,
       "source_blob": null,
       "sha256": "3c26e7bdd7cc1fa995bc9aab43e321c70234a369577ea4e396ea1365429efd84",
@@ -491,7 +491,7 @@
       "path": "tests/ntw16s-dll/system_menu_visual.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b6cfcae540f7da9f3c25524cb0ad5ddbd3dd32f5bf1c67f8e8f9b7e6af733fd9",
+      "sha256": "fddf9c189898d4ae3f9c03b0744fbf7efd9e502c78e5f1e89457fdd21939c8c5",
       "disposition": "authored",
       "review": "T20 S19 native system menu regression witness; T23 S1 native system-menu hover buffering and unchanged-selection regression",
       "notice": "Project-authored test; no imported code or resources"
@@ -617,7 +617,7 @@
       "path": "tests/ntw16s-dll/inplace_model.c",
       "source": null,
       "source_blob": null,
-      "sha256": "52ca0fedee5fcc5f409c9dd45d0ae3bf2ef4567d4734b0d55a76500e87c2aff2",
+      "sha256": "c792282e4551d85797b0678c1ea0e628d4b2c15d98ef931548a5bddf898c8359",
       "disposition": "authored",
       "review": "T18 S64 P129 in-place button fixture and model; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 P156: lookup dropdown native model and bounded negative cases; T24 S1 shared exception probe",
       "notice": "Project-authored source; no imported code or resources"
@@ -626,7 +626,7 @@
       "path": "tests/ntw16s-dll/month_model.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1e9c39d868408acb0a3658da47a86b8dc92902aff4470584ada854276b4116fc",
+      "sha256": "d4c6b98d768b3a4ab5f9a76e48d50305eef649370f6c0711d432172238e0a029",
       "disposition": "authored",
       "review": "T18 S64 P125 native month calendar arrow and lifecycle model; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T24 S1 shared exception probe",
       "notice": "Project-authored source; no imported code or resources"
@@ -707,7 +707,7 @@
       "path": "src/ntw16s-dll/status_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "759e1afbc2d76798a3a3cc7da595587d1e3e4f969deeef56b93253c9c740f920",
+      "sha256": "e92a0c37437ef4ab4ec1a657672032f2b09f8387330f2ccfb7dd89e17f6623dc",
       "disposition": "authored",
       "review": "T18 S64 P119 bounded multi-pane status font and regression",
       "notice": "Project-authored source; no imported code or resources"
@@ -725,7 +725,7 @@
       "path": "tests/ntw16s-dll/status_font_stock.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5b2d61516eed75a5c457537f2ffda96249b5f281d750d664b05688bba79c8900",
+      "sha256": "a5244436e5d2c8fc4dc4d2f5f81810abf206631228df0a4a040063ebba5789db",
       "disposition": "authored",
       "review": "T18 S64 P118 project-authored stock-font lease ownership regression; T21 S22 source path update",
       "notice": "Project-authored test; uses in-repository font source under existing notices"
@@ -734,7 +734,7 @@
       "path": "tests/ntw16s-dll/status_font_isolation.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ecfcc887c98c40e775d977145070d0f3695343e0e126c5e16df35f797175138f",
+      "sha256": "81a5af8b1055c57d6e34368a7590ef8c006914d725a19acc201ea9601fd5402f",
       "disposition": "authored",
       "review": "T18 S64 P117 project-authored deterministic isolated-font ownership regression",
       "notice": "Project-authored source; no imported code or resources"
@@ -842,7 +842,7 @@
       "path": "src/ntw16s-dll/attachment.c",
       "source": "src/ntw16s-dll/attachment.c",
       "source_blob": "e467006ab99ada1846f9298b650c30605807466b",
-      "sha256": "b7a9f2b118ce1a3edb07eb6ef6c30ca9a574181badcf60bffe6d027b4bd273c6",
+      "sha256": "1553689add2db1a898dd116d5e87414ecd38f3a615c2d852f7c2b69c3c264b01",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S23 bounded v5 TProgressBar static edge, native client and colors retained; dual-width public-protocol and fallback model; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S54 scoped runtime grid nonclient border/scrollbars with actual public scroll check, guarded retirement and self-owned dual-width model; original resources retained; T18 S57 witnessed VCL toolbar print forwarding, unique zero-command text-only painting and native fallback, dual-width self-owned tests; original graphics retained; T18 S60 witnessed runtime TTabControl native WM_PAINT forwarding, existing public tab protocol and parent lifetime guard; resources preserved; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P23 real VB5 checkbox list; T18 S64 P30 exact VB MDI frame identity and self-contained public-window model; T18 S64 P36 bounded VB6 UserControl client-edge renderer, pending paint and role retirement, no external code or graphic changes; T18 S64 P47 limited VB6 Data border; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64 P52 observed VB6 Data 144 DPI; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64: extend witnessed group frame to ordinary TRadioGroup, original notices retained; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64: disabled ordinary Delphi group frame, state-consistent paint and reentrant-state regression; T18 S64: disabled Delphi panel outer bevel with mid-pair state validation; T18 S64: witnessed Delphi scrollbar role and disabled direct-key native semantics; T18 S64 exact witnessed TLabeledEdit role; T18 S64 witnessed TNumberBox role; T18 S64 witnessed Delphi SysLink protocol and native typography; no graphics or external code changed; T18 S64 delayed text link retry with fresh native witness; T18 S64 witnessed runtime SpinEdit EDIT protocol, native button retained; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P111 scoped runtime-owned Delphi push button; T18 S64 P112 runtime-owned Delphi checkbox and parent-background regression; T18 S64 P113 Delphi radio parent-background preservation; T18 S64 P114 witnessed runtime-owned editable Delphi combo; T18 S64 P115 verified Delphi dropdown-list combo ownership, role and font lifecycle; T18 S64 P116 verified Delphi simple combo mode; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P120 ordinary no-border pane text; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P124 hotkey witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 popup list native forwarding and nonclient adaptation; T18 S64 short popup list and dynamic scrollbar transitions; T18 S64 value editor native frame; T18 S64 ordinary grids without visible scrollbars; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 witnessed TMaskEdit; T18 S64 bounded app-owned TDBGrid frame and model; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P156: bounded same-owner TDBLookupComboBox dropdown paint witness; original resources and notices retained; T18 S64 P158: scoped lookup popup lifecycle and scrollbar rendering; T18 S64 P159: Alt+Down lookup popup creation scope; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T18 S64 P161: bounded TMediaPlayer normal/pressed button backgrounds; T18 S64 P162: bounded disabled/focused TMediaPlayer button backgrounds; T18 S64: same-owner Delphi MDI frame identity and lifecycle; T18 S64: modeled TDBLookupListBox nonclient frame and scrollbar; T18 S64: release MDI host reference on failed subclass installation; T18 S64: candidate bounded same-owner TCoolBar grip custom draw and paint scope; T18 S64 P192: extend witnessed native tab attachment to TPageControl, preserve parent and fallback; T18 S64 runtime-owned tree/report native-paint witness and public-protocol reuse; project-authored adaptation, no graphic changes; preserve existing main-EXE list path after package regression; T18 S64 bounded witnessed list view modes, app-owned images and native state preserved; T21 S5 shared creation and late-attachment classifier; T21 S22 native embedded combo button painter extracted; T23 S4 console and Terminal window adaptation and native tests; T23 S6 Chromium composed frame and stock menu font fallback; T23 S7 composed frame reuse for Paint and XamlWindow; T24 S1 remove same-signature callback forwarding",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -860,7 +860,7 @@
       "path": "src/ntw16s-dll/control_scope.c",
       "source": "src/ntw16s-dll/control_scope.c",
       "source_blob": "e7d2e565af452f8b618badb8e1df0d2ee644a77a",
-      "sha256": "2b70f536f065f798187d96c7810897ae41ba241c0261fb3651df3d3fbc7d9a88",
+      "sha256": "9791da0e9e26c04b42b721675ce0d85e0d60284fff5a9a872ee4bafb61764417",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -869,7 +869,7 @@
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "c7f5d7afe698c93084ea9192a40e1860c3dc2f0b7c2d74c92d280e1e8b537405",
+      "sha256": "6cf4b0618eccb90cead1e97debaca26dfa8c8077bfd76a7effcd4e91f144c287",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: only begin transient native redraw brackets on WS_VISIBLE controls, preserving hidden state; font/render algorithms unchanged; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; BCM_GETIMAGELIST borrowed images, state pixels, explicit COMCTL6 and native disabled notification comparison; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T15 S6 finite verified native header public protocol and string-only painter; native geometry/font/notifications retained; fixed item formats use original painter; callback/lifetime/OOM tests; no external code copied or original resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S3 exact runtime-owned plain VB6 CheckBox; reuse existing glyph/font painter, preserve native Value/events; unsupported graphical variants and live transition retire to native; independent C non-superclass regression and optional actual Actor observer; no external code or original resources changed; S3 self-review: forward native message before retirement, pinned callback can destroy HWND without late forwarding; native destruction fixture; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 exact runtime50/60 Combo/List/Scroll aliases, public combo native EDIT identity and bounded private-font binding with reentrant retirement, original application font restoration; no external implementation or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S23 bounded v5 TProgressBar static edge, native client and colors retained; dual-width public-protocol and fallback model; T18 S54 scoped runtime grid nonclient border/scrollbars with actual public scroll check, guarded retirement and self-owned dual-width model; original resources retained; T18 S57 witnessed VCL toolbar print forwarding, unique zero-command text-only painting and native fallback, dual-width self-owned tests; original graphics retained; T18 S60 witnessed runtime TTabControl native WM_PAINT forwarding, existing public tab protocol and parent lifetime guard; resources preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P23 real VB5 checkbox list; T18 S64 P36 bounded VB6 UserControl client-edge renderer, pending paint and role retirement, no external code or graphic changes; T18 S64 P47 limited VB6 Data border; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64 P52 observed VB6 Data 144 DPI; T18 S64 P55 observed VB6 checklist 144 DPI; T18 S64 P57 observed VB5 checklist 144 DPI; T18 S64: witnessed Delphi scrollbar role and disabled direct-key native semantics; disabled direct mouse forwarding follows real VCL native baseline; T18 S64 witnessed Delphi SysLink protocol and native typography; no graphics or external code changed; T18 S64 preserve witnessed SpinEdit text reservation on font change; T18 S64 P111 scoped runtime-owned Delphi push button; T18 S64 P112 runtime-owned Delphi checkbox and parent-background regression; T18 S64 P113 Delphi radio parent-background preservation; T18 S64 P114 witnessed runtime-owned editable Delphi combo; T18 S64 P115 verified Delphi dropdown-list combo ownership, role and font lifecycle; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P125 native month calendar arrows; T18 S64 multiline nonclient frame; T19 S1 retire native ordinary BUTTON on live owner-draw transition, preserving parent painting; T21 S22 basic presentation extracted; T21 S22 button and static presentation extracted with same-thread callbacks; T21 S22 list and edit presentation extracted with live state references; T21 S22 combo presentation extracted with live state and native-info callbacks; T21 S22 buffered scrollbar presentation extracted with live state and native layout callbacks; T21 S22 standard button and static presentation view extraction; T21 S22 sizebox, progress border and calendar arrow presentation extraction; T21 S22 VB data arrow pixel presentation extracted; T21 S22 buffered control presentation extraction; T21 S22 graphical and bitmap-button face presentation extraction; T24 S1 share list and combo list classification",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -878,7 +878,7 @@
       "path": "src/ntw16s-dll/controls.h",
       "source": "src/ntw16s-dll/controls.h",
       "source_blob": "8c6380513ec16c21ff3b1e34b9ef14222cc4d837",
-      "sha256": "d32459ffc0270c982f23c8b2ab0fe19acae90f6e381c8cbdc2f2b8589024f41f",
+      "sha256": "1a0cc39b82cc24ae979cca0672b783ecea145270bd28d356e0c75fe4cf425d23",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S23 bounded v5 TProgressBar static edge, native client and colors retained; dual-width public-protocol and fallback model; T18 S54 scoped runtime grid nonclient border/scrollbars with actual public scroll check, guarded retirement and self-owned dual-width model; original resources retained; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -893,7 +893,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-common/font.c",
+      "path": "src/lib-style/win16-common/font.c",
       "source": "src/ntw16s-dll/font.c",
       "source_blob": "3bce01032d506f05bb571f8be35392f12c4dcebb",
       "sha256": "9b6c86c186db3f393992c9ed2debcb387c76afb85a05a51d9d7e7270cf3d126e",
@@ -902,7 +902,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-common/font.h",
+      "path": "src/lib-style/win16-common/font.h",
       "source": "src/ntw16s-dll/font.h",
       "source_blob": "772af2b70b85d897ea842003229b5d3e5795803e",
       "sha256": "9f4a3ad4bb0489013f44483dcdc155407ae689241db1faca401a4989efec2a37",
@@ -911,7 +911,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-common/layout.c",
+      "path": "src/lib-style/win16-common/layout.c",
       "source": "src/ntw16s-dll/layout.c",
       "source_blob": "a9ba79fb962c41bbb5d8ffab0bbb3632213d282e",
       "sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede",
@@ -920,7 +920,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-common/layout.h",
+      "path": "src/lib-style/win16-common/layout.h",
       "source": "src/ntw16s-dll/layout.h",
       "source_blob": "397587ca491a9aef181ae8bca9404ddf0e9d0672",
       "sha256": "a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3",
@@ -929,7 +929,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_bar.c",
+      "path": "src/lib-style/win16-window/menu_bar.c",
       "source": "src/ntw16s-dll/menu_bar.c",
       "source_blob": "8dea689873ff121dce171c1e89d4b8ac93375ffd",
       "sha256": "9c1930a791b6d2f6346891f09b187c391ccb8f2b3c28afc07023c2010a3c382e",
@@ -938,7 +938,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_bar.h",
+      "path": "src/lib-style/win16-window/menu_bar.h",
       "source": "src/ntw16s-dll/menu_bar.h",
       "source_blob": "dbf916ef7759d4c3a249a56712c10ec946ec70de",
       "sha256": "00e59e2863eb2b0e471716e9eaa4134e12e3ddbe86ebfb1db24fa2b20c83393b",
@@ -947,7 +947,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_bar_paint.c",
+      "path": "src/lib-style/win16-window/menu_bar_paint.c",
       "source": "src/ntw16s-dll/menu_bar_paint.c",
       "source_blob": "e8d1450ac63e3364fcbad23c926e458785c3bf88",
       "sha256": "392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94",
@@ -956,7 +956,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_items.c",
+      "path": "src/lib-style/win16-window/menu_items.c",
       "source": "src/ntw16s-dll/menu_items.c",
       "source_blob": "e4515547a7ec174558bfd2923536d190b62f5fb7",
       "sha256": "50ffdecade278016841546433fb6650c0c8e2e3d7996725eefb5e77e10be0706",
@@ -965,7 +965,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_items.h",
+      "path": "src/lib-style/win16-window/menu_items.h",
       "source": "src/ntw16s-dll/menu_items.h",
       "source_blob": "4aab35cbb7a6fa674d7a0cbcf729b3bc9cff49d9",
       "sha256": "24dff3476635ede1304b7ee3bdf28c3639b4ded55826c8000e7142531ac69b18",
@@ -974,7 +974,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-common/menu_layout.c",
+      "path": "src/lib-style/win16-common/menu_layout.c",
       "source": "src/ntw16s-dll/menu_layout.c",
       "source_blob": "82916ee3bf2e3e115838721ced63d0aa65539747",
       "sha256": "cde752459255f121492daa908df6cd6201a549d0080d2cf73b8975b6042dc62c",
@@ -983,7 +983,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-common/menu_layout.h",
+      "path": "src/lib-style/win16-common/menu_layout.h",
       "source": "src/ntw16s-dll/menu_layout.h",
       "source_blob": "7636669b8a54caaebba89ad80572c0bbbac0a275",
       "sha256": "e70959ddd21f2cb3d2904a7bf756f79066e839144d7ecc7174a97f026a065e19",
@@ -992,7 +992,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_paint.c",
+      "path": "src/lib-style/win16-window/menu_paint.c",
       "source": "src/ntw16s-dll/menu_paint.c",
       "source_blob": "b9ba84a7ac43981013b1319d0019ee18cd1ff6b7",
       "sha256": "00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84",
@@ -1001,7 +1001,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_paint.h",
+      "path": "src/lib-style/win16-window/menu_paint.h",
       "source": "src/ntw16s-dll/menu_paint.h",
       "source_blob": "8473ec9496b45d043be33bbf90fb43b14f8f148d",
       "sha256": "590f81afb53614015b31baf3fd06ac3643175ef346c2deee94ea8442a3591e02",
@@ -1010,7 +1010,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_scope.c",
+      "path": "src/lib-style/win16-window/menu_scope.c",
       "source": "src/ntw16s-dll/menu_scope.c",
       "source_blob": "b27da79667d1dce3f17336721ef7c6be06fc18f7",
       "sha256": "b34d866c518fc98e46b222f7e571b9a4a15c54932e712cfa3d5f5b2f12d20d14",
@@ -1019,7 +1019,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_scope.h",
+      "path": "src/lib-style/win16-window/menu_scope.h",
       "source": "src/ntw16s-dll/menu_scope.h",
       "source_blob": "2f793a46215944cf6219f478db14715fd59d4f06",
       "sha256": "e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699",
@@ -1049,13 +1049,13 @@
       "path": "src/ntw16s-dll/ntw16s.h",
       "source": "src/ntw16s-dll/ntw16s.h",
       "source_blob": "4206eba1ed0572ed7f1ae7fe2301786b6fb5b9e5",
-      "sha256": "5d7672fb1fff31e46d843d866b47fa460d294821f45fcb1ffd77562c5c44668f",
+      "sha256": "e92a19db14acf84cbf6d16c8b18818ec3d15e097b6dff5e34a6a0506ace34777",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_layout.c",
+      "path": "src/lib-style/win16-control/scroll_layout.c",
       "source": "src/ntw16s-dll/scroll_layout.c",
       "source_blob": "891f118725eed946da93e45e8bad2dde1753eef9",
       "sha256": "0b1b344fcbe0ef2a8060ef140c539cefeb5fa79c7b93c322452513d15b95b4d0",
@@ -1064,7 +1064,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_layout.h",
+      "path": "src/lib-style/win16-control/scroll_layout.h",
       "source": "src/ntw16s-dll/scroll_layout.h",
       "source_blob": "63fda7674d27d2c0949374669f6c86a58263f5b3",
       "sha256": "b8398eafbc51af77a5e5ce72c4dd06f12e51a6cdf6bdd51cf2ef6275b0b9fcb4",
@@ -1073,7 +1073,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_track.c",
+      "path": "src/lib-style/win16-control/scroll_track.c",
       "source": "src/ntw16s-dll/scroll_track.c",
       "source_blob": "10f55fcfa1ddcf7686b45665dbdcd8afcde60ba0",
       "sha256": "0b9c5d40849d321e3e467635d4c28b85c5897d8ee4dd8ec7bf3ed1d39fcd72ee",
@@ -1082,7 +1082,7 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_track.h",
+      "path": "src/lib-style/win16-control/scroll_track.h",
       "source": "src/ntw16s-dll/scroll_track.h",
       "source_blob": "36dab01c50c485fa0da58835d7c1b97cc5f79737",
       "sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e",
@@ -1103,7 +1103,7 @@
       "path": "src/ntw16s-dll/theme.h",
       "source": "src/ntw16s-dll/theme.h",
       "source_blob": "088ea9230823070a010d586058bd7b86aee5d93b",
-      "sha256": "921c3291f216aa926f29b3a3e66c256ae1817716578529b3cfd4273d5413735b",
+      "sha256": "7287c1c5d8430b9bc041a09e544335150e99c1a844d2a287f582164e0387416b",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S2: deferred theme recording/commit and native superclass adaptation; original notices retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1112,7 +1112,7 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "3a7eb6d08765f458fced1f08bddd1bdad4006ea7cb7ce8bbba726078c6e6b3d0",
+      "sha256": "5847768e5bb62e580a1b40e9a189cf87b547faf6647dc93dbc153e5847225807",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T21 S22 frame painter extracted; T21 S22 caption and sizing-band presentation extracted with live state references; T21 S22 frame presentation extraction, preserving fault instrumentation; T21 S22 buffered frame/menu/button presentation extraction; T21 S22 frame layout and high-contrast palette extraction",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1121,13 +1121,13 @@
       "path": "src/ntw16s-dll/win16_style.h",
       "source": "src/ntw16s-dll/win16_style.h",
       "source_blob": "5e922312ae64dfd28356a7960caf97854c5d41ab",
-      "sha256": "2b5b9c4041fb67bf7c4b8c45298e0261dc2e10630f71798c296ece657e2499cc",
+      "sha256": "1414cabeb717e70361261d213fde0a47e9c6c0ece0566658972eed0f45842249",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T21 S22 shared palette and include path",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/combo_glyph.h",
+      "path": "src/lib-style/win16-control/combo_glyph.h",
       "source": "src/ntw16s-dll/combo_glyph.h",
       "source_blob": "6844a599eaeabee81e3a6f0b93571aae45a3dad5",
       "sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34",
@@ -1136,7 +1136,7 @@
       "notice": "Original source resource/provenance notices retained; not project-authored artwork; see src/ntw16s-dll/resources.md"
     },
     {
-      "path": "src/lib-win32/win16-control/control_glyphs.h",
+      "path": "src/lib-style/win16-control/control_glyphs.h",
       "source": "src/ntw16s-dll/control_glyphs.h",
       "source_blob": "a5ac2b29e4e1471b0b1d59fedffa891565bfecbb",
       "sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83",
@@ -1145,7 +1145,7 @@
       "notice": "Original source resource/provenance notices retained; not project-authored artwork; see src/ntw16s-dll/resources.md"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_buttons.h",
+      "path": "src/lib-style/win16-window/frame_buttons.h",
       "source": "src/ntw16s-dll/frame_buttons.h",
       "source_blob": "dd782cd7d4e58e278067366777836e6e5ae34100",
       "sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5",
@@ -1154,7 +1154,7 @@
       "notice": "Original source resource/provenance notices retained; not project-authored artwork; see src/ntw16s-dll/resources.md"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_glyphs.h",
+      "path": "src/lib-style/win16-window/menu_glyphs.h",
       "source": "src/ntw16s-dll/menu_glyphs.h",
       "source_blob": "3bd7a84da0ee765bc8277595caa7795b7c530cd2",
       "sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e",
@@ -1163,7 +1163,7 @@
       "notice": "Original source resource/provenance notices retained; not project-authored artwork; see src/ntw16s-dll/resources.md"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_glyphs.h",
+      "path": "src/lib-style/win16-control/scroll_glyphs.h",
       "source": "src/ntw16s-dll/scroll_glyphs.h",
       "source_blob": "47942549a40628868026e6b3c9ac751015c69fc7",
       "sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40",
@@ -1247,7 +1247,7 @@
       "path": "tests/ntw16s-dll/win16_style_font.c",
       "source": "tests/app/win16_style_font.c",
       "source_blob": "5d70ebef16f342c36df381ab0cb6e43b270f8488",
-      "sha256": "00f73f9de82a3c01beeb3a59357da50f3742fd22c4cde9c2eed47b74b8c5034d",
+      "sha256": "940086d5443ee957449414726f015940971cc44179bad8a1c9ba7b4793810d4f",
       "disposition": "adapt",
       "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md",
       "notice": "Project-authored source fixture, original notices preserved"
@@ -1256,7 +1256,7 @@
       "path": "tests/ntw16s-dll/win16_style_list_tabs.c",
       "source": "tests/app/win16_style_list_tabs.c",
       "source_blob": "8154d9ef5c2b54f1899e74724c7da8a9e6e3c37e",
-      "sha256": "3fba0b66546ac76db708934cd3c235fcb9ef439616dca1895fb7cbe5e5520689",
+      "sha256": "bc43fc89808ece148b76ce063feafce774285743eb210a5eb43b865b7f7b9c99",
       "disposition": "adapt",
       "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md; T8 attachment keeps original font; later WM_SETFONT and new tab requests follow app metrics",
       "notice": "Project-authored source fixture, original notices preserved"
@@ -1265,7 +1265,7 @@
       "path": "tests/ntw16s-dll/win16_style_scroll_geometry.c",
       "source": "tests/app/win16_style_scroll_geometry.c",
       "source_blob": "a152cfe652660138fbbf8147ef24cb23552ee64d",
-      "sha256": "b627733e179697f77b15621b7a746e25c00373d00c118c014d50bccb4677f6c1",
+      "sha256": "f3e61a81872ec06198e5cee3002ecbec23ec5d0347e5810749c9a7dae2649105",
       "disposition": "adapt",
       "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md; T21 S22 header path update",
       "notice": "Project-authored source fixture, original notices preserved"
@@ -1409,7 +1409,7 @@
       "path": "src/ntw16s-dll/injection/window_titles.c",
       "source": "src/nthook32-dll/window_titles.cpp",
       "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
-      "sha256": "017e8dfbd3509aa34cee56e39eba331bc6e1f6886c2ec632f309493d66e6f35a",
+      "sha256": "26f73733efab74198aaa8bb0b703cb523c3fb0b3edf80e332db10a5a030dca93",
       "disposition": "adapt",
       "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T20 S1 common find/replace creation scope; T21 S13 unified late style hooks and stop semantics; T24 S1 unify simple common dialog scope hooks; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
@@ -1598,7 +1598,7 @@
       "path": "tests/ntw16s-dll/win16_style_control_present.c",
       "source": "tests/app/win16_style_control_present.c",
       "source_blob": "a44a8cf711985ae62d847021b037b8bb308f8cc7",
-      "sha256": "5e213ffa06cb3fef87944d7244067e57c5329fa377461c795aa13f975046a0ec",
+      "sha256": "95c90a1cd6d2d8a4737bb3f6a32abe849ca8e8b35f9a2326dc582a680da5e3b5",
       "disposition": "adapt",
       "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 S3 fixed64 full-workload USER cache warmup; strict assertions unchanged; T21 S22 retain GDI instrumentation after painter extraction; T21 S22 standard button and static presentation view extraction; T21 S22 sizebox, progress border and calendar arrow presentation extraction; T21 S22 buffered control presentation extraction",
       "notice": "Project-authored fixed-source fixture; original comments retained"
@@ -1607,7 +1607,7 @@
       "path": "tests/ntw16s-dll/win16_style_dc_failure.c",
       "source": "tests/app/win16_style_dc_failure.c",
       "source_blob": "0bbdc27c4e17eaf1dce1ec51715b26c66b610d75",
-      "sha256": "f2157b1be86f4089a34c2eb8716d86f391e3c7403712303138abf6a04ac1cdca",
+      "sha256": "0545d0804f465f06c23c61038da54bbcd05f96c8e6292053e18630a0e1996489",
       "disposition": "adapt",
       "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S22 header path update; T21 S22 frame presentation extraction, preserving fault instrumentation",
       "notice": "Project-authored fixed-source fixture; original comments retained"
@@ -2027,7 +2027,7 @@
       "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes"
     },
     {
-      "path": "src/lib-win32/win16-control/control_class.h",
+      "path": "src/lib-style/win16-control/control_class.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2036,7 +2036,7 @@
       "review": "T18 S64 P59 observed VB5/VB6 144 DPI checklist text scope and semantic regression; T21 S22 shared classification/text scope extraction with caller identity callback; T24 S1 share list and combo list classification; T24 S1 removed forwarding header src/ntw16s-dll/control_class.h SHA256 2abccdab3a9a45ad75042bf5a59896c0adeee33c6389da61b551a9dd7255c812"
     },
     {
-      "path": "src/lib-win32/win16-control/vb_text.c",
+      "path": "src/lib-style/win16-control/vb_text.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2045,7 +2045,7 @@
       "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; report-only reuse of existing stroke-preserving System lease after actual11px E/8 loss; original font generator and established typography unchanged; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T21 S22 shared classification/text scope extraction with caller identity callback"
     },
     {
-      "path": "src/lib-win32/win16-control/vb_text.h",
+      "path": "src/lib-style/win16-control/vb_text.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2077,7 +2077,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "7d67b476b0454df164412b29bc5741c708a44aa336d26be56a759aa7f35d3315",
+      "sha256": "5e6c490feb0db2048f06612c9dd67e2ba736196987fb0e366eeab3700525b724",
       "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation; T17 S3 exact runtime-owned plain VB6 CheckBox; reuse existing glyph/font painter, preserve native Value/events; unsupported graphical variants and live transition retire to native; independent C non-superclass regression and optional actual Actor observer; no external code or original resources changed; S3 self-review: forward native message before retirement, pinned callback can destroy HWND without late forwarding; native destruction fixture; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 wrapper support and explicit native-child font lifetime contract; notices and original resources retained; T17 S18 makes the graphical role-transition assertion explicit and triggers the retirement fixture with real WM_SETFONT rather than implicit style-change assumptions; T17 S23 adds an authored exact runtime-owned default CommandButton state/transition/disabled/keyboard/notification witness; T17 S24 adds authored exact runtime-owned multiline/password/alignment TextBox state and retirement witness; T17 S25 adds authored exact runtime-owned drop-down/drop-down-list/simple ComboBox state witness; T18 S6 records DPI-aware styled/native TextBox hashes and captures both client and owned non-client surfaces, because PRF_CLIENT alone is invariant after high-DPI USER font scaling; no external code or graphics copied; isolated ASCII model disables thread IME during private desktop test"
     },
     {
@@ -2086,7 +2086,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "f79700c638eb35265b60c77aacfa31a3d6f6cef59b606ef7e2f7e187a4659ea6",
+      "sha256": "2780b25fed6fc0ab56bcfc69609669bcc7e3a29a871fdc729078c5a4eda103e7",
       "review": "T15 S1: original private VB6 adaptation or self-contained native fixture; no copied external implementation; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; report-only reuse of existing stroke-preserving System lease after actual11px E/8 loss; original font generator and established typography unchanged"
     },
     {
@@ -2131,7 +2131,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "842d4c69dc14180356dd781e68ad1f9fe3afaacc24c23cf15497757aa31056ed",
+      "sha256": "6ebaf8e4b0d833de1fc6bb9f510df6db96b7867f59e3d11ec3753b5c1ae838cf",
       "review": "T15 S2 private theme ownership or native superclass regression; no external code copied"
     },
     {
@@ -2162,7 +2162,7 @@
       "review": "T15 S3 self-contained real public creation/attachment API hidden-state regression for four native protocols, parent/child visibility, external redraw, detach and borrowed font; no external code copied"
     },
     {
-      "path": "src/lib-win32/win16-control/control_protocol.c",
+      "path": "src/lib-style/win16-control/control_protocol.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2171,7 +2171,7 @@
       "sha256": "04d755f6f04cf8a65cc25ef69cfe0bb7776cfe6b259a6b1c470625630602e62c"
     },
     {
-      "path": "src/lib-win32/win16-control/control_protocol.h",
+      "path": "src/lib-style/win16-control/control_protocol.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2195,7 +2195,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "T18 S11 self-owned native toolbar text boundary regression for v5/v6 and both bitnesses.; T21 S22 shared palette and include path",
-      "sha256": "9f2b47aff31c9c1d02db5a706a5df9b1bb62e1fac832e7c7882a85bd4cd5922a"
+      "sha256": "41842485e7c54db6146a122fb2e9f5f92d692295828a6749740ad31571bb5142"
     },
     {
       "path": "tests/ntw16s-dll/control_protocol_owner.c",
@@ -2204,7 +2204,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "T15 S4 public initialized control protocols, borrowed native image/PushLike and client-edge support; no external code copied; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T18 S64: bounded TDBListBox native protocol and negative models; T21 S22 include path update",
-      "sha256": "73e7f5b0f765e3acea2f9ef97d07d9ecbd3cd8da25a489e8844e51a96c0939ce"
+      "sha256": "2977b3e87594ef901df6069ba794ee899749a05316ba4464958f22a6e7faf20f"
     },
     {
       "path": "tests/ntw16s-dll/control_extensions.rc",
@@ -2216,7 +2216,7 @@
       "sha256": "e82c7a5c6477a9e580b3fa10dab71fd653ff30b118e810e9e6c2b047edff14bb"
     },
     {
-      "path": "src/lib-win32/win16-control/tab_paint.c",
+      "path": "src/lib-style/win16-control/tab_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2225,7 +2225,7 @@
       "sha256": "851b637c211182d994f27117d4ccde0993e59719916982c2cc95e7d98395603e"
     },
     {
-      "path": "src/lib-win32/win16-control/tab_paint.h",
+      "path": "src/lib-style/win16-control/tab_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2252,7 +2252,7 @@
       "sha256": "ca8129d04f810eb11d29ccd2d4667c099cc647069a0a07502fe43d46370569a3"
     },
     {
-      "path": "src/lib-win32/win16-control/header_paint.c",
+      "path": "src/lib-style/win16-control/header_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2261,7 +2261,7 @@
       "sha256": "9bcf190b4606c88c8ba5a9ece6a636682ea8a3a4251b6f820418355c96c0aad2"
     },
     {
-      "path": "src/lib-win32/win16-control/header_paint.h",
+      "path": "src/lib-style/win16-control/header_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2285,7 +2285,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "T15 S6 finite verified native header public protocol and string-only painter; native geometry/font/notifications retained; fixed item formats use original painter; callback/lifetime/OOM tests; no external code copied or original resource changes; T21 S22 shared palette and include path",
-      "sha256": "2276c4808fe435c5e47866a0f717a37540676d3fdf6d123602a2ff05e75de56d"
+      "sha256": "8010ed89a6982d603558a1536f6087a3de47415d257256de69352b292775b6d8"
     },
     {
       "path": "tests/ntw16s-dll/list_report.c",
@@ -2321,7 +2321,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "T17 S28 optional direct-OLE host for an explicit user-supplied licensed OCX; no registration, installation, external binary inclusion or copied code. It verifies narrow OCX/standard-child attachment, filename identity rejection, explicit negative attachment assertions for unsafe external OCX frames, and bounded USER Edit text/selection or ScrollBar position round trips beneath an OCX wrapper.; T21 S22 include path update",
-      "sha256": "03096d3c8a8b9e6f4f7192dd81fe5e0d1ace5bb9e325b647787df4c01af4167b"
+      "sha256": "41ec07d84443e98f5554d2f909161ee5b136314439083200a2d08ef1bf20e843"
     },
     {
       "path": "tests/ntw16s-dll/ocx_catalog.c",
@@ -2342,7 +2342,7 @@
       "sha256": "b27bf304f919321b0a330c35f629fa527def0b5c81a2f5d52e0502f10cb59e32"
     },
     {
-      "path": "src/lib-win32/win16-control/progress_paint.c",
+      "path": "src/lib-style/win16-control/progress_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2351,7 +2351,7 @@
       "sha256": "a54b8d950b6f884a75121fa87a51d14679e1785ef0d6551451ed79155f3fa72e"
     },
     {
-      "path": "src/lib-win32/win16-control/progress_paint.h",
+      "path": "src/lib-style/win16-control/progress_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2369,7 +2369,7 @@
       "sha256": "189b562f3e066eab7434a02ee47d1657f8ea412ae1f99258901d079a7402989f"
     },
     {
-      "path": "src/lib-win32/win16-control/toolbar_paint.c",
+      "path": "src/lib-style/win16-control/toolbar_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2378,7 +2378,7 @@
       "sha256": "80a942b47f67f9d7f40c9fe943a438aa112237c48f9e95353bd136030100759d"
     },
     {
-      "path": "src/lib-win32/win16-control/toolbar_paint.h",
+      "path": "src/lib-style/win16-control/toolbar_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2387,7 +2387,7 @@
       "sha256": "478968df38c7fe227172d25d5de5a207cb3e1c3a03259d594eebc116a3600409"
     },
     {
-      "path": "src/lib-win32/win16-control/trackbar_paint.c",
+      "path": "src/lib-style/win16-control/trackbar_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2396,7 +2396,7 @@
       "sha256": "7b11f979f943213837219b4f94dc799b1a05b2a9fd2d0e6d667596354448511b"
     },
     {
-      "path": "src/lib-win32/win16-control/trackbar_paint.h",
+      "path": "src/lib-style/win16-control/trackbar_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2414,7 +2414,7 @@
       "sha256": "1132e1ec1b03f1995231eb7f790b76f8bd9ce109265e691e06a49d844d115edc"
     },
     {
-      "path": "src/lib-win32/win16-control/updown_adapter.c",
+      "path": "src/lib-style/win16-control/updown_adapter.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2423,7 +2423,7 @@
       "sha256": "01dd0012baeb819e1cf4f843136f579e05ea81d9325430fce2ca5b47a233fd21"
     },
     {
-      "path": "src/lib-win32/win16-control/updown_adapter.h",
+      "path": "src/lib-style/win16-control/updown_adapter.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -2447,7 +2447,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes",
-      "sha256": "298a5bb35130e501c94adde44331e7212d1e8f8c81abb4716962b50d30e741a6"
+      "sha256": "84801e579931a2d4dc5a85fe462e1da647dcbcdaae6a39463eb6904c01d61855"
     },
     {
       "path": "src/demo-exe/catalog.c",
@@ -2474,7 +2474,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "T17 S3 exact runtime-owned plain VB6 CheckBox; reuse existing glyph/font painter, preserve native Value/events; unsupported graphical variants and live transition retire to native; independent C non-superclass regression and optional actual Actor observer; no external code or original resources changed",
-      "sha256": "afd1cc8d3e7dae90b1c0a47c2b19afe4cc167a811724195c0871418ad43ee3ed"
+      "sha256": "43733cf0b4fa38e036b0dc6c586cb6d5d7483d69d54fe104c40162c97fcc9986"
     },
     {
       "path": "tests/integration/vb_intrinsic.c",
@@ -2483,7 +2483,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license; original sample attribution is evidence only",
       "review": "T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 wrapper support and explicit native-child font lifetime contract; notices and original resources retained; T17 S6 project-authored exact-owned-thread queue/notification witness, tagged FIFO acknowledgement, original VB5/6 queued input assertions and native double-width positive/negative lifecycle test; test-only files, no product renderer or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T17 S11 optional source-reviewed image-only true VB6 observer: ten controls, native disabled/pressed flags, no Click, pixel/state/property restoration; no external code/resources copied; T18 S64 P25 real VB5 picture button observer without clicks; T18 S64 P26 pressed-state image witness; T18 S64 P27 optional real VB5 checklist keyboard and lifecycle; T18 S64 P28 optional real VB5 sorted multiselect witness; T18 S64 P29 optional real VB6 sorted combo and queued close; T18 S64 P31 real VB MDI button maximize/restore and dual-width model verification; T18 S64 P32 original VB5 UserControl nested ListBox selection witness; T18 S64 P51 real VB6 Data binding navigation witness",
-      "sha256": "71ec9243adcd24fabaf168c5540bd75d5eccc51b478bbb3ab4d713e5ff590fa3"
+      "sha256": "a62aba491cd408a240e01845825c5077bc31de777a9a47090483bf9e3f1ba62f"
     },
     {
       "source_blob": null,
@@ -2570,7 +2570,7 @@
       "path": "tests/ntw16s-dll/checklist.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8a2c84e2151744c14aa0e947b6fa3f13195ba35d0af5a8f35d3b1e716124f3c8",
+      "sha256": "0bd66b9da495804264b2324d4f1b8bcbd6eb75868a44a71a3ec7db4f88e8f57f",
       "disposition": "authored",
       "review": "T18 S21 self-contained native checklist scope, original glyph, negative and lifecycle model; not a Delphi runtime",
       "notice": "Project-authored C17; project MIT license"
@@ -2771,7 +2771,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17 native test; no external source or resources copied",
       "review": "T18 S64 VB6 checklist public protocol model and bounded pixel/state/negative cases; fixture is not an actual VB runtime; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P22 mixed-script fallback witness; T18 S64 P23 real VB5 checkbox list; T18 S64 P55 witnessed VB6 144 DPI geometry; T18 S64 P57 witnessed VB5 144 DPI geometry",
-      "sha256": "cb329d911b937aad209c5fe47a8b2625127e81e8663f0069d217064ac3a7ed7c"
+      "sha256": "2111f55b519cab30584a42216180224779a5bf03aaaf2054bf1b272d6b3ef57c"
     },
     {
       "path": "tests/integration/vb5_picture_compare.py",
@@ -2975,7 +2975,7 @@
       "path": "src/ntw16s-dll/injection/theme_track.h",
       "source": null,
       "source_blob": null,
-      "sha256": "689fd3e5228aaaab879bd3ed43e37b2d52a66ef649136d789627d84d6d31107c",
+      "sha256": "37d587d2efa9d1374293ea5a1a0583991d22ff1a6ff6067adc16fc5748232007",
       "disposition": "authored",
       "review": "T18 S64 P110 project-authored modern SpinButton theme tracking and native regression; T18 S64 P130 witnessed combo theme and dropdown arrow",
       "notice": "Project-authored source; no imported code or resources"
@@ -3056,7 +3056,7 @@
       "path": "src/ntw16s-dll/injection/file_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ac4a296da9cecb35e734bb4896110426d6e8eb0391502b64f4450ad7e605dfd6",
+      "sha256": "342095cc43443291273c21a5ddaf992cda69667450ed284827a2070e7e7f457c",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics; T25 S2 shared runtime extraction",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -3065,7 +3065,7 @@
       "path": "src/ntw16s-dll/injection/folder_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dc593d410d2e2a1b4e83e0e98d58f31626975c0d032c6fed3b2409e89c3c321c",
+      "sha256": "acd0d3fb45866efa56d884b435d08c563a3ab019fde0933d13657c2d1fbc1ad4",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics; T24 S1 quality refactor; T25 S2 shared runtime extraction",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -3182,7 +3182,7 @@
       "path": "src/ntw16s-dll/injection/modern_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6bead2deca24dbf0598a97a281e74a57ffcdf7d5e32129bce6f785d44de066eb",
+      "sha256": "202fa873771a601af7d49281163eb773deec201bb2b32006f80b78a38488c00b",
       "disposition": "authored",
       "review": "T20 S1 public modern dialog API and demo comparison under development",
       "notice": "Project-authored; no imported code or resources"
@@ -3218,7 +3218,7 @@
       "path": "src/ntw16s-dll/injection/com_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7568b891d20537acbb952fd4d610ab243e6c419f349a95ef3d25896a11d13441",
+      "sha256": "6b88d841b682a33cbeb4df2c791efeec64ad7095e585368042701c45b18e63e4",
       "disposition": "authored",
       "review": "T20 S1 COM dialog bridge and real native probe under development; T21 S13 unified late style hooks and stop semantics; T25 S2 shared runtime extraction",
       "notice": "Project-authored; no imported code or resources"
@@ -3440,7 +3440,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/print_extended.c",
+      "path": "src/lib-style/win16-dialog/print_extended.c",
       "source": null,
       "source_blob": null,
       "sha256": "e1924745c9a84db397283b71d6a272e538834c5bdef5b39959373ebba68cab04",
@@ -3449,7 +3449,7 @@
       "notice": "Project-authored C code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/print_extended.h",
+      "path": "src/lib-style/win16-dialog/print_extended.h",
       "source": null,
       "source_blob": null,
       "sha256": "d47e2abf43fc25acd4983e7e8a160be4b914240e8497d6a6b2d554885e65f5b2",
@@ -3569,7 +3569,7 @@
       "path": "src/ntw16s-dll/global/vb_text.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1c58490085b6efebb64c05285b4b370618e5a290b669998789ed3f4cf8f77e92",
+      "sha256": "6a61aca5e12d9e99fae191ee512e9801219721d578ea30d83e9424881a139ca6",
       "disposition": "authored",
       "review": "T21 S13 controlled VB6 global text attachment and native fixture; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -3596,7 +3596,7 @@
       "path": "tests/ntw16s-dll/global_vb_text.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3dcbb6079ab6bdac842b0aa825b73b90805c5f550e7e701aef4cbd68f9a2310e",
+      "sha256": "b47ad52730a0825de48080c9a56a90ab5c86da8005737db9eccb33bf0ec06540",
       "disposition": "authored",
       "review": "T21 S13 controlled VB6 global text attachment and native fixture; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -3800,7 +3800,7 @@
       "notice": "Project-authored source; no imported code or resources"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_paint.c",
+      "path": "src/lib-style/win16-window/frame_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3809,7 +3809,7 @@
       "review": "T21 S22 extraction from existing project-authored frame painter; T21 S22 caption and sizing-band presentation extracted with live state references"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_paint.h",
+      "path": "src/lib-style/win16-window/frame_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3818,7 +3818,7 @@
       "review": "T21 S22 extraction from existing project-authored frame painter; T21 S22 caption and sizing-band presentation extracted with live state references"
     },
     {
-      "path": "src/lib-win32/win16-control/basic_paint.c",
+      "path": "src/lib-style/win16-control/basic_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3827,7 +3827,7 @@
       "review": "T21 S22 extraction from existing project-authored control presentation"
     },
     {
-      "path": "src/lib-win32/win16-control/basic_paint.h",
+      "path": "src/lib-style/win16-control/basic_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3836,7 +3836,7 @@
       "review": "T21 S22 extraction from existing project-authored control presentation"
     },
     {
-      "path": "src/lib-win32/win16-control/updown_paint.c",
+      "path": "src/lib-style/win16-control/updown_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3845,7 +3845,7 @@
       "review": "T21 S22 extraction of existing up/down painter"
     },
     {
-      "path": "src/lib-win32/win16-control/updown_paint.h",
+      "path": "src/lib-style/win16-control/updown_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3854,7 +3854,7 @@
       "review": "T21 S22 extraction of existing up/down painter"
     },
     {
-      "path": "src/lib-win32/win16-control/choice_paint.c",
+      "path": "src/lib-style/win16-control/choice_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3863,7 +3863,7 @@
       "review": "T21 S22 extraction of existing choice glyph presentation; T24 S1 share pixel viewport validation"
     },
     {
-      "path": "src/lib-win32/win16-control/choice_paint.h",
+      "path": "src/lib-style/win16-control/choice_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3872,7 +3872,7 @@
       "review": "T21 S22 extraction of existing choice glyph presentation"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_assets.c",
+      "path": "src/lib-style/win16-control/scroll_assets.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3881,7 +3881,7 @@
       "review": "T21 S22 shared original scrollbar glyph resource access"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_assets.h",
+      "path": "src/lib-style/win16-control/scroll_assets.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3890,7 +3890,7 @@
       "review": "T21 S22 shared original scrollbar glyph resource access"
     },
     {
-      "path": "src/lib-win32/win16-control/other_paint.c",
+      "path": "src/lib-style/win16-control/other_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3899,7 +3899,7 @@
       "review": "T21 S22 extraction of existing button and static presentation"
     },
     {
-      "path": "src/lib-win32/win16-control/other_paint.h",
+      "path": "src/lib-style/win16-control/other_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3908,7 +3908,7 @@
       "review": "T21 S22 extraction of existing button and static presentation"
     },
     {
-      "path": "src/lib-win32/win16-control/list_paint.c",
+      "path": "src/lib-style/win16-control/list_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3917,7 +3917,7 @@
       "review": "T21 S22 extraction of existing list and edit presentation"
     },
     {
-      "path": "src/lib-win32/win16-control/list_paint.h",
+      "path": "src/lib-style/win16-control/list_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3926,7 +3926,7 @@
       "review": "T21 S22 extraction of existing list and edit presentation"
     },
     {
-      "path": "src/lib-win32/win16-control/combo_paint.c",
+      "path": "src/lib-style/win16-control/combo_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3935,7 +3935,7 @@
       "review": "T21 S22 extraction of existing combo presentation; T21 S22 native embedded combo button painter extracted"
     },
     {
-      "path": "src/lib-win32/win16-control/combo_paint.h",
+      "path": "src/lib-style/win16-control/combo_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3944,7 +3944,7 @@
       "review": "T21 S22 extraction of existing combo presentation; T21 S22 native embedded combo button painter extracted"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_paint.c",
+      "path": "src/lib-style/win16-control/scroll_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3953,7 +3953,7 @@
       "review": "T21 S22 extraction of existing scrollbar presentation"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_paint.h",
+      "path": "src/lib-style/win16-control/scroll_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3962,7 +3962,7 @@
       "review": "T21 S22 extraction of existing scrollbar presentation"
     },
     {
-      "path": "src/lib-win32/win16-window/win16_style.h",
+      "path": "src/lib-style/win16-window/win16_style.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3971,7 +3971,7 @@
       "review": "T21 S22 palette extraction and compatibility headers"
     },
     {
-      "path": "src/lib-win32/win16-common/palette.c",
+      "path": "src/lib-style/win16-common/palette.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3980,7 +3980,7 @@
       "review": "T21 S22 palette extraction and compatibility headers; T21 S22 frame layout and high-contrast palette extraction"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_view.c",
+      "path": "src/lib-style/win16-window/frame_view.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3989,7 +3989,7 @@
       "review": "T21 S22 extraction of existing frame presentation with caller-owned state; T21 S22 buffered frame/menu/button presentation extraction; T24 S1 unify buffered frame, menu and button paint"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_view.h",
+      "path": "src/lib-style/win16-window/frame_view.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -3998,7 +3998,7 @@
       "review": "T21 S22 extraction of existing frame presentation with caller-owned state; T21 S22 buffered frame/menu/button presentation extraction"
     },
     {
-      "path": "src/lib-win32/win16-control/choice_view.c",
+      "path": "src/lib-style/win16-control/choice_view.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -4007,7 +4007,7 @@
       "review": "T21 S22 extraction of standard button and static presentation"
     },
     {
-      "path": "src/lib-win32/win16-control/choice_view.h",
+      "path": "src/lib-style/win16-control/choice_view.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -4021,20 +4021,20 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "ee56a13031b95d35e61cff991344332458c4ef50eba9c35c4d9c7d9e7c16b239",
+      "sha256": "6ebb81bd73dd68334a67605facce47b7a1d735c298793b6ac189b2d1a45e43bf",
       "review": "T21 S22 forwarding header or thin caller-owned identity adapter"
     },
     {
-      "path": "tests/lib/win16-control/control_link.c",
+      "path": "tests/lib-style/win16-control/control_link.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "04dc8873ee6b0d83e0c66bfd45248796480d9c4eee8e017d458fbb8d6a63b715",
+      "sha256": "ef10b5f1ee9e908892ed01ca98f015416d1a84912b3029f29138dfee0e5b175e",
       "review": "T21 S22 standalone whole-archive linkage and original glyph smoke test"
     },
     {
-      "path": "src/lib-win32/win16-control/special_paint.c",
+      "path": "src/lib-style/win16-control/special_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -4043,7 +4043,7 @@
       "review": "T21 S22 extraction of existing specialized control presentation; T21 S22 VB data arrow pixel presentation extracted; T21 S22 graphical and bitmap-button face presentation extraction; T24 S1 share pixel viewport validation"
     },
     {
-      "path": "src/lib-win32/win16-control/special_paint.h",
+      "path": "src/lib-style/win16-control/special_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -4052,7 +4052,7 @@
       "review": "T21 S22 extraction of existing specialized control presentation; T21 S22 VB data arrow pixel presentation extracted; T21 S22 graphical and bitmap-button face presentation extraction"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_layout.c",
+      "path": "src/lib-style/win16-window/frame_layout.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -4061,7 +4061,7 @@
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_layout.h",
+      "path": "src/lib-style/win16-window/frame_layout.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -4070,7 +4070,7 @@
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
-      "path": "src/lib-win32/win16-common/present.c",
+      "path": "src/lib-style/win16-common/present.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -4079,7 +4079,7 @@
       "review": "T21 S22 extraction of existing buffered control presentation"
     },
     {
-      "path": "src/lib-win32/win16-common/present.h",
+      "path": "src/lib-style/win16-common/present.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -4088,7 +4088,7 @@
       "review": "T21 S22 extraction of existing buffered control presentation"
     },
     {
-      "path": "src/lib-win32/win16-control/month_text.c",
+      "path": "src/lib-style/win16-control/month_text.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -4097,7 +4097,7 @@
       "review": "T21 S22 extraction of existing calendar text validation and layout"
     },
     {
-      "path": "src/lib-win32/win16-control/month_text.h",
+      "path": "src/lib-style/win16-control/month_text.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
@@ -4106,25 +4106,25 @@
       "review": "T21 S22 extraction of existing calendar text validation and layout; T24 S1 removed forwarding header src/ntw16s-dll/month_text.h SHA256 7446a9e54c5347bafc6030a546cb5ef736a2e55cbac1a0087078214700abab88"
     },
     {
-      "path": "tests/lib/win16-control/control_print.c",
+      "path": "tests/lib-style/win16-control/control_print.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "2fded13719a1dc30b3d416d62d555b36f177031e47f24f7f6711777f8c573a7e",
+      "sha256": "eece8dbc44c88e84c889ac892404d726fe2031dc6f68d6ddb96b8f6cc07507c5",
       "review": "T21 S22 library window print ordering and detach verification"
     },
     {
-      "path": "tests/lib/win16-dialog/dialog_link.c",
+      "path": "tests/lib-style/win16-dialog/dialog_link.c",
       "source": null,
       "source_blob": null,
-      "sha256": "00352656b1ad43dafb6334e0b0c98b5e723415208e561a6b7c52024a489f5ce3",
+      "sha256": "36ee661359ebf39f730e65f288bee9c40307d1e8c5861720f460518c871a0919",
       "disposition": "authored",
       "review": "T21 S23 independent whole-library link and page range test",
       "notice": "Project-authored C17; project MIT license"
     },
     {
-      "path": "src/lib-win32/win16-dialog/file_helpers.c",
+      "path": "src/lib-style/win16-dialog/file_helpers.c",
       "source": null,
       "source_blob": null,
       "sha256": "c1e079cceacae52d97bf310008e09fc6253bf81755c35ad2cf21bfcc132f06e8",
@@ -4133,7 +4133,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/file_helpers.h",
+      "path": "src/lib-style/win16-dialog/file_helpers.h",
       "source": null,
       "source_blob": null,
       "sha256": "2987ea9ced74628b6ccce4274cac917f9c9c3797d4fd5da9a2547ffba2486f81",
@@ -4142,7 +4142,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/file_contract.c",
+      "path": "src/lib-style/win16-dialog/file_contract.c",
       "source": null,
       "source_blob": null,
       "sha256": "f281cf41e2bdf5547602f576c9011b1bd74e0a090e1f9498c529be4066941145",
@@ -4151,7 +4151,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/file_contract.h",
+      "path": "src/lib-style/win16-dialog/file_contract.h",
       "source": null,
       "source_blob": null,
       "sha256": "0ec4624c1953745695321c850458f2979c6b25a7f6817d6b596769b9ba86a632",
@@ -4160,7 +4160,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/modern.c",
+      "path": "src/lib-style/win16-dialog/modern.c",
       "source": null,
       "source_blob": null,
       "sha256": "ce2826a08ef13bf84a8c401be82a8fbda60895cacde13f4d345108d1bae43afb",
@@ -4169,7 +4169,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/modern.h",
+      "path": "src/lib-style/win16-dialog/modern.h",
       "source": null,
       "source_blob": null,
       "sha256": "df8c5f47bf2759486234db2123ceb5cd618e372eecbd63d6e2a5dc26da68e3b5",
@@ -4178,7 +4178,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/folder_create.c",
+      "path": "src/lib-style/win16-dialog/folder_create.c",
       "source": null,
       "source_blob": null,
       "sha256": "0985e6f5099196a786b37db24c07e64abcbabfa605a8dfd546ba8aaa60f1633b",
@@ -4187,7 +4187,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/folder_create.h",
+      "path": "src/lib-style/win16-dialog/folder_create.h",
       "source": null,
       "source_blob": null,
       "sha256": "81a2a98aa3ad93260a8ba30d9cb9c156a52d8cc220a9da178de2a6d18955c27c",
@@ -4196,16 +4196,16 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "tests/lib/win16-dialog/dialog_folder_create.c",
+      "path": "tests/lib-style/win16-dialog/dialog_folder_create.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d9d3c20ed64dca63ee00ec01543c663cfb86acc71056ad5bdcba9016296c725d",
+      "sha256": "61cf2f23eb5533d9b55fc2f2e4930a4cfafd5176f17570300535f00343320108",
       "disposition": "authored",
       "review": "T21 S23 self-owned folder dialog library regression",
       "notice": "Project-authored test; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/shell_folder.c",
+      "path": "src/lib-style/win16-dialog/shell_folder.c",
       "source": null,
       "source_blob": null,
       "sha256": "5e187a51bf8e8f6cc12221a2ed497932ff236a028d9a0c03b5dc9403139c2b57",
@@ -4214,7 +4214,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/shell_folder.h",
+      "path": "src/lib-style/win16-dialog/shell_folder.h",
       "source": null,
       "source_blob": null,
       "sha256": "0e6074160f305f6a103bb287dd15318ed5d552381669ade4ce4f142ff0632a94",
@@ -4223,7 +4223,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/shell_item.c",
+      "path": "src/lib-style/win16-dialog/shell_item.c",
       "source": null,
       "source_blob": null,
       "sha256": "573fcf0a684acd88c3b2529eea01b25069684989627c5a3e7d4a6ac2d05bf02d",
@@ -4232,7 +4232,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/shell_item.h",
+      "path": "src/lib-style/win16-dialog/shell_item.h",
       "source": null,
       "source_blob": null,
       "sha256": "146b13f16def796ea441fdb4345f885aae3b1bdc707f9951858662dd7c1c4b2d",
@@ -4241,7 +4241,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/chrome.c",
+      "path": "src/lib-style/win16-dialog/chrome.c",
       "source": null,
       "source_blob": null,
       "sha256": "c449f4ebadf579993253a19c35878ac373afecae87cfc53f934d08e65d2498d1",
@@ -4250,7 +4250,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/chrome.h",
+      "path": "src/lib-style/win16-dialog/chrome.h",
       "source": null,
       "source_blob": null,
       "sha256": "35c6f8e1680ad8afc0001c1c4cd5ee8424f42cbbaa58a7465ae81c98e309efe7",
@@ -4259,16 +4259,16 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "tests/lib/win16-dialog/dialog_chrome.c",
+      "path": "tests/lib-style/win16-dialog/dialog_chrome.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f4a1dba0c8b69c6112ced7771aab4aa21c7b2aa34ed5f82e45d2935d5a52d0c5",
+      "sha256": "360a63abcbb7940f5938fc4538c156aab2a0c5149602be0400a3a10b4f9a0886",
       "disposition": "authored",
       "review": "T21 S23 classic dialog control presentation adapter regression",
       "notice": "Project-authored test; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/customize.c",
+      "path": "src/lib-style/win16-dialog/customize.c",
       "source": null,
       "source_blob": null,
       "sha256": "6935a09fa722c20f3283151ba11940404009480833008f4166ab783d12a912e2",
@@ -4277,7 +4277,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/customize.h",
+      "path": "src/lib-style/win16-dialog/customize.h",
       "source": null,
       "source_blob": null,
       "sha256": "542eeb17ebbaa136ea47f2027f5a6ad0b29dc9be409206ec743fe69aab41246f",
@@ -4286,7 +4286,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/events.c",
+      "path": "src/lib-style/win16-dialog/events.c",
       "source": null,
       "source_blob": null,
       "sha256": "8d87a1b364307af26f16e0e7f896dcee4a2539e31093f73d59f403d3b6b0489e",
@@ -4295,7 +4295,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/events.h",
+      "path": "src/lib-style/win16-dialog/events.h",
       "source": null,
       "source_blob": null,
       "sha256": "59d4fd197c0e5f40d91d4f6c124cf3f5d1566743825ca2dfe0b372c7f5089a57",
@@ -4304,7 +4304,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/ole_window.c",
+      "path": "src/lib-style/win16-dialog/ole_window.c",
       "source": null,
       "source_blob": null,
       "sha256": "d1524968eee6d9f810a223aacdc2ad63a11026e93b480ec59efbb2bfd76b2701",
@@ -4313,7 +4313,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/ole_window.h",
+      "path": "src/lib-style/win16-dialog/ole_window.h",
       "source": null,
       "source_blob": null,
       "sha256": "4edd8c213441044b99002b7522053a7a7faaa1af794e899598f333607bb349a3",
@@ -4322,7 +4322,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/v2.c",
+      "path": "src/lib-style/win16-dialog/v2.c",
       "source": null,
       "source_blob": null,
       "sha256": "b8ed8ac21010a22aa40ccc3c04573497564f8d0e59ad1a5d17d7ebd25c171afa",
@@ -4331,7 +4331,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/v2.h",
+      "path": "src/lib-style/win16-dialog/v2.h",
       "source": null,
       "source_blob": null,
       "sha256": "b72bcb9470b7d62763f97326b085067f9abbcd4e4bc4644e2cab93185146b53b",
@@ -4340,7 +4340,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/primary.c",
+      "path": "src/lib-style/win16-dialog/primary.c",
       "source": null,
       "source_blob": null,
       "sha256": "6de83953329c66cfe620b6c54a878e530bf44d12d96a6a5b23265cbb7c9b6575",
@@ -4349,7 +4349,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/primary.h",
+      "path": "src/lib-style/win16-dialog/primary.h",
       "source": null,
       "source_blob": null,
       "sha256": "dfb14f2bf8a64ecffccfefe15cfaf53024bfc3a0a33849b55ee8b37721524e70",
@@ -4358,7 +4358,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/com_show.c",
+      "path": "src/lib-style/win16-dialog/com_show.c",
       "source": null,
       "source_blob": null,
       "sha256": "b77ffd05a4d9cecc45da27378c3475ea056ddb427bae8a25e317e7d9fd07b683",
@@ -4367,7 +4367,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/com_show.h",
+      "path": "src/lib-style/win16-dialog/com_show.h",
       "source": null,
       "source_blob": null,
       "sha256": "f01129e9446202b0577282374de421c31c6f67c22c8fc83a69b2e7e7ae6cc65a",
@@ -4376,7 +4376,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/browse.c",
+      "path": "src/lib-style/win16-dialog/browse.c",
       "source": null,
       "source_blob": null,
       "sha256": "e3383ee780aed746d20b11e265a09e5da539f12f90ca60395707fcaa2df488e4",
@@ -4385,7 +4385,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/browse.h",
+      "path": "src/lib-style/win16-dialog/browse.h",
       "source": null,
       "source_blob": null,
       "sha256": "58bc1f2744aa83d7110046f1981136954453961da56289e7f8f7f0c27288b373",
@@ -4394,7 +4394,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/classic_folder.c",
+      "path": "src/lib-style/win16-dialog/classic_folder.c",
       "source": null,
       "source_blob": null,
       "sha256": "205cc53575d5413acea41fb8628c29110b1b12a9eb44217c7db35e5d89a0777e",
@@ -4403,7 +4403,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/classic_folder.h",
+      "path": "src/lib-style/win16-dialog/classic_folder.h",
       "source": null,
       "source_blob": null,
       "sha256": "52fbebf1f66c10f60398cb290866da675b2ae8803bc72eb4d1c07719f61427fd",
@@ -4412,7 +4412,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/file_hook.c",
+      "path": "src/lib-style/win16-dialog/file_hook.c",
       "source": null,
       "source_blob": null,
       "sha256": "9d385add8407cc0df599c366ff319e924c72af92b420a9e57e4d87179e51371e",
@@ -4421,7 +4421,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/file_hook.h",
+      "path": "src/lib-style/win16-dialog/file_hook.h",
       "source": null,
       "source_blob": null,
       "sha256": "c99b71ff6f1a3d0f26384ef15d6ec8d1c6cb2126629ca0ea1db3e646a4c9b192",
@@ -4430,7 +4430,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/file_live.c",
+      "path": "src/lib-style/win16-dialog/file_live.c",
       "source": null,
       "source_blob": null,
       "sha256": "5f599969d1956769b538ee481f249b849471cffab31f1005883ce754d22254a0",
@@ -4439,7 +4439,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/file_live.h",
+      "path": "src/lib-style/win16-dialog/file_live.h",
       "source": null,
       "source_blob": null,
       "sha256": "ef397277f3419bc2c7270310a5c096cff45bc935ac47a617bec14036efccda7a",
@@ -4448,7 +4448,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/com_hook.c",
+      "path": "src/lib-style/win16-dialog/com_hook.c",
       "source": null,
       "source_blob": null,
       "sha256": "c62b84fc602f0c9eac5706bbe092fcbba53fec8e4cfa85ad571c584a93c57a76",
@@ -4457,7 +4457,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/com_hook.h",
+      "path": "src/lib-style/win16-dialog/com_hook.h",
       "source": null,
       "source_blob": null,
       "sha256": "b386ddd54aa6683bf1af73dfe35d8f8fffeb9dd816dd1a2ae026044fb2fd6855",
@@ -4466,7 +4466,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/proxy.c",
+      "path": "src/lib-style/win16-dialog/proxy.c",
       "source": null,
       "source_blob": null,
       "sha256": "ca3e69b8713d392284513cd4e817c28ac8945773cb8147667aaca0789349c193",
@@ -4475,7 +4475,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/proxy.h",
+      "path": "src/lib-style/win16-dialog/proxy.h",
       "source": null,
       "source_blob": null,
       "sha256": "7a88a3e8b4566115b368f8d64e5bebd02a0122d2a89c0ae0e5e4195bbec4f087",
@@ -4484,7 +4484,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/print_classic.c",
+      "path": "src/lib-style/win16-dialog/print_classic.c",
       "source": null,
       "source_blob": null,
       "sha256": "9ed6bfe38dd7cddc22b69939c1343629eab24e837d8282f0d5e7749ba6909061",
@@ -4493,7 +4493,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-dialog/print_classic.h",
+      "path": "src/lib-style/win16-dialog/print_classic.h",
       "source": null,
       "source_blob": null,
       "sha256": "6d8e0cb667bf49f0936679ae4afbd9e666226ff14d1c0cc4d33395b378020bcd",
@@ -4502,7 +4502,7 @@
       "notice": "Project-authored code; no imported resources"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_native.c",
+      "path": "src/lib-style/win16-control/scroll_native.c",
       "source": null,
       "source_blob": null,
       "sha256": "4b33f9f72a2b80fb35efe3c71c3b5c96f3a4cbf245951b803c10e37275ad60b9",
@@ -4511,7 +4511,7 @@
       "notice": "Project-authored C implementation; no imported artwork"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_native.h",
+      "path": "src/lib-style/win16-control/scroll_native.h",
       "source": null,
       "source_blob": null,
       "sha256": "70f14ed21e33a60a9ab152c2ebdc488543b1b747b0bee6c5ed90d9c650a24a1b",
@@ -4520,7 +4520,7 @@
       "notice": "Project-authored C implementation; no imported artwork"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_font.c",
+      "path": "src/lib-style/win16-window/frame_font.c",
       "source": null,
       "source_blob": null,
       "sha256": "79179fabee2ffd30ddc3f0c438905c0f1ff9553a31ea747735ecfd1dd97d4487",
@@ -4529,7 +4529,7 @@
       "notice": "Project-authored C implementation; no imported artwork"
     },
     {
-      "path": "src/lib-win32/win16-control/theme_state.c",
+      "path": "src/lib-style/win16-control/theme_state.c",
       "source": null,
       "source_blob": null,
       "sha256": "9922a523099271ac5985af9f93d7a8c995580ed7c04ba231acedab1f4932daed",
@@ -4538,7 +4538,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/theme_state.h",
+      "path": "src/lib-style/win16-control/theme_state.h",
       "source": null,
       "source_blob": null,
       "sha256": "2025f65f91bb378f3d9416954958d24821da0c8ad7ff19b2f395a3c0a08e2421",
@@ -4547,7 +4547,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/custom_draw.c",
+      "path": "src/lib-style/win16-control/custom_draw.c",
       "source": null,
       "source_blob": null,
       "sha256": "7b34269068ece36dc6231336a057dbe720c2aa3090bbd2aed4728e8bcb417de5",
@@ -4556,7 +4556,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/custom_draw.h",
+      "path": "src/lib-style/win16-control/custom_draw.h",
       "source": null,
       "source_blob": null,
       "sha256": "cbb3d5d70b1e8da4331f75b30bac502bb8d313ad5a0f27a1091370b1e27873d7",
@@ -4565,7 +4565,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/spin_identity.c",
+      "path": "src/lib-style/win16-control/spin_identity.c",
       "source": null,
       "source_blob": null,
       "sha256": "d19563240b4cc67495059b3a4a923921aaa245d07e56ed43abfb3133b78b0c28",
@@ -4574,7 +4574,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/spin_identity.h",
+      "path": "src/lib-style/win16-control/spin_identity.h",
       "source": null,
       "source_blob": null,
       "sha256": "c3785d6d6e1ba7976829b74b6a8d433648cbc7098a92b2bf9550652d4a3e4a05",
@@ -4583,7 +4583,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_state.c",
+      "path": "src/lib-style/win16-window/frame_state.c",
       "source": null,
       "source_blob": null,
       "sha256": "85765a7b1c676b58b33b7fb2ab626c558693a83de81cfb51feacb3c3599e0831",
@@ -4592,7 +4592,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_state.h",
+      "path": "src/lib-style/win16-window/frame_state.h",
       "source": null,
       "source_blob": null,
       "sha256": "aee8eae54cf3aeae7571f6f56d0992b1c0e3f218a9515b4459d6f95a13c459a9",
@@ -4601,7 +4601,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_state.c",
+      "path": "src/lib-style/win16-control/control_state.c",
       "source": null,
       "source_blob": null,
       "sha256": "3935d3b573a9ab3b6007648f60b48eb5a966b618e0be74013fd8457f2a032f71",
@@ -4610,7 +4610,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_state.h",
+      "path": "src/lib-style/win16-control/control_state.h",
       "source": null,
       "source_blob": null,
       "sha256": "4224a625d98867c0bc59e89982eb3d636b491ed9f433139ad8922245d2472942",
@@ -4619,7 +4619,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/list_message.c",
+      "path": "src/lib-style/win16-control/list_message.c",
       "source": null,
       "source_blob": null,
       "sha256": "d59687c010b8c275f47b7693eea79c2ebfdbff575b995469e672b1ba26d76145",
@@ -4628,7 +4628,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/list_message.h",
+      "path": "src/lib-style/win16-control/list_message.h",
       "source": null,
       "source_blob": null,
       "sha256": "96b05ce3b3a94624aa9327119cb120b25ea7cf631ad736262a4a3754c183a7cb",
@@ -4637,7 +4637,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/edit_message.c",
+      "path": "src/lib-style/win16-control/edit_message.c",
       "source": null,
       "source_blob": null,
       "sha256": "0f284d9fd2d537c1162ccba633d9ff7d2d1150f657d4f442d767695ea1af6357",
@@ -4646,7 +4646,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/edit_message.h",
+      "path": "src/lib-style/win16-control/edit_message.h",
       "source": null,
       "source_blob": null,
       "sha256": "d7c5da65909dc16c9ed2ac58f59dbf34de20af6c10030737d5fae6b316e5ee21",
@@ -4655,7 +4655,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/basic_message.c",
+      "path": "src/lib-style/win16-control/basic_message.c",
       "source": null,
       "source_blob": null,
       "sha256": "395e494a857b4a9167cd2a50463d53358dfcbf8800f64c0498d0bc6b958dbc6b",
@@ -4664,7 +4664,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/basic_message.h",
+      "path": "src/lib-style/win16-control/basic_message.h",
       "source": null,
       "source_blob": null,
       "sha256": "22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c",
@@ -4673,7 +4673,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_message.c",
+      "path": "src/lib-style/win16-control/scroll_message.c",
       "source": null,
       "source_blob": null,
       "sha256": "4087b80d97e6f9ffaacd39343c1a3d985db91a0c2fd5bd2c997756c407a32a90",
@@ -4682,7 +4682,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/scroll_message.h",
+      "path": "src/lib-style/win16-control/scroll_message.h",
       "source": null,
       "source_blob": null,
       "sha256": "ac96754592cbe76b8701fa04915ea18b461991a44b5bb16de44a9c5efa184b69",
@@ -4691,7 +4691,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/fileowner_message.c",
+      "path": "src/lib-style/win16-control/fileowner_message.c",
       "source": null,
       "source_blob": null,
       "sha256": "d0ae9366238dd0bdcd539370fd2c1d2a5ad3fd2a7f6a5a2a05800e10f127b5d1",
@@ -4700,7 +4700,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/fileowner_message.h",
+      "path": "src/lib-style/win16-control/fileowner_message.h",
       "source": null,
       "source_blob": null,
       "sha256": "8f08379fd2ff61873b4cfff7006cfadc9c48b039d27fd4232e2ce8445cf99f88",
@@ -4709,7 +4709,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/notify_message.c",
+      "path": "src/lib-style/win16-control/notify_message.c",
       "source": null,
       "source_blob": null,
       "sha256": "e6807de3223d3fd1c4ed6a396006fdb0ce911e28dbc762fb662306aa782eed57",
@@ -4718,7 +4718,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/notify_message.h",
+      "path": "src/lib-style/win16-control/notify_message.h",
       "source": null,
       "source_blob": null,
       "sha256": "44ac844c460c0a26ce509497a5a8db3315e895e09ff584b44f587421317002df",
@@ -4727,7 +4727,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/combo_text.c",
+      "path": "src/lib-style/win16-control/combo_text.c",
       "source": null,
       "source_blob": null,
       "sha256": "661697675d0818b8f9ac8cf11de08772ca9bd874fc84989dcdcd106ba2fcd4bf",
@@ -4736,7 +4736,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/combo_text.h",
+      "path": "src/lib-style/win16-control/combo_text.h",
       "source": null,
       "source_blob": null,
       "sha256": "dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0",
@@ -4745,7 +4745,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/native_presentation.c",
+      "path": "src/lib-style/win16-control/native_presentation.c",
       "source": null,
       "source_blob": null,
       "sha256": "8c45aa60cb3d07789765c6b6476423f871b908bcf3b1d2f0a24f2a1801e5ad8e",
@@ -4754,7 +4754,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/native_presentation.h",
+      "path": "src/lib-style/win16-control/native_presentation.h",
       "source": null,
       "source_blob": null,
       "sha256": "5edd24a570f25d3d6b07374a2ba2cbed166eebe66721ace5acc5144326125e36",
@@ -4763,7 +4763,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_iteration.c",
+      "path": "src/lib-style/win16-window/menu_iteration.c",
       "source": null,
       "source_blob": null,
       "sha256": "bf56f623b42c29098a6579aceab386f6163157493aafbcd3a0fce4734f00e96d",
@@ -4772,7 +4772,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_iteration.h",
+      "path": "src/lib-style/win16-window/menu_iteration.h",
       "source": null,
       "source_blob": null,
       "sha256": "1e5e3870b89cba0a817b10eeeb494231795dda9b760b286df1b365f839be5926",
@@ -4781,7 +4781,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_dispatch.c",
+      "path": "src/lib-style/win16-control/control_dispatch.c",
       "source": null,
       "source_blob": null,
       "sha256": "a1e8bb7da8816f64cc0cb7f2cb3eb207eedde2148d546fa91b3a0aa8fd4b60fc",
@@ -4790,7 +4790,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_dispatch.h",
+      "path": "src/lib-style/win16-control/control_dispatch.h",
       "source": null,
       "source_blob": null,
       "sha256": "299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8",
@@ -4799,7 +4799,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_message.c",
+      "path": "src/lib-style/win16-window/menu_message.c",
       "source": null,
       "source_blob": null,
       "sha256": "8d9485bab573e805c652fa4c797687ffede28f6515257e4b1803b337f7d1abfd",
@@ -4808,7 +4808,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/menu_message.h",
+      "path": "src/lib-style/win16-window/menu_message.h",
       "source": null,
       "source_blob": null,
       "sha256": "deaedbf7c25bbebf64e892ad7f647cb37a6e19944eef1c73f5dece6673d95b79",
@@ -4817,7 +4817,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_message.c",
+      "path": "src/lib-style/win16-window/frame_message.c",
       "source": null,
       "source_blob": null,
       "sha256": "d91e12e359b940b6222ed5bb1fb9ca87d966ebd562fabe5bf67b57641b7fa5dc",
@@ -4826,7 +4826,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_message.h",
+      "path": "src/lib-style/win16-window/frame_message.h",
       "source": null,
       "source_blob": null,
       "sha256": "dd42ca6758f2e5fc5664848f34081295680653792e39b74399d4e0719314d347",
@@ -4835,7 +4835,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_input.c",
+      "path": "src/lib-style/win16-window/frame_input.c",
       "source": null,
       "source_blob": null,
       "sha256": "11cc7af916129e10e9f222865d52fef3b75c4920f9701ff672d3ab24f3a14fdd",
@@ -4844,7 +4844,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_input.h",
+      "path": "src/lib-style/win16-window/frame_input.h",
       "source": null,
       "source_blob": null,
       "sha256": "2725920d1159d39153d0bfac2e7e94d86aa79c8e725fdd1bcb12f0ae8fd45233",
@@ -4853,7 +4853,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/native_combo_identity.c",
+      "path": "src/lib-style/win16-control/native_combo_identity.c",
       "source": null,
       "source_blob": null,
       "sha256": "9c71e5baebe7b5320434b50b31ecdc9e85e7e287f5cf61b0a5ed743bd016b79b",
@@ -4862,7 +4862,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/native_combo_identity.h",
+      "path": "src/lib-style/win16-control/native_combo_identity.h",
       "source": null,
       "source_blob": null,
       "sha256": "6c9710516250a05fd4cb5b0a2e662b11714a4533b6f477334dcf79f313a5c864",
@@ -4871,7 +4871,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/cool_grip_identity.c",
+      "path": "src/lib-style/win16-control/cool_grip_identity.c",
       "source": null,
       "source_blob": null,
       "sha256": "aa997498d8dd3e9c8e7afa8c2bfa25723266b0cdf0a5f160a6cfc8e69c81a147",
@@ -4880,7 +4880,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/cool_grip_identity.h",
+      "path": "src/lib-style/win16-control/cool_grip_identity.h",
       "source": null,
       "source_blob": null,
       "sha256": "53b6d50fbb5c047e21dd688bda1e78e012fe885c9d71598a340283c94d36c294",
@@ -4889,7 +4889,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/vcl_native_paint.c",
+      "path": "src/lib-style/win16-control/vcl_native_paint.c",
       "source": null,
       "source_blob": null,
       "sha256": "3ff40fff9defaaba15bdc0fd7092098946daf525c42b43df96ad14b6f87891d7",
@@ -4898,7 +4898,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/vcl_native_paint.h",
+      "path": "src/lib-style/win16-control/vcl_native_paint.h",
       "source": null,
       "source_blob": null,
       "sha256": "2372cae31d72c1b5d0381905fa077efdcbaf785cb484e8fec6c876731e4aa06d",
@@ -4907,7 +4907,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/text_policy.c",
+      "path": "src/lib-style/win16-control/text_policy.c",
       "source": null,
       "source_blob": null,
       "sha256": "69096cf8e505c6c8b7c0d4bd25743ba5aa93fdde8d50a922294d8892bd1231af",
@@ -4916,7 +4916,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/text_policy.h",
+      "path": "src/lib-style/win16-control/text_policy.h",
       "source": null,
       "source_blob": null,
       "sha256": "50074d3156e5516ac52cb161388629b6a9cc688199b63b2f62bc592475ad04c1",
@@ -4925,7 +4925,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/vcl_frame_policy.c",
+      "path": "src/lib-style/win16-control/vcl_frame_policy.c",
       "source": null,
       "source_blob": null,
       "sha256": "7da0eb44524e9aecd849680c3d53e2ed21a0efeca38277550c40b0ea5a4a232b",
@@ -4934,7 +4934,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/vcl_frame_policy.h",
+      "path": "src/lib-style/win16-control/vcl_frame_policy.h",
       "source": null,
       "source_blob": null,
       "sha256": "f3abc4a76f5e02da02b0ffa9578615ba1b7746a5a4d43390c8035084c37aeb9e",
@@ -4943,7 +4943,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-dialog/hidden_files.c",
+      "path": "src/lib-style/win16-dialog/hidden_files.c",
       "source": null,
       "source_blob": null,
       "sha256": "6d4b626e29316884be4a5a30886a9c42c299db7da4a7bb12c5e7663086db919a",
@@ -4952,7 +4952,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-dialog/hidden_files.h",
+      "path": "src/lib-style/win16-dialog/hidden_files.h",
       "source": null,
       "source_blob": null,
       "sha256": "c20bf1ab974b0e306d2e3fd928f7eafaa16372af965207dac89f4b7c659d103a",
@@ -4961,7 +4961,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-dialog/hook_state.c",
+      "path": "src/lib-style/win16-dialog/hook_state.c",
       "source": null,
       "source_blob": null,
       "sha256": "4c8afe5333b79639ade32f0c67e81cf8d9fe113a8b72f357a914f09c1f71f326",
@@ -4970,7 +4970,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-dialog/hook_state.h",
+      "path": "src/lib-style/win16-dialog/hook_state.h",
       "source": null,
       "source_blob": null,
       "sha256": "df0f3009e9a51c45c61da8eefabccd0dfbbeb89a18f7980dd52838927aaa6e2d",
@@ -4979,7 +4979,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-dialog/classic_events.c",
+      "path": "src/lib-style/win16-dialog/classic_events.c",
       "source": null,
       "source_blob": null,
       "sha256": "8f5ebe87d2c7ec2604578dfdca7859bdc69151f7153fe956dc4d8ee992dfe602",
@@ -4988,7 +4988,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-dialog/classic_events.h",
+      "path": "src/lib-style/win16-dialog/classic_events.h",
       "source": null,
       "source_blob": null,
       "sha256": "5c596b16e0f682710fd6576f96aad1806be210c0f932436f499b3af5c0f44cab",
@@ -4997,7 +4997,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_lifetime.c",
+      "path": "src/lib-style/win16-control/control_lifetime.c",
       "source": null,
       "source_blob": null,
       "sha256": "2c14befd8209a6caeb1235662f9b406368fc50349cbf047aa7db5b86dda41c15",
@@ -5006,7 +5006,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_lifetime.h",
+      "path": "src/lib-style/win16-control/control_lifetime.h",
       "source": null,
       "source_blob": null,
       "sha256": "4147b1628c0cc000d12a00731121539abd04f4bd2faad7eb9a45ab489d5ea173",
@@ -5015,7 +5015,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_guard.c",
+      "path": "src/lib-style/win16-control/control_guard.c",
       "source": null,
       "source_blob": null,
       "sha256": "48af4cb2be13c1deb50db0b776fd7cc97d37597889f5374b1b9df482ab5e41b2",
@@ -5024,7 +5024,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_guard.h",
+      "path": "src/lib-style/win16-control/control_guard.h",
       "source": null,
       "source_blob": null,
       "sha256": "0a122894b6de946481f48cf3b5820d5f36c372221e457b63245104fa0758bec7",
@@ -5033,7 +5033,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/spin_scope.c",
+      "path": "src/lib-style/win16-control/spin_scope.c",
       "source": null,
       "source_blob": null,
       "sha256": "b58d26349ce12ebd2b087a96e52c3b185beb21a43c840319c00a3616df5a1929",
@@ -5042,7 +5042,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/spin_scope.h",
+      "path": "src/lib-style/win16-control/spin_scope.h",
       "source": null,
       "source_blob": null,
       "sha256": "1e435d595fe40eba8d581186d18d3e0f51ac153d87a5ae79cfb9d7ea282626ce",
@@ -5051,7 +5051,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-dialog/proxy_dispatch.c",
+      "path": "src/lib-style/win16-dialog/proxy_dispatch.c",
       "source": null,
       "source_blob": null,
       "sha256": "89fe5557af7b4336aa2be5837f9cd9e8f6ef7b37e430a05000c04e3a94832779",
@@ -5060,7 +5060,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-dialog/proxy_dispatch.h",
+      "path": "src/lib-style/win16-dialog/proxy_dispatch.h",
       "source": null,
       "source_blob": null,
       "sha256": "262a8d1a79843422972aaf13eb7f6e55a62329d7d5fd5b9022e8bdaa98af59e0",
@@ -5069,7 +5069,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_install.c",
+      "path": "src/lib-style/win16-control/control_install.c",
       "source": null,
       "source_blob": null,
       "sha256": "16544f30996c899c5e5cff9e9ec83e147fe3a74f7e0472beac12fddb86b503f6",
@@ -5078,7 +5078,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_install.h",
+      "path": "src/lib-style/win16-control/control_install.h",
       "source": null,
       "source_blob": null,
       "sha256": "dbe7b18324cb3ff529189f43264fb20504d7cb29adfa0f7b22736a65195f2839",
@@ -5087,7 +5087,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_remove.c",
+      "path": "src/lib-style/win16-control/control_remove.c",
       "source": null,
       "source_blob": null,
       "sha256": "83f83c9af67223259807a1559aa35d30772bb5126e6364de0d94cca796195b31",
@@ -5096,7 +5096,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_remove.h",
+      "path": "src/lib-style/win16-control/control_remove.h",
       "source": null,
       "source_blob": null,
       "sha256": "dbcd064a957c340b5c296e0c3a7debd67bfc8f46e5e7036f09dd54cda31e9c3f",
@@ -5105,7 +5105,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_lifecycle.c",
+      "path": "src/lib-style/win16-window/frame_lifecycle.c",
       "source": null,
       "source_blob": null,
       "sha256": "71d9f04ddd122b39a4d3a8301c4aec9a4de7ba3d74cfc0d194f5ed2c963c8ace",
@@ -5114,7 +5114,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_lifecycle.h",
+      "path": "src/lib-style/win16-window/frame_lifecycle.h",
       "source": null,
       "source_blob": null,
       "sha256": "9471ceb5aab4c90b11becf74dfbe1969bb2faa3526e3eeff956cf25c7cedddb8",
@@ -5123,7 +5123,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/status_frame.c",
+      "path": "src/lib-style/win16-control/status_frame.c",
       "source": null,
       "source_blob": null,
       "sha256": "c572975a4efee34831504841b4c10edd0eec27f48d6304456b674fdb316f9cd8",
@@ -5132,7 +5132,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/status_frame.h",
+      "path": "src/lib-style/win16-control/status_frame.h",
       "source": null,
       "source_blob": null,
       "sha256": "feb401af2547580ca41f873c42c25a24969d530a51f2ef330d439532dbe89df0",
@@ -5141,7 +5141,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/status_font.c",
+      "path": "src/lib-style/win16-control/status_font.c",
       "source": null,
       "source_blob": null,
       "sha256": "cce26d4e34b445df76d9623e68717419ae5366e5f016a1367f727e8b802435ce",
@@ -5150,7 +5150,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/status_font.h",
+      "path": "src/lib-style/win16-control/status_font.h",
       "source": null,
       "source_blob": null,
       "sha256": "e987f7856503f0e0164b46d5c5ba3302a3c179defc6153944102a56ea6a54293",
@@ -5159,7 +5159,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/status_text.c",
+      "path": "src/lib-style/win16-control/status_text.c",
       "source": null,
       "source_blob": null,
       "sha256": "2f79f32996a212667afab595114a35bdf819b2f6acbdb007ec5b0c0908e09974",
@@ -5168,7 +5168,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/status_text.h",
+      "path": "src/lib-style/win16-control/status_text.h",
       "source": null,
       "source_blob": null,
       "sha256": "74fb3b53a38e931c7312f6dbfde2e350a13915e2629d9ae853f41da1a495f466",
@@ -5177,7 +5177,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/status_identity.c",
+      "path": "src/lib-style/win16-control/status_identity.c",
       "source": null,
       "source_blob": null,
       "sha256": "ac95de35082a6c4b25822a3794cf85c15f9fb49e8e4334a34bb58f6c603113b3",
@@ -5186,7 +5186,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/status_identity.h",
+      "path": "src/lib-style/win16-control/status_identity.h",
       "source": null,
       "source_blob": null,
       "sha256": "378a4f96a091a1db617cd598b85422f946aa2383434193c4b56160802c3111b4",
@@ -5195,7 +5195,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/vcl_identity.c",
+      "path": "src/lib-style/win16-control/vcl_identity.c",
       "source": null,
       "source_blob": null,
       "sha256": "e40d275b9f0081d273b46b6c10f4e74f7903e525fea2bffc94f1a6c3d3a8280d",
@@ -5204,7 +5204,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/vcl_identity.h",
+      "path": "src/lib-style/win16-control/vcl_identity.h",
       "source": null,
       "source_blob": null,
       "sha256": "34a43ca790184b99dba17a5c13836f58017ca5cc39386782e3204f248a035633",
@@ -5213,7 +5213,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/vcl_extra_frame.c",
+      "path": "src/lib-style/win16-control/vcl_extra_frame.c",
       "source": null,
       "source_blob": null,
       "sha256": "1fb5fd2067e06852bdcd4e9a4ffd5906ef1c53720fd6e7906b64b5ee18959a6c",
@@ -5222,7 +5222,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/vcl_extra_frame.h",
+      "path": "src/lib-style/win16-control/vcl_extra_frame.h",
       "source": null,
       "source_blob": null,
       "sha256": "c83a619ef8bb4138c40a588551ec55dd792d3d7e7cbe14ab049f669f3a7f9edc",
@@ -5231,7 +5231,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/month_paint.c",
+      "path": "src/lib-style/win16-control/month_paint.c",
       "source": null,
       "source_blob": null,
       "sha256": "9e0735b5b64f94438c9198c781af21770b7edaccf6ff2aa58546fe9ca62b4ccc",
@@ -5240,7 +5240,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/month_paint.h",
+      "path": "src/lib-style/win16-control/month_paint.h",
       "source": null,
       "source_blob": null,
       "sha256": "54019ebba59ec1f11e6d2a0d70a2a019c96304d6c440360a61e3b7e30267bf60",
@@ -5249,7 +5249,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/special_install.c",
+      "path": "src/lib-style/win16-control/special_install.c",
       "source": null,
       "source_blob": null,
       "sha256": "156e211297a529ccbb5844d81fad0386b1c67b8853bd73c2ae075d1bf59d987d",
@@ -5258,7 +5258,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/special_install.h",
+      "path": "src/lib-style/win16-control/special_install.h",
       "source": null,
       "source_blob": null,
       "sha256": "b4be7bbb66ac51e85b62bfae1c90cb926829b021bd9c726505269572df670f20",
@@ -5267,7 +5267,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/attachment_guard.c",
+      "path": "src/lib-style/win16-control/attachment_guard.c",
       "source": null,
       "source_blob": null,
       "sha256": "3ee859efd60354f0efb9ac3bb792e7717d7c51986bdacb1b3af113576bc4f3b9",
@@ -5276,7 +5276,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/attachment_state.h",
+      "path": "src/lib-style/win16-control/attachment_state.h",
       "source": null,
       "source_blob": null,
       "sha256": "4d83b6b12dc8f3d35060e8b7683984f0aeb36177fb1e93034c9445e34342ff6a",
@@ -5285,7 +5285,7 @@
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_scope.c",
+      "path": "src/lib-style/win16-control/control_scope.c",
       "source": null,
       "source_blob": null,
       "sha256": "09d9c95a7252dc23f52fa3e306287591772b5fcf8467df1d93090315ea35f460",
@@ -5294,7 +5294,7 @@
       "notice": "Project-authored source per fixed component README; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-control/control_scope.h",
+      "path": "src/lib-style/win16-control/control_scope.h",
       "source": null,
       "source_blob": null,
       "sha256": "b7f228dff1c39baab74f493215e3fad249ce2ccf0fbc95e284a05157d075d174",
@@ -5303,7 +5303,7 @@
       "notice": "Project-authored source per fixed component README; original notices preserved"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_dispatch.c",
+      "path": "src/lib-style/win16-window/frame_dispatch.c",
       "source": null,
       "source_blob": null,
       "sha256": "55e6b88e6696be8949f66c5126a7416ec9f8f207169573829a0b5d3eda683139",
@@ -5312,7 +5312,7 @@
       "notice": "Project-authored source; existing resource and provenance notices retained"
     },
     {
-      "path": "src/lib-win32/win16-window/frame_dispatch.h",
+      "path": "src/lib-style/win16-window/frame_dispatch.h",
       "source": null,
       "source_blob": null,
       "sha256": "6146e01c8f42b6f61a7eabc8e6b615ca76ada48154ad61c0c675f613d34c8a26",
@@ -6005,16 +6005,16 @@
       "notice": "Project-authored C code; project MIT LICENSE"
     },
     {
-      "path": "src/lib-win32/win16-window-uwp/frame.c",
+      "path": "src/lib-style/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "66cc79762c8c20da3a6e2ff309592bb668da7c69de3a8550441ea8e18cf0ae82",
+      "sha256": "fb80b7c3427e9405588bae8f10fe2a8172a5f4f241d5b837594c4684aac22a07",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling; T23 S4 console and Terminal window adaptation and native tests; T23 S7 maximize work-area geometry regression and fix",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
-      "path": "src/lib-win32/win16-window-uwp/frame.h",
+      "path": "src/lib-style/win16-window-uwp/frame.h",
       "source": null,
       "source_blob": null,
       "sha256": "00da809635b3781756d1760ce368b241259267eeca36e77d99cff117c0c5fbe4",
@@ -6023,7 +6023,7 @@
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
-      "path": "src/lib-win32/win16-window-uwp/frame_layout.c",
+      "path": "src/lib-style/win16-window-uwp/frame_layout.c",
       "source": null,
       "source_blob": null,
       "sha256": "3e5f1839b3b4a648f8c182c5a8faaee1e9f65a41b5e554951d97482944d069b6",
@@ -6032,10 +6032,10 @@
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
-      "path": "src/lib-win32/win16-window-uwp/frame_layout.h",
+      "path": "src/lib-style/win16-window-uwp/frame_layout.h",
       "source": null,
       "source_blob": null,
-      "sha256": "d793ddf273aee7a5189b1e854b4bb092dfb595c4496944f57514e9f6fdd9e2b9",
+      "sha256": "50cab3768287cf12f5a60008ce382293a983f26070546ea5033303385f9f41e8",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6044,7 +6044,7 @@
       "path": "src/ntw16s-dll/uwp/hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6cddcb4e98dd260bd651bcee6d0d26576e422f386f7b7a4a8247e52f4df15795",
+      "sha256": "29ec66992e8abf4104c8a2e2cd19b96970ee75decaebd411fd08d2aaa11cf70b",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6077,19 +6077,19 @@
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
-      "path": "tests/lib-win32/win16-window-uwp/frame.c",
+      "path": "tests/lib-style/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9bfda550f757f827622292d652424aead748edbd3a2d7dc3b1064b91cd447d0a",
+      "sha256": "3b62b8a0a1d6ed3d82d8f2a91a5f60fe86ac5e7ff64b20cad94dd19803828210",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T23 S4 console and Terminal window adaptation and native tests; T23 S7 maximize work-area geometry regression and fix",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
     },
     {
-      "path": "tests/lib-win32/win16-window-uwp/frame_layout.c",
+      "path": "tests/lib-style/win16-window-uwp/frame_layout.c",
       "source": null,
       "source_blob": null,
-      "sha256": "83456c82cdd0e1511243252ec37579d94916d89f6bd30b66df07c860696a79a2",
+      "sha256": "21ba4b9c70367a6dbee4efe100a9afe76c9ab80cee1f6c810bab1dbb4a0510dd",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 P24 DPI and non-client/client boundary regression",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6098,7 +6098,7 @@
       "path": "tests/run16s-exe/uwp.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6b0a5936149e0259550bb52101a024d24f344b5cab38df6f9bf521173f997e1f",
+      "sha256": "e1e631adefa7994e08ad4495f6963663b3bd16d26a11b934441f1ce880c88d99",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T22 S1 P25 explicit native fixture target identity; T22 S1 P27 optional real pointer sampling, fresh CURSORINFO per call and bounded restoration; T22 S1 P28 real published launcher wait/close fixture with bounded owned-target cleanup; T22 S1 P29 reactivate after removal, distinguish reuse/new PID and observe hidden surface after close; T22 S1 P30 await actual asynchronous overlay destruction, not just hidden state",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6284,7 +6284,7 @@
       "notice": "Project-authored C implementation; repository MIT"
     },
     {
-      "path": "src/lib-win32/win16-control/dc_geometry.h",
+      "path": "src/lib-style/win16-control/dc_geometry.h",
       "source": null,
       "source_blob": null,
       "sha256": "e4ee05d01ff901cd10a5968b183bc9ed87c6cf17761e28205aab6fb55d7dd688",
@@ -6293,7 +6293,7 @@
       "notice": "Project-authored C interface; no imported artwork"
     },
     {
-      "path": "src/lib-win32/win16-dialog/common_methods.h",
+      "path": "src/lib-style/win16-dialog/common_methods.h",
       "source": null,
       "source_blob": null,
       "sha256": "3137dc501b44435a48ef957ea71076b293353849516d62819c460b2226c4ee03",
@@ -6548,7 +6548,7 @@
       "path": "src/ntw2ks-dll/controls.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3a5ca6f2147c8b8283dd78585431ffcaa6917182abf6b03d0288d3d2a57b5f01",
+      "sha256": "29d3a47b2c959233307c7b2a4c178587a663e832f4ffa1ba68316101bf047abd",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -6698,7 +6698,7 @@
       "notice": "Project-authored test helper"
     },
     {
-      "path": "src/lib-win32/win2k-window/caption.c",
+      "path": "src/lib-style/win2k-window/caption.c",
       "source": null,
       "source_blob": null,
       "sha256": "ab1ac337b04b6524b1872df279ec8715fd1decfa44247060f43e7f2019872ef9",
@@ -6707,7 +6707,7 @@
       "notice": "Project-authored implementation; historical source observed only"
     },
     {
-      "path": "src/lib-win32/win2k-window/caption.h",
+      "path": "src/lib-style/win2k-window/caption.h",
       "source": null,
       "source_blob": null,
       "sha256": "752e5d019f9d12ae479a565533dda32101e0ed4ce3c7bb5f7e44067cfea30075",
@@ -6716,16 +6716,16 @@
       "notice": "Project-authored implementation; historical source observed only"
     },
     {
-      "path": "tests/lib-win32/win2k-window/caption.c",
+      "path": "tests/lib-style/win2k-window/caption.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1e0d598f958b0a5375367026685ad6f9953f64194a1a787e1660ef3e848048ee",
+      "sha256": "6b2e5c9c8d602863f1a93b78deac2b0bcf1037e9c94bfccd71eb72b9120a60d3",
       "disposition": "authored",
       "review": "T25 S3 caption drawing primitive and test",
       "notice": "Project-authored implementation; historical source observed only"
     },
     {
-      "path": "src/lib-win32/win2k-window/frame.c",
+      "path": "src/lib-style/win2k-window/frame.c",
       "source": null,
       "source_blob": null,
       "sha256": "ac0230f98560c49d067e7b848086f9c9d48100be684b1422e568331ad00e588a",
@@ -6734,7 +6734,7 @@
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "src/lib-win32/win2k-window/frame.h",
+      "path": "src/lib-style/win2k-window/frame.h",
       "source": null,
       "source_blob": null,
       "sha256": "c8b20e9abd404a041725cabde922ff20698bb11531f18d030872904701681181",
@@ -6761,7 +6761,7 @@
       "notice": "Project-authored test resource; no external source or artwork copied"
     },
     {
-      "path": "src/lib-win32/win2k-window/system_menu.c",
+      "path": "src/lib-style/win2k-window/system_menu.c",
       "source": null,
       "source_blob": null,
       "sha256": "cef33bfaf26556e2298b49cd588d1cf96f871d93553dbfb86afcaf15449a0a85",
@@ -6770,7 +6770,7 @@
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "src/lib-win32/win2k-window/system_menu.h",
+      "path": "src/lib-style/win2k-window/system_menu.h",
       "source": null,
       "source_blob": null,
       "sha256": "8608f209175f54efc7921b19a689eb435e8edd5a3825a7170496cee1c0207e8c",
@@ -6797,7 +6797,7 @@
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "tests/lib-win32/win2k-window/frame_lifecycle.c",
+      "path": "tests/lib-style/win2k-window/frame_lifecycle.c",
       "source": null,
       "source_blob": null,
       "sha256": "924121f05e5443d8d716d40db8be0771a5b1f4de244f94c0612b43358ef1beac",
@@ -6872,7 +6872,7 @@
       "path": "src/ntw2ks-dll/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "87ad5e6bd131c41492c821d4eaf810a23d758b577d2c45f1ca3446c536fbb8a7",
+      "sha256": "9f3a2fcedcb8b08aa304a980c157a462e5039ae8c8b294f3dc1803852736be32",
       "disposition": "authored",
       "review": "T25 S8 Win2000 window adapter",
       "notice": "Project-authored C; no external source or artwork copied"

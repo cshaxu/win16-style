@@ -9,7 +9,7 @@ static void *tracked_calloc(size_t count,size_t size)
 static void tracked_free(void *p){if(p){if(!allocations)abort();--allocations;free(p);}}
 #define calloc tracked_calloc
 #define free tracked_free
-#include "../../src/lib-win32/win16-control/header_paint.c"
+#include "../../src/lib-style/win16-control/header_paint.c"
 #undef calloc
 #undef free
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"HEADER_OWNER_FAIL line=%u error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)

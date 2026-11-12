@@ -1,4 +1,4 @@
-#include "lib-win32/win2k-window/caption.h"
+#include "lib-style/win2k-window/caption.h"
 #include <stdio.h>
 
 int main(void)

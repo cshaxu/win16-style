@@ -1,8 +1,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
-#include "../../src/lib-win32/win16-control/updown_adapter.h"
-#include "lib-win32/win16-control/scroll_glyphs.h"
+#include "../../src/lib-style/win16-control/updown_adapter.h"
+#include "lib-style/win16-control/scroll_glyphs.h"
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"UPDOWN_OWNER_FAIL line=%u error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static _Thread_local HWND scope_window;static _Thread_local HDC scope_dc;

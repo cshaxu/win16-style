@@ -1,6 +1,6 @@
 /* Native bitmap-font realization, exact pixels and reference lifetime.
  * No visible window, global font installation or guest-font input. */
-#include "../../src/lib-win32/win16-common/font.h"
+#include "../../src/lib-style/win16-common/font.h"
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>

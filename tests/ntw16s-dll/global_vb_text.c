@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "ntw16s-dll/global/vb_text.h"
 #include "lib-win32/module-import/import_scan.h"
-#include "lib-win32/win16-control/vb_text.h"
+#include "lib-style/win16-control/vb_text.h"
 #include "isolated_process.h"
 
 #define CHECK(x) do{if(!(x)){printf("GLOBAL_VB_TEXT FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)

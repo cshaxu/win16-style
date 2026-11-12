@@ -2,13 +2,13 @@
 #include <windows.h>
 #include <stdio.h>
 #include <dlgs.h>
-#include "lib-win32/win16-dialog/chrome.h"
-#include "lib-win32/win16-dialog/ole_window.h"
-#include "lib-win32/win16-dialog/classic_folder.h"
-#include "lib-win32/win16-dialog/file_hook.h"
-#include "lib-win32/win16-dialog/file_live.h"
-#include "lib-win32/win16-dialog/com_hook.h"
-#include "lib-win32/win16-dialog/proxy.h"
+#include "lib-style/win16-dialog/chrome.h"
+#include "lib-style/win16-dialog/ole_window.h"
+#include "lib-style/win16-dialog/classic_folder.h"
+#include "lib-style/win16-dialog/file_hook.h"
+#include "lib-style/win16-dialog/file_live.h"
+#include "lib-style/win16-dialog/com_hook.h"
+#include "lib-style/win16-dialog/proxy.h"
 static int grids,scrolls,removes,combos;static const void *grid_owner;static BOOL same_owner=TRUE;
 static BOOL fake_grid(HWND w,const void *owner){(void)w;++grids;grid_owner=owner;return TRUE;}
 static BOOL fake_scroll(HWND w){(void)w;++scrolls;return FALSE;}

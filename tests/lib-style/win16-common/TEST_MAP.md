@@ -3,9 +3,9 @@
 Each source family has one focused native adapter. `common_link.c` exercises
 the common palette, font and menu-layout contract; the focused DLL probes
 retain behaviour-specific coverage. Window-library linkage is checked by the
-separate `tests/lib/win16-window/window_link.c` adapter.
+separate `tests/lib-style/win16-window/window_link.c` adapter.
 
 | Source family | Native test adapter |
 | --- | --- |
 | `layout`, `font`, `palette` | `common_link.c`; `tests/ntw16s-dll/font_layout.c` |
-| `present` | `tests/lib/win16-control/control_print.c` |
+| `present` | `tests/lib-style/win16-control/control_print.c` |

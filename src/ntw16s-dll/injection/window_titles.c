@@ -1,17 +1,17 @@
-#include "../../lib-win32/win16-control/text_policy.h"
-#include "../../lib-win32/win16-window/menu_iteration.h"
-#include "../../lib-win32/win16-dialog/print_classic.h"
-#include "../../lib-win32/win16-dialog/chrome.h"
+#include "../../lib-style/win16-control/text_policy.h"
+#include "../../lib-style/win16-window/menu_iteration.h"
+#include "../../lib-style/win16-dialog/print_classic.h"
+#include "../../lib-style/win16-dialog/chrome.h"
 #include "intercept.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "../../lib-win32/process-hook/unwind.h"
 #include "theme_track.h"
-#include "../../lib-win32/win16-dialog/print_extended.h"
+#include "../../lib-style/win16-dialog/print_extended.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/attachment.h"
 #include "ntw16s-dll/native_api.h"
-#include "lib-win32/win16-control/vb_text.h"
-#include "../../lib-win32/win16-control/updown_adapter.h"
+#include "lib-style/win16-control/vb_text.h"
+#include "../../lib-style/win16-control/updown_adapter.h"
 #include "ntw16s-dll/controls.h"
 #include "ntw16s-dll/static_text.h"
 #include "ntw16s-dll/status_theme.h"
@@ -21,11 +21,11 @@
 #include <commdlg.h>
 #include <commctrl.h>
 #include <vssym32.h>
-#include "../../lib-win32/win16-common/font.h"
-#include "../../lib-win32/win16-control/month_text.h"
-#include "lib-win32/win16-control/special_paint.h"
-#include "lib-win32/win16-control/choice_paint.h"
-#include "lib-win32/win16-control/vcl_extra_frame.h"
+#include "../../lib-style/win16-common/font.h"
+#include "../../lib-style/win16-control/month_text.h"
+#include "lib-style/win16-control/special_paint.h"
+#include "lib-style/win16-control/choice_paint.h"
+#include "lib-style/win16-control/vcl_extra_frame.h"
 HFONT ntw16s_month_text_borrow(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,const void *);
 BOOL ntw16s_month_text_room(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,int,const void *);
 typedef struct month_text_room_context {HTHEME theme;HDC dc;int part,state;DWORD flags,flags2;const RECT *rect;const void *caller;} month_text_room_context;

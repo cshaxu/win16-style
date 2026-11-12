@@ -1,5 +1,5 @@
-#include "lib-win32/win16-window-uwp/frame.h"
-#include "lib-win32/win16-window-uwp/frame_layout.h"
+#include "lib-style/win16-window-uwp/frame.h"
+#include "lib-style/win16-window-uwp/frame_layout.h"
 #include "isolated_process.h"
 #include <commctrl.h>
 #include <windowsx.h>

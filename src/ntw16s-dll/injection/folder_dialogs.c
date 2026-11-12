@@ -2,8 +2,8 @@
  * Shell owns the dialog and returned PIDL. Other contracts remain native. */
 #include "intercept.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
-#include "../../lib-win32/win16-dialog/chrome.h"
-#include "../../lib-win32/win16-dialog/browse.h"
+#include "../../lib-style/win16-dialog/chrome.h"
+#include "../../lib-style/win16-dialog/browse.h"
 #include "ntw16s-dll/controls.h"
 #include <shlobj.h>
 static PIDLIST_ABSOLUTE (WINAPI *native_browse_a)(LPBROWSEINFOA);

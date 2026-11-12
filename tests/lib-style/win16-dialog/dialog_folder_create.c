@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "lib-win32/win16-dialog/folder_create.h"
+#include "lib-style/win16-dialog/folder_create.h"
 static DWORD dialog_thread;
 static HANDLE submitted;
 static BOOL CALLBACK submit(HWND window,LPARAM unused)

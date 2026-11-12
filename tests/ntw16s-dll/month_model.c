@@ -8,7 +8,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include "../../src/lib-win32/process-hook/unwind.h"
-#include "../../src/lib-win32/win16-control/month_text.h"
+#include "../../src/lib-style/win16-control/month_text.h"
 #define NTW16S_TEST_PROCESS_TIMEOUT 15000
 #include "isolated_process.h"
 #define CHECK(x) do {if(!(x)){fprintf(stderr,"MONTH_MODEL_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}} while(0)

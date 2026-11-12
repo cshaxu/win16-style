@@ -1,7 +1,7 @@
 /* Public opt-in modern dialog entry point. No GUI work runs from DllMain. */
 #include "../api.h"
 #include "intercept.h"
-#include "../../lib-win32/win16-dialog/modern.h"
+#include "../../lib-style/win16-dialog/modern.h"
 
 static _Thread_local unsigned modern_depth;
 BOOL ntw16s_modern_dialog_active(void) { return modern_depth != 0; }

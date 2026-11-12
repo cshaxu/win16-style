@@ -1,6 +1,6 @@
 #include "run16s-exe/uwp.h"
 #include "ntw16s-dll/uwp/hook.h"
-#include "lib-win32/win16-window-uwp/frame_layout.h"
+#include "lib-style/win16-window-uwp/frame_layout.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <tlhelp32.h>

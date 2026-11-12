@@ -2,7 +2,7 @@
 #define NTW16S_THEME_TRACK_H
 #include <windows.h>
 #include <uxtheme.h>
-#include "lib-win32/win16-control/theme_state.h"
+#include "lib-style/win16-control/theme_state.h"
 
 /* A ticket is valid only while no theme open/close has crossed the draw. */
 typedef struct ntw16s_theme_ticket {

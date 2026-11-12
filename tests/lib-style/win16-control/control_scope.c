@@ -1,4 +1,4 @@
-#include "lib-win32/win16-control/control_scope.h"
+#include "lib-style/win16-control/control_scope.h"
 #include <stdio.h>
 static win16_style_control_scope *scopes,*ending;
 static HHOOK hook;

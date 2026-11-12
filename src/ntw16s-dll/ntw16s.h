@@ -8,8 +8,8 @@ extern "C" {
 #include "attachment.h"
 #include "win16_style.h"
 #include "controls.h"
-#include "../lib-win32/win16-common/font.h"
-#include "../lib-win32/win16-window/menu_paint.h"
+#include "../lib-style/win16-common/font.h"
+#include "../lib-style/win16-window/menu_paint.h"
 #ifdef __cplusplus
 }
 #endif

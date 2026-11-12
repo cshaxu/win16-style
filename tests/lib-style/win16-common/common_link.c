@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "lib-win32/win16-common/font.h"
-#include "lib-win32/win16-common/layout.h"
-#include "lib-win32/win16-common/menu_layout.h"
-#include "lib-win32/win16-common/palette.h"
+#include "lib-style/win16-common/font.h"
+#include "lib-style/win16-common/layout.h"
+#include "lib-style/win16-common/menu_layout.h"
+#include "lib-style/win16-common/palette.h"
 
 int main(void)
 {

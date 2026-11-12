@@ -4,7 +4,7 @@
 static void *watched;static unsigned freed_watched;
 static void watched_free(void *p);
 #define free watched_free
-#include "../../src/lib-win32/win16-common/font.c"
+#include "../../src/lib-style/win16-common/font.c"
 #undef free
 static void watched_free(void *p){if(p&&p==watched)++freed_watched;free(p);}
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"STOCK_FAIL line=%d expr=%s\n",__LINE__,#x);return 1;}}while(0)

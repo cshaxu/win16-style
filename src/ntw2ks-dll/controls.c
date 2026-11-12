@@ -4,7 +4,7 @@
 #include <wchar.h>
 #include "lib-win32/process-hook/startup_hooks.h"
 #include "lib-win32/process-hook/unwind.h"
-#include "lib-win32/win2k-window/frame.h"
+#include "lib-style/win2k-window/frame.h"
 #include "lib-style/common/global_window.h"
 
 static __typeof__(&CreateWindowExW) create_W;

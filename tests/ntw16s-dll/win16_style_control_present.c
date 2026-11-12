@@ -69,15 +69,15 @@ static BOOL WINAPI observed_blt(HDC dc,int x,int y,int cx,int cy,HDC from,int sx
 #include "ntw16s-dll/controls.c"
 /* Instrument the same library implementations used by the product, so the
  * failure and GDI ownership checks still cover the extracted painters. */
-#include "lib-win32/win16-control/basic_paint.c"
-#include "lib-win32/win16-control/choice_paint.c"
-#include "lib-win32/win16-control/choice_view.c"
-#include "lib-win32/win16-control/other_paint.c"
-#include "lib-win32/win16-control/list_paint.c"
-#include "lib-win32/win16-control/combo_paint.c"
-#include "lib-win32/win16-control/scroll_paint.c"
-#include "lib-win32/win16-control/special_paint.c"
-#include "lib-win32/win16-common/present.c"
+#include "lib-style/win16-control/basic_paint.c"
+#include "lib-style/win16-control/choice_paint.c"
+#include "lib-style/win16-control/choice_view.c"
+#include "lib-style/win16-control/other_paint.c"
+#include "lib-style/win16-control/list_paint.c"
+#include "lib-style/win16-control/combo_paint.c"
+#include "lib-style/win16-control/scroll_paint.c"
+#include "lib-style/win16-control/special_paint.c"
+#include "lib-style/win16-common/present.c"
 #undef FillRect
 #undef SaveDC
 #undef BitBlt

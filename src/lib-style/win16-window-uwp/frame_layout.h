@@ -1,6 +1,6 @@
 #ifndef WIN16_UWP_FRAME_LAYOUT_H
 #define WIN16_UWP_FRAME_LAYOUT_H
-#include "lib-win32/win16-common/layout.h"
+#include "lib-style/win16-common/layout.h"
 
 /* All rectangles use physical pixels relative to the adapter surface (the
  * outer window, clipped to the monitor work area when maximized).

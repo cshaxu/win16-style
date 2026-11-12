@@ -1,4 +1,4 @@
-#include "lib-win32/win16-window-uwp/frame_layout.h"
+#include "lib-style/win16-window-uwp/frame_layout.h"
 #include <stdio.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"FAIL line %d\n",__LINE__);return 1;}}while(0)
 int main(void)

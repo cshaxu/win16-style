@@ -6,7 +6,8 @@
 src/run16s-exe/       x64 CLI / 首次启动
 src/ntw16s-dll/       双位宽 renderer / interception / injection
 src/demo-exe/         x64 原生示例
-src/lib-win32/        内部 Win32 静态库：托盘、Win16 公共/窗口/控件/对话框、进程挂钩
+src/lib-win32/        内部 Win32 静态库：托盘、进程管理和挂钩等基础能力
+src/lib-style/        各年代样式组件及可跨风格共享的样式机制
 src/lib-style/common/  不依赖具体样式的窗口输入、生命周期和对话框基础机制
 tests/run16s-exe/     启动契约测试
 tests/ntw16s-dll/     双位宽 DLL 单元及生命周期测试
@@ -44,9 +45,9 @@ T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及�
 
 ## UWP window style library (T22 S1 candidate)
 
-`src/lib-win32/win16-window-uwp/frame.{c,h}` owns same-GUI-thread apply,
+`src/lib-style/win16-window-uwp/frame.{c,h}` owns same-GUI-thread apply,
 remove and surface lifetime; `frame_layout.{c,h}` owns geometry and hit testing.
-Matching tests are in `tests/lib-win32/win16-window-uwp/`. Public functions use
+Matching tests are in `tests/lib-style/win16-window-uwp/`. Public functions use
 `win16_uwp_frame_*`, without product names. The library reuses `win16-window`
 and `win16-common`; it does not call the launcher, process hooks or activation.
 

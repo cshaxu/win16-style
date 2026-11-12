@@ -9,7 +9,7 @@
 #include <oleidl.h>
 #include <olectl.h>
 #include <stdio.h>
-#include "lib-win32/win16-control/control_protocol.h"
+#include "lib-style/win16-control/control_protocol.h"
 
 #define CHECK(x) do{if(!(x)){fwprintf(stderr,L"OCX_TREE_HOST_FAIL line=%u error=%lu: %hs\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 typedef struct host host;

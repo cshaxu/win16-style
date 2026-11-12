@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "lib-win32/win2k-window/system_menu.h"
+#include "lib-style/win2k-window/system_menu.h"
 static HMENU system_menu;static HWND popup;static UINT before_type,seen_type;static ULONG_PTR before_data,seen_data;static BOOL seen,checked,selected,custom;static COLORREF sample=CLR_INVALID,live_sample=CLR_INVALID;static unsigned idles,custom_draws;static BOOL hover,hover_checked,hover_preserved,win2k_paint,win2k_live,win2k_glyph,win2k_default;static unsigned glyph_rows;static BOOL default_changed;
 static BOOL cancel_test,cancel_sent,cancel_timed_out;
 static BOOL win2k_switch,switch_done,win2k_keyboard,key_sent,win2k_context;static int sampled_index=-1,first_index=-1;static COLORREF first_live=CLR_INVALID;

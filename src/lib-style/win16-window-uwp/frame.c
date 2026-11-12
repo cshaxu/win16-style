@@ -1,8 +1,8 @@
 #include "frame.h"
 #include "frame_layout.h"
-#include "lib-win32/win16-window/frame_view.h"
-#include "lib-win32/win16-common/font.h"
-#include "lib-win32/win16-window/menu_message.h"
+#include "lib-style/win16-window/frame_view.h"
+#include "lib-style/win16-common/font.h"
+#include "lib-style/win16-window/menu_message.h"
 #include <commctrl.h>
 #include <stdint.h>
 #include <stdlib.h>

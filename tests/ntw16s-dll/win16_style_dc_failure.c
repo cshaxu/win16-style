@@ -2,8 +2,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "../../src/lib-win32/win16-window/menu_paint.h"
-#include "lib-win32/win16-common/menu_layout.h"
+#include "../../src/lib-style/win16-window/menu_paint.h"
+#include "lib-style/win16-common/menu_layout.h"
 #include <limits.h>
 static int save_calls, fail_save;
 static int WINAPI test_save_dc(HDC dc)
@@ -13,7 +13,7 @@ static int WINAPI test_save_dc(HDC dc)
 }
 #define SaveDC test_save_dc
 #include "ntw16s-dll/win16_style.c"
-#include "lib-win32/win16-window/frame_view.c"
+#include "lib-style/win16-window/frame_view.c"
 #undef SaveDC
 #define CHECK(x) do { if(!(x)){fprintf(stderr,"DC FAIL line %d\n",__LINE__);return 1;} } while(0)
 static UINT lifetime_message;

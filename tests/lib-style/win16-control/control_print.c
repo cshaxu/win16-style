@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
-#include "lib-win32/win16-common/present.h"
+#include "lib-style/win16-common/present.h"
 
 static HWND root,child,owned;
 static BOOL detached,detach_on_erase;

@@ -6,7 +6,7 @@
 #include <wchar.h>
 #include <stdint.h>
 #include "../ntw16s-dll/isolated_process.h"
-#include "../../src/lib-win32/win16-control/control_glyphs.h"
+#include "../../src/lib-style/win16-control/control_glyphs.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"ACTOR_FAIL line=%d error=%lu %s\n",__LINE__,GetLastError(),#x);ExitProcess(1);}}while(0)
 static HANDLE job,ready,port;
 #include "vb_process.h"

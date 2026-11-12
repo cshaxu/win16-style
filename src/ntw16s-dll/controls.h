@@ -1,7 +1,7 @@
 #ifndef WIN16_STYLE_CONTROLS_H
 #define WIN16_STYLE_CONTROLS_H
 #include "win16_style.h"
-#include "../lib-win32/win16-control/control_scope.h"
+#include "../lib-style/win16-control/control_scope.h"
 /* Same-thread presentation attachment. Standard push/check/radio/group BUTTON
  * and text/box STATIC forms, ordinary string LISTBOX client rows;
  * plain EDIT border presentation retains native

@@ -1,6 +1,6 @@
-#include "lib-win32/win16-control/scroll_layout.h"
-#include "lib-win32/win16-control/scroll_native.h"
-#include "lib-win32/win16-control/scroll_track.h"
+#include "lib-style/win16-control/scroll_layout.h"
+#include "lib-style/win16-control/scroll_native.h"
+#include "lib-style/win16-control/scroll_track.h"
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>

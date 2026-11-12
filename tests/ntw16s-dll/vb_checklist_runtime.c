@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <stdint.h>
-#include "../../src/lib-win32/win16-control/control_glyphs.h"
+#include "../../src/lib-style/win16-control/control_glyphs.h"
 static uint64_t text_hash;static unsigned text_mode;
 static HINSTANCE module;static WNDPROC native;static BOOL disable_on_query,style_on_query;static HWND move_on_query;
 static LRESULT CALLBACK list_proc(HWND w,UINT m,WPARAM a,LPARAM b){if(m==LB_ITEMFROMPOINT && disable_on_query){disable_on_query=FALSE;EnableWindow(w,FALSE);}if(m==LB_ITEMFROMPOINT && style_on_query){style_on_query=FALSE;SetWindowLongPtrW(w,GWL_STYLE,GetWindowLongPtrW(w,GWL_STYLE)^WS_TABSTOP);}if(m==LB_ITEMFROMPOINT && move_on_query){HWND parent=move_on_query;move_on_query=NULL;SetParent(w,parent);}return CallWindowProcW(native,w,m,a,b);}

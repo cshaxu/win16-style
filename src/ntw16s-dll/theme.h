@@ -1,7 +1,7 @@
 #ifndef NTW16S_THEME_H
 #define NTW16S_THEME_H
 #include "api.h"
-#include "../lib-win32/win16-control/theme_state.h"
+#include "../lib-style/win16-control/theme_state.h"
 /* Private same-thread theme ownership for newly created controls. Capture
  * keeps native rendering unchanged; enable starts the local override. */
 BOOL ntw16s_theme_enable(HWND,const void *owner);
