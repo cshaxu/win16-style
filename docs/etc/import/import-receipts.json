@@ -6044,7 +6044,7 @@
       "path": "src/ntw16s-dll/uwp/hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f4724262090c4d9e6b42c1459747810f999733ea9c410068549751cc58cfe5bf",
+      "sha256": "6a9bb6b59896813e918e20d3dbbe9b8ef3b742115d1c11e62a38b78409d91132",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -7250,9 +7250,36 @@
       "path": "tests/lib-style/uwp/dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "faeaf7eae25aeb3a3c11d1271ac11acb60ac736f848d9693b8225a476e7cc2ef",
+      "sha256": "2c00ba0f0cf6edce4b0f8a3f001c0197aafa5724f34ece9912e2766ecd3fe2d3",
       "disposition": "authored",
       "review": "T26 S1 shared UWP target dispatch and native test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/uwp/hook.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "8b9ca75ee4dcfcf8c7793172ad1ff050b7e753ac9c754637820f0c84ad048449",
+      "disposition": "authored",
+      "review": "T26 S1 shared UWP hook protocol and native fixture",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/uwp/hook.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "dbe754ba84458439d7e7ad8c3ec1e7b62936d298dfdf4afb0d8bebcd92e597b6",
+      "disposition": "authored",
+      "review": "T26 S1 shared UWP hook protocol and native fixture",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/uwp/hook_fixture.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "8df42b1176cf82954f3e9b4e2553e71384ce389fa9a59b8452781c00794de5eb",
+      "disposition": "authored",
+      "review": "T26 S1 shared UWP hook protocol and native fixture",
       "notice": "Project-authored C; no imported artwork"
     }
   ]
