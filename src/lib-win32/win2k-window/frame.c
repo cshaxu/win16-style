@@ -2,6 +2,8 @@
 #include "caption.h"
 #include "system_menu.h"
 #include "lib-win32/style-common/menu_hit.h"
+#include "lib-win32/style-common/dwm.h"
+#include "lib-win32/style-common/frame.h"
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <oleacc.h>
@@ -17,6 +19,7 @@ static const WCHAR menu_property[]=L"Win2kStyle.Menu";
 static const WCHAR menu_keyboard_property[]=L"Win2kStyle.MenuKeyboard";
 static const WCHAR menu_focus_property[]=L"Win2kStyle.MenuFocus";
 static const WCHAR pending_property[]=L"Win2kStyle.FramePending";
+static const WCHAR policy_property[]=L"Win2kStyle.PreviousDwmState";
 static _Atomic UINT frame_message;
 
 static int caption_height(HWND window)
@@ -558,7 +561,7 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
         HANDLE hit=(HANDLE)(uintptr_t)(wp+1);
         if(GetPropW(window,hover_property)!=hit){SetPropW(window,hover_property,hit);repaint=TRUE;}
     }else if(message==WM_NCMOUSELEAVE){RemovePropW(window,hover_property);repaint=TRUE;}
-    if(message==WM_NCDESTROY){RemovePropW(window,pending_property);RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,id);}
+    if(message==WM_NCDESTROY){RemovePropW(window,policy_property);RemovePropW(window,pending_property);RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,id);}
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();
@@ -652,14 +655,60 @@ BOOL win2k_frame_attach(HWND window)
         return SetWindowSubclass(window,pending_frame_proc,(UINT_PTR)pending_frame_proc,0);
     if(!SetWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc,0))return FALSE;
     if(!SetPropW(window,frame_property,(HANDLE)(uintptr_t)(GetActiveWindow()==window?2:1))){RemoveWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc);return FALSE;}
-    enum DWMNCRENDERINGPOLICY policy=DWMNCRP_DISABLED;
-    if(FAILED(DwmSetWindowAttribute(window,DWMWA_NCRENDERING_POLICY,&policy,sizeof(policy)))){
+    DWORD previous=DWMNCRP_USEWINDOWSTYLE;
+    BOOL observed=style_dwm_capture(window,DwmGetWindowAttribute,&previous);
+    if(!SetPropW(window,policy_property,(HANDLE)(uintptr_t)(observed?(previous==DWMNCRP_ENABLED?2:1):3))){
         RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc);return FALSE;
+    }
+    enum DWMNCRENDERINGPOLICY policy=DWMNCRP_DISABLED;
+    if(FAILED(style_dwm_policy(window,DwmSetWindowAttribute,policy))){
+        RemovePropW(window,policy_property);RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc);return FALSE;
     }
     /* Avoid sending WM_SIZE before the creator can finish initializing its window. */
     UINT message=RegisterWindowMessageW(L"Win2kStyle.RecalculateFrame");
     if(message && SetPropW(window,pending_property,(HANDLE)1)){
         atomic_store(&frame_message,message);PostMessageW(window,message,0,0);
     }
+    return TRUE;
+}
+
+BOOL win2k_frame_attached(HWND window)
+{
+    DWORD pid=0;
+    if(!window || GetWindowThreadProcessId(window,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId()){
+        SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
+    }
+    return GetPropW(window,frame_property)!=NULL;
+}
+
+BOOL win2k_frame_remove(HWND window)
+{
+    DWORD pid=0;
+    if(!window || GetWindowThreadProcessId(window,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId()){
+        SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
+    }
+    if(!GetPropW(window,frame_property)){
+        if(RemoveWindowSubclass(window,pending_frame_proc,(UINT_PTR)pending_frame_proc))return TRUE;
+        SetLastError(ERROR_NOT_FOUND);return FALSE;
+    }
+    if((active_menu && active_menu->window==window) || GetPropW(window,button_property)){
+        SetLastError(ERROR_BUSY);return FALSE;
+    }
+    RECT client;BOOL normal=!IsIconic(window) && !IsZoomed(window);
+    if(normal)style_client_screen(window,&client);
+    uintptr_t previous=(uintptr_t)GetPropW(window,policy_property);
+    if(!RemoveWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc))return FALSE;
+    RemovePropW(window,policy_property);
+    RemovePropW(window,pending_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);
+    if(GetPropW(window,menu_keyboard_property))leave_menu_keyboard(window,TRUE);
+    else {RemovePropW(window,menu_focus_property);RemovePropW(window,menu_property);}
+    win2k_system_menu_end(window,TRUE);
+    if(previous){
+        enum DWMNCRENDERINGPOLICY policy=previous==2?DWMNCRP_ENABLED:previous==1?DWMNCRP_DISABLED:DWMNCRP_USEWINDOWSTYLE;
+        HRESULT status=style_dwm_policy(window,DwmSetWindowAttribute,policy);
+        if(FAILED(status)){SetLastError(HRESULT_CODE(status));return FALSE;}
+    }
+    style_frame_changed(window);
+    if(normal && IsWindow(window))style_restore_client(window,&client);
     return TRUE;
 }

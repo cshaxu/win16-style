@@ -23,6 +23,13 @@ DWORD win32_process_global_load_discard(win32_process_global_load *ticket)
     if(error)return error;
     close_ticket(ticket);return ERROR_SUCCESS;
 }
+DWORD win32_process_global_load_abandon(win32_process_global_load *ticket)
+{
+    if(!ticket || !ticket->thread || !ticket->process || !ticket->remote_path)return ERROR_INVALID_PARAMETER;
+    DWORD wait=WaitForSingleObject(ticket->thread,0);
+    if(wait!=WAIT_TIMEOUT)return wait==WAIT_FAILED?GetLastError():ERROR_INVALID_STATE;
+    close_ticket(ticket);return ERROR_SUCCESS;
+}
 
 DWORD win32_process_global_load_begin(HANDLE process,DWORD pid,const WCHAR *path,const WCHAR *expected_name,win32_process_global_loader_fn resolve_loader,win32_process_global_load *ticket)
 {

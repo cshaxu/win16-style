@@ -30,7 +30,7 @@ int wmain(int argc,WCHAR **argv)
     if(!n || n>=ARRAYSIZE(self) || swprintf(command,ARRAYSIZE(command),L"\"%ls\" witness",self)<0)return 5;
     STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};
     if(!CreateProcessW(self,command,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&si,&pi))return 6;
-    ULONGLONG start=GetTickCount64();int result=run16s_global_with_parent(pi.hProcess);
+    ULONGLONG start=GetTickCount64();int result=run16s_global_with_parent(pi.hProcess,NTW16S_GLOBAL_STYLE_16);
     DWORD waited=WaitForSingleObject(pi.hProcess,3000),code=999;
     if(waited==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);
     else{TerminateProcess(pi.hProcess,ERROR_TIMEOUT);WaitForSingleObject(pi.hProcess,1000);}

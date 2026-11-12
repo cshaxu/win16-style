@@ -2,6 +2,7 @@
 #include "frame_layout.h"
 #include "frame_dispatch.h"
 #include "../win16-common/font.h"
+#include "lib-win32/style-common/dwm.h"
 #include <dwmapi.h>
 
 BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creating,const void *owner,const BOOL *cancelled,const win16_control_frame_lifecycle_services *v)
@@ -38,10 +39,7 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     win16_control_client_screen(w,&client);
     /* POLICY is set-only. Preserve the observable rendering state instead;
      * Windows does not expose whether it came from USEWINDOWSTYLE or ENABLED. */
-    BOOL nc_enabled=FALSE;
-    s->policy_saved=!(style&WS_CHILD) && SUCCEEDED(v->get_window_attribute(w,DWMWA_NCRENDERING_ENABLED,
-        &nc_enabled,sizeof(nc_enabled)));
-    s->old_policy=nc_enabled?DWMNCRP_ENABLED:DWMNCRP_DISABLED;
+    s->policy_saved=!(style&WS_CHILD) && style_dwm_capture(w,v->get_window_attribute,&s->old_policy);
     if(cancelled && *cancelled){win16_control_frame_state_dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
     if(!SetWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc,(DWORD_PTR)s)){
         DWORD error=GetLastError();win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;

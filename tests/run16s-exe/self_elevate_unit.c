@@ -15,9 +15,11 @@ static DWORD actual_mask;static HWND actual_owner;static int actual_show;static 
 static BOOL WINAPI fake_shell(SHELLEXECUTEINFOW *p){wcsncpy(actual_file,p->lpFile?p->lpFile:L"",32767);wcsncpy(actual_args,p->lpParameters?p->lpParameters:L"",32767);wcsncpy(actual_directory,p->lpDirectory?p->lpDirectory:L"",32767);actual_mask=p->fMask;actual_owner=p->hwnd;actual_show=p->nShow;p->hInstApp=(HINSTANCE)(INT_PTR)42;SetLastError(fake_error);return fake_result;}
 static DWORD attach(void *slot,void *replacement){memcpy(&hooked,&replacement,sizeof(hooked));BOOL (WINAPI *fn)(SHELLEXECUTEINFOW *)=fake_shell;memcpy(slot,&fn,sizeof(fn));return 0;}
 DWORD process_hook_propagation_attach(DWORD (*a)(void *,void *),const process_hook_propagation_ops *o){(void)a;(void)o;return 0;}
+void process_hook_propagation_discard(const process_hook_propagation_ops *o){(void)o;}
 DWORD process_hook_propagation_attach_as_user_w(DWORD (*a)(void *,void *)){(void)a;return 0;}
 DWORD process_hook_startup_attach(void *a,void *b){(void)a;(void)b;return 0;}
 BOOL ntw16s_global_policy_active(DWORD c){(void)c;return FALSE;}
+BOOL ntw16s_global_policy_style(DWORD c,DWORD style){(void)c;(void)style;return FALSE;}
 BOOL ntwshk_system_print_host_w(LPCWSTR a,LPWSTR b){(void)a;(void)b;return FALSE;}
 BOOL ntwshk_system_print_host_a(LPCSTR a,LPSTR b){(void)a;(void)b;return FALSE;}
 DWORD ntwshk_install(HANDLE h,const ntwshk_context *c,ntwshk_create_w f){(void)h;(void)c;(void)f;return 0;}

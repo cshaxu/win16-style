@@ -17,6 +17,10 @@ typedef struct process_hook_propagation_ops {
     void *context;
 } process_hook_propagation_ops;
 DWORD process_hook_propagation_attach(DWORD (*attach)(void *,void *),const process_hook_propagation_ops *);
+/* Includes registrations being prepared; callers must treat these as owned. */
+BOOL process_hook_propagation_registered(void);
+/* Only after the owner's hook transaction has been fully rolled back. */
+void process_hook_propagation_discard(const process_hook_propagation_ops *);
 /* Optional token-preserving W entry, after propagation_attach in the same
  * transaction. The caller supplies the original token; no elevation or token
  * acquisition is performed here. Same suspension, rollback and reentry rules. */

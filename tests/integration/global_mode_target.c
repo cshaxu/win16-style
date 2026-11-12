@@ -9,12 +9,14 @@
 #define QUERY_DPI (WM_APP+78)
 #define CREATE_HIDDEN (WM_APP+79)
 #define SHOW_HIDDEN (WM_APP+80)
+#define QUERY_STYLE_2K (WM_APP+81)
 static HINSTANCE instance;
 static unsigned clicks;
 static const WCHAR cls[]=L"Win16GlobalE2ETarget";
 typedef BOOL (__cdecl *hit_fn)(HWND,LPARAM,LRESULT *);
 static LRESULT CALLBACK window_proc(HWND w,UINT message,WPARAM a,LPARAM b)
 {
+    if(message==QUERY_STYLE_2K)return GetPropW(w,L"Win2kStyle.Frame")!=NULL;
     if(message==QUERY_STYLE){
         HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
         hit_fn hit=dll?(hit_fn)(void *)GetProcAddress(dll,"win16_style_hit_test"):NULL;

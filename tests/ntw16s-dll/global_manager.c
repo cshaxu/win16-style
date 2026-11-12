@@ -153,6 +153,11 @@ static int stop_race(void)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==2 && !lstrcmpW(argv[1],L"local-abandon")){
+        DWORD error=ntw16s_global_manager_test_abandon();
+        printf("MANAGER LOCAL ABANDON bits=%u error=%lu\n",(unsigned)(sizeof(void *)*8),error);
+        return error?1:0;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"target"))return target();
     if(argc==2 && !lstrcmpW(argv[1],L"race-child"))return stop_race_child();
     if(argc==2 && !lstrcmpW(argv[1],L"stop-race"))return stop_race();

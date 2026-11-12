@@ -7,6 +7,7 @@ LONG ntw16s_attach_titles(void); /* joins the current early Detours transaction 
 LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *));
 LONG ntw16s_attach_processes(void);
 LONG ntw16s_attach_processes_using(DWORD (*attach)(void *,void *));
+void ntw16s_discard_processes(void);
 LONG ntw16s_attach_file_dialogs(void);
 LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *));
 LONG ntw16s_attach_com_dialogs(void);

@@ -25,6 +25,10 @@ static BOOL fail_window_walk(DWORD thread,ULONGLONG deadline,win32_process_globa
 }
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==2 && !wcscmp(argv[1],L"--unsupported-style")){
+        int result=run16s_global_with_parent(NULL,0xffffffffu);
+        printf("GLOBAL STYLE UNSUPPORTED result=%d\n",result);return result==10?0:4;
+    }
     if(argc==2 && !wcscmp(argv[1],L"--timeout")){
         inject_sweep=TRUE;walk_error=ERROR_TIMEOUT;
         DWORD result=sweep(1,1,0,NTW16S_GLOBAL_APPLY);
@@ -36,7 +40,7 @@ int wmain(int argc,WCHAR **argv)
     WCHAR desktop[128],name[NTW16S_GLOBAL_NAME_CAP];DWORD needed=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed) ||
        wcsncmp(desktop,L"Win16S-Dialog-",14) || !ntw16s_global_name(name,ARRAYSIZE(name)))return 1;
-    int result=run16s_global_with_parent(NULL);
+    int result=run16s_global_with_parent(NULL,NTW16S_GLOBAL_STYLE_16);
     HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);DWORD error=mapping?ERROR_SUCCESS:GetLastError();
     if(mapping)CloseHandle(mapping);
     BOOL gone=!mapping && error==ERROR_FILE_NOT_FOUND;

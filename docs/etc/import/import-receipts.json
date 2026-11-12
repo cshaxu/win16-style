@@ -86,7 +86,7 @@
       "path": "src/run16s-exe/tray_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f9681de0da6d6f8c76d2ba8c796ef038318207d13dd9891d3845b44beb7e0686",
+      "sha256": "108a4852bf5d489e11b78f18089234b2e9c1df9792c22d65fc2a527064e21a8d",
       "disposition": "authored",
       "review": "T21 S19 tray control using existing global session; T21 S20 tray library split; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored C orchestration; no imported hook implementation"
@@ -104,7 +104,7 @@
       "path": "tests/integration/global_parent_owned.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ed6c525b11ff00f61a69eea8734de3d7b37739d8aa780ee297599699bc9c32c0",
+      "sha256": "54af83a06b38f036c92f57c7c0d9347de3d08a7027d06e93eb39b308e81e60b9",
       "disposition": "authored",
       "review": "T21 S15 elevated controller parent lifetime regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -194,7 +194,7 @@
       "path": "src/ntw16s-dll/injection/late_process.c",
       "source": null,
       "source_blob": null,
-      "sha256": "97d50f9425d5a7fae4db236ad3783366cf081f1b1358f7f9fd5a39400cd62c66",
+      "sha256": "4f7c5e97d572657699010546b67dff264d9dff0e4e5157b1198414042a174159",
       "disposition": "authored",
       "review": "T21 S13 experimental synchronized late process initializer; not linked into product; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 PSS guard ownership candidate; T21 S13 unified session stop semantics; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; uses existing project hook and installer code"
@@ -203,7 +203,7 @@
       "path": "tests/integration/late_process_prototype.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8b514ff323789176ebc923f71c3622e67d6dbbde321781aa9b2fe09325b8bac0",
+      "sha256": "785448bb5bac9f0b1512feaf3b17272b35597e045fd11c24106f55f9d46e2abd",
       "disposition": "authored",
       "review": "T21 S13 experimental late process-hook adapter exercising production propagation implementation; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 session-bound propagation tests; T21 S13 session-bound propagation tests; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S42 direct public calls and product-side cleanup; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported code or resources"
@@ -293,7 +293,7 @@
       "path": "tests/ntw16s-dll/global_manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "08df374578a54d36449d19d3e74b99d604695b11bae811a700cbd7909912de64",
+      "sha256": "2901944742cc87b6e5d2c57f8c2819cac83e7a22c9e2958c9fdc3fe522b36b67",
       "disposition": "authored",
       "review": "T21 S13 manager startup wait timeout and completion test; T21 S42 direct public calls and product-side cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -302,7 +302,7 @@
       "path": "src/ntw16s-dll/global/manager.h",
       "source": null,
       "source_blob": null,
-      "sha256": "a6c16ed0d8522ae93564fa4d16e5fc604cefd83007bc9e0e6eb45a19486b6a26",
+      "sha256": "5b20d88cb6584ed785dc4618e774c1bf0f03d9a87a2a3a73130afc268d82696d",
       "disposition": "authored",
       "review": "T21 S13 bounded startup attachment completion; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -311,7 +311,7 @@
       "path": "src/ntw16s-dll/global/manager.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dbba93fbe17c4b4c17c75ec9a2f408be18d86e689c39eecf4c1a2a6a6b76868f",
+      "sha256": "0a42350de2e348cf3990b4aff1e0bff64a8a8f9c5a2ac992807ecdade39e84d2",
       "disposition": "authored",
       "review": "T21 S40 shared Toolhelp iteration; caller retains selection and lifecycle; T21 S42 direct public discovery calls; T21 S42 product adapter directory cleanup; T22 S1 P32 shared UWP target coordination and window-scoped global admission; T24 S1 quality refactor",
       "notice": "Project-authored C"
@@ -383,7 +383,7 @@
       "path": "tests/integration/global_mode_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4af24c93504e57bbeed64a911d8c5b7785dca2a1b2df9c7c01ef6734f81f6a51",
+      "sha256": "34eb652b2befd07af1414fab6580c3663ebfa29de813689616aaff8a099443b5",
       "disposition": "authored",
       "review": "T21 S3 global controller and private-desktop integration; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture; T21 S13 hidden ordinary-window global stop regression; T21 S13 verify hidden windows shown after stop",
       "notice": "Project-authored source; no imported code or resources"
@@ -401,7 +401,7 @@
       "path": "src/run16s-exe/global.h",
       "source": null,
       "source_blob": null,
-      "sha256": "f457953dfd24fdabc702f8365ad5f1ec004757830ba59ecd0035a62d998c59d1",
+      "sha256": "b8ddfb392020ed96bd6d4f54aeebdf208882bc551878d0b005e0b2b16751aa22",
       "disposition": "authored",
       "review": "T21 S3 global controller and private-desktop integration; T24 S1 quality refactor",
       "notice": "Project-authored source; no imported code or resources"
@@ -410,7 +410,7 @@
       "path": "src/run16s-exe/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c5e7c2536ae9067d52ee26f182d847c1cc5337922ddc81ccdd4c6424732aa745",
+      "sha256": "8545a509f0d46144467b468d960afac8475e1d325bddc43597d1ce57fae8eaa0",
       "disposition": "authored",
       "review": "T21 S13 bounded startup attachment completion; T21 S42 direct public calls and product-side cleanup; T24 S1 quality refactor; T24 S1 directly use process-image interface; T24 S1 preserve global startup wait error; T24 S1 report sweep enumeration errors; T25 S2 shared runtime extraction",
       "notice": "Project-authored source; no imported code or resources"
@@ -419,7 +419,7 @@
       "path": "src/ntw16s-dll/global/session.h",
       "source": null,
       "source_blob": null,
-      "sha256": "7f5d7e22978e652aa50f6bdc90aeb6befc86dc9d62df35675b6fb6ba0f524fae",
+      "sha256": "6b6b85c47eb303e182c8013187d4c26eaae5654d476ac1f90daea84b2d8d41b3",
       "disposition": "authored",
       "review": "T21 S3 global controller and private-desktop integration; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 attached-window acknowledgement candidate; T21 S13 cross-directory compatible module reuse; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -428,7 +428,7 @@
       "path": "src/ntw16s-dll/global/session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "649722f72dcb82e1b90c675b47aa698b9ab42e328e92ce02d610af17555a049f",
+      "sha256": "9e885f72e20c7cfc1e1da4c8de21c75ac0166eefd77b63f2bd76bec8bfed65d9",
       "disposition": "authored",
       "review": "T21 S3 global controller and private-desktop integration; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 cross-directory compatible module reuse; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -437,7 +437,7 @@
       "path": "src/ntw16s-dll/global/hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "53f13b3f89d14595c391831b5432ac925c3f7b2e401aac85b43eafc2dd7b4c83",
+      "sha256": "103fa19eaa9544afcccce6c3c0dae1f52319cda2debe1d6192430afd73026cee",
       "disposition": "authored",
       "review": "T21 S13 bounded startup attachment completion; T21 S13 cross-directory compatible module reuse; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -455,7 +455,7 @@
       "path": "src/ntw16s-dll/global/window.h",
       "source": null,
       "source_blob": null,
-      "sha256": "a5454f9c2cc694e8ba1d824321e647ab0602abd3b733465a5725454df0523746",
+      "sha256": "67118cb09d059fe0d42485b2f08e53f2c4d597b005c012bca5afcf738e30c263",
       "disposition": "authored",
       "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -464,7 +464,7 @@
       "path": "src/ntw16s-dll/global/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "609129ee8ea18136df1057fc039345240b5fdf31c15b5283546fcbb97cfe7743",
+      "sha256": "48cdea8b9abe493e213d31af1f0aa9fd72fcc71e161bd7a1d73a30a68d71cb22",
       "disposition": "authored",
       "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics; T21 S13 attached-window acknowledgement candidate; T21 S13 hidden ordinary-window global stop regression; T21 S42 product adapter directory cleanup",
       "notice": "Project-authored source; no imported code or resources"
@@ -1400,7 +1400,7 @@
       "path": "src/ntw16s-dll/injection/intercept.h",
       "source": "src/nthook32-dll/intercept.h",
       "source_blob": "b9b7ea48abb2548f2c980db63896321d079a80cd",
-      "sha256": "1fa964e83afa6ec0aa0b63ed67d77d8618114ce8ee54fc215bba201d68fccf58",
+      "sha256": "bf05edc6173b2b11730b127d40594db85b7cefd9e1f857db03c306741023368e",
       "disposition": "adapt",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T20 S1 common-dialog bridge and version; T21 S13 reusable late initializer and process-detour adapter; T21 S13 unified late style hooks and stop semantics; T24 S1 quality refactor; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
@@ -1472,7 +1472,7 @@
       "path": "src/ntw16s-dll/injection/create_process.c",
       "source": "src/nthook32-dll/create_process.cpp",
       "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
-      "sha256": "b2fede8b6a9aabe5fb74d4dce7468b8265539c1f684e11abe5d59dcf6b463bdb",
+      "sha256": "2d6c9fbba7d4dc9b8a1e9bcbaeff3e377948bc1cd0528c0bf010201a8b1a8a23",
       "disposition": "adapt",
       "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S42 product adapter directory cleanup; T23 S1 optional AsUserW propagation and DWM restoration regression; T23 S2 bounded self-elevation redirect candidate; T25 S2 shared runtime extraction; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
@@ -4057,7 +4057,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "11b33932c082d59af785e428092b70b01caeb1a4404aca1f7e94c0b87a63812f",
+      "sha256": "ca7f0d9e8e4e2705001879b562d553c325787e801540c5e4cab70229c6dd1c74",
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
@@ -5108,7 +5108,7 @@
       "path": "src/lib-win32/win16-window/frame_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "84878bad11fb604a054bed698f6522d67991694c58d78d319d33377b227f2658",
+      "sha256": "014a64e0e79476c8f784d2c5bb5c9a17b79ae742a499fef882469ecf4a40406e",
       "disposition": "authored",
       "review": "T21 S24 extract frame lifecycle; T23 S1 preserve documented DWM rendering state on removal; T23 S4 console and Terminal window adaptation and native tests",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5612,7 +5612,7 @@
       "path": "src/lib-win32/process-global/load.c",
       "source": null,
       "source_blob": null,
-      "sha256": "641a7ea08c0e1f383a5cb05ac5839f7a7cf506b8bf0b6f0df5461ea8d100a6c5",
+      "sha256": "a20873fbd2c2436c42d4f8a000b3d9c750986ad4290d306010998054217775a0",
       "disposition": "authored",
       "review": "T21 S41 parameterize existing global load lifecycle",
       "notice": "Project-authored C code; no imported artwork"
@@ -5621,7 +5621,7 @@
       "path": "src/lib-win32/process-global/load.h",
       "source": null,
       "source_blob": null,
-      "sha256": "23e5075125d3c06d0a63380fde0153f8b12f77d3fdf0c493d18c9adc0c238c86",
+      "sha256": "b17a03a7db6f4beba6781df15cf3c6ba34b69e6d719ca7be65bba057ad29f679",
       "disposition": "authored",
       "review": "T21 S41 parameterize existing global load lifecycle",
       "notice": "Project-authored C code; no imported artwork"
@@ -5900,7 +5900,7 @@
       "path": "src/lib-win32/process-hook/propagate.c",
       "source": null,
       "source_blob": null,
-      "sha256": "33858f2a61f7efce4b7b9a3b63dac9af444f550a3334ac499d217062f00c2bb1",
+      "sha256": "a4b9d7d689cb5224a9e918fba0316293164b562bd1814e3a1a71cac00323bbb6",
       "disposition": "authored",
       "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design; T21 S41 P24 compiler compatibility and boundary testing; T23 S1 optional AsUserW propagation and DWM restoration regression",
       "notice": "Project-authored C code; project MIT LICENSE"
@@ -5909,7 +5909,7 @@
       "path": "src/lib-win32/process-hook/propagate.h",
       "source": null,
       "source_blob": null,
-      "sha256": "e7d413da3c9ea1aa05fed7efc831a3b89ae2121072774cc16835925653859619",
+      "sha256": "fb03dd15205f532fa6652801f52513f352d4755d3e2fa8d854806c79d7b4466d",
       "disposition": "authored",
       "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design; T21 S43 minimal public contract/lifetime corrections; original resources unchanged; T23 S1 optional AsUserW propagation and DWM restoration regression",
       "notice": "Project-authored C code; project MIT LICENSE"
@@ -5918,7 +5918,7 @@
       "path": "tests/lib-win32/process-hook/propagate.c",
       "source": null,
       "source_blob": null,
-      "sha256": "791c93375d44d979343386627747e097e1c09c12b7e84d9f5b87d12cbfb0dea4",
+      "sha256": "cc3b34ba02739c0ffeaf0ffc650ac4e89e5ed900b6322d8ed2a58eb39e0d6a46",
       "disposition": "authored",
       "review": "T21 S41 shared propagation and native unwind; preserves T6 S1 cleanup design; T21 S41 P24 reentrant propagation test; T21 S44 shared test import from ntvdm64 967ef3d31, see pinned evidence manifest; T23 S1 optional AsUserW propagation and DWM restoration regression",
       "notice": "Project-authored C code; project MIT LICENSE"
@@ -6179,7 +6179,7 @@
       "path": "tests/integration/uwp_tray.c",
       "source": null,
       "source_blob": null,
-      "sha256": "afa1ad58497b551e4261408b7c484a8f418da36385f97a3a38ca63d261c84b62",
+      "sha256": "4d3fbccfbe0f5c65e855cd1557e4d214d1598325f4245f975fe2787985cc9e72",
       "disposition": "authored",
       "review": "T22 S1 P38 opt-in published tray controller UWP integration; native menu input and owned targets",
       "notice": "Project-authored pure C test; no imported artwork"
@@ -6314,7 +6314,7 @@
       "path": "tests/integration/global_start_failure.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a9593dba5bff337a04b763edbfcfe17d399b9c81b0826290c3fea47a639e3914",
+      "sha256": "0a4629ab4d12d71c3243471d7a1f671d50decee45255a5802c86bec85761a1d5",
       "disposition": "authored",
       "review": "T24 S1 global startup wait failure and cleanup regression; T24 S1 report sweep enumeration errors; T24 S1 verify bounded sweep timeout",
       "notice": "Project-authored native C test; no imported artwork"
@@ -6548,7 +6548,7 @@
       "path": "src/ntw2ks-dll/controls.c",
       "source": null,
       "source_blob": null,
-      "sha256": "030000be084bfa08d553424fc0c8421964b45fb9bdb81ee751e4eee8e7b1c6d9",
+      "sha256": "b2d2cea75a7f5b17fa7f87c1bc8cd1a50bda0c06d43e5d571a1942fd48cfba24",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -6566,7 +6566,7 @@
       "path": "src/ntw2ks-dll/ntw2ks.def",
       "source": null,
       "source_blob": null,
-      "sha256": "36f7d68712e417ca3bf9ad994df9ea98074f6c1b2f9f6590b2eaf644dd4e9acf",
+      "sha256": "736b1eae274b7333682406e358ed9e571b63815016fd5cc51d33eb563d73d12e",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -6629,7 +6629,7 @@
       "path": "src/ntwshk-dll/ntwshk.def",
       "source": null,
       "source_blob": null,
-      "sha256": "e7caf5e003d7981c10bdbe0168d6e6c7a8e736ed77befbc12ec04bf5b13c2ddf",
+      "sha256": "e8d0afb9836af16d3b35d43eeeacff93c28029579ee2fd9cc3953184b7579c0d",
       "disposition": "authored",
       "review": "T25 S2 shared runtime and native verification; T25 S2 shared runtime extraction",
       "notice": "Project-authored; no imported artwork"
@@ -6728,18 +6728,18 @@
       "path": "src/lib-win32/win2k-window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1fde5855c3fa031f581fe5400f829cebc7ff3e4f925d20bff9f11b31bc9c8851",
+      "sha256": "69ded3554e69579d5c20b6792949b9efc3a92d1621ac4248aacaad6c82e821e4",
       "disposition": "authored",
-      "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state",
+      "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
       "path": "src/lib-win32/win2k-window/frame.h",
       "source": null,
       "source_blob": null,
-      "sha256": "63ad629007f2f3807415e4f863307b0c64e92c0db03fd5f5f17d8b1d6d7afc55",
+      "sha256": "c8b20e9abd404a041725cabde922ff20698bb11531f18d030872904701681181",
       "disposition": "authored",
-      "review": "T25 S3 native Win2000 frame and fixture",
+      "review": "T25 S3 native Win2000 frame and fixture; T25 S8 paired frame removal",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
@@ -6795,6 +6795,141 @@
       "disposition": "authored",
       "review": "T25 S4 shared custom menu input protocol and test",
       "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "tests/lib-win32/win2k-window/frame_lifecycle.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7d35d3089a6df3113a86eca1653eaafc69089906eb2c2bced80f2c8f33121c2e",
+      "disposition": "authored",
+      "review": "T25 S8 frame lifecycle test",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "src/lib-win32/style-common/dwm.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "dc446af8cb5f5635cae67b4961282d2d5769414a857447f81d412b9647b815e5",
+      "disposition": "authored",
+      "review": "T25 S8 shared observable DWM state",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "src/lib-win32/style-common/global_window.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "85ae0cca88a46b13f9c303a97bdb8acc371769052521e34188b6da91ea1c5569",
+      "disposition": "authored",
+      "review": "T25 S8 shared style global window lifecycle",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "src/lib-win32/style-common/global_window.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "46148c8406ddfe5b51b17775a2d68ac377b52a72642c357e25150c188dcc5623",
+      "disposition": "authored",
+      "review": "T25 S8 shared style global window lifecycle",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "tests/lib-win32/style-common/global_window.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f781edfa0feef994234bf9281514c38fb067ae472f1ce4defe68f7ec988f0ba4",
+      "disposition": "authored",
+      "review": "T25 S8 shared style global window lifecycle",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "tests/lib-win32/style-common/win16_dwm_restore.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "754aebb44a49aee52d998ce66ea863c74ac6f687bb85af87c34a8060d1f0f8f7",
+      "disposition": "authored",
+      "review": "T25 S8 shared window restoration",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "src/lib-win32/style-common/frame.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6555feca07db324154fd96f22e53f58aa5e14d46cc282577b25e64168611bfd2",
+      "disposition": "authored",
+      "review": "T25 S8 shared window restoration",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "tests/ntw16s-dll/global_session_style.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f796b316252a86fdd2195ae60a6a29a51f778cd76a199e7715411439aefee17c",
+      "disposition": "authored",
+      "review": "T25 S8 global session style identity",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "src/ntw2ks-dll/window.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "87ad5e6bd131c41492c821d4eaf810a23d758b577d2c45f1ca3446c536fbb8a7",
+      "disposition": "authored",
+      "review": "T25 S8 Win2000 window adapter",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "src/ntw2ks-dll/window.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "fa52dca7007a1f1a9466db3e500511d6dcd69f27dfc4227a126c27cb50190596",
+      "disposition": "authored",
+      "review": "T25 S8 Win2000 window adapter",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "tests/ntw16s-dll/global_style_bridge.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "19d4031843a1b7aadc85e597f4b2fcea91863a3cecff7835333a9611761b06cd",
+      "disposition": "authored",
+      "review": "T25 S8 shared global style bridge",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "tests/run16s-exe/tray_controller.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "cdd450ee35d16f9c25a592ea9715781989f573e32cb665c5fa366911138cc0aa",
+      "disposition": "authored",
+      "review": "T25 S8 global style lifecycle and tray selection tests",
+      "notice": "Project-authored native C; no imported artwork"
+    },
+    {
+      "path": "tests/ntw2ks-dll/window_style_race.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "41e4e92e551efce934fe4b3fe09a9847f27e1e08e72371de19b844e10c890300",
+      "disposition": "authored",
+      "review": "T25 S8 shared window lifecycle race",
+      "notice": "Project-authored native C; no imported artwork"
+    },
+    {
+      "path": "tests/integration/tray_styles_current.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2f10f1cd2ce35a7a4e3d5c5ae5061e5cb0d5e1c28e819f62808d4fd33a44eb60",
+      "disposition": "authored",
+      "review": "T25 S8 current-desktop global style verification",
+      "notice": "Project-authored native C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-win32/process-global/load_abandon.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "5b75b041aa7f19945f424770e3e5b907136d7ba8668cbbc87456a9a9586b4100",
+      "disposition": "authored",
+      "review": "T25 S8 pending loader stop lifecycle",
+      "notice": "Project-authored native C; no imported artwork"
     }
   ]
 }

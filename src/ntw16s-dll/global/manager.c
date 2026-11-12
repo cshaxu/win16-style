@@ -16,6 +16,7 @@ static BOOL test_allowed(DWORD pid){return pid==test_pid||(test_second_pid&&pid=
 #include "lib-win32/process-global/transaction.h"
 #include "lib-win32/process-global/engine.h"
 #include "lib-win32/process-global/targets.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -211,17 +212,27 @@ void ntw16s_global_manager_stats_read(ntw16s_global_manager *m,ntw16s_global_man
 static DWORD close_target(win32_process_global_target *target,void *context,ULONGLONG deadline)
 {
     manager_entry *e=(manager_entry *)target;(void)context;
-    if(e->attach.start.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;WaitForSingleObject(e->attach.start.thread,left);}
-    if(e->attach.load.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;WaitForSingleObject(e->attach.load.thread,left);}
-    return ntw16s_global_attach_close(&e->attach);
+    DWORD worker=WAIT_OBJECT_0,loader=WAIT_OBJECT_0;
+    if(e->attach.start.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;worker=WaitForSingleObject(e->attach.start.thread,left);}
+    if(e->attach.load.thread){ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;loader=WaitForSingleObject(e->attach.load.thread,left);}
+    if(loader==WAIT_TIMEOUT && worker==WAIT_OBJECT_0){
+        DWORD abandoned=win32_process_global_load_abandon(&e->attach.load);
+        if(!abandoned)fwprintf(stderr,L"run16s: global target %lu/%lu loader still running; remote path retained until target exit\n",target->pid,target->thread_id);
+        else if(abandoned!=ERROR_INVALID_STATE)return abandoned;
+    }
+    DWORD error=ntw16s_global_attach_close(&e->attach);
+    if(error)fwprintf(stderr,L"run16s: global target %lu/%lu stop failed (%lu), worker=%lu loader=%lu phase=%lu\n",
+                     target->pid,target->thread_id,error,worker,loader,e->attach.phase);
+    return error;
 }
 DWORD ntw16s_global_manager_stop(ntw16s_global_manager *m,DWORD timeout)
 {
     if(!m || m->owner_thread!=GetCurrentThreadId())return ERROR_INVALID_PARAMETER;
-    if(m->process_monitor){DWORD error=win32_process_global_monitor_stop(m->process_monitor);if(error)return error;m->process_monitor=NULL;}
-    if(m->discover.hook){DWORD error=win32_process_global_window_stop(&m->discover);if(error)return error;}
-    DWORD close_error=win32_process_global_engine_stop(&m->engine,timeout,close_target,m);if(close_error)return close_error;
-    if(m->uwp){close_error=ntw16s_uwp_global_stop(m->uwp,timeout);if(close_error)return close_error;m->uwp=NULL;}
+    if(m->process_monitor){DWORD error=win32_process_global_monitor_stop(m->process_monitor);if(error){fwprintf(stderr,L"run16s: global monitor stop failed (%lu)\n",error);return error;}m->process_monitor=NULL;}
+    if(m->discover.hook){DWORD error=win32_process_global_window_stop(&m->discover);if(error){fwprintf(stderr,L"run16s: global discovery stop failed (%lu)\n",error);return error;}}
+    DWORD close_error=win32_process_global_engine_stop(&m->engine,timeout,close_target,m);
+    if(close_error){fwprintf(stderr,L"run16s: global targets stop failed (%lu)\n",close_error);return close_error;}
+    if(m->uwp){close_error=ntw16s_uwp_global_stop(m->uwp,timeout);if(close_error){fwprintf(stderr,L"run16s: global UWP stop failed (%lu)\n",close_error);return close_error;}m->uwp=NULL;}
     if(m->session)UnmapViewOfFile(m->session);
     if(m->mapping)CloseHandle(m->mapping);
     if(m->stop)CloseHandle(m->stop);
@@ -230,6 +241,40 @@ DWORD ntw16s_global_manager_stop(ntw16s_global_manager *m,DWORD timeout)
     if(m->changed)CloseHandle(m->changed);
     free(m->dll_path);free(m);return ERROR_SUCCESS;
 }
+#ifdef NTW16S_GLOBAL_MANAGER_TEST
+typedef struct test_loader {HANDLE go;const char *path;} test_loader;
+static DWORD WINAPI test_loader_wait(void *value)
+{
+    test_loader *loader=value;
+    return WaitForSingleObject(loader->go,3000)!=WAIT_OBJECT_0 || strcmp(loader->path,"retained")?1:0;
+}
+DWORD ntw16s_global_manager_test_abandon(void)
+{
+    ntw16s_global_manager *m=calloc(1,sizeof(*m));manager_entry *entry=calloc(1,sizeof(*entry));
+    HANDLE go=CreateEventW(NULL,TRUE,FALSE,NULL),watch=NULL;
+    char *memory=VirtualAlloc(NULL,4096,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE);
+    if(!m || !entry || !go || !memory){free(m);free(entry);if(go)CloseHandle(go);if(memory)VirtualFree(memory,0,MEM_RELEASE);return ERROR_NOT_ENOUGH_MEMORY;}
+    strcpy(memory,"retained");test_loader loader={go,memory};
+    if(!DuplicateHandle(GetCurrentProcess(),GetCurrentProcess(),GetCurrentProcess(),&entry->attach.load.process,0,FALSE,DUPLICATE_SAME_ACCESS))goto setup_failed;
+    entry->attach.load.remote_path=memory;watch=CreateThread(NULL,0,test_loader_wait,&loader,0,NULL);
+    if(!watch || !DuplicateHandle(GetCurrentProcess(),watch,GetCurrentProcess(),&entry->attach.load.thread,0,FALSE,DUPLICATE_SAME_ACCESS))goto setup_failed;
+    m->owner_thread=GetCurrentThreadId();m->engine.owner=m->owner_thread;m->engine.initialized=TRUE;
+    m->engine.targets.ops.dispose=dispose_target;
+    win32_process_global_registry_init(&m->engine.targets.registry,m->engine.targets.buckets,WIN32_PROCESS_GLOBAL_TARGET_BUCKETS);
+    win32_process_global_registry_insert(&m->engine.targets.registry,&entry->target.registry_node,
+                                         GetCurrentProcessId(),m->owner_thread,&entry->target);
+    m->engine.targets.count=1;
+    DWORD stopped=ntw16s_global_manager_stop(m,0);SetEvent(go);
+    DWORD wait=WaitForSingleObject(watch,3000),code=1;if(wait==WAIT_OBJECT_0)GetExitCodeThread(watch,&code);
+    if(stopped)(void)ntw16s_global_manager_stop(m,3000);
+    CloseHandle(watch);CloseHandle(go);BOOL freed=VirtualFree(memory,0,MEM_RELEASE);
+    return !stopped && wait==WAIT_OBJECT_0 && !code && freed?ERROR_SUCCESS:ERROR_INVALID_STATE;
+setup_failed:
+    {DWORD error=GetLastError();if(watch){SetEvent(go);WaitForSingleObject(watch,3000);CloseHandle(watch);}
+     if(entry->attach.load.process)CloseHandle(entry->attach.load.process);
+     CloseHandle(go);VirtualFree(memory,0,MEM_RELEASE);free(entry);free(m);return error?error:ERROR_INVALID_STATE;}
+}
+#endif
 DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_global_manager **result)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],stop_name[NTW16S_GLOBAL_NAME_CAP+16];DWORD error=ERROR_SUCCESS;
@@ -254,7 +299,7 @@ DWORD ntw16s_global_manager_start(const WCHAR *dll_path,WORD machine,ntw16s_glob
     error=win32_process_global_engine_start(&m->engine,desktop,m->quit,m->stop,m->work,m->changed,
         MANAGER_WORKERS,sizeof(manager_entry),&ops,m,3000);
     if(error)goto fail;
-    if(machine==IMAGE_FILE_MACHINE_AMD64){
+    if(machine==IMAGE_FILE_MACHINE_AMD64 && m->session->style==NTW16S_GLOBAL_STYLE_16){
         error=ntw16s_uwp_global_start(&m->policy,m->dll_path,desktop,m->quit,m->stop,m->session->cookie,&m->uwp);
         if(error)goto fail;
     }

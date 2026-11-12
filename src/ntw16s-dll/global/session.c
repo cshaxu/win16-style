@@ -22,18 +22,26 @@ BOOL ntw16s_global_owner_alive(const ntw16s_global_session *s)
        low==s->owner_birth_low && high==s->owner_birth_high)result=TRUE;
     CloseHandle(process);return result;
 }
-BOOL ntw16s_global_policy_active(DWORD cookie)
+BOOL ntw16s_global_session_matches(const ntw16s_global_session *s,DWORD cookie,DWORD style)
+{
+    return s && cookie && s->cookie==cookie && s->phase==NTW16S_GLOBAL_ACTIVE && s->style==style &&
+           ntw16s_global_owner_alive(s);
+}
+static BOOL policy(DWORD cookie,DWORD style,BOOL match_style)
 {
     DWORD saved=GetLastError();BOOL active=FALSE;WCHAR name[NTW16S_GLOBAL_NAME_CAP];
     if(cookie && ntw16s_global_name(name,ARRAYSIZE(name))){
         HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
         ntw16s_global_session *s=mapping?(ntw16s_global_session *)MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*s)):NULL;
-        if(s && s->cookie==cookie && s->phase==NTW16S_GLOBAL_ACTIVE && ntw16s_global_owner_alive(s))active=TRUE;
+        if(s && (match_style?ntw16s_global_session_matches(s,cookie,style):
+                 (s->cookie==cookie && s->phase==NTW16S_GLOBAL_ACTIVE && ntw16s_global_owner_alive(s))))active=TRUE;
         if(s)UnmapViewOfFile(s);
         if(mapping)CloseHandle(mapping);
     }
     SetLastError(saved);return active;
 }
+BOOL ntw16s_global_policy_active(DWORD cookie){return policy(cookie,0,FALSE);}
+BOOL ntw16s_global_policy_style(DWORD cookie,DWORD style){return policy(cookie,style,TRUE);}
 BOOL ntw16s_global_owner_matches(const ntw16s_global_session *s,HMODULE module)
 {
     BOOL ok=FALSE;DWORD size=32752;WCHAR *owner=(WCHAR *)calloc(size,sizeof(WCHAR));

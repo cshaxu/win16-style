@@ -55,7 +55,7 @@ static DWORD random_cookie(DWORD *value)
 }
 static int fail(DWORD error,PCWSTR what)
 {fwprintf(stderr,L"run16s: global %ls failed (%lu)\n",what,error);return 10;}
-int run16s_global_with_parent(HANDLE parent)
+int run16s_global_with_parent(HANDLE parent,DWORD style)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],ready_name[NTW16S_GLOBAL_NAME_CAP+16],host_stop_name[NTW16S_GLOBAL_NAME_CAP+16],request_name[NTW16S_GLOBAL_NAME_CAP+16];
     WCHAR wow[MAX_PATH],host_image[MAX_PATH],dll64[NTWSHK_PATH_CAP],dll32[NTWSHK_PATH_CAP],command[NTWSHK_PATH_CAP+MAX_PATH+64];
@@ -63,6 +63,7 @@ int run16s_global_with_parent(HANDLE parent)
     HANDLE mapping=NULL,ready=NULL,host_stop=NULL;ntw16s_global_session *s=NULL;HMODULE dll=NULL;HHOOK hook=NULL;
     PROCESS_INFORMATION host={0};DWORD error=0;UINT message=0;int result=10;BOOL handler=FALSE;
     ntw16s_global_manager *manager=NULL;
+    if(style!=NTW16S_GLOBAL_STYLE_16 && style!=NTW16S_GLOBAL_STYLE_2K)return fail(ERROR_NOT_SUPPORTED,L"style");
     if(parent){DWORD state=WaitForSingleObject(parent,0);if(state==WAIT_OBJECT_0)return 0;
         if(state!=WAIT_TIMEOUT)return fail(state==WAIT_FAILED?GetLastError():ERROR_INVALID_HANDLE,L"parent wait");}
     DWORD elevation_error=0;
@@ -79,6 +80,7 @@ int run16s_global_with_parent(HANDLE parent)
     if(!mapping){error=GetLastError();goto done;}if(GetLastError()==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto done;}
     s=(ntw16s_global_session *)MapViewOfFile(mapping,FILE_MAP_ALL_ACCESS,0,0,sizeof(*s));if(!s){error=GetLastError();goto done;}
     ZeroMemory(s,sizeof(*s));s->magic=NTW16S_GLOBAL_MAGIC;s->version=NTW16S_GLOBAL_VERSION;s->owner_pid=GetCurrentProcessId();
+    s->style=style;
     if(!win32_process_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high)){error=GetLastError();goto done;}
     error=random_cookie(&s->cookie);if(error)goto done;
     ready=CreateEventW(&attributes,TRUE,FALSE,ready_name);if(!ready){error=GetLastError();goto done;}if(GetLastError()==ERROR_ALREADY_EXISTS){error=ERROR_ALREADY_EXISTS;goto done;}
@@ -90,6 +92,12 @@ int run16s_global_with_parent(HANDLE parent)
     if(!SetConsoleCtrlHandler(stop_handler,TRUE)){error=GetLastError();goto done;}handler=TRUE;
     context=(ntwshk_context *)calloc(1,sizeof(*context));if(!context){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
     error=ntwshk_context_paths(context,NULL);if(error)goto done;
+    if(style==NTW16S_GLOBAL_STYLE_2K){
+        if(swprintf(dll64,ARRAYSIZE(dll64),L"%lsntw2ks64.dll",context->directory)<0 ||
+           swprintf(dll32,ARRAYSIZE(dll32),L"%lsntw2ks32.dll",context->directory)<0){error=ERROR_INSUFFICIENT_BUFFER;goto done;}
+        error=win32_process_image_validate(dll64,IMAGE_FILE_MACHINE_AMD64,TRUE);if(error)goto done;
+        error=win32_process_image_validate(dll32,IMAGE_FILE_MACHINE_I386,TRUE);if(error)goto done;
+    }
     if(swprintf(dll64,ARRAYSIZE(dll64),L"%lsntw16s64.dll",context->directory)<0 || swprintf(dll32,ARRAYSIZE(dll32),L"%lsntw16s32.dll",context->directory)<0){error=ERROR_INSUFFICIENT_BUFFER;goto done;}
     error=win32_process_image_validate(dll64,IMAGE_FILE_MACHINE_AMD64,TRUE);if(error)goto done;
     error=win32_process_image_validate(dll32,IMAGE_FILE_MACHINE_I386,TRUE);if(error)goto done;
@@ -110,6 +118,8 @@ int run16s_global_with_parent(HANDLE parent)
     HANDLE startup_waits[3]={ready,host.hProcess,parent};DWORD startup_status=WaitForMultipleObjects(parent?3:2,startup_waits,FALSE,10000);
     if(parent && startup_status==WAIT_OBJECT_0+2){result=0;goto done;}
     if(startup_status!=WAIT_OBJECT_0){
+        if(startup_status==WAIT_OBJECT_0+1){DWORD host_code=0;
+            if(GetExitCodeProcess(host.hProcess,&host_code))fwprintf(stderr,L"run16s: global 32-bit host exited (%lu)\n",host_code);}
         error=startup_status==WAIT_FAILED?GetLastError():startup_status==WAIT_TIMEOUT?ERROR_TIMEOUT:
             startup_status==WAIT_OBJECT_0+1?ERROR_DLL_INIT_FAILED:ERROR_INVALID_STATE;
         goto done;

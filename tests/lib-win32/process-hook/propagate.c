@@ -6,6 +6,11 @@
 #include <string.h>
 static BOOL enabled=TRUE,accepted=TRUE,fail_install=FALSE;static unsigned installations;static HANDLE failed_child;
 static BOOL reenter,recursive_ok,use_token;
+static DWORD install_alternate(HANDLE,process_hook_create_w,void *);
+static BOOL active(void *);
+static BOOL accept_w(LPCWSTR,LPWSTR,void *);
+static BOOL accept_a(LPCSTR,LPSTR,void *);
+static const process_hook_propagation_ops alternate={active,accept_w,accept_a,install_alternate,NULL};
 static DWORD launch(const WCHAR *,DWORD,BOOL);
 static const BYTE payload[]={0x51,0x26,0x37,0xa5};
 static BOOL active(void *context){(void)context;return enabled;}
@@ -21,6 +26,8 @@ static DWORD install(HANDLE process,process_hook_create_w create,void *context)
     }
     return process_hook_stage_payload(process,payload,sizeof(payload));
 }
+static DWORD install_alternate(HANDLE process,process_hook_create_w create,void *context)
+{return install(process,create,context);}
 static DWORD consume(const void *data,DWORD bytes,DWORD machine,void *context)
 {(void)machine;*(BOOL *)context=bytes==sizeof(payload) && !memcmp(data,payload,bytes);return ERROR_SUCCESS;}
 static int initialize(void)
@@ -67,7 +74,10 @@ int wmain(int argc,WCHAR **argv)
         return 72;
     }
     if(argc>1)return process_hook_stage_read(consume,&valid,&found) || found?4:73;
+    if(process_hook_propagation_registered())return 25;
     if(initialize())return 5;
+    process_hook_propagation_discard(&alternate);
+    if(!process_hook_propagation_registered())return 26;
     reenter=TRUE;if(launch(L"child",0,FALSE)!=72 || installations!=1 || !recursive_ok)return 6;
     if(launch(L"leaf",CREATE_SUSPENDED,TRUE)!=71 || installations!=2)return 7;
     if(launch_a("leaf")!=71 || installations!=3)return 8;

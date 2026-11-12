@@ -131,16 +131,16 @@ static BOOL choose(BOOL expected_checked,BOOL exit_menu)
     if(!SendMessageTimeoutW(menu_window,0x01e1,0,0,SMTO_ABORTIFHUNG,500,&result))return FALSE;
     HMENU menu=(HMENU)result;UINT state=GetMenuState(menu,1001,MF_BYCOMMAND);
     printf("MENU checked=%d disabled=%d expected=%d exit=%d\n",!!(state&MF_CHECKED),!!(state&(MF_GRAYED|MF_DISABLED)),expected_checked,exit_menu);
-    if(state==0xffffffffu||GetMenuItemCount(menu)!=2||!!(state&MF_CHECKED)!=expected_checked||(!exit_menu&&(state&(MF_GRAYED|MF_DISABLED)))){
+    if(state==0xffffffffu||GetMenuItemCount(menu)!=3||!!(state&MF_CHECKED)!=expected_checked||(!exit_menu&&(state&(MF_GRAYED|MF_DISABLED)))){
         PostMessageW(menu_window,WM_CANCELMODE,0,0);return FALSE;
     }
     MENUITEMINFOW info={.cbSize=sizeof(info),.fMask=MIIM_FTYPE|MIIM_STATE};
-    GetMenuItemInfoW(menu,exit_menu?1:0,TRUE,&info);
+    GetMenuItemInfoW(menu,exit_menu?2:0,TRUE,&info);
     printf("MENU_TYPE type=%x state=%x\n",info.fType,info.fState);
     IAccessible *accessible=NULL;
     HRESULT hr=AccessibleObjectFromWindow(menu_window,OBJID_CLIENT,&IID_IAccessible,(void **)&accessible);
     if(SUCCEEDED(hr)){
-        VARIANT child;VariantInit(&child);V_VT(&child)=VT_I4;V_I4(&child)=exit_menu?2:1;
+        VARIANT child;VariantInit(&child);V_VT(&child)=VT_I4;V_I4(&child)=exit_menu?3:1;
         BSTR name=NULL,action=NULL;VARIANT state;VariantInit(&state);LONG count=0;
         IAccessible_get_accChildCount(accessible,&count);
         HRESULT name_hr=IAccessible_get_accName(accessible,child,&name);

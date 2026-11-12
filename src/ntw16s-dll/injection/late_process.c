@@ -1,5 +1,6 @@
 #include "late_process.h"
 #include "lib-win32/process-hook/late_batch.h"
+#include "lib-win32/process-hook/propagate.h"
 #include "intercept.h"
 #include <string.h>
 #include <wchar.h>
@@ -32,19 +33,28 @@ static DWORD initialize(PCWSTR directory,DWORD session_cookie,DWORD flags,BOOL s
     }
     if(batch.installed)goto done;
     if(ntw16s_process_context.flags)goto done;
+    /* The process-creation hooks are shared for the life of the process.
+     * Keep an existing owner's propagation rather than patching its entries
+     * a second time. The global window hook still handles newly shown windows. */
+    BOOL reuse=process_hook_propagation_registered();
+    if(reuse && !session_cookie){error=ERROR_ALREADY_EXISTS;goto done;}
     memcpy(ntw16s_process_context.directory,directory,(n+1)*sizeof(WCHAR));
     wcscpy(ntw16s_process_context.module,L"ntw16s");
     ntw16s_process_context.flags=flags;
     if(session_cookie){ntw16s_process_context.flags|=NTWSHK_POLICY_GLOBAL_SESSION;ntw16s_process_context.session_cookie=session_cookie;}
     error=process_hook_late_batch_begin(&batch,hooks,items,ARRAYSIZE(hooks));
-    if(!error)error=(DWORD)ntw16s_attach_processes_using(prepare);
+    if(!error && !reuse)error=(DWORD)ntw16s_attach_processes_using(prepare);
     if(!error && (flags&NTWSHK_POLICY_STYLE))error=(DWORD)ntw16s_attach_titles_using(prepare);
     if(!error && (flags&NTWSHK_POLICY_STYLE))error=(DWORD)ntw16s_attach_file_dialogs_using(prepare);
     if(!error && (flags&NTWSHK_POLICY_STYLE))error=(DWORD)ntw16s_attach_com_dialogs_using(prepare);
     if(!error && (flags&NTWSHK_POLICY_STYLE))error=(DWORD)ntw16s_attach_folder_dialogs_using(prepare);
-    if(!error && batch.count<2)error=ERROR_INVALID_STATE;
-    error=process_hook_late_batch_commit(&batch,error,100,1);
-    if(error && !batch.sticky_error)ZeroMemory(&ntw16s_process_context,sizeof(ntw16s_process_context));
+    if(!error && !reuse && batch.count<2)error=ERROR_INVALID_STATE;
+    if(!error && reuse && !batch.count)batch.installed=TRUE;
+    else error=process_hook_late_batch_commit(&batch,error,100,1);
+    if(error && !batch.sticky_error){
+        if(!reuse)ntw16s_discard_processes();
+        ZeroMemory(&ntw16s_process_context,sizeof(ntw16s_process_context));
+    }
  done:
     ReleaseSRWLockExclusive(&init_lock);return error;
 }

@@ -8,4 +8,7 @@ typedef DWORD (*win32_process_global_resolve_fn)(HANDLE,DWORD,const WCHAR *,void
 DWORD win32_process_global_load_begin(HANDLE,DWORD,const WCHAR *,const WCHAR *,win32_process_global_loader_fn,win32_process_global_load *);
 DWORD win32_process_global_load_finish(win32_process_global_load *,DWORD,win32_process_global_resolve_fn,void **);
 DWORD win32_process_global_load_discard(win32_process_global_load *);
+/* For a still-running loader only: close local resources without freeing the
+ * remote path it may still read. That allocation remains until target exit. */
+DWORD win32_process_global_load_abandon(win32_process_global_load *);
 #endif

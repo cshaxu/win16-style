@@ -38,20 +38,22 @@ static BOOL WINAPI redirect_self_elevation(SHELLEXECUTEINFOW *info)
     info->hInstApp=request.hInstApp;free(parameters);free(paths);SetLastError(error);return result;
 }
 BOOL ntw16s_process_session_active(void)
-{return !(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTWSHK_POLICY_GLOBAL_SESSION) || ntw16s_global_policy_active(__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE));}
-static BOOL active(void *unused){(void)unused;return ntw16s_process_session_active();}
+{return !(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTWSHK_POLICY_GLOBAL_SESSION) || ntw16s_global_policy_style(__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE),NTW16S_GLOBAL_STYLE_16);}
+static BOOL active(void *unused)
+{(void)unused;return !(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTWSHK_POLICY_GLOBAL_SESSION) || ntw16s_global_policy_active(__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE));}
 static BOOL accept_w(LPCWSTR application,LPWSTR command,void *unused)
 {(void)unused;return !ntwshk_system_print_host_w(application,command);}
 static BOOL accept_a(LPCSTR application,LPSTR command,void *unused)
 {(void)unused;return !ntwshk_system_print_host_a(application,command);}
 static DWORD install(HANDLE child,process_hook_create_w create,void *unused)
 {(void)unused;return ntwshk_install(child,&ntw16s_process_context,create);}
+static const process_hook_propagation_ops propagation={active,accept_w,accept_a,install,NULL};
+void ntw16s_discard_processes(void){process_hook_propagation_discard(&propagation);}
 LONG ntw16s_attach_processes_using(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;
     if(!(ntw16s_process_context.flags&NTWSHK_POLICY_PROPAGATE))return NO_ERROR;
-    const process_hook_propagation_ops ops={active,accept_w,accept_a,install,NULL};
-    DWORD error=process_hook_propagation_attach(attach,&ops);
+    DWORD error=process_hook_propagation_attach(attach,&propagation);
     if(!error)error=process_hook_propagation_attach_as_user_w(attach);
     if(!error && __atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)==(NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE)){
         HMODULE shell=GetModuleHandleW(L"shell32.dll");

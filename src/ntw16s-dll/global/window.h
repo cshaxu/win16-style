@@ -10,4 +10,6 @@ BOOL __cdecl Ntw16sWindowAttach(HWND window);
 BOOL ntw16s_global_window_apply(HWND window);
 BOOL ntw16s_global_window_remove(HWND window);
 BOOL ntw16s_global_window_attached(HWND window);
+BOOL ntw16s_global_window_apply_style(HWND window,DWORD style);
+BOOL ntw16s_global_window_remove_style(HWND window,DWORD style);
 #endif

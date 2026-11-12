@@ -11,6 +11,8 @@ EXPORTS
     process_hook_startup_commit
     process_hook_startup_abort
     process_hook_propagation_attach
+    process_hook_propagation_registered
+    process_hook_propagation_discard
     process_hook_propagation_attach_as_user_w
     process_hook_late_batch_begin
     process_hook_late_batch_prepare

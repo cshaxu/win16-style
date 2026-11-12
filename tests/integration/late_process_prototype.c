@@ -6,21 +6,103 @@
 #include "ntw16s-dll/injection/intercept.h"
 #include "ntw16s-dll/injection/late_process.h"
 #include "ntw16s-dll/global/session.h"
+#include "lib-win32/process-hook/late_batch.h"
+#include "lib-win32/process-hook/propagate.h"
 ntwshk_context ntw16s_process_context;
 static volatile LONG running=1,ticks,style_registrations;
+static BOOL chain_titles,fail_titles;
+static volatile LONG first_windows,second_windows;
+static __typeof__(&CreateWindowExW) first_create_window,second_create_window;
+#define WINDOW_ARGUMENTS DWORD ex,LPCWSTR cls,LPCWSTR title,DWORD style,int x,int y,int width,int height,HWND parent,HMENU menu,HINSTANCE instance,LPVOID param
+#define WINDOW_VALUES ex,cls,title,style,x,y,width,height,parent,menu,instance,param
+static HWND WINAPI first_window(WINDOW_ARGUMENTS)
+{InterlockedIncrement(&first_windows);return first_create_window(WINDOW_VALUES);}
+static HWND WINAPI second_window(WINDOW_ARGUMENTS)
+{InterlockedIncrement(&second_windows);return second_create_window(WINDOW_VALUES);}
 /* The ordinary-startup backend is not linked into this isolated fixture. */
 DWORD process_hook_startup_attach(void *slot,void *replacement)
 {(void)slot;(void)replacement;return ERROR_NOT_SUPPORTED;}
 /* This fixture isolates process propagation. Real style registrations are
  * exercised by the actual DLL integration tests. */
-LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
+LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
+{
+    if(!attach)return ERROR_INVALID_PARAMETER;
+    InterlockedIncrement(&style_registrations);
+    if(fail_titles)return ERROR_ACCESS_DENIED;
+    if(!chain_titles)return NO_ERROR;
+    second_create_window=CreateWindowExW;return (LONG)attach(&second_create_window,(void *)second_window);
+}
 LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
 LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
 LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
 static DWORD WINAPI background(void *p)
 {(void)p;while(InterlockedCompareExchange(&running,0,0)){InterlockedIncrement(&ticks);Sleep(1);}return 0;}
+static process_hook_late_patch first_hooks[4];
+static process_hook_late_patch *first_items[4];
+static process_hook_late_batch first_batch;
+static DWORD first_prepare(void *slot,void *replacement)
+{return process_hook_late_batch_prepare(&first_batch,slot,replacement);}
+static volatile LONG first_installs;
+static BOOL first_active(void *context){(void)context;return TRUE;}
+static BOOL first_accept_w(LPCWSTR application,LPWSTR command,void *context)
+{(void)application;(void)command;(void)context;return TRUE;}
+static BOOL first_accept_a(LPCSTR application,LPSTR command,void *context)
+{(void)application;(void)command;(void)context;return TRUE;}
+static DWORD first_install(HANDLE process,process_hook_create_w create,void *context)
+{(void)process;(void)create;(void)context;InterlockedIncrement(&first_installs);return ERROR_SUCCESS;}
+static DWORD WINAPI probe_create(void *context)
+{
+    (void)context;WCHAR image[32768],command[32790];STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
+    if(!GetModuleFileNameW(NULL,image,ARRAYSIZE(image)) || swprintf(command,ARRAYSIZE(command),L"\"%ls\" probe-child",image)<0)return 1;
+    if(!CreateProcessW(image,command,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&startup,&child))return 2;
+    DWORD result=3;if(WaitForSingleObject(child.hProcess,3000)==WAIT_OBJECT_0)GetExitCodeProcess(child.hProcess,&result);
+    else{TerminateProcess(child.hProcess,ERROR_TIMEOUT);WaitForSingleObject(child.hProcess,1000);}
+    CloseHandle(child.hThread);CloseHandle(child.hProcess);return result;
+}
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==2 && !wcscmp(argv[1],L"probe-child"))return 0;
+    if(argc==2 && !wcscmp(argv[1],L"retry-after-failure")){
+        fail_titles=TRUE;
+        DWORD first=ntw16s_late_process_init(L"C:\\fixture",123);
+        BOOL clean=!process_hook_propagation_registered() && !ntw16s_process_context.flags;
+        fail_titles=FALSE;
+        DWORD second=ntw16s_late_process_init(L"C:\\fixture",123);
+        BOOL installed=process_hook_propagation_registered();
+        printf("LATE RETRY bits=%u first=%lu clean=%d second=%lu installed=%d\n",
+               (unsigned)(sizeof(void *)*8),first,clean,second,installed);
+        return first==ERROR_ACCESS_DENIED && clean && !second && installed?0:1;
+    }
+    if(argc==2 && (!wcscmp(argv[1],L"existing-propagation") || !wcscmp(argv[1],L"reuse-retry"))){
+        BOOL retry=!wcscmp(argv[1],L"reuse-retry"),rollback=TRUE;
+        SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOGPFAULTERRORBOX);
+        const process_hook_propagation_ops first={first_active,first_accept_w,first_accept_a,first_install,NULL};
+        DWORD error=process_hook_late_batch_begin(&first_batch,first_hooks,first_items,ARRAYSIZE(first_hooks));
+        if(!error)error=process_hook_propagation_attach(first_prepare,&first);
+        if(!error)error=process_hook_propagation_attach_as_user_w(first_prepare);
+        first_create_window=CreateWindowExW;
+        if(!error)error=first_prepare(&first_create_window,(void *)first_window);
+        error=process_hook_late_batch_commit(&first_batch,error,100,1);
+        if(error){printf("LATE PREEXISTING initial=%lu\n",error);return 2;}
+        BYTE before_w[16],before_a[16];memcpy(before_w,(const void *)CreateProcessW,sizeof(before_w));
+        memcpy(before_a,(const void *)CreateProcessA,sizeof(before_a));
+        chain_titles=TRUE;
+        if(retry){fail_titles=TRUE;DWORD rejected=ntw16s_late_process_init(L"C:\\fixture",123);
+            rollback=rejected==ERROR_ACCESS_DENIED && process_hook_propagation_registered() && !ntw16s_process_context.flags;
+            fail_titles=FALSE;style_registrations=0;}
+        DWORD status=ntw16s_late_process_init(L"C:\\fixture",123);
+        BOOL unchanged=!memcmp(before_w,(const void *)CreateProcessW,sizeof(before_w)) &&
+                       !memcmp(before_a,(const void *)CreateProcessA,sizeof(before_a));
+        HANDLE probe=CreateThread(NULL,0,probe_create,NULL,0,NULL);DWORD result=1;
+        BOOL created=probe && WaitForSingleObject(probe,5000)==WAIT_OBJECT_0 && GetExitCodeThread(probe,&result) && !result;
+        if(probe)CloseHandle(probe);
+        HWND window=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,0,0,100,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
+        if(window)DestroyWindow(window);
+        BOOL chained=window && first_windows==1 && second_windows==1;
+        printf("LATE PREEXISTING bits=%u initial=0 status=%lu unchanged=%d create=%d original_install=%ld style=%ld chained=%d rollback=%d\n",
+               (unsigned)(sizeof(void *)*8),status,unchanged,created,first_installs,style_registrations,chained,rollback);
+        return !status && unchanged && created && first_installs==1 && style_registrations==4 && chained && rollback?0:1;
+    }
     if(argc==2 && !wcscmp(argv[1],L"existing")){
         BYTE before_w[16],before_a[16];memcpy(before_w,(const void *)CreateProcessW,sizeof(before_w));memcpy(before_a,(const void *)CreateProcessA,sizeof(before_a));
         ntw16s_process_context.flags=NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE;

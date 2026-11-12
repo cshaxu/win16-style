@@ -5,9 +5,12 @@
 #include "lib-win32/process-hook/startup_hooks.h"
 #include "lib-win32/process-hook/unwind.h"
 #include "lib-win32/win2k-window/frame.h"
+#include "lib-win32/style-common/global_window.h"
 
 static __typeof__(&CreateWindowExW) create_W;
 static __typeof__(&CreateWindowExA) create_A;
+static void attach_frame(HWND window)
+{if(window && !style_global_window_managed(window))win2k_frame_attach(window);}
 
 static void classic_control(HWND window,DWORD style)
 {
@@ -23,7 +26,7 @@ static void classic_control(HWND window,DWORD style)
 #define WINDOW_HOOK(S,T) \
 static HWND WINAPI hook_##S(DWORD ex,T cls,T text,DWORD style,int x,int y,int width,int height,HWND parent,HMENU menu,HINSTANCE instance,void *data) \
 { HWND result=create_##S(ex,cls,text,style,x,y,width,height,parent,menu,instance,data);DWORD error=GetLastError(); \
-  classic_control(result,style);if(result && !(style&WS_CHILD))win2k_frame_attach(result);SetLastError(error);return result; }
+  classic_control(result,style);if(result && !(style&WS_CHILD))attach_frame(result);SetLastError(error);return result; }
 WINDOW_HOOK(W,LPCWSTR)
 WINDOW_HOOK(A,LPCSTR)
 
@@ -33,7 +36,7 @@ static LRESULT CALLBACK dialog_created(int code,WPARAM wp,LPARAM lp)
     DWORD incoming=GetLastError();
     if(code>=0 && lp){
         const CWPRETSTRUCT *event=(const CWPRETSTRUCT *)lp;
-        if(event->message==WM_INITDIALOG)win2k_frame_attach(event->hwnd);
+        if(event->message==WM_INITDIALOG)attach_frame(event->hwnd);
     }
     SetLastError(incoming);return CallNextHookEx(NULL,code,wp,lp);
 }
@@ -49,7 +52,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION RET WINAPI hook_##NAME(HINSTANCE instance,TY
   process_hook_unwind_scope scope;RET result;DWORD error; \
   PROCESS_HOOK_UNWIND_BEGIN(scope,dialog_scope_end,&hook);SetLastError(incoming); \
   { result=real_##NAME(instance,name,parent,proc,param);error=GetLastError(); } \
-  PROCESS_HOOK_UNWIND_END(scope);if((MODELESS) && result)win2k_frame_attach((HWND)result);SetLastError(error);return result; }
+  PROCESS_HOOK_UNWIND_END(scope);if((MODELESS) && result)attach_frame((HWND)result);SetLastError(error);return result; }
 DIALOG_HOOK(CreateDialogParamA,LPCSTR,HWND,TRUE)
 DIALOG_HOOK(CreateDialogParamW,LPCWSTR,HWND,TRUE)
 DIALOG_HOOK(CreateDialogIndirectParamA,LPCDLGTEMPLATEA,HWND,TRUE)
@@ -83,7 +86,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HWND WINAPI hook_##NAME(TYPE *parameters) \
   process_hook_unwind_scope scope;HWND result;DWORD error; \
   PROCESS_HOOK_UNWIND_BEGIN(scope,dialog_scope_end,&hook);SetLastError(incoming); \
   { result=real_##NAME(parameters);error=GetLastError(); } \
-  PROCESS_HOOK_UNWIND_END(scope);if(result)win2k_frame_attach(result);SetLastError(error);return result; }
+  PROCESS_HOOK_UNWIND_END(scope);if(result)attach_frame(result);SetLastError(error);return result; }
 FIND_HOOK(FindTextA,FINDREPLACEA)
 FIND_HOOK(FindTextW,FINDREPLACEW)
 FIND_HOOK(ReplaceTextA,FINDREPLACEA)
@@ -107,12 +110,13 @@ COMMON_MODAL_HOOK(ChooseColorW,CHOOSECOLORW)
 COMMON_MODAL_HOOK(PageSetupDlgA,PAGESETUPDLGA)
 COMMON_MODAL_HOOK(PageSetupDlgW,PAGESETUPDLGW)
 
-DWORD ntw2ks_controls_attach(void)
+DWORD ntw2ks_controls_attach_using(DWORD (*attach)(void *,void *))
 {
+    if(!attach)return ERROR_INVALID_PARAMETER;
     create_W=CreateWindowExW;create_A=CreateWindowExA;
-    DWORD error=process_hook_startup_attach(&create_W,(void *)hook_W);
-    if(!error)error=process_hook_startup_attach(&create_A,(void *)hook_A);
-#define ATTACH_DIALOG(NAME) do { if(!error){real_##NAME=NAME;error=process_hook_startup_attach(&real_##NAME,(void *)hook_##NAME);} } while(0)
+    DWORD error=attach(&create_W,(void *)hook_W);
+    if(!error)error=attach(&create_A,(void *)hook_A);
+#define ATTACH_DIALOG(NAME) do { if(!error){real_##NAME=NAME;error=attach(&real_##NAME,(void *)hook_##NAME);} } while(0)
     ATTACH_DIALOG(CreateDialogParamA);ATTACH_DIALOG(CreateDialogParamW);
     ATTACH_DIALOG(CreateDialogIndirectParamA);ATTACH_DIALOG(CreateDialogIndirectParamW);
     ATTACH_DIALOG(DialogBoxParamA);ATTACH_DIALOG(DialogBoxParamW);
@@ -129,3 +133,6 @@ DWORD ntw2ks_controls_attach(void)
 #undef ATTACH_DIALOG
     return error;
 }
+
+DWORD ntw2ks_controls_attach(void)
+{return ntw2ks_controls_attach_using(process_hook_startup_attach);}

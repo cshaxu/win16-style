@@ -1,3 +1,6 @@
 EXPORTS
     Ntw2ksFinishHelper @1 NONAME
     Ntw2ksDrawButton @2
+    Ntw2ksWindowAttach @3
+    Ntw2ksWindowAttached @4
+    Ntw2ksWindowRemove @5

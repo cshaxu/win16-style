@@ -40,6 +40,11 @@ M0 T25 S7 按有限范围收口，见[记录](../history/M0-T25-S7-P13-closure.m
 
 ## Technical Baseline
 
+S8 P7 候选八文件已发布，发布后的双位宽受控检查通过；正式包托盘交互、真实全局
+切换和 DWM 恢复仍未通过，范围和测试目录见[交付记录](../history/M0-T25-S8-P7-global-style-candidate.md)。
+此前管理员全局切换测试使用混合候选，不能代替正式包验证。首次干净构建的 x86
+测试替身链接遗漏已修复；第二次双位宽干净构建通过。S8 与 T25 继续开放。
+
 S8 P5 按用户纠正全局选择、样式去重和最终审计的顺序，见[记录](../history/M0-T25-S8-P5-plan-correction.md)。
 
 S8 P6 审计现有全局流程及 Win2000 恢复缺口，见[记录](../history/M0-T25-S8-P6-global-path-audit.md)。

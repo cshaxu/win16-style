@@ -1,5 +1,7 @@
 #include "frame_layout.h"
 #include "lib-win32/style-common/menu_hit.h"
+#include "lib-win32/style-common/dwm.h"
+#include "lib-win32/style-common/frame.h"
 #include <dwmapi.h>
 #include "menu_bar.h"
 #include <windowsx.h>
@@ -20,26 +22,24 @@ BOOL win16_control_frame_set_cursor(HWND w,WPARAM target,LPARAM hit)
 }
 void win16_control_frame_changed(HWND w)
 {
-    SetWindowPos(w,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|
-        SWP_NOACTIVATE|SWP_FRAMECHANGED);
-    RedrawWindow(w,NULL,NULL,RDW_FRAME|RDW_INVALIDATE|RDW_UPDATENOW);
+    style_frame_changed(w);
 }
 void win16_control_frame_activate(HWND w,const BOOL *detached,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute)
 {
     DWORD policy=DWMNCRP_DISABLED;
     if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD))
-        set_attribute(w,DWMWA_NCRENDERING_POLICY,&policy,sizeof(policy));
+        style_dwm_policy(w,set_attribute,policy);
     if(!*detached)win16_control_frame_changed(w);
     if(!*detached && normal)win16_control_restore_client(w,client);
 }
 void win16_control_frame_restore(HWND w,const BOOL *pending,const BOOL *policy_saved,const DWORD *old_policy,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute)
 {
-    if(IsWindow(w) && !*pending && *policy_saved)set_attribute(w,DWMWA_NCRENDERING_POLICY,old_policy,sizeof(*old_policy));
+    if(IsWindow(w) && !*pending && *policy_saved)style_dwm_policy(w,set_attribute,*old_policy);
     if(IsWindow(w) && !*pending){win16_control_frame_changed(w);if(normal && IsWindow(w))win16_control_restore_client(w,client);}
 }
 void win16_control_client_screen(HWND w,RECT *r)
 {
-    POINT p={0,0};GetClientRect(w,r);ClientToScreen(w,&p);OffsetRect(r,p.x,p.y);
+    style_client_screen(w,r);
 }
 BOOL win16_control_frame_xaml_bridge(HWND w,BOOL visible_only)
 {
@@ -62,13 +62,7 @@ BOOL win16_control_frame_keep_outer(HWND w,const RECT *wanted,const win16_style_
 }
 void win16_control_restore_client(HWND w,const RECT *wanted)
 {
-    RECT r,outer;POINT origin;win16_control_client_screen(w,&r);GetWindowRect(w,&outer);
-    origin.x=outer.left+wanted->left-r.left;origin.y=outer.top+wanted->top-r.top;
-    if(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD)ScreenToClient(GetParent(w),&origin);
-    SetWindowPos(w,NULL,origin.x,origin.y,
-        outer.right-outer.left+(wanted->right-wanted->left)-(r.right-r.left),
-        outer.bottom-outer.top+(wanted->bottom-wanted->top)-(r.bottom-r.top),
-        SWP_NOZORDER|SWP_NOACTIVATE);
+    style_restore_client(w,wanted);
 }
 BOOL win16_control_frame_hit_test(HWND w,const win16_style_layout *l,LPARAM lp,LRESULT *result)
 {
