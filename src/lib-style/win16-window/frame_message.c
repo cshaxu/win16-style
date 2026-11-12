@@ -11,7 +11,7 @@ BOOL win16_control_frame_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARA
     case WM_SHOWWINDOW:
         if(wp && s->pending_frame){
             RECT client;BOOL normal=!IsIconic(w)&&!IsZoomed(w);
-            win16_control_client_screen(w,&client);s->pending_frame=FALSE;
+            style_client_screen(w,&client);s->pending_frame=FALSE;
             v->activate(w,s,&client,normal);
             if(s->detached)return TRUE;
         }
@@ -62,7 +62,7 @@ BOOL win16_control_frame_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARA
         *result=DefSubclassProc(w,msg,wp,lp);return TRUE;
     case WM_DPICHANGED:
         *result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached){v->refresh_font(w,s);win16_control_frame_changed(w);}return TRUE;
+        if(!s->detached){v->refresh_font(w,s);style_frame_changed(w);}return TRUE;
     case WM_SETTINGCHANGE:
     case WM_SYSCOLORCHANGE:
     case WM_THEMECHANGED:

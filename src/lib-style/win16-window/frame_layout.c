@@ -20,49 +20,27 @@ BOOL win16_control_frame_set_cursor(HWND w,WPARAM target,LPARAM hit)
     }
     return FALSE;
 }
-void win16_control_frame_changed(HWND w)
-{
-    style_frame_changed(w);
-}
 void win16_control_frame_activate(HWND w,const BOOL *detached,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute)
 {
     DWORD policy=DWMNCRP_DISABLED;
     if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD))
         style_dwm_policy(w,set_attribute,policy);
-    if(!*detached)win16_control_frame_changed(w);
-    if(!*detached && normal)win16_control_restore_client(w,client);
+    if(!*detached)style_frame_changed(w);
+    if(!*detached && normal)style_restore_client(w,client);
 }
 void win16_control_frame_restore(HWND w,const BOOL *pending,const BOOL *policy_saved,const DWORD *old_policy,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute)
 {
     if(IsWindow(w) && !*pending && *policy_saved)style_dwm_policy(w,set_attribute,*old_policy);
-    if(IsWindow(w) && !*pending){win16_control_frame_changed(w);if(normal && IsWindow(w))win16_control_restore_client(w,client);}
-}
-void win16_control_client_screen(HWND w,RECT *r)
-{
-    style_client_screen(w,r);
-}
-BOOL win16_control_frame_xaml_bridge(HWND w,BOOL visible_only)
-{
-    static const WCHAR *const classes[]={L"Windows.UI.Composition.DesktopWindowContentBridge",L"Microsoft.UI.Content.DesktopChildSiteBridge"};
-    for(unsigned i=0;i<sizeof(classes)/sizeof(classes[0]);++i){
-        HWND child=NULL;
-        while((child=FindWindowExW(w,child,classes[i],NULL))!=NULL)
-            if(!visible_only || IsWindowVisible(child))return TRUE;
-    }
-    return FALSE;
+    if(IsWindow(w) && !*pending){style_frame_changed(w);if(normal && IsWindow(w))style_restore_client(w,client);}
 }
 BOOL win16_control_frame_keep_outer(HWND w,const RECT *wanted,const win16_style_layout *layout)
 {
     RECT outer;MONITORINFO monitor={.cbSize=sizeof(monitor)};
     if(!wanted || !layout || (GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) ||
-       !win16_control_frame_xaml_bridge(w,FALSE) ||
+       !style_frame_xaml_bridge(w,FALSE) ||
        !GetWindowRect(w,&outer) || !GetMonitorInfoW(MonitorFromRect(&outer,MONITOR_DEFAULTTONEAREST),&monitor))return FALSE;
     return (outer.top>=monitor.rcWork.top && wanted->top-layout->client.top<monitor.rcWork.top) ||
            (outer.left>=monitor.rcWork.left && wanted->left-layout->client.left<monitor.rcWork.left);
-}
-void win16_control_restore_client(HWND w,const RECT *wanted)
-{
-    style_restore_client(w,wanted);
 }
 BOOL win16_control_frame_hit_test(HWND w,const win16_style_layout *l,LPARAM lp,LRESULT *result)
 {

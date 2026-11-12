@@ -1607,7 +1607,7 @@
       "path": "tests/ntw16s-dll/win16_style_dc_failure.c",
       "source": "tests/app/win16_style_dc_failure.c",
       "source_blob": "0bbdc27c4e17eaf1dce1ec51715b26c66b610d75",
-      "sha256": "0545d0804f465f06c23c61038da54bbcd05f96c8e6292053e18630a0e1996489",
+      "sha256": "99d87b91b918b1b85939fc5207e80c6be80473bd14c6933635a2d6d88235f2b5",
       "disposition": "adapt",
       "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S22 header path update; T21 S22 frame presentation extraction, preserving fault instrumentation",
       "notice": "Project-authored fixed-source fixture; original comments retained"
@@ -4030,7 +4030,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "9c0ebee4170539bd3b450a2e5529abac2789bda87d83b6cef37ebb63b93a6e01",
+      "sha256": "a5145abc4191f478fa6aa318a424291997f508009da394e40de7d0d59a110706",
       "review": "T21 S22 standalone whole-archive linkage and original glyph smoke test"
     },
     {
@@ -4057,7 +4057,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "eb5a91ba2b45e6eb4749dd9475e229a15979c96f2e5090eb8855de2b8a75d063",
+      "sha256": "f1bce88139702ac60c46b326f44befe2ddd557cc7055022be531bfe98c475941",
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
@@ -4066,7 +4066,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "c150e70aea0f7c12aef39bc262a80a6f38ba55659b73976805346364ba24ce29",
+      "sha256": "a5d926fa18557fe771919ca9121ab7495227bf8686a58c8778a554dc2478efd6",
       "review": "T21 S22 extraction of window frame geometry with caller-owned state"
     },
     {
@@ -4820,7 +4820,7 @@
       "path": "src/lib-style/win16-window/frame_message.c",
       "source": null,
       "source_blob": null,
-      "sha256": "81acb6e38ec054798907666800443e6b7217529f3f3e9430283bf761d3693ab3",
+      "sha256": "3fb669f9e780edd100c1d0d517cefde41e512db1186766e5441a6c4f5c708445",
       "disposition": "authored",
       "review": "T21 S24 extract nonclient frame presentation message handling",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5108,7 +5108,7 @@
       "path": "src/lib-style/win16-window/frame_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "71d9f04ddd122b39a4d3a8301c4aec9a4de7ba3d74cfc0d194f5ed2c963c8ace",
+      "sha256": "a0b3032bb565a0bc3b04a5fb91628c48850410e867821d0b3eb3309e7014c3a8",
       "disposition": "authored",
       "review": "T21 S24 extract frame lifecycle; T23 S1 preserve documented DWM rendering state on removal; T23 S4 console and Terminal window adaptation and native tests",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -5306,7 +5306,7 @@
       "path": "src/lib-style/win16-window/frame_dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5cb21477725ceeeec7855a5fb513f9821750878dbece610d6cd628bec2a99e05",
+      "sha256": "c26db852f921f1ce8f8bd03fe77067e4be9fd3ca90b1d7dba87644192b1873d1",
       "disposition": "authored",
       "review": "T21 S24 extracted frame message dispatch from project-authored src/ntw16s-dll/win16_style.c",
       "notice": "Project-authored source; existing resource and provenance notices retained"
@@ -6854,7 +6854,7 @@
       "path": "src/lib-style/common/frame.h",
       "source": null,
       "source_blob": null,
-      "sha256": "9dedbee44a605cfa05028e609e398fd50e60490258b8bca972b6e7c5cc27c0ac",
+      "sha256": "10b1d630ccdab95ddb4d4e3fe07efe2ef37d7ad64e3e6ba9766d32e3364a5571",
       "disposition": "authored",
       "review": "T25 S8 shared window restoration",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -7172,6 +7172,15 @@
       "sha256": "eb246aebccc43eed2054f0eba83b348327ffc08b4a1e5975def435564d84811e",
       "disposition": "authored",
       "review": "T26 S1 shared control protocol native test",
+      "notice": "Project-authored C test; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/common/frame_xaml.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "973df78ed5ba00b36ad9a274dfb7b1763b2cefa7259c91af502001efdd4e0cd1",
+      "disposition": "authored",
+      "review": "T26 S1 shared frame XAML child detection test",
       "notice": "Project-authored C test; no imported artwork"
     }
   ]

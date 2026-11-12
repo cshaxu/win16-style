@@ -1,3 +1,4 @@
+#include "lib-style/common/frame.h"
 #include "frame_dispatch.h"
 #include "frame_layout.h"
 #include "lib-style/common/menu_input.h"
@@ -13,13 +14,13 @@ static LRESULT CALLBACK repaint_proc(HWND timer,UINT msg,WPARAM wp,LPARAM lp,UIN
         ++s->calls;
         if(s->xaml_waiting){
             HWND owner=s->xaml_repaint_owner;
-            if(!win16_control_frame_xaml_bridge(owner,TRUE) && GetTickCount64()<s->xaml_deadline && queue_repaint(owner,s)){
+            if(!style_frame_xaml_bridge(owner,TRUE) && GetTickCount64()<s->xaml_deadline && queue_repaint(owner,s)){
                 if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
                 return 0;
             }
             s->xaml_waiting=FALSE;s->pending_frame=FALSE;
             RECT client;BOOL normal=!IsIconic(owner)&&!IsZoomed(owner);
-            win16_control_client_screen(owner,&client);s->xaml_activate(owner,s,&client,normal);
+            style_client_screen(owner,&client);s->xaml_activate(owner,s,&client,normal);
         }else{
             s->xaml_repainting=TRUE;
             SendMessageW(s->xaml_repaint_owner,WM_NCPAINT,1,0);
@@ -74,7 +75,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     if(s->pending_frame && msg!=WM_SHOWWINDOW && msg!=WM_NCDESTROY)goto forward;
     if(msg==WM_SHOWWINDOW && s->pending_frame){
         if(s->xaml_waiting){if(!wp)win16_control_frame_cancel_repaint(s);goto forward;}
-        if(wp && win16_control_frame_xaml_bridge(w,FALSE)){
+        if(wp && style_frame_xaml_bridge(w,FALSE)){
             s->xaml_waiting=TRUE;s->xaml_deadline=GetTickCount64()+2000;s->xaml_activate=v->message->activate;
             if(queue_repaint(w,s))goto forward;
             s->xaml_waiting=FALSE;
@@ -94,7 +95,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     case WM_SETICON: {
         LONG_PTR style=GetWindowLongPtrW(w,GWL_STYLE);
         if(!s->xaml_icon_update && !(style&WS_CHILD) && (style&WS_DLGFRAME) &&
-           win16_control_frame_xaml_bridge(w,FALSE)){
+           style_frame_xaml_bridge(w,FALSE)){
             s->xaml_icon_update=TRUE;SetLastError(0);
             LONG_PTR old=SetWindowLongPtrW(w,GWL_STYLE,style&~WS_DLGFRAME);
             if(old || !GetLastError()){
@@ -123,7 +124,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
         /* Coalesce a burst of XAML background erases into one frame refresh.
          * Classic windows do not schedule this additional paint. */
         if(!s->detached && !s->xaml_repainting && !s->xaml_repaint_pending && !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) &&
-           win16_control_frame_xaml_bridge(w,FALSE)){
+           style_frame_xaml_bridge(w,FALSE)){
             (void)queue_repaint(w,s);
         }
         break;

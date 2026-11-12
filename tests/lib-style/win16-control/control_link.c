@@ -264,9 +264,9 @@ int main(void)
     BOOL got_hit=got_rect && win16_control_frame_hit_test(window,&layout,MAKELPARAM(outer.left+5,outer.top+5),&hit);
     BOOL close=TRUE;
     if(win16_control_menu_bar_item_screen(window,&layout,bar_font,bar_dpi,MAKELPARAM(outer.left+5,outer.top+5),&close)!=-1 || close){DestroyWindow(window);return 25;}
-    RECT old_client,new_client;win16_control_client_screen(window,&old_client);
+    RECT old_client,new_client;style_client_screen(window,&old_client);
     SetWindowPos(window,NULL,0,0,140,120,SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
-    win16_control_restore_client(window,&old_client);win16_control_client_screen(window,&new_client);
+    style_restore_client(window,&old_client);style_client_screen(window,&new_client);
     BOOL restored=EqualRect(&old_client,&new_client);
     DestroyWindow(window);
     if(!got_hit || hit!=HTBORDER || !restored)return 11;

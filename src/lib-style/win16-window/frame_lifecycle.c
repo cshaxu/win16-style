@@ -1,3 +1,4 @@
+#include "lib-style/common/frame.h"
 #include "frame_lifecycle.h"
 #include "frame_layout.h"
 #include "frame_dispatch.h"
@@ -36,7 +37,7 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     if(!v->refresh_font(w,s)){win16_control_frame_state_dispose(s);SetLastError(ERROR_INVALID_DATA);return FALSE;}
     {win16_style_layout checked;
         if(!v->layout(w,s,&checked)){win16_control_frame_state_dispose(s);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}}
-    win16_control_client_screen(w,&client);
+    style_client_screen(w,&client);
     /* POLICY is set-only. Preserve the observable rendering state instead;
      * Windows does not expose whether it came from USEWINDOWSTYLE or ENABLED. */
     s->policy_saved=!(style&WS_CHILD) && style_dwm_capture(w,v->get_window_attribute,&s->old_policy);
@@ -87,7 +88,7 @@ BOOL win16_control_frame_remove(HWND w,const win16_control_frame_lifecycle_servi
     if(!v->local_window(w))return FALSE;
     s=v->state(w);if(!s){SetLastError(ERROR_NOT_FOUND);return FALSE;}
     menu_only=s->menu_only;
-    if(!menu_only){normal=!IsIconic(w)&&!IsZoomed(w);win16_control_client_screen(w,&client);}
+    if(!menu_only){normal=!IsIconic(w)&&!IsZoomed(w);style_client_screen(w,&client);}
     if(!RemoveWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc))return FALSE;
     ++s->calls;
     if(!menu_only)win16_control_frame_cancel_repaint(s);

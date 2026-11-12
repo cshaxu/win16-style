@@ -59,6 +59,17 @@ static inline void style_invalidate_native_menu_overlap(HWND window)
     RedrawWindow(window,&overlap,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN);
 }
 
+static inline BOOL style_frame_xaml_bridge(HWND w,BOOL visible_only)
+{
+    static const WCHAR *const classes[]={L"Windows.UI.Composition.DesktopWindowContentBridge",L"Microsoft.UI.Content.DesktopChildSiteBridge"};
+    for(unsigned i=0;i<sizeof(classes)/sizeof(classes[0]);++i){
+        HWND child=NULL;
+        while((child=FindWindowExW(w,child,classes[i],NULL))!=NULL)
+            if(!visible_only || IsWindowVisible(child))return TRUE;
+    }
+    return FALSE;
+}
+
 static inline void style_frame_changed(HWND window)
 {
     SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
