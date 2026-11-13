@@ -6,7 +6,6 @@
 #include "theme.h"
 #include "static_text.h"
 #include "../lib-style/win16-control/basic_paint.h"
-#include "../lib-style/win16-control/combo_paint.h"
 #include "../lib-style/win16-control/native_combo_identity.h"
 #include "../lib-style/win16-control/cool_grip_identity.h"
 #include "lib-style/common/control_custom_draw.h"

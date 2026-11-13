@@ -26,7 +26,7 @@
 | 17 | `src/lib-style/win16-control/choice_view.h` | `02a9c00c937c411be9e66158a56bbbfdc7dac5f82e07e4591cb24761947bc92d` | 已过关 |
 | 18 | `src/lib-style/win16-control/combo_glyph.h` | `75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34` | 已过关 |
 | 19 | `src/lib-style/win16-control/combo_paint.c` | `d7b9ba1aac4a0b3f22086f0e8e323e4f8ed960fa2d04768a29510724cbe9062a` | 已过关 |
-| 20 | `src/lib-style/win16-control/combo_paint.h` | `9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca` | 待审 |
+| 20 | `src/lib-style/win16-control/combo_paint.h` | `9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca` | 已过关 |
 | 21 | `src/lib-style/win16-control/combo_text.c` | `4d95a3cc8238c3e3a194dc64f1ee1d3c56b8e296e29469c6bd0229e85bb5e63c` | 待审 |
 | 22 | `src/lib-style/win16-control/combo_text.h` | `dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0` | 待审 |
 | 23 | `src/lib-style/win16-control/control_class.h` | `2202c98d94b0220a0d9e360439e7a18742d3a830b6f2a53bd249de959d7da59f` | 待审 |
@@ -277,3 +277,8 @@
 - 职责：组合框的 Win16 颜色、箭头、字体、焦点及原生编辑框裁剪策略保留风格侧；文本快照、实色边框及箭头像素绘制此前已共用。
 - 本次把组合框和滑块重复的非镜像像素坐标及两个零原点检查迁入 `common/dc_geometry.h`；保持原有检查顺序和非 RTL 布局语义。滑块仅改接线，仍按原序待完整审计。
 - 双位宽干净构建，先发布再运行 DC 边界、组合框及滑块自建夹具均通过；资源和公共依赖检查通过。真实第三方应用、其他风格和全部 DPI 未验证。详见[交付记录](M0-T26-S1-ordered-19-dc.md)。
+
+## 020 `win16-control/combo_paint.h`：已过关
+
+- 声明 Win16 组合框绘制及原生按钮绘制接口；分别由产品 `controls.c` 和风格模块 `native_combo_identity.c` 调用。接口绑定 Win16 调色板和绘制策略，保留风格侧；坐标、文本、实色边框和像素机制使用公共组件。
+- 清除产品 `attachment.c` 未使用的该头包含；双位宽增量构建通过，修改前后该文件的两个目标文件 SHA-256 均逐字节一致。沿用第 19 项正式包测试；真实第三方应用和其他风格未验证。
