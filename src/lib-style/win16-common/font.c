@@ -1,5 +1,6 @@
 #include "font.h"
 #include "lib-style/common/bitmap.h"
+#include "lib-style/common/bitmap_font.h"
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
@@ -7,11 +8,6 @@
 static _Thread_local HFONT shared_font;
 static _Thread_local HANDLE shared_resource;
 static _Thread_local unsigned references;
-
-static void word(BYTE *p,unsigned n,unsigned v)
-{p[n]=(BYTE)v;p[n+1]=(BYTE)(v>>8);}
-static void dword(BYTE *p,unsigned n,DWORD v)
-{memcpy(p+n,&v,4);}
 
 static BOOL create_font(void)
 {
@@ -40,7 +36,7 @@ static BOOL create_font(void)
             !GetTextExtentPoint32W(src,&wc,1,&extent) || extent.cx<0 || extent.cx>128)goto done;
         w=(unsigned)MulDiv(extent.cx,20,tm.tmHeight);if(w>128)goto done;
         bytes=((w+7)/8)*20;if(cursor+bytes+sizeof(face)>65535)goto done;
-        word(data,118+4*n,w);word(data,120+4*n,cursor);
+        style_bitmap_font_word(data,118+4*n,w);style_bitmap_font_word(data,120+4*n,cursor);
         if(!FillRect(src,&clear,(HBRUSH)GetStockObject(WHITE_BRUSH)) || !TextOutW(src,0,0,&wc,1))goto done;
         if(w && !StretchBlt(scaled,0,0,(int)w,20,src,0,0,extent.cx,tm.tmHeight,SRCCOPY))goto done;
         for(x=0;x<w;++x)for(y=0;y<20;++y){COLORREF pixel=GetPixel(scaled,(int)x,(int)y);
@@ -48,15 +44,9 @@ static BOOL create_font(void)
             if(pixel==RGB(0,0,0))data[cursor+(x/8)*20+y]|=(BYTE)(0x80>>(x%8));}
         cursor+=bytes;sum+=w;if(w>maxwidth)maxwidth=w;
     }
-    word(data,118+224*4,0);word(data,120+224*4,cursor);
-    word(data,0,0x200);word(data,68,15);word(data,70,96);word(data,72,96);
-    word(data,74,(unsigned)MulDiv(tm.tmAscent,20,tm.tmHeight));
-    word(data,76,(unsigned)MulDiv(tm.tmInternalLeading,20,tm.tmHeight));
-    word(data,83,(unsigned)tm.tmWeight);word(data,88,20);data[90]=1;
-    word(data,91,sum/224);word(data,93,maxwidth);data[95]=32;data[96]=255;data[97]='?'-32;
-    /* Total byte-columns of the font bitmap, not the widest glyph. */
-    word(data,99,(cursor-(118+225*4))/20);dword(data,105,cursor);dword(data,113,118+225*4);
-    memcpy(data+cursor,face,strlen(face)+1);cursor+=(unsigned)strlen(face)+1;dword(data,2,cursor);
+    style_bitmap_font_metrics metrics={20,(unsigned)MulDiv(tm.tmAscent,20,tm.tmHeight),
+        (unsigned)MulDiv(tm.tmInternalLeading,20,tm.tmHeight),0,(unsigned)tm.tmWeight,15,sum,maxwidth};
+    cursor=style_bitmap_font_finish(data,cursor,face,&metrics);
     resource=AddFontMemResourceEx(data,cursor,NULL,&count);if(!resource || count!=1)goto done;
     font=CreateFontA(20,0,0,0,tm.tmWeight,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_RASTER_PRECIS,
         CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,face);
@@ -159,7 +149,7 @@ static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOO
             oldsize.cx<0 || oldsize.cx>128 || syssize.cx<0 || syssize.cx>128)goto done;
         unsigned width=(unsigned)(menu_dpi?MulDiv(syssize.cx,(int)menu_dpi,96):oldsize.cx),bytes=((width+7)/8)*(unsigned)tm.tmHeight;
         if(width>128 || cursor+bytes+sizeof(face)>65535)goto done;
-        word(data,118+4*n,width);word(data,120+4*n,cursor);
+        style_bitmap_font_word(data,118+4*n,width);style_bitmap_font_word(data,120+4*n,cursor);
         if(!FillRect(src,&clear,(HBRUSH)GetStockObject(WHITE_BRUSH)) || !TextOutW(src,0,0,&wc,1))goto done;
         if(!FillRect(dst,&clear,(HBRUSH)GetStockObject(WHITE_BRUSH)))goto done;
         if(width && syssize.cx && !StretchBlt(dst,0,0,(int)width,tm.tmHeight,src,0,0,syssize.cx,system.tmHeight,SRCCOPY))goto done;
@@ -168,14 +158,10 @@ static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOO
             if(!(pixels[y*128+x]&0xffffff))data[cursor+(x/8)*(unsigned)tm.tmHeight+y]|=(BYTE)(0x80>>(x%8));
         cursor+=bytes;sum+=width;if(width>maxwidth)maxwidth=width;
     }
-    word(data,118+224*4,0);word(data,120+224*4,cursor);
-    word(data,0,0x200);word(data,68,menu_dpi?12:8);word(data,70,96);word(data,72,96);
-    word(data,74,(unsigned)tm.tmAscent);word(data,76,(unsigned)tm.tmInternalLeading);
-    word(data,78,(unsigned)tm.tmExternalLeading);
-    word(data,83,(unsigned)system.tmWeight);word(data,88,(unsigned)tm.tmHeight);data[90]=1;
-    word(data,91,sum/224);word(data,93,maxwidth);data[95]=32;data[96]=255;data[97]='?'-32;
-    word(data,99,(cursor-(118+225*4))/(unsigned)tm.tmHeight);dword(data,105,cursor);dword(data,113,118+225*4);
-    memcpy(data+cursor,face,strlen(face)+1);cursor+=(unsigned)strlen(face)+1;dword(data,2,cursor);
+    style_bitmap_font_metrics metrics={(unsigned)tm.tmHeight,(unsigned)tm.tmAscent,
+        (unsigned)tm.tmInternalLeading,(unsigned)tm.tmExternalLeading,(unsigned)system.tmWeight,
+        menu_dpi?12u:8u,sum,maxwidth};
+    cursor=style_bitmap_font_finish(data,cursor,face,&metrics);
     resource=AddFontMemResourceEx(data,cursor,NULL,&count);if(!resource || count!=1)goto done;
     font=CreateFontA(tm.tmHeight,0,0,0,system.tmWeight,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_RASTER_PRECIS,
         CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,face);

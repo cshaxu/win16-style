@@ -8,7 +8,7 @@
 | 序号 | 文件 | SHA-256 | 状态 |
 | ---: | --- | --- | --- |
 | 1 | `src/lib-style/win16-common/control_api.h` | `3c26e7bdd7cc1fa995bc9aab43e321c70234a369577ea4e396ea1365429efd84` | 已过关 |
-| 2 | `src/lib-style/win16-common/font.c` | `d723a27e69d4fb410fa124db76ff48781948ad0e0e37fbb3edfbd000b7b6be83` | 待审 |
+| 2 | `src/lib-style/win16-common/font.c` | `8246cf5cd78b8516e342543d6609a193b8f2e98c3c4d352cd83d3a8ebf21979c` | 已过关 |
 | 3 | `src/lib-style/win16-common/font.h` | `9f4a3ad4bb0489013f44483dcdc155407ae689241db1faca401a4989efec2a37` | 待审 |
 | 4 | `src/lib-style/win16-common/layout.c` | `83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede` | 待审 |
 | 5 | `src/lib-style/win16-common/layout.h` | `a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3` | 待审 |
@@ -158,13 +158,16 @@
 | 149 | `src/lib-style/win16-window/menu_scope.h` | `e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699` | 待审 |
 | 150 | `src/lib-style/win16-window/win16_style.h` | `5e927143c2ebae5ff80e4b36cb125c5fdd1fbaf3a02d3d76a0a1c9c05765ecd0` | 待审 |
 
-## 001 `win16-common/control_api.h` 初查
+## 001 `win16-common/control_api.h`：已过关
 
-- 职责：为现有 Win16 DLL 字体与配色声明提供 `NTW16S_API` 导入标记；不包含绘制或通用跨风格运行时行为。
-- 实际调用：`win16-common/font.h` 和 `palette.h` 直接包含；稳定导出由 `ntw16s32.def` / `ntw16s64.def` 和 `tests/ntw16s-dll/abi.c` 约束。
-- 待处理：`ntw16s-dll/api.h` 重复定义同一导入宏，需按依赖方向检查能否去重，保持静态构建与 DLL 消费者的现有 ABI，不能让公共库反向依赖产品私有头。
-- 验证：需双位宽编译、导出与实际消费者验证；该文件尚未过关。当前已在构建的列表变更不属于本次顺序审计，先完成其既有交付后再修改。
+- 职责：为 Win16 DLL 字体与配色声明提供导入标记，不包含跨风格运行时行为。
+- 实际调用：`win16-common/font.h` 和 `palette.h`，产品 `ntw16s-dll/api.h`；导出由双位宽 `.def` 文件控制。
+- 处置：保留风格侧头文件，产品头改为引用它并删除重复宏；公共库没有反向包含产品私有头。
+- 验证：双位宽正式 DLL ABI 检查与 Win16 公共库链接通过；具体资源及未覆盖范围见[第 1 项记录](M0-T26-S1-ordered-01.md)。
 
-- 处置更新：产品 `api.h` 改为包含本头，删除重复宏实现。双位宽增量 ABI 检查均为 38 个导出、版本 3，Win16 公共库链接通过；需完成正式包构建、发布和复测后才能过关。
+## 002 `win16-common/font.c`：已过关
 
-- 正式交付与复测：[第 1 项记录](M0-T26-S1-ordered-01.md)。产品头直接引用本头，原重复定义已删除；资源、ABI 和未覆盖边界见记录。
+- 内容：两种 Win16 System 位图字体生成、菜单与 VB 字体变体、线程局部租约和资源释放；调用方包括 Win16 窗口、控件、现代外框及产品文本适配。
+- 分类：字形选择、缩放、字宽、DPI、菜单和 VB 策略属于 Win16；ANSI FNT v2 字节编码不依赖风格。
+- 处置：两处重复序列化抽入 `common/bitmap_font.h`，Win16 原生成路径直接使用；线程局部租约仍绑定 Win16 字体策略。
+- 验证：双位宽正式 DLL 的格式、租约及完整字体布局矩阵通过；其他风格字体和真实现代应用未覆盖，见[第 2 项记录](M0-T26-S1-ordered-02.md)。

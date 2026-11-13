@@ -896,7 +896,7 @@
       "path": "src/lib-style/win16-common/font.c",
       "source": "src/ntw16s-dll/font.c",
       "source_blob": "3bce01032d506f05bb571f8be35392f12c4dcebb",
-      "sha256": "d723a27e69d4fb410fa124db76ff48781948ad0e0e37fbb3edfbd000b7b6be83",
+      "sha256": "8246cf5cd78b8516e342543d6609a193b8f2e98c3c4d352cd83d3a8ebf21979c",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P118 prevent freeing an existing font variant on isolated stock-font fast path; T18 S64 P128 bounded calendar text; T21 S22 font library extraction and independent API include; T26 S1 reuse shared DIB for font rasterization",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -7901,6 +7901,24 @@
       "sha256": "0af35c05c3cbb54c1d49eb8ead26875f6d979ffaf9c08ad798249a2c39456435",
       "disposition": "authored",
       "review": "T26 S1 shared native list state and runtime test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/bitmap_font.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ace63bf4923114f9f46a6ecef3ebe793eb16da89fcf575bc626429d69000c55e",
+      "disposition": "authored",
+      "review": "T26 S1 ordered font audit: shared ANSI FNT v2 serialization",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/common/bitmap_font.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "85c555788b9bef8ce72e31d8aaa5cc0bebb06df25ebb48f6f4fe977745d8250d",
+      "disposition": "authored",
+      "review": "T26 S1 ordered font audit: shared ANSI FNT v2 serialization",
       "notice": "Project-authored C; no imported artwork"
     }
   ]

@@ -8,6 +8,7 @@
 | `text_metrics` | `text_metrics.c` (alphabet average and invalid DC); Win16 menu and list consumers |
 | `menu_metrics` | `menu_metrics.c` (native font margin and GDI font restoration); Win16 owner-draw menu consumer |
 | `bitmap` | `bitmap.c`; `tests/lib-style/uwp/surface.c`; Win2000 caption button and UWP surface consumers |
+| `bitmap_font` | `bitmap_font.c` (ANSI FNT v2 header fields and offsets); Win16 font realization tests |
 | `global_window` | `global_window.c` (style lifecycle and descendant visitation); `tests/ntw16s-dll/global_style_bridge.c` (two-style window and child transitions) |
 | `menu_input` | `menu_input.c` |
 | `control_vcl_identity` | `control_vcl_identity.c`; Win16 VCL grid, group, toolbar and bit-button product fixtures |
