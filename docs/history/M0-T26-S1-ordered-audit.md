@@ -16,7 +16,7 @@
 | 7 | `src/lib-style/win16-common/palette.h` | `f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36` | 已过关 |
 | 8 | `src/lib-style/win16-control/attachment_guard.c` | `77951c6a64d1d4e990cf4e09f76f2c93a9d6d0f96bf2bb03c268c0f09d3b0214` | 已过关 |
 | 9 | `src/lib-style/win16-control/attachment_state.h` | `764d7929b4d856293a0483e173aaad03cb7b7b0d9e61f03f2357057cfe59f3d2` | 已过关 |
-| 10 | `src/lib-style/win16-control/basic_message.c` | `2bc39526c285621a7d38b19bf9e61d56f05b64f228d3ad4912911d26b9a48b3e` | 待审 |
+| 10 | `src/lib-style/win16-control/basic_message.c` | `2bc39526c285621a7d38b19bf9e61d56f05b64f228d3ad4912911d26b9a48b3e` | 已过关 |
 | 11 | `src/lib-style/win16-control/basic_message.h` | `22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c` | 待审 |
 | 12 | `src/lib-style/win16-control/basic_paint.c` | `b253f2984bb7ee9237dab4a8521aa7d256996f959539ef0fab27b22e8721805b` | 待审 |
 | 13 | `src/lib-style/win16-control/basic_paint.h` | `db5fd5cd49c5e5528d4d34240ea659d4235013f62f669ba030cd4f16ba48d604` | 待审 |
@@ -221,3 +221,9 @@
 - 职责与调用：定义 Win16 的控件附着状态、候选角色、字体、重入引用，以及第 8 项各分派和生命周期回调契约；直接由 `attachment_guard.c`、产品 `ntw16s-dll/attachment.c` 和控件独立链接测试包含。
 - 处置：状态组合及安装回调依赖 Win16 调色、字体和候选策略，保留风格侧；独立通用协议、剪裁快照和身份检查已由公共头提供。该头不反向包含产品私有头；将整个状态结构上移会把 Win16 角色和资源策略暴露给其他风格。本次无产品源码修改。
 - 验证：双位宽重新编译并运行 `core-win16-control-link`，独立链接、附着资格和分派优先级通过；第 8 项的双位宽产品路径及失败/重入回归见[函数盘点](M0-T26-S1-ordered-08-inventory.md)。不表示所有状态组合、真实第三方程序或其他风格已验证。
+
+## 010 `win16-control/basic_message.c`：已过关
+
+- 职责与调用：`win16_control_basic_message` 由 `control_dispatch.c` 调用，为 Win16 基本控件协调原生消息、位图 STATIC、VB Frame、绘制和重绘时机；画笔及呈现由调用方提供。
+- 处置：原生重绘抑制及可见性保护已使用 `common/control_redraw.h`，类名检查在公共 `control_class.h`；消息路由、何时覆盖原生绘制及 Win16 状态属于风格策略。位图打印的局部 DC 保存和恢复与跨消息剪裁快照契约不同，无需为了单次 GDI 调用增加包装。本项未修改产品源码。
+- 验证：当前正式包双位宽 `core-control-visibility` 各 16 种父子可见性组合通过，`core-vcl-static` 的原生嵌套、伪装拒绝和字体保留通过；第 9 项独立链接测试覆盖分隔线识别。位图 STATIC 的打印分支未单独覆盖，真实 VB 程序和其他风格未验证。
