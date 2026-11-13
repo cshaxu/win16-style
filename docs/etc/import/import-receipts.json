@@ -7997,9 +7997,9 @@
       "path": "tests/lib-style/win16-control/control_class.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ec02b17708dd18faf1953d7ebc325df72c3579d60543476838bcaeec106e0ab1",
+      "sha256": "e67e2d7eb0c1207838077dbc5e70049e897453214b0d9fcd9e9bf9df15632ceb",
       "disposition": "authored",
-      "review": "T26 S1 ordered audit native hidden-window VB classification test",
+      "review": "T26 S1 ordered audit native hidden-window VB classification test; VB5/VB6 file and picture eligibility fixtures",
       "notice": "Project-authored native C test; no imported artwork"
     }
   ]

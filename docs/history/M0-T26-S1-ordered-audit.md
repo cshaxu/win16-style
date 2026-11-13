@@ -29,7 +29,7 @@
 | 20 | `src/lib-style/win16-control/combo_paint.h` | `9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca` | 已过关 |
 | 21 | `src/lib-style/win16-control/combo_text.c` | `a42411b0209b1b008311716bade4d572a1df95d633df6060d0fcdd72819d0451` | 已过关 |
 | 22 | `src/lib-style/win16-control/combo_text.h` | `dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0` | 已过关 |
-| 23 | `src/lib-style/win16-control/control_class.h` | `c9283ac35cd85c856c219c28145cce706b3406d7f99ed74c027599efbca52969` | 审计中 |
+| 23 | `src/lib-style/win16-control/control_class.h` | `c9283ac35cd85c856c219c28145cce706b3406d7f99ed74c027599efbca52969` | 已过关 |
 | 24 | `src/lib-style/win16-control/control_dispatch.c` | `90df43ca6d849e54deb9986a3b45c778c46b0577bdf10283a931c2adb17d6506` | 待审 |
 | 25 | `src/lib-style/win16-control/control_dispatch.h` | `299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8` | 待审 |
 | 26 | `src/lib-style/win16-control/control_glyphs.h` | `75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83` | 待审 |
@@ -294,11 +294,13 @@
 - 职责与调用：声明组合框子编辑器的消息处理和解绑接口，产品 `controls.c` 传入自身子类过程，`combo_text.c` 实现；参数使用 Win16 `control_style`，当前不属于无风格公共接口。第 21 项所记与第 31 项的字体恢复机制仍须按序核查。
 - 本文件没有改动；双位宽 Win16 控件独立链接测试通过，字体解绑及重入覆盖见第 21 项；不代表其他风格或真实 VB 已验证。
 
-## 023 `win16-control/control_class.h`：审计中
+## 023 `win16-control/control_class.h`：已过关
 
 - 公共 `control_class.h` 已实现 VB 类及运行时身份识别；本文件另含 Win16 绘制资格（控件样式、RTL、清单 96/144 DPI 限制）以及 VB Frame 按钮类型映射。须逐函数判断语义能否与绘制器资格拆开，不能整体移动。
 - 直接使用正式发布包和自建窗口运行 96 DPI VB5/VB6 清单夹具：VB5 x86 首次在重入重设父窗口绘制断言失败、重试通过，VB5 x64 通过；VB6 x86 在同一断言失败，VB6 x64 在重入样式变化后的像素断言失败。错误码 126 不能据此认定根因；失败和不稳定项不计通过，仍需复核。未创建隔离桌面。
 - 后续对照：同一测试、自建窗口及 VB5/VB6 夹具在无样式时双位宽均通过；因此未能把失败归因于夹具的无样式基线，尚不能确定具体根因。
-- 在审计过程中，VB Frame 的按钮分组类型映射已移入 `common/control_class.h`，两个 Win16 生产调用方接入；其他尚未审计的调用文件仅调整接线。双位宽干净构建、先发布和正式包自建 VB Frame/普通按钮夹具通过，见[交付记录](M0-T26-S1-ordered-23-class.md)；清单重入失败仍未解决，故本项继续审计。
+- 在审计过程中，VB Frame 的按钮分组类型映射已移入 `common/control_class.h`，两个 Win16 生产调用方接入；其他尚未审计的调用文件仅调整接线。双位宽干净构建、先发布和正式包自建 VB Frame/普通按钮夹具通过，见[交付记录](M0-T26-S1-ordered-23-class.md)；清单重入失败仍未解决，作为独立未通过项保留。
 - 新增失败诊断并复测：可见清单仍可能得到 `GetClipBox` 的 `NULLREGION`，此时 `RedrawWindow` 成功但无绘制回调；重入换父窗口失败采样为 redraw=1、observations=0、父窗口未变、裁剪区为空，故该次触发根本未运行。另一次像素不匹配后裁剪区亦为空，但事后状态不足以证明所有像素失败原因。临时置顶实验仍有失败，已撤销；没有放宽测试断言。双位宽各有完整通过和失败，仍视为不稳定。
 - 新增无需屏幕绘制的原生身份测试，使用自建 VB6 运行时和隐藏窗口：双位宽覆盖普通及图形复选/单选、owner-draw、错误运行时、Frame 类型及 96 DPI 清单资格和 RTL 拒绝，均通过；VB5、目录/驱动器、图片框、144 DPI 和真实 VB 未由此测试覆盖。清单实际绘制和重入的不稳定结果依然开放。
+- 逐函数归类：清单与文件控件的固定 owner-draw 模式和 DPI、普通/图形选择控件的渲染资格、图片框及图形按钮的外框和 RTL 限制属于当前 Win16 绘制能力；Frame 的语义类型已共享。公共类名与运行时身份已由 `common/control_class.h` 提供，不重复复制。
+- 补充自建 VB5/VB6 隐藏窗口测试，双位宽覆盖目录、驱动器和图片框的资格、粗边框和 RTL 拒绝；连同基础身份测试，10 项全部通过。144 DPI、真实 VB 和其他风格仍未覆盖。清单实际绘制和重入不稳定作为独立未解决项继续开放，不能由身份测试代替。

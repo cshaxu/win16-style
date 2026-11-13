@@ -1,8 +1,50 @@
 #include "lib-style/win16-control/control_class.h"
 #include <stdio.h>
+#include <wchar.h>
 #define CHECK(x) do { if(!(x)){fprintf(stderr,"CONTROL_CLASS_FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;} } while(0)
+static int files(const WCHAR *path)
+{
+    HMODULE runtime=LoadLibraryW(path);CHECK(runtime);
+    BOOL (WINAPI *reg)(void)=(void *)GetProcAddress(runtime,"VbFileRegister");
+    BOOL (WINAPI *release)(void)=(void *)GetProcAddress(runtime,"VbFileRelease");
+    unsigned (WINAPI *version)(void)=(void *)GetProcAddress(runtime,"VbFileVersion");
+    CHECK(reg && release && version && reg());unsigned v=version();CHECK(v==5 || v==6);
+    HWND root=CreateWindowW(L"VBFileFixtureParent",L"",WS_OVERLAPPED,0,0,200,100,NULL,NULL,runtime,NULL);CHECK(root);
+    HWND dir=CreateWindowW(v==5?L"ThunderRT5DirListBox":L"ThunderRT6DirListBox",L"",WS_CHILD|LBS_OWNERDRAWVARIABLE|LBS_HASSTRINGS,0,0,80,40,root,NULL,runtime,NULL);CHECK(dir);
+    CHECK(ntw16s_vb_owner_file(dir));
+    SetWindowLongPtrW(dir,GWL_EXSTYLE,GetWindowLongPtrW(dir,GWL_EXSTYLE)|WS_EX_RTLREADING);
+    CHECK(!ntw16s_vb_owner_file(dir));
+    if(v==5){
+        HWND drive=CreateWindowW(L"ThunderRT5DriveListBox",L"",WS_CHILD|CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS,0,0,80,80,root,NULL,runtime,NULL);CHECK(drive);
+        CHECK(ntw16s_vb_owner_file(drive));
+        SetWindowLongPtrW(drive,GWL_EXSTYLE,GetWindowLongPtrW(drive,GWL_EXSTYLE)|WS_EX_RTLREADING);
+        CHECK(!ntw16s_vb_owner_file(drive));
+    }
+    CHECK(DestroyWindow(root) && release() && FreeLibrary(runtime));
+    printf("CONTROL_CLASS_FILES_OK vb=%u directory=1 drive=%u rtl=1\n",v,v==5);return 0;
+}
+static int picture(const WCHAR *path)
+{
+    HMODULE runtime=LoadLibraryW(path);CHECK(runtime);
+    BOOL (WINAPI *reg)(void)=(void *)GetProcAddress(runtime,"VbContainerRegister");
+    BOOL (WINAPI *release)(void)=(void *)GetProcAddress(runtime,"VbContainerRelease");
+    unsigned (WINAPI *version)(void)=(void *)GetProcAddress(runtime,"VbContainerVersion");
+    CHECK(reg && release && version && reg());unsigned v=version();CHECK(v==5 || v==6);
+    HWND root=CreateWindowW(L"STATIC",L"",WS_OVERLAPPED,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(root);
+    HWND p=CreateWindowW(v==5?L"ThunderRT5PictureBox":L"ThunderRT6PictureBoxDC",L"",WS_CHILD,0,0,80,40,root,NULL,runtime,NULL);CHECK(p);
+    CHECK(ntw16s_vb_picture(p));
+    SetWindowLongPtrW(p,GWL_STYLE,GetWindowLongPtrW(p,GWL_STYLE)|WS_THICKFRAME);
+    CHECK(!ntw16s_vb_picture(p));
+    SetWindowLongPtrW(p,GWL_STYLE,GetWindowLongPtrW(p,GWL_STYLE)&~WS_THICKFRAME);
+    SetWindowLongPtrW(p,GWL_EXSTYLE,GetWindowLongPtrW(p,GWL_EXSTYLE)|WS_EX_RTLREADING);
+    CHECK(!ntw16s_vb_picture(p));
+    CHECK(DestroyWindow(root) && release() && FreeLibrary(runtime));
+    printf("CONTROL_CLASS_PICTURE_OK vb=%u frame=1 rtl=1\n",v);return 0;
+}
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==3 && !wcscmp(argv[1],L"--files"))return files(argv[2]);
+    if(argc==3 && !wcscmp(argv[1],L"--picture"))return picture(argv[2]);
     CHECK(argc==2);
     HMODULE runtime=LoadLibraryW(argv[1]);CHECK(runtime);
     BOOL (WINAPI *reg)(void)=(void *)GetProcAddress(runtime,"VbRegister");
