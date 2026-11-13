@@ -18,9 +18,9 @@
 | 9 | `src/lib-style/win16-control/attachment_state.h` | `764d7929b4d856293a0483e173aaad03cb7b7b0d9e61f03f2357057cfe59f3d2` | 已过关 |
 | 10 | `src/lib-style/win16-control/basic_message.c` | `2bc39526c285621a7d38b19bf9e61d56f05b64f228d3ad4912911d26b9a48b3e` | 已过关 |
 | 11 | `src/lib-style/win16-control/basic_message.h` | `22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c` | 已过关 |
-| 12 | `src/lib-style/win16-control/basic_paint.c` | `703e8b27f1c11d82ac151b8898b86431da99505733aca9ff8950976d28068a9d` | 审计中 |
+| 12 | `src/lib-style/win16-control/basic_paint.c` | `3aee89062a3986ce02d405013f2c9599117ff104cb7876914884e7fb2c6d8a38` | 已过关 |
 | 13 | `src/lib-style/win16-control/basic_paint.h` | `8ba4944a6f6614fb3569045b69e5a8c7e965ff535dcda935238993868600d300` | 待审 |
-| 14 | `src/lib-style/win16-control/choice_paint.c` | `768af7385d7a9bf5bcb3d4cc6abcf4deead9ae39efcc006a3bf4036bb6451d7b` | 待审 |
+| 14 | `src/lib-style/win16-control/choice_paint.c` | `a3cc188ce10ed9d20a0ede3f5cf84fe0f84bd35d9e9a099f4cbdd226516e35e2` | 待审 |
 | 15 | `src/lib-style/win16-control/choice_paint.h` | `6efc933f3e2293f106275bcaa13ce66067da445af567a91ef3c35c069677902c` | 待审 |
 | 16 | `src/lib-style/win16-control/choice_view.c` | `0ca0a586fcc2164dd65f6e7723d1108dfcea2b8b9c5eceeb62e1d57bf640ceda` | 待审 |
 | 17 | `src/lib-style/win16-control/choice_view.h` | `02a9c00c937c411be9e66158a56bbbfdc7dac5f82e07e4591cb24761947bc92d` | 待审 |
@@ -233,7 +233,8 @@
 - 职责与调用：声明使用 Win16 `control_style` 及绘制回调的基本消息处理器，实现与实际分派在 `basic_message.c` 和 `control_dispatch.c`；接口没有产品私有头反向依赖，保留风格侧。
 - 处置：产品 `ntw16s-dll/controls.c` 不直接使用该接口，已删除多余包含；公共重绘机制仍由第 10 项所述公共组件提供。双位宽增量编译通过，修改前后产品 `controls.c.obj` 的 SHA-256 分别为 x86 `775c1bba9b4300c5f7329ad4bb0c50278f204f2e2f496a67700017ae2b24ac71` 和 x64 `d4e02b9731f27d56a7686b12fc16fef95990e5ceb38812ecd4ee77172021c8ef`，逐字节一致；沿用既有发布包。第 10 项双位宽正式包回归适用，未单独覆盖的位图打印仍保留。
 
-## 012 `win16-control/basic_paint.c`：审计中
+## 012 `win16-control/basic_paint.c`：已过关
 
 - 职责：绘制 Win16 组合框箭头、按钮边框、滚动条箭头及实色矩形边框。箭头图案、按钮配色与立体边属于 Win16 策略；实色矩形的内缩绘制不依赖风格。
-- 已抽出：实色边框迁入 `common/paint_frame.h`，组合框、列表、其他基本控件、滚动条和特殊控件直接使用新入口；对应未审文件仅更换调用并更新摘要，尚未计入已审。双位宽干净构建、发布及正式包回归通过，见[交付记录](M0-T26-S1-ordered-12-frame.md)。箭头栅格化仍须核对。
+- 已抽出：实色边框迁入 `common/paint_frame.h`，组合框、列表、其他基本控件、滚动条和特殊控件直接使用新入口；对应未审文件仅更换调用并更新摘要，尚未计入已审。双位宽干净构建、发布及正式包回归通过，见[交付记录](M0-T26-S1-ordered-12-frame.md)。
+- 箭头和选择框图案使用相同的按比例像素网格，通用绘制迁入 `common/pixel_grid.h`，Win16 保留原始图案、颜色和透明规则；`choice_paint.c` 仅接入并更新摘要，尚待按顺序审计。双位宽干净构建、发布及正式包回归通过，见[交付记录](M0-T26-S1-ordered-12-grid.md)。全部 DPI、真实第三方程序和其他风格未覆盖。

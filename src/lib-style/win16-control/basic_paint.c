@@ -1,14 +1,11 @@
 #include "basic_paint.h"
 #include "combo_glyph.h"
+#include "../common/pixel_grid.h"
 
 void win16_control_combo_arrow(HDC dc,int left,int top,int dpi)
 {
-    HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
-    for(int y=0;y<9;++y)for(int x=0;x<7;++x)if(combo_arrow[y][x]=='0'){
-        RECT pixel={left+MulDiv(x,dpi,96),top+MulDiv(y,dpi,96),
-            left+MulDiv(x+1,dpi,96),top+MulDiv(y+1,dpi,96)};
-        FillRect(dc,&pixel,brush);
-    }
+    const style_pixel_grid grid={&combo_arrow[0][0],7,9,8,1,NULL,{left,top},{dpi,dpi},{96,96}};
+    style_paint_pixel_grid(dc,&grid);
 }
 
 RECT win16_control_button_border(HDC dc,RECT r,const win16_style_palette *palette,int u,int border,BOOL pushed)
@@ -34,12 +31,7 @@ RECT win16_control_button_border(HDC dc,RECT r,const win16_style_palette *palett
 }
 void win16_control_scroll_arrow(HDC dc,RECT r,const char bits[17][18],const win16_style_palette *p)
 {
-    int x,y;COLORREF colors[4]={p->edge,p->light,p->shadow,p->face};RECT pixel;
-    HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
-    for(y=0;y<17;++y)for(x=0;x<17;++x){
-        SetDCBrushColor(dc,colors[bits[y][x]-'0']);
-        SetRect(&pixel,r.left+MulDiv(x,r.right-r.left,17),r.top+MulDiv(y,r.bottom-r.top,17),
-            r.left+MulDiv(x+1,r.right-r.left,17),r.top+MulDiv(y+1,r.bottom-r.top,17));
-        FillRect(dc,&pixel,brush);
-    }
+    const COLORREF colors[4]={p->edge,p->light,p->shadow,p->face};
+    const style_pixel_grid grid={&bits[0][0],17,17,18,-1,colors,{r.left,r.top},{r.right-r.left,r.bottom-r.top},{17,17}};
+    style_paint_pixel_grid(dc,&grid);
 }

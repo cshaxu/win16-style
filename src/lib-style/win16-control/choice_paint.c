@@ -1,4 +1,5 @@
 #include "lib-style/common/dc_geometry.h"
+#include "lib-style/common/pixel_grid.h"
 #include "choice_paint.h"
 #include "control_class.h"
 #include "control_glyphs.h"
@@ -38,13 +39,9 @@ BOOL win16_control_checklist_glyph(HDC dc,const RECT *rect,UINT flags)
 }
 void win16_control_choice_glyph(HDC dc,RECT glyph,UINT dpi,int row,int column,const win16_style_palette *palette)
 {
-    RECT pixel;
-    for(int y=0;y<13;++y)for(int x=0;x<14;++x){
-        SetDCBrushColor(dc,control_checks[row*13+y][column*14+x]=='0'?palette->edge:palette->light);
-        SetRect(&pixel,glyph.left+MulDiv(x,(int)dpi,96),glyph.top+MulDiv(y,(int)dpi,96),
-            glyph.left+MulDiv(x+1,(int)dpi,96),glyph.top+MulDiv(y+1,(int)dpi,96));
-        FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-    }
+    const COLORREF colors[2]={palette->edge,palette->light};
+    const style_pixel_grid grid={&control_checks[row*13][column*14],14,13,57,-1,colors,{glyph.left,glyph.top},{(int)dpi,(int)dpi},{96,96}};
+    style_paint_pixel_grid(dc,&grid);
 }
 
 /* VB5 and VB6 draw the checkbox as an 11x11 runtime-owned bitmap, directly onto

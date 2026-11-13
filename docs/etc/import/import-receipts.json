@@ -3823,8 +3823,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "703e8b27f1c11d82ac151b8898b86431da99505733aca9ff8950976d28068a9d",
-      "review": "T21 S22 extraction from existing project-authored control presentation; T26 S1 shared solid frame painter"
+      "sha256": "3aee89062a3986ce02d405013f2c9599117ff104cb7876914884e7fb2c6d8a38",
+      "review": "T21 S22 extraction from existing project-authored control presentation; T26 S1 shared solid frame painter; T26 S1 shared indexed pixel grid"
     },
     {
       "path": "src/lib-style/win16-control/basic_paint.h",
@@ -3859,8 +3859,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "768af7385d7a9bf5bcb3d4cc6abcf4deead9ae39efcc006a3bf4036bb6451d7b",
-      "review": "T21 S22 extraction of existing choice glyph presentation; T24 S1 share pixel viewport validation; T26 S1 shared device-context geometry"
+      "sha256": "a3cc188ce10ed9d20a0ede3f5cf84fe0f84bd35d9e9a099f4cbdd226516e35e2",
+      "review": "T21 S22 extraction of existing choice glyph presentation; T24 S1 share pixel viewport validation; T26 S1 shared device-context geometry; T26 S1 shared indexed pixel grid"
     },
     {
       "path": "src/lib-style/win16-control/choice_paint.h",
@@ -7955,6 +7955,15 @@
       "sha256": "4689ef38be900a31906e85cd1d129e0983cd7105259b54d64c2548dff3207522",
       "disposition": "authored",
       "review": "T26 S1 shared solid rectangular frame painter",
+      "notice": "Project-authored C interface; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/pixel_grid.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9a3e6f478bef3f658dc00ad231faa66b7fb82731325d00add42b02205e70690e",
+      "disposition": "authored",
+      "review": "T26 S1 shared scaled indexed pixel grid painter",
       "notice": "Project-authored C interface; no imported artwork"
     }
   ]
