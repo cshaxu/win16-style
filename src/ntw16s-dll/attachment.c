@@ -369,8 +369,9 @@ static PROCESS_HOOK_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *,H
 typedef struct cool_scope {struct cool_scope *previous;attachment *owner;HWND window;BOOL ours,completed,nested;cool_observation observer;ntw16s_vb_paint *paint;void *status_prior,*spin_prior;} cool_scope;
 static _Thread_local cool_scope *cool_current;
 
+static BOOL cool_current_attachment(HWND w,void *owner){return lookup(w)==owner;}
 static BOOL cool_identity(HWND w,attachment *a)
-{return win16_attachment_cool_identity(w,a,lookup);}
+{return !a->detached && style_control_vcl_cool_identity(w,a->cool_parent,a->cool_owner,cool_current_attachment,a);}
 static BOOL cool_identity_callback(HWND w,void *owner)
 {return cool_identity(w,(attachment *)owner);}
 static BOOL cool_grip(HWND w,attachment *a,const NMCUSTOMDRAW *n)

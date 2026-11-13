@@ -14,8 +14,8 @@
 | 5 | `src/lib-style/win16-common/layout.h` | `a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3` | 已过关 |
 | 6 | `src/lib-style/win16-common/palette.c` | `c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae` | 已过关 |
 | 7 | `src/lib-style/win16-common/palette.h` | `f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36` | 已过关 |
-| 8 | `src/lib-style/win16-control/attachment_guard.c` | `65b38860283a1c3a53eb8dd9ad5e07410368c2867df7419d799118d82c6105b2` | 审计中 |
-| 9 | `src/lib-style/win16-control/attachment_state.h` | `6b9c351f6ec5dde4276ad7f7d891c8e3d1dae45224de3b0699f29b9c0438f82a` | 待审 |
+| 8 | `src/lib-style/win16-control/attachment_guard.c` | `77951c6a64d1d4e990cf4e09f76f2c93a9d6d0f96bf2bb03c268c0f09d3b0214` | 审计中 |
+| 9 | `src/lib-style/win16-control/attachment_state.h` | `764d7929b4d856293a0483e173aaad03cb7b7b0d9e61f03f2357057cfe59f3d2` | 待审 |
 | 10 | `src/lib-style/win16-control/basic_message.c` | `2bc39526c285621a7d38b19bf9e61d56f05b64f228d3ad4912911d26b9a48b3e` | 待审 |
 | 11 | `src/lib-style/win16-control/basic_message.h` | `22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c` | 待审 |
 | 12 | `src/lib-style/win16-control/basic_paint.c` | `b253f2984bb7ee9237dab4a8521aa7d256996f959539ef0fab27b22e8721805b` | 待审 |
@@ -214,3 +214,4 @@
 - 已按 51 个公开函数分组列明生命周期、识别和绘制边界，以及尚需核查的共享事务和剪裁机制，见[函数盘点](M0-T26-S1-ordered-08-inventory.md)。
 - 打印 DC 剪裁快照的捕获、应用与资源释放已迁入公共 `clip.h`，Win16 实际接入；双位宽干净构建、发布和正式包回归通过，见[交付记录](M0-T26-S1-ordered-08-clip.md)。第 9 项头文件因接口接线发生必要修改，哈希已更新但尚未审计。
 - VCL MDI 的窗口关系、线程、模块和样式位核验迁入公共控件身份组件，原 Win16 函数删除；调用方提供宿主附着判断。双位宽干净构建、发布和正式包回归通过，见[交付记录](M0-T26-S1-ordered-08-mdi.md)。
+- VCL CoolBar 的窗口、线程和模块归属验证迁入公共控件身份组件，原 Win16 函数删除；调用方提供当前附着对象判断。双位宽干净构建、发布和正式包回归通过，见[交付记录](M0-T26-S1-ordered-08-cool.md)。

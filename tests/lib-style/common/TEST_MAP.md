@@ -11,7 +11,7 @@
 | `bitmap_font` | `bitmap_font.c` (ANSI FNT v2 header fields and offsets); Win16 font realization tests |
 | `global_window` | `global_window.c` (style lifecycle and descendant visitation); `tests/ntw16s-dll/global_style_bridge.c` (two-style window and child transitions) |
 | `menu_input` | `menu_input.c` |
-| `control_vcl_identity` | `control_vcl_identity.c` (including MDI host, parent, owner and style checks); Win16 VCL grid, group, toolbar, MDI and bit-button product fixtures |
+| `control_vcl_identity` | `control_vcl_identity.c` (including MDI and CoolBar parent, owner and attachment checks); Win16 VCL grid, group, toolbar, MDI, CoolBar and bit-button product fixtures |
 | `control_native_witness` | `control_native_witness.c` (ANSI and Unicode procedure and module identity); Win16 attachment native forwarding |
 | `control_list` | `control_list.c` (native top, selection, caret and change detection); `tests/ntw16s-dll/list_view_runtime.c` (Win16 list message consumer) |
 | `control_native_combo` | `control_native_combo.c` (native combo/date identity and invalidation) |

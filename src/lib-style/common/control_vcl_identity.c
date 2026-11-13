@@ -3,6 +3,18 @@
 #include "lib-win32/style/window_identity.h"
 #include <commctrl.h>
 
+BOOL style_control_vcl_cool_identity(HWND w,HWND parent,HMODULE owner,BOOL (*current)(HWND,void *),void *context)
+{
+    DWORD pid=0,ppid=0;WNDCLASSEXW c={.cbSize=sizeof(c)};HMODULE proc=NULL;
+    return parent && IsWindow(w) && IsWindow(parent) && current && current(w,context) &&
+        GetParent(w)==parent && GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+        GetWindowThreadProcessId(parent,&ppid)==GetCurrentThreadId() && ppid==pid &&
+        style_control_class_is(w,L"TCoolBar") && (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
+        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==owner &&
+        GetClassInfoExW(owner,L"TCoolBar",&c) && c.lpfnWndProc &&
+        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)c.lpfnWndProc,&proc) && proc==owner;
+}
+
 BOOL style_control_vcl_mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner,BOOL (*host_attached)(HWND))
 {
     DWORD pid=0,host_pid=0,client_pid=0;
