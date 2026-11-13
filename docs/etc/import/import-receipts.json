@@ -4550,7 +4550,7 @@
       "path": "src/lib-style/win16-control/list_message.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e8d1ea9bdcbe2cc8f607a0983e2139903a220f6571ff42d1393490bd0521d83f",
+      "sha256": "0ac87da08ab21cf8a95f38a73d40dbee1f26dedea69aec6fd93b7ee5068a57e5",
       "disposition": "authored",
       "review": "T21 S24 extract list presentation message handling with borrowed window callbacks",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -7874,6 +7874,33 @@
       "sha256": "220ab302aa9bbb70d38fe3786ec6acb0008b446799e34a30925bd50630ddcfe7",
       "disposition": "authored",
       "review": "T26 S1 shared VCL identity extraction and native test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/control_list.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "75e789b32e96634e003fc8db57661b8bef4dc383b6bb8aca340df2bd97acb588",
+      "disposition": "authored",
+      "review": "T26 S1 shared native list state and runtime test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/common/control_list.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0e9a31d9e21e2398710553eb193055a6509b1ba816232fff265be1c7914d120e",
+      "disposition": "authored",
+      "review": "T26 S1 shared native list state and runtime test",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/ntw16s-dll/list_view_runtime.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0af35c05c3cbb54c1d49eb8ead26875f6d979ffaf9c08ad798249a2c39456435",
+      "disposition": "authored",
+      "review": "T26 S1 shared native list state and runtime test",
       "notice": "Project-authored C; no imported artwork"
     }
   ]

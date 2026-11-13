@@ -1,17 +1,7 @@
 #include "lib-style/common/control_redraw.h"
+#include "lib-style/common/control_list.h"
 #include "list_message.h"
 #include <commctrl.h>
-
-typedef struct list_view_state {
-    LRESULT top,selection,caret;
-} list_view_state;
-static list_view_state list_view(HWND w)
-{
-    list_view_state v;
-    v.top=SendMessageW(w,LB_GETTOPINDEX,0,0);
-    v.selection=SendMessageW(w,LB_GETCURSEL,0,0);
-    v.caret=SendMessageW(w,LB_GETCARETINDEX,0,0);return v;
-}
 
 LRESULT win16_control_list_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,const win16_control_list_services *services)
 {
@@ -41,7 +31,7 @@ LRESULT win16_control_list_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
         }
         else if(m==WM_ERASEBKGND)result=1;
         else {
-            BOOL moving=m==WM_MOUSEMOVE,changed=FALSE;list_view_state before={0},after;
+            BOOL moving=m==WM_MOUSEMOVE,changed=FALSE;style_control_list_view before={0},after;
             BOOL suppress=style_control_redraw_can_suppress(w,s->list_redraw_off,s->list_suppression) &&
                 (m==WM_MOUSEWHEEL || m==WM_VSCROLL || m==WM_HSCROLL || m==WM_KEYDOWN || m==WM_KEYUP ||
                 m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_ENABLE || m==WM_SETFONT ||
@@ -49,10 +39,10 @@ LRESULT win16_control_list_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
                 m==LB_ADDSTRING || m==LB_INSERTSTRING || m==LB_DELETESTRING || m==LB_RESETCONTENT ||
                 m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||
                 m==LB_SETCARETINDEX || m==LB_SETTOPINDEX);
-            if(moving)before=list_view(w);
+            if(moving)before=style_control_list_view_read(w);
             result=style_control_redraw_call(w,m,a,b,suppress,&s->list_suppression,&s->detached,&s->list_redraw_off);
-            if(!s->detached && moving){after=list_view(w);
-                changed=before.top!=after.top || before.selection!=after.selection || before.caret!=after.caret;}
+            if(!s->detached && moving){after=style_control_list_view_read(w);
+                changed=style_control_list_view_changed(&before,&after);}
             if(!s->detached && !s->list_suppression && !s->list_redraw_off && (m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||
                 m==LB_SETCARETINDEX || m==LB_SETTOPINDEX || m==LB_ADDSTRING || m==LB_INSERTSTRING ||
                 m==LB_DELETESTRING || m==LB_RESETCONTENT || m==LB_SETCOLUMNWIDTH || m==LB_SETHORIZONTALEXTENT || m==WM_SETFONT || m==WM_ENABLE ||
