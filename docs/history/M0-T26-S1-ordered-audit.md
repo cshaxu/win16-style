@@ -32,7 +32,7 @@
 | 23 | `src/lib-style/win16-control/control_class.h` | `c9283ac35cd85c856c219c28145cce706b3406d7f99ed74c027599efbca52969` | 已过关 |
 | 24 | `src/lib-style/win16-control/control_dispatch.c` | `90df43ca6d849e54deb9986a3b45c778c46b0577bdf10283a931c2adb17d6506` | 已过关 |
 | 25 | `src/lib-style/win16-control/control_dispatch.h` | `299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8` | 已过关 |
-| 26 | `src/lib-style/win16-control/control_glyphs.h` | `75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83` | 待审 |
+| 26 | `src/lib-style/win16-control/control_glyphs.h` | `75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83` | 已过关 |
 | 27 | `src/lib-style/win16-control/control_guard.c` | `caf72ecd2a933f48366021d7a62771f69f75f9480c930ea67d4b49f3965f09f1` | 待审 |
 | 28 | `src/lib-style/win16-control/control_guard.h` | `3f451ee7f28387d3adeeae88676a819cefa4f99e27d9cd6995cf2b00a7a11e13` | 待审 |
 | 29 | `src/lib-style/win16-control/control_install.c` | `7e7618955fc2108280f647562d8e0f7a0c871e4045f3cbc18d57670496efdcf2` | 待审 |
@@ -315,3 +315,8 @@
 
 - 定义 Win16 分派服务视图及入口，产品 `controls.c` 构造回调，`control_dispatch.c` 消费；视图直接引用 Win16 `control_style`、绘制器和各控件消息服务，不能作为其他风格的通用契约。公共原生控件识别独立位于 `common`，没有反向引用本头。
 - 本头未修改。双位宽 Win16 控件独立链接测试通过；链接测试只证明链接及其自身断言，不代替分派各分支行为，相关实际控件测试和表头不稳定结果见第 24 项。
+
+## 026 `win16-control/control_glyphs.h`：已过关
+
+- 原始 Windows 3.1 VGA.DRV `CHECKBOXES` 位图资源的 56×39 图集，含三行四列复选、单选、混合状态；`choice_paint.c` 选择 Win16 图案并调用公共 `pixel_grid.h`、`pixel_dib.h` 实现缩放与绘制。图案是年代专属数据，不能作为其他风格的通用资源。
+- 按来源政策原位逐字节保留，资源身份及原来源声明校验通过；双位宽公共像素网格/DIB 测试和正式包自建清单模型通过。清单模型在当前 96 DPI 明确跳过缩放分支，真实第三方程序、其他风格及此前 VB 清单重入不稳定未由此验证。无源码修改，未使用隔离桌面。
