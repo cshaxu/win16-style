@@ -5000,18 +5000,18 @@
       "path": "src/lib-style/win16-control/control_install.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7e7618955fc2108280f647562d8e0f7a0c871e4045f3cbc18d57670496efdcf2",
+      "sha256": "912a3e15abaa9499656753544e0899d393eebbd8286dad8e42f654f43084950c",
       "disposition": "authored",
-      "review": "T21 S24 extract control install lifecycle; T24 S1 share list and combo list classification; T26 S1 shared native combo edit identity; T26 S1 shared classic dialog combo eligibility",
+      "review": "T21 S24 extract control install lifecycle; T24 S1 share list and combo list classification; T26 S1 shared native combo edit identity; T26 S1 shared classic dialog combo eligibility; T26 ordered audit reduce install interface state dependency",
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
       "path": "src/lib-style/win16-control/control_install.h",
       "source": null,
       "source_blob": null,
-      "sha256": "dbe7b18324cb3ff529189f43264fb20504d7cb29adfa0f7b22736a65195f2839",
+      "sha256": "1347b0605a479f5727aa1200cc269d8b237886eae7962e2343a50b9a1800e780",
       "disposition": "authored",
-      "review": "T21 S24 extract control install lifecycle",
+      "review": "T21 S24 extract control install lifecycle; T26 ordered audit reduce install interface state dependency",
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {

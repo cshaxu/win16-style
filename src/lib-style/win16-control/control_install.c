@@ -1,4 +1,5 @@
 #include "control_install.h"
+#include "control_state.h"
 #include "control_guard.h"
 #include "control_class.h"
 #include "fileowner_message.h"

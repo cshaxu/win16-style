@@ -35,8 +35,8 @@
 | 26 | `src/lib-style/win16-control/control_glyphs.h` | `75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83` | 已过关 |
 | 27 | `src/lib-style/win16-control/control_guard.c` | `0ff41181605d22fecfc154204080018c782f10fdcfbd5922e56ecdfa3f73b812` | 已过关 |
 | 28 | `src/lib-style/win16-control/control_guard.h` | `bac734eb7a9bf97c934d7080f1e54ec394979150a8ba78d104d0e97c8bb5c1b8` | 已过关 |
-| 29 | `src/lib-style/win16-control/control_install.c` | `7e7618955fc2108280f647562d8e0f7a0c871e4045f3cbc18d57670496efdcf2` | 已过关 |
-| 30 | `src/lib-style/win16-control/control_install.h` | `dbe7b18324cb3ff529189f43264fb20504d7cb29adfa0f7b22736a65195f2839` | 待审 |
+| 29 | `src/lib-style/win16-control/control_install.c` | `912a3e15abaa9499656753544e0899d393eebbd8286dad8e42f654f43084950c` | 已过关 |
+| 30 | `src/lib-style/win16-control/control_install.h` | `1347b0605a479f5727aa1200cc269d8b237886eae7962e2343a50b9a1800e780` | 已过关 |
 | 31 | `src/lib-style/win16-control/control_lifetime.c` | `f29ae1bb58a0754c8de9e1df6be2d1e743f97eb88020b43d827af6673989e057` | 待审 |
 | 32 | `src/lib-style/win16-control/control_lifetime.h` | `1412fcd6165eeeba24d396054cf921e7e3c8500686d401f08b72f17daa336cc2` | 待审 |
 | 33 | `src/lib-style/win16-control/control_remove.c` | `27678f0276c7b028cf292bcf53dabdba7289f1a956ccf93838c2b8e28fb78dbb` | 待审 |
@@ -337,3 +337,8 @@
 - 产品 `controls.c` 为普通控件和旧式对话框组合框分别提供安装服务；本文件检查当前线程、重复附着和支持资格，创建 Win16 状态、字体与子类，在重入安装/取消时保留所有权，并安装组合框子控件。对话框 pending 指针用于 Win16 专属绘制资格的嵌套作用域。
 - 原生类别与组合框父子关系使用公共 `control_class.h` 和 `control_native_combo.h`，原生协议租约由 `control_protocol.h` 管理。剩余状态、字体映射、绘制资格、子控件及回滚次序依赖 Win16 行为，不以逐行搬迁或回调包装充作共用。引用计数及延迟释放与后续第 31 项控件生命周期有关，按序审计时必须对照其他风格实际需要，再决定可否合并。
 - 正式发布包自建测试双位宽通过：取/设字体期间取消、重入独立附着、原字体有效性，以及 VB6 组合框字体、重入退出和换父恢复。真实第三方程序、其他风格、全部失败路径与对话框组合框本轮未单独覆盖；此前清单和表头不稳定仍开放。无源码修改、未使用隔离桌面。
+
+## 030 `win16-control/control_install.h`：已过关
+
+- 普通控件和旧式对话框组合框的安装服务视图与接口由产品 `controls.c` 提供回调、`control_install.c` 实现；包含 Win16 调色板及特定控件语义，当前保留风格侧。
+- 接口原本间接暴露完整控件状态；改为仅包含所用的调色板头，实现文件直接包含自身所需状态。双位宽增量构建及控件独立链接通过，安装实现和产品调用源的四个目标文件修改前后摘要逐字节一致；沿用第 29 项正式包测试及其覆盖限制。

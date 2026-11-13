@@ -1,6 +1,6 @@
 #ifndef WIN16_CONTROL_INSTALL_H
 #define WIN16_CONTROL_INSTALL_H
-#include "control_state.h"
+#include "../win16-common/palette.h"
 #include <commctrl.h>
 typedef struct win16_control_install_services {
     SUBCLASSPROC control_proc,combo_proc;
