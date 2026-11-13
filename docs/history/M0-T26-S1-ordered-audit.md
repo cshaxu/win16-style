@@ -45,8 +45,8 @@
 | 34 | `src/lib-style/win16-control/control_remove.h` | `dbcd064a957c340b5c296e0c3a7debd67bfc8f46e5e7036f09dd54cda31e9c3f` | 已过关 |
 | 35 | `src/lib-style/win16-control/control_scope.c` | `f534206388ab958ef31a3addbfced46565dde214b9a20c1935cf28c084ca62af` | 已过关 |
 | 36 | `src/lib-style/win16-control/control_scope.h` | `d7a2c4f7d8531924c51dd7e493f6e410959315da9598b7b090a4ca99734ffbec` | 已过关 |
-| 37 | `src/lib-style/win16-control/control_state.c` | `a56c61f2f2603d89cb08b6bf7b97208bc0e2b6a79fd3e855c19e3a4a3343cea8` | 待审 |
-| 38 | `src/lib-style/win16-control/control_state.h` | `cccb65a997d5cbabebc7a62577cf79da8678b9754c5373757d64cb74ccff4e78` | 待审 |
+| 37 | `src/lib-style/win16-control/control_state.c` | `a56c61f2f2603d89cb08b6bf7b97208bc0e2b6a79fd3e855c19e3a4a3343cea8` | 已过关 |
+| 38 | `src/lib-style/win16-control/control_state.h` | `cccb65a997d5cbabebc7a62577cf79da8678b9754c5373757d64cb74ccff4e78` | 已过关 |
 | 39 | `src/lib-style/win16-control/cool_grip_identity.c` | `04a9841be43ce2e95553eb3a9cb6a9f094ef03296dec5c86b26981239b2e979c` | 待审 |
 | 40 | `src/lib-style/win16-control/cool_grip_identity.h` | `5aa8dce1ae9e718d2a067c7da16fca5f7d07c60a2b5fd2e93e974edfbc4e4e02` | 待审 |
 | 41 | `src/lib-style/win16-control/edit_message.c` | `b2004278efe1e65e88bf3e8877cb3fe9704efcea97c69aac7048bd3a3d2e6ce6` | 待审 |
@@ -369,3 +369,14 @@
 ## 036 `win16-control/control_scope.h`：已过关
 
 - 暴露 Win16 调色板、安装策略和计数，公共作用域类型直接复用；产品侧创建观察入口使用。双位宽测试和限制见第 35 项。
+
+## 037 `win16-control/control_state.c`：已过关
+
+- 创建与释放 Win16 控件状态、字体租约和协议引用；字体映射及原字体透传依赖 Win16 字体策略。组合框、标签、表头、进度消息分派分别绑定 Win16 支持资格、绘制器和重绘时机。`controls.c` 与分派/安装/移除模块调用。
+- 控件重绘抑制已调用公共 `common/control_redraw.h`，原生控件身份及协议已调用公共组件；常见 WM_PAINT 语句虽相似，但签名和绘制资格均依赖 Win16 状态，当前无第二风格实现可证明需要一个回调包装。第 31 项字体恢复的不同后继者优先级仍保留。
+- 双位宽自建字体租约测试验证资源释放、原字体保留、容量与失败路径，控件独立链接通过；第 24 项实际标签和表头回归及不稳定记录继续适用。真实 VB、其他风格和全部消息组合未覆盖；本文件未修改，未使用隔离桌面。
+
+## 038 `win16-control/control_state.h`：已过关
+
+- 定义 Win16 调色板、字体、滚动条、组合框和控件绘制状态及消息接口；由产品 `controls.c` 和 Win16 控件内部模块使用。原生协议指针引用公共组件，但结构体及销毁时序属于 Win16，不能直接作为跨风格状态。
+- 本头未修改；双位宽独立链接和第 37 项字体租约测试通过，不能替代真实 VB、其他风格及全部控件消息验证。
