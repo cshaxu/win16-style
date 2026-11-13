@@ -4946,18 +4946,18 @@
       "path": "src/lib-style/win16-control/control_guard.c",
       "source": null,
       "source_blob": null,
-      "sha256": "caf72ecd2a933f48366021d7a62771f69f75f9480c930ea67d4b49f3965f09f1",
+      "sha256": "0ff41181605d22fecfc154204080018c782f10fdcfbd5922e56ecdfa3f73b812",
       "disposition": "authored",
-      "review": "T21 S24 extract control style eligibility and native fallback; T24 S1 share list and combo list classification; T26 S1 shared classic dialog combo eligibility; T26 ordered audit shared VB frame button type",
+      "review": "T21 S24 extract control style eligibility and native fallback; T24 S1 share list and combo list classification; T26 S1 shared classic dialog combo eligibility; T26 ordered audit shared VB frame button type; T26 ordered audit neutral guard callback field names",
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
       "path": "src/lib-style/win16-control/control_guard.h",
       "source": null,
       "source_blob": null,
-      "sha256": "3f451ee7f28387d3adeeae88676a819cefa4f99e27d9cd6995cf2b00a7a11e13",
+      "sha256": "bac734eb7a9bf97c934d7080f1e54ec394979150a8ba78d104d0e97c8bb5c1b8",
       "disposition": "authored",
-      "review": "T21 S24 extract control style eligibility and native fallback",
+      "review": "T21 S24 extract control style eligibility and native fallback; T26 ordered audit neutral guard callback field names",
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {

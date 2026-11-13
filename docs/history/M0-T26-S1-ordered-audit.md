@@ -33,8 +33,8 @@
 | 24 | `src/lib-style/win16-control/control_dispatch.c` | `90df43ca6d849e54deb9986a3b45c778c46b0577bdf10283a931c2adb17d6506` | 已过关 |
 | 25 | `src/lib-style/win16-control/control_dispatch.h` | `299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8` | 已过关 |
 | 26 | `src/lib-style/win16-control/control_glyphs.h` | `75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83` | 已过关 |
-| 27 | `src/lib-style/win16-control/control_guard.c` | `caf72ecd2a933f48366021d7a62771f69f75f9480c930ea67d4b49f3965f09f1` | 已过关 |
-| 28 | `src/lib-style/win16-control/control_guard.h` | `3f451ee7f28387d3adeeae88676a819cefa4f99e27d9cd6995cf2b00a7a11e13` | 待审 |
+| 27 | `src/lib-style/win16-control/control_guard.c` | `0ff41181605d22fecfc154204080018c782f10fdcfbd5922e56ecdfa3f73b812` | 已过关 |
+| 28 | `src/lib-style/win16-control/control_guard.h` | `bac734eb7a9bf97c934d7080f1e54ec394979150a8ba78d104d0e97c8bb5c1b8` | 已过关 |
 | 29 | `src/lib-style/win16-control/control_install.c` | `7e7618955fc2108280f647562d8e0f7a0c871e4045f3cbc18d57670496efdcf2` | 待审 |
 | 30 | `src/lib-style/win16-control/control_install.h` | `dbe7b18324cb3ff529189f43264fb20504d7cb29adfa0f7b22736a65195f2839` | 待审 |
 | 31 | `src/lib-style/win16-control/control_lifetime.c` | `f29ae1bb58a0754c8de9e1df6be2d1e743f97eb88020b43d827af6673989e057` | 待审 |
@@ -326,3 +326,8 @@
 - 产品 `controls.c` 在消息分派前调用动态角色与 owner-draw 守卫，先转发原生消息，再按 Win16 附着状态退出并重绘；`control_install.c` 使用资格判断决定是否安装。三组动态守卫的字体、控件及附着退出顺序与 Win16 状态和产品回调绑定，不构造脱离实际复用者的公共包装。
 - 控件类别、VB 运行时、Frame 类型和对话框组合框关系已使用公共 `control_class.h`、`control_native_combo.h`；剩余支持的控件样式、普通/图形及各绘制器限制是 Win16 渲染资格，保留风格侧。
 - 正式发布包双位宽自建 VB6 测试覆盖按钮默认态、单选、复选、普通到图形状态和退出，通过；第 23 项隐藏窗口身份及资格测试、清单重入未通过记录继续适用。真实 VB/VCL、所有资格组合及其他风格未由本轮覆盖。本文件未修改，未使用隔离桌面。
+
+## 028 `win16-control/control_guard.h`：已过关
+
+- 守卫服务视图由产品 `controls.c` 提供具体资格与移除回调，`control_guard.c` 实现，`control_install.c` 使用支持资格；接口直接依赖 Win16 `control_style` 和具体渲染策略，保留风格侧。
+- 移除服务视图字段上无必要的 `ntw16s_`/`style_control_` 实现前缀，产品仍传入原回调，逻辑顺序不变；第 27 项 C 文件仅同步改字段引用与摘要。双位宽增量构建通过，受影响的 `control_guard.c`、`control_install.c` 和产品 `controls.c` 的六个目标文件修改前后摘要完全一致；控件独立链接测试通过。本项未改变产品二进制，沿用第 27 项发布包回归与未覆盖限制。
