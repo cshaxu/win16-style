@@ -7992,6 +7992,15 @@
       "disposition": "authored",
       "review": "T26 S1 shared window text snapshot",
       "notice": "Project-authored C interface; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/win16-control/control_class.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ec02b17708dd18faf1953d7ebc325df72c3579d60543476838bcaeec106e0ab1",
+      "disposition": "authored",
+      "review": "T26 S1 ordered audit native hidden-window VB classification test",
+      "notice": "Project-authored native C test; no imported artwork"
     }
   ]
 }
