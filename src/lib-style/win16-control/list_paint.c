@@ -88,7 +88,7 @@ void win16_control_edit_border(HWND w,BOOL edit_border,const win16_style_palette
     if(!edit_border)return;
     dc=target?target:GetDC(w);if(!dc)return;
     saved=SaveDC(dc);if(saved){
-        GetClientRect(w,&bounds);win16_control_control_frame(dc,bounds,(*palette).edge,max(1,MulDiv(1,(int)GetDpiForWindow(w),96)));
+        GetClientRect(w,&bounds);style_paint_solid_frame(dc,bounds,(*palette).edge,max(1,MulDiv(1,(int)GetDpiForWindow(w),96)));
         RestoreDC(dc,saved);
     }
     if(!target)ReleaseDC(w,dc);
@@ -103,7 +103,7 @@ void win16_control_list_border(HWND w,const win16_style_palette *palette,HDC tar
     dc=target?target:GetWindowDC(w);if(!dc)return;
     saved=SaveDC(dc);
     if(saved){
-        if(edge){inside=bounds;InflateRect(&inside,-1,-1);win16_control_control_frame(dc,inside,(*palette).light,1);}
-        win16_control_control_frame(dc,bounds,(*palette).edge,1);RestoreDC(dc,saved);}
+        if(edge){inside=bounds;InflateRect(&inside,-1,-1);style_paint_solid_frame(dc,inside,(*palette).light,1);}
+        style_paint_solid_frame(dc,bounds,(*palette).edge,1);RestoreDC(dc,saved);}
     if(!target)ReleaseDC(w,dc);
 }

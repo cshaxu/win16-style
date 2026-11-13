@@ -3823,8 +3823,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "b253f2984bb7ee9237dab4a8521aa7d256996f959539ef0fab27b22e8721805b",
-      "review": "T21 S22 extraction from existing project-authored control presentation"
+      "sha256": "703e8b27f1c11d82ac151b8898b86431da99505733aca9ff8950976d28068a9d",
+      "review": "T21 S22 extraction from existing project-authored control presentation; T26 S1 shared solid frame painter"
     },
     {
       "path": "src/lib-style/win16-control/basic_paint.h",
@@ -3832,8 +3832,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "db5fd5cd49c5e5528d4d34240ea659d4235013f62f669ba030cd4f16ba48d604",
-      "review": "T21 S22 extraction from existing project-authored control presentation"
+      "sha256": "8ba4944a6f6614fb3569045b69e5a8c7e965ff535dcda935238993868600d300",
+      "review": "T21 S22 extraction from existing project-authored control presentation; T26 S1 shared solid frame painter"
     },
     {
       "path": "src/lib-style/win16-control/updown_paint.c",
@@ -3895,8 +3895,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "cb3569dcef00dd5c65da5e7ec64b575f82368e8a028885abd6e35d1459d1cf21",
-      "review": "T21 S22 extraction of existing button and static presentation"
+      "sha256": "900d6ff1812bc3344d9015a583f7b4d5a2264b39c1e0aefe374ddcf96be42ed4",
+      "review": "T21 S22 extraction of existing button and static presentation; T26 S1 shared solid frame painter"
     },
     {
       "path": "src/lib-style/win16-control/other_paint.h",
@@ -3913,8 +3913,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "e4ff6eaa119d31eaaa4034ce2807e8f2b3b5dddb2504c84f12afa567a2571b10",
-      "review": "T21 S22 extraction of existing list and edit presentation; T26 S1 share USER alphabet metrics"
+      "sha256": "3c655109d7863a2164da3d97e4e441212ebb5582e4553bd56fc88644156e2026",
+      "review": "T21 S22 extraction of existing list and edit presentation; T26 S1 share USER alphabet metrics; T26 S1 shared solid frame painter"
     },
     {
       "path": "src/lib-style/win16-control/list_paint.h",
@@ -3931,8 +3931,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "247cae8803b0eb66db03dab8dbcd30b60b3d32561f67497150a840e00d33af6f",
-      "review": "T21 S22 extraction of existing combo presentation; T21 S22 native embedded combo button painter extracted"
+      "sha256": "85bdb2c74b1ca5782c79defc5b4603d5d897c3f21578f11876927e499c75c10c",
+      "review": "T21 S22 extraction of existing combo presentation; T21 S22 native embedded combo button painter extracted; T26 S1 shared solid frame painter"
     },
     {
       "path": "src/lib-style/win16-control/combo_paint.h",
@@ -3949,8 +3949,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "80de0319e496bf84657276c9d8efa12e34921d84d77846ba999fa5a354cb9108",
-      "review": "T21 S22 extraction of existing scrollbar presentation"
+      "sha256": "924bfa652957efa4672f44f2d08c0bf379651f166bc7a85c90ff9b5b96f07a6b",
+      "review": "T21 S22 extraction of existing scrollbar presentation; T26 S1 shared solid frame painter"
     },
     {
       "path": "src/lib-style/win16-control/scroll_paint.h",
@@ -4030,8 +4030,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "0367f2659b28cc900fabc3f8148af152f419f2ed782780ffbfeb17fdcc6cbec5",
-      "review": "T21 S22 extraction of existing specialized control presentation; T21 S22 VB data arrow pixel presentation extracted; T21 S22 graphical and bitmap-button face presentation extraction; T24 S1 share pixel viewport validation; T26 S1 share DIB buffer with Win16 spin paint; T26 S1 shared device-context geometry"
+      "sha256": "16f7c2207c7be04b4f4ba9655977c30428e5e4bd81fc97f3f074871c6509e076",
+      "review": "T21 S22 extraction of existing specialized control presentation; T21 S22 VB data arrow pixel presentation extracted; T21 S22 graphical and bitmap-button face presentation extraction; T24 S1 share pixel viewport validation; T26 S1 share DIB buffer with Win16 spin paint; T26 S1 shared device-context geometry; T26 S1 shared solid frame painter"
     },
     {
       "path": "src/lib-style/win16-control/special_paint.h",
@@ -7946,6 +7946,15 @@
       "sha256": "3108f08e8bc458a426ad858dd28618686b2e14139c933e2444c8924a31f349ff",
       "disposition": "authored",
       "review": "T26 S1 shared native control procedure and module witness",
+      "notice": "Project-authored C interface; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/paint_frame.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4689ef38be900a31906e85cd1d129e0983cd7105259b54d64c2548dff3207522",
+      "disposition": "authored",
+      "review": "T26 S1 shared solid rectangular frame painter",
       "notice": "Project-authored C interface; no imported artwork"
     }
   ]

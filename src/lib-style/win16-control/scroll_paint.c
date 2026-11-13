@@ -41,7 +41,7 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
                 if(v->track->part==WIN16_SCROLL_LINE_AFTER)info.rgstate[5]|=STATE_SYSTEM_PRESSED;}
         }
     }
-    win16_control_control_frame(dc,r,v->palette->edge,1);
+    style_paint_solid_frame(dc,r,v->palette->edge,1);
     win16_control_scroll_arrow(dc,first,(info.rgstate[1]&STATE_SYSTEM_UNAVAILABLE)?(vertical?win16_control_scroll_glyph(WIN16_SCROLL_UP_DISABLED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT_DISABLED)):
         vertical?(info.rgstate[1]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_UP_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_UP)):
         (info.rgstate[1]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT)),v->palette);
@@ -50,7 +50,7 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
         (info.rgstate[5]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT)),v->palette);
     if(info.xyThumbBottom>info.xyThumbTop){
         SetDCBrushColor(dc,v->palette->face);FillRect(dc,&thumb,(HBRUSH)GetStockObject(DC_BRUSH));
-        win16_control_control_frame(dc,thumb,v->palette->edge,1);InflateRect(&thumb,-1,-1);
+        style_paint_solid_frame(dc,thumb,v->palette->edge,1);InflateRect(&thumb,-1,-1);
         SetDCBrushColor(dc,v->palette->light);pixel=thumb;pixel.bottom=pixel.top+1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
         pixel=thumb;pixel.right=pixel.left+1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
         SetDCBrushColor(dc,v->palette->shadow);pixel=thumb;pixel.top=pixel.bottom-1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));

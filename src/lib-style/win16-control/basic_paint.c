@@ -11,20 +11,10 @@ void win16_control_combo_arrow(HDC dc,int left,int top,int dpi)
     }
 }
 
-void win16_control_control_frame(HDC dc,RECT r,COLORREF color,int width)
-{
-    HBRUSH brush=CreateSolidBrush(color);int i;
-    if(!brush)return;
-    for(i=0;i<width && r.right>r.left && r.bottom>r.top;++i){FrameRect(dc,&r,brush);
-    InflateRect(&r,-1,-1);
-    }
-    DeleteObject(brush);
-}
-
 RECT win16_control_button_border(HDC dc,RECT r,const win16_style_palette *palette,int u,int border,BOOL pushed)
 {
     RECT bounds=r,corner;
-    win16_control_control_frame(dc,bounds,palette->edge,border);
+    style_paint_solid_frame(dc,bounds,palette->edge,border);
     SetDCBrushColor(dc,palette->light);
     SetRect(&corner,r.left,r.top,r.left+u,r.top+u);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));
     OffsetRect(&corner,r.right-r.left-u,0);FillRect(dc,&corner,(HBRUSH)GetStockObject(DC_BRUSH));

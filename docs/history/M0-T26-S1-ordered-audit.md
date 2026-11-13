@@ -18,14 +18,14 @@
 | 9 | `src/lib-style/win16-control/attachment_state.h` | `764d7929b4d856293a0483e173aaad03cb7b7b0d9e61f03f2357057cfe59f3d2` | 已过关 |
 | 10 | `src/lib-style/win16-control/basic_message.c` | `2bc39526c285621a7d38b19bf9e61d56f05b64f228d3ad4912911d26b9a48b3e` | 已过关 |
 | 11 | `src/lib-style/win16-control/basic_message.h` | `22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c` | 已过关 |
-| 12 | `src/lib-style/win16-control/basic_paint.c` | `b253f2984bb7ee9237dab4a8521aa7d256996f959539ef0fab27b22e8721805b` | 待审 |
-| 13 | `src/lib-style/win16-control/basic_paint.h` | `db5fd5cd49c5e5528d4d34240ea659d4235013f62f669ba030cd4f16ba48d604` | 待审 |
+| 12 | `src/lib-style/win16-control/basic_paint.c` | `703e8b27f1c11d82ac151b8898b86431da99505733aca9ff8950976d28068a9d` | 审计中 |
+| 13 | `src/lib-style/win16-control/basic_paint.h` | `8ba4944a6f6614fb3569045b69e5a8c7e965ff535dcda935238993868600d300` | 待审 |
 | 14 | `src/lib-style/win16-control/choice_paint.c` | `768af7385d7a9bf5bcb3d4cc6abcf4deead9ae39efcc006a3bf4036bb6451d7b` | 待审 |
 | 15 | `src/lib-style/win16-control/choice_paint.h` | `6efc933f3e2293f106275bcaa13ce66067da445af567a91ef3c35c069677902c` | 待审 |
 | 16 | `src/lib-style/win16-control/choice_view.c` | `0ca0a586fcc2164dd65f6e7723d1108dfcea2b8b9c5eceeb62e1d57bf640ceda` | 待审 |
 | 17 | `src/lib-style/win16-control/choice_view.h` | `02a9c00c937c411be9e66158a56bbbfdc7dac5f82e07e4591cb24761947bc92d` | 待审 |
 | 18 | `src/lib-style/win16-control/combo_glyph.h` | `75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34` | 待审 |
-| 19 | `src/lib-style/win16-control/combo_paint.c` | `247cae8803b0eb66db03dab8dbcd30b60b3d32561f67497150a840e00d33af6f` | 待审 |
+| 19 | `src/lib-style/win16-control/combo_paint.c` | `85bdb2c74b1ca5782c79defc5b4603d5d897c3f21578f11876927e499c75c10c` | 待审 |
 | 20 | `src/lib-style/win16-control/combo_paint.h` | `9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca` | 待审 |
 | 21 | `src/lib-style/win16-control/combo_text.c` | `4d95a3cc8238c3e3a194dc64f1ee1d3c56b8e296e29469c6bd0229e85bb5e63c` | 待审 |
 | 22 | `src/lib-style/win16-control/combo_text.h` | `dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0` | 待审 |
@@ -55,7 +55,7 @@
 | 46 | `src/lib-style/win16-control/header_paint.h` | `0242e8b959c1aa6900e5282708515c55f07bfe0d7bab833935feb06abbf829f3` | 待审 |
 | 47 | `src/lib-style/win16-control/list_message.c` | `0ac87da08ab21cf8a95f38a73d40dbee1f26dedea69aec6fd93b7ee5068a57e5` | 待审 |
 | 48 | `src/lib-style/win16-control/list_message.h` | `96b05ce3b3a94624aa9327119cb120b25ea7cf631ad736262a4a3754c183a7cb` | 待审 |
-| 49 | `src/lib-style/win16-control/list_paint.c` | `e4ff6eaa119d31eaaa4034ce2807e8f2b3b5dddb2504c84f12afa567a2571b10` | 待审 |
+| 49 | `src/lib-style/win16-control/list_paint.c` | `3c655109d7863a2164da3d97e4e441212ebb5582e4553bd56fc88644156e2026` | 待审 |
 | 50 | `src/lib-style/win16-control/list_paint.h` | `108ddfa842255a92e1d92e5e66208970b444fa124b307fc9753ee8107301758c` | 待审 |
 | 51 | `src/lib-style/win16-control/month_paint.c` | `9e0735b5b64f94438c9198c781af21770b7edaccf6ff2aa58546fe9ca62b4ccc` | 待审 |
 | 52 | `src/lib-style/win16-control/month_paint.h` | `54019ebba59ec1f11e6d2a0d70a2a019c96304d6c440360a61e3b7e30267bf60` | 待审 |
@@ -67,7 +67,7 @@
 | 58 | `src/lib-style/win16-control/native_presentation.h` | `a944a0f4edaa3748f39c3f6795394f31762bbb5ef1bf91ee0ac81dbe2ba44e30` | 待审 |
 | 59 | `src/lib-style/win16-control/notify_message.c` | `9f2332f1b82a71503c22a376498d841323fe55d9656ce895c6961008cabce9ed` | 待审 |
 | 60 | `src/lib-style/win16-control/notify_message.h` | `44ac844c460c0a26ce509497a5a8db3315e895e09ff584b44f587421317002df` | 待审 |
-| 61 | `src/lib-style/win16-control/other_paint.c` | `cb3569dcef00dd5c65da5e7ec64b575f82368e8a028885abd6e35d1459d1cf21` | 待审 |
+| 61 | `src/lib-style/win16-control/other_paint.c` | `900d6ff1812bc3344d9015a583f7b4d5a2264b39c1e0aefe374ddcf96be42ed4` | 待审 |
 | 62 | `src/lib-style/win16-control/other_paint.h` | `94459d8578fcebd60cc401db53ef589b1a7b663ff0ce35b5185167ca79aca278` | 待审 |
 | 63 | `src/lib-style/win16-control/progress_paint.c` | `cade3335d0f1efa3065149d3d55b9d7bfabedd3ff63201c6bf50574b8fd73523` | 待审 |
 | 64 | `src/lib-style/win16-control/progress_paint.h` | `f43e978a1dfebe98344cb5b3d051186e475777eb5209a73fcdb854f3a6dafa4a` | 待审 |
@@ -80,13 +80,13 @@
 | 71 | `src/lib-style/win16-control/scroll_message.h` | `ac96754592cbe76b8701fa04915ea18b461991a44b5bb16de44a9c5efa184b69` | 待审 |
 | 72 | `src/lib-style/win16-control/scroll_native.c` | `5f3ddf5d2408a8c404acc9cf6874351030274398d5cd6b9ca75d4d1177ec497a` | 待审 |
 | 73 | `src/lib-style/win16-control/scroll_native.h` | `722808178add0650d40211ac7f43eecac03d2637a46a9e57e884d968c397345a` | 待审 |
-| 74 | `src/lib-style/win16-control/scroll_paint.c` | `80de0319e496bf84657276c9d8efa12e34921d84d77846ba999fa5a354cb9108` | 待审 |
+| 74 | `src/lib-style/win16-control/scroll_paint.c` | `924bfa652957efa4672f44f2d08c0bf379651f166bc7a85c90ff9b5b96f07a6b` | 待审 |
 | 75 | `src/lib-style/win16-control/scroll_paint.h` | `73430fabd8399933fcde5ed2829e522c4677926efa95b5d83a7e3403a8319fc7` | 待审 |
 | 76 | `src/lib-style/win16-control/scroll_track.c` | `72bb6ba21989e4b40be7e1897928003cde4ee23467b3133d8f799b1f30926de9` | 待审 |
 | 77 | `src/lib-style/win16-control/scroll_track.h` | `36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e` | 待审 |
 | 78 | `src/lib-style/win16-control/special_install.c` | `ed4869d10cb6bdbec6e0c46d8d121aadc07dd77118b17e1caf07deb17c332103` | 待审 |
 | 79 | `src/lib-style/win16-control/special_install.h` | `b4be7bbb66ac51e85b62bfae1c90cb926829b021bd9c726505269572df670f20` | 待审 |
-| 80 | `src/lib-style/win16-control/special_paint.c` | `0367f2659b28cc900fabc3f8148af152f419f2ed782780ffbfeb17fdcc6cbec5` | 待审 |
+| 80 | `src/lib-style/win16-control/special_paint.c` | `16f7c2207c7be04b4f4ba9655977c30428e5e4bd81fc97f3f074871c6509e076` | 待审 |
 | 81 | `src/lib-style/win16-control/special_paint.h` | `9eed7cbc5eec9fe4be5a35f3d80e2a90e8f592006404968eb47ebf1df40d9a08` | 待审 |
 | 82 | `src/lib-style/win16-control/spin_scope.c` | `1eb516c67ff3c98708004c3220553c37a604096eaf099954fe009cdca0c082b5` | 待审 |
 | 83 | `src/lib-style/win16-control/spin_scope.h` | `1e435d595fe40eba8d581186d18d3e0f51ac153d87a5ae79cfb9d7ea282626ce` | 待审 |
@@ -232,3 +232,8 @@
 
 - 职责与调用：声明使用 Win16 `control_style` 及绘制回调的基本消息处理器，实现与实际分派在 `basic_message.c` 和 `control_dispatch.c`；接口没有产品私有头反向依赖，保留风格侧。
 - 处置：产品 `ntw16s-dll/controls.c` 不直接使用该接口，已删除多余包含；公共重绘机制仍由第 10 项所述公共组件提供。双位宽增量编译通过，修改前后产品 `controls.c.obj` 的 SHA-256 分别为 x86 `775c1bba9b4300c5f7329ad4bb0c50278f204f2e2f496a67700017ae2b24ac71` 和 x64 `d4e02b9731f27d56a7686b12fc16fef95990e5ceb38812ecd4ee77172021c8ef`，逐字节一致；沿用既有发布包。第 10 项双位宽正式包回归适用，未单独覆盖的位图打印仍保留。
+
+## 012 `win16-control/basic_paint.c`：审计中
+
+- 职责：绘制 Win16 组合框箭头、按钮边框、滚动条箭头及实色矩形边框。箭头图案、按钮配色与立体边属于 Win16 策略；实色矩形的内缩绘制不依赖风格。
+- 已抽出：实色边框迁入 `common/paint_frame.h`，组合框、列表、其他基本控件、滚动条和特殊控件直接使用新入口；对应未审文件仅更换调用并更新摘要，尚未计入已审。双位宽干净构建、发布及正式包回归通过，见[交付记录](M0-T26-S1-ordered-12-frame.md)。箭头栅格化仍须核对。

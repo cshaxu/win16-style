@@ -141,7 +141,7 @@ void win16_control_legacy_progress_border(HWND w,const win16_style_palette *pale
     int left=origin.x-outer.left,top=origin.y-outer.top;
     if(width<3 || height<3 || left<1 || top<1 || left+client.right>=width || top+client.bottom>=height)goto done;
     RECT bounds={0,0,width,height};HDC dc=target?target:GetWindowDC(w);if(!dc)goto done;
-    int saved=SaveDC(dc);if(saved){win16_control_control_frame(dc,bounds,palette->edge,1);RestoreDC(dc,saved);}
+    int saved=SaveDC(dc);if(saved){style_paint_solid_frame(dc,bounds,palette->edge,1);RestoreDC(dc,saved);}
     if(!target)ReleaseDC(w,dc);
 done: SetLastError(saved_error);
 }

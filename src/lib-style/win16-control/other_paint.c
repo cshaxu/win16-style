@@ -47,17 +47,17 @@ void win16_control_other(HWND w,const BOOL *detached,const win16_style_palette *
          * geometry and express it using the same flat border as SS_*FRAME. */
         if(type==SS_ETCHEDHORZ)r.bottom=min(r.bottom,r.top+u);
         if(type==SS_ETCHEDVERT)r.right=min(r.right,r.left+u);
-        win16_control_control_frame(dc,r,(*palette).edge,u);return;
+        style_paint_solid_frame(dc,r,(*palette).edge,u);return;
     }
     if(label && type>=SS_BLACKRECT && type<=SS_WHITEFRAME){
         COLORREF color=(type==SS_BLACKRECT || type==SS_BLACKFRAME)?(*palette).edge:
             (type==SS_GRAYRECT || type==SS_GRAYFRAME)?(*palette).shadow:(*palette).light;
-        if(type>=SS_BLACKFRAME)win16_control_control_frame(dc,r,color,u);
+        if(type>=SS_BLACKFRAME)style_paint_solid_frame(dc,r,color,u);
         else {SetDCBrushColor(dc,color);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));}return;
     }
     if(!label && type==BS_GROUPBOX){
         RECT title=r;title.left+=8*u;DrawTextW(dc,text,-1,&title,DT_CALCRECT|DT_SINGLELINE);
-        bounds.top+=tm.tmHeight/2;win16_control_control_frame(dc,bounds,(*palette).shadow,u);
+        bounds.top+=tm.tmHeight/2;style_paint_solid_frame(dc,bounds,(*palette).shadow,u);
         InflateRect(&title,u,0);SetDCBrushColor(dc,(*palette).light);FillRect(dc,&title,(HBRUSH)GetStockObject(DC_BRUSH));
         title.left+=u;DrawTextW(dc,text,-1,&title,DT_SINGLELINE);return;
     }

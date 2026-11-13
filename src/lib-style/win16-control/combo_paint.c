@@ -24,13 +24,13 @@ void win16_control_draw_combo(HWND w,const BOOL *detached,const BOOL *common_dia
         if(GetWindowRect(info.hwndList,&list)){
             MapWindowPoints(NULL,w,(POINT *)&list,2);ExcludeClipRect(dc,list.left,list.top,list.right,list.bottom);}
         SetDCBrushColor(dc,(*palette).light);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
-        text=info.rcItem;InflateRect(&text,u,u);win16_control_control_frame(dc,text,(*palette).edge,u);
+        text=info.rcItem;InflateRect(&text,u,u);style_paint_solid_frame(dc,text,(*palette).edge,u);
         RestoreDC(dc,saved);free(label);return;
     }
     SetDCBrushColor(dc,(*palette).light);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
-    win16_control_control_frame(dc,client,(*palette).edge,u);
+    style_paint_solid_frame(dc,client,(*palette).edge,u);
     button=info.rcButton;SetDCBrushColor(dc,(*palette).face);FillRect(dc,&button,(HBRUSH)GetStockObject(DC_BRUSH));
-    win16_control_control_frame(dc,button,(*palette).edge,u);InflateRect(&button,-u,-u);
+    style_paint_solid_frame(dc,button,(*palette).edge,u);InflateRect(&button,-u,-u);
     pixel=button;pixel.bottom=pixel.top+u;SetDCBrushColor(dc,pressed?(*palette).shadow:(*palette).light);
     FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));pixel=button;pixel.right=pixel.left+u;
     FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
