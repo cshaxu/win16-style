@@ -7,7 +7,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
-FORBIDDEN = re.compile(r"ntw16s|ntw2ks|ntwshk|run16s|win16|win2k|win2000", re.I)
+FORBIDDEN = re.compile(r"ntw16s|ntw2ks|ntwxps|ntw7s|ntwvistas|ntwshk|run16s|win16|win2k|win2000|winxp|win7|vista", re.I)
 COMPONENTS = ("src/lib-style/common", "src/lib-style/uwp", "src/lib-win32/style")
 
 
@@ -26,6 +26,9 @@ def main():
     if args.self_test:
         assert check_text("fixture", '#include "ntw16s-dll/private.h"\n')
         assert check_text("fixture", "void win2k_frame(void);\n")
+        assert check_text("fixture", '#include "lib-style/winxp-window/frame.h"\n')
+        assert check_text("fixture", "void vista_caption(void);\n")
+        assert check_text("fixture", "void win7_frame(void);\n")
         assert not check_text("fixture", '#include "lib-style/common/frame.h"\n')
     errors = []
     for component in COMPONENTS:

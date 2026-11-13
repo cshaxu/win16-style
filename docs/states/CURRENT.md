@@ -50,13 +50,14 @@ Win16 滚动条的临时位图和提交代码已改用两风格共用的呈现�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 1
-- Last verified remote delivery: M0 T26 S1 P43，`ce30bd95`。
+- Last verified remote delivery: M0 T26 S1 P44，`45318a14`。
 - Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
 
 ## Technical Baseline
 
 - **活动范围**：T25 S9 去重已并入 T26。当前 S1 仍需完成全部窗口、控件、对话框、Win32/UWP/WinUI 生产入口与测试的分类、迁移次序和覆盖审计；不把已迁移的局部当作 T26 完成。
 - **覆盖台账**：当前生产与测试目录的盘点、已审证据和待审边界见[台账](../history/M0-T26-S1-coverage-ledger.md)；目录统计不是逐文件审计结论。
+- **公共依赖门禁**：源码检查扩展至 XP、Vista、Win7；打包时自动发现公共样式归档，干净打包验证双位宽各 14 个归档通过，见[记录](../history/M0-T26-S1-shared-dependency-check.md)。
 - **Win16 基础目录复核**：七个文件的布局、配色、字体资源和产品 ABI 已分类，公共位图已复用，未来高对比度策略的边界见[记录](../history/M0-T26-S1-win16-common-review.md)。字体布局测试默认入口误尝试创建私有桌面，系统拒绝且未切换；未运行部分不计通过，后续须先核对测试入口。
 - **当前发布**：第二十二批双位宽同快照候选已发布至 `assets` 与 `O:\winnt`，八文件摘要一致。构建、针对性回归、明确失败与未覆盖范围见[候选记录](../history/M0-T26-S1-shared-candidate-22.md)；候选未正式验收，S1/T26 未收口。
 - **其他已发布共享**：同进程窗口钩子分发、现代窗口缩放边缘命中、普通/现代外框光标映射、现代宿主类名核验、Win2000 系统菜单公共缓冲及滚动条公共位置映射已发布；相关验证见各历史候选记录。后者不表示 Win2000 滚动条已实现。
