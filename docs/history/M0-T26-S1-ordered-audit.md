@@ -11,7 +11,7 @@
 | 2 | `src/lib-style/win16-common/font.c` | `8246cf5cd78b8516e342543d6609a193b8f2e98c3c4d352cd83d3a8ebf21979c` | 已过关 |
 | 3 | `src/lib-style/win16-common/font.h` | `63256a509950663b489a187ca6a912510fd5e8e658d8b864d86c7e3f53e04fd3` | 已过关 |
 | 4 | `src/lib-style/win16-common/layout.c` | `83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede` | 已过关 |
-| 5 | `src/lib-style/win16-common/layout.h` | `a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3` | 待审 |
+| 5 | `src/lib-style/win16-common/layout.h` | `a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3` | 已过关 |
 | 6 | `src/lib-style/win16-common/palette.c` | `c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae` | 待审 |
 | 7 | `src/lib-style/win16-common/palette.h` | `f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36` | 待审 |
 | 8 | `src/lib-style/win16-control/attachment_guard.c` | `1c4fe0a7aa90ae478255b0b18e0073e3b8611c4f5ad66f65791fb4cb8ae9f368` | 待审 |
@@ -187,3 +187,9 @@
 - 关联修复：`common_link.c` 对借用的菜单字体改用对应租约释放接口，避免测试直接删除受管理字体。
 
 - 差异统计（不含本台账）：6 个文本文件新增 49 行、删除 4 行；未修改产品二进制，assets 与 O:\winnt 的八文件均与 HEAD 一致。
+
+## 005 `win16-common/layout.h`：已过关
+
+- 职责：声明 Win16 窗口相对坐标结构和对应几何、命中接口，仅依赖 Windows 类型。
+- 调用：Win16 普通外框和现代外框布局、绘制及产品命中入口；没有具体产品私有头反向依赖。结构包含 Win16 特有的系统菜单、最小化和最大化几何，保留在风格侧，不作为其他年代通用数据结构。
+- 处置：无需源码修改。双位宽 `core-win16-layout` 与 `core-uwp-frame_layout` 均通过；前者直接覆盖声明的接口，后者覆盖现代外框 96–288 DPI 几何。该测试不证明可见 UWP/WinUI 或其他风格效果。产品文件未变。
