@@ -21,7 +21,7 @@
 | `theme_state` | `theme_state.c`; `theme_exception.c` (native unwind and reuse, static, shared DLL, comctl v6); `theme_shared.c` (shared DLL and Win16 integration); `tests/ntw16s-dll/theme_stage.c` |
 | `theme_track` | `theme_track.c` (handle aliases, concurrent open/close, capacity and cancellation) |
 | `file_events` | `file_events.c`; `tests/lib-style/common/classic_dialog_link.c` |
-| `modern_file_dialog` | `modern_file_dialog.c`; `tests/lib-style/common/classic_dialog_link.c` (argument validation) |
+| `modern_file_dialog` | `modern_file_dialog.c`; `modern_file_depth.c` (thread-local nesting and failure cleanup); `tests/lib-style/common/classic_dialog_link.c` (argument validation) |
 | `classic_shell_folder` | `tests/lib-style/common/classic_dialog_link.c` (product linkage; interactive browser not covered) |
 | `dialog_primary`, `dialog_v2`, `dialog_customize`, `dialog_ole_window` | `dialog_adapter.c`; `tests/lib-style/common/classic_dialog_link.c`; `tests/lib-style/common/classic_dialog_chrome.c` |
 | `classic_com_show`, `classic_browse`, `classic_file_live` | `classic_bridge.c`; `tests/lib-style/common/classic_dialog_link.c`; `tests/lib-style/common/classic_dialog_chrome.c` |

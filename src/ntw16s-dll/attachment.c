@@ -490,7 +490,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     }
     win16_attachment_guard_roles(w,m,a,&guards);
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
-    ntw16s_vb_paint paint;ntw16s_vb_paint_begin(&paint,w,m,&a->fonts);
+    ntw16s_vb_paint paint;win16_control_vb_paint_begin(&paint,w,m,&a->fonts,ntw16s_vb_user_label_target);
     win16_attachment_prepare_report(w,m,p,a,&paint,report_try_bind);
     BOOL box_witnessed=FALSE;
     win16_attachment_reset_witness(a,m);
@@ -539,7 +539,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION LRESULT bit_draw_dispatch(attachment *a,HWND
  * rewrite the application's result, select its font, or inspect item lParam. */
 static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
-    const win16_attachment_notify_services services={report_notify,bit_draw_dispatch,release,ntw16s_vb_paint_begin,&checklist_current};
+    const win16_attachment_notify_services services={report_notify,bit_draw_dispatch,release,ntw16s_vb_user_label_target,&checklist_current};
     return win16_attachment_report_notify(w,m,p,l,id,data,&services);
 }
 /* Some frameworks set the report view after native WM_CREATE. This is still

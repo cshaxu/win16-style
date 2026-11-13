@@ -158,7 +158,7 @@ typedef struct win16_attachment_notify_services {
     SUBCLASSPROC notify;
     LRESULT (*bit_draw_dispatch)(attachment *,HWND,UINT,WPARAM,LPARAM,const DRAWITEMSTRUCT *);
     void (*release)(attachment *);
-    void (*paint_begin)(ntw16s_vb_paint *,HWND,UINT,ntw16s_vb_fonts *);
+    BOOL (*user_label_target)(HWND);
     checklist_draw_scope **checklist_current;
 } win16_attachment_notify_services;
 LRESULT win16_attachment_report_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR,const win16_attachment_notify_services *);

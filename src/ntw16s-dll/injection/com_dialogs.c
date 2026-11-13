@@ -20,6 +20,7 @@
 #include "lib-style/common/classic_com_hook.h"
 #include "lib-style/common/classic_dialog_proxy.h"
 #include "lib-style/common/classic_dialog_proxy_dispatch.h"
+#include "lib-style/common/modern_file_dialog.h"
 #include <shlobj.h>
 #include <shobjidl.h>
 #include <commdlg.h>
@@ -310,7 +311,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI bridge_create(REFCLSID clsid,
     ++native_creation_depth;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=native_create(clsid,outer,context,iid,out);}
     PROCESS_HOOK_UNWIND_END(unwind);
-    if(FAILED(original_hr)||!out||!*out||outer||nested||ntw16s_modern_dialog_active())return original_hr;
+    if(FAILED(original_hr)||!out||!*out||outer||nested||style_dialog_modern_active())return original_hr;
     BOOL save=IsEqualCLSID(clsid,&CLSID_FileSaveDialog),open=IsEqualCLSID(clsid,&CLSID_FileOpenDialog);
     if(!(save||open)||!style_dialog_proxy_iid(iid,save))return original_hr;
     proxy_replace(iid,out,save);return original_hr;
@@ -323,7 +324,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI bridge_create_ex(REFCLSID cls
     ++native_creation_depth;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=native_create_ex(clsid,outer,context,server,count,results);}
     PROCESS_HOOK_UNWIND_END(unwind);
-    if(FAILED(original_hr)||outer||server||nested||ntw16s_modern_dialog_active()||!results||!count||count>64)return original_hr;
+    if(FAILED(original_hr)||outer||server||nested||style_dialog_modern_active()||!results||!count||count>64)return original_hr;
     BOOL save=IsEqualCLSID(clsid,&CLSID_FileSaveDialog),open=IsEqualCLSID(clsid,&CLSID_FileOpenDialog);
     if(!(save||open))return original_hr;
     IUnknown *original=NULL;
@@ -366,7 +367,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT STDMETHODCALLTYPE factory_create(ICl
     ++native_creation_depth;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=IClassFactory_CreateInstance(factory->native,outer,iid,out);}
     PROCESS_HOOK_UNWIND_END(unwind);
-    if(FAILED(original_hr)||outer||!out||!*out||ntw16s_modern_dialog_active()||!style_dialog_proxy_iid(iid,factory->save))return original_hr;
+    if(FAILED(original_hr)||outer||!out||!*out||style_dialog_modern_active()||!style_dialog_proxy_iid(iid,factory->save))return original_hr;
     proxy_replace(iid,out,factory->save);return original_hr;
 }
 static HRESULT STDMETHODCALLTYPE factory_lock(IClassFactory *self,BOOL lock)
@@ -376,7 +377,7 @@ static HRESULT WINAPI bridge_class_object(REFCLSID clsid,DWORD context,LPVOID se
 {
     if(!ntw16s_process_session_active())return native_class_object(clsid,context,server,iid,out);
     HRESULT original_hr=native_class_object(clsid,context,server,iid,out);
-    if(FAILED(original_hr)||!out||!*out||server||native_creation_depth||ntw16s_modern_dialog_active()||
+    if(FAILED(original_hr)||!out||!*out||server||native_creation_depth||style_dialog_modern_active()||
        !(context&CLSCTX_INPROC_SERVER)||!(IsEqualIID(iid,&IID_IUnknown)||IsEqualIID(iid,&IID_IClassFactory)))return original_hr;
     BOOL save=IsEqualCLSID(clsid,&CLSID_FileSaveDialog),open=IsEqualCLSID(clsid,&CLSID_FileOpenDialog);
     if(!(save||open))return original_hr;

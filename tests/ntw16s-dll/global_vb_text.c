@@ -32,7 +32,7 @@ static uint64_t draw_hash(HDC dc,void *pixels,draw_fn draw,unsigned mode,HWND fo
 {
     RECT bounds={0,0,200,40};FillRect(dc,&bounds,(HBRUSH)GetStockObject(WHITE_BRUSH));
     SetBkMode(dc,TRANSPARENT);SetTextColor(dc,RGB(0,0,0));
-    ntw16s_vb_paint paint;if(scoped)ntw16s_vb_paint_begin(&paint,form,WM_PAINT,fonts);
+    ntw16s_vb_paint paint;if(scoped)win16_control_vb_paint_begin(&paint,form,WM_PAINT,fonts,ntw16s_vb_user_label_target);
     SetLastError(0x2345);BOOL ok=draw(dc,mode);*last=GetLastError();
     if(scoped)ntw16s_vb_paint_end(&paint);
     if(!ok || !GdiFlush())return 0;

@@ -70,7 +70,7 @@ static int ownership(const WCHAR *runtime_path)
     HDC dc=CreateCompatibleDC(NULL);CHECK(dc);HFONT sources[33]={0},leases[32]={0};HGDIOBJ old=GetCurrentObject(dc,OBJ_FONT);
     ntw16s_vb_fonts fonts={0},barrier_fonts={0};ntw16s_vb_paint scope,nested;
     unsigned baseline=live_allocations;
-    ntw16s_vb_paint_begin(&scope,window,WM_PRINTCLIENT,&fonts);CHECK(ntw16s_vb_paint_active());
+    win16_control_vb_paint_begin(&scope,window,WM_PRINTCLIENT,&fonts,ntw16s_vb_user_label_target);CHECK(ntw16s_vb_paint_active());
     for(unsigned i=0;i<33;++i){
         sources[i]=CreateFontW(-12-(int)i,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,
             OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");CHECK(sources[i]);
@@ -86,7 +86,7 @@ static int ownership(const WCHAR *runtime_path)
         CHECK(GetGlyphIndicesW(dc,L"\x03a9",1,&omega,GGI_MARK_NONEXISTING_GLYPHS)!=GDI_ERROR && omega!=0xffff);
         CHECK(!ntw16s_vb_decode_glyphs(dc,(const WCHAR *)&omega,1,decoded));
         CHECK(GetCurrentObject(dc,OBJ_FONT)==sources[i]);
-        ntw16s_vb_paint_begin(&nested,barrier,WM_PRINTCLIENT,&barrier_fonts);
+        win16_control_vb_paint_begin(&nested,barrier,WM_PRINTCLIENT,&barrier_fonts,ntw16s_vb_user_label_target);
         CHECK(!ntw16s_vb_paint_active() && !ntw16s_vb_paint_font(dc));ntw16s_vb_paint_end(&nested);
         CHECK(ntw16s_vb_paint_active());
     }
@@ -105,7 +105,7 @@ static int report_ownership(void)
     HFONT source=CreateFontW(-16,0,0,0,FW_NORMAL,0,0,0,ANSI_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,L"Arial");CHECK(source);
     HGDIOBJ old=SelectObject(dc,source);ntw16s_vb_fonts fonts={0},barrier={0};ntw16s_vb_paint scope,nested;BOOL cancelled=FALSE;
     unsigned baseline=live_allocations;
-    ntw16s_vb_paint_begin(&scope,w,WM_PRINTCLIENT,&fonts);
+    win16_control_vb_paint_begin(&scope,w,WM_PRINTCLIENT,&fonts,ntw16s_vb_user_label_target);
     ntw16s_report_paint_enable(&scope,w,GetModuleHandleW(L"USER32.dll"),&cancelled);
     CHECK(ntw16s_report_paint_active() && ntw16s_report_paint_caller(GetModuleHandleW(NULL)));
     CHECK(!ntw16s_report_paint_caller(GetModuleHandleW(L"KERNEL32.dll")));
@@ -114,7 +114,7 @@ static int report_ownership(void)
     HFONT font=ntw16s_vb_paint_font(dc);CHECK(font && fonts.count==1 && !ntw16s_vb_paint_font(other));
     HFONT standard=win16_style_vb_font_acquire(source);CHECK(standard==font);win16_style_system_release(standard);
     CHECK(GetCurrentObject(dc,OBJ_FONT)==source);
-    ntw16s_vb_paint_begin(&nested,w,WM_PRINTCLIENT,&barrier);CHECK(!ntw16s_vb_paint_font(dc));ntw16s_vb_paint_end(&nested);
+    win16_control_vb_paint_begin(&nested,w,WM_PRINTCLIENT,&barrier,ntw16s_vb_user_label_target);CHECK(!ntw16s_vb_paint_font(dc));ntw16s_vb_paint_end(&nested);
     CHECK(ntw16s_vb_paint_font(dc)==font);cancelled=TRUE;
     CHECK(!ntw16s_vb_paint_active() && !ntw16s_vb_paint_font(dc));
     LOGFONTW lf;CHECK(GetObjectW(font,sizeof(lf),&lf)==sizeof(lf));

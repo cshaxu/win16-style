@@ -16,7 +16,6 @@ typedef struct ntw16s_vb_paint {
     HMODULE report_module;
     const BOOL *cancelled;
 } ntw16s_vb_paint;
-void ntw16s_vb_paint_begin(ntw16s_vb_paint *scope,HWND window,UINT message,ntw16s_vb_fonts *fonts);
 void win16_control_vb_paint_begin(ntw16s_vb_paint *scope,HWND window,UINT message,ntw16s_vb_fonts *fonts,BOOL (*user_label_target)(HWND));
 void ntw16s_report_paint_enable(ntw16s_vb_paint *,HWND,HMODULE,const BOOL *);
 void ntw16s_report_paint_bind(HWND,HDC);

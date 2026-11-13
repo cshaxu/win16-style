@@ -397,7 +397,7 @@ LRESULT win16_attachment_report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR 
                     GetWindowThreadProcessId(target,NULL)==GetCurrentThreadId();
             }
             if(valid && !a->detached){
-                v->paint_begin(&file_paint,list,WM_PRINTCLIENT,&a->fonts);file_active=file_paint.active;
+                win16_control_vb_paint_begin(&file_paint,list,WM_PRINTCLIENT,&a->fonts,v->user_label_target);file_active=file_paint.active;
                 if(file_active){HWND painted=target?target:list;
                     ntw16s_report_paint_enable(&file_paint,painted,a->report_module,&a->detached);
                     ntw16s_report_paint_bind(painted,item->hDC);
