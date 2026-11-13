@@ -40,11 +40,11 @@
 | 29 | `src/lib-style/win16-control/control_install.c` | `912a3e15abaa9499656753544e0899d393eebbd8286dad8e42f654f43084950c` | 已过关 |
 | 30 | `src/lib-style/win16-control/control_install.h` | `1347b0605a479f5727aa1200cc269d8b237886eae7962e2343a50b9a1800e780` | 已过关 |
 | 31 | `src/lib-style/win16-control/control_lifetime.c` | `1b7640ed3968ad525b0483d1b166d3cf32db18891c0e9c33d8d43699f0b4ea3c` | 已过关 |
-| 32 | `src/lib-style/win16-control/control_lifetime.h` | `a75dd73f5c6e5851da4fc78e58d4f6477d610dcfbe589bf6a59655415373ced0` | 待审 |
-| 33 | `src/lib-style/win16-control/control_remove.c` | `27678f0276c7b028cf292bcf53dabdba7289f1a956ccf93838c2b8e28fb78dbb` | 待审 |
-| 34 | `src/lib-style/win16-control/control_remove.h` | `dbcd064a957c340b5c296e0c3a7debd67bfc8f46e5e7036f09dd54cda31e9c3f` | 待审 |
-| 35 | `src/lib-style/win16-control/control_scope.c` | `f534206388ab958ef31a3addbfced46565dde214b9a20c1935cf28c084ca62af` | 待审 |
-| 36 | `src/lib-style/win16-control/control_scope.h` | `d7a2c4f7d8531924c51dd7e493f6e410959315da9598b7b090a4ca99734ffbec` | 待审 |
+| 32 | `src/lib-style/win16-control/control_lifetime.h` | `a75dd73f5c6e5851da4fc78e58d4f6477d610dcfbe589bf6a59655415373ced0` | 已过关 |
+| 33 | `src/lib-style/win16-control/control_remove.c` | `27678f0276c7b028cf292bcf53dabdba7289f1a956ccf93838c2b8e28fb78dbb` | 已过关 |
+| 34 | `src/lib-style/win16-control/control_remove.h` | `dbcd064a957c340b5c296e0c3a7debd67bfc8f46e5e7036f09dd54cda31e9c3f` | 已过关 |
+| 35 | `src/lib-style/win16-control/control_scope.c` | `f534206388ab958ef31a3addbfced46565dde214b9a20c1935cf28c084ca62af` | 已过关 |
+| 36 | `src/lib-style/win16-control/control_scope.h` | `d7a2c4f7d8531924c51dd7e493f6e410959315da9598b7b090a4ca99734ffbec` | 已过关 |
 | 37 | `src/lib-style/win16-control/control_state.c` | `a56c61f2f2603d89cb08b6bf7b97208bc0e2b6a79fd3e855c19e3a4a3343cea8` | 待审 |
 | 38 | `src/lib-style/win16-control/control_state.h` | `cccb65a997d5cbabebc7a62577cf79da8678b9754c5373757d64cb74ccff4e78` | 待审 |
 | 39 | `src/lib-style/win16-control/cool_grip_identity.c` | `04a9841be43ce2e95553eb3a9cb6a9f094ef03296dec5c86b26981239b2e979c` | 待审 |
@@ -349,3 +349,23 @@
 
 - VCL 微调编辑框在字体更新前后保留按钮区域的机制迁入已有 `common/control_vcl_spin`，Win16 传入自己的脱离状态；双位宽干净构建、先发布后产品夹具通过，见[记录](M0-T26-S1-ordered-31-spin.md)。字体恢复两处的后继子类顺序不同：组合框优先子编辑子类再检查普通控件子类；普通控件只检查自身子类。两者还依赖不同字体源字段，暂保留风格侧，不引入为共享而共享的间接层。
 - 其余释放、临时滚动条绘制和附着引用绑定 Win16 状态和字体租约；通用子类所有权已由 `common/control_scope.h` 提供。双位宽无目标和错误码公共测试通过；真实 Delphi、其他风格、所有重入组合未验证。
+
+## 032 `win16-control/control_lifetime.h`：已过关
+
+- 产品 `controls.c` 使用消息完成、上下文引用和滚动条绘制接口；参数含 Win16 控件状态及调色板，保留风格侧。公共 VCL 编辑区保护及子类所有权见第 31 项。双位宽独立链接和第 31 项实际夹具通过；真实第三方及其他风格未覆盖。
+
+## 033 `win16-control/control_remove.c`：已过关
+
+- 产品调用方提供滚动操作结束、子类与子控件解绑、字体和主题恢复；普通移除、窗口销毁和组合列表所有者校验顺序依赖 Win16 状态。公共主题及子类机制已独立提供，剩余生命周期顺序不能整体当通用算法。第 29 项双位宽取消/独立附着与第 31 项微调编辑器重入移除通过；不覆盖全部分支和其他风格。
+
+## 034 `win16-control/control_remove.h`：已过关
+
+- 产品 `controls.c` 提供 Win16 状态、滚动、字体/主题和子控件回调，`control_remove.c` 消费；接口保留风格侧。验证与限制同第 33 项。
+
+## 035 `win16-control/control_scope.c`：已过关
+
+- 原生创建观察、嵌套引用及释放由公共 `common/control_scope.c` 提供；此文件负责 Win16 控件类别资格、组合框内部子控件跳过、安装回调和统计。避免把具体风格的安装选择置入公共作用域。双位宽公共及 Win16 隐藏窗口作用域测试直接运行通过，覆盖嵌套、重入和清理；CTest 包装入口因未设置捕获目录报错，未计通过。真实应用和其他风格未覆盖。
+
+## 036 `win16-control/control_scope.h`：已过关
+
+- 暴露 Win16 调色板、安装策略和计数，公共作用域类型直接复用；产品侧创建观察入口使用。双位宽测试和限制见第 35 项。
