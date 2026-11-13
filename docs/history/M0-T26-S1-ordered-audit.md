@@ -14,7 +14,7 @@
 | 5 | `src/lib-style/win16-common/layout.h` | `a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3` | 已过关 |
 | 6 | `src/lib-style/win16-common/palette.c` | `c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae` | 已过关 |
 | 7 | `src/lib-style/win16-common/palette.h` | `f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36` | 已过关 |
-| 8 | `src/lib-style/win16-control/attachment_guard.c` | `77951c6a64d1d4e990cf4e09f76f2c93a9d6d0f96bf2bb03c268c0f09d3b0214` | 审计中 |
+| 8 | `src/lib-style/win16-control/attachment_guard.c` | `77951c6a64d1d4e990cf4e09f76f2c93a9d6d0f96bf2bb03c268c0f09d3b0214` | 已过关 |
 | 9 | `src/lib-style/win16-control/attachment_state.h` | `764d7929b4d856293a0483e173aaad03cb7b7b0d9e61f03f2357057cfe59f3d2` | 待审 |
 | 10 | `src/lib-style/win16-control/basic_message.c` | `2bc39526c285621a7d38b19bf9e61d56f05b64f228d3ad4912911d26b9a48b3e` | 待审 |
 | 11 | `src/lib-style/win16-control/basic_message.h` | `22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c` | 待审 |
@@ -206,9 +206,9 @@
 - 处置：接口描述具体 Win16 风格，不反向包含产品私有头；目前其他风格并无相同色彩契约，保留在风格库，避免提前固定不适用于其他主题的公共接口。
 - 验证：第 6 项的双位宽原生配色测试直接包含该头并调用所声明接口，均通过；高对比度开启未覆盖。
 
-## 008 `win16-control/attachment_guard.c`：审计中
+## 008 `win16-control/attachment_guard.c`：已过关
 
-- 文件混合控件附着安装及撤销、绘制期分派、运行时类别与原生过程核验；产品入口集中在 `ntw16s-dll/attachment.c`。逐函数梳理及正式包验证尚未完成，不计过关。
+- 文件混合控件附着安装及撤销、绘制期分派、运行时类别与原生过程核验；产品入口集中在 `ntw16s-dll/attachment.c`。基线 51 个公开函数已分类，详情和留在风格侧的具体理由见[函数盘点](M0-T26-S1-ordered-08-inventory.md)。
 - 已抽出：ANSI 和 Unicode 两条原生窗口过程转发路径共用的过程及调用模块归属核验迁入 `common/control_native_witness.h`，原路径直接调用，控件类型及实际绘制策略仍由 Win16 决定。
 - 验证：双位宽共享校验正反例、Win16 DLL 增量构建及 MinGW/Ninja/ccache 双位宽干净打包通过；先发布到 assets 和 O:\winnt，再用正式启动器运行双位宽 ANSI DBEdit 与 Unicode 轨迹条自建夹具，均通过，含伪装、外部调用、重入移除和资源清理。发布明细见[交付记录](M0-T26-S1-ordered-08-witness.md)。真实第三方程序未覆盖。
 - 已按 51 个公开函数分组列明生命周期、识别和绘制边界，以及尚需核查的共享事务和剪裁机制，见[函数盘点](M0-T26-S1-ordered-08-inventory.md)。
