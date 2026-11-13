@@ -2761,8 +2761,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17 native test; no external source or resources copied",
-      "review": "T18 S64 VB6 checklist public protocol model and bounded pixel/state/negative cases; fixture is not an actual VB runtime; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P22 mixed-script fallback witness; T18 S64 P23 real VB5 checkbox list",
-      "sha256": "2c085f5fdff65575a4ff3c12d86147924f2f24a8f4004eebfbb7460bd16b9a2f"
+      "review": "T18 S64 VB6 checklist public protocol model and bounded pixel/state/negative cases; fixture is not an actual VB runtime; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P22 mixed-script fallback witness; T18 S64 P23 real VB5 checkbox list; T26 ordered audit expose checklist failure clip diagnostics",
+      "sha256": "31c985a870f9e2910f7d8e3117d3bcee8b49bbb9ffd3c2f8d26671e49dc9e5c5"
     },
     {
       "path": "tests/ntw16s-dll/vb_checklist_runtime.c",
