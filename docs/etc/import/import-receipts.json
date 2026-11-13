@@ -7929,6 +7929,15 @@
       "disposition": "authored",
       "review": "T26 S1 ordered audit: frame font declaration ownership",
       "notice": "Project-authored C interface; no imported artwork"
+    },
+    {
+      "path": "tests/lib-style/win16-common/layout.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "06ee18d9e2ea0563dd1b47568a948acefdc3f00dd570a2cefe1aca4d9b20a781",
+      "disposition": "authored",
+      "review": "T26 S1 ordered audit: Win16 frame geometry and hit testing",
+      "notice": "Project-authored native C; no imported artwork"
     }
   ]
 }

@@ -7,4 +7,5 @@ separate `tests/lib-style/win16-window/window_link.c` adapter.
 
 | Source family | Native test adapter |
 | --- | --- |
-| `layout`, `font`, `palette` | `common_link.c`; `tests/ntw16s-dll/font_layout.c` |
+| `layout` | `layout.c` (geometry and hit testing); `tests/lib-style/win16-window-uwp/frame_layout.c` |
+| `font`, `palette` | `common_link.c`; `tests/ntw16s-dll/font_layout.c` |

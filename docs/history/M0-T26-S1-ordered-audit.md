@@ -10,7 +10,7 @@
 | 1 | `src/lib-style/win16-common/control_api.h` | `3c26e7bdd7cc1fa995bc9aab43e321c70234a369577ea4e396ea1365429efd84` | 已过关 |
 | 2 | `src/lib-style/win16-common/font.c` | `8246cf5cd78b8516e342543d6609a193b8f2e98c3c4d352cd83d3a8ebf21979c` | 已过关 |
 | 3 | `src/lib-style/win16-common/font.h` | `63256a509950663b489a187ca6a912510fd5e8e658d8b864d86c7e3f53e04fd3` | 已过关 |
-| 4 | `src/lib-style/win16-common/layout.c` | `83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede` | 待审 |
+| 4 | `src/lib-style/win16-common/layout.c` | `83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede` | 已过关 |
 | 5 | `src/lib-style/win16-common/layout.h` | `a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3` | 待审 |
 | 6 | `src/lib-style/win16-common/palette.c` | `c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae` | 待审 |
 | 7 | `src/lib-style/win16-common/palette.h` | `f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36` | 待审 |
@@ -178,3 +178,12 @@
 - 职责：声明 Win16 位图字体获取、释放、来源映射和风格租约；产品、Win16 窗口及控件依赖这些接口。
 - 问题与处置：窗口标题和菜单字体刷新函数实现于 `win16-window/frame_font.c`，其声明原本错误地放在本基础头；已迁至同目录新增的 `frame_font.h`，各实际调用方直接包含该头。字体租约声明保留在 Win16，导出宏仍由顺序审计第 1 项统一。
 - 增量验证：双位宽公共基础库、窗口库、控件库链接测试通过；正式同快照构建、发布及复测通过，见[第 3 项记录](M0-T26-S1-ordered-03.md)；真实可见现代窗口不在本次覆盖。
+
+## 004 `win16-common/layout.c`：已过关
+
+- 职责：`win16_style_measure` 和 `win16_style_hit` 实现 Win3.1 特定边框、标题栏按钮尺寸/次序、客户区和命中优先级；Win16 普通外框及现代外框布局调用。
+- 处置：保留这些风格策略；通用工作区交集和系统缩放光标已由 `common/frame.h` 提供，不将 Win3.1 参数冒充其他年代的默认值。本次没有变更产品源码或二进制。
+- 验证：新增与源文件对应的原生单元测试覆盖非法尺寸、DPI、按钮、外框命中、最大化及无标题窗口；双位宽均通过。双位宽现代外框几何测试覆盖 96–288 DPI，正式 DLL 的自有窗口夹具覆盖六类窗口及最大化/还原。测试副本已清理；真实 UWP/WinUI 外观不在本次覆盖。
+- 关联修复：`common_link.c` 对借用的菜单字体改用对应租约释放接口，避免测试直接删除受管理字体。
+
+- 差异统计（不含本台账）：6 个文本文件新增 49 行、删除 4 行；未修改产品二进制，assets 与 O:\winnt 的八文件均与 HEAD 一致。

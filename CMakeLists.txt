@@ -1786,6 +1786,10 @@ if(BUILD_TESTING)
   target_link_options(core-geometry PRIVATE ${explicit_manifest_options})
   # Force every object into an independent consumer: no private ntw16s DLL
   # symbols may be needed to link the presentation library.
+  add_executable(core-win16-layout tests/lib-style/win16-common/layout.c)
+  target_include_directories(core-win16-layout PRIVATE src)
+  target_link_libraries(core-win16-layout PRIVATE win16-common)
+  add_test(NAME core/win16-layout COMMAND $<TARGET_FILE:core-win16-layout>)
   add_executable(core-win16-common-link tests/lib-style/win16-common/common_link.c)
   target_include_directories(core-win16-common-link PRIVATE src)
   target_compile_definitions(core-win16-common-link PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)

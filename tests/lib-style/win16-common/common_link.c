@@ -15,9 +15,9 @@ int main(void)
     if(!font)return 11;
     if(!style_classic_menu_arrange((POINT){0,0},100,&size,&flags,1,&item,&height) ||
        item.right<=item.left || height<=0){
-        DeleteObject(font);return 12;
+        win16_style_system_release(font);return 12;
     }
-    DeleteObject(font);
+    win16_style_system_release(font);
     puts("WIN16_COMMON_LINK_OK palette=1 font=1 menu_layout=1");
     return 0;
 }
