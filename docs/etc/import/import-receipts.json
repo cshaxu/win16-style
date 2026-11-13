@@ -5198,9 +5198,9 @@
       "path": "src/lib-style/win16-control/attachment_guard.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1c4fe0a7aa90ae478255b0b18e0073e3b8611c4f5ad66f65791fb4cb8ae9f368",
+      "sha256": "4983214cf94627725c873f13b1f6662808fbbacbe7ca617ecc41ec8574c95969",
       "disposition": "authored",
-      "review": "T21 S24 extract Win16 attachment state and role guards; T24 S1 quality refactor; T24 S1 consolidate ANSI data control witness checks; T26 S1 shared owned subclass removal",
+      "review": "T21 S24 extract Win16 attachment state and role guards; T24 S1 quality refactor; T24 S1 consolidate ANSI data control witness checks; T26 S1 shared owned subclass removal; T26 S1 native witness validation moved into shared style helper",
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
@@ -7938,6 +7938,15 @@
       "disposition": "authored",
       "review": "T26 S1 ordered audit: Win16 frame geometry and hit testing",
       "notice": "Project-authored native C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/control_native_witness.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3108f08e8bc458a426ad858dd28618686b2e14139c933e2444c8924a31f349ff",
+      "disposition": "authored",
+      "review": "T26 S1 shared native control procedure and module witness",
+      "notice": "Project-authored C interface; no imported artwork"
     }
   ]
 }

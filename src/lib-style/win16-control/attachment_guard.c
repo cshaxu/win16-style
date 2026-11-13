@@ -1,4 +1,5 @@
 #include "lib-style/common/control_vcl_identity.h"
+#include "lib-style/common/control_native_witness.h"
 #include "attachment_state.h"
 #include "lib-style/common/control_scope.h"
 #include "control_class.h"
@@ -448,15 +449,6 @@ BOOL win16_attachment_classify_initial(HWND w,DWORD original_style,BOOL ready,BO
     return TRUE;
 }
 
-static HMODULE native_control_owner(HWND w,WNDPROC proc,const void *address,const WCHAR *class_name)
-{
-    WNDCLASSEXW native={.cbSize=sizeof(native)};HMODULE caller=NULL;
-    if(!GetClassInfoExW(NULL,class_name,&native) || proc!=native.lpfnWndProc ||
-       !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                           (LPCWSTR)address,&caller))return NULL;
-    HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
-    return owner && caller==owner?owner:NULL;
-}
 HMODULE win16_attachment_observe_native(HWND w,UINT message,WNDPROC proc,const void *address,
     attachment *a,HWND paint_window,attachment *cool_owner,HWND cool_window,
     WNDPROC *cool_native,attachment *(*lookup)(HWND))
@@ -468,35 +460,35 @@ HMODULE win16_attachment_observe_native(HWND w,UINT message,WNDPROC proc,const v
        caller==cool_owner->cool_owner)*cool_native=proc;
     if(message==WM_PAINT && a && paint_window==w &&
        a->status_candidate && !a->detached && !a->status_attempted && lookup(w)==a){
-        owner=native_control_owner(w,proc,address,STATUSCLASSNAMEW);
+        owner=style_control_native_witness(w,proc,address,STATUSCLASSNAMEW,TRUE);
         if(owner)a->status_witness_owner=owner;
     }
     if(message==WM_PAINT && a && paint_window==w &&
        a->date_candidate && !a->detached && !a->date_attempted && lookup(w)==a){
-        owner=native_control_owner(w,proc,address,DATETIMEPICK_CLASSW);
+        owner=style_control_native_witness(w,proc,address,DATETIMEPICK_CLASSW,TRUE);
         if(owner)a->date_witness_owner=owner;
     }
     if(message==WM_PAINT && a && paint_window==w &&
        a->color_candidate && !a->detached && !a->color_attempted && lookup(w)==a){
-        owner=native_control_owner(w,proc,address,L"COMBOBOX");
+        owner=style_control_native_witness(w,proc,address,L"COMBOBOX",TRUE);
         if(owner)a->color_witness_owner=owner;
     }
     if(message==WM_PAINT && a && paint_window==w &&
        a->track_candidate && !a->detached && !a->track_attempted && lookup(w)==a){
-        owner=native_control_owner(w,proc,address,TRACKBAR_CLASSW);
+        owner=style_control_native_witness(w,proc,address,TRACKBAR_CLASSW,TRUE);
         if(owner)a->track_witness_owner=owner;
     }
     if(message==WM_PAINT && a && paint_window==w &&
        a->scroll_candidate && !a->detached &&
        !a->scroll_attempted && lookup(w)==a &&
        GetParent(w)==a->scroll_parent){
-        owner=native_control_owner(w,proc,address,L"SCROLLBAR");
+        owner=style_control_native_witness(w,proc,address,L"SCROLLBAR",TRUE);
         if(owner)a->scroll_witness=owner;
     }
     if(message==WM_PAINT && a && paint_window==w &&
        a->edit_candidate && !a->detached &&
        !a->edit_attempted && lookup(w)==a){
-        owner=native_control_owner(w,proc,address,a->link_candidate?WC_LINK:a->combo_candidate?L"COMBOBOX":L"EDIT");
+        owner=style_control_native_witness(w,proc,address,a->link_candidate?WC_LINK:a->combo_candidate?L"COMBOBOX":L"EDIT",TRUE);
         if(owner){WCHAR name[64];
             if(!a->combo_candidate || (GetClassNameW(w,name,ARRAYSIZE(name)) && lstrcmpW(name,L"TDBComboBox")))
                 a->edit_witness_owner=owner;
@@ -506,7 +498,7 @@ HMODULE win16_attachment_observe_native(HWND w,UINT message,WNDPROC proc,const v
        a->group_button_candidate && !a->detached &&
        !a->group_button_attempted && lookup(w)==a &&
        style_control_vcl_group_button_identity(w)){
-        owner=native_control_owner(w,proc,address,L"BUTTON");
+        owner=style_control_native_witness(w,proc,address,L"BUTTON",TRUE);
         if(owner)a->group_button_witness_owner=owner;
     }
     native.cbSize=sizeof(native);
@@ -521,7 +513,7 @@ HMODULE win16_attachment_observe_native(HWND w,UINT message,WNDPROC proc,const v
        a->tab_candidate && !a->detached &&
        !a->tab_attempted && lookup(w)==a &&
        GetParent(w)==a->tab_parent){
-        owner=native_control_owner(w,proc,address,WC_TABCONTROLW);
+        owner=style_control_native_witness(w,proc,address,WC_TABCONTROLW,TRUE);
         if(owner)a->tab_witness_owner=owner;
     }
     native.cbSize=sizeof(native);
@@ -727,14 +719,12 @@ BOOL win16_attachment_vcl_tab_valid(HWND w,attachment *a)
 
 static void db_ansi_witness(WNDPROC proc,HWND w,UINT message,const void *address,attachment *a,HWND observed,attachment *(*lookup)(HWND),BOOL candidate,const WCHAR *class_name,const char *native_class)
 {
-    WNDCLASSEXA native={.cbSize=sizeof(native)};HMODULE caller=NULL,owner;WCHAR name[64];
+    HMODULE owner;WCHAR name[64];
     if(message!=WM_PAINT || !a || observed!=w || !candidate ||
         a->detached || a->edit_attempted || lookup(w)!=a ||
-        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,class_name) ||
-        !GetClassInfoExA(NULL,native_class,&native) || proc!=native.lpfnWndProc ||
-        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller))return;
-    owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
-    if(owner && caller==owner)a->edit_witness_owner=owner;
+        !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,class_name))return;
+    owner=style_control_native_witness(w,proc,address,native_class,FALSE);
+    if(owner)a->edit_witness_owner=owner;
 }
 
 void win16_attachment_dbedit_ansi_witness(WNDPROC proc,HWND w,UINT message,const void *address,attachment *a,HWND observed,attachment *(*lookup)(HWND))
