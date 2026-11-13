@@ -14,4 +14,10 @@ static inline NMCUSTOMDRAW *style_control_custom_draw_message(HWND parent,HWND c
 LRESULT style_control_custom_draw_after(HWND window,const NMCUSTOMDRAW *draw,BOOL *active,BOOL internal,
     LRESULT result,const void *context,BOOL (*supported)(HWND),
     BOOL (*paint_part)(HWND,const NMCUSTOMDRAW *,const void *));
+
+/* Negotiate an item post-paint only when the application permits default
+ * drawing. The caller owns the scope and supplies identity and paint policy. */
+LRESULT style_control_custom_draw_post(HWND parent,UINT message,WPARAM wp,LPARAM lp,
+    void *owner,HWND window,BOOL *active,BOOL *painted,BOOL (*valid)(HWND,void *),
+    BOOL (*paint)(HWND,void *,const NMCUSTOMDRAW *));
 #endif

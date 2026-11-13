@@ -8,6 +8,7 @@
 #include "../lib-style/win16-control/combo_paint.h"
 #include "../lib-style/win16-control/native_combo_identity.h"
 #include "../lib-style/win16-control/cool_grip_identity.h"
+#include "lib-style/common/control_custom_draw.h"
 #include "../lib-style/win16-control/vcl_native_paint.h"
 #include "../lib-style/win16-control/text_policy.h"
 #include "../lib-style/win16-control/vcl_frame_policy.h"
@@ -376,11 +377,11 @@ static BOOL cool_grip(HWND w,attachment *a,const NMCUSTOMDRAW *n)
     return win16_control_cool_grip_identity(w,a,n,native,cool_identity_callback);
 }
 static BOOL cool_grip_callback(HWND w,void *owner,const NMCUSTOMDRAW *draw)
-{return cool_grip(w,(attachment *)owner,draw);}
+{return cool_grip(w,(attachment *)owner,draw) && win16_control_cool_grip(draw->hdc,&draw->rc);}
 static LRESULT CALLBACK cool_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     (void)id;attachment *a=(attachment *)data;cool_scope *s=cool_current;
-    return win16_control_cool_notify(parent,m,p,l,a,s && s->owner==a?s->window:NULL,
+    return style_control_custom_draw_post(parent,m,p,l,a,s && s->owner==a?s->window:NULL,
         s && s->owner==a?&s->ours:NULL,&a->cool_verified,cool_identity_callback,cool_grip_callback);
 }
 static void cool_unbind(attachment *a)

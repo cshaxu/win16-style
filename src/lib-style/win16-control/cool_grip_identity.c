@@ -1,5 +1,4 @@
 #include "cool_grip_identity.h"
-#include "special_paint.h"
 
 BOOL win16_control_cool_grip_identity(HWND w,void *owner,const NMCUSTOMDRAW *n,WNDPROC native,BOOL (*valid)(HWND,void *))
 {
@@ -24,17 +23,4 @@ BOOL win16_control_cool_grip_identity(HWND w,void *owner,const NMCUSTOMDRAW *n,W
     return valid(w,owner) && dpi && !IsRectEmpty(&r) && r.left==band.left && r.top==band.top && r.bottom==band.bottom &&
         border.left>0 && r.right<=band.left+border.left && r.right-r.left<=MulDiv(12,dpi,96) &&
         r.left>=client.left && r.top>=client.top && r.right<=client.right && r.bottom<=client.bottom && !IntersectRect(&overlap,&r,&child);
-}
-LRESULT win16_control_cool_notify(HWND parent,UINT m,WPARAM p,LPARAM l,void *owner,HWND window,BOOL *ours,BOOL *verified,BOOL (*valid)(HWND,void *),BOOL (*grip)(HWND,void *,const NMCUSTOMDRAW *))
-{
-    if(m!=WM_NOTIFY || !l || !ours || window!=((NMHDR*)l)->hwndFrom || ((NMHDR*)l)->code!=NM_CUSTOMDRAW || !valid(window,owner))return DefSubclassProc(parent,m,p,l);
-    NMCUSTOMDRAW *n=(NMCUSTOMDRAW*)l;
-    if(n->dwDrawStage==CDDS_PREPAINT){LRESULT base=DefSubclassProc(parent,m,p,l);*ours=base==CDRF_DODEFAULT && valid(window,owner);return *ours?CDRF_NOTIFYITEMDRAW:base;}
-    if(!*ours || !valid(window,owner))return DefSubclassProc(parent,m,p,l);
-    if(n->dwDrawStage==CDDS_ITEMPREPAINT)return CDRF_NOTIFYPOSTPAINT;
-    if(n->dwDrawStage==CDDS_ITEMPOSTPAINT){
-        if(grip(window,owner,n) && win16_control_cool_grip(n->hdc,&n->rc))*verified=TRUE;
-        return CDRF_DODEFAULT;
-    }
-    return DefSubclassProc(parent,m,p,l);
 }
