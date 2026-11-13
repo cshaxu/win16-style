@@ -4856,7 +4856,7 @@
       "path": "src/lib-style/win16-control/vcl_frame_policy.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7da0eb44524e9aecd849680c3d53e2ed21a0efeca38277550c40b0ea5a4a232b",
+      "sha256": "3178a5f867641cf689f3e5fd549ee4cd00df40cf50b94206d11c6f1490a30e43",
       "disposition": "authored",
       "review": "T21 S24 extract VCL group and panel frame policies",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -6215,7 +6215,7 @@
       "path": "src/lib-style/common/dc_geometry.h",
       "source": null,
       "source_blob": null,
-      "sha256": "53adb2be0b5c33caa661e9c35d4fdd31b0edf39b82c1ad4ee302281ceb525dc3",
+      "sha256": "008ea0f3f23b553a4156fb9aad3f57b50964b69cef0955b8e1a610ba82d5002d",
       "disposition": "authored",
       "review": "T24 S1 shared control DC viewport check; T26 S1 shared device-context geometry",
       "notice": "Project-authored C interface; no imported artwork"
@@ -7511,7 +7511,7 @@
       "path": "tests/lib-style/common/dc_geometry.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5c6b46e9abf4bc5dbd95fa42fada2c5da3b0daec99a818f655738e7c96e85919",
+      "sha256": "874ab18b1407b7bb2cd28281a0faf98e95e7422553b97f7b3aef9e3bd5c86ad4",
       "disposition": "authored",
       "review": "T26 S1 native device-context geometry verification",
       "notice": "Project-authored C; no imported artwork"
