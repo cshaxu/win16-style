@@ -1,6 +1,23 @@
 #include "control_vcl_identity.h"
+#include "control_class.h"
 #include "lib-win32/style/window_identity.h"
 #include <commctrl.h>
+
+BOOL style_control_vcl_mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner,BOOL (*host_attached)(HWND))
+{
+    DWORD pid=0,host_pid=0,client_pid=0;
+    return owner && parent && host && IsWindow(w) && IsWindow(parent) && IsWindow(host) &&
+        GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
+        GetWindowThreadProcessId(parent,&client_pid)==GetCurrentThreadId() && client_pid==pid &&
+        GetWindowThreadProcessId(host,&host_pid)==GetCurrentThreadId() && host_pid==pid &&
+        GetParent(w)==parent && GetParent(parent)==host && style_control_class_is(w,L"TForm") &&
+        style_control_class_is(parent,L"MDIClient") && style_control_class_is(host,L"TForm") &&
+        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==GetModuleHandleW(L"user32.dll") &&
+        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
+        (HMODULE)GetClassLongPtrW(host,GCLP_HMODULE)==owner && host_attached && host_attached(host) &&
+        (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_MDICHILD) &&
+        (GetWindowLongPtrW(w,GWL_STYLE)&WS_CAPTION)==WS_CAPTION;
+}
 
 /* Same-runtime VCL buttons witness the registered BUTTON procedure in paint. */
 BOOL style_control_vcl_group_button_identity(HWND w)

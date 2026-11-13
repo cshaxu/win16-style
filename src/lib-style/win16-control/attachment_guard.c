@@ -612,22 +612,6 @@ win16_attachment_dispatch win16_attachment_dispatch_kind(HWND w,attachment *a,UI
     return WIN16_ATTACHMENT_DISPATCH_NATIVE;
 }
 
-BOOL win16_attachment_mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner,attachment *(*lookup)(HWND))
-{
-    DWORD pid=0,host_pid=0,client_pid=0;
-    return owner && parent && host && IsWindow(w) && IsWindow(parent) && IsWindow(host) &&
-        GetWindowThreadProcessId(w,&pid)==GetCurrentThreadId() && pid==GetCurrentProcessId() &&
-        GetWindowThreadProcessId(parent,&client_pid)==GetCurrentThreadId() && client_pid==pid &&
-        GetWindowThreadProcessId(host,&host_pid)==GetCurrentThreadId() && host_pid==pid &&
-        GetParent(w)==parent && GetParent(parent)==host && style_control_class_is(w,L"TForm") &&
-        style_control_class_is(parent,L"MDIClient") && style_control_class_is(host,L"TForm") &&
-        (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==GetModuleHandleW(L"user32.dll") &&
-        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==owner &&
-        (HMODULE)GetClassLongPtrW(host,GCLP_HMODULE)==owner && lookup(host) &&
-        (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_MDICHILD) &&
-        (GetWindowLongPtrW(w,GWL_STYLE)&WS_CAPTION)==WS_CAPTION;
-}
-
 BOOL win16_attachment_combo_same_role(HWND w,attachment *a)
 {return style_control_vcl_plain_combo(w,a->combo_parent) && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==a->combo_original_type;}
 

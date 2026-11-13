@@ -57,7 +57,6 @@ typedef struct win16_attachment_guard_services {
 } win16_attachment_guard_services;
 HMODULE win16_attachment_observe_native(HWND,UINT,WNDPROC,const void *,attachment *,HWND,
     attachment *,HWND,WNDPROC *,attachment *(*)(HWND));
-BOOL win16_attachment_mdi_identity(HWND,HWND,HWND,HMODULE,attachment *(*)(HWND));
 BOOL win16_attachment_combo_same_role(HWND,attachment *);
 BOOL win16_attachment_vcl_combo_candidate(HWND,attachment *);
 BOOL win16_attachment_vcl_combo_valid(HWND,attachment *);

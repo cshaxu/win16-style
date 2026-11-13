@@ -1,10 +1,12 @@
 #include "lib-style/common/control_vcl_identity.h"
 #include <stdio.h>
 #define CHECK(x) do { if(!(x)){printf("VCL_IDENTITY_FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;} } while(0)
+static BOOL host_yes(HWND host){return host!=NULL;}
+static BOOL host_no(HWND host){(void)host;return FALSE;}
 int main(void)
 {
     HINSTANCE instance=GetModuleHandleW(NULL);
-    const WCHAR *names[]={L"TControlBar",L"TToolBar",L"TStringGrid",L"TButton",L"TDBNavigator",L"TValueListEditor",L"TInplaceEditList",L"TDBLookupComboBox",L"TBitBtn"};
+    const WCHAR *names[]={L"TControlBar",L"TToolBar",L"TStringGrid",L"TButton",L"TDBNavigator",L"TValueListEditor",L"TInplaceEditList",L"TDBLookupComboBox",L"TBitBtn",L"TForm"};
     WNDCLASSW cls={.hInstance=instance,.lpfnWndProc=DefWindowProcW};
     for(unsigned i=0;i<ARRAYSIZE(names);++i){cls.lpszClassName=names[i];CHECK(RegisterClassW(&cls));}
     HWND host=CreateWindowW(names[0],L"",WS_OVERLAPPED,0,0,100,100,NULL,NULL,instance,NULL);CHECK(host);
@@ -29,6 +31,19 @@ int main(void)
     CHECK(!style_control_vcl_grid_identity(grid,instance,editor));
     CHECK(!style_control_vcl_checklist_identity(button));
     CHECK(!style_control_vcl_lookup_popup_identity(host,lookup,host,instance));
+    HWND form=CreateWindowW(L"TForm",L"",WS_OVERLAPPEDWINDOW,0,0,100,100,NULL,NULL,instance,NULL);CHECK(form);
+    CLIENTCREATESTRUCT client_data={0};
+    HWND client=CreateWindowW(L"MDICLIENT",L"",WS_CHILD,0,0,80,80,form,NULL,instance,&client_data);CHECK(client);
+    HWND child=CreateWindowExW(WS_EX_MDICHILD,L"TForm",L"",WS_CHILD|WS_CAPTION,0,0,20,20,client,NULL,instance,NULL);CHECK(child);
+    CHECK(style_control_vcl_mdi_identity(child,client,form,instance,host_yes));
+    CHECK(!style_control_vcl_mdi_identity(child,client,form,instance,host_no));
+    CHECK(!style_control_vcl_mdi_identity(child,client,form,instance,NULL));
+    CHECK(!style_control_vcl_mdi_identity(child,client,host,instance,host_yes));
+    CHECK(!style_control_vcl_mdi_identity(child,client,form,GetModuleHandleW(L"user32.dll"),host_yes));
+    LONG_PTR child_ex=GetWindowLongPtrW(child,GWL_EXSTYLE);
+    SetWindowLongPtrW(child,GWL_EXSTYLE,child_ex & ~WS_EX_MDICHILD);
+    CHECK(!style_control_vcl_mdi_identity(child,client,form,instance,host_yes));
+    CHECK(DestroyWindow(form));
     SetWindowLongPtrW(toolbar,GWL_EXSTYLE,WS_EX_CLIENTEDGE);
     CHECK(!style_control_vcl_toolbar_identity(toolbar,instance,host));
     SetWindowLongPtrW(button,GWL_STYLE,WS_CHILD|BS_BITMAP);

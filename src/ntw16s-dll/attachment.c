@@ -214,8 +214,9 @@ static attachment *lookup(HWND w)
     DWORD_PTR value;
     return GetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,&value)?(attachment *)value:NULL;
 }
+static BOOL mdi_host_attached(HWND host){return lookup(host)!=NULL;}
 static BOOL mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner)
-{return win16_attachment_mdi_identity(w,parent,host,owner,lookup);}
+{return style_control_vcl_mdi_identity(w,parent,host,owner,mdi_host_attached);}
 static BOOL controlbar_identity(HWND w,attachment *a)
 {
     if(!a)return FALSE;

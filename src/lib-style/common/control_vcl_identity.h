@@ -12,4 +12,5 @@ BOOL style_control_vcl_lookup_popup_identity(HWND w,HWND source,HWND source_pare
 BOOL style_control_vcl_nav_identity(HWND w,HMODULE owner,HWND parent);
 BOOL style_control_vcl_bit_identity(HWND w,HMODULE owner);
 BOOL style_control_vcl_checklist_identity(HWND w);
+BOOL style_control_vcl_mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner,BOOL (*host_attached)(HWND));
 #endif
