@@ -30,7 +30,7 @@
 | 21 | `src/lib-style/win16-control/combo_text.c` | `a42411b0209b1b008311716bade4d572a1df95d633df6060d0fcdd72819d0451` | 已过关 |
 | 22 | `src/lib-style/win16-control/combo_text.h` | `dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0` | 已过关 |
 | 23 | `src/lib-style/win16-control/control_class.h` | `c9283ac35cd85c856c219c28145cce706b3406d7f99ed74c027599efbca52969` | 已过关 |
-| 24 | `src/lib-style/win16-control/control_dispatch.c` | `90df43ca6d849e54deb9986a3b45c778c46b0577bdf10283a931c2adb17d6506` | 待审 |
+| 24 | `src/lib-style/win16-control/control_dispatch.c` | `90df43ca6d849e54deb9986a3b45c778c46b0577bdf10283a931c2adb17d6506` | 已过关 |
 | 25 | `src/lib-style/win16-control/control_dispatch.h` | `299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8` | 待审 |
 | 26 | `src/lib-style/win16-control/control_glyphs.h` | `75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83` | 待审 |
 | 27 | `src/lib-style/win16-control/control_guard.c` | `caf72ecd2a933f48366021d7a62771f69f75f9480c930ea67d4b49f3965f09f1` | 待审 |
@@ -304,3 +304,9 @@
 - 新增无需屏幕绘制的原生身份测试，使用自建 VB6 运行时和隐藏窗口：双位宽覆盖普通及图形复选/单选、owner-draw、错误运行时、Frame 类型及 96 DPI 清单资格和 RTL 拒绝，均通过；VB5、目录/驱动器、图片框、144 DPI 和真实 VB 未由此测试覆盖。清单实际绘制和重入的不稳定结果依然开放。
 - 逐函数归类：清单与文件控件的固定 owner-draw 模式和 DPI、普通/图形选择控件的渲染资格、图片框及图形按钮的外框和 RTL 限制属于当前 Win16 绘制能力；Frame 的语义类型已共享。公共类名与运行时身份已由 `common/control_class.h` 提供，不重复复制。
 - 补充自建 VB5/VB6 隐藏窗口测试，双位宽覆盖目录、驱动器和图片框的资格、粗边框和 RTL 拒绝；连同基础身份测试，10 项全部通过。144 DPI、真实 VB 和其他风格仍未覆盖。清单实际绘制和重入不稳定作为独立未解决项继续开放，不能由身份测试代替。
+
+## 024 `win16-control/control_dispatch.c`：已过关
+
+- 由产品 `controls.c` 在字体与附着检查之后调用；负责 Win16 控件类型的优先次序、销毁转发、滑块父子状态维护以及向标签、表头、进度、滚动、文件、组合、列表、编辑和基础绘制分派。处理结果与消息参数回传由调用方后续字体生命周期使用。
+- 公共原生控件身份、滑块运行时身份已由 `common/control_class.h`、`common/control_protocol.h` 提供；其他分支直接依赖 Win16 `control_style`、专用绘制及解绑策略。未发现不引入空包装即可独立迁移的额外通用实现；未来另一风格具有相同分派需求时须以其实际规则验证，不能假定优先级相同。
+- 正式包与自建窗口的 96 DPI 标签、v5/v6 滑块双位宽通过；表头 v6 双位宽及 v5 x64 通过，v5 x86 首次在特殊格式原生像素哈希相等断言失败、重试通过，仍记为不稳定。进度、链接及其他分派分支本轮未单独运行；清单重入和真实第三方应用仍未验证。未创建或切换隔离桌面。本文件未修改。
