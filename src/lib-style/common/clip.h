@@ -2,6 +2,24 @@
 #define STYLE_COMMON_CLIP_H
 #include <windows.h>
 
+/* Snapshot owns its region until disposed; kind -1 means capture failed,
+ * 0 means the DC has no application clip, 1 means region is valid. */
+typedef struct style_clip_snapshot { HRGN region; int kind; } style_clip_snapshot;
+static inline void style_clip_snapshot_capture(style_clip_snapshot *snapshot,HDC dc)
+{
+    snapshot->region=CreateRectRgn(0,0,0,0);snapshot->kind=-1;
+    if(snapshot->region)snapshot->kind=GetClipRgn(dc,snapshot->region);
+}
+static inline BOOL style_clip_snapshot_apply(const style_clip_snapshot *snapshot,HDC dc)
+{
+    return snapshot->kind>=0 && SelectClipRgn(dc,snapshot->kind?snapshot->region:NULL)!=ERROR;
+}
+static inline void style_clip_snapshot_dispose(style_clip_snapshot *snapshot)
+{
+    if(snapshot->region){DWORD error=GetLastError();DeleteObject(snapshot->region);SetLastError(error);}
+    snapshot->region=NULL;snapshot->kind=-1;
+}
+
 /* Points are in device coordinates. Preserve the caller's DC mapping. */
 static inline BOOL style_clip_covers(HDC dc,const POINT points[2])
 {

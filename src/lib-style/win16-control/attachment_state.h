@@ -4,6 +4,7 @@
 #include <commctrl.h>
 #include "status_font.h"
 #include "../common/control_protocol.h"
+#include "../common/clip.h"
 #include "vb_text.h"
 #include "vcl_identity.h"
 typedef struct attachment {
@@ -104,8 +105,8 @@ typedef struct win16_attachment_native_services {
     void (*color_button)(HWND,attachment *,HDC,const RECT *);
     void (*date_button)(HWND,attachment *,HDC,const RECT *);
 } win16_attachment_native_services;
-void win16_attachment_native_prepare(HWND,UINT,WPARAM,attachment *,BOOL,RECT *,BOOL *,HRGN *,int *);
-void win16_attachment_post_native(HWND,UINT,WPARAM,attachment *,HRGN,int,BOOL,const RECT *,const win16_attachment_native_services *);
+void win16_attachment_native_prepare(HWND,UINT,WPARAM,attachment *,BOOL,RECT *,BOOL *,style_clip_snapshot *);
+void win16_attachment_post_native(HWND,UINT,WPARAM,attachment *,style_clip_snapshot *,BOOL,const RECT *,const win16_attachment_native_services *);
 typedef BOOL (*win16_attachment_special_install)(HWND,const win16_style_palette *,const void *,const BOOL *);
 typedef struct win16_attachment_install_services {
     win16_attachment_special_install legacy_progress,toolbar,updown,trackbar,progress,tree,picture,grid,frame_scrollbars;

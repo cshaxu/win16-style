@@ -467,8 +467,8 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
 {
     attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status||a->spin,color=a->color_candidate||a->date_candidate;(void)id;
     win16_attachment_retire_frames(w,a);
-    RECT color_dirty;BOOL color_update;HRGN print_clip;int print_clip_kind;
-    win16_attachment_native_prepare(w,m,p,a,color,&color_dirty,&color_update,&print_clip,&print_clip_kind);
+    RECT color_dirty;BOOL color_update;style_clip_snapshot print_clip;
+    win16_attachment_native_prepare(w,m,p,a,color,&color_dirty,&color_update,&print_clip);
     ++a->calls;
     const win16_attachment_guard_services guards={lookup,mdi_identity,cool_identity,Ntw16sWindowRemove};
     win16_attachment_guard_cool(w,m,a,&guards);
@@ -497,10 +497,10 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     BOOL box_witnessed=FALSE;
     win16_attachment_reset_witness(a,m);
     if(status || color)SetLastError(status_error);
-    switch(win16_attachment_dispatch_kind(w,a,m,p,l,status_current==&scope,print_clip!=NULL,spin_message,static_paint!=NULL)){
+    switch(win16_attachment_dispatch_kind(w,a,m,p,l,status_current==&scope,print_clip.region!=NULL,spin_message,static_paint!=NULL)){
     case WIN16_ATTACHMENT_DISPATCH_COOL:result=cool_dispatch(a,w,m,p,l,&paint,prior,spin_prior);break;
     case WIN16_ATTACHMENT_DISPATCH_STATUS:result=status_print_dispatch(a,w,m,p,l,&paint,prior,spin_prior);break;
-    case WIN16_ATTACHMENT_DISPATCH_COLOR:result=color_print_dispatch(a,w,m,p,l,print_clip,&paint,prior,spin_prior);break;
+    case WIN16_ATTACHMENT_DISPATCH_COLOR:result=color_print_dispatch(a,w,m,p,l,print_clip.region,&paint,prior,spin_prior);break;
     case WIN16_ATTACHMENT_DISPATCH_SPIN:result=modern_spin_dispatch(a,w,m,p,l,&spin_scope,spin_prior,prior,&paint);break;
     case WIN16_ATTACHMENT_DISPATCH_BOX:result=box_dispatch(a,w,m,p,l,&paint,prior,spin_prior,&box_witnessed);break;
     case WIN16_ATTACHMENT_DISPATCH_LOOKUP:result=lookup_popup_dispatch(a,w,m,p,l,&paint,prior,spin_prior);break;
@@ -521,7 +521,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     win16_attachment_post_controls(w,m,a,&post);
     win16_attachment_post_verified(w,m,a,&verified);
     const win16_attachment_native_services native={color_identity,status_identity,date_identity,color_button,date_button};
-    win16_attachment_post_native(w,m,p,a,print_clip,print_clip_kind,color_update,&color_dirty,&native);
+    win16_attachment_post_native(w,m,p,a,&print_clip,color_update,&color_dirty,&native);
     release(a);if(status || color)SetLastError(status_error);return result;
 }
 static void bit_draw_end(void *data)

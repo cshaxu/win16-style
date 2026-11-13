@@ -3,7 +3,7 @@
 | Source family | Native test adapter |
 | --- | --- |
 | `present` | `present.c`; `present_fault.c`; `present_print.c`; `tests/ntw16s-dll/win16_style_control_present.c` |
-| `clip` | `clip.c` (full and nonrectangular clipping, DC mapping restoration); Win16 spin paint consumer |
+| `clip` | `clip.c` (full and nonrectangular clipping, DC mapping restoration, print clip snapshot and failure); Win16 spin paint and color/date print consumers |
 | `dc_geometry` | `dc_geometry.c` (viewport, mapping and RTL); Win16 control painting consumers |
 | `text_metrics` | `text_metrics.c` (alphabet average and invalid DC); Win16 menu and list consumers |
 | `menu_metrics` | `menu_metrics.c` (native font margin and GDI font restoration); Win16 owner-draw menu consumer |

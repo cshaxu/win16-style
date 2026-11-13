@@ -18,7 +18,19 @@ int main(void)
     CHECK(!style_clip_covers(dc,points));
     CHECK(GetViewportOrgEx(dc,&origin) && origin.x==3 && origin.y==4);
     CHECK(GetWindowOrgEx(dc,&origin) && origin.x==1 && origin.y==2);
+    style_clip_snapshot snapshot;
+    style_clip_snapshot_capture(&snapshot,dc);CHECK(snapshot.region && snapshot.kind==1);
+    CHECK(SelectClipRgn(dc,NULL)!=ERROR && style_clip_snapshot_apply(&snapshot,dc));
+    CHECK(!style_clip_covers(dc,points));
+    SetLastError(1234);style_clip_snapshot_dispose(&snapshot);
+    CHECK(!snapshot.region && snapshot.kind==-1 && GetLastError()==1234);
+    CHECK(SelectClipRgn(dc,NULL)!=ERROR);
+    style_clip_snapshot_capture(&snapshot,dc);CHECK(snapshot.region && snapshot.kind==0);
+    CHECK(SelectClipRgn(dc,hole)!=ERROR && style_clip_snapshot_apply(&snapshot,dc));
+    CHECK(style_clip_covers(dc,points));style_clip_snapshot_dispose(&snapshot);
+    style_clip_snapshot_capture(&snapshot,NULL);CHECK(snapshot.region && snapshot.kind==-1);
+    CHECK(!style_clip_snapshot_apply(&snapshot,dc));style_clip_snapshot_dispose(&snapshot);
     CHECK(SelectClipRgn(dc,NULL)!=ERROR && DeleteObject(hole) && DeleteObject(clip));
     CHECK(SelectObject(dc,old)==bitmap && DeleteObject(bitmap) && DeleteDC(dc));
-    puts("CLIP_OK full=1 partial=1 hole=1 mapping_restored=1");return 0;
+    puts("CLIP_OK full=1 partial=1 hole=1 mapping_restored=1 snapshot=1");return 0;
 }
