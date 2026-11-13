@@ -2392,8 +2392,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "review": "T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T21 S22 library migration and palette include",
-      "sha256": "0547e30abe83767efce450015b89d64fd15d2b6a2647a19a23a6075b95069cbf"
+      "review": "T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T21 S22 library migration and palette include; T26 ordered audit shared unmirrored DC origin check",
+      "sha256": "68e06057e1b4632e7660dacdc0fdeb578870a5faf263a4b7a3b806debeb5a5c4"
     },
     {
       "path": "src/lib-style/win16-control/trackbar_paint.h",
@@ -3931,8 +3931,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "e9fa477018441ec1b29a2f25e83d523e88d564e7dc670e05196984661bdc552a",
-      "review": "T21 S22 extraction of existing combo presentation; T21 S22 native embedded combo button painter extracted; T26 S1 shared solid frame painter; T26 S1 direct shared painter include; T26 S1 shared window text snapshot"
+      "sha256": "d7b9ba1aac4a0b3f22086f0e8e323e4f8ed960fa2d04768a29510724cbe9062a",
+      "review": "T21 S22 extraction of existing combo presentation; T21 S22 native embedded combo button painter extracted; T26 S1 shared solid frame painter; T26 S1 direct shared painter include; T26 S1 shared window text snapshot; T26 ordered audit shared unmirrored DC origin check"
     },
     {
       "path": "src/lib-style/win16-control/combo_paint.h",
@@ -6215,9 +6215,9 @@
       "path": "src/lib-style/common/dc_geometry.h",
       "source": null,
       "source_blob": null,
-      "sha256": "008ea0f3f23b553a4156fb9aad3f57b50964b69cef0955b8e1a610ba82d5002d",
+      "sha256": "28c044707a7e5f8ad2407084cba3403866de90322699dddc170f46293c47a921",
       "disposition": "authored",
-      "review": "T24 S1 shared control DC viewport check; T26 S1 shared device-context geometry",
+      "review": "T24 S1 shared control DC viewport check; T26 S1 shared device-context geometry; T26 ordered audit shared unmirrored DC origin check",
       "notice": "Project-authored C interface; no imported artwork"
     },
     {
@@ -7511,9 +7511,9 @@
       "path": "tests/lib-style/common/dc_geometry.c",
       "source": null,
       "source_blob": null,
-      "sha256": "874ab18b1407b7bb2cd28281a0faf98e95e7422553b97f7b3aef9e3bd5c86ad4",
+      "sha256": "5947464ea7deae70486a8a1c96257a7f1fa8c564cdab5e01bf25111b6699a88c",
       "disposition": "authored",
-      "review": "T26 S1 native device-context geometry verification",
+      "review": "T26 S1 native device-context geometry verification; T26 ordered audit shared unmirrored DC origin check",
       "notice": "Project-authored C; no imported artwork"
     },
     {

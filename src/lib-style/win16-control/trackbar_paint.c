@@ -1,5 +1,6 @@
 #include "trackbar_paint.h"
 #include "../common/control_protocol.h"
+#include "../common/dc_geometry.h"
 
 BOOL win16_style_trackbar_supported(HWND w)
 {
@@ -13,11 +14,9 @@ BOOL win16_style_trackbar_supported(HWND w)
 }
 BOOL win16_style_trackbar_runtime_border(HWND w,const NMCUSTOMDRAW *draw,const win16_style_palette *palette)
 {
-    RECT client,r=draw->rc;POINT window_origin,viewport_origin;
+    RECT client,r=draw->rc;
     if(!style_control_protocol_runtime_trackbar(w) || !win16_style_trackbar_supported(w) || !draw->hdc ||
-       GetMapMode(draw->hdc)!=MM_TEXT || (GetLayout(draw->hdc)&LAYOUT_RTL) ||
-       !GetWindowOrgEx(draw->hdc,&window_origin) || window_origin.x || window_origin.y ||
-       !GetViewportOrgEx(draw->hdc,&viewport_origin) || viewport_origin.x || viewport_origin.y ||
+       !style_dc_unmirrored_origin_pixels(draw->hdc) ||
        (draw->dwItemSpec!=TBCD_CHANNEL && draw->dwItemSpec!=TBCD_THUMB) || !GetClientRect(w,&client) ||
        r.left<client.left || r.top<client.top || r.right>client.right || r.bottom>client.bottom ||
        r.right<=r.left || r.bottom<=r.top)return FALSE;

@@ -2,6 +2,7 @@
 #include "basic_paint.h"
 #include "../common/paint_frame.h"
 #include "../common/control_protocol.h"
+#include "../common/dc_geometry.h"
 #include "../common/window_text.h"
 #include <stdlib.h>
 
@@ -56,10 +57,8 @@ void win16_control_draw_combo(HWND w,const BOOL *detached,const BOOL *common_dia
 
 void win16_control_native_combo_button(HWND w,const BOOL *detached,HDC dc,const RECT *dirty,RECT r,BOOL pressed)
 {
-    RECT q;POINT origin;win16_style_palette palette;
-    if(!dc || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) ||
-       !GetWindowOrgEx(dc,&origin) || origin.x || origin.y ||
-       !GetViewportOrgEx(dc,&origin) || origin.x || origin.y)return;
+    RECT q;win16_style_palette palette;
+    if(!dc || !style_dc_unmirrored_origin_pixels(dc))return;
     int dpi=(int)GetDpiForWindow(w);if(dpi<=0 || dpi>768)return;
     int u=max(1,MulDiv(1,dpi,96)),gw=MulDiv(7,dpi,96),gh=MulDiv(9,dpi,96);
     if(r.right-r.left<gw+2*u || r.bottom-r.top<gh+2*u || *detached || !IsWindow(w))return;

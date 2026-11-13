@@ -8,6 +8,15 @@ static inline BOOL style_dc_pixel_viewport(HDC dc)
         GetViewportOrgEx(dc,&origin) && !origin.x && !origin.y;
 }
 
+/* Pixel coordinates with both origins at zero; non-RTL layout flags are allowed. */
+static inline BOOL style_dc_unmirrored_origin_pixels(HDC dc)
+{
+    POINT origin;
+    return GetMapMode(dc)==MM_TEXT && !(GetLayout(dc)&LAYOUT_RTL) &&
+        GetWindowOrgEx(dc,&origin) && !origin.x && !origin.y &&
+        GetViewportOrgEx(dc,&origin) && !origin.x && !origin.y;
+}
+
 /* Exact, unmirrored pixel coordinates, including both DC origins. */
 static inline BOOL style_dc_origin_pixels(HDC dc)
 {

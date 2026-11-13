@@ -25,7 +25,7 @@
 | 16 | `src/lib-style/win16-control/choice_view.c` | `c369bc99d500f668a91c8f354503b707e581c4938b709c9469f022e8ed709d42` | 已过关 |
 | 17 | `src/lib-style/win16-control/choice_view.h` | `02a9c00c937c411be9e66158a56bbbfdc7dac5f82e07e4591cb24761947bc92d` | 已过关 |
 | 18 | `src/lib-style/win16-control/combo_glyph.h` | `75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34` | 已过关 |
-| 19 | `src/lib-style/win16-control/combo_paint.c` | `e9fa477018441ec1b29a2f25e83d523e88d564e7dc670e05196984661bdc552a` | 待审 |
+| 19 | `src/lib-style/win16-control/combo_paint.c` | `d7b9ba1aac4a0b3f22086f0e8e323e4f8ed960fa2d04768a29510724cbe9062a` | 已过关 |
 | 20 | `src/lib-style/win16-control/combo_paint.h` | `9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca` | 待审 |
 | 21 | `src/lib-style/win16-control/combo_text.c` | `4d95a3cc8238c3e3a194dc64f1ee1d3c56b8e296e29469c6bd0229e85bb5e63c` | 待审 |
 | 22 | `src/lib-style/win16-control/combo_text.h` | `dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0` | 待审 |
@@ -104,7 +104,7 @@
 | 95 | `src/lib-style/win16-control/theme_kind.h` | `dd9182da02336ffc68fb36c6c6ded493a57b07719211df12c786dbd2359e87b0` | 待审 |
 | 96 | `src/lib-style/win16-control/toolbar_paint.c` | `47bf23e4e8a86b5d7e664e3e57da74d5f4df97503ffeef1583c1bf9610814fa1` | 待审 |
 | 97 | `src/lib-style/win16-control/toolbar_paint.h` | `20a149697c1e2336fdba81cc450fe1b01665313ded58b70e1fa25c7f3bb46c62` | 待审 |
-| 98 | `src/lib-style/win16-control/trackbar_paint.c` | `0547e30abe83767efce450015b89d64fd15d2b6a2647a19a23a6075b95069cbf` | 待审 |
+| 98 | `src/lib-style/win16-control/trackbar_paint.c` | `68e06057e1b4632e7660dacdc0fdeb578870a5faf263a4b7a3b806debeb5a5c4` | 待审 |
 | 99 | `src/lib-style/win16-control/trackbar_paint.h` | `999a58448d0a17ec7afc6283555a7ab10e2cc998c7cdca89b75860cbf0f662a2` | 待审 |
 | 100 | `src/lib-style/win16-control/updown_adapter.c` | `01dd0012baeb819e1cf4f843136f579e05ea81d9325430fce2ca5b47a233fd21` | 待审 |
 | 101 | `src/lib-style/win16-control/updown_adapter.h` | `2cc302bd4b319c046e70a1fda89c433c40fe8af2feb038a65ee7423d1052a232` | 待审 |
@@ -271,3 +271,9 @@
 
 - 职责与调用：Windows 3.1 VGA.DRV 的 7×9 组合框箭头资源；`basic_paint.c` 提供 Win16 箭头，组合框与 VCL 按钮等路径使用，集成测试也直接引用原图案。
 - 处置与验证：该数据是特定年代的受保留原图形资源，不能当作所有主题默认图案；按来源策略原位逐字节保留。可跨风格复用的缩放网格已位于 `common/pixel_grid.h`。资源身份核验通过，双位宽像素网格及正式包组合框回归见[第 12 项记录](M0-T26-S1-ordered-12-grid.md)；其他风格与全部 DPI 未验证。本项无源码修改。
+
+## 019 `win16-control/combo_paint.c`：已过关
+
+- 职责：组合框的 Win16 颜色、箭头、字体、焦点及原生编辑框裁剪策略保留风格侧；文本快照、实色边框及箭头像素绘制此前已共用。
+- 本次把组合框和滑块重复的非镜像像素坐标及两个零原点检查迁入 `common/dc_geometry.h`；保持原有检查顺序和非 RTL 布局语义。滑块仅改接线，仍按原序待完整审计。
+- 双位宽干净构建，先发布再运行 DC 边界、组合框及滑块自建夹具均通过；资源和公共依赖检查通过。真实第三方应用、其他风格和全部 DPI 未验证。详见[交付记录](M0-T26-S1-ordered-19-dc.md)。
