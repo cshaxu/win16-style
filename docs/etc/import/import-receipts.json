@@ -1013,7 +1013,7 @@
       "path": "src/lib-style/win16-window/menu_scope.c",
       "source": "src/ntw16s-dll/menu_scope.c",
       "source_blob": "b27da79667d1dce3f17336721ef7c6be06fc18f7",
-      "sha256": "98f54cf2f90b5d07e5723125be0fe5a72fdf740951da4e2000c187a3480883d8",
+      "sha256": "d10f1420bc829c4ec769cfcc5b627908450f3a76c9e79d615858a8b6a66a58b9",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S3 scoped USER SysShadow suppression and actual popup border/shadow regression; T21 S22 unchanged same-thread popup scope migration; T23 S1 native system-menu hover buffering and unchanged-selection regression; T26 S1 shared popup observation messages; T26 S1 shared popup presentation buffer; T26 S1 shared popup print coordinate conversion",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1598,7 +1598,7 @@
       "path": "tests/ntw16s-dll/win16_style_control_present.c",
       "source": "tests/app/win16_style_control_present.c",
       "source_blob": "a44a8cf711985ae62d847021b037b8bb308f8cc7",
-      "sha256": "c6c39baf3e0c3ef456529f65428938b4ff6f2b34ca07380d7a1715b46f8e748a",
+      "sha256": "f9212fa66ee5f3dbf2df7ea3e5328dd89c2c854c7b0cca0fa5ba8156c46942d0",
       "disposition": "adapt",
       "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 S3 fixed64 full-workload USER cache warmup; strict assertions unchanged; T21 S22 retain GDI instrumentation after painter extraction; T21 S22 standard button and static presentation view extraction; T21 S22 sizebox, progress border and calendar arrow presentation extraction; T21 S22 buffered control presentation extraction",
       "notice": "Project-authored fixed-source fixture; original comments retained"
@@ -3949,7 +3949,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "1db57e66c45d51c5631d815f04443258e95d5bba79a5eb22d197d6b847f3817b",
+      "sha256": "80de0319e496bf84657276c9d8efa12e34921d84d77846ba999fa5a354cb9108",
       "review": "T21 S22 extraction of existing scrollbar presentation"
     },
     {
@@ -3985,7 +3985,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "478d789e989c080f3f71e23cf2315e28995d056fc4f61ff2d9bbdb427f674726",
+      "sha256": "55cc044e31a20351a5cf53d5c110c85f7810c82d79dbc0de82de233c22cdaf21",
       "review": "T21 S22 extraction of existing frame presentation with caller-owned state; T21 S22 buffered frame/menu/button presentation extraction; T24 S1 unify buffered frame, menu and button paint; T26 S1 shared nonclient and control presentation buffer"
     },
     {
@@ -4075,7 +4075,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "c756074acaa6642e7cfee539ddb9ec797efd57382eaa3f53af4bca8f47a0ebf6",
+      "sha256": "96e0e0d8b3a58715646657a59e5d50f76a54aa635660e168ac8cc417fb2be760",
       "review": "T21 S22 extraction of existing buffered control presentation; T26 S1 shared nonclient and control presentation buffer"
     },
     {
@@ -4084,7 +4084,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "f13ce87a4231fe3618a5d62210045abbe057d6b5a4ce026639cfb96e1aa67ff5",
+      "sha256": "eec652ebfa2e552d530d3dcf098f1461fed4e91a2b521bb33333ef92fe4b1397",
       "review": "T21 S22 extraction of existing buffered control presentation; T26 S1 shared nonclient and control presentation buffer"
     },
     {
@@ -6701,7 +6701,7 @@
       "path": "src/lib-style/win2k-window/system_menu.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3ae03736bd08cbaa74c95a4d702a59eac35904101a9638fb00c5c56a620c00f8",
+      "sha256": "0640ec43eb39db70eb17741f4e16c794c7178e2e1e92195b44da7f74fdee5ba3",
       "disposition": "authored",
       "review": "T25 S4 Win2000 system menu presentation candidate; T26 S1 shared popup observation messages; T26 S1 shared popup print coordinate conversion",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6908,7 +6908,7 @@
       "path": "tests/lib-style/common/present.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fe1518ca8a233c9cf1ed402d16455556a9338afcaea46672706d83af3970ed6a",
+      "sha256": "328867e92c0c3d7cb2ffa9f5e984533e455c1ed3a1128aabdd1106397cb747bf",
       "disposition": "authored",
       "review": "T26 S1 independent style presentation integration",
       "notice": "Project-authored C; no imported artwork"

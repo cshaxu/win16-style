@@ -82,7 +82,7 @@ void win16_control_paint_frame(HWND w,const win16_control_frame_view *view,HDC t
 static void paint_buffered(HWND w,const win16_control_frame_view *view,HDC dc,const RECT *bounds)
 {
     style_present_buffer buffer;BOOL ready=FALSE;
-    if(style_present_buffer_begin(&buffer,dc,bounds)){
+    if(style_present_buffer_begin(&buffer,dc,bounds,TRUE)){
         win16_control_paint_frame(w,view,buffer.memory);
         ready=style_present_buffer_end(&buffer,!*view->detached);
     }else (void)style_present_buffer_end(&buffer,FALSE);

@@ -1,6 +1,7 @@
 #include "scroll_paint.h"
 #include "basic_paint.h"
 #include "scroll_assets.h"
+#include "lib-style/common/present.h"
 #include <oleacc.h>
 
 static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG object,BOOL vertical)
@@ -60,27 +61,21 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
 
 void win16_control_draw_scroll(HWND w,const win16_control_scroll_view *v,HDC dc,LONG object,BOOL vertical)
 {
-    RECT r;SCROLLBARINFO bar={.cbSize=sizeof(bar)};HDC memory;HBITMAP bitmap,old;POINT brush,device;BOOL painted;
+    RECT r;SCROLLBARINFO bar={.cbSize=sizeof(bar)};style_present_buffer buffer;POINT brush,device;BOOL painted;
     if(!dc || !GetScrollBarInfo(w,object,&bar) || (bar.rgstate[0]&STATE_SYSTEM_INVISIBLE))return;
     if(object==OBJID_CLIENT)GetClientRect(w,&r);
     else {RECT window;GetWindowRect(w,&window);r=bar.rcScrollBar;OffsetRect(&r,-window.left,-window.top);}
     if(IsRectEmpty(&r))return;
-    memory=CreateCompatibleDC(dc);bitmap=CreateCompatibleBitmap(dc,r.right-r.left,r.bottom-r.top);
-    if(!memory || !bitmap){if(memory)DeleteDC(memory);if(bitmap)DeleteObject(bitmap);
-        paint_pixels(w,v,dc,object,vertical);return;}
-    old=(HBITMAP)SelectObject(memory,bitmap);
-    if(!old || (HGDIOBJ)old==HGDI_ERROR){DeleteObject(bitmap);DeleteDC(memory);
+    if(!style_present_buffer_begin(&buffer,dc,&r,FALSE)){
+        (void)style_present_buffer_end(&buffer,FALSE);
         paint_pixels(w,v,dc,object,vertical);return;}
     /* Preserve the checker phase while composing only this bar. One BitBlt
      * prevents the background erase and subsequent thumb draw being visible
      * as separate states. No persistent buffer or redraw timer is needed. */
     device.x=r.left;device.y=r.top;LPtoDP(dc,&device,1);GetBrushOrgEx(dc,&brush);
-    SetBrushOrgEx(memory,brush.x-device.x,brush.y-device.y,NULL);
-    SetViewportOrgEx(memory,-r.left,-r.top,NULL);
-    painted=paint_pixels(w,v,memory,object,vertical);
-    SetViewportOrgEx(memory,0,0,NULL);
+    SetBrushOrgEx(buffer.memory,brush.x-device.x,brush.y-device.y,NULL);
+    painted=paint_pixels(w,v,buffer.memory,object,vertical);
     /* A failed painter has no complete image to publish. Keep the previous
      * target pixels rather than copying an uninitialized temporary bitmap. */
-    if(painted)BitBlt(dc,r.left,r.top,r.right-r.left,r.bottom-r.top,memory,0,0,SRCCOPY);
-    SelectObject(memory,old);DeleteObject(bitmap);DeleteDC(memory);
+    (void)style_present_buffer_end(&buffer,painted);
 }

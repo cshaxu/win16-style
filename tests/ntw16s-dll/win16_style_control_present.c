@@ -94,9 +94,12 @@ int main(int argc,char **argv)
     const WCHAR *classes[]={L"BUTTON",L"BUTTON",L"BUTTON",L"STATIC",L"LISTBOX",L"COMBOBOX"};
     DWORD types[]={BS_PUSHBUTTON,BS_AUTOCHECKBOX,BS_GROUPBOX,SS_LEFT,LBS_NOTIFY,CBS_DROPDOWNLIST};
     WNDCLASSW wc={0};WCHAR name[80];HDESK desktop;HWND root,w;unsigned i,n,warm;DWORD before,after;
-    if(argc!=1){if(argc!=2 || strcmp(argv[1],"--leak-negative"))return 2;inject_leak=TRUE;}
-    swprintf_s(name,80,L"StyleControlPresent-%lu",GetCurrentProcessId());
-    desktop=CreateDesktopW(name,NULL,NULL,0,GENERIC_ALL,NULL);CHECK(desktop && SetThreadDesktop(desktop));
+    BOOL scroll_only=argc==2 && !strcmp(argv[1],"--scroll-only");
+    if(argc!=1 && !scroll_only){if(argc!=2 || strcmp(argv[1],"--leak-negative"))return 2;inject_leak=TRUE;}
+    if(!scroll_only){
+        swprintf_s(name,80,L"StyleControlPresent-%lu",GetCurrentProcessId());
+        desktop=CreateDesktopW(name,NULL,NULL,0,GENERIC_ALL,NULL);CHECK(desktop && SetThreadDesktop(desktop));
+    }
     wc.lpfnWndProc=witness;wc.lpszClassName=L"StyleControlPresent";wc.hInstance=GetModuleHandleW(NULL);
     CHECK(RegisterClassW(&wc));root=CreateWindowW(wc.lpszClassName,L"Presentation",WS_OVERLAPPEDWINDOW|WS_VISIBLE,
         0,0,500,300,NULL,NULL,wc.hInstance,NULL);CHECK(root);ShowWindow(root,SW_SHOWNORMAL);UpdateWindow(root);
@@ -146,6 +149,30 @@ int main(int argc,char **argv)
      CHECK(scroll_copies==1 && !owned_live && GetPixel(target,0,0)!=RGB(17,39,61));
      SelectObject(target,old);CHECK(DeleteObject(bitmap) && DeleteDC(target) && DestroyWindow(w));
      printf("SCROLL FAILURE SaveDC=1 pattern=1 unchangedPixels=4080 normalPresent=1 objects=0\n");}
+    {HDC screen=GetDC(root),direct=CreateCompatibleDC(screen),buffered=CreateCompatibleDC(screen);
+     HBITMAP first=CreateCompatibleBitmap(screen,200,160),second=CreateCompatibleBitmap(screen,200,160);
+     CHECK(screen && direct && buffered && first && second);
+     HGDIOBJ old_first=SelectObject(direct,first),old_second=SelectObject(buffered,second);
+     CHECK(old_first && old_second && ReleaseDC(root,screen));
+     w=CreateWindowW(L"LISTBOX",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,160,120,root,NULL,wc.hInstance,NULL);CHECK(w);
+     SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=0,.nMax=100,.nPage=10,.nPos=25};
+     SetScrollInfo(w,SB_VERT,&range,TRUE);control_style state={0};win16_style_default_palette(&state.palette);
+     const win16_control_scroll_view view={&state.palette,&state.scroll,&state.frame_scrollbars,
+        &state.edit_scrollbars,&state.list_scrollbar,&state.embedded_object,scroll_layout,
+        embedded_scroll_layout,edit_thumb_messages,list_axis_owned};
+     SCROLLBARINFO info={.cbSize=sizeof(info)};RECT outer;
+     CHECK(GetScrollBarInfo(w,OBJID_VSCROLL,&info) && !(info.rgstate[0]&STATE_SYSTEM_INVISIBLE) && GetWindowRect(w,&outer));
+     RECT bar=info.rcScrollBar;OffsetRect(&bar,-outer.left,-outer.top);
+     CHECK(bar.left>0 && bar.right<=200 && bar.bottom<=160);
+     SetBrushOrgEx(direct,3,5,NULL);SetBrushOrgEx(buffered,3,5,NULL);
+     CHECK(paint_pixels(w,&view,direct,OBJID_VSCROLL,TRUE));
+     win16_control_draw_scroll(w,&view,buffered,OBJID_VSCROLL,TRUE);
+     for(int y=bar.top;y<bar.bottom;++y)for(int x=bar.left;x<bar.right;++x)
+        CHECK(GetPixel(direct,x,y)==GetPixel(buffered,x,y));
+     SelectObject(direct,old_first);SelectObject(buffered,old_second);
+     CHECK(DeleteObject(first) && DeleteObject(second) && DeleteDC(direct) && DeleteDC(buffered) && DestroyWindow(w));
+     puts("SCROLL BUFFER PIXELS PASS nonzero_origin=1 checker_phase=1");}
+    if(scroll_only){CHECK(DestroyWindow(root));puts("SCROLL PRESENT ONLY PASS");return 0;}
     for(i=0;i<sizeof(types)/sizeof(types[0]);++i){
         w=CreateWindowW(classes[i],L"Test",WS_CHILD|WS_VISIBLE|types[i],10,10,300,100,root,NULL,wc.hInstance,NULL);CHECK(w);
         CHECK(win16_style_control_install(w,NULL));

@@ -136,7 +136,7 @@ add_library(win16-control STATIC
   src/lib-style/win16-control/attachment_guard.c)
 target_include_directories(win16-control PUBLIC src/lib-style/win16-control)
 target_compile_definitions(win16-control PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-control PUBLIC style-bitmap style-control-common win16-common user32 gdi32 comctl32 uxtheme)
+target_link_libraries(win16-control PUBLIC style-bitmap style-control-common style-present win16-common user32 gdi32 comctl32 uxtheme)
 add_library(style-dialog-common STATIC src/lib-style/common/classic_dialog_events.c src/lib-style/common/classic_dialog_state.c src/lib-style/common/classic_dialog_proxy.c src/lib-style/common/classic_dialog_proxy_dispatch.c src/lib-style/common/classic_file_hook.c src/lib-style/common/classic_com_hook.c src/lib-style/common/classic_dialog_controls.c src/lib-style/common/print_extended.c src/lib-style/common/classic_print_contract.c src/lib-style/common/print_resources.c src/lib-style/common/print_ranges.c src/lib-style/common/classic_file_contract.c src/lib-style/common/classic_shell_item.c src/lib-style/common/file_events.c src/lib-style/common/modern_file_dialog.c src/lib-style/common/classic_shell_folder.c src/lib-style/common/dialog_customize.c src/lib-style/common/dialog_ole_window.c src/lib-style/common/dialog_v2.c src/lib-style/common/dialog_primary.c src/lib-style/common/classic_com_show.c src/lib-style/common/classic_browse.c src/lib-style/common/classic_file_live.c src/lib-style/common/classic_file_helpers.c src/lib-style/common/classic_hidden_files.c)
 target_include_directories(style-dialog-common PUBLIC src)
 target_compile_definitions(style-dialog-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)

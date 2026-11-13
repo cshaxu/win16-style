@@ -127,7 +127,7 @@ static void paint_system(HWND w,popup *p,HDC target,BOOL window_coordinates)
     RECT client;HDC output=dc;style_present_buffer buffer;BOOL attempted=FALSE;
     if(valid&&!target&&GetClientRect(w,&client)){
         attempted=TRUE;
-        if(style_present_buffer_begin(&buffer,dc,&client))dc=buffer.memory;
+        if(style_present_buffer_begin(&buffer,dc,&client,TRUE))dc=buffer.memory;
     }
     for(int i=0;valid&&i<count&&!p->detached;++i){RECT r=rows[i].rect;
         MapWindowPoints(NULL,w,(POINT *)&r,2);OffsetRect(&r,delta.x,delta.y);

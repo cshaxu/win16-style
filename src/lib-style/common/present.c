@@ -1,6 +1,6 @@
 #include "present.h"
 
-BOOL style_present_buffer_begin(style_present_buffer *buffer,HDC target,const RECT *bounds)
+BOOL style_present_buffer_begin(style_present_buffer *buffer,HDC target,const RECT *bounds,BOOL preserve)
 {
     ZeroMemory(buffer,sizeof(*buffer));buffer->target=target;buffer->bounds=*bounds;
     int width=bounds->right-bounds->left,height=bounds->bottom-bounds->top;
@@ -8,7 +8,7 @@ BOOL style_present_buffer_begin(style_present_buffer *buffer,HDC target,const RE
     if(buffer->memory)buffer->bitmap=CreateCompatibleBitmap(target,width,height);
     if(buffer->bitmap)buffer->old=(HBITMAP)SelectObject(buffer->memory,buffer->bitmap);
     return buffer->old && buffer->old!=(HBITMAP)HGDI_ERROR &&
-        BitBlt(buffer->memory,0,0,width,height,target,bounds->left,bounds->top,SRCCOPY) &&
+        (!preserve || BitBlt(buffer->memory,0,0,width,height,target,bounds->left,bounds->top,SRCCOPY)) &&
         SetWindowOrgEx(buffer->memory,bounds->left,bounds->top,NULL);
 }
 BOOL style_present_buffer_end(style_present_buffer *buffer,BOOL commit)
@@ -38,7 +38,7 @@ void style_present(HWND w,const style_present_view *view,HDC target)
                 MapWindowPoints(NULL,w,(POINT *)&r,2);
                 ExcludeClipRect(target,r.left,r.top,r.right,r.bottom);}
     }
-    if(style_present_buffer_begin(&buffer,target,&dirty)){
+    if(style_present_buffer_begin(&buffer,target,&dirty,TRUE)){
         HDC memory=buffer.memory;
         if(group){HWND parent=GetParent(w);POINT origin={0,0};int saved=SaveDC(memory);
             SetDCBrushColor(memory,view->background);FillRect(memory,&client,(HBRUSH)GetStockObject(DC_BRUSH));

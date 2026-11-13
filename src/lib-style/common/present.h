@@ -6,9 +6,10 @@ typedef struct style_present_buffer {
     HBITMAP bitmap,old;
     RECT bounds;
 } style_present_buffer;
-/* All arguments are required. Call end after every begin, including failure;
- * commit only when begin succeeded and the caller's paint remains valid. */
-BOOL style_present_buffer_begin(style_present_buffer *,HDC,const RECT *);
+/* All arguments are required. Preserve copies the target pixels first;
+ * without it the painter must fill the entire buffer before committing.
+ * Call end after every begin, including failure. */
+BOOL style_present_buffer_begin(style_present_buffer *,HDC,const RECT *,BOOL preserve);
 BOOL style_present_buffer_end(style_present_buffer *,BOOL);
 typedef struct style_present_view {
     const BOOL *detached;

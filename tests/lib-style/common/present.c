@@ -22,7 +22,18 @@ int main(void)
     BOOL rendered=calls==1 && GetPixel(dc,20,20)==RGB(11,37,79);
     detached=TRUE;style_present(w,&view,dc);
     BOOL unchanged=calls==1 && GetPixel(dc,20,20)==RGB(11,37,79);
+    RECT bounds={10,7,40,30};style_present_buffer buffer;
+    BOOL blank=style_present_buffer_begin(&buffer,dc,&bounds,FALSE);
+    if(blank){SetDCBrushColor(buffer.memory,RGB(20,60,100));
+        BOOL filled=FillRect(buffer.memory,&bounds,(HBRUSH)GetStockObject(DC_BRUSH))!=0;
+        BOOL committed=style_present_buffer_end(&buffer,filled);blank=filled && committed;}
+    else (void)style_present_buffer_end(&buffer,FALSE);
+    blank=blank && GetPixel(dc,15,10)==RGB(20,60,100) && GetPixel(dc,5,5)==RGB(11,37,79);
+    BOOL preserved=style_present_buffer_begin(&buffer,dc,&bounds,TRUE);
+    if(preserved){BOOL pixel=GetPixel(buffer.memory,15,10)==RGB(20,60,100);
+        BOOL committed=style_present_buffer_end(&buffer,TRUE);preserved=pixel && committed;}
+    else (void)style_present_buffer_end(&buffer,FALSE);
     SelectObject(dc,old);DeleteObject(bitmap);DeleteDC(dc);DestroyWindow(w);
-    if(!rendered || !unchanged)return 2;
+    if(!rendered || !unchanged || !blank || !preserved)return 2;
     puts("STYLE PRESENT PASS buffered=1 detached=1");return 0;
 }

@@ -97,7 +97,7 @@ static void popup_paint(HWND window,menu_scope *scope,HDC target,BOOL window_coo
     RECT client;
     if(!target && GetClientRect(window,&client)){
         style_present_buffer buffer;
-        BOOL ready=style_present_buffer_begin(&buffer,dc,&client);
+        BOOL ready=style_present_buffer_begin(&buffer,dc,&client,TRUE);
         if(ready)painted=win2k_system_menu_paint(window,scope->menu,buffer.memory,FALSE);
         BOOL committed=style_present_buffer_end(&buffer,ready && painted && !scope->detached);
         painted=painted && committed;
