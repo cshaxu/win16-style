@@ -1,6 +1,6 @@
 # T26 S1 当前覆盖台账
 
-基于 P44 后的工作区盘点，统计 `.c`、`.h`、`.def`；它是待审全集和现有证据索引，不等于逐文件、逐函数审计完成。初始路径基线见[冻结清单](M0-T26-S1-initial-inventory.md)。目录数可能随后续迁移变化，应在收口前重新枚举、逐项对账。
+基于 P46 提交的工作区盘点，统计 `.c`、`.h`、`.def`；它是待审全集和现有证据索引，不等于逐文件、逐函数审计完成。初始路径基线见[冻结清单](M0-T26-S1-initial-inventory.md)。目录数可能随后续迁移变化，应在收口前重新枚举、逐项对账。
 
 | 生产范围 | 文件数 | 已有证据与未完成工作 |
 | --- | ---: | --- |
@@ -12,10 +12,10 @@
 | `lib-style/win16-window-uwp` | 4 | 宿主通用安装和所有者/标题分派已抽离；表面输入、菜单动作和风格绘制仍需核对可复用边界。 |
 | `lib-style/win2k-window` | 6 | 外框及菜单使用部分公共机制；DWM 恢复失败、风格差异和 Win2000 消费范围仍需验证。 |
 | `lib-win32/style` | 10 | 启动、窗口身份、分发及伴随模块部分通用；须对照每个产品调用、头依赖及旧路径逐一检查。 |
-| `ntw16s-dll` 根目录 / `global` / `injection` / `uwp` | 20 / 23 / 10 / 4 | 部分接入已调用公共库；会话协议、具体 DLL 导出及风格策略留产品侧，未审协调不能笼统归为业务，见[接入复核](M0-T26-S1-product-adapter-review.md)和[对话框复核](M0-T26-S1-dialog-current-review.md)。 |
+| `ntw16s-dll` 根目录 / `global` / `injection` / `uwp` | 19 / 23 / 10 / 4 | 部分接入已调用公共库；会话协议、具体 DLL 导出及风格策略留产品侧，未审协调不能笼统归为业务，见[接入复核](M0-T26-S1-product-adapter-review.md)和[对话框复核](M0-T26-S1-dialog-current-review.md)。 |
 | `ntw2ks-dll` / `ntwshk-dll` / `run16s-exe` | 6 / 9 / 19 | 已有共享启动及主题状态；须完成所有入口、链接、普通和全局模式的实际调用和恢复边界核对。 |
 
-对应测试全集：`tests/lib-style` 66、`tests/lib-win32/style` 8、`tests/ntw16s-dll` 222、`tests/ntw2ks-dll` 7、`tests/integration` 49。测试路径只是覆盖候选，不代表每个生产入口都有测试；还须逐项映射 CMake 注册、可运行条件、双位宽和实际结果。
+对应测试全集：`tests/lib-style` 67、`tests/lib-win32/style` 8、`tests/ntw16s-dll` 222、`tests/ntw2ks-dll` 7、`tests/integration` 49。测试路径只是覆盖候选，不代表每个生产入口都有测试；还须逐项映射 CMake 注册、可运行条件、双位宽和实际结果。
 
 以下是按实际调用核对的公共交集，而不是仅按头文件名称推断：
 
