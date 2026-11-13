@@ -31,7 +31,6 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib-style/win16-control/control_state.h"
 #include "../lib-style/win16-control/list_message.h"
 #include "../lib-style/win16-control/edit_message.h"
-#include "../lib-style/win16-control/basic_message.h"
 #include "../lib-style/win16-control/scroll_message.h"
 #include "../lib-style/win16-control/fileowner_message.h"
 #include "../lib-style/win16-control/notify_message.h"

@@ -17,7 +17,7 @@
 | 8 | `src/lib-style/win16-control/attachment_guard.c` | `77951c6a64d1d4e990cf4e09f76f2c93a9d6d0f96bf2bb03c268c0f09d3b0214` | 已过关 |
 | 9 | `src/lib-style/win16-control/attachment_state.h` | `764d7929b4d856293a0483e173aaad03cb7b7b0d9e61f03f2357057cfe59f3d2` | 已过关 |
 | 10 | `src/lib-style/win16-control/basic_message.c` | `2bc39526c285621a7d38b19bf9e61d56f05b64f228d3ad4912911d26b9a48b3e` | 已过关 |
-| 11 | `src/lib-style/win16-control/basic_message.h` | `22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c` | 待审 |
+| 11 | `src/lib-style/win16-control/basic_message.h` | `22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c` | 已过关 |
 | 12 | `src/lib-style/win16-control/basic_paint.c` | `b253f2984bb7ee9237dab4a8521aa7d256996f959539ef0fab27b22e8721805b` | 待审 |
 | 13 | `src/lib-style/win16-control/basic_paint.h` | `db5fd5cd49c5e5528d4d34240ea659d4235013f62f669ba030cd4f16ba48d604` | 待审 |
 | 14 | `src/lib-style/win16-control/choice_paint.c` | `768af7385d7a9bf5bcb3d4cc6abcf4deead9ae39efcc006a3bf4036bb6451d7b` | 待审 |
@@ -227,3 +227,8 @@
 - 职责与调用：`win16_control_basic_message` 由 `control_dispatch.c` 调用，为 Win16 基本控件协调原生消息、位图 STATIC、VB Frame、绘制和重绘时机；画笔及呈现由调用方提供。
 - 处置：原生重绘抑制及可见性保护已使用 `common/control_redraw.h`，类名检查在公共 `control_class.h`；消息路由、何时覆盖原生绘制及 Win16 状态属于风格策略。位图打印的局部 DC 保存和恢复与跨消息剪裁快照契约不同，无需为了单次 GDI 调用增加包装。本项未修改产品源码。
 - 验证：当前正式包双位宽 `core-control-visibility` 各 16 种父子可见性组合通过，`core-vcl-static` 的原生嵌套、伪装拒绝和字体保留通过；第 9 项独立链接测试覆盖分隔线识别。位图 STATIC 的打印分支未单独覆盖，真实 VB 程序和其他风格未验证。
+
+## 011 `win16-control/basic_message.h`：已过关
+
+- 职责与调用：声明使用 Win16 `control_style` 及绘制回调的基本消息处理器，实现与实际分派在 `basic_message.c` 和 `control_dispatch.c`；接口没有产品私有头反向依赖，保留风格侧。
+- 处置：产品 `ntw16s-dll/controls.c` 不直接使用该接口，已删除多余包含；公共重绘机制仍由第 10 项所述公共组件提供。双位宽增量编译通过，修改前后产品 `controls.c.obj` 的 SHA-256 分别为 x86 `775c1bba9b4300c5f7329ad4bb0c50278f204f2e2f496a67700017ae2b24ac71` 和 x64 `d4e02b9731f27d56a7686b12fc16fef95990e5ceb38812ecd4ee77172021c8ef`，逐字节一致；沿用既有发布包。第 10 项双位宽正式包回归适用，未单独覆盖的位图打印仍保留。
