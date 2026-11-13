@@ -39,8 +39,8 @@
 | 28 | `src/lib-style/win16-control/control_guard.h` | `bac734eb7a9bf97c934d7080f1e54ec394979150a8ba78d104d0e97c8bb5c1b8` | 已过关 |
 | 29 | `src/lib-style/win16-control/control_install.c` | `912a3e15abaa9499656753544e0899d393eebbd8286dad8e42f654f43084950c` | 已过关 |
 | 30 | `src/lib-style/win16-control/control_install.h` | `1347b0605a479f5727aa1200cc269d8b237886eae7962e2343a50b9a1800e780` | 已过关 |
-| 31 | `src/lib-style/win16-control/control_lifetime.c` | `f29ae1bb58a0754c8de9e1df6be2d1e743f97eb88020b43d827af6673989e057` | 待审 |
-| 32 | `src/lib-style/win16-control/control_lifetime.h` | `1412fcd6165eeeba24d396054cf921e7e3c8500686d401f08b72f17daa336cc2` | 待审 |
+| 31 | `src/lib-style/win16-control/control_lifetime.c` | `1b7640ed3968ad525b0483d1b166d3cf32db18891c0e9c33d8d43699f0b4ea3c` | 已过关 |
+| 32 | `src/lib-style/win16-control/control_lifetime.h` | `a75dd73f5c6e5851da4fc78e58d4f6477d610dcfbe589bf6a59655415373ced0` | 待审 |
 | 33 | `src/lib-style/win16-control/control_remove.c` | `27678f0276c7b028cf292bcf53dabdba7289f1a956ccf93838c2b8e28fb78dbb` | 待审 |
 | 34 | `src/lib-style/win16-control/control_remove.h` | `dbcd064a957c340b5c296e0c3a7debd67bfc8f46e5e7036f09dd54cda31e9c3f` | 待审 |
 | 35 | `src/lib-style/win16-control/control_scope.c` | `f534206388ab958ef31a3addbfced46565dde214b9a20c1935cf28c084ca62af` | 待审 |
@@ -344,3 +344,8 @@
 
 - 普通控件和旧式对话框组合框的安装服务视图与接口由产品 `controls.c` 提供回调、`control_install.c` 实现；包含 Win16 调色板及特定控件语义，当前保留风格侧。
 - 接口原本间接暴露完整控件状态；改为仅包含所用的调色板头，实现文件直接包含自身所需状态。双位宽增量构建及控件独立链接通过，安装实现和产品调用源的四个目标文件修改前后摘要逐字节一致；沿用第 29 项正式包测试及其覆盖限制。
+
+## 031 `win16-control/control_lifetime.c`：已过关
+
+- VCL 微调编辑框在字体更新前后保留按钮区域的机制迁入已有 `common/control_vcl_spin`，Win16 传入自己的脱离状态；双位宽干净构建、先发布后产品夹具通过，见[记录](M0-T26-S1-ordered-31-spin.md)。字体恢复两处的后继子类顺序不同：组合框优先子编辑子类再检查普通控件子类；普通控件只检查自身子类。两者还依赖不同字体源字段，暂保留风格侧，不引入为共享而共享的间接层。
+- 其余释放、临时滚动条绘制和附着引用绑定 Win16 状态和字体租约；通用子类所有权已由 `common/control_scope.h` 提供。双位宽无目标和错误码公共测试通过；真实 Delphi、其他风格、所有重入组合未验证。

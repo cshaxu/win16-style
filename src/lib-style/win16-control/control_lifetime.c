@@ -4,27 +4,9 @@
 #include "../win16-common/font.h"
 #include <commctrl.h>
 
-HWND win16_control_spin_before(HWND w,UINT m,RECT *before)
-{
-    HWND button=NULL;DWORD error=GetLastError();
-    if(m==WM_SETFONT && (button=style_control_vcl_spinedit_button(w))!=NULL)
-        SendMessageW(w,EM_GETRECT,0,(LPARAM)before);
-    SetLastError(error);return button;
-}
 void win16_control_finish_message(HWND w,control_style *s,UINT m,LPARAM b,HWND spin_button,const RECT *spin_before,BOOL combo_paint,HFONT previous,HFONT outbound,HFONT pinned,SUBCLASSPROC callback)
 {
-    if(spin_button && !s->detached && IsWindow(w) && style_control_vcl_spinedit_button(w)==spin_button){
-        DWORD error=GetLastError();RECT button,after;
-        if(GetWindowRect(spin_button,&button)){
-            MapWindowPoints(NULL,w,(POINT*)&button,2);
-            SendMessageW(w,EM_GETRECT,0,(LPARAM)&after);
-            if(!s->detached && spin_before->right>spin_before->left && spin_before->right<=button.left &&
-               after.right>button.left && spin_before->right>after.left){
-                after.right=spin_before->right;SendMessageW(w,EM_SETRECTNP,0,(LPARAM)&after);
-            }
-        }
-        SetLastError(error);
-    }
+    style_control_vcl_spin_after(w,spin_button,spin_before,&s->detached);
     if(m==WM_SETFONT && s->detached && IsWindow(w)){
         /* A native setter can finish AFTER its callback removed this leaf,
          * overwriting the font restored during removal with our retired

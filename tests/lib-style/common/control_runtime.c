@@ -16,6 +16,11 @@ int main(void)
         !style_control_runtime_class(window,L"StyleRuntimeClassTest",L"StyleMissingRuntime.dll") &&
         !style_control_vcl_spin_identity(window) && !style_control_vcl_modern_spin_shape(window) &&
         !style_control_vcl_spinedit_button(window);
+    RECT saved={1,2,3,4};BOOL detached=FALSE;
+    SetLastError(0x1234);
+    ok=ok && !style_control_vcl_spin_before(window,WM_SETFONT,&saved) && GetLastError()==0x1234;
+    style_control_vcl_spin_after(window,NULL,&saved,&detached);
+    ok=ok && GetLastError()==0x1234 && saved.left==1 && saved.right==3;
     WNDCLASSW spin_edit={.lpfnWndProc=DefWindowProcW,.hInstance=instance,.lpszClassName=L"TSpinEdit"};
     WNDCLASSW spin_button={.lpfnWndProc=DefWindowProcW,.hInstance=instance,.lpszClassName=L"TSpinButton"};
     BOOL edit_class=RegisterClassW(&spin_edit)!=0,button_class=RegisterClassW(&spin_button)!=0;

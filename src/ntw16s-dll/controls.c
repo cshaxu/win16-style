@@ -236,7 +236,7 @@ static void draw_sizebox(HWND w,control_style *s,HDC dc)
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
-    RECT spin_before={0};HWND spin_button=win16_control_spin_before(w,m,&spin_before);
+    RECT spin_before={0};HWND spin_button=style_control_vcl_spin_before(w,m,&spin_before);
     BOOL tab=style_control_is_tab(w),header=style_control_is_header(w),progress=style_control_class_is(w,PROGRESS_CLASSW),native_font=tab || header;
     BOOL combo_paint=style_control_vb_combo(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);if(combo_paint)++s->combo_paints;
     if(progress && win16_style_progress_changes(m))++s->progress_epoch;

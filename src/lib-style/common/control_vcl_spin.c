@@ -43,3 +43,26 @@ HWND style_control_vcl_spinedit_button(HWND w)
     return child && GetParent(child)==w && GetWindowThreadProcessId(child,NULL)==GetCurrentThreadId() &&
         GetClassLongPtrW(child,GCLP_HMODULE)==GetClassLongPtrW(w,GCLP_HMODULE)?child:NULL;
 }
+
+HWND style_control_vcl_spin_before(HWND w,UINT message,RECT *before)
+{
+    HWND button=NULL;DWORD error=GetLastError();
+    if(message==WM_SETFONT && (button=style_control_vcl_spinedit_button(w))!=NULL)
+        SendMessageW(w,EM_GETRECT,0,(LPARAM)before);
+    SetLastError(error);return button;
+}
+void style_control_vcl_spin_after(HWND w,HWND spin_button,const RECT *before,const BOOL *detached)
+{
+    if(spin_button && !*detached && IsWindow(w) && style_control_vcl_spinedit_button(w)==spin_button){
+        DWORD error=GetLastError();RECT button,after;
+        if(GetWindowRect(spin_button,&button)){
+            MapWindowPoints(NULL,w,(POINT*)&button,2);
+            SendMessageW(w,EM_GETRECT,0,(LPARAM)&after);
+            if(!*detached && before->right>before->left && before->right<=button.left &&
+               after.right>button.left && before->right>after.left){
+                after.right=before->right;SendMessageW(w,EM_SETRECTNP,0,(LPARAM)&after);
+            }
+        }
+        SetLastError(error);
+    }
+}
