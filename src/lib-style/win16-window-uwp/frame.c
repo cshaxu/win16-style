@@ -2,6 +2,7 @@
 #include "frame_layout.h"
 #include "lib-style/uwp/surface.h"
 #include "lib-style/uwp/host.h"
+#include "lib-style/uwp/input.h"
 #include "lib-style/uwp/menu.h"
 #include "lib-style/common/frame.h"
 #include "lib-win32/style/window_identity.h"
@@ -104,21 +105,24 @@ static BOOL refresh(void *context)
         &s->bitmap,s,refresh_geometry,refresh_paint};
     return style_uwp_surface_refresh(&view);
 }
-static LRESULT point_hit(uwp_frame *s,LPARAM point)
-{
-    POINT p={GET_X_LPARAM(point),GET_Y_LPARAM(point)};
-    return win16_uwp_frame_hit(&s->layout,p);
-}
-static LPARAM screen_point(uwp_frame *s,LPARAM point)
-{
-    POINT p={GET_X_LPARAM(point),GET_Y_LPARAM(point)};ClientToScreen(s->host.surface,&p);
-    return MAKELPARAM(p.x,p.y);
-}
 static void invoke(uwp_frame *s,int hit)
 {
     UINT command=hit==HTMINBUTTON?SC_MINIMIZE:hit==HTMAXBUTTON?
         (IsZoomed(s->host.owner)?SC_RESTORE:SC_MAXIMIZE):SC_KEYMENU;
     PostMessageW(s->host.owner,WM_SYSCOMMAND,command,command==SC_KEYMENU?L' ':0);
+}
+static LRESULT input_hit(void *context,POINT point)
+{return win16_uwp_frame_hit(&((uwp_frame *)context)->layout,point);}
+static BOOL input_button(void *context,int hit)
+{(void)context;return hit==HTSYSMENU || hit==HTMINBUTTON || hit==HTMAXBUTTON;}
+static void input_invoke(void *context,int hit,UINT message)
+{
+    uwp_frame *s=context;
+    if(message==WM_LBUTTONUP)invoke(s,hit);
+    else if(message==WM_LBUTTONDBLCLK){
+        if(hit==HTSYSMENU)PostMessageW(s->host.owner,WM_SYSCOMMAND,SC_CLOSE,0);
+        else if(hit==HTCAPTION && (GetWindowLongPtrW(s->host.owner,GWL_STYLE)&WS_MAXIMIZEBOX))invoke(s,HTMAXBUTTON);
+    }else if(message==WM_RBUTTONUP && (hit==HTCAPTION || hit==HTSYSMENU))invoke(s,HTSYSMENU);
 }
 static void menu_present(uwp_frame *s,HWND window)
 {
@@ -176,54 +180,15 @@ static void surface_menu_button(HWND w,style_window *menu,int hit)
 {(void)w;(void)menu;(void)hit;}
 static BOOL surface_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,LRESULT *output)
 {
-    uwp_frame *s=context;LRESULT result=0;BOOL handled=TRUE;
+    uwp_frame *s=context;LRESULT result=0;
     if(message==WM_ENTERMENULOOP)win16_control_frame_state_enter_menu(s->menu);
     if(win16_control_menu_message(w,s->menu,message,a,b,surface_menu_button,&result)){
         *output=result;return TRUE;
     }
-    switch(message){
-    case WM_ENTERIDLE:if(a==MSGF_MENU)menu_present(s,(HWND)b);break;
-    case WM_MOUSEACTIVATE:result=MA_NOACTIVATE;break;
-    case WM_SETCURSOR: {
-        POINT point;
-        if(!GetCursorPos(&point)||!ScreenToClient(w,&point)){handled=FALSE;break;}
-        int hit=(int)win16_uwp_frame_hit(&s->layout,point);
-        PCWSTR cursor=style_frame_resize_cursor(hit);
-        SetCursor(LoadCursorW(NULL,cursor));
-        result=TRUE;break;
-    }
-    case WM_NCHITTEST:result=HTCLIENT;break; /* The window region excludes client content. */
-    case WM_LBUTTONDOWN: {
-        int hit=(int)point_hit(s,b);SetForegroundWindow(s->host.owner);
-        if(s->host.detached)break;
-        if(hit==HTSYSMENU || hit==HTMINBUTTON || hit==HTMAXBUTTON){s->pressed=hit;s->hot=TRUE;SetCapture(w);refresh(s);}
-        else if(hit==HTCAPTION || (hit>=HTLEFT && hit<=HTBOTTOMRIGHT))
-            SendMessageW(s->host.owner,WM_NCLBUTTONDOWN,(WPARAM)hit,screen_point(s,b));
-        break;
-    }
-    case WM_LBUTTONDBLCLK: {
-        int hit=(int)point_hit(s,b);
-        if(hit==HTSYSMENU)PostMessageW(s->host.owner,WM_SYSCOMMAND,SC_CLOSE,0);
-        else if(hit==HTCAPTION && (GetWindowLongPtrW(s->host.owner,GWL_STYLE)&WS_MAXIMIZEBOX))invoke(s,HTMAXBUTTON);
-        break;
-    }
-    case WM_RBUTTONUP:
-        if(point_hit(s,b)==HTCAPTION || point_hit(s,b)==HTSYSMENU)invoke(s,HTSYSMENU);
-        break;
-    case WM_MOUSEMOVE:
-        if(s->pressed){BOOL hot=point_hit(s,b)==s->pressed;if(hot!=s->hot){s->hot=hot;refresh(s);}}
-        break;
-    case WM_LBUTTONUP:
-        if(s->pressed){int hit=s->pressed;BOOL act=point_hit(s,b)==hit;s->pressed=0;s->hot=FALSE;
-            ReleaseCapture();if(!s->host.detached){refresh(s);if(act&&!s->host.detached)invoke(s,hit);}}
-        break;
-    case WM_CANCELMODE:
-    case WM_CAPTURECHANGED:
-        if(s->pressed){s->pressed=0;s->hot=FALSE;if(GetCapture()==w)ReleaseCapture();refresh(s);}
-        break;
-    default:handled=FALSE;break;
-    }
-    *output=result;return handled;
+    if(message==WM_ENTERIDLE){if(a==MSGF_MENU)menu_present(s,(HWND)b);*output=0;return TRUE;}
+    const style_uwp_input_view view={s->host.owner,w,&s->host.detached,&s->pressed,&s->hot,
+        s,input_hit,input_button,input_invoke,refresh};
+    return style_uwp_input_message(&view,message,a,b,output);
 }
 static void menu_button(HWND w,style_window *menu,int hit)
 {

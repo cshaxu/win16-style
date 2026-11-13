@@ -11,6 +11,8 @@ int main(void)
     for(int i=0;i<3;++i){
         CHECK(win16_uwp_frame_apply(owner,title));
         HWND surface=win16_uwp_frame_surface(owner);CHECK(surface && IsWindow(surface));
+        CHECK(SendMessageW(surface,WM_MOUSEACTIVATE,0,0)==MA_NOACTIVATE);
+        CHECK(SendMessageW(surface,WM_NCHITTEST,0,0)==HTCLIENT);
         CHECK(win16_uwp_frame_remove(owner));
         CHECK(!IsWindow(surface) && !win16_uwp_frame_surface(owner));
     }

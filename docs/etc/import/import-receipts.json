@@ -5945,7 +5945,7 @@
       "path": "src/lib-style/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d102623a9dcd541f90676eaac9e6caad39eb955b666f13158b9f3368dbd6233f",
+      "sha256": "92887166ee05fc9829ce16a18aceece6a779461f00308f7a541a17236079b20f",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling; T23 S4 console and Terminal window adaptation and native tests; T23 S7 maximize work-area geometry regression and fix; T26 S1 share DIB buffer across UWP and Win2000; T26 S1 shared window thread identity; T26 S1 shared resize cursor mapping; T26 S1 shared surface refresh lifecycle; T26 S1 shared host detach and reentrant lifetime",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -7736,7 +7736,7 @@
       "path": "tests/lib-style/win16-window-uwp/frame_hidden.c",
       "source": null,
       "source_blob": null,
-      "sha256": "49390f7b9185750cbd3a799efe1f383013b32fcc42528e28e9dd3b44b2cc28ba",
+      "sha256": "4e07f85aca66dfed69915a6a33e6bd9d5bb592ec6e615e9ac136f6e27d58ccb3",
       "disposition": "authored",
       "review": "T26 S1 shared modern window host lifetime and native regression",
       "notice": "Project-authored C; no imported code or artwork"
@@ -7821,6 +7821,33 @@
       "disposition": "authored",
       "review": "T26 S1 style-independent intrinsic and VB control class identity extracted from Win16 control classification",
       "notice": "Project-authored C interface; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/uwp/input.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "2edb44288834ff5877bd5c412e23c9e74990fe2c5ccde782c26912cbff312e71",
+      "disposition": "authored",
+      "review": "T26 S1 shared modern surface input and native regression",
+      "notice": "Project-authored C; no imported code or artwork"
+    },
+    {
+      "path": "src/lib-style/uwp/input.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0a47ae77d7e525cfbf7822660e7262d14ee382b135545f51ee4bd3bf70f6ec00",
+      "disposition": "authored",
+      "review": "T26 S1 shared modern surface input and native regression",
+      "notice": "Project-authored C; no imported code or artwork"
+    },
+    {
+      "path": "tests/lib-style/uwp/input.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "61ac736d9ef4bddb97162a0fd95c78ad1d8521341ff287851560140604659695",
+      "disposition": "authored",
+      "review": "T26 S1 shared modern surface input and native regression",
+      "notice": "Project-authored C; no imported code or artwork"
     }
   ]
 }
