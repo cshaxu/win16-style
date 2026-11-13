@@ -23,8 +23,8 @@
 | 14 | `src/lib-style/win16-control/choice_paint.c` | `8859b2a5f78a219711d7feb872f2f8fad7e89a99eacb956c32993851be446900` | 已过关 |
 | 15 | `src/lib-style/win16-control/choice_paint.h` | `6efc933f3e2293f106275bcaa13ce66067da445af567a91ef3c35c069677902c` | 已过关 |
 | 16 | `src/lib-style/win16-control/choice_view.c` | `c369bc99d500f668a91c8f354503b707e581c4938b709c9469f022e8ed709d42` | 已过关 |
-| 17 | `src/lib-style/win16-control/choice_view.h` | `02a9c00c937c411be9e66158a56bbbfdc7dac5f82e07e4591cb24761947bc92d` | 待审 |
-| 18 | `src/lib-style/win16-control/combo_glyph.h` | `75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34` | 待审 |
+| 17 | `src/lib-style/win16-control/choice_view.h` | `02a9c00c937c411be9e66158a56bbbfdc7dac5f82e07e4591cb24761947bc92d` | 已过关 |
+| 18 | `src/lib-style/win16-control/combo_glyph.h` | `75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34` | 已过关 |
 | 19 | `src/lib-style/win16-control/combo_paint.c` | `e9fa477018441ec1b29a2f25e83d523e88d564e7dc670e05196984661bdc552a` | 待审 |
 | 20 | `src/lib-style/win16-control/combo_paint.h` | `9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca` | 待审 |
 | 21 | `src/lib-style/win16-control/combo_text.c` | `4d95a3cc8238c3e3a194dc64f1ee1d3c56b8e296e29469c6bd0229e85bb5e63c` | 待审 |
@@ -261,3 +261,13 @@
 - 职责：产品 `controls.c` 构造视图后调用，用 Win16 调色、图案、字体和布局绘制静态、按钮及选择控件。
 - 已抽出：静态图标和按钮图标重复的尺寸读取及 `GetIconInfo` 位图释放迁入公共 `icon_size.h`，两个实际调用方直接使用；`other_paint.c` 仅调整接线和摘要，仍待按顺序审计。双位宽干净构建、发布及正式包回归通过，见[交付记录](M0-T26-S1-ordered-16-icon.md)。
 - 选择控件与组合框重复的窗口文本分配和读取迁入公共 `window_text.h`，调用方仍负责释放；组合框文件仅改接线并更新摘要，尚待按顺序审计。双位宽干净构建、发布及正式包回归通过，见[交付记录](M0-T26-S1-ordered-16-text.md)。剩余图案选择、颜色、字体、位置和焦点绘制为 Win16 风格策略；静态图标产品路径、真实第三方程序和其他风格未单独验证。
+
+## 017 `win16-control/choice_view.h`：已过关
+
+- 职责与调用：定义选择控件绘制所需的 Win16 调色、字体、脱离状态和 VB/按钮角色回调；产品 `controls.c` 构造视图，`choice_view.c` 消费。回调承载产品识别政策，避免公共组件依赖产品私有头。
+- 处置与验证：此视图绑定 Win16 调色与选择控件绘制，保留风格侧；没有需要复制或上移的通用绘制机制。本项无源码修改。双位宽重新链接并运行 `core-win16-control-link` 通过；第 16 项双位宽正式包选择控件回归通过，静态图标产品路径、真实第三方程序和其他风格未单独验证。
+
+## 018 `win16-control/combo_glyph.h`：已过关
+
+- 职责与调用：Windows 3.1 VGA.DRV 的 7×9 组合框箭头资源；`basic_paint.c` 提供 Win16 箭头，组合框与 VCL 按钮等路径使用，集成测试也直接引用原图案。
+- 处置与验证：该数据是特定年代的受保留原图形资源，不能当作所有主题默认图案；按来源策略原位逐字节保留。可跨风格复用的缩放网格已位于 `common/pixel_grid.h`。资源身份核验通过，双位宽像素网格及正式包组合框回归见[第 12 项记录](M0-T26-S1-ordered-12-grid.md)；其他风格与全部 DPI 未验证。本项无源码修改。
