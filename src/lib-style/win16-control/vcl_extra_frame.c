@@ -1,3 +1,4 @@
+#include "lib-style/common/control_vcl_identity.h"
 #include "lib-style/common/dc_geometry.h"
 #include "vcl_extra_frame.h"
 #include "vcl_identity.h"
@@ -7,7 +8,7 @@ void win16_control_bit_theme_frame(const win16_control_bit_frame_view *s,HDC dc,
 {
     HMODULE caller=NULL;RECT client;
     if(!s || !s->owner || *s->detached || !dc || dc!=s->dc || part!=1 || !rect ||
-        !win16_control_bit_identity(s->window,*s->module) || GetParent(s->window)!=*s->parent ||
+        !style_control_vcl_bit_identity(s->window,*s->module) || GetParent(s->window)!=*s->parent ||
         !GetClientRect(s->window,&client) || !EqualRect(rect,&client) || !EqualRect(&s->item,&client) ||
         !style_dc_pixel_viewport(dc) ||
         !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,

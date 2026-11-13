@@ -1,3 +1,4 @@
+#include "lib-style/common/control_vcl_identity.h"
 #include "../lib-style/win16-control/vb_text.h"
 #include "../lib-style/win16-control/control_class.h"
 #include "ntw16s.h"
@@ -138,13 +139,13 @@ void ntw16s_bit_theme_frame(HDC dc,int part,const RECT *rect,const RECT *clip,co
 static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address,BOOL drop)
 {
     static_paint_scope *s=static_paint;if(!s)return;
-    const win16_control_vcl_paint_view v={s->window,&s->owner->inplace_candidate,&s->owner->detached,&s->owner->inplace_verified,&s->owner->inplace_owner,&s->owner->inplace_parent,win16_control_inplace_or_lookup,win16_control_lookup_identity,style_control_class_is};
+    const win16_control_vcl_paint_view v={s->window,&s->owner->inplace_candidate,&s->owner->detached,&s->owner->inplace_verified,&s->owner->inplace_owner,&s->owner->inplace_parent,style_control_vcl_inplace_or_lookup,style_control_vcl_lookup_identity,style_control_class_is};
     win16_control_vcl_inplace_draw(&v,dc,part,state,r,clip,address,drop);
 }
 void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {
     static_paint_scope *s=static_paint;if(!s)return;
-    const win16_control_vcl_paint_view v={s->window,&s->owner->nav_candidate,&s->owner->detached,&s->owner->nav_verified,&s->owner->nav_owner,&s->owner->nav_parent,win16_control_nav_identity,NULL,style_control_class_is};
+    const win16_control_vcl_paint_view v={s->window,&s->owner->nav_candidate,&s->owner->detached,&s->owner->nav_verified,&s->owner->nav_owner,&s->owner->nav_parent,style_control_vcl_nav_identity,NULL,style_control_class_is};
     win16_control_vcl_nav_draw(&v,dc,part,state,r,clip,address);
 }
 BOOL ntw16s_inplace_paint(HDC dc)
@@ -580,7 +581,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=win16_control_checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (style_control_vcl_spin_identity(w)||style_control_vcl_modern_spin_shape(w));HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=style_control_vcl_checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (style_control_vcl_spin_identity(w)||style_control_vcl_modern_spin_shape(w));HWND parent;HMODULE owner;attachment *a;DWORD error;
     style_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -596,7 +597,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     win16_attachment_classify_vcl(w,original_style,ready,picture,checklist,status,spin,&initial,&candidates);
     HWND popup_source=lookup_popup_creator,popup_source_parent=popup_source?GetParent(popup_source):NULL;
     attachment *popup_source_attachment=popup_source?lookup(popup_source):NULL;
-    BOOL lookup_popup_candidate=ready && popup_source_attachment && win16_control_lookup_popup_identity(w,popup_source,popup_source_parent,owner);
+    BOOL lookup_popup_candidate=ready && popup_source_attachment && style_control_vcl_lookup_popup_identity(w,popup_source,popup_source_parent,owner);
     win16_control_vcl_extra_candidates extra;
     win16_control_vcl_classify_extra(w,original_style,ready,owner,&extra);
     BOOL cool_candidate=extra.cool_candidate;

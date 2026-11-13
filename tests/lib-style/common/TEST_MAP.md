@@ -10,6 +10,7 @@
 | `bitmap` | `bitmap.c`; `tests/lib-style/uwp/surface.c`; Win2000 caption button and UWP surface consumers |
 | `global_window` | `global_window.c` (style lifecycle and descendant visitation); `tests/ntw16s-dll/global_style_bridge.c` (two-style window and child transitions) |
 | `menu_input` | `menu_input.c` |
+| `control_vcl_identity` | `control_vcl_identity.c`; Win16 VCL grid, group, toolbar and bit-button product fixtures |
 | `control_native_combo` | `control_native_combo.c` (native combo/date identity and invalidation) |
 | `control_status` | `control_status.c` (native v5/v6 identity and invalidation) |
 | `menu_snapshot` | `menu_snapshot.c`; Win16 and Win2000 system-menu consumers |

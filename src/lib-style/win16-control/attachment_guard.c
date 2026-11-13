@@ -1,3 +1,4 @@
+#include "lib-style/common/control_vcl_identity.h"
 #include "attachment_state.h"
 #include "lib-style/common/control_scope.h"
 #include "control_class.h"
@@ -27,10 +28,10 @@ void win16_attachment_guard_roles(HWND w,UINT m,attachment *a,const win16_attach
             (void)v->remove(w);
         if((a->file_owner || a->button_owner || a->checklist) && !a->detached && a->report_parent && GetParent(w)!=a->report_parent)
             (void)v->remove(w);
-        if(a->inplace_candidate && !a->detached && !win16_control_inplace_or_lookup(w,a->inplace_owner,a->inplace_parent))(void)v->remove(w);
-        if(a->lookup_popup_candidate && !a->detached && (v->lookup(a->lookup_popup_source)!=a->lookup_popup_source_attachment || !win16_control_lookup_popup_identity(w,a->lookup_popup_source,a->lookup_popup_source_parent,a->lookup_popup_owner)))(void)v->remove(w);
+        if(a->inplace_candidate && !a->detached && !style_control_vcl_inplace_or_lookup(w,a->inplace_owner,a->inplace_parent))(void)v->remove(w);
+        if(a->lookup_popup_candidate && !a->detached && (v->lookup(a->lookup_popup_source)!=a->lookup_popup_source_attachment || !style_control_vcl_lookup_popup_identity(w,a->lookup_popup_source,a->lookup_popup_source_parent,a->lookup_popup_owner)))(void)v->remove(w);
         if(a->mdi_candidate && !a->detached && (v->lookup(a->mdi_host)!=a->mdi_host_attachment || !v->mdi_identity(w,a->mdi_parent,a->mdi_host,a->mdi_owner)))(void)v->remove(w);
-        if(a->nav_candidate && !a->detached && !win16_control_nav_identity(w,a->nav_owner,a->nav_parent))(void)v->remove(w);
+        if(a->nav_candidate && !a->detached && !style_control_vcl_nav_identity(w,a->nav_owner,a->nav_parent))(void)v->remove(w);
     }
     if(a->scroll_candidate && !a->detached && GetParent(w)!=a->scroll_parent)(void)v->remove(w);
     if(a->vcl_report_candidate && !a->detached && GetParent(w)!=a->vcl_report_parent)(void)v->remove(w);
@@ -80,7 +81,7 @@ void win16_attachment_post_controls(HWND w,UINT m,attachment *a,const win16_atta
     if(a->grid_candidate && !a->grid_attempted && !a->detached){
         DWORD saved=GetLastError();SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_ALL};DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
         a->grid_attempted=TRUE;
-        if(win16_control_grid_identity(w,a->grid_owner,a->grid_parent) &&
+        if(style_control_vcl_grid_identity(w,a->grid_owner,a->grid_parent) &&
             ((style_control_class_is(w,L"TValueListEditor") && !(style&(WS_HSCROLL|WS_VSCROLL))) ||
              (v->get_scroll_info(w,(style&WS_HSCROLL)?SB_HORZ:SB_VERT,&info) &&
               info.nMin<=info.nMax && info.nPos>=info.nMin && info.nPos<=info.nMax)) && !a->detached){
@@ -101,7 +102,7 @@ void win16_attachment_post_toolbar(HWND w,UINT m,attachment *a,const win16_attac
 {
     if(m==WM_PAINT && a->vcl_toolbar_candidate && !a->vcl_toolbar_attempted && !a->detached && a->vcl_toolbar_witness){
         DWORD saved=GetLastError();a->vcl_toolbar_attempted=TRUE;
-        style_control_protocol *protocol=win16_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent)?style_control_protocol_bind_verified_toolbar(w,a->vcl_toolbar_witness):NULL;
+        style_control_protocol *protocol=style_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent)?style_control_protocol_bind_verified_toolbar(w,a->vcl_toolbar_witness):NULL;
         if(protocol && !a->detached){
             a->protocol=protocol;BOOL installed=v->toolbar_install(w,NULL,a,&a->detached);
             if(installed && !a->detached){a->vcl_toolbar_installed=TRUE;InvalidateRect(w,NULL,TRUE);}
@@ -115,7 +116,7 @@ void win16_attachment_post_verified(HWND w,UINT m,attachment *a,const win16_atta
     if(m!=WM_PAINT)return;
     if(a->group_button_candidate && !a->group_button_attempted && !a->detached && a->group_button_witness_owner){
         DWORD saved=GetLastError();a->group_button_attempted=TRUE;
-        style_control_protocol *protocol=win16_control_group_button_identity(w)?style_control_protocol_bind_verified_group_button(w,a->group_button_witness_owner):NULL;
+        style_control_protocol *protocol=style_control_vcl_group_button_identity(w)?style_control_protocol_bind_verified_group_button(w,a->group_button_witness_owner):NULL;
         if(protocol && !a->detached){
             a->protocol=protocol;
             BOOL installed=v->control_install(w,FALSE,FALSE,FALSE,NULL,a,&a->detached);
@@ -314,7 +315,7 @@ BOOL win16_attachment_attached(HWND w,const win16_attachment_lifecycle_services 
     if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    attachment *a=v->lookup(w);return a && (!a->vcl_report_candidate || (a->vcl_report_installed && GetParent(w)==a->vcl_report_parent)) && (!a->cool_candidate || (a->cool_verified && v->cool_identity(w,a))) && (!a->mdi_candidate || (v->lookup(a->mdi_host)==a->mdi_host_attachment && v->mdi_identity(w,a->mdi_parent,a->mdi_host,a->mdi_owner))) && (!a->controlbar_candidate || (a->controlbar_verified && v->controlbar_identity(w,a))) && (!a->box_candidate || (a->box_installed && win16_control_box_identity(w,a->box_owner,a->box_parent))) && (!a->modern_spin || a->modern_spin_verified) && (!a->vb_data_candidate || a->vb_data_edge) && (!a->vb_user_candidate || v->vb_user_label_target(w)) && (!a->static_candidate || a->static_verified) && (!a->scroll_candidate || (a->scroll_installed && GetParent(w)==a->scroll_parent)) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->rich_candidate || (a->rich_installed && v->rich_identity(w,a))) && (!a->bit_candidate || a->bit_verified) && (!a->inplace_candidate || (a->inplace_verified && win16_control_inplace_or_lookup(w,a->inplace_owner,a->inplace_parent))) && (!a->nav_candidate || (a->nav_verified && win16_control_nav_identity(w,a->nav_owner,a->nav_parent))) && (!a->lookup_popup_candidate || (v->lookup(a->lookup_popup_source)==a->lookup_popup_source_attachment && win16_control_lookup_popup_identity(w,a->lookup_popup_source,a->lookup_popup_source_parent,a->lookup_popup_owner))) && (!a->group_frame_candidate || (a->group_frame_verified && !a->group_frame_retired && GetParent(w)==a->group_frame_parent)) && (!a->panel_frame_candidate || (a->panel_frame_verified && !a->panel_frame_retired && GetParent(w)==a->panel_frame_parent));
+    attachment *a=v->lookup(w);return a && (!a->vcl_report_candidate || (a->vcl_report_installed && GetParent(w)==a->vcl_report_parent)) && (!a->cool_candidate || (a->cool_verified && v->cool_identity(w,a))) && (!a->mdi_candidate || (v->lookup(a->mdi_host)==a->mdi_host_attachment && v->mdi_identity(w,a->mdi_parent,a->mdi_host,a->mdi_owner))) && (!a->controlbar_candidate || (a->controlbar_verified && v->controlbar_identity(w,a))) && (!a->box_candidate || (a->box_installed && win16_control_box_identity(w,a->box_owner,a->box_parent))) && (!a->modern_spin || a->modern_spin_verified) && (!a->vb_data_candidate || a->vb_data_edge) && (!a->vb_user_candidate || v->vb_user_label_target(w)) && (!a->static_candidate || a->static_verified) && (!a->scroll_candidate || (a->scroll_installed && GetParent(w)==a->scroll_parent)) && (!a->edit_candidate || a->edit_installed) && (!a->group_button_candidate || a->group_button_installed) && (!a->grid_candidate || a->grid_installed) && (!a->vcl_toolbar_candidate || a->vcl_toolbar_installed) && (!a->track_candidate || a->track_installed) && (!a->tab_candidate || a->tab_installed) && (!a->color_candidate || a->color_installed) && (!a->date_candidate || a->date_installed) && (!a->status_candidate || a->status_installed) && (!a->rich_candidate || (a->rich_installed && v->rich_identity(w,a))) && (!a->bit_candidate || a->bit_verified) && (!a->inplace_candidate || (a->inplace_verified && style_control_vcl_inplace_or_lookup(w,a->inplace_owner,a->inplace_parent))) && (!a->nav_candidate || (a->nav_verified && style_control_vcl_nav_identity(w,a->nav_owner,a->nav_parent))) && (!a->lookup_popup_candidate || (v->lookup(a->lookup_popup_source)==a->lookup_popup_source_attachment && style_control_vcl_lookup_popup_identity(w,a->lookup_popup_source,a->lookup_popup_source_parent,a->lookup_popup_owner))) && (!a->group_frame_candidate || (a->group_frame_verified && !a->group_frame_retired && GetParent(w)==a->group_frame_parent)) && (!a->panel_frame_candidate || (a->panel_frame_verified && !a->panel_frame_retired && GetParent(w)==a->panel_frame_parent));
 }
 void win16_attachment_scroll_changed(HWND w,const win16_attachment_lifecycle_services *v)
 {
@@ -371,14 +372,14 @@ LRESULT win16_attachment_report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR 
     ntw16s_vb_paint file_paint;BOOL file_active=FALSE;
     checklist_draw_scope checklist_scope;BOOL checklist_active=FALSE;
     ++a->calls;
-    if(a->bit_candidate && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && win16_control_bit_identity(list,a->report_module)){
+    if(a->bit_candidate && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && style_control_vcl_bit_identity(list,a->report_module)){
         const DRAWITEMSTRUCT *item=(const DRAWITEMSTRUCT *)l;
         if(item->CtlType==ODT_BUTTON && item->itemAction==ODA_DRAWENTIRE && item->hwndItem==list && item->hDC){
             HWND target=WindowFromDC(item->hDC);
             if(!target || target==list){SetLastError(entry);LRESULT result=v->bit_draw_dispatch(a,w,m,p,l,item);DWORD error=GetLastError();v->release(a);SetLastError(error);return result;}
         }
     }
-    if(a->checklist && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && win16_control_checklist_identity(list)){
+    if(a->checklist && !a->detached && m==WM_DRAWITEM && l && GetParent(list)==w && style_control_vcl_checklist_identity(list)){
         const DRAWITEMSTRUCT *item=(const DRAWITEMSTRUCT *)l;
         if(item->CtlType==ODT_LISTBOX && item->hwndItem==list && item->hDC && item->itemID!=(UINT)-1 &&
             WindowFromDC(item->hDC)==list){
@@ -443,7 +444,7 @@ BOOL win16_attachment_classify_initial(HWND w,DWORD original_style,BOOL ready,BO
     /* These owner-drawn VCL file lists expose LISTBOX as their native class;
      * keep their client callbacks and route only the frame through grid. */
     if(ready && v->control && !v->protocol && (style_control_class_is(w,L"TDirectoryListBox") || style_control_class_is(w,L"TFileListBox")) &&
-       win16_control_grid_identity(w,v->owner,GetParent(w))){v->control=FALSE;v->edit=FALSE;}
+       style_control_vcl_grid_identity(w,v->owner,GetParent(w))){v->control=FALSE;v->edit=FALSE;}
     return TRUE;
 }
 
@@ -504,7 +505,7 @@ HMODULE win16_attachment_observe_native(HWND w,UINT message,WNDPROC proc,const v
     if(message==WM_PAINT && a && paint_window==w &&
        a->group_button_candidate && !a->detached &&
        !a->group_button_attempted && lookup(w)==a &&
-       win16_control_group_button_identity(w)){
+       style_control_vcl_group_button_identity(w)){
         owner=native_control_owner(w,proc,address,L"BUTTON");
         if(owner)a->group_button_witness_owner=owner;
     }
@@ -512,7 +513,7 @@ HMODULE win16_attachment_observe_native(HWND w,UINT message,WNDPROC proc,const v
     if(message==WM_PRINTCLIENT && a && paint_window==w &&
        a->vcl_toolbar_candidate && !a->detached &&
        !a->vcl_toolbar_attempted && lookup(w)==a &&
-       win16_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent) &&
+       style_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent) &&
        GetClassInfoExW(NULL,TOOLBARCLASSNAMEW,&native) && proc==native.lpfnWndProc &&
        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) &&
        caller==a->vcl_toolbar_owner)a->vcl_toolbar_witness=caller;
@@ -615,7 +616,7 @@ win16_attachment_dispatch win16_attachment_dispatch_kind(HWND w,attachment *a,UI
     if(print_clip)return WIN16_ATTACHMENT_DISPATCH_COLOR;
     if(a->modern_spin && spin_message)return WIN16_ATTACHMENT_DISPATCH_SPIN;
     if(((a->box_candidate && !a->box_installed) || a->controlbar_candidate) && !a->detached && m==WM_NCPAINT)return WIN16_ATTACHMENT_DISPATCH_BOX;
-    if(a->inplace_candidate && !a->detached && (m==WM_LBUTTONDOWN || (m==WM_SYSKEYDOWN && p==VK_DOWN && ((ULONG_PTR)l&((ULONG_PTR)1<<29)))) && win16_control_lookup_identity(w,a->inplace_owner,a->inplace_parent))return WIN16_ATTACHMENT_DISPATCH_LOOKUP;
+    if(a->inplace_candidate && !a->detached && (m==WM_LBUTTONDOWN || (m==WM_SYSKEYDOWN && p==VK_DOWN && ((ULONG_PTR)l&((ULONG_PTR)1<<29)))) && style_control_vcl_lookup_identity(w,a->inplace_owner,a->inplace_parent))return WIN16_ATTACHMENT_DISPATCH_LOOKUP;
     if(nested_static || win16_attachment_static_paint(a,m))return WIN16_ATTACHMENT_DISPATCH_STATIC;
     return WIN16_ATTACHMENT_DISPATCH_NATIVE;
 }
@@ -651,14 +652,14 @@ BOOL win16_attachment_group_button_valid(HWND w,attachment *a)
 {
 
     return !a || a->detached || !a->group_button_candidate || !a->group_button_installed ||
-        (a->group_button_parent==GetParent(w) && win16_control_group_button_identity(w));
+        (a->group_button_parent==GetParent(w) && style_control_vcl_group_button_identity(w));
 }
 
 BOOL win16_attachment_group_push_button(HWND w,attachment *a)
 {
     WCHAR name[64];
     return a && !a->detached && a->group_button_candidate && a->group_button_installed &&
-        a->group_button_parent==GetParent(w) && win16_control_group_button_identity(w) &&
+        a->group_button_parent==GetParent(w) && style_control_vcl_group_button_identity(w) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TButton");
 }
 
@@ -666,7 +667,7 @@ BOOL win16_attachment_group_choice_button(HWND w,attachment *a)
 {
     WCHAR name[64];
     return a && !a->detached && a->group_button_candidate && a->group_button_installed &&
-        a->group_button_parent==GetParent(w) && win16_control_group_button_identity(w) &&
+        a->group_button_parent==GetParent(w) && style_control_vcl_group_button_identity(w) &&
         GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TCheckBox") || !lstrcmpW(name,L"TRadioButton") || !lstrcmpW(name,L"TGroupButton"));
 }
 
@@ -706,14 +707,14 @@ BOOL win16_attachment_vb_user_edge_valid(HWND w,attachment *a)
 BOOL win16_attachment_grid_valid(HWND w,attachment *a)
 {
 
-    return !a || a->detached || !a->grid_candidate || !a->grid_installed || win16_control_grid_identity(w,a->grid_owner,a->grid_parent);
+    return !a || a->detached || !a->grid_candidate || !a->grid_installed || style_control_vcl_grid_identity(w,a->grid_owner,a->grid_parent);
 }
 
 BOOL win16_attachment_vcl_toolbar_valid(HWND w,attachment *a)
 {
 
     return !a || a->detached || !a->vcl_toolbar_candidate || !a->vcl_toolbar_installed ||
-        win16_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent);
+        style_control_vcl_toolbar_identity(w,a->vcl_toolbar_owner,a->vcl_toolbar_parent);
 }
 
 BOOL win16_attachment_vcl_tab_valid(HWND w,attachment *a)
@@ -748,7 +749,7 @@ BOOL win16_attachment_inplace_paint(attachment *owner,HWND observed,HDC dc)
 BOOL win16_attachment_checklist_draw_target(checklist_draw_scope *s,HDC dc,const RECT *r,const void *address)
 {
     return s && s->owner && !s->owner->detached &&
-        win16_control_checklist_target(dc,s->dc,s->owner->report_window,s->owner->report_parent,&s->item,r,address,win16_control_checklist_identity);
+        win16_control_checklist_target(dc,s->dc,s->owner->report_window,s->owner->report_parent,&s->item,r,address,style_control_vcl_checklist_identity);
 }
 
 void win16_attachment_box_witness(HWND w,UINT msg,const void *address,attachment *owner,HWND observed,BOOL *witnessed)
