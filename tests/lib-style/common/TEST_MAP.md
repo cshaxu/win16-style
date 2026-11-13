@@ -6,6 +6,7 @@
 | `clip` | `clip.c` (full and nonrectangular clipping, DC mapping restoration, print clip snapshot and failure); Win16 spin paint and color/date print consumers |
 | `paint_frame` | `paint_frame.c` (frame thickness, interior and outside pixels); Win16 basic control frame consumers |
 | `pixel_grid` | `pixel_grid.c` (indexed colors, transparency, brush and fractional scaling); Win16 combo, choice and scroll glyph consumers |
+| `pixel_dib` | `pixel_dib.c` (indexed colors, scaling, clipping and brush preservation); Win16 checklist glyph consumer |
 | `dc_geometry` | `dc_geometry.c` (viewport, mapping and RTL); Win16 control painting consumers |
 | `text_metrics` | `text_metrics.c` (alphabet average and invalid DC); Win16 menu and list consumers |
 | `menu_metrics` | `menu_metrics.c` (native font margin and GDI font restoration); Win16 owner-draw menu consumer |

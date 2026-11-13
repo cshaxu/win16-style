@@ -3859,8 +3859,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "a3cc188ce10ed9d20a0ede3f5cf84fe0f84bd35d9e9a099f4cbdd226516e35e2",
-      "review": "T21 S22 extraction of existing choice glyph presentation; T24 S1 share pixel viewport validation; T26 S1 shared device-context geometry; T26 S1 shared indexed pixel grid"
+      "sha256": "8859b2a5f78a219711d7feb872f2f8fad7e89a99eacb956c32993851be446900",
+      "review": "T21 S22 extraction of existing choice glyph presentation; T24 S1 share pixel viewport validation; T26 S1 shared device-context geometry; T26 S1 shared indexed pixel grid; T26 S1 shared indexed DIB painter"
     },
     {
       "path": "src/lib-style/win16-control/choice_paint.h",
@@ -7964,6 +7964,15 @@
       "sha256": "9a3e6f478bef3f658dc00ad231faa66b7fb82731325d00add42b02205e70690e",
       "disposition": "authored",
       "review": "T26 S1 shared scaled indexed pixel grid painter",
+      "notice": "Project-authored C interface; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/pixel_dib.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "77075b64bea4dfc9e5cbb53b513726b67722ee74fb380584bdb1308e90720a3f",
+      "disposition": "authored",
+      "review": "T26 S1 shared indexed DIB painter",
       "notice": "Project-authored C interface; no imported artwork"
     }
   ]
