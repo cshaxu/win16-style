@@ -42,6 +42,8 @@ VCL CoolBar 窗口身份核验已迁入公共控件组件，Win16 提供附着�
 
 第 12 项已审计：实色矩形边框和像素网格已迁入公共绘制组件并接入 Win16，双位宽干净构建、发布及正式包回归通过，见[边框记录](../history/M0-T26-S1-ordered-12-frame.md)和[网格记录](../history/M0-T26-S1-ordered-12-grid.md)。
 
+第 14 项正在审计：普通像素网格已共用，双位宽 96/144 DPI 清单模型及 VB 清单自建夹具通过；DIB 绘制路径的公共边界待核查。
+
 ## M0 T26 S1 Packet
 
 | Field | Required record |
