@@ -107,7 +107,7 @@ BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
 static void draw(HWND w,control_style *s,HDC dc)
 {
     const win16_control_choice_view view={&s->detached,&s->palette,&s->font,
-        ntw16s_button_type,style_control_is_static,style_control_vb_frame,style_control_vb_button,
+        style_control_button_type,style_control_is_static,style_control_vb_frame,style_control_vb_button,
         ntw16s_group_choice_button,ntw16s_group_push_button};
     win16_control_draw_choice(w,&view,dc);
 }

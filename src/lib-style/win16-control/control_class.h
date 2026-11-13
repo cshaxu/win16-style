@@ -65,6 +65,4 @@ static inline BOOL ntw16s_vb_graphical_button(HWND w)
           style_control_vb5_class(w,L"ThunderRT5CheckBox") || style_control_vb5_class(w,L"ThunderRT5OptionButton")));
 }
 
-static inline UINT ntw16s_button_type(HWND w,DWORD style)
-{return style_control_vb_frame(w)?BS_GROUPBOX:(style&BS_TYPEMASK);}
 #endif

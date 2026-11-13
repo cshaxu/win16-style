@@ -63,6 +63,8 @@ static inline BOOL style_control_list_class(HWND w)
 {WCHAR name[16];return style_control_class_is(w,L"LISTBOX") || (GetClassNameW(w,name,16) && !lstrcmpiW(name,L"ComboLBox"));}
 static inline BOOL style_control_vb_frame(HWND w)
 {return style_control_vb_class(w,L"ThunderRT6Frame") || style_control_vb5_class(w,L"ThunderRT5Frame");}
+static inline UINT style_control_button_type(HWND w,DWORD style)
+{return style_control_vb_frame(w)?BS_GROUPBOX:(style&BS_TYPEMASK);}
 static inline BOOL style_control_vb_edit(HWND w)
 {return style_control_vb_class(w,L"ThunderRT6TextBox") || style_control_vb5_class(w,L"ThunderRT5TextBox");}
 #endif

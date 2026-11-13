@@ -84,6 +84,8 @@ static int child(const WCHAR *runtime_path,BOOL styled,BOOL aware)
     CHECK(!composites(root,runtime,dll,styled));
     HWND group=CreateWindowExW(0,L"ThunderRT6Frame",L"Frame",WS_CHILD|WS_VISIBLE|BS_GROUPBOX,0,0,200,100,root,(HMENU)1,runtime,NULL);CHECK(group);
     HWND button=CreateWindowW(L"ThunderRT6CommandButton",L"&Press",WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON,210,0,100,30,root,(HMENU)2,runtime,NULL);CHECK(button);
+    CHECK(style_control_button_type(group,BS_PUSHBUTTON)==BS_GROUPBOX);
+    CHECK(style_control_button_type(button,WS_CHILD|BS_AUTOCHECKBOX)==BS_AUTOCHECKBOX);
     HWND default_button=CreateWindowW(L"ThunderRT6CommandButton",L"&Default",WS_CHILD|WS_VISIBLE|WS_TABSTOP|BS_DEFPUSHBUTTON,0,120,140,28,root,(HMENU)10,runtime,NULL);CHECK(default_button);
     HWND edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6TextBox",L"native",WS_CHILD|WS_VISIBLE|ES_AUTOHSCROLL,210,40,100,24,root,(HMENU)3,runtime,NULL);CHECK(edit);
     HWND multiline=CreateWindowExW(WS_EX_CLIENTEDGE,L"ThunderRT6TextBox",L"alpha\r\nbeta",WS_CHILD|WS_VISIBLE|ES_MULTILINE|ES_AUTOVSCROLL|WS_VSCROLL|WS_HSCROLL,0,152,140,36,root,(HMENU)11,runtime,NULL);CHECK(multiline);

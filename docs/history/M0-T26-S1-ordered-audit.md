@@ -29,11 +29,11 @@
 | 20 | `src/lib-style/win16-control/combo_paint.h` | `9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca` | 已过关 |
 | 21 | `src/lib-style/win16-control/combo_text.c` | `a42411b0209b1b008311716bade4d572a1df95d633df6060d0fcdd72819d0451` | 已过关 |
 | 22 | `src/lib-style/win16-control/combo_text.h` | `dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0` | 已过关 |
-| 23 | `src/lib-style/win16-control/control_class.h` | `2202c98d94b0220a0d9e360439e7a18742d3a830b6f2a53bd249de959d7da59f` | 审计中 |
+| 23 | `src/lib-style/win16-control/control_class.h` | `c9283ac35cd85c856c219c28145cce706b3406d7f99ed74c027599efbca52969` | 审计中 |
 | 24 | `src/lib-style/win16-control/control_dispatch.c` | `90df43ca6d849e54deb9986a3b45c778c46b0577bdf10283a931c2adb17d6506` | 待审 |
 | 25 | `src/lib-style/win16-control/control_dispatch.h` | `299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8` | 待审 |
 | 26 | `src/lib-style/win16-control/control_glyphs.h` | `75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83` | 待审 |
-| 27 | `src/lib-style/win16-control/control_guard.c` | `701a9d83b7c472b6a1272d7c0b8d12baa85e8adccd0bbdb85bff7647caf2259b` | 待审 |
+| 27 | `src/lib-style/win16-control/control_guard.c` | `caf72ecd2a933f48366021d7a62771f69f75f9480c930ea67d4b49f3965f09f1` | 待审 |
 | 28 | `src/lib-style/win16-control/control_guard.h` | `3f451ee7f28387d3adeeae88676a819cefa4f99e27d9cd6995cf2b00a7a11e13` | 待审 |
 | 29 | `src/lib-style/win16-control/control_install.c` | `7e7618955fc2108280f647562d8e0f7a0c871e4045f3cbc18d57670496efdcf2` | 待审 |
 | 30 | `src/lib-style/win16-control/control_install.h` | `dbe7b18324cb3ff529189f43264fb20504d7cb29adfa0f7b22736a65195f2839` | 待审 |
@@ -299,3 +299,4 @@
 - 公共 `control_class.h` 已实现 VB 类及运行时身份识别；本文件另含 Win16 绘制资格（控件样式、RTL、清单 96/144 DPI 限制）以及 VB Frame 按钮类型映射。须逐函数判断语义能否与绘制器资格拆开，不能整体移动。
 - 直接使用正式发布包和自建窗口运行 96 DPI VB5/VB6 清单夹具：VB5 x86 首次在重入重设父窗口绘制断言失败、重试通过，VB5 x64 通过；VB6 x86 在同一断言失败，VB6 x64 在重入样式变化后的像素断言失败。错误码 126 不能据此认定根因；失败和不稳定项不计通过，仍需复核。未创建隔离桌面。
 - 后续对照：同一测试、自建窗口及 VB5/VB6 夹具在无样式时双位宽均通过；因此未能把失败归因于夹具的无样式基线，尚不能确定具体根因。
+- 在审计过程中，VB Frame 的按钮分组类型映射已移入 `common/control_class.h`，两个 Win16 生产调用方接入；其他尚未审计的调用文件仅调整接线。双位宽干净构建、先发布和正式包自建 VB Frame/普通按钮夹具通过，见[交付记录](M0-T26-S1-ordered-23-class.md)；清单重入失败仍未解决，故本项继续审计。

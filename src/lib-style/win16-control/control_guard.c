@@ -44,7 +44,7 @@ BOOL win16_control_guard_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM 
 
 BOOL win16_control_supported(HWND w,HWND common_dialog_combo_pending)
 {
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=ntw16s_button_type(w,style);
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),type=style_control_button_type(w,style);
     if(ntw16s_vb_owner_file(w) || (w==common_dialog_combo_pending && style_control_dialog_combo_valid(w,GetParent(w),style_control_is_combo)))return TRUE;
     if((style_control_vb_checkbox(w) || style_control_vb_option(w)) &&
         !ntw16s_vb_plain_choice(w) && !ntw16s_vb_graphical_choice(w))return FALSE;
