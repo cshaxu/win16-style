@@ -15,7 +15,7 @@
 | 6 | `src/lib-style/win16-common/palette.c` | `c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae` | 已过关 |
 | 7 | `src/lib-style/win16-common/palette.h` | `f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36` | 已过关 |
 | 8 | `src/lib-style/win16-control/attachment_guard.c` | `77951c6a64d1d4e990cf4e09f76f2c93a9d6d0f96bf2bb03c268c0f09d3b0214` | 已过关 |
-| 9 | `src/lib-style/win16-control/attachment_state.h` | `764d7929b4d856293a0483e173aaad03cb7b7b0d9e61f03f2357057cfe59f3d2` | 待审 |
+| 9 | `src/lib-style/win16-control/attachment_state.h` | `764d7929b4d856293a0483e173aaad03cb7b7b0d9e61f03f2357057cfe59f3d2` | 已过关 |
 | 10 | `src/lib-style/win16-control/basic_message.c` | `2bc39526c285621a7d38b19bf9e61d56f05b64f228d3ad4912911d26b9a48b3e` | 待审 |
 | 11 | `src/lib-style/win16-control/basic_message.h` | `22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c` | 待审 |
 | 12 | `src/lib-style/win16-control/basic_paint.c` | `b253f2984bb7ee9237dab4a8521aa7d256996f959539ef0fab27b22e8721805b` | 待审 |
@@ -215,3 +215,9 @@
 - 打印 DC 剪裁快照的捕获、应用与资源释放已迁入公共 `clip.h`，Win16 实际接入；双位宽干净构建、发布和正式包回归通过，见[交付记录](M0-T26-S1-ordered-08-clip.md)。第 9 项头文件因接口接线发生必要修改，哈希已更新但尚未审计。
 - VCL MDI 的窗口关系、线程、模块和样式位核验迁入公共控件身份组件，原 Win16 函数删除；调用方提供宿主附着判断。双位宽干净构建、发布和正式包回归通过，见[交付记录](M0-T26-S1-ordered-08-mdi.md)。
 - VCL CoolBar 的窗口、线程和模块归属验证迁入公共控件身份组件，原 Win16 函数删除；调用方提供当前附着对象判断。双位宽干净构建、发布和正式包回归通过，见[交付记录](M0-T26-S1-ordered-08-cool.md)。
+
+## 009 `win16-control/attachment_state.h`：已过关
+
+- 职责与调用：定义 Win16 的控件附着状态、候选角色、字体、重入引用，以及第 8 项各分派和生命周期回调契约；直接由 `attachment_guard.c`、产品 `ntw16s-dll/attachment.c` 和控件独立链接测试包含。
+- 处置：状态组合及安装回调依赖 Win16 调色、字体和候选策略，保留风格侧；独立通用协议、剪裁快照和身份检查已由公共头提供。该头不反向包含产品私有头；将整个状态结构上移会把 Win16 角色和资源策略暴露给其他风格。本次无产品源码修改。
+- 验证：双位宽重新编译并运行 `core-win16-control-link`，独立链接、附着资格和分派优先级通过；第 8 项的双位宽产品路径及失败/重入回归见[函数盘点](M0-T26-S1-ordered-08-inventory.md)。不表示所有状态组合、真实第三方程序或其他风格已验证。
