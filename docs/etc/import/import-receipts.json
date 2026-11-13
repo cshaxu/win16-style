@@ -3931,8 +3931,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "1ce35d1d1bd56973090448756aea71a6887029dc7fa37c774858fb41751d1d45",
-      "review": "T21 S22 extraction of existing combo presentation; T21 S22 native embedded combo button painter extracted; T26 S1 shared solid frame painter; T26 S1 direct shared painter include"
+      "sha256": "e9fa477018441ec1b29a2f25e83d523e88d564e7dc670e05196984661bdc552a",
+      "review": "T21 S22 extraction of existing combo presentation; T21 S22 native embedded combo button painter extracted; T26 S1 shared solid frame painter; T26 S1 direct shared painter include; T26 S1 shared window text snapshot"
     },
     {
       "path": "src/lib-style/win16-control/combo_paint.h",
@@ -4003,8 +4003,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "d8ce34cb9f0a6f30e575df343e8616956231f832cad8f9c59cbe9f4429fbf6bf",
-      "review": "T21 S22 extraction of standard button and static presentation; T26 S1 shared icon size and resource cleanup"
+      "sha256": "c369bc99d500f668a91c8f354503b707e581c4938b709c9469f022e8ed709d42",
+      "review": "T21 S22 extraction of standard button and static presentation; T26 S1 shared icon size and resource cleanup; T26 S1 shared window text snapshot"
     },
     {
       "path": "src/lib-style/win16-control/choice_view.h",
@@ -7982,6 +7982,15 @@
       "sha256": "d771a06047567f0de8d5824df96a3029c068a9f45c9cff2718e310b1bd21d872",
       "disposition": "authored",
       "review": "T26 S1 shared icon dimensions and bitmap cleanup",
+      "notice": "Project-authored C interface; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/window_text.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c95e7c2ccba330fc3e395970bbd0b3892e010807d3ad8e51f8db4d8d96115e99",
+      "disposition": "authored",
+      "review": "T26 S1 shared window text snapshot",
       "notice": "Project-authored C interface; no imported artwork"
     }
   ]

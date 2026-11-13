@@ -3,12 +3,13 @@
 #include "other_paint.h"
 #include "../common/control_protocol.h"
 #include "../common/icon_size.h"
+#include "../common/window_text.h"
 #include <uxtheme.h>
 #include <stdlib.h>
 
 void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC dc)
 {
-    RECT r,glyph,label,focus;int saved,x,y,row,column,height,length;
+    RECT r,glyph,label,focus;int saved,x,y,row,column,height;
     UINT dpi=GetDpiForWindow(w);DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
     UINT type=view->button_type(w,style);LRESULT state,check;WCHAR *text;HFONT font;TEXTMETRICW tm;
     BOOL radio=type==BS_RADIOBUTTON || type==BS_AUTORADIOBUTTON;
@@ -30,9 +31,8 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
         RestoreDC(dc,saved);return;
     }
     state=label_control?0:SendMessageW(w,BM_GETSTATE,0,0);check=label_control?0:SendMessageW(w,BM_GETCHECK,0,0);
-    length=GetWindowTextLengthW(w);text=calloc((size_t)length+1,sizeof(WCHAR));
+    text=style_window_text_copy(w);
     if(!text)return;
-    GetWindowTextW(w,text,length+1);
     font=*view->font && (view->vb_frame(w) || view->vb_button(w) ||
         style_control_protocol_is(w,L"BUTTON"))?
         *view->font:(HFONT)SendMessageW(w,WM_GETFONT,0,0);

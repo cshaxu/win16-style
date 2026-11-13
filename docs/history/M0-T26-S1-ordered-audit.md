@@ -22,10 +22,10 @@
 | 13 | `src/lib-style/win16-control/basic_paint.h` | `34d6b0857ae92824d63596a060e8191d25e4b95956446f1a57c6b77946186fe6` | 已过关 |
 | 14 | `src/lib-style/win16-control/choice_paint.c` | `8859b2a5f78a219711d7feb872f2f8fad7e89a99eacb956c32993851be446900` | 已过关 |
 | 15 | `src/lib-style/win16-control/choice_paint.h` | `6efc933f3e2293f106275bcaa13ce66067da445af567a91ef3c35c069677902c` | 已过关 |
-| 16 | `src/lib-style/win16-control/choice_view.c` | `d8ce34cb9f0a6f30e575df343e8616956231f832cad8f9c59cbe9f4429fbf6bf` | 审计中 |
+| 16 | `src/lib-style/win16-control/choice_view.c` | `c369bc99d500f668a91c8f354503b707e581c4938b709c9469f022e8ed709d42` | 已过关 |
 | 17 | `src/lib-style/win16-control/choice_view.h` | `02a9c00c937c411be9e66158a56bbbfdc7dac5f82e07e4591cb24761947bc92d` | 待审 |
 | 18 | `src/lib-style/win16-control/combo_glyph.h` | `75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34` | 待审 |
-| 19 | `src/lib-style/win16-control/combo_paint.c` | `1ce35d1d1bd56973090448756aea71a6887029dc7fa37c774858fb41751d1d45` | 待审 |
+| 19 | `src/lib-style/win16-control/combo_paint.c` | `e9fa477018441ec1b29a2f25e83d523e88d564e7dc670e05196984661bdc552a` | 待审 |
 | 20 | `src/lib-style/win16-control/combo_paint.h` | `9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca` | 待审 |
 | 21 | `src/lib-style/win16-control/combo_text.c` | `4d95a3cc8238c3e3a194dc64f1ee1d3c56b8e296e29469c6bd0229e85bb5e63c` | 待审 |
 | 22 | `src/lib-style/win16-control/combo_text.h` | `dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0` | 待审 |
@@ -256,7 +256,8 @@
 - 职责与调用：声明 Win16 清单资格、VB 清单和选择图案接口；`choice_view.c`、`attachment_guard.c`、`special_paint.c` 和产品文本注入入口直接使用。接口依赖 Win16 调色与清单策略，保留风格侧；通用像素网格及 DIB 接口位于公共组件。
 - 处置与验证：移除产品 `controls.c` 与 `attachment.c` 中未使用的此头包含。双位宽增量构建通过，两个产品源文件在两种位宽的四个目标文件修改前后 SHA-256 全部一致；沿用第 14 项已发布包和双位宽、96/144 DPI 清单回归。真实 VB 程序和其他风格仍未覆盖。
 
-## 016 `win16-control/choice_view.c`：审计中
+## 016 `win16-control/choice_view.c`：已过关
 
 - 职责：产品 `controls.c` 构造视图后调用，用 Win16 调色、图案、字体和布局绘制静态、按钮及选择控件。
-- 已抽出：静态图标和按钮图标重复的尺寸读取及 `GetIconInfo` 位图释放迁入公共 `icon_size.h`，两个实际调用方直接使用；`other_paint.c` 仅调整接线和摘要，仍待按顺序审计。双位宽干净构建、发布及正式包回归通过，见[交付记录](M0-T26-S1-ordered-16-icon.md)。选择控件与组合框重复的窗口文本读取仍须核对。
+- 已抽出：静态图标和按钮图标重复的尺寸读取及 `GetIconInfo` 位图释放迁入公共 `icon_size.h`，两个实际调用方直接使用；`other_paint.c` 仅调整接线和摘要，仍待按顺序审计。双位宽干净构建、发布及正式包回归通过，见[交付记录](M0-T26-S1-ordered-16-icon.md)。
+- 选择控件与组合框重复的窗口文本分配和读取迁入公共 `window_text.h`，调用方仍负责释放；组合框文件仅改接线并更新摘要，尚待按顺序审计。双位宽干净构建、发布及正式包回归通过，见[交付记录](M0-T26-S1-ordered-16-text.md)。剩余图案选择、颜色、字体、位置和焦点绘制为 Win16 风格策略；静态图标产品路径、真实第三方程序和其他风格未单独验证。
