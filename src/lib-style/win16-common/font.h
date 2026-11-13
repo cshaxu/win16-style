@@ -17,8 +17,6 @@ BOOL win16_style_system_try_retain(HFONT font);
 HFONT win16_style_vb_font_acquire(HFONT source);
 /* Private menu lease: System16 uniformly scaled by window DPI. */
 HFONT win16_style_menu_font_acquire(UINT dpi);
-/* Replace the owned title/menu leases together; leave them intact on failure. */
-BOOL win16_control_refresh_frame_fonts(HWND window,UINT *dpi,HFONT *title,HFONT *menu);
 /* Single-calendar text at the witnessed 96-DPI size. */
 HFONT win16_style_calendar_font_acquire(void);
 void win16_style_system_release(HFONT font);

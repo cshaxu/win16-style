@@ -905,7 +905,7 @@
       "path": "src/lib-style/win16-common/font.h",
       "source": "src/ntw16s-dll/font.h",
       "source_blob": "772af2b70b85d897ea842003229b5d3e5795803e",
-      "sha256": "9f4a3ad4bb0489013f44483dcdc155407ae689241db1faca401a4989efec2a37",
+      "sha256": "63256a509950663b489a187ca6a912510fd5e8e658d8b864d86c7e3f53e04fd3",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P128 bounded calendar text; T21 S22 font library extraction and independent API include; T24 S1 removed forwarding header src/ntw16s-dll/font.h SHA256 56294291f4c2a046f8dc2ff2e9ab7b557161ef3ea963bf42ba51c45629341cce",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1112,7 +1112,7 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "aed382cf9328a13be58e0530950c37eba4de598d8adaf7198634b39d00dabaec",
+      "sha256": "d9eb1cf41c275f68287075caf2eb56d1609ab5ea7a74e3378a8362d630f9422d",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T21 S22 frame painter extracted; T21 S22 caption and sizing-band presentation extracted with live state references; T21 S22 frame presentation extraction, preserving fault instrumentation; T21 S22 buffered frame/menu/button presentation extraction; T21 S22 frame layout and high-contrast palette extraction; T26 S1 share frame thread identity; T26 S1 shared XAML work-area frame protection",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -4021,7 +4021,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "e7226ff7cf28f2f369a2a93dc90b4029681128ef8dbe9dfecdfc6ac549d11720",
+      "sha256": "37640fb43a903fa8af1cfeaf6d38b78d48b398f77e0c8bafe79d554e9e19cb76",
       "review": "T21 S22 standalone whole-archive linkage and original glyph smoke test; T26 S1 shared classic dialog combo eligibility"
     },
     {
@@ -4451,7 +4451,7 @@
       "path": "src/lib-style/win16-window/frame_font.c",
       "source": null,
       "source_blob": null,
-      "sha256": "79179fabee2ffd30ddc3f0c438905c0f1ff9553a31ea747735ecfd1dd97d4487",
+      "sha256": "46964bbb4e795df8818ff7009fe33d9295fec1f39116122cac74af3016308c87",
       "disposition": "authored",
       "review": "T21 S24 extract frame font policy and preserve independent font fixture compiler contract; T23 S6 Chromium composed frame and stock menu font fallback",
       "notice": "Project-authored C implementation; no imported artwork"
@@ -5936,7 +5936,7 @@
       "path": "src/lib-style/win16-window-uwp/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "92887166ee05fc9829ce16a18aceece6a779461f00308f7a541a17236079b20f",
+      "sha256": "611847b338b1fddda29fe8997a11c2c3af6436062e2f70963e6394cbdd4eaae6",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling; T23 S4 console and Terminal window adaptation and native tests; T23 S7 maximize work-area geometry regression and fix; T26 S1 share DIB buffer across UWP and Win2000; T26 S1 shared window thread identity; T26 S1 shared resize cursor mapping; T26 S1 shared surface refresh lifecycle; T26 S1 shared host detach and reentrant lifetime",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -7920,6 +7920,15 @@
       "disposition": "authored",
       "review": "T26 S1 ordered font audit: shared ANSI FNT v2 serialization",
       "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/win16-window/frame_font.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "dcd05c8d415169bc70cd3c6884cf8eec8159e5cf7c0806e4fda546845b30243b",
+      "disposition": "authored",
+      "review": "T26 S1 ordered audit: frame font declaration ownership",
+      "notice": "Project-authored C interface; no imported artwork"
     }
   ]
 }

@@ -1,6 +1,6 @@
 # T26 S1 Win16 库顺序审计台账
 
-用户要求按文件顺序逐个审计，不再按零散候选跳转。基线 `f157e02a` 加入本轮已在构建中的列表状态变更；此清单记录建立时每个文件的 SHA-256。
+用户要求按文件顺序逐个审计，不再按零散候选跳转。基线 `f157e02a` 加入本轮已在构建中的列表状态变更；此清单记录当前文件 SHA-256；第 3 项新增 `win16-window/frame_font.h`，总数由 150 增至 151。
 按目录名及相对路径升序处理全部文件，包括头文件；目录 `win16-dialog` 当前为空，相关产品对话框入口在库文件之后另行逐项审计。文件移动、删除或新增时更新清单并保留对应关系，不能静默遗漏。
 
 状态：待审、审计中、待修复/待验证、已过关。只有逐项记录职责、实际调用方、风格与公共边界、代码处置、验证和限制后才能标记已过关；历史局部结论可以作为证据，但须按该顺序重新核对。
@@ -9,7 +9,7 @@
 | ---: | --- | --- | --- |
 | 1 | `src/lib-style/win16-common/control_api.h` | `3c26e7bdd7cc1fa995bc9aab43e321c70234a369577ea4e396ea1365429efd84` | 已过关 |
 | 2 | `src/lib-style/win16-common/font.c` | `8246cf5cd78b8516e342543d6609a193b8f2e98c3c4d352cd83d3a8ebf21979c` | 已过关 |
-| 3 | `src/lib-style/win16-common/font.h` | `9f4a3ad4bb0489013f44483dcdc155407ae689241db1faca401a4989efec2a37` | 待审 |
+| 3 | `src/lib-style/win16-common/font.h` | `63256a509950663b489a187ca6a912510fd5e8e658d8b864d86c7e3f53e04fd3` | 已过关 |
 | 4 | `src/lib-style/win16-common/layout.c` | `83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede` | 待审 |
 | 5 | `src/lib-style/win16-common/layout.h` | `a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3` | 待审 |
 | 6 | `src/lib-style/win16-common/palette.c` | `c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae` | 待审 |
@@ -120,43 +120,44 @@
 | 111 | `src/lib-style/win16-control/vcl_identity.h` | `0d84b3a319f00e86220897002de33db0a7e635392a31e98ba5e94755824335e0` | 待审 |
 | 112 | `src/lib-style/win16-control/vcl_native_paint.c` | `92de4090a1b0199510d6428dbe9c03886b09a4a32570155904f0fdc880b85d6d` | 待审 |
 | 113 | `src/lib-style/win16-control/vcl_native_paint.h` | `2372cae31d72c1b5d0381905fa077efdcbaf785cb484e8fec6c876731e4aa06d` | 待审 |
-| 114 | `src/lib-style/win16-window-uwp/frame.c` | `92887166ee05fc9829ce16a18aceece6a779461f00308f7a541a17236079b20f` | 待审 |
+| 114 | `src/lib-style/win16-window-uwp/frame.c` | `611847b338b1fddda29fe8997a11c2c3af6436062e2f70963e6394cbdd4eaae6` | 待审 |
 | 115 | `src/lib-style/win16-window-uwp/frame.h` | `00da809635b3781756d1760ce368b241259267eeca36e77d99cff117c0c5fbe4` | 待审 |
 | 116 | `src/lib-style/win16-window-uwp/frame_layout.c` | `a345511d535bda17c081e1fce4432e2b4d775a532b08b3648fae9533fded3960` | 待审 |
 | 117 | `src/lib-style/win16-window-uwp/frame_layout.h` | `50cab3768287cf12f5a60008ce382293a983f26070546ea5033303385f9f41e8` | 待审 |
 | 118 | `src/lib-style/win16-window/frame_buttons.h` | `e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5` | 待审 |
 | 119 | `src/lib-style/win16-window/frame_dispatch.c` | `6b057e074a4444de0f88d9917d90c99b77d7e493877e957b4097085831a274a9` | 待审 |
 | 120 | `src/lib-style/win16-window/frame_dispatch.h` | `b94c3a6b62a3904d11eafe719d9d49489a4f9495ee947d2b14310f4de7a932f5` | 待审 |
-| 121 | `src/lib-style/win16-window/frame_font.c` | `79179fabee2ffd30ddc3f0c438905c0f1ff9553a31ea747735ecfd1dd97d4487` | 待审 |
-| 122 | `src/lib-style/win16-window/frame_input.c` | `206a0c8f95f1b972aa4de7b203516c3caca0bc8678b26312b6edbd826bcaf45f` | 待审 |
-| 123 | `src/lib-style/win16-window/frame_input.h` | `2725920d1159d39153d0bfac2e7e94d86aa79c8e725fdd1bcb12f0ae8fd45233` | 待审 |
-| 124 | `src/lib-style/win16-window/frame_layout.c` | `cf08844671dd5c1b46e43e61abca08255821b7399a90dba11c87bc5b68bf35d3` | 待审 |
-| 125 | `src/lib-style/win16-window/frame_layout.h` | `aa4138b097b5a81190eb63fdcde855b0e3659f5d49d6bccd18074755a9147e1b` | 待审 |
-| 126 | `src/lib-style/win16-window/frame_lifecycle.c` | `2372e7e3a44488936fac5fd1c66c9a6742191177963338a08c246492e5584db2` | 待审 |
-| 127 | `src/lib-style/win16-window/frame_lifecycle.h` | `9471ceb5aab4c90b11becf74dfbe1969bb2faa3526e3eeff956cf25c7cedddb8` | 待审 |
-| 128 | `src/lib-style/win16-window/frame_message.c` | `3fb669f9e780edd100c1d0d517cefde41e512db1186766e5441a6c4f5c708445` | 待审 |
-| 129 | `src/lib-style/win16-window/frame_message.h` | `dd42ca6758f2e5fc5664848f34081295680653792e39b74399d4e0719314d347` | 待审 |
-| 130 | `src/lib-style/win16-window/frame_paint.c` | `0ce5a283cd055ef454254f175b05134c83eec83449ceb438aa97be1226a231f2` | 待审 |
-| 131 | `src/lib-style/win16-window/frame_paint.h` | `e9324c74dcd59cfe6c9af7cd1bffc467b4020ddbc1c1da375a57a0546c5eb5fc` | 待审 |
-| 132 | `src/lib-style/win16-window/frame_state.c` | `426ea9b1ed8dfc2c524f88da9221d31eb11f30515f7920dd31c4bd882573bde1` | 待审 |
-| 133 | `src/lib-style/win16-window/frame_state.h` | `9078c5a86c45fafb6858249c30f2ab0149e5991d9c884e044e78772a12f53576` | 待审 |
-| 134 | `src/lib-style/win16-window/frame_view.c` | `55cc044e31a20351a5cf53d5c110c85f7810c82d79dbc0de82de233c22cdaf21` | 待审 |
-| 135 | `src/lib-style/win16-window/frame_view.h` | `6748a2c8636037c3dade81b965871c350be5dcc616d61368008746b78efb6ddb` | 待审 |
-| 136 | `src/lib-style/win16-window/menu_bar.c` | `47d105dd8bdd47c99e7ff8574c6958b20444b134ad303eb540532017ef6494b6` | 待审 |
-| 137 | `src/lib-style/win16-window/menu_bar.h` | `5792fc73118ef17bc7f59700d461a47e4ff6a499d4354b8042e321e8f169abfa` | 待审 |
-| 138 | `src/lib-style/win16-window/menu_bar_paint.c` | `392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94` | 待审 |
-| 139 | `src/lib-style/win16-window/menu_glyphs.h` | `03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e` | 待审 |
-| 140 | `src/lib-style/win16-window/menu_items.c` | `b71c31aa23818810887e4c5630e80fcb98cb79b1cd03c930290a41cd6b49e162` | 待审 |
-| 141 | `src/lib-style/win16-window/menu_items.h` | `8eb73d3ca798cc0561f25c1603c4d94807d1ae154cf17d7bbc07e89148d726da` | 待审 |
-| 142 | `src/lib-style/win16-window/menu_iteration.c` | `3f68b0c46f13505d0e141955d2734c40b486e7c476e15ce9213be9bdb119865e` | 待审 |
-| 143 | `src/lib-style/win16-window/menu_iteration.h` | `76f030d3ab0efb853d871357a0e4e87b60dc5c3f991f7a93f3b45b5cb14fad5b` | 待审 |
-| 144 | `src/lib-style/win16-window/menu_message.c` | `100325c5f1a6030c9a823d6d9edb4a1e53bc5b1435b85208ac5d3c8555727826` | 待审 |
-| 145 | `src/lib-style/win16-window/menu_message.h` | `deaedbf7c25bbebf64e892ad7f647cb37a6e19944eef1c73f5dece6673d95b79` | 待审 |
-| 146 | `src/lib-style/win16-window/menu_paint.c` | `00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84` | 待审 |
-| 147 | `src/lib-style/win16-window/menu_paint.h` | `590f81afb53614015b31baf3fd06ac3643175ef346c2deee94ea8442a3591e02` | 待审 |
-| 148 | `src/lib-style/win16-window/menu_scope.c` | `d10f1420bc829c4ec769cfcc5b627908450f3a76c9e79d615858a8b6a66a58b9` | 待审 |
-| 149 | `src/lib-style/win16-window/menu_scope.h` | `e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699` | 待审 |
-| 150 | `src/lib-style/win16-window/win16_style.h` | `5e927143c2ebae5ff80e4b36cb125c5fdd1fbaf3a02d3d76a0a1c9c05765ecd0` | 待审 |
+| 121 | `src/lib-style/win16-window/frame_font.c` | `46964bbb4e795df8818ff7009fe33d9295fec1f39116122cac74af3016308c87` | 待审 |
+| 122 | `src/lib-style/win16-window/frame_font.h` | `dcd05c8d415169bc70cd3c6884cf8eec8159e5cf7c0806e4fda546845b30243b` | 待审 |
+| 123 | `src/lib-style/win16-window/frame_input.c` | `206a0c8f95f1b972aa4de7b203516c3caca0bc8678b26312b6edbd826bcaf45f` | 待审 |
+| 124 | `src/lib-style/win16-window/frame_input.h` | `2725920d1159d39153d0bfac2e7e94d86aa79c8e725fdd1bcb12f0ae8fd45233` | 待审 |
+| 125 | `src/lib-style/win16-window/frame_layout.c` | `cf08844671dd5c1b46e43e61abca08255821b7399a90dba11c87bc5b68bf35d3` | 待审 |
+| 126 | `src/lib-style/win16-window/frame_layout.h` | `aa4138b097b5a81190eb63fdcde855b0e3659f5d49d6bccd18074755a9147e1b` | 待审 |
+| 127 | `src/lib-style/win16-window/frame_lifecycle.c` | `2372e7e3a44488936fac5fd1c66c9a6742191177963338a08c246492e5584db2` | 待审 |
+| 128 | `src/lib-style/win16-window/frame_lifecycle.h` | `9471ceb5aab4c90b11becf74dfbe1969bb2faa3526e3eeff956cf25c7cedddb8` | 待审 |
+| 129 | `src/lib-style/win16-window/frame_message.c` | `3fb669f9e780edd100c1d0d517cefde41e512db1186766e5441a6c4f5c708445` | 待审 |
+| 130 | `src/lib-style/win16-window/frame_message.h` | `dd42ca6758f2e5fc5664848f34081295680653792e39b74399d4e0719314d347` | 待审 |
+| 131 | `src/lib-style/win16-window/frame_paint.c` | `0ce5a283cd055ef454254f175b05134c83eec83449ceb438aa97be1226a231f2` | 待审 |
+| 132 | `src/lib-style/win16-window/frame_paint.h` | `e9324c74dcd59cfe6c9af7cd1bffc467b4020ddbc1c1da375a57a0546c5eb5fc` | 待审 |
+| 133 | `src/lib-style/win16-window/frame_state.c` | `426ea9b1ed8dfc2c524f88da9221d31eb11f30515f7920dd31c4bd882573bde1` | 待审 |
+| 134 | `src/lib-style/win16-window/frame_state.h` | `9078c5a86c45fafb6858249c30f2ab0149e5991d9c884e044e78772a12f53576` | 待审 |
+| 135 | `src/lib-style/win16-window/frame_view.c` | `55cc044e31a20351a5cf53d5c110c85f7810c82d79dbc0de82de233c22cdaf21` | 待审 |
+| 136 | `src/lib-style/win16-window/frame_view.h` | `6748a2c8636037c3dade81b965871c350be5dcc616d61368008746b78efb6ddb` | 待审 |
+| 137 | `src/lib-style/win16-window/menu_bar.c` | `47d105dd8bdd47c99e7ff8574c6958b20444b134ad303eb540532017ef6494b6` | 待审 |
+| 138 | `src/lib-style/win16-window/menu_bar.h` | `5792fc73118ef17bc7f59700d461a47e4ff6a499d4354b8042e321e8f169abfa` | 待审 |
+| 139 | `src/lib-style/win16-window/menu_bar_paint.c` | `392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94` | 待审 |
+| 140 | `src/lib-style/win16-window/menu_glyphs.h` | `03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e` | 待审 |
+| 141 | `src/lib-style/win16-window/menu_items.c` | `b71c31aa23818810887e4c5630e80fcb98cb79b1cd03c930290a41cd6b49e162` | 待审 |
+| 142 | `src/lib-style/win16-window/menu_items.h` | `8eb73d3ca798cc0561f25c1603c4d94807d1ae154cf17d7bbc07e89148d726da` | 待审 |
+| 143 | `src/lib-style/win16-window/menu_iteration.c` | `3f68b0c46f13505d0e141955d2734c40b486e7c476e15ce9213be9bdb119865e` | 待审 |
+| 144 | `src/lib-style/win16-window/menu_iteration.h` | `76f030d3ab0efb853d871357a0e4e87b60dc5c3f991f7a93f3b45b5cb14fad5b` | 待审 |
+| 145 | `src/lib-style/win16-window/menu_message.c` | `100325c5f1a6030c9a823d6d9edb4a1e53bc5b1435b85208ac5d3c8555727826` | 待审 |
+| 146 | `src/lib-style/win16-window/menu_message.h` | `deaedbf7c25bbebf64e892ad7f647cb37a6e19944eef1c73f5dece6673d95b79` | 待审 |
+| 147 | `src/lib-style/win16-window/menu_paint.c` | `00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84` | 待审 |
+| 148 | `src/lib-style/win16-window/menu_paint.h` | `590f81afb53614015b31baf3fd06ac3643175ef346c2deee94ea8442a3591e02` | 待审 |
+| 149 | `src/lib-style/win16-window/menu_scope.c` | `d10f1420bc829c4ec769cfcc5b627908450f3a76c9e79d615858a8b6a66a58b9` | 待审 |
+| 150 | `src/lib-style/win16-window/menu_scope.h` | `e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699` | 待审 |
+| 151 | `src/lib-style/win16-window/win16_style.h` | `5e927143c2ebae5ff80e4b36cb125c5fdd1fbaf3a02d3d76a0a1c9c05765ecd0` | 待审 |
 
 ## 001 `win16-common/control_api.h`：已过关
 
@@ -171,3 +172,9 @@
 - 分类：字形选择、缩放、字宽、DPI、菜单和 VB 策略属于 Win16；ANSI FNT v2 字节编码不依赖风格。
 - 处置：两处重复序列化抽入 `common/bitmap_font.h`，Win16 原生成路径直接使用；线程局部租约仍绑定 Win16 字体策略。
 - 验证：双位宽正式 DLL 的格式、租约及完整字体布局矩阵通过；其他风格字体和真实现代应用未覆盖，见[第 2 项记录](M0-T26-S1-ordered-02.md)。
+
+## 003 `win16-common/font.h`：已过关
+
+- 职责：声明 Win16 位图字体获取、释放、来源映射和风格租约；产品、Win16 窗口及控件依赖这些接口。
+- 问题与处置：窗口标题和菜单字体刷新函数实现于 `win16-window/frame_font.c`，其声明原本错误地放在本基础头；已迁至同目录新增的 `frame_font.h`，各实际调用方直接包含该头。字体租约声明保留在 Win16，导出宏仍由顺序审计第 1 项统一。
+- 增量验证：双位宽公共基础库、窗口库、控件库链接测试通过；正式同快照构建、发布及复测通过，见[第 3 项记录](M0-T26-S1-ordered-03.md)；真实可见现代窗口不在本次覆盖。

@@ -7,6 +7,7 @@
 #include "lib-style/common/frame.h"
 #include "lib-win32/style/window_identity.h"
 #include "lib-style/win16-window/frame_view.h"
+#include "lib-style/win16-window/frame_font.h"
 #include "lib-style/win16-common/font.h"
 #include "lib-style/win16-window/menu_message.h"
 #include <commctrl.h>

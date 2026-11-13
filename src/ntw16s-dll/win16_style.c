@@ -13,6 +13,7 @@
 #include "../lib-style/win16-window/frame_dispatch.h"
 #include "../lib-style/win16-window/frame_input.h"
 #include "../lib-style/win16-window/frame_layout.h"
+#include "../lib-style/win16-window/frame_font.h"
 #include "lib-style/common/present.h"
 #include "lib-style/common/frame.h"
 #include "lib-win32/style/window_identity.h"

@@ -6,6 +6,7 @@
 #include "lib-style/win16-window/menu_bar.h"
 #include "lib-style/win16-common/font.h"
 #include "lib-style/win16-window/frame_layout.h"
+#include "lib-style/win16-window/frame_font.h"
 #include "lib-style/win16-window/frame_view.h"
 #include "lib-style/common/frame.h"
 #include "lib-style/win16-window/frame_state.h"
