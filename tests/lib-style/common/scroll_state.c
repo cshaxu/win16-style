@@ -4,6 +4,9 @@ static BOOL read_info(HWND window,int bar,LPSCROLLINFO info)
 {return GetScrollInfo(window,bar,info);}
 static BOOL fail_info(HWND window,int bar,LPSCROLLINFO info)
 {(void)window;(void)bar;(void)info;return FALSE;}
+static LONG maximum=65535,minimum=0;static UINT page=1;
+static BOOL range_info(HWND window,int bar,LPSCROLLINFO info)
+{(void)window;if(bar!=SB_HORZ)return FALSE;info->nMin=minimum;info->nMax=maximum;info->nPage=page;return TRUE;}
 typedef struct paint_state {HDC expected;unsigned count;BOOL valid;} paint_state;
 static void paint(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
 {
@@ -31,6 +34,17 @@ int main(void)
     HWND root=CreateWindowW(L"STATIC",L"",WS_POPUP|WS_VSCROLL,0,0,120,100,NULL,NULL,instance,NULL);
     HWND scroll=root?CreateWindowW(L"SCROLLBAR",L"",WS_CHILD|SBS_HORZ,0,0,100,20,root,NULL,instance,NULL):NULL;
     if(!root || !scroll){if(root)DestroyWindow(root);return 1;}
+    HWND list=CreateWindowW(L"LISTBOX",L"",WS_CHILD|LBS_MULTICOLUMN,0,0,80,40,root,NULL,instance,NULL);
+    HWND edit=CreateWindowW(L"EDIT",L"one",WS_CHILD|ES_MULTILINE,0,0,80,40,root,NULL,instance,NULL);
+    BOOL protocol=list && edit && style_scroll_horizontal_thumb_messages(list,range_info) &&
+        !style_scroll_horizontal_thumb_messages(list,fail_info) &&
+        style_scroll_list_axis_owned(list,OBJID_HSCROLL,range_info) &&
+        !style_scroll_list_axis_owned(list,OBJID_VSCROLL,range_info) &&
+        style_scroll_edit_thumb_messages(edit,OBJID_VSCROLL,range_info);
+    maximum=65536;protocol=protocol && !style_scroll_horizontal_thumb_messages(list,range_info) &&
+        !style_scroll_edit_thumb_messages(edit,OBJID_HSCROLL,range_info);
+    page=2;protocol=protocol && style_scroll_horizontal_thumb_messages(list,range_info);
+    minimum=-1;protocol=protocol && !style_scroll_horizontal_thumb_messages(list,range_info);
     paint_state absent={NULL,0,TRUE};style_scroll_nonclient_paint(scroll,&absent,NULL,paint);
     SetWindowLongPtrW(root,GWL_STYLE,GetWindowLongPtrW(root,GWL_STYLE)|WS_HSCROLL);
     HDC target=GetWindowDC(root);paint_state painted={target,0,TRUE};
@@ -43,7 +57,7 @@ int main(void)
         .nMin=4,.nMax=104,.nPage=10,.nPos=25};
     SetScrollInfo(scroll,SB_CTL,&setting,FALSE);
     SCROLLINFO info;RECT bar;POINT origin;UINT dpi;
-    BOOL ok=axes && style_scroll_control_read(scroll,read_info,&bar,&info,&dpi) &&
+    BOOL ok=protocol && axes && style_scroll_control_read(scroll,read_info,&bar,&info,&dpi) &&
         bar.right-bar.left==100 && bar.bottom-bar.top==20 && dpi &&
         info.nMin==4 && info.nMax==104 && info.nPage==10 && info.nPos==25 &&
         !style_scroll_control_read(scroll,fail_info,&bar,&info,&dpi);

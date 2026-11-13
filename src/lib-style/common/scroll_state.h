@@ -7,6 +7,27 @@
 typedef BOOL (*style_scroll_info_fn)(HWND,int,LPSCROLLINFO);
 typedef void (*style_scroll_painter)(HWND,void *,HDC,LONG,BOOL);
 
+/* Native list and edit controls use 16-bit positions in scroll messages.
+ * Callers retain the decision to fall back to native handling. */
+static inline BOOL style_scroll_horizontal_thumb_messages(HWND window,style_scroll_info_fn get_info)
+{
+    SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE};
+    return get_info(window,SB_HORZ,&info) && info.nMin>=0 &&
+        (LONGLONG)info.nMax-(info.nPage?info.nPage-1:0)<=0xffff;
+}
+static inline BOOL style_scroll_list_axis_owned(HWND window,LONG object,style_scroll_info_fn get_info)
+{
+    if(GetWindowLongPtrW(window,GWL_STYLE)&LBS_MULTICOLUMN)return object==OBJID_HSCROLL;
+    return object==OBJID_VSCROLL || (object==OBJID_HSCROLL && style_scroll_horizontal_thumb_messages(window,get_info));
+}
+static inline BOOL style_scroll_edit_thumb_messages(HWND window,LONG object,style_scroll_info_fn get_info)
+{
+    LRESULT lines=SendMessageW(window,EM_GETLINECOUNT,0,0);
+    if(lines<=0 || lines>=0xffff)return FALSE;
+    if(object==OBJID_HSCROLL && !style_scroll_horizontal_thumb_messages(window,get_info))return FALSE;
+    return TRUE;
+}
+
 /* Native scrollbar keyboard commands are shared by both axes. */
 static inline BOOL style_scroll_key_command(WPARAM key,UINT *command)
 {

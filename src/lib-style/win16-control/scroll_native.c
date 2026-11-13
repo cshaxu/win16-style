@@ -35,8 +35,8 @@ BOOL win16_scroll_embedded_input(HWND w,const win16_scroll_embedded_view *v,UINT
     else if(down)object=a==HTHSCROLL?OBJID_HSCROLL:OBJID_VSCROLL;
     if(!down && m!=WM_MOUSEMOVE && m!=WM_LBUTTONUP && m!=WM_CANCELMODE &&
         m!=WM_CAPTURECHANGED && !(m==WM_TIMER && *s->timer && a==*s->timer))return FALSE;
-    if((*s->edit && !win16_scroll_edit_thumb_messages(w,object,v->get_info)) ||
-        (*s->list && !win16_scroll_list_axis_owned(w,object,v->get_info))){
+    if((*s->edit && !style_scroll_edit_thumb_messages(w,object,v->get_info)) ||
+        (*s->list && !style_scroll_list_axis_owned(w,object,v->get_info))){
         if(s->track->active)win16_scroll_finish(w,s,v->previous_capture,TRUE);
         return FALSE;
     }
@@ -155,25 +155,6 @@ void win16_scroll_apply_actions(HWND w,const win16_scroll_actions_view *s,
     else if(actions->repaint){RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
         if(!*s->detached && (*s->list || *s->edit))s->nonclient(w,s->context,NULL);}
     s->caret(w,s->context);
-}
-BOOL win16_scroll_horizontal_thumb_messages(HWND w,win16_scroll_info_fn get_info)
-{
-    SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE};
-    return get_info(w,SB_HORZ,&info) && info.nMin>=0 &&
-        (LONGLONG)info.nMax-(info.nPage?info.nPage-1:0)<=0xffff;
-}
-BOOL win16_scroll_list_axis_owned(HWND w,LONG object,win16_scroll_info_fn get_info)
-{
-    if(GetWindowLongPtrW(w,GWL_STYLE)&LBS_MULTICOLUMN)return object==OBJID_HSCROLL;
-    return object==OBJID_VSCROLL || (object==OBJID_HSCROLL && win16_scroll_horizontal_thumb_messages(w,get_info));
-}
-BOOL win16_scroll_edit_thumb_messages(HWND w,LONG object,win16_scroll_info_fn get_info)
-{
-    /* Native EDIT reads its own nTrackPos when line count reaches this limit. */
-    LRESULT lines=SendMessageW(w,EM_GETLINECOUNT,0,0);
-    if(lines<=0 || lines>=0xffff)return FALSE;
-    if(object==OBJID_HSCROLL && !win16_scroll_horizontal_thumb_messages(w,get_info))return FALSE;
-    return TRUE;
 }
 void win16_scroll_caret_destroy(HWND w,const win16_scroll_caret_view *s)
 {

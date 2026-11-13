@@ -27,7 +27,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "lib-style/common/control_scope.h"
 #include "../lib-style/win16-control/choice_paint.h"
 #include "../lib-style/win16-control/choice_view.h"
-#include "../lib-style/win16-control/spin_identity.h"
+#include "lib-style/common/control_vcl_spin.h"
 #include "../lib-style/win16-control/control_state.h"
 #include "../lib-style/win16-control/list_message.h"
 #include "../lib-style/win16-control/edit_message.h"
@@ -145,9 +145,9 @@ static BOOL embedded_scroll_layout(HWND w,LONG object,win16_scroll_layout *layou
 {return win16_scroll_embedded_layout(w,object,ntw16s_native_get_scroll_info,layout,screen_origin);}
 
 static BOOL list_axis_owned(HWND w,LONG object)
-{return win16_scroll_list_axis_owned(w,object,ntw16s_native_get_scroll_info);}
+{return style_scroll_list_axis_owned(w,object,ntw16s_native_get_scroll_info);}
 static BOOL edit_thumb_messages(HWND w,LONG object)
-{return win16_scroll_edit_thumb_messages(w,object,ntw16s_native_get_scroll_info);}
+{return style_scroll_edit_thumb_messages(w,object,ntw16s_native_get_scroll_info);}
 
 static void draw_scroll(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical)
 {

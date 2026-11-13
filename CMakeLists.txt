@@ -100,7 +100,7 @@ add_custom_command(OUTPUT "${subclass_import}"
   COMMAND "${gcc_bin}/dlltool.exe" -d "${subclass_def}" -l "${subclass_import}" --kill-at --as "${gcc_assembler}"
   DEPENDS "${subclass_def}" VERBATIM)
 add_custom_target(style-subclass DEPENDS "${subclass_import}")
-add_library(style-control-common STATIC src/lib-style/common/control_protocol.c src/lib-style/common/control_scope.c src/lib-style/common/control_custom_draw.c src/lib-style/common/control_native_combo.c src/lib-style/common/control_status.c)
+add_library(style-control-common STATIC src/lib-style/common/control_protocol.c src/lib-style/common/control_scope.c src/lib-style/common/control_custom_draw.c src/lib-style/common/control_native_combo.c src/lib-style/common/control_status.c src/lib-style/common/control_vcl_spin.c)
 target_include_directories(style-control-common PUBLIC src)
 target_compile_definitions(style-control-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_dependencies(style-control-common style-subclass)
@@ -119,7 +119,6 @@ add_library(win16-control STATIC
   src/lib-style/win16-control/special_paint.c
   src/lib-style/win16-control/month_text.c src/lib-style/win16-control/scroll_native.c
   src/lib-style/win16-control/theme_kind.c src/lib-style/win16-control/updown_adapter.c
-  src/lib-style/win16-control/spin_identity.c
   src/lib-style/win16-control/control_state.c src/lib-style/win16-control/list_message.c
   src/lib-style/win16-control/edit_message.c src/lib-style/win16-control/basic_message.c
   src/lib-style/win16-control/scroll_message.c src/lib-style/win16-control/fileowner_message.c

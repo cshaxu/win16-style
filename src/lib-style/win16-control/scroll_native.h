@@ -19,9 +19,6 @@ typedef BOOL (*win16_scroll_info_fn)(HWND,int,LPSCROLLINFO);
 BOOL win16_scroll_control_layout(HWND window,win16_scroll_info_fn get_info,win16_scroll_layout *layout);
 BOOL win16_scroll_embedded_layout(HWND window,LONG object,win16_scroll_info_fn get_info,
     win16_scroll_layout *layout,POINT *screen_origin);
-BOOL win16_scroll_horizontal_thumb_messages(HWND window,win16_scroll_info_fn get_info);
-BOOL win16_scroll_list_axis_owned(HWND window,LONG object,win16_scroll_info_fn get_info);
-BOOL win16_scroll_edit_thumb_messages(HWND window,LONG object,win16_scroll_info_fn get_info);
 typedef struct win16_scroll_actions_view {
     void *context;
     BOOL *detached,*reporting,*frame,*edit,*list;

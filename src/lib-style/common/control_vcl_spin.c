@@ -1,8 +1,8 @@
-#include "spin_identity.h"
+#include "lib-style/common/control_vcl_spin.h"
 #include "lib-win32/style/window_identity.h"
-#include "../common/control_protocol.h"
+#include "control_protocol.h"
 
-BOOL win16_control_spin_identity(HWND w)
+BOOL style_control_vcl_spin_identity(HWND w)
 {
     HWND parent=GetParent(w);WCHAR name[64],real[64],parent_name[64],parent_real[64];
     WNDCLASSEXW wide={.cbSize=sizeof(wide)};WNDCLASSEXA ansi={.cbSize=sizeof(ansi)};
@@ -23,7 +23,7 @@ BOOL win16_control_spin_identity(HWND w)
 /* Newer VCL paints a buffered themed TSpinButton under a witnessed EDIT.
  * Only a buffer derived in this exact paint and copied to this exact window
  * can be composed; unrelated or uncertain images keep their native pixels. */
-BOOL win16_control_modern_spin_shape(HWND w)
+BOOL style_control_vcl_modern_spin_shape(HWND w)
 {
     HWND p=GetParent(w);WCHAR c[64],r[64],pc[64],pr[64];
     HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
@@ -35,7 +35,7 @@ BOOL win16_control_modern_spin_shape(HWND w)
 
 /* A VCL spin edit reserves part of its format rectangle for its own child.
  * Native WM_SETFONT can reset that reservation; never cover the button. */
-HWND win16_control_spinedit_button(HWND w)
+HWND style_control_vcl_spinedit_button(HWND w)
 {
     WCHAR name[64];HWND child;
     if(!style_control_protocol_is(w,L"EDIT") || !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpW(name,L"TSpinEdit"))return NULL;

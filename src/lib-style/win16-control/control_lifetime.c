@@ -1,5 +1,5 @@
 #include "control_lifetime.h"
-#include "spin_identity.h"
+#include "lib-style/common/control_vcl_spin.h"
 #include "lib-style/common/control_scope.h"
 #include "../win16-common/font.h"
 #include <commctrl.h>
@@ -7,13 +7,13 @@
 HWND win16_control_spin_before(HWND w,UINT m,RECT *before)
 {
     HWND button=NULL;DWORD error=GetLastError();
-    if(m==WM_SETFONT && (button=win16_control_spinedit_button(w))!=NULL)
+    if(m==WM_SETFONT && (button=style_control_vcl_spinedit_button(w))!=NULL)
         SendMessageW(w,EM_GETRECT,0,(LPARAM)before);
     SetLastError(error);return button;
 }
 void win16_control_finish_message(HWND w,control_style *s,UINT m,LPARAM b,HWND spin_button,const RECT *spin_before,BOOL combo_paint,HFONT previous,HFONT outbound,HFONT pinned,SUBCLASSPROC callback)
 {
-    if(spin_button && !s->detached && IsWindow(w) && win16_control_spinedit_button(w)==spin_button){
+    if(spin_button && !s->detached && IsWindow(w) && style_control_vcl_spinedit_button(w)==spin_button){
         DWORD error=GetLastError();RECT button,after;
         if(GetWindowRect(spin_button,&button)){
             MapWindowPoints(NULL,w,(POINT*)&button,2);

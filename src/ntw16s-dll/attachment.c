@@ -13,7 +13,7 @@
 #include "../lib-style/win16-control/vcl_frame_policy.h"
 #include "../lib-style/win16-control/choice_paint.h"
 #include "../lib-style/win16-control/special_paint.h"
-#include "../lib-style/win16-control/spin_identity.h"
+#include "lib-style/common/control_vcl_spin.h"
 #include "../lib-style/win16-control/spin_scope.h"
 #include "../lib-style/win16-control/status_frame.h"
 #include "../lib-style/win16-control/status_font.h"
@@ -579,7 +579,7 @@ BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=win16_control_checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (win16_control_spin_identity(w)||win16_control_modern_spin_shape(w));HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=win16_control_checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (style_control_vcl_spin_identity(w)||style_control_vcl_modern_spin_shape(w));HWND parent;HMODULE owner;attachment *a;DWORD error;
     style_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
