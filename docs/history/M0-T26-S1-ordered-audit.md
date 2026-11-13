@@ -47,8 +47,8 @@
 | 36 | `src/lib-style/win16-control/control_scope.h` | `d7a2c4f7d8531924c51dd7e493f6e410959315da9598b7b090a4ca99734ffbec` | 已过关 |
 | 37 | `src/lib-style/win16-control/control_state.c` | `a56c61f2f2603d89cb08b6bf7b97208bc0e2b6a79fd3e855c19e3a4a3343cea8` | 已过关 |
 | 38 | `src/lib-style/win16-control/control_state.h` | `cccb65a997d5cbabebc7a62577cf79da8678b9754c5373757d64cb74ccff4e78` | 已过关 |
-| 39 | `src/lib-style/win16-control/cool_grip_identity.c` | `04a9841be43ce2e95553eb3a9cb6a9f094ef03296dec5c86b26981239b2e979c` | 待审 |
-| 40 | `src/lib-style/win16-control/cool_grip_identity.h` | `5aa8dce1ae9e718d2a067c7da16fca5f7d07c60a2b5fd2e93e974edfbc4e4e02` | 待审 |
+| 39 | `src/lib-style/win16-control/cool_grip_identity.c` | `04a9841be43ce2e95553eb3a9cb6a9f094ef03296dec5c86b26981239b2e979c` | 已过关 |
+| 40 | `src/lib-style/win16-control/cool_grip_identity.h` | `5aa8dce1ae9e718d2a067c7da16fca5f7d07c60a2b5fd2e93e974edfbc4e4e02` | 已过关 |
 | 41 | `src/lib-style/win16-control/edit_message.c` | `b2004278efe1e65e88bf3e8877cb3fe9704efcea97c69aac7048bd3a3d2e6ce6` | 待审 |
 | 42 | `src/lib-style/win16-control/edit_message.h` | `d7c5da65909dc16c9ed2ac58f59dbf34de20af6c10030737d5fae6b316e5ee21` | 待审 |
 | 43 | `src/lib-style/win16-control/fileowner_message.c` | `ce1ae8ed053c4b967b52cdfd6eb5cc3f5f9fd1405eb2db4a3b0ffabf16619911` | 待审 |
@@ -380,3 +380,12 @@
 
 - 定义 Win16 调色板、字体、滚动条、组合框和控件绘制状态及消息接口；由产品 `controls.c` 和 Win16 控件内部模块使用。原生协议指针引用公共组件，但结构体及销毁时序属于 Win16，不能直接作为跨风格状态。
 - 本头未修改；双位宽独立链接和第 37 项字体租约测试通过，不能替代真实 VB、其他风格及全部控件消息验证。
+
+## 039 `win16-control/cool_grip_identity.c`：已过关
+
+- 产品 `attachment.c` 先通过公共 `control_vcl_identity` 验证实际 CoolBar 身份，再用本函数检查 native rebar 状态、重入后所有权、DC 和目标矩形；仅在无图片、文本、自定义颜色和特殊样式、无子控件重叠且握柄尺寸适合 Win16 绘制时替换。`common/control_custom_draw` 已负责通知协商与阶段分派。
+- 握柄大小、颜色及替换资格直接限定 Win16 绘制行为，保留风格侧；复用公共身份和通知，不将资格硬编码到公共库。正式包双位宽自建 CoolBar 回归覆盖嵌套、异常、移除、换父和十种不适用回退，均通过；真实 VCL、其他风格及所有 DPI 未覆盖。无源码修改，未使用隔离桌面。
+
+## 040 `win16-control/cool_grip_identity.h`：已过关
+
+- 声明上述 Win16 握柄绘制资格接口，产品提供已经验证的身份回调与原生过程；不包含公共身份实现。双位宽实际产品夹具及限制见第 39 项；本头未修改。
