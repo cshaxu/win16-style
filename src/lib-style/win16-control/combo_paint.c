@@ -1,5 +1,6 @@
 #include "combo_paint.h"
 #include "basic_paint.h"
+#include "../common/paint_frame.h"
 #include "../common/control_protocol.h"
 #include <stdlib.h>
 

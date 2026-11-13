@@ -1,6 +1,7 @@
 #include "lib-style/common/dc_geometry.h"
 #include "special_paint.h"
 #include "basic_paint.h"
+#include "../common/paint_frame.h"
 #include "scroll_assets.h"
 #include "../common/control_protocol.h"
 #include "../common/bitmap.h"

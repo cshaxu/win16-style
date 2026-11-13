@@ -1,5 +1,6 @@
 #include "list_paint.h"
 #include "basic_paint.h"
+#include "../common/paint_frame.h"
 #include "lib-style/common/text_metrics.h"
 #include <stdlib.h>
 #include <limits.h>

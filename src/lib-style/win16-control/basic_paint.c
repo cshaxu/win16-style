@@ -1,4 +1,5 @@
 #include "basic_paint.h"
+#include "../common/paint_frame.h"
 #include "combo_glyph.h"
 #include "../common/pixel_grid.h"
 

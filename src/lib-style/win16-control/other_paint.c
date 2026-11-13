@@ -1,5 +1,6 @@
 #include "other_paint.h"
 #include "basic_paint.h"
+#include "../common/paint_frame.h"
 #include <commctrl.h>
 
 static BOOL fit_push_text(HDC target,HFONT font,const WCHAR *text,const RECT *bounds,COLORREF face,COLORREF ink,SIZE *drawn)
