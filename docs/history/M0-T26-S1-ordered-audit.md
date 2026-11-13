@@ -211,3 +211,4 @@
 - 文件混合控件附着安装及撤销、绘制期分派、运行时类别与原生过程核验；产品入口集中在 `ntw16s-dll/attachment.c`。逐函数梳理及正式包验证尚未完成，不计过关。
 - 已抽出：ANSI 和 Unicode 两条原生窗口过程转发路径共用的过程及调用模块归属核验迁入 `common/control_native_witness.h`，原路径直接调用，控件类型及实际绘制策略仍由 Win16 决定。
 - 验证：双位宽共享校验正反例、Win16 DLL 增量构建及 MinGW/Ninja/ccache 双位宽干净打包通过；先发布到 assets 和 O:\winnt，再用正式启动器运行双位宽 ANSI DBEdit 与 Unicode 轨迹条自建夹具，均通过，含伪装、外部调用、重入移除和资源清理。发布明细见[交付记录](M0-T26-S1-ordered-08-witness.md)。真实第三方程序未覆盖。
+- 已按 51 个公开函数分组列明生命周期、识别和绘制边界，以及尚需核查的共享事务和剪裁机制，见[函数盘点](M0-T26-S1-ordered-08-inventory.md)。
