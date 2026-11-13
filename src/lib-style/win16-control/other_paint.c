@@ -1,5 +1,6 @@
 #include "other_paint.h"
 #include "basic_paint.h"
+#include "../common/icon_size.h"
 #include "../common/paint_frame.h"
 #include <commctrl.h>
 
@@ -92,13 +93,7 @@ void win16_control_other(HWND w,const BOOL *detached,const win16_style_palette *
                 ImageList_GetIconSize(images.himl,&cx,&cy);
         }
         if(image && image_type==IMAGE_ICON){
-            ICONINFO info;
-            if(GetIconInfo((HICON)image,&info)){
-                if(GetObjectW(info.hbmColor?info.hbmColor:info.hbmMask,sizeof(bits),&bits)){
-                    cx=bits.bmWidth;cy=info.hbmColor?bits.bmHeight:bits.bmHeight/2;}
-                if(info.hbmColor)DeleteObject(info.hbmColor);
-                if(info.hbmMask)DeleteObject(info.hbmMask);
-            }
+            (void)style_icon_size((HICON)image,&cx,&cy);
         }else if(image && GetObjectW(image,sizeof(bits),&bits)){cx=bits.bmWidth;cy=bits.bmHeight;}
         if((image || listed) && cx>0 && cy>0){
             int x=bounds.left+(bounds.right-bounds.left-cx)/2,y=bounds.top+(bounds.bottom-bounds.top-cy)/2;

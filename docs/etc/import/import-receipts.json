@@ -3895,8 +3895,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "638f3458d6d85b9caa64393439e65d99f7b1d4709eaa66f31d27cdaf7ef6cdd3",
-      "review": "T21 S22 extraction of existing button and static presentation; T26 S1 shared solid frame painter; T26 S1 direct shared painter include"
+      "sha256": "d334904841aceed64def25e3159e832a6f139c9070cf64e1e697990bb00d36c7",
+      "review": "T21 S22 extraction of existing button and static presentation; T26 S1 shared solid frame painter; T26 S1 direct shared painter include; T26 S1 shared icon size and resource cleanup"
     },
     {
       "path": "src/lib-style/win16-control/other_paint.h",
@@ -4003,8 +4003,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "0ca0a586fcc2164dd65f6e7723d1108dfcea2b8b9c5eceeb62e1d57bf640ceda",
-      "review": "T21 S22 extraction of standard button and static presentation"
+      "sha256": "d8ce34cb9f0a6f30e575df343e8616956231f832cad8f9c59cbe9f4429fbf6bf",
+      "review": "T21 S22 extraction of standard button and static presentation; T26 S1 shared icon size and resource cleanup"
     },
     {
       "path": "src/lib-style/win16-control/choice_view.h",
@@ -7973,6 +7973,15 @@
       "sha256": "77075b64bea4dfc9e5cbb53b513726b67722ee74fb380584bdb1308e90720a3f",
       "disposition": "authored",
       "review": "T26 S1 shared indexed DIB painter",
+      "notice": "Project-authored C interface; no imported artwork"
+    },
+    {
+      "path": "src/lib-style/common/icon_size.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d771a06047567f0de8d5824df96a3029c068a9f45c9cff2718e310b1bd21d872",
+      "disposition": "authored",
+      "review": "T26 S1 shared icon dimensions and bitmap cleanup",
       "notice": "Project-authored C interface; no imported artwork"
     }
   ]

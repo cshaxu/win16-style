@@ -2,6 +2,7 @@
 #include "choice_paint.h"
 #include "other_paint.h"
 #include "../common/control_protocol.h"
+#include "../common/icon_size.h"
 #include <uxtheme.h>
 #include <stdlib.h>
 
@@ -23,15 +24,7 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
         IntersectClipRect(dc,r.left,r.top,r.right,r.bottom);
         SetDCBrushColor(dc,view->palette->light);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
         if(icon && (style&SS_CENTERIMAGE)){
-            ICONINFO info;BITMAP bits;
-            if(GetIconInfo(icon,&info)){
-                if(GetObjectW(info.hbmColor?info.hbmColor:info.hbmMask,sizeof(bits),&bits)){
-                    cx=bits.bmWidth;cy=info.hbmColor?bits.bmHeight:bits.bmHeight/2;
-                    x=(r.right-cx)/2;y=(r.bottom-cy)/2;
-                }
-                if(info.hbmColor)DeleteObject(info.hbmColor);
-                if(info.hbmMask)DeleteObject(info.hbmMask);
-            }
+            if(style_icon_size(icon,&cx,&cy)){x=(r.right-cx)/2;y=(r.bottom-cy)/2;}
         }
         if(icon)DrawIconEx(dc,x,y,icon,cx,cy,0,NULL,DI_NORMAL);
         RestoreDC(dc,saved);return;
