@@ -54,6 +54,8 @@ VCL CoolBar 窗口身份核验已迁入公共控件组件，Win16 提供附着�
 
 第 24 项消息分派已审计：通用控件身份沿用公共组件，Win16 分派优先级和状态保留风格侧；本轮表头 v5 x86 首次像素断言失败、重试通过，仍为不稳定，详见[顺序台账](../history/M0-T26-S1-ordered-audit.md)。
 
+执行效率检查按[执行规则](../rules/EXECUTION.md#效率检查点)进行；按文件顺序审计，按能力合并实施与验证，检查结论记入顺序台账，不为单文件重复完整交付。
+
 ## M0 T26 S1 Packet
 
 | Field | Required record |
@@ -79,7 +81,7 @@ VCL CoolBar 窗口身份核验已迁入公共控件组件，Win16 提供附着�
 
 - Milestone: M0 (fixed)
 - Last allocated T: 26
-- Last allocated Td S: 19
+- Last allocated Td S: 20
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
