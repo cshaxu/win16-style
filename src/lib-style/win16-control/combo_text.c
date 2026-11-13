@@ -11,7 +11,6 @@ static HFONT combo_edit_font(control_style *s,HFONT source)
     if(s->combo_font_count==ARRAYSIZE(s->combo_fonts)){win16_style_system_release(font);return source;}
     s->combo_fonts[s->combo_font_count++]=font;return font;
 }
-void win16_control_combo_text_unbind(control_style *,BOOL,SUBCLASSPROC);
 LRESULT win16_control_combo_text_message(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,control_style *s,SUBCLASSPROC combo_proc,SUBCLASSPROC control_proc)
 {
     ++s->calls;LRESULT result;

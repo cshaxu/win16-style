@@ -27,7 +27,7 @@
 | 18 | `src/lib-style/win16-control/combo_glyph.h` | `75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34` | 已过关 |
 | 19 | `src/lib-style/win16-control/combo_paint.c` | `d7b9ba1aac4a0b3f22086f0e8e323e4f8ed960fa2d04768a29510724cbe9062a` | 已过关 |
 | 20 | `src/lib-style/win16-control/combo_paint.h` | `9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca` | 已过关 |
-| 21 | `src/lib-style/win16-control/combo_text.c` | `4d95a3cc8238c3e3a194dc64f1ee1d3c56b8e296e29469c6bd0229e85bb5e63c` | 待审 |
+| 21 | `src/lib-style/win16-control/combo_text.c` | `a42411b0209b1b008311716bade4d572a1df95d633df6060d0fcdd72819d0451` | 已过关 |
 | 22 | `src/lib-style/win16-control/combo_text.h` | `dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0` | 待审 |
 | 23 | `src/lib-style/win16-control/control_class.h` | `2202c98d94b0220a0d9e360439e7a18742d3a830b6f2a53bd249de959d7da59f` | 待审 |
 | 24 | `src/lib-style/win16-control/control_dispatch.c` | `90df43ca6d849e54deb9986a3b45c778c46b0577bdf10283a931c2adb17d6506` | 待审 |
@@ -282,3 +282,9 @@
 
 - 声明 Win16 组合框绘制及原生按钮绘制接口；分别由产品 `controls.c` 和风格模块 `native_combo_identity.c` 调用。接口绑定 Win16 调色板和绘制策略，保留风格侧；坐标、文本、实色边框和像素机制使用公共组件。
 - 清除产品 `attachment.c` 未使用的该头包含；双位宽增量构建通过，修改前后该文件的两个目标文件 SHA-256 均逐字节一致。沿用第 19 项正式包测试；真实第三方应用和其他风格未验证。
+
+## 021 `win16-control/combo_text.c`：已过关
+
+- 组合框子编辑器的字体消息分派、绘制期间借用、解绑及重入恢复依赖 `control_style` 和 Win16 字体租约；当前保留风格侧。通用子类所有权检查已经使用 `common/control_scope.h`。
+- 与第 31 项 `control_lifetime.c` 都在原生 `WM_SETFONT` 返回后恢复字体；两者对后继子类的识别不同，应在按序审计第 31 项时一起核实是否能抽象，不能把待验证的重复当作已经共享。
+- 删除已由自有头声明的重复前置声明，双位宽增量构建前后两个目标文件摘要逐字节一致。用正式发布包运行双位宽自建 VB 组合框夹具，覆盖 40 个字体、原字体、解绑、设置字体期间重入及重设父窗口，均通过；只覆盖当前 96 DPI、合成运行时，真实 VB 和其他风格未验证。

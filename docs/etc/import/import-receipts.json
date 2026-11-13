@@ -4658,9 +4658,9 @@
       "path": "src/lib-style/win16-control/combo_text.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4d95a3cc8238c3e3a194dc64f1ee1d3c56b8e296e29469c6bd0229e85bb5e63c",
+      "sha256": "a42411b0209b1b008311716bade4d572a1df95d633df6060d0fcdd72819d0451",
       "disposition": "authored",
-      "review": "T21 S24 extract combo edit font and presentation state",
+      "review": "T21 S24 extract combo edit font and presentation state; T26 ordered audit remove duplicate declaration",
       "notice": "Project-authored C implementation; original notices preserved"
     },
     {
