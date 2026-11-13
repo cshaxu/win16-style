@@ -29,7 +29,7 @@
 | 20 | `src/lib-style/win16-control/combo_paint.h` | `9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca` | 已过关 |
 | 21 | `src/lib-style/win16-control/combo_text.c` | `a42411b0209b1b008311716bade4d572a1df95d633df6060d0fcdd72819d0451` | 已过关 |
 | 22 | `src/lib-style/win16-control/combo_text.h` | `dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0` | 已过关 |
-| 23 | `src/lib-style/win16-control/control_class.h` | `2202c98d94b0220a0d9e360439e7a18742d3a830b6f2a53bd249de959d7da59f` | 待审 |
+| 23 | `src/lib-style/win16-control/control_class.h` | `2202c98d94b0220a0d9e360439e7a18742d3a830b6f2a53bd249de959d7da59f` | 审计中 |
 | 24 | `src/lib-style/win16-control/control_dispatch.c` | `90df43ca6d849e54deb9986a3b45c778c46b0577bdf10283a931c2adb17d6506` | 待审 |
 | 25 | `src/lib-style/win16-control/control_dispatch.h` | `299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8` | 待审 |
 | 26 | `src/lib-style/win16-control/control_glyphs.h` | `75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83` | 待审 |
@@ -293,3 +293,8 @@
 
 - 职责与调用：声明组合框子编辑器的消息处理和解绑接口，产品 `controls.c` 传入自身子类过程，`combo_text.c` 实现；参数使用 Win16 `control_style`，当前不属于无风格公共接口。第 21 项所记与第 31 项的字体恢复机制仍须按序核查。
 - 本文件没有改动；双位宽 Win16 控件独立链接测试通过，字体解绑及重入覆盖见第 21 项；不代表其他风格或真实 VB 已验证。
+
+## 023 `win16-control/control_class.h`：审计中
+
+- 公共 `control_class.h` 已实现 VB 类及运行时身份识别；本文件另含 Win16 绘制资格（控件样式、RTL、清单 96/144 DPI 限制）以及 VB Frame 按钮类型映射。须逐函数判断语义能否与绘制器资格拆开，不能整体移动。
+- 直接使用正式发布包和自建窗口运行 96 DPI VB5/VB6 清单夹具：VB5 x86 首次在重入重设父窗口绘制断言失败、重试通过，VB5 x64 通过；VB6 x86 在同一断言失败，VB6 x64 在重入样式变化后的像素断言失败。错误码 126 不能据此认定根因；失败和不稳定项不计通过，仍需复核。未创建隔离桌面。
