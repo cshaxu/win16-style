@@ -637,7 +637,7 @@ BOOL win16_attachment_mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner,at
 }
 
 BOOL win16_attachment_combo_same_role(HWND w,attachment *a)
-{return win16_control_combo_identity(w,a->combo_parent) && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==a->combo_original_type;}
+{return style_control_vcl_plain_combo(w,a->combo_parent) && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==a->combo_original_type;}
 
 BOOL win16_attachment_vcl_combo_candidate(HWND w,attachment *a)
 {(void)w;return a && !a->detached && a->combo_candidate;}

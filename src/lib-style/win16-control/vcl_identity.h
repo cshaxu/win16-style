@@ -1,7 +1,6 @@
 #ifndef WIN16_CONTROL_VCL_IDENTITY_H
 #define WIN16_CONTROL_VCL_IDENTITY_H
 #include <windows.h>
-BOOL win16_control_combo_identity(HWND w,HWND parent);
 BOOL win16_control_group_button_identity(HWND w);
 BOOL win16_control_grid_identity(HWND w,HMODULE owner,HWND parent);
 BOOL win16_control_vcl_toolbar_identity(HWND w,HMODULE owner,HWND parent);

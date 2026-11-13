@@ -25,6 +25,21 @@ int main(int argc,char **argv)
     ok=ok && impostor && !style_control_vb_combo(impostor) && !style_control_is_combo(impostor);
     if(impostor)DestroyWindow(impostor);
     if(registered)UnregisterClassW(fake.lpszClassName,instance);
+    WNDCLASSW vcl_parent={.hInstance=instance,.lpfnWndProc=DefWindowProcW,.lpszClassName=L"StyleVclParent"};
+    WNDCLASSW vcl_combo={.hInstance=instance,.lpfnWndProc=DefWindowProcW,.lpszClassName=L"TComboBox"};
+    WNDCLASSW vcl_db={.hInstance=instance,.lpfnWndProc=DefWindowProcW,.lpszClassName=L"TDBComboBox"};
+    BOOL classes=RegisterClassW(&vcl_parent) && RegisterClassW(&vcl_combo) && RegisterClassW(&vcl_db);
+    HWND host=classes?CreateWindowW(vcl_parent.lpszClassName,L"",WS_POPUP,0,0,20,20,NULL,NULL,instance,NULL):NULL;
+    HWND combo=host?CreateWindowW(vcl_combo.lpszClassName,L"",WS_CHILD|CBS_DROPDOWN,0,0,10,10,host,NULL,instance,NULL):NULL;
+    HWND db=host?CreateWindowW(vcl_db.lpszClassName,L"",WS_CHILD|CBS_DROPDOWN,0,0,10,10,host,NULL,instance,NULL):NULL;
+    ok=ok && host && combo && db && style_control_vcl_plain_combo(combo,host) &&
+        style_control_vcl_plain_combo(db,host) && !style_control_vcl_plain_combo(combo,parent);
+    if(combo){SetWindowLongPtrW(combo,GWL_STYLE,WS_CHILD|CBS_DROPDOWN|CBS_OWNERDRAWFIXED);
+        ok=ok && !style_control_vcl_plain_combo(combo,host);}
+    if(db){SetWindowLongPtrW(db,GWL_STYLE,WS_CHILD|CBS_DROPDOWNLIST);
+        ok=ok && !style_control_vcl_plain_combo(db,host);}
+    if(host)DestroyWindow(host);
+    if(classes){UnregisterClassW(vcl_db.lpszClassName,instance);UnregisterClassW(vcl_combo.lpszClassName,instance);UnregisterClassW(vcl_parent.lpszClassName,instance);}
     if(argc>1){
         HMODULE runtime=LoadLibraryA(argv[1]);
         BOOL (WINAPI *reg)(void)=runtime?(void *)GetProcAddress(runtime,"VbFileRegister"):NULL;

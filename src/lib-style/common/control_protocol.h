@@ -32,6 +32,9 @@ style_control_protocol *style_control_protocol_acquire(HWND);
 BOOL style_control_protocol_is(HWND,const WCHAR *);
 /* Recognize a registered superclass of the requested native class. */
 BOOL style_control_native_superclass(HWND,const WCHAR *);
+/* Same-runtime VCL combo in the plain, left-to-right modes; callers decide
+ * whether this supported subset is eligible for their own rendering. */
+BOOL style_control_vcl_plain_combo(HWND,HWND);
 HMODULE style_control_protocol_list_module(HWND);
 HMODULE style_control_protocol_tree_module(HWND);
 HMODULE style_control_protocol_updown_module(HWND);

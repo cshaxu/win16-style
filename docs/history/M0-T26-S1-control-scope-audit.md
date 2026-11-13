@@ -21,3 +21,7 @@ but its function, scope and callback contract differ. The audit does not
 claim these are interchangeable, that Win2000 uses the Win16 observer, or
 that controls recover their prior theme. Implementation, failure-path tests,
 and a real cross-style caller remain outstanding.
+
+## Current status
+
+The nested scope list, observer lifetime, root invalidation and callback-time delayed release now live in `src/lib-style/common/control_scope.c`. `win16-control/control_scope.c` supplies class selection, combo-child exclusion, installation and palette/count policy. The production caller and native test remain as above. The Win2000 dialog observer still has a different contract and has not adopted this scope; this does not establish a cross-style runtime test.

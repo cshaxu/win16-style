@@ -13,6 +13,12 @@ BOOL style_control_native_superclass(HWND window,const WCHAR *expected)
         RealGetWindowClassW(window,real,ARRAYSIZE(real)) && !lstrcmpiW(real,expected);
 }
 
+BOOL style_control_vcl_plain_combo(HWND w,HWND parent)
+{
+    WCHAR name[64],real[64];DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);HMODULE owner=(HMODULE)GetClassLongPtrW(w,GCLP_HMODULE);
+    return win32_style_window_owned_child(w,owner,parent) && ((style&3)==CBS_SIMPLE || (style&3)==CBS_DROPDOWN || (style&3)==CBS_DROPDOWNLIST) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE)) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) && GetClassNameW(w,name,ARRAYSIZE(name)) && (!lstrcmpW(name,L"TComboBox") || (!lstrcmpW(name,L"TDBComboBox") && (style&3)==CBS_DROPDOWN)) && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && (!lstrcmpW(name,real) || !lstrcmpiW(real,L"COMBOBOX"));
+}
+
 struct style_control_protocol {
     struct style_control_protocol *next;
     HWND window;
