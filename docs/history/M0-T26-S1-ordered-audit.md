@@ -21,7 +21,7 @@
 | 12 | `src/lib-style/win16-control/basic_paint.c` | `e04652dacf363bb3ad61034d95d2abb16bdb6ee5961a855056e1f2e02cbd73c5` | 已过关 |
 | 13 | `src/lib-style/win16-control/basic_paint.h` | `34d6b0857ae92824d63596a060e8191d25e4b95956446f1a57c6b77946186fe6` | 已过关 |
 | 14 | `src/lib-style/win16-control/choice_paint.c` | `8859b2a5f78a219711d7feb872f2f8fad7e89a99eacb956c32993851be446900` | 已过关 |
-| 15 | `src/lib-style/win16-control/choice_paint.h` | `6efc933f3e2293f106275bcaa13ce66067da445af567a91ef3c35c069677902c` | 待审 |
+| 15 | `src/lib-style/win16-control/choice_paint.h` | `6efc933f3e2293f106275bcaa13ce66067da445af567a91ef3c35c069677902c` | 已过关 |
 | 16 | `src/lib-style/win16-control/choice_view.c` | `0ca0a586fcc2164dd65f6e7723d1108dfcea2b8b9c5eceeb62e1d57bf640ceda` | 待审 |
 | 17 | `src/lib-style/win16-control/choice_view.h` | `02a9c00c937c411be9e66158a56bbbfdc7dac5f82e07e4591cb24761947bc92d` | 待审 |
 | 18 | `src/lib-style/win16-control/combo_glyph.h` | `75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34` | 待审 |
@@ -250,3 +250,8 @@
 - 职责：Win16 选择图案、清单绘制目标核验和 VB 清单位图处理；产品拦截入口、控件绘制及附着通知均有调用。图案到 DC 的普通像素网格已由公共 `pixel_grid.h` 提供；DC 坐标和 VB 类身份分别使用公共 `dc_geometry.h` 与 `control_class.h`。
 - 验证：当前发布包的双位宽清单模型与 VB 清单夹具通过，覆盖 96/144 DPI、像素、错误来源、禁用、重入和父窗口变化；测试使用直接工作入口，无隔离桌面。真实 VB 程序尚未覆盖。
 - DIB 路径：索引像素缩放、临时缓冲和 `SetDIBitsToDevice` 已迁入公共 `pixel_dib.h`，保留独立于 `FillRect` 的 DC 契约；Win16 保留原图案及尺寸限制。双位宽干净构建、发布和正式包回归通过，见[交付记录](M0-T26-S1-ordered-14-dib.md)。清单目标资格、VB 运行时与尺寸策略继续保留风格侧；真实 VB 程序和其他风格未验证。
+
+## 015 `win16-control/choice_paint.h`：已过关
+
+- 职责与调用：声明 Win16 清单资格、VB 清单和选择图案接口；`choice_view.c`、`attachment_guard.c`、`special_paint.c` 和产品文本注入入口直接使用。接口依赖 Win16 调色与清单策略，保留风格侧；通用像素网格及 DIB 接口位于公共组件。
+- 处置与验证：移除产品 `controls.c` 与 `attachment.c` 中未使用的此头包含。双位宽增量构建通过，两个产品源文件在两种位宽的四个目标文件修改前后 SHA-256 全部一致；沿用第 14 项已发布包和双位宽、96/144 DPI 清单回归。真实 VB 程序和其他风格仍未覆盖。

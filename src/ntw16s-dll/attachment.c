@@ -13,7 +13,6 @@
 #include "../lib-style/win16-control/vcl_native_paint.h"
 #include "../lib-style/win16-control/text_policy.h"
 #include "../lib-style/win16-control/vcl_frame_policy.h"
-#include "../lib-style/win16-control/choice_paint.h"
 #include "../lib-style/win16-control/special_paint.h"
 #include "lib-style/common/control_vcl_spin.h"
 #include "../lib-style/win16-control/spin_scope.h"

@@ -25,7 +25,6 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "lib-style/common/present.h"
 #include "lib-style/common/scroll_state.h"
 #include "lib-style/common/control_scope.h"
-#include "../lib-style/win16-control/choice_paint.h"
 #include "../lib-style/win16-control/choice_view.h"
 #include "lib-style/common/control_vcl_spin.h"
 #include "../lib-style/win16-control/control_state.h"
