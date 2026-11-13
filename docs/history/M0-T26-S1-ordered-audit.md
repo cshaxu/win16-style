@@ -12,8 +12,8 @@
 | 3 | `src/lib-style/win16-common/font.h` | `63256a509950663b489a187ca6a912510fd5e8e658d8b864d86c7e3f53e04fd3` | 已过关 |
 | 4 | `src/lib-style/win16-common/layout.c` | `83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede` | 已过关 |
 | 5 | `src/lib-style/win16-common/layout.h` | `a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3` | 已过关 |
-| 6 | `src/lib-style/win16-common/palette.c` | `c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae` | 待审 |
-| 7 | `src/lib-style/win16-common/palette.h` | `f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36` | 待审 |
+| 6 | `src/lib-style/win16-common/palette.c` | `c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae` | 已过关 |
+| 7 | `src/lib-style/win16-common/palette.h` | `f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36` | 已过关 |
 | 8 | `src/lib-style/win16-control/attachment_guard.c` | `1c4fe0a7aa90ae478255b0b18e0073e3b8611c4f5ad66f65791fb4cb8ae9f368` | 待审 |
 | 9 | `src/lib-style/win16-control/attachment_state.h` | `681dd8332f8a598e7444ceb0aee223cd2c912855cd54a253b8e0b61c627a4b16` | 待审 |
 | 10 | `src/lib-style/win16-control/basic_message.c` | `2bc39526c285621a7d38b19bf9e61d56f05b64f228d3ad4912911d26b9a48b3e` | 待审 |
@@ -193,3 +193,15 @@
 - 职责：声明 Win16 窗口相对坐标结构和对应几何、命中接口，仅依赖 Windows 类型。
 - 调用：Win16 普通外框和现代外框布局、绘制及产品命中入口；没有具体产品私有头反向依赖。结构包含 Win16 特有的系统菜单、最小化和最大化几何，保留在风格侧，不作为其他年代通用数据结构。
 - 处置：无需源码修改。双位宽 `core-win16-layout` 与 `core-uwp-frame_layout` 均通过；前者直接覆盖声明的接口，后者覆盖现代外框 96–288 DPI 几何。该测试不证明可见 UWP/WinUI 或其他风格效果。产品文件未变。
+
+## 006 `win16-common/palette.c`：已过关
+
+- 职责与调用：提供 Win16 默认色、按系统高对比度映射 Win16 颜色角色、设置对话框 DC 的颜色；普通窗口、菜单、控件、现代外框及产品适配器使用相应入口。
+- 处置：默认值和颜色角色属于 Win16 风格；高对比度查询目前没有其他相同调用方，单独抽取查询会产生无实际复用的包装，暂留原处。Win2000 的系统色处理用于帧按钮映射，契约不同。本项未更改产品源码。
+- 验证：新增对应源文件的原生测试，双位宽检查全部默认值、当前对比度分支及对话框 DC 颜色和画刷，均通过；当前系统高对比度关闭，开启分支未运行，不更改系统设置。
+
+## 007 `win16-common/palette.h`：已过关
+
+- 职责与调用：声明 Win16 的八色角色和配色接口；普通外框、菜单、控件、现代外框及产品适配通过此契约交换颜色。
+- 处置：接口描述具体 Win16 风格，不反向包含产品私有头；目前其他风格并无相同色彩契约，保留在风格库，避免提前固定不适用于其他主题的公共接口。
+- 验证：第 6 项的双位宽原生配色测试直接包含该头并调用所声明接口，均通过；高对比度开启未覆盖。
