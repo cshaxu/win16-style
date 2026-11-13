@@ -7,7 +7,7 @@
 
 | 序号 | 文件 | SHA-256 | 状态 |
 | ---: | --- | --- | --- |
-| 1 | `src/lib-style/win16-common/control_api.h` | `3c26e7bdd7cc1fa995bc9aab43e321c70234a369577ea4e396ea1365429efd84` | 审计中 |
+| 1 | `src/lib-style/win16-common/control_api.h` | `3c26e7bdd7cc1fa995bc9aab43e321c70234a369577ea4e396ea1365429efd84` | 已过关 |
 | 2 | `src/lib-style/win16-common/font.c` | `d723a27e69d4fb410fa124db76ff48781948ad0e0e37fbb3edfbd000b7b6be83` | 待审 |
 | 3 | `src/lib-style/win16-common/font.h` | `9f4a3ad4bb0489013f44483dcdc155407ae689241db1faca401a4989efec2a37` | 待审 |
 | 4 | `src/lib-style/win16-common/layout.c` | `83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede` | 待审 |
@@ -164,3 +164,7 @@
 - 实际调用：`win16-common/font.h` 和 `palette.h` 直接包含；稳定导出由 `ntw16s32.def` / `ntw16s64.def` 和 `tests/ntw16s-dll/abi.c` 约束。
 - 待处理：`ntw16s-dll/api.h` 重复定义同一导入宏，需按依赖方向检查能否去重，保持静态构建与 DLL 消费者的现有 ABI，不能让公共库反向依赖产品私有头。
 - 验证：需双位宽编译、导出与实际消费者验证；该文件尚未过关。当前已在构建的列表变更不属于本次顺序审计，先完成其既有交付后再修改。
+
+- 处置更新：产品 `api.h` 改为包含本头，删除重复宏实现。双位宽增量 ABI 检查均为 38 个导出、版本 3，Win16 公共库链接通过；需完成正式包构建、发布和复测后才能过关。
+
+- 正式交付与复测：[第 1 项记录](M0-T26-S1-ordered-01.md)。产品头直接引用本头，原重复定义已删除；资源、ABI 和未覆盖边界见记录。

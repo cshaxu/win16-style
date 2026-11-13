@@ -833,7 +833,7 @@
       "path": "src/ntw16s-dll/api.h",
       "source": "src/ntw16s-dll/api.h",
       "source_blob": "ed5a06e643692e727431ad7482483cfd175006f9",
-      "sha256": "54868063bf3c5df8b0b544c244cc8eb1d658e49b9ee3340340421d952a73601a",
+      "sha256": "2bfb7f9fac34d85ea49e38b8e3a4b743054881662e475a6f4ce7701223bdae4d",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md",
       "notice": "Project-authored source per fixed component README; original file notices preserved"

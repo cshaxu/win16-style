@@ -1,13 +1,6 @@
 #ifndef NTW16S_API_H
 #define NTW16S_API_H
-#include <windows.h>
-#if defined(NTW16S_STATIC)
-#define NTW16S_API
-#elif defined(NTW16S_BUILD)
-#define NTW16S_API /* Explicit .def owns the stable C export names. */
-#else
-#define NTW16S_API __declspec(dllimport)
-#endif
+#include "../lib-style/win16-common/control_api.h"
 #define NTW16S_ABI_VERSION 3u
 /* Local C ABI, same native width. Never pass CRT allocations across it.
  * Calls and removal run on the HWND's GUI thread. The caller must retain its
