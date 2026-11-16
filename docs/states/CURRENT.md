@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S6全局接入与切换。S1审计、S2目录、S3 GUI根生命周期、S4启动、S5运行时接入已收口；不把局部完成称为全T完成。
+M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S7窗口与标题栏。S1审计、S2目录、S3 GUI根生命周期、S4启动、S5运行时接入、S6全局协调已收口；不把局部完成称为全T完成。
 
 [S5交付](../history/M0-T26-S5-runtime.md)b08d601d已实际fetch并逐blob复核37个变更；同快照八文件先发布assets根/O:/winnt，随后118项去重实际包回归通过。另2项DWM旧失败与S4一致，不计通过。见[开发证据](../etc/evidence/t26-s5-runtime.json)与[最终交付](../etc/evidence/t26-s5-delivery.json)。双宽各17个公共样式归档门禁通过，1005个源码/构建/测试/工具输入一致，ABI及原资源保留。
 
@@ -10,32 +10,32 @@ S5运行时module/请求/通知/late批次已公共化，产品侧净减少105�
 
 S6已将session/control/start/worker/late/attach/manager/receiver/host/owner/trace迁入公共层并接入产品，删除14个产品C/H文件及六个空转发，必要线程导出合并至hook装配。927项来源回执、原资源及双宽各18个样式归档门禁通过。沙箱外同一自有目标12项原生接入全部通过，确认此前拒绝与AppContainer环境有关，未改生产策略；原沙箱失败保留在[开发证据](../etc/evidence/t26-s6-global-development.json)。
 
-S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），1024个输入摘要一致，来源/资源/ABI及双宽公共归档门禁通过。同批八文件已先发布assets根/O:/winnt，再进行162项实际包聚焦回归：160通过、2项管理员ETW跳过；另2项DWM恢复旧失败仍归S7/S14，不计通过。见[交付证据](../etc/evidence/t26-s6-delivery.json)。提交/推送/实际远端复核完成前不关闭S6；T26保持开放。
+S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），1024个输入摘要一致，来源/资源/ABI及双宽公共归档门禁通过。同批八文件已先发布assets根/O:/winnt，再进行162项实际包聚焦回归：160通过、2项管理员ETW跳过；另2项DWM恢复旧失败仍归S7/S14，不计通过。见[交付证据](../etc/evidence/t26-s6-delivery.json)。S6 P1 `4d1cdcb7`已推送并实际fetch复核95个现存blob、14个删除路径及八文件摘要，见[远端证据](../etc/evidence/t26-s6-remote.json)。S6收口并自动准入S7，T26保持开放。
 
 两轮S6构建/测试均结束，已核验无存活自有夹具及reparse后清理scratch/快照/发布备份548,376,032字节，保留.ninja/.ccache，见[清理记录](../etc/evidence/t26-s6-cleanup.json)。最终格式规范后重新构建、发布、测试，没有混用旧摘要；[全局生产链与最终映射](../history/M0-T26-S6-global.md)保留完整审计、失败对照和效率复核。禁止computer-use及私有桌面，不改或依赖兄弟仓库，不新增能力/权限/目标。
 
 [S4事实](../history/M0-T26-S4-startup.md)及[交付](../etc/evidence/t26-s4-delivery.json)保留；T25按用户决定有限收口，未通过项不补记通过。
 
-## M0 T26 S6 Packet
+## M0 T26 S7 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S5运行时能力交付收口后自动准入S6，沿用M0/T26。 |
-| Admission And Approval | 用户批准三层架构与14个S自动有序执行，单人实施/协调复核，按完整能力合批交付。 |
-| Objective | 全局发现/接入会话与停止/切换协调归access/global，复用既有process-global、process-hook及startup/runtime，Original/Win3.x/Win2000按同一移除后应用路径组合；产品仅保留选择/协议策略、风格操作和必要ABI。 |
-| Non-goals | 不新增跨进程/卸载机制、不扩大目标或权限，不修改托盘UX/系统设置，不复制底层管理器/队列/挂钩后端；具体渲染与API创建链按S7–S12，不在本S发明新风格能力。 |
-| Reference Baseline | S5 P1 b08d601d，同批八文件、118项聚焦通过/2项DWM旧失败、37个实际远端blob复核；S1全局与产品审计及S2映射。 |
-| Candidate Proposal | docs/proposals/style-library-reorganization.md，S6全局接入与切换。 |
-| Files And ABI Surface | access/global、ntw16s/global全链、run16s global/tray controller、共享运行时及两风格接入/停止调用与全部测试消费者；先冻结有限全集/类型/入口/调用、保持产品ABI和八产物。 |
-| Applicable Rules | M0；纯C17、MinGW GCC、Ninja、ccache；公共组件实际拥有状态/生命周期，调用方提供完整策略操作，不传整个私有上下文/制造空包装；错误本层清理后上抛、外层报告。 |
-| Verification | 独立发现/管理、接入与样式操作分离、既有/后续自有目标、重复启停/失败/停止竞态及六种风格转换；增量后同快照双宽干净构建、先发布再测试/提交/推送与实际远端复核。管理员ETW等真实限制须skip且不算通过。 |
-| Expected Markers | 单一公共协调状态及实际产品调用，旧通用算法/空转发删除；风格/DLL/导出/消息名称由调用方配置，不把Win3.x/Win2000策略硬编码公共库，不把停用或样式恢复称物理卸载。 |
-| Asset Needs | 八文件、图形资源与来源声明保持；不引入兄弟仓库或额外产品文件/服务。 |
-| Reporting Requirements | 每个保留产品项有具体原因及公共调用位置；记录生命周期/协议/资源所有者、旧路径处置、精确测试与限制，不能用某一步成功代表DLL加载/初始化/传播/窗口附着/绘制/恢复全链。 |
-| Stop Conditions | 不使用computer-use/私有桌面，不改兄弟仓库或安全设置，不覆盖其他改动；不在loader-lock做等待/GUI/GDI/LoadLibrary。新机制或重大范围变化先说明；已有UAC授权按用户要求等待一分钟再追问。 |
-| Exit Criteria | 冻结清单的通用全局协调已真实抽离并接入，六种转换/停止契约在适用矩阵验证，规范交付/实际远端复核；未覆盖/环境限制如实记录，不能只搬文件或用stub冒充实际全局覆盖。 |
-| Original Owner Request | 所有样式组件按access/application/appearance重组，产品只关注产品，极简/统一/复用；全局样式切换共享先取消再应用，不逐文件完整交付。 |
-| Similar-Issue Sweep | EXE/双宽host、管理器/事务/会话、目标与模块身份、lazy初始化、窗口通知/子窗口、停止/恢复/后代传播、托盘重复选择与所有六种转换；优先调用已有公共Win32引擎。 |
+| Identifier Mode | Continuation；S6交付且实际远端复核后自动准入S7，沿用M0/T26。 |
+| Admission And Approval | 用户批准三层架构与14个S自动有序执行，单人实施与第二角色复核，完整能力合批交付。 |
+| Objective | 普通窗口和标题栏的原生快照、激活/恢复、消息/命中及资源机制归application/window/graphics，两风格实际共用；appearance仅拥有年代布局/绘制与真实差异策略。 |
+| Non-goals | 不新增风格/框架能力或权限/卸载机制；菜单输入S8、控件S9/S10、创建链S11、现代宿主S12；不整体搬私有state或添加逐字段空包装。 |
+| Reference Baseline | S6 P1 4d1cdcb7，同批八文件、160通过/2项ETW skip、2项DWM旧失败，95现存blob及14删除路径实际远端复核。 |
+| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S7-window.md；冻结输入docs/etc/evidence/t26-s7-window-audit.json。 |
+| Files And ABI Surface | application/window、普通Win3x frame系列、Win2000 frame/caption、产品正式窗口装配及对应测试；核对现代frame/system_menu公共消费，保持八文件/ABI。 |
+| Applicable Rules | M0；纯C17、MinGW GCC、Ninja、ccache；唯一公共状态所有者、完整操作回调；错误本层清理后上抛，外层报告，极简而非无限容错。 |
+| Verification | 双宽公共独立及两风格产品，正常/隐藏/pending/最大化、失败/取消/销毁/重入、命中/打印/字体/资源及恢复；增量后统一干净构建、先发布再实际包测试和远端复核。 |
+| Expected Markers | 共同原生状态/事务下沉，真实消费者、旧实现与空转发删除；布局和绘制独立。原set-only DWM policy不可观察，不把remove成功算完全恢复。 |
+| Asset Needs | 五组件八文件及原图形资源/来源声明保持，不引入兄弟仓库或额外产品依赖。 |
+| Reporting Requirements | 冻结清单最终归属/公共入口/产品调用/测试、实际diff行数/所有权及失败/skip/未覆盖；不以门禁替代运行证明。 |
+| Stop Conditions | 禁止computer-use及私有桌面，不改兄弟仓库/系统安全设置/其他任务；不在loader-lock做GUI/等待；UAC超过一分钟才追问，环境限制如实记录。 |
+| Exit Criteria | 普通外框清单实际拆分并接入、无重复/反向依赖，恢复边界实证；规范发布测试提交推送与实际远端复核，现代/菜单交界明确接收者。 |
+| Original Owner Request | 所有样式按access/application/appearance重组到lib-win32-style；极简统一复用，逐文件审计、按完整能力交付，不逐文件发布。 |
+| Similar-Issue Sweep | 双风格安装/隐藏/待定/销毁/移除、DWM/客户区、NC消息/打印/光标/命中、标题/字体资源及产品组合，现代/菜单跨S公共消费。 |
 
 ## Identifier State
 
@@ -47,9 +47,9 @@ S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），102
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
-- Last allocated T26 S: 6
-- Last verified remote delivery: M0 T26 S5 P1，`b08d601d`；37个变更blob及八文件复核通过。
-- Open task: M0 T26 S6；全局接入与切换。
+- Last allocated T26 S: 7
+- Last verified remote delivery: M0 T26 S6 P1，`4d1cdcb7`；95现存blob、14删除路径及八文件复核。
+- Open task: M0 T26 S7；窗口与标题栏。
 
 ## Technical Baseline
 

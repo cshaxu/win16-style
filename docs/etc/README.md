@@ -231,3 +231,7 @@
 - [T26 S6开发验证](evidence/t26-s6-global-development.json)：会话、切换与线程启动的增量验证；实际DLL接入拒绝结果明确保留，尚非交付或S6收口。
 
 - [T26 S6交付](evidence/t26-s6-delivery.json)：同快照八文件先发布，160项原生聚焦通过、2项管理员ETW跳过和2项DWM旧失败；双宽构建/cache与依赖/来源摘要；[临时产物清理](evidence/t26-s6-cleanup.json)。
+
+- [T26 S6实际远端](evidence/t26-s6-remote.json)：95现存blob、14删除路径及最终八文件复核。
+
+- [T26 S7冻结输入](evidence/t26-s7-window-audit.json)：普通外框、现代/菜单交界与实际消费者；不是完成结论。

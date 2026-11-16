@@ -1,0 +1,301 @@
+{
+  "task": "M0 T26 S7",
+  "status": "frozen-inputs-not-completion",
+  "baseline": "4d1cdcb70ef1c7917965f4eb6437c39ba0372f00",
+  "files": [
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/caption.c",
+      "sha256": "ab1ac337b04b6524b1872df279ec8715fd1decfa44247060f43e7f2019872ef9",
+      "disposition": "mixed rendering review",
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/caption.h",
+      "sha256": "752e5d019f9d12ae479a565533dda32101e0ed4ce3c7bb5f7e44067cfea30075",
+      "disposition": "mixed rendering review",
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/frame.c",
+      "sha256": "c81807df90701ddcf17f2b1b771f92a18e7edbd33c2dc3969c7e15ee94b79e70",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/frame.h",
+      "sha256": "c8b20e9abd404a041725cabde922ff20698bb11531f18d030872904701681181",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/system_menu.c",
+      "sha256": "2f8852d5c20f220fa3d9f20633ccd457a6b25136f845a33ab7eecbbd806e62b8",
+      "disposition": "S8 boundary",
+      "reason": "menu state/input retained until common menu migration"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/system_menu.h",
+      "sha256": "8608f209175f54efc7921b19a689eb435e8edd5a3825a7170496cee1c0207e8c",
+      "disposition": "S8 boundary",
+      "reason": "menu state/input retained until common menu migration"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.c",
+      "sha256": "a310ef719ed226e6ef765c850c6d727d5fccc0a573462a2a6010566579bcb779",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.h",
+      "sha256": "15033ca7d882f19ecd458365ffd76aa8f803732034b99d4d467b13ca8622760e",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_font.c",
+      "sha256": "5414a7de13ce83ba74fcf3786a320616aa50bc81ecb6f860d287f45e535d7b72",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_font.h",
+      "sha256": "dcd05c8d415169bc70cd3c6884cf8eec8159e5cf7c0806e4fda546845b30243b",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_input.c",
+      "sha256": "9283ce28e5d7c159fb4482906cc6f2d82818cf4e4ce6ec7e302d1a51f6a9e0bc",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_input.h",
+      "sha256": "e067c1cfe84bc28f22b9b02357000d2a1519ccc1a0c73e560ea4dfd2fcd3527c",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_layout.c",
+      "sha256": "eee865271101727c8d55b1b8b556371335f0638522674daa020d6e479a500269",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_layout.h",
+      "sha256": "8ce56c7cc3d9c6a98dd924a1988e60ec619c5614fbeebbd661bc531c6dad9d14",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c",
+      "sha256": "0e8aa5eb3c7ef3a5dc9f4efc4475f67e2df9c32822bcce63c5b3d1d89cfc1a55",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.h",
+      "sha256": "4b989f179aa2c79d9331525311eaf80ba67d6877d254737fd362e9d2412c5de3",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_message.c",
+      "sha256": "a02fe5fd842cf88970bdf0190158d6de3511bb4356ae090eb5a9fd60c8c164dd",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_message.h",
+      "sha256": "07b7aa78e2c300e3d35c12308bc2d81d9e8bccd599aa3d7ee2221da560b5c11f",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_paint.c",
+      "sha256": "1a09c832c9f80b9fae46c4580b056909e664ec01aa4fde33130c5b7aa192f9dd",
+      "disposition": "mixed rendering review",
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_paint.h",
+      "sha256": "576a9892474c8fe7709d85278c2edaa56f47658583f64e53915c59d0aed077f4",
+      "disposition": "mixed rendering review",
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_state.c",
+      "sha256": "2e0d05f5a6317cb1c4529f877da96e6dc0b38f7343059cfea728980aafc7e6e9",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_state.h",
+      "sha256": "91fd2953fa0f906facec6dc7fd55b97165e461eac6eff33130d210e4f46601c8",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_view.c",
+      "sha256": "2609ec92fabfe1769a5d0d9a1217ad03cd7d816c5fc77473903cf891c2cdffc3",
+      "disposition": "mixed rendering review",
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_view.h",
+      "sha256": "cee550d0193c4c6dfd6df0edf53935a6addef9e48beef44488e96da76cb938b6",
+      "disposition": "mixed rendering review",
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
+      "sha256": "a4e6faa1967b0447feda3ae1760114987bf5671af8bedc8f219dd0340255f2f2",
+      "disposition": "S12 boundary",
+      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.h",
+      "sha256": "00da809635b3781756d1760ce368b241259267eeca36e77d99cff117c0c5fbe4",
+      "disposition": "S12 boundary",
+      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c",
+      "sha256": "fa5140f31fd839432e55ea7a511cad04aba213f9ac7094d0c3b6871c4be2d6b9",
+      "disposition": "S12 boundary",
+      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/modern_frame_layout.h",
+      "sha256": "15c3b0ca9836c852b4caa4a9c8d3289d46111a718d865a27c1eee5efe94badf9",
+      "disposition": "S12 boundary",
+      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/win16_style.h",
+      "sha256": "6049f0ce949af60da299436283a7be37f2c9ac53e228199e0b7fb5537c43dba1",
+      "disposition": "shared mechanism migration review",
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/dwm.h",
+      "sha256": "dc446af8cb5f5635cae67b4961282d2d5769414a857447f81d412b9647b815e5",
+      "disposition": "existing public mechanism",
+      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/frame.h",
+      "sha256": "0919b68928537000bcb2134422503a3bed5e42a5e69a92a56fe12be957af34fa",
+      "disposition": "existing public mechanism",
+      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/window_identity.h",
+      "sha256": "cbab1c414cce1971fcbf709f920bf4aa63d9ffc99ebb12cb83f9223b0d908fd6",
+      "disposition": "existing public mechanism",
+      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/window_text.h",
+      "sha256": "c95e7c2ccba330fc3e395970bbd0b3892e010807d3ad8e51f8db4d8d96115e99",
+      "disposition": "existing public mechanism",
+      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers"
+    },
+    {
+      "path": "src/ntw16s-dll/attachment.c",
+      "sha256": "5b3c4acc82abc29cfe6aeb33f5e837c59e0fdaaa53ef65ac2f1e69e22fd65345",
+      "disposition": "product integration",
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+    },
+    {
+      "path": "src/ntw16s-dll/attachment.h",
+      "sha256": "7a5cde7dcf7fb6925373ec34b0877ff37b2175f19ecb5a9c2cfa5e52ee49a7ed",
+      "disposition": "product integration",
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+    },
+    {
+      "path": "src/ntw16s-dll/win16_style.c",
+      "sha256": "9af1eabd9ab4f9f26d670676ae55cc399311edf013f9c7bee87030ffbea6cd58",
+      "disposition": "product integration",
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+    },
+    {
+      "path": "src/ntw16s-dll/win16_style.h",
+      "sha256": "45412585b7fe4165220573f209ebb1e833ba2b53c963036e9aa9ff4773a5c8a9",
+      "disposition": "product integration",
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+    },
+    {
+      "path": "src/ntw2ks-dll/window.c",
+      "sha256": "e886d5f03094396a557d3b5d3799d08c8dfeec90f1185798bba49efccd526ea1",
+      "disposition": "product integration",
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+    },
+    {
+      "path": "src/ntw2ks-dll/window.h",
+      "sha256": "fa52dca7007a1f1a9466db3e500511d6dcd69f27dfc4227a126c27cb50190596",
+      "disposition": "product integration",
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/window/caption.c",
+      "sha256": "2f226006b3d747ec4103523093057487010c9fa70a36599e7fa2fa6208b2555f",
+      "disposition": "verification",
+      "reason": "existing native fixture; audit invocation before running"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/window/frame_lifecycle.c",
+      "sha256": "50e584ec3a8eb67b76090ec6f4d4eb013ff8e776dbe8a4bb048bf23d390fb75e",
+      "disposition": "verification",
+      "reason": "existing native fixture; audit invocation before running"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/window/instance_lifetime.c",
+      "sha256": "15c6044bb177005827933bd804c1c532739f15401cf933fd5d8b06f6b869ca43",
+      "disposition": "verification",
+      "reason": "existing native fixture; audit invocation before running"
+    },
+    {
+      "path": "tests/lib-win32-style/application/window/frame_restore.c",
+      "sha256": "1aae317b1738635cbebf42ef3b7adb813f569b9d7c16d2a3bfac563c467d738c",
+      "disposition": "verification",
+      "reason": "existing native fixture; audit invocation before running"
+    },
+    {
+      "path": "tests/lib-win32-style/application/window/frame_xaml.c",
+      "sha256": "142c1894432012a7b2b3c5115dc80de64400d859532325de4a3c032eaac2e65b",
+      "disposition": "verification",
+      "reason": "existing native fixture; audit invocation before running"
+    },
+    {
+      "path": "tests/lib-win32-style/application/window/win16_dwm_restore.c",
+      "sha256": "754aebb44a49aee52d998ce66ea863c74ac6f687bb85af87c34a8060d1f0f8f7",
+      "disposition": "verification",
+      "reason": "existing native fixture; audit invocation before running"
+    },
+    {
+      "path": "tests/lib-win32-style/application/window/window_identity.c",
+      "sha256": "5cc16f4362ae4280039723aae186f71065e0d9c8341326c6d4d004d487f4ac03",
+      "disposition": "verification",
+      "reason": "existing native fixture; audit invocation before running"
+    },
+    {
+      "path": "tests/lib-win32-style/application/window/window_text.c",
+      "sha256": "38abdba39dc0a943814256f2a6adabc2f86002169fb5320998bf84dfb5b85a87",
+      "disposition": "verification",
+      "reason": "existing native fixture; audit invocation before running"
+    },
+    {
+      "path": "tests/ntw16s-dll/frames.c",
+      "sha256": "3340d39e9839acc903288fbd0efa9d38d2777406b2ae004c8b523924f6f5d6fc",
+      "disposition": "verification",
+      "reason": "existing native fixture; audit invocation before running"
+    },
+    {
+      "path": "tests/ntw16s-dll/pending_frame_owner.c",
+      "sha256": "5998f07c984529433baae51cf4a27710a76979a5dca45dc9cbcde87e4e443571",
+      "disposition": "verification",
+      "reason": "existing native fixture; audit invocation before running"
+    }
+  ]
+}

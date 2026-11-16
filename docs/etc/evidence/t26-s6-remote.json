@@ -1,0 +1,508 @@
+{
+  "task": "M0 T26 S6 P1",
+  "remote_commit": "4d1cdcb70ef1c7917965f4eb6437c39ba0372f00",
+  "status": "passed",
+  "actual_remote_blobs": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "c0aa20c34ea9b05e654aea9ce637961ef6a2916c6e0c93a13bc9a941782267ae",
+      "bytes": 174087
+    },
+    {
+      "path": "assets/demo.exe",
+      "sha256": "9a08805ef5c858b914dcb1c37871ad503692dac4ccfd678210bf3ab7cb308aa6",
+      "bytes": 264515
+    },
+    {
+      "path": "assets/ntw16s32.dll",
+      "sha256": "569afb56dcda832e9d11073663f2528c6e7ebe89be9ff90a0ec480fa10e75213",
+      "bytes": 1614170
+    },
+    {
+      "path": "assets/ntw16s64.dll",
+      "sha256": "6fd05f387cb5b2bec997849cb6a91e94b8515cbbfeb8d2041a9ba53688ffdd83",
+      "bytes": 1600980
+    },
+    {
+      "path": "assets/ntw2ks32.dll",
+      "sha256": "c2b1e725190af90fe9f9a736586fcfe294365221dc06593839782047fed82d50",
+      "bytes": 254368
+    },
+    {
+      "path": "assets/ntw2ks64.dll",
+      "sha256": "23073a9616551ec964a0763c99d9f2d12d00deb774e6b1b3e81cbc8dd49dd7da",
+      "bytes": 274527
+    },
+    {
+      "path": "assets/ntwshk32.dll",
+      "sha256": "300fd5bac0ea3484186b75eff8ade74cdb20fae469eb51566ff1c55f3f566d88",
+      "bytes": 204190
+    },
+    {
+      "path": "assets/ntwshk64.dll",
+      "sha256": "0cb521d5c6263f42238f56c3cfab6cdf758c23d307331b372c64c6657536de41",
+      "bytes": 230629
+    },
+    {
+      "path": "assets/run16s.exe",
+      "sha256": "d989d7576e0935abcb6d75fda3d3fa78a84f94fb343da9c612c4a24d834846b0",
+      "bytes": 880338
+    },
+    {
+      "path": "docs/design/ARCHITECTURE.md",
+      "sha256": "1328a69d74fa67546f6c4b9149115bd3ce488053046d1b51637bc72ce754d43b",
+      "bytes": 11218
+    },
+    {
+      "path": "docs/design/ROADMAP.md",
+      "sha256": "5e34d9de1cec263225beb9ad5a6e46dd09209e2dd12ca6e9253d3cc1deacb52f",
+      "bytes": 1601
+    },
+    {
+      "path": "docs/etc/README.md",
+      "sha256": "564cdd736f4296970ae5673a53cc94cb53d4e08d27eb45c96a0e789c1ffe9c27",
+      "bytes": 20295
+    },
+    {
+      "path": "docs/etc/evidence/t26-s6-cleanup.json",
+      "sha256": "20494b0a3707f4cd1e2d1ea99aa0815320beae8003c28e04f6fc80061a0fe220",
+      "bytes": 771
+    },
+    {
+      "path": "docs/etc/evidence/t26-s6-delivery.json",
+      "sha256": "d20f149f4e8cfcd4c24a2d3c938de1ab78e2976e583a90a932178b3d0e103d6e",
+      "bytes": 240547
+    },
+    {
+      "path": "docs/etc/evidence/t26-s6-global-development.json",
+      "sha256": "815929334d3774f3c45385bf67073f1d03be62570f26bcaf729463751b7ddeb9",
+      "bytes": 40864
+    },
+    {
+      "path": "docs/etc/import/import-receipts.json",
+      "sha256": "7856c36ebfda98820417af97a67c592f2e0e542a8c9fca7ab85b51892e819084",
+      "bytes": 528017
+    },
+    {
+      "path": "docs/history/M0-T26-S6-global.md",
+      "sha256": "c1401ede7245d488f5f6e6ae0840080aa190ac6460aed818e9080fe52f9ea0b2",
+      "bytes": 24987
+    },
+    {
+      "path": "docs/states/CURRENT.md",
+      "sha256": "df525e502dadfe8bebbc336cafe2c68fc8176b295b52a2614e937ec2279f4eb9",
+      "bytes": 16077
+    },
+    {
+      "path": "src/lib-win32-style/access/global/attach.c",
+      "sha256": "e04732fab6bcec76cf90cb93f304d88bbd3f66d520397f72838ced68e4f9e164",
+      "bytes": 7555
+    },
+    {
+      "path": "src/lib-win32-style/access/global/attach.h",
+      "sha256": "27055e664eaf582e556947f71bece648be146919e5391dfa6e397c65e375eff8",
+      "bytes": 1793
+    },
+    {
+      "path": "src/lib-win32-style/access/global/control.c",
+      "sha256": "fd361a900ed3ba7c775a2ee22857749c8866b6f57285855136e94b221dc6f340",
+      "bytes": 3752
+    },
+    {
+      "path": "src/lib-win32-style/access/global/control.h",
+      "sha256": "a47b6be103c19e84a2084241643790b7e469c432060384dfea5066df5687da47",
+      "bytes": 1629
+    },
+    {
+      "path": "src/lib-win32-style/access/global/host.c",
+      "sha256": "58e5df4838137ec40bd6777fe1be41e9b7ed2cf15b5113534d7e6cead8bab23c",
+      "bytes": 3304
+    },
+    {
+      "path": "src/lib-win32-style/access/global/host.h",
+      "sha256": "21347944ae994bad5c877ea6a8a90b324334dcbf9f542ef282ee1b0b067494cf",
+      "bytes": 855
+    },
+    {
+      "path": "src/lib-win32-style/access/global/late.c",
+      "sha256": "fdd3f2302aaee3686c9c71d0616d034c71ca80e7bba1626b61c3b606f700ebda",
+      "bytes": 2138
+    },
+    {
+      "path": "src/lib-win32-style/access/global/late.h",
+      "sha256": "6c427bb5d01b7229ee2caf4bb20dab0eae91399c837cc3deee516594d9e1c14f",
+      "bytes": 861
+    },
+    {
+      "path": "src/lib-win32-style/access/global/manager.c",
+      "sha256": "c0fd20b4b294e8da84a01822b69c73c9f79e266e0077b03be8e49443b341a21a",
+      "bytes": 19712
+    },
+    {
+      "path": "src/lib-win32-style/access/global/manager.h",
+      "sha256": "59d278969879e4b74a0c8221853bbfcd4be98f4363102486ef95c88cf2faf635",
+      "bytes": 2741
+    },
+    {
+      "path": "src/lib-win32-style/access/global/owner.c",
+      "sha256": "ccf44a12d6d48c90ddded4b09397fa80df89d3f63287b8c0e199eb558d225c7b",
+      "bytes": 10531
+    },
+    {
+      "path": "src/lib-win32-style/access/global/owner.h",
+      "sha256": "efe5d588c33c5eb9cc0eb5d28ceca7e1d6968e5ea4c85d0d0a9dfbe5ee57e27e",
+      "bytes": 1492
+    },
+    {
+      "path": "src/lib-win32-style/access/global/receiver.c",
+      "sha256": "c45259a6cca6bc2acd4bb7902d6473737b560903d81f4d2899d774c5bf44941d",
+      "bytes": 3633
+    },
+    {
+      "path": "src/lib-win32-style/access/global/receiver.h",
+      "sha256": "37cff986d836dea6ffe46bf9420d6abe26abb6dc56f6de797ba8fb96aa44058e",
+      "bytes": 930
+    },
+    {
+      "path": "src/lib-win32-style/access/global/session.c",
+      "sha256": "4c9464cecb6c536eace2dff5031585be700c9818aa49d3d085c87bcedcaef1c0",
+      "bytes": 4134
+    },
+    {
+      "path": "src/lib-win32-style/access/global/session.h",
+      "sha256": "5ef2cb666d41768ea45b26e6e0572989120333d1f0e6120ab0ae045d151bdb9b",
+      "bytes": 1587
+    },
+    {
+      "path": "src/lib-win32-style/access/global/start.c",
+      "sha256": "1b1f33644aa7f9b6325bb423ffab7aeedc2171c8a221db1e0e43b4ba7ccd1b61",
+      "bytes": 2606
+    },
+    {
+      "path": "src/lib-win32-style/access/global/start.h",
+      "sha256": "39335576f147e6bc18ede8317193730b77625436be08b775899373a459110fb8",
+      "bytes": 1107
+    },
+    {
+      "path": "src/lib-win32-style/access/global/trace.c",
+      "sha256": "a52251ec7766045304873ceb81705efc4c7df8d6d8cbdbe8ba811394c56a6c36",
+      "bytes": 2300
+    },
+    {
+      "path": "src/lib-win32-style/access/global/trace.h",
+      "sha256": "f9d111357f70d91407067a365f8fdff8eb2602a5ee8085989c96a5284933b154",
+      "bytes": 654
+    },
+    {
+      "path": "src/lib-win32-style/access/global/worker.c",
+      "sha256": "dbd08230a7d50eb37bb01ee995091af94aedaf131b20acb85f8f38c305f39fd2",
+      "bytes": 3902
+    },
+    {
+      "path": "src/lib-win32-style/access/global/worker.h",
+      "sha256": "96250cd636fb8c4586dda6929f01b183e3d815cefc35de0a3faf04aea713bd06",
+      "bytes": 756
+    },
+    {
+      "path": "src/lib-win32/process-global/load.c",
+      "sha256": "c6ad928fa641a159836c58d22abb531f91ab133fa4bdeddb9aa38a709186bef5",
+      "bytes": 4811
+    },
+    {
+      "path": "src/lib-win32/process-global/load.h",
+      "sha256": "75224c25c9db172c52ceeef8e5929039f727448438d8aa8d2b2b90f9011ba12a",
+      "bytes": 1330
+    },
+    {
+      "path": "src/lib-win32/process-global/module.c",
+      "sha256": "651e266b53fe2c5cdb877da6b1ff5230925e274d42e22ace14163ef6dedbca46",
+      "bytes": 6325
+    },
+    {
+      "path": "src/lib-win32/process-global/module.h",
+      "sha256": "6398c7f283da43a0650f4942b396188303c215f500d774b7a38906b4e9ea46b5",
+      "bytes": 1364
+    },
+    {
+      "path": "src/lib-win32/process-global/recovery.c",
+      "sha256": "c5711f0d20ab7e7d3d288a93d51ad147a33dd6def1ffb1065629fa1f54d62d52",
+      "bytes": 2861
+    },
+    {
+      "path": "src/lib-win32/process-global/recovery.h",
+      "sha256": "70ffe1548b911fdfff67b8abb03b9fe774ba675d40a00bbb2b8a27711778bdc2",
+      "bytes": 956
+    },
+    {
+      "path": "src/ntw16s-dll/global/config.c",
+      "sha256": "0f766c24c40cd705159c8667d456fca7499cd5c465128431d9e1768d208aa2d6",
+      "bytes": 361
+    },
+    {
+      "path": "src/ntw16s-dll/global/hook.c",
+      "sha256": "85f0469c14f31ad440145176df2b7a3c85d1d54aee970c80ff91d1e1a8f4c593",
+      "bytes": 3079
+    },
+    {
+      "path": "src/ntw16s-dll/global/policy.c",
+      "sha256": "399db6c9296b034b1d405c3967e596913a66b712cc6c0c6b149dda43ba284d17",
+      "bytes": 764
+    },
+    {
+      "path": "src/ntw16s-dll/global/policy.h",
+      "sha256": "1ffbea0e113ef638a6f3c7fa99029f8a87d3ab8cde6366ee4584e7808f51837f",
+      "bytes": 212
+    },
+    {
+      "path": "src/ntw16s-dll/global/services.c",
+      "sha256": "5278665014ebab3f99c2523290375f7938e47e1effabbe9aa620558c6f3f661d",
+      "bytes": 2794
+    },
+    {
+      "path": "src/ntw16s-dll/global/session.c",
+      "sha256": "1300d2dacfd54bedbf6f014503bccbee9d0645131f2dcd8046d1ebe18d3e61c0",
+      "bytes": 811
+    },
+    {
+      "path": "src/ntw16s-dll/global/session.h",
+      "sha256": "19df4e2451b42abc76725c7196b8de06dc7b03f62a70cff4e9648467f2694827",
+      "bytes": 1347
+    },
+    {
+      "path": "src/run16s-exe/global.c",
+      "sha256": "a41d8f73442b0dd91dd4a6d1f4f9f1d3e20f6b8d51d6c31d611ae3ae4ab16a96",
+      "bytes": 3626
+    },
+    {
+      "path": "src/run16s-exe/tray_controller.c",
+      "sha256": "58b7fc67c89e1f5787762a2cbaaa48d8be2910df5f6a081b82d302968cfb9519",
+      "bytes": 5252
+    },
+    {
+      "path": "tests/integration/global_common.c",
+      "sha256": "c7260ef6025490425f013c32b9c5ae0bff052be2f91fbe577b628fe1455ab2f1",
+      "bytes": 6347
+    },
+    {
+      "path": "tests/integration/global_cross_origin.c",
+      "sha256": "f12c76d38d1ccbd9a294b25f0bee73225ac260ee585d0d4435208d67cc442877",
+      "bytes": 9251
+    },
+    {
+      "path": "tests/integration/global_headless_existing.c",
+      "sha256": "921c523ba24ee29505e8a575f43e8904ac7fb9f6f2f28ed01e485f3f7773cb63",
+      "bytes": 7936
+    },
+    {
+      "path": "tests/integration/global_hook_owner.c",
+      "sha256": "ab8d6fbefbcf173475a453a4553c037226f8e7c6ab5cc7bcd061bd3d867f6cd9",
+      "bytes": 1734
+    },
+    {
+      "path": "tests/integration/global_lifecycle.c",
+      "sha256": "c4bbcc4d56a29f08e50848a78afa46eedbaeef6f0eac5de2e22640c49314dac5",
+      "bytes": 6992
+    },
+    {
+      "path": "tests/integration/global_mode.c",
+      "sha256": "e18902410ac2ff728b80b73c88518976653f3926d0217b390a381ef48bd74dcd",
+      "bytes": 11509
+    },
+    {
+      "path": "tests/integration/global_parent_owned.c",
+      "sha256": "7fa482c37ae3e944969cd50c1b608b07f922cc747ada29fc3a2ac1ef1c871b73",
+      "bytes": 2271
+    },
+    {
+      "path": "tests/integration/global_propagation_lifecycle.c",
+      "sha256": "942e7ddb92f6ef2be5b362b5761d6ec855b777b00d465b297dc7d2665ae7e294",
+      "bytes": 4046
+    },
+    {
+      "path": "tests/integration/global_propagation_probe.c",
+      "sha256": "a46929fcc52cbf87b6c1c40f7d0c319e1904dbb9ed427c5dc8992da30b638f8a",
+      "bytes": 10881
+    },
+    {
+      "path": "tests/integration/global_real.c",
+      "sha256": "55e01999d6a20926b0e7515002aecb2f3e93e70ccff10558c5da4c152e9078d1",
+      "bytes": 6239
+    },
+    {
+      "path": "tests/integration/global_relay.c",
+      "sha256": "624fe0f49a22361292b7593628870fc682906d0d4612d452bdeab66caeeb0bc3",
+      "bytes": 2471
+    },
+    {
+      "path": "tests/integration/global_start_failure.c",
+      "sha256": "a64cbfa3d0f24723e603661792c3420f98c425c424177ede205e351192f1c42a",
+      "bytes": 2848
+    },
+    {
+      "path": "tests/integration/global_startup_break.c",
+      "sha256": "357eb26b56f32dc62473f3f1e408bc01558835e7410a82f10061a38f4ecc0029",
+      "bytes": 2535
+    },
+    {
+      "path": "tests/integration/global_threads.c",
+      "sha256": "0b7252ab00ee3ec41d3faed2cd879ac95e21fd93bff957f599d6148477078882",
+      "bytes": 5597
+    },
+    {
+      "path": "tests/integration/late_process_prototype.c",
+      "sha256": "cf2e90d32115efc66582b257f9736b679ad46c5b50f68a521901fc0740a92ba5",
+      "bytes": 16184
+    },
+    {
+      "path": "tests/integration/uwp_tray.c",
+      "sha256": "29a5555a71e173b844e8b30feb3c8b05d0f8d2e4603a594d664a72c32ccdf3af",
+      "bytes": 31196
+    },
+    {
+      "path": "tests/lib-win32-style/access/global/control.c",
+      "sha256": "b7df8b0d898ace72b27f1589bf91461c621612618390cac23793c6150e819e66",
+      "bytes": 4581
+    },
+    {
+      "path": "tests/lib-win32-style/access/global/host.c",
+      "sha256": "6f52c5c314f7670715696df189cccc60482ef84547569bfc2cf593ca005dc1bc",
+      "bytes": 2137
+    },
+    {
+      "path": "tests/lib-win32-style/access/global/late.c",
+      "sha256": "d5f745b1633c65b5ab23bebf062a37949b11044db893ef152c985ecaa642fccf",
+      "bytes": 4405
+    },
+    {
+      "path": "tests/lib-win32-style/access/global/owner.c",
+      "sha256": "2877f986cffe1f6d084a7f465358fbb4ce22922f96ded70258747ce743b39d31",
+      "bytes": 2659
+    },
+    {
+      "path": "tests/lib-win32-style/access/global/receiver.c",
+      "sha256": "f1504df7fcf803331cd66fc97000daf48a84e637716181b78f79213963352770",
+      "bytes": 5377
+    },
+    {
+      "path": "tests/lib-win32-style/access/global/session.c",
+      "sha256": "fa7ad0d5bb7ecaa7a8759425a5e344bbf948af457aae4667ca68e4398e98d451",
+      "bytes": 3239
+    },
+    {
+      "path": "tests/lib-win32-style/access/global/trace.c",
+      "sha256": "4058132040d5ca29759fd2491fdb2c5abfa69d51279d68ce48649c60e6f81644",
+      "bytes": 1087
+    },
+    {
+      "path": "tests/lib-win32/process-global/load_finish.c",
+      "sha256": "795433a949981a0f5f136cc1d36f72998361d775ceaac17f22de5c9e6acbe795",
+      "bytes": 2667
+    },
+    {
+      "path": "tests/lib-win32/process-global/module.c",
+      "sha256": "c2b5c0f2244ddafba958cabb87ae3a42f44a42c425c747357337bcc00b8f32f4",
+      "bytes": 5828
+    },
+    {
+      "path": "tests/ntw16s-dll/global_attach.c",
+      "sha256": "60efce8069ab546b178b7cc6bf1bc082cb3b207333f5764192cc0baf8fa2d0fd",
+      "bytes": 5984
+    },
+    {
+      "path": "tests/ntw16s-dll/global_load.c",
+      "sha256": "28a0998c97fb9cec5bf9553a422c749293eaa3078087182c75f8313bc410bd94",
+      "bytes": 5502
+    },
+    {
+      "path": "tests/ntw16s-dll/global_manager.c",
+      "sha256": "4a7d6a5e20809716bee574abe99f72eaf4f114d5e78fe7f02d4e9bc5250b7696",
+      "bytes": 16536
+    },
+    {
+      "path": "tests/ntw16s-dll/global_manager_unsupported.c",
+      "sha256": "e3c6bed1f4ae8f0d1006f74509ab27ad1d1bdb3aacabc9d80e62c9564f4be196",
+      "bytes": 5427
+    },
+    {
+      "path": "tests/ntw16s-dll/global_module_fixture.h",
+      "sha256": "881ee43600625db556b8e1b77cc27c9da91aa1503c9d53de9775a9bb82628243",
+      "bytes": 964
+    },
+    {
+      "path": "tests/ntw16s-dll/global_policy.c",
+      "sha256": "3c8b4971e2445f9606e8ba308f7a6cf884515efde6a92d8f46a7b63caced1a94",
+      "bytes": 11350
+    },
+    {
+      "path": "tests/ntw16s-dll/global_process.c",
+      "sha256": "983fdbe5cb4ba24169a6d7b7fa0bfa636113167d822f62a904a5ee8525279291",
+      "bytes": 3730
+    },
+    {
+      "path": "tests/ntw16s-dll/global_process_integration.c",
+      "sha256": "248ba647056eb64d6805f0ec6b446b7b2ace0b5e520b169ef6775e4ea834a659",
+      "bytes": 2934
+    },
+    {
+      "path": "tests/ntw16s-dll/global_remote.c",
+      "sha256": "9b1fbce9575a5e6edbe661e3f72b485f9d19549a1789562c92289d8cb5075a26",
+      "bytes": 7382
+    },
+    {
+      "path": "tests/ntw16s-dll/global_session_fixture.h",
+      "sha256": "2b2bce8ad54bfea98c8ca2e694b61877b9ff7aeb3de64ec6d7c497c58d10c7b2",
+      "bytes": 1195
+    },
+    {
+      "path": "tests/ntw16s-dll/global_session_style.c",
+      "sha256": "0a619f94d24897af5e9face3410be54b426bf54d9282fca09ab489161664134f",
+      "bytes": 1792
+    },
+    {
+      "path": "tests/ntw16s-dll/global_start.c",
+      "sha256": "d867add98aec9016a2ce73a12adf6537cbb1630e201b6fc7e03152734c00fe6f",
+      "bytes": 7858
+    },
+    {
+      "path": "tests/ntw16s-dll/global_thread.c",
+      "sha256": "25d169c935683d2ce8c6bc29f6ebbad78f99daa45ebd17e6b844c0515ef9a71c",
+      "bytes": 6420
+    },
+    {
+      "path": "tests/ntw16s-dll/uwp/global.c",
+      "sha256": "a22be31fb58e03c0f958fcc8263042245251f0eb654aee8fcf8f77aeacd851fe",
+      "bytes": 14348
+    },
+    {
+      "path": "tests/run16s-exe/tray_controller.c",
+      "sha256": "56989c75d037118c3bcedb467c482f0225841e29ea8ed8cc625f04375b9ce8d0",
+      "bytes": 4131
+    }
+  ],
+  "deleted_paths_absent": [
+    "src/ntw16s-dll/global/attach.c",
+    "src/ntw16s-dll/global/attach.h",
+    "src/ntw16s-dll/global/late.c",
+    "src/ntw16s-dll/global/late.h",
+    "src/ntw16s-dll/global/manager.c",
+    "src/ntw16s-dll/global/manager.h",
+    "src/ntw16s-dll/global/process.c",
+    "src/ntw16s-dll/global/process.h",
+    "src/ntw16s-dll/global/remote.c",
+    "src/ntw16s-dll/global/remote.h",
+    "src/ntw16s-dll/global/start.c",
+    "src/ntw16s-dll/global/start.h",
+    "src/ntw16s-dll/global/thread.c",
+    "src/ntw16s-dll/global/thread.h"
+  ],
+  "published_hashes": {
+    "run16s.exe": "d989d7576e0935abcb6d75fda3d3fa78a84f94fb343da9c612c4a24d834846b0",
+    "demo.exe": "9a08805ef5c858b914dcb1c37871ad503692dac4ccfd678210bf3ab7cb308aa6",
+    "ntw16s32.dll": "569afb56dcda832e9d11073663f2528c6e7ebe89be9ff90a0ec480fa10e75213",
+    "ntw16s64.dll": "6fd05f387cb5b2bec997849cb6a91e94b8515cbbfeb8d2041a9ba53688ffdd83",
+    "ntw2ks32.dll": "c2b1e725190af90fe9f9a736586fcfe294365221dc06593839782047fed82d50",
+    "ntw2ks64.dll": "23073a9616551ec964a0763c99d9f2d12d00deb774e6b1b3e81cbc8dd49dd7da",
+    "ntwshk32.dll": "300fd5bac0ea3484186b75eff8ade74cdb20fae469eb51566ff1c55f3f566d88",
+    "ntwshk64.dll": "0cb521d5c6263f42238f56c3cfab6cdf758c23d307331b372c64c6657536de41"
+  }
+}
