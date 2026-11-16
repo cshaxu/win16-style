@@ -276,6 +276,14 @@ popup scope只有一个同线程WH_CALLWNDPROC hook，不是全局hook；最后s
 
 现有验证入口为common menu_input/menu_snapshot/menu_items/menu_owner、Win16 menu_dispatch/menu_cancel/menu_initial/system_menu_visual、现代frame actions/retire-menu，以及Win2000 system_menu和frame_lifecycle。menu_cancel已有15场景含keyboard/mouse切换、取消、nested escape和system menu；本批仅核对其断言，未运行，因此不宣称新路径通过。资源身份校验和现有产品ABI在迁移时必须复核，不能把资源声明迁丢。
 
+## S1 产品对话框与注册操作契约
+
+产品 injection 的10文件及Win2000 controls/dllmain/window已按当前源码复核，具体注册、状态、测试及SHA见[产品对话框审计](../history/M0-T26-S1-dialog-current-review.md#新三层架构下的产品入口复核p106)。现有public dialog库并不代表产品已足够精简：COM activation/factory引用、file observer、title creation以及绘图观察仍需迁移。
+
+S4/S5接入组拥有hook集合的安装协调并复用process-hook；S3实例拥有scope/owner/最后引用与回滚；S11拥有参数/COM协议、对话框执行与结果事务；S9/S10/S13消费绘图/主题观察并选择renderer。跨组以完整操作与上下文连接，不逐个API或实例字段加回调。产品只装配已有能力集合、指定标识及兼容导出，风格提供支持/布局/字体和绘制。S2先迁实际文件与构建，不能把机械归位当机制已共享。
+
+保持的契约：Win16创建作用域失败可撤销本次新建modeless窗口，Win2000既有创建后observer策略不变；A/W参数、原native返回及LastError保留；多选/应用hook/template/聚合/远程COM和不支持接口按既有原生回退；实验flags不启用。公共COM操作持有factory/proxy/event引用并在全部替换成功后提交MULTI_QI，不要求调用方手工组装内部proxy状态的指针视图。未具备的异常恢复或物理卸载不得由新接口名暗示支持。
+
 ## 未通过与未来候选
 
 导航焦点、Win2000 DWM 恢复、VB 清单和表头不稳定及实际现代宿主/全局覆盖限制继续由 CURRENT 和已有证据承载；不因架构设计被关闭。T26 结束条件是现有能力的三层归位、实际复用和验证，而非所有年代所有应用都支持。

@@ -90,3 +90,51 @@ Win2000 的打印/页面设置夹具在当前候选及第七批发布基线的�
 原由产品 `modern_dialogs.c` 持有的线程局部深度现归公共 `modern_file_dialog`；COM 代理通过 `style_dialog_modern_active` 查询同一状态，调用方仅提供原有样式作用域，删除 enter/leave 两个转发回调及产品私有查询入口。深度的起止仍位于原 COM 初始化之后、释放之前，未改变对话框选择或错误返回策略。
 
 双位宽增量构建通过。公共测试模拟 COM 创建失败和嵌套调用，检查线程隔离、内外层状态及初始化失败后的清理；自建启动器加载增量 DLL，实际现代打开、另存和文件夹对话框在两个位宽均自动显示并取消，观察到现代内容、外框附着、空路径和取消返回。该结果不覆盖用户选择文件、所有选项或其他风格；本次尚未发布。
+
+## 新三层架构下的产品入口复核（P106）
+
+本批完整阅读 injection 的10个生产源/头文件、ntw2ks 的controls/dllmain/window及所列公共接口。源码锚定见下表；只完成审计和迁移设计，未修改产品或运行原生测试。历史段落中的“尚未发布”须结合其后发布记录理解，不是本批产生新候选。
+
+| 来源 | 现有调用与应迁移机制 | 保留在产品/风格的边界 | 目标与验证 |
+| --- | --- | --- | --- |
+| entry.c | context_read → stage_restore → win32_style_startup → prepare_hooks；事务已共享，不新增另一套 | 产品module校验、当前hook集合和兼容helper导出 | access/startup装配；保持无payload被动加载、开始失败/准备回滚/提交结果的既有契约 |
+| create_process.c | process_hook_propagation_attach/as_user，active/accept/install回调；共享传播不重写 | run16s自提权重定向、打印宿主排除、当前session/style选择为产品策略 | access/startup及runtime；传播可单独启用，仍复用process-hook |
+| late_process.c/h | init_lock、batch/sticky_error、context发布和既有传播复用属于运行时接入协调；88槽不变 | 产品cookie/module/flags映射与特定hook列表由装配提供 | access/runtime；普通/晚期两入口共用hook集合，无物理卸载承诺；复用late-batch与late-process测试 |
+| intercept.h | 混合context、5组hook注册、scope与dialog chrome服务，需拆职责声明 | 原有导出ABI不扩展，删除已失效的Detours注释随迁移合批处理 | access内部注册与application/dialog scope分开，不让公共库包含该产品头 |
+| file_dialogs.c | 有界A/W契约已有公共实现；old-dialog TLS栈、observer配对、resolve-links及异常退出仍由产品协调 | 当前准入/回退和原始API注册为策略；旧式布局选择属风格 | application/dialog file操作拥有scope，调用chrome服务；传参地址、结果回写、GetLastError及应用hook原样保留 |
+| folder_dialogs.c | classic_browse/controls已共享；owner标记、控件服务组装可由统一dialog实例持有 | Win3.x grid/combo/scroll服务和选旧式Shell树的支持策略 | application/dialog browse；shell拥有PIDL，公共机制不删除返回给应用的结果 |
+| modern_dialogs.c | 9行公开ABI转发已经调用style_dialog_show_modern；重入深度归公共库 | Ntw16sShowModernFileDialog导出和选择本风格scope | 保留薄导出，删除包装本身并不能提高解耦；公共现代深度/取消测试 |
+| com_dialogs.c | proxy/events/dispatch/show已有公共实现，但native_creation_depth、CoCreate*/class-factory包装、MULTI_QI替换和factory引用仍混在产品 | CLSID/IID及原生回退条件为既有转换协议，风格提供启用/布局/chrome，产品提供API注册和标识 | application/dialog COM activation完整操作，复用proxy/events，不再让调用者组装几十个字段指针；工厂/聚合/接口身份和部分失败回退验证 |
+| window_titles.c | 同时含创建scope、dialog包装、theme open/close、绘图和scroll API观察、临时popup owner；这些机制不能作为一个产品文件整体保留 | Win3.x字体、字符资格、各控件绘制选择；兼容导出与产品选项 | access/runtime注册，application/lifecycle创建，dialog调用，graphics/theme/control/menu观察分别归位；原始trampoline和LastError契约保留 |
+| ntw2ks controls.c | 原生创建后附着、线程dialog observer、theme ownership以及26个dialog相关注册共同装配；已用STYLE_DIALOG_HOOK | 目前只对五类控件关闭原生主题，不是自绘Win2000控件；保持该范围 | application实例统一observer/ownership，Win2000提供控件支持和资源策略；与Win16不同的失败策略保留 |
+| ntw2ks dllmain.c/window.c | 相同startup事务和process-hook传播已复用；窗口export路由已有frame/control真实调用 | module、global-session拒绝条件、helper及三个导出是产品契约 | 入口装配保留薄层，不把产品文件名/导出硬编码到公共库 |
+
+COM 当前默认不启用EXPERIMENTAL_CLASSIC_EVENTS、EXPERIMENTAL_CLASSIC_HIDDEN和EXPERIMENTAL_CREATION_SUBCLASS，主CMake也未定义这些开关；源码保留分支不等于产品支持。style_classic_com_can_bridge明确拒绝FOS_ALLOWMULTISELECT，即便下游有multi-result代码也不能宣称多选已支持。原生GetOpen/SaveFileName的兼容flags同样不接管OFN_ALLOWMULTISELECT及应用自定义hook/template；T26保持回退，不借迁移追加功能或激活实验分支。
+
+公共COM激活操作必须在原生调用成功且接口满足各入口既有条件后才代理：CoCreate路径对聚合outer、远程server、递归激活和modern主动调用走原生；factory_create保留自身现有检查，不能凭统一接口额外增加或取消条件；CoCreateInstanceEx先构建全部replacement，任一失败释放新引用并保留原MULTI_QI，完整成功才提交；factory/native与proxy各拥有自身引用。类工厂包装目前仍在com_dialogs.c，是可迁的协议/生命周期，不是必须保留的产品业务。现有标识字符串通过caller配置维持，公共组件不得硬编码Win16/T20名称。
+
+window_titles注册集合与绘制来源不应以每API一个可配置回调膨胀公共接口。按创建、对话框、主题、文本/图形、滚动协议的完整观察操作分组，每组拥有对应native leaves和scope；风格提供实际支持与renderer。begin_titles的创建错误可覆盖返回并销毁新建modeless HWND，Win2000 observer路径不采用该策略，两者都必须由明确的finish契约保留，不能强制最复杂策略覆盖所有风格。
+
+最内层释放本层资源，原始失败向产品入口传播；本次不额外设计通用容错或无限重试。现有异常展开层复用process-hook/unwind，不将普通VB_TEXT_HOOK没有异常cleanup的现状写成已具备；迁移时保持明确边界，并用既有真实回调异常未通过记录约束结论。
+
+测试对应：公共dialog_hook、classic_file/bridge、classic_dialog_proxy、file_events、modern_file_depth、print_extended/contract/resources/ranges和chrome；产品dialog-entry/common/find/file/folder/com/task/print/sheet/modern目标。公共参数/代理测试只证明接口，实际目标的自动取消不证明选择、打印或全部参数，Win2000打印及真实回调异常失败继续开放。源文件重组后逐一迁移对应CMake目标，不能用原生回退像素当作已完成风格接入。
+
+### 本批源身份
+
+| 文件 | SHA-256 |
+| --- | --- |
+| `src/ntw16s-dll/injection/com_dialogs.c` | `ac1c3e5546d3b8f47272b58148c5c39fd2e209a76726f312cf5b1818c95bc2e4` |
+| `src/ntw16s-dll/injection/create_process.c` | `2d6c9fbba7d4dc9b8a1e9bcbaeff3e377948bc1cd0528c0bf010201a8b1a8a23` |
+| `src/ntw16s-dll/injection/entry.c` | `7782c72233bd1045a64e4af5831613c186980270275b8d61dea498e6099737f4` |
+| `src/ntw16s-dll/injection/file_dialogs.c` | `1d8e9e4b3aedb0bdd7e4509bfe02d78143c8bda74d55800d9cb96628a1f34138` |
+| `src/ntw16s-dll/injection/folder_dialogs.c` | `9db8eb732997c7983d65c1014985e1c78dcc560a37c1b3529403dcb7d0d8aea6` |
+| `src/ntw16s-dll/injection/intercept.h` | `a9cd91b4ae61179932e21354e65a870ae65da389bf3753a16e0a0a748af736ab` |
+| `src/ntw16s-dll/injection/late_process.c` | `4f7c5e97d572657699010546b67dff264d9dff0e4e5157b1198414042a174159` |
+| `src/ntw16s-dll/injection/late_process.h` | `923fc11663961293cbf41e86f66338e61deaade0d3ff8ba033351927fb2d6a1d` |
+| `src/ntw16s-dll/injection/modern_dialogs.c` | `8e8931a417dac91191c554c5e25879eaf87558166a1eefc3b70f6b7dc6fed8c5` |
+| `src/ntw16s-dll/injection/window_titles.c` | `e83a10dc23a2560c06d3db72753c943946ddd3cacf63543a08b89eb3b2a69d86` |
+| `src/ntw2ks-dll/controls.c` | `6b0ca3680fcd85c4cdf1c64156d93739ecc129f2e81264ad6d24c8af2c9f26b7` |
+| `src/ntw2ks-dll/dllmain.c` | `3a20c40d13f003be7c3fc8a7a3c5bb9428180d625697b0c4ed0983a11e363543` |
+| `src/ntw2ks-dll/window.c` | `c6cb610ac330a245b65cb1655eccd18523ecefa5ef0958357924722baa72f27b` |
+
+单人复核与效率检查：对照源码注册表与CMake实际输入，分清已有公共机制、产品可迁事务和未启用实验分支；修正“有multi-result函数就已支持多选”的推论风险。没有新增二进制改动、测试或scratch，保留第41项在途改动。下一批继续global、UWP和启动器的接入组合核对；未完成该范围前不关闭S1。
