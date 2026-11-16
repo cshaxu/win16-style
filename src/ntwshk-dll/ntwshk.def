@@ -21,14 +21,14 @@ EXPORTS
     process_hook_unwind_end
     process_hook_payload_write
     process_hook_payload_take
-    ntwshk_packet_parse
-    ntwshk_context_read
-    ntwshk_context_paths
-    ntwshk_context_library
+    ntwshk_packet_parse=style_startup_packet_parse
+    ntwshk_context_read=style_startup_read
+    ntwshk_context_paths=style_startup_paths
+    ntwshk_context_library=style_startup_library
     ntwshk_install
     ntwshk_run_helper
-    ntwshk_system_print_host_a
-    ntwshk_system_print_host_w
+    ntwshk_system_print_host_a=style_startup_print_host_a
+    ntwshk_system_print_host_w=style_startup_print_host_w
     style_theme_capture
     style_theme_stage
     style_theme_commit

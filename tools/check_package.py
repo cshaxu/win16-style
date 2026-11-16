@@ -134,7 +134,7 @@ def main():
             pe = struct.unpack_from('<I', raw, 60)[0]
             assert struct.unpack_from('<H', raw, pe+22)[0] & 0x2000, 'DLL flag missing'
             assert machine == (0x14c if arch == 'x86' else 0x8664)
-            exports = {line.strip().split()[0] for line in (root/'src/ntwshk-dll/ntwshk.def').read_text().splitlines() if line.startswith('    ')}
+            exports = {line.strip().split()[0].split("=", 1)[0] for line in (root/'src/ntwshk-dll/ntwshk.def').read_text().splitlines() if line.startswith('    ')}
             if arch == 'x64': exports.add('process_hook_unwind_handler')
             assert set(public) == exports and ordinals['process_hook_install_helper'] == 1
             assert {n.lower() for n in imports if not core.system_crt(n)} == {'kernel32.dll', 'advapi32.dll'}

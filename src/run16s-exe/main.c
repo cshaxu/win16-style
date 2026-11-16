@@ -1,10 +1,10 @@
 #include "lib-win32/process-image/image.h"
-#include "ntwshk-dll/injection.h"
+#include "lib-win32-style/access/startup/install.h"
 #include "elevation.h"
 #include "lib-win32/security/elevation.h"
 #include "lib-win32/process-launch/command_line.h"
 #include "lib-win32/process-launch/process.h"
-#include "process_lifecycle.h"
+#include "lib-win32/process-launch/lifecycle.h"
 #include "startup_error.h"
 #include "global.h"
 #include "tray.h"
@@ -19,7 +19,7 @@
  * '?' in explicit extended paths (\\?\) before target resolution. */
 int _dowildcard=0;
 static DWORD prepare_target(HANDLE process,void *context)
-{return ntwshk_install(process,context,CreateProcessW);}
+{return style_startup_install(process,context,L"ntwshk",CreateProcessW);}
 static int diagnostic(int code,DWORD error,PCWSTR phase)
 {
     WCHAR message[512]={0};
@@ -74,7 +74,7 @@ int wmain(int argc,WCHAR **argv)
     }
     BOOL private_console=run16s_private_console();
     int first=1;BOOL wait=FALSE,reentered=FALSE;DWORD error,exit_code=0;WORD subsystem=0;
-    WCHAR image[NTWSHK_PATH_CAP];ntwshk_context context;
+    WCHAR image[STYLE_STARTUP_PATH_CAP];style_startup_context context;
     STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
     PCWSTR raw=win32_process_next_argument(GetCommandLineW());PWSTR command;
     if(explicit16 || win2k)raw=win32_process_next_argument(raw);
@@ -87,8 +87,8 @@ int wmain(int argc,WCHAR **argv)
         fwprintf(argc<=first?stderr:stdout,L"Usage: run16s.exe [--16|--2k] [--wait] <application> [arguments]\n       run16s.exe --global\n       run16s.exe --app <AUMID>\n--2k is experimental: Win32 frame and standard control coverage is partial.\nConsole targets wait by default; --wait also waits for GUI targets.\n");
         return argc<=first?2:0;
     }
-    DWORD length=SearchPathW(NULL,argv[first],L".exe",NTWSHK_PATH_CAP,image,NULL);
-    if(!length || length>=NTWSHK_PATH_CAP)return diagnostic(3,length?ERROR_FILENAME_EXCED_RANGE:GetLastError(),L"target resolution");
+    DWORD length=SearchPathW(NULL,argv[first],L".exe",STYLE_STARTUP_PATH_CAP,image,NULL);
+    if(!length || length>=STYLE_STARTUP_PATH_CAP)return diagnostic(3,length?ERROR_FILENAME_EXCED_RANGE:GetLastError(),L"target resolution");
     if(win2k && (run16s_uwp_calculator_image(image) || run16s_explorer_default(image,win32_process_next_argument(raw)) ||
         run16s_terminal_image(image) || run16s_console_host_image(image)))
         return diagnostic(10,ERROR_NOT_SUPPORTED,L"Windows 2000 style for this target");
@@ -111,7 +111,7 @@ int wmain(int argc,WCHAR **argv)
     /* Keep the parent shell blocked for interactive console targets. GUI
      * targets stay asynchronous unless --wait explicitly requests otherwise. */
     wait=wait || subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI;
-    error=ntwshk_context_paths(&context,NULL);if(error)return diagnostic(6,error,L"package directory");
+    error=style_startup_paths(&context,NULL);if(error)return diagnostic(6,error,L"package directory");
     wcscpy(context.module,win2k?L"ntw2ks":L"ntw16s");
     command=_wcsdup(raw);if(!command)return diagnostic(5,ERROR_NOT_ENOUGH_MEMORY,L"command allocation");
     if(win32_process_create(image,command,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&startup,&child))error=ERROR_SUCCESS;

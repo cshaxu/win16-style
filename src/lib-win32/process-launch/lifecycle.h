@@ -1,5 +1,5 @@
-#ifndef WIN32_PROCESS_LAUNCH_PROCESS_H
-#define WIN32_PROCESS_LAUNCH_PROCESS_H
+#ifndef LIB_WIN32_PROCESS_LAUNCH_LIFECYCLE_H
+#define LIB_WIN32_PROCESS_LAUNCH_LIFECYCLE_H
 #include <windows.h>
 #ifdef __cplusplus
 extern "C" {

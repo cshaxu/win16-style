@@ -1,9 +1,8 @@
 /* Adapted from the fixed source context.cpp: standalone pointer-free policy. */
-#include "injection.h"
-#include "staging.h"
+#include "context.h"
+#include "lib-win32/process-hook/staging.h"
 #include <wchar.h>
 #include <string.h>
-const GUID ntwshk_payload_guid={0xa170a252,0x7d0c,0x4b4a,{0xa2,0x86,0x61,0xd3,0x7a,0xea,0x39,0xc8}};
 static BOOL dos_absolute(PCWSTR p,size_t n)
 {return n>=3 && ((p[0]>=L'A' && p[0]<=L'Z') || (p[0]>=L'a' && p[0]<=L'z')) && p[1]==L':' && p[2]==L'\\';}
 static BOOL unc_absolute(PCWSTR p)
@@ -16,17 +15,17 @@ static BOOL absolute(PCWSTR p,size_t n)
         (n>=8 && !_wcsnicmp(p+4,L"UNC\\",4) && unc_absolute(p+8));
     return p[2]!=L'.' && p[2]!=L'?' && unc_absolute(p+2);
 }
-DWORD ntwshk_packet_parse(const void *data,DWORD bytes,DWORD machine,ntwshk_context *context)
+DWORD style_startup_packet_parse(const void *data,DWORD bytes,DWORD machine,style_startup_context *context)
 {
-    ntwshk_packet h;const WCHAR *directory;
+    style_startup_packet h;const WCHAR *directory;
     if(!data || !context)return ERROR_INVALID_PARAMETER;
     ZeroMemory(context,sizeof(*context));
     if(bytes<sizeof(h) || bytes>65536)return ERROR_INVALID_DATA;
     memcpy(&h,data,sizeof(h));
     if(h.bytes!=bytes || h.version!=2 || h.machine!=machine ||
         (machine!=IMAGE_FILE_MACHINE_I386 && machine!=IMAGE_FILE_MACHINE_AMD64) ||
-        !(h.flags&(NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE)) || (h.flags&~7u) ||
-        (!!(h.flags&NTWSHK_POLICY_GLOBAL_SESSION)!=!!h.reserved0) ||
+        !(h.flags&(STYLE_STARTUP_POLICY_STYLE|STYLE_STARTUP_POLICY_PROPAGATE)) || (h.flags&~7u) ||
+        (!!(h.flags&STYLE_STARTUP_POLICY_GLOBAL_SESSION)!=!!h.reserved0) ||
         h.directory_offset!=sizeof(h) || h.directory_bytes<8 || h.directory_bytes%2 ||
         h.reserved1<4 || h.reserved1%2 || h.reserved1>sizeof(context->module) ||
         h.directory_bytes>sizeof(context->directory) ||
@@ -49,31 +48,33 @@ DWORD ntwshk_packet_parse(const void *data,DWORD bytes,DWORD machine,ntwshk_cont
     context->flags=h.flags;context->session_cookie=h.reserved0;return ERROR_SUCCESS;
 }
 static DWORD consume_packet(const void *data,DWORD bytes,DWORD machine,void *context)
-{return ntwshk_packet_parse(data,bytes,machine,(ntwshk_context *)context);}
-DWORD ntwshk_context_read(ntwshk_context *context,BOOL *found)
+{return style_startup_packet_parse(data,bytes,machine,(style_startup_context *)context);}
+DWORD style_startup_read(style_startup_context *context,BOOL *found)
 {
     if(!context || !found)return ERROR_INVALID_PARAMETER;
     ZeroMemory(context,sizeof(*context));
     return process_hook_stage_read(consume_packet,context,found);
 }
-DWORD ntwshk_context_paths(ntwshk_context *context,HMODULE module)
+DWORD style_startup_paths(style_startup_context *context,HMODULE module)
 {
     if(!context)return ERROR_INVALID_PARAMETER;
     ZeroMemory(context,sizeof(*context));
-    DWORD count=GetModuleFileNameW(module,context->directory,NTWSHK_PATH_CAP);
-    if(!count || count>=NTWSHK_PATH_CAP)return count?ERROR_FILENAME_EXCED_RANGE:GetLastError();
+    DWORD count=GetModuleFileNameW(module,context->directory,STYLE_STARTUP_PATH_CAP);
+    if(!count || count>=STYLE_STARTUP_PATH_CAP)return count?ERROR_FILENAME_EXCED_RANGE:GetLastError();
     WCHAR *slash=wcsrchr(context->directory,L'\\');if(!slash)return ERROR_INVALID_NAME;
-    slash[1]=0;context->flags=NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE;return ERROR_SUCCESS;
+    slash[1]=0;context->flags=STYLE_STARTUP_POLICY_STYLE|STYLE_STARTUP_POLICY_PROPAGATE;return ERROR_SUCCESS;
 }
-DWORD ntwshk_context_library(const ntwshk_context *context,WORD machine,WCHAR *path,size_t capacity)
+DWORD style_startup_module_path(const style_startup_context *context,WORD machine,PCWSTR name,WCHAR *path,size_t capacity)
 {
     if(!context || !path || !capacity || (machine!=IMAGE_FILE_MACHINE_I386 && machine!=IMAGE_FILE_MACHINE_AMD64))return ERROR_INVALID_PARAMETER;
-    size_t length=wcsnlen_s(context->directory,NTWSHK_PATH_CAP);
-    if(!length || length>=NTWSHK_PATH_CAP)return ERROR_INVALID_DATA;
-    const WCHAR *name=context->module;
-    if(!*name || wcsnlen_s(name,NTWSHK_MODULE_CAP)>=NTWSHK_MODULE_CAP)return ERROR_INVALID_DATA;
+    size_t length=wcsnlen_s(context->directory,STYLE_STARTUP_PATH_CAP);
+    if(!length || length>=STYLE_STARTUP_PATH_CAP)return ERROR_INVALID_DATA;
+    if(!name || !*name || wcsnlen_s(name,STYLE_STARTUP_MODULE_CAP)>=STYLE_STARTUP_MODULE_CAP)return ERROR_INVALID_DATA;
     if(swprintf_s(path,capacity,L"%ls%ls%ls%u.dll",context->directory,
         context->directory[length-1]==L'\\'?L"":L"\\",name,machine==IMAGE_FILE_MACHINE_I386?32u:64u)<0)
         return ERROR_FILENAME_EXCED_RANGE;
     return ERROR_SUCCESS;
 }
+
+DWORD style_startup_library(const style_startup_context *context,WORD machine,WCHAR *path,size_t capacity)
+{return style_startup_module_path(context,machine,context?context->module:NULL,path,capacity);}

@@ -219,3 +219,7 @@
   公共控件已有路径与缺少真实wrapper协议的边界；没有产品实现。
 
 - [T21 S44公共交集导入](evidence/t21-s44-shared-import.json)：固定来源blob、摘要与差异清单。
+
+- [T26 S4启动接入](evidence/t26-s4-startup.json)：公共初始化/传播、双位宽暂存与四位宽边开发验证，以及总句柄观察不稳定的旧源码对照；最终发布另记录。
+
+- [T26 S4交付](evidence/t26-s4-delivery.json)：同批八文件先发布、73项聚焦通过、2项DWM旧失败、工具链和输入摘要。

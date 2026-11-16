@@ -4,6 +4,8 @@
 
 M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S4启动接入。[S1最终审计](../history/M0-T26-S1-final-audit.md)及151项顺序台账已完成；[S2](../history/M0-T26-S2-relocation.md)已完成381项归位、发布后36项回归和远端51c68a06逐blob复核。
 
+S4已核对普通启动至两风格bootstrap/传播链，冻结[迁移边界与验证契约](../history/M0-T26-S4-startup.md)。本批scratch/快照/发布备份已提炼证据并清理276,326,075字节，另清理早期临时包7,888,448字节；源码/构建和测试调用方已接入；双位宽同快照干净构建、先发布八文件至assets根及O:/winnt、73项聚焦回归通过，另2项DWM旧失败不计通过。见[S4交付证据](../etc/evidence/t26-s4-delivery.json)。尚待提交推送及实际远端复核，不提前关闭S4。
+
 S3已收口，交付8e21860a经实际fetch与59个变更blob核对，八文件与发布摘要一致。S3将Win3.x frame/control/产品observer、现代host及Win2000 full/pending根接入公共instance，见[S3记录](../history/M0-T26-S3-lifecycle.md)与[有限审计](../etc/evidence/t26-s3-lifecycle.json)。公共层拥有GUI身份、原生子类安装/解除、重入引用和最后引用退场；呈现与各自资源策略仍由已有消费者提供。菜单多窗口事务及其余机制按S4–S13继续，不把本S称为全T完成。
 
 双位宽增量和多项原生开发回归通过；S2 DLL对照证实Win2000 DWM恢复断言仍为旧失败，不计通过。兼容性终审另发现pending重复接入语义遗漏，已实测S2行为并改为复用既有节点、断言无额外分配。废弃的首个快照已终止、未发布，清理104,985,036字节；最终同批八文件已先发布至assets根与O:/winnt；48项双位宽聚焦回归通过，2项DWM恢复旧失败与S2基线一致且不计通过。详见[S3交付证据](../etc/evidence/t26-s3-delivery.json)。已完成提交、推送和远端复核；S4已准入，T26保持开放。

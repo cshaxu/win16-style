@@ -1,4 +1,4 @@
-#include "process_lifecycle.h"
+#include "lifecycle.h"
 DWORD win32_process_activate(PROCESS_INFORMATION *child,win32_process_prepare prepare,void *context,unsigned *phase)
 {
     DWORD error,previous;

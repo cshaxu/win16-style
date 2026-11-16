@@ -1,7 +1,7 @@
 /* Product policy and payload adapter for the shared creation transaction. */
 #include "intercept.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
-#include "ntwshk-dll/system_process.h"
+#include "lib-win32-style/access/startup/propagate.h"
 #include "ntw16s-dll/global/session.h"
 #include "lib-win32/process-hook/propagate.h"
 #include <shellapi.h>
@@ -41,20 +41,11 @@ BOOL ntw16s_process_session_active(void)
 {return !(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTWSHK_POLICY_GLOBAL_SESSION) || ntw16s_global_policy_style(__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE),NTW16S_GLOBAL_STYLE_16);}
 static BOOL active(void *unused)
 {(void)unused;return !(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTWSHK_POLICY_GLOBAL_SESSION) || ntw16s_global_policy_active(__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE));}
-static BOOL accept_w(LPCWSTR application,LPWSTR command,void *unused)
-{(void)unused;return !ntwshk_system_print_host_w(application,command);}
-static BOOL accept_a(LPCSTR application,LPSTR command,void *unused)
-{(void)unused;return !ntwshk_system_print_host_a(application,command);}
-static DWORD install(HANDLE child,process_hook_create_w create,void *unused)
-{(void)unused;return ntwshk_install(child,&ntw16s_process_context,create);}
-static const process_hook_propagation_ops propagation={active,accept_w,accept_a,install,NULL};
-void ntw16s_discard_processes(void){process_hook_propagation_discard(&propagation);}
+static const style_startup_propagation propagation={&ntw16s_process_context,L"ntwshk",active,NULL};
+void ntw16s_discard_processes(void){style_startup_propagation_discard(&propagation);}
 LONG ntw16s_attach_processes_using(DWORD (*attach)(void *,void *))
 {
-    if(!attach)return ERROR_INVALID_PARAMETER;
-    if(!(ntw16s_process_context.flags&NTWSHK_POLICY_PROPAGATE))return NO_ERROR;
-    DWORD error=process_hook_propagation_attach(attach,&propagation);
-    if(!error)error=process_hook_propagation_attach_as_user_w(attach);
+    DWORD error=style_startup_propagate(attach,&propagation);
     if(!error && __atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)==(NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE)){
         HMODULE shell=GetModuleHandleW(L"shell32.dll");
         FARPROC address=shell?GetProcAddress(shell,"ShellExecuteExW"):NULL;

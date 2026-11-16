@@ -160,3 +160,5 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 - [ ] TODO(Medium): Delphi非报告列表视图协议在同步查询中改变父窗或样式的重入保护尚缺独立有效故障负例；Owner：后续控件生命周期测试。Evidence：[列表调查](../history/M0-T18-S64-runtime-lists.md)：移除末尾重检的故障版仍通过现有重入模型。Admission：建立能检出该故障且不影响应用语义的可重复原生测试；不称已证实完整重入安全。
 
 - [ ] TODO(Low): UWP外框未认证边界：其他宿主、多显示器DPI、原生title HWND替换、挂起UIA提供者及全局通知失败；Owner：未来用户明确准入的UWP兼容扩展。Evidence：[T22收口](../history/M0-T22-closure.md)的实际目标/144DPI/通知失败与固定模块边界。Admission：有具体目标和可复现失败，再按自有实例验证；不将当前计算器/Scan成功扩张为所有UWP，不把样式移除称物理卸载。
+
+- [ ] TODO(Medium): 失败安装测试的进程总句柄数在开发环境不稳定。Owner：T26 S14验证终审。Evidence：[S4旧源码对照](../etc/evidence/t26-s4-startup.json)同时观察旧源码失败/当前通过与早先反例；[最终实际包](../etc/evidence/t26-s4-delivery.json)原断言x86 88/88、x64 56/56通过，未放宽断言。Admission：区分OS/运行库懒初始化与本层资源，不把一次相等当作所有环境均无泄漏，不为总量波动增加产品容错。

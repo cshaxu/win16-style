@@ -18,10 +18,7 @@ static DWORD prepare_hooks(void *unused)
 BOOL ntw16s_bootstrap(void)
 {
     BOOL found=FALSE;
-    DWORD error=ntwshk_context_read(&ntw16s_process_context,&found);
-    if(error){SetLastError(error);return FALSE;}
-    if(!found)return TRUE;
-    if(_wcsicmp(ntw16s_process_context.module,L"ntw16s")){SetLastError(ERROR_INVALID_DATA);return FALSE;}
-    error=process_hook_stage_restore();if(error){SetLastError(error);return FALSE;}
-    error=win32_style_startup(prepare_hooks,NULL);SetLastError(error);return error==NO_ERROR;
+    DWORD error=style_startup_bootstrap(&ntw16s_process_context,L"ntw16s",TRUE,&found,prepare_hooks,NULL);
+    if(error || found)SetLastError(error);
+    return error==NO_ERROR;
 }

@@ -1,0 +1,365 @@
+{
+  "status": "development-verified-with-handle-count-instability",
+  "baseline": "254340e7efe113fc0af00e332a785f982b69d2a3",
+  "scope": "S4 startup extraction only; S5-S14 remain open",
+  "tests": {
+    "unit-results": [
+      {
+        "arch": "x86",
+        "test": "core-style-startup-bootstrap",
+        "code": 0,
+        "stdout": "startup bootstrap pass: passive identity session restore transaction rollback\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x86",
+        "test": "core-style-startup-propagate",
+        "code": 0,
+        "stdout": "startup propagation pass: independent policy original creator failures discard ownership\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x86",
+        "test": "launch-payload",
+        "code": 0,
+        "stdout": "PAYLOAD PASS generic module, machine, bounds, policy, path, termination\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x86",
+        "test": "core-process-lifecycle",
+        "code": 0,
+        "stdout": "PROCESS_LIFECYCLE_PASS success=1 prepare_failure=1 resume_failure=1 exited=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x86",
+        "test": "print-host-policy-unit",
+        "code": 0,
+        "stdout": "PRINT HOST POLICY PASS exact quoted ansi spoof\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x86",
+        "test": "uac-self-elevate-unit",
+        "code": 0,
+        "stdout": "shell redirect unit pass\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x86",
+        "test": "core-style-startup",
+        "code": 0,
+        "stdout": "STYLE STARTUP PASS success=1 begin_failure=1 prepare_rollback=1 commit_failure=1 context=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x86",
+        "test": "ntwshk-startup-test",
+        "code": 0,
+        "stdout": "STARTUP_CAPACITY_OK slots=88 overflow89=1 abort_restored=89\nSTYLE STARTUP NATIVE PASS prepare_failure_rollback=1 commit=1\nC STARTUP HOOK PASS width=32 native export/abort/trampoline/commit\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "test": "core-style-startup-bootstrap",
+        "code": 0,
+        "stdout": "startup bootstrap pass: passive identity session restore transaction rollback\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "test": "core-style-startup-propagate",
+        "code": 0,
+        "stdout": "startup propagation pass: independent policy original creator failures discard ownership\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "test": "launch-payload",
+        "code": 0,
+        "stdout": "PAYLOAD PASS generic module, machine, bounds, policy, path, termination\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "test": "core-process-lifecycle",
+        "code": 0,
+        "stdout": "PROCESS_LIFECYCLE_PASS success=1 prepare_failure=1 resume_failure=1 exited=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "test": "print-host-policy-unit",
+        "code": 0,
+        "stdout": "PRINT HOST POLICY PASS exact quoted ansi spoof\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "test": "uac-self-elevate-unit",
+        "code": 0,
+        "stdout": "shell redirect unit pass\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "test": "core-style-startup",
+        "code": 0,
+        "stdout": "STYLE STARTUP PASS success=1 begin_failure=1 prepare_rollback=1 commit_failure=1 context=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "test": "ntwshk-startup-test",
+        "code": 0,
+        "stdout": "STARTUP_CAPACITY_OK slots=88 overflow89=1 abort_restored=89\nSTYLE STARTUP NATIVE PASS prepare_failure_rollback=1 commit=1\nC STARTUP HOOK PASS width=64 native export/abort/trampoline/commit\n",
+        "stderr": ""
+      }
+    ],
+    "staging-results": [
+      {
+        "arch": "x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\launch-staging.exe",
+          "--parent"
+        ],
+        "code": 0,
+        "stdout": "STAGING REPEAT PASS same import metadata\nSTAGING PASS actual same-width target, payload/imports staged, original suspension retained; initialization not claimed\nSTAGING EXTERNAL PASS bits=32 mode=0 result=0 initialized=1\nSTAGING EXTERNAL PASS bits=32 mode=1 result=299 initialized=0\nSTAGING EXTERNAL PASS bits=32 mode=2 result=193 initialized=0\nSTAGING EXTERNAL PASS bits=32 mode=3 result=193 initialized=0\nLEGACY IAT PASS bits=32 zero_oft=0 initialized=1 metadata_restored=1\nLEGACY IAT PASS bits=32 zero_oft=1 initialized=1 metadata_restored=1\nLEGACY IAT REJECT PASS bits=32 mode=2 error=193 headers_unchanged=1 suspended=1\nLEGACY IAT REJECT PASS bits=32 mode=3 error=193 headers_unchanged=1 suspended=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\launch-staging.exe",
+          "--parent"
+        ],
+        "code": 0,
+        "stdout": "STAGING REPEAT PASS same import metadata\nSTAGING PASS actual same-width target, payload/imports staged, original suspension retained; initialization not claimed\nSTAGING EXTERNAL PASS bits=64 mode=0 result=0 initialized=1\nSTAGING EXTERNAL PASS bits=64 mode=1 result=299 initialized=0\nSTAGING EXTERNAL PASS bits=64 mode=2 result=193 initialized=0\nSTAGING EXTERNAL PASS bits=64 mode=3 result=193 initialized=0\nLEGACY IAT PASS bits=64 zero_oft=0 initialized=1 metadata_restored=1\nLEGACY IAT PASS bits=64 zero_oft=1 initialized=1 metadata_restored=1\nLEGACY IAT REJECT PASS bits=64 mode=2 error=193 headers_unchanged=1 suspended=1\nLEGACY IAT REJECT PASS bits=64 mode=3 error=193 headers_unchanged=1 suspended=1\n",
+        "stderr": ""
+      }
+    ],
+    "propagation-results": {
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\propagate-basic.exe",
+        "--private-worker",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw16s32.dll",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\propagate-target.exe",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\propagate-target.exe"
+      ],
+      "code": 0,
+      "stdout": "TREE PASS root=32 child=32 grandchild=64 A/W=0 suspended=0 generations=3\nTREE PASS root=32 child=32 grandchild=64 A/W=1 suspended=1 generations=3\nTREE PASS root=32 child=64 grandchild=64 A/W=0 suspended=1 generations=3\nTREE PASS root=32 child=64 grandchild=64 A/W=1 suspended=0 generations=3\nTREE PASS root=64 child=32 grandchild=32 A/W=0 suspended=1 generations=3\nTREE PASS root=64 child=32 grandchild=32 A/W=1 suspended=0 generations=3\nTREE PASS root=64 child=64 grandchild=32 A/W=0 suspended=0 generations=3\nTREE PASS root=64 child=64 grandchild=32 A/W=1 suspended=1 generations=3\nPROPAGATION BASIC PASS four edges, both A/W, three generations, caller suspension, actual windows/font and lineage\n",
+      "stderr": ""
+    },
+    "win2k-results": [
+      {
+        "parent": "x86",
+        "child": "x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw2ks-staging.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s4\\win2k-package\\",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+          "--frame"
+        ],
+        "code": 0,
+        "stdout": "WIN2K PROPAGATION FRAME bits=32 role=parent attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=32 role=parent attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nWIN2K PROPAGATION FRAME bits=32 role=child attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=32 role=child attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nNTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1\n",
+        "stderr": ""
+      },
+      {
+        "parent": "x86",
+        "child": "x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw2ks-staging.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s4\\win2k-package\\",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+          "--frame"
+        ],
+        "code": 0,
+        "stdout": "WIN2K PROPAGATION FRAME bits=32 role=parent attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=32 role=parent attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nWIN2K PROPAGATION FRAME bits=64 role=child attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=64 role=child attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nNTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1\n",
+        "stderr": ""
+      },
+      {
+        "parent": "x64",
+        "child": "x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw2ks-staging.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s4\\win2k-package\\",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+          "--frame"
+        ],
+        "code": 0,
+        "stdout": "WIN2K PROPAGATION FRAME bits=64 role=parent attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=64 role=parent attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nWIN2K PROPAGATION FRAME bits=32 role=child attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=32 role=child attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nNTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1\n",
+        "stderr": ""
+      },
+      {
+        "parent": "x64",
+        "child": "x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw2ks-staging.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s4\\win2k-package\\",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+          "--frame"
+        ],
+        "code": 0,
+        "stdout": "WIN2K PROPAGATION FRAME bits=64 role=parent attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=64 role=parent attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nWIN2K PROPAGATION FRAME bits=64 role=child attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=64 role=child attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nNTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1\n",
+        "stderr": ""
+      }
+    ],
+    "late-results": [
+      {
+        "arch": "x86",
+        "mode": "existing",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "existing"
+        ],
+        "code": 0,
+        "stdout": "LATE EXISTING bits=32 status=0 unchanged=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x86",
+        "mode": "existing-propagation",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "existing-propagation"
+        ],
+        "code": 0,
+        "stdout": "LATE PREEXISTING bits=32 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x86",
+        "mode": "retry-after-failure",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "retry-after-failure"
+        ],
+        "code": 0,
+        "stdout": "LATE RETRY bits=32 first=5 clean=1 second=0 installed=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x86",
+        "mode": "reuse-retry",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "reuse-retry"
+        ],
+        "code": 0,
+        "stdout": "LATE PREEXISTING bits=32 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "mode": "existing",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "existing"
+        ],
+        "code": 0,
+        "stdout": "LATE EXISTING bits=64 status=0 unchanged=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "mode": "existing-propagation",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "existing-propagation"
+        ],
+        "code": 0,
+        "stdout": "LATE PREEXISTING bits=64 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "mode": "retry-after-failure",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "retry-after-failure"
+        ],
+        "code": 0,
+        "stdout": "LATE RETRY bits=64 first=5 clean=1 second=0 installed=1\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "mode": "reuse-retry",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "reuse-retry"
+        ],
+        "code": 0,
+        "stdout": "LATE PREEXISTING bits=64 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n",
+        "stderr": ""
+      }
+    ],
+    "failure-results": [
+      {
+        "arch": "x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\launch-failures.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\launch-failures.exe"
+        ],
+        "code": 0,
+        "stdout": "INSTALL FAILURE PASS width=32 restricted handle, refused DLL initialization/no entry, handle count=87/87\n",
+        "stderr": ""
+      },
+      {
+        "arch": "x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\launch-failures.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\launch-failures.exe"
+        ],
+        "code": 1,
+        "stdout": "HELPER timeout PASS elapsed=10016 target suspension retained, owned helper exited\nHELPER target-first-exit PASS error=1067, target exit=37, owned helper exited\n",
+        "stderr": "INSTALL FAILURE TEST line=121 error=5: GetProcessHandleCount(GetCurrentProcess(),&after) && after==before\n"
+      }
+    ]
+  },
+  "diagnostics": {
+    "failure-comparison": [
+      {
+        "name": "baseline.exe",
+        "code": 1,
+        "stdout": "PHASE pre-helper=54\nPHASE helper=1 handles=59\nPHASE helper=2 handles=62\nHELPER timeout PASS elapsed=10016 target suspension retained, owned helper exited\nPHASE helper=3 handles=64\nHELPER target-first-exit PASS error=1067, target exit=37, owned helper exited\n",
+        "stderr": "INSTALL FAILURE TEST line=122 error=5: GetProcessHandleCount(GetCurrentProcess(),&after) && after==before\n"
+      },
+      {
+        "name": "current.exe",
+        "code": 0,
+        "stdout": "INSTALL FAILURE START bits=64\nPHASE pre-helper=60\nPHASE helper=1 handles=62\nPHASE helper=2 handles=65\nHELPER timeout PASS elapsed=10015 target suspension retained, owned helper exited\nPHASE helper=3 handles=67\nHELPER target-first-exit PASS error=1067, target exit=37, owned helper exited\nINSTALL FAILURE PASS width=64 restricted handle, refused DLL initialization/no entry, handle count=56/56\n",
+        "stderr": ""
+      }
+    ],
+    "failure-baseline.log": "HELPER timeout PASS elapsed=10000 target suspension retained, owned helper exited\nHELPER target-first-exit PASS error=1067, target exit=37, owned helper exited\nINSTALL FAILURE PASS width=64 restricted handle, refused DLL initialization/no entry, handle count=59/59\n",
+    "failure-diagnostic.log": "HELPER timeout PASS elapsed=10016 target suspension retained, owned helper exited\nHELPER target-first-exit PASS error=1067, target exit=37, owned helper exited\nINSTALL HANDLES before=53 after=56\nINSTALL FAILURE TEST line=123 error=5: after==before\n",
+    "failure-warm.log": "INSTALL FAILURE START bits=64\nINSTALL HANDLES before=53 after=56\nHELPER timeout PASS elapsed=10016 target suspension retained, owned helper exited\nHELPER target-first-exit PASS error=1067, target exit=37, owned helper exited\nINSTALL FAILURE TEST line=125 error=5: after==before\n",
+    "failure-handles.log": "INSTALL FAILURE START bits=64\nHELPER timeout PASS elapsed=10000 target suspension retained, owned helper exited\nHELPER target-first-exit PASS error=1067, target exit=37, owned helper exited\nINSTALL FAILURE PASS width=64 restricted handle, refused DLL initialization/no entry, handle count=59/59\n"
+  },
+  "limits": [
+    "Total process handle-count assertion unstable under baseline and candidate; no relaxation of equality assertion.",
+    "Existing Win2000 DWM restoration failure remains S7/S14 debt.",
+    "No private desktop, computer-use, sibling dependency, new access mechanism or physical unloading claim."
+  ],
+  "public_source_sha256": {
+    "src/lib-win32-style/access/startup/bootstrap.c": "b2319dc5f911d578fff6afc7a0d837dbe3719d64de9c61a5c80dbc06c4319cb0",
+    "src/lib-win32-style/access/startup/context.c": "fe683c58909049c16afd65ad4fd193497ffd86ac3e8b8d58a7488d8ef399a1c7",
+    "src/lib-win32-style/access/startup/context.h": "efc70b090a6d8b2b098b8b17a82995023921722c9ece3d798799ffe595c0a6cf",
+    "src/lib-win32-style/access/startup/helper.c": "5f91e638561e9efb5b989bec1390a74052755b8adc80a765ec98f9d2f7802ae8",
+    "src/lib-win32-style/access/startup/install.c": "81250c218ea65d3e965a645cd0c45b2bc3539d7c649a528cac3a4dfc36002af8",
+    "src/lib-win32-style/access/startup/install.h": "9134cebcf065f19ce04ed1c3246e1047607bc7cce44fb1238911c45ad5d6e625",
+    "src/lib-win32-style/access/startup/propagate.c": "80b86da9b79158ac5c7b6ad1f6c8cde5aec65bc81b6827fcb2d2a205ab5dfdfa",
+    "src/lib-win32-style/access/startup/propagate.h": "fd8c0d77d18153ff333663c8b2fc67178c8b8ccad1d155dedffbe0e0652feb66",
+    "src/lib-win32-style/access/startup/startup.h": "df3bd78829e1edc9ee883fd3c69c8fc7e753a4aaef3e340bb8db082b8ec861d4",
+    "src/lib-win32-style/access/startup/target.c": "6ac0aa8457370ab1f8ed67116215eb4b451d9f3e26b1a0d035546a6c8fdf2486",
+    "src/lib-win32-style/access/startup/target.h": "4b5a37f1774d213c8022c5099688e591e902e86bbdabc967f91ccd038758bcac"
+  }
+}

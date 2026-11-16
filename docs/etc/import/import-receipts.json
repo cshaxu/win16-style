@@ -1307,39 +1307,39 @@
       "notice": "Project-authored, repository MIT"
     },
     {
-      "path": "src/ntwshk-dll/injection.h",
+      "path": "src/lib-win32-style/access/startup/context.h",
       "source": "src/nthook32-dll/hook.h",
       "source_blob": "ed368c6a8b71cda0a1a84e57a542ddf8452de1ad",
-      "sha256": "e26830db4a8405bbe46f41f4fd49754903129f79addc5fae04b2957b9ee21c3a",
+      "sha256": "efc70b090a6d8b2b098b8b17a82995023921722c9ece3d798799ffe595c0a6cf",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
-      "path": "src/ntwshk-dll/context.c",
+      "path": "src/lib-win32-style/access/startup/context.c",
       "source": "src/nthook32-dll/context.cpp",
       "source_blob": "f435db72a3475ef34d921a57d1632d6990d407af",
-      "sha256": "cb0e7bdb56e58b4bc8003c2a4441c3e19ec1f13e725d2def4f69cd3ea070408a",
+      "sha256": "fe683c58909049c16afd65ad4fd193497ffd86ac3e8b8d58a7488d8ef399a1c7",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
-      "path": "src/ntwshk-dll/installer.c",
+      "path": "src/lib-win32-style/access/startup/install.c",
       "source": "src/nthook32-dll/installer.cpp",
       "source_blob": "84e78935b3079089569b9167eaed994df3220ebd",
-      "sha256": "f0abefcea10481529d4c6bb4323e388ed69b44bd8b98c63977bf30481182c329",
+      "sha256": "81250c218ea65d3e965a645cd0c45b2bc3539d7c649a528cac3a4dfc36002af8",
       "disposition": "adapt",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified session stop semantics; T21 S28 image operations extracted to process-image; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified session stop semantics; T21 S28 image operations extracted to process-image; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4f4ef3076fddfbc10a86d068c1052196522e0703124857f0e7c0d64bada20bae",
+      "sha256": "691d8a72e8d245eda331051eb80d195ba25512221a7fc51c2a74252a07e9e62c",
       "disposition": "authored",
-      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T23 S4 console and Terminal window adaptation and native tests; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T25 S3 Win2000 frame",
+      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T23 S4 console and Terminal window adaptation and native tests; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T25 S3 Win2000 frame; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project MIT; upstream ntvdm64 source identity recorded"
     },
     {
@@ -1361,21 +1361,21 @@
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
-      "path": "tests/run16s-exe/payload.c",
+      "path": "tests/lib-win32-style/access/startup/context.c",
       "source": null,
       "source_blob": null,
-      "sha256": "64cc819d503835638fcb26d0848c8968d925e0e27b2fb8ac19c0eb84c110ba32",
+      "sha256": "35294da3da195e8bdb6aed9ddd67c549d93e1d68fef2e06d79be6159487adf35",
       "disposition": "authored",
-      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
+      "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
-      "path": "tests/run16s-exe/staging.c",
+      "path": "tests/lib-win32-style/access/startup/install.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e5dd001f0a4f8c0326f74b3da5329a9f36971bb853c62f732a71da02f4e67843",
+      "sha256": "7ea54463ccb923c8bf42a66c7f11651a522bdd06fe4b7c43d40fcfb3ef832672",
       "disposition": "authored",
-      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T24 S1 directly use process-image interface; T25 S2 shared runtime extraction",
+      "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T24 S1 directly use process-image interface; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
     },
     {
@@ -1391,18 +1391,18 @@
       "path": "src/ntw16s-dll/injection/entry.c",
       "source": "src/nthook32-dll/entry.cpp",
       "source_blob": "39504e103bf2a934721d2898b1a1a2e8b6dd2f6b",
-      "sha256": "1cbdb9cf06be761f844693eb4867f4ac5359e78eef60c6d11817a67e49dc0b41",
+      "sha256": "96d997a47d3e39edc35e342819c7191899200364a15de754b2e53acc03852422",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T20 S1 common-dialog bridge and version; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T26 S1 shared style startup transaction; T26 S2 mechanical path/include relocation",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T20 S1 common-dialog bridge and version; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T26 S1 shared style startup transaction; T26 S2 mechanical path/include relocation; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
       "path": "src/ntw16s-dll/injection/intercept.h",
       "source": "src/nthook32-dll/intercept.h",
       "source_blob": "b9b7ea48abb2548f2c980db63896321d079a80cd",
-      "sha256": "a9cd91b4ae61179932e21354e65a870ae65da389bf3753a16e0a0a748af736ab",
+      "sha256": "8365a212a13fab0bed354fc2315a335531f965f99c2830fafa0a138fa485b251",
       "disposition": "adapt",
-      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T20 S1 common-dialog bridge and version; T21 S13 reusable late initializer and process-detour adapter; T21 S13 unified late style hooks and stop semantics; T24 S1 quality refactor; T25 S2 shared runtime extraction",
+      "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T20 S1 common-dialog bridge and version; T21 S13 reusable late initializer and process-detour adapter; T21 S13 unified late style hooks and stop semantics; T24 S1 quality refactor; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
@@ -1451,12 +1451,12 @@
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
     },
     {
-      "path": "tests/run16s-exe/failures.c",
+      "path": "tests/lib-win32-style/access/startup/failures.c",
       "source": null,
       "source_blob": null,
-      "sha256": "daeebb47636df05810d292d21d8b9c4a929b1a916137e1f28cad390f16a00530",
+      "sha256": "df361f465267d6d643a9e79a42199dfc8dea72d9e195e11d66a86096cf98dc0a",
       "disposition": "authored",
-      "review": "T3 S3 real permission/initialization/helper/CLI failure paths; docs/proposals/launcher-injection.md; T4 S3 target-first-exit helper branch, see docs/history/M0-T4-completion.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T25 S2 shared runtime extraction",
+      "review": "T3 S3 real permission/initialization/helper/CLI failure paths; docs/proposals/launcher-injection.md; T4 S3 target-first-exit helper branch, see docs/history/M0-T4-completion.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored test, repository MIT"
     },
     {
@@ -1472,9 +1472,9 @@
       "path": "src/ntw16s-dll/injection/create_process.c",
       "source": "src/nthook32-dll/create_process.cpp",
       "source_blob": "2369ce7a7c46e79fc23f73367db9d42e0c40c9da",
-      "sha256": "2d6c9fbba7d4dc9b8a1e9bcbaeff3e377948bc1cd0528c0bf010201a8b1a8a23",
+      "sha256": "80fe28e8c920df01fd6344315ae1d1f06aadbf45f284382f14c2b59c88bb8336",
       "disposition": "adapt",
-      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S42 product adapter directory cleanup; T23 S1 optional AsUserW propagation and DWM restoration regression; T23 S2 bounded self-elevation redirect candidate; T25 S2 shared runtime extraction; T25 S2 shared runtime extraction",
+      "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T21 S13 reusable late initializer and process-detour adapter; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S42 product adapter directory cleanup; T23 S1 optional AsUserW propagation and DWM restoration regression; T23 S2 bounded self-elevation redirect candidate; T25 S2 shared runtime extraction; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
     },
     {
@@ -1847,12 +1847,12 @@
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
-      "path": "src/ntwshk-dll/helper.c",
+      "path": "src/lib-win32-style/access/startup/helper.c",
       "source": null,
       "source_blob": null,
-      "sha256": "01e553ae718d138a2b24cf636fa62ae806b4d8b70ce30c4d1acf71672626e18a",
+      "sha256": "5f91e638561e9efb5b989bec1390a74052755b8adc80a765ec98f9d2f7802ae8",
       "disposition": "authored",
-      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction",
+      "review": "T6 S1 private C PE stager/OS helper or explicit native Windows manifest/import contract; see M0-T6-S1-package.md; final clean-package regression pending; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored; project MIT LICENSE"
     },
     {
@@ -3476,30 +3476,30 @@
       "notice": "Project-authored test; no imported resources"
     },
     {
-      "path": "src/ntwshk-dll/system_process.c",
+      "path": "src/lib-win32-style/access/startup/target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f6365216fe65f855f7955111d0a197392354942b85417c25c7203bf2fa4a65ab",
+      "sha256": "6ac0aa8457370ab1f8ed67116215eb4b451d9f3e26b1a0d035546a6c8fdf2486",
       "disposition": "authored",
-      "review": "T20 S1 Windows print-host propagation boundary; T25 S2 shared runtime extraction",
+      "review": "T20 S1 Windows print-host propagation boundary; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored C code; no imported resources"
     },
     {
-      "path": "src/ntwshk-dll/system_process.h",
+      "path": "src/lib-win32-style/access/startup/target.h",
       "source": null,
       "source_blob": null,
-      "sha256": "1e20b4caabfbf01ffca0fc8f13dc4a1c4a7137bea08b55a7916b97dd471bce09",
+      "sha256": "4b5a37f1774d213c8022c5099688e591e902e86bbdabc967f91ccd038758bcac",
       "disposition": "authored",
-      "review": "T20 S1 Windows print-host propagation boundary; T25 S2 shared runtime extraction",
+      "review": "T20 S1 Windows print-host propagation boundary; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored C code; no imported resources"
     },
     {
-      "path": "tests/ntw16s-dll/print_host_policy.c",
+      "path": "tests/lib-win32-style/access/startup/target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "20f8ed613976968bf5526d07e26d8063dd1ec356be9098ba446b8f90340b6cd0",
+      "sha256": "f7c4a6501aad6f8ec5a89c12fdf59d84cae08df0b5944b3a4794ee8497212337",
       "disposition": "authored",
-      "review": "T20 S1 Windows print-host propagation boundary; T25 S2 shared runtime extraction",
+      "review": "T20 S1 Windows print-host propagation boundary; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored C code; no imported resources"
     },
     {
@@ -5366,21 +5366,21 @@
       "notice": "Project MIT; upstream ntvdm64 source identity recorded"
     },
     {
-      "path": "src/run16s-exe/process_lifecycle.c",
+      "path": "src/lib-win32/process-launch/lifecycle.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "sha256": "0605ff4883ca08bbabe52c53a39a58a1c6ecbaaaeaa5910604fdfa4c719dcafb",
-      "review": "T21 S36 process launch source and launcher ownership; see fixed source record",
+      "sha256": "12ee15883c8ad873bc82cecea84a2605eedadd4be5403daa624057c07247fb11",
+      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project MIT; upstream ntvdm64 source identity recorded"
     },
     {
-      "path": "src/run16s-exe/process_lifecycle.h",
+      "path": "src/lib-win32/process-launch/lifecycle.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "sha256": "842360028f05c273ec3c8bb82d7b9fb333453da2c2525274eec54f8b47518b3d",
-      "review": "T21 S36 process launch source and launcher ownership; see fixed source record",
+      "sha256": "436be0cfe0142c90bb3640b1be5f299149217c039bb206bbcbf4d578c21d9af2",
+      "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project MIT; upstream ntvdm64 source identity recorded"
     },
     {
@@ -6485,9 +6485,9 @@
       "path": "src/ntw2ks-dll/dllmain.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d89d1a98e7001a7a3ffb6a9cea2e85adec4b39dd1f934acc0c886a81abf0a6c9",
+      "sha256": "b1a65b421098c6f1c7b3526de6c39bd8f63a7e2fd698b73fd49ef19afb5dcf79",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S2 shared runtime extraction; T25 S2 shared runtime extraction; T26 S1 shared style startup transaction; T26 S2 mechanical path/include relocation",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S2 shared runtime extraction; T25 S2 shared runtime extraction; T26 S1 shared style startup transaction; T26 S2 mechanical path/include relocation; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -6530,9 +6530,9 @@
       "path": "tests/ntw2ks-dll/staging.c",
       "source": null,
       "source_blob": null,
-      "sha256": "892e84ac6440431bfc85596573588204357a1d7a0c7038b4b755162d6f2f3f13",
+      "sha256": "d044ccb9434cd6af1505cdbcad6aba549e4b7d04dfed9e4476118e1b0f596434",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S2 shared runtime extraction",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -6557,9 +6557,9 @@
       "path": "src/ntwshk-dll/ntwshk.def",
       "source": null,
       "source_blob": null,
-      "sha256": "e7b8b4093f059263cd6ea7df46323d57d462427bd8909cb022688aaf60ea5a1d",
+      "sha256": "8501fa7286f27212479fb8ed10efe8ad4f5e41be6d755d0c2d8abfb299bff28d",
       "disposition": "authored",
-      "review": "T25 S2 shared runtime and native verification; T25 S2 shared runtime extraction; T26 S1 shared theme state exports; T26 S1 shared control theme lifecycle; T26 S1 explicit theme interception",
+      "review": "T25 S2 shared runtime and native verification; T25 S2 shared runtime extraction; T26 S1 shared theme state exports; T26 S1 shared control theme lifecycle; T26 S1 explicit theme interception; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored; no imported artwork"
     },
     {
@@ -7682,9 +7682,9 @@
       "path": "src/lib-win32-style/access/startup/startup.h",
       "source": null,
       "source_blob": null,
-      "sha256": "bbad18591f8a6a6915bb1bc2145fe5d7fb4b9bd2fa29f49c2f1c7898a667684d",
+      "sha256": "df3bd78829e1edc9ee883fd3c69c8fc7e753a4aaef3e340bb8db082b8ec861d4",
       "disposition": "authored",
-      "review": "T26 S1 shared style startup transaction; T26 S2 mechanical path/include relocation",
+      "review": "T26 S1 shared style startup transaction; T26 S2 mechanical path/include relocation; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored C; no imported artwork"
     },
     {
@@ -8046,6 +8046,87 @@
       "disposition": "authored",
       "review": "T26 S3 native Win2000 frame allocation/release witness, reentrant replacement and pending/full installation failure cleanup; production source included with allocation observers",
       "notice": "Project-authored pure C test; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32-style/access/startup/bootstrap.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b2319dc5f911d578fff6afc7a0d837dbe3719d64de9c61a5c80dbc06c4319cb0",
+      "disposition": "authored",
+      "review": "T26 S4 shared startup operation/compatibility or isolated contract test; see M0-T26-S4-startup.md",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32-style/access/startup/install.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9134cebcf065f19ce04ed1c3246e1047607bc7cce44fb1238911c45ad5d6e625",
+      "disposition": "authored",
+      "review": "T26 S4 shared startup operation/compatibility or isolated contract test; see M0-T26-S4-startup.md",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32-style/access/startup/propagate.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "80b86da9b79158ac5c7b6ad1f6c8cde5aec65bc81b6827fcb2d2a205ab5dfdfa",
+      "disposition": "authored",
+      "review": "T26 S4 shared startup operation/compatibility or isolated contract test; see M0-T26-S4-startup.md",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/lib-win32-style/access/startup/propagate.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "fd8c0d77d18153ff333663c8b2fc67178c8b8ccad1d155dedffbe0e0652feb66",
+      "disposition": "authored",
+      "review": "T26 S4 shared startup operation/compatibility or isolated contract test; see M0-T26-S4-startup.md",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/ntwshk-dll/injection.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b7cc8cca56315a3d124a067bf61f7da09cdcbe3582f056b5f1442da15a4bbecf",
+      "disposition": "authored",
+      "review": "T26 S4 shared startup operation/compatibility or isolated contract test; see M0-T26-S4-startup.md",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/ntwshk-dll/startup.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e8b0b2910c87c407e080db2e10ccf6062ff0d6db2e4e255c860368d0bf98f2a4",
+      "disposition": "authored",
+      "review": "T26 S4 shared startup operation/compatibility or isolated contract test; see M0-T26-S4-startup.md",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "src/ntwshk-dll/system_process.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "92a731093371dc0bda7affa6ffffa9edf89bae6449fc90000a0622d73eff77af",
+      "disposition": "authored",
+      "review": "T26 S4 shared startup operation/compatibility or isolated contract test; see M0-T26-S4-startup.md",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-win32-style/access/startup/bootstrap.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "fec73a8dae8054ce58758e142dd55087d5d53b63c126ccdfa495b10b00270db1",
+      "disposition": "authored",
+      "review": "T26 S4 shared startup operation/compatibility or isolated contract test; see M0-T26-S4-startup.md",
+      "notice": "Project-authored C; no imported artwork"
+    },
+    {
+      "path": "tests/lib-win32-style/access/startup/propagate.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a3492a116fac72ee5d2ddacb2d7a9e36cf6378974fef3ca86d91d6898b006bd3",
+      "disposition": "authored",
+      "review": "T26 S4 shared startup operation/compatibility or isolated contract test; see M0-T26-S4-startup.md",
+      "notice": "Project-authored C; no imported artwork"
     }
   ]
 }

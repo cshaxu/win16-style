@@ -1,5 +1,5 @@
 #include "ntw16s-dll/injection/intercept.h"
-#include "lib-win32/process-hook/propagate.h"
+#include "lib-win32-style/access/startup/propagate.h"
 #include <shellapi.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,9 +14,8 @@ static DWORD fake_error=ERROR_CANCELLED;
 static DWORD actual_mask;static HWND actual_owner;static int actual_show;static WCHAR actual_directory[32768];
 static BOOL WINAPI fake_shell(SHELLEXECUTEINFOW *p){wcsncpy(actual_file,p->lpFile?p->lpFile:L"",32767);wcsncpy(actual_args,p->lpParameters?p->lpParameters:L"",32767);wcsncpy(actual_directory,p->lpDirectory?p->lpDirectory:L"",32767);actual_mask=p->fMask;actual_owner=p->hwnd;actual_show=p->nShow;p->hInstApp=(HINSTANCE)(INT_PTR)42;SetLastError(fake_error);return fake_result;}
 static DWORD attach(void *slot,void *replacement){memcpy(&hooked,&replacement,sizeof(hooked));BOOL (WINAPI *fn)(SHELLEXECUTEINFOW *)=fake_shell;memcpy(slot,&fn,sizeof(fn));return 0;}
-DWORD process_hook_propagation_attach(DWORD (*a)(void *,void *),const process_hook_propagation_ops *o){(void)a;(void)o;return 0;}
-void process_hook_propagation_discard(const process_hook_propagation_ops *o){(void)o;}
-DWORD process_hook_propagation_attach_as_user_w(DWORD (*a)(void *,void *)){(void)a;return 0;}
+DWORD style_startup_propagate(DWORD (*a)(void *,void *),const style_startup_propagation *o){(void)a;(void)o;return 0;}
+void style_startup_propagation_discard(const style_startup_propagation *o){(void)o;}
 DWORD process_hook_startup_attach(void *a,void *b){(void)a;(void)b;return 0;}
 BOOL ntw16s_global_policy_active(DWORD c){(void)c;return FALSE;}
 BOOL ntw16s_global_policy_style(DWORD c,DWORD style){(void)c;(void)style;return FALSE;}
