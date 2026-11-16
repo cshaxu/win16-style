@@ -227,6 +227,55 @@ VCL 背景/文字和两笔panel边缘的配对状态属于当前操作，不能�
 
 已核对 attachment 的绘制服务、正常/异常 scope end 与引用退场、attachment_guard 的分类和 native_dc 绑定、injection 的 frame/text/draw 观察调用。现有测试映射包括 vb_font 的32/33租约、分配失败、glyph map释放和嵌套barrier，global_vb_text 的scope外不替换/LastError保留，以及 VCL bitbtn/group/panel/controlbar/inplace/nav 的自有模块夹具。当前导航焦点失败仍开放；夹具不等于真实VB/Delphi全覆盖。本批只完成源码和调用审计，未运行新增测试，后续S3/S9/S10合批验证公共独立性、风格实际使用及旧路径删除。
 
+## S1 连续审计批次：现代与普通外框（114–136）
+
+| 文件 | 公共目标与所有者 | 风格与调用边界 |
+| --- | --- | --- |
+| win16-window-uwp/frame.c/h | adapters 的本地GUI线程安装/移除、宿主状态、系统菜单跟踪和临时actions事务；现有host/input/surface继续唯一复用 | Win3.x标题/按钮布局、字体和绘制归appearance；兼容导出由产品装配提供 |
+| win16-window-uwp/frame_layout.c/h | adapters 的outer/content有效性、工作区及透明洞与resize margin协调 | Win3.x caption最小高度、button pitch、corner与measure/hit留风格 |
+| frame_buttons.h | 无通用机制 | Win3.x VGA.DRV atlas，逐字节迁移保留来源和声明 |
+| frame_dispatch.c/h | window/lifecycle 的原生消息分流、嵌套引用、hidden/pending可见激活、XAML重绘排队和最终销毁 | 菜单支持范围、MDI合并策略和具体measure/paint由风格提供 |
+| frame_font.c/h | graphics 的标题/菜单资源成对提交及失败保留旧对 | 字体名称、10pt、bold、NONANTIALIASED、菜单资源和stock回退由win3x资源策略提供 |
+| frame_input.c/h | window/menu 的系统命令路由、focus/capture、Alt/F10、菜单循环与点击坐标 | no-hover、原版双击与合并按钮行为由风格选择，不扩大支持 |
+| frame_layout.c/h | window 的DWM capture/restore、client-screen/work-area变换、原生scrollbar区域优先命中 | Win3.x固定/对话框/sizeable度量和scrollbar共享内边线规则留appearance |
+| frame_lifecycle.c/h | lifecycle 的实例身份/owner、安装回滚、附着移除、最后引用释放和terminal；window拥有DWM及原生客户区快照 | layered Console例外等现有资格显式策略化，字体、palette、layout和scrollbar呈现由风格提供 |
+| frame_message.c/h | window 的NCCALCSIZE原生更新顺序、UAH抑制、WM_PRINT坐标、标题变更及DPI/主题重绘 | 支持时替换几何/配色；已有ncpaint、print-client与menu重叠刷新不复制 |
+| frame_paint.c/h | graphics的fill/outline等现有原语、window标题快照 | 原版按钮、system atlas、flat sizing band、居中文字、配色及图案属于win3x |
+| frame_state.c/h | lifecycle的公共实例引用、owner/退场、menu的depth/数据恢复，adapters的XAML排队状态分别拥有 | palette/font选择/pressed呈现分开；不把完整style_window改名后原样放公共 |
+| frame_view.c/h | window/graphics的capture动作执行、局部重绘clip、借用DC保存及缓冲提交 | Win3.x外框合成次序、菜单/标题画法和按钮动作选择独立 |
+
+现代宿主当前已将引用、owner/title/surface安装回滚与消息骨架交给公共host，输入交给input，表面可见性/位图/呈现交给surface；不能再造平行宿主。仍在Win16 frame里的menu tracking、临时action命令及省略标志，是公共菜单事务和呈现状态混合。公共菜单操作复制action数组，借用label/context至remove并返回所有回调；上限256、命令冲突、按身份清理、先清理再invoke保持。remove或title销毁期间EndMenu，调用栈引用覆盖到tracking返回，不能提前释放actions或menu字体。
+
+普通外框安装已依赖公共DWM/客户区辅助，但事务和状态仍是Win16私有；移除依次解除本层subclass、停用排队刷新、标记detached、移除本owner控件、恢复menu数据、撤销自己的capture及尝试恢复原生几何。终结销毁不应套用正常移除的尺寸恢复；menu-only不应强加完整frame。公共实例拥有calls、detached、creation-owner和阶段；window状态拥有native-client/DWM/hidden-pending；menu状态拥有depth/items/focus/tracking；适配器拥有XAML刷新token；appearance只拥有资源选择及渲染私有数据。各状态通过实例组合，不以几十个字段指针回调伪装解耦。
+
+NCCALCSIZE先保留原生scrollbar更新，再替换客户区；失效后的WVR_VALIDRECTS不可复用。WM_PRINT尊重可见性与flags并保留借用DC；pending隐藏窗口不提前改变应用布局。XAML的show延后与erase合并应归框架适配，不把所有普通窗口都放入延迟队列。现有DWM只能恢复可观察到的状态，不能宣称已恢复系统未公开的原始policy；Win2000已知恢复失败保持开放。
+
+按钮输入和局部重绘可共用协议执行与DC/clip资源，measure/hit/command是操作策略；普通nonclient与透明surface的坐标系不同，不强制同一消息入口。字体更新先取得两类资源再提交，失败原对不变；资源提供者明确title owned与menu lease，不能混用DeleteObject/release。frame_caption还有GetWindowTextLength/GetWindowText/分配与绘制混合，原生快照应复用现有window_text能力，原版居中/裁剪规则不变。
+
+实际调用为ntw16s win16_style的lifecycle/dispatch装配、attachment的nonclient表面及uwp/hook的actions入口；Win2000当前在win2k-window/frame.c自行维护部分菜单/外框property和input，必须纳入S3/S7/S8去重，而不是声称已经共用。验证映射包括公共frame_restore/frame_xaml/paint_frame、uwp host/start/input/surface、Win16 frame_hidden/layout/frame、pending_frame_owner、frames和scroll_frame_target，以及Win2000 frame_lifecycle。现代frame完整测试有isolated_process默认入口，执行前核对worker模式；本批没有运行这些测试或切换桌面。
+
+## S1 连续审计批次：菜单（137–151）
+
+| 文件 | 公共目标与所有者 | 风格与完成条件 |
+| --- | --- | --- |
+| menu_bar.c/h | menu原生item/text快照、app measure、来源核验、输入/焦点与navigation状态 | Win3.x省略MDI minimize/close、原版measure/arrange/索引行为策略独立；HMENU/itemData借用，文本/rect数组由快照拥有 |
+| menu_bar_paint.c | menu的应用owner-draw转发、SaveDC/clip和回调后有效性 | 普通文本、合并system/restore图案由win3x画法提供 |
+| menu_glyphs.h | 无公共生命周期 | 原始CHECK/MNARROW资源、来源和未清除分发限制声明保留 |
+| menu_items.c/h | menu的token查找、全菜单列数据聚合及measure/draw分派，复用common/menu_items | 固定列留白、行高/分隔和具体文本画法由appearance提供 |
+| menu_iteration.c/h | menu的native tracking迭代、WM_NEXTMENU跨窗口交接、作用域保活和focus恢复 | 具体边界/选择行为策略化，不能复制Win16与Win2000两套消息过滤和生命周期 |
+| menu_message.c/h | menu的prepare/restore/app回调顺序、mnemonic先交应用、嵌套depth与失败清理 | 系统按钮选中呈现和style scope实现从策略进入 |
+| menu_paint.c/h | graphics测量/临时文本操作及menu列数据可复用 | 固定margin、14px最小行高、DSS_UNION点状禁用文字、glyph/颜色/分隔线归win3x；产品兼容导出保持 |
+| menu_scope.c/h | menu的同线程hook、popup节点引用、nested scope及非栈顶结束、shadow配对与打印坐标/原生选中快照 | 是否隐藏shadow、popup边框、system行画法由风格提供；不把Win3.x scope复制给Win2000 |
+| win16_style.h | 无生产机制，仅转发palette的过渡头 | 消费者归位后删除，不新增空壳公共组件 |
+
+公共菜单保留应用HMENU、命令、itemData和owner-draw权威：初始化前还原本层临时项，让应用更新，再准备本层token；prepare失败回滚本popup，退出按depth恢复。应用WM_MENUCHAR结果优先，只有MNC_IGNORE才尝试本层助记符。bar快照可有应用WM_MEASUREITEM，任何回调后均需核实对应item、目标和附着仍有效；不使用陈旧快照发命令。
+
+菜单迭代可经WM_NEXTMENU切换到另一窗口；先保活新实例，再退出旧引用，焦点恢复只在仍由本层持有时执行。系统菜单、popup及直接command不同，箭头只改变选择，不能意外执行直接command。现有-2系统项、-3未命中的语义与Win2000 -1及mouse armed策略不相同；公共层应表达动作/命中角色，不能通过改常量抹平真实行为差异。
+
+popup scope只有一个同线程WH_CALLWNDPROC hook，不是全局hook；最后scope退出才解除观察。非栈顶退出允许，节点在嵌套消息期间需保活；正常结束与WM_NCDESTROY的shadow恢复不同。SysShadow按同线程观察、紧邻Z序和有限矩形扩展配对，不能隐藏其他窗口。system-selection目前以64位mask覆盖至64项，未知或变化时重画，同项鼠标移动不重复重画；边框/是否去阴影属风格策略。Win2000 system_menu.c目前仍有自己的scope/popups，应在同一公共观察与生命周期中提供画法。
+
+现有验证入口为common menu_input/menu_snapshot/menu_items/menu_owner、Win16 menu_dispatch/menu_cancel/menu_initial/system_menu_visual、现代frame actions/retire-menu，以及Win2000 system_menu和frame_lifecycle。menu_cancel已有15场景含keyboard/mouse切换、取消、nested escape和system menu；本批仅核对其断言，未运行，因此不宣称新路径通过。资源身份校验和现有产品ABI在迁移时必须复核，不能把资源声明迁丢。
+
 ## 未通过与未来候选
 
 导航焦点、Win2000 DWM 恢复、VB 清单和表头不稳定及实际现代宿主/全局覆盖限制继续由 CURRENT 和已有证据承载；不因架构设计被关闭。T26 结束条件是现有能力的三层归位、实际复用和验证，而非所有年代所有应用都支持。

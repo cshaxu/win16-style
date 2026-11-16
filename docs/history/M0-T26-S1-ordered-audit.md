@@ -122,44 +122,44 @@
 | 111 | `src/lib-style/win16-control/vcl_identity.h` | `0d84b3a319f00e86220897002de33db0a7e635392a31e98ba5e94755824335e0` | 待修复/待验证 |
 | 112 | `src/lib-style/win16-control/vcl_native_paint.c` | `92de4090a1b0199510d6428dbe9c03886b09a4a32570155904f0fdc880b85d6d` | 待修复/待验证 |
 | 113 | `src/lib-style/win16-control/vcl_native_paint.h` | `2372cae31d72c1b5d0381905fa077efdcbaf785cb484e8fec6c876731e4aa06d` | 待修复/待验证 |
-| 114 | `src/lib-style/win16-window-uwp/frame.c` | `611847b338b1fddda29fe8997a11c2c3af6436062e2f70963e6394cbdd4eaae6` | 待审 |
-| 115 | `src/lib-style/win16-window-uwp/frame.h` | `00da809635b3781756d1760ce368b241259267eeca36e77d99cff117c0c5fbe4` | 待审 |
-| 116 | `src/lib-style/win16-window-uwp/frame_layout.c` | `a345511d535bda17c081e1fce4432e2b4d775a532b08b3648fae9533fded3960` | 待审 |
-| 117 | `src/lib-style/win16-window-uwp/frame_layout.h` | `50cab3768287cf12f5a60008ce382293a983f26070546ea5033303385f9f41e8` | 待审 |
-| 118 | `src/lib-style/win16-window/frame_buttons.h` | `e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5` | 待审 |
-| 119 | `src/lib-style/win16-window/frame_dispatch.c` | `6b057e074a4444de0f88d9917d90c99b77d7e493877e957b4097085831a274a9` | 待审 |
-| 120 | `src/lib-style/win16-window/frame_dispatch.h` | `b94c3a6b62a3904d11eafe719d9d49489a4f9495ee947d2b14310f4de7a932f5` | 待审 |
-| 121 | `src/lib-style/win16-window/frame_font.c` | `46964bbb4e795df8818ff7009fe33d9295fec1f39116122cac74af3016308c87` | 待审 |
-| 122 | `src/lib-style/win16-window/frame_font.h` | `dcd05c8d415169bc70cd3c6884cf8eec8159e5cf7c0806e4fda546845b30243b` | 待审 |
-| 123 | `src/lib-style/win16-window/frame_input.c` | `206a0c8f95f1b972aa4de7b203516c3caca0bc8678b26312b6edbd826bcaf45f` | 待审 |
-| 124 | `src/lib-style/win16-window/frame_input.h` | `2725920d1159d39153d0bfac2e7e94d86aa79c8e725fdd1bcb12f0ae8fd45233` | 待审 |
-| 125 | `src/lib-style/win16-window/frame_layout.c` | `cf08844671dd5c1b46e43e61abca08255821b7399a90dba11c87bc5b68bf35d3` | 待审 |
-| 126 | `src/lib-style/win16-window/frame_layout.h` | `aa4138b097b5a81190eb63fdcde855b0e3659f5d49d6bccd18074755a9147e1b` | 待审 |
-| 127 | `src/lib-style/win16-window/frame_lifecycle.c` | `2372e7e3a44488936fac5fd1c66c9a6742191177963338a08c246492e5584db2` | 待审 |
-| 128 | `src/lib-style/win16-window/frame_lifecycle.h` | `9471ceb5aab4c90b11becf74dfbe1969bb2faa3526e3eeff956cf25c7cedddb8` | 待审 |
-| 129 | `src/lib-style/win16-window/frame_message.c` | `3fb669f9e780edd100c1d0d517cefde41e512db1186766e5441a6c4f5c708445` | 待审 |
-| 130 | `src/lib-style/win16-window/frame_message.h` | `dd42ca6758f2e5fc5664848f34081295680653792e39b74399d4e0719314d347` | 待审 |
-| 131 | `src/lib-style/win16-window/frame_paint.c` | `0ce5a283cd055ef454254f175b05134c83eec83449ceb438aa97be1226a231f2` | 待审 |
-| 132 | `src/lib-style/win16-window/frame_paint.h` | `e9324c74dcd59cfe6c9af7cd1bffc467b4020ddbc1c1da375a57a0546c5eb5fc` | 待审 |
-| 133 | `src/lib-style/win16-window/frame_state.c` | `426ea9b1ed8dfc2c524f88da9221d31eb11f30515f7920dd31c4bd882573bde1` | 待审 |
-| 134 | `src/lib-style/win16-window/frame_state.h` | `9078c5a86c45fafb6858249c30f2ab0149e5991d9c884e044e78772a12f53576` | 待审 |
-| 135 | `src/lib-style/win16-window/frame_view.c` | `55cc044e31a20351a5cf53d5c110c85f7810c82d79dbc0de82de233c22cdaf21` | 待审 |
-| 136 | `src/lib-style/win16-window/frame_view.h` | `6748a2c8636037c3dade81b965871c350be5dcc616d61368008746b78efb6ddb` | 待审 |
-| 137 | `src/lib-style/win16-window/menu_bar.c` | `47d105dd8bdd47c99e7ff8574c6958b20444b134ad303eb540532017ef6494b6` | 待审 |
-| 138 | `src/lib-style/win16-window/menu_bar.h` | `5792fc73118ef17bc7f59700d461a47e4ff6a499d4354b8042e321e8f169abfa` | 待审 |
-| 139 | `src/lib-style/win16-window/menu_bar_paint.c` | `392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94` | 待审 |
-| 140 | `src/lib-style/win16-window/menu_glyphs.h` | `03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e` | 待审 |
-| 141 | `src/lib-style/win16-window/menu_items.c` | `b71c31aa23818810887e4c5630e80fcb98cb79b1cd03c930290a41cd6b49e162` | 待审 |
-| 142 | `src/lib-style/win16-window/menu_items.h` | `8eb73d3ca798cc0561f25c1603c4d94807d1ae154cf17d7bbc07e89148d726da` | 待审 |
-| 143 | `src/lib-style/win16-window/menu_iteration.c` | `3f68b0c46f13505d0e141955d2734c40b486e7c476e15ce9213be9bdb119865e` | 待审 |
-| 144 | `src/lib-style/win16-window/menu_iteration.h` | `76f030d3ab0efb853d871357a0e4e87b60dc5c3f991f7a93f3b45b5cb14fad5b` | 待审 |
-| 145 | `src/lib-style/win16-window/menu_message.c` | `100325c5f1a6030c9a823d6d9edb4a1e53bc5b1435b85208ac5d3c8555727826` | 待审 |
-| 146 | `src/lib-style/win16-window/menu_message.h` | `deaedbf7c25bbebf64e892ad7f647cb37a6e19944eef1c73f5dece6673d95b79` | 待审 |
-| 147 | `src/lib-style/win16-window/menu_paint.c` | `00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84` | 待审 |
-| 148 | `src/lib-style/win16-window/menu_paint.h` | `590f81afb53614015b31baf3fd06ac3643175ef346c2deee94ea8442a3591e02` | 待审 |
-| 149 | `src/lib-style/win16-window/menu_scope.c` | `d10f1420bc829c4ec769cfcc5b627908450f3a76c9e79d615858a8b6a66a58b9` | 待审 |
-| 150 | `src/lib-style/win16-window/menu_scope.h` | `e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699` | 待审 |
-| 151 | `src/lib-style/win16-window/win16_style.h` | `5e927143c2ebae5ff80e4b36cb125c5fdd1fbaf3a02d3d76a0a1c9c05765ecd0` | 待审 |
+| 114 | `src/lib-style/win16-window-uwp/frame.c` | `611847b338b1fddda29fe8997a11c2c3af6436062e2f70963e6394cbdd4eaae6` | 待修复/待验证 |
+| 115 | `src/lib-style/win16-window-uwp/frame.h` | `00da809635b3781756d1760ce368b241259267eeca36e77d99cff117c0c5fbe4` | 待修复/待验证 |
+| 116 | `src/lib-style/win16-window-uwp/frame_layout.c` | `a345511d535bda17c081e1fce4432e2b4d775a532b08b3648fae9533fded3960` | 待修复/待验证 |
+| 117 | `src/lib-style/win16-window-uwp/frame_layout.h` | `50cab3768287cf12f5a60008ce382293a983f26070546ea5033303385f9f41e8` | 待修复/待验证 |
+| 118 | `src/lib-style/win16-window/frame_buttons.h` | `e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5` | 待修复/待验证 |
+| 119 | `src/lib-style/win16-window/frame_dispatch.c` | `6b057e074a4444de0f88d9917d90c99b77d7e493877e957b4097085831a274a9` | 待修复/待验证 |
+| 120 | `src/lib-style/win16-window/frame_dispatch.h` | `b94c3a6b62a3904d11eafe719d9d49489a4f9495ee947d2b14310f4de7a932f5` | 待修复/待验证 |
+| 121 | `src/lib-style/win16-window/frame_font.c` | `46964bbb4e795df8818ff7009fe33d9295fec1f39116122cac74af3016308c87` | 待修复/待验证 |
+| 122 | `src/lib-style/win16-window/frame_font.h` | `dcd05c8d415169bc70cd3c6884cf8eec8159e5cf7c0806e4fda546845b30243b` | 待修复/待验证 |
+| 123 | `src/lib-style/win16-window/frame_input.c` | `206a0c8f95f1b972aa4de7b203516c3caca0bc8678b26312b6edbd826bcaf45f` | 待修复/待验证 |
+| 124 | `src/lib-style/win16-window/frame_input.h` | `2725920d1159d39153d0bfac2e7e94d86aa79c8e725fdd1bcb12f0ae8fd45233` | 待修复/待验证 |
+| 125 | `src/lib-style/win16-window/frame_layout.c` | `cf08844671dd5c1b46e43e61abca08255821b7399a90dba11c87bc5b68bf35d3` | 待修复/待验证 |
+| 126 | `src/lib-style/win16-window/frame_layout.h` | `aa4138b097b5a81190eb63fdcde855b0e3659f5d49d6bccd18074755a9147e1b` | 待修复/待验证 |
+| 127 | `src/lib-style/win16-window/frame_lifecycle.c` | `2372e7e3a44488936fac5fd1c66c9a6742191177963338a08c246492e5584db2` | 待修复/待验证 |
+| 128 | `src/lib-style/win16-window/frame_lifecycle.h` | `9471ceb5aab4c90b11becf74dfbe1969bb2faa3526e3eeff956cf25c7cedddb8` | 待修复/待验证 |
+| 129 | `src/lib-style/win16-window/frame_message.c` | `3fb669f9e780edd100c1d0d517cefde41e512db1186766e5441a6c4f5c708445` | 待修复/待验证 |
+| 130 | `src/lib-style/win16-window/frame_message.h` | `dd42ca6758f2e5fc5664848f34081295680653792e39b74399d4e0719314d347` | 待修复/待验证 |
+| 131 | `src/lib-style/win16-window/frame_paint.c` | `0ce5a283cd055ef454254f175b05134c83eec83449ceb438aa97be1226a231f2` | 待修复/待验证 |
+| 132 | `src/lib-style/win16-window/frame_paint.h` | `e9324c74dcd59cfe6c9af7cd1bffc467b4020ddbc1c1da375a57a0546c5eb5fc` | 待修复/待验证 |
+| 133 | `src/lib-style/win16-window/frame_state.c` | `426ea9b1ed8dfc2c524f88da9221d31eb11f30515f7920dd31c4bd882573bde1` | 待修复/待验证 |
+| 134 | `src/lib-style/win16-window/frame_state.h` | `9078c5a86c45fafb6858249c30f2ab0149e5991d9c884e044e78772a12f53576` | 待修复/待验证 |
+| 135 | `src/lib-style/win16-window/frame_view.c` | `55cc044e31a20351a5cf53d5c110c85f7810c82d79dbc0de82de233c22cdaf21` | 待修复/待验证 |
+| 136 | `src/lib-style/win16-window/frame_view.h` | `6748a2c8636037c3dade81b965871c350be5dcc616d61368008746b78efb6ddb` | 待修复/待验证 |
+| 137 | `src/lib-style/win16-window/menu_bar.c` | `47d105dd8bdd47c99e7ff8574c6958b20444b134ad303eb540532017ef6494b6` | 待修复/待验证 |
+| 138 | `src/lib-style/win16-window/menu_bar.h` | `5792fc73118ef17bc7f59700d461a47e4ff6a499d4354b8042e321e8f169abfa` | 待修复/待验证 |
+| 139 | `src/lib-style/win16-window/menu_bar_paint.c` | `392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94` | 待修复/待验证 |
+| 140 | `src/lib-style/win16-window/menu_glyphs.h` | `03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e` | 待修复/待验证 |
+| 141 | `src/lib-style/win16-window/menu_items.c` | `b71c31aa23818810887e4c5630e80fcb98cb79b1cd03c930290a41cd6b49e162` | 待修复/待验证 |
+| 142 | `src/lib-style/win16-window/menu_items.h` | `8eb73d3ca798cc0561f25c1603c4d94807d1ae154cf17d7bbc07e89148d726da` | 待修复/待验证 |
+| 143 | `src/lib-style/win16-window/menu_iteration.c` | `3f68b0c46f13505d0e141955d2734c40b486e7c476e15ce9213be9bdb119865e` | 待修复/待验证 |
+| 144 | `src/lib-style/win16-window/menu_iteration.h` | `76f030d3ab0efb853d871357a0e4e87b60dc5c3f991f7a93f3b45b5cb14fad5b` | 待修复/待验证 |
+| 145 | `src/lib-style/win16-window/menu_message.c` | `100325c5f1a6030c9a823d6d9edb4a1e53bc5b1435b85208ac5d3c8555727826` | 待修复/待验证 |
+| 146 | `src/lib-style/win16-window/menu_message.h` | `deaedbf7c25bbebf64e892ad7f647cb37a6e19944eef1c73f5dece6673d95b79` | 待修复/待验证 |
+| 147 | `src/lib-style/win16-window/menu_paint.c` | `00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84` | 待修复/待验证 |
+| 148 | `src/lib-style/win16-window/menu_paint.h` | `590f81afb53614015b31baf3fd06ac3643175ef346c2deee94ea8442a3591e02` | 待修复/待验证 |
+| 149 | `src/lib-style/win16-window/menu_scope.c` | `d10f1420bc829c4ec769cfcc5b627908450f3a76c9e79d615858a8b6a66a58b9` | 待修复/待验证 |
+| 150 | `src/lib-style/win16-window/menu_scope.h` | `e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699` | 待修复/待验证 |
+| 151 | `src/lib-style/win16-window/win16_style.h` | `5e927143c2ebae5ff80e4b36cb125c5fdd1fbaf3a02d3d76a0a1c9c05765ecd0` | 待修复/待验证 |
 
 ## 001 `win16-common/control_api.h`：已过关
 
@@ -766,3 +766,195 @@
 - 接口/所有权与验证映射见[任务设计](../proposals/style-library-reorganization.md)的 VB/VCL 尾部批次；未实施及运行，不计过关。
 
 单人复核与效率检查（104–113）：完整阅读控件目录尾部十文件，追查 attachment 的 scope begin/end、异常退场、最后引用释放、guard 的 native DC 绑定及窗口绘制钩子消费；对照公共 VCL identity，明确不能只迁函数名而保留私有字段耦合。无新构建/测试或 scratch；已连续核对至113，剩38项，下一项114是现代外框，后续仍须审产品入口。保留在途第41项，按S1整体契约归并到S3/S9/S10，不逐文件完整交付。
+
+## 114 `win16-window-uwp/frame.c`：待修复/待验证
+
+- 源码与调用核对：宿主已共用host/input/surface；剩余菜单事务、actions清理和公共字体/重绘所有权需从Win16装配拆开。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 115 `win16-window-uwp/frame.h`：待修复/待验证
+
+- 源码与调用核对：本地GUI线程apply/remove和action借用契约归公共现代适配；Win16兼容入口留风格装配。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 116 `win16-window-uwp/frame_layout.c`：待修复/待验证
+
+- 源码与调用核对：Win3.x标题按钮几何归风格，work-area/content洞及resize-margin核验复用公共适配。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 117 `win16-window-uwp/frame_layout.h`：待修复/待验证
+
+- 源码与调用核对：公共surface布局描述与Win3.x layout分离，不让宿主接口依赖具体年代结构。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 118 `win16-window/frame_buttons.h`：待修复/待验证
+
+- 源码与调用核对：原始VGA.DRV按钮和系统菜单atlas为Win3.x只读资源，迁移保留像素/声明/来源。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 119 `win16-window/frame_dispatch.c`：待修复/待验证
+
+- 源码与调用核对：消息分派、重入引用、pending/XAML重绘协调及终结归公共window/lifecycle，具体支持与绘制归风格。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 120 `win16-window/frame_dispatch.h`：待修复/待验证
+
+- 源码与调用核对：分派服务改为公共实例及完整操作，去掉style_window私有跨层依赖。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 121 `win16-window/frame_font.c`：待修复/待验证
+
+- 源码与调用核对：标题/菜单字体成对替换事务归公共graphics资源管理，字体名称、字号、质量与stock回退策略归风格。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 122 `win16-window/frame_font.h`：待修复/待验证
+
+- 源码与调用核对：明确两类字体所有权和失败时保留旧对，不把Win3.x字体工厂当通用服务。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 123 `win16-window/frame_input.c`：待修复/待验证
+
+- 源码与调用核对：输入路由、焦点/capture与菜单循环配对归公共window/menu，原版no-hover及动作策略归风格。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 124 `win16-window/frame_input.h`：待修复/待验证
+
+- 源码与调用核对：公共输入上下文不暴露完整Win16菜单和布局状态，复用menu_input算法。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 125 `win16-window/frame_layout.c`：待修复/待验证
+
+- 源码与调用核对：DWM/客户区恢复、工作区转换、滚动条原生几何和命中协调归公共；Win3.x共边及度量归风格。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 126 `win16-window/frame_layout.h`：待修复/待验证
+
+- 源码与调用核对：原生窗口快照与style measure/hit契约分开，DWM函数指针归共享运行时操作。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 127 `win16-window/frame_lifecycle.c`：待修复/待验证
+
+- 源码与调用核对：安装回滚、owner移除、最后引用、终结及菜单退场归公共lifecycle，资格及资源由策略提供。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 128 `win16-window/frame_lifecycle.h`：待修复/待验证
+
+- 源码与调用核对：公共安装事务拥有状态和资源清理，不以逐字段服务包装保留Win16私有所有者。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 129 `win16-window/frame_message.c`：待修复/待验证
+
+- 源码与调用核对：原生NCCALCSIZE/WM_PRINT/主题绘制协调归公共window，Win3.x几何和dialog配色归风格。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 130 `win16-window/frame_message.h`：待修复/待验证
+
+- 源码与调用核对：分离原生消息骨架与measure/render策略，已有公共ncpaint/print继续唯一复用。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 131 `win16-window/frame_paint.c`：待修复/待验证
+
+- 源码与调用核对：Win3.x标题/按钮/平坦外框呈现及年代资源归appearance；矩形原语与标题快照复用graphics/window。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 132 `win16-window/frame_paint.h`：待修复/待验证
+
+- 源码与调用核对：Win3.x painter契约应消费公共描述而非指向Win16实例字段。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 133 `win16-window/frame_state.c`：待修复/待验证
+
+- 源码与调用核对：附着分配/最后释放和嵌套菜单深度/恢复归公共生命周期，风格仅提供字体和scope策略。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 134 `win16-window/frame_state.h`：待修复/待验证
+
+- 源码与调用核对：style_window混合四种责任必须拆状态所有权，不能整结构移作公共实例。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 135 `win16-window/frame_view.c`：待修复/待验证
+
+- 源码与调用核对：capture配对、局部重绘clip/缓冲和DC资源归公共window/graphics，具体Win3.x合成次序归风格。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 136 `win16-window/frame_view.h`：待修复/待验证
+
+- 源码与调用核对：按钮状态/呈现请求公共化，不继续用多组字段指针作为跨层接口。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的现代与普通外框批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 137 `win16-window/menu_bar.c`：待修复/待验证
+
+- 源码与调用核对：菜单数据快照、输入/焦点、owner-draw协议归公共menu，MDI省略项及具体度量归风格。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 138 `win16-window/menu_bar.h`：待修复/待验证
+
+- 源码与调用核对：菜单原生数据与几何/绘制策略分开；复制文本自有，HMENU/itemData借用。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 139 `win16-window/menu_bar_paint.c`：待修复/待验证
+
+- 源码与调用核对：应用owner-draw转发、clip与回调后有效性归公共menu，文本与合并按钮绘制归风格。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 140 `win16-window/menu_glyphs.h`：待修复/待验证
+
+- 源码与调用核对：原版CHECK/MNARROW像素归Win3.x资源，保留未清除的来源/分发限制声明。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 141 `win16-window/menu_items.c`：待修复/待验证
+
+- 源码与调用核对：公共itemData token查找和列快照复用现有menu_items；具体列宽/高度及绘制归风格。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 142 `win16-window/menu_items.h`：待修复/待验证
+
+- 源码与调用核对：owner-draw操作契约与Win3.x列度量分离，避免暴露私有palette。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 143 `win16-window/menu_iteration.c`：待修复/待验证
+
+- 源码与调用核对：TrackPopupMenu循环、WM_NEXTMENU跨窗口保活和焦点恢复归公共menu，索引/选择行为策略保持。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 144 `win16-window/menu_iteration.h`：待修复/待验证
+
+- 源码与调用核对：公共menu tracking拥有目标/引用与hook生命周期，风格不再维护一套独立iterator状态。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 145 `win16-window/menu_message.c`：待修复/待验证
+
+- 源码与调用核对：原生菜单消息顺序、app数据恢复和prepare失败回滚归公共menu；system按钮呈现与scope策略独立。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 146 `win16-window/menu_message.h`：待修复/待验证
+
+- 源码与调用核对：公共菜单实例与通知契约替代style_window参数，原生回调仍由应用权威处理。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 147 `win16-window/menu_paint.c`：待修复/待验证
+
+- 源码与调用核对：固定菜单留白、点状禁用文字和原版glyph归Win3.x呈现；文本测量/列聚合可复用graphics/menu。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 148 `win16-window/menu_paint.h`：待修复/待验证
+
+- 源码与调用核对：保留当前导出ABI在产品适配层，公共库接口不依赖NTW16S_API。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 149 `win16-window/menu_scope.c`：待修复/待验证
+
+- 源码与调用核对：线程局部popup观察、节点引用、菜单scope嵌套和shadow配对机制公共化；边框/阴影选择与绘制归风格。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 150 `win16-window/menu_scope.h`：待修复/待验证
+
+- 源码与调用核对：公共scope明确同线程和非栈顶结束契约，只有最后scope解除线程观察hook。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+## 151 `win16-window/win16_style.h`：待修复/待验证
+
+- 源码与调用核对：仅转发palette的过渡头可在消费者迁移后删除，无需保留新的空壳组件。
+- 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
+
+单人复核与效率检查（114–151）：完整阅读最后38项，比较已共用host/input/surface/present/menu基础及Win2000实际frame/system_menu调用；明确两风格共有机制和真实行为差异，原版glyph保持只读。151项顺序源码审计均已有记录，但原先40项过关还须按新架构复核，且产品接入/对话框/测试消费清单未完成，S1不能收口。未运行产品测试或完整构建，未创建scratch；第41项源码保持在途。下一批核对产品入口与公共能力矩阵，冻结按完整操作划分的公共接口，随后统一目录迁移，不再回到逐文件发布。
