@@ -1,4 +1,5 @@
 #include "lib-style/common/control_redraw.h"
+#include "lib-style/common/frame.h"
 #include "edit_message.h"
 #include "control_class.h"
 #include <commctrl.h>
@@ -15,14 +16,8 @@ LRESULT win16_control_edit_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
             if(!s->detached && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE)){
                 if(a==1)services->border(w,s,NULL);
                 else if(a){
-                    HRGN region=CreateRectRgn(0,0,0,0);
-                    if(region){
-                        if(CombineRgn(region,(HRGN)a,NULL,RGN_COPY)!=ERROR){
-                            HDC dc=GetDCEx(w,region,DCX_WINDOW|DCX_CACHE|DCX_INTERSECTRGN);
-                            if(dc){services->border(w,s,dc);ReleaseDC(w,dc);region=NULL;}
-                        }
-                        if(region)DeleteObject(region);
-                    }
+                    HDC dc=style_frame_update_dc(w,(HRGN)a);
+                    if(dc){services->border(w,s,dc);ReleaseDC(w,dc);}
                 }
             }
             return result;

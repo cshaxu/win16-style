@@ -1,5 +1,7 @@
 # Supporting Material Index
 
+- [T26 S1 最终批交付证据](evidence/t26-s1-final-delivery.json)：双位宽干净构建、cache计数、先发布的八文件摘要及10项聚焦测试；不代表T26迁移或完整现代/全局覆盖。
+
 - [T26 样式目录迁移清单](evidence/t26-style-relocation.json)：冻结288个生产文件及93个测试/说明文件的当前摘要、S2机械目的地及后续能力拆分阶段；不是迁移完成或质量通过证明。
 
 - [Delphi S26逐项台账](evidence/delphi-s26-current-ledger.json)：冻结的74个家族、当前有限证据、

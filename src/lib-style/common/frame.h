@@ -28,17 +28,25 @@ static inline BOOL style_frame_suppress_native_theme(UINT message,BOOL iconic,BO
     return has_menu && (message==STYLE_UAHDRAWMENU || message==STYLE_UAHDRAWMENUITEM);
 }
 
+/* GetDCEx owns the copied region on success; the caller releases the DC. */
+static inline HDC style_frame_update_dc(HWND window,HRGN update)
+{
+    HRGN region=CreateRectRgn(0,0,0,0);HDC dc=NULL;
+    if(region && CombineRgn(region,update,NULL,RGN_COPY)!=ERROR){
+        dc=GetDCEx(window,region,DCX_WINDOW|DCX_INTERSECTRGN|DCX_CACHE);
+        if(dc)region=NULL;
+    }
+    if(region)DeleteObject(region);
+    return dc;
+}
+
 /* The frame and optional scrollbar painters are supplied by the style. */
 static inline void style_frame_ncpaint(HWND window,WPARAM update,void *context,
     void (*paint)(HWND,void *,HDC),void (*buffered)(HWND,void *,HDC))
 {
     if(update!=1 && update){
-        HRGN region=CreateRectRgn(0,0,0,0);HDC dc=NULL;
-        if(region && CombineRgn(region,(HRGN)update,NULL,RGN_COPY)!=ERROR){
-            dc=GetDCEx(window,region,DCX_WINDOW|DCX_INTERSECTRGN|DCX_CACHE);
-            if(dc){buffered(window,context,dc);ReleaseDC(window,dc);region=NULL;}
-        }
-        if(region)DeleteObject(region);
+        HDC dc=style_frame_update_dc(window,(HRGN)update);
+        if(dc){buffered(window,context,dc);ReleaseDC(window,dc);}
         if(!dc)paint(window,context,NULL);
     }else {HDC dc=GetWindowDC(window);if(dc){buffered(window,context,dc);ReleaseDC(window,dc);}}
 }

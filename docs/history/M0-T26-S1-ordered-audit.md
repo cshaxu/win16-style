@@ -49,7 +49,7 @@
 | 38 | `src/lib-style/win16-control/control_state.h` | `cccb65a997d5cbabebc7a62577cf79da8678b9754c5373757d64cb74ccff4e78` | 已过关 |
 | 39 | `src/lib-style/win16-control/cool_grip_identity.c` | `04a9841be43ce2e95553eb3a9cb6a9f094ef03296dec5c86b26981239b2e979c` | 已过关 |
 | 40 | `src/lib-style/win16-control/cool_grip_identity.h` | `5aa8dce1ae9e718d2a067c7da16fca5f7d07c60a2b5fd2e93e974edfbc4e4e02` | 已过关 |
-| 41 | `src/lib-style/win16-control/edit_message.c` | `3fc0c155e31270e49ba7a0dfa61992e49cfef79539eed186d8dca16af5edf7c3` | 审计中 |
+| 41 | `src/lib-style/win16-control/edit_message.c` | `3fc0c155e31270e49ba7a0dfa61992e49cfef79539eed186d8dca16af5edf7c3` | 待修复/待验证 |
 | 42 | `src/lib-style/win16-control/edit_message.h` | `d7c5da65909dc16c9ed2ac58f59dbf34de20af6c10030737d5fae6b316e5ee21` | 待修复/待验证 |
 | 43 | `src/lib-style/win16-control/fileowner_message.c` | `ce1ae8ed053c4b967b52cdfd6eb5cc3f5f9fd1405eb2db4a3b0ffabf16619911` | 待修复/待验证 |
 | 44 | `src/lib-style/win16-control/fileowner_message.h` | `662ee200c53369290027cb9a6e84805235a3b0ead717edcb50ad966063dc76d5` | 待修复/待验证 |
@@ -390,7 +390,7 @@
 
 - 声明上述 Win16 握柄绘制资格接口，产品提供已经验证的身份回调与原生过程；不包含公共身份实现。双位宽实际产品夹具及限制见第 39 项；本头未修改。
 
-## 041 `win16-control/edit_message.c`：审计中
+## 041 `win16-control/edit_message.c`：待修复/待验证
 
 - 非客户区更新区域的复制和裁剪 DC 获取与公共窗口外框重复，已抽为公共 `style_frame_update_dc`，原有成功资源所有权和失败回退策略分别保留；待双位宽构建及运行验证。
 - 双位宽增量构建通过；新增公共测试验证更新区域复制、无效区域失败和资源释放，两位宽通过。正式包编辑控件及两风格外框路径仍待发布后回归，本项继续审计中。
@@ -958,3 +958,5 @@
 - 迁移接口、所有权和验证入口见[任务设计](../proposals/style-library-reorganization.md)的菜单批次；本轮仅审计设计，未实施及运行，不计过关。
 
 单人复核与效率检查（114–151）：完整阅读最后38项，比较已共用host/input/surface/present/menu基础及Win2000实际frame/system_menu调用；明确两风格共有机制和真实行为差异，原版glyph保持只读。151项顺序源码审计均已有记录，但原先40项过关还须按新架构复核，且产品接入/对话框/测试消费清单未完成，S1不能收口。未运行产品测试或完整构建，未创建scratch；第41项源码保持在途。下一批核对产品入口与公共能力矩阵，冻结按完整操作划分的公共接口，随后统一目录迁移，不再回到逐文件发布。
+
+第41项交付更新（P109）：共享更新区域DC操作已双位宽干净构建、先发布并通过10项聚焦验证，记录见[最终审计](M0-T26-S1-final-audit.md)。本项状态保留待修复/待验证，因为完整消息/状态机制仍由S9迁移；不以DC局部去重替代整个文件归位。151项审计阶段完成，原40项局部过关同样不豁免新架构迁移。

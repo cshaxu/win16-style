@@ -1,0 +1,181 @@
+{
+  "task": "M0 T26 S1 P109",
+  "status": "passed-focused",
+  "build": {
+    "physical_acceptance": "pending",
+    "candidate": "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\candidate",
+    "clean_source": "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source",
+    "status": "passed",
+    "exit_code": 0,
+    "full_matrix": "pending"
+  },
+  "source_snapshot_sha256": "05227f2609df4eb72cf34049535939fda978cf6f47db62d7f800ff0387c98bc8",
+  "toolchains": {
+    "ccache_version": "ccache version 4.13.6",
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "toolchains": [
+      {
+        "version": "16.1.0",
+        "target": "i686-w64-mingw32",
+        "architecture": "x86",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe"
+      },
+      {
+        "version": "16.1.0",
+        "target": "x86_64-w64-mingw32",
+        "architecture": "x64",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe"
+      }
+    ],
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe"
+  },
+  "build_seconds": {
+    "x86": 186.2461046000244,
+    "x64": 212.19594050000887
+  },
+  "cache": {
+    "x86": {
+      "hits": 790,
+      "misses": 5
+    },
+    "x64": {
+      "hits": 892,
+      "misses": 5
+    }
+  },
+  "publication": {
+    "locations": [
+      "assets/",
+      "O:/winnt"
+    ],
+    "sha256": {
+      "run16s.exe": "3b9767f2558724239e1efd2038d83edef535cced992eb1536d0a00827bc72837",
+      "demo.exe": "31929d645ed58405c08a28c2834a845c2534d2fa903eda0630a70d1fe0d9b558",
+      "ntw16s32.dll": "3f9ae64921990ef5e89c753b53684d210c87bf222b7defeb4809825d7abc4738",
+      "ntw16s64.dll": "1978b2ea56f19343f1325a87f6e1ec3639e03db287da86eeeb3575961e4ceec3",
+      "ntw2ks32.dll": "fcd7313965e6d28977175a7975acada9d296a5c9111bdfac24153a7323b1bab3",
+      "ntw2ks64.dll": "ccb4d6243a36732feb315d8810570d550263dbb875a901566d625ee8dd64a1ad",
+      "ntwshk32.dll": "61b8c74db9b827a78dc349be544908e5bba4fa4280bb9f21864ac623402e534a",
+      "ntwshk64.dll": "1c88ff735b1390145cfc643e162e0325344c26029dc76ad3c14b67a31b78c4c8"
+    }
+  },
+  "tests": [
+    {
+      "name": "frame-update-dc-32",
+      "exit_code": 0,
+      "passed": true,
+      "seconds": 0.11721830000169575,
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x86\\core-style-frame-update-dc.exe"
+      ]
+    },
+    {
+      "name": "control-link-32",
+      "exit_code": 0,
+      "passed": true,
+      "seconds": 0.16104139998788014,
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x86\\core-win16-control-link.exe"
+      ]
+    },
+    {
+      "name": "abi-32",
+      "exit_code": 0,
+      "passed": true,
+      "seconds": 0.19081440003355965,
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+        "O:\\winnt\\ntw16s32.dll"
+      ]
+    },
+    {
+      "name": "frames-32",
+      "exit_code": 0,
+      "passed": true,
+      "seconds": 2.5704755000188015,
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x86\\core-frames.exe",
+        "--private-worker"
+      ]
+    },
+    {
+      "name": "vcl-edit-32",
+      "exit_code": 0,
+      "passed": true,
+      "seconds": 0.9242772000143304,
+      "command": [
+        "O:\\winnt\\run16s.exe",
+        "--wait",
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x86\\core-vcl-edit-module.exe",
+        "--private-worker",
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x86\\vcl-edit-module-fixture.dll"
+      ]
+    },
+    {
+      "name": "frame-update-dc-64",
+      "exit_code": 0,
+      "passed": true,
+      "seconds": 0.11648460000287741,
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x64\\core-style-frame-update-dc.exe"
+      ]
+    },
+    {
+      "name": "control-link-64",
+      "exit_code": 0,
+      "passed": true,
+      "seconds": 0.19792330003110692,
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x64\\core-win16-control-link.exe"
+      ]
+    },
+    {
+      "name": "abi-64",
+      "exit_code": 0,
+      "passed": true,
+      "seconds": 0.04934369999682531,
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+        "O:\\winnt\\ntw16s64.dll"
+      ]
+    },
+    {
+      "name": "frames-64",
+      "exit_code": 0,
+      "passed": true,
+      "seconds": 2.4088378999731503,
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x64\\core-frames.exe",
+        "--private-worker"
+      ]
+    },
+    {
+      "name": "vcl-edit-64",
+      "exit_code": 0,
+      "passed": true,
+      "seconds": 0.5647041000192985,
+      "command": [
+        "O:\\winnt\\run16s.exe",
+        "--wait",
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x64\\core-vcl-edit-module.exe",
+        "--private-worker",
+        "O:\\repos.hobby\\win16style\\build\\t26-package\\s1-final-audit\\clean-source\\build\\.ninja\\x64\\vcl-edit-module-fixture.dll"
+      ]
+    }
+  ],
+  "coverage": "changed DC helper, standalone control link, ABI, window forms, actual published launcher VCL edit target; current desktop worker path",
+  "not_claimed": [
+    "full T26 migration",
+    "all applications/styles",
+    "all dialog/global/UWP/WinUI cases",
+    "physical keyboard/mouse acceptance"
+  ],
+  "observations": {
+    "vcl-edit-32.log": "NC_REGION inside=20 outside=0 width=220\nMEMO_FRAME_PIXELS edge=5360 client=0 outer=1144\nNOEDGE_WITNESS changed=0 checked=180\nVCL_EDIT_MODULE_OK bits=32 fake_paint_rejected=1 selection=1 readonly=1 multiline=1 scroll=1 reentrant_remove=1 frame_pixels=1 nc_clip=1 noedge=1 cleanup=1\n",
+    "vcl-edit-64.log": "NC_REGION inside=20 outside=0 width=220\nMEMO_FRAME_PIXELS edge=5360 client=0 outer=1144\nNOEDGE_WITNESS changed=0 checked=180\nVCL_EDIT_MODULE_OK bits=64 fake_paint_rejected=1 selection=1 readonly=1 multiline=1 scroll=1 reentrant_remove=1 frame_pixels=1 nc_clip=1 noedge=1 cleanup=1\n",
+    "frames-32.log": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\n",
+    "frames-64.log": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\n"
+  }
+}
