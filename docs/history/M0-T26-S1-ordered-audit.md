@@ -86,18 +86,18 @@
 | 75 | `src/lib-style/win16-control/scroll_paint.h` | `73430fabd8399933fcde5ed2829e522c4677926efa95b5d83a7e3403a8319fc7` | 待修复/待验证 |
 | 76 | `src/lib-style/win16-control/scroll_track.c` | `72bb6ba21989e4b40be7e1897928003cde4ee23467b3133d8f799b1f30926de9` | 待修复/待验证 |
 | 77 | `src/lib-style/win16-control/scroll_track.h` | `36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e` | 待修复/待验证 |
-| 78 | `src/lib-style/win16-control/special_install.c` | `ed4869d10cb6bdbec6e0c46d8d121aadc07dd77118b17e1caf07deb17c332103` | 待审 |
-| 79 | `src/lib-style/win16-control/special_install.h` | `b4be7bbb66ac51e85b62bfae1c90cb926829b021bd9c726505269572df670f20` | 待审 |
-| 80 | `src/lib-style/win16-control/special_paint.c` | `27cfcdf4a57afd036ee3d2bd4f2ae1b542105a98ec7cf3810365638660a399ae` | 待审 |
-| 81 | `src/lib-style/win16-control/special_paint.h` | `9eed7cbc5eec9fe4be5a35f3d80e2a90e8f592006404968eb47ebf1df40d9a08` | 待审 |
-| 82 | `src/lib-style/win16-control/spin_scope.c` | `1eb516c67ff3c98708004c3220553c37a604096eaf099954fe009cdca0c082b5` | 待审 |
-| 83 | `src/lib-style/win16-control/spin_scope.h` | `1e435d595fe40eba8d581186d18d3e0f51ac153d87a5ae79cfb9d7ea282626ce` | 待审 |
-| 84 | `src/lib-style/win16-control/status_font.c` | `cce26d4e34b445df76d9623e68717419ae5366e5f016a1367f727e8b802435ce` | 待审 |
-| 85 | `src/lib-style/win16-control/status_font.h` | `e987f7856503f0e0164b46d5c5ba3302a3c179defc6153944102a56ea6a54293` | 待审 |
-| 86 | `src/lib-style/win16-control/status_frame.c` | `bf2e1b0ce63b68a791288ec5c35011c509c7a89364f70fc8bd40b7b558f84360` | 待审 |
-| 87 | `src/lib-style/win16-control/status_frame.h` | `f743c97a782dbb5b9af1e48520823ba99b29ace80c89c3586b7b7554b17a44c3` | 待审 |
-| 88 | `src/lib-style/win16-control/status_text.c` | `87595843e4c2cc28436e5375dc9f2bc4541a6b121a71e806bb4015bf1eccfd61` | 待审 |
-| 89 | `src/lib-style/win16-control/status_text.h` | `74fb3b53a38e931c7312f6dbfde2e350a13915e2629d9ae853f41da1a495f466` | 待审 |
+| 78 | `src/lib-style/win16-control/special_install.c` | `ed4869d10cb6bdbec6e0c46d8d121aadc07dd77118b17e1caf07deb17c332103` | 待修复/待验证 |
+| 79 | `src/lib-style/win16-control/special_install.h` | `b4be7bbb66ac51e85b62bfae1c90cb926829b021bd9c726505269572df670f20` | 待修复/待验证 |
+| 80 | `src/lib-style/win16-control/special_paint.c` | `27cfcdf4a57afd036ee3d2bd4f2ae1b542105a98ec7cf3810365638660a399ae` | 待修复/待验证 |
+| 81 | `src/lib-style/win16-control/special_paint.h` | `9eed7cbc5eec9fe4be5a35f3d80e2a90e8f592006404968eb47ebf1df40d9a08` | 待修复/待验证 |
+| 82 | `src/lib-style/win16-control/spin_scope.c` | `1eb516c67ff3c98708004c3220553c37a604096eaf099954fe009cdca0c082b5` | 待修复/待验证 |
+| 83 | `src/lib-style/win16-control/spin_scope.h` | `1e435d595fe40eba8d581186d18d3e0f51ac153d87a5ae79cfb9d7ea282626ce` | 待修复/待验证 |
+| 84 | `src/lib-style/win16-control/status_font.c` | `cce26d4e34b445df76d9623e68717419ae5366e5f016a1367f727e8b802435ce` | 待修复/待验证 |
+| 85 | `src/lib-style/win16-control/status_font.h` | `e987f7856503f0e0164b46d5c5ba3302a3c179defc6153944102a56ea6a54293` | 待修复/待验证 |
+| 86 | `src/lib-style/win16-control/status_frame.c` | `bf2e1b0ce63b68a791288ec5c35011c509c7a89364f70fc8bd40b7b558f84360` | 待修复/待验证 |
+| 87 | `src/lib-style/win16-control/status_frame.h` | `f743c97a782dbb5b9af1e48520823ba99b29ace80c89c3586b7b7554b17a44c3` | 待修复/待验证 |
+| 88 | `src/lib-style/win16-control/status_text.c` | `87595843e4c2cc28436e5375dc9f2bc4541a6b121a71e806bb4015bf1eccfd61` | 待修复/待验证 |
+| 89 | `src/lib-style/win16-control/status_text.h` | `74fb3b53a38e931c7312f6dbfde2e350a13915e2629d9ae853f41da1a495f466` | 待修复/待验证 |
 | 90 | `src/lib-style/win16-control/tab_paint.c` | `851b637c211182d994f27117d4ccde0993e59719916982c2cc95e7d98395603e` | 待审 |
 | 91 | `src/lib-style/win16-control/tab_paint.h` | `b23708ff1dbb04542b2174b2e32d4355f4b11391fed9dca7e14f061abb0ad0de` | 待审 |
 | 92 | `src/lib-style/win16-control/text_policy.c` | `69096cf8e505c6c8b7c0d4bd25743ba5aa93fdde8d50a922294d8892bd1231af` | 待审 |
@@ -580,3 +580,65 @@
 - 所有者、回调顺序和验证入口见[任务设计](../proposals/style-library-reorganization.md)的滚动批次；本批未实施迁移或运行新测试，不计过关。
 
 单人复核与效率检查（70–77）：比较公共 scroll_state 与当前八个文件，区分协议执行和原版行为；新增明确迁移事项而非因 Win16 状态类型原样保留。复核发现动作执行的多列列表提前返回跳过 reporting/report 恢复，记录待修复及重入负例验证，未声称运行复现。未重复编译/整包测试，未产生新临时构建；下一批按第 78 项继续，公共滚动机制在 S9 合批迁移。
+
+## 078 `win16-control/special_install.c`：待修复/待验证
+
+- 源码与实际调用核对：owner 安装/退场、父通知子类和主题租约应公共化；资格与呈现独立。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+## 079 `win16-control/special_install.h`：待修复/待验证
+
+- 源码与实际调用核对：安装契约需脱离整个 Win16 状态及调色板。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+## 080 `win16-control/special_paint.c`：待修复/待验证
+
+- 源码与实际调用核对：图形快照合成和原语、运行时来源检查与 Win3.x 呈现混合，需按职责拆开。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+## 081 `win16-control/special_paint.h`：待修复/待验证
+
+- 源码与实际调用核对：需分别归 graphics/control/appearance，避免重新制造 special 杂项组件。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+## 082 `win16-control/spin_scope.c`：待修复/待验证
+
+- 源码与实际调用核对：绘图来源、DC/位图失效和合成作用域属于公共机制，face painter 由风格提供。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+## 083 `win16-control/spin_scope.h`：待修复/待验证
+
+- 源码与实际调用核对：缓冲、有效位及克隆列表应归公共 composite scope，保留现有观察边界。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+## 084 `win16-control/status_font.c`：待修复/待验证
+
+- 源码与实际调用核对：字体签名、借用与失效延迟释放属于公共缓存；替代字体由风格资源提供。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+## 085 `win16-control/status_font.h`：待修复/待验证
+
+- 源码与实际调用核对：缓存所有者与借用 token 契约需通用化，不内置 Win16 字体映射。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+## 086 `win16-control/status_frame.c`：待修复/待验证
+
+- 源码与实际调用核对：pane/图标代次和绘制来源验证公共化，黑框/末 pane 画法保留风格。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+## 087 `win16-control/status_frame.h`：待修复/待验证
+
+- 源码与实际调用核对：公共 pane scope 与具体边框呈现接口分开。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+## 088 `win16-control/status_text.c`：待修复/待验证
+
+- 源码与实际调用核对：文本调用关联、scope 和租约机制公共化，ASCII/长度/flags 支持由风格控制。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+## 089 `win16-control/status_text.h`：待修复/待验证
+
+- 源码与实际调用核对：主题文本观测 scope 与字体呈现策略分开并明确借用有效期。
+- 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
+
+单人复核与效率检查（78–89）：重新核对十二文件源码摘要、actual caller 和测试入口，归类安装事务、composite 来源、字体签名/借用与 pane scope；现有 bitmap/clip/protocol 继续复用，未仅因 Win16 类型耦合判定留原处。没有新产品构建或测试。核验第 41 项中断快照无 result.json、无活动编译进程及 reparse point 后删除 12,861,797 字节自有 scratch；保留全部在途源码和 .ninja/.ccache。下一批从第 90 项按序继续。

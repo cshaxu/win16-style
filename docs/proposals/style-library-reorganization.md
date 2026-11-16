@@ -50,7 +50,7 @@ S3–S12 随机制迁移同步拆分风格呈现，公共图形遇到实际消�
 
 ## S1 执行与在途工作
 
-当前 151 文件顺序清单保留，之后补查产品对话框、接入和测试调用者；不能只审库文件。第 41 项裁剪 DC 去重及测试的未提交修改保留为在途能力批次，尚未发布/提交。`build/t26-package/ordered-41-frame` 是此前暂停中断的快照，未发现活动编译进程；结果须检查后决定复用或清理，不能直接重启覆盖。新治理文档不算其已验证输入。
+当前 151 文件顺序清单保留，之后补查产品对话框、接入和测试调用者；不能只审库文件。第 41 项裁剪 DC 去重及测试的未提交修改保留为在途能力批次，尚未发布/提交。`build/t26-package/ordered-41-frame` 是此前暂停中断的快照；本轮核实无完成结果、无活动编译进程和 reparse point 后已清理（12,861,797 字节），保留源码与 .ninja/.ccache。后续合批时新建快照，不能称中断构建已通过。
 
 后续连续审计，每项登记旧位置、目标组件、状态所有者、公共入口、调用方、旧路径处置、对应验证及缺口。审计完成不自动等于全部机制已迁移；已有“已过关”记录须在最终归属矩阵中复核。相关发现合批到能力单元，不对每个文件单独完整交付。
 
@@ -157,6 +157,31 @@ progress 查询须在每次可重入消息后核验代次/存活，采集阶段�
 Win3.x 几何及取消时的视觉和通知位置有不同契约；Win2000 比例 thumb 和自身行为必须通过策略表达，不能为了合并而改变现有原版证据。绘制中用原生快照和当前 track 几何合成，公共 present_buffer 继续承担资源与提交；buffer 失败时保留现有明确回退行为。
 
 实际调用为 controls 的 scroll_action/input/caret 与 managed API、control_dispatch/control_state 的消息处理、scroll_track 的公共位置换算及 scroll_paint 的呈现缓冲。验证入口包括 core-style-scroll-state、core-geometry、core-scroll-native、vcl-scroll-module 和 frame target；本批核对源码/入口，没有运行整包测试或新建 scratch，所有行为结论待迁移时对照基线验证。
+
+## S1 连续审计批次：特殊控件与状态栏（78–89）
+
+| 文件 | application 公共机制 | appearance 风格及所有者 |
+| --- | --- | --- |
+| special_install.c | lifecycle/control 的按 owner 安装事务、父窗口通知子类、主题租约与失败退场 | supported、箭头资源和 frame painter 由风格提供；公共实例持有子类/租约 |
+| special_install.h | 控件能力注册和安装服务契约 | 不把 Win16 palette、control_style 与所有具体控件回调打包为公共对象 |
+| special_paint.c | graphics 的位图快照、背景差分与保留原图像合成、裁剪框/线/文字绘制原语；control 的绘制来源匹配 | 黑框颜色、Win3.x 箭头/按钮/sizebox、VB Data 目标布局和月历支持由风格/运行时策略提供 |
+| special_paint.h | 分成图形操作、运行时识别和具体呈现接口 | 删除 other/special 大杂烩式接口；按实际调用拆，不每个小函数另建组件 |
+| spin_scope.c | control 的 DC 克隆来源、选中位图身份、变更失效、scope 和 composite 事务 | VCL part/state 和支持几何属运行时适配策略，面板画法属风格 |
+| spin_scope.h | 公共 composite scope 拥有缓冲和有效位图，绘制期栈与失效生命周期 | 16 个克隆与 64×64 观察边界保持，不因通用化扩大目标或无界分配 |
+| status_font.c | graphics 字体签名（LOGFONT/metrics/widths）、嵌套 borrow/return、失效延迟释放 | 具体替代字体及 acquire/retain/release 由字体资源提供者决定 |
+| status_font.h | 缓存签名与借用状态通用化；owner token 有明确配对契约 | Win16 字体映射不作为公共缓存的固有规则 |
+| status_frame.c | control 状态栏 pane/图标快照、代次、原生调用来源与绘制阶段核验 | Win3.x 黑框和 sizegrip 最后 pane 的呈现策略由风格提供 |
+| status_frame.h | 公共 pane/绘制作用域描述 | 不把黑框绘制入口当所有风格的统一身份规则 |
+| status_text.c | control 主题文本与原生文本调用关联、内容/作用域匹配、借用字体 token | 当前 ASCII、长度与 flags 限制属于既有 Win3.x 文本支持策略 |
+| status_text.h | 公共文字观测 scope 与风格字体请求解耦 | 513 字符缓冲和简单 pane 模式的现有契约保留，按实例/调用作用域归属 |
+
+special_install 的父通知子类与 theme lease 应加入公共实例的安装事务，失败只回滚该 owner；安装中原生通知可移除或替换实例，不能假设安装返回后状态仍存在。共享 theme_state/control_protocol 继续复用，避免为每个扩展控件复制租约和销毁流程。
+
+spin composite 捕获的是可验证来源的背景，再保留应用后绘制的箭头/图像，风格只能替换已识别区域。DC 删除、位图更换、未知主题调用必须使旧 snapshot 失效。不能把某种风格的 face painter 藏在通用合成算法内部；graphics 提供合成，control 提供有效性，appearance 提供面板绘制。先保留现有固定观察边界，不把失败处理扩展成任意 API 参数兜底。
+
+status 字体缓存不能只按 HFONT 值判断身份，现有 LOGFONT/metrics/字符宽度签名用于句柄复用检测，应保持。借用期间缓存失效时延迟释放，最后 return 清理；资源提供者保证原生字体只借用，不误删除应用/stock 字体。文本观测和字体支持资格分开，公共层不统一拒绝非 ASCII；当前 Win3.x 不支持的文字仍走原生。
+
+已查实际 controls 的 special install、attachment 的 spin/theme/status 中转、injection 的 DC/图形/文本调用，以及公共 bitmap/clip/protocol 与现有 status identity。现有验证入口包括 spin_controls/vcl_modern_spin、status_controls、font isolation/stock/alias、status pane/simple 字体夹具及自定义绘制负例。本批只检查入口和源码，没有新运行结果；实际重入、异常、字体句柄复用和像素保留仍需在对应 S 实施时验证。
 
 ## 未通过与未来候选
 
