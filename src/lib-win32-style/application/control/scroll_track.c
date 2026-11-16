@@ -5,40 +5,40 @@
 
 /* Source observations: pinned Win3.1 USER18:110C,1369,1447,14E5,1636.
  * See the scrollbar audit. No imported code, global state or modal loop. */
-static UINT command(win16_scroll_part part)
+static UINT command(style_scroll_part part)
 {
     switch(part){
-    case WIN16_SCROLL_LINE_BEFORE:return SB_LINEUP;
-    case WIN16_SCROLL_LINE_AFTER:return SB_LINEDOWN;
-    case WIN16_SCROLL_PAGE_BEFORE:return SB_PAGEUP;
-    case WIN16_SCROLL_PAGE_AFTER:return SB_PAGEDOWN;
+    case STYLE_SCROLL_LINE_BEFORE:return SB_LINEUP;
+    case STYLE_SCROLL_LINE_AFTER:return SB_LINEDOWN;
+    case STYLE_SCROLL_PAGE_BEFORE:return SB_PAGEUP;
+    case STYLE_SCROLL_PAGE_AFTER:return SB_PAGEDOWN;
     default:return SB_THUMBTRACK;
     }
 }
 
-BOOL win16_scroll_begin(win16_scroll_track *t,const win16_scroll_layout *l,
-    UINT disabled,POINT point,const RECT *limit,win16_scroll_actions *a)
+BOOL style_scroll_begin(style_scroll_track *t,const style_scroll_layout *l,
+    UINT disabled,POINT point,const RECT *limit,style_scroll_actions *a,const style_scroll_policy *policy)
 {
-    win16_scroll_part part;
+    style_scroll_part part;
     if(!t || !l || !limit || !a)return FALSE;
     memset(a,0,sizeof(*a));if(t->active)return FALSE;
-    part=win16_scroll_hit(l,point,disabled);if(part==WIN16_SCROLL_NONE)return FALSE;
+    part=policy->hit(l,point,disabled);if(part==STYLE_SCROLL_NONE)return FALSE;
     memset(t,0,sizeof(*t));t->part=part;t->drag_limit=*limit;
     t->initial_pixel=t->pixel=l->vertical?l->thumb.top:l->thumb.left;
-    if(part==WIN16_SCROLL_THUMB)t->grab_offset=(l->vertical?point.y:point.x)-t->initial_pixel;
-    t->position=l->position;t->active=t->inside=TRUE;t->repeat_ms=200;
+    if(part==STYLE_SCROLL_THUMB)t->grab_offset=(l->vertical?point.y:point.x)-t->initial_pixel;
+    t->position=l->position;t->active=t->inside=TRUE;t->repeat_ms=policy->initial_repeat_ms;
     a->repaint=TRUE;a->count=1;a->notices[0].command=command(part);
-    if(part==WIN16_SCROLL_THUMB)a->notices[0].position=t->position;
+    if(part==STYLE_SCROLL_THUMB)a->notices[0].position=t->position;
     else a->timer_ms=t->repeat_ms;
     return TRUE;
 }
 
-void win16_scroll_motion(win16_scroll_track *t,const win16_scroll_layout *l,
-    UINT disabled,POINT point,BOOL timer,win16_scroll_actions *a)
+void style_scroll_motion(style_scroll_track *t,const style_scroll_layout *l,
+    UINT disabled,POINT point,BOOL timer,style_scroll_actions *a,const style_scroll_policy *policy)
 {
     BOOL inside;int pixel;int64_t desired;
-    memset(a,0,sizeof(*a));a->timer_ms=WIN16_SCROLL_KEEP_TIMER;if(!t->active)return;
-    if(t->part==WIN16_SCROLL_THUMB){
+    memset(a,0,sizeof(*a));a->timer_ms=STYLE_SCROLL_KEEP_TIMER;if(!t->active)return;
+    if(t->part==STYLE_SCROLL_THUMB){
         /* Original outside-drag-area behavior snaps to the initial pixel;
          * moving back in resumes using the original pointer grab offset. */
         if(timer)return;
@@ -57,9 +57,9 @@ void win16_scroll_motion(win16_scroll_track *t,const win16_scroll_layout *l,
         }
         t->inside=inside;return;
     }
-    inside=win16_scroll_hit(l,point,disabled)==t->part;
+    inside=policy->hit(l,point,disabled)==t->part;
     a->repaint=inside!=t->inside;
-    if(timer)t->repeat_ms=50;
+    if(timer)t->repeat_ms=policy->repeat_ms;
     if(inside && (timer || !t->inside)){
         a->count=1;a->notices[0].command=command(t->part);
     }
@@ -67,13 +67,13 @@ void win16_scroll_motion(win16_scroll_track *t,const win16_scroll_layout *l,
     t->inside=inside;
 }
 
-void win16_scroll_end(win16_scroll_track *t,BOOL cancel,win16_scroll_actions *a)
+void style_scroll_end(style_scroll_track *t,BOOL cancel,style_scroll_actions *a)
 {
     memset(a,0,sizeof(*a));if(!t->active)return;
     /* Commit termination before caller notification: callbacks may remove,
      * destroy or replace the attachment and must never see it still active. */
     t->active=FALSE;t->inside=FALSE;a->repaint=TRUE;
-    if(t->part==WIN16_SCROLL_THUMB){
+    if(t->part==STYLE_SCROLL_THUMB){
         if(cancel)t->pixel=t->initial_pixel;
         /* USER18:1399..13C1 restores the visual thumb on cancel but reports
          * the last notified position (04FE); it does not invent a new

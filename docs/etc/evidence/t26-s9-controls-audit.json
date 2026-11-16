@@ -1,0 +1,878 @@
+{
+  "task": "M0 T26 S9",
+  "baseline": "db5a19c5fcad96a7cb6604bb2f10ee285bed86cf",
+  "status": "S9 implementation and finite input boundary review complete; final diff review, clean package delivery and actual remote verification pending",
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "d5662cd67e209c02c19307b3a9528b51f424cb542850f9ab15e6daf99f33f29f",
+      "state": "build-contract-reviewed",
+      "receiver": "style-control-common and style-instance public dependency; standalone snapshots link only common mechanism; profile renderers continue existing five-component/eight-artifact graph. Full package verification remains S9 delivery.",
+      "finding": "style-control-common and style-instance public dependency; standalone snapshots link only common mechanism; profile renderers continue existing five-component/eight-artifact graph. Full package verification remains S9 delivery.",
+      "current_sha256": "8416dbc6f666dc8cc70381153833c914a0a216164e63dcd7e87c01538496c28c"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/frame.c",
+      "sha256": "3998c0615df578a3c458aee7177a6dc47ec0c9b5b18500f1b923f832ea8a54f2",
+      "state": "shared-install-consumer-reviewed",
+      "receiver": "application/lifecycle/install",
+      "current_sha256": "4a782d5392613505a65ca62733331938d7ac16bade6b7264c421234ecd00b3bf",
+      "finding": "one shared publication/cancellation/ref transaction, provider owns complete setup failure rollback; window semantics explicit, control existing rollback retained; native source exports unchanged"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/attachment_state.h",
+      "sha256": "f836bf79abadc03e490019bcc3f5e11cb15298d9953f6157d6cbf357d7d90246",
+      "state": "boundary-reviewed-s10-s11",
+      "receiver": "Extended runtime candidate/witness/parent fields and DRAWITEM scope are S10; creation dispatch/install/lifecycle protocol is S11. Public style_instance/protocol already composed. This boundary review does not declare the whole extended attachment migrated.",
+      "finding": "Extended runtime candidate/witness/parent fields and DRAWITEM scope are S10; creation dispatch/install/lifecycle protocol is S11. Public style_instance/protocol already composed. This boundary review does not declare the whole extended attachment migrated.",
+      "current_sha256": "f836bf79abadc03e490019bcc3f5e11cb15298d9953f6157d6cbf357d7d90246"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/basic_message.c",
+      "sha256": "a42ebf33f1bce3f4f6fe1106c25e9ffd405ed39388ff4a7b3a8bdb6e83d3eddf",
+      "state": "public-protocol-migrated-and-native-verified",
+      "receiver": "src/lib-win32-style/application/control/basic.c",
+      "current_sha256": "cdab9ff7d75e1ece53ab7612e105170d23a0353cd30921fc3a6960422c48cf7a",
+      "finding": "old private path removed; actual consumer invokes public instance/state and complete render/font operations; independent native and product integration tests pass"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/basic_message.h",
+      "sha256": "22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c",
+      "state": "public-protocol-migrated-and-native-verified",
+      "receiver": "src/lib-win32-style/application/control/basic.h",
+      "current_sha256": "4e68fc7a1c7b0c01a95b98a70234fd7e50d31e1f25042568cd8b5d42470c8420",
+      "finding": "old private path removed; actual consumer invokes public instance/state and complete render/font operations; independent native and product integration tests pass"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/basic_paint.c",
+      "sha256": "5553a078b046b27b35b85f9df4ec35a4c9f5a4a90a61404d02660799f864cc98",
+      "state": "appearance-primitives-reviewed-retained",
+      "receiver": "appearance Win3x primitives using public graphics/pixel_grid and paint_frame",
+      "current_sha256": "5553a078b046b27b35b85f9df4ec35a4c9f5a4a90a61404d02660799f864cc98",
+      "finding": "Win3x corner/band/face/shadow and 7x9 combo/17x17 original glyph binding are actual era rendering; no native text or lifecycle ownership"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/basic_paint.h",
+      "sha256": "de72a7755446e4a0fafd82a61aa37dc85582dfb4352bd15923ebe30c14e6f8e8",
+      "state": "appearance-primitives-reviewed-retained",
+      "receiver": "appearance Win3x primitives using public graphics/pixel_grid and paint_frame",
+      "current_sha256": "de72a7755446e4a0fafd82a61aa37dc85582dfb4352bd15923ebe30c14e6f8e8",
+      "finding": "Win3x corner/band/face/shadow and 7x9 combo/17x17 original glyph binding are actual era rendering; no native text or lifecycle ownership"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/choice_paint.c",
+      "sha256": "eafd6b36698ed863c16b2f22ebae3a9649e266081852963457437308f08797a3",
+      "state": "glyph-reviewed-runtime-identity-received-s10",
+      "receiver": "S10 application/adapters/win32 checklist observation identity/reentrancy; appearance exact glyphs",
+      "current_sha256": "eafd6b36698ed863c16b2f22ebae3a9649e266081852963457437308f08797a3",
+      "finding": "full C body reviewed: checklist_target/vb_checklist_unchanged/vb_checklist module/DC/parent/native state and TLS are shared runtime mechanisms, explicitly received S10"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/choice_paint.h",
+      "sha256": "474e03b6735be5c24dae46ae8a64ad1e836d73847e93103bbd68210e16918585",
+      "state": "appearance-and-s10-boundary-reviewed",
+      "receiver": "choice/checklist glyph raster stays Win3x; checklist_target/vb_checklist native runtime identity/DC/witness and reentry move with S10 adapter, not common glyph policy.",
+      "finding": "choice/checklist glyph raster stays Win3x; checklist_target/vb_checklist native runtime identity/DC/witness and reentry move with S10 adapter, not common glyph policy.",
+      "current_sha256": "474e03b6735be5c24dae46ae8a64ad1e836d73847e93103bbd68210e16918585"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/choice_view.c",
+      "sha256": "162ad2bf4782030e8be144a6727c2491a893eb4db443d2599fca2f30ebd73fb8",
+      "state": "snapshot-extracted-native-verified",
+      "receiver": "Native text/state/font/COMBOBOXINFO snapshots now public button_snapshot/combo_snapshot and real profile consumers use whole instance/state. Era layout/colors/child clipping unchanged. Native extension combo button helper is S10, not declared migrated by the base renderer change.",
+      "current_sha256": "911ec753dc522ab3d26c3e707a4a2de38cd28278ed523148c0fb953ecec16aae",
+      "finding": "Native text/state/font/COMBOBOXINFO snapshots now public button_snapshot/combo_snapshot and real profile consumers use whole instance/state. Era layout/colors/child clipping unchanged. Native extension combo button helper is S10, not declared migrated by the base renderer change."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/choice_view.h",
+      "sha256": "0fffc32a468b0e1717c39a8b47bd22455bc652be42f4bbc22962de0b155a44bb",
+      "state": "snapshot-extracted-native-verified",
+      "receiver": "Native text/state/font/COMBOBOXINFO snapshots now public button_snapshot/combo_snapshot and real profile consumers use whole instance/state. Era layout/colors/child clipping unchanged. Native extension combo button helper is S10, not declared migrated by the base renderer change.",
+      "current_sha256": "f3790f54ec05e79f8cf8f2cb1955e60db6482c86f3f57e0d2dce9c2cb52fc517",
+      "finding": "Native text/state/font/COMBOBOXINFO snapshots now public button_snapshot/combo_snapshot and real profile consumers use whole instance/state. Era layout/colors/child clipping unchanged. Native extension combo button helper is S10, not declared migrated by the base renderer change."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/combo_paint.c",
+      "sha256": "3c7467a910335be419be7c36292e2ee37baca02b229237715a45ec01d42aadd3",
+      "state": "snapshot-extracted-native-verified",
+      "receiver": "Native text/state/font/COMBOBOXINFO snapshots now public button_snapshot/combo_snapshot and real profile consumers use whole instance/state. Era layout/colors/child clipping unchanged. Native extension combo button helper is S10, not declared migrated by the base renderer change.",
+      "current_sha256": "7d61a51f4f724c6baabd746c5c1e7b02ea60ae450518c3f9091efc1501dbe40d",
+      "finding": "Native text/state/font/COMBOBOXINFO snapshots now public button_snapshot/combo_snapshot and real profile consumers use whole instance/state. Era layout/colors/child clipping unchanged. Native extension combo button helper is S10, not declared migrated by the base renderer change."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/combo_paint.h",
+      "sha256": "f6a06491da9d508c03ad5e83c7e0f3da0b99150bff07bc4e1cf839dd78ccadb8",
+      "state": "snapshot-extracted-native-verified",
+      "receiver": "Native text/state/font/COMBOBOXINFO snapshots now public button_snapshot/combo_snapshot and real profile consumers use whole instance/state. Era layout/colors/child clipping unchanged. Native extension combo button helper is S10, not declared migrated by the base renderer change.",
+      "current_sha256": "3ed927df901a0c66cdf344f7af9c0e6f05914c9d7a8fc08958bee4af91306d80",
+      "finding": "Native text/state/font/COMBOBOXINFO snapshots now public button_snapshot/combo_snapshot and real profile consumers use whole instance/state. Era layout/colors/child clipping unchanged. Native extension combo button helper is S10, not declared migrated by the base renderer change."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/combo_text.c",
+      "sha256": "16efce05fe5d7e7a22f93d6a8bde12cf0d4fe138a15694ca5bf6b6869dd09989",
+      "state": "public-protocol-migrated-and-native-verified",
+      "receiver": "src/lib-win32-style/application/control/combo.c",
+      "current_sha256": "05dcabe033a3f9bf9f4bb8087e2297f60aa9bc160e0d5d9c13eb04227f48edac",
+      "finding": "old private path removed; actual consumer invokes public instance/state and complete render/font operations; independent native and product integration tests pass"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/combo_text.h",
+      "sha256": "dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0",
+      "state": "public-protocol-migrated-and-native-verified",
+      "receiver": "src/lib-win32-style/application/control/combo.h",
+      "current_sha256": "3e65edc0b7f7f8f5aac9c6b7658a22dae1ed07f606ac672cc133a8813658a52a",
+      "finding": "old private path removed; actual consumer invokes public instance/state and complete render/font operations; independent native and product integration tests pass"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_class.h",
+      "sha256": "9fefd0c67700d8e4e5e6f70709ccce0188103a173d346f5759986e638e1709f3",
+      "state": "appearance-eligibility-reviewed",
+      "receiver": "Only currently supported VB choice/picture/file mode and DPI eligibility; exact class/module mechanics already application/control/control_class and control_protocol. No new support scope.",
+      "finding": "Only currently supported VB choice/picture/file mode and DPI eligibility; exact class/module mechanics already application/control/control_class and control_protocol. No new support scope.",
+      "current_sha256": "9fefd0c67700d8e4e5e6f70709ccce0188103a173d346f5759986e638e1709f3"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_dispatch.c",
+      "sha256": "3c1a6ce0406a93210389f74d50130504b5a3e1cd9456d242a9b8e2fe7e1133c8",
+      "state": "base-controller-consumer-reviewed",
+      "receiver": "Base basic/combo/list/edit/frame/scroll/sizebox branches call public controllers using full operations; remaining tab/header/progress/trackbar/fileowner protocols and dispatch composition have S10 receiver. Style border eligibility and legacy-progress overlay remain profile.",
+      "finding": "Base basic/combo/list/edit/frame/scroll/sizebox branches call public controllers using full operations; remaining tab/header/progress/trackbar/fileowner protocols and dispatch composition have S10 receiver. Style border eligibility and legacy-progress overlay remain profile.",
+      "current_sha256": "a242296073a263706e35cd88b9ac087785f3385ccd4462cd436936263b89e1f8"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_dispatch.h",
+      "sha256": "299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8",
+      "state": "base-controller-consumer-reviewed",
+      "receiver": "Complete base renderer operations consume public instance/state/controllers; extension operations belong S10. No common header imports this private composition.",
+      "finding": "Complete base renderer operations consume public instance/state/controllers; extension operations belong S10. No common header imports this private composition.",
+      "current_sha256": "e0905d9044e36a2f48d115be11a3d2db78142e79338808c45fe78b985914b249"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_guard.c",
+      "sha256": "6f8f224c9f7febdb8bc2a68d924d74cd6f6750f4789dcc45af2b8d7500d5342c",
+      "state": "consumer-interface-migrated",
+      "receiver": "S9 common mechanism/appearance policy; S10 specialized runtime and S13 final renderer resources must have explicit reason",
+      "current_sha256": "43aaa8e8839c1f906440b4a54c989b2a8b02e1fc3ae78ac28770020f336d1ca7",
+      "finding": "actual code reads common state or generic instance install; specialized painting/messages remain reviewed in subsequent S9/S10 phase"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_guard.h",
+      "sha256": "bac734eb7a9bf97c934d7080f1e54ec394979150a8ba78d104d0e97c8bb5c1b8",
+      "state": "appearance-eligibility-reviewed",
+      "receiver": "Supported-role and retirement choices belong profile; root state/lifetime is public. Extension witness contract S10.",
+      "finding": "Supported-role and retirement choices belong profile; root state/lifetime is public. Extension witness contract S10.",
+      "current_sha256": "209820598bf532e263fb41cb7e2dbc7f2f05287548b7a37051be4149e9d68f9f"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_install.c",
+      "sha256": "aaee62ba777c08d16cfff6d2e2b970560e01a1b968324d9175252f1decc7d05e",
+      "state": "consumer-interface-migrated",
+      "receiver": "S9 common mechanism/appearance policy; S10 specialized runtime and S13 final renderer resources must have explicit reason",
+      "current_sha256": "d6cc1a8419261cc81070743fae0e12abf963df4add05f8223c222fda594aeb58",
+      "finding": "actual code reads common state or generic instance install; specialized painting/messages remain reviewed in subsequent S9/S10 phase"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_install.h",
+      "sha256": "40606f9c20b7ec75c2e556fc6b00b0fa41f0443108f873d789b9e307f276cfa8",
+      "state": "common-setup-consumer-reviewed",
+      "receiver": "Root publication uses lifecycle/install; ordinary combo child install/edit/cancel/rollback calls public combo_setup. Old-style file-dialog pending marker/child coordinator explicitly S11.",
+      "finding": "Root publication uses lifecycle/install; ordinary combo child install/edit/cancel/rollback calls public combo_setup. Old-style file-dialog pending marker/child coordinator explicitly S11.",
+      "current_sha256": "76286a7b8ac5d84aad9b8967b74143a158bf99a3922c2d3179aaa523e6fa8624"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_lifetime.c",
+      "sha256": "bea1bc22f17d1ade0a2a4ed5ea02e80325ce2fdcd310ea16a2184cc8058214bf",
+      "state": "resource-batch-implemented",
+      "receiver": "S9 common mechanism/appearance policy; S10 specialized runtime and S13 final renderer resources must have explicit reason",
+      "current_sha256": "02bee7cc40c2875c4f669f25ba84d8572ce6fad42ac8d418e73bc33f2f09d4de",
+      "finding": "common state owns font/source/protocol/redraw/native depth/tabs; font and tabstop transactions common, private font qualification/rendering and remaining lifecycle/message mechanisms explicit pending"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_lifetime.h",
+      "sha256": "a75dd73f5c6e5851da4fc78e58d4f6477d610dcfbe589bf6a59655415373ced0",
+      "state": "resource-consumer-reviewed",
+      "receiver": "Font lease/message settlement uses public control state; updown native owner pinning is S10; scrollbar palette/render snapshot is profile and final graphics contract S13.",
+      "finding": "Font lease/message settlement uses public control state; updown native owner pinning is S10; scrollbar palette/render snapshot is profile and final graphics contract S13.",
+      "current_sha256": "a75dd73f5c6e5851da4fc78e58d4f6477d610dcfbe589bf6a59655415373ced0"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_remove.c",
+      "sha256": "96eef0f56f212aa26956eba7ddf7370510fd818bd95763144766fa7aa8cb7a94",
+      "state": "retire-controller-extracted-resource-adapter-reviewed",
+      "receiver": "application/control/retire + combo + scroll_resources; appearance retains theme/actual specialized binding release",
+      "current_sha256": "09a5c068a7792517907c40569a4be3961f886312127d028e4b40d746c8ca004e",
+      "finding": "shared controller owns ref/guard/detach/failure/refresh, terminal return preserved; remaining scroll finish input explicitly pending S9"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_remove.h",
+      "sha256": "dbcd064a957c340b5c296e0c3a7debd67bfc8f46e5e7036f09dd54cda31e9c3f",
+      "state": "retire-controller-extracted-resource-adapter-reviewed",
+      "receiver": "application/control/retire + combo + scroll_resources; appearance retains theme/actual specialized binding release",
+      "current_sha256": "bdecc5021247ac03928adf6e9b28564ec65a627143a82dd4f7718995c092db83",
+      "finding": "shared controller owns ref/guard/detach/failure/refresh, terminal return preserved; remaining scroll finish input explicitly pending S9"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_scope.c",
+      "sha256": "f534206388ab958ef31a3addbfced46565dde214b9a20c1935cf28c084ca62af",
+      "state": "creation-scope-adapter-reviewed-s11-receiver",
+      "receiver": "application/control/control_scope hook lifetime; S11 internal combo construction ancestry; appearance class/palette policy",
+      "current_sha256": "f534206388ab958ef31a3addbfced46565dde214b9a20c1935cf28c084ca62af",
+      "finding": "public already owns scope lifetime; generic ancestor-combo skip in scope_created received S11, not labelled business logic"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_scope.h",
+      "sha256": "2a384b56f8d72d134fa48109bb011ba3a9533869025e4aaccdb511edfa2086ae",
+      "state": "creation-boundary-reviewed-s11",
+      "receiver": "Creation-scope palette and eligible-child adapter; public scope owns callbacks/data/reference lifetime. Combo ancestor filtering and creation counts reviewed as S11 migration, not drawing.",
+      "finding": "Creation-scope palette and eligible-child adapter; public scope owns callbacks/data/reference lifetime. Combo ancestor filtering and creation counts reviewed as S11 migration, not drawing.",
+      "current_sha256": "2a384b56f8d72d134fa48109bb011ba3a9533869025e4aaccdb511edfa2086ae"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_state.c",
+      "sha256": "215e93a3596c46d0c4b02c2116675ad32bf16302ee86aa06cca687a25dd5189f",
+      "state": "base-resource-and-combo-protocol-extracted",
+      "receiver": "application/control/control_state + combo; extended tab/header/progress S10",
+      "current_sha256": "4b3a5fa26ed0b2c33a99666b954a2ee19cb08a8a3b472be3ce1ce263870482eb",
+      "finding": "native combo message protocol moved into public combo; source now font eligibility and extended control dispatch, not copied base protocol"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_state.h",
+      "sha256": "752191c28278cd529deda10d6401a4f5d3b6e86eaea80f243110ff9fc258c5b0",
+      "state": "root-controller-composition-reviewed",
+      "receiver": "application/control/control_state + combo + scroll_controller; extended presentation state S10",
+      "current_sha256": "a0e258a9493891ac9445622663194b9140863ebe56c98beb2b54edbbf6ea2d27",
+      "finding": "no private scroll epoch/report/key/object or resources; root composes owning public state/controller; actual palette/era and extended-control presentation remain private; base scroll message/snapshot review pending"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/edit_message.c",
+      "sha256": "6ffc6774acdc87767fc4f2ce252ece2901fb9f0d67576e74c6300789d0dbb0b4",
+      "state": "native-edit-controller-migrated-and-verified",
+      "receiver": "src/lib-win32-style/application/control/edit.c",
+      "current_sha256": "6df394e41329ae7b5c00ad085a94c62fae7c01fa434b8f69886cb99a5c8b3b71",
+      "finding": "old private implementation deleted; native buffer/selection/undo and PRINT DC/return preserved; profile border qualification remains appearance; two-width independent EDIT and actual production present/VCL/VB tests pass"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/edit_message.h",
+      "sha256": "d7c5da65909dc16c9ed2ac58f59dbf34de20af6c10030737d5fae6b316e5ee21",
+      "state": "deleted-declarations-merged",
+      "receiver": "application/control/edit.h + appearance/win3x/control/control_dispatch.h",
+      "finding": "private operation declarations merged into existing dispatch header; public API has no private object"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/list_message.c",
+      "sha256": "9c9c54d3f0ed6d70d8a9052b42c639f12a0a867d80e30d51e0644c72c8d463cf",
+      "state": "native-list-controller-migrated-and-verified",
+      "receiver": "src/lib-win32-style/application/control/list.c",
+      "current_sha256": "6f5652141766c139d652e1005f76817aca4d991991de14e8ecc15a3f9679c960",
+      "finding": "private implementation deleted; public controller owns native forwarding/redraw/tabs/PRINT state; actual product dispatch supplies render/input profile; two-width independent LISTBOX and production tabs/lifetime pass"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/list_message.h",
+      "sha256": "96b05ce3b3a94624aa9327119cb120b25ea7cf631ad736262a4a3754c183a7cb",
+      "state": "deleted-declarations-merged",
+      "receiver": "appearance/win3x/control/control_dispatch.h + application/control/list.h",
+      "finding": "private service declaration merged into existing appearance dispatch; public native controller contract has no private types"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/list_paint.c",
+      "sha256": "2dfabf0f3d8aed354bf79d49087f6c9b255766e51f44b385b36944719cf99442",
+      "state": "native-list-snapshot-extracted-presentation-retained",
+      "receiver": "application/control/list_snapshot + appearance font/colors/text/focus/border",
+      "current_sha256": "1e134032e1c83c6a4808bb281b0a16df975c7e50f69277f9fe93601bc3338a2c",
+      "finding": "native visible row/text/selection, single/multicolumn normalization and DC isolation public; old field-pointer interface removed, full font/begin/item operations; independent and product tests passed"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/list_paint.h",
+      "sha256": "d597b3af9f0c94691004dff85ee746d7f4b658ca373c1a40d9bebe9a6b94904e",
+      "state": "native-list-snapshot-extracted-presentation-retained",
+      "receiver": "application/control/list_snapshot + appearance font/colors/text/focus/border",
+      "current_sha256": "3349aa1e0175f6323b06b5be1440ad661b6435954c11a9457ed497ce4e31bffb",
+      "finding": "native visible row/text/selection, single/multicolumn normalization and DC isolation public; old field-pointer interface removed, full font/begin/item operations; independent and product tests passed"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/native_presentation.c",
+      "sha256": "125c2840b33dedee3aa2bd46a4e411d63964347d4f53e224cbd87dfde25ea25f",
+      "state": "consumer-interface-migrated",
+      "receiver": "common state API consumer or generic lifecycle transaction; specialization stays S10/S13",
+      "current_sha256": "6923ecc411296b9e6fb5387aab9af27fb6f98e61b83fd02615769cc6ee518183",
+      "finding": "actual code reads common state or generic instance install; specialized painting/messages remain reviewed in subsequent S9/S10 phase"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/other_paint.c",
+      "sha256": "79c6ee15438d7e7d8e788c5ffb44941835e55d83abafaa97e0a75dcd851a762d",
+      "state": "image-snapshot-extracted-rendering-retained",
+      "receiver": "Whole public instance is borrowed, field detached view removed. Native BM_GETIMAGE/BCM_GETIMAGELIST dimensions via public button_snapshot; Win3x placement and fit rendering remain, generic fit bitmap/DC transaction has S13 receiver.",
+      "current_sha256": "38b5156b2b31be3152ef25652e8f8e7e5f734047f60a141e0bfff8231d1d84b1",
+      "finding": "Whole public instance is borrowed, field detached view removed. Native BM_GETIMAGE/BCM_GETIMAGELIST dimensions via public button_snapshot; Win3x placement and fit rendering remain, generic fit bitmap/DC transaction has S13 receiver."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/other_paint.h",
+      "sha256": "ab6296ce1d981144141aabae78a13f4d0a2f62e5273c3e69a01f2508b904fb3e",
+      "state": "image-snapshot-extracted-rendering-retained",
+      "receiver": "Whole public instance is borrowed, field detached view removed. Native BM_GETIMAGE/BCM_GETIMAGELIST dimensions via public button_snapshot; Win3x placement and fit rendering remain, generic fit bitmap/DC transaction has S13 receiver.",
+      "finding": "Whole public instance is borrowed, field detached view removed. Native BM_GETIMAGE/BCM_GETIMAGELIST dimensions via public button_snapshot; Win3x placement and fit rendering remain, generic fit bitmap/DC transaction has S13 receiver.",
+      "current_sha256": "e5478a2378b698683aa306b4761cf247239fd349c68de0a0fb9235eb50f69f24"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_layout.c",
+      "sha256": "f675d60e01b5618c61c9e59729ec6dbea6ada802436457ae1cffce8825c856ed",
+      "state": "appearance-geometry-reviewed-retained",
+      "receiver": "appearance/win3x/control/scroll_layout; shared layout/part data defined application/control/scroll_geometry",
+      "current_sha256": "5b83f219d3df03ad44bdf7b3e57d60e007fca10be5036fd8f2388f1cdd2b7490",
+      "finding": "fixed-thumb overlap/arrow-before-thumb hit priority, era measurement/rounding retain exact USER behavior; not mislabelled as universal proportional layout; shared controller consumes measured geometry and policy callback; original geometry assertions pass"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_layout.h",
+      "sha256": "65e112bc5fb72bd770313a2af4dbdde44ef5109f1f75acb56ffd0c20805d97a2",
+      "state": "appearance-geometry-reviewed-retained",
+      "receiver": "appearance/win3x/control/scroll_layout; shared layout/part data defined application/control/scroll_geometry",
+      "current_sha256": "ae252625ba1e840c1a1ced3f970553d856112e1e8a3d7156f8335d795c9c3096",
+      "finding": "fixed-thumb overlap/arrow-before-thumb hit priority, era measurement/rounding retain exact USER behavior; not mislabelled as universal proportional layout; shared controller consumes measured geometry and policy callback; original geometry assertions pass"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_message.c",
+      "sha256": "fdf5f78124d882f9bbb983d1880bc151bce05afca8a67f5291fb4c3105327b99",
+      "state": "native-scroll-message-migrated-and-verified",
+      "receiver": "application/control/scroll_message",
+      "current_sha256": "682854277a598efbefc54cb10e7336d14e1ee65cc26690fe6e89af4b94173347",
+      "finding": "frame/control/sizebox result, SBM rewrite, disabled protocol and DC order public; old path/services deleted, profile border/overlay retained; independent and VCL/present both-width verified"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_message.h",
+      "sha256": "ac96754592cbe76b8701fa04915ea18b461991a44b5bb16de44a9c5efa184b69",
+      "state": "native-scroll-message-migrated-and-verified",
+      "receiver": "application/control/scroll_message",
+      "current_sha256": "9e13627dc569e645f81bad3765dbe8338dd3fe0dfdb49f09cb697caa8d6e7a45",
+      "finding": "frame/control/sizebox result, SBM rewrite, disabled protocol and DC order public; old path/services deleted, profile border/overlay retained; independent and VCL/present both-width verified"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_native.c",
+      "sha256": "cb127510d05f2b95972a4b4cae5363db20f355849cefe7b3f0993b1cc5c992c4",
+      "state": "input-and-management-extracted-policy-retained",
+      "receiver": "application/control/scroll_controller + scroll_managed; appearance retains Win3x geometry/caret rectangle/timing/palette",
+      "current_sha256": "e00457d189cb80d4720925e8ba535062689d7afbb3ffc04d929a93601b5ea203",
+      "finding": "actions/input/embedded field views deleted; common state owns track/roles/epoch/report/key/object and resources; Get/SetScrollInfo/active/enable/frame-remove public; remaining file only actual Win3x geometry and palette adapter; independent managed + product VCL/native API/present pass"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_native.h",
+      "sha256": "722808178add0650d40211ac7f43eecac03d2637a46a9e57e884d968c397345a",
+      "state": "input-and-management-extracted-policy-retained",
+      "receiver": "application/control/scroll_controller + scroll_managed; appearance retains Win3x geometry/caret rectangle/timing/palette",
+      "current_sha256": "da8234d2366b41131854eb01acab35dc3ff648a3615c0f31f8c3e08a55a35465",
+      "finding": "actions/input/embedded field views deleted; common state owns track/roles/epoch/report/key/object and resources; Get/SetScrollInfo/active/enable/frame-remove public; remaining file only actual Win3x geometry and palette adapter; independent managed + product VCL/native API/present pass"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_paint.c",
+      "sha256": "f0929af5e3b3589b4a503c4dbdb31d7f3ef7c1619f9cae523d7b296a2a80ea51",
+      "state": "native-scroll-surface-extracted-presentation-retained",
+      "receiver": "application/control/scroll_surface and common controller; actual Win3x raster/palette/fixed-thumb renderer",
+      "current_sha256": "b1eb7204ae415ad8f134352cbab492d9599114decb8b76d1b1f19c406acb8742",
+      "finding": "both buffer and pixel consumers share native state/DC origins; no per-field borrowed track view; native client/embedded/hidden tests and product present/VCL passed"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_paint.h",
+      "sha256": "7bb4ab4cb70fd83e343270fe4e5523f65e04fd5570ae2a711c440314580c4e9d",
+      "state": "native-scroll-surface-extracted-presentation-retained",
+      "receiver": "application/control/scroll_surface and common controller; actual Win3x raster/palette/fixed-thumb renderer",
+      "current_sha256": "9b79a3287b9366516ce1fee13ee2a3ef890378cf15e08deca5e1e15c4978784e",
+      "finding": "both buffer and pixel consumers share native state/DC origins; no per-field borrowed track view; native client/embedded/hidden tests and product present/VCL passed"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_track.c",
+      "sha256": "6aa8d64594491358d966405582015906d995507af3e00f6186460c06e4d2c464",
+      "state": "common-track-migrated-and-verified",
+      "receiver": "src/lib-win32-style/application/control/scroll_track.c",
+      "current_sha256": "0be02e86294b88bb6944260b19f3f5185f4267580852325286554872cd435560",
+      "finding": "single shared action/drag/termination engine accepts full layout/hit/timing policy; old private path removed; actual Win3x retains 200/50ms and 4/1 tolerance; standalone different policies + geometry + VCL default/aware pass both widths"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_track.h",
+      "sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e",
+      "state": "common-track-migrated-and-verified",
+      "receiver": "src/lib-win32-style/application/control/scroll_track.h",
+      "current_sha256": "b2bc001278cefe34775d002f988b8bb8f05adfd0cbba357200f1afdbf80457d3",
+      "finding": "single shared action/drag/termination engine accepts full layout/hit/timing policy; old private path removed; actual Win3x retains 200/50ms and 4/1 tolerance; standalone different policies + geometry + VCL default/aware pass both widths"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c",
+      "sha256": "4e96dbf86156a42de7e4eb08380c33e81e0cb2220fa6281c1775ab51450d920f",
+      "state": "shared-install-consumer-reviewed",
+      "receiver": "application/lifecycle/install",
+      "current_sha256": "69b211527624c9ba896c8739d2c71d4c17dfd36c1dc040db58852b883d02f1de",
+      "finding": "one shared publication/cancellation/ref transaction, provider owns complete setup failure rollback; window semantics explicit, control existing rollback retained; native source exports unchanged"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_class.h",
+      "sha256": "bef69902b4dfaedb966253d65e00b89cc76ce3a73d376023834c1248126493d3",
+      "state": "existing-public-mechanism-reviewed",
+      "receiver": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "finding": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "current_sha256": "bef69902b4dfaedb966253d65e00b89cc76ce3a73d376023834c1248126493d3"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_custom_draw.c",
+      "sha256": "42d01d2d9b7fe02bf25d1acc3067ca12b029b77b6616eb582811e11d4bb4f46f",
+      "state": "existing-public-extension-boundary-reviewed",
+      "receiver": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "finding": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "current_sha256": "42d01d2d9b7fe02bf25d1acc3067ca12b029b77b6616eb582811e11d4bb4f46f"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_custom_draw.h",
+      "sha256": "a5698e2a3cff63ae46b8d0e5004dca5c53416def2ed72a028b2d06fa95044373",
+      "state": "existing-public-extension-boundary-reviewed",
+      "receiver": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "finding": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "current_sha256": "a5698e2a3cff63ae46b8d0e5004dca5c53416def2ed72a028b2d06fa95044373"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_list.h",
+      "sha256": "75e789b32e96634e003fc8db57661b8bef4dc383b6bb8aca340df2bd97acb588",
+      "state": "existing-public-mechanism-reviewed",
+      "receiver": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "finding": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "current_sha256": "75e789b32e96634e003fc8db57661b8bef4dc383b6bb8aca340df2bd97acb588"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_native_combo.c",
+      "sha256": "c8c4e5ab502582ecf83be2c42544dd86aac3a8b023f96d3c78a769b42b6f40aa",
+      "state": "existing-public-extension-boundary-reviewed",
+      "receiver": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "finding": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "current_sha256": "c8c4e5ab502582ecf83be2c42544dd86aac3a8b023f96d3c78a769b42b6f40aa"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_native_combo.h",
+      "sha256": "356a2532991c82293e72981271700a327a567ca49c9d323110c979cb9d7c66fa",
+      "state": "existing-public-extension-boundary-reviewed",
+      "receiver": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "finding": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "current_sha256": "356a2532991c82293e72981271700a327a567ca49c9d323110c979cb9d7c66fa"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_native_witness.h",
+      "sha256": "3108f08e8bc458a426ad858dd28618686b2e14139c933e2444c8924a31f349ff",
+      "state": "existing-public-extension-boundary-reviewed",
+      "receiver": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "finding": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "current_sha256": "3108f08e8bc458a426ad858dd28618686b2e14139c933e2444c8924a31f349ff"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_protocol.c",
+      "sha256": "e96af1890e7ca57bb509a396af587e5fcfc71e9cb1f4efb1b93903d564617355",
+      "state": "existing-public-mechanism-reviewed",
+      "receiver": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "finding": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "current_sha256": "e96af1890e7ca57bb509a396af587e5fcfc71e9cb1f4efb1b93903d564617355"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_protocol.h",
+      "sha256": "5cbee3c6669d9a510efce67ecb777b13428225222e4cab9a77fc7c3c9eba48b9",
+      "state": "existing-public-mechanism-reviewed",
+      "receiver": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "finding": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "current_sha256": "5cbee3c6669d9a510efce67ecb777b13428225222e4cab9a77fc7c3c9eba48b9"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_redraw.h",
+      "sha256": "a1972fc9f97c30de8673fb711dc6c47de8e0b0b6282d571e2f81e492631a881e",
+      "state": "existing-public-mechanism-reviewed",
+      "receiver": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "finding": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "current_sha256": "a1972fc9f97c30de8673fb711dc6c47de8e0b0b6282d571e2f81e492631a881e"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_scope.c",
+      "sha256": "5bd1e1abf878d2db293e153c82a7699aa553bf06d1e3b15712ec5b3755e1f60f",
+      "state": "existing-public-creation-boundary-reviewed",
+      "receiver": "Common scope owns aligned data/retained callback lifetime and observer hook; public owner-subclass helpers consumed by combo/base paths. Creation coordinator and observer reorganization S11; no style palette or eligibility inside scope.",
+      "finding": "Common scope owns aligned data/retained callback lifetime and observer hook; public owner-subclass helpers consumed by combo/base paths. Creation coordinator and observer reorganization S11; no style palette or eligibility inside scope.",
+      "current_sha256": "5bd1e1abf878d2db293e153c82a7699aa553bf06d1e3b15712ec5b3755e1f60f"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_scope.h",
+      "sha256": "8c1f4a930547e068246fb862585bea38d63bef3ecc5034943c96e368f65a64e8",
+      "state": "existing-public-creation-boundary-reviewed",
+      "receiver": "Common scope owns aligned data/retained callback lifetime and observer hook; public owner-subclass helpers consumed by combo/base paths. Creation coordinator and observer reorganization S11; no style palette or eligibility inside scope.",
+      "finding": "Common scope owns aligned data/retained callback lifetime and observer hook; public owner-subclass helpers consumed by combo/base paths. Creation coordinator and observer reorganization S11; no style palette or eligibility inside scope.",
+      "current_sha256": "8c1f4a930547e068246fb862585bea38d63bef3ecc5034943c96e368f65a64e8"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_state.c",
+      "sha256": null,
+      "state": "resource-batch-implemented",
+      "receiver": "common state API consumer or generic lifecycle transaction; specialization stays S10/S13",
+      "current_sha256": "fed4b05351fb3bdbdb6a41bb1afe4920543ffdac45d2c42d346089eba7ffcc37",
+      "finding": "common state owns font/source/protocol/redraw/native depth/tabs; font and tabstop transactions common, private font qualification/rendering and remaining lifecycle/message mechanisms explicit pending"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_state.h",
+      "sha256": null,
+      "state": "resource-batch-implemented",
+      "receiver": "common state API consumer or generic lifecycle transaction; specialization stays S10/S13",
+      "current_sha256": "4b8aef50b3b8208bf9f8ba607e456b734408d95646fb8e5648f9960240b5060c",
+      "finding": "common state owns font/source/protocol/redraw/native depth/tabs; font and tabstop transactions common, private font qualification/rendering and remaining lifecycle/message mechanisms explicit pending"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_status.c",
+      "sha256": "d7a2d3556f24e9a3d6604fe4f342d6ab56f7e76731e92da344b2bae71cfcd9ba",
+      "state": "existing-public-extension-boundary-reviewed",
+      "receiver": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "finding": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "current_sha256": "d7a2d3556f24e9a3d6604fe4f342d6ab56f7e76731e92da344b2bae71cfcd9ba"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_status.h",
+      "sha256": "3a98db6e28166dc380e592aaeaf3352475b53d530cd059597bf5a940b65fc70b",
+      "state": "existing-public-extension-boundary-reviewed",
+      "receiver": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "finding": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "current_sha256": "3a98db6e28166dc380e592aaeaf3352475b53d530cd059597bf5a940b65fc70b"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_vcl_identity.c",
+      "sha256": "f53c352b185d8b7418e9bb00c20ca233e2f24d8dba55d80245ce330e156a9924",
+      "state": "existing-public-extension-boundary-reviewed",
+      "receiver": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "finding": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "current_sha256": "f53c352b185d8b7418e9bb00c20ca233e2f24d8dba55d80245ce330e156a9924"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_vcl_identity.h",
+      "sha256": "e31c3b073269da62df7d79aeb18022a09901bf2f4fdfb60a6d8db4c49a25453c",
+      "state": "existing-public-extension-boundary-reviewed",
+      "receiver": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "finding": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "current_sha256": "e31c3b073269da62df7d79aeb18022a09901bf2f4fdfb60a6d8db4c49a25453c"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_vcl_spin.c",
+      "sha256": "f14782e42d48f8d86e41f253cde78d54383ee061f8d45f79a3b70b8676435437",
+      "state": "existing-public-extension-boundary-reviewed",
+      "receiver": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "finding": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "current_sha256": "f14782e42d48f8d86e41f253cde78d54383ee061f8d45f79a3b70b8676435437"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_vcl_spin.h",
+      "sha256": "4af839fc2c1f850d7558320335c6b3794a05b7c5abd1efefcf9e2dd062adbe3a",
+      "state": "existing-public-extension-boundary-reviewed",
+      "receiver": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "finding": "Already common native identity/notification/resource helpers, no private profile imports; current native witness/status field-view contracts must be redesigned with actual extended owner in S10. S9 base combo_edit relation directly consumed, no copied implementation.",
+      "current_sha256": "4af839fc2c1f850d7558320335c6b3794a05b7c5abd1efefcf9e2dd062adbe3a"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_state.h",
+      "sha256": "96d8b147c7e7fdba6dd8f7f03326bb50ec3f642b69d22cd8e92e6f68bb8052e3",
+      "state": "existing-public-mechanism-reviewed",
+      "receiver": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "finding": "Existing exact native/runtime class and protocol/ref registry, redraw or native scroll helpers remain common without profile imports. control_state/controller consume actual protocol and state. Runtime role organization/final field contracts reviewed again in S10/S13, not new era support.",
+      "current_sha256": "96d8b147c7e7fdba6dd8f7f03326bb50ec3f642b69d22cd8e92e6f68bb8052e3"
+    },
+    {
+      "path": "src/lib-win32-style/application/lifecycle/install.c",
+      "sha256": null,
+      "state": "shared-install-consumer-reviewed",
+      "receiver": "application/lifecycle/install",
+      "current_sha256": "ed111b49bf97fadf44d5ed9caa91908567b2c9af56fca2e2c8b3c0eacd47389d",
+      "finding": "one shared publication/cancellation/ref transaction, provider owns complete setup failure rollback; window semantics explicit, control existing rollback retained; native source exports unchanged"
+    },
+    {
+      "path": "src/lib-win32-style/application/lifecycle/install.h",
+      "sha256": null,
+      "state": "shared-install-consumer-reviewed",
+      "receiver": "application/lifecycle/install",
+      "current_sha256": "8aee798b7c7067846b6c743580fae4c649ace4f66002dcf6419b4cbe91af1ae6",
+      "finding": "one shared publication/cancellation/ref transaction, provider owns complete setup failure rollback; window semantics explicit, control existing rollback retained; native source exports unchanged"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/install.c",
+      "sha256": "18cf17ab72baef24f20d965067cf7928b4d0e875d802fe3ce3c9bc0b3cac7d56",
+      "current_sha256": null,
+      "state": "shared-install-consumer-reviewed",
+      "receiver": "application/lifecycle/install",
+      "finding": "one shared publication/cancellation/ref transaction, provider owns complete setup failure rollback; window semantics explicit, control existing rollback retained; native source exports unchanged"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/install.h",
+      "sha256": "75660a72e7fc7cd8091f4db801efdc95ee9cb2107a97222402b8d85c6eb523f0",
+      "state": "shared-install-consumer-reviewed",
+      "receiver": "application/lifecycle/install",
+      "current_sha256": null,
+      "moved_to": "src/lib-win32-style/application/lifecycle/install.h",
+      "finding": "one shared publication/cancellation/ref transaction, provider owns complete setup failure rollback; window semantics explicit, control existing rollback retained; native source exports unchanged"
+    },
+    {
+      "path": "src/ntw16s-dll/attachment.c",
+      "sha256": "5b3c4acc82abc29cfe6aeb33f5e837c59e0fdaaa53ef65ac2f1e69e22fd65345",
+      "state": "base-boundary-reviewed-extended-and-creation-received",
+      "receiver": "S10 attachment runtime; S11 creation coordinator; S12 modern frame composition",
+      "finding": "Base install_created delegates to existing control ABI and new public control engines via controls.c. Attachment proc/root extended witness/status/DRAWITEM/TLS ownership goes to S10; creation_begin/before/return/end and pending/dialog observer S11; composed-frame class and modern detach S12. This is a verified boundary partition, not a claim this 860-line mixed file is fully extracted.",
+      "current_sha256": "5b3c4acc82abc29cfe6aeb33f5e837c59e0fdaaa53ef65ac2f1e69e22fd65345"
+    },
+    {
+      "path": "src/ntw16s-dll/controls.c",
+      "sha256": "40b476a59479abe35a51c6720109719a87a7b7e9ae0b9930006cb0413fe718da",
+      "state": "base-product-composition-reviewed",
+      "receiver": "Actual basic consumers use public instance/control_state, combo/list/button snapshots, setup and scroll engines. Track/custom-draw/TLS unwind and extended setup are S10; common-dialog pending/install S11; final renderer/present views S13. Does not claim whole product composition is already clean.",
+      "current_sha256": "0223436cea8ed94bc293e161b7d9b30d2117086640d31e07b11754ab9eb4ba7f",
+      "finding": "Actual basic consumers use public instance/control_state, combo/list/button snapshots, setup and scroll engines. Track/custom-draw/TLS unwind and extended setup are S10; common-dialog pending/install S11; final renderer/present views S13. Does not claim whole product composition is already clean."
+    },
+    {
+      "path": "src/ntw16s-dll/controls.h",
+      "sha256": "8378744bcc23396cb41fe14a6a3de88205f78250bf09b89c9ed59c0c601d5282",
+      "state": "product-abi-reviewed",
+      "receiver": "Existing exported installation/removal/scope/scroll ABI retained. Creation-owner and extension entry declarations remain product adapters until S10/S11; no duplicated native controller implementation in header.",
+      "finding": "Existing exported installation/removal/scope/scroll ABI retained. Creation-owner and extension entry declarations remain product adapters until S10/S11; no duplicated native controller implementation in header.",
+      "current_sha256": "8378744bcc23396cb41fe14a6a3de88205f78250bf09b89c9ed59c0c601d5282"
+    },
+    {
+      "path": "src/ntw2ks-dll/button.c",
+      "sha256": "a0974289571e1c263e847ca8d12ead7d3b3997de6d4678209ec577b08895d356",
+      "state": "existing-capability-reviewed",
+      "receiver": "Stateless exported DrawFrameControl button primitive only; no control-instance root or child attachment to migrate. Do not fabricate Win2000 control support to count a second consumer.",
+      "finding": "Stateless exported DrawFrameControl button primitive only; no control-instance root or child attachment to migrate. Do not fabricate Win2000 control support to count a second consumer.",
+      "current_sha256": "a0974289571e1c263e847ca8d12ead7d3b3997de6d4678209ec577b08895d356"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win3x/control/control_class.c",
+      "sha256": "ff1b4bd9fa1a52db8636ff4b01c0abc97c504ac8b7ae83e6b2e87eafe41f3cc2",
+      "state": "test-contract-reviewed",
+      "receiver": "Native runtime fixtures/role eligibility or nested reentrant creation scope assertions retained. No private desktop entry. Runtime scope belongs S10/S11; actual new base protocol regressions recorded separately, not claiming this test reran at this checkpoint.",
+      "finding": "Native runtime fixtures/role eligibility or nested reentrant creation scope assertions retained. No private desktop entry. Runtime scope belongs S10/S11; actual new base protocol regressions recorded separately, not claiming this test reran at this checkpoint.",
+      "current_sha256": "ff1b4bd9fa1a52db8636ff4b01c0abc97c504ac8b7ae83e6b2e87eafe41f3cc2"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win3x/control/control_link.c",
+      "sha256": "7fa3ef0fd6d63a990a8b59abdff493f3b590cb8ba9205914bdeff4744828b67b",
+      "state": "consumer-interface-migrated",
+      "receiver": "S9 common mechanism/appearance policy; S10 specialized runtime and S13 final renderer resources must have explicit reason",
+      "current_sha256": "1a344d878e0a6706037d0d685a017d1fcdd7c3c2d09e6295b811cd716fedaade",
+      "finding": "actual code reads common state or generic instance install; specialized painting/messages remain reviewed in subsequent S9/S10 phase"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win3x/control/control_scope.c",
+      "sha256": "c307747d935d2f3931bd0efc068da6a0998ceb5676eb406ec443bef6293bdbcd",
+      "state": "test-contract-reviewed",
+      "receiver": "Native runtime fixtures/role eligibility or nested reentrant creation scope assertions retained. No private desktop entry. Runtime scope belongs S10/S11; actual new base protocol regressions recorded separately, not claiming this test reran at this checkpoint.",
+      "finding": "Native runtime fixtures/role eligibility or nested reentrant creation scope assertions retained. No private desktop entry. Runtime scope belongs S10/S11; actual new base protocol regressions recorded separately, not claiming this test reran at this checkpoint.",
+      "current_sha256": "c307747d935d2f3931bd0efc068da6a0998ceb5676eb406ec443bef6293bdbcd"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win3x/control/list_paint.c",
+      "sha256": "1262c62dddf9109976e82a80b40578b41eaa7549128ea8f4abceed062cd57dd6",
+      "state": "public-test-relocated",
+      "receiver": "tests/lib-win32-style/application/control/tabstops.c",
+      "current_sha256": "f6a7c1517237d52dae73f0ceccae5dddc5ea69068adc0026dbe2d152eb6cbb0f",
+      "finding": "all proportional-font/tab forwarding assertions retained; public-only linkage, no appearance header"
+    },
+    {
+      "path": "tests/lib-win32-style/application/TEST_MAP.md",
+      "sha256": "697add1acc41c6b8a6cdc1a05a8627a781149a4a62c981fc78ce1304ebfaa72c",
+      "state": "consumer-interface-migrated",
+      "receiver": "common state API consumer or generic lifecycle transaction; specialization stays S10/S13",
+      "current_sha256": "61af260ec604e397a5f8ad044465d143e3918ea38d271b36ea41513dd55b8550",
+      "finding": "actual code reads common state or generic instance install; specialized painting/messages remain reviewed in subsequent S9/S10 phase"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_custom_draw.c",
+      "sha256": "cc37e04eb343643e63a9f802c316bc5f54c08db299ba2e66efe4959d7882ee41",
+      "state": "test-contract-reviewed",
+      "receiver": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "finding": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "current_sha256": "cc37e04eb343643e63a9f802c316bc5f54c08db299ba2e66efe4959d7882ee41"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_list.c",
+      "sha256": "12db2729eae8fa430879829962a5ac2a5fee779926edc61ee2180f69fa15b3d8",
+      "state": "test-contract-reviewed",
+      "receiver": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "finding": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "current_sha256": "12db2729eae8fa430879829962a5ac2a5fee779926edc61ee2180f69fa15b3d8"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_native_combo.c",
+      "sha256": "d5f6a00d900d54d799ff8ba1f1304ed5bb54f93caac8b663b10dd9e2c86744b1",
+      "state": "test-contract-reviewed",
+      "receiver": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "finding": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "current_sha256": "d5f6a00d900d54d799ff8ba1f1304ed5bb54f93caac8b663b10dd9e2c86744b1"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_native_witness.c",
+      "sha256": "0c00bc37b9adfbebec5b16216d261af883e5b24c6e2bcd80b6a896707dc95395",
+      "state": "test-contract-reviewed",
+      "receiver": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "finding": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "current_sha256": "0c00bc37b9adfbebec5b16216d261af883e5b24c6e2bcd80b6a896707dc95395"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_protocol.c",
+      "sha256": "204a0bb604d1d69017ecfcb1594766583c65340a32c82a0d74f260cfa294acad",
+      "state": "test-contract-reviewed",
+      "receiver": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "finding": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "current_sha256": "204a0bb604d1d69017ecfcb1594766583c65340a32c82a0d74f260cfa294acad"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_redraw.c",
+      "sha256": "6ef5c5302faa692c6b0ff2563c8bec567fa0c5220a2fcfe30fa48d1f7d7e75f3",
+      "state": "test-contract-reviewed",
+      "receiver": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "finding": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "current_sha256": "6ef5c5302faa692c6b0ff2563c8bec567fa0c5220a2fcfe30fa48d1f7d7e75f3"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_runtime.c",
+      "sha256": "a4c4da47d1d87b0609ce72ccf8434613e2c8351e193b350455ad1585cbbb5770",
+      "state": "test-contract-reviewed",
+      "receiver": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "finding": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "current_sha256": "a4c4da47d1d87b0609ce72ccf8434613e2c8351e193b350455ad1585cbbb5770"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_scope.c",
+      "sha256": "c880bf2ef898ff3ebe1956b56d886996fd34b214ae7b9db39f17ae258adbce6f",
+      "state": "test-contract-reviewed",
+      "receiver": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "finding": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "current_sha256": "c880bf2ef898ff3ebe1956b56d886996fd34b214ae7b9db39f17ae258adbce6f"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_state.c",
+      "sha256": null,
+      "state": "resource-batch-implemented",
+      "receiver": "common state API consumer or generic lifecycle transaction; specialization stays S10/S13",
+      "current_sha256": "a236edbd386712effbd7a1230f0df0477cc111daa0e291192476c69415b5fcac",
+      "finding": "common state owns font/source/protocol/redraw/native depth/tabs; font and tabstop transactions common, private font qualification/rendering and remaining lifecycle/message mechanisms explicit pending"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_status.c",
+      "sha256": "cdfbddd341adf372d0b4a13ca7c5fd7defa9cab85e9b9961874f671c0463844f",
+      "state": "test-contract-reviewed",
+      "receiver": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "finding": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "current_sha256": "cdfbddd341adf372d0b4a13ca7c5fd7defa9cab85e9b9961874f671c0463844f"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_vcl_identity.c",
+      "sha256": "dca8028c0388b5e09e07d469e428a63ef308ea50643cd4bace2e055a62463eb9",
+      "state": "test-contract-reviewed",
+      "receiver": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "finding": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "current_sha256": "dca8028c0388b5e09e07d469e428a63ef308ea50643cd4bace2e055a62463eb9"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/scroll_state.c",
+      "sha256": "3e19cfdbe24ea891d1f758c9f73ad7091a67ff7de4543566f14ac24d6152b1e8",
+      "state": "test-contract-reviewed",
+      "receiver": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "finding": "Self-owned native window/protocol fixture; no desktop creation or user input. Tests public callback/result/role/resource contract; no new rerun claimed by source review. Extended status/witness tests must accompany S10 owner migration, scope S11.",
+      "current_sha256": "3e19cfdbe24ea891d1f758c9f73ad7091a67ff7de4543566f14ac24d6152b1e8"
+    },
+    {
+      "path": "tests/lib-win32-style/application/lifecycle/install.c",
+      "sha256": null,
+      "state": "shared-install-consumer-reviewed",
+      "receiver": "application/lifecycle/install",
+      "current_sha256": "2d0ed10530ace190ee4ef81da79423028539027001918d94d9431ef3b074a121",
+      "finding": "one shared publication/cancellation/ref transaction, provider owns complete setup failure rollback; window semantics explicit, control existing rollback retained; native source exports unchanged"
+    },
+    {
+      "path": "tests/lib-win32-style/application/window/install.c",
+      "sha256": "8a1287e1ed95893adaff404c62119150a20da901a4c813d6aabaaebf8e74b746",
+      "current_sha256": null,
+      "state": "shared-install-consumer-reviewed",
+      "receiver": "application/lifecycle/install",
+      "finding": "one shared publication/cancellation/ref transaction, provider owns complete setup failure rollback; window semantics explicit, control existing rollback retained; native source exports unchanged"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_control_lifetime.c",
+      "sha256": "7e5e4eac51343c69147b93ef964842cf7e506a0d29019c9d31121ae14be3a70c",
+      "state": "resource-batch-implemented",
+      "receiver": "common state API consumer or generic lifecycle transaction; specialization stays S10/S13",
+      "current_sha256": "168f780ff43170ae76745303125307b002b6ab55ab7f5c9c0ae1f06a671ff8c0",
+      "finding": "common state owns font/source/protocol/redraw/native depth/tabs; font and tabstop transactions common, private font qualification/rendering and remaining lifecycle/message mechanisms explicit pending"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_control_present.c",
+      "sha256": "82871b308b6b9d7e881bdc4415c4503015189490bad64d62d1f182d98c7b3bb3",
+      "state": "test-entry-adapted",
+      "receiver": "common state API consumer or generic lifecycle transaction; specialization stays S10/S13",
+      "current_sha256": "70b0d0f69dd90604afc68923e056bce25733e9cba659a769c4d37da574ceb96e",
+      "finding": "removed desktop creation/switch only, native assertions retained; public state/font/lifetime/tabs rerun, complete present suite pending"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_dc_failure.c",
+      "sha256": "18c7d76bee4b0aa0f29352fe353e1bddc33a1e4e4338e9f2e5b380e8cbce2f28",
+      "state": "existing-regression-boundary-reviewed",
+      "receiver": "S9 published package regression; final S14 complete coverage",
+      "finding": "Current-desktop native fixture compiles actual Win3x window painter with SaveDC fault boundary, borrowed state and menu nesting/retirement checks; S7/S8 inherited integration regression, no new execution claimed here. Include in S9 delivery affected prior-window/menu regression where applicable; no private desktop.",
+      "current_sha256": "18c7d76bee4b0aa0f29352fe353e1bddc33a1e4e4338e9f2e5b380e8cbce2f28"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_font.c",
+      "sha256": "4eca3ef89ab75f67ed49d783bed24774836ecd7c7e1fca64025daedaf0b2a0b2",
+      "state": "test-entry-adapted",
+      "receiver": "common state API consumer or generic lifecycle transaction; specialization stays S10/S13",
+      "current_sha256": "7b6a86bdb991abf708a624e936038749c1f204c2ca0ad562d73f6b096e01f71b",
+      "finding": "removed desktop creation/switch only, native assertions retained; public state/font/lifetime/tabs rerun, complete present suite pending"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_list_tabs.c",
+      "sha256": "1da4d29ec81c78685a01b6ea699f9ff84948135d7aabad10ce52742ec35ac56d",
+      "state": "test-entry-adapted",
+      "receiver": "common state API consumer or generic lifecycle transaction; specialization stays S10/S13",
+      "current_sha256": "e842f2aee1f80665e6fcba74f47d27f8de6bfbbed6b52c44929413299306eac5",
+      "finding": "removed desktop creation/switch only, native assertions retained; public state/font/lifetime/tabs rerun, complete present suite pending"
+    }
+  ],
+  "migration_batches": [
+    {
+      "order": 1,
+      "scope": "control state/font/protocol/redraw/tabstop resource ownership, root installation/removal and callback lifetime",
+      "owner": "application/control"
+    },
+    {
+      "order": 2,
+      "scope": "basic/combo/edit/list message execution and native snapshots",
+      "owner": "application/control, era draw/measure eligibility callbacks"
+    },
+    {
+      "order": 3,
+      "scope": "scroll geometry/input/native reporting/capture/caret/timer",
+      "owner": "application/control with era metrics/painter supplied; existing capabilities only"
+    }
+  ],
+  "verification": "independent pure C native contract plus existing owned controls/scroll/font/reentrancy and two-profile applicable paths; development incremental, one same-snapshot full delivery after capability completion",
+  "new_public_outputs": [
+    "src/lib-win32-style/application/control/button_snapshot.c",
+    "src/lib-win32-style/application/control/button_snapshot.h",
+    "src/lib-win32-style/application/control/combo_snapshot.c",
+    "src/lib-win32-style/application/control/combo_snapshot.h",
+    "src/lib-win32-style/application/control/control_state.c",
+    "src/lib-win32-style/application/control/control_state.h",
+    "src/lib-win32-style/application/control/list_snapshot.c",
+    "src/lib-win32-style/application/control/list_snapshot.h",
+    "src/lib-win32-style/application/control/retire.c",
+    "src/lib-win32-style/application/control/retire.h",
+    "src/lib-win32-style/application/control/scroll_controller.c",
+    "src/lib-win32-style/application/control/scroll_controller.h",
+    "src/lib-win32-style/application/control/scroll_geometry.h",
+    "src/lib-win32-style/application/control/scroll_managed.c",
+    "src/lib-win32-style/application/control/scroll_managed.h",
+    "src/lib-win32-style/application/control/scroll_resources.c",
+    "src/lib-win32-style/application/control/scroll_resources.h",
+    "src/lib-win32-style/application/control/scroll_surface.c",
+    "src/lib-win32-style/application/control/scroll_surface.h",
+    "tests/lib-win32-style/application/control/button_snapshot.c",
+    "tests/lib-win32-style/application/control/combo_snapshot.c",
+    "tests/lib-win32-style/application/control/control_state.c",
+    "tests/lib-win32-style/application/control/list_snapshot.c",
+    "tests/lib-win32-style/application/control/retire.c",
+    "tests/lib-win32-style/application/control/scroll_controller.c",
+    "tests/lib-win32-style/application/control/scroll_managed.c",
+    "tests/lib-win32-style/application/control/scroll_resources.c",
+    "tests/lib-win32-style/application/control/scroll_surface.c"
+  ]
+}

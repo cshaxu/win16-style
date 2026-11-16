@@ -1,7 +1,9 @@
 #include "lib-win32-style/appearance/win3x/control/scroll_layout.h"
 #include "lib-win32-style/appearance/win3x/control/scroll_native.h"
-#include "lib-win32-style/appearance/win3x/control/scroll_track.h"
+#include "lib-win32-style/application/control/scroll_track.h"
 #include "lib-win32-style/application/control/scroll_state.h"
+#include "lib-win32-style/application/control/scroll_resources.h"
+#include "lib-win32-style/application/control/scroll_controller.h"
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,18 +19,15 @@ static void action_draw(HWND w,void *p,HDC dc,LONG object,BOOL vertical)
 {(void)w;(void)p;(void)dc;(void)object;(void)vertical;}
 static void action_nonclient(HWND w,void *p,HDC dc){(void)w;(void)p;(void)dc;}
 static void action_caret(HWND w,void *p){(void)w;(void)p;}
-static BOOL no_owner(void *context){(void)context;return FALSE;}
-static BOOL no_embedded_layout(HWND w,LONG object,win16_scroll_layout *layout,POINT *origin)
-{(void)w;(void)object;(void)layout;(void)origin;return FALSE;}
+static BOOL no_embedded_layout(HWND w,void *context,LONG object,style_scroll_layout *layout,POINT *origin)
+{(void)w;(void)context;(void)object;(void)layout;(void)origin;return FALSE;}
 #define CHECK(x) do { ++checks; if(!(x)){fprintf(stderr,"SCROLL GEOMETRY FAIL %d: %s\n",__LINE__,#x);exit(1);} } while(0)
 static void tracking_tests(void)
 {
     const win16_scroll_metrics metrics={17,17,1};RECT bar={0,0,17,200},limit={-4,-1,21,201};
-    win16_scroll_layout l,from_native;win16_scroll_track t={0};win16_scroll_actions a;
-    BOOL detached=TRUE,created=FALSE,shown=TRUE;SIZE caret_size={0};
-    const win16_scroll_caret_view caret={&detached,&created,&shown,&caret_size,&t,NULL,NULL};
-    win16_scroll_caret_sync(NULL,&caret);CHECK(!created && shown);
-    win16_scroll_caret_destroy(NULL,&caret);CHECK(!created && !shown);
+    style_scroll_layout l,from_native;style_scroll_track t={0};style_scroll_actions a;
+    style_scroll_resources caret={.caret_shown=TRUE};
+    style_scroll_caret_destroy(NULL,&caret);CHECK(!caret.caret && !caret.caret_shown);
     CHECK(style_scroll_horizontal_thumb_messages(NULL,fake_info));
     fake_max=65536;CHECK(!style_scroll_horizontal_thumb_messages(NULL,fake_info));
     fake_page=2;CHECK(style_scroll_horizontal_thumb_messages(NULL,fake_info));
@@ -47,29 +46,26 @@ static void tracking_tests(void)
     EnableWindow(child,TRUE);
     CHECK(win16_scroll_control_layout(child,fake_info,&from_native));
     CHECK(from_native.vertical && from_native.first.bottom-from_native.first.top==20);
-    BOOL action_detached=FALSE,reporting=FALSE,frame=FALSE,edit=FALSE,list=FALSE;
-    unsigned epoch=5;LONG report=77,object=OBJID_CLIENT;UINT_PTR timer=0;win16_scroll_track action_track={0};
-    const win16_scroll_actions_view view={NULL,&action_detached,&reporting,&frame,&edit,&list,&epoch,&report,&object,
-        &timer,&action_track,action_draw,action_nonclient,action_caret};
-    HWND prior_capture=parent;win16_scroll_finish(child,&view,&prior_capture,FALSE);
-    CHECK(prior_capture==parent && epoch==5);
-    win16_scroll_actions notices={.count=2,.timer_ms=WIN16_SCROLL_KEEP_TIMER};
-    notices.notices[0].command=SB_LINEUP;notices.notices[1].command=SB_ENDSCROLL;observed_epoch=&epoch;
-    win16_scroll_apply_actions(child,&view,&notices,5);
-    CHECK(received_notices==1 && epoch==6 && !reporting && report==77);
-    BOOL key=FALSE;win16_scroll_input_view input={view,&prior_capture,&key,NULL};
-    received_notices=0;epoch=5;
-    CHECK(win16_scroll_control_input(child,&input,WM_KEYDOWN,VK_DOWN,0));
-    CHECK(key && received_notices==1 && last_notice==SB_LINEDOWN);
-    CHECK(win16_scroll_control_input(child,&input,WM_KEYUP,VK_DOWN,0));
-    CHECK(!key && received_notices==2 && last_notice==SB_ENDSCROLL);
-    CHECK(!win16_scroll_control_input(child,&input,WM_KEYDOWN,VK_F2,0));
-    const win16_scroll_embedded_view embedded={view,&prior_capture,no_owner,no_embedded_layout,fake_info};
-    CHECK(!win16_scroll_embedded_input(child,&embedded,WM_KEYDOWN,VK_DOWN,0));
-    frame=TRUE;
-    CHECK(!win16_scroll_embedded_input(child,&embedded,WM_KEYDOWN,VK_DOWN,0));
-    CHECK(win16_scroll_embedded_input(child,&embedded,WM_NCLBUTTONDOWN,HTVSCROLL,0));
-    frame=FALSE;
+    style_instance instance={0};style_control_state owner={0};
+    style_scroll_controller controller={.epoch=5,.report=77,.object=OBJID_CLIENT};
+    const style_scroll_ops operations={NULL,&win16_scroll_policy,fake_info,no_embedded_layout,action_draw,action_nonclient,action_caret};
+    controller.resources.previous_capture=parent;style_scroll_finish(child,&instance,&controller,&operations,FALSE);
+    CHECK(controller.resources.previous_capture==parent && controller.epoch==5);
+    style_scroll_actions notices={.count=2,.timer_ms=STYLE_SCROLL_KEEP_TIMER};
+    notices.notices[0].command=SB_LINEUP;notices.notices[1].command=SB_ENDSCROLL;observed_epoch=&controller.epoch;
+    style_scroll_apply_actions(child,&instance,&controller,&operations,&notices,5);
+    CHECK(received_notices==1 && controller.epoch==6 && !controller.reporting && controller.report==77);
+    received_notices=0;controller.epoch=5;
+    CHECK(style_scroll_control_input(child,&instance,&controller,&operations,WM_KEYDOWN,VK_DOWN,0));
+    CHECK(controller.key && received_notices==1 && last_notice==SB_LINEDOWN);
+    CHECK(style_scroll_control_input(child,&instance,&controller,&operations,WM_KEYUP,VK_DOWN,0));
+    CHECK(!controller.key && received_notices==2 && last_notice==SB_ENDSCROLL);
+    CHECK(!style_scroll_control_input(child,&instance,&controller,&operations,WM_KEYDOWN,VK_F2,0));
+    CHECK(!style_scroll_embedded_input(child,&instance,&owner,&controller,&operations,WM_KEYDOWN,VK_DOWN,0));
+    controller.resources.frame=TRUE;
+    CHECK(!style_scroll_embedded_input(child,&instance,&owner,&controller,&operations,WM_KEYDOWN,VK_DOWN,0));
+    CHECK(style_scroll_embedded_input(child,&instance,&owner,&controller,&operations,WM_NCLBUTTONDOWN,HTVSCROLL,0));
+    controller.resources.frame=FALSE;
     DestroyWindow(child);DestroyWindow(parent);CHECK(UnregisterClassW(cls.lpszClassName,cls.hInstance));
     POINT point={8,100};
     SCROLLINFO native={.cbSize=sizeof(native),.nMin=0,.nMax=109,.nPage=10,.nPos=50};
@@ -79,60 +75,60 @@ static void tracking_tests(void)
     CHECK(!win16_scroll_measure_native(NULL,TRUE,96,&native,&from_native));
     CHECK(!win16_scroll_measure_native(&bar,TRUE,96,NULL,&from_native));
     CHECK(win16_scroll_measure(&bar,TRUE,&metrics,0,100,50,&l));
-    CHECK(win16_scroll_begin(&t,&l,0,point,&limit,&a));
-    CHECK(t.active && t.part==WIN16_SCROLL_THUMB && t.grab_offset==8 && t.pixel==92);
+    CHECK(style_scroll_begin(&t,&l,0,point,&limit,&a,&win16_scroll_policy));
+    CHECK(t.active && t.part==STYLE_SCROLL_THUMB && t.grab_offset==8 && t.pixel==92);
     CHECK(a.count==1 && a.notices[0].command==SB_THUMBTRACK && a.notices[0].position==50 && !a.timer_ms);
-    CHECK(!win16_scroll_begin(&t,&l,0,point,&limit,&a) && t.active && t.pixel==92);
-    point.y=130;win16_scroll_motion(&t,&l,0,point,FALSE,&a);
+    CHECK(!style_scroll_begin(&t,&l,0,point,&limit,&a,&win16_scroll_policy) && t.active && t.pixel==92);
+    point.y=130;style_scroll_motion(&t,&l,0,point,FALSE,&a,&win16_scroll_policy);
     CHECK(t.pixel==122 && t.position==70 && a.count==1 && a.notices[0].command==SB_THUMBTRACK);
-    win16_scroll_motion(&t,&l,0,point,FALSE,&a);
-    CHECK(!a.count && !a.repaint && a.timer_ms==WIN16_SCROLL_KEEP_TIMER);
-    point.x=-5;win16_scroll_motion(&t,&l,0,point,FALSE,&a);
+    style_scroll_motion(&t,&l,0,point,FALSE,&a,&win16_scroll_policy);
+    CHECK(!a.count && !a.repaint && a.timer_ms==STYLE_SCROLL_KEEP_TIMER);
+    point.x=-5;style_scroll_motion(&t,&l,0,point,FALSE,&a,&win16_scroll_policy);
     CHECK(!t.inside && t.pixel==92 && t.position==50 && a.count==1);
-    point.x=8;win16_scroll_motion(&t,&l,0,point,FALSE,&a);
+    point.x=8;style_scroll_motion(&t,&l,0,point,FALSE,&a,&win16_scroll_policy);
     CHECK(t.inside && t.pixel==122 && t.position==70 && a.count==1);
-    win16_scroll_end(&t,TRUE,&a);
+    style_scroll_end(&t,TRUE,&a);
     CHECK(!t.active && t.pixel==92 && !a.timer_ms && a.count==2);
     CHECK(a.notices[0].command==SB_THUMBPOSITION && a.notices[0].position==70 && a.notices[1].command==SB_ENDSCROLL);
-    win16_scroll_end(&t,FALSE,&a);CHECK(!a.count && !a.timer_ms);
-    point.x=8;point.y=5;CHECK(win16_scroll_begin(&t,&l,0,point,&limit,&a));
+    style_scroll_end(&t,FALSE,&a);CHECK(!a.count && !a.timer_ms);
+    point.x=8;point.y=5;CHECK(style_scroll_begin(&t,&l,0,point,&limit,&a,&win16_scroll_policy));
     CHECK(a.count==1 && a.notices[0].command==SB_LINEUP && a.timer_ms==200);
-    win16_scroll_motion(&t,&l,0,point,FALSE,&a);
-    CHECK(!a.count && a.timer_ms==WIN16_SCROLL_KEEP_TIMER);
-    win16_scroll_motion(&t,&l,0,point,TRUE,&a);
+    style_scroll_motion(&t,&l,0,point,FALSE,&a,&win16_scroll_policy);
+    CHECK(!a.count && a.timer_ms==STYLE_SCROLL_KEEP_TIMER);
+    style_scroll_motion(&t,&l,0,point,TRUE,&a,&win16_scroll_policy);
     CHECK(a.count==1 && a.notices[0].command==SB_LINEUP && a.timer_ms==50);
-    point.x=30;win16_scroll_motion(&t,&l,0,point,FALSE,&a);
+    point.x=30;style_scroll_motion(&t,&l,0,point,FALSE,&a,&win16_scroll_policy);
     CHECK(!t.inside && !a.count && !a.timer_ms && a.repaint);
-    point.x=8;win16_scroll_motion(&t,&l,0,point,FALSE,&a);
+    point.x=8;style_scroll_motion(&t,&l,0,point,FALSE,&a,&win16_scroll_policy);
     CHECK(t.inside && a.count==1 && a.timer_ms==50);
-    win16_scroll_motion(&t,&l,ESB_DISABLE_UP,point,FALSE,&a);
+    style_scroll_motion(&t,&l,ESB_DISABLE_UP,point,FALSE,&a,&win16_scroll_policy);
     CHECK(!t.inside && !a.count && !a.timer_ms);
-    win16_scroll_end(&t,FALSE,&a);CHECK(a.count==1 && a.notices[0].command==SB_ENDSCROLL && !t.active);
-    CHECK(!win16_scroll_begin(&t,&l,ESB_DISABLE_BOTH,point,&limit,&a) && !t.active);
-    point.y=50;CHECK(win16_scroll_begin(&t,&l,0,point,&limit,&a));
+    style_scroll_end(&t,FALSE,&a);CHECK(a.count==1 && a.notices[0].command==SB_ENDSCROLL && !t.active);
+    CHECK(!style_scroll_begin(&t,&l,ESB_DISABLE_BOTH,point,&limit,&a,&win16_scroll_policy) && !t.active);
+    point.y=50;CHECK(style_scroll_begin(&t,&l,0,point,&limit,&a,&win16_scroll_policy));
     CHECK(a.count==1 && a.notices[0].command==SB_PAGEUP);
     CHECK(win16_scroll_measure(&bar,TRUE,&metrics,0,100,0,&l));
-    win16_scroll_motion(&t,&l,0,point,TRUE,&a);
+    style_scroll_motion(&t,&l,0,point,TRUE,&a,&win16_scroll_policy);
     CHECK(!t.inside && !a.count && !a.timer_ms);
-    win16_scroll_end(&t,FALSE,&a);CHECK(!t.active && a.count==1);
+    style_scroll_end(&t,FALSE,&a);CHECK(!t.active && a.count==1);
     puts("SCROLL TRACK PASS: grab offset, outside/back, original cancel notices, 200/50ms repeat, no motion timer starvation, page-stop, disabled and idempotent end");
 }
 int main(void)
 {
     const win16_scroll_metrics vga={17,17,1};
-    win16_scroll_layout l,h;RECT v={10,20,27,220},r={20,10,220,27};int p,length;
+    style_scroll_layout l,h;RECT v={10,20,27,220},r={20,10,220,27};int p,length;
     /* Hand-calculated original-profile vectors: 17-pixel arrows/thumb and
      * the one-pixel shared boundary, not native SCROLLBARINFO as an oracle. */
     CHECK(win16_scroll_measure(&v,TRUE,&vga,0,100,0,&l));
     CHECK(l.first.bottom==37 && l.last.top==203 && l.minimum_pixel==36 && l.travel==151);
     CHECK(l.thumb.top==36 && l.thumb.bottom==53 && l.thumb_fits);
     {POINT p1={12,36},p2={12,37},p3={12,53},p4={27,37};
-        CHECK(win16_scroll_hit(&l,p1,0)==WIN16_SCROLL_LINE_BEFORE);
-        CHECK(win16_scroll_hit(&l,p2,0)==WIN16_SCROLL_THUMB);
-        CHECK(win16_scroll_hit(&l,p3,0)==WIN16_SCROLL_PAGE_AFTER);
-        CHECK(win16_scroll_hit(&l,p4,0)==WIN16_SCROLL_NONE);
-        CHECK(win16_scroll_hit(&l,p1,ESB_DISABLE_UP)==WIN16_SCROLL_NONE);
-        CHECK(win16_scroll_hit(&l,p2,ESB_DISABLE_BOTH)==WIN16_SCROLL_NONE);}
+        CHECK(win16_scroll_hit(&l,p1,0)==STYLE_SCROLL_LINE_BEFORE);
+        CHECK(win16_scroll_hit(&l,p2,0)==STYLE_SCROLL_THUMB);
+        CHECK(win16_scroll_hit(&l,p3,0)==STYLE_SCROLL_PAGE_AFTER);
+        CHECK(win16_scroll_hit(&l,p4,0)==STYLE_SCROLL_NONE);
+        CHECK(win16_scroll_hit(&l,p1,ESB_DISABLE_UP)==STYLE_SCROLL_NONE);
+        CHECK(win16_scroll_hit(&l,p2,ESB_DISABLE_BOTH)==STYLE_SCROLL_NONE);}
     CHECK(win16_scroll_measure(&v,TRUE,&vga,0,100,50,&l));
     CHECK(l.thumb.top==112 && l.thumb.bottom==129);
     CHECK(win16_scroll_measure(&v,TRUE,&vga,0,100,100,&l));

@@ -251,3 +251,9 @@
 - [T26 S8交付](evidence/t26-s8-delivery.json)：同快照双宽八文件先发布后测试，259项聚焦回归257通过/2项ETW skip、两项DWM旧失败及首次编排错误；完整源码/依赖/资源和摘要证据。
 
 - [T26 S8实际远端](evidence/t26-s8-remote.json)：P1 64现存blob、4删除路径和八文件已实际fetch逐项复核。
+
+- [T26 S9控件冻结输入](evidence/t26-s9-controls-audit.json)：103项根状态/基础消息/滚动与实际调用者的逐项归属；跨S边界明确接收，不把冻结计为迁移完成。
+
+- [T26 S9控件开发结果](evidence/t26-s9-controls-development.json)：公共资源状态、字体/tabstop事务的双宽增量及原始错误与修正；不是完整S9或新发布。
+
+- [T26 S9整批交付](evidence/t26-s9-delivery.json)：同快照双宽干净八文件已先发布两处，发布后聚焦回归、来源/资源/依赖和原失败对照的实际状态由证据记录。

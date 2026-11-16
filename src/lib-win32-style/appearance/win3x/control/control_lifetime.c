@@ -7,21 +7,12 @@
 void win16_control_finish_message(HWND w,control_style *s,UINT m,LPARAM b,HWND spin_button,const RECT *spin_before,BOOL combo_paint,HFONT previous,HFONT outbound,HFONT pinned,SUBCLASSPROC callback)
 {
     style_control_vcl_spin_after(w,spin_button,spin_before,&s->instance.detached);
+    HFONT source=s->state.original_font;
     if(m==WM_SETFONT && s->instance.detached && IsWindow(w)){
-        /* A native setter can finish AFTER its callback removed this leaf,
-         * overwriting the font restored during removal with our retired
-         * variant. Settle only after that native call has returned. A new
-         * independent owner, if installed reentrantly, keeps its own source. */
-        DWORD_PTR successor;HFONT source=s->original_font;
-        if(GetWindowSubclass(w,callback,(UINT_PTR)callback,&successor))
-            source=((control_style *)successor)->original_font;
-        SendMessageW(w,WM_SETFONT,(WPARAM)source,b);
+        DWORD_PTR successor;
+        if(GetWindowSubclass(w,callback,(UINT_PTR)callback,&successor))source=((control_style *)successor)->state.original_font;
     }
-    if(combo_paint)--s->combo_paints;
-    /* Native processing (including nested paint/remove/setfont) has finished
-     * with the previous lease. Never delete the application's borrowed font. */
-    win16_style_system_release(previous);
-    win16_style_system_release(outbound);win16_style_system_release(pinned);
+    style_control_font_finish(w,&s->instance,&s->state,m,b,combo_paint,source,previous,outbound,pinned);
     style_instance_release(&s->instance);
 }
 
@@ -41,9 +32,9 @@ void win16_control_scrollbars_paint(HWND w,HDC target,const win16_style_palette 
     if(GetWindowSubclass(w,proc,(UINT_PTR)proc,&attached)){
         control_style *owner=(control_style *)attached;
         if(!palette)s.palette=owner->palette;
-        s.list_scrollbar=owner->list_scrollbar;s.edit_scrollbars=owner->edit_scrollbars;s.scroll=owner->scroll;
-        s.frame_scrollbars=owner->frame_scrollbars;
-        s.embedded_object=owner->embedded_object;
+        s.scroll.resources.list=owner->scroll.resources.list;s.scroll.resources.edit=owner->scroll.resources.edit;s.scroll.track=owner->scroll.track;
+        s.scroll.resources.frame=owner->scroll.resources.frame;
+        s.scroll.object=owner->scroll.object;
     }
     paint(w,&s,target);
 }

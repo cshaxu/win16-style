@@ -1,7 +1,7 @@
 #include "install.h"
 
-BOOL style_frame_install(style_instance *instance,HWND window,SUBCLASSPROC procedure,
-    const void *owner,const style_frame_install_ops *ops)
+BOOL style_instance_install(style_instance *instance,HWND window,SUBCLASSPROC procedure,
+    const void *owner,const style_instance_install_ops *ops)
 {
     DWORD error;style_instance_retain(instance);
     if(ops && ops->cancelled && *ops->cancelled){error=ERROR_CANCELLED;goto unpublished;}
@@ -10,7 +10,6 @@ BOOL style_frame_install(style_instance *instance,HWND window,SUBCLASSPROC proce
         error=GetLastError();
         if(!instance->detached && style_instance_lookup(window,procedure)==instance){
             if(ops->rollback)ops->rollback(window,ops->context);
-            if(!instance->detached)style_instance_detach(instance);
         }
         goto failed;
     }

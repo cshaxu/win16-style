@@ -233,11 +233,8 @@ static int edit_scroll_probe(void)
 }
 int main(void)
 {
-    WCHAR desktop_name[80];HDESK desktop;HWND w;int status;
+    HWND w;int status;
     WNDCLASSW cls={0};SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=0,.nMax=200000,.nPage=20,.nPos=31,.nTrackPos=0};
-    swprintf_s(desktop_name,80,L"win16-scroll-api-%lu",GetCurrentProcessId());
-    desktop=CreateDesktopW(desktop_name,NULL,NULL,0,GENERIC_ALL,NULL);
-    if(!desktop || !SetThreadDesktop(desktop)){printf("desktop failed %lu\n",GetLastError());return 10;}
     w=CreateWindowExW(0,L"SCROLLBAR",L"",WS_POPUP|SBS_VERT,0,0,17,200,NULL,NULL,GetModuleHandleW(NULL),NULL);
     if(!w)return 11;
     SetScrollInfo(w,SB_CTL,&info,FALSE);
@@ -249,8 +246,6 @@ int main(void)
     w=CreateWindowExW(0,cls.lpszClassName,L"",WS_POPUP,0,0,17,200,NULL,NULL,cls.hInstance,NULL);
     if(!w)return 14;
     status=inspect(w,"custom");DestroyWindow(w);
-    /* The private desktop is released at process exit; it is still assigned
-     * to this thread, so do not pretend CloseDesktop would release it here. */
     if(status)return status;
     status=frame_query_probe();if(status)return status;
     status=hidden_bar_probe();if(status)return status;

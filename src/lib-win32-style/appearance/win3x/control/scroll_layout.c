@@ -9,7 +9,7 @@
  * This is not imported executable code or NT4's proportional-thumb branch. */
 BOOL win16_scroll_measure(const RECT *bar,BOOL vertical,
     const win16_scroll_metrics *m,LONG minimum,LONG maximum,LONG position,
-    win16_scroll_layout *l)
+    style_scroll_layout *l)
 {
     int64_t start,end,length,cross,arrow,origin,travel,thumb;
     int64_t range=(int64_t)maximum-minimum,offset;
@@ -45,19 +45,19 @@ BOOL win16_scroll_measure(const RECT *bar,BOOL vertical,
     return TRUE;
 }
 
-win16_scroll_part win16_scroll_hit(const win16_scroll_layout *l,POINT point,UINT disabled)
+style_scroll_part win16_scroll_hit(const style_scroll_layout *l,POINT point,UINT disabled)
 {
     LONG pixel,thumb_start,thumb_end;
     if(!l || !PtInRect(&l->bar,point) || (disabled&ESB_DISABLE_BOTH)==ESB_DISABLE_BOTH)
-        return WIN16_SCROLL_NONE;
+        return STYLE_SCROLL_NONE;
     /* USER 18:170B..1792 tests arrows before the overlapping thumb edge;
      * a thumb can be drawn in exactly enough room but cannot be dragged. */
-    if(PtInRect(&l->first,point))return disabled&ESB_DISABLE_UP?WIN16_SCROLL_NONE:WIN16_SCROLL_LINE_BEFORE;
-    if(PtInRect(&l->last,point))return disabled&ESB_DISABLE_DOWN?WIN16_SCROLL_NONE:WIN16_SCROLL_LINE_AFTER;
+    if(PtInRect(&l->first,point))return disabled&ESB_DISABLE_UP?STYLE_SCROLL_NONE:STYLE_SCROLL_LINE_BEFORE;
+    if(PtInRect(&l->last,point))return disabled&ESB_DISABLE_DOWN?STYLE_SCROLL_NONE:STYLE_SCROLL_LINE_AFTER;
     pixel=l->vertical?point.y:point.x;
     thumb_start=l->vertical?l->thumb.top:l->thumb.left;
     thumb_end=l->vertical?l->thumb.bottom:l->thumb.right;
-    if(pixel<thumb_start)return WIN16_SCROLL_PAGE_BEFORE;
-    if(pixel>=thumb_end)return WIN16_SCROLL_PAGE_AFTER;
-    return l->thumb_draggable?WIN16_SCROLL_THUMB:WIN16_SCROLL_NONE;
+    if(pixel<thumb_start)return STYLE_SCROLL_PAGE_BEFORE;
+    if(pixel>=thumb_end)return STYLE_SCROLL_PAGE_AFTER;
+    return l->thumb_draggable?STYLE_SCROLL_THUMB:STYLE_SCROLL_NONE;
 }

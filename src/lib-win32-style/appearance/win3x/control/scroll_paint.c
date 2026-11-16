@@ -4,16 +4,15 @@
 #include "../resources/scroll_assets.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include <oleacc.h>
+#include "lib-win32-style/application/control/scroll_surface.h"
 
 static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG object,BOOL vertical)
 {
-    SCROLLBARINFO info={.cbSize=sizeof(info)};RECT r,first,last,thumb,pixel;int saved;
-    if(!dc || !GetScrollBarInfo(w,object,&info) || (info.rgstate[0]&STATE_SYSTEM_INVISIBLE))return FALSE;
+    style_scroll_surface surface;RECT r,first,last,thumb,pixel;int saved;
+    if(!dc || !style_scroll_surface_read(w,object,&surface))return FALSE;
+    SCROLLBARINFO info=surface.info;r=surface.bar;
     saved=SaveDC(dc);if(!saved)return FALSE;
-    if(object==OBJID_CLIENT)GetClientRect(w,&r);
-    else {RECT outer;GetWindowRect(w,&outer);
-        OffsetViewportOrgEx(dc,info.rcScrollBar.left-outer.left,info.rcScrollBar.top-outer.top,NULL);
-        SetRect(&r,0,0,info.rcScrollBar.right-info.rcScrollBar.left,info.rcScrollBar.bottom-info.rcScrollBar.top);}
+    if(object!=OBJID_CLIENT)OffsetViewportOrgEx(dc,surface.origin.x,surface.origin.y,NULL);
     IntersectClipRect(dc,r.left,r.top,r.right,r.bottom);
     /* Native state remains authoritative; opted-in bars replace geometry
      * below with the same fixed-thumb layout used for hit testing. */
@@ -28,18 +27,18 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
         thumb.top=info.xyThumbTop;thumb.bottom=info.xyThumbBottom;}
     else {first.right=first.left+info.dxyLineButton;last.left=last.right-info.dxyLineButton;
         thumb.left=info.xyThumbTop;thumb.right=info.xyThumbBottom;}
-    if(object==OBJID_CLIENT || *v->frame_scrollbars || (*v->edit_scrollbars && v->edit_thumb_messages(w,object)) || (*v->list_scrollbar &&
-        v->list_axis_owned(w,object))){win16_scroll_layout layout;POINT origin;
+    if(object==OBJID_CLIENT || v->scroll->resources.frame || (v->scroll->resources.edit && v->edit_thumb_messages(w,object)) || (v->scroll->resources.list &&
+        v->list_axis_owned(w,object))){style_scroll_layout layout;POINT origin;
         if(object==OBJID_CLIENT?v->scroll_layout(w,&layout):v->embedded_scroll_layout(w,object,&layout,&origin)){
             first=layout.first;last=layout.last;thumb=layout.thumb;
-            if(v->track->active && (object==OBJID_CLIENT || object==*v->embedded_object) && v->track->part==WIN16_SCROLL_THUMB){
-                if(vertical)OffsetRect(&thumb,0,v->track->pixel-thumb.top);
-                else OffsetRect(&thumb,v->track->pixel-thumb.left,0);}
+            if(v->scroll->track.active && (object==OBJID_CLIENT || object==v->scroll->object) && v->scroll->track.part==STYLE_SCROLL_THUMB){
+                if(vertical)OffsetRect(&thumb,0,v->scroll->track.pixel-thumb.top);
+                else OffsetRect(&thumb,v->scroll->track.pixel-thumb.left,0);}
             info.xyThumbBottom=layout.thumb_fits?1:0;info.xyThumbTop=0;
             info.rgstate[1]&=~STATE_SYSTEM_PRESSED;info.rgstate[5]&=~STATE_SYSTEM_PRESSED;
-            if(v->track->active && (object==OBJID_CLIENT || object==*v->embedded_object) && v->track->inside){
-                if(v->track->part==WIN16_SCROLL_LINE_BEFORE)info.rgstate[1]|=STATE_SYSTEM_PRESSED;
-                if(v->track->part==WIN16_SCROLL_LINE_AFTER)info.rgstate[5]|=STATE_SYSTEM_PRESSED;}
+            if(v->scroll->track.active && (object==OBJID_CLIENT || object==v->scroll->object) && v->scroll->track.inside){
+                if(v->scroll->track.part==STYLE_SCROLL_LINE_BEFORE)info.rgstate[1]|=STATE_SYSTEM_PRESSED;
+                if(v->scroll->track.part==STYLE_SCROLL_LINE_AFTER)info.rgstate[5]|=STATE_SYSTEM_PRESSED;}
         }
     }
     style_paint_solid_frame(dc,r,v->palette->edge,1);
@@ -62,11 +61,9 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
 
 void win16_control_draw_scroll(HWND w,const win16_control_scroll_view *v,HDC dc,LONG object,BOOL vertical)
 {
-    RECT r;SCROLLBARINFO bar={.cbSize=sizeof(bar)};style_present_buffer buffer;POINT brush,device;BOOL painted;
-    if(!dc || !GetScrollBarInfo(w,object,&bar) || (bar.rgstate[0]&STATE_SYSTEM_INVISIBLE))return;
-    if(object==OBJID_CLIENT)GetClientRect(w,&r);
-    else {RECT window;GetWindowRect(w,&window);r=bar.rcScrollBar;OffsetRect(&r,-window.left,-window.top);}
-    if(IsRectEmpty(&r))return;
+    style_scroll_surface surface;style_present_buffer buffer;POINT brush,device;BOOL painted;
+    if(!dc || !style_scroll_surface_read(w,object,&surface))return;
+    RECT r=surface.target;
     if(!style_present_buffer_begin(&buffer,dc,&r,FALSE)){
         (void)style_present_buffer_end(&buffer,FALSE);
         paint_pixels(w,v,dc,object,vertical);return;}

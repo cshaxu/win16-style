@@ -3,32 +3,37 @@
 #include "../../../application/graphics/paint_frame.h"
 #include "../../../application/control/control_protocol.h"
 #include "../../../application/graphics/dc_geometry.h"
-#include "../../../application/window/window_text.h"
-#include <stdlib.h>
+#include "lib-win32-style/application/control/combo_snapshot.h"
 
-void win16_control_draw_combo(HWND w,const BOOL *detached,const BOOL *common_dialog_combo,const win16_style_palette *palette,HFONT *font_slot,HDC dc,BOOL (*get_info)(HWND,PCOMBOBOXINFO),BOOL (*is_vb_combo)(HWND),BOOL (*is_vb_drive)(HWND))
+typedef struct combo_reader_context {
+    const style_control_state *state;
+    BOOL (*is_vb_combo)(HWND);
+} combo_reader_context;
+static HFONT combo_font(HWND window,void *context)
 {
-    COMBOBOXINFO info={.cbSize=sizeof(info)};RECT client,button,text,pixel;HFONT font;
-    WCHAR *label;int saved,left,top,u;BOOL selected,pressed,editable,simple;
-    if(!dc || !get_info(w,&info))return;
-    label=style_window_text_copy(w);if(!label)return;
-    font=*font_slot && (is_vb_combo(w) || style_control_protocol_is(w,L"COMBOBOX"))?
-        *font_slot:(HFONT)SendMessageW(w,WM_GETFONT,0,0);
-    pressed=SendMessageW(w,CB_GETDROPPEDSTATE,0,0)!=0;
-    simple=(GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_SIMPLE;
-    editable=(GetWindowLongPtrW(w,GWL_STYLE)&3)!=CBS_DROPDOWNLIST;
-    if(*detached){free(label);return;}
-    saved=SaveDC(dc);if(!saved){free(label);return;}
+    const combo_reader_context *reader=context;
+    return reader->state->font && (reader->is_vb_combo(window) || style_control_protocol_is(window,L"COMBOBOX"))?
+        reader->state->font:(HFONT)SendMessageW(window,WM_GETFONT,0,0);
+}
+void win16_control_draw_combo(HWND w,style_instance *instance,const style_control_state *state,BOOL common_dialog_combo,const win16_style_palette *palette,HDC dc,BOOL (*get_info)(HWND,PCOMBOBOXINFO),BOOL (*is_vb_combo)(HWND),BOOL (*is_vb_drive)(HWND))
+{
+    RECT client,button,text,pixel;int saved,left,top,u;BOOL selected;
+    if(!dc)return;
+    combo_reader_context context={state,is_vb_combo};const style_control_combo_reader reader={&context,get_info,combo_font};
+    style_control_combo_snapshot snapshot;if(!style_control_combo_snapshot_read(w,instance,&reader,&snapshot))return;
+    COMBOBOXINFO info=snapshot.info;WCHAR *label=snapshot.text;HFONT font=snapshot.font;
+    BOOL pressed=snapshot.pressed,simple=snapshot.simple,editable=snapshot.editable;
+    saved=SaveDC(dc);if(!saved){style_control_combo_snapshot_clear(&snapshot);return;}
     u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));GetClientRect(w,&client);
     /* Native child EDIT owns its caret, text, selection and IME. Do not paint
      * over that child while drawing the combo's surrounding chrome. */
-    if(editable || is_vb_drive(w) || *common_dialog_combo)ExcludeClipRect(dc,info.rcItem.left,info.rcItem.top,info.rcItem.right,info.rcItem.bottom);
+    if(editable || is_vb_drive(w) || common_dialog_combo)ExcludeClipRect(dc,info.rcItem.left,info.rcItem.top,info.rcItem.right,info.rcItem.bottom);
     if(simple){RECT list;
         if(GetWindowRect(info.hwndList,&list)){
             MapWindowPoints(NULL,w,(POINT *)&list,2);ExcludeClipRect(dc,list.left,list.top,list.right,list.bottom);}
         SetDCBrushColor(dc,(*palette).light);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
         text=info.rcItem;InflateRect(&text,u,u);style_paint_solid_frame(dc,text,(*palette).edge,u);
-        RestoreDC(dc,saved);free(label);return;
+        RestoreDC(dc,saved);style_control_combo_snapshot_clear(&snapshot);return;
     }
     SetDCBrushColor(dc,(*palette).light);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
     style_paint_solid_frame(dc,client,(*palette).edge,u);
@@ -44,14 +49,14 @@ void win16_control_draw_combo(HWND w,const BOOL *detached,const BOOL *common_dia
     if(pressed){left+=u;top+=u;}
     SetDCBrushColor(dc,IsWindowEnabled(w)?(*palette).edge:(*palette).shadow);
     win16_control_combo_arrow(dc,left,top,96*u);
-    if(editable || is_vb_drive(w) || *common_dialog_combo){RestoreDC(dc,saved);free(label);return;}
+    if(editable || is_vb_drive(w) || common_dialog_combo){RestoreDC(dc,saved);style_control_combo_snapshot_clear(&snapshot);return;}
     text=info.rcItem;selected=GetFocus()==w && !pressed;
     SetDCBrushColor(dc,selected?(*palette).active:(*palette).light);FillRect(dc,&text,(HBRUSH)GetStockObject(DC_BRUSH));
     SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));SetBkMode(dc,TRANSPARENT);
     SetTextColor(dc,!IsWindowEnabled(w)?(*palette).shadow:selected?(*palette).active_text:(*palette).edge);
     text.left+=2;DrawTextW(dc,label,-1,&text,DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX);
     if(selected)DrawFocusRect(dc,&info.rcItem);
-    RestoreDC(dc,saved);free(label);
+    RestoreDC(dc,saved);style_control_combo_snapshot_clear(&snapshot);
 }
 
 

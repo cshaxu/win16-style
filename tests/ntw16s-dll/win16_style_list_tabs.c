@@ -85,10 +85,8 @@ static int transition_cases(HWND root,HFONT font16,HFONT font20)
 }
 int main(void)
 {
-    WNDCLASSW cls={0};WCHAR name[80];HDESK desktop;HWND root,list;HFONT font16,font20;int stop=48,a,b,c,d,initial,multiple,repeat;
+    WNDCLASSW cls={0};HWND root,list;HFONT font16,font20;int stop=48,a,b,c,d,initial,multiple,repeat;
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-    swprintf_s(name,80,L"StyleTabs-%lu",GetCurrentProcessId());desktop=CreateDesktopW(name,NULL,NULL,0,GENERIC_ALL,NULL);
-    CHECK(desktop && SetThreadDesktop(desktop));
     cls.lpfnWndProc=owner;cls.lpszClassName=L"StyleTabs";cls.hInstance=GetModuleHandleW(NULL);
     CHECK(RegisterClassW(&cls));root=CreateWindowW(cls.lpszClassName,L"Tabs",WS_OVERLAPPEDWINDOW,0,0,500,200,NULL,NULL,cls.hInstance,NULL);CHECK(root);
     list=CreateWindowW(L"LISTBOX",L"",WS_CHILD|WS_VISIBLE|LBS_USETABSTOPS|LBS_NOINTEGRALHEIGHT,

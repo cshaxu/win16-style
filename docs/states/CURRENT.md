@@ -25,7 +25,7 @@ S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），102
 | Objective | 基础控件附着/移除、重入状态、原生协议和输入归application/control，按钮/静态/编辑/列表/组合/滚动的实际绘制和度量归appearance；接入已有两风格适用路径并删除旧机制。 |
 | Non-goals | 不新增Win2000整套控件或Luna/Aero功能、权限或目标；扩展控件/VB/VCL专属策略S10，创建/对话框S11，现代宿主S12，最终注册/图形S13。不能用这些边界保留本应公共的根生命周期。 |
 | Reference Baseline | S8 P1 54c8b269，259项发布后聚焦回归257通过/2项ETW skip，2项DWM旧失败未变；实际远端64现存blob/4删除路径及八文件已复核。 |
-| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S9-controls.md；沿用S1全部文件顺序及已确认分类，实施前补有限控件输入/调用/测试清单。 |
+| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S9-controls.md；有限输入docs/etc/evidence/t26-s9-controls-audit.json，沿用S1文件顺序，附加实际消费者有明确基线。 |
 | Files And ABI Surface | appearance/win3x/control根生命周期/基础消息绘制、application/control/graphics、Win2000已有按钮调用和产品attachment/controls消费者及对应测试；不变更五组件八文件和已有导出ABI。 |
 | Applicable Rules | 纯C17、MinGW GCC/Ninja/ccache；公共实例拥有资源/状态，完整操作回调，不传整个Win16私有对象、不作字段view/空包装；内层清理、外层报告。 |
 | Verification | 先基线/有限清单，双宽独立公共与实际基础控件：初始化、消息返回/LastError、选中/焦点/滚动/字体/DC、重入移除/销毁/失败清理；同快照八文件先发布再测试和远端复核。 |
@@ -40,6 +40,8 @@ S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），102
 S8已将popup/owner/tracking/bar状态、快照及跨窗口controller公共化，两风格普通/现代菜单实际接入；私有message/iterator四文件、TLS/filter/property/字段指针view删除。唯一干净双宽构建通过，1046输入一致，259项聚焦回归257通过/2项ETW跳过；两项DWM旧失败未变且不计通过。八文件先发布assets根/O:/winnt，再测并复核摘要，P1 `54c8b269`已实际fetch复核64现存blob/4删除路径和八文件；见[逐项审计](../etc/evidence/t26-s8-menu-audit.json)、[交付](../etc/evidence/t26-s8-delivery.json)与[远端](../etc/evidence/t26-s8-remote.json)。S8 closed，S9 active。
 
 S8全部临时快照/测试/发布备份已提炼并清理，保留.ninja/.ccache及正式包；无computer-use/私有桌面/兄弟依赖。Win3x/Win2000实际呈现策略继续独立，现代宿主和最终renderer/view分别S12/S13，不能将菜单公共化称为全T完成。
+
+S9已公共化control_state的字体/source/protocol/重绘/tabstop资源、共用lifecycle安装事务、combo子窗口/32项字体池、basic/list/edit/combo原生消息、根retire重入/解除失败/最终刷新及滚动track/controller/managed/message、list/scroll快照资源；实际Win3x消费者接入，私有basic/combo/list/edit/track路径与冗余转发删除。双宽all增量及68项去重开发调用通过（54项原生CTest、14项实际VCL/VB/滚动/控件绘制调用），来源986回执、原资源与公共归档边界通过，见[结果](../etc/evidence/t26-s9-controls-development.json)。历史旧desktop入口误执行及新增测试配置/编译/命令问题均保留，不算符合约束的通过；scroll-native本轮x86误创建私有线程桌面后已退出（未SwitchDesktop），调度器已停止并移除该夹具desktop setup，双宽当前桌面复验通过。完成的scratch均提炼清理，保留.ninja/.ccache。按钮/静态/组合快照、借用图像元数据及普通combo子窗口setup已公共化，最新两宽各21项CTest及14项实际消费者通过；103项输入处置及整批干净构建已完成，八文件已发布两处，发布后146项聚焦调用通过、2项DWM旧失败不变；提交推送和实际远端复核仍待完成，S9尚未收口；完整能力合批交付，不逐文件完整交付。
 
 ## Identifier State
 

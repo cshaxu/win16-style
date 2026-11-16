@@ -116,11 +116,11 @@ int main(void)
     DeleteDC(policy_dc);
 
     control_style *control=win16_control_state_create();
-    if(!control || control->font || control->protocol || control->tab_positions || control->instance.calls)return 38;
-    control->tab_positions=malloc(2*sizeof(*control->tab_positions));
-    control->font=win16_style_menu_font_acquire(96);
-    control->combo_fonts[0]=win16_style_menu_font_acquire(96);control->combo_font_count=1;
-    if(!control->tab_positions || !control->font || !control->combo_fonts[0]){win16_control_state_dispose(control);return 39;}
+    if(!control || control->state.font || control->state.protocol || control->state.tab_positions || control->instance.calls)return 38;
+    control->state.tab_positions=malloc(2*sizeof(*control->state.tab_positions));
+    control->state.font=win16_style_menu_font_acquire(96);
+    control->combo.fonts[0]=win16_style_menu_font_acquire(96);control->combo.font_count=1;
+    if(!control->state.tab_positions || !control->state.font || !control->combo.fonts[0]){win16_control_state_dispose(control);return 39;}
     win16_control_state_dispose(control);
     style_window *owned=win16_control_frame_state_create();
     if(!owned || owned->menu.loops || owned->fonts.title || owned->fonts.menu || owned->instance.calls)return 34;
@@ -213,7 +213,7 @@ int main(void)
     control_style *font_state=win16_control_state_create();HFONT old_font=NULL,outbound_font=NULL;
     HFONT application_font=(HFONT)GetStockObject(SYSTEM_FONT);WPARAM font_parameter=(WPARAM)application_font;
     if(!font_state || !win16_control_state_prepare_font(window,font_state,WM_SETFONT,&font_parameter,TRUE,&old_font,&outbound_font) ||
-       font_state->original_font!=application_font || font_parameter!=(WPARAM)application_font || !outbound_font){
+       font_state->state.original_font!=application_font || font_parameter!=(WPARAM)application_font || !outbound_font){
         if(font_state)win16_control_state_dispose(font_state);
         DestroyWindow(window);return 40;}
     win16_style_system_release(outbound_font);win16_style_system_release(old_font);
@@ -226,16 +226,15 @@ int main(void)
     const win16_control_frame_button_view button_view={NULL,&button_state,&button_detached,test_button_layout,test_button_paint};
     if(!win16_control_frame_button_motion(window,&button_view,WM_MOUSEMOVE,MAKELPARAM(0,0)) || !button_state.hot || button_paints!=1 ||
        !win16_control_frame_button_cancel(window,&button_view,WM_CAPTURECHANGED) || button_state.pressed || button_state.hot || button_paints!=2){DestroyWindow(window);return 24;}
-    BOOL tabs_detached=FALSE;HFONT tabs_font=(HFONT)GetStockObject(SYSTEM_FONT);int tabs_count=0,*tabs_positions=NULL;
-    const win16_control_tabstops_view tabs_view={&tabs_detached,&tabs_font,&tabs_count,&tabs_positions,test_forward_tabs};
+    style_instance tabs_instance={0};style_control_state tabs_state={.font=(HFONT)GetStockObject(SYSTEM_FONT)};
     int stops[]={4,8};
-    if(!win16_control_set_list_tabs(window,&tabs_view,2,(LPARAM)stops) || tabs_count!=2 ||
-       !tabs_positions || tabs_positions[0]<=0 || tabs_positions[1]<=tabs_positions[0] || forwarded_tabs!=1){
-        free(tabs_positions);DestroyWindow(window);return 20;}
-    if(win16_control_set_list_tabs(window,&tabs_view,1,0) || forwarded_tabs!=1){free(tabs_positions);DestroyWindow(window);return 21;}
-    tabs_detached=TRUE;
-    if(!win16_control_set_list_tabs(window,&tabs_view,0,0) || tabs_count!=2 || forwarded_tabs!=2){free(tabs_positions);DestroyWindow(window);return 22;}
-    free(tabs_positions);
+    if(!style_control_tabs_set(window,&tabs_instance,&tabs_state,2,(LPARAM)stops,test_forward_tabs) || tabs_state.tab_count!=2 ||
+       !tabs_state.tab_positions || tabs_state.tab_positions[0]<=0 || tabs_state.tab_positions[1]<=tabs_state.tab_positions[0] || forwarded_tabs!=1){
+        free(tabs_state.tab_positions);DestroyWindow(window);return 20;}
+    if(style_control_tabs_set(window,&tabs_instance,&tabs_state,1,0,test_forward_tabs) || forwarded_tabs!=1){free(tabs_state.tab_positions);DestroyWindow(window);return 21;}
+    tabs_instance.detached=TRUE;
+    if(!style_control_tabs_set(window,&tabs_instance,&tabs_state,0,0,test_forward_tabs) || tabs_state.tab_count!=2 || forwarded_tabs!=2){free(tabs_state.tab_positions);DestroyWindow(window);return 22;}
+    free(tabs_state.tab_positions);
     int frame_paints=0;style_frame_ncpaint(window,1,&frame_paints,test_frame_paint,test_frame_paint);
     if(frame_paints!=1){DestroyWindow(window);return 18;}
     if(style_frame_set_cursor(window,(WPARAM)window,MAKELPARAM(HTCLIENT,0)) ||

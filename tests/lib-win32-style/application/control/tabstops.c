@@ -1,4 +1,4 @@
-#include "lib-win32-style/appearance/win3x/control/list_paint.h"
+#include "lib-win32-style/application/control/control_state.h"
 #include "lib-win32-style/application/graphics/text_metrics.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,12 +16,11 @@ int main(void)
     CHECK(old && GetTextMetricsW(dc,&metrics));average=metrics.tmAveCharWidth;
     if(metrics.tmPitchAndFamily&TMPF_FIXED_PITCH)CHECK(style_text_alphabet_average(dc,&average));
     SelectObject(dc,old);ReleaseDC(list,dc);
-    BOOL detached=FALSE;int count=0,*positions=NULL,stops[]={32,64};
-    win16_control_tabstops_view view={&detached,&font,&count,&positions,forward};
-    CHECK(win16_control_set_list_tabs(list,&view,2,(LPARAM)stops));
-    CHECK(count==2 && positions && positions[0]==(32*average+2)/4 && positions[1]==(64*average+2)/4);
-    int *saved=positions;CHECK(!win16_control_set_list_tabs(list,&view,1,0) && positions==saved && count==2);
-    CHECK(win16_control_set_list_tabs(list,&view,0,0) && !positions && !count);
+    style_instance instance={0};style_control_state state={.font=font};int stops[]={32,64};
+    CHECK(style_control_tabs_set(list,&instance,&state,2,(LPARAM)stops,forward));
+    CHECK(state.tab_count==2 && state.tab_positions && state.tab_positions[0]==(32*average+2)/4 && state.tab_positions[1]==(64*average+2)/4);
+    int *saved=state.tab_positions;CHECK(!style_control_tabs_set(list,&instance,&state,1,0,forward) && state.tab_positions==saved && state.tab_count==2);
+    CHECK(style_control_tabs_set(list,&instance,&state,0,0,forward) && !state.tab_positions && !state.tab_count);
     CHECK(DeleteObject(font) && DestroyWindow(root));
     puts("LIST_TABS_OK proportional=1 forwarding=1 invalid_preserves=1 cleanup=1");return 0;
 }

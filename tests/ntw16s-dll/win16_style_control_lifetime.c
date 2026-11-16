@@ -24,9 +24,7 @@ static LRESULT CALLBACK callback(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWO
 }
 int main(void)
 {
-    HDESK desktop;HWND root;unsigned mode;
-    desktop=CreateDesktopW(L"StyleControlLifetime",NULL,NULL,0,GENERIC_ALL,NULL);
-    CHECK(desktop && SetThreadDesktop(desktop));
+    HWND root;unsigned mode;
     root=CreateWindowW(L"STATIC",L"Lifecycle probe",WS_OVERLAPPEDWINDOW,0,0,300,200,
         NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(root);
     for(mode=0;mode<2;++mode){

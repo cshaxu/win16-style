@@ -708,10 +708,10 @@
       "size": 3644,
       "sha256": "0b9c5d40849d321e3e467635d4c28b85c5897d8ee4dd8ec7bf3ed1d39fcd72ee",
       "action": "adapt",
-      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_track.c",
+      "destination": "src/lib-win32-style/application/control/scroll_track.c",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
-      "receiver": "style-core"
+      "reason": "T26 S9 shared native tracking and action state; public layout/part and caller hit/timing policy replace private types; preserve source blob/notices, fixed-thumb measurement remains in appearance",
+      "receiver": "application/control/scroll_track; Win3x measurement/hit/timing provider"
     },
     {
       "source": "src/ntw16s-dll/scroll_track.h",
@@ -719,11 +719,11 @@
       "blob": "36dab01c50c485fa0da58835d7c1b97cc5f79737",
       "size": 1244,
       "sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e",
-      "action": "retain",
-      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_track.h",
+      "action": "adapt",
+      "destination": "src/lib-win32-style/application/control/scroll_track.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
-      "receiver": "style-core"
+      "reason": "T26 S9 shared native tracking and action state; public layout/part and caller hit/timing policy replace private types; preserve source blob/notices, fixed-thumb measurement remains in appearance",
+      "receiver": "application/control/scroll_track; Win3x measurement/hit/timing provider"
     },
     {
       "source": "src/ntw16s-dll/theme.c",

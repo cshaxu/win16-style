@@ -8,7 +8,7 @@
 #include "lib-win32-style/application/menu/bar_controller.h"
 #include "lib-win32-style/application/window/native_frame.h"
 #include "lib-win32-style/application/window/messages.h"
-#include "lib-win32-style/application/window/install.h"
+#include "lib-win32-style/application/lifecycle/install.h"
 #include "lib-win32-style/application/window/caption_button.h"
 #include "lib-win32-style/application/window/frame.h"
 #include "lib-win32-style/application/graphics/bitmap.h"
@@ -580,7 +580,7 @@ static BOOL setup_frame(HWND window,void *context)
     return TRUE;
 }
 static void rollback_frame(HWND window,void *context)
-{(void)context;RemovePropW(window,frame_property);}
+{frame_window *frame=context;RemovePropW(window,frame_property);style_instance_detach(&frame->instance);}
 static void dispose_frame(void *context)
 {
     frame_window *frame=context;style_menu_owner_stop(&frame->menu);free(frame);
@@ -597,8 +597,8 @@ BOOL win2k_frame_attach(HWND window)
     if(!frame){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     frame->menu.bar.selected=frame->menu.bar.highlighted=-1;
     style_instance_init(&frame->instance,frame,dispose_frame);
-    const style_frame_install_ops ops={.context=frame,.setup=pending?NULL:setup_frame,.rollback=rollback_frame};
-    return style_frame_install(&frame->instance,window,pending?pending_frame_proc:frame_proc,NULL,&ops);
+    const style_instance_install_ops ops={.context=frame,.setup=pending?NULL:setup_frame,.rollback=rollback_frame};
+    return style_instance_install(&frame->instance,window,pending?pending_frame_proc:frame_proc,NULL,&ops);
 }
 
 BOOL win2k_frame_attached(HWND window)

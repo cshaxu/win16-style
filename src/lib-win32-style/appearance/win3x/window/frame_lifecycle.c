@@ -1,6 +1,6 @@
 #include "lib-win32-style/application/window/frame.h"
 #include "frame_lifecycle.h"
-#include "lib-win32-style/application/window/install.h"
+#include "lib-win32-style/application/lifecycle/install.h"
 #include "frame_layout.h"
 #include "frame_dispatch.h"
 #include "../common/font.h"
@@ -27,6 +27,7 @@ static void rollback(HWND window,void *context)
 {
     frame_install *install=context;
     (void)install->services->remove(window);
+    if(!install->state->instance.detached)style_instance_detach(&install->state->instance);
 }
 
 BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creating,const void *owner,const BOOL *cancelled,const win16_control_frame_lifecycle_services *v)
@@ -63,8 +64,8 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     style_client_screen(w,&client);
     style_native_frame_capture(&s->native,w,v->get_window_attribute,FALSE);
     frame_install install={s,v,client,normal};
-    const style_frame_install_ops ops={&install,cancelled,setup,rollback};
-    return style_frame_install(&s->instance,w,v->style_proc,owner,&ops);
+    const style_instance_install_ops ops={&install,cancelled,setup,rollback};
+    return style_instance_install(&s->instance,w,v->style_proc,owner,&ops);
 }
 BOOL win16_control_menu_owner_install(HWND w,const void *owner,const BOOL *cancelled,const win16_control_frame_lifecycle_services *v)
 {
@@ -77,8 +78,8 @@ BOOL win16_control_menu_owner_install(HWND w,const void *owner,const BOOL *cance
   DWORD error=cancelled&&*cancelled?ERROR_CANCELLED:ERROR_INVALID_DATA;
   win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;
  }
- const style_frame_install_ops ops={.cancelled=cancelled};
- return style_frame_install(&s->instance,w,v->style_proc,owner,&ops);
+ const style_instance_install_ops ops={.cancelled=cancelled};
+ return style_instance_install(&s->instance,w,v->style_proc,owner,&ops);
 }
 BOOL win16_control_frame_remove_owned(HWND w,const void *owner,const win16_control_frame_lifecycle_services *v)
 {

@@ -1,60 +1,51 @@
 #include "control_remove.h"
 #include "control_class.h"
+#include "lib-win32-style/application/control/scroll_state.h"
 #include "updown_adapter.h"
+#include "lib-win32-style/application/control/retire.h"
 
-BOOL win16_control_remove(HWND w,const win16_control_remove_services *v)
+typedef struct control_retire {
+    control_style *state;
+    const win16_control_remove_services *services;
+} control_retire;
+static void finish_input(HWND window,void *context)
+{control_retire *retire=context;retire->services->scroll_finish(window,retire->state,TRUE);}
+static style_control_retired release_bindings(HWND w,void *context,BOOL terminal)
 {
-    DWORD_PTR data;control_style *s;
-    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
-        !GetWindowSubclass(w,v->control_proc,(UINT_PTR)v->control_proc,&data))return FALSE;
-    s=(control_style *)data;
-    if(s->removing)return TRUE;
-    style_instance_retain(&s->instance);s->removing=TRUE;
-    /* End the live gesture while queries still see its full-width report.
-     * The application may remove again or destroy the HWND in this notice. */
-    v->scroll_finish(w,s,TRUE);
-    if(s->instance.detached){style_instance_release(&s->instance);return TRUE;}
-    if(!style_instance_detach(&s->instance)){
-        s->removing=FALSE;style_instance_release(&s->instance);return FALSE;}
-    ntw16s_updown_retire(&s->updown);BOOL track=s->track_window!=NULL;v->trackbar_unbind(s);v->toolbar_unbind(s);v->combo_text_unbind(s,FALSE);v->detach_combo_list(s);
+    control_retire *retire=context;control_style *s=retire->state;
+    const win16_control_remove_services *v=retire->services;
+    ntw16s_updown_retire(&s->updown);BOOL track=s->track_window!=NULL;
+    v->trackbar_unbind(s);v->toolbar_unbind(s);
+    if(terminal){
+        if(s->list_theme_owned){s->list_theme_owned=FALSE;(void)v->theme_terminal(w,s);}
+        style_scroll_caret_destroy(w,&s->scroll.resources);style_scroll_stop_timer(w,&s->scroll.resources.timer);
+        style_control_combo_unbind(&s->combo,TRUE);
+        return (style_control_retired){style_control_combo_list_retire(&s->combo,&s->instance,v->lookup,v->terminal_list),FALSE};
+    }
+    style_control_combo_unbind(&s->combo,FALSE);
+    (void)style_control_combo_list_retire(&s->combo,&s->instance,v->lookup,v->remove_list);
     if(s->list_theme_owned){s->list_theme_owned=FALSE;v->theme_remove(w,s);}
-    if(s->font && IsWindow(w) && !s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->original_font,FALSE);
+    if(s->state.font && IsWindow(w) && !s->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)s->state.original_font,FALSE);
     if(IsWindow(w) && style_control_is_separator(w))SetWindowPos(w,NULL,0,0,0,0,
         SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
-    v->scroll_caret_destroy(w,s);
-    if(s->list_suppression && !s->list_redraw_off)SendMessageW(w,WM_SETREDRAW,TRUE,0);
-    v->scroll_stop_timer(w,s);
-    if(s->scroll.active){s->scroll.active=FALSE;v->scroll_release_capture(w,s);}
-    style_instance_release(&s->instance);
-    if(track && IsWindow(w))SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
-    RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
-    if(style_control_is_scroll(w) && GetFocus()==w)SendMessageW(w,WM_SETFOCUS,0,0);
-    return TRUE;
+    style_scroll_caret_destroy(w,&s->scroll.resources);
+    if(s->state.suppression && !s->state.redraw_off)SendMessageW(w,WM_SETREDRAW,TRUE,0);
+    style_scroll_stop_timer(w,&s->scroll.resources.timer);
+    if(s->scroll.track.active){s->scroll.track.active=FALSE;style_scroll_release_capture(w,&s->scroll.resources.previous_capture,s->scroll.resources.list || s->scroll.resources.edit || s->scroll.resources.frame);}
+    return (style_control_retired){TRUE,track};
+}
+static const style_control_retire_ops retire_operations={finish_input,release_bindings};
+BOOL win16_control_remove(HWND w,const win16_control_remove_services *v)
+{
+    DWORD_PTR data;
+    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
+        !GetWindowSubclass(w,v->control_proc,(UINT_PTR)v->control_proc,&data))return FALSE;
+    control_style *s=(control_style *)data;control_retire retire={s,v};
+    return style_control_retire(w,&s->instance,&s->state,FALSE,&retire,&retire_operations);
 }
 BOOL win16_control_terminal(HWND w,const win16_control_remove_services *v)
 {
-    DWORD_PTR data;control_style *s;
-    BOOL result;
-    if(!GetWindowSubclass(w,v->control_proc,(UINT_PTR)v->control_proc,&data))return TRUE;
-    s=(control_style *)data;
-    style_instance_retain(&s->instance);
-    if(!style_instance_detach(&s->instance)){
-        style_instance_release(&s->instance);SetLastError(ERROR_INVALID_STATE);return FALSE;
-    }
-    ntw16s_updown_retire(&s->updown);v->trackbar_unbind(s);v->toolbar_unbind(s);
-    if(s->list_theme_owned){s->list_theme_owned=FALSE;(void)v->theme_terminal(w,s);}
-    v->scroll_caret_destroy(w,s);
-    v->scroll_stop_timer(w,s);
-    v->combo_text_unbind(s,TRUE);result=v->terminal_combo_list(s);
-    style_instance_release(&s->instance);
-    return result;
-}
-
-BOOL win16_control_combo_list_retire(control_style *s,SUBCLASSPROC proc,BOOL (*retire)(HWND))
-{
-    DWORD_PTR data;HWND list=s->combo_list;s->combo_list=NULL;
-    /* An independently removed/reinstalled child is no longer ours. */
-    if(list && GetWindowSubclass(list,proc,(UINT_PTR)proc,&data) &&
-        ((control_style *)data)->owner==s)return retire(list);
-    return TRUE;
+    DWORD_PTR data;if(!GetWindowSubclass(w,v->control_proc,(UINT_PTR)v->control_proc,&data))return TRUE;
+    control_style *s=(control_style *)data;control_retire retire={s,v};
+    return style_control_retire(w,&s->instance,&s->state,TRUE,&retire,&retire_operations);
 }

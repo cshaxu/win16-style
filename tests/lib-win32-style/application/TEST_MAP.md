@@ -25,7 +25,7 @@
 | `menu_snapshot` | `menu/menu_snapshot.c`; Win16 and Win2000 system-menu consumers |
 | `menu_owner` | `menu/menu_owner.c`; `tests/ntw16s-dll/vcl_popup_scope.c` (product integration) |
 | `messages` | `window/messages.c` (native order/WVR, error preservation, removal in callback, print and font protocols); ordinary Win3.x/Win2000 consumers |
-| `install` | `window/install.c` (publication, cancellation, foreign subclass, setup failure rollback, destruction/replacement identity and lifetime); actual two-style fixtures |
+| `install` | `lifecycle/install.c` (publication, cancellation, foreign subclass, setup failure rollback, destruction/replacement identity and lifetime); actual two-style window and control fixtures; explicit failed setup retaining ownership |
 | `font_pair` | `graphics/font_pair.c` (real GDI ownership, partial failure retains old pair, stock lease and disposal); ordinary and modern frame consumers |
 | `native_frame` | `window/native_frame.c` (observed/default DWM, child exclusion, pending and keep-outer restoration, coalesced deferred refresh); actual Win3.x/Win2000 frame consumers |
 | `caption_button` | `window/caption_button.c` (capture ownership, release/cancel synchronous reentry, destroyed target); Win3.x `control_link.c` and Win2000 `instance_lifetime.c` (three actual caption commands, busy removal and cancel) |
@@ -65,3 +65,31 @@
 
 | `menu/bar_snapshot` | `menu/bar_snapshot.c`: custom/native geometry, copied text, original position/data, owner measurement/drawing, DC isolation, mutation failure cleanup; two appearance product menu suites |
 | `menu/bar_controller` | `menu/bar_controller.c`: both navigation policies, command/mnemonic, focus/cancel and reentrant initialization stop; Win3x cancel/NEXTMENU and Win2000 native input suites |
+
+| `control/control_state` | `control/control_state.c`: font lease/source/native forwarding, failure fallback, query teardown, retired setter successor, tab commit/failure/reentrant cleanup; Win3x control-link/list-paint and product font/control suites |
+
+| `control/combo` | `control/combo.c`: actual native EDIT binding/source/paint-font messages, 32/33 lease boundary, duplicate bind, child identity replacement and setter removal/successor; existing VCL/VB combo product fixtures |
+
+| `control/basic` | `control/basic.c`: native bitmap/borrowed DC isolation and ownership, native-before-overlay return/ordering, detach during native callback; real button/static/radio production present suite |
+
+| `control/retire` | `control/retire.c`: recursive removal, destruction during input completion, failed detach retaining ownership, terminal child failure and disposal-before-refresh |
+| `control/scroll_resources` | `control/scroll_resources.c`: real caret resize/hide/foreign ownership, timer release and borrowed capture restore |
+| `control/control_state` tabstops | `control/tabstops.c`: proportional-font set-time conversion, native forwarding, invalid input preserving state and cleanup; no appearance linkage |
+
+| `control/list` | `control/list.c`: real LISTBOX native state/forwarding, tabstop ownership, client PRINT coordinates/DC restore and reentrant retirement; production tabs/lifetime/control-present |
+
+| `control/edit` | `control/edit.c`: real EDIT text/selection/undo, native redraw ownership, print return/DC isolation, nonclient and callback retirement; actual edit clipboard/font/control-present suites |
+| `control/combo` messages | `control/combo.c`: native COMBOBOX item/selection and redraw state, borrowed PRINTCLIENT renderer; binding tests remain independent |
+
+| `control/scroll_track` | `control/scroll_track.c`: independent layouts and two hit/repeat policies, drag/cancel/native notice contract; Win3x geometry fidelity remains product integration |
+| `control/scroll_controller`, `scroll_geometry` | `control/scroll_controller.c`: real SCROLLBAR notices, owned timer/capture, epoch cancellation and callback destruction; product geometry/VCL/native input suites |
+
+| `control/scroll_managed` | `control/scroll_managed.c`: native result/error/redraw forwarding, role qualification, report/track position, setter replacement and render-time retirement lifetime; product native/VCL scroll suites |
+
+| `control/scroll_message` | `control/scroll_message.c`: native return and SBM rewrite, full track position, disabled native input, frame PRINT DC/retirement and sizebox; actual VCL scroll/control-present |
+| `control/list_snapshot` | `control/list_snapshot.c`: native single/multicolumn rows/selection/text, failed read, DC isolation and read-time removal; actual list rendering suites |
+| `control/scroll_surface` | `control/scroll_surface.c`: native client/embedded bounds, window DC origins, hidden/invalid rejection; actual scroll raster/present suites |
+
+| `control/button_snapshot` | `control/button_snapshot.c`: native BUTTON/STATIC role/state/check/text, borrowed font/icon, query-time retirement and text cleanup; actual basic controls rendering |
+| `control/combo_snapshot` | `control/combo_snapshot.c`: native dropdown/dropdownlist/simple info/text/font/children, drop state, native info failure and font-query removal cleanup; actual VCL combo and present suites |
+| `control/combo` setup | `control/combo.c`: parent/child publication, query/install/edit failure, install/edit retirement, failed rollback retaining identity and successful cleanup; actual combo installation |

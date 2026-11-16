@@ -7,60 +7,33 @@
 #include "progress_paint.h"
 #include <commctrl.h>
 #include <stdlib.h>
+static HFONT acquire_font(HWND w,HFONT source,BOOL native)
+{
+    BOOL vb=!native && (style_control_vb_frame(w) || style_control_vb_edit(w) || style_control_vb_button(w) || style_control_vb_combo(w) || style_control_vb_list(w));
+    return vb?win16_style_vb_font_acquire(source):win16_style_system_acquire(source);
+}
+static const style_control_fonts font_operations={win16_style_system_source,acquire_font,win16_style_system_retain,win16_style_system_release};
 control_style *win16_control_state_create(void)
-{control_style *s=calloc(1,sizeof(*s));if(s)style_instance_init(&s->instance,s,win16_control_state_dispose);return s;}
+{
+    control_style *s=calloc(1,sizeof(*s));if(!s)return NULL;
+    style_instance_init(&s->instance,s,win16_control_state_dispose);style_control_state_init(&s->state,&font_operations);return s;
+}
 void win16_control_state_dispose(void *context)
 {
     control_style *s=context;
-    for(unsigned i=0;i<s->combo_font_count;++i)win16_style_system_release(s->combo_fonts[i]);
-    win16_style_system_release(s->font);
-    style_control_protocol_release(s->protocol);
-    free(s->tab_positions);free(s);
+    style_control_combo_dispose(&s->combo,&s->state);
+    style_control_state_dispose(&s->state);free(s);
 }
 BOOL win16_control_state_prepare_font(HWND w,control_style *s,UINT m,WPARAM *a,BOOL native_font,HFONT *previous,HFONT *outbound)
 {
-    if(!s->frame_scrollbars && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT) &&
-            (native_font || style_control_vb_frame(w) || style_control_vb_edit(w) || style_control_vb_button(w) || style_control_vb_combo(w) || style_control_vb_list(w))){
-        HFONT source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
-        if(!s->instance.detached && source!=s->original_font){
-            HFONT replacement=native_font?win16_style_system_acquire(source):win16_style_vb_font_acquire(source);
-            *previous=s->font;s->original_font=source;s->font=replacement?replacement:source;
-        }
-    }
-    if(s->instance.detached)return FALSE;
-    if(m==WM_SETFONT && s->combo_passthrough){
-        s->original_font=win16_style_system_source((HFONT)*a);*a=(WPARAM)s->original_font;
-        if(((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_DROPDOWNLIST){
-            HFONT replacement=win16_style_system_acquire(s->original_font);*previous=s->font;s->font=replacement?replacement:s->original_font;
-        }
-    }
-    if(m==WM_SETFONT && !s->frame_scrollbars && !s->combo_passthrough){
-        HFONT original=win16_style_system_source((HFONT)*a);
-        BOOL vb=style_control_vb_frame(w) || style_control_vb_edit(w) || style_control_vb_button(w) || style_control_vb_combo(w) || style_control_vb_list(w);
-        HFONT replacement=vb?win16_style_vb_font_acquire(original):win16_style_system_acquire(original);
-        *previous=s->font;s->original_font=original;
-        s->font=replacement?replacement:original;
-        *outbound=s->font;win16_style_system_retain(*outbound);
-        /* Native tab geometry and VB checklist retain the application's font. */
-        *a=(WPARAM)((native_font || ntw16s_vb_checklist_owner(w))?original:s->font);
-    }
-    return TRUE;
-}
-LRESULT win16_control_combo_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,win16_control_state_present present,win16_control_state_painter paint)
-{
-    LRESULT result=0;
-    if(m==WM_SETREDRAW){s->list_redraw_off=!a;result=DefSubclassProc(w,m,a,b);}
-    else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present(w,s,dc,paint);EndPaint(w,&ps);}
-    else if(m==WM_PRINTCLIENT)paint(w,s,(HDC)a);
-    else if(m==WM_ERASEBKGND)result=1;
-    else {BOOL affects=m==CB_SETCURSEL || m==CB_SHOWDROPDOWN || m==WM_COMMAND || m==WM_ENABLE ||
-            m==WM_SETFONT || m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_KEYDOWN ||
-            m==WM_LBUTTONDOWN || m==WM_LBUTTONUP;
-        BOOL suppress=style_control_redraw_can_suppress(w,s->list_redraw_off,s->list_suppression) && affects;
-        result=style_control_redraw_call(w,m,a,b,suppress,&s->list_suppression,&s->instance.detached,&s->list_redraw_off);
-        if(!s->instance.detached && !s->list_suppression && !s->list_redraw_off && affects)
-            RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);}
-    return result;
+    style_control_font_mode mode=STYLE_CONTROL_FONT_NONE;
+    if(!s->scroll.resources.frame && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT) &&
+        (native_font || style_control_vb_frame(w) || style_control_vb_edit(w) || style_control_vb_button(w) || style_control_vb_combo(w) || style_control_vb_list(w)))mode=STYLE_CONTROL_FONT_OBSERVE;
+    if(m==WM_SETFONT && s->combo_passthrough)
+        mode=((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_DROPDOWNLIST?STYLE_CONTROL_FONT_CACHE:STYLE_CONTROL_FONT_NORMALIZE;
+    if(m==WM_SETFONT && !s->scroll.resources.frame && !s->combo_passthrough)mode=STYLE_CONTROL_FONT_REPLACE;
+    return style_control_font_message(w,&s->instance,&s->state,a,mode,native_font,
+        mode==STYLE_CONTROL_FONT_REPLACE && (native_font || ntw16s_vb_checklist_owner(w)),previous,outbound);
 }
 LRESULT win16_control_tab_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,win16_control_state_present present,win16_control_state_painter paint)
 {

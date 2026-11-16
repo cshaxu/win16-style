@@ -10,10 +10,6 @@ int main(int argc,char **argv)
     HFONT font,second,base;HDC src,expected,actual;HBITMAP a,b,c;
     HGDIOBJ oa,ob,oc,of,of2;RECT clear={0,0,128,64};TEXTMETRICW tm,scaled;
     unsigned n,pixels=0;DWORD before,after;LOGFONTW lf;
-    WCHAR desktop_name[80];HDESK original=GetThreadDesktop(GetCurrentThreadId()),desktop;
-    swprintf_s(desktop_name,80,L"Win16StyleFont-%lu",GetCurrentProcessId());
-    desktop=CreateDesktopW(desktop_name,NULL,NULL,0,GENERIC_ALL,NULL);
-    CHECK(desktop && SetThreadDesktop(desktop));
     if(argc==2 && !strcmp(argv[1],"--dpi96"))SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE);
     else SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     src=CreateCompatibleDC(NULL);expected=CreateCompatibleDC(NULL);actual=CreateCompatibleDC(NULL);
@@ -49,5 +45,5 @@ int main(int argc,char **argv)
     printf("FONT20 PASS source=%ld target=20 glyphs=224 pixels=%u exact; native EDIT row/selection; GDI=%lu/%lu\n",tm.tmHeight,pixels,before,after);
     SelectObject(src,of);SelectObject(src,oa);SelectObject(expected,ob);SelectObject(actual,oc);
     DeleteObject(base);DeleteObject(a);DeleteObject(b);DeleteObject(c);DeleteDC(src);DeleteDC(expected);DeleteDC(actual);
-    CHECK(SetThreadDesktop(original) && CloseDesktop(desktop));return 0;
+    return 0;
 }

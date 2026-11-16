@@ -67,14 +67,14 @@ BOOL win16_control_special_tree_install(HWND w,const win16_style_palette *palett
 {
     if(!style_control_protocol_is(w,WC_TREEVIEWW)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    s->native_border=TRUE;
+    s->scroll.resources.native_border=TRUE;
     return TRUE;
 }
 BOOL win16_control_special_grid_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
     BOOL result=TRUE;
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    style_instance_retain(&s->instance);s->native_border=TRUE;
+    style_instance_retain(&s->instance);s->scroll.resources.native_border=TRUE;
     /* Owner-drawn lists use the shared frame scrollbar painter but may not
      * have the ordinary control attachment's theme lease. Common-controls
      * theme animations can otherwise repaint over that scrollbar later. */
@@ -89,6 +89,6 @@ BOOL win16_control_special_picture_install(HWND w,const win16_style_palette *pal
 {
     if(!ntw16s_vb_picture(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    s->native_border=TRUE;
+    s->scroll.resources.native_border=TRUE;
     return TRUE;
 }

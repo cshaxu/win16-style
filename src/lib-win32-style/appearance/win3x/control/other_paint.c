@@ -1,6 +1,6 @@
 #include "other_paint.h"
 #include "basic_paint.h"
-#include "../../../application/graphics/icon_size.h"
+#include "lib-win32-style/application/control/button_snapshot.h"
 #include "../../../application/graphics/paint_frame.h"
 #include <commctrl.h>
 
@@ -35,14 +35,14 @@ static BOOL fit_push_text(HDC target,HFONT font,const WCHAR *text,const RECT *bo
     DeleteObject(bitmap);DeleteDC(memory);
     if(ok){drawn->cx=out_width;drawn->cy=out_height;}return ok;
 }
-void win16_control_other(HWND w,const BOOL *detached,const win16_style_palette *palette,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label,UINT (*button_type)(HWND,DWORD),BOOL (*group_push)(HWND))
+void win16_control_other(HWND w,style_instance *instance,const win16_style_palette *palette,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label,UINT (*button_type)(HWND,DWORD),BOOL (*group_push)(HWND))
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);UINT type=(label?(style&SS_TYPEMASK):button_type(w,style));
     int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));RECT bounds=r;TEXTMETRICW tm;
     LRESULT button_state=label?0:SendMessageW(w,BM_GETSTATE,0,0);
     UINT flags=DT_LEFT;BOOL pushed=(button_state&BST_PUSHED)!=0,fit=!label && group_push(w);SIZE fitted={0};
     if(!label && (style&BS_PUSHLIKE))pushed=pushed || SendMessageW(w,BM_GETCHECK,0,0)!=BST_UNCHECKED;
-    if(*detached)return;
+    if(instance->detached)return;
     SelectObject(dc,font);GetTextMetricsW(dc,&tm);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,(*palette).edge);
     if(label && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME){
         /* A later STATIC separator has no Win3.x etched relief. Keep its
@@ -82,19 +82,10 @@ void win16_control_other(HWND w,const BOOL *detached,const win16_style_palette *
     if(!IsWindowEnabled(w) && !(label && type==SS_SIMPLE))SetTextColor(dc,(*palette).shadow);
     if(!label && (style&(BS_ICON|BS_BITMAP))){
         UINT image_type=(style&BS_ICON)?IMAGE_ICON:IMAGE_BITMAP;
-        HANDLE image=(HANDLE)SendMessageW(w,BM_GETIMAGE,image_type,0);
-        BUTTON_IMAGELIST images={0};BOOL listed=FALSE;
-        int cx=0,cy=0;BITMAP bits;
-        if(*detached || !IsWindow(w))return;
-        if(!image){
-            listed=(BOOL)SendMessageW(w,BCM_GETIMAGELIST,0,(LPARAM)&images);
-            if(*detached || !IsWindow(w))return;
-            listed=listed && images.himl && images.himl!=BCCL_NOGLYPH &&
-                ImageList_GetIconSize(images.himl,&cx,&cy);
-        }
-        if(image && image_type==IMAGE_ICON){
-            (void)style_icon_size((HICON)image,&cx,&cy);
-        }else if(image && GetObjectW(image,sizeof(bits),&bits)){cx=bits.bmWidth;cy=bits.bmHeight;}
+        style_control_button_image snapshot;
+        if(!style_control_button_image_read(w,instance,image_type,&snapshot))return;
+        HANDLE image=snapshot.image;BUTTON_IMAGELIST images=snapshot.images;BOOL listed=snapshot.listed;
+        int cx=snapshot.size.cx,cy=snapshot.size.cy;
         if((image || listed) && cx>0 && cy>0){
             int x=bounds.left+(bounds.right-bounds.left-cx)/2,y=bounds.top+(bounds.bottom-bounds.top-cy)/2;
             if(listed){
@@ -116,7 +107,7 @@ void win16_control_other(HWND w,const BOOL *detached,const win16_style_palette *
                 if(listed){
                     int count=ImageList_GetImageCount(images.himl),index=0;
                     if(count>1)index=!IsWindowEnabled(w)?3:pushed?2:(button_state&BST_HOT)?1:type==BS_DEFPUSHBUTTON?4:0;
-                    if(!*detached && index<count)ImageList_DrawEx(images.himl,index,dc,x,y,cx,cy,CLR_NONE,
+                    if(!instance->detached && index<count)ImageList_DrawEx(images.himl,index,dc,x,y,cx,cy,CLR_NONE,
                         (*palette).shadow,count==1 && !IsWindowEnabled(w)?ILD_BLEND50:ILD_NORMAL);
                 }else DrawStateW(dc,NULL,NULL,(LPARAM)image,0,x,y,cx,cy,
                         (image_type==IMAGE_ICON?DST_ICON:DST_BITMAP)|(IsWindowEnabled(w)?DSS_NORMAL:DSS_DISABLED));

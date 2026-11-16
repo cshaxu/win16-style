@@ -1,4 +1,4 @@
-#include "lib-win32-style/application/window/install.h"
+#include "lib-win32-style/application/lifecycle/install.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -25,7 +25,7 @@ static BOOL setup(HWND window,void *context)
         s->cancelled=TRUE;
         if(!style_instance_detach(&s->instance))return FALSE;
         replacement=prepare(0);
-        if(!replacement || !style_frame_install(&replacement->instance,window,procedure,NULL,NULL))return FALSE;
+        if(!replacement || !style_instance_install(&replacement->instance,window,procedure,NULL,NULL))return FALSE;
         pinned=disposed==before;
     }
     return TRUE;
@@ -34,7 +34,7 @@ static void rollback(HWND window,void *context)
 {
     fixture *s=context;++rollbacks;
     pinned=s->instance.calls>0 && style_instance_lookup(window,procedure)==&s->instance;
-    SetLastError(999);
+    style_instance_detach(&s->instance);SetLastError(999);
 }
 static LRESULT CALLBACK procedure(HWND window,UINT message,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR ref)
 {
@@ -53,25 +53,29 @@ int main(void)
     CHECK(RegisterClassW(&cls));
     window=CreateWindowW(cls.lpszClassName,L"Install transaction",WS_OVERLAPPEDWINDOW,20,20,200,100,NULL,NULL,module,NULL);CHECK(window);
     fixture *s=prepare(0);CHECK(s);
-    const int owner=1;style_frame_install_ops ops={s,&s->cancelled,setup,rollback};
-    CHECK(style_frame_install(&s->instance,window,procedure,&owner,&ops));
+    const int owner=1;style_instance_install_ops ops={s,&s->cancelled,setup,rollback};
+    CHECK(style_instance_install(&s->instance,window,procedure,&owner,&ops));
     CHECK(s->instance.owner==&owner && s->instance.calls==0 && setups==1 && allocated==1 && disposed==0);
     remove_instance(&s->instance);CHECK(allocated==disposed);
-    s=prepare(0);CHECK(s);s->cancelled=TRUE;ops=(style_frame_install_ops){s,&s->cancelled,setup,rollback};
-    CHECK(!style_frame_install(&s->instance,window,procedure,NULL,&ops) && GetLastError()==ERROR_CANCELLED && setups==1 && allocated==disposed);
+    s=prepare(0);CHECK(s);s->cancelled=TRUE;ops=(style_instance_install_ops){s,&s->cancelled,setup,rollback};
+    CHECK(!style_instance_install(&s->instance,window,procedure,NULL,&ops) && GetLastError()==ERROR_CANCELLED && setups==1 && allocated==disposed);
     style_instance foreign={0};CHECK(SetWindowSubclass(window,procedure,(UINT_PTR)procedure,(DWORD_PTR)&foreign));
     s=prepare(0);CHECK(s);
-    CHECK(!style_frame_install(&s->instance,window,procedure,NULL,NULL) && GetLastError()==ERROR_ALREADY_EXISTS && allocated==disposed);
+    CHECK(!style_instance_install(&s->instance,window,procedure,NULL,NULL) && GetLastError()==ERROR_ALREADY_EXISTS && allocated==disposed);
     CHECK(RemoveWindowSubclass(window,procedure,(UINT_PTR)procedure));
-    s=prepare(1);CHECK(s);ops=(style_frame_install_ops){s,&s->cancelled,setup,rollback};
-    CHECK(!style_frame_install(&s->instance,window,procedure,NULL,&ops) && GetLastError()==4501 && pinned && rollbacks==1 && allocated==disposed);
+    s=prepare(1);CHECK(s);ops=(style_instance_install_ops){s,&s->cancelled,setup,rollback};
+    CHECK(!style_instance_install(&s->instance,window,procedure,NULL,&ops) && GetLastError()==4501 && pinned && rollbacks==1 && allocated==disposed);
     CHECK(!style_instance_lookup(window,procedure));
-    s=prepare(2);CHECK(s);ops=(style_frame_install_ops){s,&s->cancelled,setup,rollback};pinned=FALSE;
-    CHECK(!style_frame_install(&s->instance,window,procedure,NULL,&ops) && GetLastError()==ERROR_INVALID_WINDOW_HANDLE && pinned && allocated==disposed);
+    s=prepare(1);CHECK(s);ops=(style_instance_install_ops){.context=s,.setup=setup};
+    CHECK(!style_instance_install(&s->instance,window,procedure,NULL,&ops) && GetLastError()==4501);
+    CHECK(!s->instance.detached && !s->instance.calls && style_instance_lookup(window,procedure)==&s->instance);
+    remove_instance(&s->instance);CHECK(allocated==disposed);
+    s=prepare(2);CHECK(s);ops=(style_instance_install_ops){s,&s->cancelled,setup,rollback};pinned=FALSE;
+    CHECK(!style_instance_install(&s->instance,window,procedure,NULL,&ops) && GetLastError()==ERROR_INVALID_WINDOW_HANDLE && pinned && allocated==disposed);
     window=NULL;
     window=CreateWindowW(cls.lpszClassName,L"Replacement",WS_OVERLAPPEDWINDOW,20,20,200,100,NULL,NULL,module,NULL);CHECK(window);
-    s=prepare(3);CHECK(s);ops=(style_frame_install_ops){s,&s->cancelled,setup,rollback};pinned=FALSE;
-    CHECK(!style_frame_install(&s->instance,window,procedure,NULL,&ops) && GetLastError()==ERROR_CANCELLED && pinned);
+    s=prepare(3);CHECK(s);ops=(style_instance_install_ops){s,&s->cancelled,setup,rollback};pinned=FALSE;
+    CHECK(!style_instance_install(&s->instance,window,procedure,NULL,&ops) && GetLastError()==ERROR_CANCELLED && pinned);
     CHECK(replacement && style_instance_lookup(window,procedure)==&replacement->instance && !replacement->instance.detached && allocated==disposed+1);
     remove_instance(&replacement->instance);replacement=NULL;CHECK(allocated==disposed);
 done:

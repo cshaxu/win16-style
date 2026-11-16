@@ -93,13 +93,9 @@ int main(int argc,char **argv)
 {
     const WCHAR *classes[]={L"BUTTON",L"BUTTON",L"BUTTON",L"STATIC",L"LISTBOX",L"COMBOBOX"};
     DWORD types[]={BS_PUSHBUTTON,BS_AUTOCHECKBOX,BS_GROUPBOX,SS_LEFT,LBS_NOTIFY,CBS_DROPDOWNLIST};
-    WNDCLASSW wc={0};WCHAR name[80];HDESK desktop;HWND root,w;unsigned i,n,warm;DWORD before,after;
+    WNDCLASSW wc={0};HWND root,w;unsigned i,n,warm;DWORD before,after;
     BOOL scroll_only=argc==2 && !strcmp(argv[1],"--scroll-only");
     if(argc!=1 && !scroll_only){if(argc!=2 || strcmp(argv[1],"--leak-negative"))return 2;inject_leak=TRUE;}
-    if(!scroll_only){
-        swprintf_s(name,80,L"StyleControlPresent-%lu",GetCurrentProcessId());
-        desktop=CreateDesktopW(name,NULL,NULL,0,GENERIC_ALL,NULL);CHECK(desktop && SetThreadDesktop(desktop));
-    }
     wc.lpfnWndProc=witness;wc.lpszClassName=L"StyleControlPresent";wc.hInstance=GetModuleHandleW(NULL);
     CHECK(RegisterClassW(&wc));root=CreateWindowW(wc.lpszClassName,L"Presentation",WS_OVERLAPPEDWINDOW|WS_VISIBLE,
         0,0,500,300,NULL,NULL,wc.hInstance,NULL);CHECK(root);ShowWindow(root,SW_SHOWNORMAL);UpdateWindow(root);
@@ -107,7 +103,7 @@ int main(int argc,char **argv)
      * including the reported 17x28 regression and both axis directions. */
     for(int vertical=0;vertical<2;++vertical)for(int cross=17;cross<=42;cross+=cross==17?11:7){
         SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_POS,.nMin=0,.nMax=100,.nPos=50};
-        win16_scroll_layout l;
+        style_scroll_layout l;
         w=CreateWindowW(L"SCROLLBAR",L"",WS_CHILD|WS_VISIBLE|(vertical?SBS_VERT:SBS_HORZ),
             0,0,vertical?cross:240,vertical?240:cross,root,NULL,wc.hInstance,NULL);CHECK(w);
         SetScrollInfo(w,SB_CTL,&range,FALSE);CHECK(scroll_layout(w,&l));
@@ -157,8 +153,7 @@ int main(int argc,char **argv)
      w=CreateWindowW(L"LISTBOX",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,160,120,root,NULL,wc.hInstance,NULL);CHECK(w);
      SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=0,.nMax=100,.nPage=10,.nPos=25};
      SetScrollInfo(w,SB_VERT,&range,TRUE);control_style state={0};win16_style_default_palette(&state.palette);
-     const win16_control_scroll_view view={&state.palette,&state.scroll,&state.frame_scrollbars,
-        &state.edit_scrollbars,&state.list_scrollbar,&state.embedded_object,scroll_layout,
+     const win16_control_scroll_view view={&state.palette,&state.scroll,scroll_layout,
         embedded_scroll_layout,edit_thumb_messages,list_axis_owned};
      SCROLLBARINFO info={.cbSize=sizeof(info)};RECT outer;
      CHECK(GetScrollBarInfo(w,OBJID_VSCROLL,&info) && !(info.rgstate[0]&STATE_SYSTEM_INVISIBLE) && GetWindowRect(w,&outer));

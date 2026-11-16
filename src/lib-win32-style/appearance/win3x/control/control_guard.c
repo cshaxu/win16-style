@@ -13,7 +13,7 @@ BOOL win16_control_guard_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM 
     /* A verified VCL control belongs only to its original parent and role.
      * Let the native transition finish, then retire this exact attachment. */
     if(m!=WM_NCDESTROY && (!v->rich_valid(w) || !v->vcl_combo_valid(w) || !v->group_button_valid(w) || !v->grid_valid(w) || !v->vb_data_valid(w) || !v->vb_user_edge_valid(w) || !v->vcl_toolbar_valid(w) || !v->vcl_tab_valid(w))){
-        if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
+        if(m==WM_SETFONT)s->state.original_font=win16_style_system_source((HFONT)a);
         *result=DefSubclassProc(w,m,a,b);
         if(!s->instance.detached && IsWindow(w) && !v->vb_user_edge_dormant(w) && v->remove_window(w) && IsWindow(w))InvalidateRect(w,NULL,TRUE);
         return TRUE;
@@ -33,7 +33,7 @@ BOOL win16_control_guard_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM 
      * transition retires only this painter; do not keep drawing a plain box. */
     if(m!=WM_NCDESTROY && (v->vb_checkbox(w) || v->vb_option(w)) &&
             !v->vb_plain_choice(w) && !v->vb_graphical_choice(w) && !v->vb_graphical_button(w)){
-        if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
+        if(m==WM_SETFONT)s->state.original_font=win16_style_system_source((HFONT)a);
         *result=DefSubclassProc(w,m,a,b);
         if(!s->instance.detached)v->remove_control(w);
         return TRUE;
@@ -65,4 +65,12 @@ BOOL win16_control_supported(HWND w,HWND common_dialog_combo_pending)
     if(type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX)return TRUE;
     return type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_RADIOBUTTON ||
         type==BS_AUTORADIOBUTTON || type==BS_3STATE || type==BS_AUTO3STATE;
+}
+
+style_control_basic_kind win16_control_basic_kind(HWND window)
+{
+    if(style_control_is_static(window) && (GetWindowLongPtrW(window,GWL_STYLE)&SS_TYPEMASK)==SS_BITMAP)return STYLE_CONTROL_BITMAP;
+    if(style_control_is_separator(window))return STYLE_CONTROL_SEPARATOR;
+    if(style_control_vb_frame(window))return STYLE_CONTROL_NATIVE_OVERLAY;
+    return style_control_is_static(window)?STYLE_CONTROL_STATIC:STYLE_CONTROL_BUTTON;
 }

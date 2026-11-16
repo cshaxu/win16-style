@@ -1,16 +1,18 @@
-#include "lib-win32-style/application/control/control_redraw.h"
-#include "lib-win32-style/application/control/control_list.h"
-#include "list_message.h"
+#include "control_redraw.h"
+#include "control_list.h"
+#include "list.h"
 #include <commctrl.h>
 
-LRESULT win16_control_list_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,const win16_control_list_services *services)
+static LRESULT forward_tabs(HWND window,WPARAM count,LPARAM values)
+{return DefSubclassProc(window,LB_SETTABSTOPS,count,values);}
+LRESULT style_control_list_message(HWND w,style_instance *instance,style_control_state *state,UINT m,WPARAM a,LPARAM b,const style_control_list_ops *ops)
 {
     LRESULT result=0;
-        if(services->scroll_input(w,s,m,a,b))result=0;
-        else if(m==LB_SETTABSTOPS && (GetWindowLongPtrW(w,GWL_STYLE)&LBS_USETABSTOPS))result=services->set_tabs(w,s,a,b);
-        else if(m==WM_SETREDRAW){s->list_redraw_off=!a;result=DefSubclassProc(w,m,a,b);}
-        else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);services->present(w,s,dc,services->paint);EndPaint(w,&ps);}
-        else if(m==WM_PRINTCLIENT)services->paint(w,s,(HDC)a);
+        if(ops->input(w,ops->context,m,a,b))result=0;
+        else if(m==LB_SETTABSTOPS && (GetWindowLongPtrW(w,GWL_STYLE)&LBS_USETABSTOPS))result=style_control_tabs_set(w,instance,state,a,b,forward_tabs);
+        else if(m==WM_SETREDRAW){state->redraw_off=!a;result=DefSubclassProc(w,m,a,b);}
+        else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);ops->draw(w,ops->context,dc,TRUE);EndPaint(w,&ps);}
+        else if(m==WM_PRINTCLIENT)ops->draw(w,ops->context,(HDC)a,FALSE);
         else if(m==WM_NCPAINT || m==WM_PRINT){
             /* This subclass owns the complete list nonclient surface. Native
              * painting first exposes a second scrollbar skin before ours. */
@@ -18,21 +20,20 @@ LRESULT win16_control_list_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
                 HDC dc=(HDC)a;int saved=SaveDC(dc);RECT wr;POINT origin={0,0};
                 if(saved){GetWindowRect(w,&wr);ClientToScreen(w,&origin);
                     OffsetViewportOrgEx(dc,origin.x-wr.left,origin.y-wr.top,NULL);
-                    services->paint(w,s,dc);RestoreDC(dc,saved);}
+                    ops->draw(w,ops->context,dc,FALSE);RestoreDC(dc,saved);}
             }
-            if(!s->instance.detached && (m==WM_NCPAINT || (b&PRF_NONCLIENT))){
-                services->border(w,s,m==WM_PRINT?(HDC)a:NULL);
-                services->scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);}
+            if(!instance->detached && (m==WM_NCPAINT || (b&PRF_NONCLIENT))){
+                ops->border(w,ops->context,m==WM_PRINT?(HDC)a:NULL);
+                ops->scrollbars(w,ops->context,m==WM_PRINT?(HDC)a:NULL);}
         }
-        else if(m==WM_NCMOUSEMOVE || m==WM_NCMOUSELEAVE){
-            /* Win3.x has no scrollbar hover skin. Do not start the host's
-             * themed hover/leave repaint; clicks still use native tracking. */
+        else if(ops->suppress_hover && (m==WM_NCMOUSEMOVE || m==WM_NCMOUSELEAVE)){
+            /* The profile owns whether native hover repaint is suppressed. */
             result=0;
         }
         else if(m==WM_ERASEBKGND)result=1;
         else {
             BOOL moving=m==WM_MOUSEMOVE,changed=FALSE;style_control_list_view before={0},after;
-            BOOL suppress=style_control_redraw_can_suppress(w,s->list_redraw_off,s->list_suppression) &&
+            BOOL suppress=style_control_redraw_can_suppress(w,state->redraw_off,state->suppression) &&
                 (m==WM_MOUSEWHEEL || m==WM_VSCROLL || m==WM_HSCROLL || m==WM_KEYDOWN || m==WM_KEYUP ||
                 m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_ENABLE || m==WM_SETFONT ||
                 m==WM_MOUSEMOVE || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP ||
@@ -40,16 +41,16 @@ LRESULT win16_control_list_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
                 m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||
                 m==LB_SETCARETINDEX || m==LB_SETTOPINDEX);
             if(moving)before=style_control_list_view_read(w);
-            result=style_control_redraw_call(w,m,a,b,suppress,&s->list_suppression,&s->instance.detached,&s->list_redraw_off);
-            if(!s->instance.detached && moving){after=style_control_list_view_read(w);
+            result=style_control_redraw_call(w,m,a,b,suppress,&state->suppression,&instance->detached,&state->redraw_off);
+            if(!instance->detached && moving){after=style_control_list_view_read(w);
                 changed=style_control_list_view_changed(&before,&after);}
-            if(!s->instance.detached && !s->list_suppression && !s->list_redraw_off && (m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||
+            if(!instance->detached && !state->suppression && !state->redraw_off && (m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||
                 m==LB_SETCARETINDEX || m==LB_SETTOPINDEX || m==LB_ADDSTRING || m==LB_INSERTSTRING ||
                 m==LB_DELETESTRING || m==LB_RESETCONTENT || m==LB_SETCOLUMNWIDTH || m==LB_SETHORIZONTALEXTENT || m==WM_SETFONT || m==WM_ENABLE ||
                 m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP ||
                 changed || m==WM_KEYDOWN || m==WM_KEYUP || m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL)){
                 RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
-                if(!s->instance.detached)services->scrollbars(w,s,NULL);}
+                if(!instance->detached)ops->scrollbars(w,ops->context,NULL);}
         }
         return result;
 }
