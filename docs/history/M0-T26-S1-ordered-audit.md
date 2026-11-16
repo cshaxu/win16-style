@@ -78,14 +78,14 @@
 | 67 | `src/lib-style/win16-control/scroll_glyphs.h` | `a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40` | 待修复/待验证 |
 | 68 | `src/lib-style/win16-control/scroll_layout.c` | `f675d60e01b5618c61c9e59729ec6dbea6ada802436457ae1cffce8825c856ed` | 待修复/待验证 |
 | 69 | `src/lib-style/win16-control/scroll_layout.h` | `65e112bc5fb72bd770313a2af4dbdde44ef5109f1f75acb56ffd0c20805d97a2` | 待修复/待验证 |
-| 70 | `src/lib-style/win16-control/scroll_message.c` | `a81ec1c71a98c8399028281faf85dd90e174b25d31e811db2d3337d3b897c801` | 待审 |
-| 71 | `src/lib-style/win16-control/scroll_message.h` | `ac96754592cbe76b8701fa04915ea18b461991a44b5bb16de44a9c5efa184b69` | 待审 |
-| 72 | `src/lib-style/win16-control/scroll_native.c` | `5f3ddf5d2408a8c404acc9cf6874351030274398d5cd6b9ca75d4d1177ec497a` | 待审 |
-| 73 | `src/lib-style/win16-control/scroll_native.h` | `722808178add0650d40211ac7f43eecac03d2637a46a9e57e884d968c397345a` | 待审 |
-| 74 | `src/lib-style/win16-control/scroll_paint.c` | `7186e6052e5e536e002c956c6505756c7cc924a61c1a95eceb01373b2cb105d5` | 待审 |
-| 75 | `src/lib-style/win16-control/scroll_paint.h` | `73430fabd8399933fcde5ed2829e522c4677926efa95b5d83a7e3403a8319fc7` | 待审 |
-| 76 | `src/lib-style/win16-control/scroll_track.c` | `72bb6ba21989e4b40be7e1897928003cde4ee23467b3133d8f799b1f30926de9` | 待审 |
-| 77 | `src/lib-style/win16-control/scroll_track.h` | `36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e` | 待审 |
+| 70 | `src/lib-style/win16-control/scroll_message.c` | `a81ec1c71a98c8399028281faf85dd90e174b25d31e811db2d3337d3b897c801` | 待修复/待验证 |
+| 71 | `src/lib-style/win16-control/scroll_message.h` | `ac96754592cbe76b8701fa04915ea18b461991a44b5bb16de44a9c5efa184b69` | 待修复/待验证 |
+| 72 | `src/lib-style/win16-control/scroll_native.c` | `5f3ddf5d2408a8c404acc9cf6874351030274398d5cd6b9ca75d4d1177ec497a` | 待修复/待验证 |
+| 73 | `src/lib-style/win16-control/scroll_native.h` | `722808178add0650d40211ac7f43eecac03d2637a46a9e57e884d968c397345a` | 待修复/待验证 |
+| 74 | `src/lib-style/win16-control/scroll_paint.c` | `7186e6052e5e536e002c956c6505756c7cc924a61c1a95eceb01373b2cb105d5` | 待修复/待验证 |
+| 75 | `src/lib-style/win16-control/scroll_paint.h` | `73430fabd8399933fcde5ed2829e522c4677926efa95b5d83a7e3403a8319fc7` | 待修复/待验证 |
+| 76 | `src/lib-style/win16-control/scroll_track.c` | `72bb6ba21989e4b40be7e1897928003cde4ee23467b3133d8f799b1f30926de9` | 待修复/待验证 |
+| 77 | `src/lib-style/win16-control/scroll_track.h` | `36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e` | 待修复/待验证 |
 | 78 | `src/lib-style/win16-control/special_install.c` | `ed4869d10cb6bdbec6e0c46d8d121aadc07dd77118b17e1caf07deb17c332103` | 待审 |
 | 79 | `src/lib-style/win16-control/special_install.h` | `b4be7bbb66ac51e85b62bfae1c90cb926829b021bd9c726505269572df670f20` | 待审 |
 | 80 | `src/lib-style/win16-control/special_paint.c` | `27cfcdf4a57afd036ee3d2bd4f2ae1b542105a98ec7cf3810365638660a399ae` | 待审 |
@@ -538,3 +538,45 @@
 - 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
 
 效率检查与单人复核（51–69 批）：实施角色完成月历/原生呈现及通知/按钮/进度/滚动资源的连续源码核对；复核角色重查实际调用和源码摘要，19 个文件身份与台账一致，资源身份检查通过。新增矩阵明确公共快照、阶段协议、图形操作及风格几何的不同所有者，未以现有 control_style 耦合为保留理由。没有启动完整构建或产生新 scratch；原有第 41 项在途改动继续保留，产品行为未验证部分不计通过。下一批从第 70 项滚动消息继续，统一比对公共滚动算法和风格交互策略。
+
+## 070 `win16-control/scroll_message.c`：待修复/待验证
+
+- 顺序核对源码、实际调用和公共 scroll_state 关系：滚动协议、trackpos 回读和原生转发应公共化，no-hover 和边框呈现由风格决定。
+- 所有者、回调顺序和验证入口见[任务设计](../proposals/style-library-reorganization.md)的滚动批次；本批未实施迁移或运行新测试，不计过关。
+
+## 071 `win16-control/scroll_message.h`：待修复/待验证
+
+- 顺序核对源码、实际调用和公共 scroll_state 关系：公共滚动消息服务应脱离 control_style 私有状态。
+- 所有者、回调顺序和验证入口见[任务设计](../proposals/style-library-reorganization.md)的滚动批次；本批未实施迁移或运行新测试，不计过关。
+
+## 072 `win16-control/scroll_native.c`：待修复/待验证
+
+- 顺序核对源码、实际调用和公共 scroll_state 关系：通知、捕获、计时、reporting 和 caret 生命周期应集中公共执行层；Win3.x 几何/容差独立。
+- 所有者、回调顺序和验证入口见[任务设计](../proposals/style-library-reorganization.md)的滚动批次；本批未实施迁移或运行新测试，不计过关。
+
+## 073 `win16-control/scroll_native.h`：待修复/待验证
+
+- 顺序核对源码、实际调用和公共 scroll_state 关系：分散字段指针要归一到有明确所有权的公共滚动实例，风格状态不反向泄漏。
+- 所有者、回调顺序和验证入口见[任务设计](../proposals/style-library-reorganization.md)的滚动批次；本批未实施迁移或运行新测试，不计过关。
+
+## 074 `win16-control/scroll_paint.c`：待修复/待验证
+
+- 顺序核对源码、实际调用和公共 scroll_state 关系：原生快照/坐标和缓冲机制可共享，Win3.x 棋盘箭头与固定滑块绘制独立。
+- 所有者、回调顺序和验证入口见[任务设计](../proposals/style-library-reorganization.md)的滚动批次；本批未实施迁移或运行新测试，不计过关。
+
+## 075 `win16-control/scroll_paint.h`：待修复/待验证
+
+- 顺序核对源码、实际调用和公共 scroll_state 关系：通用视图应摆脱 Win16 track 类型及资源。
+- 所有者、回调顺序和验证入口见[任务设计](../proposals/style-library-reorganization.md)的滚动批次；本批未实施迁移或运行新测试，不计过关。
+
+## 076 `win16-control/scroll_track.c`：待修复/待验证
+
+- 顺序核对源码、实际调用和公共 scroll_state 关系：动作执行公共化，Win3.x 重复速度、越界吸回和取消报告规则保留策略。
+- 所有者、回调顺序和验证入口见[任务设计](../proposals/style-library-reorganization.md)的滚动批次；本批未实施迁移或运行新测试，不计过关。
+
+## 077 `win16-control/scroll_track.h`：待修复/待验证
+
+- 顺序核对源码、实际调用和公共 scroll_state 关系：公共动作/通知数据与风格跟踪状态拆开，生命周期由公共实例持有。
+- 所有者、回调顺序和验证入口见[任务设计](../proposals/style-library-reorganization.md)的滚动批次；本批未实施迁移或运行新测试，不计过关。
+
+单人复核与效率检查（70–77）：比较公共 scroll_state 与当前八个文件，区分协议执行和原版行为；新增明确迁移事项而非因 Win16 状态类型原样保留。复核发现动作执行的多列列表提前返回跳过 reporting/report 恢复，记录待修复及重入负例验证，未声称运行复现。未重复编译/整包测试，未产生新临时构建；下一批按第 78 项继续，公共滚动机制在 S9 合批迁移。

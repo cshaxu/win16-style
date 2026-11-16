@@ -135,6 +135,29 @@ progress 查询须在每次可重入消息后核验代次/存活，采集阶段�
 
 已核对 controls 的 trackbar/toolbar notify、guard/state/native_presentation 的 progress、choice_view 的 other painter、scroll_track/paint 及 special_install 的资源调用。测试入口为公共 custom_draw、vcl toolbar/trackbar 模块、control_extensions、progress v5/v6、scroll_layout 及原始资源核验。仅资源身份在本批实际运行且通过；其他测试是已定位待实施验证入口，不宣称运行通过。
 
+## S1 连续审计批次：滚动消息、原生适配与跟踪（70–77）
+
+| 文件 | application 公共机制 | appearance 与状态归属 |
+| --- | --- | --- |
+| scroll_message.c | 滚动消息与原生转发、禁用期间退场、打印 DC 保留、全宽 trackpos 回读、操作后重绘协调 | no-hover、sizebox 与 legacy progress 边框由风格策略提供 |
+| scroll_message.h | 公共滚动服务契约与实例状态 | 不能通过 control_style 绑定 Win16 控件，风格仅提供动作策略和画法 |
+| scroll_native.c | control/embedded 输入适配、通知派发、计时器与捕获生命周期、全宽 reporting、caret 资源及 managed API 对接 | Win3.x drag limit、固定 thumb 和 caret 外观几何独立；palette 更新由风格实例负责 |
+| scroll_native.h | 统一公共滚动动作/实例接口，避免多组分散字段指针形成隐式所有权 | track、timer、epoch、capture、report 归同一实例；绘制及几何通过操作契约 |
+| scroll_paint.c | 原生 SCROLLBARINFO 快照、窗口坐标适配与一次缓冲提交 | 棋盘、箭头、固定 thumb、颜色及高光阴影由 Win3.x painter 提供 |
+| scroll_paint.h | 通用滚动视图和布局结果 | 脱离 Win16 track/asset 类型，不把 frame/list/edit 具体画法混入共享像素接口 |
+| scroll_track.c | 公共动作容器和可复用位置换算；状态机按行为差异提供策略 | Win3.x 初始 200ms/后续 50ms、容差外吸回、取消报告最后位置等行为保留该风格 |
+| scroll_track.h | 公共 notice/action、timer 指令与实例生命周期，风格 track 私有状态独立 | 不将 KEEP_TIMER 与固定两条 notice 的容器误当年代行为，按现有需求确定共享契约 |
+
+公共执行层拥有 timer、捕获、键盘操作配对、full-width 临时报送值和附着 epoch，通知前保活并在通知返回后重新验证。样式状态机产生动作，执行层按目标协议发给独立控件父窗口、frame、edit 或 list；不能由每个风格再复制多列列表索引换算和 16-bit 消息边界。已存在的 common/scroll_state 是唯一基础，先复用再扩展，不新建平行版本。
+
+结束手势先提交 inactive 状态，再结束计时/归还本层捕获，最后派发通知，避免重入看见仍活动的旧手势。只能释放自己拥有的捕获和 caret，不关闭其他控件状态；原始 reporting 值在嵌套通知之后恢复，不把物理输入、窗口恢复或 hook 卸载混为一谈。
+
+源码复核发现：scroll_apply_actions 在设置 reporting/report 后，多列列表的 LB_GETITEMHEIGHT 重入或无效几何分支会直接 return，跳过下方恢复旧 reporting/report 的代码。这是明确的清理路径缺口；在公共动作执行层用统一退出清理恢复，并以通知中重入、失败及存活目标验证，不通过增加多层补救处理。尚未修复或运行复现测试，不宣称已证实用户可见故障。
+
+Win3.x 几何及取消时的视觉和通知位置有不同契约；Win2000 比例 thumb 和自身行为必须通过策略表达，不能为了合并而改变现有原版证据。绘制中用原生快照和当前 track 几何合成，公共 present_buffer 继续承担资源与提交；buffer 失败时保留现有明确回退行为。
+
+实际调用为 controls 的 scroll_action/input/caret 与 managed API、control_dispatch/control_state 的消息处理、scroll_track 的公共位置换算及 scroll_paint 的呈现缓冲。验证入口包括 core-style-scroll-state、core-geometry、core-scroll-native、vcl-scroll-module 和 frame target；本批核对源码/入口，没有运行整包测试或新建 scratch，所有行为结论待迁移时对照基线验证。
+
 ## 未通过与未来候选
 
 导航焦点、Win2000 DWM 恢复、VB 清单和表头不稳定及实际现代宿主/全局覆盖限制继续由 CURRENT 和已有证据承载；不因架构设计被关闭。T26 结束条件是现有能力的三层归位、实际复用和验证，而非所有年代所有应用都支持。
