@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S3 P1",
-  "status": "verified-locally-pending-remote",
+  "status": "passed-focused-known-baseline-failures-remote-verified",
   "build": {
     "physical_acceptance": "pending",
     "status": "passed",
@@ -756,5 +756,11 @@
       "bytes": 10455667.0,
       "path": "build/t26-package/s3-lifecycle-publish"
     }
-  ]
+  ],
+  "remote_verification": {
+    "commit": "8e21860a0406b8a4db333436f277f94189083d62",
+    "fetched_ref": "origin/main",
+    "changed_blobs_read": 59,
+    "publication_files_checked": 8
+  }
 }

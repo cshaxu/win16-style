@@ -2,36 +2,36 @@
 
 ## Current Work
 
-M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S3公共生命周期。[S1最终审计](../history/M0-T26-S1-final-audit.md)及151项顺序台账已完成；[S2](../history/M0-T26-S2-relocation.md)已完成381项归位、发布后36项回归和远端51c68a06逐blob复核。
+M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S4启动接入。[S1最终审计](../history/M0-T26-S1-final-audit.md)及151项顺序台账已完成；[S2](../history/M0-T26-S2-relocation.md)已完成381项归位、发布后36项回归和远端51c68a06逐blob复核。
 
-S3已将Win3.x frame/control/产品observer、现代host及Win2000 full/pending根接入公共instance，见[S3记录](../history/M0-T26-S3-lifecycle.md)与[有限审计](../etc/evidence/t26-s3-lifecycle.json)。公共层拥有GUI身份、原生子类安装/解除、重入引用和最后引用退场；呈现与各自资源策略仍由已有消费者提供。菜单多窗口事务及其余机制按S4–S13继续，不把本S称为全T完成。
+S3已收口，交付8e21860a经实际fetch与59个变更blob核对，八文件与发布摘要一致。S3将Win3.x frame/control/产品observer、现代host及Win2000 full/pending根接入公共instance，见[S3记录](../history/M0-T26-S3-lifecycle.md)与[有限审计](../etc/evidence/t26-s3-lifecycle.json)。公共层拥有GUI身份、原生子类安装/解除、重入引用和最后引用退场；呈现与各自资源策略仍由已有消费者提供。菜单多窗口事务及其余机制按S4–S13继续，不把本S称为全T完成。
 
-双位宽增量和多项原生开发回归通过；S2 DLL对照证实Win2000 DWM恢复断言仍为旧失败，不计通过。兼容性终审另发现pending重复接入语义遗漏，已实测S2行为并改为复用既有节点、断言无额外分配。废弃的首个快照已终止、未发布，清理104,985,036字节；最终同批八文件已先发布至assets根与O:/winnt；48项双位宽聚焦回归通过，2项DWM恢复旧失败与S2基线一致且不计通过。详见[S3交付证据](../etc/evidence/t26-s3-delivery.json)。正在提交推送与远端复核，不称S3已收口。
+双位宽增量和多项原生开发回归通过；S2 DLL对照证实Win2000 DWM恢复断言仍为旧失败，不计通过。兼容性终审另发现pending重复接入语义遗漏，已实测S2行为并改为复用既有节点、断言无额外分配。废弃的首个快照已终止、未发布，清理104,985,036字节；最终同批八文件已先发布至assets根与O:/winnt；48项双位宽聚焦回归通过，2项DWM恢复旧失败与S2基线一致且不计通过。详见[S3交付证据](../etc/evidence/t26-s3-delivery.json)。已完成提交、推送和远端复核；S4已准入，T26保持开放。
 
 测试和构建均已返回，提炼证据后清理本轮scratch、完整快照和备份271,040,367字节，另废弃快照104,985,036字节；保留.ninja/.ccache。不使用computer-use或隔离桌面，不修改兄弟仓库，不扩大权限/目标/功能范围。
 
 T25按用户决定有限收口，未通过或未完成部分不补记通过，见[T25记录](../history/M0-T25-owner-closure.md)。既有导航焦点、VB清单/表头不稳定、实际UWP/WinUI/全局覆盖、Win2000恢复与打印等边界保留于下方事实索引及TODO，S14须统一复核。
 
-## M0 T26 S3 Packet
+## M0 T26 S4 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S2完成目录与构建归位后准入下一S3，沿用M0/T26。 |
-| Admission And Approval | 用户批准三层架构、14个S有序执行及按能力合批交付；不逐文件完整交付。 |
-| Objective | 抽离既有附着身份、重入引用、最后引用退场、资源和安装移除事务，公共生命周期拥有通用状态；两风格已有相同路径实际接入并删除复制机制。 |
-| Non-goals | 不新增完整Win2000控件/对话框，不扩大接入范围，不虚构物理卸载或修复所有既有失败；不把整份私有状态改名后搬入公共库。 |
-| Reference Baseline | S2 P1提交51c68a06、同快照八文件及36项已发布包原生回归；S1完整151项审计与产品适配清单。 |
-| Candidate Proposal | docs/proposals/style-library-reorganization.md，S3公共生命周期与状态所有者契约。 |
-| Files And ABI Surface | application/lifecycle及appearance/win3x窗口/控件附着、appearance/win2000窗口、产品装配与对应tests；先冻结有限生产全集及调用图，保持产品ABI与八产物。 |
-| Applicable Rules | M0；纯C17/MinGW GCC/Ninja/ccache；完整操作与实际状态所有者，错误内层清理后上抛、最外层报告；单人实施/复核。 |
-| Verification | 公共状态独立原生测试；两风格真实生产安装/重入/移除/销毁/失败回滚和资源释放；双位宽增量，合批干净构建、先发布后测试及远端复核。 |
-| Expected Markers | 共用身份和退场操作实际被现有两风格消费，调用期间保活及资源恰好释放，旧机制删除；呈现和真实年代策略仍由风格拥有。 |
-| Asset Needs | 原图形头、资源声明和八文件包不变；不引入第三方源码或兄弟仓库依赖。 |
-| Reporting Requirements | 列出冻结全集、状态所有者、消费者、旧路径处置和测试/失败边界；区分作用域停用、窗口恢复与物理卸载；记录效率检查和自有scratch清理。 |
-| Stop Conditions | 不使用computer-use或隔离桌面，不修改兄弟仓库/系统安全设置，不覆盖其他改动；权限/环境未运行项如实记录。 |
-| Exit Criteria | 有限审计清单对应的现有通用生命周期归公共层，两风格对应已有能力复用并删重复，完成验证、发布、提交推送和实际远端复核；既有不具备能力明确保留。 |
-| Original Owner Request | 顶层架构与S规划写入T26后自动继续；目录、文件、结构、函数、变量干净，极简复用，不按单个文件重复完整交付。 |
-| Similar-Issue Sweep | 普通frame、menu-only、控件owner、全局切换、现代宿主及嵌套销毁；scope保活/资源所有者重复、回调字段穿透和正常/terminal恢复差异。 |
+| Identifier Mode | Continuation；S3公共生命周期交付收口后准入S4，沿用M0/T26。 |
+| Admission And Approval | 用户批准三层架构与14个S自动有序执行，单人实施及复核，按能力合批交付。 |
+| Objective | 普通启动、初始化和后代传播的既有装配/事务归access/startup，复用process-hook后端和application实例；产品保留风格配置/兼容导出，删除重复协调。 |
+| Non-goals | 不新增晚期/全局接入能力、不复制MinHook/注入后端、不扩大目标/权限/别名支持，不把整个私有上下文改名搬入库。 |
+| Reference Baseline | S3 P1提交8e21860a、同快照八文件、48项聚焦通过及2项DWM旧失败对照；S1接入/产品根审计及S2迁移映射。 |
+| Candidate Proposal | docs/proposals/style-library-reorganization.md，S4启动接入。 |
+| Files And ABI Surface | access/startup、启动器普通启动、共享DLL初始化与Win3.x/Win2000启动注册装配及对应tests；实现前按现有生产入口冻结清单，保持CLI/产品ABI与八产物。 |
+| Applicable Rules | M0；纯C17、MinGW GCC、Ninja、ccache；通用机制与风格行为分层，错误本层资源清理后上抛、最外层报告；不反向依赖私有产品头。 |
+| Verification | 公共启动事务独立性、两种风格真实启动及初始化、四种父子位宽边/原CREATE_SUSPENDED/A-W参数语义/失败回滚/普通启动不全局扫描；增量后合批干净构建、先发布再实际包验证及远端复核。 |
+| Expected Markers | 生产调用实际使用唯一公共装配，后端继续process-hook，载荷/挂起/错误/资源所有者保持，无产品名/DLL名/导出名硬编码在公共层，旧协调副本删除。 |
+| Asset Needs | 原图形资源、来源声明和产品包保持；不引入兄弟仓库运行依赖或新产品文件。 |
+| Reporting Requirements | 记录生产入口/类型/调用、策略参数、迁移前后差异、删除路径与验证；区分DLL安装、初始化、传播、附着和绘制，不以单一步成功代替全链。 |
+| Stop Conditions | 不使用computer-use或隔离桌面，不修改兄弟仓库/系统安全设置，不覆盖其他改动，不在loader-lock等待或做GUI/GDI/LoadLibrary。 |
+| Exit Criteria | 有限清单中的现有普通启动和初始化装配已归位并真实接入，既有两风格与传播契约验证，规范交付并复核远端；既有未覆盖/失败项保持明确。 |
+| Original Owner Request | 所有样式组件按access/application/appearance重组，产品侧只关注产品；极简、统一、复用，不逐文件完整交付。 |
+| Similar-Issue Sweep | run16s普通入口、两风格DLL初始化/注册、共享ntwshk、A-W CreateProcess/后代传播、位宽选择、被动加载及创建中失败的资源/挂起所有权。 |
 
 ## Identifier State
 
@@ -43,9 +43,9 @@ T25按用户决定有限收口，未通过或未完成部分不补记通过，�
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
-- Last allocated T26 S: 3
-- Last verified remote delivery: M0 T26 S2 P1，`51c68a06`；457个现存变更blob、381项去向及八文件复核通过。
-- Open task: M0 T26 S3；公共生命周期。
+- Last allocated T26 S: 4
+- Last verified remote delivery: M0 T26 S3 P1，`8e21860a`；59个变更blob及八文件复核通过。
+- Open task: M0 T26 S4；启动接入。
 
 ## Technical Baseline
 

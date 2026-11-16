@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S3",
-  "status": "implemented-verified-locally-pending-remote",
+  "status": "implemented-verified-remote",
   "search_baseline": "b424d30c",
   "baseline_hits": [
     {
