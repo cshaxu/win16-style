@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S2 P1",
-  "status": "verified-locally-pending-remote",
+  "status": "passed-focused-remote-verified",
   "build": {
     "full_matrix": "pending",
     "status": "passed",
@@ -605,5 +605,12 @@
       "path": "build/t26-package/s2-relocation-publish",
       "bytes": 10455517.0
     }
-  ]
+  ],
+  "remote_verification": {
+    "commit": "51c68a066d623585eef38cd963c1ccb84f8ee5ca",
+    "fetched_ref": "origin/main",
+    "changed_existing_blobs_read": 457,
+    "relocations_checked": 381,
+    "publication_files_checked": 8
+  }
 }

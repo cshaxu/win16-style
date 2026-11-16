@@ -2,7 +2,7 @@
 
 ## Current Work
 
-S1已收口，按用户批准的[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S2。381项目录迁移已完成：374个C/头文件及54个未移动消费者只有include变化，实际修改277个include消费者；原资源字节保留。双位宽全目标增量和同快照干净构建通过（163.54/195.29秒，cache 795/897 hit、0 miss），八文件已先发布assets根与O:/winnt，再通过36项原生回归；完整范围和首次构建/测试环境修正见[S2记录](../history/M0-T26-S2-relocation.md)。正进行提交推送与远端复核，尚不收口；T26保持开放，机制共享仍由S3–S13执行。本轮测试均已返回，证据提炼后已清理迁移scratch、最终构建副本和发布备份270,190,781字节；失败快照另清理29,451,943字节，保留.ninja/.ccache。
+S1已收口，按用户批准的[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S2。381项目录迁移已完成：374个C/头文件及54个未移动消费者只有include变化，实际修改277个include消费者；原资源字节保留。双位宽全目标增量和同快照干净构建通过（163.54/195.29秒，cache 795/897 hit、0 miss），八文件已先发布assets根与O:/winnt，再通过36项原生回归；完整范围和首次构建/测试环境修正见[S2记录](../history/M0-T26-S2-relocation.md)。P1提交51c68a06已推送并实际fetch，逐blob读取457个现存变更文件及381项去向复核通过；S2收口，自动准入S3公共生命周期。T26保持开放，机制共享仍由S3–S13执行。本轮测试均已返回，证据提炼后已清理迁移scratch、最终构建副本和发布备份270,190,781字节；失败快照另清理29,451,943字节，保留.ninja/.ccache。
 
 用户决定以现有实际成果有限收口 T25，未完成的 S8 验证和 S10 最终审计不计通过；原 S9 去重已明确并入 T26，遗留范围见[T25 收口记录](../history/M0-T25-owner-closure.md)。准入 T26，抽离跨风格通用机制并整理样式库。
 
@@ -58,26 +58,26 @@ VCL CoolBar 窗口身份核验已迁入公共控件组件，Win16 提供附着�
 
 执行效率检查按[执行规则](../rules/EXECUTION.md#效率检查点)进行；按文件顺序审计，按能力合并实施与验证，检查结论记入顺序台账，不为单文件重复完整交付。
 
-## M0 T26 S2 Packet
+## M0 T26 S3 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S1已收口，沿用M0/T26，准入下一S2。 |
-| Admission And Approval | 用户批准lib-win32-style三层结构及S1–S14自动有序续作；不逐文件完整交付。 |
-| Objective | 按381项冻结清单把现有样式库及对应测试归位新根，同步includes、CMake、来源摘要与依赖/资源门禁；形成无旧活动路径的可构建同批包。 |
-| Non-goals | 不把机械挪动当作状态/机制已共享；mixed项由S3–S13拆分，不新增风格功能或扩大接入范围。 |
-| Reference Baseline | S1 P109提交f4aa242b及已测试发布八文件；151项顺序台账和381项当前摘要。 |
-| Candidate Proposal | docs/proposals/style-library-reorganization.md，S2目录与构建归位。 |
-| Files And ABI Surface | src/lib-style、src/lib-win32/style及对应tests，CMake与工具/来源/当前文档；公开ABI、资源字节及八产物保持。 |
-| Applicable Rules | M0；纯C17、MinGW GCC、Ninja、ccache；单人实施/复核；按能力合批。 |
-| Verification | 精确集合/摘要/去向对账、所有include和CMake消费者、门禁负例与非空归档覆盖；双位宽增量及干净包，先发布再做聚焦原生回归，远端复核。 |
-| Expected Markers | 381项都有实际去向/处置，旧活动路径无遗漏，两个风格及产品组合仍链接实际生产实现；mixed债务保持明确。 |
-| Asset Needs | 原glyph、atlas、图标与来源声明不变，不读写兄弟项目作为依赖。 |
-| Reporting Requirements | 区分机械归位、真正共享及待拆状态，报告构建/cache、测试及原有未通过范围；交付后清理临时副本。 |
-| Stop Conditions | 不使用computer-use或隔离桌面，不改系统安全策略，不覆盖用户修改，不改ntvdm64/softpc。 |
-| Exit Criteria | 目录、构建、tests、来源及门禁全部接入新根，实际包行为与S1基线一致，完成规范交付和远端复核；不要求后续S机制拆分提前完成。 |
-| Original Owner Request | 顶层架构与S规划写入T26、修订过时架构文档并继续；所有style组件进入lib-win32-style的access/application/appearance三层。 |
-| Similar-Issue Sweep | 所有相对/根include、dlltool def、测试直接编译产品源、receipt、资源固定路径、archive发现与当前文档；禁止门禁空跑或新增转发壳。 |
+| Identifier Mode | Continuation；S2完成目录与构建归位后准入下一S3，沿用M0/T26。 |
+| Admission And Approval | 用户批准三层架构、14个S有序执行及按能力合批交付；不逐文件完整交付。 |
+| Objective | 抽离既有附着身份、重入引用、最后引用退场、资源和安装移除事务，公共生命周期拥有通用状态；两风格已有相同路径实际接入并删除复制机制。 |
+| Non-goals | 不新增完整Win2000控件/对话框，不扩大接入范围，不虚构物理卸载或修复所有既有失败；不把整份私有状态改名后搬入公共库。 |
+| Reference Baseline | S2 P1提交51c68a06、同快照八文件及36项已发布包原生回归；S1完整151项审计与产品适配清单。 |
+| Candidate Proposal | docs/proposals/style-library-reorganization.md，S3公共生命周期与状态所有者契约。 |
+| Files And ABI Surface | application/lifecycle及appearance/win3x窗口/控件附着、appearance/win2000窗口、产品装配与对应tests；先冻结有限生产全集及调用图，保持产品ABI与八产物。 |
+| Applicable Rules | M0；纯C17/MinGW GCC/Ninja/ccache；完整操作与实际状态所有者，错误内层清理后上抛、最外层报告；单人实施/复核。 |
+| Verification | 公共状态独立原生测试；两风格真实生产安装/重入/移除/销毁/失败回滚和资源释放；双位宽增量，合批干净构建、先发布后测试及远端复核。 |
+| Expected Markers | 共用身份和退场操作实际被现有两风格消费，调用期间保活及资源恰好释放，旧机制删除；呈现和真实年代策略仍由风格拥有。 |
+| Asset Needs | 原图形头、资源声明和八文件包不变；不引入第三方源码或兄弟仓库依赖。 |
+| Reporting Requirements | 列出冻结全集、状态所有者、消费者、旧路径处置和测试/失败边界；区分作用域停用、窗口恢复与物理卸载；记录效率检查和自有scratch清理。 |
+| Stop Conditions | 不使用computer-use或隔离桌面，不修改兄弟仓库/系统安全设置，不覆盖其他改动；权限/环境未运行项如实记录。 |
+| Exit Criteria | 有限审计清单对应的现有通用生命周期归公共层，两风格对应已有能力复用并删重复，完成验证、发布、提交推送和实际远端复核；既有不具备能力明确保留。 |
+| Original Owner Request | 顶层架构与S规划写入T26后自动继续；目录、文件、结构、函数、变量干净，极简复用，不按单个文件重复完整交付。 |
+| Similar-Issue Sweep | 普通frame、menu-only、控件owner、全局切换、现代宿主及嵌套销毁；scope保活/资源所有者重复、回调字段穿透和正常/terminal恢复差异。 |
 
 ## Identifier State
 
@@ -89,15 +89,15 @@ VCL CoolBar 窗口身份核验已迁入公共控件组件，Win16 提供附着�
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
-- Last allocated T26 S: 2
-- Last verified remote delivery: M0 T26 S1 P109，`f4aa242b`；源码与八文件逐blob复核通过。
-- Open task: M0 T26 S2；目录与构建归位。
+- Last allocated T26 S: 3
+- Last verified remote delivery: M0 T26 S2 P1，`51c68a06`；457个现存变更blob、381项去向及八文件复核通过。
+- Open task: M0 T26 S3；公共生命周期。
 
 ## Technical Baseline
 
 以下S1历史证据中的lib-style/lib-win32/style是当时路径；S2当前物理去向以381项清单为准。迁移中的真实验证状态以上方活动包为准，不把历史局部通过当作新目录已交付。
 
-- **活动范围**：T25 S9 去重已并入 T26。S1已完成全部窗口、控件、对话框及接入生产入口与测试分类；S2执行目录归位，S3–S13实施剩余机制拆分；不把已迁移的局部当作 T26 完成。
+- **活动范围**：T25 S9 去重已并入 T26。S1已完成全部窗口、控件、对话框及接入生产入口与测试分类；S2目录归位已完成，S3–S13实施剩余机制拆分；不把已迁移的局部当作 T26 完成。
 - **覆盖台账**：当前生产与测试目录的盘点、已审证据和待审边界见[台账](../history/M0-T26-S1-coverage-ledger.md)；目录统计不是逐文件审计结论。
 - **产品接线精简**：VB 绘制作用域的产品转发文件已删除，Win16 附着和通知处理直接调用现有控件实现并提供目标策略；双位宽字体、文本及正式发布包自建控件回归通过，见[记录](../history/M0-T26-S1-shared-candidate-23.md)。不改变全局覆盖结论。
 - **现代对话框状态**：线程局部重入深度归入公共对话框库，Win16 COM 代理直接使用；双位宽嵌套/隔离测试及正式发布包实际打开、另存、文件夹对话框自动取消通过，见[记录](../history/M0-T26-S1-shared-candidate-23.md)。确认与其他风格行为未覆盖。

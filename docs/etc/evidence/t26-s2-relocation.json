@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S2",
-  "status": "verified-locally-pending-remote",
+  "status": "relocation-verified-remote",
   "moves": 381,
   "include_only_code_files": 374,
   "byte_exact": 153,
