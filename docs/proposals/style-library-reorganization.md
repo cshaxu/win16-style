@@ -183,6 +183,50 @@ status 字体缓存不能只按 HFONT 值判断身份，现有 LOGFONT/metrics/�
 
 已查实际 controls 的 special install、attachment 的 spin/theme/status 中转、injection 的 DC/图形/文本调用，以及公共 bitmap/clip/protocol 与现有 status identity。现有验证入口包括 spin_controls/vcl_modern_spin、status_controls、font isolation/stock/alias、status pane/simple 字体夹具及自定义绘制负例。本批只检查入口和源码，没有新运行结果；实际重入、异常、字体句柄复用和像素保留仍需在对应 S 实施时验证。
 
+## S1 连续审计批次：标签页、文本与微调适配（90–103）
+
+| 文件 | application 公共机制 | appearance 风格策略及所有者 |
+| --- | --- | --- |
+| tab_paint.c/h | control 的项/文字/图像和原生几何快照、代次检查、页内部及子窗口区域保护、变更消息分类 | 支持的 TCS 标志、边框、选中位移、字体与配色归 win3x；公共实例拥有代次，单次呈现拥有临时文字，图像列表只借用 |
+| text_policy.c/h | control 运行时调用来源核验；graphics 的 glyph 解码和编码缓冲生命周期；来源模块和目标 DC 身份核验 | CP1252、ASCII、RTL/长度限制和替代字体资格维持现有 Win3.x 策略，不升为公共层的全局语言限制 |
+| theme_kind.c/h | lifecycle 主题类名有界读取和类别身份；复用 theme_state，统一类别契约 | 哪些类别及 part/state 要接管由风格决定，主题状态不能依赖 Win16 私有枚举 |
+| toolbar_paint.c/h | control 的项目、命令、几何及有界文本快照；复用 protocol 和 custom_draw 的来源/通知协商 | text-only、支持的按钮 flags、数量资格与 Win3.x 字体/边框呈现独立；原生图片列表和命令行为保留 |
+| trackbar_paint.c/h | control 的通知 rect/client/DC 一致性及 runtime 来源；复用 dc_geometry 和 custom_draw | TBS 支持掩码、channel/thumb 配色和边缘、runtime 仅覆盖边框属于风格能力 |
+| updown_adapter.c/h | control 的线程内目标登记与 retire、native source 检查、32槽 DC clone 元数据、owner acquire/release、frame/theme 事件规范化 | application 实例拥有身份和借用 DC 关联；支持样式/part-state 与 painter 为风格策略，不能把 palette/glyph 藏进公共身份表 |
+| updown_paint.c/h | graphics 的一次 DC 保存/裁剪/恢复复用现有组件 | 原始11x11箭头、12状态资源、等比缩放及边缘布局归 appearance/win3x；不强制其他风格使用相同 glyph |
+
+标签页不请求 TCIF_PARAM，保持 TCM_SETITEMEXTRA 的应用扩展数据；原生 USER/COMCTL 保有布局、键盘、焦点、tooltip、选中与页内容权威。当前 painter 在查询 selected、focus 和逐项文字之前已填 strip/body，查询失败时 native_presentation 仍可能调用 WM_PRINTCLIENT 回退。此为源码层的部分绘制/回退边界，尚未证实用户可见缺陷；公共呈现应先完成可重入快照，再在当前代次有效时提交，或使用现有缓冲做到一次提交，不增加无限重试。保留当前4096项、128到32768字符、256子窗口观察边界；是否绘制及支持条件由风格选择。
+
+文本 glyph_prepare 失败时可能已经返回 decoded/encoded 分配，当前 injection 调用者随后统一释放；迁移必须保留明确的缓冲所有者及原始 text/options 不变的失败契约，不能只挪函数而使调用者假定失败无资源。VB runtime、USER/LPK/USP10/GDI32FULL 来源名单是现有受限调用路径，来源身份可共享但不能自动扩大目标；direct label 的调用方授权与 style 字体资格分开。
+
+theme_kind 使用 ReadProcessMemory 有界读类名，避免假定来参可直接解引用。类别识别是身份，不是渲染；当前共享 style_theme_track_open_end 接收由 Win16 enum 得出的值，迁移须统一 public category 的数值契约，并检查对应消费者，不能仅将函数改名后保留隐式依赖。
+
+工具栏继续使用有容量的 TB_GETBUTTONINFOW，不替换为 TB_GETBUTTONTEXT 的长度预查，因为查询可重入而后者无容量参数。原生项目数据和矩形采集归公共快照；支持无图像、非分隔/下拉等限制是当前 painter 能力。查询中控件销毁或换代的处理应与公共 draw scope 配合，不把每次 getter 包成单独回调；运行时零/重复命令和64/65边界仍保留原生回退。
+
+updown 的 clone 元数据不拥有 DC，DeleteDC 成功的事件仅移除关联，retire 必须清除所有指向实例的槽位，再允许 owner 最终释放；同线程 TLS 和32槽溢出回退保持。每次 target 保活在全部成功/失败出口恰好 release；源 module、active paint scope 与真实 WindowFromDC 的选择顺序保持，不能用共享 HTHEME 反推窗口。DrawFrameControl 的低四位方向与 DrawThemeBackground 的 part映射产生统一请求，具体有效状态和渲染由风格提供。进程级 API enable 只是现有观察能力标记，不等于某个窗口已附着或可物理卸载。
+
+已核对 control_guard/state、native_presentation、notify_message、special_install、control_remove、attachment 和 injection/window_titles 的消费链。可复用测试为 control_link 的主题类/文本边界，tab_controls 的 itemextra64、图像/页像素保留及 getter销毁，VCL toolbar/trackbar 的通知、app skip、重入移除/销毁，以及 updown_owner 的130轮DC回收、32/33槽容量、跨线程/调用模块拒绝、旧实例retire和同HWND重新登记。测试入口中含 isolated_process 包装，后续运行须用已审明的当前桌面/worker入口，不创建或切换隔离桌面。本批核对源码和断言，不宣称这些测试已重新运行；缺失的 glyph失败资源、主题类别跨风格、tab失败原子提交验证随实施补齐。
+
+## S1 连续审计批次：VB/VCL 绘制作用域与分类（104–113）
+
+| 文件 | application 公共机制 | appearance 与接口边界 |
+| --- | --- | --- |
+| vb_text.c/h | control 的 native/report 嵌套绘制 scope、DC/窗口关联、取消、32槽资源租约及解码缓存所有权 | 替代字体提供者、Win3.x CP1252 224字符映射与字体资格分开；借用原生字体不删除 |
+| vcl_extra_frame.c/h | control 运行时 BitBtn/controlbar 的 source module、parent、item/client 与 DC 几何证据；已验证结果回写 | bitbtn face、黑框及支持的 edge/flags 由风格决定，公共层不调 win16 painter |
+| vcl_frame_policy.c/h | control 的 group 背景/文字关联和 panel 两笔来源配对、scope 当前性、父/owner 验证 | 原生主题part/state 的支持由风格契约选择；具体黑框/阴影替换归 win3x |
+| vcl_identity.c/h | control 运行时 VB/VCL 分类及同模块/父子/class-proc 身份，优先复用 common/control_vcl_identity 与 window_identity | 身份与风格能力分开；现有 data-role 96/144DPI、RTL及渲染模式限制不能无意扩大或作为所有风格身份规则 |
+| vcl_native_paint.c/h | control 运行时 inplace/lookup/nav/media 的来源、目标、原生坐标与DC偏移协议 | button face、箭头、按压/禁用/焦点画法与可替换的part/state由风格提供 |
+
+VB 的 current 与 native_current 是两组不同作用域：前者还覆盖 EDIT 的同步文本/选择/焦点消息，后者用于特定 paint/erase 消息的目标观察。嵌套非VB窗口是 barrier，不能只把NULL目标当作可沿栈查找上一层。report 绑定确切 DC、调用来源和 cancelled 标志，原生目标元数据独立于字体资格；复用公共绘制scope时须保留该区别，不能制造每风格一个TLS观察器。
+
+字体/解码资源归附着实例，借用延续到最后一个活动调用退出；attachment 的异常清理已承担对应 scope end 和 release，公共生命周期应接管配对而非给每种scope再造异常框架。现有字体缓存以 source HFONT 找槽，glyph map 保存对应字符和索引，数量上限32；与 status_font 的签名缓存契约不同，迁移前核实源句柄存活要求，不能直接合并或宣称已覆盖句柄复用。资源策略只负责 acquire/release，公共实例负责缓存和退场，失败不留下半初始化槽位。
+
+VCL 背景/文字和两笔panel边缘的配对状态属于当前操作，不能误用其他绘制期的配对证据；实例的 verified 支持标志仍按现有安装/退场契约管理。panel_first 在不匹配路径清空，第二笔须同DC、同父、同enabled且互补高光阴影，随后才交给风格。group 在最终绘制前重查scope/owner；这些来源协议可共用，具体是否将native bevel变成黑框是Win3.x策略。inplace与nav的坐标语义不同（nav可能负window origin），不能统一为一个无依据的零原点判断。
+
+分类层输出事实（class、runtime module、native role及父子关系），风格根据事实决定支持；产品只选择风格和提供现有owner附着。继续复用已提取的 VCL identity/protocol，不把剩余分类包装成新的并行身份表。现有 MDI/外部OCX限制保持，T26不扩大目标范围。旧私有 candidate/verified/retired 的指针视图应由公共实例与完整操作替代，不能仅改public前缀。
+
+已核对 attachment 的绘制服务、正常/异常 scope end 与引用退场、attachment_guard 的分类和 native_dc 绑定、injection 的 frame/text/draw 观察调用。现有测试映射包括 vb_font 的32/33租约、分配失败、glyph map释放和嵌套barrier，global_vb_text 的scope外不替换/LastError保留，以及 VCL bitbtn/group/panel/controlbar/inplace/nav 的自有模块夹具。当前导航焦点失败仍开放；夹具不等于真实VB/Delphi全覆盖。本批只完成源码和调用审计，未运行新增测试，后续S3/S9/S10合批验证公共独立性、风格实际使用及旧路径删除。
+
 ## 未通过与未来候选
 
 导航焦点、Win2000 DWM 恢复、VB 清单和表头不稳定及实际现代宿主/全局覆盖限制继续由 CURRENT 和已有证据承载；不因架构设计被关闭。T26 结束条件是现有能力的三层归位、实际复用和验证，而非所有年代所有应用都支持。

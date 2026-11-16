@@ -98,30 +98,30 @@
 | 87 | `src/lib-style/win16-control/status_frame.h` | `f743c97a782dbb5b9af1e48520823ba99b29ace80c89c3586b7b7554b17a44c3` | 待修复/待验证 |
 | 88 | `src/lib-style/win16-control/status_text.c` | `87595843e4c2cc28436e5375dc9f2bc4541a6b121a71e806bb4015bf1eccfd61` | 待修复/待验证 |
 | 89 | `src/lib-style/win16-control/status_text.h` | `74fb3b53a38e931c7312f6dbfde2e350a13915e2629d9ae853f41da1a495f466` | 待修复/待验证 |
-| 90 | `src/lib-style/win16-control/tab_paint.c` | `851b637c211182d994f27117d4ccde0993e59719916982c2cc95e7d98395603e` | 待审 |
-| 91 | `src/lib-style/win16-control/tab_paint.h` | `b23708ff1dbb04542b2174b2e32d4355f4b11391fed9dca7e14f061abb0ad0de` | 待审 |
-| 92 | `src/lib-style/win16-control/text_policy.c` | `69096cf8e505c6c8b7c0d4bd25743ba5aa93fdde8d50a922294d8892bd1231af` | 待审 |
-| 93 | `src/lib-style/win16-control/text_policy.h` | `50074d3156e5516ac52cb161388629b6a9cc688199b63b2f62bc592475ad04c1` | 待审 |
-| 94 | `src/lib-style/win16-control/theme_kind.c` | `5d373e8e069764094be7f09630521fd2b625d57d0c27482e31bfaa50d8ac34d7` | 待审 |
-| 95 | `src/lib-style/win16-control/theme_kind.h` | `dd9182da02336ffc68fb36c6c6ded493a57b07719211df12c786dbd2359e87b0` | 待审 |
-| 96 | `src/lib-style/win16-control/toolbar_paint.c` | `47bf23e4e8a86b5d7e664e3e57da74d5f4df97503ffeef1583c1bf9610814fa1` | 待审 |
-| 97 | `src/lib-style/win16-control/toolbar_paint.h` | `20a149697c1e2336fdba81cc450fe1b01665313ded58b70e1fa25c7f3bb46c62` | 待审 |
-| 98 | `src/lib-style/win16-control/trackbar_paint.c` | `68e06057e1b4632e7660dacdc0fdeb578870a5faf263a4b7a3b806debeb5a5c4` | 待审 |
-| 99 | `src/lib-style/win16-control/trackbar_paint.h` | `999a58448d0a17ec7afc6283555a7ab10e2cc998c7cdca89b75860cbf0f662a2` | 待审 |
-| 100 | `src/lib-style/win16-control/updown_adapter.c` | `01dd0012baeb819e1cf4f843136f579e05ea81d9325430fce2ca5b47a233fd21` | 待审 |
-| 101 | `src/lib-style/win16-control/updown_adapter.h` | `2cc302bd4b319c046e70a1fda89c433c40fe8af2feb038a65ee7423d1052a232` | 待审 |
-| 102 | `src/lib-style/win16-control/updown_paint.c` | `66925149de796f9f234ade7253a76f4bc5a813731a1aee9022373d75b1882d24` | 待审 |
-| 103 | `src/lib-style/win16-control/updown_paint.h` | `228d753f3ea4c5c14f6f6f69af97bbfa778e962160716705ab673b31d6553567` | 待审 |
-| 104 | `src/lib-style/win16-control/vb_text.c` | `02e40a52bf3f9b6495826780e43c474a070c598c4403d5fc6a26f6cdba9a2b69` | 待审 |
-| 105 | `src/lib-style/win16-control/vb_text.h` | `eae57707ab1fd917877418cc94df4a17dedde1c4968e4d2ad3965f88b6ed5c41` | 待审 |
-| 106 | `src/lib-style/win16-control/vcl_extra_frame.c` | `5ab1193a79361c3817d8d4c090bcbfbf69368871142bb49a1cbfae4206af846e` | 待审 |
-| 107 | `src/lib-style/win16-control/vcl_extra_frame.h` | `c83a619ef8bb4138c40a588551ec55dd792d3d7e7cbe14ab049f669f3a7f9edc` | 待审 |
-| 108 | `src/lib-style/win16-control/vcl_frame_policy.c` | `3178a5f867641cf689f3e5fd549ee4cd00df40cf50b94206d11c6f1490a30e43` | 待审 |
-| 109 | `src/lib-style/win16-control/vcl_frame_policy.h` | `f3abc4a76f5e02da02b0ffa9578615ba1b7746a5a4d43390c8035084c37aeb9e` | 待审 |
-| 110 | `src/lib-style/win16-control/vcl_identity.c` | `eba6a8b06f9cafad8b0b465c06694541f74d0f287d88c45747af8e04112f9a3c` | 待审 |
-| 111 | `src/lib-style/win16-control/vcl_identity.h` | `0d84b3a319f00e86220897002de33db0a7e635392a31e98ba5e94755824335e0` | 待审 |
-| 112 | `src/lib-style/win16-control/vcl_native_paint.c` | `92de4090a1b0199510d6428dbe9c03886b09a4a32570155904f0fdc880b85d6d` | 待审 |
-| 113 | `src/lib-style/win16-control/vcl_native_paint.h` | `2372cae31d72c1b5d0381905fa077efdcbaf785cb484e8fec6c876731e4aa06d` | 待审 |
+| 90 | `src/lib-style/win16-control/tab_paint.c` | `851b637c211182d994f27117d4ccde0993e59719916982c2cc95e7d98395603e` | 待修复/待验证 |
+| 91 | `src/lib-style/win16-control/tab_paint.h` | `b23708ff1dbb04542b2174b2e32d4355f4b11391fed9dca7e14f061abb0ad0de` | 待修复/待验证 |
+| 92 | `src/lib-style/win16-control/text_policy.c` | `69096cf8e505c6c8b7c0d4bd25743ba5aa93fdde8d50a922294d8892bd1231af` | 待修复/待验证 |
+| 93 | `src/lib-style/win16-control/text_policy.h` | `50074d3156e5516ac52cb161388629b6a9cc688199b63b2f62bc592475ad04c1` | 待修复/待验证 |
+| 94 | `src/lib-style/win16-control/theme_kind.c` | `5d373e8e069764094be7f09630521fd2b625d57d0c27482e31bfaa50d8ac34d7` | 待修复/待验证 |
+| 95 | `src/lib-style/win16-control/theme_kind.h` | `dd9182da02336ffc68fb36c6c6ded493a57b07719211df12c786dbd2359e87b0` | 待修复/待验证 |
+| 96 | `src/lib-style/win16-control/toolbar_paint.c` | `47bf23e4e8a86b5d7e664e3e57da74d5f4df97503ffeef1583c1bf9610814fa1` | 待修复/待验证 |
+| 97 | `src/lib-style/win16-control/toolbar_paint.h` | `20a149697c1e2336fdba81cc450fe1b01665313ded58b70e1fa25c7f3bb46c62` | 待修复/待验证 |
+| 98 | `src/lib-style/win16-control/trackbar_paint.c` | `68e06057e1b4632e7660dacdc0fdeb578870a5faf263a4b7a3b806debeb5a5c4` | 待修复/待验证 |
+| 99 | `src/lib-style/win16-control/trackbar_paint.h` | `999a58448d0a17ec7afc6283555a7ab10e2cc998c7cdca89b75860cbf0f662a2` | 待修复/待验证 |
+| 100 | `src/lib-style/win16-control/updown_adapter.c` | `01dd0012baeb819e1cf4f843136f579e05ea81d9325430fce2ca5b47a233fd21` | 待修复/待验证 |
+| 101 | `src/lib-style/win16-control/updown_adapter.h` | `2cc302bd4b319c046e70a1fda89c433c40fe8af2feb038a65ee7423d1052a232` | 待修复/待验证 |
+| 102 | `src/lib-style/win16-control/updown_paint.c` | `66925149de796f9f234ade7253a76f4bc5a813731a1aee9022373d75b1882d24` | 待修复/待验证 |
+| 103 | `src/lib-style/win16-control/updown_paint.h` | `228d753f3ea4c5c14f6f6f69af97bbfa778e962160716705ab673b31d6553567` | 待修复/待验证 |
+| 104 | `src/lib-style/win16-control/vb_text.c` | `02e40a52bf3f9b6495826780e43c474a070c598c4403d5fc6a26f6cdba9a2b69` | 待修复/待验证 |
+| 105 | `src/lib-style/win16-control/vb_text.h` | `eae57707ab1fd917877418cc94df4a17dedde1c4968e4d2ad3965f88b6ed5c41` | 待修复/待验证 |
+| 106 | `src/lib-style/win16-control/vcl_extra_frame.c` | `5ab1193a79361c3817d8d4c090bcbfbf69368871142bb49a1cbfae4206af846e` | 待修复/待验证 |
+| 107 | `src/lib-style/win16-control/vcl_extra_frame.h` | `c83a619ef8bb4138c40a588551ec55dd792d3d7e7cbe14ab049f669f3a7f9edc` | 待修复/待验证 |
+| 108 | `src/lib-style/win16-control/vcl_frame_policy.c` | `3178a5f867641cf689f3e5fd549ee4cd00df40cf50b94206d11c6f1490a30e43` | 待修复/待验证 |
+| 109 | `src/lib-style/win16-control/vcl_frame_policy.h` | `f3abc4a76f5e02da02b0ffa9578615ba1b7746a5a4d43390c8035084c37aeb9e` | 待修复/待验证 |
+| 110 | `src/lib-style/win16-control/vcl_identity.c` | `eba6a8b06f9cafad8b0b465c06694541f74d0f287d88c45747af8e04112f9a3c` | 待修复/待验证 |
+| 111 | `src/lib-style/win16-control/vcl_identity.h` | `0d84b3a319f00e86220897002de33db0a7e635392a31e98ba5e94755824335e0` | 待修复/待验证 |
+| 112 | `src/lib-style/win16-control/vcl_native_paint.c` | `92de4090a1b0199510d6428dbe9c03886b09a4a32570155904f0fdc880b85d6d` | 待修复/待验证 |
+| 113 | `src/lib-style/win16-control/vcl_native_paint.h` | `2372cae31d72c1b5d0381905fa077efdcbaf785cb484e8fec6c876731e4aa06d` | 待修复/待验证 |
 | 114 | `src/lib-style/win16-window-uwp/frame.c` | `611847b338b1fddda29fe8997a11c2c3af6436062e2f70963e6394cbdd4eaae6` | 待审 |
 | 115 | `src/lib-style/win16-window-uwp/frame.h` | `00da809635b3781756d1760ce368b241259267eeca36e77d99cff117c0c5fbe4` | 待审 |
 | 116 | `src/lib-style/win16-window-uwp/frame_layout.c` | `a345511d535bda17c081e1fce4432e2b4d775a532b08b3648fae9533fded3960` | 待审 |
@@ -642,3 +642,127 @@
 - 所有权、迁移方向与验证入口见[任务设计](../proposals/style-library-reorganization.md)的特殊控件/状态栏批次；未实施及运行验证，不计过关。
 
 单人复核与效率检查（78–89）：重新核对十二文件源码摘要、actual caller 和测试入口，归类安装事务、composite 来源、字体签名/借用与 pane scope；现有 bitmap/clip/protocol 继续复用，未仅因 Win16 类型耦合判定留原处。没有新产品构建或测试。核验第 41 项中断快照无 result.json、无活动编译进程及 reparse point 后删除 12,861,797 字节自有 scratch；保留全部在途源码和 .ninja/.ccache。下一批从第 90 项按序继续。
+
+## 090 `win16-control/tab_paint.c`：待修复/待验证
+
+- 源码与调用核对：标签页原生项/几何快照、变更代次和客户区保护归公共 control；配色、支持样式及边框几何归风格。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 091 `win16-control/tab_paint.h`：待修复/待验证
+
+- 源码与调用核对：拆开原生标签页数据、呈现结果和风格 painter 契约，去掉 palette 私有依赖。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 092 `win16-control/text_policy.c`：待修复/待验证
+
+- 源码与调用核对：运行时调用来源核验和 glyph 临时资源归公共机制；1252/ASCII、RTL 与字体资格属于现有风格策略。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 093 `win16-control/text_policy.h`：待修复/待验证
+
+- 源码与调用核对：文本来源、解码资源所有权与风格支持契约分开，失败时仍由拥有者释放已分配缓冲。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 094 `win16-control/theme_kind.c`：待修复/待验证
+
+- 源码与调用核对：有界读取主题类名并分类是共享主题身份机制；具体接管类别由风格选择。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 095 `win16-control/theme_kind.h`：待修复/待验证
+
+- 源码与调用核对：主题类别由公共 theme state 契约定义，不能使共享 tracker 接受 Win16 专属枚举。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 096 `win16-control/toolbar_paint.c`：待修复/待验证
+
+- 源码与调用核对：工具栏有界文本/项目快照和身份协议归公共 control，text-only 支持与按钮绘制归风格。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 097 `win16-control/toolbar_paint.h`：待修复/待验证
+
+- 源码与调用核对：custom-draw 数据视图与具体 painter 分离，复用现有公共通知协商。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 098 `win16-control/trackbar_paint.c`：待修复/待验证
+
+- 源码与调用核对：滑块通知区域及来源核验归公共 control；支持样式、channel/thumb 和 runtime 边框画法归风格。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 099 `win16-control/trackbar_paint.h`：待修复/待验证
+
+- 源码与调用核对：复用公共 draw scope 和几何核验，风格只提供支持条件与绘制。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 100 `win16-control/updown_adapter.c`：待修复/待验证
+
+- 源码与调用核对：同线程目标登记、DC 克隆来源、owner 保活/退场和原生绘制事件分派归公共 control；不内置 Win16 palette/glyph。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 101 `win16-control/updown_adapter.h`：待修复/待验证
+
+- 源码与调用核对：公共实例持有身份与借用 DC 元数据；renderer 策略不携带 NTW16S 类型，明确 register/retire 与回调有效期。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 102 `win16-control/updown_paint.c`：待修复/待验证
+
+- 源码与调用核对：原版箭头像素、颜色和边缘布局属于 win3x；DC 裁剪/保存和恢复复用公共 graphics。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+## 103 `win16-control/updown_paint.h`：待修复/待验证
+
+- 源码与调用核对：具体 glyph 数组属于风格资源；公共绘制请求只描述矩形、方向和状态。
+- 机制/策略、所有权与验证入口见[任务设计](../proposals/style-library-reorganization.md)的标签页/文本/微调适配批次；本批仅审计设计，未迁移及运行，不计过关。
+
+单人复核与效率检查（90–103）：核对十四文件完整源码及 controls/attachment/injection 的实际调用，检查 tab、text-policy、toolbar/trackbar 和 updown-owner 现有测试覆盖。确认 tab 在项目查询前已写像素，其失败回退需要与公共呈现事务一并治理；toolbar 有界取文不可退回无容量的 TB_GETBUTTONTEXT。updown 的32个借用DC槽位、退场清空及源模块检查应整体共享，不复制另一套生命周期。未启动完整构建、发布或原生测试，未产生新 scratch；保留第41项在途改动。下一项104，继续按顺序完成控件尾部，再审现代外框和窗口文件。
+
+## 104 `win16-control/vb_text.c`：待修复/待验证
+
+- 源码与调用核对：VB/native 两组嵌套绘制作用域和租约/解码缓存应公共化；字体与1252字符表归风格。
+- 接口/所有权与验证映射见[任务设计](../proposals/style-library-reorganization.md)的 VB/VCL 尾部批次；未实施及运行，不计过关。
+
+## 105 `win16-control/vb_text.h`：待修复/待验证
+
+- 源码与调用核对：公共 paint scope、缓存和资源提供者契约分开，保留借用直到最后活动调用退场的生命周期。
+- 接口/所有权与验证映射见[任务设计](../proposals/style-library-reorganization.md)的 VB/VCL 尾部批次；未实施及运行，不计过关。
+
+## 106 `win16-control/vcl_extra_frame.c`：待修复/待验证
+
+- 源码与调用核对：BitBtn/controlbar 来源、同父/同模块及绘制区域核验归运行时适配，具体面板边框归风格。
+- 接口/所有权与验证映射见[任务设计](../proposals/style-library-reorganization.md)的 VB/VCL 尾部批次；未实施及运行，不计过关。
+
+## 107 `win16-control/vcl_extra_frame.h`：待修复/待验证
+
+- 源码与调用核对：绘制来源 view 应归公共 scope，不用多组 Win16 指针字段代替完整操作契约。
+- 接口/所有权与验证映射见[任务设计](../proposals/style-library-reorganization.md)的 VB/VCL 尾部批次；未实施及运行，不计过关。
+
+## 108 `win16-control/vcl_frame_policy.c`：待修复/待验证
+
+- 源码与调用核对：VCL 分组背景/文字关联及 panel 两笔配对归运行时协议，黑框和阴影替换归风格。
+- 接口/所有权与验证映射见[任务设计](../proposals/style-library-reorganization.md)的 VB/VCL 尾部批次；未实施及运行，不计过关。
+
+## 109 `win16-control/vcl_frame_policy.h`：待修复/待验证
+
+- 源码与调用核对：配对 scope 由当前绘制操作拥有，owner/parent 有效性与渲染结果分开。
+- 接口/所有权与验证映射见[任务设计](../proposals/style-library-reorganization.md)的 VB/VCL 尾部批次；未实施及运行，不计过关。
+
+## 110 `win16-control/vcl_identity.c`：待修复/待验证
+
+- 源码与调用核对：VB/VCL 类、模块、父子和过程身份统一归公共 runtime 分类，96/144DPI等现有支持资格留风格。
+- 接口/所有权与验证映射见[任务设计](../proposals/style-library-reorganization.md)的 VB/VCL 尾部批次；未实施及运行，不计过关。
+
+## 111 `win16-control/vcl_identity.h`：待修复/待验证
+
+- 源码与调用核对：公共分类描述与风格支持候选分开，沿用 common/control_vcl_identity，删除重复核验。
+- 接口/所有权与验证映射见[任务设计](../proposals/style-library-reorganization.md)的 VB/VCL 尾部批次；未实施及运行，不计过关。
+
+## 112 `win16-control/vcl_native_paint.c`：待修复/待验证
+
+- 源码与调用核对：inplace/nav 原生来源、几何和DC契约公共化，button面板/箭头和支持part-state留风格。
+- 接口/所有权与验证映射见[任务设计](../proposals/style-library-reorganization.md)的 VB/VCL 尾部批次；未实施及运行，不计过关。
+
+## 113 `win16-control/vcl_native_paint.h`：待修复/待验证
+
+- 源码与调用核对：公共运行时绘制请求和renderer契约分开，不再把 verified 等私有字段指针当公共API。
+- 接口/所有权与验证映射见[任务设计](../proposals/style-library-reorganization.md)的 VB/VCL 尾部批次；未实施及运行，不计过关。
+
+单人复核与效率检查（104–113）：完整阅读控件目录尾部十文件，追查 attachment 的 scope begin/end、异常退场、最后引用释放、guard 的 native DC 绑定及窗口绘制钩子消费；对照公共 VCL identity，明确不能只迁函数名而保留私有字段耦合。无新构建/测试或 scratch；已连续核对至113，剩38项，下一项114是现代外框，后续仍须审产品入口。保留在途第41项，按S1整体契约归并到S3/S9/S10，不逐文件完整交付。
