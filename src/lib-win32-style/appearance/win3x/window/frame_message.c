@@ -13,7 +13,7 @@ BOOL win16_control_frame_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARA
             RECT client;BOOL normal=!IsIconic(w)&&!IsZoomed(w);
             style_client_screen(w,&client);s->pending_frame=FALSE;
             v->activate(w,s,&client,normal);
-            if(s->detached)return TRUE;
+            if(s->instance.detached)return TRUE;
         }
         return FALSE;
     case WM_CTLCOLORDLG:
@@ -25,7 +25,7 @@ BOOL win16_control_frame_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARA
         if(!v->measure(w,s,&r,&l))return FALSE;
         /* USER still updates scrollbar state before our geometry is applied. */
         native=DefSubclassProc(w,msg,wp,lp);
-        if(s->detached)return TRUE;
+        if(s->instance.detached)return TRUE;
         OffsetRect(&l.client,r.left,r.top);
         if(wp)((NCCALCSIZE_PARAMS *)lp)->rgrc[0]=l.client;else *(RECT *)lp=l.client;
         /* Preserve explicit redraw requests; VALIDRECTS describe the old
@@ -51,23 +51,23 @@ BOOL win16_control_frame_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARA
     case WM_PRINT:
         if((lp&PRF_CHECKVISIBLE) && !IsWindowVisible(w))return TRUE;
         if(lp&PRF_NONCLIENT)v->paint(w,s,(HDC)wp);
-        if(!s->detached)style_print_client_and_children(w,&s->detached,(HDC)wp,lp);
+        if(!s->instance.detached)style_print_client_and_children(w,&s->instance.detached,(HDC)wp,lp);
         return TRUE;
     case WM_SETTEXT:
         *result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached)v->paint(w,s,NULL);
+        if(!s->instance.detached)v->paint(w,s,NULL);
         return TRUE;
     case WM_HSCROLL:
     case WM_VSCROLL:
         *result=DefSubclassProc(w,msg,wp,lp);return TRUE;
     case WM_DPICHANGED:
         *result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached){v->refresh_font(w,s);style_frame_changed(w);}return TRUE;
+        if(!s->instance.detached){v->refresh_font(w,s);style_frame_changed(w);}return TRUE;
     case WM_SETTINGCHANGE:
     case WM_SYSCOLORCHANGE:
     case WM_THEMECHANGED:
         *result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached)v->paint(w,s,NULL);
+        if(!s->instance.detached)v->paint(w,s,NULL);
         return TRUE;
     default:return FALSE;
     }

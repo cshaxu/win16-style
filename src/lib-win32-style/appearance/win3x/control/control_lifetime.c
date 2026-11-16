@@ -6,8 +6,8 @@
 
 void win16_control_finish_message(HWND w,control_style *s,UINT m,LPARAM b,HWND spin_button,const RECT *spin_before,BOOL combo_paint,HFONT previous,HFONT outbound,HFONT pinned,SUBCLASSPROC callback)
 {
-    style_control_vcl_spin_after(w,spin_button,spin_before,&s->detached);
-    if(m==WM_SETFONT && s->detached && IsWindow(w)){
+    style_control_vcl_spin_after(w,spin_button,spin_before,&s->instance.detached);
+    if(m==WM_SETFONT && s->instance.detached && IsWindow(w)){
         /* A native setter can finish AFTER its callback removed this leaf,
          * overwriting the font restored during removal with our retired
          * variant. Settle only after that native call has returned. A new
@@ -22,17 +22,17 @@ void win16_control_finish_message(HWND w,control_style *s,UINT m,LPARAM b,HWND s
      * with the previous lease. Never delete the application's borrowed font. */
     win16_style_system_release(previous);
     win16_style_system_release(outbound);win16_style_system_release(pinned);
-    if(!--s->calls && s->detached)win16_control_state_dispose(s);
+    style_instance_release(&s->instance);
 }
 
 BOOL win16_control_updown_acquire(void *owner,SUBCLASSPROC proc)
 {
     control_style *s=owner;
-    if(s->detached || !style_control_subclass_owned(s->updown.window,proc,(UINT_PTR)proc,s))return FALSE;
-    ++s->calls;return TRUE;
+    if(s->instance.detached || !style_control_subclass_owned(s->updown.window,proc,(UINT_PTR)proc,s))return FALSE;
+    style_instance_retain(&s->instance);return TRUE;
 }
 void win16_control_updown_release(void *owner)
-{control_style *s=owner;if(!--s->calls && s->detached)win16_control_state_dispose(s);}
+{control_style *s=owner;style_instance_release(&s->instance);}
 void win16_control_scrollbars_paint(HWND w,HDC target,const win16_style_palette *palette,SUBCLASSPROC proc,
     void (*paint)(HWND,control_style *,HDC))
 {

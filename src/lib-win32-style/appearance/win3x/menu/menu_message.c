@@ -17,16 +17,16 @@ BOOL win16_control_menu_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM
     case WM_MENUCHAR:
         /* Application-owned items retain their existing mnemonic handler. */
         *result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached && HIWORD(*result)==MNC_IGNORE)
+        if(!s->instance.detached && HIWORD(*result)==MNC_IGNORE)
             style_menu_char(s->menu_items,(HMENU)lp,(WCHAR)LOWORD(wp),result);
         return TRUE;
     case WM_INITMENUPOPUP:
         /* Restore application-owned data before the owner refreshes items. */
         style_menu_restore_popup((HMENU)wp,&s->menu_items);
         *result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached && !style_menu_prepare((HMENU)wp,&s->menu_items,s->menu_depth))
+        if(!s->instance.detached && !style_menu_prepare((HMENU)wp,&s->menu_items,s->menu_depth))
             style_menu_restore_popup((HMENU)wp,&s->menu_items);
-        if(!s->detached && HIWORD(lp)){
+        if(!s->instance.detached && HIWORD(lp)){
             if(s->menus)win16_style_menu_system(s->menus->scope,(HMENU)wp,s->menu_font,s->dpi);
             s->system_menu=TRUE;paint(w,s,HTSYSMENU);
         }
@@ -34,7 +34,7 @@ BOOL win16_control_menu_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM
     case WM_EXITMENULOOP:
         win16_control_frame_state_exit_menu(s);
         *result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached && s->system_menu){s->system_menu=FALSE;paint(w,s,HTSYSMENU);}
+        if(!s->instance.detached && s->system_menu){s->system_menu=FALSE;paint(w,s,HTSYSMENU);}
         return TRUE;
     default:return FALSE;
     }

@@ -49,13 +49,10 @@ static LRESULT CALLBACK menu_filter(int code,WPARAM wp,LPARAM lp)
     }
     return CallNextHookEx(NULL,code,wp,lp);
 }
-#define STYLE_ID ((UINT_PTR)style_proc)
 
 static style_window *state(HWND w)
 {
-    DWORD_PTR data=0;
-    if(GetWindowSubclass(w,style_proc,STYLE_ID,&data))return (style_window *)data;
-    return NULL;
+    return (style_window *)style_instance_lookup(w,style_proc);
 }
 
 static BOOL local_window(HWND w)
@@ -67,7 +64,7 @@ static BOOL local_window(HWND w)
 }
 
 static BOOL measure_window(HWND w,style_window *s,const RECT *outer,win16_style_layout *l)
-{return win16_control_measure_window(w,&s->dpi,&s->menu_font,&s->detached,outer,l);}
+{return win16_control_measure_window(w,&s->dpi,&s->menu_font,&s->instance.detached,outer,l);}
 
 static BOOL layout(HWND w,style_window *s,win16_style_layout *l)
 {
@@ -90,7 +87,7 @@ static void paint_colors(void *context,win16_style_palette *palette)
 {win16_control_resolve_palette(&((style_window *)context)->palette,palette);}
 static win16_control_frame_view paint_view(style_window *s)
 {
-    const win16_control_frame_view view={s,&s->detached,&s->active,&s->menu_font,&s->title_font,
+    const win16_control_frame_view view={s,&s->instance.detached,&s->active,&s->menu_font,&s->title_font,
         &s->dpi,&s->bar_selected,&s->system_menu,&s->bar_keyboard,&s->pressed,&s->hot,
         paint_layout,paint_colors,win16_style_scrollbars_paint};
     return view;
@@ -108,14 +105,14 @@ static void paint_button_state(HWND w,style_window *s,int hit)
 static void button_paint_callback(HWND w,void *context,int hit){paint_button_state(w,(style_window *)context,hit);}
 static win16_control_frame_button_view button_view(style_window *s)
 {
-    const win16_control_frame_button_view view={s,&s->pressed,&s->hot,&s->detached,paint_layout,button_paint_callback};
+    const win16_control_frame_button_view view={s,&s->pressed,&s->hot,&s->instance.detached,paint_layout,button_paint_callback};
     return view;
 }
 
 static void bar_paint_callback(HWND w,void *context){paint_menu_state(w,(style_window *)context);}
 static win16_control_bar_state_view bar_view(style_window *s)
 {
-    const win16_control_bar_state_view view={s,&s->detached,&s->bar_keyboard,&s->bar_focus,
+    const win16_control_bar_state_view view={s,&s->instance.detached,&s->bar_keyboard,&s->bar_focus,
         &s->bar_selected,&s->menu_font,&s->dpi,paint_layout,bar_paint_callback};
     return view;
 }
@@ -127,7 +124,7 @@ static void select_bar(HWND w,style_window *s,int direction)
 static int bar_at_screen(HWND w,style_window *s,POINT point)
 {
     win16_style_layout l;
-    if(s->detached || !layout(w,s,&l))return -3;
+    if(s->instance.detached || !layout(w,s,&l))return -3;
     return win16_control_menu_bar_hit_screen(w,&l,s->menu_font,s->dpi,point);
 }
 
@@ -150,8 +147,8 @@ static BOOL refresh_font(HWND w,style_window *s)
 static void activate_frame(HWND w,style_window *s,const RECT *client,BOOL normal)
 {
     win16_style_layout l;
-    s->keep_outer=normal && client && layout(w,s,&l) && !s->detached && style_frame_keep_outer(w,client,&l.client);
-    if(!s->detached)win16_control_frame_activate(w,&s->detached,client,normal&&!s->keep_outer,DwmSetWindowAttribute);
+    s->keep_outer=normal && client && layout(w,s,&l) && !s->instance.detached && style_frame_keep_outer(w,client,&l.client);
+    if(!s->instance.detached)win16_control_frame_activate(w,&s->instance.detached,client,normal&&!s->keep_outer,DwmSetWindowAttribute);
 }
 
 static const win16_control_frame_lifecycle_services frame_lifecycle={style_proc,DwmGetWindowAttribute,DwmSetWindowAttribute,local_window,state,refresh_font,layout,activate_frame,
@@ -176,7 +173,7 @@ typedef struct menu_dispatch_scope { style_window *state;BOOL returned; } menu_d
 static void menu_dispatch_end(void *data)
 {
     menu_dispatch_scope *scope=data;style_window *s=scope->state;
-    if(!scope->returned && !--s->calls && s->detached)win16_control_frame_state_dispose(s);
+    if(!scope->returned)style_instance_release(&s->instance);
 }
 static PROCESS_HOOK_UNWIND_FUNCTION LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     UINT_PTR id,DWORD_PTR data)

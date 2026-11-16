@@ -1,0 +1,760 @@
+{
+  "task": "M0 T26 S3 P1",
+  "status": "verified-locally-pending-remote",
+  "build": {
+    "physical_acceptance": "pending",
+    "status": "passed",
+    "candidate": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\candidate",
+    "exit_code": 0,
+    "full_matrix": "pending",
+    "clean_source": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source"
+  },
+  "toolchains": {
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache_version": "ccache version 4.13.6",
+    "toolchains": [
+      {
+        "architecture": "x86",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "version": "16.1.0",
+        "target": "i686-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe"
+      },
+      {
+        "architecture": "x64",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "version": "16.1.0",
+        "target": "x86_64-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe"
+      }
+    ]
+  },
+  "snapshot_sha256": "49c707e3e3802565dea5735df11aa30c41b1ca9014ce1d005863bbf435cfc3a6",
+  "post_publication": {
+    "status": "passed-focused-with-known-baseline-failures",
+    "sha256": {
+      "demo.exe": "b6ffaaf15d9e63390dc692517bd9cef1ac872e28f9032ab27334764e33300cc8",
+      "ntw16s32.dll": "1a9148ee2c09940e0fed1b8ea245489189edac86bd31dbb6d69bea5b37d47f48",
+      "ntw16s64.dll": "7ed0c58b0b7ec207f46d733bedca000fa39702d6038ec1f80c651a716abb438d",
+      "ntw2ks32.dll": "c74d9282f9051224a1bd0c2e1937435c65b0d2a48f9196f13bc8901126312a55",
+      "ntw2ks64.dll": "968db83860a0ba584361007f34dae486517327aa2b8c828b3bc13c50f94f19d9",
+      "ntwshk32.dll": "50812cf52a859aa031f05faead71f47a431ef90ad01ea0fd49540c956e61626c",
+      "ntwshk64.dll": "dfdfa5bc8233fad1e12c7ef24eaba24137e5ea177ac197eb50f6df6ec485334d",
+      "run16s.exe": "fd5f89d64fb5ca6da473b3ebef3a7535eefe3b1af4fda12b998dd6581c58b664"
+    },
+    "cases": [
+      {
+        "name": "startup-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-style-startup.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE STARTUP PASS success=1 begin_failure=1 prepare_rollback=1 commit_failure=1 context=1\r\n",
+        "seconds": 0.11286679998738691,
+        "passed": true
+      },
+      {
+        "name": "global-window-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-style-global-window.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE GLOBAL WINDOW bits=32 installed=1 query=1 mismatch=1 removed=1 repeated=1 reattached=1 marker=1 failed_cleanup=1 rollback=1 children=1 stop=1 invalid=1 foreign=1 cleanup=1\r\n",
+        "seconds": 0.124814500042703,
+        "passed": true
+      },
+      {
+        "name": "uwp-hook-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-style-uwp-hook.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP_HOOK_OK valid=1 invalid=1 recursion=1 cleanup=1\r\n",
+        "seconds": 0.10394599998835474,
+        "passed": true
+      },
+      {
+        "name": "dc-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-style-frame-update-dc.exe"
+        ],
+        "exit_code": 0,
+        "output": "FRAME_UPDATE_DC_OK copied_region=1 invalid=1 cleanup=1\r\n",
+        "seconds": 0.10324850003235042,
+        "passed": true
+      },
+      {
+        "name": "control-link-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-win16-control-link.exe"
+        ],
+        "exit_code": 0,
+        "output": "ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1\r\nATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1\r\nCONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1\r\nWIN16_CONTROL_STANDALONE_LINK_OK palette=1 glyphs=12 pixel=1\r\n",
+        "seconds": 0.16651240002829581,
+        "passed": true
+      },
+      {
+        "name": "dialog-link-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-win16-dialog-link.exe"
+        ],
+        "exit_code": 0,
+        "output": "CLASSIC_RESULT_OK folder=1 commit=1 revoke=1 invalid_multi=1\r\nCLASSIC_MESSAGE_OK reject=1 navigating=1 fileok=1 hidden=1\r\nCLASSIC_NAVIGATION_OK scope=1 events=1 cleanup=1\r\nWIN16_DIALOG_STANDALONE_LINK_OK ranges=1 file_contract=1 modern_invalid=1\r\n",
+        "seconds": 0.5587888999725692,
+        "passed": true
+      },
+      {
+        "name": "bitmap-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-style-bitmap.exe"
+        ],
+        "exit_code": 0,
+        "output": "BITMAP_OK reference=1 pixels=1 reuse=1 invalid=1 resize=1 cleanup=1\r\n",
+        "seconds": 0.08882639999501407,
+        "passed": true
+      },
+      {
+        "name": "pixel-grid-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-style-pixel-grid.exe"
+        ],
+        "exit_code": 0,
+        "output": "PIXEL_GRID_OK palette=1 transparent=1 brush=1 fractional_scale=1 stride=1\r\n",
+        "seconds": 0.10177649999968708,
+        "passed": true
+      },
+      {
+        "name": "menu-items-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-style-menu-items.exe"
+        ],
+        "exit_code": 0,
+        "output": "",
+        "seconds": 0.08701060002204031,
+        "passed": true
+      },
+      {
+        "name": "theme-track-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-theme-track.exe"
+        ],
+        "exit_code": 0,
+        "output": "THEME_TRACK_OK shared=1 alias=1 combo=1 failed_close=1 nested=1 overlap=1 capacity=1\r\n",
+        "seconds": 0.07118349999655038,
+        "passed": true
+      },
+      {
+        "name": "dialog-hook-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-style-dialog-hook.exe"
+        ],
+        "exit_code": 0,
+        "output": "DIALOG HOOK PASS ordinary=1 parameter=1 return=1 error=1 begin_failure=1 rollback=1 exception_cleanup=1\r\n",
+        "seconds": 0.09021619998384267,
+        "passed": true
+      },
+      {
+        "name": "host-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-uwp-host.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HOST PASS owner_failure=1 ordering=1 title_reentry=1 owner_reentry=1 title_refresh=1 surface=1 surface_reentry=1 surface_destroy=1 deferred_dispose=1\r\n",
+        "seconds": 0.11238029995001853,
+        "passed": true
+      },
+      {
+        "name": "host-input-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-uwp-input.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP_INPUT_OK button=1 hot=1 drag=1 cancel=1 double=1 right=1 detach=1\r\n",
+        "seconds": 0.09835750004276633,
+        "passed": true
+      },
+      {
+        "name": "win2k-caption-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-win2k-caption.exe"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K CAPTION PASS solid gradient text invalid-input\r\n",
+        "seconds": 0.10075889999279752,
+        "passed": true
+      },
+      {
+        "name": "modern-hidden-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-uwp-frame-hidden.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1\r\n",
+        "seconds": 0.11101079999934882,
+        "passed": true
+      },
+      {
+        "name": "abi-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+          "O:\\winnt\\ntw16s32.dll"
+        ],
+        "exit_code": 0,
+        "output": "ABI PASS width=32 version=3 public=38 private-bind-exports=0\r\n",
+        "seconds": 0.053929699992295355,
+        "passed": true
+      },
+      {
+        "name": "frames-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-frames.exe",
+          "--private-worker"
+        ],
+        "exit_code": 0,
+        "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\r\n",
+        "seconds": 2.443419700022787,
+        "passed": true
+      },
+      {
+        "name": "vcl-edit-32",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-vcl-edit-module.exe",
+          "--private-worker",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\vcl-edit-module-fixture.dll"
+        ],
+        "exit_code": 0,
+        "output": "NC_REGION inside=20 outside=0 width=220\r\nMEMO_FRAME_PIXELS edge=5360 client=0 outer=1144\r\nNOEDGE_WITNESS changed=0 checked=180\r\nVCL_EDIT_MODULE_OK bits=32 fake_paint_rejected=1 selection=1 readonly=1 multiline=1 scroll=1 reentrant_remove=1 frame_pixels=1 nc_clip=1 noedge=1 cleanup=1\r\n",
+        "seconds": 1.0121651000226848,
+        "passed": true
+      },
+      {
+        "name": "startup-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-style-startup.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE STARTUP PASS success=1 begin_failure=1 prepare_rollback=1 commit_failure=1 context=1\r\n",
+        "seconds": 0.08880329999374226,
+        "passed": true
+      },
+      {
+        "name": "global-window-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-style-global-window.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE GLOBAL WINDOW bits=64 installed=1 query=1 mismatch=1 removed=1 repeated=1 reattached=1 marker=1 failed_cleanup=1 rollback=1 children=1 stop=1 invalid=1 foreign=1 cleanup=1\r\n",
+        "seconds": 0.15782309998758137,
+        "passed": true
+      },
+      {
+        "name": "uwp-hook-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-style-uwp-hook.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP_HOOK_OK valid=1 invalid=1 recursion=1 cleanup=1\r\n",
+        "seconds": 0.13065609999466687,
+        "passed": true
+      },
+      {
+        "name": "dc-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-style-frame-update-dc.exe"
+        ],
+        "exit_code": 0,
+        "output": "FRAME_UPDATE_DC_OK copied_region=1 invalid=1 cleanup=1\r\n",
+        "seconds": 0.11328739998862147,
+        "passed": true
+      },
+      {
+        "name": "control-link-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-win16-control-link.exe"
+        ],
+        "exit_code": 0,
+        "output": "ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1\r\nATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1\r\nCONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1\r\nWIN16_CONTROL_STANDALONE_LINK_OK palette=1 glyphs=12 pixel=1\r\n",
+        "seconds": 0.20660320000024512,
+        "passed": true
+      },
+      {
+        "name": "dialog-link-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-win16-dialog-link.exe"
+        ],
+        "exit_code": 0,
+        "output": "CLASSIC_RESULT_OK folder=1 commit=1 revoke=1 invalid_multi=1\r\nCLASSIC_MESSAGE_OK reject=1 navigating=1 fileok=1 hidden=1\r\nCLASSIC_NAVIGATION_OK scope=1 events=1 cleanup=1\r\nWIN16_DIALOG_STANDALONE_LINK_OK ranges=1 file_contract=1 modern_invalid=1\r\n",
+        "seconds": 0.456830799987074,
+        "passed": true
+      },
+      {
+        "name": "bitmap-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-style-bitmap.exe"
+        ],
+        "exit_code": 0,
+        "output": "BITMAP_OK reference=1 pixels=1 reuse=1 invalid=1 resize=1 cleanup=1\r\n",
+        "seconds": 0.09745840000687167,
+        "passed": true
+      },
+      {
+        "name": "pixel-grid-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-style-pixel-grid.exe"
+        ],
+        "exit_code": 0,
+        "output": "PIXEL_GRID_OK palette=1 transparent=1 brush=1 fractional_scale=1 stride=1\r\n",
+        "seconds": 0.11063569999532774,
+        "passed": true
+      },
+      {
+        "name": "menu-items-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-style-menu-items.exe"
+        ],
+        "exit_code": 0,
+        "output": "",
+        "seconds": 0.09055439999792725,
+        "passed": true
+      },
+      {
+        "name": "theme-track-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-theme-track.exe"
+        ],
+        "exit_code": 0,
+        "output": "THEME_TRACK_OK shared=1 alias=1 combo=1 failed_close=1 nested=1 overlap=1 capacity=1\r\n",
+        "seconds": 0.10167689999798313,
+        "passed": true
+      },
+      {
+        "name": "dialog-hook-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-style-dialog-hook.exe"
+        ],
+        "exit_code": 0,
+        "output": "DIALOG HOOK PASS ordinary=1 parameter=1 return=1 error=1 begin_failure=1 rollback=1 exception_cleanup=1\r\n",
+        "seconds": 0.11335300002247095,
+        "passed": true
+      },
+      {
+        "name": "host-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-uwp-host.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HOST PASS owner_failure=1 ordering=1 title_reentry=1 owner_reentry=1 title_refresh=1 surface=1 surface_reentry=1 surface_destroy=1 deferred_dispose=1\r\n",
+        "seconds": 0.14702500001294538,
+        "passed": true
+      },
+      {
+        "name": "host-input-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-uwp-input.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP_INPUT_OK button=1 hot=1 drag=1 cancel=1 double=1 right=1 detach=1\r\n",
+        "seconds": 0.12670419999631122,
+        "passed": true
+      },
+      {
+        "name": "win2k-caption-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-win2k-caption.exe"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K CAPTION PASS solid gradient text invalid-input\r\n",
+        "seconds": 0.0947431999957189,
+        "passed": true
+      },
+      {
+        "name": "modern-hidden-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-uwp-frame-hidden.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1\r\n",
+        "seconds": 0.18408649996854365,
+        "passed": true
+      },
+      {
+        "name": "abi-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+          "O:\\winnt\\ntw16s64.dll"
+        ],
+        "exit_code": 0,
+        "output": "ABI PASS width=64 version=3 public=38 private-bind-exports=0\r\n",
+        "seconds": 0.04737550002755597,
+        "passed": true
+      },
+      {
+        "name": "frames-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-frames.exe",
+          "--private-worker"
+        ],
+        "exit_code": 0,
+        "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\r\n",
+        "seconds": 2.5430089000146836,
+        "passed": true
+      },
+      {
+        "name": "vcl-edit-64",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-vcl-edit-module.exe",
+          "--private-worker",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\vcl-edit-module-fixture.dll"
+        ],
+        "exit_code": 0,
+        "output": "NC_REGION inside=20 outside=0 width=220\r\nMEMO_FRAME_PIXELS edge=5360 client=0 outer=1144\r\nNOEDGE_WITNESS changed=0 checked=180\r\nVCL_EDIT_MODULE_OK bits=64 fake_paint_rejected=1 selection=1 readonly=1 multiline=1 scroll=1 reentrant_remove=1 frame_pixels=1 nc_clip=1 noedge=1 cleanup=1\r\n",
+        "seconds": 0.4905881999875419,
+        "passed": true
+      },
+      {
+        "name": "instance-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-style-instance.exe"
+        ],
+        "exit_code": 0,
+        "output": "INSTANCE_OK identity=1 nested=1 successor=1 detach_failure=1 retry=1 terminal=1 final_release=1\r\n",
+        "seconds": 0.1202707999618724,
+        "passed": true
+      },
+      {
+        "name": "win2k-instance-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-win2k-instance-lifetime.exe"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K_STYLE_VALUES previous=84000000 returned=84000000\r\nWIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 cleanup=1\r\n",
+        "seconds": 0.1730274999863468,
+        "passed": true
+      },
+      {
+        "name": "host-start-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-uwp-host-start.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HOST START PASS success=1 owner=1 title=1 create=1 subclass=1 refresh=1 reentrant_create=1 reentrant_refresh=1\r\n",
+        "seconds": 0.08441379998112097,
+        "passed": true
+      },
+      {
+        "name": "global-bridge-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-global-style-bridge.exe"
+        ],
+        "exit_code": 0,
+        "output": "FOOTER child_bottom=277 client_bottom=277\r\nOVERLAP screen=88,122,372,130 origin=83,122 update=1 repainted=0\r\nGLOBAL CHILD BRIDGE 2k=1 16=1 back=1 new=1 remove=1\r\nGLOBAL STYLE BRIDGE bits=32 apply2k=1 switch16=1 switch2k=1 client_clean=1 immediate=1 clean_after=1 click_clean=1 footer=1 overlap=1 refreshed=1 remove2k=1 apply16=1 remove16=1 reverse=1 existing=1 takeover=1 existing2k=1 takeover16=1\r\n",
+        "seconds": 3.8335197999840602,
+        "passed": true
+      },
+      {
+        "name": "vcl-bitbtn-32",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-vcl-bitbtn-module.exe",
+          "--private-worker",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\vcl-bitbtn-module-fixture.dll"
+        ],
+        "exit_code": 0,
+        "output": "BIT_PIXELS changed=7100 glyph=100 altered=0 clip_outside=0\r\nVCL_BITBTN_MODULE_OK bits=32 fake=1 foreign=1 unwind=1 nested=1 click=1 pixels=1 glyph=1 clip=1 retire=1 cleanup=1\r\nNESTED_EVIDENCE armed=0 hits=1 outer=1 inner=1\r\n",
+        "seconds": 0.35617620003176853,
+        "passed": true
+      },
+      {
+        "name": "startup-2k-32",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--2k",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+          "--frame-child"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K PROPAGATION FRAME bits=32 role=child attached=1 geometry=1 painted=1 destroyed=1\r\nWIN2K PROPAGATION CONTROL bits=32 role=child attached=1 removed=1 cleanup=1\r\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\r\n",
+        "seconds": 0.2930358999874443,
+        "passed": true
+      },
+      {
+        "name": "instance-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-style-instance.exe"
+        ],
+        "exit_code": 0,
+        "output": "INSTANCE_OK identity=1 nested=1 successor=1 detach_failure=1 retry=1 terminal=1 final_release=1\r\n",
+        "seconds": 0.12337400001706555,
+        "passed": true
+      },
+      {
+        "name": "win2k-instance-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-win2k-instance-lifetime.exe"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K_STYLE_VALUES previous=84000000 returned=ffffffff84000000\r\nWIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 cleanup=1\r\n",
+        "seconds": 0.22012110002106056,
+        "passed": true
+      },
+      {
+        "name": "host-start-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-uwp-host-start.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HOST START PASS success=1 owner=1 title=1 create=1 subclass=1 refresh=1 reentrant_create=1 reentrant_refresh=1\r\n",
+        "seconds": 0.09094620001269504,
+        "passed": true
+      },
+      {
+        "name": "global-bridge-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-global-style-bridge.exe"
+        ],
+        "exit_code": 0,
+        "output": "FOOTER child_bottom=277 client_bottom=277\r\nOVERLAP screen=88,122,372,130 origin=83,122 update=1 repainted=0\r\nGLOBAL CHILD BRIDGE 2k=1 16=1 back=1 new=1 remove=1\r\nGLOBAL STYLE BRIDGE bits=64 apply2k=1 switch16=1 switch2k=1 client_clean=1 immediate=1 clean_after=1 click_clean=1 footer=1 overlap=1 refreshed=1 remove2k=1 apply16=1 remove16=1 reverse=1 existing=1 takeover=1 existing2k=1 takeover16=1\r\n",
+        "seconds": 3.572807600023225,
+        "passed": true
+      },
+      {
+        "name": "vcl-bitbtn-64",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-vcl-bitbtn-module.exe",
+          "--private-worker",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\vcl-bitbtn-module-fixture.dll"
+        ],
+        "exit_code": 0,
+        "output": "BIT_PIXELS changed=7100 glyph=100 altered=0 clip_outside=0\r\nVCL_BITBTN_MODULE_OK bits=64 fake=1 foreign=1 unwind=1 nested=1 click=1 pixels=1 glyph=1 clip=1 retire=1 cleanup=1\r\nNESTED_EVIDENCE armed=0 hits=1 outer=1 inner=1\r\n",
+        "seconds": 0.24306690000230446,
+        "passed": true
+      },
+      {
+        "name": "startup-2k-64",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--2k",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+          "--frame-child"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K PROPAGATION FRAME bits=64 role=child attached=1 geometry=1 painted=1 destroyed=1\r\nWIN2K PROPAGATION CONTROL bits=64 role=child attached=1 removed=1 cleanup=1\r\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\r\n",
+        "seconds": 0.21941109996987507,
+        "passed": true
+      }
+    ],
+    "known_failures": [
+      {
+        "name": "win2k-dwm-known-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x86\\core-win2k-frame-lifecycle.exe"
+        ],
+        "exit_code": 3,
+        "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\r\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\r\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\r\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\r\nWIN2K DWM STAGES attach=0 pump=0 policy_after_pump=2\r\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\r\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\r\nWIN2K FRAME LIFECYCLE bits=32 attached=1 removed=1 observed=1 before=1 after=0 captured=2 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\r\n",
+        "seconds": 0.3708579000085592,
+        "baseline": {
+          "baseline": "S2 published assets 51c68a06",
+          "exit_code": 3,
+          "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\r\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\r\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\r\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\r\nWIN2K DWM STAGES attach=0 pump=0 policy_after_pump=2\r\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\r\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\r\nWIN2K FRAME LIFECYCLE bits=32 attached=1 removed=1 observed=1 before=1 after=0 captured=2 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\r\n",
+          "sha256": {
+            "case.exe": "71a76068ef45290489b142591273b165394e3066c36b54cec5d2281383680a8e",
+            "ntw2ks32.dll": "5937375383b957a886c868f6b0c850c45e0c684e320be6cf2443f40e359c9e92",
+            "ntwshk32.dll": "6cc821a48fa70a69f3ad6a5d32089ac98944880b68669e5cd0e99e73f9b8467d"
+          }
+        },
+        "unchanged": true
+      },
+      {
+        "name": "win2k-dwm-known-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\clean-source\\build\\.ninja\\x64\\core-win2k-frame-lifecycle.exe"
+        ],
+        "exit_code": 3,
+        "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\r\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\r\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\r\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\r\nWIN2K DWM STAGES attach=0 pump=0 policy_after_pump=2\r\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\r\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\r\nWIN2K FRAME LIFECYCLE bits=64 attached=1 removed=1 observed=1 before=1 after=0 captured=2 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\r\n",
+        "seconds": 0.39853710000170395,
+        "baseline": {
+          "baseline": "S2 assets 51c68a06",
+          "exit_code": 3,
+          "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\r\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\r\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\r\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\r\nWIN2K DWM STAGES attach=0 pump=0 policy_after_pump=2\r\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\r\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\r\nWIN2K FRAME LIFECYCLE bits=64 attached=1 removed=1 observed=1 before=1 after=0 captured=2 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\r\n"
+        },
+        "unchanged": true
+      }
+    ],
+    "environment": {
+      "WIN16STYLE_CAPTURE_DIR": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final"
+    },
+    "scope": "current-desktop owned native fixtures; no private desktop, computer use or physical input claim"
+  },
+  "publication": {
+    "evidence": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\result.json",
+    "status": "passed",
+    "test_status": "pending-post-publication",
+    "skipped": [],
+    "test_result": null,
+    "package": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-final\\candidate",
+    "files": [
+      {
+        "expected": "b6ffaaf15d9e63390dc692517bd9cef1ac872e28f9032ab27334764e33300cc8",
+        "before": "cd379e030d9540fbb3491968fb720de6485011e9b7a5b27392400501804ffe34",
+        "after": "b6ffaaf15d9e63390dc692517bd9cef1ac872e28f9032ab27334764e33300cc8",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+      },
+      {
+        "expected": "1a9148ee2c09940e0fed1b8ea245489189edac86bd31dbb6d69bea5b37d47f48",
+        "before": "7f8e0880e75f8b6b370a31e604d068ce1a41b35b9aabce8a34813e9038c539d5",
+        "after": "1a9148ee2c09940e0fed1b8ea245489189edac86bd31dbb6d69bea5b37d47f48",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+      },
+      {
+        "expected": "7ed0c58b0b7ec207f46d733bedca000fa39702d6038ec1f80c651a716abb438d",
+        "before": "3311c3e9c51e2b8dd906be6831ab724b9e246b57bb5417ff71400adc52a4bb0b",
+        "after": "7ed0c58b0b7ec207f46d733bedca000fa39702d6038ec1f80c651a716abb438d",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+      },
+      {
+        "expected": "c74d9282f9051224a1bd0c2e1937435c65b0d2a48f9196f13bc8901126312a55",
+        "before": "5937375383b957a886c868f6b0c850c45e0c684e320be6cf2443f40e359c9e92",
+        "after": "c74d9282f9051224a1bd0c2e1937435c65b0d2a48f9196f13bc8901126312a55",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks32.dll"
+      },
+      {
+        "expected": "968db83860a0ba584361007f34dae486517327aa2b8c828b3bc13c50f94f19d9",
+        "before": "b9eb6fc7ad033c23b6151e6d5d628d41d47a5b8a61281f79635a492947ade122",
+        "after": "968db83860a0ba584361007f34dae486517327aa2b8c828b3bc13c50f94f19d9",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks64.dll"
+      },
+      {
+        "expected": "50812cf52a859aa031f05faead71f47a431ef90ad01ea0fd49540c956e61626c",
+        "before": "6cc821a48fa70a69f3ad6a5d32089ac98944880b68669e5cd0e99e73f9b8467d",
+        "after": "50812cf52a859aa031f05faead71f47a431ef90ad01ea0fd49540c956e61626c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk32.dll"
+      },
+      {
+        "expected": "dfdfa5bc8233fad1e12c7ef24eaba24137e5ea177ac197eb50f6df6ec485334d",
+        "before": "506d2d6b8b478f49233a18920c357bfe65cf022413758fb2cb46fd4b4acfc959",
+        "after": "dfdfa5bc8233fad1e12c7ef24eaba24137e5ea177ac197eb50f6df6ec485334d",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk64.dll"
+      },
+      {
+        "expected": "fd5f89d64fb5ca6da473b3ebef3a7535eefe3b1af4fda12b998dd6581c58b664",
+        "before": "a9e20761768b4beed334f54aa0c470c5c99108832af604506a35ddf95076cfb0",
+        "after": "fd5f89d64fb5ca6da473b3ebef3a7535eefe3b1af4fda12b998dd6581c58b664",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-0",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+      },
+      {
+        "expected": "b6ffaaf15d9e63390dc692517bd9cef1ac872e28f9032ab27334764e33300cc8",
+        "before": "cd379e030d9540fbb3491968fb720de6485011e9b7a5b27392400501804ffe34",
+        "after": "b6ffaaf15d9e63390dc692517bd9cef1ac872e28f9032ab27334764e33300cc8",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-1",
+        "path": "O:\\winnt\\demo.exe"
+      },
+      {
+        "expected": "1a9148ee2c09940e0fed1b8ea245489189edac86bd31dbb6d69bea5b37d47f48",
+        "before": "7f8e0880e75f8b6b370a31e604d068ce1a41b35b9aabce8a34813e9038c539d5",
+        "after": "1a9148ee2c09940e0fed1b8ea245489189edac86bd31dbb6d69bea5b37d47f48",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-1",
+        "path": "O:\\winnt\\ntw16s32.dll"
+      },
+      {
+        "expected": "7ed0c58b0b7ec207f46d733bedca000fa39702d6038ec1f80c651a716abb438d",
+        "before": "3311c3e9c51e2b8dd906be6831ab724b9e246b57bb5417ff71400adc52a4bb0b",
+        "after": "7ed0c58b0b7ec207f46d733bedca000fa39702d6038ec1f80c651a716abb438d",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-1",
+        "path": "O:\\winnt\\ntw16s64.dll"
+      },
+      {
+        "expected": "c74d9282f9051224a1bd0c2e1937435c65b0d2a48f9196f13bc8901126312a55",
+        "before": "5937375383b957a886c868f6b0c850c45e0c684e320be6cf2443f40e359c9e92",
+        "after": "c74d9282f9051224a1bd0c2e1937435c65b0d2a48f9196f13bc8901126312a55",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-1",
+        "path": "O:\\winnt\\ntw2ks32.dll"
+      },
+      {
+        "expected": "968db83860a0ba584361007f34dae486517327aa2b8c828b3bc13c50f94f19d9",
+        "before": "b9eb6fc7ad033c23b6151e6d5d628d41d47a5b8a61281f79635a492947ade122",
+        "after": "968db83860a0ba584361007f34dae486517327aa2b8c828b3bc13c50f94f19d9",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-1",
+        "path": "O:\\winnt\\ntw2ks64.dll"
+      },
+      {
+        "expected": "50812cf52a859aa031f05faead71f47a431ef90ad01ea0fd49540c956e61626c",
+        "before": "6cc821a48fa70a69f3ad6a5d32089ac98944880b68669e5cd0e99e73f9b8467d",
+        "after": "50812cf52a859aa031f05faead71f47a431ef90ad01ea0fd49540c956e61626c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-1",
+        "path": "O:\\winnt\\ntwshk32.dll"
+      },
+      {
+        "expected": "dfdfa5bc8233fad1e12c7ef24eaba24137e5ea177ac197eb50f6df6ec485334d",
+        "before": "506d2d6b8b478f49233a18920c357bfe65cf022413758fb2cb46fd4b4acfc959",
+        "after": "dfdfa5bc8233fad1e12c7ef24eaba24137e5ea177ac197eb50f6df6ec485334d",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-1",
+        "path": "O:\\winnt\\ntwshk64.dll"
+      },
+      {
+        "expected": "fd5f89d64fb5ca6da473b3ebef3a7535eefe3b1af4fda12b998dd6581c58b664",
+        "before": "a9e20761768b4beed334f54aa0c470c5c99108832af604506a35ddf95076cfb0",
+        "after": "fd5f89d64fb5ca6da473b3ebef3a7535eefe3b1af4fda12b998dd6581c58b664",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s3-lifecycle-publish\\before-1",
+        "path": "O:\\winnt\\run16s.exe"
+      }
+    ],
+    "tested_package": null
+  },
+  "build_metrics": {
+    "x86": {
+      "seconds": 159.092687700002,
+      "hits": 756,
+      "misses": 42
+    },
+    "x64": {
+      "seconds": 194.58635110000614,
+      "hits": 858,
+      "misses": 42
+    }
+  },
+  "boundaries": {
+    "style_archives_per_architecture": 15,
+    "generic_process_archives_per_architecture": 4,
+    "resource_tables_per_renderer": 18
+  },
+  "not_claimed": [
+    "full T26 complete",
+    "DWM restoration fixed",
+    "DLL physical unload",
+    "physical input acceptance",
+    "all UWP/WinUI/global programs"
+  ],
+  "snapshot_compile_and_tool_inputs_rechecked": 967,
+  "cleanup": [
+    {
+      "bytes": 224663.0,
+      "path": "build/t26-s3"
+    },
+    {
+      "bytes": 260360037.0,
+      "path": "build/t26-package/s3-lifecycle-final"
+    },
+    {
+      "bytes": 10455667.0,
+      "path": "build/t26-package/s3-lifecycle-publish"
+    }
+  ]
+}

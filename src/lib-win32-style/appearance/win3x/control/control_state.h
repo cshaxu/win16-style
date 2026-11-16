@@ -1,13 +1,14 @@
 #ifndef WIN16_CONTROL_STATE_H
 #define WIN16_CONTROL_STATE_H
 #include "../common/palette.h"
+#include "lib-win32-style/application/lifecycle/instance.h"
 #include "../../../application/control/control_protocol.h"
 #include "scroll_track.h"
 #include "updown_adapter.h"
 typedef struct control_style {
+    style_instance instance;
     win16_style_palette palette;
-    unsigned calls;
-    BOOL detached,removing,file_owner;
+    BOOL removing,file_owner;
     HFONT font,original_font;
     BOOL edit_border;
     HWND combo_list,combo_edit,combo_parent;
@@ -16,7 +17,6 @@ typedef struct control_style {
     BOOL combo_bound,combo_passthrough,common_dialog_combo;
     HWND common_dialog_parent;
     struct control_style *owner;
-    const void *creation_owner;
     style_control_protocol *protocol;
     win16_scroll_track scroll;
     UINT_PTR scroll_timer;
@@ -40,7 +40,7 @@ typedef struct control_style {
     int tab_count,*tab_positions;
 } control_style;
 control_style *win16_control_state_create(void);
-void win16_control_state_dispose(control_style *state);
+void win16_control_state_dispose(void *context);
 BOOL win16_control_state_prepare_font(HWND window,control_style *state,UINT message,WPARAM *parameter,BOOL native_font,HFONT *previous,HFONT *outbound);
 typedef void (*win16_control_state_painter)(HWND,control_style *,HDC);
 typedef void (*win16_control_state_present)(HWND,control_style *,HDC,win16_control_state_painter);

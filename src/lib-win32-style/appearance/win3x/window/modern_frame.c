@@ -43,9 +43,8 @@ static BOOL local(HWND w)
 }
 static uwp_frame *lookup(HWND w)
 {
-    DWORD_PTR value=0;
-    return GetWindowSubclass(w,style_uwp_host_owner_proc,(UINT_PTR)style_uwp_host_owner_proc,&value)?
-        (uwp_frame *)((style_uwp_host *)value)->context:NULL;
+    style_instance *instance=style_instance_lookup(w,style_uwp_host_owner_proc);
+    return instance?instance->context:NULL;
 }
 static void dispose(void *context)
 {
@@ -65,7 +64,7 @@ static void before_title_remove(void *context)
 static void after_title_remove(void *context)
 {
     uwp_frame *s=context;
-    s->menu->detached=TRUE;
+    s->menu->instance.detached=TRUE;
     while(s->menu->menus)win16_control_frame_state_end_menu(s->menu);
     style_menu_restore(&s->menu->menu_items);
 }
@@ -78,7 +77,7 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
     if(!win16_uwp_frame_layout(size,dpi,(DWORD)GetWindowLongPtrW(s->host.owner,GWL_STYLE),zoomed,content,&s->layout))return FALSE;
     if(dpi!=s->dpi && !win16_control_refresh_frame_fonts(s->host.owner,&s->dpi,&s->title_font,&s->menu_font))return FALSE;
     s->menu->dpi=s->dpi;s->menu->menu_font=s->menu_font;
-    return !s->host.detached;
+    return !s->host.instance.detached;
 }
 static BOOL cached_layout(HWND w,void *context,win16_style_layout *layout)
 {(void)w;*layout=((uwp_frame *)context)->layout;return TRUE;}
@@ -95,14 +94,14 @@ static BOOL refresh_geometry(void *context,RECT *outer,RECT *hole)
 static void refresh_paint(void *context,HDC dc)
 {
     uwp_frame *s=context;
-    win16_control_frame_view view={s,&s->host.detached,&s->active,&s->menu_font,&s->title_font,&s->dpi,
+    win16_control_frame_view view={s,&s->host.instance.detached,&s->active,&s->menu_font,&s->title_font,&s->dpi,
         &s->no_selection,&s->no_menu,&s->no_keyboard,&s->pressed,&s->hot,cached_layout,colors,no_scrollbars};
     win16_control_paint_frame(s->host.owner,&view,dc);
 }
 static BOOL refresh(void *context)
 {
     uwp_frame *s=context;
-    const style_uwp_surface_view view={s->host.owner,&s->host.surface,&s->host.detached,&s->updating,
+    const style_uwp_surface_view view={s->host.owner,&s->host.surface,&s->host.instance.detached,&s->updating,
         &s->bitmap,s,refresh_geometry,refresh_paint};
     return style_uwp_surface_refresh(&view);
 }
@@ -127,17 +126,17 @@ static void input_invoke(void *context,int hit,UINT message)
 }
 static void menu_present(uwp_frame *s,HWND window)
 {
-    if(s->host.detached || !s->tracking || s->menu_window)return;
+    if(s->host.instance.detached || !s->tracking || s->menu_window)return;
     style_uwp_menu_present(window,GetSystemMenu(s->host.owner,FALSE),&s->menu_window);
 }
 static void system_menu(uwp_frame *s)
 {
-    if(s->tracking || s->host.detached)return;
+    if(s->tracking || s->host.instance.detached)return;
     HMENU menu=GetSystemMenu(s->host.owner,FALSE);RECT surface;
     if(!menu || !GetWindowRect(s->host.surface,&surface))return;
     s->tracking=TRUE;
     SendMessageW(s->host.owner,WM_INITMENU,(WPARAM)menu,0);
-    if(s->host.detached){s->tracking=FALSE;return;}
+    if(s->host.instance.detached){s->tracking=FALSE;return;}
     /* TrackPopupMenu does not apply the root window's system-command states.
      * Add only temporary restrictions; retain application-disabled commands. */
     style_uwp_menu_state menu_state;
@@ -152,7 +151,7 @@ static void system_menu(uwp_frame *s)
     /* Never present a replacement menu with a required action missing. */
     if(actions_ready){
         s->no_menu=TRUE;refresh(s);
-        if(!s->host.detached)command=TrackPopupMenuEx(menu,TPM_LEFTALIGN|TPM_TOPALIGN|TPM_RETURNCMD|TPM_NOANIMATION,
+        if(!s->host.instance.detached)command=TrackPopupMenuEx(menu,TPM_LEFTALIGN|TPM_TOPALIGN|TPM_RETURNCMD|TPM_NOANIMATION,
             surface.left+s->layout.system.left,surface.top+s->layout.system.bottom,
             s->host.surface,NULL);
     }
@@ -160,7 +159,7 @@ static void system_menu(uwp_frame *s)
         style_uwp_menu_unpresent(s->menu_window,menu);
         s->menu_window=NULL;
     }
-    if(!s->host.detached && GetSystemMenu(s->host.owner,FALSE)==menu)style_uwp_menu_restore(menu,&menu_state);
+    if(!s->host.instance.detached && GetSystemMenu(s->host.owner,FALSE)==menu)style_uwp_menu_restore(menu,&menu_state);
     for(unsigned i=0;i<s->action_count;++i){
         frame_action *action=&s->actions[i];
         if(!action->command)continue;
@@ -169,9 +168,9 @@ static void system_menu(uwp_frame *s)
         action->command=0;
     }
     s->tracking=FALSE;s->no_menu=FALSE;
-    if(!s->host.detached){
+    if(!s->host.instance.detached){
         refresh(s);
-        if(!s->host.detached && command){
+        if(!s->host.instance.detached && command){
             if(selected<s->action_count)s->actions[selected].value.invoke(s->host.owner,s->actions[selected].value.context);
             else PostMessageW(s->host.owner,WM_SYSCOMMAND,command,0);
         }
@@ -187,24 +186,24 @@ static BOOL surface_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,
         *output=result;return TRUE;
     }
     if(message==WM_ENTERIDLE){if(a==MSGF_MENU)menu_present(s,(HWND)b);*output=0;return TRUE;}
-    const style_uwp_input_view view={s->host.owner,w,&s->host.detached,&s->pressed,&s->hot,
+    const style_uwp_input_view view={s->host.owner,w,&s->host.instance.detached,&s->pressed,&s->hot,
         s,input_hit,input_button,input_invoke,refresh};
     return style_uwp_input_message(&view,message,a,b,output);
 }
 static void menu_button(HWND w,style_window *menu,int hit)
 {
     (void)hit;uwp_frame *s=lookup(w);
-    if(s&&!s->host.detached){s->no_menu=menu->system_menu;refresh(s);}
+    if(s&&!s->host.instance.detached){s->no_menu=menu->system_menu;refresh(s);}
 }
 static BOOL owner_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,LRESULT *result)
 {
     uwp_frame *s=context;
-    if(!s->host.detached && message==WM_CANCELMODE && s->tracking)EndMenu();
-    if(!s->host.detached && message==WM_SYSCOMMAND &&
+    if(!s->host.instance.detached && message==WM_CANCELMODE && s->tracking)EndMenu();
+    if(!s->host.instance.detached && message==WM_SYSCOMMAND &&
        (((a&0xfff0)==SC_KEYMENU && (b==L' '||b==0)) || (a&0xfff0)==SC_MOUSEMENU)){
         system_menu(s);*result=0;return TRUE;
     }
-    if(!s->host.detached){
+    if(!s->host.instance.detached){
         if(message==WM_ENTERMENULOOP)win16_control_frame_state_enter_menu(s->menu);
         return win16_control_menu_message(w,s->menu,message,a,b,menu_button,result);
     }
@@ -226,14 +225,14 @@ static BOOL apply_actions(HWND w,HWND title,const win16_uwp_frame_action *action
     win16_style_default_palette(&s->menu->palette);
     s->action_count=count;
     for(unsigned i=0;i<count;++i)s->actions[i].value=actions[i];
-    s->host=(style_uwp_host){.owner=w,.title=title,.surface_message=surface_message,.context=s,
+    s->host=(style_uwp_host){.owner=w,.title=title,.surface_message=surface_message,
         .owner_message=owner_message,.owner_activation=owner_activation,
         .before_title_remove=before_title_remove,.after_title_remove=after_title_remove,
-        .dispose=dispose,.calls=1};
+        .instance={.context=s,.dispose=dispose,.calls=1}};
     s->no_selection=-1;s->active=GetForegroundWindow()==w;
     BOOL ok=style_uwp_host_start(&s->host,refresh);
     DWORD error=GetLastError();
-    style_uwp_host_release(&s->host);SetLastError(error);return ok;
+    style_instance_release(&s->host.instance);SetLastError(error);return ok;
 }
 BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const win16_uwp_frame_action *actions,unsigned count)
 {
@@ -250,10 +249,10 @@ BOOL win16_uwp_frame_remove(HWND w)
 {
     if(!local(w))return FALSE;
     uwp_frame *s=lookup(w);if(!s){SetLastError(ERROR_NOT_FOUND);return FALSE;}
-    style_uwp_host_retain(&s->host);BOOL ok=style_uwp_host_detach(&s->host);style_uwp_host_release(&s->host);return ok;
+    style_instance_retain(&s->host.instance);BOOL ok=style_uwp_host_detach(&s->host);style_instance_release(&s->host.instance);return ok;
 }
 HWND win16_uwp_frame_surface(HWND w)
 {
     if(!local(w))return NULL;
-    uwp_frame *s=lookup(w);return s&&!s->host.detached?s->host.surface:NULL;
+    uwp_frame *s=lookup(w);return s&&!s->host.instance.detached?s->host.surface:NULL;
 }

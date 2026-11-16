@@ -7,7 +7,7 @@
 LRESULT win16_control_trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,control_style *s,SUBCLASSPROC callback,track_paint_scope **active_scope)
 {
     DWORD entry=GetLastError();LRESULT result;BOOL internal=FALSE;
-    ++s->calls;NMCUSTOMDRAW *draw=style_control_custom_draw_message(parent,s->track_window,m,l,s->detached);
+    style_instance_retain(&s->instance);NMCUSTOMDRAW *draw=style_control_custom_draw_message(parent,s->track_window,m,l,s->instance.detached);
     if(draw && style_control_protocol_runtime_trackbar(s->track_window)){
         track_paint_scope *scope=*active_scope;
         BOOL match=scope && scope->owner==s && scope->active && scope->draw==draw && scope->dc==draw->hdc;
@@ -18,7 +18,7 @@ LRESULT win16_control_trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_
         }else if(match && draw->dwDrawStage==CDDS_POSTPAINT){scope->active=FALSE;result=CDRF_DODEFAULT;}
         else {
             SetLastError(entry);result=DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
-            if(!s->detached && scope && *active_scope==scope && scope->owner==s){
+            if(!s->instance.detached && scope && *active_scope==scope && scope->owner==s){
                 if(draw->dwDrawStage==CDDS_PREPAINT && result==CDRF_NOTIFYITEMDRAW &&
                    win16_style_trackbar_supported(s->track_window)){
                     scope->draw=draw;scope->dc=draw->hdc;scope->active=TRUE;
@@ -28,31 +28,31 @@ LRESULT win16_control_trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_
                     scope->item=draw->dwItemSpec;scope->rect=draw->rc;scope->pending=TRUE;result=CDRF_NOTIFYPOSTPAINT;
                 }
             }
-            if(!--s->calls && s->detached)win16_control_state_dispose(s);
+            style_instance_release(&s->instance);
             SetLastError(error);return result;
         }
-        if(!--s->calls && s->detached)win16_control_state_dispose(s);
+        style_instance_release(&s->instance);
         SetLastError(entry);return result;
     }
     if(draw && draw->dwDrawStage!=CDDS_PREPAINT && s->track_internal)internal=TRUE;
     if(m==WM_NCDESTROY){RemoveWindowSubclass(parent,callback,id);s->track_parent=NULL;s->track_internal=FALSE;}
     SetLastError(entry);
     result=internal?CDRF_DODEFAULT:DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
-    if(draw && !s->detached)result=style_control_custom_draw_after(s->track_window,draw,&s->track_internal,internal,result,
+    if(draw && !s->instance.detached)result=style_control_custom_draw_after(s->track_window,draw,&s->track_internal,internal,result,
         &s->palette,win16_style_trackbar_supported,win16_style_trackbar_part);
-    if(!--s->calls && s->detached)win16_control_state_dispose(s);
+    style_instance_release(&s->instance);
     SetLastError(error);return result;
 }
 
 LRESULT win16_control_toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,control_style *s,SUBCLASSPROC callback)
 {
     DWORD entry=GetLastError();LRESULT result;BOOL internal=FALSE;
-    ++s->calls;NMCUSTOMDRAW *draw=style_control_custom_draw_message(parent,s->toolbar_window,m,l,s->detached);
+    style_instance_retain(&s->instance);NMCUSTOMDRAW *draw=style_control_custom_draw_message(parent,s->toolbar_window,m,l,s->instance.detached);
     if(draw && draw->dwDrawStage!=CDDS_PREPAINT && s->toolbar_internal)internal=TRUE;
     if(m==WM_NCDESTROY){RemoveWindowSubclass(parent,callback,id);s->toolbar_parent=NULL;s->toolbar_internal=FALSE;}
     SetLastError(entry);result=internal?CDRF_DODEFAULT:DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
-    if(draw && !s->detached)result=style_control_custom_draw_after(s->toolbar_window,draw,&s->toolbar_internal,internal,result,
+    if(draw && !s->instance.detached)result=style_control_custom_draw_after(s->toolbar_window,draw,&s->toolbar_internal,internal,result,
         &s->palette,win16_style_toolbar_supported,win16_style_toolbar_part);
-    if(!--s->calls && s->detached)win16_control_state_dispose(s);
+    style_instance_release(&s->instance);
     SetLastError(error);return result;
 }

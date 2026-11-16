@@ -198,7 +198,7 @@ void win16_control_managed_frame_scrollbars_palette_owned(HWND w,const win16_sty
 {
     DWORD_PTR data;
     if(GetWindowSubclass(w,v->proc,(UINT_PTR)v->proc,&data) &&
-        ((control_style *)data)->frame_scrollbars && ((control_style *)data)->creation_owner==owner)
+        ((control_style *)data)->frame_scrollbars && ((control_style *)data)->instance.owner==owner)
         ((control_style *)data)->palette=*palette;
 }
 
@@ -219,7 +219,7 @@ BOOL win16_control_managed_active(HWND w,const win16_control_managed_services *v
     DWORD_PTR data;
     return w && GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() &&
         GetWindowSubclass(w,v->proc,(UINT_PTR)v->proc,&data) &&
-        !((control_style *)data)->detached &&
+        !((control_style *)data)->instance.detached &&
         (((control_style *)data)->frame_scrollbars || ((control_style *)data)->list_scrollbar || ((control_style *)data)->edit_scrollbars);
 }
 BOOL win16_control_managed_get_scroll_info(HWND w,int bar,LPSCROLLINFO info,const win16_control_managed_services *v)

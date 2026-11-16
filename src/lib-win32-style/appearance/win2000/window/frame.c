@@ -1,4 +1,6 @@
 #include "frame.h"
+#include "lib-win32-style/application/lifecycle/instance.h"
+#include <stdlib.h>
 #include "caption.h"
 #include "system_menu.h"
 #include "lib-win32-style/application/menu/menu_input.h"
@@ -23,6 +25,7 @@ static const WCHAR menu_focus_property[]=L"Win2kStyle.MenuFocus";
 static const WCHAR pending_property[]=L"Win2kStyle.FramePending";
 static const WCHAR policy_property[]=L"Win2kStyle.PreviousDwmState";
 static _Atomic UINT frame_message;
+static LRESULT CALLBACK frame_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 
 static int caption_height(HWND window)
 {
@@ -510,9 +513,8 @@ static void recalculate_frame(HWND window)
     if(IsWindow(window))RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN);
 }
 
-static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR ref)
+static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_instance *instance)
 {
-    (void)ref;
     DWORD incoming=GetLastError();
     if(compact_enabled(window) && style_frame_suppress_native_theme(message,IsIconic(window),GetMenu(window)!=NULL)){
         SetLastError(incoming);return 0;
@@ -525,7 +527,7 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
         HRGN region=style_frame_native_region(window,wp);
         if(region){DefSubclassProc(window,message,(WPARAM)region,lp);DWORD error=GetLastError();
             DeleteObject(region);
-            if(IsWindow(window)){
+            if(!instance->detached && IsWindow(window)){
                 paint(window);
                 if(IsWindow(window) && compact_enabled(window))style_invalidate_native_menu_overlap(window);
             }
@@ -561,10 +563,11 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
         HANDLE hit=(HANDLE)(uintptr_t)(wp+1);
         if(GetPropW(window,hover_property)!=hit){SetPropW(window,hover_property,hit);repaint=TRUE;}
     }else if(message==WM_NCMOUSELEAVE){RemovePropW(window,hover_property);repaint=TRUE;}
-    if(message==WM_NCDESTROY){RemovePropW(window,policy_property);RemovePropW(window,pending_property);RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,id);}
+    if(message==WM_NCDESTROY){RemovePropW(window,policy_property);RemovePropW(window,pending_property);RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);style_instance_detach(instance);}
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();
+    if(instance->detached){SetLastError(outcome);return result;}
     if(message==WM_SHOWWINDOW && wp && IsWindow(window) && RemovePropW(window,pending_property))recalculate_frame(window);
     if(message==WM_NCCALCSIZE && lp && compact_enabled(window) &&
        (GetWindowLongPtrW(window,GWL_STYLE)&WS_CAPTION)==WS_CAPTION &&
@@ -631,20 +634,27 @@ static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,
     return result;
 }
 
+static LRESULT CALLBACK frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR ref)
+{
+    (void)id;style_instance *instance=(style_instance *)ref;
+    style_instance_retain(instance);
+    LRESULT result=frame_body(window,message,wp,lp,instance);DWORD error=GetLastError();
+    style_instance_release(instance);SetLastError(error);return result;
+}
+
 static LRESULT CALLBACK pending_frame_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR ref)
 {
-    (void)ref;
-    if(message==WM_NCDESTROY)RemoveWindowSubclass(window,pending_frame_proc,id);
+    (void)id;style_instance *instance=(style_instance *)ref;style_instance_retain(instance);
+    if(message==WM_NCDESTROY)style_instance_detach(instance);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD error=GetLastError();
     if(message==WM_STYLECHANGED && wp==(WPARAM)GWL_STYLE && IsWindow(window)){
         LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
         if(!(style&WS_CHILD) && (style&WS_CAPTION)==WS_CAPTION){
-            RemoveWindowSubclass(window,pending_frame_proc,id);
-            win2k_frame_attach(window);
+            if(style_instance_detach(instance))win2k_frame_attach(window);
         }
     }
-    SetLastError(error);return result;
+    style_instance_release(instance);SetLastError(error);return result;
 }
 
 BOOL win2k_frame_attach(HWND window)
@@ -652,25 +662,32 @@ BOOL win2k_frame_attach(HWND window)
     if(!window || !win32_style_window_current_thread(window))return FALSE;
     LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
     if((style&WS_CHILD) || GetPropW(window,frame_property))return FALSE;
-    if((style&WS_CAPTION)!=WS_CAPTION)
-        return SetWindowSubclass(window,pending_frame_proc,(UINT_PTR)pending_frame_proc,0);
-    if(!SetWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc,0))return FALSE;
-    if(!SetPropW(window,frame_property,(HANDLE)(uintptr_t)(GetActiveWindow()==window?2:1))){RemoveWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc);return FALSE;}
+    BOOL pending=(style&WS_CAPTION)!=WS_CAPTION;
+    if(pending && style_instance_lookup(window,pending_frame_proc))return TRUE;
+    style_instance *instance=calloc(1,sizeof(*instance));
+    if(!instance){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    style_instance_init(instance,instance,free);style_instance_retain(instance);
+    SUBCLASSPROC procedure=pending?pending_frame_proc:frame_proc;
+    if(!style_instance_attach(instance,window,procedure,NULL)){
+        DWORD error=GetLastError();free(instance);SetLastError(error);return FALSE;
+    }
+    if(procedure==pending_frame_proc){style_instance_release(instance);return TRUE;}
+    DWORD failure;
+    if(!SetPropW(window,frame_property,(HANDLE)(uintptr_t)(GetActiveWindow()==window?2:1)))goto failed;
     DWORD previous=DWMNCRP_USEWINDOWSTYLE;
     BOOL observed=style_dwm_capture(window,DwmGetWindowAttribute,&previous);
-    if(!SetPropW(window,policy_property,(HANDLE)(uintptr_t)(observed?(previous==DWMNCRP_ENABLED?2:1):3))){
-        RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc);return FALSE;
-    }
+    if(!SetPropW(window,policy_property,(HANDLE)(uintptr_t)(observed?(previous==DWMNCRP_ENABLED?2:1):3)))goto failed;
     enum DWMNCRENDERINGPOLICY policy=DWMNCRP_DISABLED;
-    if(FAILED(style_dwm_policy(window,DwmSetWindowAttribute,policy))){
-        RemovePropW(window,policy_property);RemovePropW(window,frame_property);RemoveWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc);return FALSE;
-    }
+    if(FAILED(style_dwm_policy(window,DwmSetWindowAttribute,policy)))goto failed;
     /* Avoid sending WM_SIZE before the creator can finish initializing its window. */
     UINT message=RegisterWindowMessageW(L"Win2kStyle.RecalculateFrame");
     if(message && SetPropW(window,pending_property,(HANDLE)1)){
         atomic_store(&frame_message,message);PostMessageW(window,message,0,0);
     }
-    return TRUE;
+    style_instance_release(instance);return TRUE;
+failed:
+    failure=GetLastError();RemovePropW(window,policy_property);RemovePropW(window,frame_property);
+    style_instance_detach(instance);style_instance_release(instance);SetLastError(failure);return FALSE;
 }
 
 BOOL win2k_frame_attached(HWND window)
@@ -687,7 +704,8 @@ BOOL win2k_frame_remove(HWND window)
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
     if(!GetPropW(window,frame_property)){
-        if(RemoveWindowSubclass(window,pending_frame_proc,(UINT_PTR)pending_frame_proc))return TRUE;
+        style_instance *pending=style_instance_lookup(window,pending_frame_proc);
+        if(pending){style_instance_retain(pending);BOOL result=style_instance_detach(pending);style_instance_release(pending);return result;}
         SetLastError(ERROR_NOT_FOUND);return FALSE;
     }
     if((active_menu && active_menu->window==window) || GetPropW(window,button_property)){
@@ -696,7 +714,10 @@ BOOL win2k_frame_remove(HWND window)
     RECT client;BOOL normal=!IsIconic(window) && !IsZoomed(window);
     if(normal)style_client_screen(window,&client);
     uintptr_t previous=(uintptr_t)GetPropW(window,policy_property);
-    if(!RemoveWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc))return FALSE;
+    style_instance *instance=style_instance_lookup(window,frame_proc);
+    if(!instance)return FALSE;
+    style_instance_retain(instance);
+    if(!style_instance_detach(instance)){style_instance_release(instance);return FALSE;}
     RemovePropW(window,policy_property);
     RemovePropW(window,pending_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);
     if(GetPropW(window,menu_keyboard_property))leave_menu_keyboard(window,TRUE);
@@ -705,8 +726,8 @@ BOOL win2k_frame_remove(HWND window)
     if(previous){
         enum DWMNCRENDERINGPOLICY policy=previous==2?DWMNCRP_ENABLED:previous==1?DWMNCRP_DISABLED:DWMNCRP_USEWINDOWSTYLE;
         HRESULT status=style_dwm_policy(window,DwmSetWindowAttribute,policy);
-        if(FAILED(status)){SetLastError(HRESULT_CODE(status));return FALSE;}
+        if(FAILED(status)){style_instance_release(instance);SetLastError(HRESULT_CODE(status));return FALSE;}
     }
     style_frame_changed_restore(window,&client,normal);
-    return TRUE;
+    style_instance_release(instance);return TRUE;
 }

@@ -28,7 +28,7 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     normal=!IsIconic(w)&&!IsZoomed(w);
     s=win16_control_frame_state_create();
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    s->bar_selected=-1;s->creation_owner=owner;s->calls=1;
+    s->bar_selected=-1;s->instance.owner=owner;style_instance_retain(&s->instance);
     s->pending_frame=creating && normal && !(style&WS_VISIBLE);
     {WCHAR name[32];s->dialog=GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"#32770");}
     if(p)s->palette=*p;else win16_style_default_palette(&s->palette);
@@ -42,23 +42,23 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
      * Windows does not expose whether it came from USEWINDOWSTYLE or ENABLED. */
     s->policy_saved=!(style&WS_CHILD) && style_dwm_capture(w,v->get_window_attribute,&s->old_policy);
     if(cancelled && *cancelled){win16_control_frame_state_dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(!SetWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc,(DWORD_PTR)s)){
+    if(!style_instance_attach(&s->instance,w,v->style_proc,owner)){
         DWORD error=GetLastError();win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;
     }
     /* Bars may be added by range/visibility changes after attachment. Keep
      * one frame tracker ready instead of conditionally installing it later. */
-    if(!v->scrollbars_install(w,&s->palette,s,&s->detached)){
+    if(!v->scrollbars_install(w,&s->palette,s,&s->instance.detached)){
         DWORD error=GetLastError();
         if(v->state(w)==s)v->remove(w);
-        if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
+        style_instance_release(&s->instance);
         SetLastError(error);return FALSE;
     }
     /* Initial minimized/maximized creation is valid too. Native USER owns
      * its saved normal placement; never resize that state to preserve the
      * transient icon/maximized client rectangle. Restore uses normal layout. */
     if(!s->pending_frame)v->activate_frame(w,s,&client,normal);
-    --s->calls;
-    if(s->detached){win16_control_frame_state_dispose(s);SetLastError(cancelled && *cancelled?ERROR_CANCELLED:ERROR_INVALID_WINDOW_HANDLE);return FALSE;}
+    BOOL detached=s->instance.detached;style_instance_release(&s->instance);
+    if(detached){SetLastError(cancelled && *cancelled?ERROR_CANCELLED:ERROR_INVALID_WINDOW_HANDLE);return FALSE;}
     return TRUE;
 }
 BOOL win16_control_menu_owner_install(HWND w,const void *owner,const BOOL *cancelled,const win16_control_frame_lifecycle_services *v)
@@ -66,19 +66,19 @@ BOOL win16_control_menu_owner_install(HWND w,const void *owner,const BOOL *cance
  if(!v->local_window(w))return FALSE;
  if(v->state(w)){SetLastError(ERROR_INVALID_STATE);return FALSE;}
  style_window *s=win16_control_frame_state_create();if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
- s->creation_owner=owner;s->menu_only=TRUE;s->dpi=GetDpiForWindow(w);if(!s->dpi)s->dpi=96;
+ s->instance.owner=owner;s->menu_only=TRUE;s->dpi=GetDpiForWindow(w);if(!s->dpi)s->dpi=96;
  win16_style_default_palette(&s->palette);s->menu_font=win16_style_menu_font_acquire(s->dpi);
  if(!s->menu_font || (cancelled&&*cancelled)){
   DWORD error=cancelled&&*cancelled?ERROR_CANCELLED:ERROR_INVALID_DATA;
   win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;
  }
- if(!SetWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc,(DWORD_PTR)s)){DWORD error=GetLastError();win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;}
+ if(!style_instance_attach(&s->instance,w,v->style_proc,owner)){DWORD error=GetLastError();win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;}
  return TRUE;
 }
 BOOL win16_control_frame_remove_owned(HWND w,const void *owner,const win16_control_frame_lifecycle_services *v)
 {
     style_window *s=v->state(w);
-    if(!owner || !s || s->creation_owner!=owner)return FALSE;
+    if(!owner || !s || s->instance.owner!=owner)return FALSE;
     return v->remove(w);
 }
 
@@ -89,10 +89,9 @@ BOOL win16_control_frame_remove(HWND w,const win16_control_frame_lifecycle_servi
     s=v->state(w);if(!s){SetLastError(ERROR_NOT_FOUND);return FALSE;}
     menu_only=s->menu_only;
     if(!menu_only){normal=!IsIconic(w)&&!IsZoomed(w);style_client_screen(w,&client);}
-    if(!RemoveWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc))return FALSE;
-    ++s->calls;
+    style_instance_retain(&s->instance);
+    if(!style_instance_detach(&s->instance)){style_instance_release(&s->instance);return FALSE;}
     if(!menu_only)style_uwp_repaint_cancel(&s->xaml);
-    s->detached=TRUE;
     if(!menu_only)v->control_remove(w,s);
     while(s->menus)win16_control_frame_state_end_menu(s);
     style_menu_restore(&s->menu_items);
@@ -101,7 +100,7 @@ BOOL win16_control_frame_remove(HWND w,const win16_control_frame_lifecycle_servi
         if(s->pressed && GetCapture()==w)ReleaseCapture();
         win16_control_frame_restore(w,&s->pending_frame,&s->policy_saved,&s->old_policy,&client,normal&&!s->keep_outer,v->set_window_attribute);
     }
-    if(!--s->calls)win16_control_frame_state_dispose(s);
+    style_instance_release(&s->instance);
     return TRUE;
 }
 
@@ -111,19 +110,20 @@ BOOL win16_control_frame_set_palette(HWND w,const win16_style_palette *p,const w
     if(!p){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     if(!v->local_window(w))return FALSE;
     s=v->state(w);if(!s){SetLastError(ERROR_NOT_FOUND);return FALSE;}
-    ++s->calls;s->palette=*p;v->scrollbars_palette(w,p,s);v->paint(w,s,NULL);
-    if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
+    style_instance_retain(&s->instance);s->palette=*p;v->scrollbars_palette(w,p,s);v->paint(w,s,NULL);
+    style_instance_release(&s->instance);
     return TRUE;
 }
 BOOL win16_control_frame_terminal(HWND w,const win16_control_frame_lifecycle_services *v)
 {
     style_window *s;
     s=v->state(w);if(!s)return TRUE;
-    if(!RemoveWindowSubclass(w,v->style_proc,(UINT_PTR)v->style_proc)){
-        SetLastError(ERROR_INVALID_STATE);return FALSE;
+    style_instance_retain(&s->instance);
+    if(!style_instance_detach(&s->instance)){
+        style_instance_release(&s->instance);SetLastError(ERROR_INVALID_STATE);return FALSE;
     }
-    ++s->calls;style_uwp_repaint_cancel(&s->xaml);s->detached=TRUE;
+    style_uwp_repaint_cancel(&s->xaml);
     while(s->menus)win16_control_frame_state_end_menu(s);
-    if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
+    style_instance_release(&s->instance);
     return TRUE;
 }

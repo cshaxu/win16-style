@@ -4,9 +4,9 @@
 #include "lib-win32-style/application/menu/menu_input.h"
 #include <commctrl.h>
 #include <windowsx.h>
-static void repaint_retain(void *context){++((style_window *)context)->calls;}
+static void repaint_retain(void *context){style_instance_retain(&((style_window *)context)->instance);}
 static void repaint_release(void *context)
-{style_window *s=context;if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);}
+{style_window *s=context;style_instance_release(&s->instance);}
 static void repaint_activate(HWND owner,void *context)
 {
     style_window *s=context;s->pending_frame=FALSE;
@@ -19,7 +19,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
 {
 
     LRESULT result=0;win16_style_layout l;POINT point;RECT r;
-    ++s->calls;
+    style_instance_retain(&s->instance);
     if(s->menu_only && msg!=WM_ENTERMENULOOP && msg!=WM_EXITMENULOOP && msg!=WM_INITMENUPOPUP && msg!=WM_MENUCHAR && msg!=WM_MEASUREITEM && msg!=WM_DRAWITEM && msg!=WM_NCDESTROY)goto forward;
     /* Maximized MDI children merge their controls into the frame menu.
      * Preserve DefMDIChildProc's native geometry/dispatch for that state;
@@ -31,7 +31,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     if(s->pending_frame && msg==WM_NCACTIVATE)s->active=(BOOL)wp;
     if(s->pending_frame && msg==WM_DPICHANGED){
         result=DefSubclassProc(w,msg,wp,lp);
-        if(!s->detached)v->message->refresh_font(w,s);
+        if(!s->instance.detached)v->message->refresh_font(w,s);
         goto done;
     }
     if(s->pending_frame && msg!=WM_SHOWWINDOW && msg!=WM_NCDESTROY)goto forward;
@@ -39,9 +39,9 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
         if(s->xaml.waiting){if(!wp)style_uwp_repaint_cancel(&s->xaml);goto forward;}
         if(wp && style_frame_xaml_bridge(w,FALSE)){
             s->xaml.waiting=TRUE;s->xaml.deadline=GetTickCount64()+2000;s->xaml_activate=v->message->activate;
-            if(style_uwp_repaint_queue(w,&s->xaml,&s->detached,s,&repaint_services))goto forward;
+            if(style_uwp_repaint_queue(w,&s->xaml,&s->instance.detached,s,&repaint_services))goto forward;
             s->xaml.waiting=FALSE;
-            if(s->detached)goto done;
+            if(s->instance.detached)goto done;
         }
     }
     /* Our menu bar is custom nonclient chrome. USER hot-tracks HTMENU before
@@ -55,16 +55,16 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     switch(msg){
     case WM_GETICON:
     case WM_SETICON: {
-        if(style_frame_xaml_icon(w,msg,wp,lp,&s->xaml_icon_update,&s->detached,&result))break;
+        if(style_frame_xaml_icon(w,msg,wp,lp,&s->xaml_icon_update,&s->instance.detached,&result))break;
         goto forward;
     }
     case WM_ERASEBKGND:
         result=DefSubclassProc(w,msg,wp,lp);
         /* Coalesce a burst of XAML background erases into one frame refresh.
          * Classic windows do not schedule this additional paint. */
-        if(!s->detached && !s->xaml.repainting && !s->xaml.pending && !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) &&
+        if(!s->instance.detached && !s->xaml.repainting && !s->xaml.pending && !(GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) &&
            style_frame_xaml_bridge(w,FALSE)){
-            (void)style_uwp_repaint_queue(w,&s->xaml,&s->detached,s,&repaint_services);
+            (void)style_uwp_repaint_queue(w,&s->xaml,&s->instance.detached,s,&repaint_services);
         }
         break;
     case WM_SHOWWINDOW:
@@ -130,7 +130,7 @@ forward:
         result=DefSubclassProc(w,msg,wp,lp);break;
     }
 done:
-    if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
+    style_instance_release(&s->instance);
     return result;
 
 }

@@ -8,9 +8,10 @@
 #include <commctrl.h>
 #include <stdlib.h>
 control_style *win16_control_state_create(void)
-{return (control_style *)calloc(1,sizeof(control_style));}
-void win16_control_state_dispose(control_style *s)
+{control_style *s=calloc(1,sizeof(*s));if(s)style_instance_init(&s->instance,s,win16_control_state_dispose);return s;}
+void win16_control_state_dispose(void *context)
 {
+    control_style *s=context;
     for(unsigned i=0;i<s->combo_font_count;++i)win16_style_system_release(s->combo_fonts[i]);
     win16_style_system_release(s->font);
     style_control_protocol_release(s->protocol);
@@ -21,12 +22,12 @@ BOOL win16_control_state_prepare_font(HWND w,control_style *s,UINT m,WPARAM *a,B
     if(!s->frame_scrollbars && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT) &&
             (native_font || style_control_vb_frame(w) || style_control_vb_edit(w) || style_control_vb_button(w) || style_control_vb_combo(w) || style_control_vb_list(w))){
         HFONT source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
-        if(!s->detached && source!=s->original_font){
+        if(!s->instance.detached && source!=s->original_font){
             HFONT replacement=native_font?win16_style_system_acquire(source):win16_style_vb_font_acquire(source);
             *previous=s->font;s->original_font=source;s->font=replacement?replacement:source;
         }
     }
-    if(s->detached)return FALSE;
+    if(s->instance.detached)return FALSE;
     if(m==WM_SETFONT && s->combo_passthrough){
         s->original_font=win16_style_system_source((HFONT)*a);*a=(WPARAM)s->original_font;
         if(((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_DROPDOWNLIST){
@@ -56,8 +57,8 @@ LRESULT win16_control_combo_message(HWND w,control_style *s,UINT m,WPARAM a,LPAR
             m==WM_SETFONT || m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_KEYDOWN ||
             m==WM_LBUTTONDOWN || m==WM_LBUTTONUP;
         BOOL suppress=style_control_redraw_can_suppress(w,s->list_redraw_off,s->list_suppression) && affects;
-        result=style_control_redraw_call(w,m,a,b,suppress,&s->list_suppression,&s->detached,&s->list_redraw_off);
-        if(!s->detached && !s->list_suppression && !s->list_redraw_off && affects)
+        result=style_control_redraw_call(w,m,a,b,suppress,&s->list_suppression,&s->instance.detached,&s->list_redraw_off);
+        if(!s->instance.detached && !s->list_suppression && !s->list_redraw_off && affects)
             RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);}
     return result;
 }
@@ -68,7 +69,7 @@ LRESULT win16_control_tab_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM
         PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present(w,s,dc,paint);EndPaint(w,&ps);
     }else if(m==WM_PRINTCLIENT && win16_style_tab_supported(w))paint(w,s,(HDC)a);
     else result=DefSubclassProc(w,m,a,b);
-    if(!s->detached && win16_style_tab_changes(m))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
+    if(!s->instance.detached && win16_style_tab_changes(m))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->instance.calls==1?RDW_UPDATENOW:0));
     return result;
 }
 LRESULT win16_control_header_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,win16_control_state_present present,win16_control_state_painter paint)
@@ -77,7 +78,7 @@ LRESULT win16_control_header_message(HWND w,control_style *s,UINT m,WPARAM a,LPA
     if(m==WM_LBUTTONDOWN){
         HDHITTESTINFO hit={.pt={(short)LOWORD(b),(short)HIWORD(b)}};
         LRESULT item=SendMessageW(w,HDM_HITTEST,0,(LPARAM)&hit);
-        if(s->detached)return 0;
+        if(s->instance.detached)return 0;
         s->header_pressed=(item>=0 && (hit.flags&HHT_ONHEADER))?(int)item:-1;
     }
     if(m==WM_LBUTTONUP || m==WM_CANCELMODE || m==WM_CAPTURECHANGED)s->header_pressed=-1;
@@ -85,7 +86,7 @@ LRESULT win16_control_header_message(HWND w,control_style *s,UINT m,WPARAM a,LPA
         PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);present(w,s,dc,paint);EndPaint(w,&ps);
     }else if(m==WM_PRINTCLIENT && win16_style_header_supported(w))paint(w,s,(HDC)a);
     else result=DefSubclassProc(w,m,a,b);
-    if(!s->detached && win16_style_header_changes(m))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
+    if(!s->instance.detached && win16_style_header_changes(m))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->instance.calls==1?RDW_UPDATENOW:0));
     return result;
 }
 LRESULT win16_control_progress_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b,win16_control_state_present present,win16_control_state_painter paint)
@@ -95,8 +96,8 @@ LRESULT win16_control_progress_message(HWND w,control_style *s,UINT m,WPARAM a,L
     else if(m==WM_PRINTCLIENT && classic)paint(w,s,(HDC)a);
     else if(m==WM_PRINT && classic && (b&PRF_CLIENT)){
         int saved=SaveDC((HDC)a);if(saved){result=DefSubclassProc(w,m,a,b&~PRF_CLIENT);RestoreDC((HDC)a,saved);}
-        if(!s->detached)paint(w,s,(HDC)a);
+        if(!s->instance.detached)paint(w,s,(HDC)a);
     }else result=DefSubclassProc(w,m,a,b);
-    if(!s->detached && win16_style_progress_changes(m))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->calls==1?RDW_UPDATENOW:0));
+    if(!s->instance.detached && win16_style_progress_changes(m))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(s->instance.calls==1?RDW_UPDATENOW:0));
     return result;
 }

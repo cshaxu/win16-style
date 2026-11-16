@@ -106,7 +106,7 @@ BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
  * layout; only the text image is fitted inside the button's existing face. */
 static void draw(HWND w,control_style *s,HDC dc)
 {
-    const win16_control_choice_view view={&s->detached,&s->palette,&s->font,
+    const win16_control_choice_view view={&s->instance.detached,&s->palette,&s->font,
         style_control_button_type,style_control_is_static,style_control_vb_frame,style_control_vb_button,
         ntw16s_group_choice_button,ntw16s_group_push_button};
     win16_control_draw_choice(w,&view,dc);
@@ -115,14 +115,14 @@ static void draw(HWND w,control_style *s,HDC dc)
 /* The native list owns strings, sorting, selection and scrolling. Query only
  * visible rows; never replace item data or convert application owner-draw. */
 static void draw_list(HWND w,control_style *s,HDC dc)
-{win16_control_draw_list(w,&s->detached,&s->palette,&s->font,&s->tab_count,&s->tab_positions,dc,style_control_vb_list);}
+{win16_control_draw_list(w,&s->instance.detached,&s->palette,&s->font,&s->tab_count,&s->tab_positions,dc,style_control_vb_list);}
 static void edit_border(HWND w,control_style *s,HDC target)
 {win16_control_edit_border(w,s->edit_border,&s->palette,target);}
 static void list_border(HWND w,control_style *s,HDC target)
 {win16_control_list_border(w,&s->palette,target);}
 
 static void draw_combo(HWND w,control_style *s,HDC dc)
-{win16_control_draw_combo(w,&s->detached,&s->common_dialog_combo,&s->palette,&s->font,dc,
+{win16_control_draw_combo(w,&s->instance.detached,&s->common_dialog_combo,&s->palette,&s->font,dc,
     ntw16s_native_get_combo_info,style_control_vb_combo,style_control_vb_drive);}
 
 static void detach_combo_list(control_style *s)
@@ -165,7 +165,7 @@ void win16_style_scrollbars_paint(HWND w,HDC target,const win16_style_palette *p
 
 static win16_scroll_caret_view scroll_caret_view(control_style *s)
 {
-    const win16_scroll_caret_view view={&s->detached,&s->scroll_caret,&s->scroll_caret_shown,
+    const win16_scroll_caret_view view={&s->instance.detached,&s->scroll_caret,&s->scroll_caret_shown,
         &s->scroll_caret_size,&s->scroll,style_control_is_scroll,scroll_layout};return view;
 }
 static void scroll_caret_destroy(HWND w,control_style *s)
@@ -180,7 +180,7 @@ static void scroll_caret_callback(HWND w,void *context)
 {scroll_caret_sync(w,(control_style *)context);}
 static win16_scroll_actions_view scroll_action_view(control_style *s)
 {
-    const win16_scroll_actions_view view={s,&s->detached,&s->scroll_reporting,&s->frame_scrollbars,
+    const win16_scroll_actions_view view={s,&s->instance.detached,&s->scroll_reporting,&s->frame_scrollbars,
         &s->edit_scrollbars,&s->list_scrollbar,&s->scroll_epoch,&s->scroll_report,&s->embedded_object,
         &s->scroll_timer,&s->scroll,scroll_draw_callback,scroll_nonclient_callback,scroll_caret_callback};
     return view;
@@ -215,7 +215,7 @@ static BOOL present_group(HWND w,void *context)
 static void present_control(HWND w,control_style *s,HDC target,void (*painter)(HWND,control_style *,HDC))
 {
     present_context context={s,painter};
-    const style_present_view view={&s->detached,s->palette.light,&context,present_painter,NULL,present_group};
+    const style_present_view view={&s->instance.detached,s->palette.light,&context,present_painter,NULL,present_group};
     style_present(w,&view,target);
 }
 
@@ -226,7 +226,7 @@ static LRESULT forward_list_tabs(HWND w,WPARAM count,LPARAM values)
 {return DefSubclassProc(w,LB_SETTABSTOPS,count,values);}
 static LRESULT set_list_tabs(HWND w,control_style *s,WPARAM count,LPARAM values)
 {
-    const win16_control_tabstops_view view={&s->detached,&s->font,&s->tab_count,&s->tab_positions,forward_list_tabs};
+    const win16_control_tabstops_view view={&s->instance.detached,&s->font,&s->tab_count,&s->tab_positions,forward_list_tabs};
     return win16_control_set_list_tabs(w,&view,count,values);
 }
 static void draw_sizebox(HWND w,control_style *s,HDC dc)
@@ -235,7 +235,7 @@ static void draw_sizebox(HWND w,control_style *s,HDC dc)
  * verified static edge, after the native procedure; leave the client intact. */
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
-    control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;++s->calls;
+    control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->font,outbound=NULL;(void)id;style_instance_retain(&s->instance);
     RECT spin_before={0};HWND spin_button=style_control_vcl_spin_before(w,m,&spin_before);
     BOOL tab=style_control_is_tab(w),header=style_control_is_header(w),progress=style_control_class_is(w,PROGRESS_CLASSW),native_font=tab || header;
     BOOL combo_paint=style_control_vb_combo(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);if(combo_paint)++s->combo_paints;
@@ -346,7 +346,7 @@ BOOL win16_style_control_remove_owned(HWND w,const void *owner)
     DWORD_PTR data;
     if(!owner || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
         !GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) ||
-        ((control_style *)data)->creation_owner!=owner)return FALSE;
+        ((control_style *)data)->instance.owner!=owner)return FALSE;
     return win16_style_control_remove(w);
 }
 BOOL win16_style_control_terminal(HWND w)

@@ -1,6 +1,7 @@
 #ifndef WIN16_CONTROL_ATTACHMENT_STATE_H
 #define WIN16_CONTROL_ATTACHMENT_STATE_H
 #include "../common/palette.h"
+#include "lib-win32-style/application/lifecycle/instance.h"
 #include <commctrl.h>
 #include "status_font.h"
 #include "../../../application/control/control_protocol.h"
@@ -8,8 +9,8 @@
 #include "vb_text.h"
 #include "vcl_identity.h"
 typedef struct attachment {
-    unsigned calls;
-    BOOL detached,tree,file_owner,picture,button_owner,checklist,status,spin,static_candidate,static_verified;
+    style_instance instance;
+    BOOL tree,file_owner,picture,button_owner,checklist,status,spin,static_candidate,static_verified;
     BOOL edit_candidate,edit_attempted,edit_installed,link_candidate,spinedit_candidate,combo_candidate,modern_spin,modern_spin_verified;
     BOOL scroll_candidate,scroll_attempted,scroll_installed; HWND scroll_parent; HMODULE scroll_witness;
     BOOL group_button_candidate,group_button_attempted,group_button_installed;

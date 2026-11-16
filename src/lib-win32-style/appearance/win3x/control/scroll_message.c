@@ -10,17 +10,17 @@ LRESULT win16_control_frame_scroll_message(HWND w,control_style *s,UINT m,WPARAM
         else if(m==WM_NCMOUSEMOVE && (a==HTHSCROLL || a==HTVSCROLL))result=0;
         else {if(m==WM_ENABLE && !a)services->finish(w,s,TRUE);
             int saved=(s->native_border && m==WM_PRINT)?SaveDC((HDC)a):0;
-            if(!s->detached)result=DefSubclassProc(w,m,a,b);
+            if(!s->instance.detached)result=DefSubclassProc(w,m,a,b);
             if(saved)RestoreDC((HDC)a,saved);}
-        if(!s->detached && s->native_border && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT)))){
+        if(!s->instance.detached && s->native_border && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT)))){
             services->border(w,s,m==WM_PRINT?(HDC)a:NULL);services->scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
         }
-        if(!s->detached && s->legacy_progress_border && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
+        if(!s->instance.detached && s->legacy_progress_border && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
             win16_control_legacy_progress_border(w,&s->palette,m==WM_PRINT?(HDC)a:NULL);
         /* Native controls can repaint their own non-client bars while handling
          * input or position changes without issuing WM_NCPAINT. Restore both
          * axes after the native handler, including programmatic list scrolling. */
-        if(!s->detached && (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL || m==WM_MOUSEHWHEEL ||
+        if(!s->instance.detached && (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL || m==WM_MOUSEHWHEEL ||
             m==WM_KEYDOWN || m==WM_KEYUP || m==WM_LBUTTONUP || m==WM_ENABLE || m==WM_SIZE ||
             m==LB_SETTOPINDEX || m==LB_SETCURSEL || m==LB_SETSEL || m==EM_LINESCROLL))
             services->scrollbars(w,s,NULL);
@@ -52,12 +52,12 @@ LRESULT win16_control_scroll_message(HWND w,control_style *s,UINT *message,WPARA
         else if(m==WM_ERASEBKGND)result=1;
         else {BOOL redraw=m==SBM_SETPOS?b!=0:m==SBM_SETSCROLLINFO?a!=0:m!=SBM_SETRANGE;
             if(m==WM_ENABLE && !a)services->finish(w,s,TRUE);
-            if(s->detached)goto done;
+            if(s->instance.detached)goto done;
             if(m==SBM_SETPOS)b=FALSE;
             if(m==SBM_SETSCROLLINFO)a=FALSE;
             if(m==SBM_SETRANGEREDRAW)m=SBM_SETRANGE;
             result=DefSubclassProc(w,m,a,b);
-            if(redraw && !s->detached && (m==SBM_SETPOS || m==SBM_SETSCROLLINFO || m==SBM_SETRANGE || m==SBM_SETRANGEREDRAW ||
+            if(redraw && !s->instance.detached && (m==SBM_SETPOS || m==SBM_SETSCROLLINFO || m==SBM_SETRANGE || m==SBM_SETRANGEREDRAW ||
                 m==SBM_ENABLE_ARROWS || m==WM_ENABLE || m==WM_SETFOCUS || m==WM_KILLFOCUS ||
                 m==WM_LBUTTONDOWN || m==WM_LBUTTONUP || m==WM_KEYDOWN))RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
             if(redraw)services->caret_sync(w,s);}

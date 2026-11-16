@@ -13,11 +13,11 @@ static HFONT combo_edit_font(control_style *s,HFONT source)
 }
 LRESULT win16_control_combo_text_message(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,control_style *s,SUBCLASSPROC combo_proc,SUBCLASSPROC control_proc)
 {
-    ++s->calls;LRESULT result;
+    style_instance_retain(&s->instance);LRESULT result;
     HFONT pinned=s->combo_edit_font,outbound=NULL;win16_style_system_retain(pinned);
-    BOOL related=!s->detached && s->combo_edit==w && GetParent(w)==s->combo_parent;
+    BOOL related=!s->instance.detached && s->combo_edit==w && GetParent(w)==s->combo_parent;
     BOOL painting=related && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);if(painting)++s->combo_paints;
-    if(m==WM_NCDESTROY){RemoveWindowSubclass(w,combo_proc,id);if(s->combo_edit==w){s->combo_edit=NULL;if(s->combo_bound){s->combo_bound=FALSE;--s->calls;}}}
+    if(m==WM_NCDESTROY){RemoveWindowSubclass(w,combo_proc,id);if(s->combo_edit==w){s->combo_edit=NULL;if(s->combo_bound){s->combo_bound=FALSE;style_instance_release(&s->instance);}}}
     if(related && m==WM_GETFONT)result=(LRESULT)(s->combo_paints && s->combo_edit_font?s->combo_edit_font:s->combo_edit_source);
     else {
         if(related && m==WM_SETFONT){
@@ -28,8 +28,8 @@ LRESULT win16_control_combo_text_message(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PT
         result=DefSubclassProc(w,m,a,b);
     }
     /* A native setter can reenter removal; restore only after it returns. */
-    if(!related && m!=WM_NCDESTROY && !s->detached && s->combo_edit==w)win16_control_combo_text_unbind(s,FALSE,combo_proc);
-    if(m==WM_SETFONT && s->detached && IsWindow(w)){
+    if(!related && m!=WM_NCDESTROY && !s->instance.detached && s->combo_edit==w)win16_control_combo_text_unbind(s,FALSE,combo_proc);
+    if(m==WM_SETFONT && s->instance.detached && IsWindow(w)){
         DWORD_PTR successor;HFONT source=s->combo_edit_source;
         if(GetWindowSubclass(w,combo_proc,(UINT_PTR)combo_proc,&successor))source=((control_style *)successor)->combo_edit_source;
         else if(GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&successor))source=((control_style *)successor)->original_font;
@@ -37,7 +37,7 @@ LRESULT win16_control_combo_text_message(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PT
     }
     if(painting)--s->combo_paints;
     win16_style_system_release(outbound);win16_style_system_release(pinned);
-    if(!--s->calls && s->detached)win16_control_state_dispose(s);
+    style_instance_release(&s->instance);
     return result;
 }
 void win16_control_combo_text_unbind(control_style *s,BOOL terminal,SUBCLASSPROC combo_proc)
@@ -46,7 +46,7 @@ void win16_control_combo_text_unbind(control_style *s,BOOL terminal,SUBCLASSPROC
     if(!s->combo_bound)return;
     BOOL owned=style_control_subclass_owned(edit,combo_proc,(UINT_PTR)combo_proc,s);
     if(owned && !RemoveWindowSubclass(edit,combo_proc,(UINT_PTR)combo_proc))return;
-    s->combo_edit=NULL;s->combo_bound=FALSE;--s->calls;
+    s->combo_edit=NULL;s->combo_bound=FALSE;style_instance_release(&s->instance);
     if(owned && !terminal && IsWindow(edit)){
         SendMessageW(edit,WM_SETFONT,(WPARAM)s->combo_edit_source,FALSE);
         if(IsWindow(edit))InvalidateRect(edit,NULL,TRUE);

@@ -16,8 +16,8 @@ LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPA
         if(style_control_protocol_runtime_trackbar(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT))
             result=v->track_dispatch(s,w,m,a,b);
         else result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && m==WM_STYLECHANGED)SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
-        if(!s->detached && s->track_parent && GetParent(w)!=s->track_parent){
+        if(!s->instance.detached && m==WM_STYLECHANGED)SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
+        if(!s->instance.detached && s->track_parent && GetParent(w)!=s->track_parent){
             v->track_unbind(s);SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
         }
     }

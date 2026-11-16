@@ -11,14 +11,14 @@ static control_style *install_frame(HWND w,const win16_style_palette *palette,co
     DWORD_PTR data;
     if(!v->frame_install(w,palette,owner,cancelled))return NULL;
     if(!GetWindowSubclass(w,v->control_proc,(UINT_PTR)v->control_proc,&data) ||
-       ((control_style *)data)->creation_owner!=owner){SetLastError(ERROR_CANCELLED);return NULL;}
+       ((control_style *)data)->instance.owner!=owner){SetLastError(ERROR_CANCELLED);return NULL;}
     return (control_style *)data;
 }
 static BOOL finish_install(HWND w,const void *owner,const win16_control_special_services *v,control_style *s,BOOL okay)
 {
-    if(s->detached)okay=FALSE;
-    if(!okay && !s->detached)v->remove_owned(w,owner);
-    if(!--s->calls && s->detached)win16_control_state_dispose(s);
+    if(s->instance.detached)okay=FALSE;
+    if(!okay && !s->instance.detached)v->remove_owned(w,owner);
+    style_instance_release(&s->instance);
     return okay;
 }
 BOOL win16_control_special_updown_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
@@ -33,7 +33,7 @@ BOOL win16_control_special_trackbar_install(HWND w,const win16_style_palette *pa
 {
     if(!win16_style_trackbar_supported(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    ++s->calls;s->track_window=w;s->track_parent=GetParent(w);
+    style_instance_retain(&s->instance);s->track_window=w;s->track_parent=GetParent(w);
     BOOL okay=s->track_parent && SetWindowSubclass(s->track_parent,v->trackbar_notify,(UINT_PTR)w,(DWORD_PTR)s);
     /* Native trackbars cache part drawing. Invalidate only this new control's
      * native cache after binding, without changing theme/global properties. */
@@ -44,7 +44,7 @@ BOOL win16_control_special_toolbar_install(HWND w,const win16_style_palette *pal
 {
     if(!style_control_protocol_toolbar(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    ++s->calls;s->toolbar_window=w;s->toolbar_parent=GetParent(w);
+    style_instance_retain(&s->instance);s->toolbar_window=w;s->toolbar_parent=GetParent(w);
     BOOL okay=s->toolbar_parent && SetWindowSubclass(s->toolbar_parent,v->toolbar_notify,(UINT_PTR)w,(DWORD_PTR)s);
     return finish_install(w,owner,v,s,okay);
 }
@@ -74,7 +74,7 @@ BOOL win16_control_special_grid_install(HWND w,const win16_style_palette *palett
 {
     BOOL result=TRUE;
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    ++s->calls;s->native_border=TRUE;
+    style_instance_retain(&s->instance);s->native_border=TRUE;
     /* Owner-drawn lists use the shared frame scrollbar painter but may not
      * have the ordinary control attachment's theme lease. Common-controls
      * theme animations can otherwise repaint over that scrollbar later. */
@@ -82,7 +82,7 @@ BOOL win16_control_special_grid_install(HWND w,const win16_style_palette *palett
         if(!v->theme_capture(w))result=FALSE;
         else {s->list_theme_owned=TRUE;if(!v->theme_enable(w,s))result=FALSE;}
     }
-    if(s->detached || (cancelled && *cancelled)){result=FALSE;SetLastError(ERROR_CANCELLED);}
+    if(s->instance.detached || (cancelled && *cancelled)){result=FALSE;SetLastError(ERROR_CANCELLED);}
     return finish_install(w,owner,v,s,result);
 }
 BOOL win16_control_special_picture_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)

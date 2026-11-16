@@ -13,7 +13,7 @@ LRESULT win16_control_edit_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
         if(s->edit_scrollbars && (m==WM_NCMOUSEMOVE || m==WM_NCMOUSELEAVE))return result;
         if(s->edit_scrollbars && m==WM_NCPAINT){
             services->scrollbars(w,s,NULL);
-            if(!s->detached && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE)){
+            if(!s->instance.detached && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE)){
                 if(a==1)services->border(w,s,NULL);
                 else if(a){
                     HDC dc=style_frame_update_dc(w,(HRGN)a);
@@ -31,16 +31,16 @@ LRESULT win16_control_edit_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
         int native_dc=(m==WM_PRINT || m==WM_PRINTCLIENT)?SaveDC((HDC)a):0;
         result=DefSubclassProc(w,m,a,b);
         if(native_dc)RestoreDC((HDC)a,native_dc);
-        if(suppress)style_control_redraw_end(w,&s->list_suppression,&s->detached,&s->list_redraw_off);
-        if(suppress && !s->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW);
+        if(suppress)style_control_redraw_end(w,&s->list_suppression,&s->instance.detached,&s->list_redraw_off);
+        if(suppress && !s->instance.detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW);
         }
-        if(!s->detached && (m==WM_PRINTCLIENT || (m==WM_PRINT && (b&PRF_CLIENT)) || m==WM_PAINT || m==WM_ENABLE))
+        if(!s->instance.detached && (m==WM_PRINTCLIENT || (m==WM_PRINT && (b&PRF_CLIENT)) || m==WM_PAINT || m==WM_ENABLE))
             services->client_border(w,s,(m==WM_PRINT || m==WM_PRINTCLIENT)?(HDC)a:NULL);
-        if(!s->detached && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
+        if(!s->instance.detached && (m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))))
             {services->scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);
              if(style_control_vb_edit(w) || style_control_native_superclass(w,L"EDIT") ||
                 (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE))services->border(w,s,m==WM_PRINT?(HDC)a:NULL);}
-        else if(!s->detached && (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL ||
+        else if(!s->instance.detached && (m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL ||
             m==EM_LINESCROLL || m==WM_SETTEXT || m==WM_KEYDOWN || m==WM_CHAR))
             services->scrollbars(w,s,NULL);
         return result;

@@ -9,7 +9,7 @@ LRESULT win16_control_fileowner_message(HWND w,control_style *s,UINT m,WPARAM a,
          * its native paint; never clear or recreate the image/text item. */
         if(ntw16s_vb_owner_file(w) && style_control_vb_directory(w) && services->scroll_input(w,s,m,a,b))result=0;
         else result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && (ntw16s_vb_owner_file(w) ||
+        if(!s->instance.detached && (ntw16s_vb_owner_file(w) ||
                 (s->common_dialog_combo && style_control_dialog_combo_valid(w,s->common_dialog_parent,style_control_is_combo)))){
             if(m==WM_PAINT){
                 if(style_control_vb_drive(w) || s->common_dialog_combo){HDC dc=GetDC(w);if(dc){services->combo(w,s,dc);ReleaseDC(w,dc);}}

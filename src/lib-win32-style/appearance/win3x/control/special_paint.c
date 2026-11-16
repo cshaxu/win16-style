@@ -227,7 +227,7 @@ static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *a
             !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)address,&caller) ||
             caller!=(HMODULE)GetClassLongPtrW(*w,GCLP_HMODULE) ||
             !GetWindowSubclass(*w,proc,(UINT_PTR)proc,&value))return NULL;
-    control_style *s=(void *)value;return !s->detached && s->frame_scrollbars?s:NULL;
+    control_style *s=(void *)value;return !s->instance.detached && s->frame_scrollbars?s:NULL;
 }
 BOOL win16_control_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy,SUBCLASSPROC proc)
 {

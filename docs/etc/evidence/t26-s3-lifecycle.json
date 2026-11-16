@@ -1,0 +1,701 @@
+{
+  "task": "M0 T26 S3",
+  "status": "implemented-verified-locally-pending-remote",
+  "search_baseline": "b424d30c",
+  "baseline_hits": [
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/system_menu.c",
+      "sha256": "2f8852d5c20f220fa3d9f20633ccd457a6b25136f845a33ab7eecbbd806e62b8",
+      "current_sha256": "2f8852d5c20f220fa3d9f20633ccd457a6b25136f845a33ab7eecbbd806e62b8",
+      "disposition": "menu multi-window scope/popup lifetime",
+      "receiver": "S8",
+      "public_entry": "existing native menu scope API",
+      "reason": "Popup/shadow pairing, nested scopes and restoration must migrate with both menu engines; no root instance duplication introduced in S3."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/attachment_guard.c",
+      "sha256": "3b97824bc523247f4eac9afea52942b2ec6f19e44655f40b74d16a61977bcb84",
+      "current_sha256": "4153f9a6dc14f7f38be23212e7bf8997b3741d33f0385ec022621296c3e81072",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/basic_message.c",
+      "sha256": "6e52b4d8f8d43afdf715d66080bb0f277a16372d10bbc8450170058c848b6098",
+      "current_sha256": "a42ebf33f1bce3f4f6fe1106c25e9ffd405ed39388ff4a7b3a8bdb6e83d3eddf",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/choice_view.c",
+      "sha256": "162ad2bf4782030e8be144a6727c2491a893eb4db443d2599fca2f30ebd73fb8",
+      "current_sha256": "162ad2bf4782030e8be144a6727c2491a893eb4db443d2599fca2f30ebd73fb8",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/combo_text.c",
+      "sha256": "f39c9b0532dedeb5378942471a4d7a77b270b8ee27188d11d205930b4ae8a9ef",
+      "current_sha256": "16efce05fe5d7e7a22f93d6a8bde12cf0d4fe138a15694ca5bf6b6869dd09989",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_dispatch.c",
+      "sha256": "aefcbc53a16125060963bd9979dbd99c2f7ad90e31cc86289ee99025e188e8a8",
+      "current_sha256": "3c1a6ce0406a93210389f74d50130504b5a3e1cd9456d242a9b8e2fe7e1133c8",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_guard.c",
+      "sha256": "6d1647cda100e8479854db9f37b1046f50363ee922d6b4973827ed63d7a08d41",
+      "current_sha256": "6f8f224c9f7febdb8bc2a68d924d74cd6f6750f4789dcc45af2b8d7500d5342c",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_install.c",
+      "sha256": "1d21b770a7bd44a548080ba0b7f9de53d84289727579b2cee64f7c338aad0d95",
+      "current_sha256": "aaee62ba777c08d16cfff6d2e2b970560e01a1b968324d9175252f1decc7d05e",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_lifetime.c",
+      "sha256": "d04898b8f7648686dc6650d389c50c682f3b7c8af0dadfa2e6af3d3fa6b43b05",
+      "current_sha256": "bea1bc22f17d1ade0a2a4ed5ea02e80325ce2fdcd310ea16a2184cc8058214bf",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_remove.c",
+      "sha256": "27678f0276c7b028cf292bcf53dabdba7289f1a956ccf93838c2b8e28fb78dbb",
+      "current_sha256": "96eef0f56f212aa26956eba7ddf7370510fd818bd95763144766fa7aa8cb7a94",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_state.c",
+      "sha256": "8d560e28c771d3bb8d2e997c7705375e29085b933f96fac1f693dd8b50e9a836",
+      "current_sha256": "215e93a3596c46d0c4b02c2116675ad32bf16302ee86aa06cca687a25dd5189f",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/edit_message.c",
+      "sha256": "7879b386581a0feb2601c57942c6b92e80ea13eeee67aa8c8ffbde81e6459dd7",
+      "current_sha256": "6ffc6774acdc87767fc4f2ce252ece2901fb9f0d67576e74c6300789d0dbb0b4",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/fileowner_message.c",
+      "sha256": "ce1ae8ed053c4b967b52cdfd6eb5cc3f5f9fd1405eb2db4a3b0ffabf16619911",
+      "current_sha256": "3d50a0e7e027d4b479dff1640d6e32d66ea796a97738b8d00f8d6bfec228e5fa",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/list_message.c",
+      "sha256": "30c4d829ec9ef3d243941a953bc115bd45d561947a29c283e9818980789c1dcb",
+      "current_sha256": "9c9c54d3f0ed6d70d8a9052b42c639f12a0a867d80e30d51e0644c72c8d463cf",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/list_paint.c",
+      "sha256": "2dfabf0f3d8aed354bf79d49087f6c9b255766e51f44b385b36944719cf99442",
+      "current_sha256": "2dfabf0f3d8aed354bf79d49087f6c9b255766e51f44b385b36944719cf99442",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/month_paint.c",
+      "sha256": "d82f68dc3b69fa5dfbf80305ddaff26b9feeb6441696693acebe38037d648a28",
+      "current_sha256": "d82f68dc3b69fa5dfbf80305ddaff26b9feeb6441696693acebe38037d648a28",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/native_combo_identity.c",
+      "sha256": "8ab3b75c571ed8de36d205e2555578df3232f12b24eb704fb3280f44ce4b75ec",
+      "current_sha256": "8ab3b75c571ed8de36d205e2555578df3232f12b24eb704fb3280f44ce4b75ec",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/native_presentation.c",
+      "sha256": "4f5d0514a2e2e5668fdf8b4e8eb1af5e962231f2320ec7d9bd3ae45317a17e35",
+      "current_sha256": "125c2840b33dedee3aa2bd46a4e411d63964347d4f53e224cbd87dfde25ea25f",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/notify_message.c",
+      "sha256": "ddb112273f5d588c69574b5322c4a504da17713a0569a73629a170eeca0526ff",
+      "current_sha256": "d5d108c1fd4b32b52ae6ee188734c817835b32ba5c36bc1a1815969417e507db",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_message.c",
+      "sha256": "c46b2aecdbf440588fea0d6e2ffd5db12cd53821e56fcba6692c234ddf9d4a2e",
+      "current_sha256": "fdf5f78124d882f9bbb983d1880bc151bce05afca8a67f5291fb4c3105327b99",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_native.c",
+      "sha256": "bb41b7efe3b7160ad2997710a6ca2048934124720209e1b3ff11a2857eb83e34",
+      "current_sha256": "cb127510d05f2b95972a4b4cae5363db20f355849cefe7b3f0993b1cc5c992c4",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/special_install.c",
+      "sha256": "0a3787524563c755381436c48aa58502769cbcae6a172e6b4efc539209a29f04",
+      "current_sha256": "74065086ad87af09a53700ebfba5026ce615a4e649994b8f445f91b6103abf9b",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/special_paint.c",
+      "sha256": "e00a24386fb4d5250c90de57429dd1168e86eda10d339448fe40c4c5eed675a5",
+      "current_sha256": "3d861d609458d7f26d852609f6967ad8112310edc1468885c1f016af9542be0d",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/spin_scope.c",
+      "sha256": "717551442acc61a8eb3222257e7daaf4a4304ef21f58472358b156743526a44d",
+      "current_sha256": "717551442acc61a8eb3222257e7daaf4a4304ef21f58472358b156743526a44d",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/status_frame.c",
+      "sha256": "f7ad65eaf0b6ef245547336bf7bd3c24949de879fb5384c6250b4e4e8025061e",
+      "current_sha256": "f7ad65eaf0b6ef245547336bf7bd3c24949de879fb5384c6250b4e4e8025061e",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/status_text.c",
+      "sha256": "58ebefeb1fb755f5bbacb2ed8932af75931fa6f244056c5a94cda03cb65a8547",
+      "current_sha256": "58ebefeb1fb755f5bbacb2ed8932af75931fa6f244056c5a94cda03cb65a8547",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/vcl_extra_frame.c",
+      "sha256": "a4b8409e9e5f75f85b54f05c348232aff1ff4223ce41e868120eec37bba59cab",
+      "current_sha256": "a4b8409e9e5f75f85b54f05c348232aff1ff4223ce41e868120eec37bba59cab",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/vcl_frame_policy.c",
+      "sha256": "cc28c7eaedbd611def2f9294eb5f90632e095e263cd8b93c011a0f502d2ccdae",
+      "current_sha256": "cc28c7eaedbd611def2f9294eb5f90632e095e263cd8b93c011a0f502d2ccdae",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/vcl_identity.c",
+      "sha256": "d0c01aba84f4455458f4570ec5b5ca6abb859433cc43da4a28aa6d7260f815fc",
+      "current_sha256": "d0c01aba84f4455458f4570ec5b5ca6abb859433cc43da4a28aa6d7260f815fc",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/vcl_native_paint.c",
+      "sha256": "711d01325a8fb26bee7fc988bdaeecbd0622ebe5623cfd0c7bcf010add79c545",
+      "current_sha256": "711d01325a8fb26bee7fc988bdaeecbd0622ebe5623cfd0c7bcf010add79c545",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_bar.c",
+      "sha256": "95f628f2c4e94c5ab658d5fada2e307ebd1484b94f1fcacee2039bce17b0700e",
+      "current_sha256": "95f628f2c4e94c5ab658d5fada2e307ebd1484b94f1fcacee2039bce17b0700e",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_iteration.c",
+      "sha256": "3f68b0c46f13505d0e141955d2734c40b486e7c476e15ce9213be9bdb119865e",
+      "current_sha256": "ecf67e0c6fbad6d0058f7c441bdf431410e190d3823bec75c58b32599e31f95e",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_message.c",
+      "sha256": "100325c5f1a6030c9a823d6d9edb4a1e53bc5b1435b85208ac5d3c8555727826",
+      "current_sha256": "df65cfa3cafaff7f22fcfa6739c42436260fa03b5f1cb1238600cc6ca0a6a191",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_scope.c",
+      "sha256": "bf6e7e520716d5f24a91ffe15255b08bfc4765b4e887d0795490160220db2fe4",
+      "current_sha256": "bf6e7e520716d5f24a91ffe15255b08bfc4765b4e887d0795490160220db2fe4",
+      "disposition": "menu multi-window scope/popup lifetime",
+      "receiver": "S8",
+      "public_entry": "existing native menu scope API",
+      "reason": "Popup/shadow pairing, nested scopes and restoration must migrate with both menu engines; no root instance duplication introduced in S3."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.c",
+      "sha256": "e7bcffc0b1ae3ad1383a1df3a239eedcb51814763205ff2d8b6180be68f2275a",
+      "current_sha256": "a310ef719ed226e6ef765c850c6d727d5fccc0a573462a2a6010566579bcb779",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_input.c",
+      "sha256": "340065f11debc6d45ea5abda754e340643276cc476fef96b373ef7fa570862f8",
+      "current_sha256": "9283ce28e5d7c159fb4482906cc6f2d82818cf4e4ce6ec7e302d1a51f6a9e0bc",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c",
+      "sha256": "e23e69aaee4cba83b4aa6cbeb52652dc87e3889e8fd1c5dc47780595299ad94b",
+      "current_sha256": "0e8aa5eb3c7ef3a5dc9f4efc4475f67e2df9c32822bcce63c5b3d1d89cfc1a55",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_message.c",
+      "sha256": "cf9b7eed9269a2e8ae82c096fa6bf9b88746e039ed615aa8df76718635b470fe",
+      "current_sha256": "a02fe5fd842cf88970bdf0190158d6de3511bb4356ae090eb5a9fd60c8c164dd",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_view.c",
+      "sha256": "2609ec92fabfe1769a5d0d9a1217ad03cd7d816c5fc77473903cf891c2cdffc3",
+      "current_sha256": "2609ec92fabfe1769a5d0d9a1217ad03cd7d816c5fc77473903cf891c2cdffc3",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
+      "sha256": "7763ff966381ef30b93ea497ff9da01b449f996a5fb73e5e372275cddd7eec63",
+      "current_sha256": "a4e6faa1967b0447feda3ae1760114987bf5671af8bedc8f219dd0340255f2f2",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/host.c",
+      "sha256": "b16fbf52f122ebe735bf096ee5c45937468e60e0a659c98eea6f3a802b8a65dc",
+      "current_sha256": "6be6890ccbf29c7a8aa66166792dadf4ecc404995b35a7c60540e1732e3e5c8a",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/input.c",
+      "sha256": "d818dbc848f2abb308712a18b93ec0bd7cea677a01cf043bcafaaa71bc1e5d1f",
+      "current_sha256": "d818dbc848f2abb308712a18b93ec0bd7cea677a01cf043bcafaaa71bc1e5d1f",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/repaint.c",
+      "sha256": "a6c6b119913cf949a34f5f2fa27a838c3eb70219af7c6fc0d53108663e652744",
+      "current_sha256": "a6c6b119913cf949a34f5f2fa27a838c3eb70219af7c6fc0d53108663e652744",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/surface.c",
+      "sha256": "862479d0f058cc81d7381a0fd602ff6c3e026c8f63418fa11e296da870cf4bbf",
+      "current_sha256": "862479d0f058cc81d7381a0fd602ff6c3e026c8f63418fa11e296da870cf4bbf",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_native_combo.c",
+      "sha256": "c8c4e5ab502582ecf83be2c42544dd86aac3a8b023f96d3c78a769b42b6f40aa",
+      "current_sha256": "c8c4e5ab502582ecf83be2c42544dd86aac3a8b023f96d3c78a769b42b6f40aa",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_scope.c",
+      "sha256": "5bd1e1abf878d2db293e153c82a7699aa553bf06d1e3b15712ec5b3755e1f60f",
+      "current_sha256": "5bd1e1abf878d2db293e153c82a7699aa553bf06d1e3b15712ec5b3755e1f60f",
+      "disposition": "already public distinct ownership protocol",
+      "receiver": "existing application component",
+      "public_entry": "existing style_control_scope/style_theme/style_global_window APIs",
+      "reason": "Thread scope list, theme leases or style-transition registry owns a different lifetime than one installed GUI root; do not combine counters."
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_status.c",
+      "sha256": "d7a2d3556f24e9a3d6604fe4f342d6ab56f7e76731e92da344b2bae71cfcd9ba",
+      "current_sha256": "d7a2d3556f24e9a3d6604fe4f342d6ab56f7e76731e92da344b2bae71cfcd9ba",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/present.c",
+      "sha256": "96e0e0d8b3a58715646657a59e5d50f76a54aa635660e168ac8cc417fb2be760",
+      "current_sha256": "96e0e0d8b3a58715646657a59e5d50f76a54aa635660e168ac8cc417fb2be760",
+      "disposition": "borrowed cancellation view",
+      "receiver": "S7-S12 by frozen S1 mapping",
+      "public_entry": "borrowed const BOOL pointer supplied by root instance",
+      "reason": "No independent root reference/disposal mechanism; view checks its owner-provided cancellation state."
+    },
+    {
+      "path": "src/lib-win32-style/application/lifecycle/global_window.c",
+      "sha256": "e9d769a6c85bb4bcb4194761c8f10a794966c1a744e156895f3ff66e503c5eb3",
+      "current_sha256": "e9d769a6c85bb4bcb4194761c8f10a794966c1a744e156895f3ff66e503c5eb3",
+      "disposition": "already public distinct ownership protocol",
+      "receiver": "existing application component",
+      "public_entry": "existing style_control_scope/style_theme/style_global_window APIs",
+      "reason": "Thread scope list, theme leases or style-transition registry owns a different lifetime than one installed GUI root; do not combine counters."
+    },
+    {
+      "path": "src/lib-win32-style/application/lifecycle/theme_state.c",
+      "sha256": "bbebc9dfe7fb3b768ffe91e459feed92578e1566a2f072b6939ab6cbb97f662a",
+      "current_sha256": "bbebc9dfe7fb3b768ffe91e459feed92578e1566a2f072b6939ab6cbb97f662a",
+      "disposition": "already public distinct ownership protocol",
+      "receiver": "existing application component",
+      "public_entry": "existing style_control_scope/style_theme/style_global_window APIs",
+      "reason": "Thread scope list, theme leases or style-transition registry owns a different lifetime than one installed GUI root; do not combine counters."
+    },
+    {
+      "path": "src/ntw16s-dll/attachment.c",
+      "sha256": "4046539338c41f5c1eef983e600136a8ff5b1319e63356a7915c5f32af5d62d9",
+      "current_sha256": "070f16c1d1b05bc113e632fc7619e8fe84e2eb31ce06b11b3b133b80a9fd375c",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/ntw16s-dll/controls.c",
+      "sha256": "0e1d8f67acf300be6fc2d1d3a3f71337a08460e2f6ae3dddd8ffe680f0f8152a",
+      "current_sha256": "40b476a59479abe35a51c6720109719a87a7b7e9ae0b9930006cb0413fe718da",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    },
+    {
+      "path": "src/ntw16s-dll/win16_style.c",
+      "sha256": "76a113749fa42e3cb2bbb96b01a8d67ccbfbd148c288d121b7e4f4306b7910ef",
+      "current_sha256": "9af1eabd9ab4f9f26d670676ae55cc399311edf013f9c7bee87030ffbea6cd58",
+      "disposition": "shared instance consumer",
+      "receiver": "S3",
+      "public_entry": "style_instance_*",
+      "reason": "Root identity and lifetime use the shared state; remaining protocol/presentation fields stay with their S7-S12 capability owner."
+    }
+  ],
+  "new_files": [
+    "src/lib-win32-style/application/lifecycle/instance.c",
+    "src/lib-win32-style/application/lifecycle/instance.h",
+    "tests/lib-win32-style/application/lifecycle/instance.c",
+    "tests/lib-win32-style/appearance/win2000/window/instance_lifetime.c"
+  ],
+  "development": {
+    "dual_native": [
+      {
+        "architecture": "x86",
+        "name": "core-style-instance",
+        "exit_code": 0,
+        "output": "INSTANCE_OK identity=1 nested=1 successor=1 detach_failure=1 retry=1 terminal=1 final_release=1\r\n"
+      },
+      {
+        "architecture": "x86",
+        "name": "core-win2k-instance-lifetime",
+        "exit_code": 0,
+        "output": "WIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 allocation_failure=1 attach_failure=1 cleanup=1\r\n"
+      },
+      {
+        "architecture": "x86",
+        "name": "core-uwp-host",
+        "exit_code": 0,
+        "output": "UWP HOST PASS owner_failure=1 ordering=1 title_reentry=1 owner_reentry=1 title_refresh=1 surface=1 surface_reentry=1 surface_destroy=1 deferred_dispose=1\r\n"
+      },
+      {
+        "architecture": "x86",
+        "name": "core-uwp-host-start",
+        "exit_code": 0,
+        "output": "UWP HOST START PASS success=1 owner=1 title=1 create=1 subclass=1 refresh=1 reentrant_create=1 reentrant_refresh=1\r\n"
+      },
+      {
+        "architecture": "x86",
+        "name": "core-uwp-frame-hidden",
+        "exit_code": 0,
+        "output": "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1\r\n"
+      },
+      {
+        "architecture": "x64",
+        "name": "core-style-instance",
+        "exit_code": 0,
+        "output": "INSTANCE_OK identity=1 nested=1 successor=1 detach_failure=1 retry=1 terminal=1 final_release=1\r\n"
+      },
+      {
+        "architecture": "x64",
+        "name": "core-win2k-instance-lifetime",
+        "exit_code": 1,
+        "output": "WIN2K_INSTANCE_FAIL line=50 allocations=21 releases=20 error=0\r\n"
+      },
+      {
+        "architecture": "x64",
+        "name": "core-uwp-host",
+        "exit_code": 0,
+        "output": "UWP HOST PASS owner_failure=1 ordering=1 title_reentry=1 owner_reentry=1 title_refresh=1 surface=1 surface_reentry=1 surface_destroy=1 deferred_dispose=1\r\n"
+      },
+      {
+        "architecture": "x64",
+        "name": "core-uwp-host-start",
+        "exit_code": 0,
+        "output": "UWP HOST START PASS success=1 owner=1 title=1 create=1 subclass=1 refresh=1 reentrant_create=1 reentrant_refresh=1\r\n"
+      },
+      {
+        "architecture": "x64",
+        "name": "core-uwp-frame-hidden",
+        "exit_code": 0,
+        "output": "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1\r\n"
+      }
+    ],
+    "frames_bridge": [
+      {
+        "architecture": "x86",
+        "name": "core-global-style-bridge",
+        "exit_code": 0,
+        "output": "FOOTER child_bottom=277 client_bottom=277\r\nOVERLAP screen=88,122,372,130 origin=83,122 update=1 repainted=0\r\nGLOBAL CHILD BRIDGE 2k=1 16=1 back=1 new=1 remove=1\r\nGLOBAL STYLE BRIDGE bits=32 apply2k=1 switch16=1 switch2k=1 client_clean=1 immediate=1 clean_after=1 click_clean=1 footer=1 overlap=1 refreshed=1 remove2k=1 apply16=1 remove16=1 reverse=1 existing=1 takeover=1 existing2k=1 takeover16=1\r\n"
+      },
+      {
+        "architecture": "x86",
+        "name": "core-frames",
+        "exit_code": 0,
+        "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\r\n"
+      },
+      {
+        "architecture": "x64",
+        "name": "core-global-style-bridge",
+        "exit_code": 0,
+        "output": "FOOTER child_bottom=277 client_bottom=277\r\nOVERLAP screen=88,122,372,130 origin=83,122 update=1 repainted=0\r\nGLOBAL CHILD BRIDGE 2k=1 16=1 back=1 new=1 remove=1\r\nGLOBAL STYLE BRIDGE bits=64 apply2k=1 switch16=1 switch2k=1 client_clean=1 immediate=1 clean_after=1 click_clean=1 footer=1 overlap=1 refreshed=1 remove2k=1 apply16=1 remove16=1 reverse=1 existing=1 takeover=1 existing2k=1 takeover16=1\r\n"
+      },
+      {
+        "architecture": "x64",
+        "name": "core-frames",
+        "exit_code": 0,
+        "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\r\n"
+      }
+    ],
+    "win2k_width_x64": {
+      "exit_code": 0,
+      "output": "WIN2K_STYLE_VALUES previous=84000000 returned=ffffffff84000000\r\nWIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 allocation_failure=1 attach_failure=1 cleanup=1\r\n"
+    },
+    "known_dwm_baseline_x86": {
+      "baseline": "S2 published assets 51c68a06",
+      "exit_code": 3,
+      "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\r\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\r\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\r\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\r\nWIN2K DWM STAGES attach=0 pump=0 policy_after_pump=2\r\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\r\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\r\nWIN2K FRAME LIFECYCLE bits=32 attached=1 removed=1 observed=1 before=1 after=0 captured=2 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\r\n",
+      "sha256": {
+        "case.exe": "71a76068ef45290489b142591273b165394e3066c36b54cec5d2281383680a8e",
+        "ntw2ks32.dll": "5937375383b957a886c868f6b0c850c45e0c684e320be6cf2443f40e359c9e92",
+        "ntwshk32.dll": "6cc821a48fa70a69f3ad6a5d32089ac98944880b68669e5cd0e99e73f9b8467d"
+      }
+    }
+  },
+  "observer_unwind_development": {
+    "command": [
+      "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\run16s.exe",
+      "--wait",
+      "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-vcl-bitbtn-module.exe",
+      "--private-worker",
+      "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\vcl-bitbtn-module-fixture.dll"
+    ],
+    "exit_code": 0,
+    "output": "BIT_PIXELS changed=7100 glyph=100 altered=0 clip_outside=0\r\nVCL_BITBTN_MODULE_OK bits=64 fake=1 foreign=1 unwind=1 nested=1 click=1 pixels=1 glyph=1 clip=1 retire=1 cleanup=1\r\nNESTED_EVIDENCE armed=0 hits=1 outer=1 inner=1\r\n"
+  },
+  "pending_repeat_baseline": {
+    "baseline": "S2 published ntw2ks64.dll",
+    "first": true,
+    "second": true,
+    "removed": true
+  },
+  "abandoned_snapshot": {
+    "name": "s3-lifecycle",
+    "result": {
+      "error": "Clean build failed",
+      "status": "failed-or-inconclusive"
+    },
+    "reason": "Corrective pending repeated-attach compatibility fix; own x64 build explicitly terminated after process identity checks. No artifacts published.",
+    "cleanup_bytes": 104985036
+  },
+  "known_dwm_baseline_x64": {
+    "baseline": "S2 assets 51c68a06",
+    "exit_code": 3,
+    "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\r\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\r\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\r\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\r\nWIN2K DWM STAGES attach=0 pump=0 policy_after_pump=2\r\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\r\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\r\nWIN2K FRAME LIFECYCLE bits=64 attached=1 removed=1 observed=1 before=1 after=0 captured=2 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\r\n"
+  },
+  "startup_2k_development": {
+    "command": [
+      "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\run16s.exe",
+      "--2k",
+      "--wait",
+      "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+      "--frame-child"
+    ],
+    "exit_code": 0,
+    "output": "WIN2K PROPAGATION FRAME bits=64 role=child attached=1 geometry=1 painted=1 destroyed=1\r\nWIN2K PROPAGATION CONTROL bits=64 role=child attached=1 removed=1 cleanup=1\r\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\r\n"
+  },
+  "state_declarations": [
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_state.h",
+      "baseline_sha256": "f2cdd076000e8303b9afa513d383f35816746dd950d886a9eaf6cd7f18b7ee6c",
+      "sha256": "91fd2953fa0f906facec6dc7fd55b97165e461eac6eff33130d210e4f46601c8",
+      "owner": "public style_instance first member; concrete payload remains with its current capability owner"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_state.h",
+      "baseline_sha256": "85c272aa95f1d58b37b67a066ee017a3a171cf558e26a1a79d425abe7629ab03",
+      "sha256": "752191c28278cd529deda10d6401a4f5d3b6e86eaea80f243110ff9fc258c5b0",
+      "owner": "public style_instance first member; concrete payload remains with its current capability owner"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/attachment_state.h",
+      "baseline_sha256": "10e8d40fb8a360da356c25649df1b6c8ca6b3332a52bb99d0a42fd792a7321d9",
+      "sha256": "f836bf79abadc03e490019bcc3f5e11cb15298d9953f6157d6cbf357d7d90246",
+      "owner": "public style_instance first member; concrete payload remains with its current capability owner"
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/host.h",
+      "baseline_sha256": "4182312a21a8f94d0201e2f7812a9cdf244650bf95b95f3d49073e3f56ea5d27",
+      "sha256": "b098e5b84704d5118c3549a6c7d47994f1d86478a378ff501a7dd4ad5db5623e",
+      "owner": "public style_instance first member; concrete payload remains with its current capability owner"
+    }
+  ],
+  "production_changes": [
+    "src/lib-win32-style/appearance/win2000/window/frame.c",
+    "src/lib-win32-style/appearance/win3x/control/attachment_guard.c",
+    "src/lib-win32-style/appearance/win3x/control/attachment_state.h",
+    "src/lib-win32-style/appearance/win3x/control/basic_message.c",
+    "src/lib-win32-style/appearance/win3x/control/combo_text.c",
+    "src/lib-win32-style/appearance/win3x/control/control_dispatch.c",
+    "src/lib-win32-style/appearance/win3x/control/control_guard.c",
+    "src/lib-win32-style/appearance/win3x/control/control_install.c",
+    "src/lib-win32-style/appearance/win3x/control/control_lifetime.c",
+    "src/lib-win32-style/appearance/win3x/control/control_remove.c",
+    "src/lib-win32-style/appearance/win3x/control/control_state.c",
+    "src/lib-win32-style/appearance/win3x/control/control_state.h",
+    "src/lib-win32-style/appearance/win3x/control/edit_message.c",
+    "src/lib-win32-style/appearance/win3x/control/fileowner_message.c",
+    "src/lib-win32-style/appearance/win3x/control/list_message.c",
+    "src/lib-win32-style/appearance/win3x/control/native_presentation.c",
+    "src/lib-win32-style/appearance/win3x/control/notify_message.c",
+    "src/lib-win32-style/appearance/win3x/control/scroll_message.c",
+    "src/lib-win32-style/appearance/win3x/control/scroll_native.c",
+    "src/lib-win32-style/appearance/win3x/control/special_install.c",
+    "src/lib-win32-style/appearance/win3x/control/special_paint.c",
+    "src/lib-win32-style/appearance/win3x/menu/menu_iteration.c",
+    "src/lib-win32-style/appearance/win3x/menu/menu_message.c",
+    "src/lib-win32-style/appearance/win3x/window/frame_dispatch.c",
+    "src/lib-win32-style/appearance/win3x/window/frame_input.c",
+    "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c",
+    "src/lib-win32-style/appearance/win3x/window/frame_message.c",
+    "src/lib-win32-style/appearance/win3x/window/frame_state.c",
+    "src/lib-win32-style/appearance/win3x/window/frame_state.h",
+    "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
+    "src/lib-win32-style/application/adapters/host.c",
+    "src/lib-win32-style/application/adapters/host.h",
+    "src/ntw16s-dll/attachment.c",
+    "src/ntw16s-dll/controls.c",
+    "src/ntw16s-dll/win16_style.c",
+    "src/lib-win32-style/application/lifecycle/instance.c",
+    "src/lib-win32-style/application/lifecycle/instance.h"
+  ]
+}

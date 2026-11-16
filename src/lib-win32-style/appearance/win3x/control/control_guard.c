@@ -15,7 +15,7 @@ BOOL win16_control_guard_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM 
     if(m!=WM_NCDESTROY && (!v->rich_valid(w) || !v->vcl_combo_valid(w) || !v->group_button_valid(w) || !v->grid_valid(w) || !v->vb_data_valid(w) || !v->vb_user_edge_valid(w) || !v->vcl_toolbar_valid(w) || !v->vcl_tab_valid(w))){
         if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
         *result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && IsWindow(w) && !v->vb_user_edge_dormant(w) && v->remove_window(w) && IsWindow(w))InvalidateRect(w,NULL,TRUE);
+        if(!s->instance.detached && IsWindow(w) && !v->vb_user_edge_dormant(w) && v->remove_window(w) && IsWindow(w))InvalidateRect(w,NULL,TRUE);
         return TRUE;
     }
     /* A native BUTTON can become owner-drawn after creation. Its parent must
@@ -23,7 +23,7 @@ BOOL win16_control_guard_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM 
     if(m!=WM_NCDESTROY && v->is_exact_native_button(w) &&
        (((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_OWNERDRAW)){
         *result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && IsWindow(w)){
+        if(!s->instance.detached && IsWindow(w)){
             if(!v->remove_window(w))v->remove_control(w);
             if(IsWindow(w))InvalidateRect(w,NULL,TRUE);
         }
@@ -35,7 +35,7 @@ BOOL win16_control_guard_message(HWND w,control_style *s,UINT m,WPARAM a,LPARAM 
             !v->vb_plain_choice(w) && !v->vb_graphical_choice(w) && !v->vb_graphical_button(w)){
         if(m==WM_SETFONT)s->original_font=win16_style_system_source((HFONT)a);
         *result=DefSubclassProc(w,m,a,b);
-        if(!s->detached)v->remove_control(w);
+        if(!s->instance.detached)v->remove_control(w);
         return TRUE;
     }
     return FALSE;

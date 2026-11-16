@@ -131,19 +131,19 @@ void ntw16s_spin_frame(HDC dc,const RECT *r,UINT type,UINT flags,const void *cal
 void ntw16s_bit_theme_frame(HDC dc,int part,const RECT *rect,const RECT *clip,const void *address)
 {
     bit_draw_scope *s=bit_current;if(!s || !s->owner)return;attachment *a=s->owner;
-    const win16_control_bit_frame_view v={a,s->window,s->dc,s->item,s->state,&a->detached,&a->bit_verified,&a->report_parent,&a->report_module};
+    const win16_control_bit_frame_view v={a,s->window,s->dc,s->item,s->state,&a->instance.detached,&a->bit_verified,&a->report_parent,&a->report_module};
     win16_control_bit_theme_frame(&v,dc,part,rect,clip,address);
 }
 static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address,BOOL drop)
 {
     static_paint_scope *s=static_paint;if(!s)return;
-    const win16_control_vcl_paint_view v={s->window,&s->owner->inplace_candidate,&s->owner->detached,&s->owner->inplace_verified,&s->owner->inplace_owner,&s->owner->inplace_parent,style_control_vcl_inplace_or_lookup,style_control_vcl_lookup_identity,style_control_class_is};
+    const win16_control_vcl_paint_view v={s->window,&s->owner->inplace_candidate,&s->owner->instance.detached,&s->owner->inplace_verified,&s->owner->inplace_owner,&s->owner->inplace_parent,style_control_vcl_inplace_or_lookup,style_control_vcl_lookup_identity,style_control_class_is};
     win16_control_vcl_inplace_draw(&v,dc,part,state,r,clip,address,drop);
 }
 void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {
     static_paint_scope *s=static_paint;if(!s)return;
-    const win16_control_vcl_paint_view v={s->window,&s->owner->nav_candidate,&s->owner->detached,&s->owner->nav_verified,&s->owner->nav_owner,&s->owner->nav_parent,style_control_vcl_nav_identity,NULL,style_control_class_is};
+    const win16_control_vcl_paint_view v={s->window,&s->owner->nav_candidate,&s->owner->instance.detached,&s->owner->nav_verified,&s->owner->nav_owner,&s->owner->nav_parent,style_control_vcl_nav_identity,NULL,style_control_class_is};
     win16_control_vcl_nav_draw(&v,dc,part,state,r,clip,address);
 }
 BOOL ntw16s_inplace_paint(HDC dc)
@@ -153,7 +153,7 @@ void ntw16s_inplace_dropdown(HDC dc,int part,int state,const RECT *r,const RECT 
 static BOOL status_identity(HWND w,attachment *a,HMODULE *native)
 {
     if(!a)return style_control_status_identity(w,NULL,native);
-    const style_control_status_view view={&a->status_candidate,&a->detached,&a->status_witness_owner,&a->status_parent,L"TStatusBar"};
+    const style_control_status_view view={&a->status_candidate,&a->instance.detached,&a->status_witness_owner,&a->status_parent,L"TStatusBar"};
     return style_control_status_identity(w,&view,native);
 }
 
@@ -163,7 +163,7 @@ static win16_control_status_text_view status_text_view(status_draw_scope *s)
 {
     const win16_control_status_text_view v={s->owner,s,s->window,s->dc,s->native,s->epoch,s->text_count,s->simple,
         s->simple_length,s->simple_text,s->text_panes,s->owner?&s->owner->status_candidate:NULL,
-        s->owner?&s->owner->detached:NULL,s->owner?&s->owner->status_epoch:NULL,
+        s->owner?&s->owner->instance.detached:NULL,s->owner?&s->owner->status_epoch:NULL,
         s->owner?&s->owner->status_font:NULL,status_frame_identity};
     return v;
 }
@@ -191,7 +191,7 @@ void ntw16s_status_simple_return(void *token,HFONT font)
 static win16_control_status_frame_view status_frame_view(status_draw_scope *s)
 {
     const win16_control_status_frame_view view={s->owner,s->window,s->dc,s->native,s->epoch,s->count,
-        s->owner?&s->owner->status_epoch:NULL,s->owner?&s->owner->detached:NULL,s->panes,status_frame_identity};
+        s->owner?&s->owner->status_epoch:NULL,s->owner?&s->owner->instance.detached:NULL,s->panes,status_frame_identity};
     return view;
 }
 void ntw16s_status_text_frame(HDC dc,const RECT *text,UINT flags,const void *address)
@@ -209,8 +209,7 @@ static void vcl_report_try_bind(HWND,attachment *);
 
 static attachment *lookup(HWND w)
 {
-    DWORD_PTR value;
-    return GetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,&value)?(attachment *)value:NULL;
+    return (attachment *)style_instance_lookup(w,attachment_proc);
 }
 static BOOL mdi_host_attached(HWND host){return lookup(host)!=NULL;}
 static BOOL mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner)
@@ -218,13 +217,13 @@ static BOOL mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner)
 static BOOL controlbar_identity(HWND w,attachment *a)
 {
     if(!a)return FALSE;
-    const win16_control_controlbar_view v={&a->detached,&a->controlbar_retired,&a->controlbar_parent,&a->controlbar_owner};
+    const win16_control_controlbar_view v={&a->instance.detached,&a->controlbar_retired,&a->controlbar_parent,&a->controlbar_owner};
     return win16_control_controlbar_identity(w,&v);
 }
 static BOOL rich_identity(HWND w,attachment *a)
 {
     if(!a)return FALSE;
-    const win16_control_rich_view v={&a->detached,&a->rich_popup,&a->rich_hotkey,&a->rich_month,&a->rich_unicode,&a->rich_parent,&a->rich_owner};
+    const win16_control_rich_view v={&a->instance.detached,&a->rich_popup,&a->rich_hotkey,&a->rich_month,&a->rich_unicode,&a->rich_parent,&a->rich_owner};
     return win16_control_rich_identity(w,&v);
 }
 
@@ -272,7 +271,7 @@ BOOL ntw16s_static_call_begin(ntw16s_static_call *scope,WNDPROC proc,HWND w,UINT
         cool_observing?&cool_observing->native:NULL,lookup);
     if(!native_owner)return FALSE;
     scope->previous=static_call;scope->window=w;scope->native_module=native_owner;
-    scope->cancelled=&static_paint->owner->detached;scope->active=TRUE;
+    scope->cancelled=&static_paint->owner->instance.detached;scope->active=TRUE;
     static_call=scope;static_paint->owner->static_verified=TRUE;return TRUE;
 }
 BOOL ntw16s_static_call_suspend(ntw16s_static_call *scope)
@@ -294,19 +293,19 @@ HFONT ntw16s_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,const voi
 static BOOL vcl_frame_owned(HWND w,void *owner){return lookup(w)==owner;}
 static BOOL vcl_frame_current(win16_control_vcl_frame_scope *scope){return static_paint && &static_paint->frame==scope;}
 static void group_frame_drawn(void *context)
-{win16_control_vcl_frame_result *r=context;attachment *a=r->owner;if(!a->detached){a->group_frame_parent=r->parent;a->group_frame_verified=TRUE;}}
+{win16_control_vcl_frame_result *r=context;attachment *a=r->owner;if(!a->instance.detached){a->group_frame_parent=r->parent;a->group_frame_verified=TRUE;}}
 static void panel_frame_drawn(void *context)
-{win16_control_vcl_frame_result *r=context;attachment *a=r->owner;if(!a->detached){a->panel_frame_parent=r->parent;a->panel_frame_verified=TRUE;}}
+{win16_control_vcl_frame_result *r=context;attachment *a=r->owner;if(!a->instance.detached){a->panel_frame_parent=r->parent;a->panel_frame_verified=TRUE;}}
 void ntw16s_group_frame(HDC dc,int part,int state,const RECT *rect,const RECT *clip,LPCWSTR text,int count,DWORD flags,const void *caller,BOOL is_text)
 {
     static_paint_scope *scope=static_paint;if(!scope || !scope->owner)return;attachment *a=scope->owner;
-    const win16_control_vcl_frame_view v={&scope->frame,a,scope->window,&a->detached,&a->group_frame_candidate,&a->group_frame_retired,&a->group_frame_parent,vcl_frame_owned,vcl_frame_current,group_frame_drawn};
+    const win16_control_vcl_frame_view v={&scope->frame,a,scope->window,&a->instance.detached,&a->group_frame_candidate,&a->group_frame_retired,&a->group_frame_parent,vcl_frame_owned,vcl_frame_current,group_frame_drawn};
     win16_control_vcl_group_frame(&v,dc,part,state,rect,clip,text,count,flags,caller,is_text);
 }
 void ntw16s_panel_polyline(HDC dc,const POINT *points,int count,const void *caller,BOOL (WINAPI *draw)(HDC,const POINT*,int))
 {
     static_paint_scope *scope=static_paint;if(!scope)return;if(!scope->owner){scope->frame.panel_first=FALSE;return;}attachment *a=scope->owner;
-    const win16_control_vcl_frame_view v={&scope->frame,a,scope->window,&a->detached,&a->panel_frame_candidate,&a->panel_frame_retired,&a->panel_frame_parent,vcl_frame_owned,vcl_frame_current,panel_frame_drawn};
+    const win16_control_vcl_frame_view v={&scope->frame,a,scope->window,&a->instance.detached,&a->panel_frame_candidate,&a->panel_frame_retired,&a->panel_frame_parent,vcl_frame_owned,vcl_frame_current,panel_frame_drawn};
     win16_control_vcl_panel_polyline(&v,dc,points,count,caller,draw);
 }
 
@@ -316,7 +315,7 @@ void ntw16s_box_witness(HWND w,UINT msg,const void *address)
 {box_witness_scope *s=box_current;if(s)win16_attachment_box_witness(w,msg,address,s->owner,s->window,&s->witnessed);}
 
 BOOL ntw16s_controlbar_edge_active(void)
-{return box_current && box_current->owner->controlbar_candidate && !box_current->owner->detached;}
+{return box_current && box_current->owner->controlbar_candidate && !box_current->owner->instance.detached;}
 static BOOL controlbar_frame_identity(HWND w,void *owner)
 {return controlbar_identity(w,(attachment *)owner);}
 void ntw16s_controlbar_edge(HDC dc,const RECT *rect,UINT edge,UINT flags,const void *address)
@@ -347,7 +346,7 @@ void ntw16s_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address,BOOL w
 static BOOL month_view_identity(HWND w,void *owner){return rich_identity(w,(attachment *)owner);}
 static BOOL month_view_current(void *scope){return static_paint==scope;}
 static win16_control_month_view month_view(static_paint_scope *s)
-{attachment *a=s->owner;const win16_control_month_view v={s,a,s->window,&s->month,&a->rich_month,&a->rich_witness,&a->detached,&a->month_cached_font,month_view_identity,month_view_current};return v;}
+{attachment *a=s->owner;const win16_control_month_view v={s,a,s->window,&s->month,&a->rich_month,&a->rich_witness,&a->instance.detached,&a->month_cached_font,month_view_identity,month_view_current};return v;}
 void ntw16s_month_arrow(HTHEME t,HDC dc,int p,int state,const RECT *r,const RECT *clip,const void *addr)
 {static_paint_scope *s=static_paint;if(s){const win16_control_month_view v=month_view(s);win16_control_month_arrow(&v,t,dc,p,state,r,clip,addr);}}
 HFONT ntw16s_month_text_borrow(HTHEME t,HDC dc,int p,int state,DWORD f,DWORD f2,const RECT *r,const void *addr)
@@ -360,8 +359,14 @@ void ntw16s_month_selection_background(HTHEME t,HDC dc,int p,int state,const REC
 {static_paint_scope *s=static_paint;if(s){const win16_control_month_view v=month_view(s);win16_control_month_selection_background(&v,t,dc,p,state,r,clip,addr);}}
 void ntw16s_month_selection_text(HTHEME t,HDC dc,int p,int state,const RECT *r,DWORD f,const void *addr)
 {static_paint_scope *s=static_paint;if(s){const win16_control_month_view v=month_view(s);win16_control_month_selection_text(&v,t,dc,p,state,r,f,addr);}}
-static void release(attachment *a)
-{if(!--a->calls && a->detached){attachment *source=a->lookup_popup_source_attachment,*host=a->mdi_host_attachment;win16_style_system_release(a->month_cached_font);win16_style_system_release(a->status_font.font);ntw16s_vb_fonts_clear(&a->fonts);free(a);if(source)release(source);if(host)release(host);}}
+static void release(attachment *a);
+static void attachment_dispose(void *context)
+{
+    attachment *a=context,*source=a->lookup_popup_source_attachment,*host=a->mdi_host_attachment;
+    win16_style_system_release(a->month_cached_font);win16_style_system_release(a->status_font.font);
+    ntw16s_vb_fonts_clear(&a->fonts);free(a);if(source)release(source);if(host)release(host);
+}
+static void release(attachment *a){style_instance_release(&a->instance);}
 static PROCESS_HOOK_UNWIND_FUNCTION LRESULT static_paint_dispatch(attachment *,HWND,UINT,WPARAM,LPARAM,ntw16s_vb_paint *,void *,void *);
 /* One paint scope per CoolBar invocation. It is never shared across threads. */
 typedef struct cool_scope {struct cool_scope *previous;attachment *owner;HWND window;BOOL ours,completed,nested;cool_observation observer;ntw16s_vb_paint *paint;void *status_prior,*spin_prior;} cool_scope;
@@ -369,7 +374,7 @@ static _Thread_local cool_scope *cool_current;
 
 static BOOL cool_current_attachment(HWND w,void *owner){return lookup(w)==owner;}
 static BOOL cool_identity(HWND w,attachment *a)
-{return !a->detached && style_control_vcl_cool_identity(w,a->cool_parent,a->cool_owner,cool_current_attachment,a);}
+{return !a->instance.detached && style_control_vcl_cool_identity(w,a->cool_parent,a->cool_owner,cool_current_attachment,a);}
 static BOOL cool_identity_callback(HWND w,void *owner)
 {return cool_identity(w,(attachment *)owner);}
 static BOOL cool_grip(HWND w,attachment *a,const NMCUSTOMDRAW *n)
@@ -456,20 +461,20 @@ static PROCESS_HOOK_UNWIND_FUNCTION LRESULT status_print_dispatch(attachment *a,
 {status_print_unwind state={a,paint,prior,spin_prior,FALSE,static_paint!=NULL};process_hook_unwind_scope unwind;DWORD entry=GetLastError(),error;LRESULT result;
  PROCESS_HOOK_UNWIND_BEGIN(unwind,status_print_end,&state);SetLastError(entry);result=state.nested?static_paint_dispatch(a,w,m,p,l,NULL,NULL,NULL):DefSubclassProc(w,m,p,l);error=GetLastError();state.completed=TRUE;PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;}
 static BOOL color_identity(HWND w,attachment *a,COMBOBOXINFO *info)
-{const style_control_native_combo_view v={&a->detached,&a->color_parent,&a->color_witness_owner};return style_control_color_identity(w,&v,info);}
+{const style_control_native_combo_view v={&a->instance.detached,&a->color_parent,&a->color_witness_owner};return style_control_color_identity(w,&v,info);}
 static void color_button(HWND w,attachment *a,HDC dc,const RECT *dirty)
-{const style_control_native_combo_view v={&a->detached,&a->color_parent,&a->color_witness_owner};win16_control_color_button(w,&v,dc,dirty);}
+{const style_control_native_combo_view v={&a->instance.detached,&a->color_parent,&a->color_witness_owner};win16_control_color_button(w,&v,dc,dirty);}
 static BOOL date_identity(HWND w,attachment *a,DATETIMEPICKERINFO *info)
-{const style_control_native_combo_view v={&a->detached,&a->date_parent,&a->date_witness_owner};return style_control_date_identity(w,&v,info);}
+{const style_control_native_combo_view v={&a->instance.detached,&a->date_parent,&a->date_witness_owner};return style_control_date_identity(w,&v,info);}
 static void date_button(HWND w,attachment *a,HDC dc,const RECT *dirty)
-{const style_control_native_combo_view v={&a->detached,&a->date_parent,&a->date_witness_owner};win16_control_date_button(w,&v,dc,dirty);}
+{const style_control_native_combo_view v={&a->instance.detached,&a->date_parent,&a->date_witness_owner};win16_control_date_button(w,&v,dc,dirty);}
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     attachment *a=(attachment *)data;LRESULT result;DWORD status_error=GetLastError();BOOL status=a->status||a->spin,color=a->color_candidate||a->date_candidate;(void)id;
     win16_attachment_retire_frames(w,a);
     RECT color_dirty;BOOL color_update;style_clip_snapshot print_clip;
     win16_attachment_native_prepare(w,m,p,a,color,&color_dirty,&color_update,&print_clip);
-    ++a->calls;
+    style_instance_retain(&a->instance);
     const win16_attachment_guard_services guards={lookup,mdi_identity,cool_identity,Ntw16sWindowRemove};
     win16_attachment_guard_cool(w,m,a,&guards);
     if(a->status)style_control_status_invalidate(m,&a->status_font.invalid,&a->status_epoch);
@@ -477,14 +482,14 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
     spin_draw_scope spin_scope={0},*spin_prior=spin_current;
     BOOL spin_message=win16_attachment_spin_message(a,m);
     if(spin_prior)spin_current=NULL;
-    if(spin_message){spin_scope.modern_spin=&a->modern_spin;spin_scope.detached=&a->detached;spin_scope.verified=&a->modern_spin_verified;spin_scope.window=w;spin_scope.parent=GetParent(w);
+    if(spin_message){spin_scope.modern_spin=&a->modern_spin;spin_scope.detached=&a->instance.detached;spin_scope.verified=&a->modern_spin_verified;spin_scope.window=w;spin_scope.parent=GetParent(w);
         spin_scope.dc=(m==WM_PRINT || m==WM_PRINTCLIENT)?(HDC)p:NULL;spin_current=&spin_scope;
         spin_scope.previous_stack=spin_stack;spin_stack=&spin_scope;}
-    BOOL painting=a->status && !a->detached && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);
+    BOOL painting=a->status && !a->instance.detached && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);
     if(prior && prior->window!=w)status_current=NULL;
     if(painting){
         scope.previous=status_current;scope.owner=a;scope.window=w;scope.dc=m==WM_PAINT?NULL:(HDC)p;scope.epoch=a->status_epoch;
-        const style_control_status_snapshot_view snapshot={a,&a->detached,&a->status_epoch,scope.epoch,
+        const style_control_status_snapshot_view snapshot={a,&a->instance.detached,&a->status_epoch,scope.epoch,
             &scope.native,&scope.simple,&scope.simple_length,scope.simple_text,&scope.text_count,scope.text_panes,
             &scope.count,scope.panes,status_frame_identity};
         style_control_status_snapshot(w,&snapshot);
@@ -606,10 +611,11 @@ static BOOL install_created(HWND w,DWORD original_style)
     if(rejected){if(rejected==1)style_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     a=calloc(1,sizeof(*a));
     if(!a){style_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    style_instance_init(&a->instance,a,attachment_dispose);
     const win16_attachment_seed seed={&initial,&candidates,&extra,picture,checklist,status,spin,
         vcl_mdi_probe,lookup_popup_candidate,popup_source,popup_source_parent,popup_source_attachment,lookup};
     win16_attachment_initialize(w,original_style,a,&seed);
-    if(!SetWindowSubclass(w,attachment_proc,(UINT_PTR)attachment_proc,(DWORD_PTR)a)){
+    if(!style_instance_attach(&a->instance,w,attachment_proc,NULL)){
         DWORD failure=GetLastError();style_control_protocol_release(protocol);if(a->lookup_popup_source_attachment)release(a->lookup_popup_source_attachment);if(a->mdi_host_attachment)release(a->mdi_host_attachment);free(a);SetLastError(failure);return FALSE;
     }
     if((report || tree || a->file_owner || a->button_owner || a->checklist || a->bit_candidate) && (!a->report_parent || !SetWindowSubclass(a->report_parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
@@ -624,7 +630,7 @@ static BOOL install_created(HWND w,DWORD original_style)
         if(ntw16s_native_get_combo_info(w,&info) && info.hwndItem!=w && lookup(info.hwndItem))
             Ntw16sWindowRemove(info.hwndItem);
     }
-    if(a->detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
+    if(a->instance.detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
     const win16_attachment_install_services install_services={win16_style_legacy_progress_border_install_created,
         win16_style_toolbar_install_created,win16_style_updown_install_created,win16_style_trackbar_install_created,
         win16_style_progress_install_created,win16_style_tree_install_created,win16_style_picture_install_created,

@@ -1,5 +1,9 @@
 # Supporting Material Index
 
+- [T26 S3交付证据](evidence/t26-s3-delivery.json)：双位宽同快照、八文件先发布、48项聚焦通过及2项原有DWM失败的实包对照；不代表全部恢复或全T完成。
+
+- [T26 S3生命周期审计](evidence/t26-s3-lifecycle.json)：有限引用/状态全集、公共实例调用与剩余菜单/借用协议边界，以及开发验证和既有恢复失败对照。
+
 - [T26 S2迁移复核](evidence/t26-s2-relocation.json)：381项实际去向、摘要、include外内容核验、54个产品/测试消费者及失败构建处置。
 - [T26 S2交付证据](evidence/t26-s2-delivery.json)：同快照双位宽干净构建、cache、八文件发布与36项实际包回归；远端复核状态见S2记录。
 

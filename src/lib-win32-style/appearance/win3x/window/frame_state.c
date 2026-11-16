@@ -2,7 +2,7 @@
 #include "../common/font.h"
 #include <stdlib.h>
 style_window *win16_control_frame_state_create(void)
-{return (style_window *)calloc(1,sizeof(style_window));}
+{style_window *s=calloc(1,sizeof(*s));if(s)style_instance_init(&s->instance,s,win16_control_frame_state_dispose);return s;}
 void win16_control_frame_state_enter_menu(style_window *s)
 {
     ++s->menu_depth;
@@ -23,8 +23,9 @@ void win16_control_frame_state_end_menu(style_window *s)
     menu_loop *loop=s->menus;
     if(loop){s->menus=loop->previous;win16_style_menu_end(loop->scope);free(loop);}
 }
-void win16_control_frame_state_dispose(style_window *s)
+void win16_control_frame_state_dispose(void *context)
 {
+    style_window *s=context;
     while(s->menus)win16_control_frame_state_end_menu(s);
     style_menu_restore(&s->menu_items);
     if(s->title_font)DeleteObject(s->title_font);

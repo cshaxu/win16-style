@@ -82,9 +82,9 @@ int main(void)
     if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_NATIVE)return 91;
     dispatch.static_candidate=TRUE;
     if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_STATIC)return 92;
-    dispatch.detached=TRUE;
+    dispatch.instance.detached=TRUE;
     if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_NATIVE)return 93;
-    dispatch.detached=FALSE;dispatch.modern_spin=TRUE;
+    dispatch.instance.detached=FALSE;dispatch.modern_spin=TRUE;
     if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PRINTCLIENT,0,0,TRUE,TRUE,TRUE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_STATUS)return 94;
     if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PRINTCLIENT,0,0,FALSE,TRUE,TRUE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_COLOR)return 95;
     dispatch.cool_candidate=TRUE;
@@ -118,14 +118,14 @@ int main(void)
     DeleteDC(policy_dc);
 
     control_style *control=win16_control_state_create();
-    if(!control || control->font || control->protocol || control->tab_positions || control->calls)return 38;
+    if(!control || control->font || control->protocol || control->tab_positions || control->instance.calls)return 38;
     control->tab_positions=malloc(2*sizeof(*control->tab_positions));
     control->font=win16_style_menu_font_acquire(96);
     control->combo_fonts[0]=win16_style_menu_font_acquire(96);control->combo_font_count=1;
     if(!control->tab_positions || !control->font || !control->combo_fonts[0]){win16_control_state_dispose(control);return 39;}
     win16_control_state_dispose(control);
     style_window *owned=win16_control_frame_state_create();
-    if(!owned || owned->menus || owned->title_font || owned->menu_font || owned->calls)return 34;
+    if(!owned || owned->menus || owned->title_font || owned->menu_font || owned->instance.calls)return 34;
     menu_loop outer_loop={.depth=1};owned->menus=&outer_loop;owned->menu_depth=2;
     win16_control_frame_state_exit_menu(owned);
     if(owned->menus!=&outer_loop || owned->menu_depth!=1){owned->menus=NULL;win16_control_frame_state_dispose(owned);return 37;}
@@ -223,7 +223,7 @@ int main(void)
         if(font_state)win16_control_state_dispose(font_state);
         DestroyWindow(window);return 40;}
     win16_style_system_release(outbound_font);win16_style_system_release(old_font);
-    font_state->detached=TRUE;font_parameter=(WPARAM)application_font;
+    font_state->instance.detached=TRUE;font_parameter=(WPARAM)application_font;
     if(win16_control_state_prepare_font(window,font_state,WM_SETFONT,&font_parameter,FALSE,&old_font,&outbound_font)){
         win16_control_state_dispose(font_state);DestroyWindow(window);return 41;}
     win16_control_state_dispose(font_state);

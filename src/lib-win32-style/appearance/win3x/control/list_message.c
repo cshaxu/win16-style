@@ -20,7 +20,7 @@ LRESULT win16_control_list_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
                     OffsetViewportOrgEx(dc,origin.x-wr.left,origin.y-wr.top,NULL);
                     services->paint(w,s,dc);RestoreDC(dc,saved);}
             }
-            if(!s->detached && (m==WM_NCPAINT || (b&PRF_NONCLIENT))){
+            if(!s->instance.detached && (m==WM_NCPAINT || (b&PRF_NONCLIENT))){
                 services->border(w,s,m==WM_PRINT?(HDC)a:NULL);
                 services->scrollbars(w,s,m==WM_PRINT?(HDC)a:NULL);}
         }
@@ -40,16 +40,16 @@ LRESULT win16_control_list_message(HWND w,control_style *s,UINT m,WPARAM a,LPARA
                 m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||
                 m==LB_SETCARETINDEX || m==LB_SETTOPINDEX);
             if(moving)before=style_control_list_view_read(w);
-            result=style_control_redraw_call(w,m,a,b,suppress,&s->list_suppression,&s->detached,&s->list_redraw_off);
-            if(!s->detached && moving){after=style_control_list_view_read(w);
+            result=style_control_redraw_call(w,m,a,b,suppress,&s->list_suppression,&s->instance.detached,&s->list_redraw_off);
+            if(!s->instance.detached && moving){after=style_control_list_view_read(w);
                 changed=style_control_list_view_changed(&before,&after);}
-            if(!s->detached && !s->list_suppression && !s->list_redraw_off && (m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||
+            if(!s->instance.detached && !s->list_suppression && !s->list_redraw_off && (m==LB_SETCURSEL || m==LB_SETSEL || m==LB_SELITEMRANGE || m==LB_SELITEMRANGEEX ||
                 m==LB_SETCARETINDEX || m==LB_SETTOPINDEX || m==LB_ADDSTRING || m==LB_INSERTSTRING ||
                 m==LB_DELETESTRING || m==LB_RESETCONTENT || m==LB_SETCOLUMNWIDTH || m==LB_SETHORIZONTALEXTENT || m==WM_SETFONT || m==WM_ENABLE ||
                 m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP ||
                 changed || m==WM_KEYDOWN || m==WM_KEYUP || m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL)){
                 RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
-                if(!s->detached)services->scrollbars(w,s,NULL);}
+                if(!s->instance.detached)services->scrollbars(w,s,NULL);}
         }
         return result;
 }

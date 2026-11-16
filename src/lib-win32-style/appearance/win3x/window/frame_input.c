@@ -50,7 +50,7 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
             }
             if(index>=0){
                 if(!s->bar_keyboard)v->select(w,s,0);
-                if(!s->detached)v->open(w,s,index);
+                if(!s->instance.detached)v->open(w,s,index);
             }
             return TRUE;
         }
@@ -68,10 +68,10 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
                 *result=DefSubclassProc(w,msg,wp,lp);v->end(&frame);
                 if(frame.root){
                     s->bar_direction=frame.direction;s->bar_hover=frame.target;
-                    if(!s->detached && !frame.direction && frame.target==-3 && !frame.escape)
+                    if(!s->instance.detached && !frame.direction && frame.target==-3 && !frame.escape)
                         v->leave(w,s,TRUE);
                 }
-                if(frame.double_click && !s->detached)
+                if(frame.double_click && !s->instance.detached)
                     PostMessageW(w,WM_NCLBUTTONDBLCLK,HTSYSMENU,frame.point);
                 return TRUE;
             }
@@ -89,7 +89,7 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
         if(s->bar_keyboard && !v->current())v->leave(w,s,TRUE);
         if(wp==HTMENU && v->layout(w,s,&l)){
             int item=win16_control_menu_bar_item_screen(w,&l,s->menu_font,s->dpi,lp,NULL);
-            if(item>=0 && !s->detached)v->open(w,s,item);
+            if(item>=0 && !s->instance.detached)v->open(w,s,item);
             return TRUE;
         }
         if(wp==HTSYSMENU){

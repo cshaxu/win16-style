@@ -25,7 +25,7 @@ LRESULT win16_control_basic_message(HWND w,control_style *s,UINT m,WPARAM a,LPAR
         /* Unlike native GROUPBOX, a VB Frame owns children and paints its
          * windowless labels. Always run the original painter first. */
         result=DefSubclassProc(w,m,a,b);
-        if(!s->detached && (m==WM_PAINT || m==WM_PRINTCLIENT ||
+        if(!s->instance.detached && (m==WM_PAINT || m==WM_PRINTCLIENT ||
                 (m==WM_PRINT && (b&PRF_CLIENT)))){
             HDC dc=(m==WM_PAINT)?GetDC(w):(HDC)a;
             if(dc){paint(w,s,dc);if(m==WM_PAINT)ReleaseDC(w,dc);}
@@ -50,9 +50,9 @@ LRESULT win16_control_basic_message(HWND w,control_style *s,UINT m,WPARAM a,LPAR
             (m==BM_SETCHECK || m==BM_SETSTATE || m==BM_SETSTYLE || m==WM_ENABLE ||
              m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_SETTEXT || m==WM_SETFONT ||
              m==WM_MOUSEMOVE);
-        result=style_control_redraw_call(w,m,a,b,suppress,&s->list_suppression,&s->detached,&s->list_redraw_off);
-        if(!s->detached && moving)changed=previous!=SendMessageW(w,BM_GETSTATE,0,0);
-        if(!s->detached && s->calls==1 && !s->list_suppression && !s->list_redraw_off && (m==BM_SETCHECK || m==BM_SETSTATE || m==BM_SETSTYLE || m==BM_CLICK || m==WM_ENABLE ||
+        result=style_control_redraw_call(w,m,a,b,suppress,&s->list_suppression,&s->instance.detached,&s->list_redraw_off);
+        if(!s->instance.detached && moving)changed=previous!=SendMessageW(w,BM_GETSTATE,0,0);
+        if(!s->instance.detached && s->instance.calls==1 && !s->list_suppression && !s->list_redraw_off && (m==BM_SETCHECK || m==BM_SETSTATE || m==BM_SETSTYLE || m==BM_CLICK || m==WM_ENABLE ||
             m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_SETTEXT || m==WM_SETFONT ||
             m==BM_SETIMAGE || m==BCM_SETIMAGELIST || (style_control_is_static(w) && (m==STM_SETICON || m==STM_SETIMAGE)) ||
             m==WM_LBUTTONDOWN || m==WM_LBUTTONUP || changed || m==WM_KEYDOWN || m==WM_KEYUP))

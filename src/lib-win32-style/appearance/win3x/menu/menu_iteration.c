@@ -14,7 +14,7 @@ static int open_bar_once(HWND w,style_window *s,int index,int *hover,const win16
         return s->bar_direction;
     }
     SendMessageW(w,WM_INITMENU,(WPARAM)GetMenu(w),0);
-    if(s->detached || !services->layout(w,s,&l) || IsRectEmpty(&l.menu))return 0;
+    if(s->instance.detached || !services->layout(w,s,&l) || IsRectEmpty(&l.menu))return 0;
     origin.x=l.menu.left;origin.y=l.menu.top;
     if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return 0;
     if(index<0 || (UINT)index>=bar.count || (bar.items[index].state&MFS_DISABLED)){
@@ -33,19 +33,19 @@ static int open_bar_once(HWND w,style_window *s,int index,int *hover,const win16
     if(s->bar_keyboard){
         if(popup)command=(UINT)TrackPopupMenuEx(popup,TPM_LEFTALIGN|TPM_TOPALIGN|TPM_RETURNCMD,
             anchor.x,anchor.y,w,NULL);
-        if(!s->detached){
-            if(command){services->leave(w,s,TRUE);if(!s->detached)PostMessageW(w,WM_COMMAND,command,0);}
+        if(!s->instance.detached){
+            if(command){services->leave(w,s,TRUE);if(!s->instance.detached)PostMessageW(w,WM_COMMAND,command,0);}
             else if(!frame.direction && frame.target==-3 && !frame.escape)services->leave(w,s,TRUE);
             else services->paint(w,s); /* Keyboard Escape returns to the selected bar. */
         }
     }else{
         if(popup)TrackPopupMenuEx(popup,TPM_LEFTALIGN|TPM_TOPALIGN,anchor.x,anchor.y,w,NULL);
         else PostMessageW(w,WM_COMMAND,command,0);
-        if(!s->detached){s->bar_selected=-1;services->paint(w,s);}
+        if(!s->instance.detached){s->bar_selected=-1;services->paint(w,s);}
     }
     if(popup){
         services->end(&frame);
-        if(frame.double_click && !s->detached)
+        if(frame.double_click && !s->instance.detached)
             PostMessageW(w,WM_NCLBUTTONDBLCLK,HTMENU,frame.point);
     }
     *hover=frame.target;return frame.direction;
@@ -55,11 +55,11 @@ void win16_control_open_menu_bar(HWND w,style_window *s,int index,const win16_co
 {
     int direction,hover;BOOL mouse_origin=!s->bar_keyboard;
     HWND original_focus=s->bar_keyboard?s->bar_focus:GetFocus();
-    ++s->calls; /* The iterator may change HWND; pin its current style state. */
+    style_instance_retain(&s->instance); /* The iterator may change HWND; pin its current style state. */
     for(;;){
         win16_style_layout l;win16_style_bar bar;POINT origin;BOOL popup;int count=0;
         direction=open_bar_once(w,s,index,&hover,services);
-        if(s->detached || (!direction && hover==-3))break;
+        if(s->instance.detached || (!direction && hover==-3))break;
         if(GetMenu(w) && services->layout(w,s,&l)){
             origin.x=l.menu.left;origin.y=l.menu.top;
             if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
@@ -68,7 +68,7 @@ void win16_control_open_menu_bar(HWND w,style_window *s,int index,const win16_co
             MDINEXTMENU next={0};style_window *target;int next_index;
             next.hmenuIn=index==-2?GetSystemMenu(w,FALSE):GetMenu(w);
             SendMessageW(w,WM_NEXTMENU,direction<0?VK_LEFT:VK_RIGHT,(LPARAM)&next);
-            if(s->detached)break;
+            if(s->instance.detached)break;
             if(next.hwndNext && next.hmenuNext && IsWindow(next.hwndNext) && IsMenu(next.hmenuNext) &&
                 GetWindowThreadProcessId(next.hwndNext,NULL)==GetCurrentThreadId() &&
                 (target=services->lookup(next.hwndNext))!=NULL){
@@ -80,13 +80,13 @@ void win16_control_open_menu_bar(HWND w,style_window *s,int index,const win16_co
                     next_index=direction>0?0:(int)bar.count-1;win16_style_bar_free(&bar);
                     if(next_index<0)break;
                 }else break;
-                ++target->calls;
+                style_instance_retain(&target->instance);
                 services->leave(w,s,FALSE);
-                if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
+                style_instance_release(&s->instance);
                 w=next.hwndNext;s=target;index=next_index;
-                if(s->detached)break;
+                if(s->instance.detached)break;
                 SetFocus(w);
-                if(s->detached)break;
+                if(s->instance.detached)break;
                 s->bar_focus=original_focus;s->bar_keyboard=TRUE;s->bar_selected=index;
                 services->paint(w,s);continue;
             }
@@ -107,6 +107,6 @@ void win16_control_open_menu_bar(HWND w,style_window *s,int index,const win16_co
     }
     /* Switching a mouse-opened popup uses the keyboard iterator internally,
      * but must not leave Alt/F10 mode armed after cancellation. */
-    if(mouse_origin && !s->detached)services->leave(w,s,TRUE);
-    if(!--s->calls && s->detached)win16_control_frame_state_dispose(s);
+    if(mouse_origin && !s->instance.detached)services->leave(w,s,TRUE);
+    style_instance_release(&s->instance);
 }

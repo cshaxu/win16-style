@@ -2,6 +2,7 @@
 
 | Source family | Native test adapter |
 | --- | --- |
+| `instance` | `lifecycle/instance.c`; `tests/lib-win32-style/appearance/win2000/window/instance_lifetime.c`; Win3.x frame/control and modern host production consumers |
 | `present` | `graphics/present.c`; `graphics/present_fault.c`; `graphics/present_print.c`; `tests/ntw16s-dll/win16_style_control_present.c` |
 | `clip` | `graphics/clip.c` (full and nonrectangular clipping, DC mapping restoration, print clip snapshot and failure); Win16 spin paint and color/date print consumers |
 | `paint_frame` | `graphics/paint_frame.c` (frame thickness, interior and outside pixels); Win16 basic control frame consumers |
