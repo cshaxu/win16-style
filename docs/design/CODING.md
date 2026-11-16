@@ -2,27 +2,30 @@
 
 导入任务按需建立目录；当前不放置虚假实现或空构建目标。
 
+目标目录按 T26 逐步迁移，当前 `lib-style` 与 `lib-win32/style` 尚未消除；迁移事实见 CURRENT 和审计台账。
+
 ```text
-src/run16s-exe/       x64 CLI / 首次启动
-src/ntw16s-dll/       双位宽 renderer / interception / injection
-src/demo-exe/         x64 原生示例
-src/lib-win32/        内部 Win32 静态库：托盘、进程管理和挂钩等基础能力
-src/lib-style/        各年代样式组件及可跨风格共享的样式机制
-src/lib-style/common/  不依赖具体样式的窗口输入、生命周期和对话框基础机制
-src/lib-style/uwp/    不依赖具体样式的 UWP 宿主发现、身份校验和原生标题能力
-tests/run16s-exe/     启动契约测试
-tests/ntw16s-dll/     双位宽 DLL 单元及生命周期测试
-tests/demo-exe/       原生 demo 边界测试
-tests/integration/    真实注入、跨位宽链及 UI 观察
-tools/               构建、打包、检查与观测工具
-assets/       四产物的发布包
-build/               全部生成物（忽略）
+src/lib-win32/                         无风格含义的进程、句柄、托盘基础能力
+src/lib-win32-style/access/
+  startup/ runtime/ global/            三种接入方式
+src/lib-win32-style/application/
+  lifecycle/ window/ menu/ control/    公共状态、协议、输入与生命周期
+  dialog/ graphics/                   对话框机制、绘图资源
+  adapters/win32/ uwp/ winui/          应用框架适配
+src/lib-win32-style/appearance/
+  win3x/ win2000/                      各自 common、window、menu、control、dialog、resources
+  luna/ aero/                         未来规划，按实际实现建立
+src/run16s-exe/                        CLI 与托盘业务装配
+src/ntwshk-dll/                        双位宽共享运行时装配
+src/ntw16s-dll/ src/ntw2ks-dll/         双位宽具体风格装配及导出
+src/demo-exe/                         原生示例
+ tests/                              按源码组件对应目录，产品组合测试另列 integration
+ tools/                              构建、检查及观测
+ assets/                             当前五组件八文件正式包
+ build/                              生成物，保留 .ninja 和 .ccache
 ```
 
-内部静态库不产生第四个产品组件；启动器和 DLL 通过明确的内部构建接口使用共享代码。
-`lib-style/common/menu_input.h` 由 Win16 与 Win2000 窗口层共同使用：菜单命中路由、助记键、键盘动作和指针切换判断统一，菜单几何、绘制和跟踪状态由各样式持有。
-demo 只依赖 Windows API。产品 ABI 与私有头分离，消费者不得
-通过包含 renderer 私有头绕过责任边界。
+接口和依赖边界由 [ARCHITECTURE](ARCHITECTURE.md) 统一规定。公共源码组件可静态链接到多个现有产品，不自动新增 DLL。demo 仅依赖 Windows API；公共组件不引用产品私有头，各风格不互相引用。
 
 目标构建基线：纯 C17、MinGW-w64 GCC + Ninja + ccache，警告作为错误，
 x86/x64 使用独立工具链与稳定 build/.ninja/x86、build/.ninja/x64；CMake 可作
@@ -36,7 +39,7 @@ build/.ninja/ 与可选 build/.ccache/ 可复用；其他 scratch 必须在活�
 scratch；每次测试完成即按执行规则清理已不再需要的临时构建及副本，
 仅为未完成的后续验证或发布暂留有明确用途的最小集合。不得清理用户目录、
 系统目录、其他任务正在使用的内容或跟随 reparse point。
-产品包四文件均在同一目录，构建输出与正式发布相互区分。
+当前产品包八文件均在同一目录，构建输出与正式发布相互区分。
 
 T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及旧入口
 已在T6 S1退休，历史可从T1提交复取。当前工具链直接构建实际产品和C测试，
@@ -44,7 +47,9 @@ T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及�
 本机双架构 SDK/DLL/TLS 实测已通过，结果及证明局限见
 [工具链记录](../etc/import/TOOLCHAIN.md)，不等于产品构建成功。
 
-## UWP window style library (T22 S1 candidate)
+## UWP 历史实现位置（T26 迁移前）
+
+以下记录帮助定位当前生产代码；T26 目标将无风格宿主机制归 application/adapters，Win16 几何与呈现归 appearance/win3x，不继续为每个风格复制 UWP 宿主。
 
 `src/lib-style/win16-window-uwp/frame.{c,h}` owns same-GUI-thread apply,
 remove and surface lifetime; `frame_layout.{c,h}` owns geometry and hit testing.

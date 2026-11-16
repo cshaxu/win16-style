@@ -2,6 +2,8 @@
 
 ## Current Work
 
+用户已批准统一 `lib-win32-style` 的接入、样式应用、风格呈现三层架构及 S1–S14 规划，见[任务设计](../proposals/style-library-reorganization.md)。单人实施/复核双角色执行；S1 继续完整审计，后续按能力合批迁移，禁止逐文件完整交付。现有第 41 项未提交改动保留，暂停中断的构建不得直接覆盖重启。
+
 用户决定以现有实际成果有限收口 T25，未完成的 S8 验证和 S10 最终审计不计通过；原 S9 去重已明确并入 T26，遗留范围见[T25 收口记录](../history/M0-T25-owner-closure.md)。准入 T26，抽离跨风格通用机制并整理样式库。
 
 顺序审计第 3 项同快照候选已发布并通过链接及 ABI 验证，导航焦点测试仍未通过，见[记录](../history/M0-T26-S1-ordered-03.md)。当前范围和未通过项见下方技术基线。
@@ -61,14 +63,14 @@ VCL CoolBar 窗口身份核验已迁入公共控件组件，Win16 提供附着�
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | New；T25 按用户决定有限收口，T26 从 S1 开始。 |
-| Admission And Approval | 用户要求把 Win16 中跨年代可用的外框、控件、对话框以及 Win32/UWP/WinUI 机制抽离至 lib-style，并准入下一 T。 |
-| Objective | 冻结全部相关生产组件、调用与测试清单，区分风格无关机制及各年代专属行为，确定分批迁移和实际复用契约；按用户要求对已确认单元同步实施。 |
+| Admission And Approval | 用户已批准统一 lib-win32-style 三层结构、S1–S14 及单人双角色执行；保留 T26 和已有 S1 成果。 |
+| Objective | 按已批准三层架构冻结完整生产/测试清单、接口、状态所有者和迁移映射；继续 S1，随后按任务设计依次准入 S2–S14，按能力合批实施及交付。 |
 | Non-goals | 审计不宣称已支持未实现的主题或控件；不改变既有挂钩权限与用户体验。 |
 | Reference Baseline | T25 S8 P13 已发布包及有限收口记录；保留既有 Win16 与 Win2000 行为。 |
 | Candidate Proposal | docs/proposals/style-library-reorganization.md，结合本次明确扩展的窗口、控件、对话框和现代框架范围。 |
 | Files And ABI Surface | 样式库、通用样式机制、产品适配、CMake、全部相应测试及来源声明；审计先不改公开 ABI。 |
 | Applicable Rules | M0；纯 C17、MinGW GCC、Ninja、ccache；现有八文件同批交付。 |
-| Verification | 静态生产依赖及调用方盘点、来源与测试映射；迁移后验证两种风格实际调用、双位宽及适用框架回归。 |
+| Verification | 逐文件顺序覆盖和跨文件能力归属矩阵；无反向依赖、两风格真实调用、旧路径删除、双位宽及实际包回归；单人复核原请求、diff 和证据。 |
 | Expected Markers | 每一项列明旧位置、分类、目标组件、调用方、迁移顺序及验证；未覆盖明确保留。 |
 | Asset Needs | 保留原始图形资源及来源声明，不依赖或修改兄弟仓库。 |
 | Reporting Requirements | 分别报告已共享、待迁移、风格专属和未验证能力；不把目录移动当作代码复用。 |
@@ -81,7 +83,7 @@ VCL CoolBar 窗口身份核验已迁入公共控件组件，Win16 提供附着�
 
 - Milestone: M0 (fixed)
 - Last allocated T: 26
-- Last allocated Td S: 20
+- Last allocated Td S: 21
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
 - Last allocated T20 S: 19
