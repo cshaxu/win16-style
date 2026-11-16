@@ -3,10 +3,9 @@
 
 static int global_test_session(WCHAR *name,WCHAR *stop_name,HANDLE *map,ntw16s_global_session **session,DWORD cookie)
 {
-    WCHAR desktop[128];DWORD needed=0;
-    if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed) ||
-       wcsncmp(desktop,L"Win16S-Dialog-",14))return 7;
-    if(!ntw16s_global_name(name,NTW16S_GLOBAL_NAME_CAP) ||
+    /* Owned targets only; an existing product session is rejected below.
+     * No private desktop is required or created by this fixture. */
+    if(!style_global_session_name(&ntw16s_global_namespace,name,NTW16S_GLOBAL_NAME_CAP) ||
        swprintf(stop_name,NTW16S_GLOBAL_NAME_CAP+16,L"%ls.stop",name)<0)return 8;
     *map=CreateFileMappingW(INVALID_HANDLE_VALUE,NULL,PAGE_READWRITE,0,sizeof(ntw16s_global_session),name);
     if(!*map || GetLastError()==ERROR_ALREADY_EXISTS)return 9;

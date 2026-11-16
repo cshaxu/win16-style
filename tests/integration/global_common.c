@@ -28,7 +28,7 @@ int wmain(int argc,WCHAR **argv)
  BOOL vb=argc==6;int native[2]={0};
  WCHAR desk[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16],cmd[8192];DWORD size=0;
  if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desk,sizeof(desk),&size)||wcsncmp(desk,L"Win16S-Dialog-",14))return 3;
- if(!ntw16s_global_name(name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
+ if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
  target t[4]={0};PROCESS_INFORMATION manager={0};HANDLE mapping=NULL,event=NULL;ntw16s_global_session *session=NULL;BOOL pass=FALSE;
  if(!launch(&t[0],argv[2],L"Old32",vb?argv[4]:NULL)||!launch(&t[1],argv[3],L"Old64",vb?argv[5]:NULL))goto done;
  if(!wait_mask(t[0].window,0)||!wait_mask(t[1].window,0))goto done;

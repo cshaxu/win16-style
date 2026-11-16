@@ -227,3 +227,7 @@
 - [T26 S5运行时接入](evidence/t26-s5-runtime.json)：冻结清单、独立/原生运行时与晚期传播、产品组合的开发回归；最终交付另记。
 
 - [T26 S5交付](evidence/t26-s5-delivery.json)：118项发布后组合回归、2项DWM旧失败、双宽工具链/cache、同快照八文件和输入摘要。
+
+- [T26 S6开发验证](evidence/t26-s6-global-development.json)：会话、切换与线程启动的增量验证；实际DLL接入拒绝结果明确保留，尚非交付或S6收口。
+
+- [T26 S6交付](evidence/t26-s6-delivery.json)：同快照八文件先发布，160项原生聚焦通过、2项管理员ETW跳过和2项DWM旧失败；双宽构建/cache与依赖/来源摘要；[临时产物清理](evidence/t26-s6-cleanup.json)。

@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global/manager.h"
+#include "lib-win32-style/access/global/manager.h"
 #include "ntw16s-dll/global/policy.h"
 #include "ntw16s-dll/global/session.h"
 #include "global_session_fixture.h"
@@ -64,9 +64,9 @@ static int target(void)
 }
 static int query(HWND w,UINT message)
 {DWORD_PTR value=0;return SendMessageTimeoutW(w,message,0,0,SMTO_ABORTIFHUNG,500,&value)?(int)value:-1;}
-static BOOL wait_attached(ntw16s_global_manager *manager,HWND w)
+static BOOL wait_attached(style_global_manager *manager,HWND w)
 {
-    ULONGLONG deadline=GetTickCount64()+5000;HANDLE changed=ntw16s_global_manager_changed(manager);
+    ULONGLONG deadline=GetTickCount64()+5000;HANDLE changed=style_global_manager_changed(manager);
     while(GetTickCount64()<deadline){
         MSG msg;while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE)){TranslateMessage(&msg);DispatchMessageW(&msg);}
         if(query(w,WM_APP+52)==3)return TRUE;
@@ -76,11 +76,11 @@ static BOOL wait_attached(ntw16s_global_manager *manager,HWND w)
     }
     return FALSE;
 }
-static BOOL wait_active(ntw16s_global_manager *manager,LONG count)
+static BOOL wait_active(style_global_manager *manager,LONG count)
 {
-    ULONGLONG deadline=GetTickCount64()+5000;HANDLE changed=ntw16s_global_manager_changed(manager);
+    ULONGLONG deadline=GetTickCount64()+5000;HANDLE changed=style_global_manager_changed(manager);
     while(GetTickCount64()<deadline){
-        ntw16s_global_manager_stats stats;ntw16s_global_manager_stats_read(manager,&stats);
+        style_global_manager_stats stats;style_global_manager_stats_read(manager,&stats);
         if(stats.active>=count)return TRUE;
         MSG msg;while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE)){TranslateMessage(&msg);DispatchMessageW(&msg);}
         ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;
@@ -89,12 +89,12 @@ static BOOL wait_active(ntw16s_global_manager *manager,LONG count)
     }
     return FALSE;
 }
-static BOOL wait_retired(ntw16s_global_manager *manager,DWORD pid,DWORD tid)
+static BOOL wait_retired(style_global_manager *manager,DWORD pid,DWORD tid)
 {
-    ULONGLONG deadline=GetTickCount64()+3000;HANDLE changed=ntw16s_global_manager_changed(manager);
+    ULONGLONG deadline=GetTickCount64()+3000;HANDLE changed=style_global_manager_changed(manager);
     while(GetTickCount64()<deadline){
         MSG msg;while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE)){TranslateMessage(&msg);DispatchMessageW(&msg);}
-        if(!ntw16s_global_manager_tracks(manager,pid,tid))return TRUE;
+        if(!style_global_manager_tracks(manager,pid,tid))return TRUE;
         ULONGLONG now=GetTickCount64();DWORD left=now<deadline?(DWORD)(deadline-now):0;
         DWORD result=MsgWaitForMultipleObjects(1,&changed,FALSE,left,QS_ALLINPUT);
         if(result==WAIT_TIMEOUT || result==WAIT_FAILED)return FALSE;
@@ -111,6 +111,7 @@ static BOOL spawn(const WCHAR *self,unsigned index,PROCESS_INFORMATION *pi,HWND 
     swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" target",self);
     STARTUPINFOW si={.cb=sizeof(si)};
     BOOL started=CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&si,pi);
+    if(started){if(!index)style_global_manager_test_filter(pi->dwProcessId);else style_global_manager_test_second(pi->dwProcessId);}
     BOOL ok=started && WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;
     *window=ok?FindWindowW(L"Win16OwnedManagerTest",title):NULL;
     CloseHandle(ready);return ok && *window;
@@ -130,21 +131,23 @@ static int stop_race(void)
     GetModuleFileNameW(NULL,self,ARRAYSIZE(self));wcscpy(dll,self);WCHAR *slash=wcsrchr(dll,L'\\');if(!slash)return 13;
     wcscpy(slash+1,sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
     HWND sentinel=CreateWindowW(L"STATIC",L"test sentinel",WS_OVERLAPPED,0,0,10,10,NULL,NULL,GetModuleHandleW(NULL),NULL);
-    ntw16s_global_manager *manager=NULL;DWORD start=sentinel?ntw16s_global_manager_start(dll,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&manager):GetLastError();
+    style_global_manager_test_filter(GetCurrentProcessId());
+    style_global_manager *manager=NULL;DWORD start=sentinel?style_global_manager_start(&ntw16s_global_manager_config,dll,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&manager):GetLastError();
     PROCESS_INFORMATION pi={0};STARTUPINFOW si={.cb=sizeof(si)};swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" race-child",self);
     BOOL created=!start && CreateProcessW(self,cmd,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&si,&pi);
     win32_process_global_policy policy={0};win32_process_global_identity identity;DWORD initial=ERROR_INVALID_STATE;
     if(created && !win32_process_global_policy_init(&policy)){
-        initial=ntw16s_global_policy_inspect_thread(&policy,pi.dwProcessId,pi.dwThreadId,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&identity);
-        ntw16s_global_manager_test_process(manager,pi.dwProcessId);
+        style_global_manager_test_filter(pi.dwProcessId);
+        initial=win32_process_global_policy_inspect_thread(&policy,pi.dwProcessId,pi.dwThreadId,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&identity,ntw16s_global_image_allowed);
+        style_global_manager_test_process(manager,pi.dwProcessId);
     }
-    BOOL tracked=created && ntw16s_global_manager_tracks(manager,pi.dwProcessId,pi.dwThreadId);
-    DWORD pending=tracked?ntw16s_global_manager_wait_idle(manager,40):ERROR_INVALID_STATE;
+    BOOL tracked=created && style_global_manager_tracks(manager,pi.dwProcessId,pi.dwThreadId);
+    DWORD pending=tracked?style_global_manager_wait_idle(manager,40):ERROR_INVALID_STATE;
     session->phase=NTW16S_GLOBAL_STOPPING;
     BOOL resumed=created && ResumeThread(pi.hThread)!=(DWORD)-1;
     BOOL exited=resumed && WaitForSingleObject(pi.hProcess,3000)==WAIT_OBJECT_0;DWORD child=999;
     if(exited)GetExitCodeProcess(pi.hProcess,&child);
-    SetEvent(stop);DWORD stopped=manager?ntw16s_global_manager_stop(manager,5000):ERROR_INVALID_STATE;
+    SetEvent(stop);DWORD stopped=manager?style_global_manager_stop(manager,5000):ERROR_INVALID_STATE;
     if(created){if(!exited)TerminateProcess(pi.hProcess,ERROR_TIMEOUT);CloseHandle(pi.hThread);CloseHandle(pi.hProcess);}
     if(sentinel)DestroyWindow(sentinel);
     CloseHandle(stop);UnmapViewOfFile(session);CloseHandle(map);
@@ -154,7 +157,7 @@ static int stop_race(void)
 int wmain(int argc,WCHAR **argv)
 {
     if(argc==2 && !lstrcmpW(argv[1],L"local-abandon")){
-        DWORD error=ntw16s_global_manager_test_abandon();
+        DWORD error=style_global_manager_test_abandon();
         printf("MANAGER LOCAL ABANDON bits=%u error=%lu\n",(unsigned)(sizeof(void *)*8),error);
         return error?1:0;
     }
@@ -167,27 +170,27 @@ int wmain(int argc,WCHAR **argv)
     HANDLE stop=CreateEventW(NULL,TRUE,FALSE,stop_name);if(!stop)return 12;
     GetModuleFileNameW(NULL,self,ARRAYSIZE(self));wcscpy(dll,self);WCHAR *slash=wcsrchr(dll,L'\\');if(!slash)return 13;
     wcscpy(slash+1,sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
-    PROCESS_INFORMATION pi[2]={{0}};HWND windows[2]={0};ntw16s_global_manager *manager=NULL;
+    PROCESS_INFORMATION pi[2]={{0}};HWND windows[2]={0};style_global_manager *manager=NULL;
     WCHAR delay_name[128];swprintf(delay_name,ARRAYSIZE(delay_name),L"Local\\Win16ManagerDelay-%lu",GetCurrentProcessId());
     HANDLE delay_event=CreateEventW(NULL,TRUE,FALSE,delay_name);SetEnvironmentVariableW(L"WIN16_MANAGER_DELAY_STARTED",delay_name);
     BOOL before=spawn(self,0,&pi[0],&windows[0]);
     DWORD native_draw=before?(DWORD)query(windows[0],WM_APP+55):0;
     DWORD native_font=before?(DWORD)query(windows[0],WM_APP+56):0,native_style=before?(DWORD)query(windows[0],WM_APP+57):0;
-    DWORD start=before?ntw16s_global_manager_start(dll,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&manager):ERROR_INVALID_STATE;
+    DWORD start=before?style_global_manager_start(&ntw16s_global_manager_config,dll,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&manager):ERROR_INVALID_STATE;
     BOOL delayed_started=delay_event && WaitForSingleObject(delay_event,3000)==WAIT_OBJECT_0;
-    DWORD idle_timeout=manager && delayed_started?ntw16s_global_manager_wait_idle(manager,20):ERROR_INVALID_STATE;
-    DWORD idle_done=manager?ntw16s_global_manager_wait_idle(manager,3000):ERROR_INVALID_STATE;
+    DWORD idle_timeout=manager && delayed_started?style_global_manager_wait_idle(manager,20):ERROR_INVALID_STATE;
+    DWORD idle_done=manager?style_global_manager_wait_idle(manager,3000):ERROR_INVALID_STATE;
     BOOL first=!start && wait_attached(manager,windows[0]);
     DWORD styled_draw=first?(DWORD)query(windows[0],WM_APP+55):0;
     BOOL created=first && spawn(self,1,&pi[1],&windows[1]);
     BOOL second_attached=created && wait_attached(manager,windows[1]);
     BOOL second_active=second_attached && wait_active(manager,2);
     BOOL second=second_attached && second_active;
-    ntw16s_global_manager_stats stats={0};if(manager)ntw16s_global_manager_stats_read(manager,&stats);
+    style_global_manager_stats stats={0};if(manager)style_global_manager_stats_read(manager,&stats);
     int clicked[2]={-1,-1};
     for(unsigned i=0;i<2;++i)if(windows[i]){HWND child=GetDlgItem(windows[i],101);if(child)SendMessageW(child,BM_CLICK,0,0);clicked[i]=query(windows[i],WM_APP+53);}
     DWORD old_pid=pi[1].dwProcessId,old_tid=pi[1].dwThreadId;
-    BOOL tracked=manager && ntw16s_global_manager_tracks(manager,old_pid,old_tid),exited=FALSE,retired=FALSE;
+    BOOL tracked=manager && style_global_manager_tracks(manager,old_pid,old_tid),exited=FALSE,retired=FALSE;
     if(second && windows[1] && pi[1].hProcess){
         PostMessageW(windows[1],WM_CLOSE,0,0);exited=WaitForSingleObject(pi[1].hProcess,3000)==WAIT_OBJECT_0;
         if(exited){CloseHandle(pi[1].hThread);CloseHandle(pi[1].hProcess);ZeroMemory(&pi[1],sizeof(pi[1]));windows[1]=NULL;
@@ -205,7 +208,7 @@ int wmain(int argc,WCHAR **argv)
     int removed[2]={windows[0]?query(windows[0],WM_APP+52):0,windows[1]?query(windows[1],WM_APP+52):-1};
     DWORD restored_draw=windows[0]?(DWORD)query(windows[0],WM_APP+55):0;
     DWORD restored_font=windows[0]?(DWORD)query(windows[0],WM_APP+56):0,restored_style=windows[0]?(DWORD)query(windows[0],WM_APP+57):0;
-    SetEvent(stop);DWORD stopped=manager?ntw16s_global_manager_stop(manager,5000):ERROR_INVALID_STATE;
+    SetEvent(stop);DWORD stopped=manager?style_global_manager_stop(manager,5000):ERROR_INVALID_STATE;
     BOOL cleaned=TRUE;
     for(unsigned i=0;i<2;++i)if(pi[i].hProcess){
         if(windows[i])PostMessageW(windows[i],WM_CLOSE,0,0);

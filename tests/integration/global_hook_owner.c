@@ -8,7 +8,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc!=3)return 2;
     WCHAR desktop[128],name[NTW16S_GLOBAL_NAME_CAP],command[32768];DWORD needed=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed)||wcsncmp(desktop,L"Win16S-Dialog-",14))return 3;
-    if(!ntw16s_global_name(name,ARRAYSIZE(name)))return 4;
+    if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return 4;
     HANDLE mapping=CreateFileMappingW(INVALID_HANDLE_VALUE,NULL,PAGE_READWRITE,0,sizeof(ntw16s_global_session),name);
     if(!mapping || GetLastError()==ERROR_ALREADY_EXISTS)return 5;
     ntw16s_global_session *s=MapViewOfFile(mapping,FILE_MAP_WRITE,0,0,sizeof(*s));if(!s)return 6;

@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global/manager.h"
+#include "lib-win32-style/access/global/manager.h"
 #include "ntw16s-dll/global/session.h"
 #include "global_session_fixture.h"
 
@@ -35,11 +35,12 @@ int wmain(int argc,WCHAR **argv)
     if(!ready || !stop || !CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))return 13;
     BOOL started=WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;HWND window=FindWindowW(L"Win16OwnedAttachTest",L"owned");
     int precreated=preexisting && window?query(window,WM_APP+54):0;
-    ntw16s_global_manager *manager=NULL;DWORD start=started?ntw16s_global_manager_start(dll,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&manager):ERROR_INVALID_STATE;
-    ntw16s_global_manager_stats stats={0};ULONGLONG deadline=GetTickCount64()+5000;MSG msg;
+    style_global_manager_test_filter(pi.dwProcessId);
+    style_global_manager *manager=NULL;DWORD start=started?style_global_manager_start(&ntw16s_global_manager_config,dll,sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&manager):ERROR_INVALID_STATE;
+    style_global_manager_stats stats={0};ULONGLONG deadline=GetTickCount64()+5000;MSG msg;
     while(manager && GetTickCount64()<deadline){
         while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE)){TranslateMessage(&msg);DispatchMessageW(&msg);}
-        ntw16s_global_manager_stats_read(manager,&stats);if(stats.failed && stats.active)break;
+        style_global_manager_stats_read(manager,&stats);if(stats.failed && stats.active)break;
         MsgWaitForMultipleObjects(0,NULL,FALSE,10,QS_ALLINPUT);
     }
     int before=window?query(window,WM_APP+52):-1,made=preexisting?precreated:(window?query(window,WM_APP+54):0),later=0;
@@ -56,7 +57,7 @@ int wmain(int argc,WCHAR **argv)
     BOOL inactive_sent=late_window && control && SendMessageTimeoutW(late_window,control,session->cookie,NTW16S_GLOBAL_QUERY,SMTO_ABORTIFHUNG,1000,&inactive);
     BOOL sent=late_window && control && SendMessageTimeoutW(late_window,control,session->cookie,NTW16S_GLOBAL_REMOVE,SMTO_ABORTIFHUNG,1000,&ignored);
     int after=window?query(window,WM_APP+55):-1;SetEvent(stop);
-    DWORD stopped=manager?ntw16s_global_manager_stop(manager,5000):ERROR_INVALID_STATE;
+    DWORD stopped=manager?style_global_manager_stop(manager,5000):ERROR_INVALID_STATE;
     if(window)PostMessageW(window,WM_CLOSE,0,0);
     DWORD wait=WaitForSingleObject(pi.hProcess,3000),code=99;if(wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);else TerminateProcess(pi.hProcess,ERROR_TIMEOUT);
     CloseHandle(pi.hThread);CloseHandle(pi.hProcess);CloseHandle(ready);CloseHandle(stop);UnmapViewOfFile(session);CloseHandle(map);

@@ -6,7 +6,7 @@
 
 /* A file may have been replaced since the target mapped it. Check the mapped
  * image header as well as comparing the files before reusing an instance. */
-DWORD win32_process_global_mapped_identity(HANDLE process,DWORD pid,HMODULE remote,const WCHAR *name,const WCHAR *path,const char *export_name,win32_process_global_resolve_fn resolve)
+DWORD win32_process_global_mapped_identity_using(HANDLE process,DWORD pid,HMODULE remote,const WCHAR *name,const WCHAR *path,const char *export_name,win32_process_global_resolve_using_fn resolve,void *context)
 {
     HMODULE local=GetModuleHandleW(name);IMAGE_DOS_HEADER rd,ld;IMAGE_NT_HEADERS rn,ln;DWORD error;
     BYTE local_code[16],remote_code[16];void *remote_worker=NULL;FARPROC local_worker;
@@ -22,7 +22,7 @@ DWORD win32_process_global_mapped_identity(HANDLE process,DWORD pid,HMODULE remo
        rn.OptionalHeader.Magic!=ln.OptionalHeader.Magic || rn.OptionalHeader.SizeOfImage!=ln.OptionalHeader.SizeOfImage ||
        rn.OptionalHeader.CheckSum!=ln.OptionalHeader.CheckSum)return ERROR_REVISION_MISMATCH;
     local_worker=GetProcAddress(local,export_name);if(!local_worker)return ERROR_PROC_NOT_FOUND;
-    error=resolve(process,pid,path,&remote_worker);if(error)return error;
+    error=resolve(process,pid,path,&remote_worker,context);if(error)return error;
     error=win32_process_global_remote_read(GetCurrentProcess(),(const void *)local_worker,local_code,sizeof(local_code));if(error)return error;
     error=win32_process_global_remote_read(process,remote_worker,remote_code,sizeof(remote_code));if(error)return error;
     if(memcmp(local_code,remote_code,sizeof(local_code)))return ERROR_REVISION_MISMATCH;
@@ -31,7 +31,7 @@ DWORD win32_process_global_mapped_identity(HANDLE process,DWORD pid,HMODULE remo
 
 /* Reuse the first same-named module already in the target. The target's
  * GetModuleHandle uses this same load order when the global hook fires. */
-DWORD win32_process_global_select_path(HANDLE process,DWORD pid,const WCHAR *requested,WCHAR *selected,DWORD capacity,win32_process_global_files_equal_fn equal,win32_process_global_mapped_identity_fn identity)
+DWORD win32_process_global_select_path_using(HANDLE process,DWORD pid,const WCHAR *requested,WCHAR *selected,DWORD capacity,win32_process_global_files_equal_fn equal,win32_process_global_mapped_identity_using_fn identity,void *context)
 {
     typedef DWORD (WINAPI *module_path_fn)(HANDLE,HMODULE,LPWSTR,DWORD);
     module_path_fn module_path=(module_path_fn)(void *)GetProcAddress(GetModuleHandleW(L"kernel32.dll"),"K32GetModuleFileNameExW");
@@ -53,7 +53,7 @@ DWORD win32_process_global_select_path(HANDLE process,DWORD pid,const WCHAR *req
         memcpy(selected,requested,(length+1)*sizeof(WCHAR));
     }else if(_wcsicmp(selected,requested)){
         if(!equal(selected,requested))error=ERROR_REVISION_MISMATCH;
-        else error=identity(process,pid,found_module,base+1,selected);
+        else error=identity(process,pid,found_module,base+1,selected,context);
     }
 done:
     CloseHandle(snapshot);return error;
@@ -81,3 +81,12 @@ done:
     if(left!=INVALID_HANDLE_VALUE)CloseHandle(left);
     return equal;
 }
+
+static DWORD legacy_resolve(HANDLE process,DWORD pid,const WCHAR *path,void **address,void *context)
+{return (*(win32_process_global_resolve_fn *)context)(process,pid,path,address);}
+DWORD win32_process_global_mapped_identity(HANDLE process,DWORD pid,HMODULE remote,const WCHAR *name,const WCHAR *path,const char *export_name,win32_process_global_resolve_fn resolve)
+{return win32_process_global_mapped_identity_using(process,pid,remote,name,path,export_name,legacy_resolve,&resolve);}
+static DWORD legacy_identity(HANDLE process,DWORD pid,HMODULE remote,const WCHAR *name,const WCHAR *path,void *context)
+{return (*(win32_process_global_mapped_identity_fn *)context)(process,pid,remote,name,path);}
+DWORD win32_process_global_select_path(HANDLE process,DWORD pid,const WCHAR *requested,WCHAR *selected,DWORD capacity,win32_process_global_files_equal_fn equal,win32_process_global_mapped_identity_fn identity)
+{return win32_process_global_select_path_using(process,pid,requested,selected,capacity,equal,legacy_identity,&identity);}

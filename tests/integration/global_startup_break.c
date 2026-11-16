@@ -9,7 +9,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc!=2)return 2;
     WCHAR desktop[128],name[NTW16S_GLOBAL_NAME_CAP],cmd[32768];DWORD bytes=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&bytes) ||
-       wcsncmp(desktop,L"Win16S-Dialog-",14) || !ntw16s_global_name(name,ARRAYSIZE(name)))return 3;
+       wcsncmp(desktop,L"Win16S-Dialog-",14) || !style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return 3;
     BOOL allocated=FALSE;if(!GetConsoleCP()){if(!AllocConsole()){printf("BREAK console_error=%lu\n",GetLastError());return 4;}allocated=TRUE;}
     if(swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" --global",argv[1])<0)return 5;
     STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION manager={0};

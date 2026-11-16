@@ -8,4 +8,7 @@ BOOL win32_process_global_trace_orphan(DWORD pid,DWORD birth_high,DWORD birth_lo
  * trace; the caller chooses and owns the name and borrowed process handle. */
 DWORD win32_process_global_trace_stop_peer(HANDLE,DWORD,const WCHAR *);
 void win32_process_global_recover_orphans(win32_process_global_trace_name_parser parse);
+/* Context is borrowed for synchronous enumeration and parser calls. */
+typedef BOOL (*win32_process_global_trace_name_parser_using)(const WCHAR *,DWORD *,DWORD *,DWORD *,void *);
+void win32_process_global_recover_orphans_using(win32_process_global_trace_name_parser_using,void *);
 #endif

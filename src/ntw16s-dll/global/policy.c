@@ -14,8 +14,3 @@ BOOL ntw16s_global_image_allowed(const WCHAR *image,const WCHAR *windows)
     }
     return TRUE;
 }
-
-DWORD ntw16s_global_policy_inspect(const win32_process_global_policy *p,HWND w,DWORD pid,DWORD tid,WORD machine,win32_process_global_identity *i)
-{return win32_process_global_policy_inspect(p,w,pid,tid,machine,i,ntw16s_global_image_allowed);}
-DWORD ntw16s_global_policy_inspect_thread(const win32_process_global_policy *p,DWORD pid,DWORD tid,WORD machine,win32_process_global_identity *i)
-{return win32_process_global_policy_inspect_thread(p,pid,tid,machine,i,ntw16s_global_image_allowed);}

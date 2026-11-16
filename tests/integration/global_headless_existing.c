@@ -4,9 +4,8 @@
 #include <wchar.h>
 #include <tlhelp32.h>
 #include "ntw16s-dll/global/session.h"
-#include "ntw16s-dll/global/remote.h"
-#include "ntw16s-dll/global/start.h"
-#include "ntw16s-dll/global/attach.h"
+#include "lib-win32-style/access/global/start.h"
+#include "lib-win32-style/access/global/attach.h"
 
 static BOOL launch(const WCHAR *image, const WCHAR *args, PROCESS_INFORMATION *p)
 {
@@ -50,14 +49,14 @@ int wmain(int argc,WCHAR **argv)
     if(argc!=3 && argc!=4)return 2;
     WCHAR desk[128],name[NTW16S_GLOBAL_NAME_CAP],stopname[NTW16S_GLOBAL_NAME_CAP+16],goname[128],aftername[128],readyname[160],started_name[160],self[32768],cmd[512];DWORD n=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desk,sizeof(desk),&n)||wcsncmp(desk,L"Win16S-Dialog-",14))return 4;
-    if(!ntw16s_global_name(name,ARRAYSIZE(name)))return 5;
+    if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return 5;
     swprintf(stopname,ARRAYSIZE(stopname),L"%ls.request",name);
     swprintf(goname,ARRAYSIZE(goname),L"Local\\Win16S.HeadlessProbe.%lu",GetCurrentProcessId());
     swprintf(started_name,ARRAYSIZE(started_name),L"%ls.ready",goname);
     swprintf(aftername,ARRAYSIZE(aftername),L"Local\\Win16S.HeadlessAfter.%lu",GetCurrentProcessId());
     swprintf(readyname,ARRAYSIZE(readyname),L"%ls.ready",aftername);
     HANDLE go=CreateEventW(NULL,TRUE,FALSE,goname),after=CreateEventW(NULL,TRUE,FALSE,aftername),ready=CreateEventW(NULL,TRUE,FALSE,readyname),started=CreateEventW(NULL,TRUE,FALSE,started_name),map=NULL,stop=NULL;ntw16s_global_session *s=NULL;
-    PROCESS_INFORMATION target={0},manager={0};ntw16s_global_attach ticket={0};win32_process_global_policy policy;
+    PROCESS_INFORMATION target={0},manager={0};style_global_attach ticket={0};win32_process_global_policy policy;
     DWORD error=0,code=99;BOOL ok=FALSE;
     if(!go || !after || !ready || !started || !GetModuleFileNameW(NULL,self,ARRAYSIZE(self)))goto done;
     swprintf(cmd,ARRAYSIZE(cmd),L"target %ls %ls",goname,aftername);
@@ -86,14 +85,14 @@ int wmain(int argc,WCHAR **argv)
         Sleep(250);
     }else{
     error=win32_process_global_policy_init(&policy);
-    if(!error)error=ntw16s_global_attach_begin_thread(&policy,target.dwProcessId,target.dwThreadId,
+    if(!error)error=style_global_attach_begin(&ntw16s_global_attach_config,&policy,NULL,target.dwProcessId,target.dwThreadId,
         sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,s->cookie,argv[2],&ticket);
     if(!error){error=ERROR_IO_PENDING;
         for(unsigned i=0;i<4 && error==ERROR_IO_PENDING;++i){
             if(ticket.load.thread){if(WaitForSingleObject(ticket.load.thread,5000)!=WAIT_OBJECT_0)break;}
             else if(ticket.start.ready){HANDLE waits[]={ticket.start.ready,ticket.start.thread};
                 if(WaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,5000)>=WAIT_OBJECT_0+ARRAYSIZE(waits))break;}
-            error=ntw16s_global_attach_advance(&ticket,NULL);
+            error=style_global_attach_advance(&ticket,NULL);
         }
     }
     printf("EXISTING attach=%lu\n",error);
@@ -109,7 +108,7 @@ int wmain(int argc,WCHAR **argv)
 done:
     if(manager.hProcess && WaitForSingleObject(manager.hProcess,0)==WAIT_TIMEOUT){stop=OpenEventW(EVENT_MODIFY_STATE,FALSE,stopname);if(stop)SetEvent(stop);if(WaitForSingleObject(manager.hProcess,6000)!=WAIT_OBJECT_0){TerminateProcess(manager.hProcess,ERROR_TIMEOUT);WaitForSingleObject(manager.hProcess,1000);}}
     if(target.hProcess && WaitForSingleObject(target.hProcess,0)==WAIT_TIMEOUT){TerminateProcess(target.hProcess,ERROR_TIMEOUT);WaitForSingleObject(target.hProcess,1000);}
-    (void)ntw16s_global_attach_close(&ticket);
+    (void)style_global_attach_close(&ticket);
     if(s)UnmapViewOfFile(s);
     if(map)CloseHandle(map);
     if(stop)CloseHandle(stop);

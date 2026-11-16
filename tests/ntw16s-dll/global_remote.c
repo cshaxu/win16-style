@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
-#include "ntw16s-dll/global/remote.h"
+#include "global_module_fixture.h"
 #include "lib-win32/process-global/remote_loader.h"
 #include "lib-win32/process-global/remote_export.h"
 
@@ -50,10 +50,10 @@ int wmain(int argc,WCHAR **argv)
     DWORD error=started?win32_process_global_remote_loadlibrary(pi.hProcess,pi.dwProcessId,&remote):ERROR_TIMEOUT;
     DWORD bad=win32_process_global_remote_loadlibrary(pi.hProcess,pi.dwProcessId+1,&invalid);
     void *worker=NULL,*invalid_worker=(void *)1;
-    DWORD worker_error=started?ntw16s_remote_global_thread(pi.hProcess,pi.dwProcessId,argv[1],&worker):ERROR_TIMEOUT;
-    DWORD bad_name=ntw16s_remote_global_thread(pi.hProcess,pi.dwProcessId,L"C:\\not-project.dll",&invalid_worker);
+    DWORD worker_error=started?fixture_remote_global_thread(pi.hProcess,pi.dwProcessId,argv[1],&worker):ERROR_TIMEOUT;
+    DWORD bad_name=fixture_remote_global_thread(pi.hProcess,pi.dwProcessId,L"C:\\not-project.dll",&invalid_worker);
     void *missing_worker=(void *)1;
-    DWORD missing=ntw16s_remote_global_thread(pi.hProcess,pi.dwProcessId,
+    DWORD missing=fixture_remote_global_thread(pi.hProcess,pi.dwProcessId,
         sizeof(void*)==8?L"C:\\missing\\ntw16s64.dll":L"C:\\missing\\ntw16s32.dll",&missing_worker);
     void *generic_missing=(void *)1;
     static WCHAR long_path[33010];wmemset(long_path,L'x',ARRAYSIZE(long_path)-1);
@@ -77,7 +77,7 @@ int wmain(int argc,WCHAR **argv)
     swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" target",self);
     if(!CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&corrupt_si,&corrupt_pi))return 11;
     BOOL corrupt_ready=WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;void *corrupt_worker=(void *)1;
-    DWORD corrupt_error=corrupt_ready?ntw16s_remote_global_thread(corrupt_pi.hProcess,corrupt_pi.dwProcessId,argv[1],&corrupt_worker):ERROR_TIMEOUT;
+    DWORD corrupt_error=corrupt_ready?fixture_remote_global_thread(corrupt_pi.hProcess,corrupt_pi.dwProcessId,argv[1],&corrupt_worker):ERROR_TIMEOUT;
     SetEvent(stop);DWORD corrupt_wait=WaitForSingleObject(corrupt_pi.hProcess,3000),corrupt_code=99;
     if(corrupt_wait==WAIT_OBJECT_0)GetExitCodeProcess(corrupt_pi.hProcess,&corrupt_code);else TerminateProcess(corrupt_pi.hProcess,ERROR_TIMEOUT);
     CloseHandle(corrupt_pi.hThread);CloseHandle(corrupt_pi.hProcess);CloseHandle(ready);CloseHandle(stop);

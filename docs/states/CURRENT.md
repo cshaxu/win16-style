@@ -8,7 +8,11 @@ M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorg
 
 S5运行时module/请求/通知/late批次已公共化，产品侧净减少105行。API创建链仍由产品attachment/window_titles拥有，明确按S11与dialog装配迁application/lifecycle，不称其为纯业务或遗漏；全局session/phase与当前管理适配由S6继续。已知失败/未覆盖见TODO及下方历史事实，S14统一复核。
 
-所有S5构建/测试会话已结束，已清理scratch/快照/发布备份277,522,232字节，另早期late包3,637,500字节；保留.ninja/.ccache。S6尚未修改源码，先冻结全局生产链、公共引擎/产品策略与状态所有者；沿用有效工作，不重复分配。禁止computer-use及私有桌面，不改或依赖兄弟仓库，不新增能力/权限/目标。
+S6已将session/control/start/worker/late/attach/manager/receiver/host/owner/trace迁入公共层并接入产品，删除14个产品C/H文件及六个空转发，必要线程导出合并至hook装配。927项来源回执、原资源及双宽各18个样式归档门禁通过。沙箱外同一自有目标12项原生接入全部通过，确认此前拒绝与AppContainer环境有关，未改生产策略；原沙箱失败保留在[开发证据](../etc/evidence/t26-s6-global-development.json)。
+
+S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），1024个输入摘要一致，来源/资源/ABI及双宽公共归档门禁通过。同批八文件已先发布assets根/O:/winnt，再进行162项实际包聚焦回归：160通过、2项管理员ETW跳过；另2项DWM恢复旧失败仍归S7/S14，不计通过。见[交付证据](../etc/evidence/t26-s6-delivery.json)。提交/推送/实际远端复核完成前不关闭S6；T26保持开放。
+
+两轮S6构建/测试均结束，已核验无存活自有夹具及reparse后清理scratch/快照/发布备份548,376,032字节，保留.ninja/.ccache，见[清理记录](../etc/evidence/t26-s6-cleanup.json)。最终格式规范后重新构建、发布、测试，没有混用旧摘要；[全局生产链与最终映射](../history/M0-T26-S6-global.md)保留完整审计、失败对照和效率复核。禁止computer-use及私有桌面，不改或依赖兄弟仓库，不新增能力/权限/目标。
 
 [S4事实](../history/M0-T26-S4-startup.md)及[交付](../etc/evidence/t26-s4-delivery.json)保留；T25按用户决定有限收口，未通过项不补记通过。
 

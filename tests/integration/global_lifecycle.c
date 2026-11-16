@@ -21,7 +21,7 @@ static void cleanup(PROCESS_INFORMATION *p,HWND w)
 int wmain(int argc,WCHAR **argv)
 {if(argc!=3 && argc!=4)return 2;WCHAR desktop[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];DWORD bytes=0;
  if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&bytes)||wcsncmp(desktop,L"Win16S-Dialog-",14))return 3;
- if(!ntw16s_global_name(name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
+ if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
  PROCESS_INFORMATION first={0},second={0},manager={0},duplicate={0},restarted={0};HWND w1=NULL,w2=NULL;HANDLE mapping=NULL,host=NULL,event=NULL;ntw16s_global_session *session=NULL;BOOL pass=FALSE;DWORD duplicate_code=99;
  if(!launch(argv[2],L"LifeBefore",&first)||!(w1=find(L"LifeBefore",&first)))goto done;
  if(!launch(argv[1],L"--global",&manager))goto done;

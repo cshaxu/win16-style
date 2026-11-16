@@ -54,26 +54,26 @@ int wmain(int argc,WCHAR **argv)
     BOOL started=WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;HWND window=FindWindowW(L"Win16OwnedPolicyTest",L"owned");
     WORD machine=sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386;
     win32_process_global_identity identity={0},invalid={0},zero={0};
-    DWORD result=started?ntw16s_global_policy_inspect(&policy,window,pi.dwProcessId,pi.dwThreadId,machine,&identity):ERROR_TIMEOUT;
-    DWORD wrong_pid=ntw16s_global_policy_inspect(&policy,window,pi.dwProcessId+1,pi.dwThreadId,machine,&invalid);
+    DWORD result=started?win32_process_global_policy_inspect(&policy,window,pi.dwProcessId,pi.dwThreadId,machine,&identity,ntw16s_global_image_allowed):ERROR_TIMEOUT;
+    DWORD wrong_pid=win32_process_global_policy_inspect(&policy,window,pi.dwProcessId+1,pi.dwThreadId,machine,&invalid,ntw16s_global_image_allowed);
     BOOL cleared=!memcmp(&invalid,&zero,sizeof(zero));
-    DWORD wrong_thread=ntw16s_global_policy_inspect(&policy,window,pi.dwProcessId,pi.dwThreadId+1,machine,&invalid);
-    DWORD wrong_arch=ntw16s_global_policy_inspect(&policy,window,pi.dwProcessId,pi.dwThreadId,
-        machine==IMAGE_FILE_MACHINE_I386?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&invalid);
+    DWORD wrong_thread=win32_process_global_policy_inspect(&policy,window,pi.dwProcessId,pi.dwThreadId+1,machine,&invalid,ntw16s_global_image_allowed);
+    DWORD wrong_arch=win32_process_global_policy_inspect(&policy,window,pi.dwProcessId,pi.dwThreadId,
+        machine==IMAGE_FILE_MACHINE_I386?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&invalid,ntw16s_global_image_allowed);
     win32_process_global_policy bad_policy=policy;bad_policy.sid_bytes=sizeof(bad_policy.sid)+1;
-    DWORD wrong_sid=ntw16s_global_policy_inspect(&bad_policy,window,pi.dwProcessId,pi.dwThreadId,machine,&invalid);
+    DWORD wrong_sid=win32_process_global_policy_inspect(&bad_policy,window,pi.dwProcessId,pi.dwThreadId,machine,&invalid,ntw16s_global_image_allowed);
     DWORD revalidate=win32_process_global_policy_revalidate(pi.hProcess,window,&identity);
     win32_process_global_identity stale=identity;stale.process_birth_low^=1;
     DWORD stale_process=win32_process_global_policy_revalidate(pi.hProcess,window,&stale);
     stale=identity;stale.thread_birth_low^=1;
     DWORD stale_thread=win32_process_global_policy_revalidate(pi.hProcess,window,&stale);
     win32_process_global_identity thread_identity={0};
-    DWORD thread_result=ntw16s_global_policy_inspect_thread(&policy,pi.dwProcessId,pi.dwThreadId,machine,&thread_identity);
+    DWORD thread_result=win32_process_global_policy_inspect_thread(&policy,pi.dwProcessId,pi.dwThreadId,machine,&thread_identity,ntw16s_global_image_allowed);
     DWORD thread_valid=win32_process_global_policy_revalidate_thread(pi.hProcess,&thread_identity);
     stale=thread_identity;stale.thread_birth_low^=1;
     DWORD thread_stale=win32_process_global_policy_revalidate_thread(pi.hProcess,&stale);
-    DWORD thread_wrong_arch=ntw16s_global_policy_inspect_thread(&policy,pi.dwProcessId,pi.dwThreadId,
-        machine==IMAGE_FILE_MACHINE_I386?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&invalid);
+    DWORD thread_wrong_arch=win32_process_global_policy_inspect_thread(&policy,pi.dwProcessId,pi.dwThreadId,
+        machine==IMAGE_FILE_MACHINE_I386?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&invalid,ntw16s_global_image_allowed);
     /* A suspended new process may not have attached its first thread to USER
      * yet. Its identity and architecture must still be checked before the
      * policy reports a retryable missing desktop. */
@@ -83,11 +83,11 @@ int wmain(int argc,WCHAR **argv)
     BOOL fresh_started=FALSE;HDESK fresh_desktop=NULL;DWORD fresh_desktop_error=0;
     if(fresh_created){
         SetLastError(ERROR_SUCCESS);fresh_desktop=GetThreadDesktop(fresh.dwThreadId);fresh_desktop_error=GetLastError();
-        fresh_before=ntw16s_global_policy_inspect_thread(&policy,fresh.dwProcessId,fresh.dwThreadId,machine,&invalid);
-        fresh_wrong_arch=ntw16s_global_policy_inspect_thread(&policy,fresh.dwProcessId,fresh.dwThreadId,
-            machine==IMAGE_FILE_MACHINE_I386?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&invalid);
+        fresh_before=win32_process_global_policy_inspect_thread(&policy,fresh.dwProcessId,fresh.dwThreadId,machine,&invalid,ntw16s_global_image_allowed);
+        fresh_wrong_arch=win32_process_global_policy_inspect_thread(&policy,fresh.dwProcessId,fresh.dwThreadId,
+            machine==IMAGE_FILE_MACHINE_I386?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,&invalid,ntw16s_global_image_allowed);
         if(ResumeThread(fresh.hThread)!=(DWORD)-1)fresh_started=WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;
-        if(fresh_started)fresh_after=ntw16s_global_policy_inspect_thread(&policy,fresh.dwProcessId,fresh.dwThreadId,machine,&invalid);
+        if(fresh_started)fresh_after=win32_process_global_policy_inspect_thread(&policy,fresh.dwProcessId,fresh.dwThreadId,machine,&invalid,ntw16s_global_image_allowed);
         TerminateProcess(fresh.hProcess,0);WaitForSingleObject(fresh.hProcess,3000);CloseHandle(fresh.hThread);CloseHandle(fresh.hProcess);
     }
     WCHAR other_name[128];swprintf(other_name,ARRAYSIZE(other_name),L"Win16S-Policy-Other-%lu",GetCurrentProcessId());
@@ -96,7 +96,7 @@ int wmain(int argc,WCHAR **argv)
     ResetEvent(ready);swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" target",self);
     BOOL other_started=other && CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&other_si,&other_pi) &&
         WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;
-    DWORD other_result=other_started?ntw16s_global_policy_inspect_thread(&policy,other_pi.dwProcessId,other_pi.dwThreadId,machine,&invalid):ERROR_TIMEOUT;
+    DWORD other_result=other_started?win32_process_global_policy_inspect_thread(&policy,other_pi.dwProcessId,other_pi.dwThreadId,machine,&invalid,ntw16s_global_image_allowed):ERROR_TIMEOUT;
     if(other_pi.hProcess){TerminateProcess(other_pi.hProcess,0);WaitForSingleObject(other_pi.hProcess,3000);CloseHandle(other_pi.hThread);CloseHandle(other_pi.hProcess);}
     if(other)CloseDesktop(other);
     SetEnvironmentVariableW(L"WIN16_POLICY_DESKTOP",desktop);ResetEvent(ready);
@@ -104,7 +104,7 @@ int wmain(int argc,WCHAR **argv)
     PROCESS_INFORMATION station_pi={0};STARTUPINFOW station_si={.cb=sizeof(station_si)};
     BOOL station_created=CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&station_si,&station_pi);
     BOOL station_started=station_created && WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;
-    DWORD station_result=station_started?ntw16s_global_policy_inspect_thread(&policy,station_pi.dwProcessId,station_pi.dwThreadId,machine,&invalid):ERROR_TIMEOUT;
+    DWORD station_result=station_started?win32_process_global_policy_inspect_thread(&policy,station_pi.dwProcessId,station_pi.dwThreadId,machine,&invalid,ntw16s_global_image_allowed):ERROR_TIMEOUT;
     if(!station_started){DWORD station_exit=99;if(station_created)GetExitCodeProcess(station_pi.hProcess,&station_exit);printf("POLICY STATION SKIP start=%d exit=%lu error=%lu\n",station_created,station_exit,GetLastError());}
     if(station_pi.hProcess){TerminateProcess(station_pi.hProcess,0);WaitForSingleObject(station_pi.hProcess,3000);CloseHandle(station_pi.hThread);CloseHandle(station_pi.hProcess);}
     if(window)PostMessageW(window,WM_CLOSE,0,0);

@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global/remote.h"
+#include "global_module_fixture.h"
 
 static HANDLE env_event(const WCHAR *key,DWORD access)
 {WCHAR name[128];return GetEnvironmentVariableW(key,name,ARRAYSIZE(name))?OpenEventW(access,FALSE,name):NULL;}
@@ -31,17 +31,17 @@ int wmain(int argc,WCHAR **argv)
     win32_process_global_load ticket={0},invalid={0};void *worker=NULL;
     static WCHAR long_path[33010];wmemset(long_path,L'x',ARRAYSIZE(long_path)-1);
     long_path[0]=L'C';long_path[1]=L':';long_path[2]=L'\\';
-    DWORD long_error=ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId,long_path,&invalid);
-    DWORD bad_pid=ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId+1,argv[1],&invalid);
-    DWORD bad_name=ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId,L"C:\\wrong.dll",&invalid);
-    DWORD begin=started?ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId,argv[1],&ticket):ERROR_TIMEOUT;
+    DWORD long_error=fixture_global_load_begin(pi.hProcess,pi.dwProcessId,long_path,&invalid);
+    DWORD bad_pid=fixture_global_load_begin(pi.hProcess,pi.dwProcessId+1,argv[1],&invalid);
+    DWORD bad_name=fixture_global_load_begin(pi.hProcess,pi.dwProcessId,L"C:\\wrong.dll",&invalid);
+    DWORD begin=started?fixture_global_load_begin(pi.hProcess,pi.dwProcessId,argv[1],&ticket):ERROR_TIMEOUT;
     BOOL entered=!begin && WaitForSingleObject(events[2],3000)==WAIT_OBJECT_0;
-    DWORD duplicate=entered?ntw16s_global_load_begin(pi.hProcess,pi.dwProcessId,argv[1],&ticket):ERROR_INVALID_STATE;
-    DWORD timed=entered?ntw16s_global_load_finish(&ticket,0,&worker):ERROR_TIMEOUT;
+    DWORD duplicate=entered?fixture_global_load_begin(pi.hProcess,pi.dwProcessId,argv[1],&ticket):ERROR_INVALID_STATE;
+    DWORD timed=entered?fixture_global_load_finish(&ticket,0,&worker):ERROR_TIMEOUT;
     DWORD busy=entered?win32_process_global_load_discard(&ticket):ERROR_INVALID_STATE;
     BOOL retained=ticket.process && ticket.thread && ticket.remote_path && ticket.path && !worker;
     SetEvent(events[3]);
-    DWORD finished=begin?begin:ntw16s_global_load_finish(&ticket,5000,&worker);
+    DWORD finished=begin?begin:fixture_global_load_finish(&ticket,5000,&worker);
     BOOL cleared=!ticket.process && !ticket.thread && !ticket.remote_path && !ticket.path && worker;
     SetEvent(events[1]);DWORD wait=WaitForSingleObject(pi.hProcess,3000),code=99;
     if(wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);else TerminateProcess(pi.hProcess,ERROR_TIMEOUT);
@@ -50,10 +50,10 @@ int wmain(int argc,WCHAR **argv)
     swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" target",self);STARTUPINFOW dead_si={.cb=sizeof(dead_si)};PROCESS_INFORMATION dead={0};
     if(!CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&dead_si,&dead))return 9;
     BOOL dead_ready=WaitForSingleObject(events[0],3000)==WAIT_OBJECT_0;win32_process_global_load dead_ticket={0};void *dead_worker=NULL;
-    DWORD dead_begin=dead_ready?ntw16s_global_load_begin(dead.hProcess,dead.dwProcessId,argv[1],&dead_ticket):ERROR_TIMEOUT;
+    DWORD dead_begin=dead_ready?fixture_global_load_begin(dead.hProcess,dead.dwProcessId,argv[1],&dead_ticket):ERROR_TIMEOUT;
     BOOL dead_entered=!dead_begin && WaitForSingleObject(events[2],3000)==WAIT_OBJECT_0;
     BOOL killed=TerminateProcess(dead.hProcess,91);DWORD dead_wait=WaitForSingleObject(dead.hProcess,3000);
-    DWORD dead_finish=dead_begin?dead_begin:ntw16s_global_load_finish(&dead_ticket,3000,&dead_worker);
+    DWORD dead_finish=dead_begin?dead_begin:fixture_global_load_finish(&dead_ticket,3000,&dead_worker);
     BOOL dead_cleared=!dead_ticket.process && !dead_ticket.thread && !dead_ticket.remote_path && !dead_ticket.path && !dead_worker;
     CloseHandle(dead.hThread);CloseHandle(dead.hProcess);for(unsigned i=0;i<ARRAYSIZE(events);++i)CloseHandle(events[i]);
     if(long_error!=ERROR_FILENAME_EXCED_RANGE || invalid.path){printf("GLOBAL LOAD PATH ERROR got=%lu retained=%d\n",long_error,invalid.path!=NULL);return 10;}

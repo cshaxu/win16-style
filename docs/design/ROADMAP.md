@@ -3,6 +3,8 @@
 本项目永久只有 milestone0（M0），不创建 M1 或后续 milestone。
 候选没有 T 号；此处描述依赖顺序，CURRENT 才能准入。
 
+当前T26按[三层样式架构与14个S规划](../proposals/style-library-reorganization.md)有序实施；具体活动S及交付基线只由[CURRENT](../states/CURRENT.md)管理。逐文件审计，按完整能力合批实施与交付，不为单个文件重复完整构建发布。
+
 | 阶段 | 结果与退出条件 |
 | --- | --- |
 | 治理与准备 | 权威拓扑、MTSP、产品契约、静态门禁、固定来源文件指纹、导入方案可审查并推送 |

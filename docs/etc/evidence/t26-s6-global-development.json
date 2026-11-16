@@ -1,0 +1,795 @@
+{
+  "stage": "S6 development, incomplete, not published",
+  "baseline": "31010d3f3b3c6fd9fb999dc185b1b6083e08feb0",
+  "execution": "native current desktop, owned fixtures; no computer-use or private desktops",
+  "build": "MinGW GCC C17 Ninja ccache incremental x86/x64; warning-as-error; start/thread/attach/DLL and x64 run16s compiled",
+  "public_source_sha256": {
+    "src/lib-win32-style/access/global/session.c": "4c9464cecb6c536eace2dff5031585be700c9818aa49d3d085c87bcedcaef1c0",
+    "src/lib-win32-style/access/global/session.h": "5ef2cb666d41768ea45b26e6e0572989120333d1f0e6120ab0ae045d151bdb9b",
+    "src/lib-win32-style/access/global/control.c": "fd361a900ed3ba7c775a2ee22857749c8866b6f57285855136e94b221dc6f340",
+    "src/lib-win32-style/access/global/control.h": "a47b6be103c19e84a2084241643790b7e469c432060384dfea5066df5687da47",
+    "src/lib-win32-style/access/global/start.c": "1b1f33644aa7f9b6325bb423ffab7aeedc2171c8a221db1e0e43b4ba7ccd1b61",
+    "src/lib-win32-style/access/global/start.h": "39335576f147e6bc18ede8317193730b77625436be08b775899373a459110fb8",
+    "src/lib-win32-style/access/global/worker.c": "dbd08230a7d50eb37bb01ee995091af94aedaf131b20acb85f8f38c305f39fd2",
+    "src/lib-win32-style/access/global/worker.h": "96250cd636fb8c4586dda6929f01b183e3d815cefc35de0a3faf04aea713bd06",
+    "src/lib-win32-style/access/global/late.c": "fdd3f2302aaee3686c9c71d0616d034c71ca80e7bba1626b61c3b606f700ebda",
+    "src/lib-win32-style/access/global/late.h": "6c427bb5d01b7229ee2caf4bb20dab0eae91399c837cc3deee516594d9e1c14f",
+    "src/lib-win32-style/access/global/attach.c": "e04732fab6bcec76cf90cb93f304d88bbd3f66d520397f72838ced68e4f9e164",
+    "src/lib-win32-style/access/global/attach.h": "27055e664eaf582e556947f71bece648be146919e5391dfa6e397c65e375eff8",
+    "src/lib-win32-style/access/global/manager.c": "c0fd20b4b294e8da84a01822b69c73c9f79e266e0077b03be8e49443b341a21a",
+    "src/lib-win32-style/access/global/manager.h": "59d278969879e4b74a0c8221853bbfcd4be98f4363102486ef95c88cf2faf635",
+    "src/lib-win32-style/access/global/uwp_global.c": "5d99460f132e339a1e1772aa7a739586b5c89ba9c280e9c6841731fe542e4f4d",
+    "src/lib-win32-style/access/global/uwp_global.h": "9ff539650e1d80eddcaf53908aaf00079a0726792f691c08a967a1c826723d26",
+    "src/lib-win32/process-global/background.c": "220a05bef469656c1c332109c4379a7f6b705e20f37c614bea2409dec70b3ddd",
+    "src/lib-win32/process-global/background.h": "c6ee2a215d368f3338f181acfef63cbb8259a7d6e480f811bf2d65728cbba2fd",
+    "src/lib-win32/process-global/dispatch.c": "e7658cd05fc6eadf8efc7fee3a03c25926e2d83cd8c21b98fa94e88140a10fd6",
+    "src/lib-win32/process-global/dispatch.h": "c5b7e49f37963914b8e608198cc8fea4c0bff289fd6ec848794708f8f8c81d71",
+    "src/lib-win32/process-global/engine.c": "46237e514fb6f7e36001d1b1179af1fc13a801567b52b2f28c704f15d39e4af9",
+    "src/lib-win32/process-global/engine.h": "447aff3af796a04563b450de66adb87b859e7e27352c7254f630872e32485863",
+    "src/lib-win32/process-global/enumerate.c": "316087512a5074b2ce77a0c668a9d462f9817d28d94ecae2d3c0c426da914989",
+    "src/lib-win32/process-global/enumerate.h": "77170efdb3f6f088d23712b24f21a53722c80f86afa095116b59bdfc1087e947",
+    "src/lib-win32/process-global/identity.c": "4816f6ed4e97ef979ef0da3f8cd377cc895f7e3f75cea13138f39660203f8288",
+    "src/lib-win32/process-global/identity.h": "51e6412989e13eb2720ba702994cbebb716da4b144b5be4fac42cdb68f822d0d",
+    "src/lib-win32/process-global/load.c": "c6ad928fa641a159836c58d22abb531f91ab133fa4bdeddb9aa38a709186bef5",
+    "src/lib-win32/process-global/load.h": "75224c25c9db172c52ceeef8e5929039f727448438d8aa8d2b2b90f9011ba12a",
+    "src/lib-win32/process-global/module.c": "651e266b53fe2c5cdb877da6b1ff5230925e274d42e22ace14163ef6dedbca46",
+    "src/lib-win32/process-global/module.h": "6398c7f283da43a0650f4942b396188303c215f500d774b7a38906b4e9ea46b5",
+    "src/lib-win32/process-global/module_snapshot.h": "8d869a76144faed414cdd6c95c1d8266592ded985d755c24175ce69fb07c1565",
+    "src/lib-win32/process-global/monitor.c": "73c87b15989a575bafb24ebb9f4a6a4c73157bcad5afd6ccaf81f787272a93d5",
+    "src/lib-win32/process-global/monitor.h": "19b0f9b0895eb23e11b1e465d3a9e453d7d9fcdddff5f38daa03c3bbaa6a21da",
+    "src/lib-win32/process-global/policy.c": "fdaff9c40110ae26ade5ae6bc04ededc59333369427a3bf245bd098cd2c10368",
+    "src/lib-win32/process-global/policy.h": "64d6d0dd6e0763e83d687b273623d4800ad4f5a0ddaee1d9c65f5cbf0fc5f475",
+    "src/lib-win32/process-global/queue.c": "4f499e42308419308ff62428e60cd4812f12097c35889b9448e0a01dd9094b0b",
+    "src/lib-win32/process-global/queue.h": "5a0e774b0745fe73ec9ceaed0194992e6382b6d4497e5dc630097f3cae1666dc",
+    "src/lib-win32/process-global/recovery.c": "4608b06b133ec4964bd1dffbd046ed660ee79035549e4b29e3f8f97185d52dc5",
+    "src/lib-win32/process-global/recovery.h": "5df203f555b53cb0d04f7d383321241024ee7f72ac3bdefdfd0fd2399693c214",
+    "src/lib-win32/process-global/registry.c": "264a7c4fb57c0158c1adc3f0dfcd595414e3cb62552387db6e0c35a7a6b35ec0",
+    "src/lib-win32/process-global/registry.h": "b9e3e148fc93fa7e21ba64b5e610f73f33fca9c1566caabefa414d87efe0331c",
+    "src/lib-win32/process-global/remote_export.c": "6aee72a36e56ded062ab1c45ae8a55cccb28e43918c60a5dd15f7345b89c5ba2",
+    "src/lib-win32/process-global/remote_export.h": "2a04c13f6a7c7ce4e25c04a747dbc6e701d4903ff18b8083def2d687cd037094",
+    "src/lib-win32/process-global/remote_loader.c": "8dc1a83b77a91550ddbe974b7b49816e84e2168b5277d6cd6e1475a8cc838119",
+    "src/lib-win32/process-global/remote_loader.h": "7cda73e5d399c0d3febb002593a23c159540f6ca615427b588db200f8ce11bf7",
+    "src/lib-win32/process-global/remote_memory.h": "109801c22f611c379f7981ba7ff19a5c14d56a3f2c1f0ad92ed68e2a59226e7e",
+    "src/lib-win32/process-global/targets.c": "d324c6d3b672dc9a347f211be6a5ff6af483e9ccc4b625f9d51ee1e0cac390f4",
+    "src/lib-win32/process-global/targets.h": "d96c3a76c259ed54a5d12b2cbfb68bb3be94510fe5dcc55337d048e1ba1ad68b",
+    "src/lib-win32/process-global/transaction.c": "fe9eaade66fbb5a3731aaa8ac6234a95b67bc5542104b2c6ff89659e17be47f3",
+    "src/lib-win32/process-global/transaction.h": "e28c87eb5d6ddb493b267cb5962988ccc1028458b6ec830eb630e68a24f97e50",
+    "src/lib-win32/process-global/window.c": "acea318d7d4c32b3f89560d14aaa34f38a56788f015b122948c061c2d5382062",
+    "src/lib-win32/process-global/window.h": "ce0ae14d90bc7f09acf5e8decbb321e69ba238d04e646f95c5cb6d3d7dd7aa58",
+    "src/lib-win32/process-global/worker.c": "88bd7ed81c40933a7cb3bc2125046e8e7a631cbe25773be5e9ed4f26291a7f4b",
+    "src/lib-win32/process-global/worker.h": "351d3862b00167a9f77377496b3d48b804955e166a0e69f032a823569ffb307b",
+    "src/lib-win32-style/access/global/host.c": "58e5df4838137ec40bd6777fe1be41e9b7ed2cf15b5113534d7e6cead8bab23c",
+    "src/lib-win32-style/access/global/host.h": "21347944ae994bad5c877ea6a8a90b324334dcbf9f542ef282ee1b0b067494cf",
+    "src/lib-win32-style/access/global/owner.c": "ccf44a12d6d48c90ddded4b09397fa80df89d3f63287b8c0e199eb558d225c7b",
+    "src/lib-win32-style/access/global/owner.h": "efe5d588c33c5eb9cc0eb5d28ceca7e1d6968e5ea4c85d0d0a9dfbe5ee57e27e",
+    "src/lib-win32-style/access/global/receiver.c": "1ecf20b1b9af50cc164d53b313e2509d2a6ae820689e6ca50598644629dbff6c",
+    "src/lib-win32-style/access/global/receiver.h": "37cff986d836dea6ffe46bf9420d6abe26abb6dc56f6de797ba8fb96aa44058e",
+    "src/lib-win32-style/access/global/trace.c": "a52251ec7766045304873ceb81705efc4c7df8d6d8cbdbe8ba811394c56a6c36",
+    "src/lib-win32-style/access/global/trace.h": "f9d111357f70d91407067a365f8fdff8eb2602a5ee8085989c96a5284933b154"
+  },
+  "cases": [
+    {
+      "arch": "x86",
+      "test": "core-style-global-session",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-global-session.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_SESSION_OK namespaces=1 opaque_style=42 owner_birth=1 version=1 cookie=1 phase=1 last_error=1 handles=1 cleanup=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "core-global-style-bridge",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-global-style-bridge.exe"
+      ],
+      "code": 0,
+      "output": "FOOTER child_bottom=277 client_bottom=277\nOVERLAP screen=88,122,372,130 origin=83,122 update=1 repainted=0\nGLOBAL CHILD BRIDGE 2k=1 16=1 back=1 new=1 remove=1\nGLOBAL STYLE BRIDGE bits=32 apply2k=1 switch16=1 switch2k=1 client_clean=1 immediate=1 clean_after=1 click_clean=1 footer=1 overlap=1 refreshed=1 remove2k=1 apply16=1 remove16=1 reverse=1 existing=1 takeover=1 existing2k=1 takeover16=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "core-style-global-session",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-global-session.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_SESSION_OK namespaces=1 opaque_style=42 owner_birth=1 version=1 cookie=1 phase=1 last_error=1 handles=1 cleanup=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "core-global-style-bridge",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-global-style-bridge.exe"
+      ],
+      "code": 0,
+      "output": "FOOTER child_bottom=277 client_bottom=277\nOVERLAP screen=88,122,372,130 origin=83,122 update=1 repainted=0\nGLOBAL CHILD BRIDGE 2k=1 16=1 back=1 new=1 remove=1\nGLOBAL STYLE BRIDGE bits=64 apply2k=1 switch16=1 switch2k=1 client_clean=1 immediate=1 clean_after=1 click_clean=1 footer=1 overlap=1 refreshed=1 remove2k=1 apply16=1 remove16=1 reverse=1 existing=1 takeover=1 existing2k=1 takeover16=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "core-style-global-control",
+      "code": 0,
+      "output": "GLOBAL_CONTROL_OK six_edges=1 opaque_ids=41_99_500 ready=1 rapid_choice=1 no_overlap=1 failure=1 retained_timeout=1 joined=1\r\n"
+    },
+    {
+      "arch": "x64",
+      "test": "core-style-global-control",
+      "code": 0,
+      "output": "GLOBAL_CONTROL_OK six_edges=1 opaque_ids=41_99_500 ready=1 rapid_choice=1 no_overlap=1 failure=1 retained_timeout=1 joined=1\r\n"
+    },
+    {
+      "arch": "x86",
+      "test": "core-style-global-late",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-global-late.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_LATE_OK no_style=1 inactive=1 failure_retry=1 busy=1 completed_once=1 module=1 notify=1 drained=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "core-style-global-late",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-global-late.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_LATE_OK no_style=1 inactive=1 failure_retry=1 busy=1 completed_once=1 module=1 notify=1 drained=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "core-process-global-module",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-process-global-module.exe"
+      ],
+      "code": 0,
+      "output": "PROCESS_GLOBAL_MODULE_PASS matched=1 mismatch=1 fallback=1 file_equal=1 file_different=1 missing=1 context=1 nested=1 mapped=1 error=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "core-process-global-load-finish",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-process-global-load-finish.exe"
+      ],
+      "code": 0,
+      "output": "PROCESS_GLOBAL_LOAD_FINISH_OK context=1 timeout_retains=1 error_bubbles=1 success=1 cleanup=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "core-process-global-module",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-process-global-module.exe"
+      ],
+      "code": 0,
+      "output": "PROCESS_GLOBAL_MODULE_PASS matched=1 mismatch=1 fallback=1 file_equal=1 file_different=1 missing=1 context=1 nested=1 mapped=1 error=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "core-process-global-load-finish",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-process-global-load-finish.exe"
+      ],
+      "code": 0,
+      "output": "PROCESS_GLOBAL_LOAD_FINISH_OK context=1 timeout_retains=1 error_bubbles=1 success=1 cleanup=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "manager-local-abandon",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-manager-fixture\\run16s.exe",
+        "local-abandon"
+      ],
+      "code": 0,
+      "output": "MANAGER LOCAL ABANDON bits=32 error=0\n"
+    },
+    {
+      "arch": "x64",
+      "test": "manager-local-abandon",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-manager-fixture\\run16s.exe",
+        "local-abandon"
+      ],
+      "code": 0,
+      "output": "MANAGER LOCAL ABANDON bits=64 error=0\n"
+    },
+    {
+      "arch": "x86",
+      "test": "core-style-global-receiver",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-global-receiver.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_RECEIVER_OK direct=1 no_style=1 owner=1 cookie=1 once=1 reentry=1 stop_race=1 remove=1 last_error=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "core-style-global-host",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-global-host.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_HOST_OK missing=1 protocol=1 owner_birth=1 repeated=50 handles=1 no_hook=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "core-style-global-receiver",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-global-receiver.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_RECEIVER_OK direct=1 no_style=1 owner=1 cookie=1 once=1 reentry=1 stop_race=1 remove=1 last_error=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "core-style-global-host",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-global-host.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_HOST_OK missing=1 protocol=1 owner_birth=1 repeated=50 handles=1 no_hook=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "core-style-global-owner",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-global-owner.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_OWNER_OK parent_cancel=1 opaque_style=42 preflight_failure=1 repeated=20 handles=1 mapping_gone=1 collision_untouched=1 no_hook=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "core-style-global-owner",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-global-owner.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_OWNER_OK parent_cancel=1 opaque_style=42 preflight_failure=1 repeated=20 handles=1 mapping_gone=1 collision_untouched=1 no_hook=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "product-global-start-failure--unsupported-style",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-failure.exe",
+        "--unsupported-style"
+      ],
+      "code": 0,
+      "output": "GLOBAL STYLE UNSUPPORTED result=10\nrun16s: global style failed (50)\n"
+    },
+    {
+      "arch": "x64",
+      "test": "product-global-start-failure--timeout",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-failure.exe",
+        "--timeout"
+      ],
+      "code": 0,
+      "output": "GLOBAL SWEEP TIMEOUT result=0 injected=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "core-global-session-style",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-global-session-style.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL SESSION STYLE bits=32 size=40 offset=36 live16=1 live2k=1 match16=1 match2k=1 old_rejected=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "core-tray-controller",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-tray-controller.exe"
+      ],
+      "code": 0,
+      "output": "TRAY CONTROLLER PASS bits=32 switch=both toggle=off failure=1 mutually_exclusive=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "core-global-session-style",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-global-session-style.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL SESSION STYLE bits=64 size=40 offset=36 live16=1 live2k=1 match16=1 match2k=1 old_rejected=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "core-tray-controller",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-tray-controller.exe"
+      ],
+      "code": 0,
+      "output": "TRAY CONTROLLER PASS bits=64 switch=both toggle=off failure=1 mutually_exclusive=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "start",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\ntw16s32.dll"
+      ],
+      "code": 0,
+      "output": "TARGET IDENTITY session=1 alive=1 owner_match=1\nGLOBAL START PASS bits=32 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1 remote_load=0\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x86",
+      "test": "start-remote",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\ntw16s32.dll",
+        "remote-load"
+      ],
+      "code": 0,
+      "output": "GLOBAL START PASS bits=32 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1 remote_load=1\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x86",
+      "test": "attach",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-attach-fixture\\run16s.exe"
+      ],
+      "code": 0,
+      "output": "ATTACH BOUNDED PASS bits=32 timeout=1460 elapsed=516\nATTACH PASS bits=32 unloaded=1 loaded=1 parent=1 child=1 click=1 removed=1 cleanup=1\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x86",
+      "test": "manager-targets",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-manager-fixture\\run16s.exe"
+      ],
+      "code": 0,
+      "output": "MANAGER DRAW bits=32 changed=1 restored_equal=0 native=343534586 styled=2033954149 restored=2875890938 font=0/0 style=1342177280/1342177280\nMANAGER IDLE bits=32 timeout=1460 completed=0\nMANAGER PASS bits=32 existing=1 new=1 clicks=2 removed=2 cleanup=1 retired=1 survivor=1 replacement=1\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x86",
+      "test": "manager-stop-race",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-manager-fixture\\run16s.exe",
+        "stop-race"
+      ],
+      "code": 0,
+      "output": "CLASSIC_TARGET_RESULT pid=8496 tid=30508 window=00000000 error=1223 appcontainer=0\nMANAGER STOP RACE bits=32 start=0 created=1 initial=21 tracked=1 pending=1460 resumed=1 exited=1 child=0 stopped=0\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x86",
+      "test": "manager-unsupported",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-manager-unsupported-fixture\\run16s.exe"
+      ],
+      "code": 0,
+      "output": "CLASSIC_TARGET_RESULT pid=14292 tid=4248 window=0425084A error=21 appcontainer=0\nMANAGER_UNSUPPORTED bits=32 mode=later start=0 failed=1 active=1 before=2 made=1 later=1 sent=1 after=0 stopped=0 wait=0 code=0 ack=1 wrong=1 inactive=1\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x64",
+      "test": "start",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\ntw16s64.dll"
+      ],
+      "code": 0,
+      "output": "TARGET IDENTITY session=1 alive=1 owner_match=1\nGLOBAL START PASS bits=64 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1 remote_load=0\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x64",
+      "test": "start-remote",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\ntw16s64.dll",
+        "remote-load"
+      ],
+      "code": 0,
+      "output": "GLOBAL START PASS bits=64 real_dll=1 ready=1 packet_freed=1 busy=1 stop=1 bad_pid=1 bad_thread=1 bad_cookie=1 collision=1 cleanup=1 remote_load=1\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x64",
+      "test": "attach",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-attach-fixture\\run16s.exe"
+      ],
+      "code": 0,
+      "output": "ATTACH BOUNDED PASS bits=64 timeout=1460 elapsed=515\nATTACH PASS bits=64 unloaded=1 loaded=1 parent=1 child=1 click=1 removed=1 cleanup=1\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x64",
+      "test": "manager-targets",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-manager-fixture\\run16s.exe"
+      ],
+      "code": 0,
+      "output": "MANAGER DRAW bits=64 changed=1 restored_equal=0 native=343534586 styled=2033954149 restored=2875890938 font=0/0 style=1342177280/1342177280\nMANAGER IDLE bits=64 timeout=1460 completed=0\nMANAGER PASS bits=64 existing=1 new=1 clicks=2 removed=2 cleanup=1 retired=1 survivor=1 replacement=1\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x64",
+      "test": "manager-stop-race",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-manager-fixture\\run16s.exe",
+        "stop-race"
+      ],
+      "code": 0,
+      "output": "CLASSIC_TARGET_RESULT pid=15808 tid=36640 window=0000000000000000 error=1223 appcontainer=0\nMANAGER STOP RACE bits=64 start=0 created=1 initial=21 tracked=1 pending=1460 resumed=1 exited=1 child=0 stopped=0\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x64",
+      "test": "manager-unsupported",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-manager-unsupported-fixture\\run16s.exe"
+      ],
+      "code": 0,
+      "output": "CLASSIC_TARGET_RESULT pid=31972 tid=37384 window=00000000054406a8 error=21 appcontainer=0\nMANAGER_UNSUPPORTED bits=64 mode=later start=0 failed=1 active=1 before=2 made=1 later=1 sent=1 after=0 stopped=0 wait=0 code=0 ack=1 wrong=1 inactive=1\n",
+      "execution": "unsandboxed native owned fixtures"
+    },
+    {
+      "arch": "x86",
+      "test": "core-style-global-trace",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-global-trace.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_TRACE_OK namespaces=2 canonical=1 isolated=1 invalid=1 live_peer_rejected=1 no_etw=1\n",
+      "skip": false,
+      "subcase_skip": false
+    },
+    {
+      "arch": "x86",
+      "test": "core-global-process",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-global-process.exe"
+      ],
+      "code": 0,
+      "output": "TRACE STOP PASS owned_exited=1 missing_trace=1\nGLOBAL PROCESS PARSER PASS 32=1 64=1 short=1 opcode=1 provider=1\n",
+      "skip": false,
+      "subcase_skip": false
+    },
+    {
+      "arch": "x86",
+      "test": "core-global-thread",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-global-thread.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL THREAD WORKER PASS bits=32 callback=1 stop=1 bad_cookie=1 mode=stop\n",
+      "skip": false,
+      "subcase_skip": false
+    },
+    {
+      "arch": "x86",
+      "test": "core-global-thread",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-global-thread.exe",
+        "owner-loss"
+      ],
+      "code": 0,
+      "output": "GLOBAL THREAD WORKER PASS bits=32 callback=1 stop=1 bad_cookie=1 mode=owner-loss\n",
+      "skip": false,
+      "subcase_skip": false
+    },
+    {
+      "arch": "x86",
+      "test": "core-global-process-integration",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-global-process-integration.exe"
+      ],
+      "code": 77,
+      "output": "GLOBAL ORPHAN SKIP elevation required\n",
+      "skip": true,
+      "subcase_skip": true
+    },
+    {
+      "arch": "x64",
+      "test": "core-style-global-trace",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-global-trace.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL_TRACE_OK namespaces=2 canonical=1 isolated=1 invalid=1 live_peer_rejected=1 no_etw=1\n",
+      "skip": false,
+      "subcase_skip": false
+    },
+    {
+      "arch": "x64",
+      "test": "core-global-process",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-global-process.exe"
+      ],
+      "code": 0,
+      "output": "TRACE STOP PASS owned_exited=1 missing_trace=1\nGLOBAL PROCESS PARSER PASS 32=1 64=1 short=1 opcode=1 provider=1\n",
+      "skip": false,
+      "subcase_skip": false
+    },
+    {
+      "arch": "x64",
+      "test": "core-global-thread",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-global-thread.exe"
+      ],
+      "code": 0,
+      "output": "GLOBAL THREAD WORKER PASS bits=64 callback=1 stop=1 bad_cookie=1 mode=stop\n",
+      "skip": false,
+      "subcase_skip": false
+    },
+    {
+      "arch": "x64",
+      "test": "core-global-thread",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-global-thread.exe",
+        "owner-loss"
+      ],
+      "code": 0,
+      "output": "GLOBAL THREAD WORKER PASS bits=64 callback=1 stop=1 bad_cookie=1 mode=owner-loss\n",
+      "skip": false,
+      "subcase_skip": false
+    },
+    {
+      "arch": "x64",
+      "test": "core-global-process-integration",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-global-process-integration.exe"
+      ],
+      "code": 77,
+      "output": "GLOBAL ORPHAN SKIP elevation required\n",
+      "skip": true,
+      "subcase_skip": true
+    }
+  ],
+  "passed": 46,
+  "failed": 0,
+  "limits": [
+    "start/start-remote both widths worker ready returned access denied (5); load/export and wrong-cookie/collision checks observed separately",
+    "attach both widths begin returned access denied (5); not a successful initialization/style result",
+    "denial cause not yet isolated; no production security/target policy changed",
+    "thread test compiles worker without product NTW16S_BUILD initialization; cannot substitute for DLL initialization",
+    "full clean build/package/publish/remote verification pending full S6 scope",
+    "public worker and lazy scheduling extracted; independent lazy test has no style or hooks; manager/owner/host and attach migration still incomplete",
+    "published S5 DLL under same current owned fixture also returns ready error 5 in x86/x64; this is not a successful baseline and not proof of actual product coverage",
+    "receiver test directly invokes the real public receiver using synthetic CWPSTRUCT messages in an owned child; no real desktop-wide hook, no renderer",
+    "host tests cover missing/invalid session and repeated failure cleanup only; real dual-width host lifecycle remains unverified",
+    "owner tests stop before installing hooks: parent cancellation, package preflight failure, object collision and repeated handle/map cleanup",
+    "host/owner APIs expose failed manager stop as retained state; no new physical unload or proof of complete recovery",
+    "native manager draw is changed, but restored_equal=0; not proof of exact pixel/DWM restoration (S7/S14 debt)",
+    "actual orphan ETW monitor tests return 77 without elevation; excluded from pass count"
+  ],
+  "baseline_comparison": [
+    {
+      "arch": "x86",
+      "test": "published-S5-DLL-with-current-test-driver",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t26-s6\\baseline-fixture\\x86\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t26-s6\\baseline-fixture\\x86\\ntw16s32.dll"
+      ],
+      "code": 13,
+      "output": "GLOBAL START FAIL started=1 load_begin=0 load_finish=0 bad_pid=87 bad_thread=1444 collision_default=183 collision=183 unchanged=1 wrong_begin=0 wrong_ready=5 wrong_wait=0 wrong_close=0 begin=0 ready=5 packet=0 busy=0 worker_wait=4294967295 close=0 child_wait=0 code=0\n"
+    },
+    {
+      "arch": "x64",
+      "test": "published-S5-DLL-with-current-test-driver",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\t26-s6\\baseline-fixture\\x64\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\t26-s6\\baseline-fixture\\x64\\ntw16s64.dll"
+      ],
+      "code": 13,
+      "output": "TARGET IDENTITY session=1 alive=1 owner_match=1\nGLOBAL START FAIL started=1 load_begin=0 load_finish=0 bad_pid=87 bad_thread=1444 collision_default=183 collision=183 unchanged=1 wrong_begin=0 wrong_ready=5 wrong_wait=0 wrong_close=0 begin=0 ready=5 packet=0 busy=0 worker_wait=4294967295 close=0 child_wait=0 code=0\nOWNER IDENTITY image=O:\\repos.hobby\\win16style\\build\\t26-s6\\baseline-fixture\\x64\\run16s.exe module=O:\\repos.hobby\\win16style\\build\\t26-s6\\baseline-fixture\\x64\\run16s.exe\n"
+    }
+  ],
+  "owner_identity_diagnostic": {
+    "arch": "x64",
+    "target_session": true,
+    "target_owner_alive": true,
+    "target_owner_module_match": true,
+    "owner_image_matches_self_module": true,
+    "result": "current worker ready still returned 5; excludes this fixture owner image/module match, not initialization or OS restrictions",
+    "output": "TARGET IDENTITY session=1 alive=1 owner_match=1\nGLOBAL START FAIL started=1 load_begin=0 load_finish=0 bad_pid=87 bad_thread=1444 collision_default=183 collision=183 unchanged=1 wrong_begin=0 wrong_ready=5 wrong_wait=0 wrong_close=0 begin=0 ready=5 packet=0 busy=0 worker_wait=4294967295 close=0 child_wait=0 code=0\nOWNER IDENTITY image=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\run16s.exe module=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\run16s.exe\n"
+  },
+  "cleanup": {
+    "baseline_fixture_bytes_removed": 3902486,
+    "path": "build/t26-s6/baseline-fixture",
+    "reparse_checked": true,
+    "scratch_retained": "build/t26-s6 small logs/results and baseline audit hashes for continued S6 diagnosis; no complete clean build clone or publish backup",
+    "owned_manager_targets_confirmed_exited": [
+      10564,
+      14044,
+      38628,
+      31160
+    ]
+  },
+  "migration_current": {
+    "deleted_product_sources": [
+      "global/start.c",
+      "global/start.h",
+      "global/remote.c",
+      "global/remote.h",
+      "global/attach.c",
+      "global/attach.h",
+      "global/manager.c",
+      "global/manager.h",
+      "global/late.c",
+      "global/late.h",
+      "global/thread.c",
+      "global/thread.h",
+      "global/process.c",
+      "global/process.h"
+    ],
+    "public_ownership": [
+      "session",
+      "control",
+      "start",
+      "worker",
+      "late",
+      "attach",
+      "manager",
+      "receiver",
+      "host",
+      "owner",
+      "trace"
+    ],
+    "product_configuration": [
+      "global/config.c: module/control/target filter binding",
+      "global/services.c: UWP eligibility/operation and outer diagnostic reporting"
+    ],
+    "pending": [
+      "final audit, single-snapshot clean build/package/publish and actual-package verification",
+      "commit/push/actual remote audit before closing S6"
+    ]
+  },
+  "boundary": {
+    "source_self_test": "pass",
+    "x86_style_global_archive": "pass",
+    "x64_style_global_archive": "pass",
+    "scope": "new style-global archive and complete access/application source scan; full package gates pending"
+  },
+  "observed_environment": {
+    "manager_target_results": "TokenIsAppContainer=1 for both actual target and unsupported fixtures, both widths",
+    "classic_policy": "existing process-global policy rejects AppContainer without any production change",
+    "effect": "positive global attachment/style assertions not covered; raw failed exit codes retained, never counted as pass",
+    "unresolved": "worker-init ready error 5 and suspended-thread stop-race initial error 5 not fully isolated",
+    "resolution": "Same owned fixtures outside AppContainer sandbox pass all 12 formerly rejected cases without changing product policy/security; raw sandbox failures retained separately."
+  },
+  "whole_S6_worktree_line_counts_including_untracked": {
+    "shared": {
+      "paths": 24,
+      "before_lines": 190,
+      "after_lines": 1505,
+      "net_lines": 1315
+    },
+    "product": {
+      "paths": 21,
+      "before_lines": 1328,
+      "after_lines": 378,
+      "net_lines": -950
+    },
+    "tests": {
+      "paths": 37,
+      "before_lines": 2943,
+      "after_lines": 3411,
+      "net_lines": 468
+    }
+  },
+  "sandbox_case_history": [
+    {
+      "arch": "x86",
+      "test": "manager-stop-race",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-manager-fixture\\run16s.exe",
+        "stop-race"
+      ],
+      "code": 15,
+      "output": "MANAGER STOP RACE bits=32 start=0 created=1 initial=5 tracked=0 pending=5023 resumed=1 exited=1 child=0 stopped=0\n"
+    },
+    {
+      "arch": "x86",
+      "test": "manager-targets",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-manager-fixture\\run16s.exe"
+      ],
+      "code": 14,
+      "output": "CLASSIC_TARGET_RESULT pid=10564 tid=32720 window=01BD07A0 error=5 appcontainer=1\nCLASSIC_TARGET_RESULT pid=10564 tid=32720 window=01BD07A0 error=5 appcontainer=1\nMANAGER DRAW bits=32 changed=1 restored_equal=0 native=343534586 styled=0 restored=2875890938 font=0/0 style=1342177280/1342177280\nMANAGER FAIL before=1 start=0 delay=0 idle_timeout=5023 idle_done=0 first=0 created=0 second=0 attached=0 active=0 exited=0 retired=0 replacement=0 replacement_clicks=-1 survivor=0 survivor_clicks=2 stats=0,0,2,0 clicks=1,-1 removed=0,-1 stop=0 cleanup=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "manager-unsupported",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-manager-unsupported-fixture\\run16s.exe"
+      ],
+      "code": 1,
+      "output": "CLASSIC_TARGET_RESULT pid=14044 tid=30500 window=01BE07A0 error=5 appcontainer=1\nCLASSIC_TARGET_RESULT pid=14044 tid=30500 window=01BE07A0 error=5 appcontainer=1\nMANAGER_UNSUPPORTED bits=32 mode=later start=0 failed=2 active=0 before=0 made=1 later=0 sent=1 after=0 stopped=0 wait=0 code=0 ack=0 wrong=1 inactive=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "manager-stop-race",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-manager-fixture\\run16s.exe",
+        "stop-race"
+      ],
+      "code": 15,
+      "output": "MANAGER STOP RACE bits=64 start=0 created=1 initial=5 tracked=0 pending=5023 resumed=1 exited=1 child=0 stopped=0\n"
+    },
+    {
+      "arch": "x64",
+      "test": "manager-targets",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-manager-fixture\\run16s.exe"
+      ],
+      "code": 14,
+      "output": "CLASSIC_TARGET_RESULT pid=38628 tid=34348 window=000000000358096c error=5 appcontainer=1\nCLASSIC_TARGET_RESULT pid=38628 tid=34348 window=000000000358096c error=5 appcontainer=1\nMANAGER DRAW bits=64 changed=1 restored_equal=0 native=343534586 styled=0 restored=2875890938 font=0/0 style=1342177280/1342177280\nMANAGER FAIL before=1 start=0 delay=0 idle_timeout=5023 idle_done=0 first=0 created=0 second=0 attached=0 active=0 exited=0 retired=0 replacement=0 replacement_clicks=-1 survivor=0 survivor_clicks=2 stats=0,0,2,0 clicks=1,-1 removed=0,-1 stop=0 cleanup=1\n"
+    },
+    {
+      "arch": "x64",
+      "test": "manager-unsupported",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-manager-unsupported-fixture\\run16s.exe"
+      ],
+      "code": 1,
+      "output": "CLASSIC_TARGET_RESULT pid=31160 tid=36304 window=00000000054b0874 error=5 appcontainer=1\nCLASSIC_TARGET_RESULT pid=31160 tid=36304 window=00000000054b0874 error=5 appcontainer=1\nMANAGER_UNSUPPORTED bits=64 mode=later start=0 failed=2 active=0 before=0 made=1 later=0 sent=1 after=0 stopped=0 wait=0 code=0 ack=0 wrong=1 inactive=1\n"
+    },
+    {
+      "arch": "x86",
+      "test": "start-current",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\ntw16s32.dll"
+      ],
+      "code": 13,
+      "output": "TARGET IDENTITY session=1 alive=1 owner_match=1\nGLOBAL START FAIL started=1 load_begin=0 load_finish=0 bad_pid=87 bad_thread=1444 collision_default=183 collision=183 unchanged=1 wrong_begin=0 wrong_ready=5 wrong_wait=0 wrong_close=0 begin=0 ready=5 packet=0 busy=0 worker_wait=4294967295 close=0 child_wait=0 code=0\nOWNER IDENTITY image=O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\run16s.exe module=O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\run16s.exe\n"
+    },
+    {
+      "arch": "x86",
+      "test": "start-current-remote",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\ntw16s32.dll",
+        "remote-load"
+      ],
+      "code": 13,
+      "output": "GLOBAL START FAIL started=1 load_begin=0 load_finish=0 bad_pid=87 bad_thread=1444 collision_default=183 collision=183 unchanged=1 wrong_begin=0 wrong_ready=5 wrong_wait=0 wrong_close=0 begin=0 ready=5 packet=0 busy=0 worker_wait=4294967295 close=0 child_wait=0 code=0\nOWNER IDENTITY image=O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\run16s.exe module=O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-start-fixture\\run16s.exe\n"
+    },
+    {
+      "arch": "x86",
+      "test": "attach-current",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-attach-fixture\\run16s.exe"
+      ],
+      "code": 14,
+      "output": "ATTACH BLOCK blocked=0 error=5023 elapsed=0 attached=0\nATTACH FAIL started=1 init=0 before=0 begin=5 advance=5 attached=0 clicks=1 remove=5 after=0 worker_wait=4294967295 closed=0 child_wait=0 code=0\n"
+    },
+    {
+      "arch": "x64",
+      "test": "start-current",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\ntw16s64.dll"
+      ],
+      "code": 13,
+      "output": "TARGET IDENTITY session=1 alive=1 owner_match=1\nGLOBAL START FAIL started=1 load_begin=0 load_finish=0 bad_pid=87 bad_thread=1444 collision_default=183 collision=183 unchanged=1 wrong_begin=0 wrong_ready=5 wrong_wait=0 wrong_close=0 begin=0 ready=5 packet=0 busy=0 worker_wait=4294967295 close=0 child_wait=0 code=0\nOWNER IDENTITY image=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\run16s.exe module=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\run16s.exe\n"
+    },
+    {
+      "arch": "x64",
+      "test": "start-current-remote",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\run16s.exe",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\ntw16s64.dll",
+        "remote-load"
+      ],
+      "code": 13,
+      "output": "GLOBAL START FAIL started=1 load_begin=0 load_finish=0 bad_pid=87 bad_thread=1444 collision_default=183 collision=183 unchanged=1 wrong_begin=0 wrong_ready=5 wrong_wait=0 wrong_close=0 begin=0 ready=5 packet=0 busy=0 worker_wait=4294967295 close=0 child_wait=0 code=0\nOWNER IDENTITY image=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\run16s.exe module=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-start-fixture\\run16s.exe\n"
+    },
+    {
+      "arch": "x64",
+      "test": "attach-current",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-attach-fixture\\run16s.exe"
+      ],
+      "code": 14,
+      "output": "ATTACH BLOCK blocked=0 error=5023 elapsed=0 attached=0\nATTACH FAIL started=1 init=0 before=0 begin=5 advance=5 attached=0 clicks=1 remove=5 after=0 worker_wait=4294967295 closed=0 child_wait=0 code=0\n"
+    }
+  ],
+  "skipped": 2
+}

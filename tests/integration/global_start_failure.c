@@ -8,6 +8,7 @@ static DWORD WINAPI fail_start_wait(DWORD count,const HANDLE *handles,BOOL all,D
 static BOOL fail_window_walk(DWORD thread,ULONGLONG deadline,win32_process_global_visit_window visit,void *context);
 #define WaitForMultipleObjects fail_start_wait
 #define win32_process_global_window_walk fail_window_walk
+#include "../../src/lib-win32-style/access/global/owner.c"
 #include "../../src/run16s-exe/global.c"
 #undef WaitForMultipleObjects
 #undef win32_process_global_window_walk
@@ -31,7 +32,8 @@ int wmain(int argc,WCHAR **argv)
     }
     if(argc==2 && !wcscmp(argv[1],L"--timeout")){
         inject_sweep=TRUE;walk_error=ERROR_TIMEOUT;
-        DWORD result=sweep(1,1,0,NTW16S_GLOBAL_APPLY);
+        const style_global_owner_spec spec={.manager=&ntw16s_global_manager_config};
+        DWORD result=sweep(&spec,1,1,0,NTW16S_GLOBAL_APPLY);
         printf("GLOBAL SWEEP TIMEOUT result=%lu injected=%u\n",result,walk_injected);
         return result==ERROR_SUCCESS && walk_injected==1?0:4;
     }
@@ -39,7 +41,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc>1 && !inject_sweep)return 3;
     WCHAR desktop[128],name[NTW16S_GLOBAL_NAME_CAP];DWORD needed=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed) ||
-       wcsncmp(desktop,L"Win16S-Dialog-",14) || !ntw16s_global_name(name,ARRAYSIZE(name)))return 1;
+       wcsncmp(desktop,L"Win16S-Dialog-",14) || !style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return 1;
     int result=run16s_global_with_parent(NULL,NTW16S_GLOBAL_STYLE_16);
     HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);DWORD error=mapping?ERROR_SUCCESS:GetLastError();
     if(mapping)CloseHandle(mapping);

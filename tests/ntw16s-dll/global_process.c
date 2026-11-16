@@ -1,4 +1,5 @@
-#include "ntw16s-dll/global/process.h"
+#include "lib-win32-style/access/global/trace.h"
+#include "ntw16s-dll/global/session.h"
 #include "lib-win32/process-global/recovery.h"
 #include <stdio.h>
 #include <string.h>
@@ -21,11 +22,11 @@ int main(int argc,char **argv)
     record.EventHeader.EventDescriptor.Opcode=1;record.EventHeader.ProviderId.Data1++;
     if(win32_process_global_monitor_event_pid(&record) || win32_process_global_monitor_event_pid(NULL))return 5;
     DWORD owner=0,high=0,low=0;
-    if(!ntw16s_global_process_parse_name(L"Win16S-ETW-1234-0123456789abcdef",&owner,&high,&low) ||
+    if(!style_global_trace_parse(NTW16S_GLOBAL_TRACE_PREFIX,L"Win16S-ETW-1234-0123456789abcdef",&owner,&high,&low) ||
        owner!=1234 || high!=0x01234567 || low!=0x89abcdef)return 6;
-    if(ntw16s_global_process_parse_name(L"Win16S-ETW-01234-0123456789abcdef",&owner,&high,&low) ||
-       ntw16s_global_process_parse_name(L"Win16S-ETW-1234-0123456789abcdef-extra",&owner,&high,&low) ||
-       ntw16s_global_process_parse_name(L"Other-ETW-1234-0123456789abcdef",&owner,&high,&low))return 7;
+    if(style_global_trace_parse(NTW16S_GLOBAL_TRACE_PREFIX,L"Win16S-ETW-01234-0123456789abcdef",&owner,&high,&low) ||
+       style_global_trace_parse(NTW16S_GLOBAL_TRACE_PREFIX,L"Win16S-ETW-1234-0123456789abcdef-extra",&owner,&high,&low) ||
+       style_global_trace_parse(NTW16S_GLOBAL_TRACE_PREFIX,L"Other-ETW-1234-0123456789abcdef",&owner,&high,&low))return 7;
     FILETIME created,exited,kernel,user;
     if(!GetProcessTimes(GetCurrentProcess(),&created,&exited,&kernel,&user))return 8;
     if(win32_process_global_trace_orphan(GetCurrentProcessId(),created.dwHighDateTime,created.dwLowDateTime))return 9;

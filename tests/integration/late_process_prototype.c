@@ -130,7 +130,7 @@ int wmain(int argc,WCHAR **argv)
     if(propagation_only && !SetEnvironmentVariableW(L"WIN16S_TEST_PROPAGATION_ONLY",L"1"))return 2;
     WCHAR directory[NTWSHK_PATH_CAP];DWORD length=GetFullPathNameW(argv[2],NTWSHK_PATH_CAP,directory,NULL);
     if(!length || length>=NTWSHK_PATH_CAP)return 3;
-    WCHAR session_name[NTW16S_GLOBAL_NAME_CAP];if(!ntw16s_global_name(session_name,ARRAYSIZE(session_name)))return 9;
+    WCHAR session_name[NTW16S_GLOBAL_NAME_CAP];if(!style_global_session_name(&ntw16s_global_namespace,session_name,ARRAYSIZE(session_name)))return 9;
     HANDLE mapping=CreateFileMappingW(INVALID_HANDLE_VALUE,NULL,PAGE_READWRITE,0,sizeof(ntw16s_global_session),session_name);
     if(!mapping || GetLastError()==ERROR_ALREADY_EXISTS)return 9;
     ntw16s_global_session *session=MapViewOfFile(mapping,FILE_MAP_WRITE,0,0,sizeof(*session));if(!session)return 9;

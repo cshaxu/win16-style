@@ -44,7 +44,7 @@ int wmain(int argc,WCHAR **argv)
  BOOL ordinary=argc==5 && !lstrcmpW(argv[4],L"ordinary");if(argc==5 && !ordinary)return 2;
  WCHAR desktop[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];DWORD needed=0;
  if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed)||wcsncmp(desktop,L"Win16S-Dialog-",14))return 3;
- if(!ntw16s_global_name(name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
+ if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
  int x86=run(argv[1],argv[2],request,ordinary),x64=run(argv[1],argv[3],request,ordinary);
  if(!x86&&!x64){printf("GLOBAL PROPAGATION LIFECYCLE PASS widths=2 cycles=2 active=4 stopped=4 removed=4 mode=%s\n",ordinary?"ordinary":"native");return 0;}
  printf("GLOBAL PROPAGATION LIFECYCLE FAIL x86=%d x64=%d error=%lu\n",x86,x64,GetLastError());return 1;

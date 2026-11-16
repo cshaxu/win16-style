@@ -78,7 +78,7 @@ int wmain(int argc,WCHAR **argv)
     if(!SetEnvironmentVariableW(L"WIN16S_TEST_DPI_UNAWARE",unaware?L"1":NULL))return 2;
     WCHAR desk[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16],command[4096];DWORD needed=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desk,sizeof(desk),&needed) || wcsncmp(desk,L"Win16S-Dialog-",14))return 3;
-    if(!ntw16s_global_name(name,ARRAYSIZE(name)) || swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
+    if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)) || swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
     target targets[TARGET_COUNT]={0};PROCESS_INFORMATION manager={0};HANDLE mapping=NULL,event=NULL;ntw16s_global_session *session=NULL;BOOL passed=FALSE,active=FALSE;DWORD exitcode=99;
     const WCHAR *titles[]={L"T21PlainOld32",L"T21PlainOld64",L"T21RunOld64",L"T21RunOld32",L"T21PlainNew32",L"T21PlainNew64",L"T21RunNew64",L"T21RunNew32",L"T21AfterStop"};
     if(!launch(&targets[0],argv[2],NULL,titles[0]) || !launch(&targets[1],argv[3],NULL,titles[1]) ||

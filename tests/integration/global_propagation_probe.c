@@ -27,7 +27,7 @@ static void headless_trace(const char *stage)
 static BOOL wait_global_ready(DWORD timeout)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],ready[NTW16S_GLOBAL_NAME_CAP+64];
-    if(!ntw16s_global_name(name,ARRAYSIZE(name)))return FALSE;
+    if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return FALSE;
     ULONGLONG end=GetTickCount64()+timeout;
     while(GetTickCount64()<end){
         HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
@@ -49,7 +49,7 @@ static BOOL wait_global_ready(DWORD timeout)
     }
     WCHAR desktop[256]=L"",session_name[NTW16S_GLOBAL_NAME_CAP]=L"";DWORD needed=0,open_error=0;
     (void)GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed);
-    if(ntw16s_global_name(session_name,ARRAYSIZE(session_name))){HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,session_name);
+    if(style_global_session_name(&ntw16s_global_namespace,session_name,ARRAYSIZE(session_name))){HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,session_name);
         if(!mapping)open_error=GetLastError();else CloseHandle(mapping);}
     printf("HEADLESS READY DIAG bits=%u desktop=%ls mapping_error=%lu module=%d\n",(unsigned)(sizeof(void*)*8),desktop,open_error,module()!=NULL);
     return FALSE;

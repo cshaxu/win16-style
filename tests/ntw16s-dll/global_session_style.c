@@ -9,15 +9,15 @@ int main(void)
     session.magic=NTW16S_GLOBAL_MAGIC;session.version=NTW16S_GLOBAL_VERSION;
     session.owner_pid=GetCurrentProcessId();session.owner_birth_low=low;session.owner_birth_high=high;
     session.cookie=123;session.phase=NTW16S_GLOBAL_ACTIVE;session.style=NTW16S_GLOBAL_STYLE_16;
-    BOOL live16=ntw16s_global_owner_alive(&session);
-    BOOL match16=ntw16s_global_session_matches(&session,123,NTW16S_GLOBAL_STYLE_16) &&
-                 !ntw16s_global_session_matches(&session,123,NTW16S_GLOBAL_STYLE_2K);
+    BOOL live16=style_global_owner_alive(&ntw16s_global_namespace,&session);
+    BOOL match16=style_global_session_matches(&ntw16s_global_namespace,&session,123,NTW16S_GLOBAL_STYLE_16) &&
+                 !style_global_session_matches(&ntw16s_global_namespace,&session,123,NTW16S_GLOBAL_STYLE_2K);
     session.style=NTW16S_GLOBAL_STYLE_2K;
-    BOOL live2k=ntw16s_global_owner_alive(&session);
-    BOOL match2k=ntw16s_global_session_matches(&session,123,NTW16S_GLOBAL_STYLE_2K) &&
-                 !ntw16s_global_session_matches(&session,123,NTW16S_GLOBAL_STYLE_16) &&
-                 !ntw16s_global_session_matches(&session,124,NTW16S_GLOBAL_STYLE_2K);
-    session.version=1;BOOL old_rejected=!ntw16s_global_owner_alive(&session);
+    BOOL live2k=style_global_owner_alive(&ntw16s_global_namespace,&session);
+    BOOL match2k=style_global_session_matches(&ntw16s_global_namespace,&session,123,NTW16S_GLOBAL_STYLE_2K) &&
+                 !style_global_session_matches(&ntw16s_global_namespace,&session,123,NTW16S_GLOBAL_STYLE_16) &&
+                 !style_global_session_matches(&ntw16s_global_namespace,&session,124,NTW16S_GLOBAL_STYLE_2K);
+    session.version=1;BOOL old_rejected=!style_global_owner_alive(&ntw16s_global_namespace,&session);
     printf("GLOBAL SESSION STYLE bits=%u size=%u offset=%u live16=%d live2k=%d match16=%d match2k=%d old_rejected=%d\n",
            (unsigned)(sizeof(void *)*8),(unsigned)sizeof(session),(unsigned)offsetof(ntw16s_global_session,style),
            live16,live2k,match16,match2k,old_rejected);

@@ -62,7 +62,7 @@ fail:
     {DWORD release_error=win32_process_global_load_discard(ticket);return release_error?release_error:error;}
 }
 
-DWORD win32_process_global_load_finish(win32_process_global_load *ticket,DWORD timeout,win32_process_global_resolve_fn resolve,void **worker)
+DWORD win32_process_global_load_finish_using(win32_process_global_load *ticket,DWORD timeout,win32_process_global_resolve_using_fn resolve,void *context,void **worker)
 {
     DWORD wait,error;void *resolved=NULL;
     if(worker)*worker=NULL;
@@ -72,7 +72,7 @@ DWORD win32_process_global_load_finish(win32_process_global_load *ticket,DWORD t
     if(wait!=WAIT_OBJECT_0)return wait==WAIT_FAILED?GetLastError():ERROR_INVALID_STATE;
     if(WaitForSingleObject(ticket->process,0)==WAIT_OBJECT_0)error=ERROR_PROCESS_ABORTED;
     else{
-        error=resolve(ticket->process,ticket->pid,ticket->path,&resolved);
+        error=resolve(ticket->process,ticket->pid,ticket->path,&resolved,context);
         if(error && WaitForSingleObject(ticket->process,0)==WAIT_OBJECT_0)error=ERROR_PROCESS_ABORTED;
     }
     DWORD release_error=win32_process_global_load_discard(ticket);
@@ -80,3 +80,8 @@ DWORD win32_process_global_load_finish(win32_process_global_load *ticket,DWORD t
     if(!error)*worker=resolved;
     return error;
 }
+
+static DWORD legacy_resolve(HANDLE process,DWORD pid,const WCHAR *path,void **address,void *context)
+{return (*(win32_process_global_resolve_fn *)context)(process,pid,path,address);}
+DWORD win32_process_global_load_finish(win32_process_global_load *ticket,DWORD timeout,win32_process_global_resolve_fn resolve,void **worker)
+{return win32_process_global_load_finish_using(ticket,timeout,resolve?legacy_resolve:NULL,&resolve,worker);}

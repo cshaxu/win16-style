@@ -1,5 +1,5 @@
 #define COBJMACROS
-#include "ntw16s-dll/global/manager.h"
+#include "lib-win32-style/access/global/manager.h"
 #include "ntw16s-dll/uwp/target.h"
 #include "ntw16s-dll/global/session.h"
 #include <shobjidl.h>
@@ -91,7 +91,7 @@ int wmain(int argc,WCHAR **argv)
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],stop_name[NTW16S_GLOBAL_NAME_CAP+16],dll[32768];DWORD n=GetModuleFileNameW(NULL,dll,ARRAYSIZE(dll));
     WCHAR *tail=wcsrchr(dll,L'\\');if(!n||n>=ARRAYSIZE(dll)||!tail||(size_t)(tail-dll)+20>=ARRAYSIZE(dll))return 1;
     wcscpy(tail+1,L"ntw16s64.dll");
-    if(!ntw16s_global_name(name,ARRAYSIZE(name)))return 1;
+    if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return 1;
     if(swprintf(stop_name,ARRAYSIZE(stop_name),L"%ls.stop",name)<0)return 1;
     HANDLE mapping=CreateFileMappingW(INVALID_HANDLE_VALUE,NULL,PAGE_READWRITE,0,sizeof(ntw16s_global_session),name);
     if(!mapping)return 1;
@@ -99,15 +99,15 @@ int wmain(int argc,WCHAR **argv)
     ntw16s_global_session *s=MapViewOfFile(mapping,FILE_MAP_ALL_ACCESS,0,0,sizeof(*s));
     HANDLE stop=CreateEventW(NULL,TRUE,FALSE,stop_name),application=NULL,second_application=NULL;
     style_uwp_target second_target={0};HWND second_surface=NULL;
-    ntw16s_global_manager *global=NULL;style_uwp_target target={0};BOOL ok=FALSE;DWORD error=0;
+    style_global_manager *global=NULL;style_uwp_target target={0};BOOL ok=FALSE;DWORD error=0;
     HRESULT hr=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);BOOL com=SUCCEEDED(hr);
     HWINEVENTHOOK event_hook=SetWinEventHook(EVENT_OBJECT_CREATE,EVENT_OBJECT_UNCLOAKED,NULL,events,0,0,WINEVENT_OUTOFCONTEXT);
     if(!s||!stop||!com)goto done;
     *s=(ntw16s_global_session){.magic=NTW16S_GLOBAL_MAGIC,.version=NTW16S_GLOBAL_VERSION,.owner_pid=GetCurrentProcessId(),.cookie=GetCurrentProcessId(),.phase=NTW16S_GLOBAL_ACTIVE};
     if(!win32_process_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high))goto done;
     if(new_target){
-        ntw16s_global_manager_test_filter(MAXDWORD);
-        error=ntw16s_global_manager_start(dll,IMAGE_FILE_MACHINE_AMD64,&global);
+        style_global_manager_test_filter(MAXDWORD);
+        error=style_global_manager_start(&ntw16s_global_manager_config,dll,IMAGE_FILE_MACHINE_AMD64,&global);
         if(error)goto done;
     }
     FILETIME start;GetSystemTimeAsFileTime(&start);DWORD pid=0;IApplicationActivationManager *manager=NULL;
@@ -130,7 +130,7 @@ int wmain(int argc,WCHAR **argv)
     }
     printf("ACTIVATE hr=%lx pid=%lu\n",(unsigned long)hr,pid);if(FAILED(hr))goto done;
     observed_pid=pid;
-    ntw16s_global_manager_test_filter(pid);
+    style_global_manager_test_filter(pid);
     application=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE|PROCESS_TERMINATE,FALSE,pid);
     FILETIME birth,a,b,c;
     if(!application||!GetProcessTimes(application,&birth,&a,&b,&c)||CompareFileTime(&birth,&start)<0){if(application)CloseHandle(application);application=NULL;goto done;}
@@ -150,7 +150,7 @@ int wmain(int argc,WCHAR **argv)
         if(FAILED(hr))goto done;
         second_application=OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION|SYNCHRONIZE|PROCESS_TERMINATE,FALSE,second_pid);
         if(!second_application||!GetProcessTimes(second_application,&birth,&a,&b,&c)||CompareFileTime(&birth,&start)<0){if(second_application)CloseHandle(second_application);second_application=NULL;goto done;}
-        ntw16s_global_manager_test_second(second_pid);
+        style_global_manager_test_second(second_pid);
         deadline=GetTickCount64()+10000;
         while(!style_uwp_target_find(second_pid,&second_target)&&GetTickCount64()<deadline){
             MsgWaitForMultipleObjects(0,NULL,FALSE,20,QS_ALLINPUT);
@@ -161,8 +161,8 @@ int wmain(int argc,WCHAR **argv)
         if(!second_target.frame||!host1||host1!=host2||frame==second_target.frame)goto done;
         if(prestyled){error=ntw16s_uwp_target_change(&target,dll,TRUE);printf("PAIR_PRESTYLE error=%lu\n",error);if(error)goto done;}
     }
-    if(!new_target){error=ntw16s_global_manager_start(dll,IMAGE_FILE_MACHINE_AMD64,&global);if(error)goto done;}
-    BOOL admitted=new_target||!ntw16s_global_manager_refresh(global);
+    if(!new_target){error=style_global_manager_start(&ntw16s_global_manager_config,dll,IMAGE_FILE_MACHINE_AMD64,&global);if(error)goto done;}
+    BOOL admitted=new_target||!style_global_manager_refresh(global);
     if(new_target){
         deadline=GetTickCount64()+7000;
         do{
@@ -172,11 +172,11 @@ int wmain(int argc,WCHAR **argv)
             if(surface&&IsWindowVisible(surface))break;
         }while(GetTickCount64()<deadline);
     }
-    error=ntw16s_global_manager_wait_idle(global,7000);
+    error=style_global_manager_wait_idle(global,7000);
     surfaces=0;surface=NULL;EnumWindows(owned,0);
     ok=!error&&admitted&&surfaces==1&&surface&&IsWindowVisible(surface);
     printf("GLOBAL_APPLY admitted=%d idle_error=%lu surfaces=%u visible=%d\n",admitted,error,surfaces,surface?IsWindowVisible(surface):0);
-    ntw16s_global_manager_stats stats;ntw16s_global_manager_stats_read(global,&stats);
+    style_global_manager_stats stats;style_global_manager_stats_read(global,&stats);
     printf("GLOBAL_STATS queued=%ld active=%ld failed=%ld\n",stats.queued,stats.active,stats.failed);
     if(ok)ok=capture(frame);
     if(ok&&pair){
@@ -187,14 +187,14 @@ int wmain(int argc,WCHAR **argv)
     }
 done:
     if(s)s->phase=NTW16S_GLOBAL_STOPPING;
-    if(global){DWORD removed=ntw16s_global_manager_stop(global,5000);printf("GLOBAL_REMOVE error=%lu surface_exists=%d\n",removed,IsWindow(surface));ok=ok&&!removed&&!IsWindow(surface);if(removed)error=removed;else global=NULL;}
+    if(global){DWORD removed=style_global_manager_stop(global,5000);printf("GLOBAL_REMOVE error=%lu surface_exists=%d\n",removed,IsWindow(surface));ok=ok&&!removed&&!IsWindow(surface);if(removed)error=removed;else global=NULL;}
     if(pair){printf("PAIR_REMOVE second_exists=%d\n",IsWindow(second_surface));ok=ok&&!IsWindow(second_surface);}
     if(ok){
         s->phase=NTW16S_GLOBAL_ACTIVE;
-        error=ntw16s_global_manager_start(dll,IMAGE_FILE_MACHINE_AMD64,&global);
-        if(!error)ok=!ntw16s_global_manager_refresh(global);
+        error=style_global_manager_start(&ntw16s_global_manager_config,dll,IMAGE_FILE_MACHINE_AMD64,&global);
+        if(!error)ok=!style_global_manager_refresh(global);
         s->phase=NTW16S_GLOBAL_STOPPING;
-        if(global){DWORD removed=ntw16s_global_manager_stop(global,5000);if(removed)error=removed;else global=NULL;}
+        if(global){DWORD removed=style_global_manager_stop(global,5000);if(removed)error=removed;else global=NULL;}
         surfaces=0;surface=NULL;EnumWindows(owned,0);ok=ok&&!error&&!surfaces;
         printf("GLOBAL_STOP_RACE error=%lu surfaces=%u\n",error,surfaces);
         if(pair){HWND first_frame=frame;frame=second_target.frame;surfaces=0;surface=NULL;EnumWindows(owned,0);
@@ -202,7 +202,7 @@ done:
     }
     if(application){if(frame)PostMessageW(frame,WM_CLOSE,0,0);if(WaitForSingleObject(application,3000)!=WAIT_OBJECT_0){TerminateProcess(application,0);WaitForSingleObject(application,1000);}CloseHandle(application);}
     if(second_application){if(second_target.frame)PostMessageW(second_target.frame,WM_CLOSE,0,0);if(WaitForSingleObject(second_application,3000)!=WAIT_OBJECT_0){TerminateProcess(second_application,0);WaitForSingleObject(second_application,1000);}CloseHandle(second_application);}
-    if(global){DWORD removed=ntw16s_global_manager_stop(global,5000);if(removed){printf("FAIL retained worker error=%lu\n",removed);return 1;}}
+    if(global){DWORD removed=style_global_manager_stop(global,5000);if(removed){printf("FAIL retained worker error=%lu\n",removed);return 1;}}
     if(com)CoUninitialize();
     if(event_hook)UnhookWinEvent(event_hook);
     if(s)UnmapViewOfFile(s);

@@ -7,7 +7,7 @@
 static int witness(void)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP];
-    if(!ntw16s_global_name(name,ARRAYSIZE(name)))return 2;
+    if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return 2;
     ULONGLONG until=GetTickCount64()+10000;
     while(GetTickCount64()<until){
         HANDLE map=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
@@ -25,7 +25,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc==2 && !wcscmp(argv[1],L"witness"))return witness();
     WCHAR desk[128],self[32768],command[32790],name[NTW16S_GLOBAL_NAME_CAP];DWORD needed=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desk,sizeof(desk),&needed) ||
-       wcsncmp(desk,L"Win16S-Dialog-",14) || !ntw16s_global_name(name,ARRAYSIZE(name)))return 4;
+       wcsncmp(desk,L"Win16S-Dialog-",14) || !style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return 4;
     DWORD n=GetModuleFileNameW(NULL,self,ARRAYSIZE(self));
     if(!n || n>=ARRAYSIZE(self) || swprintf(command,ARRAYSIZE(command),L"\"%ls\" witness",self)<0)return 5;
     STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};

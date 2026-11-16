@@ -79,7 +79,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc!=4 && !(argc==5 && !wcscmp(argv[4],L"--low")) && !(argc==6 && !wcscmp(argv[4],L"--medium")))return 5;
     WCHAR desktop[128],other[128],event_name[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16],self[32768],cmd[32768];DWORD needed=0;
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed) ||
-       wcsncmp(desktop,L"Win16S-Dialog-",14) || !ntw16s_global_name(name,ARRAYSIZE(name)))return 6;
+       wcsncmp(desktop,L"Win16S-Dialog-",14) || !style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return 6;
     swprintf(other,ARRAYSIZE(other),L"Win16S-Origin-%lu",GetCurrentProcessId());
     swprintf(event_name,ARRAYSIZE(event_name),L"Local\\Win16S-Origin-Go-%lu",GetCurrentProcessId());
     swprintf(request,ARRAYSIZE(request),L"%ls.request",name);

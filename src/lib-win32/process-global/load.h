@@ -5,6 +5,10 @@
 typedef struct win32_process_global_load {HANDLE process,thread,file;void *remote_path;WCHAR *path;DWORD pid;} win32_process_global_load;
 typedef DWORD (*win32_process_global_loader_fn)(HANDLE,DWORD,void **);
 typedef DWORD (*win32_process_global_resolve_fn)(HANDLE,DWORD,const WCHAR *,void **);
+/* Context is borrowed only for the synchronous finish call. */
+typedef DWORD (*win32_process_global_resolve_using_fn)(HANDLE,DWORD,const WCHAR *,void **,void *);
+DWORD win32_process_global_load_finish_using(win32_process_global_load *,DWORD,
+    win32_process_global_resolve_using_fn,void *,void **);
 DWORD win32_process_global_load_begin(HANDLE,DWORD,const WCHAR *,const WCHAR *,win32_process_global_loader_fn,win32_process_global_load *);
 DWORD win32_process_global_load_finish(win32_process_global_load *,DWORD,win32_process_global_resolve_fn,void **);
 DWORD win32_process_global_load_discard(win32_process_global_load *);

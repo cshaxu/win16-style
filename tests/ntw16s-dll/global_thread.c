@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include "ntw16s-dll/global/session.h"
-#include "ntw16s-dll/global/thread.h"
+#include "lib-win32-style/access/global/worker.h"
 
 LRESULT CALLBACK Ntw16sGlobalHook(int code,WPARAM a,LPARAM b)
 {
@@ -16,20 +16,26 @@ LRESULT CALLBACK Ntw16sGlobalHook(int code,WPARAM a,LPARAM b)
     return CallNextHookEx(NULL,code,a,b);
 }
 
+/* Direct public-worker test; product ABI is exercised by the real DLL start fixture. */
+static DWORD WINAPI run_worker(void *parameter)
+{
+    static const style_global_worker_ops ops={&ntw16s_global_namespace,Ntw16sGlobalHook,NULL,NULL};
+    return style_global_worker_run(&ops,parameter);
+}
 static int target(void)
 {
-    ntw16s_global_thread_packet packet={sizeof(packet),1,GetCurrentThreadId(),0x12345};
-    ntw16s_global_thread_packet invalid=packet;invalid.cookie++;
-    HANDLE bad=CreateThread(NULL,0,ntw16s_global_thread_worker,&invalid,0,NULL);
+    style_global_thread_packet packet={sizeof(packet),1,GetCurrentThreadId(),0x12345};
+    style_global_thread_packet invalid=packet;invalid.cookie++;
+    HANDLE bad=CreateThread(NULL,0,run_worker,&invalid,0,NULL);
     DWORD code=0;
     if(!bad || WaitForSingleObject(bad,3000)!=WAIT_OBJECT_0 || !GetExitCodeThread(bad,&code) || code!=ERROR_ACCESS_DENIED)return 2;
     CloseHandle(bad);
     HWND w=CreateWindowW(L"STATIC",L"worker-test",WS_OVERLAPPEDWINDOW,0,0,100,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
     if(!w)return 3;
-    HANDLE worker=CreateThread(NULL,0,ntw16s_global_thread_worker,&packet,0,NULL);
+    HANDLE worker=CreateThread(NULL,0,run_worker,&packet,0,NULL);
     if(!worker)return 4;
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],event_name[NTW16S_GLOBAL_NAME_CAP+64];
-    if(!ntw16s_global_name(name,ARRAYSIZE(name)) || swprintf(event_name,ARRAYSIZE(event_name),L"%ls.thread.%lu.%lu.%lu",name,
+    if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)) || swprintf(event_name,ARRAYSIZE(event_name),L"%ls.thread.%lu.%lu.%lu",name,
        GetCurrentProcessId(),packet.thread_id,packet.cookie)<0)return 5;
     HANDLE ready=OpenEventW(SYNCHRONIZE,FALSE,event_name);
     if(!ready || WaitForSingleObject(ready,3000)!=WAIT_OBJECT_0)return 6;
@@ -57,11 +63,9 @@ int wmain(int argc,WCHAR **argv)
     }
     BOOL owner_loss=argc==2 && !lstrcmpW(argv[1],L"owner-loss");
     if(argc!=1 && !owner_loss)return 21;
-    WCHAR desktop[128],name[NTW16S_GLOBAL_NAME_CAP],stop_name[NTW16S_GLOBAL_NAME_CAP+16],
-          ready_name[NTW16S_GLOBAL_NAME_CAP+64],hit_name[128],self[MAX_PATH],cmd[MAX_PATH+32];DWORD needed=0;
-    if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&needed) ||
-       wcsncmp(desktop,L"Win16S-Dialog-",14))return 10;
-    if(!ntw16s_global_name(name,ARRAYSIZE(name)) || swprintf(stop_name,ARRAYSIZE(stop_name),L"%ls.stop",name)<0)return 11;
+    WCHAR name[NTW16S_GLOBAL_NAME_CAP],stop_name[NTW16S_GLOBAL_NAME_CAP+16],
+          ready_name[NTW16S_GLOBAL_NAME_CAP+64],hit_name[128],self[MAX_PATH],cmd[MAX_PATH+32];
+    if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)) || swprintf(stop_name,ARRAYSIZE(stop_name),L"%ls.stop",name)<0)return 11;
     HANDLE map=CreateFileMappingW(INVALID_HANDLE_VALUE,NULL,PAGE_READWRITE,0,sizeof(ntw16s_global_session),name);
     if(!map || GetLastError()==ERROR_ALREADY_EXISTS)return 12;
     ntw16s_global_session *s=(ntw16s_global_session *)MapViewOfFile(map,FILE_MAP_ALL_ACCESS,0,0,sizeof(*s));if(!s)return 13;

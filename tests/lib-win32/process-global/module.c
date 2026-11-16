@@ -18,6 +18,22 @@ static BOOL same(const WCHAR *a,const WCHAR *b)
 {(void)a;(void)b;++equals;return allow;}
 static DWORD check(HANDLE p,DWORD id,HMODULE m,const WCHAR *name,const WCHAR *path)
 {(void)p;(void)id;(void)m;(void)name;(void)path;++checks;return ERROR_SUCCESS;}
+typedef struct check_context {DWORD error;unsigned calls;} check_context;
+static DWORD check_using(HANDLE process,DWORD pid,HMODULE module,const WCHAR *name,const WCHAR *path,void *value)
+{
+    check_context *context=value;WCHAR nested[MAX_PATH];(void)module;(void)name;(void)path;
+    ++context->calls;
+    /* A nested path selection must not overwrite the outer callback context. */
+    DWORD error=win32_process_global_select_path_using(process,pid,L"C:\\nonexistent\\nested-absent-module.dll",
+        nested,ARRAYSIZE(nested),same,check_using,NULL);
+    return error?error:context->error;
+}
+static DWORD resolve_using(HANDLE process,DWORD pid,const WCHAR *path,void **address,void *value)
+{
+    check_context *context=value;(void)process;(void)pid;(void)path;++context->calls;
+    *address=(void *)GetProcAddress(GetModuleHandleW(L"kernel32.dll"),"GetTickCount");
+    return context->error;
+}
 int main(void)
 {
     WCHAR selected[MAX_PATH];HANDLE p=GetCurrentProcess();DWORD id=GetCurrentProcessId();
@@ -34,6 +50,18 @@ int main(void)
     e=win32_process_global_select_path(p,id,L"C:\\nonexistent\\no-such-module-123456.dll",selected,ARRAYSIZE(selected),same,check);
     if(e || lstrcmpW(selected,L"C:\\nonexistent\\no-such-module-123456.dll"))return 3;
     if(win32_process_global_select_path(p,id,L"badname",selected,ARRAYSIZE(selected),same,check)!=ERROR_INVALID_PARAMETER)return 4;
+    check_context context={ERROR_ACCESS_DENIED,0};
+    e=win32_process_global_select_path_using(p,id,L"C:\\nonexistent\\kernel32.dll",selected,ARRAYSIZE(selected),same,check_using,&context);
+    if(e!=ERROR_ACCESS_DENIED || context.calls!=1)return 13;
+    context.error=0;
+    e=win32_process_global_select_path_using(p,id,L"C:\\nonexistent\\kernel32.dll",selected,ARRAYSIZE(selected),same,check_using,&context);
+    if(e || context.calls!=2)return 14;
+    HMODULE module=GetModuleHandleW(L"kernel32.dll");
+    e=win32_process_global_mapped_identity_using(p,id,module,L"kernel32.dll",L"owned-path","GetTickCount",resolve_using,&context);
+    if(e || context.calls!=3)return 15;
+    context.error=ERROR_ACCESS_DENIED;
+    e=win32_process_global_mapped_identity_using(p,id,module,L"kernel32.dll",L"owned-path","GetTickCount",resolve_using,&context);
+    if(e!=ERROR_ACCESS_DENIED || context.calls!=4)return 16;
     WCHAR temp[MAX_PATH],left[MAX_PATH]={0},right[MAX_PATH]={0};DWORD wrote=0;BOOL equal=FALSE,written=FALSE,different=FALSE,missing=FALSE;
     HANDLE one=INVALID_HANDLE_VALUE,two=INVALID_HANDLE_VALUE;
     if(!GetTempPathW(ARRAYSIZE(temp),temp) || !GetTempFileNameW(temp,L"gm1",0,left) || !GetTempFileNameW(temp,L"gm2",0,right))goto file_done;
@@ -55,5 +83,5 @@ file_done:
     if(left[0])DeleteFileW(left);
     if(right[0])DeleteFileW(right);
     if(!equal || !written || !different || !missing)return 9;
-    puts("PROCESS_GLOBAL_MODULE_PASS matched=1 mismatch=1 fallback=1 file_equal=1 file_different=1 missing=1");return 0;
+    puts("PROCESS_GLOBAL_MODULE_PASS matched=1 mismatch=1 fallback=1 file_equal=1 file_different=1 missing=1 context=1 nested=1 mapped=1 error=1");return 0;
 }

@@ -1,0 +1,32 @@
+[
+  {
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-s6",
+    "bytes": 268750.0,
+    "removed": true
+  },
+  {
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s6-global",
+    "bytes": 263272334.0,
+    "removed": true
+  },
+  {
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s6-global-publish",
+    "bytes": 10619141.0,
+    "removed": true
+  },
+  {
+    "bytes": 108054.0,
+    "removed": true,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-s6-final"
+  },
+  {
+    "bytes": 263453068.0,
+    "removed": true,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s6-global-final"
+  },
+  {
+    "bytes": 10654685.0,
+    "removed": true,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s6-global-final-publish"
+  }
+]

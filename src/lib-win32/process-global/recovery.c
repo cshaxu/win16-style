@@ -29,7 +29,7 @@ DWORD win32_process_global_trace_stop_peer(HANDLE process,DWORD pid,const WCHAR 
     return error==ERROR_WMI_INSTANCE_NOT_FOUND || error==ERROR_ACTIVE_CONNECTIONS?ERROR_SUCCESS:error;
 }
 
-void win32_process_global_recover_orphans(win32_process_global_trace_name_parser parse)
+void win32_process_global_recover_orphans_using(win32_process_global_trace_name_parser_using parse,void *context)
 {
     if(!parse)return;
     enum {capacity=256,name_capacity=128};
@@ -44,10 +44,15 @@ void win32_process_global_recover_orphans(win32_process_global_trace_name_parser
     for(ULONG i=0;i<count && i<capacity;++i){
         WCHAR *name=(WCHAR *)((BYTE *)entries[i]+entries[i]->LoggerNameOffset);
         DWORD pid=0,high=0,low=0;
-        if(!parse(name,&pid,&high,&low) || pid==GetCurrentProcessId())continue;
+        if(!parse(name,&pid,&high,&low,context) || pid==GetCurrentProcessId())continue;
         BOOL orphan=win32_process_global_trace_orphan(pid,high,low);
         if(orphan)(void)ControlTraceW(0,name,entries[i],EVENT_TRACE_CONTROL_STOP);
     }
 done:
     for(unsigned i=0;i<capacity;++i)free(entries[i]);
 }
+
+static BOOL legacy_parse(const WCHAR *name,DWORD *pid,DWORD *high,DWORD *low,void *context)
+{return (*(win32_process_global_trace_name_parser *)context)(name,pid,high,low);}
+void win32_process_global_recover_orphans(win32_process_global_trace_name_parser parse)
+{win32_process_global_recover_orphans_using(parse?legacy_parse:NULL,&parse);}

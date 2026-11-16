@@ -28,7 +28,7 @@ static void close_process(PROCESS_INFORMATION *p,HWND w)
 int wmain(int argc,WCHAR **argv)
 {if(argc!=4)return 2;WCHAR desk[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];DWORD n=0;
  if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desk,sizeof(desk),&n)||wcsncmp(desk,L"Win16S-Dialog-",14))return 3;
- if(!ntw16s_global_name(name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
+ if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
  PROCESS_INFORMATION old={0},fresh={0},manager={0};HWND a=NULL,b=NULL;HANDLE map=NULL,event=NULL;ntw16s_global_session *session=NULL;BOOL pass=FALSE;uint64_t before=0,styled=0,after=0;
  if(!launch(argv[2],NULL,&old)||!(a=wait_window(&old)))goto done;
  before=screenshot(a,argv[3],L"before");

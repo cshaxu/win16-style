@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "ntw16s-dll/global/attach.h"
+#include "lib-win32-style/access/global/attach.h"
 #include "ntw16s-dll/global/session.h"
 #include "global_session_fixture.h"
 
@@ -38,9 +38,9 @@ int wmain(int argc,WCHAR **argv)
     STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION pi={0};
     if(!ready || !stop || !entered || !release || !CreateProcessW(self,cmd,NULL,NULL,FALSE,0,NULL,NULL,&si,&pi))return 13;
     BOOL started=WaitForSingleObject(ready,3000)==WAIT_OBJECT_0;HWND window=FindWindowW(L"Win16OwnedAttachTest",L"owned");
-    win32_process_global_policy policy;DWORD init=win32_process_global_policy_init(&policy);ntw16s_global_attach ticket={0};
+    win32_process_global_policy policy;DWORD init=win32_process_global_policy_init(&policy);style_global_attach ticket={0};
     int before=window?query(window,WM_APP+52):-1;
-    DWORD begin=started && !init?ntw16s_global_attach_begin(&policy,window,pi.dwProcessId,pi.dwThreadId,
+    DWORD begin=started && !init?style_global_attach_begin(&ntw16s_global_attach_config,&policy,window,pi.dwProcessId,pi.dwThreadId,
         sizeof(void*)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386,session->cookie,dll,&ticket):ERROR_INVALID_STATE;
     DWORD advance=begin;
     if(!begin){
@@ -49,7 +49,7 @@ int wmain(int argc,WCHAR **argv)
             if(ticket.load.thread){if(WaitForSingleObject(ticket.load.thread,3000)!=WAIT_OBJECT_0)break;}
             else if(ticket.start.ready){HANDLE waits[]={ticket.start.ready,ticket.start.thread};
                 if(WaitForMultipleObjects(ARRAYSIZE(waits),waits,FALSE,3000)>=WAIT_OBJECT_0+ARRAYSIZE(waits))break;}
-            advance=ntw16s_global_attach_advance(&ticket,NULL);
+            advance=style_global_attach_advance(&ticket,NULL);
         }
     }
     int attached=window?query(window,WM_APP+52):-1;
@@ -57,14 +57,14 @@ int wmain(int argc,WCHAR **argv)
     int clicks=window?query(window,WM_APP+53):-1;
     BOOL blocked=FALSE;DWORD bounded=ERROR_INVALID_STATE;ULONGLONG elapsed=0;
     if(!advance && window && PostMessageW(window,WM_APP+54,0,0) && WaitForSingleObject(entered,2000)==WAIT_OBJECT_0){
-        blocked=TRUE;ULONGLONG start=GetTickCount64();bounded=ntw16s_global_attach_apply(&ticket);elapsed=GetTickCount64()-start;
+        blocked=TRUE;ULONGLONG start=GetTickCount64();bounded=style_global_attach_apply(&ticket);elapsed=GetTickCount64()-start;
     }
     SetEvent(release);
     int after_block=window?query(window,WM_APP+52):-1;
     session->phase=NTW16S_GLOBAL_STOPPING;
-    DWORD removed=advance?advance:ntw16s_global_attach_remove(&ticket);int after=window?query(window,WM_APP+52):-1;
+    DWORD removed=advance?advance:style_global_attach_remove(&ticket);int after=window?query(window,WM_APP+52):-1;
     SetEvent(stop);DWORD worker_wait=ticket.start.thread?WaitForSingleObject(ticket.start.thread,3000):WAIT_FAILED;
-    DWORD closed=ntw16s_global_attach_close(&ticket);
+    DWORD closed=style_global_attach_close(&ticket);
     if(window)PostMessageW(window,WM_CLOSE,0,0);
     DWORD child_wait=WaitForSingleObject(pi.hProcess,3000),code=99;if(child_wait==WAIT_OBJECT_0)GetExitCodeProcess(pi.hProcess,&code);else TerminateProcess(pi.hProcess,ERROR_TIMEOUT);
     CloseHandle(pi.hThread);CloseHandle(pi.hProcess);CloseHandle(ready);CloseHandle(stop);CloseHandle(entered);CloseHandle(release);UnmapViewOfFile(session);CloseHandle(map);

@@ -17,7 +17,7 @@ static DWORD controller_pid;
 static BOOL mouse_menu;
 static BOOL wait_ready(void)
 {
-    WCHAR name[NTW16S_GLOBAL_NAME_CAP];if(!ntw16s_global_name(name,ARRAYSIZE(name)))return FALSE;
+    WCHAR name[NTW16S_GLOBAL_NAME_CAP];if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return FALSE;
     ULONGLONG end=GetTickCount64()+15000;
     do{
         HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
@@ -33,7 +33,7 @@ static BOOL wait_ready(void)
 }
 static BOOL wait_ready_style(DWORD style)
 {
-    WCHAR name[NTW16S_GLOBAL_NAME_CAP];if(!ntw16s_global_name(name,ARRAYSIZE(name)))return FALSE;
+    WCHAR name[NTW16S_GLOBAL_NAME_CAP];if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return FALSE;
     ULONGLONG started=GetTickCount64(),end=started+90000;
     do{HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
         ntw16s_global_session *s=mapping?MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*s)):NULL;
@@ -49,7 +49,7 @@ static BOOL wait_ready_style(DWORD style)
 static BOOL wait_session_stopped(void)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];
-    if(!ntw16s_global_name(name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return FALSE;
+    if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return FALSE;
     ULONGLONG end=GetTickCount64()+20000;
     do{HANDLE event=OpenEventW(SYNCHRONIZE,FALSE,request);
         if(!event)return GetLastError()==ERROR_FILE_NOT_FOUND;
@@ -60,12 +60,12 @@ static BOOL wait_session_stopped(void)
 static BOOL stop_owned_controller(void)
 {
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];
-    if(!ntw16s_global_name(name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return FALSE;
+    if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return FALSE;
     HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
     if(!mapping)return FALSE;
     ntw16s_global_session *session=MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*session));
     BOOL own=session&&session->magic==NTW16S_GLOBAL_MAGIC&&session->version==NTW16S_GLOBAL_VERSION&&
-        session->owner_pid==controller_pid&&ntw16s_global_owner_alive(session);
+        session->owner_pid==controller_pid&&style_global_owner_alive(&ntw16s_global_namespace,session);
     if(session)UnmapViewOfFile(session);
     CloseHandle(mapping);if(!own)return FALSE;
     HANDLE event=OpenEventW(EVENT_MODIFY_STATE,FALSE,request);if(!event)return FALSE;

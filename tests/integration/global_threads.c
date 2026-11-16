@@ -21,7 +21,7 @@ int wmain(int argc,WCHAR **argv)
  if(argc!=4 && !(argc==5 && !wcscmp(argv[4],L"visible")))return 2;
  WCHAR desk[128],name[NTW16S_GLOBAL_NAME_CAP],request[NTW16S_GLOBAL_NAME_CAP+16];DWORD n=0;
  if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desk,sizeof(desk),&n)||wcsncmp(desk,L"Win16S-Dialog-",14))return 3;
- if(!ntw16s_global_name(name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
+ if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
  PROCESS_INFORMATION targets[2]={0},manager={0};HWND windows[8]={0};HANDLE mapping=NULL,event=NULL;ntw16s_global_session *session=NULL;BOOL pass=FALSE;DWORD handles[2][2]={0},gdi[2][2]={0};
  if(!launch(argv[2],argc==5?L"Threads32 visible":L"Threads32",&targets[0])||!launch(argv[3],argc==5?L"Threads64 visible":L"Threads64",&targets[1]))goto done;
  for(unsigned p=0;p<2;++p)for(unsigned i=0;i<2;++i){WCHAR title[100];swprintf(title,ARRAYSIZE(title),L"Threads%u-%u",p?64:32,i);windows[p*4+i]=find(title);if(!windows[p*4+i]||!wait_mask(windows[p*4+i],0))goto done;}
