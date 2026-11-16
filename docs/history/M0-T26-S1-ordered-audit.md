@@ -59,25 +59,25 @@
 | 48 | `src/lib-style/win16-control/list_message.h` | `96b05ce3b3a94624aa9327119cb120b25ea7cf631ad736262a4a3754c183a7cb` | 待修复/待验证 |
 | 49 | `src/lib-style/win16-control/list_paint.c` | `9da3e1338e35d9dffdd8ce0facf8ae78053cff5a4ff3d0bd2453f04213aedccf` | 待修复/待验证 |
 | 50 | `src/lib-style/win16-control/list_paint.h` | `108ddfa842255a92e1d92e5e66208970b444fa124b307fc9753ee8107301758c` | 待修复/待验证 |
-| 51 | `src/lib-style/win16-control/month_paint.c` | `9e0735b5b64f94438c9198c781af21770b7edaccf6ff2aa58546fe9ca62b4ccc` | 待审 |
-| 52 | `src/lib-style/win16-control/month_paint.h` | `54019ebba59ec1f11e6d2a0d70a2a019c96304d6c440360a61e3b7e30267bf60` | 待审 |
-| 53 | `src/lib-style/win16-control/month_text.c` | `cac6b67de87b786a77d44bb0565a3d9b80670af1afd6b615db926a6cd2873ba4` | 待审 |
-| 54 | `src/lib-style/win16-control/month_text.h` | `13a533325ee251c26bb2077130bb5e37be6cee9458dbb3c7d3fa53c8f6a1c84a` | 待审 |
-| 55 | `src/lib-style/win16-control/native_combo_identity.c` | `8ab3b75c571ed8de36d205e2555578df3232f12b24eb704fb3280f44ce4b75ec` | 待审 |
-| 56 | `src/lib-style/win16-control/native_combo_identity.h` | `0e156a50a84184a49ff84d0cc84b8cd0219efe00578f9430e058d62b22b91a92` | 待审 |
-| 57 | `src/lib-style/win16-control/native_presentation.c` | `f0feede2f8e65d8fe974d8bb5d0d253b42a503f4f7803449d0583898303d8ad7` | 待审 |
-| 58 | `src/lib-style/win16-control/native_presentation.h` | `a944a0f4edaa3748f39c3f6795394f31762bbb5ef1bf91ee0ac81dbe2ba44e30` | 待审 |
-| 59 | `src/lib-style/win16-control/notify_message.c` | `9f2332f1b82a71503c22a376498d841323fe55d9656ce895c6961008cabce9ed` | 待审 |
-| 60 | `src/lib-style/win16-control/notify_message.h` | `44ac844c460c0a26ce509497a5a8db3315e895e09ff584b44f587421317002df` | 待审 |
-| 61 | `src/lib-style/win16-control/other_paint.c` | `d334904841aceed64def25e3159e832a6f139c9070cf64e1e697990bb00d36c7` | 待审 |
-| 62 | `src/lib-style/win16-control/other_paint.h` | `94459d8578fcebd60cc401db53ef589b1a7b663ff0ce35b5185167ca79aca278` | 待审 |
-| 63 | `src/lib-style/win16-control/progress_paint.c` | `cade3335d0f1efa3065149d3d55b9d7bfabedd3ff63201c6bf50574b8fd73523` | 待审 |
-| 64 | `src/lib-style/win16-control/progress_paint.h` | `f43e978a1dfebe98344cb5b3d051186e475777eb5209a73fcdb854f3a6dafa4a` | 待审 |
-| 65 | `src/lib-style/win16-control/scroll_assets.c` | `257fa54bcca6b8d8c0f5bdcb091f3002a35d4158c9c3b1cf7c0b87f8ee183a81` | 待审 |
-| 66 | `src/lib-style/win16-control/scroll_assets.h` | `a21066150e645b60aa05436dcfa7690fcb413057c5ab8b295cf08b52d7307eb4` | 待审 |
-| 67 | `src/lib-style/win16-control/scroll_glyphs.h` | `a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40` | 待审 |
-| 68 | `src/lib-style/win16-control/scroll_layout.c` | `f675d60e01b5618c61c9e59729ec6dbea6ada802436457ae1cffce8825c856ed` | 待审 |
-| 69 | `src/lib-style/win16-control/scroll_layout.h` | `65e112bc5fb72bd770313a2af4dbdde44ef5109f1f75acb56ffd0c20805d97a2` | 待审 |
+| 51 | `src/lib-style/win16-control/month_paint.c` | `9e0735b5b64f94438c9198c781af21770b7edaccf6ff2aa58546fe9ca62b4ccc` | 待修复/待验证 |
+| 52 | `src/lib-style/win16-control/month_paint.h` | `54019ebba59ec1f11e6d2a0d70a2a019c96304d6c440360a61e3b7e30267bf60` | 待修复/待验证 |
+| 53 | `src/lib-style/win16-control/month_text.c` | `cac6b67de87b786a77d44bb0565a3d9b80670af1afd6b615db926a6cd2873ba4` | 待修复/待验证 |
+| 54 | `src/lib-style/win16-control/month_text.h` | `13a533325ee251c26bb2077130bb5e37be6cee9458dbb3c7d3fa53c8f6a1c84a` | 待修复/待验证 |
+| 55 | `src/lib-style/win16-control/native_combo_identity.c` | `8ab3b75c571ed8de36d205e2555578df3232f12b24eb704fb3280f44ce4b75ec` | 待修复/待验证 |
+| 56 | `src/lib-style/win16-control/native_combo_identity.h` | `0e156a50a84184a49ff84d0cc84b8cd0219efe00578f9430e058d62b22b91a92` | 待修复/待验证 |
+| 57 | `src/lib-style/win16-control/native_presentation.c` | `f0feede2f8e65d8fe974d8bb5d0d253b42a503f4f7803449d0583898303d8ad7` | 待修复/待验证 |
+| 58 | `src/lib-style/win16-control/native_presentation.h` | `a944a0f4edaa3748f39c3f6795394f31762bbb5ef1bf91ee0ac81dbe2ba44e30` | 待修复/待验证 |
+| 59 | `src/lib-style/win16-control/notify_message.c` | `9f2332f1b82a71503c22a376498d841323fe55d9656ce895c6961008cabce9ed` | 待修复/待验证 |
+| 60 | `src/lib-style/win16-control/notify_message.h` | `44ac844c460c0a26ce509497a5a8db3315e895e09ff584b44f587421317002df` | 待修复/待验证 |
+| 61 | `src/lib-style/win16-control/other_paint.c` | `d334904841aceed64def25e3159e832a6f139c9070cf64e1e697990bb00d36c7` | 待修复/待验证 |
+| 62 | `src/lib-style/win16-control/other_paint.h` | `94459d8578fcebd60cc401db53ef589b1a7b663ff0ce35b5185167ca79aca278` | 待修复/待验证 |
+| 63 | `src/lib-style/win16-control/progress_paint.c` | `cade3335d0f1efa3065149d3d55b9d7bfabedd3ff63201c6bf50574b8fd73523` | 待修复/待验证 |
+| 64 | `src/lib-style/win16-control/progress_paint.h` | `f43e978a1dfebe98344cb5b3d051186e475777eb5209a73fcdb854f3a6dafa4a` | 待修复/待验证 |
+| 65 | `src/lib-style/win16-control/scroll_assets.c` | `257fa54bcca6b8d8c0f5bdcb091f3002a35d4158c9c3b1cf7c0b87f8ee183a81` | 待修复/待验证 |
+| 66 | `src/lib-style/win16-control/scroll_assets.h` | `a21066150e645b60aa05436dcfa7690fcb413057c5ab8b295cf08b52d7307eb4` | 待修复/待验证 |
+| 67 | `src/lib-style/win16-control/scroll_glyphs.h` | `a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40` | 待修复/待验证 |
+| 68 | `src/lib-style/win16-control/scroll_layout.c` | `f675d60e01b5618c61c9e59729ec6dbea6ada802436457ae1cffce8825c856ed` | 待修复/待验证 |
+| 69 | `src/lib-style/win16-control/scroll_layout.h` | `65e112bc5fb72bd770313a2af4dbdde44ef5109f1f75acb56ffd0c20805d97a2` | 待修复/待验证 |
 | 70 | `src/lib-style/win16-control/scroll_message.c` | `a81ec1c71a98c8399028281faf85dd90e174b25d31e811db2d3337d3b897c801` | 待审 |
 | 71 | `src/lib-style/win16-control/scroll_message.h` | `ac96754592cbe76b8701fa04915ea18b461991a44b5bb16de44a9c5efa184b69` | 待审 |
 | 72 | `src/lib-style/win16-control/scroll_native.c` | `5f3ddf5d2408a8c404acc9cf6874351030274398d5cd6b9ca75d4d1177ec497a` | 待审 |
@@ -441,3 +441,100 @@
 
 - 顺序核对源码、生产调用和测试入口后确认：混合头需拆为公共 tabstop/数据接口与 Win3.x 呈现接口。
 - 具体接口、状态所有者及验证范围见[当前任务设计](../proposals/style-library-reorganization.md)的连续批次；尚未迁移或验证，不计过关。
+
+## 051 `win16-control/month_paint.c`：待修复/待验证
+
+- 顺序审查源码、调用关系及现有测试入口：月历原生查询、来源及绘制关联状态应拆为公共机制，字体/配色/支持条件保留风格。
+- 拆分契约和资源所有权见[任务设计](../proposals/style-library-reorganization.md)的月历与原生呈现批次；本批没有新实现或运行结果，不计过关。
+
+## 052 `win16-control/month_paint.h`：待修复/待验证
+
+- 顺序审查源码、调用关系及现有测试入口：混合状态需要区分公共几何/作用域与风格字体缓存。
+- 拆分契约和资源所有权见[任务设计](../proposals/style-library-reorganization.md)的月历与原生呈现批次；本批没有新实现或运行结果，不计过关。
+
+## 053 `win16-control/month_text.c`：待修复/待验证
+
+- 顺序审查源码、调用关系及现有测试入口：标题导航区间判断是公共几何，字符资格属于具体风格。
+- 拆分契约和资源所有权见[任务设计](../proposals/style-library-reorganization.md)的月历与原生呈现批次；本批没有新实现或运行结果，不计过关。
+
+## 054 `win16-control/month_text.h`：待修复/待验证
+
+- 顺序审查源码、调用关系及现有测试入口：应拆开通用几何和 Win3.x 字符支持声明。
+- 拆分契约和资源所有权见[任务设计](../proposals/style-library-reorganization.md)的月历与原生呈现批次；本批没有新实现或运行结果，不计过关。
+
+## 055 `win16-control/native_combo_identity.c`：待修复/待验证
+
+- 顺序审查源码、调用关系及现有测试入口：原生按钮查询与有效性判定应公共化，Win3.x 按钮 painter 由风格提供。
+- 拆分契约和资源所有权见[任务设计](../proposals/style-library-reorganization.md)的月历与原生呈现批次；本批没有新实现或运行结果，不计过关。
+
+## 056 `win16-control/native_combo_identity.h`：待修复/待验证
+
+- 顺序审查源码、调用关系及现有测试入口：应公开原生按钮描述，而非具体 Win16 painter。
+- 拆分契约和资源所有权见[任务设计](../proposals/style-library-reorganization.md)的月历与原生呈现批次；本批没有新实现或运行结果，不计过关。
+
+## 057 `win16-control/native_presentation.c`：待修复/待验证
+
+- 顺序审查源码、调用关系及现有测试入口：字体保活、绘制与原生回退的事务机制应独立于具体控件和风格。
+- 拆分契约和资源所有权见[任务设计](../proposals/style-library-reorganization.md)的月历与原生呈现批次；本批没有新实现或运行结果，不计过关。
+
+## 058 `win16-control/native_presentation.h`：待修复/待验证
+
+- 顺序审查源码、调用关系及现有测试入口：需公共呈现契约和精简上下文，不能继续将完整 control_style 暴露。
+- 拆分契约和资源所有权见[任务设计](../proposals/style-library-reorganization.md)的月历与原生呈现批次；本批没有新实现或运行结果，不计过关。
+
+## 059 `win16-control/notify_message.c`：待修复/待验证
+
+- 顺序审查源码、调用及测试入口：通知协商、重入存活、私有阶段匹配和错误码保留应集中于公共协议，具体 painter 留风格。
+- 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
+
+## 060 `win16-control/notify_message.h`：待修复/待验证
+
+- 顺序审查源码、调用及测试入口：通知作用域应归公共控件生命周期，脱离完整 Win16 状态。
+- 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
+
+## 061 `win16-control/other_paint.c`：待修复/待验证
+
+- 顺序审查源码、调用及测试入口：临时文字图像缩放与按钮原生内容采集公共化；Win3.x 布局/配色/焦点策略留风格。
+- 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
+
+## 062 `win16-control/other_paint.h`：待修复/待验证
+
+- 顺序审查源码、调用及测试入口：应区分公共内容描述与 Win3.x 呈现接口。
+- 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
+
+## 063 `win16-control/progress_paint.c`：待修复/待验证
+
+- 顺序审查源码、调用及测试入口：进度快照和查询后有效性核验公共化，支持样式与绘制策略独立。
+- 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
+
+## 064 `win16-control/progress_paint.h`：待修复/待验证
+
+- 顺序审查源码、调用及测试入口：公共快照/变更和风格绘制契约需分开。
+- 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
+
+## 065 `win16-control/scroll_assets.c`：待修复/待验证
+
+- 顺序审查源码、调用及测试入口：原始箭头资源访问表按现有映射归入 Win3.x resources；公共绘制仅接受通用像素描述。
+- 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
+
+## 066 `win16-control/scroll_assets.h`：待修复/待验证
+
+- 顺序审查源码、调用及测试入口：资源枚举保留风格内，需清理通用 updown 对具体资源类型的依赖。
+- 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
+
+## 067 `win16-control/scroll_glyphs.h`：待修复/待验证
+
+- 顺序审查源码、调用及测试入口：固定原始资源按字节保留，目标归 Win3.x resources；本批身份核验通过，尚未目录迁移。
+- 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
+
+## 068 `win16-control/scroll_layout.c`：待修复/待验证
+
+- 顺序审查源码、调用及测试入口：固定 thumb、短条与命中优先级是 Win3.x 策略，range 算术与公共 scroll_state 比较后按语义复用。
+- 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
+
+## 069 `win16-control/scroll_layout.h`：待修复/待验证
+
+- 顺序审查源码、调用及测试入口：需公共布局描述与各风格 measure/hit 策略；不得把忽略 nPage 变为通用契约。
+- 迁移契约和状态所有者见[任务设计](../proposals/style-library-reorganization.md)对应连续批次。没有新产品实现或完整回归，不计过关。
+
+效率检查与单人复核（51–69 批）：实施角色完成月历/原生呈现及通知/按钮/进度/滚动资源的连续源码核对；复核角色重查实际调用和源码摘要，19 个文件身份与台账一致，资源身份检查通过。新增矩阵明确公共快照、阶段协议、图形操作及风格几何的不同所有者，未以现有 control_style 耦合为保留理由。没有启动完整构建或产生新 scratch；原有第 41 项在途改动继续保留，产品行为未验证部分不计通过。下一批从第 70 项滚动消息继续，统一比对公共滚动算法和风格交互策略。

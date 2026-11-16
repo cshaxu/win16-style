@@ -94,6 +94,47 @@ S3–S12 随机制迁移同步拆分风格呈现，公共图形遇到实际消�
 
 本批仅完成源码和调用/测试入口核对，没有新实现或运行结果；未将审计文件标为已迁移。与编辑消息共用同一控件状态拆分，放在同一能力批次增量验证。
 
+## S1 连续审计批次：月历与原生呈现（51–58）
+
+| 文件 | 公共机制目标 | 风格与调用边界 |
+| --- | --- | --- |
+| month_paint.c | application/control 的 month native 几何查询、来源/主题匹配、绘制关联状态和存活核验 | 字体选择、支持 DPI/字符/part-state、黑色判断、背景与箭头绘制归 win3x |
+| month_paint.h | 公共 month 几何/作用域快照，与风格字体租约分开 | 当前混合 view 不能整头迁移；attachment 提供作用域存活和窗口身份 |
+| month_text.c | 标题居中区间与两个导航区间不相交的几何运算 | ASCII/U+200E 与长度上限是当前 Win3.x 字体支持策略，不能升为所有风格字符限制 |
+| month_text.h | 将通用几何接口与风格文本资格声明分开 | injection/window_titles 的实际调用链须同步迁移 |
+| native_combo_identity.c | application/control 的原生颜色/日期按钮 snapshot 及查询后有效性检查 | 当前 identity 已在 common；按钮 Win3.x 绘制由风格提供 |
+| native_combo_identity.h | 通用原生按钮描述，不携带 Win16 painter | attachment 提供公共 identity/作用域，再选择具体风格绘制 |
+| native_presentation.c | application/control 的绘制事务、存活判断与原生 fallback 协调 | 字体选择/租约由资源所有者提供，tab/header/progress 绘制由风格实现 |
+| native_presentation.h | 定义通用呈现结果和上下文契约 | 不把 control_style 作为公共接口参数，不逐个控件复制相同回退骨架 |
+
+公共月历查询必须保留每次原生调用后的存活检查和 scope 当前性检查。几何快照由当前绘制作用域拥有；选中背景与文本的关联记录有明确有效期，字体缓存与借用租约独立管理，不将 Win16 固定字体要求放入公共身份识别。
+
+公共呈现需要区分成功、未接管和已失效；只有仍存活且未接管时才回退原生。在开始提交像素前完成所需快照/资格检查，避免一次失败导致半套自绘叠加原生。接口以一次完整绘制事务为单位，依赖操作范围内的资源有效性，而不是复制每个控件的 retain/paint/fallback/release。
+
+已核对 attachment 的 month_view/query 入口、window_titles 的文本拦截、controls 的 tab/header/progress 回调，以及 native_combo 的颜色/日期入口。现有验证入口为 core-month-model、core-style-control-native-combo、颜色/日期模块夹具、tab/header/progress 和字体租约测试；本批仅核实入口和范围，没有新运行结果。具体重入、异常及回退证据在实施 S9/S10 前对照基线，旧的不稳定项仍开放。
+
+## S1 连续审计批次：通知、按钮、进度与滚动资源（59–69）
+
+| 文件 | 公共机制与目标 | 风格归属/完成要求 |
+| --- | --- | --- |
+| notify_message.c | application/control 自定义绘制通知、app 返回值协商、私有阶段、重入存活和错误码保留 | 现有 control_custom_draw 继续复用；trackbar 特有 pending/postpaint 匹配纳入协议，具体 supported/paint 由风格提供 |
+| notify_message.h | 公共 custom-draw 作用域拥有 owner、draw、DC、item、矩形和嵌套关联 | 移除 control_style 类型依赖；不能用悬空 draw 指针跨回调保存状态 |
+| other_paint.c | application/control 的原生按钮图片状态采集、借用图片所有权；graphics 的临时文字位图和比例缩放 | Win3.x 字体选择、按钮/分组/静态度量、颜色、焦点边框、拟合启用策略留 appearance |
+| other_paint.h | 公共按钮内容描述与风格绘制契约分开 | 不把一整套 Win16 other painter 作为通用 API |
+| progress_paint.c | application/control 的 range/position/state/color 快照、变更代次与原生协议核验 | Win3.x 支持样式、缺省配色、错误/暂停颜色、分块和边框属于风格 |
+| progress_paint.h | 公共快照/变更接口与风格 paint/supported 分开 | 实际 control_state/guard/native_presentation/controls 调用同步接入 |
+| scroll_assets.c | 无通用进程或窗口机制；资源访问表可原样归位 | appearance/win3x/resources，普通/pressed/disabled 的枚举映射须保留 |
+| scroll_assets.h | 年代资源描述与公共像素描述分离 | Win16 原图案仅由该风格注册，通用 updown 不引用这些枚举 |
+| scroll_glyphs.h | 固定 VGA.DRV 原始图案，禁止重新生成或改像素 | appearance/win3x/resources；保留来源、摘要与资源校验 |
+| scroll_layout.c | range-to-pixel 等纯算术仅在保留舍入语义时复用已有公共 scroll 算法 | 固定 thumb、短条边界与箭头优先命中为 Win3.x 策略；Win2000 需独立比例滑块策略 |
+| scroll_layout.h | 公共布局描述可包含条、箭头、滑块、travel；风格提供 measure/hit 策略 | 不能把 nPage 忽略规则硬编码成公共布局；不为两个风格复制原生状态采集 |
+
+通知作用域由公共控件实例/当前调用持有，应用自绘返回值保持权威；先协商、后承诺私有阶段，绘制后移除或换父仍须正确退场。原生字体与图片只借用，不由公共快照删除应用对象。文字缩放资源是图形操作，启用缩放及限额保持现有策略，不对所有按钮强制缩放。
+
+progress 查询须在每次可重入消息后核验代次/存活，采集阶段不画像素；绘制使用完整快照。supported 条件与 palette 不混入原生身份核验。scroll 的 Win3.x 几何有明确原版证据，提取共享算术前须与现有 scroll_state 比较，不能通过改舍入或 hit 顺序实现表面去重。
+
+已核对 controls 的 trackbar/toolbar notify、guard/state/native_presentation 的 progress、choice_view 的 other painter、scroll_track/paint 及 special_install 的资源调用。测试入口为公共 custom_draw、vcl toolbar/trackbar 模块、control_extensions、progress v5/v6、scroll_layout 及原始资源核验。仅资源身份在本批实际运行且通过；其他测试是已定位待实施验证入口，不宣称运行通过。
+
 ## 未通过与未来候选
 
 导航焦点、Win2000 DWM 恢复、VB 清单和表头不稳定及实际现代宿主/全局覆盖限制继续由 CURRENT 和已有证据承载；不因架构设计被关闭。T26 结束条件是现有能力的三层归位、实际复用和验证，而非所有年代所有应用都支持。
