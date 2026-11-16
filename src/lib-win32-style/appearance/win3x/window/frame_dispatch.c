@@ -9,7 +9,7 @@ static void repaint_release(void *context)
 {style_window *s=context;style_instance_release(&s->instance);}
 static void repaint_activate(HWND owner,void *context)
 {
-    style_window *s=context;s->pending_frame=FALSE;
+    style_window *s=context;s->native.pending=FALSE;
     RECT client;BOOL normal=!IsIconic(owner)&&!IsZoomed(owner);
     style_client_screen(owner,&client);s->xaml_activate(owner,s,&client,normal);
 }
@@ -28,14 +28,14 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
        msg!=WM_NCDESTROY)goto forward;
     /* Hidden creation must retain the application's geometry until showing.
      * XAML bridges may become visible after the parent show notification. */
-    if(s->pending_frame && msg==WM_NCACTIVATE)s->active=(BOOL)wp;
-    if(s->pending_frame && msg==WM_DPICHANGED){
+    if(s->native.pending && msg==WM_NCACTIVATE)s->native.active=(BOOL)wp;
+    if(s->native.pending && msg==WM_DPICHANGED){
         result=DefSubclassProc(w,msg,wp,lp);
         if(!s->instance.detached)v->message->refresh_font(w,s);
         goto done;
     }
-    if(s->pending_frame && msg!=WM_SHOWWINDOW && msg!=WM_NCDESTROY)goto forward;
-    if(msg==WM_SHOWWINDOW && s->pending_frame){
+    if(s->native.pending && msg!=WM_SHOWWINDOW && msg!=WM_NCDESTROY)goto forward;
+    if(msg==WM_SHOWWINDOW && s->native.pending){
         if(s->xaml.waiting){if(!wp)style_uwp_repaint_cancel(&s->xaml);goto forward;}
         if(wp && style_frame_xaml_bridge(w,FALSE)){
             s->xaml.waiting=TRUE;s->xaml.deadline=GetTickCount64()+2000;s->xaml_activate=v->message->activate;
@@ -67,9 +67,11 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
             (void)style_uwp_repaint_queue(w,&s->xaml,&s->instance.detached,s,&repaint_services);
         }
         break;
-    case WM_SHOWWINDOW:
     case WM_CTLCOLORDLG:
     case WM_CTLCOLORSTATIC:
+        if(!s->dialog)goto forward;
+        result=win16_control_dialog_colors((HDC)wp,&s->palette);break;
+    case WM_SHOWWINDOW:
     case WM_NCCALCSIZE:
     case WM_NCPAINT:
     case WM_SETCURSOR:
@@ -87,7 +89,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     case WM_SETTINGCHANGE:
     case WM_SYSCOLORCHANGE:
     case WM_THEMECHANGED: {
-        if(win16_control_frame_message(w,s,msg,wp,lp,v->message,&result))break;
+        if(style_frame_message(&s->instance,&s->native,msg,wp,lp,v->message,&result))break;
         goto forward;
     }
     case WM_MEASUREITEM:

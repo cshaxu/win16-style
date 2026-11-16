@@ -21,6 +21,36 @@ static inline LPCWSTR style_frame_resize_cursor(int hit)
     }
 }
 
+static inline BOOL style_frame_set_cursor(HWND window,WPARAM target,LPARAM hit)
+{
+    if(IsIconic(window) || (HWND)target!=window || (short)LOWORD(hit)<=HTCLIENT)return FALSE;
+    SetCursor(LoadCursorW(NULL,style_frame_resize_cursor((short)LOWORD(hit))));
+    return TRUE;
+}
+
+/* Native bars take precedence over a renderer's frame rectangles. */
+static inline BOOL style_frame_scrollbar_hit(HWND window,POINT screen,LRESULT *result)
+{
+    LONG_PTR flags=GetWindowLongPtrW(window,GWL_STYLE);SCROLLBARINFO bar={.cbSize=sizeof(bar)};
+    if((flags&WS_HSCROLL) && GetScrollBarInfo(window,OBJID_HSCROLL,&bar) && PtInRect(&bar.rcScrollBar,screen)){
+        *result=HTHSCROLL;return TRUE;
+    }
+    if((flags&WS_VSCROLL) && GetScrollBarInfo(window,OBJID_VSCROLL,&bar) && PtInRect(&bar.rcScrollBar,screen)){
+        *result=HTVSCROLL;return TRUE;
+    }
+    return FALSE;
+}
+
+/* A replacement client rectangle invalidates USER's old VALIDRECTS pair.
+ * The caller selects which other native return flags its layout supports. */
+static inline LRESULT style_frame_set_client(WPARAM extended,LPARAM parameters,
+    const RECT *client,LRESULT native)
+{
+    if(extended)((NCCALCSIZE_PARAMS *)parameters)->rgrc[0]=*client;
+    else *(RECT *)parameters=*client;
+    return extended?native&~WVR_VALIDRECTS:native;
+}
+
 static inline BOOL style_frame_suppress_native_theme(UINT message,BOOL iconic,BOOL has_menu)
 {
     if(iconic)return FALSE;

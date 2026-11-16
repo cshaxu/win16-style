@@ -14,6 +14,12 @@ int main(void)
        style_frame_resize_cursor(HTSIZE)!=(LPCWSTR)IDC_SIZENWSE || style_frame_resize_cursor(HTTOPLEFT)!=(LPCWSTR)IDC_SIZENWSE ||
        style_frame_resize_cursor(HTBOTTOMRIGHT)!=(LPCWSTR)IDC_SIZENWSE || style_frame_resize_cursor(HTTOPRIGHT)!=(LPCWSTR)IDC_SIZENESW ||
        style_frame_resize_cursor(HTBOTTOMLEFT)!=(LPCWSTR)IDC_SIZENESW || style_frame_resize_cursor(HTCAPTION)!=(LPCWSTR)IDC_ARROW)return 7;
+    RECT replacement={2,3,80,90},plain={0};NCCALCSIZE_PARAMS parameters={0};
+    parameters.rgrc[1]=(RECT){6,7,8,9};RECT preserved=parameters.rgrc[1];
+    if(style_frame_set_client(FALSE,(LPARAM)&plain,&replacement,0)!=0 || !EqualRect(&plain,&replacement))return 11;
+    LRESULT flags=WVR_VALIDRECTS|WVR_REDRAW|WVR_ALIGNTOP;
+    if(style_frame_set_client(TRUE,(LPARAM)&parameters,&replacement,flags)!=(flags&~WVR_VALIDRECTS) ||
+       !EqualRect(&parameters.rgrc[0],&replacement) || !EqualRect(&parameters.rgrc[1],&preserved))return 12;
     static const WCHAR name[]=L"StyleFrameRestoreTest";
     WNDCLASSW cls={0};cls.hInstance=GetModuleHandleW(NULL);cls.lpfnWndProc=procedure;cls.lpszClassName=name;
     if(!RegisterClassW(&cls))return 1;

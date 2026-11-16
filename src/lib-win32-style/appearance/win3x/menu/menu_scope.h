@@ -1,6 +1,6 @@
 #ifndef WIN16_STYLE_MENU_SCOPE_H
 #define WIN16_STYLE_MENU_SCOPE_H
-#include "win16_style.h"
+#include "../common/palette.h"
 typedef struct win16_style_menu_scope win16_style_menu_scope;
 /* Same-thread lifetime around one native menu loop. Nested scopes are allowed;
  * owner teardown may end an outer scope before an inner scope finishes.

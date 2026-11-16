@@ -235,3 +235,9 @@
 - [T26 S6实际远端](evidence/t26-s6-remote.json)：95现存blob、14删除路径及最终八文件复核。
 
 - [T26 S7冻结输入](evidence/t26-s7-window-audit.json)：普通外框、现代/菜单交界与实际消费者；不是完成结论。
+
+- [T26 S7增量验证](evidence/t26-s7-window-development.json)：共同原生外框状态、NC协议及标题按钮的开发结果；尚非S7完整发布。
+
+- [T26 S7临时产物清理](evidence/t26-s7-cleanup.json)：本批测试结束后移除临时构建日志与scratch，保留增量/ccache；早先六个小日志目录也已按归属清理。
+
+- [T26 S7交付](evidence/t26-s7-delivery.json)：同快照八文件先发布，188项聚焦回归186通过/2项ETW跳过，另2项DWM旧失败；构建/cache、来源与实际包摘要。

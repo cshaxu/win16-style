@@ -1,0 +1,77 @@
+[
+  {
+    "removed": true,
+    "bytes": 28315.0,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-window-dev7"
+  },
+  {
+    "removed": true,
+    "bytes": 0.0,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-s7"
+  },
+  {
+    "removed": true,
+    "bytes": 31703.0,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-window-dev10"
+  },
+  {
+    "removed": true,
+    "bytes": 0.0,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-s7"
+  },
+  {
+    "bytes": 34457.0,
+    "removed": true,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-message-dev"
+  },
+  {
+    "bytes": 21951.0,
+    "removed": true,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-message-dev2"
+  },
+  {
+    "bytes": 33928.0,
+    "removed": true,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-install-dev"
+  },
+  {
+    "bytes": 18059.0,
+    "removed": true,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-font-dev"
+  },
+  {
+    "bytes": 27267.0,
+    "removed": true,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-all-dev"
+  },
+  {
+    "bytes": 72454.0,
+    "removed": true,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-all-dev2"
+  },
+  {
+    "bytes": 47148.0,
+    "removed": true,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-final-dev"
+  },
+  {
+    "bytes": 60732.0,
+    "removed": true,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-freeze-dev"
+  },
+  {
+    "bytes": 265238639.0,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-window",
+    "removed": true
+  },
+  {
+    "bytes": 10654673.0,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-window-publish",
+    "removed": true
+  },
+  {
+    "bytes": 119959.0,
+    "path": "O:\\repos.hobby\\win16style\\build\\t26-s7",
+    "removed": true
+  }
+]

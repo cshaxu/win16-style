@@ -9,12 +9,14 @@ typedef struct win16_control_frame_lifecycle_services {
     HRESULT (WINAPI *set_window_attribute)(HWND,DWORD,LPCVOID,DWORD);
     BOOL (*local_window)(HWND);
     style_window *(*state)(HWND);
-    BOOL (*refresh_font)(HWND,style_window *),(*layout)(HWND,style_window *,win16_style_layout *);
-    void (*activate_frame)(HWND,style_window *,const RECT *,BOOL);
+    BOOL (*refresh_font)(HWND,void *);
+    BOOL (*layout)(HWND,style_window *,win16_style_layout *);
+    void (*activate_frame)(HWND,void *,const RECT *,BOOL);
     BOOL (*scrollbars_install)(HWND,const win16_style_palette *,const void *,const BOOL *);
     void (*scrollbars_palette)(HWND,const win16_style_palette *,const void *);
     BOOL (*control_remove)(HWND,const void *),(*remove)(HWND);
-    void (*leave_bar)(HWND,style_window *,BOOL),(*paint)(HWND,style_window *,HDC);
+    void (*leave_bar)(HWND,style_window *,BOOL);
+    void (*paint)(HWND,void *,HDC);
 } win16_control_frame_lifecycle_services;
 BOOL win16_control_frame_install(HWND,const win16_style_palette *,BOOL,const void *,const BOOL *,const win16_control_frame_lifecycle_services *);
 BOOL win16_control_menu_owner_install(HWND,const void *,const BOOL *,const win16_control_frame_lifecycle_services *);

@@ -37,6 +37,10 @@ S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），102
 | Original Owner Request | 所有样式按access/application/appearance重组到lib-win32-style；极简统一复用，逐文件审计、按完整能力交付，不逐文件发布。 |
 | Similar-Issue Sweep | 双风格安装/隐藏/待定/销毁/移除、DWM/客户区、NC消息/打印/光标/命中、标题/字体资源及产品组合，现代/菜单跨S公共消费。 |
 
+S7已完成普通窗口公共状态/messages/install/font_pair等迁移，49个冻结输入及附加消费者有逐项最终归属。唯一干净快照双宽通过，1033个输入一致；同批八文件先发布assets根/O:/winnt，再跑188项聚焦原生回归186通过、2项ETW跳过，另2项DWM旧失败不计通过。见[交付](../etc/evidence/t26-s7-delivery.json)、[逐项审计](../etc/evidence/t26-s7-window-audit.json)与[S7记录](../history/M0-T26-S7-window.md)。当前仅本地已验证，提交推送和实际远端逐blob复核后才收口。
+
+所有本S构建/测试结束，已验证无存活自有夹具并清理临时快照/备份/scratch，保留.ninja/.ccache，见[清理](../etc/evidence/t26-s7-cleanup.json)。未使用computer-use或私有桌面；菜单S8、现代宿主S12、最终renderer接口S13仍按既定范围继续，T26开放。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)

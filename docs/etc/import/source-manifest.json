@@ -611,10 +611,10 @@
       "blob": "2f793a46215944cf6219f478db14715fd59d4f06",
       "size": 656,
       "sha256": "e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/lib-win32-style/appearance/win3x/menu/menu_scope.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T26 S7 removes empty window forwarding header: include palette directly, signatures/notices unchanged",
       "receiver": "style-core"
     },
     {

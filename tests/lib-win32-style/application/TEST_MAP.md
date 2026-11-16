@@ -24,6 +24,11 @@
 | `control_status` | `control/control_status.c` (native v5/v6 identity and invalidation) |
 | `menu_snapshot` | `menu/menu_snapshot.c`; Win16 and Win2000 system-menu consumers |
 | `menu_owner` | `menu/menu_owner.c`; `tests/ntw16s-dll/vcl_popup_scope.c` (product integration) |
+| `messages` | `window/messages.c` (native order/WVR, error preservation, removal in callback, print and font protocols); ordinary Win3.x/Win2000 consumers |
+| `install` | `window/install.c` (publication, cancellation, foreign subclass, setup failure rollback, destruction/replacement identity and lifetime); actual two-style fixtures |
+| `font_pair` | `graphics/font_pair.c` (real GDI ownership, partial failure retains old pair, stock lease and disposal); ordinary and modern frame consumers |
+| `native_frame` | `window/native_frame.c` (observed/default DWM, child exclusion, pending and keep-outer restoration, coalesced deferred refresh); actual Win3.x/Win2000 frame consumers |
+| `caption_button` | `window/caption_button.c` (capture ownership, release/cancel synchronous reentry, destroyed target); Win3.x `control_link.c` and Win2000 `instance_lifetime.c` (three actual caption commands, busy removal and cancel) |
 | `frame` resize restoration | `window/frame_restore.c`; Win16 and Win2000 frame lifecycle tests |
 | `scroll_state` | `tests/ntw16s-dll/win16_style_scroll_geometry.c` (null and disabled control) |
 | `print_ranges` | `dialog/print_ranges.c` |

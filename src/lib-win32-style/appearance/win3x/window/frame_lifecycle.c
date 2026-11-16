@@ -1,10 +1,33 @@
 #include "lib-win32-style/application/window/frame.h"
 #include "frame_lifecycle.h"
+#include "lib-win32-style/application/window/install.h"
 #include "frame_layout.h"
 #include "frame_dispatch.h"
 #include "../common/font.h"
 #include "lib-win32-style/application/window/dwm.h"
 #include <dwmapi.h>
+
+typedef struct frame_install {
+    style_window *state;
+    const win16_control_frame_lifecycle_services *services;
+    RECT client;
+    BOOL normal;
+} frame_install;
+static BOOL setup(HWND window,void *context)
+{
+    frame_install *install=context;style_window *state=install->state;
+    const win16_control_frame_lifecycle_services *services=install->services;
+    /* Range changes can add bars after attachment: keep one tracker ready. */
+    if(!services->scrollbars_install(window,&state->palette,state,&state->instance.detached))return FALSE;
+    /* Native USER retains the normal placement of initially iconic/zoomed windows. */
+    if(!state->native.pending)services->activate_frame(window,state,&install->client,install->normal);
+    return TRUE;
+}
+static void rollback(HWND window,void *context)
+{
+    frame_install *install=context;
+    (void)install->services->remove(window);
+}
 
 BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creating,const void *owner,const BOOL *cancelled,const win16_control_frame_lifecycle_services *v)
 {
@@ -28,52 +51,34 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     normal=!IsIconic(w)&&!IsZoomed(w);
     s=win16_control_frame_state_create();
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    s->bar_selected=-1;s->instance.owner=owner;style_instance_retain(&s->instance);
-    s->pending_frame=creating && normal && !(style&WS_VISIBLE);
+    s->bar_selected=-1;s->instance.owner=owner;
+    s->native.pending=creating && normal && !(style&WS_VISIBLE);
     {WCHAR name[32];s->dialog=GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"#32770");}
     if(p)s->palette=*p;else win16_style_default_palette(&s->palette);
-    s->active=(ex&WS_EX_MDICHILD)?
+    s->native.active=(ex&WS_EX_MDICHILD)?
         (HWND)SendMessageW(GetParent(w),WM_MDIGETACTIVE,0,0)==w:GetActiveWindow()==w;
     if(!v->refresh_font(w,s)){win16_control_frame_state_dispose(s);SetLastError(ERROR_INVALID_DATA);return FALSE;}
     {win16_style_layout checked;
         if(!v->layout(w,s,&checked)){win16_control_frame_state_dispose(s);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}}
     style_client_screen(w,&client);
-    /* POLICY is set-only. Preserve the observable rendering state instead;
-     * Windows does not expose whether it came from USEWINDOWSTYLE or ENABLED. */
-    s->policy_saved=!(style&WS_CHILD) && style_dwm_capture(w,v->get_window_attribute,&s->old_policy);
-    if(cancelled && *cancelled){win16_control_frame_state_dispose(s);SetLastError(ERROR_CANCELLED);return FALSE;}
-    if(!style_instance_attach(&s->instance,w,v->style_proc,owner)){
-        DWORD error=GetLastError();win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;
-    }
-    /* Bars may be added by range/visibility changes after attachment. Keep
-     * one frame tracker ready instead of conditionally installing it later. */
-    if(!v->scrollbars_install(w,&s->palette,s,&s->instance.detached)){
-        DWORD error=GetLastError();
-        if(v->state(w)==s)v->remove(w);
-        style_instance_release(&s->instance);
-        SetLastError(error);return FALSE;
-    }
-    /* Initial minimized/maximized creation is valid too. Native USER owns
-     * its saved normal placement; never resize that state to preserve the
-     * transient icon/maximized client rectangle. Restore uses normal layout. */
-    if(!s->pending_frame)v->activate_frame(w,s,&client,normal);
-    BOOL detached=s->instance.detached;style_instance_release(&s->instance);
-    if(detached){SetLastError(cancelled && *cancelled?ERROR_CANCELLED:ERROR_INVALID_WINDOW_HANDLE);return FALSE;}
-    return TRUE;
+    style_native_frame_capture(&s->native,w,v->get_window_attribute,FALSE);
+    frame_install install={s,v,client,normal};
+    const style_frame_install_ops ops={&install,cancelled,setup,rollback};
+    return style_frame_install(&s->instance,w,v->style_proc,owner,&ops);
 }
 BOOL win16_control_menu_owner_install(HWND w,const void *owner,const BOOL *cancelled,const win16_control_frame_lifecycle_services *v)
 {
  if(!v->local_window(w))return FALSE;
  if(v->state(w)){SetLastError(ERROR_INVALID_STATE);return FALSE;}
  style_window *s=win16_control_frame_state_create();if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
- s->instance.owner=owner;s->menu_only=TRUE;s->dpi=GetDpiForWindow(w);if(!s->dpi)s->dpi=96;
- win16_style_default_palette(&s->palette);s->menu_font=win16_style_menu_font_acquire(s->dpi);
- if(!s->menu_font || (cancelled&&*cancelled)){
+ s->instance.owner=owner;s->menu_only=TRUE;s->fonts.dpi=GetDpiForWindow(w);if(!s->fonts.dpi)s->fonts.dpi=96;
+ win16_style_default_palette(&s->palette);s->fonts.menu=win16_style_menu_font_acquire(s->fonts.dpi);
+ if(!s->fonts.menu || (cancelled&&*cancelled)){
   DWORD error=cancelled&&*cancelled?ERROR_CANCELLED:ERROR_INVALID_DATA;
   win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;
  }
- if(!style_instance_attach(&s->instance,w,v->style_proc,owner)){DWORD error=GetLastError();win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;}
- return TRUE;
+ const style_frame_install_ops ops={.cancelled=cancelled};
+ return style_frame_install(&s->instance,w,v->style_proc,owner,&ops);
 }
 BOOL win16_control_frame_remove_owned(HWND w,const void *owner,const win16_control_frame_lifecycle_services *v)
 {
@@ -97,8 +102,9 @@ BOOL win16_control_frame_remove(HWND w,const win16_control_frame_lifecycle_servi
     style_menu_restore(&s->menu_items);
     if(!menu_only){
         if(s->bar_keyboard)v->leave_bar(w,s,TRUE);
-        if(s->pressed && GetCapture()==w)ReleaseCapture();
-        win16_control_frame_restore(w,&s->pending_frame,&s->policy_saved,&s->old_policy,&client,normal&&!s->keep_outer,v->set_window_attribute);
+        if(s->button.pressed && GetCapture()==w)ReleaseCapture();
+        (void)style_native_frame_restore_policy(w,&s->native,v->set_window_attribute);
+        style_native_frame_restore_geometry(w,&s->native,&client,normal);
     }
     style_instance_release(&s->instance);
     return TRUE;

@@ -22,8 +22,7 @@ typedef struct uwp_frame {
     BOOL updating,active,hot,tracking;
     BOOL no_menu,no_keyboard;
     int pressed,no_selection;
-    UINT dpi;
-    HFONT title_font,menu_font;
+    style_font_pair fonts;
     style_bitmap bitmap;
     win16_style_layout layout;
     style_window *menu;
@@ -50,10 +49,9 @@ static void dispose(void *context)
 {
     uwp_frame *s=context;
     style_bitmap_dispose(&s->bitmap);
-    if(s->title_font)DeleteObject(s->title_font);
-    s->menu->menu_font=NULL; /* The frame owns the font lease. */
+    s->menu->fonts.menu=NULL; /* The frame owns the font lease. */
     win16_control_frame_state_dispose(s->menu);
-    win16_style_system_release(s->menu_font);
+    style_font_pair_dispose(&s->fonts,win16_control_release_frame_fonts);
     free(s);
 }
 static void before_title_remove(void *context)
@@ -75,8 +73,8 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
     SIZE size={outer->right-outer->left,outer->bottom-outer->top};
     UINT dpi=GetDpiForWindow(s->host.owner);
     if(!win16_uwp_frame_layout(size,dpi,(DWORD)GetWindowLongPtrW(s->host.owner,GWL_STYLE),zoomed,content,&s->layout))return FALSE;
-    if(dpi!=s->dpi && !win16_control_refresh_frame_fonts(s->host.owner,&s->dpi,&s->title_font,&s->menu_font))return FALSE;
-    s->menu->dpi=s->dpi;s->menu->menu_font=s->menu_font;
+    if(dpi!=s->fonts.dpi && !win16_control_refresh_frame_fonts(s->host.owner,&s->fonts))return FALSE;
+    s->menu->fonts.dpi=s->fonts.dpi;s->menu->fonts.menu=s->fonts.menu;
     return !s->host.instance.detached;
 }
 static BOOL cached_layout(HWND w,void *context,win16_style_layout *layout)
@@ -94,7 +92,7 @@ static BOOL refresh_geometry(void *context,RECT *outer,RECT *hole)
 static void refresh_paint(void *context,HDC dc)
 {
     uwp_frame *s=context;
-    win16_control_frame_view view={s,&s->host.instance.detached,&s->active,&s->menu_font,&s->title_font,&s->dpi,
+    win16_control_frame_view view={s,&s->host.instance.detached,&s->active,&s->fonts.menu,&s->fonts.title,&s->fonts.dpi,
         &s->no_selection,&s->no_menu,&s->no_keyboard,&s->pressed,&s->hot,cached_layout,colors,no_scrollbars};
     win16_control_paint_frame(s->host.owner,&view,dc);
 }

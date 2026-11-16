@@ -1,6 +1,7 @@
 #include "frame_paint.h"
 #include "../resources/frame_buttons.h"
 #include <stdlib.h>
+#include "lib-win32-style/application/window/window_text.h"
 
 void win16_control_fill(HDC dc,RECT r,COLORREF c)
 {
@@ -88,11 +89,9 @@ void win16_control_frame_caption(HWND w,HDC dc,const win16_style_layout *layout,
         (GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD)!=0,l.unit,&p);
     win16_control_frame_button(dc,l.minimize,HTMINBUTTON,*pressed==HTMINBUTTON&&*hot,FALSE,FALSE,l.unit,&p);
     win16_control_frame_button(dc,l.maximize,HTMAXBUTTON,*pressed==HTMAXBUTTON&&*hot,IsZoomed(w),FALSE,l.unit,&p);
-    len=GetWindowTextLengthW(w);
-    title=(WCHAR *)calloc((size_t)len+1,sizeof(WCHAR));
+    title=style_window_text_copy(w);
     if(title){
-        SIZE extent;
-        GetWindowTextW(w,title,len+1);
+        SIZE extent;len=lstrlenW(title);
         r=l.title;
         SelectObject(dc,*title_font);SetBkMode(dc,TRANSPARENT);
         SetTextColor(dc,*active?p.active_text:p.inactive_text);

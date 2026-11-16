@@ -1,301 +1,922 @@
 {
   "task": "M0 T26 S7",
-  "status": "frozen-inputs-not-completion",
+  "status": "implementation-and-published-focused-verification-complete-remote-pending",
   "baseline": "4d1cdcb70ef1c7917965f4eb6437c39ba0372f00",
   "files": [
     {
       "path": "src/lib-win32-style/appearance/win2000/window/caption.c",
       "sha256": "ab1ac337b04b6524b1872df279ec8715fd1decfa44247060f43e7f2019872ef9",
       "disposition": "mixed rendering review",
-      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution",
+      "current_path": "src/lib-win32-style/appearance/win2000/window/caption.c",
+      "baseline_unchanged": true,
+      "current_sha256": "ab1ac337b04b6524b1872df279ec8715fd1decfa44247060f43e7f2019872ef9",
+      "final_owner": "appearance era rendering",
+      "final_reason": "Actual bitmap/palette/gradient, text placement, bevel and button shape; common title snapshot/GDI helpers consumed rather than moving era draw policy",
+      "verification": [
+        "core-frames",
+        "core-win2k-frame-lifecycle (DWM failure separate)",
+        "core-dc-failure"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/window/caption.h",
       "sha256": "752e5d019f9d12ae479a565533dda32101e0ed4ce3c7bb5f7e44067cfea30075",
       "disposition": "mixed rendering review",
-      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution",
+      "current_path": "src/lib-win32-style/appearance/win2000/window/caption.h",
+      "baseline_unchanged": true,
+      "current_sha256": "752e5d019f9d12ae479a565533dda32101e0ed4ce3c7bb5f7e44067cfea30075",
+      "final_owner": "appearance era rendering",
+      "final_reason": "Actual bitmap/palette/gradient, text placement, bevel and button shape; common title snapshot/GDI helpers consumed rather than moving era draw policy",
+      "verification": [
+        "core-frames",
+        "core-win2k-frame-lifecycle (DWM failure separate)",
+        "core-dc-failure"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/window/frame.c",
       "sha256": "c81807df90701ddcf17f2b1b771f92a18e7edbd33c2dc3969c7e15ee94b79e70",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win2000/window/frame.c",
+      "baseline_unchanged": false,
+      "current_sha256": "594c8a72c9edae695c4f93105ba7f5a29c603cca4a18d959ff2283f6d1035512",
+      "final_owner": "appearance profile assembly using application/window/install/messages/native_frame/caption_button",
+      "public_entry": "style_frame_install, style_frame_message, style_native_frame_*, style_caption_button_*; style_instance_*",
+      "final_reason": "Common publication/reference/rollback, native state and input removed from private engine; profile eligibility, complete renderer/control/menu teardown order and geometry remain actual style policy; menu portions S8",
+      "verification": [
+        "core-style-frame-install",
+        "core-win2k-instance-lifetime",
+        "core-frames",
+        "core-pending-frame-owner"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/window/frame.h",
       "sha256": "c8b20e9abd404a041725cabde922ff20698bb11531f18d030872904701681181",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win2000/window/frame.h",
+      "baseline_unchanged": true,
+      "current_sha256": "c8b20e9abd404a041725cabde922ff20698bb11531f18d030872904701681181",
+      "final_owner": "product style/ABI registration and renderer binding",
+      "public_entry": "style_frame_message, style_frame_install via appearance provider, existing window exports",
+      "final_reason": "Module ABI, actual style/control choice and renderer binding retained; no local native window state machine. Menu bindings S8, final provider registration S13",
+      "verification": [
+        "core-frames",
+        "actual product style/global bridge matrix"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/window/system_menu.c",
       "sha256": "2f8852d5c20f220fa3d9f20633ccd457a6b25136f845a33ab7eecbbd806e62b8",
       "disposition": "S8 boundary",
-      "reason": "menu state/input retained until common menu migration"
+      "reason": "menu state/input retained until common menu migration",
+      "current_path": "src/lib-win32-style/appearance/win2000/window/system_menu.c",
+      "baseline_unchanged": true,
+      "current_sha256": "2f8852d5c20f220fa3d9f20633ccd457a6b25136f845a33ab7eecbbd806e62b8",
+      "final_owner": "S8 menu boundary",
+      "final_reason": "Popup scope/rows and style presentation are menu work; S7 keeps existing caller protocol and only verifies common frame consumers",
+      "verification": [
+        "S8 native menu suite; existing product lifecycle"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/window/system_menu.h",
       "sha256": "8608f209175f54efc7921b19a689eb435e8edd5a3825a7170496cee1c0207e8c",
       "disposition": "S8 boundary",
-      "reason": "menu state/input retained until common menu migration"
+      "reason": "menu state/input retained until common menu migration",
+      "current_path": "src/lib-win32-style/appearance/win2000/window/system_menu.h",
+      "baseline_unchanged": true,
+      "current_sha256": "8608f209175f54efc7921b19a689eb435e8edd5a3825a7170496cee1c0207e8c",
+      "final_owner": "S8 menu boundary",
+      "final_reason": "Popup scope/rows and style presentation are menu work; S7 keeps existing caller protocol and only verifies common frame consumers",
+      "verification": [
+        "S8 native menu suite; existing product lifecycle"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.c",
       "sha256": "a310ef719ed226e6ef765c850c6d727d5fccc0a573462a2a6010566579bcb779",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.c",
+      "baseline_unchanged": false,
+      "current_sha256": "5114c166c8ee2700fa1e93d0f0c9aabf67465447c496cf65e1049dc6f4fa4592",
+      "final_owner": "appearance message qualification/menu/XAML assembly",
+      "public_entry": "style_frame_message; existing repaint/instance APIs",
+      "final_reason": "Ordinary native protocol delegated to common engine; MDI support qualification and frame menu/XAML gate bindings remain S8/S12 integration",
+      "verification": [
+        "core-frames",
+        "core-dc-failure",
+        "core-uwp-frame-hidden"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.h",
       "sha256": "15033ca7d882f19ecd458365ffd76aa8f803732034b99d4d467b13ca8622760e",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.h",
+      "baseline_unchanged": false,
+      "current_sha256": "8af504f1cf3b8ccd67db531005563ead03435f1c1f46576d4fb8b683306c6e93",
+      "final_owner": "appearance message qualification/menu/XAML assembly",
+      "public_entry": "style_frame_message; existing repaint/instance APIs",
+      "final_reason": "Ordinary native protocol delegated to common engine; MDI support qualification and frame menu/XAML gate bindings remain S8/S12 integration",
+      "verification": [
+        "core-frames",
+        "core-dc-failure",
+        "core-uwp-frame-hidden"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_font.c",
       "sha256": "5414a7de13ce83ba74fcf3786a320616aa50bc81ecb6f860d287f45e535d7b72",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_font.c",
+      "baseline_unchanged": false,
+      "current_sha256": "8fc21068060be28507b807cc426a82e033a89fc09d8b58874157e29f7688c586",
+      "final_owner": "appearance font creation/release policy + application/graphics/font_pair",
+      "public_entry": "style_font_pair_commit/dispose",
+      "final_reason": "Actual MS Sans Serif/System lease and font fallback choices are era policy; ownership, DPI and atomic replacement are common",
+      "verification": [
+        "core-style-font-pair",
+        "core-win16-control-link",
+        "core-uwp-frame-hidden",
+        "core-frames"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_font.h",
       "sha256": "dcd05c8d415169bc70cd3c6884cf8eec8159e5cf7c0806e4fda546845b30243b",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_font.h",
+      "baseline_unchanged": false,
+      "current_sha256": "658e4a3db51071aeb1b8bf2305308ed42f0b536c052c248f4a9d8f010313ff43",
+      "final_owner": "appearance font creation/release policy + application/graphics/font_pair",
+      "public_entry": "style_font_pair_commit/dispose",
+      "final_reason": "Actual MS Sans Serif/System lease and font fallback choices are era policy; ownership, DPI and atomic replacement are common",
+      "verification": [
+        "core-style-font-pair",
+        "core-win16-control-link",
+        "core-uwp-frame-hidden",
+        "core-frames"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_input.c",
       "sha256": "9283ce28e5d7c159fb4482906cc6f2d82818cf4e4ce6ec7e302d1a51f6a9e0bc",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_input.c",
+      "baseline_unchanged": false,
+      "current_sha256": "900ef4cc1721b3810188753ae339ce3368f4755b2552ff601d16548189845d13",
+      "final_owner": "appearance hit/command/painting policy using shared input/present",
+      "public_entry": "style_caption_button_*; style_present_buffer_*",
+      "final_reason": "Actual era hit rectangles, command/invoke/paint order retained; common capture state/lifetime and buffer ownership are not copied; menu input S8, renderer view boundary S13",
+      "verification": [
+        "core-win16-control-link",
+        "core-dc-failure",
+        "core-frames"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_input.h",
       "sha256": "e067c1cfe84bc28f22b9b02357000d2a1519ccc1a0c73e560ea4dfd2fcd3527c",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_input.h",
+      "baseline_unchanged": true,
+      "current_sha256": "e067c1cfe84bc28f22b9b02357000d2a1519ccc1a0c73e560ea4dfd2fcd3527c",
+      "final_owner": "appearance hit/command/painting policy using shared input/present",
+      "public_entry": "style_caption_button_*; style_present_buffer_*",
+      "final_reason": "Actual era hit rectangles, command/invoke/paint order retained; common capture state/lifetime and buffer ownership are not copied; menu input S8, renderer view boundary S13",
+      "verification": [
+        "core-win16-control-link",
+        "core-dc-failure",
+        "core-frames"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_layout.c",
       "sha256": "eee865271101727c8d55b1b8b556371335f0638522674daa020d6e479a500269",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_layout.c",
+      "baseline_unchanged": false,
+      "current_sha256": "03ba7e7e9296ff8a9c24a32703f1d65bcc05384355621bee2860d50151864d1c",
+      "final_owner": "appearance geometry using application/window/frame",
+      "public_entry": "style_frame_work_area/scrollbar_hit/set_client",
+      "final_reason": "Only era layout, menu sizing and inner scrollbar-border measurements retained; native hit priority/cursor/restore moved",
+      "verification": [
+        "core-frames",
+        "core-style-frame-restore"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_layout.h",
       "sha256": "8ce56c7cc3d9c6a98dd924a1988e60ec619c5614fbeebbd661bc531c6dad9d14",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_layout.h",
+      "baseline_unchanged": false,
+      "current_sha256": "820c11f41903f31ff0e440d9c83b75444cadd2be80581efae4061ee958ec6dc9",
+      "final_owner": "appearance geometry using application/window/frame",
+      "public_entry": "style_frame_work_area/scrollbar_hit/set_client",
+      "final_reason": "Only era layout, menu sizing and inner scrollbar-border measurements retained; native hit priority/cursor/restore moved",
+      "verification": [
+        "core-frames",
+        "core-style-frame-restore"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c",
       "sha256": "0e8aa5eb3c7ef3a5dc9f4efc4475f67e2df9c32822bcce63c5b3d1d89cfc1a55",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c",
+      "baseline_unchanged": false,
+      "current_sha256": "e77271d528b8165b17e935f84334adbaae63615cec27b934e14922a4d0e0f90d",
+      "final_owner": "appearance profile assembly using application/window/install/messages/native_frame/caption_button",
+      "public_entry": "style_frame_install, style_frame_message, style_native_frame_*, style_caption_button_*; style_instance_*",
+      "final_reason": "Common publication/reference/rollback, native state and input removed from private engine; profile eligibility, complete renderer/control/menu teardown order and geometry remain actual style policy; menu portions S8",
+      "verification": [
+        "core-style-frame-install",
+        "core-win2k-instance-lifetime",
+        "core-frames",
+        "core-pending-frame-owner"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.h",
       "sha256": "4b989f179aa2c79d9331525311eaf80ba67d6877d254737fd362e9d2412c5de3",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.h",
+      "baseline_unchanged": false,
+      "current_sha256": "af9c42706382dd4fe89e2089264534070f9fbfc6a8abd0a60b9152f5df773968",
+      "final_owner": "appearance profile assembly using application/window/install/messages/native_frame/caption_button",
+      "public_entry": "style_frame_install, style_frame_message, style_native_frame_*, style_caption_button_*; style_instance_*",
+      "final_reason": "Common publication/reference/rollback, native state and input removed from private engine; profile eligibility, complete renderer/control/menu teardown order and geometry remain actual style policy; menu portions S8",
+      "verification": [
+        "core-style-frame-install",
+        "core-win2k-instance-lifetime",
+        "core-frames",
+        "core-pending-frame-owner"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_message.c",
       "sha256": "a02fe5fd842cf88970bdf0190158d6de3511bb4356ae090eb5a9fd60c8c164dd",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/application/window/messages.c",
+      "baseline_unchanged": false,
+      "current_sha256": "843aea6e7877bd90b3c14c7712f97090c0b749a753ea2529cb60ed169d41a05c",
+      "final_owner": "application/window/messages",
+      "public_entry": "style_frame_message",
+      "final_reason": "Real native forwarding, paint/activation/print/client and reentry protocol; era geometry and dialog colors supplied outside",
+      "verification": [
+        "core-style-frame-messages",
+        "core-frames",
+        "core-win2k-instance-lifetime"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_message.h",
       "sha256": "07b7aa78e2c300e3d35c12308bc2d81d9e8bccd599aa3d7ee2221da560b5c11f",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/application/window/messages.h",
+      "baseline_unchanged": false,
+      "current_sha256": "301ad434931ffc3fb97904101ce4fe2ac1116470426f9b85eb2dba7094b96ac3",
+      "final_owner": "application/window/messages",
+      "public_entry": "style_frame_message",
+      "final_reason": "Real native forwarding, paint/activation/print/client and reentry protocol; era geometry and dialog colors supplied outside",
+      "verification": [
+        "core-style-frame-messages",
+        "core-frames",
+        "core-win2k-instance-lifetime"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_paint.c",
       "sha256": "1a09c832c9f80b9fae46c4580b056909e664ec01aa4fde33130c5b7aa192f9dd",
       "disposition": "mixed rendering review",
-      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_paint.c",
+      "baseline_unchanged": false,
+      "current_sha256": "d5869166827e1ecf524d13f083d02650bc778fec7d65cabae4ef3c8ce95bc476",
+      "final_owner": "appearance era rendering",
+      "final_reason": "Actual bitmap/palette/gradient, text placement, bevel and button shape; common title snapshot/GDI helpers consumed rather than moving era draw policy",
+      "verification": [
+        "core-frames",
+        "core-win2k-frame-lifecycle (DWM failure separate)",
+        "core-dc-failure"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_paint.h",
       "sha256": "576a9892474c8fe7709d85278c2edaa56f47658583f64e53915c59d0aed077f4",
       "disposition": "mixed rendering review",
-      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_paint.h",
+      "baseline_unchanged": true,
+      "current_sha256": "576a9892474c8fe7709d85278c2edaa56f47658583f64e53915c59d0aed077f4",
+      "final_owner": "appearance era rendering",
+      "final_reason": "Actual bitmap/palette/gradient, text placement, bevel and button shape; common title snapshot/GDI helpers consumed rather than moving era draw policy",
+      "verification": [
+        "core-frames",
+        "core-win2k-frame-lifecycle (DWM failure separate)",
+        "core-dc-failure"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_state.c",
       "sha256": "2e0d05f5a6317cb1c4529f877da96e6dc0b38f7343059cfea728980aafc7e6e9",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_state.c",
+      "baseline_unchanged": false,
+      "current_sha256": "275184d277c7d335fe7167705fd0a07f100f5ba573654bf313f5f1af04729d95",
+      "final_owner": "appearance palette/menu/XAML composition; common root/native/font/button state",
+      "public_entry": "style_instance_*; style_native_frame; style_caption_button; style_font_pair",
+      "final_reason": "Private composition owns renderer palette/menu entries, not another root/DWM/capture/font engine; menu scope remains S8 and XAML S12",
+      "verification": [
+        "core-win16-control-link",
+        "core-frames",
+        "core-uwp-frame-hidden"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_state.h",
       "sha256": "91fd2953fa0f906facec6dc7fd55b97165e461eac6eff33130d210e4f46601c8",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_state.h",
+      "baseline_unchanged": false,
+      "current_sha256": "399a462c1a4d950d0c9692bc991574c09d4e361aae404471a5c744dc527bb079",
+      "final_owner": "appearance palette/menu/XAML composition; common root/native/font/button state",
+      "public_entry": "style_instance_*; style_native_frame; style_caption_button; style_font_pair",
+      "final_reason": "Private composition owns renderer palette/menu entries, not another root/DWM/capture/font engine; menu scope remains S8 and XAML S12",
+      "verification": [
+        "core-win16-control-link",
+        "core-frames",
+        "core-uwp-frame-hidden"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_view.c",
       "sha256": "2609ec92fabfe1769a5d0d9a1217ad03cd7d816c5fc77473903cf891c2cdffc3",
       "disposition": "mixed rendering review",
-      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_view.c",
+      "baseline_unchanged": false,
+      "current_sha256": "b6843dd138206f212acee26d670ad90bcced93ea87630de1beffd6da64c2504f",
+      "final_owner": "appearance hit/command/painting policy using shared input/present",
+      "public_entry": "style_caption_button_*; style_present_buffer_*",
+      "final_reason": "Actual era hit rectangles, command/invoke/paint order retained; common capture state/lifetime and buffer ownership are not copied; menu input S8, renderer view boundary S13",
+      "verification": [
+        "core-win16-control-link",
+        "core-dc-failure",
+        "core-frames"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_view.h",
       "sha256": "cee550d0193c4c6dfd6df0edf53935a6addef9e48beef44488e96da76cb938b6",
       "disposition": "mixed rendering review",
-      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution"
+      "reason": "retain era layout/drawing; extract shared caption snapshots/DC/input execution",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/frame_view.h",
+      "baseline_unchanged": false,
+      "current_sha256": "ca1cc9278f044bc625e319eaeea2b390aef0a0fc30bf6e2322290037b78adafd",
+      "final_owner": "appearance hit/command/painting policy using shared input/present",
+      "public_entry": "style_caption_button_*; style_present_buffer_*",
+      "final_reason": "Actual era hit rectangles, command/invoke/paint order retained; common capture state/lifetime and buffer ownership are not copied; menu input S8, renderer view boundary S13",
+      "verification": [
+        "core-win16-control-link",
+        "core-dc-failure",
+        "core-frames"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
       "sha256": "a4e6faa1967b0447feda3ae1760114987bf5671af8bedc8f219dd0340255f2f2",
       "disposition": "S12 boundary",
-      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7"
+      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
+      "baseline_unchanged": false,
+      "current_sha256": "19b148922498263ba5e208a158d09cb45dc73a893ed4fada10498a4e4f104e68",
+      "final_owner": "appearance/win3x with S12 host boundary",
+      "public_entry": "style_font_pair_commit/dispose; existing style_uwp_host/surface/input",
+      "final_reason": "Font state now shared and actual borrower lifetime retained; modern geometry/artwork stays here, host/input integration remains explicitly S12",
+      "verification": [
+        "core-uwp-frame --private-worker",
+        "core-uwp-frame-hidden"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.h",
       "sha256": "00da809635b3781756d1760ce368b241259267eeca36e77d99cff117c0c5fbe4",
       "disposition": "S12 boundary",
-      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7"
+      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/modern_frame.h",
+      "baseline_unchanged": true,
+      "current_sha256": "00da809635b3781756d1760ce368b241259267eeca36e77d99cff117c0c5fbe4",
+      "final_owner": "appearance/win3x with S12 host boundary",
+      "public_entry": "style_font_pair_commit/dispose; existing style_uwp_host/surface/input",
+      "final_reason": "Font state now shared and actual borrower lifetime retained; modern geometry/artwork stays here, host/input integration remains explicitly S12",
+      "verification": [
+        "core-uwp-frame --private-worker",
+        "core-uwp-frame-hidden"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c",
       "sha256": "fa5140f31fd839432e55ea7a511cad04aba213f9ac7094d0c3b6871c4be2d6b9",
       "disposition": "S12 boundary",
-      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7"
+      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c",
+      "baseline_unchanged": true,
+      "current_sha256": "fa5140f31fd839432e55ea7a511cad04aba213f9ac7094d0c3b6871c4be2d6b9",
+      "final_owner": "appearance/win3x with S12 host boundary",
+      "public_entry": "style_font_pair_commit/dispose; existing style_uwp_host/surface/input",
+      "final_reason": "Font state now shared and actual borrower lifetime retained; modern geometry/artwork stays here, host/input integration remains explicitly S12",
+      "verification": [
+        "core-uwp-frame --private-worker",
+        "core-uwp-frame-hidden"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/modern_frame_layout.h",
       "sha256": "15c3b0ca9836c852b4caa4a9c8d3289d46111a718d865a27c1eee5efe94badf9",
       "disposition": "S12 boundary",
-      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7"
+      "reason": "modern host lifecycle belongs adapters; preserve shared frame consumers in S7",
+      "current_path": "src/lib-win32-style/appearance/win3x/window/modern_frame_layout.h",
+      "baseline_unchanged": true,
+      "current_sha256": "15c3b0ca9836c852b4caa4a9c8d3289d46111a718d865a27c1eee5efe94badf9",
+      "final_owner": "appearance/win3x with S12 host boundary",
+      "public_entry": "style_font_pair_commit/dispose; existing style_uwp_host/surface/input",
+      "final_reason": "Font state now shared and actual borrower lifetime retained; modern geometry/artwork stays here, host/input integration remains explicitly S12",
+      "verification": [
+        "core-uwp-frame --private-worker",
+        "core-uwp-frame-hidden"
+      ]
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/win16_style.h",
       "sha256": "6049f0ce949af60da299436283a7be37f2c9ac53e228199e0b7fb5537c43dba1",
       "disposition": "shared mechanism migration review",
-      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks"
+      "reason": "separate frame lifecycle/message/native resource state from era policy; no private field-view callbacks",
+      "current_path": null,
+      "baseline_unchanged": false,
+      "final_owner": "deleted",
+      "final_reason": "Only palette forwarding, no remaining consumers; menu_scope.h now includes common/palette.h directly",
+      "verification": [
+        "all-target compilation",
+        "source receipt/dependency gate"
+      ]
     },
     {
       "path": "src/lib-win32-style/application/window/dwm.h",
       "sha256": "dc446af8cb5f5635cae67b4961282d2d5769414a857447f81d412b9647b815e5",
       "disposition": "existing public mechanism",
-      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers"
+      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers",
+      "current_path": "src/lib-win32-style/application/window/dwm.h",
+      "baseline_unchanged": true,
+      "current_sha256": "dc446af8cb5f5635cae67b4961282d2d5769414a857447f81d412b9647b815e5",
+      "final_owner": "application/window",
+      "public_entry": "style_frame_* / style_dwm_* / style_window_text_copy / win32_style_window_current_thread",
+      "final_reason": "Single common native operation and identity implementation; no product or era private state",
+      "verification": [
+        "core-style-frame-restore",
+        "core-style-frame-xaml",
+        "core-style-window-text",
+        "core-frames"
+      ]
     },
     {
       "path": "src/lib-win32-style/application/window/frame.h",
       "sha256": "0919b68928537000bcb2134422503a3bed5e42a5e69a92a56fe12be957af34fa",
       "disposition": "existing public mechanism",
-      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers"
+      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers",
+      "current_path": "src/lib-win32-style/application/window/frame.h",
+      "baseline_unchanged": false,
+      "current_sha256": "1babe7f570761c967e60a0b5c131ab093ef66bca978d47262fca7bd326f4c64e",
+      "final_owner": "application/window",
+      "public_entry": "style_frame_* / style_dwm_* / style_window_text_copy / win32_style_window_current_thread",
+      "final_reason": "Single common native operation and identity implementation; no product or era private state",
+      "verification": [
+        "core-style-frame-restore",
+        "core-style-frame-xaml",
+        "core-style-window-text",
+        "core-frames"
+      ]
     },
     {
       "path": "src/lib-win32-style/application/window/window_identity.h",
       "sha256": "cbab1c414cce1971fcbf709f920bf4aa63d9ffc99ebb12cb83f9223b0d908fd6",
       "disposition": "existing public mechanism",
-      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers"
+      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers",
+      "current_path": "src/lib-win32-style/application/window/window_identity.h",
+      "baseline_unchanged": true,
+      "current_sha256": "cbab1c414cce1971fcbf709f920bf4aa63d9ffc99ebb12cb83f9223b0d908fd6",
+      "final_owner": "application/window",
+      "public_entry": "style_frame_* / style_dwm_* / style_window_text_copy / win32_style_window_current_thread",
+      "final_reason": "Single common native operation and identity implementation; no product or era private state",
+      "verification": [
+        "core-style-frame-restore",
+        "core-style-frame-xaml",
+        "core-style-window-text",
+        "core-frames"
+      ]
     },
     {
       "path": "src/lib-win32-style/application/window/window_text.h",
       "sha256": "c95e7c2ccba330fc3e395970bbd0b3892e010807d3ad8e51f8db4d8d96115e99",
       "disposition": "existing public mechanism",
-      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers"
+      "reason": "sole frame/DWM/identity/text core; extend only for actual shared consumers",
+      "current_path": "src/lib-win32-style/application/window/window_text.h",
+      "baseline_unchanged": true,
+      "current_sha256": "c95e7c2ccba330fc3e395970bbd0b3892e010807d3ad8e51f8db4d8d96115e99",
+      "final_owner": "application/window",
+      "public_entry": "style_frame_* / style_dwm_* / style_window_text_copy / win32_style_window_current_thread",
+      "final_reason": "Single common native operation and identity implementation; no product or era private state",
+      "verification": [
+        "core-style-frame-restore",
+        "core-style-frame-xaml",
+        "core-style-window-text",
+        "core-frames"
+      ]
     },
     {
       "path": "src/ntw16s-dll/attachment.c",
       "sha256": "5b3c4acc82abc29cfe6aeb33f5e837c59e0fdaaa53ef65ac2f1e69e22fd65345",
       "disposition": "product integration",
-      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle",
+      "current_path": "src/ntw16s-dll/attachment.c",
+      "baseline_unchanged": true,
+      "current_sha256": "5b3c4acc82abc29cfe6aeb33f5e837c59e0fdaaa53ef65ac2f1e69e22fd65345",
+      "final_owner": "product creation integration pending S11",
+      "final_reason": "CBT/first-show and dialog creation protocol explicitly assigned S11; uses existing shared instance/access mechanisms, not duplicated ordinary window engine",
+      "verification": [
+        "core-pending-frame-owner",
+        "startup/runtime product matrix"
+      ]
     },
     {
       "path": "src/ntw16s-dll/attachment.h",
       "sha256": "7a5cde7dcf7fb6925373ec34b0877ff37b2175f19ecb5a9c2cfa5e52ee49a7ed",
       "disposition": "product integration",
-      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle",
+      "current_path": "src/ntw16s-dll/attachment.h",
+      "baseline_unchanged": true,
+      "current_sha256": "7a5cde7dcf7fb6925373ec34b0877ff37b2175f19ecb5a9c2cfa5e52ee49a7ed",
+      "final_owner": "product creation integration pending S11",
+      "final_reason": "CBT/first-show and dialog creation protocol explicitly assigned S11; uses existing shared instance/access mechanisms, not duplicated ordinary window engine",
+      "verification": [
+        "core-pending-frame-owner",
+        "startup/runtime product matrix"
+      ]
     },
     {
       "path": "src/ntw16s-dll/win16_style.c",
       "sha256": "9af1eabd9ab4f9f26d670676ae55cc399311edf013f9c7bee87030ffbea6cd58",
       "disposition": "product integration",
-      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle",
+      "current_path": "src/ntw16s-dll/win16_style.c",
+      "baseline_unchanged": false,
+      "current_sha256": "9f45874f226d1d1f9fec082f47d0adca7d019ae4f14896e425e9981961cfbdb2",
+      "final_owner": "product style/ABI registration and renderer binding",
+      "public_entry": "style_frame_message, style_frame_install via appearance provider, existing window exports",
+      "final_reason": "Module ABI, actual style/control choice and renderer binding retained; no local native window state machine. Menu bindings S8, final provider registration S13",
+      "verification": [
+        "core-frames",
+        "actual product style/global bridge matrix"
+      ]
     },
     {
       "path": "src/ntw16s-dll/win16_style.h",
       "sha256": "45412585b7fe4165220573f209ebb1e833ba2b53c963036e9aa9ff4773a5c8a9",
       "disposition": "product integration",
-      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle",
+      "current_path": "src/ntw16s-dll/win16_style.h",
+      "baseline_unchanged": true,
+      "current_sha256": "45412585b7fe4165220573f209ebb1e833ba2b53c963036e9aa9ff4773a5c8a9",
+      "final_owner": "product style/ABI registration and renderer binding",
+      "public_entry": "style_frame_message, style_frame_install via appearance provider, existing window exports",
+      "final_reason": "Module ABI, actual style/control choice and renderer binding retained; no local native window state machine. Menu bindings S8, final provider registration S13",
+      "verification": [
+        "core-frames",
+        "actual product style/global bridge matrix"
+      ]
     },
     {
       "path": "src/ntw2ks-dll/window.c",
       "sha256": "e886d5f03094396a557d3b5d3799d08c8dfeec90f1185798bba49efccd526ea1",
       "disposition": "product integration",
-      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle",
+      "current_path": "src/ntw2ks-dll/window.c",
+      "baseline_unchanged": true,
+      "current_sha256": "e886d5f03094396a557d3b5d3799d08c8dfeec90f1185798bba49efccd526ea1",
+      "final_owner": "product style/ABI registration and renderer binding",
+      "public_entry": "style_frame_message, style_frame_install via appearance provider, existing window exports",
+      "final_reason": "Module ABI, actual style/control choice and renderer binding retained; no local native window state machine. Menu bindings S8, final provider registration S13",
+      "verification": [
+        "core-frames",
+        "actual product style/global bridge matrix"
+      ]
     },
     {
       "path": "src/ntw2ks-dll/window.h",
       "sha256": "fa52dca7007a1f1a9466db3e500511d6dcd69f27dfc4227a126c27cb50190596",
       "disposition": "product integration",
-      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle"
+      "reason": "ABI/style registration remains; migrate generic operations, no duplicate lifecycle",
+      "current_path": "src/ntw2ks-dll/window.h",
+      "baseline_unchanged": true,
+      "current_sha256": "fa52dca7007a1f1a9466db3e500511d6dcd69f27dfc4227a126c27cb50190596",
+      "final_owner": "product style/ABI registration and renderer binding",
+      "public_entry": "style_frame_message, style_frame_install via appearance provider, existing window exports",
+      "final_reason": "Module ABI, actual style/control choice and renderer binding retained; no local native window state machine. Menu bindings S8, final provider registration S13",
+      "verification": [
+        "core-frames",
+        "actual product style/global bridge matrix"
+      ]
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/window/caption.c",
       "sha256": "2f226006b3d747ec4103523093057487010c9fa70a36599e7fa2fa6208b2555f",
       "disposition": "verification",
-      "reason": "existing native fixture; audit invocation before running"
+      "reason": "existing native fixture; audit invocation before running",
+      "current_path": "tests/lib-win32-style/appearance/win2000/window/caption.c",
+      "baseline_unchanged": true,
+      "current_sha256": "2f226006b3d747ec4103523093057487010c9fa70a36599e7fa2fa6208b2555f",
+      "final_owner": "native verification",
+      "final_reason": "Current desktop worker or direct fixture; known DWM failure remains separate from passes",
+      "verification": [
+        "caption"
+      ]
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/window/frame_lifecycle.c",
       "sha256": "50e584ec3a8eb67b76090ec6f4d4eb013ff8e776dbe8a4bb048bf23d390fb75e",
       "disposition": "verification",
-      "reason": "existing native fixture; audit invocation before running"
+      "reason": "existing native fixture; audit invocation before running",
+      "current_path": "tests/lib-win32-style/appearance/win2000/window/frame_lifecycle.c",
+      "baseline_unchanged": false,
+      "current_sha256": "c5b2a64786cd2927f6f1af939e878e99e4fc5ae2757e0d5131bb817c933d6f73",
+      "final_owner": "native verification",
+      "final_reason": "Current desktop worker or direct fixture; known DWM failure remains separate from passes",
+      "verification": [
+        "frame_lifecycle"
+      ]
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/window/instance_lifetime.c",
       "sha256": "15c6044bb177005827933bd804c1c532739f15401cf933fd5d8b06f6b869ca43",
       "disposition": "verification",
-      "reason": "existing native fixture; audit invocation before running"
+      "reason": "existing native fixture; audit invocation before running",
+      "current_path": "tests/lib-win32-style/appearance/win2000/window/instance_lifetime.c",
+      "baseline_unchanged": false,
+      "current_sha256": "6e348f66a6ab65c73dc599915e3cbc8d6facf2ad2f1560458436e032a55e7d81",
+      "final_owner": "native verification",
+      "final_reason": "Current desktop worker or direct fixture; known DWM failure remains separate from passes",
+      "verification": [
+        "instance_lifetime"
+      ]
     },
     {
       "path": "tests/lib-win32-style/application/window/frame_restore.c",
       "sha256": "1aae317b1738635cbebf42ef3b7adb813f569b9d7c16d2a3bfac563c467d738c",
       "disposition": "verification",
-      "reason": "existing native fixture; audit invocation before running"
+      "reason": "existing native fixture; audit invocation before running",
+      "current_path": "tests/lib-win32-style/application/window/frame_restore.c",
+      "baseline_unchanged": false,
+      "current_sha256": "1578319bf32d8edc74625b8e1e2e64a03a488604a7fe73a90ab5de13a3275da9",
+      "final_owner": "application/window",
+      "public_entry": "style_frame_* / style_dwm_* / style_window_text_copy / win32_style_window_current_thread",
+      "final_reason": "Single common native operation and identity implementation; no product or era private state",
+      "verification": [
+        "core-style-frame-restore",
+        "core-style-frame-xaml",
+        "core-style-window-text",
+        "core-frames"
+      ]
     },
     {
       "path": "tests/lib-win32-style/application/window/frame_xaml.c",
       "sha256": "142c1894432012a7b2b3c5115dc80de64400d859532325de4a3c032eaac2e65b",
       "disposition": "verification",
-      "reason": "existing native fixture; audit invocation before running"
+      "reason": "existing native fixture; audit invocation before running",
+      "current_path": "tests/lib-win32-style/application/window/frame_xaml.c",
+      "baseline_unchanged": true,
+      "current_sha256": "142c1894432012a7b2b3c5115dc80de64400d859532325de4a3c032eaac2e65b",
+      "final_owner": "application/window",
+      "public_entry": "style_frame_* / style_dwm_* / style_window_text_copy / win32_style_window_current_thread",
+      "final_reason": "Single common native operation and identity implementation; no product or era private state",
+      "verification": [
+        "core-style-frame-restore",
+        "core-style-frame-xaml",
+        "core-style-window-text",
+        "core-frames"
+      ]
     },
     {
       "path": "tests/lib-win32-style/application/window/win16_dwm_restore.c",
       "sha256": "754aebb44a49aee52d998ce66ea863c74ac6f687bb85af87c34a8060d1f0f8f7",
       "disposition": "verification",
-      "reason": "existing native fixture; audit invocation before running"
+      "reason": "existing native fixture; audit invocation before running",
+      "current_path": "tests/lib-win32-style/application/window/win16_dwm_restore.c",
+      "baseline_unchanged": true,
+      "current_sha256": "754aebb44a49aee52d998ce66ea863c74ac6f687bb85af87c34a8060d1f0f8f7",
+      "final_owner": "application/window",
+      "public_entry": "style_frame_* / style_dwm_* / style_window_text_copy / win32_style_window_current_thread",
+      "final_reason": "Single common native operation and identity implementation; no product or era private state",
+      "verification": [
+        "core-style-frame-restore",
+        "core-style-frame-xaml",
+        "core-style-window-text",
+        "core-frames"
+      ]
     },
     {
       "path": "tests/lib-win32-style/application/window/window_identity.c",
       "sha256": "5cc16f4362ae4280039723aae186f71065e0d9c8341326c6d4d004d487f4ac03",
       "disposition": "verification",
-      "reason": "existing native fixture; audit invocation before running"
+      "reason": "existing native fixture; audit invocation before running",
+      "current_path": "tests/lib-win32-style/application/window/window_identity.c",
+      "baseline_unchanged": true,
+      "current_sha256": "5cc16f4362ae4280039723aae186f71065e0d9c8341326c6d4d004d487f4ac03",
+      "final_owner": "application/window",
+      "public_entry": "style_frame_* / style_dwm_* / style_window_text_copy / win32_style_window_current_thread",
+      "final_reason": "Single common native operation and identity implementation; no product or era private state",
+      "verification": [
+        "core-style-frame-restore",
+        "core-style-frame-xaml",
+        "core-style-window-text",
+        "core-frames"
+      ]
     },
     {
       "path": "tests/lib-win32-style/application/window/window_text.c",
       "sha256": "38abdba39dc0a943814256f2a6adabc2f86002169fb5320998bf84dfb5b85a87",
       "disposition": "verification",
-      "reason": "existing native fixture; audit invocation before running"
+      "reason": "existing native fixture; audit invocation before running",
+      "current_path": "tests/lib-win32-style/application/window/window_text.c",
+      "baseline_unchanged": true,
+      "current_sha256": "38abdba39dc0a943814256f2a6adabc2f86002169fb5320998bf84dfb5b85a87",
+      "final_owner": "application/window",
+      "public_entry": "style_frame_* / style_dwm_* / style_window_text_copy / win32_style_window_current_thread",
+      "final_reason": "Single common native operation and identity implementation; no product or era private state",
+      "verification": [
+        "core-style-frame-restore",
+        "core-style-frame-xaml",
+        "core-style-window-text",
+        "core-frames"
+      ]
     },
     {
       "path": "tests/ntw16s-dll/frames.c",
       "sha256": "3340d39e9839acc903288fbd0efa9d38d2777406b2ae004c8b523924f6f5d6fc",
       "disposition": "verification",
-      "reason": "existing native fixture; audit invocation before running"
+      "reason": "existing native fixture; audit invocation before running",
+      "current_path": "tests/ntw16s-dll/frames.c",
+      "baseline_unchanged": true,
+      "current_sha256": "3340d39e9839acc903288fbd0efa9d38d2777406b2ae004c8b523924f6f5d6fc",
+      "final_owner": "native verification",
+      "final_reason": "Current desktop worker or direct fixture; known DWM failure remains separate from passes",
+      "verification": [
+        "frames"
+      ]
     },
     {
       "path": "tests/ntw16s-dll/pending_frame_owner.c",
       "sha256": "5998f07c984529433baae51cf4a27710a76979a5dca45dc9cbcde87e4e443571",
       "disposition": "verification",
-      "reason": "existing native fixture; audit invocation before running"
+      "reason": "existing native fixture; audit invocation before running",
+      "current_path": "tests/ntw16s-dll/pending_frame_owner.c",
+      "baseline_unchanged": true,
+      "current_sha256": "5998f07c984529433baae51cf4a27710a76979a5dca45dc9cbcde87e4e443571",
+      "final_owner": "native verification",
+      "final_reason": "Current desktop worker or direct fixture; known DWM failure remains separate from passes",
+      "verification": [
+        "pending_frame_owner"
+      ]
+    }
+  ],
+  "added_common_files": [
+    "src/lib-win32-style/application/graphics/font_pair.h",
+    "src/lib-win32-style/application/window/caption_button.h",
+    "src/lib-win32-style/application/window/frame.h",
+    "src/lib-win32-style/application/window/install.c",
+    "src/lib-win32-style/application/window/install.h",
+    "src/lib-win32-style/application/window/messages.c",
+    "src/lib-win32-style/application/window/messages.h",
+    "src/lib-win32-style/application/window/native_frame.h",
+    "tests/lib-win32-style/application/graphics/font_pair.c",
+    "tests/lib-win32-style/application/window/caption_button.c",
+    "tests/lib-win32-style/application/window/frame_restore.c",
+    "tests/lib-win32-style/application/window/install.c",
+    "tests/lib-win32-style/application/window/messages.c",
+    "tests/lib-win32-style/application/window/native_frame.c"
+  ],
+  "verification_summary": {
+    "published_cases": 188,
+    "passed": 186,
+    "skipped": 2,
+    "known_failures_unchanged": 2,
+    "source_inputs": 1033,
+    "physical_full_third_party_coverage": false
+  },
+  "additional_reviewed_consumers": [
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_scope.h",
+      "sha256": "d8926e11a8b6c6106dbcaae9d0e4e47b9476ea26c10264aa0d935ba8e45cbabf",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_dc_failure.c",
+      "sha256": "e07b5bce42fa4d9bef5964b049fdd0508a34d20aa31ae010c1dd90990931fd44",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win3x/control/control_link.c",
+      "sha256": "847f77b30de5e04ca4545fe0222bb95d8ab7c34ba776343a24b5bbe607398c66",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_iteration.c",
+      "sha256": "7634e8b5496f0d68cfc6fa7f3e9a64f3b47c96d8ca160cbeb492325c10e0d042",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_message.c",
+      "sha256": "1da9cf7d660f11a9e6899acbfb70b1972f6552173ab5438d9fd2b137661c3678",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/messages.c",
+      "sha256": "843aea6e7877bd90b3c14c7712f97090c0b749a753ea2529cb60ed169d41a05c",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/messages.h",
+      "sha256": "301ad434931ffc3fb97904101ce4fe2ac1116470426f9b85eb2dba7094b96ac3",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/native_frame.h",
+      "sha256": "9c74b9e62d6671b2e1d9413d90112f4069125e9cf002959a01678bf539c9a608",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "tests/lib-win32-style/application/window/native_frame.c",
+      "sha256": "1ec86398e029333cf3dcb34fe9b1ff978f7a87c3e015d7ea8857d0978cf105f7",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/caption_button.h",
+      "sha256": "e8d92b36733067e78ce2f9bab8ff8a91cc6b7448e6fa497aa5499181284bd38f",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "tests/lib-win32-style/application/window/caption_button.c",
+      "sha256": "51560e659f59977c6cb65541d8be639e7b4b81471a6ab8b30a126f5e5ea892bc",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/font_pair.h",
+      "sha256": "ad3c0dd7240a3b6763ef619042d22d949fec550d0fc4bee190f64c76f4920b56",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/install.c",
+      "sha256": "18cf17ab72baef24f20d965067cf7928b4d0e875d802fe3ce3c9bc0b3cac7d56",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/install.h",
+      "sha256": "75660a72e7fc7cd8091f4db801efdc95ee9cb2107a97222402b8d85c6eb523f0",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "tests/lib-win32-style/application/graphics/font_pair.c",
+      "sha256": "cf45f3f7837f662f6d49e113d3f6e9dda3c814ca8b5a7eb2bfe0622681f6f41e",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "tests/lib-win32-style/application/window/install.c",
+      "sha256": "8a1287e1ed95893adaff404c62119150a20da901a4c813d6aabaaebf8e74b746",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
+    },
+    {
+      "path": "tests/lib-win32-style/application/window/messages.c",
+      "sha256": "341664f273a5875a7bf74ef060098654647332c6ea9ee611362ba9daee275c1f",
+      "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
     }
   ]
 }

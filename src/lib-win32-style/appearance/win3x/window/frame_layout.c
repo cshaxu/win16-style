@@ -6,36 +6,11 @@
 #include "../menu/menu_bar.h"
 #include <windowsx.h>
 
-BOOL win16_control_frame_set_cursor(HWND w,WPARAM target,LPARAM hit)
-{
-    if(!IsIconic(w) && (HWND)target==w && (short)LOWORD(hit)>HTCLIENT){
-        LPCWSTR cursor=style_frame_resize_cursor((short)LOWORD(hit));
-        SetCursor(LoadCursorW(NULL,cursor));return TRUE;
-    }
-    return FALSE;
-}
-void win16_control_frame_activate(HWND w,const BOOL *detached,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute)
-{
-    DWORD policy=DWMNCRP_DISABLED;
-    if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD))
-        style_dwm_policy(w,set_attribute,policy);
-    if(!*detached)style_frame_changed(w);
-    if(!*detached && normal)style_restore_client(w,client);
-}
-void win16_control_frame_restore(HWND w,const BOOL *pending,const BOOL *policy_saved,const DWORD *old_policy,const RECT *client,BOOL normal,win16_control_set_window_attribute set_attribute)
-{
-    if(IsWindow(w) && !*pending && *policy_saved)style_dwm_policy(w,set_attribute,*old_policy);
-    if(IsWindow(w) && !*pending)style_frame_changed_restore(w,client,normal);
-}
 BOOL win16_control_frame_hit_test(HWND w,const win16_style_layout *l,LPARAM lp,LRESULT *result)
 {
-    RECT r;POINT point;SCROLLBARINFO scroll={.cbSize=sizeof(scroll)};
+    RECT r;POINT point;
     POINT screen={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
-    DWORD flags=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-    if((flags&WS_HSCROLL) && GetScrollBarInfo(w,OBJID_HSCROLL,&scroll) && PtInRect(&scroll.rcScrollBar,screen)){
-        *result=HTHSCROLL;return TRUE;}
-    if((flags&WS_VSCROLL) && GetScrollBarInfo(w,OBJID_VSCROLL,&scroll) && PtInRect(&scroll.rcScrollBar,screen)){
-        *result=HTVSCROLL;return TRUE;}
+    if(style_frame_scrollbar_hit(w,screen,result))return TRUE;
     if(!GetWindowRect(w,&r))return FALSE;
     point.x=screen.x-r.left;point.y=screen.y-r.top;
     *result=style_menu_neutral_hit(PtInRect(&l->menu,point)?HTMENU:win16_style_hit(l,point));

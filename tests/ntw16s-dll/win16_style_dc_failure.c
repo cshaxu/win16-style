@@ -35,10 +35,7 @@ int wmain(int argc,WCHAR **argv)
 {
     WNDCLASSW wc={0};HWND w;HDC dc;HBITMAP bm,old;style_window s={0};
     BITMAPINFO bi={0};DWORD *pixels;RECT before,after;int i,mode;
-    WCHAR name[64];HDESK desktop;
-    swprintf_s(name,64,L"StyleDC-%lu",GetCurrentProcessId());
-    desktop=CreateDesktopW(name,NULL,NULL,0,GENERIC_ALL,NULL);
-    CHECK(desktop && SetThreadDesktop(desktop));
+    /* Current desktop only; native menu callbacks have bounded cancellation. */
     wc.lpfnWndProc=DefWindowProcW;wc.hInstance=GetModuleHandleW(NULL);wc.lpszClassName=L"StyleDCFailure";
     CHECK(RegisterClassW(&wc));
     {HMENU menu=CreatePopupMenu();style_menu_item *items=NULL;MENUITEMINFOW info={.cbSize=sizeof(info)};LRESULT result;
@@ -213,6 +210,6 @@ int wmain(int argc,WCHAR **argv)
             printf("PASS menu callback lifetime message=%x action=%d\n",messages[k],action);
         }}
     SelectObject(dc,old);DeleteObject(bm);DeleteDC(dc);DestroyWindow(w);
-    win16_style_font_release(s.title_font);
+    win16_style_font_release(s.fonts.title);
     return 0;
 }

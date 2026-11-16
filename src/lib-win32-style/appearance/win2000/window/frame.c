@@ -4,7 +4,10 @@
 #include "caption.h"
 #include "system_menu.h"
 #include "lib-win32-style/application/menu/menu_input.h"
-#include "lib-win32-style/application/window/dwm.h"
+#include "lib-win32-style/application/window/native_frame.h"
+#include "lib-win32-style/application/window/messages.h"
+#include "lib-win32-style/application/window/install.h"
+#include "lib-win32-style/application/window/caption_button.h"
 #include "lib-win32-style/application/window/frame.h"
 #include "lib-win32-style/application/graphics/bitmap.h"
 #include "lib-win32-style/application/window/window_identity.h"
@@ -13,19 +16,20 @@
 #include <oleacc.h>
 #include <shellscalingapi.h>
 #include <stdint.h>
-#include <stdatomic.h>
 #include <windowsx.h>
 
 static const WCHAR frame_property[]=L"Win2kStyle.Frame";
-static const WCHAR hover_property[]=L"Win2kStyle.CaptionHover";
-static const WCHAR button_property[]=L"Win2kStyle.CaptionButton";
 static const WCHAR menu_property[]=L"Win2kStyle.Menu";
 static const WCHAR menu_keyboard_property[]=L"Win2kStyle.MenuKeyboard";
 static const WCHAR menu_focus_property[]=L"Win2kStyle.MenuFocus";
-static const WCHAR pending_property[]=L"Win2kStyle.FramePending";
-static const WCHAR policy_property[]=L"Win2kStyle.PreviousDwmState";
-static _Atomic UINT frame_message;
+typedef struct frame_window {
+    style_instance instance;
+    style_native_frame native;
+    style_caption_button button;
+} frame_window;
 static LRESULT CALLBACK frame_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
+static frame_window *frame_state(HWND window)
+{return (frame_window *)style_instance_lookup(window,frame_proc);}
 
 static int caption_height(HWND window)
 {
@@ -159,7 +163,7 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
         if(font)SelectObject(dc,font);
         SetBkMode(dc,TRANSPARENT);
         int count=GetMenuItemCount(menu);uintptr_t selected=(uintptr_t)GetPropW(window,menu_property);
-        BOOL inactive=GetPropW(window,frame_property)!=(HANDLE)(uintptr_t)2;
+        frame_window *frame=frame_state(window);BOOL inactive=!frame || !frame->native.active;
         for(int i=0;i<count;++i){
             WCHAR text[512]={0};MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STRING|MIIM_STATE,
                 .dwTypeData=text,.cch=ARRAYSIZE(text)-1};RECT r;
@@ -287,20 +291,23 @@ static void paint_caption_icon(HWND window,HDC dc,const RECT *icon)
 
 static void paint(HWND window)
 {
+    frame_window *frame=frame_state(window);if(!frame)return;
+    style_instance_retain(&frame->instance);
     RECT outer;TITLEBARINFOEX info={0};WCHAR title[1024];
-    if(IsIconic(window) || !GetWindowRect(window,&outer))return;
+    if(IsIconic(window) || !GetWindowRect(window,&outer))goto done;
     info.cbSize=sizeof(info);
     SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
-    if(info.rcTitleBar.right<=info.rcTitleBar.left || info.rcTitleBar.bottom<=info.rcTitleBar.top)return;
+    if(frame->instance.detached)goto done;
+    if(info.rcTitleBar.right<=info.rcTitleBar.left || info.rcTitleBar.bottom<=info.rcTitleBar.top)goto done;
     RECT caption=info.rcTitleBar;
     OffsetRect(&caption,-outer.left,-outer.top);
     RECT icon={0};BOOL has_icon=(GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) &&
         !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW) && caption_icon_rect(window,&outer,&icon);
     if(has_icon && icon.left<caption.left)caption.left=icon.left;
     int width=outer.right-outer.left,height=outer.bottom-outer.top;
-    if(caption.left<0 || caption.top<0 || caption.right>width || caption.bottom>height)return;
-    HDC dc=GetWindowDC(window);if(!dc)return;
-    BOOL active=GetPropW(window,frame_property)==(HANDLE)(uintptr_t)2;
+    if(caption.left<0 || caption.top<0 || caption.right>width || caption.bottom>height)goto done;
+    HDC dc=GetWindowDC(window);if(!dc)goto done;
+    BOOL active=frame->native.active;
     win2k_caption_colors colors=active?
         (win2k_caption_colors){RGB(0,0,128),RGB(166,202,240),RGB(255,255,255),TRUE}:
         (win2k_caption_colors){RGB(128,128,128),RGB(181,181,181),RGB(192,192,192),TRUE};
@@ -359,13 +366,18 @@ static void paint(HWND window)
             UINT state=buttons[i];
             if(i==3 && IsZoomed(window))state=DFCS_CAPTIONRESTORE;
             if(info.rgstate[i]&STATE_SYSTEM_UNAVAILABLE)state|=DFCS_INACTIVE;
-            uintptr_t tracked=(uintptr_t)GetPropW(window,button_property);
-            if((tracked/2==i && (tracked&1)) || (info.rgstate[i]&STATE_SYSTEM_PRESSED))state|=DFCS_PUSHED;
+            style_caption_button *tracked=&frame->button;
+            if(((unsigned)tracked->pressed==i && tracked->hot) || (info.rgstate[i]&STATE_SYSTEM_PRESSED))state|=DFCS_PUSHED;
             paint_button(dc,&r,state);
         }
     }
     ReleaseDC(window,dc);
+done:
+    style_instance_release(&frame->instance);
 }
+
+static void paint_message(HWND window,void *context,HDC target)
+{(void)context;(void)target;paint(window);}
 
 static BOOL menu_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
@@ -462,29 +474,27 @@ static BOOL menu_keyboard_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
     return FALSE;
 }
 
-static BOOL button_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
+static BOOL button_input(HWND window,frame_window *frame,UINT message,WPARAM wp,LPARAM lp)
 {
-    uintptr_t tracked=(uintptr_t)GetPropW(window,button_property);
-    if((message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONDBLCLK) && !tracked){
+    style_caption_button *tracked=&frame->button;
+    if((message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONDBLCLK) && !tracked->pressed){
         if(IsIconic(window))return FALSE;
         unsigned index=wp==HTMINBUTTON?2:wp==HTMAXBUTTON?3:wp==HTHELP?4:wp==HTCLOSE?5:0;
         if(!index)return FALSE;
         TITLEBARINFOEX info={.cbSize=sizeof(info)};
         SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
         if(info.rgstate[index]&(STATE_SYSTEM_INVISIBLE|STATE_SYSTEM_UNAVAILABLE))return FALSE;
-        if(!SetPropW(window,button_property,(HANDLE)(uintptr_t)(index*2+1)))return FALSE;
-        SetCapture(window);
-        if(GetCapture()!=window){RemovePropW(window,button_property);return FALSE;}
+        if(!style_caption_button_begin(window,tracked,(int)index,TRUE))return FALSE;
         paint(window);return TRUE;
     }
-    if(!tracked)return FALSE;
+    if(!tracked->pressed)return FALSE;
     if(message==WM_MOUSEMOVE || message==WM_LBUTTONUP){
-        unsigned index=(unsigned)(tracked/2);TITLEBARINFOEX info={.cbSize=sizeof(info)};
+        unsigned index=(unsigned)tracked->pressed;TITLEBARINFOEX info={.cbSize=sizeof(info)};
         POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
         ClientToScreen(window,&point);SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
         BOOL inside=PtInRect(&info.rgrect[index],point);
         if(message==WM_LBUTTONUP){
-            RemovePropW(window,button_property);if(GetCapture()==window)ReleaseCapture();
+            (void)style_caption_button_move(window,tracked,inside,TRUE,FALSE);
             if(IsWindow(window))paint(window);
             if(inside && IsWindow(window)){
                 UINT command=index==2?SC_MINIMIZE:index==3?(IsZoomed(window)?SC_RESTORE:SC_MAXIMIZE):
@@ -494,14 +504,13 @@ static BOOL button_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
                    (system && !(GetMenuState(system,command,MF_BYCOMMAND)&MFS_DISABLED)))
                     SendMessageW(window,WM_SYSCOMMAND,command,MAKELPARAM(point.x,point.y));
             }
-        }else if(inside!=(BOOL)(tracked&1)){
-            SetPropW(window,button_property,(HANDLE)(uintptr_t)(index*2+(inside?1:0)));paint(window);
+        }else if(inside!=tracked->hot){
+            (void)style_caption_button_move(window,tracked,inside,FALSE,FALSE);paint(window);
         }
         return TRUE;
     }
     if(message==WM_CAPTURECHANGED || message==WM_CANCELMODE || message==WM_NCDESTROY){
-        RemovePropW(window,button_property);
-        if(message==WM_CANCELMODE && GetCapture()==window)ReleaseCapture();
+        (void)style_caption_button_cancel(window,tracked,message);
         if(message!=WM_NCDESTROY && IsWindow(window))paint(window);
     }
     return FALSE;
@@ -519,9 +528,13 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
     if(compact_enabled(window) && style_frame_suppress_native_theme(message,IsIconic(window),GetMenu(window)!=NULL)){
         SetLastError(incoming);return 0;
     }
-    if(!IsIconic(window) && compact_enabled(window) && message==WM_NCACTIVATE){
-        SetPropW(window,frame_property,(HANDLE)(uintptr_t)(wp?2:1));paint(window);
-        SetLastError(incoming);return TRUE;
+    if(message==WM_SETTEXT || message==WM_THEMECHANGED || message==WM_DPICHANGED ||
+       (!IsIconic(window) && compact_enabled(window) && message==WM_NCACTIVATE)){
+        const style_frame_message_ops ops={.context=instance,.paint=paint_message};LRESULT result=0;
+        if(style_frame_message(instance,&((frame_window *)instance)->native,message,wp,lp,&ops,&result)){
+            if(message==WM_NCACTIVATE)SetLastError(incoming);
+            return result;
+        }
     }
     if(!IsIconic(window) && compact_enabled(window) && message==WM_NCPAINT){
         HRGN region=style_frame_native_region(window,wp);
@@ -533,8 +546,8 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
             }
             SetLastError(error);return 0;}
     }
-    if(message && message==atomic_load(&frame_message)){
-        if(RemovePropW(window,pending_property))recalculate_frame(window);
+    if(message && message==((frame_window *)instance)->native.refresh_message){
+        if(style_native_frame_take_refresh(&((frame_window *)instance)->native))recalculate_frame(window);
         SetLastError(incoming);return 0;
     }
     if((message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONDBLCLK) && wp==HTBORDER && compact_enabled(window)){
@@ -556,19 +569,19 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
     }
     if(menu_keyboard_input(window,message,wp,lp)){SetLastError(incoming);return 0;}
     if(menu_input(window,message,wp,lp)){SetLastError(incoming);return 0;}
-    if(button_input(window,message,wp,lp)){SetLastError(incoming);return 0;}
+    if(button_input(window,(frame_window *)instance,message,wp,lp)){SetLastError(incoming);return 0;}
     BOOL repaint=FALSE;
-    if(message==WM_NCACTIVATE)SetPropW(window,frame_property,(HANDLE)(uintptr_t)(wp?2:1));
+    if(message==WM_NCACTIVATE)((frame_window *)instance)->native.active=(BOOL)wp;
     if(message==WM_NCMOUSEMOVE){
-        HANDLE hit=(HANDLE)(uintptr_t)(wp+1);
-        if(GetPropW(window,hover_property)!=hit){SetPropW(window,hover_property,hit);repaint=TRUE;}
-    }else if(message==WM_NCMOUSELEAVE){RemovePropW(window,hover_property);repaint=TRUE;}
-    if(message==WM_NCDESTROY){RemovePropW(window,policy_property);RemovePropW(window,pending_property);RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);style_instance_detach(instance);}
+        WPARAM hit=wp+1;style_native_frame *native=&((frame_window *)instance)->native;
+        if(native->hover!=hit){native->hover=hit;repaint=TRUE;}
+    }else if(message==WM_NCMOUSELEAVE){((frame_window *)instance)->native.hover=0;repaint=TRUE;}
+    if(message==WM_NCDESTROY){RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,frame_property);style_instance_detach(instance);}
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();
     if(instance->detached){SetLastError(outcome);return result;}
-    if(message==WM_SHOWWINDOW && wp && IsWindow(window) && RemovePropW(window,pending_property))recalculate_frame(window);
+    if(message==WM_SHOWWINDOW && wp && IsWindow(window) && style_native_frame_take_refresh(&((frame_window *)instance)->native))recalculate_frame(window);
     if(message==WM_NCCALCSIZE && lp && compact_enabled(window) &&
        (GetWindowLongPtrW(window,GWL_STYLE)&WS_CAPTION)==WS_CAPTION &&
        !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL)){
@@ -579,11 +592,11 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
         int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
         if(difference>0 || dx || dy){
             client->left-=dx;client->right+=dx;client->top-=max(0,difference)+dy;client->bottom+=dy;
-            if(wp)result&=~WVR_VALIDRECTS;
+            result=style_frame_set_client(wp,lp,client,result);
         }
     }
     if(message==WM_GETTITLEBARINFOEX && lp){
-        uintptr_t tracked=(uintptr_t)GetPropW(window,button_property);
+        style_caption_button *tracked=&((frame_window *)instance)->button;
         TITLEBARINFOEX *info=(TITLEBARINFOEX *)lp;
         if(info->cbSize>=sizeof(*info)){
             int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
@@ -595,7 +608,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
                height>0 && info->rcTitleBar.bottom-info->rcTitleBar.top>height)
                 info->rcTitleBar.bottom=info->rcTitleBar.top+height;
             classic_buttons(window,info);
-            if(tracked/2>=2 && tracked/2<=CCHILDREN_TITLEBAR && (tracked&1))info->rgstate[tracked/2]|=STATE_SYSTEM_PRESSED;
+            if(tracked->pressed>=2 && tracked->pressed<=CCHILDREN_TITLEBAR && tracked->hot)info->rgstate[tracked->pressed]|=STATE_SYSTEM_PRESSED;
         }
     }
     BOOL preserve_hit=message==WM_NCHITTEST && (result==HTTRANSPARENT || result==HTERROR || result==HTNOWHERE || result==HTCLIENT);
@@ -657,37 +670,36 @@ static LRESULT CALLBACK pending_frame_proc(HWND window,UINT message,WPARAM wp,LP
     style_instance_release(instance);SetLastError(error);return result;
 }
 
+static BOOL setup_frame(HWND window,void *context)
+{
+    frame_window *frame=context;
+    /* Keep the existing externally observed attachment marker, not state. */
+    if(!SetPropW(window,frame_property,(HANDLE)1))return FALSE;
+    frame->native.active=GetActiveWindow()==window;
+    style_native_frame_capture(&frame->native,window,DwmGetWindowAttribute,TRUE);
+    enum DWMNCRENDERINGPOLICY policy=DWMNCRP_DISABLED;
+    HRESULT status=style_dwm_policy(window,DwmSetWindowAttribute,policy);
+    if(FAILED(status)){SetLastError(HRESULT_CODE(status));return FALSE;}
+    /* Avoid sending WM_SIZE before the creator can finish initializing its window. */
+    UINT message=RegisterWindowMessageW(L"Win2kStyle.RecalculateFrame");
+    style_native_frame_queue(&frame->native,window,message);
+    return TRUE;
+}
+static void rollback_frame(HWND window,void *context)
+{(void)context;RemovePropW(window,frame_property);}
 BOOL win2k_frame_attach(HWND window)
 {
     if(!window || !win32_style_window_current_thread(window))return FALSE;
     LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
-    if((style&WS_CHILD) || GetPropW(window,frame_property))return FALSE;
+    if(style&WS_CHILD)return FALSE;
+    if(frame_state(window)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
     BOOL pending=(style&WS_CAPTION)!=WS_CAPTION;
     if(pending && style_instance_lookup(window,pending_frame_proc))return TRUE;
-    style_instance *instance=calloc(1,sizeof(*instance));
-    if(!instance){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    style_instance_init(instance,instance,free);style_instance_retain(instance);
-    SUBCLASSPROC procedure=pending?pending_frame_proc:frame_proc;
-    if(!style_instance_attach(instance,window,procedure,NULL)){
-        DWORD error=GetLastError();free(instance);SetLastError(error);return FALSE;
-    }
-    if(procedure==pending_frame_proc){style_instance_release(instance);return TRUE;}
-    DWORD failure;
-    if(!SetPropW(window,frame_property,(HANDLE)(uintptr_t)(GetActiveWindow()==window?2:1)))goto failed;
-    DWORD previous=DWMNCRP_USEWINDOWSTYLE;
-    BOOL observed=style_dwm_capture(window,DwmGetWindowAttribute,&previous);
-    if(!SetPropW(window,policy_property,(HANDLE)(uintptr_t)(observed?(previous==DWMNCRP_ENABLED?2:1):3)))goto failed;
-    enum DWMNCRENDERINGPOLICY policy=DWMNCRP_DISABLED;
-    if(FAILED(style_dwm_policy(window,DwmSetWindowAttribute,policy)))goto failed;
-    /* Avoid sending WM_SIZE before the creator can finish initializing its window. */
-    UINT message=RegisterWindowMessageW(L"Win2kStyle.RecalculateFrame");
-    if(message && SetPropW(window,pending_property,(HANDLE)1)){
-        atomic_store(&frame_message,message);PostMessageW(window,message,0,0);
-    }
-    style_instance_release(instance);return TRUE;
-failed:
-    failure=GetLastError();RemovePropW(window,policy_property);RemovePropW(window,frame_property);
-    style_instance_detach(instance);style_instance_release(instance);SetLastError(failure);return FALSE;
+    frame_window *frame=calloc(1,sizeof(*frame));
+    if(!frame){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    style_instance_init(&frame->instance,frame,free);
+    const style_frame_install_ops ops={.context=frame,.setup=pending?NULL:setup_frame,.rollback=rollback_frame};
+    return style_frame_install(&frame->instance,window,pending?pending_frame_proc:frame_proc,NULL,&ops);
 }
 
 BOOL win2k_frame_attached(HWND window)
@@ -695,7 +707,7 @@ BOOL win2k_frame_attached(HWND window)
     if(!window || !win32_style_window_current_thread(window)){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    return GetPropW(window,frame_property)!=NULL;
+    return frame_state(window)!=NULL;
 }
 
 BOOL win2k_frame_remove(HWND window)
@@ -703,31 +715,28 @@ BOOL win2k_frame_remove(HWND window)
     if(!window || !win32_style_window_current_thread(window)){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
-    if(!GetPropW(window,frame_property)){
+    if(!frame_state(window)){
         style_instance *pending=style_instance_lookup(window,pending_frame_proc);
         if(pending){style_instance_retain(pending);BOOL result=style_instance_detach(pending);style_instance_release(pending);return result;}
         SetLastError(ERROR_NOT_FOUND);return FALSE;
     }
-    if((active_menu && active_menu->window==window) || GetPropW(window,button_property)){
+    style_instance *instance=style_instance_lookup(window,frame_proc);
+    if(!instance)return FALSE;
+    if((active_menu && active_menu->window==window) || ((frame_window *)instance)->button.pressed){
         SetLastError(ERROR_BUSY);return FALSE;
     }
     RECT client;BOOL normal=!IsIconic(window) && !IsZoomed(window);
     if(normal)style_client_screen(window,&client);
-    uintptr_t previous=(uintptr_t)GetPropW(window,policy_property);
-    style_instance *instance=style_instance_lookup(window,frame_proc);
-    if(!instance)return FALSE;
     style_instance_retain(instance);
     if(!style_instance_detach(instance)){style_instance_release(instance);return FALSE;}
-    RemovePropW(window,policy_property);
-    RemovePropW(window,pending_property);RemovePropW(window,hover_property);RemovePropW(window,frame_property);
+
+    RemovePropW(window,frame_property);
     if(GetPropW(window,menu_keyboard_property))leave_menu_keyboard(window,TRUE);
     else {RemovePropW(window,menu_focus_property);RemovePropW(window,menu_property);}
     win2k_system_menu_end(window,TRUE);
-    if(previous){
-        enum DWMNCRENDERINGPOLICY policy=previous==2?DWMNCRP_ENABLED:previous==1?DWMNCRP_DISABLED:DWMNCRP_USEWINDOWSTYLE;
-        HRESULT status=style_dwm_policy(window,DwmSetWindowAttribute,policy);
-        if(FAILED(status)){style_instance_release(instance);SetLastError(HRESULT_CODE(status));return FALSE;}
-    }
-    style_frame_changed_restore(window,&client,normal);
+    frame_window *frame=(frame_window *)instance;
+    HRESULT status=style_native_frame_restore_policy(window,&frame->native,DwmSetWindowAttribute);
+    if(FAILED(status)){style_instance_release(instance);SetLastError(HRESULT_CODE(status));return FALSE;}
+    style_native_frame_restore_geometry(window,&frame->native,&client,normal);
     style_instance_release(instance);return TRUE;
 }

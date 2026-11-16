@@ -16,7 +16,7 @@ static int open_bar_once(HWND w,style_window *s,int index,int *hover,const win16
     SendMessageW(w,WM_INITMENU,(WPARAM)GetMenu(w),0);
     if(s->instance.detached || !services->layout(w,s,&l) || IsRectEmpty(&l.menu))return 0;
     origin.x=l.menu.left;origin.y=l.menu.top;
-    if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))return 0;
+    if(!win16_style_bar_read_for_window(w,GetMenu(w),s->fonts.menu,s->fonts.dpi,origin,l.menu.right-l.menu.left,&bar))return 0;
     if(index<0 || (UINT)index>=bar.count || (bar.items[index].state&MFS_DISABLED)){
         win16_style_bar_free(&bar);return 0;}
     popup=bar.items[index].popup;command=bar.items[index].id;
@@ -62,7 +62,7 @@ void win16_control_open_menu_bar(HWND w,style_window *s,int index,const win16_co
         if(s->instance.detached || (!direction && hover==-3))break;
         if(GetMenu(w) && services->layout(w,s,&l)){
             origin.x=l.menu.left;origin.y=l.menu.top;
-            if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
+            if(win16_style_bar_read_for_window(w,GetMenu(w),s->fonts.menu,s->fonts.dpi,origin,l.menu.right-l.menu.left,&bar)){
                 count=(int)bar.count;win16_style_bar_free(&bar);}}
         if(direction && (index==-2 || (index==0 && direction<0) || (index==count-1 && direction>0))){
             MDINEXTMENU next={0};style_window *target;int next_index;
@@ -76,7 +76,7 @@ void win16_control_open_menu_bar(HWND w,style_window *s,int index,const win16_co
                 else if(next.hmenuNext==GetMenu(next.hwndNext)){
                     if(!services->layout(next.hwndNext,target,&l))break;
                     origin.x=l.menu.left;origin.y=l.menu.top;
-                    if(!win16_style_bar_read_for_window(next.hwndNext,next.hmenuNext,target->menu_font,target->dpi,origin,l.menu.right-l.menu.left,&bar))break;
+                    if(!win16_style_bar_read_for_window(next.hwndNext,next.hmenuNext,target->fonts.menu,target->fonts.dpi,origin,l.menu.right-l.menu.left,&bar))break;
                     next_index=direction>0?0:(int)bar.count-1;win16_style_bar_free(&bar);
                     if(next_index<0)break;
                 }else break;
@@ -101,7 +101,7 @@ void win16_control_open_menu_bar(HWND w,style_window *s,int index,const win16_co
         if(!services->layout(w,s,&l))break;
         origin.x=l.menu.left;
         origin.y=l.menu.top;
-        if(!win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar))break;
+        if(!win16_style_bar_read_for_window(w,GetMenu(w),s->fonts.menu,s->fonts.dpi,origin,l.menu.right-l.menu.left,&bar))break;
         popup=index>=0 && (UINT)index<bar.count && bar.items[index].popup!=NULL;
         win16_style_bar_free(&bar);if(!popup)break;
     }

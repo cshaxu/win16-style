@@ -1,6 +1,11 @@
 #include "../common/font.h"
 #include "frame_font.h"
-BOOL win16_control_refresh_frame_fonts(HWND w,UINT *current_dpi,HFONT *current_title,HFONT *current_menu)
+void win16_control_release_frame_fonts(const style_font_pair *fonts)
+{
+    if(fonts->title)DeleteObject(fonts->title);
+    win16_style_system_release(fonts->menu);
+}
+BOOL win16_control_refresh_frame_fonts(HWND w,style_font_pair *current)
 {
     HFONT title,menu;
     /* USER virtualizes legacy windows separately; convert points once. */
@@ -12,8 +17,5 @@ BOOL win16_control_refresh_frame_fonts(HWND w,UINT *current_dpi,HFONT *current_t
     /* Sandboxed helper processes may be unable to register a memory font.
      * A stock font keeps window creation working in that environment. */
     if(!menu)menu=(HFONT)GetStockObject(SYSTEM_FONT);
-    if(!title || !menu){if(title)DeleteObject(title);win16_style_system_release(menu);return FALSE;}
-    if(*current_title)DeleteObject(*current_title);
-    win16_style_system_release(*current_menu);
-    *current_dpi=dpi;*current_title=title;*current_menu=menu;return TRUE;
+    return style_font_pair_commit(current,(style_font_pair){title,menu,dpi},win16_control_release_frame_fonts);
 }

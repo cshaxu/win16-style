@@ -99,13 +99,11 @@ int main(int argc,char **argv)
     BOOL direct=argc>1 && !lstrcmpA(argv[1],"--direct");
     BOOL installed=direct?Ntw2ksWindowAttach(window):
         style_global_window_apply(window,&ops) && style_global_window_attached(window,&ops) && attached(window);
-    ULONG_PTR captured=(ULONG_PTR)GetPropW(window,L"Win2kStyle.PreviousDwmState");
     BOOL after_attach=FALSE,after_pump=FALSE;
     DwmGetWindowAttribute(window,DWMWA_NCRENDERING_ENABLED,&after_attach,sizeof(after_attach));
     MSG message;if(argc<2 || lstrcmpA(argv[1],"--no-pump"))
         while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}
     DwmGetWindowAttribute(window,DWMWA_NCRENDERING_ENABLED,&after_pump,sizeof(after_pump));
-    ULONG_PTR captured_after_pump=(ULONG_PTR)GetPropW(window,L"Win2kStyle.PreviousDwmState");
     SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&classic);
     COLORREF classic_pixel=caption_sample(window,&classic.rcTitleBar);
     RECT client_before,client_after;POINT origin={0,0};
@@ -134,14 +132,14 @@ int main(int argc,char **argv)
     printf("WIN2K NATIVE DWM before=%d after=%d custom_frame_restore=%d after_move=%d\n",native_before,native_after,resized_restore,resized_after_move);
     printf("WIN2K DWM AFTER REMOVE immediate=%d status=%08lx\n",immediate,(unsigned long)immediate_status);
     printf("WIN2K WINDOW AFTER REMOVE style=%08lx ex=%08lx\n",(unsigned long)style_after,(unsigned long)ex_after);
-    printf("WIN2K DWM STAGES attach=%d pump=%d policy_after_pump=%llu\n",after_attach,after_pump,(unsigned long long)captured_after_pump);
+    printf("WIN2K DWM STAGES attach=%d pump=%d\n",after_attach,after_pump);
     printf("WIN2K CAPTION PIXEL native=%06lx classic=%06lx after=%06lx\n",
            (unsigned long)native_pixel,(unsigned long)classic_pixel,(unsigned long)after_pixel);
     printf("WIN2K TITLE RECTS native=%ld,%ld,%ld,%ld classic=%ld,%ld,%ld,%ld after=%ld,%ld,%ld,%ld\n",
            native.rcTitleBar.left,native.rcTitleBar.top,native.rcTitleBar.right,native.rcTitleBar.bottom,
            classic.rcTitleBar.left,classic.rcTitleBar.top,classic.rcTitleBar.right,classic.rcTitleBar.bottom,
            again.rcTitleBar.left,again.rcTitleBar.top,again.rcTitleBar.right,again.rcTitleBar.bottom);
-    printf("WIN2K FRAME LIFECYCLE bits=%u attached=%d removed=%d observed=%d before=%d after=%d captured=%llu restored=%d geometry=%d repeated=%d reattached=%d thread=%lu pending=%d\n",
-           (unsigned)(sizeof(void *)*8),installed,removed,observed,before,after,(unsigned long long)captured,restored,geometry,repeated,reattached,thread_result,pending);
+    printf("WIN2K FRAME LIFECYCLE bits=%u attached=%d removed=%d observed=%d before=%d after=%d restored=%d geometry=%d repeated=%d reattached=%d thread=%lu pending=%d\n",
+           (unsigned)(sizeof(void *)*8),installed,removed,observed,before,after,restored,geometry,repeated,reattached,thread_result,pending);
     return installed && removed && restored && geometry && repeated && reattached && !thread_result && pending?0:3;
 }

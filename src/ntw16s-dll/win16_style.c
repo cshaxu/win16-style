@@ -9,7 +9,7 @@
 #include "../lib-win32-style/appearance/win3x/window/frame_lifecycle.h"
 #include "../lib-win32-style/appearance/win3x/menu/menu_iteration.h"
 #include "../lib-win32-style/appearance/win3x/menu/menu_message.h"
-#include "../lib-win32-style/appearance/win3x/window/frame_message.h"
+#include "lib-win32-style/application/window/messages.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_dispatch.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_input.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_layout.h"
@@ -64,7 +64,7 @@ static BOOL local_window(HWND w)
 }
 
 static BOOL measure_window(HWND w,style_window *s,const RECT *outer,win16_style_layout *l)
-{return win16_control_measure_window(w,&s->dpi,&s->menu_font,&s->instance.detached,outer,l);}
+{return win16_control_measure_window(w,&s->fonts.dpi,&s->fonts.menu,&s->instance.detached,outer,l);}
 
 static BOOL layout(HWND w,style_window *s,win16_style_layout *l)
 {
@@ -87,15 +87,14 @@ static void paint_colors(void *context,win16_style_palette *palette)
 {win16_control_resolve_palette(&((style_window *)context)->palette,palette);}
 static win16_control_frame_view paint_view(style_window *s)
 {
-    const win16_control_frame_view view={s,&s->instance.detached,&s->active,&s->menu_font,&s->title_font,
-        &s->dpi,&s->bar_selected,&s->system_menu,&s->bar_keyboard,&s->pressed,&s->hot,
+    const win16_control_frame_view view={s,&s->instance.detached,&s->native.active,&s->fonts.menu,&s->fonts.title,
+        &s->fonts.dpi,&s->bar_selected,&s->system_menu,&s->bar_keyboard,&s->button.pressed,&s->button.hot,
         paint_layout,paint_colors,win16_style_scrollbars_paint};
     return view;
 }
-static void paint(HWND w,style_window *s,HDC target)
-{const win16_control_frame_view view=paint_view(s);win16_control_paint_frame(w,&view,target);}
+static void paint(HWND w,void *context,HDC target)
+{const win16_control_frame_view view=paint_view(context);win16_control_paint_frame(w,&view,target);}
 
-static void paint_callback(HWND w,void *context,HDC dc){paint(w,(style_window *)context,dc);}
 static void paint_buffered_callback(HWND w,void *context,HDC dc)
 {const win16_control_frame_view view=paint_view((style_window *)context);win16_control_frame_buffered(w,&view,dc);}
 static void paint_menu_state(HWND w,style_window *s)
@@ -105,7 +104,7 @@ static void paint_button_state(HWND w,style_window *s,int hit)
 static void button_paint_callback(HWND w,void *context,int hit){paint_button_state(w,(style_window *)context,hit);}
 static win16_control_frame_button_view button_view(style_window *s)
 {
-    const win16_control_frame_button_view view={s,&s->pressed,&s->hot,&s->instance.detached,paint_layout,button_paint_callback};
+    const win16_control_frame_button_view view={s,&s->button,&s->instance.detached,paint_layout,button_paint_callback};
     return view;
 }
 
@@ -113,7 +112,7 @@ static void bar_paint_callback(HWND w,void *context){paint_menu_state(w,(style_w
 static win16_control_bar_state_view bar_view(style_window *s)
 {
     const win16_control_bar_state_view view={s,&s->instance.detached,&s->bar_keyboard,&s->bar_focus,
-        &s->bar_selected,&s->menu_font,&s->dpi,paint_layout,bar_paint_callback};
+        &s->bar_selected,&s->fonts.menu,&s->fonts.dpi,paint_layout,bar_paint_callback};
     return view;
 }
 static void leave_bar(HWND w,style_window *s,BOOL restore_focus)
@@ -125,7 +124,7 @@ static int bar_at_screen(HWND w,style_window *s,POINT point)
 {
     win16_style_layout l;
     if(s->instance.detached || !layout(w,s,&l))return -3;
-    return win16_control_menu_bar_hit_screen(w,&l,s->menu_font,s->dpi,point);
+    return win16_control_menu_bar_hit_screen(w,&l,s->fonts.menu,s->fonts.dpi,point);
 }
 
 static menu_frame *menu_current(void)
@@ -141,14 +140,14 @@ static void open_bar(HWND w,style_window *s,int index)
     win16_control_open_menu_bar(w,s,index,&services);
 }
 
-static BOOL refresh_font(HWND w,style_window *s)
-{return win16_control_refresh_frame_fonts(w,&s->dpi,&s->title_font,&s->menu_font);}
+static BOOL refresh_font(HWND w,void *context)
+{style_window *s=context;return win16_control_refresh_frame_fonts(w,&s->fonts);}
 
-static void activate_frame(HWND w,style_window *s,const RECT *client,BOOL normal)
+static void activate_frame(HWND w,void *context,const RECT *client,BOOL normal)
 {
-    win16_style_layout l;
-    s->keep_outer=normal && client && layout(w,s,&l) && !s->instance.detached && style_frame_keep_outer(w,client,&l.client);
-    if(!s->instance.detached)win16_control_frame_activate(w,&s->instance.detached,client,normal&&!s->keep_outer,DwmSetWindowAttribute);
+    style_window *s=context;win16_style_layout l;
+    s->native.keep_outer=normal && client && layout(w,s,&l) && !s->instance.detached && style_frame_keep_outer(w,client,&l.client);
+    if(!s->instance.detached)style_native_frame_activate(w,&s->native,&s->instance.detached,client,normal,DwmSetWindowAttribute);
 }
 
 static const win16_control_frame_lifecycle_services frame_lifecycle={style_proc,DwmGetWindowAttribute,DwmSetWindowAttribute,local_window,state,refresh_font,layout,activate_frame,
@@ -185,11 +184,19 @@ static PROCESS_HOOK_UNWIND_FUNCTION LRESULT CALLBACK style_proc(HWND w,UINT msg,
     result=style_proc_body(w,msg,wp,lp,id,data);scope.returned=TRUE;
     PROCESS_HOOK_UNWIND_END(unwind);return result;
 }
+static BOOL measure_client(HWND w,void *context,const RECT *outer,RECT *client)
+{
+    win16_style_layout layout;
+    if(!measure_window(w,context,outer,&layout))return FALSE;
+    *client=layout.client;return TRUE;
+}
+static BOOL frame_hit(HWND w,void *context,LPARAM point,LRESULT *result)
+{(void)context;return win16_style_hit_test(w,point,result);}
 static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
     UINT_PTR id,DWORD_PTR data)
 {
     (void)id;
-    const win16_control_frame_message_services message={measure_window,activate_frame,paint,paint_callback,paint_buffered_callback,win16_style_hit_test,refresh_font};
+    const style_frame_message_ops message={(void *)data,measure_client,activate_frame,paint,paint_buffered_callback,frame_hit,refresh_font};
     const win16_control_frame_input_services input={menu_current,menu_begin,menu_end,layout,bar_at_screen,paint_menu_state,select_bar,leave_bar,open_bar,button_view};
     const win16_control_frame_dispatch_services services={&message,&input,paint_button_state,&tracking_menu,win16_style_frame_terminal};
     return win16_control_frame_dispatch(w,(style_window *)data,msg,wp,lp,&services);

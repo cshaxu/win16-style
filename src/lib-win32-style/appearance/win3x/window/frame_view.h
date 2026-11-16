@@ -2,6 +2,7 @@
 #define WIN16_CONTROL_FRAME_VIEW_H
 #include "../common/palette.h"
 #include "../common/layout.h"
+#include "lib-win32-style/application/window/caption_button.h"
 typedef struct win16_control_frame_view {
     void *context;
     const BOOL *detached,*active;
@@ -21,8 +22,8 @@ void win16_control_frame_menu_state(HWND window,const win16_control_frame_view *
 void win16_control_frame_button_state(HWND window,const win16_control_frame_view *view,int hit);
 typedef struct win16_control_frame_button_view {
     void *context;
-    int *pressed;
-    BOOL *hot,*detached;
+    style_caption_button *state;
+    const BOOL *detached;
     BOOL (*layout)(HWND,void *,win16_style_layout *);
     void (*paint)(HWND,void *,int);
 } win16_control_frame_button_view;

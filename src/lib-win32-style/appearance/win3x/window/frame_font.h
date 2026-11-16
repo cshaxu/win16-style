@@ -1,6 +1,6 @@
 #ifndef WIN16_CONTROL_FRAME_FONT_H
 #define WIN16_CONTROL_FRAME_FONT_H
-#include <windows.h>
-/* Replace the owned title/menu leases together; leave them intact on failure. */
-BOOL win16_control_refresh_frame_fonts(HWND window,UINT *dpi,HFONT *title,HFONT *menu);
+#include "lib-win32-style/application/graphics/font_pair.h"
+BOOL win16_control_refresh_frame_fonts(HWND,style_font_pair *);
+void win16_control_release_frame_fonts(const style_font_pair *);
 #endif

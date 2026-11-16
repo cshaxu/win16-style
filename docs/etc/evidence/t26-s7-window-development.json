@@ -1,0 +1,1551 @@
+{
+  "task": "M0 T26 S7",
+  "status": "development-not-delivered",
+  "attempts": [
+    {
+      "name": "s7-native-dev",
+      "result": "x86 compile failed",
+      "reason": "test counter gets collides with stdio declaration; renamed get_calls",
+      "product_frame_compile": "Win3x and Win2000 source compiled; no test pass claimed"
+    },
+    {
+      "name": "s7-caption-dev4",
+      "result": "x86 compile failed",
+      "reason": "mechanical ordinary state rename reached separate modern uwp_frame state; reverted those two consumers, modern input remains S12",
+      "test_pass_claimed": false
+    },
+    {
+      "name": "s7-window-dev9",
+      "result": "x86 compile passed, 5 tests passed and instance lifetime failed",
+      "reason": "early common identity detection returned stale error for an existing foreign subclass; restored ERROR_ALREADY_EXISTS contract without allocating",
+      "test_line": 74
+    },
+    {
+      "name": "s7-font-dev",
+      "result": "x86 compile failed",
+      "reason": "standalone fixture still used the removed private font fields; migrated it to actual shared pair ownership",
+      "test_pass_claimed": false
+    },
+    {
+      "name": "s7-all-dev",
+      "result": "x86 all-target compile stopped",
+      "reason": "direct-source DC-failure fixture still referenced private title_font; moved to actual public font pair",
+      "test_pass_claimed": false
+    },
+    {
+      "name": "source-receipt-final-review",
+      "result": "retain byte-identity gate rejected changed menu_scope include",
+      "reason": "explicitly changed the original manifest decision retain -> adapt for direct palette include; preserved original source commit/blob/hash and notices; gate then passed"
+    }
+  ],
+  "native_cases": [
+    {
+      "architecture": "x86",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-native-frame.exe"
+      ],
+      "exit_code": 0,
+      "output": "NATIVE FRAME STATE bits=32 result=0 get=4 set=4 geometry=1\n",
+      "seconds": 0.0706961999530904,
+      "passed": true,
+      "known_failure": false
+    },
+    {
+      "architecture": "x86",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-frame-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.09966509998776019,
+      "passed": true,
+      "known_failure": false
+    },
+    {
+      "architecture": "x86",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-frame-xaml.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.09831930004293099,
+      "passed": true,
+      "known_failure": false
+    },
+    {
+      "architecture": "x86",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win16-control-link.exe"
+      ],
+      "exit_code": 0,
+      "output": "ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1\nATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1\nCONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1\nWIN16_CONTROL_STANDALONE_LINK_OK palette=1 glyphs=12 pixel=1\n",
+      "seconds": 0.15040440001757815,
+      "passed": true,
+      "known_failure": false
+    },
+    {
+      "architecture": "x86",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win16-dwm-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN16 WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN16 DWM RESTORE bits=32 observed=1 before=1 attached=1 removed=1 read=1 after=1\n",
+      "seconds": 0.27813959994819015,
+      "passed": true,
+      "known_failure": false
+    },
+    {
+      "architecture": "x86",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win2k-frame-lifecycle.exe"
+      ],
+      "exit_code": 3,
+      "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\nWIN2K DWM STAGES attach=0 pump=0\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\nWIN2K FRAME LIFECYCLE bits=32 attached=1 removed=1 observed=1 before=1 after=0 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\n",
+      "seconds": 0.4019892999785952,
+      "passed": false,
+      "known_failure": true
+    },
+    {
+      "architecture": "x64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-native-frame.exe"
+      ],
+      "exit_code": 0,
+      "output": "NATIVE FRAME STATE bits=64 result=0 get=4 set=4 geometry=1\n",
+      "seconds": 0.04406749998452142,
+      "passed": true,
+      "known_failure": false
+    },
+    {
+      "architecture": "x64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-frame-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.12221870000939816,
+      "passed": true,
+      "known_failure": false
+    },
+    {
+      "architecture": "x64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-frame-xaml.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.11288500000955537,
+      "passed": true,
+      "known_failure": false
+    },
+    {
+      "architecture": "x64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win16-control-link.exe"
+      ],
+      "exit_code": 0,
+      "output": "ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1\nATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1\nCONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1\nWIN16_CONTROL_STANDALONE_LINK_OK palette=1 glyphs=12 pixel=1\n",
+      "seconds": 0.23841609997907653,
+      "passed": true,
+      "known_failure": false
+    },
+    {
+      "architecture": "x64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win16-dwm-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN16 WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN16 DWM RESTORE bits=64 observed=1 before=1 attached=1 removed=1 read=1 after=1\n",
+      "seconds": 0.270568199979607,
+      "passed": true,
+      "known_failure": false
+    },
+    {
+      "architecture": "x64",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win2k-frame-lifecycle.exe"
+      ],
+      "exit_code": 3,
+      "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\nWIN2K DWM STAGES attach=0 pump=0\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\nWIN2K FRAME LIFECYCLE bits=64 attached=1 removed=1 observed=1 before=1 after=0 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\n",
+      "seconds": 0.4075107999960892,
+      "passed": false,
+      "known_failure": true
+    }
+  ],
+  "build_result": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "targets": "core-style-native-frame,core-style-frame-restore,core-style-frame-xaml,core-win16-control-link,core-win2k-frame-lifecycle,core-win16-dwm-restore,ntw16s,ntw2ks",
+    "selection": "^core/style-native-frame$",
+    "status": "passed",
+    "build_jobs": 8,
+    "exit_code": 0,
+    "tests": [
+      {
+        "passed": 1,
+        "build_seconds": 3.994237700011581,
+        "configure_seconds": 4.275096099998336,
+        "test_seconds": 0.3226740999962203,
+        "tests": 1,
+        "skipped": [],
+        "architecture": "x86"
+      },
+      {
+        "passed": 1,
+        "build_seconds": 15.502384699997492,
+        "configure_seconds": 4.781436000019312,
+        "test_seconds": 0.31582880002679303,
+        "tests": 1,
+        "skipped": [],
+        "architecture": "x64"
+      }
+    ],
+    "profile": "Focused",
+    "test_jobs": 4,
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja"
+  },
+  "s7-native-dev2": {
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "targets": "core-style-native-frame,core-style-frame-restore,core-style-frame-xaml,core-win16-control-link,core-win2k-frame-lifecycle,core-win16-dwm-restore,ntw16s,ntw2ks",
+    "selection": "^core/style-native-frame$",
+    "status": "passed",
+    "build_jobs": 8,
+    "exit_code": 0,
+    "tests": [
+      {
+        "passed": 1,
+        "build_seconds": 3.994237700011581,
+        "configure_seconds": 4.275096099998336,
+        "test_seconds": 0.3226740999962203,
+        "tests": 1,
+        "skipped": [],
+        "architecture": "x86"
+      },
+      {
+        "passed": 1,
+        "build_seconds": 15.502384699997492,
+        "configure_seconds": 4.781436000019312,
+        "test_seconds": 0.31582880002679303,
+        "tests": 1,
+        "skipped": [],
+        "architecture": "x64"
+      }
+    ],
+    "profile": "Focused",
+    "test_jobs": 4,
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja"
+  },
+  "s7-window-dev3": {
+    "build_jobs": 8,
+    "test_jobs": 4,
+    "selection": "^core/(style-native-frame|style-frame-restore|style-frame-xaml|style-window-text)$",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "exit_code": 0,
+    "status": "passed",
+    "tests": [
+      {
+        "tests": 4,
+        "build_seconds": 14.488354200031608,
+        "configure_seconds": 4.441731099970639,
+        "skipped": [],
+        "test_seconds": 0.49219899997115135,
+        "passed": 4,
+        "architecture": "x86"
+      },
+      {
+        "tests": 4,
+        "build_seconds": 18.604743200005032,
+        "configure_seconds": 4.372122200031299,
+        "skipped": [],
+        "test_seconds": 0.6908774999901652,
+        "passed": 4,
+        "architecture": "x64"
+      }
+    ],
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "targets": "core-style-native-frame,core-style-frame-restore,core-style-frame-xaml,core-style-window-text,core-win16-control-link,core-win2k-frame-lifecycle,core-win16-dwm-restore,ntw16s,ntw2ks",
+    "profile": "Focused"
+  },
+  "s7-caption-dev5": {
+    "profile": "Focused",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "exit_code": 0,
+    "test_jobs": 4,
+    "targets": "core-style-native-frame,core-style-caption-button,core-style-frame-restore,core-style-frame-xaml,core-style-window-text,core-win16-control-link,core-win2k-frame-lifecycle,core-win16-dwm-restore,ntw16s,ntw2ks",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "status": "passed",
+    "selection": "^core/(style-native-frame|style-caption-button|style-frame-restore|style-frame-xaml|style-window-text)$",
+    "tests": [
+      {
+        "test_seconds": 0.35619530000258237,
+        "build_seconds": 5.6907844000379555,
+        "tests": 5,
+        "architecture": "x86",
+        "skipped": [],
+        "configure_seconds": 3.8046859999885783,
+        "passed": 5
+      },
+      {
+        "test_seconds": 0.48291130003053695,
+        "build_seconds": 15.430814799969085,
+        "tests": 5,
+        "architecture": "x64",
+        "skipped": [],
+        "configure_seconds": 5.235913399956189,
+        "passed": 5
+      }
+    ],
+    "build_jobs": 8
+  },
+  "s7-window-dev6": {
+    "tests": [
+      {
+        "tests": 5,
+        "skipped": [],
+        "architecture": "x86",
+        "passed": 5,
+        "test_seconds": 0.34758360002888367,
+        "configure_seconds": 4.727886700013187,
+        "build_seconds": 11.391197899996769
+      },
+      {
+        "tests": 5,
+        "skipped": [],
+        "architecture": "x64",
+        "passed": 5,
+        "test_seconds": 0.46282969997264445,
+        "configure_seconds": 4.218399700010195,
+        "build_seconds": 15.339151400025003
+      }
+    ],
+    "status": "passed",
+    "selection": "^core/(style-native-frame|style-caption-button|style-frame-restore|style-frame-xaml|style-window-text)$",
+    "exit_code": 0,
+    "build_jobs": 8,
+    "test_jobs": 4,
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "profile": "Focused",
+    "targets": "core-style-native-frame,core-style-caption-button,core-style-frame-restore,core-style-frame-xaml,core-style-window-text,core-win16-control-link,core-win2k-frame-lifecycle,core-win16-dwm-restore,core-win2k-instance-lifetime,ntw16s,ntw2ks"
+  },
+  "current_native_cases": [
+    {
+      "architecture": "x86",
+      "name": "core-style-native-frame",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-native-frame.exe"
+      ],
+      "exit_code": 0,
+      "output": "NATIVE FRAME STATE bits=32 result=0 get=4 set=4 geometry=1\n",
+      "seconds": 0.053205300006084144,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-style-caption-button",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-caption-button.exe"
+      ],
+      "exit_code": 0,
+      "output": "CAPTION BUTTON STATE bits=32 result=0 stale_capture=0\n",
+      "seconds": 0.04892209998797625,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-style-frame-restore",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-frame-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.046100599982310086,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-style-frame-xaml",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-frame-xaml.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.04225629998836666,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-style-window-text",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-window-text.exe"
+      ],
+      "exit_code": 0,
+      "output": "WINDOW_TEXT_OK unicode=1 snapshot=1 empty=1 cleanup=1\n",
+      "seconds": 0.03965350001817569,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-win16-control-link",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win16-control-link.exe"
+      ],
+      "exit_code": 0,
+      "output": "ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1\nATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1\nCONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1\nWIN16_CONTROL_STANDALONE_LINK_OK palette=1 glyphs=12 pixel=1\n",
+      "seconds": 0.14942899998277426,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-win16-dwm-restore",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win16-dwm-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN16 WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN16 DWM RESTORE bits=32 observed=1 before=1 attached=1 removed=1 read=1 after=1\n",
+      "seconds": 0.27626579999923706,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-win2k-instance-lifetime",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win2k-instance-lifetime.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN2K_STYLE_VALUES previous=84000000 returned=84000000\nWIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 caption_reentry=1 caption_commands=3 caption_busy_cancel=1 cleanup=1\n",
+      "seconds": 0.27826939994702116,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-win2k-frame-lifecycle",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win2k-frame-lifecycle.exe"
+      ],
+      "exit_code": 3,
+      "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\nWIN2K DWM STAGES attach=0 pump=0\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\nWIN2K FRAME LIFECYCLE bits=32 attached=1 removed=1 observed=1 before=1 after=0 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\n",
+      "seconds": 0.423333199985791,
+      "passed": false,
+      "known_failure": true,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "frame-forms",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-frames.exe",
+        "--private-worker"
+      ],
+      "exit_code": 0,
+      "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\n",
+      "seconds": 2.792643999971915,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "pending-owner",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-pending-frame-owner.exe",
+        "--private-worker",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw16s32.dll"
+      ],
+      "exit_code": 0,
+      "output": "PENDING_FRAME bits=32 mode=0 fired=1 removed=1 independent=0 attached=0 scope=1223 fresh=1 error=0\nPENDING_FRAME bits=32 mode=1 fired=1 removed=1 independent=1 attached=0 scope=1223 fresh=0 error=183\nPENDING_FRAME bits=32 mode=2 fired=0 removed=0 independent=0 attached=1 scope=0 fresh=1 error=0\nPENDING_FRAME_OWNER_OK failures=0\n",
+      "seconds": 0.5287639999878593,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-native-frame",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-native-frame.exe"
+      ],
+      "exit_code": 0,
+      "output": "NATIVE FRAME STATE bits=64 result=0 get=4 set=4 geometry=1\n",
+      "seconds": 0.04694629996083677,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-caption-button",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-caption-button.exe"
+      ],
+      "exit_code": 0,
+      "output": "CAPTION BUTTON STATE bits=64 result=0 stale_capture=0\n",
+      "seconds": 0.045552600000519305,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-frame-restore",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-frame-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.0419180000317283,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-frame-xaml",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-frame-xaml.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.040534299972932786,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-window-text",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-window-text.exe"
+      ],
+      "exit_code": 0,
+      "output": "WINDOW_TEXT_OK unicode=1 snapshot=1 empty=1 cleanup=1\n",
+      "seconds": 0.03724889998557046,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-win16-control-link",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win16-control-link.exe"
+      ],
+      "exit_code": 0,
+      "output": "ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1\nATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1\nCONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1\nWIN16_CONTROL_STANDALONE_LINK_OK palette=1 glyphs=12 pixel=1\n",
+      "seconds": 0.1925768000073731,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-win16-dwm-restore",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win16-dwm-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN16 WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN16 DWM RESTORE bits=64 observed=1 before=1 attached=1 removed=1 read=1 after=1\n",
+      "seconds": 0.29310410004109144,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-win2k-instance-lifetime",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win2k-instance-lifetime.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN2K_STYLE_VALUES previous=84000000 returned=ffffffff84000000\nWIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 caption_reentry=1 caption_commands=3 caption_busy_cancel=1 cleanup=1\n",
+      "seconds": 0.29715860000578687,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-win2k-frame-lifecycle",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win2k-frame-lifecycle.exe"
+      ],
+      "exit_code": 3,
+      "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\nWIN2K DWM STAGES attach=0 pump=0\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\nWIN2K FRAME LIFECYCLE bits=64 attached=1 removed=1 observed=1 before=1 after=0 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\n",
+      "seconds": 0.4294512000051327,
+      "passed": false,
+      "known_failure": true,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "frame-forms",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-frames.exe",
+        "--private-worker"
+      ],
+      "exit_code": 0,
+      "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\n",
+      "seconds": 2.446924099989701,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "pending-owner",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-pending-frame-owner.exe",
+        "--private-worker",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll"
+      ],
+      "exit_code": 0,
+      "output": "PENDING_FRAME bits=64 mode=0 fired=1 removed=1 independent=0 attached=0 scope=1223 fresh=1 error=0\nPENDING_FRAME bits=64 mode=1 fired=1 removed=1 independent=1 attached=0 scope=1223 fresh=0 error=183\nPENDING_FRAME bits=64 mode=2 fired=0 removed=0 independent=0 attached=1 scope=0 fresh=1 error=0\nPENDING_FRAME_OWNER_OK failures=0\n",
+      "seconds": 0.3606271999888122,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current; explicit worker bypasses private desktop creation where applicable"
+    }
+  ],
+  "s7-window-dev7": {
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "exit_code": 0,
+    "targets": "core-style-native-frame,core-style-caption-button,core-style-frame-restore,core-style-frame-xaml,core-style-window-text,core-win16-control-link,core-win2k-frame-lifecycle,core-win16-dwm-restore,core-win2k-instance-lifetime,ntw16s,ntw2ks",
+    "selection": "^core/(style-native-frame|style-caption-button|style-frame-restore|style-frame-xaml|style-window-text|win2k-instance-lifetime)$",
+    "build_jobs": 8,
+    "test_jobs": 4,
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "tests": [
+      {
+        "configure_seconds": 4.904055699997116,
+        "skipped": [],
+        "build_seconds": 6.465941800037399,
+        "test_seconds": 0.6993429000140168,
+        "architecture": "x86",
+        "tests": 6,
+        "passed": 6
+      },
+      {
+        "configure_seconds": 5.607329100021161,
+        "skipped": [],
+        "build_seconds": 7.4001088999793865,
+        "test_seconds": 0.7769231999991462,
+        "architecture": "x64",
+        "tests": 6,
+        "passed": 6
+      }
+    ],
+    "profile": "Focused",
+    "status": "passed"
+  },
+  "current_source_sha256": {
+    "src/lib-win32-style/appearance/win2000/window/frame.c": "594c8a72c9edae695c4f93105ba7f5a29c603cca4a18d959ff2283f6d1035512",
+    "src/lib-win32-style/appearance/win3x/menu/menu_iteration.c": "7634e8b5496f0d68cfc6fa7f3e9a64f3b47c96d8ca160cbeb492325c10e0d042",
+    "src/lib-win32-style/appearance/win3x/menu/menu_message.c": "1da9cf7d660f11a9e6899acbfb70b1972f6552173ab5438d9fd2b137661c3678",
+    "src/lib-win32-style/appearance/win3x/menu/menu_scope.h": "d8926e11a8b6c6106dbcaae9d0e4e47b9476ea26c10264aa0d935ba8e45cbabf",
+    "src/lib-win32-style/appearance/win3x/window/frame_dispatch.c": "5114c166c8ee2700fa1e93d0f0c9aabf67465447c496cf65e1049dc6f4fa4592",
+    "src/lib-win32-style/appearance/win3x/window/frame_dispatch.h": "8af504f1cf3b8ccd67db531005563ead03435f1c1f46576d4fb8b683306c6e93",
+    "src/lib-win32-style/appearance/win3x/window/frame_font.c": "8fc21068060be28507b807cc426a82e033a89fc09d8b58874157e29f7688c586",
+    "src/lib-win32-style/appearance/win3x/window/frame_font.h": "658e4a3db51071aeb1b8bf2305308ed42f0b536c052c248f4a9d8f010313ff43",
+    "src/lib-win32-style/appearance/win3x/window/frame_input.c": "900ef4cc1721b3810188753ae339ce3368f4755b2552ff601d16548189845d13",
+    "src/lib-win32-style/appearance/win3x/window/frame_layout.c": "03ba7e7e9296ff8a9c24a32703f1d65bcc05384355621bee2860d50151864d1c",
+    "src/lib-win32-style/appearance/win3x/window/frame_layout.h": "820c11f41903f31ff0e440d9c83b75444cadd2be80581efae4061ee958ec6dc9",
+    "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c": "e77271d528b8165b17e935f84334adbaae63615cec27b934e14922a4d0e0f90d",
+    "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.h": "af9c42706382dd4fe89e2089264534070f9fbfc6a8abd0a60b9152f5df773968",
+    "src/lib-win32-style/appearance/win3x/window/frame_paint.c": "d5869166827e1ecf524d13f083d02650bc778fec7d65cabae4ef3c8ce95bc476",
+    "src/lib-win32-style/appearance/win3x/window/frame_state.c": "275184d277c7d335fe7167705fd0a07f100f5ba573654bf313f5f1af04729d95",
+    "src/lib-win32-style/appearance/win3x/window/frame_state.h": "399a462c1a4d950d0c9692bc991574c09d4e361aae404471a5c744dc527bb079",
+    "src/lib-win32-style/appearance/win3x/window/frame_view.c": "b6843dd138206f212acee26d670ad90bcced93ea87630de1beffd6da64c2504f",
+    "src/lib-win32-style/appearance/win3x/window/frame_view.h": "ca1cc9278f044bc625e319eaeea2b390aef0a0fc30bf6e2322290037b78adafd",
+    "src/lib-win32-style/appearance/win3x/window/modern_frame.c": "19b148922498263ba5e208a158d09cb45dc73a893ed4fada10498a4e4f104e68",
+    "src/lib-win32-style/application/graphics/font_pair.h": "ad3c0dd7240a3b6763ef619042d22d949fec550d0fc4bee190f64c76f4920b56",
+    "src/lib-win32-style/application/window/caption_button.h": "e8d92b36733067e78ce2f9bab8ff8a91cc6b7448e6fa497aa5499181284bd38f",
+    "src/lib-win32-style/application/window/frame.h": "1babe7f570761c967e60a0b5c131ab093ef66bca978d47262fca7bd326f4c64e",
+    "src/lib-win32-style/application/window/install.c": "18cf17ab72baef24f20d965067cf7928b4d0e875d802fe3ce3c9bc0b3cac7d56",
+    "src/lib-win32-style/application/window/install.h": "75660a72e7fc7cd8091f4db801efdc95ee9cb2107a97222402b8d85c6eb523f0",
+    "src/lib-win32-style/application/window/messages.c": "843aea6e7877bd90b3c14c7712f97090c0b749a753ea2529cb60ed169d41a05c",
+    "src/lib-win32-style/application/window/messages.h": "301ad434931ffc3fb97904101ce4fe2ac1116470426f9b85eb2dba7094b96ac3",
+    "src/lib-win32-style/application/window/native_frame.h": "9c74b9e62d6671b2e1d9413d90112f4069125e9cf002959a01678bf539c9a608",
+    "src/ntw16s-dll/win16_style.c": "9f45874f226d1d1f9fec082f47d0adca7d019ae4f14896e425e9981961cfbdb2",
+    "tests/lib-win32-style/appearance/win2000/window/frame_lifecycle.c": "c5b2a64786cd2927f6f1af939e878e99e4fc5ae2757e0d5131bb817c933d6f73",
+    "tests/lib-win32-style/appearance/win2000/window/instance_lifetime.c": "6e348f66a6ab65c73dc599915e3cbc8d6facf2ad2f1560458436e032a55e7d81",
+    "tests/lib-win32-style/appearance/win3x/control/control_link.c": "847f77b30de5e04ca4545fe0222bb95d8ab7c34ba776343a24b5bbe607398c66",
+    "tests/lib-win32-style/application/graphics/font_pair.c": "cf45f3f7837f662f6d49e113d3f6e9dda3c814ca8b5a7eb2bfe0622681f6f41e",
+    "tests/lib-win32-style/application/window/caption_button.c": "51560e659f59977c6cb65541d8be639e7b4b81471a6ab8b30a126f5e5ea892bc",
+    "tests/lib-win32-style/application/window/frame_restore.c": "1578319bf32d8edc74625b8e1e2e64a03a488604a7fe73a90ab5de13a3275da9",
+    "tests/lib-win32-style/application/window/install.c": "8a1287e1ed95893adaff404c62119150a20da901a4c813d6aabaaebf8e74b746",
+    "tests/lib-win32-style/application/window/messages.c": "341664f273a5875a7bf74ef060098654647332c6ea9ee611362ba9daee275c1f",
+    "tests/lib-win32-style/application/window/native_frame.c": "1ec86398e029333cf3dcb34fe9b1ff978f7a87c3e015d7ea8857d0978cf105f7",
+    "tests/ntw16s-dll/win16_style_dc_failure.c": "e07b5bce42fa4d9bef5964b049fdd0508a34d20aa31ae010c1dd90990931fd44"
+  },
+  "scope": "final implementation, development tests only; package delivery pending",
+  "frame_native_cases": [
+    {
+      "architecture": "x86",
+      "name": "frame-forms",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-frames.exe",
+        "--private-worker"
+      ],
+      "exit_code": 0,
+      "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\n",
+      "seconds": 2.7615566999884322,
+      "passed": true,
+      "desktop": "current desktop; explicit worker branch bypasses desktop creation"
+    },
+    {
+      "architecture": "x86",
+      "name": "pending-owner",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-pending-frame-owner.exe",
+        "--private-worker",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw16s32.dll"
+      ],
+      "exit_code": 0,
+      "output": "PENDING_FRAME bits=32 mode=0 fired=1 removed=1 independent=0 attached=0 scope=1223 fresh=1 error=0\nPENDING_FRAME bits=32 mode=1 fired=1 removed=1 independent=1 attached=0 scope=1223 fresh=0 error=183\nPENDING_FRAME bits=32 mode=2 fired=0 removed=0 independent=0 attached=1 scope=0 fresh=1 error=0\nPENDING_FRAME_OWNER_OK failures=0\n",
+      "seconds": 0.39059540000744164,
+      "passed": true,
+      "desktop": "current desktop; explicit worker branch bypasses desktop creation"
+    },
+    {
+      "architecture": "x86",
+      "name": "caption-product-lifetime",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win2k-instance-lifetime.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN2K_STYLE_VALUES previous=84000000 returned=84000000\nWIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 caption_reentry=1 caption_commands=3 caption_busy_cancel=1 cleanup=1\n",
+      "seconds": 0.2907499999855645,
+      "passed": true,
+      "desktop": "current desktop; explicit worker branch bypasses desktop creation"
+    },
+    {
+      "architecture": "x64",
+      "name": "frame-forms",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-frames.exe",
+        "--private-worker"
+      ],
+      "exit_code": 0,
+      "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\n",
+      "seconds": 2.464226799958851,
+      "passed": true,
+      "desktop": "current desktop; explicit worker branch bypasses desktop creation"
+    },
+    {
+      "architecture": "x64",
+      "name": "pending-owner",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-pending-frame-owner.exe",
+        "--private-worker",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll"
+      ],
+      "exit_code": 0,
+      "output": "PENDING_FRAME bits=64 mode=0 fired=1 removed=1 independent=0 attached=0 scope=1223 fresh=1 error=0\nPENDING_FRAME bits=64 mode=1 fired=1 removed=1 independent=1 attached=0 scope=1223 fresh=0 error=183\nPENDING_FRAME bits=64 mode=2 fired=0 removed=0 independent=0 attached=1 scope=0 fresh=1 error=0\nPENDING_FRAME_OWNER_OK failures=0\n",
+      "seconds": 0.773981400008779,
+      "passed": true,
+      "desktop": "current desktop; explicit worker branch bypasses desktop creation"
+    },
+    {
+      "architecture": "x64",
+      "name": "caption-product-lifetime",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win2k-instance-lifetime.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN2K_STYLE_VALUES previous=84000000 returned=ffffffff84000000\nWIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 caption_reentry=1 caption_commands=3 caption_busy_cancel=1 cleanup=1\n",
+      "seconds": 0.27059339999686927,
+      "passed": true,
+      "desktop": "current desktop; explicit worker branch bypasses desktop creation"
+    }
+  ],
+  "s7-window-dev8": {
+    "selection": "^core/(style-native-frame|style-caption-button|style-frame-restore|style-frame-xaml|style-window-text|win2k-instance-lifetime)$",
+    "status": "passed",
+    "profile": "Focused",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "exit_code": 0,
+    "test_jobs": 4,
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "tests": [
+      {
+        "test_seconds": 0.4654290999751538,
+        "architecture": "x86",
+        "passed": 6,
+        "build_seconds": 4.592605799960438,
+        "skipped": [],
+        "tests": 6,
+        "configure_seconds": 3.848256700031925
+      },
+      {
+        "test_seconds": 0.5266854999936186,
+        "architecture": "x64",
+        "passed": 6,
+        "build_seconds": 5.918434199993499,
+        "skipped": [],
+        "tests": 6,
+        "configure_seconds": 4.111596999980975
+      }
+    ],
+    "build_jobs": 8,
+    "targets": "core-style-native-frame,core-style-caption-button,core-style-frame-restore,core-style-frame-xaml,core-style-window-text,core-win16-control-link,core-win2k-frame-lifecycle,core-win16-dwm-restore,core-win2k-instance-lifetime,core-frames,core-pending-frame-owner,ntw16s,ntw2ks"
+  },
+  "s7-window-dev10": {
+    "test_jobs": 4,
+    "status": "passed",
+    "build_jobs": 8,
+    "selection": "^core/(style-native-frame|style-caption-button|style-frame-restore|style-frame-xaml|style-window-text|win2k-instance-lifetime)$",
+    "targets": "core-style-native-frame,core-style-caption-button,core-style-frame-restore,core-style-frame-xaml,core-style-window-text,core-win16-control-link,core-win2k-frame-lifecycle,core-win16-dwm-restore,core-win2k-instance-lifetime,core-frames,core-pending-frame-owner,ntw16s,ntw2ks",
+    "tests": [
+      {
+        "configure_seconds": 4.132536199991591,
+        "tests": 6,
+        "passed": 6,
+        "build_seconds": 5.807420699973591,
+        "test_seconds": 0.46642390004126355,
+        "skipped": [],
+        "architecture": "x86"
+      },
+      {
+        "configure_seconds": 4.017547300027218,
+        "tests": 6,
+        "passed": 6,
+        "build_seconds": 13.732326099998318,
+        "test_seconds": 0.4926528999931179,
+        "skipped": [],
+        "architecture": "x64"
+      }
+    ],
+    "exit_code": 0,
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "profile": "Focused",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja"
+  },
+  "gates": {
+    "source": "931 receipts passed; LF/negative self-tests passed",
+    "resources": "5 original headers and provenance byte exact",
+    "style_boundary": "source + x86/x64 18 public archives each passed",
+    "diff_check": "passed"
+  },
+  "s7-message-dev": {
+    "profile": "Focused",
+    "exit_code": 0,
+    "test_jobs": 4,
+    "selection": "^core/(style-native-frame|style-caption-button|style-frame-restore|style-frame-xaml|style-window-text|win2k-instance-lifetime)$",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "tests": [
+      {
+        "test_seconds": 0.4952746999915689,
+        "skipped": [],
+        "tests": 6,
+        "configure_seconds": 4.725817200029269,
+        "architecture": "x86",
+        "build_seconds": 11.400098599959165,
+        "passed": 6
+      },
+      {
+        "test_seconds": 0.525839600013569,
+        "skipped": [],
+        "tests": 6,
+        "configure_seconds": 4.882716000021901,
+        "architecture": "x64",
+        "build_seconds": 14.454024599981494,
+        "passed": 6
+      }
+    ],
+    "targets": "core-style-native-frame,core-style-caption-button,core-style-frame-restore,core-style-frame-xaml,core-style-window-text,core-win16-control-link,core-win2k-frame-lifecycle,core-win16-dwm-restore,core-win2k-instance-lifetime,core-frames,core-pending-frame-owner,ntw16s,ntw2ks",
+    "build_jobs": 8,
+    "status": "passed"
+  },
+  "s7-message-dev2": {
+    "targets": "core-style-frame-messages,core-win16-control-link,core-win2k-frame-lifecycle,core-win16-dwm-restore,core-win2k-instance-lifetime,core-frames,core-pending-frame-owner,ntw16s,ntw2ks",
+    "build_jobs": 8,
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "status": "passed",
+    "test_jobs": 4,
+    "tests": [
+      {
+        "configure_seconds": 3.7759414999745786,
+        "build_seconds": 3.92183579999255,
+        "architecture": "x86",
+        "test_seconds": 0.43170590000227094,
+        "skipped": [],
+        "passed": 2,
+        "tests": 2
+      },
+      {
+        "configure_seconds": 4.816847899986897,
+        "build_seconds": 5.076945699984208,
+        "architecture": "x64",
+        "test_seconds": 0.3627240000059828,
+        "skipped": [],
+        "passed": 2,
+        "tests": 2
+      }
+    ],
+    "exit_code": 0,
+    "profile": "Focused",
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "selection": "^core/(style-frame-messages|win2k-instance-lifetime)$"
+  },
+  "s7-install-dev": {
+    "test_jobs": 4,
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "build_jobs": 8,
+    "tests": [
+      {
+        "skipped": [],
+        "test_seconds": 0.7818142000469379,
+        "passed": 8,
+        "configure_seconds": 5.328839499969035,
+        "tests": 8,
+        "build_seconds": 7.201126299973112,
+        "architecture": "x86"
+      },
+      {
+        "skipped": [],
+        "test_seconds": 0.7881327000213787,
+        "passed": 8,
+        "configure_seconds": 5.122867300000507,
+        "tests": 8,
+        "build_seconds": 8.418786800000817,
+        "architecture": "x64"
+      }
+    ],
+    "selection": "^core/(style-frame-install|style-frame-messages|style-native-frame|style-caption-button|style-frame-restore|style-frame-xaml|style-window-text|win2k-instance-lifetime)$",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "exit_code": 0,
+    "profile": "Focused",
+    "targets": "core-style-frame-install,core-style-frame-messages,core-style-native-frame,core-style-caption-button,core-style-frame-restore,core-style-frame-xaml,core-style-window-text,core-win16-control-link,core-win2k-frame-lifecycle,core-win16-dwm-restore,core-win2k-instance-lifetime,core-frames,core-pending-frame-owner,ntw16s,ntw2ks",
+    "status": "passed"
+  },
+  "s7-all-dev2": {
+    "exit_code": 0,
+    "selection": "^core/(style-font-pair|style-frame-install|style-frame-messages|style-native-frame|style-caption-button|style-frame-restore|style-frame-xaml|style-window-text|win2k-instance-lifetime|uwp-frame-hidden)$",
+    "tests": [
+      {
+        "test_seconds": 0.7471131000202149,
+        "configure_seconds": 3.656726199958939,
+        "passed": 10,
+        "skipped": [],
+        "tests": 10,
+        "build_seconds": 7.4906743000028655,
+        "architecture": "x86"
+      },
+      {
+        "test_seconds": 1.191977099981159,
+        "configure_seconds": 4.256840599991847,
+        "passed": 10,
+        "skipped": [],
+        "tests": 10,
+        "build_seconds": 33.95304260001285,
+        "architecture": "x64"
+      }
+    ],
+    "profile": "Focused",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "test_jobs": 4,
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "targets": "all",
+    "build_jobs": 8,
+    "status": "passed"
+  },
+  "s7-final-dev": {
+    "tests": [
+      {
+        "configure_seconds": 4.153840800048783,
+        "passed": 10,
+        "build_seconds": 5.470776100002695,
+        "architecture": "x86",
+        "test_seconds": 0.4804431000375189,
+        "tests": 10,
+        "skipped": []
+      },
+      {
+        "configure_seconds": 4.414058300026227,
+        "passed": 10,
+        "build_seconds": 6.775314799975604,
+        "architecture": "x64",
+        "test_seconds": 0.48728980001760647,
+        "tests": 10,
+        "skipped": []
+      }
+    ],
+    "profile": "Focused",
+    "build_jobs": 8,
+    "selection": "^core/(style-font-pair|style-frame-install|style-frame-messages|style-native-frame|style-caption-button|style-frame-restore|style-frame-xaml|style-window-text|win2k-instance-lifetime|uwp-frame-hidden)$",
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "exit_code": 0,
+    "test_jobs": 4,
+    "targets": "all",
+    "status": "passed"
+  },
+  "final_development_native_cases": [
+    {
+      "architecture": "x86",
+      "name": "core-style-native-frame",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-native-frame.exe"
+      ],
+      "exit_code": 0,
+      "output": "NATIVE FRAME STATE bits=32 result=0 get=4 set=4 geometry=1\n",
+      "seconds": 0.05373879999388009,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-style-caption-button",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-caption-button.exe"
+      ],
+      "exit_code": 0,
+      "output": "CAPTION BUTTON STATE bits=32 result=0 stale_capture=0\n",
+      "seconds": 0.052816900017205626,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-style-frame-messages",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-frame-messages.exe"
+      ],
+      "exit_code": 0,
+      "output": "SHARED FRAME MESSAGES bits=32 failure=0 paint=4 font=1 disposed=1\n",
+      "seconds": 0.04808269999921322,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-style-frame-install",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-frame-install.exe"
+      ],
+      "exit_code": 0,
+      "output": "SHARED FRAME INSTALL bits=32 failure=0 allocated=7 disposed=7 setup=4 rollback=1\n",
+      "seconds": 0.05030210001859814,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-style-font-pair",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-font-pair.exe"
+      ],
+      "exit_code": 0,
+      "output": "FONT PAIR bits=32 ok=1 released=4\n",
+      "seconds": 0.04224350000731647,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-style-frame-restore",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-frame-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.05014190002111718,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-style-frame-xaml",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-frame-xaml.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.04722939996281639,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-style-window-text",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-window-text.exe"
+      ],
+      "exit_code": 0,
+      "output": "WINDOW_TEXT_OK unicode=1 snapshot=1 empty=1 cleanup=1\n",
+      "seconds": 0.04076380003243685,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-win16-control-link",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win16-control-link.exe"
+      ],
+      "exit_code": 0,
+      "output": "ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1\nATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1\nCONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1\nWIN16_CONTROL_STANDALONE_LINK_OK palette=1 glyphs=12 pixel=1\n",
+      "seconds": 0.15234359999885783,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-win16-window-link",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win16-window-link.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN16_WINDOW_LINK_OK state=1 menu=1\n",
+      "seconds": 0.10670599999139085,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-win16-dwm-restore",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win16-dwm-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN16 WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN16 DWM RESTORE bits=32 observed=1 before=1 attached=1 removed=1 read=1 after=1\n",
+      "seconds": 0.40726800000993535,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-win2k-instance-lifetime",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win2k-instance-lifetime.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN2K_STYLE_VALUES previous=84000000 returned=84000000\nWIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 caption_reentry=1 caption_commands=3 caption_busy_cancel=1 cleanup=1\n",
+      "seconds": 0.2907158999587409,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-win2k-frame-lifecycle",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-win2k-frame-lifecycle.exe"
+      ],
+      "exit_code": 3,
+      "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\nWIN2K DWM STAGES attach=0 pump=0\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\nWIN2K FRAME LIFECYCLE bits=32 attached=1 removed=1 observed=1 before=1 after=0 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\n",
+      "seconds": 0.42775880004046485,
+      "passed": false,
+      "known_failure": true,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-uwp-frame-hidden",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-uwp-frame-hidden.exe"
+      ],
+      "exit_code": 0,
+      "output": "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1\n",
+      "seconds": 0.06792140001198277,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "core-dc-failure",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-dc-failure.exe"
+      ],
+      "exit_code": 0,
+      "output": "PASS native popup item adaptation and original-data restoration with state changes preserved\nPASS menu bar layout: wrap, break, right alignment, clipping, hit boundaries and overflow\nPASS SaveDC case=1 preserved borrowed state\nPASS SaveDC case=2 preserved borrowed state\nPASS menu text state/clip/separator cases (not interactive menu acceptance)\nPASS nested menu scope outer-owner teardown and restart\nPASS caption drawing messages cannot change keyboard menu selection\nPASS component menu-loop nesting and remove during loop\nPASS menu callback lifetime message=116 action=1\nPASS menu callback lifetime message=116 action=2\nPASS menu callback lifetime message=117 action=1\nPASS menu callback lifetime message=117 action=2\nPASS menu callback lifetime message=213 action=1\nPASS menu callback lifetime message=213 action=2\n",
+      "seconds": 0.9719780000159517,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "frame-forms",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-frames.exe",
+        "--private-worker"
+      ],
+      "exit_code": 0,
+      "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\n",
+      "seconds": 2.446240100020077,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "pending-owner",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-pending-frame-owner.exe",
+        "--private-worker",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw16s32.dll"
+      ],
+      "exit_code": 0,
+      "output": "PENDING_FRAME bits=32 mode=0 fired=1 removed=1 independent=0 attached=0 scope=1223 fresh=1 error=0\nPENDING_FRAME bits=32 mode=1 fired=1 removed=1 independent=1 attached=0 scope=1223 fresh=0 error=183\nPENDING_FRAME bits=32 mode=2 fired=0 removed=0 independent=0 attached=1 scope=0 fresh=1 error=0\nPENDING_FRAME_OWNER_OK failures=0\n",
+      "seconds": 0.6796781000448391,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x86",
+      "name": "modern-frame-worker",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-uwp-frame.exe",
+        "--private-worker"
+      ],
+      "exit_code": 0,
+      "output": "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100\nSYSTEM_MENU_STATE zoomed=1 restore=100 maximize=101\nRESOURCES iteration=1 gdi=13/13 user=16/16\nRESOURCES iteration=2 gdi=13/13 user=16/16\nSYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100\nSYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100\nUWP_FRAME_SHARED_THREAD_PASS menu-title-destroy=1 explicit-reattach=1 peer-isolated=1\nUWP_FRAME_LIFECYCLE_PASS private-desktop repeat=3 owner-destroy=1\n",
+      "seconds": 4.79611009999644,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-native-frame",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-native-frame.exe"
+      ],
+      "exit_code": 0,
+      "output": "NATIVE FRAME STATE bits=64 result=0 get=4 set=4 geometry=1\n",
+      "seconds": 0.049606400018092245,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-caption-button",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-caption-button.exe"
+      ],
+      "exit_code": 0,
+      "output": "CAPTION BUTTON STATE bits=64 result=0 stale_capture=0\n",
+      "seconds": 0.04296340001747012,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-frame-messages",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-frame-messages.exe"
+      ],
+      "exit_code": 0,
+      "output": "SHARED FRAME MESSAGES bits=64 failure=0 paint=4 font=1 disposed=1\n",
+      "seconds": 0.04438839998329058,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-frame-install",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-frame-install.exe"
+      ],
+      "exit_code": 0,
+      "output": "SHARED FRAME INSTALL bits=64 failure=0 allocated=7 disposed=7 setup=4 rollback=1\n",
+      "seconds": 0.04789740004343912,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-font-pair",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-font-pair.exe"
+      ],
+      "exit_code": 0,
+      "output": "FONT PAIR bits=64 ok=1 released=4\n",
+      "seconds": 0.03057140001328662,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-frame-restore",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-frame-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.043928700033575296,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-frame-xaml",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-frame-xaml.exe"
+      ],
+      "exit_code": 0,
+      "output": "",
+      "seconds": 0.040436699986457825,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-style-window-text",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-window-text.exe"
+      ],
+      "exit_code": 0,
+      "output": "WINDOW_TEXT_OK unicode=1 snapshot=1 empty=1 cleanup=1\n",
+      "seconds": 0.03668499999912456,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-win16-control-link",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win16-control-link.exe"
+      ],
+      "exit_code": 0,
+      "output": "ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1\nATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1\nCONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1\nWIN16_CONTROL_STANDALONE_LINK_OK palette=1 glyphs=12 pixel=1\n",
+      "seconds": 0.21989700000267476,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-win16-window-link",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win16-window-link.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN16_WINDOW_LINK_OK state=1 menu=1\n",
+      "seconds": 0.17691699997521937,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-win16-dwm-restore",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win16-dwm-restore.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN16 WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN16 DWM RESTORE bits=64 observed=1 before=1 attached=1 removed=1 read=1 after=1\n",
+      "seconds": 0.738553800038062,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-win2k-instance-lifetime",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win2k-instance-lifetime.exe"
+      ],
+      "exit_code": 0,
+      "output": "WIN2K_STYLE_VALUES previous=84000000 returned=ffffffff84000000\nWIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 caption_reentry=1 caption_commands=3 caption_busy_cancel=1 cleanup=1\n",
+      "seconds": 0.3002804000279866,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-win2k-frame-lifecycle",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-win2k-frame-lifecycle.exe"
+      ],
+      "exit_code": 3,
+      "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\nWIN2K DWM STAGES attach=0 pump=0\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\nWIN2K FRAME LIFECYCLE bits=64 attached=1 removed=1 observed=1 before=1 after=0 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\n",
+      "seconds": 0.38719869998749346,
+      "passed": false,
+      "known_failure": true,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-uwp-frame-hidden",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-uwp-frame-hidden.exe"
+      ],
+      "exit_code": 0,
+      "output": "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1\n",
+      "seconds": 0.05513250001240522,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "core-dc-failure",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-dc-failure.exe"
+      ],
+      "exit_code": 0,
+      "output": "PASS native popup item adaptation and original-data restoration with state changes preserved\nPASS menu bar layout: wrap, break, right alignment, clipping, hit boundaries and overflow\nPASS SaveDC case=1 preserved borrowed state\nPASS SaveDC case=2 preserved borrowed state\nPASS menu text state/clip/separator cases (not interactive menu acceptance)\nPASS nested menu scope outer-owner teardown and restart\nPASS caption drawing messages cannot change keyboard menu selection\nPASS component menu-loop nesting and remove during loop\nPASS menu callback lifetime message=116 action=1\nPASS menu callback lifetime message=116 action=2\nPASS menu callback lifetime message=117 action=1\nPASS menu callback lifetime message=117 action=2\nPASS menu callback lifetime message=213 action=1\nPASS menu callback lifetime message=213 action=2\n",
+      "seconds": 0.9933012000401504,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "frame-forms",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-frames.exe",
+        "--private-worker"
+      ],
+      "exit_code": 0,
+      "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\n",
+      "seconds": 2.406376899976749,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "pending-owner",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-pending-frame-owner.exe",
+        "--private-worker",
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll"
+      ],
+      "exit_code": 0,
+      "output": "PENDING_FRAME bits=64 mode=0 fired=1 removed=1 independent=0 attached=0 scope=1223 fresh=1 error=0\nPENDING_FRAME bits=64 mode=1 fired=1 removed=1 independent=1 attached=0 scope=1223 fresh=0 error=183\nPENDING_FRAME bits=64 mode=2 fired=0 removed=0 independent=0 attached=1 scope=0 fresh=1 error=0\nPENDING_FRAME_OWNER_OK failures=0\n",
+      "seconds": 0.34875230002216995,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    },
+    {
+      "architecture": "x64",
+      "name": "modern-frame-worker",
+      "command": [
+        "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-uwp-frame.exe",
+        "--private-worker"
+      ],
+      "exit_code": 0,
+      "output": "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100\nSYSTEM_MENU_STATE zoomed=1 restore=100 maximize=101\nRESOURCES iteration=1 gdi=13/13 user=16/16\nRESOURCES iteration=2 gdi=13/13 user=16/16\nSYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100\nSYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100\nUWP_FRAME_SHARED_THREAD_PASS menu-title-destroy=1 explicit-reattach=1 peer-isolated=1\nUWP_FRAME_LIFECYCLE_PASS private-desktop repeat=3 owner-destroy=1\n",
+      "seconds": 4.505672800005414,
+      "passed": true,
+      "known_failure": false,
+      "desktop": "current desktop only; explicit worker bypasses desktop creation where applicable"
+    }
+  ],
+  "s7-freeze-dev": {
+    "build_root": "O:\\repos.hobby\\win16style\\build\\.ninja",
+    "targets": "all",
+    "status": "passed",
+    "build_jobs": 8,
+    "architectures": [
+      "x86",
+      "x64"
+    ],
+    "exit_code": 0,
+    "tests": [
+      {
+        "tests": 10,
+        "test_seconds": 0.5565312000107951,
+        "architecture": "x86",
+        "configure_seconds": 5.018121600034647,
+        "build_seconds": 14.757521399995312,
+        "passed": 10,
+        "skipped": []
+      },
+      {
+        "tests": 10,
+        "test_seconds": 0.6201409000204876,
+        "architecture": "x64",
+        "configure_seconds": 4.54131060000509,
+        "build_seconds": 19.707293700019363,
+        "passed": 10,
+        "skipped": []
+      }
+    ],
+    "selection": "^core/(style-font-pair|style-frame-install|style-frame-messages|style-native-frame|style-caption-button|style-frame-restore|style-frame-xaml|style-window-text|win2k-instance-lifetime|uwp-frame-hidden)$",
+    "test_jobs": 4,
+    "profile": "Focused"
+  },
+  "final_development_native_scope": "36 native cases after shared message/install/font migration, before final HRESULT bubbling correction and forwarding-header removal; final package matrix will verify final bytes"
+}

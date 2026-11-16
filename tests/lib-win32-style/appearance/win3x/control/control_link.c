@@ -1,3 +1,4 @@
+#include "lib-win32-style/application/window/native_frame.h"
 #include "lib-win32-style/application/menu/menu_input.h"
 #include <stdio.h>
 #include "lib-win32-style/appearance/win3x/common/palette.h"
@@ -125,15 +126,15 @@ int main(void)
     if(!control->tab_positions || !control->font || !control->combo_fonts[0]){win16_control_state_dispose(control);return 39;}
     win16_control_state_dispose(control);
     style_window *owned=win16_control_frame_state_create();
-    if(!owned || owned->menus || owned->title_font || owned->menu_font || owned->instance.calls)return 34;
+    if(!owned || owned->menus || owned->fonts.title || owned->fonts.menu || owned->instance.calls)return 34;
     menu_loop outer_loop={.depth=1};owned->menus=&outer_loop;owned->menu_depth=2;
     win16_control_frame_state_exit_menu(owned);
     if(owned->menus!=&outer_loop || owned->menu_depth!=1){owned->menus=NULL;win16_control_frame_state_dispose(owned);return 37;}
     owned->menus=NULL;owned->menu_depth=0;
-    owned->title_font=CreateFontW(-12,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Arial");
-    owned->menu_font=win16_style_menu_font_acquire(96);
-    if(!owned->title_font || !owned->menu_font){win16_control_frame_state_dispose(owned);return 35;}
-    HFONT former_title=owned->title_font;win16_control_frame_state_dispose(owned);
+    owned->fonts.title=CreateFontW(-12,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Arial");
+    owned->fonts.menu=win16_style_menu_font_acquire(96);
+    if(!owned->fonts.title || !owned->fonts.menu){win16_control_frame_state_dispose(owned);return 35;}
+    HFONT former_title=owned->fonts.title;win16_control_frame_state_dispose(owned);
     LOGFONTW disposed;if(GetObjectW(former_title,sizeof(disposed),&disposed))return 36;
     if(style_theme_set(NULL,L"Test",L"Demo",test_native_theme)!=S_FALSE || theme_calls!=1)return 23;
     win16_style_palette palette;
@@ -190,13 +191,12 @@ int main(void)
     message.message=WM_KEYDOWN;message.wParam=VK_ESCAPE;
     win16_control_menu_input(&message,&input);
     if(!escaped || message.message!=WM_KEYDOWN)return 15;
-    UINT dpi=0;HFONT title=NULL,menu=NULL;LOGFONTW info={0};
-    if(!win16_control_refresh_frame_fonts(NULL,&dpi,&title,&menu) || dpi!=96 || !title || !menu ||
-       GetObjectW(title,sizeof(info),&info)!=sizeof(info) || info.lfHeight!=-MulDiv(10,96,72) || info.lfWeight!=FW_BOLD){
-        if(title)DeleteObject(title);
-        win16_style_system_release(menu);return 8;
+    style_font_pair fonts={0};LOGFONTW info={0};
+    if(!win16_control_refresh_frame_fonts(NULL,&fonts) || fonts.dpi!=96 || !fonts.title || !fonts.menu ||
+       GetObjectW(fonts.title,sizeof(info),&info)!=sizeof(info) || info.lfHeight!=-MulDiv(10,96,72) || info.lfWeight!=FW_BOLD){
+        style_font_pair_dispose(&fonts,win16_control_release_frame_fonts);return 8;
     }
-    DeleteObject(title);win16_style_system_release(menu);
+    style_font_pair_dispose(&fonts,win16_control_release_frame_fonts);
     HWND window=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,20,20,100,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
     if(!window)return 10;
     const DWORD separator_styles[]={SS_ETCHEDHORZ,SS_ETCHEDVERT,SS_ETCHEDFRAME,SS_LEFT};
@@ -228,9 +228,10 @@ int main(void)
         win16_control_state_dispose(font_state);DestroyWindow(window);return 41;}
     win16_control_state_dispose(font_state);
     int pressed=HTMINBUTTON;BOOL hot=FALSE,button_detached=FALSE;
-    const win16_control_frame_button_view button_view={NULL,&pressed,&hot,&button_detached,test_button_layout,test_button_paint};
-    if(!win16_control_frame_button_motion(window,&button_view,WM_MOUSEMOVE,MAKELPARAM(0,0)) || !hot || button_paints!=1 ||
-       !win16_control_frame_button_cancel(window,&button_view,WM_CAPTURECHANGED) || pressed || hot || button_paints!=2){DestroyWindow(window);return 24;}
+    style_caption_button button_state={pressed,hot};
+    const win16_control_frame_button_view button_view={NULL,&button_state,&button_detached,test_button_layout,test_button_paint};
+    if(!win16_control_frame_button_motion(window,&button_view,WM_MOUSEMOVE,MAKELPARAM(0,0)) || !button_state.hot || button_paints!=1 ||
+       !win16_control_frame_button_cancel(window,&button_view,WM_CAPTURECHANGED) || button_state.pressed || button_state.hot || button_paints!=2){DestroyWindow(window);return 24;}
     BOOL tabs_detached=FALSE;HFONT tabs_font=(HFONT)GetStockObject(SYSTEM_FONT);int tabs_count=0,*tabs_positions=NULL;
     const win16_control_tabstops_view tabs_view={&tabs_detached,&tabs_font,&tabs_count,&tabs_positions,test_forward_tabs};
     int stops[]={4,8};
@@ -243,17 +244,17 @@ int main(void)
     free(tabs_positions);
     int frame_paints=0;style_frame_ncpaint(window,1,&frame_paints,test_frame_paint,test_frame_paint);
     if(frame_paints!=1){DestroyWindow(window);return 18;}
-    if(win16_control_frame_set_cursor(window,(WPARAM)window,MAKELPARAM(HTCLIENT,0)) ||
-       win16_control_frame_set_cursor(window,0,MAKELPARAM(HTLEFT,0)) ||
-       !win16_control_frame_set_cursor(window,(WPARAM)window,MAKELPARAM(HTLEFT,0))){DestroyWindow(window);return 17;}
+    if(style_frame_set_cursor(window,(WPARAM)window,MAKELPARAM(HTCLIENT,0)) ||
+       style_frame_set_cursor(window,0,MAKELPARAM(HTLEFT,0)) ||
+       !style_frame_set_cursor(window,(WPARAM)window,MAKELPARAM(HTLEFT,0))){DestroyWindow(window);return 17;}
     BOOL detached=FALSE,keyboard=TRUE;HWND focus=NULL;int selected=1;UINT bar_dpi=96;HFONT bar_font=(HFONT)GetStockObject(SYSTEM_FONT);
-    BOOL frame_detached=TRUE,pending=TRUE,saved=TRUE;DWORD prior_policy=DWMNCRP_ENABLED;
-    win16_control_frame_activate(window,&frame_detached,NULL,FALSE,test_frame_policy);
+    BOOL frame_detached=TRUE;style_native_frame native={.pending=TRUE,.saved=TRUE,.policy=DWMNCRP_ENABLED};
+    style_native_frame_activate(window,&native,&frame_detached,NULL,FALSE,test_frame_policy);
     if(frame_policy_calls!=1 || frame_policy_value!=DWMNCRP_DISABLED){DestroyWindow(window);return 31;}
-    win16_control_frame_restore(window,&pending,&saved,&prior_policy,NULL,FALSE,test_frame_policy);
+    style_native_frame_restore_policy(window,&native,test_frame_policy);
     if(frame_policy_calls!=1){DestroyWindow(window);return 32;}
-    pending=FALSE;win16_control_frame_restore(window,&pending,&saved,&prior_policy,NULL,FALSE,test_frame_policy);
-    if(frame_policy_calls!=2 || frame_policy_value!=prior_policy){DestroyWindow(window);return 33;}
+    native.pending=FALSE;style_native_frame_restore_policy(window,&native,test_frame_policy);
+    if(frame_policy_calls!=2 || frame_policy_value!=native.policy){DestroyWindow(window);return 33;}
     const win16_control_bar_state_view state={NULL,&detached,&keyboard,&focus,&selected,&bar_font,&bar_dpi,test_layout,test_bar_paint};
     win16_control_menu_bar_leave(window,&state,FALSE);
     if(keyboard || selected!=-1 || bar_paints!=1){DestroyWindow(window);return 12;}

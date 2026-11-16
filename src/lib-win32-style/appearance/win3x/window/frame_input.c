@@ -26,7 +26,7 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
                 win16_style_bar bar;POINT origin;BOOL popup=hit==-2;
                 s->bar_selected=hit;v->paint(w,s);
                 if(hit>=0 && v->layout(w,s,&l)){origin.x=l.menu.left;origin.y=l.menu.top;
-                    if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
+                    if(win16_style_bar_read_for_window(w,GetMenu(w),s->fonts.menu,s->fonts.dpi,origin,l.menu.right-l.menu.left,&bar)){
                         popup=(UINT)hit<bar.count && bar.items[hit].popup!=NULL;
                         win16_style_bar_free(&bar);}}
                 if(popup)v->open(w,s,hit);
@@ -44,7 +44,7 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
         }
         if((wp&0xfff0)==SC_KEYMENU && lp && lp!=L' ' && GetMenu(w) && v->layout(w,s,&l)){
             win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};int index=-1;
-            if(win16_style_bar_read_for_window(w,GetMenu(w),s->menu_font,s->dpi,origin,l.menu.right-l.menu.left,&bar)){
+            if(win16_style_bar_read_for_window(w,GetMenu(w),s->fonts.menu,s->fonts.dpi,origin,l.menu.right-l.menu.left,&bar)){
                 index=win16_control_menu_bar_mnemonic(&bar,(WCHAR)lp);
                 win16_style_bar_free(&bar);
             }
@@ -80,7 +80,7 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
     case WM_NCLBUTTONDBLCLK:
         if(wp==HTMENU && v->layout(w,s,&l)){
             BOOL close=FALSE;
-            (void)win16_control_menu_bar_item_screen(w,&l,s->menu_font,s->dpi,lp,&close);
+            (void)win16_control_menu_bar_item_screen(w,&l,s->fonts.menu,s->fonts.dpi,lp,&close);
             if(close)PostMessageW(w,WM_COMMAND,SC_CLOSE,0);
             return TRUE;
         }
@@ -88,7 +88,7 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
     case WM_NCLBUTTONDOWN:
         if(s->bar_keyboard && !v->current())v->leave(w,s,TRUE);
         if(wp==HTMENU && v->layout(w,s,&l)){
-            int item=win16_control_menu_bar_item_screen(w,&l,s->menu_font,s->dpi,lp,NULL);
+            int item=win16_control_menu_bar_item_screen(w,&l,s->fonts.menu,s->fonts.dpi,lp,NULL);
             if(item>=0 && !s->instance.detached)v->open(w,s,item);
             return TRUE;
         }

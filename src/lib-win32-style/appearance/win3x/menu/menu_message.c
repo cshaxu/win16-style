@@ -7,11 +7,11 @@ BOOL win16_control_menu_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM
 {
     switch(msg){
     case WM_MEASUREITEM:
-        if(!win16_style_menu_size(s->menu_items,(MEASUREITEMSTRUCT *)lp,s->menu_font,s->dpi))return FALSE;
+        if(!win16_style_menu_size(s->menu_items,(MEASUREITEMSTRUCT *)lp,s->fonts.menu,s->fonts.dpi))return FALSE;
         *result=TRUE;return TRUE;
     case WM_DRAWITEM: {
         win16_style_palette palette;win16_control_resolve_palette(&s->palette,&palette);
-        if(!win16_style_menu_draw(s->menu_items,(DRAWITEMSTRUCT *)lp,s->menu_font,s->dpi,&palette))return FALSE;
+        if(!win16_style_menu_draw(s->menu_items,(DRAWITEMSTRUCT *)lp,s->fonts.menu,s->fonts.dpi,&palette))return FALSE;
         *result=TRUE;return TRUE;
     }
     case WM_MENUCHAR:
@@ -27,7 +27,7 @@ BOOL win16_control_menu_message(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM
         if(!s->instance.detached && !style_menu_prepare((HMENU)wp,&s->menu_items,s->menu_depth))
             style_menu_restore_popup((HMENU)wp,&s->menu_items);
         if(!s->instance.detached && HIWORD(lp)){
-            if(s->menus)win16_style_menu_system(s->menus->scope,(HMENU)wp,s->menu_font,s->dpi);
+            if(s->menus)win16_style_menu_system(s->menus->scope,(HMENU)wp,s->fonts.menu,s->fonts.dpi);
             s->system_menu=TRUE;paint(w,s,HTSYSMENU);
         }
         return TRUE;

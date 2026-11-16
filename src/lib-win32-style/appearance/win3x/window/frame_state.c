@@ -1,4 +1,5 @@
 #include "frame_state.h"
+#include "frame_font.h"
 #include "../common/font.h"
 #include <stdlib.h>
 style_window *win16_control_frame_state_create(void)
@@ -28,7 +29,6 @@ void win16_control_frame_state_dispose(void *context)
     style_window *s=context;
     while(s->menus)win16_control_frame_state_end_menu(s);
     style_menu_restore(&s->menu_items);
-    if(s->title_font)DeleteObject(s->title_font);
-    win16_style_system_release(s->menu_font);
+    style_font_pair_dispose(&s->fonts,win16_control_release_frame_fonts);
     free(s);
 }
