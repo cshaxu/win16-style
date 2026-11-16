@@ -67,3 +67,7 @@ font_pair现在实际拥有普通及现代外框的title/menu租约与DPI，失�
 第二角色重新读取原三层目标、49项归属及附加消费者、实际diff和发布后输出：普通NC状态/消息/安装/输入及字体所有权确由公共实现承担；年代布局、资源选择与完整profile组装留appearance；菜单、现代宿主和最终renderer注册明确由S8/S12/S13继续。实现没有第二套挂钩后端、权限/范围变化或隐藏的新风格支持。源码统计：共享净+289行、appearance净-101行、产品绑定净+7行，生产总净+195行；测试净+402行。增加部分是公开状态/完整协议与生命周期契约，未将其描述为总代码量减少，也不预称S13的最终provider接口已清洁完毕。
 
 构建/原生会话终结，沙箱外只读核验无从本S快照或scratch执行的存活进程；归档必要结果后按绝对路径/reparse检查清理临时快照、发布备份与日志，累计276,389,285字节，保留.ninja/.ccache。正式assets/O:/winnt八文件未删除，见[交付](../etc/evidence/t26-s7-delivery.json)与[清理](../etc/evidence/t26-s7-cleanup.json)。提交推送与实际远端逐blob复核前仍不关闭S7。
+
+S7 P1 `cb84dac13c7401a16ed41d1bfb358af8c732cc63`已推送并实际fetch；58现存blob逐SHA与工作区一致、3个删除路径不存在，八文件与O:/winnt和实际测试摘要相同，见[远端记录](../etc/evidence/t26-s7-remote.json)。S7按原重组边界收口，自动准入S8；DWM旧失败和ETW skip不改写为通过，T26保持开放。
+
+公共调用契约：message调用方持有同GUI线程实例并将result初始为0，只分派该profile适用的消息；paint必需，其余client/activate/buffered/hit/font按已支持能力提供。install消费新初始化、未发布且无外部calls的实例，provider负责完整setup/rollback；字体next转交独立取得的租约，release只释放字体角色而不释放owner。所有当前消费者和对应原生fixture均按这些契约调用，未为未支持组合预建空实现。

@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S7 P1",
-  "status": "passed-focused-with-skips-local-remote-pending",
+  "status": "passed-focused-with-skips-remote-verified",
   "build": {
     "status": "passed",
     "candidate": "O:\\repos.hobby\\win16style\\build\\t26-package\\s7-window\\candidate",
@@ -2713,5 +2713,6 @@
     "owned modern fixtures do not establish third-party UWP/WinUI or physical input/full continuous drawing coverage",
     "stop, style removal and callback lifetime are not physical DLL unload"
   ],
-  "behavior_delta": "native forwarded message LastError now survives painting; DWM setup HRESULT translated before transaction rollback; no scope/permission/renderer/resource policy expansion"
+  "behavior_delta": "native forwarded message LastError now survives painting; DWM setup HRESULT translated before transaction rollback; no scope/permission/renderer/resource policy expansion",
+  "verified_remote_commit": "cb84dac13c7401a16ed41d1bfb358af8c732cc63"
 }

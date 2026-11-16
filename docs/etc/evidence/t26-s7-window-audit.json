@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S7",
-  "status": "implementation-and-published-focused-verification-complete-remote-pending",
+  "status": "implementation-published-focused-and-remote-verified",
   "baseline": "4d1cdcb70ef1c7917965f4eb6437c39ba0372f00",
   "files": [
     {
@@ -918,5 +918,6 @@
       "sha256": "341664f273a5875a7bf74ef060098654647332c6ea9ee611362ba9daee275c1f",
       "reason": "S7 shared mechanism/renderer/font consumer or native verification; both architectures compiled and applicable actual-package cases passed"
     }
-  ]
+  ],
+  "verified_remote_commit": "cb84dac13c7401a16ed41d1bfb358af8c732cc63"
 }

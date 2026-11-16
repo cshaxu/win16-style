@@ -2,11 +2,11 @@
 
 ## Current Work
 
-M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S7窗口与标题栏。S1审计、S2目录、S3 GUI根生命周期、S4启动、S5运行时接入、S6全局协调已收口；不把局部完成称为全T完成。
+M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S8菜单。S1审计、S2目录、S3 GUI根生命周期、S4启动、S5运行时接入、S6全局协调、S7窗口与标题栏已收口；不把局部完成称为全T完成。
 
 [S5交付](../history/M0-T26-S5-runtime.md)b08d601d已实际fetch并逐blob复核37个变更；同快照八文件先发布assets根/O:/winnt，随后118项去重实际包回归通过。另2项DWM旧失败与S4一致，不计通过。见[开发证据](../etc/evidence/t26-s5-runtime.json)与[最终交付](../etc/evidence/t26-s5-delivery.json)。双宽各17个公共样式归档门禁通过，1005个源码/构建/测试/工具输入一致，ABI及原资源保留。
 
-S5运行时module/请求/通知/late批次已公共化，产品侧净减少105行。API创建链仍由产品attachment/window_titles拥有，明确按S11与dialog装配迁application/lifecycle，不称其为纯业务或遗漏；全局session/phase与当前管理适配由S6继续。已知失败/未覆盖见TODO及下方历史事实，S14统一复核。
+S5运行时module/请求/通知/late批次已公共化，产品侧净减少105行。API创建链仍由产品attachment/window_titles拥有，明确按S11与dialog装配迁application/lifecycle，不称其为纯业务或遗漏；全局session/phase与管理协调已由S6提取并交付。已知失败/未覆盖见TODO及下方历史事实，S14统一复核。
 
 S6已将session/control/start/worker/late/attach/manager/receiver/host/owner/trace迁入公共层并接入产品，删除14个产品C/H文件及六个空转发，必要线程导出合并至hook装配。927项来源回执、原资源及双宽各18个样式归档门禁通过。沙箱外同一自有目标12项原生接入全部通过，确认此前拒绝与AppContainer环境有关，未改生产策略；原沙箱失败保留在[开发证据](../etc/evidence/t26-s6-global-development.json)。
 
@@ -16,28 +16,28 @@ S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），102
 
 [S4事实](../history/M0-T26-S4-startup.md)及[交付](../etc/evidence/t26-s4-delivery.json)保留；T25按用户决定有限收口，未通过项不补记通过。
 
-## M0 T26 S7 Packet
+## M0 T26 S8 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S6交付且实际远端复核后自动准入S7，沿用M0/T26。 |
-| Admission And Approval | 用户批准三层架构与14个S自动有序执行，单人实施与第二角色复核，完整能力合批交付。 |
-| Objective | 普通窗口和标题栏的原生快照、激活/恢复、消息/命中及资源机制归application/window/graphics，两风格实际共用；appearance仅拥有年代布局/绘制与真实差异策略。 |
-| Non-goals | 不新增风格/框架能力或权限/卸载机制；菜单输入S8、控件S9/S10、创建链S11、现代宿主S12；不整体搬私有state或添加逐字段空包装。 |
-| Reference Baseline | S6 P1 4d1cdcb7，同批八文件、160通过/2项ETW skip、2项DWM旧失败，95现存blob及14删除路径实际远端复核。 |
-| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S7-window.md；冻结输入docs/etc/evidence/t26-s7-window-audit.json。 |
-| Files And ABI Surface | application/window、普通Win3x frame系列、Win2000 frame/caption、产品正式窗口装配及对应测试；核对现代frame/system_menu公共消费，保持八文件/ABI。 |
-| Applicable Rules | M0；纯C17、MinGW GCC、Ninja、ccache；唯一公共状态所有者、完整操作回调；错误本层清理后上抛，外层报告，极简而非无限容错。 |
-| Verification | 双宽公共独立及两风格产品，正常/隐藏/pending/最大化、失败/取消/销毁/重入、命中/打印/字体/资源及恢复；增量后统一干净构建、先发布再实际包测试和远端复核。 |
-| Expected Markers | 共同原生状态/事务下沉，真实消费者、旧实现与空转发删除；布局和绘制独立。原set-only DWM policy不可观察，不把remove成功算完全恢复。 |
-| Asset Needs | 五组件八文件及原图形资源/来源声明保持，不引入兄弟仓库或额外产品依赖。 |
-| Reporting Requirements | 冻结清单最终归属/公共入口/产品调用/测试、实际diff行数/所有权及失败/skip/未覆盖；不以门禁替代运行证明。 |
-| Stop Conditions | 禁止computer-use及私有桌面，不改兄弟仓库/系统安全设置/其他任务；不在loader-lock做GUI/等待；UAC超过一分钟才追问，环境限制如实记录。 |
-| Exit Criteria | 普通外框清单实际拆分并接入、无重复/反向依赖，恢复边界实证；规范发布测试提交推送与实际远端复核，现代/菜单交界明确接收者。 |
-| Original Owner Request | 所有样式按access/application/appearance重组到lib-win32-style；极简统一复用，逐文件审计、按完整能力交付，不逐文件发布。 |
-| Similar-Issue Sweep | 双风格安装/隐藏/待定/销毁/移除、DWM/客户区、NC消息/打印/光标/命中、标题/字体资源及产品组合，现代/菜单跨S公共消费。 |
+| Identifier Mode | Continuation；S7规范交付及实际远端复核后自动准入S8，沿用M0/T26。 |
+| Admission And Approval | 用户批准三层架构与14个S自动有序执行，单人实施及第二角色复核；完整能力合批交付。 |
+| Objective | 菜单栏、系统及popup的观察/项恢复/输入/嵌套生命周期归application/menu，两风格真实共用；年代布局、字体、原资源及绘制/命令策略独立。 |
+| Non-goals | 不新增风格、支持范围、权限或挂钩后端，不改注册表/系统主题；现代宿主S12、控件S9/S10、创建链S11和最终provider注册S13；不整搬私有状态或做空包装。 |
+| Reference Baseline | S7 P1 cb84dac1，188项实际包回归186通过/2项ETW skip，2项DWM旧失败未变；58现存blob/3删除路径及八文件实际远端复核。 |
+| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S8-menu.md；冻结输入docs/etc/evidence/t26-s8-menu-audit.json。 |
+| Files And ABI Surface | application/menu、Win3x menu、Win2000 system_menu及frame/menu输入/状态、产品menu_filter与现代菜单消费者、全部相关测试；资源和八文件ABI保持。 |
+| Applicable Rules | M0；纯C17、MinGW GCC、Ninja、ccache；同一机制唯一实现，公共对象真正拥有状态与资源，完整操作回调；本层释放后错误上抛、外层报告。 |
+| Verification | 双宽独立/public和实际两风格：初始化、owner-draw、栏/系统/nested popup、取消、回调销毁/替换、scope/字体/打印/DC及资源；原生协议与物理输入区分。合批后同快照八文件先发布再测和远端复核。 |
+| Expected Markers | 公共scope/observer/项恢复/输入状态有真实消费者，旧实现/空转发删除；renderer只提供真实布局/绘制和命令差异，不以不同私有类型拒绝抽离。 |
+| Asset Needs | 五组件八文件及五原图形头/原资源声明保持，不引入兄弟仓库或额外产品服务/文件。 |
+| Reporting Requirements | 逐冻结文件最终归属、入口/消费者/测试和保留具体原因；实际diff计数、所有权、失败/skip/未覆盖；不把消息或定时器模拟称真实键鼠通过。 |
+| Stop Conditions | 禁止computer-use及私有桌面，不改兄弟仓库/系统安全设置/其他工作；所有fixture自建/有限等待/清理，UAC等待一分钟后才问；不无限补丁或扩范围掩盖失败。 |
+| Exit Criteria | 有限清单的通用菜单机制真实抽离接入，资源与ABI保持、无反向依赖/第二套引擎；适用组合与异常退场验证，规范交付和实际远端复核后自动S9。 |
+| Original Owner Request | 全部style按access/application/appearance归lib-win32-style；极简统一、宏观复用、五大干净；文件顺序审计、能力合批交付，不逐文件完整发布。 |
+| Similar-Issue Sweep | HMENU/itemData和字体借用、准备/恢复、助记符/NEXTMENU、栏/系统/popup、nested/non-top scope、SysShadow、打印坐标与原生选中、移除/销毁/替换和焦点归还；现代仅菜单交界。 |
 
-S7已完成普通窗口公共状态/messages/install/font_pair等迁移，49个冻结输入及附加消费者有逐项最终归属。唯一干净快照双宽通过，1033个输入一致；同批八文件先发布assets根/O:/winnt，再跑188项聚焦原生回归186通过、2项ETW跳过，另2项DWM旧失败不计通过。见[交付](../etc/evidence/t26-s7-delivery.json)、[逐项审计](../etc/evidence/t26-s7-window-audit.json)与[S7记录](../history/M0-T26-S7-window.md)。当前仅本地已验证，提交推送和实际远端逐blob复核后才收口。
+S7已完成普通窗口公共状态/messages/install/font_pair等迁移，49个冻结输入及附加消费者有逐项最终归属。唯一干净快照双宽通过，1033个输入一致；同批八文件先发布assets根/O:/winnt，再跑188项聚焦原生回归186通过、2项ETW跳过，另2项DWM旧失败不计通过。见[交付](../etc/evidence/t26-s7-delivery.json)、[逐项审计](../etc/evidence/t26-s7-window-audit.json)与[S7记录](../history/M0-T26-S7-window.md)。S7 P1 `cb84dac1`已推送并实际fetch复核58个现存blob、3个删除路径和八文件摘要，见[远端](../etc/evidence/t26-s7-remote.json)。S7按既定范围收口，自动准入S8。
 
 所有本S构建/测试结束，已验证无存活自有夹具并清理临时快照/备份/scratch，保留.ninja/.ccache，见[清理](../etc/evidence/t26-s7-cleanup.json)。未使用computer-use或私有桌面；菜单S8、现代宿主S12、最终renderer接口S13仍按既定范围继续，T26开放。
 
@@ -51,9 +51,9 @@ S7已完成普通窗口公共状态/messages/install/font_pair等迁移，49个�
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
-- Last allocated T26 S: 7
-- Last verified remote delivery: M0 T26 S6 P1，`4d1cdcb7`；95现存blob、14删除路径及八文件复核。
-- Open task: M0 T26 S7；窗口与标题栏。
+- Last allocated T26 S: 8
+- Last verified remote delivery: M0 T26 S7 P1，`cb84dac1`；58现存blob、3删除路径及八文件复核。
+- Open task: M0 T26 S8；菜单。
 
 ## Technical Baseline
 

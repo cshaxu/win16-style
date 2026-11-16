@@ -241,3 +241,7 @@
 - [T26 S7临时产物清理](evidence/t26-s7-cleanup.json)：本批测试结束后移除临时构建日志与scratch，保留增量/ccache；早先六个小日志目录也已按归属清理。
 
 - [T26 S7交付](evidence/t26-s7-delivery.json)：同快照八文件先发布，188项聚焦回归186通过/2项ETW跳过，另2项DWM旧失败；构建/cache、来源与实际包摘要。
+
+- [T26 S7实际远端](evidence/t26-s7-remote.json)：58现存blob、3删除路径及八文件复核。
+
+- [T26 S8菜单冻结输入](evidence/t26-s8-menu-audit.json)：菜单机制、风格及产品消费者的起始路径/摘要；未预称审计完成。

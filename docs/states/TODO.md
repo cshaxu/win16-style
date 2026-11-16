@@ -2,7 +2,7 @@
 
 # Deferred Debt
 
-- [ ] TODO(High): 普通 `--2k` 的运行中移除API已经具备，但DWM渲染恢复未通过。Owner：T26 S7窗口恢复机制及S14最终审计。Evidence：[T25早期缺口](../history/M0-T25-S7-P5-apps-and-restore.md)记录当时缺少导出；当前已有Ntw2ksWindowRemove及win2k_frame_remove，[T26 S3实际包](../etc/evidence/t26-s3-delivery.json)双位宽installed/removed/geometry/repeated/reattached/pending均通过，DWM restored=0与S2同条件基线一致。Admission：保持用户允许的当前桌面验证，以实际DWM/外框状态证明恢复，不将移除返回TRUE、销毁或SC_RESTORE算作完整恢复。
+- [ ] TODO(High): 普通 `--2k` 的运行中移除API已经具备，但DWM渲染恢复未通过。Owner：T26 S14最终审计；S7重组已确认该旧失败不变，未将其记为通过。Evidence：[T25早期缺口](../history/M0-T25-S7-P5-apps-and-restore.md)记录当时缺少导出；当前已有Ntw2ksWindowRemove及win2k_frame_remove，[T26 S3实际包](../etc/evidence/t26-s3-delivery.json)双位宽installed/removed/geometry/repeated/reattached/pending均通过，DWM restored=0与S2同条件基线一致。Admission：保持用户允许的当前桌面验证，以实际DWM/外框状态证明恢复，不将移除返回TRUE、销毁或SC_RESTORE算作完整恢复。
 
 - [ ] TODO(High): Win2000 外框真实拖动/缩放的连续画面、瞬时闪烁、跨屏 DPI 和跨进程前台焦点未完成；Owner：T25 最终审计。Evidence：[S7 P11](../history/M0-T25-S7-P11-physical-frame-drag.md)通过双位宽自有窗口一次真实拖动和拉伸及末帧采样，[S6 P3](../history/M0-T25-S6-P3-activation-foreground.md)中后续测试窗口未获前台而跳过；连续画面和跨屏仍未覆盖。Admission：不创建/切换隔离桌面、不妨碍用户操作；以自有窗口与有限清理验证动态画面，不能将末帧采样或跳过算通过。
 
