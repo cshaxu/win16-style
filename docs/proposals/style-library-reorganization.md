@@ -284,6 +284,14 @@ S4/S5接入组拥有hook集合的安装协调并复用process-hook；S3实例拥
 
 保持的契约：Win16创建作用域失败可撤销本次新建modeless窗口，Win2000既有创建后observer策略不变；A/W参数、原native返回及LastError保留；多选/应用hook/template/聚合/远程COM和不支持接口按既有原生回退；实验flags不启用。公共COM操作持有factory/proxy/event引用并在全部替换成功后提交MULTI_QI，不要求调用方手工组装内部proxy状态的指针视图。未具备的异常恢复或物理卸载不得由新接口名暗示支持。
 
+## S1 全局、运行时与启动器组合契约
+
+[接入复核](../history/M0-T26-S1-product-adapter-review.md#新三层架构下的全局uwp与启动器复核p107)记录本轮55个生产源/头/def的逐项归属及SHA。manager/session/ticket和双位宽host的资源/停止协调进入access；继续使用process-global引擎、process-hook后端及现有uwp/window dispatch，不复制目标队列或安装器。global/window由公共style transition和风格注册表组合，global/vb_text拆往control运行时协议及win3x字体策略，不能盲搬global目录。
+
+S2须同步迁移EXE和测试直接编译的DLL来源文件，消除反向依赖；S4–S6再通过完整接入/会话操作迁出状态，产品只给兼容协议、导出与风格选择。运行时票据在timeout/stop失败时保持未完资源的所有权，只有close成功才可释放；恢复窗口、停用传播、移除线程hook和物理卸载分别报告。普通启动不变成全局扫描，既有alias/Console/Explorer目标范围和超时不扩大。非样式的process_lifecycle应复用/归入lib-win32/process-launch，托盘菜单及错误报告仍为产品业务。
+
+本批完成入口/消费审计，不等于公共库全量迁移或实际global/现代宿主已验证；S1仍需完成公共库与产品根状态/注册的最终交叉核对以及迁移构建清单。
+
 ## 未通过与未来候选
 
 导航焦点、Win2000 DWM 恢复、VB 清单和表头不稳定及实际现代宿主/全局覆盖限制继续由 CURRENT 和已有证据承载；不因架构设计被关闭。T26 结束条件是现有能力的三层归位、实际复用和验证，而非所有年代所有应用都支持。
