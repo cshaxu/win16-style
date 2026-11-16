@@ -2,7 +2,7 @@
 
 ## Current Work
 
-用户已批准统一 `lib-win32-style` 的接入、样式应用、风格呈现三层架构及 S1–S14 规划，见[任务设计](../proposals/style-library-reorganization.md)。单人实施/复核双角色执行；S1 继续完整审计，后续按能力合批迁移，禁止逐文件完整交付。第41项原在途改动已完成本地交付验证；无结果、无活动编译进程的中断快照已核验并清理，后续按能力合批新建构建。连续审计已核对 41–151 的源码与调用，42–151 明确列为待修复/待验证；具体公共接口和状态拆分归任务设计，未计作实现过关。151文件的顺序源码审计已有记录；产品injection十文件及Win2000 controls/dllmain/window的注册、对话框和消费映射已补查；global/UWP/启动器及共享DLL的55个生产文件已补查，产品根状态/注册已补查，381项源码与对应测试/说明迁移清单及构建消费者已登记；最终覆盖已复核，第41项已完成双位宽干净构建、先发布及10项聚焦测试；待提交远端复核后收口S1并准入S2，不能据此关闭S1。
+S1完整审计与末批交付已收口，见[最终审计](../history/M0-T26-S1-final-audit.md)。源码及八文件已发布、通过双位宽10项聚焦验证并推送`f4aa242b`，实际fetch后的远端blob与两处发布摘要一致；自有临时构建及备份269,421,490字节已清理。按用户批准的[三层架构和S1–S14规划](../proposals/style-library-reorganization.md)自动准入S2：依据[381项迁移清单](../etc/evidence/t26-style-relocation.json)合批迁移目录、构建、测试、来源与门禁。S1审计不等于后续机制已共享，T26继续开放。
 
 用户决定以现有实际成果有限收口 T25，未完成的 S8 验证和 S10 最终审计不计通过；原 S9 去重已明确并入 T26，遗留范围见[T25 收口记录](../history/M0-T25-owner-closure.md)。准入 T26，抽离跨风格通用机制并整理样式库。
 
@@ -58,26 +58,26 @@ VCL CoolBar 窗口身份核验已迁入公共控件组件，Win16 提供附着�
 
 执行效率检查按[执行规则](../rules/EXECUTION.md#效率检查点)进行；按文件顺序审计，按能力合并实施与验证，检查结论记入顺序台账，不为单文件重复完整交付。
 
-## M0 T26 S1 Packet
+## M0 T26 S2 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New；T25 按用户决定有限收口，T26 从 S1 开始。 |
-| Admission And Approval | 用户已批准统一 lib-win32-style 三层结构、S1–S14 及单人双角色执行；保留 T26 和已有 S1 成果。 |
-| Objective | 按已批准三层架构冻结完整生产/测试清单、接口、状态所有者和迁移映射；继续 S1，随后按任务设计依次准入 S2–S14，按能力合批实施及交付。 |
-| Non-goals | 审计不宣称已支持未实现的主题或控件；不改变既有挂钩权限与用户体验。 |
-| Reference Baseline | T25 S8 P13 已发布包及有限收口记录；保留既有 Win16 与 Win2000 行为。 |
-| Candidate Proposal | docs/proposals/style-library-reorganization.md，结合本次明确扩展的窗口、控件、对话框和现代框架范围。 |
-| Files And ABI Surface | 样式库、通用样式机制、产品适配、CMake、全部相应测试及来源声明；审计先不改公开 ABI。 |
-| Applicable Rules | M0；纯 C17、MinGW GCC、Ninja、ccache；现有八文件同批交付。 |
-| Verification | 逐文件顺序覆盖和跨文件能力归属矩阵；无反向依赖、两风格真实调用、旧路径删除、双位宽及实际包回归；单人复核原请求、diff 和证据。 |
-| Expected Markers | 每一项列明旧位置、分类、目标组件、调用方、迁移顺序及验证；未覆盖明确保留。 |
-| Asset Needs | 保留原始图形资源及来源声明，不依赖或修改兄弟仓库。 |
-| Reporting Requirements | 分别报告已共享、待迁移、风格专属和未验证能力；不把目录移动当作代码复用。 |
-| Stop Conditions | 不创建或切换隔离桌面，不使用 computer-use；不改系统安全设置或兄弟仓库。 |
-| Exit Criteria | 审计覆盖全部相关生产入口和测试，形成可执行的迁移次序、明确边界及 S 序列，完成规范验证与远端复核。 |
-| Original Owner Request | 收口 T25；把 Win16 中可用于 Win2000、XP、Vista、Win7 的外框、控件、对话框及 Win32/UWP/WinUI 通用能力抽离到 lib-style。 |
-| Similar-Issue Sweep | 检查现有 style-common、Win16/Win2000 样式模块、产品适配及共享进程入口，避免重复机制和风格反向依赖。 |
+| Identifier Mode | Continuation；S1已收口，沿用M0/T26，准入下一S2。 |
+| Admission And Approval | 用户批准lib-win32-style三层结构及S1–S14自动有序续作；不逐文件完整交付。 |
+| Objective | 按381项冻结清单把现有样式库及对应测试归位新根，同步includes、CMake、来源摘要与依赖/资源门禁；形成无旧活动路径的可构建同批包。 |
+| Non-goals | 不把机械挪动当作状态/机制已共享；mixed项由S3–S13拆分，不新增风格功能或扩大接入范围。 |
+| Reference Baseline | S1 P109提交f4aa242b及已测试发布八文件；151项顺序台账和381项当前摘要。 |
+| Candidate Proposal | docs/proposals/style-library-reorganization.md，S2目录与构建归位。 |
+| Files And ABI Surface | src/lib-style、src/lib-win32/style及对应tests，CMake与工具/来源/当前文档；公开ABI、资源字节及八产物保持。 |
+| Applicable Rules | M0；纯C17、MinGW GCC、Ninja、ccache；单人实施/复核；按能力合批。 |
+| Verification | 精确集合/摘要/去向对账、所有include和CMake消费者、门禁负例与非空归档覆盖；双位宽增量及干净包，先发布再做聚焦原生回归，远端复核。 |
+| Expected Markers | 381项都有实际去向/处置，旧活动路径无遗漏，两个风格及产品组合仍链接实际生产实现；mixed债务保持明确。 |
+| Asset Needs | 原glyph、atlas、图标与来源声明不变，不读写兄弟项目作为依赖。 |
+| Reporting Requirements | 区分机械归位、真正共享及待拆状态，报告构建/cache、测试及原有未通过范围；交付后清理临时副本。 |
+| Stop Conditions | 不使用computer-use或隔离桌面，不改系统安全策略，不覆盖用户修改，不改ntvdm64/softpc。 |
+| Exit Criteria | 目录、构建、tests、来源及门禁全部接入新根，实际包行为与S1基线一致，完成规范交付和远端复核；不要求后续S机制拆分提前完成。 |
+| Original Owner Request | 顶层架构与S规划写入T26、修订过时架构文档并继续；所有style组件进入lib-win32-style的access/application/appearance三层。 |
+| Similar-Issue Sweep | 所有相对/根include、dlltool def、测试直接编译产品源、receipt、资源固定路径、archive发现与当前文档；禁止门禁空跑或新增转发壳。 |
 
 ## Identifier State
 
@@ -89,9 +89,9 @@ VCL CoolBar 窗口身份核验已迁入公共控件组件，Win16 提供附着�
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
-- Last allocated T26 S: 1
-- Last verified remote delivery: M0 T26 S1 P88，`f7c8e85d`。
-- Open task: M0 T26 S1；跨风格能力完整审计与迁移规划。
+- Last allocated T26 S: 2
+- Last verified remote delivery: M0 T26 S1 P109，`f4aa242b`；源码与八文件逐blob复核通过。
+- Open task: M0 T26 S2；目录与构建归位。
 
 ## Technical Baseline
 
