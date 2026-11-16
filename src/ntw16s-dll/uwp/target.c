@@ -1,7 +1,7 @@
 #include "target.h"
 #include "hook.h"
-#include "lib-style/uwp/native.h"
-#include "lib-style/uwp/dispatch.h"
+#include "lib-win32-style/application/adapters/uwp/native.h"
+#include "lib-win32-style/access/runtime/uwp_dispatch.h"
 static DWORD select_action(const style_uwp_target *app,BOOL apply,WPARAM *action,void *context)
 {
     (void)context;*action=NTW16S_UWP_REMOVE;

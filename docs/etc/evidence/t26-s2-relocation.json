@@ -1,0 +1,3143 @@
+{
+  "task": "M0 T26 S2",
+  "status": "verified-locally-pending-remote",
+  "moves": 381,
+  "include_only_code_files": 374,
+  "byte_exact": 153,
+  "entries": [
+    {
+      "source": "src/lib-style/common/bitmap.c",
+      "destination": "src/lib-win32-style/application/graphics/bitmap.c",
+      "baseline_sha256": "ca5ac0ebc37c2d2ddb1053cfebe2fe447818a6cb5602c4d0540bd1cf67026e33",
+      "sha256": "ca5ac0ebc37c2d2ddb1053cfebe2fe447818a6cb5602c4d0540bd1cf67026e33",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/bitmap.h",
+      "destination": "src/lib-win32-style/application/graphics/bitmap.h",
+      "baseline_sha256": "ebd25bfe279c870fb630aaaefee6770a5ab26855067e0be4851c867bd4c605aa",
+      "sha256": "ebd25bfe279c870fb630aaaefee6770a5ab26855067e0be4851c867bd4c605aa",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/bitmap_font.h",
+      "destination": "src/lib-win32-style/application/graphics/bitmap_font.h",
+      "baseline_sha256": "ace63bf4923114f9f46a6ecef3ebe793eb16da89fcf575bc626429d69000c55e",
+      "sha256": "ace63bf4923114f9f46a6ecef3ebe793eb16da89fcf575bc626429d69000c55e",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_browse.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_browse.c",
+      "baseline_sha256": "440c9620bbdf8958afc5c45bcfda08d65f76acfadae656c9201e179ef0b5e722",
+      "sha256": "698dec37eb30cd4e9a1bc8b477d90d4342f82c8edf98f00b95347289322b6efa",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_browse.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_browse.h",
+      "baseline_sha256": "70ecf98f3605e9f9c35d8ce92cec70be57c497d87051ac22ea66a024bc8e75aa",
+      "sha256": "70ecf98f3605e9f9c35d8ce92cec70be57c497d87051ac22ea66a024bc8e75aa",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_com_hook.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_com_hook.c",
+      "baseline_sha256": "aec49e6aa9f90a2234a98623ad2be3be742777ccf414c9e079fc11673a89d163",
+      "sha256": "aec49e6aa9f90a2234a98623ad2be3be742777ccf414c9e079fc11673a89d163",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_com_hook.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_com_hook.h",
+      "baseline_sha256": "29379e13462a12a5e69edba1211b87e3ba7f59cf0482303a7347f9dd13412199",
+      "sha256": "29379e13462a12a5e69edba1211b87e3ba7f59cf0482303a7347f9dd13412199",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_com_show.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_com_show.c",
+      "baseline_sha256": "2579d65cd6b3ca78796059563cba9b30ee9adb53576ab32c43a00c48621081e2",
+      "sha256": "d827cf217f2f7df94bdca430e97417795b4f2ddf09df4fae808b393cb7777fa5",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_com_show.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_com_show.h",
+      "baseline_sha256": "2b4081caac430fcbce8fdc56e766669c996fc21e4fdb73e54c203651900c5f42",
+      "sha256": "2b4081caac430fcbce8fdc56e766669c996fc21e4fdb73e54c203651900c5f42",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_dialog_controls.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_dialog_controls.c",
+      "baseline_sha256": "a42f38ab9097bc53f556e616718d2db0bd073190df7bb1c3145a816d0c9cc673",
+      "sha256": "a42f38ab9097bc53f556e616718d2db0bd073190df7bb1c3145a816d0c9cc673",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_dialog_controls.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_dialog_controls.h",
+      "baseline_sha256": "f3284d55caaa0f2f1169556771412994ee06425aa9ce8320b0d3bfbd1d621dd5",
+      "sha256": "f3284d55caaa0f2f1169556771412994ee06425aa9ce8320b0d3bfbd1d621dd5",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_dialog_events.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_dialog_events.c",
+      "baseline_sha256": "2a7056701e5d09cdbf88522aca527ecd38c313f80e9f1a0f77298ee9318315b7",
+      "sha256": "899bfbe35d61a6e8f54ef682bad79b2544d4d1acd19a8bef22a71f9cb1bcd977",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_dialog_events.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_dialog_events.h",
+      "baseline_sha256": "ec944b71b9011cdf5be5628ebf9e1817396b3571f79c4d2ac3faed5db0481f52",
+      "sha256": "6a26c019149f1223396a6516a9ec2fb96fa0e70bb711519c11cd672604e62ba8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_dialog_proxy.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_dialog_proxy.c",
+      "baseline_sha256": "1be983a172b973330604bd934aed0d9ae5582e91806b843abfcabcf3025bd208",
+      "sha256": "61f8f1f44a6ac045c8841402264c93ba6d5101890c28a690410790d5bee62639",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_dialog_proxy.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_dialog_proxy.h",
+      "baseline_sha256": "bbbf337911de3c0e6e68dc1e4dbe7e7520db548a7a85c9d450a38e3758da7188",
+      "sha256": "bc39c2744e1274e14ffc3f1280b705707b14000e1e778665ed4c4f0c009de3b9",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_dialog_proxy_dispatch.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_dialog_proxy_dispatch.c",
+      "baseline_sha256": "8c04045c8de03dc30b2b8dd3c4fc95b35debf53dcc4bde00ea0014fd2a2185d9",
+      "sha256": "9bb8d72bc6c1f9200115071e5d9cc3d9c484407fcf85a9f139cf7e2ca85cbc7b",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_dialog_proxy_dispatch.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_dialog_proxy_dispatch.h",
+      "baseline_sha256": "cd99b40bd8768c7de2d553193239385cef2bc01d2652cc6c201396615f163fed",
+      "sha256": "1c800ebaf7b77d922fe5cbfd6652fcee05986a9690dcdb9a4caf83613b3adf87",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_dialog_state.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_dialog_state.c",
+      "baseline_sha256": "923db4ef2af48e1d60552bd6e8c5c8270c48568244f7a0f963c7c87de6c872f1",
+      "sha256": "923db4ef2af48e1d60552bd6e8c5c8270c48568244f7a0f963c7c87de6c872f1",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_dialog_state.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_dialog_state.h",
+      "baseline_sha256": "0b27011f125517b0234dbc6363e4961af88a5d18ce53451473fe450f23ef8388",
+      "sha256": "3c3dfd79f8688c6767e9916dcd77014150d539955e421cc75f0563f574256679",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_file_contract.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_file_contract.c",
+      "baseline_sha256": "98be4f6de881e604b71911ed4cb402122011896ad707a4ead6cd52eec552ee09",
+      "sha256": "0b70a2c5985c02d70fc6d1058de9890d2be61d1cc25d7ba66e0a612bcc2d97d8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_file_contract.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_file_contract.h",
+      "baseline_sha256": "be52265fb87ad40d2909fd0769ee0d355e2c6551b3bf91f481d17d541fc1e84a",
+      "sha256": "be52265fb87ad40d2909fd0769ee0d355e2c6551b3bf91f481d17d541fc1e84a",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_file_helpers.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_file_helpers.c",
+      "baseline_sha256": "48ffcd8b526980a858b0caef1b424c45f0b831d038d7ba2a2c5409e45291aee3",
+      "sha256": "93552e7257989f7e8f5938c642c1f016fbebe23722d7a1450f94e6c2c138df32",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_file_helpers.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_file_helpers.h",
+      "baseline_sha256": "9da7b190454acbcfcaca7110b4c883e0dc3817b80eab0ec974f20eaa61d55965",
+      "sha256": "9da7b190454acbcfcaca7110b4c883e0dc3817b80eab0ec974f20eaa61d55965",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_file_hook.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_file_hook.c",
+      "baseline_sha256": "b2faf26c74c93352634d5a0335819204d904478ebf59de928e461dd762a5c1fa",
+      "sha256": "1973b9da36978cae329640406b9a37db7609172979434e0b6f4d2c2002f37c07",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_file_hook.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_file_hook.h",
+      "baseline_sha256": "557f1f6caa7642aab222ed5cf7fdf0be2ffe04594f0881172c112fb112a19a17",
+      "sha256": "557f1f6caa7642aab222ed5cf7fdf0be2ffe04594f0881172c112fb112a19a17",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_file_live.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_file_live.c",
+      "baseline_sha256": "cf48acd6afd39fbafcf724e59f87268b650f16ee99a773f061546eb7c4f3d405",
+      "sha256": "b326ebac128dd6009f0e075eb513256a459a96556c0dcb5f27b2ee25b749477c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_file_live.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_file_live.h",
+      "baseline_sha256": "dbafb84a0b93a969fa23aa5442842916b689ecf14823e0c29e89870153f6754d",
+      "sha256": "dbafb84a0b93a969fa23aa5442842916b689ecf14823e0c29e89870153f6754d",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_hidden_files.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_hidden_files.c",
+      "baseline_sha256": "37f4db5f1be2d4256e7175d8975da8b7e0e429c4107234250991f1c334d4b75b",
+      "sha256": "ab6f25d469e34de359e165f1296208d63efdf3eaba156f0afbff9db704f6b046",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_hidden_files.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_hidden_files.h",
+      "baseline_sha256": "563ea12a7eb51d8c71da84d310ebce6c64647f5e8497cf285045e833da5a1474",
+      "sha256": "563ea12a7eb51d8c71da84d310ebce6c64647f5e8497cf285045e833da5a1474",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_menu_layout.c",
+      "destination": "src/lib-win32-style/application/menu/classic_menu_layout.c",
+      "baseline_sha256": "487e2829a4006fc85c09ceebd9a5be7676b561d34bda7895f762f5e82b40049f",
+      "sha256": "487e2829a4006fc85c09ceebd9a5be7676b561d34bda7895f762f5e82b40049f",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_menu_layout.h",
+      "destination": "src/lib-win32-style/application/menu/classic_menu_layout.h",
+      "baseline_sha256": "10c29219c26dc757534c7f5d3f99355fc65b4a0cccaaca735c6291ae72465c6d",
+      "sha256": "10c29219c26dc757534c7f5d3f99355fc65b4a0cccaaca735c6291ae72465c6d",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_print_contract.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_print_contract.c",
+      "baseline_sha256": "733e73914fb1b7c1e323ef137706d9531ad8d7f4ad5c960c3707d8442df41da6",
+      "sha256": "733e73914fb1b7c1e323ef137706d9531ad8d7f4ad5c960c3707d8442df41da6",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_print_contract.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_print_contract.h",
+      "baseline_sha256": "016a25f906bd17473934c4731524433d907da91a8aa9b78801de1a164abaa86f",
+      "sha256": "016a25f906bd17473934c4731524433d907da91a8aa9b78801de1a164abaa86f",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_shell_folder.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_shell_folder.c",
+      "baseline_sha256": "29dbd04b2212897cf1a902ff99a49c917a369fbc7bde80fb590325f2298afb98",
+      "sha256": "4df0a1b2afcf7e0dfb8e3eb2fce55df530b95c5d8654374c49e66acbd9caf2be",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_shell_folder.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_shell_folder.h",
+      "baseline_sha256": "ec17ace9c4142856d89adc279cc14fe55e45dd6a4d2e961eb607e1625056d4aa",
+      "sha256": "ec17ace9c4142856d89adc279cc14fe55e45dd6a4d2e961eb607e1625056d4aa",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_shell_item.c",
+      "destination": "src/lib-win32-style/application/dialog/classic_shell_item.c",
+      "baseline_sha256": "af12eff1e4aa6c658e3161249ae3a348f31032dda16e8dccc91434d68c029e68",
+      "sha256": "191f9a34afb07a3a3db42da0c64436fde95d6c9de539d0167899d762a1cba5d8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/classic_shell_item.h",
+      "destination": "src/lib-win32-style/application/dialog/classic_shell_item.h",
+      "baseline_sha256": "50ce970337a3f746e19802a443dc38403dd925ab1a9fb56e1634abe80cc25203",
+      "sha256": "50ce970337a3f746e19802a443dc38403dd925ab1a9fb56e1634abe80cc25203",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/clip.h",
+      "destination": "src/lib-win32-style/application/graphics/clip.h",
+      "baseline_sha256": "14cd4ce295116dab14fbadb011856fd13a482922cceda9533eeac78444407872",
+      "sha256": "14cd4ce295116dab14fbadb011856fd13a482922cceda9533eeac78444407872",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_class.h",
+      "destination": "src/lib-win32-style/application/control/control_class.h",
+      "baseline_sha256": "bef69902b4dfaedb966253d65e00b89cc76ce3a73d376023834c1248126493d3",
+      "sha256": "bef69902b4dfaedb966253d65e00b89cc76ce3a73d376023834c1248126493d3",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_custom_draw.c",
+      "destination": "src/lib-win32-style/application/control/control_custom_draw.c",
+      "baseline_sha256": "42d01d2d9b7fe02bf25d1acc3067ca12b029b77b6616eb582811e11d4bb4f46f",
+      "sha256": "42d01d2d9b7fe02bf25d1acc3067ca12b029b77b6616eb582811e11d4bb4f46f",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_custom_draw.h",
+      "destination": "src/lib-win32-style/application/control/control_custom_draw.h",
+      "baseline_sha256": "a5698e2a3cff63ae46b8d0e5004dca5c53416def2ed72a028b2d06fa95044373",
+      "sha256": "a5698e2a3cff63ae46b8d0e5004dca5c53416def2ed72a028b2d06fa95044373",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_list.h",
+      "destination": "src/lib-win32-style/application/control/control_list.h",
+      "baseline_sha256": "75e789b32e96634e003fc8db57661b8bef4dc383b6bb8aca340df2bd97acb588",
+      "sha256": "75e789b32e96634e003fc8db57661b8bef4dc383b6bb8aca340df2bd97acb588",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_native_combo.c",
+      "destination": "src/lib-win32-style/application/control/control_native_combo.c",
+      "baseline_sha256": "c8c4e5ab502582ecf83be2c42544dd86aac3a8b023f96d3c78a769b42b6f40aa",
+      "sha256": "c8c4e5ab502582ecf83be2c42544dd86aac3a8b023f96d3c78a769b42b6f40aa",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_native_combo.h",
+      "destination": "src/lib-win32-style/application/control/control_native_combo.h",
+      "baseline_sha256": "356a2532991c82293e72981271700a327a567ca49c9d323110c979cb9d7c66fa",
+      "sha256": "356a2532991c82293e72981271700a327a567ca49c9d323110c979cb9d7c66fa",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_native_witness.h",
+      "destination": "src/lib-win32-style/application/control/control_native_witness.h",
+      "baseline_sha256": "3108f08e8bc458a426ad858dd28618686b2e14139c933e2444c8924a31f349ff",
+      "sha256": "3108f08e8bc458a426ad858dd28618686b2e14139c933e2444c8924a31f349ff",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_protocol.c",
+      "destination": "src/lib-win32-style/application/control/control_protocol.c",
+      "baseline_sha256": "b294af5a9c2c845070451e9341f7bcac82f61ccb12c957bb7acb15786799a9a7",
+      "sha256": "e96af1890e7ca57bb509a396af587e5fcfc71e9cb1f4efb1b93903d564617355",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_protocol.h",
+      "destination": "src/lib-win32-style/application/control/control_protocol.h",
+      "baseline_sha256": "5cbee3c6669d9a510efce67ecb777b13428225222e4cab9a77fc7c3c9eba48b9",
+      "sha256": "5cbee3c6669d9a510efce67ecb777b13428225222e4cab9a77fc7c3c9eba48b9",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_redraw.h",
+      "destination": "src/lib-win32-style/application/control/control_redraw.h",
+      "baseline_sha256": "a1972fc9f97c30de8673fb711dc6c47de8e0b0b6282d571e2f81e492631a881e",
+      "sha256": "a1972fc9f97c30de8673fb711dc6c47de8e0b0b6282d571e2f81e492631a881e",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_scope.c",
+      "destination": "src/lib-win32-style/application/control/control_scope.c",
+      "baseline_sha256": "29a2cb5949e08c2819f6ccead52be8008fe87b642a35d5257d2bcf9f41522f5c",
+      "sha256": "5bd1e1abf878d2db293e153c82a7699aa553bf06d1e3b15712ec5b3755e1f60f",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_scope.h",
+      "destination": "src/lib-win32-style/application/control/control_scope.h",
+      "baseline_sha256": "8c1f4a930547e068246fb862585bea38d63bef3ecc5034943c96e368f65a64e8",
+      "sha256": "8c1f4a930547e068246fb862585bea38d63bef3ecc5034943c96e368f65a64e8",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_status.c",
+      "destination": "src/lib-win32-style/application/control/control_status.c",
+      "baseline_sha256": "d7a2d3556f24e9a3d6604fe4f342d6ab56f7e76731e92da344b2bae71cfcd9ba",
+      "sha256": "d7a2d3556f24e9a3d6604fe4f342d6ab56f7e76731e92da344b2bae71cfcd9ba",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_status.h",
+      "destination": "src/lib-win32-style/application/control/control_status.h",
+      "baseline_sha256": "3a98db6e28166dc380e592aaeaf3352475b53d530cd059597bf5a940b65fc70b",
+      "sha256": "3a98db6e28166dc380e592aaeaf3352475b53d530cd059597bf5a940b65fc70b",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_vcl_identity.c",
+      "destination": "src/lib-win32-style/application/control/control_vcl_identity.c",
+      "baseline_sha256": "bbfbea97c85e86e0897b8195391f753ace67ab4131a5d66613408f015f574fa2",
+      "sha256": "f53c352b185d8b7418e9bb00c20ca233e2f24d8dba55d80245ce330e156a9924",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_vcl_identity.h",
+      "destination": "src/lib-win32-style/application/control/control_vcl_identity.h",
+      "baseline_sha256": "e31c3b073269da62df7d79aeb18022a09901bf2f4fdfb60a6d8db4c49a25453c",
+      "sha256": "e31c3b073269da62df7d79aeb18022a09901bf2f4fdfb60a6d8db4c49a25453c",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_vcl_spin.c",
+      "destination": "src/lib-win32-style/application/control/control_vcl_spin.c",
+      "baseline_sha256": "6aac389af90fae19bafc4646a493135e23dca727e04394c9c9bc8fdbff6d43b1",
+      "sha256": "f14782e42d48f8d86e41f253cde78d54383ee061f8d45f79a3b70b8676435437",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/control_vcl_spin.h",
+      "destination": "src/lib-win32-style/application/control/control_vcl_spin.h",
+      "baseline_sha256": "4af839fc2c1f850d7558320335c6b3794a05b7c5abd1efefcf9e2dd062adbe3a",
+      "sha256": "4af839fc2c1f850d7558320335c6b3794a05b7c5abd1efefcf9e2dd062adbe3a",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dc_geometry.h",
+      "destination": "src/lib-win32-style/application/graphics/dc_geometry.h",
+      "baseline_sha256": "28c044707a7e5f8ad2407084cba3403866de90322699dddc170f46293c47a921",
+      "sha256": "28c044707a7e5f8ad2407084cba3403866de90322699dddc170f46293c47a921",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dialog_common_methods.h",
+      "destination": "src/lib-win32-style/application/dialog/dialog_common_methods.h",
+      "baseline_sha256": "4e2af7e6d443e3024dde6545112cf0b976a1615004820ea0fc9746b547644bf9",
+      "sha256": "4e2af7e6d443e3024dde6545112cf0b976a1615004820ea0fc9746b547644bf9",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dialog_customize.c",
+      "destination": "src/lib-win32-style/application/dialog/dialog_customize.c",
+      "baseline_sha256": "368c346179e272af9c2524190f07a1a5bea4d80086a4cc2efcebaaf934f1a9e2",
+      "sha256": "b8ba0945a26072640825d3b417f6a6fb1dc76190dc392b0fa58a25a20c00ef85",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dialog_customize.h",
+      "destination": "src/lib-win32-style/application/dialog/dialog_customize.h",
+      "baseline_sha256": "09201191ef5e477d6e647531deb0a0134993f95fe3f42ecd0a5ed67a9ef0cfd9",
+      "sha256": "09201191ef5e477d6e647531deb0a0134993f95fe3f42ecd0a5ed67a9ef0cfd9",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dialog_hook.h",
+      "destination": "src/lib-win32-style/application/dialog/dialog_hook.h",
+      "baseline_sha256": "d981f99ffbfe0deff22f167a3e281ebedb9f690ae7aca13fee63ee3bf4c8556a",
+      "sha256": "d981f99ffbfe0deff22f167a3e281ebedb9f690ae7aca13fee63ee3bf4c8556a",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dialog_ole_window.c",
+      "destination": "src/lib-win32-style/application/dialog/dialog_ole_window.c",
+      "baseline_sha256": "2312add0125a51224aababdcb0f5b0f28fb538244b4e206c1e2128987972a002",
+      "sha256": "565cb3c023652d29069d4094193281854f25c44e8c6f37ecd4a0ed60a731aaf2",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dialog_ole_window.h",
+      "destination": "src/lib-win32-style/application/dialog/dialog_ole_window.h",
+      "baseline_sha256": "f58afde069e40845686cee9ca2f7310d076a1a2a3dcbf6dfb5136d7fa0dafe23",
+      "sha256": "a1cf86304b99c12fe8e51eff9ae2d192f2709b9598a6c813bcc3e393958041a1",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dialog_primary.c",
+      "destination": "src/lib-win32-style/application/dialog/dialog_primary.c",
+      "baseline_sha256": "9faa9f6910e22df9c78319d21c7f5957c2eaeb43a3b9e15e2be937f46427c6a0",
+      "sha256": "ae0edfdd6ae57ad3163733da58d0075448495e1be74081b0023a4e5facbba031",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dialog_primary.h",
+      "destination": "src/lib-win32-style/application/dialog/dialog_primary.h",
+      "baseline_sha256": "fc824aca8aabffa346b6ecae72348f2ee094d94841c10b8a582e973112e884a6",
+      "sha256": "c1629e1fe3191897e7f98f3e1526e8863cc3adcbe5de9d98e4185aa47cebde47",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dialog_v2.c",
+      "destination": "src/lib-win32-style/application/dialog/dialog_v2.c",
+      "baseline_sha256": "a788a779ad7cf841028271d46b5fd705a511a9d490f61b75143280ebc0e49951",
+      "sha256": "2dd4eec476bf3a94f56f5ede22f0204c6c0afd8d8421ed4ff419f13dfd3595b6",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dialog_v2.h",
+      "destination": "src/lib-win32-style/application/dialog/dialog_v2.h",
+      "baseline_sha256": "a02afb9757c463aa1b9990a6266dc20783518e7b36d42b3511ea732b9ef86e28",
+      "sha256": "a92506328315cde876151efe80d2fd7dd1680a7a07246bfe482f208d8767cf18",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/dwm.h",
+      "destination": "src/lib-win32-style/application/window/dwm.h",
+      "baseline_sha256": "dc446af8cb5f5635cae67b4961282d2d5769414a857447f81d412b9647b815e5",
+      "sha256": "dc446af8cb5f5635cae67b4961282d2d5769414a857447f81d412b9647b815e5",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/file_events.c",
+      "destination": "src/lib-win32-style/application/dialog/file_events.c",
+      "baseline_sha256": "43350e1529aa3fddd317f6091fa6d5399bff2357bcea791f116428de2fee4a1c",
+      "sha256": "4a33677b4d5294ab01d938beb23a08f7c21ec8c901003a120bdf4d83dae56c6c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/file_events.h",
+      "destination": "src/lib-win32-style/application/dialog/file_events.h",
+      "baseline_sha256": "2ea5befd1047e4f63532ee49ef0613907670879adbed346d3eb25827383722dc",
+      "sha256": "2ea5befd1047e4f63532ee49ef0613907670879adbed346d3eb25827383722dc",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/frame.h",
+      "destination": "src/lib-win32-style/application/window/frame.h",
+      "baseline_sha256": "0919b68928537000bcb2134422503a3bed5e42a5e69a92a56fe12be957af34fa",
+      "sha256": "0919b68928537000bcb2134422503a3bed5e42a5e69a92a56fe12be957af34fa",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/global_window.c",
+      "destination": "src/lib-win32-style/application/lifecycle/global_window.c",
+      "baseline_sha256": "04bf9ed635c9829e50c8b9a09f448fe0bf522f0699d0b671fceb02e6dcb97fec",
+      "sha256": "e9d769a6c85bb4bcb4194761c8f10a794966c1a744e156895f3ff66e503c5eb3",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/global_window.h",
+      "destination": "src/lib-win32-style/application/lifecycle/global_window.h",
+      "baseline_sha256": "776306eaf782b6e34d5ddab11e5368ca8b6aab1d5d1cb81855b18228ba68ea8b",
+      "sha256": "776306eaf782b6e34d5ddab11e5368ca8b6aab1d5d1cb81855b18228ba68ea8b",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/icon_size.h",
+      "destination": "src/lib-win32-style/application/graphics/icon_size.h",
+      "baseline_sha256": "d771a06047567f0de8d5824df96a3029c068a9f45c9cff2718e310b1bd21d872",
+      "sha256": "d771a06047567f0de8d5824df96a3029c068a9f45c9cff2718e310b1bd21d872",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/menu_input.h",
+      "destination": "src/lib-win32-style/application/menu/menu_input.h",
+      "baseline_sha256": "977fa76d12db1edd193c97cb7187390ed8540d6924f436f47336c0b4441d5b98",
+      "sha256": "977fa76d12db1edd193c97cb7187390ed8540d6924f436f47336c0b4441d5b98",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/menu_items.c",
+      "destination": "src/lib-win32-style/application/menu/menu_items.c",
+      "baseline_sha256": "ccd5d0d3e65c8a27d52daa15abd4b6b04ab4c84a872edb4c911bd433ed49ec3e",
+      "sha256": "ccd5d0d3e65c8a27d52daa15abd4b6b04ab4c84a872edb4c911bd433ed49ec3e",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/menu_items.h",
+      "destination": "src/lib-win32-style/application/menu/menu_items.h",
+      "baseline_sha256": "546ff87e7bfb4c253538439f95f971e9b17bcaf24ce307ba7f1b254eb7e3a50c",
+      "sha256": "546ff87e7bfb4c253538439f95f971e9b17bcaf24ce307ba7f1b254eb7e3a50c",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/menu_metrics.h",
+      "destination": "src/lib-win32-style/application/menu/menu_metrics.h",
+      "baseline_sha256": "332c45dcdbe24aedf58a51a66ff6167f4d117cb9f9666084c6d1f8f98fd22a38",
+      "sha256": "28213af133468e711964dae8121c91f949edb70ef58a26eab03f8014256d544b",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/menu_owner.c",
+      "destination": "src/lib-win32-style/application/menu/menu_owner.c",
+      "baseline_sha256": "aa7247b8ce948ebc2cb01100f78b73b87febb46943ea5c64323796d5d0691cba",
+      "sha256": "15a09cc3a8e1f289363ef7bd16260570b4a66ccbe064751a31f364292d3f0247",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/menu_owner.h",
+      "destination": "src/lib-win32-style/application/menu/menu_owner.h",
+      "baseline_sha256": "704a4eac951fd0079fcb9c1243df8fb587ba569d73f543b710b7794f1a4175c2",
+      "sha256": "704a4eac951fd0079fcb9c1243df8fb587ba569d73f543b710b7794f1a4175c2",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/menu_snapshot.h",
+      "destination": "src/lib-win32-style/application/menu/menu_snapshot.h",
+      "baseline_sha256": "7e885cf9cd88d4c22a559a378545aebe59667a8de9ef00e94323023c96313f8f",
+      "sha256": "7e885cf9cd88d4c22a559a378545aebe59667a8de9ef00e94323023c96313f8f",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/message_observer.h",
+      "destination": "src/lib-win32-style/application/dialog/message_observer.h",
+      "baseline_sha256": "1d7ba377a993373764a668f9ced6ebeeccbe714f92a9f8e9a1837cb109b910c2",
+      "sha256": "1d7ba377a993373764a668f9ced6ebeeccbe714f92a9f8e9a1837cb109b910c2",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/modern_file_dialog.c",
+      "destination": "src/lib-win32-style/application/dialog/modern_file_dialog.c",
+      "baseline_sha256": "1f5652b2b7ffb8d773e4cfb79e8f9c0e17bb642750eceefb3a491c96c887885d",
+      "sha256": "efc2c906f33fe8ab39c2000c19f05bbb2443f612a092db6427fdc8debf258ed2",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/modern_file_dialog.h",
+      "destination": "src/lib-win32-style/application/dialog/modern_file_dialog.h",
+      "baseline_sha256": "fa0d1002a58c96298521e8a51ca2d20674264b35b3d9e5ffa465debf75a7d5a7",
+      "sha256": "fa0d1002a58c96298521e8a51ca2d20674264b35b3d9e5ffa465debf75a7d5a7",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/paint_frame.h",
+      "destination": "src/lib-win32-style/application/graphics/paint_frame.h",
+      "baseline_sha256": "4689ef38be900a31906e85cd1d129e0983cd7105259b54d64c2548dff3207522",
+      "sha256": "4689ef38be900a31906e85cd1d129e0983cd7105259b54d64c2548dff3207522",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/pixel_dib.h",
+      "destination": "src/lib-win32-style/application/graphics/pixel_dib.h",
+      "baseline_sha256": "77075b64bea4dfc9e5cbb53b513726b67722ee74fb380584bdb1308e90720a3f",
+      "sha256": "77075b64bea4dfc9e5cbb53b513726b67722ee74fb380584bdb1308e90720a3f",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/pixel_grid.h",
+      "destination": "src/lib-win32-style/application/graphics/pixel_grid.h",
+      "baseline_sha256": "9a3e6f478bef3f658dc00ad231faa66b7fb82731325d00add42b02205e70690e",
+      "sha256": "9a3e6f478bef3f658dc00ad231faa66b7fb82731325d00add42b02205e70690e",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/present.c",
+      "destination": "src/lib-win32-style/application/graphics/present.c",
+      "baseline_sha256": "96e0e0d8b3a58715646657a59e5d50f76a54aa635660e168ac8cc417fb2be760",
+      "sha256": "96e0e0d8b3a58715646657a59e5d50f76a54aa635660e168ac8cc417fb2be760",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/present.h",
+      "destination": "src/lib-win32-style/application/graphics/present.h",
+      "baseline_sha256": "eec652ebfa2e552d530d3dcf098f1461fed4e91a2b521bb33333ef92fe4b1397",
+      "sha256": "eec652ebfa2e552d530d3dcf098f1461fed4e91a2b521bb33333ef92fe4b1397",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/print_extended.c",
+      "destination": "src/lib-win32-style/application/dialog/print_extended.c",
+      "baseline_sha256": "43f831cbe521f4808fabe20b9a202c821659cf7d686eba7e27d5911c974176bf",
+      "sha256": "888d7a8b65048945520f8b574cf8f9379255829c2c6734303f755c3fbcecf49f",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/print_extended.h",
+      "destination": "src/lib-win32-style/application/dialog/print_extended.h",
+      "baseline_sha256": "54142775d848a6ae6dea54061523198d809342cbc1ec96a6580e9685e5fe05eb",
+      "sha256": "54142775d848a6ae6dea54061523198d809342cbc1ec96a6580e9685e5fe05eb",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/print_ranges.c",
+      "destination": "src/lib-win32-style/application/dialog/print_ranges.c",
+      "baseline_sha256": "ae7a79cd68c80b50de313d97a171fc64df2d1a73d7c96b77d225138e49c79890",
+      "sha256": "ae7a79cd68c80b50de313d97a171fc64df2d1a73d7c96b77d225138e49c79890",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/print_ranges.h",
+      "destination": "src/lib-win32-style/application/dialog/print_ranges.h",
+      "baseline_sha256": "d5f361385e6d6162542dd3693c35a5fcbd79e09fef1dc16a32bee9011dc62cfc",
+      "sha256": "d5f361385e6d6162542dd3693c35a5fcbd79e09fef1dc16a32bee9011dc62cfc",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/print_resources.c",
+      "destination": "src/lib-win32-style/application/dialog/print_resources.c",
+      "baseline_sha256": "32fc8224df8299a0de63403b3e9a6208ab3f00b9507321aa55593f7c4b292b72",
+      "sha256": "32fc8224df8299a0de63403b3e9a6208ab3f00b9507321aa55593f7c4b292b72",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/print_resources.h",
+      "destination": "src/lib-win32-style/application/dialog/print_resources.h",
+      "baseline_sha256": "c14cfc2b9dbf05a509a2ec65b7eefae318fc0cd164271805f003ac39e5edc2d6",
+      "sha256": "c14cfc2b9dbf05a509a2ec65b7eefae318fc0cd164271805f003ac39e5edc2d6",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/scroll_state.h",
+      "destination": "src/lib-win32-style/application/control/scroll_state.h",
+      "baseline_sha256": "96d8b147c7e7fdba6dd8f7f03326bb50ec3f642b69d22cd8e92e6f68bb8052e3",
+      "sha256": "96d8b147c7e7fdba6dd8f7f03326bb50ec3f642b69d22cd8e92e6f68bb8052e3",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/text_metrics.h",
+      "destination": "src/lib-win32-style/application/graphics/text_metrics.h",
+      "baseline_sha256": "d521a2c1cec034eb88d97d501eab75639383481a1095d0b4b611de1c8e3eb612",
+      "sha256": "d521a2c1cec034eb88d97d501eab75639383481a1095d0b4b611de1c8e3eb612",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/theme_state.c",
+      "destination": "src/lib-win32-style/application/lifecycle/theme_state.c",
+      "baseline_sha256": "bbebc9dfe7fb3b768ffe91e459feed92578e1566a2f072b6939ab6cbb97f662a",
+      "sha256": "bbebc9dfe7fb3b768ffe91e459feed92578e1566a2f072b6939ab6cbb97f662a",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/theme_state.h",
+      "destination": "src/lib-win32-style/application/lifecycle/theme_state.h",
+      "baseline_sha256": "fb36e0fd142f44fd75edf0b4fabe092fc962cab1467d5a082a0bd2e3122f2e3a",
+      "sha256": "fb36e0fd142f44fd75edf0b4fabe092fc962cab1467d5a082a0bd2e3122f2e3a",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/theme_track.c",
+      "destination": "src/lib-win32-style/application/lifecycle/theme_track.c",
+      "baseline_sha256": "80c0ac8aef4a70be378a72bee37cb68b5e4917cd7286dabbf2112a53eb9032bf",
+      "sha256": "80c0ac8aef4a70be378a72bee37cb68b5e4917cd7286dabbf2112a53eb9032bf",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/theme_track.h",
+      "destination": "src/lib-win32-style/application/lifecycle/theme_track.h",
+      "baseline_sha256": "738b0c4dbb2c67cb1364625b9b88ebd24bf239effee5ea142e8d816c06f3a10b",
+      "sha256": "738b0c4dbb2c67cb1364625b9b88ebd24bf239effee5ea142e8d816c06f3a10b",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/common/window_text.h",
+      "destination": "src/lib-win32-style/application/window/window_text.h",
+      "baseline_sha256": "c95e7c2ccba330fc3e395970bbd0b3892e010807d3ad8e51f8db4d8d96115e99",
+      "sha256": "c95e7c2ccba330fc3e395970bbd0b3892e010807d3ad8e51f8db4d8d96115e99",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/dispatch.c",
+      "destination": "src/lib-win32-style/access/runtime/uwp_dispatch.c",
+      "baseline_sha256": "2da0ecc975839a347733cdfc95ffec61f27e47f8c1a733ea6a3a693ab7d83e24",
+      "sha256": "7978e96ba325489b5e5ab23f096eea300b362e3ad3949928f18b3e8adc796aeb",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/dispatch.h",
+      "destination": "src/lib-win32-style/access/runtime/uwp_dispatch.h",
+      "baseline_sha256": "0fa77408b66b60b84c2da2534a61f5d0a50b3ac9db57624c3a550ccd0c383feb",
+      "sha256": "a73614149149be5e1231826d517aa4ef338b6be88a2d2e8adc42470f266c621e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/global.c",
+      "destination": "src/lib-win32-style/access/global/uwp_global.c",
+      "baseline_sha256": "1424ddce0aa69f58effaca8e23c072aef7548157ff8a0a2797b61fa1d1897c1a",
+      "sha256": "5d99460f132e339a1e1772aa7a739586b5c89ba9c280e9c6841731fe542e4f4d",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/global.h",
+      "destination": "src/lib-win32-style/access/global/uwp_global.h",
+      "baseline_sha256": "130de15ef68913623018ed02a484e824a27e8e94a4cc99aed726eee8049b62cd",
+      "sha256": "9ff539650e1d80eddcaf53908aaf00079a0726792f691c08a967a1c826723d26",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/hook.c",
+      "destination": "src/lib-win32-style/application/adapters/uwp/hook.c",
+      "baseline_sha256": "6e29604991105091e42d1e3c2835e7bb128addd0dbb928a62a69f9a23fa3aeea",
+      "sha256": "d83bc150cc7078707ed7198379c1a5f6294182047e6d82c2cc94fcc000be1cc4",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/hook.h",
+      "destination": "src/lib-win32-style/application/adapters/uwp/hook.h",
+      "baseline_sha256": "dbe754ba84458439d7e7ad8c3ec1e7b62936d298dfdf4afb0d8bebcd92e597b6",
+      "sha256": "dbe754ba84458439d7e7ad8c3ec1e7b62936d298dfdf4afb0d8bebcd92e597b6",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/host.c",
+      "destination": "src/lib-win32-style/application/adapters/host.c",
+      "baseline_sha256": "b16fbf52f122ebe735bf096ee5c45937468e60e0a659c98eea6f3a802b8a65dc",
+      "sha256": "b16fbf52f122ebe735bf096ee5c45937468e60e0a659c98eea6f3a802b8a65dc",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/host.h",
+      "destination": "src/lib-win32-style/application/adapters/host.h",
+      "baseline_sha256": "4182312a21a8f94d0201e2f7812a9cdf244650bf95b95f3d49073e3f56ea5d27",
+      "sha256": "4182312a21a8f94d0201e2f7812a9cdf244650bf95b95f3d49073e3f56ea5d27",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/input.c",
+      "destination": "src/lib-win32-style/application/adapters/input.c",
+      "baseline_sha256": "2edb44288834ff5877bd5c412e23c9e74990fe2c5ccde782c26912cbff312e71",
+      "sha256": "d818dbc848f2abb308712a18b93ec0bd7cea677a01cf043bcafaaa71bc1e5d1f",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/input.h",
+      "destination": "src/lib-win32-style/application/adapters/input.h",
+      "baseline_sha256": "0a47ae77d7e525cfbf7822660e7262d14ee382b135545f51ee4bd3bf70f6ec00",
+      "sha256": "0a47ae77d7e525cfbf7822660e7262d14ee382b135545f51ee4bd3bf70f6ec00",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/menu.h",
+      "destination": "src/lib-win32-style/application/menu/host_menu.h",
+      "baseline_sha256": "fb97890e1139d83dc3db0392edf81e4ad3b8514ea4b61a8b48df2dac9a368086",
+      "sha256": "74c2af9a19788daec099456ec9a46c33e24d2b5754e3d86e35134a42fcfba008",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/native.c",
+      "destination": "src/lib-win32-style/application/adapters/uwp/native.c",
+      "baseline_sha256": "9da547a00f81b56b3874709e8581bde8e1aa80677f78a3be2f11a39d911659da",
+      "sha256": "c8cc156f0389f0c41443bacf464136da5c5512d8513a308bc8b4267ef363acb8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/native.h",
+      "destination": "src/lib-win32-style/application/adapters/uwp/native.h",
+      "baseline_sha256": "4ffc64dbb2bec3a2c8e28bfe99187efa4980a2c1e37ac8d5aec20d997c70468d",
+      "sha256": "4ffc64dbb2bec3a2c8e28bfe99187efa4980a2c1e37ac8d5aec20d997c70468d",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/repaint.c",
+      "destination": "src/lib-win32-style/application/adapters/repaint.c",
+      "baseline_sha256": "29a0b9e8e22acea986653a5d75925392075f747bf0218932ccc9604dadbbed8e",
+      "sha256": "a6c6b119913cf949a34f5f2fa27a838c3eb70219af7c6fc0d53108663e652744",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/repaint.h",
+      "destination": "src/lib-win32-style/application/adapters/repaint.h",
+      "baseline_sha256": "f625af40355e2e7bf5c93709ed6f9f6c2642b943d6bd418050b4e4b5bfbc880d",
+      "sha256": "f625af40355e2e7bf5c93709ed6f9f6c2642b943d6bd418050b4e4b5bfbc880d",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/surface.c",
+      "destination": "src/lib-win32-style/application/adapters/surface.c",
+      "baseline_sha256": "c9837fe46423fa5e3b6fe0415b1f2e7aac975ed77dfae5f25e6428da26f9fb72",
+      "sha256": "862479d0f058cc81d7381a0fd602ff6c3e026c8f63418fa11e296da870cf4bbf",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/surface.h",
+      "destination": "src/lib-win32-style/application/adapters/surface.h",
+      "baseline_sha256": "5bee7c0010d1f9277384005c8e7cb683fa60f7c28e76c19663e4ce9911734239",
+      "sha256": "8a3eaae4b21240a11f05a7ae6754f77005306b9d2b4a3785cf853306426f234d",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/target.c",
+      "destination": "src/lib-win32-style/application/adapters/uwp/target.c",
+      "baseline_sha256": "d4515770ece3af514f042b16a79613048973a0c0198b8046d6c1f555a62f5f55",
+      "sha256": "ab04b4064c01865d45f2ab157c4b3f42368db8bad87dadeacdf7a03fa8cfce57",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/uwp/target.h",
+      "destination": "src/lib-win32-style/application/adapters/uwp/target.h",
+      "baseline_sha256": "dba5fa889fa96ae0c2b6bffe168b3e8abfe6cadd88d27d9f3278d3ea85eae123",
+      "sha256": "dba5fa889fa96ae0c2b6bffe168b3e8abfe6cadd88d27d9f3278d3ea85eae123",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-common/control_api.h",
+      "destination": "src/lib-win32-style/appearance/win3x/common/control_api.h",
+      "baseline_sha256": "3c26e7bdd7cc1fa995bc9aab43e321c70234a369577ea4e396ea1365429efd84",
+      "sha256": "3c26e7bdd7cc1fa995bc9aab43e321c70234a369577ea4e396ea1365429efd84",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-common/font.c",
+      "destination": "src/lib-win32-style/appearance/win3x/common/font.c",
+      "baseline_sha256": "8246cf5cd78b8516e342543d6609a193b8f2e98c3c4d352cd83d3a8ebf21979c",
+      "sha256": "834b3f40289a4af8a712890497907071fdc40fa0bd394809f9a14a8163062b81",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-common/font.h",
+      "destination": "src/lib-win32-style/appearance/win3x/common/font.h",
+      "baseline_sha256": "63256a509950663b489a187ca6a912510fd5e8e658d8b864d86c7e3f53e04fd3",
+      "sha256": "63256a509950663b489a187ca6a912510fd5e8e658d8b864d86c7e3f53e04fd3",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-common/layout.c",
+      "destination": "src/lib-win32-style/appearance/win3x/common/layout.c",
+      "baseline_sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede",
+      "sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-common/layout.h",
+      "destination": "src/lib-win32-style/appearance/win3x/common/layout.h",
+      "baseline_sha256": "a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3",
+      "sha256": "a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-common/palette.c",
+      "destination": "src/lib-win32-style/appearance/win3x/common/palette.c",
+      "baseline_sha256": "c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae",
+      "sha256": "c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-common/palette.h",
+      "destination": "src/lib-win32-style/appearance/win3x/common/palette.h",
+      "baseline_sha256": "f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36",
+      "sha256": "f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/attachment_guard.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/attachment_guard.c",
+      "baseline_sha256": "77951c6a64d1d4e990cf4e09f76f2c93a9d6d0f96bf2bb03c268c0f09d3b0214",
+      "sha256": "3b97824bc523247f4eac9afea52942b2ec6f19e44655f40b74d16a61977bcb84",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/attachment_state.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/attachment_state.h",
+      "baseline_sha256": "764d7929b4d856293a0483e173aaad03cb7b7b0d9e61f03f2357057cfe59f3d2",
+      "sha256": "10e8d40fb8a360da356c25649df1b6c8ca6b3332a52bb99d0a42fd792a7321d9",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/basic_message.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/basic_message.c",
+      "baseline_sha256": "2bc39526c285621a7d38b19bf9e61d56f05b64f228d3ad4912911d26b9a48b3e",
+      "sha256": "6e52b4d8f8d43afdf715d66080bb0f277a16372d10bbc8450170058c848b6098",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/basic_message.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/basic_message.h",
+      "baseline_sha256": "22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c",
+      "sha256": "22e3e7959725de7eb3972df0238d3a8fdbb1f3b61d8c5fda50390e3a956fa24c",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/basic_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/basic_paint.c",
+      "baseline_sha256": "e04652dacf363bb3ad61034d95d2abb16bdb6ee5961a855056e1f2e02cbd73c5",
+      "sha256": "5553a078b046b27b35b85f9df4ec35a4c9f5a4a90a61404d02660799f864cc98",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/basic_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/basic_paint.h",
+      "baseline_sha256": "34d6b0857ae92824d63596a060e8191d25e4b95956446f1a57c6b77946186fe6",
+      "sha256": "de72a7755446e4a0fafd82a61aa37dc85582dfb4352bd15923ebe30c14e6f8e8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/choice_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/choice_paint.c",
+      "baseline_sha256": "8859b2a5f78a219711d7feb872f2f8fad7e89a99eacb956c32993851be446900",
+      "sha256": "eafd6b36698ed863c16b2f22ebae3a9649e266081852963457437308f08797a3",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/choice_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/choice_paint.h",
+      "baseline_sha256": "6efc933f3e2293f106275bcaa13ce66067da445af567a91ef3c35c069677902c",
+      "sha256": "474e03b6735be5c24dae46ae8a64ad1e836d73847e93103bbd68210e16918585",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/choice_view.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/choice_view.c",
+      "baseline_sha256": "c369bc99d500f668a91c8f354503b707e581c4938b709c9469f022e8ed709d42",
+      "sha256": "162ad2bf4782030e8be144a6727c2491a893eb4db443d2599fca2f30ebd73fb8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/choice_view.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/choice_view.h",
+      "baseline_sha256": "02a9c00c937c411be9e66158a56bbbfdc7dac5f82e07e4591cb24761947bc92d",
+      "sha256": "0fffc32a468b0e1717c39a8b47bd22455bc652be42f4bbc22962de0b155a44bb",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/combo_glyph.h",
+      "destination": "src/lib-win32-style/appearance/win3x/resources/combo_glyph.h",
+      "baseline_sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34",
+      "sha256": "75b05a50bf02bbc8fcbd6c6f84948fcdbf82fa7f0fbbfc590a6e4eb94c3ffe34",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/combo_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/combo_paint.c",
+      "baseline_sha256": "d7b9ba1aac4a0b3f22086f0e8e323e4f8ed960fa2d04768a29510724cbe9062a",
+      "sha256": "3c7467a910335be419be7c36292e2ee37baca02b229237715a45ec01d42aadd3",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/combo_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/combo_paint.h",
+      "baseline_sha256": "9aff44009ff2d51bb54aa237d8ebf0a4a4b2f295976383147c8aae0c67cbabca",
+      "sha256": "f6a06491da9d508c03ad5e83c7e0f3da0b99150bff07bc4e1cf839dd78ccadb8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/combo_text.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/combo_text.c",
+      "baseline_sha256": "a42411b0209b1b008311716bade4d572a1df95d633df6060d0fcdd72819d0451",
+      "sha256": "f39c9b0532dedeb5378942471a4d7a77b270b8ee27188d11d205930b4ae8a9ef",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/combo_text.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/combo_text.h",
+      "baseline_sha256": "dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0",
+      "sha256": "dc8aaafadbdf403f34c37b33829067c7353a72b96c6db233fff8a0b302c118a0",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_class.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_class.h",
+      "baseline_sha256": "c9283ac35cd85c856c219c28145cce706b3406d7f99ed74c027599efbca52969",
+      "sha256": "9fefd0c67700d8e4e5e6f70709ccce0188103a173d346f5759986e638e1709f3",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_dispatch.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_dispatch.c",
+      "baseline_sha256": "90df43ca6d849e54deb9986a3b45c778c46b0577bdf10283a931c2adb17d6506",
+      "sha256": "aefcbc53a16125060963bd9979dbd99c2f7ad90e31cc86289ee99025e188e8a8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_dispatch.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_dispatch.h",
+      "baseline_sha256": "299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8",
+      "sha256": "299ead239b40d141908fbce6b776767a45bef6d6f6bad6f2e619fc0b53e830d8",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_glyphs.h",
+      "destination": "src/lib-win32-style/appearance/win3x/resources/control_glyphs.h",
+      "baseline_sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83",
+      "sha256": "75031b93af2382f8ce1f47d971f32efdfe00cb7000e0db09ef878a1b50adff83",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_guard.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_guard.c",
+      "baseline_sha256": "0ff41181605d22fecfc154204080018c782f10fdcfbd5922e56ecdfa3f73b812",
+      "sha256": "6d1647cda100e8479854db9f37b1046f50363ee922d6b4973827ed63d7a08d41",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_guard.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_guard.h",
+      "baseline_sha256": "bac734eb7a9bf97c934d7080f1e54ec394979150a8ba78d104d0e97c8bb5c1b8",
+      "sha256": "bac734eb7a9bf97c934d7080f1e54ec394979150a8ba78d104d0e97c8bb5c1b8",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_install.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_install.c",
+      "baseline_sha256": "912a3e15abaa9499656753544e0899d393eebbd8286dad8e42f654f43084950c",
+      "sha256": "1d21b770a7bd44a548080ba0b7f9de53d84289727579b2cee64f7c338aad0d95",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_install.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_install.h",
+      "baseline_sha256": "1347b0605a479f5727aa1200cc269d8b237886eae7962e2343a50b9a1800e780",
+      "sha256": "40606f9c20b7ec75c2e556fc6b00b0fa41f0443108f873d789b9e307f276cfa8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_lifetime.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_lifetime.c",
+      "baseline_sha256": "1b7640ed3968ad525b0483d1b166d3cf32db18891c0e9c33d8d43699f0b4ea3c",
+      "sha256": "d04898b8f7648686dc6650d389c50c682f3b7c8af0dadfa2e6af3d3fa6b43b05",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_lifetime.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_lifetime.h",
+      "baseline_sha256": "a75dd73f5c6e5851da4fc78e58d4f6477d610dcfbe589bf6a59655415373ced0",
+      "sha256": "a75dd73f5c6e5851da4fc78e58d4f6477d610dcfbe589bf6a59655415373ced0",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_remove.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_remove.c",
+      "baseline_sha256": "27678f0276c7b028cf292bcf53dabdba7289f1a956ccf93838c2b8e28fb78dbb",
+      "sha256": "27678f0276c7b028cf292bcf53dabdba7289f1a956ccf93838c2b8e28fb78dbb",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_remove.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_remove.h",
+      "baseline_sha256": "dbcd064a957c340b5c296e0c3a7debd67bfc8f46e5e7036f09dd54cda31e9c3f",
+      "sha256": "dbcd064a957c340b5c296e0c3a7debd67bfc8f46e5e7036f09dd54cda31e9c3f",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_scope.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_scope.c",
+      "baseline_sha256": "f534206388ab958ef31a3addbfced46565dde214b9a20c1935cf28c084ca62af",
+      "sha256": "f534206388ab958ef31a3addbfced46565dde214b9a20c1935cf28c084ca62af",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_scope.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_scope.h",
+      "baseline_sha256": "d7a2c4f7d8531924c51dd7e493f6e410959315da9598b7b090a4ca99734ffbec",
+      "sha256": "2a384b56f8d72d134fa48109bb011ba3a9533869025e4aaccdb511edfa2086ae",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_state.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_state.c",
+      "baseline_sha256": "a56c61f2f2603d89cb08b6bf7b97208bc0e2b6a79fd3e855c19e3a4a3343cea8",
+      "sha256": "8d560e28c771d3bb8d2e997c7705375e29085b933f96fac1f693dd8b50e9a836",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/control_state.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/control_state.h",
+      "baseline_sha256": "cccb65a997d5cbabebc7a62577cf79da8678b9754c5373757d64cb74ccff4e78",
+      "sha256": "85c272aa95f1d58b37b67a066ee017a3a171cf558e26a1a79d425abe7629ab03",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/cool_grip_identity.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/cool_grip_identity.c",
+      "baseline_sha256": "04a9841be43ce2e95553eb3a9cb6a9f094ef03296dec5c86b26981239b2e979c",
+      "sha256": "04a9841be43ce2e95553eb3a9cb6a9f094ef03296dec5c86b26981239b2e979c",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/cool_grip_identity.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/cool_grip_identity.h",
+      "baseline_sha256": "5aa8dce1ae9e718d2a067c7da16fca5f7d07c60a2b5fd2e93e974edfbc4e4e02",
+      "sha256": "5aa8dce1ae9e718d2a067c7da16fca5f7d07c60a2b5fd2e93e974edfbc4e4e02",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/edit_message.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/edit_message.c",
+      "baseline_sha256": "3fc0c155e31270e49ba7a0dfa61992e49cfef79539eed186d8dca16af5edf7c3",
+      "sha256": "7879b386581a0feb2601c57942c6b92e80ea13eeee67aa8c8ffbde81e6459dd7",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/edit_message.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/edit_message.h",
+      "baseline_sha256": "d7c5da65909dc16c9ed2ac58f59dbf34de20af6c10030737d5fae6b316e5ee21",
+      "sha256": "d7c5da65909dc16c9ed2ac58f59dbf34de20af6c10030737d5fae6b316e5ee21",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/fileowner_message.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/fileowner_message.c",
+      "baseline_sha256": "ce1ae8ed053c4b967b52cdfd6eb5cc3f5f9fd1405eb2db4a3b0ffabf16619911",
+      "sha256": "ce1ae8ed053c4b967b52cdfd6eb5cc3f5f9fd1405eb2db4a3b0ffabf16619911",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/fileowner_message.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/fileowner_message.h",
+      "baseline_sha256": "662ee200c53369290027cb9a6e84805235a3b0ead717edcb50ad966063dc76d5",
+      "sha256": "662ee200c53369290027cb9a6e84805235a3b0ead717edcb50ad966063dc76d5",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/header_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/header_paint.c",
+      "baseline_sha256": "9bcf190b4606c88c8ba5a9ece6a636682ea8a3a4251b6f820418355c96c0aad2",
+      "sha256": "9bcf190b4606c88c8ba5a9ece6a636682ea8a3a4251b6f820418355c96c0aad2",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/header_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/header_paint.h",
+      "baseline_sha256": "0242e8b959c1aa6900e5282708515c55f07bfe0d7bab833935feb06abbf829f3",
+      "sha256": "b1e250e7abe06b057be657a04c697f66e3e5825a73467ed123b202c64c8aac19",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/list_message.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/list_message.c",
+      "baseline_sha256": "0ac87da08ab21cf8a95f38a73d40dbee1f26dedea69aec6fd93b7ee5068a57e5",
+      "sha256": "30c4d829ec9ef3d243941a953bc115bd45d561947a29c283e9818980789c1dcb",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/list_message.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/list_message.h",
+      "baseline_sha256": "96b05ce3b3a94624aa9327119cb120b25ea7cf631ad736262a4a3754c183a7cb",
+      "sha256": "96b05ce3b3a94624aa9327119cb120b25ea7cf631ad736262a4a3754c183a7cb",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/list_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/list_paint.c",
+      "baseline_sha256": "9da3e1338e35d9dffdd8ce0facf8ae78053cff5a4ff3d0bd2453f04213aedccf",
+      "sha256": "2dfabf0f3d8aed354bf79d49087f6c9b255766e51f44b385b36944719cf99442",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/list_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/list_paint.h",
+      "baseline_sha256": "108ddfa842255a92e1d92e5e66208970b444fa124b307fc9753ee8107301758c",
+      "sha256": "d597b3af9f0c94691004dff85ee746d7f4b658ca373c1a40d9bebe9a6b94904e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/month_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/month_paint.c",
+      "baseline_sha256": "9e0735b5b64f94438c9198c781af21770b7edaccf6ff2aa58546fe9ca62b4ccc",
+      "sha256": "d82f68dc3b69fa5dfbf80305ddaff26b9feeb6441696693acebe38037d648a28",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/month_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/month_paint.h",
+      "baseline_sha256": "54019ebba59ec1f11e6d2a0d70a2a019c96304d6c440360a61e3b7e30267bf60",
+      "sha256": "54019ebba59ec1f11e6d2a0d70a2a019c96304d6c440360a61e3b7e30267bf60",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/month_text.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/month_text.c",
+      "baseline_sha256": "cac6b67de87b786a77d44bb0565a3d9b80670af1afd6b615db926a6cd2873ba4",
+      "sha256": "cac6b67de87b786a77d44bb0565a3d9b80670af1afd6b615db926a6cd2873ba4",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/month_text.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/month_text.h",
+      "baseline_sha256": "13a533325ee251c26bb2077130bb5e37be6cee9458dbb3c7d3fa53c8f6a1c84a",
+      "sha256": "13a533325ee251c26bb2077130bb5e37be6cee9458dbb3c7d3fa53c8f6a1c84a",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/native_combo_identity.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/native_combo_identity.c",
+      "baseline_sha256": "8ab3b75c571ed8de36d205e2555578df3232f12b24eb704fb3280f44ce4b75ec",
+      "sha256": "8ab3b75c571ed8de36d205e2555578df3232f12b24eb704fb3280f44ce4b75ec",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/native_combo_identity.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/native_combo_identity.h",
+      "baseline_sha256": "0e156a50a84184a49ff84d0cc84b8cd0219efe00578f9430e058d62b22b91a92",
+      "sha256": "9ddb0eab39ee09e47a9db169b2fbeb3fc74799ab78b2f7ddfec2ae2b7a6dcfea",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/native_presentation.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/native_presentation.c",
+      "baseline_sha256": "f0feede2f8e65d8fe974d8bb5d0d253b42a503f4f7803449d0583898303d8ad7",
+      "sha256": "4f5d0514a2e2e5668fdf8b4e8eb1af5e962231f2320ec7d9bd3ae45317a17e35",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/native_presentation.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/native_presentation.h",
+      "baseline_sha256": "a944a0f4edaa3748f39c3f6795394f31762bbb5ef1bf91ee0ac81dbe2ba44e30",
+      "sha256": "a944a0f4edaa3748f39c3f6795394f31762bbb5ef1bf91ee0ac81dbe2ba44e30",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/notify_message.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/notify_message.c",
+      "baseline_sha256": "9f2332f1b82a71503c22a376498d841323fe55d9656ce895c6961008cabce9ed",
+      "sha256": "ddb112273f5d588c69574b5322c4a504da17713a0569a73629a170eeca0526ff",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/notify_message.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/notify_message.h",
+      "baseline_sha256": "44ac844c460c0a26ce509497a5a8db3315e895e09ff584b44f587421317002df",
+      "sha256": "44ac844c460c0a26ce509497a5a8db3315e895e09ff584b44f587421317002df",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/other_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/other_paint.c",
+      "baseline_sha256": "d334904841aceed64def25e3159e832a6f139c9070cf64e1e697990bb00d36c7",
+      "sha256": "79c6ee15438d7e7d8e788c5ffb44941835e55d83abafaa97e0a75dcd851a762d",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/other_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/other_paint.h",
+      "baseline_sha256": "94459d8578fcebd60cc401db53ef589b1a7b663ff0ce35b5185167ca79aca278",
+      "sha256": "ab6296ce1d981144141aabae78a13f4d0a2f62e5273c3e69a01f2508b904fb3e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/progress_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/progress_paint.c",
+      "baseline_sha256": "cade3335d0f1efa3065149d3d55b9d7bfabedd3ff63201c6bf50574b8fd73523",
+      "sha256": "759c7b7b9f2c52a5850d6b081d95c8dc6ab2d626fd0c09941681d9514f18c747",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/progress_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/progress_paint.h",
+      "baseline_sha256": "f43e978a1dfebe98344cb5b3d051186e475777eb5209a73fcdb854f3a6dafa4a",
+      "sha256": "44d7e7b4e803d6ac9b083f64fef36545aa0c41b418b2ab019f1ace09129775a4",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_assets.c",
+      "destination": "src/lib-win32-style/appearance/win3x/resources/scroll_assets.c",
+      "baseline_sha256": "257fa54bcca6b8d8c0f5bdcb091f3002a35d4158c9c3b1cf7c0b87f8ee183a81",
+      "sha256": "257fa54bcca6b8d8c0f5bdcb091f3002a35d4158c9c3b1cf7c0b87f8ee183a81",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_assets.h",
+      "destination": "src/lib-win32-style/appearance/win3x/resources/scroll_assets.h",
+      "baseline_sha256": "a21066150e645b60aa05436dcfa7690fcb413057c5ab8b295cf08b52d7307eb4",
+      "sha256": "a0a4201017c4213f01558a5f11dcee187778276f704a34eeaecad6056c7c2349",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_glyphs.h",
+      "destination": "src/lib-win32-style/appearance/win3x/resources/scroll_glyphs.h",
+      "baseline_sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40",
+      "sha256": "a748e7d89d52abf6225403244971da442c5b391ab877d1f248ddf2ca96001d40",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_layout.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_layout.c",
+      "baseline_sha256": "f675d60e01b5618c61c9e59729ec6dbea6ada802436457ae1cffce8825c856ed",
+      "sha256": "f675d60e01b5618c61c9e59729ec6dbea6ada802436457ae1cffce8825c856ed",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_layout.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_layout.h",
+      "baseline_sha256": "65e112bc5fb72bd770313a2af4dbdde44ef5109f1f75acb56ffd0c20805d97a2",
+      "sha256": "65e112bc5fb72bd770313a2af4dbdde44ef5109f1f75acb56ffd0c20805d97a2",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_message.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_message.c",
+      "baseline_sha256": "a81ec1c71a98c8399028281faf85dd90e174b25d31e811db2d3337d3b897c801",
+      "sha256": "c46b2aecdbf440588fea0d6e2ffd5db12cd53821e56fcba6692c234ddf9d4a2e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_message.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_message.h",
+      "baseline_sha256": "ac96754592cbe76b8701fa04915ea18b461991a44b5bb16de44a9c5efa184b69",
+      "sha256": "ac96754592cbe76b8701fa04915ea18b461991a44b5bb16de44a9c5efa184b69",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_native.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_native.c",
+      "baseline_sha256": "5f3ddf5d2408a8c404acc9cf6874351030274398d5cd6b9ca75d4d1177ec497a",
+      "sha256": "bb41b7efe3b7160ad2997710a6ca2048934124720209e1b3ff11a2857eb83e34",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_native.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_native.h",
+      "baseline_sha256": "722808178add0650d40211ac7f43eecac03d2637a46a9e57e884d968c397345a",
+      "sha256": "722808178add0650d40211ac7f43eecac03d2637a46a9e57e884d968c397345a",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_paint.c",
+      "baseline_sha256": "7186e6052e5e536e002c956c6505756c7cc924a61c1a95eceb01373b2cb105d5",
+      "sha256": "f0929af5e3b3589b4a503c4dbdb31d7f3ef7c1619f9cae523d7b296a2a80ea51",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_paint.h",
+      "baseline_sha256": "73430fabd8399933fcde5ed2829e522c4677926efa95b5d83a7e3403a8319fc7",
+      "sha256": "7bb4ab4cb70fd83e343270fe4e5523f65e04fd5570ae2a711c440314580c4e9d",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_track.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_track.c",
+      "baseline_sha256": "72bb6ba21989e4b40be7e1897928003cde4ee23467b3133d8f799b1f30926de9",
+      "sha256": "6aa8d64594491358d966405582015906d995507af3e00f6186460c06e4d2c464",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/scroll_track.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_track.h",
+      "baseline_sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e",
+      "sha256": "36be02d2e879175c02863c495693d5c79dfa1cbca716419c6e0ec46b59c5934e",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/special_install.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/special_install.c",
+      "baseline_sha256": "ed4869d10cb6bdbec6e0c46d8d121aadc07dd77118b17e1caf07deb17c332103",
+      "sha256": "0a3787524563c755381436c48aa58502769cbcae6a172e6b4efc539209a29f04",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/special_install.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/special_install.h",
+      "baseline_sha256": "b4be7bbb66ac51e85b62bfae1c90cb926829b021bd9c726505269572df670f20",
+      "sha256": "b4be7bbb66ac51e85b62bfae1c90cb926829b021bd9c726505269572df670f20",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/special_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/special_paint.c",
+      "baseline_sha256": "27cfcdf4a57afd036ee3d2bd4f2ae1b542105a98ec7cf3810365638660a399ae",
+      "sha256": "e00a24386fb4d5250c90de57429dd1168e86eda10d339448fe40c4c5eed675a5",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/special_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/special_paint.h",
+      "baseline_sha256": "9eed7cbc5eec9fe4be5a35f3d80e2a90e8f592006404968eb47ebf1df40d9a08",
+      "sha256": "d7a18ad58253fff6ee59203d18e85ef9302d8a600f66e8c2d3ac3060ea008c8e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/spin_scope.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/spin_scope.c",
+      "baseline_sha256": "1eb516c67ff3c98708004c3220553c37a604096eaf099954fe009cdca0c082b5",
+      "sha256": "717551442acc61a8eb3222257e7daaf4a4304ef21f58472358b156743526a44d",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/spin_scope.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/spin_scope.h",
+      "baseline_sha256": "1e435d595fe40eba8d581186d18d3e0f51ac153d87a5ae79cfb9d7ea282626ce",
+      "sha256": "1e435d595fe40eba8d581186d18d3e0f51ac153d87a5ae79cfb9d7ea282626ce",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/status_font.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/status_font.c",
+      "baseline_sha256": "cce26d4e34b445df76d9623e68717419ae5366e5f016a1367f727e8b802435ce",
+      "sha256": "048b99a7a5525e7c85206d02f1ebc565eca358b957fa609c048d04af1b79daff",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/status_font.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/status_font.h",
+      "baseline_sha256": "e987f7856503f0e0164b46d5c5ba3302a3c179defc6153944102a56ea6a54293",
+      "sha256": "e987f7856503f0e0164b46d5c5ba3302a3c179defc6153944102a56ea6a54293",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/status_frame.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/status_frame.c",
+      "baseline_sha256": "bf2e1b0ce63b68a791288ec5c35011c509c7a89364f70fc8bd40b7b558f84360",
+      "sha256": "f7ad65eaf0b6ef245547336bf7bd3c24949de879fb5384c6250b4e4e8025061e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/status_frame.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/status_frame.h",
+      "baseline_sha256": "f743c97a782dbb5b9af1e48520823ba99b29ace80c89c3586b7b7554b17a44c3",
+      "sha256": "f743c97a782dbb5b9af1e48520823ba99b29ace80c89c3586b7b7554b17a44c3",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/status_text.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/status_text.c",
+      "baseline_sha256": "87595843e4c2cc28436e5375dc9f2bc4541a6b121a71e806bb4015bf1eccfd61",
+      "sha256": "58ebefeb1fb755f5bbacb2ed8932af75931fa6f244056c5a94cda03cb65a8547",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/status_text.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/status_text.h",
+      "baseline_sha256": "74fb3b53a38e931c7312f6dbfde2e350a13915e2629d9ae853f41da1a495f466",
+      "sha256": "74fb3b53a38e931c7312f6dbfde2e350a13915e2629d9ae853f41da1a495f466",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/tab_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/tab_paint.c",
+      "baseline_sha256": "851b637c211182d994f27117d4ccde0993e59719916982c2cc95e7d98395603e",
+      "sha256": "851b637c211182d994f27117d4ccde0993e59719916982c2cc95e7d98395603e",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/tab_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/tab_paint.h",
+      "baseline_sha256": "b23708ff1dbb04542b2174b2e32d4355f4b11391fed9dca7e14f061abb0ad0de",
+      "sha256": "68a48ae6139ee98b1ddec9d963652ac6b94b7df8ac727e18072d5c3fc28c1acf",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/text_policy.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/text_policy.c",
+      "baseline_sha256": "69096cf8e505c6c8b7c0d4bd25743ba5aa93fdde8d50a922294d8892bd1231af",
+      "sha256": "5a9731f15b11dfa214706413775b538bad2181107e05e5b10d765962ea341edb",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/text_policy.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/text_policy.h",
+      "baseline_sha256": "50074d3156e5516ac52cb161388629b6a9cc688199b63b2f62bc592475ad04c1",
+      "sha256": "50074d3156e5516ac52cb161388629b6a9cc688199b63b2f62bc592475ad04c1",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/theme_kind.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/theme_kind.c",
+      "baseline_sha256": "5d373e8e069764094be7f09630521fd2b625d57d0c27482e31bfaa50d8ac34d7",
+      "sha256": "5d373e8e069764094be7f09630521fd2b625d57d0c27482e31bfaa50d8ac34d7",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/theme_kind.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/theme_kind.h",
+      "baseline_sha256": "dd9182da02336ffc68fb36c6c6ded493a57b07719211df12c786dbd2359e87b0",
+      "sha256": "dd9182da02336ffc68fb36c6c6ded493a57b07719211df12c786dbd2359e87b0",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/toolbar_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/toolbar_paint.c",
+      "baseline_sha256": "47bf23e4e8a86b5d7e664e3e57da74d5f4df97503ffeef1583c1bf9610814fa1",
+      "sha256": "d0b0fce5b5cabef9baca3f661a5d6bb030d2be630763a63aa458e5b85055e85a",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/toolbar_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/toolbar_paint.h",
+      "baseline_sha256": "20a149697c1e2336fdba81cc450fe1b01665313ded58b70e1fa25c7f3bb46c62",
+      "sha256": "ae69c2dc996a8acf03accf60d0b8329fc28d59c89a156145cf8f0edfd175680e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/trackbar_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/trackbar_paint.c",
+      "baseline_sha256": "68e06057e1b4632e7660dacdc0fdeb578870a5faf263a4b7a3b806debeb5a5c4",
+      "sha256": "bd3f2667264a4736d3881121fec025a02e6e5ccaf6d88786cb1c93bd85b8b66b",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/trackbar_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/trackbar_paint.h",
+      "baseline_sha256": "999a58448d0a17ec7afc6283555a7ab10e2cc998c7cdca89b75860cbf0f662a2",
+      "sha256": "4ddd7b75103ad8e74c4a50f47614c571ae824cdaff8b329e40d68cd388671bc4",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/updown_adapter.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/updown_adapter.c",
+      "baseline_sha256": "01dd0012baeb819e1cf4f843136f579e05ea81d9325430fce2ca5b47a233fd21",
+      "sha256": "01dd0012baeb819e1cf4f843136f579e05ea81d9325430fce2ca5b47a233fd21",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/updown_adapter.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/updown_adapter.h",
+      "baseline_sha256": "2cc302bd4b319c046e70a1fda89c433c40fe8af2feb038a65ee7423d1052a232",
+      "sha256": "6541a8c6dedafc5ff2a5f02c57864bb79237734abf995a23ada99ae8026eefae",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/updown_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/updown_paint.c",
+      "baseline_sha256": "66925149de796f9f234ade7253a76f4bc5a813731a1aee9022373d75b1882d24",
+      "sha256": "66925149de796f9f234ade7253a76f4bc5a813731a1aee9022373d75b1882d24",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/updown_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/updown_paint.h",
+      "baseline_sha256": "228d753f3ea4c5c14f6f6f69af97bbfa778e962160716705ab673b31d6553567",
+      "sha256": "41761087df55e12e181b071ad800dc29837a51621716868c09b392537b8af651",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/vb_text.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/vb_text.c",
+      "baseline_sha256": "02e40a52bf3f9b6495826780e43c474a070c598c4403d5fc6a26f6cdba9a2b69",
+      "sha256": "9280c5fa41e25b3250b7e316ccae58f8391b0bc55cb6ea6df54ca483580fc378",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/vb_text.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/vb_text.h",
+      "baseline_sha256": "eae57707ab1fd917877418cc94df4a17dedde1c4968e4d2ad3965f88b6ed5c41",
+      "sha256": "eae57707ab1fd917877418cc94df4a17dedde1c4968e4d2ad3965f88b6ed5c41",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/vcl_extra_frame.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/vcl_extra_frame.c",
+      "baseline_sha256": "5ab1193a79361c3817d8d4c090bcbfbf69368871142bb49a1cbfae4206af846e",
+      "sha256": "a4b8409e9e5f75f85b54f05c348232aff1ff4223ce41e868120eec37bba59cab",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/vcl_extra_frame.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/vcl_extra_frame.h",
+      "baseline_sha256": "c83a619ef8bb4138c40a588551ec55dd792d3d7e7cbe14ab049f669f3a7f9edc",
+      "sha256": "c83a619ef8bb4138c40a588551ec55dd792d3d7e7cbe14ab049f669f3a7f9edc",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/vcl_frame_policy.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/vcl_frame_policy.c",
+      "baseline_sha256": "3178a5f867641cf689f3e5fd549ee4cd00df40cf50b94206d11c6f1490a30e43",
+      "sha256": "cc28c7eaedbd611def2f9294eb5f90632e095e263cd8b93c011a0f502d2ccdae",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/vcl_frame_policy.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/vcl_frame_policy.h",
+      "baseline_sha256": "f3abc4a76f5e02da02b0ffa9578615ba1b7746a5a4d43390c8035084c37aeb9e",
+      "sha256": "f3abc4a76f5e02da02b0ffa9578615ba1b7746a5a4d43390c8035084c37aeb9e",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/vcl_identity.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/vcl_identity.c",
+      "baseline_sha256": "eba6a8b06f9cafad8b0b465c06694541f74d0f287d88c45747af8e04112f9a3c",
+      "sha256": "d0c01aba84f4455458f4570ec5b5ca6abb859433cc43da4a28aa6d7260f815fc",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/vcl_identity.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/vcl_identity.h",
+      "baseline_sha256": "0d84b3a319f00e86220897002de33db0a7e635392a31e98ba5e94755824335e0",
+      "sha256": "0d84b3a319f00e86220897002de33db0a7e635392a31e98ba5e94755824335e0",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/vcl_native_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/control/vcl_native_paint.c",
+      "baseline_sha256": "92de4090a1b0199510d6428dbe9c03886b09a4a32570155904f0fdc880b85d6d",
+      "sha256": "711d01325a8fb26bee7fc988bdaeecbd0622ebe5623cfd0c7bcf010add79c545",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-control/vcl_native_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/control/vcl_native_paint.h",
+      "baseline_sha256": "2372cae31d72c1b5d0381905fa077efdcbaf785cb484e8fec6c876731e4aa06d",
+      "sha256": "2372cae31d72c1b5d0381905fa077efdcbaf785cb484e8fec6c876731e4aa06d",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_buttons.h",
+      "destination": "src/lib-win32-style/appearance/win3x/resources/frame_buttons.h",
+      "baseline_sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5",
+      "sha256": "e7a472d76858c3d01fb1501a34d958ccd8337c8d8ccc36893c17ef9222bac0c5",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_dispatch.c",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.c",
+      "baseline_sha256": "6b057e074a4444de0f88d9917d90c99b77d7e493877e957b4097085831a274a9",
+      "sha256": "e7bcffc0b1ae3ad1383a1df3a239eedcb51814763205ff2d8b6180be68f2275a",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_dispatch.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.h",
+      "baseline_sha256": "b94c3a6b62a3904d11eafe719d9d49489a4f9495ee947d2b14310f4de7a932f5",
+      "sha256": "15033ca7d882f19ecd458365ffd76aa8f803732034b99d4d467b13ca8622760e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_font.c",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_font.c",
+      "baseline_sha256": "46964bbb4e795df8818ff7009fe33d9295fec1f39116122cac74af3016308c87",
+      "sha256": "5414a7de13ce83ba74fcf3786a320616aa50bc81ecb6f860d287f45e535d7b72",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_font.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_font.h",
+      "baseline_sha256": "dcd05c8d415169bc70cd3c6884cf8eec8159e5cf7c0806e4fda546845b30243b",
+      "sha256": "dcd05c8d415169bc70cd3c6884cf8eec8159e5cf7c0806e4fda546845b30243b",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_input.c",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_input.c",
+      "baseline_sha256": "206a0c8f95f1b972aa4de7b203516c3caca0bc8678b26312b6edbd826bcaf45f",
+      "sha256": "340065f11debc6d45ea5abda754e340643276cc476fef96b373ef7fa570862f8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_input.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_input.h",
+      "baseline_sha256": "2725920d1159d39153d0bfac2e7e94d86aa79c8e725fdd1bcb12f0ae8fd45233",
+      "sha256": "e067c1cfe84bc28f22b9b02357000d2a1519ccc1a0c73e560ea4dfd2fcd3527c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_layout.c",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_layout.c",
+      "baseline_sha256": "cf08844671dd5c1b46e43e61abca08255821b7399a90dba11c87bc5b68bf35d3",
+      "sha256": "eee865271101727c8d55b1b8b556371335f0638522674daa020d6e479a500269",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_layout.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_layout.h",
+      "baseline_sha256": "aa4138b097b5a81190eb63fdcde855b0e3659f5d49d6bccd18074755a9147e1b",
+      "sha256": "8ce56c7cc3d9c6a98dd924a1988e60ec619c5614fbeebbd661bc531c6dad9d14",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_lifecycle.c",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c",
+      "baseline_sha256": "2372e7e3a44488936fac5fd1c66c9a6742191177963338a08c246492e5584db2",
+      "sha256": "e23e69aaee4cba83b4aa6cbeb52652dc87e3889e8fd1c5dc47780595299ad94b",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_lifecycle.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.h",
+      "baseline_sha256": "9471ceb5aab4c90b11becf74dfbe1969bb2faa3526e3eeff956cf25c7cedddb8",
+      "sha256": "4b989f179aa2c79d9331525311eaf80ba67d6877d254737fd362e9d2412c5de3",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_message.c",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_message.c",
+      "baseline_sha256": "3fb669f9e780edd100c1d0d517cefde41e512db1186766e5441a6c4f5c708445",
+      "sha256": "cf9b7eed9269a2e8ae82c096fa6bf9b88746e039ed615aa8df76718635b470fe",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_message.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_message.h",
+      "baseline_sha256": "dd42ca6758f2e5fc5664848f34081295680653792e39b74399d4e0719314d347",
+      "sha256": "07b7aa78e2c300e3d35c12308bc2d81d9e8bccd599aa3d7ee2221da560b5c11f",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_paint.c",
+      "baseline_sha256": "0ce5a283cd055ef454254f175b05134c83eec83449ceb438aa97be1226a231f2",
+      "sha256": "1a09c832c9f80b9fae46c4580b056909e664ec01aa4fde33130c5b7aa192f9dd",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_paint.h",
+      "baseline_sha256": "e9324c74dcd59cfe6c9af7cd1bffc467b4020ddbc1c1da375a57a0546c5eb5fc",
+      "sha256": "576a9892474c8fe7709d85278c2edaa56f47658583f64e53915c59d0aed077f4",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_state.c",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_state.c",
+      "baseline_sha256": "426ea9b1ed8dfc2c524f88da9221d31eb11f30515f7920dd31c4bd882573bde1",
+      "sha256": "0e3d264660ea884ef5018284b6c80842aefd0f27815968b810cad1f8b9328ff1",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_state.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_state.h",
+      "baseline_sha256": "9078c5a86c45fafb6858249c30f2ab0149e5991d9c884e044e78772a12f53576",
+      "sha256": "f2cdd076000e8303b9afa513d383f35816746dd950d886a9eaf6cd7f18b7ee6c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_view.c",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_view.c",
+      "baseline_sha256": "55cc044e31a20351a5cf53d5c110c85f7810c82d79dbc0de82de233c22cdaf21",
+      "sha256": "2609ec92fabfe1769a5d0d9a1217ad03cd7d816c5fc77473903cf891c2cdffc3",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/frame_view.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/frame_view.h",
+      "baseline_sha256": "6748a2c8636037c3dade81b965871c350be5dcc616d61368008746b78efb6ddb",
+      "sha256": "cee550d0193c4c6dfd6df0edf53935a6addef9e48beef44488e96da76cb938b6",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_bar.c",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_bar.c",
+      "baseline_sha256": "47d105dd8bdd47c99e7ff8574c6958b20444b134ad303eb540532017ef6494b6",
+      "sha256": "95f628f2c4e94c5ab658d5fada2e307ebd1484b94f1fcacee2039bce17b0700e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_bar.h",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_bar.h",
+      "baseline_sha256": "5792fc73118ef17bc7f59700d461a47e4ff6a499d4354b8042e321e8f169abfa",
+      "sha256": "88797bde0147f710502d7dcb3fa823cc0963271e3f7b6405e4d7a920ee44d601",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_bar_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_bar_paint.c",
+      "baseline_sha256": "392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94",
+      "sha256": "392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_glyphs.h",
+      "destination": "src/lib-win32-style/appearance/win3x/resources/menu_glyphs.h",
+      "baseline_sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e",
+      "sha256": "03922a10b6a7b46e1792852b93f1e1590d45546a57a63cead41fb7b0f0eefa4e",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_items.c",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_items.c",
+      "baseline_sha256": "b71c31aa23818810887e4c5630e80fcb98cb79b1cd03c930290a41cd6b49e162",
+      "sha256": "cbb1d4b89e040478d0e0df0bd2801e5b5a20a8a702c090934f1284b14f170df4",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_items.h",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_items.h",
+      "baseline_sha256": "8eb73d3ca798cc0561f25c1603c4d94807d1ae154cf17d7bbc07e89148d726da",
+      "sha256": "dd7d6ad975f9b77e17ebab61631fc47b3dce08013c5413990708dc44a1d74258",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_iteration.c",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_iteration.c",
+      "baseline_sha256": "3f68b0c46f13505d0e141955d2734c40b486e7c476e15ce9213be9bdb119865e",
+      "sha256": "3f68b0c46f13505d0e141955d2734c40b486e7c476e15ce9213be9bdb119865e",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_iteration.h",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_iteration.h",
+      "baseline_sha256": "76f030d3ab0efb853d871357a0e4e87b60dc5c3f991f7a93f3b45b5cb14fad5b",
+      "sha256": "38c4c0e901598d609edf75782c731a9957c9d056c129e323a3b58d301b86de22",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_message.c",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_message.c",
+      "baseline_sha256": "100325c5f1a6030c9a823d6d9edb4a1e53bc5b1435b85208ac5d3c8555727826",
+      "sha256": "100325c5f1a6030c9a823d6d9edb4a1e53bc5b1435b85208ac5d3c8555727826",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_message.h",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_message.h",
+      "baseline_sha256": "deaedbf7c25bbebf64e892ad7f647cb37a6e19944eef1c73f5dece6673d95b79",
+      "sha256": "3affa587f142c1fdbf4ffcc94664f098220d7df274c4653bf0e08b5aa66b87df",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_paint.c",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_paint.c",
+      "baseline_sha256": "00df595f7ab3f4471bd5d851930aac1e03d48430c45a8ed8ecb372dbdc108e84",
+      "sha256": "4ea377a908634e745e8a2f1b4c3c4bf2a8c18b4749c33b5e27b6bd95f09ab5b8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_paint.h",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_paint.h",
+      "baseline_sha256": "590f81afb53614015b31baf3fd06ac3643175ef346c2deee94ea8442a3591e02",
+      "sha256": "0fd85ed32bf9f387cff389e6329b49a0e09e55a07ff0e8e43b736a582f9ab59d",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_scope.c",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_scope.c",
+      "baseline_sha256": "d10f1420bc829c4ec769cfcc5b627908450f3a76c9e79d615858a8b6a66a58b9",
+      "sha256": "bf6e7e520716d5f24a91ffe15255b08bfc4765b4e887d0795490160220db2fe4",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/menu_scope.h",
+      "destination": "src/lib-win32-style/appearance/win3x/menu/menu_scope.h",
+      "baseline_sha256": "e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699",
+      "sha256": "e7f130982359c73f3aa790cdbe8915c2acf5aa2a4889dbd5dfda7855a652a699",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window/win16_style.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/win16_style.h",
+      "baseline_sha256": "5e927143c2ebae5ff80e4b36cb125c5fdd1fbaf3a02d3d76a0a1c9c05765ecd0",
+      "sha256": "6049f0ce949af60da299436283a7be37f2c9ac53e228199e0b7fb5537c43dba1",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window-uwp/frame.c",
+      "destination": "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
+      "baseline_sha256": "611847b338b1fddda29fe8997a11c2c3af6436062e2f70963e6394cbdd4eaae6",
+      "sha256": "7763ff966381ef30b93ea497ff9da01b449f996a5fb73e5e372275cddd7eec63",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window-uwp/frame.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/modern_frame.h",
+      "baseline_sha256": "00da809635b3781756d1760ce368b241259267eeca36e77d99cff117c0c5fbe4",
+      "sha256": "00da809635b3781756d1760ce368b241259267eeca36e77d99cff117c0c5fbe4",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window-uwp/frame_layout.c",
+      "destination": "src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c",
+      "baseline_sha256": "a345511d535bda17c081e1fce4432e2b4d775a532b08b3648fae9533fded3960",
+      "sha256": "fa5140f31fd839432e55ea7a511cad04aba213f9ac7094d0c3b6871c4be2d6b9",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win16-window-uwp/frame_layout.h",
+      "destination": "src/lib-win32-style/appearance/win3x/window/modern_frame_layout.h",
+      "baseline_sha256": "50cab3768287cf12f5a60008ce382293a983f26070546ea5033303385f9f41e8",
+      "sha256": "15c3b0ca9836c852b4caa4a9c8d3289d46111a718d865a27c1eee5efe94badf9",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win2k-window/caption.c",
+      "destination": "src/lib-win32-style/appearance/win2000/window/caption.c",
+      "baseline_sha256": "ab1ac337b04b6524b1872df279ec8715fd1decfa44247060f43e7f2019872ef9",
+      "sha256": "ab1ac337b04b6524b1872df279ec8715fd1decfa44247060f43e7f2019872ef9",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win2k-window/caption.h",
+      "destination": "src/lib-win32-style/appearance/win2000/window/caption.h",
+      "baseline_sha256": "752e5d019f9d12ae479a565533dda32101e0ed4ce3c7bb5f7e44067cfea30075",
+      "sha256": "752e5d019f9d12ae479a565533dda32101e0ed4ce3c7bb5f7e44067cfea30075",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win2k-window/frame.c",
+      "destination": "src/lib-win32-style/appearance/win2000/window/frame.c",
+      "baseline_sha256": "7908f00b9a2edb6dfe8f393d653034afc845d93cd30ee520542d55b2c7fef854",
+      "sha256": "a8e3b5b37be1e0a0010ec23790fa6c3afa586eda2f812a1239bce295c3f364c1",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win2k-window/frame.h",
+      "destination": "src/lib-win32-style/appearance/win2000/window/frame.h",
+      "baseline_sha256": "c8b20e9abd404a041725cabde922ff20698bb11531f18d030872904701681181",
+      "sha256": "c8b20e9abd404a041725cabde922ff20698bb11531f18d030872904701681181",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win2k-window/system_menu.c",
+      "destination": "src/lib-win32-style/appearance/win2000/window/system_menu.c",
+      "baseline_sha256": "0640ec43eb39db70eb17741f4e16c794c7178e2e1e92195b44da7f74fdee5ba3",
+      "sha256": "2f8852d5c20f220fa3d9f20633ccd457a6b25136f845a33ab7eecbbd806e62b8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-style/win2k-window/system_menu.h",
+      "destination": "src/lib-win32-style/appearance/win2000/window/system_menu.h",
+      "baseline_sha256": "8608f209175f54efc7921b19a689eb435e8edd5a3825a7170496cee1c0207e8c",
+      "sha256": "8608f209175f54efc7921b19a689eb435e8edd5a3825a7170496cee1c0207e8c",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-win32/style/companion.c",
+      "destination": "src/lib-win32-style/access/runtime/companion.c",
+      "baseline_sha256": "306f311d3600c31eb7d7a268a8a1731ebbc70b0cbb91f876c9f54865355db4b9",
+      "sha256": "306f311d3600c31eb7d7a268a8a1731ebbc70b0cbb91f876c9f54865355db4b9",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-win32/style/companion.h",
+      "destination": "src/lib-win32-style/access/runtime/companion.h",
+      "baseline_sha256": "eb13710b5036acc0735009827a225db81cee5c0ac6664a29761d91d999812cdd",
+      "sha256": "eb13710b5036acc0735009827a225db81cee5c0ac6664a29761d91d999812cdd",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-win32/style/creation_pending.h",
+      "destination": "src/lib-win32-style/application/lifecycle/creation_pending.h",
+      "baseline_sha256": "4ac9b13780ca804531c02028be8b2e30420947007e6e8c3ca9b18ca94758d5a1",
+      "sha256": "4ac9b13780ca804531c02028be8b2e30420947007e6e8c3ca9b18ca94758d5a1",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-win32/style/startup.h",
+      "destination": "src/lib-win32-style/access/startup/startup.h",
+      "baseline_sha256": "bbad18591f8a6a6915bb1bc2145fe5d7fb4b9bd2fa29f49c2f1c7898a667684d",
+      "sha256": "bbad18591f8a6a6915bb1bc2145fe5d7fb4b9bd2fa29f49c2f1c7898a667684d",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-win32/style/subclass32.def",
+      "destination": "src/lib-win32-style/application/adapters/win32/subclass32.def",
+      "baseline_sha256": "1bb586134e8c3bdbfde4122b502d373a12112d33435aa3956952f067e2f82551",
+      "sha256": "1bb586134e8c3bdbfde4122b502d373a12112d33435aa3956952f067e2f82551",
+      "byte_exact": true,
+      "non_include_equal": false
+    },
+    {
+      "source": "src/lib-win32/style/subclass64.def",
+      "destination": "src/lib-win32-style/application/adapters/win32/subclass64.def",
+      "baseline_sha256": "7801e6b16a6795f252cb92a997594e1c32a72f6dfe178b5ff03eb08509bbec09",
+      "sha256": "7801e6b16a6795f252cb92a997594e1c32a72f6dfe178b5ff03eb08509bbec09",
+      "byte_exact": true,
+      "non_include_equal": false
+    },
+    {
+      "source": "src/lib-win32/style/window_dispatch.c",
+      "destination": "src/lib-win32-style/access/runtime/window_dispatch.c",
+      "baseline_sha256": "d339c1c9fb7d02d3050a1d02044d4ec1a67d49365a5d732d46f07bbb029fa842",
+      "sha256": "d339c1c9fb7d02d3050a1d02044d4ec1a67d49365a5d732d46f07bbb029fa842",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-win32/style/window_dispatch.h",
+      "destination": "src/lib-win32-style/access/runtime/window_dispatch.h",
+      "baseline_sha256": "199f49510e6be3913f4245ae6236212ad4a644a443bcfaaff5c4fbff4866ce02",
+      "sha256": "199f49510e6be3913f4245ae6236212ad4a644a443bcfaaff5c4fbff4866ce02",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-win32/style/window_hook.h",
+      "destination": "src/lib-win32-style/access/runtime/window_hook.h",
+      "baseline_sha256": "7519ccad28a017122cb82bc29c84db582ccead5a04d96c5296c45e3ac75089e8",
+      "sha256": "7519ccad28a017122cb82bc29c84db582ccead5a04d96c5296c45e3ac75089e8",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "src/lib-win32/style/window_identity.h",
+      "destination": "src/lib-win32-style/application/window/window_identity.h",
+      "baseline_sha256": "cbab1c414cce1971fcbf709f920bf4aa63d9ffc99ebb12cb83f9223b0d908fd6",
+      "sha256": "cbab1c414cce1971fcbf709f920bf4aa63d9ffc99ebb12cb83f9223b0d908fd6",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/bitmap.c",
+      "destination": "tests/lib-win32-style/application/graphics/bitmap.c",
+      "baseline_sha256": "7cfca3c6a135e0f333158c08cb9c4d93e7649ec3a0c4e042360780998ad70f2b",
+      "sha256": "060e256adf41e7ee7b80b666df17bb1e874962d314206d26315c61dce0836c0d",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/bitmap_font.c",
+      "destination": "tests/lib-win32-style/application/graphics/bitmap_font.c",
+      "baseline_sha256": "85c555788b9bef8ce72e31d8aaa5cc0bebb06df25ebb48f6f4fe977745d8250d",
+      "sha256": "fd5ac8faf3242b1b14600611bf32bd9ca9e6300fbe3544cb62ed9fd423d68cc0",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/classic_bridge.c",
+      "destination": "tests/lib-win32-style/application/dialog/classic_bridge.c",
+      "baseline_sha256": "b24fba5d7820bba3c0b1089a9f293ad2761c8f64d756f531e30f2d49a29b96ba",
+      "sha256": "6d78b34b357b6a8797f04a398b6d2647710275eb082ca644522ccfd4ae94613c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/classic_dialog_chrome.c",
+      "destination": "tests/lib-win32-style/application/dialog/classic_dialog_chrome.c",
+      "baseline_sha256": "9c21fa1441b34774d465b7f503838a83d0c5482af342a9426ca6d97bebdfb23f",
+      "sha256": "0e6bd6bd2262a705c23e3c8e6ce0cb5822bd0ba729667c840537f6b165364b78",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/classic_dialog_link.c",
+      "destination": "tests/lib-win32-style/application/dialog/classic_dialog_link.c",
+      "baseline_sha256": "00cfeb1d1b3900c8f43930241d19b312fab7536c8825c1abea85bd8253e8f9d6",
+      "sha256": "59af2afc94e5316aa150cfeeacc16bf6d4a3274bd1c6659f46f87df26a6a4389",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/classic_dialog_proxy.c",
+      "destination": "tests/lib-win32-style/application/dialog/classic_dialog_proxy.c",
+      "baseline_sha256": "b60a6b0177a56ec306aa65fba3b23911b06aad19d98eb5d1892fcd0c9283ecfd",
+      "sha256": "810780dc98d5444d4019bb2274c2d2e57ec9dc6a020b078380c95aa0b12b295d",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/classic_file.c",
+      "destination": "tests/lib-win32-style/application/dialog/classic_file.c",
+      "baseline_sha256": "b90eb673fbe42af0605361cfcbddde62919529c923bb9050f4f6399a6414684d",
+      "sha256": "37a1a29d3d80ec3a09a99c3d6189c7e175e9d5fac9bca0e9f3b3b49f612e2f96",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/classic_helpers.c",
+      "destination": "tests/lib-win32-style/application/dialog/classic_helpers.c",
+      "baseline_sha256": "a2688c65a1fc7911758936cd147ef91a751ff18376b9db82c4452319cde1041b",
+      "sha256": "d2b1b7a51dc324f8cd91aecda0d6e875216911547aa1f00d5af2fcbc6777b9b0",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/classic_print_contract.c",
+      "destination": "tests/lib-win32-style/application/dialog/classic_print_contract.c",
+      "baseline_sha256": "dc5d21dad8b50cc6b43f168ffbfb86633768e654275034db67ccb4552283825c",
+      "sha256": "a8539ddffa1b45c54ddf1640d9646f21c6eb2ba0ea9ddcc28df26fba4ec5eca6",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/clip.c",
+      "destination": "tests/lib-win32-style/application/graphics/clip.c",
+      "baseline_sha256": "0d885277963e957885937f030d53427e3f24ce353d555bc6120ce9234781fa64",
+      "sha256": "5e51c34c9665900244b57ea8e67c41aad89ac00bb37c0000f2a99c4f603f4ecc",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/control_custom_draw.c",
+      "destination": "tests/lib-win32-style/application/control/control_custom_draw.c",
+      "baseline_sha256": "a5a6d8450a47e6f4999fb9be93277925587efc8bba988531a7b1a7f17973103a",
+      "sha256": "cc37e04eb343643e63a9f802c316bc5f54c08db299ba2e66efe4959d7882ee41",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/control_list.c",
+      "destination": "tests/lib-win32-style/application/control/control_list.c",
+      "baseline_sha256": "0e9a31d9e21e2398710553eb193055a6509b1ba816232fff265be1c7914d120e",
+      "sha256": "12db2729eae8fa430879829962a5ac2a5fee779926edc61ee2180f69fa15b3d8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/control_native_combo.c",
+      "destination": "tests/lib-win32-style/application/control/control_native_combo.c",
+      "baseline_sha256": "2fce36e6156f444f12b8e1069ed87731a6f3ba9fdcebc1ecbe742ed93ca5e86f",
+      "sha256": "d5f6a00d900d54d799ff8ba1f1304ed5bb54f93caac8b663b10dd9e2c86744b1",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/control_native_witness.c",
+      "destination": "tests/lib-win32-style/application/control/control_native_witness.c",
+      "baseline_sha256": "4ae23a543034515c38556bb03b5bba7d1eb92a579f652aaeb1d0fbb7b29a779f",
+      "sha256": "0c00bc37b9adfbebec5b16216d261af883e5b24c6e2bcd80b6a896707dc95395",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/control_protocol.c",
+      "destination": "tests/lib-win32-style/application/control/control_protocol.c",
+      "baseline_sha256": "a3d55017195e49c150d9ee6637fc08823b13e6a298beebc493b21e68b15a28ce",
+      "sha256": "204a0bb604d1d69017ecfcb1594766583c65340a32c82a0d74f260cfa294acad",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/control_redraw.c",
+      "destination": "tests/lib-win32-style/application/control/control_redraw.c",
+      "baseline_sha256": "e70b647b1c043cf5b04f6bcba343945617ad9d6ccd9f67e1aad6a8a83b8d8004",
+      "sha256": "6ef5c5302faa692c6b0ff2563c8bec567fa0c5220a2fcfe30fa48d1f7d7e75f3",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/control_runtime.c",
+      "destination": "tests/lib-win32-style/application/control/control_runtime.c",
+      "baseline_sha256": "c820e14dcb605a43dd76ce7c0b3b7f858882cfc6a5d18db24882c8cca68c66b4",
+      "sha256": "a4c4da47d1d87b0609ce72ccf8434613e2c8351e193b350455ad1585cbbb5770",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/control_scope.c",
+      "destination": "tests/lib-win32-style/application/control/control_scope.c",
+      "baseline_sha256": "57ef6d599ff8bb9c8416f1e256f511e6fa7983b6fa96792703aceecf3a11ab13",
+      "sha256": "c880bf2ef898ff3ebe1956b56d886996fd34b214ae7b9db39f17ae258adbce6f",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/control_status.c",
+      "destination": "tests/lib-win32-style/application/control/control_status.c",
+      "baseline_sha256": "afdc09feb5b2927ac39493074f82084cf766cf5fdbe9c72ab9326205ecbb8ef2",
+      "sha256": "cdfbddd341adf372d0b4a13ca7c5fd7defa9cab85e9b9961874f671c0463844f",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/control_vcl_identity.c",
+      "destination": "tests/lib-win32-style/application/control/control_vcl_identity.c",
+      "baseline_sha256": "6c89a33a042c044be87f4a04fbf88d043abd7bea2bca7c2f2c8e39fc8714dc03",
+      "sha256": "dca8028c0388b5e09e07d469e428a63ef308ea50643cd4bace2e055a62463eb9",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/dc_geometry.c",
+      "destination": "tests/lib-win32-style/application/graphics/dc_geometry.c",
+      "baseline_sha256": "5947464ea7deae70486a8a1c96257a7f1fa8c564cdab5e01bf25111b6699a88c",
+      "sha256": "8f8e9b692350ade982255f3362950cc696e54acc76ccc0aa5fef33e10af6e069",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/dialog_adapter.c",
+      "destination": "tests/lib-win32-style/application/dialog/dialog_adapter.c",
+      "baseline_sha256": "92088a1fc66a59b706f4e113d073408b93b9853b9a0ae4378b31a5649b2ecabc",
+      "sha256": "3dfe5c71f62212383f3feb5fa5e232e5c136fda0ce6ddd6ddfb620cff20973c5",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/dialog_hook.c",
+      "destination": "tests/lib-win32-style/application/dialog/dialog_hook.c",
+      "baseline_sha256": "3e629d525b69d28106c2106fa5ed73ef9ac7e0aee4d725222965586ba4c71c15",
+      "sha256": "d18e053bf45de3ca6098e5099d8e32daa340629d6939244006c98defa487b95c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/file_events.c",
+      "destination": "tests/lib-win32-style/application/dialog/file_events.c",
+      "baseline_sha256": "1fc9f3d37f10875a757dc375b0d8f0199d090111d29709311fe442cff297480b",
+      "sha256": "b15a2167e254214658cf23c5374b838986745dc029046dc15e9f07d578d56870",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/frame_restore.c",
+      "destination": "tests/lib-win32-style/application/window/frame_restore.c",
+      "baseline_sha256": "97ee313201321cd370fe0cbe1a2b166f4392f3e3ddb85597c6ee36aef49f6e2d",
+      "sha256": "1aae317b1738635cbebf42ef3b7adb813f569b9d7c16d2a3bfac563c467d738c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/frame_update_dc.c",
+      "destination": "tests/lib-win32-style/application/graphics/frame_update_dc.c",
+      "baseline_sha256": "99535e108a7e48e9f4e969f0a2fbe5282fa8ded775ea209eb63c95b1c9d549e7",
+      "sha256": "a3fc5979a8d85a40cedf9c7cafb8bdd7c487e7cb1fee21e2ca73efe4e4d199ce",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/frame_xaml.c",
+      "destination": "tests/lib-win32-style/application/window/frame_xaml.c",
+      "baseline_sha256": "a670627d4c15dcba563e1b6063c7eefb05ca566e63cc42796bf771b0cac117ef",
+      "sha256": "142c1894432012a7b2b3c5115dc80de64400d859532325de4a3c032eaac2e65b",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/global_window.c",
+      "destination": "tests/lib-win32-style/application/lifecycle/global_window.c",
+      "baseline_sha256": "93b4caee0f7621938382ab62f5096769c21e21a0df9ea53f90899ee245c39b28",
+      "sha256": "2618676fe54fe196c4cc14437b0bcde85dd7a5631495f9f1b3b1697411f7f10f",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/icon_size.c",
+      "destination": "tests/lib-win32-style/application/graphics/icon_size.c",
+      "baseline_sha256": "ec7f44d78bd2c82425b864d62eddf28ba7709c458700de05ddf77e235ba2e7db",
+      "sha256": "9cf64e650a67285c36e01084af94962f8551cb2ee8324164ac2fbdeff4d168dc",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/menu_input.c",
+      "destination": "tests/lib-win32-style/application/menu/menu_input.c",
+      "baseline_sha256": "da9005a35afebeaba3a84ab0b2d84c86d3dd79f7d0db641b566dec9002929241",
+      "sha256": "10c56e98f6f0e20859d5f2f2f485d4be6ffde81ae9d13cc56479f36257a6608c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/menu_items.c",
+      "destination": "tests/lib-win32-style/application/menu/menu_items.c",
+      "baseline_sha256": "11071307a7c730d1de1c55b5058f642123ba11d1180ef54c2a47a086ebbc2046",
+      "sha256": "c954896f1b74737bb38a0d7993fcc9b473b87da56131510bf5aad93cd072ebfb",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/menu_metrics.c",
+      "destination": "tests/lib-win32-style/application/menu/menu_metrics.c",
+      "baseline_sha256": "3ecf2336ded5a10eb0dfc922b9898af81212e45d6a54c4c4281b3a8c663225b6",
+      "sha256": "184bcb77763f633f21a45ba00f7235ffe6e0b3b3e54fad654c9d4601ad2cf854",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/menu_owner.c",
+      "destination": "tests/lib-win32-style/application/menu/menu_owner.c",
+      "baseline_sha256": "eb89be7786f180df6b31a9b4ba66e512f7f44b5acbbbad41ee6cf01b76ba4d9d",
+      "sha256": "c3d554ef79406a162a88352aea6b0ff898a82ee32873ec41883e47fa2e8b4bd5",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/menu_snapshot.c",
+      "destination": "tests/lib-win32-style/application/menu/menu_snapshot.c",
+      "baseline_sha256": "c41eb18fc6cded9ffc879e4f82ea6a7aa7249207c08953c50ff2f8ccf833604c",
+      "sha256": "68b4d1f60043c0e75537c000a5e390dec7e4e7c68b78985a63703cf07ff6011c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/message_observer.c",
+      "destination": "tests/lib-win32-style/application/dialog/message_observer.c",
+      "baseline_sha256": "124ed4b8b6264e6a577ade276eab7ebb027f78c474cfee430ba5e64c885a644a",
+      "sha256": "8c5e184ed9ffb38e9bc5d0e9ec01fe5faebdbcb34a92b06863137d12a0227323",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/modern_file_depth.c",
+      "destination": "tests/lib-win32-style/application/dialog/modern_file_depth.c",
+      "baseline_sha256": "e20505662cd0dbe8295b4559acbb20ea1febf0bcd641f8551c9cbf4de9623255",
+      "sha256": "385d974bceaeb81784c95238a3cd247307b822dfc6ec1e1e63638afafd06ceec",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/modern_file_dialog.c",
+      "destination": "tests/lib-win32-style/application/dialog/modern_file_dialog.c",
+      "baseline_sha256": "7fe417737bf20bf8ed8ddffaac457d6eac6dd237e9008ee775b32cbb19ad8490",
+      "sha256": "ec417d48d054cadb24c35c5b7f5ce73e466c870595c45514c537d8ac099ebe2c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/paint_frame.c",
+      "destination": "tests/lib-win32-style/application/graphics/paint_frame.c",
+      "baseline_sha256": "5547b0c55cfa543f965410ec719d5e9a2b35a3f4b903800855bf2e2962e1698f",
+      "sha256": "7069821ce07c5c309dfa17b951af11097d7bae358b554334a5611a49d9cd2ade",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/pixel_dib.c",
+      "destination": "tests/lib-win32-style/application/graphics/pixel_dib.c",
+      "baseline_sha256": "14f27ae5a0bfee69db5890bc3f34db6df94b5f51222156f306a568849e728cf3",
+      "sha256": "de8744d496b8ab38148b329072a5371a3676a0d6d1529f8c18971c6c9ee6ec31",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/pixel_grid.c",
+      "destination": "tests/lib-win32-style/application/graphics/pixel_grid.c",
+      "baseline_sha256": "6ecd28e9bacb3386a0b59bcd50545cb8c97fc9e77ea68edd763de0830c17e88a",
+      "sha256": "48aca54d64af84f73b5d2616735bb1f7983ff5aca3953f1cbb4b8e7898866a9c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/present.c",
+      "destination": "tests/lib-win32-style/application/graphics/present.c",
+      "baseline_sha256": "328867e92c0c3d7cb2ffa9f5e984533e455c1ed3a1128aabdd1106397cb747bf",
+      "sha256": "963ba181f8bff41fdb452449e21166cd147f3771c95feb1cbeac14c195195234",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/present_fault.c",
+      "destination": "tests/lib-win32-style/application/graphics/present_fault.c",
+      "baseline_sha256": "b08497d95007928efe51561fd7b58a85fbfdff55878db276e77399003f84f860",
+      "sha256": "659f45f654cc5bb5994cf698f566a1215e9f01adf6b3464366c4f1edb8d01c0e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/present_print.c",
+      "destination": "tests/lib-win32-style/application/graphics/present_print.c",
+      "baseline_sha256": "af996c241c794c516ba78d87a70f73e5a0484959b24eddd29e57484b46ed15d3",
+      "sha256": "94c35e7c99ec71f795d85904f34c187a768cbc6899c2098b0acbaf24d0e07708",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/print_extended.c",
+      "destination": "tests/lib-win32-style/application/dialog/print_extended.c",
+      "baseline_sha256": "58ade62910cd8f9069539e11e1578a39b19aa60bf7b71e64473a1213e5b9de31",
+      "sha256": "6ea91ad158240977cf2a3ea0c948d8def9e2482360f68ebaeeae558dbd02eec0",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/print_ranges.c",
+      "destination": "tests/lib-win32-style/application/dialog/print_ranges.c",
+      "baseline_sha256": "65d4c32ded21ab619aa4d5d792776630b6b13534e18d1bc0d808c8255aab1edf",
+      "sha256": "c00aeb3696aab20d83f8684a2ee2215ed688aeabe415219cf169b7212c1f9e72",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/print_resources.c",
+      "destination": "tests/lib-win32-style/application/dialog/print_resources.c",
+      "baseline_sha256": "6087029eb164beeebb009c923e28566d201c12e41d8597777593797e5140b188",
+      "sha256": "d81e7b6c91c273f2158b4b3cc572e72479544a7855d8bf657cea232c0282c289",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/scroll_state.c",
+      "destination": "tests/lib-win32-style/application/control/scroll_state.c",
+      "baseline_sha256": "f8436e36f432cf6c06f687425c7cf20d19f56b6810c253ef06badf9e7250d53b",
+      "sha256": "3e19cfdbe24ea891d1f758c9f73ad7091a67ff7de4543566f14ac24d6152b1e8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/TEST_MAP.md",
+      "destination": "tests/lib-win32-style/application/TEST_MAP.md",
+      "baseline_sha256": "6a2a48017e4eb7ab471df6aaf0c2d1efea9564894442198cebd5c78d78fabb2f",
+      "sha256": "1d487fcd5ddaf5aa733182ffff562be13ec97dc67923652634cb5ad0bd8b2ff4",
+      "byte_exact": false,
+      "non_include_equal": false
+    },
+    {
+      "source": "tests/lib-style/common/text_metrics.c",
+      "destination": "tests/lib-win32-style/application/graphics/text_metrics.c",
+      "baseline_sha256": "0d09c548baa7e19a5ac7f84d0efe5095ab82ae82299bb25a0e5057d6ce84ee31",
+      "sha256": "77505263f0e73923f8830109535fca5394151228134ea8195b2f5b1f453309a2",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/theme_exception.c",
+      "destination": "tests/lib-win32-style/application/lifecycle/theme_exception.c",
+      "baseline_sha256": "bbd6076e50f483a44c90ce0cbe3bfcf6113588acade6c885ddd6aa06916c1de9",
+      "sha256": "f98d80aee5c39a02b108d3e808c5494fa57e01a5be1bc6afebcafc9d4385634c",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/theme_shared.c",
+      "destination": "tests/lib-win32-style/application/lifecycle/theme_shared.c",
+      "baseline_sha256": "96539d4d8a64ce30b799d6167ac5a4bed2ab9494c11adead24d5ae4ec58776e5",
+      "sha256": "f16670b037f5adf5a456d863120581d0c3d615bd207d785caae2ad43b4c81888",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/theme_state.c",
+      "destination": "tests/lib-win32-style/application/lifecycle/theme_state.c",
+      "baseline_sha256": "37a6017d311b2e155a0ea2137effb576461516ae56f40bf9f98f770a4285abad",
+      "sha256": "a170a8694c1bb7165fa714b8d5a1f41488f4a20974090be7d4662b1a522ff4ae",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/theme_track.c",
+      "destination": "tests/lib-win32-style/application/lifecycle/theme_track.c",
+      "baseline_sha256": "f45cbe649121a4a4ec87528d0294afbd4904609e539665bd5d963d336fe77f0a",
+      "sha256": "579b77d6deb05fde28a01887184668d4c512fa42b5ffbac993d23c4557907399",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/win16_dwm_restore.c",
+      "destination": "tests/lib-win32-style/application/window/win16_dwm_restore.c",
+      "baseline_sha256": "754aebb44a49aee52d998ce66ea863c74ac6f687bb85af87c34a8060d1f0f8f7",
+      "sha256": "754aebb44a49aee52d998ce66ea863c74ac6f687bb85af87c34a8060d1f0f8f7",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/common/window_text.c",
+      "destination": "tests/lib-win32-style/application/window/window_text.c",
+      "baseline_sha256": "1b10667607f7e07a1bbdaa7061b782864040a2e38174e1365390eca65b2a5e11",
+      "sha256": "38abdba39dc0a943814256f2a6adabc2f86002169fb5320998bf84dfb5b85a87",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/dispatch.c",
+      "destination": "tests/lib-win32-style/access/runtime/uwp_dispatch.c",
+      "baseline_sha256": "b9ac900d89a8c5c439849a042046053fe3130af2dae2feca0f9b1f15f5bac402",
+      "sha256": "941d2d2bfd6b375cea0cf6157ef0663bdaade6a3cfddfde6cb206c3cf18b4453",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/global.c",
+      "destination": "tests/lib-win32-style/access/global/uwp_global.c",
+      "baseline_sha256": "b42472b3a6e77326ad8622f844ef3b38f963561b10b4bddfaa839b8ab6c0ff8f",
+      "sha256": "f0747baa42e922609e2840526e5d46fdcb717fb1c5cc3d82d725e540fe9756b9",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/hook.c",
+      "destination": "tests/lib-win32-style/application/adapters/uwp/hook.c",
+      "baseline_sha256": "37b9e9331bceb1a85c7b770d97e378a9f519e95bc0f2cca1ac147c4d21e9d576",
+      "sha256": "d59ac168c0087138bb743049be027f67e9d8774ca3755ac079505e1f783137d0",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/hook_fixture.c",
+      "destination": "tests/lib-win32-style/application/adapters/uwp/hook_fixture.c",
+      "baseline_sha256": "8df42b1176cf82954f3e9b4e2553e71384ce389fa9a59b8452781c00794de5eb",
+      "sha256": "c8b128ed32d93549d7c70fd4bdc36fd4f12628f5e9d85a91e4a84ef6f09235bb",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/host.c",
+      "destination": "tests/lib-win32-style/application/adapters/host.c",
+      "baseline_sha256": "657bee3c53f23861780e65e758d013a43050a28092c697dfc33d52b023d85faa",
+      "sha256": "71edba203f3ee61d965a76cf8ede5d51d438be9ca5d0dd5376a92badf9179641",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/host_start.c",
+      "destination": "tests/lib-win32-style/application/adapters/host_start.c",
+      "baseline_sha256": "fae76cddbf39b251bddc8902ae84981898e0e39e04a77e9cb12651f6c680ba1a",
+      "sha256": "a197ffff36af0eb4360364630982116bb716cbd0600baf7543b8094e25132f95",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/input.c",
+      "destination": "tests/lib-win32-style/application/adapters/input.c",
+      "baseline_sha256": "61ac736d9ef4bddb97162a0fd95c78ad1d8521341ff287851560140604659695",
+      "sha256": "ecf5607d95bcf66507b49d4f31429b31380deec63e927f4cf2aca722deecd8cd",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/menu.c",
+      "destination": "tests/lib-win32-style/application/menu/host_menu.c",
+      "baseline_sha256": "3ea5f42c988f6e2c30edd463e3d96257daedab27213724e59b1b3a056f5d2e4b",
+      "sha256": "6b31020441cd90340bbe34da9a1832f2aee226a062d80b7db2c7f9ccf122c72d",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/native.c",
+      "destination": "tests/lib-win32-style/application/adapters/uwp/native.c",
+      "baseline_sha256": "47ab9fd0b235ae3a7c6149d47b7ad0ed25cf93e48ccb3de3056aaf4940d7f2af",
+      "sha256": "3047c6be95d41df97c2aba5aae48c3c6f9bc83374c849380a9d52d06cf45efe6",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/repaint.c",
+      "destination": "tests/lib-win32-style/application/adapters/repaint.c",
+      "baseline_sha256": "8aa71d20d849cc4dabded08685c2d5d764e2a6745af6592bc2cfeb162bbb34fa",
+      "sha256": "6dac9805ab65bbf2ad1f4cf87cc834e1feb7b71db5e6dc2c8eae793ba60de97b",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/surface.c",
+      "destination": "tests/lib-win32-style/application/adapters/surface.c",
+      "baseline_sha256": "c6844a98666ce476494d2ea411064cdf0587bc8a3f8291247f3ac9a8f15e767f",
+      "sha256": "1c9277e02373894a7a0898d7192b5d0c5fea42bb9c31e59b15fcdbc8032142d0",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/surface_present.c",
+      "destination": "tests/lib-win32-style/application/adapters/surface_present.c",
+      "baseline_sha256": "b4b5d1ee547f729c70568f4d2283f64acd6cf309f102947a4a0947a2ddb95d69",
+      "sha256": "643a2c2a8b7f74c05b0164d12ffb1e6b59b584d2d453f3dbff4757137fde3284",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/target.c",
+      "destination": "tests/lib-win32-style/application/adapters/uwp/target.c",
+      "baseline_sha256": "3b8c678e063bbb9b208c0162bdde0ccee1e788fc9dfb06daf41a4d9cdd3df0ef",
+      "sha256": "04bd3317e3cdd0835eab56e8d249f76e2f48ca3dfd28db80fd9f0c09e5d090f6",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/uwp/TEST_MAP.md",
+      "destination": "tests/lib-win32-style/application/adapters/TEST_MAP.md",
+      "baseline_sha256": "57c2478c636bc096a9e329be7358951be25f648bec17d5ec136e35c63b480b5e",
+      "sha256": "76665ea1062d0ab8cd68d4684be2ff799d1ece6b618854f875993ca0ba5c5548",
+      "byte_exact": false,
+      "non_include_equal": false
+    },
+    {
+      "source": "tests/lib-style/win16-common/common_link.c",
+      "destination": "tests/lib-win32-style/appearance/win3x/common/common_link.c",
+      "baseline_sha256": "eb3a5257019e40a3fe3dffc0fd5bb3b9a4234f450e01b3391ee07355eaedd7e5",
+      "sha256": "146afa2f89e5a94bb1fac0a36f0c1061b11f611987c345a710f99c2a4a2183da",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win16-common/layout.c",
+      "destination": "tests/lib-win32-style/appearance/win3x/common/layout.c",
+      "baseline_sha256": "06ee18d9e2ea0563dd1b47568a948acefdc3f00dd570a2cefe1aca4d9b20a781",
+      "sha256": "3a830ac9a6eacfe1d65f7652731ae70624208c9a9095d0eb0d23008b446e0ba3",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win16-common/palette.c",
+      "destination": "tests/lib-win32-style/appearance/win3x/common/palette.c",
+      "baseline_sha256": "2d1748eed0679ceb758fae54f454fa5a45ab3a0d6e8945b72e329072f8e1a411",
+      "sha256": "d2143bcdcf2e41d60034f6dfeaa4545c57825d441e8b70fac10a7b0081709ed8",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win16-common/TEST_MAP.md",
+      "destination": "tests/lib-win32-style/appearance/win3x/common/TEST_MAP.md",
+      "baseline_sha256": "23bd9c06568fa639176b7cd5b6eb3cfae064886d9761b5f98dfb8cc9911abccc",
+      "sha256": "0dd530f512cb3756ed588c733ae486c209f9250cb5b1ecd6795682ddd689fd6d",
+      "byte_exact": false,
+      "non_include_equal": false
+    },
+    {
+      "source": "tests/lib-style/win16-control/control_class.c",
+      "destination": "tests/lib-win32-style/appearance/win3x/control/control_class.c",
+      "baseline_sha256": "e67e2d7eb0c1207838077dbc5e70049e897453214b0d9fcd9e9bf9df15632ceb",
+      "sha256": "ff1b4bd9fa1a52db8636ff4b01c0abc97c504ac8b7ae83e6b2e87eafe41f3cc2",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win16-control/control_link.c",
+      "destination": "tests/lib-win32-style/appearance/win3x/control/control_link.c",
+      "baseline_sha256": "37640fb43a903fa8af1cfeaf6d38b78d48b398f77e0c8bafe79d554e9e19cb76",
+      "sha256": "bc6d0f240c4a47795f26ade44b36dd9a3447c3920370e54945db3d200548d6c7",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win16-control/control_scope.c",
+      "destination": "tests/lib-win32-style/appearance/win3x/control/control_scope.c",
+      "baseline_sha256": "2de049dad65c1e60a1a5047180c3d9aea8f66b30f9e09f38abe9db976b158f2b",
+      "sha256": "c307747d935d2f3931bd0efc068da6a0998ceb5676eb406ec443bef6293bdbcd",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win16-control/list_paint.c",
+      "destination": "tests/lib-win32-style/appearance/win3x/control/list_paint.c",
+      "baseline_sha256": "5667a16f161d3f88d469a8ab46a89fad0fa7df95f5ad2817c267eb77c5f8b762",
+      "sha256": "1262c62dddf9109976e82a80b40578b41eaa7549128ea8f4abceed062cd57dd6",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win16-control/TEST_MAP.md",
+      "destination": "tests/lib-win32-style/appearance/win3x/control/TEST_MAP.md",
+      "baseline_sha256": "5a4c7c620befc1bff537727652190ebe20fc249fd4c568409218a3f63a149273",
+      "sha256": "f36f7efaea0a5e20dd2373294616cc87d3d8675fdc640a3bb92b37e525776b88",
+      "byte_exact": false,
+      "non_include_equal": false
+    },
+    {
+      "source": "tests/lib-style/win16-window/TEST_MAP.md",
+      "destination": "tests/lib-win32-style/appearance/win3x/window/TEST_MAP.md",
+      "baseline_sha256": "8561d4971800d0205f1beccb948be760f9aa3191586470b1aa509bc0515116d9",
+      "sha256": "259ecfacc6b0a281cb6d1eae4bf3337ed4d1290d007bc8dfc35dba3a51e66192",
+      "byte_exact": false,
+      "non_include_equal": false
+    },
+    {
+      "source": "tests/lib-style/win16-window/window_link.c",
+      "destination": "tests/lib-win32-style/appearance/win3x/window/window_link.c",
+      "baseline_sha256": "ce6749b760ae75f990d9c35fcf0a19c20e7b0936863e9583060060f11be9d05b",
+      "sha256": "38b77131244753bba58c8c92e0b65b6a98ff56933588298877447f9993d7c92b",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win16-window-uwp/frame.c",
+      "destination": "tests/lib-win32-style/appearance/win3x/window/modern_frame.c",
+      "baseline_sha256": "3b62b8a0a1d6ed3d82d8f2a91a5f60fe86ac5e7ff64b20cad94dd19803828210",
+      "sha256": "a5ef28b711823fa2f19535f5eb95000120771a67d3310623ccafc2e06ec30965",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win16-window-uwp/frame_hidden.c",
+      "destination": "tests/lib-win32-style/appearance/win3x/window/modern_frame_hidden.c",
+      "baseline_sha256": "4e07f85aca66dfed69915a6a33e6bd9d5bb592ec6e615e9ac136f6e27d58ccb3",
+      "sha256": "3eef485d11a17437ab7a23efddd1eef87b0f5ccb5d99d022943a936489bd4b1d",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win16-window-uwp/frame_layout.c",
+      "destination": "tests/lib-win32-style/appearance/win3x/window/modern_frame_layout.c",
+      "baseline_sha256": "21ba4b9c70367a6dbee4efe100a9afe76c9ab80cee1f6c810bab1dbb4a0510dd",
+      "sha256": "26bff03ed769515dc3c804630b9e623d46ee8088dc4e7d2fe147bc683f2b4424",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win2k-window/caption.c",
+      "destination": "tests/lib-win32-style/appearance/win2000/window/caption.c",
+      "baseline_sha256": "6b2e5c9c8d602863f1a93b78deac2b0bcf1037e9c94bfccd71eb72b9120a60d3",
+      "sha256": "2f226006b3d747ec4103523093057487010c9fa70a36599e7fa2fa6208b2555f",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-style/win2k-window/frame_lifecycle.c",
+      "destination": "tests/lib-win32-style/appearance/win2000/window/frame_lifecycle.c",
+      "baseline_sha256": "639f5971d063b5ab1b43f22d6d94975bc6a04ad60a43f9f6726b883d6216b3bd",
+      "sha256": "50e584ec3a8eb67b76090ec6f4d4eb013ff8e776dbe8a4bb048bf23d390fb75e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-win32/style/companion.c",
+      "destination": "tests/lib-win32-style/access/runtime/companion.c",
+      "baseline_sha256": "232884b054fa701d1f00c58b1dfe545835f76a1912afbc463ac15a1d6ac6b079",
+      "sha256": "ff19362ddad3e7a10f98508a27cff5488866abfdb0fa4ed308dfbc5aa5500df5",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-win32/style/companion_fixture.c",
+      "destination": "tests/lib-win32-style/access/runtime/companion_fixture.c",
+      "baseline_sha256": "ed27f3dd92c527855f43d934d84109baf2f46909b8e3e5fad82f023f2bacca57",
+      "sha256": "ed27f3dd92c527855f43d934d84109baf2f46909b8e3e5fad82f023f2bacca57",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-win32/style/creation_pending.c",
+      "destination": "tests/lib-win32-style/application/lifecycle/creation_pending.c",
+      "baseline_sha256": "3dbce07b1498e2f82d26e8561d8eb634a5a2c8a32f8c5189969334cfb26e984f",
+      "sha256": "dad7e5f13f3b774544ac19ffc8dae2673a7bb55dd6c2a62f26a179e3962c08e3",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-win32/style/startup.c",
+      "destination": "tests/lib-win32-style/access/startup/startup.c",
+      "baseline_sha256": "d4d8324ea2da26cca273352c2c8ea50f91f238b48da3c38c7515d09d1d91bed5",
+      "sha256": "3e12b6fc59e876e415526c98c23f3eea1888d0eeb11367f90266586d8086b24e",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-win32/style/window_dispatch.c",
+      "destination": "tests/lib-win32-style/access/runtime/window_dispatch.c",
+      "baseline_sha256": "a9facfda370e6525345a3aca767ed20d7241cf4e6c9ad907ba6364d2e5fccd95",
+      "sha256": "1598150e9005459f57b23d48162d59a97ad100f6009af28ba9de8bf5af4e63d5",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-win32/style/window_dispatch_fixture.c",
+      "destination": "tests/lib-win32-style/access/runtime/window_dispatch_fixture.c",
+      "baseline_sha256": "cb287188bf0aa8a825b2219b1d75d79ed2dd180298c29276056fe19a750636ca",
+      "sha256": "cb287188bf0aa8a825b2219b1d75d79ed2dd180298c29276056fe19a750636ca",
+      "byte_exact": true,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-win32/style/window_hook.c",
+      "destination": "tests/lib-win32-style/access/runtime/window_hook.c",
+      "baseline_sha256": "f77f4553fb7f079e2073e40668bedd56430e9c386819dde59802645f120c648d",
+      "sha256": "227ff22b113ad68bc147daa304582567134a5b712aaa45019b7c1e732cec58f1",
+      "byte_exact": false,
+      "non_include_equal": true
+    },
+    {
+      "source": "tests/lib-win32/style/window_identity.c",
+      "destination": "tests/lib-win32-style/application/window/window_identity.c",
+      "baseline_sha256": "e71685e0938612e93f0fd83467a7dff1b9b5571d75e725a4b296116a09953978",
+      "sha256": "5cc16f4362ae4280039723aae186f71065e0d9c8341326c6d4d004d487f4ac03",
+      "byte_exact": false,
+      "non_include_equal": true
+    }
+  ],
+  "consumer_audit": {
+    "non_include_equal": 54,
+    "paths": [
+      "src/ntw16s-dll/api.h",
+      "src/ntw16s-dll/attachment.c",
+      "src/ntw16s-dll/control_scope.c",
+      "src/ntw16s-dll/controls.c",
+      "src/ntw16s-dll/controls.h",
+      "src/ntw16s-dll/global/manager.c",
+      "src/ntw16s-dll/global/vb_text.c",
+      "src/ntw16s-dll/global/window.c",
+      "src/ntw16s-dll/injection/com_dialogs.c",
+      "src/ntw16s-dll/injection/entry.c",
+      "src/ntw16s-dll/injection/file_dialogs.c",
+      "src/ntw16s-dll/injection/folder_dialogs.c",
+      "src/ntw16s-dll/injection/modern_dialogs.c",
+      "src/ntw16s-dll/injection/window_titles.c",
+      "src/ntw16s-dll/ntw16s.h",
+      "src/ntw16s-dll/status_theme.h",
+      "src/ntw16s-dll/theme.h",
+      "src/ntw16s-dll/uwp/hook.c",
+      "src/ntw16s-dll/uwp/target.c",
+      "src/ntw16s-dll/uwp/target.h",
+      "src/ntw16s-dll/win16_style.c",
+      "src/ntw16s-dll/win16_style.h",
+      "src/ntw2ks-dll/controls.c",
+      "src/ntw2ks-dll/dllmain.c",
+      "src/ntw2ks-dll/window.c",
+      "tests/integration/theme_hook_chain.c",
+      "tests/integration/vb_actor.c",
+      "tests/integration/vb_intrinsic.c",
+      "tests/ntw16s-dll/checklist.c",
+      "tests/ntw16s-dll/control_protocol_owner.c",
+      "tests/ntw16s-dll/global_vb_text.c",
+      "tests/ntw16s-dll/header_paint_owner.c",
+      "tests/ntw16s-dll/inplace_model.c",
+      "tests/ntw16s-dll/month_model.c",
+      "tests/ntw16s-dll/ocx_tree_host.c",
+      "tests/ntw16s-dll/status_font_isolation.c",
+      "tests/ntw16s-dll/status_font_stock.c",
+      "tests/ntw16s-dll/system_menu_visual.c",
+      "tests/ntw16s-dll/theme_stage.c",
+      "tests/ntw16s-dll/toolbar_text_bounds.c",
+      "tests/ntw16s-dll/updown_owner.c",
+      "tests/ntw16s-dll/vb_checklist_runtime.c",
+      "tests/ntw16s-dll/vb_controls.c",
+      "tests/ntw16s-dll/vb_font.c",
+      "tests/ntw16s-dll/win16_style_control_present.c",
+      "tests/ntw16s-dll/win16_style_dc_failure.c",
+      "tests/ntw16s-dll/win16_style_font.c",
+      "tests/ntw16s-dll/win16_style_list_tabs.c",
+      "tests/ntw16s-dll/win16_style_scroll_geometry.c",
+      "tests/ntw2ks-dll/control_theme.c",
+      "tests/ntw2ks-dll/staging_target.c",
+      "tests/ntw2ks-dll/window_style_race.c",
+      "tests/run16s-exe/startup_hooks.c",
+      "tests/run16s-exe/uwp.c"
+    ]
+  },
+  "initial_failed_build": {
+    "task": "M0 T26 S2",
+    "attempt": "s2-relocation",
+    "status": "failed",
+    "reason": "Two checklist fixture targets had relative includes rewritten into src-root includes without a src include search path. Fixed by preserving original relative include mode, not expanding global include directories.",
+    "errors": [
+      "FAILED: [code=1] CMakeFiles/vb5-checklist-runtime.dir/tests/ntw16s-dll/vb_checklist_runtime.c.obj ",
+      "O:/repos.hobby/win16style/build/t26-package/s2-relocation/clean-source/tests/ntw16s-dll/vb_checklist_runtime.c:3:10: fatal error: lib-win32-style/appearance/win3x/resources/control_glyphs.h: No such file or directory",
+      "FAILED: [code=1] CMakeFiles/vb-checklist-runtime.dir/tests/ntw16s-dll/vb_checklist_runtime.c.obj ",
+      "O:/repos.hobby/win16style/build/t26-package/s2-relocation/clean-source/tests/ntw16s-dll/vb_checklist_runtime.c:3:10: fatal error: lib-win32-style/appearance/win3x/resources/control_glyphs.h: No such file or directory"
+    ],
+    "result": {
+      "error": "Clean build failed",
+      "status": "failed-or-inconclusive"
+    }
+  },
+  "incremental_build": {
+    "x86": {
+      "steps": 506,
+      "exit_code": 0
+    },
+    "x64": {
+      "steps": 519,
+      "exit_code": 0
+    }
+  },
+  "include_changed_moved_code": 223
+}

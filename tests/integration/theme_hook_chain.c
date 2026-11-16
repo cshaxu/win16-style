@@ -5,7 +5,7 @@
 #include "lib-win32/process-hook/startup_hooks.h"
 #include "lib-win32/process-hook/late_batch.h"
 #include "lib-win32/process-hook/unwind.h"
-#include "lib-style/common/theme_state.h"
+#include "lib-win32-style/application/lifecycle/theme_state.h"
 #define TEST_EXCEPTION 0xe0424242u
 
 static __typeof__(&SetWindowTheme) first_original,second_original;

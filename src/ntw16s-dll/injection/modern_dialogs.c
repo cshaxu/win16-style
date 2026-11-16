@@ -1,7 +1,7 @@
 /* Public opt-in modern dialog entry point. No GUI work runs from DllMain. */
 #include "../api.h"
 #include "intercept.h"
-#include "lib-style/common/modern_file_dialog.h"
+#include "lib-win32-style/application/dialog/modern_file_dialog.h"
 
 HRESULT __cdecl Ntw16sShowModernFileDialog(HWND owner, UINT kind, PWSTR path, DWORD capacity)
 {

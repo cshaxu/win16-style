@@ -1,6 +1,6 @@
 /* Native patch/abort/trampoline test in this expendable test process only. */
 #include "../../src/lib-win32/process-hook/startup_hooks.h"
-#include "../../src/lib-win32/style/startup.h"
+#include "../../src/lib-win32-style/access/startup/startup.h"
 #include <stdio.h>
 #include <string.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"STARTUP HOOK FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)

@@ -2,7 +2,7 @@
 #include "intercept.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "ntwshk-dll/staging.h"
-#include "lib-win32/style/startup.h"
+#include "lib-win32-style/access/startup/startup.h"
 ntwshk_context ntw16s_process_context={0};
 void CALLBACK Ntw16sFinishHelper(HWND window,HINSTANCE instance,LPSTR command,INT show)
 {(void)window;(void)instance;(void)command;(void)show;ntwshk_run_helper();}

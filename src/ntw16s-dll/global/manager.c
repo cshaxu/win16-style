@@ -2,7 +2,7 @@
 #include "ntw16s-dll/global/attach.h"
 #include "ntw16s-dll/global/session.h"
 #include "ntw16s-dll/global/process.h"
-#include "lib-style/uwp/global.h"
+#include "lib-win32-style/access/global/uwp_global.h"
 #include "ntw16s-dll/uwp/target.h"
 #ifdef NTW16S_GLOBAL_MANAGER_TEST
 #include <stdio.h>

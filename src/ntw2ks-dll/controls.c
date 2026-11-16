@@ -5,12 +5,12 @@
 #include <wchar.h>
 #include "lib-win32/process-hook/startup_hooks.h"
 #include "lib-win32/process-hook/unwind.h"
-#include "lib-style/win2k-window/frame.h"
-#include "lib-style/common/global_window.h"
-#include "lib-style/common/message_observer.h"
-#include "lib-style/common/dialog_hook.h"
-#include "lib-style/common/theme_state.h"
-#include "lib-win32/style/window_identity.h"
+#include "lib-win32-style/appearance/win2000/window/frame.h"
+#include "lib-win32-style/application/lifecycle/global_window.h"
+#include "lib-win32-style/application/dialog/message_observer.h"
+#include "lib-win32-style/application/dialog/dialog_hook.h"
+#include "lib-win32-style/application/lifecycle/theme_state.h"
+#include "lib-win32-style/application/window/window_identity.h"
 
 static __typeof__(&CreateWindowExW) create_W;
 static __typeof__(&CreateWindowExA) create_A;

@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include "lib-win32-style/appearance/win3x/common/font.h"
+#include "lib-win32-style/appearance/win3x/common/layout.h"
+#include "lib-win32-style/application/menu/classic_menu_layout.h"
+#include "lib-win32-style/appearance/win3x/common/palette.h"
+
+int main(void)
+{
+    win16_style_palette palette;
+    HFONT font;
+    SIZE size={30,16};UINT flags=0;RECT item={0};int height=0;
+    win16_style_default_palette(&palette);
+    if(palette.face!=RGB(192,192,192) || palette.edge!=RGB(0,0,0))return 10;
+    font=win16_style_menu_font_acquire(96);
+    if(!font)return 11;
+    if(!style_classic_menu_arrange((POINT){0,0},100,&size,&flags,1,&item,&height) ||
+       item.right<=item.left || height<=0){
+        win16_style_system_release(font);return 12;
+    }
+    win16_style_system_release(font);
+    puts("WIN16_COMMON_LINK_OK palette=1 font=1 menu_layout=1");
+    return 0;
+}

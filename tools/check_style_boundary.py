@@ -7,8 +7,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
-FORBIDDEN = re.compile(r"ntw16s|ntw2ks|ntwxps|ntw7s|ntwvistas|ntwshk|run16s|win16|win2k|win2000|winxp|win7|vista", re.I)
-COMPONENTS = ("src/lib-style/common", "src/lib-style/uwp", "src/lib-win32/style")
+FORBIDDEN = re.compile(r"ntw16s|ntw2ks|ntwxps|ntw7s|ntwvistas|ntwshk|run16s|win16|win2k|win2000|winxp|win7|vista|win3x|luna|aero", re.I)
+COMPONENTS = ("src/lib-win32-style/access", "src/lib-win32-style/application")
 
 
 def check_text(path, text):
@@ -26,15 +26,21 @@ def main():
     if args.self_test:
         assert check_text("fixture", '#include "ntw16s-dll/private.h"\n')
         assert check_text("fixture", "void win2k_frame(void);\n")
-        assert check_text("fixture", '#include "lib-style/winxp-window/frame.h"\n')
+        assert check_text("fixture", '#include "lib-win32-style/appearance/win3x/window/frame.h"\n')
         assert check_text("fixture", "void vista_caption(void);\n")
+        assert check_text("fixture", '#include "lib-win32-style/appearance/luna/frame.h"\n')
+        assert check_text("fixture", '#include "lib-win32-style/appearance/aero/frame.h"\n')
         assert check_text("fixture", "void win7_frame(void);\n")
-        assert not check_text("fixture", '#include "lib-style/common/frame.h"\n')
+        assert not check_text("fixture", '#include "lib-win32-style/application/window/frame.h"\n')
     errors = []
     for component in COMPONENTS:
-        for path in sorted((ROOT / component).rglob("*")):
-            if path.is_file() and path.suffix in (".c", ".h"):
-                errors.extend(check_text(path.relative_to(ROOT), path.read_text(encoding="utf-8")))
+        if not (ROOT / component).is_dir():
+            errors.append(f"{component}: shared component directory missing")
+        sources = [p for p in sorted((ROOT / component).rglob("*")) if p.is_file() and p.suffix in (".c", ".h")]
+        if not sources:
+            errors.append(f"{component}: no shared sources checked")
+        for path in sources:
+            errors.extend(check_text(path.relative_to(ROOT), path.read_text(encoding="utf-8")))
     for archive in args.archive:
         result = subprocess.run([args.nm, "--undefined-only", archive], text=True, capture_output=True)
         if result.returncode:

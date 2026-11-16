@@ -1,0 +1,51 @@
+#include "trackbar_paint.h"
+#include "../../../application/control/control_protocol.h"
+#include "../../../application/graphics/dc_geometry.h"
+
+BOOL win16_style_trackbar_supported(HWND w)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    DWORD allowed=TBS_AUTOTICKS|TBS_VERT|TBS_TOP|TBS_BOTH|TBS_NOTICKS|TBS_FIXEDLENGTH;
+    if(style_control_protocol_runtime_trackbar(w))allowed|=TBS_ENABLESELRANGE;
+    return style_control_protocol_is(w,TRACKBAR_CLASSW) &&
+        !(style&0xffffu&~allowed) &&
+        !(style&(WS_BORDER|WS_HSCROLL|WS_VSCROLL)) &&
+        !(ex&(WS_EX_CLIENTEDGE|WS_EX_STATICEDGE|WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
+}
+BOOL win16_style_trackbar_runtime_border(HWND w,const NMCUSTOMDRAW *draw,const win16_style_palette *palette)
+{
+    RECT client,r=draw->rc;
+    if(!style_control_protocol_runtime_trackbar(w) || !win16_style_trackbar_supported(w) || !draw->hdc ||
+       !style_dc_unmirrored_origin_pixels(draw->hdc) ||
+       (draw->dwItemSpec!=TBCD_CHANNEL && draw->dwItemSpec!=TBCD_THUMB) || !GetClientRect(w,&client) ||
+       r.left<client.left || r.top<client.top || r.right>client.right || r.bottom>client.bottom ||
+       r.right<=r.left || r.bottom<=r.top)return FALSE;
+    int saved=SaveDC(draw->hdc);if(!saved)return FALSE;
+    SetDCBrushColor(draw->hdc,palette->edge);
+    FrameRect(draw->hdc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
+    RestoreDC(draw->hdc,saved);return TRUE;
+}
+BOOL win16_style_trackbar_part(HWND w,const NMCUSTOMDRAW *draw,const void *context)
+{
+    const win16_style_palette *palette=context;
+    if(!draw->hdc || (draw->dwItemSpec!=TBCD_CHANNEL && draw->dwItemSpec!=TBCD_THUMB) ||
+        !win16_style_trackbar_supported(w))return FALSE;
+    RECT r=draw->rc,client;
+    if(!GetClientRect(w,&client) || r.left<0 || r.top<0 || r.right>client.right || r.bottom>client.bottom ||
+        r.right<=r.left || r.bottom<=r.top)return FALSE;
+    int saved=SaveDC(draw->hdc);if(!saved)return FALSE;
+    HBRUSH brush=GetStockObject(DC_BRUSH);int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
+    SetDCBrushColor(draw->hdc,draw->dwItemSpec==TBCD_CHANNEL?palette->light:palette->face);FillRect(draw->hdc,&r,brush);
+    SetDCBrushColor(draw->hdc,palette->edge);
+    for(int i=0;i<unit && r.left<r.right && r.top<r.bottom;++i){FrameRect(draw->hdc,&r,brush);InflateRect(&r,-1,-1);}
+    if(draw->dwItemSpec==TBCD_THUMB && r.right>r.left && r.bottom>r.top){
+        BOOL pressed=(draw->uItemState&CDIS_SELECTED)!=0;RECT strip=r;
+        SetDCBrushColor(draw->hdc,pressed?palette->shadow:palette->light);
+        strip.bottom=min(r.top+unit,r.bottom);FillRect(draw->hdc,&strip,brush);
+        strip=r;strip.right=min(r.left+unit,r.right);FillRect(draw->hdc,&strip,brush);
+        SetDCBrushColor(draw->hdc,pressed?palette->light:palette->shadow);
+        strip=r;strip.top=max(r.bottom-unit,r.top);FillRect(draw->hdc,&strip,brush);
+        strip=r;strip.left=max(r.right-unit,r.left);FillRect(draw->hdc,&strip,brush);
+    }
+    RestoreDC(draw->hdc,saved);return TRUE;
+}

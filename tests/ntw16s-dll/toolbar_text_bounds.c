@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include "isolated_process.h"
-#include "../../src/lib-style/win16-control/toolbar_paint.c"
+#include "../../src/lib-win32-style/appearance/win3x/control/toolbar_paint.c"
 
 /* The fixture calls the real COMCTL toolbar with the production reader. */
 BOOL style_control_protocol_toolbar(HWND w){return w!=NULL;}

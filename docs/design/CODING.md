@@ -2,7 +2,7 @@
 
 导入任务按需建立目录；当前不放置虚假实现或空构建目标。
 
-目标目录按 T26 逐步迁移，当前 `lib-style` 与 `lib-win32/style` 尚未消除；迁移事实见 CURRENT 和审计台账。
+S2已将原lib-style与lib-win32/style的库文件和对应测试机械归位lib-win32-style；旧库目录已移除，双位宽干净构建和已发布包聚焦回归通过，正进行远端复核。appearance中的混合实现须由S3–S13继续拆分；目录归位不等于机制已完全共享，事实见CURRENT、S1台账及冻结迁移清单。
 
 ```text
 src/lib-win32/                         无风格含义的进程、句柄、托盘基础能力
@@ -47,43 +47,23 @@ T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及�
 本机双架构 SDK/DLL/TLS 实测已通过，结果及证明局限见
 [工具链记录](../etc/import/TOOLCHAIN.md)，不等于产品构建成功。
 
-## UWP 历史实现位置（T26 迁移前）
+## 现代外框的当前源码位置与迁移边界
 
-以下记录帮助定位当前生产代码；T26 目标将无风格宿主机制归 application/adapters，Win16 几何与呈现归 appearance/win3x，不继续为每个风格复制 UWP 宿主。
+公共宿主、输入、表面和重绘机制位于 `src/lib-win32-style/application/adapters/`；
+原生标题和目标观察位于其 `uwp/` 子目录。Win3.x 的几何、命中和呈现目前位于
+`appearance/win3x/window/modern_frame{,_layout}.{c,h}`，仍含待 S12 拆出的菜单和状态机制。
+对应测试按相同组件放在 `tests/lib-win32-style/`。S2 是机械归位，不声称这些混合文件已经解耦。
 
-`src/lib-style/win16-window-uwp/frame.{c,h}` owns same-GUI-thread apply,
-remove and surface lifetime; `frame_layout.{c,h}` owns geometry and hit testing.
-Matching tests are in `tests/lib-style/win16-window-uwp/`. Public functions use
-`win16_uwp_frame_*`, without product names. The library reuses `win16-window`
-and `win16-common`; it does not call the launcher, process hooks or activation.
+接入协调位于 `access/runtime/uwp_dispatch` 和 `access/global/uwp_global`；产品仍有导出、
+消息协议和装配，后续按 S4–S6、S12 的冻结审计拆分。不能为 Win2000 或未来风格复制宿主，
+应由公共适配器接受各风格几何、资源和绘制策略。
 
-The caller supplies the root and native title HWND, runs on their GUI thread,
-and retains the containing module until callbacks have returned after removal.
-`ntw16s-dll/uwp/hook` owns the exported thread callback, message protocol and
-module pin; `run16s-exe/uwp` owns AUMID activation and target/host selection.
-A future `win2k-window-uwp` can provide a parallel style implementation at this
-boundary. No unimplemented theme-dispatch framework is introduced here.
+现有契约保持：调用者提供根窗口及原生标题 HWND，在所属 GUI 线程应用或移除，
+并持有模块直到移除后全部回调返回。标题动作复制数组，借用标签和上下文；临时菜单命令
+先检查冲突、按身份清理，再调用动作。原生标题动作的 UIA 查询在协调线程进行，
+菜单调用使用独立 MTA worker 及模块引用；OLEAUT32 是系统依赖，不增加产品文件。
 
-T22 S1 native title actions: the frame library copies an optional action array;
-labels and contexts are borrowed until removal. Menu commands are temporary,
-collision-checked and removed before callbacks. Shared `lib-style/uwp/native` selects
-the witnessed native title and queries/invokes its full-screen UIA provider.
-Coordinator queries run outside the target GUI thread; menu invocation uses
-an independent MTA worker with a module reference. OLEAUT32 is an OS dependency,
-not an additional product. This does not style XAML controls or enable global UWP.
-
-T22 S1 P22 launcher maps resolved System32/SysWOW64 calc.exe and byte-identical copies to the installed
-Calculator package, forwarding activation arguments and optional wait. Other
-same-name images retain native launch. Activation-returned reused instances are
-accepted; created_pid remains zero for reused processes. This is explicit target
-activation, not global enumeration or host propagation.
-
-T22 S1 P32 candidate: product `uwp/target` shares frame discovery and targeted
-apply/remove coordination between explicit activation and the global manager.
-Product `uwp/global` tracks individual CoreWindow/frame pairs using public
-process-global identity, queue and worker primitives. The x64 manager observes
-existing and new windows; the ordinary host exclusion and propagation policy
-remain unchanged. The shared host receives only selected frame adaptation,
-not client-control styling or propagation. Stop removes surviving adaptations;
-the pinned DLL is not physically unloaded. Native fixture coverage and remaining
-intermittent activation failure are recorded in CURRENT; not universal UWP support.
+启动器已有 calc.exe 身份核验及包激活路径，保留参数、等待和复用实例语义；
+普通同名程序不扩展为全局扫描。全局协调跟踪选定的 CoreWindow/宿主对，
+停止时尽力移除仍存活的适配，已固定 DLL 不物理卸载。客户区 XAML 控件、
+间歇激活失败及实际宿主覆盖仍以 CURRENT 的证据和限制为准。

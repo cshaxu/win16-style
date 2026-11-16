@@ -5,10 +5,10 @@
 #include "intercept.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "../../lib-win32/process-hook/unwind.h"
-#include "lib-style/common/classic_file_helpers.h"
-#include "lib-style/common/classic_file_contract.h"
-#include "lib-style/common/classic_file_hook.h"
-#include "lib-style/common/message_observer.h"
+#include "lib-win32-style/application/dialog/classic_file_helpers.h"
+#include "lib-win32-style/application/dialog/classic_file_contract.h"
+#include "lib-win32-style/application/dialog/classic_file_hook.h"
+#include "lib-win32-style/application/dialog/message_observer.h"
 #include <dlgs.h>
 #include <commdlg.h>
 #include <shlobj.h>

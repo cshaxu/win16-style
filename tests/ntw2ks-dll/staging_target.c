@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include <uxtheme.h>
-#include "lib-style/common/theme_state.h"
+#include "lib-win32-style/application/lifecycle/theme_state.h"
 
 static WCHAR restored[64];
 static HRESULT observe_theme(HWND window,LPCWSTR application,LPCWSTR ids)

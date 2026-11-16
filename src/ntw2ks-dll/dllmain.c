@@ -4,7 +4,7 @@
 #include "lib-win32/process-hook/propagate.h"
 #include "lib-win32/process-hook/startup_hooks.h"
 #include "ntwshk-dll/system_process.h"
-#include "lib-win32/style/startup.h"
+#include "lib-win32-style/access/startup/startup.h"
 
 void ntwshk_run_helper(void);
 DWORD ntw2ks_controls_attach(void);

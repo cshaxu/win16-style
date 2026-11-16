@@ -1,8 +1,8 @@
 #include "ntw16s-dll/global/window.h"
 #include "ntw16s-dll/attachment.h"
 #include "ntw16s-dll/global/session.h"
-#include "lib-style/common/global_window.h"
-#include "lib-win32/style/companion.h"
+#include "lib-win32-style/application/lifecycle/global_window.h"
+#include "lib-win32-style/access/runtime/companion.h"
 
 static const style_global_window_ops ops={
     Ntw16sWindowAttached,Ntw16sWindowAttach,Ntw16sWindowRemove,

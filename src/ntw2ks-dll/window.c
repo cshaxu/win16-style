@@ -1,5 +1,5 @@
 #include "window.h"
-#include "lib-style/win2k-window/frame.h"
+#include "lib-win32-style/appearance/win2000/window/frame.h"
 
 BOOL ntw2ks_control_attach(HWND);
 BOOL ntw2ks_control_attached(HWND);

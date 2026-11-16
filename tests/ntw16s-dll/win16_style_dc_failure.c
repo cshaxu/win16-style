@@ -1,10 +1,10 @@
-#include "lib-style/common/frame.h"
+#include "lib-win32-style/application/window/frame.h"
 /* Compile the real painter with a test-local SaveDC failure boundary. */
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "../../src/lib-style/win16-window/menu_paint.h"
-#include "lib-style/common/classic_menu_layout.h"
+#include "../../src/lib-win32-style/appearance/win3x/menu/menu_paint.h"
+#include "lib-win32-style/application/menu/classic_menu_layout.h"
 #include <limits.h>
 static int save_calls, fail_save;
 static int WINAPI test_save_dc(HDC dc)
@@ -14,7 +14,7 @@ static int WINAPI test_save_dc(HDC dc)
 }
 #define SaveDC test_save_dc
 #include "ntw16s-dll/win16_style.c"
-#include "lib-style/win16-window/frame_view.c"
+#include "lib-win32-style/appearance/win3x/window/frame_view.c"
 #undef SaveDC
 #define CHECK(x) do { if(!(x)){fprintf(stderr,"DC FAIL line %d\n",__LINE__);return 1;} } while(0)
 static UINT lifetime_message;

@@ -1,7 +1,7 @@
 #include "hook.h"
-#include "lib-style/uwp/native.h"
-#include "lib-style/uwp/hook.h"
-#include "lib-style/win16-window-uwp/frame.h"
+#include "lib-win32-style/application/adapters/uwp/native.h"
+#include "lib-win32-style/application/adapters/uwp/hook.h"
+#include "lib-win32-style/appearance/win3x/window/modern_frame.h"
 #include <stdint.h>
 static _Thread_local BOOL busy;
 static BOOL apply_frame(HWND frame,BOOL fullscreen)

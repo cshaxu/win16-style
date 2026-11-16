@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <uxtheme.h>
 #include <string.h>
-#include "lib-style/common/theme_state.h"
+#include "lib-win32-style/application/lifecycle/theme_state.h"
 
 typedef BOOL (__cdecl *window_op)(HWND);
 typedef BOOL (*retained_op)(HWND);
