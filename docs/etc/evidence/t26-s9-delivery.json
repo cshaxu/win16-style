@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S9 P1",
-  "status": "verified-published-awaiting-commit-and-actual-remote",
+  "status": "passed-focused-remote-verified",
   "build": {
     "status": "passed",
     "candidate": "O:\\repos.hobby\\win16style\\build\\t26-package\\s9-delivery\\candidate",
@@ -2667,5 +2667,6 @@
       "terminal": true,
       "ownership": "T26 S9 registered scratch, unsandboxed CIM confirmed no live owned executables; exact prefix and reparse checks passed"
     }
-  ]
+  ],
+  "verified_remote_commit": "f9de34045556b25147a3ced86506afacc674abee"
 }

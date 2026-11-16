@@ -257,3 +257,5 @@
 - [T26 S9控件开发结果](evidence/t26-s9-controls-development.json)：公共资源状态、字体/tabstop事务的双宽增量及原始错误与修正；不是完整S9或新发布。
 
 - [T26 S9整批交付](evidence/t26-s9-delivery.json)：同快照双宽干净八文件已先发布两处，发布后聚焦回归、来源/资源/依赖和原失败对照的实际状态由证据记录。
+
+- [T26 S9实际远端](evidence/t26-s9-remote.json)：P1 107现存blob、16删除路径及八文件已fetch逐项复核。

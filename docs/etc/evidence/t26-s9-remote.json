@@ -1,0 +1,577 @@
+{
+  "task": "M0 T26 S9 P1",
+  "fetched_ref": "origin/main",
+  "commit": "f9de34045556b25147a3ced86506afacc674abee",
+  "base": "db5a19c5fcad96a7cb6604bb2f10ee285bed86cf",
+  "status": "actual-remote-blobs-verified",
+  "present": [
+    {
+      "path": "CMakeLists.txt",
+      "blob": "5cad7e6be79f955dda0ab7a8d090aea8806e125c",
+      "sha256": "8416dbc6f666dc8cc70381153833c914a0a216164e63dcd7e87c01538496c28c"
+    },
+    {
+      "path": "assets/demo.exe",
+      "blob": "e7c1170b490dba60c993c5c1ae632b317496a9cc",
+      "sha256": "d045d6dfeeabf02c9cdf9a8c27a822fb792aed8a2d3b75eb6f11b758144c92ab"
+    },
+    {
+      "path": "assets/ntw16s32.dll",
+      "blob": "9b6e60273b49c46792b8c387b1c8c82da7b36cb2",
+      "sha256": "110bc8cc63737037e156e4f3413850d9aa1adeb8bb6c69229c24415d0750c521"
+    },
+    {
+      "path": "assets/ntw16s64.dll",
+      "blob": "114bdb6dc79d265b2f6a9c2d1eb59495eb921d4b",
+      "sha256": "cfc4428e23406ab5a337060be360633029c4fa9a2dffa3e8e38f665eeafc7066"
+    },
+    {
+      "path": "assets/ntw2ks32.dll",
+      "blob": "415793389a9ecbd8e5112b0c9e4dd85993bf26de",
+      "sha256": "ce9d663951903e864e65f1824f526779c8554eacf15e36ccbb4176bac42039fc"
+    },
+    {
+      "path": "assets/ntw2ks64.dll",
+      "blob": "1bd1c7f58b73e90c6eb02c3c5975c50a9517648c",
+      "sha256": "5fc3e6d969b57b116a3ac9de1b93baf6c0ef86d84389a2dd317ebc5795953bf1"
+    },
+    {
+      "path": "assets/ntwshk32.dll",
+      "blob": "80aac98f88fc19c65a1f3e2db8b027fee41318b1",
+      "sha256": "c4adc21dd305aa04b5b57b9362445d61fed1d55fac2fcf6ecb8722315f41b828"
+    },
+    {
+      "path": "assets/ntwshk64.dll",
+      "blob": "c6f62ebe8889691d30fdbedba2643ca27a0de4e8",
+      "sha256": "4386c20c53fcb20f90b3af3b8dd314817602afa2be9ef9780b1ba3b07619d996"
+    },
+    {
+      "path": "assets/run16s.exe",
+      "blob": "75dbe2149fc7fce76631e75045643bc8287237f4",
+      "sha256": "ab1bf9e95dd497124c1c1833bdde86578e2ccaefaa8f393a64e635777f443af2"
+    },
+    {
+      "path": "docs/design/ARCHITECTURE.md",
+      "blob": "49c80bb93b9a35151c207a7e9f3513860ba81908",
+      "sha256": "80252f8c86160377e9fbfff40edaaacb0602d8dbfa2d8d19b0ba370b9c1cde3a"
+    },
+    {
+      "path": "docs/etc/README.md",
+      "blob": "e0d50759c19657dacf94a2186f563c4385469de6",
+      "sha256": "88f3a19f8b910e72ca426c956d136ef4ed846ff6abbb657fd6414477fb5cb8c7"
+    },
+    {
+      "path": "docs/etc/evidence/t26-s9-controls-audit.json",
+      "blob": "198bbc8ad6bce9aca924915fcb7d022698ac5836",
+      "sha256": "0a8b0e88ebda6680925c606437c77a94e3c10e53b4bf9322e6a08bfba4d626d3"
+    },
+    {
+      "path": "docs/etc/evidence/t26-s9-controls-development.json",
+      "blob": "6e880fbe0e1db05ad08276792816dc79b6d0ef95",
+      "sha256": "77a66453a868aad85f9765972c7fc4d8ca68a80185e32b8ed10d3b9545b2c29a"
+    },
+    {
+      "path": "docs/etc/evidence/t26-s9-delivery.json",
+      "blob": "a24854943e70f3c8286ef358c52f2f9a412273ab",
+      "sha256": "c94ed2226eff7fe0de89fb869c678c18bc25fdeada36bb53848f8733ee0612e6"
+    },
+    {
+      "path": "docs/etc/import/import-receipts.json",
+      "blob": "b29c96d689d93fe793a8cffc7224970a0f74ef45",
+      "sha256": "665430738771a6ccd2644f0bde0181447cc25823b77b7dfaeb03968554df8880"
+    },
+    {
+      "path": "docs/etc/import/source-manifest.json",
+      "blob": "46a7f28cdc9517e24c5d7114faab19a39a5a1567",
+      "sha256": "07406f26de5e28c2624870a0ec22121826403e8a3d0a7e6f4ee0cea2b443931f"
+    },
+    {
+      "path": "docs/history/M0-T26-S9-controls.md",
+      "blob": "1c5386db4360633ebb8c0461f09eb007c540b7ce",
+      "sha256": "017362aa6e353f5d7a47ffc4491105d805f30c2eaccf9b35d497b96366b1f95d"
+    },
+    {
+      "path": "docs/states/CURRENT.md",
+      "blob": "71ea738d499a8b50e4982186616e43898aad7bf3",
+      "sha256": "9f478d357ef5a77ae4ed48c7c5ef6e6a35d785b7724a786745afc785c12a97d9"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/frame.c",
+      "blob": "07399c4b21693c34b7967b1c29d7e7eff2b149ad",
+      "sha256": "4a782d5392613505a65ca62733331938d7ac16bade6b7264c421234ecd00b3bf"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/choice_view.c",
+      "blob": "1315b960d96fc9dd0775b2ee91f5666b4cbaf630",
+      "sha256": "911ec753dc522ab3d26c3e707a4a2de38cd28278ed523148c0fb953ecec16aae"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/choice_view.h",
+      "blob": "8425548fb161e30cd7667c8027dd52844ebb3320",
+      "sha256": "f3790f54ec05e79f8cf8f2cb1955e60db6482c86f3f57e0d2dce9c2cb52fc517"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/combo_paint.c",
+      "blob": "b38d31471c084def26856117b2b10b27c24e6aa3",
+      "sha256": "7d61a51f4f724c6baabd746c5c1e7b02ea60ae450518c3f9091efc1501dbe40d"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/combo_paint.h",
+      "blob": "f091dd2fd90101598dd89c64162459f51fbffad8",
+      "sha256": "3ed927df901a0c66cdf344f7af9c0e6f05914c9d7a8fc08958bee4af91306d80"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_dispatch.c",
+      "blob": "c6313cd63997e902c927dd9408cf52ae14f858c0",
+      "sha256": "a242296073a263706e35cd88b9ac087785f3385ccd4462cd436936263b89e1f8"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_dispatch.h",
+      "blob": "984c6232d6400b865101f158a2d42eec20d0a7ac",
+      "sha256": "e0905d9044e36a2f48d115be11a3d2db78142e79338808c45fe78b985914b249"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_guard.c",
+      "blob": "0e8550e7c2cdcd8a9a91aa304e1065d686104bc4",
+      "sha256": "dd705b0a4b787fa584534f98c0e8b8571f595e90eabcda5d51c8998e96351a07"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_guard.h",
+      "blob": "9468684bf94ddcaa59e29ebc29b41cf60c130fac",
+      "sha256": "209820598bf532e263fb41cb7e2dbc7f2f05287548b7a37051be4149e9d68f9f"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_install.c",
+      "blob": "deca2719e85a249435c5f93414dc7da7a30432a0",
+      "sha256": "b368d1e3ace1035dd582dee9adf2259853efe64e05f95e8a98b7442969bf39e2"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_install.h",
+      "blob": "bd727984c0b2f3de52f38cc8500073925a7669b1",
+      "sha256": "76286a7b8ac5d84aad9b8967b74143a158bf99a3922c2d3179aaa523e6fa8624"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_lifetime.c",
+      "blob": "ff75d54d55e38614335e64af0dd5beea1269d155",
+      "sha256": "25a9deb79349c886da20a4cac809899534e019a4eba8bbaf39476f22a7688038"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_remove.c",
+      "blob": "e5aa8849433be946fb10a575ead8d76b622445c0",
+      "sha256": "2f30f72d89c1f5de65d4c3cd062a2266c2762369ac91ac47ffa8d717230f8578"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_remove.h",
+      "blob": "36e694e241af8cffdd67672995760d1dae93f3a6",
+      "sha256": "bdecc5021247ac03928adf6e9b28564ec65a627143a82dd4f7718995c092db83"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_state.c",
+      "blob": "f2e5229134362b59abe6359d58924b52c4c50ec7",
+      "sha256": "56a5ae3fca197e8a298d42c9b88df8478d03939413461e03a6a875b1aae03653"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_state.h",
+      "blob": "32395318cdf21cc2c4eaadb040d44205f49b1237",
+      "sha256": "71e91ef758aafab04c715c0db51034e327f73e897988584790afa72926aefa9c"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/list_paint.c",
+      "blob": "675d65612f21598231e674b58ccc3f5baec345ba",
+      "sha256": "1e134032e1c83c6a4808bb281b0a16df975c7e50f69277f9fe93601bc3338a2c"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/list_paint.h",
+      "blob": "508163a43ce0effbd895e1f7b5e8e23677f78d66",
+      "sha256": "3349aa1e0175f6323b06b5be1440ad661b6435954c11a9457ed497ce4e31bffb"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/native_presentation.c",
+      "blob": "97ce1bd1c1c64f639a0886341b32b349a1f08d79",
+      "sha256": "6923ecc411296b9e6fb5387aab9af27fb6f98e61b83fd02615769cc6ee518183"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/other_paint.c",
+      "blob": "95d6c98e4d5ac4ad95c767d6e9dd4473bc138cfc",
+      "sha256": "38b5156b2b31be3152ef25652e8f8e7e5f734047f60a141e0bfff8231d1d84b1"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/other_paint.h",
+      "blob": "569aca597ac9409b716e2cdaef7a99a75a65be99",
+      "sha256": "e5478a2378b698683aa306b4761cf247239fd349c68de0a0fb9235eb50f69f24"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_layout.c",
+      "blob": "197a1b3f20314f04be5c9c878cab50142548ea28",
+      "sha256": "5b83f219d3df03ad44bdf7b3e57d60e007fca10be5036fd8f2388f1cdd2b7490"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_layout.h",
+      "blob": "07c17ef762183d2c29747ae551c72c15a664e2ef",
+      "sha256": "ae252625ba1e840c1a1ced3f970553d856112e1e8a3d7156f8335d795c9c3096"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_native.c",
+      "blob": "6e397bd41064295fad631450c39bd61c196a593f",
+      "sha256": "e00457d189cb80d4720925e8ba535062689d7afbb3ffc04d929a93601b5ea203"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_native.h",
+      "blob": "bb753a6c078e70f08c0c36e77567bf2ff47e1636",
+      "sha256": "da8234d2366b41131854eb01acab35dc3ff648a3615c0f31f8c3e08a55a35465"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_paint.c",
+      "blob": "3ac14947527a1f7bc8176e536effb1fa7a380354",
+      "sha256": "b1eb7204ae415ad8f134352cbab492d9599114decb8b76d1b1f19c406acb8742"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/scroll_paint.h",
+      "blob": "6cca6825611ef27c5d308ba6f3abc11dc13e3caf",
+      "sha256": "9b79a3287b9366516ce1fee13ee2a3ef890378cf15e08deca5e1e15c4978784e"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/special_install.c",
+      "blob": "11e29bfa52b881e998d817e691335e223476fa6a",
+      "sha256": "aadbaa76ad8e1c09ad4d91eb718ad7fb19a1d5e0ce9b8ed1a38c13f38d30f11e"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/special_paint.c",
+      "blob": "f174e6e8c5541de176105b6e73ecc8df7553f827",
+      "sha256": "ce8821349ac6bb9782698cecd5bfd91ed456c2b9d45e1b9c2a0c00773dab957f"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c",
+      "blob": "e4286e86652543b8afd9d925ab547c785a163451",
+      "sha256": "69b211527624c9ba896c8739d2c71d4c17dfd36c1dc040db58852b883d02f1de"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/basic.c",
+      "blob": "c77ef697caa61de57c70dff31962b25788139883",
+      "sha256": "cdab9ff7d75e1ece53ab7612e105170d23a0353cd30921fc3a6960422c48cf7a"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/basic.h",
+      "blob": "e8abf3e613780438e6d087f6cefa1165af2cde70",
+      "sha256": "4e68fc7a1c7b0c01a95b98a70234fd7e50d31e1f25042568cd8b5d42470c8420"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/button_snapshot.c",
+      "blob": "a4793be49231971a39605f52f9b905e92d2e676f",
+      "sha256": "0f43a8411bb651e557d176eefedd055ed5a3f7f1fd6e800ce05baf082474ddb7"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/button_snapshot.h",
+      "blob": "4d8c7fc9b6e0841ec8cf528cc3bf4a3ef775e479",
+      "sha256": "c9293bf7c0b0eb2f6af7197e496d4051101461ae2318cb93f9a9025dbfaa14ac"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/combo.c",
+      "blob": "24021d382051f7feb9d01bf63053abf95f25dace",
+      "sha256": "cdb7c0491e61d51959d99a048e6063a72eaf0f75fcc9412974e9c64812fb1b32"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/combo.h",
+      "blob": "03ea8b11fa1bfb9b66e6174b4ec2476f051469d1",
+      "sha256": "c1b730a41ead7c2317614f9b977179912d2ff5208cc83934c85eb9313cae7d1e"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/combo_snapshot.c",
+      "blob": "20cfdfa98a0b9c1c9cd93bb5e08f852ece27a7dd",
+      "sha256": "2f3afd32c9a05a34a9101d322d749529c35a79bc0c4f3914fe063390dccb7769"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/combo_snapshot.h",
+      "blob": "6901a2d4fe040a56e5b32b34c4fcea3e2cfeea23",
+      "sha256": "91eb320140042878fecf646385b343c092d3a3a3f08e3e8a4a580e5c87c15c7c"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_state.c",
+      "blob": "5da4242e9f5ce0ca6d8aa653d00abcb303f1b088",
+      "sha256": "dcd8de897609eee45930878ca87aa73547b59ac4beb864f50f75c04ed1866b2c"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/control_state.h",
+      "blob": "b1a53d4161c3506f1003c37611bea0dd4bf43252",
+      "sha256": "e5771d0d4a99fedf61a4217fb7152728111d923064589a3db9b65886672a866e"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/edit.c",
+      "blob": "302039c23043b9e797106e5e25b1b6b8360c1190",
+      "sha256": "6df394e41329ae7b5c00ad085a94c62fae7c01fa434b8f69886cb99a5c8b3b71"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/edit.h",
+      "blob": "109e84ab101eecb5755c4689e4db56e00c73a694",
+      "sha256": "f6ed48d697f228b24c98445b1561c8d6ea462969116feb797de8714b0158d0d4"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/list.c",
+      "blob": "3d1fef359f9d1d8e5dee7c3a297ae0e3bb7359ac",
+      "sha256": "6f5652141766c139d652e1005f76817aca4d991991de14e8ecc15a3f9679c960"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/list.h",
+      "blob": "ff3ffd82cca964b912aa83876f0ec7ec2c792ee1",
+      "sha256": "dc3ebc72782ead4fe333ac91f38af4486408ed10854137230060ba14a2a82856"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/list_snapshot.c",
+      "blob": "ac475d0eed605d1be917dacf91c0834d8622c802",
+      "sha256": "702c7e0ac09277efc14e6e6b4c53163d4a03054c466d862793ca8400dcf31ec8"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/list_snapshot.h",
+      "blob": "9071d0eb6ac67528e92b4e31344afb14b8b3f93e",
+      "sha256": "a05953bb502cd63d75c75d27b0b07a32d1451daccb20a17a1a25b912e53c7b0b"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/retire.c",
+      "blob": "96d24f3a0f4dee84d6380a156288d7bcbcf63b5f",
+      "sha256": "abe274ea88f7277656cb736c3b412214c74ded15f2d0675f30d8e993f99ac286"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/retire.h",
+      "blob": "757790763caa0e2f6da167715697e678cebe359e",
+      "sha256": "9b27435767fcc57d5d70925391681c17f3613b0635510dd0870d9c291b4bb620"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_controller.c",
+      "blob": "6261c84f98101374bb79bd33996916fd14175091",
+      "sha256": "4d63b3e23ec4fe406b9c18bb90ccb0af9f5a4bbebd40fb70240ff845f55c640a"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_controller.h",
+      "blob": "8ea5ff6767e916d559ca936e0bf9715f894e2f34",
+      "sha256": "d4b4d06fd7b35fd2887bcf6a842fd82e93258fc19a6b7532226826668eadc2de"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_geometry.h",
+      "blob": "0e813a513339fd0985c3d340cf44310d8ceafea2",
+      "sha256": "08c661658808715deac3621d7c4fc197550e5ad5091f1c693c21a80865be2e78"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_managed.c",
+      "blob": "c1d5c8a147e715c59eb2b92f2cd5a1bdca4de623",
+      "sha256": "be8024eaf6ef1017b0e77ff33f3215278a8fbea79d1e7ae8f3e79081e4300fe5"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_managed.h",
+      "blob": "e6e6c443443f9aa3484770426b77a0cb58abb2df",
+      "sha256": "3d88a3bb39fa7e5ae0998962c786ada89c0262c3542ae80311a6f7cf4bd61f50"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_message.c",
+      "blob": "cca8f03f9a34b411e47ca91285f4cb92f9a3b1cc",
+      "sha256": "682854277a598efbefc54cb10e7336d14e1ee65cc26690fe6e89af4b94173347"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_message.h",
+      "blob": "8f934c0bab2fc7a7f9f1d76d02ae8ac41eaf7e1b",
+      "sha256": "9e13627dc569e645f81bad3765dbe8338dd3fe0dfdb49f09cb697caa8d6e7a45"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_resources.c",
+      "blob": "56da191913e6a1e51de60f328b6dc0e9dbaa1a39",
+      "sha256": "b166a434b3fde56d367735487aed7506f6020314e9811013924d9797fabd60aa"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_resources.h",
+      "blob": "693e4d2b704a3e96a282c40ee9ebe43da01f4155",
+      "sha256": "c7b9165324bf6711dfdbe27fa34e146a3dcf858a03236fb280b54f227936cc04"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_surface.c",
+      "blob": "a1aa70b6d4acbc3149a0c288034a242a75c44b48",
+      "sha256": "649d67069a9870a122e5bc91c1101cb96651de0007269eec99b539e04ee48a6a"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_surface.h",
+      "blob": "4d994f7a5e1f7903f0d0d7608411fde56980fd45",
+      "sha256": "3a2d054fa02f8911931e2505d187d9fdabbb4c63fdd0f7cc350207bbb6fbaccf"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_track.c",
+      "blob": "b6203ebbadac441b96d9a66df82ed54309291347",
+      "sha256": "0be02e86294b88bb6944260b19f3f5185f4267580852325286554872cd435560"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/scroll_track.h",
+      "blob": "8ffb05689b65779f0e467e62d96651f58d8f135f",
+      "sha256": "b2bc001278cefe34775d002f988b8bb8f05adfd0cbba357200f1afdbf80457d3"
+    },
+    {
+      "path": "src/lib-win32-style/application/lifecycle/install.c",
+      "blob": "67c95b0edb8ee671d277cac4cfa37d4433789986",
+      "sha256": "ed111b49bf97fadf44d5ed9caa91908567b2c9af56fca2e2c8b3c0eacd47389d"
+    },
+    {
+      "path": "src/lib-win32-style/application/lifecycle/install.h",
+      "blob": "ad97ab9d02c1fd6bde204b0cb5849fd3bd885947",
+      "sha256": "8aee798b7c7067846b6c743580fae4c649ace4f66002dcf6419b4cbe91af1ae6"
+    },
+    {
+      "path": "src/ntw16s-dll/controls.c",
+      "blob": "4a0ffa00937770edb24349281c50bffcbb376ac6",
+      "sha256": "0223436cea8ed94bc293e161b7d9b30d2117086640d31e07b11754ab9eb4ba7f"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win3x/control/control_link.c",
+      "blob": "99e510c41b07114dc55c91bf554db0da183da685",
+      "sha256": "33fa99dd1d4b1c781f509584c940610e99371ec8316065dfdec236c05e7a3974"
+    },
+    {
+      "path": "tests/lib-win32-style/application/TEST_MAP.md",
+      "blob": "7c173003d437cfc7c6a64a639bbd1a1e89a4e1e3",
+      "sha256": "f608bddaf05789679e4a3428010b9163a7e98a906360791dc29b44a5c3e6dabc"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/basic.c",
+      "blob": "e958766878b08282f5dd0058743cda567c59edec",
+      "sha256": "9f64adaa72ec7f9af54c2bcc1311c38fbd479a67cc4027796ff6b603c91b2bce"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/button_snapshot.c",
+      "blob": "701a1673c649f4070a0be02deb8761e82a983370",
+      "sha256": "b5c18d3fe4388a460cbad2915aa5b881769b59344292e47790c7086baadede64"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/combo.c",
+      "blob": "9f77f11aa0612deb689495223ef023d03dd88fa3",
+      "sha256": "56745bbbc26301234a6c55ad5679ff34512360efb91d90ebf5951e020a95d2d4"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/combo_snapshot.c",
+      "blob": "1da9ff86a565f1b8a7d4220f3b9533daa854cab0",
+      "sha256": "ff4e925a4ef912c85bf4fdf4331661284852c684d66309f0999c24473e39c9e7"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/control_state.c",
+      "blob": "2372c486ab00f2686d33af7bf99d873a69f20e17",
+      "sha256": "63292e9f6ec3a44a6108c129233a12f197f261241708e67f9983b895cc8beefb"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/edit.c",
+      "blob": "2df0400702b95dca9ed02f5c740a724b1aef8be4",
+      "sha256": "4251669c020123e9c034afeeedc90fa6257d80ac802a87016c675d4ac8134670"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/list.c",
+      "blob": "e44daebe19125180e6437d79cca4629b11b7fea2",
+      "sha256": "83c3d8463e71a779c69390af4d5098c3ce107eb68a382e32a44b6b7a86b73599"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/list_snapshot.c",
+      "blob": "67083885270674b13126e551d0e54915875e639a",
+      "sha256": "fa10796ab8b31a93710718d2df309dfaf7d05723d846e25c4bc066f40911b0b7"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/retire.c",
+      "blob": "bea92cfef73b15a466e5b4a44ca8086fda211d3e",
+      "sha256": "c7dd2a36d0d072fc9f5db09492a21d4475ab3029b931166fc152a82edfb0457f"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/scroll_controller.c",
+      "blob": "f56531ff8f24b315db8a55baf0df98cf834bdc10",
+      "sha256": "190c4475e06d3f98660a8367c8acad44e469530317c0a77ab3c431c9b15bba30"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/scroll_managed.c",
+      "blob": "1a7d94fb987031a4602dd4385ad4683c6ef6e481",
+      "sha256": "5c4ee73ef25544248ce4ff0eab7400cce710897f43df26f9281aab9d67c52295"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/scroll_message.c",
+      "blob": "023187864b687ce896cb3c170d215d4ce0428710",
+      "sha256": "d951b7982c774a3656a9d7285eb2351f8b02f1769b5413b304537aa8e0ea806f"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/scroll_resources.c",
+      "blob": "af6641dd42786f61849bf45c3903a376d993bbb6",
+      "sha256": "0394af57d1d22cda13f25f8b446a590b70859c9390c076290b3ecf7a9307811b"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/scroll_surface.c",
+      "blob": "939e74768fc6aa265435b142f0f035be86b059ef",
+      "sha256": "358aee4fe4737f4373de646b9c265cee3a022cfedf52c8e1c3e0af8dc81c4019"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/scroll_track.c",
+      "blob": "79215eca3485bdaeecdff463ca926c3b416df8e1",
+      "sha256": "7517fe259da679af04b6c39dbc78d4078d15909fc09f08fdfe6616cf041bc254"
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/tabstops.c",
+      "blob": "7ed2578624b4ec3d66e930715bc2824fa0e3597a",
+      "sha256": "f6a7c1517237d52dae73f0ceccae5dddc5ea69068adc0026dbe2d152eb6cbb0f"
+    },
+    {
+      "path": "tests/lib-win32-style/application/lifecycle/install.c",
+      "blob": "aa5b178c313bbdb439dbe3d89efbac095fb52d86",
+      "sha256": "2d0ed10530ace190ee4ef81da79423028539027001918d94d9431ef3b074a121"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_control_lifetime.c",
+      "blob": "deebef10f9d13dff898b70bfc6ae5b98b11d3c64",
+      "sha256": "168f780ff43170ae76745303125307b002b6ab55ab7f5c9c0ae1f06a671ff8c0"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_control_present.c",
+      "blob": "738a6a96c521bcfbcdd712671c1afee69ca62251",
+      "sha256": "d8b785a7524a711dff7abc6da0216f5b74fbc62b3dc9973d2548dea09bca9fe8"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_font.c",
+      "blob": "3fa6b9a642a36e591c0f78360e3958b429edde0a",
+      "sha256": "7b6a86bdb991abf708a624e936038749c1f204c2ca0ad562d73f6b096e01f71b"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_list_tabs.c",
+      "blob": "1b90946ac7d82942053654a647cdb398a9bcf8ac",
+      "sha256": "e842f2aee1f80665e6fcba74f47d27f8de6bfbbed6b52c44929413299306eac5"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_scroll_api.c",
+      "blob": "e141f5686550cdcb9aef84e1d258ce66d01c29a7",
+      "sha256": "e81e71422afdc06986821cffe02f64a3f21d41c39c72a3070e1004f348369631"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_scroll_geometry.c",
+      "blob": "d00cba26f9434eb6f4307de1a4db84ff1ca8d17f",
+      "sha256": "f4aa6977b3fda24dfb207ba8a931b5cc687f9288f3e2b5a0179969359e683f3e"
+    }
+  ],
+  "deleted": [
+    "src/lib-win32-style/appearance/win3x/control/basic_message.c",
+    "src/lib-win32-style/appearance/win3x/control/basic_message.h",
+    "src/lib-win32-style/appearance/win3x/control/combo_text.c",
+    "src/lib-win32-style/appearance/win3x/control/combo_text.h",
+    "src/lib-win32-style/appearance/win3x/control/edit_message.c",
+    "src/lib-win32-style/appearance/win3x/control/edit_message.h",
+    "src/lib-win32-style/appearance/win3x/control/list_message.c",
+    "src/lib-win32-style/appearance/win3x/control/list_message.h",
+    "src/lib-win32-style/appearance/win3x/control/scroll_message.c",
+    "src/lib-win32-style/appearance/win3x/control/scroll_message.h",
+    "src/lib-win32-style/appearance/win3x/control/scroll_track.c",
+    "src/lib-win32-style/appearance/win3x/control/scroll_track.h",
+    "src/lib-win32-style/application/window/install.c",
+    "src/lib-win32-style/application/window/install.h",
+    "tests/lib-win32-style/appearance/win3x/control/list_paint.c",
+    "tests/lib-win32-style/application/window/install.c"
+  ],
+  "artifacts": {
+    "run16s.exe": "ab1bf9e95dd497124c1c1833bdde86578e2ccaefaa8f393a64e635777f443af2",
+    "demo.exe": "d045d6dfeeabf02c9cdf9a8c27a822fb792aed8a2d3b75eb6f11b758144c92ab",
+    "ntw16s32.dll": "110bc8cc63737037e156e4f3413850d9aa1adeb8bb6c69229c24415d0750c521",
+    "ntw16s64.dll": "cfc4428e23406ab5a337060be360633029c4fa9a2dffa3e8e38f665eeafc7066",
+    "ntw2ks32.dll": "ce9d663951903e864e65f1824f526779c8554eacf15e36ccbb4176bac42039fc",
+    "ntw2ks64.dll": "5fc3e6d969b57b116a3ac9de1b93baf6c0ef86d84389a2dd317ebc5795953bf1",
+    "ntwshk32.dll": "c4adc21dd305aa04b5b57b9362445d61fed1d55fac2fcf6ecb8722315f41b828",
+    "ntwshk64.dll": "4386c20c53fcb20f90b3af3b8dd314817602afa2be9ef9780b1ba3b07619d996"
+  },
+  "counts": {
+    "present": 107,
+    "deleted": 16,
+    "artifacts": 8
+  }
+}
