@@ -171,3 +171,35 @@ CMake当前将global/session/remote/start/process/policy/attach/manager和uwp/ta
 | `src/ntwshk-dll/system_process.h` | `1e20b4caabfbf01ffca0fc8f13dc4a1c4a7137bea08b55a7916b97dd471bce09` |
 
 单人复核与效率检查：追查每个注册/stop动作到现有公共实现和实际CMake消费者，新增证据是manager并非纯产品策略、window_target与通用dispatch的重叠、process_lifecycle的非样式归属及global/vb_text的反向迁移方向。没有产品代码修改、原生测试、整包重建或scratch；保留已有在途第41项。下一批对照公共库与产品根attachment/controls/theme的剩余接口，生成最终迁移构建清单及S1完成矩阵；未将局部审计计为S1收口。
+
+## 产品根与迁移构建交叉核对（P108）
+
+继续完整核对attachment.c、controls.c、control_scope.c、theme.c、native_api.c、dllmain.c及对应公开/私有头，结合前批已读win16_style。attachment不是只含胶水：它拥有creation scope/TLS、pending记录、paint/report/status/spin等嵌套barrier、引用最终释放、owner成对安装和异常退场；controls同样拥有subclass、字体/scroll状态、父notify和具体服务装配。这些须按S3/S9/S10迁入公共application，支持和画法回appearance，产品最终只保留注册及兼容导出。
+
+| 当前状态/接口 | 最终所有者 | 迁移契约/实际调用 |
+| --- | --- | --- |
+| Ntw16sCreationBegin/End、creation_before/return | application/lifecycle的创建链及access观察装配 | FALSE内层scope屏蔽外层；原style在CBT记录，首次show可提前settle；延迟WM_INITDIALOG返回不重新附着显式移除过的窗口；最后scope释放hooks/pending/theme stage |
+| attachment calls/detached及source/mdi-host引用 | application/lifecycle实例 | 最后活跃调用返回才释放，report/lookup/mdi宿主引用配对；业务支持不通过裸指针视图反向访问整个attachment |
+| static/cool/status/spin/checklist/bit/lookup作用域 | application/control运行时协议，资源归graphics | 嵌套无关调用是barrier；正常和异常出口还原TLS、native DC和字体租约，不混淆Win3.x字体资格 |
+| native_api绑定 | application运行时native leaves，装配给出原始trampoline | 同进程同位宽，一次绑定、重复相同可用/不同拒绝，stock原始默认可供直接消费者；不能经过已拦截入口递归 |
+| theme wrapper与跨DLL状态 | application/lifecycle，由ntwshk承载同一实例 | Win16 theme.c及Win2000 controls已真实调用style_theme；公共库不得各自静态复制主题状态；恢复仅限已观察请求 |
+| controls消息/安装/移除与parent notify | application/control实例和完整操作 | 初始身份由公共protocol；Win3.x palette/font/renderer为策略；control_scope使用公共scope，所有权和frame/child绘制协同保持 |
+| Ntw16sWindowThreadHook | access/runtime协议适配 | 同线程/同PID、显式选定窗口与action结果property；pin/CallNextHookEx/LastError契约保持，renderer不拥有跨进程协调 |
+| composed_frame_class及apply_nonclient | application/adapters的既有framework profile | CASCADIA/Chrome/MSPaint/Xaml类资格与NOREDIRECTION条件保持，风格只提供frame measure/paint，不能搬成每风格一份宿主 |
+| api/ntw16s/win16_style/controls公开头和DllMain | 产品兼容ABI及风格装配 | 原ordinal/导出/调用约定不改；公开兼容类型可保留，公共实现不包含这些产品头；被动加载和loader-lock约束不改变 |
+
+### S2 机械迁移清单及能力后续
+
+已将当前src/lib-style、src/lib-win32/style及对应tests目录全部381个文件登记到[迁移清单](../etc/evidence/t26-style-relocation.json)：288生产文件、93测试/说明文件。每项有source/destination/SHA、机械阶段及能力拆分阶段，大小写不敏感目的地无冲突。当前hash包括保留的第41项在途源码，不误称HEAD干净快照。这个清单是执行输入，不表示公共库每个函数或所有测试都已经运行通过。
+
+S2先按表git mv并同步include/CMake/receipt路径：已有共享组件进入application或access；Win3.x/Win2000混合文件先保留原有耦合在appearance的明确过渡位置，S3–S13按顺序台账拆分状态与机制。mixed-split-required不能在S2改成“已共享”，最终S14必须清空该类迁移债务。原始glyph/atlas进入appearance资源，保留字节、资源来源和分发声明。源目录TEST_MAP说明按实际存在项迁移，不生成虚假文件。
+
+产品根和injection/global里的混合协调不在这份机械mv清单中，不允许直接整文件搬进公共组件并继续依赖私有头；其操作/state逐步拆分按上述表及P106/P107矩阵执行。tests/ntw16s-dll等产品组合测试保留产品所有权并更新include；原组件测试按公共能力所有者归位。93项测试说明路径不是93次测试通过，也不代表一源一测试已完备。
+
+构建消费者已查：CMake实际产品target、global_manager_test_sources和UWP消费者均须迁移链接实际公共实现；tools/check_style_boundary.py的COMPONENTS改为新access/application并保留负例，tools/check_package.py的公共archive发现及tools/verify_resource_identity.py的固定原始资源路径同步。docs/etc/import/import-receipts.json更新路径及真实改变的摘要；旧历史文件保留事实，当前设计/源码布局/TEST_MAP修订活动路径。不得通过排除新目录让边界门禁空跑；资源hash内容不改。其他通用process-hook/global/image/tray不因目录重组改变来源。
+
+验证先增量编译实际受影响target，确认include及独立链接；完成同批关联更改再按规范干净双位宽打包、先发布后测试、摘要/ABI/资源核验、提交远端复核。现有第41项DC操作归graphics，窗口和编辑消费者同迁，所保留的测试也已列入清单。下一批复核机械清单与公共接口覆盖、在途改动的交付归属，满足S1判据后才能正式进入S2；本批不虚称S1关闭。
+
+单人复核与效率检查：从“继续逐文件加文档”转为可机器核验的完整迁移输入；当场检查所有381源路径存在、SHA匹配、目的地唯一及无越出目标根。没有新产品构建/测试/scratch；现有.ninja/.ccache保留。目录映射不替代后续状态拆分与运行验证，不为单个文件进行整包交付。
+
+本批实际验证：381项迁移集合与当前四个根目录精确相等、目的地无冲突、源SHA全部匹配；verify_source_manifest通过124 decisions / 294 includes / 890 local imports；verify_resource_identity及6个资源字节改动负例通过；check_style_boundary源码和自测通过（archives=0，仅源码边界，不冒充链接检查）。治理SelfTest及diff检查通过后提交；未运行产品原生测试。

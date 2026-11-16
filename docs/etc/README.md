@@ -1,5 +1,7 @@
 # Supporting Material Index
 
+- [T26 样式目录迁移清单](evidence/t26-style-relocation.json)：冻结288个生产文件及93个测试/说明文件的当前摘要、S2机械目的地及后续能力拆分阶段；不是迁移完成或质量通过证明。
+
 - [Delphi S26逐项台账](evidence/delphi-s26-current-ledger.json)：冻结的74个家族、当前有限证据、
   样本名称线索和未解决接收者；50项真实owner仍未证实，不代表全量适配。
 
