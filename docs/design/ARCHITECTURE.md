@@ -56,6 +56,8 @@ S5将同位宽运行时模块校验、临时线程hook事务、请求/结果与�
 
 S7在`application/window`实际实施native_frame、caption_button、messages、install：共同原生状态、GUI实例发布/失败回滚、消息执行及捕获生命周期由公共实现拥有，两风格直接调用。`application/graphics/font_pair`拥有字体对与DPI、失败保留/提交/释放；年代字体及租约释放由renderer提供。普通和现代外框共用字体对象，现代宿主流程仍由S12终整；菜单S8、renderer过渡view和最终注册S13，不把这些交界提前称为完成。当前交付/验证状态由CURRENT管理。
 
+S8菜单能力已公共化，`application/menu/popup`和`tracking`的线程观察/跟踪状态由既有共享运行时统一承载，GUI函数延迟解析；`owner`拥有嵌套loop、临时item与消息协议，`bar_state`拥有键盘/焦点/选择。两风格和现代菜单已有真实消费，公共input在GUI调用方执行，不使控制台runtime静态导入GUI。`bar_snapshot`拥有复制项/文本、owner-draw身份/原生回调及临时几何；`bar_controller`拥有栏/系统输入、原生跟踪迭代、焦点和NEXTMENU引用交接。Win3x与Win2000均直接消费，profile提供实际度量/屏幕几何/绘制及已有navigation差异；Win3x旧迭代文件与Win2000私有输入循环已删除。最终交付状态见CURRENT。
+
 ## 应用、恢复与挂钩生命周期
 
 S6将全局协调迁入`access/global`：namespace/session拥有会话身份与查询，control拥有desired/current、worker与停止后再启动的协调，start拥有GUI线程核验、ready事件和既有worker事务；worker拥有目标端会话核验/句柄/线程hook等待，late拥有后台初始化与通知协调；attach拥有分阶段加载/启动/control事务，manager拥有发现/目标/停止回收的组合；receiver拥有目标侧接收、重入和停止竞态，owner/host拥有会话、模块、双宽host及停止资源协调，trace拥有名称与监控恢复装配。产品提供包选择、模块/导出/控制协议、目标资格、完整风格操作、UWP能力及最终报告，公共层不引用风格私有头。旧产品manager/attach/remote/start/thread/late/process实现与六个空转发已删除；实际调用和验证边界见CURRENT链接的S6清单。此完成范围不包含仍待S7–S12拆分的应用与呈现机制，也不代表所有第三方宿主均已验证。

@@ -1,4 +1,5 @@
 #include "menu_items.h"
+#include "menu_scope.h"
 #include "lib-win32-style/application/menu/menu_metrics.h"
 
 static BOOL columns_read(style_menu_item *items,HMENU menu,HDC dc,HFONT font,UINT dpi,
@@ -32,3 +33,19 @@ BOOL win16_style_menu_size(style_menu_item *items,MEASUREITEMSTRUCT *measure,HFO
     DeleteDC(dc);if(ok){measure->itemWidth=max(1,win16_style_menu_columns_width(&columns,dpi,arrows)-margin);
         measure->itemHeight=(item->type&MFT_SEPARATOR)?2*max(1,MulDiv(1,(int)dpi,96)):columns.height;}return ok;
 }
+
+static style_menu_popup_scope *begin_menu(void *context,HWND owner)
+{win16_style_menu_theme *t=context;(void)owner;return win16_style_menu_begin(t->palette);}
+static void set_system(void *context,style_menu_popup_scope *scope,HMENU menu)
+{win16_style_menu_theme *t=context;if(scope)win16_style_menu_system(scope,menu,t->font,t->dpi);}
+static BOOL measure_item(void *context,style_menu_item *items,MEASUREITEMSTRUCT *measure)
+{win16_style_menu_theme *t=context;return win16_style_menu_size(items,measure,t->font,t->dpi);}
+static BOOL draw_item(void *context,style_menu_item *items,const DRAWITEMSTRUCT *draw)
+{
+    win16_style_menu_theme *t=context;win16_style_palette palette;
+    win16_control_resolve_palette(t->palette,&palette);
+    return win16_style_menu_draw(items,draw,t->font,t->dpi,&palette);
+}
+static void select_system(void *context,HWND owner,BOOL selected)
+{win16_style_menu_theme *t=context;if(t->selection)t->selection(owner,t->context,selected);}
+const style_menu_owner_ops win16_style_menu_operations={begin_menu,set_system,measure_item,draw_item,select_system,TRUE};

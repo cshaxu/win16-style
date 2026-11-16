@@ -7,8 +7,7 @@
 #include "../lib-win32-style/appearance/win3x/window/frame_view.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_state.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_lifecycle.h"
-#include "../lib-win32-style/appearance/win3x/menu/menu_iteration.h"
-#include "../lib-win32-style/appearance/win3x/menu/menu_message.h"
+#include "lib-win32-style/application/menu/bar_controller.h"
 #include "lib-win32-style/application/window/messages.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_dispatch.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_input.h"
@@ -32,24 +31,6 @@ static LRESULT CALLBACK style_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK style_proc_body(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 
 /* -3 means outside the bar/system cell; -2 denotes the system cell. */
-static int bar_at_screen(HWND,style_window *,POINT);
-/* Bound only while this thread runs a dialog's native system-menu loop.
- * A stack binding preserves reentrant menus without a global mouse hook. */
-static _Thread_local menu_frame *tracking_menu;
-static int bar_input_hit(void *context,POINT point)
-{menu_frame *frame=context;return bar_at_screen(frame->window,frame->style,point);}
-static LRESULT CALLBACK menu_filter(int code,WPARAM wp,LPARAM lp)
-{
-    menu_frame *frame=tracking_menu;
-    if(code==HC_ACTION && (wp&PM_REMOVE) && frame){
-        const win16_control_menu_input_view view={&frame->window,&frame->root,&frame->active,&frame->button,
-            frame,frame->style?bar_input_hit:NULL,&frame->selected,&frame->target,&frame->direction,
-            &frame->escape,&frame->double_click,&frame->point};
-        win16_control_menu_input((MSG *)lp,&view);
-    }
-    return CallNextHookEx(NULL,code,wp,lp);
-}
-
 static style_window *state(HWND w)
 {
     return (style_window *)style_instance_lookup(w,style_proc);
@@ -88,7 +69,7 @@ static void paint_colors(void *context,win16_style_palette *palette)
 static win16_control_frame_view paint_view(style_window *s)
 {
     const win16_control_frame_view view={s,&s->instance.detached,&s->native.active,&s->fonts.menu,&s->fonts.title,
-        &s->fonts.dpi,&s->bar_selected,&s->system_menu,&s->bar_keyboard,&s->button.pressed,&s->button.hot,
+        &s->fonts.dpi,&s->menu.bar.selected,&s->menu.system,&s->menu.bar.keyboard,&s->button.pressed,&s->button.hot,
         paint_layout,paint_colors,win16_style_scrollbars_paint};
     return view;
 }
@@ -108,38 +89,34 @@ static win16_control_frame_button_view button_view(style_window *s)
     return view;
 }
 
-static void bar_paint_callback(HWND w,void *context){paint_menu_state(w,(style_window *)context);}
-static win16_control_bar_state_view bar_view(style_window *s)
+static BOOL bar_read(const style_menu_bar_target *target,style_menu_bar_snapshot *bar)
 {
-    const win16_control_bar_state_view view={s,&s->instance.detached,&s->bar_keyboard,&s->bar_focus,
-        &s->bar_selected,&s->fonts.menu,&s->fonts.dpi,paint_layout,bar_paint_callback};
-    return view;
+    style_window *s=target->context;win16_style_layout l;RECT outer;
+    if(!layout(target->window,s,&l) || !GetWindowRect(target->window,&outer))return FALSE;
+    if(!win16_style_bar_read_for_window(target->window,GetMenu(target->window),s->fonts.menu,s->fonts.dpi,
+        (POINT){l.menu.left,l.menu.top},l.menu.right-l.menu.left,bar))return FALSE;
+    for(UINT i=0;i<bar->count;++i)OffsetRect(&bar->rects[i],outer.left,outer.top);
+    return TRUE;
 }
+static int bar_hit(const style_menu_bar_target *target,POINT point)
+{
+    style_window *s=target->context;win16_style_layout l;
+    if(s->instance.detached || !layout(target->window,s,&l))return STYLE_MENU_NO_ITEM;
+    return win16_control_menu_bar_hit_screen(target->window,&l,s->fonts.menu,s->fonts.dpi,point);
+}
+static void bar_paint(const style_menu_bar_target *target)
+{paint_menu_state(target->window,target->context);}
+static BOOL bar_target(HWND,style_menu_bar_target *);
+static const style_menu_bar_ops bar_ops={bar_read,bar_hit,bar_paint,bar_target,STYLE_MENU_TRACK_COLUMNS};
+static BOOL bar_target(HWND w,style_menu_bar_target *target)
+{
+    style_window *s=state(w);if(!s)return FALSE;
+    *target=(style_menu_bar_target){w,&s->instance,&s->menu,s,&bar_ops};return TRUE;
+}
+static style_menu_bar_target menu_target(HWND w,style_window *s)
+{return (style_menu_bar_target){w,&s->instance,&s->menu,s,&bar_ops};}
 static void leave_bar(HWND w,style_window *s,BOOL restore_focus)
-{const win16_control_bar_state_view view=bar_view(s);win16_control_menu_bar_leave(w,&view,restore_focus);}
-static void select_bar(HWND w,style_window *s,int direction)
-{const win16_control_bar_state_view view=bar_view(s);win16_control_menu_bar_select(w,&view,direction);}
-
-static int bar_at_screen(HWND w,style_window *s,POINT point)
-{
-    win16_style_layout l;
-    if(s->instance.detached || !layout(w,s,&l))return -3;
-    return win16_control_menu_bar_hit_screen(w,&l,s->fonts.menu,s->fonts.dpi,point);
-}
-
-static menu_frame *menu_current(void)
-{return tracking_menu;}
-static void menu_begin(menu_frame *frame)
-{tracking_menu=frame;frame->hook=SetWindowsHookExW(WH_GETMESSAGE,menu_filter,NULL,GetCurrentThreadId());}
-static void menu_end(menu_frame *frame)
-{if(frame->hook)UnhookWindowsHookEx(frame->hook);tracking_menu=frame->previous;}
-
-static void open_bar(HWND w,style_window *s,int index)
-{
-    const win16_control_menu_bar_services services={menu_current,menu_begin,menu_end,layout,state,leave_bar,paint_menu_state,select_bar};
-    win16_control_open_menu_bar(w,s,index,&services);
-}
-
+{const style_menu_bar_target t=menu_target(w,s);style_menu_bar_finish(&t,restore_focus);}
 static BOOL refresh_font(HWND w,void *context)
 {style_window *s=context;return win16_control_refresh_frame_fonts(w,&s->fonts);}
 
@@ -197,7 +174,7 @@ static LRESULT CALLBACK style_proc_body(HWND w,UINT msg,WPARAM wp,LPARAM lp,
 {
     (void)id;
     const style_frame_message_ops message={(void *)data,measure_client,activate_frame,paint,paint_buffered_callback,frame_hit,refresh_font};
-    const win16_control_frame_input_services input={menu_current,menu_begin,menu_end,layout,bar_at_screen,paint_menu_state,select_bar,leave_bar,open_bar,button_view};
-    const win16_control_frame_dispatch_services services={&message,&input,paint_button_state,&tracking_menu,win16_style_frame_terminal};
+    const win16_control_frame_input_services input={layout,menu_target,button_view};
+    const win16_control_frame_dispatch_services services={&message,&input,paint_button_state,win16_style_frame_terminal};
     return win16_control_frame_dispatch(w,(style_window *)data,msg,wp,lp,&services);
 }

@@ -4,6 +4,8 @@
 #include "caption.h"
 #include "system_menu.h"
 #include "lib-win32-style/application/menu/menu_input.h"
+#include "lib-win32-style/application/menu/tracking.h"
+#include "lib-win32-style/application/menu/bar_controller.h"
 #include "lib-win32-style/application/window/native_frame.h"
 #include "lib-win32-style/application/window/messages.h"
 #include "lib-win32-style/application/window/install.h"
@@ -19,13 +21,11 @@
 #include <windowsx.h>
 
 static const WCHAR frame_property[]=L"Win2kStyle.Frame";
-static const WCHAR menu_property[]=L"Win2kStyle.Menu";
-static const WCHAR menu_keyboard_property[]=L"Win2kStyle.MenuKeyboard";
-static const WCHAR menu_focus_property[]=L"Win2kStyle.MenuFocus";
 typedef struct frame_window {
     style_instance instance;
     style_native_frame native;
     style_caption_button button;
+    style_menu_owner menu;
 } frame_window;
 static LRESULT CALLBACK frame_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static frame_window *frame_state(HWND window)
@@ -89,16 +89,27 @@ static void offset_menu(HWND window,RECT *rect)
     OffsetRect(rect,-frame_shift(window,TRUE),-menu_shift(window)-frame_shift(window,FALSE));
 }
 
+static style_menu_bar_inclusion compact_item(const MENUITEMINFOW *item,UINT *flags)
+{
+    (void)flags;
+    return (item->fType&(MFT_OWNERDRAW|MFT_MENUBREAK|MFT_MENUBARBREAK|MFT_SEPARATOR|MFT_RIGHTJUSTIFY)) || item->hbmpItem?
+        STYLE_MENU_BAR_UNSUPPORTED:STYLE_MENU_BAR_INCLUDE;
+}
+static BOOL menu_snapshot(HWND window,style_menu_bar_snapshot *bar)
+{
+    const style_menu_bar_profile profile={.include=compact_item,.native_rects=TRUE};
+    return style_menu_bar_read(window,GetMenu(window),(POINT){0,0},0,&profile,NULL,bar);
+}
 static int menu_item_at(HWND window,POINT point,RECT *bounds)
 {
-    HMENU menu=GetMenu(window);if(!menu || !compact_enabled(window))return -1;
-    int count=GetMenuItemCount(menu);
-    for(int i=0;i<count;++i){
-        RECT r;if(!GetMenuItemRect(window,menu,(UINT)i,&r))return -1;
-        offset_menu(window,&r);
-        if(PtInRect(&r,point)){if(bounds)*bounds=r;return i;}
+    if(!GetMenu(window) || !compact_enabled(window))return -1;
+    style_menu_bar_snapshot bar;if(!menu_snapshot(window,&bar))return -1;
+    int found=-1;
+    for(UINT i=0;i<bar.count;++i){
+        RECT r=bar.rects[i];offset_menu(window,&r);
+        if(PtInRect(&r,point)){if(bounds)*bounds=r;found=(int)bar.items[i].position;break;}
     }
-    return -1;
+    style_menu_bar_free(&bar);return found;
 }
 
 static BOOL menu_bar_at(HWND window,POINT point)
@@ -106,41 +117,6 @@ static BOOL menu_bar_at(HWND window,POINT point)
     MENUBARINFO bar={.cbSize=sizeof(bar)};
     if(!GetMenu(window) || !compact_enabled(window) || !GetMenuBarInfo(window,OBJID_MENU,0,&bar))return FALSE;
     offset_menu(window,&bar.rcBar);return PtInRect(&bar.rcBar,point);
-}
-
-typedef struct menu_tracking { HWND window;HMENU root,active;int selected,target;BOOL armed;struct menu_tracking *previous; } menu_tracking;
-static _Thread_local menu_tracking *active_menu;
-
-static LRESULT CALLBACK menu_filter(int code,WPARAM wp,LPARAM lp)
-{
-    if(code==MSGF_MENU && active_menu && lp){
-        MSG *message=(MSG *)lp;
-        if(message->message==WM_LBUTTONUP || message->message==WM_NCLBUTTONUP)active_menu->armed=TRUE;
-        if(message->message==WM_MOUSEMOVE || message->message==WM_NCMOUSEMOVE ||
-           message->message==WM_LBUTTONDOWN || message->message==WM_NCLBUTTONDOWN){
-            POINT point={GET_X_LPARAM(message->lParam),GET_Y_LPARAM(message->lParam)};
-            int item=menu_item_at(active_menu->window,point,NULL);
-            if(style_menu_pointer(message->message,item,active_menu->selected,-1,-1,active_menu->armed,&active_menu->target)){
-                message->message=WM_NULL;EndMenu();
-            }
-        }
-        if((message->message==WM_KEYDOWN || message->message==WM_SYSKEYDOWN) &&
-           (message->wParam==VK_LEFT || message->wParam==VK_RIGHT) && active_menu->active==active_menu->root){
-            if(!active_menu->root || style_menu_bar_arrow(active_menu->window,active_menu->root,
-                active_menu->active,(UINT)message->wParam,FALSE)){
-                HMENU bar=GetMenu(active_menu->window);int count=bar?GetMenuItemCount(bar):0;
-                int direction=message->wParam==VK_LEFT?-1:1;
-                for(int step=1;step<count;++step){
-                    int next=(active_menu->selected+direction*step+count*step)%count;
-                    MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE|MIIM_SUBMENU};
-                    if(GetMenuItemInfoW(bar,(UINT)next,TRUE,&item) && item.hSubMenu && !(item.fState&MFS_DISABLED)){
-                        active_menu->target=next;message->message=WM_NULL;EndMenu();break;
-                    }
-                }
-            }
-        }
-    }
-    return CallNextHookEx(NULL,code,wp,lp);
 }
 
 static void paint_menu(HWND window,HDC dc,const RECT *outer)
@@ -162,16 +138,18 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
     int saved=SaveDC(dc);if(saved){
         if(font)SelectObject(dc,font);
         SetBkMode(dc,TRANSPARENT);
-        int count=GetMenuItemCount(menu);uintptr_t selected=(uintptr_t)GetPropW(window,menu_property);
-        frame_window *frame=frame_state(window);BOOL inactive=!frame || !frame->native.active;
-        for(int i=0;i<count;++i){
-            WCHAR text[512]={0};MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STRING|MIIM_STATE,
-                .dwTypeData=text,.cch=ARRAYSIZE(text)-1};RECT r;
-            if(!GetMenuItemInfoW(menu,(UINT)i,TRUE,&item) || !GetMenuItemRect(window,menu,(UINT)i,&r))continue;
-            offset_menu(window,&r);OffsetRect(&r,-outer->left,-outer->top);
-            if(selected==(uintptr_t)i+1){HBRUSH active=CreateSolidBrush(RGB(0,0,128));if(active){FillRect(dc,&r,active);DeleteObject(active);}}
-            SetTextColor(dc,(inactive || (item.fState&MFS_DISABLED))?RGB(128,128,128):selected==(uintptr_t)i+1?RGB(255,255,255):RGB(0,0,0));
-            DrawTextW(dc,text,-1,&r,DT_SINGLELINE|DT_VCENTER|DT_CENTER);
+        style_menu_bar_snapshot snapshot;frame_window *frame=frame_state(window);
+        int selected=frame?frame->menu.bar.highlighted:-1;BOOL inactive=!frame || !frame->native.active;
+        if(menu_snapshot(window,&snapshot)){
+            for(UINT i=0;i<snapshot.count;++i){
+                const style_menu_bar_item *item=&snapshot.items[i];RECT r=snapshot.rects[i];
+                offset_menu(window,&r);OffsetRect(&r,-outer->left,-outer->top);
+                BOOL highlighted=selected==(int)item->position;
+                if(highlighted){HBRUSH active=CreateSolidBrush(RGB(0,0,128));if(active){FillRect(dc,&r,active);DeleteObject(active);}}
+                SetTextColor(dc,(inactive || (item->state&MFS_DISABLED))?RGB(128,128,128):highlighted?RGB(255,255,255):RGB(0,0,0));
+                DrawTextW(dc,item->text,min(511,lstrlenW(item->text)),&r,DT_SINGLELINE|DT_VCENTER|DT_CENTER);
+            }
+            style_menu_bar_free(&snapshot);
         }
         RestoreDC(dc,saved);
     }
@@ -379,100 +357,19 @@ done:
 static void paint_message(HWND window,void *context,HDC target)
 {(void)context;(void)target;paint(window);}
 
-static BOOL menu_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
+static BOOL bar_read(const style_menu_bar_target *target,style_menu_bar_snapshot *bar)
 {
-    if(message==WM_SYSCOMMAND && (wp&0xfff0)==SC_KEYMENU && lp && lp!=L' ' && compact_enabled(window)){
-        HMENU menu=GetMenu(window);int count=menu?GetMenuItemCount(menu):0;WCHAR key=(WCHAR)lp;
-        for(int i=0;i<count;++i){
-            WCHAR text[512]={0};MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STRING|MIIM_STATE,
-                .dwTypeData=text,.cch=ARRAYSIZE(text)-1};
-            if(!GetMenuItemInfoW(menu,(UINT)i,TRUE,&item) || (item.fState&MFS_DISABLED))continue;
-            if(style_menu_mnemonic(text,key,FALSE)){
-                RECT r;if(!GetMenuItemRect(window,menu,(UINT)i,&r))return TRUE;
-                offset_menu(window,&r);
-                return menu_input(window,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2));
-            }
-        }
-        return FALSE;
-    }
-    if(message!=WM_NCLBUTTONDOWN || wp!=HTMENU || !compact_enabled(window))return FALSE;
-    POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};RECT bounds;
-    int index=menu_item_at(window,point,&bounds);if(index<0)return menu_bar_at(window,point);
-    menu_tracking tracking={.window=window,.selected=index,.target=-1,
-        .armed=(GetKeyState(VK_LBUTTON)&0x8000)==0,.previous=active_menu};
-    active_menu=&tracking;HHOOK hook=SetWindowsHookExW(WH_MSGFILTER,menu_filter,NULL,GetCurrentThreadId());
-    for(;;){
-        HMENU menu=GetMenu(window);SendMessageW(window,WM_INITMENU,(WPARAM)menu,0);
-        if(!IsWindow(window) || GetMenu(window)!=menu || !compact_enabled(window))break;
-        MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE|MIIM_ID|MIIM_SUBMENU};
-        RECT native;if(!GetMenuItemInfoW(menu,(UINT)index,TRUE,&item) || (item.fState&MFS_DISABLED) ||
-                       !GetMenuItemRect(window,menu,(UINT)index,&native))break;
-        offset_menu(window,&native);bounds=native;
-        if(!SetPropW(window,menu_property,(HANDLE)(uintptr_t)(index+1)))break;
-        tracking.selected=index;tracking.target=-1;tracking.root=tracking.active=item.hSubMenu;repaint_menu(window);
-        if(item.hSubMenu)TrackPopupMenuEx(item.hSubMenu,TPM_LEFTALIGN|TPM_TOPALIGN,bounds.left,bounds.bottom,window,NULL);
-        else PostMessageW(window,WM_COMMAND,item.wID,0);
-        if(!IsWindow(window))break;
-        RemovePropW(window,menu_property);repaint_menu(window);
-        if(tracking.target<0)break;
-        index=tracking.target;
-    }
-    if(hook)UnhookWindowsHookEx(hook);
-    active_menu=tracking.previous;
-    if(IsWindow(window))RemovePropW(window,menu_property);
+    if(!GetMenu(target->window) || !compact_enabled(target->window) || !menu_snapshot(target->window,bar))return FALSE;
+    for(UINT i=0;i<bar->count;++i)offset_menu(target->window,&bar->rects[i]);
     return TRUE;
 }
-
-static void leave_menu_keyboard(HWND window,BOOL restore)
-{
-    HWND focus=(HWND)RemovePropW(window,menu_focus_property);
-    RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);
-    if(restore && focus && IsWindow(focus) && GetFocus()==window)SetFocus(focus);
-    if(IsWindow(window))repaint_menu(window);
-}
-
-static BOOL menu_keyboard_input(HWND window,UINT message,WPARAM wp,LPARAM lp)
-{
-    HMENU menu=GetMenu(window);
-    if(!menu || !compact_enabled(window))return FALSE;
-    uintptr_t selected=(uintptr_t)GetPropW(window,menu_keyboard_property);
-    if(message==WM_SYSCOMMAND && (wp&0xfff0)==SC_KEYMENU && !lp){
-        if(selected)leave_menu_keyboard(window,TRUE);
-        else if(GetMenuItemCount(menu)>0){
-            HWND focus=GetFocus();if(focus)SetPropW(window,menu_focus_property,focus);
-            if(!SetPropW(window,menu_keyboard_property,(HANDLE)(uintptr_t)1))return FALSE;
-            SetPropW(window,menu_property,(HANDLE)(uintptr_t)1);SetFocus(window);repaint_menu(window);
-        }
-        return TRUE;
-    }
-    if(!selected)return FALSE;
-    if(message==WM_KILLFOCUS){leave_menu_keyboard(window,FALSE);return FALSE;}
-    if(message==WM_NCLBUTTONDOWN){leave_menu_keyboard(window,FALSE);return FALSE;}
-    if(message!=WM_KEYDOWN && message!=WM_SYSKEYDOWN)return FALSE;
-    style_menu_key_action action=style_menu_key(wp);
-    if(action==STYLE_MENU_KEY_LEAVE){leave_menu_keyboard(window,TRUE);return TRUE;}
-    if(action==STYLE_MENU_KEY_PREVIOUS || action==STYLE_MENU_KEY_NEXT){
-        int count=GetMenuItemCount(menu),direction=action==STYLE_MENU_KEY_PREVIOUS?-1:1,index=(int)selected-1;
-        for(int step=1;step<=count;++step){int next=(index+direction*step+count*step)%count;
-            MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE};
-            if(GetMenuItemInfoW(menu,(UINT)next,TRUE,&item) && !(item.fState&MFS_DISABLED)){
-                SetPropW(window,menu_keyboard_property,(HANDLE)(uintptr_t)(next+1));
-                SetPropW(window,menu_property,(HANDLE)(uintptr_t)(next+1));repaint_menu(window);break;
-            }}
-        return TRUE;
-    }
-    if(action==STYLE_MENU_KEY_OPEN){
-        RECT r;if(GetMenuItemRect(window,menu,(UINT)(selected-1),&r)){
-            offset_menu(window,&r);
-            menu_input(window,WM_NCLBUTTONDOWN,HTMENU,MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2));
-            if(IsWindow(window) && GetPropW(window,menu_keyboard_property)){
-                SetPropW(window,menu_property,(HANDLE)selected);repaint_menu(window);
-            }
-        }
-        return TRUE;
-    }
-    return FALSE;
-}
+static int bar_hit(const style_menu_bar_target *target,POINT point)
+{int item=menu_item_at(target->window,point,NULL);return item<0?STYLE_MENU_NO_ITEM:item;}
+static void bar_paint(const style_menu_bar_target *target)
+{repaint_menu(target->window);}
+static const style_menu_bar_ops bar_ops={.read=bar_read,.hit=bar_hit,.paint=bar_paint,.navigation=STYLE_MENU_TRACK_NATIVE_POPUPS};
+static style_menu_bar_target menu_target(HWND w,frame_window *frame)
+{return (style_menu_bar_target){w,&frame->instance,&frame->menu,frame,&bar_ops};}
 
 static BOOL button_input(HWND window,frame_window *frame,UINT message,WPARAM wp,LPARAM lp)
 {
@@ -524,7 +421,7 @@ static void recalculate_frame(HWND window)
 
 static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_instance *instance)
 {
-    DWORD incoming=GetLastError();
+    DWORD incoming=GetLastError();frame_window *frame=(frame_window *)instance;
     if(compact_enabled(window) && style_frame_suppress_native_theme(message,IsIconic(window),GetMenu(window)!=NULL)){
         SetLastError(incoming);return 0;
     }
@@ -553,22 +450,19 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
     if((message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONDBLCLK) && wp==HTBORDER && compact_enabled(window)){
         POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
         if(style_menu_route_click(message,wp,menu_bar_at(window,point))==HTMENU){
-            if(message==WM_NCLBUTTONDOWN)menu_input(window,message,HTMENU,lp);
+            if(message==WM_NCLBUTTONDOWN){const style_menu_bar_target t=menu_target(window,frame);style_menu_bar_input(&t,message,HTMENU,lp);}
             SetLastError(incoming);return 0;
         }
     }
-    if(message==WM_ENTERMENULOOP)win2k_system_menu_begin(window);
-    else if(message==WM_INITMENUPOPUP && HIWORD(lp))win2k_system_menu_set(window,(HMENU)wp);
-    else if(message==WM_ENTERIDLE && wp==MSGF_MENU)win2k_system_menu_idle(window);
-    else if(message==WM_EXITMENULOOP)win2k_system_menu_end(window,FALSE);
-    else if(message==WM_NCDESTROY)win2k_system_menu_end(window,TRUE);
-    if(message==WM_COMMAND && !lp && GetPropW(window,menu_keyboard_property))leave_menu_keyboard(window,TRUE);
-    if(active_menu && active_menu->window==window){
-        if(message==WM_INITMENUPOPUP)active_menu->active=(HMENU)wp;
-        else if(message==WM_UNINITMENUPOPUP && active_menu->active==(HMENU)wp)active_menu->active=active_menu->root;
+    LRESULT menu_result=0;
+    if(message==WM_NCDESTROY)style_menu_owner_stop(&frame->menu);
+    else if(style_menu_owner_message(&frame->menu,window,message,wp,lp,&win2k_system_menu_operations,NULL,&menu_result)){
+        SetLastError(incoming);return menu_result;
     }
-    if(menu_keyboard_input(window,message,wp,lp)){SetLastError(incoming);return 0;}
-    if(menu_input(window,message,wp,lp)){SetLastError(incoming);return 0;}
+    const style_menu_bar_target menu=menu_target(window,frame);
+    if(message==WM_COMMAND && !lp && frame->menu.bar.keyboard)style_menu_bar_finish(&menu,TRUE);
+    style_menu_tracking_update(window,message,wp,lp);
+    if(style_menu_bar_input(&menu,message,wp,lp)){SetLastError(incoming);return 0;}
     if(button_input(window,(frame_window *)instance,message,wp,lp)){SetLastError(incoming);return 0;}
     BOOL repaint=FALSE;
     if(message==WM_NCACTIVATE)((frame_window *)instance)->native.active=(BOOL)wp;
@@ -576,7 +470,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
         WPARAM hit=wp+1;style_native_frame *native=&((frame_window *)instance)->native;
         if(native->hover!=hit){native->hover=hit;repaint=TRUE;}
     }else if(message==WM_NCMOUSELEAVE){((frame_window *)instance)->native.hover=0;repaint=TRUE;}
-    if(message==WM_NCDESTROY){RemovePropW(window,menu_focus_property);RemovePropW(window,menu_keyboard_property);RemovePropW(window,menu_property);RemovePropW(window,frame_property);style_instance_detach(instance);}
+    if(message==WM_NCDESTROY){RemovePropW(window,frame_property);style_instance_detach(instance);}
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();
@@ -687,6 +581,10 @@ static BOOL setup_frame(HWND window,void *context)
 }
 static void rollback_frame(HWND window,void *context)
 {(void)context;RemovePropW(window,frame_property);}
+static void dispose_frame(void *context)
+{
+    frame_window *frame=context;style_menu_owner_stop(&frame->menu);free(frame);
+}
 BOOL win2k_frame_attach(HWND window)
 {
     if(!window || !win32_style_window_current_thread(window))return FALSE;
@@ -697,7 +595,8 @@ BOOL win2k_frame_attach(HWND window)
     if(pending && style_instance_lookup(window,pending_frame_proc))return TRUE;
     frame_window *frame=calloc(1,sizeof(*frame));
     if(!frame){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    style_instance_init(&frame->instance,frame,free);
+    frame->menu.bar.selected=frame->menu.bar.highlighted=-1;
+    style_instance_init(&frame->instance,frame,dispose_frame);
     const style_frame_install_ops ops={.context=frame,.setup=pending?NULL:setup_frame,.rollback=rollback_frame};
     return style_frame_install(&frame->instance,window,pending?pending_frame_proc:frame_proc,NULL,&ops);
 }
@@ -722,7 +621,8 @@ BOOL win2k_frame_remove(HWND window)
     }
     style_instance *instance=style_instance_lookup(window,frame_proc);
     if(!instance)return FALSE;
-    if((active_menu && active_menu->window==window) || ((frame_window *)instance)->button.pressed){
+    style_menu_tracking *tracking=style_menu_tracking_current();
+    if((tracking && tracking->window==window) || ((frame_window *)instance)->button.pressed){
         SetLastError(ERROR_BUSY);return FALSE;
     }
     RECT client;BOOL normal=!IsIconic(window) && !IsZoomed(window);
@@ -731,10 +631,9 @@ BOOL win2k_frame_remove(HWND window)
     if(!style_instance_detach(instance)){style_instance_release(instance);return FALSE;}
 
     RemovePropW(window,frame_property);
-    if(GetPropW(window,menu_keyboard_property))leave_menu_keyboard(window,TRUE);
-    else {RemovePropW(window,menu_focus_property);RemovePropW(window,menu_property);}
-    win2k_system_menu_end(window,TRUE);
     frame_window *frame=(frame_window *)instance;
+    if(frame->menu.bar.keyboard){const style_menu_bar_target menu=menu_target(window,frame);style_menu_bar_finish(&menu,TRUE);}
+    style_menu_owner_stop(&frame->menu);
     HRESULT status=style_native_frame_restore_policy(window,&frame->native,DwmSetWindowAttribute);
     if(FAILED(status)){style_instance_release(instance);SetLastError(HRESULT_CODE(status));return FALSE;}
     style_native_frame_restore_geometry(window,&frame->native,&client,normal);

@@ -9,7 +9,7 @@
 #include "lib-win32-style/appearance/win3x/window/frame_view.h"
 #include "lib-win32-style/appearance/win3x/window/frame_font.h"
 #include "lib-win32-style/appearance/win3x/common/font.h"
-#include "lib-win32-style/appearance/win3x/menu/menu_message.h"
+#include "lib-win32-style/appearance/win3x/menu/menu_items.h"
 #include <commctrl.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -25,7 +25,7 @@ typedef struct uwp_frame {
     style_font_pair fonts;
     style_bitmap bitmap;
     win16_style_layout layout;
-    style_window *menu;
+    style_menu_owner menu;
     HWND menu_window;
     unsigned action_count;
     frame_action actions[];
@@ -49,8 +49,7 @@ static void dispose(void *context)
 {
     uwp_frame *s=context;
     style_bitmap_dispose(&s->bitmap);
-    s->menu->fonts.menu=NULL; /* The frame owns the font lease. */
-    win16_control_frame_state_dispose(s->menu);
+    style_menu_owner_stop(&s->menu);
     style_font_pair_dispose(&s->fonts,win16_control_release_frame_fonts);
     free(s);
 }
@@ -62,9 +61,7 @@ static void before_title_remove(void *context)
 static void after_title_remove(void *context)
 {
     uwp_frame *s=context;
-    s->menu->instance.detached=TRUE;
-    while(s->menu->menus)win16_control_frame_state_end_menu(s->menu);
-    style_menu_restore(&s->menu->menu_items);
+    style_menu_owner_stop(&s->menu);
 }
 static BOOL geometry(uwp_frame *s,RECT *outer)
 {
@@ -74,7 +71,6 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
     UINT dpi=GetDpiForWindow(s->host.owner);
     if(!win16_uwp_frame_layout(size,dpi,(DWORD)GetWindowLongPtrW(s->host.owner,GWL_STYLE),zoomed,content,&s->layout))return FALSE;
     if(dpi!=s->fonts.dpi && !win16_control_refresh_frame_fonts(s->host.owner,&s->fonts))return FALSE;
-    s->menu->fonts.dpi=s->fonts.dpi;s->menu->fonts.menu=s->fonts.menu;
     return !s->host.instance.detached;
 }
 static BOOL cached_layout(HWND w,void *context,win16_style_layout *layout)
@@ -174,13 +170,12 @@ static void system_menu(uwp_frame *s)
         }
     }
 }
-static void surface_menu_button(HWND w,style_window *menu,int hit)
-{(void)w;(void)menu;(void)hit;}
 static BOOL surface_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,LRESULT *output)
 {
     uwp_frame *s=context;LRESULT result=0;
-    if(message==WM_ENTERMENULOOP)win16_control_frame_state_enter_menu(s->menu);
-    if(win16_control_menu_message(w,s->menu,message,a,b,surface_menu_button,&result)){
+    win16_style_palette palette;win16_style_default_palette(&palette);
+    win16_style_menu_theme theme={&palette,s->fonts.menu,s->fonts.dpi,NULL,NULL};
+    if(style_menu_owner_message(&s->menu,w,message,a,b,&win16_style_menu_operations,&theme,&result)){
         *output=result;return TRUE;
     }
     if(message==WM_ENTERIDLE){if(a==MSGF_MENU)menu_present(s,(HWND)b);*output=0;return TRUE;}
@@ -188,10 +183,10 @@ static BOOL surface_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,
         s,input_hit,input_button,input_invoke,refresh};
     return style_uwp_input_message(&view,message,a,b,output);
 }
-static void menu_button(HWND w,style_window *menu,int hit)
+static void menu_button(HWND w,void *context,BOOL selected)
 {
-    (void)hit;uwp_frame *s=lookup(w);
-    if(s&&!s->host.instance.detached){s->no_menu=menu->system_menu;refresh(s);}
+    (void)w;uwp_frame *s=context;
+    if(!s->host.instance.detached){s->no_menu=selected;refresh(s);}
 }
 static BOOL owner_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,LRESULT *result)
 {
@@ -202,8 +197,9 @@ static BOOL owner_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,LR
         system_menu(s);*result=0;return TRUE;
     }
     if(!s->host.instance.detached){
-        if(message==WM_ENTERMENULOOP)win16_control_frame_state_enter_menu(s->menu);
-        return win16_control_menu_message(w,s->menu,message,a,b,menu_button,result);
+        win16_style_palette palette;win16_style_default_palette(&palette);
+        win16_style_menu_theme theme={&palette,s->fonts.menu,s->fonts.dpi,s,menu_button};
+        return style_menu_owner_message(&s->menu,w,message,a,b,&win16_style_menu_operations,&theme,result);
     }
     return FALSE;
 }
@@ -218,9 +214,6 @@ static BOOL apply_actions(HWND w,HWND title,const win16_uwp_frame_action *action
     if(lookup(w)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
     if(title && GetParent(title)!=w){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     uwp_frame *s=calloc(1,sizeof(*s)+(size_t)count*sizeof(frame_action));if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    s->menu=win16_control_frame_state_create();
-    if(!s->menu){free(s);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    win16_style_default_palette(&s->menu->palette);
     s->action_count=count;
     for(unsigned i=0;i<count;++i)s->actions[i].value=actions[i];
     s->host=(style_uwp_host){.owner=w,.title=title,.surface_message=surface_message,

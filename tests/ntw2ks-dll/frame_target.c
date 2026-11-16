@@ -303,7 +303,8 @@ static DWORD WINAPI menu_physical_thread(void *parameter)
         else probe->input=SetCursorPos(probe->second.x,probe->second.y) && probe->input;
         Sleep(350);
         probe->second_paints=InterlockedCompareExchange(&menu_frame_paints,0,0);
-        probe->closed_before_escape=GetPropW(probe->window,L"Win2kStyle.Menu")==NULL;
+        GUITHREADINFO state={.cbSize=sizeof(state)};
+        probe->closed_before_escape=GetGUIThreadInfo(GetWindowThreadProcessId(probe->window,NULL),&state) && !(state.flags&GUI_INMENUMODE);
         PostMessageW(probe->window,WM_KEYDOWN,VK_ESCAPE,1);Sleep(200);
     }
     PostMessageW(probe->window,WM_APP+1,0,0);return 0;

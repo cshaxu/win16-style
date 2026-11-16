@@ -1,6 +1,6 @@
 #include "system_menu.h"
 #include "lib-win32-style/application/menu/menu_snapshot.h"
-#include "lib-win32-style/application/menu/menu_input.h"
+#include "lib-win32-style/application/menu/popup.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include <oleacc.h>
 #include <commctrl.h>
@@ -82,94 +82,50 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     RestoreDC(dc,saved);if(bold)DeleteObject(bold);if(font)DeleteObject(font);free(rows);return valid;
 }
 
-typedef struct menu_scope menu_scope;
-struct menu_scope { HWND owner,popup;HMENU menu;menu_scope *previous;unsigned calls;int selection;BOOL detached,painted; };
-static _Thread_local menu_scope *scopes;
-static _Thread_local HHOOK message_hook;
-static LRESULT CALLBACK menu_popup_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
-static int selected_item(HMENU menu);
-
-static void popup_paint(HWND window,menu_scope *scope,HDC target,BOOL window_coordinates)
+typedef struct menu_presentation { HMENU menu; } menu_presentation;
+static BOOL accept_popup(void *context,HWND window)
 {
-    if(scope->detached || !scope->menu)return;
-    HDC dc=target?target:GetDC(window);if(!dc)return;
-    BOOL painted=FALSE;
-    RECT client;
+    menu_presentation *s=context;
+    return s->menu && style_menu_popup_is(window,s->menu);
+}
+static BOOL selected_item(style_menu_popup *popup,ULONGLONG *selected)
+{
+    menu_presentation *s=style_menu_popup_context(popup);int count=GetMenuItemCount(s->menu);
+    if(count<0)return FALSE;
+    *selected=0;
+    for(int i=0;i<count;++i){MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE};
+        if(GetMenuItemInfoW(s->menu,(UINT)i,TRUE,&item) && (item.fState&MFS_HILITE)){
+            *selected=(ULONGLONG)i+1;break;}}
+    return TRUE;
+}
+static BOOL popup_paint(style_menu_popup *popup,HDC target,BOOL window_coordinates)
+{
+    HWND window=style_menu_popup_window(popup);menu_presentation *s=style_menu_popup_context(popup);
+    if(!s->menu)return FALSE;
+    HDC dc=target?target:GetDC(window);if(!dc)return FALSE;
+    BOOL painted=FALSE;RECT client;
     if(!target && GetClientRect(window,&client)){
         style_present_buffer buffer;
         BOOL ready=style_present_buffer_begin(&buffer,dc,&client,TRUE);
-        if(ready)painted=win2k_system_menu_paint(window,scope->menu,buffer.memory,FALSE);
-        BOOL committed=style_present_buffer_end(&buffer,ready && painted && !scope->detached);
+        if(ready)painted=win2k_system_menu_paint(window,s->menu,buffer.memory,FALSE);
+        BOOL committed=style_present_buffer_end(&buffer,ready && painted && style_menu_popup_live(popup));
         painted=painted && committed;
     }
-    if(!painted && !scope->detached)
-        painted=win2k_system_menu_paint(window,scope->menu,dc,window_coordinates);
+    if(!painted && style_menu_popup_live(popup))painted=win2k_system_menu_paint(window,s->menu,dc,window_coordinates);
     if(!target)ReleaseDC(window,dc);
-    if(painted && !target && !scope->detached){scope->selection=selected_item(scope->menu);scope->painted=TRUE;}
+    return painted;
 }
-static int selected_item(HMENU menu)
+static const style_menu_popup_ops popup_ops={accept_popup,NULL,popup_paint,selected_item,free,FALSE,TRUE};
+static style_menu_popup_scope *begin_menu(void *context,HWND owner)
 {
-    int count=GetMenuItemCount(menu);
-    for(int i=0;i<count;++i){MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE};
-        if(GetMenuItemInfoW(menu,(UINT)i,TRUE,&item) && (item.fState&MFS_HILITE))return i;}
-    return -1;
+    (void)context;menu_presentation *s=calloc(1,sizeof(*s));if(!s)return NULL;
+    style_menu_popup_scope *scope=style_menu_popup_begin(owner,&popup_ops,s);
+    if(!scope)free(s);
+    return scope;
 }
-static LRESULT CALLBACK menu_popup_proc(HWND window,UINT message,WPARAM wp,LPARAM lp,UINT_PTR id,DWORD_PTR data)
+static void set_system(void *context,style_menu_popup_scope *scope,HMENU menu)
 {
-    menu_scope *scope=(menu_scope *)data;(void)id;++scope->calls;
-    BOOL mouse=message==WM_MOUSEMOVE || message==WM_NCMOUSEMOVE;
-    int before=mouse && scope->menu?selected_item(scope->menu):-1;
-    LRESULT result=DefSubclassProc(window,message,wp,lp);
-    if(!scope->detached){
-        if(message==WM_NCDESTROY){scope->popup=NULL;RemoveWindowSubclass(window,menu_popup_proc,(UINT_PTR)menu_popup_proc);}
-        else if(message==WM_PRINT && (lp&PRF_CLIENT))popup_paint(window,scope,(HDC)wp,TRUE);
-        else if(message==WM_PAINT || message==WM_WINDOWPOSCHANGED || message==WM_KEYDOWN ||
-                (mouse && scope->menu && before!=selected_item(scope->menu)))popup_paint(window,scope,NULL,FALSE);
-    }
-    if(!--scope->calls && scope->detached)free(scope);
-    return result;
+    (void)context;menu_presentation *s=style_menu_popup_scope_context(scope);
+    if(s)s->menu=menu;
 }
-static LRESULT CALLBACK menu_message(int code,WPARAM wp,LPARAM lp)
-{
-    if(code>=0 && lp && scopes){
-        const CWPSTRUCT *event=(const CWPSTRUCT *)lp;
-        if(style_menu_popup_observation(event->message)){
-            menu_scope *scope=scopes;
-            if(scope->menu && !scope->popup && style_menu_popup_is(event->hwnd,scope->menu) &&
-               SetWindowSubclass(event->hwnd,menu_popup_proc,(UINT_PTR)menu_popup_proc,(DWORD_PTR)scope))scope->popup=event->hwnd;
-        }
-    }
-    return CallNextHookEx(NULL,code,wp,lp);
-}
-void win2k_system_menu_begin(HWND owner)
-{
-    menu_scope *scope=calloc(1,sizeof(*scope));if(!scope)return;
-    if(!scopes){message_hook=SetWindowsHookExW(WH_CALLWNDPROC,menu_message,NULL,GetCurrentThreadId());
-        if(!message_hook){free(scope);return;}}
-    scope->owner=owner;scope->previous=scopes;scopes=scope;
-}
-void win2k_system_menu_set(HWND owner,HMENU menu)
-{
-    if(scopes && scopes->owner==owner)scopes->menu=menu;
-}
-void win2k_system_menu_idle(HWND owner)
-{
-    menu_scope *scope=scopes;
-    if(scope && scope->owner==owner && scope->popup && scope->menu &&
-       (!scope->painted || scope->selection!=selected_item(scope->menu))){
-        ++scope->calls;popup_paint(scope->popup,scope,NULL,FALSE);
-        if(!--scope->calls && scope->detached)free(scope);
-    }
-}
-void win2k_system_menu_end(HWND owner,BOOL all)
-{
-    menu_scope **link=&scopes;
-    while(*link){menu_scope *scope=*link;
-        if(scope->owner!=owner){link=&scope->previous;continue;}
-        *link=scope->previous;scope->detached=TRUE;
-        if(scope->popup)RemoveWindowSubclass(scope->popup,menu_popup_proc,(UINT_PTR)menu_popup_proc);
-        if(!scope->calls)free(scope);
-        if(!all)break;
-    }
-    if(!scopes && message_hook){UnhookWindowsHookEx(message_hook);message_hook=NULL;}
-}
+const style_menu_owner_ops win2k_system_menu_operations={.begin=begin_menu,.system=set_system};

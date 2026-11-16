@@ -245,3 +245,7 @@
 - [T26 S7实际远端](evidence/t26-s7-remote.json)：58现存blob、3删除路径及八文件复核。
 
 - [T26 S8菜单冻结输入](evidence/t26-s8-menu-audit.json)：菜单机制、风格及产品消费者的起始路径/摘要；未预称审计完成。
+
+- [T26 S8菜单增量验证](evidence/t26-s8-menu-development.json)：公共popup/owner/tracking/bar快照与controller的增量和两风格实际消费者结果、原始失败/重试及清理；不等于最终发布交付。
+
+- [T26 S8交付](evidence/t26-s8-delivery.json)：同快照双宽八文件先发布后测试，259项聚焦回归257通过/2项ETW skip、两项DWM旧失败及首次编排错误；完整源码/依赖/资源和摘要证据。

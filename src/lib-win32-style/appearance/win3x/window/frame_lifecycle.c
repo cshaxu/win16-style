@@ -51,7 +51,7 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     normal=!IsIconic(w)&&!IsZoomed(w);
     s=win16_control_frame_state_create();
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    s->bar_selected=-1;s->instance.owner=owner;
+    s->menu.bar.selected=-1;s->instance.owner=owner;
     s->native.pending=creating && normal && !(style&WS_VISIBLE);
     {WCHAR name[32];s->dialog=GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"#32770");}
     if(p)s->palette=*p;else win16_style_default_palette(&s->palette);
@@ -98,10 +98,9 @@ BOOL win16_control_frame_remove(HWND w,const win16_control_frame_lifecycle_servi
     if(!style_instance_detach(&s->instance)){style_instance_release(&s->instance);return FALSE;}
     if(!menu_only)style_uwp_repaint_cancel(&s->xaml);
     if(!menu_only)v->control_remove(w,s);
-    while(s->menus)win16_control_frame_state_end_menu(s);
-    style_menu_restore(&s->menu_items);
+    style_menu_owner_stop(&s->menu);
     if(!menu_only){
-        if(s->bar_keyboard)v->leave_bar(w,s,TRUE);
+        if(s->menu.bar.keyboard)v->leave_bar(w,s,TRUE);
         if(s->button.pressed && GetCapture()==w)ReleaseCapture();
         (void)style_native_frame_restore_policy(w,&s->native,v->set_window_attribute);
         style_native_frame_restore_geometry(w,&s->native,&client,normal);
@@ -129,7 +128,7 @@ BOOL win16_control_frame_terminal(HWND w,const win16_control_frame_lifecycle_ser
         style_instance_release(&s->instance);SetLastError(ERROR_INVALID_STATE);return FALSE;
     }
     style_uwp_repaint_cancel(&s->xaml);
-    while(s->menus)win16_control_frame_state_end_menu(s);
+    style_menu_owner_stop(&s->menu);
     style_instance_release(&s->instance);
     return TRUE;
 }

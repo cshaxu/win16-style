@@ -14,6 +14,9 @@ static void repaint_activate(HWND owner,void *context)
     style_client_screen(owner,&client);s->xaml_activate(owner,s,&client,normal);
 }
 static const style_uwp_repaint_services repaint_services={repaint_retain,repaint_release,repaint_activate};
+typedef struct menu_selection { style_window *state;win16_control_menu_button_painter paint; } menu_selection;
+static void menu_button(HWND window,void *context,BOOL selected)
+{menu_selection *s=context;(void)selected;s->paint(window,s->state,HTSYSMENU);}
 LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM lp,
     const win16_control_frame_dispatch_services *v)
 {
@@ -97,8 +100,12 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     case WM_MENUCHAR:
     case WM_INITMENUPOPUP:
     case WM_EXITMENULOOP:
-        if(win16_control_menu_message(w,s,msg,wp,lp,v->paint_button,&result))break;
+    case WM_ENTERMENULOOP: {
+        menu_selection selection={s,v->paint_button};
+        win16_style_menu_theme theme={&s->palette,s->fonts.menu,s->fonts.dpi,&selection,menu_button};
+        if(style_menu_owner_message(&s->menu,w,msg,wp,lp,&win16_style_menu_operations,&theme,&result))break;
         goto forward;
+    }
     case WM_KEYDOWN:
     case WM_KILLFOCUS:
     case WM_NCMOUSEMOVE:
@@ -118,11 +125,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
         if(win16_control_frame_input(w,s,msg,wp,lp,v->input,&result))break;
         goto forward;
     case WM_MENUSELECT:
-        if(*v->tracking_menu && (*v->tracking_menu)->window==w && lp)
-            (*v->tracking_menu)->active=(HMENU)lp;
-        goto forward;
-    case WM_ENTERMENULOOP:
-        win16_control_frame_state_enter_menu(s);
+        style_menu_tracking_update(w,msg,wp,lp);
         goto forward;
     case WM_NCDESTROY:
         (void)v->terminal(w);

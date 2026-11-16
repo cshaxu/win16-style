@@ -26,7 +26,7 @@ S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），102
 | Non-goals | 不新增风格、支持范围、权限或挂钩后端，不改注册表/系统主题；现代宿主S12、控件S9/S10、创建链S11和最终provider注册S13；不整搬私有状态或做空包装。 |
 | Reference Baseline | S7 P1 cb84dac1，188项实际包回归186通过/2项ETW skip，2项DWM旧失败未变；58现存blob/3删除路径及八文件实际远端复核。 |
 | Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S8-menu.md；冻结输入docs/etc/evidence/t26-s8-menu-audit.json。 |
-| Files And ABI Surface | application/menu、Win3x menu、Win2000 system_menu及frame/menu输入/状态、产品menu_filter与现代菜单消费者、全部相关测试；资源和八文件ABI保持。 |
+| Files And ABI Surface | application/menu、Win3x menu、Win2000 system_menu及frame/menu输入/状态、产品menu_filter/现代菜单消费者/测试；含共享运行时及CMake/导出/包门禁约束审计。旧ABI和八产物保持，如需追加兼容公共符号先冻结；ntwshk不得新增GUI导入。 |
 | Applicable Rules | M0；纯C17、MinGW GCC、Ninja、ccache；同一机制唯一实现，公共对象真正拥有状态与资源，完整操作回调；本层释放后错误上抛、外层报告。 |
 | Verification | 双宽独立/public和实际两风格：初始化、owner-draw、栏/系统/nested popup、取消、回调销毁/替换、scope/字体/打印/DC及资源；原生协议与物理输入区分。合批后同快照八文件先发布再测和远端复核。 |
 | Expected Markers | 公共scope/observer/项恢复/输入状态有真实消费者，旧实现/空转发删除；renderer只提供真实布局/绘制和命令差异，不以不同私有类型拒绝抽离。 |
@@ -40,6 +40,8 @@ S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），102
 S7已完成普通窗口公共状态/messages/install/font_pair等迁移，49个冻结输入及附加消费者有逐项最终归属。唯一干净快照双宽通过，1033个输入一致；同批八文件先发布assets根/O:/winnt，再跑188项聚焦原生回归186通过、2项ETW跳过，另2项DWM旧失败不计通过。见[交付](../etc/evidence/t26-s7-delivery.json)、[逐项审计](../etc/evidence/t26-s7-window-audit.json)与[S7记录](../history/M0-T26-S7-window.md)。S7 P1 `cb84dac1`已推送并实际fetch复核58个现存blob、3个删除路径和八文件摘要，见[远端](../etc/evidence/t26-s7-remote.json)。S7按既定范围收口，自动准入S8。
 
 所有本S构建/测试结束，已验证无存活自有夹具并清理临时快照/备份/scratch，保留.ninja/.ccache，见[清理](../etc/evidence/t26-s7-cleanup.json)。未使用computer-use或私有桌面；菜单S8、现代宿主S12、最终renderer接口S13仍按既定范围继续，T26开放。
+
+S8有限菜单审计已冻结52项（38生产/约束、14测试），三批实施顺序为popup观察/scope、owner深度与项恢复、tracking及bar输入，见[S8审计](../history/M0-T26-S8-menu.md)。已移除menu_dispatch无条件私有桌面入口，当前桌面双宽原生回归通过；结果与失败尝试见[增量证据](../etc/evidence/t26-s8-menu-development.json)。popup公共运行时已由ntwshk唯一承载，两风格实际消费且双宽原生验证通过；owner深度/项恢复/消息协议已公共化并接入普通两风格和现代菜单，删除私有message和多条生命周期/转发；tracking线程栈/输入及bar焦点/选择已公共化，两风格私有TLS/hook和property/view已删；快照/owner-draw回调及跨窗口bar控制器已公共化，两风格真实消费，旧iterator和Win2000私有输入循环已删除。当前本批52项去重聚焦开发回归通过（12公共/dispatch、40实际消费者），来源951项及原资源/边界/开发包门禁通过；唯一干净快照双宽all通过，1046个源码/测试/工具/构建输入一致；八文件已先发布assets根/O:/winnt，再完成259项聚焦回归257通过/2项管理员ETW skip，另2项DWM旧失败未变且不计通过。见[交付](../etc/evidence/t26-s8-delivery.json)。S8已本地verified，待提交推送及实际远端复核才关闭；scratch提炼后清理，保留.ninja/.ccache。
 
 ## Identifier State
 

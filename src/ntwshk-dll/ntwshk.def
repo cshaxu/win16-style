@@ -40,3 +40,14 @@ EXPORTS
     style_theme_remove
     style_theme_set
     style_theme_intercept
+    style_menu_popup_begin
+    style_menu_popup_end
+    style_menu_popup_scope_context
+    style_menu_popup_idle
+    style_menu_popup_window
+    style_menu_popup_context
+    style_menu_popup_live
+    style_menu_tracking_begin
+    style_menu_tracking_end
+    style_menu_tracking_current
+    style_menu_tracking_update

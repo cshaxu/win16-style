@@ -55,3 +55,13 @@
 | `print_resources` | `dialog/print_resources.c`; Win16 PrintDlgEx integration |
 | `print_extended` | `dialog/print_extended.c`; `tests/ntw16s-dll/print_dialog_target.c` (product integration) |
 | `classic_print_contract` | `dialog/classic_print_contract.c`; `tests/lib-win32-style/application/dialog/classic_dialog_link.c` |
+
+| `menu/popup` | `menu/popup.c` standalone and actual shared runtime: nested/non-top scopes, foreign thread rejection, owned native popup, accept/paint callback teardown and deferred disposal; profile shadow/PRINT through existing menu integration tests |
+
+| `menu/owner` | `menu/owner.c`: real subclass/native forwarding with adapted/native item policies, failed inner entry, depth restore, application mnemonic priority and stop during initialization/entry; ordinary frame, modern menu actions and Win2000 real popup integration |
+
+| `menu/tracking`, `tracking_input` | `menu/tracking.c` static/shared: PM_REMOVE, one nested dispatch, mixed hook sources, non-top end, foreign thread rejection, callback end and actual owned native popup; two-profile native menu regression |
+| `menu/bar_state` | `menu/owner.c` actual EDIT focus return/non-stealing, stopped selection and step semantics; native Win2000 F10/key/hover/nested and Win3x cancellation matrices |
+
+| `menu/bar_snapshot` | `menu/bar_snapshot.c`: custom/native geometry, copied text, original position/data, owner measurement/drawing, DC isolation, mutation failure cleanup; two appearance product menu suites |
+| `menu/bar_controller` | `menu/bar_controller.c`: both navigation policies, command/mnemonic, focus/cancel and reentrant initialization stop; Win3x cancel/NEXTMENU and Win2000 native input suites |

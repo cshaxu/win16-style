@@ -153,9 +153,9 @@ int wmain(int argc,WCHAR **argv)
     }
     {win16_style_menu_scope *outer=win16_style_menu_begin(NULL),*inner;
         CHECK(outer);inner=win16_style_menu_begin(NULL);CHECK(inner);
-        CHECK(win16_style_menu_end(outer)); /* detached owner during inner loop */
-        CHECK(win16_style_menu_end(inner));
-        outer=win16_style_menu_begin(NULL);CHECK(outer);CHECK(win16_style_menu_end(outer));
+        CHECK(style_menu_popup_end(outer)); /* detached owner during inner loop */
+        CHECK(style_menu_popup_end(inner));
+        outer=win16_style_menu_begin(NULL);CHECK(outer);CHECK(style_menu_popup_end(outer));
         printf("PASS nested menu scope outer-owner teardown and restart\n");}
     {style_window *installed;HMENU outer=CreatePopupMenu(),inner=CreatePopupMenu();MENUITEMINFOW info={.cbSize=sizeof(info)};
         CHECK(outer && inner && AppendMenuW(outer,MF_STRING,1,L"&Outer") && AppendMenuW(inner,MF_STRING,2,L"&Inner"));
@@ -163,29 +163,29 @@ int wmain(int argc,WCHAR **argv)
         {HMENU bar=CreateMenu();win16_style_layout frame;RECT window;
             CHECK(bar && AppendMenuW(bar,MF_STRING,42,L"&Action") && SetMenu(w,bar));
             style_frame_changed(w);CHECK(layout(w,installed,&frame) && GetWindowRect(w,&window));
-            installed->bar_keyboard=TRUE;installed->bar_selected=-1;
+            installed->menu.bar.keyboard=TRUE;installed->menu.bar.selected=-1;
             SendMessageW(w,STYLE_NCUAHDRAWCAPTION,0,
                 MAKELPARAM(window.left+frame.menu.left+2,window.top+frame.menu.top+2));
-            CHECK(installed->bar_selected==-1);
+            CHECK(installed->menu.bar.selected==-1);
             SendMessageW(w,STYLE_NCUAHDRAWFRAME,0,
                 MAKELPARAM(window.left+frame.menu.left+2,window.top+frame.menu.top+2));
-            CHECK(installed->bar_selected==-1);
-            installed->bar_keyboard=FALSE;
+            CHECK(installed->menu.bar.selected==-1);
+            installed->menu.bar.keyboard=FALSE;
             CHECK(SetMenu(w,NULL) && DestroyMenu(bar));style_frame_changed(w);
             printf("PASS caption drawing messages cannot change keyboard menu selection\n");}
-        SendMessageW(w,WM_ENTERMENULOOP,TRUE,0);CHECK(installed->menus && installed->menu_depth==1);
+        SendMessageW(w,WM_ENTERMENULOOP,TRUE,0);CHECK(installed->menu.loops && installed->menu.depth==1);
         SendMessageW(w,WM_INITMENUPOPUP,(WPARAM)outer,0);
-        SendMessageW(w,WM_ENTERMENULOOP,TRUE,0);CHECK(installed->menus->previous && installed->menu_depth==2);
+        SendMessageW(w,WM_ENTERMENULOOP,TRUE,0);CHECK(installed->menu.loops && installed->menu.depth==2);
         SendMessageW(w,WM_INITMENUPOPUP,(WPARAM)inner,0);
         info.fMask=MIIM_FTYPE;
         CHECK(GetMenuItemInfoW(outer,0,TRUE,&info) && (info.fType&MFT_OWNERDRAW));
         CHECK(GetMenuItemInfoW(inner,0,TRUE,&info) && (info.fType&MFT_OWNERDRAW));
-        SendMessageW(w,WM_EXITMENULOOP,TRUE,0);CHECK(installed->menus && !installed->menus->previous);
+        SendMessageW(w,WM_EXITMENULOOP,TRUE,0);CHECK(installed->menu.loops && installed->menu.depth==1);
         CHECK(GetMenuItemInfoW(outer,0,TRUE,&info) && (info.fType&MFT_OWNERDRAW));
         CHECK(GetMenuItemInfoW(inner,0,TRUE,&info) && !(info.fType&MFT_OWNERDRAW));
-        SendMessageW(w,WM_EXITMENULOOP,TRUE,0);CHECK(!installed->menus && !installed->menu_depth);
+        SendMessageW(w,WM_EXITMENULOOP,TRUE,0);CHECK(!installed->menu.loops && !installed->menu.depth);
         CHECK(GetMenuItemInfoW(outer,0,TRUE,&info) && !(info.fType&MFT_OWNERDRAW));
-        CHECK(!installed->menu_items);CHECK(DestroyMenu(outer) && DestroyMenu(inner));
+        CHECK(!installed->menu.items);CHECK(DestroyMenu(outer) && DestroyMenu(inner));
         SendMessageW(w,WM_ENTERMENULOOP,TRUE,0);CHECK(win16_style_remove(w));
         CHECK(!state(w));
         printf("PASS component menu-loop nesting and remove during loop\n");}

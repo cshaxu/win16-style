@@ -1,3 +1,4 @@
+#include "lib-win32-style/application/menu/tracking.h"
 #include "lib-win32-style/application/window/native_frame.h"
 #include "lib-win32-style/application/menu/menu_input.h"
 #include <stdio.h>
@@ -23,11 +24,7 @@
 #include <dwmapi.h>
 #include <stdlib.h>
 
-static int bar_paints;
-static BOOL test_layout(HWND w,void *context,win16_style_layout *layout)
-{(void)w;(void)context;SetRect(&layout->menu,0,0,100,20);return TRUE;}
-static void test_bar_paint(HWND w,void *context){(void)w;(void)context;++bar_paints;}
-static int test_bar_hit(void *context,POINT point){(void)point;return *(int *)context;}
+static int test_bar_hit(const style_menu_tracking *frame,POINT point){(void)point;return *(int *)frame->context;}
 static void test_frame_paint(HWND w,void *context,HDC dc)
 {(void)w;if(dc)++*(int *)context;}
 static int forwarded_tabs;
@@ -126,11 +123,9 @@ int main(void)
     if(!control->tab_positions || !control->font || !control->combo_fonts[0]){win16_control_state_dispose(control);return 39;}
     win16_control_state_dispose(control);
     style_window *owned=win16_control_frame_state_create();
-    if(!owned || owned->menus || owned->fonts.title || owned->fonts.menu || owned->instance.calls)return 34;
-    menu_loop outer_loop={.depth=1};owned->menus=&outer_loop;owned->menu_depth=2;
-    win16_control_frame_state_exit_menu(owned);
-    if(owned->menus!=&outer_loop || owned->menu_depth!=1){owned->menus=NULL;win16_control_frame_state_dispose(owned);return 37;}
-    owned->menus=NULL;owned->menu_depth=0;
+    if(!owned || owned->menu.loops || owned->fonts.title || owned->fonts.menu || owned->instance.calls)return 34;
+    /* Failed inner-entry ownership is covered through the public menu owner
+     * contract test; this component test retains its actual font disposal. */
     owned->fonts.title=CreateFontW(-12,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Arial");
     owned->fonts.menu=win16_style_menu_font_acquire(96);
     if(!owned->fonts.title || !owned->fonts.menu){win16_control_frame_state_dispose(owned);return 35;}
@@ -172,25 +167,24 @@ int main(void)
         !style_menu_bar_arrow(NULL,root,root,VK_UP,TRUE);
     DestroyMenu(child);DestroyMenu(root);
     if(!arrows)return 7;
-    win16_style_bar_item items[3]={{.text=L"&File"},{.text=L"E&&xit\t&X"},{.text=L"&Edit",.state=MFS_DISABLED}};
-    win16_style_bar sample={.count=3,.items=items};
-    if(win16_control_menu_bar_mnemonic(&sample,L'f')!=0 ||
-       win16_control_menu_bar_mnemonic(&sample,L'x')!=-1 ||
-       win16_control_menu_bar_mnemonic(&sample,L'e')!=-1)return 16;
-    if(win16_control_menu_bar_next(0,-1,3,TRUE)!=-2 ||
-       win16_control_menu_bar_next(-2,-1,3,TRUE)!=2 ||
-       win16_control_menu_bar_next(2,1,3,FALSE)!=0 ||
-       win16_control_menu_bar_next(1,0,3,FALSE)!=1)return 9;
-    HWND owner=NULL;HMENU active=NULL,root_menu=NULL;RECT button={0,0,10,10};
-    int hover=2,chosen=1,target=-3,direction=0;BOOL escaped=FALSE,doubled=FALSE;LPARAM click=0;
-    const win16_control_menu_input_view input={&owner,&root_menu,&active,&button,&hover,test_bar_hit,
-        &chosen,&target,&direction,&escaped,&doubled,&click};
+    style_menu_bar_item items[3]={{.text=L"&File"},{.text=L"E&&xit\t&X"},{.text=L"&Edit",.state=MFS_DISABLED}};
+    style_menu_bar_snapshot sample={.count=3,.items=items};
+    if(style_menu_bar_mnemonic(&sample,L'f',TRUE)!=0 ||
+       style_menu_bar_mnemonic(&sample,L'x',TRUE)!=-1 ||
+       style_menu_bar_mnemonic(&sample,L'e',TRUE)!=-1)return 16;
+    if(style_menu_bar_step(0,-1,3,TRUE)!=-2 ||
+       style_menu_bar_step(-2,-1,3,TRUE)!=2 ||
+       style_menu_bar_step(2,1,3,FALSE)!=0 ||
+       style_menu_bar_step(1,0,3,FALSE)!=1)return 9;
+    int hover=2;
+    style_menu_tracking input={.button={0,0,10,10},.context=&hover,.hit=test_bar_hit,
+        .selected=1,.target=STYLE_MENU_NO_ITEM,.armed=TRUE,.kind=WH_GETMESSAGE};
     MSG message={.message=WM_MOUSEMOVE,.lParam=MAKELPARAM(5,5)};
-    win16_control_menu_input(&message,&input);
-    if(message.message!=WM_NULL || target!=2)return 14;
+    style_menu_tracking_input(&input,&message);
+    if(message.message!=WM_NULL || input.target!=2)return 14;
     message.message=WM_KEYDOWN;message.wParam=VK_ESCAPE;
-    win16_control_menu_input(&message,&input);
-    if(!escaped || message.message!=WM_KEYDOWN)return 15;
+    style_menu_tracking_input(&input,&message);
+    if(!input.escape || message.message!=WM_KEYDOWN)return 15;
     style_font_pair fonts={0};LOGFONTW info={0};
     if(!win16_control_refresh_frame_fonts(NULL,&fonts) || fonts.dpi!=96 || !fonts.title || !fonts.menu ||
        GetObjectW(fonts.title,sizeof(info),&info)!=sizeof(info) || info.lfHeight!=-MulDiv(10,96,72) || info.lfWeight!=FW_BOLD){
@@ -247,7 +241,7 @@ int main(void)
     if(style_frame_set_cursor(window,(WPARAM)window,MAKELPARAM(HTCLIENT,0)) ||
        style_frame_set_cursor(window,0,MAKELPARAM(HTLEFT,0)) ||
        !style_frame_set_cursor(window,(WPARAM)window,MAKELPARAM(HTLEFT,0))){DestroyWindow(window);return 17;}
-    BOOL detached=FALSE,keyboard=TRUE;HWND focus=NULL;int selected=1;UINT bar_dpi=96;HFONT bar_font=(HFONT)GetStockObject(SYSTEM_FONT);
+    UINT bar_dpi=96;HFONT bar_font=(HFONT)GetStockObject(SYSTEM_FONT);
     BOOL frame_detached=TRUE;style_native_frame native={.pending=TRUE,.saved=TRUE,.policy=DWMNCRP_ENABLED};
     style_native_frame_activate(window,&native,&frame_detached,NULL,FALSE,test_frame_policy);
     if(frame_policy_calls!=1 || frame_policy_value!=DWMNCRP_DISABLED){DestroyWindow(window);return 31;}
@@ -255,11 +249,11 @@ int main(void)
     if(frame_policy_calls!=1){DestroyWindow(window);return 32;}
     native.pending=FALSE;style_native_frame_restore_policy(window,&native,test_frame_policy);
     if(frame_policy_calls!=2 || frame_policy_value!=native.policy){DestroyWindow(window);return 33;}
-    const win16_control_bar_state_view state={NULL,&detached,&keyboard,&focus,&selected,&bar_font,&bar_dpi,test_layout,test_bar_paint};
-    win16_control_menu_bar_leave(window,&state,FALSE);
-    if(keyboard || selected!=-1 || bar_paints!=1){DestroyWindow(window);return 12;}
-    detached=TRUE;win16_control_menu_bar_leave(window,&state,FALSE);
-    if(bar_paints!=1){DestroyWindow(window);return 13;}
+    style_menu_owner bar_owner={.bar={.keyboard=TRUE,.selected=1}};
+    style_menu_bar_leave(&bar_owner,window,FALSE);
+    if(bar_owner.bar.keyboard || bar_owner.bar.selected!=-1){DestroyWindow(window);return 12;}
+    bar_owner.detached=TRUE;
+    if(style_menu_bar_select(&bar_owner,window,0)){DestroyWindow(window);return 13;}
     RECT outer;win16_style_layout layout={0};LRESULT hit=0;
     BOOL got_rect=GetWindowRect(window,&outer);
     SetRect(&layout.menu,0,0,20,20);

@@ -53,12 +53,12 @@ void win16_control_paint_frame(HWND w,const win16_control_frame_view *view,HDC t
     r=l.outer;InflateRect(&r,-l.border+l.unit,-l.border+l.unit);
     win16_control_outline(dc,r,l.unit,l.dialog_frame?p.light:p.edge);
     if(!IsRectEmpty(&l.menu)){
-        win16_style_bar bar;POINT origin={l.menu.left,l.menu.top};
+        style_menu_bar_snapshot bar;POINT origin={l.menu.left,l.menu.top};
         win16_control_fill(dc,l.menu,p.light);
         if(win16_style_bar_read_for_window(w,GetMenu(w),*view->menu_font,*view->dpi,origin,l.menu.right-l.menu.left,&bar)){
             if(*view->bar_selected>=0 && (UINT)*view->bar_selected<bar.count)
                 bar.items[*view->bar_selected].state|=MFS_HILITE;
-            win16_style_bar_paint(&bar,dc,*view->menu_font,*view->dpi,&p);win16_style_bar_free(&bar);
+            win16_style_bar_paint(&bar,dc,*view->menu_font,*view->dpi,&p);style_menu_bar_free(&bar);
             if(*view->detached){RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);return;}
         }
         r=l.menu;r.top=r.bottom-l.unit;win16_control_fill(dc,r,p.edge);

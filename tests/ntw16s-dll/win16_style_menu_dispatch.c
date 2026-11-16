@@ -26,12 +26,10 @@ static LRESULT CALLBACK witness(HWND w,UINT m,WPARAM a,LPARAM b)
 }
 int main(void)
 {
-    WCHAR name[80];HDESK desktop;WNDCLASSW cls={0};HWND w;HMENU menu;
+    WNDCLASSW cls={0};HWND w;HMENU menu;
     unsigned i,phase,round;UINT draw[]={0x91,0x92};DWORD before,after;
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-    swprintf_s(name,80,L"StyleMenuDispatch-%lu",GetCurrentProcessId());
-    desktop=CreateDesktopW(name,NULL,NULL,0,GENERIC_ALL,NULL);
-    CHECK(desktop && SetThreadDesktop(desktop));
+    /* Owned windows on the current desktop; menu cancellation is bounded. */
     cls.lpfnWndProc=witness;cls.hInstance=GetModuleHandleW(NULL);cls.lpszClassName=L"StyleMenuDispatch";
     CHECK(RegisterClassW(&cls));
     w=CreateWindowW(cls.lpszClassName,L"File hover routing",WS_OVERLAPPEDWINDOW,

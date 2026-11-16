@@ -8,22 +8,12 @@
 #include "../menu/menu_scope.h"
 #include "../menu/menu_items.h"
 #include "lib-win32-style/application/adapters/repaint.h"
-typedef struct menu_loop {
-    win16_style_menu_scope *scope;
-    unsigned depth;
-    struct menu_loop *previous;
-} menu_loop;
 typedef struct style_window {
     style_instance instance;
     win16_style_palette palette;
     style_font_pair fonts;
-    BOOL system_menu, dialog, menu_only;
-    int bar_selected,bar_direction,bar_hover;
-    BOOL bar_keyboard;
-    HWND bar_focus;
-    style_menu_item *menu_items;
-    menu_loop *menus;
-    unsigned menu_depth;
+    BOOL dialog, menu_only;
+    style_menu_owner menu;
     style_native_frame native;
     style_caption_button button;
     BOOL xaml_icon_update;
@@ -32,8 +22,5 @@ typedef struct style_window {
 } style_window;
 
 style_window *win16_control_frame_state_create(void);
-void win16_control_frame_state_enter_menu(style_window *state);
-void win16_control_frame_state_exit_menu(style_window *state);
-void win16_control_frame_state_end_menu(style_window *state);
 void win16_control_frame_state_dispose(void *context);
 #endif

@@ -7,6 +7,20 @@ typedef enum style_menu_key_action {
     STYLE_MENU_KEY_LEAVE, STYLE_MENU_KEY_OPEN
 } style_menu_key_action;
 
+/* Native keyboard selection may include a direct command; popup switching
+ * visits enabled submenus only and never reopens the current popup. */
+static inline int style_menu_next_enabled(HMENU menu,int selected,int direction,BOOL popup_only)
+{
+    int count=GetMenuItemCount(menu);
+    for(int step=1;step<=count;++step){
+        int next=(selected+direction*step+count*step)%count;
+        MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE|MIIM_SUBMENU};
+        if((!popup_only || next!=selected) && GetMenuItemInfoW(menu,(UINT)next,TRUE,&item) &&
+           !(item.fState&MFS_DISABLED) && (!popup_only || item.hSubMenu))return next;
+    }
+    return -1;
+}
+
 /* Popup windows become discoverable during these native notifications. */
 static inline BOOL style_menu_popup_observation(UINT message)
 {

@@ -6,7 +6,7 @@ int main(void)
 {
     style_window *state=win16_control_frame_state_create();
     if(!state)return 10;
-    if(win16_control_menu_bar_next(0,1,3,FALSE)!=1){
+    if(style_menu_bar_step(0,1,3,FALSE)!=1){
         win16_control_frame_state_dispose(state);
         return 11;
     }

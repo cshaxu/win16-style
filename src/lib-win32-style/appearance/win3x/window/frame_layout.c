@@ -32,13 +32,13 @@ BOOL win16_control_measure_window(HWND w,const UINT *dpi,HFONT *menu_font,const 
     OffsetRect(&l->caption,dx,dy);OffsetRect(&l->title,dx,dy);
     OffsetRect(&l->system,dx,dy);OffsetRect(&l->minimize,dx,dy);OffsetRect(&l->maximize,dx,dy);
     if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD) && GetMenu(w)){
-        win16_style_bar bar;POINT origin={l->client.left,l->client.top};
+        style_menu_bar_snapshot bar;POINT origin={l->client.left,l->client.top};
         if(!win16_style_bar_read_for_window(w,GetMenu(w),*menu_font?*menu_font:(HFONT)GetStockObject(SYSTEM_FONT),
             *dpi,origin,l->client.right-l->client.left,&bar))return FALSE;
-        if(*detached){win16_style_bar_free(&bar);return FALSE;}
+        if(*detached){style_menu_bar_free(&bar);return FALSE;}
         if(bar.height){l->menu=l->client;l->menu.bottom=min(l->client.bottom,l->client.top+bar.height+l->unit);
             l->client.top=l->menu.bottom;}
-        win16_style_bar_free(&bar);
+        style_menu_bar_free(&bar);
     }
     {DWORD flags=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
         /* USER18:0F5F uses the inner sizing band N=F-B for the bars' outer
