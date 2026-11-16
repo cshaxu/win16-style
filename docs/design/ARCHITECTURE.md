@@ -52,6 +52,8 @@ S3已在 `application/lifecycle/instance` 实施GUI根的身份、子类安装/�
 
 S4已将启动接入迁入公共组件：`access/startup`拥有载荷解析、包内模块定位、安装/辅助进程校验及初始化/传播装配，消费者提供模块身份、依赖前缀、会话资格和API准备操作。`lib-win32/process-hook`仍是唯一挂钩后端；静态公共装配不自行引入第二份进程内后端。产品共享DLL的旧导出通过别名和必要ABI适配保留，CLI与自提权策略仍由产品提供。通用创建后激活/等待归`lib-win32/process-launch/lifecycle`；交付状态见CURRENT。
 
+S5将同位宽运行时模块校验、临时线程hook事务、请求/结果与接收重入协调归`access/runtime`；晚期初始化拥有批次、锁、回滚和保留状态，使用公开startup context和调用方注册策略，继续调用唯一process-hook后端。UWP的接入消息处理也归runtime，框架窗口关系判断调用application适配器。产品仅保留模块/协议/动作与实际风格操作；尚在产品中的API创建链（CBT、首次show和延迟WM_INITDIALOG协议）按S11与对话框装配一起归application，不能以S5局部完成声称全T迁移完成。
+
 ## 应用、恢复与挂钩生命周期
 
 普通启动、运行时和全局接入最终调用相同的窗口/控件应用机制。切换统一为移除当前风格并尽力恢复，再安装新风格；聚合阶段和逐目标错误，不为六种转换分别维护实现。用户托盘选择 Original、Win3.x、Win2000 调用同一协调器。

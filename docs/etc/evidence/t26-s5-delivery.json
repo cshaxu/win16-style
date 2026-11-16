@@ -1,0 +1,1700 @@
+{
+  "task": "M0 T26 S5 P1",
+  "status": "post-publication-verified-pending-remote",
+  "build": {
+    "candidate": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\candidate",
+    "exit_code": 0,
+    "physical_acceptance": "pending",
+    "full_matrix": "pending",
+    "clean_source": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source",
+    "status": "passed"
+  },
+  "toolchains": {
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ccache_version": "ccache version 4.13.6",
+    "toolchains": [
+      {
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "version": "16.1.0",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "architecture": "x86",
+        "target": "i686-w64-mingw32"
+      },
+      {
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "version": "16.1.0",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "architecture": "x64",
+        "target": "x86_64-w64-mingw32"
+      }
+    ]
+  },
+  "snapshot_sha256": "ab9e3d579f2919b91157f7002aa9791d1296d5bab1336c92b22451877affcf58",
+  "frozen_inputs_checked": 1005,
+  "build_stats": {
+    "x86": {
+      "time": {
+        "seconds": 151.4773259999929,
+        "exit_code": 0
+      },
+      "cache_delta": {
+        "cache_miss": 0,
+        "direct_cache_hit": 805,
+        "preprocessed_cache_hit": 0
+      }
+    },
+    "x64": {
+      "time": {
+        "seconds": 179.94911200000206,
+        "exit_code": 0
+      },
+      "cache_delta": {
+        "cache_miss": 0,
+        "direct_cache_hit": 905,
+        "preprocessed_cache_hit": 0
+      }
+    }
+  },
+  "package": {
+    "status": "PACKAGE PASS",
+    "artifacts": {
+      "run16s.exe": {
+        "architecture": "x64",
+        "version": "M0 T26",
+        "sha256": "c24b15a6d01ec8d3011c9aa207dd0dd3c5b9b781b1e6b92ffab415a6ef6ec27b",
+        "imports": [
+          "advapi32.dll",
+          "dwmapi.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "oleaut32.dll",
+          "shell32.dll",
+          "user32.dll",
+          "ntwshk64.dll"
+        ]
+      },
+      "ntw16s32.dll": {
+        "architecture": "x86",
+        "version": "M0 T26",
+        "sha256": "553151e179193c64772c40fc9bc37c6e16d2a302ceded413a4351240d09e1c23",
+        "imports": [
+          "ADVAPI32.dll",
+          "COMCTL32.dll",
+          "COMDLG32.DLL",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "ole32.dll",
+          "OLEAUT32.dll",
+          "SHELL32.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk32.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw16s64.dll": {
+        "architecture": "x64",
+        "version": "M0 T26",
+        "sha256": "fc97ba3e774147bae1ae74f513d14eec31e5953daab371f92859f67e95893667",
+        "imports": [
+          "ADVAPI32.dll",
+          "COMCTL32.dll",
+          "comdlg32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "OLEAUT32.dll",
+          "SHELL32.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk64.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw2ks32.dll": {
+        "architecture": "x86",
+        "version": "M0 T26",
+        "sha256": "14bc6ae82bc61bc4722ddfc94dbd807b4beb18afd73a4f424cb84e96a0908988",
+        "imports": [
+          "COMCTL32.dll",
+          "COMDLG32.DLL",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.DLL",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "SHCORE.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk32.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw2ks64.dll": {
+        "architecture": "x64",
+        "version": "M0 T26",
+        "sha256": "e3024625d414af29b76e1670a4e3be2c6336e0a0d3a860934258f9ba53e4888d",
+        "imports": [
+          "COMCTL32.dll",
+          "comdlg32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.dll",
+          "msvcrt.dll",
+          "SHCORE.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk64.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntwshk32.dll": {
+        "architecture": "x86",
+        "version": "M0 T26",
+        "sha256": "b90399bc286510f1020c88a1c5667be6473eb172c899cba3c884b49008be39e0",
+        "imports": [
+          "ADVAPI32.dll",
+          "KERNEL32.dll",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll"
+        ]
+      },
+      "ntwshk64.dll": {
+        "architecture": "x64",
+        "version": "M0 T26",
+        "sha256": "18309bd618bd94e3e2d90d87468465c5a851300a239e48b7bee374ee8d911d9a",
+        "imports": [
+          "ADVAPI32.dll",
+          "KERNEL32.dll",
+          "msvcrt.dll"
+        ]
+      },
+      "demo.exe": {
+        "architecture": "x64",
+        "version": "M0 T26",
+        "sha256": "75a3f20fce16a8922a2f8a0078108ee2d4ff99109c8df8e132b054f776729f48",
+        "imports": [
+          "comctl32.dll",
+          "comdlg32.dll",
+          "gdi32.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "shell32.dll",
+          "user32.dll"
+        ]
+      }
+    },
+    "original_resource_tables_per_ntw16s_dll": 18
+  },
+  "post_publication": {
+    "status": "passed-focused-with-known-baseline-failures",
+    "sha256": {
+      "demo.exe": "75a3f20fce16a8922a2f8a0078108ee2d4ff99109c8df8e132b054f776729f48",
+      "ntw16s32.dll": "553151e179193c64772c40fc9bc37c6e16d2a302ceded413a4351240d09e1c23",
+      "ntw16s64.dll": "fc97ba3e774147bae1ae74f513d14eec31e5953daab371f92859f67e95893667",
+      "ntw2ks32.dll": "14bc6ae82bc61bc4722ddfc94dbd807b4beb18afd73a4f424cb84e96a0908988",
+      "ntw2ks64.dll": "e3024625d414af29b76e1670a4e3be2c6336e0a0d3a860934258f9ba53e4888d",
+      "ntwshk32.dll": "b90399bc286510f1020c88a1c5667be6473eb172c899cba3c884b49008be39e0",
+      "ntwshk64.dll": "18309bd618bd94e3e2d90d87468465c5a851300a239e48b7bee374ee8d911d9a",
+      "run16s.exe": "c24b15a6d01ec8d3011c9aa207dd0dd3c5b9b781b1e6b92ffab415a6ef6ec27b"
+    },
+    "cases": [
+      {
+        "name": "startup-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-startup.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE STARTUP PASS success=1 begin_failure=1 prepare_rollback=1 commit_failure=1 context=1\n",
+        "seconds": 0.12056529999244958,
+        "passed": true
+      },
+      {
+        "name": "global-window-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-global-window.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE GLOBAL WINDOW bits=32 installed=1 query=1 mismatch=1 removed=1 repeated=1 reattached=1 marker=1 failed_cleanup=1 rollback=1 children=1 stop=1 invalid=1 foreign=1 cleanup=1\n",
+        "seconds": 0.11935579997953027,
+        "passed": true
+      },
+      {
+        "name": "uwp-hook-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-uwp-hook.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP_HOOK_OK valid=1 invalid=1 recursion=1 cleanup=1\n",
+        "seconds": 0.09060789999784902,
+        "passed": true
+      },
+      {
+        "name": "dc-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-frame-update-dc.exe"
+        ],
+        "exit_code": 0,
+        "output": "FRAME_UPDATE_DC_OK copied_region=1 invalid=1 cleanup=1\n",
+        "seconds": 0.1083455000189133,
+        "passed": true
+      },
+      {
+        "name": "control-link-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-win16-control-link.exe"
+        ],
+        "exit_code": 0,
+        "output": "ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1\nATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1\nCONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1\nWIN16_CONTROL_STANDALONE_LINK_OK palette=1 glyphs=12 pixel=1\n",
+        "seconds": 0.1950522999977693,
+        "passed": true
+      },
+      {
+        "name": "dialog-link-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-win16-dialog-link.exe"
+        ],
+        "exit_code": 0,
+        "output": "CLASSIC_RESULT_OK folder=1 commit=1 revoke=1 invalid_multi=1\nCLASSIC_MESSAGE_OK reject=1 navigating=1 fileok=1 hidden=1\nCLASSIC_NAVIGATION_OK scope=1 events=1 cleanup=1\nWIN16_DIALOG_STANDALONE_LINK_OK ranges=1 file_contract=1 modern_invalid=1\n",
+        "seconds": 0.5259851000155322,
+        "passed": true
+      },
+      {
+        "name": "bitmap-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-bitmap.exe"
+        ],
+        "exit_code": 0,
+        "output": "BITMAP_OK reference=1 pixels=1 reuse=1 invalid=1 resize=1 cleanup=1\n",
+        "seconds": 0.1456395999994129,
+        "passed": true
+      },
+      {
+        "name": "pixel-grid-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-pixel-grid.exe"
+        ],
+        "exit_code": 0,
+        "output": "PIXEL_GRID_OK palette=1 transparent=1 brush=1 fractional_scale=1 stride=1\n",
+        "seconds": 0.0849451000103727,
+        "passed": true
+      },
+      {
+        "name": "menu-items-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-menu-items.exe"
+        ],
+        "exit_code": 0,
+        "output": "",
+        "seconds": 0.08583570003975183,
+        "passed": true
+      },
+      {
+        "name": "theme-track-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-theme-track.exe"
+        ],
+        "exit_code": 0,
+        "output": "THEME_TRACK_OK shared=1 alias=1 combo=1 failed_close=1 nested=1 overlap=1 capacity=1\n",
+        "seconds": 0.09128719998989254,
+        "passed": true
+      },
+      {
+        "name": "dialog-hook-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-dialog-hook.exe"
+        ],
+        "exit_code": 0,
+        "output": "DIALOG HOOK PASS ordinary=1 parameter=1 return=1 error=1 begin_failure=1 rollback=1 exception_cleanup=1\n",
+        "seconds": 0.08910799998557195,
+        "passed": true
+      },
+      {
+        "name": "host-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-uwp-host.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HOST PASS owner_failure=1 ordering=1 title_reentry=1 owner_reentry=1 title_refresh=1 surface=1 surface_reentry=1 surface_destroy=1 deferred_dispose=1\n",
+        "seconds": 0.11818519997177646,
+        "passed": true
+      },
+      {
+        "name": "host-input-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-uwp-input.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP_INPUT_OK button=1 hot=1 drag=1 cancel=1 double=1 right=1 detach=1\n",
+        "seconds": 0.10596120002446696,
+        "passed": true
+      },
+      {
+        "name": "win2k-caption-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-win2k-caption.exe"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K CAPTION PASS solid gradient text invalid-input\n",
+        "seconds": 0.10295560001395643,
+        "passed": true
+      },
+      {
+        "name": "modern-hidden-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-uwp-frame-hidden.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1\n",
+        "seconds": 0.11750799999572337,
+        "passed": true
+      },
+      {
+        "name": "abi-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+          "O:\\winnt\\ntw16s32.dll"
+        ],
+        "exit_code": 0,
+        "output": "ABI PASS width=32 version=3 public=38 private-bind-exports=0\n",
+        "seconds": 0.04750510002486408,
+        "passed": true
+      },
+      {
+        "name": "frames-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-frames.exe",
+          "--private-worker"
+        ],
+        "exit_code": 0,
+        "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\n",
+        "seconds": 2.619600099977106,
+        "passed": true
+      },
+      {
+        "name": "vcl-edit-32",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-vcl-edit-module.exe",
+          "--private-worker",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\vcl-edit-module-fixture.dll"
+        ],
+        "exit_code": 0,
+        "output": "NC_REGION inside=20 outside=0 width=220\nMEMO_FRAME_PIXELS edge=5360 client=0 outer=1144\nNOEDGE_WITNESS changed=0 checked=180\nVCL_EDIT_MODULE_OK bits=32 fake_paint_rejected=1 selection=1 readonly=1 multiline=1 scroll=1 reentrant_remove=1 frame_pixels=1 nc_clip=1 noedge=1 cleanup=1\n",
+        "seconds": 1.302122299966868,
+        "passed": true
+      },
+      {
+        "name": "startup-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-startup.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE STARTUP PASS success=1 begin_failure=1 prepare_rollback=1 commit_failure=1 context=1\n",
+        "seconds": 0.09189689997583628,
+        "passed": true
+      },
+      {
+        "name": "global-window-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-global-window.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE GLOBAL WINDOW bits=64 installed=1 query=1 mismatch=1 removed=1 repeated=1 reattached=1 marker=1 failed_cleanup=1 rollback=1 children=1 stop=1 invalid=1 foreign=1 cleanup=1\n",
+        "seconds": 0.157374800008256,
+        "passed": true
+      },
+      {
+        "name": "uwp-hook-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-uwp-hook.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP_HOOK_OK valid=1 invalid=1 recursion=1 cleanup=1\n",
+        "seconds": 0.21602470002835616,
+        "passed": true
+      },
+      {
+        "name": "dc-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-frame-update-dc.exe"
+        ],
+        "exit_code": 0,
+        "output": "FRAME_UPDATE_DC_OK copied_region=1 invalid=1 cleanup=1\n",
+        "seconds": 0.11722690000897273,
+        "passed": true
+      },
+      {
+        "name": "control-link-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-win16-control-link.exe"
+        ],
+        "exit_code": 0,
+        "output": "ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1\nATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1\nCONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1\nWIN16_CONTROL_STANDALONE_LINK_OK palette=1 glyphs=12 pixel=1\n",
+        "seconds": 0.20494879997568205,
+        "passed": true
+      },
+      {
+        "name": "dialog-link-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-win16-dialog-link.exe"
+        ],
+        "exit_code": 0,
+        "output": "CLASSIC_RESULT_OK folder=1 commit=1 revoke=1 invalid_multi=1\nCLASSIC_MESSAGE_OK reject=1 navigating=1 fileok=1 hidden=1\nCLASSIC_NAVIGATION_OK scope=1 events=1 cleanup=1\nWIN16_DIALOG_STANDALONE_LINK_OK ranges=1 file_contract=1 modern_invalid=1\n",
+        "seconds": 0.44160189997637644,
+        "passed": true
+      },
+      {
+        "name": "bitmap-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-bitmap.exe"
+        ],
+        "exit_code": 0,
+        "output": "BITMAP_OK reference=1 pixels=1 reuse=1 invalid=1 resize=1 cleanup=1\n",
+        "seconds": 0.10330369998700917,
+        "passed": true
+      },
+      {
+        "name": "pixel-grid-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-pixel-grid.exe"
+        ],
+        "exit_code": 0,
+        "output": "PIXEL_GRID_OK palette=1 transparent=1 brush=1 fractional_scale=1 stride=1\n",
+        "seconds": 0.10621759999776259,
+        "passed": true
+      },
+      {
+        "name": "menu-items-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-menu-items.exe"
+        ],
+        "exit_code": 0,
+        "output": "",
+        "seconds": 0.09100539999781176,
+        "passed": true
+      },
+      {
+        "name": "theme-track-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-theme-track.exe"
+        ],
+        "exit_code": 0,
+        "output": "THEME_TRACK_OK shared=1 alias=1 combo=1 failed_close=1 nested=1 overlap=1 capacity=1\n",
+        "seconds": 0.08577439998043701,
+        "passed": true
+      },
+      {
+        "name": "dialog-hook-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-dialog-hook.exe"
+        ],
+        "exit_code": 0,
+        "output": "DIALOG HOOK PASS ordinary=1 parameter=1 return=1 error=1 begin_failure=1 rollback=1 exception_cleanup=1\n",
+        "seconds": 0.12388969998573884,
+        "passed": true
+      },
+      {
+        "name": "host-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-uwp-host.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HOST PASS owner_failure=1 ordering=1 title_reentry=1 owner_reentry=1 title_refresh=1 surface=1 surface_reentry=1 surface_destroy=1 deferred_dispose=1\n",
+        "seconds": 0.14469220000319183,
+        "passed": true
+      },
+      {
+        "name": "host-input-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-uwp-input.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP_INPUT_OK button=1 hot=1 drag=1 cancel=1 double=1 right=1 detach=1\n",
+        "seconds": 0.15634079999290407,
+        "passed": true
+      },
+      {
+        "name": "win2k-caption-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-win2k-caption.exe"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K CAPTION PASS solid gradient text invalid-input\n",
+        "seconds": 0.10463570000138134,
+        "passed": true
+      },
+      {
+        "name": "modern-hidden-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-uwp-frame-hidden.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1\n",
+        "seconds": 0.1697946999920532,
+        "passed": true
+      },
+      {
+        "name": "abi-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+          "O:\\winnt\\ntw16s64.dll"
+        ],
+        "exit_code": 0,
+        "output": "ABI PASS width=64 version=3 public=38 private-bind-exports=0\n",
+        "seconds": 0.047340900055132806,
+        "passed": true
+      },
+      {
+        "name": "frames-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-frames.exe",
+          "--private-worker"
+        ],
+        "exit_code": 0,
+        "output": "FRAME PASS six forms, client screen preservation, same geometry hit test, title/palette, maximize/minimize/restore, three exclusions\n",
+        "seconds": 2.5620465999818407,
+        "passed": true
+      },
+      {
+        "name": "vcl-edit-64",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-vcl-edit-module.exe",
+          "--private-worker",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\vcl-edit-module-fixture.dll"
+        ],
+        "exit_code": 0,
+        "output": "NC_REGION inside=20 outside=0 width=220\nMEMO_FRAME_PIXELS edge=5360 client=0 outer=1144\nNOEDGE_WITNESS changed=0 checked=180\nVCL_EDIT_MODULE_OK bits=64 fake_paint_rejected=1 selection=1 readonly=1 multiline=1 scroll=1 reentrant_remove=1 frame_pixels=1 nc_clip=1 noedge=1 cleanup=1\n",
+        "seconds": 0.9755120999761857,
+        "passed": true
+      },
+      {
+        "name": "instance-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-instance.exe"
+        ],
+        "exit_code": 0,
+        "output": "INSTANCE_OK identity=1 nested=1 successor=1 detach_failure=1 retry=1 terminal=1 final_release=1\n",
+        "seconds": 0.11426810000557452,
+        "passed": true
+      },
+      {
+        "name": "win2k-instance-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-win2k-instance-lifetime.exe"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K_STYLE_VALUES previous=84000000 returned=84000000\nWIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 cleanup=1\n",
+        "seconds": 0.16545810003299266,
+        "passed": true
+      },
+      {
+        "name": "host-start-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-uwp-host-start.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HOST START PASS success=1 owner=1 title=1 create=1 subclass=1 refresh=1 reentrant_create=1 reentrant_refresh=1\n",
+        "seconds": 0.09155999997165054,
+        "passed": true
+      },
+      {
+        "name": "global-bridge-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-global-style-bridge.exe"
+        ],
+        "exit_code": 0,
+        "output": "FOOTER child_bottom=277 client_bottom=277\nOVERLAP screen=88,122,372,130 origin=83,122 update=1 repainted=0\nGLOBAL CHILD BRIDGE 2k=1 16=1 back=1 new=1 remove=1\nGLOBAL STYLE BRIDGE bits=32 apply2k=1 switch16=1 switch2k=1 client_clean=1 immediate=1 clean_after=1 click_clean=1 footer=1 overlap=1 refreshed=1 remove2k=1 apply16=1 remove16=1 reverse=1 existing=1 takeover=1 existing2k=1 takeover16=1\n",
+        "seconds": 3.964033299998846,
+        "passed": true
+      },
+      {
+        "name": "vcl-bitbtn-32",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-vcl-bitbtn-module.exe",
+          "--private-worker",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\vcl-bitbtn-module-fixture.dll"
+        ],
+        "exit_code": 0,
+        "output": "BIT_PIXELS changed=7100 glyph=100 altered=0 clip_outside=0\nVCL_BITBTN_MODULE_OK bits=32 fake=1 foreign=1 unwind=1 nested=1 click=1 pixels=1 glyph=1 clip=1 retire=1 cleanup=1\nNESTED_EVIDENCE armed=0 hits=1 outer=1 inner=1\n",
+        "seconds": 0.3469821999897249,
+        "passed": true
+      },
+      {
+        "name": "startup-2k-32",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--2k",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+          "--frame-child"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K PROPAGATION FRAME bits=32 role=child attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=32 role=child attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\n",
+        "seconds": 0.3087882000254467,
+        "passed": true
+      },
+      {
+        "name": "instance-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-instance.exe"
+        ],
+        "exit_code": 0,
+        "output": "INSTANCE_OK identity=1 nested=1 successor=1 detach_failure=1 retry=1 terminal=1 final_release=1\n",
+        "seconds": 0.1297091000014916,
+        "passed": true
+      },
+      {
+        "name": "win2k-instance-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-win2k-instance-lifetime.exe"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K_STYLE_VALUES previous=84000000 returned=ffffffff84000000\nWIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 cleanup=1\n",
+        "seconds": 0.20835819997591898,
+        "passed": true
+      },
+      {
+        "name": "host-start-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-uwp-host-start.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP HOST START PASS success=1 owner=1 title=1 create=1 subclass=1 refresh=1 reentrant_create=1 reentrant_refresh=1\n",
+        "seconds": 0.09372710000025108,
+        "passed": true
+      },
+      {
+        "name": "global-bridge-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-global-style-bridge.exe"
+        ],
+        "exit_code": 0,
+        "output": "FOOTER child_bottom=277 client_bottom=277\nOVERLAP screen=88,122,372,130 origin=83,122 update=1 repainted=0\nGLOBAL CHILD BRIDGE 2k=1 16=1 back=1 new=1 remove=1\nGLOBAL STYLE BRIDGE bits=64 apply2k=1 switch16=1 switch2k=1 client_clean=1 immediate=1 clean_after=1 click_clean=1 footer=1 overlap=1 refreshed=1 remove2k=1 apply16=1 remove16=1 reverse=1 existing=1 takeover=1 existing2k=1 takeover16=1\n",
+        "seconds": 3.9909933999879286,
+        "passed": true
+      },
+      {
+        "name": "vcl-bitbtn-64",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-vcl-bitbtn-module.exe",
+          "--private-worker",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\vcl-bitbtn-module-fixture.dll"
+        ],
+        "exit_code": 0,
+        "output": "BIT_PIXELS changed=7100 glyph=100 altered=0 clip_outside=0\nVCL_BITBTN_MODULE_OK bits=64 fake=1 foreign=1 unwind=1 nested=1 click=1 pixels=1 glyph=1 clip=1 retire=1 cleanup=1\nNESTED_EVIDENCE armed=0 hits=1 outer=1 inner=1\n",
+        "seconds": 0.27761270001064986,
+        "passed": true
+      },
+      {
+        "name": "startup-2k-64",
+        "command": [
+          "O:\\winnt\\run16s.exe",
+          "--2k",
+          "--wait",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+          "--frame-child"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K PROPAGATION FRAME bits=64 role=child attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=64 role=child attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\n",
+        "seconds": 0.253155299986247,
+        "passed": true
+      },
+      {
+        "name": "core-style-startup-bootstrap-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-startup-bootstrap.exe"
+        ],
+        "exit_code": 0,
+        "output": "startup bootstrap pass: passive identity session restore transaction rollback\n",
+        "seconds": 0.08976150001399219,
+        "passed": true
+      },
+      {
+        "name": "core-style-startup-propagate-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-startup-propagate.exe"
+        ],
+        "exit_code": 0,
+        "output": "startup propagation pass: independent policy original creator failures discard ownership\n",
+        "seconds": 0.08182249998208135,
+        "passed": true
+      },
+      {
+        "name": "launch-payload-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\launch-payload.exe"
+        ],
+        "exit_code": 0,
+        "output": "PAYLOAD PASS generic module, machine, bounds, policy, path, termination\n",
+        "seconds": 0.08458140003494918,
+        "passed": true
+      },
+      {
+        "name": "core-process-lifecycle-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-process-lifecycle.exe"
+        ],
+        "exit_code": 0,
+        "output": "PROCESS_LIFECYCLE_PASS success=1 prepare_failure=1 resume_failure=1 exited=1\n",
+        "seconds": 0.15246060001663864,
+        "passed": true
+      },
+      {
+        "name": "print-host-policy-unit-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\print-host-policy-unit.exe"
+        ],
+        "exit_code": 0,
+        "output": "PRINT HOST POLICY PASS exact quoted ansi spoof\n",
+        "seconds": 0.08351060003042221,
+        "passed": true
+      },
+      {
+        "name": "uac-self-elevate-unit-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\uac-self-elevate-unit.exe"
+        ],
+        "exit_code": 0,
+        "output": "shell redirect unit pass\n",
+        "seconds": 0.0902514000190422,
+        "passed": true
+      },
+      {
+        "name": "ntwshk-startup-test-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\ntwshk-startup-test.exe"
+        ],
+        "exit_code": 0,
+        "output": "STARTUP_CAPACITY_OK slots=88 overflow89=1 abort_restored=89\nSTYLE STARTUP NATIVE PASS prepare_failure_rollback=1 commit=1\nC STARTUP HOOK PASS width=32 native export/abort/trampoline/commit\n",
+        "seconds": 0.0911447000107728,
+        "passed": true
+      },
+      {
+        "name": "core-process-hook-propagate-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-process-hook-propagate.exe"
+        ],
+        "exit_code": 0,
+        "output": "PROCESS HOOK PROPAGATE PASS as_user_w=1 width=32 child=1 grandchild=1 aw=1 suspended=1 disabled=1 rejected=1 error193=1 no_style=1 reentrant=1\n",
+        "seconds": 0.3673430999624543,
+        "passed": true
+      },
+      {
+        "name": "launch-staging-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\launch-staging.exe",
+          "--parent"
+        ],
+        "exit_code": 0,
+        "output": "STAGING REPEAT PASS same import metadata\nSTAGING PASS actual same-width target, payload/imports staged, original suspension retained; initialization not claimed\nSTAGING EXTERNAL PASS bits=32 mode=0 result=0 initialized=1\nSTAGING EXTERNAL PASS bits=32 mode=1 result=299 initialized=0\nSTAGING EXTERNAL PASS bits=32 mode=2 result=193 initialized=0\nSTAGING EXTERNAL PASS bits=32 mode=3 result=193 initialized=0\nLEGACY IAT PASS bits=32 zero_oft=0 initialized=1 metadata_restored=1\nLEGACY IAT PASS bits=32 zero_oft=1 initialized=1 metadata_restored=1\nLEGACY IAT REJECT PASS bits=32 mode=2 error=193 headers_unchanged=1 suspended=1\nLEGACY IAT REJECT PASS bits=32 mode=3 error=193 headers_unchanged=1 suspended=1\n",
+        "seconds": 0.5685247000074014,
+        "passed": true
+      },
+      {
+        "name": "launch-failures-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\launch-failures.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\launch-failures.exe"
+        ],
+        "exit_code": 0,
+        "output": "INSTALL FAILURE PASS width=32 restricted handle, refused DLL initialization/no entry, handle count=88/88\n",
+        "seconds": 0.3400697999750264,
+        "passed": true
+      },
+      {
+        "name": "core-style-startup-bootstrap-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-startup-bootstrap.exe"
+        ],
+        "exit_code": 0,
+        "output": "startup bootstrap pass: passive identity session restore transaction rollback\n",
+        "seconds": 0.12572290003299713,
+        "passed": true
+      },
+      {
+        "name": "core-style-startup-propagate-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-startup-propagate.exe"
+        ],
+        "exit_code": 0,
+        "output": "startup propagation pass: independent policy original creator failures discard ownership\n",
+        "seconds": 0.12154140003258362,
+        "passed": true
+      },
+      {
+        "name": "launch-payload-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\launch-payload.exe"
+        ],
+        "exit_code": 0,
+        "output": "PAYLOAD PASS generic module, machine, bounds, policy, path, termination\n",
+        "seconds": 0.09526510001160204,
+        "passed": true
+      },
+      {
+        "name": "core-process-lifecycle-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-process-lifecycle.exe"
+        ],
+        "exit_code": 0,
+        "output": "PROCESS_LIFECYCLE_PASS success=1 prepare_failure=1 resume_failure=1 exited=1\n",
+        "seconds": 0.20369220001157373,
+        "passed": true
+      },
+      {
+        "name": "print-host-policy-unit-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\print-host-policy-unit.exe"
+        ],
+        "exit_code": 0,
+        "output": "PRINT HOST POLICY PASS exact quoted ansi spoof\n",
+        "seconds": 0.09641639998881146,
+        "passed": true
+      },
+      {
+        "name": "uac-self-elevate-unit-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\uac-self-elevate-unit.exe"
+        ],
+        "exit_code": 0,
+        "output": "shell redirect unit pass\n",
+        "seconds": 0.2761715999804437,
+        "passed": true
+      },
+      {
+        "name": "ntwshk-startup-test-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\ntwshk-startup-test.exe"
+        ],
+        "exit_code": 0,
+        "output": "STARTUP_CAPACITY_OK slots=88 overflow89=1 abort_restored=89\nSTYLE STARTUP NATIVE PASS prepare_failure_rollback=1 commit=1\nC STARTUP HOOK PASS width=64 native export/abort/trampoline/commit\n",
+        "seconds": 0.09532540000509471,
+        "passed": true
+      },
+      {
+        "name": "core-process-hook-propagate-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-process-hook-propagate.exe"
+        ],
+        "exit_code": 0,
+        "output": "PROCESS HOOK PROPAGATE PASS as_user_w=1 width=64 child=1 grandchild=1 aw=1 suspended=1 disabled=1 rejected=1 error193=1 no_style=1 reentrant=1\n",
+        "seconds": 0.42189300002064556,
+        "passed": true
+      },
+      {
+        "name": "launch-staging-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\launch-staging.exe",
+          "--parent"
+        ],
+        "exit_code": 0,
+        "output": "STAGING REPEAT PASS same import metadata\nSTAGING PASS actual same-width target, payload/imports staged, original suspension retained; initialization not claimed\nSTAGING EXTERNAL PASS bits=64 mode=0 result=0 initialized=1\nSTAGING EXTERNAL PASS bits=64 mode=1 result=299 initialized=0\nSTAGING EXTERNAL PASS bits=64 mode=2 result=193 initialized=0\nSTAGING EXTERNAL PASS bits=64 mode=3 result=193 initialized=0\nLEGACY IAT PASS bits=64 zero_oft=0 initialized=1 metadata_restored=1\nLEGACY IAT PASS bits=64 zero_oft=1 initialized=1 metadata_restored=1\nLEGACY IAT REJECT PASS bits=64 mode=2 error=193 headers_unchanged=1 suspended=1\nLEGACY IAT REJECT PASS bits=64 mode=3 error=193 headers_unchanged=1 suspended=1\n",
+        "seconds": 0.45559740002499893,
+        "passed": true
+      },
+      {
+        "name": "launch-failures-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\launch-failures.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\launch-failures.exe"
+        ],
+        "exit_code": 0,
+        "output": "HELPER timeout PASS elapsed=10015 target suspension retained, owned helper exited\nHELPER target-first-exit PASS error=1067, target exit=37, owned helper exited\nINSTALL FAILURE PASS width=64 restricted handle, refused DLL initialization/no entry, handle count=56/56\n",
+        "seconds": 10.254619899962563,
+        "passed": true
+      },
+      {
+        "name": "win2k-propagation-x86-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+          "O:\\winnt\\",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+          "--frame"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K PROPAGATION FRAME bits=32 role=parent attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=32 role=parent attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nWIN2K PROPAGATION FRAME bits=32 role=child attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=32 role=child attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nNTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1\n",
+        "seconds": 0.7015356000047177,
+        "passed": true
+      },
+      {
+        "name": "win2k-propagation-x86-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+          "O:\\winnt\\",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+          "--frame"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K PROPAGATION FRAME bits=32 role=parent attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=32 role=parent attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nWIN2K PROPAGATION FRAME bits=64 role=child attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=64 role=child attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nNTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1\n",
+        "seconds": 0.5370712999720126,
+        "passed": true
+      },
+      {
+        "name": "win2k-propagation-x64-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+          "O:\\winnt\\",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+          "--frame"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K PROPAGATION FRAME bits=64 role=parent attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=64 role=parent attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nWIN2K PROPAGATION FRAME bits=32 role=child attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=32 role=child attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nNTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1\n",
+        "seconds": 0.4533188999630511,
+        "passed": true
+      },
+      {
+        "name": "win2k-propagation-x64-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+          "O:\\winnt\\",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+          "--frame"
+        ],
+        "exit_code": 0,
+        "output": "WIN2K PROPAGATION FRAME bits=64 role=parent attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=64 role=parent attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nWIN2K PROPAGATION FRAME bits=64 role=child attached=1 geometry=1 painted=1 destroyed=1\nWIN2K PROPAGATION CONTROL bits=64 role=child attached=1 removed=1 cleanup=1\nWIN2K THEME REQUEST result=00000000 active=1 while=0 after=0 tracked=1\nNTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=1\n",
+        "seconds": 0.3201759000075981,
+        "passed": true
+      },
+      {
+        "name": "win3x-propagation-matrix",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\propagate-basic.exe",
+          "--private-worker",
+          "O:\\winnt\\run16s.exe",
+          "O:\\winnt\\ntw16s32.dll",
+          "O:\\winnt\\ntw16s64.dll",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\propagate-target.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\propagate-target.exe"
+        ],
+        "exit_code": 0,
+        "output": "TREE PASS root=32 child=32 grandchild=64 A/W=0 suspended=0 generations=3\nTREE PASS root=32 child=32 grandchild=64 A/W=1 suspended=1 generations=3\nTREE PASS root=32 child=64 grandchild=64 A/W=0 suspended=1 generations=3\nTREE PASS root=32 child=64 grandchild=64 A/W=1 suspended=0 generations=3\nTREE PASS root=64 child=32 grandchild=32 A/W=0 suspended=1 generations=3\nTREE PASS root=64 child=32 grandchild=32 A/W=1 suspended=0 generations=3\nTREE PASS root=64 child=64 grandchild=32 A/W=0 suspended=0 generations=3\nTREE PASS root=64 child=64 grandchild=32 A/W=1 suspended=1 generations=3\nPROPAGATION BASIC PASS four edges, both A/W, three generations, caller suspension, actual windows/font and lineage\n",
+        "seconds": 6.540869100019336,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-style-runtime-process",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-runtime-process.exe"
+        ],
+        "exit_code": 0,
+        "output": "RUNTIME_PROCESS_OK flags=1 adoption=1 repeat=1 rollback=1 retry=1 reuse=1 sticky=1 batch_binding=1 capacity=88\n",
+        "seconds": 0.08802060002926737,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-style-window-hook",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-window-hook.exe"
+        ],
+        "exit_code": 0,
+        "output": "WINDOW_HOOK_OK reject=1 busy=1 result=1 cleanup=1 recursive=1 destroyed=1\n",
+        "seconds": 0.10387869999976829,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-style-uwp-dispatch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-uwp-dispatch.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP_DISPATCH_DIAGNOSTIC load=0 export=0 hook=0 local=0\nUWP_DISPATCH result=0 denied=5 cancelled=1223 machine=50 identity=1400 unknown=13 invalid_core=1400 other_thread=0 stopped=1\n",
+        "seconds": 0.11768309999024495,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-style-dispatch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-dispatch.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE DISPATCH child=1 success=0 denied=5 no_result=13 missing=127\nSTYLE MODULE child=1 before=0 after=0 callback=1\n",
+        "seconds": 0.17892199999187142,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-style-peer",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-style-peer.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE COMPANION PASS resolve=1 missing=1 pin=1 path=1\n",
+        "seconds": 0.0861159999622032,
+        "passed": true
+      },
+      {
+        "name": "unit-results-launch-window-target-errors",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\launch-window-target-errors.exe"
+        ],
+        "exit_code": 0,
+        "output": "WINDOW_DISPATCH_ERRORS_OK hook=1 no_error=1 identity=1 registration=1 unhook=1 original_error=1\nWINDOW_MESSAGE_OK result=1 missing=1 error=1 timeout=1 cleanup=1\nWINDOW_MODULE_ENUM_OK exhausted=1 failure=1 no_error=1 mismatch=1 cleanup=1 read=1 short=1 equal=1\n",
+        "seconds": 0.09360379999270663,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-process-hook-late-batch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-process-hook-late-batch.exe"
+        ],
+        "exit_code": 0,
+        "output": "PROCESS HOOK LATE BATCH PASS bits=32 abort=1 retry=1 installed=1 retained=1 sticky=1 limit=1 boundary_0_88_89=1\n",
+        "seconds": 0.08040870004333556,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-style-runtime-process",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-runtime-process.exe"
+        ],
+        "exit_code": 0,
+        "output": "RUNTIME_PROCESS_OK flags=1 adoption=1 repeat=1 rollback=1 retry=1 reuse=1 sticky=1 batch_binding=1 capacity=88\n",
+        "seconds": 0.1529105000081472,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-style-window-hook",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-window-hook.exe"
+        ],
+        "exit_code": 0,
+        "output": "WINDOW_HOOK_OK reject=1 busy=1 result=1 cleanup=1 recursive=1 destroyed=1\n",
+        "seconds": 0.11146149999694899,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-style-uwp-dispatch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-uwp-dispatch.exe"
+        ],
+        "exit_code": 0,
+        "output": "UWP_DISPATCH_DIAGNOSTIC load=0 export=0 hook=0 local=0\nUWP_DISPATCH result=0 denied=5 cancelled=1223 machine=50 identity=1400 unknown=13 invalid_core=1400 other_thread=0 stopped=1\n",
+        "seconds": 0.1478534000343643,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-style-dispatch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-dispatch.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE DISPATCH child=1 success=0 denied=5 no_result=13 missing=127\nSTYLE MODULE child=1 before=0 after=0 callback=1\n",
+        "seconds": 0.22858380002435297,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-style-peer",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-style-peer.exe"
+        ],
+        "exit_code": 0,
+        "output": "STYLE COMPANION PASS resolve=1 missing=1 pin=1 path=1\n",
+        "seconds": 0.09398429997963831,
+        "passed": true
+      },
+      {
+        "name": "unit-results-launch-window-target-errors",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\launch-window-target-errors.exe"
+        ],
+        "exit_code": 0,
+        "output": "WINDOW_DISPATCH_ERRORS_OK hook=1 no_error=1 identity=1 registration=1 unhook=1 original_error=1\nWINDOW_MESSAGE_OK result=1 missing=1 error=1 timeout=1 cleanup=1\nWINDOW_MODULE_ENUM_OK exhausted=1 failure=1 no_error=1 mismatch=1 cleanup=1 read=1 short=1 equal=1\n",
+        "seconds": 0.09177330002421513,
+        "passed": true
+      },
+      {
+        "name": "unit-results-core-process-hook-late-batch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-process-hook-late-batch.exe"
+        ],
+        "exit_code": 0,
+        "output": "PROCESS HOOK LATE BATCH PASS bits=64 abort=1 retry=1 installed=1 retained=1 sticky=1 limit=1 boundary_0_88_89=1\n",
+        "seconds": 0.10066410002764314,
+        "passed": true
+      },
+      {
+        "name": "product-results-launch-explorer-selection",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\launch-explorer-selection.exe"
+        ],
+        "exit_code": 0,
+        "output": "renamed_mapping_result=1306\nexplorer-selection PASS\n",
+        "seconds": 2.316808999981731,
+        "passed": true
+      },
+      {
+        "name": "product-results-launch-console-host",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\launch-console-host.exe"
+        ],
+        "exit_code": 0,
+        "output": "",
+        "seconds": 0.14614159998018295,
+        "passed": true
+      },
+      {
+        "name": "product-results-launch-console-host-errors",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\launch-console-host-errors.exe"
+        ],
+        "exit_code": 0,
+        "output": "CONSOLE_SCAN_ERRORS_OK empty=1 first=1 next=1 exhausted=1 cleanup=1\nCONSOLE_IMAGE_ERROR_OK denied=1 exited=1 cleanup=1\nCONSOLE_SCAN_FOUND_OK success=1 later_failure=1 cleanup=1\nCONSOLE_TIME_ERRORS_OK host=1 client=1 order=1 cleanup=1\nCONSOLE_ENUM_ERRORS_OK missing=1 denied=1 cleanup=1\n",
+        "seconds": 0.08548720000544563,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-existing",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "existing"
+        ],
+        "exit_code": 0,
+        "output": "LATE EXISTING bits=32 status=0 unchanged=1\n",
+        "seconds": 0.09288350003771484,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-existing-propagation",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "existing-propagation"
+        ],
+        "exit_code": 0,
+        "output": "LATE PREEXISTING bits=32 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n",
+        "seconds": 0.11926499998662621,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-retry-after-failure",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "retry-after-failure"
+        ],
+        "exit_code": 0,
+        "output": "LATE RETRY bits=32 first=5 clean=1 second=0 installed=1\n",
+        "seconds": 0.036528199969325215,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-reuse-retry",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "reuse-retry"
+        ],
+        "exit_code": 0,
+        "output": "LATE PREEXISTING bits=32 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n",
+        "seconds": 0.1085194000042975,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-x86-A-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "A"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=32 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n",
+        "seconds": 1.0982522999984212,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-x86-A-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "A",
+          "propagation-only"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=32 style_registration=0 style_flag=0\n",
+        "seconds": 0.4246082999743521,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-x86-W-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "W"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=32 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n",
+        "seconds": 0.6150994999916293,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-x86-W-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "W",
+          "propagation-only"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=32 style_registration=0 style_flag=0\n",
+        "seconds": 1.076574700011406,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-x64-A-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "A"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=64 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n",
+        "seconds": 1.170609099965077,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-x64-A-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "A",
+          "propagation-only"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=32 style_registration=0 style_flag=0\n",
+        "seconds": 0.5513679000432603,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-x64-W-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "W"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=64 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n",
+        "seconds": 0.6926933000213467,
+        "passed": true
+      },
+      {
+        "name": "late-results-x86-x64-W-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "W",
+          "propagation-only"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=32 style_registration=0 style_flag=0\n",
+        "seconds": 0.548627000011038,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-existing",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "existing"
+        ],
+        "exit_code": 0,
+        "output": "LATE EXISTING bits=64 status=0 unchanged=1\n",
+        "seconds": 0.1484562999685295,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-existing-propagation",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "existing-propagation"
+        ],
+        "exit_code": 0,
+        "output": "LATE PREEXISTING bits=64 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n",
+        "seconds": 0.12174969998886809,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-retry-after-failure",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "retry-after-failure"
+        ],
+        "exit_code": 0,
+        "output": "LATE RETRY bits=64 first=5 clean=1 second=0 installed=1\n",
+        "seconds": 0.03363670001272112,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-reuse-retry",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "reuse-retry"
+        ],
+        "exit_code": 0,
+        "output": "LATE PREEXISTING bits=64 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n",
+        "seconds": 0.08870000002207235,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-x86-A-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "A"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=32 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n",
+        "seconds": 1.1141758000012487,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-x86-A-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "A",
+          "propagation-only"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=64 style_registration=0 style_flag=0\n",
+        "seconds": 1.1367067000246607,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-x86-W-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "W"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=32 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n",
+        "seconds": 0.755868099979125,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-x86-W-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "W",
+          "propagation-only"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=64 style_registration=0 style_flag=0\n",
+        "seconds": 1.0973709999816492,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-x64-A-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "A"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=64 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n",
+        "seconds": 0.502750100044068,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-x64-A-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "A",
+          "propagation-only"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=64 style_registration=0 style_flag=0\n",
+        "seconds": 0.3959080000058748,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-x64-W-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "W"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=64 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n",
+        "seconds": 0.48101549997227266,
+        "passed": true
+      },
+      {
+        "name": "late-results-x64-x64-W-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\winnt\\",
+          "W",
+          "propagation-only"
+        ],
+        "exit_code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=64 style_registration=0 style_flag=0\n",
+        "seconds": 0.41187660000286996,
+        "passed": true
+      },
+      {
+        "name": "window-thread-results-x86",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-window-thread.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\ntw16s32.dll"
+        ],
+        "exit_code": 0,
+        "output": "window-thread PASS width=32 direct=0\n",
+        "seconds": 0.13382250000722706,
+        "passed": true
+      },
+      {
+        "name": "window-thread-results-x86-direct",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-window-thread.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\ntw16s32.dll",
+          "--direct"
+        ],
+        "exit_code": 0,
+        "output": "window-thread PASS width=32 direct=1\n",
+        "seconds": 0.06600399996386841,
+        "passed": true
+      },
+      {
+        "name": "window-thread-results-x64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-window-thread.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\ntw16s64.dll"
+        ],
+        "exit_code": 0,
+        "output": "window-thread PASS width=64 direct=0\n",
+        "seconds": 0.14207870000973344,
+        "passed": true
+      },
+      {
+        "name": "window-thread-results-x64-direct",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-window-thread.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\ntw16s64.dll",
+          "--direct"
+        ],
+        "exit_code": 0,
+        "output": "window-thread PASS width=64 direct=1\n",
+        "seconds": 0.05652199999894947,
+        "passed": true
+      }
+    ],
+    "known_failures": [
+      {
+        "name": "win2k-dwm-known-32",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x86\\core-win2k-frame-lifecycle.exe"
+        ],
+        "exit_code": 3,
+        "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\nWIN2K DWM STAGES attach=0 pump=0 policy_after_pump=2\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\nWIN2K FRAME LIFECYCLE bits=32 attached=1 removed=1 observed=1 before=1 after=0 captured=2 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\n",
+        "seconds": 0.6568380999960937,
+        "passed": false,
+        "baseline": {
+          "exit_code": 3,
+          "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\nWIN2K DWM STAGES attach=0 pump=0 policy_after_pump=2\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\nWIN2K FRAME LIFECYCLE bits=32 attached=1 removed=1 observed=1 before=1 after=0 captured=2 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\n"
+        },
+        "unchanged": true
+      },
+      {
+        "name": "win2k-dwm-known-64",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\clean-source\\build\\.ninja\\x64\\core-win2k-frame-lifecycle.exe"
+        ],
+        "exit_code": 3,
+        "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\nWIN2K DWM STAGES attach=0 pump=0 policy_after_pump=2\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\nWIN2K FRAME LIFECYCLE bits=64 attached=1 removed=1 observed=1 before=1 after=0 captured=2 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\n",
+        "seconds": 0.38021549995755777,
+        "passed": false,
+        "baseline": {
+          "exit_code": 3,
+          "output": "WIN2K WINDOW CONDITIONS style=14cf0000 ex=00000100 active=0 foreground=0\nWIN2K NATIVE DWM before=1 after=1 custom_frame_restore=1 after_move=1\nWIN2K DWM AFTER REMOVE immediate=0 status=00000000\nWIN2K WINDOW AFTER REMOVE style=14cf0000 ex=00000100\nWIN2K DWM STAGES attach=0 pump=0 policy_after_pump=2\nWIN2K CAPTION PIXEL native=000000 classic=9f9f9f after=e8dacd\nWIN2K TITLE RECTS native=104,83,492,111 classic=105,83,497,102 after=99,75,497,103\nWIN2K FRAME LIFECYCLE bits=64 attached=1 removed=1 observed=1 before=1 after=0 captured=2 restored=0 geometry=1 repeated=1 reattached=1 thread=0 pending=1\n"
+        },
+        "unchanged": true
+      }
+    ],
+    "environment": "owned native fixtures on current desktop; no isolated desktop/computer use; Explorer fixture uses owned job and scratch cwd"
+  },
+  "publication": {
+    "status": "passed",
+    "tested_package": null,
+    "test_status": "pending-post-publication",
+    "skipped": [],
+    "files": [
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-0",
+        "before": "61cc85469ce2fe7b1ce38dce876fad844e61d28feb62804a2d85c23dc89dc847",
+        "after": "75a3f20fce16a8922a2f8a0078108ee2d4ff99109c8df8e132b054f776729f48",
+        "expected": "75a3f20fce16a8922a2f8a0078108ee2d4ff99109c8df8e132b054f776729f48"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-0",
+        "before": "a1fc5f6d2175add89028a14c4072cd909297fa49a368fd7b79d58d2dae25300b",
+        "after": "553151e179193c64772c40fc9bc37c6e16d2a302ceded413a4351240d09e1c23",
+        "expected": "553151e179193c64772c40fc9bc37c6e16d2a302ceded413a4351240d09e1c23"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-0",
+        "before": "7b759e233213a842637d5c89d788caccd9c056eabef325e923c7e5b9c25945a4",
+        "after": "fc97ba3e774147bae1ae74f513d14eec31e5953daab371f92859f67e95893667",
+        "expected": "fc97ba3e774147bae1ae74f513d14eec31e5953daab371f92859f67e95893667"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks32.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-0",
+        "before": "53ee49217cdb3fe518fd77621733564e91db02cde2a73c039526abacdc1015d1",
+        "after": "14bc6ae82bc61bc4722ddfc94dbd807b4beb18afd73a4f424cb84e96a0908988",
+        "expected": "14bc6ae82bc61bc4722ddfc94dbd807b4beb18afd73a4f424cb84e96a0908988"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks64.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-0",
+        "before": "894872a7272467371c52f07026a4f498b0645b66faeeb79e23dcbfeff455c0f7",
+        "after": "e3024625d414af29b76e1670a4e3be2c6336e0a0d3a860934258f9ba53e4888d",
+        "expected": "e3024625d414af29b76e1670a4e3be2c6336e0a0d3a860934258f9ba53e4888d"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk32.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-0",
+        "before": "083ac9af176d2ca58759033c27c8f2ed9c732a7362208ab0a21fe352506c31a8",
+        "after": "b90399bc286510f1020c88a1c5667be6473eb172c899cba3c884b49008be39e0",
+        "expected": "b90399bc286510f1020c88a1c5667be6473eb172c899cba3c884b49008be39e0"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk64.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-0",
+        "before": "1594a1a4c87c86d8d0d386b181276eab934d404907cd3c6eb6671df0e88df152",
+        "after": "18309bd618bd94e3e2d90d87468465c5a851300a239e48b7bee374ee8d911d9a",
+        "expected": "18309bd618bd94e3e2d90d87468465c5a851300a239e48b7bee374ee8d911d9a"
+      },
+      {
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-0",
+        "before": "6756a8f1136e0105329a0e827b0703a40d4aa17a7edfe26db312220d5edc8480",
+        "after": "c24b15a6d01ec8d3011c9aa207dd0dd3c5b9b781b1e6b92ffab415a6ef6ec27b",
+        "expected": "c24b15a6d01ec8d3011c9aa207dd0dd3c5b9b781b1e6b92ffab415a6ef6ec27b"
+      },
+      {
+        "path": "O:\\winnt\\demo.exe",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-1",
+        "before": "61cc85469ce2fe7b1ce38dce876fad844e61d28feb62804a2d85c23dc89dc847",
+        "after": "75a3f20fce16a8922a2f8a0078108ee2d4ff99109c8df8e132b054f776729f48",
+        "expected": "75a3f20fce16a8922a2f8a0078108ee2d4ff99109c8df8e132b054f776729f48"
+      },
+      {
+        "path": "O:\\winnt\\ntw16s32.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-1",
+        "before": "a1fc5f6d2175add89028a14c4072cd909297fa49a368fd7b79d58d2dae25300b",
+        "after": "553151e179193c64772c40fc9bc37c6e16d2a302ceded413a4351240d09e1c23",
+        "expected": "553151e179193c64772c40fc9bc37c6e16d2a302ceded413a4351240d09e1c23"
+      },
+      {
+        "path": "O:\\winnt\\ntw16s64.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-1",
+        "before": "7b759e233213a842637d5c89d788caccd9c056eabef325e923c7e5b9c25945a4",
+        "after": "fc97ba3e774147bae1ae74f513d14eec31e5953daab371f92859f67e95893667",
+        "expected": "fc97ba3e774147bae1ae74f513d14eec31e5953daab371f92859f67e95893667"
+      },
+      {
+        "path": "O:\\winnt\\ntw2ks32.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-1",
+        "before": "53ee49217cdb3fe518fd77621733564e91db02cde2a73c039526abacdc1015d1",
+        "after": "14bc6ae82bc61bc4722ddfc94dbd807b4beb18afd73a4f424cb84e96a0908988",
+        "expected": "14bc6ae82bc61bc4722ddfc94dbd807b4beb18afd73a4f424cb84e96a0908988"
+      },
+      {
+        "path": "O:\\winnt\\ntw2ks64.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-1",
+        "before": "894872a7272467371c52f07026a4f498b0645b66faeeb79e23dcbfeff455c0f7",
+        "after": "e3024625d414af29b76e1670a4e3be2c6336e0a0d3a860934258f9ba53e4888d",
+        "expected": "e3024625d414af29b76e1670a4e3be2c6336e0a0d3a860934258f9ba53e4888d"
+      },
+      {
+        "path": "O:\\winnt\\ntwshk32.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-1",
+        "before": "083ac9af176d2ca58759033c27c8f2ed9c732a7362208ab0a21fe352506c31a8",
+        "after": "b90399bc286510f1020c88a1c5667be6473eb172c899cba3c884b49008be39e0",
+        "expected": "b90399bc286510f1020c88a1c5667be6473eb172c899cba3c884b49008be39e0"
+      },
+      {
+        "path": "O:\\winnt\\ntwshk64.dll",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-1",
+        "before": "1594a1a4c87c86d8d0d386b181276eab934d404907cd3c6eb6671df0e88df152",
+        "after": "18309bd618bd94e3e2d90d87468465c5a851300a239e48b7bee374ee8d911d9a",
+        "expected": "18309bd618bd94e3e2d90d87468465c5a851300a239e48b7bee374ee8d911d9a"
+      },
+      {
+        "path": "O:\\winnt\\run16s.exe",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime-publish\\before-1",
+        "before": "6756a8f1136e0105329a0e827b0703a40d4aa17a7edfe26db312220d5edc8480",
+        "after": "c24b15a6d01ec8d3011c9aa207dd0dd3c5b9b781b1e6b92ffab415a6ef6ec27b",
+        "expected": "c24b15a6d01ec8d3011c9aa207dd0dd3c5b9b781b1e6b92ffab415a6ef6ec27b"
+      }
+    ],
+    "evidence": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\result.json",
+    "package": "O:\\repos.hobby\\win16style\\build\\t26-package\\s5-runtime\\candidate",
+    "test_result": null
+  },
+  "cleanup": {
+    "post_test_bytes": 277522232,
+    "earlier_owned_bytes": 3637500,
+    "paths": [
+      "build/t26-s5",
+      "build/t26-package/s5-runtime",
+      "build/t26-package/s5-runtime-publish"
+    ],
+    "status": "removed after all owned test/build sessions returned; absolute/reparse checks performed",
+    "preserved": [
+      "build/.ninja",
+      "build/.ccache"
+    ]
+  }
+}

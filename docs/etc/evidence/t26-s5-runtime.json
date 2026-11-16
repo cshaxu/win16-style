@@ -1,0 +1,529 @@
+{
+  "baseline": {
+    "commit": "ba2147fceba8483a166f18b65269442d87e31288",
+    "files": {
+      "src/lib-win32-style/access/runtime/companion.c": "306f311d3600c31eb7d7a268a8a1731ebbc70b0cbb91f876c9f54865355db4b9",
+      "src/lib-win32-style/access/runtime/companion.h": "eb13710b5036acc0735009827a225db81cee5c0ac6664a29761d91d999812cdd",
+      "src/lib-win32-style/access/runtime/uwp_dispatch.c": "7978e96ba325489b5e5ab23f096eea300b362e3ad3949928f18b3e8adc796aeb",
+      "src/lib-win32-style/access/runtime/uwp_dispatch.h": "a73614149149be5e1231826d517aa4ef338b6be88a2d2e8adc42470f266c621e",
+      "src/lib-win32-style/access/runtime/window_dispatch.c": "d339c1c9fb7d02d3050a1d02044d4ec1a67d49365a5d732d46f07bbb029fa842",
+      "src/lib-win32-style/access/runtime/window_dispatch.h": "199f49510e6be3913f4245ae6236212ad4a644a443bcfaaff5c4fbff4866ce02",
+      "src/lib-win32-style/access/runtime/window_hook.h": "7519ccad28a017122cb82bc29c84db582ccead5a04d96c5296c45e3ac75089e8",
+      "src/ntw16s-dll/injection/late_process.c": "4f7c5e97d572657699010546b67dff264d9dff0e4e5157b1198414042a174159",
+      "src/ntw16s-dll/injection/late_process.h": "923fc11663961293cbf41e86f66338e61deaade0d3ff8ba033351927fb2d6a1d",
+      "src/ntw16s-dll/injection/create_process.c": "80fe28e8c920df01fd6344315ae1d1f06aadbf45f284382f14c2b59c88bb8336",
+      "src/ntw16s-dll/attachment.c": "070f16c1d1b05bc113e632fc7619e8fe84e2eb31ce06b11b3b133b80a9fd375c",
+      "src/ntw16s-dll/window_thread.h": "002eeae6199a8bda05dec280fae6c8d54938c26c5cf59e2888ecd391c3c15f5f",
+      "src/ntw16s-dll/uwp/hook.c": "ce52b9b4a8cd19aa73e923d59149c4b4934551090a08f668edacc14ff626adba",
+      "src/ntw16s-dll/uwp/hook.h": "f116ce527e8907a9c85c3ef2f22a50fd93c27be573d35973649d4860db6cfc10",
+      "src/ntw16s-dll/global/hook.c": "32a63df5f25e2ab0982db44de3e5d3441b5afaa292f08f23be704d5159f7628e",
+      "src/ntw16s-dll/global/late.c": "5c4c11323c085222fa01e9581d37135322b5f7f63cbb361cfd5023ff13958bc3",
+      "src/ntw16s-dll/global/thread.c": "8954e9d0b89f864adfccb12654dd7d187fa05f86844c42df5085ba28d8137238",
+      "src/ntw16s-dll/global/window.c": "e4b9b5842f1de056b1e5ac6ba06d13ffa3e5e0c302fddb6f7c754d304c85f0f0",
+      "src/ntw16s-dll/injection/window_titles.c": "90e63e393a49dd8d66f764f94073b96972d5afcfe05802b98fc4dfac6ae60dc0",
+      "src/ntw2ks-dll/controls.c": "cd1eb955ef2e3f23669af6c13f9ffb74102b4c40e3c03e8fbee8ec2d6eeb3c42",
+      "src/ntw2ks-dll/window.c": "e886d5f03094396a557d3b5d3799d08c8dfeec90f1185798bba49efccd526ea1",
+      "src/ntw2ks-dll/dllmain.c": "b1a65b421098c6f1c7b3526de6c39bd8f63a7e2fd698b73fd49ef19afb5dcf79",
+      "src/ntwshk-dll/dllmain.c": "24f11b55b59b9f67b073f34da632f010bd5b8a15fbfc5c5b2efc2d7b23ba9793",
+      "src/ntwshk-dll/ntwshk.def": "8501fa7286f27212479fb8ed10efe8ad4f5e41be6d755d0c2d8abfb299bff28d",
+      "src/run16s-exe/window_target.c": "b33952b6777bfb41f32853e6f39a60f9ae75ffb2421d419f37f72dac32f28068",
+      "src/run16s-exe/window_target.h": "aceba4577ac0e41ebe21e4763edeb74222d3602866d4419f2c6d27a196df0026",
+      "src/run16s-exe/explorer.c": "077c539bc340c375bbf06713295aebe30de2dc57b67fc5716e2bb534a6145b3d",
+      "src/run16s-exe/console_host.c": "012aa5a2f37dad369345e6ffe865445aa2ce9feacd345a2139fb1390d9817c7d",
+      "src/run16s-exe/uwp.c": "2c09838dd0364842857b53ce37f1681d912ba62609c3c0f00fd67892ec8e75bb",
+      "src/lib-win32-style/application/adapters/uwp/hook.c": "d83bc150cc7078707ed7198379c1a5f6294182047e6d82c2cc94fcc000be1cc4",
+      "src/lib-win32-style/application/adapters/uwp/hook.h": "dbe754ba84458439d7e7ad8c3ec1e7b62936d298dfdf4afb0d8bebcd92e597b6",
+      "CMakeLists.txt": "e681723667c35072fa66de0bb71dbc996fe0fc83acf096cdc787b369fc306c7f"
+    }
+  },
+  "status": "development-focused-pass",
+  "tests": {
+    "unit-results": [
+      {
+        "arch": "x86",
+        "test": "core-style-runtime-process",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-runtime-process.exe"
+        ],
+        "code": 0,
+        "output": "RUNTIME_PROCESS_OK flags=1 adoption=1 repeat=1 rollback=1 retry=1 reuse=1 sticky=1 batch_binding=1 capacity=88\n"
+      },
+      {
+        "arch": "x86",
+        "test": "core-style-window-hook",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-window-hook.exe"
+        ],
+        "code": 0,
+        "output": "WINDOW_HOOK_OK reject=1 busy=1 result=1 cleanup=1 recursive=1 destroyed=1\n"
+      },
+      {
+        "arch": "x86",
+        "test": "core-style-uwp-hook",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-uwp-hook.exe"
+        ],
+        "code": 0,
+        "output": "UWP_HOOK_OK valid=1 invalid=1 recursion=1 cleanup=1\n"
+      },
+      {
+        "arch": "x86",
+        "test": "core-style-uwp-dispatch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-uwp-dispatch.exe"
+        ],
+        "code": 0,
+        "output": "UWP_DISPATCH_DIAGNOSTIC load=0 export=0 hook=0 local=0\nUWP_DISPATCH result=0 denied=5 cancelled=1223 machine=50 identity=1400 unknown=13 invalid_core=1400 other_thread=0 stopped=1\n"
+      },
+      {
+        "arch": "x86",
+        "test": "core-style-dispatch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-dispatch.exe"
+        ],
+        "code": 0,
+        "output": "STYLE DISPATCH child=1 success=0 denied=5 no_result=13 missing=127\nSTYLE MODULE child=1 before=0 after=0 callback=1\n"
+      },
+      {
+        "arch": "x86",
+        "test": "core-style-peer",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-style-peer.exe"
+        ],
+        "code": 0,
+        "output": "STYLE COMPANION PASS resolve=1 missing=1 pin=1 path=1\n"
+      },
+      {
+        "arch": "x86",
+        "test": "launch-window-target-errors",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\launch-window-target-errors.exe"
+        ],
+        "code": 0,
+        "output": "WINDOW_DISPATCH_ERRORS_OK hook=1 no_error=1 identity=1 registration=1 unhook=1 original_error=1\nWINDOW_MESSAGE_OK result=1 missing=1 error=1 timeout=1 cleanup=1\nWINDOW_MODULE_ENUM_OK exhausted=1 failure=1 no_error=1 mismatch=1 cleanup=1 read=1 short=1 equal=1\n"
+      },
+      {
+        "arch": "x86",
+        "test": "core-process-hook-late-batch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-process-hook-late-batch.exe"
+        ],
+        "code": 0,
+        "output": "PROCESS HOOK LATE BATCH PASS bits=32 abort=1 retry=1 installed=1 retained=1 sticky=1 limit=1 boundary_0_88_89=1\n"
+      },
+      {
+        "arch": "x64",
+        "test": "core-style-runtime-process",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-runtime-process.exe"
+        ],
+        "code": 0,
+        "output": "RUNTIME_PROCESS_OK flags=1 adoption=1 repeat=1 rollback=1 retry=1 reuse=1 sticky=1 batch_binding=1 capacity=88\n"
+      },
+      {
+        "arch": "x64",
+        "test": "core-style-window-hook",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-window-hook.exe"
+        ],
+        "code": 0,
+        "output": "WINDOW_HOOK_OK reject=1 busy=1 result=1 cleanup=1 recursive=1 destroyed=1\n"
+      },
+      {
+        "arch": "x64",
+        "test": "core-style-uwp-hook",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-uwp-hook.exe"
+        ],
+        "code": 0,
+        "output": "UWP_HOOK_OK valid=1 invalid=1 recursion=1 cleanup=1\n"
+      },
+      {
+        "arch": "x64",
+        "test": "core-style-uwp-dispatch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-uwp-dispatch.exe"
+        ],
+        "code": 0,
+        "output": "UWP_DISPATCH_DIAGNOSTIC load=0 export=0 hook=0 local=0\nUWP_DISPATCH result=0 denied=5 cancelled=1223 machine=50 identity=1400 unknown=13 invalid_core=1400 other_thread=0 stopped=1\n"
+      },
+      {
+        "arch": "x64",
+        "test": "core-style-dispatch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-dispatch.exe"
+        ],
+        "code": 0,
+        "output": "STYLE DISPATCH child=1 success=0 denied=5 no_result=13 missing=127\nSTYLE MODULE child=1 before=0 after=0 callback=1\n"
+      },
+      {
+        "arch": "x64",
+        "test": "core-style-peer",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-style-peer.exe"
+        ],
+        "code": 0,
+        "output": "STYLE COMPANION PASS resolve=1 missing=1 pin=1 path=1\n"
+      },
+      {
+        "arch": "x64",
+        "test": "launch-window-target-errors",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\launch-window-target-errors.exe"
+        ],
+        "code": 0,
+        "output": "WINDOW_DISPATCH_ERRORS_OK hook=1 no_error=1 identity=1 registration=1 unhook=1 original_error=1\nWINDOW_MESSAGE_OK result=1 missing=1 error=1 timeout=1 cleanup=1\nWINDOW_MODULE_ENUM_OK exhausted=1 failure=1 no_error=1 mismatch=1 cleanup=1 read=1 short=1 equal=1\n"
+      },
+      {
+        "arch": "x64",
+        "test": "core-process-hook-late-batch",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-process-hook-late-batch.exe"
+        ],
+        "code": 0,
+        "output": "PROCESS HOOK LATE BATCH PASS bits=64 abort=1 retry=1 installed=1 retained=1 sticky=1 limit=1 boundary_0_88_89=1\n"
+      }
+    ],
+    "product-results": [
+      {
+        "test": "launch-explorer-selection",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\launch-explorer-selection.exe"
+        ],
+        "code": 0,
+        "output": "renamed_mapping_result=1306\nexplorer-selection PASS\n"
+      },
+      {
+        "test": "launch-console-host",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\launch-console-host.exe"
+        ],
+        "code": 0,
+        "output": ""
+      },
+      {
+        "test": "launch-console-host-errors",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\launch-console-host-errors.exe"
+        ],
+        "code": 0,
+        "output": "CONSOLE_SCAN_ERRORS_OK empty=1 first=1 next=1 exhausted=1 cleanup=1\nCONSOLE_IMAGE_ERROR_OK denied=1 exited=1 cleanup=1\nCONSOLE_SCAN_FOUND_OK success=1 later_failure=1 cleanup=1\nCONSOLE_TIME_ERRORS_OK host=1 client=1 order=1 cleanup=1\nCONSOLE_ENUM_ERRORS_OK missing=1 denied=1 cleanup=1\n"
+      }
+    ],
+    "late-results": [
+      {
+        "name": "x86-existing",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "existing"
+        ],
+        "code": 0,
+        "output": "LATE EXISTING bits=32 status=0 unchanged=1\n"
+      },
+      {
+        "name": "x86-existing-propagation",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "existing-propagation"
+        ],
+        "code": 0,
+        "output": "LATE PREEXISTING bits=32 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n"
+      },
+      {
+        "name": "x86-retry-after-failure",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "retry-after-failure"
+        ],
+        "code": 0,
+        "output": "LATE RETRY bits=32 first=5 clean=1 second=0 installed=1\n"
+      },
+      {
+        "name": "x86-reuse-retry",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "reuse-retry"
+        ],
+        "code": 0,
+        "output": "LATE PREEXISTING bits=32 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n"
+      },
+      {
+        "name": "x86-x86-A-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "A"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=32 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n"
+      },
+      {
+        "name": "x86-x86-A-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "A",
+          "propagation-only"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=32 style_registration=0 style_flag=0\n"
+      },
+      {
+        "name": "x86-x86-W-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "W"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=32 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n"
+      },
+      {
+        "name": "x86-x86-W-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "W",
+          "propagation-only"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=32 style_registration=0 style_flag=0\n"
+      },
+      {
+        "name": "x86-x64-A-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "A"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=64 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n"
+      },
+      {
+        "name": "x86-x64-A-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "A",
+          "propagation-only"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=32 style_registration=0 style_flag=0\n"
+      },
+      {
+        "name": "x86-x64-W-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "W"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=64 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n"
+      },
+      {
+        "name": "x86-x64-W-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "W",
+          "propagation-only"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=32 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=32 style_registration=0 style_flag=0\n"
+      },
+      {
+        "name": "x64-existing",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "existing"
+        ],
+        "code": 0,
+        "output": "LATE EXISTING bits=64 status=0 unchanged=1\n"
+      },
+      {
+        "name": "x64-existing-propagation",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "existing-propagation"
+        ],
+        "code": 0,
+        "output": "LATE PREEXISTING bits=64 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n"
+      },
+      {
+        "name": "x64-retry-after-failure",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "retry-after-failure"
+        ],
+        "code": 0,
+        "output": "LATE RETRY bits=64 first=5 clean=1 second=0 installed=1\n"
+      },
+      {
+        "name": "x64-reuse-retry",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "reuse-retry"
+        ],
+        "code": 0,
+        "output": "LATE PREEXISTING bits=64 initial=0 status=0 unchanged=1 create=1 original_install=1 style=4 chained=1 theme_chain=1 rollback=1\n"
+      },
+      {
+        "name": "x64-x86-A-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "A"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=32 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n"
+      },
+      {
+        "name": "x64-x86-A-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "A",
+          "propagation-only"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=64 style_registration=0 style_flag=0\n"
+      },
+      {
+        "name": "x64-x86-W-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "W"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=32 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n"
+      },
+      {
+        "name": "x64-x86-W-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "W",
+          "propagation-only"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=32 role=child dll=0\nPROPAGATION ENTRY bits=32 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=32 role=grandchild attached=0\nPROPAGATION ENTRY bits=32 role=child dll=1\nPROPAGATION ONLY WINDOW bits=32 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=64 style_registration=0 style_flag=0\n"
+      },
+      {
+        "name": "x64-x64-A-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "A"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=64 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n"
+      },
+      {
+        "name": "x64-x64-A-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "A",
+          "propagation-only"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=A init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=64 style_registration=0 style_flag=0\n"
+      },
+      {
+        "name": "x64-x64-W-style",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "W"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nGLOBAL PROPAGATION bits=64 root_attached=1 create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\n"
+      },
+      {
+        "name": "x64-x64-W-only",
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\late-process-prototype.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\global-propagation-probe.exe",
+          "O:\\repos.hobby\\win16style\\build\\t26-s5\\late-package\\",
+          "W",
+          "propagation-only"
+        ],
+        "code": 0,
+        "output": "PROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nPROPAGATION ONLY ROOT create=1 child_exit=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=0\nPROPAGATION DESCENDANT stopped=1 create=1 exit=41\nPROPAGATION ENTRY bits=64 role=child dll=0\nPROPAGATION ENTRY bits=64 role=grandchild dll=1\nPROPAGATION ONLY WINDOW bits=64 role=grandchild attached=0\nPROPAGATION ENTRY bits=64 role=child dll=1\nPROPAGATION ONLY WINDOW bits=64 role=child attached=0\nPROPAGATION CHILD create=1 exit=0\nLATE PROCESS bits=64 api=W init=1 repeat=1 created=1 exit=0 stopped=1 stopped_exit=41 descendant=1 restarted=1 joined=1\nLATE PROPAGATION ONLY bits=64 style_registration=0 style_flag=0\n"
+      }
+    ],
+    "window-thread-results": [
+      {
+        "arch": "x86",
+        "direct": false,
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-window-thread.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw16s32.dll"
+        ],
+        "code": 0,
+        "output": "window-thread PASS width=32 direct=0\n"
+      },
+      {
+        "arch": "x86",
+        "direct": true,
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\core-window-thread.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x86\\ntw16s32.dll",
+          "--direct"
+        ],
+        "code": 0,
+        "output": "window-thread PASS width=32 direct=1\n"
+      },
+      {
+        "arch": "x64",
+        "direct": false,
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-window-thread.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll"
+        ],
+        "code": 0,
+        "output": "window-thread PASS width=64 direct=0\n"
+      },
+      {
+        "arch": "x64",
+        "direct": true,
+        "command": [
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\core-window-thread.exe",
+          "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll",
+          "--direct"
+        ],
+        "code": 0,
+        "output": "window-thread PASS width=64 direct=1\n"
+      }
+    ]
+  },
+  "known_limits": [
+    "No physical unloading of process trampolines.",
+    "Win2000 has no new independent late function-hook initializer.",
+    "Real UWP/WinUI hosts and real global desktop-wide sessions are not proved by owned fixtures.",
+    "Existing DWM restoration and intermittent total handle-count debts remain in TODO."
+  ],
+  "cleanup": {
+    "owned_early_bytes": 3637500,
+    "paths": [
+      "build/t26-s5/explorer-run",
+      "build/t26-s5/late-package"
+    ]
+  }
+}

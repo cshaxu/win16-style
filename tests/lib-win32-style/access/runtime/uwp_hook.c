@@ -1,4 +1,4 @@
-#include "lib-win32-style/application/adapters/uwp/hook.h"
+#include "lib-win32-style/access/runtime/uwp_hook.h"
 #include <stdint.h>
 #include <stdio.h>
 static BOOL busy;static unsigned calls;static style_uwp_hook_spec spec;

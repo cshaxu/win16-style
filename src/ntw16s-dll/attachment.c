@@ -660,8 +660,14 @@ BOOL __cdecl Ntw16sWindowAttach(HWND w)
     if(!lookup(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     return TRUE;
 }
-static DWORD window_thread_perform(const CWPSTRUCT *message)
+static BOOL window_thread_accept(const CWPSTRUCT *message,void *context)
 {
+    (void)context;return (message->wParam==NTW16S_WINDOW_THREAD_ATTACH || message->wParam==NTW16S_WINDOW_THREAD_REMOVE) &&
+        (HWND)message->lParam==message->hwnd;
+}
+static DWORD window_thread_perform(const CWPSTRUCT *message,void *context)
+{
+    (void)context;
     DWORD error=0;HMODULE pinned=NULL;BOOL ok=FALSE;
     if(!win32_style_window_current_thread(message->hwnd))
         return ERROR_INVALID_THREAD_ID;
@@ -677,14 +683,9 @@ LRESULT CALLBACK Ntw16sWindowThreadHook(int code,WPARAM wp,LPARAM lp)
 {
     static _Thread_local BOOL busy;
     DWORD saved=GetLastError();
-    const CWPSTRUCT *message=win32_style_window_hook_match(code,lp,busy,NTW16S_WINDOW_THREAD_MESSAGE);
-    if(message && (message->wParam==NTW16S_WINDOW_THREAD_ATTACH || message->wParam==NTW16S_WINDOW_THREAD_REMOVE) &&
-       (HWND)message->lParam==message->hwnd){
-        busy=TRUE;
-        DWORD error=window_thread_perform(message);
-        win32_style_window_hook_finish(message->hwnd,NTW16S_WINDOW_THREAD_RESULT,error);
-        busy=FALSE;
-    }
+    const style_window_hook_spec spec={NTW16S_WINDOW_THREAD_MESSAGE,NTW16S_WINDOW_THREAD_RESULT,
+        window_thread_accept,window_thread_perform,NULL};
+    style_window_hook_handle(code,lp,&busy,&spec);
     LRESULT result=CallNextHookEx(NULL,code,wp,lp);SetLastError(saved);return result;
 }
 static LRESULT CALLBACK creation_before(int code,WPARAM p,LPARAM l)

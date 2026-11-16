@@ -18,8 +18,10 @@ static LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM wp,LPARAM lp
 
 static HWND make_folder(HINSTANCE instance)
 {
-    return CreateWindowW(L"CabinetWClass",L"fixture",WS_OVERLAPPEDWINDOW|WS_VISIBLE,
+    HWND window=CreateWindowW(L"CabinetWClass",L"fixture",WS_OVERLAPPEDWINDOW,
         0,0,300,200,NULL,NULL,instance,NULL);
+    if(window)ShowWindow(window,SW_SHOWNOACTIVATE);
+    return window;
 }
 
 typedef struct owned_window {DWORD pid;HWND window;} owned_window;
@@ -33,6 +35,14 @@ static BOOL CALLBACK find_owned(HWND window,LPARAM parameter)
     return TRUE;
 }
 
+static HANDLE owned_job;
+static BOOL spawn(PCWSTR image,LPWSTR command,STARTUPINFOW *startup,PROCESS_INFORMATION *child)
+{
+    if(!CreateProcessW(image,command,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,startup,child))return FALSE;
+    if(AssignProcessToJobObject(owned_job,child->hProcess) && ResumeThread(child->hThread)==1)return TRUE;
+    DWORD error=GetLastError();TerminateProcess(child->hProcess,ERROR_CANCELLED);WaitForSingleObject(child->hProcess,2000);
+    CloseHandle(child->hThread);CloseHandle(child->hProcess);ZeroMemory(child,sizeof(*child));SetLastError(error);return FALSE;
+}
 int wmain(int argc,WCHAR **argv)
 {
     if(argc==3 && !wcscmp(argv[1],L"--other-module")){
@@ -43,7 +53,10 @@ int wmain(int argc,WCHAR **argv)
         FreeLibrary(other);return 0;
     }
     CHECK(argc==1);
-    WCHAR desktop_name[64],image[32768],directory[32768],path[32768];
+    WCHAR image[32768],directory[32768],path[32768];
+    owned_job=CreateJobObjectW(NULL,NULL);CHECK(owned_job);
+    JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+    CHECK(SetInformationJobObject(owned_job,JobObjectExtendedLimitInformation,&limits,sizeof(limits)));
     WCHAR system_explorer[MAX_PATH];
     UINT system_length=GetWindowsDirectoryW(system_explorer,ARRAYSIZE(system_explorer));
     CHECK(system_length && system_length+14<ARRAYSIZE(system_explorer));
@@ -54,10 +67,6 @@ int wmain(int argc,WCHAR **argv)
     CHECK(run16s_terminal_image(L"C:\\Apps\\WindowsTerminal.exe"));
     CHECK(!run16s_terminal_image(L"C:\\Apps\\not-terminal.exe"));
     CHECK(!run16s_terminal_image(NULL));
-    swprintf(desktop_name,ARRAYSIZE(desktop_name),L"S3Selection-%lu",GetCurrentProcessId());
-    HDESK original=GetThreadDesktop(GetCurrentThreadId());CHECK(original);
-    HDESK desktop=CreateDesktopW(desktop_name,NULL,NULL,0,GENERIC_ALL,NULL);
-    CHECK(desktop && SetThreadDesktop(desktop));
     DWORD length=GetModuleFileNameW(NULL,image,ARRAYSIZE(image));
     CHECK(length && length<ARRAYSIZE(image));
     wcscpy(directory,image);WCHAR *slash=wcsrchr(directory,L'\\');CHECK(slash);slash[1]=0;
@@ -71,7 +80,7 @@ int wmain(int argc,WCHAR **argv)
     HWND old=make_folder(wc.hInstance);CHECK(old);
     ShowWindow(old,SW_HIDE);
     run16s_explorer_snapshot *snapshot=run16s_explorer_snapshot_create();CHECK(snapshot);
-    ShowWindow(old,SW_SHOW);
+    ShowWindow(old,SW_SHOWNOACTIVATE);
     HWND fresh=make_folder(wc.hInstance);CHECK(fresh);
     CHECK(run16s_explorer_attach_new(snapshot,image,directory)==ERROR_SUCCESS);
     CHECK(attached(fresh) && !attached(old));
@@ -101,8 +110,8 @@ int wmain(int argc,WCHAR **argv)
     wcscpy(other,scratch);wcscat(other,L"\\ntw16s64.dll");CHECK(CopyFileW(path,other,TRUE));
     snapshot=run16s_explorer_snapshot_create();CHECK(snapshot);
     CHECK(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --other-module \"%ls\"",image,other)>0);
-    STARTUPINFOW startup={.cb=sizeof(startup),.lpDesktop=desktop_name};PROCESS_INFORMATION child={0};
-    CHECK(CreateProcessW(image,command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&child));
+    STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
+    CHECK(spawn(image,command,&startup,&child));
     CHECK(run16s_explorer_attach_new(snapshot,image,directory)==ERROR_REVISION_MISMATCH);
     owned_window target={.pid=child.dwProcessId};EnumWindows(find_owned,(LPARAM)&target);CHECK(target.window);
     CHECK(PostMessageW(target.window,WM_CLOSE,0,0));CHECK(WaitForSingleObject(child.hProcess,3000)==WAIT_OBJECT_0);
@@ -116,7 +125,7 @@ int wmain(int argc,WCHAR **argv)
     wcscpy(package,scratch);wcscat(package,L"\\");
     snapshot=run16s_explorer_snapshot_create();CHECK(snapshot);
     CHECK(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --other-module \"%ls\"",image,other)>0);
-    child=(PROCESS_INFORMATION){0};CHECK(CreateProcessW(image,command,NULL,NULL,FALSE,0,NULL,NULL,&startup,&child));
+    child=(PROCESS_INFORMATION){0};CHECK(spawn(image,command,&startup,&child));
     target=(owned_window){.pid=child.dwProcessId};
     for(unsigned i=0;i<60 && !target.window;i++){EnumWindows(find_owned,(LPARAM)&target);if(!target.window)Sleep(50);}
     CHECK(target.window);CHECK(MoveFileW(other,moved));CHECK(CopyFileW(path,other,TRUE));
@@ -128,6 +137,6 @@ int wmain(int argc,WCHAR **argv)
     CHECK(changed==ERROR_REVISION_MISMATCH);
     DestroyWindow(old);FreeLibrary(module);
     CHECK(UnregisterClassW(wc.lpszClassName,wc.hInstance));
-    CHECK(SetThreadDesktop(original));CHECK(CloseDesktop(desktop));
+    CloseHandle(owned_job);
     puts("explorer-selection PASS");return 0;
 }

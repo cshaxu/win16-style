@@ -1,6 +1,6 @@
 #include "hook.h"
 #include "lib-win32-style/application/adapters/uwp/native.h"
-#include "lib-win32-style/application/adapters/uwp/hook.h"
+#include "lib-win32-style/access/runtime/uwp_hook.h"
 #include "lib-win32-style/appearance/win3x/window/modern_frame.h"
 #include <stdint.h>
 static _Thread_local BOOL busy;

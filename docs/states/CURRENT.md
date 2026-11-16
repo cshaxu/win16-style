@@ -6,7 +6,7 @@ M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorg
 
 [S4交付](../history/M0-T26-S4-startup.md)4517db1e已实际fetch与50个变更blob复核；同快照八文件已先发布assets根/O:/winnt，再通过73项聚焦回归。2项Win2000 DWM恢复旧失败与S3一致、不计通过；总句柄观察的开发不稳定及最终通过结果均保留。见[开发证据](../etc/evidence/t26-s4-startup.json)及[最终交付](../etc/evidence/t26-s4-delivery.json)。源码冻结1000个输入一致，双宽各16个公共样式归档门禁通过；产品ABI/资源保留。
 
-S4测试/构建全部退出，已提炼证据并清理scratch/快照/备份276,326,075字节，另早期自有临时包7,888,448字节；保留.ninja/.ccache。S5尚未修改产品，先冻结运行时生产链清单与状态所有者，再按能力合批；不用computer-use/隔离桌面，不修改或依赖兄弟仓库，不新增接入机制或扩大目标/权限。
+S4测试/构建全部退出，已提炼证据并清理scratch/快照/备份276,326,075字节，另早期自有临时包7,888,448字节；保留.ninja/.ccache。S5已冻结[完整运行时链清单与状态所有者](../history/M0-T26-S5-runtime.md)，本批已提炼证据并清理scratch/快照/备份277,522,232字节，另早期late包3,637,500字节；47项开发原生回归通过，已同快照干净构建并先发布八文件至assets根/O:/winnt，随后118项聚焦回归通过，另2项DWM旧失败不计通过；[最终证据](../etc/evidence/t26-s5-delivery.json)，尚待提交推送及实际远端复核；不用computer-use/隔离桌面，不修改或依赖兄弟仓库，不新增接入机制或扩大目标/权限。
 
 S3事实见[记录](../history/M0-T26-S3-lifecycle.md)、[审计](../etc/evidence/t26-s3-lifecycle.json)及[交付](../etc/evidence/t26-s3-delivery.json)。T25按用户决定有限收口，已知失败与未覆盖保留于技术基线和TODO，S14统一复核。
 

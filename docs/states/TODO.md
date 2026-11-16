@@ -162,3 +162,5 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 - [ ] TODO(Low): UWP外框未认证边界：其他宿主、多显示器DPI、原生title HWND替换、挂起UIA提供者及全局通知失败；Owner：未来用户明确准入的UWP兼容扩展。Evidence：[T22收口](../history/M0-T22-closure.md)的实际目标/144DPI/通知失败与固定模块边界。Admission：有具体目标和可复现失败，再按自有实例验证；不将当前计算器/Scan成功扩张为所有UWP，不把样式移除称物理卸载。
 
 - [ ] TODO(Medium): 失败安装测试的进程总句柄数在开发环境不稳定。Owner：T26 S14验证终审。Evidence：[S4旧源码对照](../etc/evidence/t26-s4-startup.json)同时观察旧源码失败/当前通过与早先反例；[最终实际包](../etc/evidence/t26-s4-delivery.json)原断言x86 88/88、x64 56/56通过，未放宽断言。Admission：区分OS/运行库懒初始化与本层资源，不把一次相等当作所有环境均无泄漏，不为总量波动增加产品容错。
+
+- [ ] TODO(Medium): API创建链仍由产品attachment/window_titles拥有。Owner：T26 S11，结合title creation和dialog统一迁application/lifecycle。Evidence：[S5职责复核](../history/M0-T26-S5-runtime.md)；已有creation_pending/message_observer仅是基础，不是整链共享。Admission：保留FALSE scope屏蔽、首show settle、延迟WM_INITDIALOG、主题stage/commit与EndDialog失败语义，不因与当前私有类型耦合认定不能抽离。

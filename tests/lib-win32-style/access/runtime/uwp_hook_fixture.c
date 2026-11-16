@@ -1,4 +1,4 @@
-#include "lib-win32-style/application/adapters/uwp/hook.h"
+#include "lib-win32-style/access/runtime/uwp_hook.h"
 #include <stdint.h>
 static _Thread_local BOOL busy;
 static BOOL accepts(WPARAM action,void *context){(void)context;return action==1 || action==2;}
