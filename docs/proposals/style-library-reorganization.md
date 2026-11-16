@@ -58,6 +58,42 @@ S3–S12 随机制迁移同步拆分风格呈现，公共图形遇到实际消�
 
 单人先承担实施角色，再以复核角色独立读取 diff、原请求和实际证据，发现问题返回实施；复核不是复述自己的总结。每批或约 30 分钟执行效率检查，记录新证据、批次调整、资源和下一步，规则见 [执行规范](../rules/EXECUTION.md#效率检查点)。禁止 computer-use、隔离桌面、修改兄弟仓库或把它们作为依赖。
 
+## S1 连续审计批次：编辑、owner-draw 与表头（41–46）
+
+本批是职责与接口设计，正式状态仍见顺序台账；不把设计完成当作迁移或运行通过。按 41–46 顺序核对源码与实际调用，集中以下能力到 S7/S9/S10/S13 实施。
+
+| 当前文件 | 公共目标与状态所有者 | 风格呈现与调用方 |
+| --- | --- | --- |
+| edit_message.c | application/control 的原生编辑消息和重绘协调；裁剪 DC 由 application/graphics 管理 | application 调用风格的边框/滚动条绘制；现有 control_dispatch 为接线来源 |
+| edit_message.h | 改为编辑操作的公共上下文与绘制契约；控件实例持有公共状态，回调期间有效 | 移除对完整 control_style 的接口依赖，度量和颜色由 appearance 提供 |
+| fileowner_message.c | application/control 的 owner-draw 保留、原生转发和绘后通知；实例拥有有效性及父子关系 | Win3.x 仅提供 chrome 绘制及支持资格；VB runtime 保持 item/text 权威 |
+| fileowner_message.h | 与基础控件共享绘制上下文；契约表达 overlay 区域及状态 | 不复制一套 owner-draw 生命周期；具体支持条件归风格 |
+| header_paint.c | application/control 的表头项目/文字快照、变更代次与重入核验；graphics 的 DC/裁剪 | appearance/win3x 的颜色、边框、间距和 pressed 位移；format 支持掩码由风格提供 |
+| header_paint.h | 快照与变更通知归公共契约，支持与绘制归风格契约 | 当前 guard/state/controls/native_presentation 调用点须统一迁移 |
+
+编辑状态应拆出 suppression depth、redraw-off 与公共附着存活标志；Win16 的 edit_border、配色、字体映射不得强塞进公共接口。原生 WM_PRINT 的 DC 保存恢复、重绘抑制与销毁后禁止绘制维持现有顺序。
+
+表头快照在任何像素写入前采集全部项目；公共采集过程在每次可能重入的原生查询后检查附着及代次，失败整体返回给调用方回退。现有文本增长上限和项目数限制按现有行为保留；支持的格式是风格能力参数，不能将 Win16 的格式限制硬编码为所有风格的限制。不要为文本长度、格式、颜色等每个字段各建回调。
+
+在途 style_frame_update_dc 是图形资源操作，当前临时位于 common/frame.h；S2/S7 归位时迁入 application/graphics，窗口与编辑共用。取得 DC 成功后 USER 接管复制区域，调用方 ReleaseDC；失败由公共层释放副本，绘制回退由调用方决定。
+
+本批验证计划复用公共区域所有权测试、编辑 undo/selection/IME/scroll 相关现有夹具、owner-draw 原始内容保留以及表头重入/特殊格式回退。先区分现有不稳定，再验证迁移前后；不为 S1 的纯设计重新启动完整包构建。在途二进制改动不能冒充已交付，合批后执行正式闭环。
+
+## S1 连续审计批次：列表（47–50）
+
+| 文件 | application 公共机制 | appearance 风格策略 | 所有者与验证入口 |
+| --- | --- | --- | --- |
+| list_message.c | 原生消息转发、选中/顶行快照、重绘抑制、WM_PRINT 坐标与滚动通知协调 | 无 hover 策略、绘制替换范围、何时强制更新 | 公共控件实例拥有 suppression/redraw 状态；control_dispatch 调用；control_list 和 superclass 夹具 |
+| list_message.h | 公共列表消息上下文与 tabstop、scroll、paint 操作契约 | 提供对应策略和绘制实现 | 不再通过整个 Win16 control_style 传递公共状态 |
+| list_paint.c | set-time 制表位换算/提交；原生项文本、选择和几何采集；通用缓冲与边框算法 | 颜色、字体选择、固定文本间距、原图案、边框度量 | 列表实例持有 tab 像素数组，快照操作拥有临时文本；list_paint 与 control_link 现有测试 |
+| list_paint.h | tabstop 操作和列表数据视图分别成为公共契约 | Win3.x 列表和编辑/列表边框绘制接口 | 避免把当前混合头原封不动迁到公共库 |
+
+制表位保持 set-time 字体测量、现有舍入和整数边界；先计算临时像素数组，再转发原生 LB_SETTABSTOPS，只有原生成功且附着仍有效才提交并替换旧数组，调用方退出时释放。原生失败或重入脱离时释放临时数组并保留原生返回值；不改变字体选择策略。
+
+列表项目采集应与绘制分离，同时保留 USER 的多列顺序、单列 xOrigin、选择和焦点语义。公共 snapshot 必须定义回调期间存活与重入后的失效规则，不能只把旧的查询代码改名；当前直接读取与绘制交织，属于 S9 待迁移项。现有长度查询和随后取文本之间的重入行为须在迁移前核实，不能用新增无限重试掩盖状态变化。
+
+本批仅完成源码和调用/测试入口核对，没有新实现或运行结果；未将审计文件标为已迁移。与编辑消息共用同一控件状态拆分，放在同一能力批次增量验证。
+
 ## 未通过与未来候选
 
 导航焦点、Win2000 DWM 恢复、VB 清单和表头不稳定及实际现代宿主/全局覆盖限制继续由 CURRENT 和已有证据承载；不因架构设计被关闭。T26 结束条件是现有能力的三层归位、实际复用和验证，而非所有年代所有应用都支持。

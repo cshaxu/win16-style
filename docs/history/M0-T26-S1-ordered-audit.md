@@ -49,16 +49,16 @@
 | 38 | `src/lib-style/win16-control/control_state.h` | `cccb65a997d5cbabebc7a62577cf79da8678b9754c5373757d64cb74ccff4e78` | 已过关 |
 | 39 | `src/lib-style/win16-control/cool_grip_identity.c` | `04a9841be43ce2e95553eb3a9cb6a9f094ef03296dec5c86b26981239b2e979c` | 已过关 |
 | 40 | `src/lib-style/win16-control/cool_grip_identity.h` | `5aa8dce1ae9e718d2a067c7da16fca5f7d07c60a2b5fd2e93e974edfbc4e4e02` | 已过关 |
-| 41 | `src/lib-style/win16-control/edit_message.c` | `b2004278efe1e65e88bf3e8877cb3fe9704efcea97c69aac7048bd3a3d2e6ce6` | 待审 |
-| 42 | `src/lib-style/win16-control/edit_message.h` | `d7c5da65909dc16c9ed2ac58f59dbf34de20af6c10030737d5fae6b316e5ee21` | 待审 |
-| 43 | `src/lib-style/win16-control/fileowner_message.c` | `ce1ae8ed053c4b967b52cdfd6eb5cc3f5f9fd1405eb2db4a3b0ffabf16619911` | 待审 |
-| 44 | `src/lib-style/win16-control/fileowner_message.h` | `662ee200c53369290027cb9a6e84805235a3b0ead717edcb50ad966063dc76d5` | 待审 |
-| 45 | `src/lib-style/win16-control/header_paint.c` | `9bcf190b4606c88c8ba5a9ece6a636682ea8a3a4251b6f820418355c96c0aad2` | 待审 |
-| 46 | `src/lib-style/win16-control/header_paint.h` | `0242e8b959c1aa6900e5282708515c55f07bfe0d7bab833935feb06abbf829f3` | 待审 |
-| 47 | `src/lib-style/win16-control/list_message.c` | `0ac87da08ab21cf8a95f38a73d40dbee1f26dedea69aec6fd93b7ee5068a57e5` | 待审 |
-| 48 | `src/lib-style/win16-control/list_message.h` | `96b05ce3b3a94624aa9327119cb120b25ea7cf631ad736262a4a3754c183a7cb` | 待审 |
-| 49 | `src/lib-style/win16-control/list_paint.c` | `9da3e1338e35d9dffdd8ce0facf8ae78053cff5a4ff3d0bd2453f04213aedccf` | 待审 |
-| 50 | `src/lib-style/win16-control/list_paint.h` | `108ddfa842255a92e1d92e5e66208970b444fa124b307fc9753ee8107301758c` | 待审 |
+| 41 | `src/lib-style/win16-control/edit_message.c` | `3fc0c155e31270e49ba7a0dfa61992e49cfef79539eed186d8dca16af5edf7c3` | 审计中 |
+| 42 | `src/lib-style/win16-control/edit_message.h` | `d7c5da65909dc16c9ed2ac58f59dbf34de20af6c10030737d5fae6b316e5ee21` | 待修复/待验证 |
+| 43 | `src/lib-style/win16-control/fileowner_message.c` | `ce1ae8ed053c4b967b52cdfd6eb5cc3f5f9fd1405eb2db4a3b0ffabf16619911` | 待修复/待验证 |
+| 44 | `src/lib-style/win16-control/fileowner_message.h` | `662ee200c53369290027cb9a6e84805235a3b0ead717edcb50ad966063dc76d5` | 待修复/待验证 |
+| 45 | `src/lib-style/win16-control/header_paint.c` | `9bcf190b4606c88c8ba5a9ece6a636682ea8a3a4251b6f820418355c96c0aad2` | 待修复/待验证 |
+| 46 | `src/lib-style/win16-control/header_paint.h` | `0242e8b959c1aa6900e5282708515c55f07bfe0d7bab833935feb06abbf829f3` | 待修复/待验证 |
+| 47 | `src/lib-style/win16-control/list_message.c` | `0ac87da08ab21cf8a95f38a73d40dbee1f26dedea69aec6fd93b7ee5068a57e5` | 待修复/待验证 |
+| 48 | `src/lib-style/win16-control/list_message.h` | `96b05ce3b3a94624aa9327119cb120b25ea7cf631ad736262a4a3754c183a7cb` | 待修复/待验证 |
+| 49 | `src/lib-style/win16-control/list_paint.c` | `9da3e1338e35d9dffdd8ce0facf8ae78053cff5a4ff3d0bd2453f04213aedccf` | 待修复/待验证 |
+| 50 | `src/lib-style/win16-control/list_paint.h` | `108ddfa842255a92e1d92e5e66208970b444fa124b307fc9753ee8107301758c` | 待修复/待验证 |
 | 51 | `src/lib-style/win16-control/month_paint.c` | `9e0735b5b64f94438c9198c781af21770b7edaccf6ff2aa58546fe9ca62b4ccc` | 待审 |
 | 52 | `src/lib-style/win16-control/month_paint.h` | `54019ebba59ec1f11e6d2a0d70a2a019c96304d6c440360a61e3b7e30267bf60` | 待审 |
 | 53 | `src/lib-style/win16-control/month_text.c` | `cac6b67de87b786a77d44bb0565a3d9b80670af1afd6b615db926a6cd2873ba4` | 待审 |
@@ -389,3 +389,55 @@
 ## 040 `win16-control/cool_grip_identity.h`：已过关
 
 - 声明上述 Win16 握柄绘制资格接口，产品提供已经验证的身份回调与原生过程；不包含公共身份实现。双位宽实际产品夹具及限制见第 39 项；本头未修改。
+
+## 041 `win16-control/edit_message.c`：审计中
+
+- 非客户区更新区域的复制和裁剪 DC 获取与公共窗口外框重复，已抽为公共 `style_frame_update_dc`，原有成功资源所有权和失败回退策略分别保留；待双位宽构建及运行验证。
+- 双位宽增量构建通过；新增公共测试验证更新区域复制、无效区域失败和资源释放，两位宽通过。正式包编辑控件及两风格外框路径仍待发布后回归，本项继续审计中。
+
+效率检查（新架构恢复）：第 41 项的暂停快照没有完成结果，未发现活动编译进程；本轮未重启完整构建。连续核对 41–46 的职责与调用，将编辑消息、owner-draw 绘后处理、表头快照/代次识别为公共机制候选，接口与状态分拆方案见任务设计。原来因依赖 control_style 就保留风格侧的结论不足，需要复核。正式文件状态不因设计补充自动过关；在途源码和测试仍待合批验证交付。
+
+## 042 `win16-control/edit_message.h`：待修复/待验证
+
+- 顺序核对源码、生产调用和测试入口后确认：完整 control_style 接口依赖需拆为公共编辑状态与风格绘制契约。
+- 具体接口、状态所有者及验证范围见[当前任务设计](../proposals/style-library-reorganization.md)的连续批次；尚未迁移或验证，不计过关。
+
+## 043 `win16-control/fileowner_message.c`：待修复/待验证
+
+- 顺序核对源码、生产调用和测试入口后确认：原生转发和 owner-draw 绘后处理需归公共控件，呈现支持条件由风格提供。
+- 具体接口、状态所有者及验证范围见[当前任务设计](../proposals/style-library-reorganization.md)的连续批次；尚未迁移或验证，不计过关。
+
+## 044 `win16-control/fileowner_message.h`：待修复/待验证
+
+- 顺序核对源码、生产调用和测试入口后确认：需定义公共 overlay 上下文，不能保留完整 Win16 状态为公共接口。
+- 具体接口、状态所有者及验证范围见[当前任务设计](../proposals/style-library-reorganization.md)的连续批次；尚未迁移或验证，不计过关。
+
+## 045 `win16-control/header_paint.c`：待修复/待验证
+
+- 顺序核对源码、生产调用和测试入口后确认：原生表头项目文字快照、代次核验与重入检查应拆入公共控件；颜色、间距及 pressed 呈现归风格。
+- 具体接口、状态所有者及验证范围见[当前任务设计](../proposals/style-library-reorganization.md)的连续批次；尚未迁移或验证，不计过关。
+
+## 046 `win16-control/header_paint.h`：待修复/待验证
+
+- 顺序核对源码、生产调用和测试入口后确认：需拆分公共快照/变更契约与风格支持/绘制契约。
+- 具体接口、状态所有者及验证范围见[当前任务设计](../proposals/style-library-reorganization.md)的连续批次；尚未迁移或验证，不计过关。
+
+## 047 `win16-control/list_message.c`：待修复/待验证
+
+- 顺序核对源码、生产调用和测试入口后确认：原生列表协调、重绘与打印坐标机制需公共化，no-hover 和呈现时机由风格提供。
+- 具体接口、状态所有者及验证范围见[当前任务设计](../proposals/style-library-reorganization.md)的连续批次；尚未迁移或验证，不计过关。
+
+## 048 `win16-control/list_message.h`：待修复/待验证
+
+- 顺序核对源码、生产调用和测试入口后确认：列表公共状态及策略上下文需从完整 Win16 状态接口中拆开。
+- 具体接口、状态所有者及验证范围见[当前任务设计](../proposals/style-library-reorganization.md)的连续批次；尚未迁移或验证，不计过关。
+
+## 049 `win16-control/list_paint.c`：待修复/待验证
+
+- 顺序核对源码、生产调用和测试入口后确认：制表位像素换算/提交及项目数据采集是公共机制，颜色、字体选择和间距归风格。
+- 具体接口、状态所有者及验证范围见[当前任务设计](../proposals/style-library-reorganization.md)的连续批次；尚未迁移或验证，不计过关。
+
+## 050 `win16-control/list_paint.h`：待修复/待验证
+
+- 顺序核对源码、生产调用和测试入口后确认：混合头需拆为公共 tabstop/数据接口与 Win3.x 呈现接口。
+- 具体接口、状态所有者及验证范围见[当前任务设计](../proposals/style-library-reorganization.md)的连续批次；尚未迁移或验证，不计过关。
