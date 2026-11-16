@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S8 P1",
-  "status": "verified-locally-pending-remote",
+  "status": "passed-focused-with-skips-remote-verified",
   "build": {
     "full_matrix": "pending",
     "exit_code": 0,
@@ -3687,5 +3687,6 @@
       "path": "build/t26-package/s8-post-publication",
       "removed": true
     }
-  ]
+  ],
+  "verified_remote_commit": "54c8b269c65e9b88834296473ae93bb23dddc156"
 }

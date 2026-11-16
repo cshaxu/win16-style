@@ -1,0 +1,280 @@
+{
+  "task": "M0 T26 S8 P1",
+  "remote_commit": "54c8b269c65e9b88834296473ae93bb23dddc156",
+  "status": "actual-fetch-blobs-and-published-artifacts-verified",
+  "existing_blobs": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "d5662cd67e209c02c19307b3a9528b51f424cb542850f9ab15e6daf99f33f29f"
+    },
+    {
+      "path": "assets/demo.exe",
+      "sha256": "e2f2e2c4b524885f8e49bcc78a459faa48fbbd0d5f6a2132040e4060bd4291ae"
+    },
+    {
+      "path": "assets/ntw16s32.dll",
+      "sha256": "4e891a0cae482e17d9189b70f6c5c55fb466fb9e586ef0006d9e2eb382fe0e88"
+    },
+    {
+      "path": "assets/ntw16s64.dll",
+      "sha256": "55a58b7bfa35e1ca82c63aa857231b9266488b61f0c6da126cf0a09df372c6bd"
+    },
+    {
+      "path": "assets/ntw2ks32.dll",
+      "sha256": "b4798a350c2a02e6b48a777f6d817967b550161b09aa974ab2e53c881c60f6fd"
+    },
+    {
+      "path": "assets/ntw2ks64.dll",
+      "sha256": "2b296d80cc4083633baf319a04bf1452811225533d0978550c5249a7d637aa72"
+    },
+    {
+      "path": "assets/ntwshk32.dll",
+      "sha256": "9dbcc890e509fb844084bafd81bf924d9730b237edfc403d5540c0b4a286f8ce"
+    },
+    {
+      "path": "assets/ntwshk64.dll",
+      "sha256": "a97e61bcb33ff49e9b95aba191bd1b87035cf2f6108d89bba8b17dac99e86fce"
+    },
+    {
+      "path": "assets/run16s.exe",
+      "sha256": "1ee153eae45a3dd4154896277a923dd764a647cce3ae353f24d3a5fed87de832"
+    },
+    {
+      "path": "docs/design/ARCHITECTURE.md",
+      "sha256": "75ef7c0398fc133e8debc91cbafa8dbed1c2492633fb7049e38a2c33e8129d27"
+    },
+    {
+      "path": "docs/etc/README.md",
+      "sha256": "f753363efc1da5a373ed0342b8a87cfc5f3e747ac5c77fdf758a88c30bb33640"
+    },
+    {
+      "path": "docs/etc/evidence/t26-s8-delivery.json",
+      "sha256": "fd4cc4e33bbe304239a6f5df9b531550031ad8a23c5538f8423a2ae5abe6e2d5"
+    },
+    {
+      "path": "docs/etc/evidence/t26-s8-menu-audit.json",
+      "sha256": "444f3eeb4a60bb94b3072905a6deeb1619b240e0ddfc50810c1442ed3ec625fa"
+    },
+    {
+      "path": "docs/etc/evidence/t26-s8-menu-development.json",
+      "sha256": "9a7d4f98595de61a4cc65d0b20b2245c56deac3d92f366fcee286039cd739c95"
+    },
+    {
+      "path": "docs/etc/import/import-receipts.json",
+      "sha256": "10f2412b2887fde6d6c4218608228e9566d97fd21702438eab55b9b4842c546e"
+    },
+    {
+      "path": "docs/history/M0-T26-S8-menu.md",
+      "sha256": "6b9412e61d51feefe92e7c61a4be0b892506bc46a7cc58e9b287060f03cac409"
+    },
+    {
+      "path": "docs/proposals/style-library-reorganization.md",
+      "sha256": "f06b1d740e7e7b5ddab202213095d0e1cc82bb1f333b22673b34eec5915d3bf3"
+    },
+    {
+      "path": "docs/states/CURRENT.md",
+      "sha256": "2ff7eb8afe506f85f5165e2050e1370299804602276fd89e08cf407bdecfc751"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/frame.c",
+      "sha256": "3998c0615df578a3c458aee7177a6dc47ec0c9b5b18500f1b923f832ea8a54f2"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/system_menu.c",
+      "sha256": "dc0754272dbaadd3241f25375acb086a3a72e6c43861a954df97c7a397d5accf"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/window/system_menu.h",
+      "sha256": "0beb161774a9675fc6b9180f337c276bb8eaaf7d6f2aebd09e9e34941043b9aa"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_bar.c",
+      "sha256": "f2bc7c58f9b9eb027003e8f09f381739cdc45cf59b1d067ef4d0595c1473c112"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_bar.h",
+      "sha256": "e4be6e2776378f8a2092c6b670ca827cd2666844f7568a27096b3b0216aaa14e"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_bar_paint.c",
+      "sha256": "4f733078e7caea6196604663b1317e996f27c04e42f7b2d7ab86da35a27b0dba"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_items.c",
+      "sha256": "5ea07f5e6c589dc9c1bfb6234a210c164594e72cca3acb46e7edca7e1f1d10dd"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_items.h",
+      "sha256": "0fe06093f7fc2900998f4a992ca887c155d58090156891463ae3d3772198dddb"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_scope.c",
+      "sha256": "39ebd1257858f512362c7237fa75eadef7cb6c27aa1ce896bb94c2f8d8635b82"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/menu/menu_scope.h",
+      "sha256": "04fd3a9dc46f8e902399b5510081f3bc6ff140ad7c16ca77cbcc0d84efa00120"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.c",
+      "sha256": "1173481d0957d6cea1ee8ededfc40ae06482bb87aa615f87a94d9856b08e04e1"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.h",
+      "sha256": "c343521940f09456445cfa4df2848aa4793be7232cdec257e3919aa304cb0519"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_input.c",
+      "sha256": "cdc5940e51e20105004fed30ecd3aa475fd96e5a41a0b8f2d0ccef59140352a1"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_input.h",
+      "sha256": "c103cf598074a8fddd554a75cb9c623ac719a36d76f009bf5279a52ce3c72ef8"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_layout.c",
+      "sha256": "8cbd5e584919d4a59146684a7fe77c0fdf17d2f26b95d0a49caf69aec70a4f2e"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c",
+      "sha256": "4e96dbf86156a42de7e4eb08380c33e81e0cb2220fa6281c1775ab51450d920f"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_state.c",
+      "sha256": "5ba59b2d4047ed58a02830bf0f759904787ca2a8ecbeda46b60358a9659bc6f4"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_state.h",
+      "sha256": "9e6c684a74cf68dd2e00fa06e027033e30dc0679fb43c1f17c1ff2dcfbcf8850"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_view.c",
+      "sha256": "d85ec2ac3a7109438f4c6c8deb176c2d13acd83e410f3125319e784849615e2b"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
+      "sha256": "42eb2743cebb3a9d65b4d20fac5005fe8b06f4448e8ada16886288096b8da393"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/bar_controller.c",
+      "sha256": "96e67389a25806f40de2b5d206e096d8916c120986bc572c42bb0e28e1c60049"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/bar_controller.h",
+      "sha256": "780cfaa6b9d2e0dde782050cf15bda4cc5e79724bab6abe4b4fa75cc0ba41835"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/bar_snapshot.c",
+      "sha256": "91a0d095e17b7d24fe0d1cd58cdd71541f2cb009ed59c8c45435e313d955fccc"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/bar_snapshot.h",
+      "sha256": "1b84e6e00689ff5b2dcf45f70746992145fd096f723de051d7f02f0b011a1692"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/bar_state.c",
+      "sha256": "d09871b4eedf601eef0e837a4a65e9a05b874bb8824f7b3f81ed8fe9bb3b2f88"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/menu_input.h",
+      "sha256": "38530186357a08469f40a253441ea3362e00ccec35a0d60c6db100329b65b696"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/owner.c",
+      "sha256": "496603795e6e37ed05846ac41c7298c2d1a2a1b9dbbc851f363053a3bd84f8db"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/owner.h",
+      "sha256": "1436219b9ef20678773729babd3113e2410ff759a514da6c217e04a5d16b1285"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/popup.c",
+      "sha256": "02b07b25eebfa1c0367dbd56fe1177eee9eff82fb55662740a7f3eaaf4c40629"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/popup.h",
+      "sha256": "3021cbff9570d5d3a0052a83d5cf961a51749da918a09c117c158cb237ecd6f9"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/tracking.c",
+      "sha256": "6746183433b8b3e6666846b4c8033f6f9d766dc6753ca74be90dcb8887d69f17"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/tracking.h",
+      "sha256": "62409cab18eaa0f82772060273f1d4d962c64f1811ad8bd8c9fc5964c2b5d2d4"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/tracking_input.c",
+      "sha256": "e9705d60199d404dd0ebdd29bf78104f9bdaffef49086066359e838a12f8c38b"
+    },
+    {
+      "path": "src/ntw16s-dll/win16_style.c",
+      "sha256": "046bd8d7ed1b7bc04681c3ef4dc107a24314eb0f2c2cce181490807be5feb4f9"
+    },
+    {
+      "path": "src/ntwshk-dll/ntwshk.def",
+      "sha256": "a2a9f3fb1c33dfc4ae23e185adddb6716f7835c561fdce87c3f86fd075309983"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win3x/control/control_link.c",
+      "sha256": "7fa3ef0fd6d63a990a8b59abdff493f3b590cb8ba9205914bdeff4744828b67b"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win3x/window/window_link.c",
+      "sha256": "549758659aa55755a926cc012041b26c399fb91fe74fb27390074c4510084d1c"
+    },
+    {
+      "path": "tests/lib-win32-style/application/TEST_MAP.md",
+      "sha256": "697add1acc41c6b8a6cdc1a05a8627a781149a4a62c981fc78ce1304ebfaa72c"
+    },
+    {
+      "path": "tests/lib-win32-style/application/menu/bar_controller.c",
+      "sha256": "ede1702605b169f7aaaecb3de3e7284784f2f2eb49c25596d8a3abc52e3b1665"
+    },
+    {
+      "path": "tests/lib-win32-style/application/menu/bar_snapshot.c",
+      "sha256": "3e5a6db9735cda69a7d0a97cb79d5629757d8b704b428e7ec71d6e3ee6f89771"
+    },
+    {
+      "path": "tests/lib-win32-style/application/menu/owner.c",
+      "sha256": "f3eab02c0ff69e8360ec3fb15a45eb81f56d4177cdd18d458ccdb905ec8cb1b4"
+    },
+    {
+      "path": "tests/lib-win32-style/application/menu/popup.c",
+      "sha256": "1904080e6e010b2f9f0c064446cada9e37891beea81af834f5aa70e00e9e1a84"
+    },
+    {
+      "path": "tests/lib-win32-style/application/menu/tracking.c",
+      "sha256": "5e4a56989e2bb05e24c19d675f5506a714e08f58228776d230e3e64096ff3ed2"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_dc_failure.c",
+      "sha256": "18c7d76bee4b0aa0f29352fe353e1bddc33a1e4e4338e9f2e5b380e8cbce2f28"
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_menu_dispatch.c",
+      "sha256": "8eaa0dad770549166eb09932b0324b7f32bbe9fde177fd7a7bd8cade593d8ffd"
+    },
+    {
+      "path": "tests/ntw2ks-dll/frame_target.c",
+      "sha256": "af0448940d87cfd50150cd9015e9ea1f1458130816d44cab1913232f08ff220a"
+    }
+  ],
+  "deleted_paths": [
+    "src/lib-win32-style/appearance/win3x/menu/menu_iteration.c",
+    "src/lib-win32-style/appearance/win3x/menu/menu_iteration.h",
+    "src/lib-win32-style/appearance/win3x/menu/menu_message.c",
+    "src/lib-win32-style/appearance/win3x/menu/menu_message.h"
+  ],
+  "package": {
+    "run16s.exe": "1ee153eae45a3dd4154896277a923dd764a647cce3ae353f24d3a5fed87de832",
+    "ntw16s32.dll": "4e891a0cae482e17d9189b70f6c5c55fb466fb9e586ef0006d9e2eb382fe0e88",
+    "ntw16s64.dll": "55a58b7bfa35e1ca82c63aa857231b9266488b61f0c6da126cf0a09df372c6bd",
+    "ntw2ks32.dll": "b4798a350c2a02e6b48a777f6d817967b550161b09aa974ab2e53c881c60f6fd",
+    "ntw2ks64.dll": "2b296d80cc4083633baf319a04bf1452811225533d0978550c5249a7d637aa72",
+    "ntwshk32.dll": "9dbcc890e509fb844084bafd81bf924d9730b237edfc403d5540c0b4a286f8ce",
+    "ntwshk64.dll": "a97e61bcb33ff49e9b95aba191bd1b87035cf2f6108d89bba8b17dac99e86fce",
+    "demo.exe": "e2f2e2c4b524885f8e49bcc78a459faa48fbbd0d5f6a2132040e4060bd4291ae"
+  },
+  "review": "Coordinator role read actual commit/diff and all remote blobs; original request and frozen 52-input menu responsibility map checked. S8 complete within its menu boundary, not all T26."
+}

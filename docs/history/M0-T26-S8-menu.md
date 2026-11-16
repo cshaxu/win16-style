@@ -159,3 +159,7 @@ controller最终增量双宽all及每宽6项聚焦通过，包含真实原生pop
 最终复核：私有menu_message及menu_iteration四源/头、两风格TLS/filter、Win2000私有bar properties和Win3x字段指针view均删除。公共对象真正持有scope/observer/node/ref、owner loop/items/depth、tracking栈/消息源与bar状态/快照/controller；两风格既有native/adapted项和columns/native-popup语义通过完整操作配置，未引用年代/产品私有头。保留的palette/font/glyph、System字体及MDI cell资格、Win2000 compact/native矩形偏移属于实际呈现，现代宿主和最终view/注册分别归既定S12/S13。生产+1238/-1005净+233行，测试+467/-51净+416行；没有宣称总代码减少。完成远端复核后才关闭S8并自动S9；M0/T26保持。
 
 所有构建及测试句柄已终止，未发现本S scratch下存活自有进程，绝对路径/祖先及子树reparse核验后清理交付快照、原生测试和发布备份288871223.0字节；原始结构化结果已提炼交付证据，.ninja/.ccache及assets/O:/winnt正式包保留。
+
+## S8收口及自动准入
+
+S8 P1 `54c8b269`已推送并实际fetch，逐blob复核64个现存文件、4个删除路径及八文件，见[远端证据](../etc/evidence/t26-s8-remote.json)。协调复核角色读取实际commit/diff、原始请求与52项冻结映射，确认菜单范围收口，不扩大为整个T26完成。S8已closed，自动准入S9基础控件。此次P2只记录收口/准入与复核，无产品构建输入变化，八文件保持已测摘要，不重复完整构建；M0固定、T26开放。

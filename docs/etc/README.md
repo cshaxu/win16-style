@@ -249,3 +249,5 @@
 - [T26 S8菜单增量验证](evidence/t26-s8-menu-development.json)：公共popup/owner/tracking/bar快照与controller的增量和两风格实际消费者结果、原始失败/重试及清理；不等于最终发布交付。
 
 - [T26 S8交付](evidence/t26-s8-delivery.json)：同快照双宽八文件先发布后测试，259项聚焦回归257通过/2项ETW skip、两项DWM旧失败及首次编排错误；完整源码/依赖/资源和摘要证据。
+
+- [T26 S8实际远端](evidence/t26-s8-remote.json)：P1 64现存blob、4删除路径和八文件已实际fetch逐项复核。

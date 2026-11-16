@@ -1,12 +1,12 @@
 {
   "task": "M0 T26 S8",
   "baseline": "cb84dac13c7401a16ed41d1bfb358af8c732cc63",
-  "status": "all 52 frozen inputs and new outputs implemented/reviewed; clean dual-width package published then 259-case focused suite verified; remote closure pending",
+  "status": "S8 closed: all frozen inputs reviewed, common mechanisms consumed, clean package published/tested and actual remote verified; T26 continues S9",
   "files": [
     {
       "path": "src/lib-win32-style/appearance/win2000/window/frame.c",
       "sha256": "594c8a72c9edae695c4f93105ba7f5a29c603cca4a18d959ff2283f6d1035512",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "menu_tracking active_menu TLS, WH_MSGFILTER, selected/focus/keyboard properties and TrackPopup iteration remain private; compact/RTL/owner-draw support and offset/painting are actual style policy",
       "public_reuse": "menu_input pointer/key/mnemonic helpers already shared; shared menu lifetime/state still missing",
@@ -21,7 +21,7 @@
     {
       "path": "src/lib-win32-style/appearance/win2000/window/system_menu.c",
       "sha256": "2f8852d5c20f220fa3d9f20633ccd457a6b25136f845a33ab7eecbbd806e62b8",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "scope stack and per-thread WH_CALLWNDPROC, popup subclass/calls/detached/idle/selection cleanup are common mechanisms; Tahoma/bevel/row glyphs are era drawing policy",
       "public_reuse": "menu_snapshot/read_row/client_offset, menu_input/popup_observation, present_buffer already reused",
@@ -36,7 +36,7 @@
     {
       "path": "src/lib-win32-style/appearance/win2000/window/system_menu.h",
       "sha256": "8608f209175f54efc7921b19a689eb435e8edd5a3825a7170496cee1c0207e8c",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "scope stack and per-thread WH_CALLWNDPROC, popup subclass/calls/detached/idle/selection cleanup are common mechanisms; Tahoma/bevel/row glyphs are era drawing policy",
       "public_reuse": "menu_snapshot/read_row/client_offset, menu_input/popup_observation, present_buffer already reused",
@@ -51,7 +51,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_bar.c",
       "sha256": "95f628f2c4e94c5ab658d5fada2e307ebd1484b94f1fcacee2039bce17b0700e",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "bar snapshot/read/owner-draw identity and focus/keyboard/input state remain mixed; MDI merged-cell filtering and measurement are supplied profile operations",
       "evidence": "bar_read_for_window/item_current/menu_bar_leave/select/menu_input",
@@ -65,7 +65,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_bar.h",
       "sha256": "88797bde0147f710502d7dcb3fa823cc0963271e3f7b6405e4d7a920ee44d601",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "private field-pointer state/input views and private snapshot types must be replaced with public owned menu state and full operations; actual layout/painter stays appearance",
       "evidence": "win16_control_bar_state_view/win16_control_menu_input_view/win16_style_bar",
@@ -79,7 +79,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_bar_paint.c",
       "sha256": "392b28274f295dfed1cbf48c464b194784fdb6af055eaff03fc0c530a074bd94",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "era text/merged artwork stays appearance; native application owner-draw state/identity and clipped callback invocation is common protocol",
       "evidence": "win16_style_bar_paint",
@@ -93,7 +93,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_items.c",
       "sha256": "cbb1d4b89e040478d0e0df0bd2801e5b5a20a8a702c090934f1284b14f170df4",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Win3x column maxima and System glyph widths are actual rendering policy; temporary native data preparation/restoration already uses public menu_items",
       "evidence": "columns_read/menu_draw/menu_size",
@@ -107,7 +107,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_items.h",
       "sha256": "dd7d6ad975f9b77e17ebab61631fc47b3dce08013c5413990708dc44a1d74258",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "renderer draw/measure interface borrows public temporary items and fonts; no scope or hook state here",
       "evidence": "win16_style_menu_draw/size",
@@ -121,7 +121,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_iteration.c",
       "sha256": "7634e8b5496f0d68cfc6fa7f3e9a64f3b47c96d8ca160cbeb492325c10e0d042",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "TrackPopup loop, retained window identity across WM_INITMENU/NEXTMENU, focus transfer and selection iteration must move; geometry and target profile support supplied operations",
       "evidence": "open_bar_once/win16_control_open_menu_bar",
@@ -135,7 +135,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_iteration.h",
       "sha256": "38c4c0e901598d609edf75782c731a9957c9d056c129e323a3b58d301b86de22",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "private menu_frame owns hook/stack/input state and services expose style_window; replace with public tracking state and full operations",
       "evidence": "menu_frame/win16_control_menu_bar_services",
@@ -149,7 +149,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_message.c",
       "sha256": "1da9cf7d660f11a9e6899acbfb70b1972f6552173ab5438d9fd2b137661c3678",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "native popup initialization forward-before-prepare, fallback mnemonic and depth restoration are common lifecycle protocol; palette and system button drawing profile callbacks",
       "evidence": "win16_control_menu_message",
@@ -163,7 +163,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_message.h",
       "sha256": "3affa587f142c1fdbf4ffcc94664f098220d7df274c4653bf0e08b5aa66b87df",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "message dispatch currently includes private window state; common protocol needs public menu owner state and operations",
       "evidence": "win16_control_menu_message",
@@ -177,7 +177,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_paint.c",
       "sha256": "4ea377a908634e745e8a2f1b4c3c4bf2a8c18b4749c33b5e27b6bd95f09ab5b8",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "System text measurement, stippled disabled rendering, glyph artwork, colors, era columns and margins are genuine Win3x appearance; keep this renderer, borrow DC/font only",
       "evidence": "menu_columns_read/menu_text_columns/render_text/glyph",
@@ -191,7 +191,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_paint.h",
       "sha256": "0fd85ed32bf9f387cff389e6329b49a0e09e55a07ff0e8e43b736a582f9ab59d",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "existing exported text/measure ABI retained; private columns remain actual era policy rather than common lifecycle",
       "evidence": "win16_style_menu_text/measure/columns",
@@ -205,7 +205,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_scope.c",
       "sha256": "bf6e7e520716d5f24a91ffe15255b08bfc4765b4e887d0795490160220db2fe4",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "TLS scopes/thread observer, popup and shadow refs/detach/print/selection refresh must share engine; actual border/system drawing and shadow suppression eligibility remain profile operations",
       "evidence": "popup_proc/shadow_proc/popup_message/begin/end/paint_system",
@@ -219,7 +219,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_scope.h",
       "sha256": "d8926e11a8b6c6106dbcaae9d0e4e47b9476ea26c10264aa0d935ba8e45cbabf",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "same-thread nested and non-top exit contract retained; concrete palette begin becomes renderer adapter to shared scope",
       "evidence": "win16_style_menu_begin/end",
@@ -233,7 +233,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.c",
       "sha256": "5114c166c8ee2700fa1e93d0f0c9aabf67465447c496cf65e1049dc6f4fa4592",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "menu route/enter/exit/select forwarding consumes shared menu owner and tracking; non-menu native dispatch remains S7/S12 owner",
       "evidence": "WM_ENTERMENULOOP/WM_MENUSELECT/menu_message",
@@ -247,7 +247,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_input.c",
       "sha256": "900ef4cc1721b3810188753ae339ce3368f4755b2552ff601d16548189845d13",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "bar keyboard/focus/open/cancel and native system loop input are generic mechanism; frame button and geometry support remain existing window/provider contracts",
       "evidence": "WM_SYSCOMMAND/WM_KEYDOWN/WM_CANCELMODE",
@@ -261,7 +261,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_state.c",
       "sha256": "275184d277c7d335fe7167705fd0a07f100f5ba573654bf313f5f1af04729d95",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "menu_depth/menu_loop stack/item cleanup is generic owner lifecycle including failed inner entry not popping outer scope; frame/font ownership remains existing component",
       "evidence": "frame_state_enter_menu/exit_menu/end_menu/dispose",
@@ -275,7 +275,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_state.h",
       "sha256": "399a462c1a4d950d0c9692bc991574c09d4e361aae404471a5c744dc527bb079",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "private bar focus/selection/menu-depth/items/loop fields must become public menu state; palette/native/frame identity remains separate",
       "evidence": "style_window/menu_loop",
@@ -289,7 +289,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
       "sha256": "19b148922498263ba5e208a158d09cb45dc73a893ed4fada10498a4e4f104e68",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "menu-only style_window allocation and borrowed font represent same menu owner protocol; move its menu consumption with S8 while host surface/geometry/action transport stays S12",
       "evidence": "surface_message/owner_message/system_menu/after_title_remove",
@@ -303,7 +303,7 @@
     {
       "path": "src/lib-win32-style/application/menu/classic_menu_layout.c",
       "sha256": "487e2829a4006fc85c09ceebd9a5be7676b561d34bda7895f762f5e82b40049f",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Existing public implementation retained/reused; no product or appearance private include. Does not yet own popup scope, tracking or owner loop lifetime.",
       "evidence": "classic_menu_layout.c",
@@ -316,7 +316,7 @@
     {
       "path": "src/lib-win32-style/application/menu/classic_menu_layout.h",
       "sha256": "10c29219c26dc757534c7f5d3f99355fc65b4a0cccaaca735c6291ae72465c6d",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Existing public implementation retained/reused; no product or appearance private include. Does not yet own popup scope, tracking or owner loop lifetime.",
       "evidence": "classic_menu_layout.h",
@@ -329,7 +329,7 @@
     {
       "path": "src/lib-win32-style/application/menu/host_menu.h",
       "sha256": "74c2af9a19788daec099456ec9a46c33e24d2b5754e3d86e35134a42fcfba008",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Existing public implementation retained/reused; no product or appearance private include. Does not yet own popup scope, tracking or owner loop lifetime.",
       "evidence": "host_menu.h",
@@ -342,7 +342,7 @@
     {
       "path": "src/lib-win32-style/application/menu/menu_input.h",
       "sha256": "977fa76d12db1edd193c97cb7187390ed8540d6924f436f47336c0b4441d5b98",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Existing public implementation retained/reused; no product or appearance private include. Does not yet own popup scope, tracking or owner loop lifetime.",
       "evidence": "menu_input.h",
@@ -355,7 +355,7 @@
     {
       "path": "src/lib-win32-style/application/menu/menu_items.c",
       "sha256": "ccd5d0d3e65c8a27d52daa15abd4b6b04ab4c84a872edb4c911bd433ed49ec3e",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Existing public implementation retained/reused; no product or appearance private include. Does not yet own popup scope, tracking or owner loop lifetime.",
       "evidence": "menu_items.c",
@@ -368,7 +368,7 @@
     {
       "path": "src/lib-win32-style/application/menu/menu_items.h",
       "sha256": "546ff87e7bfb4c253538439f95f971e9b17bcaf24ce307ba7f1b254eb7e3a50c",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Existing public implementation retained/reused; no product or appearance private include. Does not yet own popup scope, tracking or owner loop lifetime.",
       "evidence": "menu_items.h",
@@ -381,7 +381,7 @@
     {
       "path": "src/lib-win32-style/application/menu/menu_metrics.h",
       "sha256": "28213af133468e711964dae8121c91f949edb70ef58a26eab03f8014256d544b",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Existing public implementation retained/reused; no product or appearance private include. Does not yet own popup scope, tracking or owner loop lifetime.",
       "evidence": "menu_metrics.h",
@@ -394,7 +394,7 @@
     {
       "path": "src/lib-win32-style/application/menu/menu_owner.c",
       "sha256": "15a09cc3a8e1f289363ef7bd16260570b4a66ccbe064751a31f364292d3f0247",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Existing public implementation retained/reused; no product or appearance private include. Does not yet own popup scope, tracking or owner loop lifetime.",
       "evidence": "menu_owner.c",
@@ -407,7 +407,7 @@
     {
       "path": "src/lib-win32-style/application/menu/menu_owner.h",
       "sha256": "704a4eac951fd0079fcb9c1243df8fb587ba569d73f543b710b7794f1a4175c2",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Existing public implementation retained/reused; no product or appearance private include. Does not yet own popup scope, tracking or owner loop lifetime.",
       "evidence": "menu_owner.h",
@@ -420,7 +420,7 @@
     {
       "path": "src/lib-win32-style/application/menu/menu_snapshot.h",
       "sha256": "7e885cf9cd88d4c22a559a378545aebe59667a8de9ef00e94323023c96313f8f",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Existing public implementation retained/reused; no product or appearance private include. Does not yet own popup scope, tracking or owner loop lifetime.",
       "evidence": "menu_snapshot.h",
@@ -433,7 +433,7 @@
     {
       "path": "src/ntw16s-dll/win16_style.c",
       "sha256": "9f45874f226d1d1f9fec082f47d0adca7d019ae4f14896e425e9981961cfbdb2",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "product TLS tracking_menu and WH_GETMESSAGE begin/end/filter are generic tracking lifetime and must leave product; module export/instance lookup/render operation bindings remain",
       "evidence": "menu_filter/menu_begin/menu_end/bar_view/open_bar",
@@ -447,7 +447,7 @@
     {
       "path": "tests/lib-win32-style/appearance/win3x/window/modern_frame.c",
       "sha256": "a5ef28b711823fa2f19535f5eb95000120771a67d3310623ccafc2e06ec30965",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Native menu cancellation, item restoration and callback lifetime inspected; isolated_process callers require explicit --private-worker to bypass desktop creation; dc_failure already current-desktop only. Posted messages/timers are protocol tests, not physical input.",
       "evidence": "modern_frame.c",
@@ -459,7 +459,7 @@
     {
       "path": "tests/lib-win32-style/application/menu/host_menu.c",
       "sha256": "6b31020441cd90340bbe34da9a1832f2aee226a062d80b7db2c7f9ccf122c72d",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Native public menu fixture inspected; owned windows/menus and bounded popup callbacks; current desktop, not physical input acceptance.",
       "evidence": "host_menu.c",
@@ -471,7 +471,7 @@
     {
       "path": "tests/lib-win32-style/application/menu/menu_input.c",
       "sha256": "10c56e98f6f0e20859d5f2f2f485d4be6ffde81ae9d13cc56479f36257a6608c",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Native public menu fixture inspected; owned windows/menus and bounded popup callbacks; current desktop, not physical input acceptance.",
       "evidence": "menu_input.c",
@@ -483,7 +483,7 @@
     {
       "path": "tests/lib-win32-style/application/menu/menu_items.c",
       "sha256": "c954896f1b74737bb38a0d7993fcc9b473b87da56131510bf5aad93cd072ebfb",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Native public menu fixture inspected; owned windows/menus and bounded popup callbacks; current desktop, not physical input acceptance.",
       "evidence": "menu_items.c",
@@ -495,7 +495,7 @@
     {
       "path": "tests/lib-win32-style/application/menu/menu_metrics.c",
       "sha256": "184bcb77763f633f21a45ba00f7235ffe6e0b3b3e54fad654c9d4601ad2cf854",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Native public menu fixture inspected; owned windows/menus and bounded popup callbacks; current desktop, not physical input acceptance.",
       "evidence": "menu_metrics.c",
@@ -507,7 +507,7 @@
     {
       "path": "tests/lib-win32-style/application/menu/menu_owner.c",
       "sha256": "c3d554ef79406a162a88352aea6b0ff898a82ee32873ec41883e47fa2e8b4bd5",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Native public menu fixture inspected; owned windows/menus and bounded popup callbacks; current desktop, not physical input acceptance.",
       "evidence": "menu_owner.c",
@@ -519,7 +519,7 @@
     {
       "path": "tests/lib-win32-style/application/menu/menu_snapshot.c",
       "sha256": "68b4d1f60043c0e75537c000a5e390dec7e4e7c68b78985a63703cf07ff6011c",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Native public menu fixture inspected; owned windows/menus and bounded popup callbacks; current desktop, not physical input acceptance.",
       "evidence": "menu_snapshot.c",
@@ -531,7 +531,7 @@
     {
       "path": "tests/ntw16s-dll/win16_style_dc_failure.c",
       "sha256": "e07b5bce42fa4d9bef5964b049fdd0508a34d20aa31ae010c1dd90990931fd44",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Native menu cancellation, item restoration and callback lifetime inspected; isolated_process callers require explicit --private-worker to bypass desktop creation; dc_failure already current-desktop only. Posted messages/timers are protocol tests, not physical input.",
       "evidence": "win16_style_dc_failure.c",
@@ -543,7 +543,7 @@
     {
       "path": "tests/ntw16s-dll/win16_style_menu_cancel.c",
       "sha256": "2e6fe7dc73d8e03275da7adbd2b11c2db1e27c8fe81133163a250e837648b520",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Native menu cancellation, item restoration and callback lifetime inspected; isolated_process callers require explicit --private-worker to bypass desktop creation; dc_failure already current-desktop only. Posted messages/timers are protocol tests, not physical input.",
       "evidence": "win16_style_menu_cancel.c",
@@ -555,7 +555,7 @@
     {
       "path": "tests/ntw16s-dll/win16_style_menu_dispatch.c",
       "sha256": "407399be6f089cdd3dd2b39697dabaa1dd1c6e09f48c0cc676a387c618b8a562",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Unconditional private desktop creation removed; existing native UAH forwarding, menu damage/idle and warm/measured GDI workload retained.",
       "evidence": "main/damage/witness; current-desktop-only modification",
@@ -567,7 +567,7 @@
     {
       "path": "tests/ntw2ks-dll/frame_target.c",
       "sha256": "3a801c7fcdff89053f1689dcd5d2800d5cb7f11306ca6d26aefeadc9dc23e923",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "menu mechanism or actual consumer; era artwork remains appearance, modern host remains S12",
       "finding": "Menu-related portions reviewed: owner procedure and timeouts, inactive/multirow, physical toggle/switch, hover/arrow/nested, F10/mnemonic/focus, add/remove geometry and system icon/disabled commands. Other window/dialog/control portions remain prior S7 or future S scope; native messages not physical evidence.",
       "evidence": "procedure/menu_physical_thread; --menu-*; --inactive-menu; --system-icon; --disabled-menu-commands",
@@ -579,7 +579,7 @@
     {
       "path": "CMakeLists.txt",
       "sha256": "79bf10939c5ff68529d80b2f04bcbc0c1378978db1eec1dbf1523e50583e33b2",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "single runtime state and console-safe import/ABI constraint; not new behavior",
       "finding": "theme_state supplies existing shared runtime pattern: GUI resolution is lazy, ntwshk imports remain kernel32/advapi32; no GUI work in DllMain; compatible appended symbols only if needed",
       "current_sha256": "d5662cd67e209c02c19307b3a9528b51f424cb542850f9ab15e6daf99f33f29f",
@@ -590,7 +590,7 @@
     {
       "path": "src/ntwshk-dll/ntwshk.def",
       "sha256": "8501fa7286f27212479fb8ed10efe8ad4f5e41be6d755d0c2d8abfb299bff28d",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "single runtime state and console-safe import/ABI constraint; not new behavior",
       "finding": "theme_state supplies existing shared runtime pattern: GUI resolution is lazy, ntwshk imports remain kernel32/advapi32; no GUI work in DllMain; compatible appended symbols only if needed",
       "current_sha256": "a2a9f3fb1c33dfc4ae23e185adddb6716f7835c561fdce87c3f86fd075309983",
@@ -601,7 +601,7 @@
     {
       "path": "src/lib-win32-style/application/lifecycle/theme_state.c",
       "sha256": "bbebc9dfe7fb3b768ffe91e459feed92578e1566a2f072b6939ab6cbb97f662a",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "single runtime state and console-safe import/ABI constraint; not new behavior",
       "finding": "theme_state supplies existing shared runtime pattern: GUI resolution is lazy, ntwshk imports remain kernel32/advapi32; no GUI work in DllMain; compatible appended symbols only if needed",
       "current_sha256": "bbebc9dfe7fb3b768ffe91e459feed92578e1566a2f072b6939ab6cbb97f662a",
@@ -612,7 +612,7 @@
     {
       "path": "tools/check_package.py",
       "sha256": "1996ed0a77e306a0772ca134342d1c2fcb06fa47fdae381910767f7ccb79f0b2",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "single runtime state and console-safe import/ABI constraint; not new behavior",
       "finding": "theme_state supplies existing shared runtime pattern: GUI resolution is lazy, ntwshk imports remain kernel32/advapi32; no GUI work in DllMain; compatible appended symbols only if needed",
       "current_sha256": "1996ed0a77e306a0772ca134342d1c2fcb06fa47fdae381910767f7ccb79f0b2",
@@ -623,7 +623,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_input.h",
       "sha256": "e067c1cfe84bc28f22b9b02357000d2a1519ccc1a0c73e560ea4dfd2fcd3527c",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "bounded menu consumer or existing native regression; no broader subsystem review claim",
       "finding": "Private input services expose menu_frame and style_window; migrate menu operations to public state, leave frame button services separate.",
       "evidence": "frame_input.h",
@@ -637,7 +637,7 @@
     {
       "path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.h",
       "sha256": "8af504f1cf3b8ccd67db531005563ead03435f1c1f46576d4fb8b683306c6e93",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "bounded menu consumer or existing native regression; no broader subsystem review claim",
       "finding": "Private menu_frame double-pointer is tracking ownership leak; consume common current/update interface rather than product TLS pointer.",
       "evidence": "frame_dispatch.h",
@@ -651,7 +651,7 @@
     {
       "path": "tests/ntw16s-dll/menu_initial.c",
       "sha256": "f3b43c5e3e3600bf29a32d0e77d4ad5c5deb63084805b0797593cae77e0fb3e3",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "bounded menu consumer or existing native regression; no broader subsystem review claim",
       "finding": "Current desktop owned fixture: observes WM_DRAWITEM before subclass dispatch and idle, bounded 3s cancel; launcher-injected styled versus keyboard-native control; not physical input.",
       "evidence": "menu_initial.c",
@@ -663,7 +663,7 @@
     {
       "path": "tests/ntw16s-dll/system_menu_visual.c",
       "sha256": "ccc9ce2ca1f471ce1f80c809be827a4100dc9384b5a1d62314b31683f637775a",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "bounded menu consumer or existing native regression; no broader subsystem review claim",
       "finding": "Current desktop native popup: preserved itemData/FTYPE during INIT, WM_PRINT versus live pixel samples, same-row hover marker, keyboard/switch, glyph/default/owner-draw/cancel/context modes; keep direct renderer paint control distinct from actual product live test.",
       "evidence": "system_menu_visual.c",
@@ -675,7 +675,7 @@
     {
       "path": "tests/ntw16s-dll/demo_system_menu.c",
       "sha256": "6a7c78b9777fe7b758d4503fbd0ec41a20e903c494234c13643aa4b789f15d69",
-      "state": "verified-awaiting-remote-closure",
+      "state": "verified-remote-closed-S8",
       "scope": "bounded menu consumer or existing native regression; no broader subsystem review claim",
       "finding": "Current desktop job-owned launcher/demo tree; bounded PID/window/menu discovery and native pixel capture; job close ends owned children. Not all-target or physical input evidence.",
       "evidence": "demo_system_menu.c",
@@ -742,5 +742,6 @@
     "src/lib-win32-style/application/menu/bar_snapshot.h",
     "tests/lib-win32-style/application/menu/bar_controller.c",
     "tests/lib-win32-style/application/menu/bar_snapshot.c"
-  ]
+  ],
+  "verified_remote_commit": "54c8b269c65e9b88834296473ae93bb23dddc156"
 }

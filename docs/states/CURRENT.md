@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S8菜单。S1审计、S2目录、S3 GUI根生命周期、S4启动、S5运行时接入、S6全局协调、S7窗口与标题栏已收口；不把局部完成称为全T完成。
+M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S9基础控件。S1审计、S2目录、S3 GUI根生命周期、S4启动、S5运行时接入、S6全局协调、S7窗口与标题栏、S8菜单已收口；不把局部完成称为全T完成。
 
 [S5交付](../history/M0-T26-S5-runtime.md)b08d601d已实际fetch并逐blob复核37个变更；同快照八文件先发布assets根/O:/winnt，随后118项去重实际包回归通过。另2项DWM旧失败与S4一致，不计通过。见[开发证据](../etc/evidence/t26-s5-runtime.json)与[最终交付](../etc/evidence/t26-s5-delivery.json)。双宽各17个公共样式归档门禁通过，1005个源码/构建/测试/工具输入一致，ABI及原资源保留。
 
@@ -16,32 +16,30 @@ S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），102
 
 [S4事实](../history/M0-T26-S4-startup.md)及[交付](../etc/evidence/t26-s4-delivery.json)保留；T25按用户决定有限收口，未通过项不补记通过。
 
-## M0 T26 S8 Packet
+## M0 T26 S9 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S7规范交付及实际远端复核后自动准入S8，沿用M0/T26。 |
-| Admission And Approval | 用户批准三层架构与14个S自动有序执行，单人实施及第二角色复核；完整能力合批交付。 |
-| Objective | 菜单栏、系统及popup的观察/项恢复/输入/嵌套生命周期归application/menu，两风格真实共用；年代布局、字体、原资源及绘制/命令策略独立。 |
-| Non-goals | 不新增风格、支持范围、权限或挂钩后端，不改注册表/系统主题；现代宿主S12、控件S9/S10、创建链S11和最终provider注册S13；不整搬私有状态或做空包装。 |
-| Reference Baseline | S7 P1 cb84dac1，188项实际包回归186通过/2项ETW skip，2项DWM旧失败未变；58现存blob/3删除路径及八文件实际远端复核。 |
-| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S8-menu.md；冻结输入docs/etc/evidence/t26-s8-menu-audit.json。 |
-| Files And ABI Surface | application/menu、Win3x menu、Win2000 system_menu及frame/menu输入/状态、产品menu_filter/现代菜单消费者/测试；含共享运行时及CMake/导出/包门禁约束审计。旧ABI和八产物保持，如需追加兼容公共符号先冻结；ntwshk不得新增GUI导入。 |
-| Applicable Rules | M0；纯C17、MinGW GCC、Ninja、ccache；同一机制唯一实现，公共对象真正拥有状态与资源，完整操作回调；本层释放后错误上抛、外层报告。 |
-| Verification | 双宽独立/public和实际两风格：初始化、owner-draw、栏/系统/nested popup、取消、回调销毁/替换、scope/字体/打印/DC及资源；原生协议与物理输入区分。合批后同快照八文件先发布再测和远端复核。 |
-| Expected Markers | 公共scope/observer/项恢复/输入状态有真实消费者，旧实现/空转发删除；renderer只提供真实布局/绘制和命令差异，不以不同私有类型拒绝抽离。 |
-| Asset Needs | 五组件八文件及五原图形头/原资源声明保持，不引入兄弟仓库或额外产品服务/文件。 |
-| Reporting Requirements | 逐冻结文件最终归属、入口/消费者/测试和保留具体原因；实际diff计数、所有权、失败/skip/未覆盖；不把消息或定时器模拟称真实键鼠通过。 |
-| Stop Conditions | 禁止computer-use及私有桌面，不改兄弟仓库/系统安全设置/其他工作；所有fixture自建/有限等待/清理，UAC等待一分钟后才问；不无限补丁或扩范围掩盖失败。 |
-| Exit Criteria | 有限清单的通用菜单机制真实抽离接入，资源与ABI保持、无反向依赖/第二套引擎；适用组合与异常退场验证，规范交付和实际远端复核后自动S9。 |
-| Original Owner Request | 全部style按access/application/appearance归lib-win32-style；极简统一、宏观复用、五大干净；文件顺序审计、能力合批交付，不逐文件完整发布。 |
-| Similar-Issue Sweep | HMENU/itemData和字体借用、准备/恢复、助记符/NEXTMENU、栏/系统/popup、nested/non-top scope、SysShadow、打印坐标与原生选中、移除/销毁/替换和焦点归还；现代仅菜单交界。 |
+| Identifier Mode | Continuation；S8正式交付并完成实际远端复核后自动准入S9，沿用M0/T26。 |
+| Admission And Approval | 用户批准三层架构与14个S有序自动执行，单人实施及第二角色复核；按完整能力合批交付。 |
+| Objective | 基础控件附着/移除、重入状态、原生协议和输入归application/control，按钮/静态/编辑/列表/组合/滚动的实际绘制和度量归appearance；接入已有两风格适用路径并删除旧机制。 |
+| Non-goals | 不新增Win2000整套控件或Luna/Aero功能、权限或目标；扩展控件/VB/VCL专属策略S10，创建/对话框S11，现代宿主S12，最终注册/图形S13。不能用这些边界保留本应公共的根生命周期。 |
+| Reference Baseline | S8 P1 54c8b269，259项发布后聚焦回归257通过/2项ETW skip，2项DWM旧失败未变；实际远端64现存blob/4删除路径及八文件已复核。 |
+| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S9-controls.md；沿用S1全部文件顺序及已确认分类，实施前补有限控件输入/调用/测试清单。 |
+| Files And ABI Surface | appearance/win3x/control根生命周期/基础消息绘制、application/control/graphics、Win2000已有按钮调用和产品attachment/controls消费者及对应测试；不变更五组件八文件和已有导出ABI。 |
+| Applicable Rules | 纯C17、MinGW GCC/Ninja/ccache；公共实例拥有资源/状态，完整操作回调，不传整个Win16私有对象、不作字段view/空包装；内层清理、外层报告。 |
+| Verification | 先基线/有限清单，双宽独立公共与实际基础控件：初始化、消息返回/LastError、选中/焦点/滚动/字体/DC、重入移除/销毁/失败清理；同快照八文件先发布再测试和远端复核。 |
+| Expected Markers | 统一根状态/附着/退场和相同原生协议的唯一实现；保留资源/年代布局和支持策略；旧根字段/函数/接线删除，实际消费者接入并列出每个保留原因。 |
+| Asset Needs | 当前五组件八文件、原图形/字体资源和声明保持；无兄弟仓库、额外服务或产品文件依赖。 |
+| Reporting Requirements | 按文件顺序给出归属、真实入口/消费者/测试；记录行数/资源所有者、失败/skip及未覆盖；不把自动消息称真实键鼠或全部框架验收。 |
+| Stop Conditions | 禁止computer-use和私有桌面；不改兄弟仓库/系统安全设置/其他任务；自建fixture有界清理；UAC等待一分钟后才询问，不新增重复批准。 |
+| Exit Criteria | 有限基础控件清单机制真实公共化、旧实现删除、适用消费者接入；异常退场/原行为及原资源/ABI/依赖门禁、规范交付和实际远端复核后自动S10。 |
+| Original Owner Request | 所有style归lib-win32-style的access/application/appearance；极简统一、五大干净，逐文件审计、完整能力合批交付，不逐文件全量发布。 |
+| Similar-Issue Sweep | control_style/attachment/guard/scope/ref及字体租约、原生消息/owner draw、同线程身份、remove/reinstall/reparent、借用HDC/HFONT/itemData、输入/焦点/滚动和失败/重入退场；扩展绘制保持原协议。 |
 
-S7已完成普通窗口公共状态/messages/install/font_pair等迁移，49个冻结输入及附加消费者有逐项最终归属。唯一干净快照双宽通过，1033个输入一致；同批八文件先发布assets根/O:/winnt，再跑188项聚焦原生回归186通过、2项ETW跳过，另2项DWM旧失败不计通过。见[交付](../etc/evidence/t26-s7-delivery.json)、[逐项审计](../etc/evidence/t26-s7-window-audit.json)与[S7记录](../history/M0-T26-S7-window.md)。S7 P1 `cb84dac1`已推送并实际fetch复核58个现存blob、3个删除路径和八文件摘要，见[远端](../etc/evidence/t26-s7-remote.json)。S7按既定范围收口，自动准入S8。
+S8已将popup/owner/tracking/bar状态、快照及跨窗口controller公共化，两风格普通/现代菜单实际接入；私有message/iterator四文件、TLS/filter/property/字段指针view删除。唯一干净双宽构建通过，1046输入一致，259项聚焦回归257通过/2项ETW跳过；两项DWM旧失败未变且不计通过。八文件先发布assets根/O:/winnt，再测并复核摘要，P1 `54c8b269`已实际fetch复核64现存blob/4删除路径和八文件；见[逐项审计](../etc/evidence/t26-s8-menu-audit.json)、[交付](../etc/evidence/t26-s8-delivery.json)与[远端](../etc/evidence/t26-s8-remote.json)。S8 closed，S9 active。
 
-所有本S构建/测试结束，已验证无存活自有夹具并清理临时快照/备份/scratch，保留.ninja/.ccache，见[清理](../etc/evidence/t26-s7-cleanup.json)。未使用computer-use或私有桌面；菜单S8、现代宿主S12、最终renderer接口S13仍按既定范围继续，T26开放。
-
-S8有限菜单审计已冻结52项（38生产/约束、14测试），三批实施顺序为popup观察/scope、owner深度与项恢复、tracking及bar输入，见[S8审计](../history/M0-T26-S8-menu.md)。已移除menu_dispatch无条件私有桌面入口，当前桌面双宽原生回归通过；结果与失败尝试见[增量证据](../etc/evidence/t26-s8-menu-development.json)。popup公共运行时已由ntwshk唯一承载，两风格实际消费且双宽原生验证通过；owner深度/项恢复/消息协议已公共化并接入普通两风格和现代菜单，删除私有message和多条生命周期/转发；tracking线程栈/输入及bar焦点/选择已公共化，两风格私有TLS/hook和property/view已删；快照/owner-draw回调及跨窗口bar控制器已公共化，两风格真实消费，旧iterator和Win2000私有输入循环已删除。当前本批52项去重聚焦开发回归通过（12公共/dispatch、40实际消费者），来源951项及原资源/边界/开发包门禁通过；唯一干净快照双宽all通过，1046个源码/测试/工具/构建输入一致；八文件已先发布assets根/O:/winnt，再完成259项聚焦回归257通过/2项管理员ETW skip，另2项DWM旧失败未变且不计通过。见[交付](../etc/evidence/t26-s8-delivery.json)。S8已本地verified，待提交推送及实际远端复核才关闭；scratch提炼后清理，保留.ninja/.ccache。
+S8全部临时快照/测试/发布备份已提炼并清理，保留.ninja/.ccache及正式包；无computer-use/私有桌面/兄弟依赖。Win3x/Win2000实际呈现策略继续独立，现代宿主和最终renderer/view分别S12/S13，不能将菜单公共化称为全T完成。
 
 ## Identifier State
 
@@ -53,9 +51,9 @@ S8有限菜单审计已冻结52项（38生产/约束、14测试），三批实�
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
-- Last allocated T26 S: 8
-- Last verified remote delivery: M0 T26 S7 P1，`cb84dac1`；58现存blob、3删除路径及八文件复核。
-- Open task: M0 T26 S8；菜单。
+- Last allocated T26 S: 9
+- Last verified remote delivery: M0 T26 S8 P1，`54c8b269`；64现存blob、4删除路径及八文件复核。
+- Open task: M0 T26 S9；基础控件。
 
 ## Technical Baseline
 
