@@ -2,30 +2,30 @@
 
 ## Current Work
 
-M0固定。T27 Win2000常用控件保持开放；S1-S6来源/按钮/选择/静态分组/编辑/列表组合已按有限范围交付关闭，当前S7滚动条与尺寸角。按[16个S规划](../proposals/windows-2000-controls.md)合批，不逐文件完整交付；不提前称所有控件parity完成。
+M0固定。T27 Win2000常用控件保持开放；S1-S7来源/按钮/选择/静态分组/编辑/列表组合/滚动条已按有限范围交付关闭，当前S8标签页和表头。按[16个S规划](../proposals/windows-2000-controls.md)合批，不逐文件完整交付；不提前称所有控件parity完成。
 
-正式八文件为[T27 S7滚动条批次](../etc/evidence/t27-s7-scroll.json)，两宽同快照，先发布后84/84进程用例通过，既有36项客户区打印子检查明确跳过。实际远端复核待完成。T26已知失败保留在[终审](../etc/evidence/t26-s14-final-audit.json)，未被本组局部通过替代。Win2000其他关闭主题分支不计独立renderer完成。
+正式八文件为[T27 S7滚动条批次](../etc/evidence/t27-s7-scroll.json)，两宽同快照，先发布后84/84进程用例通过，既有36项客户区打印子检查明确跳过。[实际远端](../etc/evidence/t27-s7-remote.json)已核验35个变更文件和八件发布物。T26已知失败保留在[终审](../etc/evidence/t26-s14-final-audit.json)，未被本组局部通过替代。Win2000其他关闭主题分支不计独立renderer完成。
 
-## M0 T27 S7 Packet
+## M0 T27 S8 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；按既定S序，M0/T27不变。 |
 | Admission And Approval | T27 Win2000 常用控件既有授权。 |
-| Objective | Win2000 独立滚动条、窗口与控件非客户区滚动条、尺寸角。 |
-| Non-goals | 全局和进程传播、其他控件组及系统配置。 |
-| Reference Baseline | S6 同快照八件及76/76进程验证，已取回核对。 |
-| Candidate Proposal | docs/proposals/windows-2000-controls.md；brief docs/history/M0-T27-S7-scroll.md。 |
-| Files And ABI Surface | Win2000 appearance、共同滚动控制器和交付探针；五组件八件及现有ABI。 |
+| Objective | Win2000 Tab 与 Header，在原生项目布局和输入上应用年代呈现。 |
+| Non-goals | 其他控件组、系统配置、系统窗口管理和跨进程入口。 |
+| Reference Baseline | S7 同快照八件及84/84进程验证，已取回核对。 |
+| Candidate Proposal | docs/proposals/windows-2000-controls.md；brief docs/history/M0-T27-S8-tab-header.md。 |
+| Files And ABI Surface | Win2000 appearance、共享控件快照与所属者协议、交付探针；五组件八件及现有ABI。 |
 | Applicable Rules | 两宽C17 GCC/Ninja/ccache、三层方向、保留原资源和独立工作区。 |
-| Verification | 原版箭头、轨道、滑块及尺寸角，横纵、禁用、短轴、页比例、拖动/点击/滚轮、借用DC与移除；两宽普通启动。 |
-| Expected Markers | 公开状态/几何、画面、原生通知和清理分别有断言。 |
-| Asset Needs | 固定Win2000SRC sbctl/draw和真实截图，记录适用证据。 |
+| Verification | 原版边缘、背景与选中/按下状态；标签方向、图文与禁用焦点、表头对齐/顺序/列宽、原生回调及移除；两宽实际启动。 |
+| Expected Markers | 可见像素、原生状态、内容通知、绘图借用和清理有独立断言。 |
+| Asset Needs | 固定 comctl32 tab/header 源码、实际可得原图。 |
 | Reporting Requirements | 来源、支持范围、失败及未覆盖、实际包与远端、临时文件清理。 |
 | Stop Conditions | 禁computer-use和私有桌面，保护现有改动，兄弟目录只读。 |
-| Exit Criteria | 有限矩阵完成、同快照八件先发布后测、推送取回复核及清理后进入S8。 |
+| Exit Criteria | 有限矩阵完成、同快照八件先发布后测、推送取回复核及清理后进入S9。 |
 | Original Owner Request | Win2000常用控件按已有Win3.x实际范围对齐，采用固定源码和真实图像依据。 |
-| Similar-Issue Sweep | 独立/内嵌、横纵、短轨/禁用/无滑块、滚轮/禁用捕获/程序更新、尺寸区和背景。 |
+| Similar-Issue Sweep | 单行/多行、方向、图标、owner draw、回调文字、排序/拖列/过滤与热点、DPI。 |
 
 ## Identifier State
 
@@ -38,9 +38,9 @@ M0固定。T27 Win2000常用控件保持开放；S1-S6来源/按钮/选择/静�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T27 S6 P1，`a1852441`；29变更/八件取回核对。
-- Last allocated T27 S: 7
-- Open task: M0 T27 S7；Win2000滚动条与尺寸角。
+- Last verified remote delivery: M0 T27 S7 P1，`d3a5dd4c`；35变更/八件取回核对。
+- Last allocated T27 S: 8
+- Open task: M0 T27 S8；Win2000标签页与表头。
 
 ## Technical Baseline
 
