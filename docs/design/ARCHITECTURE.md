@@ -14,7 +14,7 @@
 | ntw2ks-dll | ntw2ks32.dll、ntw2ks64.dll | Win2000 风格装配及导出 |
 | demo-exe | demo.exe，x64 | 原生示例与手动操作入口；直接启动保持系统原生行为 |
 
-S2已完成库源码/测试的新根归位；S3–S10已按能力迁移生命周期、三种接入、窗口、菜单及基础/扩展控件和Win32运行时，并完成各S交付。当前S11处理创建/对话框，S12–S14负责现代宿主、图形与终审；appearance混合文件和产品侧剩余通用机制仍是迁移对象，不能把当前耦合当作目标责任边界。具体状态由CURRENT统一管理。
+S2已完成库源码/测试的新根归位；S3–S11已按能力迁移生命周期、三种接入、窗口、菜单、基础/扩展控件、Win32运行时及创建/对话框事务，并完成各S交付。当前S12处理现代宿主，S13–S14负责图形与终审；appearance混合文件和产品侧剩余通用机制仍是迁移对象，不能把当前耦合当作目标责任边界。具体状态由CURRENT统一管理。
 
 ## 三层架构
 
@@ -122,7 +122,7 @@ T3 已验证首次注入与同 DLL 自动窗口附着；T4 已实现原生A/W子
 当前核心 DLL 的显式 API 与自动加载边界见
 [核心说明](../../src/ntw16s-dll/README.md)。详细限制和后续证明责任由设计记录承载。
 
-S11进行中的对话框路径已直接消费公共完整proxy，不再构造并行字段指针view；Show的结果/原生回退和既有实验引用展开归dialog。子控件scope的链表/hook/计数和原生过滤、主creation的严格嵌套/屏障/pending/首次show归现有公共根，产品只提供真实风格操作和必要ABI。主事务通过不可变完整操作表借用prepare/install/attached/cancel/unsupported，到scope及其回调结束；普通结束不移除已安装的窗口。Win2000现有post-create observer合同尚未因此被改写为Win3x预创建协议。实际验证、原激活失败及剩余API装配范围以CURRENT/S11证据为准，不表示S11已交付。
+S11已交付的对话框路径已直接消费公共完整proxy，不再构造并行字段指针view；Show的结果/原生回退和既有实验引用展开归dialog。子控件scope的链表/hook/计数和原生过滤、主creation的严格嵌套/屏障/pending/首次show归现有公共根，产品只提供真实风格操作和必要ABI。主事务通过不可变完整操作表借用prepare/install/attached/cancel/unsupported，到scope及其回调结束；普通结束不移除已安装的窗口。Win2000现有post-create observer合同尚未因此被改写为Win3x预创建协议。实际交付、原激活失败和现代/图形接收范围以CURRENT/S11证据为准，不表示T26全部完成。
 
 S11的`application/dialog/classic_com_controller`现拥有既有COM激活/工厂、线程创建depth、代理/事件资源、消息和显示协调；由产品装配固定会话判断、样式scope、协议字符串和原实验配置。配置值复制到公共根，借用的字符串与callback代码覆盖hook/工厂/proxy的完整存活期；底层patch事务仍由调用方提供，控制器不另建hook后端或物理卸载机制。消息入口直接消费同一公共proxy和message configuration，只为完整导航保留操作回调，删除逐字段/逐消息转发。默认实验开关仍关，完整UI/交付状态见CURRENT，不将原生对象单元测试扩大为所有应用支持。
 

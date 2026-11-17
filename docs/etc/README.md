@@ -271,3 +271,6 @@
 - [T26 S11对话框增量验证](evidence/t26-s11-dialog-development.json)：公共COM、两类创建scope的双宽原生验证、有限原coordinator对照和保留的激活失败；不代表整S交付。
 
 - [T26 S11 整组交付](evidence/t26-s11-delivery.json)：同快照八文件两处发布、91个有限原生case及两项夹具纠正复测、完整初轮失败、源码/归档/资源门禁与逐项摘要；远端复核状态见CURRENT。
+
+- [T26 S11实际远端](evidence/t26-s11-remote.json)：P1实际fetch后的67个blob与八个发布产物相等；后续关闭记录以CURRENT为准。
+- [T26 S12现代宿主初表](evidence/t26-s12-modern-audit.json)：52项初始入口SHA；尚未完成逐项/调用闭包审查，不是实现或运行通过。

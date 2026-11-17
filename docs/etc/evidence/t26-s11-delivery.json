@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S11 P1",
-  "status": "verified locally; remote review pending",
+  "status": "published finite-migration delivery and actual remote P1 verified; S11 closed",
   "build": {
     "candidate": "O:\\repos.hobby\\win16style\\build\\t26-package\\s11-delivery-fixed\\candidate",
     "clean_source": "O:\\repos.hobby\\win16style\\build\\t26-package\\s11-delivery-fixed\\clean-source",
@@ -15044,10 +15044,14 @@
       "live_owned": 0
     }
   ],
-  "temporary_retention": [
-    {
-      "root": "build/t26-package/s11-publish",
-      "reason": "Only publication backup retained until actual remote verification; delete immediately afterward."
-    }
-  ]
+  "temporary_retention": [],
+  "remote_commit": "f6c5185c172795d4db85ff713fb86f5303e741ff",
+  "remote_evidence": "docs/etc/evidence/t26-s11-remote.json",
+  "cleanup_after_remote": {
+    "root": "build/t26-package/s11-publish",
+    "removed": true,
+    "bytes": 10611667,
+    "live_owned": 0,
+    "native_process_absolute_ancestor_descendant_reparse_checks": "passed"
+  }
 }
