@@ -19,7 +19,7 @@ int wmain(int argc,WCHAR **argv)
         RECT bounds={1,1,31,31};PatBlt(dc,0,0,32,32,BLACKNESS);
         if(!draw(dc,&bounds,states[i]) || bounds.left!=1 || bounds.right!=31)return 7;
         COLORREF edge=(states[i]&DFCS_FLAT)?RGB(128,128,128):
-            (states[i]&(DFCS_PUSHED|DFCS_CHECKED))?RGB(0,0,0):RGB(255,255,255);
+            (states[i]&(DFCS_PUSHED|DFCS_CHECKED))?RGB(64,64,64):RGB(255,255,255);
         COLORREF center=GetPixel(dc,15,15);
         if(GetPixel(dc,1,15)!=edge ||
            (center!=RGB(212,208,200) && !((states[i]&DFCS_CHECKED)&&center==RGB(255,255,255))))return 8;

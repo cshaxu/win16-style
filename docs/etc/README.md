@@ -303,3 +303,5 @@
 - [T27 S2 source-based buttons](evidence/t27-s2-buttons.json): original source identities, development failures and real DLL rendering/lifecycle verification; formal delivery status recorded in evidence.
 
 - [T27 S2 actual remote](evidence/t27-s2-remote.json): fetched 38 changed blobs/eight tested binaries byte-verified; 1181 inputs inspected, nine pre-existing CRLF/LF-only differences explicitly recorded.
+
+- [T27 S3 choice control references](evidence/t27-s3-choice-controls.json): pinned source facts, genuine image digests, four exact 13-pixel glyph matches, dark-shadow correction and finite planned coverage.

@@ -2,8 +2,8 @@
 
 | Production source | Contract validation |
 | --- | --- |
-| common/palette.c, common/edge.c | common/edge.c: source/original-image edge color samples, standard scheme, default/pressed differences, mono window slot and caller DC restoration |
-| control/button_paint.c | control/button_paint.c: actual product ABI/WM_PRINTCLIENT pixels and input/resource contracts; v5/v6 manifests, pressed text offset, multiline, disabled emboss, focus/UI-cue messages, borrowed bitmap, modern image-list native preservation and DC state |
+| common/palette.c, common/paint.c | common/paint.c: source/original-image edge color samples, standard scheme, default/pressed differences, mono window slot, four genuine 13px glyph hashes, wrong-dark negative, mixed/disabled/flat rules and caller DC/resource restoration |
+| control/button_paint.c | control/button_paint.c: actual product ABI/WM_PRINTCLIENT pixels and input/resource contracts; v5/v6 manifests, 84 choice/pushlike state renders per mode, native auto3/radio groups, odd-offset dither consistency, pressed text offset, multiline, disabled emboss, focus/UI-cue messages, borrowed bitmap, modern image-list native preservation and DC state |
 | control/control.c | control/button_paint.c and tests/ntw2ks-dll/control_theme.c: actual install/remove/retire, reentry and shared theme ownership; integration tests, not independent product-free library tests |
 
 Tests retain source component paths. An actual consumer test can cover multiple

@@ -55,16 +55,20 @@ add_library(win2k-window STATIC src/lib-win32-style/appearance/win2000/window/ca
 target_include_directories(win2k-window PUBLIC src)
 target_compile_definitions(win2k-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-window PUBLIC style-menu-owner style-window style-instance style-bitmap style-present user32 gdi32 msimg32 comctl32 dwmapi shcore)
-add_library(win2k-control STATIC
+add_library(win2k-common STATIC
   src/lib-win32-style/appearance/win2000/common/palette.c
-  src/lib-win32-style/appearance/win2000/common/edge.c
+  src/lib-win32-style/appearance/win2000/common/paint.c)
+target_include_directories(win2k-common PUBLIC src)
+target_compile_definitions(win2k-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_link_libraries(win2k-common PUBLIC user32 gdi32)
+add_library(win2k-control STATIC
   src/lib-win32-style/appearance/win2000/control/button_paint.c
   src/lib-win32-style/appearance/win2000/control/control.c)
 target_include_directories(win2k-control PUBLIC src)
 target_compile_definitions(win2k-control PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 # Theme state is supplied by the existing shared ntwshk runtime. Do not link
 # a second static theme-state owner into this profile.
-target_link_libraries(win2k-control PUBLIC style-control-common style-instance style-present user32 gdi32 comctl32)
+target_link_libraries(win2k-control PUBLIC win2k-common style-control-common style-instance style-present user32 gdi32 comctl32)
 add_library(lib-tray STATIC src/lib-win32/tray/tray.c)
 target_compile_definitions(lib-tray PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_include_directories(lib-tray PUBLIC src/lib-win32/tray)
@@ -450,9 +454,9 @@ if(BUILD_TESTING)
   target_link_libraries(core-ntw2ks-control-theme PRIVATE user32 uxtheme)
   add_dependencies(core-ntw2ks-control-theme ntwshk ntw16s ntw2ks)
   add_test(NAME core/ntw2ks-control-theme COMMAND $<TARGET_FILE:core-ntw2ks-control-theme>)
-  add_executable(core-win2k-edge tests/lib-win32-style/appearance/win2000/common/edge.c)
-  target_link_libraries(core-win2k-edge PRIVATE win2k-control)
-  add_test(NAME core/win2k-edge COMMAND $<TARGET_FILE:core-win2k-edge>)
+  add_executable(core-win2k-paint tests/lib-win32-style/appearance/win2000/common/paint.c)
+  target_link_libraries(core-win2k-paint PRIVATE win2k-common)
+  add_test(NAME core/win2k-paint COMMAND $<TARGET_FILE:core-win2k-paint>)
   add_executable(core-win2k-button tests/lib-win32-style/appearance/win2000/control/button_paint.c)
   target_compile_definitions(core-win2k-button PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-win2k-button PRIVATE user32 gdi32 comctl32)

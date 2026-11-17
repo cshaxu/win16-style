@@ -20,7 +20,12 @@ BOOL win2k_control_supported(HWND window)
 {
     WCHAR name[32];
     DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
-    return (style&WS_CHILD) && (style&BS_TYPEMASK)<=BS_DEFPUSHBUTTON &&
+    UINT type=style&BS_TYPEMASK;
+    BOOL push=type<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE);
+    BOOL choice=type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_RADIOBUTTON ||
+        type==BS_AUTORADIOBUTTON || type==BS_3STATE || type==BS_AUTO3STATE;
+    return (style&WS_CHILD) && (type<=BS_DEFPUSHBUTTON || choice) &&
+        (push || !(style&(BS_ICON|BS_BITMAP))) &&
         !(GetWindowLongPtrW(window,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
         GetClassNameW(window,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"BUTTON");
 }
@@ -44,19 +49,17 @@ static BOOL retire(HWND window,win2k_control *control,BOOL terminal)
 static void paint(HWND window,void *context,HDC dc)
 {
     win2k_control *control=context;
-    if(!win2k_button_paint(window,&control->instance,dc,&win2k_control_standard_palette) &&
+    if(!win2k_button_paint(window,&control->instance,dc,&win2k_standard_palette) &&
        !control->instance.detached){
         int saved=SaveDC(dc);
         if(saved){DefSubclassProc(window,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);RestoreDC(dc,saved);}
     }
 }
-static BOOL is_group(HWND window,void *context)
-{(void)window;(void)context;return FALSE;}
 static void render(HWND window,void *context,HDC dc,BOOL buffered)
 {
     win2k_control *control=context;
-    if(buffered){const style_present_ops ops={paint,is_group};
-        style_present(window,&control->instance,control,win2k_control_standard_palette.face,&ops,dc);}
+    if(buffered){const style_present_ops ops={paint,NULL};
+        style_present(window,&control->instance,control,win2k_standard_palette.face,&ops,dc);}
     else paint(window,control,dc);
 }
 static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b)

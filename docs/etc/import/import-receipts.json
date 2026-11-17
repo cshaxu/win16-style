@@ -6035,9 +6035,9 @@
       "path": "src/ntw2ks-dll/button.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b514e9a63e93afce3f0871119df51854685077422de6d80d239d20da4f256f89",
+      "sha256": "6d46e93b86aea2817c0da9a7b05bc6e6651cde9f23a9c9769c293ec5b70daa79",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -6080,9 +6080,9 @@
       "path": "tests/ntw2ks-dll/button.c",
       "source": null,
       "source_blob": null,
-      "sha256": "de65939f2c4f8c38506f8d4150cff132b14a14d19ef1eea0dd38840464e679b0",
+      "sha256": "cebfe572fde01f68844c120495efe51b148d158cbedc136d0a6e1313a52795d8",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T27 S2 original Win2000 scheme instead of host native colors",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T27 S2 original Win2000 scheme instead of host native colors; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -6199,7 +6199,7 @@
       "source_blob": null,
       "sha256": "ab1ac337b04b6524b1872df279ec8715fd1decfa44247060f43e7f2019872ef9",
       "disposition": "authored",
-      "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation",
+      "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation; historical source observed only"
     },
     {
@@ -6208,7 +6208,7 @@
       "source_blob": null,
       "sha256": "752e5d019f9d12ae479a565533dda32101e0ed4ce3c7bb5f7e44067cfea30075",
       "disposition": "authored",
-      "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation",
+      "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation; historical source observed only"
     },
     {
@@ -6217,7 +6217,7 @@
       "source_blob": null,
       "sha256": "2f226006b3d747ec4103523093057487010c9fa70a36599e7fa2fa6208b2555f",
       "disposition": "authored",
-      "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration",
+      "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation; historical source observed only"
     },
     {
@@ -6226,7 +6226,7 @@
       "source_blob": null,
       "sha256": "4a782d5392613505a65ca62733331938d7ac16bade6b7264c421234ecd00b3bf",
       "disposition": "authored",
-      "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal; T26 S1 shared frame change and client restore; T26 S1 share DIB buffer across UWP and Win2000; T26 S1 shared window thread identity; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions",
+      "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal; T26 S1 shared frame change and client restore; T26 S1 share DIB buffer across UWP and Win2000; T26 S1 shared window thread identity; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
@@ -6235,7 +6235,7 @@
       "source_blob": null,
       "sha256": "c8b20e9abd404a041725cabde922ff20698bb11531f18d030872904701681181",
       "disposition": "authored",
-      "review": "T25 S3 native Win2000 frame and fixture; T25 S8 paired frame removal; T26 S2 mechanical path/include relocation",
+      "review": "T25 S3 native Win2000 frame and fixture; T25 S8 paired frame removal; T26 S2 mechanical path/include relocation; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
@@ -6262,7 +6262,7 @@
       "source_blob": null,
       "sha256": "dc0754272dbaadd3241f25375acb086a3a72e6c43861a954df97c7a397d5accf",
       "disposition": "authored",
-      "review": "T25 S4 Win2000 system menu presentation candidate; T26 S1 shared popup observation messages; T26 S1 shared popup print coordinate conversion; T26 S2 mechanical path/include relocation; T26 S8 shared popup scope/observer ownership and current-desktop native regression; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed",
+      "review": "T25 S4 Win2000 system menu presentation candidate; T26 S1 shared popup observation messages; T26 S1 shared popup print coordinate conversion; T26 S2 mechanical path/include relocation; T26 S8 shared popup scope/observer ownership and current-desktop native regression; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
@@ -6271,7 +6271,7 @@
       "source_blob": null,
       "sha256": "0beb161774a9675fc6b9180f337c276bb8eaaf7d6f2aebd09e9e34941043b9aa",
       "disposition": "authored",
-      "review": "T25 S4 Win2000 system menu presentation candidate; T26 S2 mechanical path/include relocation; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed",
+      "review": "T25 S4 Win2000 system menu presentation candidate; T26 S2 mechanical path/include relocation; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
@@ -6298,7 +6298,7 @@
       "source_blob": null,
       "sha256": "c5b2a64786cd2927f6f1af939e878e99e4fc5ae2757e0d5131bb817c933d6f73",
       "disposition": "authored",
-      "review": "T25 S8 frame lifecycle test; T26 S2 mechanical path/include relocation; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration",
+      "review": "T25 S8 frame lifecycle test; T26 S2 mechanical path/include relocation; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
@@ -7594,7 +7594,7 @@
       "source_blob": null,
       "sha256": "6e348f66a6ab65c73dc599915e3cbc8d6facf2ad2f1560458436e032a55e7d81",
       "disposition": "authored",
-      "review": "T26 S3 native Win2000 frame allocation/release witness, reentrant replacement and pending/full installation failure cleanup; production source included with allocation observers; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration",
+      "review": "T26 S3 native Win2000 frame allocation/release witness, reentrant replacement and pending/full installation failure cleanup; production source included with allocation observers; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored pure C test; no imported artwork"
     },
     {
@@ -9695,103 +9695,103 @@
       "sha256": "596fae8828fe400ff448577467a821d06d7b77e84c968d2871f0dcd23e3e7500"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/common/edge.c",
+      "path": "src/lib-win32-style/appearance/win2000/common/paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "175666979c4c7c3a7c8bd8191d6898c4312fbdb0326010cd1afe84282e646479"
+      "sha256": "4a16fa4cc3c5deb0b8ea76ff25b52ebd8688f9689c463af2f514c790f8195f99"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/common/edge.h",
+      "path": "src/lib-win32-style/appearance/win2000/common/paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "008f50e951a16d078cdb50afc2a1163a2a06cdd864d74e0867959699b533abd4"
+      "sha256": "1f855dbbe967f74ccc10b8c94d17f64da52a7e815b911e8e45f24e8e89ce2de7"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/common/palette.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "a871faefc07f1d9915f186353e5b04e629a7070c7f84c9ab7a705fd5f0eb7960"
+      "sha256": "9df0e5e10eac3289465e8065680b0114dd6f298ae9954b373351224540328a20"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/common/palette.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "ed7a355ed91bf43604c8343ed7f60d849f17100a3f22ad995b55120722a82f33"
+      "sha256": "0bf16a16888bb9245bda006ae333f5233d94b5d803be3692c5c64134350b0c05"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/button_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "9c396aeeb021398720140a0ba26236eb341c33d9850a0d3a50e6cc6cfba74962"
+      "sha256": "6fc4bc4a0686c852d7fcc79b30c951512f81e972563f153048365d3816302662"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/button_paint.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "be741740655635664d62b69228ce5b3c22c0eb52a7b840aadf823a94476c774b"
+      "sha256": "12cfddd5c4ea3240b37181d33360a42b6adbefd4af040f9cb25a247a6b9cd84a"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "6055e85ec6daca56a40ddcb1086fa45e2ddf86a69209d5e68be55c069b8df0d3"
+      "sha256": "499eed573f3bec76d80d4ca6afedc218ec72d223d1d03a9f28c44adacc6f2322"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "0ecfa0c2e67b32205692b3714ca4d57e2adf3f9844f7faacc8aa1a7142dfe626"
+      "sha256": "fee0443f7fbdb82e47548f998f66cb2996fd46a01f5539a1f01be8627e75fcd6"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/TEST_MAP.md",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "db756fcaa4b59f8d96fabf2be6ee4f3447889bbb7c1854f967728e54e8fa1a64"
+      "sha256": "acf56c6be2966cbfa4a6199a9a11106e40cec17306d2bb150f664586750bb5ae"
     },
     {
-      "path": "tests/lib-win32-style/appearance/win2000/common/edge.c",
+      "path": "tests/lib-win32-style/appearance/win2000/common/paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "d96db6f6e67546bc09ad33116504794e8419a8d421fc12c5758fcbc66bb68002"
+      "sha256": "6c5c03bf39504304e4cfa1ba92fe78366b18faea33d14a0ecda993ccfeac00d2"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/control/button_paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "dedba2248dcc73f96487ac5058edd55ff094b72177353437a34c949b3c7ae207"
+      "sha256": "d39f6156fb9180cd10997058b9f458c5668d953fb27f1a984b341bbe4b4f0ee8"
     }
   ]
 }
