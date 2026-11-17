@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S14 P1",
-  "status": "Finite full-T refactor audit verified locally and scratch cleaned; actual P1 remote verification pending. Known original failures remain explicit and are not passes.",
+  "status": "S14 finite full-T refactor audit delivered, cleaned and actual P1 remote verified; T26 closed within existing-behavior reorganization scope, original failures retained",
   "method": "Reuse exact-byte prior stage audits/deliveries, reconcile current component and real call trace, explicitly review remaining runtime/ABI/CLI surfaces. Directory placement, hashes or model tests alone are not implementation proof.",
   "source_inventory": [
     {
@@ -17139,5 +17139,6 @@
       }
     ],
     "net": 3508
-  }
+  },
+  "verified_remote_commit": "9d5ea6ea008bd29b72b92190ab4c93c25e95e2ea"
 }

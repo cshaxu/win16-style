@@ -2,49 +2,17 @@
 
 ## Current Work
 
-M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S14全范围终审。S1–S13已按有限重组范围交付及实际远端复核；既有失败不计通过。S14已完成本地有限源码与组合终审，待清理、提交推送及实际远端复核，不提前称全T收口。
+M0固定。T26按已批准的[三层架构与14个S规划](../proposals/style-library-reorganization.md)完成既有能力重组与有限终审；S1–S14已交付，当前无活动任务包，不自动准入新T。这个结论不表示原有绘制/恢复缺陷或所有第三方框架兼容问题已经解决。
 
-[S5交付](../history/M0-T26-S5-runtime.md)b08d601d已实际fetch并逐blob复核37个变更；同快照八文件先发布assets根/O:/winnt，随后118项去重实际包回归通过。另2项DWM旧失败与S4一致，不计通过。见[开发证据](../etc/evidence/t26-s5-runtime.json)与[最终交付](../etc/evidence/t26-s5-delivery.json)。双宽各17个公共样式归档门禁通过，1005个源码/构建/测试/工具输入一致，ABI及原资源保留。
+[最终审计](../etc/evidence/t26-s14-final-audit.json)逐项记录473个当前样式/产品C/H归属、实际公共根/入口/消费者和原路径处置。443项沿用字节一致的阶段证据，另30项核对runtime/CLI/ABI叶子；1170生产/测试/工具输入与最终干净构建快照完全相同。全T生产C/H按Git numstat含rename检测净+3508行，不宣称总footprint减少。
 
-S5运行时module/请求/通知/late批次已公共化，产品侧净减少105行。S11已交付creation/creation_call、COM/file controller、combo与font/color观察完整事务，产品保留必要ABI/策略/呈现装配；现代与字体/GDI剩余分别由S12/S13接收；全局session/phase与管理协调已由S6提取并交付。已知失败/未覆盖见TODO及下方历史事实，S14统一复核。
+最终产品由S13 P1 `1b1b33d3`同快照MinGW GCC 16.1/C17、Ninja/ccache双位宽干净构建，x86约268秒、x64约299秒；八文件先发布assets根与O:/winnt再测试。S14未改变二进制输入，复核同摘要包，未重复构建或虚构新发布。[S14 P1实际远端](../etc/evidence/t26-s14-remote.json)已fetch核对9个变更blob、1170冻结输入及八文件。S13[交付](../etc/evidence/t26-s13-renderer-delivery.json)及[实际远端](../etc/evidence/t26-s13-renderer-remote.json)保留完整构建/包身份和原始结果。
 
-S6已将session/control/start/worker/late/attach/manager/receiver/host/owner/trace迁入公共层并接入产品，删除14个产品C/H文件及六个空转发，必要线程导出合并至hook装配。927项来源回执、原资源及双宽各18个样式归档门禁通过。沙箱外同一自有目标12项原生接入全部通过，确认此前拒绝与AppContainer环境有关，未改生产策略；原沙箱失败保留在[开发证据](../etc/evidence/t26-s6-global-development.json)。
+S13最后120调用119过/1未过，x86 v5 header回退24像素由完整S12包同条件复现；随后一次S13对照过但首失败保留。S14首94调用86过/8未过；两次dialog-link补齐其既定临时目录环境后通过，原始失败保留。最终94项按正确前置条件88通过、6未过、0skip，总96调用不称首轮全过。两宽公共六条转换、实际窗体/子控件切换与移除、无样式目标/传播、资源/失败/重入、12个dialog scope和独立modern provider通过；具体范围见[实施记录](../history/M0-T26-S14-final-audit.md)。
 
-S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），1024个输入摘要一致，来源/资源/ABI及双宽公共归档门禁通过。同批八文件已先发布assets根/O:/winnt，再进行162项实际包聚焦回归：160通过、2项管理员ETW跳过；另2项DWM恢复旧失败仍归S7/S14，不计通过。见[交付证据](../etc/evidence/t26-s6-delivery.json)。S6 P1 `4d1cdcb7`已推送并实际fetch复核95个现存blob、14个删除路径及八文件摘要，见[远端证据](../etc/evidence/t26-s6-remote.json)。S6收口并自动准入S7，T26保持开放。
+6个最终未过仍为双宽Win2000 DWM恢复restored=0及普通/composed原生thread hook126；直接入口/表面通过不能替代。原static exception0xC000041D、header间歇24像素、实际计算器1460/宿主关系与其他未覆盖面保留；后续兼容工作见[TODO](TODO.md)，不改权限、安全策略或扩框架来掩盖限制。此前dialog激活NULL本次未复现，不声称代码修复了桌面环境。
 
-两轮S6构建/测试均结束，已核验无存活自有夹具及reparse后清理scratch/快照/发布备份548,376,032字节，保留.ninja/.ccache，见[清理记录](../etc/evidence/t26-s6-cleanup.json)。最终格式规范后重新构建、发布、测试，没有混用旧摘要；[全局生产链与最终映射](../history/M0-T26-S6-global.md)保留完整审计、失败对照和效率复核。禁止computer-use及私有桌面，不改或依赖兄弟仓库，不新增能力/权限/目标。
-
-[S4事实](../history/M0-T26-S4-startup.md)及[交付](../etc/evidence/t26-s4-delivery.json)保留；T25按用户决定有限收口，未通过项不补记通过。
-
-## M0 T26 S14 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；S13 P1实际远端复核后依用户已准入14S规划自动S14，M0/T26不变。 |
-| Admission And Approval | 用户授权三层架构、全清单顺序审计和按完整能力合批交付；单人双角色，沿用S1–S13有效成果。 |
-| Objective | 全T归属、实际公共所有者/消费者、依赖及旧路径终审；以最终同快照包完成有界组合/恢复验证，准确结算已有失败和限制。 |
-| Non-goals | 不扩权限、目标、框架或主题；不补齐Win2000控件/Luna/Aero，不把基线失败改记通过，不新增第五组件外产品。 |
-| Reference Baseline | S13 P1 1b1b33d3，同快照双宽干净构建、两处先发布，120原生119过/1旧失败及完整S12对照；77blob/4删除/八文件实际远端复核。 |
-| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S14-final-audit.md。 |
-| Files And ABI Surface | 全部当前style库及产品装配、原S1/S2映射、S3–S13归属/交付证据与对应测试；固定五组件八文件/原ABI和资源。 |
-| Applicable Rules | C17、MinGW GCC/Ninja/ccache；不反向依赖产品/其他年代；当前源码/测试/工具与最终构建快照一致时不重复干净构建。 |
-| Verification | 冻结终审输入；逐能力追溯公共根/公共入口/实际消费者/旧实现删除/测试；原生自有双宽组合与恢复及源码/归档/来源/资源/包摘要门禁。 |
-| Expected Markers | access/application/appearance职责和状态所有者明确；无空包装/第二套机制或产品私有反向依赖；所有未覆盖/失败有范围及接收位置。 |
-| Asset Needs | 现有正式八文件及其同摘要包；仅保留S13编译的必要测试和归档供本S，scratch build/t26-package/s14-final-audit-01。 |
-| Reporting Requirements | 全T最终公共入口/产品调用/验证映射，真实通过/失败/skip/未覆盖和资源清理；区分有限重组完成与全平台支持。 |
-| Stop Conditions | 禁止computer-use、私有桌面及改/依赖兄弟仓库；自有目标有界清理，不改系统安全设置，不重复UAC。 |
-| Exit Criteria | 全覆盖归属和组合审计落实，保留失败真实结论；适用验证及八文件两处摘要一致、提交推送实际复核、临时产物清理；满足后才收口T26。 |
-| Original Owner Request | 所有style统一lib-win32-style三层；逐文件审计按完整能力合批，不随机搬文件/字段回调、不逐文件完整发布。 |
-| Similar-Issue Sweep | 三接入、公共生命周期、普通/现代窗体、菜单、基础/扩展控件与VB/VCL、对话框、graphics/renderer、产品ABI/装配及原资源。 |
-
-
-
-S10交付见[实施记录](../history/M0-T26-S10-extended-controls.md)、[归属表](../etc/evidence/t26-s10-controls-audit.json)、[开发](../etc/evidence/t26-s10-controls-development.json)、[整组交付及补充](../etc/evidence/t26-s10-delivery.json)和[实际远端](../etc/evidence/t26-s10-remote.json)。317项既有输入（309初始冻结+8终审显式补录）及86新增输出已分类；生产+3669/-2844净+825，58新增C/H。初轮416中410过/6失败原样保存，修正同线程witness/DC与图像夹具后24调用通过，其余有限对照提供当前证据，不写成重新416全过。现代USER/原像素和既有DWM限制由TODO/S12/S14承载，不称修复。
-
-S10正式八文件已发布assets根/O:/winnt并从远端逐blob复核；同快照干净构建约248/307秒、ccache直接818/906命中各miss68。源码/资源/ABI及双宽各4进程/21样式归档通过；最后EOF格式规范化的双宽编译对象字节一致，未重复整包发布。S10全部当前scratch已归档清理，保留稳定.ninja/.ccache，无本S在用构建/测试。
-
-[S11交付](../etc/evidence/t26-s11-delivery.json)P1 `f6c5185c`已实际fetch并逐blob复核67个变更及八文件，见[远端证据](../etc/evidence/t26-s11-remote.json)。118输入/18输出已分类，生产C/H+1053/-1014净+39；双宽整包、每宽22样式/4进程归档、604生产/工具输入、1066回执/原资源/ABI通过。91个有限case按首67中65过/2个synthetic provider纠正后复测、另20接受结果与4 scope全过记录，无skip，不冒称首轮全过/物理操作。八文件先发布两处且摘要始终不变，所有本S临时构建/测试/探针/发布备份已归档核验清理；缓存保留。S11收口并自动S12，原dialog_scope激活NULL旧失败仍S14，不将已知限制伪装修复。S12按67输入/3输出完成现代完整根的有限重组并收口，P1 `a683cc2e`已实际fetch核对38个变更blob及八文件。公共frame拥有菜单/actions/输入/bitmap，产品/profile真实消费，生产净+17行。双宽干净构建、每宽22样式/4进程归档、1163输入、原资源/ABI及两处先发布通过；43当前case中37过/6未过、0skip，另3个完整S11包控制复现126/1460。未通过不转成成功，实际宿主/原生接入继续S14。见[S12交付](../etc/evidence/t26-s12-modern-delivery.json)、[远端](../etc/evidence/t26-s12-modern-remote.json)与brief。本S交付临时目录及发布备份已归档清理336,190,533字节，两轮开发scratch也已回收，缓存保留。S13已完成十批完整能力的增量实施：字体cache/pool、完整instance呈现/打印、原生renderer租约/回退、普通/现代共同frame renderer、字体scope/gate与文字import、theme/popup临时注册生命周期、文字缩放与glyph临时资源根；删除产品私有副本与字段view，真实消费者接入。当前199输入（171+28闭包）、9新增输出；199输入与9新增输出的归属终审已结算，整组正式交付仍待完成。第七批双宽8CTest/16原生调用通过，第八批公共文字缩放事务双宽2CTest/8原生调用通过，第九批glyph临时资源根双宽2CTest/16原生调用通过，第十批完整测量借用双宽2CTest/12原生调用通过；此前header间歇失败与S12同条件复现的static exception失败保留、不计通过。见[S13实施记录](../history/M0-T26-S13-renderers.md)、[审计表](../etc/evidence/t26-s13-renderer-audit.json)及[开发证据](../etc/evidence/t26-s13-renderer-development.json)。十批临时构建/开发包34,129,391字节已核验清理，稳定Ninja/ccache保留，正式两处包已更新为S13同快照八文件；先发布后120次实际包原生回归119过/1未过/0skip，x86 header24像素旧失败由完整S12控制复现，后续S13控制过但首失败保留。见[整组交付](../etc/evidence/t26-s13-renderer-delivery.json)。双宽构建约268/299秒、每宽4进程/23样式归档通过，1170当前构建输入与快照一致。scratch为build/t26-package/s13-delivery-01及s13-publish-01；P1 `1b1b33d3`已实际fetch核对77blob/4删除/八文件；S13有限重组收口并自动S14，T26保持开放。临时构建仅向S14移交必要测试/归档最小副本，其余立即清理，不按文件完整交付，不称S14/T26已完成。
-
+S13/S14正式交付scratch/发布备份合计370141812字节已先归档证据后核验清理，S13十批开发34129391字节也已清理；见[S13清理](../etc/evidence/t26-s13-renderer-cleanup.json)、[S14清理](../etc/evidence/t26-s14-cleanup.json)。无本任务worker或测试副本；稳定.ninja/.ccache和正式八文件保留。
 
 ## Identifier State
 
@@ -57,45 +25,15 @@ S10正式八文件已发布assets根/O:/winnt并从远端逐blob复核；同快�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T26 S13 P1，`1b1b33d3`；77个现存变更blob/4删除路径与八文件实际复核。
-- Open task: M0 T26 S14；全范围终审。
+- Last verified remote delivery: M0 T26 S14 P1，`9d5ea6ea`；9个变更blob、1170冻结输入及八文件实际复核。
+- Open task: none；T26按既有能力三层重组范围收口，不准入新T。
 
 ## Technical Baseline
 
-以下S1历史证据中的lib-style/lib-win32/style是当时路径；S2当前物理去向以381项清单为准。迁移中的真实验证状态以上方活动包为准，不把历史局部通过当作新目录已交付。
-
-- **活动范围**：T25 S9 去重已并入 T26。S1已完成全部窗口、控件、对话框及接入生产入口与测试分类；S2目录归位已完成，S3–S13实施剩余机制拆分；不把已迁移的局部当作 T26 完成。
-- **覆盖台账**：当前生产与测试目录的盘点、已审证据和待审边界见[台账](../history/M0-T26-S1-coverage-ledger.md)；目录统计不是逐文件审计结论。
-- **产品接线精简**：VB 绘制作用域的产品转发文件已删除，Win16 附着和通知处理直接调用现有控件实现并提供目标策略；双位宽字体、文本及正式发布包自建控件回归通过，见[记录](../history/M0-T26-S1-shared-candidate-23.md)。不改变全局覆盖结论。
-- **现代对话框状态**：线程局部重入深度归入公共对话框库，Win16 COM 代理直接使用；双位宽嵌套/隔离测试及正式发布包实际打开、另存、文件夹对话框自动取消通过，见[记录](../history/M0-T26-S1-shared-candidate-23.md)。确认与其他风格行为未覆盖。
-- **公共依赖门禁**：源码检查扩展至 XP、Vista、Win7；打包时自动发现公共样式归档，干净打包验证双位宽各 14 个归档通过，见[记录](../history/M0-T26-S1-shared-dependency-check.md)。
-- **Win16 基础目录复核**：七个文件的布局、配色、字体资源和产品 ABI 已分类，公共位图已复用，未来高对比度策略的边界见[记录](../history/M0-T26-S1-win16-common-review.md)。字体布局测试默认入口误尝试创建私有桌面，系统拒绝且未切换；未运行部分不计通过，后续须先核对测试入口。
-- **S1阶段发布证据**：顺序审计第 23 项 VB Frame 分类候选曾发布至 `assets` 与 `O:\winnt`，八文件摘要一致。构建、针对性回归及未覆盖范围见[交付记录](../history/M0-T26-S1-ordered-23-class.md)；S1已收口，T26仍开放，当前发布以上方活动状态为准。
-- **其他已发布共享**：同进程窗口钩子分发、现代窗口缩放边缘命中、普通/现代外框光标映射、现代宿主类名核验、Win2000 系统菜单公共缓冲及滚动条公共位置映射已发布；相关验证见各历史候选记录。后者不表示 Win2000 滚动条已实现。
-- **第八批新增共享**：普通、单参数和消息框入口的调用骨架由 Win16 和 Win2000 共用；真实窗口回调异常及 Win2000 打印夹具仍未通过，见[对话框复核](../history/M0-T26-S1-dialog-current-review.md)。现代窗口表面刷新生命周期由公共组件负责，真实宿主仍未覆盖，见[表面记录](../history/M0-T26-S1-uwp-surface.md)。同线程子窗口遍历由公共组件负责，产品保留风格和目标策略，见[接入复核](../history/M0-T26-S1-product-adapter-review.md)。
-- **第十批新增共享**：Win16 和 Win2000 系统菜单 `WM_PRINT` 的窗口/客户区坐标偏移已共用；双位宽自建窗口及实际系统菜单增量验证通过，见[菜单坐标记录](../history/M0-T26-S1-menu-coordinate.md)。
-- **第九批新增共享**：普通 Win16 和 Win2000 启动入口已共用公共启动事务；双位宽事务及两种风格各四种父子位宽组合的自建传播测试通过，见[接入复核](../history/M0-T26-S1-product-adapter-review.md)。XAML 工作区边缘保护及普通、现代外框的工作区交集计算已共享，公共及 Win16 自建外框测试双位宽通过，见[外框记录](../history/M0-T26-S1-frame-xaml.md)。
-- **公共组件边界**：当前样式源码与测试统一归 `lib-win32-style` 的 access/application/appearance；旧 `lib-style`、`lib-win32/style` 已由S2归位，不再作为当前目录契约。公共主题状态由现有共享DLL承载，Win16与Win2000已有实际消费者；系统主题仅能恢复已观察到的请求。原S1轻量导入/懒加载、v5/v6与异常验证见[主题审计](../history/M0-T26-S1-theme-lifecycle-review.md)，当前进度见上方活动包。
-- **尚未通过**：Win2000 移除外框后 DWM 状态未恢复；同机 Git HEAD 基线亦复现，见[调查](../history/M0-T26-S1-win2k-dwm-investigation.md)。同进程 UWP 分发修复已发布并通过聚焦测试；自建跨进程真实钩子返回 126，UWP 全局自建目标策略准入返回 5，实际 UWP/WinUI 宿主和真实全局会话未验证，分别见[分发记录](../history/M0-T26-S1-uwp-dispatch.md)和[全局记录](../history/M0-T26-S1-uwp-global.md)。这些不是通过项。
-- **第十一批新增共享**：创建作用域待处理窗口记录已移入 `lib-win32/style` 并被 Win16 实际接入；双位宽公共和产品创建回归见[记录](../history/M0-T26-S1-creation-pending.md)。Win2000 尚未接入此创建机制。
-- **第十一批新增共享**：原生颜色下拉与日期控件身份核验已从 Win16 绘制中拆入公共控件库；双位宽原生正负例及 Win16 产品回归见[记录](../history/M0-T26-S1-native-combo-identity.md)。
-- **第十一批新增共享**：状态栏身份核验已迁入公共控件库，框架别名由调用方提供；双位宽 v5/v6 和 Win16 产品回归见[记录](../history/M0-T26-S1-status-identity.md)。
-- **第十一批新增共享**：颜色对话框模板与色块识别已并入公共对话框库，Win16 保留具体绘制策略，空的私有对话框库已删除；双位宽产品回归见[记录](../history/M0-T26-S1-color-dialog-common.md)。
-- **第十二批新增共享**：同模块、同线程子窗口与类过程身份核验已由公共窗口组件提供并接入 Win16 VCL 路径；见[记录](../history/M0-T26-S1-owned-child-identity.md)及第十二批发布后测试。
-- **控件生命周期复核**：逐项记录已共享和仍依赖 Win16 状态/字体的入口，见[记录](../history/M0-T26-S1-control-lifetime-review.md)。
-- **第十二批新增共享**：控件子类按所有权移除已并入公共控件作用域并被 Win16 轨迹条、工具栏和报告控件使用；见[记录](../history/M0-T26-S1-owned-subclass.md)及第十二批发布后测试。
-- **第十二批新增共享**：旧式字体对话框组合框资格检查已迁入公共控件，Win16 提供类别策略；公共测试及正式发布版字体对话框 A/W 确认和取消双位宽通过，见[候选记录](../history/M0-T26-S1-shared-candidate-12.md)。
-- **现代外框待拆分**：脱离、重入引用、所有者/标题/表面安装事务及所有者、标题通用消息分派已由公共宿主接管；第十四批同快照自建测试通过，表面输入与风格策略仍需审计，真实宿主与回滚条件见[现代外框审计](../history/M0-T26-S1-modern-frame-audit.md)。
-- **菜单弹出路径复核**：两种风格已共用输入、快照与呈现基础；选中状态和嵌套生命周期仍有不同契约，具体可拆边界见[局部审计](../history/M0-T26-S1-menu-scope-review.md)。
-- **普通外框生命周期复核**：位置恢复与 DWM 操作已有共享基础，安装事务、状态和消息分派仍须按两种风格各自契约拆分；见[局部审计](../history/M0-T26-S1-frame-lifecycle-review.md)。
-- **第十五批新增共享与修复**：全局窗口样式适配去掉三个转发函数，Win2000 非客户区漏掉的公共菜单重叠刷新已修复；非客户区滚动条轴选择和 DC 管理移入公共组件并由 Win16 使用。双位宽测试和真实全局及 Win2000 控件边界见[候选记录](../history/M0-T26-S1-shared-candidate-15.md)。
-- **第十六批新增共享**：状态栏标准消息的字体和快照失效判定、原生分栏与文本快照采集已移入公共状态栏组件并由 Win16 使用；双位宽回归见[候选记录](../history/M0-T26-S1-shared-candidate-16.md)。
-- **第十七批新增共享**：轨迹条和工具栏的自绘通知来源校验、XAML 图标消息的样式位暂存与恢复已归入公共组件，Win16 实际接入；双位宽回归和真实宿主限制见[候选记录](../history/M0-T26-S1-shared-candidate-17.md)。
-- **第十三批新增共享**：原生及 VB5/VB6 控件类身份与别名已从 Win16 控件层移入公共样式层，Win16 的绘制资格保留；双位宽回归及限制见[候选记录](../history/M0-T26-S1-shared-candidate-13.md)。
-- **剩余实现**：对话框与窗口创建事务已按S11交付；现代宿主与具体字体/GDI/renderer边界由S12/S13接收，不能凭公共索引称全T已完成。Win2000 控件外观、所有目标种类和真实应用的完整覆盖仍未证明。
-- **执行约束**：不使用 computer-use，不创建或切换隔离桌面；保留源码与资源声明，不依赖或修改兄弟仓库。先发布再进行产品包测试；清理本次临时构建、测试副本和发布备份，保留必要证据。P52 已提交推送并复核远端；后续交付仍须逐批执行。
-- **历史记录**：此前完整状态文字保存在[基线历史日志](../history/M0-T26-S1-baseline-log.md)；其中旧的“未发布”等状态可能已被本基线及候选记录取代。
-
-S13整组临时源树/构建/候选/测试及两处发布备份已核验清理334,638,930字节，见[清理记录](../etc/evidence/t26-s13-renderer-cleanup.json)。S14仅保留登记的29,683,976字节最小原生测试/归档及摘要移交；无S13活动构建，稳定缓存和正式八文件保留。
-
-S14本地终审见[最终证据](../etc/evidence/t26-s14-final-audit.json)：473当前C/H归属、1170最终构建输入一致及每宽23样式/4进程归档门禁通过。94项首轮86过/8未过；两次dialog-link补齐既定临时目录后通过，首失败保留；最终正确前置条件88项通过、6项原有DWM/hook未过、0skip。架构/CODING已按当前三层责任更新，未改产品、测试或构建输入。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；正式文件在assets根与O:/winnt，摘要见最终审计。
+- 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
+- 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
+- 来源1077回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
+- propagation停用、窗口恢复、thread hook解除与物理DLL/late patch卸载分别报告；原有进程存活期固定/保留能力不改称安全卸载。
+- 禁止computer-use、创建或切换私有桌面；只用自有有界当前桌面探针。用户已永久授权非computer-use验证及按身份处理正式文件实际占用者；不重复请求同一授权，不改系统安全设置。
+- 历史逐文件来源及迁移见[原顺序台账](../history/M0-T26-S1-ordered-audit.md)、各S证据与T26规划；早期lib-style/lib-win32/style路径是历史路径，当前旧生产目录已删除。

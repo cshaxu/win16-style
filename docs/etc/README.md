@@ -293,3 +293,5 @@
 - [T26 S14 final audit](evidence/t26-s14-final-audit.json): 473 current source/header ownership reconciliation, exact 1170 build inputs, actual consumer traces, public archive gates, final package identity and bounded native combination results.
 
 - [T26 S14 cleanup](evidence/t26-s14-cleanup.json): final handoff tests/archives/package removed after evidence archive; no private desktop or computer-use.
+
+- [T26 S14 actual remote](evidence/t26-s14-remote.json): fetched P1 blobs, exact final source inputs and eight formal product identities verified.

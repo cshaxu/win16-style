@@ -1,0 +1,74 @@
+{
+  "task": "M0 T26 S14 P1",
+  "commit": "9d5ea6ea008bd29b72b92190ab4c93c25e95e2ea",
+  "actual_fetched": "9d5ea6ea008bd29b72b92190ab4c93c25e95e2ea",
+  "changed_blobs": [
+    {
+      "path": "docs/design/ARCHITECTURE.md",
+      "blob": "e709fc29746e22ee7a36360075237ca4ba4ee4df",
+      "sha256": "d1c544c6453af2db7abced6d3774e21555546b0c70733c2d31053f8c59e0384e",
+      "local_equal": true
+    },
+    {
+      "path": "docs/design/CODING.md",
+      "blob": "b3a42e30eeee1e7ee823905c193293480f53ddc3",
+      "sha256": "16d96d9da899020569abb9ea418bece9491f6b373ca94c313731bcdb7f4910d5",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/README.md",
+      "blob": "b134f8b329de7ec84fe2df875f38960c486c3b72",
+      "sha256": "165ecf48e823697ee5a974febc63092bbe826cbb22e562a6c7e1004f371814fa",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/evidence/t26-s14-cleanup.json",
+      "blob": "6048e33decc80a35bc0fa786c037a068d009154a",
+      "sha256": "f9c6f5825f1c989f656df90efc0c1f3f453bb1008ac5c6b93946862cd315a776",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/evidence/t26-s14-final-audit.json",
+      "blob": "aa03aa69f47cdc96bd461c81031dfd696648f28b",
+      "sha256": "55782f5a59289774609a77ac3d8ae5314f4a9421db79d70e779ea1900e96105c",
+      "local_equal": true
+    },
+    {
+      "path": "docs/history/M0-T26-S14-final-audit.md",
+      "blob": "8bea1c4f1347f6018dc49e9d1b56402a86e9bf1c",
+      "sha256": "1d9de77ff6fb0febabb30a668a67f08d38bb8b67f14a22f9244432059016eaf6",
+      "local_equal": true
+    },
+    {
+      "path": "docs/proposals/style-library-reorganization.md",
+      "blob": "bd07229ad0ed2912bae54ae19ed95ce626b7a3c9",
+      "sha256": "7311437c4adf269c42388c8baaeeb7c8a985423d7bf09a3c8bdbdbd492f58ac8",
+      "local_equal": true
+    },
+    {
+      "path": "docs/states/CURRENT.md",
+      "blob": "3d96011199522111620c53276866459f8ff335ee",
+      "sha256": "913bdcb876e18baf4e013363fbd52e5d01c528a06d021d9575115c452db3c0f5",
+      "local_equal": true
+    },
+    {
+      "path": "docs/states/TODO.md",
+      "blob": "c60b8d2a524a64b50bb854250e8c04aa7ef23868",
+      "sha256": "c6eb0e5a6e5a86f5a6d75fecdd0f07564fbadc8c1232668bbc86adcde78952ce",
+      "local_equal": true
+    }
+  ],
+  "product_sha256": {
+    "demo.exe": "73d04c486a28dfd832260f27c0bae25bc28b38b85b3199f44b619d533ca60ea9",
+    "ntw16s32.dll": "94b907cdb3525c91d89892ea1fa007eb05595fda6e7068c79d9bc34a4066e175",
+    "ntw16s64.dll": "2289817dd5a3484e15f1014095d5f88c5ee31bac5f2cfc886a8f33f7c139807d",
+    "ntw2ks32.dll": "55b8de7b1cece135c01b05656ed11f80b58145d34e116c55819ac193c9c9d62d",
+    "ntw2ks64.dll": "ea8eb3306a377dc71c4a607235834e1bb3a2bb9e15bac3456f49ecd0f643c99d",
+    "ntwshk32.dll": "c79c89aef6cdb81949a92fb14af3b42b99dec3df1ac54c75a78bd6353c4565d6",
+    "ntwshk64.dll": "e417cd162e0c4dc8712a7aadb5b8f3a6b57abd0d95ad5982cad2a86b4a7d2424",
+    "run16s.exe": "e9836aadfa708f623cdd59025f0679909a7f370b83e0ae032835087c2acb03f7"
+  },
+  "unchanged_product_source_since_S13_P1": true,
+  "exact_frozen_inputs": 1170,
+  "status": "Actual fetched S14 changed blobs and eight products verified; final source/test/tool and product inputs remain S13 snapshot bytes"
+}
