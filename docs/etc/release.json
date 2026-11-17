@@ -190,7 +190,8 @@
     "skipped": 0,
     "coverage": "focused, not whole repository",
     "incremental_cases": 14,
-    "public_boundaries": "Both widths: 4 process archives and 23 neutral style archives passed; dependency traces accept only copied source + compiler roots, no siblings; original five resource headers and embedded 18 raster tables retained"
+    "public_boundaries": "Both widths: 4 process archives and 23 neutral style archives passed; dependency traces accept only copied source + compiler roots, no siblings; original five resource headers and embedded 18 raster tables retained",
+    "actual_remote": "evidence/t27-s2-remote.json; 38 changes and 8 binaries byte-exact; 9 prior input line-ending-only differences individually disclosed"
   },
   "validation": {
     "physical_keyboard_mouse": "not claimed",
@@ -207,8 +208,8 @@
     ]
   },
   "closure": {
-    "S2": "verified locally; push and actual remote verification pending",
-    "T27": "open",
+    "S2": "closed after actual fetched P1 commit 4912b70d and eight-file byte verification",
+    "T27": "open; S3 choice controls admitted",
     "M0": "fixed"
   }
 }

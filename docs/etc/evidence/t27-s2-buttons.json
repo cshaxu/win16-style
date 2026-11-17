@@ -1,6 +1,6 @@
 {
   "task": "M0 T27 S2",
-  "status": "S2 source-based ordinary/default native BUTTON implementation and 36/36 actual published-package focused cases verified locally; commit/push/actual remote pending",
+  "status": "S2 closed after P1 published package, 36/36 focused actual cases, cleanup and actual remote verification; T27 S3 continues",
   "reference_commit": "fd809a81098565b33f52d0f65925159de8f4c337",
   "reference_files_sha256": {
     "client/btnctl.c": "f44a25484dbcaff4c972e4bd9bd2cd168f5fd1c0ea04cb989ec961fee9441ba6",
@@ -215,7 +215,7 @@
     "Entire T27 controls parity is not complete; remaining approved S tasks continue"
   ],
   "formal_delivery": {
-    "status": "locally verified, actual remote pending",
+    "status": "actual remote 4912b70d verified; all 38 changed files/eight binaries byte-exact; 9 pre-existing CRLF/LF-only input differences disclosed in t27-s2-remote.json",
     "build": {
       "build_result": {
         "full_matrix": "pending",
@@ -1500,5 +1500,6 @@
     "new_production_c_h_files": 8,
     "new_production_c_h_lines": 337,
     "state_owner": "Common instance/install/retire/basic/present/dispatch and unique ntwshk theme owner retained; no parallel lifecycle implementation"
-  }
+  },
+  "remote_evidence": "t27-s2-remote.json"
 }

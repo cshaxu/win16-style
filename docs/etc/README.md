@@ -301,3 +301,5 @@
 - [T27 S1 actual remote](evidence/t27-s1-remote.json): fetched seven changed blobs and unchanged eight-file baseline verified.
 
 - [T27 S2 source-based buttons](evidence/t27-s2-buttons.json): original source identities, development failures and real DLL rendering/lifecycle verification; formal delivery status recorded in evidence.
+
+- [T27 S2 actual remote](evidence/t27-s2-remote.json): fetched 38 changed blobs/eight tested binaries byte-verified; 1181 inputs inspected, nine pre-existing CRLF/LF-only differences explicitly recorded.
