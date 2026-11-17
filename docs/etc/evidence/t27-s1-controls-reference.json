@@ -1,6 +1,6 @@
 {
   "task": "M0 T27 S1 P1",
-  "status": "Finite parity/reference/interface design frozen and locally verified; no renderer claimed; actual remote delivery pending",
+  "status": "S1 finite scope/reference/interface freeze delivered, scratch cleaned and actual remote P1 verified; renderer/state-level implementation follows S2-S16",
   "baseline": "efcf9109c25cab465d0bf6607b279588612d31a7",
   "counts": {
     "control_groups": 24,
@@ -2349,7 +2349,8 @@
       "run16s.exe": "e9836aadfa708f623cdd59025f0679909a7f370b83e0ae032835087c2acb03f7"
     },
     "publication": "unchanged T26 final package; no build or fake T27 publication during S1",
-    "governance": "Verify-Governance -SelfTest passed, 13 rejection cases; git diff --check passed"
+    "governance": "Verify-Governance -SelfTest passed, 13 rejection cases; git diff --check passed",
+    "verified_remote_commit": "0742a00f1b25361676269479e9b21b7a24e6f890"
   },
   "restrictions": [
     "No computer-use or private desktop",

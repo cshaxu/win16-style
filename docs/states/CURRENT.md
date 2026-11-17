@@ -2,28 +2,28 @@
 
 ## Current Work
 
-M0固定。用户已准入T27 Windows 2000常用控件，并授权自行设定目标持续执行；当前S1建立Win3.x实际parity清单、Win2000源码/资源/真实图像依据与实施设计，不称控件呈现已完成。按[16个S规划](../proposals/windows-2000-controls.md)以完整能力合批，先依据后实现，不逐文件完整交付。
+M0固定。用户已准入T27 Windows 2000常用控件，并授权自行设定目标持续执行；S1已完成有限parity/来源/接口设计冻结并实际远端复核，当前S2实现基础呈现与普通按钮，不提前称控件parity完成。按[16个S规划](../proposals/windows-2000-controls.md)以完整能力合批，先依据后实现，不逐文件完整交付。
 
-T26三层重组已有限收口，正式八文件仍为S13同快照包，最终审计/已知失败见[记录](../etc/evidence/t26-s14-final-audit.json)。T27当前未修改产品/测试/构建输入，也未虚构新发布；Win2000旧分支关闭主题不计作独立renderer完成。
+T26三层重组已有限收口，正式八文件仍为S13同快照包，最终审计/已知失败见[记录](../etc/evidence/t26-s14-final-audit.json)。S1未修改产品/测试/构建输入，也未虚构新发布；Win2000旧分支关闭主题不计作独立renderer完成。
 
-## M0 T27 S1 Packet
+## M0 T27 S2 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New；用户准入原建议第二项Win2000常用控件，T27 S1，M0固定。 |
+| Identifier Mode | Continuation；S1来源/设计冻结已实际远端复核，按已批准16S自动S2，M0/T27不变。 |
 | Admission And Approval | 用户要求参考Win2000源代码、原资源和真实截图，目标达到现有Win3.x已实现控件范围的parity，授权自行设目标持续执行。 |
-| Objective | 冻结完整parity/状态清单、原版来源/资源/图像与公共机制/年代呈现设计，形成有证据的后续实施和验收矩阵。 |
+| Objective | 依据原版来源实现Win2000语义palette/edge与普通/默认按钮完整呈现，接入产品并保留原生输入/数据/资源所有权。 |
 | Non-goals | 不凭印象画；不把关闭主题当实现；本T不做公共对话框/菜单、XAML客户区、新主题格式或扩权限/目标，不复制Win16机制。 |
-| Reference Baseline | efcf9109，T26最终三层/八文件；参考Win2000SRC fd809a81098565b33f52d0f65925159de8f4c337，只读且无本地改动。 |
-| Candidate Proposal | docs/proposals/windows-2000-controls.md；brief docs/history/M0-T27-S1-controls-reference.md。 |
-| Files And ABI Surface | 当前appearance/win3x/control及实际公共/产品消费者与demo，参考ntuser/comctl32；S1仅研究文档，不改五组件八文件/ABI。 |
+| Reference Baseline | S1 P1 0742a00f，24控件组/8运行时组、32原文件和真实原图已冻结；两处仍T26八文件。参考Win2000SRC fd809a81只读。 |
+| Candidate Proposal | docs/proposals/windows-2000-controls.md；brief docs/history/M0-T27-S2-buttons.md。 |
+| Files And ABI Surface | appearance/win2000/common/control、ntw2ks装配、对应公共实际消费者/原生测试与CMake；固定五组件八文件及ABI，不改Win3.x字形。 |
 | Applicable Rules | C17/MinGW GCC/Ninja/ccache，沿用access/application/appearance；固定来源/SHA/声明，无外部仓库构建依赖。 |
-| Verification | 逐控件原入口/支持范围、Win2000文件/函数/资源与图像对照；完整状态/真实与模型/缺图/未覆盖分列，治理与现有包摘要核对。 |
-| Expected Markers | 完整有限清单、原版依据、接入设计和验证判据；没有依据的状态不捏造，没有原版等价的现代控件单列。 |
+| Verification | 原版按钮状态/边缘/颜色/文字合同，原图可见像素对照，双宽原生实际安装/移除/输入/打印/重入/资源与Win16回归；先发布后实际包。 |
+| Expected Markers | 实际公共根驱动Win2000按钮呈现；默认/普通/按下/禁用/焦点及适用内容有据，未验证分支明确保留，不靠关闭主题冒充完成。 |
 | Asset Needs | 只读Win2000原源码及可核实截图；任何新增资源先逐项来源审查，保留已有五头/原声明；不加产品文件。 |
 | Reporting Requirements | 实际盘点数、已确认/缺失依据、公共能力/产品/年代职责、S顺序和原始失败；不得把计划/原生保留称实现。 |
 | Stop Conditions | 禁止computer-use、私有桌面、改兄弟/参考仓库和安全设置；保留工作区改动，不重启已有有效构建，不反复UAC。 |
-| Exit Criteria | S1清单与设计有据且可审计，现有八文件不变证据、治理/diff检查及提交推送实际复核后自动S2；本T按16S继续。 |
+| Exit Criteria | 源状态合同、真实产品消费者及适用验证落实，同快照双宽八文件两处先发布后测试、清理/提交推送实际复核后自动S3；T27保持开放。 |
 | Original Owner Request | Win2000常用控件，目标Win3.x样式parity；必须看Win2000源代码/资源和真实图像，千万别猜，自行设目标开始执行。 |
 | Similar-Issue Sweep | 原生基础/公共控件，VB/VCL/OCX与容器，独立/非客户滚动条，字体/颜色/位图/状态与demo，以及既有Win16保留模式。 |
 
@@ -38,9 +38,9 @@ T26三层重组已有限收口，正式八文件仍为S13同快照包，最终�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T26 S14 P1，`9d5ea6ea`；9个变更blob、1170冻结输入及八文件实际复核。
-- Last allocated T27 S: 1
-- Open task: M0 T27 S1；Win2000常用控件parity、原版依据与设计。
+- Last verified remote delivery: M0 T27 S1 P1，`0742a00f`；7个变更blob、无产品输入变化及原八文件实际复核。
+- Last allocated T27 S: 2
+- Open task: M0 T27 S2；Win2000基础呈现与普通按钮。
 
 ## Technical Baseline
 

@@ -1,0 +1,47 @@
+{
+  "task": "M0 T27 S1 P1",
+  "commit": "0742a00f1b25361676269479e9b21b7a24e6f890",
+  "actual_fetched": "0742a00f1b25361676269479e9b21b7a24e6f890",
+  "changed_blobs": [
+    {
+      "path": "docs/design/ROADMAP.md",
+      "sha256": "9f9901da0b66ea28f1f674ae3dd25a8ab4c1a19477e9293c439bb7b4f9b1197e"
+    },
+    {
+      "path": "docs/etc/README.md",
+      "sha256": "5fab595895ba5164dee6931cd7c57eadf7b7b78b3e5638f2c0aa5dd5e1860f1a"
+    },
+    {
+      "path": "docs/etc/evidence/t27-s1-controls-reference.json",
+      "sha256": "3ed8147f0b9a8399853d49c7f44114751a633a4f6cb21d89860c5eaf14f4fc0a"
+    },
+    {
+      "path": "docs/history/M0-T27-S1-controls-reference.md",
+      "sha256": "55ae1fe548cbbf36737b3ef78932f6680714788cad5a5def5f6b165489246bfc"
+    },
+    {
+      "path": "docs/proposals/windows-2000-controls.md",
+      "sha256": "54cc0ef4d540b83b6c92999252b985b1c5a1f0aaad0ba56decd9f71f05a02cc4"
+    },
+    {
+      "path": "docs/states/CURRENT.md",
+      "sha256": "ff4f8ae7c9ca8a1c3dd54fa62cf6c67a6627e508bb65b3b51ec06d186c633150"
+    },
+    {
+      "path": "docs/states/QUEUE.md",
+      "sha256": "051288b57b2ffb1f8ef99a221045e5b1bcec350b0f94502c3a397e159df27ab5"
+    }
+  ],
+  "product_sha256": {
+    "demo.exe": "73d04c486a28dfd832260f27c0bae25bc28b38b85b3199f44b619d533ca60ea9",
+    "ntw16s32.dll": "94b907cdb3525c91d89892ea1fa007eb05595fda6e7068c79d9bc34a4066e175",
+    "ntw16s64.dll": "2289817dd5a3484e15f1014095d5f88c5ee31bac5f2cfc886a8f33f7c139807d",
+    "ntw2ks32.dll": "55b8de7b1cece135c01b05656ed11f80b58145d34e116c55819ac193c9c9d62d",
+    "ntw2ks64.dll": "ea8eb3306a377dc71c4a607235834e1bb3a2bb9e15bac3456f49ecd0f643c99d",
+    "ntwshk32.dll": "c79c89aef6cdb81949a92fb14af3b42b99dec3df1ac54c75a78bd6353c4565d6",
+    "ntwshk64.dll": "e417cd162e0c4dc8712a7aadb5b8f3a6b57abd0d95ad5982cad2a86b4a7d2424",
+    "run16s.exe": "e9836aadfa708f623cdd59025f0679909a7f370b83e0ae032835087c2acb03f7"
+  },
+  "product_inputs_unchanged": true,
+  "status": "actual remote source/docs and unchanged eight-file baseline verified"
+}

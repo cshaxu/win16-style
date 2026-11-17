@@ -297,3 +297,5 @@
 - [T26 S14 actual remote](evidence/t26-s14-remote.json): fetched P1 blobs, exact final source inputs and eight formal product identities verified.
 
 - [T27 S1 control references](evidence/t27-s1-controls-reference.json): frozen Win3.x parity groups/aliases, user Windows2000 source identities, original screenshot observations and explicit reference gaps.
+
+- [T27 S1 actual remote](evidence/t27-s1-remote.json): fetched seven changed blobs and unchanged eight-file baseline verified.
