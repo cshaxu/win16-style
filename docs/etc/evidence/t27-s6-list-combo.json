@@ -1,6 +1,6 @@
 {
   "task": "M0 T27 S6",
-  "stage": "published and verified locally; actual remote audit pending",
+  "stage": "closed after fetched remote audit",
   "baseline": "S5 P1 8325ccbb, P2 bde8c31f verified unchanged source/asset trees",
   "reference_commit": "fd809a81098565b33f52d0f65925159de8f4c337",
   "sources": {
@@ -2521,5 +2521,6 @@
       "11\t0\ttools/Test-Package.ps1"
     ]
   },
-  "cleanup": "Completed reference/development/clean-build/publication directories removed after archive. Package-output scratch retained only through remote verification, then removed. Stable Ninja and ccache retained."
+  "cleanup": "Completed reference/development/clean-build/publication directories removed after archive. Package-output scratch retained only through remote verification, then removed. Stable Ninja and ccache retained.",
+  "remote_evidence": "t27-s6-remote.json"
 }

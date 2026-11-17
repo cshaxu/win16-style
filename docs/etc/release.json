@@ -227,7 +227,7 @@
     "skipped_client_print_subchecks": 36,
     "evidence": "evidence/t27-s6-list-combo.json",
     "coverage": "focused",
-    "actual_remote": "pending"
+    "actual_remote": "evidence/t27-s6-remote.json"
   },
   "validation": {
     "physical_keyboard_mouse": "not tested",
@@ -240,8 +240,8 @@
     ]
   },
   "closure": {
-    "S6": "pending remote audit",
-    "T27": "open",
+    "S6": "closed after fetched remote audit",
+    "T27": "open; S7 admitted",
     "M0": "fixed"
   }
 }
