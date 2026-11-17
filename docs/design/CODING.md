@@ -51,7 +51,7 @@ T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及�
 
 公共宿主、输入、表面和重绘机制位于 `src/lib-win32-style/application/adapters/`；
 原生标题和目标观察位于其 `uwp/` 子目录。Win3.x 的几何、命中和呈现目前位于
-`appearance/win3x/window/modern_frame{,_layout}.{c,h}`，S12候选已将菜单、输入与表面状态交给公共`adapters/frame`完整对象；当前交付状态以CURRENT为准。
+`appearance/win3x/window/modern_frame{,_layout}.{c,h}`，S12有限交付已将菜单、输入与表面状态交给公共`adapters/frame`完整对象；当前交付状态以CURRENT为准。
 对应测试按相同组件放在 `tests/lib-win32-style/`。S2 是机械归位，不声称这些混合文件已经解耦。
 
 接入协调位于 `access/runtime/uwp_dispatch` 和 `access/global/uwp_global`；产品仍有导出、

@@ -1,7 +1,7 @@
 {
   "task": "M0 T26 S12",
   "baseline": "f6c5185c172795d4db85ff713fb86f5303e741ff",
-  "status": "Finite modern ownership migration implemented/published;43 current case identities:37 pass,6 unpassed retained,0skip;3 complete S11 controls reproduce hook126/CLI1460; remote pending, not universal real-host verification.",
+  "status": "S12 finite ownership migration delivered/closed after actual P1 remote verification;6 existing access/real-host failures remain S14, not counted as passed; S13 owns renderer transition",
   "scope_query": "application/adapters excluding win32; Win3x modern_frame*; existing uwp access/product/test entry roots; attachment/window_thread/launcher and CMake/TEST_MAP. Call/include/consumer closure must be explicitly reconciled before implementation; late discoveries added with evidence, not silently excluded.",
   "completion": "Whole generic host/menu/input/surface/reference ownership actually in common application adapters, existing product/profile consumers migrated, no parallel engine or private reverse dependency, retained geometry/presentation reasons, dual native/failure/resource/package delivery and actual remote review.",
   "files": [

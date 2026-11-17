@@ -278,3 +278,6 @@
 - [S12现代宿主开发证据](evidence/t26-s12-modern-development.json)：逐批增量构建、失败及后续原生验证；不是整S交付证明。
 
 - [S12现代宿主整组交付](evidence/t26-s12-modern-delivery.json)：双宽干净构建、八文件两处先发布、37项通过/6项未通过和上版有限对照；测试-only快照修订、原资源/ABI/依赖及清理另列。
+
+- [S12实际远端复核](evidence/t26-s12-modern-remote.json)：P1实际fetch的38项blob和八文件，与候选/assets/O:/winnt字节相等。
+- [S13初始renderer审计](evidence/t26-s13-renderer-audit.json)：初始冻结根，尚未审查或实施；活动范围见CURRENT与S13 brief。

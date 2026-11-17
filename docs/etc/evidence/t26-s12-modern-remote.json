@@ -1,0 +1,248 @@
+{
+  "task": "M0 T26 S12 P1",
+  "commit": "a683cc2e7648ec97ac06704b2be48db98183a078",
+  "actual_fetched": "a683cc2e7648ec97ac06704b2be48db98183a078",
+  "actual_remote_tracking": "a683cc2e7648ec97ac06704b2be48db98183a078",
+  "changed_blobs": [
+    {
+      "path": "CMakeLists.txt",
+      "blob": "16a2b371855a54f9a91956862621630d0f2492dc",
+      "sha256": "f6076b847b801580445660f32caa51837b4a7b6cf41a4d40d860e07fc2a831d5",
+      "local_equal": true
+    },
+    {
+      "path": "assets/demo.exe",
+      "blob": "29739ba7ece122202859b3050f51f4ca90d61130",
+      "sha256": "791f43f8788378cee2ae397d576be5bbaf83a62b55ecb875304f553f2719c8db",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntw16s32.dll",
+      "blob": "e9ea205b7f456d160b6a9e9faf5f6d621d7d5b29",
+      "sha256": "a8f2798d87753567b0ac2dc3a85a5832f082e2a936d175da73026bb1a654b12d",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntw16s64.dll",
+      "blob": "807c9a7ded830f19bd170aa472993de6f4d4ed2a",
+      "sha256": "57c717b78c992592e24dd6aada9dfb03dbb0bf34c35a5f29c93a6cea7d9c822b",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntw2ks32.dll",
+      "blob": "3501ee5263b62a6a30d43414cd41a84c2c1b1360",
+      "sha256": "30bec026f6c4a64a6eac7208d68978861b45c18bf2c1dc96dd5316e0e5f1624b",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntw2ks64.dll",
+      "blob": "74f33d4b3504fe7c0ca2d46ef85944b46f3acd1f",
+      "sha256": "39c526aec2f4fe7ce9660dc786de6ba56032b5efabbdf9452e90da8f027f2b98",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntwshk32.dll",
+      "blob": "4eba406a62676587c231445a3c1a3c0da5aa3423",
+      "sha256": "e4183b70e61d6429e3454775ab475a267decde037f617a3942053e8b3a17dc29",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntwshk64.dll",
+      "blob": "aff083ac3f885788627f77dd601389c0e43680b2",
+      "sha256": "9ea0112c6f24167ee15cf2eacf9d29402e8ab2a39940f793561a7e0504dc20be",
+      "local_equal": true
+    },
+    {
+      "path": "assets/run16s.exe",
+      "blob": "7190e36d794dd9e059cf53b9c9f1faf698529acd",
+      "sha256": "eecba34db24082dc2b985735bfe4d892972fd612858cec735eda26293b715365",
+      "local_equal": true
+    },
+    {
+      "path": "docs/design/ARCHITECTURE.md",
+      "blob": "ba40860570c1134ae5d20047b747fa565e2e1309",
+      "sha256": "c3d6ef70228fe257f16ce9714aff508f97c5e7bb09c1af11090a1f7ec3ae20c6",
+      "local_equal": true
+    },
+    {
+      "path": "docs/design/CODING.md",
+      "blob": "4e9e40c4a52425eec766079e93aa270e29a65768",
+      "sha256": "d958655bcc73b0f92d04376dc98d7d2c22a0b5c0eb0275f2534f22a5b3fe18bf",
+      "local_equal": true
+    },
+    {
+      "path": "docs/design/GOAL.md",
+      "blob": "8bca23941d9a97aaa00a84d83f281d9013dfe537",
+      "sha256": "f23c0e24ddfbbd182f3502ef256df7c377c66a87affd8a79827e32e465ba8297",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/README.md",
+      "blob": "19c021e8aadf3979d06c89c1f6e3b1c0e9027cb2",
+      "sha256": "a83666549a26d21872aa886897683dccf142fd36644be566b5e3d13954fd2b3f",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/evidence/t26-s12-modern-audit.json",
+      "blob": "cd0c19a730d639ffd3b044839cecaaa37a7b81bd",
+      "sha256": "d426fb5b4d892ff416acd1a5d881dc1c4972d4c0a88997045e551fa3ec584ea6",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/evidence/t26-s12-modern-delivery.json",
+      "blob": "2d1e62c0d2b198e6aec4b9c18d4ab5f80643a64b",
+      "sha256": "f6b30db6dd6c312f772626502b43156c0eae35728f2b53c2fa7edd1d3b0552ef",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/evidence/t26-s12-modern-development.json",
+      "blob": "394ef915ba2b2c1e10c236843f311b1a84e563bc",
+      "sha256": "a198bf34f73abd43f35adb02d5b5f8e3f767078ee046c9dacc4f2b02348c17da",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/import/import-receipts.json",
+      "blob": "8ed645b2113719c3eceb8d28f0bc80302936492c",
+      "sha256": "9837d3ed0d51634ab68139ef1b123e534ee1b5951982e5f81b91b59e0ffd6a14",
+      "local_equal": true
+    },
+    {
+      "path": "docs/history/M0-T26-S12-modern-hosts.md",
+      "blob": "72ac66aaae649d1b9c37cd6be44cbfe7e5b80eca",
+      "sha256": "b90a1940a5fec2398257f6adad0a2d6570f64656e887c1f9760e58929fcd18d8",
+      "local_equal": true
+    },
+    {
+      "path": "docs/states/CURRENT.md",
+      "blob": "ef43b6905926bfd6c5ad808fcd505fdb175e4bee",
+      "sha256": "cc7a29a4697b5205b3f9d78c1f1958d416f9a1361a14914b5cabe390730e1b22",
+      "local_equal": true
+    },
+    {
+      "path": "docs/states/TODO.md",
+      "blob": "0e1c597d68cdbb731781cc2ec7b7e6bdbe11aed2",
+      "sha256": "66b945b24f1a163b0acae1c54cc633fd05efa3da0246a42fdd345bad6ec2570f",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
+      "blob": "799bf5e0322d92ca4fadd778c5ff6f1163e120dd",
+      "sha256": "94d59ddd0554a23a91672e1197befcce3635e258d746c8938714bad96de38a03",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.h",
+      "blob": "cd912d5a56ecf56b6fcfaa4163ad8dd7499da86a",
+      "sha256": "86c520500159b03196afd780bc3f97850a59ef99bbfd1fa3b614ff7604f96b0e",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/frame.c",
+      "blob": "8899bc61e2cff12456f290184296b5b54c85590f",
+      "sha256": "cfc299043891e7fd5ab081a51259a33fa5f1acc302043b8c781ad5c53f09f113",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/frame.h",
+      "blob": "67afbb8f2199142983f4b916b6a345871a808e69",
+      "sha256": "e18c1cddab14789131abc3333b7fc5707798e7db086391dc296253a25b9db8ab",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/input.c",
+      "blob": "eb217812bc2317769968b0f1261ec0618608b671",
+      "sha256": "a6a2a56f592e9c4582064d65248ddff392a28c819d5f108a460aec17a8e974c2",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/input.h",
+      "blob": "89239b89a67448f4a3ffe8b55a367bbe09f4078c",
+      "sha256": "0c201d5a9671bc1c44a3c5d11ca1818d17fcdd5eaae9588389634aa8a372c86e",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/surface.c",
+      "blob": "79c3d8915017780b90822d91c9614bf9566d8c0a",
+      "sha256": "bf23d979e11fc5ec60cada478e106f6c61701aca2ffc1a19aa2c8ef3d57f9829",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/surface.h",
+      "blob": "31af507ea19751909e5b2edf76e65c62592f7c35",
+      "sha256": "b1c9b9cb6d70c0b873f12c59cb27eea6499a3f51e1daabc6f9a294dad2f5fb36",
+      "local_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/attachment.c",
+      "blob": "767135cdc3cb558e9aa2b459b88b6cb5056d59bf",
+      "sha256": "c5ba029ad8ff8d51d165f4aebc62e33efa129c9145cd015a6c28486f453899e3",
+      "local_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/uwp/hook.c",
+      "blob": "ea35c640cbb8facb48080cf67c80f0200596cb17",
+      "sha256": "4cdbb07e4aa311200fe78e7f0ad089ae7354a3b46650257c003c53e72bd413d0",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win3x/window/modern_frame.c",
+      "blob": "15d1d67c2ebae02c63c4f4d0f19a623796ae0e7b",
+      "sha256": "13be684298b6feca6acc677355e1be1fcec25a8b9e54f11834713a731e2d47fb",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win3x/window/modern_frame_hidden.c",
+      "blob": "5afda5f54119d07f32e060020b05ee1b578b2bd2",
+      "sha256": "f07c619862a9c58138f51960fd642a15a0711e0f069144ed21f916063f57ca5d",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/TEST_MAP.md",
+      "blob": "683197f64a4a48d98b207ecc38806a62577ed020",
+      "sha256": "13342ff0bdb3c2059bc8e1233f0afba8f31aa3b9e2a274e0c375315750a8a749",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/adapters/frame.c",
+      "blob": "e7e0aa2c71ba602bd598064811fdf4d200343a00",
+      "sha256": "593dddd0d14cc70d198579c593dead935e52754c2b29b5922fc3b8e5bd29ffb5",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/adapters/input.c",
+      "blob": "d9edeb10ee15daccedc087bd1c5a2859d21e9e7a",
+      "sha256": "2f785d390941cc76f4eb3df94859db10744232726eb0a650c013c96e987d8f54",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/adapters/surface.c",
+      "blob": "85c9f07f30f8012132f9c2fb4acdd070c18d28bd",
+      "sha256": "f1e6dd439a8873b5caa2ec798da0b8ee94fb1607ba2fe54986645d89d303f2b0",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/adapters/surface_present.c",
+      "blob": "32fb8b625c5e4165129954cd8a28fc9ad6685272",
+      "sha256": "f16784e60bcbfab2902ff766c94b6b3ec2508ae36736e9b3938b84b9c24e497d",
+      "local_equal": true
+    },
+    {
+      "path": "tests/ntw16s-dll/window_thread.c",
+      "blob": "9a05f07b8bae7830857586ea2488a6974b202b73",
+      "sha256": "3a300803349e4c320b365e7e13fc03f3a878bf71656c3f53b83bf94704fd4429",
+      "local_equal": true
+    }
+  ],
+  "eight_products": {
+    "demo.exe": "791f43f8788378cee2ae397d576be5bbaf83a62b55ecb875304f553f2719c8db",
+    "ntw16s32.dll": "a8f2798d87753567b0ac2dc3a85a5832f082e2a936d175da73026bb1a654b12d",
+    "ntw16s64.dll": "57c717b78c992592e24dd6aada9dfb03dbb0bf34c35a5f29c93a6cea7d9c822b",
+    "ntw2ks32.dll": "30bec026f6c4a64a6eac7208d68978861b45c18bf2c1dc96dd5316e0e5f1624b",
+    "ntw2ks64.dll": "39c526aec2f4fe7ce9660dc786de6ba56032b5efabbdf9452e90da8f027f2b98",
+    "ntwshk32.dll": "e4183b70e61d6429e3454775ab475a267decde037f617a3942053e8b3a17dc29",
+    "ntwshk64.dll": "9ea0112c6f24167ee15cf2eacf9d29402e8ab2a39940f793561a7e0504dc20be",
+    "run16s.exe": "eecba34db24082dc2b985735bfe4d892972fd612858cec735eda26293b715365"
+  },
+  "all_current_local_candidate_assets_winnt_equal": true,
+  "scope": "Actual fetch and blob-byte comparison; native test outcomes remain37pass/6unpassed, not replaced by remote checks"
+}

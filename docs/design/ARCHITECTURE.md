@@ -14,7 +14,7 @@
 | ntw2ks-dll | ntw2ks32.dll、ntw2ks64.dll | Win2000 风格装配及导出 |
 | demo-exe | demo.exe，x64 | 原生示例与手动操作入口；直接启动保持系统原生行为 |
 
-S2已完成库源码/测试的新根归位；S3–S11已按能力迁移生命周期、三种接入、窗口、菜单、基础/扩展控件、Win32运行时及创建/对话框事务，并完成各S交付。当前S12处理现代宿主，S13–S14负责图形与终审；appearance混合文件和产品侧剩余通用机制仍是迁移对象，不能把当前耦合当作目标责任边界。具体状态由CURRENT统一管理。
+S2已完成库源码/测试的新根归位；S3–S12已按有限范围迁移生命周期、三种接入、窗口、菜单、基础/扩展控件、Win32运行时及创建/对话框事务，并完成各S交付。现代宿主公共根已按S12有限交付，当前S13和后续S14负责图形与终审；appearance混合文件和产品侧剩余通用机制仍是迁移对象，不能把当前耦合当作目标责任边界。具体状态由CURRENT统一管理。
 
 ## 三层架构
 
@@ -130,4 +130,4 @@ S11的`application/dialog/classic_file_controller`拥有A/W打开和保存的参
 
 S11的`application/dialog/observation`统一持有创建调用、当前线程观察hook和可选嵌套目标身份。Win3x font/color组合创建事务与观察；Win2000用NULL创建上下文明确只观察，不改成预创建附着。结束按既有顺序恢复身份、释放本层hook和创建作用域，应用既有呈现不会因结束被移除。classic_file_live操作直接借用同一完整proxy，原生调用可重入并改变active_window，之后读取当前字段；没有另建字段指针视图或并行状态。实际交付状态仍由CURRENT管理。
 
-S12候选的`application/adapters/frame`嵌入既有host/instance并拥有bitmap、刷新/输入/激活状态、menu owner和action事务；profile在同一次分配中嵌入公共根及action尾存储，只保留年代布局、命中、命令/菜单绘制和字体策略。input/surface直接使用完整根，不再接收字段指针view。内部移除/表面查询由产品直接调用公共入口，DLL协议及导出保持。候选的有限验证与整S交付状态由CURRENT/S12证据确定，不能据此声称所有现代应用已验证；旧renderer frame_view明确由S13接收。
+S12交付的`application/adapters/frame`嵌入既有host/instance并拥有bitmap、刷新/输入/激活状态、menu owner和action事务；profile在同一次分配中嵌入公共根及action尾存储，只保留年代布局、命中、命令/菜单绘制和字体策略。input/surface直接使用完整根，不再接收字段指针view。内部移除/表面查询由产品直接调用公共入口，DLL协议及导出保持。有限验证、六项原生接入/实际宿主未通过观察及交付状态由CURRENT/S12证据确定，不能据此声称所有现代应用已验证；旧renderer frame_view明确由S13接收。

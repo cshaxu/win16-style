@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S12 P1",
-  "status": "Same-snapshot products published; finite migration verified, six unpassed cases retained; not all real host/hook paths passed; commit/remote pending",
+  "status": "S12 finite ownership migration delivered and remote P1 verified; raw six unpassed existing access/host observations retained for S14, not universal platform acceptance",
   "build": {
     "exit_code": 0,
     "physical_acceptance": "pending",
@@ -14122,7 +14122,7 @@
     "No computer-use, private desktop, physical mouse claim, UAC or system setting changes.",
     "Existing S11 activation and Win2000 DWM restoration debts remain S14."
   ],
-  "cleanup": "330261871 bytes of archived scratch removed; candidate retained only until commit/remote identity check",
+  "cleanup": "All S12 development/build/test/baseline/candidate/publication-backup scratch archived and removed; stable .ninja/.ccache retained",
   "cleanup_phase1": [
     {
       "active_owned_processes": 0,
@@ -14160,5 +14160,12 @@
       "removed": true
     }
   ],
-  "cleanup_bytes_phase1": 330261871.0
+  "cleanup_bytes_phase1": 330261871.0,
+  "verified_remote_commit": "a683cc2e7648ec97ac06704b2be48db98183a078",
+  "cleanup_phase2": {
+    "path": "build/t26-package/s12-modern-delivery-01",
+    "bytes": 5928662,
+    "removed": true,
+    "reason": "P1 actual remote source/eight products verified; stable caches retained"
+  }
 }

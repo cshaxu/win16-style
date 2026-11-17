@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S12现代宿主与外框机制。S1–S11已按各自范围交付及实际远端复核；S12现代宿主、S13图形/renderer和S14终审仍未完成，不称全T完成。
+M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S13呈现与图形边界。S1–S12已按有限重组范围交付及实际远端复核；既有失败不计通过。S13终整、S14全范围审计仍未完成，不称全T完成。
 
 [S5交付](../history/M0-T26-S5-runtime.md)b08d601d已实际fetch并逐blob复核37个变更；同快照八文件先发布assets根/O:/winnt，随后118项去重实际包回归通过。另2项DWM旧失败与S4一致，不计通过。见[开发证据](../etc/evidence/t26-s5-runtime.json)与[最终交付](../etc/evidence/t26-s5-delivery.json)。双宽各17个公共样式归档门禁通过，1005个源码/构建/测试/工具输入一致，ABI及原资源保留。
 
@@ -16,32 +16,33 @@ S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），102
 
 [S4事实](../history/M0-T26-S4-startup.md)及[交付](../etc/evidence/t26-s4-delivery.json)保留；T25按用户决定有限收口，未通过项不补记通过。
 
-## M0 T26 S12 Packet
+## M0 T26 S13 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S11 P1实际远端复核后按已批准14个S自动S12，M0/T26不变。 |
-| Admission And Approval | 用户授权三层重组、完整能力合批、单人双角色及自动逐S推进；S11源/产物已实际fetch核对。 |
-| Objective | 现有现代宿主/外框安装回滚、重入/退场、菜单actions、input/surface状态真实归通用application/adapters，删除Win3x/产品重复机制。 |
-| Non-goals | 不新增Win2000现代renderer、Luna/Aero或XAML客户区控件，不扩大接入目标/权限/系统设置；不把C模型扩大为真实框架全覆盖。 |
-| Reference Baseline | S11 P1 f6c5185c：八文件两处先发布，91有限case及两项夹具纠正复测，实际远端67blob与八文件相等；旧激活失败仍S14。 |
-| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S12-modern-hosts.md；初始52项docs/etc/evidence/t26-s12-modern-audit.json。 |
-| Files And ABI Surface | application/adapters、Win3x modern_frame、产品uwp/attachment/window_thread、CLI/access实际入口及对应测试/CMake；保留五组件八文件和已有ABI。 |
-| Applicable Rules | 纯C17/MinGW GCC/Ninja/ccache；通用对象持完整状态/资源，provider只给呈现策略，不用字段指针view伪装抽离，不反向依赖产品/年代头。 |
-| Verification | 顺序输入审计和调用闭包；安装失败/重入/退场、隐藏/重绘/几何/命中、actions菜单引用、normal/terminal移除、双宽真实消费者/实际包及原资源/ABI。 |
-| Expected Markers | 现代宿主唯一通用状态/资源实现，现有产品/profile真实消费；旧副本删除，每个保留项有具体呈现原因和S13接收者。 |
-| Asset Needs | 既有八文件与原图形/字体/来源声明；不加新DLL、服务、主题加载器或兄弟仓库依赖。 |
-| Reporting Requirements | 逐项公共入口/所有者/调用方/删除/验证和净代码量；原始失败、skip、模型与实际宿主边界分别报告；原始快照与补充不可混淆。 |
-| Stop Conditions | 单人执行；禁止computer-use、私有桌面及兄弟仓库修改/依赖；只处理自有有界测试，按既有UAC规则不重复问。 |
-| Exit Criteria | 输入与实际改动逐项落实、真实去重/公共调用、完整组构建发布后验证、清理、提交推送及实际远端复核后自动S13；T26仍开放。 |
-| Original Owner Request | 所有style统一lib-win32-style的access/application/appearance；通用现代机制供Win2k/XP/未来风格复用，极简和五大干净，不逐文件完整交付。 |
-| Similar-Issue Sweep | owner/title/surface/native target、普通/composed frame、菜单/actions、重入销毁/复制借用、隐藏/尺寸/焦点/重绘队列和module/UIA资源生命周期。 |
+| Identifier Mode | Continuation；S12 P1实际远端复核后按已批准14个S自动S13，M0/T26不变。 |
+| Admission And Approval | 用户授权三层重组、完整能力合批、单人双角色及自动逐S推进；S12有限迁移及原始失败已归档，不冒称全面验收。 |
+| Objective | 终整现有renderer注册、完整呈现操作及字体/字形/DC/bitmap/租约所有权，删除字段指针view、空转发和可复用副本，让产品仅装配年代策略。 |
+| Non-goals | 不新增Win2000控件全套、Luna/Aero、主题文件加载器、XAML客户区或新框架，不扩目标/权限/安全设置，不把原生hook停用称物理卸载。 |
+| Reference Baseline | S12 P1 a683cc2e：同快照八文件两处先发布，43当前case中37过/6未过、3个完整S11包控制；38个远端blob及八文件实际复核，旧失败仍S14。 |
+| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S13-renderers.md；初始171项docs/etc/evidence/t26-s13-renderer-audit.json。 |
+| Files And ABI Surface | 既有appearance/application graphics、frame_view/style_present及实际产品/测试消费者和CMake；完整闭包须显式补录，保留五组件八文件和ABI。 |
+| Applicable Rules | 纯C17/MinGW GCC/Ninja/ccache；完整公共状态和资源归实际公共所有者，年代仅提供度量/绘制/资格/资源策略，无产品或跨风格反向依赖。 |
+| Verification | 顺序输入审计；原生preflight、临时字体与原异常展开、GDI/字形缓存/借还、重入与退役、双宽实际消费者、原资源/来源/ABI/依赖和实际包回归。 |
+| Expected Markers | 一个共同呈现/资源生命周期，旧view/副本/空接线删除；每个保留项有实际呈现原因，不靠文件移动或字段回调伪装解耦。 |
+| Asset Needs | 既有八文件和原图形/字体/来源声明；不加新DLL/服务/主题加载器或兄弟仓库依赖。 |
+| Reporting Requirements | 逐项所有者/公共入口/真实调用/删除与验证，准确净代码量；原失败/skip/模型及实际宿主界限、初始快照与测试修订分列。 |
+| Stop Conditions | 单人执行；禁止computer-use、私有桌面、修改或依赖兄弟仓库；只用自有有界测试，沿用有效工作，不重复UAC询问。 |
+| Exit Criteria | 有限清单与实际修改逐项落实，完整操作/资源真实共用，整组构建两处先发布后测试、清理、提交推送及实际远端复核后自动S14；T26仍开放。 |
+| Original Owner Request | 所有style统一lib-win32-style的access/application/appearance，极简和五大干净，未来年代复用机制，逐文件审计但按完整能力合批交付。 |
+| Similar-Issue Sweep | frame_view/style_present、control dispatch/special paint/install、VB字体/字形缓存与status borrow-return、window_titles和renderer注册及原生preflight/异常资源释放。 |
+
 
 S10交付见[实施记录](../history/M0-T26-S10-extended-controls.md)、[归属表](../etc/evidence/t26-s10-controls-audit.json)、[开发](../etc/evidence/t26-s10-controls-development.json)、[整组交付及补充](../etc/evidence/t26-s10-delivery.json)和[实际远端](../etc/evidence/t26-s10-remote.json)。317项既有输入（309初始冻结+8终审显式补录）及86新增输出已分类；生产+3669/-2844净+825，58新增C/H。初轮416中410过/6失败原样保存，修正同线程witness/DC与图像夹具后24调用通过，其余有限对照提供当前证据，不写成重新416全过。现代USER/原像素和既有DWM限制由TODO/S12/S14承载，不称修复。
 
 S10正式八文件已发布assets根/O:/winnt并从远端逐blob复核；同快照干净构建约248/307秒、ccache直接818/906命中各miss68。源码/资源/ABI及双宽各4进程/21样式归档通过；最后EOF格式规范化的双宽编译对象字节一致，未重复整包发布。S10全部当前scratch已归档清理，保留稳定.ninja/.ccache，无本S在用构建/测试。
 
-[S11交付](../etc/evidence/t26-s11-delivery.json)P1 `f6c5185c`已实际fetch并逐blob复核67个变更及八文件，见[远端证据](../etc/evidence/t26-s11-remote.json)。118输入/18输出已分类，生产C/H+1053/-1014净+39；双宽整包、每宽22样式/4进程归档、604生产/工具输入、1066回执/原资源/ABI通过。91个有限case按首67中65过/2个synthetic provider纠正后复测、另20接受结果与4 scope全过记录，无skip，不冒称首轮全过/物理操作。八文件先发布两处且摘要始终不变，所有本S临时构建/测试/探针/发布备份已归档核验清理；缓存保留。S11收口并自动S12，原dialog_scope激活NULL旧失败仍S14，不将已知限制伪装修复。S12已分类67输入和3输出，完整adapters/frame拥有菜单/actions/输入/bitmap状态，产品/profile实际消费。双宽干净构建及每宽22样式/4进程归档、1163输入、原资源/ABI通过，八文件先发布两处。正式包43有限case：37通过、6未通过、0skip；3个完整S11包控制同样126/1460，未把直接入口当原生hook成功。原始失败/测试-only快照修订见S12交付证据；源/产物提交及远端复核未完成，不称S12已收口。已回收330,261,871字节，仅保留待核对candidate。
+[S11交付](../etc/evidence/t26-s11-delivery.json)P1 `f6c5185c`已实际fetch并逐blob复核67个变更及八文件，见[远端证据](../etc/evidence/t26-s11-remote.json)。118输入/18输出已分类，生产C/H+1053/-1014净+39；双宽整包、每宽22样式/4进程归档、604生产/工具输入、1066回执/原资源/ABI通过。91个有限case按首67中65过/2个synthetic provider纠正后复测、另20接受结果与4 scope全过记录，无skip，不冒称首轮全过/物理操作。八文件先发布两处且摘要始终不变，所有本S临时构建/测试/探针/发布备份已归档核验清理；缓存保留。S11收口并自动S12，原dialog_scope激活NULL旧失败仍S14，不将已知限制伪装修复。S12按67输入/3输出完成现代完整根的有限重组并收口，P1 `a683cc2e`已实际fetch核对38个变更blob及八文件。公共frame拥有菜单/actions/输入/bitmap，产品/profile真实消费，生产净+17行。双宽干净构建、每宽22样式/4进程归档、1163输入、原资源/ABI及两处先发布通过；43当前case中37过/6未过、0skip，另3个完整S11包控制复现126/1460。未通过不转成成功，实际宿主/原生接入继续S14。见[S12交付](../etc/evidence/t26-s12-modern-delivery.json)、[远端](../etc/evidence/t26-s12-modern-remote.json)与brief。本S交付临时目录及发布备份已归档清理336,190,533字节，两轮开发scratch也已回收，缓存保留。自动S13初始171项冻结、0已审，没有S13实现或新运行证明。
 
 
 ## Identifier State
@@ -54,9 +55,9 @@ S10正式八文件已发布assets根/O:/winnt并从远端逐blob复核；同快�
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
-- Last allocated T26 S: 12
-- Last verified remote delivery: M0 T26 S11 P1，`f6c5185c`；67个变更blob与八文件实际复核。
-- Open task: M0 T26 S12；现代宿主与外框机制。
+- Last allocated T26 S: 13
+- Last verified remote delivery: M0 T26 S12 P1，`a683cc2e`；38个变更blob与八文件实际复核。
+- Open task: M0 T26 S13；呈现与图形边界终整。
 
 ## Technical Baseline
 
