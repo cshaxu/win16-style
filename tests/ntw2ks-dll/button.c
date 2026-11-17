@@ -1,6 +1,7 @@
+/* Public primitive contract, now the original Win2000 standard scheme rather
+ * than DrawFrameControl using the current host's system colors. */
 #include <windows.h>
 #include <stdio.h>
-#include <string.h>
 
 typedef BOOL (WINAPI *draw_fn)(HDC,RECT *,UINT);
 int wmain(int argc,WCHAR **argv)
@@ -9,14 +10,22 @@ int wmain(int argc,WCHAR **argv)
     HMODULE module=LoadLibraryW(argv[1]);if(!module)return 2;
     draw_fn draw=(draw_fn)(void *)GetProcAddress(module,"Ntw2ksDrawButton");if(!draw)return 3;
     if(draw(NULL,NULL,0))return 4;
-    HDC dc[2]={CreateCompatibleDC(NULL),CreateCompatibleDC(NULL)};
-    BITMAPINFO bi={0};bi.bmiHeader.biSize=sizeof(bi.bmiHeader);bi.bmiHeader.biWidth=32;bi.bmiHeader.biHeight=-32;bi.bmiHeader.biPlanes=1;bi.bmiHeader.biBitCount=32;
-    void *pixels[2]={0};HBITMAP bmp[2]={0};HGDIOBJ old[2]={0};
-    for(unsigned i=0;i<2;++i){bmp[i]=CreateDIBSection(dc[i],&bi,DIB_RGB_COLORS,&pixels[i],NULL,0);if(!dc[i] || !bmp[i] || !pixels[i])return 5;old[i]=SelectObject(dc[i],bmp[i]);if(!old[i])return 6;}
+    HDC dc=CreateCompatibleDC(NULL);void *pixels;
+    BITMAPINFO bi={.bmiHeader={sizeof(BITMAPINFOHEADER),32,-32,1,32,BI_RGB}};
+    HBITMAP bitmap=CreateDIBSection(dc,&bi,DIB_RGB_COLORS,&pixels,NULL,0);if(!dc||!bitmap)return 5;
+    HGDIOBJ old=SelectObject(dc,bitmap);if(!old||old==HGDI_ERROR)return 6;
     const UINT states[]={0,DFCS_PUSHED,DFCS_INACTIVE,DFCS_CHECKED,DFCS_FLAT};
-    for(unsigned i=0;i<ARRAYSIZE(states);++i){RECT a={1,1,31,31},b=a;memset(pixels[0],0x5a,32*32*4);memset(pixels[1],0x5a,32*32*4);
-        if(!draw(dc[0],&a,states[i]) || !DrawFrameControl(dc[1],&b,DFC_BUTTON,DFCS_BUTTONPUSH|states[i]))return 7;
-        GdiFlush();if(memcmp(pixels[0],pixels[1],32*32*4) || memcmp(&a,&b,sizeof(a)))return 8;}
-    for(unsigned i=0;i<2;++i){SelectObject(dc[i],old[i]);DeleteObject(bmp[i]);DeleteDC(dc[i]);}
-    FreeLibrary(module);printf("NTW2KS_BUTTON_OK bits=%u states=5 native_equivalent=1\n",(unsigned)(8*sizeof(void *)));return 0;
+    for(unsigned i=0;i<ARRAYSIZE(states);++i){
+        RECT bounds={1,1,31,31};PatBlt(dc,0,0,32,32,BLACKNESS);
+        if(!draw(dc,&bounds,states[i]) || bounds.left!=1 || bounds.right!=31)return 7;
+        COLORREF edge=(states[i]&DFCS_FLAT)?RGB(128,128,128):
+            (states[i]&(DFCS_PUSHED|DFCS_CHECKED))?RGB(0,0,0):RGB(255,255,255);
+        COLORREF center=GetPixel(dc,15,15);
+        if(GetPixel(dc,1,15)!=edge ||
+           (center!=RGB(212,208,200) && !((states[i]&DFCS_CHECKED)&&center==RGB(255,255,255))))return 8;
+    }
+    RECT adjusted={0,0,32,32};
+    if(!draw(dc,&adjusted,DFCS_ADJUSTRECT) || adjusted.left!=2 || adjusted.top!=2 || adjusted.right!=30 || adjusted.bottom!=30)return 9;
+    if(!SelectObject(dc,old)||!DeleteObject(bitmap)||!DeleteDC(dc)||!FreeLibrary(module))return 10;
+    printf("NTW2KS_BUTTON_OK bits=%u states=5 source_scheme=1 caller_rect=1\n",(unsigned)(8*sizeof(void *)));return 0;
 }

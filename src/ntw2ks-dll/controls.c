@@ -12,6 +12,7 @@
 #include "lib-win32-style/application/dialog/dialog_hook.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/window/window_identity.h"
+#include "lib-win32-style/appearance/win2000/control/control.h"
 
 static __typeof__(&CreateWindowExW) create_W;
 static __typeof__(&CreateWindowExA) create_A;
@@ -30,12 +31,13 @@ static BOOL control_local(HWND window)
     SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
 }
 BOOL ntw2ks_control_attached(HWND window)
-{return control_local(window) && style_theme_owned(window,&control_owner);}
+{return control_local(window) && (win2k_control_attached(window) || style_theme_owned(window,&control_owner));}
 BOOL ntw2ks_control_attach(HWND window)
 {
     if(!control_local(window))return FALSE;
     if(!(GetWindowLongPtrW(window,GWL_STYLE)&WS_CHILD)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     if(ntw2ks_control_attached(window))return TRUE;
+    if(win2k_control_supported(window))return win2k_control_attach(window,native_theme);
     if(style_theme_retained(window)){SetLastError(ERROR_BUSY);return FALSE;}
     WCHAR name[32];
     if(!GetClassNameW(window,name,ARRAYSIZE(name)))return FALSE;
@@ -52,6 +54,7 @@ BOOL ntw2ks_control_attach(HWND window)
 BOOL ntw2ks_control_remove(HWND window)
 {
     if(!control_local(window))return FALSE;
+    if(win2k_control_attached(window))return win2k_control_remove(window);
     if(!ntw2ks_control_attached(window)){SetLastError(ERROR_NOT_FOUND);return FALSE;}
     style_theme_remove(window,&control_owner,native_theme);return TRUE;
 }

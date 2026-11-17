@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(win16_style VERSION 0.26.0 LANGUAGES C RC)
+project(win16_style VERSION 0.27.0 LANGUAGES C RC)
 if(NOT MINGW OR NOT CMAKE_C_COMPILER_ID STREQUAL "GNU")
   message(FATAL_ERROR "The product profile requires native MinGW-w64 GCC C17")
 endif()
@@ -55,6 +55,16 @@ add_library(win2k-window STATIC src/lib-win32-style/appearance/win2000/window/ca
 target_include_directories(win2k-window PUBLIC src)
 target_compile_definitions(win2k-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-window PUBLIC style-menu-owner style-window style-instance style-bitmap style-present user32 gdi32 msimg32 comctl32 dwmapi shcore)
+add_library(win2k-control STATIC
+  src/lib-win32-style/appearance/win2000/common/palette.c
+  src/lib-win32-style/appearance/win2000/common/edge.c
+  src/lib-win32-style/appearance/win2000/control/button_paint.c
+  src/lib-win32-style/appearance/win2000/control/control.c)
+target_include_directories(win2k-control PUBLIC src)
+target_compile_definitions(win2k-control PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+# Theme state is supplied by the existing shared ntwshk runtime. Do not link
+# a second static theme-state owner into this profile.
+target_link_libraries(win2k-control PUBLIC style-control-common style-instance style-present user32 gdi32 comctl32)
 add_library(lib-tray STATIC src/lib-win32/tray/tray.c)
 target_compile_definitions(lib-tray PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_include_directories(lib-tray PUBLIC src/lib-win32/tray)
@@ -320,7 +330,7 @@ target_compile_definitions(style-runtime-process PRIVATE UNICODE _UNICODE _WIN32
 # Like startup assembly, this consumes the caller's existing hook provider.
 target_link_libraries(ntw16s PRIVATE style-runtime-process)
 add_dependencies(ntw2ks style-subclass)
-target_link_libraries(ntw2ks PRIVATE style-startup win2k-window style-global-window "$<LINK_GROUP:RESCAN,style-menu-owner,ntwshk>" "${subclass_import}")
+target_link_libraries(ntw2ks PRIVATE style-startup win2k-window win2k-control style-global-window "$<LINK_GROUP:RESCAN,style-menu-owner,ntwshk>" "${subclass_import}")
 target_sources(ntw16s PRIVATE ${injection_root}/entry.c ${injection_root}/window_titles.c ${injection_root}/file_dialogs.c ${injection_root}/folder_dialogs.c ${injection_root}/modern_dialogs.c ${injection_root}/com_dialogs.c
   ${injection_root}/create_process.c ${injection_root}/late_process.c)
 target_link_libraries(ntw16s PRIVATE style-theme-track)
@@ -440,6 +450,24 @@ if(BUILD_TESTING)
   target_link_libraries(core-ntw2ks-control-theme PRIVATE user32 uxtheme)
   add_dependencies(core-ntw2ks-control-theme ntwshk ntw16s ntw2ks)
   add_test(NAME core/ntw2ks-control-theme COMMAND $<TARGET_FILE:core-ntw2ks-control-theme>)
+  add_executable(core-win2k-edge tests/lib-win32-style/appearance/win2000/common/edge.c)
+  target_link_libraries(core-win2k-edge PRIVATE win2k-control)
+  add_test(NAME core/win2k-edge COMMAND $<TARGET_FILE:core-win2k-edge>)
+  add_executable(core-win2k-button tests/lib-win32-style/appearance/win2000/control/button_paint.c)
+  target_compile_definitions(core-win2k-button PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-win2k-button PRIVATE user32 gdi32 comctl32)
+  target_link_options(core-win2k-button PRIVATE -municode)
+  add_dependencies(core-win2k-button ntw2ks)
+  add_test(NAME core/win2k-button COMMAND $<TARGET_FILE:core-win2k-button> $<TARGET_FILE:ntw2ks>)
+  add_test(NAME core/win2k-button-aware COMMAND $<TARGET_FILE:core-win2k-button> $<TARGET_FILE:ntw2ks> aware)
+  add_executable(core-win2k-button-v6 tests/lib-win32-style/appearance/win2000/control/button_paint.c tests/ntw16s-dll/control_extensions.rc)
+  target_include_directories(core-win2k-button-v6 PRIVATE src)
+  target_compile_definitions(core-win2k-button-v6 PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00 WIN2K_BUTTON_V6)
+  target_link_libraries(core-win2k-button-v6 PRIVATE user32 gdi32 comctl32 uxtheme)
+  target_link_options(core-win2k-button-v6 PRIVATE -municode ${explicit_manifest_options})
+  add_dependencies(core-win2k-button-v6 ntw2ks)
+  add_test(NAME core/win2k-button-v6 COMMAND $<TARGET_FILE:core-win2k-button-v6> $<TARGET_FILE:ntw2ks>)
+  add_test(NAME core/win2k-button-v6-aware COMMAND $<TARGET_FILE:core-win2k-button-v6> $<TARGET_FILE:ntw2ks> aware)
   add_executable(core-style-runtime-text-imports tests/lib-win32-style/application/adapters/win32/runtime_text_imports.c)
   target_link_libraries(core-style-runtime-text-imports PRIVATE style-control-common)
   add_test(NAME core/style-runtime-text-imports COMMAND $<TARGET_FILE:core-style-runtime-text-imports>)

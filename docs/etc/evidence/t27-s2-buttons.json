@@ -1,0 +1,1504 @@
+{
+  "task": "M0 T27 S2",
+  "status": "S2 source-based ordinary/default native BUTTON implementation and 36/36 actual published-package focused cases verified locally; commit/push/actual remote pending",
+  "reference_commit": "fd809a81098565b33f52d0f65925159de8f4c337",
+  "reference_files_sha256": {
+    "client/btnctl.c": "f44a25484dbcaff4c972e4bd9bd2cd168f5fd1c0ea04cb989ec961fee9441ba6",
+    "rtl/draw.c": "9aac299560301d0cab3de437210e428cd1e2dadf013f8a7c39477090cb6d2e50",
+    "kernel/inctlpan.c": "811b46564e55365a524be50efc3a2f8d486c5b07189b6ae3dd5dc7af21c969d2",
+    "kernel/init.c": "ba6eb422ac587bca94de304c6869d11f066aa82a6b2dabeda13ce65a7eccde8e"
+  },
+  "reference_image": "t27-s1-controls-reference.json original Accessibility Options screenshot; normal/default/disabled visible states only",
+  "development_runs": {
+    "s2-buttons-dev-01": {
+      "files": {
+        "result.json": {
+          "sha256": "ea72693dca3690e5ede5559aec6bc9dc821774ce9457682961c02a9949bf2451",
+          "text": "{\n  \"error\": \"x86 build/test exit 3; inspect architecture run.log/run.err\",\n  \"status\": \"failed-or-inconclusive\"\n}\n"
+        },
+        "run.err": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        "run.log": {
+          "sha256": "7a956f6e67ad5efb20fb910460bd1732b8327253fae94bb1d8a659fb10674d02",
+          "text": "-- Configuring done (1.0s)\n-- Generating done (3.5s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x86\n[1/12] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/common/palette.c.obj\n[2/12] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj\nFAILED: [code=1] CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj \nC:\\Users\\neko\\AppData\\Local\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\mingw64\\bin\\cmake.exe -E env CCACHE_DIR=O:/repos.hobby/win16style/build/.ccache CCACHE_TEMPDIR=O:/repos.hobby/win16style/build/.ccache/tmp CCACHE_MAXSIZE=5G CCACHE_BASEDIR=O:/repos.hobby/win16style C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe C:\\Users\\neko\\AppData\\Local\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\mingw32\\bin\\gcc.exe -DUNICODE -D_UNICODE -D_WIN32_WINNT=0x0A00 -IO:/repos.hobby/win16style/src -O3 -DNDEBUG -std=c17 -Wall -Wextra -Werror -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-lto -MD -MT CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj -MF CMakeFiles\\win2k-control.dir\\src\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c.obj.d -o CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj -c O:/repos.hobby/win16style/src/lib-win32-style/appearance/win2000/control/button_paint.c\n..\\..\\..\\src\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c: In function 'draw_content':\n..\\..\\..\\src\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c:62:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]\n   62 |     if(light)DeleteObject(light);if(gray)DeleteObject(gray);return result;\n      |     ^~\n..\\..\\..\\src\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c:62:34: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'\n   62 |     if(light)DeleteObject(light);if(gray)DeleteObject(gray);return result;\n      |                                  ^~\ncc1.exe: all warnings being treated as errors\n[3/12] Building C object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/button.c.obj\n[4/12] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/common/edge.c.obj\n[5/12] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/control.c.obj\n[6/12] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\nFAILED: [code=1] CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj \nC:\\Users\\neko\\AppData\\Local\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\mingw64\\bin\\cmake.exe -E env CCACHE_DIR=O:/repos.hobby/win16style/build/.ccache CCACHE_TEMPDIR=O:/repos.hobby/win16style/build/.ccache/tmp CCACHE_MAXSIZE=5G CCACHE_BASEDIR=O:/repos.hobby/win16style C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe C:\\Users\\neko\\AppData\\Local\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\mingw32\\bin\\gcc.exe   -O3 -DNDEBUG -std=c17 -Wall -Wextra -Werror -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-lto -MD -MT CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj -MF CMakeFiles\\core-win2k-button.dir\\tests\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c.obj.d -o CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj -c O:/repos.hobby/win16style/tests/lib-win32-style/appearance/win2000/control/button_paint.c\n..\\..\\..\\tests\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c: In function 'wmain':\n..\\..\\..\\tests\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c:24:22: error: implicit declaration of function 'SetProcessDpiAwarenessContext' [-Wimplicit-function-declaration]\n   24 |     if(argc==3)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));\n      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n..\\..\\..\\tests\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c:9:27: note: in definition of macro 'CHECK'\n    9 | #define CHECK(x) do {if(!(x)){fprintf(stderr,\"WIN2K_BUTTON_FAIL line=%d error=%lu: %s\\n\",__LINE__,GetLastError(),#x);return 1;}}while(0)\n      |                           ^\n[7/12] Building C object CMakeFiles/core-win2k-edge.dir/tests/lib-win32-style/appearance/win2000/common/edge.c.obj\n[8/12] Building C object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/controls.c.obj\nninja: build stopped: subcommand failed.\n"
+        },
+        "x86/build-time.json": {
+          "sha256": "8238da93c50fb38516c7fea3a794e4f7907bc72d186a974dbf0d3c852107e424",
+          "text": "{\"seconds\": 6.195231799967587, \"exit_code\": 1}\n"
+        },
+        "x86/configure-time.json": {
+          "sha256": "0f2eb854d0ba246d522da3c8da8cd0c2657c347ac7a7740e1f083e2a97cc5160",
+          "text": "{\"seconds\": 5.0120965000241995, \"exit_code\": 0}\n"
+        },
+        "x86/process.json": {
+          "sha256": "17c448f7d2c81090fb5a700812c6241c55dec1bc68718580dc9914590b4d606e",
+          "text": "{\n  \"pid\": 16528,\n  \"timeout_seconds\": 180,\n  \"architecture\": \"x86\"\n}\n"
+        },
+        "x86/run.err": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        "x86/run.log": {
+          "sha256": "7a956f6e67ad5efb20fb910460bd1732b8327253fae94bb1d8a659fb10674d02",
+          "text": "-- Configuring done (1.0s)\n-- Generating done (3.5s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x86\n[1/12] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/common/palette.c.obj\n[2/12] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj\nFAILED: [code=1] CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj \nC:\\Users\\neko\\AppData\\Local\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\mingw64\\bin\\cmake.exe -E env CCACHE_DIR=O:/repos.hobby/win16style/build/.ccache CCACHE_TEMPDIR=O:/repos.hobby/win16style/build/.ccache/tmp CCACHE_MAXSIZE=5G CCACHE_BASEDIR=O:/repos.hobby/win16style C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe C:\\Users\\neko\\AppData\\Local\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\mingw32\\bin\\gcc.exe -DUNICODE -D_UNICODE -D_WIN32_WINNT=0x0A00 -IO:/repos.hobby/win16style/src -O3 -DNDEBUG -std=c17 -Wall -Wextra -Werror -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-lto -MD -MT CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj -MF CMakeFiles\\win2k-control.dir\\src\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c.obj.d -o CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj -c O:/repos.hobby/win16style/src/lib-win32-style/appearance/win2000/control/button_paint.c\n..\\..\\..\\src\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c: In function 'draw_content':\n..\\..\\..\\src\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c:62:5: error: this 'if' clause does not guard... [-Werror=misleading-indentation]\n   62 |     if(light)DeleteObject(light);if(gray)DeleteObject(gray);return result;\n      |     ^~\n..\\..\\..\\src\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c:62:34: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'\n   62 |     if(light)DeleteObject(light);if(gray)DeleteObject(gray);return result;\n      |                                  ^~\ncc1.exe: all warnings being treated as errors\n[3/12] Building C object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/button.c.obj\n[4/12] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/common/edge.c.obj\n[5/12] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/control.c.obj\n[6/12] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\nFAILED: [code=1] CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj \nC:\\Users\\neko\\AppData\\Local\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\mingw64\\bin\\cmake.exe -E env CCACHE_DIR=O:/repos.hobby/win16style/build/.ccache CCACHE_TEMPDIR=O:/repos.hobby/win16style/build/.ccache/tmp CCACHE_MAXSIZE=5G CCACHE_BASEDIR=O:/repos.hobby/win16style C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe C:\\Users\\neko\\AppData\\Local\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\\mingw32\\bin\\gcc.exe   -O3 -DNDEBUG -std=c17 -Wall -Wextra -Werror -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-lto -MD -MT CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj -MF CMakeFiles\\core-win2k-button.dir\\tests\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c.obj.d -o CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj -c O:/repos.hobby/win16style/tests/lib-win32-style/appearance/win2000/control/button_paint.c\n..\\..\\..\\tests\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c: In function 'wmain':\n..\\..\\..\\tests\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c:24:22: error: implicit declaration of function 'SetProcessDpiAwarenessContext' [-Wimplicit-function-declaration]\n   24 |     if(argc==3)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));\n      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n..\\..\\..\\tests\\lib-win32-style\\appearance\\win2000\\control\\button_paint.c:9:27: note: in definition of macro 'CHECK'\n    9 | #define CHECK(x) do {if(!(x)){fprintf(stderr,\"WIN2K_BUTTON_FAIL line=%d error=%lu: %s\\n\",__LINE__,GetLastError(),#x);return 1;}}while(0)\n      |                           ^\n[7/12] Building C object CMakeFiles/core-win2k-edge.dir/tests/lib-win32-style/appearance/win2000/common/edge.c.obj\n[8/12] Building C object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/controls.c.obj\nninja: build stopped: subcommand failed.\n"
+        }
+      },
+      "status": "failed, retained; not counted as pass"
+    },
+    "s2-buttons-dev-02": {
+      "files": {
+        "result.json": {
+          "sha256": "89357b66736558c27a893c3e22fce6f266cf14fd1a69b9e1fa7d8c7e613460d9",
+          "text": "{\n  \"status\": \"failed-or-inconclusive\",\n  \"error\": \"x86 build/test exit 4; inspect architecture run.log/run.err\"\n}\n"
+        },
+        "run.err": {
+          "sha256": "18e00877dc1071c85cd4f479d451bebeef8309022e46cf8c63b0bed5151984a4",
+          "text": "Errors while running CTest\n"
+        },
+        "run.log": {
+          "sha256": "cb54f75c480bfd6cb0e5589d098d8cc6b732685d1e7d991f72c69b14346d6461",
+          "text": "-- Configuring done (0.7s)\n-- Generating done (2.8s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x86\n[1/11] Building RC object CMakeFiles/ntw16s.dir/src/ntw16s-dll/version.rc.obj\n[2/11] Building RC object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/version.rc.obj\n[3/11] Building RC object CMakeFiles/ntwshk.dir/src/ntwshk-dll/version.rc.obj\n[4/11] Linking C shared library ntwshk32.dll\n[5/11] Linking C shared library ntw16s32.dll\n[6/11] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[7/11] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[8/11] Linking C static library libwin2k-control.a\n[9/11] Linking C executable core-win2k-edge.exe\n[10/11] Linking C shared library ntw2ks32.dll\nC:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/../lib/gcc/i686-w64-mingw32/16.1.0/../../../../i686-w64-mingw32/bin/ld.exe: warning: resolving _Ntw2ksDrawButton by linking to _Ntw2ksDrawButton@12\nUse --enable-stdcall-fixup to disable these warnings\nUse --disable-stdcall-fixup to disable these fixups\nC:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/../lib/gcc/i686-w64-mingw32/16.1.0/../../../../i686-w64-mingw32/bin/ld.exe: warning: resolving _Ntw2ksFinishHelper by linking to _Ntw2ksFinishHelper@16\n[11/11] Linking C executable core-win2k-button.exe\nTest project O:/repos.hobby/win16style/build/.ninja/x86\n    Start 14: core/ntw2ks-control-theme\n    Start 15: core/win2k-edge\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n1/4 Test #14: core/ntw2ks-control-theme ........   Passed    0.23 sec\n2/4 Test #15: core/win2k-edge ..................   Passed    0.16 sec\n3/4 Test #16: core/win2k-button ................***Failed    0.13 sec\nWIN2K_BUTTON_FAIL line=34 error=0: GetPixel(dc,0,10)==RGB(255,255,255) && GetPixel(dc,5,5)==RGB(212,208,200)\n\n4/4 Test #17: core/win2k-button-aware ..........***Failed    0.08 sec\nWIN2K_BUTTON_FAIL line=34 error=0: GetPixel(dc,0,10)==RGB(255,255,255) && GetPixel(dc,5,5)==RGB(212,208,200)\n\n\n50% tests passed, 2 tests failed out of 4\n\nLabel Time Summary:\nintegration    =   0.60 sec*proc (4 tests)\n\nTotal Test time (real) =   0.41 sec\n\nThe following tests FAILED:\n\t 16 - core/win2k-button (Failed)                        integration\n\t 17 - core/win2k-button-aware (Failed)                  integration\n"
+        },
+        "x86/build-time.json": {
+          "sha256": "a60a86c2b8498234b2b44bba393375c1a1f40236128a226fac3e8c6fd1b389cc",
+          "text": "{\"seconds\": 7.294871099991724, \"exit_code\": 0}\n"
+        },
+        "x86/configure-time.json": {
+          "sha256": "ad8709382e1b955db0a97f7e03fdf67e3c86c657b23d80c6dee41c07c7e13936",
+          "text": "{\"seconds\": 4.127326900023036, \"exit_code\": 0}\n"
+        },
+        "x86/process.json": {
+          "sha256": "99e8dd3e6e64192b3db821b00d801d1fc858f5f7a0bb95758f4476a2de51e1ad",
+          "text": "{\n  \"timeout_seconds\": 180,\n  \"architecture\": \"x86\",\n  \"pid\": 22900\n}\n"
+        },
+        "x86/run.err": {
+          "sha256": "18e00877dc1071c85cd4f479d451bebeef8309022e46cf8c63b0bed5151984a4",
+          "text": "Errors while running CTest\n"
+        },
+        "x86/run.log": {
+          "sha256": "cb54f75c480bfd6cb0e5589d098d8cc6b732685d1e7d991f72c69b14346d6461",
+          "text": "-- Configuring done (0.7s)\n-- Generating done (2.8s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x86\n[1/11] Building RC object CMakeFiles/ntw16s.dir/src/ntw16s-dll/version.rc.obj\n[2/11] Building RC object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/version.rc.obj\n[3/11] Building RC object CMakeFiles/ntwshk.dir/src/ntwshk-dll/version.rc.obj\n[4/11] Linking C shared library ntwshk32.dll\n[5/11] Linking C shared library ntw16s32.dll\n[6/11] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[7/11] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[8/11] Linking C static library libwin2k-control.a\n[9/11] Linking C executable core-win2k-edge.exe\n[10/11] Linking C shared library ntw2ks32.dll\nC:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/../lib/gcc/i686-w64-mingw32/16.1.0/../../../../i686-w64-mingw32/bin/ld.exe: warning: resolving _Ntw2ksDrawButton by linking to _Ntw2ksDrawButton@12\nUse --enable-stdcall-fixup to disable these warnings\nUse --disable-stdcall-fixup to disable these fixups\nC:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/../lib/gcc/i686-w64-mingw32/16.1.0/../../../../i686-w64-mingw32/bin/ld.exe: warning: resolving _Ntw2ksFinishHelper by linking to _Ntw2ksFinishHelper@16\n[11/11] Linking C executable core-win2k-button.exe\nTest project O:/repos.hobby/win16style/build/.ninja/x86\n    Start 14: core/ntw2ks-control-theme\n    Start 15: core/win2k-edge\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n1/4 Test #14: core/ntw2ks-control-theme ........   Passed    0.23 sec\n2/4 Test #15: core/win2k-edge ..................   Passed    0.16 sec\n3/4 Test #16: core/win2k-button ................***Failed    0.13 sec\nWIN2K_BUTTON_FAIL line=34 error=0: GetPixel(dc,0,10)==RGB(255,255,255) && GetPixel(dc,5,5)==RGB(212,208,200)\n\n4/4 Test #17: core/win2k-button-aware ..........***Failed    0.08 sec\nWIN2K_BUTTON_FAIL line=34 error=0: GetPixel(dc,0,10)==RGB(255,255,255) && GetPixel(dc,5,5)==RGB(212,208,200)\n\n\n50% tests passed, 2 tests failed out of 4\n\nLabel Time Summary:\nintegration    =   0.60 sec*proc (4 tests)\n\nTotal Test time (real) =   0.41 sec\n\nThe following tests FAILED:\n\t 16 - core/win2k-button (Failed)                        integration\n\t 17 - core/win2k-button-aware (Failed)                  integration\n"
+        },
+        "x86/test-time.json": {
+          "sha256": "c430303ae9355f5021bdfa60f8139cf187d284eaf12de2109e0191ab606f8a83",
+          "text": "{\"seconds\": 0.6187029000138864, \"exit_code\": 8}\n"
+        }
+      },
+      "status": "failed, retained; not counted as pass"
+    },
+    "s2-buttons-dev-03": {
+      "files": {
+        "result.json": {
+          "sha256": "7310122aa169d352ec7402b1525e56b439a73419cc05b7873b847f166ddfc271",
+          "text": "{\n  \"error\": \"x86 build/test exit 4; inspect architecture run.log/run.err\",\n  \"status\": \"failed-or-inconclusive\"\n}\n"
+        },
+        "run.err": {
+          "sha256": "18e00877dc1071c85cd4f479d451bebeef8309022e46cf8c63b0bed5151984a4",
+          "text": "Errors while running CTest\n"
+        },
+        "run.log": {
+          "sha256": "200cd04b17d8d91d376be6a2db9aace749d6e2e999e90570098485abf05ad6da",
+          "text": "-- Configuring done (0.8s)\n-- Generating done (3.8s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x86\n[1/3] Linking C executable core-win2k-edge.exe\n[2/3] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[3/3] Linking C executable core-win2k-button.exe\nTest project O:/repos.hobby/win16style/build/.ninja/x86\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n    Start 15: core/win2k-edge\n    Start 14: core/ntw2ks-control-theme\n1/4 Test #16: core/win2k-button ................***Failed    0.20 sec\nWIN2K_BUTTON_FAIL line=53 error=0: GetPixel(dc,49,15)==RGB(23,79,131)\n\n2/4 Test #17: core/win2k-button-aware ..........***Failed    0.13 sec\nWIN2K_BUTTON_FAIL line=53 error=0: GetPixel(dc,49,15)==RGB(23,79,131)\n\n3/4 Test #15: core/win2k-edge ..................   Passed    0.11 sec\n4/4 Test #14: core/ntw2ks-control-theme ........   Passed    0.08 sec\n\n50% tests passed, 2 tests failed out of 4\n\nLabel Time Summary:\nintegration    =   0.53 sec*proc (4 tests)\n\nTotal Test time (real) =   0.31 sec\n\nThe following tests FAILED:\n\t 16 - core/win2k-button (Failed)                        integration\n\t 17 - core/win2k-button-aware (Failed)                  integration\n"
+        },
+        "x86/build-time.json": {
+          "sha256": "a000d4933725f441d7b2f1aadf61244051f08f6d2b2ce1815134c36d6b22d3f9",
+          "text": "{\"seconds\": 4.403232100070454, \"exit_code\": 0}\n"
+        },
+        "x86/configure-time.json": {
+          "sha256": "69bb07be2b7b2ae082f8f75cecde44ec6b8ec91d88b6b25496544bb47c75b0ce",
+          "text": "{\"seconds\": 5.160800900077447, \"exit_code\": 0}\n"
+        },
+        "x86/process.json": {
+          "sha256": "600cc23cd68ead2abbb56bf6af794c21f9cdcd18de024fcf25fc4c56596ac0d5",
+          "text": "{\n  \"timeout_seconds\": 180,\n  \"pid\": 32196,\n  \"architecture\": \"x86\"\n}\n"
+        },
+        "x86/run.err": {
+          "sha256": "18e00877dc1071c85cd4f479d451bebeef8309022e46cf8c63b0bed5151984a4",
+          "text": "Errors while running CTest\n"
+        },
+        "x86/run.log": {
+          "sha256": "200cd04b17d8d91d376be6a2db9aace749d6e2e999e90570098485abf05ad6da",
+          "text": "-- Configuring done (0.8s)\n-- Generating done (3.8s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x86\n[1/3] Linking C executable core-win2k-edge.exe\n[2/3] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[3/3] Linking C executable core-win2k-button.exe\nTest project O:/repos.hobby/win16style/build/.ninja/x86\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n    Start 15: core/win2k-edge\n    Start 14: core/ntw2ks-control-theme\n1/4 Test #16: core/win2k-button ................***Failed    0.20 sec\nWIN2K_BUTTON_FAIL line=53 error=0: GetPixel(dc,49,15)==RGB(23,79,131)\n\n2/4 Test #17: core/win2k-button-aware ..........***Failed    0.13 sec\nWIN2K_BUTTON_FAIL line=53 error=0: GetPixel(dc,49,15)==RGB(23,79,131)\n\n3/4 Test #15: core/win2k-edge ..................   Passed    0.11 sec\n4/4 Test #14: core/ntw2ks-control-theme ........   Passed    0.08 sec\n\n50% tests passed, 2 tests failed out of 4\n\nLabel Time Summary:\nintegration    =   0.53 sec*proc (4 tests)\n\nTotal Test time (real) =   0.31 sec\n\nThe following tests FAILED:\n\t 16 - core/win2k-button (Failed)                        integration\n\t 17 - core/win2k-button-aware (Failed)                  integration\n"
+        },
+        "x86/test-time.json": {
+          "sha256": "57bac7d4e91b2596f949da3e08b3f166b2d6bdf4ca8553197e34d5d9204443b6",
+          "text": "{\"seconds\": 0.4753406000090763, \"exit_code\": 8}\n"
+        }
+      },
+      "status": "failed, retained; not counted as pass"
+    },
+    "s2-buttons-dev-04": {
+      "files": {
+        "result.json": {
+          "sha256": "8d4c637e8ef72fe8ae3a03c52271b426f65d4af62d2fc35bc73a0a9ed5e04877",
+          "text": "{\n  \"targets\": \"core-win2k-edge,core-win2k-button,core-ntw2ks-control-theme\",\n  \"status\": \"passed\",\n  \"tests\": [\n    {\n      \"test_seconds\": 0.5271574999205768,\n      \"configure_seconds\": 4.522079300018959,\n      \"tests\": 4,\n      \"build_seconds\": 0.654531899956055,\n      \"architecture\": \"x86\",\n      \"skipped\": [],\n      \"passed\": 4\n    },\n    {\n      \"test_seconds\": 0.8640216001076624,\n      \"configure_seconds\": 5.0536107999505475,\n      \"tests\": 4,\n      \"build_seconds\": 11.619864199892618,\n      \"architecture\": \"x64\",\n      \"skipped\": [],\n      \"passed\": 4\n    }\n  ],\n  \"build_jobs\": 8,\n  \"exit_code\": 0,\n  \"selection\": \"^(core/win2k-edge|core/win2k-button|core/win2k-button-aware|core/ntw2ks-control-theme)$\",\n  \"architectures\": [\n    \"x86\",\n    \"x64\"\n  ],\n  \"profile\": \"Focused\",\n  \"build_root\": \"O:\\\\repos.hobby\\\\win16style\\\\build\\\\.ninja\",\n  \"test_jobs\": 4\n}\n"
+        },
+        "run.err": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        "run.log": {
+          "sha256": "bee99b9db987338a35736aff4f361611e04e3c79d4a9565ebb4b90f238f1b9d3",
+          "text": "-- Configuring done (0.8s)\n-- Generating done (2.9s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x86\nninja: no work to do.\nTest project O:/repos.hobby/win16style/build/.ninja/x86\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n    Start 15: core/win2k-edge\n    Start 14: core/ntw2ks-control-theme\n1/4 Test #15: core/win2k-edge ..................   Passed    0.06 sec\n2/4 Test #14: core/ntw2ks-control-theme ........   Passed    0.10 sec\n3/4 Test #16: core/win2k-button ................   Passed    0.31 sec\n4/4 Test #17: core/win2k-button-aware ..........   Passed    0.30 sec\n\n100% tests passed, 0 tests failed out of 4\n\nLabel Time Summary:\nintegration    =   0.78 sec*proc (4 tests)\n\nTotal Test time (real) =   0.37 sec\n{\"status\": \"PE PASS\", \"architecture\": \"x86\", \"public_exports\": 38, \"ordinals\": \"1 NONAME helper; 2..32 core; 33 modern dialog; 34 global hook; 35 global host; 36 window attach; 37 global thread; 38 UWP frame hook; 39 window thread hook\", \"imports\": [\"ADVAPI32.dll\", \"COMCTL32.dll\", \"COMDLG32.DLL\", \"dwmapi.dll\", \"GDI32.dll\", \"KERNEL32.dll\", \"api-ms-win-crt-convert-l1-1-0.dll\", \"api-ms-win-crt-heap-l1-1-0.dll\", \"api-ms-win-crt-private-l1-1-0.dll\", \"api-ms-win-crt-runtime-l1-1-0.dll\", \"api-ms-win-crt-stdio-l1-1-0.dll\", \"api-ms-win-crt-string-l1-1-0.dll\", \"ole32.dll\", \"OLEAUT32.dll\", \"SHELL32.dll\", \"USER32.dll\", \"UxTheme.dll\", \"ntwshk32.dll\", \"COMCTL32.dll\"], \"sha256\": \"f4aa9f98da6d81fb1531841c773fc493600230a67f7817d56be89a484cf03e31\"}\n-- Configuring done (0.9s)\n-- Generating done (3.7s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x64\n[1/17] Building RC object CMakeFiles/ntwshk.dir/src/ntwshk-dll/version.rc.obj\n[2/17] Building RC object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/version.rc.obj\n[3/17] Building RC object CMakeFiles/ntw16s.dir/src/ntw16s-dll/version.rc.obj\n[4/17] Linking C shared library ntwshk64.dll\n[5/17] Linking C shared library ntw16s64.dll\n[6/17] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/common/palette.c.obj\n[7/17] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[8/17] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/common/edge.c.obj\n[9/17] Building C object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/button.c.obj\n[10/17] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/control.c.obj\n[11/17] Building C object CMakeFiles/core-win2k-edge.dir/tests/lib-win32-style/appearance/win2000/common/edge.c.obj\n[12/17] Building C object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/controls.c.obj\n[13/17] Linking C static library libwin2k-control.a\n[14/17] Linking C executable core-win2k-edge.exe\n[15/17] Linking C shared library ntw2ks64.dll\n[16/17] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[17/17] Linking C executable core-win2k-button.exe\nTest project O:/repos.hobby/win16style/build/.ninja/x64\n    Start 14: core/ntw2ks-control-theme\n    Start 15: core/win2k-edge\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n1/4 Test #14: core/ntw2ks-control-theme ........   Passed    0.34 sec\n2/4 Test #15: core/win2k-edge ..................   Passed    0.25 sec\n3/4 Test #16: core/win2k-button ................   Passed    0.35 sec\n4/4 Test #17: core/win2k-button-aware ..........   Passed    0.26 sec\n\n100% tests passed, 0 tests failed out of 4\n\nLabel Time Summary:\nintegration    =   1.21 sec*proc (4 tests)\n\nTotal Test time (real) =   0.71 sec\n{\"status\": \"PE PASS\", \"architecture\": \"x64\", \"public_exports\": 38, \"ordinals\": \"1 NONAME helper; 2..32 core; 33 modern dialog; 34 global hook; 35 global host; 36 window attach; 37 global thread; 38 UWP frame hook; 39 window thread hook\", \"imports\": [\"ADVAPI32.dll\", \"COMCTL32.dll\", \"comdlg32.dll\", \"dwmapi.dll\", \"GDI32.dll\", \"KERNEL32.dll\", \"msvcrt.dll\", \"ole32.dll\", \"OLEAUT32.dll\", \"SHELL32.dll\", \"USER32.dll\", \"UxTheme.dll\", \"ntwshk64.dll\", \"COMCTL32.dll\"], \"sha256\": \"496cd5fa638c4dd97417d04b3a11adff6ce6c30f16dde9f0bc4e1df6c48f5b35\"}\n"
+        },
+        "toolchains.json": {
+          "sha256": "fd7eca35e5503450e37ce577c119eb08621800d76be2fca9caba77c2db114541",
+          "text": "{\n  \"ccache_version\": \"ccache version 4.13.6\",\n  \"toolchains\": [\n    {\n      \"compiler_sha256\": \"d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6\",\n      \"version\": \"16.1.0\",\n      \"compiler\": \"C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe\",\n      \"target\": \"i686-w64-mingw32\",\n      \"architecture\": \"x86\"\n    },\n    {\n      \"compiler_sha256\": \"7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad\",\n      \"version\": \"16.1.0\",\n      \"compiler\": \"C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe\",\n      \"target\": \"x86_64-w64-mingw32\",\n      \"architecture\": \"x64\"\n    }\n  ],\n  \"ccache\": \"C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe\",\n  \"ninja\": \"C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe\"\n}\n"
+        },
+        "x64/build-time.json": {
+          "sha256": "f0a904766bddb913c183b57a9ddc68a2934f1fbd694bddc78bea8cb3c09b48aa",
+          "text": "{\"seconds\": 11.619864199892618, \"exit_code\": 0}\n"
+        },
+        "x64/configure-time.json": {
+          "sha256": "872290f82256f8cf7615f7a45e2fe98248b11e16fc43dc3b74348c7fbfa84591",
+          "text": "{\"seconds\": 5.0536107999505475, \"exit_code\": 0}\n"
+        },
+        "x64/process.json": {
+          "sha256": "95845ec9af57c9f2f5e23ef348c133885d419120d983475f7e2eb82b5692741c",
+          "text": "{\n  \"timeout_seconds\": 180,\n  \"pid\": 23848,\n  \"architecture\": \"x64\"\n}\n"
+        },
+        "x64/run.err": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        "x64/run.log": {
+          "sha256": "6e027f10be56aecd4647573e50c148c59ce0f2a872c421f33e6f2297da2929a0",
+          "text": "-- Configuring done (0.9s)\n-- Generating done (3.7s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x64\n[1/17] Building RC object CMakeFiles/ntwshk.dir/src/ntwshk-dll/version.rc.obj\n[2/17] Building RC object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/version.rc.obj\n[3/17] Building RC object CMakeFiles/ntw16s.dir/src/ntw16s-dll/version.rc.obj\n[4/17] Linking C shared library ntwshk64.dll\n[5/17] Linking C shared library ntw16s64.dll\n[6/17] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/common/palette.c.obj\n[7/17] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[8/17] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/common/edge.c.obj\n[9/17] Building C object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/button.c.obj\n[10/17] Building C object CMakeFiles/win2k-control.dir/src/lib-win32-style/appearance/win2000/control/control.c.obj\n[11/17] Building C object CMakeFiles/core-win2k-edge.dir/tests/lib-win32-style/appearance/win2000/common/edge.c.obj\n[12/17] Building C object CMakeFiles/ntw2ks.dir/src/ntw2ks-dll/controls.c.obj\n[13/17] Linking C static library libwin2k-control.a\n[14/17] Linking C executable core-win2k-edge.exe\n[15/17] Linking C shared library ntw2ks64.dll\n[16/17] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[17/17] Linking C executable core-win2k-button.exe\nTest project O:/repos.hobby/win16style/build/.ninja/x64\n    Start 14: core/ntw2ks-control-theme\n    Start 15: core/win2k-edge\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n1/4 Test #14: core/ntw2ks-control-theme ........   Passed    0.34 sec\n2/4 Test #15: core/win2k-edge ..................   Passed    0.25 sec\n3/4 Test #16: core/win2k-button ................   Passed    0.35 sec\n4/4 Test #17: core/win2k-button-aware ..........   Passed    0.26 sec\n\n100% tests passed, 0 tests failed out of 4\n\nLabel Time Summary:\nintegration    =   1.21 sec*proc (4 tests)\n\nTotal Test time (real) =   0.71 sec\n{\"status\": \"PE PASS\", \"architecture\": \"x64\", \"public_exports\": 38, \"ordinals\": \"1 NONAME helper; 2..32 core; 33 modern dialog; 34 global hook; 35 global host; 36 window attach; 37 global thread; 38 UWP frame hook; 39 window thread hook\", \"imports\": [\"ADVAPI32.dll\", \"COMCTL32.dll\", \"comdlg32.dll\", \"dwmapi.dll\", \"GDI32.dll\", \"KERNEL32.dll\", \"msvcrt.dll\", \"ole32.dll\", \"OLEAUT32.dll\", \"SHELL32.dll\", \"USER32.dll\", \"UxTheme.dll\", \"ntwshk64.dll\", \"COMCTL32.dll\"], \"sha256\": \"496cd5fa638c4dd97417d04b3a11adff6ce6c30f16dde9f0bc4e1df6c48f5b35\"}\n"
+        },
+        "x64/test-time.json": {
+          "sha256": "8abea4591c05f61c099ac34e12e7dc5534790d28503ba2d3e82f2211dd1adaff",
+          "text": "{\"seconds\": 0.8640216001076624, \"exit_code\": 0}\n"
+        },
+        "x86/build-time.json": {
+          "sha256": "aee82778d4377519983749cab94401cc8e178ff1a2a17eb7f9df9a5815a6756f",
+          "text": "{\"seconds\": 0.654531899956055, \"exit_code\": 0}\n"
+        },
+        "x86/configure-time.json": {
+          "sha256": "4a660b3aa08e0edccd4e5f5d35250eb1e7526f73b5c15c9aac018605a9332624",
+          "text": "{\"seconds\": 4.522079300018959, \"exit_code\": 0}\n"
+        },
+        "x86/process.json": {
+          "sha256": "f067fa9ff0d904cd8b82b01cd59e8709f624e4c59e31cf382e09e95671c256f9",
+          "text": "{\n  \"timeout_seconds\": 180,\n  \"pid\": 28088,\n  \"architecture\": \"x86\"\n}\n"
+        },
+        "x86/run.err": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        "x86/run.log": {
+          "sha256": "3ee363a72281b98276db2d782014cc29c96fa58838d107ac727c493784ed04ba",
+          "text": "-- Configuring done (0.8s)\n-- Generating done (2.9s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x86\nninja: no work to do.\nTest project O:/repos.hobby/win16style/build/.ninja/x86\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n    Start 15: core/win2k-edge\n    Start 14: core/ntw2ks-control-theme\n1/4 Test #15: core/win2k-edge ..................   Passed    0.06 sec\n2/4 Test #14: core/ntw2ks-control-theme ........   Passed    0.10 sec\n3/4 Test #16: core/win2k-button ................   Passed    0.31 sec\n4/4 Test #17: core/win2k-button-aware ..........   Passed    0.30 sec\n\n100% tests passed, 0 tests failed out of 4\n\nLabel Time Summary:\nintegration    =   0.78 sec*proc (4 tests)\n\nTotal Test time (real) =   0.37 sec\n{\"status\": \"PE PASS\", \"architecture\": \"x86\", \"public_exports\": 38, \"ordinals\": \"1 NONAME helper; 2..32 core; 33 modern dialog; 34 global hook; 35 global host; 36 window attach; 37 global thread; 38 UWP frame hook; 39 window thread hook\", \"imports\": [\"ADVAPI32.dll\", \"COMCTL32.dll\", \"COMDLG32.DLL\", \"dwmapi.dll\", \"GDI32.dll\", \"KERNEL32.dll\", \"api-ms-win-crt-convert-l1-1-0.dll\", \"api-ms-win-crt-heap-l1-1-0.dll\", \"api-ms-win-crt-private-l1-1-0.dll\", \"api-ms-win-crt-runtime-l1-1-0.dll\", \"api-ms-win-crt-stdio-l1-1-0.dll\", \"api-ms-win-crt-string-l1-1-0.dll\", \"ole32.dll\", \"OLEAUT32.dll\", \"SHELL32.dll\", \"USER32.dll\", \"UxTheme.dll\", \"ntwshk32.dll\", \"COMCTL32.dll\"], \"sha256\": \"f4aa9f98da6d81fb1531841c773fc493600230a67f7817d56be89a484cf03e31\"}\n"
+        },
+        "x86/test-time.json": {
+          "sha256": "0fa076e2cda53c6c83d4b236a02ff92fbe57e9a4e394b312d71bd85eddd91ddc",
+          "text": "{\"seconds\": 0.5271574999205768, \"exit_code\": 0}\n"
+        }
+      },
+      "status": "passed"
+    }
+  },
+  "additional_x86_direct_test": "WIN2K_BUTTON_OK bits=32 aware=0 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1",
+  "gates": {
+    "source": "1088 receipts; LF and third-party negative tests passed",
+    "style_boundary": "passed",
+    "governance": "13 negative cases passed"
+  },
+  "limits": [
+    "Focus/UI cue messages tested, not physical keyboard focus",
+    "Modern image-list-only BUTTON retains native fallback; not original Win2000 API",
+    "Only S2 ordinary/default BUTTON implemented; other control groups not completed by theme suppression",
+    "No DLL physical unload claim; current reference ownership retained",
+    "No physical mouse/keyboard or continuous live visual fidelity claim; focus/UI-cue message tests only",
+    "DialogManager internal child creation not proven by direct CreateWindow tests: S4 container application + S15 composition are explicit receivers",
+    "Entire T27 controls parity is not complete; remaining approved S tasks continue"
+  ],
+  "formal_delivery": {
+    "status": "locally verified, actual remote pending",
+    "build": {
+      "build_result": {
+        "full_matrix": "pending",
+        "physical_acceptance": "pending",
+        "clean_source": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source",
+        "candidate": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\candidate",
+        "exit_code": 0,
+        "status": "passed"
+      },
+      "package_verification": {
+        "status": "PACKAGE PASS",
+        "artifacts": {
+          "run16s.exe": {
+            "architecture": "x64",
+            "version": "M0 T27",
+            "sha256": "e62efc1c8bb5958b27a130ce97d2860cc8d7eba61a165f110b34ed7de1b1c818",
+            "imports": [
+              "advapi32.dll",
+              "dwmapi.dll",
+              "kernel32.dll",
+              "msvcrt.dll",
+              "ole32.dll",
+              "oleaut32.dll",
+              "shell32.dll",
+              "user32.dll",
+              "ntwshk64.dll"
+            ]
+          },
+          "ntw16s32.dll": {
+            "architecture": "x86",
+            "version": "M0 T27",
+            "sha256": "a933b07ac6bbe945887d60596d36f1f13ae10e77858a673c9472d5f530a7b227",
+            "imports": [
+              "ADVAPI32.dll",
+              "COMCTL32.dll",
+              "COMDLG32.DLL",
+              "dwmapi.dll",
+              "GDI32.dll",
+              "KERNEL32.dll",
+              "api-ms-win-crt-convert-l1-1-0.dll",
+              "api-ms-win-crt-heap-l1-1-0.dll",
+              "api-ms-win-crt-private-l1-1-0.dll",
+              "api-ms-win-crt-runtime-l1-1-0.dll",
+              "api-ms-win-crt-stdio-l1-1-0.dll",
+              "api-ms-win-crt-string-l1-1-0.dll",
+              "ole32.dll",
+              "OLEAUT32.dll",
+              "SHELL32.dll",
+              "USER32.dll",
+              "UxTheme.dll",
+              "ntwshk32.dll",
+              "COMCTL32.dll"
+            ]
+          },
+          "ntw16s64.dll": {
+            "architecture": "x64",
+            "version": "M0 T27",
+            "sha256": "69352f7c066298d4ebb617ec5b14f0db52e99bd7d1a9535c31e06e82095f3772",
+            "imports": [
+              "ADVAPI32.dll",
+              "COMCTL32.dll",
+              "comdlg32.dll",
+              "dwmapi.dll",
+              "GDI32.dll",
+              "KERNEL32.dll",
+              "msvcrt.dll",
+              "ole32.dll",
+              "OLEAUT32.dll",
+              "SHELL32.dll",
+              "USER32.dll",
+              "UxTheme.dll",
+              "ntwshk64.dll",
+              "COMCTL32.dll"
+            ]
+          },
+          "ntw2ks32.dll": {
+            "architecture": "x86",
+            "version": "M0 T27",
+            "sha256": "0f47faff06e86a9b21b2002236dd47d8dfa43b9dfe9d2e8e17f9a2dc219e8896",
+            "imports": [
+              "COMCTL32.dll",
+              "COMDLG32.DLL",
+              "dwmapi.dll",
+              "GDI32.dll",
+              "KERNEL32.dll",
+              "MSIMG32.DLL",
+              "api-ms-win-crt-convert-l1-1-0.dll",
+              "api-ms-win-crt-heap-l1-1-0.dll",
+              "api-ms-win-crt-private-l1-1-0.dll",
+              "api-ms-win-crt-runtime-l1-1-0.dll",
+              "api-ms-win-crt-stdio-l1-1-0.dll",
+              "api-ms-win-crt-string-l1-1-0.dll",
+              "SHCORE.dll",
+              "USER32.dll",
+              "UxTheme.dll",
+              "ntwshk32.dll",
+              "COMCTL32.dll"
+            ]
+          },
+          "ntw2ks64.dll": {
+            "architecture": "x64",
+            "version": "M0 T27",
+            "sha256": "895327ec0332a36961a9ed51a1d26f30ab03dab99c49c8e48a4ec3915e49a9e3",
+            "imports": [
+              "COMCTL32.dll",
+              "comdlg32.dll",
+              "dwmapi.dll",
+              "GDI32.dll",
+              "KERNEL32.dll",
+              "MSIMG32.dll",
+              "msvcrt.dll",
+              "SHCORE.dll",
+              "USER32.dll",
+              "UxTheme.dll",
+              "ntwshk64.dll",
+              "COMCTL32.dll"
+            ]
+          },
+          "ntwshk32.dll": {
+            "architecture": "x86",
+            "version": "M0 T27",
+            "sha256": "05bd2c2de8fe6db81a7c6073623c9ce7307b1c42d6909758d45078acac0b0b94",
+            "imports": [
+              "ADVAPI32.dll",
+              "KERNEL32.dll",
+              "api-ms-win-crt-convert-l1-1-0.dll",
+              "api-ms-win-crt-heap-l1-1-0.dll",
+              "api-ms-win-crt-private-l1-1-0.dll",
+              "api-ms-win-crt-runtime-l1-1-0.dll",
+              "api-ms-win-crt-stdio-l1-1-0.dll",
+              "api-ms-win-crt-string-l1-1-0.dll"
+            ]
+          },
+          "ntwshk64.dll": {
+            "architecture": "x64",
+            "version": "M0 T27",
+            "sha256": "608f2adb4b0ae7f5797012b3136e6bef4c975ca230836b4d8c67546eb41fe1b7",
+            "imports": [
+              "ADVAPI32.dll",
+              "KERNEL32.dll",
+              "msvcrt.dll"
+            ]
+          },
+          "demo.exe": {
+            "architecture": "x64",
+            "version": "M0 T27",
+            "sha256": "886731c5c479e551737f57129694838de97c69e37ddbd24e4af4868d00e3fd33",
+            "imports": [
+              "comctl32.dll",
+              "comdlg32.dll",
+              "gdi32.dll",
+              "kernel32.dll",
+              "msvcrt.dll",
+              "ole32.dll",
+              "shell32.dll",
+              "user32.dll"
+            ]
+          }
+        },
+        "original_resource_tables_per_ntw16s_dll": 18
+      },
+      "snapshot_sha256": "bb72a3fb091eef4b8660f2cdc000c2eb1db1436e0fdaa95aca1e3c10c5f453ae",
+      "cohort": {
+        "definition": "SHA256 sorted relative path + NUL + SHA256 + LF for src/,tests/,tools/,CMakeLists.txt snapshot inputs; every working input checked equal before commit",
+        "count": 1181,
+        "sha256": "df56dca2494cc680470ce511bed2e7377f0a0943ae2505e87a6d8d9874feb164"
+      },
+      "toolchains": {
+        "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+        "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+        "toolchains": [
+          {
+            "target": "i686-w64-mingw32",
+            "version": "16.1.0",
+            "architecture": "x86",
+            "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+            "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6"
+          },
+          {
+            "target": "x86_64-w64-mingw32",
+            "version": "16.1.0",
+            "architecture": "x64",
+            "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+            "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad"
+          }
+        ],
+        "ccache_version": "ccache version 4.13.6"
+      },
+      "architecture": {
+        "x86": {
+          "build-time.json": "{\"seconds\": 270.8295943000121, \"exit_code\": 0}\n",
+          "configure-time.json": "{\"seconds\": 8.723264000029303, \"exit_code\": 0}\n",
+          "cache-before.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28549\ncache_size_kibibyte\t601080\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t724801\ndirect_cache_miss\t35500\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49792\ninternal_error\t8\nlocal_storage_hit\t731248\nlocal_storage_miss\t28549\nlocal_storage_read_hit\t1467881\nlocal_storage_read_miss\t52677\nlocal_storage_write\t63534\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t29005\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794937826\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+          "cache-after.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28552\ncache_size_kibibyte\t601132\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t725709\ndirect_cache_miss\t35503\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49795\ninternal_error\t8\nlocal_storage_hit\t732156\nlocal_storage_miss\t28552\nlocal_storage_read_hit\t1469700\nlocal_storage_read_miss\t52680\nlocal_storage_write\t63540\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t29008\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794938210\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+          "run_log_sha256": "038eef1d40a59aaddde1b384dab66ac9222f1182a57975a3804bc5725fc139a7",
+          "dependency_trace_sha256": "aa2de36b0052bb81791f8da9378a0c46cfcf7cd95ee5a58295b550f3d007ca61"
+        },
+        "x64": {
+          "build-time.json": "{\"seconds\": 307.9595587999793, \"exit_code\": 0}\n",
+          "configure-time.json": "{\"seconds\": 10.353032499901019, \"exit_code\": 0}\n",
+          "cache-before.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28552\ncache_size_kibibyte\t601132\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t725709\ndirect_cache_miss\t35503\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49795\ninternal_error\t8\nlocal_storage_hit\t732156\nlocal_storage_miss\t28552\nlocal_storage_read_hit\t1469700\nlocal_storage_read_miss\t52680\nlocal_storage_write\t63540\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t29008\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794938210\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+          "cache-after.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28555\ncache_size_kibibyte\t601184\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t726705\ndirect_cache_miss\t35506\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49798\ninternal_error\t8\nlocal_storage_hit\t733152\nlocal_storage_miss\t28555\nlocal_storage_read_hit\t1471695\nlocal_storage_read_miss\t52683\nlocal_storage_write\t63546\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t29011\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794938511\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+          "run_log_sha256": "0a5e3442c096a2fde70b073c4e3033ed360c56faa83aea842e43f4e8a4f73715",
+          "dependency_trace_sha256": "70719b556bcd089fbb5ce3d249977ae55f9222ca768d1a0431af19d33e7a0d41"
+        }
+      },
+      "boundaries": "Both widths: 4 process archives and 23 neutral style archives passed; dependency traces accept only copied source + compiler roots, no siblings; original five resource headers and embedded 18 raster tables retained"
+    },
+    "publication": {
+      "package": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\candidate",
+      "skipped": [],
+      "tested_package": null,
+      "files": [
+        {
+          "expected": "886731c5c479e551737f57129694838de97c69e37ddbd24e4af4868d00e3fd33",
+          "before": "73d04c486a28dfd832260f27c0bae25bc28b38b85b3199f44b619d533ca60ea9",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-0",
+          "after": "886731c5c479e551737f57129694838de97c69e37ddbd24e4af4868d00e3fd33",
+          "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+        },
+        {
+          "expected": "a933b07ac6bbe945887d60596d36f1f13ae10e77858a673c9472d5f530a7b227",
+          "before": "94b907cdb3525c91d89892ea1fa007eb05595fda6e7068c79d9bc34a4066e175",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-0",
+          "after": "a933b07ac6bbe945887d60596d36f1f13ae10e77858a673c9472d5f530a7b227",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+        },
+        {
+          "expected": "69352f7c066298d4ebb617ec5b14f0db52e99bd7d1a9535c31e06e82095f3772",
+          "before": "2289817dd5a3484e15f1014095d5f88c5ee31bac5f2cfc886a8f33f7c139807d",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-0",
+          "after": "69352f7c066298d4ebb617ec5b14f0db52e99bd7d1a9535c31e06e82095f3772",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+        },
+        {
+          "expected": "0f47faff06e86a9b21b2002236dd47d8dfa43b9dfe9d2e8e17f9a2dc219e8896",
+          "before": "55b8de7b1cece135c01b05656ed11f80b58145d34e116c55819ac193c9c9d62d",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-0",
+          "after": "0f47faff06e86a9b21b2002236dd47d8dfa43b9dfe9d2e8e17f9a2dc219e8896",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks32.dll"
+        },
+        {
+          "expected": "895327ec0332a36961a9ed51a1d26f30ab03dab99c49c8e48a4ec3915e49a9e3",
+          "before": "ea8eb3306a377dc71c4a607235834e1bb3a2bb9e15bac3456f49ecd0f643c99d",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-0",
+          "after": "895327ec0332a36961a9ed51a1d26f30ab03dab99c49c8e48a4ec3915e49a9e3",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks64.dll"
+        },
+        {
+          "expected": "05bd2c2de8fe6db81a7c6073623c9ce7307b1c42d6909758d45078acac0b0b94",
+          "before": "c79c89aef6cdb81949a92fb14af3b42b99dec3df1ac54c75a78bd6353c4565d6",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-0",
+          "after": "05bd2c2de8fe6db81a7c6073623c9ce7307b1c42d6909758d45078acac0b0b94",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk32.dll"
+        },
+        {
+          "expected": "608f2adb4b0ae7f5797012b3136e6bef4c975ca230836b4d8c67546eb41fe1b7",
+          "before": "e417cd162e0c4dc8712a7aadb5b8f3a6b57abd0d95ad5982cad2a86b4a7d2424",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-0",
+          "after": "608f2adb4b0ae7f5797012b3136e6bef4c975ca230836b4d8c67546eb41fe1b7",
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk64.dll"
+        },
+        {
+          "expected": "e62efc1c8bb5958b27a130ce97d2860cc8d7eba61a165f110b34ed7de1b1c818",
+          "before": "e9836aadfa708f623cdd59025f0679909a7f370b83e0ae032835087c2acb03f7",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-0",
+          "after": "e62efc1c8bb5958b27a130ce97d2860cc8d7eba61a165f110b34ed7de1b1c818",
+          "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+        },
+        {
+          "expected": "886731c5c479e551737f57129694838de97c69e37ddbd24e4af4868d00e3fd33",
+          "before": "73d04c486a28dfd832260f27c0bae25bc28b38b85b3199f44b619d533ca60ea9",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-1",
+          "after": "886731c5c479e551737f57129694838de97c69e37ddbd24e4af4868d00e3fd33",
+          "path": "O:\\winnt\\demo.exe"
+        },
+        {
+          "expected": "a933b07ac6bbe945887d60596d36f1f13ae10e77858a673c9472d5f530a7b227",
+          "before": "94b907cdb3525c91d89892ea1fa007eb05595fda6e7068c79d9bc34a4066e175",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-1",
+          "after": "a933b07ac6bbe945887d60596d36f1f13ae10e77858a673c9472d5f530a7b227",
+          "path": "O:\\winnt\\ntw16s32.dll"
+        },
+        {
+          "expected": "69352f7c066298d4ebb617ec5b14f0db52e99bd7d1a9535c31e06e82095f3772",
+          "before": "2289817dd5a3484e15f1014095d5f88c5ee31bac5f2cfc886a8f33f7c139807d",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-1",
+          "after": "69352f7c066298d4ebb617ec5b14f0db52e99bd7d1a9535c31e06e82095f3772",
+          "path": "O:\\winnt\\ntw16s64.dll"
+        },
+        {
+          "expected": "0f47faff06e86a9b21b2002236dd47d8dfa43b9dfe9d2e8e17f9a2dc219e8896",
+          "before": "55b8de7b1cece135c01b05656ed11f80b58145d34e116c55819ac193c9c9d62d",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-1",
+          "after": "0f47faff06e86a9b21b2002236dd47d8dfa43b9dfe9d2e8e17f9a2dc219e8896",
+          "path": "O:\\winnt\\ntw2ks32.dll"
+        },
+        {
+          "expected": "895327ec0332a36961a9ed51a1d26f30ab03dab99c49c8e48a4ec3915e49a9e3",
+          "before": "ea8eb3306a377dc71c4a607235834e1bb3a2bb9e15bac3456f49ecd0f643c99d",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-1",
+          "after": "895327ec0332a36961a9ed51a1d26f30ab03dab99c49c8e48a4ec3915e49a9e3",
+          "path": "O:\\winnt\\ntw2ks64.dll"
+        },
+        {
+          "expected": "05bd2c2de8fe6db81a7c6073623c9ce7307b1c42d6909758d45078acac0b0b94",
+          "before": "c79c89aef6cdb81949a92fb14af3b42b99dec3df1ac54c75a78bd6353c4565d6",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-1",
+          "after": "05bd2c2de8fe6db81a7c6073623c9ce7307b1c42d6909758d45078acac0b0b94",
+          "path": "O:\\winnt\\ntwshk32.dll"
+        },
+        {
+          "expected": "608f2adb4b0ae7f5797012b3136e6bef4c975ca230836b4d8c67546eb41fe1b7",
+          "before": "e417cd162e0c4dc8712a7aadb5b8f3a6b57abd0d95ad5982cad2a86b4a7d2424",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-1",
+          "after": "608f2adb4b0ae7f5797012b3136e6bef4c975ca230836b4d8c67546eb41fe1b7",
+          "path": "O:\\winnt\\ntwshk64.dll"
+        },
+        {
+          "expected": "e62efc1c8bb5958b27a130ce97d2860cc8d7eba61a165f110b34ed7de1b1c818",
+          "before": "e9836aadfa708f623cdd59025f0679909a7f370b83e0ae032835087c2acb03f7",
+          "backup_directory": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-publish-01\\before-1",
+          "after": "e62efc1c8bb5958b27a130ce97d2860cc8d7eba61a165f110b34ed7de1b1c818",
+          "path": "O:\\winnt\\run16s.exe"
+        }
+      ],
+      "test_result": null,
+      "status": "passed",
+      "evidence": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\result.json",
+      "test_status": "pending-post-publication"
+    },
+    "actual_package_tests": {
+      "status": "passed-focused",
+      "count": 36,
+      "passed": 36,
+      "private_desktops_created": false,
+      "cases": [
+        {
+          "name": "progress-sharing",
+          "command": [
+            "pwsh",
+            "-NoProfile",
+            "-File",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\tests\\tooling\\package_progress_lock.ps1"
+          ],
+          "markers": [
+            "PACKAGE_PROGRESS_LOCK PASS"
+          ],
+          "seconds": 90,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.963780099991709,
+          "stdout": "PACKAGE_PROGRESS_LOCK PASS old-fails locked-skip recovered nonsharing-fails\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "plan-selection",
+          "command": [
+            "pwsh",
+            "-NoProfile",
+            "-File",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\tests\\tooling\\package_case_selection.ps1"
+          ],
+          "markers": [
+            "PACKAGE_PLAN PASS"
+          ],
+          "seconds": 90,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 1.0568488999269903,
+          "stdout": "PACKAGE_PLAN PASS default focused unknown duplicate empty missing-required rejected\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "demo-boundary",
+          "command": [
+            "C:\\Program Files\\Python313\\python.exe",
+            "-B",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\tests\\demo-exe\\boundary.py",
+            "O:\\winnt\\demo.exe"
+          ],
+          "markers": [
+            "DEMO BOUNDARY PASS"
+          ],
+          "seconds": 90,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.17572679999284446,
+          "stdout": "DEMO BOUNDARY PASS x64 GUI, Windows USER32/GDI32/COMCTL32/COMDLG32/SHELL32/OLE32/KERNEL32/system CRT only, no exports/delay imports or source style consumption; sha256=886731c5c479e551737f57129694838de97c69e37ddbd24e4af4868d00e3fd33\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "abi-x86",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\core-abi.exe",
+            "O:\\winnt\\ntw16s32.dll"
+          ],
+          "markers": [
+            "ABI PASS width=32"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.16547460004221648,
+          "stdout": "ABI PASS width=32 version=3 public=38 private-bind-exports=0\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-public-button-x32",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\core-ntw2ks-button.exe",
+            "O:\\winnt\\ntw2ks32.dll"
+          ],
+          "markers": [
+            "NTW2KS_BUTTON_OK bits=32 states=5 source_scheme=1 caller_rect=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.12114270008169115,
+          "stdout": "NTW2KS_BUTTON_OK bits=32 states=5 source_scheme=1 caller_rect=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-button-32-aware-0",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\core-win2k-button.exe",
+            "O:\\winnt\\ntw2ks32.dll"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=32 aware=0 hooked=0",
+            "ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.2908565999241546,
+          "stdout": "WIN2K_BUTTON_OK bits=32 aware=0 hooked=0 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-button-32-aware-1",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\core-win2k-button.exe",
+            "O:\\winnt\\ntw2ks32.dll",
+            "aware"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=32 aware=1 hooked=0",
+            "ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.2449300999287516,
+          "stdout": "WIN2K_BUTTON_OK bits=32 aware=1 hooked=0 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-button-v6-32-aware-0",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\core-win2k-button-v6.exe",
+            "O:\\winnt\\ntw2ks32.dll"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=32",
+            "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.38311689998954535,
+          "stdout": "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1\r\nWIN2K_BUTTON_OK bits=32 aware=0 hooked=0 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": "V6_LIST native_marker=12 left=00834f17 middle=00000000 dpi=96 visible=0\r\n"
+        },
+        {
+          "name": "win2k-button-v6-32-aware-1",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\core-win2k-button-v6.exe",
+            "O:\\winnt\\ntw2ks32.dll",
+            "aware"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=32",
+            "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.44042140000965446,
+          "stdout": "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1\r\nWIN2K_BUTTON_OK bits=32 aware=1 hooked=0 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": "V6_LIST native_marker=4 left=00f0f0f0 middle=00000000 dpi=144 visible=0\r\n"
+        },
+        {
+          "name": "win2k-button-v6-startup-x32",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\winnt\\run16s.exe",
+            "--2k",
+            "--wait",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\core-win2k-button-v6.exe",
+            "O:\\winnt\\ntw2ks32.dll",
+            "hooked"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=32 aware=0 hooked=1",
+            "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.6351024999748915,
+          "stdout": "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1\r\nWIN2K_BUTTON_OK bits=32 aware=0 hooked=1 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": "V6_LIST native_marker=12 left=00834f17 middle=00000000 dpi=96 visible=0\r\n"
+        },
+        {
+          "name": "win2k-button-startup-x32",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\winnt\\run16s.exe",
+            "--2k",
+            "--wait",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\core-win2k-button.exe",
+            "O:\\winnt\\ntw2ks32.dll",
+            "hooked"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=32 aware=0 hooked=1",
+            "gdi_balanced=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.3595502000534907,
+          "stdout": "WIN2K_BUTTON_OK bits=32 aware=0 hooked=1 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-theme-x32",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-current-desktop-01\\theme-32.exe"
+          ],
+          "markers": [
+            "WIN2K CONTROL THEME bits=32",
+            "foreign=1 rejected=1 apply=1 attached=1 retained=1 wrong_thread=0",
+            "remove=1 released=1 repeat=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.14762679999694228,
+          "stdout": "WIN2K CONTROL THEME bits=32 foreign=1 rejected=1 apply=1 attached=1 retained=1 wrong_thread=0 change=00000000 remove=1 released=1 repeat=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win16-to-win2k-theme-x32",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\winnt\\run16s.exe",
+            "--wait",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-current-desktop-01\\theme-32.exe",
+            "--hooked"
+          ],
+          "markers": [
+            "HOOKED THEME bits=32",
+            "removed=1 tracked=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.27950599999167025,
+          "stdout": "HOOKED THEME bits=32 win16=1 win2k=1 removed=1 tracked=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win16-visibility-x32",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\core-control-visibility.exe",
+            "--private-worker",
+            "O:\\winnt\\ntw16s32.dll"
+          ],
+          "markers": [
+            "CONTROL_VISIBILITY_OK bits=32"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.9733124000485986,
+          "stdout": "CONTROL_VISIBILITY_OK bits=32 cases=16 hidden_parent=1 hidden_child=1 native_redraw=1 detach=1 borrowed_font=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "common-present-x32",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\core-style-present.exe"
+          ],
+          "markers": [
+            "STYLE PRESENT PASS buffered=1 detached=1 retire_before_commit=1 bounded=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.14368300000205636,
+          "stdout": "STYLE PRESENT PASS buffered=1 detached=1 retire_before_commit=1 bounded=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-edge-x32",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\core-win2k-edge.exe"
+          ],
+          "markers": [
+            "WIN2K_EDGE_OK"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.11699979996774346,
+          "stdout": "WIN2K_EDGE_OK original_default_samples=1 normal=1 pressed=1 default_pressed=1 mono_window_slot=1 dc_restored=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "abi-x64",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\core-abi.exe",
+            "O:\\winnt\\ntw16s64.dll"
+          ],
+          "markers": [
+            "ABI PASS width=64"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.09247939998749644,
+          "stdout": "ABI PASS width=64 version=3 public=38 private-bind-exports=0\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-public-button-x64",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\core-ntw2ks-button.exe",
+            "O:\\winnt\\ntw2ks64.dll"
+          ],
+          "markers": [
+            "NTW2KS_BUTTON_OK bits=64 states=5 source_scheme=1 caller_rect=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.14104279992170632,
+          "stdout": "NTW2KS_BUTTON_OK bits=64 states=5 source_scheme=1 caller_rect=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-button-64-aware-0",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\core-win2k-button.exe",
+            "O:\\winnt\\ntw2ks64.dll"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=64 aware=0 hooked=0",
+            "ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.2761388000799343,
+          "stdout": "WIN2K_BUTTON_OK bits=64 aware=0 hooked=0 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-button-64-aware-1",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\core-win2k-button.exe",
+            "O:\\winnt\\ntw2ks64.dll",
+            "aware"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=64 aware=1 hooked=0",
+            "ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.21275780000723898,
+          "stdout": "WIN2K_BUTTON_OK bits=64 aware=1 hooked=0 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-button-v6-64-aware-0",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\core-win2k-button-v6.exe",
+            "O:\\winnt\\ntw2ks64.dll"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=64",
+            "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.33780099998693913,
+          "stdout": "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1\r\nWIN2K_BUTTON_OK bits=64 aware=0 hooked=0 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": "V6_LIST native_marker=12 left=00834f17 middle=00000000 dpi=96 visible=0\r\n"
+        },
+        {
+          "name": "win2k-button-v6-64-aware-1",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\core-win2k-button-v6.exe",
+            "O:\\winnt\\ntw2ks64.dll",
+            "aware"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=64",
+            "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.25199519994203,
+          "stdout": "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1\r\nWIN2K_BUTTON_OK bits=64 aware=1 hooked=0 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": "V6_LIST native_marker=4 left=00f0f0f0 middle=00000000 dpi=144 visible=0\r\n"
+        },
+        {
+          "name": "win2k-button-v6-startup-x64",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\winnt\\run16s.exe",
+            "--2k",
+            "--wait",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\core-win2k-button-v6.exe",
+            "O:\\winnt\\ntw2ks64.dll",
+            "hooked"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=64 aware=0 hooked=1",
+            "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.29281849996186793,
+          "stdout": "WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1\r\nWIN2K_BUTTON_OK bits=64 aware=0 hooked=1 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": "V6_LIST native_marker=12 left=00834f17 middle=00000000 dpi=96 visible=0\r\n"
+        },
+        {
+          "name": "win2k-button-startup-x64",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\winnt\\run16s.exe",
+            "--2k",
+            "--wait",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\core-win2k-button.exe",
+            "O:\\winnt\\ntw2ks64.dll",
+            "hooked"
+          ],
+          "markers": [
+            "WIN2K_BUTTON_OK bits=64 aware=0 hooked=1",
+            "gdi_balanced=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.2526884999824688,
+          "stdout": "WIN2K_BUTTON_OK bits=64 aware=0 hooked=1 original_edge=1 face=1 default=1 pressed=1 disabled=1 font_borrowed=1 native_click=1 bitmap_borrowed=1 pressed_text_offset=1 multiline=1 disabled_emboss=1 focus_cue_messages=1 ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-theme-x64",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-current-desktop-01\\theme-64.exe"
+          ],
+          "markers": [
+            "WIN2K CONTROL THEME bits=64",
+            "foreign=1 rejected=1 apply=1 attached=1 retained=1 wrong_thread=0",
+            "remove=1 released=1 repeat=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.1709187999367714,
+          "stdout": "WIN2K CONTROL THEME bits=64 foreign=1 rejected=1 apply=1 attached=1 retained=1 wrong_thread=0 change=00000000 remove=1 released=1 repeat=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win16-to-win2k-theme-x64",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\winnt\\run16s.exe",
+            "--wait",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-current-desktop-01\\theme-64.exe",
+            "--hooked"
+          ],
+          "markers": [
+            "HOOKED THEME bits=64",
+            "removed=1 tracked=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.15798859996721148,
+          "stdout": "HOOKED THEME bits=64 win16=1 win2k=1 removed=1 tracked=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win16-visibility-x64",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\core-control-visibility.exe",
+            "--private-worker",
+            "O:\\winnt\\ntw16s64.dll"
+          ],
+          "markers": [
+            "CONTROL_VISIBILITY_OK bits=64"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 1.1429673000238836,
+          "stdout": "CONTROL_VISIBILITY_OK bits=64 cases=16 hidden_parent=1 hidden_child=1 native_redraw=1 detach=1 borrowed_font=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "common-present-x64",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\core-style-present.exe"
+          ],
+          "markers": [
+            "STYLE PRESENT PASS buffered=1 detached=1 retire_before_commit=1 bounded=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.16267550003249198,
+          "stdout": "STYLE PRESENT PASS buffered=1 detached=1 retire_before_commit=1 bounded=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-edge-x64",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\core-win2k-edge.exe"
+          ],
+          "markers": [
+            "WIN2K_EDGE_OK"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.1361671999329701,
+          "stdout": "WIN2K_EDGE_OK original_default_samples=1 normal=1 pressed=1 default_pressed=1 mono_window_slot=1 dc_restored=1\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-staging-x86-x86",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging.exe",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+            "O:\\winnt"
+          ],
+          "markers": [
+            "NTW2KS STAGING PASS selected=win2k win16_absent=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.22430000000167638,
+          "stdout": "NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=0\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-staging-x86-x64",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging.exe",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+            "O:\\winnt"
+          ],
+          "markers": [
+            "NTW2KS STAGING PASS selected=win2k win16_absent=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.45982220000587404,
+          "stdout": "NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=0\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-staging-x64-x86",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging.exe",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\ntw2ks-staging-target.exe",
+            "O:\\winnt"
+          ],
+          "markers": [
+            "NTW2KS STAGING PASS selected=win2k win16_absent=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.28125,
+          "stdout": "NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=0\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "win2k-staging-x64-x64",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging.exe",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\ntw2ks-staging-target.exe",
+            "O:\\winnt"
+          ],
+          "markers": [
+            "NTW2KS STAGING PASS selected=win2k win16_absent=1"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 0.1330415999982506,
+          "stdout": "NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=0\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "automatic",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\launch-automatic.exe",
+            "--private-worker",
+            "O:\\winnt\\run16s.exe",
+            "O:\\winnt\\ntw16s32.dll",
+            "O:\\winnt\\ntw16s64.dll",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\launch-target.exe",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\launch-target.exe"
+          ],
+          "markers": [
+            "LAUNCH MATRIX PASS"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 2.2069745999760926,
+          "stdout": "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "propagation",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\propagate-basic.exe",
+            "--private-worker",
+            "O:\\winnt\\run16s.exe",
+            "O:\\winnt\\ntw16s32.dll",
+            "O:\\winnt\\ntw16s64.dll",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x86\\propagate-target.exe",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\propagate-target.exe"
+          ],
+          "markers": [
+            "PROPAGATION BASIC PASS"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 6.587247799965553,
+          "stdout": "TREE PASS root=32 child=32 grandchild=64 A/W=0 suspended=0 generations=3\r\nTREE PASS root=32 child=32 grandchild=64 A/W=1 suspended=1 generations=3\r\nTREE PASS root=32 child=64 grandchild=64 A/W=0 suspended=1 generations=3\r\nTREE PASS root=32 child=64 grandchild=64 A/W=1 suspended=0 generations=3\r\nTREE PASS root=64 child=32 grandchild=32 A/W=0 suspended=1 generations=3\r\nTREE PASS root=64 child=32 grandchild=32 A/W=1 suspended=0 generations=3\r\nTREE PASS root=64 child=64 grandchild=32 A/W=0 suspended=0 generations=3\r\nTREE PASS root=64 child=64 grandchild=32 A/W=1 suspended=1 generations=3\r\nPROPAGATION BASIC PASS four edges, both A/W, three generations, caller suspension, actual windows/font and lineage\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        },
+        {
+          "name": "demo-pair",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\dialog-test-driver.exe",
+            "--direct",
+            "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-03\\clean-source\\build\\.ninja\\x64\\demo-observe.exe",
+            "--private-worker",
+            "O:\\winnt\\run16s.exe",
+            "O:\\winnt\\ntw16s64.dll",
+            "O:\\winnt\\ntw16s32.dll",
+            "O:\\winnt\\demo.exe"
+          ],
+          "markers": [
+            "DEMO PAIR PASS"
+          ],
+          "seconds": 45,
+          "exit_code": 0,
+          "missing_markers": [],
+          "passed": true,
+          "seconds_actual": 29.88079750002362,
+          "stdout": "DEMO INTERACTION PASS styled=0 posted Tab=7 focus verified via GUI thread; dpi=144 scrollbar thickness=26\r\nDEMO DIALOG EVENT class=#32770 title=About Win16 Style Demo\r\nDEMO ABOUT/MOVE PASS styled=0 modal dialog opened/closed and exact window displacement\r\nDEMO CATALOG PAGE PASS styled=0 page=0 gdi=52\r\nDEMO CATALOG PAGE PASS styled=0 page=1 gdi=54\r\nDEMO CATALOG PAGE PASS styled=0 page=2 gdi=54\r\nDEMO CATALOG PAGE PASS styled=0 page=3 gdi=54\r\nDEMO CATALOG PAGE PASS styled=0 page=4 gdi=56\r\nDEMO CATALOG PAGE PASS styled=0 page=5 gdi=59\r\nDEMO DIALOG EVENT class=Win16StyleDemoCatalog title=Text and special objects\r\nDEMO PROPERTY CLOSE styled=0 wait=0 exists=0 current=0000000000000000 visible=0\r\nDEMO CATALOG PAGE PASS styled=0 page=6 gdi=73\r\nDEMO CATALOG PAGE PASS styled=0 page=7 gdi=73\r\nDEMO DIALOG ENTRIES PASS open=3 save=3 folder=4\r\nDEMO EXTRA ENTRIES PASS 7\r\nDEMO DIALOG LAYOUT PASS 27 visible nonoverlapping buttons\r\nDEMO CATALOG PAGE PASS styled=0 page=8 gdi=73\r\nDEMO CATALOG RESOURCE SAMPLE styled=0 warm=73 settled=73 final=73\r\nDEMO CATALOG PASS styled=0 pages=9 reopen=2 resources_stable=1 initial=37 final=73\r\nDEMO OBSERVE PASS styled=0 same image, six classes, data/notifications/menu/window commands, text advance=41 caption pixels=0\r\nDEMO INTERACTION PASS styled=1 posted Tab=7 focus verified via GUI thread; dpi=144 scrollbar thickness=26\r\nDEMO CAPTURE PASS styled=1 scrollbar arrow press/release position=29\r\nDEMO DIALOG EVENT class=#32770 title=About Win16 Style Demo\r\nDEMO ABOUT/MOVE PASS styled=1 modal dialog opened/closed and exact window displacement\r\nDEMO CATALOG PAGE PASS styled=1 page=0 gdi=31\r\nDEMO CATALOG PAGE PASS styled=1 page=1 gdi=33\r\nDEMO CATALOG PAGE PASS styled=1 page=2 gdi=33\r\nDEMO CATALOG PAGE PASS styled=1 page=3 gdi=33\r\nDEMO CATALOG PAGE PASS styled=1 page=4 gdi=37\r\nDEMO CATALOG PAGE PASS styled=1 page=5 gdi=40\r\nDEMO DIALOG EVENT class=Win16StyleDemoCatalog title=Text and special objects\r\nDEMO PROPERTY CLOSE styled=1 wait=0 exists=0 current=0000000000000000 visible=0\r\nDEMO CATALOG PAGE PASS styled=1 page=6 gdi=54\r\nDEMO CATALOG PAGE PASS styled=1 page=7 gdi=56\r\nDEMO DIALOG ENTRIES PASS open=3 save=3 folder=4\r\nDEMO EXTRA ENTRIES PASS 7\r\nDEMO DIALOG LAYOUT PASS 27 visible nonoverlapping buttons\r\nDEMO EXTRA DIALOG id=2920 modern=0 tree=1\r\nDEMO EXTRA DIALOG id=2921 modern=0 tree=0\r\nDEMO EXTRA DIALOG id=2922 modern=1 tree=1\r\nDEMO EXTRA DIALOG id=2924 modern=0 tree=0\r\nDEMO EXTRA DIALOG id=2925 modern=0 tree=0\r\nDEMO EXTRA DIALOG id=2926 modern=1 tree=1\r\nDEMO EXTRA DIALOG id=2927 modern=0 tree=0\r\nDEMO EXTRA DIALOG PASS opened=7 cancelled=7 shell_tree=1\r\nDEMO DIALOG PATH id=2901 modern=0 legacy_list=1\r\nDEMO DIALOG PATH id=2902 modern=0 legacy_list=1\r\nDEMO DIALOG PATH id=2903 modern=1 legacy_list=1\r\nDEMO DIALOG PATH id=2904 modern=0 legacy_list=1\r\nDEMO DIALOG PATH id=2905 modern=0 legacy_list=1\r\nDEMO DIALOG PATH id=2906 modern=1 legacy_list=1\r\nDEMO DIALOG PATH id=2907 modern=0 legacy_list=0\r\nDEMO DIALOG PATH id=2908 modern=0 legacy_list=0\r\nDEMO DIALOG PATH id=2909 modern=1 legacy_list=1\r\nDEMO DIALOG PATHS PASS opened=9 cancelled=9\r\nDEMO DIALOG SELECT PASS legacy=1 bridge=1 save=1 cleanup=1\r\nDEMO FOLDER TREE SELECT PASS filesystem=1\r\nDEMO CATALOG PAGE PASS styled=1 page=8 gdi=139\r\nDEMO CATALOG RESOURCE SAMPLE styled=1 warm=139 settled=139 final=139\r\nDEMO CATALOG PASS styled=1 pages=9 reopen=2 resources_stable=1 initial=27 final=139\r\nDEMO OBSERVE PASS styled=1 same image, six classes, data/notifications/menu/window commands, text advance=41 caption pixels=25872\r\nDEMO PAIR PASS external module/appearance/business observations on private desktop; physical input not claimed\r\nDIALOG_DRIVER exit=0\r\n",
+          "stderr": ""
+        }
+      ],
+      "full_integration": false
+    },
+    "product_sha256": {
+      "demo.exe": "886731c5c479e551737f57129694838de97c69e37ddbd24e4af4868d00e3fd33",
+      "ntw16s32.dll": "a933b07ac6bbe945887d60596d36f1f13ae10e77858a673c9472d5f530a7b227",
+      "ntw16s64.dll": "69352f7c066298d4ebb617ec5b14f0db52e99bd7d1a9535c31e06e82095f3772",
+      "ntw2ks32.dll": "0f47faff06e86a9b21b2002236dd47d8dfa43b9dfe9d2e8e17f9a2dc219e8896",
+      "ntw2ks64.dll": "895327ec0332a36961a9ed51a1d26f30ab03dab99c49c8e48a4ec3915e49a9e3",
+      "ntwshk32.dll": "05bd2c2de8fe6db81a7c6073623c9ce7307b1c42d6909758d45078acac0b0b94",
+      "ntwshk64.dll": "608f2adb4b0ae7f5797012b3136e6bef4c975ca230836b4d8c67546eb41fe1b7",
+      "run16s.exe": "e62efc1c8bb5958b27a130ce97d2860cc8d7eba61a165f110b34ed7de1b1c818"
+    },
+    "assets_and_winnt_hashes": "all eight match candidate after testing"
+  },
+  "first_clean_build": {
+    "status": {
+      "physical_acceptance": "pending",
+      "status": "passed",
+      "full_matrix": "pending",
+      "clean_source": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-01\\clean-source",
+      "candidate": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-01\\candidate",
+      "exit_code": 0
+    },
+    "snapshot_sha256": "bbf4685fd1661fa46fdd953fd5db5d3baad2f416d888591dbdb809b062694172",
+    "source_unchanged_until_snapshot_copy": true,
+    "not_published": "Follow-up original-scheme export test/actual startup observation and allocation error contract merged for final release-02",
+    "build": {
+      "x86": {
+        "build-time.json": "{\"seconds\": 271.91490740003064, \"exit_code\": 0}\n",
+        "configure-time.json": "{\"seconds\": 10.997760799946263, \"exit_code\": 0}\n",
+        "cache-before.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28516\ncache_size_kibibyte\t600448\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t720998\ndirect_cache_miss\t35467\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49738\ninternal_error\t8\nlocal_storage_hit\t727445\nlocal_storage_miss\t28516\nlocal_storage_read_hit\t1460263\nlocal_storage_read_miss\t52623\nlocal_storage_write\t63468\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t28972\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794936204\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+        "cache-after.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28519\ncache_size_kibibyte\t600504\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t721905\ndirect_cache_miss\t35470\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49741\ninternal_error\t8\nlocal_storage_hit\t728352\nlocal_storage_miss\t28519\nlocal_storage_read_hit\t1462080\nlocal_storage_read_miss\t52626\nlocal_storage_write\t63474\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t28975\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794936529\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+        "log_sha256": "922f87b66ac7be851f3466d67e2b8896e268c9653b9cb988de85a6e03ce66b99",
+        "log_tail": [
+          "Use --disable-stdcall-fixup to disable these fixups",
+          "[1536/1538] Linking C executable shared-tests\\process-hook\\portable\\late_batch.exe",
+          "[1537/1538] Linking C executable shared-tests\\process-hook\\portable\\unwind.exe",
+          "[1538/1538] Linking C executable shared-tests\\process-hook\\portable\\propagate.exe",
+          "Test project O:/repos.hobby/win16style/build/t27-package/s2-buttons-release-01/clean-source/build/.ninja/x86",
+          "    Start 208: core/abi",
+          "1/1 Test #208: core/abi .........................   Passed    0.34 sec",
+          "",
+          "100% tests passed, 0 tests failed out of 1",
+          "",
+          "Label Time Summary:",
+          "quick    =   0.34 sec*proc (1 test)",
+          "",
+          "Total Test time (real) =   0.40 sec",
+          "{\"status\": \"PE PASS\", \"architecture\": \"x86\", \"public_exports\": 38, \"ordinals\": \"1 NONAME helper; 2..32 core; 33 modern dialog; 34 global hook; 35 global host; 36 window attach; 37 global thread; 38 UWP frame hook; 39 window thread hook\", \"imports\": [\"ADVAPI32.dll\", \"COMCTL32.dll\", \"COMDLG32.DLL\", \"dwmapi.dll\", \"GDI32.dll\", \"KERNEL32.dll\", \"api-ms-win-crt-convert-l1-1-0.dll\", \"api-ms-win-crt-heap-l1-1-0.dll\", \"api-ms-win-crt-private-l1-1-0.dll\", \"api-ms-win-crt-runtime-l1-1-0.dll\", \"api-ms-win-crt-stdio-l1-1-0.dll\", \"api-ms-win-crt-string-l1-1-0.dll\", \"ole32.dll\", \"OLEAUT32.dll\", \"SHELL32.dll\", \"USER32.dll\", \"UxTheme.dll\", \"ntwshk32.dll\", \"COMCTL32.dll\"], \"sha256\": \"a795f06b43cd783253ab1039930784044d3b618dbf3f6a77593c66346484d372\"}"
+        ]
+      },
+      "x64": {
+        "build-time.json": "{\"seconds\": 310.17207620001864, \"exit_code\": 0}\n",
+        "configure-time.json": "{\"seconds\": 10.762483500060625, \"exit_code\": 0}\n",
+        "cache-before.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28519\ncache_size_kibibyte\t600504\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t721905\ndirect_cache_miss\t35470\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49741\ninternal_error\t8\nlocal_storage_hit\t728352\nlocal_storage_miss\t28519\nlocal_storage_read_hit\t1462080\nlocal_storage_read_miss\t52626\nlocal_storage_write\t63474\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t28975\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794936529\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+        "cache-after.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28523\ncache_size_kibibyte\t600580\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t722899\ndirect_cache_miss\t35474\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49746\ninternal_error\t8\nlocal_storage_hit\t729346\nlocal_storage_miss\t28523\nlocal_storage_read_hit\t1464071\nlocal_storage_read_miss\t52631\nlocal_storage_write\t63482\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t28979\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794936828\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+        "log_sha256": "bbb181cc41775b7676935da9fa20b45f7e167e43a61f7b0f7c88dfcedf3123e6",
+        "log_tail": [
+          "[1656/1659] Linking C executable shared-tests\\shared-cross-payload.exe",
+          "[1657/1659] Linking C executable shared-tests\\process-hook\\portable\\late_batch.exe",
+          "[1658/1659] Linking C executable shared-tests\\process-hook\\portable\\unwind.exe",
+          "[1659/1659] Linking C executable shared-tests\\process-hook\\portable\\propagate.exe",
+          "Test project O:/repos.hobby/win16style/build/t27-package/s2-buttons-release-01/clean-source/build/.ninja/x64",
+          "    Start 232: core/abi",
+          "1/1 Test #232: core/abi .........................   Passed    0.38 sec",
+          "",
+          "100% tests passed, 0 tests failed out of 1",
+          "",
+          "Label Time Summary:",
+          "quick    =   0.38 sec*proc (1 test)",
+          "",
+          "Total Test time (real) =   0.45 sec",
+          "{\"status\": \"PE PASS\", \"architecture\": \"x64\", \"public_exports\": 38, \"ordinals\": \"1 NONAME helper; 2..32 core; 33 modern dialog; 34 global hook; 35 global host; 36 window attach; 37 global thread; 38 UWP frame hook; 39 window thread hook\", \"imports\": [\"ADVAPI32.dll\", \"COMCTL32.dll\", \"comdlg32.dll\", \"dwmapi.dll\", \"GDI32.dll\", \"KERNEL32.dll\", \"msvcrt.dll\", \"ole32.dll\", \"OLEAUT32.dll\", \"SHELL32.dll\", \"USER32.dll\", \"UxTheme.dll\", \"ntwshk64.dll\", \"COMCTL32.dll\"], \"sha256\": \"08acfe7e71a3863f0649a78602f1399835231ebc3a4192f93d59969b54ed67e6\"}"
+        ]
+      }
+    },
+    "toolchains": {
+      "toolchains": [
+        {
+          "version": "16.1.0",
+          "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+          "target": "i686-w64-mingw32",
+          "architecture": "x86",
+          "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6"
+        },
+        {
+          "version": "16.1.0",
+          "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+          "target": "x86_64-w64-mingw32",
+          "architecture": "x64",
+          "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad"
+        }
+      ],
+      "ccache_version": "ccache version 4.13.6",
+      "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+      "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
+    },
+    "candidate_sha256": {
+      "demo.exe": "2f90efca274991fa32a6c27bcf904dd9631e80f7cbd2317e5c4181b9a84c47dc",
+      "ntw16s32.dll": "a795f06b43cd783253ab1039930784044d3b618dbf3f6a77593c66346484d372",
+      "ntw16s64.dll": "08acfe7e71a3863f0649a78602f1399835231ebc3a4192f93d59969b54ed67e6",
+      "ntw2ks32.dll": "7636990614cd4a773ff553578b86fa3b6be898b9e1ce4e8e26ac3f6cbf15d78e",
+      "ntw2ks64.dll": "c9b29fdae9a989b619d27afdda2f44901deca5c84fce337f83c4742b568babad",
+      "ntwshk32.dll": "5279bfae9ea136b5a4975a2335284cf13e4a7bd5ed24742562b55cbe20e3a505",
+      "ntwshk64.dll": "9b67219f30b0cacdf55d6fb3e1777c1df69017ad6e8b52946d33450099451588",
+      "run16s.exe": "6516537a2773019eab6333fac41e0b15844edf407720b9ea279862c2d6b7b34f"
+    }
+  },
+  "development_scratch_cleanup": {
+    "paths": [
+      "s2-buttons-dev-01",
+      "s2-buttons-dev-02",
+      "s2-buttons-dev-03",
+      "s2-buttons-dev-04"
+    ],
+    "bytes_removed": 60450,
+    "ninja_cache": "retained"
+  },
+  "additional_development": {
+    "public_primitive": "Both widths NTW2KS_BUTTON_OK states=5 source_scheme=1 caller_rect=1",
+    "startup_x64": "WIN2K_BUTTON_OK bits=64 aware=0 hooked=1; full rendering/64 ANSI lifecycle tests passed; DIALOG_DRIVER exit=0",
+    "startup_x86_from_split_dev_tree": "failed exit6 installation error2: x64 build directory has no ntw2ks32/ntwshk32 sibling files; not a complete package, not counted as pass; final unified eight-file package will verify cross-width path",
+    "first_clean_scratch_cleanup_bytes": 320789021
+  },
+  "second_clean_build": {
+    "result": {
+      "candidate": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-02\\candidate",
+      "exit_code": 0,
+      "physical_acceptance": "pending",
+      "full_matrix": "pending",
+      "status": "passed",
+      "clean_source": "O:\\repos.hobby\\win16style\\build\\t27-package\\s2-buttons-release-02\\clean-source"
+    },
+    "snapshot_sha256": "0c05d5a81cbafc20221a31228ebac23e69639d8216a2394c9a065288873498a7",
+    "not_published": "Modern ImageList preservation branch and v6 fixture added after this snapshot; final release-03 includes them",
+    "architecture": {
+      "x86": {
+        "build-time.json": "{\"seconds\": 262.1523151000729, \"exit_code\": 0}\n",
+        "configure-time.json": "{\"seconds\": 12.008245600038208, \"exit_code\": 0}\n",
+        "cache-before.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28529\ncache_size_kibibyte\t600688\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t722899\ndirect_cache_miss\t35480\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49758\ninternal_error\t8\nlocal_storage_hit\t729346\nlocal_storage_miss\t28529\nlocal_storage_read_hit\t1464071\nlocal_storage_read_miss\t52643\nlocal_storage_write\t63494\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t28985\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794937106\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+        "cache-after.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28532\ncache_size_kibibyte\t600740\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t723806\ndirect_cache_miss\t35483\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49761\ninternal_error\t8\nlocal_storage_hit\t730253\nlocal_storage_miss\t28532\nlocal_storage_read_hit\t1465888\nlocal_storage_read_miss\t52646\nlocal_storage_write\t63500\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t28988\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794937359\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+        "log_sha256": "5099425a1801d3a6a7f18b7aeef39846bec3174f466c4c5f16837e83ff133b39"
+      },
+      "x64": {
+        "build-time.json": "{\"seconds\": 307.05432169989217, \"exit_code\": 0}\n",
+        "configure-time.json": "{\"seconds\": 13.357060700072907, \"exit_code\": 0}\n",
+        "cache-before.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28532\ncache_size_kibibyte\t600740\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t723806\ndirect_cache_miss\t35483\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49761\ninternal_error\t8\nlocal_storage_hit\t730253\nlocal_storage_miss\t28532\nlocal_storage_read_hit\t1465888\nlocal_storage_read_miss\t52646\nlocal_storage_write\t63500\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t28988\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794937359\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+        "cache-after.txt": "autoconf_test\t0\nbad_compiler_arguments\t0\nbad_input_file\t0\nbad_output_file\t8\ncache_miss\t28546\ncache_size_kibibyte\t601016\ncalled_for_link\t42\ncalled_for_preprocessing\t0\ncleanups_performed\t0\ncompile_failed\t441\ncompiler_check_failed\t0\ncompiler_produced_empty_output\t0\ncompiler_produced_no_output\t0\ncompiler_produced_stdout\t0\ncould_not_find_compiler\t0\ncould_not_use_modules\t0\ncould_not_use_precompiled_header\t0\ndirect_cache_hit\t724801\ndirect_cache_miss\t35497\ndisabled\t0\nerror_hashing_extra_file\t0\nfiles_in_cache\t49786\ninternal_error\t8\nlocal_storage_hit\t731248\nlocal_storage_miss\t28546\nlocal_storage_read_hit\t1467881\nlocal_storage_read_miss\t52671\nlocal_storage_write\t63528\nmax_cache_size_kibibyte\t5242880\nmax_files_in_cache\t0\nmissing_cache_file\t0\nmodified_input_file\t4\nmultiple_source_files\t0\nno_input_file\t0\noutput_to_stdout\t0\npreprocessed_cache_hit\t6434\npreprocessed_cache_miss\t29002\npreprocessor_error\t61\nrecache\t0\nremote_storage_error\t0\nremote_storage_hit\t0\nremote_storage_miss\t0\nremote_storage_read_hit\t0\nremote_storage_read_miss\t0\nremote_storage_timeout\t0\nremote_storage_write\t0\nstats_updated_timestamp\t1794937727\nstats_zeroed_timestamp\t0\nunsupported_code_directive\t0\nunsupported_compiler_option\t0\nunsupported_environment_variable\t0\nunsupported_source_encoding\t0\nunsupported_source_language\t0\n",
+        "log_sha256": "305ba9f80a101c8151cc9c0df0205d0d3b872bfbe824cbe55e36ebb585ee2958"
+      }
+    },
+    "candidate_sha256": {
+      "demo.exe": "dc5a9e6c8ab0c43193f3d9f054dee920e5d3f6e1ef8611d078c21d81400084bf",
+      "ntw16s32.dll": "9facdb5b6f91d41704ad96aef99d71ddd0a77c4130ee6afdf028ebc5fbd6f52d",
+      "ntw16s64.dll": "fe343a89dd2da9f122b9410341801ec923a83d57a25b3745fabcca18d885080b",
+      "ntw2ks32.dll": "6f24a95f9b117b59974ddc9f40f48046fcf87709d415db657812a9965a818647",
+      "ntw2ks64.dll": "fd7b319a7df48aa40bd34b1080aceed56f864005091e0da1514ce83c128dc1d4",
+      "ntwshk32.dll": "f2b70740c05b8915296e576df7b621a81e0de84e8326e1e26402552f1a139237",
+      "ntwshk64.dll": "d0834263a012f55824cb53a55ba691c86781fb345d709198b9521ff67b98c9d4",
+      "run16s.exe": "9c8afdef5818fda55f5f26e05b9463542252865f7111dc5c36198e9de4447306"
+    }
+  },
+  "final_focused_development": {
+    "result.json": "{\n  \"tests\": [\n    {\n      \"test_seconds\": 1.7868843999458477,\n      \"passed\": 7,\n      \"skipped\": [],\n      \"configure_seconds\": 4.56807789998129,\n      \"tests\": 7,\n      \"architecture\": \"x86\",\n      \"build_seconds\": 4.634958700044081\n    },\n    {\n      \"test_seconds\": 2.800399300060235,\n      \"passed\": 7,\n      \"skipped\": [],\n      \"configure_seconds\": 4.712380399927497,\n      \"tests\": 7,\n      \"architecture\": \"x64\",\n      \"build_seconds\": 5.798156699980609\n    }\n  ],\n  \"targets\": \"core-win2k-edge,core-win2k-button,core-win2k-button-v6,core-ntw2ks-button,core-ntw2ks-control-theme\",\n  \"status\": \"passed\",\n  \"selection\": \"^(core/win2k-edge|core/win2k-button|core/win2k-button-aware|core/win2k-button-v6|core/win2k-button-v6-aware|core/ntw2ks-button|core/ntw2ks-control-theme)$\",\n  \"build_jobs\": 8,\n  \"exit_code\": 0,\n  \"build_root\": \"O:\\\\repos.hobby\\\\win16style\\\\build\\\\.ninja\",\n  \"architectures\": [\n    \"x86\",\n    \"x64\"\n  ],\n  \"profile\": \"Focused\",\n  \"test_jobs\": 4\n}\n",
+    "run.err": "",
+    "run.log": "-- Configuring done (0.7s)\n-- Generating done (3.3s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x86\n[1/5] Linking C executable core-win2k-edge.exe\n[2/5] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[3/5] Building C object CMakeFiles/core-win2k-button-v6.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[4/5] Linking C executable core-win2k-button.exe\n[5/5] Linking C executable core-win2k-button-v6.exe\nTest project O:/repos.hobby/win16style/build/.ninja/x86\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n    Start 14: core/ntw2ks-control-theme\n    Start 15: core/win2k-edge\n1/7 Test #15: core/win2k-edge ..................   Passed    0.12 sec\n    Start 36: core/ntw2ks-button\n2/7 Test #14: core/ntw2ks-control-theme ........   Passed    0.18 sec\n    Start 18: core/win2k-button-v6\n3/7 Test #36: core/ntw2ks-button ...............   Passed    0.11 sec\n    Start 19: core/win2k-button-v6-aware\n4/7 Test #16: core/win2k-button ................   Passed    0.76 sec\n5/7 Test #17: core/win2k-button-aware ..........   Passed    1.03 sec\n6/7 Test #18: core/win2k-button-v6 .............   Passed    1.27 sec\n7/7 Test #19: core/win2k-button-v6-aware .......   Passed    1.19 sec\n\n100% tests passed, 0 tests failed out of 7\n\nLabel Time Summary:\nintegration    =   4.67 sec*proc (7 tests)\n\nTotal Test time (real) =   1.64 sec\n{\"status\": \"PE PASS\", \"architecture\": \"x86\", \"public_exports\": 38, \"ordinals\": \"1 NONAME helper; 2..32 core; 33 modern dialog; 34 global hook; 35 global host; 36 window attach; 37 global thread; 38 UWP frame hook; 39 window thread hook\", \"imports\": [\"ADVAPI32.dll\", \"COMCTL32.dll\", \"COMDLG32.DLL\", \"dwmapi.dll\", \"GDI32.dll\", \"KERNEL32.dll\", \"api-ms-win-crt-convert-l1-1-0.dll\", \"api-ms-win-crt-heap-l1-1-0.dll\", \"api-ms-win-crt-private-l1-1-0.dll\", \"api-ms-win-crt-runtime-l1-1-0.dll\", \"api-ms-win-crt-stdio-l1-1-0.dll\", \"api-ms-win-crt-string-l1-1-0.dll\", \"ole32.dll\", \"OLEAUT32.dll\", \"SHELL32.dll\", \"USER32.dll\", \"UxTheme.dll\", \"ntwshk32.dll\", \"COMCTL32.dll\"], \"sha256\": \"f4aa9f98da6d81fb1531841c773fc493600230a67f7817d56be89a484cf03e31\"}\n-- Configuring done (0.7s)\n-- Generating done (3.6s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x64\n[1/6] Linking C shared library ntwshk64.dll\n[2/6] Linking C executable core-win2k-edge.exe\n[3/6] Linking C shared library ntw2ks64.dll\n[4/6] Linking C shared library ntw16s64.dll\n[5/6] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[6/6] Linking C executable core-win2k-button.exe\nTest project O:/repos.hobby/win16style/build/.ninja/x64\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n    Start 15: core/win2k-edge\n    Start 14: core/ntw2ks-control-theme\n1/7 Test #15: core/win2k-edge ..................   Passed    0.14 sec\n    Start 36: core/ntw2ks-button\n2/7 Test #14: core/ntw2ks-control-theme ........   Passed    0.09 sec\n    Start 18: core/win2k-button-v6\n3/7 Test #36: core/ntw2ks-button ...............   Passed    0.08 sec\n    Start 19: core/win2k-button-v6-aware\n4/7 Test #16: core/win2k-button ................   Passed    1.23 sec\n5/7 Test #17: core/win2k-button-aware ..........   Passed    1.70 sec\n6/7 Test #19: core/win2k-button-v6-aware .......   Passed    2.10 sec\n7/7 Test #18: core/win2k-button-v6 .............   Passed    2.12 sec\n\n100% tests passed, 0 tests failed out of 7\n\nLabel Time Summary:\nintegration    =   7.46 sec*proc (7 tests)\n\nTotal Test time (real) =   2.52 sec\n{\"status\": \"PE PASS\", \"architecture\": \"x64\", \"public_exports\": 38, \"ordinals\": \"1 NONAME helper; 2..32 core; 33 modern dialog; 34 global hook; 35 global host; 36 window attach; 37 global thread; 38 UWP frame hook; 39 window thread hook\", \"imports\": [\"ADVAPI32.dll\", \"COMCTL32.dll\", \"comdlg32.dll\", \"dwmapi.dll\", \"GDI32.dll\", \"KERNEL32.dll\", \"msvcrt.dll\", \"ole32.dll\", \"OLEAUT32.dll\", \"SHELL32.dll\", \"USER32.dll\", \"UxTheme.dll\", \"ntwshk64.dll\", \"COMCTL32.dll\"], \"sha256\": \"fde03cd84c86ca2094f95fc647c9c63f10e485812063fca6682001139c1f8283\"}\n",
+    "toolchains.json": "{\n  \"ccache_version\": \"ccache version 4.13.6\",\n  \"ccache\": \"C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe\",\n  \"toolchains\": [\n    {\n      \"compiler\": \"C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe\",\n      \"architecture\": \"x86\",\n      \"version\": \"16.1.0\",\n      \"target\": \"i686-w64-mingw32\",\n      \"compiler_sha256\": \"d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6\"\n    },\n    {\n      \"compiler\": \"C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe\",\n      \"architecture\": \"x64\",\n      \"version\": \"16.1.0\",\n      \"target\": \"x86_64-w64-mingw32\",\n      \"compiler_sha256\": \"7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad\"\n    }\n  ],\n  \"ninja\": \"C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe\"\n}\n",
+    "x64/build-time.json": "{\"seconds\": 5.798156699980609, \"exit_code\": 0}\n",
+    "x64/configure-time.json": "{\"seconds\": 4.712380399927497, \"exit_code\": 0}\n",
+    "x64/process.json": "{\n  \"architecture\": \"x64\",\n  \"pid\": 19628,\n  \"timeout_seconds\": 180\n}\n",
+    "x64/run.err": "",
+    "x64/run.log": "-- Configuring done (0.7s)\n-- Generating done (3.6s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x64\n[1/6] Linking C shared library ntwshk64.dll\n[2/6] Linking C executable core-win2k-edge.exe\n[3/6] Linking C shared library ntw2ks64.dll\n[4/6] Linking C shared library ntw16s64.dll\n[5/6] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[6/6] Linking C executable core-win2k-button.exe\nTest project O:/repos.hobby/win16style/build/.ninja/x64\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n    Start 15: core/win2k-edge\n    Start 14: core/ntw2ks-control-theme\n1/7 Test #15: core/win2k-edge ..................   Passed    0.14 sec\n    Start 36: core/ntw2ks-button\n2/7 Test #14: core/ntw2ks-control-theme ........   Passed    0.09 sec\n    Start 18: core/win2k-button-v6\n3/7 Test #36: core/ntw2ks-button ...............   Passed    0.08 sec\n    Start 19: core/win2k-button-v6-aware\n4/7 Test #16: core/win2k-button ................   Passed    1.23 sec\n5/7 Test #17: core/win2k-button-aware ..........   Passed    1.70 sec\n6/7 Test #19: core/win2k-button-v6-aware .......   Passed    2.10 sec\n7/7 Test #18: core/win2k-button-v6 .............   Passed    2.12 sec\n\n100% tests passed, 0 tests failed out of 7\n\nLabel Time Summary:\nintegration    =   7.46 sec*proc (7 tests)\n\nTotal Test time (real) =   2.52 sec\n{\"status\": \"PE PASS\", \"architecture\": \"x64\", \"public_exports\": 38, \"ordinals\": \"1 NONAME helper; 2..32 core; 33 modern dialog; 34 global hook; 35 global host; 36 window attach; 37 global thread; 38 UWP frame hook; 39 window thread hook\", \"imports\": [\"ADVAPI32.dll\", \"COMCTL32.dll\", \"comdlg32.dll\", \"dwmapi.dll\", \"GDI32.dll\", \"KERNEL32.dll\", \"msvcrt.dll\", \"ole32.dll\", \"OLEAUT32.dll\", \"SHELL32.dll\", \"USER32.dll\", \"UxTheme.dll\", \"ntwshk64.dll\", \"COMCTL32.dll\"], \"sha256\": \"fde03cd84c86ca2094f95fc647c9c63f10e485812063fca6682001139c1f8283\"}\n",
+    "x64/test-time.json": "{\"seconds\": 2.800399300060235, \"exit_code\": 0}\n",
+    "x86/build-time.json": "{\"seconds\": 4.634958700044081, \"exit_code\": 0}\n",
+    "x86/configure-time.json": "{\"seconds\": 4.56807789998129, \"exit_code\": 0}\n",
+    "x86/process.json": "{\n  \"architecture\": \"x86\",\n  \"pid\": 9564,\n  \"timeout_seconds\": 180\n}\n",
+    "x86/run.err": "",
+    "x86/run.log": "-- Configuring done (0.7s)\n-- Generating done (3.3s)\n-- Build files have been written to: O:/repos.hobby/win16style/build/.ninja/x86\n[1/5] Linking C executable core-win2k-edge.exe\n[2/5] Building C object CMakeFiles/core-win2k-button.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[3/5] Building C object CMakeFiles/core-win2k-button-v6.dir/tests/lib-win32-style/appearance/win2000/control/button_paint.c.obj\n[4/5] Linking C executable core-win2k-button.exe\n[5/5] Linking C executable core-win2k-button-v6.exe\nTest project O:/repos.hobby/win16style/build/.ninja/x86\n    Start 16: core/win2k-button\n    Start 17: core/win2k-button-aware\n    Start 14: core/ntw2ks-control-theme\n    Start 15: core/win2k-edge\n1/7 Test #15: core/win2k-edge ..................   Passed    0.12 sec\n    Start 36: core/ntw2ks-button\n2/7 Test #14: core/ntw2ks-control-theme ........   Passed    0.18 sec\n    Start 18: core/win2k-button-v6\n3/7 Test #36: core/ntw2ks-button ...............   Passed    0.11 sec\n    Start 19: core/win2k-button-v6-aware\n4/7 Test #16: core/win2k-button ................   Passed    0.76 sec\n5/7 Test #17: core/win2k-button-aware ..........   Passed    1.03 sec\n6/7 Test #18: core/win2k-button-v6 .............   Passed    1.27 sec\n7/7 Test #19: core/win2k-button-v6-aware .......   Passed    1.19 sec\n\n100% tests passed, 0 tests failed out of 7\n\nLabel Time Summary:\nintegration    =   4.67 sec*proc (7 tests)\n\nTotal Test time (real) =   1.64 sec\n{\"status\": \"PE PASS\", \"architecture\": \"x86\", \"public_exports\": 38, \"ordinals\": \"1 NONAME helper; 2..32 core; 33 modern dialog; 34 global hook; 35 global host; 36 window attach; 37 global thread; 38 UWP frame hook; 39 window thread hook\", \"imports\": [\"ADVAPI32.dll\", \"COMCTL32.dll\", \"COMDLG32.DLL\", \"dwmapi.dll\", \"GDI32.dll\", \"KERNEL32.dll\", \"api-ms-win-crt-convert-l1-1-0.dll\", \"api-ms-win-crt-heap-l1-1-0.dll\", \"api-ms-win-crt-private-l1-1-0.dll\", \"api-ms-win-crt-runtime-l1-1-0.dll\", \"api-ms-win-crt-stdio-l1-1-0.dll\", \"api-ms-win-crt-string-l1-1-0.dll\", \"ole32.dll\", \"OLEAUT32.dll\", \"SHELL32.dll\", \"USER32.dll\", \"UxTheme.dll\", \"ntwshk32.dll\", \"COMCTL32.dll\"], \"sha256\": \"f4aa9f98da6d81fb1531841c773fc493600230a67f7817d56be89a484cf03e31\"}\n",
+    "x86/test-time.json": "{\"seconds\": 1.7868843999458477, \"exit_code\": 0}\n"
+  },
+  "v6_development": {
+    "failed_first_x64": "Stale fixture scanning x>=8 missed native image at x=4; final consistent rebuilt fixtures scan interior; not counted as product failure/pass",
+    "final_direct_both_widths": "Actual native image-list preservation and caller clip restoration passed; 64 ANSI lifecycle/GDI balanced",
+    "final_startup_x64": "WIN2K_BUTTON_OK bits=64 aware=0 hooked=1; WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1; DIALOG_DRIVER exit=0"
+  },
+  "cleanup_additional": {
+    "release_02_bytes_removed": 320805824,
+    "dev_05_bytes_removed": 29431,
+    "remaining_registered": [],
+    "stable_ninja_ccache": "retained",
+    "final_removed": {
+      "s2-buttons-release-03": 321181257,
+      "s2-buttons-publish-01": 11142173,
+      "s2-buttons-current-desktop-01": 87495694
+    },
+    "task_scratch_remaining": "build/t27-package is empty; stable build/.ninja and build/.ccache retained"
+  },
+  "code_statistics": {
+    "scope": "src/,tests/,tools/,CMakeLists.txt; includes version metadata and test map, excludes generated evidence/docs/binaries",
+    "added": 587,
+    "deleted": 37,
+    "net": 550,
+    "files": 21,
+    "new_production_c_h_files": 8,
+    "new_production_c_h_lines": 337,
+    "state_owner": "Common instance/install/retire/basic/present/dispatch and unique ntwshk theme owner retained; no parallel lifecycle implementation"
+  }
+}

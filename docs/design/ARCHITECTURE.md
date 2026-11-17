@@ -11,7 +11,7 @@
 | run16s-exe | run16s.exe，x64 | CLI、托盘业务、风格与目标选择、提权 UX 和最终错误报告 |
 | ntwshk-dll | ntwshk32.dll、ntwshk64.dll | 共享运行时装配、进程内接入和公共状态导出 |
 | ntw16s-dll | ntw16s32.dll、ntw16s64.dll | Win3.x 风格装配、原 API trampoline、兼容导出及产品协议 |
-| ntw2ks-dll | ntw2ks32.dll、ntw2ks64.dll | Win2000 风格装配、兼容导出及现有原生主题控制 |
+| ntw2ks-dll | ntw2ks32.dll、ntw2ks64.dll | Win2000 风格装配、兼容导出、呈现策略及原生主题协调 |
 | demo-exe | demo.exe，x64 | 原生示例与手动测试入口，直接启动保持系统原生行为 |
 
 ## 三层结构

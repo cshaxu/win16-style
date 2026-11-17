@@ -121,7 +121,7 @@
 | [evidence/md5summer-controls.json](evidence/md5summer-controls.json) | Td S12真实MD5summer原生协议/附着/截图对照及识别缺口、TreeView边界；无产品变更 |
 | [evidence/hdtune-controls.json](evidence/hdtune-controls.json) | Td S13 HD Tune Pro真实提权主窗/标准控件附着缺口、740及关闭失败；无产品修复 |
 | [evidence/framework-completion.json](evidence/framework-completion.json) | T15 S3原生菜单栏/对话框/隐藏状态修复、旧包负例、41实际包/12聚焦、真实三应用及双发布证据；后续状态见CURRENT |
-| [release.json](release.json) | 当前开发包的输入/工具链/四文件哈希与验收范围，历史版本从对应Git提交取回 |
+| [release.json](release.json) | 当前开发包的输入/工具链/八文件哈希与验收范围，历史版本从对应Git提交取回 |
 | [evidence/control-protocols.json](evidence/control-protocols.json) | T15 S4初始化后框架协议角色、原生图像/PushLike/client-edge、实际应用及失败原型/发布证据 |
 | [evidence/tab-controls.json](evidence/tab-controls.json) | T15 S5原生/框架页签、原生布局/通知、字体同步、安装取消所有权与实际包验证；状态见CURRENT |
 | [evidence/header-controls.json](evidence/header-controls.json) | T15 S6原生文字表头协议/实际列与像素、通知/取消、回调与内存/DC所有权、有限保留模式及包验证 |
@@ -299,3 +299,5 @@
 - [T27 S1 control references](evidence/t27-s1-controls-reference.json): frozen Win3.x parity groups/aliases, user Windows2000 source identities, original screenshot observations and explicit reference gaps.
 
 - [T27 S1 actual remote](evidence/t27-s1-remote.json): fetched seven changed blobs and unchanged eight-file baseline verified.
+
+- [T27 S2 source-based buttons](evidence/t27-s2-buttons.json): original source identities, development failures and real DLL rendering/lifecycle verification; formal delivery status recorded in evidence.
