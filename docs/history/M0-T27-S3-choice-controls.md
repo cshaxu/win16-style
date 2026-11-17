@@ -56,3 +56,5 @@ P2准入实际复核：353646af已push/fetch，7个文档变更字节一致，sr
 登记build/t27-package/s3-choices-publish-01：同批八文件先发布assets根/O:/winnt，保留本S两处原八文件备份仅供实际包验证失败回滚，测试通过并归档摘要后立即清理；不增加产品文件或发布目录。
 
 正式交付本地验证：双宽干净GCC/Ninja/ccache（x86 259.06秒，908hit/3miss；x64 281.87秒，996hit/3miss）、8文件包/原资源/依赖门禁通过；先发布assets根/O:/winnt，再实际36/36聚焦通过，无skip。12个实际BUTTON模式各84状态共1008次render，不称1008独立进程用例。首轮32/36中4项仅runner遗漏WIN16STYLE_CAPTURE_DIR，原始失败保留，补环境后仅4项重跑通过；无产品修改或再次整包构建。按证据记录回收3个正式scratch及两处备份，保留稳定Ninja/ccache；S3待提交推送及实际远端复核，未提前关闭。
+
+P1 b4ca7bf2已push/fetch，实际32变更（含3旧路径删除）与八文件逐字节一致，全部1181构建输入中仅原先9个未动文件CRLF/LF差异，逐项见[t27-s3-remote](../etc/evidence/t27-s3-remote.json)。S3有限条件满足，P2仅记复核/关闭并准入固定S4，无二进制变化、不重复构建发布；T27/M0保持。下一次全输入远端比对改用批量Git对象读取或树级等价检查，避免1181次独立git show进程，不能为了复核反复重跑全构建。

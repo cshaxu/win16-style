@@ -1,6 +1,6 @@
 {
   "task": "M0 T27 S3",
-  "stage": "verified locally and published at both destinations; S3 P1 push/actual remote pending",
+  "stage": "S3 verified, published, pushed and actual fetched remote verified; closed by P2, T27 remains open",
   "source_commit": "fd809a81098565b33f52d0f65925159de8f4c337",
   "sources": {
     "client/btnctl.c": "f44a25484dbcaff4c972e4bd9bd2cd168f5fd1c0ea04cb989ec961fee9441ba6",
@@ -2312,5 +2312,6 @@
     "governance": "13 rejection self-tests passed",
     "diff_check": "passed",
     "package_script_parse": "passed"
-  }
+  },
+  "remote_evidence": "t27-s3-remote.json"
 }

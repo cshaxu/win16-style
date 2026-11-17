@@ -305,3 +305,5 @@
 - [T27 S2 actual remote](evidence/t27-s2-remote.json): fetched 38 changed blobs/eight tested binaries byte-verified; 1181 inputs inspected, nine pre-existing CRLF/LF-only differences explicitly recorded.
 
 - [T27 S3 choice control references](evidence/t27-s3-choice-controls.json): pinned source facts, genuine image digests, four exact 13-pixel glyph matches, dark-shadow correction and finite planned coverage.
+
+- [T27 S3实际远端](evidence/t27-s3-remote.json)：32变更/八文件实际fetch字节验证与9个旧行尾差异。

@@ -2,30 +2,30 @@
 
 ## Current Work
 
-M0固定。T27 Win2000常用控件保持开放；S1来源冻结、S2基础呈现/普通按钮已按有限范围交付关闭，当前S3复选/单选/三态。按[16个S规划](../proposals/windows-2000-controls.md)合批，不逐文件完整交付；不提前称所有控件parity完成。
+M0固定。T27 Win2000常用控件保持开放；S1来源冻结、S2基础呈现/普通按钮、S3复选/单选/三态已按有限范围交付关闭，当前S4静态/分组/容器。按[16个S规划](../proposals/windows-2000-controls.md)合批，不逐文件完整交付；不提前称所有控件parity完成。
 
-正式八文件已更新为[T27 S3已发布/测试批次](../etc/evidence/t27-s3-choice-controls.json)，36/36聚焦通过，当前待S3 P1推送/实际远端复核；[上次实际远端](../etc/evidence/t27-s2-remote.json)38变更与八文件字节一致，9个旧输入行尾差异披露。T26已知失败保留在[终审](../etc/evidence/t26-s14-final-audit.json)，未被本组局部通过替代。Win2000其他关闭主题分支不计独立renderer完成。
+正式八文件已更新为[T27 S3已发布/测试批次](../etc/evidence/t27-s3-choice-controls.json)，36/36聚焦通过，[实际远端](../etc/evidence/t27-s3-remote.json)32变更与八文件字节一致，9个旧输入行尾差异披露。T26已知失败保留在[终审](../etc/evidence/t26-s14-final-audit.json)，未被本组局部通过替代。Win2000其他关闭主题分支不计独立renderer完成。
 
-## M0 T27 S3 Packet
+## M0 T27 S4 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S2有限条件完成并实际远端复核，按既定顺序S3，M0/T27不变。 |
-| Admission And Approval | 用户准入Win2000常用控件并要求参照原源码/原资源/真实图片，自行设目标持续执行，现按16S规划推进。 |
-| Objective | 实现有原版依据的checkbox/radio/3state及适用pushlike，复用S2控件对象和公共生命周期/原生输入。 |
-| Non-goals | 不猜字形，不复制Win16状态/位图，不做XAML客户区、新对话框/菜单或扩权限/目标；不声称原生保留为年代实现。 |
-| Reference Baseline | S2 P1 4912b70d；双宽14项增量及36项实际发布包通过，原Win2000SRC fd809a81只读，S1 parity清单继续有效。 |
-| Candidate Proposal | docs/proposals/windows-2000-controls.md；brief docs/history/M0-T27-S3-choice-controls.md。 |
-| Files And ABI Surface | appearance/win2000/common/control、ntw2ks装配与对应原生测试/CMake；既有五组件八文件及公开ABI保持。 |
-| Applicable Rules | 纯C17、MinGW GCC/Ninja/ccache；三层方向、唯一共同状态/原资源声明，源参考不成为外部构建依赖。 |
-| Verification | 原版状态/字形/布局、真实图像可见状态；v5/v6/aware与双宽实际安装/输入/资源/恢复/重入/启动，旧push回归；先发布后实际包。 |
-| Expected Markers | 六类选择控件与适用pushlike真实呈现/原生状态相容；类型/状态子用例与进程用例区分，所有未覆盖/原生保留如实列出。 |
-| Asset Needs | Win2000原字形资源/构造及可核实真实图像；缺原Marlett不得假称已取得，不新增未审查替代图形。 |
-| Reporting Requirements | 来源/代码/产品调用/实际计数/原始失败、清理与交付证据；消息输入不冒称物理输入，skip不算通过。 |
-| Stop Conditions | 禁computer-use、创建/切换隔离桌面、兄弟仓库改动/依赖和安全设置变更；保护已有工作，不重启有效构建，不反复UAC。 |
-| Exit Criteria | 本组有限矩阵实际接入、适用验证、同快照双宽八文件两处先发布后测试、即时清理/提交推送/实际复核后自动S4，T27开放。 |
-| Original Owner Request | 目标Win3.x控件parity，必须看Win2000源码/原资源和真实图片，不要自己捏造；自行设目标执行。 |
-| Similar-Issue Sweep | checked/mixed/pressed/disabled/focus、UI提示、自动分组/通知、pushlike、标签/字体/图像/背景、角色变化与借用资源。 |
+| Identifier Mode | Continuation；S3有限条件完成并实际远端复核，自动按既定顺序S4，M0/T27不变。 |
+| Admission And Approval | 用户准入Win2000常用控件，要求原源码/原资源/真实图片，授权自行设目标持续按16S执行。 |
+| Objective | 原生STATIC和GROUPBOX有据呈现，保持图像/父背景/字体/子内容；接通既有对话框完成观察器的已创建子控件。 |
+| Non-goals | 不复制Win16 renderer/机制，不扩大owner-draw/未知框架/XAML客户区/全局目标/权限，不宣称全部控件parity。 |
+| Reference Baseline | S3 P1 b4ca7bf2同源双宽八文件先发布36/36实际包，32变更/八文件实际远端字节验证；Win2000SRC fd809a81只读。 |
+| Candidate Proposal | docs/proposals/windows-2000-controls.md；brief docs/history/M0-T27-S4-static-group.md。 |
+| Files And ABI Surface | appearance/win2000/common/control、ntw2ks对话框装配、对应测试/CMake；既有五组件八文件和公开ABI保持。 |
+| Applicable Rules | 纯C17、MinGW GCC/Ninja/ccache；三层方向、唯一公共状态，原图形及声明保留，兄弟仓库只读且无构建依赖。 |
+| Verification | 原版static/group布局色层、应用文字/字体/图像/背景/子内容，重入/资源/恢复；双宽v5/v6/aware和真实DialogManager普通启动，旧按钮/Win16回归。 |
+| Expected Markers | 本组有据呈现、原生输入和资源借还，已创建对话框子控件实际附着；独立原语/产品组合与原生保留分列。 |
+| Asset Needs | 固定原源码及已核实真实Mouse/Effects等截图；缺原字体/资源如实报告，不生成近似替代图形。 |
+| Reporting Requirements | 来源/文件/生产调用/有限覆盖、原始失败/skip、实际八文件摘要、清理及实际远端；消息不冒称物理操作。 |
+| Stop Conditions | 禁computer-use及创建/切换私有桌面、改兄弟仓库/安全设置、扩大权限或目标；保护已有工作，不重启有效构建。 |
+| Exit Criteria | 有限矩阵实际接入、双宽必要干净构建、八文件两处先发布后实际测试、提交推送/实际复核和即时清理后自动S5，T27保持开放。 |
+| Original Owner Request | Win2000常用控件对齐已有Win3.x有限parity；必须看原源码/原资源与真实图片，不瞎猜，自行持续执行。 |
+| Similar-Issue Sweep | 静态子型/文字布局/禁用/UI提示、分组标题/透明内部、图像与应用刷、已创建子控件、重入换父/销毁和恢复。 |
 
 ## Identifier State
 
@@ -38,9 +38,9 @@ M0固定。T27 Win2000常用控件保持开放；S1来源冻结、S2基础呈现
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T27 S2 P1，`4912b70d`；38变更/八文件实际fetch字节复核，旧9行尾差异披露。
-- Last allocated T27 S: 3
-- Open task: M0 T27 S3；Win2000复选、单选和三态。
+- Last verified remote delivery: M0 T27 S3 P1，`b4ca7bf2`；32变更/八文件实际fetch字节复核，旧9行尾差异披露。
+- Last allocated T27 S: 4
+- Open task: M0 T27 S4；Win2000静态、分组和高频容器。
 
 ## Technical Baseline
 

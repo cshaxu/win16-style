@@ -232,7 +232,7 @@
     "incremental_cases": 14,
     "startup_development_cases": 4,
     "public_boundaries": "Both architectures: 4 process archives and23 neutral style archives passed, original5 resource headers and embedded18 raster tables retained. Build script checked full ninja dependency traces permit only copied source/compiler roots, no sibling dependency.",
-    "actual_remote": "pending S3 P1 fetch; previous line-ending-only differences remain disclosed in S2 remote evidence"
+    "actual_remote": "evidence/t27-s3-remote.json; b4ca7bf2 all32 changed paths/eight binaries byte-exact; baseline9 line-ending-only inputs individually disclosed"
   },
   "validation": {
     "physical_keyboard_mouse": "not claimed",
@@ -249,8 +249,8 @@
     ]
   },
   "closure": {
-    "S3": "verified locally, published and actual36/36 passed; remote pending",
-    "T27": "open; S3 until remote verification",
+    "S3": "closed after actual fetched P1 b4ca7bf2 byte verification",
+    "T27": "open; S4 static/group/container controls admitted",
     "M0": "fixed"
   }
 }
