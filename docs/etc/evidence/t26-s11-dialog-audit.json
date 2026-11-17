@@ -1,0 +1,781 @@
+{
+  "task": "M0 T26 S11",
+  "baseline": "effe2abd6dca90e904bcf0b8f31d333da61ab19f",
+  "status": "initial scope frozen before implementation; ordered review not started",
+  "coverage_unit": "production/headers/build and actual direct creation/dialog consumers, path-sorted; final changed-file sweep must catch any added dependencies explicitly",
+  "completion": "Every in-scope mechanism classified with owner/public entry/consumer/removal/tests; common state/lifecycle consumed; one whole S publication/verification/remote closure; no new Win2000 dialog support.",
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "36380ad7135b767e800167c11c639b6b7252f930277f443e9f8c2f9c29ae7f78",
+      "kind": "build",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_guard.c",
+      "sha256": "ca5296aeb3b970e3d7b85f230a1863f755f2008bec168199d88ca48c3ae7a0a2",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_install.c",
+      "sha256": "e0fb6351597c63d7ede1f7eb2d73565cacc76e9983b80d8984ce0b349b632525",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_install.h",
+      "sha256": "76286a7b8ac5d84aad9b8967b74143a158bf99a3922c2d3179aaa523e6fa8624",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_scope.c",
+      "sha256": "f534206388ab958ef31a3addbfced46565dde214b9a20c1935cf28c084ca62af",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_scope.h",
+      "sha256": "2a384b56f8d72d134fa48109bb011ba3a9533869025e4aaccdb511edfa2086ae",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_browse.c",
+      "sha256": "698dec37eb30cd4e9a1bc8b477d90d4342f82c8edf98f00b95347289322b6efa",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_browse.h",
+      "sha256": "70ecf98f3605e9f9c35d8ce92cec70be57c497d87051ac22ea66a024bc8e75aa",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_com_hook.c",
+      "sha256": "aec49e6aa9f90a2234a98623ad2be3be742777ccf414c9e079fc11673a89d163",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_com_hook.h",
+      "sha256": "29379e13462a12a5e69edba1211b87e3ba7f59cf0482303a7347f9dd13412199",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_com_show.c",
+      "sha256": "d827cf217f2f7df94bdca430e97417795b4f2ddf09df4fae808b393cb7777fa5",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_com_show.h",
+      "sha256": "2b4081caac430fcbce8fdc56e766669c996fc21e4fdb73e54c203651900c5f42",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_dialog_controls.c",
+      "sha256": "a42f38ab9097bc53f556e616718d2db0bd073190df7bb1c3145a816d0c9cc673",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_dialog_controls.h",
+      "sha256": "f3284d55caaa0f2f1169556771412994ee06425aa9ce8320b0d3bfbd1d621dd5",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_dialog_events.c",
+      "sha256": "899bfbe35d61a6e8f54ef682bad79b2544d4d1acd19a8bef22a71f9cb1bcd977",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_dialog_events.h",
+      "sha256": "6a26c019149f1223396a6516a9ec2fb96fa0e70bb711519c11cd672604e62ba8",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_dialog_proxy.c",
+      "sha256": "61f8f1f44a6ac045c8841402264c93ba6d5101890c28a690410790d5bee62639",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_dialog_proxy.h",
+      "sha256": "bc39c2744e1274e14ffc3f1280b705707b14000e1e778665ed4c4f0c009de3b9",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_dialog_proxy_dispatch.c",
+      "sha256": "9bb8d72bc6c1f9200115071e5d9cc3d9c484407fcf85a9f139cf7e2ca85cbc7b",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_dialog_proxy_dispatch.h",
+      "sha256": "1c800ebaf7b77d922fe5cbfd6652fcee05986a9690dcdb9a4caf83613b3adf87",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_dialog_state.c",
+      "sha256": "923db4ef2af48e1d60552bd6e8c5c8270c48568244f7a0f963c7c87de6c872f1",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_dialog_state.h",
+      "sha256": "3c3dfd79f8688c6767e9916dcd77014150d539955e421cc75f0563f574256679",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_file_contract.c",
+      "sha256": "0b70a2c5985c02d70fc6d1058de9890d2be61d1cc25d7ba66e0a612bcc2d97d8",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_file_contract.h",
+      "sha256": "be52265fb87ad40d2909fd0769ee0d355e2c6551b3bf91f481d17d541fc1e84a",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_file_helpers.c",
+      "sha256": "93552e7257989f7e8f5938c642c1f016fbebe23722d7a1450f94e6c2c138df32",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_file_helpers.h",
+      "sha256": "9da7b190454acbcfcaca7110b4c883e0dc3817b80eab0ec974f20eaa61d55965",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_file_hook.c",
+      "sha256": "1973b9da36978cae329640406b9a37db7609172979434e0b6f4d2c2002f37c07",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_file_hook.h",
+      "sha256": "557f1f6caa7642aab222ed5cf7fdf0be2ffe04594f0881172c112fb112a19a17",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_file_live.c",
+      "sha256": "b326ebac128dd6009f0e075eb513256a459a96556c0dcb5f27b2ee25b749477c",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_file_live.h",
+      "sha256": "dbafb84a0b93a969fa23aa5442842916b689ecf14823e0c29e89870153f6754d",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_hidden_files.c",
+      "sha256": "ab6f25d469e34de359e165f1296208d63efdf3eaba156f0afbff9db704f6b046",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_hidden_files.h",
+      "sha256": "563ea12a7eb51d8c71da84d310ebce6c64647f5e8497cf285045e833da5a1474",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_print_contract.c",
+      "sha256": "733e73914fb1b7c1e323ef137706d9531ad8d7f4ad5c960c3707d8442df41da6",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_print_contract.h",
+      "sha256": "016a25f906bd17473934c4731524433d907da91a8aa9b78801de1a164abaa86f",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_shell_folder.c",
+      "sha256": "4df0a1b2afcf7e0dfb8e3eb2fce55df530b95c5d8654374c49e66acbd9caf2be",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_shell_folder.h",
+      "sha256": "ec17ace9c4142856d89adc279cc14fe55e45dd6a4d2e961eb607e1625056d4aa",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_shell_item.c",
+      "sha256": "191f9a34afb07a3a3db42da0c64436fde95d6c9de539d0167899d762a1cba5d8",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/classic_shell_item.h",
+      "sha256": "50ce970337a3f746e19802a443dc38403dd925ab1a9fb56e1634abe80cc25203",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/dialog_common_methods.h",
+      "sha256": "4e2af7e6d443e3024dde6545112cf0b976a1615004820ea0fc9746b547644bf9",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/dialog_customize.c",
+      "sha256": "b8ba0945a26072640825d3b417f6a6fb1dc76190dc392b0fa58a25a20c00ef85",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/dialog_customize.h",
+      "sha256": "09201191ef5e477d6e647531deb0a0134993f95fe3f42ecd0a5ed67a9ef0cfd9",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/dialog_hook.h",
+      "sha256": "d981f99ffbfe0deff22f167a3e281ebedb9f690ae7aca13fee63ee3bf4c8556a",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/dialog_ole_window.c",
+      "sha256": "565cb3c023652d29069d4094193281854f25c44e8c6f37ecd4a0ed60a731aaf2",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/dialog_ole_window.h",
+      "sha256": "a1cf86304b99c12fe8e51eff9ae2d192f2709b9598a6c813bcc3e393958041a1",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/dialog_primary.c",
+      "sha256": "ae0edfdd6ae57ad3163733da58d0075448495e1be74081b0023a4e5facbba031",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/dialog_primary.h",
+      "sha256": "c1629e1fe3191897e7f98f3e1526e8863cc3adcbe5de9d98e4185aa47cebde47",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/dialog_v2.c",
+      "sha256": "2dd4eec476bf3a94f56f5ede22f0204c6c0afd8d8421ed4ff419f13dfd3595b6",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/dialog_v2.h",
+      "sha256": "a92506328315cde876151efe80d2fd7dd1680a7a07246bfe482f208d8767cf18",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/file_events.c",
+      "sha256": "4a33677b4d5294ab01d938beb23a08f7c21ec8c901003a120bdf4d83dae56c6c",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/file_events.h",
+      "sha256": "2ea5befd1047e4f63532ee49ef0613907670879adbed346d3eb25827383722dc",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/message_observer.h",
+      "sha256": "1d7ba377a993373764a668f9ced6ebeeccbe714f92a9f8e9a1837cb109b910c2",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/modern_file_dialog.c",
+      "sha256": "efc2c906f33fe8ab39c2000c19f05bbb2443f612a092db6427fdc8debf258ed2",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/modern_file_dialog.h",
+      "sha256": "fa0d1002a58c96298521e8a51ca2d20674264b35b3d9e5ffa465debf75a7d5a7",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/print_extended.c",
+      "sha256": "888d7a8b65048945520f8b574cf8f9379255829c2c6734303f755c3fbcecf49f",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/print_extended.h",
+      "sha256": "54142775d848a6ae6dea54061523198d809342cbc1ec96a6580e9685e5fe05eb",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/print_ranges.c",
+      "sha256": "ae7a79cd68c80b50de313d97a171fc64df2d1a73d7c96b77d225138e49c79890",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/print_ranges.h",
+      "sha256": "d5f361385e6d6162542dd3693c35a5fcbd79e09fef1dc16a32bee9011dc62cfc",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/print_resources.c",
+      "sha256": "32fc8224df8299a0de63403b3e9a6208ab3f00b9507321aa55593f7c4b292b72",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/dialog/print_resources.h",
+      "sha256": "c14cfc2b9dbf05a509a2ec65b7eefae318fc0cd164271805f003ac39e5edc2d6",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/lib-win32-style/application/lifecycle/creation_pending.h",
+      "sha256": "4ac9b13780ca804531c02028be8b2e30420947007e6e8c3ca9b18ca94758d5a1",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/attachment.c",
+      "sha256": "a3b29c711a60d055a9fba58b03828cd8021069f5e8a49c42fccea83adb27a295",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/attachment.h",
+      "sha256": "42176b209184a9b9f71ad779adc154781278409feb3251eb9c8032f2d386393b",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/control_scope.c",
+      "sha256": "6b43e2608c738cc4b57a0366667d1d00d34a0755245ac3055d72e91deb97f27c",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/controls.c",
+      "sha256": "e94b6164c4520d4a4484af83fc72391581a0b331aed743533232cffbe2f3df8a",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/com_dialogs.c",
+      "sha256": "e5b85bde6cfde067d5819323075df916b8d472f4702c4ca65fd077f7c84a6ec8",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/entry.c",
+      "sha256": "96d997a47d3e39edc35e342819c7191899200364a15de754b2e53acc03852422",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/file_dialogs.c",
+      "sha256": "81434647c997cce3e89b4c88f11ac7dacd2bdcaf0047bfd2fea84d8e974a496e",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/folder_dialogs.c",
+      "sha256": "1b50d5b215aa62e807cd235f7c0844e2b97c720c33d194c32f66dcbc6ed7108c",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/intercept.h",
+      "sha256": "8365a212a13fab0bed354fc2315a335531f965f99c2830fafa0a138fa485b251",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/modern_dialogs.c",
+      "sha256": "32cbf3da12fd5bb995455efde19467f1856d54b11ee282844428b6e49a7da5c1",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/injection/window_titles.c",
+      "sha256": "9e4c562c3d71671f1674a2d869f9713e125bf3d13755c85b119a136e4ef2206a",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/ntw16s32.def",
+      "sha256": "37f7c42979538946c7ac84037b639405d3560acca371872473879af646a04e7c",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw16s-dll/ntw16s64.def",
+      "sha256": "3a19b506e2883e662641ddba02c90c388e48281058d501f9fe576592bfdb6204",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw2ks-dll/dllmain.c",
+      "sha256": "b1a65b421098c6f1c7b3526de6c39bd8f63a7e2fd698b73fd49ef19afb5dcf79",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "src/ntw2ks-dll/window.c",
+      "sha256": "e886d5f03094396a557d3b5d3799d08c8dfeec90f1185798bba49efccd526ea1",
+      "kind": "production",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/classic_bridge.c",
+      "sha256": "6d78b34b357b6a8797f04a398b6d2647710275eb082ca644522ccfd4ae94613c",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/classic_dialog_chrome.c",
+      "sha256": "0e6bd6bd2262a705c23e3c8e6ce0cb5822bd0ba729667c840537f6b165364b78",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/classic_dialog_link.c",
+      "sha256": "59af2afc94e5316aa150cfeeacc16bf6d4a3274bd1c6659f46f87df26a6a4389",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/classic_dialog_proxy.c",
+      "sha256": "810780dc98d5444d4019bb2274c2d2e57ec9dc6a020b078380c95aa0b12b295d",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/classic_file.c",
+      "sha256": "37a1a29d3d80ec3a09a99c3d6189c7e175e9d5fac9bca0e9f3b3b49f612e2f96",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/classic_helpers.c",
+      "sha256": "d2b1b7a51dc324f8cd91aecda0d6e875216911547aa1f00d5af2fcbc6777b9b0",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/classic_print_contract.c",
+      "sha256": "a8539ddffa1b45c54ddf1640d9646f21c6eb2ba0ea9ddcc28df26fba4ec5eca6",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/dialog_adapter.c",
+      "sha256": "3dfe5c71f62212383f3feb5fa5e232e5c136fda0ce6ddd6ddfb620cff20973c5",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/dialog_hook.c",
+      "sha256": "d18e053bf45de3ca6098e5099d8e32daa340629d6939244006c98defa487b95c",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/file_events.c",
+      "sha256": "b15a2167e254214658cf23c5374b838986745dc029046dc15e9f07d578d56870",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/message_observer.c",
+      "sha256": "8c5e184ed9ffb38e9bc5d0e9ec01fe5faebdbcb34a92b06863137d12a0227323",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/modern_file_depth.c",
+      "sha256": "385d974bceaeb81784c95238a3cd247307b822dfc6ec1e1e63638afafd06ceec",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/modern_file_dialog.c",
+      "sha256": "ec417d48d054cadb24c35c5b7f5ce73e466c870595c45514c537d8ac099ebe2c",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/print_extended.c",
+      "sha256": "6ea91ad158240977cf2a3ea0c948d8def9e2482360f68ebaeeae558dbd02eec0",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/print_ranges.c",
+      "sha256": "c00aeb3696aab20d83f8684a2ee2215ed688aeabe415219cf169b7212c1f9e72",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/dialog/print_resources.c",
+      "sha256": "d81e7b6c91c273f2158b4b3cc572e72479544a7855d8bf657cea232c0282c289",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/lifecycle/creation_pending.c",
+      "sha256": "dad7e5f13f3b774544ac19ffc8dae2673a7bb55dd6c2a62f26a179e3962c08e3",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/lib-win32-style/application/TEST_MAP.md",
+      "sha256": "ba63269b35e35095951bfa3a3eb1d51125a440b0595f17894f6a1c2bd1e79252",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/abi.c",
+      "sha256": "6f10c4eb8096677e1f16aa3b9e1a584f9aa8b113616196a7425cc4347b506401",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/control_extensions.c",
+      "sha256": "b11f6f4744bd1f5c6dff929ce109463aa32e3c970a23d99ffaea0ba0b0aca96b",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/control_visibility.c",
+      "sha256": "eff5867868a1ce574af8c01feb7f8e203ec3000ad41235fc13d89d4bea96c9c6",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/creation_scope_nested.c",
+      "sha256": "9f8361f26b1ff32cb326f2b5aca5d6127b8a5f33533352ce8da81157632b3f1b",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/creation_wndproc_target.c",
+      "sha256": "2ff77d888cf9c799e5670e678188a17af34f7408968f7734f1ae8c2b45c13672",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/dialog_scope.c",
+      "sha256": "9c48c515279b4ecd7c0d95ab57949c1e8d2f175f9c8465587554e2f5ea922781",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/global_window.c",
+      "sha256": "40a49a9abf0d7d7cb59b94e67efc7247a1c64f444c686d402a4228951f90eab1",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/header_controls.c",
+      "sha256": "eefea8f365d8279c54c38cacbec745bfb273733c43e6b15e33f17c2e773c2a55",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/ntw16s_terminal.c",
+      "sha256": "dbfea02b68f38815a5930b231dfb66f29054c3f4b3f3d569a5d8c28eceff84ab",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/pending_control_owner.c",
+      "sha256": "ca8129d04f810eb11d29ccd2d4667c099cc647069a0a07502fe43d46370569a3",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/pending_frame_owner.c",
+      "sha256": "5998f07c984529433baae51cf4a27710a76979a5dca45dc9cbcde87e4e443571",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/runtime.c",
+      "sha256": "7c29eadf782751d8e45a221c82898f712e654afe56acad1f4b51dc17c6a28e17",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/spin_controls.c",
+      "sha256": "e2405f0239f7872d0ac81d630a6d676899c09cd2cd085e9d96c010c4ee762186",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/status_controls.c",
+      "sha256": "ce0740bc316e1f8e241fd759e1aca78dff90e6adbf5be5cfbc3be5865e2e0f97",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/tab_controls.c",
+      "sha256": "52e19891d2d76cf3674040f46b9c4a1034ef63e2026a926bd07825f1806e2124",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tests/ntw16s-dll/updown_controls.c",
+      "sha256": "39e6fe9ed24e6786aca3eb8c72bc3e5c71ba7b991bd9fe2f685d2708a04d2e47",
+      "kind": "test",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    },
+    {
+      "path": "tools/Test-Package.ps1",
+      "sha256": "0b11964c90a438846f8c05565090be42a5fa5dd4ae6364b19cb56ff22b99a2f6",
+      "kind": "build",
+      "state": "frozen-to-review",
+      "receiver": "S11 application/lifecycle + dialog; actual presentation remains appearance; classify whole operations before edits"
+    }
+  ],
+  "scope_query": "Ntw16sCreation|ntw16s_creation|style_dialog_|classic_dialog_|style_creation_|common_dialog_combo_pending|win32_style_creation",
+  "new_outputs": []
+}

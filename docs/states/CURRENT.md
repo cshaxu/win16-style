@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S10扩展控件与运行时适配。S1审计、S2目录、S3 GUI根生命周期、S4启动、S5运行时接入、S6全局协调、S7窗口与标题栏、S8菜单、S9基础控件已收口；不把局部完成称为全T完成。
+M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S11创建与对话框事务。S1–S10已按各自范围交付及实际远端复核；后续S12现代宿主、S13图形/renderer和S14终审仍未完成，不称全T完成。
 
 [S5交付](../history/M0-T26-S5-runtime.md)b08d601d已实际fetch并逐blob复核37个变更；同快照八文件先发布assets根/O:/winnt，随后118项去重实际包回归通过。另2项DWM旧失败与S4一致，不计通过。见[开发证据](../etc/evidence/t26-s5-runtime.json)与[最终交付](../etc/evidence/t26-s5-delivery.json)。双宽各17个公共样式归档门禁通过，1005个源码/构建/测试/工具输入一致，ABI及原资源保留。
 
@@ -16,40 +16,32 @@ S6最终同快照双宽干净构建通过（x86约158秒，x64约176秒），102
 
 [S4事实](../history/M0-T26-S4-startup.md)及[交付](../etc/evidence/t26-s4-delivery.json)保留；T25按用户决定有限收口，未通过项不补记通过。
 
-## M0 T26 S10 Packet
+## M0 T26 S11 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；S9正式交付并实际远端复核后自动S10，沿用M0/T26。 |
-| Admission And Approval | 用户批准三层架构与14个S按能力合批自动推进，单人实施及第二角色复核。 |
-| Objective | 扩展控件/VB/VCL的原生状态、通知、快照和资源所有权进入公共application；实际Win3x呈现策略独立，产品调用公共机制并删除旧接线。 |
-| Non-goals | 不新增Win2000控件或扩大运行库支持集合；创建/对话框S11、现代宿主S12、最终图形/renderer契约S13。不能以这些边界留下本应共享的扩展生命周期。 |
-| Reference Baseline | S9 P1 f9de3404：八文件先发布两处再146项聚焦通过，2项DWM旧失败不变；实际fetch复核107现存blob、16删除路径及八文件。 |
-| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S10-extended-controls.md；S9逐项交接docs/etc/evidence/t26-s9-controls-audit.json。 |
-| Files And ABI Surface | appearance/win3x/control扩展状态/消息/绘制、application/control和win32运行时适配、产品attachment/controls及其全部实际测试调用者；保持五组件八文件及已有ABI。 |
-| Applicable Rules | 纯C17、MinGW GCC/Ninja/ccache；公共对象持状态/资源，完整操作回调，无反向依赖/字段view/空包装；内层清理、外层报告。 |
-| Verification | 先冻结有限输入与具体接收者；原生通知、项目/文本快照、字体/DC、所有权、换父/角色、重入移除/销毁/失败资源及双宽实际产品路径；整批八文件先发布再测和远端复核。 |
-| Expected Markers | 同一扩展协议唯一生产实现；运行时身份与呈现资格分离，产品只组合实际策略；旧字段机制和重复路径删除，各保留项有具体原因/接收位置。 |
-| Asset Needs | 当前五组件八文件及原图形/字体资源和声明；无兄弟仓库、额外服务或产品文件依赖。 |
-| Reporting Requirements | 文件顺序覆盖、所有者/公共入口/实际消费与对应验证，生产增删净行数；错误/skip和未覆盖分开，不冒称所有框架/真实键鼠验收。 |
-| Stop Conditions | 禁止computer-use和私有桌面，不改兄弟仓库/系统安全或其他任务；自建fixture有界清理，UAC同次等待一分钟后才询问。 |
-| Exit Criteria | 有限清单逐项落实、扩展机制实际公共化与调用迁移、旧实现删除；原行为/资源/ABI/边界通过及规范发布提交推送和实际远端复核后自动S11。 |
-| Original Owner Request | 所有style归lib-win32-style的access/application/appearance；极简统一、五大干净，逐文件审计，按完整能力合批交付。 |
-| Similar-Issue Sweep | status/header/tab/progress/track/updown/toolbar/tree与owner/custom draw的身份、parent/witness、缓存代次、TLS作用域和子类通知；VB/VCL借用文本/图片/字体/DC及重入失败退场。 |
+| Identifier Mode | Continuation；S10已实际远端复核后按批准14个S自动S11，M0/T26不变。 |
+| Admission And Approval | 用户授权所有样式按access/application/appearance重组、能力合批、单人双角色和自动逐S推进。 |
+| Objective | 创建scope/待处理/首次show与对话框调用、COM及选择器结果/资源事务归公共完整对象，实际两风格已有消费者接入，删除产品重复机制。 |
+| Non-goals | 不新增Win2000完整控件/对话框、Luna/Aero或现代客户区；不改变既有Win3x撤销新窗口与Win2000创建后observer差异；现代S12、最终renderer/字体S13。 |
+| Reference Baseline | S10 P1 effe2abd：同批八文件先发布两处，初416记录及24定向验证/有限对照完整保留；实际fetch192现存blob、28删除路径及八文件一致。 |
+| Candidate Proposal | docs/proposals/style-library-reorganization.md；brief docs/history/M0-T26-S11-dialogs.md；初始有限表docs/etc/evidence/t26-s11-dialog-audit.json。 |
+| Files And ABI Surface | application/dialog、lifecycle创建协议、appearance/dialog/control scope及产品attachment/window_titles/COM/file/folder入口和实际测试消费者，保留五组件八文件及已有导出。 |
+| Applicable Rules | 纯C17/MinGW GCC/Ninja/ccache；公共对象持状态/引用/资源，完整操作而非字段view或空包装；内层清理、外层报告，禁止反向私有依赖。 |
+| Verification | 原生参数/返回/LastError、嵌套scope屏障、stage/commit/取消、first-show/延迟INITDIALOG、应用hook/template、COM引用/回退及失败资源；双宽实际消费者和发布包。 |
+| Expected Markers | 同一创建/对话框事务唯一公共实现，调用方只组合目标/转换/呈现；旧私有状态与重复清理删除，每个保留项有精确原因和接收者。 |
+| Asset Needs | 既有八文件与原图形/字体/来源声明；无额外服务、兄弟仓库或新产品文件。 |
+| Reporting Requirements | 路径顺序审计，公共入口/状态所有者/真实消费者/旧实现处置/测试和净代码量；初轮失败、修正、skip和未覆盖不混淆。 |
+| Stop Conditions | 禁止computer-use和私有桌面，不修改/依赖兄弟仓库或系统安全；自建当前桌面有界清理，已有UAC等待规则保留。 |
+| Exit Criteria | 有限清单逐项落实及全部实际改动反查、共同机制实际消费、旧路径删除、原行为/资源/ABI/边界验证、整批发布后测试、提交推送和实际远端复核后自动S12。 |
+| Original Owner Request | 所有style组件统一lib-win32-style三层，极简/统一/五大干净；逐文件审计，按完整能力合批交付，不每文件完整发布。 |
+| Similar-Issue Sweep | window/dialog/modeless/modal/A-W/TaskDialog/MessageBox/属性页、file/folder/print/COM工厂事件与错误回写；scope重入/线程/延迟返回和借用资源。 |
 
-S9基础控件已收口，完整事实见[brief](../history/M0-T26-S9-controls.md)、[逐项输入](../etc/evidence/t26-s9-controls-audit.json)、[整批交付](../etc/evidence/t26-s9-delivery.json)及[实际远端](../etc/evidence/t26-s9-remote.json)。字体/protocol/tabstop、根安装/退场、basic/list/edit/combo消息与快照和scroll输入/资源/管理已由公共对象拥有，实际产品接入。生产含新文件净增478行（+1606/-1128）；扩展状态/运行时与创建/现代/最终renderer仍分别由后续S处理，不能称全T完成。
+S10交付见[实施记录](../history/M0-T26-S10-extended-controls.md)、[归属表](../etc/evidence/t26-s10-controls-audit.json)、[开发](../etc/evidence/t26-s10-controls-development.json)、[整组交付及补充](../etc/evidence/t26-s10-delivery.json)和[实际远端](../etc/evidence/t26-s10-remote.json)。317项既有输入（309初始冻结+8终审显式补录）及86新增输出已分类；生产+3669/-2844净+825，58新增C/H。初轮416中410过/6失败原样保存，修正同线程witness/DC与图像夹具后24调用通过，其余有限对照提供当前证据，不写成重新416全过。现代USER/原像素和既有DWM限制由TODO/S12/S14承载，不称修复。
 
-S9同快照双宽干净构建约160/187秒，1080源码/测试/工具输入一致，原资源及双宽各21样式归档/4进程归档边界通过。八文件已先发布assets根及O:/winnt，再146项去重实际包聚焦全部通过；2项DWM恢复旧失败不变、不计通过。首次测试驱动遗漏capture环境导致入口断言失败，保留后补齐并从失败项继续，无产品变化。正式发布的资源、版本和八文件SHA均已从远端读取复核。
+S10正式八文件已发布assets根/O:/winnt并从远端逐blob复核；同快照干净构建约248/307秒、ccache直接818/906命中各miss68。源码/资源/ABI及双宽各4进程/21样式归档通过；最后EOF格式规范化的双宽编译对象字节一致，未重复整包发布。S10全部当前scratch已归档清理，保留稳定.ninja/.ccache，无本S在用构建/测试。
 
-S9全部终态scratch/源码副本/发布备份已提炼并清理约293MB，保留.ninja/.ccache及两处正式包；历史旧desktop入口违规与纠正保留于开发证据，不计合规通过。S10已冻结309项输入，逐项状态见[审计台账](../etc/evidence/t26-s10-controls-audit.json)，实际结果和失败保留于[开发证据](../etc/evidence/t26-s10-controls-development.json)。当前公共application拥有扩展native状态/快照、status、notify、overlay、runtime protocol安装与report/edge；win32适配拥有原生见证、rich/frame身份与绘制关联、text/bit/inplace/nav状态及MDI/lookup关联引用。产品已消费，旧字段view/重复观察和安装路径删除，CoolBar复用notify绑定/解绑；关联引用保留到根最后释放，正常和attach失败顺序不变。
-
-S10已将原生扩展状态/快照/通知、spin/updown资源、native text/paint/message与完整attachment根及安装/退场结算迁入公共application，产品实际调用，旧私有实现按台账删除。详细批次与原始结果留在[实施记录](../history/M0-T26-S10-extended-controls.md)和[开发证据](../etc/evidence/t26-s10-controls-development.json)，不在CURRENT复制流水。当前生产相对HEAD为+3669/-2844、净+825行，新增58个生产C/H；不把目录移动或通过次数称为全部解耦。
-
-初始309项冻结输入和23条过渡归属终整已完成；最终148个生产改动路径反查另补录8个先前漏列的共享依赖/消费者，原冻结SHA不改，补录不冒称事先冻结。共317项既有输入和86新增输出均有归属、实际消费者与验证；创建S11、现代S12及图形/renderer S13继续有精确函数接收者。
-
-S10同快照双宽干净构建（约248/307秒）及先发布八文件两处已完成。初轮416实际调用410通过、6失败原样保留；定向修正3个测试夹具的同线程witness参数和独立DC/图像输入后24项通过，有限旧/新对照提供其余当前证据，6个原失败身份均有后续通过映射，不称重新416全过。没有产品源码或二进制变化，不重复整包构建发布。现代USER19/18初次波动未解释，及此前DWM等限制仍归S12/S14，不声称修复。见[整组交付及补充证据](../etc/evidence/t26-s10-delivery.json)。
-
-开发260个去重通过调用为历史开发统计；不与初轮/补充调用相加冒称新用例。初轮终态scratch已清理381,105,787字节，定向s10-failure-contract亦已归档清理7,056,009字节；保留Ninja/ccache与两处同摘要发布候选。S10 P1待最终治理、提交推送及实际远端复核；未复核前不收口、不准入S11，最后远端验证版本仍S9。
+S11初始110项已按路径冻结（74生产、34测试、2构建/工具），尚未逐项review或实施；后续新增依赖显式补表并反查全部改动，不重演漏列共享消费者。无S11源码/二进制变化、scratch或运行任务，不把准入和冻结当作已经公共化。
 
 ## Identifier State
 
@@ -61,9 +53,9 @@ S10同快照双宽干净构建（约248/307秒）及先发布八文件两处已�
 - Last allocated T20 S: 19
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
-- Last allocated T26 S: 10
-- Last verified remote delivery: M0 T26 S9 P1，`f9de3404`；107现存blob、16删除路径及八文件复核。
-- Open task: M0 T26 S10；扩展控件与运行时适配。
+- Last allocated T26 S: 11
+- Last verified remote delivery: M0 T26 S10 P1，`effe2abd`；192现存blob、28删除路径及八文件复核。
+- Open task: M0 T26 S11；创建与对话框事务。
 
 ## Technical Baseline
 

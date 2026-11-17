@@ -264,3 +264,6 @@
 
 - [T26 S10开发验证](evidence/t26-s10-controls-development.json)：按能力批次记录双宽增量、独立公共契约与实际VB/VCL调用、失败修正及立即清理；不是完整S10交付。
 - [T26 S10 整批交付](evidence/t26-s10-delivery.json)：同快照双宽八文件、先发布后测与实际结果，进行中状态按文件记录。
+
+- [T26 S10 实际远端](evidence/t26-s10-remote.json)：192现存blob、28删除路径及同批八文件复核。
+- [T26 S11 创建/对话框有限表](evidence/t26-s11-dialog-audit.json)：初始110项冻结，逐项审计和实施尚待执行。

@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S10 P1",
-  "status": "verified-focused-with-recorded-historical-observations-awaiting-commit-remote",
+  "status": "focused-migration-delivery-remote-verified-with-recorded-historical-observations",
   "build": {
     "full_matrix": "pending",
     "physical_acceptance": "pending",
@@ -30417,5 +30417,7 @@
         "stderr": ""
       }
     ]
-  }
+  },
+  "verified_remote_commit": "effe2abd6dca90e904bcf0b8f31d333da61ab19f",
+  "closure": "S10 extraction scope delivered and remote-verified; initial failures and subsequent fixture corrections/finite comparison preserved. S12/S14 retain unexplained historical USER/pixel observations and older DWM limitations; no full T completion claim."
 }

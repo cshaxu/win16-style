@@ -1,7 +1,7 @@
 {
   "task": "M0 T26 S10",
   "baseline": "be2baf5fbd428c029086ba69d3f7cd0390c9ffae",
-  "status": "309 initial frozen plus8 retrospective shared dependency/consumer additions reviewed; original SHA preserved; delivery verification in progress",
+  "status": "S10 extraction scope implemented, focused-verified, published and actual-remote-verified; exact S11/S12/S13 receivers remain in T26",
   "coverage_unit": "production/test/header file plus explicit functions and actual consumers; inventory never means reviewed",
   "allowed_dispositions": [
     "shared-mechanism-implemented",
@@ -3981,5 +3981,6 @@
     "unmapped": [],
     "current_hash_drift": [],
     "meaning": "All production modifications mapped and same hashes as pre-clean audit/addendum; followup edits test-only."
-  }
+  },
+  "remote_commit": "effe2abd6dca90e904bcf0b8f31d333da61ab19f"
 }
