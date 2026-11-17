@@ -2,7 +2,7 @@
 
 # Deferred Debt
 
-- [ ] TODO(High): 普通 `--2k` 的运行中移除API已经具备，但DWM渲染恢复未通过。Owner：T26 S14最终审计；S7重组已确认该旧失败不变，未将其记为通过。Evidence：[T25早期缺口](../history/M0-T25-S7-P5-apps-and-restore.md)记录当时缺少导出；当前已有Ntw2ksWindowRemove及win2k_frame_remove，[T26 S3实际包](../etc/evidence/t26-s3-delivery.json)双位宽installed/removed/geometry/repeated/reattached/pending均通过，DWM restored=0与S2同条件基线一致。Admission：保持用户允许的当前桌面验证，以实际DWM/外框状态证明恢复，不将移除返回TRUE、销毁或SC_RESTORE算作完整恢复。
+- [ ] TODO(High): 普通 `--2k` 的运行中移除API已经具备，但DWM渲染恢复未通过。Owner：Win2000外框恢复；后续兼容修复候选（未准入）。T26 S14双宽终审仍restored=0，既有失败不计通过。Evidence：[T25早期缺口](../history/M0-T25-S7-P5-apps-and-restore.md)记录当时缺少导出；当前已有Ntw2ksWindowRemove及win2k_frame_remove，[T26 S3实际包](../etc/evidence/t26-s3-delivery.json)双位宽installed/removed/geometry/repeated/reattached/pending均通过，DWM restored=0与S2同条件基线一致。Admission：保持用户允许的当前桌面验证，以实际DWM/外框状态证明恢复，不将移除返回TRUE、销毁或SC_RESTORE算作完整恢复。
 
 - [ ] TODO(High): Win2000 外框真实拖动/缩放的连续画面、瞬时闪烁、跨屏 DPI 和跨进程前台焦点未完成；Owner：T25 最终审计。Evidence：[S7 P11](../history/M0-T25-S7-P11-physical-frame-drag.md)通过双位宽自有窗口一次真实拖动和拉伸及末帧采样，[S6 P3](../history/M0-T25-S6-P3-activation-foreground.md)中后续测试窗口未获前台而跳过；连续画面和跨屏仍未覆盖。Admission：不创建/切换隔离桌面、不妨碍用户操作；以自有窗口与有限清理验证动态画面，不能将末帧采样或跳过算通过。
 
@@ -161,12 +161,11 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 
 - [ ] TODO(Low): UWP外框未认证边界：其他宿主、多显示器DPI、原生title HWND替换、挂起UIA提供者及全局通知失败；Owner：未来用户明确准入的UWP兼容扩展。Evidence：[T22收口](../history/M0-T22-closure.md)的实际目标/144DPI/通知失败与固定模块边界。Admission：有具体目标和可复现失败，再按自有实例验证；不将当前计算器/Scan成功扩张为所有UWP，不把样式移除称物理卸载。
 
-- [ ] TODO(Medium): 失败安装测试的进程总句柄数在开发环境不稳定。Owner：T26 S14验证终审。Evidence：[S4旧源码对照](../etc/evidence/t26-s4-startup.json)同时观察旧源码失败/当前通过与早先反例；[最终实际包](../etc/evidence/t26-s4-delivery.json)原断言x86 88/88、x64 56/56通过，未放宽断言。Admission：区分OS/运行库懒初始化与本层资源，不把一次相等当作所有环境均无泄漏，不为总量波动增加产品容错。
+- [ ] TODO(Medium): 失败安装测试的进程总句柄数在开发环境不稳定。Owner：启动安装资源验证；后续兼容候选（未准入）。Evidence：[S4旧源码对照](../etc/evidence/t26-s4-startup.json)同时观察旧源码失败/当前通过与早先反例；[最终实际包](../etc/evidence/t26-s4-delivery.json)原断言x86 88/88、x64 56/56通过，未放宽断言。Admission：区分OS/运行库懒初始化与本层资源，不把一次相等当作所有环境均无泄漏，不为总量波动增加产品容错。
 
 - [ ] TODO(Medium): API创建链仍由产品attachment/window_titles拥有。Owner：T26 S11，结合title creation和dialog统一迁application/lifecycle。Evidence：[S5职责复核](../history/M0-T26-S5-runtime.md)；已有creation_pending/message_observer仅是基础，不是整链共享。Admission：保留FALSE scope屏蔽、首show settle、延迟WM_INITDIALOG、主题stage/commit与EndDialog失败语义，不因与当前私有类型耦合认定不能抽离。
 
-- [ ] TODO(Medium): T26 S10初轮的间歇header像素/现代外框USER计数观察仍须最终复核。Owner：S12现代宿主及S14终审。Evidence：[初轮与定向证据](../etc/evidence/t26-s10-delivery.json)：416项410过/6失败；同线程witness参数问题已证实并只修夹具，文件/容器及DC/图像完整输入24项通过；旧/新有限对照通过但不称修复原USER19/18或旧24像素观察。Admission：有新的像素或资源所有权证据时定位，不盲重试，不放宽断言/改安全设置，不把前后一次相等外推为绝对无泄漏。
+- [ ] TODO(Medium): T26 S10初轮的间歇header像素/现代外框USER计数观察仍须最终复核。Owner：控件/现代宿主资源与像素兼容；后续候选（未准入）。T26 S13原header失败已由完整S12包同条件复现24像素；S14不称修复。Evidence：[初轮与定向证据](../etc/evidence/t26-s10-delivery.json)：416项410过/6失败；同线程witness参数问题已证实并只修夹具，文件/容器及DC/图像完整输入24项通过；旧/新有限对照通过但不称修复原USER19/18或旧24像素观察。Admission：有新的像素或资源所有权证据时定位，不盲重试，不放宽断言/改安全设置，不把前后一次相等外推为绝对无泄漏。
 
-- [ ] TODO(Medium): 当前桌面的dialog_scope完整夹具在首个对话框GetActiveWindow返回NULL，激活断言未过；Owner：T26 S14最终桌面复核。Evidence：[S11开发对照](../etc/evidence/t26-s11-dialog-development.json)中当前/HEAD原coordinator在x86/x64均相同，四轮各12组安装/迟返/撤销/失败资源检查成立、live/hooks归零，完整夹具均exit1；不是整旧包重建。Admission：保持原激活断言及禁止私有桌面约束，记录实际输入桌面/激活证据；不能将生命周期子断言通过算完整夹具通过，也不为本重构改变产品焦点策略。
 
-- [ ] TODO(High): T26 S12正式包真实产品thread hook在x86/x64返回126（普通及composed各一），完整S11上版八文件控制同样126；直接DLL入口/composed表面安装显示移除通过，不能代替原生hook成功。Owner：T26 S14有限终审/后续接入兼容候选；Evidence：[S12整组](../etc/evidence/t26-s12-modern-delivery.json)含6个原始失败及3次上版控制。真实计算器当前与旧CLI均1460且core==frame，原AFH关系未满足；global在frame发现前失败，未执行旧global控制。准入条件：保持原策略，以符合既有宿主契约的自有目标或明确新增框架任务验证，不扩权限/系统设置来通过重构测试。
+- [ ] TODO(High): T26 S12正式包真实产品thread hook在x86/x64返回126（普通及composed各一），完整S11上版八文件控制同样126；直接DLL入口/composed表面安装显示移除通过，不能代替原生hook成功。Owner：运行时接入兼容候选（未准入）；T26 S14四个原生hook仍126，直接入口/表面通过不作替代；Evidence：[S12整组](../etc/evidence/t26-s12-modern-delivery.json)含6个原始失败及3次上版控制。真实计算器当前与旧CLI均1460且core==frame，原AFH关系未满足；global在frame发现前失败，未执行旧global控制。准入条件：保持原策略，以符合既有宿主契约的自有目标或明确新增框架任务验证，不扩权限/系统设置来通过重构测试。

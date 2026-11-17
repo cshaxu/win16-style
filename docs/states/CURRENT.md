@@ -2,7 +2,7 @@
 
 ## Current Work
 
-M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S14全范围终审。S1–S13已按有限重组范围交付及实际远端复核；既有失败不计通过。S14全范围审计仍未完成，不称全T完成。
+M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorganization.md)执行S14全范围终审。S1–S13已按有限重组范围交付及实际远端复核；既有失败不计通过。S14已完成本地有限源码与组合终审，待清理、提交推送及实际远端复核，不提前称全T收口。
 
 [S5交付](../history/M0-T26-S5-runtime.md)b08d601d已实际fetch并逐blob复核37个变更；同快照八文件先发布assets根/O:/winnt，随后118项去重实际包回归通过。另2项DWM旧失败与S4一致，不计通过。见[开发证据](../etc/evidence/t26-s5-runtime.json)与[最终交付](../etc/evidence/t26-s5-delivery.json)。双宽各17个公共样式归档门禁通过，1005个源码/构建/测试/工具输入一致，ABI及原资源保留。
 
@@ -97,3 +97,5 @@ S10正式八文件已发布assets根/O:/winnt并从远端逐blob复核；同快�
 - **历史记录**：此前完整状态文字保存在[基线历史日志](../history/M0-T26-S1-baseline-log.md)；其中旧的“未发布”等状态可能已被本基线及候选记录取代。
 
 S13整组临时源树/构建/候选/测试及两处发布备份已核验清理334,638,930字节，见[清理记录](../etc/evidence/t26-s13-renderer-cleanup.json)。S14仅保留登记的29,683,976字节最小原生测试/归档及摘要移交；无S13活动构建，稳定缓存和正式八文件保留。
+
+S14本地终审见[最终证据](../etc/evidence/t26-s14-final-audit.json)：473当前C/H归属、1170最终构建输入一致及每宽23样式/4进程归档门禁通过。94项首轮86过/8未过；两次dialog-link补齐既定临时目录后通过，首失败保留；最终正确前置条件88项通过、6项原有DWM/hook未过、0skip。架构/CODING已按当前三层责任更新，未改产品、测试或构建输入。

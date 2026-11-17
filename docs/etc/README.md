@@ -289,3 +289,7 @@
 - [T26 S13 actual remote](evidence/t26-s13-renderer-remote.json): 77 existing blobs, four removed paths and eight product hashes fetched and verified.
 
 - [T26 S13 cleanup](evidence/t26-s13-renderer-cleanup.json): archived source/build/test evidence before removing scratch and publication backups; stable caches preserved.
+
+- [T26 S14 final audit](evidence/t26-s14-final-audit.json): 473 current source/header ownership reconciliation, exact 1170 build inputs, actual consumer traces, public archive gates, final package identity and bounded native combination results.
+
+- [T26 S14 cleanup](evidence/t26-s14-cleanup.json): final handoff tests/archives/package removed after evidence archive; no private desktop or computer-use.

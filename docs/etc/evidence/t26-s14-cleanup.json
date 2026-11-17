@@ -1,0 +1,10 @@
+{
+  "bytes": 35502882.0,
+  "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s14-final-audit-01",
+  "evidence": "t26-s14-final-audit.json contains source inventory, hashes, native commands/results, handoff and gate outputs before deletion",
+  "retained": "Stable .ninja/.ccache and formal eight files at assets/O:/winnt",
+  "task": "M0 T26 S14",
+  "reparse": 0,
+  "status": "cleaned",
+  "active_owners": 0
+}

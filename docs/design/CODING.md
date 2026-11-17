@@ -2,7 +2,7 @@
 
 导入任务按需建立目录；当前不放置虚假实现或空构建目标。
 
-S2已将原lib-style与lib-win32/style的库文件和对应测试机械归位lib-win32-style；旧库目录已移除，双位宽干净构建和已发布包聚焦回归通过，已完成远端逐blob复核。S3–S13已按各S有限清单拆分共同状态、协议、完整操作与资源所有权；S14仍须全T终审实际消费者及旧路径，目录归位不等于全部机制共享，事实见CURRENT、各S归属/交付及冻结迁移清单。
+样式库与对应测试统一使用下列三层根。组件接口与所有权以ARCHITECTURE为准；实际覆盖及迁移证据由CURRENT和各S记录管理，不从目录存在推导能力已支持。
 
 ```text
 src/lib-win32/                         无风格含义的进程、句柄、托盘基础能力
@@ -51,11 +51,11 @@ T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及�
 
 公共宿主、输入、表面和重绘机制位于 `src/lib-win32-style/application/adapters/`；
 原生标题和目标观察位于其 `uwp/` 子目录。Win3.x 的几何、命中和呈现目前位于
-`appearance/win3x/window/modern_frame{,_layout}.{c,h}`，S12有限交付已将菜单、输入与表面状态交给公共`adapters/frame`完整对象；当前交付状态以CURRENT为准。
-对应测试按相同组件放在 `tests/lib-win32-style/`。S2 是机械归位，不声称这些混合文件已经解耦。
+`appearance/win3x/window/modern_frame{,_layout}.{c,h}`，菜单、输入与表面状态由公共`adapters/frame`完整对象拥有；年代保留几何、命中和呈现。
+对应测试按相同组件放在 `tests/lib-win32-style/`；实际产品组合验证保留明确标记，不能把它们冒称为独立公共库测试。
 
 接入协调位于 `access/runtime/uwp_dispatch` 和 `access/global/uwp_global`；产品仍有导出、
-消息协议和装配；S4–S6 的接入协调已公共化，宿主状态/消息/表面公共根已按S12有限清单迁移；appearance仅保留年代几何、命中和呈现，当前S13终整renderer与图形资源。不能为 Win2000 或未来风格复制宿主，
+消息协议和装配；接入协调、宿主状态/消息/表面和图形资源使用共同根；appearance保留年代几何、命中和呈现。不能为 Win2000 或未来风格复制宿主，
 应由公共适配器接受各风格几何、资源和绘制策略。
 
 现有契约保持：调用者提供根窗口及原生标题 HWND，在所属 GUI 线程应用或移除，
