@@ -1,6 +1,6 @@
 {
   "task": "M0 T27 S4",
-  "stage": "verified locally; same-snapshot eight files published at both destinations and48/48 actual cases passed; P1 push/remote pending",
+  "stage": "S4 verified, published, pushed and actual fetched remote verified; closed byP2, T27 remains open",
   "source_commit": "fd809a81098565b33f52d0f65925159de8f4c337",
   "sources": {
     "client/statctl.c": "56960a5eb2f65ae5d4f83e12ff8e6818908e8e94b0700352565e6852c7877a43",
@@ -1963,5 +1963,6 @@
     "net": 301,
     "state_owners": "existing application instance/control_state/theme retained; one frame_owned flag for era-requested NC restoration, no second attachment engine",
     "old_paths": "button-private parent background/DrawState code removed and moved into actual multiple-consumer Win2000 operations"
-  }
+  },
+  "remote_evidence": "t27-s4-remote.json"
 }

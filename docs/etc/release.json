@@ -233,7 +233,7 @@
     "additional_static_contract_cases": 8,
     "startup_development_cases": 8,
     "public_boundaries": "Both architectures:4 process archives and23 neutral style archives passed; original5 headers/notice and18 embedded tables retained; ninja dependency traces accept only copied source/compiler roots, no siblings.",
-    "actual_remote": "pending S4 P1 fetch; baseline9 line-ending-only inputs remain disclosed"
+    "actual_remote": "evidence/t27-s4-remote.json; 802fe1fe all30 changed paths and8 binary files byte-exact,1187 inputs with only9 baseline line-ending conversions; one batch2.26seconds"
   },
   "validation": {
     "physical_keyboard_mouse": "not claimed",
@@ -248,8 +248,8 @@
     ]
   },
   "closure": {
-    "S4": "verified locally, published48/48; actual remote pending",
-    "T27": "open; S4 until remote verification",
+    "S4": "closed after actual fetched P1 802fe1fe byte verification",
+    "T27": "open; S5 edit/RichEdit/HotKey admitted",
     "M0": "fixed"
   }
 }

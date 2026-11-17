@@ -309,3 +309,5 @@
 - [T27 S3实际远端](evidence/t27-s3-remote.json)：32变更/八文件实际fetch字节验证与9个旧行尾差异。
 
 - [T27 S4静态/分组](evidence/t27-s4-static-group.json)：固定源/原图及17角色有限审计、实现和实际交付证据（当前审计阶段）。
+
+- [T27 S4实际远端](evidence/t27-s4-remote.json)：批量对象复核30变更/八文件，1187输入和9个旧行尾差异。

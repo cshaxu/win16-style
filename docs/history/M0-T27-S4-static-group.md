@@ -54,3 +54,5 @@ dev-04终结：新增group对齐夹具重启用后未重新capture，读取旧di
 普通CreateWindowEx和对话框后续完成使用同一控件对象，未引入第二套钩子、状态或传播。删掉按钮私有DrawState/父刷实现，实际多个消费者复用；产品继续负责原API装配/观察时点，不将API hook清单放入年代库。原Win3.x图形头/renderer及来源声明未改。
 
 本地交付：同源双宽干净C17/GCC/Ninja/ccache，x86 912hit/3miss，x64 1000hit/3miss；包/依赖/原资源检查通过。先发布assets根/O:/winnt后48/48实际包聚焦通过，无skip；保留全部开发失败，未把fixture问题追写为产品成功。字形/物理输入/其他变体边界不扩大；S3/S2全T仍未等于T27控件parity全部完成。归档后立即回收正式3个scratch（含两处备份）和所有已完成开发/参考scratch，稳定Ninja/ccache保留。S4待提交推送及实际远端复核，不提前关闭。
+
+P1 802fe1fe已push/fetch，[实际远端](../etc/evidence/t27-s4-remote.json)30变更/八文件字节一致；全部1187输入仅9个既有行尾转换，使用单次cat-file --batch读取，2.26秒完成，避免逐文件启动Git进程。S4有限条件满足，P2仅复核/关闭并自动准入固定S5；src/tests/tools/CMake/assets树不变，不重复构建发布。T27保持开放，M0固定。
