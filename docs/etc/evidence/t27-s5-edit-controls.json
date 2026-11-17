@@ -1,6 +1,6 @@
 {
   "task": "M0 T27 S5",
-  "stage": "verified locally; published eight then62 process tests, explicit client-print subskips; push/remote pending",
+  "stage": "closed after actual fetched P1 verification; finite edit frame/stock brush scope, explicit client-print skips",
   "reference_commit": "fd809a81098565b33f52d0f65925159de8f4c337",
   "working_source_sha256": {
     "ntos/w32/ntuser/client/editec.c": "f2a78523d7f4bec2024c0303dd0b1a6a60ea2b58886ffda264c736b744931d73",
@@ -4166,5 +4166,5 @@
     "governance": "PASS plus13 rejection self-tests",
     "diff_check": "passed"
   },
-  "remote_evidence": "pending actual fetched P1"
+  "remote_evidence": "t27-s5-remote.json"
 }

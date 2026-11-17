@@ -234,7 +234,7 @@
     "isolated_resource_modes": 8,
     "startup_development_revised_cases": 4,
     "public_boundaries": "Both architectures:4 process archives and23 neutral style archives passed; original5 headers/notice and18 embedded tables retained; ninja dependency traces accept only copied source/compiler roots, no siblings.",
-    "actual_remote": "pending"
+    "actual_remote": "evidence/t27-s5-remote.json; P1 8325ccbb8e710687dfa94de2fc0dcc9ba8312746;25 changed paths/eight binary files exact;1191 inputs, only9 disclosed baseline line-ending conversions; one batch2.28s"
   },
   "validation": {
     "physical_keyboard_mouse": "not claimed",
@@ -251,8 +251,8 @@
     ]
   },
   "closure": {
-    "S5": "pending fetched remote verification",
-    "T27": "open",
+    "S5": "closed after actual fetched P1 verification",
+    "T27": "open; S6 ListBox/ComboBox admitted",
     "M0": "fixed"
   }
 }
