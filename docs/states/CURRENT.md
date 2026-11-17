@@ -6,7 +6,7 @@ M0 T26开放，按[三层架构与14个S规划](../proposals/style-library-reorg
 
 [S5交付](../history/M0-T26-S5-runtime.md)b08d601d已实际fetch并逐blob复核37个变更；同快照八文件先发布assets根/O:/winnt，随后118项去重实际包回归通过。另2项DWM旧失败与S4一致，不计通过。见[开发证据](../etc/evidence/t26-s5-runtime.json)与[最终交付](../etc/evidence/t26-s5-delivery.json)。双宽各17个公共样式归档门禁通过，1005个源码/构建/测试/工具输入一致，ABI及原资源保留。
 
-S5运行时module/请求/通知/late批次已公共化，产品侧净减少105行。API创建链仍由产品attachment/window_titles拥有，明确按S11与dialog装配迁application/lifecycle，不称其为纯业务或遗漏；全局session/phase与管理协调已由S6提取并交付。已知失败/未覆盖见TODO及下方历史事实，S14统一复核。
+S5运行时module/请求/通知/late批次已公共化，产品侧净减少105行。S11已将CBT/返回/pending与首次show事务迁application/lifecycle/creation，产品window_titles的API调用scope与dialog装配仍在同S继续，不称其为纯业务或遗漏；全局session/phase与管理协调已由S6提取并交付。已知失败/未覆盖见TODO及下方历史事实，S14统一复核。
 
 S6已将session/control/start/worker/late/attach/manager/receiver/host/owner/trace迁入公共层并接入产品，删除14个产品C/H文件及六个空转发，必要线程导出合并至hook装配。927项来源回执、原资源及双宽各18个样式归档门禁通过。沙箱外同一自有目标12项原生接入全部通过，确认此前拒绝与AppContainer环境有关，未改生产策略；原沙箱失败保留在[开发证据](../etc/evidence/t26-s6-global-development.json)。
 
@@ -41,7 +41,7 @@ S10交付见[实施记录](../history/M0-T26-S10-extended-controls.md)、[归属
 
 S10正式八文件已发布assets根/O:/winnt并从远端逐blob复核；同快照干净构建约248/307秒、ccache直接818/906命中各miss68。源码/资源/ABI及双宽各4进程/21样式归档通过；最后EOF格式规范化的双宽编译对象字节一致，未重复整包发布。S10全部当前scratch已归档清理，保留稳定.ninja/.ccache，无本S在用构建/测试。
 
-S11初始110项已按路径冻结（74生产、34测试、2构建/工具），尚未逐项review或实施；后续新增依赖显式补表并反查全部改动，不重演漏列共享消费者。无S11源码/二进制变化、scratch或运行任务，不把准入和冻结当作已经公共化。
+S11有限118/118输入已分类，另18个显式新增输出；创建/观察/COM/file/combo事务实际下沉并消费，旧scope/产品TLS/字段view和五个私有转发已删除。双宽干净整包及各22样式/4进程归档、604个生产/工具输入与快照一致、1066回执/原资源/ABI门禁通过。八文件已先发布assets根/O:/winnt，随后91个有限case身份经验证：首67中65过、2个synthetic provider误计IME helper，保留原断言修正自建目标资格后两宽原生复测通过；另20接受结果及4 scope均过，无skip，不冒称首轮全过或物理操作。产品八文件不因测试纠正而变更；头自包含失败和runner旧路径错误均完整保留，详见[交付证据](../etc/evidence/t26-s11-delivery.json)。构建/探针/测试副本已归档核验清理，保留稳定缓存；仅发布备份暂留至远端复核。当前verified locally，尚待提交推送/实际远端后收口S11并自动S12。原dialog_scope激活NULL旧失败仍由S14接收，S12现代与S13字体/GDI范围不提前称完成。
 
 ## Identifier State
 

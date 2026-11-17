@@ -29,7 +29,7 @@
 #include "lib-win32-style/application/dialog/message_observer.h"
 #include "lib-win32-style/access/runtime/window_hook.h"
 #include "lib-win32-style/application/window/window_identity.h"
-#include "lib-win32-style/application/lifecycle/creation_pending.h"
+#include "lib-win32-style/application/lifecycle/creation.h"
 #include "../lib-win32/process-hook/unwind.h"
 #include "status_theme.h"
 #include "../lib-win32-style/appearance/win3x/control/month_text.h"
@@ -45,54 +45,8 @@
 #include "attachment.h"
 #include "window_thread.h"
 
-/* This coordinator composes the one existing renderer. It observes only
- * creation inside explicit caller scopes; it never scans a desktop or infers
- * task policy from an owner, title, executable name or a process-wide switch. */
-typedef win32_style_creation_pending pending_window;
-struct ntw16s_creation_scope {
-    struct ntw16s_creation_scope *previous;
-    DWORD thread;
-    BOOL enabled;
-#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-    BOOL owns_return_hook,suspended_return_hook;
-#endif
-    pending_window *pending;
-    ntw16s_creation_result result;
-};
-
-static _Thread_local ntw16s_creation_scope *current;
 static _Thread_local style_runtime_paint_manager paint_runtime;
 static const style_runtime_observation *current_observation(void){return paint_runtime.paint?&paint_runtime.paint->observation:NULL;}
-static _Thread_local HHOOK creation_return_hook;
-static _Thread_local HHOOK creation_before_hook;
-#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-static LRESULT CALLBACK creation_return(int,WPARAM,LPARAM);
-static LRESULT creation_observe(int,WPARAM,LPARAM,BOOL);
-static _Thread_local void (*creation_dialog_observer)(HWND);
-void (*ntw16s_creation_dialog_observer(void (*observer)(HWND)))(HWND)
-{
-    void (*previous)(HWND)=creation_dialog_observer;
-    creation_dialog_observer=observer;return previous;
-}
-static LRESULT CALLBACK creation_subclass(HWND w,UINT message,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
-{
-    (void)id;(void)data;
-    LRESULT result=DefSubclassProc(w,message,a,b);
-    if(message==WM_CREATE || message==WM_INITDIALOG || message==WM_SHOWWINDOW ||
-        message==WM_WINDOWPOSCHANGED || message==WM_NCDESTROY){
-        CWPRETSTRUCT returned={.lResult=result,.lParam=b,.wParam=a,.message=message,.hwnd=w};
-        creation_observe(0,0,(LPARAM)&returned,TRUE);
-    }
-    if(message==WM_INITDIALOG && IsWindow(w) && creation_dialog_observer){
-        DWORD error=GetLastError();creation_dialog_observer(w);SetLastError(error);
-    }
-    if(message==WM_NCDESTROY || message==WM_INITDIALOG ||
-        (message==WM_CREATE && !style_control_class_is(w,L"#32770")))
-        RemoveWindowSubclass(w,creation_subclass,(UINT_PTR)creation_subclass);
-    return result;
-}
-#endif
-
 
 /* Status frames are drawn by the native common control before text, icons
  * and WM_DRAWITEM. A per-message snapshot makes nested unrelated drawing a
@@ -497,173 +451,34 @@ LRESULT CALLBACK Ntw16sWindowThreadHook(int code,WPARAM wp,LPARAM lp)
     style_window_hook_handle(code,lp,&busy,&spec);
     LRESULT result=CallNextHookEx(NULL,code,wp,lp);SetLastError(saved);return result;
 }
-static LRESULT CALLBACK creation_before(int code,WPARAM p,LPARAM l)
+/* Creation ownership belongs to the public transaction; these operations
+ * select this renderer's existing theme and attachment behavior. */
+static BOOL creation_prepare(HWND window,DWORD style)
 {
-    ntw16s_creation_scope *scope=current;DWORD saved=GetLastError();
-    if(code==HCBT_CREATEWND && scope && scope->enabled){
-        const CBT_CREATEWNDW *create=(const CBT_CREATEWNDW *)l;
-        pending_window *pending=win32_style_creation_add(&scope->pending,(HWND)p,(DWORD)create->lpcs->style);
-        if(!pending){scope->result.failure=ERROR_NOT_ENOUGH_MEMORY;return 1;}
-#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-        if(!creation_return_hook && !SetWindowSubclass((HWND)p,creation_subclass,(UINT_PTR)creation_subclass,0)){
-            scope->result.failure=GetLastError()?GetLastError():ERROR_GEN_FAILURE;return 1;
-        }
-#endif
-        if(class_is((HWND)p,L"LISTBOX") || class_is((HWND)p,L"ComboLBox") ||
-           (class_is((HWND)p,L"EDIT") && (pending->style&ES_MULTILINE))){
-            if(!style_theme_capture((HWND)p)){
-                scope->result.failure=GetLastError();return 1;
-            }
-        }else if((pending->style&WS_CHILD) && !style_theme_stage((HWND)p)){
-            scope->result.failure=GetLastError();return 1;
-        }
-    }
-    SetLastError(saved);return CallNextHookEx(NULL,code,p,l);
+    if(class_is(window,L"LISTBOX") || class_is(window,L"ComboLBox") ||
+       (class_is(window,L"EDIT") && (style&ES_MULTILINE)))return style_theme_capture(window);
+    return !(style&WS_CHILD) || style_theme_stage(window);
 }
-#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-static LRESULT creation_observe(int code,WPARAM p,LPARAM l,BOOL synthetic)
+static BOOL creation_install(HWND window,DWORD style)
+{return style_theme_commit(window) && install_created(window,style);}
+static BOOL creation_attached(HWND window){return lookup(window)!=NULL;}
+static void creation_unsupported(HWND window)
 {
-    LRESULT result=synthetic?0:CallNextHookEx(NULL,code,p,l);DWORD saved=GetLastError();
+    ntw16s_theme_remove(window,NULL);
+    if(class_is(window,L"COMBOBOX")){
+        COMBOBOXINFO info={.cbSize=sizeof(info)};
+        if(ntw16s_native_get_combo_info(window,&info))ntw16s_theme_remove(info.hwndList,NULL);
+    }
+}
+const style_creation_ops ntw16s_creation_ops={creation_prepare,creation_install,creation_attached,
+    style_theme_cancel_stage,creation_unsupported,
+#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
+    TRUE
 #else
-static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
-{
-    LRESULT result=CallNextHookEx(NULL,code,p,l);DWORD saved=GetLastError();
+    FALSE
 #endif
-    ntw16s_creation_scope *scope=current;
-    if(code>=0 && scope && scope->enabled){
-        const CWPRETSTRUCT *m=(const CWPRETSTRUCT *)l;
-        BOOL created=m->message==WM_CREATE && m->lResult!=-1;
-        /* Dialog managers finish layout and format their caption during
-         * WM_INITDIALOG. Attach after that native initialization (ShellAbout
-         * also formats its caption there); never rewrite application text.
-         * Keep its pending style until the real dialog initialization exits. */
-        if(created && class_is(m->hwnd,L"#32770")){
-            SetLastError(saved);return result;
-        }
-        if(m->message==WM_NCDESTROY){pending_window *pending=win32_style_creation_take(&scope->pending,m->hwnd);style_theme_cancel_stage(m->hwnd);free(pending);}
-        /* Some dialogs show themselves and run a nested loop inside
-         * WM_INITDIALOG. Its return may be delayed until the application exits.
-         * A completed first-show notification is also a safe boundary, but
-         * only for a captioned top-level dialog owned by this creation chain.
-         * Mark its pending node before installation can reenter USER. */
-        BOOL first_show=(m->message==WM_SHOWWINDOW && m->wParam) ||
-            (m->message==WM_WINDOWPOSCHANGED && m->lParam &&
-             (((const WINDOWPOS *)m->lParam)->flags&SWP_SHOWWINDOW));
-        ntw16s_creation_scope *owner=scope;
-        if(first_show){
-            DWORD style=(DWORD)GetWindowLongPtrW(m->hwnd,GWL_STYLE);
-            first_show=(style&WS_VISIBLE) && !(style&WS_CHILD) &&
-                (style&WS_CAPTION)==WS_CAPTION && class_is(m->hwnd,L"#32770");
-            if(first_show){
-                for(;owner;owner=owner->previous){
-                    pending_window *pending=win32_style_creation_find(owner->pending,m->hwnd);
-                    if(owner->enabled && pending && !pending->settled)break;
-                }
-                first_show=owner!=NULL;
-            }
-        }
-        if((created || m->message==WM_INITDIALOG || first_show) && IsWindow(m->hwnd)){
-            if(!first_show)owner=scope;
-            pending_window *pending;
-            if(first_show){
-                pending=win32_style_creation_find(owner->pending,m->hwnd);
-                if(pending)pending->settled=TRUE;
-            }else pending=win32_style_creation_take(&owner->pending,m->hwnd);
-            /* A first-show attachment has already completed this creation.
-             * In particular, do not undo an explicit removal by attaching
-             * again when the delayed initializer finally returns. */
-            if(!first_show && pending && pending->settled && pending->installed){free(pending);SetLastError(saved);return result;}
-            DWORD style=created?(DWORD)((const CREATESTRUCTW *)m->lParam)->style:
-                (DWORD)GetWindowLongPtrW(m->hwnd,GWL_STYLE);
-            if(pending){style=pending->style;if(!first_show)free(pending);}
-            BOOL already=lookup(m->hwnd)!=NULL;
-            BOOL installed=style_theme_commit(m->hwnd) && install_created(m->hwnd,style);
-            if(installed){
-                if(first_show && win32_style_creation_contains(owner->pending,pending,m->hwnd))pending->installed=TRUE;
-                if(!already && lookup(m->hwnd))++owner->result.installed;
-            }else{
-                DWORD error=GetLastError();
-                if(error==ERROR_NOT_SUPPORTED){
-                    ++owner->result.unsupported;ntw16s_theme_remove(m->hwnd,NULL);
-                    if(class_is(m->hwnd,L"COMBOBOX")){
-                        COMBOBOXINFO info={.cbSize=sizeof(info)};
-                        if(ntw16s_native_get_combo_info(m->hwnd,&info))ntw16s_theme_remove(info.hwndList,NULL);
-                    }
-                }
-                else if(!owner->result.failure)owner->result.failure=error?error:ERROR_GEN_FAILURE;
-            }
-            if(owner->result.failure && m->message==WM_INITDIALOG)
-                EndDialog(m->hwnd,-1);
-        }
-    }
-    SetLastError(saved);return result;
-}
-#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-static LRESULT CALLBACK creation_return(int code,WPARAM p,LPARAM l)
-{
-    LRESULT result=creation_observe(code,p,l,FALSE);
-    if(code>=0 && l && ((const CWPRETSTRUCT *)l)->message==WM_INITDIALOG && creation_dialog_observer){
-        HWND w=((const CWPRETSTRUCT *)l)->hwnd;DWORD error=GetLastError();
-        if(IsWindow(w))creation_dialog_observer(w);
-        SetLastError(error);
-    }
-    return result;
-}
-static ntw16s_creation_scope *creation_begin(BOOL enabled,BOOL dialog)
-#else
+};
 ntw16s_creation_scope *__cdecl Ntw16sCreationBegin(BOOL enabled)
-#endif
-{
-    ntw16s_creation_scope *scope=calloc(1,sizeof(*scope));
-    if(!scope){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return NULL;}
-    if(!current){
-        creation_before_hook=SetWindowsHookExW(WH_CBT,creation_before,NULL,GetCurrentThreadId());
-        if(!creation_before_hook){free(scope);return NULL;}
-#ifndef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-        creation_return_hook=style_message_observer_begin(creation_return);
-        if(!creation_return_hook){DWORD error=GetLastError();UnhookWindowsHookEx(creation_before_hook);creation_before_hook=NULL;free(scope);SetLastError(error);return NULL;}
-#endif
-    }
-#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-    if(dialog && creation_return_hook){
-        if(!UnhookWindowsHookEx(creation_return_hook)){DWORD error=GetLastError();free(scope);SetLastError(error);return NULL;}
-        creation_return_hook=NULL;scope->suspended_return_hook=TRUE;
-    }
-    if(!dialog && !creation_return_hook){
-        creation_return_hook=style_message_observer_begin(creation_return);
-        if(!creation_return_hook){DWORD error=GetLastError();if(!current){UnhookWindowsHookEx(creation_before_hook);creation_before_hook=NULL;}free(scope);SetLastError(error);return NULL;}
-        scope->owns_return_hook=TRUE;
-    }
-#endif
-    scope->thread=GetCurrentThreadId();scope->enabled=enabled;
-    scope->previous=current;current=scope;return scope;
-}
-#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-ntw16s_creation_scope *__cdecl Ntw16sCreationBegin(BOOL enabled)
-{return creation_begin(enabled,FALSE);}
-ntw16s_creation_scope *ntw16s_creation_begin_dialog(BOOL enabled)
-{return creation_begin(enabled,TRUE);}
-#endif
+{return style_creation_begin(enabled,FALSE,&ntw16s_creation_ops);}
 BOOL __cdecl Ntw16sCreationEnd(ntw16s_creation_scope *scope,ntw16s_creation_result *result)
-{
-    if(!scope || scope!=current){SetLastError(ERROR_INVALID_STATE);return FALSE;}
-    if(scope->thread!=GetCurrentThreadId()){SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;}
-    current=scope->previous;if(result)*result=scope->result;
-    while(scope->pending){pending_window *pending=scope->pending;scope->pending=pending->next;
-#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-        if(IsWindow(pending->window))RemoveWindowSubclass(pending->window,creation_subclass,(UINT_PTR)creation_subclass);
-#endif
-        style_theme_cancel_stage(pending->window);free(pending);}
-#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-    if(scope->owns_return_hook){style_message_observer_end(creation_return_hook);creation_return_hook=NULL;}
-    if(scope->suspended_return_hook){
-        creation_return_hook=style_message_observer_begin(creation_return);
-        if(!creation_return_hook){DWORD error=GetLastError()?GetLastError():ERROR_GEN_FAILURE;
-            if(result && !result->failure)result->failure=error;
-            if(current && !current->result.failure)current->result.failure=error;}
-    }
-#endif
-    if(!current){style_message_observer_end(creation_return_hook);creation_return_hook=NULL;
-        UnhookWindowsHookEx(creation_before_hook);creation_before_hook=NULL;}
-    free(scope);return TRUE;
-}
+{return style_creation_end(scope,result);}

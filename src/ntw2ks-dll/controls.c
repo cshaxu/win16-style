@@ -8,6 +8,7 @@
 #include "lib-win32-style/appearance/win2000/window/frame.h"
 #include "lib-win32-style/application/lifecycle/global_window.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
+#include "lib-win32-style/application/dialog/observation.h"
 #include "lib-win32-style/application/dialog/dialog_hook.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/window/window_identity.h"
@@ -70,18 +71,13 @@ static LRESULT CALLBACK dialog_created(int code,WPARAM wp,LPARAM lp)
     if(event)attach_frame(event->hwnd);
     SetLastError(incoming);return CallNextHookEx(NULL,code,wp,lp);
 }
-static void dialog_scope_end(void *context)
-{
-    HHOOK hook=*(HHOOK *)context;
-    style_message_observer_end(hook);
-}
-#define CLASSIC_DIALOG_BEGIN(state,incoming) ((void)(incoming),*(state)=style_message_observer_begin(dialog_created),TRUE)
+#define CLASSIC_DIALOG_BEGIN(state,incoming) ((void)(incoming),style_dialog_observation_begin(state,NULL,dialog_created,FALSE))
 #define CLASSIC_DIALOG_PREPARE(state,incoming) ((void)(state),SetLastError(incoming))
 #define CLASSIC_DIALOG_FINISH(state,modal,result,error,fail) do { \
     (void)(state);(void)(error);if(!(modal) && (result))attach_frame((HWND)(result)); \
 } while(0)
 #define DIALOG_HOOK(NAME,TYPE,RET,MODAL,FAIL) \
-    STYLE_DIALOG_HOOK(NAME,(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param),(instance,name,parent,proc,param),RET,FAIL,MODAL,HHOOK,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,dialog_scope_end,CLASSIC_DIALOG_FINISH)
+    STYLE_DIALOG_HOOK(NAME,(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param),(instance,name,parent,proc,param),RET,FAIL,MODAL,style_dialog_observation,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_DIALOG_FINISH)
 DIALOG_HOOK(CreateDialogParamA,LPCSTR,HWND,FALSE,NULL)
 DIALOG_HOOK(CreateDialogParamW,LPCWSTR,HWND,FALSE,NULL)
 DIALOG_HOOK(CreateDialogIndirectParamA,LPCDLGTEMPLATEA,HWND,FALSE,NULL)
@@ -96,7 +92,7 @@ DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,TRUE,-1)
     (void)(state);(void)(error);if((modeless) && (result))attach_frame((HWND)(uintptr_t)(result)); \
 } while(0)
 #define MESSAGE_HOOK(NAME,ARGS,CALL) \
-    STYLE_DIALOG_HOOK(NAME,ARGS,CALL,int,0,FALSE,HHOOK,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,dialog_scope_end,CLASSIC_PARAM_FINISH)
+    STYLE_DIALOG_HOOK(NAME,ARGS,CALL,int,0,FALSE,style_dialog_observation,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_PARAM_FINISH)
 MESSAGE_HOOK(MessageBoxA,(HWND owner,LPCSTR text,LPCSTR title,UINT type),(owner,text,title,type))
 MESSAGE_HOOK(MessageBoxW,(HWND owner,LPCWSTR text,LPCWSTR title,UINT type),(owner,text,title,type))
 MESSAGE_HOOK(MessageBoxExA,(HWND owner,LPCSTR text,LPCSTR title,UINT type,WORD language),(owner,text,title,type,language))
@@ -106,7 +102,7 @@ MESSAGE_HOOK(MessageBoxIndirectW,(const MSGBOXPARAMSW *parameters),(parameters))
 
 /* Find and replace create modeless dialogs inside COMDLG32. */
 #define FIND_HOOK(NAME,TYPE) \
-    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),HWND,NULL,TRUE,HHOOK,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,dialog_scope_end,CLASSIC_PARAM_FINISH)
+    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),HWND,NULL,TRUE,style_dialog_observation,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_PARAM_FINISH)
 FIND_HOOK(FindTextA,FINDREPLACEA)
 FIND_HOOK(FindTextW,FINDREPLACEW)
 FIND_HOOK(ReplaceTextA,FINDREPLACEA)
@@ -114,7 +110,7 @@ FIND_HOOK(ReplaceTextW,FINDREPLACEW)
 
 /* Common dialogs can create their window without exported dialog calls. */
 #define COMMON_MODAL_HOOK(NAME,TYPE) \
-    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),BOOL,FALSE,FALSE,HHOOK,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,dialog_scope_end,CLASSIC_PARAM_FINISH)
+    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),BOOL,FALSE,FALSE,style_dialog_observation,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_PARAM_FINISH)
 COMMON_MODAL_HOOK(GetOpenFileNameA,OPENFILENAMEA)
 COMMON_MODAL_HOOK(GetOpenFileNameW,OPENFILENAMEW)
 COMMON_MODAL_HOOK(GetSaveFileNameA,OPENFILENAMEA)

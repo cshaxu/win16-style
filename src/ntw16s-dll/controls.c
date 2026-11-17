@@ -24,6 +24,7 @@ BOOL ntw16s_vb_user_edge_dormant(HWND);
 #include "../lib-win32-style/appearance/win3x/control/control_state.h"
 #include "lib-win32-style/application/control/notify.h"
 #include "lib-win32-style/application/control/combo.h"
+#include "lib-win32-style/application/control/dialog_combo.h"
 #include "../lib-win32-style/appearance/win3x/control/native_presentation.h"
 #include "../lib-win32-style/appearance/win3x/control/control_dispatch.h"
 #include "../lib-win32-style/appearance/win3x/control/control_guard.h"
@@ -77,7 +78,6 @@ static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT
 static BOOL is_exact_native_button(HWND w)
 {WCHAR name[32];return GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"BUTTON");}
 
-static _Thread_local HWND common_dialog_combo_pending;
 
 BOOL win16_style_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address)
 {return win16_control_checklist_frame(dc,rect,type,flags,address,ntw16s_checklist_draw_target);}
@@ -216,15 +216,27 @@ static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL ori
     const win16_control_install_services services={control_proc,&combo_operations,ntw16s_vcl_combo_candidate,
         ntw16s_native_get_combo_info,win16_style_control_install,win16_style_control_remove};
     return win16_control_install(w,palette,edit,original_border,frame_bars,tab_count,tabs,creation_owner,cancelled,
-        common_dialog_combo_pending,&services);
+        style_control_dialog_combo_pending(),&services);
 }
 /* Called only for the known owner-drawn drive combo in a system old-style
  * file dialog. Native item painting and item data stay with COMDLG32. */
-BOOL win16_style_common_dialog_combo_install(HWND w,const void *owner)
+static BOOL dialog_combo_apply(HWND window,style_dialog_combo_part part,BOOL border,const void *owner)
 {
-    const win16_control_dialog_combo_services services={install,ntw16s_native_get_combo_info,
-        win16_style_grid_install_created,win16_style_list_scrollbar_enable,style_control_is_edit,win16_style_control_install_created};
-    return win16_control_dialog_combo_install(w,owner,&common_dialog_combo_pending,&services);
+    switch(part){
+    case STYLE_DIALOG_COMBO:
+        return install(window,NULL,FALSE,FALSE,FALSE,-1,NULL,owner,NULL);
+    case STYLE_DIALOG_COMBO_LIST:
+        if(!win16_style_grid_install_created(window,NULL,owner,NULL))return FALSE;
+        return win16_style_list_scrollbar_enable(window);
+    case STYLE_DIALOG_COMBO_EDIT:
+        return win16_style_control_install_created(window,TRUE,border,FALSE,NULL,owner,NULL);
+    }
+    return FALSE;
+}
+BOOL win16_style_common_dialog_combo_install(HWND window,const void *owner)
+{
+    const style_dialog_combo_ops ops={dialog_combo_apply,ntw16s_native_get_combo_info};
+    return style_control_dialog_combo_install(window,owner,&ops);
 }
 BOOL win16_style_control_install(HWND w,const win16_style_palette *palette)
 {return install(w,palette,FALSE,FALSE,FALSE,-1,NULL,NULL,NULL);}

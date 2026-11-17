@@ -20,6 +20,7 @@ static HHOOK WINAPI scope_set_hook(int type,HOOKPROC callback,HINSTANCE module,D
 #endif
 #define calloc scope_calloc
 #define free scope_free
+#include "lib-win32-style/application/lifecycle/creation.c"
 #include "../../src/ntw16s-dll/attachment.c"
 #undef calloc
 #undef free
@@ -27,12 +28,12 @@ static HHOOK WINAPI scope_set_hook(int type,HOOKPROC callback,HINSTANCE module,D
 #undef SetWindowsHookExW
 #endif
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"DIALOG_SCOPE_FAIL line=%u error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
-static BOOL nested,detach,unsupported;static unsigned failures,observed;static HWND anchor;
+static BOOL nested,detach,unsupported;static unsigned failures,observed,activation_failures;static HWND anchor;
 static void finish(HWND w)
 {
-    if(!Ntw16sWindowAttached(w))++failures;
+    if(!Ntw16sWindowAttached(w)){++failures;fprintf(stderr,"SCOPE_NOT_ATTACHED window=%p\n",(void *)w);}
     if(detach && (!Ntw16sWindowRemove(w) || Ntw16sWindowAttached(w)))++failures;
-    ++observed;if(GetActiveWindow()!=w)++failures;EndDialog(w,73);
+    ++observed;HWND active=GetActiveWindow();if(active!=w){++activation_failures;fprintf(stderr,"SCOPE_NOT_ACTIVE window=%p active=%p\n",(void *)w,(void *)active);}EndDialog(w,73);
 }
 static VOID CALLBACK finish_timer(HWND w,UINT m,UINT_PTR id,DWORD time)
 {(void)m;(void)time;KillTimer(w,id);finish(w);}
@@ -44,7 +45,8 @@ static INT_PTR CALLBACK dialog(HWND w,UINT m,WPARAM a,LPARAM b)
     LONG_PTR original_ex=GetWindowLongPtrW(w,GWL_EXSTYLE);
     if(unsupported){SetWindowLongPtrW(w,GWL_EXSTYLE,original_ex|WS_EX_LAYERED);SetLayeredWindowAttributes(w,0,255,LWA_ALPHA);}
     ShowWindow(w,SW_HIDE);ShowWindow(w,SW_SHOW);UpdateWindow(w);
-    if(!IsWindowVisible(w) || Ntw16sWindowAttached(w)==unsupported)++failures;
+    BOOL visible=IsWindowVisible(w),attached_now=Ntw16sWindowAttached(w);
+    if(!visible || attached_now==unsupported){++failures;fprintf(stderr,"SCOPE_SHOW_CHECK visible=%d attached=%d unsupported=%d\n",visible,attached_now,unsupported);}
     if(inner){ntw16s_creation_result result={0};if(!Ntw16sCreationEnd(inner,&result) || result.failure || result.installed)++failures;}
     if(unsupported){SetWindowLongPtrW(w,GWL_EXSTYLE,original_ex);if(!SetTimer(w,1,10,finish_timer))++failures;return TRUE;}
     finish(w);return TRUE;
@@ -110,7 +112,7 @@ static int worker(int argc,WCHAR **argv)
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
     {
         ntw16s_creation_scope *outer=Ntw16sCreationBegin(TRUE);CHECK(outer && creation_return_hook);
-        ntw16s_creation_scope *inner=ntw16s_creation_begin_dialog(TRUE);CHECK(inner && !creation_return_hook);
+        ntw16s_creation_scope *inner=style_creation_begin(TRUE,TRUE,&ntw16s_creation_ops);CHECK(inner && !creation_return_hook);
         ntw16s_creation_result ir={0},or={0};fail_return_hook=TRUE;
         CHECK(Ntw16sCreationEnd(inner,&ir) && ir.failure==ERROR_NOT_ENOUGH_MEMORY && !creation_return_hook);
         CHECK(Ntw16sCreationEnd(outer,&or) && or.failure==ERROR_NOT_ENOUGH_MEMORY && !live && !current && !creation_before_hook);
@@ -137,6 +139,8 @@ static int worker(int argc,WCHAR **argv)
     scope=Ntw16sCreationBegin(TRUE);CHECK(scope);fail_next=TRUE;
     CHECK(!CreateWindowW(c.lpszClassName,L"pending OOM",WS_OVERLAPPEDWINDOW,0,0,100,100,NULL,NULL,c.hInstance,NULL));
     ntw16s_creation_result failed={0};CHECK(Ntw16sCreationEnd(scope,&failed) && failed.failure==ERROR_NOT_ENOUGH_MEMORY && !live && !current && !creation_before_hook && !creation_return_hook);CHECK(UnregisterClassW(c.lpszClassName,c.hInstance));
+    printf("DIALOG_SCOPE_LIFECYCLE_OK bits=%u dialogs=12 allocations=0 activation_failures=%u\n",(unsigned)(sizeof(void*)*8),activation_failures);
+    CHECK(!activation_failures);
     printf("DIALOG_SCOPE_OWNERSHIP_OK bits=%u dialogs=12 nested_owner=1 detach=1 failed_create=1 unsupported_retry=1 owner_callback_destroy=2 owner_callback_mutation=2 oom=1 allocations=0\n",(unsigned)(sizeof(void*)*8));return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}

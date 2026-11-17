@@ -2,6 +2,8 @@
 
 | Source family | Native test adapter |
 | --- | --- |
+| `creation_call` | `lifecycle/creation_call.c` (inactive/prepare retry/once/result priority/native exception cleanup and post-unwind reuse); real window/dialog API consumers |
+| `creation` | `lifecycle/creation.c` (real thread hooks, nested barriers/order, prepare/install/OOM, optional subclass and failed hook restoration); `tests/ntw16s-dll/dialog_scope.c` (actual renderer first-show and delayed initializer); real DLL nested/WNDPROC callers |
 | `instance` | `lifecycle/instance.c`; `tests/lib-win32-style/appearance/win2000/window/instance_lifetime.c`; Win3.x frame/control and modern host production consumers |
 | `present` | `graphics/present.c`; `graphics/present_fault.c`; `graphics/present_print.c`; `tests/ntw16s-dll/win16_style_control_present.c` |
 | `clip` | `graphics/clip.c` (full and nonrectangular clipping, DC mapping restoration, print clip snapshot and failure); Win16 spin paint and color/date print consumers |
@@ -39,6 +41,10 @@
 | `modern_file_dialog` | `dialog/modern_file_dialog.c`; `dialog/modern_file_depth.c` (thread-local nesting and failure cleanup); `tests/lib-win32-style/application/dialog/classic_dialog_link.c` (argument validation) |
 | `classic_shell_folder` | `tests/lib-win32-style/application/dialog/classic_dialog_link.c` (product linkage; interactive browser not covered) |
 | `dialog_primary`, `dialog_v2`, `dialog_customize`, `dialog_ole_window` | `dialog/dialog_adapter.c`; `tests/lib-win32-style/application/dialog/classic_dialog_link.c`; `tests/lib-win32-style/application/dialog/classic_dialog_chrome.c` |
+| `observation` | `dialog/observation.c` (real current-thread hooks, tracked/untracked nesting, inactive barrier, prepare/hook failure, native unwind and post-end silence) |
+| `dialog_combo` | `control/dialog_combo.c` (owned native combo/list/edit, pending identity, nested install, unsupported/main failure, advisory child failures and destruction) |
+| `classic_file_controller` | `dialog/classic_file_controller.c` (same production A/W facades, real owned thread hooks, native result/LastError, custom/multi passthrough, nested state, scope/hook failure, actual native unwind and observer restoration) |
+| `classic_com_controller` | `dialog/classic_com_controller.c` (actual native COM objects through captured production facades: three activation entries, identity/refs, scopes, inactive/experimental options and registration failure); product COM identity consumers |
 | `classic_com_show`, `classic_browse`, `classic_file_live` | `dialog/classic_bridge.c`; `tests/lib-win32-style/application/dialog/classic_dialog_link.c`; `tests/lib-win32-style/application/dialog/classic_dialog_chrome.c` |
 | `classic_file_helpers`, `classic_hidden_files` | `dialog/classic_helpers.c`; `tests/lib-win32-style/application/dialog/classic_dialog_link.c` |
 | `classic_dialog_controls` | `tests/lib-win32-style/application/dialog/classic_dialog_chrome.c` |

@@ -52,7 +52,7 @@ S3已在 `application/lifecycle/instance` 实施GUI根的身份、子类安装/�
 
 S4已将启动接入迁入公共组件：`access/startup`拥有载荷解析、包内模块定位、安装/辅助进程校验及初始化/传播装配，消费者提供模块身份、依赖前缀、会话资格和API准备操作。`lib-win32/process-hook`仍是唯一挂钩后端；静态公共装配不自行引入第二份进程内后端。产品共享DLL的旧导出通过别名和必要ABI适配保留，CLI与自提权策略仍由产品提供。通用创建后激活/等待归`lib-win32/process-launch/lifecycle`；交付状态见CURRENT。
 
-S5将同位宽运行时模块校验、临时线程hook事务、请求/结果与接收重入协调归`access/runtime`；晚期初始化拥有批次、锁、回滚和保留状态，使用公开startup context和调用方注册策略，继续调用唯一process-hook后端。UWP的接入消息处理也归runtime，框架窗口关系判断调用application适配器。产品仅保留模块/协议/动作与实际风格操作；尚在产品中的API创建链（CBT、首次show和延迟WM_INITDIALOG协议）按S11与对话框装配一起归application，不能以S5局部完成声称全T迁移完成。
+S5将同位宽运行时模块校验、临时线程hook事务、请求/结果与接收重入协调归`access/runtime`；晚期初始化拥有批次、锁、回滚和保留状态，使用公开startup context和调用方注册策略，继续调用唯一process-hook后端。UWP的接入消息处理也归runtime，框架窗口关系判断调用application适配器。产品仅保留模块/协议/动作与实际风格操作；S11已将CBT、首次show、延迟WM_INITDIALOG结算与pending/hook资源归application/lifecycle/creation，产品提供完整风格操作及兼容ABI；API调用scope的一次初始化、嵌套创建和错误结算现由application/lifecycle/creation_call拥有；产品保留原生ABI参数适配及年代策略，不能以局部完成声称全T迁移完成。
 
 S7在`application/window`实际实施native_frame、caption_button、messages、install：共同原生状态、GUI实例发布/失败回滚、消息执行及捕获生命周期由公共实现拥有，两风格直接调用。`application/graphics/font_pair`拥有字体对与DPI、失败保留/提交/释放；年代字体及租约释放由renderer提供。普通和现代外框共用字体对象，现代宿主流程仍由S12终整；菜单S8、renderer过渡view和最终注册S13，不把这些交界提前称为完成。当前交付/验证状态由CURRENT管理。
 
@@ -121,3 +121,11 @@ T3 已验证首次注入与同 DLL 自动窗口附着；T4 已实现原生A/W子
 四位宽边/三代、原生创建字段对照和回滚聚焦矩阵，完整回归与任务关闭以CURRENT为准。
 当前核心 DLL 的显式 API 与自动加载边界见
 [核心说明](../../src/ntw16s-dll/README.md)。详细限制和后续证明责任由设计记录承载。
+
+S11进行中的对话框路径已直接消费公共完整proxy，不再构造并行字段指针view；Show的结果/原生回退和既有实验引用展开归dialog。子控件scope的链表/hook/计数和原生过滤、主creation的严格嵌套/屏障/pending/首次show归现有公共根，产品只提供真实风格操作和必要ABI。主事务通过不可变完整操作表借用prepare/install/attached/cancel/unsupported，到scope及其回调结束；普通结束不移除已安装的窗口。Win2000现有post-create observer合同尚未因此被改写为Win3x预创建协议。实际验证、原激活失败及剩余API装配范围以CURRENT/S11证据为准，不表示S11已交付。
+
+S11的`application/dialog/classic_com_controller`现拥有既有COM激活/工厂、线程创建depth、代理/事件资源、消息和显示协调；由产品装配固定会话判断、样式scope、协议字符串和原实验配置。配置值复制到公共根，借用的字符串与callback代码覆盖hook/工厂/proxy的完整存活期；底层patch事务仍由调用方提供，控制器不另建hook后端或物理卸载机制。消息入口直接消费同一公共proxy和message configuration，只为完整导航保留操作回调，删除逐字段/逐消息转发。默认实验开关仍关，完整UI/交付状态见CURRENT，不将原生对象单元测试扩大为所有应用支持。
+
+S11的`application/dialog/classic_file_controller`拥有A/W打开和保存的参数转换、原生返回与LastError结算、嵌套线程状态及观察hook/creation-observer恢复；产品只提供active/scope/chrome及既有observer模式。原应用hook/template、多选及扩展参数沿用既有原生路径，观察hook失败不新增阻断或重试。`application/lifecycle/creation_call`持有固定prepare/active/creation操作上下文、一次初始化和调用结束结算；这些是实际状态所有者，不是新的产品转发层。实际测试与交付状态由CURRENT及S11证据记录。
+
+S11的`application/dialog/observation`统一持有创建调用、当前线程观察hook和可选嵌套目标身份。Win3x font/color组合创建事务与观察；Win2000用NULL创建上下文明确只观察，不改成预创建附着。结束按既有顺序恢复身份、释放本层hook和创建作用域，应用既有呈现不会因结束被移除。classic_file_live操作直接借用同一完整proxy，原生调用可重入并改变active_window，之后读取当前字段；没有另建字段指针视图或并行状态。实际交付状态仍由CURRENT管理。

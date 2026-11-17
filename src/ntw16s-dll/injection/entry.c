@@ -10,9 +10,9 @@ static DWORD prepare_hooks(void *unused)
 {
     (void)unused;LONG status=ntw16s_attach_processes();
     if(!status)status=ntw16s_attach_titles();
-    if(!status)status=ntw16s_attach_file_dialogs();
-    if(!status)status=ntw16s_attach_com_dialogs();
-    if(!status)status=ntw16s_attach_folder_dialogs();
+    if(!status)status=ntw16s_attach_file_dialogs_using(process_hook_startup_attach);
+    if(!status)status=ntw16s_attach_com_dialogs_using(process_hook_startup_attach);
+    if(!status)status=ntw16s_attach_folder_dialogs_using(process_hook_startup_attach);
     return (DWORD)status;
 }
 BOOL ntw16s_bootstrap(void)

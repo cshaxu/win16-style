@@ -266,4 +266,8 @@
 - [T26 S10 整批交付](evidence/t26-s10-delivery.json)：同快照双宽八文件、先发布后测与实际结果，进行中状态按文件记录。
 
 - [T26 S10 实际远端](evidence/t26-s10-remote.json)：192现存blob、28删除路径及同批八文件复核。
-- [T26 S11 创建/对话框有限表](evidence/t26-s11-dialog-audit.json)：初始110项冻结，逐项审计和实施尚待执行。
+- [T26 S11 创建/对话框有限表](evidence/t26-s11-dialog-audit.json)：初始110项及显式补充逐项审计与公共归属，当前完成度以CURRENT为准。
+
+- [T26 S11对话框增量验证](evidence/t26-s11-dialog-development.json)：公共COM、两类创建scope的双宽原生验证、有限原coordinator对照和保留的激活失败；不代表整S交付。
+
+- [T26 S11 整组交付](evidence/t26-s11-delivery.json)：同快照八文件两处发布、91个有限原生case及两项夹具纠正复测、完整初轮失败、源码/归档/资源门禁与逐项摘要；远端复核状态见CURRENT。

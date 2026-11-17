@@ -61,23 +61,3 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     const style_instance_install_ops ops={&install,cancelled,setup_control,NULL};
     return style_instance_install(&s->instance,w,services->control_proc,creation_owner,&ops);
 }
-
-BOOL win16_control_dialog_combo_install(HWND w,const void *owner,HWND *pending,const win16_control_dialog_combo_services *v)
-{
-    HWND previous=*pending;
-    if(!style_control_dialog_combo_valid(w,GetParent(w),style_control_is_combo)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-    *pending=w;
-    BOOL result=v->install(w,NULL,FALSE,FALSE,FALSE,-1,NULL,owner,NULL);
-    *pending=previous;
-    if(result && IsWindow(w)){
-        COMBOBOXINFO info={.cbSize=sizeof(info)};
-        if(v->get_combo_info(w,&info)){
-            if(info.hwndList && v->grid_install(info.hwndList,NULL,owner,NULL))
-                (void)v->list_enable(info.hwndList);
-            if(info.hwndItem && info.hwndItem!=w && v->is_edit(info.hwndItem))
-                (void)v->control_install(info.hwndItem,TRUE,
-                    (GetWindowLongPtrW(info.hwndItem,GWL_STYLE)&WS_BORDER)!=0,FALSE,NULL,owner,NULL);
-        }
-    }
-    return result;
-}

@@ -7,10 +7,9 @@
  * Begin precedes USER creation; End follows it, including exceptional exits.
  * HWND attachments survive End, and release themselves on WM_NCDESTROY.
  * Keep this DLL loaded while scopes, windows or callbacks remain alive. */
-typedef struct ntw16s_creation_scope ntw16s_creation_scope;
-typedef struct ntw16s_creation_result {
-    DWORD installed,unsupported,failure;
-} ntw16s_creation_result;
+#include "../lib-win32-style/application/lifecycle/creation.h"
+typedef style_creation_scope ntw16s_creation_scope;
+typedef style_creation_result ntw16s_creation_result;
 NTW16S_API ntw16s_creation_scope *__cdecl Ntw16sCreationBegin(BOOL enabled);
 NTW16S_API BOOL __cdecl Ntw16sCreationEnd(ntw16s_creation_scope *,ntw16s_creation_result *);
 /* Reports actual automatic installation, not title text or inherited policy. */
@@ -28,6 +27,7 @@ NTW16S_API void __cdecl Ntw16sScrollChanged(HWND);
  * for detach while the active presentation remains locally unthemed. */
 NTW16S_API HRESULT __cdecl Ntw16sSetWindowTheme(HWND,LPCWSTR,LPCWSTR);
 /* Private synchronous renderer bridge; not exported product ABI. */
+extern const style_creation_ops ntw16s_creation_ops;
 struct style_runtime_native_call;
 BOOL ntw16s_static_call_begin(struct style_runtime_native_call *,WNDPROC,HWND,UINT,const void *);
 HFONT ntw16s_static_text_font(HDC,LPCWSTR,int,UINT,const void *);

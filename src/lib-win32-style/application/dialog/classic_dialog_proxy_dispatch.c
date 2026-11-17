@@ -8,8 +8,8 @@ HRESULT style_classic_dialog_proxy_dispatch(style_classic_dialog_proxy *p,style_
     switch(op){
     case STYLE_DIALOG_V2_SHOW:return services->show(p,(HWND)a);
     case STYLE_DIALOG_V2_TYPES:return style_classic_dialog_proxy_types(p,(UINT)a,(const COMDLG_FILTERSPEC *)b);
-    case STYLE_DIALOG_V2_SET_INDEX:return style_classic_file_live_set_filter(p->native,&p->filter_index,(UINT)a);
-    case STYLE_DIALOG_V2_GET_INDEX:return style_classic_file_live_get_filter(p->native,&p->active_window,&p->filter,(UINT *)a);
+    case STYLE_DIALOG_V2_SET_INDEX:return style_classic_file_live_set_filter(p,(UINT)a);
+    case STYLE_DIALOG_V2_GET_INDEX:return style_classic_file_live_get_filter(p,(UINT *)a);
     case STYLE_DIALOG_V2_ADVISE:return services->advise(p,(IFileDialogEvents *)a,(DWORD *)b);
     case STYLE_DIALOG_V2_UNADVISE:return services->unadvise(p,(DWORD)a);
     case STYLE_DIALOG_V2_SET_FOLDER:return services->set_folder(p,(IShellItem *)a);
@@ -18,8 +18,8 @@ HRESULT style_classic_dialog_proxy_dispatch(style_classic_dialog_proxy *p,style_
         if(experimental_events)return style_classic_dialog_proxy_get_selection(p,(IShellItem **)a);
         return IFileDialog2_GetCurrentSelection(p->v2_native,(IShellItem **)a);
     /* Keep the native configuration and the active classic edit synchronized. */
-    case STYLE_DIALOG_V2_SET_NAME:return style_classic_file_live_set_name(p->native,&p->active_window,(LPCWSTR)a);
-    case STYLE_DIALOG_V2_GET_NAME:return style_classic_file_live_get_name(p->native,&p->active_window,(LPWSTR *)a);
+    case STYLE_DIALOG_V2_SET_NAME:return style_classic_file_live_set_name(p,(LPCWSTR)a);
+    case STYLE_DIALOG_V2_GET_NAME:return style_classic_file_live_get_name(p,(LPWSTR *)a);
     case STYLE_DIALOG_V2_TITLE:return style_classic_dialog_proxy_title(p,(LPCWSTR)a);
     case STYLE_DIALOG_V2_LABEL:return style_classic_dialog_proxy_label(p,(LPCWSTR)a,(BOOL)b);
     case STYLE_DIALOG_V2_RESULT:return style_classic_dialog_proxy_result(p,(IShellItem **)a);

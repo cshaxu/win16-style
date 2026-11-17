@@ -202,7 +202,9 @@ done:
     if(!DeleteFileW(path))ok=FALSE;
     return ok;
 }
-static HRESULT fallback_show(void *owner,HWND window){observed_owner=owner;observed_a=(ULONG_PTR)window;return E_ABORT;}
+static HRESULT STDMETHODCALLTYPE fallback_show(IFileDialog *self,HWND window)
+{observed_owner=self;observed_a=(ULONG_PTR)window;return E_ABORT;}
+static HRESULT fallback_scope(HRESULT (*call)(void *),void *context){return call(context);}
 static BOOL test_capture_selection(void)
 {
     WCHAR dir[MAX_PATH],path[MAX_PATH];IShellItem *folder=NULL;PWSTR actual=NULL;BOOL ok=FALSE;
@@ -527,11 +529,12 @@ int main(void)
     style_dialog_primary_init(&primary,&owner,NULL,&unsupported,TRUE,&identity,fake_v2_call);
     IFileSaveDialog *save=(IFileSaveDialog *)&primary;
     if(IFileSaveDialog_Close(save,E_FAIL)!=S_FALSE || observed_op!=STYLE_DIALOG_V2_PRIMARY_CLOSE || (HRESULT)observed_a!=E_FAIL)return 27;
-    IShellItem *show_result=NULL;IShellItemArray *show_results=NULL;BOOL show_completed=TRUE;
-    style_classic_com_show_state show_state={.owner=&owner,.result=&show_result,.results=&show_results,
-        .completed=&show_completed,.session_active=no_session,.show_native=fallback_show};
-    if(style_classic_com_show(&show_state,(HWND)(UINT_PTR)123)!=E_ABORT || show_completed ||
-       observed_owner!=&owner || observed_a!=123)return 28;
+    IFileDialogVtbl show_vtable={.Show=fallback_show};
+    IFileDialog show_native_dialog={.lpVtbl=&show_vtable};
+    style_classic_dialog_proxy show_proxy={.native=&show_native_dialog,.completed=TRUE};
+    const style_classic_com_show_services show_services={.session_active=no_session,.scope=fallback_scope};
+    if(style_classic_com_show(&show_proxy,(HWND)(UINT_PTR)123,&show_services)!=E_ABORT || show_proxy.completed ||
+       observed_owner!=&show_native_dialog || observed_a!=123)return 28;
     UINT browse_base=BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE|BIF_EDITBOX|BIF_VALIDATE;
     struct {UINT input;BOOL callback;style_classic_browse_mode mode;UINT output;} plans[]={
         {browse_base,TRUE,STYLE_CLASSIC_BROWSE_NATIVE,browse_base},

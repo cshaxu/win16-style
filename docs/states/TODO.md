@@ -166,3 +166,5 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 - [ ] TODO(Medium): API创建链仍由产品attachment/window_titles拥有。Owner：T26 S11，结合title creation和dialog统一迁application/lifecycle。Evidence：[S5职责复核](../history/M0-T26-S5-runtime.md)；已有creation_pending/message_observer仅是基础，不是整链共享。Admission：保留FALSE scope屏蔽、首show settle、延迟WM_INITDIALOG、主题stage/commit与EndDialog失败语义，不因与当前私有类型耦合认定不能抽离。
 
 - [ ] TODO(Medium): T26 S10初轮的间歇header像素/现代外框USER计数观察仍须最终复核。Owner：S12现代宿主及S14终审。Evidence：[初轮与定向证据](../etc/evidence/t26-s10-delivery.json)：416项410过/6失败；同线程witness参数问题已证实并只修夹具，文件/容器及DC/图像完整输入24项通过；旧/新有限对照通过但不称修复原USER19/18或旧24像素观察。Admission：有新的像素或资源所有权证据时定位，不盲重试，不放宽断言/改安全设置，不把前后一次相等外推为绝对无泄漏。
+
+- [ ] TODO(Medium): 当前桌面的dialog_scope完整夹具在首个对话框GetActiveWindow返回NULL，激活断言未过；Owner：T26 S14最终桌面复核。Evidence：[S11开发对照](../etc/evidence/t26-s11-dialog-development.json)中当前/HEAD原coordinator在x86/x64均相同，四轮各12组安装/迟返/撤销/失败资源检查成立、live/hooks归零，完整夹具均exit1；不是整旧包重建。Admission：保持原激活断言及禁止私有桌面约束，记录实际输入桌面/激活证据；不能将生命周期子断言通过算完整夹具通过，也不为本重构改变产品焦点策略。

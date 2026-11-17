@@ -1,7 +1,6 @@
 /* Select the older Shell tree for a limited filesystem browse request.
  * Shell owns the dialog and returned PIDL. Other contracts remain native. */
 #include "intercept.h"
-#include "../../lib-win32/process-hook/startup_hooks.h"
 #include "lib-win32-style/application/dialog/classic_browse.h"
 #include "lib-win32-style/application/dialog/classic_dialog_controls.h"
 #include "ntw16s-dll/controls.h"
@@ -33,5 +32,3 @@ LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *))
     if(!error)error=(LONG)attach(&native_browse_w,(void *)browse_w);
     return error;
 }
-
-LONG ntw16s_attach_folder_dialogs(void){return ntw16s_attach_folder_dialogs_using(process_hook_startup_attach);}

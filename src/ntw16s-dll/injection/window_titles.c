@@ -4,6 +4,8 @@
 #include "lib-win32-style/application/dialog/classic_dialog_controls.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
 #include "lib-win32-style/application/dialog/dialog_hook.h"
+#include "lib-win32-style/application/lifecycle/creation_call.h"
+#include "lib-win32-style/application/dialog/observation.h"
 #include "intercept.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "../../lib-win32/process-hook/unwind.h"
@@ -55,7 +57,6 @@ void ntw16s_month_arrow(HTHEME,HDC,int,int,const RECT *,const RECT *,const void 
 
 /* The original trampoline leaves are bound privately to this same DLL.
  * No renderer LoadLibrary/GetProcAddress, GUI allocation or binding in DllMain. */
-static INIT_ONCE title_once=INIT_ONCE_STATIC_INIT;
 static LONG style_ready;
 static __typeof__(&GetScrollInfo) real_get_scroll;
 static __typeof__(&SetScrollInfo) real_set_scroll;
@@ -69,45 +70,21 @@ static BOOL CALLBACK bind_titles(PINIT_ONCE once,void *parameter,void **context)
     ntw16s_status_hooks_enable();
     InterlockedExchange(&style_ready,1);return TRUE;
 }
+static style_creation_context title_context={.once=INIT_ONCE_STATIC_INIT,.prepare=bind_titles,
+    .active=ntw16s_process_session_active,.operations=&ntw16s_creation_ops};
 static const WCHAR menu_owner_property[]=L"Win16Style.T18.MenuOwner";
 static int menu_owner_marker;
 static void mark_menu_owner(HWND w,const void *caller)
 {(void)style_menu_owner_mark(w,caller,L"TPUtilWindow",menu_owner_property,(HANDLE)&menu_owner_marker);}
 
-typedef struct title_scope { ntw16s_creation_scope *creation;DWORD failure;BOOL enabled; } title_scope;
-static BOOL begin_titles(title_scope *scope,BOOL modal)
-{
-    ZeroMemory(scope,sizeof(*scope));
-    if(!ntw16s_process_session_active())return TRUE;
-    if(!InitOnceExecuteOnce(&title_once,bind_titles,NULL,NULL))return FALSE;
-    scope->enabled=TRUE;
-#ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
-    scope->creation=modal?ntw16s_creation_begin_dialog(TRUE):Ntw16sCreationBegin(TRUE);
-#else
-    (void)modal;scope->creation=Ntw16sCreationBegin(TRUE);
-#endif
-    return scope->creation!=NULL;
-}
-static void end_titles(void *data)
-{
-    title_scope *scope=data;
-    ntw16s_creation_result result={0};
-    if(!scope->creation)return;
-    if(!Ntw16sCreationEnd(scope->creation,&result))scope->failure=GetLastError();
-    else scope->failure=result.failure;
-}
+typedef style_creation_call title_scope;
+#define begin_titles(scope,modal) style_creation_call_begin(scope,modal,&title_context)
+#define end_titles style_creation_call_end
 
 /* Shell COM dialogs can create their window without passing the exported
  * CreateWindow entry points. Keep attachment active during their modal Show. */
 HRESULT ntw16s_dialog_style_scope(HRESULT (*callback)(void *),void *context)
-{
-    process_hook_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;
-    if(!callback)return E_INVALIDARG;
-    if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError());
-    PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); {result=callback(context);}
-    PROCESS_HOOK_UNWIND_END(unwind);
-    return scope.failure?HRESULT_FROM_WIN32(scope.failure):result;
-}
+{return style_creation_call_invoke(&title_context,callback,context);}
 
 #define WINDOW_HOOK(S,T) \
 static __typeof__(&CreateWindowEx##S) create_##S; \
@@ -176,60 +153,33 @@ static LRESULT CALLBACK font_dialog_return(int code,WPARAM wparam,LPARAM lparam)
     if(message && style_classic_font_template(message->hwnd))ntw16s_font_dialog_chrome(message->hwnd);
     return CallNextHookEx(NULL,code,wparam,lparam);
 }
-typedef struct font_dialog_scope {title_scope title;HHOOK hook;} font_dialog_scope;
-static void font_dialog_end(void *value)
-{
-    font_dialog_scope *scope=value;
-    style_message_observer_end(scope->hook);
-    end_titles(&scope->title);
-}
-#define FONT_DIALOG_HOOK(NAME, TYPE) \
-static __typeof__(&NAME) real_##NAME; \
-static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{ process_hook_unwind_scope unwind;font_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
-  if(!begin_titles(&scope.title,TRUE))return FALSE; \
-  if(scope.title.enabled)scope.hook=style_message_observer_begin(font_dialog_return); \
-  PROCESS_HOOK_UNWIND_BEGIN(unwind,font_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
-  } PROCESS_HOOK_UNWIND_END(unwind); \
-  if(scope.title.failure){result=FALSE;error=scope.title.failure;} SetLastError(error);return result; }
-FONT_DIALOG_HOOK(ChooseFontA,CHOOSEFONTA)
-FONT_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW)
-#undef FONT_DIALOG_HOOK
-
 /* The system's colour picker subclasses several STATIC surfaces and owns
  * their colour-grid painting.  Do not replace these clients with our generic
  * STATIC frame painter; the surrounding standard controls remain styled. */
-typedef struct color_dialog_scope {font_dialog_scope base;HWND dialog;struct color_dialog_scope *previous;} color_dialog_scope;
-static _Thread_local color_dialog_scope *active_color_dialog;
-static void color_dialog_found(HWND window){if(active_color_dialog)active_color_dialog->dialog=window;}
 static void color_dialog_remove_surface(HWND window){(void)Ntw16sWindowRemove(window);}
-static void color_dialog_end(void *value)
-{
-    color_dialog_scope *scope=value;active_color_dialog=scope->previous;font_dialog_end(&scope->base);
-}
 static LRESULT CALLBACK color_dialog_return(int code,WPARAM wparam,LPARAM lparam)
 {
     const CWPRETSTRUCT *message=style_message_dialog_initialized(code,lparam);
     if(message && style_classic_color_template(message->hwnd)){
         const int ids[]={720,721,710,702,709};
-        color_dialog_found(message->hwnd);
+        style_dialog_observation_found(message->hwnd);
         style_classic_color_controls(message->hwnd,ids,ARRAYSIZE(ids),color_dialog_remove_surface);
     }
     return CallNextHookEx(NULL,code,wparam,lparam);
 }
-#define COLOR_DIALOG_HOOK(NAME, TYPE) \
+#define OBSERVED_DIALOG_HOOK(NAME,TYPE,OBSERVER,TRACKED) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{ process_hook_unwind_scope unwind;color_dialog_scope scope={0};BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
-  if(!begin_titles(&scope.base.title,TRUE))return FALSE; \
-  scope.previous=active_color_dialog;active_color_dialog=&scope; \
-  if(scope.base.title.enabled)scope.base.hook=style_message_observer_begin(color_dialog_return); \
-  PROCESS_HOOK_UNWIND_BEGIN(unwind,color_dialog_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
+{ process_hook_unwind_scope unwind;style_dialog_observation scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+  if(!style_dialog_observation_begin(&scope,&title_context,OBSERVER,TRACKED))return FALSE; \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
-  if(scope.base.title.failure){result=FALSE;error=scope.base.title.failure;} SetLastError(error);return result; }
-COLOR_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA)
-COLOR_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW)
-#undef COLOR_DIALOG_HOOK
+  if(scope.creation.failure){result=FALSE;error=scope.creation.failure;}SetLastError(error);return result; }
+OBSERVED_DIALOG_HOOK(ChooseFontA,CHOOSEFONTA,font_dialog_return,FALSE)
+OBSERVED_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW,font_dialog_return,FALSE)
+OBSERVED_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA,color_dialog_return,TRUE)
+OBSERVED_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW,color_dialog_return,TRUE)
+#undef OBSERVED_DIALOG_HOOK
 
 /* A no-op print hook selects the system's traditional PrintDlg layout.
  * Preserve caller-owned customization and less common flag contracts unchanged. */
@@ -626,7 +576,7 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
     DWORD incoming=GetLastError();
     RECT original={0};BOOL eligible=rect && edge==BDR_SUNKENOUTER && flags==(BF_RECT|BF_ADJUST);
     BOOL controlbar=rect && flags==(BF_RECT|BF_ADJUST) && style_runtime_controlbar_edge_allowed(edge) && ntw16s_controlbar_edge_active();
-    BOOL color=FALSE;HWND dialog=active_color_dialog?active_color_dialog->dialog:NULL;HMODULE origin=NULL;
+    BOOL color=FALSE;HWND dialog=style_dialog_observation_current();HMODULE origin=NULL;
     if(rect&&dialog&&edge==EDGE_SUNKEN&&flags==(BF_RECT|BF_ADJUST)&&WindowFromDC(dc)==dialog&&
        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)__builtin_return_address(0),&origin)&&origin==GetModuleHandleW(L"comdlg32.dll")){
         color=style_classic_color_swatch(dialog,dc,rect);

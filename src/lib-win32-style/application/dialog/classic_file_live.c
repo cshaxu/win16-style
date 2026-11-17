@@ -3,33 +3,33 @@
 #include "lib-win32-style/application/dialog/classic_file_live.h"
 #include <dlgs.h>
 
-HRESULT style_classic_file_live_set_filter(IFileDialog *native,UINT *filter_index,UINT index)
+HRESULT style_classic_file_live_set_filter(style_classic_dialog_proxy *proxy,UINT index)
 {
-    HRESULT hr=IFileDialog_SetFileTypeIndex(native,index);if(SUCCEEDED(hr))*filter_index=index;return hr;
+    HRESULT hr=IFileDialog_SetFileTypeIndex(proxy->native,index);if(SUCCEEDED(hr))proxy->filter_index=index;return hr;
 }
-HRESULT style_classic_file_live_get_filter(IFileDialog *native,HWND *active_window,WCHAR **filter,UINT *index)
+HRESULT style_classic_file_live_get_filter(style_classic_dialog_proxy *proxy,UINT *index)
 {
-    if(!*active_window || !*filter || !index)return IFileDialog_GetFileTypeIndex(native,index);
-    HWND combo=GetDlgItem(*active_window,cmb1);
+    if(!proxy->active_window || !proxy->filter || !index)return IFileDialog_GetFileTypeIndex(proxy->native,index);
+    HWND combo=GetDlgItem(proxy->active_window,cmb1);
     if(!combo)return HRESULT_FROM_WIN32(ERROR_INVALID_WINDOW_HANDLE);
     LRESULT selected=SendMessageW(combo,CB_GETCURSEL,0,0);
     if(selected==CB_ERR)return E_FAIL;
     *index=(UINT)selected+1;return S_OK;
 }
 
-HRESULT style_classic_file_live_set_name(IFileDialog *native,HWND *active_window,LPCWSTR name)
+HRESULT style_classic_file_live_set_name(style_classic_dialog_proxy *proxy,LPCWSTR name)
 {
-    HRESULT hr=IFileDialog_SetFileName(native,name);
-    if(FAILED(hr) || !*active_window)return hr;
-    HWND edit=GetDlgItem(*active_window,edt1);
+    HRESULT hr=IFileDialog_SetFileName(proxy->native,name);
+    if(FAILED(hr) || !proxy->active_window)return hr;
+    HWND edit=GetDlgItem(proxy->active_window,edt1);
     if(!edit || !SetWindowTextW(edit,name))return HRESULT_FROM_WIN32(ERROR_INVALID_WINDOW_HANDLE);
     return hr;
 }
-HRESULT style_classic_file_live_get_name(IFileDialog *native,HWND *active_window,LPWSTR *name)
+HRESULT style_classic_file_live_get_name(style_classic_dialog_proxy *proxy,LPWSTR *name)
 {
-    if(!*active_window)return IFileDialog_GetFileName(native,name);
+    if(!proxy->active_window)return IFileDialog_GetFileName(proxy->native,name);
     if(!name)return E_POINTER;
-    *name=NULL;HWND edit=GetDlgItem(*active_window,edt1);
+    *name=NULL;HWND edit=GetDlgItem(proxy->active_window,edt1);
     if(!edit)return HRESULT_FROM_WIN32(ERROR_INVALID_WINDOW_HANDLE);
     int length=GetWindowTextLengthW(edit);
     if(length<0 || length>=32768)return HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER);

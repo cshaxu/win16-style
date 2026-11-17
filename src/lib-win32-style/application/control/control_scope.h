@@ -15,19 +15,22 @@ static inline void style_control_subclass_remove_owned(HWND window,SUBCLASSPROC 
 }
 
 typedef struct style_control_scope style_control_scope;
-/* All operations, including callbacks, belong to the root's GUI thread.
- * The caller supplies a hook procedure and owns the list and hook variables.
- * Data is zeroed and remains valid until the last retained callback returns. */
+typedef struct style_control_scope_counts {unsigned installed,unsupported,failed;} style_control_scope_counts;
+/* Zero-initialize once; only these APIs modify the manager. All operations,
+ * callbacks and the native observer binding belong to the root's GUI thread.
+ * Scope data survives an end during a callback until that callback returns. */
+typedef struct style_control_scope_manager {
+    style_control_scope *scopes;
+    HHOOK hook;
+} style_control_scope_manager;
 style_control_scope *style_control_scope_begin(HWND root,size_t data_size,
-    style_control_scope **scopes,HHOOK *hook,HOOKPROC observer);
-BOOL style_control_scope_end(style_control_scope *scope,style_control_scope **scopes,HHOOK *hook);
-BOOL style_control_scope_contains(style_control_scope *scopes,const style_control_scope *scope);
-style_control_scope *style_control_scope_find(style_control_scope *scopes,HWND child);
-void style_control_scope_root_destroyed(style_control_scope *scopes,HWND root);
-void *style_control_scope_data(style_control_scope *scope);
-void style_control_scope_retain(style_control_scope *scope);
-void style_control_scope_release(style_control_scope *scope);
-/* Dispatch a successful child creation while retaining the matched scope. */
-void style_control_scope_observe(style_control_scope *scopes,const CWPRETSTRUCT *message,
-    void (*created)(style_control_scope *,const CWPRETSTRUCT *,void *),void *context);
+    style_control_scope_manager *,HOOKPROC observer);
+BOOL style_control_scope_end(style_control_scope *,style_control_scope_counts *,style_control_scope_manager *);
+BOOL style_control_scope_contains(const style_control_scope_manager *,const style_control_scope *);
+style_control_scope *style_control_scope_find(const style_control_scope_manager *,HWND child);
+void *style_control_scope_data(style_control_scope *);
+/* Observe successful native child creation, skipping a combo's internal
+ * controls. Installation is counted after the callback, including reentry. */
+void style_control_scope_observe(style_control_scope_manager *,const CWPRETSTRUCT *,
+    BOOL (*install)(style_control_scope *,const CWPRETSTRUCT *,BOOL edit,void *),void *);
 #endif
