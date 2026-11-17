@@ -1,6 +1,6 @@
 {
   "task": "M0 T26 S13 P1",
-  "status": "local finite renderer migration verified; remote verification pending; retained baseline failures are not passes",
+  "status": "S13 finite renderer migration delivered and actual P1 remote verified; first header failure retained with exact S12 reproduction, other existing limitations assigned to S14",
   "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Worker -Task 26 -RunName s13-delivery-01",
   "build": {
     "physical_acceptance": "pending",
@@ -10150,10 +10150,26 @@
     "Hook deactivation is not physical DLL unloading; no new target, permission, propagation, ABI or product file introduced."
   ],
   "cleanup": {
-    "status": "pending after source/binary remote verification",
-    "roots": [
-      "O:\\repos.hobby\\win16style\\build\\t26-package\\s13-delivery-01",
-      "O:\\repos.hobby\\win16style\\build\\t26-package\\s13-publish-01"
-    ]
-  }
+    "status": "cleaned",
+    "records": [
+      {
+        "removed": true,
+        "reparse": 0,
+        "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s13-delivery-01",
+        "active_owners": 0,
+        "bytes": 323511659.0
+      },
+      {
+        "removed": true,
+        "reparse": 0,
+        "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s13-publish-01",
+        "active_owners": 0,
+        "bytes": 11127271.0
+      }
+    ],
+    "evidence": "t26-s13-renderer-delivery.json and renderer-remote.json archived before cleanup",
+    "retained": "S14 registered minimal test/archive handoff 29,683,976 bytes; stable .ninja/.ccache; formal eight assets and O:/winnt",
+    "task": "M0 T26 S13"
+  },
+  "verified_remote_commit": "1b1b33d34732002fe4bd1088ddfb482202a8a191"
 }

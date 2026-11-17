@@ -1,7 +1,7 @@
 {
   "task": "M0 T26 S13",
   "baseline": "a683cc2e7648ec97ac06704b2be48db98183a078",
-  "status": "All199 frozen/explicit inputs and9 new outputs have finite source/owner dispositions; ten complete capability batches incrementally verified. Formal S13 same-snapshot build/publication/package tests/remote review still incomplete; original failures retained.",
+  "status": "199 inputs and 9 outputs ownership reviewed; finite same-snapshot delivery and actual remote verified; retained baseline limitations are not passes",
   "scope_query": "all existing appearance and application/graphics C/H and matching tests; symbol consumers in src/tests; actual product registration/resource owners and CMake/TEST_MAP. Transitive closure must be reconciled explicitly before edits.",
   "files": [
     {
@@ -3244,7 +3244,7 @@
     "registration_scope_native_invocations": 16,
     "final_source_review_retained": 85,
     "frozen_inputs_remaining": 0,
-    "formal_delivery_complete": false
+    "formal_delivery_complete": true
   },
   "restrictions": [
     "pure C17",

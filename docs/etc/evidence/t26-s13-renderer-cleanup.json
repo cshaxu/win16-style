@@ -1,0 +1,22 @@
+{
+  "status": "cleaned",
+  "records": [
+    {
+      "removed": true,
+      "reparse": 0,
+      "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s13-delivery-01",
+      "active_owners": 0,
+      "bytes": 323511659.0
+    },
+    {
+      "removed": true,
+      "reparse": 0,
+      "path": "O:\\repos.hobby\\win16style\\build\\t26-package\\s13-publish-01",
+      "active_owners": 0,
+      "bytes": 11127271.0
+    }
+  ],
+  "evidence": "t26-s13-renderer-delivery.json and renderer-remote.json archived before cleanup",
+  "retained": "S14 registered minimal test/archive handoff 29,683,976 bytes; stable .ninja/.ccache; formal eight assets and O:/winnt",
+  "task": "M0 T26 S13"
+}

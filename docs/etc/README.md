@@ -285,3 +285,7 @@
 - [S13呈现/资源开发证据](evidence/t26-s13-renderer-development.json)：能力合批增量构建/原生资源与真实消费者结果、失败/边界和清理，不是整S发布证明。
 
 - [T26 S13 renderer delivery](evidence/t26-s13-renderer-delivery.json): clean dual-width package, publication identities, 120 native calls, retained failure and exact S12 control.
+
+- [T26 S13 actual remote](evidence/t26-s13-renderer-remote.json): 77 existing blobs, four removed paths and eight product hashes fetched and verified.
+
+- [T26 S13 cleanup](evidence/t26-s13-renderer-cleanup.json): archived source/build/test evidence before removing scratch and publication backups; stable caches preserved.

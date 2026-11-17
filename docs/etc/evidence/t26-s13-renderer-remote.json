@@ -1,0 +1,486 @@
+{
+  "task": "M0 T26 S13 P1",
+  "commit": "1b1b33d34732002fe4bd1088ddfb482202a8a191",
+  "actual_fetched": "1b1b33d34732002fe4bd1088ddfb482202a8a191",
+  "changed_blobs": [
+    {
+      "path": "CMakeLists.txt",
+      "blob": "2132c8e1e003395364e0eaa95d560b1b24d32080",
+      "sha256": "e996b65892469ada53783d1ef099cacd0ab4ece91c6cc29136ef41046c103a41",
+      "local_equal": true
+    },
+    {
+      "path": "assets/demo.exe",
+      "blob": "97330ab62c263480ee358d6e0868ca8bc674f128",
+      "sha256": "73d04c486a28dfd832260f27c0bae25bc28b38b85b3199f44b619d533ca60ea9",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntw16s32.dll",
+      "blob": "9d631467901867723741b3ddc52addcc9109d72c",
+      "sha256": "94b907cdb3525c91d89892ea1fa007eb05595fda6e7068c79d9bc34a4066e175",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntw16s64.dll",
+      "blob": "d12364bb27ed68f7ebbefffffab88c17284c7b54",
+      "sha256": "2289817dd5a3484e15f1014095d5f88c5ee31bac5f2cfc886a8f33f7c139807d",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntw2ks32.dll",
+      "blob": "a71204cafe9a0510669c7a2e431ec25e42c40dd2",
+      "sha256": "55b8de7b1cece135c01b05656ed11f80b58145d34e116c55819ac193c9c9d62d",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntw2ks64.dll",
+      "blob": "a8588d26a4e0c6072cf75806f60c506504ec32b5",
+      "sha256": "ea8eb3306a377dc71c4a607235834e1bb3a2bb9e15bac3456f49ecd0f643c99d",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntwshk32.dll",
+      "blob": "acd67f6e7a7a19a2ba0168208501300019bf2607",
+      "sha256": "c79c89aef6cdb81949a92fb14af3b42b99dec3df1ac54c75a78bd6353c4565d6",
+      "local_equal": true
+    },
+    {
+      "path": "assets/ntwshk64.dll",
+      "blob": "1f1a547e4a3a38b0dbc2167f5f0de12eabc64da0",
+      "sha256": "e417cd162e0c4dc8712a7aadb5b8f3a6b57abd0d95ad5982cad2a86b4a7d2424",
+      "local_equal": true
+    },
+    {
+      "path": "assets/run16s.exe",
+      "blob": "45bd664e0f5fdb0d3e2b9c5ead2cdac6100708fc",
+      "sha256": "e9836aadfa708f623cdd59025f0679909a7f370b83e0ae032835087c2acb03f7",
+      "local_equal": true
+    },
+    {
+      "path": "docs/design/ARCHITECTURE.md",
+      "blob": "63cf175a433c8d05c8bd8713fbc8b688022ad7af",
+      "sha256": "3b5265ea77e5b7734a554d9b5bf464aa6294bbf80f5426d868b65534b0e7f060",
+      "local_equal": true
+    },
+    {
+      "path": "docs/design/CODING.md",
+      "blob": "3dc5e6b6fe39677905c31344c81c1fa944e40e7c",
+      "sha256": "42a999f4aba4480476fca2cb579520ae1a289e9e0b04ac5cc7b880d65e64041f",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/README.md",
+      "blob": "3796ced29e84882ba55e7fcc692102bcb09ca3a0",
+      "sha256": "40f7fefda13812760a09ab11f4ab0a54fc6699c938194f58c533f8c9f8a79b54",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/evidence/t26-s13-renderer-audit.json",
+      "blob": "f45429cdbce3f7648488105c0e94f4e097c55170",
+      "sha256": "722e88b8bf495ed4f6c9794e66b8873d870bb06b3448d67f9a6df57237ff8784",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/evidence/t26-s13-renderer-delivery.json",
+      "blob": "ed4e8992d12cfb52730559b1ba18e68893629613",
+      "sha256": "0db83933192b24360d6c441d1da1e14d6a6f6c418851f428926319a51ccb26ad",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/evidence/t26-s13-renderer-development.json",
+      "blob": "08e707c18b60c864b4f645b33391c54c8dc14af3",
+      "sha256": "e5d52d993ccd22c88f6b2eef5527f6d2c6bdeea5cacbd4edb3a3c5b877bbb531",
+      "local_equal": true
+    },
+    {
+      "path": "docs/etc/import/import-receipts.json",
+      "blob": "b9d315c82e36e32caad03c17b1b00e4d7b7c5dde",
+      "sha256": "f434c05db7b1caaa2432dbf4d765b712f6a847609f8b95ad0d49300ff4cf4391",
+      "local_equal": true
+    },
+    {
+      "path": "docs/history/M0-T26-S13-renderers.md",
+      "blob": "bc521aba32390c9ec1ba41c1b6f9f1301e94bb83",
+      "sha256": "93487c29e4fdffec7bb8f57b9360864574941aedfa1c043d543c62868f1bfb69",
+      "local_equal": true
+    },
+    {
+      "path": "docs/proposals/style-library-reorganization.md",
+      "blob": "94ac33ecb71e5a43959ae5334a73cc1de0d4ca9f",
+      "sha256": "684714f084692af10970ab4964730ecd0f07fadff07563c8fa732d980d882e8e",
+      "local_equal": true
+    },
+    {
+      "path": "docs/states/CURRENT.md",
+      "blob": "22a1e405ebfb83a2f791b12288155d886d4291fa",
+      "sha256": "efd54d4e1204d9c9063459653aa8310b36c6e74911287591e174908ef83e4b5b",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/common/font.c",
+      "blob": "01c656dc9fc90f2d56590f39b732468159e579da",
+      "sha256": "d49e6d0fc16a0276bfa9e80ed9ec3743bb3d7ac7d0db83ebbef1dbe050c48ccd",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/attachment_state.h",
+      "blob": "4d7ecd9e6b6ac1eca186ca23b7696b54397ded6c",
+      "sha256": "a273d0c5fb775761ba25e79e06b86d639ccff7d407dcfb5014fa1ed88c0c1b8d",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_dispatch.c",
+      "blob": "5b682aec216bbe1c238398f037378c1183ad5e6d",
+      "sha256": "481c0c19f44b521ce732f8a1357e405a749b5a5c5a0d7a8d5a7472766e9dd05a",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_dispatch.h",
+      "blob": "1cda29f6f1eba1fff620d3c0fbc69b50219aa2a7",
+      "sha256": "47093f72c9915ab8738d5295bac819f6ac26778fc5f7601e03c220de95d4e6fe",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/control_state.h",
+      "blob": "6165cce2ed92ae8c66cf9b1a5f7563ca4d35a4fb",
+      "sha256": "f2db32eae285e204ecf913908df169299298b74a29726a099e8ac5cf41a88752",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/other_paint.c",
+      "blob": "dd33587dd4cadf5c77835396a83ff39a65b50cf9",
+      "sha256": "83c7b04d4ed587ea9e8d308a96afd2c15e2a9d21f36959eeb4b3192aa0f96da6",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/status_font.c",
+      "blob": "b635d55d786f6325e7b154a6b37f3a2d52a88f27",
+      "sha256": "29f72b3920829d6379fe8e13afa1cbdbfc6a280325350540a8cbcd80e136b3fe",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/status_font.h",
+      "blob": "af3896578870d41d6b231cc77d9d6a08ac39d70a",
+      "sha256": "eb32572687181035ffe7ec8a1a54974fa87a965602f604b702d63148e8ced5a5",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/text_policy.c",
+      "blob": "5dac517bb6ca3cf6dc0cf3f3d518b1fa2d9bff9d",
+      "sha256": "3f1820a21fd39e03e9286595f1f19294a3a876bbc93c7773e39682fd5432bef6",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/text_policy.h",
+      "blob": "c2c4c3d882db3a23d7a5971779dfca5db57612b8",
+      "sha256": "75a7d30943c5bc2b80aacd15af4ec1253f715687f3e692967dfde191b9712457",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/vb_text.c",
+      "blob": "f96607ebd8b0cb458d3217e71cfb698238acf2bc",
+      "sha256": "625114858cd79f1d6ab4509992e48aa0a12e519ca0c1dff787adba4da9243145",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/control/vb_text.h",
+      "blob": "71bb0f3444add13a4575f904c9d3c47e86c0c1cf",
+      "sha256": "89ca54f86a89b469422e0b75da5a7e677aa1af3882221c1857aa1e06216581ab",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_input.h",
+      "blob": "6c45b9efdb99e95151f43841d2a0ca25bf5fdaf7",
+      "sha256": "d7242196b06b9934c05e512db4d3c8ffa8491289995cdad4245e8bf4ef80cd01",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_layout.c",
+      "blob": "868b7fd002e16b129268eb35c4abb679873abd97",
+      "sha256": "ffffb85479d1f695b656dfe75ba8c3bf1089e613c4274ee4810d68befe900ed0",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_layout.h",
+      "blob": "44dfcebe9e63f993976bce3b1cfc3e7a9a705add",
+      "sha256": "8b870e80feb6f2a2deb01ba242b09c0ea3349250d682c3c0cadafd976aa9aa5c",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_paint.c",
+      "blob": "32f1ccd48cdab101080f1f0a93f546f33d81f605",
+      "sha256": "7fde5645c4e0c462c7fd33a3776c2bdf05817e077112843aefc07d86849009aa",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_paint.h",
+      "blob": "7efec788220da9459c8b0cd6a17b924e120d2082",
+      "sha256": "4b31fe73f534e22afbe6976e25c68e581f600961dfe72ddad99359f917738a41",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_renderer.c",
+      "blob": "fe93e470ecb35cfcca9d76be4d7755e8651791ca",
+      "sha256": "bf4ba10754fe18971660cb9a8e811661d0b9628dc487e723da3de389c68756cc",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_renderer.h",
+      "blob": "03127e75e68c84a6d0453865b911e79296e2cf00",
+      "sha256": "35e25df5ef857521ab66566104d991734f5934ba293189c205777542c5b9d41e",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
+      "blob": "c76cf254c0aa77900f7ab13a5105fc9241459893",
+      "sha256": "2ce30b013060a1cf228b40853eac637ed312d3cedf1528fe0e3c752eed14b727",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/win32/runtime_text_imports.c",
+      "blob": "1bc577d92cbc517b4c254ba219d8cb7a20ea7e07",
+      "sha256": "3ce232287d62a484e20648b488fd913756c00f7f7230a1d115ff1098407c2633",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/win32/runtime_text_imports.h",
+      "blob": "b35467f1309538d631c41b64df1af9f088e6c968",
+      "sha256": "1c4049eeb0cb7372e8267252a7f660d1dee0fcbba11d222fd42212aaa81aefd8",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/control/native.c",
+      "blob": "3a25ee35ab79f85a74d32cc8f55452504b65f1a9",
+      "sha256": "d4c4102a41c4437a07ae0783655dd870817449beca934cc26838faa112a2ca35",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/control/native.h",
+      "blob": "2e5aaf03ce4faff8a2e139fff79718e16b46d1c5",
+      "sha256": "a2d6b83de07ab79879a6c465d96b3b261060703e04923b3331da8507e25ec5ff",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/font_cache.c",
+      "blob": "90ba916adea90b6a174ae76b5c168552ccdb2009",
+      "sha256": "767005f249b52152aac9c134208d84ece67e6190654a45788d68e95a336dd750",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/font_cache.h",
+      "blob": "fac70635b15ef6469483ae9856632b4cbd0065f4",
+      "sha256": "ea8cf57cd3c110ab62200534ec8e1cc2bbf04e7fc704ab683810b5be192d9c06",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/font_scope.h",
+      "blob": "1b676ccba83d16cd02c6cc654ab521c439a42bfa",
+      "sha256": "39927d1519f481a856ae242dee859c441cf4e305d308d4d31e3218cd602197b3",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/present.c",
+      "blob": "4a748b71bc4e1a45d9d1d4859bcedcbb85d8c1bd",
+      "sha256": "ec053e623293615b1d41c28fceb55bc3401764584c595cfad91185a3bd367faf",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/present.h",
+      "blob": "5e29c812a7815c9a40b5be59d50a3512a5308741",
+      "sha256": "197e1456d1743f0b574f8a715bb26a49f472e816959055de96c28d9b30414434",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/text_metrics.c",
+      "blob": "3598a2a3d8de81e5fef919e6508545505c6d4f83",
+      "sha256": "596fae8828fe400ff448577467a821d06d7b77e84c968d2871f0dcd23e3e7500",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/text_metrics.h",
+      "blob": "4dad3e5f40c46b939c320c29997275c6c61eef6a",
+      "sha256": "b2cfc81fd1582cef675fb2a4b29682c34718c29c7440fb6059cff7713aba7b39",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/lifecycle/theme_track.c",
+      "blob": "0bce9e32c2708b946be1344b13dbd9753491f771",
+      "sha256": "663298df09087f08b33a80e2aa77309740a9f16f2c995d6e25400b1da9f9ea0a",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/lifecycle/theme_track.h",
+      "blob": "44460f2c764b79eb03cb02c345f998e9670e7b8f",
+      "sha256": "ddf5947a830e972acdbb720f25fcca9cd7e96763442c8e0e57fc2d3b1df3b739",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/menu_owner.c",
+      "blob": "7a6806f09c48263d124a12bcbf035308d42252e2",
+      "sha256": "e8e42aaf4cc9f6955b01780e8b91a211ae7d5d7e47995f163849f66b1375884a",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/menu_owner.h",
+      "blob": "6cdc63e501faea4fe6b3965bd6f9deb34785669c",
+      "sha256": "effdb16c512f46a9039ccd52faaf45e82550f504cfdf99c43bf8f13e922df918",
+      "local_equal": true
+    },
+    {
+      "path": "src/lib-win32-style/application/window/messages.c",
+      "blob": "44d3d6f2c35163dd74c1025ded1a930c3efb1926",
+      "sha256": "3e22486f4fd204381e21f1725c68240bfa7b19f6bbfc4d1443dea7cc16978697",
+      "local_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/attachment.c",
+      "blob": "e6aea61e1944cb40dc73c5840f40a57aa9340e75",
+      "sha256": "f4d383b229324439ec8e10ce0dcd84581b13f21e1b2b5edf8aaec7e18b011f4f",
+      "local_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/controls.c",
+      "blob": "49da5e55e540d160af62d91af8f7f28f6f69093f",
+      "sha256": "db716866b57947b17acfe3ef884f5f419e456cd6051db63923c9c18b3e617d1d",
+      "local_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/global/vb_text.c",
+      "blob": "40744a45e639e5680b83469f5dd1880c18dbdf96",
+      "sha256": "5cabe67433e7d45f34392913549b58a7c5a358644d05831d94ab08f037cc876c",
+      "local_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/injection/window_titles.c",
+      "blob": "96c7546a90ba638dde50ae0d38232545bd3d2104",
+      "sha256": "53d54afb834fddb8553eaa444ad1136e2167367eda834052d8991f6ea9d82989",
+      "local_equal": true
+    },
+    {
+      "path": "src/ntw16s-dll/win16_style.c",
+      "blob": "40c3559aa028f936cd8b8292e9b432012e7a2e63",
+      "sha256": "6c0e5d3d28607abb6bb6530df0baf0ca65abeb69e314b6317b2162256f811759",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win3x/control/control_link.c",
+      "blob": "2ff15768ac669111c09e90d79e9e623d37996d72",
+      "sha256": "afee40a299b2e5fead8f57f6b0d9eb89113c9d4f6a8426f518ed50c7b4d4a6b5",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/TEST_MAP.md",
+      "blob": "b3830e0a6aa5642d5570ef538d9680a6d3071e32",
+      "sha256": "2704b3b2c338eadcce5becd052ab4a3905b682d9018ef3d0b7c01cc33b7e4822",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/adapters/win32/runtime_text_imports.c",
+      "blob": "483a004dd3d815a39056862f415f528f11cdb4be",
+      "sha256": "96fd69eacb93cf52eaae60d2b3fe3e972e3ed310f92dae45997329702d9d66e1",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/control/native.c",
+      "blob": "876d6ba5d02b88e2a1c09f323fe3f9a7585d4f31",
+      "sha256": "d15388ff9f15a6a2562f9b0146bf0e92e521ff6080bf63e1009a70d1c5033113",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/graphics/font_cache.c",
+      "blob": "9b5b1c7d5d3c7cdbd1145df26a3abbb5506a99e2",
+      "sha256": "39b7236dd80350615575b60361f0e95defb9c38e7b467e9538d9f7a77f7e8eea",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/graphics/font_scope.c",
+      "blob": "eeef2ec4e0c7568266586cd6af8cc4f0b4c60f56",
+      "sha256": "8bed0cef2ea80c6b29701f63d550bf4213b23db10fccbe8f4603f3d12039561b",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/graphics/present.c",
+      "blob": "0b2ce8c07c0a4009f153782de14ebedb84e6fe9b",
+      "sha256": "92ddd597de5c5484bc17e36f295692a90018c0eed521cd9153f359b75c62db3e",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/graphics/present_fault.c",
+      "blob": "5089bf564e49fc65f491d1642963872e6bfe9b98",
+      "sha256": "add19bbb50a733b7d33361360b1631475cb7a93e3baaac3e9473e2ec3ce6dead",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/graphics/present_print.c",
+      "blob": "4f5c93d212c94b918f7f01bd4d89c8ce1e7ba204",
+      "sha256": "089ffe9ee1748b70222f4acb7f764570c2ce819a64200535aa2b45ba8cd9c104",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/graphics/text_metrics.c",
+      "blob": "5f8909769897c7110d536f4df9aed46f5dfd1c83",
+      "sha256": "e0e169a7b69ed2652ee03e6c8c9b6c0de60d2cf811d719210ba0186417d6d65f",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/lifecycle/theme_track.c",
+      "blob": "3395ef3810ffbe2e325bfb8141abb3a5b70b4fe3",
+      "sha256": "0124072d8c2f894a6b355b13ef83c95a57d08e8ae244eac72dc7940dcd9afbfe",
+      "local_equal": true
+    },
+    {
+      "path": "tests/lib-win32-style/application/menu/menu_owner.c",
+      "blob": "c7e8b8e1f8984e24f3a374323ebf5918ac8a2c2a",
+      "sha256": "798451e32fde59ae7b35193c1709c34fd4780aeafb0a082c00f97c4dbd02df10",
+      "local_equal": true
+    },
+    {
+      "path": "tests/ntw16s-dll/global_vb_text.c",
+      "blob": "c73763b54f35e45a152755ff97dea09e4d93ef32",
+      "sha256": "55067b1501c8b1788b2365f1b5954674f73ed424f6771e91102b849cb90a8b21",
+      "local_equal": true
+    },
+    {
+      "path": "tests/ntw16s-dll/status_font_stock.c",
+      "blob": "e748ea45e4a9d2bdcb6e7bbdc3365b4588df0084",
+      "sha256": "a949aa2822a73e35ad096ea6284253896e98291e9c212ab44bd93000f9ca260d",
+      "local_equal": true
+    },
+    {
+      "path": "tests/ntw16s-dll/vb_font.c",
+      "blob": "113417ea41058ad1b3ee220041c8e2481748544e",
+      "sha256": "bfbcbaed2616212d546e00cd8ba9d24b454d53cf4a8af4df843118a34875f4c4",
+      "local_equal": true
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_control_present.c",
+      "blob": "7e78cf98f387dcd72411148d6f52455ba2973f98",
+      "sha256": "4ddb1f2ade70a4d9726cd023828aa04af2524d8afe4a98464684a2d90041174a",
+      "local_equal": true
+    },
+    {
+      "path": "tests/ntw16s-dll/win16_style_dc_failure.c",
+      "blob": "87653287adeddcd487f9e5e6ad02f0296a488447",
+      "sha256": "9fb198669d62af82993e623354e29217eea796ebff1a573e2ddcff0db54cee80",
+      "local_equal": true
+    }
+  ],
+  "deleted_paths": [
+    "src/lib-win32-style/appearance/win3x/control/native_presentation.c",
+    "src/lib-win32-style/appearance/win3x/control/native_presentation.h",
+    "src/lib-win32-style/appearance/win3x/window/frame_view.c",
+    "src/lib-win32-style/appearance/win3x/window/frame_view.h"
+  ],
+  "products": {
+    "demo.exe": "73d04c486a28dfd832260f27c0bae25bc28b38b85b3199f44b619d533ca60ea9",
+    "ntw16s32.dll": "94b907cdb3525c91d89892ea1fa007eb05595fda6e7068c79d9bc34a4066e175",
+    "ntw16s64.dll": "2289817dd5a3484e15f1014095d5f88c5ee31bac5f2cfc886a8f33f7c139807d",
+    "ntw2ks32.dll": "55b8de7b1cece135c01b05656ed11f80b58145d34e116c55819ac193c9c9d62d",
+    "ntw2ks64.dll": "ea8eb3306a377dc71c4a607235834e1bb3a2bb9e15bac3456f49ecd0f643c99d",
+    "ntwshk32.dll": "c79c89aef6cdb81949a92fb14af3b42b99dec3df1ac54c75a78bd6353c4565d6",
+    "ntwshk64.dll": "e417cd162e0c4dc8712a7aadb5b8f3a6b57abd0d95ad5982cad2a86b4a7d2424",
+    "run16s.exe": "e9836aadfa708f623cdd59025f0679909a7f370b83e0ae032835087c2acb03f7"
+  },
+  "status": "actual fetched source blobs and eight product bytes verified; local and O:/winnt equal"
+}
