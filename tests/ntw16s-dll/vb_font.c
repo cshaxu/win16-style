@@ -69,30 +69,30 @@ static int ownership(const WCHAR *runtime_path)
     HWND window=CreateWindowW(L"ThunderRT6Frame",L"Frame",WS_CHILD|BS_GROUPBOX,0,0,200,100,root,NULL,runtime,NULL);CHECK(window);
     HWND barrier=CreateWindowW(L"STATIC",L"application",WS_CHILD,0,0,20,20,window,NULL,GetModuleHandleW(NULL),NULL);CHECK(barrier);
     HDC dc=CreateCompatibleDC(NULL);CHECK(dc);HFONT sources[33]={0},leases[32]={0};HGDIOBJ old=GetCurrentObject(dc,OBJ_FONT);
-    ntw16s_vb_fonts fonts={0},barrier_fonts={0};style_runtime_text_scope scope,nested;
+    style_font_cache fonts={0},barrier_fonts={0};style_runtime_text_scope scope,nested;
     unsigned baseline=live_allocations;
     win16_control_vb_paint_begin(&scope,window,WM_PRINTCLIENT,&fonts,ntw16s_vb_user_label_target);CHECK(style_runtime_text_active());
     for(unsigned i=0;i<33;++i){
         sources[i]=CreateFontW(-12-(int)i,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,
             OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");CHECK(sources[i]);
         CHECK(SelectObject(dc,sources[i]));
-        if(!i){fail_next=1;CHECK(!ntw16s_vb_paint_font(dc));CHECK(live_allocations==baseline && !fonts.count);}
-        HFONT lease=ntw16s_vb_paint_font(dc);
+        if(!i){fail_next=1;CHECK(!win16_control_vb_paint_font(dc));CHECK(live_allocations==baseline && !fonts.count);}
+        HFONT lease=win16_control_vb_paint_font(dc);
         if(i==32){CHECK(!lease && fonts.count==32);continue;}
-        leases[i]=lease;CHECK(lease && ntw16s_vb_paint_font(dc)==lease && fonts.count==i+1);
+        leases[i]=lease;CHECK(lease && win16_control_vb_paint_font(dc)==lease && fonts.count==i+1);
         WORD glyphs[5],omega;WCHAR decoded[5];
         CHECK(GetGlyphIndicesW(dc,L"01234",5,glyphs,GGI_MARK_NONEXISTING_GLYPHS)!=GDI_ERROR);
-        if(!i){fail_next=1;CHECK(!ntw16s_vb_decode_glyphs(dc,(const WCHAR *)glyphs,5,decoded));}
-        CHECK(ntw16s_vb_decode_glyphs(dc,(const WCHAR *)glyphs,5,decoded) && !wmemcmp(decoded,L"01234",5));
+        if(!i){fail_next=1;CHECK(!win16_control_vb_decode_glyphs(dc,(const WCHAR *)glyphs,5,decoded));}
+        CHECK(win16_control_vb_decode_glyphs(dc,(const WCHAR *)glyphs,5,decoded) && !wmemcmp(decoded,L"01234",5));
         CHECK(GetGlyphIndicesW(dc,L"\x03a9",1,&omega,GGI_MARK_NONEXISTING_GLYPHS)!=GDI_ERROR && omega!=0xffff);
-        CHECK(!ntw16s_vb_decode_glyphs(dc,(const WCHAR *)&omega,1,decoded));
+        CHECK(!win16_control_vb_decode_glyphs(dc,(const WCHAR *)&omega,1,decoded));
         CHECK(GetCurrentObject(dc,OBJ_FONT)==sources[i]);
         win16_control_vb_paint_begin(&nested,barrier,WM_PRINTCLIENT,&barrier_fonts,ntw16s_vb_user_label_target);
-        CHECK(!style_runtime_text_active() && !ntw16s_vb_paint_font(dc));style_runtime_text_end(&nested);
+        CHECK(!style_runtime_text_active() && !win16_control_vb_paint_font(dc));style_runtime_text_end(&nested);
         CHECK(style_runtime_text_active());
     }
-    style_runtime_text_end(&scope);CHECK(!style_runtime_text_active() && !ntw16s_vb_paint_font(dc));
-    CHECK(SelectObject(dc,old));ntw16s_vb_fonts_clear(&fonts);CHECK(!fonts.count && live_allocations==baseline);
+    style_runtime_text_end(&scope);CHECK(!style_runtime_text_active() && !win16_control_vb_paint_font(dc));
+    CHECK(SelectObject(dc,old));style_font_cache_dispose(&fonts);CHECK(!fonts.count && live_allocations==baseline);
     for(unsigned i=0;i<32;++i){LOGFONTW lf;CHECK(!GetObjectW(leases[i],sizeof(lf),&lf));}
     for(unsigned i=0;i<33;++i){LOGFONTW lf;CHECK(GetObjectW(sources[i],sizeof(lf),&lf)==sizeof(lf));CHECK(DeleteObject(sources[i]));}
     CHECK(DeleteDC(dc) && DestroyWindow(root));release();CHECK(FreeLibrary(runtime));
@@ -104,22 +104,22 @@ static int report_ownership(void)
     HWND w=CreateWindowW(L"STATIC",L"report lifetime",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
     CHECK(w);HDC dc=CreateCompatibleDC(NULL),other=CreateCompatibleDC(NULL);CHECK(dc && other);
     HFONT source=CreateFontW(-16,0,0,0,FW_NORMAL,0,0,0,ANSI_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,L"Arial");CHECK(source);
-    HGDIOBJ old=SelectObject(dc,source);ntw16s_vb_fonts fonts={0},barrier={0};style_runtime_text_scope scope,nested;BOOL cancelled=FALSE;
+    HGDIOBJ old=SelectObject(dc,source);style_font_cache fonts={0},barrier={0};style_runtime_text_scope scope,nested;BOOL cancelled=FALSE;
     unsigned baseline=live_allocations;
     win16_control_vb_paint_begin(&scope,w,WM_PRINTCLIENT,&fonts,ntw16s_vb_user_label_target);
     style_runtime_text_report_enable(&scope,w,GetModuleHandleW(L"USER32.dll"),&cancelled,ntw16s_vb_graphical_button);
     CHECK(style_runtime_text_report_active() && style_runtime_text_report_caller(GetModuleHandleW(NULL)));
     CHECK(!style_runtime_text_report_caller(GetModuleHandleW(L"KERNEL32.dll")));
-    CHECK(!ntw16s_vb_paint_font(dc));style_runtime_text_report_bind(NULL,dc);CHECK(!ntw16s_vb_paint_font(dc));
-    style_runtime_text_report_bind(w,dc);fail_next=1;CHECK(!ntw16s_vb_paint_font(dc) && !fonts.count && live_allocations==baseline);
-    HFONT font=ntw16s_vb_paint_font(dc);CHECK(font && fonts.count==1 && !ntw16s_vb_paint_font(other));
+    CHECK(!win16_control_vb_paint_font(dc));style_runtime_text_report_bind(NULL,dc);CHECK(!win16_control_vb_paint_font(dc));
+    style_runtime_text_report_bind(w,dc);fail_next=1;CHECK(!win16_control_vb_paint_font(dc) && !fonts.count && live_allocations==baseline);
+    HFONT font=win16_control_vb_paint_font(dc);CHECK(font && fonts.count==1 && !win16_control_vb_paint_font(other));
     HFONT standard=win16_style_vb_font_acquire(source);CHECK(standard==font);win16_style_system_release(standard);
     CHECK(GetCurrentObject(dc,OBJ_FONT)==source);
-    win16_control_vb_paint_begin(&nested,w,WM_PRINTCLIENT,&barrier,ntw16s_vb_user_label_target);CHECK(!ntw16s_vb_paint_font(dc));style_runtime_text_end(&nested);
-    CHECK(ntw16s_vb_paint_font(dc)==font);cancelled=TRUE;
-    CHECK(!style_runtime_text_active() && !ntw16s_vb_paint_font(dc));
+    win16_control_vb_paint_begin(&nested,w,WM_PRINTCLIENT,&barrier,ntw16s_vb_user_label_target);CHECK(!win16_control_vb_paint_font(dc));style_runtime_text_end(&nested);
+    CHECK(win16_control_vb_paint_font(dc)==font);cancelled=TRUE;
+    CHECK(!style_runtime_text_active() && !win16_control_vb_paint_font(dc));
     LOGFONTW lf;CHECK(GetObjectW(font,sizeof(lf),&lf)==sizeof(lf));
-    style_runtime_text_end(&scope);ntw16s_vb_fonts_clear(&fonts);CHECK(live_allocations==baseline);
+    style_runtime_text_end(&scope);style_font_cache_dispose(&fonts);CHECK(live_allocations==baseline);
     CHECK(!GetObjectW(font,sizeof(lf),&lf));CHECK(GetObjectW(source,sizeof(lf),&lf)==sizeof(lf));
     SelectObject(dc,old);CHECK(DeleteObject(source) && DeleteDC(other) && DeleteDC(dc) && DestroyWindow(w));
     puts("REPORT_TEXT_OWNERSHIP_OK exact_dc=1 barrier=1 cancelled=1 source_preserved=1 host_system=1 strokes=preserved oom=1 allocations=0");return 0;

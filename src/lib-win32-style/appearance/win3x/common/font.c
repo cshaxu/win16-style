@@ -1,16 +1,16 @@
 #include "font.h"
+#include "lib-win32-style/application/graphics/font_cache.h"
 #include "lib-win32-style/application/graphics/bitmap.h"
 #include "lib-win32-style/application/graphics/bitmap_font.h"
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 
-static _Thread_local HFONT shared_font;
-static _Thread_local HANDLE shared_resource;
-static _Thread_local unsigned references;
+static _Thread_local style_memory_font shared;
 
-static BOOL create_font(void)
+static BOOL create_font(void *context,style_memory_font *result)
 {
+    (void)context;
     /* FNT v2 is the public bitmap-resource form already exercised by the
      * standalone font probe. Only newly rasterized host glyphs go into it.
      * The original USER/font loader is not imported or reconstructed. */
@@ -64,54 +64,31 @@ done:
     if(src)DeleteDC(src);
     if(scaled)DeleteDC(scaled);
     free(data);
-    if(ok){shared_font=font;shared_resource=resource;return TRUE;}
+    if(ok){result->font=font;result->resource=resource;return TRUE;}
     if(font)DeleteObject(font);
     if(resource)RemoveFontMemResourceEx(resource);
     return FALSE;
 }
 
 HFONT win16_style_font_acquire(void)
-{
-    if(!references && !create_font())return NULL;
-    if(references==UINT_MAX)return NULL;
-    ++references;return shared_font;
-}
+{return style_memory_font_acquire(&shared,create_font,NULL);}
 void win16_style_font_release(HFONT font)
-{
-    if(!references || font!=shared_font)return;
-    if(!--references){DeleteObject(shared_font);RemoveFontMemResourceEx(shared_resource);
-        shared_font=NULL;shared_resource=NULL;}
-}
+{style_memory_font_release(&shared,font);}
 
-typedef struct system_variant {
-    struct system_variant *next;
-    HFONT source,font;
-    HANDLE resource;
-    unsigned refs;
-    UINT menu_dpi;
-    BOOL preserve_strokes,isolated;
-} system_variant;
-static _Thread_local system_variant *variants;
+static _Thread_local style_font_pool variants;
 static LONG variant_serial;
 
 HFONT win16_style_system_source(HFONT font)
-{
-    for(system_variant *v=variants;v;v=v->next)if(v->font==font)return v->source;
-    return font;
-}
+{return style_font_pool_source(&variants,font);}
 
-static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOOL isolated)
+static HFONT system_create(HFONT source,UINT key,void *context,style_font_pool_entry **owned)
 {
+    UINT menu_dpi=(UINT)(key>>1);BOOL preserve_strokes=(key&1)!=0;(void)context;
     HDC original=NULL,src=NULL,dst=NULL;HFONT base=NULL,font=NULL;
     HBITMAP a=NULL;HGDIOBJ oa=NULL,of=NULL,oo=NULL;style_bitmap rendered={0};
     BYTE *data=NULL;DWORD *pixels=NULL;HANDLE resource=NULL;DWORD count=0;
     TEXTMETRICW tm,system;char face[32],actual[32];BOOL ok=FALSE;
-    unsigned cursor=118+225*4,sum=0,maxwidth=0;system_variant *v=NULL;
-    source=win16_style_system_source(source);
-    if(!isolated)for(v=variants;v;v=v->next)if(!v->isolated && v->source==source && v->menu_dpi==menu_dpi && v->preserve_strokes==preserve_strokes){
-        if(v->refs==UINT_MAX)return NULL;
-        ++v->refs;return v->font;
-    }
+    unsigned cursor=118+225*4,sum=0,maxwidth=0;style_font_pool_entry *v=NULL;
     original=CreateCompatibleDC(NULL);if(!original)goto done;
     oo=SelectObject(original,source?source:GetStockObject(SYSTEM_FONT));
     if(!oo || !GetTextMetricsW(original,&tm) || !GetTextFaceA(original,32,actual))goto done;
@@ -179,13 +156,16 @@ done:
     if(src)DeleteDC(src);
     style_bitmap_dispose(&rendered);
     free(data);
-    if(ok && resource){v->source=source;v->menu_dpi=menu_dpi;v->preserve_strokes=preserve_strokes;v->isolated=isolated;v->font=font;v->resource=resource;v->refs=1;v->next=variants;variants=v;return font;}
+    if(ok && resource){v->lease.font=font;v->lease.resource=resource;*owned=v;return font;}
     free(v);
     if(ok)return font;
     if(font)DeleteObject(font);
     if(resource)RemoveFontMemResourceEx(resource);
     return NULL;
 }
+
+static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOOL isolated)
+{return style_font_pool_get(&variants,source,((UINT)menu_dpi<<1)|!!preserve_strokes,isolated,system_create,NULL);}
 
 HFONT win16_style_system_acquire(HFONT source)
 {return system_acquire(source,0,FALSE,FALSE);}
@@ -208,21 +188,8 @@ HFONT win16_style_calendar_font_acquire(void)
 {return system_acquire(NULL,78,FALSE,FALSE);}
 
 void win16_style_system_release(HFONT font)
-{
-    system_variant **p=&variants;
-    while(*p){system_variant *v=*p;
-        if(v->font==font){if(!--v->refs){*p=v->next;DeleteObject(v->font);RemoveFontMemResourceEx(v->resource);free(v);}return;}
-        p=&v->next;
-    }
-}
-
+{style_font_pool_release(&variants,font);}
 BOOL win16_style_system_try_retain(HFONT font)
-{
-    for(system_variant *v=variants;v;v=v->next)if(v->font==font){if(v->refs==UINT_MAX)return FALSE;++v->refs;return TRUE;}
-    return FALSE;
-}
-
+{return style_font_pool_try_retain(&variants,font);}
 void win16_style_system_retain(HFONT font)
-{
-    for(system_variant *v=variants;v;v=v->next)if(v->font==font){++v->refs;return;}
-}
+{style_font_pool_retain(&variants,font);}

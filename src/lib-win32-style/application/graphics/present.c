@@ -22,13 +22,23 @@ BOOL style_present_buffer_end(style_present_buffer *buffer,BOOL commit)
     return ready;
 }
 
-void style_present(HWND w,const style_present_view *view,HDC target)
+void style_present_buffered(HWND w,style_instance *instance,void *context,void (*paint)(HWND,void *,HDC),HDC dc,const RECT *bounds)
+{
+    style_present_buffer buffer;BOOL ready=FALSE;
+    if(style_present_buffer_begin(&buffer,dc,bounds,TRUE)){
+        paint(w,context,buffer.memory);
+        ready=style_present_buffer_end(&buffer,!instance->detached);
+    }else (void)style_present_buffer_end(&buffer,FALSE);
+    if(!ready && !instance->detached)paint(w,context,dc);
+}
+
+void style_present(HWND w,style_instance *instance,void *context,COLORREF background,const style_present_ops *ops,HDC target)
 {
     RECT dirty,client;style_present_buffer buffer;BOOL ready=FALSE;
     BOOL group;int target_saved=0;
     if(!target || GetClipBox(target,&dirty)==ERROR || !GetClientRect(w,&client) ||
         !IntersectRect(&dirty,&dirty,&client))return;
-    group=view->is_group && view->is_group(w,view->classification);
+    group=ops->is_group && ops->is_group(w,context);
     if(group){HWND sibling;RECT r;
         target_saved=SaveDC(target);if(!target_saved)return;
         /* Group interiors belong to the parent background. Never overwrite
@@ -41,18 +51,18 @@ void style_present(HWND w,const style_present_view *view,HDC target)
     if(style_present_buffer_begin(&buffer,target,&dirty,TRUE)){
         HDC memory=buffer.memory;
         if(group){HWND parent=GetParent(w);POINT origin={0,0};int saved=SaveDC(memory);
-            SetDCBrushColor(memory,view->background);FillRect(memory,&client,(HBRUSH)GetStockObject(DC_BRUSH));
+            SetDCBrushColor(memory,background);FillRect(memory,&client,(HBRUSH)GetStockObject(DC_BRUSH));
             if(saved && parent){MapWindowPoints(w,parent,&origin,1);
                 OffsetViewportOrgEx(memory,-origin.x,-origin.y,NULL);
                 SendMessageW(parent,WM_PRINTCLIENT,(WPARAM)memory,PRF_CLIENT);}
             if(saved)RestoreDC(memory,saved);
         }
-        if(!*view->detached)view->paint(w,view->context,memory);
-        ready=style_present_buffer_end(&buffer,!*view->detached);
+        if(!instance->detached)ops->paint(w,context,memory);
+        ready=style_present_buffer_end(&buffer,!instance->detached);
     }else{
         (void)style_present_buffer_end(&buffer,FALSE);
     }
-    if(!ready && !*view->detached)view->paint(w,view->context,target);
+    if(!ready && !instance->detached)ops->paint(w,context,target);
     if(target_saved)RestoreDC(target,target_saved);
 }
 
@@ -79,7 +89,7 @@ static BOOL CALLBACK print_child(HWND child,LPARAM data)
 /* Custom nonclient geometry cannot delegate native frame printing. Preserve
  * DWP's frame/client/child ordering using the public HWND/DC boundaries.
  * See the S4 print audit for the original xxxDWPPrint reference. */
-void style_print_client_and_children(HWND w,const BOOL *detached,HDC dc,LPARAM flags)
+void style_print_client_and_children(HWND w,style_instance *instance,HDC dc,LPARAM flags)
 {
     RECT wr,client;POINT origin={0,0};int saved;print_children children;
     if(!GetWindowRect(w,&wr) || !GetClientRect(w,&client) || !ClientToScreen(w,&origin))return;
@@ -90,11 +100,11 @@ void style_print_client_and_children(HWND w,const BOOL *detached,HDC dc,LPARAM f
         OffsetViewportOrgEx(dc,origin.x-children.origin.x,origin.y-children.origin.y,NULL);
         IntersectClipRect(dc,0,0,client.right,client.bottom);
         if(flags&PRF_ERASEBKGND)SendMessageW(w,WM_ERASEBKGND,(WPARAM)dc,0);
-        if(!*detached)SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,flags);
+        if(!instance->detached)SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,flags);
         RestoreDC(dc,saved);
     }
-    if(!*detached && (flags&PRF_CHILDREN))EnumChildWindows(w,print_child,(LPARAM)&children);
-    if(!*detached && (flags&PRF_OWNED)){
+    if(!instance->detached && (flags&PRF_CHILDREN))EnumChildWindows(w,print_child,(LPARAM)&children);
+    if(!instance->detached && (flags&PRF_OWNED)){
         children.owned=TRUE;EnumThreadWindows(GetCurrentThreadId(),print_child,(LPARAM)&children);
     }
 }

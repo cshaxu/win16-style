@@ -17,12 +17,12 @@ BOOL win16_control_frame_hit_test(HWND w,const win16_style_layout *l,LPARAM lp,L
     return TRUE;
 }
 
-BOOL win16_control_measure_window(HWND w,const UINT *dpi,HFONT *menu_font,const BOOL *detached,const RECT *outer,win16_style_layout *l)
+BOOL win16_control_measure_window(HWND w,const style_instance *instance,const style_font_pair *fonts,const RECT *outer,win16_style_layout *l)
 {
     RECT visible=*outer;BOOL zoom=IsZoomed(w);int dx,dy;
     if(zoom)(void)style_frame_work_area(w,outer,&visible);
     if(!win16_style_measure(visible.right-visible.left,visible.bottom-visible.top,
-        *dpi,(DWORD)GetWindowLongPtr(w,GWL_STYLE),
+        fonts->dpi,(DWORD)GetWindowLongPtr(w,GWL_STYLE),
         (DWORD)GetWindowLongPtr(w,GWL_EXSTYLE),zoom,l))return FALSE;
     /* Native maximized resize borders can lie outside the work area. Keep
      * Windows' geometry, but place every custom non-client element and the
@@ -33,9 +33,9 @@ BOOL win16_control_measure_window(HWND w,const UINT *dpi,HFONT *menu_font,const 
     OffsetRect(&l->system,dx,dy);OffsetRect(&l->minimize,dx,dy);OffsetRect(&l->maximize,dx,dy);
     if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD) && GetMenu(w)){
         style_menu_bar_snapshot bar;POINT origin={l->client.left,l->client.top};
-        if(!win16_style_bar_read_for_window(w,GetMenu(w),*menu_font?*menu_font:(HFONT)GetStockObject(SYSTEM_FONT),
-            *dpi,origin,l->client.right-l->client.left,&bar))return FALSE;
-        if(*detached){style_menu_bar_free(&bar);return FALSE;}
+        if(!win16_style_bar_read_for_window(w,GetMenu(w),fonts->menu?fonts->menu:(HFONT)GetStockObject(SYSTEM_FONT),
+            fonts->dpi,origin,l->client.right-l->client.left,&bar))return FALSE;
+        if(instance->detached){style_menu_bar_free(&bar);return FALSE;}
         if(bar.height){l->menu=l->client;l->menu.bottom=min(l->client.bottom,l->client.top+bar.height+l->unit);
             l->client.top=l->menu.bottom;}
         style_menu_bar_free(&bar);
@@ -47,11 +47,11 @@ BOOL win16_control_measure_window(HWND w,const UINT *dpi,HFONT *menu_font,const 
          * Fixed/dialog and host-only left-bar profiles remain separate. */
         int shared=l->sizeable && !l->dialog_frame &&
             !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LEFTSCROLLBAR)?l->unit:0;
-        if(flags&WS_VSCROLL){int cx=GetSystemMetricsForDpi(SM_CXVSCROLL,*dpi)-shared;
+        if(flags&WS_VSCROLL){int cx=GetSystemMetricsForDpi(SM_CXVSCROLL,fonts->dpi)-shared;
             if(l->client.right-l->client.left>=cx){
                 if(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LEFTSCROLLBAR)l->client.left+=cx;
                 else l->client.right-=cx;}}
-        if(flags&WS_HSCROLL){int cy=GetSystemMetricsForDpi(SM_CYHSCROLL,*dpi)-shared;
+        if(flags&WS_HSCROLL){int cy=GetSystemMetricsForDpi(SM_CYHSCROLL,fonts->dpi)-shared;
             if(l->client.bottom-l->client.top>cy)l->client.bottom-=cy;}
     }
     return TRUE;

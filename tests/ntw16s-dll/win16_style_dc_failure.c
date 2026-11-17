@@ -14,7 +14,7 @@ static int WINAPI test_save_dc(HDC dc)
 }
 #define SaveDC test_save_dc
 #include "ntw16s-dll/win16_style.c"
-#include "lib-win32-style/appearance/win3x/window/frame_view.c"
+#include "lib-win32-style/appearance/win3x/window/frame_renderer.c"
 #undef SaveDC
 #define CHECK(x) do { if(!(x)){fprintf(stderr,"DC FAIL line %d\n",__LINE__);return 1;} } while(0)
 static UINT lifetime_message;
@@ -30,6 +30,38 @@ static LRESULT CALLBACK lifetime_proc(HWND w,UINT message,WPARAM a,LPARAM b)
     if(message==WM_ENTERIDLE && a==MSGF_MENU){PostMessageW(w,WM_KEYDOWN,VK_LEFT,0);return 0;}
     if(message==WM_TIMER && a==99){lifetime_timeout=TRUE;EndMenu();return 0;}
     return DefWindowProcW(w,message,a,b);
+}
+#include "exception_probe.h"
+static LRESULT CALLBACK menu_exception(HWND w,UINT m,WPARAM a,LPARAM b)
+{
+    if(m==WM_APP+21){RaiseException(NTW16S_TEST_EXCEPTION_CODE,0,0,NULL);return 0;}
+    if(m==WM_APP+22){SetLastError(0x63ab);return 73;}
+    return DefWindowProcW(w,m,a,b);
+}
+static unsigned title_callbacks;
+static LRESULT CALLBACK reentrant_title(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+{
+    (void)id;style_window *state=(style_window *)data;
+    if(m==WM_GETTEXT){++title_callbacks;state->native.active=TRUE;
+        state->fonts.title=(HFONT)GetStockObject(DEFAULT_GUI_FONT);}
+    return DefSubclassProc(w,m,a,b);
+}
+typedef struct measure_fixture {
+    style_instance instance;
+    style_font_pair fonts;
+    BOOL retire;
+    unsigned calls;
+} measure_fixture;
+static LRESULT CALLBACK measure_reentry(HWND w,UINT m,WPARAM a,LPARAM b)
+{
+    measure_fixture *f=(void *)GetWindowLongPtrW(w,GWLP_USERDATA);
+    if(m==WM_MEASUREITEM && f){
+        MEASUREITEMSTRUCT *item=(void *)b;item->itemWidth=32;item->itemHeight=18;
+        ++f->calls;f->fonts.dpi=144;f->fonts.menu=(HFONT)GetStockObject(DEFAULT_GUI_FONT);
+        if(f->retire)f->instance.detached=TRUE;
+        return TRUE;
+    }
+    return DefWindowProcW(w,m,a,b);
 }
 int wmain(int argc,WCHAR **argv)
 {
@@ -93,12 +125,59 @@ int wmain(int argc,WCHAR **argv)
         printf("PASS menu bar layout: wrap, break, right alignment, clipping, hit boundaries and overflow\n");
     }
     w=CreateWindowW(wc.lpszClassName,L"DC preservation",WS_OVERLAPPEDWINDOW,0,0,320,200,NULL,NULL,wc.hInstance,NULL);
+    {
+        WNDCLASSW owner_class={.lpfnWndProc=menu_exception,.hInstance=wc.hInstance,.lpszClassName=L"OwnedMenuException"};
+        CHECK(RegisterClassW(&owner_class));
+        HWND menu_window=CreateWindowW(owner_class.lpszClassName,L"",WS_POPUP,0,0,100,100,NULL,NULL,wc.hInstance,NULL);CHECK(menu_window);
+        CHECK(win16_style_menu_owner_install_created(menu_window,NULL,NULL));
+        style_window *menu_state=state(menu_window);CHECK(menu_state && menu_state->menu_only && !menu_state->instance.calls);
+        CHECK(test_unwind(menu_window,WM_APP+21,0,0));
+        CHECK(state(menu_window)==menu_state && !menu_state->instance.calls);
+        CHECK(SendMessageW(menu_window,WM_APP+22,0,0)==73 && GetLastError()==0x63ab && !menu_state->instance.calls);
+        CHECK(win16_style_remove(menu_window) && !state(menu_window) && DestroyWindow(menu_window));
+        CHECK(UnregisterClassW(owner_class.lpszClassName,wc.hInstance));
+        puts("PASS actual menu-only dispatch: native unwind releases instance once; later result/error and removal preserved");
+    }
+    {
+        WNDCLASSW cls={.lpfnWndProc=measure_reentry,.hInstance=wc.hInstance,.lpszClassName=L"MeasureWholeRoots"};
+        CHECK(RegisterClassW(&cls));
+        HWND owner=CreateWindowW(cls.lpszClassName,L"",WS_OVERLAPPEDWINDOW|WS_VSCROLL,0,0,320,200,NULL,NULL,wc.hInstance,NULL);
+        HMENU menu=CreateMenu();CHECK(owner && menu && AppendMenuW(menu,MF_OWNERDRAW,1,(LPCWSTR)(UINT_PTR)7));
+        measure_fixture fixture={0};SetWindowLongPtrW(owner,GWLP_USERDATA,(LONG_PTR)&fixture);CHECK(SetMenu(owner,menu));
+        fixture.fonts=(style_font_pair){.menu=(HFONT)GetStockObject(SYSTEM_FONT),.dpi=96};fixture.calls=0;
+        RECT outer;win16_style_layout measured,base;CHECK(GetWindowRect(owner,&outer));
+        CHECK(win16_style_measure(outer.right-outer.left,outer.bottom-outer.top,96,
+            (DWORD)GetWindowLongPtrW(owner,GWL_STYLE),(DWORD)GetWindowLongPtrW(owner,GWL_EXSTYLE),FALSE,&base));
+        CHECK(win16_control_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,&measured));
+        CHECK(fixture.calls && fixture.fonts.dpi==144 &&
+            fixture.fonts.menu==GetStockObject(DEFAULT_GUI_FONT) &&
+            measured.client.right==base.client.right-GetSystemMetricsForDpi(SM_CXVSCROLL,144)+base.unit);
+        fixture.retire=TRUE;fixture.calls=0;fixture.fonts.dpi=96;
+        CHECK(!win16_control_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,&measured) &&
+            fixture.calls && fixture.instance.detached);
+        CHECK(DestroyWindow(owner) && UnregisterClassW(cls.lpszClassName,wc.hInstance));
+        puts("PASS frame measurement reentry: live whole font pair DPI and instance retirement after native owner-draw callback");
+    }
     CHECK(w);CHECK(refresh_font(w,&s));win16_style_default_palette(&s.palette);
     dc=CreateCompatibleDC(NULL);CHECK(dc);
     bi.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);bi.bmiHeader.biWidth=320;bi.bmiHeader.biHeight=-200;
     bi.bmiHeader.biPlanes=1;bi.bmiHeader.biBitCount=32;
     bm=CreateDIBSection(dc,&bi,DIB_RGB_COLORS,(void **)&pixels,NULL,0);CHECK(bm);
     old=(HBITMAP)SelectObject(dc,bm);
+    {
+        style_window title_state={0};win16_style_layout title_layout={0};
+        title_state.fonts.title=(HFONT)GetStockObject(SYSTEM_FONT);
+        win16_style_palette palette=s.palette;palette.active_text=RGB(12,34,56);palette.inactive_text=RGB(65,43,21);
+        SetRect(&title_layout.caption,0,0,320,30);title_layout.title=title_layout.caption;title_layout.unit=1;
+        CHECK(SetWindowSubclass(w,reentrant_title,77,(DWORD_PTR)&title_state));
+        int saved=SaveDC(dc);CHECK(saved);title_callbacks=0;
+        win16_control_frame_caption(w,dc,&title_layout,&palette,&title_state,paint_state);
+        CHECK(title_callbacks && title_state.native.active &&
+            GetCurrentObject(dc,OBJ_FONT)==GetStockObject(DEFAULT_GUI_FONT) && GetTextColor(dc)==palette.active_text);
+        CHECK(RestoreDC(dc,saved) && RemoveWindowSubclass(w,reentrant_title,77));
+        puts("PASS renderer title reentry: current font pair and activation reread after native text callback");
+    }
+
     /* Direct shared-font title drawing removed the second SaveDC/stretch
      * scope. Cover failure and success at the one remaining real boundary. */
     for(mode=1;mode<=2;++mode){

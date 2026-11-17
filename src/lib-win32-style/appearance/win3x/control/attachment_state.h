@@ -16,8 +16,8 @@
 typedef struct attachment {
     style_runtime_attachment base;
     BOOL file_owner,picture,button_owner,checklist;
-    HFONT month_cached_font;win16_control_status_font_cache status_font;
-    ntw16s_vb_fonts fonts;
+    HFONT month_cached_font;style_font_snapshot_cache status_font;
+    style_font_cache fonts;
 } attachment;
 typedef struct win16_attachment_guard_services {
     BOOL (*host_attached)(HWND);

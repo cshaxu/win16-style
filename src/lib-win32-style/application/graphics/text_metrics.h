@@ -10,4 +10,9 @@ static inline BOOL style_text_alphabet_average(HDC dc,int *average)
     *average=((size.cx/26)+1)/2;return TRUE;
 }
 
+/* Synchronous shrink-only rasterization. Caller borrows DC/font/text and
+ * chooses the maximum source extent; drawn changes only after successful
+ * publication. FALSE leaves fallback to caller, including already-fitting
+ * text and native allocation/drawing failure. Normal-return cleanup only. */
+BOOL style_text_fit(HDC,HFONT,const WCHAR *,const RECT *,COLORREF,COLORREF,SIZE limit,SIZE *drawn);
 #endif

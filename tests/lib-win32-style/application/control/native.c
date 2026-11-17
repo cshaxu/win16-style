@@ -28,6 +28,39 @@ static LRESULT CALLBACK procedure(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DW
     LRESULT result=style_control_native_message(w,&f->instance,&f->state,f->kind,m,a,b,supported,&renderer);
     style_instance_release(&f->instance);return result;
 }
+typedef struct presentation_fixture {
+    style_instance instance;
+    style_control_state state;
+    unsigned retains,releases,fallbacks,disposed;
+    HFONT expected,retained,released;
+    BOOL supported,replace,stop,font_free,valid;
+} presentation_fixture;
+static presentation_fixture *painting;
+static void presentation_retain(HFONT font){++painting->retains;painting->retained=font;}
+static void presentation_release(HFONT font){++painting->releases;painting->released=font;}
+static void presentation_dispose(void *context){++((presentation_fixture *)context)->disposed;}
+static BOOL presentation_paint(HWND w,void *context,HDC dc,HFONT font)
+{
+    (void)dc;presentation_fixture *f=context;
+    f->valid=font==(f->font_free?NULL:f->expected) && (f->font_free || f->retains==f->releases+1);
+    if(f->replace)f->state.font=(HFONT)GetStockObject(SYSTEM_FONT);
+    if(f->stop)f->valid=f->valid && style_instance_detach(&f->instance);
+    (void)w;return f->supported;
+}
+static LRESULT CALLBACK presentation_native(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+{
+    (void)id;presentation_fixture *f=(presentation_fixture *)data;
+    if(m==WM_PRINTCLIENT){++f->fallbacks;return 0;}
+    return DefSubclassProc(w,m,a,b);
+}
+static LRESULT CALLBACK presentation_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+{
+    (void)id;presentation_fixture *f=(presentation_fixture *)data;
+    if(m!=WM_APP+1)return DefSubclassProc(w,m,a,b);
+    style_instance_retain(&f->instance);
+    style_control_native_paint(w,&f->instance,f->font_free?NULL:&f->state,f,presentation_paint,(HDC)a);
+    style_instance_release(&f->instance);return 0;
+}
 int main(void)
 {
     INITCOMMONCONTROLSEX init={sizeof(init),ICC_TAB_CLASSES|ICC_LISTVIEW_CLASSES|ICC_PROGRESS_CLASS};CHECK(InitCommonControlsEx(&init));
@@ -50,6 +83,25 @@ int main(void)
         f.allow=TRUE;f.stop=TRUE;SendMessageW(w,WM_PRINTCLIENT,(WPARAM)dc,0);CHECK(f.instance.detached && f.disposed==1 && !style_instance_lookup(w,procedure));
         CHECK(DestroyWindow(w));
     }
+    {
+        HWND w=CreateWindowW(L"STATIC",L"",WS_CHILD,0,0,80,40,parent,NULL,GetModuleHandleW(NULL),NULL);CHECK(w);
+        const style_control_fonts fonts={.retain=presentation_retain,.release=presentation_release};
+        presentation_fixture f={.supported=TRUE};painting=&f;style_instance_init(&f.instance,&f,presentation_dispose);
+        f.state.font=(HFONT)GetStockObject(DEFAULT_GUI_FONT);f.state.fonts=&fonts;f.expected=f.state.font;
+        CHECK(SetWindowSubclass(w,presentation_native,1,(DWORD_PTR)&f));
+        CHECK(style_instance_attach(&f.instance,w,presentation_proc,NULL));
+        SendMessageW(w,WM_APP+1,(WPARAM)dc,0);
+        CHECK(f.valid && f.retains==1 && f.releases==1 && !f.fallbacks && f.retained==f.expected && f.released==f.expected);
+        f.supported=FALSE;SendMessageW(w,WM_APP+1,(WPARAM)dc,0);
+        CHECK(f.valid && f.retains==2 && f.releases==2 && f.fallbacks==1);
+        f.replace=TRUE;SendMessageW(w,WM_APP+1,(WPARAM)dc,0);
+        CHECK(f.valid && f.retains==3 && f.releases==3 && f.released==f.expected && f.state.font!=f.expected && f.fallbacks==2);
+        f.replace=FALSE;f.font_free=TRUE;SendMessageW(w,WM_APP+1,(WPARAM)dc,0);
+        CHECK(f.valid && f.retains==3 && f.releases==3 && f.fallbacks==3);
+        f.font_free=FALSE;f.stop=TRUE;f.expected=f.state.font;SendMessageW(w,WM_APP+1,(WPARAM)dc,0);
+        CHECK(f.valid && f.retains==4 && f.releases==4 && f.released==f.expected && f.fallbacks==3 && f.instance.detached && f.disposed==1);
+        CHECK(RemoveWindowSubclass(w,presentation_native,1) && DestroyWindow(w));painting=NULL;
+    }
     SelectObject(dc,old);CHECK(DeleteObject(bitmap) && DeleteDC(dc) && DestroyWindow(parent));
-    puts("NATIVE CONTROL PASS families=3 native_result=1 query_timing=1 header_input=1 epoch=1 print_dc=1 eligibility=1 retire=1 cleanup=1");return 0;
+    puts("NATIVE CONTROL PASS families=3 native_result=1 query_timing=1 header_input=1 epoch=1 print_dc=1 eligibility=1 retire=1 cleanup=1 font_lease=1 fallback=1 reentrant_font=1 font_free=1");return 0;
 }

@@ -128,3 +128,12 @@ int style_theme_classify(LPCWSTR name)
     if(safe[8]==0 && !lstrcmpiW(safe,L"COMBOBOX"))return STYLE_THEME_COMBOBOX;
     return safe[8]==0 && !lstrcmpiW(safe,L"TEXTGLOW")?STYLE_THEME_TEXTGLOW:STYLE_THEME_OTHER;
 }
+
+void style_theme_track_scope_end(void *context)
+{
+    style_theme_track_scope *scope=context;
+    if(!scope->active)return;
+    if(scope->closing)style_theme_track_close_end(scope->handle,FALSE);
+    else style_theme_track_open_cancel();
+    scope->active=FALSE;
+}

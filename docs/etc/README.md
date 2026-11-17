@@ -281,3 +281,7 @@
 
 - [S12实际远端复核](evidence/t26-s12-modern-remote.json)：P1实际fetch的38项blob和八文件，与候选/assets/O:/winnt字节相等。
 - [S13初始renderer审计](evidence/t26-s13-renderer-audit.json)：初始冻结根，尚未审查或实施；活动范围见CURRENT与S13 brief。
+
+- [S13呈现/资源开发证据](evidence/t26-s13-renderer-development.json)：能力合批增量构建/原生资源与真实消费者结果、失败/边界和清理，不是整S发布证明。
+
+- [T26 S13 renderer delivery](evidence/t26-s13-renderer-delivery.json): clean dual-width package, publication identities, 120 native calls, retained failure and exact S12 control.

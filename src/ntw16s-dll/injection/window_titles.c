@@ -27,6 +27,8 @@
 #include <commctrl.h>
 #include <vssym32.h>
 #include "../../lib-win32-style/appearance/win3x/common/font.h"
+#include "lib-win32-style/application/graphics/font_scope.h"
+#include "lib-win32-style/application/graphics/font_cache.h"
 #include "../../lib-win32-style/appearance/win3x/control/month_text.h"
 #include "lib-win32-style/appearance/win3x/control/special_paint.h"
 #include "lib-win32-style/appearance/win3x/control/choice_paint.h"
@@ -37,8 +39,8 @@ BOOL ntw16s_month_text_room(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,int,cons
 typedef struct month_text_room_context {HTHEME theme;HDC dc;int part,state;DWORD flags,flags2;const RECT *rect;const void *caller;} month_text_room_context;
 static BOOL month_text_room(void *value,int width)
 {month_text_room_context *c=value;return ntw16s_month_text_room(c->theme,c->dc,c->part,c->state,c->flags,c->flags2,c->rect,width,c->caller);}
-typedef struct month_font_borrow {HDC dc;int saved;HFONT font;} month_font_borrow;
-static void month_font_return(void *p){month_font_borrow *b=p;if(b->saved)RestoreDC(b->dc,b->saved);win16_style_system_release(b->font);}
+static void release_system_font(void *context,HFONT font)
+{(void)context;win16_style_system_release(font);}
 
 /* Private, synchronous coordinator scope; not part of the public ABI. */
 void ntw16s_status_frame(HDC,const RECT *,const RECT *,const void *);
@@ -322,7 +324,7 @@ static BOOL WINAPI hook_enable_scroll(HWND w,UINT bar,UINT arrows)
 /* Process-local native text leaves. Outside a verified VB6/report paint scope these
  * are transparent trampolines. The temporary font is restored before any
  * lease can be released; no application HFONT/property/layout is modified. */
-static _Thread_local unsigned vb_text_busy;
+static _Thread_local style_font_gate vb_text_gate;
 /* The report adapter promises only whole, reversible CP1252 runs. Keep
  * measurements and unsupported language/RTL runs on the native font. */
 static BOOL report_wide_text(HDC dc,const WCHAR *text,int count)
@@ -332,10 +334,10 @@ static BOOL report_ansi_text(HDC dc,const char *text,int count)
 #define VB_TEXT_HOOK(NAME,TYPE,PARAMS,ARGS,ALLOW) \
 static __typeof__(&NAME) real_##NAME; \
 static TYPE WINAPI hook_##NAME PARAMS \
-{ HFONT font=NULL,old=NULL;DWORD entry=GetLastError(),error;TYPE result; \
-  if(!vb_text_busy++ && (ALLOW) && style_runtime_text_active() && style_runtime_text_caller(__builtin_return_address(0))){font=ntw16s_vb_paint_font(dc);if(font){old=SelectObject(dc,font);if(old==HGDI_ERROR)old=NULL;}} \
+{ style_font_scope scope;DWORD entry=GetLastError(),error;TYPE result; \
+  if(style_font_gate_begin(&vb_text_gate,&scope,dc) && (ALLOW) && style_runtime_text_active() && style_runtime_text_caller(__builtin_return_address(0)))style_font_scope_select(&scope,win16_control_vb_paint_font(dc)); \
   SetLastError(entry);result=real_##NAME ARGS;error=GetLastError(); \
-  if(old){SelectObject(dc,old);}--vb_text_busy;SetLastError(error);return result; }
+  style_font_scope_end(&scope);style_font_gate_end(&vb_text_gate);SetLastError(error);return result; }
 VB_TEXT_HOOK(DrawTextA,int,(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format),(dc,text,count,rect,format),((!style_runtime_text_report_active() && style_runtime_text_direct_allowed()) || !(format&DT_CALCRECT)) && style_runtime_text_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
 VB_TEXT_HOOK(DrawTextExA,int,(HDC dc,LPSTR text,int count,LPRECT rect,UINT format,LPDRAWTEXTPARAMS params),(dc,text,count,rect,format,params),((!style_runtime_text_report_active() && style_runtime_text_direct_allowed()) || !(format&DT_CALCRECT)) && style_runtime_text_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
 VB_TEXT_HOOK(TextOutA,BOOL,(HDC dc,int x,int y,LPCSTR text,int count),(dc,x,y,text,count),(style_runtime_text_direct_allowed() || (GetMapMode(dc)==MM_TEXT && !(GetTextAlign(dc)&TA_UPDATECP))) && style_runtime_text_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
@@ -369,36 +371,26 @@ static PROCESS_HOOK_UNWIND_FUNCTION LRESULT WINAPI hook_CallWindowProcW(WNDPROC 
 HFONT ntw16s_status_simple_font(HDC,LPCWSTR,int,UINT,const void *,void **);
 void ntw16s_status_simple_return(void *,HFONT);
 static __typeof__(&DrawTextW) real_DrawTextW;
-typedef struct static_font_borrow {HDC dc;HFONT font;HGDIOBJ previous;} static_font_borrow;
-static void static_font_return(void *data)
-{
-    static_font_borrow *borrow=data;
-    if(borrow->previous)SelectObject(borrow->dc,borrow->previous);
-    if(borrow->font)win16_style_system_release(borrow->font);
-}
 static PROCESS_HOOK_UNWIND_FUNCTION int WINAPI hook_DrawTextW(HDC dc,LPCWSTR text,int count,LPRECT rect,UINT flags)
 {
     DWORD entry=GetLastError(),error;HFONT font=ntw16s_static_text_font(dc,text,count,flags,__builtin_return_address(0));
-    HGDIOBJ old=font?SelectObject(dc,font):NULL;
-    if(old==HGDI_ERROR)old=NULL;
     if(!font){SetLastError(entry);return real_DrawTextW(dc,text,count,rect,flags);}
-    static_font_borrow borrow={dc,font,old};process_hook_unwind_scope unwind;int result;
-    PROCESS_HOOK_UNWIND_BEGIN(unwind,static_font_return,&borrow);
+    style_font_scope borrow={.dc=dc,.font=font,.release=release_system_font};
+    style_font_scope_select(&borrow,font);process_hook_unwind_scope unwind;int result;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,style_font_scope_end,&borrow);
     SetLastError(entry);result=real_DrawTextW(dc,text,count,rect,flags);error=GetLastError();
     PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 
 
-typedef struct status_font_borrow {HDC dc;HFONT font;HGDIOBJ previous;void *token;} status_font_borrow;
-static void status_font_return(void *data){status_font_borrow *b=data;if(b->previous)SelectObject(b->dc,b->previous);ntw16s_status_simple_return(b->token,b->font);}
 static __typeof__(&DrawTextExW) real_DrawTextExW;
 static PROCESS_HOOK_UNWIND_FUNCTION int WINAPI hook_DrawTextExW(HDC dc,LPWSTR text,int count,LPRECT rect,UINT flags,LPDRAWTEXTPARAMS params)
 {
     DWORD entry=GetLastError(),error;void *token=NULL;HFONT font=ntw16s_status_simple_font(dc,text,count,flags,__builtin_return_address(0),&token);
-    HGDIOBJ old=font?SelectObject(dc,font):NULL;if(old==HGDI_ERROR)old=NULL;
     if(!font){SetLastError(entry);return real_DrawTextExW(dc,text,count,rect,flags,params);}
-    status_font_borrow borrow={dc,font,old,token};process_hook_unwind_scope unwind;int result;
-    PROCESS_HOOK_UNWIND_BEGIN(unwind,status_font_return,&borrow);
+    style_font_scope borrow={.dc=dc,.font=font,.context=token,.release=ntw16s_status_simple_return};
+    style_font_scope_select(&borrow,font);process_hook_unwind_scope unwind;int result;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,style_font_scope_end,&borrow);
     SetLastError(entry);result=real_DrawTextExW(dc,text,count,rect,flags,params);error=GetLastError();
     PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
@@ -411,28 +403,29 @@ static PROCESS_HOOK_UNWIND_FUNCTION int WINAPI hook_DrawTextExW(HDC dc,LPWSTR te
 static __typeof__(&ExtTextOutW) real_ExtTextOutW;
 static BOOL WINAPI hook_ExtTextOutW(HDC dc,int x,int y,UINT options,const RECT *rect,LPCWSTR text,UINT count,const INT *dx)
 {
-    DWORD entry=GetLastError(),error;HFONT font=NULL,old=NULL;WCHAR *decoded=NULL;char *encoded=NULL;BOOL result;LPCWSTR original_text=text;UINT original_options=options;
-    if(!vb_text_busy++ && style_runtime_text_direct_allowed() && style_runtime_text_active() && style_runtime_text_caller(__builtin_return_address(0))){
-        font=ntw16s_vb_paint_font(dc);
+    DWORD entry=GetLastError(),error;HFONT font=NULL;style_font_scope scope;style_glyph_text glyphs={0};BOOL result;LPCWSTR original_text=text;UINT original_options=options;
+    if(style_font_gate_begin(&vb_text_gate,&scope,dc) && style_runtime_text_direct_allowed() && style_runtime_text_active() && style_runtime_text_caller(__builtin_return_address(0))){
+        font=win16_control_vb_paint_font(dc);
         if(font && (options&ETO_GLYPH_INDEX)){
-            if(!win16_control_vb_glyph_prepare(dc,&text,&options,count,&decoded,&encoded,ntw16s_vb_decode_glyphs))font=NULL;
+            if(!win16_control_vb_glyph_allowed(dc,options,count) ||
+                !style_glyph_text_prepare(&glyphs,dc,text,count,1252,win16_control_vb_decode_glyphs))font=NULL;
+            else{text=glyphs.decoded;options&=~ETO_GLYPH_INDEX;}
         }
         if(font && !(options&ETO_GLYPH_INDEX) &&
             (!report_wide_text(dc,text,(int)count) || (style_runtime_text_report_active() && (options&ETO_RTLREADING))))font=NULL;
-        if(font)old=SelectObject(dc,font);
-        if(!old || old==HGDI_ERROR){
-            old=NULL;text=original_text;options=original_options;
-            if(encoded){HeapFree(GetProcessHeap(),0,encoded);encoded=NULL;}
+        style_font_scope_select(&scope,font);
+        if(!scope.previous){
+            text=original_text;options=original_options;
+            style_glyph_text_release_ansi(&glyphs);
         }
     }
     SetLastError(entry);
-    if(old && encoded)result=real_ExtTextOutA(dc,x,y,options,rect,encoded,count,dx);
+    if(scope.previous && glyphs.encoded)result=real_ExtTextOutA(dc,x,y,options,rect,glyphs.encoded,count,dx);
     else result=real_ExtTextOutW(dc,x,y,options,rect,text,count,dx);
     error=GetLastError();
-    if(old)SelectObject(dc,old);
-    if(decoded)HeapFree(GetProcessHeap(),0,decoded);
-    if(encoded)HeapFree(GetProcessHeap(),0,encoded);
-    --vb_text_busy;SetLastError(error);return result;
+    style_font_scope_end(&scope);
+    style_glyph_text_end(&glyphs);
+    style_font_gate_end(&vb_text_gate);SetLastError(error);return result;
 }
 
 static __typeof__(&DrawFrameControl) real_DrawFrameControl;
@@ -458,7 +451,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_DrawThemeText(HTHEME the
     if(!entered && text){
         int n=0;BOOL supported=ntw16s_month_text_length(text,count,&n);
         HFONT font=supported?ntw16s_month_text_borrow(theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)):NULL;
-        if(font){month_font_borrow borrow={dc,SaveDC(dc),font};BOOL done=FALSE;process_hook_unwind_scope cleanup;PROCESS_HOOK_UNWIND_BEGIN(cleanup,month_font_return,&borrow);
+        if(font){style_font_scope borrow={.dc=dc,.font=font,.saved=SaveDC(dc),.release=release_system_font};BOOL done=FALSE;process_hook_unwind_scope cleanup;PROCESS_HOOK_UNWIND_BEGIN(cleanup,style_font_scope_end,&borrow);
           if(borrow.saved){month_text_room_context room={theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)};done=win16_control_month_text(theme,dc,part,state,font,text,n,flags,rect,real_DrawTextW,month_text_room,&room);}
           PROCESS_HOOK_UNWIND_END(cleanup);if(done){SetLastError(saved);return S_OK;}}}
     if(!entered){SetLastError(saved);return real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);}
@@ -479,22 +472,12 @@ static __typeof__(&OpenThemeDataEx) real_OpenThemeDataEx;
 static __typeof__(&CloseThemeData) real_CloseThemeData;
 typedef HTHEME (WINAPI *theme_dpi_fn)(HWND,LPCWSTR,UINT);
 static theme_dpi_fn real_OpenThemeDataForDpi;
-typedef struct theme_unwind { BOOL active, closing; HTHEME handle; } theme_unwind;
-static void theme_end(void *data)
-{
-    theme_unwind *scope=data;
-    if (!scope->active) return;
-    if (scope->closing) style_theme_track_close_end(scope->handle,FALSE);
-    else style_theme_track_open_cancel();
-    scope->active=FALSE;
-}
-
 #define THEME_OPEN_HOOK(NAME,PARAMETERS,ARGUMENTS) \
 static PROCESS_HOOK_UNWIND_FUNCTION HTHEME WINAPI hook_##NAME PARAMETERS \
 { \
     DWORD entry=GetLastError(),error;HTHEME h;process_hook_unwind_scope unwind; \
-    theme_unwind scope={TRUE,FALSE,NULL};style_theme_track_ticket ticket=style_theme_track_open_begin(); \
-    PROCESS_HOOK_UNWIND_BEGIN(unwind,theme_end,&scope); \
+    style_theme_track_scope scope={TRUE,FALSE,NULL};style_theme_track_ticket ticket=style_theme_track_open_begin(); \
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,style_theme_track_scope_end,&scope); \
     SetLastError(entry);h=real_##NAME ARGUMENTS;error=GetLastError(); \
     style_theme_track_open_end(ticket,h,h?style_theme_classify(name):STYLE_THEME_OTHER);scope.active=FALSE; \
     PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return h; \
@@ -506,8 +489,8 @@ THEME_OPEN_HOOK(OpenThemeDataForDpi,(HWND w,LPCWSTR name,UINT dpi),(w,name,dpi))
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_CloseThemeData(HTHEME h)
 {
     DWORD entry=GetLastError(),error;HRESULT result;process_hook_unwind_scope unwind;
-    theme_unwind scope={TRUE,TRUE,h};style_theme_track_close_begin(h);
-    PROCESS_HOOK_UNWIND_BEGIN(unwind,theme_end,&scope);
+    style_theme_track_scope scope={TRUE,TRUE,h};style_theme_track_close_begin(h);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,style_theme_track_scope_end,&scope);
     SetLastError(entry);result=real_CloseThemeData(h);error=GetLastError();
     style_theme_track_close_end(h,SUCCEEDED(result));scope.active=FALSE;
     PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
@@ -625,18 +608,12 @@ static BOOL WINAPI hook_DeleteDC(HDC dc)
 
 
 static __typeof__(&TrackPopupMenu) real_TrackPopupMenu;
-typedef struct popup_owner_scope { HWND window;BOOL installed; } popup_owner_scope;
-static void popup_owner_end(void *data)
-{
- popup_owner_scope *scope=data;BOOL installed=scope->installed;HWND w=scope->window;
- scope->installed=FALSE;if(installed && IsWindow(w))win16_style_frame_remove_owned(w,scope);
-}
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_TrackPopupMenu(HMENU m,UINT flags,int x,int y,int reserved,HWND w,const RECT *r)
 {
- process_hook_unwind_scope unwind;popup_owner_scope scope={w,FALSE};DWORD incoming=GetLastError(),error;BOOL result;
+ process_hook_unwind_scope unwind;style_menu_owner_scope scope={w,FALSE,win16_style_frame_remove_owned};DWORD incoming=GetLastError(),error;BOOL result;
  if(style_menu_owner_eligible(w,menu_owner_property,(HANDLE)&menu_owner_marker))
      scope.installed=win16_style_menu_owner_install_created(w,&scope,NULL);
- PROCESS_HOOK_UNWIND_BEGIN(unwind,popup_owner_end,&scope);
+ PROCESS_HOOK_UNWIND_BEGIN(unwind,style_menu_owner_scope_end,&scope);
  SetLastError(incoming);result=real_TrackPopupMenu(m,flags,x,y,reserved,w,r);error=GetLastError();
  PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }

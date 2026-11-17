@@ -17,3 +17,10 @@ BOOL style_menu_owner_eligible(HWND w,LPCWSTR property,HANDLE marker)
         GetPropW(w,property)==marker && !(GetWindowLongPtrW(w,GWL_STYLE)&(WS_VISIBLE|WS_CHILD)) &&
         (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_TOOLWINDOW);
 }
+
+void style_menu_owner_scope_end(void *context)
+{
+    style_menu_owner_scope *scope=context;BOOL installed=scope->installed;HWND w=scope->window;
+    scope->installed=FALSE;
+    if(installed && IsWindow(w))scope->remove(w,scope);
+}

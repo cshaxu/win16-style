@@ -1,15 +1,17 @@
 #include "lib-win32-style/application/menu/tracking.h"
+#include "lib-win32-style/application/graphics/font_cache.h"
 #include "lib-win32-style/application/window/native_frame.h"
 #include "lib-win32-style/application/menu/menu_input.h"
 #include <stdio.h>
 #include "lib-win32-style/appearance/win3x/common/palette.h"
 #include "lib-win32-style/appearance/win3x/control/basic_paint.h"
+#include "lib-win32-style/appearance/win3x/control/other_paint.h"
 #include "lib-win32-style/appearance/win3x/resources/scroll_assets.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_bar.h"
 #include "lib-win32-style/appearance/win3x/common/font.h"
 #include "lib-win32-style/appearance/win3x/window/frame_layout.h"
 #include "lib-win32-style/appearance/win3x/window/frame_font.h"
-#include "lib-win32-style/appearance/win3x/window/frame_view.h"
+#include "lib-win32-style/appearance/win3x/window/frame_renderer.h"
 #include "lib-win32-style/application/window/frame.h"
 #include "lib-win32-style/appearance/win3x/window/frame_state.h"
 #include "lib-win32-style/appearance/win3x/control/control_state.h"
@@ -45,8 +47,39 @@ static void test_button_paint(HWND w,void *context,int hit)
 {(void)w;(void)context;if(hit==HTMINBUTTON)++button_paints;}
 static BOOL test_decode(HDC dc,const WCHAR *input,UINT count,WCHAR *output)
 {(void)dc;for(UINT i=0;i<count;++i)output[i]=input[i];return TRUE;}
+static UINT fit_button_type(HWND w,DWORD style){(void)w;return style&BS_TYPEMASK;}
+static BOOL fit_group_push(HWND w){(void)w;return TRUE;}
+static BOOL actual_fitted_button(void)
+{
+    HWND w=CreateWindowW(L"BUTTON",L"",WS_POPUP|BS_PUSHBUTTON,0,0,80,40,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    HDC screen=GetDC(NULL),dc=screen?CreateCompatibleDC(screen):NULL;
+    HBITMAP bitmap=dc?CreateCompatibleBitmap(screen,80,40):NULL;
+    if(screen)ReleaseDC(NULL,screen);
+    HGDIOBJ old=bitmap?SelectObject(dc,bitmap):NULL;
+    HFONT font=CreateFontW(-48,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_DEFAULT_PRECIS,
+        CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,FIXED_PITCH,L"Courier New");
+    BOOL ok=w && dc && old && old!=HGDI_ERROR && font;unsigned ink=0;
+    if(ok){
+        style_instance instance={0};win16_style_palette palette;win16_style_default_palette(&palette);
+        int saved=SaveDC(dc);RECT bounds={0,0,80,40};
+        win16_control_other(w,&instance,&palette,dc,bounds,font,L"A deliberately long caption",FALSE,fit_button_type,fit_group_push);
+        int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
+        for(int y=4*unit;y<40-4*unit;++y)for(int x=6*unit;x<80-6*unit;++x)
+            if(GetPixel(dc,x,y)==palette.edge)++ink;
+        if(saved)RestoreDC(dc,saved);
+        ok=saved && ink>0;
+    }
+    if(old && old!=HGDI_ERROR)SelectObject(dc,old);
+    if(bitmap)DeleteObject(bitmap);
+    if(dc)DeleteDC(dc);
+    if(font)DeleteObject(font);
+    if(w)DestroyWindow(w);
+    return ok;
+}
 int main(void)
 {
+    if(!actual_fitted_button())return 93;
+    puts("WIN16_FITTED_BUTTON_OK actual_renderer=1 shared_text_fit=1");
 
     win16_attachment_initial_classification initial={0};
     style_control_runtime_candidates vcl={0};style_control_runtime_extras extra={0};
@@ -86,17 +119,15 @@ int main(void)
        !win16_control_report_ansi_text(policy_dc,"abc",-1,TRUE) ||
        win16_control_report_ansi_text(policy_dc,NULL,0,TRUE) ||
        !win16_control_report_ansi_text(policy_dc,NULL,0,FALSE))return 82;
-    LPCWSTR run=L"AB";UINT flags=ETO_GLYPH_INDEX;WCHAR *decoded=NULL;char *encoded=NULL;
-    if(!win16_control_vb_glyph_prepare(policy_dc,&run,&flags,2,&decoded,&encoded,test_decode) ||
-       flags || !decoded || !encoded || encoded[0]!='A' || encoded[1]!='B' || run!=decoded)return 101;
-    HeapFree(GetProcessHeap(),0,decoded);HeapFree(GetProcessHeap(),0,encoded);
-    run=L"\x4e2d";flags=ETO_GLYPH_INDEX;decoded=NULL;encoded=NULL;
-    if(win16_control_vb_glyph_prepare(policy_dc,&run,&flags,1,&decoded,&encoded,test_decode) ||
-       flags!=ETO_GLYPH_INDEX)return 102;
-    if(decoded)HeapFree(GetProcessHeap(),0,decoded);
-    if(encoded)HeapFree(GetProcessHeap(),0,encoded);
-    run=L"A";flags=ETO_GLYPH_INDEX|ETO_RTLREADING;decoded=NULL;encoded=NULL;
-    if(win16_control_vb_glyph_prepare(policy_dc,&run,&flags,1,&decoded,&encoded,test_decode) || decoded || encoded)return 103;
+    style_glyph_text run={0};
+    if(!win16_control_vb_glyph_allowed(policy_dc,ETO_GLYPH_INDEX,2) ||
+       !style_glyph_text_prepare(&run,policy_dc,L"AB",2,1252,test_decode) ||
+       !run.decoded || !run.encoded || run.encoded[0]!='A' || run.encoded[1]!='B')return 101;
+    style_glyph_text_end(&run);
+    if(style_glyph_text_prepare(&run,policy_dc,L"\x4e2d",1,1252,test_decode))return 102;
+    style_glyph_text_end(&run);
+    if(win16_control_vb_glyph_allowed(policy_dc,ETO_GLYPH_INDEX|ETO_RTLREADING,1) ||
+       win16_control_vb_glyph_allowed(policy_dc,ETO_GLYPH_INDEX,4097))return 103;
     SetTextAlign(policy_dc,TA_RTLREADING);
     if(win16_control_report_wide_text(policy_dc,L"a",1,TRUE) || win16_control_report_ansi_text(policy_dc,"a",1,TRUE))return 83;
     if(win16_control_static_text_font(policy_dc,L"a",1,DT_CALCRECT,(const void *)main,NULL,GetModuleHandleW(NULL)))return 84;
@@ -209,9 +240,9 @@ int main(void)
     if(win16_control_state_prepare_font(window,font_state,&font_call)){
         win16_control_state_dispose(font_state);DestroyWindow(window);return 41;}
     win16_control_state_dispose(font_state);
-    int pressed=HTMINBUTTON;BOOL hot=FALSE,button_detached=FALSE;
+    int pressed=HTMINBUTTON;BOOL hot=FALSE;style_instance button_instance={0};
     style_caption_button button_state={pressed,hot};
-    const win16_control_frame_button_view button_view={NULL,&button_state,&button_detached,test_button_layout,test_button_paint};
+    const win16_control_frame_button_view button_view={NULL,&button_state,&button_instance,test_button_layout,test_button_paint};
     if(!win16_control_frame_button_motion(window,&button_view,WM_MOUSEMOVE,MAKELPARAM(0,0)) || !button_state.hot || button_paints!=1 ||
        !win16_control_frame_button_cancel(window,&button_view,WM_CAPTURECHANGED) || button_state.pressed || button_state.hot || button_paints!=2){DestroyWindow(window);return 24;}
     style_instance tabs_instance={0};style_control_state tabs_state={.font=(HFONT)GetStockObject(SYSTEM_FONT)};

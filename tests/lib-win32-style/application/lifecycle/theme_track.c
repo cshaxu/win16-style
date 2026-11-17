@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
+#include "../../../ntw16s-dll/exception_probe.h"
 #include "lib-win32-style/application/lifecycle/theme_track.h"
 
 
@@ -22,8 +23,33 @@ static DWORD WINAPI close_thread(void *argument)
     if (WaitForSingleObject(o->start, 2000) != WAIT_OBJECT_0) return 1;
     closed(o->h, TRUE); SetEvent(o->done); return 0;
 }
+static LRESULT PROCESS_HOOK_UNWIND_FUNCTION CALLBACK scope_proc(HWND w,UINT m,WPARAM wp,LPARAM lp)
+{
+    if(m!=WM_APP+1)return DefWindowProcW(w,m,wp,lp);
+    style_theme_track_scope scope={TRUE,(BOOL)wp,(HTHEME)lp};
+    if(scope.closing)style_theme_track_close_begin(scope.handle);
+    else (void)style_theme_track_open_begin();
+    process_hook_unwind_scope unwind;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,style_theme_track_scope_end,&scope);
+    RaiseException(NTW16S_TEST_EXCEPTION_CODE,0,0,NULL);
+    PROCESS_HOOK_UNWIND_END(unwind);return 0;
+}
+static int check_scope(void)
+{
+    HINSTANCE module=GetModuleHandleW(NULL);WNDCLASSW cls={.hInstance=module,.lpfnWndProc=scope_proc,.lpszClassName=L"ThemeScopeFixture"};CHECK(RegisterClassW(&cls));
+    HWND w=CreateWindowW(cls.lpszClassName,L"",WS_POPUP,0,0,80,40,NULL,NULL,module,NULL);CHECK(w);
+    style_theme_track_scope inactive={0};style_theme_track_scope_end(&inactive);
+    HTHEME h=(HTHEME)(UINT_PTR)0x7071;opened(h,TRUE);CHECK(style_theme_track_begin(h,STYLE_THEME_BUTTON).eligible);
+    CHECK(test_unwind(w,WM_APP+1,TRUE,(LPARAM)h));CHECK(!style_theme_track_begin(h,STYLE_THEME_BUTTON).eligible);
+    h=(HTHEME)(UINT_PTR)0x7072;opened(h,TRUE);CHECK(style_theme_track_begin(h,STYLE_THEME_BUTTON).eligible);
+    CHECK(test_unwind(w,WM_APP+1,FALSE,0));
+    h=(HTHEME)(UINT_PTR)0x7073;opened(h,TRUE);CHECK(!style_theme_track_begin(h,STYLE_THEME_BUTTON).eligible);
+    CHECK(DestroyWindow(w) && UnregisterClassW(cls.lpszClassName,module));
+    puts("THEME SCOPE PASS inactive=1 native_close_unwind=1 native_open_unwind=1 existing_cancel_policy=1");return 0;
+}
 int main(int argc, char **argv)
 {
+    if(argc==2 && !strcmp(argv[1],"scope"))return check_scope();
     CHECK(style_theme_classify(L"BUTTON")==STYLE_THEME_BUTTON);
     CHECK(style_theme_classify(L"combobox")==STYLE_THEME_COMBOBOX);
     CHECK(style_theme_classify(L"TEXTGLOW")==STYLE_THEME_TEXTGLOW);

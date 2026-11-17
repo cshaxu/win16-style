@@ -1,6 +1,6 @@
 #ifndef WIN16_CONTROL_FRAME_INPUT_H
 #define WIN16_CONTROL_FRAME_INPUT_H
-#include "frame_view.h"
+#include "frame_renderer.h"
 #include "frame_state.h"
 #include "lib-win32-style/application/menu/bar_controller.h"
 typedef struct win16_control_frame_input_services {

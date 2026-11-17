@@ -1,7 +1,7 @@
 #include "modern_frame.h"
 #include "modern_frame_layout.h"
 #include "lib-win32-style/application/adapters/surface.h"
-#include "lib-win32-style/appearance/win3x/window/frame_view.h"
+#include "lib-win32-style/appearance/win3x/window/frame_renderer.h"
 #include "lib-win32-style/appearance/win3x/window/frame_font.h"
 #include "lib-win32-style/appearance/win3x/common/font.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_items.h"
@@ -11,8 +11,6 @@ typedef struct uwp_frame {
     style_uwp_frame frame;
     style_font_pair fonts;
     win16_style_layout layout;
-    int no_selection;
-    BOOL no_keyboard;
     style_uwp_frame_action_entry actions[];
 } uwp_frame;
 
@@ -44,12 +42,17 @@ static BOOL refresh_geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
     if(!geometry(s,outer))return FALSE;
     *hole=s->layout.client;*anchor=(POINT){s->layout.system.left,s->layout.system.bottom};return TRUE;
 }
+static void paint_state(void *context,win16_frame_paint_state *result)
+{
+    uwp_frame *s=context;
+    *result=(win16_frame_paint_state){&s->fonts,s->frame.active,s->frame.no_menu,FALSE,-1,
+        {s->frame.pressed,s->frame.hot}};
+}
+static const win16_frame_renderer_ops renderer={cached_layout,paint_state,colors,no_scrollbars};
 static void refresh_paint(void *context,HDC dc)
 {
     uwp_frame *s=context;
-    win16_control_frame_view view={s,&s->frame.host.instance.detached,&s->frame.active,&s->fonts.menu,&s->fonts.title,&s->fonts.dpi,
-        &s->no_selection,&s->frame.no_menu,&s->no_keyboard,&s->frame.pressed,&s->frame.hot,cached_layout,colors,no_scrollbars};
-    win16_control_paint_frame(s->frame.host.owner,&view,dc);
+    win16_control_paint_frame(s->frame.host.owner,&s->frame.host.instance,s,&renderer,dc);
 }
 static void invoke(uwp_frame *s,int hit)
 {
@@ -84,7 +87,6 @@ static BOOL apply_actions(HWND w,HWND title,const style_uwp_frame_action *action
     if(!style_uwp_frame_validate(w,title,actions,count))return FALSE;
     uwp_frame *s=calloc(1,sizeof(*s)+(size_t)count*sizeof(*s->actions));
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    s->no_selection=-1;
     return style_uwp_frame_start(&s->frame,w,title,&operations,s,actions,count,s->actions);
 }
 BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const style_uwp_frame_action *actions,unsigned count)

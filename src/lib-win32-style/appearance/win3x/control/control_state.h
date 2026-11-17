@@ -21,9 +21,7 @@ typedef struct control_style {
 control_style *win16_control_state_create(void);
 void win16_control_state_dispose(void *context);
 BOOL win16_control_state_prepare_font(HWND,void *,style_control_message *);
-typedef void (*win16_control_state_painter)(HWND,control_style *,HDC);
-typedef void (*win16_control_state_present)(HWND,control_style *,HDC,win16_control_state_painter);
-typedef struct win16_control_remove_services {
+typedef void (*win16_control_state_painter)(HWND,control_style *,HDC);typedef struct win16_control_remove_services {
     SUBCLASSPROC control_proc;
     void (*scroll_finish)(HWND,control_style *,BOOL);
     SUBCLASSPROC track_notify,toolbar_notify;

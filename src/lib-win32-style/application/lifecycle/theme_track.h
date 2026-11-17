@@ -15,6 +15,13 @@ typedef struct style_theme_track_ticket {
     HTHEME theme;
 } style_theme_track_ticket;
 
+/* Owns cancellation of one in-flight native open/close call. The caller
+ * begins the existing tracker operation and clears active after normal
+ * completion. End is also callback-compatible with its existing unwinder;
+ * it never catches/retries or calls a native theme API. */
+typedef struct style_theme_track_scope {BOOL active,closing;HTHEME handle;} style_theme_track_scope;
+void style_theme_track_scope_end(void *);
+
 /* Kind values are supplied by the caller; the tracker owns no style policy.
  * Each linked module has one process-wide tracker, not one per window. */
 style_theme_track_ticket style_theme_track_open_begin(void);

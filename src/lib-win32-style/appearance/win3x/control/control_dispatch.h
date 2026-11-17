@@ -10,7 +10,6 @@ typedef struct win16_control_fileowner_services {
 #include "lib-win32-style/application/control/list.h"
 typedef struct win16_control_list_services {
     BOOL (*scroll_input)(HWND,control_style *,UINT,WPARAM,LPARAM);
-    win16_control_state_present present;
     win16_control_state_painter paint,border,scrollbars;
 } win16_control_list_services;
 #include "lib-win32-style/application/control/edit.h"
@@ -21,8 +20,7 @@ typedef struct win16_control_edit_services {
 typedef struct win16_control_dispatch_services {
     BOOL (*terminal)(HWND);
     style_control_track_calls *track_calls;SUBCLASSPROC track_notify;
-    win16_control_state_present present;
-    win16_control_state_painter tab,header,progress,combo,basic,frame_border,sizebox;
+    win16_control_state_painter combo,basic,frame_border,sizebox;
     const style_scroll_ops *scroll;
     const win16_control_fileowner_services *fileowner;
     const win16_control_list_services *list;

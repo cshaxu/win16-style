@@ -77,6 +77,13 @@ static BOOL WINAPI observed_blt(HDC dc,int x,int y,int cx,int cy,HDC from,int sx
 #include "lib-win32-style/appearance/win3x/control/combo_paint.c"
 #include "lib-win32-style/appearance/win3x/control/scroll_paint.c"
 #include "lib-win32-style/appearance/win3x/control/special_paint.c"
+/* Observe the actual profile renderer after removal of the product
+ * presentation trampoline; isolate only same-TU test-local helper names. */
+#define list_border dispatch_list_border
+#define edit_border dispatch_edit_border
+#include "lib-win32-style/appearance/win3x/control/control_dispatch.c"
+#undef list_border
+#undef edit_border
 #include "lib-win32-style/application/graphics/present.c"
 #undef FillRect
 #undef SaveDC
@@ -121,7 +128,7 @@ int main(int argc,char **argv)
      bi.bmiHeader.biPlanes=1;bi.bmiHeader.biBitCount=32;
      bitmap=CreateDIBSection(dc,&bi,DIB_RGB_COLORS,&pixels,NULL,0);CHECK(bitmap);old=SelectObject(dc,bitmap);
      FillRect(dc,&r,(HBRUSH)GetStockObject(BLACK_BRUSH));win16_style_default_palette(&state.palette);
-     present_control(group,&state,dc,draw);
+     control_render render={&state,NULL,draw};render_control(group,&render,dc,draw,TRUE);
      CHECK(GetPixel(dc,100,70)==RGB(37,83,119));CHECK(GetPixel(dc,25,35)==RGB(0,0,0));
      CHECK(!owned_live && !owned_overflow);SelectObject(dc,old);DeleteObject(bitmap);DeleteDC(dc);
      CHECK(DestroyWindow(sibling) && DestroyWindow(group));

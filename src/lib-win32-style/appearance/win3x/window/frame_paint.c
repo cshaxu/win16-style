@@ -79,22 +79,23 @@ void win16_control_frame_sizing(HDC dc,const win16_style_layout *layout,const wi
 }
 
 void win16_control_frame_caption(HWND w,HDC dc,const win16_style_layout *layout,const win16_style_palette *palette,
-    const BOOL *active,const BOOL *system_menu,const BOOL *bar_keyboard,const int *bar_selected,
-    const int *pressed,const BOOL *hot,HFONT *title_font)
+    void *context,win16_frame_state_read read)
 {
     win16_style_layout l=*layout;win16_style_palette p=*palette;RECT r;int len;WCHAR *title;
-    win16_control_fill(dc,l.caption,*active?p.active:p.inactive);
+    win16_frame_paint_state state;read(context,&state);
+    win16_control_fill(dc,l.caption,state.active?p.active:p.inactive);
     r=l.caption;r.top=r.bottom;r.bottom+=l.unit;win16_control_fill(dc,r,p.edge);
-    win16_control_frame_button(dc,l.system,HTSYSMENU,*system_menu||(*bar_keyboard&&*bar_selected==-2)||(*pressed==HTSYSMENU&&*hot),FALSE,
+    win16_control_frame_button(dc,l.system,HTSYSMENU,state.system_menu||(state.bar_keyboard&&state.bar_selected==-2)||(state.button.pressed==HTSYSMENU&&state.button.hot),FALSE,
         (GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD)!=0,l.unit,&p);
-    win16_control_frame_button(dc,l.minimize,HTMINBUTTON,*pressed==HTMINBUTTON&&*hot,FALSE,FALSE,l.unit,&p);
-    win16_control_frame_button(dc,l.maximize,HTMAXBUTTON,*pressed==HTMAXBUTTON&&*hot,IsZoomed(w),FALSE,l.unit,&p);
+    win16_control_frame_button(dc,l.minimize,HTMINBUTTON,state.button.pressed==HTMINBUTTON&&state.button.hot,FALSE,FALSE,l.unit,&p);
+    win16_control_frame_button(dc,l.maximize,HTMAXBUTTON,state.button.pressed==HTMAXBUTTON&&state.button.hot,IsZoomed(w),FALSE,l.unit,&p);
     title=style_window_text_copy(w);
     if(title){
+        read(context,&state);
         SIZE extent;len=lstrlenW(title);
         r=l.title;
-        SelectObject(dc,*title_font);SetBkMode(dc,TRANSPARENT);
-        SetTextColor(dc,*active?p.active_text:p.inactive_text);
+        SelectObject(dc,state.fonts->title);SetBkMode(dc,TRANSPARENT);
+        SetTextColor(dc,state.active?p.active_text:p.inactive_text);
         /* The role font is realized at this window DPI. Do not scale it a
          * second time; retain centered-or-clipped, no-ellipsis text. */
         if(GetTextExtentPoint32W(dc,title,len,&extent))

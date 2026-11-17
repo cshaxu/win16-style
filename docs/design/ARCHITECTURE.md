@@ -130,4 +130,14 @@ S11的`application/dialog/classic_file_controller`拥有A/W打开和保存的参
 
 S11的`application/dialog/observation`统一持有创建调用、当前线程观察hook和可选嵌套目标身份。Win3x font/color组合创建事务与观察；Win2000用NULL创建上下文明确只观察，不改成预创建附着。结束按既有顺序恢复身份、释放本层hook和创建作用域，应用既有呈现不会因结束被移除。classic_file_live操作直接借用同一完整proxy，原生调用可重入并改变active_window，之后读取当前字段；没有另建字段指针视图或并行状态。实际交付状态仍由CURRENT管理。
 
-S12交付的`application/adapters/frame`嵌入既有host/instance并拥有bitmap、刷新/输入/激活状态、menu owner和action事务；profile在同一次分配中嵌入公共根及action尾存储，只保留年代布局、命中、命令/菜单绘制和字体策略。input/surface直接使用完整根，不再接收字段指针view。内部移除/表面查询由产品直接调用公共入口，DLL协议及导出保持。有限验证、六项原生接入/实际宿主未通过观察及交付状态由CURRENT/S12证据确定，不能据此声称所有现代应用已验证；旧renderer frame_view明确由S13接收。
+S12交付的`application/adapters/frame`嵌入既有host/instance并拥有bitmap、刷新/输入/激活状态、menu owner和action事务；profile在同一次分配中嵌入公共根及action尾存储，只保留年代布局、命中、命令/菜单绘制和字体策略。input/surface直接使用完整根，不再接收字段指针view。内部移除/表面查询由产品直接调用公共入口，DLL协议及导出保持。有限验证、六项原生接入/实际宿主未通过观察及交付状态由CURRENT/S12证据确定，不能据此声称所有现代应用已验证；原frame_view字段视图已由S13替换为完整frame_renderer操作，普通与现代路径共用；S13仍未正式交付。
+
+S13当前图形所有权契约：`application/graphics/font_cache`直接拥有来源字体缓存、字形映射、快照借还、已发布内存字体引用和variant池；年代提供实际字形/FNT生成及配方key，不复制计数和释放链。`graphics/present`同步借用完整实例与绘制操作，拥有缓冲/DC和既有打印顺序；`control/native`通过现有control state字体操作拥有临时租约和存活检查后的原生回退。具体tab/header/progress呈现由appearance直接选择，产品无需转发它们。上述是已实施的局部契约，外框renderer已增量接入，整组审计及交付状态见CURRENT，不能由此称S13完成。
+
+外框renderer同步借用完整instance和font_pair；年代操作提供布局、配色、滚动条及整份呈现状态。快照不拥有资源，应用菜单测量和标题文本回调后重读，保留原生重入对font/active/selection的更新。普通/modern使用同一年代renderer，公共graphics负责有界buffer提交和失败直接绘制；两种宿主已有生命周期根保持独立，不为消除字段view复制状态。实际交付状态仍以CURRENT为准。
+
+文字资源调用中，公共`graphics/font_scope`拥有临时font/saved-DC恢复与字体lease归还，完整thread gate协调已有嵌套；年代只提供选字体、文本支持条件及实际lease返回策略。公共`adapters/win32/runtime_text_imports`承载既有ANSI API绑定和原import事务，调用者资格与字体provider仍由产品/年代选择。普通menu-only分派复用已有公共dispatch异常完成机制；未给原正常返回的ANSI/字形叶子新增异常处理，也未增加目标或DLL卸载能力。
+
+已有theme与popup临时注册作用域分别由`application/lifecycle/theme_track`和`application/menu/menu_owner`拥有：前者结算现有open/close取消，后者持有稳定owner身份、移除前清除installed状态并核验窗口存活。产品提供原生API调用、资格与具体样式操作。沿用既有异常展开调用这些完整根，不新增catch/retry或物理卸载保证。
+
+完整文字图形操作也归graphics：`text_metrics`持有既有缩小文字的临时DC/bitmap与成功发布，年代提供字体/颜色/源尺寸上限；`font_cache`的glyph-text根持有解码/单字节编码两块缓冲。产品ExtTextOutW仅装配原ABI、支持规则和A/W路由，保持字体恢复后再释放文本、最后退出gate的顺序。普通外框测量借用完整instance/font_pair，在native菜单测量回调后读取当前DPI和退役标志，不保存字段地址视图。原正常返回路径没有新增异常处理合同；交付及失败边界见CURRENT。

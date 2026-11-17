@@ -28,7 +28,12 @@ add_library(style-uwp-native STATIC src/lib-win32-style/application/adapters/uwp
 target_include_directories(style-uwp-native PUBLIC src)
 target_compile_definitions(style-uwp-native PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-uwp-native PUBLIC "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" style-instance style-bitmap user32 gdi32 ole32 oleaut32 uuid dwmapi comctl32)
-add_library(style-present STATIC src/lib-win32-style/application/graphics/present.c)
+add_library(style-font-cache STATIC src/lib-win32-style/application/graphics/font_cache.c)
+target_include_directories(style-font-cache PUBLIC src)
+target_compile_definitions(style-font-cache PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_link_libraries(style-font-cache PUBLIC gdi32)
+add_library(style-present STATIC src/lib-win32-style/application/graphics/present.c
+  src/lib-win32-style/application/graphics/text_metrics.c)
 target_include_directories(style-present PUBLIC src)
 target_compile_definitions(style-present PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-present PUBLIC user32 gdi32)
@@ -59,7 +64,7 @@ add_library(win16-common STATIC
   src/lib-win32-style/appearance/win3x/common/font.c src/lib-win32-style/appearance/win3x/common/palette.c)
 target_include_directories(win16-common PUBLIC src/lib-win32-style/appearance/win3x/common)
 target_compile_definitions(win16-common PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-common PUBLIC style-bitmap style-menu-items style-present user32 gdi32 comctl32 uxtheme)
+target_link_libraries(win16-common PUBLIC style-font-cache style-bitmap style-menu-items style-present user32 gdi32 comctl32 uxtheme)
 add_library(style-uwp-hook STATIC src/lib-win32-style/access/runtime/uwp_hook.c)
 target_include_directories(style-uwp-hook PUBLIC src)
 target_compile_definitions(style-uwp-hook PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -83,7 +88,7 @@ add_library(win16-window STATIC
   src/lib-win32-style/appearance/win3x/menu/menu_paint.c
   src/lib-win32-style/appearance/win3x/menu/menu_bar.c src/lib-win32-style/appearance/win3x/menu/menu_bar_paint.c
   src/lib-win32-style/appearance/win3x/menu/menu_items.c src/lib-win32-style/appearance/win3x/menu/menu_scope.c
-  src/lib-win32-style/appearance/win3x/window/frame_paint.c src/lib-win32-style/appearance/win3x/window/frame_view.c
+  src/lib-win32-style/appearance/win3x/window/frame_paint.c src/lib-win32-style/appearance/win3x/window/frame_renderer.c
   src/lib-win32-style/appearance/win3x/window/frame_layout.c src/lib-win32-style/appearance/win3x/window/frame_dispatch.c
   src/lib-win32-style/appearance/win3x/window/frame_input.c src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c
   src/lib-win32-style/appearance/win3x/window/frame_font.c
@@ -120,6 +125,7 @@ add_library(style-control-common STATIC
   src/lib-win32-style/application/adapters/win32/paint_dispatch.c
   src/lib-win32-style/application/control/bindings.c
   src/lib-win32-style/application/adapters/win32/runtime_text.c
+  src/lib-win32-style/application/adapters/win32/runtime_text_imports.c
   src/lib-win32-style/application/control/updown.c
   src/lib-win32-style/application/control/rebar.c
   src/lib-win32-style/application/adapters/win32/runtime_native.c
@@ -169,7 +175,7 @@ add_library(style-control-common STATIC
 target_include_directories(style-control-common PUBLIC src)
 target_compile_definitions(style-control-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_dependencies(style-control-common style-subclass)
-target_link_libraries(style-control-common PUBLIC style-bitmap win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme)
+target_link_libraries(style-control-common PUBLIC module-import style-bitmap win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme)
 add_library(win16-control STATIC
   src/lib-win32-style/appearance/win3x/control/scroll_layout.c
   src/lib-win32-style/appearance/win3x/control/tab_paint.c
@@ -184,7 +190,7 @@ add_library(win16-control STATIC
   src/lib-win32-style/appearance/win3x/control/special_paint.c
   src/lib-win32-style/appearance/win3x/control/month_text.c src/lib-win32-style/appearance/win3x/control/scroll_native.c
   src/lib-win32-style/appearance/win3x/control/control_state.c
-  src/lib-win32-style/appearance/win3x/control/native_presentation.c src/lib-win32-style/appearance/win3x/control/control_dispatch.c
+  src/lib-win32-style/appearance/win3x/control/control_dispatch.c
   src/lib-win32-style/appearance/win3x/control/vcl_native_paint.c src/lib-win32-style/appearance/win3x/control/text_policy.c
   src/lib-win32-style/appearance/win3x/control/control_guard.c
   src/lib-win32-style/appearance/win3x/control/control_install.c
@@ -194,7 +200,7 @@ add_library(win16-control STATIC
   src/lib-win32-style/appearance/win3x/control/attachment_guard.c)
 target_include_directories(win16-control PUBLIC src/lib-win32-style/appearance/win3x/control)
 target_compile_definitions(win16-control PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-control PUBLIC style-instance style-bitmap style-control-common style-present win16-common user32 gdi32 comctl32 uxtheme)
+target_link_libraries(win16-control PUBLIC style-font-cache style-instance style-bitmap style-control-common style-present win16-common user32 gdi32 comctl32 uxtheme)
 add_library(style-creation STATIC src/lib-win32-style/application/lifecycle/creation.c src/lib-win32-style/application/lifecycle/creation_call.c)
 target_include_directories(style-creation PUBLIC src)
 target_compile_definitions(style-creation PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -434,6 +440,16 @@ if(BUILD_TESTING)
   target_link_libraries(core-ntw2ks-control-theme PRIVATE user32 uxtheme)
   add_dependencies(core-ntw2ks-control-theme ntwshk ntw16s ntw2ks)
   add_test(NAME core/ntw2ks-control-theme COMMAND $<TARGET_FILE:core-ntw2ks-control-theme>)
+  add_executable(core-style-runtime-text-imports tests/lib-win32-style/application/adapters/win32/runtime_text_imports.c)
+  target_link_libraries(core-style-runtime-text-imports PRIVATE style-control-common)
+  add_test(NAME core/style-runtime-text-imports COMMAND $<TARGET_FILE:core-style-runtime-text-imports>)
+  add_executable(core-style-font-scope tests/lib-win32-style/application/graphics/font_scope.c)
+  target_include_directories(core-style-font-scope PRIVATE src)
+  target_link_libraries(core-style-font-scope PRIVATE win32-unwind user32 gdi32)
+  add_test(NAME core/style-font-scope COMMAND $<TARGET_FILE:core-style-font-scope>)
+  add_executable(core-style-font-cache tests/lib-win32-style/application/graphics/font_cache.c)
+  target_link_libraries(core-style-font-cache PRIVATE style-font-cache user32)
+  add_test(NAME core/style-font-cache COMMAND $<TARGET_FILE:core-style-font-cache>)
   add_executable(core-style-present tests/lib-win32-style/application/graphics/present.c)
   target_link_libraries(core-style-present PRIVATE style-present)
   add_test(NAME core/style-present COMMAND $<TARGET_FILE:core-style-present>)
@@ -692,8 +708,9 @@ if(BUILD_TESTING)
   target_link_libraries(commdlg-shadow-target PRIVATE user32 comdlg32)
   add_executable(core-theme-track tests/lib-win32-style/application/lifecycle/theme_track.c)
   target_include_directories(core-theme-track PRIVATE src)
-  target_link_libraries(core-theme-track PRIVATE style-theme-track)
+  target_link_libraries(core-theme-track PRIVATE style-theme-track win32-unwind)
   add_test(NAME core/theme-track COMMAND $<TARGET_FILE:core-theme-track>)
+  add_test(NAME core/theme-track-scope COMMAND $<TARGET_FILE:core-theme-track> scope)
   add_test(NAME core/theme-track-cancel COMMAND $<TARGET_FILE:core-theme-track> cancel)
   set_tests_properties(core/theme-track core/theme-track-cancel PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
   find_program(test_python python REQUIRED)
@@ -1244,7 +1261,7 @@ if(BUILD_TESTING)
   target_link_libraries(core-style-print-extended PRIVATE style-dialog-common)
   add_test(NAME core/style-print-extended COMMAND $<TARGET_FILE:core-style-print-extended>)
   add_executable(core-style-menu-owner tests/lib-win32-style/application/menu/menu_owner.c)
-  target_link_libraries(core-style-menu-owner PRIVATE style-global-window)
+  target_link_libraries(core-style-menu-owner PRIVATE style-global-window win32-unwind)
   add_test(NAME core/style-menu-owner COMMAND $<TARGET_FILE:core-style-menu-owner>)
   add_executable(core-style-frame-restore tests/lib-win32-style/application/window/frame_restore.c)
   add_executable(core-style-native-frame tests/lib-win32-style/application/window/native_frame.c)
@@ -1746,7 +1763,7 @@ if(BUILD_TESTING)
   target_compile_definitions(core-vcl-status-font-alias PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   add_executable(core-status-font-isolation tests/ntw16s-dll/status_font_isolation.c src/lib-win32-style/appearance/win3x/common/font.c)
   target_compile_definitions(core-status-font-isolation PRIVATE NTW16S_BUILD _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-status-font-isolation PRIVATE style-bitmap user32 gdi32)
+  target_link_libraries(core-status-font-isolation PRIVATE style-font-cache style-bitmap user32 gdi32)
   add_executable(core-status-font-stock tests/ntw16s-dll/status_font_stock.c)
   target_compile_definitions(core-status-font-stock PRIVATE NTW16S_BUILD _WIN32_WINNT=0x0A00)
   target_link_libraries(core-status-font-stock PRIVATE style-bitmap user32 gdi32)
@@ -1812,7 +1829,7 @@ if(BUILD_TESTING)
   plain_test(core-vcl-combo-simple-module tests/ntw16s-dll/vcl_combo_simple_module.c user32 gdi32)
   add_executable(core-vcl-combo-list-module tests/ntw16s-dll/vcl_combo_list_module.c src/lib-win32-style/appearance/win3x/common/font.c)
   target_compile_definitions(core-vcl-combo-list-module PRIVATE NTW16S_BUILD)
-  target_link_libraries(core-vcl-combo-list-module PRIVATE style-bitmap user32 gdi32)
+  target_link_libraries(core-vcl-combo-list-module PRIVATE style-font-cache style-bitmap user32 gdi32)
   target_link_options(core-vcl-combo-list-module PRIVATE -municode)
 
   add_control_fixture(vcl-group-frame-fixture tests/ntw16s-dll/vcl_group_frame_fixture.c user32 gdi32 uxtheme)
@@ -1984,16 +2001,16 @@ if(BUILD_TESTING)
   target_compile_definitions(vb-global-runtime PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   set_target_properties(vb-global-runtime PROPERTIES PREFIX "" OUTPUT_NAME "MSVBVM60" ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/vb-global-fixture" LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/vb-global-fixture" RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/vb-global-fixture")
   add_dependencies(global-common-target vb-global-runtime)
-  add_executable(core-global-vb-text tests/ntw16s-dll/global_vb_text.c src/ntw16s-dll/global/vb_text.c src/lib-win32/module-import/import_scan.c src/lib-win32/module-import/import_patch.c src/lib-win32-style/appearance/win3x/control/vb_text.c src/lib-win32-style/appearance/win3x/common/font.c)
+  add_executable(core-global-vb-text tests/ntw16s-dll/global_vb_text.c src/ntw16s-dll/global/vb_text.c src/lib-win32-style/appearance/win3x/control/vb_text.c src/lib-win32-style/appearance/win3x/common/font.c)
   target_include_directories(core-global-vb-text PRIVATE src)
   target_compile_definitions(core-global-vb-text PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-global-vb-text PRIVATE style-control-common style-bitmap user32 gdi32)
+  target_link_libraries(core-global-vb-text PRIVATE style-font-cache style-control-common style-bitmap user32 gdi32)
   target_link_options(core-global-vb-text PRIVATE -municode)
   add_dependencies(core-global-vb-text vb-global-runtime)
   add_test(NAME core/global-vb-text COMMAND ${test_driver} --name core/global-vb-text -- $<TARGET_FILE:core-global-vb-text> $<TARGET_FILE:vb-global-runtime>)
   set_tests_properties(core/global-vb-text PROPERTIES TIMEOUT 15)
 
-  add_executable(core-vb-font tests/ntw16s-dll/vb_font.c src/lib-win32-style/appearance/win3x/common/font.c src/lib-win32-style/appearance/win3x/control/vb_text.c)
+  add_executable(core-vb-font src/lib-win32-style/application/graphics/font_cache.c tests/ntw16s-dll/vb_font.c src/lib-win32-style/appearance/win3x/common/font.c src/lib-win32-style/appearance/win3x/control/vb_text.c)
   target_include_directories(core-vb-font PRIVATE src)
   target_compile_definitions(core-vb-font PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-vb-font PRIVATE style-control-common style-bitmap user32 gdi32)

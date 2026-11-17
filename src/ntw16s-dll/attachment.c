@@ -107,10 +107,10 @@ HFONT ntw16s_status_simple_font(HDC dc,LPCWSTR text,int count,UINT flags,const v
     style_control_status_scope *s=paint_runtime.status;if(!s){if(token)*token=NULL;return NULL;}
     if(token)*token=NULL;
     if(!token || !style_control_status_text_matches(s,paint_runtime.status_themes.current,dc,text,count,flags,address,win16_control_status_text_supported))return NULL;
-    attachment *a=s->context;return win16_control_status_font_borrow(&a->status_font,dc,a,token);
+    attachment *a=s->context;return style_font_snapshot_borrow(&a->status_font,dc,a,token,&win16_status_font_operations);
 }
 void ntw16s_status_simple_return(void *token,HFONT font)
-{attachment *a=token;if(a)win16_control_status_font_return(&a->status_font,font);}
+{attachment *a=token;if(a)style_font_snapshot_return(&a->status_font,font);}
 
 
 void ntw16s_status_text_frame(HDC dc,const RECT *text,UINT flags,const void *address)
@@ -223,8 +223,8 @@ static void release(attachment *a);
 static void attachment_dispose(void *context)
 {
     attachment *a=context;style_runtime_references references=a->base.runtime.roles.references;
-    win16_style_system_release(a->month_cached_font);win16_style_system_release(a->status_font.font);
-    ntw16s_vb_fonts_clear(&a->fonts);free(a);style_runtime_references_release(&references);
+    win16_style_system_release(a->month_cached_font);style_font_snapshot_dispose(&a->status_font);
+    style_font_cache_dispose(&a->fonts);free(a);style_runtime_references_release(&references);
 }
 static void release(attachment *a){style_instance_release(&a->base.instance);}
 static BOOL cool_identity(HWND w,attachment *a)

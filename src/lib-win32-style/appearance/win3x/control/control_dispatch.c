@@ -8,12 +8,31 @@
 #include "lib-win32-style/application/control/control_class.h"
 #include "../../../application/control/control_protocol.h"
 #include <commctrl.h>
+#include "lib-win32-style/application/graphics/present.h"
 
 typedef struct control_render {
     control_style *state;
     const win16_control_dispatch_services *services;
     win16_control_state_painter painter;
 } control_render;
+/* Screen painting owns a transient common buffer; print calls keep their
+ * borrowed DC. The enclosing message invocation pins the same instance. */
+static void paint_control(HWND window,void *context,HDC dc)
+{const control_render *render=context;render->painter(window,render->state,dc);}
+static BOOL group_control(HWND window,void *context)
+{
+    (void)context;
+    return style_control_class_is(window,L"BUTTON") &&
+        (GetWindowLongPtrW(window,GWL_STYLE)&BS_TYPEMASK)==BS_GROUPBOX;
+}
+static void render_control(HWND window,const control_render *render,HDC dc,
+    win16_control_state_painter painter,BOOL buffered)
+{
+    if(!buffered){painter(window,render->state,dc);return;}
+    control_render call=*render;call.painter=painter;
+    const style_present_ops ops={paint_control,group_control};
+    style_present(window,&call.state->instance,&call,call.state->palette.light,&ops,dc);
+}
 static BOOL owner_input(HWND w,void *context,UINT m,WPARAM a,LPARAM b)
 {const control_render *r=context;return ntw16s_vb_owner_file(w) && style_control_vb_directory(w) && r->services->fileowner->scroll_input(w,r->state,m,a,b);}
 static style_control_owner_action owner_select(HWND w,void *context,UINT m,LPARAM b)
@@ -31,25 +50,38 @@ static void owner_draw(HWND w,void *context,HDC dc,style_control_owner_action ac
     if(action==STYLE_CONTROL_OWNER_FRAME){ops->border(w,r->state,dc);ops->scrollbars(w,r->state,dc);}
     else ops->combo(w,r->state,dc);
 }
+typedef struct native_render {control_style *state;style_control_native_kind kind;} native_render;
+static BOOL native_policy_paint(HWND window,void *context,HDC dc,HFONT font)
+{
+    const native_render *render=context;control_style *s=render->state;
+    if(render->kind==STYLE_CONTROL_TAB)return win16_style_tab_paint(window,dc,&s->palette,font,&s->instance,&s->bindings.tab);
+    if(render->kind==STYLE_CONTROL_HEADER)return win16_style_header_paint(window,dc,&s->palette,font,&s->instance,&s->bindings.header);
+    return win16_style_progress_paint(window,dc,&s->palette,&s->instance,&s->bindings.progress);
+}
+static void native_paint(HWND window,void *context,HDC dc)
+{
+    native_render *render=context;control_style *s=render->state;
+    style_control_native_paint(window,&s->instance,render->kind==STYLE_CONTROL_PROGRESS?NULL:&s->state,
+        render,native_policy_paint,dc);
+}
 static void native_draw(HWND window,void *context,HDC dc,BOOL buffered)
 {
-    const control_render *render=context;
-    if(buffered)render->services->present(window,render->state,dc,render->painter);
-    else render->painter(window,render->state,dc);
+    native_render *render=context;control_style *s=render->state;
+    if(buffered){const style_present_ops ops={native_paint,group_control};
+        style_present(window,&s->instance,render,s->palette.light,&ops,dc);}
+    else native_paint(window,render,dc);
 }
 static void draw_basic(HWND window,void *context,HDC dc,BOOL buffered)
 {
     const control_render *render=context;
-    if(buffered)render->services->present(window,render->state,dc,render->services->basic);
-    else render->services->basic(window,render->state,dc);
+    render_control(window,render,dc,render->services->basic,buffered);
 }
 static BOOL list_input(HWND window,void *context,UINT message,WPARAM parameter,LPARAM value)
 {const control_render *render=context;return render->services->list->scroll_input(window,render->state,message,parameter,value);}
 static void list_draw(HWND window,void *context,HDC dc,BOOL buffered)
 {
     const control_render *render=context;const win16_control_list_services *list=render->services->list;
-    if(buffered)list->present(window,render->state,dc,list->paint);
-    else list->paint(window,render->state,dc);
+    render_control(window,render,dc,list->paint,buffered);
 }
 static void list_border(HWND window,void *context,HDC dc)
 {const control_render *render=context;render->services->list->border(window,render->state,dc);}
@@ -58,8 +90,7 @@ static void list_scrollbars(HWND window,void *context,HDC dc)
 static void combo_draw(HWND window,void *context,HDC dc,BOOL buffered)
 {
     const control_render *render=context;
-    if(buffered)render->services->present(window,render->state,dc,render->services->combo);
-    else render->services->combo(window,render->state,dc);
+    render_control(window,render,dc,render->services->combo,buffered);
 }
 static BOOL edit_input(HWND window,void *context,UINT message,WPARAM parameter,LPARAM value)
 {const control_render *render=context;return render->services->edit->scroll_input(window,render->state,message,parameter,value);}
@@ -84,8 +115,7 @@ static void frame_overlay(HWND window,void *context,HDC dc)
 static void sizebox_draw(HWND window,void *context,HDC dc,BOOL buffered)
 {
     const control_render *render=context;
-    if(buffered)render->services->present(window,render->state,dc,render->services->sizebox);
-    else render->services->sizebox(window,render->state,dc);
+    render_control(window,render,dc,render->services->sizebox,buffered);
 }
 LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPARAM *wparam,LPARAM *lparam,BOOL tab,BOOL header,BOOL progress,const win16_control_dispatch_services *v)
 {
@@ -95,7 +125,7 @@ LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPA
     else if(tab || header || progress){
         style_control_native_kind kind=tab?STYLE_CONTROL_TAB:header?STYLE_CONTROL_HEADER:STYLE_CONTROL_PROGRESS;
         style_control_native_state *state=tab?&s->bindings.tab:header?&s->bindings.header:&s->bindings.progress;
-        control_render render={s,v,tab?v->tab:header?v->header:v->progress};
+        native_render render={s,kind};
         const style_control_draw draw={&render,native_draw};
         result=style_control_native_message(w,&s->instance,state,kind,m,a,b,
             tab?win16_style_tab_supported:header?win16_style_header_supported:win16_style_progress_supported,&draw);

@@ -28,7 +28,7 @@ static BOOL set_slot(void **slot,void *expected,void *replacement)
     return VirtualProtect(slot,sizeof(*slot),before,&ignored) && was==expected;
 }
 static uint64_t draw_hash(HDC dc,void *pixels,draw_fn draw,unsigned mode,HWND form,
-                          BOOL scoped,ntw16s_vb_fonts *fonts,DWORD *last)
+                          BOOL scoped,style_font_cache *fonts,DWORD *last)
 {
     RECT bounds={0,0,200,40};FillRect(dc,&bounds,(HBRUSH)GetStockObject(WHITE_BRUSH));
     SetBkMode(dc,TRANSPARENT);SetTextColor(dc,RGB(0,0,0));
@@ -62,7 +62,7 @@ static int worker(int argc,WCHAR **argv)
     HBITMAP bitmap=CreateDIBSection(dc,&info,DIB_RGB_COLORS,&pixels,NULL,0);CHECK(bitmap && pixels);
     HGDIOBJ old_bitmap=SelectObject(dc,bitmap);HFONT source=CreateFontW(-12,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,
         OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");CHECK(source);
-    HGDIOBJ old_font=SelectObject(dc,source);ntw16s_vb_fonts fonts={0};uint64_t native[4];DWORD native_error[4];
+    HGDIOBJ old_font=SelectObject(dc,source);style_font_cache fonts={0};uint64_t native[4];DWORD native_error[4];
     for(unsigned i=0;i<4;++i){native[i]=draw_hash(dc,pixels,draw,i,form,TRUE,&fonts,&native_error[i]);CHECK(native[i]);}
     CHECK(!ntw16s_global_vb_text(form,&changed) && changed);
     for(unsigned i=0;i<4;++i)CHECK(*slots[i]!=original[i]);
@@ -72,7 +72,7 @@ static int worker(int argc,WCHAR **argv)
         uint64_t styled=draw_hash(dc,pixels,draw,i,form,TRUE,&fonts,&error);
         CHECK(styled && styled!=native[i] && error==native_error[i] && GetCurrentObject(dc,OBJ_FONT)==source);
     }
-    ntw16s_vb_fonts_clear(&fonts);SelectObject(dc,old_font);DeleteObject(source);
+    style_font_cache_dispose(&fonts);SelectObject(dc,old_font);DeleteObject(source);
     SelectObject(dc,old_bitmap);DeleteObject(bitmap);DeleteDC(dc);
     CHECK(DestroyWindow(form) && release() && FreeLibrary(runtime));
     CHECK(!GetModuleHandleW(L"MSVBVM60.DLL"));

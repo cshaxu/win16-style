@@ -25,7 +25,6 @@ BOOL ntw16s_vb_user_edge_dormant(HWND);
 #include "lib-win32-style/application/control/notify.h"
 #include "lib-win32-style/application/control/combo.h"
 #include "lib-win32-style/application/control/dialog_combo.h"
-#include "../lib-win32-style/appearance/win3x/control/native_presentation.h"
 #include "../lib-win32-style/appearance/win3x/control/control_dispatch.h"
 #include "../lib-win32-style/appearance/win3x/control/control_guard.h"
 #include "../lib-win32-style/appearance/win3x/control/control_install.h"
@@ -170,22 +169,6 @@ static void scroll_finish(HWND w,control_style *s,BOOL cancel)
 static BOOL embedded_scroll_input(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b)
 {const style_scroll_ops ops=scroll_operations(s);return style_scroll_embedded_input(w,&s->instance,&s->state,&s->bindings.scroll,&ops,m,a,b);}
 
-/* Only screen WM_PAINT uses this transient surface. Keep WM_PRINTCLIENT on
- * its borrowed DC. Seed the dirty rectangle so group interiors and native
- * combo EDIT/list children excluded by the painter remain unchanged. */
-typedef struct present_context {control_style *style;void (*painter)(HWND,control_style *,HDC);} present_context;
-static void present_painter(HWND w,void *context,HDC dc)
-{present_context *p=context;p->painter(w,p->style,dc);}
-static BOOL present_group(HWND w,void *context)
-{(void)context;return style_control_class_is(w,L"BUTTON") &&
-    (GetWindowLongPtrW(w,GWL_STYLE)&BS_TYPEMASK)==BS_GROUPBOX;}
-static void present_control(HWND w,control_style *s,HDC target,void (*painter)(HWND,control_style *,HDC))
-{
-    present_context context={s,painter};
-    const style_present_view view={&s->instance.detached,s->palette.light,&context,present_painter,NULL,present_group};
-    style_present(w,&view,target);
-}
-
 static void draw_sizebox(HWND w,control_style *s,HDC dc)
 {(void)s;win16_control_draw_sizebox(w,dc);}
 /* The v5 progress color and state getters are unavailable. Only paint the
@@ -194,10 +177,10 @@ static LRESULT control_dispatch(HWND w,void *context,style_control_message *call
 {
     control_style *s=context;const style_scroll_ops scroll=scroll_operations(s);
     const win16_control_fileowner_services fileowner={embedded_scroll_input,draw_combo,list_border,nonclient_scrollbars};
-    const win16_control_list_services list={embedded_scroll_input,present_control,draw_list,list_border,nonclient_scrollbars};
+    const win16_control_list_services list={embedded_scroll_input,draw_list,list_border,nonclient_scrollbars};
     const win16_control_edit_services edit={embedded_scroll_input,nonclient_scrollbars,list_border,edit_border};
     const win16_control_dispatch_services services={win16_style_control_terminal,&track_calls,trackbar_notify,
-        present_control,win16_control_draw_tab,win16_control_draw_header,win16_control_draw_progress,draw_combo,draw,list_border,draw_sizebox,
+        draw_combo,draw,list_border,draw_sizebox,
         &scroll,&fileowner,&list,&edit};
     return win16_control_dispatch_message(w,s,&call->message,&call->parameter,&call->value,call->tab,call->header,call->progress,&services);
 }

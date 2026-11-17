@@ -64,3 +64,14 @@ LRESULT style_control_native_message(HWND w,style_instance *instance,style_contr
         RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|(instance->calls==1?RDW_UPDATENOW:0));
     return result;
 }
+
+void style_control_native_paint(HWND w,style_instance *instance,style_control_state *state,void *context,
+    BOOL (*paint)(HWND,void *,HDC,HFONT),HDC dc)
+{
+    HFONT font=state?state->font:NULL;
+    const style_control_fonts *fonts=state?state->fonts:NULL;
+    if(fonts)fonts->retain(font);
+    if(!paint(w,context,dc,font) && !instance->detached)
+        DefSubclassProc(w,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
+    if(fonts)fonts->release(font);
+}

@@ -46,7 +46,7 @@ BOOL style_frame_message(style_instance *instance,style_native_frame *state,UINT
     case WM_PRINT:
         if((lp&PRF_CHECKVISIBLE) && !IsWindowVisible(w))return TRUE;
         if(lp&PRF_NONCLIENT)v->paint(w,v->context,(HDC)wp);
-        if(!instance->detached)style_print_client_and_children(w,&instance->detached,(HDC)wp,lp);
+        if(!instance->detached)style_print_client_and_children(w,instance,(HDC)wp,lp);
         return TRUE;
     case WM_HSCROLL:
     case WM_VSCROLL:

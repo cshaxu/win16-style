@@ -1,40 +1,10 @@
 #include "other_paint.h"
 #include "basic_paint.h"
+#include "lib-win32-style/application/graphics/text_metrics.h"
 #include "lib-win32-style/application/control/button_snapshot.h"
 #include "../../../application/graphics/paint_frame.h"
 #include <commctrl.h>
 
-static BOOL fit_push_text(HDC target,HFONT font,const WCHAR *text,const RECT *bounds,COLORREF face,COLORREF ink,SIZE *drawn)
-{
-    RECT measure={0,0,0,0};
-    if(!DrawTextW(target,text,-1,&measure,DT_CALCRECT|DT_SINGLELINE))return FALSE;
-    int width=measure.right,height=measure.bottom,available_width=bounds->right-bounds->left,available_height=bounds->bottom-bounds->top;
-    if(width<=0 || height<=0 || width>4096 || height>256 || available_width<=0 || available_height<=0 ||
-       (width<=available_width && height<=available_height))return FALSE;
-    int out_width=width,out_height=height;
-    if(out_width>available_width){out_height=MulDiv(out_height,available_width,out_width);out_width=available_width;}
-    if(out_height>available_height){out_width=MulDiv(out_width,available_height,out_height);out_height=available_height;}
-    if(out_width<=0 || out_height<=0)return FALSE;
-    HDC memory=CreateCompatibleDC(target);if(!memory)return FALSE;
-    HBITMAP bitmap=CreateCompatibleBitmap(target,width,height);if(!bitmap){DeleteDC(memory);return FALSE;}
-    HGDIOBJ old=SelectObject(memory,bitmap),old_font=SelectObject(memory,font);BOOL ok=FALSE;
-    if(old && old!=HGDI_ERROR && old_font && old_font!=HGDI_ERROR){
-        RECT r={0,0,width,height};SetDCBrushColor(memory,face);FillRect(memory,&r,(HBRUSH)GetStockObject(DC_BRUSH));
-        SetBkMode(memory,TRANSPARENT);SetTextColor(memory,ink);
-        if(DrawTextW(memory,text,-1,&r,DT_SINGLELINE)){
-            int saved=SaveDC(target);
-            if(saved){SetStretchBltMode(target,COLORONCOLOR);
-                int x=bounds->left+(available_width-out_width)/2,y=bounds->top+(available_height-out_height)/2;
-                ok=StretchBlt(target,x,y,out_width,out_height,memory,0,0,width,height,SRCCOPY);
-                RestoreDC(target,saved);
-            }
-        }
-    }
-    if(old_font && old_font!=HGDI_ERROR)SelectObject(memory,old_font);
-    if(old && old!=HGDI_ERROR)SelectObject(memory,old);
-    DeleteObject(bitmap);DeleteDC(memory);
-    if(ok){drawn->cx=out_width;drawn->cy=out_height;}return ok;
-}
 void win16_control_other(HWND w,style_instance *instance,const win16_style_palette *palette,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label,UINT (*button_type)(HWND,DWORD),BOOL (*group_push)(HWND))
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);UINT type=(label?(style&SS_TYPEMASK):button_type(w,style));
@@ -116,7 +86,7 @@ void win16_control_other(HWND w,style_instance *instance,const win16_style_palet
         if(GetFocus()==w){RECT focus=bounds;InflateRect(&focus,-u,-u);DrawFocusRect(dc,&focus);}
         return;
     }
-    BOOL fitted_text=fit && fit_push_text(dc,font,text,&bounds,(*palette).face,IsWindowEnabled(w)?(*palette).edge:(*palette).shadow,&fitted);
+    BOOL fitted_text=fit && style_text_fit(dc,font,text,&bounds,(*palette).face,IsWindowEnabled(w)?(*palette).edge:(*palette).shadow,(SIZE){4096,256},&fitted);
     if(!fitted_text)DrawTextW(dc,text,-1,&bounds,flags);
     if(!label && GetFocus()==w){
         /* USER 25:15DE..1694 bounds focus around the measured label, not
