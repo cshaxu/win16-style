@@ -63,6 +63,7 @@ target_compile_definitions(win2k-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x
 target_link_libraries(win2k-common PUBLIC user32 gdi32)
 add_library(win2k-control STATIC
   src/lib-win32-style/appearance/win2000/control/background.c
+  src/lib-win32-style/appearance/win2000/control/edit_paint.c
   src/lib-win32-style/appearance/win2000/control/static_paint.c
   src/lib-win32-style/appearance/win2000/control/button_paint.c
   src/lib-win32-style/appearance/win2000/control/control.c)
@@ -489,6 +490,21 @@ if(BUILD_TESTING)
   add_dependencies(core-win2k-static-v6 ntw2ks)
   add_test(NAME core/win2k-static-v6 COMMAND $<TARGET_FILE:core-win2k-static-v6> $<TARGET_FILE:ntw2ks>)
   add_test(NAME core/win2k-static-v6-aware COMMAND $<TARGET_FILE:core-win2k-static-v6> $<TARGET_FILE:ntw2ks> aware)
+  add_executable(core-win2k-edit tests/lib-win32-style/appearance/win2000/control/edit_paint.c tests/lib-win32-style/appearance/win2000/control/edit_paint.rc)
+  target_compile_definitions(core-win2k-edit PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-win2k-edit PRIVATE user32 gdi32 comctl32 ole32)
+  target_link_options(core-win2k-edit PRIVATE -municode)
+  add_dependencies(core-win2k-edit ntw2ks)
+  add_test(NAME core/win2k-edit COMMAND $<TARGET_FILE:core-win2k-edit> $<TARGET_FILE:ntw2ks>)
+  add_test(NAME core/win2k-edit-aware COMMAND $<TARGET_FILE:core-win2k-edit> $<TARGET_FILE:ntw2ks> aware)
+  add_executable(core-win2k-edit-v6 tests/lib-win32-style/appearance/win2000/control/edit_paint.c tests/lib-win32-style/appearance/win2000/control/edit_paint.rc tests/ntw16s-dll/control_extensions.rc)
+  target_include_directories(core-win2k-edit-v6 PRIVATE src)
+  target_compile_definitions(core-win2k-edit-v6 PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-win2k-edit-v6 PRIVATE user32 gdi32 comctl32 ole32)
+  target_link_options(core-win2k-edit-v6 PRIVATE -municode ${explicit_manifest_options})
+  add_dependencies(core-win2k-edit-v6 ntw2ks)
+  add_test(NAME core/win2k-edit-v6 COMMAND $<TARGET_FILE:core-win2k-edit-v6> $<TARGET_FILE:ntw2ks>)
+  add_test(NAME core/win2k-edit-v6-aware COMMAND $<TARGET_FILE:core-win2k-edit-v6> $<TARGET_FILE:ntw2ks> aware)
   add_executable(core-style-runtime-text-imports tests/lib-win32-style/application/adapters/win32/runtime_text_imports.c)
   target_link_libraries(core-style-runtime-text-imports PRIVATE style-control-common)
   add_test(NAME core/style-runtime-text-imports COMMAND $<TARGET_FILE:core-style-runtime-text-imports>)

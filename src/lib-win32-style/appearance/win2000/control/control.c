@@ -1,6 +1,9 @@
 #include "control.h"
 #include "button_paint.h"
 #include "static_paint.h"
+#include "edit_paint.h"
+#include "lib-win32-style/application/control/edit.h"
+#include "lib-win32-style/application/control/notify.h"
 #include "lib-win32-style/application/control/basic.h"
 #include "lib-win32-style/application/control/retire.h"
 #include "lib-win32-style/application/graphics/present.h"
@@ -14,8 +17,10 @@ typedef struct win2k_control {
     style_control_state state;
     style_native_theme_fn native_theme;
     BOOL frame_owned;
+    style_control_notify_state edit_parent;
 } win2k_control;
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
+static LRESULT CALLBACK color_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static win2k_control *lookup(HWND window)
 {return (win2k_control *)style_instance_lookup(window,control_proc);}
 static BOOL static_class(HWND window)
@@ -39,6 +44,13 @@ BOOL win2k_control_supported(HWND window)
             type==SS_ICON || type==SS_BITMAP || (type>=SS_BLACKRECT && type<=SS_WHITEFRAME) ||
             ((type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME) && !(style&SS_SUNKEN));
     }
+    win2k_edit_kind edit=win2k_edit_class(window);
+    if(edit!=WIN2K_EDIT_NONE){
+        DWORD ex=(DWORD)GetWindowLongPtrW(window,GWL_EXSTYLE);
+        if((style&WS_CAPTION)==WS_CAPTION || (style&WS_THICKFRAME) || (ex&WS_EX_DLGMODALFRAME))return FALSE;
+        return edit==WIN2K_EDIT_STANDARD || (style&(WS_BORDER|WS_DLGFRAME)) ||
+            (ex&(WS_EX_CLIENTEDGE|WS_EX_WINDOWEDGE|WS_EX_STATICEDGE));
+    }
     if(lstrcmpiW(name,L"BUTTON"))return FALSE;
     UINT type=style&BS_TYPEMASK;
     if(type==BS_GROUPBOX)return !(style&(BS_ICON|BS_BITMAP|BS_PUSHLIKE|BS_MULTILINE));
@@ -55,6 +67,7 @@ static void dispose(void *context)
 static style_control_retired release_theme(HWND window,void *context,BOOL terminal)
 {
     win2k_control *control=context;
+    style_control_notify_unbind(&control->edit_parent,color_proc,control);
     if(terminal)(void)style_theme_terminal(window,control);
     else style_theme_remove(window,control,control->native_theme);
     BOOL result=terminal || !control->frame_owned || !IsWindow(window) ||
@@ -86,14 +99,20 @@ static void render(HWND window,void *context,HDC dc,BOOL buffered)
         style_present(window,&control->instance,control,win2k_standard_palette.face,&ops,dc);}
     else paint(window,control,dc);
 }
+static void edit_border(HWND window,void *context,HDC dc)
+{(void)context;(void)win2k_edit_border(window,dc,&win2k_standard_palette);}
 static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b)
 {
     win2k_control *control=context;LRESULT result;
     if(message==WM_NCDESTROY){
         (void)retire(window,control,TRUE);result=DefSubclassProc(window,message,a,b);
-    }else if(!win2k_control_supported(window)){
+    }else if(!win2k_control_supported(window) ||
+        (control->edit_parent.parent && GetParent(window)!=control->edit_parent.parent)){
         result=DefSubclassProc(window,message,a,b);
         if(!control->instance.detached)(void)retire(window,control,FALSE);
+    }else if(win2k_edit_class(window)!=WIN2K_EDIT_NONE){
+        const style_control_edit_ops ops={.context=control,.border=edit_border};
+        result=style_control_edit_message(window,&control->instance,&control->state,NULL,message,a,b,&ops);
     }else{
         const style_control_draw draw={control,render};
         result=style_control_basic_message(window,&control->instance,&control->state,message,a,b,basic_kind(window),&draw);
@@ -102,6 +121,23 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
 }
 static void finish_call(void *context,BOOL completed)
 {win2k_control *control=context;(void)completed;style_instance_release(&control->instance);}
+static LRESULT color_dispatch(void *context,HWND parent,UINT message,WPARAM a,LPARAM b)
+{
+    win2k_control *control=context;
+    if(message==WM_NCDESTROY)style_control_notify_unbind(&control->edit_parent,color_proc,control);
+    LRESULT result=DefSubclassProc(parent,message,a,b);DWORD error=GetLastError();
+    if(!control->instance.detached && (message==WM_CTLCOLOREDIT || message==WM_CTLCOLORSTATIC) &&
+       (HWND)b==control->edit_parent.window && GetParent((HWND)b)==parent)
+        result=(LRESULT)win2k_edit_brush((HDC)a,(HBRUSH)result,&win2k_standard_palette);
+    SetLastError(error);return result;
+}
+static LRESULT CALLBACK color_proc(HWND parent,UINT message,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+{
+    win2k_control *control=(win2k_control *)data;(void)id;
+    style_instance_retain(&control->instance);
+    const style_dispatch_ops ops={control,control,color_dispatch,finish_call};
+    return style_dispatch_message(parent,message,a,b,&ops);
+}
 static LRESULT CALLBACK control_proc(HWND window,UINT message,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     win2k_control *control=(win2k_control *)data;(void)id;
@@ -112,6 +148,8 @@ static LRESULT CALLBACK control_proc(HWND window,UINT message,WPARAM a,LPARAM b,
 static BOOL setup(HWND window,void *context)
 {
     win2k_control *control=context;
+    if(win2k_edit_class(window)==WIN2K_EDIT_STANDARD &&
+       !style_control_notify_bind(window,&control->edit_parent,color_proc,control))return FALSE;
     if(!style_theme_capture(window) || !style_theme_suppress(window,control,control->native_theme))return FALSE;
     return !control->frame_owned || SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
 }

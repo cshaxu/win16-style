@@ -3,7 +3,9 @@
 #include "control_state.h"
 #include "scroll_resources.h"
 /* Caller pins instance and state. Native EDIT owns buffer, selection, undo and
- * IME; callbacks borrow DCs and may synchronously retire this attachment. */
+ * IME; callbacks borrow DCs and may synchronously retire this attachment.
+ * NULL scroll retains native scrolling; each omitted operation retains that
+ * native part. Profiles do not need no-op callbacks for unselected parts. */
 typedef struct style_control_edit_ops {
     void *context;
     BOOL suppress_hover;

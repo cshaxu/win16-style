@@ -1,22 +1,22 @@
 {
   "schema": 1,
-  "delivery": "M0 T27 S4 P1",
-  "stage": "development: source-based Windows2000 push/choice/static/group families; remaining T27 groups pending",
+  "delivery": "M0 T27 S5 P1",
+  "stage": "development: source-based Windows2000 push/choice/static/group/edit frames and stock brush roles; remaining T27 groups pending",
   "version": "0.27.0.0",
   "version_contract": "M0 T27; sequential S does not increment T version",
   "package_directory": "assets",
-  "source_snapshot_sha256": "c0332ba9a1ba826a405cb214a6fcc93a1fee5d29821cc36441a08902897d400e",
+  "source_snapshot_sha256": "60872427356dc6a1d23be15e6b5cdda76e3da414d511149242029b6f4bccf698",
   "source_snapshot_format": "SHA256 of clean Build-Package snapshot.json bytes",
   "source_input_cohort": {
     "definition": "SHA256 sorted relative path + NUL + SHA256 + LF for src/,tests/,tools/,CMakeLists.txt snapshot inputs; working bytes checked equal",
-    "count": 1187,
-    "sha256": "f1364f4044ca1458ef605a5fc6d6689535ad66a19f382aacd82f6800917e9032"
+    "count": 1191,
+    "sha256": "dcb09f24f31aa018089a9136cf6801d0826bc160c7119033716cc12efbfef259"
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "c2481612d51c11b5a3fe68c5e43eee7fe1ef24f5607230940a67222149d2c157",
+      "sha256": "a2058108ade74a934970d651ae91b1262fae12ef32cacd113dbc2427253dd102",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "321d343020f99be5bb5d6f550197f43b01fb75526bb3d4ceb360c3d2b6a7a373",
+      "sha256": "c6f0e78ad0fb425efdecc015869b7e780ae7f8141cccfb3806db0a572110a273",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -58,7 +58,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "a93bf5a90263c50af543cf2f8f2e14911ae06442fe5abd514c611ba9167ad1a9",
+      "sha256": "e05685195d0ece8d6392e870e1a1af2777baa70dc4953b0e1f2e6af78c5f15c8",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -79,7 +79,7 @@
     "ntw2ks32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "3a9ae5198b9960b39fe02640e28a75666859feb28f59cadb5e676f5358d1ba5f",
+      "sha256": "2a1d390f23a56de88fb002a2ab9e409553f94085fa7a3fd80fa6f6c747c62c84",
       "imports": [
         "COMCTL32.dll",
         "COMDLG32.DLL",
@@ -103,7 +103,7 @@
     "ntw2ks64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "1213f871b0ad9dd849e3c876c23a0556a24d37e15cdd9bc4094d658e11f6ddee",
+      "sha256": "1e74a023663f0ee036c54dea8a7741ac170a7adb211fb93fd1696dea04a5769c",
       "imports": [
         "COMCTL32.dll",
         "comdlg32.dll",
@@ -122,7 +122,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "9e2cfd8036f2c50a17917c4e2a62ebebc488fad967a39e9978d8456826444944",
+      "sha256": "1b327eae561c3930232d0b7e3eb8566e2f69632dce410cfc5a7bc485b1e71b75",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -137,7 +137,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "7174d80487f3ca9980ab2272cf6a82844fdb66abe8df9d4a3f27d2af89060f95",
+      "sha256": "29bef6c688b19fb69c3e07ba92ee43b5b827cc955816df66b4913d90ad3eb78a",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -147,7 +147,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "15de79bf60881f8330eb42fcfb74871628371d42d9cc8f1dd8b40b2491aba66d",
+      "sha256": "f6d27ab440db3027fb2a043e7c0afff0851a3eeb0a351c0ccd677fbfbc2d33e2",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -161,95 +161,98 @@
     }
   },
   "toolchains": {
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
     "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "ccache_version": "ccache version 4.13.6",
     "toolchains": [
       {
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
-        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
         "architecture": "x86",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
         "version": "16.1.0",
-        "target": "i686-w64-mingw32"
+        "target": "i686-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe"
       },
       {
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
-        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
         "architecture": "x64",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
         "version": "16.1.0",
-        "target": "x86_64-w64-mingw32"
+        "target": "x86_64-w64-mingw32",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe"
       }
-    ],
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
+    ]
   },
   "architecture": {
     "x86": {
       "build-time.json": {
-        "seconds": 281.0741302999668,
+        "seconds": 271.3037968999706,
         "exit_code": 0
       },
       "configure-time.json": {
-        "seconds": 5.8883330000098795,
+        "seconds": 7.443858099984936,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.5657480000518262,
+        "seconds": 0.5085704000666738,
         "exit_code": 0
       },
       "cache": {
         "cache_miss": 3,
-        "direct_cache_hit": 912,
+        "direct_cache_hit": 915,
         "preprocessed_cache_hit": 0,
-        "cache_size_kibibyte": 52
+        "cache_size_kibibyte": 56
       }
     },
     "x64": {
       "build-time.json": {
-        "seconds": 303.3538111000089,
+        "seconds": 303.9819929000223,
         "exit_code": 0
       },
       "configure-time.json": {
-        "seconds": 8.192417999962345,
+        "seconds": 7.205915900063701,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.4800411999458447,
+        "seconds": 0.5165326000424102,
         "exit_code": 0
       },
       "cache": {
         "cache_miss": 3,
-        "direct_cache_hit": 1000,
+        "direct_cache_hit": 1003,
         "preprocessed_cache_hit": 0,
         "cache_size_kibibyte": 52
       }
     }
   },
   "verification": {
-    "evidence": "evidence/t27-s4-static-group.json",
-    "actual_package_cases": 48,
-    "passed": 48,
-    "skipped": 0,
-    "coverage": "focused, not whole repository",
-    "incremental_cases": 22,
-    "additional_static_contract_cases": 8,
-    "startup_development_cases": 8,
+    "evidence": "evidence/t27-s5-edit-controls.json",
+    "actual_package_cases": 62,
+    "passed": 62,
+    "skipped_processes": 0,
+    "skipped_client_print_subchecks": 36,
+    "coverage": "focused, not whole repository; skips are not render passes",
+    "incremental_cases": 30,
+    "isolated_resource_modes": 8,
+    "startup_development_revised_cases": 4,
     "public_boundaries": "Both architectures:4 process archives and23 neutral style archives passed; original5 headers/notice and18 embedded tables retained; ninja dependency traces accept only copied source/compiler roots, no siblings.",
-    "actual_remote": "evidence/t27-s4-remote.json; 802fe1fe all30 changed paths and8 binary files byte-exact,1187 inputs with only9 baseline line-ending conversions; one batch2.26seconds"
+    "actual_remote": "pending"
   },
   "validation": {
     "physical_keyboard_mouse": "not claimed",
     "private_desktops_created": false,
-    "other_controls": "approved T27 S5-S16 pending",
+    "other_controls": "approved T27 S6-S16 pending",
     "limitations": [
-      "Owner-draw and ENHMETAFILE remain outside the existing Win3.x static renderer support; SysLink has no originalWin2000 implementation in this reference; unknown-framework audit remains S14.",
-      "Borrowed bitmap native path not counted as independent era blitter.",
-      "Physical input/DPI beyond actually observed modes not claimed.",
-      "Group image/pushlike/multiline and etched+SS_SUNKEN compound variants retain native behavior; not counted as drawn variants.",
-      "Custom parent content/background remains application-owned; no whole-application recoloring or physical keyboard/mouse claim."
+      "New RichEdit client renderer or arbitrary framework/IME support",
+      "Custom owner painting or physical input/DPI beyond observed modes",
+      "New scrollbar implementation; native bars retained until S7",
+      "DLL physical unloading",
+      "Disabled native EDIT text keeps observed host109 rather than independent originalWin2000gray128;76 pixels before/after in current run. Source edge/default-face claims are separate.",
+      "Legacy RICHEDIT1 not witnessed/added to renderer; native retained.",
+      "Rich20A/W andHotKey WM_PRINTCLIENT produced no client pixels in the offscreen native baseline as well as styled result; explicit skipped client-paint subchecks, not blank-image passes. Other verified frame/data checks remain separate."
     ]
   },
   "closure": {
-    "S4": "closed after actual fetched P1 802fe1fe byte verification",
-    "T27": "open; S5 edit/RichEdit/HotKey admitted",
+    "S5": "pending fetched remote verification",
+    "T27": "open",
     "M0": "fixed"
   }
 }

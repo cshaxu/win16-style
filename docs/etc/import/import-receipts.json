@@ -4397,7 +4397,7 @@
       "path": "src/lib-win32-style/application/control/edit.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6df394e41329ae7b5c00ad085a94c62fae7c01fa434b8f69886cb99a5c8b3b71",
+      "sha256": "7614b4a03a89c2850d5745fd60023f8a715153a9ab82f82f8445afde1275f22e",
       "disposition": "authored",
       "review": "T21 S24 extract edit presentation message handling with borrowed window callbacks; T26 ordered audit shared update region DC acquisition; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 native edit protocol public controller; profile rendering declaration merged into dispatch; T26 S9 edit/combo messages and shared native scroll-role state",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -8411,7 +8411,7 @@
       "path": "src/lib-win32-style/application/control/edit.h",
       "source": null,
       "source_blob": null,
-      "sha256": "f6ed48d697f228b24c98445b1561c8d6ea462969116feb797de8714b0158d0d4",
+      "sha256": "846f3a0753bc374709062dd206380d97241fb3993816fe693c506a0e0cf0fe33",
       "disposition": "authored",
       "review": "T26 S9 public EDIT native message controller and native text/undo/selection/DC/retirement test",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -8420,7 +8420,7 @@
       "path": "tests/lib-win32-style/application/control/edit.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4251669c020123e9c034afeeedc90fa6257d80ac802a87016c675d4ac8134670",
+      "sha256": "d8a96b15d7924a757059f69f5dc1d23dfc5ed51b602ce5d299d77a4c173d5c7a",
       "disposition": "authored",
       "review": "T26 S9 public EDIT native message controller and native text/undo/selection/DC/retirement test",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -9755,7 +9755,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "b153ffba28ba882d2a90368c67fa1c8acf15564b4156e6f41f804deaec78466b"
+      "sha256": "daf6400fbd7c7e14d5a1ad6f39b605bfaa98255a8fcf9b5776a5e9a3ebf78807"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -9773,7 +9773,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "b357c60e77942c9ac72b45003b0fd92c37d77689fac54b519f81e1875dfadff7"
+      "sha256": "8bf9a83e3cccb0535b102e7a6aa644d6d4f1b134d43d1f4b61c7c75cac049ecb"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/common/paint.c",
@@ -9846,6 +9846,42 @@
       "review": "T27 S4 independently authored source-based STATIC/GROUPBOX integration or real native consumer; pinned Win2000 reference and genuine original-image pixel samples; no imported art/font",
       "notice": "Project-authored C/RC; original Windows2000 reference is read-only, not a build/run/test dependency",
       "sha256": "2e4102c38b94e146c4abb3aa1a4ab2f119956e8d1965eec0e6cdd319a87b3a20"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/edit_paint.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T27 S5 source-based native-edit edge/default brush role implementation or actual native consumer; no imported client editor/art/font",
+      "notice": "Project-authored C/RC; pinned Windows2000 source/read-only screenshots for research, no external product/build dependency",
+      "sha256": "1af00672888801461b8af32954eb356611d9932f9fd140acbc1b229502b9d84b"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/edit_paint.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T27 S5 source-based native-edit edge/default brush role implementation or actual native consumer; no imported client editor/art/font",
+      "notice": "Project-authored C/RC; pinned Windows2000 source/read-only screenshots for research, no external product/build dependency",
+      "sha256": "fa72eda01e1d5209c63cadb94677efafe6089eed6ec3b5143ec0a24d7775369e"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/edit_paint.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T27 S5 source-based native-edit edge/default brush role implementation or actual native consumer; no imported client editor/art/font",
+      "notice": "Project-authored C/RC; pinned Windows2000 source/read-only screenshots for research, no external product/build dependency",
+      "sha256": "ec60a0bab4f4fde123e1fad2dbf0271822493968a659d485857b4e696688b53d"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/edit_paint.rc",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T27 S5 source-based native-edit edge/default brush role implementation or actual native consumer; no imported client editor/art/font",
+      "notice": "Project-authored C/RC; pinned Windows2000 source/read-only screenshots for research, no external product/build dependency",
+      "sha256": "f0cdb7ceddc9f6e8cfbae6a09671c2508d8d26d50871099adeee491272c64f29"
     }
   ]
 }

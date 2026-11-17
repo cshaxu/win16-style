@@ -311,3 +311,5 @@
 - [T27 S4静态/分组](evidence/t27-s4-static-group.json)：固定源/原图及17角色有限审计、实现和实际交付证据（当前审计阶段）。
 
 - [T27 S4实际远端](evidence/t27-s4-remote.json)：批量对象复核30变更/八文件，1187输入和9个旧行尾差异。
+
+- [T27 S5编辑控件](evidence/t27-s5-edit-controls.json)：固定原源码/原图、公共编辑协议、62项实际包及原生打印skip；首次失败/原生销毁对照保留。

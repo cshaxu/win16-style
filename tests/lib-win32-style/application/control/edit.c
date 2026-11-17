@@ -7,8 +7,8 @@ typedef struct fixture {
     style_instance instance;
     style_control_state state;
     style_scroll_resources scroll;
-    unsigned borders,clients,bars;
-    BOOL stop;
+    unsigned borders,clients,bars,native_nc;
+    BOOL stop,native_only;
 } fixture;
 static style_control_edit_ops operations;
 static void dispose(void *context){(void)context;}
@@ -23,6 +23,7 @@ static void bars(HWND window,void *context,HDC dc)
 static LRESULT CALLBACK witness(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     (void)id;fixture *f=(fixture *)data;
+    if(m==WM_NCPAINT)++f->native_nc;
     if(m==WM_PRINTCLIENT){SetViewportOrgEx((HDC)a,80,81,NULL);return 17;}
     if(m==WM_SETTEXT && f->stop)(void)style_instance_detach(&f->instance);
     return DefSubclassProc(w,m,a,b);
@@ -30,7 +31,7 @@ static LRESULT CALLBACK witness(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWOR
 static LRESULT CALLBACK procedure(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
     (void)id;fixture *f=(fixture *)data;style_instance_retain(&f->instance);
-    LRESULT result=style_control_edit_message(w,&f->instance,&f->state,&f->scroll,m,a,b,&operations);
+    LRESULT result=style_control_edit_message(w,&f->instance,&f->state,f->native_only?NULL:&f->scroll,m,a,b,&operations);
     style_instance_release(&f->instance);return result;
 }
 int main(void)
@@ -53,10 +54,20 @@ int main(void)
     unsigned before=f.clients;CHECK(SendMessageW(edit,WM_PRINTCLIENT,(WPARAM)dc,0)==17);
     POINT origin;CHECK(GetViewportOrgEx(dc,&origin) && origin.x==3 && origin.y==4 && f.clients==before+1);
     before=f.bars;SendMessageW(edit,WM_NCPAINT,1,0);CHECK(f.bars==before+1 && f.borders);
+    /* Omitted operations/native scrolling forward without no-op callbacks. */
+    style_control_edit_ops original=operations;operations=(style_control_edit_ops){0};f.native_only=TRUE;
+    before=f.clients;unsigned old_bars=f.bars,old_borders=f.borders;
+    CHECK(SendMessageW(edit,WM_PRINTCLIENT,(WPARAM)dc,0)==17);
+    CHECK(GetViewportOrgEx(dc,&origin)&&origin.x==3&&origin.y==4&&f.clients==before);
+    SendMessageW(edit,WM_NCPAINT,1,0);CHECK(f.bars==old_bars&&f.borders==old_borders);
+    f.native_only=FALSE;unsigned native_nc=f.native_nc;
+    SendMessageW(edit,WM_NCPAINT,1,0);CHECK(f.native_nc==native_nc+1);
+    operations=original;
     before=f.bars;unsigned clients=f.clients;f.stop=TRUE;
     CHECK(SendMessageW(edit,WM_SETTEXT,0,(LPARAM)L"retired"));
     CHECK(f.instance.detached && !f.state.suppression && f.bars==before && f.clients==clients);
     CHECK(GetWindowTextW(edit,text,ARRAYSIZE(text))==7 && !wcscmp(text,L"retired"));
     CHECK(RemoveWindowSubclass(edit,witness,1) && DeleteDC(dc) && DestroyWindow(root));
-    puts("EDIT native text/undo/selection, redraw state, borrowed print DC/return and callback retirement PASS");return 0;
+    puts("EDIT native text/undo/selection, redraw state, borrowed print DC/return and callback retirement PASS");
+    puts("EDIT_NATIVE_ONLY_OK null_scroll=1 optional_ops=1 mixed_native_nc=1 borrowed_dc=1");return 0;
 }

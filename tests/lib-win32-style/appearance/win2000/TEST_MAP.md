@@ -11,3 +11,5 @@ source files; no duplicate constant-only tests are added to manufacture counts.
 
 | control/background.c | control/static_paint.c and button_paint.c: actual product parent query, custom brush and reentrant remove/destroy; shared background and font order |
 | control/static_paint.c | control/static_paint.c: 14 drawn STATIC roles ×2 enable states, alignment/default colors/interior preservation, native bitmap/icon handle/DC preservation, group etched caption/interior,32 ANSI resource cycles; hooked modal/modeless initialized descendants |
+
+| control/edit_paint.c | control/edit_paint.c: actual DLL/source-image NC color samples; native EDIT7 roles/text/undo/selection/font/password/custom brush, RichEdit20A/W/50W and HotKey native clients/formats/values, parent retirement/reparent32 ANSI resources and initialized dialog children; common optional edit protocol test at application/control/edit.c |
