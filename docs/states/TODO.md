@@ -168,3 +168,5 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 - [ ] TODO(Medium): T26 S10初轮的间歇header像素/现代外框USER计数观察仍须最终复核。Owner：S12现代宿主及S14终审。Evidence：[初轮与定向证据](../etc/evidence/t26-s10-delivery.json)：416项410过/6失败；同线程witness参数问题已证实并只修夹具，文件/容器及DC/图像完整输入24项通过；旧/新有限对照通过但不称修复原USER19/18或旧24像素观察。Admission：有新的像素或资源所有权证据时定位，不盲重试，不放宽断言/改安全设置，不把前后一次相等外推为绝对无泄漏。
 
 - [ ] TODO(Medium): 当前桌面的dialog_scope完整夹具在首个对话框GetActiveWindow返回NULL，激活断言未过；Owner：T26 S14最终桌面复核。Evidence：[S11开发对照](../etc/evidence/t26-s11-dialog-development.json)中当前/HEAD原coordinator在x86/x64均相同，四轮各12组安装/迟返/撤销/失败资源检查成立、live/hooks归零，完整夹具均exit1；不是整旧包重建。Admission：保持原激活断言及禁止私有桌面约束，记录实际输入桌面/激活证据；不能将生命周期子断言通过算完整夹具通过，也不为本重构改变产品焦点策略。
+
+- [ ] TODO(High): T26 S12正式包真实产品thread hook在x86/x64返回126（普通及composed各一），完整S11上版八文件控制同样126；直接DLL入口/composed表面安装显示移除通过，不能代替原生hook成功。Owner：T26 S14有限终审/后续接入兼容候选；Evidence：[S12整组](../etc/evidence/t26-s12-modern-delivery.json)含6个原始失败及3次上版控制。真实计算器当前与旧CLI均1460且core==frame，原AFH关系未满足；global在frame发现前失败，未执行旧global控制。准入条件：保持原策略，以符合既有宿主契约的自有目标或明确新增框架任务验证，不扩权限/系统设置来通过重构测试。

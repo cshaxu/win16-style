@@ -1,329 +1,660 @@
 {
   "task": "M0 T26 S12",
   "baseline": "f6c5185c172795d4db85ff713fb86f5303e741ff",
-  "status": "admitted; initial modern-host roots frozen; no S12 code changes or new runtime proof",
+  "status": "Finite modern ownership migration implemented/published;43 current case identities:37 pass,6 unpassed retained,0skip;3 complete S11 controls reproduce hook126/CLI1460; remote pending, not universal real-host verification.",
   "scope_query": "application/adapters excluding win32; Win3x modern_frame*; existing uwp access/product/test entry roots; attachment/window_thread/launcher and CMake/TEST_MAP. Call/include/consumer closure must be explicitly reconciled before implementation; late discoveries added with evidence, not silently excluded.",
   "completion": "Whole generic host/menu/input/surface/reference ownership actually in common application adapters, existing product/profile consumers migrated, no parallel engine or private reverse dependency, retained geometry/presentation reasons, dual native/failure/resource/package delivery and actual remote review.",
   "files": [
     {
       "path": "CMakeLists.txt",
       "sha256": "853c2c527aced1d6d80000765d4495ce34baa12ce9c336e318644d6a85939829",
-      "state": "frozen-to-review",
-      "kind": "build"
+      "state": "build-consumer-reviewed",
+      "kind": "build",
+      "current_sha256": "f6076b847b801580445660f32caa51837b4a7b6cf41a4d40d860e07fc2a831d5",
+      "owner": "style-uwp-native owns common frame/input/surface/host; native menu dependencies declared transitively, independent provider added",
+      "verification": "Dual full clean configure/link; each width22 style/4 process archives, foreign deps/ABI/package gates passed."
     },
     {
       "path": "src/lib-win32-style/access/global/uwp_global.c",
       "sha256": "5d99460f132e339a1e1772aa7a739586b5c89ba9c280e9c6841731fe542e4f4d",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "existing-shared-revalidated",
+      "kind": "production",
+      "current_sha256": "5d99460f132e339a1e1772aa7a739586b5c89ba9c280e9c6841731fe542e4f4d",
+      "owner": "S5/S6 public dispatch/hook/global complete operations: protocol/action and image eligibility supplied by caller. No new backend, no physical DLL unload; unchanged baseline SHA",
+      "verification": "Source and direct consumer contracts checked; final actual package cohort pending"
     },
     {
       "path": "src/lib-win32-style/access/global/uwp_global.h",
       "sha256": "9ff539650e1d80eddcaf53908aaf00079a0726792f691c08a967a1c826723d26",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "existing-shared-revalidated",
+      "kind": "production",
+      "current_sha256": "9ff539650e1d80eddcaf53908aaf00079a0726792f691c08a967a1c826723d26",
+      "owner": "S5/S6 public dispatch/hook/global complete operations: protocol/action and image eligibility supplied by caller. No new backend, no physical DLL unload; unchanged baseline SHA",
+      "verification": "Source and direct consumer contracts checked; final actual package cohort pending"
     },
     {
       "path": "src/lib-win32-style/access/runtime/uwp_dispatch.c",
       "sha256": "7978e96ba325489b5e5ab23f096eea300b362e3ad3949928f18b3e8adc796aeb",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "existing-shared-revalidated",
+      "kind": "production",
+      "current_sha256": "7978e96ba325489b5e5ab23f096eea300b362e3ad3949928f18b3e8adc796aeb",
+      "owner": "S5/S6 public dispatch/hook/global complete operations: protocol/action and image eligibility supplied by caller. No new backend, no physical DLL unload; unchanged baseline SHA",
+      "verification": "Source and direct consumer contracts checked; final actual package cohort pending"
     },
     {
       "path": "src/lib-win32-style/access/runtime/uwp_dispatch.h",
       "sha256": "a73614149149be5e1231826d517aa4ef338b6be88a2d2e8adc42470f266c621e",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "existing-shared-revalidated",
+      "kind": "production",
+      "current_sha256": "a73614149149be5e1231826d517aa4ef338b6be88a2d2e8adc42470f266c621e",
+      "owner": "S5/S6 public dispatch/hook/global complete operations: protocol/action and image eligibility supplied by caller. No new backend, no physical DLL unload; unchanged baseline SHA",
+      "verification": "Source and direct consumer contracts checked; final actual package cohort pending"
     },
     {
       "path": "src/lib-win32-style/access/runtime/uwp_hook.c",
       "sha256": "0780afaabd2c2c0ead316ed90b451beb10aa677048f7ce83b6596977663587d4",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "existing-shared-revalidated",
+      "kind": "production",
+      "current_sha256": "0780afaabd2c2c0ead316ed90b451beb10aa677048f7ce83b6596977663587d4",
+      "owner": "S5/S6 public dispatch/hook/global complete operations: protocol/action and image eligibility supplied by caller. No new backend, no physical DLL unload; unchanged baseline SHA",
+      "verification": "Source and direct consumer contracts checked; final actual package cohort pending"
     },
     {
       "path": "src/lib-win32-style/access/runtime/uwp_hook.h",
       "sha256": "dbe754ba84458439d7e7ad8c3ec1e7b62936d298dfdf4afb0d8bebcd92e597b6",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "existing-shared-revalidated",
+      "kind": "production",
+      "current_sha256": "dbe754ba84458439d7e7ad8c3ec1e7b62936d298dfdf4afb0d8bebcd92e597b6",
+      "owner": "S5/S6 public dispatch/hook/global complete operations: protocol/action and image eligibility supplied by caller. No new backend, no physical DLL unload; unchanged baseline SHA",
+      "verification": "Source and direct consumer contracts checked; final actual package cohort pending"
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
       "sha256": "42eb2743cebb3a9d65b4d20fac5005fe8b06f4448e8ada16886288096b8da393",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "presentation-retained",
+      "kind": "production",
+      "current_sha256": "94d59ddd0554a23a91672e1197befcce3635e258d746c8938714bad96de38a03",
+      "owner": "Win3x geometry/layout/hit and button policy/menu paint/font selection only; root host/input/menu/actions/buffering removed to application/adapters/frame. Legacy frame_view remains S13 receiver.",
+      "verification": "Dual original profile frame/hidden/layout native tests passed; final snapshot tests pending"
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.h",
       "sha256": "00da809635b3781756d1760ce368b241259267eeca36e77d99cff117c0c5fbe4",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "presentation-retained",
+      "kind": "production",
+      "current_sha256": "86c520500159b03196afd780bc3f97850a59ef99bbfd1fa3b614ff7604f96b0e",
+      "owner": "Win3x geometry/layout/hit and button policy/menu paint/font selection only; root host/input/menu/actions/buffering removed to application/adapters/frame. Legacy frame_view remains S13 receiver.",
+      "verification": "Dual original profile frame/hidden/layout native tests passed; final snapshot tests pending"
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c",
       "sha256": "fa5140f31fd839432e55ea7a511cad04aba213f9ac7094d0c3b6871c4be2d6b9",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "presentation-retained",
+      "kind": "production",
+      "current_sha256": "fa5140f31fd839432e55ea7a511cad04aba213f9ac7094d0c3b6871c4be2d6b9",
+      "owner": "Win3x geometry/layout/hit and button policy/menu paint/font selection only; root host/input/menu/actions/buffering removed to application/adapters/frame. Legacy frame_view remains S13 receiver.",
+      "verification": "Dual original profile frame/hidden/layout native tests passed; final snapshot tests pending"
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/window/modern_frame_layout.h",
       "sha256": "15c3b0ca9836c852b4caa4a9c8d3289d46111a718d865a27c1eee5efe94badf9",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "presentation-retained",
+      "kind": "production",
+      "current_sha256": "15c3b0ca9836c852b4caa4a9c8d3289d46111a718d865a27c1eee5efe94badf9",
+      "owner": "Win3x geometry/layout/hit and button policy/menu paint/font selection only; root host/input/menu/actions/buffering removed to application/adapters/frame. Legacy frame_view remains S13 receiver.",
+      "verification": "Dual original profile frame/hidden/layout native tests passed; final snapshot tests pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/host.c",
       "sha256": "6be6890ccbf29c7a8aa66166792dadf4ecc404995b35a7c60540e1732e3e5c8a",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "6be6890ccbf29c7a8aa66166792dadf4ecc404995b35a7c60540e1732e3e5c8a",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/host.h",
       "sha256": "b098e5b84704d5118c3549a6c7d47994f1d86478a378ff501a7dd4ad5db5623e",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "b098e5b84704d5118c3549a6c7d47994f1d86478a378ff501a7dd4ad5db5623e",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/input.c",
       "sha256": "d818dbc848f2abb308712a18b93ec0bd7cea677a01cf043bcafaaa71bc1e5d1f",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "a6a2a56f592e9c4582064d65248ddff392a28c819d5f108a460aec17a8e974c2",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/input.h",
       "sha256": "0a47ae77d7e525cfbf7822660e7262d14ee382b135545f51ee4bd3bf70f6ec00",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "0c201d5a9671bc1c44a3c5d11ca1818d17fcdd5eaae9588389634aa8a372c86e",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/repaint.c",
       "sha256": "a6c6b119913cf949a34f5f2fa27a838c3eb70219af7c6fc0d53108663e652744",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "a6c6b119913cf949a34f5f2fa27a838c3eb70219af7c6fc0d53108663e652744",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/repaint.h",
       "sha256": "f625af40355e2e7bf5c93709ed6f9f6c2642b943d6bd418050b4e4b5bfbc880d",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "f625af40355e2e7bf5c93709ed6f9f6c2642b943d6bd418050b4e4b5bfbc880d",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/surface.c",
       "sha256": "862479d0f058cc81d7381a0fd602ff6c3e026c8f63418fa11e296da870cf4bbf",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "bf23d979e11fc5ec60cada478e106f6c61701aca2ffc1a19aa2c8ef3d57f9829",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/surface.h",
       "sha256": "8a3eaae4b21240a11f05a7ae6754f77005306b9d2b4a3785cf853306426f234d",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "b1c9b9cb6d70c0b873f12c59cb27eea6499a3f51e1daabc6f9a294dad2f5fb36",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/uwp/native.c",
       "sha256": "c8cc156f0389f0c41443bacf464136da5c5512d8513a308bc8b4267ef363acb8",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "c8cc156f0389f0c41443bacf464136da5c5512d8513a308bc8b4267ef363acb8",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/uwp/native.h",
       "sha256": "4ffc64dbb2bec3a2c8e28bfe99187efa4980a2c1e37ac8d5aec20d997c70468d",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "4ffc64dbb2bec3a2c8e28bfe99187efa4980a2c1e37ac8d5aec20d997c70468d",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/uwp/target.c",
       "sha256": "ab04b4064c01865d45f2ab157c4b3f42368db8bad87dadeacdf7a03fa8cfce57",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "ab04b4064c01865d45f2ab157c4b3f42368db8bad87dadeacdf7a03fa8cfce57",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/lib-win32-style/application/adapters/uwp/target.h",
       "sha256": "dba5fa889fa96ae0c2b6bffe168b3e8abfe6cadd88d27d9f3278d3ea85eae123",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "common-owned-or-existing-shared",
+      "kind": "production",
+      "current_sha256": "dba5fa889fa96ae0c2b6bffe168b3e8abfe6cadd88d27d9f3278d3ea85eae123",
+      "owner": "frame owns common lifecycle/menu/actions/input/bitmap state; host preserves install/detach/ref callbacks; input/surface use same complete root; repaint owns scheduler; uwp/native and target preserve platform identity/UIA/module ownership",
+      "verification": "18 native cohort covers frame/host/input/surface/profile; native/target/repaint broader checks pending"
     },
     {
       "path": "src/ntw16s-dll/attachment.c",
       "sha256": "cd5225de93203e6e4a6e2a2b8854e2be21606556021d03d2d5fd72ebfad9c224",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "product-policy-retained-common-consumer",
+      "kind": "production",
+      "current_sha256": "c5ba029ad8ff8d51d165f4aebc62e33efa129c9145cd015a6c28486f453899e3",
+      "owner": "composed_frame_class is the existing Win3x target allowlist, not a second lifecycle. install_created selects profile apply_nonclient under the exact old NOREDIRECTION/CAPTION conditions; Ntw16sWindowRemove directly calls common frame surface/remove before runtime_attachment_remove. No target-range change.",
+      "verification": "Both product DLLs linked; actual window-thread/terminal/composed-class package tests pending"
     },
     {
       "path": "src/ntw16s-dll/attachment.h",
       "sha256": "00322d9f45fa88d2d5ad667531e1863ee0ef48a2db54832f5540689b368cb88b",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "product-ABI-retained",
+      "kind": "production",
+      "current_sha256": "00322d9f45fa88d2d5ad667531e1863ee0ef48a2db54832f5540689b368cb88b",
+      "owner": "Fixed product export/message/action ABI only; shared runtime/framework/lifecycle reached by existing entry. DLL unloading not promised.",
+      "verification": "Both ABI checks passed incrementally; final clean package gate pending"
     },
     {
       "path": "src/ntw16s-dll/uwp/hook.c",
       "sha256": "f128891de6835eb4aa03b13f5f98fbf12385841a7aeeed7b6401cbc7a8b04714",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "product-ABI-assembly-retained",
+      "kind": "production",
+      "current_sha256": "4cdbb07e4aa311200fe78e7f0ad089ae7354a3b46650257c003c53e72bd413d0",
+      "owner": "Ntw16sUwpFrameHook ordinal38, message/action acceptance, host module pin and selection of Win3x renderer + two product action labels remain product. Actual routing uses common runtime hook; remove/surface use common frame directly.",
+      "verification": "ABI original definitions unchanged; dual DLL build; hook/package checks pending"
     },
     {
       "path": "src/ntw16s-dll/uwp/hook.h",
       "sha256": "f116ce527e8907a9c85c3ef2f22a50fd93c27be573d35973649d4860db6cfc10",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "product-ABI-retained",
+      "kind": "production",
+      "current_sha256": "f116ce527e8907a9c85c3ef2f22a50fd93c27be573d35973649d4860db6cfc10",
+      "owner": "Fixed product export/message/action ABI only; shared runtime/framework/lifecycle reached by existing entry. DLL unloading not promised.",
+      "verification": "Both ABI checks passed incrementally; final clean package gate pending"
     },
     {
       "path": "src/ntw16s-dll/uwp/target.c",
       "sha256": "c0be5e2e5c52fb1da62ad0ba0d7c5a508450edb88cbfab5db93c20945d68ffdf",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "product-protocol-policy-retained",
+      "kind": "production",
+      "current_sha256": "c0be5e2e5c52fb1da62ad0ba0d7c5a508450edb88cbfab5db93c20945d68ffdf",
+      "owner": "select_action chooses existing APPLY/FULLSCREEN/REMOVE protocol from public native capability; target_change configures fixed x64 product export/message/result/timeout, uses public style_uwp_dispatch_change. Does not enumerate/install its own hook.",
+      "verification": "Unchanged source SHA; actual shared dispatch tests pending"
     },
     {
       "path": "src/ntw16s-dll/uwp/target.h",
       "sha256": "e9c9d97902995ca8d819068da2d1b790b3f929913ea25f58ed33d240a1c94651",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "product-protocol-policy-retained",
+      "kind": "production",
+      "current_sha256": "e9c9d97902995ca8d819068da2d1b790b3f929913ea25f58ed33d240a1c94651",
+      "owner": "select_action chooses existing APPLY/FULLSCREEN/REMOVE protocol from public native capability; target_change configures fixed x64 product export/message/result/timeout, uses public style_uwp_dispatch_change. Does not enumerate/install its own hook.",
+      "verification": "Unchanged source SHA; actual shared dispatch tests pending"
     },
     {
       "path": "src/ntw16s-dll/window_thread.h",
       "sha256": "002eeae6199a8bda05dec280fae6c8d54938c26c5cf59e2888ecd391c3c15f5f",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "product-ABI-retained",
+      "kind": "production",
+      "current_sha256": "002eeae6199a8bda05dec280fae6c8d54938c26c5cf59e2888ecd391c3c15f5f",
+      "owner": "Fixed product export/message/action ABI only; shared runtime/framework/lifecycle reached by existing entry. DLL unloading not promised.",
+      "verification": "Both ABI checks passed incrementally; final clean package gate pending"
     },
     {
       "path": "src/run16s-exe/uwp.c",
       "sha256": "2c09838dd0364842857b53ce37f1681d912ba62609c3c0f00fd67892ec8e75bb",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "product-UX-retained",
+      "kind": "production",
+      "current_sha256": "2c09838dd0364842857b53ce37f1681d912ba62609c3c0f00fd67892ec8e75bb",
+      "owner": "Verified calc.exe/byte-identical alias, fixed AUMID/packaged activation, CLI arguments/wait/new-PID reporting and selected DLL identity are existing product UX. Host discovery and actual change consume public target/dispatch; no second renderer.",
+      "verification": "Actual resolve and bounded command activation tests selected for final x64 package; no new app support claimed"
     },
     {
       "path": "src/run16s-exe/uwp.h",
       "sha256": "230f5a21ebdeff5ea854d760b5c29c48336aba68f494ec3ed09d1a0564d83926",
-      "state": "frozen-to-review",
-      "kind": "production"
+      "state": "product-UX-retained",
+      "kind": "production",
+      "current_sha256": "230f5a21ebdeff5ea854d760b5c29c48336aba68f494ec3ed09d1a0564d83926",
+      "owner": "Verified calc.exe/byte-identical alias, fixed AUMID/packaged activation, CLI arguments/wait/new-PID reporting and selected DLL identity are existing product UX. Host discovery and actual change consume public target/dispatch; no second renderer.",
+      "verification": "Actual resolve and bounded command activation tests selected for final x64 package; no new app support claimed"
     },
     {
       "path": "tests/integration/uwp_tray.c",
       "sha256": "29a5555a71e173b844e8b30feb3c8b05d0f8d2e4603a594d664a72c32ccdf3af",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "29a5555a71e173b844e8b30feb3c8b05d0f8d2e4603a594d664a72c32ccdf3af",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/access/global/uwp_global.c",
       "sha256": "f0747baa42e922609e2840526e5d46fdcb717fb1c5cc3d82d725e540fe9756b9",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "f0747baa42e922609e2840526e5d46fdcb717fb1c5cc3d82d725e540fe9756b9",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/access/runtime/uwp_dispatch.c",
       "sha256": "941d2d2bfd6b375cea0cf6157ef0663bdaade6a3cfddfde6cb206c3cf18b4453",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "941d2d2bfd6b375cea0cf6157ef0663bdaade6a3cfddfde6cb206c3cf18b4453",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/access/runtime/uwp_hook.c",
       "sha256": "563990ccdb810e045fed3cb9ea4b69ed3525daa986dfb1cd788a6c8c30b0d2bf",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "563990ccdb810e045fed3cb9ea4b69ed3525daa986dfb1cd788a6c8c30b0d2bf",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/access/runtime/uwp_hook_fixture.c",
       "sha256": "bfc5ee1347fdbf968598809300975f63318b42a4dda2a97fd7b46424ece7373f",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "bfc5ee1347fdbf968598809300975f63318b42a4dda2a97fd7b46424ece7373f",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/appearance/win3x/window/modern_frame.c",
       "sha256": "a5ef28b711823fa2f19535f5eb95000120771a67d3310623ccafc2e06ec30965",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "13be684298b6feca6acc677355e1be1fcec25a8b9e54f11834713a731e2d47fb",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/appearance/win3x/window/modern_frame_hidden.c",
       "sha256": "3eef485d11a17437ab7a23efddd1eef87b0f5ccb5d99d022943a936489bd4b1d",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "f07c619862a9c58138f51960fd642a15a0711e0f069144ed21f916063f57ca5d",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/appearance/win3x/window/modern_frame_layout.c",
       "sha256": "26bff03ed769515dc3c804630b9e623d46ee8088dc4e7d2fe147bc683f2b4424",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "26bff03ed769515dc3c804630b9e623d46ee8088dc4e7d2fe147bc683f2b4424",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/application/TEST_MAP.md",
       "sha256": "053dc89886524f92864193fa781cee5b25518949a9e628b05f0418c10c1b5149",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "test-mapping-updated",
+      "kind": "test",
+      "current_sha256": "13342ff0bdb3c2059bc8e1233f0afba8f31aa3b9e2a274e0c375315750a8a749",
+      "owner": "Actual source/test/consumer map, no duplicate tests solely to match headers",
+      "verification": "Native cohort and corresponding source mapping"
     },
     {
       "path": "tests/lib-win32-style/application/adapters/host.c",
       "sha256": "b6f0daf2b6e91c97450949b0e39b23d6a5be1ed511699e59c40b668f0cbf3d91",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "b6f0daf2b6e91c97450949b0e39b23d6a5be1ed511699e59c40b668f0cbf3d91",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/application/adapters/host_start.c",
       "sha256": "2ea98f0c6af3155209f8c21cdcbeca275bf27cd50333370a8ad7df0c4d6e5815",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "2ea98f0c6af3155209f8c21cdcbeca275bf27cd50333370a8ad7df0c4d6e5815",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/application/adapters/input.c",
       "sha256": "ecf5607d95bcf66507b49d4f31429b31380deec63e927f4cf2aca722deecd8cd",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "2f785d390941cc76f4eb3df94859db10744232726eb0a650c013c96e987d8f54",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/application/adapters/repaint.c",
       "sha256": "6dac9805ab65bbf2ad1f4cf87cc834e1feb7b71db5e6dc2c8eae793ba60de97b",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "6dac9805ab65bbf2ad1f4cf87cc834e1feb7b71db5e6dc2c8eae793ba60de97b",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/application/adapters/surface.c",
       "sha256": "1c9277e02373894a7a0898d7192b5d0c5fea42bb9c31e59b15fcdbc8032142d0",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "f1e6dd439a8873b5caa2ec798da0b8ee94fb1607ba2fe54986645d89d303f2b0",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/application/adapters/surface_present.c",
       "sha256": "643a2c2a8b7f74c05b0164d12ffb1e6b59b584d2d453f3dbff4757137fde3284",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "f16784e60bcbfab2902ff766c94b6b3ec2508ae36736e9b3938b84b9c24e497d",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/application/adapters/uwp/native.c",
       "sha256": "3047c6be95d41df97c2aba5aae48c3c6f9bc83374c849380a9d52d06cf45efe6",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "3047c6be95d41df97c2aba5aae48c3c6f9bc83374c849380a9d52d06cf45efe6",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/lib-win32-style/application/adapters/uwp/target.c",
       "sha256": "04bd3317e3cdd0835eab56e8d249f76e2f48ca3dfd28db80fd9f0c09e5d090f6",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "04bd3317e3cdd0835eab56e8d249f76e2f48ca3dfd28db80fd9f0c09e5d090f6",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/ntw16s-dll/uwp/global.c",
       "sha256": "a22be31fb58e03c0f958fcc8263042245251f0eb654aee8fcf8f77aeacd851fe",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "a22be31fb58e03c0f958fcc8263042245251f0eb654aee8fcf8f77aeacd851fe",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
     },
     {
       "path": "tests/ntw16s-dll/window_thread.c",
       "sha256": "7d233ae05d119a148b6783244d74648c11049fa209284395876b6ef620a3c76c",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "3a300803349e4c320b365e7e13fc03f3a878bf71656c3f53b83bf94704fd4429",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Dual direct composed product entry passed install/display/remove; native hook failed126 and complete S11 controls matched; raw failures retained."
     },
     {
       "path": "tests/run16s-exe/uwp.c",
       "sha256": "d57eb26a16f6608786774751171c3c11f4d4f519bb4d03b730356d8e735b5bef",
-      "state": "frozen-to-review",
-      "kind": "test"
+      "state": "consumer-boundary-reviewed",
+      "kind": "test",
+      "current_sha256": "d57eb26a16f6608786774751171c3c11f4d4f519bb4d03b730356d8e735b5bef",
+      "owner": "Existing test retained. Direct modified helper tests use complete public root, profile cases call shared lifecycle; real application/global/tray tests require opt-in/current desktop/permissions and are not silently counted as native models.",
+      "verification": "Actual worker entry/ownership and arguments reviewed; executed cases in development JSON; unchanged tests not claimed newly passed"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/host_menu.h",
+      "sha256": "74c2af9a19788daec099456ec9a46c33e24d2b5754e3d86e35134a42fcfba008",
+      "state": "product-ABI-retained",
+      "kind": "production",
+      "addition_reason": "Existing complete native system-menu restrictions, action identity and layered popup presentation called by modern_frame; reused, not copied.",
+      "current_sha256": "74c2af9a19788daec099456ec9a46c33e24d2b5754e3d86e35134a42fcfba008",
+      "owner": "Fixed product export/message/action ABI only; shared runtime/framework/lifecycle reached by existing entry. DLL unloading not promised.",
+      "verification": "Both ABI checks passed incrementally; final clean package gate pending"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/owner.h",
+      "sha256": "1436219b9ef20678773729babd3113e2410ff759a514da6c217e04a5d16b1285",
+      "state": "product-ABI-retained",
+      "kind": "production",
+      "addition_reason": "Menu state owner and whole message operations consumed by common frame.",
+      "current_sha256": "1436219b9ef20678773729babd3113e2410ff759a514da6c217e04a5d16b1285",
+      "owner": "Fixed product export/message/action ABI only; shared runtime/framework/lifecycle reached by existing entry. DLL unloading not promised.",
+      "verification": "Both ABI checks passed incrementally; final clean package gate pending"
+    },
+    {
+      "path": "src/ntw16s-dll/ntw16s32.def",
+      "sha256": "37f7c42979538946c7ac84037b639405d3560acca371872473879af646a04e7c",
+      "state": "product-ABI-retained",
+      "kind": "production",
+      "addition_reason": "Public ABI check: remove/surface are not DLL exports; UwpFrameHook ordinal38 unchanged.",
+      "current_sha256": "37f7c42979538946c7ac84037b639405d3560acca371872473879af646a04e7c",
+      "owner": "Fixed product export/message/action ABI only; shared runtime/framework/lifecycle reached by existing entry. DLL unloading not promised.",
+      "verification": "Both ABI checks passed incrementally; final clean package gate pending"
+    },
+    {
+      "path": "src/ntw16s-dll/ntw16s64.def",
+      "sha256": "3a19b506e2883e662641ddba02c90c388e48281058d501f9fe576592bfdb6204",
+      "state": "product-ABI-retained",
+      "kind": "production",
+      "addition_reason": "Public ABI check: UwpFrameHook ordinal38 unchanged.",
+      "current_sha256": "3a19b506e2883e662641ddba02c90c388e48281058d501f9fe576592bfdb6204",
+      "owner": "Fixed product export/message/action ABI only; shared runtime/framework/lifecycle reached by existing entry. DLL unloading not promised.",
+      "verification": "Both ABI checks passed incrementally; final clean package gate pending"
+    },
+    {
+      "path": "src/lib-win32-style/application/lifecycle/instance.c",
+      "sha256": "199659092465ea06289a22114c5e484cd4c8a955064efdc26223badc48f37582",
+      "current_sha256": "199659092465ea06289a22114c5e484cd4c8a955064efdc26223badc48f37582",
+      "state": "unchanged-dependency-reused-with-explicit-receiver",
+      "kind": "production",
+      "addition_reason": "Actual transitive dependency explicitly reconciled against byte-identical S11 blob; not new S12 code.",
+      "owner": "Existing common reference/identity/resource owner, reused directly without another implementation",
+      "verification": "S11 blob byte-exact; reused earlier S3/S7/S8 audit plus current native common/profile consumer coverage; no unrelated runtime claim"
+    },
+    {
+      "path": "src/lib-win32-style/application/lifecycle/instance.h",
+      "sha256": "495d5aaa4bc984fe2eb8bdc67f2026e39884949e4911024ffa66183321d6a3f1",
+      "current_sha256": "495d5aaa4bc984fe2eb8bdc67f2026e39884949e4911024ffa66183321d6a3f1",
+      "state": "unchanged-dependency-reused-with-explicit-receiver",
+      "kind": "production",
+      "addition_reason": "Actual transitive dependency explicitly reconciled against byte-identical S11 blob; not new S12 code.",
+      "owner": "Existing common reference/identity/resource owner, reused directly without another implementation",
+      "verification": "S11 blob byte-exact; reused earlier S3/S7/S8 audit plus current native common/profile consumer coverage; no unrelated runtime claim"
+    },
+    {
+      "path": "src/lib-win32-style/application/menu/owner.c",
+      "sha256": "496603795e6e37ed05846ac41c7298c2d1a2a1b9dbbc851f363053a3bd84f8db",
+      "current_sha256": "496603795e6e37ed05846ac41c7298c2d1a2a1b9dbbc851f363053a3bd84f8db",
+      "state": "unchanged-dependency-reused-with-explicit-receiver",
+      "kind": "production",
+      "addition_reason": "Actual transitive dependency explicitly reconciled against byte-identical S11 blob; not new S12 code.",
+      "owner": "Existing common reference/identity/resource owner, reused directly without another implementation",
+      "verification": "S11 blob byte-exact; reused earlier S3/S7/S8 audit plus current native common/profile consumer coverage; no unrelated runtime claim"
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/font_pair.h",
+      "sha256": "ad3c0dd7240a3b6763ef619042d22d949fec550d0fc4bee190f64c76f4920b56",
+      "current_sha256": "ad3c0dd7240a3b6763ef619042d22d949fec550d0fc4bee190f64c76f4920b56",
+      "state": "unchanged-dependency-reused-with-explicit-receiver",
+      "kind": "production",
+      "addition_reason": "Actual transitive dependency explicitly reconciled against byte-identical S11 blob; not new S12 code.",
+      "owner": "Existing common reference/identity/resource owner, reused directly without another implementation",
+      "verification": "S11 blob byte-exact; reused earlier S3/S7/S8 audit plus current native common/profile consumer coverage; no unrelated runtime claim"
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/bitmap.c",
+      "sha256": "ca5ac0ebc37c2d2ddb1053cfebe2fe447818a6cb5602c4d0540bd1cf67026e33",
+      "current_sha256": "ca5ac0ebc37c2d2ddb1053cfebe2fe447818a6cb5602c4d0540bd1cf67026e33",
+      "state": "unchanged-dependency-reused-with-explicit-receiver",
+      "kind": "production",
+      "addition_reason": "Actual transitive dependency explicitly reconciled against byte-identical S11 blob; not new S12 code.",
+      "owner": "Existing common reference/identity/resource owner, reused directly without another implementation",
+      "verification": "S11 blob byte-exact; reused earlier S3/S7/S8 audit plus current native common/profile consumer coverage; no unrelated runtime claim"
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/bitmap.h",
+      "sha256": "ebd25bfe279c870fb630aaaefee6770a5ab26855067e0be4851c867bd4c605aa",
+      "current_sha256": "ebd25bfe279c870fb630aaaefee6770a5ab26855067e0be4851c867bd4c605aa",
+      "state": "unchanged-dependency-reused-with-explicit-receiver",
+      "kind": "production",
+      "addition_reason": "Actual transitive dependency explicitly reconciled against byte-identical S11 blob; not new S12 code.",
+      "owner": "Existing common reference/identity/resource owner, reused directly without another implementation",
+      "verification": "S11 blob byte-exact; reused earlier S3/S7/S8 audit plus current native common/profile consumer coverage; no unrelated runtime claim"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/window_identity.h",
+      "sha256": "cbab1c414cce1971fcbf709f920bf4aa63d9ffc99ebb12cb83f9223b0d908fd6",
+      "current_sha256": "cbab1c414cce1971fcbf709f920bf4aa63d9ffc99ebb12cb83f9223b0d908fd6",
+      "state": "unchanged-dependency-reused-with-explicit-receiver",
+      "kind": "production",
+      "addition_reason": "Actual transitive dependency explicitly reconciled against byte-identical S11 blob; not new S12 code.",
+      "owner": "Existing common reference/identity/resource owner, reused directly without another implementation",
+      "verification": "S11 blob byte-exact; reused earlier S3/S7/S8 audit plus current native common/profile consumer coverage; no unrelated runtime claim"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_view.c",
+      "sha256": "d85ec2ac3a7109438f4c6c8deb176c2d13acd83e410f3125319e784849615e2b",
+      "current_sha256": "d85ec2ac3a7109438f4c6c8deb176c2d13acd83e410f3125319e784849615e2b",
+      "state": "unchanged-dependency-reused-with-explicit-receiver",
+      "kind": "production",
+      "addition_reason": "Actual transitive dependency explicitly reconciled against byte-identical S11 blob; not new S12 code.",
+      "owner": "S13 receives renderer frame_view/font selection",
+      "verification": "S11 blob byte-exact; reused earlier S3/S7/S8 audit plus current native common/profile consumer coverage; no unrelated runtime claim"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_view.h",
+      "sha256": "ca1cc9278f044bc625e319eaeea2b390aef0a0fc30bf6e2322290037b78adafd",
+      "current_sha256": "ca1cc9278f044bc625e319eaeea2b390aef0a0fc30bf6e2322290037b78adafd",
+      "state": "unchanged-dependency-reused-with-explicit-receiver",
+      "kind": "production",
+      "addition_reason": "Actual transitive dependency explicitly reconciled against byte-identical S11 blob; not new S12 code.",
+      "owner": "S13 receives renderer frame_view/font selection",
+      "verification": "S11 blob byte-exact; reused earlier S3/S7/S8 audit plus current native common/profile consumer coverage; no unrelated runtime claim"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_font.c",
+      "sha256": "8fc21068060be28507b807cc426a82e033a89fc09d8b58874157e29f7688c586",
+      "current_sha256": "8fc21068060be28507b807cc426a82e033a89fc09d8b58874157e29f7688c586",
+      "state": "unchanged-dependency-reused-with-explicit-receiver",
+      "kind": "production",
+      "addition_reason": "Actual transitive dependency explicitly reconciled against byte-identical S11 blob; not new S12 code.",
+      "owner": "S13 receives renderer frame_view/font selection",
+      "verification": "S11 blob byte-exact; reused earlier S3/S7/S8 audit plus current native common/profile consumer coverage; no unrelated runtime claim"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win3x/window/frame_font.h",
+      "sha256": "658e4a3db51071aeb1b8bf2305308ed42f0b536c052c248f4a9d8f010313ff43",
+      "current_sha256": "658e4a3db51071aeb1b8bf2305308ed42f0b536c052c248f4a9d8f010313ff43",
+      "state": "unchanged-dependency-reused-with-explicit-receiver",
+      "kind": "production",
+      "addition_reason": "Actual transitive dependency explicitly reconciled against byte-identical S11 blob; not new S12 code.",
+      "owner": "S13 receives renderer frame_view/font selection",
+      "verification": "S11 blob byte-exact; reused earlier S3/S7/S8 audit plus current native common/profile consumer coverage; no unrelated runtime claim"
     }
   ],
   "scope_additions": [],
-  "new_outputs": [],
+  "new_outputs": [
+    {
+      "path": "src/lib-win32-style/application/adapters/frame.c",
+      "initial_sha256": "cfc299043891e7fd5ab081a51259a33fa5f1acc302043b8c781ad5c53f09f113",
+      "current_sha256": "cfc299043891e7fd5ab081a51259a33fa5f1acc302043b8c781ad5c53f09f113",
+      "state": "implemented-development-validated",
+      "owner": "Complete common frame root or independent native provider; no Win3x/Win2000 reverse dependency"
+    },
+    {
+      "path": "src/lib-win32-style/application/adapters/frame.h",
+      "initial_sha256": "e18c1cddab14789131abc3333b7fc5707798e7db086391dc296253a25b9db8ab",
+      "current_sha256": "e18c1cddab14789131abc3333b7fc5707798e7db086391dc296253a25b9db8ab",
+      "state": "implemented-development-validated",
+      "owner": "Complete common frame root or independent native provider; no Win3x/Win2000 reverse dependency"
+    },
+    {
+      "path": "tests/lib-win32-style/application/adapters/frame.c",
+      "initial_sha256": "593dddd0d14cc70d198579c593dead935e52754c2b29b5922fc3b8e5bd29ffb5",
+      "current_sha256": "593dddd0d14cc70d198579c593dead935e52754c2b29b5922fc3b8e5bd29ffb5",
+      "state": "implemented-development-validated",
+      "owner": "Complete common frame root or independent native provider; no Win3x/Win2000 reverse dependency"
+    }
+  ],
   "review_checkpoint": {
-    "frozen": 52,
-    "reviewed": 0,
-    "unreviewed": 52
+    "initial_frozen": 52,
+    "explicit_closure_additions": 15,
+    "classified": 67,
+    "unclassified": 0,
+    "new_outputs": 3,
+    "runtime": "37 pass,6 unpassed,0skip plus3 S11 controls"
   },
   "prior_remote": "docs/etc/evidence/t26-s11-remote.json",
   "restrictions": [
@@ -334,5 +665,22 @@
     "no new UI framework support or Win2000 modern rendering feature",
     "no new safety/permission or target-range changes",
     "incremental development; one whole-S delivery"
-  ]
+  ],
+  "implementation_order": [
+    "common owned frame plus input/surface",
+    "actual Win3x/product consumers and remove/surface",
+    "dual native independent-provider/profile/failure tests",
+    "remaining native/target/access/CLI closure and one whole-S delivery"
+  ],
+  "retained_boundary": {
+    "S13": "Win3x frame_view paint/font fields and frame_font font selection; generic bitmap/font_pair ownership already common; no new renderer or view moved unchanged into generic API.",
+    "product": "Exact Win3x composed class allowlist, fixed module/export/protocol/action labels and calculator UX remain policy, not lifecycle.",
+    "capability_limit": "Physical unloading of a host-pinned DLL is not provided; runtime frame removal only. Tests on native owned HWNDs do not establish all real XAML frameworks."
+  },
+  "final_checks": {
+    "legacy_views": "No style_uwp_input_view/surface_view remaining in src/tests",
+    "legacy_wrappers": "No win16_uwp_frame_remove/surface/apply/apply_action declarations or callers; only two real renderer selection entries remain",
+    "product": "Exact original target/ABI/UX choices retained; actual common callbacks and deletion detailed per input",
+    "ordinary_terminal": "Both DLLs 7 rounds/56 callbacks/7 families and GDI ownership passed; modern owner destruction separately covered"
+  }
 }

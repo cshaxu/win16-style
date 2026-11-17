@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "lib-win32-style/application/adapters/surface.h"
+#include "lib-win32-style/application/adapters/frame.h"
 static int mode,outer_deleted,inner_deleted,updated,positioned;
 static int hidden,painted,reentered;
 static HWND owner=(HWND)(uintptr_t)1,surface=(HWND)(uintptr_t)2,above=(HWND)(uintptr_t)3;
@@ -49,8 +50,8 @@ static BOOL fake_bitmap(style_bitmap *bitmap,HDC dc,SIZE size)
 #undef IsWindowVisible
 #undef ShowWindow
 #undef style_bitmap_ensure
-static BOOL geometry(void *context,RECT *outer,RECT *hole)
-{(void)context;*outer=(RECT){10,20,16,24};*hole=(RECT){2,1,4,3};return TRUE;}
+static BOOL geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
+{(void)context;*anchor=(POINT){2,1};*outer=(RECT){10,20,16,24};*hole=(RECT){2,1,4,3};return TRUE;}
 static void paint(void *context,HDC dc)
 {(void)dc;++painted;if(style_uwp_surface_refresh(context))++reentered;}
 int main(void)
@@ -68,10 +69,11 @@ int main(void)
     detached=TRUE;outer_deleted=inner_deleted=updated=positioned=0;
     if(style_uwp_surface_present(owner,surface,&outer,&hole,&bitmap,&detached) ||
        outer_deleted || inner_deleted || updated || positioned)return 3;
-    BOOL updating=FALSE;detached=FALSE;style_uwp_surface_view view={owner,&surface,&detached,&updating,&bitmap,NULL,geometry,paint};
+    const style_uwp_frame_ops operations={.geometry=geometry,.paint=paint};
+    style_uwp_frame view={.host={.owner=owner,.surface=surface},.bitmap=bitmap,.ops=&operations};
     view.context=&view;mode=0;painted=reentered=hidden=updated=positioned=0;
-    if(!style_uwp_surface_refresh(&view) || updating || painted!=1 || reentered!=1 || updated!=1 || positioned!=1 || hidden)return 4;
+    if(!style_uwp_surface_refresh(&view) || view.updating || painted!=1 || reentered!=1 || updated!=1 || positioned!=1 || hidden)return 4;
     mode=3;painted=reentered=hidden=updated=positioned=0;
-    if(style_uwp_surface_refresh(&view) || updating || painted!=1 || reentered!=1 || updated!=1 || positioned || hidden!=1)return 5;
+    if(style_uwp_surface_refresh(&view) || view.updating || painted!=1 || reentered!=1 || updated!=1 || positioned || hidden!=1)return 5;
     puts("UWP PRESENT PASS alpha=1 region=1 ownership=1 update=1 position=1 detached=1 refresh=1 reentry=1 failure=1");return 0;
 }

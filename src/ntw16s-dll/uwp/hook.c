@@ -8,9 +8,9 @@ static BOOL apply_frame(HWND frame,BOOL fullscreen)
 {
     HWND auxiliary=NULL,title=style_uwp_title(frame,&auxiliary);
     if(!title){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-    win16_uwp_frame_action actions[2];unsigned count=0;
-    if(auxiliary)actions[count++]=(win16_uwp_frame_action){L"Application menu...",style_uwp_application_menu,auxiliary};
-    if(fullscreen)actions[count++]=(win16_uwp_frame_action){L"Toggle full screen",style_uwp_fullscreen,title};
+    style_uwp_frame_action actions[2];unsigned count=0;
+    if(auxiliary)actions[count++]=(style_uwp_frame_action){L"Application menu...",style_uwp_application_menu,auxiliary};
+    if(fullscreen)actions[count++]=(style_uwp_frame_action){L"Toggle full screen",style_uwp_fullscreen,title};
     return win16_uwp_frame_apply_actions(frame,title,actions,count);
 }
 static BOOL accept_action(WPARAM action,void *context)
@@ -18,8 +18,8 @@ static BOOL accept_action(WPARAM action,void *context)
 static DWORD perform_action(HWND frame,HWND core,WPARAM action,void *context)
 {
     (void)core;(void)context;HMODULE module=NULL;SetLastError(0);BOOL ok;
-    if(action==NTW16S_UWP_REMOVE)ok=win16_uwp_frame_remove(frame);
-    else if(win16_uwp_frame_surface(frame))ok=TRUE;
+    if(action==NTW16S_UWP_REMOVE)ok=style_uwp_frame_remove(frame);
+    else if(style_uwp_frame_surface(frame))ok=TRUE;
     else ok=GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
         (PCWSTR)(uintptr_t)Ntw16sUwpFrameHook,&module)&&apply_frame(frame,action==NTW16S_UWP_APPLY_FULLSCREEN);
     DWORD error=ok?ERROR_SUCCESS:GetLastError();return !ok&&!error?ERROR_NOT_SUPPORTED:error;

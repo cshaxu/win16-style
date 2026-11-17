@@ -182,3 +182,18 @@ S10 paint manager: `adapters/win32/paint_dispatch.{c,h}` -> `adapters/win32/pain
 `adapters/win32/runtime_roles` guard additionally validates caller-selected owner-draw parent relationships in the existing native `runtime_roles.c`: unchanged/changed parent, non-owner, no recorded parent, destroy/terminal bypass, already-retired and failed removal continuing to later runtime-role checks. Win3x keeps supported drawing policy and calls this existing common guard; no parallel guard manager is introduced.
 
 `application/control/bindings` setup owns the existing optional list-theme capture/enable/cancel transaction as well as release. Existing `control/bindings.c` native12-case table verifies exact caller phase, preexisting lease, capture/enable failure, retirement inside either callback, final cancellation precedence, non-list exclusion, unchanged held call, owned-flag publication before enable and release only by the captured owner. Actual grid/directory fixtures consume the same setup; default ordinary options remain unchanged.
+
+## Modern host ownership (S12)
+
+| Production source | Corresponding tests and real consumer |
+| --- | --- |
+| `adapters/frame.c/h` | `adapters/frame.c`: independent C provider without Win3x rendering, 256 copied actions, wrong thread/invalid/duplicate input, original error, reentrant remove/title destruction, activation/hide/repeat/final disposal; Win3x modern frame and product hook/attachment use this same root |
+| `adapters/host.c/h` | `adapters/host.c`, `adapters/host_start.c`: subclass ownership/failed removal, deferred disposal, eight start outcomes and native synchronous retirement; common frame reuses this installer |
+| `adapters/input.c/h` | `adapters/input.c`: complete common frame pressed/hot/capture/drag/cancel and detachment during refresh; Win3x frame fixture exercises the actual installed surface |
+| `adapters/surface.c/h` | `adapters/surface.c`, `adapters/surface_present.c`: bitmap ownership/reuse, hidden/maximized/native bounds, alpha/region transfer/failure and refresh reentry; common frame owns bitmap/updating/menu anchor |
+| `adapters/repaint.c/h` | `adapters/repaint.c`: coalesced timer, deadline and cancellation during callbacks; ordinary Win3x frame retains its complete scheduler |
+| `adapters/uwp/native.c/h`, `target.c/h` | `adapters/uwp/native.c`, `target.c`: title/auxiliary identity, invalid UIA/thread, target/frame/core association and destruction; actual cross-process OS application coverage is recorded separately |
+
+The existing Win3x `modern_frame.c`, `_hidden.c` and `_layout.c` fixtures cover profile paint/layout, actual menu restrictions/collisions/partial insertion rollback, nested-title destruction and peer isolation. Call `modern_frame` with first argument `--private-worker` to bypass its legacy private-desktop wrapper on the approved current desktop; no private desktop is created/switched in that mode. These tests do not establish coverage of every UWP/WinUI application or physical input.
+
+Actual product composition: `tests/ntw16s-dll/window_thread.c --composed` selects a self-created composed-class/NOREDIRECTION window, applies through the real product thread hook and verifies the shared surface disappears on product removal. It is not an actual Chrome process or a claim about every composed application. Ordinary terminal tests remain separate from modern owner destruction.

@@ -1,12 +1,13 @@
 #include <windows.h>
 #include <stdio.h>
 #include "lib-win32-style/application/adapters/surface.h"
+#include "lib-win32-style/application/adapters/frame.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"UWP SURFACE FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
 typedef struct refresh_fixture {unsigned geometry,paint;BOOL fail,detach;BOOL *detached;} refresh_fixture;
-static BOOL refresh_geometry(void *context,RECT *outer,RECT *hole)
+static BOOL refresh_geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
 {
     refresh_fixture *f=context;++f->geometry;
-    *outer=(RECT){20,20,100,70};*hole=(RECT){5,5,75,45};return !f->fail;
+    *anchor=(POINT){5,5};*outer=(RECT){20,20,100,70};*hole=(RECT){5,5,75,45};return !f->fail;
 }
 static void refresh_paint(void *context,HDC dc)
 {
@@ -32,20 +33,21 @@ int main(void)
     HWND root=CreateWindowW(L"STATIC",L"Surface fixture",WS_OVERLAPPEDWINDOW|WS_VISIBLE,20,20,420,280,NULL,NULL,GetModuleHandleW(NULL),NULL);
     CHECK(root);ShowWindow(root,SW_SHOWNOACTIVATE);RECT client;CHECK(GetClientRect(root,&client));
     HWND surface=CreateWindowExW(WS_EX_LAYERED,L"STATIC",L"",WS_POPUP,0,0,80,50,root,NULL,GetModuleHandleW(NULL),NULL);
-    CHECK(surface);BOOL detached=FALSE,updating=FALSE;style_bitmap refresh_bitmap={0};
-    refresh_fixture fixture={.detached=&detached};
-    style_uwp_surface_view view={root,&surface,&detached,&updating,&refresh_bitmap,&fixture,refresh_geometry,refresh_paint};
-    updating=TRUE;CHECK(style_uwp_surface_refresh(&view) && !fixture.geometry);updating=FALSE;
-    detached=TRUE;CHECK(!style_uwp_surface_refresh(&view) && !fixture.geometry);detached=FALSE;
-    fixture.fail=TRUE;CHECK(!style_uwp_surface_refresh(&view) && fixture.geometry==1 && !fixture.paint && !updating);
+    CHECK(surface);style_uwp_frame frame={.host={.owner=root,.surface=surface}};
+    refresh_fixture fixture={.detached=&frame.host.instance.detached};
+    const style_uwp_frame_ops operations={.geometry=refresh_geometry,.paint=refresh_paint};
+    frame.context=&fixture;frame.ops=&operations;
+    frame.updating=TRUE;CHECK(style_uwp_surface_refresh(&frame) && !fixture.geometry);frame.updating=FALSE;
+    frame.host.instance.detached=TRUE;CHECK(!style_uwp_surface_refresh(&frame) && !fixture.geometry);frame.host.instance.detached=FALSE;
+    fixture.fail=TRUE;CHECK(!style_uwp_surface_refresh(&frame) && fixture.geometry==1 && !fixture.paint && !frame.updating);
     fixture.fail=FALSE;fixture.detach=TRUE;
-    CHECK(!style_uwp_surface_refresh(&view) && fixture.geometry==2 && fixture.paint==1 && detached && !updating);
-    fixture.detach=FALSE;detached=FALSE;SetLastError(ERROR_SUCCESS);
-    BOOL native_present=style_uwp_surface_refresh(&view);DWORD present_error=GetLastError();
-    CHECK(fixture.geometry==3 && fixture.paint==2 && !detached && !updating);
+    CHECK(!style_uwp_surface_refresh(&frame) && fixture.geometry==2 && fixture.paint==1 && frame.host.instance.detached && !frame.updating);
+    fixture.detach=FALSE;frame.host.instance.detached=FALSE;SetLastError(ERROR_SUCCESS);
+    BOOL native_present=style_uwp_surface_refresh(&frame);DWORD present_error=GetLastError();
+    CHECK(fixture.geometry==3 && fixture.paint==2 && !frame.host.instance.detached && !frame.updating);
     if(native_present)CHECK(IsWindowVisible(surface));
     else printf("UWP SURFACE NATIVE PRESENT SKIP error=%lu\n",(unsigned long)present_error);
-    style_bitmap_dispose(&refresh_bitmap);CHECK(DestroyWindow(surface));
+    style_bitmap_dispose(&frame.bitmap);CHECK(DestroyWindow(surface));
     HWND title=CreateWindowW(L"STATIC",L"title",WS_CHILD|WS_VISIBLE,0,0,client.right,32,root,NULL,GetModuleHandleW(NULL),NULL);
     CHECK(title);RECT outer,content,screen_title;BOOL zoomed;
     CHECK(style_uwp_frame_bounds(root,title,&outer,&content,&zoomed) && !zoomed && GetWindowRect(title,&screen_title));

@@ -274,3 +274,7 @@
 
 - [T26 S11实际远端](evidence/t26-s11-remote.json)：P1实际fetch后的67个blob与八个发布产物相等；后续关闭记录以CURRENT为准。
 - [T26 S12现代宿主初表](evidence/t26-s12-modern-audit.json)：52项初始入口SHA；尚未完成逐项/调用闭包审查，不是实现或运行通过。
+
+- [S12现代宿主开发证据](evidence/t26-s12-modern-development.json)：逐批增量构建、失败及后续原生验证；不是整S交付证明。
+
+- [S12现代宿主整组交付](evidence/t26-s12-modern-delivery.json)：双宽干净构建、八文件两处先发布、37项通过/6项未通过和上版有限对照；测试-only快照修订、原资源/ABI/依赖及清理另列。

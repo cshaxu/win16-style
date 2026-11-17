@@ -13,15 +13,7 @@ LRESULT style_uwp_resize_margin_hit(LRESULT hit,POINT point,const RECT *outer,
 BOOL style_uwp_surface_present(HWND owner,HWND surface,const RECT *outer,
     const RECT *hole,style_bitmap *bitmap,const BOOL *detached);
 
-/* The caller owns the state and keeps it alive across callbacks. Geometry and
- * painting are style-specific; visibility, buffering and presentation are not. */
-typedef struct style_uwp_surface_view {
-    HWND owner,*surface;
-    BOOL *detached,*updating;
-    style_bitmap *bitmap;
-    void *context;
-    BOOL (*geometry)(void *,RECT *,RECT *);
-    void (*paint)(void *,HDC);
-} style_uwp_surface_view;
-BOOL style_uwp_surface_refresh(const style_uwp_surface_view *view);
+/* Caller pins the frame across geometry/paint and native reentry. */
+struct style_uwp_frame;
+BOOL style_uwp_surface_refresh(struct style_uwp_frame *);
 #endif

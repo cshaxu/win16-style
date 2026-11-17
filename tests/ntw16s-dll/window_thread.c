@@ -9,6 +9,15 @@ typedef BOOL (__cdecl *query_fn)(HWND);
     return 1; \
 } } while(0)
 
+typedef struct surface_probe {HWND owner,surface;unsigned count;} surface_probe;
+static BOOL CALLBACK find_surface(HWND window,LPARAM context)
+{
+    surface_probe *p=(surface_probe *)context;
+    if(GetWindow(window,GW_OWNER)==p->owner && (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYERED)){
+        p->surface=window;++p->count;
+    }
+    return TRUE;
+}
 static LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
     return DefWindowProcW(window,message,wp,lp);
@@ -16,17 +25,18 @@ static LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM wp,LPARAM lp
 
 int wmain(int argc,WCHAR **argv)
 {
-    CHECK(argc==2 || (argc==3 && !lstrcmpW(argv[2],L"--direct")));
-    BOOL direct=argc==3;
+    BOOL direct=argc==3 && (!lstrcmpW(argv[2],L"--direct") || !lstrcmpW(argv[2],L"--direct-composed"));
+    BOOL composed=argc==3 && (!lstrcmpW(argv[2],L"--composed") || !lstrcmpW(argv[2],L"--direct-composed"));
+    CHECK(argc==2 || (argc==3 && (direct || composed)));
     HMODULE dll=LoadLibraryW(argv[1]);
     CHECK(dll);
     HOOKPROC callback=(HOOKPROC)(uintptr_t)GetProcAddress(dll,"Ntw16sWindowThreadHook");
     query_fn attached=(query_fn)(uintptr_t)GetProcAddress(dll,"Ntw16sWindowAttached");
     CHECK(callback && attached);
     WNDCLASSW wc={.lpfnWndProc=window_proc,.hInstance=GetModuleHandleW(NULL),
-        .lpszClassName=L"S3ThreadHookFixture"};
+        .lpszClassName=composed?L"Chrome_WidgetWin_1":L"S3ThreadHookFixture"};
     CHECK(RegisterClassW(&wc));
-    HWND first=CreateWindowW(wc.lpszClassName,L"one",WS_OVERLAPPEDWINDOW,
+    HWND first=CreateWindowExW(composed?WS_EX_NOREDIRECTIONBITMAP:0,wc.lpszClassName,L"one",WS_OVERLAPPEDWINDOW,
         0,0,400,300,NULL,NULL,wc.hInstance,NULL);
     HWND other=CreateWindowW(wc.lpszClassName,L"two",WS_OVERLAPPEDWINDOW,
         0,0,400,300,NULL,NULL,wc.hInstance,NULL);
@@ -47,14 +57,24 @@ int wmain(int argc,WCHAR **argv)
     DISPATCH();
     CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)==1 && attached(first));
     RemovePropW(first,NTW16S_WINDOW_THREAD_RESULT);
+    surface_probe surface={.owner=first};
+    if(composed){
+        ShowWindow(first,SW_SHOWNOACTIVATE);
+        CHECK(EnumThreadWindows(GetCurrentThreadId(),find_surface,(LPARAM)&surface));
+        CHECK(surface.count==1 && IsWindowVisible(surface.surface));
+    }
     event.wParam=NTW16S_WINDOW_THREAD_REMOVE;DISPATCH();
     CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)==1);
     CHECK(!attached(first) && !attached(other));
+    if(composed){
+        CHECK(!IsWindow(surface.surface));
+        CHECK(GetWindowLongPtrW(first,GWL_EXSTYLE)&WS_EX_NOREDIRECTIONBITMAP);
+    }
     if(hook)CHECK(UnhookWindowsHookEx(hook));
     DestroyWindow(first);
     DestroyWindow(other);
     FreeLibrary(dll);
-    printf("window-thread PASS width=%u direct=%d\n",(unsigned)(8*sizeof(void *)),direct);
+    printf("window-thread PASS width=%u direct=%d composed=%d surface_removed=%d\n",(unsigned)(8*sizeof(void *)),direct,composed,composed&&!IsWindow(surface.surface));
 #undef DISPATCH
     return 0;
 }

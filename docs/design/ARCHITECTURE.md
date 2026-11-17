@@ -129,3 +129,5 @@ S11的`application/dialog/classic_com_controller`现拥有既有COM激活/工厂
 S11的`application/dialog/classic_file_controller`拥有A/W打开和保存的参数转换、原生返回与LastError结算、嵌套线程状态及观察hook/creation-observer恢复；产品只提供active/scope/chrome及既有observer模式。原应用hook/template、多选及扩展参数沿用既有原生路径，观察hook失败不新增阻断或重试。`application/lifecycle/creation_call`持有固定prepare/active/creation操作上下文、一次初始化和调用结束结算；这些是实际状态所有者，不是新的产品转发层。实际测试与交付状态由CURRENT及S11证据记录。
 
 S11的`application/dialog/observation`统一持有创建调用、当前线程观察hook和可选嵌套目标身份。Win3x font/color组合创建事务与观察；Win2000用NULL创建上下文明确只观察，不改成预创建附着。结束按既有顺序恢复身份、释放本层hook和创建作用域，应用既有呈现不会因结束被移除。classic_file_live操作直接借用同一完整proxy，原生调用可重入并改变active_window，之后读取当前字段；没有另建字段指针视图或并行状态。实际交付状态仍由CURRENT管理。
+
+S12候选的`application/adapters/frame`嵌入既有host/instance并拥有bitmap、刷新/输入/激活状态、menu owner和action事务；profile在同一次分配中嵌入公共根及action尾存储，只保留年代布局、命中、命令/菜单绘制和字体策略。input/surface直接使用完整根，不再接收字段指针view。内部移除/表面查询由产品直接调用公共入口，DLL协议及导出保持。候选的有限验证与整S交付状态由CURRENT/S12证据确定，不能据此声称所有现代应用已验证；旧renderer frame_view明确由S13接收。

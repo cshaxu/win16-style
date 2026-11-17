@@ -329,8 +329,8 @@ static BOOL composed_frame_class(HWND w)
 }
 BOOL __cdecl Ntw16sWindowRemove(HWND w)
 {
-    if(composed_frame_class(w) && win16_uwp_frame_surface(w) &&
-       !win16_uwp_frame_remove(w))return FALSE;
+    if(composed_frame_class(w) && style_uwp_frame_surface(w) &&
+       !style_uwp_frame_remove(w))return FALSE;
     return style_runtime_attachment_remove(w,attachment_proc,&lifecycle_ops);
 }
 BOOL __cdecl Ntw16sWindowTerminal(HWND w)

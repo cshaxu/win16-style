@@ -1,26 +1,27 @@
 #include "surface.h"
+#include "frame.h"
 #include "lib-win32-style/application/window/frame.h"
 
-BOOL style_uwp_surface_refresh(const style_uwp_surface_view *view)
+BOOL style_uwp_surface_refresh(style_uwp_frame *frame)
 {
-    if(*view->detached || *view->updating)return !*view->detached;
-    if(!*view->surface)return TRUE;
-    if(IsIconic(view->owner) || !IsWindowVisible(view->owner)){
-        ShowWindow(*view->surface,SW_HIDE);return TRUE;
+    if(frame->host.instance.detached || frame->updating)return !frame->host.instance.detached;
+    if(!frame->host.surface)return TRUE;
+    if(IsIconic(frame->host.owner) || !IsWindowVisible(frame->host.owner)){
+        ShowWindow(frame->host.surface,SW_HIDE);return TRUE;
     }
-    *view->updating=TRUE;
-    RECT outer,hole;BOOL ok=view->geometry(view->context,&outer,&hole);
+    frame->updating=TRUE;
+    RECT outer,hole;BOOL ok=frame->ops->geometry(frame->context,&outer,&hole,&frame->menu_anchor);
     if(ok){
         SIZE size={outer.right-outer.left,outer.bottom-outer.top};
-        ok=style_bitmap_ensure(view->bitmap,NULL,size);
+        ok=style_bitmap_ensure(&frame->bitmap,NULL,size);
         if(ok){
-            ZeroMemory(view->bitmap->pixels,(SIZE_T)size.cx*(SIZE_T)size.cy*4);
-            view->paint(view->context,view->bitmap->dc);
-            ok=style_uwp_surface_present(view->owner,*view->surface,&outer,&hole,view->bitmap,view->detached);
+            ZeroMemory(frame->bitmap.pixels,(SIZE_T)size.cx*(SIZE_T)size.cy*4);
+            frame->ops->paint(frame->context,frame->bitmap.dc);
+            ok=style_uwp_surface_present(frame->host.owner,frame->host.surface,&outer,&hole,&frame->bitmap,&frame->host.instance.detached);
         }
     }
-    if(!ok && !*view->detached)ShowWindow(*view->surface,SW_HIDE);
-    *view->updating=FALSE;return ok && !*view->detached;
+    if(!ok && !frame->host.instance.detached)ShowWindow(frame->host.surface,SW_HIDE);
+    frame->updating=FALSE;return ok && !frame->host.instance.detached;
 }
 
 LRESULT style_uwp_resize_margin_hit(LRESULT hit,POINT point,const RECT *outer,
