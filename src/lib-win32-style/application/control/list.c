@@ -15,7 +15,7 @@ LRESULT style_control_list_message(HWND w,style_instance *instance,style_control
         else if(m==WM_PRINTCLIENT)ops->draw(w,ops->context,(HDC)a,FALSE);
         else if(m==WM_NCPAINT || m==WM_PRINT){
             /* A profile without scrollbar operations borrows native NC. */
-            if(!ops->scrollbars){
+            if(!ops->scrollbars || ops->native_nonclient){
                 if(m==WM_NCPAINT)result=DefSubclassProc(w,m,a,b);
                 else if(b&~(PRF_CLIENT|PRF_ERASEBKGND)){
                     int saved=SaveDC((HDC)a);

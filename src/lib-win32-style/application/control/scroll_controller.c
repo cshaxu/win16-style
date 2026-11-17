@@ -1,5 +1,14 @@
 #include "scroll_controller.h"
 
+static RECT drag_bounds(HWND window,const style_scroll_layout *layout,const style_scroll_policy *policy)
+{
+    if(policy->drag_bounds)return policy->drag_bounds(window,layout);
+    RECT bounds=layout->bar;
+    int unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
+    InflateRect(&bounds,policy->tolerance_x*unit,policy->tolerance_y*unit);
+    return bounds;
+}
+
 BOOL style_scroll_embedded_input(HWND w,style_instance *instance,const style_control_state *owner,style_scroll_controller *c,const style_scroll_ops *ops,UINT m,WPARAM a,LPARAM b)
 {
     style_scroll_layout layout;style_scroll_actions actions;POINT point,origin;
@@ -8,7 +17,7 @@ BOOL style_scroll_embedded_input(HWND w,style_instance *instance,const style_con
     BOOL down=m==WM_NCLBUTTONDOWN || m==WM_NCLBUTTONDBLCLK;
     if(!c->resources.list && !c->resources.edit && !c->resources.frame)return FALSE;
     /* A dropped combo may already own capture for client clicks. */
-    if(owner->owner!=NULL && c->resources.list && !c->track.active && GetCapture()==w &&
+    if(owner && owner->owner!=NULL && c->resources.list && !c->track.active && GetCapture()==w &&
         (m==WM_LBUTTONDOWN || m==WM_LBUTTONDBLCLK)){
         LRESULT hit;
         point.x=(short)LOWORD(b);point.y=(short)HIWORD(b);ClientToScreen(w,&point);
@@ -28,7 +37,7 @@ BOOL style_scroll_embedded_input(HWND w,style_instance *instance,const style_con
     if(down && a==(WPARAM)(object==OBJID_HSCROLL?HTHSCROLL:HTVSCROLL)){RECT limit;unsigned epoch;
         if(c->track.active || !IsWindowEnabled(w) || !ops->layout(w,ops->context,object,&layout,&origin))return TRUE;
         point.x=(short)LOWORD(b)-origin.x;point.y=(short)HIWORD(b)-origin.y;
-        limit=layout.bar;{int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));InflateRect(&limit,ops->policy->tolerance_x*u,ops->policy->tolerance_y*u);}
+        limit=drag_bounds(w,&layout,ops->policy);
         if(!style_scroll_begin(&c->track,&layout,style_scroll_disabled(w,object),point,&limit,&actions,ops->policy))return TRUE;
         epoch=++c->epoch;c->object=object;c->resources.previous_capture=GetCapture();
         if(c->resources.previous_capture!=w)SetCapture(w);
@@ -56,8 +65,7 @@ BOOL style_scroll_control_input(HWND w,style_instance *instance,style_scroll_con
     if(m==WM_LBUTTONDOWN || m==WM_LBUTTONDBLCLK){
         RECT limit;unsigned epoch;
         if(!IsWindowEnabled(w) || c->track.active || !ops->layout(w,ops->context,OBJID_CLIENT,&layout,NULL))return TRUE;
-        /* USER18:17AE uses 4*CXBORDER, CYBORDER as drag tolerance. */
-        limit=layout.bar;{int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));InflateRect(&limit,ops->policy->tolerance_x*unit,ops->policy->tolerance_y*unit);}
+        limit=drag_bounds(w,&layout,ops->policy);
         if(!style_scroll_begin(&c->track,&layout,style_scroll_disabled(w,OBJID_CLIENT),point,&limit,&actions,ops->policy))return TRUE;
         epoch=++c->epoch;SetFocus(w);
         if(instance->detached || epoch!=c->epoch || !c->track.active)return TRUE;

@@ -41,7 +41,7 @@ int main(void)
 {
     HINSTANCE module=GetModuleHandleW(NULL);HWND root=CreateWindowW(L"STATIC",L"",WS_OVERLAPPED,0,0,200,240,NULL,NULL,module,NULL);
     HWND window=CreateWindowW(L"SCROLLBAR",L"",WS_CHILD|SBS_VERT,0,0,20,200,root,NULL,module,NULL);CHECK(root && window);
-    fixture f={0};style_instance_init(&f.instance,&f,dispose);const style_scroll_policy policy={170,31,2,2,hit};
+    fixture f={0};style_instance_init(&f.instance,&f,dispose);const style_scroll_policy policy={170,31,2,2,hit,NULL};
     operations=(style_scroll_ops){&f,&policy,info,layout,draw,bars,caret};
     CHECK(SetWindowSubclass(window,witness,1,(DWORD_PTR)&f) && style_instance_attach(&f.instance,window,procedure,NULL));
     CHECK(SendMessageW(window,SBM_SETPOS,44,TRUE)==81 && f.message==SBM_SETPOS && f.parameter==44 && !f.value);

@@ -62,6 +62,8 @@ target_include_directories(win2k-common PUBLIC src)
 target_compile_definitions(win2k-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-common PUBLIC user32 gdi32)
 add_library(win2k-control STATIC
+  src/lib-win32-style/appearance/win2000/control/scroll.c
+  src/lib-win32-style/appearance/win2000/control/scroll_layout.c
   src/lib-win32-style/appearance/win2000/control/list_combo.c
   src/lib-win32-style/appearance/win2000/control/background.c
   src/lib-win32-style/appearance/win2000/control/edit_paint.c
@@ -73,6 +75,7 @@ target_compile_definitions(win2k-control PRIVATE UNICODE _UNICODE _WIN32_WINNT=0
 # Theme state is supplied by the existing shared ntwshk runtime. Do not link
 # a second static theme-state owner into this profile.
 target_link_libraries(win2k-control PUBLIC win2k-common style-control-common style-instance style-present user32 gdi32 comctl32)
+target_link_libraries(win2k-window PUBLIC win2k-control)
 add_library(lib-tray STATIC src/lib-win32/tray/tray.c)
 target_compile_definitions(lib-tray PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_include_directories(lib-tray PUBLIC src/lib-win32/tray)
@@ -519,6 +522,16 @@ if(BUILD_TESTING)
   target_sources(core-win2k-list-combo-v6 PRIVATE tests/ntw16s-dll/control_extensions.rc)
   target_include_directories(core-win2k-list-combo-v6 PRIVATE src)
   target_link_options(core-win2k-list-combo-v6 PRIVATE ${explicit_manifest_options})
+  add_executable(core-win2k-scroll-layout tests/lib-win32-style/appearance/win2000/control/scroll_layout.c)
+  target_link_libraries(core-win2k-scroll-layout PRIVATE win2k-control)
+  add_test(NAME core/win2k-scroll-layout COMMAND $<TARGET_FILE:core-win2k-scroll-layout>)
+  add_executable(core-win2k-scroll tests/lib-win32-style/appearance/win2000/control/scroll.c)
+  target_compile_definitions(core-win2k-scroll PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_libraries(core-win2k-scroll PRIVATE user32 gdi32)
+  target_link_options(core-win2k-scroll PRIVATE -municode)
+  add_dependencies(core-win2k-scroll ntw2ks)
+  add_test(NAME core/win2k-scroll COMMAND $<TARGET_FILE:core-win2k-scroll> $<TARGET_FILE:ntw2ks>)
+  add_test(NAME core/win2k-scroll-aware COMMAND $<TARGET_FILE:core-win2k-scroll> $<TARGET_FILE:ntw2ks> aware)
   add_executable(core-style-runtime-text-imports tests/lib-win32-style/application/adapters/win32/runtime_text_imports.c)
   target_link_libraries(core-style-runtime-text-imports PRIVATE style-control-common)
   add_test(NAME core/style-runtime-text-imports COMMAND $<TARGET_FILE:core-style-runtime-text-imports>)

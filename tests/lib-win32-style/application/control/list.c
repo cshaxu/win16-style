@@ -34,7 +34,7 @@ int main(void)
     HWND root=CreateWindowW(L"STATIC",L"",WS_OVERLAPPED,0,0,200,100,NULL,NULL,module,NULL);
     HWND list=CreateWindowExW(WS_EX_CLIENTEDGE,L"LISTBOX",L"",WS_CHILD|LBS_USETABSTOPS,0,0,150,70,root,NULL,module,NULL);
     CHECK(root && list);fixture f={0};style_instance_init(&f.instance,&f,dispose);
-    operations=(style_control_list_ops){&f,TRUE,input,draw,border,scrollbars};
+    operations=(style_control_list_ops){&f,TRUE,input,draw,border,scrollbars,FALSE};
     CHECK(style_instance_attach(&f.instance,list,procedure,NULL));
     CHECK(SendMessageW(list,LB_ADDSTRING,0,(LPARAM)L"first")==0);
     CHECK(SendMessageW(list,LB_GETCOUNT,0,0)==1);

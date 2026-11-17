@@ -1,7 +1,7 @@
 #include "scroll_native.h"
 #include "lib-win32-style/application/control/scroll_state.h"
 /* Pinned USER18 initial/repeat delay and 4*CXBORDER/CYBORDER drag tolerance. */
-const style_scroll_policy win16_scroll_policy={200,50,4,1,win16_scroll_hit};
+const style_scroll_policy win16_scroll_policy={200,50,4,1,win16_scroll_hit,NULL};
 RECT win16_scroll_caret_rectangle(HWND window,const style_scroll_layout *layout,const style_scroll_track *track)
 {
     RECT rectangle=layout->thumb;

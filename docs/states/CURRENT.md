@@ -4,7 +4,7 @@
 
 M0固定。T27 Win2000常用控件保持开放；S1-S6来源/按钮/选择/静态分组/编辑/列表组合已按有限范围交付关闭，当前S7滚动条与尺寸角。按[16个S规划](../proposals/windows-2000-controls.md)合批，不逐文件完整交付；不提前称所有控件parity完成。
 
-正式八文件为[T27 S6列表/组合框批次](../etc/evidence/t27-s6-list-combo.json)，两宽同快照，先发布后76/76进程用例通过，既有36项客户区打印子检查明确跳过。[实际远端](../etc/evidence/t27-s6-remote.json)已核验29个变更文件和八件发布物。T26已知失败保留在[终审](../etc/evidence/t26-s14-final-audit.json)，未被本组局部通过替代。Win2000其他关闭主题分支不计独立renderer完成。
+正式八文件为[T27 S7滚动条批次](../etc/evidence/t27-s7-scroll.json)，两宽同快照，先发布后84/84进程用例通过，既有36项客户区打印子检查明确跳过。实际远端复核待完成。T26已知失败保留在[终审](../etc/evidence/t26-s14-final-audit.json)，未被本组局部通过替代。Win2000其他关闭主题分支不计独立renderer完成。
 
 ## M0 T27 S7 Packet
 
@@ -44,10 +44,10 @@ M0固定。T27 Win2000常用控件保持开放；S1-S6来源/按钮/选择/静�
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；正式文件在assets根与O:/winnt，当前摘要/版本/有限验证见[T27 S6证据](../etc/evidence/t27-s6-list-combo.json)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；正式文件在assets根与O:/winnt，当前摘要/版本/有限验证见[T27 S7证据](../etc/evidence/t27-s7-scroll.json)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
-- 来源1101回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
+- 来源1107回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
 - propagation停用、窗口恢复、thread hook解除与物理DLL/late patch卸载分别报告；原有进程存活期固定/保留能力不改称安全卸载。
 - 禁止computer-use、创建或切换私有桌面；只用自有有界当前桌面探针。用户已永久授权非computer-use验证及按身份处理正式文件实际占用者；不重复请求同一授权，不改系统安全设置。
 - 历史逐文件来源及迁移见[原顺序台账](../history/M0-T26-S1-ordered-audit.md)、各S证据与T26规划；早期lib-style/lib-win32/style路径是历史路径，当前旧生产目录已删除。

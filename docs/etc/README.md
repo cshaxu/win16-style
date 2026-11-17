@@ -319,3 +319,5 @@
 - [T27 S6列表/组合框](evidence/t27-s6-list-combo.json)：七份固定原源码/四张真实原图，有限设计和增量实施证据；未交付范围明确。
 
 - [T27 S6实际远端](evidence/t27-s6-remote.json)记录取回的源码和八件发布物摘要。
+
+- [T27 S7滚动条](evidence/t27-s7-scroll.json)记录原版源码、截图依据与滚动几何验证。

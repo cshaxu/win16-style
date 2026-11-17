@@ -54,7 +54,7 @@ int main(void)
     SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=0,.nMax=100,.nPage=1,.nPos=50};SetScrollInfo(f.child,SB_CTL,&info,FALSE);
     f.layout=(style_scroll_layout){.bar={0,0,20,200},.first={0,0,20,20},.thumb={0,80,20,100},.minimum_pixel=20,.travel=120,.maximum=100,.position=50,.vertical=TRUE,.thumb_fits=TRUE,.thumb_draggable=TRUE};
     style_instance_init(&f.instance,&f,dispose);CHECK(style_instance_attach(&f.instance,f.child,child_proc,NULL));style_instance_retain(&f.instance);
-    const style_scroll_policy policy={170,31,2,2,hit};const style_scroll_ops ops={&f,&policy,native_info,measure,draw,nonclient,caret};
+    const style_scroll_policy policy={170,31,2,2,hit,NULL};const style_scroll_ops ops={&f,&policy,native_info,measure,draw,nonclient,caret};
     CHECK(style_scroll_control_input(f.child,&f.instance,&f.scroll,&ops,WM_KEYDOWN,VK_DOWN,0));
     CHECK(f.scroll.key && f.notices==1 && f.last==SB_LINEDOWN && f.reporting && !f.scroll.reporting && f.scroll.report==77);
     CHECK(style_scroll_control_input(f.child,&f.instance,&f.scroll,&ops,WM_KEYUP,VK_DOWN,0));CHECK(!f.scroll.key && f.notices==2 && f.last==SB_ENDSCROLL);

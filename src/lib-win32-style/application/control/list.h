@@ -10,6 +10,7 @@ typedef struct style_control_list_ops {
     void (*draw)(HWND,void *,HDC,BOOL buffered);
     void (*border)(HWND,void *,HDC);
     void (*scrollbars)(HWND,void *,HDC);
+    BOOL native_nonclient; /* draw original NC before applying a partial overlay */
 } style_control_list_ops;
 LRESULT style_control_list_message(HWND window,style_instance *instance,style_control_state *state,
     UINT message,WPARAM wparam,LPARAM lparam,const style_control_list_ops *ops);

@@ -15,3 +15,5 @@ source files; no duplicate constant-only tests are added to manufacture counts.
 | control/edit_paint.c | control/edit_paint.c: actual DLL/source-image NC color samples; native EDIT7 roles/text/undo/selection/font/password/custom brush, RichEdit20A/W/50W and HotKey native clients/formats/values, parent retirement/reparent32 ANSI resources and initialized dialog children; common optional edit protocol test at application/control/edit.c |
 
 | control/list_combo.c | control/list_combo.c: five list and three combo modes, original selection and edge colors, native tabs and owner draw, editable child clipping, owned popup paint and detach; v5/v6, DPI awareness and normal startup |
+
+| control/scroll_layout.c, control/scroll.c | scroll_layout.c verifies the shared layout geometry. scroll.c verifies attached standalone and nonclient bars, list wheel, drag notifications, borrowed GDI, custom groove and resize grip. |

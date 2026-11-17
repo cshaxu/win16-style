@@ -3,6 +3,7 @@
 #include "static_paint.h"
 #include "edit_paint.h"
 #include "list_combo.h"
+#include "scroll.h"
 #include "lib-win32-style/application/control/combo.h"
 #include "lib-win32-style/application/control/list.h"
 #include "lib-win32-style/application/control/edit.h"
@@ -23,6 +24,7 @@ typedef struct win2k_control {
     style_control_notify_state edit_parent;
     style_control_combo combo;
     HWND combo_parent;
+    win2k_scroll scroll;
 } win2k_control;
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK color_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
@@ -57,6 +59,7 @@ BOOL win2k_control_supported(HWND window)
     if(!(style&WS_CHILD) || (GetWindowLongPtrW(window,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) ||
        !GetClassNameW(window,name,ARRAYSIZE(name)))return FALSE;
     if(!lstrcmpiW(name,L"LISTBOX"))return list_style(style);
+    if(!lstrcmpiW(name,L"SCROLLBAR"))return TRUE;
     if(!lstrcmpiW(name,L"COMBOBOX"))
         return (style&3) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
     if(!lstrcmpiW(name,L"STATIC")){
@@ -88,6 +91,7 @@ static void dispose(void *context)
 static style_control_retired release_theme(HWND window,void *context,BOOL terminal)
 {
     win2k_control *control=context;
+    win2k_scroll_retire(window,&control->scroll,TRUE);
     BOOL list_removed=style_control_combo_list_retire(&control->combo,&control->instance,
         lookup_state,win2k_control_remove);
     style_control_notify_unbind(&control->edit_parent,color_proc,control);
@@ -97,9 +101,14 @@ static style_control_retired release_theme(HWND window,void *context,BOOL termin
         SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
     return (style_control_retired){list_removed && result,FALSE};
 }
+static void finish_input(HWND window,void *context)
+{
+    win2k_control *control=context;
+    win2k_scroll_retire(window,&control->scroll,FALSE);
+}
 static BOOL retire(HWND window,win2k_control *control,BOOL terminal)
 {
-    static const style_control_retire_ops ops={NULL,release_theme};
+    static const style_control_retire_ops ops={finish_input,release_theme};
     return style_control_retire(window,&control->instance,&control->state,terminal,control,&ops);
 }
 static void paint(HWND window,void *context,HDC dc)
@@ -130,6 +139,20 @@ static void render(HWND window,void *context,HDC dc,BOOL buffered)
 }
 static void edit_border(HWND window,void *context,HDC dc)
 {(void)context;(void)win2k_edit_border(window,dc,&win2k_standard_palette);}
+static BOOL embedded_input(HWND window,void *context,UINT message,WPARAM a,LPARAM b)
+{
+    win2k_control *control=context;
+    const style_scroll_ops ops=win2k_scroll_operations(&control->scroll);
+    if(message==WM_ENABLE && !a)
+        style_scroll_finish(window,&control->instance,&control->scroll.controller,&ops,TRUE);
+    return control->instance.detached || style_scroll_embedded_input(window,&control->instance,&control->state,
+        &control->scroll.controller,&ops,message,a,b);
+}
+static void embedded_paint(HWND window,void *context,HDC dc)
+{
+    win2k_control *control=context;
+    win2k_scroll_paint_nc(window,&control->scroll,dc);
+}
 static BOOL control_supported(HWND window,const win2k_control *control)
 {
     if(!control->combo_parent)return win2k_control_supported(window);
@@ -147,20 +170,29 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
         (control->edit_parent.parent && GetParent(window)!=control->edit_parent.parent)){
         result=DefSubclassProc(window,message,a,b);
         if(!control->instance.detached)(void)retire(window,control,FALSE);
-    }else if(control->combo_parent || class_is(window,L"LISTBOX")){
+    }else if(class_is(window,L"SCROLLBAR")){
+        if(GetWindowLongPtrW(window,GWL_STYLE)&(SBS_SIZEBOX|SBS_SIZEGRIP)){
+            const style_control_draw draw={control,win2k_scroll_sizebox};
+            result=style_scroll_sizebox_message(window,message,a,b,&draw);
+        }else{
+            const style_scroll_ops ops=win2k_scroll_operations(&control->scroll);
+            result=style_scroll_control_message(window,&control->instance,&control->scroll.controller,&message,&a,&b,&ops);
+        }
+    }else if(control->scroll.controller.resources.list){
         if(GetWindowLongPtrW(window,GWL_STYLE)&LBS_USETABSTOPS){
             /* Native tab positions can predate attachment and have no getter. */
-            const style_control_edit_ops ops={.context=control,.border=edit_border};
+            const style_control_edit_ops ops={.context=control,.input=embedded_input,.scrollbars=embedded_paint,.border=edit_border};
             result=style_control_edit_message(window,&control->instance,&control->state,NULL,message,a,b,&ops);
         }else{
-            const style_control_list_ops ops={.context=control,.draw=render,.border=edit_border};
+            const style_control_list_ops ops={.context=control,.input=embedded_input,.draw=render,
+                .border=edit_border,.scrollbars=embedded_paint,.native_nonclient=TRUE};
             result=style_control_list_message(window,&control->instance,&control->state,message,a,b,&ops);
         }
     }else if(class_is(window,L"COMBOBOX")){
         const style_control_draw draw={control,render};
         result=style_control_combo_message(window,&control->instance,&control->state,message,a,b,&draw);
     }else if(win2k_edit_class(window)!=WIN2K_EDIT_NONE){
-        const style_control_edit_ops ops={.context=control,.border=edit_border};
+        const style_control_edit_ops ops={.context=control,.input=embedded_input,.scrollbars=embedded_paint,.border=edit_border};
         result=style_control_edit_message(window,&control->instance,&control->state,NULL,message,a,b,&ops);
     }else{
         const style_control_draw draw={control,render};
@@ -230,6 +262,11 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     win2k_control *control=calloc(1,sizeof(*control));
     if(!control){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     style_instance_init(&control->instance,control,dispose);
+    win2k_scroll_init(&control->scroll,&control->instance);
+    control->scroll.controller.resources.list=combo_parent || class_is(window,L"LISTBOX");
+    control->scroll.controller.resources.edit=win2k_edit_class(window)==WIN2K_EDIT_STANDARD &&
+        (GetWindowLongPtrW(window,GWL_STYLE)&ES_MULTILINE);
+    control->scroll.controller.resources.frame=win2k_edit_class(window)==WIN2K_EDIT_NATIVE_CLIENT;
     style_control_state_init(&control->state,NULL);control->native_theme=native_theme;
     control->combo_parent=combo_parent;
     control->frame_owned=basic_kind(window)==STYLE_CONTROL_SEPARATOR;

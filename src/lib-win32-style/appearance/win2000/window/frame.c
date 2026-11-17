@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "caption.h"
 #include "system_menu.h"
+#include "../control/scroll.h"
 #include "lib-win32-style/application/menu/menu_input.h"
 #include "lib-win32-style/application/menu/tracking.h"
 #include "lib-win32-style/application/menu/bar_controller.h"
@@ -26,6 +27,7 @@ typedef struct frame_window {
     style_native_frame native;
     style_caption_button button;
     style_menu_owner menu;
+    win2k_scroll scroll;
 } frame_window;
 static LRESULT CALLBACK frame_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static frame_window *frame_state(HWND window)
@@ -422,6 +424,16 @@ static void recalculate_frame(HWND window)
 static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_instance *instance)
 {
     DWORD incoming=GetLastError();frame_window *frame=(frame_window *)instance;
+    if(!(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL)){
+        const style_scroll_ops scroll=win2k_scroll_operations(&frame->scroll);
+        if(style_scroll_embedded_input(window,instance,NULL,&frame->scroll.controller,&scroll,message,wp,lp)){
+            SetLastError(incoming);
+            return 0;
+        }
+        if(message==WM_ENABLE && !wp)
+            style_scroll_finish(window,instance,&frame->scroll.controller,&scroll,TRUE);
+        if(instance->detached)return 0;
+    }
     if(compact_enabled(window) && style_frame_suppress_native_theme(message,IsIconic(window),GetMenu(window)!=NULL)){
         SetLastError(incoming);return 0;
     }
@@ -439,6 +451,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
             DeleteObject(region);
             if(!instance->detached && IsWindow(window)){
                 paint(window);
+                win2k_scroll_paint_nc(window,&frame->scroll,NULL);
                 if(IsWindow(window) && compact_enabled(window))style_invalidate_native_menu_overlap(window);
             }
             SetLastError(error);return 0;}
@@ -470,7 +483,10 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
         WPARAM hit=wp+1;style_native_frame *native=&((frame_window *)instance)->native;
         if(native->hover!=hit){native->hover=hit;repaint=TRUE;}
     }else if(message==WM_NCMOUSELEAVE){((frame_window *)instance)->native.hover=0;repaint=TRUE;}
-    if(message==WM_NCDESTROY){RemovePropW(window,frame_property);style_instance_detach(instance);}
+    if(message==WM_NCDESTROY){
+        RemovePropW(window,frame_property);
+        if(style_instance_detach(instance))win2k_scroll_retire(window,&frame->scroll,TRUE);
+    }
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();
@@ -535,6 +551,13 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
        message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONUP || message==WM_SETICON ||
        message==WM_STYLECHANGED || message==WM_THEMECHANGED || message==WM_DPICHANGED || repaint)
         if(IsWindow(window))paint(window);
+    if(message==WM_NCPAINT || message==WM_NCACTIVATE || message==WM_SIZE ||
+       message==WM_STYLECHANGED || message==WM_ENABLE || message==WM_VSCROLL ||
+       message==WM_HSCROLL || message==WM_MOUSEWHEEL || message==WM_MOUSEHWHEEL)
+        win2k_scroll_paint_nc(window,&frame->scroll,NULL);
+    else if(message==WM_PRINT && wp && (lp&PRF_NONCLIENT) &&
+        (!(lp&PRF_CHECKVISIBLE) || IsWindowVisible(window)))
+        win2k_scroll_paint_nc(window,&frame->scroll,(HDC)wp);
     if((message==WM_NCPAINT || message==WM_NCACTIVATE) && IsWindow(window) && compact_enabled(window))
         style_invalidate_native_menu_overlap(window);
     SetLastError(outcome);
@@ -597,6 +620,8 @@ BOOL win2k_frame_attach(HWND window)
     if(!frame){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     frame->menu.bar.selected=frame->menu.bar.highlighted=-1;
     style_instance_init(&frame->instance,frame,dispose_frame);
+    win2k_scroll_init(&frame->scroll,&frame->instance);
+    frame->scroll.controller.resources.frame=TRUE;
     const style_instance_install_ops ops={.context=frame,.setup=pending?NULL:setup_frame,.rollback=rollback_frame};
     return style_instance_install(&frame->instance,window,pending?pending_frame_proc:frame_proc,NULL,&ops);
 }
@@ -632,6 +657,7 @@ BOOL win2k_frame_remove(HWND window)
 
     RemovePropW(window,frame_property);
     frame_window *frame=(frame_window *)instance;
+    win2k_scroll_retire(window,&frame->scroll,TRUE);
     if(frame->menu.bar.keyboard){const style_menu_bar_target menu=menu_target(window,frame);style_menu_bar_finish(&menu,TRUE);}
     style_menu_owner_stop(&frame->menu);
     HRESULT status=style_native_frame_restore_policy(window,&frame->native,DwmSetWindowAttribute);

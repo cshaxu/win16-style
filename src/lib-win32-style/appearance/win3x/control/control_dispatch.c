@@ -159,7 +159,7 @@ LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPA
     }
     else if(style_control_list_class(w)){
         control_render render={s,v,NULL};
-        const style_control_list_ops operations={&render,TRUE,list_input,list_draw,list_border,list_scrollbars};
+        const style_control_list_ops operations={&render,TRUE,list_input,list_draw,list_border,list_scrollbars,FALSE};
         result=style_control_list_message(w,&s->instance,&s->state,m,a,b,&operations);
     }
     else if(style_control_is_edit(w)){

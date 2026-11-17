@@ -826,6 +826,12 @@ try{
     $cases+=Pair {
         param($bits,$tree,$dll)
         $win2k=Join-Path $Package "ntw2ks$bits.dll"
+        $scroll=Join-Path $tree 'core-win2k-scroll.exe'
+        $scrollScope='axes=2 native_frame=1 native_list=1 native_edit=1 custom_track=1 thumb_32bit=1 sizegrip=1'
+        Case "ntw2ks-scroll-layout-$bits" (Join-Path $tree 'core-win2k-scroll-layout.exe') @() @('WIN2K_SCROLL_LAYOUT_OK') 20
+        Case "ntw2ks-scroll-$bits" $scroll @($win2k) @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=0",$scrollScope) 20
+        Case "ntw2ks-scroll-aware-$bits" $scroll @($win2k,'aware') @("WIN2K_SCROLL_OK bits=$bits aware=1 hooked=0",$scrollScope) 20
+        Case "ntw2ks-scroll-startup-$bits" $run @('--2k','--wait',$scroll,$win2k,'hooked') @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=1",$scrollScope) 25
         foreach($suffix in @('','-v6')){
             $probe=Join-Path $tree "core-win2k-list-combo$suffix.exe"
             $scope='list_modes=5 combo_modes=3 child_retire=3 native_tabs=1 owner_draw=1'

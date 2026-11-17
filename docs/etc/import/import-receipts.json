@@ -1040,7 +1040,7 @@
       "path": "src/lib-win32-style/application/control/scroll_track.h",
       "source": "src/ntw16s-dll/scroll_track.h",
       "source_blob": "36dab01c50c485fa0da58835d7c1b97cc5f79737",
-      "sha256": "b2bc001278cefe34775d002f988b8bb8f05adfd0cbba357200f1afdbf80457d3",
+      "sha256": "6ad285d18560c27777997c0f3540bae13fa78d8c330543d95cb8a0dda0d089a9",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T21 S22 byte-exact library move; T26 S2 mechanical path/include relocation; T26 S9 shared tracking with caller hit/timing policy; Win3x measurement preserved in appearance; T26 S9 scroll controller/native management composition; current-desktop native API fixture",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -4271,7 +4271,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/scroll_native.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0fe4ebd17a1cd44dd7e283b5c79de290c1fa9a94ffea76dbf2cb9b489d73f691",
+      "sha256": "fea18367e4c336f0a593c3837ae6e2b588835916ba8fff819e36f2ef401084c0",
       "disposition": "authored",
       "review": "T21 S24 extract existing native scroll metrics and range adaptation; T26 S1 shared native scrollbar state; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture",
       "notice": "Project-authored C implementation; no imported artwork"
@@ -4388,7 +4388,7 @@
       "path": "src/lib-win32-style/application/control/list.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c37b5819bca25d054f911080c47801cc5ee392f228dcaef4baa452b46922a132",
+      "sha256": "35c62695eba8bffa19ad0777351a184af85453981f5527b51a20ae0f4bfde231",
       "disposition": "authored",
       "review": "T21 S24 extract list presentation message handling with borrowed window callbacks; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common native list message controller, original presentation declarations merged into dispatch; T26 S9 list controller and actual render adapter",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4460,7 +4460,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/control_dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "481c0c19f44b521ce732f8a1357e405a749b5a5c5a0d7a8d5a7472766e9dd05a",
+      "sha256": "2b33f9a04530b781522cb8a03eb76a413d58383282ef87452f832605eb5e53c7",
       "disposition": "authored",
       "review": "T21 S24 extract in-process control style message dispatch; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 list controller and actual render adapter; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T26 S9 common native list/scroll surface snapshots and base resource preparation; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained; T26 S10 shared custom-draw state/binding/protocol and native dispatch unwind; private duplicate removed; T26 S13 complete-instance present/print contract and direct renderer consumer; original fallback/order preserved",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -6224,7 +6224,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4a782d5392613505a65ca62733331938d7ac16bade6b7264c421234ecd00b3bf",
+      "sha256": "2bc6e81db65355e4e8810b99d03aabcc72a08401ad1ea1af6b82814b5185b0f4",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal; T26 S1 shared frame change and client restore; T26 S1 share DIB buffer across UWP and Win2000; T26 S1 shared window thread identity; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -8393,7 +8393,7 @@
       "path": "src/lib-win32-style/application/control/list.h",
       "source": null,
       "source_blob": null,
-      "sha256": "dc3ebc72782ead4fe333ac91f38af4486408ed10854137230060ba14a2a82856",
+      "sha256": "bb882d57b9819bfa3c2f0efda8cee210a450780ffe85374b956985561ee2e51e",
       "disposition": "authored",
       "review": "T26 S9 common native LISTBOX message controller and real original-API contract tests",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -8402,7 +8402,7 @@
       "path": "tests/lib-win32-style/application/control/list.c",
       "source": null,
       "source_blob": null,
-      "sha256": "83c3d8463e71a779c69390af4d5098c3ce107eb68a382e32a44b6b7a86b73599",
+      "sha256": "7efb1de6a6d0010a38c23785ad1f6903fa49d3986eb06533dbfbfb9709874b64",
       "disposition": "authored",
       "review": "T26 S9 common native LISTBOX message controller and real original-API contract tests",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -8429,7 +8429,7 @@
       "path": "src/lib-win32-style/application/control/scroll_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4d63b3e23ec4fe406b9c18bb90ccb0af9f5a4bbebd40fb70240ff845f55c640a",
+      "sha256": "678f95dd95445b431bb7f53ff9c0d269714244653af73e6e7693525ae4957760",
       "disposition": "authored",
       "review": "T26 S9 shared scroll data contracts, controller/native management and independent native tests; profile geometry/timing remains caller-owned",
       "notice": "Project-authored pure C; no imported artwork"
@@ -8474,7 +8474,7 @@
       "path": "tests/lib-win32-style/application/control/scroll_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "190c4475e06d3f98660a8367c8acad44e469530317c0a77ab3c431c9b15bba30",
+      "sha256": "673d09020ca984f86e0355fc1a5199fc4acb157673c7538dd8ce257c0f9304a1",
       "disposition": "authored",
       "review": "T26 S9 shared scroll data contracts, controller/native management and independent native tests; profile geometry/timing remains caller-owned",
       "notice": "Project-authored pure C; no imported artwork"
@@ -8492,7 +8492,7 @@
       "path": "tests/lib-win32-style/application/control/scroll_track.c",
       "source": null,
       "source_blob": null,
-      "sha256": "7517fe259da679af04b6c39dbc78d4078d15909fc09f08fdfe6616cf041bc254",
+      "sha256": "ec251360b1b6b9ec9863ebc838ac656d87ffbe899523614ca93dc19daa8108c9",
       "disposition": "authored",
       "review": "T26 S9 shared scroll data contracts, controller/native management and independent native tests; profile geometry/timing remains caller-owned",
       "notice": "Project-authored pure C; no imported artwork"
@@ -8546,7 +8546,7 @@
       "path": "tests/lib-win32-style/application/control/scroll_message.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d951b7982c774a3656a9d7285eb2351f8b02f1769b5413b304537aa8e0ea806f",
+      "sha256": "e7a56cb25387936c0aa672c317ce30ed2b80ab95acaf3bd3c3f32c74f40eeaf3",
       "disposition": "authored",
       "review": "T26 S9 shared native list/scroll snapshots, control message and real native contract tests",
       "notice": "Project-authored pure C; no imported artwork"
@@ -9755,7 +9755,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "dc1bb61404db7d73277a5aebea6fef79bcd820d379938cb31cf927e07d3a25d3"
+      "sha256": "bad55fef7f31bc54ffc1110d30bff657550d2d641fa789122c7724168d0db814"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -9773,7 +9773,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "0743ec0d75a25033720f13f34d5a4340575d45aa5fff239b9e8198f9f114e6b7"
+      "sha256": "baf2eaad490df35b82ac2edb079bb36207aed2fe693782bbea6d5fcfcf637851"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/common/paint.c",
@@ -9909,6 +9909,60 @@
       "review": "T27 S6 source-informed list/combo appearance or native product test",
       "notice": "Project-authored C; references consulted without importing external code or assets",
       "sha256": "e35e6768c004193917e5feee1ec30cbff9dc621b629dad60ba381db7e57da101"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/scroll_layout.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "S7 native scroll geometry in the shared layout contract",
+      "notice": "Project-authored C informed by fixed Windows 2000 reference",
+      "sha256": "f1b2680c14ea925718dbf3c46136d28cacc70a633a6893ac7a81019d6cc16cf2"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/scroll_layout.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "S7 native scroll geometry in the shared layout contract",
+      "notice": "Project-authored C informed by fixed Windows 2000 reference",
+      "sha256": "ecc64fdd075ca12b75c37e7723b845ff4519db0cc4d733edf7ae5976254ecd84"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/scroll_layout.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "S7 native scroll geometry in the shared layout contract",
+      "notice": "Project-authored C informed by fixed Windows 2000 reference",
+      "sha256": "f8473213289ef2e51f0995d4a57f7b74b597cfb04a6bd13a589030b7dd7960ca"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/scroll.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "S7 native scroll presentation and product validation",
+      "notice": "Project-authored C with pinned behavior references",
+      "sha256": "75074e14e4569bf937b20e7d6db69724ae3084e4262f64495f0837cf17aae681"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/scroll.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "S7 native scroll presentation and product validation",
+      "notice": "Project-authored C with pinned behavior references",
+      "sha256": "c2365bf6eb62138a60d832ebb6f8391a20adf6339ed63af35c32b991fcc8c9a0"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/scroll.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "S7 native scroll presentation and product validation",
+      "notice": "Project-authored C with pinned behavior references",
+      "sha256": "b68a2d9c0c86a9193b19b603c5f87b4b55f2177f47b0dcdda82e371f2e19c09b"
     }
   ]
 }
