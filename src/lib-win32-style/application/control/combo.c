@@ -92,7 +92,7 @@ BOOL style_control_combo_setup(HWND window,style_instance *instance,style_contro
         (void)ops->remove(info.hwndList);
     }else{
         style_control_combo_list_bind(combo,instance,info.hwndList,bindings->lookup);
-        if(!ops->edit(window,info.hwndItem,ops->context)){
+        if(ops->edit && !ops->edit(window,info.hwndItem,ops->context)){
             DWORD error=GetLastError();if(!instance->detached)(void)ops->remove(window);
             SetLastError(error);result=FALSE;
         }

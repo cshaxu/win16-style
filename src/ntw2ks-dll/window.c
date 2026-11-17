@@ -6,5 +6,5 @@ BOOL ntw2ks_control_attached(HWND);
 BOOL ntw2ks_control_remove(HWND);
 static BOOL child(HWND window){return (GetWindowLongPtrW(window,GWL_STYLE)&WS_CHILD)!=0;}
 BOOL __cdecl Ntw2ksWindowAttach(HWND window){return child(window)?ntw2ks_control_attach(window):win2k_frame_attach(window);}
-BOOL __cdecl Ntw2ksWindowAttached(HWND window){return child(window)?ntw2ks_control_attached(window):win2k_frame_attached(window);}
-BOOL __cdecl Ntw2ksWindowRemove(HWND window){return child(window)?ntw2ks_control_remove(window):win2k_frame_remove(window);}
+BOOL __cdecl Ntw2ksWindowAttached(HWND window){return ntw2ks_control_attached(window) || (!child(window) && win2k_frame_attached(window));}
+BOOL __cdecl Ntw2ksWindowRemove(HWND window){return child(window) || ntw2ks_control_attached(window)?ntw2ks_control_remove(window):win2k_frame_remove(window);}

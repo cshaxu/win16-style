@@ -1,22 +1,22 @@
 {
   "schema": 1,
-  "delivery": "M0 T27 S5 P1",
-  "stage": "development: source-based Windows2000 push/choice/static/group/edit frames and stock brush roles; remaining T27 groups pending",
+  "delivery": "M0 T27 S6 P1",
+  "stage": "development: Win2000 list and combo controls",
   "version": "0.27.0.0",
-  "version_contract": "M0 T27; sequential S does not increment T version",
+  "version_contract": "M0 T27",
   "package_directory": "assets",
-  "source_snapshot_sha256": "60872427356dc6a1d23be15e6b5cdda76e3da414d511149242029b6f4bccf698",
+  "source_snapshot_sha256": "9f5177e097376112dcb643e82e491e5602aa8a5b2812a8c8421103f2b4d074fb",
   "source_snapshot_format": "SHA256 of clean Build-Package snapshot.json bytes",
   "source_input_cohort": {
-    "definition": "SHA256 sorted relative path + NUL + SHA256 + LF for src/,tests/,tools/,CMakeLists.txt snapshot inputs; working bytes checked equal",
-    "count": 1191,
-    "sha256": "dcb09f24f31aa018089a9136cf6801d0826bc160c7119033716cc12efbfef259"
+    "count": 1194,
+    "sha256": "2060d220632801e6732536ca86644dc90691470671f8bbfa6bed0ad1669d7867",
+    "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "a2058108ade74a934970d651ae91b1262fae12ef32cacd113dbc2427253dd102",
+      "sha256": "5bddc10561a6b683e70ce7f517eff4acd2c9ab51c45aa6569ea474f2ce91108f",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "c6f0e78ad0fb425efdecc015869b7e780ae7f8141cccfb3806db0a572110a273",
+      "sha256": "7add1d17813d52720899b05160ded0ac4ff72ede9d7cfa116675ab750b75ce64",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -58,7 +58,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "e05685195d0ece8d6392e870e1a1af2777baa70dc4953b0e1f2e6af78c5f15c8",
+      "sha256": "e9ed187c19ad960d509a4349d9f3f544c42836369edd0b582deff581f0b9fd57",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -79,7 +79,7 @@
     "ntw2ks32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "2a1d390f23a56de88fb002a2ab9e409553f94085fa7a3fd80fa6f6c747c62c84",
+      "sha256": "fe53de277d7034aa9a03234233579cb1d412db5f4c5c2a964cee8a8f3e1d3ac0",
       "imports": [
         "COMCTL32.dll",
         "COMDLG32.DLL",
@@ -103,7 +103,7 @@
     "ntw2ks64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "1e74a023663f0ee036c54dea8a7741ac170a7adb211fb93fd1696dea04a5769c",
+      "sha256": "1a148419819c6568f71bcfece21749bf7e96a5c2ccbcfbac3af8a243ef089496",
       "imports": [
         "COMCTL32.dll",
         "comdlg32.dll",
@@ -122,7 +122,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "1b327eae561c3930232d0b7e3eb8566e2f69632dce410cfc5a7bc485b1e71b75",
+      "sha256": "d6f9620b383d58c1c4cabee4aeb7caf28bf95f07af55627e36c8a4ec608a345c",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -137,7 +137,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "29bef6c688b19fb69c3e07ba92ee43b5b827cc955816df66b4913d90ad3eb78a",
+      "sha256": "0f06f8a576b93650ee3a8ba345e254032d12f07adbee5ef9cc30e819ec19a498",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -147,7 +147,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "f6d27ab440db3027fb2a043e7c0afff0851a3eeb0a351c0ccd677fbfbc2d33e2",
+      "sha256": "96b9b50aae38a7f8ff172e9ae1bb958f8a42fad2f0d32f622abff96d59b35f37",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -160,99 +160,88 @@
       ]
     }
   },
-  "toolchains": {
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
-    "ccache_version": "ccache version 4.13.6",
-    "toolchains": [
-      {
-        "architecture": "x86",
-        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "version": "16.1.0",
-        "target": "i686-w64-mingw32",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe"
-      },
-      {
-        "architecture": "x64",
-        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "version": "16.1.0",
-        "target": "x86_64-w64-mingw32",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe"
-      }
-    ]
-  },
   "architecture": {
     "x86": {
       "build-time.json": {
-        "seconds": 271.3037968999706,
+        "seconds": 255.81492589996196,
         "exit_code": 0
       },
       "configure-time.json": {
-        "seconds": 7.443858099984936,
+        "seconds": 6.1661624000407755,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.5085704000666738,
+        "seconds": 0.4581559000071138,
         "exit_code": 0
       },
       "cache": {
-        "cache_miss": 3,
-        "direct_cache_hit": 915,
+        "direct_cache_hit": 918,
         "preprocessed_cache_hit": 0,
-        "cache_size_kibibyte": 56
+        "cache_miss": 3
       }
     },
     "x64": {
       "build-time.json": {
-        "seconds": 303.9819929000223,
+        "seconds": 301.4841847999487,
         "exit_code": 0
       },
       "configure-time.json": {
-        "seconds": 7.205915900063701,
+        "seconds": 5.877937400015071,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.5165326000424102,
+        "seconds": 0.4943491000449285,
         "exit_code": 0
       },
       "cache": {
-        "cache_miss": 3,
-        "direct_cache_hit": 1003,
+        "direct_cache_hit": 1006,
         "preprocessed_cache_hit": 0,
-        "cache_size_kibibyte": 52
+        "cache_miss": 3
       }
     }
   },
+  "toolchains": {
+    "toolchains": [
+      {
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "version": "16.1.0",
+        "architecture": "x86",
+        "target": "i686-w64-mingw32"
+      },
+      {
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "version": "16.1.0",
+        "architecture": "x64",
+        "target": "x86_64-w64-mingw32"
+      }
+    ],
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache_version": "ccache version 4.13.6",
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
+  },
   "verification": {
-    "evidence": "evidence/t27-s5-edit-controls.json",
-    "actual_package_cases": 62,
-    "passed": 62,
-    "skipped_processes": 0,
+    "actual_package_cases": 76,
+    "passed": 76,
     "skipped_client_print_subchecks": 36,
-    "coverage": "focused, not whole repository; skips are not render passes",
-    "incremental_cases": 30,
-    "isolated_resource_modes": 8,
-    "startup_development_revised_cases": 4,
-    "public_boundaries": "Both architectures:4 process archives and23 neutral style archives passed; original5 headers/notice and18 embedded tables retained; ninja dependency traces accept only copied source/compiler roots, no siblings.",
-    "actual_remote": "evidence/t27-s5-remote.json; P1 8325ccbb8e710687dfa94de2fc0dcc9ba8312746;25 changed paths/eight binary files exact;1191 inputs, only9 disclosed baseline line-ending conversions; one batch2.28s"
+    "evidence": "evidence/t27-s6-list-combo.json",
+    "coverage": "focused",
+    "actual_remote": "pending"
   },
   "validation": {
-    "physical_keyboard_mouse": "not claimed",
+    "physical_keyboard_mouse": "not tested",
     "private_desktops_created": false,
-    "other_controls": "approved T27 S6-S16 pending",
     "limitations": [
-      "New RichEdit client renderer or arbitrary framework/IME support",
-      "Custom owner painting or physical input/DPI beyond observed modes",
-      "New scrollbar implementation; native bars retained until S7",
-      "DLL physical unloading",
-      "Disabled native EDIT text keeps observed host109 rather than independent originalWin2000gray128;76 pixels before/after in current run. Source edge/default-face claims are separate.",
-      "Legacy RICHEDIT1 not witnessed/added to renderer; native retained.",
-      "Rich20A/W andHotKey WM_PRINTCLIENT produced no client pixels in the offscreen native baseline as well as styled result; explicit skipped client-paint subchecks, not blank-image passes. Other verified frame/data checks remain separate."
+      "native tabbed-list client paint",
+      "native owner draw",
+      "native scrollbars until S7",
+      "native editable combo children"
     ]
   },
   "closure": {
-    "S5": "closed after actual fetched P1 verification",
-    "T27": "open; S6 ListBox/ComboBox admitted",
+    "S6": "pending remote audit",
+    "T27": "open",
     "M0": "fixed"
   }
 }

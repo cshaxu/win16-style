@@ -2,6 +2,9 @@
 #include "button_paint.h"
 #include "static_paint.h"
 #include "edit_paint.h"
+#include "list_combo.h"
+#include "lib-win32-style/application/control/combo.h"
+#include "lib-win32-style/application/control/list.h"
 #include "lib-win32-style/application/control/edit.h"
 #include "lib-win32-style/application/control/notify.h"
 #include "lib-win32-style/application/control/basic.h"
@@ -18,11 +21,26 @@ typedef struct win2k_control {
     style_native_theme_fn native_theme;
     BOOL frame_owned;
     style_control_notify_state edit_parent;
+    style_control_combo combo;
+    HWND combo_parent;
 } win2k_control;
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK color_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static win2k_control *lookup(HWND window)
 {return (win2k_control *)style_instance_lookup(window,control_proc);}
+static BOOL attach(HWND,style_native_theme_fn,HWND);
+static BOOL class_is(HWND window,const WCHAR *expected)
+{
+    WCHAR name[32];
+    return GetClassNameW(window,name,ARRAYSIZE(name)) && !lstrcmpiW(name,expected);
+}
+static style_control_state *lookup_state(HWND window)
+{
+    win2k_control *control=lookup(window);
+    return control?&control->state:NULL;
+}
+static BOOL list_style(DWORD style)
+{return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA));}
 static BOOL static_class(HWND window)
 {WCHAR name[32];return GetClassNameW(window,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"STATIC");}
 static style_control_basic_kind basic_kind(HWND window)
@@ -38,6 +56,9 @@ BOOL win2k_control_supported(HWND window)
     WCHAR name[32];DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
     if(!(style&WS_CHILD) || (GetWindowLongPtrW(window,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) ||
        !GetClassNameW(window,name,ARRAYSIZE(name)))return FALSE;
+    if(!lstrcmpiW(name,L"LISTBOX"))return list_style(style);
+    if(!lstrcmpiW(name,L"COMBOBOX"))
+        return (style&3) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
     if(!lstrcmpiW(name,L"STATIC")){
         UINT type=style&SS_TYPEMASK;
         return type==SS_LEFT || type==SS_CENTER || type==SS_RIGHT || type==SS_SIMPLE || type==SS_LEFTNOWORDWRAP ||
@@ -67,12 +88,14 @@ static void dispose(void *context)
 static style_control_retired release_theme(HWND window,void *context,BOOL terminal)
 {
     win2k_control *control=context;
+    BOOL list_removed=style_control_combo_list_retire(&control->combo,&control->instance,
+        lookup_state,win2k_control_remove);
     style_control_notify_unbind(&control->edit_parent,color_proc,control);
     if(terminal)(void)style_theme_terminal(window,control);
     else style_theme_remove(window,control,control->native_theme);
     BOOL result=terminal || !control->frame_owned || !IsWindow(window) ||
         SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
-    return (style_control_retired){result,FALSE};
+    return (style_control_retired){list_removed && result,FALSE};
 }
 static BOOL retire(HWND window,win2k_control *control,BOOL terminal)
 {
@@ -82,7 +105,13 @@ static BOOL retire(HWND window,win2k_control *control,BOOL terminal)
 static void paint(HWND window,void *context,HDC dc)
 {
     win2k_control *control=context;
-    BOOL painted=static_class(window)?win2k_static_paint(window,&control->instance,dc,&win2k_standard_palette):
+    BOOL painted=TRUE;
+    if(control->combo_parent || class_is(window,L"LISTBOX")){
+        HWND parent=control->combo_parent?control->combo_parent:GetParent(window);
+        win2k_list_paint(window,&control->instance,parent,dc);
+    }else if(class_is(window,L"COMBOBOX")){
+        painted=win2k_combo_paint(window,&control->instance,dc);
+    }else painted=static_class(window)?win2k_static_paint(window,&control->instance,dc,&win2k_standard_palette):
         win2k_button_paint(window,&control->instance,dc,&win2k_standard_palette);
     if(!painted &&
        !control->instance.detached){
@@ -91,7 +120,7 @@ static void paint(HWND window,void *context,HDC dc)
     }
 }
 static BOOL is_group(HWND window,void *context)
-{(void)context;return !static_class(window) && (GetWindowLongPtrW(window,GWL_STYLE)&BS_TYPEMASK)==BS_GROUPBOX;}
+{(void)context;return class_is(window,L"BUTTON") && (GetWindowLongPtrW(window,GWL_STYLE)&BS_TYPEMASK)==BS_GROUPBOX;}
 static void render(HWND window,void *context,HDC dc,BOOL buffered)
 {
     win2k_control *control=context;
@@ -101,15 +130,35 @@ static void render(HWND window,void *context,HDC dc,BOOL buffered)
 }
 static void edit_border(HWND window,void *context,HDC dc)
 {(void)context;(void)win2k_edit_border(window,dc,&win2k_standard_palette);}
+static BOOL control_supported(HWND window,const win2k_control *control)
+{
+    if(!control->combo_parent)return win2k_control_supported(window);
+    win2k_control *parent=lookup(control->combo_parent);
+    return parent && !parent->instance.detached &&
+        (!control->state.owner || control->state.owner==&parent->instance) &&
+        list_style((DWORD)GetWindowLongPtrW(window,GWL_STYLE));
+}
 static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b)
 {
     win2k_control *control=context;LRESULT result;
     if(message==WM_NCDESTROY){
         (void)retire(window,control,TRUE);result=DefSubclassProc(window,message,a,b);
-    }else if(!win2k_control_supported(window) ||
+    }else if(!control_supported(window,control) ||
         (control->edit_parent.parent && GetParent(window)!=control->edit_parent.parent)){
         result=DefSubclassProc(window,message,a,b);
         if(!control->instance.detached)(void)retire(window,control,FALSE);
+    }else if(control->combo_parent || class_is(window,L"LISTBOX")){
+        if(GetWindowLongPtrW(window,GWL_STYLE)&LBS_USETABSTOPS){
+            /* Native tab positions can predate attachment and have no getter. */
+            const style_control_edit_ops ops={.context=control,.border=edit_border};
+            result=style_control_edit_message(window,&control->instance,&control->state,NULL,message,a,b,&ops);
+        }else{
+            const style_control_list_ops ops={.context=control,.draw=render,.border=edit_border};
+            result=style_control_list_message(window,&control->instance,&control->state,message,a,b,&ops);
+        }
+    }else if(class_is(window,L"COMBOBOX")){
+        const style_control_draw draw={control,render};
+        result=style_control_combo_message(window,&control->instance,&control->state,message,a,b,&draw);
     }else if(win2k_edit_class(window)!=WIN2K_EDIT_NONE){
         const style_control_edit_ops ops={.context=control,.border=edit_border};
         result=style_control_edit_message(window,&control->instance,&control->state,NULL,message,a,b,&ops);
@@ -145,33 +194,52 @@ static LRESULT CALLBACK control_proc(HWND window,UINT message,WPARAM a,LPARAM b,
     const style_dispatch_ops ops={control,control,dispatch,finish_call};
     return style_dispatch_message(window,message,a,b,&ops);
 }
+static BOOL install_combo_list(HWND window,void *context)
+{
+    win2k_control *parent=context;
+    if(!class_is(window,L"ComboLBox") || !list_style((DWORD)GetWindowLongPtrW(window,GWL_STYLE))){
+        SetLastError(ERROR_NOT_SUPPORTED);
+        return FALSE;
+    }
+    return attach(window,parent->native_theme,parent->instance.window);
+}
 static BOOL setup(HWND window,void *context)
 {
     win2k_control *control=context;
     if(win2k_edit_class(window)==WIN2K_EDIT_STANDARD &&
        !style_control_notify_bind(window,&control->edit_parent,color_proc,control))return FALSE;
     if(!style_theme_capture(window) || !style_theme_suppress(window,control,control->native_theme))return FALSE;
+    if(class_is(window,L"COMBOBOX")){
+        const style_control_combo_ops bindings={.lookup=lookup_state};
+        const style_control_combo_setup_ops children={
+            .context=control,.get_info=win2k_combo_info,.install_list=install_combo_list,.remove=win2k_control_remove
+        };
+        return style_control_combo_setup(window,&control->instance,&control->combo,&bindings,&children);
+    }
     return !control->frame_owned || SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
 }
 static void rollback(HWND window,void *context)
 {(void)retire(window,context,FALSE);}
-BOOL win2k_control_attach(HWND window,style_native_theme_fn native_theme)
+static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_parent)
 {
     if(!win32_style_window_current_thread(window)){SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;}
     if(lookup(window))return TRUE;
-    if(!native_theme || !win2k_control_supported(window)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!native_theme || (!combo_parent && !win2k_control_supported(window))){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     if(style_theme_retained(window)){SetLastError(ERROR_BUSY);return FALSE;}
     if(!style_instance_preflight(window,control_proc))return FALSE;
     win2k_control *control=calloc(1,sizeof(*control));
     if(!control){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     style_instance_init(&control->instance,control,dispose);
     style_control_state_init(&control->state,NULL);control->native_theme=native_theme;
+    control->combo_parent=combo_parent;
     control->frame_owned=basic_kind(window)==STYLE_CONTROL_SEPARATOR;
     const style_instance_install_ops ops={control,NULL,setup,rollback};
     BOOL result=style_instance_install(&control->instance,window,control_proc,control,&ops);
     if(result)RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
     return result;
 }
+BOOL win2k_control_attach(HWND window,style_native_theme_fn native_theme)
+{return attach(window,native_theme,NULL);}
 BOOL win2k_control_attached(HWND window)
 {win2k_control *control=lookup(window);return control && !control->instance.detached;}
 BOOL win2k_control_remove(HWND window)

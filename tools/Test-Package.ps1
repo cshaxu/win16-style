@@ -823,6 +823,17 @@ try{
     $cases+=Pair { param($bits,$tree,$dll) Case "list-report-v5-${bits}" (Join-Path $tree 'core-list-report-v5.exe') @($run) @("LIST_REPORT_OK bits=${bits} styled=1",'LIST_REPORT_SYSTEM_MASK_OK','LIST_REPORT_CALLBACK_RETIRE_OK','LIST_REPORT_CLEANUP_OK') }
     $cases+=Pair { param($bits,$tree,$dll) Case "list-report-v6-${bits}" (Join-Path $tree 'core-list-report-v6.exe') @($run) @("LIST_REPORT_OK bits=${bits} styled=1",'LIST_REPORT_SYSTEM_MASK_OK','LIST_REPORT_CALLBACK_RETIRE_OK','LIST_REPORT_CLEANUP_OK') }
     $cases+=Pair { param($bits,$tree,$dll) Case "pending-frame-owner-${bits}" (Join-Path $tree 'core-pending-frame-owner.exe') @($dll) @('PENDING_FRAME_OWNER_OK failures=0') }
+    $cases+=Pair {
+        param($bits,$tree,$dll)
+        $win2k=Join-Path $Package "ntw2ks$bits.dll"
+        foreach($suffix in @('','-v6')){
+            $probe=Join-Path $tree "core-win2k-list-combo$suffix.exe"
+            $scope='list_modes=5 combo_modes=3 child_retire=3 native_tabs=1 owner_draw=1'
+            Case "ntw2ks-list-combo$suffix-$bits" $probe @($win2k) @("WIN2K_LIST_COMBO_OK bits=$bits aware=0 hooked=0",$scope) 20
+            Case "ntw2ks-list-combo$suffix-aware-$bits" $probe @($win2k,'aware') @("WIN2K_LIST_COMBO_OK bits=$bits aware=1 hooked=0",$scope) 20
+            Case "ntw2ks-list-combo$suffix-startup-$bits" $run @('--2k','--wait',$probe,$win2k,'hooked') @("WIN2K_LIST_COMBO_OK bits=$bits aware=0 hooked=1",$scope) 25
+        }
+    }
     $cases+=Pair { param($bits,$tree,$dll) Case "tree-v5-${bits}" (Join-Path $tree 'core-tree-v5.exe') @($run) @("TREE_CONTROL_OK bits=${bits} styled=1",'TREE_CALLBACK_RETIRE_OK','TREE_INPUT_STATE_OK ctrl_preserved=1 neutral_moves=1 focus=1 control=0000 shift=0000 alt=0000 restored=1','TREE_CLEANUP_OK') }
     $cases+=Pair { param($bits,$tree,$dll) Case "tree-v6-${bits}" (Join-Path $tree 'core-tree-v6.exe') @($run) @("TREE_CONTROL_OK bits=${bits} styled=1",'TREE_CALLBACK_RETIRE_OK','TREE_INPUT_STATE_OK ctrl_preserved=1 neutral_moves=1 focus=1 control=0000 shift=0000 alt=0000 restored=1','TREE_CLEANUP_OK') }
     $cases+=Pair { param($bits,$tree,$dll) Case "updown-v5-${bits}" (Join-Path $tree 'core-updown-v5.exe') @($run) @("UPDOWN_CONTROL_OK bits=${bits} styled=1",'UPDOWN_SHARED_THEME_OK','UPDOWN_PASSIVE_OK','UPDOWN_RETIRE_OK','UPDOWN_RESOURCE_OBSERVED','UPDOWN_CLEANUP_OK') }

@@ -79,6 +79,38 @@ BOOL win2k_push_button_frame(HDC dc,RECT *bounds,UINT state,BOOL default_button,
     return TRUE;
 }
 
+BOOL win2k_scroll_arrow_button(HDC dc,const RECT *bounds,UINT state,const win2k_palette *p)
+{
+    UINT direction=state&0xffu;
+    if(!dc || !bounds || !p || (direction>3u && direction!=DFCS_SCROLLCOMBOBOX) ||
+       (state&~(0xffu|DFCS_PUSHED|DFCS_INACTIVE|DFCS_FLAT|DFCS_MONO)))return FALSE;
+    RECT r=*bounds;if(r.right-r.left<=4 || r.bottom-r.top<=4)return FALSE;
+    int saved=SaveDC(dc);if(!saved)return FALSE;
+    BOOL result=FALSE;HFONT font=NULL;UINT flags=BF_RECT|BF_ADJUST;
+    if(state&DFCS_FLAT)flags|=BF_FLAT;
+    if(state&DFCS_MONO)flags|=BF_FLAT|BF_MONO;
+    if(!win2k_edge(dc,&r,(state&DFCS_PUSHED)?EDGE_SUNKEN:EDGE_RAISED,flags,p) || !win2k_fill(dc,&r,p->face))goto done;
+    int size=min(r.right-r.left,r.bottom-r.top);
+    font=CreateFontW(size,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,SYMBOL_CHARSET,
+        OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,0,L"Marlett");
+    if(!font)goto done;
+    HGDIOBJ old=SelectObject(dc,font);WCHAR family[32];
+    if(!old || old==HGDI_ERROR || !GetTextFaceW(dc,ARRAYSIZE(family),family) || lstrcmpiW(family,L"Marlett"))goto done;
+    if(!SetBkMode(dc,TRANSPARENT) || SetTextAlign(dc,TA_LEFT|TA_TOP)==GDI_ERROR ||
+       IntersectClipRect(dc,bounds->left,bounds->top,bounds->right,bounds->bottom)==ERROR)goto done;
+    WCHAR ch=(direction&DFCS_SCROLLLEFT)?L'3':L'5';if(direction&DFCS_SCROLLDOWN)++ch;
+    int x=r.left+(r.right-r.left-size)/2,y=r.top+(r.bottom-r.top-size)/2;
+    BOOL disabled=(state&DFCS_INACTIVE)!=0;
+    if(state&(DFCS_INACTIVE|DFCS_PUSHED)){++x;++y;}
+    if(SetTextColor(dc,disabled?p->highlight:p->text)==CLR_INVALID || !TextOutW(dc,x,y,&ch,1))goto done;
+    if(disabled && (SetTextColor(dc,p->shadow)==CLR_INVALID || !TextOutW(dc,x-1,y-1,&ch,1)))goto done;
+    result=TRUE;
+done:
+    if(!RestoreDC(dc,saved))result=FALSE;
+    if(font && !DeleteObject(font))result=FALSE;
+    return result;
+}
+
 /* Win2000 rtl/draw.c DrawBox and DrawFrameControl; original screenshot hashes
  * validate the system font's covered outlines separately from the color rule. */
 BOOL win2k_choice_glyph(HDC dc,const RECT *rect,UINT state,const win2k_palette *p)

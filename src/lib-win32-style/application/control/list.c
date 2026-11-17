@@ -8,14 +8,25 @@ static LRESULT forward_tabs(HWND window,WPARAM count,LPARAM values)
 LRESULT style_control_list_message(HWND w,style_instance *instance,style_control_state *state,UINT m,WPARAM a,LPARAM b,const style_control_list_ops *ops)
 {
     LRESULT result=0;
-        if(ops->input(w,ops->context,m,a,b))result=0;
+        if(ops->input && ops->input(w,ops->context,m,a,b))result=0;
         else if(m==LB_SETTABSTOPS && (GetWindowLongPtrW(w,GWL_STYLE)&LBS_USETABSTOPS))result=style_control_tabs_set(w,instance,state,a,b,forward_tabs);
         else if(m==WM_SETREDRAW){state->redraw_off=!a;result=DefSubclassProc(w,m,a,b);}
         else if(m==WM_PAINT){PAINTSTRUCT ps;HDC dc=BeginPaint(w,&ps);ops->draw(w,ops->context,dc,TRUE);EndPaint(w,&ps);}
         else if(m==WM_PRINTCLIENT)ops->draw(w,ops->context,(HDC)a,FALSE);
         else if(m==WM_NCPAINT || m==WM_PRINT){
-            /* This subclass owns the complete list nonclient surface. Native
-             * painting first exposes a second scrollbar skin before ours. */
+            /* A profile without scrollbar operations borrows native NC. */
+            if(!ops->scrollbars){
+                if(m==WM_NCPAINT)result=DefSubclassProc(w,m,a,b);
+                else if(b&~(PRF_CLIENT|PRF_ERASEBKGND)){
+                    int saved=SaveDC((HDC)a);
+                    if(saved){
+                        result=DefSubclassProc(w,m,a,b&~(PRF_CLIENT|PRF_ERASEBKGND));
+                        RestoreDC((HDC)a,saved);
+                    }
+                }
+            }
+            if(instance->detached)return result;
+            if(m==WM_PRINT && (b&PRF_CHECKVISIBLE) && !IsWindowVisible(w))return result;
             if(m==WM_PRINT && (b&PRF_CLIENT)){
                 HDC dc=(HDC)a;int saved=SaveDC(dc);RECT wr;POINT origin={0,0};
                 if(saved){GetWindowRect(w,&wr);ClientToScreen(w,&origin);
@@ -23,8 +34,8 @@ LRESULT style_control_list_message(HWND w,style_instance *instance,style_control
                     ops->draw(w,ops->context,dc,FALSE);RestoreDC(dc,saved);}
             }
             if(!instance->detached && (m==WM_NCPAINT || (b&PRF_NONCLIENT))){
-                ops->border(w,ops->context,m==WM_PRINT?(HDC)a:NULL);
-                ops->scrollbars(w,ops->context,m==WM_PRINT?(HDC)a:NULL);}
+                if(ops->border)ops->border(w,ops->context,m==WM_PRINT?(HDC)a:NULL);
+                if(ops->scrollbars)ops->scrollbars(w,ops->context,m==WM_PRINT?(HDC)a:NULL);}
         }
         else if(ops->suppress_hover && (m==WM_NCMOUSEMOVE || m==WM_NCMOUSELEAVE)){
             /* The profile owns whether native hover repaint is suppressed. */
@@ -50,7 +61,7 @@ LRESULT style_control_list_message(HWND w,style_instance *instance,style_control
                 m==WM_SETFOCUS || m==WM_KILLFOCUS || m==WM_LBUTTONDOWN || m==WM_LBUTTONUP ||
                 changed || m==WM_KEYDOWN || m==WM_KEYUP || m==WM_VSCROLL || m==WM_HSCROLL || m==WM_MOUSEWHEEL)){
                 RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW);
-                if(!instance->detached)ops->scrollbars(w,ops->context,NULL);}
+                if(!instance->detached && ops->scrollbars)ops->scrollbars(w,ops->context,NULL);}
         }
         return result;
 }

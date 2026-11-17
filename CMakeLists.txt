@@ -62,6 +62,7 @@ target_include_directories(win2k-common PUBLIC src)
 target_compile_definitions(win2k-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-common PUBLIC user32 gdi32)
 add_library(win2k-control STATIC
+  src/lib-win32-style/appearance/win2000/control/list_combo.c
   src/lib-win32-style/appearance/win2000/control/background.c
   src/lib-win32-style/appearance/win2000/control/edit_paint.c
   src/lib-win32-style/appearance/win2000/control/static_paint.c
@@ -505,6 +506,19 @@ if(BUILD_TESTING)
   add_dependencies(core-win2k-edit-v6 ntw2ks)
   add_test(NAME core/win2k-edit-v6 COMMAND $<TARGET_FILE:core-win2k-edit-v6> $<TARGET_FILE:ntw2ks>)
   add_test(NAME core/win2k-edit-v6-aware COMMAND $<TARGET_FILE:core-win2k-edit-v6> $<TARGET_FILE:ntw2ks> aware)
+  foreach(target core-win2k-list-combo core-win2k-list-combo-v6)
+    add_executable(${target} tests/lib-win32-style/appearance/win2000/control/list_combo.c)
+    target_compile_definitions(${target} PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    target_link_libraries(${target} PRIVATE user32 gdi32 comctl32)
+    target_link_options(${target} PRIVATE -municode)
+    add_dependencies(${target} ntw2ks)
+    string(REGEX REPLACE "^core-" "" case_name "${target}")
+    add_test(NAME core/${case_name} COMMAND $<TARGET_FILE:${target}> $<TARGET_FILE:ntw2ks>)
+    add_test(NAME core/${case_name}-aware COMMAND $<TARGET_FILE:${target}> $<TARGET_FILE:ntw2ks> aware)
+  endforeach()
+  target_sources(core-win2k-list-combo-v6 PRIVATE tests/ntw16s-dll/control_extensions.rc)
+  target_include_directories(core-win2k-list-combo-v6 PRIVATE src)
+  target_link_options(core-win2k-list-combo-v6 PRIVATE ${explicit_manifest_options})
   add_executable(core-style-runtime-text-imports tests/lib-win32-style/application/adapters/win32/runtime_text_imports.c)
   target_link_libraries(core-style-runtime-text-imports PRIVATE style-control-common)
   add_test(NAME core/style-runtime-text-imports COMMAND $<TARGET_FILE:core-style-runtime-text-imports>)

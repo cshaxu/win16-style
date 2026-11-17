@@ -4388,7 +4388,7 @@
       "path": "src/lib-win32-style/application/control/list.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6f5652141766c139d652e1005f76817aca4d991991de14e8ecc15a3f9679c960",
+      "sha256": "c37b5819bca25d054f911080c47801cc5ee392f228dcaef4baa452b46922a132",
       "disposition": "authored",
       "review": "T21 S24 extract list presentation message handling with borrowed window callbacks; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common native list message controller, original presentation declarations merged into dispatch; T26 S9 list controller and actual render adapter",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4442,7 +4442,7 @@
       "path": "src/lib-win32-style/application/control/combo.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cdb7c0491e61d51959d99a048e6063a72eaf0f75fcc9412974e9c64812fb1b32",
+      "sha256": "62794965ece7eb3ba219447fca4262a16b775a95adeade6745010ad3578bb627",
       "disposition": "authored",
       "review": "T21 S24 extract combo edit font and presentation state; T26 ordered audit remove duplicate declaration; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 public protocol/resource ownership relocation; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -6368,7 +6368,7 @@
       "path": "src/ntw2ks-dll/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e886d5f03094396a557d3b5d3799d08c8dfeec90f1185798bba49efccd526ea1",
+      "sha256": "6fa59ef62c1a5f847be65e9fc93495a571deaaf66d70b502a467265d6c3933fa",
       "disposition": "authored",
       "review": "T25 S8 Win2000 window adapter; T26 S1 shared control theme lifecycle; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -9701,7 +9701,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "f154abb46bdef3154aefe9696138345b8fef369ad6763bffd5942175ddd1e746"
+      "sha256": "cd6d8dc8f343792ef69b9e6597698a17a87bb72c830b9657efca286664cc46a7"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/common/paint.h",
@@ -9710,7 +9710,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "87205e3512163329c1590edbd857a41680e09fb1f808ac28241b7b053764b22f"
+      "sha256": "175c6c1b8fa9529c8f66659e789dbc511e7079b503a447c09f85197fd564659b"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/common/palette.c",
@@ -9755,7 +9755,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "daf6400fbd7c7e14d5a1ad6f39b605bfaa98255a8fcf9b5776a5e9a3ebf78807"
+      "sha256": "dc1bb61404db7d73277a5aebea6fef79bcd820d379938cb31cf927e07d3a25d3"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -9773,7 +9773,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "8bf9a83e3cccb0535b102e7a6aa644d6d4f1b134d43d1f4b61c7c75cac049ecb"
+      "sha256": "0743ec0d75a25033720f13f34d5a4340575d45aa5fff239b9e8198f9f114e6b7"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/common/paint.c",
@@ -9782,7 +9782,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "6c5c03bf39504304e4cfa1ba92fe78366b18faea33d14a0ecda993ccfeac00d2"
+      "sha256": "14d791a2e221573a87e2ba25d6a3ed5bdc9aaf4f86e0f5177c55502f32a2a7c3"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/control/button_paint.c",
@@ -9800,7 +9800,7 @@
       "disposition": "authored",
       "review": "T27 S4 independently authored source-based STATIC/GROUPBOX integration or real native consumer; pinned Win2000 reference and genuine original-image pixel samples; no imported art/font",
       "notice": "Project-authored C/RC; original Windows2000 reference is read-only, not a build/run/test dependency",
-      "sha256": "ad833a6498ca29598938a43afb61f674f508ab9646c957b0c7843dda2317a57d"
+      "sha256": "89d7e3f86f61584db9cca1c728d4fbef14325e6eb1c025270780cb88120e76a8"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/background.h",
@@ -9809,7 +9809,7 @@
       "disposition": "authored",
       "review": "T27 S4 independently authored source-based STATIC/GROUPBOX integration or real native consumer; pinned Win2000 reference and genuine original-image pixel samples; no imported art/font",
       "notice": "Project-authored C/RC; original Windows2000 reference is read-only, not a build/run/test dependency",
-      "sha256": "5a3a9feeb5d385a6cc44849e3be927fcae0f2f3a42e31b1e4ac2d338a985381b"
+      "sha256": "6c5934ea2e5fe50b051af3e2353598b8cf064ad359c47621987e2ff7874d85c6"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/static_paint.c",
@@ -9882,6 +9882,33 @@
       "review": "T27 S5 source-based native-edit edge/default brush role implementation or actual native consumer; no imported client editor/art/font",
       "notice": "Project-authored C/RC; pinned Windows2000 source/read-only screenshots for research, no external product/build dependency",
       "sha256": "f0cdb7ceddc9f6e8cfbae6a09671c2508d8d26d50871099adeee491272c64f29"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/list_combo.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T27 S6 source-informed list/combo appearance or native product test",
+      "notice": "Project-authored C; references consulted without importing external code or assets",
+      "sha256": "51e96ae627f5641308c774fa77ae42319d861083e328addb14ce4c747405fedc"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/list_combo.h",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T27 S6 source-informed list/combo appearance or native product test",
+      "notice": "Project-authored C; references consulted without importing external code or assets",
+      "sha256": "c39fcab855e268eb3a59214855230e34c52f2fcbf31e327c369693b599a17ff6"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/list_combo.c",
+      "source": null,
+      "source_blob": null,
+      "disposition": "authored",
+      "review": "T27 S6 source-informed list/combo appearance or native product test",
+      "notice": "Project-authored C; references consulted without importing external code or assets",
+      "sha256": "e35e6768c004193917e5feee1ec30cbff9dc621b629dad60ba381db7e57da101"
     }
   ]
 }

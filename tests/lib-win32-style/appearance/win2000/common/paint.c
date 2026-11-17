@@ -64,7 +64,24 @@ int main(void)
     DWORD gdi=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);CHECK(gdi);
     for(unsigned repeat=0;repeat<64;++repeat)CHECK(win2k_choice_glyph(dc,&cell,DFCS_BUTTONRADIO|DFCS_CHECKED,p));
     CHECK(GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS)==gdi);
+    /* Original Display Properties normal down-arrow: seven/five/three/one
+     * black pixels, recorded independently in t27-s6-list-combo.json. */
+    RECT arrow={0,0,17,17};unsigned rows[17]={0},total=0,first=17;
+    CHECK(win2k_scroll_arrow_button(dc,&arrow,DFCS_SCROLLCOMBOBOX,p));
+    for(unsigned y=0;y<17;++y)for(unsigned x=0;x<17;++x)if(GetPixel(dc,(int)x,(int)y)==p->text){++rows[y];++total;if(first==17)first=y;}
+    CHECK(total==16 && first<14 && rows[first]==7 && rows[first+1]==5 && rows[first+2]==3 && rows[first+3]==1);
+    CHECK(GetPixel(dc,0,8)==p->light && GetPixel(dc,1,8)==p->highlight && GetPixel(dc,16,8)==p->dark);
+    CHECK(GetCurrentObject(dc,OBJ_FONT)==borrowed_font);
+    CHECK(win2k_scroll_arrow_button(dc,&arrow,DFCS_SCROLLDOWN|DFCS_PUSHED|DFCS_FLAT,p));
+    CHECK(GetPixel(dc,0,8)==p->shadow && GetPixel(dc,1,8)==p->face);
+    CHECK(win2k_scroll_arrow_button(dc,&arrow,DFCS_SCROLLDOWN|DFCS_INACTIVE,p));
+    unsigned gray=0;for(int y=3;y<14;++y)for(int x=3;x<14;++x)gray+=GetPixel(dc,x,y)==p->shadow;
+    CHECK(gray==16);
+    for(unsigned repeat=0;repeat<64;++repeat)CHECK(win2k_scroll_arrow_button(dc,&arrow,DFCS_SCROLLDOWN,p));
+    CHECK(GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS)==gdi);
+    CHECK(!win2k_scroll_arrow_button(dc,&arrow,DFCS_SCROLLSIZEGRIP,p));
     CHECK(GetTextColor(dc)==RGB(4,5,6)&&GetBkColor(dc)==RGB(7,8,9));
+    puts("WIN2K_ARROW_REFERENCE_OK original_down_shape=1 scroll_not_soft=1 pressed=1 disabled=1 borrowed_font_dc=1 gdi_cycles=64");
     puts("WIN2K_GLYPH_REFERENCE_OK samples=4 original_exact=4 old_dark_negative=4 disabled=1 mixed=1 flat=1 gdi_cycles=64");
     CHECK(SelectObject(dc,previous) && DeleteObject(bitmap) && DeleteDC(dc));
     puts("WIN2K_PAINT_OK original_default_samples=1 normal=1 pressed=1 default_pressed=1 mono_window_slot=1 dc_restored=1");return 0;

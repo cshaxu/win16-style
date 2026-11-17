@@ -315,3 +315,5 @@
 - [T27 S5编辑控件](evidence/t27-s5-edit-controls.json)：固定原源码/原图、公共编辑协议、62项实际包及原生打印skip；首次失败/原生销毁对照保留。
 
 - [T27 S5实际远端](evidence/t27-s5-remote.json)：25变更/八文件实际fetch字节核对；1191输入仅9项旧行尾差异。
+
+- [T27 S6列表/组合框](evidence/t27-s6-list-combo.json)：七份固定原源码/四张真实原图，有限设计和增量实施证据；未交付范围明确。
