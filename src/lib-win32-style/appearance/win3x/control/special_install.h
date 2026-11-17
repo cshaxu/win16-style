@@ -4,7 +4,6 @@
 #include <commctrl.h>
 typedef struct win16_control_special_services {
     SUBCLASSPROC control_proc,trackbar_notify,toolbar_notify;
-    BOOL (*updown_acquire)(void *);void (*updown_release)(void *);
     BOOL (*frame_install)(HWND,const win16_style_palette *,const void *,const BOOL *);
     BOOL (*remove_owned)(HWND,const void *);
     BOOL (*theme_retained)(HWND),(*theme_capture)(HWND),(*theme_enable)(HWND,const void *);

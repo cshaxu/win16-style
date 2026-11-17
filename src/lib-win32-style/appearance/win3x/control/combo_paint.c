@@ -60,13 +60,14 @@ void win16_control_draw_combo(HWND w,style_instance *instance,const style_contro
 }
 
 
-void win16_control_native_combo_button(HWND w,const BOOL *detached,HDC dc,const RECT *dirty,RECT r,BOOL pressed)
+void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC dc,const RECT *dirty,const style_control_native_button *button)
 {
+    RECT r=button->bounds;BOOL pressed=button->pressed;
     RECT q;win16_style_palette palette;
     if(!dc || !style_dc_unmirrored_origin_pixels(dc))return;
     int dpi=(int)GetDpiForWindow(w);if(dpi<=0 || dpi>768)return;
     int u=max(1,MulDiv(1,dpi,96)),gw=MulDiv(7,dpi,96),gh=MulDiv(9,dpi,96);
-    if(r.right-r.left<gw+2*u || r.bottom-r.top<gh+2*u || *detached || !IsWindow(w))return;
+    if(r.right-r.left<gw+2*u || r.bottom-r.top<gh+2*u || instance->detached || !IsWindow(w))return;
     int saved=SaveDC(dc);if(!saved)return;
     if(IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)==ERROR ||
        (dirty && IntersectClipRect(dc,dirty->left,dirty->top,dirty->right,dirty->bottom)==ERROR)){

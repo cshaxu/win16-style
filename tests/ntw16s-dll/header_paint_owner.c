@@ -9,19 +9,22 @@ static void *tracked_calloc(size_t count,size_t size)
 static void tracked_free(void *p){if(p){if(!allocations)abort();--allocations;free(p);}}
 #define calloc tracked_calloc
 #define free tracked_free
+#include "lib-win32-style/application/control/header_snapshot.c"
 #include "../../src/lib-win32-style/appearance/win3x/control/header_paint.c"
 #undef calloc
 #undef free
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"HEADER_OWNER_FAIL line=%u error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static WNDPROC original;
-static BOOL armed,detached;
-static unsigned epoch,mode;
+static BOOL armed;
+static style_instance instance_state;
+static style_control_native_state native_state;
+static unsigned mode;
 static LRESULT CALLBACK callback(HWND w,UINT m,WPARAM a,LPARAM b)
 {
     if(armed && m==HDM_GETITEMW){armed=FALSE;
-        if(mode==1)detached=TRUE;
-        if(mode==2){detached=TRUE;DestroyWindow(w);return FALSE;}
-        if(mode==3)++epoch;
+        if(mode==1)instance_state.detached=TRUE;
+        if(mode==2){instance_state.detached=TRUE;DestroyWindow(w);return FALSE;}
+        if(mode==3)++native_state.epoch;
     }
     return CallWindowProcW(original,w,m,a,b);
 }
@@ -38,8 +41,8 @@ static int worker(int argc,WCHAR **argv)
     for(mode=0;mode<4;++mode)for(unsigned fault=0;fault<4;++fault){
         HWND w=CreateWindowW(cls.lpszClassName,L"",WS_CHILD|WS_VISIBLE|HDS_BUTTONS,0,0,360,26,parent,NULL,instance,NULL);CHECK(w);
         for(unsigned i=0;i<2;++i){HDITEMW item={.mask=HDI_WIDTH|HDI_TEXT|HDI_FORMAT,.cxy=100,.pszText=L"Owned header",.fmt=HDF_STRING};CHECK(SendMessageW(w,HDM_INSERTITEMW,i,(LPARAM)&item)==(LRESULT)i);}
-        armed=mode!=0;detached=FALSE;epoch=0;attempts=0;fail_on=fault;
-        BOOL painted=win16_style_header_paint(w,dc,&palette,source,&detached,&epoch,-1);
+        armed=mode!=0;instance_state.detached=FALSE;style_control_native_init(&native_state);attempts=0;fail_on=fault;
+        BOOL painted=win16_style_header_paint(w,dc,&palette,source,&instance_state,&native_state);
         CHECK(painted==(mode==0 && fault==0));CHECK(!allocations);
         CHECK(GetCurrentObject(dc,OBJ_FONT)==source && GetTextColor(dc)==RGB(27,53,71));
         armed=FALSE;if(IsWindow(w))CHECK(DestroyWindow(w));++cases;

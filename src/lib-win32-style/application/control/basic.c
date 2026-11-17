@@ -60,3 +60,14 @@ LRESULT style_control_basic_message(HWND w,style_instance *instance,style_contro
     }
     return result;
 }
+
+LRESULT style_control_owner_message(HWND w,style_instance *instance,UINT m,WPARAM a,LPARAM b,const style_control_owner_ops *ops)
+{
+    LRESULT result=ops->input(w,ops->context,m,a,b)?0:DefSubclassProc(w,m,a,b);
+    if(!instance->detached){
+        style_control_owner_action action=ops->select(w,ops->context,m,b);
+        if(action==STYLE_CONTROL_OWNER_PAINT){HDC dc=GetDC(w);if(dc){ops->render(w,ops->context,dc,action);ReleaseDC(w,dc);}}
+        else if(action!=STYLE_CONTROL_OWNER_NONE)ops->render(w,ops->context,action==STYLE_CONTROL_OWNER_PRINT || m==WM_PRINT?(HDC)a:NULL,action);
+    }
+    return result;
+}

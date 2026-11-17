@@ -38,8 +38,13 @@ static LRESULT CALLBACK owner(HWND w,UINT m,WPARAM a,LPARAM b)
 typedef struct capture {HDC dc;HBITMAP bitmap;HGDIOBJ old;DWORD *bits;} capture;
 static DWORD paint(capture *s,HWND w)
 {
+    /* Each snapshot starts with the same borrowed DC state. Native PRINT
+     * implementations may leave selected objects, origins or clipping changed. */
+    int saved=SaveDC(s->dc);if(!saved){fputs("HEADER_CAPTURE_SAVE_FAIL\n",stderr);ExitProcess(1);}
     RECT r={0,0,360,50};FillRect(s->dc,&r,GetStockObject(WHITE_BRUSH));
-    SendMessageW(w,WM_PRINTCLIENT,(WPARAM)s->dc,PRF_CLIENT);GdiFlush();DWORD hash=2166136261u;
+    SendMessageW(w,WM_PRINTCLIENT,(WPARAM)s->dc,PRF_CLIENT);GdiFlush();
+    if(!RestoreDC(s->dc,saved)){fputs("HEADER_CAPTURE_RESTORE_FAIL\n",stderr);ExitProcess(1);}
+    DWORD hash=2166136261u;
     for(unsigned i=0;i<360*50;++i)hash=(hash^(s->bits[i]&0xffffff))*16777619u;
     return hash;
 }
@@ -65,6 +70,12 @@ static int worker(int argc,WCHAR **argv)
     capture image={0};image.dc=CreateCompatibleDC(NULL);CHECK(image.dc);
     BITMAPINFO bi={.bmiHeader={.biSize=sizeof(BITMAPINFOHEADER),.biWidth=360,.biHeight=-50,.biPlanes=1,.biBitCount=32}};
     image.bitmap=CreateDIBSection(image.dc,&bi,DIB_RGB_COLORS,(void**)&image.bits,NULL,0);CHECK(image.bitmap);image.old=SelectObject(image.dc,image.bitmap);CHECK(image.old);
+    /* Compare native fallback both without an image list and with the same
+     * explicit borrowed image/index. */
+    DWORD pixels[64];for(unsigned i=0;i<ARRAYSIZE(pixels);++i)pixels[i]=0x00245ac7;
+    HBITMAP icon=CreateBitmap(8,8,1,32,pixels);CHECK(icon);
+    HIMAGELIST icons=ImageList_Create(8,8,ILC_COLOR32,1,0);CHECK(icons);
+    CHECK(ImageList_Add(icons,icon,NULL)==0 && DeleteObject(icon));
     const DWORD styles[]={0,HDS_BUTTONS|HDS_DRAGDROP|HDS_FULLDRAG,HDS_FILTERBAR,HDS_CHECKBOXES};unsigned styled=0,preserved=0;
     for(unsigned k=0;k<ARRAYSIZE(styles);++k){HWND pair[2];RECT rects[2][3];int widths[2],orders[2][3];unsigned notifications[2][3];DWORD hashes[2];BOOL supported=FALSE;
         for(unsigned decorated=0;decorated<2;++decorated){
@@ -94,12 +105,35 @@ static int worker(int argc,WCHAR **argv)
             }
             /* Per-item special formats preserve the entire original header,
              * including real owner-draw callbacks and native sort indicators. */
-            const int formats[]={HDF_OWNERDRAW|HDF_STRING,HDF_SORTUP|HDF_STRING,HDF_IMAGE|HDF_STRING};
-            for(unsigned f=0;f<ARRAYSIZE(formats);++f){DWORD native_hash[2];for(unsigned i=0;i<2;++i){HDITEMW item={.mask=HDI_FORMAT,.fmt=formats[f]};CHECK(SendMessageW(pair[i],HDM_SETITEMW,0,(LPARAM)&item));native_hash[i]=paint(&image,pair[i]);}CHECK(native_hash[0]==native_hash[1]);}
+            const int formats[]={HDF_OWNERDRAW|HDF_STRING,HDF_SORTUP|HDF_STRING,HDF_IMAGE|HDF_STRING,HDF_IMAGE|HDF_STRING};
+            for(unsigned f=0;f<ARRAYSIZE(formats);++f){
+                DWORD native_hash[2];static DWORD baseline_pixels[360*50];
+                for(unsigned i=0;i<2;++i){
+                    HDITEMW item={.mask=HDI_FORMAT,.fmt=formats[f]};
+                    if(f==3){
+                        CHECK(!SendMessageW(pair[i],HDM_SETIMAGELIST,0,(LPARAM)icons));
+                        CHECK((HIMAGELIST)SendMessageW(pair[i],HDM_GETIMAGELIST,0,0)==icons);
+                    }
+                    if(formats[f]&HDF_IMAGE){item.mask|=HDI_IMAGE;item.iImage=0;}
+                    CHECK(SendMessageW(pair[i],HDM_SETITEMW,0,(LPARAM)&item));
+                    native_hash[i]=paint(&image,pair[i]);if(!i)memcpy(baseline_pixels,image.bits,sizeof(baseline_pixels));
+                }
+                if(native_hash[0]!=native_hash[1]){
+                    unsigned differences=0;
+                    fprintf(stderr,"HEADER_FALLBACK_DIAG style=%lu format=%x native=%08lx styled=%08lx font_native=%p font_styled=%p\n",(unsigned long)styles[k],formats[f],(unsigned long)native_hash[0],(unsigned long)native_hash[1],(void *)SendMessageW(pair[0],WM_GETFONT,0,0),(void *)SendMessageW(pair[1],WM_GETFONT,0,0));
+                    for(unsigned pixel=0;pixel<360*50;++pixel)if((baseline_pixels[pixel]&0xffffff)!=(image.bits[pixel]&0xffffff)){
+                        if(differences<8)fprintf(stderr,"HEADER_PIXEL x=%u y=%u native=%06lx styled=%06lx\n",pixel%360,pixel/360,(unsigned long)(baseline_pixels[pixel]&0xffffff),(unsigned long)(image.bits[pixel]&0xffffff));
+                        ++differences;
+                    }
+                    fprintf(stderr,"HEADER_DIFFERENCES %u\n",differences);
+                }
+                CHECK(native_hash[0]==native_hash[1]);
+            }
             CHECK(remove_style(pair[1]) && !attached(pair[1]) && (HFONT)SendMessageW(pair[1],WM_GETFONT,0,0)==late);
         }else {CHECK(hashes[0]==hashes[1]);++preserved;}
         CHECK(DestroyWindow(pair[0]) && DestroyWindow(pair[1]));
     }
+    CHECK(ImageList_Destroy(icons));
     for(unsigned mode=1;mode<=5;++mode){
         ntw16s_creation_scope *scope=begin(TRUE);CHECK(scope);
         HWND w=CreateWindowW(WC_HEADERW,L"",WS_CHILD|WS_VISIBLE|HDS_BUTTONS,0,0,360,26,parent,NULL,instance,NULL);
@@ -122,6 +156,6 @@ static int worker(int argc,WCHAR **argv)
     scope=begin(TRUE);CHECK(scope);HWND fake=CreateWindowW(WC_HEADERW,L"fake",WS_CHILD,0,0,100,20,parent,NULL,instance,NULL);CHECK(fake && end(scope,&result) && !attached(fake) && DestroyWindow(fake));
     CHECK(UnregisterClassW(L"THeaderControl",instance));alias.lpfnWndProc=DefWindowProcW;alias.lpszClassName=L"THeaderControl";CHECK(RegisterClassExW(&alias));scope=begin(TRUE);CHECK(scope);fake=CreateWindowW(L"THeaderControl",L"fake",WS_CHILD,0,0,100,20,parent,NULL,instance,NULL);CHECK(fake && end(scope,&result) && !attached(fake) && DestroyWindow(fake));
     UINT dpi=GetDpiForWindow(parent);CHECK(owner_draws>0);SelectObject(image.dc,image.old);CHECK(DeleteObject(image.bitmap) && DeleteDC(image.dc));CHECK(DestroyWindow(parent) && DeleteObject(font) && DeleteObject(late) && FreeLibrary(dll));
-    printf("HEADER_CONTROL_OK bits=%u dpi=%u aware=%u styled=%u preserved=%u native_geometry=1 order=1 data=1 cancel=1 click_native=1 formats_preserved=3 late_native_font=1 callback_cases=5 roles_released=1 impostor=1\n",(unsigned)(sizeof(void*)*8),dpi,aware,styled,preserved);return 0;
+    printf("HEADER_CONTROL_OK bits=%u dpi=%u aware=%u styled=%u preserved=%u native_geometry=1 order=1 data=1 cancel=1 click_native=1 formats_preserved=4 native_image=1 missing_image=1 late_native_font=1 callback_cases=5 roles_released=1 impostor=1\n",(unsigned)(sizeof(void*)*8),dpi,aware,styled,preserved);return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}

@@ -15,9 +15,7 @@
 #include "lib-win32-style/appearance/win3x/control/control_state.h"
 #include "lib-win32-style/appearance/win3x/control/control_class.h"
 #include "lib-win32-style/appearance/win3x/control/attachment_state.h"
-#include "lib-win32-style/appearance/win3x/control/fileowner_message.h"
 #include "lib-win32-style/appearance/win3x/control/list_paint.h"
-#include "lib-win32-style/appearance/win3x/control/theme_kind.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/control/control_custom_draw.h"
 #include "lib-win32-style/appearance/win3x/control/text_policy.h"
@@ -47,22 +45,11 @@ static void test_button_paint(HWND w,void *context,int hit)
 {(void)w;(void)context;if(hit==HTMINBUTTON)++button_paints;}
 static BOOL test_decode(HDC dc,const WCHAR *input,UINT count,WCHAR *output)
 {(void)dc;for(UINT i=0;i<count;++i)output[i]=input[i];return TRUE;}
-static BOOL test_report_caller(HMODULE module)
-{return module==GetModuleHandleW(NULL);}
 int main(void)
 {
-    if(win16_control_theme_kind(L"BUTTON")!=WIN16_CONTROL_THEME_BUTTON ||
-       win16_control_theme_kind(L"combobox")!=WIN16_CONTROL_THEME_COMBOBOX ||
-       win16_control_theme_kind(L"TEXTGLOW")!=WIN16_CONTROL_THEME_TEXTGLOW ||
-       win16_control_theme_kind(NULL)!=WIN16_CONTROL_THEME_OTHER ||
-       win16_control_theme_kind((LPCWSTR)(UINT_PTR)1)!=WIN16_CONTROL_THEME_OTHER ||
-       win16_control_theme_kind(L"SCROLLBAR")!=WIN16_CONTROL_THEME_OTHER)return 104;
-    if(!win16_control_vb_text_caller((const void *)test_report_caller,test_report_caller) ||
-       win16_control_vb_text_caller((const void *)(UINT_PTR)1,test_report_caller) ||
-       !win16_control_vb_label_caller((const void *)(UINT_PTR)1,TRUE) ||
-       win16_control_vb_label_caller((const void *)(UINT_PTR)1,FALSE))return 106;
+
     win16_attachment_initial_classification initial={0};
-    win16_control_vcl_candidates vcl={0};win16_control_vcl_extra_candidates extra={0};
+    style_control_runtime_candidates vcl={0};style_control_runtime_extras extra={0};
     initial.owner=(HMODULE)(UINT_PTR)1;
     if(win16_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=1)return 85;
     initial.owner=GetModuleHandleW(NULL);
@@ -77,19 +64,19 @@ int main(void)
     if(win16_attachment_eligibility(WS_CAPTION,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=0)return 90;
     puts("ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1");
     attachment dispatch={0};
-    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_NATIVE)return 91;
-    dispatch.static_candidate=TRUE;
-    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_STATIC)return 92;
-    dispatch.instance.detached=TRUE;
-    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_NATIVE)return 93;
-    dispatch.instance.detached=FALSE;dispatch.modern_spin=TRUE;
-    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PRINTCLIENT,0,0,TRUE,TRUE,TRUE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_STATUS)return 94;
-    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PRINTCLIENT,0,0,FALSE,TRUE,TRUE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_COLOR)return 95;
-    dispatch.cool_candidate=TRUE;
-    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_PAINT,0,0,TRUE,TRUE,TRUE,FALSE)!=WIN16_ATTACHMENT_DISPATCH_COOL)return 96;
-    dispatch.cool_candidate=FALSE;dispatch.spin=TRUE;
-    if(!win16_attachment_spin_message(&dispatch,WM_LBUTTONDOWN) || win16_attachment_spin_message(&dispatch,WM_USER))return 97;
-    if(win16_attachment_dispatch_kind(NULL,&dispatch,WM_USER,0,0,FALSE,FALSE,FALSE,TRUE)!=WIN16_ATTACHMENT_DISPATCH_STATIC)return 98;
+    if(style_runtime_dispatch_kind(NULL,&dispatch.base.instance,&dispatch.base.runtime,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=STYLE_RUNTIME_DISPATCH_NATIVE)return 91;
+    dispatch.base.runtime.roles.text.candidate=TRUE;
+    if(style_runtime_dispatch_kind(NULL,&dispatch.base.instance,&dispatch.base.runtime,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=STYLE_RUNTIME_DISPATCH_STATIC)return 92;
+    dispatch.base.instance.detached=TRUE;
+    if(style_runtime_dispatch_kind(NULL,&dispatch.base.instance,&dispatch.base.runtime,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=STYLE_RUNTIME_DISPATCH_NATIVE)return 93;
+    dispatch.base.instance.detached=FALSE;dispatch.base.runtime.spin.modern=TRUE;
+    if(style_runtime_dispatch_kind(NULL,&dispatch.base.instance,&dispatch.base.runtime,WM_PRINTCLIENT,0,0,TRUE,TRUE,TRUE,FALSE)!=STYLE_RUNTIME_DISPATCH_STATUS)return 94;
+    if(style_runtime_dispatch_kind(NULL,&dispatch.base.instance,&dispatch.base.runtime,WM_PRINTCLIENT,0,0,FALSE,TRUE,TRUE,FALSE)!=STYLE_RUNTIME_DISPATCH_COLOR)return 95;
+    dispatch.base.runtime.cool.candidate=TRUE;
+    if(style_runtime_dispatch_kind(NULL,&dispatch.base.instance,&dispatch.base.runtime,WM_PAINT,0,0,TRUE,TRUE,TRUE,FALSE)!=STYLE_RUNTIME_DISPATCH_COOL)return 96;
+    dispatch.base.runtime.cool.candidate=FALSE;dispatch.base.runtime.spin.candidate=TRUE;
+    if(!style_control_spin_message(&dispatch.base.instance,&dispatch.base.runtime.spin,WM_LBUTTONDOWN) || style_control_spin_message(&dispatch.base.instance,&dispatch.base.runtime.spin,WM_USER))return 97;
+    if(style_runtime_dispatch_kind(NULL,&dispatch.base.instance,&dispatch.base.runtime,WM_USER,0,0,FALSE,FALSE,FALSE,TRUE)!=STYLE_RUNTIME_DISPATCH_STATIC)return 98;
     puts("ATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1");
     HDC policy_dc=CreateCompatibleDC(NULL);if(!policy_dc)return 81;
     if(!win16_control_report_wide_text(policy_dc,L"abc",3,TRUE) ||
@@ -119,8 +106,8 @@ int main(void)
     if(!control || control->state.font || control->state.protocol || control->state.tab_positions || control->instance.calls)return 38;
     control->state.tab_positions=malloc(2*sizeof(*control->state.tab_positions));
     control->state.font=win16_style_menu_font_acquire(96);
-    control->combo.fonts[0]=win16_style_menu_font_acquire(96);control->combo.font_count=1;
-    if(!control->state.tab_positions || !control->state.font || !control->combo.fonts[0]){win16_control_state_dispose(control);return 39;}
+    control->bindings.combo.fonts[0]=win16_style_menu_font_acquire(96);control->bindings.combo.font_count=1;
+    if(!control->state.tab_positions || !control->state.font || !control->bindings.combo.fonts[0]){win16_control_state_dispose(control);return 39;}
     win16_control_state_dispose(control);
     style_window *owned=win16_control_frame_state_create();
     if(!owned || owned->menu.loops || owned->fonts.title || owned->fonts.menu || owned->instance.calls)return 34;
@@ -210,15 +197,16 @@ int main(void)
     SetWindowLongPtrW(classic_combo,GWLP_ID,1135);
     if(style_control_dialog_combo_valid(classic_combo,window,style_control_is_combo)){DestroyWindow(window);return 43;}
     DestroyWindow(classic_combo);
-    control_style *font_state=win16_control_state_create();HFONT old_font=NULL,outbound_font=NULL;
-    HFONT application_font=(HFONT)GetStockObject(SYSTEM_FONT);WPARAM font_parameter=(WPARAM)application_font;
-    if(!font_state || !win16_control_state_prepare_font(window,font_state,WM_SETFONT,&font_parameter,TRUE,&old_font,&outbound_font) ||
-       font_state->state.original_font!=application_font || font_parameter!=(WPARAM)application_font || !outbound_font){
+    control_style *font_state=win16_control_state_create();
+    HFONT application_font=(HFONT)GetStockObject(SYSTEM_FONT);
+    style_control_message font_call={.message=WM_SETFONT,.parameter=(WPARAM)application_font,.native_font=TRUE};
+    if(!font_state || !win16_control_state_prepare_font(window,font_state,&font_call) ||
+       font_state->state.original_font!=application_font || font_call.parameter!=(WPARAM)application_font || !font_call.outbound){
         if(font_state)win16_control_state_dispose(font_state);
         DestroyWindow(window);return 40;}
-    win16_style_system_release(outbound_font);win16_style_system_release(old_font);
-    font_state->instance.detached=TRUE;font_parameter=(WPARAM)application_font;
-    if(win16_control_state_prepare_font(window,font_state,WM_SETFONT,&font_parameter,FALSE,&old_font,&outbound_font)){
+    win16_style_system_release(font_call.outbound);win16_style_system_release(font_call.previous);
+    font_state->instance.detached=TRUE;font_call=(style_control_message){.message=WM_SETFONT,.parameter=(WPARAM)application_font};
+    if(win16_control_state_prepare_font(window,font_state,&font_call)){
         win16_control_state_dispose(font_state);DestroyWindow(window);return 41;}
     win16_control_state_dispose(font_state);
     int pressed=HTMINBUTTON;BOOL hot=FALSE,button_detached=FALSE;

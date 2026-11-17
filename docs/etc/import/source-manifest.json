@@ -335,10 +335,10 @@
       "blob": "a8813543e1faf9e8ba68dee29f0f1e77643b96fa",
       "size": 1758,
       "sha256": "7a5cde7dcf7fb6925373ec34b0877ff37b2175f19ecb5a9c2cfa5e52ee49a7ed",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/ntw16s-dll/attachment.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task; T26 S10: preserve existing exported ABI declarations and source identity, append only private STATIC-renderer bridge declarations and forward declaration after deleting redundant static_text.h; intentionally adapted header, no resource bytes changed",
       "receiver": "style-core"
     },
     {

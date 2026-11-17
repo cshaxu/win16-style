@@ -1,4 +1,5 @@
 #include "vcl_identity.h"
+#include "lib-win32-style/application/adapters/win32/runtime_identity.h"
 #include "lib-win32-style/application/control/control_vcl_identity.h"
 #include "control_class.h"
 #include "lib-win32-style/application/window/window_identity.h"
@@ -25,45 +26,8 @@ BOOL win16_control_vb_user_edge_role(HWND w,HWND parent)
 BOOL win16_control_vb_user_edge_identity(HWND w,HWND parent)
 {return win16_control_vb_user_edge_role(w,parent) && (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);}
 
-BOOL win16_control_box_identity(HWND w,HMODULE owner,HWND parent)
-{
-    WCHAR name[64],real[64];
-    DWORD ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    return win32_style_window_owned_child(w,owner,parent) &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TScrollBox") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) &&
-        IsWindowUnicode(w) && (ex&WS_EX_CLIENTEDGE) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) &&
-        win32_style_class_procedure_owned(owner,name);
-}
 
-BOOL win16_control_controlbar_identity(HWND w,const win16_control_controlbar_view *a)
-{
- WCHAR name[64],real[64];HWND parent=GetParent(w);DWORD ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
- return a && !*a->detached && !*a->retired && IsWindow(w) && parent && parent==*a->parent &&
-  win32_style_window_current_thread(w) && GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() &&
-  (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==*a->owner && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==*a->owner &&
-  GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TControlBar") && RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(name,real) &&
-  IsWindowUnicode(w) && (GetWindowLongPtrW(w,GWL_STYLE)&WS_CHILD) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED)) &&
-  win32_style_class_procedure_owned(*a->owner,name);
-}
-
-
-BOOL win16_control_cool_class_owner(HMODULE owner)
-{
-    return owner && win32_style_class_procedure_owned(owner,L"TCoolBar");
-}
-
-BOOL win16_control_rich_identity(HWND w,const win16_control_rich_view *a)
-{
-    WCHAR name[64];HWND parent=GetParent(w);DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    return a && !*a->detached && IsWindow(w) && parent && parent==*a->parent &&
-        GetWindowThreadProcessId(w,NULL)==GetCurrentThreadId() &&
-        (*a->popup?(parent==GetDesktopWindow() && *a->owner==GetModuleHandleW(NULL) && (style&WS_BORDER) && !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA))):(GetWindowThreadProcessId(parent,NULL)==GetCurrentThreadId() && (HMODULE)GetClassLongPtrW(parent,GCLP_HMODULE)==*a->owner)) &&
-        (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)==*a->owner &&
-        GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,*a->popup?L"TPopupListbox":*a->month?L"TMonthCalendar":*a->hotkey?L"THotKey":*a->unicode?L"TRichEdit":L"TRichEditURL") && (!*a->unicode || IsWindowUnicode(w)) && (!*a->month || !(style&MCS_MULTISELECT)) && (style&WS_CHILD) &&
-        (*a->popup || *a->month || (ex&WS_EX_CLIENTEDGE)) && !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING|WS_EX_LAYERED));
-}
-
-void win16_control_vcl_classify(HWND w,DWORD original_style,BOOL ready,HMODULE owner,win16_control_vcl_candidates *v)
+void win16_control_vcl_classify(HWND w,DWORD original_style,BOOL ready,HMODULE owner,style_control_runtime_candidates *v)
 {
     WCHAR name[64],real[64];DWORD type=original_style&SS_TYPEMASK;
     v->static_candidate=GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"TStaticText") &&
@@ -101,10 +65,10 @@ void win16_control_vcl_classify(HWND w,DWORD original_style,BOOL ready,HMODULE o
         RealGetWindowClassW(w,real,ARRAYSIZE(real)) && !lstrcmpW(real,L"TDateTimePicker");
 }
 
-void win16_control_vcl_classify_extra(HWND w,DWORD original_style,BOOL ready,HMODULE owner,win16_control_vcl_extra_candidates *v)
+void win16_control_vcl_classify_extra(HWND w,DWORD original_style,BOOL ready,HMODULE owner,style_control_runtime_extras *v)
 {
-    v->cool_candidate=ready && (original_style&WS_CHILD) && style_control_class_is(w,L"TCoolBar") && win16_control_cool_class_owner(owner) && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
-    v->box_candidate=ready && win16_control_box_identity(w,owner,GetParent(w));
+    v->cool_candidate=ready && (original_style&WS_CHILD) && style_control_class_is(w,L"TCoolBar") && (owner && win32_style_class_procedure_owned(owner,L"TCoolBar")) && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
+    v->box_candidate=ready && style_runtime_scrollbox_identity(w,owner,GetParent(w));
     v->controlbar_candidate=ready && style_control_class_is(w,L"TControlBar") && owner && GetParent(w) && (HMODULE)GetClassLongPtrW(GetParent(w),GCLP_HMODULE)==owner;
     v->rich_month=style_control_class_is(w,L"TMonthCalendar");
     v->rich_hotkey=style_control_class_is(w,L"THotKey");

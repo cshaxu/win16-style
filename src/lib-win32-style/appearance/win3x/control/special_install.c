@@ -1,3 +1,4 @@
+#include "lib-win32-style/application/lifecycle/install.h"
 #include "special_install.h"
 #include "control_class.h"
 #include "../../../application/control/control_protocol.h"
@@ -8,45 +9,37 @@
 
 static control_style *install_frame(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
-    DWORD_PTR data;
     if(!v->frame_install(w,palette,owner,cancelled))return NULL;
-    if(!GetWindowSubclass(w,v->control_proc,(UINT_PTR)v->control_proc,&data) ||
-       ((control_style *)data)->instance.owner!=owner){SetLastError(ERROR_CANCELLED);return NULL;}
-    return (control_style *)data;
-}
-static BOOL finish_install(HWND w,const void *owner,const win16_control_special_services *v,control_style *s,BOOL okay)
-{
-    if(s->instance.detached)okay=FALSE;
-    if(!okay && !s->instance.detached)v->remove_owned(w,owner);
-    style_instance_release(&s->instance);
-    return okay;
+    style_instance *instance=style_instance_lookup(w,v->control_proc);
+    if(!instance || instance->owner!=owner){SetLastError(ERROR_CANCELLED);return NULL;}
+    return (control_style *)instance;
 }
 BOOL win16_control_special_updown_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
     HMODULE native=style_control_protocol_updown_module(w);
-    if(!native || !ntw16s_updown_api_enabled()){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!native || !style_control_updown_api_enabled()){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    ntw16s_updown_register(&s->updown,w,native,&s->palette,win16_control_scroll_glyphs(),s,v->updown_acquire,v->updown_release);
+    win16_control_updown_register(&s->updown,&s->bindings.updown,w,native,&s->palette,win16_control_scroll_glyphs(),&s->instance,style_instance_acquire_owned,style_instance_return_owned);
     return TRUE;
 }
 BOOL win16_control_special_trackbar_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
     if(!win16_style_trackbar_supported(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    style_instance_retain(&s->instance);s->track_window=w;s->track_parent=GetParent(w);
-    BOOL okay=s->track_parent && SetWindowSubclass(s->track_parent,v->trackbar_notify,(UINT_PTR)w,(DWORD_PTR)s);
+    style_instance_retain(&s->instance);
+    BOOL okay=style_control_notify_bind(w,&s->bindings.track,v->trackbar_notify,s);
     /* Native trackbars cache part drawing. Invalidate only this new control's
      * native cache after binding, without changing theme/global properties. */
     if(okay)SendMessageW(w,WM_SYSCOLORCHANGE,0,0);
-    return finish_install(w,owner,v,s,okay);
+    return style_instance_setup_finish(w,&s->instance,okay,owner,v->remove_owned);
 }
 BOOL win16_control_special_toolbar_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
     if(!style_control_protocol_toolbar(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    style_instance_retain(&s->instance);s->toolbar_window=w;s->toolbar_parent=GetParent(w);
-    BOOL okay=s->toolbar_parent && SetWindowSubclass(s->toolbar_parent,v->toolbar_notify,(UINT_PTR)w,(DWORD_PTR)s);
-    return finish_install(w,owner,v,s,okay);
+    style_instance_retain(&s->instance);
+    BOOL okay=style_control_notify_bind(w,&s->bindings.toolbar,v->toolbar_notify,s);
+    return style_instance_setup_finish(w,&s->instance,okay,owner,v->remove_owned);
 }
 BOOL win16_control_special_progress_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
@@ -67,28 +60,25 @@ BOOL win16_control_special_tree_install(HWND w,const win16_style_palette *palett
 {
     if(!style_control_protocol_is(w,WC_TREEVIEWW)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    s->scroll.resources.native_border=TRUE;
+    s->bindings.scroll.resources.native_border=TRUE;
     return TRUE;
 }
 BOOL win16_control_special_grid_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
-    BOOL result=TRUE;
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    style_instance_retain(&s->instance);s->scroll.resources.native_border=TRUE;
+    style_instance_retain(&s->instance);s->bindings.scroll.resources.native_border=TRUE;
     /* Owner-drawn lists use the shared frame scrollbar painter but may not
      * have the ordinary control attachment's theme lease. Common-controls
      * theme animations can otherwise repaint over that scrollbar later. */
-    if(style_control_list_class(w) && !v->theme_retained(w)){
-        if(!v->theme_capture(w))result=FALSE;
-        else {s->list_theme_owned=TRUE;if(!v->theme_enable(w,s))result=FALSE;}
-    }
-    if(s->instance.detached || (cancelled && *cancelled)){result=FALSE;SetLastError(ERROR_CANCELLED);}
-    return finish_install(w,owner,v,s,result);
+    const style_control_list_theme_ops theme={s,cancelled,v->theme_retained,v->theme_capture,v->theme_enable};
+    const style_control_setup_options options={.frame_bars=TRUE,.list_theme=&theme};
+    BOOL result=style_control_bindings_setup(w,&s->instance,&s->state,&s->bindings,&options);
+    return style_instance_setup_finish(w,&s->instance,result,owner,v->remove_owned);
 }
 BOOL win16_control_special_picture_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
     if(!ntw16s_vb_picture(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
-    s->scroll.resources.native_border=TRUE;
+    s->bindings.scroll.resources.native_border=TRUE;
     return TRUE;
 }

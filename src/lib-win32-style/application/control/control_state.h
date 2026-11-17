@@ -32,6 +32,10 @@ void style_control_state_init(style_control_state *,const style_control_fonts *)
 /* Prepare once on fresh initialized state; protocol and copied initial pixel
  * tabs belong to state even on failure, until the caller disposes it. */
 BOOL style_control_state_prepare(HWND,style_control_state *,int,const int *);
+/* Read and normalize the original font on a fresh unpublished state. Native
+ * WM_GETFONT may reenter installation: cancel wins, then any existing subclass
+ * is rejected. Failure leaves state owned by the caller for final disposal. */
+BOOL style_control_font_read(HWND,style_control_state *,SUBCLASSPROC,const BOOL *);
 void style_control_state_dispose(style_control_state *);
 BOOL style_control_font_message(HWND,style_instance *,style_control_state *,WPARAM *,
     style_control_font_mode,BOOL,BOOL,HFONT *,HFONT *);
@@ -39,6 +43,11 @@ BOOL style_control_font_message(HWND,style_instance *,style_control_state *,WPAR
  * current successor's source, or this state's source if no successor exists. */
 void style_control_font_finish(HWND,const style_instance *,style_control_state *,UINT,LPARAM,BOOL,
     HFONT,HFONT,HFONT,HFONT);
+/* End a complete message borrow: native spin layout, retired setter successor,
+ * font leases/native-paint depth, then the pinned instance's final release.
+ * Lookup borrows the current successor's whole state on the same GUI thread. */
+void style_control_message_finish(HWND,style_instance *,style_control_state *,UINT,LPARAM,HWND,const RECT *,BOOL,
+    HFONT,HFONT,HFONT,style_control_state *(*)(HWND));
 /* Compute set-time pixels before native forwarding; commit only on success
  * while still attached. Native tab-stop messages keep their original units. */
 LRESULT style_control_tabs_set(HWND,style_instance *,style_control_state *,WPARAM,LPARAM,

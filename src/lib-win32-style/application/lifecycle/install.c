@@ -23,3 +23,10 @@ unpublished:
 failed:
     style_instance_release(instance);SetLastError(error);return FALSE;
 }
+
+BOOL style_instance_setup_finish(HWND w,style_instance *instance,BOOL okay,const void *owner,BOOL (*remove)(HWND,const void *))
+{
+    if(instance->detached)okay=FALSE;
+    if(!okay && !instance->detached)remove(w,owner);
+    style_instance_release(instance);return okay;
+}

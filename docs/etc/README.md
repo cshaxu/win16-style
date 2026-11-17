@@ -259,3 +259,8 @@
 - [T26 S9整批交付](evidence/t26-s9-delivery.json)：同快照双宽干净八文件已先发布两处，发布后聚焦回归、来源/资源/依赖和原失败对照的实际状态由证据记录。
 
 - [T26 S9实际远端](evidence/t26-s9-remote.json)：P1 107现存blob、16删除路径及八文件已fetch逐项复核。
+
+- [T26 S10扩展控件冻结输入](evidence/t26-s10-controls-audit.json)：按文件顺序的生产/调用者/测试有限清单、原始摘要与实施批次，冻结不是已审或已迁移。
+
+- [T26 S10开发验证](evidence/t26-s10-controls-development.json)：按能力批次记录双宽增量、独立公共契约与实际VB/VCL调用、失败修正及立即清理；不是完整S10交付。
+- [T26 S10 整批交付](evidence/t26-s10-delivery.json)：同快照双宽八文件、先发布后测与实际结果，进行中状态按文件记录。

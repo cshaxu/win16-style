@@ -2,6 +2,9 @@
 #include <stdio.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"NATIVE COMBO FAIL line=%d error=%lu\n",__LINE__,(unsigned long)GetLastError());return 1;}}while(0)
 static HWND accepted;
+static style_instance *observed;
+static LRESULT CALLBACK detach_query(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+{(void)id;(void)data;if(m==CB_GETCOUNT)observed->detached=TRUE;return DefSubclassProc(w,m,a,b);}
 static BOOL accept_parent(HWND window){return window==accepted;}
 int main(void)
 {
@@ -9,17 +12,34 @@ int main(void)
     CHECK(InitCommonControlsEx(&common));
     HWND parent=CreateWindowW(L"STATIC",L"",WS_OVERLAPPEDWINDOW,10,10,300,200,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(parent);
     HWND combo=CreateWindowW(L"COMBOBOX",L"",WS_CHILD|CBS_DROPDOWNLIST|CBS_OWNERDRAWFIXED|CBS_HASSTRINGS,0,0,150,100,parent,NULL,GetModuleHandleW(NULL),NULL);CHECK(combo);
-    HMODULE owner=(HMODULE)GetClassLongPtrW(combo,GCLP_HMODULE);BOOL detached=FALSE;HWND expected=parent;
-    style_control_native_combo_view view={&detached,&expected,&owner};COMBOBOXINFO ci={.cbSize=sizeof(ci)};
-    CHECK(style_control_color_identity(combo,&view,&ci));
-    detached=TRUE;CHECK(!style_control_color_identity(combo,&view,&ci));detached=FALSE;
-    expected=NULL;CHECK(style_control_color_identity(combo,&view,&ci));expected=combo;
-    CHECK(!style_control_color_identity(combo,&view,&ci));expected=parent;
+    style_instance instance={0};
+    style_control_native_combo_state state={.owner=(HMODULE)GetClassLongPtrW(combo,GCLP_HMODULE),.parent=parent};
+    COMBOBOXINFO ci={.cbSize=sizeof(ci)};
+    CHECK(style_control_color_identity(combo,&instance,&state,&ci));
+    instance.detached=TRUE;CHECK(!style_control_color_identity(combo,&instance,&state,&ci));instance.detached=FALSE;
+    state.parent=NULL;CHECK(style_control_color_identity(combo,&instance,&state,&ci));state.parent=combo;
+    CHECK(!style_control_color_identity(combo,&instance,&state,&ci));state.parent=parent;
+    state.candidate=TRUE;SetLastError(0x1a2b);
+    style_control_native_combo_settle(combo,WM_PRINTCLIENT,&instance,&state,FALSE);
+    CHECK(!state.attempted && !state.installed && GetLastError()==0x1a2b);
+    style_control_native_combo_settle(combo,WM_PAINT,&instance,&state,FALSE);
+    CHECK(state.attempted && state.installed && state.parent==parent && GetLastError()==0x1a2b);
+    style_control_native_combo_state failed={.candidate=TRUE,.owner=state.owner,.parent=combo};
+    style_control_native_combo_settle(combo,WM_PAINT,&instance,&failed,FALSE);CHECK(failed.attempted && !failed.installed);
+    failed.parent=parent;style_control_native_combo_settle(combo,WM_PAINT,&instance,&failed,FALSE);CHECK(!failed.installed);
+    failed=(style_control_native_combo_state){.candidate=TRUE,.owner=state.owner};observed=&instance;
+    CHECK(SetWindowSubclass(combo,detach_query,1,0));
+    style_control_native_combo_settle(combo,WM_PAINT,&instance,&failed,FALSE);
+    CHECK(instance.detached && failed.attempted && !failed.installed);
+    CHECK(RemoveWindowSubclass(combo,detach_query,1));instance.detached=FALSE;
     HWND date=CreateWindowW(DATETIMEPICK_CLASSW,L"",WS_CHILD,0,30,150,24,parent,NULL,GetModuleHandleW(NULL),NULL);CHECK(date);
-    owner=(HMODULE)GetClassLongPtrW(date,GCLP_HMODULE);DATETIMEPICKERINFO di={.cbSize=sizeof(di)};
-    CHECK(style_control_date_identity(date,&view,&di));
-    detached=TRUE;CHECK(!style_control_date_identity(date,&view,&di));detached=FALSE;
-    owner=NULL;CHECK(!style_control_date_identity(date,&view,&di));
+    state.owner=(HMODULE)GetClassLongPtrW(date,GCLP_HMODULE);DATETIMEPICKERINFO di={.cbSize=sizeof(di)};
+    CHECK(style_control_date_identity(date,&instance,&state,&di));
+    instance.detached=TRUE;CHECK(!style_control_date_identity(date,&instance,&state,&di));instance.detached=FALSE;
+    state.owner=NULL;CHECK(!style_control_date_identity(date,&instance,&state,&di));
+    state=(style_control_native_combo_state){.candidate=TRUE,.owner=(HMODULE)GetClassLongPtrW(date,GCLP_HMODULE)};
+    SetLastError(0x3b4c);style_control_native_combo_settle(date,WM_PAINT,&instance,&state,TRUE);
+    CHECK(state.attempted && state.installed && state.parent==parent && GetLastError()==0x3b4c);
     HWND editable=CreateWindowW(L"COMBOBOX",L"",WS_CHILD|CBS_DROPDOWN,0,60,150,100,parent,NULL,GetModuleHandleW(NULL),NULL);CHECK(editable);
     COMBOBOXINFO edit_info={.cbSize=sizeof(edit_info)};CHECK(GetComboBoxInfo(editable,&edit_info) && edit_info.hwndItem && edit_info.hwndItem!=editable);
     accepted=editable;CHECK(style_control_combo_edit(edit_info.hwndItem,accept_parent));

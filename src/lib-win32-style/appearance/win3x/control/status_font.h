@@ -6,4 +6,5 @@ typedef struct win16_control_status_font_cache {
 } win16_control_status_font_cache;
 HFONT win16_control_status_font_borrow(win16_control_status_font_cache *,HDC,void *,void **);
 void win16_control_status_font_return(win16_control_status_font_cache *,HFONT);
+BOOL win16_control_status_text_supported(LPCWSTR,int);
 #endif

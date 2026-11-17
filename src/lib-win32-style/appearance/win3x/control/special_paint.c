@@ -1,3 +1,4 @@
+#include "lib-win32-style/application/control/rebar.h"
 #include "lib-win32-style/application/graphics/dc_geometry.h"
 #include "special_paint.h"
 #include "basic_paint.h"
@@ -11,36 +12,6 @@
 #include "vb_text.h"
 #include <commctrl.h>
 #include <vssym32.h>
-
-static BOOL spin_dib_open(HDC source,int width,int height,style_bitmap *d)
-{
-    SIZE size={width,height};if(!style_bitmap_ensure(d,source,size))return FALSE;
-    int saved=SaveDC(source);BOOL ok=FALSE;
-    if(saved){SetViewportOrgEx(source,0,0,NULL);SetWindowOrgEx(source,0,0,NULL);SelectClipRgn(source,NULL);
-        ok=BitBlt(d->dc,0,0,width,height,source,0,0,SRCCOPY);GdiFlush();RestoreDC(source,saved);}
-    if(!ok){style_bitmap_dispose(d);return FALSE;}return TRUE;
-}
-BOOL win16_control_spin_snapshot(HDC dc,int width,int height,const POINT pt[2],DWORD *background,BYTE *valid)
-{
-    style_bitmap d={0};if(!spin_dib_open(dc,width,height,&d))return FALSE;
-    const DWORD *pixels=(const DWORD *)d.pixels;
-    for(int y=pt[0].y;y<pt[1].y;y++)for(int x=0;x<width;x++){
-        int at=y*64+x;background[at]=pixels[y*width+x]&0x00ffffff;valid[at]=1;
-    }
-    style_bitmap_dispose(&d);return TRUE;
-}
-BOOL win16_control_spin_compose(HWND window,HDC dest,int x,int y,int width,int height,HDC source,
-    int source_width,int source_height,const RECT halves[2],const int states[2],const DWORD *background,DWORD *original)
-{
-    style_bitmap d={0};if(!spin_dib_open(source,source_width,source_height,&d))return FALSE;
-    DWORD *pixels=(DWORD *)d.pixels;
-    for(int j=y;j<y+height;j++)for(int i=x;i<x+width;i++)original[j*64+i]=pixels[j*source_width+i];
-    for(int half=0;half<2;half++)if(!win16_style_bitbtn_face(window,d.dc,&halves[half],NULL,states[half]==3?ODS_SELECTED:0)){style_bitmap_dispose(&d);return FALSE;}
-    GdiFlush();for(int j=y;j<y+height;j++)for(int i=x;i<x+width;i++){
-        int at=j*64+i;if((original[at]&0x00ffffff)!=background[at])pixels[j*source_width+i]=original[at];
-    }
-    BOOL copied=BitBlt(dest,x,y,width,height,d.dc,x,y,SRCCOPY);style_bitmap_dispose(&d);return copied;
-}
 
 BOOL win16_control_black_frame(HDC dc,const RECT *bounds,const RECT *clip)
 {
@@ -220,14 +191,14 @@ static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *a
     DWORD_PTR value;HMODULE caller=NULL;
     const UINT allowed=DFCS_BUTTONPUSH|DFCS_PUSHED|DFCS_INACTIVE|DFCS_ADJUSTRECT|DFCS_CHECKED;
     if(type!=DFC_BUTTON || !(flags&DFCS_BUTTONPUSH) || (flags&~allowed) ||
-            !ntw16s_report_paint_target(dc,w) || !ntw16s_vb_graphical_button(*w) ||
+            !style_runtime_text_report_target(dc,w) || !ntw16s_vb_graphical_button(*w) ||
             ((flags&DFCS_CHECKED) && !style_control_vb_class(*w,L"ThunderRT6OptionButton") &&
              !style_control_vb_class(*w,L"ThunderRT6CheckBox") && !style_control_vb5_class(*w,L"ThunderRT5CheckBox") &&
              !style_control_vb5_class(*w,L"ThunderRT5OptionButton")) ||
             !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)address,&caller) ||
             caller!=(HMODULE)GetClassLongPtrW(*w,GCLP_HMODULE) ||
             !GetWindowSubclass(*w,proc,(UINT_PTR)proc,&value))return NULL;
-    control_style *s=(void *)value;return !s->instance.detached && s->scroll.resources.frame?s:NULL;
+    control_style *s=(void *)value;return !s->instance.detached && s->bindings.scroll.resources.frame?s:NULL;
 }
 BOOL win16_control_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy,SUBCLASSPROC proc)
 {
@@ -243,4 +214,16 @@ BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,
     if(!s || !rect || !GetClientRect(w,&client) || !EqualRect(rect,&client) ||
             !style_dc_pixel_viewport(dc))return FALSE;
     return win16_control_graphical_face(w,dc,rect,flags,&s->palette);
+}
+
+BOOL win16_control_cool_grip_identity(HWND w,void *owner,const NMCUSTOMDRAW *n,WNDPROC native,BOOL (*valid)(HWND,void *))
+{
+    const style_control_rebar_scope scope={w,owner,native,valid};style_control_rebar_probe p;RECT overlap,r=n->rc;
+    if(!style_control_rebar_read(&scope,n,CCS_VERT,&p) ||
+       (p.bar_back!=CLR_NONE && p.bar_back!=GetSysColor(COLOR_BTNFACE)) || (p.bar_fore!=CLR_NONE && p.bar_fore!=GetSysColor(COLOR_BTNTEXT)) ||
+       p.back!=GetSysColor(COLOR_BTNFACE) || p.fore!=GetSysColor(COLOR_BTNTEXT) || p.bitmap || p.text[0] || p.text_capacity>ARRAYSIZE(p.text) || p.image!=-1 ||
+       !p.child || GetParent(p.child)!=w || (p.style&~(RBBS_BREAK|RBBS_FIXEDBMP|RBBS_GRIPPERALWAYS)) || !style_control_rebar_geometry(&scope,&p))return FALSE;
+    return !IsRectEmpty(&r) && r.left==p.band.left && r.top==p.band.top && r.bottom==p.band.bottom && p.border.left>0 &&
+        r.right<=p.band.left+p.border.left && r.right-r.left<=MulDiv(12,p.dpi,96) && r.left>=p.client.left && r.top>=p.client.top &&
+        r.right<=p.client.right && r.bottom<=p.client.bottom && !IntersectRect(&overlap,&r,&p.child_rect);
 }

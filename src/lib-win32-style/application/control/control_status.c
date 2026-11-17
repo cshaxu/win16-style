@@ -2,12 +2,12 @@
 #include <commctrl.h>
 #include <wchar.h>
 
-void style_control_status_invalidate(UINT m,BOOL *font_invalid,unsigned *epoch)
+void style_control_status_invalidate(UINT m,BOOL *font_invalid,style_control_status_state *state)
 {
     if(m==WM_SETFONT || m==WM_FONTCHANGE || m==WM_SETTINGCHANGE || m==WM_THEMECHANGED || m==WM_DPICHANGED)*font_invalid=TRUE;
     if(m==WM_SETTEXT || m==SB_SETPARTS || m==SB_SETTEXTA || m==SB_SETTEXTW || m==SB_SIMPLE ||
         m==SB_SETICON || m==SB_SETMINHEIGHT || m==WM_SETFONT || m==WM_STYLECHANGED ||
-        m==WM_SIZE || m==WM_ENABLE || m==WM_SETTINGCHANGE || m==WM_DESTROY || m==WM_NCDESTROY)++*epoch;
+        m==WM_SIZE || m==WM_ENABLE || m==WM_SETTINGCHANGE || m==WM_DESTROY || m==WM_NCDESTROY)++state->epoch;
 }
 
 static BOOL status_system_module(HMODULE image)
@@ -22,7 +22,7 @@ static BOOL status_system_module(HMODULE image)
     return wcslen(path)>length && CompareStringOrdinal(path,(int)length,winsxs,(int)length,TRUE)==CSTR_EQUAL;
 }
 
-BOOL style_control_status_identity(HWND w,const style_control_status_view *a,HMODULE *native)
+BOOL style_control_status_identity(HWND w,const style_instance *instance,const style_control_status_state *a,LPCWSTR class_name,HMODULE *native)
 {
     WCHAR name[64];DWORD pid=0;WNDCLASSEXW cls={.cbSize=sizeof(cls)};HMODULE image=NULL;
     if(GetWindowThreadProcessId(w,&pid)!=GetCurrentThreadId() || pid!=GetCurrentProcessId() ||
@@ -33,37 +33,48 @@ BOOL style_control_status_identity(HWND w,const style_control_status_view *a,HMO
             (LPCWSTR)(UINT_PTR)cls.lpfnWndProc,&image) || !status_system_module(image) ||
         GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)cls.cbWndExtra)return FALSE;
     if(lstrcmpiW(name,STATUSCLASSNAMEW)){
-        if(!a || !*a->candidate || !*a->witness_owner || *a->detached ||
-            !a->class_name || lstrcmpW(name,a->class_name) || (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=*a->witness_owner ||
+        if(!a || !a->candidate || !a->witness_owner || instance->detached ||
+            !class_name || lstrcmpW(name,class_name) || (HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=a->witness_owner ||
             GetWindowThreadProcessId(GetParent(w),NULL)!=GetCurrentThreadId() ||
-            (*a->parent && GetParent(w)!=*a->parent))return FALSE;
+            (a->parent && GetParent(w)!=a->parent))return FALSE;
     }else if((HMODULE)GetClassLongPtrW(w,GCLP_HMODULE)!=image ||
         GetClassLongPtrW(w,GCLP_WNDPROC)!=(ULONG_PTR)cls.lpfnWndProc)return FALSE;
     if(native)*native=image;
     return TRUE;
 }
 
-void style_control_status_snapshot(HWND w,const style_control_status_snapshot_view *s)
+BOOL style_control_status_settle(HWND w,UINT m,const style_instance *instance,style_control_status_state *state,LPCWSTR class_name)
 {
-    *s->simple=s->identity(w,s->owner,s->native) && SendMessageW(w,SB_ISSIMPLE,0,0) && !*s->detached && s->epoch==*s->owner_epoch;
-    if(*s->simple){
+    if(m!=WM_PAINT || !state->candidate || state->attempted || instance->detached || !state->witness_owner)return FALSE;
+    DWORD error=GetLastError();BOOL installed=FALSE;state->attempted=TRUE;
+    if(style_control_status_identity(w,instance,state,class_name,NULL)){
+        state->parent=GetParent(w);state->installed=TRUE;installed=TRUE;InvalidateRect(w,NULL,TRUE);
+    }
+    if(installed)state->present=TRUE;
+    SetLastError(error);return installed;
+}
+void style_control_status_read(HWND w,const style_instance *instance,const style_control_status_state *state,LPCWSTR class_name,style_control_status_snapshot *s)
+{
+    *s=(style_control_status_snapshot){.epoch=state->epoch};
+    s->simple=style_control_status_identity(w,instance,state,class_name,&s->native) && SendMessageW(w,SB_ISSIMPLE,0,0) && !instance->detached && s->epoch==state->epoch;
+    if(s->simple){
         LRESULT length=SendMessageW(w,SB_GETTEXTLENGTHW,0,0);
-        if(*s->detached || s->epoch!=*s->owner_epoch || HIWORD(length)!=0 || LOWORD(length)==0 || LOWORD(length)>512)*s->simple=FALSE;
+        if(instance->detached || s->epoch!=state->epoch || HIWORD(length)!=0 || LOWORD(length)==0 || LOWORD(length)>512)s->simple=FALSE;
         else {
             int copied=GetWindowTextW(w,s->simple_text,(int)LOWORD(length)+1);
-            if(*s->detached || s->epoch!=*s->owner_epoch || copied!=(int)LOWORD(length) || !s->identity(w,s->owner,NULL))*s->simple=FALSE;
-            else *s->simple_length=copied;
+            if(instance->detached || s->epoch!=state->epoch || copied!=(int)LOWORD(length) || !style_control_status_identity(w,instance,state,class_name,NULL))s->simple=FALSE;
+            else s->simple_length=copied;
         }
     }
-    if(!*s->simple && s->identity(w,s->owner,s->native) && !SendMessageW(w,SB_ISSIMPLE,0,0) && !*s->detached && s->epoch==*s->owner_epoch){
+    if(!s->simple && style_control_status_identity(w,instance,state,class_name,&s->native) && !SendMessageW(w,SB_ISSIMPLE,0,0) && !instance->detached && s->epoch==state->epoch){
         LRESULT count=SendMessageW(w,SB_GETPARTS,0,0);
-        if(count>0 && count<=64 && !*s->detached && s->epoch==*s->owner_epoch){
+        if(count>0 && count<=64 && !instance->detached && s->epoch==state->epoch){
             for(unsigned i=0;i<(unsigned)count;++i){RECT r={0};LRESULT type=SendMessageW(w,SB_GETTEXTLENGTHW,i,0);
-                if(*s->detached || s->epoch!=*s->owner_epoch)break;
+                if(instance->detached || s->epoch!=state->epoch)break;
                 if((HIWORD(type)&~(SBT_OWNERDRAW|SBT_NOBORDERS)) || !SendMessageW(w,SB_GETRECT,i,(LPARAM)&r))continue;
-                if(*s->detached || s->epoch!=*s->owner_epoch)break;
-                if(!(HIWORD(type)&SBT_OWNERDRAW))s->text_panes[(*s->text_count)++]=r;
-                if(!(HIWORD(type)&SBT_NOBORDERS))s->panes[(*s->count)++]=r;
+                if(instance->detached || s->epoch!=state->epoch)break;
+                if(!(HIWORD(type)&SBT_OWNERDRAW))s->text_panes[(s->text_count)++]=r;
+                if(!(HIWORD(type)&SBT_NOBORDERS))s->panes[(s->count)++]=r;
             }
         }
     }

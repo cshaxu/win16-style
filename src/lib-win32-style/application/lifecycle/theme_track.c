@@ -117,3 +117,14 @@ BOOL style_theme_track_end(HTHEME h,style_theme_track_ticket t,int kind)
     BOOL ok = t.eligible && t.theme == h && !disabled && !closing && !opening && t.epoch == epoch && r && r->kind==kind && !r->ambiguous;
     ReleaseSRWLockShared(&lock); return ok;
 }
+
+int style_theme_classify(LPCWSTR name)
+{
+    WCHAR safe[9];SIZE_T got=0;
+    if(!name || !ReadProcessMemory(GetCurrentProcess(),name,safe,7*sizeof(WCHAR),&got) || got!=7*sizeof(WCHAR))
+        return STYLE_THEME_OTHER;
+    if(safe[6]==0 && !lstrcmpiW(safe,L"BUTTON"))return STYLE_THEME_BUTTON;
+    if(!ReadProcessMemory(GetCurrentProcess(),name,safe,sizeof(safe),&got) || got!=sizeof(safe))return STYLE_THEME_OTHER;
+    if(safe[8]==0 && !lstrcmpiW(safe,L"COMBOBOX"))return STYLE_THEME_COMBOBOX;
+    return safe[8]==0 && !lstrcmpiW(safe,L"TEXTGLOW")?STYLE_THEME_TEXTGLOW:STYLE_THEME_OTHER;
+}

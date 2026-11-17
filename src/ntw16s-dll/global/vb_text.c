@@ -24,7 +24,7 @@ static BOOL CALLBACK originals_init(PINIT_ONCE once,void *parameter,void **conte
 static HGDIOBJ begin_text(HDC dc)
 {
     HFONT font=NULL;
-    if(!text_depth++ && ntw16s_vb_direct_text_allowed() && ntw16s_vb_paint_active())font=ntw16s_vb_paint_font(dc);
+    if(!text_depth++ && style_runtime_text_direct_allowed() && style_runtime_text_active())font=ntw16s_vb_paint_font(dc);
     HGDIOBJ previous=font?SelectObject(dc,font):NULL;
     return previous==HGDI_ERROR?NULL:previous;
 }

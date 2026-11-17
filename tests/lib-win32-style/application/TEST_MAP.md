@@ -93,3 +93,86 @@
 | `control/button_snapshot` | `control/button_snapshot.c`: native BUTTON/STATIC role/state/check/text, borrowed font/icon, query-time retirement and text cleanup; actual basic controls rendering |
 | `control/combo_snapshot` | `control/combo_snapshot.c`: native dropdown/dropdownlist/simple info/text/font/children, drop state, native info failure and font-query removal cleanup; actual VCL combo and present suites |
 | `control/combo` setup | `control/combo.c`: parent/child publication, query/install/edit failure, install/edit retirement, failed rollback retaining identity and successful cleanup; actual combo installation |
+
+S10 `adapters/win32/checklist.c` → `tests/lib-win32-style/application/adapters/win32/checklist.c` 与无风格 `checklist_fixture.c`：真实native LISTBOX、runtime模块/DC身份、可配置区域上限、借用位图、两种启用/选中偏移、嵌套排除及查询中disable/style/reparent。产品组合仍由现有VCL/VB checklist夹具验证原资源绘制及回退，不把公共回调测试称像素验收。
+
+S10 `control/control_native_combo.c` → 同名测试：公共native witness对象与instance、首次paint观察/提交、失败后不重复接入、查询中detached、entry LastError保留，以及原有color/date/edit/dialog身份关系。实际按钮区域及应用原生内容仍由产品原生color/date夹具复核。
+
+S10 `control/native.c`、`header_snapshot.c`、`progress_snapshot.c` → 对应同名纯C测试：实际COMCTL消息返回/支持查询时机、header命中/pressed、epoch、progress借用print DC与绘中退场；原生Unicode长文本/格式mask/foreign pointer/失效清理及progress值/色彩/失效。原`header_paint_owner.c`同时编译实际公共header_snapshot和实际profile painter，保留16项分配失败/重入/销毁/DC断言，不能因迁移丢失OOM注入。
+
+- `control/tab_snapshot.c/h` → `control/tab_snapshot.c`：无年代依赖的tab原生读/双遍顺序、长Unicode、page/child裁剪、借用图片、epoch/退场/查询失败及DC；实际Win3x消费由产品tab v5/v6夹具覆盖。
+
+- `control/notify.c/h` → `control/notify.c`：原生通知返回/私有绘制阶段、父子绑定所有权、失效引用退场、LastError、原生派发作用域与异常展开；实际runtime-track/toolbar由对应产品夹具覆盖。
+
+- `control/native_overlay.c/h`及`control_native_combo`按钮快照 → `control/native_overlay.c`：颜色/日期/pressed原生采集，print借用DC/原生裁剪保存恢复、paint DC、查询退场、精确region释放和LastError；实际模块异常/重入由color/date产品夹具覆盖。
+
+- `control/runtime.c/h` → `control/runtime.c`：真实原生protocol安装且无年代样式、一次尝试/重入、apply失败remove/release、query/apply失效所有权、parent、LastError和幂等dispose；五种角色的实际Win3x安装由对应模块回归覆盖。
+
+- `control/runtime`的edit/link/combo → `control/runtime.c`及现有edit/combo/link产品模块：原生edit协议、前后角色、一次尝试/重入、失败/失效所有权与fresh-link-witness。
+- `control/report.c/h` → `control/report.c`：无风格native list/tree通知绑定、owner子类、runtime提交/失败/失效所有权、fresh-witness与LastError；实际list/tree由产品模块覆盖。
+
+- `control/edge.c/h` → `control/edge.c`：延迟parent绑定/先发布edge、data绘后重查与user原顺序、apply失败/失效、重入、grid原生scroll和查询退场、LastError；真实VB/grid由产品夹具覆盖。
+
+S10 runtime rich/frame: `adapters/win32/runtime_identity.{c,h}` → `adapters/win32/runtime_identity.c`; independent native identity/state/settle/retire without a renderer. Product rich/box/controlbar/group/panel models retain the actual rendering, native forwarding and reparent regressions.
+
+S10 native group/panel paint association: `adapters/win32/frame_paint.{c,h}` → `adapters/win32/frame_paint.c`; public native pairing, caller/DC identity and complete-state commit use a no-style observer. Actual group/radio/panel/default/aware rendering remains covered by existing product models; private vcl_frame_policy.c/h removed.
+
+S10 native forwarded-paint witnesses: `adapters/win32/runtime_observer.{c,h}` → `adapters/win32/runtime_observer.c`; complete public runtime/observation,13 native roles, ANSI DB variants, rich/box/static/cool, ownership/detach/attempt/scope rejection without rendering. Product native models retain actual protocol, drawing, reentry and unwind checks.
+
+S10 runtime roles/related instance leases: `adapters/win32/runtime_roles.{c,h}` → `adapters/win32/runtime_roles.c`; real native instance attach/retire, transferred final-release ownership and popup→MDI release order, identity replacement, inplace/nav and terminal scroll guards without renderer. Product MDI/lookup/bit/static/navigation models verify actual composition.
+
+S10 spin buffered native protocol: `control/spin.{c,h}` → `control/spin.c`; native clone cap/borrow, print DC source, half invalidation, invalid rect, selected/deleted bitmap and nested DC cleanup without style. Product modern/legacy/spinedit models retain actual two-half composition, application glyph/pixel preservation, failure/theme/clip and unwind assertions.
+
+S10 toolbar text/native items: `control/toolbar_text.{c,h}` → `control/toolbar_text.c`; real native metadata/text/rect/find, policy rejection before text query,512 text bound and1024/1025 native item boundary without style. Existing VCL toolbar actual model covers64/65,duplicate IDs,images,callbacks,app skip,clip and native retention.
+
+`control/toolbar_text_bounds.c` retains the original actual v5/v6 production-reader700-character canary and510/511 boundary cases; it moved with the reader from tests/ntw16s-dll, removes private source includes/fake font/protocol stubs, and both CTest/package entries explicitly bypass private desktop creation.
+
+S10 month native scope: `control/month.{c,h}` → `control/month.c`; real v6 COMCTL superclass queries verify geometric success,current/detach rejection,partial header commit,nested suppression and native unwind/later query. Selection pairing/caller/native theme and shared title-fit use no style renderer. Existing month_model retains all actual Win3x font/pixel/fallback checks.
+
+S10 status_paint.c/h：control/control_status.c真实v5/v6消息/DC、final pane text/icon、epoch/detached、原生调用者、主题配对/嵌套barrier/复制文本/512界限；双宽产品status_module/simple/pane/font原绘制与字体借用异常测试对应旧绘图入口。公共scope持完整快照，Win3x status_font仅提供已有限定文字资格/实际字体与token。
+
+S10 application/lifecycle/dispatch.c/h：lifecycle/dispatch.c实际窗口与subclass，默认DefSubclassProc/可选invoke、嵌套顺序、entry/return LastError、一次finish、原生异常及后续调用。生产attachment的static/cool/box/lookup/spin/color/status/bit八个路径共用completed/native-unwind事务；各资源end保持原顺序，实际模型同时覆盖正常与异常绘制。
+
+S10 control/guard.c/h：control/guard.c实际BUTTON/subclass转发先行，角色失效/owner-draw/不支持choice三种退役、不同失败回退、原始字体提交、转发内detach/destroy及terminal/release。lifecycle/instance.c新增owned lease真实同HWND替换/错误subclass data/租约跨destroy后最后归还；产品updown安装直接用公共instance租约，原updown_owner自建owner回调仍保留。
+
+同组control_state.c的message_finish对应原control_lifetime操作：公开state、真实替换subclass后继字体及无后继回退、native-paint深度/字体lease/最后instance释放；Win3x scrollbars_paint仅renderer palette组合并入scroll_native，无第二份实现。
+
+S10 adapters/win32/runtime_native.c/h：对应runtime_native.c真实STATIC superclass+CallWindowProc调用、原生见证/有效嵌套/不匹配barrier、完整instance退役/current window、原生异常后manager恢复与后续调用；runtime_observer.c保留13-role见证顺序。产品CallWindowProcW采用同一公共begin/end，private static scope/suspend/end已删，Win3x仅保留实际文字资格/font provider。
+
+同组lifecycle/install的setup_finish消费既有保活引用、成功/失败移除/已退役/失败移除保留/target销毁及旧LastError副作用，实际frame-install原生矩阵验证；profile track/toolbar/grid直接接入，旧finish_install删除，首次publication仍用既有install事务，不复制安装器。
+
+S10 notify.c/h的track_message与track_calls：control/track_message.c真实v5/v6 TRACKBAR、原生子类先转发/缓存刷新、SetParent后owned unbind不重绑、独立notify owner、native内detach/destroy与最后引用；既有notify.c保留私有通知阶段、结果/LastError与native-unwind作用域恢复，只替换为完整manager。产品私有track分派已删除，实际VCL track/native track/toolbar验证原绘制与重入退役。
+
+S10 rebar native probe: `control/rebar.{c,h}` -> `control/rebar_probe.c` (v5/v6): native REBAR procedure, copied values, ordered queries, invalidation, DC qualification, caller style mask and post-policy geometry.
+
+S10 owner-draw overlay: `control/basic.{c,h}` -> `control/owner_message.c`: actual subclass/native-first, input, owned paint DC, borrowed print DC, detach/destroy and renderer reentry. Product CoolBar/VB file/combo models retain policy and pixel checks.
+
+S10 native updown registry: `control/updown.{c,h}` -> `control/updown.c`: independent Win32 windows/DCs,32 slots/overflow/deletion, native module/thread identity, false-with-window scope barrier, own lease/ref/retire and frame/theme decoding; no Win3x dependency. Existing product `tests/ntw16s-dll/updown_owner.c` retains actual original glyph renderer, deleted-DC fallback and165 handle cleanup; actual spin/track/toolbar models cover hook consumers.
+
+S10 native/report text scopes: `adapters/win32/runtime_text.{c,h}` -> `adapters/win32/runtime_text.c`: native/window/DC and text/report nested managers, opaque borrowed context, callback ordering, cancellation, module/thread identity, actual native and nested exception cleanup via dispatch; no Win3x font dependency. `lifecycle/theme_track.{c,h}` -> existing `lifecycle/theme_track.c` now owns original6 bounded native-class assertions; kinds do not choose styles. Profile font/glyph acquisition keeps actual VB font/consumer tests.
+
+S10 aggregate binding ownership: `control/bindings.{c,h}`, `control_state:font_read`, `lifecycle/instance:preflight` -> `control/bindings.c`: actual Windows subclass/font query cancellation and reentrant zero-data installation, foreign thread rejection, native setup/removal, owned parent notifications/updown, ordered ordinary/terminal child/theme/font/redraw release and timer cancellation; no Win3x. Existing combo/setup/retire/instance and product lifetime/presentation/track/spin/combo fixtures retain actual rendering/ownership coverage.
+
+S10 paint manager: `adapters/win32/paint_dispatch.{c,h}` -> `adapters/win32/paint_dispatch.c`: eight real native subclass paths, ordinary/nested and native exception paths with exactly-one borrowed call release, static barrier, owner-draw payload, actual region/heap disposal, error and head restoration. Actual product CoolBar/box/panel/status/month/spin/color/bit/lookup models cover renderer-qualified observations. Native/default remains the original unprotected passthrough, not a new recovery claim.
+
+`adapters/win32/message.c/.h` uses the same native `adapters/win32/paint_dispatch.c` test: full message retain/guard/prepare, status/spin prior heads, ordinary and nested native unwind/last reference. Actual VB/VCL role models cover ordered post-native settlement; these test files consume production message implementation, not a second coordinator. `runtime_text.c` covers report prepare native DC/file-owner/cancel and existing report/direct module callers.
+
+`adapters/win32/message.c` parent notification entry is also covered by `adapters/win32/report_notify.c`: native result/error, three custom-draw stages/skip, file/button scopes, wrong payload/reparent, retired instance and parent subclass cleanup. Product VB/VCL probes retain their actual font/drawing assertions.
+
+`adapters/win32/attachment.c/.h` is covered by `adapters/win32/runtime_attachment.c`: native published public root,16 role states/policy, foreign thread, failed detach ownership, reentrant ordinary removal, terminal first-error/unowned node and last release. Existing actual VB/VCL/lifetime/present probes consume the same product adapter and public root.
+
+`control/message.c/.h` is covered by `control/message.c`: real native subclass forwarding, guard/prepare short circuits, owned temporary font leases, nested messages, rewritten native arguments and detach/last release during dispatch. Profile `control_link.c` retains original font-policy assertions through the full public message object; actual VB/VCL/controls/present models cover native family observation and font/layout behavior.
+
+`adapters/win32/attachment` native seed path is covered by existing `runtime_attachment.c`: caller-selected family metadata, owner policy exact phase, MDI/popup held references, unpublished failure cleanup and target last release. Product classification still supplies actual supported families; tests do not register new runtime classes or enlarge target scope.
+
+`adapters/win32/attachment` install settlement uses the same native test: 24 LISTBOX/EDIT/COMBOBOX/STATIC combinations cover theme target, file-owner exemption, list/edit scrollbar setup, original error, setup failure, cancellation and failed removal ownership. Product render selection remains in appearance; shared root owns the transaction.
+
+`adapters/win32/attachment.c` / `style_runtime_attachment_current` is exercised in the existing `runtime_attachment.c` test: six witnessed-role rejection paths, unwitnessed candidates, native tab class/parent/RTL, exact data/user policy phases and short circuit, root replacement during policy, retirement and no-root target. Product controls call the same complete operation; no era painter or process hook is linked by the independent test.
+
+`adapters/win32/attachment.c` late control install/remove callbacks are covered by `runtime_attachment.c`: 12 native EDIT/other-role cases for renderer/theme/scrollbar failure, cancellation before and during theme setup, link/combo/spinedit/single-line exclusions, renderer removal failure and exact theme-target clearing. Original outer runtime settlement still owns protocol/rollback/entry LastError.
+
+`adapters/win32/attachment` publication uses the existing `runtime_attachment.c` native seed test: successful publication retains the initial call; duplicate native subclass rejection releases both related borrows before raw owner discard, preserves ERROR_ALREADY_EXISTS despite discard changing LastError, and does not invoke ordinary dispose. Product initialization calls this same transaction with free.
+
+`adapters/win32/runtime_roles` guard additionally validates caller-selected owner-draw parent relationships in the existing native `runtime_roles.c`: unchanged/changed parent, non-owner, no recorded parent, destroy/terminal bypass, already-retired and failed removal continuing to later runtime-role checks. Win3x keeps supported drawing policy and calls this existing common guard; no parallel guard manager is introduced.
+
+`application/control/bindings` setup owns the existing optional list-theme capture/enable/cancel transaction as well as release. Existing `control/bindings.c` native12-case table verifies exact caller phase, preexisting lease, capture/enable failure, retirement inside either callback, final cancellation precedence, non-list exclusion, unchanged held call, owned-flag publication before enable and release only by the captured owner. Actual grid/directory fixtures consume the same setup; default ordinary options remain unchanged.

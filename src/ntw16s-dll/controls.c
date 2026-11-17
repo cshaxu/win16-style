@@ -1,20 +1,14 @@
+#include "lib-win32-style/application/control/guard.h"
 #include "../lib-win32-style/appearance/win3x/control/control_class.h"
 #include "lib-win32-style/appearance/win3x/control/scroll_native.h"
 #include "attachment.h"
-/* Internal guard for a witnessed VCL group button. */
-BOOL ntw16s_group_button_valid(HWND);
-BOOL ntw16s_vcl_combo_valid(HWND);
+/* Product policies and shared runtime-role check. */
+BOOL ntw16s_control_role_valid(HWND);
 BOOL ntw16s_vcl_combo_candidate(HWND);
 BOOL ntw16s_group_push_button(HWND);
 BOOL ntw16s_group_choice_button(HWND);
-BOOL ntw16s_grid_valid(HWND);
-BOOL ntw16s_rich_valid(HWND);
-BOOL ntw16s_vb_user_edge_valid(HWND);
-BOOL ntw16s_vb_data_valid(HWND);
 BOOL ntw16s_vb_data_attached(HWND);
 BOOL ntw16s_vb_user_edge_dormant(HWND);
-BOOL ntw16s_vcl_toolbar_valid(HWND);
-BOOL ntw16s_vcl_tab_valid(HWND);
 #include "controls.h"
 #include "../lib-win32-style/appearance/win3x/control/basic_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/other_paint.h"
@@ -28,15 +22,12 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "../lib-win32-style/appearance/win3x/control/choice_view.h"
 #include "lib-win32-style/application/control/control_vcl_spin.h"
 #include "../lib-win32-style/appearance/win3x/control/control_state.h"
-#include "../lib-win32-style/appearance/win3x/control/fileowner_message.h"
-#include "../lib-win32-style/appearance/win3x/control/notify_message.h"
+#include "lib-win32-style/application/control/notify.h"
 #include "lib-win32-style/application/control/combo.h"
 #include "../lib-win32-style/appearance/win3x/control/native_presentation.h"
 #include "../lib-win32-style/appearance/win3x/control/control_dispatch.h"
-#include "../lib-win32-style/appearance/win3x/control/control_lifetime.h"
 #include "../lib-win32-style/appearance/win3x/control/control_guard.h"
 #include "../lib-win32-style/appearance/win3x/control/control_install.h"
-#include "../lib-win32-style/appearance/win3x/control/control_remove.h"
 #include "../lib-win32-style/appearance/win3x/control/special_install.h"
 
 #include "../lib-win32-style/appearance/win3x/resources/scroll_assets.h"
@@ -48,7 +39,7 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include "lib-win32-style/appearance/win3x/control/header_paint.h"
 #include "lib-win32-style/appearance/win3x/control/progress_paint.h"
 #include "lib-win32-style/appearance/win3x/control/trackbar_paint.h"
-#include "../lib-win32-style/appearance/win3x/control/updown_adapter.h"
+#include "lib-win32-style/appearance/win3x/control/toolbar_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/vb_text.h"
 #include "../lib-win32/process-hook/unwind.h"
 #include <commctrl.h>
@@ -58,22 +49,10 @@ BOOL ntw16s_vcl_tab_valid(HWND);
 #include <stdlib.h>
 #include <limits.h>
 
-static _Thread_local track_paint_scope *track_paint;
-static void track_paint_end(void *data)
-{track_paint_scope *scope=data;track_paint=scope->previous;}
-static PROCESS_HOOK_UNWIND_FUNCTION LRESULT track_paint_dispatch(control_style *s,HWND w,UINT m,WPARAM a,LPARAM b)
-{
-    track_paint_scope scope={.previous=track_paint,.owner=s};process_hook_unwind_scope unwind;
-    DWORD entry=GetLastError(),error;LRESULT result;
-    track_paint=&scope;PROCESS_HOOK_UNWIND_BEGIN(unwind,track_paint_end,&scope);
-    SetLastError(entry);result=DefSubclassProc(w,m,a,b);error=GetLastError();
-    PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
-}
+static _Thread_local style_control_track_calls track_calls;
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK trackbar_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK toolbar_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
-static BOOL updown_acquire(void *owner)
-{return win16_control_updown_acquire(owner,control_proc);}
 
 static style_control_state *lookup_control(HWND window)
 {
@@ -81,14 +60,20 @@ static style_control_state *lookup_control(HWND window)
     return instance?&((control_style *)instance)->state:NULL;
 }
 static const style_control_combo_ops combo_operations={win16_style_vb_font_acquire,lookup_control};
-static void trackbar_unbind(control_style *s)
-{style_control_subclass_remove_owned(s->track_parent,trackbar_notify,(UINT_PTR)s->track_window,s);s->track_parent=NULL;s->track_internal=FALSE;}
-static void toolbar_unbind(control_style *s)
-{style_control_subclass_remove_owned(s->toolbar_parent,toolbar_notify,(UINT_PTR)s->toolbar_window,s);s->toolbar_parent=NULL;s->toolbar_internal=FALSE;}
+static BOOL track_border(HWND w,const NMCUSTOMDRAW *draw,const void *context)
+{return win16_style_trackbar_runtime_border(w,draw,context);}
 static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
-{return win16_control_trackbar_notify(parent,m,p,l,id,(control_style *)data,trackbar_notify,&track_paint);}
+{
+    control_style *s=(control_style *)data;
+    const style_control_notify_ops ops={&s->palette,win16_style_trackbar_supported,win16_style_trackbar_part,track_border};
+    return style_control_notify_message(parent,m,p,l,id,&s->instance,&s->bindings.track,trackbar_notify,&track_calls,&ops);
+}
 static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
-{return win16_control_toolbar_notify(parent,m,p,l,id,(control_style *)data,toolbar_notify);}
+{
+    control_style *s=(control_style *)data;
+    const style_control_notify_ops ops={&s->palette,win16_style_toolbar_supported,win16_style_toolbar_part,NULL};
+    return style_control_notify_message(parent,m,p,l,id,&s->instance,&s->bindings.toolbar,toolbar_notify,NULL,&ops);
+}
 static BOOL is_exact_native_button(HWND w)
 {WCHAR name[32];return GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"BUTTON");}
 
@@ -144,7 +129,7 @@ static BOOL edit_thumb_messages(HWND w,LONG object)
 
 static void draw_scroll(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical)
 {
-    const win16_control_scroll_view view={&s->palette,&s->scroll,scroll_layout,
+    const win16_control_scroll_view view={&s->palette,&s->bindings.scroll,scroll_layout,
         embedded_scroll_layout,edit_thumb_messages,list_axis_owned};
     win16_control_draw_scroll(w,&view,dc,object,vertical);
 }
@@ -162,9 +147,9 @@ static void scroll_caret_sync(HWND w,control_style *s)
     style_scroll_layout layout;RECT rectangle;
     if(s->instance.detached || !style_control_is_scroll(w))return;
     if(GetFocus()!=w || !IsWindowEnabled(w) || !scroll_layout(w,&layout) || !layout.thumb_fits){
-        style_scroll_caret_destroy(w,&s->scroll.resources);return;}
-    rectangle=win16_scroll_caret_rectangle(w,&layout,&s->scroll.track);
-    style_scroll_caret_sync(w,&s->scroll.resources,&rectangle,s->scroll.track.active);
+        style_scroll_caret_destroy(w,&s->bindings.scroll.resources);return;}
+    rectangle=win16_scroll_caret_rectangle(w,&layout,&s->bindings.scroll.track);
+    style_scroll_caret_sync(w,&s->bindings.scroll.resources,&rectangle,s->bindings.scroll.track.active);
 }
 static void scroll_nonclient_callback(HWND w,void *context,HDC dc)
 {nonclient_scrollbars(w,(control_style *)context,dc);}
@@ -181,9 +166,9 @@ static style_scroll_ops scroll_operations(control_style *s)
         scroll_draw_callback,scroll_nonclient_callback,scroll_caret_callback};
 }
 static void scroll_finish(HWND w,control_style *s,BOOL cancel)
-{const style_scroll_ops ops=scroll_operations(s);style_scroll_finish(w,&s->instance,&s->scroll,&ops,cancel);}
+{const style_scroll_ops ops=scroll_operations(s);style_scroll_finish(w,&s->instance,&s->bindings.scroll,&ops,cancel);}
 static BOOL embedded_scroll_input(HWND w,control_style *s,UINT m,WPARAM a,LPARAM b)
-{const style_scroll_ops ops=scroll_operations(s);return style_scroll_embedded_input(w,&s->instance,&s->state,&s->scroll,&ops,m,a,b);}
+{const style_scroll_ops ops=scroll_operations(s);return style_scroll_embedded_input(w,&s->instance,&s->state,&s->bindings.scroll,&ops,m,a,b);}
 
 /* Only screen WM_PAINT uses this transient surface. Keep WM_PRINTCLIENT on
  * its borrowed DC. Seed the dirty rectangle so group interiors and native
@@ -205,38 +190,24 @@ static void draw_sizebox(HWND w,control_style *s,HDC dc)
 {(void)s;win16_control_draw_sizebox(w,dc);}
 /* The v5 progress color and state getters are unavailable. Only paint the
  * verified static edge, after the native procedure; leave the client intact. */
+static LRESULT control_dispatch(HWND w,void *context,style_control_message *call)
+{
+    control_style *s=context;const style_scroll_ops scroll=scroll_operations(s);
+    const win16_control_fileowner_services fileowner={embedded_scroll_input,draw_combo,list_border,nonclient_scrollbars};
+    const win16_control_list_services list={embedded_scroll_input,present_control,draw_list,list_border,nonclient_scrollbars};
+    const win16_control_edit_services edit={embedded_scroll_input,nonclient_scrollbars,list_border,edit_border};
+    const win16_control_dispatch_services services={win16_style_control_terminal,&track_calls,trackbar_notify,
+        present_control,win16_control_draw_tab,win16_control_draw_header,win16_control_draw_progress,draw_combo,draw,list_border,draw_sizebox,
+        &scroll,&fileowner,&list,&edit};
+    return win16_control_dispatch_message(w,s,&call->message,&call->parameter,&call->value,call->tab,call->header,call->progress,&services);
+}
 static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
-    control_style *s=(control_style *)data;LRESULT result=0;HFONT previous=NULL,pinned=s->state.font,outbound=NULL;(void)id;style_instance_retain(&s->instance);
-    RECT spin_before={0};HWND spin_button=style_control_vcl_spin_before(w,m,&spin_before);
-    BOOL tab=style_control_is_tab(w),header=style_control_is_header(w),progress=style_control_class_is(w,PROGRESS_CLASSW),native_font=tab || header;
-    BOOL combo_paint=style_control_vb_combo(w) && (m==WM_PAINT || m==WM_PRINT || m==WM_PRINTCLIENT);if(combo_paint)++s->state.native_paints;
-    if(progress && win16_style_progress_changes(m))++s->progress_epoch;
-    if(tab && win16_style_tab_changes(m))++s->tab_epoch;
-    if(header && win16_style_header_changes(m))++s->header_epoch;
-    win16_style_system_retain(pinned);
-    {
-        const win16_control_guard_services guard={ntw16s_rich_valid,ntw16s_vcl_combo_valid,ntw16s_group_button_valid,ntw16s_grid_valid,
-            ntw16s_vb_data_valid,ntw16s_vb_user_edge_valid,ntw16s_vcl_toolbar_valid,ntw16s_vcl_tab_valid,ntw16s_vb_user_edge_dormant,
-            is_exact_native_button,style_control_vb_checkbox,style_control_vb_option,ntw16s_vb_plain_choice,ntw16s_vb_graphical_choice,
-            ntw16s_vb_graphical_button,Ntw16sWindowRemove,win16_style_control_remove};
-        if(win16_control_guard_message(w,s,m,a,b,&guard,&result))goto finished;
-    }
-    if(!win16_control_state_prepare_font(w,s,m,&a,native_font,&previous,&outbound))goto finished;
-    {
-        const style_scroll_ops scroll=scroll_operations(s);
-        const win16_control_fileowner_services fileowner={embedded_scroll_input,draw_combo,list_border,nonclient_scrollbars};
-        const win16_control_list_services list={embedded_scroll_input,present_control,draw_list,list_border,nonclient_scrollbars};
-        const win16_control_edit_services edit={embedded_scroll_input,nonclient_scrollbars,list_border,edit_border};
-        const win16_control_dispatch_services services={win16_style_control_terminal,style_control_class_is,track_paint_dispatch,trackbar_unbind,
-            style_control_is_link,style_control_is_scroll,style_control_is_combo,style_control_list_class,style_control_is_edit,present_control,win16_control_draw_tab,win16_control_draw_header,win16_control_draw_progress,draw_combo,draw,list_border,draw_sizebox,
-            &scroll,&fileowner,&list,&edit};
-        result=win16_control_dispatch_message(w,s,&m,&a,&b,tab,header,progress,&services);
-    }
-
-finished:
-    win16_control_finish_message(w,s,m,b,spin_button,&spin_before,combo_paint,previous,outbound,pinned,control_proc);
-    return result;
+    (void)id;control_style *s=(control_style *)data;
+    const style_control_message_ops ops={s,
+        {ntw16s_control_role_valid,ntw16s_vb_user_edge_dormant,is_exact_native_button,win16_control_choice_unsupported,Ntw16sWindowRemove,win16_style_control_remove},
+        win16_control_state_prepare_font,control_dispatch,lookup_control};
+    return style_control_message_dispatch(w,&s->instance,&s->state,&s->bindings,m,a,b,&ops);
 }
 
 static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL original_border,BOOL frame_bars,
@@ -273,7 +244,7 @@ static style_scroll_binding lookup_scroll(HWND window)
 {
     style_instance *instance=style_instance_lookup(window,control_proc);
     if(!instance)return (style_scroll_binding){0};
-    return (style_scroll_binding){instance,&((control_style *)instance->context)->scroll};
+    return (style_scroll_binding){instance,&((control_style *)instance->context)->bindings.scroll};
 }
 static BOOL scroll_eligible(HWND window,style_scroll_role role)
 {return role==STYLE_SCROLL_LIST?style_control_list_class(window):style_control_is_edit(window);}
@@ -281,7 +252,7 @@ static const style_scroll_managed_ops managed_services={lookup_scroll,win16_styl
     ntw16s_native_get_scroll_info,ntw16s_native_set_scroll_info,scroll_draw_callback,scroll_eligible};
 void win16_style_frame_scrollbars_palette_owned(HWND w,const win16_style_palette *palette,const void *owner)
 {win16_control_managed_frame_scrollbars_palette_owned(w,palette,owner,&managed_services);}
-static const win16_control_special_services special_services={control_proc,trackbar_notify,toolbar_notify,updown_acquire,win16_control_updown_release,
+static const win16_control_special_services special_services={control_proc,trackbar_notify,toolbar_notify,
     win16_style_frame_scrollbars_install_owned,win16_style_control_remove_owned,style_theme_retained,style_theme_capture,ntw16s_theme_enable};
 BOOL win16_style_updown_install_created(HWND w,const win16_style_palette *p,const void *owner,const BOOL *cancelled)
 {return win16_control_special_updown_install(w,p,owner,cancelled,&special_services);}
@@ -316,17 +287,15 @@ BOOL win16_style_edit_install(HWND w,BOOL original_border,const win16_style_pale
 {return install(w,palette,TRUE,original_border,FALSE,-1,NULL,NULL,NULL);}
 BOOL win16_style_edit_scrollbars_enable(HWND w)
 {return style_scroll_managed_enable(w,STYLE_SCROLL_EDIT,&managed_services);}
-static const win16_control_remove_services control_remove_services={control_proc,scroll_finish,trackbar_unbind,toolbar_unbind,
+static const win16_control_remove_services control_remove_services={control_proc,scroll_finish,trackbar_notify,toolbar_notify,
     lookup_control,win16_style_control_remove,ntw16s_theme_remove,style_theme_terminal,win16_style_control_terminal};
 BOOL win16_style_control_remove(HWND w)
 {return win16_control_remove(w,&control_remove_services);}
 BOOL win16_style_control_remove_owned(HWND w,const void *owner)
 {
-    DWORD_PTR data;
-    if(!owner || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
-        !GetWindowSubclass(w,control_proc,(UINT_PTR)control_proc,&data) ||
-        ((control_style *)data)->instance.owner!=owner)return FALSE;
-    return win16_style_control_remove(w);
+    if(!owner || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId())return FALSE;
+    style_instance *instance=style_instance_lookup(w,control_proc);
+    return instance && instance->owner==owner && win16_style_control_remove(w);
 }
 BOOL win16_style_control_terminal(HWND w)
 {return win16_control_terminal(w,&control_remove_services);}

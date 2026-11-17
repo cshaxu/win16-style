@@ -15,4 +15,5 @@ BOOL win16_scroll_embedded_layout(HWND window,LONG object,win16_scroll_info_fn g
     style_scroll_layout *layout,POINT *screen_origin);
 void win16_control_managed_frame_scrollbars_palette_owned(HWND,const win16_style_palette *,const void *,const style_scroll_managed_ops *);
 void win16_control_managed_frame_scrollbars_palette(HWND,const win16_style_palette *,const style_scroll_managed_ops *);
+void win16_control_scrollbars_paint(HWND,HDC,const win16_style_palette *,SUBCLASSPROC,void (*)(HWND,control_style *,HDC));
 #endif

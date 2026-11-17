@@ -9,15 +9,14 @@
 #include "../../lib-win32/process-hook/unwind.h"
 #include "lib-win32-style/application/lifecycle/theme_track.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
-#include "lib-win32-style/appearance/win3x/control/theme_kind.h"
 #include "lib-win32-style/application/dialog/print_extended.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/attachment.h"
 #include "ntw16s-dll/native_api.h"
 #include "lib-win32-style/appearance/win3x/control/vb_text.h"
-#include "../../lib-win32-style/appearance/win3x/control/updown_adapter.h"
+#include "lib-win32-style/application/control/updown.h"
 #include "ntw16s-dll/controls.h"
-#include "ntw16s-dll/static_text.h"
+#include "lib-win32-style/application/adapters/win32/runtime_native.h"
 #include "ntw16s-dll/status_theme.h"
 #include "ntw16s-dll/win16_style.h"
 #include <wchar.h>
@@ -29,7 +28,8 @@
 #include "../../lib-win32-style/appearance/win3x/control/month_text.h"
 #include "lib-win32-style/appearance/win3x/control/special_paint.h"
 #include "lib-win32-style/appearance/win3x/control/choice_paint.h"
-#include "lib-win32-style/appearance/win3x/control/vcl_extra_frame.h"
+#include "lib-win32-style/application/adapters/win32/checklist.h"
+#include "lib-win32-style/application/adapters/win32/frame_paint.h"
 HFONT ntw16s_month_text_borrow(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,const void *);
 BOOL ntw16s_month_text_room(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,int,const void *);
 typedef struct month_text_room_context {HTHEME theme;HDC dc;int part,state;DWORD flags,flags2;const RECT *rect;const void *caller;} month_text_room_context;
@@ -65,7 +65,7 @@ static BOOL CALLBACK bind_titles(PINIT_ONCE once,void *parameter,void **context)
     (void)once;(void)parameter;(void)context;
     ntw16s_native_api api={sizeof(api),real_get_scroll,real_set_scroll,real_set_theme};
     if(!ntw16s_bind_native_api(&api))return FALSE;
-    ntw16s_updown_api_enable();
+    style_control_updown_api_enable();
     ntw16s_status_hooks_enable();
     InterlockedExchange(&style_ready,1);return TRUE;
 }
@@ -373,29 +373,24 @@ static BOOL WINAPI hook_enable_scroll(HWND w,UINT bar,UINT arrows)
  * are transparent trampolines. The temporary font is restored before any
  * lease can be released; no application HFONT/property/layout is modified. */
 static _Thread_local unsigned vb_text_busy;
-static BOOL vb_text_caller(const void *address)
-{return win16_control_vb_text_caller(address,ntw16s_report_paint_caller);}
-static BOOL vb_label_caller(const void *address)
-{return win16_control_vb_label_caller(address,ntw16s_vb_direct_text_allowed());}
-
 /* The report adapter promises only whole, reversible CP1252 runs. Keep
  * measurements and unsupported language/RTL runs on the native font. */
 static BOOL report_wide_text(HDC dc,const WCHAR *text,int count)
-{return win16_control_report_wide_text(dc,text,count,ntw16s_report_paint_active());}
+{return win16_control_report_wide_text(dc,text,count,style_runtime_text_report_active());}
 static BOOL report_ansi_text(HDC dc,const char *text,int count)
-{return win16_control_report_ansi_text(dc,text,count,ntw16s_report_paint_active());}
+{return win16_control_report_ansi_text(dc,text,count,style_runtime_text_report_active());}
 #define VB_TEXT_HOOK(NAME,TYPE,PARAMS,ARGS,ALLOW) \
 static __typeof__(&NAME) real_##NAME; \
 static TYPE WINAPI hook_##NAME PARAMS \
 { HFONT font=NULL,old=NULL;DWORD entry=GetLastError(),error;TYPE result; \
-  if(!vb_text_busy++ && (ALLOW) && ntw16s_vb_paint_active() && vb_text_caller(__builtin_return_address(0))){font=ntw16s_vb_paint_font(dc);if(font){old=SelectObject(dc,font);if(old==HGDI_ERROR)old=NULL;}} \
+  if(!vb_text_busy++ && (ALLOW) && style_runtime_text_active() && style_runtime_text_caller(__builtin_return_address(0))){font=ntw16s_vb_paint_font(dc);if(font){old=SelectObject(dc,font);if(old==HGDI_ERROR)old=NULL;}} \
   SetLastError(entry);result=real_##NAME ARGS;error=GetLastError(); \
   if(old){SelectObject(dc,old);}--vb_text_busy;SetLastError(error);return result; }
-VB_TEXT_HOOK(DrawTextA,int,(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format),(dc,text,count,rect,format),((!ntw16s_report_paint_active() && ntw16s_vb_direct_text_allowed()) || !(format&DT_CALCRECT)) && vb_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
-VB_TEXT_HOOK(DrawTextExA,int,(HDC dc,LPSTR text,int count,LPRECT rect,UINT format,LPDRAWTEXTPARAMS params),(dc,text,count,rect,format,params),((!ntw16s_report_paint_active() && ntw16s_vb_direct_text_allowed()) || !(format&DT_CALCRECT)) && vb_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
-VB_TEXT_HOOK(TextOutA,BOOL,(HDC dc,int x,int y,LPCSTR text,int count),(dc,x,y,text,count),(ntw16s_vb_direct_text_allowed() || (GetMapMode(dc)==MM_TEXT && !(GetTextAlign(dc)&TA_UPDATECP))) && vb_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
-VB_TEXT_HOOK(ExtTextOutA,BOOL,(HDC dc,int x,int y,UINT options,const RECT *rect,LPCSTR text,UINT count,const INT *dx),(dc,x,y,options,rect,text,count,dx),ntw16s_vb_direct_text_allowed() && (!ntw16s_report_paint_active() || !(options&(ETO_GLYPH_INDEX|ETO_RTLREADING))) && report_ansi_text(dc,text,(int)count))
-VB_TEXT_HOOK(TextOutW,BOOL,(HDC dc,int x,int y,LPCWSTR text,int count),(dc,x,y,text,count),ntw16s_vb_direct_text_allowed() && report_wide_text(dc,text,count))
+VB_TEXT_HOOK(DrawTextA,int,(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format),(dc,text,count,rect,format),((!style_runtime_text_report_active() && style_runtime_text_direct_allowed()) || !(format&DT_CALCRECT)) && style_runtime_text_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
+VB_TEXT_HOOK(DrawTextExA,int,(HDC dc,LPSTR text,int count,LPRECT rect,UINT format,LPDRAWTEXTPARAMS params),(dc,text,count,rect,format,params),((!style_runtime_text_report_active() && style_runtime_text_direct_allowed()) || !(format&DT_CALCRECT)) && style_runtime_text_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
+VB_TEXT_HOOK(TextOutA,BOOL,(HDC dc,int x,int y,LPCSTR text,int count),(dc,x,y,text,count),(style_runtime_text_direct_allowed() || (GetMapMode(dc)==MM_TEXT && !(GetTextAlign(dc)&TA_UPDATECP))) && style_runtime_text_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
+VB_TEXT_HOOK(ExtTextOutA,BOOL,(HDC dc,int x,int y,UINT options,const RECT *rect,LPCSTR text,UINT count,const INT *dx),(dc,x,y,options,rect,text,count,dx),style_runtime_text_direct_allowed() && (!style_runtime_text_report_active() || !(options&(ETO_GLYPH_INDEX|ETO_RTLREADING))) && report_ansi_text(dc,text,(int)count))
+VB_TEXT_HOOK(TextOutW,BOOL,(HDC dc,int x,int y,LPCWSTR text,int count),(dc,x,y,text,count),style_runtime_text_direct_allowed() && report_wide_text(dc,text,count))
 
 #undef VB_TEXT_HOOK
 
@@ -412,12 +407,12 @@ static LRESULT WINAPI hook_CallWindowProcA(WNDPROC proc,HWND w,UINT message,WPAR
 static __typeof__(&CallWindowProcW) real_CallWindowProcW;
 static PROCESS_HOOK_UNWIND_FUNCTION LRESULT WINAPI hook_CallWindowProcW(WNDPROC proc,HWND w,UINT message,WPARAM wp,LPARAM lp)
 {
-    ntw16s_static_call call;process_hook_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
+    style_runtime_native_call call;process_hook_unwind_scope unwind;LRESULT result;DWORD entry=GetLastError(),error;
     ntw16s_rich_witness(proc,w,message,__builtin_return_address(0),TRUE);
-    if(!ntw16s_static_call_begin(&call,proc,w,message,__builtin_return_address(0)) && !ntw16s_static_call_suspend(&call)){
+    if(!ntw16s_static_call_begin(&call,proc,w,message,__builtin_return_address(0))){
         SetLastError(entry);return real_CallWindowProcW(proc,w,message,wp,lp);
     }
-    PROCESS_HOOK_UNWIND_BEGIN(unwind,ntw16s_static_call_end,&call);
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,style_runtime_native_call_end,&call);
     SetLastError(entry);result=real_CallWindowProcW(proc,w,message,wp,lp);error=GetLastError();
     PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
@@ -467,13 +462,13 @@ static __typeof__(&ExtTextOutW) real_ExtTextOutW;
 static BOOL WINAPI hook_ExtTextOutW(HDC dc,int x,int y,UINT options,const RECT *rect,LPCWSTR text,UINT count,const INT *dx)
 {
     DWORD entry=GetLastError(),error;HFONT font=NULL,old=NULL;WCHAR *decoded=NULL;char *encoded=NULL;BOOL result;LPCWSTR original_text=text;UINT original_options=options;
-    if(!vb_text_busy++ && ntw16s_vb_direct_text_allowed() && ntw16s_vb_paint_active() && vb_text_caller(__builtin_return_address(0))){
+    if(!vb_text_busy++ && style_runtime_text_direct_allowed() && style_runtime_text_active() && style_runtime_text_caller(__builtin_return_address(0))){
         font=ntw16s_vb_paint_font(dc);
         if(font && (options&ETO_GLYPH_INDEX)){
             if(!win16_control_vb_glyph_prepare(dc,&text,&options,count,&decoded,&encoded,ntw16s_vb_decode_glyphs))font=NULL;
         }
         if(font && !(options&ETO_GLYPH_INDEX) &&
-            (!report_wide_text(dc,text,(int)count) || (ntw16s_report_paint_active() && (options&ETO_RTLREADING))))font=NULL;
+            (!report_wide_text(dc,text,(int)count) || (style_runtime_text_report_active() && (options&ETO_RTLREADING))))font=NULL;
         if(font)old=SelectObject(dc,font);
         if(!old || old==HGDI_ERROR){
             old=NULL;text=original_text;options=original_options;
@@ -505,7 +500,7 @@ void ntw16s_month_selection_text(HTHEME,HDC,int,int,const RECT *,DWORD,const voi
 static __typeof__(&DrawThemeText) real_DrawThemeText;
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_DrawThemeText(HTHEME theme,HDC dc,int part,int state,LPCWSTR text,int count,DWORD flags,DWORD flags2,const RECT *rect)
 {
-    DWORD saved=GetLastError(),error;HRESULT result;ntw16s_status_theme_scope scope;process_hook_unwind_scope unwind;
+    DWORD saved=GetLastError(),error;HRESULT result;style_control_status_theme scope;process_hook_unwind_scope unwind;
     ntw16s_month_header_text(theme,dc,part,state,rect,flags,__builtin_return_address(0));
     ntw16s_month_selection_text(theme,dc,part,state,rect,flags,__builtin_return_address(0));
     ntw16s_status_text_frame(dc,rect,flags,__builtin_return_address(0));
@@ -551,7 +546,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HTHEME WINAPI hook_##NAME PARAMETERS \
     theme_unwind scope={TRUE,FALSE,NULL};style_theme_track_ticket ticket=style_theme_track_open_begin(); \
     PROCESS_HOOK_UNWIND_BEGIN(unwind,theme_end,&scope); \
     SetLastError(entry);h=real_##NAME ARGUMENTS;error=GetLastError(); \
-    style_theme_track_open_end(ticket,h,h?win16_control_theme_kind(name):WIN16_CONTROL_THEME_OTHER);scope.active=FALSE; \
+    style_theme_track_open_end(ticket,h,h?style_theme_classify(name):STYLE_THEME_OTHER);scope.active=FALSE; \
     PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return h; \
 }
 THEME_OPEN_HOOK(OpenThemeData,(HWND w,LPCWSTR name),(w,name))
@@ -587,7 +582,7 @@ static BOOL WINAPI hook_BitBlt(HDC dc,int x,int y,int width,int height,HDC sourc
 {
     BOOL result=real_BitBlt(dc,x,y,width,height,source,sx,sy,rop);DWORD error=GetLastError();
     if(result)ntw16s_modern_spin_blit(dc,x,y,width,height,source,sx,sy,rop);
-    if(result)win16_control_vb_checklist(dc,x,y,width,height,source,sx,sy,rop,__builtin_return_address(0));
+    if(result)style_runtime_vb_checklist(dc,x,y,width,height,source,sx,sy,rop,__builtin_return_address(0),win16_control_checklist_glyph);
     SetLastError(error);return result;
 }
 void ntw16s_panel_polyline(HDC,const POINT *,int,const void *,BOOL (WINAPI *)(HDC,const POINT *,int));
@@ -616,7 +611,7 @@ static BOOL WINAPI hook_DeleteObject(HGDIOBJ object)
 }
 static BOOL WINAPI hook_DrawFrameControl(HDC dc,LPRECT rect,UINT type,UINT state)
 {
-    DWORD entry=GetLastError();BOOL drawn=ntw16s_updown_draw_frame(dc,rect,type,state,__builtin_return_address(0));
+    DWORD entry=GetLastError();BOOL drawn=style_control_updown_draw_frame(dc,rect,type,state,__builtin_return_address(0),style_runtime_text_native_target);
     if(drawn){SetLastError(entry);return TRUE;}
     RECT spin_original={0};if(rect)spin_original=*rect;
     RECT original;BOOL graphical=win16_style_graphical_frame_prepare(dc,rect,type,state,__builtin_return_address(0),&original);
@@ -630,7 +625,7 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
 {
     DWORD incoming=GetLastError();
     RECT original={0};BOOL eligible=rect && edge==BDR_SUNKENOUTER && flags==(BF_RECT|BF_ADJUST);
-    BOOL controlbar=rect && flags==(BF_RECT|BF_ADJUST) && win16_control_controlbar_edge_allowed(edge) && ntw16s_controlbar_edge_active();
+    BOOL controlbar=rect && flags==(BF_RECT|BF_ADJUST) && style_runtime_controlbar_edge_allowed(edge) && ntw16s_controlbar_edge_active();
     BOOL color=FALSE;HWND dialog=active_color_dialog?active_color_dialog->dialog:NULL;HMODULE origin=NULL;
     if(rect&&dialog&&edge==EDGE_SUNKEN&&flags==(BF_RECT|BF_ADJUST)&&WindowFromDC(dc)==dialog&&
        GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)__builtin_return_address(0),&origin)&&origin==GetModuleHandleW(L"comdlg32.dll")){
@@ -645,20 +640,20 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
 }
 static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int state,const RECT *rect,const RECT *clip)
 {
-    DWORD entry=GetLastError();style_theme_track_ticket ticket=style_theme_track_begin(theme,WIN16_CONTROL_THEME_BUTTON);
-    style_theme_track_ticket combo={0};if(ntw16s_inplace_paint(dc))combo=style_theme_track_begin(theme,WIN16_CONTROL_THEME_COMBOBOX);
-    style_theme_track_ticket glow=style_theme_track_begin(theme,WIN16_CONTROL_THEME_TEXTGLOW);
+    DWORD entry=GetLastError();style_theme_track_ticket ticket=style_theme_track_begin(theme,STYLE_THEME_BUTTON);
+    style_theme_track_ticket combo={0};if(ntw16s_inplace_paint(dc))combo=style_theme_track_begin(theme,STYLE_THEME_COMBOBOX);
+    style_theme_track_ticket glow=style_theme_track_begin(theme,STYLE_THEME_TEXTGLOW);
     BOOL textglow=part==1 && state==0 && glow.eligible;
     if(!textglow)ntw16s_modern_spin_theme_begin(dc,rect);
-    BOOL drawn=ntw16s_updown_draw_theme(theme,dc,part,state,rect,clip,__builtin_return_address(0));
+    BOOL drawn=style_control_updown_draw_theme(theme,dc,part,state,rect,clip,__builtin_return_address(0),style_runtime_text_native_target);
     SetLastError(entry);if(drawn)return S_OK;
     HRESULT result=real_DrawThemeBackground(theme,dc,part,state,rect,clip);DWORD error=GetLastError();
-    if(textglow && !style_theme_track_end(theme,glow,WIN16_CONTROL_THEME_TEXTGLOW))ntw16s_modern_spin_theme_begin(dc,NULL);
-    if(SUCCEEDED(result) && style_theme_track_end(theme,ticket,WIN16_CONTROL_THEME_BUTTON)){
+    if(textglow && !style_theme_track_end(theme,glow,STYLE_THEME_TEXTGLOW))ntw16s_modern_spin_theme_begin(dc,NULL);
+    if(SUCCEEDED(result) && style_theme_track_end(theme,ticket,STYLE_THEME_BUTTON)){
         ntw16s_nav_theme(dc,part,state,rect,clip,__builtin_return_address(0));
         ntw16s_inplace_button(dc,part,state,rect,clip,__builtin_return_address(0));
         ntw16s_modern_spin_theme(dc,part,state,rect,clip,__builtin_return_address(0));}
-    if(SUCCEEDED(result) && combo.eligible && style_theme_track_end(theme,combo,WIN16_CONTROL_THEME_COMBOBOX))ntw16s_inplace_dropdown(dc,part,state,rect,clip,__builtin_return_address(0));
+    if(SUCCEEDED(result) && combo.eligible && style_theme_track_end(theme,combo,STYLE_THEME_COMBOBOX))ntw16s_inplace_dropdown(dc,part,state,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result) && part==1 && state==0)ntw16s_status_frame(dc,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_bit_theme_frame(dc,part,rect,clip,__builtin_return_address(0));
     if(SUCCEEDED(result))ntw16s_month_arrow(theme,dc,part,state,rect,clip,__builtin_return_address(0));
@@ -670,11 +665,11 @@ static HDC WINAPI hook_CreateCompatibleDC(HDC source)
 {
     HDC result=real_CreateCompatibleDC(source);DWORD error=GetLastError();
     ntw16s_modern_spin_dc_created(source,result);
-    ntw16s_updown_dc_created(source,result,__builtin_return_address(0));SetLastError(error);return result;
+    style_control_updown_dc_created(source,result,__builtin_return_address(0),style_runtime_text_native_target);SetLastError(error);return result;
 }
 static BOOL WINAPI hook_DeleteDC(HDC dc)
 {
-    BOOL result=real_DeleteDC(dc);DWORD error=GetLastError();if(result){ntw16s_modern_spin_dc_deleted(dc);ntw16s_updown_dc_deleted(dc);}
+    BOOL result=real_DeleteDC(dc);DWORD error=GetLastError();if(result){ntw16s_modern_spin_dc_deleted(dc);style_control_updown_dc_deleted(dc);}
     SetLastError(error);return result;
 }
 

@@ -3,69 +3,37 @@
 #include "../common/font.h"
 #include <stdlib.h>
 typedef struct ntw16s_vb_glyphmap {WCHAR chars[224];WORD glyphs[224];BOOL valid;} ntw16s_vb_glyphmap;
-static _Thread_local ntw16s_vb_paint *current,*native_current;
-void win16_control_vb_paint_begin(ntw16s_vb_paint *scope,HWND w,UINT message,ntw16s_vb_fonts *fonts,BOOL (*user_label_target)(HWND))
+static BOOL include_text(HWND w,UINT message)
 {
-    ZeroMemory(scope,sizeof(*scope));
-    if(message==WM_PAINT || message==WM_PRINT || message==WM_PRINTCLIENT || message==WM_ERASEBKGND){
-        scope->native_previous=native_current;scope->native_window=w;scope->native_active=TRUE;native_current=scope;
-    }
     BOOL edit=style_control_vb_edit(w);
-    /* Native EDIT also draws synchronously during text, selection and focus
-     * messages. Keep that real USER path inside the same bounded scope. */
-    if(message!=WM_PAINT && message!=WM_PRINT && message!=WM_PRINTCLIENT && !edit)return;
-    if(message==WM_NCDESTROY || message==WM_DESTROY)return;
-    scope->previous=current;scope->active=TRUE;scope->fonts=fonts;current=scope;
-    /* An attached non-VB child is a barrier during nested WM_PRINT. */
-    scope->label_only=ntw16s_vb_picture(w) || user_label_target(w);
-    if(style_control_vb_frame(w) || style_control_vb_edit(w) || scope->label_only ||
-            (style_control_vb_class(w,L"ThunderRT6FormDC") || style_control_vb5_class(w,L"ThunderRT5Form")))scope->window=w;
+    if(message!=WM_PAINT && message!=WM_PRINT && message!=WM_PRINTCLIENT && !edit)return FALSE;
+    return message!=WM_NCDESTROY && message!=WM_DESTROY;
 }
-void ntw16s_vb_paint_end(ntw16s_vb_paint *scope)
+static style_runtime_text_role text_role(HWND w,void *context)
 {
-    if(scope->native_active)native_current=scope->native_previous;
-    if(!scope->active)return;
-    current=scope->previous;
+    BOOL (*user_label_target)(HWND)=*(BOOL (**)(HWND))context;
+    BOOL label_only=ntw16s_vb_picture(w) || user_label_target(w);
+    HWND target=style_control_vb_frame(w) || style_control_vb_edit(w) || label_only ||
+        (style_control_vb_class(w,L"ThunderRT6FormDC") || style_control_vb5_class(w,L"ThunderRT5Form"))?w:NULL;
+    return (style_runtime_text_role){target,label_only};
 }
-BOOL ntw16s_native_paint_target(HDC dc,HWND *w)
-{*w=native_current?native_current->native_window:NULL;return dc && native_current && native_current->native_dc==dc;}
+void win16_control_vb_paint_begin(style_runtime_text_scope *scope,HWND w,UINT message,ntw16s_vb_fonts *fonts,BOOL (*user_label_target)(HWND))
+{
+    const style_runtime_text_ops ops={&user_label_target,include_text,text_role};
+    style_runtime_text_begin(scope,w,message,fonts,&ops);
+}
 void ntw16s_vb_fonts_clear(ntw16s_vb_fonts *fonts)
 {
     for(unsigned i=0;i<fonts->count;++i){win16_style_system_release(fonts->font[i]);free(fonts->glyphs[i]);}
     ZeroMemory(fonts,sizeof(*fonts));
 }
-void ntw16s_report_paint_enable(ntw16s_vb_paint *scope,HWND w,HMODULE module,const BOOL *cancelled)
-{
-    if(!scope->active || !module)return;
-    scope->report=TRUE;scope->window=w;scope->report_module=module;scope->cancelled=cancelled;
-    if(ntw16s_vb_graphical_button(w))scope->label_only=TRUE;
-}
-void ntw16s_report_paint_bind(HWND w,HDC dc)
-{
-    if(current && current->report && current->window==w)current->report_dc=dc;
-}
-BOOL ntw16s_report_paint_active(void)
-{return current && current->report;}
-BOOL ntw16s_report_paint_target(HDC dc,HWND *w)
-{
-    *w=NULL;
-    if(!current || !current->report || !dc || current->report_dc!=dc ||
-            (current->cancelled && *current->cancelled))return FALSE;
-    *w=current->window;return *w!=NULL;
-}
-BOOL ntw16s_report_paint_caller(HMODULE module)
-{return current && current->report && (module==current->report_module || module==GetModuleHandleW(NULL));}
-BOOL ntw16s_vb_paint_active(void)
-{return current && current->window && (!current->cancelled || !*current->cancelled);}
-BOOL ntw16s_vb_direct_text_allowed(void)
-{return !current || !current->label_only;}
 HFONT ntw16s_vb_paint_font(HDC dc)
 {
-    ntw16s_vb_paint *scope=current;HFONT source;
+    const style_runtime_text_scope *scope=style_runtime_text_current();HFONT source;
     /* The scope also covers a runtime-owned memory DC during WM_PRINT or
      * double buffering. Never change a DC belonging to another HWND. */
-    if(!ntw16s_vb_paint_active() || (scope->report && dc!=scope->report_dc) || (WindowFromDC(dc) && WindowFromDC(dc)!=scope->window))return NULL;
-    ntw16s_vb_fonts *fonts=scope->fonts;
+    if(!style_runtime_text_active() || (scope->report && dc!=scope->report_dc) || (WindowFromDC(dc) && WindowFromDC(dc)!=scope->window))return NULL;
+    ntw16s_vb_fonts *fonts=scope->context;
     source=(HFONT)GetCurrentObject(dc,OBJ_FONT);
     if(!source)return NULL;
     if(scope->report){LOGFONTW lf;
@@ -81,8 +49,8 @@ HFONT ntw16s_vb_paint_font(HDC dc)
 
 BOOL ntw16s_vb_decode_glyphs(HDC dc,const WCHAR *input,UINT count,WCHAR *decoded)
 {
-    if(!current || !current->window)return FALSE;
-    ntw16s_vb_fonts *fonts=current->fonts;HFONT source=(HFONT)GetCurrentObject(dc,OBJ_FONT);unsigned slot;
+    if(!style_runtime_text_current() || !style_runtime_text_current()->window)return FALSE;
+    ntw16s_vb_fonts *fonts=style_runtime_text_current()->context;HFONT source=(HFONT)GetCurrentObject(dc,OBJ_FONT);unsigned slot;
     for(slot=0;slot<fonts->count;++slot)if(fonts->source[slot]==source)break;
     if(slot==fonts->count)return FALSE;
     ntw16s_vb_glyphmap *map=fonts->glyphs[slot];

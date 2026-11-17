@@ -27,4 +27,8 @@ NTW16S_API void __cdecl Ntw16sScrollChanged(HWND);
  * are delegated unchanged; captured controls retain application theme strings
  * for detach while the active presentation remains locally unthemed. */
 NTW16S_API HRESULT __cdecl Ntw16sSetWindowTheme(HWND,LPCWSTR,LPCWSTR);
+/* Private synchronous renderer bridge; not exported product ABI. */
+struct style_runtime_native_call;
+BOOL ntw16s_static_call_begin(struct style_runtime_native_call *,WNDPROC,HWND,UINT,const void *);
+HFONT ntw16s_static_text_font(HDC,LPCWSTR,int,UINT,const void *);
 #endif

@@ -29,3 +29,6 @@ void win16_control_status_font_return(win16_control_status_font_cache *cache,HFO
     win16_style_system_release(font);--cache->borrows;
     if(!cache->borrows && cache->invalid){win16_style_system_release(cache->font);cache->font=NULL;cache->source=NULL;}
 }
+
+BOOL win16_control_status_text_supported(LPCWSTR text,int count)
+{for(int i=0;i<count;++i)if(text[i]>0x7f)return FALSE;return TRUE;}

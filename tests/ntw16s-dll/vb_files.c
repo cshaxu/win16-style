@@ -46,7 +46,9 @@ static int child(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL styled
     HANDLE event=CreateEventW(NULL,TRUE,FALSE,event_name);CHECK(event && SetEnvironmentVariableW(VB_QUEUE_ENV,name));
     HMODULE witness=LoadLibraryW(witness_path);CHECK(witness);
     HOOKPROC get=(HOOKPROC)(UINT_PTR)GetProcAddress(witness,"VbQueueGet"),sent=(HOOKPROC)(UINT_PTR)GetProcAddress(witness,"VbQueueSent");CHECK(get && sent);
-    HHOOK get_hook=SetWindowsHookExW(WH_GETMESSAGE,get,witness,state->tid),sent_hook=SetWindowsHookExW(WH_CALLWNDPROC,sent,witness,state->tid);CHECK(get_hook && sent_hook);
+    /* The callbacks and current target thread are in this process. Keep
+     * witness loaded explicitly; the native same-process contract uses NULL. */
+    HHOOK get_hook=SetWindowsHookExW(WH_GETMESSAGE,get,NULL,state->tid),sent_hook=SetWindowsHookExW(WH_CALLWNDPROC,sent,NULL,state->tid);CHECK(get_hook && sent_hook);
     HWND root=CreateWindowW(L"VBFileFixtureParent",L"File controls",WS_OVERLAPPEDWINDOW,0,0,450,300,NULL,NULL,runtime,NULL);CHECK(root);
     const WCHAR *names[]={vb6?L"ThunderRT6FileListBox":L"ThunderRT5FileListBox",vb6?L"ThunderRT6DirListBox":L"ThunderRT5DirListBox",L"ThunderRT5DriveListBox"};
     HWND controls[3];HFONT sources[3];

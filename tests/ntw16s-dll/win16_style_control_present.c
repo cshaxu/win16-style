@@ -153,7 +153,7 @@ int main(int argc,char **argv)
      w=CreateWindowW(L"LISTBOX",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,160,120,root,NULL,wc.hInstance,NULL);CHECK(w);
      SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=0,.nMax=100,.nPage=10,.nPos=25};
      SetScrollInfo(w,SB_VERT,&range,TRUE);control_style state={0};win16_style_default_palette(&state.palette);
-     const win16_control_scroll_view view={&state.palette,&state.scroll,scroll_layout,
+     const win16_control_scroll_view view={&state.palette,&state.bindings.scroll,scroll_layout,
         embedded_scroll_layout,edit_thumb_messages,list_axis_owned};
      SCROLLBARINFO info={.cbSize=sizeof(info)};RECT outer;
      CHECK(GetScrollBarInfo(w,OBJID_VSCROLL,&info) && !(info.rgstate[0]&STATE_SYSTEM_INVISIBLE) && GetWindowRect(w,&outer));

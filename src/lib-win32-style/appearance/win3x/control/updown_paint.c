@@ -1,4 +1,5 @@
 #include "updown_paint.h"
+#include <commctrl.h>
 
 BOOL win16_control_updown_paint(HWND window,const win16_style_palette *palette,ntw16s_updown_glyph *const *glyphs,HDC dc,const RECT *bounds,const RECT *clip,unsigned direction,BOOL pressed,BOOL disabled)
 {
@@ -30,4 +31,21 @@ BOOL win16_control_updown_paint(HWND window,const win16_style_palette *palette,n
         }
     }
     RestoreDC(dc,saved);return TRUE;
+}
+
+static BOOL updown_supported(DWORD style,DWORD ex)
+{
+    return !(style&0xffffu&~(UDS_WRAP|UDS_SETBUDDYINT|UDS_ALIGNRIGHT|UDS_ALIGNLEFT|UDS_AUTOBUDDY|UDS_ARROWKEYS|UDS_HORZ|UDS_NOTHOUSANDS|UDS_HOTTRACK)) &&
+        !(style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION|WS_HSCROLL|WS_VSCROLL)) && !(ex&(WS_EX_CLIENTEDGE|WS_EX_STATICEDGE|WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
+}
+static BOOL updown_render(HWND w,void *context,HDC dc,const RECT *rect,const RECT *clip,unsigned direction,BOOL pressed,BOOL disabled)
+{
+    const win16_control_updown *s=context;
+    return win16_control_updown_paint(w,s->palette,s->glyphs,dc,rect,clip,direction,pressed,disabled);
+}
+void win16_control_updown_register(win16_control_updown *s,style_control_updown *binding,HWND w,HMODULE native,const win16_style_palette *palette,ntw16s_updown_glyph *const *glyphs,void *owner,BOOL (*acquire)(void *),void (*release)(void *))
+{
+    s->palette=palette;s->glyphs=glyphs;
+    const style_control_updown_ops ops={s,updown_supported,updown_render};
+    style_control_updown_register(binding,w,native,owner,acquire,release,&ops);
 }

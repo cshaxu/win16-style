@@ -15,6 +15,14 @@ style_instance *style_instance_lookup(HWND window,SUBCLASSPROC procedure)
     return GetWindowSubclass(window,procedure,(UINT_PTR)procedure,&data)?(style_instance *)data:NULL;
 }
 
+BOOL style_instance_preflight(HWND w,SUBCLASSPROC proc)
+{
+    DWORD_PTR existing;
+    if(GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId()){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    if(GetWindowSubclass(w,proc,(UINT_PTR)proc,&existing)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
+    return TRUE;
+}
+
 BOOL style_instance_attach(style_instance *instance,HWND window,SUBCLASSPROC procedure,const void *owner)
 {
     DWORD error=GetLastError();
@@ -31,3 +39,12 @@ BOOL style_instance_detach(style_instance *instance)
     if(!RemoveWindowSubclass(instance->window,instance->procedure,(UINT_PTR)instance->procedure))return FALSE;
     instance->detached=TRUE;return TRUE;
 }
+
+BOOL style_instance_acquire_owned(void *context)
+{
+    style_instance *instance=context;
+    if(instance->detached || style_instance_lookup(instance->window,instance->procedure)!=instance)return FALSE;
+    style_instance_retain(instance);return TRUE;
+}
+void style_instance_return_owned(void *context)
+{style_instance_release(context);}

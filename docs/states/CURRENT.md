@@ -41,7 +41,15 @@ S9基础控件已收口，完整事实见[brief](../history/M0-T26-S9-controls.m
 
 S9同快照双宽干净构建约160/187秒，1080源码/测试/工具输入一致，原资源及双宽各21样式归档/4进程归档边界通过。八文件已先发布assets根及O:/winnt，再146项去重实际包聚焦全部通过；2项DWM恢复旧失败不变、不计通过。首次测试驱动遗漏capture环境导致入口断言失败，保留后补齐并从失败项继续，无产品变化。正式发布的资源、版本和八文件SHA均已从远端读取复核。
 
-S9全部终态scratch/源码副本/发布备份已提炼并清理约293MB，保留.ninja/.ccache及两处正式包；历史旧desktop入口违规与纠正保留于开发证据，不计合规通过。S10当前冻结清单/审计，未启动新构建；整体覆盖和既有失败由S14终审，T26保持开放。
+S9全部终态scratch/源码副本/发布备份已提炼并清理约293MB，保留.ninja/.ccache及两处正式包；历史旧desktop入口违规与纠正保留于开发证据，不计合规通过。S10已冻结309项输入，逐项状态见[审计台账](../etc/evidence/t26-s10-controls-audit.json)，实际结果和失败保留于[开发证据](../etc/evidence/t26-s10-controls-development.json)。当前公共application拥有扩展native状态/快照、status、notify、overlay、runtime protocol安装与report/edge；win32适配拥有原生见证、rich/frame身份与绘制关联、text/bit/inplace/nav状态及MDI/lookup关联引用。产品已消费，旧字段view/重复观察和安装路径删除，CoolBar复用notify绑定/解绑；关联引用保留到根最后释放，正常和attach失败顺序不变。
+
+S10已将原生扩展状态/快照/通知、spin/updown资源、native text/paint/message与完整attachment根及安装/退场结算迁入公共application，产品实际调用，旧私有实现按台账删除。详细批次与原始结果留在[实施记录](../history/M0-T26-S10-extended-controls.md)和[开发证据](../etc/evidence/t26-s10-controls-development.json)，不在CURRENT复制流水。当前生产相对HEAD为+3669/-2844、净+825行，新增58个生产C/H；不把目录移动或通过次数称为全部解耦。
+
+初始309项冻结输入和23条过渡归属终整已完成；最终148个生产改动路径反查另补录8个先前漏列的共享依赖/消费者，原冻结SHA不改，补录不冒称事先冻结。共317项既有输入和86新增输出均有归属、实际消费者与验证；创建S11、现代S12及图形/renderer S13继续有精确函数接收者。
+
+S10同快照双宽干净构建（约248/307秒）及先发布八文件两处已完成。初轮416实际调用410通过、6失败原样保留；定向修正3个测试夹具的同线程witness参数和独立DC/图像输入后24项通过，有限旧/新对照提供其余当前证据，6个原失败身份均有后续通过映射，不称重新416全过。没有产品源码或二进制变化，不重复整包构建发布。现代USER19/18初次波动未解释，及此前DWM等限制仍归S12/S14，不声称修复。见[整组交付及补充证据](../etc/evidence/t26-s10-delivery.json)。
+
+开发260个去重通过调用为历史开发统计；不与初轮/补充调用相加冒称新用例。初轮终态scratch已清理381,105,787字节，定向s10-failure-contract亦已归档清理7,056,009字节；保留Ninja/ccache与两处同摘要发布候选。S10 P1待最终治理、提交推送及实际远端复核；未复核前不收口、不准入S11，最后远端验证版本仍S9。
 
 ## Identifier State
 
@@ -72,7 +80,7 @@ S9全部终态scratch/源码副本/发布备份已提炼并清理约293MB，保�
 - **第八批新增共享**：普通、单参数和消息框入口的调用骨架由 Win16 和 Win2000 共用；真实窗口回调异常及 Win2000 打印夹具仍未通过，见[对话框复核](../history/M0-T26-S1-dialog-current-review.md)。现代窗口表面刷新生命周期由公共组件负责，真实宿主仍未覆盖，见[表面记录](../history/M0-T26-S1-uwp-surface.md)。同线程子窗口遍历由公共组件负责，产品保留风格和目标策略，见[接入复核](../history/M0-T26-S1-product-adapter-review.md)。
 - **第十批新增共享**：Win16 和 Win2000 系统菜单 `WM_PRINT` 的窗口/客户区坐标偏移已共用；双位宽自建窗口及实际系统菜单增量验证通过，见[菜单坐标记录](../history/M0-T26-S1-menu-coordinate.md)。
 - **第九批新增共享**：普通 Win16 和 Win2000 启动入口已共用公共启动事务；双位宽事务及两种风格各四种父子位宽组合的自建传播测试通过，见[接入复核](../history/M0-T26-S1-product-adapter-review.md)。XAML 工作区边缘保护及普通、现代外框的工作区交集计算已共享，公共及 Win16 自建外框测试双位宽通过，见[外框记录](../history/M0-T26-S1-frame-xaml.md)。
-- **公共组件边界**：Win16/Win2000 样式目录已迁入 `lib-style`；窗口、控件、对话框及现代宿主的部分通用机制由 `lib-style/common`、`lib-style/uwp` 和 `lib-win32/style` 提供。公共主题状态由现有共享 DLL 统一承载，Win16 与 Win2000 控件有实际调用；系统原有主题仅能恢复已观察到的请求。轻量导入、控制台懒加载、v5/v6、重入与原生异常的双位宽自建回归见候选记录和[主题审计](../history/M0-T26-S1-theme-lifecycle-review.md)。
+- **公共组件边界**：当前样式源码与测试统一归 `lib-win32-style` 的 access/application/appearance；旧 `lib-style`、`lib-win32/style` 已由S2归位，不再作为当前目录契约。公共主题状态由现有共享DLL承载，Win16与Win2000已有实际消费者；系统主题仅能恢复已观察到的请求。原S1轻量导入/懒加载、v5/v6与异常验证见[主题审计](../history/M0-T26-S1-theme-lifecycle-review.md)，当前进度见上方活动包。
 - **尚未通过**：Win2000 移除外框后 DWM 状态未恢复；同机 Git HEAD 基线亦复现，见[调查](../history/M0-T26-S1-win2k-dwm-investigation.md)。同进程 UWP 分发修复已发布并通过聚焦测试；自建跨进程真实钩子返回 126，UWP 全局自建目标策略准入返回 5，实际 UWP/WinUI 宿主和真实全局会话未验证，分别见[分发记录](../history/M0-T26-S1-uwp-dispatch.md)和[全局记录](../history/M0-T26-S1-uwp-global.md)。这些不是通过项。
 - **第十一批新增共享**：创建作用域待处理窗口记录已移入 `lib-win32/style` 并被 Win16 实际接入；双位宽公共和产品创建回归见[记录](../history/M0-T26-S1-creation-pending.md)。Win2000 尚未接入此创建机制。
 - **第十一批新增共享**：原生颜色下拉与日期控件身份核验已从 Win16 绘制中拆入公共控件库；双位宽原生正负例及 Win16 产品回归见[记录](../history/M0-T26-S1-native-combo-identity.md)。

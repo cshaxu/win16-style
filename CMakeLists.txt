@@ -113,11 +113,62 @@ add_custom_command(OUTPUT "${subclass_import}"
 add_custom_target(style-subclass DEPENDS "${subclass_import}")
 add_dependencies(style-instance style-subclass)
 target_link_libraries(style-instance PUBLIC "${subclass_import}" user32 comctl32)
-add_library(style-control-common STATIC src/lib-win32-style/application/control/control_state.c src/lib-win32-style/application/control/combo.c src/lib-win32-style/application/control/combo_snapshot.c src/lib-win32-style/application/control/basic.c src/lib-win32-style/application/control/button_snapshot.c src/lib-win32-style/application/control/list.c src/lib-win32-style/application/control/list_snapshot.c src/lib-win32-style/application/control/edit.c src/lib-win32-style/application/control/retire.c src/lib-win32-style/application/control/scroll_resources.c src/lib-win32-style/application/control/scroll_track.c src/lib-win32-style/application/control/scroll_controller.c src/lib-win32-style/application/control/scroll_managed.c src/lib-win32-style/application/control/scroll_message.c src/lib-win32-style/application/control/scroll_surface.c src/lib-win32-style/application/control/control_protocol.c src/lib-win32-style/application/control/control_scope.c src/lib-win32-style/application/control/control_custom_draw.c src/lib-win32-style/application/control/control_native_combo.c src/lib-win32-style/application/control/control_status.c src/lib-win32-style/application/control/control_vcl_spin.c src/lib-win32-style/application/control/control_vcl_identity.c)
+add_library(style-control-common STATIC
+  src/lib-win32-style/application/control/message.c
+  src/lib-win32-style/application/adapters/win32/attachment.c
+  src/lib-win32-style/application/adapters/win32/message.c
+  src/lib-win32-style/application/adapters/win32/paint_dispatch.c
+  src/lib-win32-style/application/control/bindings.c
+  src/lib-win32-style/application/adapters/win32/runtime_text.c
+  src/lib-win32-style/application/control/updown.c
+  src/lib-win32-style/application/control/rebar.c
+  src/lib-win32-style/application/adapters/win32/runtime_native.c
+  src/lib-win32-style/application/control/guard.c
+  src/lib-win32-style/application/lifecycle/dispatch.c
+  src/lib-win32-style/application/control/status_paint.c
+  src/lib-win32-style/application/control/month.c
+  src/lib-win32-style/application/control/toolbar_text.c
+  src/lib-win32-style/application/control/spin.c
+  src/lib-win32-style/application/adapters/win32/runtime_roles.c
+  src/lib-win32-style/application/adapters/win32/runtime_observer.c
+  src/lib-win32-style/application/adapters/win32/frame_paint.c
+  src/lib-win32-style/application/adapters/win32/runtime_identity.c
+  src/lib-win32-style/application/control/edge.c
+  src/lib-win32-style/application/control/report.c
+  src/lib-win32-style/application/control/runtime.c
+  src/lib-win32-style/application/control/native_overlay.c
+  src/lib-win32-style/application/control/notify.c
+  src/lib-win32-style/application/control/tab_snapshot.c
+  src/lib-win32-style/application/control/header_snapshot.c
+  src/lib-win32-style/application/control/progress_snapshot.c
+  src/lib-win32-style/application/control/native.c
+  src/lib-win32-style/application/adapters/win32/checklist.c
+  src/lib-win32-style/application/control/control_state.c
+  src/lib-win32-style/application/control/combo.c
+  src/lib-win32-style/application/control/combo_snapshot.c
+  src/lib-win32-style/application/control/basic.c
+  src/lib-win32-style/application/control/button_snapshot.c
+  src/lib-win32-style/application/control/list.c
+  src/lib-win32-style/application/control/list_snapshot.c
+  src/lib-win32-style/application/control/edit.c
+  src/lib-win32-style/application/control/retire.c
+  src/lib-win32-style/application/control/scroll_resources.c
+  src/lib-win32-style/application/control/scroll_track.c
+  src/lib-win32-style/application/control/scroll_controller.c
+  src/lib-win32-style/application/control/scroll_managed.c
+  src/lib-win32-style/application/control/scroll_message.c
+  src/lib-win32-style/application/control/scroll_surface.c
+  src/lib-win32-style/application/control/control_protocol.c
+  src/lib-win32-style/application/control/control_scope.c
+  src/lib-win32-style/application/control/control_custom_draw.c
+  src/lib-win32-style/application/control/control_native_combo.c
+  src/lib-win32-style/application/control/control_status.c
+  src/lib-win32-style/application/control/control_vcl_spin.c
+  src/lib-win32-style/application/control/control_vcl_identity.c)
 target_include_directories(style-control-common PUBLIC src)
 target_compile_definitions(style-control-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_dependencies(style-control-common style-subclass)
-target_link_libraries(style-control-common PUBLIC style-instance "${subclass_import}" user32 comctl32 gdi32)
+target_link_libraries(style-control-common PUBLIC style-bitmap win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme)
 add_library(win16-control STATIC
   src/lib-win32-style/appearance/win3x/control/scroll_layout.c
   src/lib-win32-style/appearance/win3x/control/tab_paint.c
@@ -131,19 +182,13 @@ add_library(win16-control STATIC
   src/lib-win32-style/appearance/win3x/control/choice_view.c src/lib-win32-style/appearance/win3x/control/vb_text.c
   src/lib-win32-style/appearance/win3x/control/special_paint.c
   src/lib-win32-style/appearance/win3x/control/month_text.c src/lib-win32-style/appearance/win3x/control/scroll_native.c
-  src/lib-win32-style/appearance/win3x/control/theme_kind.c src/lib-win32-style/appearance/win3x/control/updown_adapter.c
   src/lib-win32-style/appearance/win3x/control/control_state.c
-  src/lib-win32-style/appearance/win3x/control/fileowner_message.c
-  src/lib-win32-style/appearance/win3x/control/notify_message.c
   src/lib-win32-style/appearance/win3x/control/native_presentation.c src/lib-win32-style/appearance/win3x/control/control_dispatch.c
-  src/lib-win32-style/appearance/win3x/control/native_combo_identity.c src/lib-win32-style/appearance/win3x/control/cool_grip_identity.c
   src/lib-win32-style/appearance/win3x/control/vcl_native_paint.c src/lib-win32-style/appearance/win3x/control/text_policy.c
-  src/lib-win32-style/appearance/win3x/control/vcl_frame_policy.c src/lib-win32-style/appearance/win3x/control/control_lifetime.c
-  src/lib-win32-style/appearance/win3x/control/control_guard.c src/lib-win32-style/appearance/win3x/control/spin_scope.c
-  src/lib-win32-style/appearance/win3x/control/control_install.c src/lib-win32-style/appearance/win3x/control/control_remove.c
-  src/lib-win32-style/appearance/win3x/control/status_frame.c src/lib-win32-style/appearance/win3x/control/status_font.c
-  src/lib-win32-style/appearance/win3x/control/status_text.c
-  src/lib-win32-style/appearance/win3x/control/vcl_identity.c src/lib-win32-style/appearance/win3x/control/vcl_extra_frame.c
+  src/lib-win32-style/appearance/win3x/control/control_guard.c
+  src/lib-win32-style/appearance/win3x/control/control_install.c
+  src/lib-win32-style/appearance/win3x/control/status_font.c
+  src/lib-win32-style/appearance/win3x/control/vcl_identity.c
   src/lib-win32-style/appearance/win3x/control/month_paint.c src/lib-win32-style/appearance/win3x/control/special_install.c
   src/lib-win32-style/appearance/win3x/control/attachment_guard.c)
 target_include_directories(win16-control PUBLIC src/lib-win32-style/appearance/win3x/control)
@@ -643,6 +688,9 @@ if(BUILD_TESTING)
   add_executable(core-theme-track tests/lib-win32-style/application/lifecycle/theme_track.c)
   target_include_directories(core-theme-track PRIVATE src)
   target_link_libraries(core-theme-track PRIVATE style-theme-track)
+  add_test(NAME core/theme-track COMMAND $<TARGET_FILE:core-theme-track>)
+  add_test(NAME core/theme-track-cancel COMMAND $<TARGET_FILE:core-theme-track> cancel)
+  set_tests_properties(core/theme-track core/theme-track-cancel PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
   find_program(test_python python REQUIRED)
   set(test_driver ${test_python} ${CMAKE_SOURCE_DIR}/tools/run_test.py)
   plain_test(wait-target tests/run16s-exe/wait_target.c)
@@ -1009,6 +1057,92 @@ if(BUILD_TESTING)
   add_executable(core-style-creation-pending tests/lib-win32-style/application/lifecycle/creation_pending.c)
   target_include_directories(core-style-creation-pending PRIVATE src)
   add_test(NAME core/style-creation-pending COMMAND $<TARGET_FILE:core-style-creation-pending>)
+  add_executable(core-style-rebar-probe-v6 tests/lib-win32-style/application/control/rebar_probe.c tests/ntw16s-dll/control_extensions.rc)
+  target_link_libraries(core-style-rebar-probe-v6 PRIVATE style-control-common)
+  target_compile_definitions(core-style-rebar-probe-v6 PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_options(core-style-rebar-probe-v6 PRIVATE ${explicit_manifest_options})
+  add_test(NAME core/style-rebar-probe-v6 COMMAND $<TARGET_FILE:core-style-rebar-probe-v6>)
+  set_tests_properties(core/style-rebar-probe-v6 PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  add_executable(core-style-track-message tests/lib-win32-style/application/control/track_message.c)
+  target_link_libraries(core-style-track-message PRIVATE style-control-common)
+  add_test(NAME core/style-track-message COMMAND $<TARGET_FILE:core-style-track-message>)
+  set_tests_properties(core/style-track-message PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  add_executable(core-style-track-message-v6 tests/lib-win32-style/application/control/track_message.c tests/ntw16s-dll/control_extensions.rc)
+  target_link_libraries(core-style-track-message-v6 PRIVATE style-control-common)
+  target_link_options(core-style-track-message-v6 PRIVATE ${explicit_manifest_options})
+  add_test(NAME core/style-track-message-v6 COMMAND $<TARGET_FILE:core-style-track-message-v6>)
+  set_tests_properties(core/style-track-message-v6 PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  add_executable(core-style-runtime-paint tests/lib-win32-style/application/adapters/win32/paint_dispatch.c)
+  target_link_libraries(core-style-runtime-paint PRIVATE style-control-common)
+  target_compile_definitions(core-style-runtime-paint PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  add_test(NAME core/style-runtime-paint COMMAND $<TARGET_FILE:core-style-runtime-paint>)
+  set_tests_properties(core/style-runtime-paint PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  add_executable(core-style-runtime-native tests/lib-win32-style/application/adapters/win32/runtime_native.c)
+  target_link_libraries(core-style-runtime-native PRIVATE style-control-common)
+  add_test(NAME core/style-runtime-native COMMAND $<TARGET_FILE:core-style-runtime-native>)
+  set_tests_properties(core/style-runtime-native PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  add_executable(core-style-paint-dispatch tests/lib-win32-style/application/lifecycle/dispatch.c)
+  target_link_libraries(core-style-paint-dispatch PRIVATE style-control-common)
+  add_test(NAME core/style-paint-dispatch COMMAND $<TARGET_FILE:core-style-paint-dispatch>)
+  set_tests_properties(core/style-paint-dispatch PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  add_executable(core-style-control-guard tests/lib-win32-style/application/control/guard.c)
+  target_link_libraries(core-style-control-guard PRIVATE style-control-common)
+  add_test(NAME core/style-control-guard COMMAND $<TARGET_FILE:core-style-control-guard>)
+  set_tests_properties(core/style-control-guard PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  foreach(kind IN ITEMS bindings updown rebar-probe owner-message native header-snapshot progress-snapshot tab-snapshot notify native-overlay runtime report edge spin toolbar-text month)
+    string(REPLACE "-" "_" source "${kind}")
+    add_executable(core-style-${kind} tests/lib-win32-style/application/control/${source}.c)
+    target_link_libraries(core-style-${kind} PRIVATE style-control-common)
+    target_compile_definitions(core-style-${kind} PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    add_test(NAME core/style-${kind} COMMAND $<TARGET_FILE:core-style-${kind}>)
+    set_tests_properties(core/style-${kind} PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  endforeach()
+  target_sources(core-style-month PRIVATE tests/ntw16s-dll/control_extensions.rc)
+  target_link_options(core-style-month PRIVATE ${explicit_manifest_options})
+  target_sources(core-style-native-overlay PRIVATE tests/ntw16s-dll/control_extensions.rc)
+  target_link_options(core-style-native-overlay PRIVATE ${explicit_manifest_options})
+  target_sources(core-style-progress-snapshot PRIVATE tests/ntw16s-dll/control_extensions.rc)
+  target_link_options(core-style-progress-snapshot PRIVATE ${explicit_manifest_options})
+  foreach(kind IN ITEMS runtime-text runtime-identity frame-paint runtime-observer runtime-roles)
+    string(REPLACE "-" "_" source "${kind}")
+    add_executable(core-style-${kind} tests/lib-win32-style/application/adapters/win32/${source}.c)
+    target_link_libraries(core-style-${kind} PRIVATE style-control-common)
+    target_compile_definitions(core-style-${kind} PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    add_test(NAME core/style-${kind} COMMAND $<TARGET_FILE:core-style-${kind}>)
+    set_tests_properties(core/style-${kind} PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  endforeach()
+  target_sources(core-style-runtime-observer PRIVATE tests/ntw16s-dll/control_extensions.rc)
+  target_link_options(core-style-runtime-observer PRIVATE ${explicit_manifest_options})
+  add_library(style-checklist-fixture SHARED tests/lib-win32-style/application/adapters/win32/checklist_fixture.c)
+  target_link_libraries(style-checklist-fixture PRIVATE user32)
+  target_link_options(style-checklist-fixture PRIVATE -Wl,--kill-at)
+  target_compile_definitions(style-checklist-fixture PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  set_target_properties(style-checklist-fixture PROPERTIES PREFIX "" OUTPUT_NAME "MSVBVM60"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/style-checklist-fixture"
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/style-checklist-fixture"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/style-checklist-fixture")
+  add_executable(core-style-control-message tests/lib-win32-style/application/control/message.c)
+  target_link_libraries(core-style-control-message PRIVATE style-control-common)
+  target_compile_definitions(core-style-control-message PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  add_test(NAME core/style-control-message COMMAND $<TARGET_FILE:core-style-control-message>)
+  set_tests_properties(core/style-control-message PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  add_executable(core-style-runtime-attachment tests/lib-win32-style/application/adapters/win32/runtime_attachment.c)
+  target_link_libraries(core-style-runtime-attachment PRIVATE style-control-common)
+  target_compile_definitions(core-style-runtime-attachment PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  add_test(NAME core/style-runtime-attachment COMMAND $<TARGET_FILE:core-style-runtime-attachment>)
+  set_tests_properties(core/style-runtime-attachment PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  add_executable(core-style-runtime-report tests/lib-win32-style/application/adapters/win32/report_notify.c)
+  target_link_libraries(core-style-runtime-report PRIVATE style-control-common)
+  target_compile_definitions(core-style-runtime-report PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  add_test(NAME core/style-runtime-report COMMAND $<TARGET_FILE:core-style-runtime-report>)
+  set_tests_properties(core/style-runtime-report PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
+  add_executable(core-style-runtime-checklist tests/lib-win32-style/application/adapters/win32/checklist.c)
+  target_link_libraries(core-style-runtime-checklist PRIVATE style-control-common)
+  target_link_options(core-style-runtime-checklist PRIVATE -municode)
+  target_compile_definitions(core-style-runtime-checklist PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  add_dependencies(core-style-runtime-checklist style-checklist-fixture)
+  add_test(NAME core/style-runtime-checklist COMMAND $<TARGET_FILE:core-style-runtime-checklist> $<TARGET_FILE:style-checklist-fixture>)
+  set_tests_properties(core/style-runtime-checklist PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
   add_executable(core-style-button-snapshot tests/lib-win32-style/application/control/button_snapshot.c)
   target_link_libraries(core-style-button-snapshot PRIVATE style-control-common)
   target_compile_definitions(core-style-button-snapshot PRIVATE _WIN32_WINNT=0x0A00)
@@ -1378,11 +1512,11 @@ if(BUILD_TESTING)
   manifest_test(core-control-extensions tests/ntw16s-dll/control_extensions.c user32 gdi32 comctl32 imm32)
   target_compile_definitions(core-control-extensions PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   add_test(NAME core/control-extensions COMMAND ${test_driver} --name core/control-extensions -- $<TARGET_FILE:core-control-extensions> $<TARGET_FILE:ntw16s>)
-  native_test(core-toolbar-text-bounds tests/ntw16s-dll/toolbar_text_bounds.c user32 gdi32 comctl32)
-  add_test(NAME core/toolbar-text-bounds COMMAND ${test_driver} --name core/toolbar-text-bounds -- $<TARGET_FILE:core-toolbar-text-bounds>)
-  manifest_test(core-toolbar-text-bounds-v6 tests/ntw16s-dll/toolbar_text_bounds.c user32 gdi32 comctl32)
+  native_test(core-toolbar-text-bounds tests/lib-win32-style/application/control/toolbar_text_bounds.c style-control-common user32 gdi32 comctl32)
+  add_test(NAME core/toolbar-text-bounds COMMAND ${test_driver} --name core/toolbar-text-bounds -- $<TARGET_FILE:core-toolbar-text-bounds> --private-worker)
+  manifest_test(core-toolbar-text-bounds-v6 tests/lib-win32-style/application/control/toolbar_text_bounds.c style-control-common user32 gdi32 comctl32)
   target_compile_definitions(core-toolbar-text-bounds-v6 PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-  add_test(NAME core/toolbar-text-bounds-v6 COMMAND ${test_driver} --name core/toolbar-text-bounds-v6 -- $<TARGET_FILE:core-toolbar-text-bounds-v6>)
+  add_test(NAME core/toolbar-text-bounds-v6 COMMAND ${test_driver} --name core/toolbar-text-bounds-v6 -- $<TARGET_FILE:core-toolbar-text-bounds-v6> --private-worker)
   native_test(core-control-protocol-owner tests/ntw16s-dll/control_protocol_owner.c user32)
   target_include_directories(core-control-protocol-owner PRIVATE src)
   add_test(NAME core/control-protocol-owner COMMAND ${test_driver} --name core/control-protocol-owner -- $<TARGET_FILE:core-control-protocol-owner>)
@@ -1442,7 +1576,7 @@ if(BUILD_TESTING)
   native_test(core-pending-frame-owner tests/ntw16s-dll/pending_frame_owner.c user32 gdi32 imm32)
   target_include_directories(core-pending-frame-owner PRIVATE src)
   add_test(NAME core/pending-frame-owner COMMAND ${test_driver} --name core/pending-frame-owner -- $<TARGET_FILE:core-pending-frame-owner> $<TARGET_FILE:ntw16s>)
-  native_test(core-header-owner tests/ntw16s-dll/header_paint_owner.c user32 gdi32 comctl32)
+  native_test(core-header-owner tests/ntw16s-dll/header_paint_owner.c user32 gdi32 comctl32 style-control-common)
   add_test(NAME core/header-owner COMMAND ${test_driver} --name core/header-owner -- $<TARGET_FILE:core-header-owner>)
 
   add_executable(core-dialog-scope tests/ntw16s-dll/dialog_scope.c src/ntw16s-dll/controls.c src/ntw16s-dll/win16_style.c)
@@ -1820,7 +1954,7 @@ if(BUILD_TESTING)
   add_executable(core-global-vb-text tests/ntw16s-dll/global_vb_text.c src/ntw16s-dll/global/vb_text.c src/lib-win32/module-import/import_scan.c src/lib-win32/module-import/import_patch.c src/lib-win32-style/appearance/win3x/control/vb_text.c src/lib-win32-style/appearance/win3x/common/font.c)
   target_include_directories(core-global-vb-text PRIVATE src)
   target_compile_definitions(core-global-vb-text PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-global-vb-text PRIVATE style-bitmap user32 gdi32)
+  target_link_libraries(core-global-vb-text PRIVATE style-control-common style-bitmap user32 gdi32)
   target_link_options(core-global-vb-text PRIVATE -municode)
   add_dependencies(core-global-vb-text vb-global-runtime)
   add_test(NAME core/global-vb-text COMMAND ${test_driver} --name core/global-vb-text -- $<TARGET_FILE:core-global-vb-text> $<TARGET_FILE:vb-global-runtime>)
@@ -1829,7 +1963,7 @@ if(BUILD_TESTING)
   add_executable(core-vb-font tests/ntw16s-dll/vb_font.c src/lib-win32-style/appearance/win3x/common/font.c src/lib-win32-style/appearance/win3x/control/vb_text.c)
   target_include_directories(core-vb-font PRIVATE src)
   target_compile_definitions(core-vb-font PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-vb-font PRIVATE style-bitmap user32 gdi32)
+  target_link_libraries(core-vb-font PRIVATE style-control-common style-bitmap user32 gdi32)
   target_compile_options(core-vb-font PRIVATE -include "${CMAKE_SOURCE_DIR}/tests/ntw16s-dll/vb_alloc.h")
   target_link_options(core-vb-font PRIVATE -municode)
   add_test(NAME core/vb-font COMMAND ${test_driver} --name core/vb-font -- $<TARGET_FILE:core-vb-font> $<TARGET_FILE:vb-runtime>)

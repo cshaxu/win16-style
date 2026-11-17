@@ -31,6 +31,12 @@
 
 S3–S12 随机制迁移同步拆分风格呈现，公共图形遇到实际消费者时迁移；S13 只做最终整理。各 S 的详细改动和适用验证须以 S1 证据细化，不通过压缩范围满足收口。
 
+## 规划执行与交付粒度
+
+一个S对应一组完整能力，不对应一个源文件。逐文件审计是覆盖方法：每项登记状态所有者、公共接收组件、产品调用位置、旧路径删除及验证；相关机制合并实施，避免只迁文件或留下空包装。开发期间沿用稳定Ninja/ccache增量树，按改动运行双位宽契约和实际消费者测试；没有新增证据目标不重复构建测试。
+
+本S整组能力满足退出条件后，才进行必要的同快照双位宽干净构建、八文件打包、两处发布、实际包测试、提交推送和远端复核。不能为单个文件单独重复完整交付，也不能因此省略S级闭环。已结束的scratch先提炼证据再清理，保留有效增量缓存。当前活动S及有效在途改动以CURRENT和对应brief为准，恢复时先核对，不重做已完成的S或覆盖未提交工作。
+
 ## S1来源与组件迁移映射（旧目录为S2之前的审计位置）
 
 | 当前来源 | 目标归属 | 迁移判断 |
@@ -295,6 +301,18 @@ S2须同步迁移EXE和测试直接编译的DLL来源文件，消除反向依赖
 ## S2 目录迁移执行输入
 
 [381项迁移清单](../etc/evidence/t26-style-relocation.json)冻结288生产文件及93测试/说明文件的当前工作区摘要和目的地，详见[产品根/构建核对](../history/M0-T26-S1-product-adapter-review.md#产品根与迁移构建交叉核对p108)。既有公共机制归access/application，年代源码归appearance；mixed-split-required是S3–S13必须完成的操作/状态拆分，不能因机械挪动标为已共享。产品混合协调按能力拆，不整文件mv后保留私有头反向依赖。S2需要同时更新CMake、includes、来源receipt、资源身份、公共边界门禁和当前TEST_MAP；产品组合测试保留对应所有权。所有381项必须逐项对账，路径唯一不能代替正确归属。
+
+## S10之后的具体接收边界
+
+S10逐项台账保留原始输入摘要和实际公共消费者；以下交接是同一T内尚须实施的机制，不是将混合文件整体认作风格代码。
+
+| 接收S | 接收的具体机制 | 现有入口 |
+| --- | --- | --- |
+| S11 | 创建scope、CBT/return/first-show、原生创建结果及旧对话框嵌套子控件事务 | attachment的Ntw16sCreationBegin/End、creation_before/return/observe、install_created；window_titles的title_scope/begin_titles/end_titles、WINDOW_HOOK/window_band和dialog宏；win16_control_dialog_combo_install/common_dialog_combo_pending；attachment_guard初始分类与protocol选择 |
+| S12 | 现代composed-frame宿主判断和surface撤销，与既有现代frame安装/消息统一 | attachment的composed_frame_class、Ntw16sWindowRemove及既有modern_frame消费者 |
+| S13 | 完整renderer注册、原生绘制preflight、DC和字体/字形缓存所有权 | control_dispatch/special_install的操作装配；special_paint的graphical_target/frame_prepare/frame和vb_data_arrow_candidate；status_font_borrow/return、ntw16s_vb_paint_font/decode_glyphs/fonts_clear；vcl_inplace/nav_draw；controls的present_control/scroll_caret_sync；window_titles的month/static/status font-return和GDI观察适配 |
+
+S13必须消除仍在使用的style_present字段view，核实native_presentation临时字体的正常与异常展开所有权；不能把spin/BitBtn异常测试当成该分支证据。实际palette、原始glyph、年代支持资格留appearance，共同状态/资源和完整操作归application。已在S10公共化的消息、通知、主题租约及根生命周期不再另造实现。
 
 ## 未通过与未来候选
 

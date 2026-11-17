@@ -17,6 +17,13 @@ static HFONT acquire(HWND window,HFONT font,BOOL native)
 static void retain(HFONT font){if(font==variant)++leases;}
 static void release(HFONT font){if(font==variant){if(leases)--leases;else invalid_release=TRUE;}}
 static const style_control_fonts operations={source,acquire,retain,release};
+static unsigned finalized;
+static void final_dispose(void *context){(void)context;++finalized;}
+static void successor_dispose(void *context){(void)context;}
+static LRESULT CALLBACK successor_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
+{(void)id;(void)data;return DefSubclassProc(w,m,a,b);}
+static style_control_state *successor_state(HWND w)
+{style_instance *instance=style_instance_lookup(w,successor_proc);return instance?instance->context:NULL;}
 static LRESULT forward(HWND window,WPARAM count,LPARAM values)
 {(void)window;(void)count;(void)values;++forwarded;if(detach_forward)active->detached=TRUE;return !fail_forward;}
 int main(void)
@@ -59,8 +66,18 @@ int main(void)
     CHECK(!style_control_tabs_set(window,&instance,&state,1,0,forward) && forwarded==before && state.tab_positions==saved);
     fail_forward=TRUE;CHECK(!style_control_tabs_set(window,&instance,&state,0,0,forward) && state.tab_positions==saved);fail_forward=FALSE;
     detach_forward=TRUE;CHECK(style_control_tabs_set(window,&instance,&state,0,0,forward) && state.tab_count==2 && state.tab_positions==saved);
+    style_control_state retired,new_state;style_control_state_init(&retired,&operations);style_control_state_init(&new_state,&operations);
+    retired.original_font=application;new_state.original_font=successor;retired.native_paints=1;
+    style_instance retired_instance,new_instance;style_instance_init(&retired_instance,NULL,final_dispose);retired_instance.detached=TRUE;style_instance_retain(&retired_instance);
+    style_instance_init(&new_instance,&new_state,successor_dispose);style_instance_retain(&new_instance);CHECK(style_instance_attach(&new_instance,window,successor_proc,NULL));
+    retain(variant);RECT spin={0};style_control_message_finish(window,&retired_instance,&retired,WM_SETFONT,0,NULL,&spin,TRUE,variant,NULL,NULL,successor_state);
+    CHECK(native_font==successor && finalized==1 && !retired_instance.calls && !retired.native_paints && !leases);
+    CHECK(style_instance_detach(&new_instance));style_instance_release(&new_instance);
+    style_instance_init(&retired_instance,NULL,final_dispose);retired_instance.detached=TRUE;style_instance_retain(&retired_instance);
+    style_control_message_finish(window,&retired_instance,&retired,WM_SETFONT,0,NULL,&spin,FALSE,NULL,NULL,NULL,successor_state);
+    CHECK(native_font==application && finalized==2);style_control_state_dispose(&retired);style_control_state_dispose(&new_state);
     style_control_state_dispose(&state);style_control_state_dispose(&state);CHECK(!state.font && !state.tab_positions && !leases && !invalid_release);
     LOGFONTW font;CHECK(GetObjectW(application,sizeof(font),&font) && DeleteObject(variant));
     CHECK(DestroyWindow(window) && UnregisterClassW(cls.lpszClassName,cls.hInstance));
-    puts("CONTROL_STATE font leases/native forwarding/fallback/retired successor/tab commit/failure/reentrant cleanup PASS");return 0;
+    puts("CONTROL_STATE font leases/native forwarding/fallback/retired successor/tab commit/failure/reentrant cleanup/message final release PASS");return 0;
 }

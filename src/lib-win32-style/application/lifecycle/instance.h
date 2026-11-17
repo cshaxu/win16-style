@@ -23,8 +23,16 @@ void style_instance_init(style_instance *,void *,void (*)(void *));
 void style_instance_retain(style_instance *);
 void style_instance_release(style_instance *);
 style_instance *style_instance_lookup(HWND,SUBCLASSPROC);
+/* Unpublished GUI installation preflight; any matching subclass, including
+ * foreign zero data, is already present. Does not allocate or attach. */
+BOOL style_instance_preflight(HWND,SUBCLASSPROC);
 BOOL style_instance_attach(style_instance *,HWND,SUBCLASSPROC,const void *);
 /* Caller holds a reference through its own cleanup. Removal failure keeps
  * the instance attached; this does not restore appearance or unload a DLL. */
 BOOL style_instance_detach(style_instance *);
+/* Callback-compatible owned lease. Valid only while the exact registered
+ * window/procedure still refers to this instance. No new attachment occurs.
+ * Caller pairs every successful acquire with return, even after detach. */
+BOOL style_instance_acquire_owned(void *);
+void style_instance_return_owned(void *);
 #endif

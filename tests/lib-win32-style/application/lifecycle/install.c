@@ -16,6 +16,15 @@ static void dispose(void *context)
 {++disposed;free(context);SetLastError(666);}
 static fixture *prepare(unsigned mode)
 {fixture *s=create(mode);if(s)style_instance_init(&s->instance,s,dispose);return s;}
+static unsigned extra_removes;
+static BOOL fail_extra_remove;
+static BOOL remove_extra(HWND window,const void *owner)
+{
+    ++extra_removes;style_instance *instance=style_instance_lookup(window,procedure);
+    if(!instance || instance->owner!=owner){SetLastError(ERROR_INVALID_STATE);return FALSE;}
+    if(fail_extra_remove){SetLastError(ERROR_BUSY);return FALSE;}
+    BOOL removed=style_instance_detach(instance);SetLastError(999);return removed;
+}
 static BOOL setup(HWND window,void *context)
 {
     fixture *s=context;++setups;unsigned before=disposed;
@@ -78,6 +87,22 @@ int main(void)
     CHECK(!style_instance_install(&s->instance,window,procedure,NULL,&ops) && GetLastError()==ERROR_CANCELLED && pinned);
     CHECK(replacement && style_instance_lookup(window,procedure)==&replacement->instance && !replacement->instance.detached && allocated==disposed+1);
     remove_instance(&replacement->instance);replacement=NULL;CHECK(allocated==disposed);
+    s=prepare(0);CHECK(s && style_instance_install(&s->instance,window,procedure,&owner,NULL));style_instance_retain(&s->instance);
+    CHECK(style_instance_setup_finish(window,&s->instance,TRUE,&owner,remove_extra) && !s->instance.calls && !s->instance.detached && !extra_removes);
+    remove_instance(&s->instance);CHECK(allocated==disposed);
+    s=prepare(0);CHECK(s && style_instance_install(&s->instance,window,procedure,&owner,NULL));style_instance_retain(&s->instance);
+    CHECK(!style_instance_setup_finish(window,&s->instance,FALSE,&owner,remove_extra) && extra_removes==1 && allocated==disposed && GetLastError()==666);
+    for(unsigned okay=0;okay<2;++okay){
+        s=prepare(0);CHECK(s && style_instance_install(&s->instance,window,procedure,&owner,NULL));style_instance_retain(&s->instance);CHECK(style_instance_detach(&s->instance));
+        CHECK(!style_instance_setup_finish(window,&s->instance,okay,&owner,remove_extra) && extra_removes==1 && allocated==disposed);
+    }
+    s=prepare(0);CHECK(s && style_instance_install(&s->instance,window,procedure,&owner,NULL));style_instance_retain(&s->instance);fail_extra_remove=TRUE;
+    CHECK(!style_instance_setup_finish(window,&s->instance,FALSE,&owner,remove_extra) && !s->instance.detached && !s->instance.calls && extra_removes==2 && allocated==disposed+1 && GetLastError()==ERROR_BUSY);
+    fail_extra_remove=FALSE;remove_instance(&s->instance);CHECK(allocated==disposed);
+    s=prepare(0);CHECK(s && style_instance_install(&s->instance,window,procedure,&owner,NULL));style_instance_retain(&s->instance);CHECK(DestroyWindow(window));window=NULL;
+    CHECK(!style_instance_setup_finish(window,&s->instance,TRUE,&owner,remove_extra) && extra_removes==2 && allocated==disposed);
+    puts("EXTRA_SETUP PASS retained=1 success=1 rollback=1 detached=1 remove_failure=1 destroyed=1 last_error_contract=1 cleanup=1");
+
 done:
     if(window)DestroyWindow(window);
     UnregisterClassW(cls.lpszClassName,module);

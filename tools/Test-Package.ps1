@@ -769,8 +769,8 @@ try{
     $cases+=Pair { param($bits,$tree,$dll) Case "control-scope-${bits}" (Join-Path $tree 'core-win16-control-scope.exe') @() @('CONTROL_SCOPE_OK nested=1 counts=1 reentrant=1 cleanup=1') }
     $cases+=Pair { param($bits,$tree,$dll) Case "control-extensions-${bits}" (Join-Path $tree 'core-control-extensions.exe') @($dll) @('CONTROL_EXTENSION_NATIVE_OK','CONTROL_EXTENSION_IMAGELIST_OK',"CONTROL_EXTENSION_OK bits=${bits} protocol_cases=60") }
     $cases+=Pair { param($bits,$tree,$dll) Case "control-protocol-owner-${bits}" (Join-Path $tree 'core-control-protocol-owner.exe') @() @("PROTOCOL_OWNER_OK bits=${bits} allocations=0 bindings=0") }
-    $cases+=Pair { param($bits,$tree,$dll) Case "toolbar-bounds-v5-${bits}" (Join-Path $tree 'core-toolbar-text-bounds.exe') @() @('TOOLBAR_SHORT_OK','TOOLBAR_BOUNDS_OK') }
-    $cases+=Pair { param($bits,$tree,$dll) Case "toolbar-bounds-v6-${bits}" (Join-Path $tree 'core-toolbar-text-bounds-v6.exe') @() @('TOOLBAR_SHORT_OK','TOOLBAR_BOUNDS_OK') }
+    $cases+=Pair { param($bits,$tree,$dll) Case "toolbar-bounds-v5-${bits}" (Join-Path $tree 'core-toolbar-text-bounds.exe') @('--private-worker') @('TOOLBAR_SHORT_OK','TOOLBAR_BOUNDS_OK') }
+    $cases+=Pair { param($bits,$tree,$dll) Case "toolbar-bounds-v6-${bits}" (Join-Path $tree 'core-toolbar-text-bounds-v6.exe') @('--private-worker') @('TOOLBAR_SHORT_OK','TOOLBAR_BOUNDS_OK') }
     $cases+=Pair { param($bits,$tree,$dll) Case "tab-controls-${bits}" (Join-Path $tree 'core-tab-controls.exe') @($dll) @('TAB_OS_ROOT_CLEANUP process_exit=1',"TAB_CONTROL_OK bits=${bits}",'styled=6 preserved=15') }
     $cases+=Pair { param($bits,$tree,$dll) Case "tab-controls-dpi-${bits}" (Join-Path $tree 'core-tab-controls.exe') @($dll,'aware') @('TAB_OS_ROOT_CLEANUP process_exit=1',"TAB_CONTROL_OK bits=${bits}",'aware=1 styled=6 preserved=15') }
     $cases+=Pair { param($bits,$tree,$dll) Case "tab-controls-v5-${bits}" (Join-Path $tree 'core-tab-controls-v5.exe') @($dll) @('TAB_OS_ROOT_CLEANUP process_exit=1',"TAB_CONTROL_OK bits=${bits}",'styled=6 preserved=15') }

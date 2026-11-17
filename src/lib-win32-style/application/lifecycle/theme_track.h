@@ -3,6 +3,11 @@
 #include <windows.h>
 #include <uxtheme.h>
 
+/* Native class IDs currently used by callers; unrecognized classes remain
+ * OTHER. This bounded reader does not choose any renderer or visual style. */
+enum style_theme_class {STYLE_THEME_OTHER,STYLE_THEME_BUTTON,STYLE_THEME_TEXTGLOW,STYLE_THEME_COMBOBOX};
+int style_theme_classify(LPCWSTR);
+
 /* A ticket is valid only while no theme open/close has crossed the draw. */
 typedef struct style_theme_track_ticket {
     ULONGLONG epoch;

@@ -48,7 +48,9 @@ static int child_cycle(const WCHAR *runtime_path,const WCHAR *witness_path,BOOL 
     state->size=sizeof(*state);state->pid=GetCurrentProcessId();state->tid=GetCurrentThreadId();wcscpy_s(state->event_name,128,event_name);
     HANDLE event=CreateEventW(NULL,TRUE,FALSE,event_name);CHECK(event && SetEnvironmentVariableW(VB_QUEUE_ENV,name));
     HMODULE witness=LoadLibraryW(witness_path);CHECK(witness);HOOKPROC get=(void *)GetProcAddress(witness,"VbQueueGet"),sent=(void *)GetProcAddress(witness,"VbQueueSent");CHECK(get && sent);
-    HHOOK get_hook=SetWindowsHookExW(WH_GETMESSAGE,get,witness,state->tid),sent_hook=SetWindowsHookExW(WH_CALLWNDPROC,sent,witness,state->tid);CHECK(get_hook && sent_hook);
+    /* The callbacks and current target thread are in this process. Keep
+     * witness loaded explicitly; the native same-process contract uses NULL. */
+    HHOOK get_hook=SetWindowsHookExW(WH_GETMESSAGE,get,NULL,state->tid),sent_hook=SetWindowsHookExW(WH_CALLWNDPROC,sent,NULL,state->tid);CHECK(get_hook && sent_hook);
     GdiFlush();DWORD initial_gdi=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
     WNDCLASSW cls={.hInstance=GetModuleHandleW(NULL),.lpfnWndProc=root_proc,.lpszClassName=L"ContainerModelParent"};CHECK(RegisterClassW(&cls));
     /* This fixture isolates child-container ownership; title/menu lifetime is

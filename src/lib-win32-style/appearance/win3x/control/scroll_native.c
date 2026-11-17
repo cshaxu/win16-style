@@ -47,3 +47,18 @@ void win16_control_managed_frame_scrollbars_palette(HWND w,const win16_style_pal
     style_scroll_binding binding=ops->lookup(w);
     if(binding.instance && binding.scroll->resources.frame)((control_style *)binding.instance->context)->palette=*palette;
 }
+
+void win16_control_scrollbars_paint(HWND w,HDC target,const win16_style_palette *palette,SUBCLASSPROC proc,
+    void (*paint)(HWND,control_style *,HDC))
+{
+    control_style s={0};DWORD_PTR attached;
+    if(palette)s.palette=*palette;else win16_style_default_palette(&s.palette);
+    if(GetWindowSubclass(w,proc,(UINT_PTR)proc,&attached)){
+        control_style *owner=(control_style *)attached;
+        if(!palette)s.palette=owner->palette;
+        s.bindings.scroll.resources.list=owner->bindings.scroll.resources.list;s.bindings.scroll.resources.edit=owner->bindings.scroll.resources.edit;s.bindings.scroll.track=owner->bindings.scroll.track;
+        s.bindings.scroll.resources.frame=owner->bindings.scroll.resources.frame;
+        s.bindings.scroll.object=owner->bindings.scroll.object;
+    }
+    paint(w,&s,target);
+}

@@ -1,4 +1,5 @@
 #include "control_state.h"
+#include "control_vcl_spin.h"
 #include "../graphics/text_metrics.h"
 #include <stdlib.h>
 #include <limits.h>
@@ -16,6 +17,13 @@ BOOL style_control_state_prepare(HWND window,style_control_state *state,int coun
         CopyMemory(state->tab_positions,tabs,(size_t)count*sizeof(int));state->tab_count=count;
     }
     return TRUE;
+}
+BOOL style_control_font_read(HWND w,style_control_state *state,SUBCLASSPROC proc,const BOOL *cancelled)
+{
+    DWORD_PTR existing;state->original_font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
+    if(cancelled && *cancelled){SetLastError(ERROR_CANCELLED);return FALSE;}
+    if(GetWindowSubclass(w,proc,(UINT_PTR)proc,&existing)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
+    state->original_font=state->fonts->source(state->original_font);return TRUE;
 }
 void style_control_state_dispose(style_control_state *state)
 {
@@ -54,6 +62,16 @@ void style_control_font_finish(HWND window,const style_instance *instance,style_
     if(message==WM_SETFONT && instance->detached && IsWindow(window))SendMessageW(window,WM_SETFONT,(WPARAM)source,parameter);
     if(painting)--state->native_paints;
     state->fonts->release(previous);state->fonts->release(outbound);state->fonts->release(pinned);
+}
+void style_control_message_finish(HWND w,style_instance *instance,style_control_state *state,UINT m,LPARAM b,HWND spin_button,const RECT *spin_before,BOOL combo_paint,HFONT previous,HFONT outbound,HFONT pinned,style_control_state *(*lookup)(HWND))
+{
+    style_control_vcl_spin_after(w,spin_button,spin_before,&instance->detached);
+    HFONT source=state->original_font;
+    if(m==WM_SETFONT && instance->detached && IsWindow(w)){
+        style_control_state *successor=lookup(w);if(successor)source=successor->original_font;
+    }
+    style_control_font_finish(w,instance,state,m,b,combo_paint,source,previous,outbound,pinned);
+    style_instance_release(instance);
 }
 LRESULT style_control_tabs_set(HWND window,style_instance *instance,style_control_state *state,WPARAM count,LPARAM values,
     LRESULT (*forward)(HWND,WPARAM,LPARAM))
