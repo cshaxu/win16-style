@@ -1,22 +1,22 @@
 {
   "schema": 1,
-  "delivery": "M0 T27 S3 P1",
-  "stage": "development: source-based Windows2000 push/choice BUTTON family; remaining T27 groups pending",
+  "delivery": "M0 T27 S4 P1",
+  "stage": "development: source-based Windows2000 push/choice/static/group families; remaining T27 groups pending",
   "version": "0.27.0.0",
   "version_contract": "M0 T27; sequential S does not increment T version",
   "package_directory": "assets",
-  "source_snapshot_sha256": "75fd28c6aba81be8f0541ecacff279f0f840c7b0e036bad3792e5ce3968e22bd",
+  "source_snapshot_sha256": "c0332ba9a1ba826a405cb214a6fcc93a1fee5d29821cc36441a08902897d400e",
   "source_snapshot_format": "SHA256 of clean Build-Package snapshot.json bytes",
   "source_input_cohort": {
-    "definition": "SHA256 sorted relative path + NUL + SHA256 + LF for src/,tests/,tools/,CMakeLists.txt snapshot inputs; every working input checked equal before commit",
-    "count": 1181,
-    "sha256": "8c8823a8c951db3ed16b29c262b9f9f4dc29ef6e841026d62c4ebef3b3af1204"
+    "definition": "SHA256 sorted relative path + NUL + SHA256 + LF for src/,tests/,tools/,CMakeLists.txt snapshot inputs; working bytes checked equal",
+    "count": 1187,
+    "sha256": "f1364f4044ca1458ef605a5fc6d6689535ad66a19f382aacd82f6800917e9032"
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "29a237c13fe70511ba9312b7ed2b8253c6d272e98fc55bc85250b587739ab6d7",
+      "sha256": "c2481612d51c11b5a3fe68c5e43eee7fe1ef24f5607230940a67222149d2c157",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "d7f56c721a1f2a75bc15ebd533533b3bf7406c6c268f0f12d5f62b6184961d8f",
+      "sha256": "321d343020f99be5bb5d6f550197f43b01fb75526bb3d4ceb360c3d2b6a7a373",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -58,7 +58,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "b35942dfe1de827f598264659a9c269b6251f91baeb6bd74984bdfe96b7f96c7",
+      "sha256": "a93bf5a90263c50af543cf2f8f2e14911ae06442fe5abd514c611ba9167ad1a9",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -79,7 +79,7 @@
     "ntw2ks32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "890385d39015ac6bc286125931b2884ea008845a16a06865650332f68465f51e",
+      "sha256": "3a9ae5198b9960b39fe02640e28a75666859feb28f59cadb5e676f5358d1ba5f",
       "imports": [
         "COMCTL32.dll",
         "COMDLG32.DLL",
@@ -103,7 +103,7 @@
     "ntw2ks64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "1c54e76675fc13e0de52b6b712a9961f174985095ee2e213672a196a47c1f114",
+      "sha256": "1213f871b0ad9dd849e3c876c23a0556a24d37e15cdd9bc4094d658e11f6ddee",
       "imports": [
         "COMCTL32.dll",
         "comdlg32.dll",
@@ -122,7 +122,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "c89981547b3d0313037566f193c3cebe3070b3a10f8bae53718967e4438cc64e",
+      "sha256": "9e2cfd8036f2c50a17917c4e2a62ebebc488fad967a39e9978d8456826444944",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -137,7 +137,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "c342a960d720ece77831e2f2abebea9ca0ed4d98bda83ac0f9aaf5956badf03d",
+      "sha256": "7174d80487f3ca9980ab2272cf6a82844fdb66abe8df9d4a3f27d2af89060f95",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -147,7 +147,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "b2b2bea6ebc0bb81a0f6994bb94fa0c5c357624b5bb5b0ff6332f75c2c48f2c8",
+      "sha256": "15de79bf60881f8330eb42fcfb74871628371d42d9cc8f1dd8b40b2491aba66d",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -161,22 +161,22 @@
     }
   },
   "toolchains": {
-    "ccache_version": "ccache version 4.13.6",
     "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache_version": "ccache version 4.13.6",
     "toolchains": [
       {
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
-        "architecture": "x86",
-        "target": "i686-w64-mingw32",
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "version": "16.1.0"
+        "architecture": "x86",
+        "version": "16.1.0",
+        "target": "i686-w64-mingw32"
       },
       {
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
-        "architecture": "x64",
-        "target": "x86_64-w64-mingw32",
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "version": "16.1.0"
+        "architecture": "x64",
+        "version": "16.1.0",
+        "target": "x86_64-w64-mingw32"
       }
     ],
     "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
@@ -184,73 +184,72 @@
   "architecture": {
     "x86": {
       "build-time.json": {
-        "seconds": 259.0601838999428,
+        "seconds": 281.0741302999668,
         "exit_code": 0
       },
       "configure-time.json": {
-        "seconds": 8.04058129992336,
+        "seconds": 5.8883330000098795,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.5282418000278994,
+        "seconds": 0.5657480000518262,
         "exit_code": 0
       },
       "cache": {
         "cache_miss": 3,
-        "direct_cache_hit": 908,
+        "direct_cache_hit": 912,
         "preprocessed_cache_hit": 0,
         "cache_size_kibibyte": 52
       }
     },
     "x64": {
       "build-time.json": {
-        "seconds": 281.8694883000571,
+        "seconds": 303.3538111000089,
         "exit_code": 0
       },
       "configure-time.json": {
-        "seconds": 7.3960929999593645,
+        "seconds": 8.192417999962345,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.6987518999958411,
+        "seconds": 0.4800411999458447,
         "exit_code": 0
       },
       "cache": {
         "cache_miss": 3,
-        "direct_cache_hit": 996,
+        "direct_cache_hit": 1000,
         "preprocessed_cache_hit": 0,
         "cache_size_kibibyte": 52
       }
     }
   },
   "verification": {
-    "evidence": "evidence/t27-s3-choice-controls.json",
-    "actual_package_cases": 36,
-    "passed": 36,
+    "evidence": "evidence/t27-s4-static-group.json",
+    "actual_package_cases": 48,
+    "passed": 48,
     "skipped": 0,
     "coverage": "focused, not whole repository",
-    "incremental_cases": 14,
-    "startup_development_cases": 4,
-    "public_boundaries": "Both architectures: 4 process archives and23 neutral style archives passed, original5 resource headers and embedded18 raster tables retained. Build script checked full ninja dependency traces permit only copied source/compiler roots, no sibling dependency.",
-    "actual_remote": "evidence/t27-s3-remote.json; b4ca7bf2 all32 changed paths/eight binaries byte-exact; baseline9 line-ending-only inputs individually disclosed"
+    "incremental_cases": 22,
+    "additional_static_contract_cases": 8,
+    "startup_development_cases": 8,
+    "public_boundaries": "Both architectures:4 process archives and23 neutral style archives passed; original5 headers/notice and18 embedded tables retained; ninja dependency traces accept only copied source/compiler roots, no siblings.",
+    "actual_remote": "pending S4 P1 fetch; baseline9 line-ending-only inputs remain disclosed"
   },
   "validation": {
     "physical_keyboard_mouse": "not claimed",
     "private_desktops_created": false,
-    "other_controls": "approved T27 S4-S16 still pending",
+    "other_controls": "approved T27 S5-S16 pending",
     "limitations": [
-      "Current installed Marlett reproduces four original13x13 crops exactly; original font file identity not obtained.",
-      "Pressed/disabled/mixed/flat follow pinned source; no original screenshot claim for unwitnessed states.",
-      "Space/focus/UI-cues use real native messages, not physical keyboard or actual desktop focus certification.",
-      "Own hidden current-desktop parents; no private desktop/global tests.",
-      "Image-only non-pushlike choices, RTL and owner-draw remain native; v6 image-list-only native rendering preserved.",
-      "DialogManager pre-created child integration is S4, not claimed complete here.",
-      "Style removal is not physical unloading of permanently retained hook modules."
+      "Owner-draw and ENHMETAFILE remain outside the existing Win3.x static renderer support; SysLink has no originalWin2000 implementation in this reference; unknown-framework audit remains S14.",
+      "Borrowed bitmap native path not counted as independent era blitter.",
+      "Physical input/DPI beyond actually observed modes not claimed.",
+      "Group image/pushlike/multiline and etched+SS_SUNKEN compound variants retain native behavior; not counted as drawn variants.",
+      "Custom parent content/background remains application-owned; no whole-application recoloring or physical keyboard/mouse claim."
     ]
   },
   "closure": {
-    "S3": "closed after actual fetched P1 b4ca7bf2 byte verification",
-    "T27": "open; S4 static/group/container controls admitted",
+    "S4": "verified locally, published48/48; actual remote pending",
+    "T27": "open; S4 until remote verification",
     "M0": "fixed"
   }
 }

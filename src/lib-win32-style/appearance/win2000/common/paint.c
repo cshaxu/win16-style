@@ -120,3 +120,16 @@ done:
     if(font && !DeleteObject(font))result=FALSE;
     return result;
 }
+
+BOOL win2k_draw_content(HDC dc,LPARAM value,WPARAM length,int x,int y,int width,int height,
+    UINT type,DRAWSTATEPROC draw,BOOL disabled,BOOL monochrome,const win2k_palette *p)
+{
+    if(!disabled && !monochrome)return DrawStateW(dc,NULL,draw,value,length,x,y,width,height,type);
+    HBRUSH light=disabled?CreateSolidBrush(p->highlight):NULL,gray=CreateSolidBrush(p->gray);
+    BOOL result=gray && (!disabled || light);
+    if(result && disabled)result=DrawStateW(dc,light,draw,value,length,x+1,y+1,width,height,type|DSS_MONO);
+    if(result)result=DrawStateW(dc,gray,draw,value,length,x,y,width,height,type|DSS_MONO);
+    if(light)DeleteObject(light);
+    if(gray)DeleteObject(gray);
+    return result;
+}

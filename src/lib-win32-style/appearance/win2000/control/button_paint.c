@@ -1,6 +1,7 @@
 /* Win2000 USER: btnctl.c xxxBNInitDC/BNCalcRect/xxxBNDrawText and
  * xxxButtonDrawCheck. Pixel references and the finite contract are in T27. */
 #include "button_paint.h"
+#include "background.h"
 #include "../common/paint.h"
 #include "lib-win32-style/application/control/button_snapshot.h"
 #include <wchar.h>
@@ -15,41 +16,11 @@ static HFONT font(HWND window,void *context)
 static BOOL push_style(DWORD style)
 {return (style&BS_TYPEMASK)<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE);}
 
-/* PaintRect aligns an application brush to its parent, then restores the DC.
- * System face is the era's face; application-created brushes remain borrowed. */
-static BOOL background(HWND window,style_instance *instance,HDC dc,const RECT *client,const win2k_palette *p)
-{
-    HWND parent=GetParent(window);if(!parent)return FALSE;
-    SetBkMode(dc,OPAQUE);SetTextColor(dc,p->text);SetBkColor(dc,p->face);
-    HBRUSH brush=(HBRUSH)SendMessageW(parent,WM_CTLCOLORSTATIC,(WPARAM)dc,(LPARAM)window);
-    if(instance->detached || !IsWindow(window) || GetParent(window)!=parent || !brush)return FALSE;
-    POINT origin={0,0},old;MapWindowPoints(parent,window,&origin,1);
-    if(!LPtoDP(dc,&origin,1)||!SetBrushOrgEx(dc,origin.x,origin.y,&old))return FALSE;
-    BOOL result;
-    if(brush==GetSysColorBrush(COLOR_BTNFACE)){
-        SetBkColor(dc,p->face);result=win2k_fill(dc,client,p->face);
-    }else result=FillRect(dc,client,brush)!=0;
-    if(!SetBrushOrgEx(dc,old.x,old.y,NULL))result=FALSE;
-    return result;
-}
-
 typedef struct button_text {const WCHAR *value;UINT format;} button_text;
 static BOOL CALLBACK multiline(HDC dc,LPARAM value,WPARAM length,int width,int height)
 {
     const button_text *text=(const button_text *)value;RECT r={0,0,width,height};(void)length;
     return DrawTextW(dc,text->value,-1,&r,text->format)!=0;
-}
-static BOOL draw_content(HDC dc,LPARAM value,WPARAM length,int x,int y,int width,int height,
-    UINT type,DRAWSTATEPROC draw,BOOL disabled,BOOL monochrome,const win2k_palette *p)
-{
-    if(!disabled && !monochrome)return DrawStateW(dc,NULL,draw,value,length,x,y,width,height,type);
-    HBRUSH light=disabled?CreateSolidBrush(p->highlight):NULL,gray=CreateSolidBrush(p->gray);
-    BOOL result=gray && (!disabled || light);
-    if(result && disabled)result=DrawStateW(dc,light,draw,value,length,x+1,y+1,width,height,type|DSS_MONO);
-    if(result)result=DrawStateW(dc,gray,draw,value,length,x,y,width,height,type|DSS_MONO);
-    if(light)DeleteObject(light);
-    if(gray)DeleteObject(gray);
-    return result;
 }
 static BOOL label(HWND window,style_instance *instance,HDC dc,const style_control_button_snapshot *s,
     RECT bounds,const RECT *client,BOOL push,UINT cues,const win2k_palette *p)
@@ -83,7 +54,7 @@ static BOOL label(HWND window,style_instance *instance,HDC dc,const style_contro
     int x=horizontal==BS_LEFT?bounds.left+2:horizontal==BS_RIGHT?bounds.right-width-2:(bounds.left+bounds.right-width)/2;
     int y=vertical==BS_TOP?bounds.top+1:vertical==BS_BOTTOM?bounds.bottom-height-1:(bounds.top+bounds.bottom-height)/2;
     if(push && (s->state&BST_PUSHED)){++x;++y;}
-    BOOL result=draw_content(dc,value,length,x,y,width,height,type,draw,(s->style&WS_DISABLED)!=0,
+    BOOL result=win2k_draw_content(dc,value,length,x,y,width,height,type,draw,(s->style&WS_DISABLED)!=0,
         push && s->check==BST_INDETERMINATE,p);
     if(result && (s->state&BST_FOCUS) && !(cues&UISF_HIDEFOCUS)){
         if(push)InflateRect(&bounds,-1,-1);
@@ -98,7 +69,7 @@ static BOOL label(HWND window,style_instance *instance,HDC dc,const style_contro
 BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const win2k_palette *p)
 {
     int saved=SaveDC(dc);if(!saved)return FALSE;
-    BOOL result=FALSE;RECT client,bounds,glyph;
+    BOOL result=FALSE;RECT client,bounds,glyph;HBRUSH brush=NULL;
     DWORD initial_style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);HWND parent=GetParent(window);
     const style_control_button_reader reader={NULL,role,font};style_control_button_snapshot snapshot={0};
     /* Later image-list-only content remains native; never silently drop it. */
@@ -107,15 +78,35 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const win2k_
         if(instance->detached || (listed && images.himl && images.himl!=BCCL_NOGLYPH))goto done;
     }
     if(!GetClientRect(window,&client))goto done;
-    if(!push_style(initial_style) && !background(window,instance,dc,&client,p))goto done;
+    BOOL group=(initial_style&BS_TYPEMASK)==BS_GROUPBOX;
+    if(!push_style(initial_style)){
+        brush=win2k_control_brush(window,instance,dc,p);if(!brush)goto done;
+        if(!group && !FillRect(dc,&client,brush))goto done;
+    }
     if(!style_control_button_snapshot_read(window,instance,&reader,&snapshot))goto done;
     UINT cues=(UINT)SendMessageW(window,WM_QUERYUISTATE,0,0);
     if(instance->detached || !IsWindow(window) || initial_style!=snapshot.style ||
        (DWORD)GetWindowLongPtrW(window,GWL_STYLE)!=snapshot.style || GetParent(window)!=parent)goto done;
     HGDIOBJ previous=SelectObject(dc,snapshot.font);if(!previous || previous==HGDI_ERROR)goto done;
+    if(IntersectClipRect(dc,client.left,client.top,client.right,client.bottom)==ERROR)goto done;
+    if(group){
+        SIZE zero;TEXTMETRICW system;RECT text={0};HGDIOBJ old=SelectObject(dc,GetStockObject(SYSTEM_FONT));
+        if(!old||old==HGDI_ERROR||!GetTextMetricsW(dc,&system)||!SelectObject(dc,old)||!GetTextExtentPoint32W(dc,L"0",1,&zero))goto done;
+        bounds=client;bounds.top+=zero.cy/2;
+        if(!win2k_edge(dc,&bounds,EDGE_ETCHED,BF_RECT|((snapshot.style&BS_FLAT)?BF_FLAT|BF_MONO:0),p))goto done;
+        if(*snapshot.text){
+            if(!DrawTextW(dc,snapshot.text,-1,&text,DT_CALCRECT|DT_SINGLELINE))goto done;
+            int width=text.right-text.left+4;bounds=client;
+            UINT align=snapshot.style&BS_CENTER;
+            bounds.left=align==BS_RIGHT?client.right-(system.tmAveCharWidth-1)-width:
+                align==BS_CENTER?(client.left+client.right-width)/2:client.left+system.tmAveCharWidth-1;
+            bounds.right=bounds.left+width;bounds.bottom=bounds.top+text.bottom-text.top+2;
+            if(!FillRect(dc,&bounds,brush))goto done;
+        }
+        result=label(window,instance,dc,&snapshot,bounds,&client,FALSE,cues|UISF_HIDEFOCUS,p);goto done;
+    }
     POINT origin={0,0};
-    if(!LPtoDP(dc,&origin,1)||!SetBrushOrgEx(dc,origin.x,origin.y,NULL)||
-       IntersectClipRect(dc,client.left,client.top,client.right,client.bottom)==ERROR)goto done;
+    if(!LPtoDP(dc,&origin,1)||!SetBrushOrgEx(dc,origin.x,origin.y,NULL))goto done;
     BOOL push=push_style(snapshot.style);bounds=client;
     UINT state=(snapshot.state&BST_PUSHED)?DFCS_PUSHED:0;
     if(snapshot.style&BS_FLAT)state|=DFCS_FLAT|DFCS_MONO;

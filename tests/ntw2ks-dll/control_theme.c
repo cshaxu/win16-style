@@ -62,7 +62,7 @@ int main(int argc,char **argv)
     BOOL foreign=capture(child) && suppress(child,&foreign_owner,no_theme);
     BOOL refused=foreign && !attach(child) && GetLastError()==ERROR_BUSY && retained(child);
     release(child,&foreign_owner,no_theme);
-    HWND unsupported=CreateWindowW(L"STATIC",L"",WS_CHILD,0,0,10,10,parent,NULL,GetModuleHandleW(NULL),NULL);
+    HWND unsupported=CreateWindowW(L"STATIC",L"",WS_CHILD|SS_OWNERDRAW,0,0,10,10,parent,NULL,GetModuleHandleW(NULL),NULL);
     BOOL rejected=unsupported && !attach(unsupported) && GetLastError()==ERROR_NOT_SUPPORTED;
     BOOL applied=attach(child),seen=attached(child),held=retained(child);
     thread_case wrong={child,attach,attached,remove};DWORD wrong_result=1;

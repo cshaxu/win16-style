@@ -66,18 +66,23 @@ static HWND WINAPI hook_##S(DWORD ex,T cls,T text,DWORD style,int x,int y,int wi
 WINDOW_HOOK(W,LPCWSTR)
 WINDOW_HOOK(A,LPCSTR)
 
+static BOOL CALLBACK attach_dialog_child(HWND child,LPARAM context)
+{(void)context;(void)ntw2ks_control_attach(child);return TRUE;}
+static void attach_dialog(HWND dialog)
+{attach_frame(dialog);if(IsWindow(dialog))EnumChildWindows(dialog,attach_dialog_child,0);}
+
 /* Dialog manager windows can bypass the exported CreateWindowEx entry points. */
 static LRESULT CALLBACK dialog_created(int code,WPARAM wp,LPARAM lp)
 {
     DWORD incoming=GetLastError();
     const CWPRETSTRUCT *event=style_message_dialog_initialized(code,lp);
-    if(event)attach_frame(event->hwnd);
+    if(event)attach_dialog(event->hwnd);
     SetLastError(incoming);return CallNextHookEx(NULL,code,wp,lp);
 }
 #define CLASSIC_DIALOG_BEGIN(state,incoming) ((void)(incoming),style_dialog_observation_begin(state,NULL,dialog_created,FALSE))
 #define CLASSIC_DIALOG_PREPARE(state,incoming) ((void)(state),SetLastError(incoming))
 #define CLASSIC_DIALOG_FINISH(state,modal,result,error,fail) do { \
-    (void)(state);(void)(error);if(!(modal) && (result))attach_frame((HWND)(result)); \
+    (void)(state);(void)(error);if(!(modal) && (result))attach_dialog((HWND)(result)); \
 } while(0)
 #define DIALOG_HOOK(NAME,TYPE,RET,MODAL,FAIL) \
     STYLE_DIALOG_HOOK(NAME,(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param),(instance,name,parent,proc,param),RET,FAIL,MODAL,style_dialog_observation,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_DIALOG_FINISH)
@@ -92,7 +97,7 @@ DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,TRUE,-1)
 
 /* Message boxes may create dialogs internally without calling exported dialog APIs. */
 #define CLASSIC_PARAM_FINISH(state,modeless,result,error,fail) do { \
-    (void)(state);(void)(error);if((modeless) && (result))attach_frame((HWND)(uintptr_t)(result)); \
+    (void)(state);(void)(error);if((modeless) && (result))attach_dialog((HWND)(uintptr_t)(result)); \
 } while(0)
 #define MESSAGE_HOOK(NAME,ARGS,CALL) \
     STYLE_DIALOG_HOOK(NAME,ARGS,CALL,int,0,FALSE,style_dialog_observation,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_PARAM_FINISH)
