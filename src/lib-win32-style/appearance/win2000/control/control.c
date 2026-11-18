@@ -18,6 +18,7 @@
 #include "lib-win32-style/application/control/basic.h"
 #include "lib-win32-style/application/control/retire.h"
 #include "lib-win32-style/application/control/native_overlay.h"
+#include "lib-win32-style/application/control/control_class.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/lifecycle/install.h"
 #include "lib-win32-style/application/lifecycle/dispatch.h"
@@ -45,16 +46,24 @@ typedef struct win2k_control {
     style_control_native_combo_state date;
     style_calendar_colors calendar;
     HWND date_popup;
+    style_control_protocol *protocol;
 } win2k_control;
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK parent_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static win2k_control *lookup(HWND window)
 {return (win2k_control *)style_instance_lookup(window,control_proc);}
 static BOOL attach(HWND,style_native_theme_fn,HWND);
+static BOOL matches(HWND window,const WCHAR *name,const WCHAR *expected)
+{
+    if(!lstrcmpiW(name,expected))return TRUE;
+    if(!lstrcmpiW(expected,TOOLBARCLASSNAMEW))return style_control_protocol_toolbar(window);
+    if(!lstrcmpiW(expected,PROGRESS_CLASSW) && style_control_protocol_legacy_progress(window))return TRUE;
+    return style_control_class_is(window,expected);
+}
 static BOOL class_is(HWND window,const WCHAR *expected)
 {
-    WCHAR name[32];
-    return GetClassNameW(window,name,ARRAYSIZE(name)) && !lstrcmpiW(name,expected);
+    WCHAR name[64];
+    return GetClassNameW(window,name,ARRAYSIZE(name)) && matches(window,name,expected);
 }
 static style_control_state *lookup_state(HWND window)
 {
@@ -64,7 +73,7 @@ static style_control_state *lookup_state(HWND window)
 static BOOL list_style(DWORD style)
 {return !(style&(LBS_OWNERDRAWFIXED|LBS_OWNERDRAWVARIABLE|LBS_NODATA));}
 static BOOL static_class(HWND window)
-{WCHAR name[32];return GetClassNameW(window,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"STATIC");}
+{return style_control_is_static(window);}
 static style_control_basic_kind basic_kind(HWND window)
 {
     if(!static_class(window))return STYLE_CONTROL_BUTTON;
@@ -75,25 +84,25 @@ static style_control_basic_kind basic_kind(HWND window)
 }
 BOOL win2k_control_supported(HWND window)
 {
-    WCHAR name[32];DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
+    WCHAR name[64];DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
     if(!(style&WS_CHILD) || (GetWindowLongPtrW(window,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) ||
        !GetClassNameW(window,name,ARRAYSIZE(name)))return FALSE;
-    if(!lstrcmpiW(name,L"LISTBOX"))return list_style(style);
-    if(!lstrcmpiW(name,WC_TABCONTROLW))return win2k_tab_supported(window);
-    if(!lstrcmpiW(name,WC_HEADERW))return win2k_header_supported(window);
-    if(!lstrcmpiW(name,WC_LISTVIEWW))return win2k_listview_supported(window);
-    if(!lstrcmpiW(name,WC_TREEVIEWW))return win2k_treeview_supported(window);
-    if(!lstrcmpiW(name,PROGRESS_CLASSW))return win2k_progress_supported(window);
-    if(!lstrcmpiW(name,TRACKBAR_CLASSW))return win2k_trackbar_supported(window);
-    if(!lstrcmpiW(name,UPDOWN_CLASSW))return win2k_updown_supported(window);
+    if(matches(window,name,L"LISTBOX"))return list_style(style);
+    if(matches(window,name,WC_TABCONTROLW))return win2k_tab_supported(window);
+    if(matches(window,name,WC_HEADERW))return win2k_header_supported(window);
+    if(matches(window,name,WC_LISTVIEWW))return win2k_listview_supported(window);
+    if(matches(window,name,WC_TREEVIEWW))return win2k_treeview_supported(window);
+    if(matches(window,name,PROGRESS_CLASSW))return win2k_progress_supported(window);
+    if(matches(window,name,TRACKBAR_CLASSW))return win2k_trackbar_supported(window);
+    if(matches(window,name,UPDOWN_CLASSW))return win2k_updown_supported(window);
     if(!lstrcmpiW(name,DATETIMEPICK_CLASSW))return win2k_date_supported(window);
     if(!lstrcmpiW(name,MONTHCAL_CLASSW))return win2k_month_supported(window);
-    if(!lstrcmpiW(name,TOOLBARCLASSNAMEW) || !lstrcmpiW(name,REBARCLASSNAMEW) || !lstrcmpiW(name,STATUSCLASSNAMEW))
+    if(matches(window,name,TOOLBARCLASSNAMEW) || !lstrcmpiW(name,REBARCLASSNAMEW) || !lstrcmpiW(name,STATUSCLASSNAMEW))
         return TRUE;
-    if(!lstrcmpiW(name,L"SCROLLBAR"))return TRUE;
-    if(!lstrcmpiW(name,L"COMBOBOX"))
+    if(matches(window,name,L"SCROLLBAR"))return TRUE;
+    if(matches(window,name,L"COMBOBOX"))
         return (style&3) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
-    if(!lstrcmpiW(name,L"STATIC")){
+    if(matches(window,name,L"STATIC")){
         UINT type=style&SS_TYPEMASK;
         return type==SS_LEFT || type==SS_CENTER || type==SS_RIGHT || type==SS_SIMPLE || type==SS_LEFTNOWORDWRAP ||
             type==SS_ICON || type==SS_BITMAP || (type>=SS_BLACKRECT && type<=SS_WHITEFRAME) ||
@@ -106,8 +115,8 @@ BOOL win2k_control_supported(HWND window)
         return edit==WIN2K_EDIT_STANDARD || (style&(WS_BORDER|WS_DLGFRAME)) ||
             (ex&(WS_EX_CLIENTEDGE|WS_EX_WINDOWEDGE|WS_EX_STATICEDGE));
     }
-    if(lstrcmpiW(name,L"BUTTON"))return FALSE;
-    UINT type=style&BS_TYPEMASK;
+    if(!matches(window,name,L"BUTTON"))return FALSE;
+    UINT type=style_control_button_type(window,style);
     if(type==BS_GROUPBOX)return !(style&(BS_ICON|BS_BITMAP|BS_PUSHLIKE|BS_MULTILINE));
     BOOL push=type<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE);
     BOOL choice=type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_RADIOBUTTON ||
@@ -117,6 +126,7 @@ BOOL win2k_control_supported(HWND window)
 static void dispose(void *context)
 {
     win2k_control *control=context;
+    style_control_protocol_release(control->protocol);
     style_control_state_dispose(&control->state);free(control);
 }
 static void close_date_popup(win2k_control *control)
@@ -181,7 +191,7 @@ static void paint(HWND window,void *context,HDC dc)
     }
 }
 static BOOL is_group(HWND window,void *context)
-{(void)context;return class_is(window,L"BUTTON") && (GetWindowLongPtrW(window,GWL_STYLE)&BS_TYPEMASK)==BS_GROUPBOX;}
+{(void)context;return class_is(window,L"BUTTON") && style_control_button_type(window,(DWORD)GetWindowLongPtrW(window,GWL_STYLE))==BS_GROUPBOX;}
 static void render(HWND window,void *context,HDC dc,BOOL buffered)
 {
     win2k_control *control=context;
@@ -432,17 +442,30 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
 {
     if(!win32_style_window_current_thread(window)){SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;}
     if(lookup(window))return TRUE;
-    if(!native_theme || (!combo_parent && !win2k_control_supported(window))){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-    win2k_report_role report=class_is(window,WC_LISTVIEWW)?WIN2K_REPORT_LIST:
-        class_is(window,WC_TREEVIEWW)?WIN2K_REPORT_TREE:WIN2K_REPORT_NONE;
-    if(report==WIN2K_REPORT_LIST && !win2k_listview_plain(window)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!native_theme){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     if(style_theme_retained(window)){SetLastError(ERROR_BUSY);return FALSE;}
     if(!style_instance_preflight(window,control_proc))return FALSE;
+    style_control_protocol *protocol=NULL;
+    DWORD error;
+    if(!combo_parent && !win2k_control_supported(window)){
+        SetLastError(ERROR_SUCCESS);
+        protocol=style_control_protocol_bind(window);
+        error=GetLastError();
+        if(!protocol || !win2k_control_supported(window)){
+            if(protocol || (error!=ERROR_NOT_ENOUGH_MEMORY && error!=ERROR_ARITHMETIC_OVERFLOW))
+                error=ERROR_NOT_SUPPORTED;
+            goto rejected;
+        }
+    }
+    win2k_report_role report=class_is(window,WC_LISTVIEWW)?WIN2K_REPORT_LIST:
+        class_is(window,WC_TREEVIEWW)?WIN2K_REPORT_TREE:WIN2K_REPORT_NONE;
+    if(report==WIN2K_REPORT_LIST && !win2k_listview_plain(window)){error=ERROR_NOT_SUPPORTED;goto rejected;}
     BOOL progress=class_is(window,PROGRESS_CLASSW);
     BOOL legacy=progress && !SendMessageW(window,PBM_GETSTATE,0,0);
     win2k_control *control=calloc(1,sizeof(*control));
-    if(!control){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    if(!control){error=ERROR_NOT_ENOUGH_MEMORY;goto rejected;}
     style_instance_init(&control->instance,control,dispose);
+    control->protocol=protocol;
     control->tab_control=class_is(window,WC_TABCONTROLW);
     control->header_control=class_is(window,WC_HEADERW);
     control->track_control=class_is(window,TRACKBAR_CLASSW);
@@ -466,6 +489,10 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     BOOL result=style_instance_install(&control->instance,window,control_proc,control,&ops);
     if(result)RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);
     return result;
+rejected:
+    style_control_protocol_release(protocol);
+    SetLastError(error);
+    return FALSE;
 }
 BOOL win2k_control_attach(HWND window,style_native_theme_fn native_theme)
 {return attach(window,native_theme,NULL);}

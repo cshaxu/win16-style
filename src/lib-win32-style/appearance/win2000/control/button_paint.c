@@ -4,17 +4,18 @@
 #include "background.h"
 #include "../common/paint.h"
 #include "lib-win32-style/application/control/button_snapshot.h"
+#include "lib-win32-style/application/control/control_class.h"
 #include <wchar.h>
 
 static style_control_button_role role(HWND window,void *context,DWORD style)
-{(void)window;(void)context;return (style_control_button_role){style&BS_TYPEMASK,FALSE};}
+{(void)context;return (style_control_button_role){style_control_button_type(window,style),FALSE};}
 static HFONT font(HWND window,void *context)
 {
     (void)context;HFONT value=(HFONT)SendMessageW(window,WM_GETFONT,0,0);
     return value?value:(HFONT)GetStockObject(SYSTEM_FONT);
 }
-static BOOL push_style(DWORD style)
-{return (style&BS_TYPEMASK)<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE);}
+static BOOL push_style(UINT type,DWORD style)
+{return type<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE);}
 
 typedef struct button_text {const WCHAR *value;UINT format;} button_text;
 static BOOL CALLBACK multiline(HDC dc,LPARAM value,WPARAM length,int width,int height)
@@ -78,8 +79,9 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const win2k_
         if(instance->detached || (listed && images.himl && images.himl!=BCCL_NOGLYPH))goto done;
     }
     if(!GetClientRect(window,&client))goto done;
-    BOOL group=(initial_style&BS_TYPEMASK)==BS_GROUPBOX;
-    if(!push_style(initial_style)){
+    UINT type=style_control_button_type(window,initial_style);
+    BOOL group=type==BS_GROUPBOX;
+    if(!push_style(type,initial_style)){
         brush=win2k_control_brush(window,instance,dc,p);if(!brush)goto done;
         if(!group && !FillRect(dc,&client,brush))goto done;
     }
@@ -107,7 +109,7 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const win2k_
     }
     POINT origin={0,0};
     if(!LPtoDP(dc,&origin,1)||!SetBrushOrgEx(dc,origin.x,origin.y,NULL))goto done;
-    BOOL push=push_style(snapshot.style);bounds=client;
+    BOOL push=push_style(snapshot.role.type,snapshot.style);bounds=client;
     UINT state=(snapshot.state&BST_PUSHED)?DFCS_PUSHED:0;
     if(snapshot.style&BS_FLAT)state|=DFCS_FLAT|DFCS_MONO;
     if(push){

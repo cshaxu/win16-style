@@ -2,10 +2,11 @@
  * color roles. RichEdit and HotKey keep their native client implementations. */
 #include "edit_paint.h"
 #include "../common/paint.h"
+#include "lib-win32-style/application/control/control_class.h"
 win2k_edit_kind win2k_edit_class(HWND window)
 {
     WCHAR name[32];if(!GetClassNameW(window,name,ARRAYSIZE(name)))return WIN2K_EDIT_NONE;
-    if(!lstrcmpiW(name,L"EDIT"))return WIN2K_EDIT_STANDARD;
+    if(style_control_is_edit(window))return WIN2K_EDIT_STANDARD;
     static const WCHAR *const native[]={L"RichEdit20A",L"RichEdit20W",L"RICHEDIT50W",L"msctls_hotkey32"};
     for(unsigned i=0;i<ARRAYSIZE(native);++i)if(!lstrcmpiW(name,native[i]))return WIN2K_EDIT_NATIVE_CLIENT;
     return WIN2K_EDIT_NONE;

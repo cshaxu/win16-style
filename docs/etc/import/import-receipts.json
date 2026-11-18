@@ -6044,9 +6044,9 @@
       "path": "src/ntw2ks-dll/controls.c",
       "source": null,
       "source_blob": null,
-      "sha256": "92bb7aca815dfea330b7ce8c2572156b84587519d6d50402936b7c6733700f5d",
+      "sha256": "d243fca3df6c890081ceac39bb3da72007de0c7715f723a414d7a4142739273a",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 shared control theme lifecycle; T26 S1 Win2000 native theme interception; T26 S1 control thread ownership; T26 S1 shared ordinary dialog hook lifecycle; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 shared control theme lifecycle; T26 S1 Win2000 native theme interception; T26 S1 control thread ownership; T26 S1 shared ordinary dialog hook lifecycle; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -9735,9 +9735,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "cdd765fd72f4dce1220f6670fd4a55c4eea5df95dad901f1782cf5ce6d6de8f2"
+      "sha256": "ff31554432285faf41fb825976b289798befce11332a87a2e876ec88002fdd2d"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/button_paint.h",
@@ -9753,9 +9753,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "1eb20747dfdba087c344a369834363d28c79fab6b96c0efbca594455747ca27a"
+      "sha256": "7ed86af5fdf2df682ecade634c0a478e04245da67f078f2342faf2907a42718e"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -9771,9 +9771,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab/header validation mapping; T27 S9 common selection roles and native draw preparation; T27 S10 test mapping; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab/header validation mapping; T27 S9 common selection roles and native draw preparation; T27 S10 test mapping; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "d56a54217db72e9114f7e9439c4f7e5aa4feeb93733c4f83522c77a715e9183c"
+      "sha256": "2b5a97ab7c44f0165eb8c7c5f4735e8f4a97ef14a8aa5f5db748d32c0113e3d8"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/common/paint.c",
@@ -9852,9 +9852,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S5 source-based native-edit edge/default brush role implementation or actual native consumer; no imported client editor/art/font",
+      "review": "T27 S5 source-based native-edit edge/default brush role implementation or actual native consumer; no imported client editor/art/font; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored C/RC; pinned Windows2000 source/read-only screenshots for research, no external product/build dependency",
-      "sha256": "1af00672888801461b8af32954eb356611d9932f9fd140acbc1b229502b9d84b"
+      "sha256": "c54d33ac9b3605683291f815784aca11f312f8a52c4cd531e3a608a30044f8ac"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/edit_paint.h",
@@ -10205,6 +10205,15 @@
       "sha256": "fe2c60216fdac5dade48151dec61a9904e985bfd690cb58dfc93e341d53ac4af",
       "disposition": "authored",
       "review": "T27 S13 日期与月历",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/runtime_roles.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1e390010666428171754fc41368f53baccce350993c36f52aae10e91df6ceab7",
+      "disposition": "authored",
+      "review": "T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored C; no external implementation or artwork imported"
     }
   ]

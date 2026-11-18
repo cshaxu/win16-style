@@ -37,7 +37,8 @@ BOOL ntw2ks_control_attach(HWND window)
     if(!control_local(window))return FALSE;
     if(!(GetWindowLongPtrW(window,GWL_STYLE)&WS_CHILD)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     if(ntw2ks_control_attached(window))return TRUE;
-    if(win2k_control_supported(window))return win2k_control_attach(window,native_theme);
+    if(win2k_control_attach(window,native_theme))return TRUE;
+    if(GetLastError()!=ERROR_NOT_SUPPORTED)return FALSE;
     if(style_theme_retained(window)){SetLastError(ERROR_BUSY);return FALSE;}
     WCHAR name[32];
     if(!GetClassNameW(window,name,ARRAYSIZE(name)))return FALSE;

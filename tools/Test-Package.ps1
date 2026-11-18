@@ -837,6 +837,7 @@ try{
             updown='WIN2K_UPDOWN_OK axes=2 native_seam=2'
             bars='WIN2K_BARS_OK toolbar=1 rebar=1 status=1'
             dates='WIN2K_DATES_OK month=1 picker=1 native_state=1 popup=2 clip=1'
+            'runtime-roles'='WIN2K_RUNTIME_ROLES_OK models=4 rejected=2'
         }
         foreach($kind in $controlScopes.Keys){
             $scope=$controlScopes[$kind]
