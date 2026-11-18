@@ -2,30 +2,12 @@
 
 ## Current Work
 
-M0固定。T27 Win2000常用控件保持开放。S1–S15 已按有限范围交付收口，当前S16全任务终审。按[16个S规划](../proposals/windows-2000-controls.md)合批，逐项记录Win3.x覆盖对照。
+M0 固定。T27 Win2000 常用控件及 S1–S16 已按有限范围收口。当前无活动任务包。
+[终审](../history/M0-T27-S16-final-audit.md)逐项核对 24 个标准组和 8 个运行库组。
 
-正式八文件为[T27 S15 Demo 控件目录与风格切换批次](../etc/evidence/t27-s15-demo.json)，两宽同快照，先发布后185/185进程用例通过，既有36项客户区打印子检查明确跳过。[实际远端](../etc/evidence/t27-s15-remote.json)已核验19个变更文件和八件发布物。T26既有失败保留在[终审](../etc/evidence/t26-s14-final-audit.json)。
-
-## M0 T27 S16 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation 保持 M0、T27 和既定 S 序。 |
-| Admission And Approval | T27 Win2000 常用控件既有授权，执行最终审计。 |
-| Objective | 将 S1 冻结的 24 个标准控件组与 8 个运行库/复合组逐项对上已验证范围、来源、产品路径和未覆盖边界。 |
-| Non-goals | 新控件、新图形资源、新主题、新 T 或扩大已交付的 Win32 适用范围。 |
-| Reference Baseline | S15 已发布同快照八件、185 项自有进程用例与实际取回。 |
-| Candidate Proposal | docs/proposals/windows-2000-controls.md；brief docs/history/M0-T27-S16-final-audit.md。 |
-| Files And ABI Surface | 审计台账、任务状态和未覆盖记录。沿用现有产品构建输入、ABI 与八件。 |
-| Applicable Rules | 复核实际远端来源与发布物；无产品输入变化沿用已发布验证，不重建。 |
-| Verification | 逐条冻结组对账，历史 P1 来源和交付校验，确认两处八件、实际远端与源输入身份。 |
-| Expected Markers | 24 + 8 项各有独立处置，原图可见状态与源码规则区分，交付范围和跳过项可复查。 |
-| Asset Needs | 不新增资产；复核五份既有原资源和各阶段只读参考。 |
-| Reporting Requirements | 各页验证和产品入口，有限 Win3.x 对照，欠项、包摘要、用户入口及清理。 |
-| Stop Conditions | 禁 computer-use 或私有桌面，不改变全局安全设置。 |
-| Exit Criteria | 完成审计、发布身份保持并实际复核远端，收口 S16 与 T27，不准入新 T。 |
-| Original Owner Request | 原版 Win2000 源码、资源与真实截图优先，和现有 Win3.x 常用控件范围逐项对照。 |
-| Similar-Issue Sweep | 分别审查未覆盖主题、复杂及远期窗口框架、原生保留和真实托盘输入。 |
+[S15 同快照八件](../etc/evidence/t27-s15-demo.json)先发布两处，185/185 项聚焦用例通过；
+36 项原生客户区离屏打印子检查保留跳过。实际管理员托盘、物理输入、
+其他框架和复杂变体按终审证据保留范围。
 
 ## Identifier State
 
@@ -38,9 +20,9 @@ M0固定。T27 Win2000常用控件保持开放。S1–S15 已按有限范围交�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T27 S15 P1，73f60c5a；19个变更文件及八件取回核对。
+- Last verified remote delivery: M0 T27 S16 P1，7448d0be；终审与 S15 八件远端核对。
 - Last allocated T27 S: 16
-- Open task: M0 T27 S16；Win2000全任务终审。
+- Open task: none.
 
 ## Technical Baseline
 

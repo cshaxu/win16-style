@@ -227,7 +227,8 @@
     "skipped_client_print_subchecks": 36,
     "evidence": "evidence/t27-s15-demo.json",
     "coverage": "focused",
-    "actual_remote": "evidence/t27-s15-remote.json"
+    "actual_remote": "evidence/t27-s15-remote.json",
+    "task_audit": "evidence/t27-s16-final-audit.json"
   },
   "validation": {
     "physical_keyboard_mouse": "not tested",
@@ -241,8 +242,9 @@
     ]
   },
   "closure": {
-    "S15": "closed after fetched remote audit",
-    "T27": "open; S16 admitted",
+    "S15": "closed after fetched product audit",
+    "S16": "closed after fetched task audit",
+    "T27": "closed for documented scope",
     "M0": "fixed"
   }
 }

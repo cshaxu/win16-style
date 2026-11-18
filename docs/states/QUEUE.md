@@ -11,7 +11,7 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 | --- | --- | --- | --- |
 | — | 当前无已排序候选 | — | — |
 
-[Windows 2000常用控件](../proposals/windows-2000-controls.md)已准入T27；当前活动S由CURRENT管理。
+[Windows 2000常用控件](../proposals/windows-2000-controls.md)已按终审范围收口。
 
 [Windows 2000 经典风格调研与准备](../proposals/windows-2000-classic.md)已由用户准入；活动状态见 CURRENT。
 
