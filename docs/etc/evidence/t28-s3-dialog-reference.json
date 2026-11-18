@@ -835,6 +835,13 @@
       }
     }
   },
+  "font_memory_template_p18": {
+    "cause_and_fix": "The earlier ChooseFont diagnostic used movable global memory. A pointer-valued handle from GMEM_FIXED worked on the current host. The fixture validates the installed 1543 dialog resource header and dimensions, then makes a temporary caller-owned copy with a 299 by 204 DLU client. The production observer already excluded CF_ENABLETEMPLATEHANDLE. No external template bytes are committed or shipped.",
+    "contract": "Microsoft documents CF_ENABLETEMPLATEHANDLE as a caller-supplied preloaded dialog template in hInstance: https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-choosefontw",
+    "verification": "Rebuilt the existing common-dialog fixture with Ninja and ran it in the ordinary session under the published P17 package. Native, Win16 and --2k passed 24/24 A/W memory-template Apply then Confirm/Cancel calls across x86/x64. Caller GlobalFree succeeded in 24/24. The 14-point Arial snapshot and A/W cancellation behavior matched the native result. At 96 DPI the declared size mapped to 449 by 332, as observed in native and Win16; Win2000 measured 451 by 338 with its existing nonclient insets and retained the larger caller layout. Stock-template Apply/Confirm/Cancel separately passed 24/24.",
+    "print_template_control": "Retried PrintDlgEx with an independent fixed-memory lower-General template and caller callback, on both architectures and encodings under native and released --2k. All eight owned calls reached the zero-size external modal proxy and showed no callback or actual property sheet within 4.7 seconds. The bounded driver removed the owned fixture instances. This leaves native PrintDlgEx property-page display unverified even with the corrected pointer-valued template handle.",
+    "delivery": "The durable font fixture and documentation changed. All eight P17 SHA-256 values at both published locations and production sources were verified without a rebuild of unchanged binaries. The scratch font and print probes were removed."
+  },
   "places_reflow_trial": {
     "package": "P9 published launcher and DLLs with temporary caller-owned ANSI and Unicode OPENFILENAME hooks. The probe used the ordinary desktop and owned dialogs at 96 DPI with a 427 by 272 work area. The temporary sources, objects, binaries and output were removed after the run.",
     "stock_geometry": "The native 421 by 247 client exposed the stock Places toolbar, a Shell directory view, and a ComboBoxEx filename field. In Open the default OK button began at (484,313), beyond both client bounds.",

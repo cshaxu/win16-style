@@ -3065,9 +3065,9 @@
       "path": "tests/ntw16s-dll/common_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "541f466ae947a6391cb5a4c9a0541a9e420c7c6e81d85fee5d0ceddd5edb6444",
+      "sha256": "6e11df69f078cfcb3a4618ab8a8ad74c07d97d679618947c73e4fc307130a13d",
       "disposition": "authored",
-      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T28 S3 shared ChooseFont Apply and LOGFONT contract on native and both styles",
+      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T28 S3 shared ChooseFont Apply and LOGFONT contract on native and both styles; T28 S3 verify fixed-memory ChooseFont templates and caller ownership",
       "notice": "Project-authored fixture; manifest based on project demo manifest; no external resources copied"
     },
     {

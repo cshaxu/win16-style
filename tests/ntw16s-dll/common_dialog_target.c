@@ -4,11 +4,13 @@
 #include <commdlg.h>
 #include <dlgs.h>
 #include <stdio.h>
+#include <string.h>
 static BOOL (__cdecl *attached)(HWND);
 static BOOL cancel_mode,font_mode,color_mode,color_expand,color_keyboard_mode;
 static BOOL color_expand_ok;
 static BOOL font_controls_ok,color_grid_ok,color_edge_ok,color_keyboard_ok,color_unrelated_ok;
 static BOOL font_apply_mode,font_apply_ansi,font_apply_seen,font_apply_initial,font_apply_match;
+static BOOL font_memory_template;
 static UINT font_apply_dpi;
 static RECT font_apply_client,font_apply_reference;
 static COLORREF color_expected,color_result;
@@ -16,6 +18,27 @@ static int inits,ticks;
 static BOOL frame_attached;
 static BOOL __cdecl win2k_frame_attached(HWND window)
 {return GetPropW(window,L"Win2kStyle.Frame")!=NULL;}
+
+enum { font_width=287, font_height=196, memory_width=299, memory_height=204 };
+
+static HGLOBAL make_font_template(void)
+{
+    enum { font_resource=1543, template_width=11, template_height=12 };
+    HMODULE common=GetModuleHandleW(L"comdlg32.dll");
+    if(!common)return NULL;
+    HRSRC resource=FindResourceW(common,MAKEINTRESOURCEW(font_resource),RT_DIALOG);
+    DWORD bytes=resource?SizeofResource(common,resource):0;
+    HGLOBAL data=bytes?LoadResource(common,resource):NULL;
+    const WORD *original=data?LockResource(data):NULL;
+    if(!original || bytes<(template_height+1)*sizeof(WORD) || original[0]!=1 || original[1]!=0xffff ||
+       original[template_width]!=font_width || original[template_height]!=font_height)return NULL;
+    WORD *copy=GlobalAlloc(GMEM_FIXED,bytes);
+    if(!copy)return NULL;
+    memcpy(copy,original,bytes);
+    copy[template_width]=memory_width;
+    copy[template_height]=memory_height;
+    return (HGLOBAL)copy;
+}
 
 static BOOL font_apply_logfont(HWND window)
 {
@@ -34,7 +57,8 @@ static BOOL font_apply_logfont(HWND window)
 static void apply_test_font(HWND window)
 {
     HWND apply=GetDlgItem(window,psh3);
-    font_apply_reference=(RECT){0,0,287,196};
+    font_apply_reference=(RECT){0,0,font_memory_template?memory_width:font_width,
+        font_memory_template?memory_height:font_height};
     if(!GetClientRect(window,&font_apply_client) || !MapDialogRect(window,&font_apply_reference))return;
     HDC dc=GetDC(window);
     font_apply_dpi=dc?(UINT)GetDeviceCaps(dc,LOGPIXELSY):0;
@@ -174,27 +198,35 @@ int wmain(int argc,WCHAR **argv)
     HMODULE module=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");
     attached=module?(BOOL (__cdecl *)(HWND))(void *)GetProcAddress(module,"Ntw16sWindowAttached"):NULL;
     if(!attached && GetModuleHandleW(sizeof(void*)==4?L"ntw2ks32.dll":L"ntw2ks64.dll"))attached=win2k_frame_attached;
-    font_apply_mode=font && (!lstrcmpW(argv[3],L"apply-ok") || !lstrcmpW(argv[3],L"apply-cancel"));
+    font_memory_template=font && (!lstrcmpW(argv[3],L"apply-memory-ok") || !lstrcmpW(argv[3],L"apply-memory-cancel"));
+    font_apply_mode=font_memory_template || (font && (!lstrcmpW(argv[3],L"apply-ok") || !lstrcmpW(argv[3],L"apply-cancel")));
     if(font_apply_mode){
-        font_apply_ansi=ansi;cancel_mode=!lstrcmpW(argv[3],L"apply-cancel");
+        font_apply_ansi=ansi;cancel_mode=!lstrcmpW(argv[3],L"apply-cancel") || !lstrcmpW(argv[3],L"apply-memory-cancel");
         DWORD flags=CF_SCREENFONTS|CF_ENABLEHOOK|CF_APPLY|CF_EFFECTS|CF_INITTOLOGFONTSTRUCT|CF_LIMITSIZE;
+        HGLOBAL memory=font_memory_template?make_font_template():NULL;
+        if(font_memory_template && !memory){puts("FONT MEMORY SKIP no_matching_system_resource");return 77;}
+        if(memory)flags|=CF_ENABLETEMPLATEHANDLE;
         LOGFONTA a={.lfHeight=-16,.lfWeight=FW_NORMAL,.lfFaceName="Arial"};
         LOGFONTW w={.lfHeight=-16,.lfWeight=FW_NORMAL,.lfFaceName=L"Arial"};
-        CHOOSEFONTA params_a={.lStructSize=sizeof(params_a),.lpLogFont=&a,.Flags=flags,.lpfnHook=app_hook,.nSizeMin=8,.nSizeMax=24};
-        CHOOSEFONTW params_w={.lStructSize=sizeof(params_w),.lpLogFont=&w,.Flags=flags,.lpfnHook=app_hook,.nSizeMin=8,.nSizeMax=24};
+        CHOOSEFONTA params_a={.lStructSize=sizeof(params_a),.lpLogFont=&a,.Flags=flags,.lpfnHook=app_hook,.hInstance=(HINSTANCE)memory,.nSizeMin=8,.nSizeMax=24};
+        CHOOSEFONTW params_w={.lStructSize=sizeof(params_w),.lpLogFont=&w,.Flags=flags,.lpfnHook=app_hook,.hInstance=(HINSTANCE)memory,.nSizeMin=8,.nSizeMax=24};
         BOOL result=ansi?ChooseFontA(&params_a):ChooseFontW(&params_w);
         DWORD error=CommDlgExtendedError();
+        BOOL memory_released=!memory || GlobalFree(memory)==NULL;
         int points=ansi?params_a.iPointSize:params_w.iPointSize;
         BOOL effects=(ansi?a.lfUnderline:w.lfUnderline) && (ansi?a.lfStrikeOut:w.lfStrikeOut);
         BOOL returned=cancel_mode?!result:(result && effects && points==140);
-        BOOL layout=font_apply_client.right==font_apply_reference.right && font_apply_client.bottom==font_apply_reference.bottom;
+        BOOL layout=font_memory_template?
+            font_apply_client.right>=font_apply_reference.right && font_apply_client.bottom>=font_apply_reference.bottom:
+            font_apply_client.right==font_apply_reference.right && font_apply_client.bottom==font_apply_reference.bottom;
         BOOL valid=(!attached || frame_attached) && inits==1 && ticks==1 && font_apply_initial && font_apply_seen &&
-            font_apply_match && returned && !error && layout;
+            font_apply_match && returned && !error && layout && memory_released;
         printf("FONT APPLY bits=%u ansi=%d cancel=%d frame=%d initial=%d notified=%d snapshot=%d points=%d effects=%d returned=%d error=%lu valid=%d\n",
             (unsigned)(sizeof(void*)*8),ansi,cancel_mode,frame_attached,font_apply_initial,font_apply_seen,font_apply_match,
             points,effects,returned,(unsigned long)error,valid);
         printf("FONT CLIENT measured=%ldx%ld reference=%ldx%ld\n",font_apply_client.right,font_apply_client.bottom,
             font_apply_reference.right,font_apply_reference.bottom);
+        if(font_memory_template)printf("FONT MEMORY released=%d\n",memory_released);
         return valid?0:1;
     }
     BOOL result;COLORREF custom[16]={0};custom[0]=RGB(12,34,56);LOGFONTA la={0};LOGFONTW lw={0};
