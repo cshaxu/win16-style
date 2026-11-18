@@ -2,6 +2,7 @@
 #define STYLE_CLASSIC_PRINT_CONTRACT_H
 #include <windows.h>
 #include <commdlg.h>
+#define STYLE_CLASSIC_PRINT_FLAGS (PD_ALLPAGES|PD_SELECTION|PD_PAGENUMS|PD_NOSELECTION|PD_NOPAGENUMS|PD_COLLATE|PD_PRINTTOFILE|PD_RETURNDC|PD_RETURNIC|PD_NOWARNING|PD_USEDEVMODECOPIESANDCOLLATE|PD_DISABLEPRINTTOFILE|PD_HIDEPRINTTOFILE|PD_NONETWORKBUTTON)
 /* The caller supplies the supported flag mask and temporary hook. The result
  * preserves the caller's original hook and hook flag. */
 BOOL style_classic_print_prepare_a(const PRINTDLGA *,PRINTDLGA *,DWORD,LPPRINTHOOKPROC);

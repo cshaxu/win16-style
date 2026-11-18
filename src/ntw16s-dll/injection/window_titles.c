@@ -187,7 +187,6 @@ OBSERVED_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW,color_dialog_return,TRUE)
  * Preserve caller-owned customization and less common flag contracts unchanged. */
 static UINT_PTR CALLBACK classic_print_hook(HWND w,UINT m,WPARAM a,LPARAM b)
 {(void)w;(void)m;(void)a;(void)b;return 0;}
-#define CLASSIC_PRINT_FLAGS (PD_ALLPAGES|PD_SELECTION|PD_PAGENUMS|PD_NOSELECTION|PD_NOPAGENUMS|PD_COLLATE|PD_PRINTTOFILE|PD_RETURNDC|PD_RETURNIC|PD_NOWARNING|PD_USEDEVMODECOPIESANDCOLLATE|PD_DISABLEPRINTTOFILE|PD_HIDEPRINTTOFILE|PD_NONETWORKBUTTON)
 #define PRINT_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
@@ -195,7 +194,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
   if(!begin_titles(&scope,TRUE))return FALSE; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { \
     TYPE copy; \
-    if(scope.enabled && style_classic_print_prepare_##SUFFIX(parameters,&copy,CLASSIC_PRINT_FLAGS,classic_print_hook)) { \
+    if(scope.enabled && style_classic_print_prepare_##SUFFIX(parameters,&copy,STYLE_CLASSIC_PRINT_FLAGS,classic_print_hook)) { \
       result=real_##NAME(&copy);error=GetLastError(); \
       style_classic_print_result_##SUFFIX(parameters,&copy); \
     } else { result=real_##NAME(parameters);error=GetLastError(); } \
@@ -204,7 +203,6 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 PRINT_HOOK(PrintDlgA,PRINTDLGA,a)
 PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
 #undef PRINT_HOOK
-#undef CLASSIC_PRINT_FLAGS
 
 /* Synchronous common dialogs also create their own internal windows. */
 SIMPLE_DIALOG_HOOK(PageSetupDlgA,PAGESETUPDLGA *,BOOL,FALSE,(void)0)

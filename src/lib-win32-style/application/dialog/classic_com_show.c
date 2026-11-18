@@ -19,6 +19,22 @@ static HRESULT native_show(void *data)
 static HRESULT show_native(style_classic_dialog_proxy *p,HWND owner,
     const style_classic_com_show_services *services)
 {native_call call={p->native,owner};return services->scope(native_show,&call);}
+static BOOL explorer_file_directory(WCHAR *file,PWSTR *folder)
+{
+    WCHAR *leaf=wcsrchr(file,L'\\');
+    BOOL absolute=(file[0]==L'\\' && file[1]==L'\\') ||
+        (file[0] && file[1]==L':' && file[2]==L'\\');
+    if(!absolute || !leaf || !leaf[1])return TRUE;
+    size_t length=(size_t)(leaf-file)+1;
+    WCHAR *directory=CoTaskMemAlloc((length+1)*sizeof(*directory));
+    if(!directory)return FALSE;
+    wmemcpy(directory,file,length);
+    directory[length]=L'\0';
+    wmemmove(file,leaf+1,wcslen(leaf+1)+1);
+    CoTaskMemFree(*folder);
+    *folder=directory;
+    return TRUE;
+}
 static HRESULT show_impl(style_classic_dialog_proxy *p,HWND owner,
     const style_classic_com_show_services *services)
 {
@@ -30,6 +46,9 @@ static HRESULT show_impl(style_classic_dialog_proxy *p,HWND owner,
     HRESULT hr=IFileDialog_GetOptions(p->native,&flags);
     if(!style_classic_com_can_bridge(hr,flags,p->unsupported,(p->events!=NULL),p->save,
         services->experimental_events,services->experimental_hidden))return show_native(p,owner,services);
+    if(services->explorer_files && !(flags&FOS_PICKFOLDERS) &&
+        (!(flags&FOS_FORCEFILESYSTEM) || p->ok_label || p->cancel_label || p->file_label || p->events))
+        return show_native(p,owner,services);
     if(services->experimental_hidden)p->classic_hidden=(flags&FOS_FORCESHOWHIDDEN)!=0;
     WCHAR file[32768]=L"";PWSTR value=NULL;IShellItem *folder=NULL;PWSTR folder_path=NULL;
     if(SUCCEEDED(IFileDialog_GetFileName(p->native,&value)) && value){
@@ -54,10 +73,20 @@ static HRESULT show_impl(style_classic_dialog_proxy *p,HWND owner,
         if(SUCCEEDED(hr))p->completed=TRUE;
         return hr;
     }
+    if(services->explorer_files && !explorer_file_directory(file,&folder_path)){
+        CoTaskMemFree(folder_path);
+        return E_OUTOFMEMORY;
+    }
     OPENFILENAMEW ofn={0};ofn.lStructSize=sizeof(ofn);ofn.hwndOwner=owner;
     ofn.lpstrFile=file;ofn.nMaxFile=ARRAYSIZE(file);ofn.lpstrInitialDir=folder_path;ofn.lpstrTitle=p->title;
     ofn.lpstrFilter=p->filter?p->filter:L"All files\0*.*\0\0";ofn.nFilterIndex=p->filter_index?p->filter_index:1;ofn.lpstrDefExt=p->extension;
-    ofn.Flags=style_classic_com_file_flags(flags);ofn.lpfnHook=services->classic_hook;ofn.lCustData=(LPARAM)p;
+    ofn.Flags=style_classic_com_file_flags(flags);
+    if(services->explorer_files){
+        ofn.Flags=(ofn.Flags&~OFN_ENABLEHOOK)|OFN_EXPLORER;
+    }else{
+        ofn.lpfnHook=services->classic_hook;
+        ofn.lCustData=(LPARAM)p;
+    }
     classic_call call={&ofn,p->save,FALSE,0};
     hr=services->scope(classic_show,&call);if(folder_path)CoTaskMemFree(folder_path);
     if(FAILED(hr))return hr;

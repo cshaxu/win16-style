@@ -15,6 +15,8 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 
 [Windows 2000 UWP 窗口外框](../proposals/windows-2000-uwp-frame.md)已按用户要求准入，活动范围见 CURRENT。
 
+[Windows 2000 公共对话框](../proposals/windows-2000-common-dialogs.md)已按用户要求准入，活动范围见 CURRENT。
+
 [Windows 2000 经典风格调研与准备](../proposals/windows-2000-classic.md)已由用户准入；活动状态见 CURRENT。
 
 [样式库与通用接入重组](../proposals/style-library-reorganization.md)已准入，活动状态见 CURRENT。[现代桌面混合窗口适配](../proposals/modern-desktop-window-style.md)已按用户要求有限收口，证据见 CURRENT。

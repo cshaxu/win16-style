@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <commdlg.h>
 #include <cderr.h>
+#include <dlgs.h>
 #include <oleacc.h>
 #include <objbase.h>
 #include <shellscalingapi.h>
@@ -183,10 +184,19 @@ static DWORD WINAPI close_common(void *unused)
 static UINT_PTR CALLBACK file_classic_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {(void)window;(void)message;(void)wp;(void)lp;return 0;}
 
-static UINT find_message;static unsigned find_terms;
+static UINT find_message;
+static unsigned find_terms;
+static DWORD find_actions;
 static LRESULT CALLBACK find_owner_proc(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
-    if(message==find_message){FINDREPLACEW *record=(FINDREPLACEW *)lp;if(record && (record->Flags&FR_DIALOGTERM))++find_terms;return 0;}
+    if(message==find_message){
+        const FINDREPLACEW *record=(const FINDREPLACEW *)lp;
+        if(record){
+            if(record->Flags&FR_DIALOGTERM)++find_terms;
+            find_actions|=record->Flags&(FR_FINDNEXT|FR_REPLACE|FR_REPLACEALL);
+        }
+        return 0;
+    }
     return DefWindowProcW(window,message,wp,lp);
 }
 
@@ -445,7 +455,11 @@ int wmain(int argc,WCHAR **argv)
         }
         return all?0:3;
     }
-    if(argc==2 && !lstrcmpW(argv[1],L"--print-ex-frame")){
+    if(argc==2 && (!lstrcmpW(argv[1],L"--print-ex-frame") || !lstrcmpW(argv[1],L"--print-ex-accept") ||
+        !lstrcmpW(argv[1],L"--print-ex-accept-dc"))){
+        BOOL require_dc=!lstrcmpW(argv[1],L"--print-ex-accept-dc");
+        BOOL accept=require_dc || !lstrcmpW(argv[1],L"--print-ex-accept");
+        InterlockedExchange(&message_accept,accept);
         PRINTDLGW defaults={.lStructSize=sizeof(defaults),.Flags=PD_RETURNDEFAULT};
         BOOL available=PrintDlgW(&defaults);DWORD printer_error=CommDlgExtendedError();
         if(defaults.hDevMode)GlobalFree(defaults.hDevMode);
@@ -463,12 +477,26 @@ int wmain(int argc,WCHAR **argv)
         for(int ansi=0;ansi<2;++ansi){
             InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);InterlockedExchange(&common_done,0);
             HANDLE thread=CreateThread(NULL,0,close_common,NULL,0,NULL);if(!thread){all=FALSE;break;}
-            PRINTDLGEXA a={.lStructSize=sizeof(a),.hwndOwner=common_owner,.Flags=PD_NOPAGENUMS,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
-            PRINTDLGEXW w={.lStructSize=sizeof(w),.hwndOwner=common_owner,.Flags=PD_NOPAGENUMS,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
+            PRINTPAGERANGE pages={2,4};
+            DWORD flags=accept?PD_PAGENUMS|PD_NOCURRENTPAGE:PD_NOPAGENUMS;
+            if(require_dc)flags|=PD_RETURNDC;
+            PRINTDLGEXA a={.lStructSize=sizeof(a),.hwndOwner=common_owner,.Flags=flags,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
+            PRINTDLGEXW w={.lStructSize=sizeof(w),.hwndOwner=common_owner,.Flags=flags,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
+            if(accept){
+                a.lpPageRanges=w.lpPageRanges=&pages;
+                a.nPageRanges=w.nPageRanges=a.nMaxPageRanges=w.nMaxPageRanges=1;
+                a.nMinPage=w.nMinPage=1;a.nMaxPage=w.nMaxPage=9;
+            }
             HRESULT result=ansi?PrintDlgExA(&a):PrintDlgExW(&w);DWORD action=ansi?a.dwResultAction:w.dwResultAction;
+            DWORD error=CommDlgExtendedError();
             InterlockedExchange(&common_done,1);DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
-            BOOL pass=wait==WAIT_OBJECT_0 && result==S_OK && action==PD_RESULT_CANCEL && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            BOOL settings=!accept || ((ansi?a.hDevMode:w.hDevMode) && (ansi?a.hDevNames:w.hDevNames) &&
+                (!require_dc || (ansi?a.hDC:w.hDC)) && (ansi?a.nPageRanges:w.nPageRanges)==1 && pages.nFromPage==2 && pages.nToPage==4);
+            BOOL pass=wait==WAIT_OBJECT_0 && result==S_OK && action==(accept?PD_RESULT_PRINT:PD_RESULT_CANCEL) &&
+                settings && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
             printf("WIN2K PRINTEX bits=%u ansi=%d attached=%ld result=%08lx action=%lu\n",(unsigned)(sizeof(void*)*8),ansi,(long)InterlockedCompareExchange(&message_attached,0,0),(unsigned long)result,(unsigned long)action);
+            if(accept)printf("WIN2K PRINTEX SETTINGS valid=%d from=%lu to=%lu error=%lu dc=%d\n",
+                settings,pages.nFromPage,pages.nToPage,error,require_dc);
             if(a.hDevMode)GlobalFree(a.hDevMode);
             if(a.hDevNames)GlobalFree(a.hDevNames);
             if(a.hDC)DeleteDC(a.hDC);
@@ -530,9 +558,11 @@ int wmain(int argc,WCHAR **argv)
         }
         InterlockedExchange(&message_accept,0);return all?0:3;
     }
-    if(argc==2 && !lstrcmpW(argv[1],L"--color-font-frame")){
-        BOOL all=TRUE;
+    if(argc==2 && (!lstrcmpW(argv[1],L"--color-font-frame") || !lstrcmpW(argv[1],L"--font-accept"))){
+        BOOL all=TRUE,accept=!lstrcmpW(argv[1],L"--font-accept");
+        InterlockedExchange(&message_accept,accept);
         for(int ansi=0;ansi<2;++ansi)for(int font=0;font<2;++font){
+            if(accept && !font)continue;
             InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
             HANDLE thread=CreateThread(NULL,0,close_common,NULL,0,NULL);if(!thread)return 2;
             COLORREF colors[16]={0};LOGFONTA log_a={0};LOGFONTW log_w={0};
@@ -540,10 +570,27 @@ int wmain(int argc,WCHAR **argv)
             CHOOSECOLORW cw={.lStructSize=sizeof(cw),.lpCustColors=colors,.Flags=CC_RGBINIT};
             CHOOSEFONTA fa={.lStructSize=sizeof(fa),.lpLogFont=&log_a,.Flags=CF_SCREENFONTS};
             CHOOSEFONTW fw={.lStructSize=sizeof(fw),.lpLogFont=&log_w,.Flags=CF_SCREENFONTS};
+            if(accept){
+                int height=-MulDiv(12,(int)GetDpiForSystem(),72);
+                log_a.lfHeight=log_w.lfHeight=height;
+                log_a.lfWeight=log_w.lfWeight=FW_BOLD;
+                lstrcpyA(log_a.lfFaceName,"Arial");lstrcpyW(log_w.lfFaceName,L"Arial");
+                fa.Flags|=CF_INITTOLOGFONTSTRUCT|CF_FORCEFONTEXIST;
+                fw.Flags|=CF_INITTOLOGFONTSTRUCT|CF_FORCEFONTEXIST;
+            }
             BOOL result=ansi?(font?ChooseFontA(&fa):ChooseColorA(&ca)):(font?ChooseFontW(&fw):ChooseColorW(&cw));
             DWORD error=CommDlgExtendedError();DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
-            BOOL pass=wait==WAIT_OBJECT_0 && !result && error==0 && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
-            printf("WIN2K COMMON bits=%u ansi=%d font=%d attached=%ld cancelled=%d error=%lu\n",(unsigned)(sizeof(void*)*8),ansi,font,(long)InterlockedCompareExchange(&message_attached,0,0),!result,(unsigned long)error);
+            BOOL selected=!accept || (ansi?
+                log_a.lfWeight==FW_BOLD && fa.iPointSize==120 && !lstrcmpiA(log_a.lfFaceName,"Arial"):
+                log_w.lfWeight==FW_BOLD && fw.iPointSize==120 && !lstrcmpiW(log_w.lfFaceName,L"Arial"));
+            BOOL pass=wait==WAIT_OBJECT_0 && result==accept && selected && error==0 && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            long attached=InterlockedCompareExchange(&message_attached,0,0);
+            if(accept)
+                printf("WIN2K FONT bits=%u ansi=%d attached=%ld accepted=%d selected=%d point_size=%d error=%lu\n",
+                    (unsigned)(sizeof(void*)*8),ansi,attached,result,selected,ansi?fa.iPointSize:fw.iPointSize,(unsigned long)error);
+            else
+                printf("WIN2K COMMON bits=%u ansi=%d font=%d attached=%ld cancelled=%d error=%lu\n",
+                    (unsigned)(sizeof(void*)*8),ansi,font,attached,!result,(unsigned long)error);
             if(!pass)all=FALSE;
         }
         return all?0:3;
@@ -595,11 +642,32 @@ int wmain(int argc,WCHAR **argv)
             char find_a[64]="needle",replacement_a[64]="replacement";WCHAR find_w[64]=L"needle",replacement_w[64]=L"replacement";
             FINDREPLACEA a={.lStructSize=sizeof(a),.hwndOwner=owner,.lpstrFindWhat=find_a,.wFindWhatLen=64,.lpstrReplaceWith=replacement_a,.wReplaceWithLen=64,.Flags=FR_DOWN};
             FINDREPLACEW w={.lStructSize=sizeof(w),.hwndOwner=owner,.lpstrFindWhat=find_w,.wFindWhatLen=64,.lpstrReplaceWith=replacement_w,.wReplaceWithLen=64,.Flags=FR_DOWN};
-            find_terms=0;HWND dialog=ansi?(replace?ReplaceTextA(&a):FindTextA(&a)):(replace?ReplaceTextW(&w):FindTextW(&w));
+            find_terms=0;find_actions=0;
+            HWND dialog=ansi?(replace?ReplaceTextA(&a):FindTextA(&a)):(replace?ReplaceTextW(&w):FindTextW(&w));
             BOOL attached=dialog && GetPropW(dialog,L"Win2kStyle.Frame")!=NULL;
-            if(dialog){SendMessageW(dialog,WM_CLOSE,0,0);pump_messages();}
-            BOOL gone=dialog && !IsWindow(dialog);BOOL pass=attached && gone && find_terms==1;
-            printf("WIN2K FIND bits=%u ansi=%d replace=%d attached=%d gone=%d terms=%u\n",(unsigned)(sizeof(void*)*8),ansi,replace,attached,gone,find_terms);
+            BOOL layout=TRUE;
+            if(dialog && !replace){
+                HWND wrap=GetDlgItem(dialog,chx3);
+                if(wrap && !(GetWindowLongPtrW(wrap,GWL_STYLE)&WS_VISIBLE)){
+                    RECT client={0},reference={0,0,236,62};
+                    layout=GetClientRect(dialog,&client) && MapDialogRect(dialog,&reference) &&
+                        client.right==reference.right && client.bottom==reference.bottom;
+                    if(!layout)printf("WIN2K FIND LAYOUT actual=%ldx%ld expected=%ldx%ld flags=%08lx\n",
+                        client.right,client.bottom,reference.right,reference.bottom,ansi?a.Flags:w.Flags);
+                }
+            }
+            if(dialog){
+                SendMessageW(GetDlgItem(dialog,IDOK),BM_CLICK,0,0);
+                if(replace){
+                    SendMessageW(GetDlgItem(dialog,psh1),BM_CLICK,0,0);
+                    SendMessageW(GetDlgItem(dialog,psh2),BM_CLICK,0,0);
+                }
+                SendMessageW(dialog,WM_CLOSE,0,0);pump_messages();
+            }
+            DWORD expected=FR_FINDNEXT|(replace?(FR_REPLACE|FR_REPLACEALL):0);
+            BOOL gone=dialog && !IsWindow(dialog);BOOL pass=attached && gone && find_terms==1 && layout && find_actions==expected;
+            printf("WIN2K FIND bits=%u ansi=%d replace=%d attached=%d gone=%d terms=%u layout=%d actions=%lx\n",
+                (unsigned)(sizeof(void*)*8),ansi,replace,attached,gone,find_terms,layout,(unsigned long)find_actions);
             if(!pass)all=FALSE;
         }
         DestroyWindow(owner);UnregisterClassW(owner_class.lpszClassName,instance);return all?0:3;

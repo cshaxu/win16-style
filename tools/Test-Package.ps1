@@ -359,6 +359,26 @@ try{
         (Case 'long-path' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/long_path.py'),$run,$d32,$d64,(Join-Path $x86 'launch-failures.exe'),(Join-Path $x64 'launch-failures.exe')) @('LONG PATH PASS width=32','LONG PATH PASS width=64')),
         (Case 'cli-failures' $python (@('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli_failures.py'))+$pair) @('CLI ROLLBACK PASS width=32','CLI ROLLBACK PASS width=64','WIN2K ROLLBACK PASS width=32','WIN2K ROLLBACK PASS width=64','no target process','CLI IO/EXIT PASS width=32','CLI IO/EXIT PASS width=64'))
     )
+    $cases+=Pair { param($bits,$tree,$dll)
+            Case "ntw2ks-font-accept-$bits" $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $tree 'ntw2ks-frame-target.exe'),'--font-accept') @(
+                "WIN2K FONT bits=$bits ansi=0 attached=1 accepted=1 selected=1 point_size=120 error=0",
+                "WIN2K FONT bits=$bits ansi=1 attached=1 accepted=1 selected=1 point_size=120 error=0",'DIALOG_DRIVER exit=0') 20
+    }
+    $cases+=Pair { param($bits,$tree,$dll)
+            Case "ntw2ks-printex-accept-$bits" $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $tree 'ntw2ks-frame-target.exe'),'--print-ex-accept') @(
+                "WIN2K PRINTEX bits=$bits ansi=0 attached=1 result=00000000 action=1",
+                "WIN2K PRINTEX bits=$bits ansi=1 attached=1 result=00000000 action=1",
+                'WIN2K PRINTEX SETTINGS valid=1 from=2 to=4','DIALOG_DRIVER exit=0') 20
+    }
+    $cases+=Pair { param($bits,$tree,$dll)
+            foreach($operation in @('open','save')) {
+                foreach($decision in @('accept','cancel')) {
+                    Case "ntw2ks-com-explorer-$operation-$decision-$bits" $dialogDriver @(
+                        '--direct',$run,'--2k','--wait',(Join-Path $tree 'com-dialog-target.exe'),$operation,$decision,'explorer') @(
+                        'COM_EXPLORER_LAYOUT bridged=1',"COM_BRIDGE bits=$bits",'DIALOG_DRIVER exit=0') 25
+                }
+            }
+    }
     foreach($parent in @('x86','x64')){foreach($child in @('x86','x64')){foreach($encoding in @('a','w')){
         $parentBits=if($parent -eq 'x86'){'32'}else{'64'}
         $childBits=if($child -eq 'x86'){'32'}else{'64'}

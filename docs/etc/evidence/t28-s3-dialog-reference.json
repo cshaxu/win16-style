@@ -1,0 +1,591 @@
+{
+  "task": "M0 T28 S3",
+  "stage": "P1 ordinary startup candidate, published and verified locally",
+  "find_incremental": {
+    "change": "Compact the stock Find window only when its optional wrap control is hidden and the client matches 236 by 74 dialog units. Reuse the common client-geometry restore after refreshing the frame. Requests with a hook or custom template retain their native layout.",
+    "published_negative_control": "x86/x64 each failed the new stock Find geometry assertion in ANSI and Unicode. The existing termination notification assertions passed.",
+    "incremental_candidate": "Eight real A/W Find and Replace cases on x86/x64. Each had a styled frame, sent the expected Find Next, Replace and Replace All notifications where applicable, then sent one termination notification. The stock Find geometry passed.",
+    "diagnostic": "Subtracting native height directly triggered the first non-client recalculation and produced 356x107 rather than the expected 354x101. Refreshing the frame and restoring the desired client rectangle through the common path passed.",
+    "published": false
+  },
+  "file_runtime_followup": {
+    "result": "x86 and x64, eight confirmed selections each across ANSI/Unicode, open/save and native legacy/Explorer modes.",
+    "prior_x86_timeout": "Not reproduced with the diagnostic probe. Its path and observation work differ from the original fixture; root cause remains unconfirmed.",
+    "native_explorer": "Both widths observed a DirectUI content area and SHELLDLL_DefView. Save can collapse the shell view to zero height. The installed native layout does not match the static modern 1552 dialog template at run time, so the 40-DLU template difference is not a sufficient resize rule."
+  },
+  "folder_runtime": {
+    "published_shell": "16/16. Both architectures, ANSI/Unicode, the legacy tree and BIF_USENEWUI, selection and cancellation. Existing Win2000 frame attached in each case and the Shell preserved the selected folder PIDL.",
+    "incremental_com": "10/10 startup cases for the folder bridge and prior file fallback: folder selection and result array, folder cancellation, custom folder cancellation, file-open native cancellation, and Win16 folder cancellation, each on both widths.",
+    "shared_contract_tests": "The COM controller and common bridge tests passed on both widths. Requests for a filesystem single-file selection use the Explorer path; custom controls, label overrides, callbacks, multiselect and unsupported options retain native Show.",
+    "binary_boundary": "The observed new ntw2ks imports are ole32.dll and shell32.dll. All four exported entry points remain identical."
+  },
+  "print_incremental": {
+    "classic": "PrintDlg and PageSetupDlg cancel passed 8/8 across both widths and ANSI/Unicode. Each had a Win2000 frame and zero CommDlgExtendedError.",
+    "extended": "PrintDlgEx cancel passed 4/4 across both widths and ANSI/Unicode. Each had a Win2000 frame, returned S_OK, and set PD_RESULT_CANCEL.",
+    "scope": "Ordinary desktop, self-owned dialogs, default print device configured. No job submitted. The existing classic extended bridge preserves supported settings. On both widths a native PrintDlgEx comparison produced no dialog observable by the fixture before its timeout. The original printnew.dlg defines a separate General property page; exact visual parity is open.",
+    "shared_contract_tests": "Classic and extended print contract tests passed on x86 and x64.",
+    "confirm": "Four PrintDlgEx A/W cases accepted pages 2–4 and returned PD_RESULT_PRINT plus DEVNAMES and DEVMODE. Four cases with PD_RETURNDC returned E_FAIL and no settings. The same four paired Win16 requests returned the same E_FAIL; a Win2000-specific regression was not identified. Apply and custom native fallback are still open. Actual release Apply additionally passed for four A/W cases across both widths, returning the three-copy snapshot after the fixture changed the live field to five copies and closed. Four paired confirmation cases also returned three copies. Settings and handles were freed, with no job submitted.",
+    "dc_native_control": "With no run16s DLL, PrintDlgW(PD_RETURNDEFAULT | PD_RETURNDC) reported success and returned a null hDC on both widths. Direct CreateDCW using the native DEVNAMES/DEVMODE returned null on both widths. The environment does not provide a usable printer DC; the bridge tests requiring one are not counted as passes."
+  },
+  "reference": "Windows 2000 English SP2 OEM CD, original setup members under I386. ISO9660 extraction only, no VM boot, modules mapped as resource data only.",
+  "comparison": "Windows 11 comdlg32.dll.mui version 10.0.26100.8117, SHA-256 34d64494ca30d95b46954b52f6deec06e8659a7b84a2969717c0392a2097295a",
+  "resource_comparison": {
+    "comdlg32.dll": {
+      "pe_sha256": "7f74dd2d097bdfc6d1506ff7edc47df167002a6be08414e16d387281a0d1a7d0",
+      "setup_member_sha256": "137708e66d0d4fb2adce60253a456d0441a3f04fcfdf8f14b93edda77d40a3d5",
+      "original_templates_parsed": 16,
+      "templates": {
+        "1536": {
+          "label": "Open",
+          "windows_2000": {
+            "client_dialog_units": [
+              268,
+              134
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 14
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              268,
+              134
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 14
+          }
+        },
+        "1537": {
+          "label": "Open",
+          "windows_2000": {
+            "client_dialog_units": [
+              268,
+              134
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 14
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              268,
+              134
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 14
+          }
+        },
+        "1538": {
+          "label": "Print",
+          "windows_2000": {
+            "client_dialog_units": [
+              288,
+              186
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 29
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              288,
+              186
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 29
+          }
+        },
+        "1539": {
+          "label": "Print Setup",
+          "windows_2000": {
+            "client_dialog_units": [
+              288,
+              178
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 24
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              288,
+              178
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 24
+          }
+        },
+        "1540": {
+          "label": "Find",
+          "windows_2000": {
+            "client_dialog_units": [
+              236,
+              62
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 10
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              236,
+              74
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 12
+          }
+        },
+        "1541": {
+          "label": "Replace",
+          "windows_2000": {
+            "client_dialog_units": [
+              230,
+              94
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 11
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              230,
+              94
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 13
+          }
+        },
+        "1543": {
+          "label": "Font",
+          "windows_2000": {
+            "client_dialog_units": [
+              287,
+              196
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 20
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              287,
+              196
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 20
+          }
+        },
+        "1546": {
+          "label": "Page Setup",
+          "windows_2000": {
+            "client_dialog_units": [
+              240,
+              240
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 24
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              240,
+              240
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 23
+          }
+        },
+        "1547": {
+          "label": "Open",
+          "windows_2000": {
+            "client_dialog_units": [
+              280,
+              164
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 13
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              280,
+              164
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 14
+          }
+        },
+        "1552": {
+          "label": "Open",
+          "windows_2000": {
+            "client_dialog_units": [
+              370,
+              197
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 14
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              370,
+              237
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 15
+          }
+        },
+        "CHOOSECOLOR": {
+          "label": "Color",
+          "windows_2000": {
+            "client_dialog_units": [
+              298,
+              184
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 27
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              298,
+              184
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 27
+          }
+        }
+      }
+    },
+    "shell32.dll": {
+      "pe_sha256": "27797344a86e6e8c016791546e17bcf17c2b814cda550c0fa796e9fe1071b688",
+      "setup_member_sha256": "a835823951d67db569cd62a424f60cb3490559848c2d8ef9031d72f8c86dd5f4",
+      "original_templates_parsed": 106,
+      "templates": {
+        "1079": {
+          "label": "Browse for Folder",
+          "windows_2000": {
+            "client_dialog_units": [
+              212,
+              188
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 6
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              212,
+              188
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 6
+          }
+        },
+        "1087": {
+          "label": "Browse For Folder",
+          "windows_2000": {
+            "client_dialog_units": [
+              212,
+              177
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 8
+          },
+          "windows_11": {
+            "client_dialog_units": [
+              212,
+              177
+            ],
+            "font": "MS Shell Dlg",
+            "font_points": 8,
+            "controls": 9
+          }
+        }
+      }
+    }
+  },
+  "find_layout_difference": "Stock 1540 adds control 1042 and a helper on Windows 11. In the ordinary native and --2k sample the added control was hidden while its empty row remained. Replace had identical client dimensions between modes.",
+  "live_before_change": {
+    "ordinary_desktop_x64": {
+      "find_client": [
+        354,
+        120
+      ],
+      "find_reference": [
+        354,
+        101
+      ],
+      "replace_client": [
+        345,
+        153
+      ],
+      "wrap_control_visible": false,
+      "styled_frame_present": true,
+      "original_win11_default_print_result": true,
+      "default_print_last_error": 0
+    },
+    "published_both_arch": {
+      "file_cancel": "16/16 across x86/x64 for ANSI/Unicode open/save and Explorer/legacy combinations. Result was cancellation with no extended error.",
+      "color_and_font_cancel": "all four ANSI/Unicode cases passed for each architecture",
+      "file_select": {
+        "x64": "8/8 ANSI/Unicode open/save and Explorer/legacy combinations",
+        "x86": "first succeeded, fixture exited 4 while waiting for the next dialog"
+      },
+      "print_cancel": {
+        "classic": "fixture exited 4 on both architectures",
+        "extended": "fixture exited 4 on both architectures"
+      }
+    }
+  },
+  "com_explorer_incremental": {
+    "initial_failure": "The original GetFileName result was an absolute filename. Carrying it unchanged alongside the native folder lost the path in the Explorer dialog: opening failed and saving selected the current directory. Both widths reproduced this.",
+    "fix": "For the Explorer path, split fully qualified file paths into the starting directory and filename before calling the system Win32 dialog. Leave relative names and the Win16 bridge unchanged.",
+    "candidate": "Eight real Win2000 open/save confirmation and cancellation cases on x86/x64, plus two Win16 open confirmation comparisons. Confirmed the Explorer host, exact returned path, one-item GetResults for open, and HRESULT_FROM_WIN32(ERROR_CANCELLED) for cancellation.",
+    "visual_limit": "Uses the installed Win32 Explorer shell layout inside the Win2000 frame. The Windows 2000 original layout is still an open visual item; the Win11 runtime DirectUI hierarchy cannot be resized from the two resource extents alone."
+  },
+  "font_color_message_incremental": {
+    "font": "Added scoped native observation to ChooseFontA/W. Both widths confirmed Arial Bold 12-point results and cancellation.",
+    "color": "Four native initial-color confirmations and four cancellations. The Windows 2000 source confirms recessed swatch edges; retain the installed native palette for Win2000. No visual match claimed for the expanded palette.",
+    "message": "Twelve MessageBox, MessageBoxEx and MessageBoxIndirect A/W native cases on both widths. Each attached and returned IDOK.",
+    "combined": "36/36 including the eight Find/Replace cases."
+  },
+  "delivery": {
+    "build_command": "tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-dialog-candidate",
+    "snapshot_manifest_sha256": "fe7b3b818f92fe63df5ab9527ebea766623a69351123c756208b4caf93b963fc",
+    "compiler": "C17, MinGW GCC 16.1.0 (i686 UCRT and x86_64 MSVCRT), Ninja 1.13.2, ccache 4.13.6",
+    "build_seconds": {
+      "x86": 204.82,
+      "x64": 247.12
+    },
+    "destinations": [
+      "assets/",
+      "O:/winnt"
+    ],
+    "artifacts": {
+      "run16s.exe": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "58d6942417d77f8b034f7edc253ff6e7954703ec8ab48f22b2cda0c783ec9038",
+        "imports": [
+          "advapi32.dll",
+          "dwmapi.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "oleaut32.dll",
+          "shell32.dll",
+          "user32.dll",
+          "ntwshk64.dll"
+        ]
+      },
+      "ntw16s32.dll": {
+        "architecture": "x86",
+        "version": "M0 T28",
+        "sha256": "6abca479d6e9dc78753a4fa6923e1baab1e83f1bcf5fbf8c2ff4fb831c4d332b",
+        "imports": [
+          "ADVAPI32.dll",
+          "COMCTL32.dll",
+          "COMDLG32.DLL",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.DLL",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "ole32.dll",
+          "OLEAUT32.dll",
+          "SHELL32.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk32.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw16s64.dll": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "300b66bb06338c7aaf93899386d54fe11f0893b6f388b3935848dac9fb990a9f",
+        "imports": [
+          "ADVAPI32.dll",
+          "COMCTL32.dll",
+          "comdlg32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "OLEAUT32.dll",
+          "SHELL32.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk64.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw2ks32.dll": {
+        "architecture": "x86",
+        "version": "M0 T28",
+        "sha256": "1ca46e086dfe1f66805d12a0a99eb8a38e24bad830a82ff97c65a40a92a51317",
+        "imports": [
+          "COMCTL32.dll",
+          "COMDLG32.DLL",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.DLL",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "ole32.dll",
+          "SHCORE.dll",
+          "SHELL32.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk32.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw2ks64.dll": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "4c8d69e42120b8b30487d032abeb0ad2e7e75d3d35803bd662582946b63d8595",
+        "imports": [
+          "COMCTL32.dll",
+          "comdlg32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "SHCORE.dll",
+          "SHELL32.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk64.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntwshk32.dll": {
+        "architecture": "x86",
+        "version": "M0 T28",
+        "sha256": "7ae30b620f96872bec98fd407e8e88b52160945f33ef43f047c8045e2424a0a6",
+        "imports": [
+          "ADVAPI32.dll",
+          "KERNEL32.dll",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll"
+        ]
+      },
+      "ntwshk64.dll": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "6703fa0ffacee063d046d7fb4a5030c34438125d27f4a68f16f24d1b69d470c1",
+        "imports": [
+          "ADVAPI32.dll",
+          "KERNEL32.dll",
+          "msvcrt.dll"
+        ]
+      },
+      "demo.exe": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "77fdcc622b2e10b889b994c7fcc97a42baff49095a1c6de28d690a5a52acaf86",
+        "imports": [
+          "comctl32.dll",
+          "comdlg32.dll",
+          "gdi32.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "shell32.dll",
+          "user32.dll"
+        ]
+      }
+    },
+    "verification": {
+      "order": "Clean build and identity gate, publication to both locations, then execution of the published launcher and manifest checks.",
+      "package": "42/42 grouped ordinary desktop runs, including two assets-path Find checks. The normal dialog test driver used --direct with owned targets.",
+      "group_runs": [
+        "x86-message-frame",
+        "x86-find-frame",
+        "x86-color-font-frame",
+        "x86-font-accept",
+        "x86-color-accept",
+        "x86-file-frame",
+        "x86-file-select",
+        "x86-print-frame",
+        "x86-print-ex-frame",
+        "x86-print-ex-accept",
+        "x86-com-open-accept",
+        "x86-com-open-cancel",
+        "x86-com-save-accept",
+        "x86-com-save-cancel",
+        "x86-com-open-custom",
+        "x86-com-folder-accept",
+        "x86-com-folder-cancel",
+        "x86-com-folder-custom",
+        "x86-win16-com-open",
+        "x86-win16-com-folder",
+        "x86-assets-find",
+        "x64-message-frame",
+        "x64-find-frame",
+        "x64-color-font-frame",
+        "x64-font-accept",
+        "x64-color-accept",
+        "x64-file-frame",
+        "x64-file-select",
+        "x64-print-frame",
+        "x64-print-ex-frame",
+        "x64-print-ex-accept",
+        "x64-com-open-accept",
+        "x64-com-open-cancel",
+        "x64-com-save-accept",
+        "x64-com-save-cancel",
+        "x64-com-open-custom",
+        "x64-com-folder-accept",
+        "x64-com-folder-cancel",
+        "x64-com-folder-custom",
+        "x64-win16-com-open",
+        "x64-win16-com-folder",
+        "x64-assets-find"
+      ],
+      "core": "24/24 focused CTest checks in the clean build. First manual CTest invocation lacked WIN16STYLE_CAPTURE_DIR for core/abi. The rerun used an owned capture directory and passed both widths.",
+      "shell": "16/16 SHBrowseForFolder A/W published runs. Both widths, legacy and new Shell paths, confirmation and cancellation, Win2000 frame and matching PIDL.",
+      "print_apply": "8/8 ordinary published runs, A/W and both widths, four Apply plus four confirmation comparisons without PD_RETURNDC.",
+      "demo": "Published x64 demo PE boundary passed. The existing package demo-pair command requires a private desktop and was omitted.",
+      "remaining": [
+        "Win2000-specific Explorer content and extended print property-page visual comparison",
+        "actual printer DC and physical printing",
+        "expanded custom-color palette comparison",
+        "real administrator/global dialog matrix"
+      ]
+    }
+  }
+}

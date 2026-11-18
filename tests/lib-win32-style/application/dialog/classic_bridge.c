@@ -82,6 +82,11 @@ int main(void)
        proxy.completed || native_calls!=6 || scope_calls!=6)return 9;
     if(style_classic_com_show(&proxy,(HWND)(ULONG_PTR)42,&experimental)!=E_UNEXPECTED ||
        native_calls!=6 || scope_calls!=6)return 10;
+    style_classic_com_show_services explorer=services;explorer.explorer_files=TRUE;
+    options_result=S_OK;options=0;
+    proxy.classic_show_aborted=FALSE;
+    if(style_classic_com_show(&proxy,(HWND)(ULONG_PTR)42,&explorer)!=E_ABORT ||
+       native_calls!=7 || scope_calls!=7)return 11;
     UINT flags=BIF_RETURNONLYFSDIRS|BIF_NEWDIALOGSTYLE;
     style_classic_browse_plan p=style_classic_plan_browse(flags,FALSE);
     if(p.mode!=STYLE_CLASSIC_BROWSE_REWRITE || p.flags!=BIF_RETURNONLYFSDIRS) return 2;

@@ -6,10 +6,14 @@
 #include "lib-win32/process-hook/startup_hooks.h"
 #include "lib-win32/process-hook/unwind.h"
 #include "lib-win32-style/appearance/win2000/window/frame.h"
+#include "lib-win32-style/appearance/win2000/dialog/find.h"
 #include "lib-win32-style/application/lifecycle/global_window.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
 #include "lib-win32-style/application/dialog/observation.h"
 #include "lib-win32-style/application/dialog/dialog_hook.h"
+#include "lib-win32-style/application/dialog/classic_com_controller.h"
+#include "lib-win32-style/application/dialog/classic_print_contract.h"
+#include "lib-win32-style/application/dialog/print_extended.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/window/window_identity.h"
 #include "lib-win32-style/appearance/win2000/control/control.h"
@@ -80,6 +84,22 @@ static LRESULT CALLBACK dialog_created(int code,WPARAM wp,LPARAM lp)
     if(event)attach_dialog(event->hwnd);
     SetLastError(incoming);return CallNextHookEx(NULL,code,wp,lp);
 }
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT observe_dialog(HRESULT (*show)(void *),void *context)
+{
+    style_dialog_observation scope;
+    process_hook_unwind_scope unwind;
+    DWORD incoming=GetLastError(),error;
+    HRESULT result;
+    if(!style_dialog_observation_begin(&scope,NULL,dialog_created,FALSE))return E_FAIL;
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope);
+    SetLastError(incoming);
+    result=show(context);
+    error=GetLastError();
+    PROCESS_HOOK_UNWIND_END(unwind);
+    SetLastError(error);
+    return result;
+}
+static BOOL com_session_active(void){return TRUE;}
 #define CLASSIC_DIALOG_BEGIN(state,incoming) ((void)(incoming),style_dialog_observation_begin(state,NULL,dialog_created,FALSE))
 #define CLASSIC_DIALOG_PREPARE(state,incoming) ((void)(state),SetLastError(incoming))
 #define CLASSIC_DIALOG_FINISH(state,modal,result,error,fail) do { \
@@ -110,12 +130,17 @@ MESSAGE_HOOK(MessageBoxIndirectA,(const MSGBOXPARAMSA *parameters),(parameters))
 MESSAGE_HOOK(MessageBoxIndirectW,(const MSGBOXPARAMSW *parameters),(parameters))
 
 /* Find and replace create modeless dialogs inside COMDLG32. */
-#define FIND_HOOK(NAME,TYPE) \
-    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),HWND,NULL,TRUE,style_dialog_observation,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_PARAM_FINISH)
-FIND_HOOK(FindTextA,FINDREPLACEA)
-FIND_HOOK(FindTextW,FINDREPLACEW)
-FIND_HOOK(ReplaceTextA,FINDREPLACEA)
-FIND_HOOK(ReplaceTextW,FINDREPLACEW)
+#define CLASSIC_FIND_FINISH(state,modeless,result,error,fail) do { \
+    CLASSIC_PARAM_FINISH(state,modeless,result,error,fail); \
+    if((result) && !(parameters->Flags&(FR_ENABLEHOOK|FR_ENABLETEMPLATE|FR_ENABLETEMPLATEHANDLE))) \
+        win2k_find_compact(result); \
+} while(0)
+#define FIND_HOOK(NAME,TYPE,FINISH) \
+    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),HWND,NULL,TRUE,style_dialog_observation,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,FINISH)
+FIND_HOOK(FindTextA,FINDREPLACEA,CLASSIC_FIND_FINISH)
+FIND_HOOK(FindTextW,FINDREPLACEW,CLASSIC_FIND_FINISH)
+FIND_HOOK(ReplaceTextA,FINDREPLACEA,CLASSIC_PARAM_FINISH)
+FIND_HOOK(ReplaceTextW,FINDREPLACEW,CLASSIC_PARAM_FINISH)
 
 /* Common dialogs can create their window without exported dialog calls. */
 #define COMMON_MODAL_HOOK(NAME,TYPE) \
@@ -124,10 +149,44 @@ COMMON_MODAL_HOOK(GetOpenFileNameA,OPENFILENAMEA)
 COMMON_MODAL_HOOK(GetOpenFileNameW,OPENFILENAMEW)
 COMMON_MODAL_HOOK(GetSaveFileNameA,OPENFILENAMEA)
 COMMON_MODAL_HOOK(GetSaveFileNameW,OPENFILENAMEW)
+COMMON_MODAL_HOOK(ChooseFontA,CHOOSEFONTA)
+COMMON_MODAL_HOOK(ChooseFontW,CHOOSEFONTW)
 COMMON_MODAL_HOOK(ChooseColorA,CHOOSECOLORA)
 COMMON_MODAL_HOOK(ChooseColorW,CHOOSECOLORW)
 COMMON_MODAL_HOOK(PageSetupDlgA,PAGESETUPDLGA)
 COMMON_MODAL_HOOK(PageSetupDlgW,PAGESETUPDLGW)
+
+static UINT_PTR CALLBACK print_dialog_hook(HWND window,UINT message,WPARAM a,LPARAM b)
+{(void)window;(void)message;(void)a;(void)b;return 0;}
+#define PRINT_HOOK(NAME,TYPE,SUFFIX) \
+static __typeof__(&NAME) real_##NAME; \
+static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{ style_dialog_observation scope;process_hook_unwind_scope unwind;TYPE native; \
+  BOOL classic=style_classic_print_prepare_##SUFFIX(parameters,&native,STYLE_CLASSIC_PRINT_FLAGS,print_dialog_hook); \
+  DWORD incoming=GetLastError(),error;BOOL result; \
+  if(!style_dialog_observation_begin(&scope,NULL,dialog_created,FALSE))return FALSE; \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); \
+  SetLastError(incoming);result=real_##NAME(classic?&native:parameters);error=GetLastError(); \
+  PROCESS_HOOK_UNWIND_END(unwind); \
+  if(classic)style_classic_print_result_##SUFFIX(parameters,&native); \
+  SetLastError(error);return result; }
+PRINT_HOOK(PrintDlgA,PRINTDLGA,a)
+PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
+#undef PRINT_HOOK
+
+/* Extended requests outside the classic bridge contract retain their property sheet. */
+#define PRINT_EXTENDED_HOOK(NAME,TYPE,BRIDGE,PRINT) \
+static __typeof__(&NAME) real_##NAME; \
+static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
+{ style_dialog_observation scope;process_hook_unwind_scope unwind; \
+  DWORD incoming=GetLastError(),error;HRESULT result; \
+  if(!style_dialog_observation_begin(&scope,NULL,dialog_created,FALSE))return E_FAIL; \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); \
+  SetLastError(incoming);if(!BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
+  error=GetLastError();PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result; }
+PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,style_print_extended_a,real_PrintDlgA)
+PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,style_print_extended_w,real_PrintDlgW)
+#undef PRINT_EXTENDED_HOOK
 
 DWORD ntw2ks_controls_attach_using(DWORD (*attach)(void *,void *))
 {
@@ -148,10 +207,19 @@ DWORD ntw2ks_controls_attach_using(DWORD (*attach)(void *,void *))
     ATTACH_DIALOG(ReplaceTextA);ATTACH_DIALOG(ReplaceTextW);
     ATTACH_DIALOG(GetOpenFileNameA);ATTACH_DIALOG(GetOpenFileNameW);
     ATTACH_DIALOG(GetSaveFileNameA);ATTACH_DIALOG(GetSaveFileNameW);
+    ATTACH_DIALOG(ChooseFontA);ATTACH_DIALOG(ChooseFontW);
     ATTACH_DIALOG(ChooseColorA);ATTACH_DIALOG(ChooseColorW);
+    ATTACH_DIALOG(PrintDlgA);ATTACH_DIALOG(PrintDlgW);
+    ATTACH_DIALOG(PrintDlgExA);ATTACH_DIALOG(PrintDlgExW);
     ATTACH_DIALOG(PageSetupDlgA);ATTACH_DIALOG(PageSetupDlgW);
 #undef ATTACH_DIALOG
-    return error;
+    if(error)return error;
+    const style_classic_com_options com={
+        .session_active=com_session_active,.scope=observe_dialog,
+        .property=L"Win2kStyle.ComDialog",.folder_message=L"Win2kStyle.ComSetFolder",
+        .hidden_message=L"Win2kStyle.HiddenFilesRefresh",.explorer_files=TRUE
+    };
+    return style_classic_com_attach(attach,&com);
 }
 
 DWORD ntw2ks_controls_attach(void)

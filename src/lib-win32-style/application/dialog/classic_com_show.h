@@ -5,7 +5,7 @@
  * this synchronous call; native fallback uses the same styling scope. */
 typedef struct style_classic_com_show_services {
     LPOFNHOOKPROC classic_hook;
-    BOOL experimental_events,experimental_hidden;
+    BOOL experimental_events,experimental_hidden,explorer_files;
     BOOL (*session_active)(void);
     HRESULT (*scope)(HRESULT (*)(void *),void *);
 } style_classic_com_show_services;

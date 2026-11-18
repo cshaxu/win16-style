@@ -93,7 +93,8 @@ static int exercise(BOOL save)
 }
 int main(void)
 {
-    style_classic_com_options options={session,scope,L"Style.Test.Com",L"Style.Test.Folder",L"Style.Test.Hidden",FALSE,FALSE};
+    style_classic_com_options options={.session_active=session,.scope=scope,
+        .property=L"Style.Test.Com",.folder_message=L"Style.Test.Folder",.hidden_message=L"Style.Test.Hidden"};
     CHECK(style_classic_com_attach(NULL,&options)==ERROR_INVALID_PARAMETER && !attaches);
     CHECK(style_classic_com_attach(capture,NULL)==ERROR_INVALID_PARAMETER && !attaches);
     fail_at=2;CHECK(style_classic_com_attach(capture,&options)==ERROR_ACCESS_DENIED && attaches==2);

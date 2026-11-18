@@ -127,7 +127,7 @@ def main():
             assert public == ['Ntw2ksDrawButton', 'Ntw2ksWindowAttach', 'Ntw2ksWindowAttached', 'Ntw2ksWindowRemove']
             assert ordinals == {'Ntw2ksDrawButton': 2, 'Ntw2ksWindowAttach': 3,
                                 'Ntw2ksWindowAttached': 4, 'Ntw2ksWindowRemove': 5} and live == set(range(1, 6))
-            assert {n.lower() for n in imports if not core.system_crt(n)} == {'kernel32.dll', 'user32.dll', 'uxtheme.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll', 'dwmapi.dll', 'msimg32.dll', 'shcore.dll', f'ntwshk{32 if arch == "x86" else 64}.dll'}
+            assert {n.lower() for n in imports if not core.system_crt(n)} == {'kernel32.dll', 'user32.dll', 'uxtheme.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll', 'dwmapi.dll', 'msimg32.dll', 'shcore.dll', 'ole32.dll', 'shell32.dll', f'ntwshk{32 if arch == "x86" else 64}.dll'}
         elif name.startswith('ntwshk'):
             assert minhook_license in raw, 'MinHook/HDE license missing from '+name
             machine, public, imports, digest, ordinals, live = core.inspect(path)

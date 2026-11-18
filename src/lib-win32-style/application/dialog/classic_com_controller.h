@@ -10,6 +10,7 @@ typedef struct style_classic_com_options {
     HRESULT (*scope)(HRESULT (*)(void *),void *);
     PCWSTR property,folder_message,hidden_message;
     BOOL experimental_events,experimental_hidden;
+    BOOL explorer_files;
 } style_classic_com_options;
 DWORD style_classic_com_attach(DWORD (*)(void *,void *),const style_classic_com_options *);
 #endif

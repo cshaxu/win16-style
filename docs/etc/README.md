@@ -317,3 +317,4 @@
 - [WinUI Win2000 外框候选](evidence/t28-s2-winui-frame.json)记录双宽构建、两处发布、实际记事本回归及恢复和取色待办。
 - [WinUI 外框恢复修正版](evidence/t28-s2-restore-delivery.json)记录同包发布、31 项原生回归、DWM 修正对照和实际 UWP 宿主缺失。
 - [WinUI 合成边界恢复交付](evidence/t28-s2-composition-delivery.json)记录同快照八件、真实 WinUI/UWP 和双位宽 Win32 对照。
+- [Windows 2000 公共对话框原版参考](evidence/t28-s3-dialog-reference.json)记录安装盘资源模板、现代模板差异和原生探针基线。

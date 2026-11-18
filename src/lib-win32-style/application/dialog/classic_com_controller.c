@@ -173,6 +173,7 @@ static HRESULT proxy_show(file_proxy *p,HWND owner)
         .scope=configuration.scope,
         .experimental_events=configuration.experimental_events,
         .experimental_hidden=configuration.experimental_hidden,
+        .explorer_files=configuration.explorer_files,
     };
     return style_classic_com_show(p,owner,&services);
 }
