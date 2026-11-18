@@ -226,7 +226,8 @@
     "passed": 182,
     "skipped_client_print_subchecks": 36,
     "evidence": "evidence/t27-s14-runtime.json",
-    "coverage": "focused"
+    "coverage": "focused",
+    "actual_remote": "evidence/t27-s14-remote.json"
   },
   "validation": {
     "physical_keyboard_mouse": "not tested",
@@ -239,8 +240,8 @@
     ]
   },
   "closure": {
-    "S14": "verified locally; remote verification pending",
-    "T27": "open",
+    "S14": "closed after fetched remote audit",
+    "T27": "open; S15 admitted",
     "M0": "fixed"
   }
 }
