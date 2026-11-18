@@ -6,6 +6,7 @@
 #include "scroll.h"
 #include "tab_header.h"
 #include "report_paint.h"
+#include "progress_paint.h"
 #include "lib-win32-style/application/control/combo.h"
 #include "lib-win32-style/application/control/list.h"
 #include "lib-win32-style/application/control/edit.h"
@@ -28,8 +29,9 @@ typedef struct win2k_control {
     style_control_combo combo;
     HWND combo_parent;
     win2k_scroll scroll;
-    style_control_native_state tab;
+    style_control_native_state native;
     BOOL tab_control,header_control;
+    BOOL progress_control,legacy_progress;
     win2k_report_role report;
 } win2k_control;
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
@@ -69,6 +71,7 @@ BOOL win2k_control_supported(HWND window)
     if(!lstrcmpiW(name,WC_HEADERW))return win2k_header_supported(window);
     if(!lstrcmpiW(name,WC_LISTVIEWW))return win2k_listview_supported(window);
     if(!lstrcmpiW(name,WC_TREEVIEWW))return win2k_treeview_supported(window);
+    if(!lstrcmpiW(name,PROGRESS_CLASSW))return win2k_progress_supported(window);
     if(!lstrcmpiW(name,L"SCROLLBAR"))return TRUE;
     if(!lstrcmpiW(name,L"COMBOBOX"))
         return (style&3) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
@@ -125,11 +128,15 @@ static void paint(HWND window,void *context,HDC dc)
 {
     win2k_control *control=context;
     BOOL painted=TRUE;
-    if(control->tab_control){
-        unsigned epoch=control->tab.epoch;
+    if(control->progress_control){
+        style_progress_snapshot snapshot;
+        painted=style_progress_snapshot_read(window,&control->instance,&control->native,win2k_progress_supported,&snapshot) &&
+            win2k_progress_paint(dc,&snapshot,(DWORD)GetWindowLongPtrW(window,GWL_STYLE),&win2k_standard_palette);
+    }else if(control->tab_control){
+        unsigned epoch=control->native.epoch;
         HFONT font=(HFONT)SendMessageW(window,WM_GETFONT,0,0);
-        painted=style_control_native_current(window,&control->instance,&control->tab,epoch) &&
-            win2k_tab_paint(window,dc,font,&control->instance,&control->tab);
+        painted=style_control_native_current(window,&control->instance,&control->native,epoch) &&
+            win2k_tab_paint(window,dc,font,&control->instance,&control->native);
     }else if(control->combo_parent || class_is(window,L"LISTBOX")){
         HWND parent=control->combo_parent?control->combo_parent:GetParent(window);
         win2k_list_paint(window,&control->instance,parent,dc);
@@ -179,17 +186,21 @@ static BOOL control_supported(HWND window,const win2k_control *control)
 static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b)
 {
     win2k_control *control=context;LRESULT result;
-    if(control->tab_control)style_control_native_observe(&control->tab,STYLE_CONTROL_TAB,message);
+    style_control_native_kind kind=control->progress_control?STYLE_CONTROL_PROGRESS:STYLE_CONTROL_TAB;
+    if(control->progress_control || control->tab_control)style_control_native_observe(&control->native,kind,message);
     if(message==WM_NCDESTROY){
         (void)retire(window,control,TRUE);result=DefSubclassProc(window,message,a,b);
     }else if(!control_supported(window,control) ||
         (control->parent_binding.parent && GetParent(window)!=control->parent_binding.parent)){
         result=DefSubclassProc(window,message,a,b);
         if(!control->instance.detached)(void)retire(window,control,FALSE);
-    }else if(control->tab_control){
+    }else if(control->progress_control && (control->legacy_progress || message==WM_NCPAINT || message==WM_PRINT)){
+        const style_control_edit_ops ops={.context=control,.border=edit_border};
+        result=style_control_edit_message(window,&control->instance,&control->state,NULL,message,a,b,&ops);
+    }else if(control->tab_control || control->progress_control){
         const style_control_draw draw={control,render};
-        result=style_control_native_message(window,&control->instance,&control->tab,STYLE_CONTROL_TAB,
-            message,a,b,win2k_tab_supported,&draw);
+        result=style_control_native_message(window,&control->instance,&control->native,kind,message,a,b,
+            control->progress_control?win2k_progress_supported:win2k_tab_supported,&draw);
     }else if(control->header_control){
         result=DefSubclassProc(window,message,a,b);
     }else if(class_is(window,L"SCROLLBAR")){
@@ -292,13 +303,16 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     if(report==WIN2K_REPORT_LIST && !win2k_listview_plain(window)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     if(style_theme_retained(window)){SetLastError(ERROR_BUSY);return FALSE;}
     if(!style_instance_preflight(window,control_proc))return FALSE;
+    BOOL progress=class_is(window,PROGRESS_CLASSW);
+    BOOL legacy=progress && !SendMessageW(window,PBM_GETSTATE,0,0);
     win2k_control *control=calloc(1,sizeof(*control));
     if(!control){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     style_instance_init(&control->instance,control,dispose);
     control->tab_control=class_is(window,WC_TABCONTROLW);
     control->header_control=class_is(window,WC_HEADERW);
+    control->progress_control=progress;control->legacy_progress=legacy;
     control->report=report;
-    style_control_native_init(&control->tab);
+    style_control_native_init(&control->native);
     win2k_scroll_init(&control->scroll,&control->instance);
     control->scroll.controller.resources.list=combo_parent || class_is(window,L"LISTBOX");
     control->scroll.controller.resources.edit=win2k_edit_class(window)==WIN2K_EDIT_STANDARD &&
@@ -306,7 +320,7 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     control->scroll.controller.resources.frame=report || win2k_edit_class(window)==WIN2K_EDIT_NATIVE_CLIENT;
     style_control_state_init(&control->state,NULL);control->native_theme=native_theme;
     control->combo_parent=combo_parent;
-    control->frame_owned=basic_kind(window)==STYLE_CONTROL_SEPARATOR;
+    control->frame_owned=progress || basic_kind(window)==STYLE_CONTROL_SEPARATOR;
     const style_instance_install_ops ops={control,NULL,setup,rollback};
     BOOL result=style_instance_install(&control->instance,window,control_proc,control,&ops);
     if(result)RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);

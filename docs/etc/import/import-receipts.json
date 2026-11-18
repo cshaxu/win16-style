@@ -9753,9 +9753,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "b470e20faa1dcd0229c0c7ea00563d7b73e78118c17f3bc5248afa0fe99e032c"
+      "sha256": "88b22b53426074404c3b11d07c08270a8b9600d5df0506c327896b13fd2b01d3"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -9771,9 +9771,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab/header validation mapping; T27 S9 common selection roles and native draw preparation",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab/header validation mapping; T27 S9 common selection roles and native draw preparation; T27 S10 test mapping",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "6e13ee48f5c9835e5bc254c8abf9019d0b965fa71f4d8b961ea4bd5e9b940aae"
+      "sha256": "fed21fceca452da5687051f02c35759c9b8ba606a25e0d92eff8d24af0cd3262"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/common/paint.c",
@@ -10025,6 +10025,42 @@
       "sha256": "44e4a25639e403dcb4dc1a17d97ba68b5d00f1bf9133741ce43f7350abeab542",
       "disposition": "authored",
       "review": "T27 S9 native report/tree consumer and ownership probe",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/progress_paint.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "36f1ab241b3030e373179b6f3b8477cf548e2186fa31dd236774068c57fed9a0",
+      "disposition": "authored",
+      "review": "T27 S10 classic block/smooth progress painter",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/progress_paint.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "590ee5cecfe8a030294757b6b3749791e1d79d74a447f9aef8972787c6a89c83",
+      "disposition": "authored",
+      "review": "T27 S10 renderer input declaration",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/progress_paint.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "263d728d57757997a16dcdc637dc98d8fd7884938e3147d730a52f7cea706223",
+      "disposition": "authored",
+      "review": "T27 S10 original progress geometry and borrowed DC tests",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/progress.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a14a00a3c4bc504422f8c371df583dcbfa6f460b4c9dfbfc3692a9318412a8bd",
+      "disposition": "authored",
+      "review": "T27 S10 actual profile v5/v6 consumer test",
       "notice": "Project-authored C; no external implementation or artwork imported"
     }
   ]

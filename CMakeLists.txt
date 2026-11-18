@@ -65,6 +65,7 @@ add_library(win2k-control STATIC
   src/lib-win32-style/appearance/win2000/control/tab_paint.c
   src/lib-win32-style/appearance/win2000/control/header_paint.c
   src/lib-win32-style/appearance/win2000/control/report_paint.c
+  src/lib-win32-style/appearance/win2000/control/progress_paint.c
   src/lib-win32-style/appearance/win2000/control/scroll.c
   src/lib-win32-style/appearance/win2000/control/scroll_layout.c
   src/lib-win32-style/appearance/win2000/control/list_combo.c
@@ -528,6 +529,23 @@ if(BUILD_TESTING)
   add_executable(core-win2k-scroll-layout tests/lib-win32-style/appearance/win2000/control/scroll_layout.c)
   target_link_libraries(core-win2k-scroll-layout PRIVATE win2k-control)
   add_test(NAME core/win2k-scroll-layout COMMAND $<TARGET_FILE:core-win2k-scroll-layout>)
+  add_executable(core-win2k-progress-paint tests/lib-win32-style/appearance/win2000/control/progress_paint.c)
+  target_link_libraries(core-win2k-progress-paint PRIVATE win2k-control)
+  add_test(NAME core/win2k-progress-paint COMMAND $<TARGET_FILE:core-win2k-progress-paint>)
+  foreach(target core-win2k-progress core-win2k-progress-v6)
+    add_executable(${target} tests/lib-win32-style/appearance/win2000/control/progress.c)
+    target_compile_definitions(${target} PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    target_link_libraries(${target} PRIVATE user32 gdi32 comctl32)
+    target_link_options(${target} PRIVATE -municode)
+    add_dependencies(${target} ntw2ks)
+    string(REGEX REPLACE "^core-" "" case_name "${target}")
+    add_test(NAME core/${case_name} COMMAND $<TARGET_FILE:${target}> $<TARGET_FILE:ntw2ks>)
+    add_test(NAME core/${case_name}-aware COMMAND $<TARGET_FILE:${target}> $<TARGET_FILE:ntw2ks> aware)
+  endforeach()
+  target_sources(core-win2k-progress-v6 PRIVATE tests/ntw16s-dll/control_extensions.rc)
+  target_include_directories(core-win2k-progress-v6 PRIVATE src)
+  target_compile_definitions(core-win2k-progress-v6 PRIVATE WIN2K_PROGRESS_V6)
+  target_link_options(core-win2k-progress-v6 PRIVATE ${explicit_manifest_options})
   add_executable(core-win2k-scroll tests/lib-win32-style/appearance/win2000/control/scroll.c)
   target_compile_definitions(core-win2k-scroll PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-win2k-scroll PRIVATE user32 gdi32)
