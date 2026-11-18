@@ -6296,7 +6296,7 @@
       "path": "tests/lib-win32-style/appearance/win2000/window/frame_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c5b2a64786cd2927f6f1af939e878e99e4fc5ae2757e0d5131bb817c933d6f73",
+      "sha256": "8c779a482aa03cad04b30515573de4adeefed4a3ed1db7c9bc41df0a42e84f43",
       "disposition": "authored",
       "review": "T25 S8 frame lifecycle test; T26 S2 mechanical path/include relocation; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored C; no external source or artwork copied"

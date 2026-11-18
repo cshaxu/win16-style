@@ -1,6 +1,21 @@
 {
   "task": "M0 T28 S2",
   "stage": "published-and-verified-on-remote",
+  "win32_lifecycle_followup": {
+    "package": "Same eight artifacts as the P1 release. No product source or binary changed.",
+    "root_cause": "On the DPI-unaware RDP thread the work area was 320 units wide. The original fixture used a 420-unit requested width and was already clamped to 340. During removal Windows clamped the requested width from 350 back to 340.",
+    "diagnostic_control": "Same x64 DLL, window within the work area. USER32 accepted the 260-unit restored width and the complete client rectangle matched.",
+    "fixture_change": "Center the lifecycle window in the monitor work area and reserve space for the restored non-client frame. All assertions are unchanged.",
+    "incremental_ctest": {"x86": "pass", "x64": "pass"},
+    "published_dll_copy_tests": {
+      "x86": {"coordinator_remove": 0, "direct_remove": 0},
+      "x64": {"coordinator_remove": 0, "direct_remove": 0},
+      "observed_dwm_geometry_repeated_reattached_and_pending": "pass in every run",
+      "environment": "ordinary desktop, same narrow RDP work area; no private desktop fixture"
+    },
+    "combined_applicable_native_cases": {"passed": 33, "total": 33},
+    "new_publication": false
+  },
   "remote_review": {
     "branch": "main",
     "delivery_commit": "737748372eb4a45f6dde3cb8e229bba8463dd128",

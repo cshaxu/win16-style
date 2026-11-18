@@ -83,8 +83,15 @@ int main(int argc,char **argv)
                 before_move.right-before_move.left-10,before_move.bottom-before_move.top-14,SWP_NOZORDER|SWP_NOACTIVATE);
         DwmGetWindowAttribute(baseline,DWMWA_NCRENDERING_ENABLED,&resized_after_move,sizeof(resized_after_move));
         DestroyWindow(baseline);}
+    MONITORINFO monitor={.cbSize=sizeof(monitor)};
+    if(!GetMonitorInfoW(MonitorFromPoint((POINT){0,0},MONITOR_DEFAULTTOPRIMARY),&monitor))return 2;
+    RECT work=monitor.rcWork;
+    /* Leave space for the restored non-client frame even on a narrow desktop. */
+    int width=min(420,work.right-work.left-64),height=min(260,work.bottom-work.top-64);
+    if(width<=0 || height<=0)return 2;
     HWND window=CreateWindowW(cls.lpszClassName,L"Frame lifecycle",WS_OVERLAPPEDWINDOW,
-                              80,80,420,260,NULL,NULL,instance,NULL);
+        work.left+(work.right-work.left-width)/2,work.top+(work.bottom-work.top-height)/2,
+        width,height,NULL,NULL,instance,NULL);
     if(!window)return 2;
     ShowWindow(window,SW_SHOWNOACTIVATE);UpdateWindow(window);
     DwmFlush();
