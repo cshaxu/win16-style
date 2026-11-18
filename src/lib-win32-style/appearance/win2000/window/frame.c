@@ -14,6 +14,8 @@
 #include "lib-win32-style/application/window/frame.h"
 #include "lib-win32-style/application/graphics/bitmap.h"
 #include "lib-win32-style/application/window/window_identity.h"
+#include "lib-win32-style/application/window/window_icon.h"
+#include "lib-win32-style/application/adapters/repaint.h"
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <oleacc.h>
@@ -28,6 +30,8 @@ typedef struct frame_window {
     style_caption_button button;
     style_menu_owner menu;
     win2k_scroll scroll;
+    style_uwp_repaint composed_repaint;
+    BOOL composed_icon_update;
 } frame_window;
 static LRESULT CALLBACK frame_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static frame_window *frame_state(HWND window)
@@ -36,7 +40,7 @@ static frame_window *frame_state(HWND window)
 static int caption_height(HWND window)
 {
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    return MulDiv((GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)?16:19,(int)dpi,96);
+    return win2k_caption_height(dpi,(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0);
 }
 
 /* Preserve the native path for menus needing application-owned rendering. */
@@ -65,6 +69,13 @@ static BOOL compact_enabled(HWND window)
     return !IsIconic(window) && !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL) && compact_menu(window);
 }
 
+static int frame_metric(BOOL sizeable,BOOL horizontal,UINT dpi)
+{
+    int metric=GetSystemMetricsForDpi(sizeable?(horizontal?SM_CXSIZEFRAME:SM_CYSIZEFRAME):
+        (horizontal?SM_CXFIXEDFRAME:SM_CYFIXEDFRAME),dpi);
+    return sizeable?metric+GetSystemMetricsForDpi(SM_CXPADDEDBORDER,dpi):metric;
+}
+
 static int frame_shift(HWND window,BOOL horizontal)
 {
     LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
@@ -79,11 +90,8 @@ static int frame_shift(HWND window,BOOL horizontal)
     }
     SetLastError(error);
     BOOL sizeable=(style&WS_THICKFRAME)!=0;
-    int metric=GetSystemMetricsForDpi(sizeable?(horizontal?SM_CXSIZEFRAME:SM_CYSIZEFRAME):
-        (horizontal?SM_CXFIXEDFRAME:SM_CYFIXEDFRAME),dpi);
-    if(sizeable)metric+=GetSystemMetricsForDpi(SM_CXPADDEDBORDER,dpi);
     int target=max(1,MulDiv(sizeable?4:3,(int)dpi,(int)(horizontal?x:y)));
-    return max(0,metric-target);
+    return max(0,frame_metric(sizeable,horizontal,dpi)-target);
 }
 
 static void offset_menu(HWND window,RECT *rect)
@@ -170,76 +178,13 @@ static void classic_buttons(HWND window,TITLEBARINFOEX *info)
     LONG_PTR ex=GetWindowLongPtrW(window,GWL_EXSTYLE);
     if(ex&WS_EX_LAYOUTRTL)return;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    int width=MulDiv((ex&WS_EX_TOOLWINDOW)?15:16,(int)dpi,96);
-    int height=MulDiv((ex&WS_EX_TOOLWINDOW)?15:14,(int)dpi,96);
-    int gap=MulDiv(2,(int)dpi,96);
-    RECT title=info->rcTitleBar;
-    if(width<=0 || height<=0 || title.bottom-title.top<height)return;
-    RECT result[CCHILDREN_TITLEBAR+1];
-    for(unsigned i=0;i<ARRAYSIZE(result);++i)result[i]=info->rgrect[i];
-    int right=title.right-gap;BOOL close=FALSE;
-    static const unsigned order[]={5,4,3,2};
-    for(unsigned n=0;n<ARRAYSIZE(order);++n){
-        unsigned i=order[n];
-        if((info->rgstate[i]&STATE_SYSTEM_INVISIBLE) || info->rgrect[i].right<=info->rgrect[i].left)continue;
-        if(close){right-=gap;close=FALSE;}
-        if(right-width<title.left)return;
-        result[i]=(RECT){right-width,title.top+(title.bottom-title.top-height)/2,right,title.top+(title.bottom-title.top-height)/2+height};
-        right-=width;if(i==5)close=TRUE;
+    BOOL present[4];RECT bounds[4];
+    for(unsigned i=0;i<ARRAYSIZE(bounds);++i){
+        RECT r=info->rgrect[i+2];
+        present[i]=!(info->rgstate[i+2]&STATE_SYSTEM_INVISIBLE) && r.right>r.left;
     }
-    for(unsigned i=2;i<ARRAYSIZE(result);++i)info->rgrect[i]=result[i];
-}
-
-/* DrawFrameControl uses the host's palette; remap its classic shades locally. */
-static void paint_button(HDC target,const RECT *rect,UINT state)
-{
-    int width=rect->right-rect->left,height=rect->bottom-rect->top;
-    if(width<=0 || height<=0)return;
-    style_bitmap bitmap={0};SIZE size={width,height};
-    if(style_bitmap_ensure(&bitmap,target,size)){
-        HDC memory=bitmap.dc;
-        RECT local={0,0,width,height};
-        if(DrawFrameControl(memory,&local,DFC_CAPTION,state)){
-            static const int indices[]={COLOR_3DFACE,COLOR_3DSHADOW,COLOR_3DDKSHADOW,COLOR_3DLIGHT};
-            static const COLORREF values[]={RGB(212,208,200),RGB(128,128,128),RGB(0,0,0),RGB(212,208,200)};
-            DWORD from[ARRAYSIZE(indices)],to[ARRAYSIZE(indices)];
-            for(unsigned i=0;i<ARRAYSIZE(indices);++i){
-                COLORREF c=GetSysColor(indices[i]),v=values[i];
-                from[i]=(DWORD)GetRValue(c)<<16 | (DWORD)GetGValue(c)<<8 | GetBValue(c);
-                to[i]=(DWORD)GetRValue(v)<<16 | (DWORD)GetGValue(v)<<8 | GetBValue(v);
-            }
-            GdiFlush();DWORD *pixels=(DWORD *)bitmap.pixels;
-            for(int i=0;i<width*height;++i)for(unsigned j=0;j<ARRAYSIZE(indices);++j)
-                if((pixels[i]&0xffffff)==from[j]){pixels[i]=to[j];break;}
-            BitBlt(target,rect->left,rect->top,width,height,memory,0,0,SRCCOPY);
-        }
-    }
-    style_bitmap_dispose(&bitmap);
-}
-
-static void paint_border(HDC dc,int width,int height,int thickness)
-{
-    static const COLORREF colors[]={RGB(212,208,200),RGB(0,0,0),RGB(255,255,255),RGB(128,128,128)};
-    if(thickness>0 && width>2*thickness && height>2*thickness){
-        HBRUSH face=CreateSolidBrush(RGB(212,208,200));
-        if(face){
-            RECT top={0,0,width,thickness},bottom={0,height-thickness,width,height};
-            RECT left={0,thickness,thickness,height-thickness},right={width-thickness,thickness,width,height-thickness};
-            FillRect(dc,&top,face);FillRect(dc,&bottom,face);FillRect(dc,&left,face);FillRect(dc,&right,face);
-            DeleteObject(face);
-        }
-    }
-    for(int inset=0;inset<2;++inset){
-        HBRUSH light=CreateSolidBrush(colors[inset*2]),dark=CreateSolidBrush(colors[inset*2+1]);
-        if(light && dark && width>2*inset && height>2*inset){
-            RECT top={inset,inset,width-inset,inset+1},left={inset,inset+1,inset+1,height-inset};
-            RECT bottom={inset,height-inset-1,width-inset,height-inset},right={width-inset-1,inset,width-inset,height-inset};
-            FillRect(dc,&top,light);FillRect(dc,&left,light);
-            FillRect(dc,&bottom,dark);FillRect(dc,&right,dark);
-        }
-        if(light)DeleteObject(light);
-        if(dark)DeleteObject(dark);
-    }
+    if(win2k_caption_buttons(&info->rcTitleBar,dpi,(ex&WS_EX_TOOLWINDOW)!=0,present,bounds))
+        for(unsigned i=0;i<ARRAYSIZE(bounds);++i)if(present[i])info->rgrect[i+2]=bounds[i];
 }
 
 static BOOL caption_icon_rect(HWND window,const RECT *outer,RECT *icon)
@@ -252,21 +197,6 @@ static BOOL caption_icon_rect(HWND window,const RECT *outer,RECT *icon)
     icon->top=max(icon->top,title.rcTitleBar.top-outer->top);
     icon->bottom=min(icon->bottom,title.rcTitleBar.bottom-outer->top);
     return icon->right>icon->left && icon->bottom>icon->top;
-}
-
-static void paint_caption_icon(HWND window,HDC dc,const RECT *icon)
-{
-    HICON image=(HICON)SendMessageW(window,WM_GETICON,ICON_SMALL2,0);
-    if(!image)image=(HICON)SendMessageW(window,WM_GETICON,ICON_SMALL,0);
-    if(!image)image=(HICON)SendMessageW(window,WM_GETICON,ICON_BIG,0);
-    if(!image)image=(HICON)GetClassLongPtrW(window,GCLP_HICONSM);
-    if(!image)image=(HICON)GetClassLongPtrW(window,GCLP_HICON);
-    if(!image)image=LoadIconW(NULL,IDI_WINLOGO);
-    UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    int width=min(icon->right-icon->left,GetSystemMetricsForDpi(SM_CXSMICON,dpi));
-    int height=min(icon->bottom-icon->top,GetSystemMetricsForDpi(SM_CYSMICON,dpi));
-    if(image && width>0 && height>0)DrawIconEx(dc,icon->left+(icon->right-icon->left-width)/2,
-        icon->top+(icon->bottom-icon->top-height)/2,image,width,height,0,NULL,DI_NORMAL);
 }
 
 static void paint(HWND window)
@@ -287,69 +217,37 @@ static void paint(HWND window)
     int width=outer.right-outer.left,height=outer.bottom-outer.top;
     if(caption.left<0 || caption.top<0 || caption.right>width || caption.bottom>height)goto done;
     HDC dc=GetWindowDC(window);if(!dc)goto done;
-    BOOL active=frame->native.active;
-    win2k_caption_colors colors=active?
-        (win2k_caption_colors){RGB(0,0,128),RGB(166,202,240),RGB(255,255,255),TRUE}:
-        (win2k_caption_colors){RGB(128,128,128),RGB(181,181,181),RGB(192,192,192),TRUE};
-    int saved=SaveDC(dc);
-    if(saved){
+    BOOL maximized=IsZoomed(window);
+    if(!maximized){
+        int border_saved=SaveDC(dc);MENUBARINFO system={.cbSize=sizeof(system)};
+        if(border_saved && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
+            RECT icon=system.rcBar;OffsetRect(&icon,-outer.left-frame_shift(window,TRUE),-outer.top-frame_shift(window,FALSE));
+            ExcludeClipRect(dc,icon.left,icon.top,icon.right,icon.bottom);
+        }
+        win2k_window_border_paint(dc,width,height,caption.top);
+        if(border_saved)RestoreDC(dc,border_saved);
+    }
+    paint_menu(window,dc,&outer);
+    GetWindowTextW(window,title,ARRAYSIZE(title));
+    HICON image=has_icon && !frame->instance.detached?style_window_caption_icon(window):NULL;
+    if(!frame->instance.detached){
+        win2k_caption_layout layout={.band=caption,.icon=has_icon?icon:(RECT){0}};
+        UINT flags[WIN2K_CAPTION_PARTS]={0};
+        for(unsigned i=0;i<WIN2K_CAPTION_PARTS;++i){
+            unsigned index=i+2;
+            if(info.rgstate[index]&STATE_SYSTEM_INVISIBLE)continue;
+            layout.buttons[i]=info.rgrect[index];
+            OffsetRect(&layout.buttons[i],-outer.left,-outer.top);
+            if(info.rgstate[index]&STATE_SYSTEM_UNAVAILABLE)flags[i]|=DFCS_INACTIVE;
+            if(((unsigned)frame->button.pressed==index && frame->button.hot) ||
+               (info.rgstate[index]&STATE_SYSTEM_PRESSED))flags[i]|=DFCS_PUSHED;
+        }
         UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-        int separator_height=max(1,MulDiv(1,(int)dpi,96));
-        if(caption.bottom-caption.top>separator_height){
-            RECT separator=caption;separator.top=separator.bottom-separator_height;
-            HBRUSH face=CreateSolidBrush(RGB(212,208,200));
-            if(face){FillRect(dc,&separator,face);DeleteObject(face);}
-            caption.bottom-=separator_height;
-        }
-        for(unsigned i=2;i<CCHILDREN_TITLEBAR+1;++i){
-            RECT r=info.rgrect[i];OffsetRect(&r,-outer.left,-outer.top);
-            if(r.right>r.left && r.bottom>r.top)ExcludeClipRect(dc,r.left,r.top,r.right,r.bottom);
-        }
-        GetWindowTextW(window,title,ARRAYSIZE(title));
-        RECT gradient=caption;
-        for(unsigned i=2;i<CCHILDREN_TITLEBAR+1;++i){
-            RECT r=info.rgrect[i];OffsetRect(&r,-outer.left,-outer.top);
-            if(r.left>gradient.left && r.left<gradient.right && r.right>r.left &&
-               !(info.rgstate[i]&STATE_SYSTEM_INVISIBLE))gradient.right=r.left;
-        }
         BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
-        int font_height=tool?MulDiv(8,(int)dpi,96):MulDiv(8,(int)dpi,72);
-        HFONT owned_font=CreateFontW(-font_height,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,
-            DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
-        HFONT font=owned_font?owned_font:(HFONT)GetStockObject(DEFAULT_GUI_FONT);
-        if(gradient.right>gradient.left)win2k_caption_paint(dc,&gradient,L"",font,&colors);
-        RECT tail=caption;tail.left=gradient.right;
-        win2k_caption_colors solid=colors;solid.left=colors.right;solid.gradient=FALSE;
-        if(tail.right>tail.left)win2k_caption_paint(dc,&tail,L"",font,&solid);
-        RECT text=gradient;text.left=has_icon?max(text.left,icon.right)+2:text.left+2;
-        if(text.right>text.left){
-            SetBkMode(dc,TRANSPARENT);SetTextColor(dc,colors.text);SelectObject(dc,font);
-            DrawTextW(dc,title,-1,&text,DT_SINGLELINE|DT_VCENTER|DT_END_ELLIPSIS|DT_NOPREFIX);
-        }
-        RestoreDC(dc,saved);
-        if(owned_font)DeleteObject(owned_font);
-        if(!IsZoomed(window)){
-            int border_saved=SaveDC(dc);MENUBARINFO system={.cbSize=sizeof(system)};
-            if(border_saved && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
-                RECT icon=system.rcBar;OffsetRect(&icon,-outer.left-frame_shift(window,TRUE),-outer.top-frame_shift(window,FALSE));
-                ExcludeClipRect(dc,icon.left,icon.top,icon.right,icon.bottom);
-            }
-            paint_border(dc,width,height,caption.top);
-            if(border_saved)RestoreDC(dc,border_saved);
-        }
-        paint_menu(window,dc,&outer);
-        if(has_icon)paint_caption_icon(window,dc,&icon);
-        static const UINT buttons[]={0,0,DFCS_CAPTIONMIN,DFCS_CAPTIONMAX,DFCS_CAPTIONHELP,DFCS_CAPTIONCLOSE};
-        for(unsigned i=2;i<CCHILDREN_TITLEBAR+1;++i){
-            RECT r=info.rgrect[i];OffsetRect(&r,-outer.left,-outer.top);
-            if(r.right<=r.left || r.bottom<=r.top || (info.rgstate[i]&STATE_SYSTEM_INVISIBLE))continue;
-            UINT state=buttons[i];
-            if(i==3 && IsZoomed(window))state=DFCS_CAPTIONRESTORE;
-            if(info.rgstate[i]&STATE_SYSTEM_UNAVAILABLE)state|=DFCS_INACTIVE;
-            style_caption_button *tracked=&frame->button;
-            if(((unsigned)tracked->pressed==i && tracked->hot) || (info.rgstate[i]&STATE_SYSTEM_PRESSED))state|=DFCS_PUSHED;
-            paint_button(dc,&r,state);
-        }
+        HFONT font=win2k_caption_font(dpi,tool);
+        win2k_caption_render(dc,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
+                             dpi,frame->native.active,maximized,flags);
+        if(font)DeleteObject(font);
     }
     ReleaseDC(window,dc);
 done:
@@ -421,9 +319,41 @@ static void recalculate_frame(HWND window)
     if(IsWindow(window))RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN);
 }
 
+static void repaint_retain(void *context)
+{style_instance_retain(&((frame_window *)context)->instance);}
+static void repaint_release(void *context)
+{style_instance_release(&((frame_window *)context)->instance);}
+static void repaint_activate(HWND window,void *context)
+{
+    frame_window *frame=context;
+    if(style_native_frame_take_refresh(&frame->native))recalculate_frame(window);
+}
+static const style_uwp_repaint_services repaint_services={repaint_retain,repaint_release,repaint_activate};
+
+static void refresh_frame(HWND window,frame_window *frame)
+{
+    style_uwp_repaint *repaint=&frame->composed_repaint;
+    if(!frame->native.refresh_pending || repaint->waiting)return;
+    if(style_frame_xaml_bridge(window,FALSE) && !style_frame_xaml_bridge(window,TRUE)){
+        repaint->waiting=TRUE;
+        repaint->deadline=GetTickCount64()+2000;
+        if(style_uwp_repaint_queue(window,repaint,&frame->instance.detached,frame,&repaint_services))return;
+        repaint->waiting=FALSE;
+    }
+    if(!frame->instance.detached)repaint_activate(window,frame);
+}
+
 static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_instance *instance)
 {
     DWORD incoming=GetLastError();frame_window *frame=(frame_window *)instance;
+    if(frame->composed_icon_update &&
+       (message==WM_STYLECHANGING || message==WM_STYLECHANGED || message==WM_NCPAINT || message==WM_NCCALCSIZE))
+        return DefSubclassProc(window,message,wp,lp);
+    if(message==WM_SETICON){
+        LRESULT icon_result=0;
+        if(style_frame_xaml_icon(window,message,wp,lp,&frame->composed_icon_update,&instance->detached,&icon_result))
+            return icon_result;
+    }
     if(!(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL)){
         const style_scroll_ops scroll=win2k_scroll_operations(&frame->scroll);
         if(style_scroll_embedded_input(window,instance,NULL,&frame->scroll.controller,&scroll,message,wp,lp)){
@@ -457,7 +387,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
             SetLastError(error);return 0;}
     }
     if(message && message==((frame_window *)instance)->native.refresh_message){
-        if(style_native_frame_take_refresh(&((frame_window *)instance)->native))recalculate_frame(window);
+        refresh_frame(window,frame);
         SetLastError(incoming);return 0;
     }
     if((message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONDBLCLK) && wp==HTBORDER && compact_enabled(window)){
@@ -485,25 +415,43 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
     }else if(message==WM_NCMOUSELEAVE){((frame_window *)instance)->native.hover=0;repaint=TRUE;}
     if(message==WM_NCDESTROY){
         RemovePropW(window,frame_property);
+        style_uwp_repaint_cancel(&frame->composed_repaint);
         if(style_instance_detach(instance))win2k_scroll_retire(window,&frame->scroll,TRUE);
     }
+    RECT *calculated=message==WM_NCCALCSIZE && lp?
+        (wp?&((NCCALCSIZE_PARAMS *)lp)->rgrc[0]:(RECT *)lp):NULL;
+    LONG proposed_top=calculated?calculated->top:0;
     SetLastError(incoming);
     LRESULT result=DefSubclassProc(window,message,wp,lp);
     DWORD outcome=GetLastError();
     if(instance->detached){SetLastError(outcome);return result;}
-    if(message==WM_SHOWWINDOW && wp && IsWindow(window) && style_native_frame_take_refresh(&((frame_window *)instance)->native))recalculate_frame(window);
-    if(message==WM_NCCALCSIZE && lp && compact_enabled(window) &&
+    if(message==WM_SHOWWINDOW && IsWindow(window)){
+        if(wp)refresh_frame(window,frame);
+        else style_uwp_repaint_cancel(&frame->composed_repaint);
+    }
+    if(!instance->detached && message==WM_ERASEBKGND && !frame->composed_repaint.repainting &&
+       !frame->composed_repaint.pending && style_frame_xaml_bridge(window,FALSE))
+        (void)style_uwp_repaint_queue(window,&frame->composed_repaint,&instance->detached,frame,&repaint_services);
+    if(instance->detached){SetLastError(outcome);return result;}
+    if(calculated && compact_enabled(window) &&
        (GetWindowLongPtrW(window,GWL_STYLE)&WS_CAPTION)==WS_CAPTION &&
        !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL)){
         UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
         int metric=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)?SM_CYSMCAPTION:SM_CYCAPTION;
         int difference=GetSystemMetricsForDpi(metric,dpi)-caption_height(window);
-        RECT *client=wp?&((NCCALCSIZE_PARAMS *)lp)->rgrc[0]:(RECT *)lp;
         int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
-        if(difference>0 || dx || dy){
-            client->left-=dx;client->right+=dx;client->top-=max(0,difference)+dy;client->bottom+=dy;
-            result=style_frame_set_client(wp,lp,client,result);
+        RECT client=*calculated;
+        if(style_frame_xaml_bridge(window,FALSE)){
+            /* Extended client applications can return the whole window here. Reserve
+             * only the caption row and let the application lay out its children. */
+            frame->native.keep_outer=TRUE;
+            BOOL sizeable=(GetWindowLongPtrW(window,GWL_STYLE)&WS_THICKFRAME)!=0;
+            LONG caption_end=proposed_top+frame_metric(sizeable,FALSE,dpi)-dy+caption_height(window);
+            if(caption_end<client.bottom)client.top=max(client.top,caption_end);
+        }else{
+            client.left-=dx;client.right+=dx;client.top-=max(0,difference)+dy;client.bottom+=dy;
         }
+        if(!EqualRect(calculated,&client))result=style_frame_set_client(wp,lp,&client,result);
     }
     if(message==WM_GETTITLEBARINFOEX && lp){
         style_caption_button *tracked=&((frame_window *)instance)->button;
@@ -657,11 +605,20 @@ BOOL win2k_frame_remove(HWND window)
 
     RemovePropW(window,frame_property);
     frame_window *frame=(frame_window *)instance;
+    style_uwp_repaint_cancel(&frame->composed_repaint);
     win2k_scroll_retire(window,&frame->scroll,TRUE);
     if(frame->menu.bar.keyboard){const style_menu_bar_target menu=menu_target(window,frame);style_menu_bar_finish(&menu,TRUE);}
     style_menu_owner_stop(&frame->menu);
     HRESULT status=style_native_frame_restore_policy(window,&frame->native,DwmSetWindowAttribute);
     if(FAILED(status)){style_instance_release(instance);SetLastError(HRESULT_CODE(status));return FALSE;}
     style_native_frame_restore_geometry(window,&frame->native,&client,normal);
+    BOOL enabled=FALSE;
+    if(frame->native.saved && frame->native.policy==DWMNCRP_ENABLED &&
+       IsWindow(window) && !frame_state(window) &&
+       SUCCEEDED(DwmGetWindowAttribute(window,DWMWA_NCRENDERING_ENABLED,&enabled,sizeof(enabled))) && !enabled){
+        /* A classic nonclient paint can leave USER's theme state cached after
+         * DWM accepts the original policy. Refresh only the detached window. */
+        SendMessageW(window,WM_THEMECHANGED,0,0);
+    }
     style_instance_release(instance);return TRUE;
 }

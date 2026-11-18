@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 static BOOL enabled=TRUE,fail_get,fail_set,detached;
+static BOOL discarded_frame_pixels;
 static unsigned get_calls,set_calls,changed;
 static DWORD policy;
 static style_native_frame *queued_state;
@@ -24,6 +25,9 @@ static HRESULT WINAPI set(HWND window,DWORD attribute,LPCVOID value,DWORD size)
 static LRESULT CALLBACK procedure(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
     if(queued_state && message==queued_state->refresh_message && style_native_frame_take_refresh(queued_state))++refreshes;
+    if(message==WM_WINDOWPOSCHANGING &&
+       (((const WINDOWPOS *)lp)->flags&(SWP_FRAMECHANGED|SWP_NOCOPYBITS))==(SWP_FRAMECHANGED|SWP_NOCOPYBITS))
+        discarded_frame_pixels=TRUE;
     if(message==WM_WINDOWPOSCHANGED)++changed;
     return DefWindowProcW(window,message,wp,lp);
 }
@@ -69,14 +73,15 @@ int main(void)
     RECT outer,after;GetWindowRect(window,&outer);
     style_native_frame_restore_geometry(window,&state,NULL,TRUE);
     GetWindowRect(window,&after);
-    if(!EqualRect(&outer,&after) || changed==before){result=14;goto done;}
+    if(!EqualRect(&outer,&after) || changed==before || !discarded_frame_pixels){result=14;goto done;}
+    MSG message;
+    if(!PeekMessageW(&message,window,WM_DWMCOMPOSITIONCHANGED,WM_DWMCOMPOSITIONCHANGED,PM_REMOVE)){result=19;goto done;}
     queued_state=&state;
     UINT refresh=RegisterWindowMessageW(L"NativeFrameStateTest.Refresh");
     if(!refresh){result=16;goto done;}
     style_native_frame_queue(&state,window,0);
     if(state.refresh_pending){result=17;goto done;}
     style_native_frame_queue(&state,window,refresh);style_native_frame_queue(&state,window,refresh);
-    MSG message;
     while(PeekMessageW(&message,window,refresh,refresh,PM_REMOVE))DispatchMessageW(&message);
     if(refreshes!=1 || state.refresh_pending || state.refresh_message!=refresh){result=18;goto done;}
     queued_state=NULL;

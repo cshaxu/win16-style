@@ -35,6 +35,8 @@ Luna、Aero 是后续呈现实现，不建立空目录宣称支持。
 
 application 定义契约，appearance 实现契约。access/application 不包含年代或产品私有头；各年代不互相依赖。框架适配器接受实际风格的几何和呈现操作，不为每种风格复制宿主生命周期。
 
+标题栏绘制接收已解析的标题、图标、字体、按钮状态和目标 DC。Win32、UWP 和 WinUI 的适配入口负责窗口查询、回调重入、坐标及最终提交。风格绘制不得向 HWND 查询标题、图标或窗口状态。Win32 的非客户区 DC 和现代宿主的合成表面可有不同的 DPI 与提交方式，验收须核对最终屏幕输出。
+
 公共组件拥有共同状态与完整事务，产品或年代提供真实策略。不得接收 Win16 私有结构后用大量回调逐字段读取，也不为每次 SaveDC 或颜色选择制造空包装。局部绘制资源由实际绘制操作就地结算。
 
 ## 接入与生命周期
@@ -65,7 +67,7 @@ application 定义契约，appearance 实现契约。access/application 不包�
 
 COM 配置字符串、回调代码和模块引用覆盖 factory/proxy/hook 存活期；应用原 hook/template、多选与扩展参数按既有回退策略处理。控制器复用调用者提供的 patch 后端，不再创建第二套实现。
 
-`application/adapters/frame` 嵌入 host/instance，拥有 bitmap、输入/刷新/激活、menu owner 和完整 action 事务。Win3.x 普通/现代外框使用相同年代 renderer；适配器接受几何和呈现，不复制状态或字段指针 view。
+`application/adapters/frame` 嵌入 host/instance，拥有 bitmap、输入/刷新/激活、menu owner 和完整 action 事务。每个年代在 appearance 中定义一套标题栏度量、按钮布局和绘制。Win32 与现代宿主提供有效 DPI、状态和坐标；宿主预留的客户区位置只用于裁剪，不重新决定年代标题栏高度或按钮宽度。
 
 UWP/WinUI 的宿主、表面和标题适配在 application；加载/请求和全局协调在 access。调用者提供 HWND，在所属 GUI 线程操作并持有模块直到所有回调返回。标题动作复制数组、借用标签和上下文；UIA 查询与独立 MTA 调用保持既有线程合同。客户区 XAML、其他框架及真实宿主覆盖以实际验证为准。
 

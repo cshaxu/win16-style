@@ -16,6 +16,6 @@ void win16_control_outline(HDC dc,RECT r,int unit,COLORREF color);
 void win16_control_frame_button(HDC dc,RECT r,int kind,BOOL down,BOOL zoom,BOOL child,int unit,
     const win16_style_palette *palette);
 void win16_control_frame_sizing(HDC dc,const win16_style_layout *layout,const win16_style_palette *palette);
-void win16_control_frame_caption(HWND window,HDC dc,const win16_style_layout *layout,const win16_style_palette *palette,
-    void *context,win16_frame_state_read);
+void win16_control_frame_caption(HDC dc,const win16_style_layout *layout,const win16_style_palette *palette,
+    const win16_frame_paint_state *state,PCWSTR title,BOOL child,BOOL zoomed);
 #endif

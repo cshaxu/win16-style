@@ -1,0 +1,4049 @@
+{
+  "task": "M0 T28 S1 P1",
+  "stage": "fixed release directories rejected the UWP thread hook; prior package restored",
+  "development": {
+    "calculator_cli": "success 144 DPI; owned real ApplicationFrameWindow; maximize, minimize, restore and detach",
+    "scan_aumid": "success in both styles; explicit Win2000 CLI observed with live gradient in one clean sample",
+    "default_legacy": "success on both actual targets",
+    "device": "current console, session 3, no desktop switch",
+    "actual_win2000_calculator_capture": {
+      "width": 638,
+      "height": 885,
+      "sha256": "7faf56ee6b78009b80c9d0780adc5fdf83df5ee567e1ae4ea123f98773127d50",
+      "top_y_6_rgb": {
+        "200": [
+          146,
+          146,
+          146
+        ],
+        "350": [
+          161,
+          161,
+          161
+        ],
+        "500": [
+          175,
+          175,
+          175
+        ]
+      }
+    },
+    "filtered_global_recheck_markers": [
+      "CALC_COMMAND exit=0",
+      "BUTTONS maximize_restore=0 minimize=0 restored=1 surface_visible=1",
+      "REMOVE_AND_GEOMETRY=1",
+      "CALC_COMMAND exit=0",
+      "BUTTONS maximize_restore=1 minimize=1 restored=1 surface_visible=1",
+      "UWP CLASSIC PIXELS visible=1 matched=0 first=202020 second=d9a184",
+      "REMOVE_AND_GEOMETRY=1",
+      "PAIR_TARGET first=37828 second=21980 host1=32296 host2=32296",
+      "PAIR_PRESTYLE error=0",
+      "GLOBAL_UWP_SWITCH old_removed=1 selected=1",
+      "GLOBAL_APPLY admitted=1 idle_error=0 surfaces=1 visible=1",
+      "GLOBAL_STATS queued=0 active=2 failed=0",
+      "PAIR_APPLY both_visible=1 distinct_surfaces=1",
+      "GLOBAL_REMOVE error=0 surface_exists=0",
+      "PAIR_REMOVE second_exists=0",
+      "GLOBAL_STOP_RACE error=0 surfaces=0",
+      "PAIR_STOP_RACE second_surfaces=0",
+      "UWP_GLOBAL_PASS error=0"
+    ],
+    "notes": [
+      "Timing-sensitive after-restore samples sometimes saw transition frames. Stable separate capture shows the expected inactive classic title gradient, caption buttons, unclipped app client and frame.",
+      "Refresh of old probe service object was necessary before evaluating the T28 global callback. Both real owned targets then switched, removed and passed a repeated stop."
+    ]
+  },
+  "coverage_limits": [
+    "Physical input not invoked.",
+    "WinUI desktop hybrids, XAML clients and untested UWP host variants are outside this release.",
+    "Global production manager path exercised with target filter in a native fixture using an active session. Full real tray-driven desktop-wide test remains separate.",
+    "Prior DWM restoration failure for ordinary Win32 is recorded separately."
+  ],
+  "test_only_post_publication_harness": "from pathlib import Path\nimport subprocess,re,sys,json\nscratch=Path(__file__).resolve().parent\nrepo=scratch.parents[2]\nsnapshot=repo/'build/t28-package/s1-uwp-release-01/clean-source'\ntree=snapshot/'build/.ninja/x64'\nsource=(snapshot/'tests/run16s-exe/uwp.c').read_bytes()\nneedle=b'        BOOL appearance=!win2k || (actions && classic_pixels());'\npatched=b'''        BOOL appearance=!win2k;\n        if(win2k && actions){\n            ULONGLONG deadline=GetTickCount64()+1500;\n            do{\n                appearance=classic_pixels();\n                if(appearance)break;\n                MsgWaitForMultipleObjects(0,NULL,FALSE,50,QS_ALLINPUT);\n                MSG pending;\n                while(PeekMessageW(&pending,NULL,0,0,PM_REMOVE)){\n                    TranslateMessage(&pending);\n                    DispatchMessageW(&pending);\n                }\n            }while(GetTickCount64()<deadline);\n        }'''\nassert source.count(needle)==1\nobserved=scratch/'uwp-settled-observer.c'\nobserved.write_bytes(source.replace(needle,patched))\ncommand=subprocess.check_output(['ninja','-t','commands','launch-uwp-live'],cwd=tree,text=True).splitlines()[-1]\nargs=command.split('\"cd . && ',1)[1].removesuffix(' && cd .\"').split()\nassert args[0].endswith('gcc.exe') and '&&' not in args\nfixture=scratch/'uwp-settled-observer.obj'\nsubprocess.run([args[0],'-I',str(snapshot/'src'),'-DUNICODE','-D_UNICODE','-D_WIN32_WINNT=0x0A00',\n                '-DNTW16S_STATIC','-std=c17','-O3','-Wall','-Wextra','-Werror','-c',str(observed),'-o',str(fixture)],check=True)\nargs=[str(fixture) if x=='CMakeFiles/launch-uwp-live.dir/tests/run16s-exe/uwp.c.obj' else\n      str(scratch/'uwp-settled-observer.exe') if x=='launch-uwp-live.exe' else\n      '-Wl,--out-implib,'+str(scratch/'libuwp-settled-observer.dll.a') if x=='-Wl,--out-implib,liblaunch-uwp-live.dll.a' else x for x in args]\nassert str(fixture) in args\nsubprocess.run(args,cwd=tree,check=True)\n\nsource=(snapshot/'tests/ntw16s-dll/uwp/global.c').read_bytes()\nneedle=b'    wcscpy(tail+1,L\"ntw16s64.dll\");'\npatch=b'''    wcscpy(tail+1,L\"ntw16s64.dll\");\n    DWORD override_length=GetEnvironmentVariableW(L\"UWP_TEST_PUBLISHED_DLL\",dll,ARRAYSIZE(dll));\n    if(!override_length || override_length>=ARRAYSIZE(dll))return 2;'''\nassert source.count(needle)==1\nobserved=scratch/'uwp-published-global.c'\nobserved.write_bytes(source.replace(needle,patch))\ncommand=subprocess.check_output(['ninja','-t','commands','core-uwp-global'],cwd=tree,text=True).splitlines()[-1]\nargs=command.split('\"cd . && ',1)[1].removesuffix(' && cd .\"').split()\nassert args[0].endswith('gcc.exe') and '&&' not in args\nfixture=scratch/'uwp-published-global.obj'\nsubprocess.run([args[0],'-I',str(snapshot/'src'),'-DUNICODE','-D_UNICODE','-D_WIN32_WINNT=0x0A00',\n                '-DSTYLE_GLOBAL_MANAGER_TEST','-std=c17','-O3','-Wall','-Wextra','-Werror','-c',str(observed),'-o',str(fixture)],check=True)\nargs=[str(fixture) if x=='CMakeFiles/core-uwp-global.dir/tests/ntw16s-dll/uwp/global.c.obj' else\n      str(scratch/'uwp-published-global.exe') if x=='core-uwp-global.exe' else\n      '-Wl,--out-implib,'+str(scratch/'libuwp-published-global.dll.a') if x=='-Wl,--out-implib,libcore-uwp-global.dll.a' else x for x in args]\nassert str(fixture) in args\nsubprocess.run(args,cwd=tree,check=True)\r\n",
+  "test_only_post_publication_notes": "Both probes compile test-only adapters against the clean test tree. The live visual probe waits for the same pixels on the same restored window. The filtered manager validates exact released O:/winnt modules, avoiding pinned DLLs in disposable scratch.",
+  "source_snapshot_sha256": "400e5d0507b1adc66e523fa21c862042e942376c632ba1b406ce270d088bec7e",
+  "build_result": {
+    "candidate": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-release-01\\candidate",
+    "exit_code": 0,
+    "clean_source": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-release-01\\clean-source",
+    "physical_acceptance": "pending",
+    "full_matrix": "pending",
+    "status": "passed"
+  },
+  "package": {
+    "status": "PACKAGE PASS",
+    "artifacts": {
+      "run16s.exe": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "75e9118ca14a27c312ee52322937ec466e81d950fc5aaf6df4295dcb87aefe1f",
+        "imports": [
+          "advapi32.dll",
+          "dwmapi.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "oleaut32.dll",
+          "shell32.dll",
+          "user32.dll",
+          "ntwshk64.dll"
+        ]
+      },
+      "ntw16s32.dll": {
+        "architecture": "x86",
+        "version": "M0 T28",
+        "sha256": "0ab556d5e8256d511141a6992f96285e5cf504c72a0e8c8ce555b6cd9fb4f54b",
+        "imports": [
+          "ADVAPI32.dll",
+          "COMCTL32.dll",
+          "COMDLG32.DLL",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.DLL",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "ole32.dll",
+          "OLEAUT32.dll",
+          "SHELL32.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk32.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw16s64.dll": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "32429e40e7bbf26b27caba2695eaa38e6bde80bf363d85f9d075848deb13682e",
+        "imports": [
+          "ADVAPI32.dll",
+          "COMCTL32.dll",
+          "comdlg32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "OLEAUT32.dll",
+          "SHELL32.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk64.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw2ks32.dll": {
+        "architecture": "x86",
+        "version": "M0 T28",
+        "sha256": "67b2b4096bc3a3bbe500e9836b8689389c720e5e4115081b107a11577dd787c2",
+        "imports": [
+          "COMCTL32.dll",
+          "COMDLG32.DLL",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.DLL",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "SHCORE.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk32.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw2ks64.dll": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "d9488d89897ae663b221b545923e51b147e7b695611987705dcfd24290ea6f9d",
+        "imports": [
+          "COMCTL32.dll",
+          "comdlg32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.dll",
+          "msvcrt.dll",
+          "SHCORE.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk64.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntwshk32.dll": {
+        "architecture": "x86",
+        "version": "M0 T28",
+        "sha256": "a999a9fbd049cf53a3e6f5fc65dcb61d77c996082d4ef513fb352171890d9c64",
+        "imports": [
+          "ADVAPI32.dll",
+          "KERNEL32.dll",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll"
+        ]
+      },
+      "ntwshk64.dll": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "41554ec3ff6b617c70eea7b11b366cfdd776f04fc8c8c7d5ac5a07e50068b8c8",
+        "imports": [
+          "ADVAPI32.dll",
+          "KERNEL32.dll",
+          "msvcrt.dll"
+        ]
+      },
+      "demo.exe": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "265110b5e1c4b63253a3a37c33703b79d80a50b296b942c9aa2ec04ff3312602",
+        "imports": [
+          "comctl32.dll",
+          "comdlg32.dll",
+          "gdi32.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "shell32.dll",
+          "user32.dll"
+        ]
+      }
+    },
+    "original_resource_tables_per_ntw16s_dll": 18
+  },
+  "publication": {
+    "evidence": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-release-01\\result.json",
+    "skipped": [],
+    "status": "passed",
+    "package": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-release-01\\candidate",
+    "test_status": "pending-post-publication",
+    "test_result": null,
+    "files": [
+      {
+        "expected": "265110b5e1c4b63253a3a37c33703b79d80a50b296b942c9aa2ec04ff3312602",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+        "after": "265110b5e1c4b63253a3a37c33703b79d80a50b296b942c9aa2ec04ff3312602",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-0",
+        "before": "d693b22d3568cef4b5784f405247c2ba98fad49723f10f3bf01df679f45ad3f2"
+      },
+      {
+        "expected": "0ab556d5e8256d511141a6992f96285e5cf504c72a0e8c8ce555b6cd9fb4f54b",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+        "after": "0ab556d5e8256d511141a6992f96285e5cf504c72a0e8c8ce555b6cd9fb4f54b",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-0",
+        "before": "50713ef8181c7e400776784421666855ca3fa1d98c5cd202234ca1156062b791"
+      },
+      {
+        "expected": "32429e40e7bbf26b27caba2695eaa38e6bde80bf363d85f9d075848deb13682e",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+        "after": "32429e40e7bbf26b27caba2695eaa38e6bde80bf363d85f9d075848deb13682e",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-0",
+        "before": "b6a7814c85f7f55a295be73f0f80a58d34d930eb3cf6e169a825e570702fafb7"
+      },
+      {
+        "expected": "67b2b4096bc3a3bbe500e9836b8689389c720e5e4115081b107a11577dd787c2",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks32.dll",
+        "after": "67b2b4096bc3a3bbe500e9836b8689389c720e5e4115081b107a11577dd787c2",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-0",
+        "before": "2f72a46c14b57c3709a01153b29d26f4071a1b23840b63aece21110585741287"
+      },
+      {
+        "expected": "d9488d89897ae663b221b545923e51b147e7b695611987705dcfd24290ea6f9d",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks64.dll",
+        "after": "d9488d89897ae663b221b545923e51b147e7b695611987705dcfd24290ea6f9d",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-0",
+        "before": "4ec45743af1743532045611302d561759d820cc3f3140557855d8fdf94597283"
+      },
+      {
+        "expected": "a999a9fbd049cf53a3e6f5fc65dcb61d77c996082d4ef513fb352171890d9c64",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk32.dll",
+        "after": "a999a9fbd049cf53a3e6f5fc65dcb61d77c996082d4ef513fb352171890d9c64",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-0",
+        "before": "12fb1778dfd19d7c6835898be4dd0288190412ef6fa683fe6d9a3e64df3adea0"
+      },
+      {
+        "expected": "41554ec3ff6b617c70eea7b11b366cfdd776f04fc8c8c7d5ac5a07e50068b8c8",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk64.dll",
+        "after": "41554ec3ff6b617c70eea7b11b366cfdd776f04fc8c8c7d5ac5a07e50068b8c8",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-0",
+        "before": "deda5939f3004287dc1e475eca9ca7c4a6869ca0aad0bfac91971282e80ee858"
+      },
+      {
+        "expected": "75e9118ca14a27c312ee52322937ec466e81d950fc5aaf6df4295dcb87aefe1f",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+        "after": "75e9118ca14a27c312ee52322937ec466e81d950fc5aaf6df4295dcb87aefe1f",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-0",
+        "before": "290cf3d68e33d92f86ed14def864bb33558074b0c2f44fabbe33b2e135e00bd3"
+      },
+      {
+        "expected": "265110b5e1c4b63253a3a37c33703b79d80a50b296b942c9aa2ec04ff3312602",
+        "path": "O:\\winnt\\demo.exe",
+        "after": "265110b5e1c4b63253a3a37c33703b79d80a50b296b942c9aa2ec04ff3312602",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-1",
+        "before": "d693b22d3568cef4b5784f405247c2ba98fad49723f10f3bf01df679f45ad3f2"
+      },
+      {
+        "expected": "0ab556d5e8256d511141a6992f96285e5cf504c72a0e8c8ce555b6cd9fb4f54b",
+        "path": "O:\\winnt\\ntw16s32.dll",
+        "after": "0ab556d5e8256d511141a6992f96285e5cf504c72a0e8c8ce555b6cd9fb4f54b",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-1",
+        "before": "50713ef8181c7e400776784421666855ca3fa1d98c5cd202234ca1156062b791"
+      },
+      {
+        "expected": "32429e40e7bbf26b27caba2695eaa38e6bde80bf363d85f9d075848deb13682e",
+        "path": "O:\\winnt\\ntw16s64.dll",
+        "after": "32429e40e7bbf26b27caba2695eaa38e6bde80bf363d85f9d075848deb13682e",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-1",
+        "before": "b6a7814c85f7f55a295be73f0f80a58d34d930eb3cf6e169a825e570702fafb7"
+      },
+      {
+        "expected": "67b2b4096bc3a3bbe500e9836b8689389c720e5e4115081b107a11577dd787c2",
+        "path": "O:\\winnt\\ntw2ks32.dll",
+        "after": "67b2b4096bc3a3bbe500e9836b8689389c720e5e4115081b107a11577dd787c2",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-1",
+        "before": "2f72a46c14b57c3709a01153b29d26f4071a1b23840b63aece21110585741287"
+      },
+      {
+        "expected": "d9488d89897ae663b221b545923e51b147e7b695611987705dcfd24290ea6f9d",
+        "path": "O:\\winnt\\ntw2ks64.dll",
+        "after": "d9488d89897ae663b221b545923e51b147e7b695611987705dcfd24290ea6f9d",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-1",
+        "before": "4ec45743af1743532045611302d561759d820cc3f3140557855d8fdf94597283"
+      },
+      {
+        "expected": "a999a9fbd049cf53a3e6f5fc65dcb61d77c996082d4ef513fb352171890d9c64",
+        "path": "O:\\winnt\\ntwshk32.dll",
+        "after": "a999a9fbd049cf53a3e6f5fc65dcb61d77c996082d4ef513fb352171890d9c64",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-1",
+        "before": "12fb1778dfd19d7c6835898be4dd0288190412ef6fa683fe6d9a3e64df3adea0"
+      },
+      {
+        "expected": "41554ec3ff6b617c70eea7b11b366cfdd776f04fc8c8c7d5ac5a07e50068b8c8",
+        "path": "O:\\winnt\\ntwshk64.dll",
+        "after": "41554ec3ff6b617c70eea7b11b366cfdd776f04fc8c8c7d5ac5a07e50068b8c8",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-1",
+        "before": "deda5939f3004287dc1e475eca9ca7c4a6869ca0aad0bfac91971282e80ee858"
+      },
+      {
+        "expected": "75e9118ca14a27c312ee52322937ec466e81d950fc5aaf6df4295dcb87aefe1f",
+        "path": "O:\\winnt\\run16s.exe",
+        "after": "75e9118ca14a27c312ee52322937ec466e81d950fc5aaf6df4295dcb87aefe1f",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-publish-01\\before-1",
+        "before": "290cf3d68e33d92f86ed14def864bb33558074b0c2f44fabbe33b2e135e00bd3"
+      }
+    ],
+    "tested_package": null
+  },
+  "actual_package": {
+    "count": 191,
+    "passed": 187,
+    "legacy_client_print_skips": 36,
+    "by_case": [
+      {
+        "name": "uwp-calculator-classic",
+        "passed": false,
+        "exit_code": 1
+      },
+      {
+        "name": "uwp-scan-classic-app",
+        "passed": false,
+        "exit_code": 1
+      },
+      {
+        "name": "uwp-calculator-win16",
+        "passed": false,
+        "exit_code": 1
+      },
+      {
+        "name": "uwp-model-x86",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "uwp-model-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "uwp-filtered-global-live",
+        "passed": false,
+        "exit_code": 1
+      },
+      {
+        "name": "win2k-edit-v6-32-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-edit-v6-startup-64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-sharing",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "plan-selection",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "demo-boundary",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "abi-x86",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-public-button-x32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-32-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-32-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-v6-32-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-v6-32-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-v6-startup-x32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-startup-x32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-theme-x32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win16-to-win2k-theme-x32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win16-visibility-x32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "common-present-x32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-paint-x32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "abi-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-public-button-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-64-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-64-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-v6-64-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-v6-64-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-v6-startup-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-button-startup-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-theme-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win16-to-win2k-theme-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win16-visibility-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "common-present-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-paint-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-staging-x86-x86",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-staging-x86-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-staging-x64-x86",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-staging-x64-x64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "automatic",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "propagation",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "demo-pair",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-32-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-32-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-startup-32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-v6-32-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-v6-32-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-v6-startup-32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-64-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-64-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-startup-64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-v6-64-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-v6-64-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-static-v6-startup-64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "edit-native-protocol-32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-edit-32-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-edit-32-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-edit-startup-32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-edit-v6-32-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-edit-v6-startup-32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "edit-native-protocol-64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-edit-64-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-edit-64-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-edit-startup-64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-edit-v6-64-aware-0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "win2k-edit-v6-64-aware-1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-32-aware0-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-32-aware1-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-32-aware0-hooked1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-v6-32-aware0-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-v6-32-aware1-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-v6-32-aware0-hooked1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "common-list-message-32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-64-aware0-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-64-aware1-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-64-aware0-hooked1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-v6-64-aware0-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-v6-64-aware1-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "list-combo-v6-64-aware0-hooked1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "common-list-message-64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "scroll-32-aware0-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "scroll-32-aware1-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "scroll-32-aware0-hooked1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "scroll-layout-32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "scroll-64-aware0-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "scroll-64-aware1-hooked0",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "scroll-64-aware0-hooked1",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "scroll-layout-64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-v6-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-v6-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-v6-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-v6-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-v6-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "tab-header-v6-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-v6-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-v6-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-v6-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-v6-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-v6-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "report-tree-v6-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-v6-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-v6-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-v6-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-paint-32",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-v6-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-v6-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-v6-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "progress-paint-64",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-v6-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-v6-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-v6-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-v6-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-v6-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-v6-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-v6-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-v6-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "trackbar-v6-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-v6-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-v6-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "updown-v6-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-v6-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-v6-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-v6-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-v6-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-v6-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "bars-v6-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-v6-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-v6-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-v6-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-v6-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-v6-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "dates-v6-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-v6-32-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-v6-32-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-v6-32-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-v6-64-attach",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-v6-64-aware",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "runtime-roles-v6-64-startup",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "demo-win2000",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "global-style-cycle-x86",
+        "passed": true,
+        "exit_code": 0
+      },
+      {
+        "name": "global-style-cycle-x64",
+        "passed": true,
+        "exit_code": 0
+      }
+    ],
+    "failed_and_retried": [
+      {
+        "first": {
+          "name": "uwp-calculator-classic",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-package-01\\uwp-settled-observer.exe",
+            "--command-2k",
+            "O:\\winnt\\run16s.exe"
+          ],
+          "markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS",
+            "UWP CLASSIC PIXELS visible=1 matched=1"
+          ],
+          "seconds": 50,
+          "client_print_subchecks_skipped": [],
+          "exit_code": 1,
+          "missing_markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS",
+            "UWP CLASSIC PIXELS visible=1 matched=1"
+          ],
+          "passed": false,
+          "seconds_actual": 1.1364939000923187,
+          "stdout": "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=10\nACTIVATE error=10 own_pid=12088\nTARGET core=0000000003d60b2c frame=0000000002a50c56 surface=0000000000000000 dpi=144\nUWP_LAUNCH_REAL_FAIL\n",
+          "stderr": "run16s: UWP frame activation failed (126): The specified module could not be found.\n\n\n",
+          "appearance_retries": []
+        },
+        "after": {
+          "name": "uwp-calculator-classic",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-package-01\\uwp-settled-observer.exe",
+            "--command-2k",
+            "O:\\winnt\\run16s.exe"
+          ],
+          "markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS",
+            "UWP CLASSIC PIXELS visible=1 matched=1"
+          ],
+          "seconds": 50,
+          "client_print_subchecks_skipped": [],
+          "exit_code": 1,
+          "missing_markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS",
+            "UWP CLASSIC PIXELS visible=1 matched=1"
+          ],
+          "passed": false,
+          "seconds_actual": 1.2987228999845684,
+          "stdout": "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=10\nACTIVATE error=10 own_pid=15724\nTARGET core=00000000000a02c6 frame=00000000067b02c4 surface=0000000000000000 dpi=144\nUWP_LAUNCH_REAL_FAIL\n",
+          "stderr": "run16s: UWP frame activation failed (126): The specified module could not be found.\n\n\n",
+          "appearance_retries": []
+        }
+      },
+      {
+        "first": {
+          "name": "uwp-scan-classic-app",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-package-01\\uwp-settled-observer.exe",
+            "--app-command-2k",
+            "O:\\winnt\\run16s.exe",
+            "Microsoft.WindowsScan_8wekyb3d8bbwe!App",
+            "ScanApp.exe"
+          ],
+          "markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS",
+            "UWP CLASSIC PIXELS visible=1 matched=1"
+          ],
+          "seconds": 50,
+          "client_print_subchecks_skipped": [],
+          "exit_code": 1,
+          "missing_markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS",
+            "UWP CLASSIC PIXELS visible=1 matched=1"
+          ],
+          "passed": false,
+          "seconds_actual": 0.6646362999454141,
+          "stdout": "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=10\nACTIVATE error=10 own_pid=14352\nTARGET core=000000000d180af4 frame=00000000067c0976 surface=0000000000000000 dpi=144\nUWP_LAUNCH_REAL_FAIL\n",
+          "stderr": "run16s: UWP frame activation failed (126): The specified module could not be found.\n\n\n",
+          "appearance_retries": []
+        },
+        "after": {
+          "name": "uwp-scan-classic-app",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-package-01\\uwp-settled-observer.exe",
+            "--app-command-2k",
+            "O:\\winnt\\run16s.exe",
+            "Microsoft.WindowsScan_8wekyb3d8bbwe!App",
+            "ScanApp.exe"
+          ],
+          "markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS",
+            "UWP CLASSIC PIXELS visible=1 matched=1"
+          ],
+          "seconds": 50,
+          "client_print_subchecks_skipped": [],
+          "exit_code": 1,
+          "missing_markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS",
+            "UWP CLASSIC PIXELS visible=1 matched=1"
+          ],
+          "passed": false,
+          "seconds_actual": 0.885433999937959,
+          "stdout": "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=10\nACTIVATE error=10 own_pid=18936\nTARGET core=0000000000330728 frame=00000000067c02c4 surface=0000000000000000 dpi=144\nUWP_LAUNCH_REAL_FAIL\n",
+          "stderr": "run16s: UWP frame activation failed (126): The specified module could not be found.\n\n\n",
+          "appearance_retries": []
+        }
+      },
+      {
+        "first": {
+          "name": "uwp-calculator-win16",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-package-01\\launch-uwp-live.exe",
+            "--command-api",
+            "O:\\winnt\\run16s.exe"
+          ],
+          "markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS"
+          ],
+          "seconds": 50,
+          "client_print_subchecks_skipped": [],
+          "exit_code": 1,
+          "missing_markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS"
+          ],
+          "passed": false,
+          "seconds_actual": 0.7152731999522075,
+          "stdout": "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=10\nACTIVATE error=10 own_pid=2512\nTARGET core=0000000005360d84 frame=0000000004b60d92 surface=0000000000000000 dpi=144\nUWP_LAUNCH_REAL_FAIL\n",
+          "stderr": "run16s: UWP frame activation failed (126): The specified module could not be found.\n\n\n",
+          "appearance_retries": []
+        },
+        "after": {
+          "name": "uwp-calculator-win16",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-package-01\\launch-uwp-live.exe",
+            "--command-api",
+            "O:\\winnt\\run16s.exe"
+          ],
+          "markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS"
+          ],
+          "seconds": 50,
+          "client_print_subchecks_skipped": [],
+          "exit_code": 1,
+          "missing_markers": [
+            "CALC_COMMAND exit=0",
+            "BUTTONS maximize_restore=1 minimize=1 restored=1",
+            "REMOVE_AND_GEOMETRY=1",
+            "UWP_LAUNCH_REAL_PASS"
+          ],
+          "passed": false,
+          "seconds_actual": 0.849319800036028,
+          "stdout": "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=10\nACTIVATE error=10 own_pid=10896\nTARGET core=00000000002a0730 frame=00000000067d02c4 surface=0000000000000000 dpi=144\nUWP_LAUNCH_REAL_FAIL\n",
+          "stderr": "run16s: UWP frame activation failed (126): The specified module could not be found.\n\n\n",
+          "appearance_retries": []
+        }
+      },
+      {
+        "first": {
+          "name": "uwp-filtered-global-live",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-package-01\\uwp-published-global.exe",
+            "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App",
+            "CalculatorApp.exe",
+            "pair-switch-2k",
+            "Microsoft.WindowsScan_8wekyb3d8bbwe!App",
+            "ScanApp.exe"
+          ],
+          "markers": [
+            "GLOBAL_UWP_SWITCH old_removed=1 selected=1",
+            "PAIR_APPLY both_visible=1 distinct_surfaces=1",
+            "GLOBAL_REMOVE error=0 surface_exists=0",
+            "PAIR_REMOVE second_exists=0",
+            "UWP_GLOBAL_PASS"
+          ],
+          "seconds": 75,
+          "client_print_subchecks_skipped": [],
+          "exit_code": 1,
+          "missing_markers": [
+            "GLOBAL_UWP_SWITCH old_removed=1 selected=1",
+            "PAIR_APPLY both_visible=1 distinct_surfaces=1",
+            "GLOBAL_REMOVE error=0 surface_exists=0",
+            "UWP_GLOBAL_PASS"
+          ],
+          "passed": false,
+          "seconds_actual": 1.1575651000021026,
+          "stdout": "ACTIVATE hr=0 pid=28220\nWINDOW_EVENT event=8018 time=591169828 pid=28220 hwnd=0000000001de0238 root=0000000007ed06fa visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=591169828 pid=28220 hwnd=00000000079a061e root=00000000079a061e visible=0 class=IME\nWINDOW_EVENT event=800f time=591169828 pid=28220 hwnd=0000000001de0238 root=0000000007ed06fa visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8002 time=591169843 pid=28220 hwnd=0000000001de0238 root=0000000007ed06fa visible=1 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=591169859 pid=32296 hwnd=0000000007ed06fa root=0000000007ed06fa visible=1 class=ApplicationFrameWindow\nBEFORE frame=0000000007ed06fa core=0000000001de0238 surfaces=0\nPAIR_TARGET first=28220 second=38480 host1=32296 host2=32296\nPAIR_PRESTYLE error=126\nPAIR_REMOVE second_exists=0\nUWP_GLOBAL_FAIL error=126\n",
+          "stderr": "",
+          "appearance_retries": []
+        },
+        "after": {
+          "name": "uwp-filtered-global-live",
+          "command": [
+            "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-package-01\\uwp-published-global.exe",
+            "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App",
+            "CalculatorApp.exe",
+            "pair-switch-2k",
+            "Microsoft.WindowsScan_8wekyb3d8bbwe!App",
+            "ScanApp.exe"
+          ],
+          "markers": [
+            "GLOBAL_UWP_SWITCH old_removed=1 selected=1",
+            "PAIR_APPLY both_visible=1 distinct_surfaces=1",
+            "GLOBAL_REMOVE error=0 surface_exists=0",
+            "PAIR_REMOVE second_exists=0",
+            "UWP_GLOBAL_PASS"
+          ],
+          "seconds": 75,
+          "client_print_subchecks_skipped": [],
+          "exit_code": 1,
+          "missing_markers": [
+            "GLOBAL_UWP_SWITCH old_removed=1 selected=1",
+            "PAIR_APPLY both_visible=1 distinct_surfaces=1",
+            "GLOBAL_REMOVE error=0 surface_exists=0",
+            "UWP_GLOBAL_PASS"
+          ],
+          "passed": false,
+          "seconds_actual": 1.4797685000812635,
+          "stdout": "ACTIVATE hr=0 pid=33880\nWINDOW_EVENT event=8018 time=591516953 pid=33880 hwnd=0000000000090612 root=00000000067e02c4 visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=591516953 pid=33880 hwnd=0000000000350728 root=0000000000350728 visible=0 class=IME\nWINDOW_EVENT event=800f time=591516953 pid=33880 hwnd=0000000000090612 root=00000000067e02c4 visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8002 time=591516968 pid=33880 hwnd=0000000000090612 root=00000000067e02c4 visible=1 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=591517000 pid=16184 hwnd=00000000067e02c4 root=00000000067e02c4 visible=1 class=ApplicationFrameWindow\nBEFORE frame=00000000067e02c4 core=0000000000090612 surfaces=0\nPAIR_TARGET first=33880 second=23756 host1=16184 host2=16184\nPAIR_PRESTYLE error=126\nPAIR_REMOVE second_exists=0\nUWP_GLOBAL_FAIL error=126\n",
+          "stderr": "",
+          "appearance_retries": []
+        }
+      }
+    ]
+  },
+  "diagnosis": {
+    "native_log": "DIAG TEST O:\\winnt\\ntw16s64.dll\nACTIVATE hr=0 pid=21084\nWINDOW_EVENT event=8018 time=591397703 pid=21084 hwnd=00000000005c0d1c root=000000000d200af4 visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=591397703 pid=21084 hwnd=00000000023206f2 root=00000000023206f2 visible=0 class=IME\nWINDOW_EVENT event=800f time=591397703 pid=21084 hwnd=00000000005c0d1c root=000000000d200af4 visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8002 time=591397703 pid=21084 hwnd=00000000005c0d1c root=000000000d200af4 visible=1 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=591397734 pid=32296 hwnd=000000000d200af4 root=000000000d200af4 visible=1 class=ApplicationFrameWindow\nBEFORE frame=000000000d200af4 core=00000000005c0d1c surfaces=0\nPAIR_TARGET first=21084 second=7928 host1=32296 host2=32296\nDIAG LoadLibraryEx module=00007ff9605a0000 err=126 path=O:\\winnt\\ntw16s64.dll\nDIAG SetWindowsHookEx hook=0000000000000000 err=126\nPAIR_PRESTYLE error=126\nPAIR_REMOVE second_exists=0\nUWP_GLOBAL_FAIL error=126\nDIAG EXIT 1\nDIAG TEST O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll\nACTIVATE hr=0 pid=36944\nWINDOW_EVENT event=8018 time=591398953 pid=36944 hwnd=00000000034706bc root=0000000006560bae visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=591398953 pid=36944 hwnd=00000000029f0dc8 root=00000000029f0dc8 visible=0 class=IME\nWINDOW_EVENT event=800f time=591398953 pid=36944 hwnd=00000000034706bc root=0000000006560bae visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8002 time=591398953 pid=36944 hwnd=00000000034706bc root=0000000006560bae visible=1 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=591398984 pid=32296 hwnd=0000000006560bae root=0000000006560bae visible=1 class=ApplicationFrameWindow\nBEFORE frame=0000000006560bae core=00000000034706bc surfaces=0\nPAIR_TARGET first=36944 second=14092 host1=32296 host2=32296\nDIAG LoadLibraryEx module=00007ff9605a0000 err=126 path=O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll\nDIAG SetWindowsHookEx hook=0000000000000000 err=126\nPAIR_PRESTYLE error=126\nPAIR_REMOVE second_exists=0\nUWP_GLOBAL_FAIL error=126\nDIAG EXIT 1\nDIAG TEST O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll\nACTIVATE hr=0 pid=20268\nWINDOW_EVENT event=8018 time=591400203 pid=20268 hwnd=000000000a230648 root=0000000004600908 visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=591400203 pid=20268 hwnd=0000000005ca0118 root=0000000005ca0118 visible=0 class=IME\nWINDOW_EVENT event=800f time=591400203 pid=20268 hwnd=000000000a230648 root=0000000004600908 visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8002 time=591400203 pid=20268 hwnd=000000000a230648 root=0000000004600908 visible=1 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=591400218 pid=32296 hwnd=0000000004600908 root=0000000004600908 visible=1 class=ApplicationFrameWindow\nBEFORE frame=0000000004600908 core=000000000a230648 surfaces=0\nPAIR_TARGET first=20268 second=5216 host1=32296 host2=32296\nDIAG LoadLibraryEx module=00007ff9504b0000 err=126 path=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll\nDIAG SetWindowsHookEx hook=0000000007510a78 err=0\nDIAG message acknowledgement error=0 property=0000000000000001\nDIAG window request error=0\nPAIR_PRESTYLE error=0\nDIAG LoadLibraryEx module=00007ff9504b0000 err=126 path=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll\nDIAG SetWindowsHookEx hook=0000000007550a78 err=0\nDIAG message acknowledgement error=0 property=0000000000000001\nDIAG window request error=0\nUWP_TARGET_RESULT pid=5216 frame=00000000039808c2 error=0\nDIAG LoadLibraryEx module=00007ff9504b0000 err=126 path=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll\nDIAG SetWindowsHookEx hook=0000000008570992 err=0\nDIAG message acknowledgement error=0 property=0000000000000001\nDIAG window request error=0\nUWP_TARGET_RESULT pid=20268 frame=0000000004600908 error=0\nGLOBAL_UWP_SWITCH old_removed=1 selected=1\nGLOBAL_APPLY admitted=1 idle_error=0 surfaces=1 visible=1\nGLOBAL_STATS queued=0 active=2 failed=0\nPAIR_APPLY both_visible=1 distinct_surfaces=1\nDIAG LoadLibraryEx module=00007ff9504b0000 err=126 path=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll\nDIAG SetWindowsHookEx hook=00000000010e04f8 err=0\nDIAG message acknowledgement error=0 property=0000000000000001\nDIAG window request error=0\nDIAG LoadLibraryEx module=00007ff9504b0000 err=126 path=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll\nDIAG SetWindowsHookEx hook=0000000006210acc err=0\nDIAG message acknowledgement error=0 property=0000000000000001\nDIAG window request error=0\nGLOBAL_REMOVE error=0 surface_exists=0\nPAIR_REMOVE second_exists=0\nDIAG LoadLibraryEx module=00007ff9504b0000 err=126 path=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll\nDIAG SetWindowsHookEx hook=0000000011b8084a err=0\nDIAG message acknowledgement error=0 property=0000000000000001\nDIAG window request error=0\nUWP_TARGET_RESULT pid=5216 frame=00000000039808c2 error=0\nDIAG LoadLibraryEx module=00007ff9504b0000 err=126 path=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll\nDIAG SetWindowsHookEx hook=0000000006230acc err=0\nDIAG message acknowledgement error=0 property=0000000000000001\nDIAG window request error=0\nUWP_TARGET_RESULT pid=20268 frame=0000000004600908 error=0\nDIAG LoadLibraryEx module=00007ff9504b0000 err=126 path=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll\nDIAG SetWindowsHookEx hook=0000000007580a78 err=0\nDIAG message acknowledgement error=0 property=0000000000000001\nDIAG window request error=0\nDIAG LoadLibraryEx module=00007ff9504b0000 err=126 path=O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\ntw16s64.dll\nDIAG SetWindowsHookEx hook=0000000007590a78 err=0\nDIAG message acknowledgement error=0 property=0000000000000001\nDIAG window request error=0\nGLOBAL_STOP_RACE error=0 surfaces=0\nPAIR_STOP_RACE second_surfaces=0\nUWP_GLOBAL_PASS error=0\nDIAG EXIT 0\n",
+    "fixture": "from pathlib import Path\nimport os, subprocess, sys\nscratch=Path(__file__).resolve().parent\nroot=scratch.parents[2]\nsource=root/'build/t28-package/s1-uwp-release-01/clean-source'\ntree=source/'build/.ninja/x64'\ntest=(scratch/'uwp-published-global.obj').resolve()\nassert test.exists()\np=source/'src/lib-win32-style/access/runtime/window_dispatch.c'\ncode=p.read_text(encoding='utf-8')\ncode='#include <stdio.h>\\n'+code\nfor anchor,diagnostic in [\n ('    if(!hook)return error?error:ERROR_PROC_NOT_FOUND;', '    printf(\"DIAG SetWindowsHookEx hook=%p err=%lu\\\\n\",(void*)hook,(unsigned long)error);\\n'),\n ('    if(!module)return GetLastError();','    DWORD logged=GetLastError();printf(\"DIAG LoadLibraryEx module=%p err=%lu path=%ls\\\\n\",(void*)module,(unsigned long)logged,module_path);SetLastError(logged);\\n'),\n ('    if(!UnhookWindowsHookEx(hook) && !error)error=GetLastError();','    printf(\"DIAG window request error=%lu\\\\n\",(unsigned long)error);\\n'),\n ('    RemovePropW(window,property);return error;','    printf(\"DIAG message acknowledgement error=%lu property=%p\\\\n\",(unsigned long)error,(void*)GetPropW(window,property));\\n')]:\n assert code.count(anchor)==1\n code=code.replace(anchor,diagnostic+anchor)\ntest_src=scratch/'uwp-debug-window-dispatch.c'\ntest_src.write_bytes(code.encode())\noutput=scratch/'uwp-debug-window-dispatch.obj'\nlink=subprocess.check_output(['ninja','-t','commands','core-uwp-global'],cwd=tree,text=True).splitlines()[-1]\nargs=link.split('\"cd . && ',1)[1].removesuffix(' && cd .\"').split()\nassert args[0].endswith('gcc.exe') and '&&' not in args\nsubprocess.run([args[0],'-I',str(p.parent),'-I',str(source/'src'),'-DUNICODE','-D_UNICODE','-D_WIN32_WINNT=0x0A00',\n                '-std=c17','-O3','-Wall','-Wextra','-Werror','-c',str(test_src),'-o',str(output)],check=True)\nexe=scratch/'uwp-debug-global.exe'\nargs=[str(test) if a=='CMakeFiles/core-uwp-global.dir/tests/ntw16s-dll/uwp/global.c.obj' else\n      str(exe) if a=='core-uwp-global.exe' else\n      '-Wl,--out-implib,'+str(scratch/'libuwp-debug-global.dll.a') if a=='-Wl,--out-implib,libcore-uwp-global.dll.a' else a for a in args]\nargs.insert(1,str(output))\nsubprocess.run(args,cwd=tree,check=True)\ncalc='Microsoft.WindowsCalculator_8wekyb3d8bbwe!App';scan='Microsoft.WindowsScan_8wekyb3d8bbwe!App'\nenv=os.environ.copy()\nfor folder in (Path('O:/winnt'),root/'assets',root/'build/.ninja/x64'):\n env['UWP_TEST_PUBLISHED_DLL']=str(folder/'ntw16s64.dll')\n print('DIAG TEST',env['UWP_TEST_PUBLISHED_DLL'],flush=True)\n p=subprocess.run([str(exe),calc,'CalculatorApp.exe','pair-switch-2k',scan,'ScanApp.exe'],env=env,timeout=70)\n print('DIAG EXIT',p.returncode,flush=True)\n\n",
+    "process_reset": {
+      "pid": 32296,
+      "exe": "C:WindowsSystem32ApplicationFrameHost.exe",
+      "mapped_development_image": "build/.ninja/x64/ntw16s64.dll",
+      "prior_window": "Realtek Audio Console",
+      "normal_close_attempt": true,
+      "ended_verified_process": true,
+      "retry_still_126": true
+    }
+  },
+  "same_byte_path_control": {
+    "results": [
+      0,
+      0,
+      0
+    ],
+    "test": "$ErrorActionPreference='Stop'\n$dir=$PSScriptRoot\n$stable=(Resolve-Path 'build/.ninja/x64').Path\n$decision=Get-Content 'build/t28-package/s1-uwp-publish-01/result.json' -Raw|ConvertFrom-Json\n$paths=@('run16s.exe','ntw16s64.dll','ntwshk64.dll')\n$backup=(New-Item -ItemType Directory -Path (Join-Path $dir 'stable-previous')).FullName\nforeach($name in $paths){\n    $from=Join-Path 'O:/winnt' $name\n    $target=Join-Path $stable $name\n    $row=$decision.files|Where-Object {$_.path -ieq [IO.Path]::GetFullPath($from)}\n    if(!$row -or (Get-FileHash -LiteralPath $from).Hash -ne $row.expected){throw \"Unverified release module $name\"}\n    Copy-Item -LiteralPath $target -Destination $backup\n    Copy-Item -LiteralPath $from -Destination $target -Force\n    if((Get-FileHash -LiteralPath $target).Hash -ne $row.expected){throw \"Staged comparison hash mismatch: $name\"}\n}\n$env:PATH=\"$stable;$env:PATH\"\n$env:UWP_TEST_PUBLISHED_DLL=Join-Path $stable 'ntw16s64.dll'\n$scan='Microsoft.WindowsScan_8wekyb3d8bbwe!App'\n$calc='Microsoft.WindowsCalculator_8wekyb3d8bbwe!App'\n$probe=Join-Path $dir 'uwp-settled-observer.exe'\n$launcher=Join-Path $stable 'run16s.exe'\n$matrix=@(@($probe,'--command-2k',$launcher),@($probe,'--app-command-2k',$launcher,$scan,'ScanApp.exe'),\n    @((Join-Path $dir 'uwp-debug-global.exe'),$calc,'CalculatorApp.exe','pair-switch-2k',$scan,'ScanApp.exe'))\n# The instrumented dispatcher normally runs all three path options. The compiled executable itself runs one selected path.\n$codes=@(foreach($here in $matrix){python -c \"import subprocess,sys;raise SystemExit(subprocess.run(sys.argv[1:],timeout=65).returncode)\" @here|Out-Host;$LASTEXITCODE})\n@{same_candidate_bytes=$true;results=$codes}|ConvertTo-Json|Set-Content (Join-Path $dir 'path-compare-result.json')\n",
+    "markers": [
+      "BUTTONS maximize_restore=1 minimize=1 restored=1 surface_visible=1",
+      "UWP CLASSIC PIXELS visible=1 matched=0 first=945647 second=d9a184",
+      "UWP CLASSIC PIXELS visible=1 matched=1 first=bd6e5b second=d9a184",
+      "REMOVE_AND_GEOMETRY=1",
+      "UWP_LAUNCH_REAL_PASS",
+      "BUTTONS maximize_restore=1 minimize=1 restored=1 surface_visible=1",
+      "UWP CLASSIC PIXELS visible=1 matched=0 first=925646 second=d9a184",
+      "UWP CLASSIC PIXELS visible=1 matched=1 first=bd6f5b second=d9a184",
+      "REMOVE_AND_GEOMETRY=1",
+      "UWP_LAUNCH_REAL_PASS",
+      "GLOBAL_UWP_SWITCH old_removed=1 selected=1",
+      "PAIR_APPLY both_visible=1 distinct_surfaces=1",
+      "GLOBAL_REMOVE error=0 surface_exists=0",
+      "UWP_GLOBAL_PASS error=0"
+    ]
+  },
+  "restored_t27": {
+    "receipt": {
+      "status": "restored",
+      "files": [
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe",
+          "sha256": "d693b22d3568cef4b5784f405247c2ba98fad49723f10f3bf01df679f45ad3f2"
+        },
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll",
+          "sha256": "50713ef8181c7e400776784421666855ca3fa1d98c5cd202234ca1156062b791"
+        },
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll",
+          "sha256": "b6a7814c85f7f55a295be73f0f80a58d34d930eb3cf6e169a825e570702fafb7"
+        },
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks32.dll",
+          "sha256": "2f72a46c14b57c3709a01153b29d26f4071a1b23840b63aece21110585741287"
+        },
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks64.dll",
+          "sha256": "4ec45743af1743532045611302d561759d820cc3f3140557855d8fdf94597283"
+        },
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk32.dll",
+          "sha256": "12fb1778dfd19d7c6835898be4dd0288190412ef6fa683fe6d9a3e64df3adea0"
+        },
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk64.dll",
+          "sha256": "deda5939f3004287dc1e475eca9ca7c4a6869ca0aad0bfac91971282e80ee858"
+        },
+        {
+          "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe",
+          "sha256": "290cf3d68e33d92f86ed14def864bb33558074b0c2f44fabbe33b2e135e00bd3"
+        },
+        {
+          "path": "O:\\winnt\\demo.exe",
+          "sha256": "d693b22d3568cef4b5784f405247c2ba98fad49723f10f3bf01df679f45ad3f2"
+        },
+        {
+          "path": "O:\\winnt\\ntw16s32.dll",
+          "sha256": "50713ef8181c7e400776784421666855ca3fa1d98c5cd202234ca1156062b791"
+        },
+        {
+          "path": "O:\\winnt\\ntw16s64.dll",
+          "sha256": "b6a7814c85f7f55a295be73f0f80a58d34d930eb3cf6e169a825e570702fafb7"
+        },
+        {
+          "path": "O:\\winnt\\ntw2ks32.dll",
+          "sha256": "2f72a46c14b57c3709a01153b29d26f4071a1b23840b63aece21110585741287"
+        },
+        {
+          "path": "O:\\winnt\\ntw2ks64.dll",
+          "sha256": "4ec45743af1743532045611302d561759d820cc3f3140557855d8fdf94597283"
+        },
+        {
+          "path": "O:\\winnt\\ntwshk32.dll",
+          "sha256": "12fb1778dfd19d7c6835898be4dd0288190412ef6fa683fe6d9a3e64df3adea0"
+        },
+        {
+          "path": "O:\\winnt\\ntwshk64.dll",
+          "sha256": "deda5939f3004287dc1e475eca9ca7c4a6869ca0aad0bfac91971282e80ee858"
+        },
+        {
+          "path": "O:\\winnt\\run16s.exe",
+          "sha256": "290cf3d68e33d92f86ed14def864bb33558074b0c2f44fabbe33b2e135e00bd3"
+        }
+      ]
+    },
+    "live_control": "run16s: UWP frame activation failed (126): The specified module could not be found.\n\n\nDISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=10\nACTIVATE error=10 own_pid=10496\nTARGET core=00000000003d0642 frame=0000000006650566 surface=0000000000000000 dpi=144\nUWP_LAUNCH_REAL_FAIL\n"
+  },
+  "cleanup": {
+    "removed": 488300479,
+    "retained": "s1-uwp-handoff/candidate, eight original clean T28 artifacts plus identity for reuse"
+  },
+  "interaction_followup": {
+    "session": "existing console session 3",
+    "probe_sha256": "a01382bbbf08d2e75f26b32ff2237c6b3ef456a68158bb96b55dd748b786f221",
+    "probe_source_sha256": "01cc34fa8781814b1b71381748f78f45ea8fbbf7f866de411b57e7659a95e2de",
+    "candidate_launch_path": "O:\\repos.hobby\\win16style\\build\\.ninja\\x64\\run16s.exe",
+    "runs": {
+      "calc": {
+        "returncode": 0,
+        "output": "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=0\nACTIVATE error=0 own_pid=6960\nTARGET core=0000000001a208c4 frame=000000000b720800 surface=0000000004d10a6c dpi=144\nFRAME phase=before hwnd=000000000b720800 surface_exists=1\nTITLE hwnd=00000000057b0504 visible=1\nTITLE hwnd=00000000019e07ec visible=0\nBUTTONS maximize_restore=1 minimize=1 restored=1 surface_visible=1\nFRAME phase=restored hwnd=000000000b720800 surface_exists=1\nTITLE hwnd=00000000057b0504 visible=1\nTITLE hwnd=00000000019e07ec visible=0\nUWP CLASSIC PIXELS visible=1 matched=0 first=a05e08 second=d9a184\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6f5b second=d9a184\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6e5b second=d9a184\nUWP CLASSIC INTERACTION resize=1 popup=1 dismissed=1\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6e5b second=d9a184\nREMOVE status=1\nREMOVE_AND_GEOMETRY=1\nUWP_LAUNCH_REAL_PASS\n"
+      },
+      "scan": {
+        "returncode": 0,
+        "output": "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=0\nACTIVATE error=0 own_pid=12184\nTARGET core=000000000c7407fa frame=0000000000af082c surface=00000000046b0dc2 dpi=144\nFRAME phase=before hwnd=0000000000af082c surface_exists=1\nTITLE hwnd=0000000009b908dc visible=1\nTITLE hwnd=0000000003ae0be0 visible=1\nBUTTONS maximize_restore=1 minimize=1 restored=1 surface_visible=1\nFRAME phase=restored hwnd=0000000000af082c surface_exists=1\nTITLE hwnd=0000000009b908dc visible=1\nTITLE hwnd=0000000003ae0be0 visible=1\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6e5b second=d9a184\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6f5b second=d9a184\nUWP CLASSIC INTERACTION resize=1 popup=1 dismissed=1\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6f5b second=d9a184\nREMOVE status=1\nREMOVE_AND_GEOMETRY=1\nUWP_LAUNCH_REAL_PASS\n"
+      },
+      "fixed_t27": {
+        "returncode": 1,
+        "output": "run16s: UWP frame activation failed (126): The specified module could not be found.\n\n\nDISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=10\nACTIVATE error=10 own_pid=32452\nTARGET core=0000000002d80c56 frame=0000000001a007ec surface=0000000000000000 dpi=144\nUWP_LAUNCH_REAL_FAIL\n"
+      }
+    }
+  },
+  "global_package_path_fixture": {
+    "session": "existing console session 3, interactive login started 2026-11-13 09:28:18 PST",
+    "candidate_dll_sha256": "32429e40e7bbf26b27caba2695eaa38e6bde80bf363d85f9d075848deb13682e",
+    "runs": {
+      "wrong_file": {
+        "exit_code": 2,
+        "output": ""
+      },
+      "same_byte_candidate": {
+        "exit_code": 0,
+        "output": "ACTIVATE hr=0 pid=34116\nWINDOW_EVENT event=8018 time=592294296 pid=34116 hwnd=000000000a0408be root=0000000000490616 visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=592294296 pid=34116 hwnd=00000000067701fa root=00000000067701fa visible=0 class=IME\nWINDOW_EVENT event=800f time=592294296 pid=34116 hwnd=000000000a0408be root=0000000000490616 visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8002 time=592294312 pid=34116 hwnd=000000000a0408be root=0000000000490616 visible=1 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=592294328 pid=16184 hwnd=0000000000490616 root=0000000000490616 visible=1 class=ApplicationFrameWindow\nBEFORE frame=0000000000490616 core=000000000a0408be surfaces=0\nPAIR_TARGET first=34116 second=35112 host1=16184 host2=16184\nPAIR_PRESTYLE error=0\nUWP_TARGET_RESULT pid=34116 frame=0000000000490616 error=0\nUWP_TARGET_RESULT pid=35112 frame=000000000140021c error=0\nGLOBAL_UWP_SWITCH old_removed=1 selected=1\nGLOBAL_APPLY admitted=1 idle_error=0 surfaces=1 visible=1\nGLOBAL_STATS queued=0 active=2 failed=0\nPAIR_APPLY both_visible=1 distinct_surfaces=1\nGLOBAL_REMOVE error=0 surface_exists=0\nPAIR_REMOVE second_exists=0\nUWP_TARGET_RESULT pid=34116 frame=0000000000490616 error=0\nUWP_TARGET_RESULT pid=35112 frame=000000000140021c error=0\nGLOBAL_STOP_RACE error=0 surfaces=0\nPAIR_STOP_RACE second_surfaces=0\nUWP_GLOBAL_PASS error=0\n"
+      }
+    }
+  },
+  "owner_preview": {
+    "status": "published for manual verification",
+    "scope": "owner preview",
+    "destination": "O:\\winnt",
+    "source": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-uwp-handoff\\candidate",
+    "backup": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-owner-preview-20261117-224801",
+    "files": [
+      {
+        "name": "demo.exe",
+        "path": "O:\\winnt\\demo.exe",
+        "before": "d693b22d3568cef4b5784f405247c2ba98fad49723f10f3bf01df679f45ad3f2",
+        "expected": "265110b5e1c4b63253a3a37c33703b79d80a50b296b942c9aa2ec04ff3312602",
+        "after": "265110b5e1c4b63253a3a37c33703b79d80a50b296b942c9aa2ec04ff3312602"
+      },
+      {
+        "name": "ntw16s32.dll",
+        "path": "O:\\winnt\\ntw16s32.dll",
+        "before": "50713ef8181c7e400776784421666855ca3fa1d98c5cd202234ca1156062b791",
+        "expected": "0ab556d5e8256d511141a6992f96285e5cf504c72a0e8c8ce555b6cd9fb4f54b",
+        "after": "0ab556d5e8256d511141a6992f96285e5cf504c72a0e8c8ce555b6cd9fb4f54b"
+      },
+      {
+        "name": "ntw16s64.dll",
+        "path": "O:\\winnt\\ntw16s64.dll",
+        "before": "b6a7814c85f7f55a295be73f0f80a58d34d930eb3cf6e169a825e570702fafb7",
+        "expected": "32429e40e7bbf26b27caba2695eaa38e6bde80bf363d85f9d075848deb13682e",
+        "after": "32429e40e7bbf26b27caba2695eaa38e6bde80bf363d85f9d075848deb13682e"
+      },
+      {
+        "name": "ntw2ks32.dll",
+        "path": "O:\\winnt\\ntw2ks32.dll",
+        "before": "2f72a46c14b57c3709a01153b29d26f4071a1b23840b63aece21110585741287",
+        "expected": "67b2b4096bc3a3bbe500e9836b8689389c720e5e4115081b107a11577dd787c2",
+        "after": "67b2b4096bc3a3bbe500e9836b8689389c720e5e4115081b107a11577dd787c2"
+      },
+      {
+        "name": "ntw2ks64.dll",
+        "path": "O:\\winnt\\ntw2ks64.dll",
+        "before": "4ec45743af1743532045611302d561759d820cc3f3140557855d8fdf94597283",
+        "expected": "d9488d89897ae663b221b545923e51b147e7b695611987705dcfd24290ea6f9d",
+        "after": "d9488d89897ae663b221b545923e51b147e7b695611987705dcfd24290ea6f9d"
+      },
+      {
+        "name": "ntwshk32.dll",
+        "path": "O:\\winnt\\ntwshk32.dll",
+        "before": "12fb1778dfd19d7c6835898be4dd0288190412ef6fa683fe6d9a3e64df3adea0",
+        "expected": "a999a9fbd049cf53a3e6f5fc65dcb61d77c996082d4ef513fb352171890d9c64",
+        "after": "a999a9fbd049cf53a3e6f5fc65dcb61d77c996082d4ef513fb352171890d9c64"
+      },
+      {
+        "name": "ntwshk64.dll",
+        "path": "O:\\winnt\\ntwshk64.dll",
+        "before": "deda5939f3004287dc1e475eca9ca7c4a6869ca0aad0bfac91971282e80ee858",
+        "expected": "41554ec3ff6b617c70eea7b11b366cfdd776f04fc8c8c7d5ac5a07e50068b8c8",
+        "after": "41554ec3ff6b617c70eea7b11b366cfdd776f04fc8c8c7d5ac5a07e50068b8c8"
+      },
+      {
+        "name": "run16s.exe",
+        "path": "O:\\winnt\\run16s.exe",
+        "before": "290cf3d68e33d92f86ed14def864bb33558074b0c2f44fabbe33b2e135e00bd3",
+        "expected": "75e9118ca14a27c312ee52322937ec466e81d950fc5aaf6df4295dcb87aefe1f",
+        "after": "75e9118ca14a27c312ee52322937ec466e81d950fc5aaf6df4295dcb87aefe1f"
+      }
+    ]
+  },
+  "caption_parity_preview": {
+    "source_snapshot_sha256": "6ead464f7a72d75919c6880bce4a58c669616c0948cc9f32caab44cb29694c30",
+    "build": {
+      "physical_acceptance": "pending",
+      "status": "passed",
+      "candidate": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-caption-parity\\candidate",
+      "exit_code": 0,
+      "clean_source": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-caption-parity\\clean-source",
+      "full_matrix": "pending"
+    },
+    "toolchains": {
+      "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+      "ccache_version": "ccache version 4.13.6",
+      "toolchains": [
+        {
+          "target": "i686-w64-mingw32",
+          "version": "16.1.0",
+          "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+          "architecture": "x86",
+          "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6"
+        },
+        {
+          "target": "x86_64-w64-mingw32",
+          "version": "16.1.0",
+          "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+          "architecture": "x64",
+          "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad"
+        }
+      ],
+      "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe"
+    },
+    "package": {
+      "status": "PACKAGE PASS",
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "90367d158aeae0e7fe55a7cf9244734e7459e79659975c5ed7fa36d2b7195b6a",
+          "imports": [
+            "advapi32.dll",
+            "dwmapi.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "oleaut32.dll",
+            "shell32.dll",
+            "user32.dll",
+            "ntwshk64.dll"
+          ]
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "cab75bd4f1f89ce3763958fdacea75e3e623edb8cb96baa7082d410c32fa45ec",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "2541377ac9107551c701a763938f64573c184fbe506335258fe8ab9849ed0e2f",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "2a4662d9d6c4ed258fbb0d8f9a837bdd71edbe6654461ce26460ed303ce915ac",
+          "imports": [
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "SHCORE.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "915a4a483ee7790a8d1034e35dc595e4b54da2a9802817b7657890a91f61cea0",
+          "imports": [
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "SHCORE.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "5f517b77da87ed4870e496fd75de7ba5a94906478a5db3fb46294a9557bf1728",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll"
+          ]
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "5dbbb6d1914c8c3d26bd4c477eac566d71388ae229afecd7d598f08a2e5ab146",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "msvcrt.dll"
+          ]
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "5842a4420aed23e7f193b2edcd04d56796b615cd7e3f05d2fadf75d9eec2ec11",
+          "imports": [
+            "comctl32.dll",
+            "comdlg32.dll",
+            "gdi32.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "shell32.dll",
+            "user32.dll"
+          ]
+        }
+      },
+      "original_resource_tables_per_ntw16s_dll": 18
+    },
+    "publication": {
+      "status": "published",
+      "files": [
+        {
+          "name": "demo.exe",
+          "path": "O:\\winnt\\demo.exe",
+          "before": "265110b5e1c4b63253a3a37c33703b79d80a50b296b942c9aa2ec04ff3312602",
+          "expected": "5842a4420aed23e7f193b2edcd04d56796b615cd7e3f05d2fadf75d9eec2ec11",
+          "after": "5842a4420aed23e7f193b2edcd04d56796b615cd7e3f05d2fadf75d9eec2ec11"
+        },
+        {
+          "name": "ntw16s32.dll",
+          "path": "O:\\winnt\\ntw16s32.dll",
+          "before": "0ab556d5e8256d511141a6992f96285e5cf504c72a0e8c8ce555b6cd9fb4f54b",
+          "expected": "cab75bd4f1f89ce3763958fdacea75e3e623edb8cb96baa7082d410c32fa45ec",
+          "after": "cab75bd4f1f89ce3763958fdacea75e3e623edb8cb96baa7082d410c32fa45ec"
+        },
+        {
+          "name": "ntw16s64.dll",
+          "path": "O:\\winnt\\ntw16s64.dll",
+          "before": "32429e40e7bbf26b27caba2695eaa38e6bde80bf363d85f9d075848deb13682e",
+          "expected": "2541377ac9107551c701a763938f64573c184fbe506335258fe8ab9849ed0e2f",
+          "after": "2541377ac9107551c701a763938f64573c184fbe506335258fe8ab9849ed0e2f"
+        },
+        {
+          "name": "ntw2ks32.dll",
+          "path": "O:\\winnt\\ntw2ks32.dll",
+          "before": "67b2b4096bc3a3bbe500e9836b8689389c720e5e4115081b107a11577dd787c2",
+          "expected": "2a4662d9d6c4ed258fbb0d8f9a837bdd71edbe6654461ce26460ed303ce915ac",
+          "after": "2a4662d9d6c4ed258fbb0d8f9a837bdd71edbe6654461ce26460ed303ce915ac"
+        },
+        {
+          "name": "ntw2ks64.dll",
+          "path": "O:\\winnt\\ntw2ks64.dll",
+          "before": "d9488d89897ae663b221b545923e51b147e7b695611987705dcfd24290ea6f9d",
+          "expected": "915a4a483ee7790a8d1034e35dc595e4b54da2a9802817b7657890a91f61cea0",
+          "after": "915a4a483ee7790a8d1034e35dc595e4b54da2a9802817b7657890a91f61cea0"
+        },
+        {
+          "name": "ntwshk32.dll",
+          "path": "O:\\winnt\\ntwshk32.dll",
+          "before": "a999a9fbd049cf53a3e6f5fc65dcb61d77c996082d4ef513fb352171890d9c64",
+          "expected": "5f517b77da87ed4870e496fd75de7ba5a94906478a5db3fb46294a9557bf1728",
+          "after": "5f517b77da87ed4870e496fd75de7ba5a94906478a5db3fb46294a9557bf1728"
+        },
+        {
+          "name": "ntwshk64.dll",
+          "path": "O:\\winnt\\ntwshk64.dll",
+          "before": "41554ec3ff6b617c70eea7b11b366cfdd776f04fc8c8c7d5ac5a07e50068b8c8",
+          "expected": "5dbbb6d1914c8c3d26bd4c477eac566d71388ae229afecd7d598f08a2e5ab146",
+          "after": "5dbbb6d1914c8c3d26bd4c477eac566d71388ae229afecd7d598f08a2e5ab146"
+        },
+        {
+          "name": "run16s.exe",
+          "path": "O:\\winnt\\run16s.exe",
+          "before": "75e9118ca14a27c312ee52322937ec466e81d950fc5aaf6df4295dcb87aefe1f",
+          "expected": "90367d158aeae0e7fe55a7cf9244734e7459e79659975c5ed7fa36d2b7195b6a",
+          "after": "90367d158aeae0e7fe55a7cf9244734e7459e79659975c5ed7fa36d2b7195b6a"
+        }
+      ],
+      "scope": "O:/winnt owner preview",
+      "backup": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-caption-parity\\prior-owner-preview"
+    },
+    "core_pass_by_architecture": {
+      "x86": [
+        "win2k-paint",
+        "win2k-caption",
+        "uwp-frame",
+        "uwp-frame_layout",
+        "uwp-frame-hidden",
+        "win2k-uwp-frame",
+        "modern-frame"
+      ],
+      "x64": [
+        "win2k-paint",
+        "win2k-caption",
+        "uwp-frame",
+        "uwp-frame_layout",
+        "uwp-frame-hidden",
+        "win2k-uwp-frame",
+        "modern-frame"
+      ]
+    },
+    "actual_published_uwp": {
+      "win2k_calc": {
+        "exit_code": 0,
+        "output": "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=0\nACTIVATE error=0 own_pid=31424\nTARGET core=00000000006c07ce frame=0000000000070572 surface=0000000000020570 dpi=144\nFRAME phase=before hwnd=0000000000070572 surface_exists=1\nTITLE hwnd=0000000000040584 visible=1\nTITLE hwnd=000000000004057e visible=0\nBUTTONS maximize_restore=1 minimize=1 restored=1 surface_visible=1\nFRAME phase=restored hwnd=0000000000070572 surface_exists=1\nTITLE hwnd=0000000000040584 visible=1\nTITLE hwnd=000000000004057e visible=0\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6e5b second=d7a083\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6e5b second=d9a184\nUWP CLASSIC INTERACTION resize=1 popup=1 dismissed=1\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6e5b second=d9a184\nREMOVE status=1\nREMOVE_AND_GEOMETRY=1\nUWP_LAUNCH_REAL_PASS\n"
+      },
+      "win16_calc": {
+        "exit_code": 0,
+        "output": "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=0\nACTIVATE error=0 own_pid=32356\nTARGET core=0000000000080592 frame=0000000000080572 surface=00000000000205a2 dpi=144\nFRAME phase=before hwnd=0000000000080572 surface_exists=1\nTITLE hwnd=000000000005057e visible=1\nTITLE hwnd=0000000000cf073e visible=0\nBUTTONS maximize_restore=1 minimize=1 restored=1 surface_visible=1\nFRAME phase=restored hwnd=0000000000080572 surface_exists=1\nTITLE hwnd=000000000005057e visible=1\nTITLE hwnd=0000000000cf073e visible=0\nREMOVE status=1\nREMOVE_AND_GEOMETRY=1\nUWP_LAUNCH_REAL_PASS\n"
+      },
+      "win2k_scan": {
+        "exit_code": 0,
+        "output": "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions\nCALC_COMMAND exit=0\nACTIVATE error=0 own_pid=3736\nTARGET core=00000000000b0554 frame=00000000000800e4 surface=00000000000b0592 dpi=144\nFRAME phase=before hwnd=00000000000800e4 surface_exists=1\nTITLE hwnd=000000000006057e visible=1\nTITLE hwnd=000000000004059a visible=1\nBUTTONS maximize_restore=1 minimize=1 restored=1 surface_visible=1\nFRAME phase=restored hwnd=00000000000800e4 surface_exists=1\nTITLE hwnd=000000000004059a visible=1\nTITLE hwnd=000000000006057e visible=1\nUWP CLASSIC PIXELS visible=1 matched=0 first=bc6e5a second=c19076\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6f5b second=d9a184\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6f5b second=d9a184\nUWP CLASSIC INTERACTION resize=1 popup=1 dismissed=1\nUWP CLASSIC PIXELS visible=1 matched=1 first=bd6f5b second=d9a184\nREMOVE status=1\nREMOVE_AND_GEOMETRY=1\nUWP_LAUNCH_REAL_PASS\n"
+      }
+    },
+    "actual_published_win32": [
+      {
+        "arch": "x86",
+        "exit_code": 0,
+        "output": "NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=0"
+      },
+      {
+        "arch": "x64",
+        "exit_code": 0,
+        "output": "NTW2KS STAGING PASS selected=win2k win16_absent=1 propagated=0"
+      }
+    ],
+    "notes": [
+      "Windows desktop and fixture process were at 144 DPI for live UWP.",
+      "Initial sandbox run did not have capture-directory input or access required by real-window fixtures. All seven checks passed in the real input session.",
+      "Original T28 preview in s1-uwp-handoff is byte-identical to the backed-up preview. Canonical T27 backup is separately retained.",
+      "PID 10104 ApplicationFrameHost held both 64-bit files. Confirmed its system path, start time and module paths and verified no top-level windows before ending it. Later live runs created real frames successfully.",
+      "Only O:/winnt was updated, and the candidate remains there for owner verification."
+    ],
+    "screen_button_comparison": {
+      "console_session": 4,
+      "method": "Same-monitor physical pixels, real Calculator --2k and owned PMv2 Win32 window attached by published ntw2ks64.dll. Positions selected to avoid overlap. For each button, verify visible window beneath sample point and classic face and glyph before comparison.",
+      "runs": [
+        "button=minimize size=24x21 compared=504 different=2\nbutton=maximize size=24x21 compared=504 different=0\nbutton=close size=24x21 compared=504 different=0\ncaption parity dpi=144 compared_buttons=3 differing_pixels=2\n",
+        "  pixel=(0,0) Win32=fcfcfc UWP=ffffff\nbutton=minimize size=24x21 compared=504 different=1\nbutton=maximize size=24x21 compared=504 different=0\nbutton=close size=24x21 compared=504 different=0\ncaption parity dpi=144 compared_buttons=3 differing_pixels=1\n"
+      ],
+      "exact_pixel_gate": "Failed in both runs. Maximize and close identical. Minimize differed by 2 pixels and 1 pixel in the two runs, respectively."
+    },
+    "actual_published_uwp_global_targeted": "exit=0\nACTIVATE hr=0 pid=25644\nWINDOW_EVENT event=8018 time=598098656 pid=25644 hwnd=00000000001001ec root=00000000000f057e visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=598098656 pid=25644 hwnd=0000000000070558 root=0000000000070558 visible=0 class=IME\nWINDOW_EVENT event=800f time=598098656 pid=25644 hwnd=00000000001001ec root=00000000000f057e visible=0 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8002 time=598098671 pid=25644 hwnd=00000000001001ec root=00000000000f057e visible=1 class=Windows.UI.Core.CoreWindow\nWINDOW_EVENT event=8018 time=598098671 pid=11056 hwnd=00000000000f057e root=00000000000f057e visible=1 class=ApplicationFrameWindow\nBEFORE frame=00000000000f057e core=00000000001001ec surfaces=0\nPAIR_TARGET first=25644 second=11792 host1=11056 host2=11056\nPAIR_PRESTYLE error=0\nUWP_TARGET_RESULT pid=11792 frame=000000000006054c error=0\nUWP_TARGET_RESULT pid=25644 frame=00000000000f057e error=0\nGLOBAL_UWP_SWITCH old_removed=1 selected=1\nGLOBAL_APPLY admitted=1 idle_error=0 surfaces=1 visible=1\nGLOBAL_STATS queued=0 active=2 failed=0\nPAIR_APPLY both_visible=1 distinct_surfaces=1\nGLOBAL_REMOVE error=0 surface_exists=0\nPAIR_REMOVE second_exists=0\nUWP_TARGET_RESULT pid=11792 frame=000000000006054c error=0\nUWP_TARGET_RESULT pid=25644 frame=00000000000f057e error=0\nGLOBAL_STOP_RACE error=0 surfaces=0\nPAIR_STOP_RACE second_surfaces=0\nUWP_GLOBAL_PASS error=0\n",
+    "bounded_session_integration": {
+      "coverage": "245 owned current-session package cases with no private desktop creation, desktop switching, or simulated physical input",
+      "retained_published_sha256": {
+        "demo.exe": "5842a4420aed23e7f193b2edcd04d56796b615cd7e3f05d2fadf75d9eec2ec11",
+        "ntw16s32.dll": "cab75bd4f1f89ce3763958fdacea75e3e623edb8cb96baa7082d410c32fa45ec",
+        "ntw16s64.dll": "2541377ac9107551c701a763938f64573c184fbe506335258fe8ab9849ed0e2f",
+        "ntw2ks32.dll": "2a4662d9d6c4ed258fbb0d8f9a837bdd71edbe6654461ce26460ed303ce915ac",
+        "ntw2ks64.dll": "915a4a483ee7790a8d1034e35dc595e4b54da2a9802817b7657890a91f61cea0",
+        "ntwshk32.dll": "5f517b77da87ed4870e496fd75de7ba5a94906478a5db3fb46294a9557bf1728",
+        "ntwshk64.dll": "5dbbb6d1914c8c3d26bd4c477eac566d71388ae229afecd7d598f08a2e5ab146",
+        "run16s.exe": "90367d158aeae0e7fe55a7cf9244734e7459e79659975c5ed7fa36d2b7195b6a"
+      },
+      "fixture_build_status": "passed",
+      "fixture_build_snapshot_sha256": "b2ea8b6e7b093695e8d653016deee4691ce9f7a8884738cd0644c6055dc974cc",
+      "fixture_identity": "Non-doc source hashes matched the original build in full. All eight preview files matched O:/winnt exactly. Rebuilt fixtures passed original source+binary identity gate. Independently matched eight mapped PE section tables and contents after masking COFF/export timestamps, checksum and file symbol table metadata.",
+      "selection_rule": "    # Current desktop run of audited owned-window cases only.\n    # Frame-target modes listed here send messages only to their own windows.\n    $localFrame = '^ntw2ks-(frame(-fixed|-resize|-fixed-menu|-resize-menu|-aware-fixed|-aware-resize)?|startup-size|style-transition|caption-added|zoom-cycle-(default|aware)|resize-(natural|cycle)-(default|aware)|default-icon|tool(-resize)?|commands|capture-loss|button-order|disabled-commands|button-cancel|help-button|system-icon|custom-hit|geometry(-bare)?|scroll-geometry|menu-transition)-x(86|64)$'\n    $known = @('progress-sharing','plan-selection','abi-x86','abi-x64','demo-boundary','automatic','propagation','creation-contract','rollback','process-lifecycle-x86','process-lifecycle-x64')\n    $selected = @($cases | Where-Object {\n        $_.name -cin $known -or\n        ($_.name -like 'ntw2ks-*' -and $_.command -ne $dialogDriver -and\n          !@($_.arguments | Where-Object { $_ -match '^--(private|low-private|physical)' }).Count) -or\n        ($_.command -eq $dialogDriver -and $_.name -cmatch $localFrame -and\n          $_.arguments[0] -eq '--direct' -and @($_.arguments -like '*ntw2ks-frame-target.exe').Count -eq 1 -and\n          !@($_.arguments | Where-Object { $_ -match '^--(private|low-private|physical)' }).Count)\n    })\n    $selectedNames = @($selected | ForEach-Object name)\n    $plan=@{coverage='bounded-session-integration';requested=@();omitted=@($cases | Where-Object { $_.name -cnotin $selectedNames } | ForEach-Object name)}\n    $cases=$selected\n    $FullIntegration=$false\n    @{selected=$selectedNames;omitted=$plan.omitted}|ConvertTo-Json -Depth 4|Set-Content (Join-Path $scratch 'selection.json') -Encoding utf8\n",
+      "result": {
+        "seconds": 132.829492,
+        "package": "O:\\repos.hobby\\win16style\\build\\t28-package\\s1-caption-parity\\candidate",
+        "full_integration": false,
+        "sha256": {
+          "demo.exe": "5842a4420aed23e7f193b2edcd04d56796b615cd7e3f05d2fadf75d9eec2ec11",
+          "ntw16s32.dll": "cab75bd4f1f89ce3763958fdacea75e3e623edb8cb96baa7082d410c32fa45ec",
+          "ntw16s64.dll": "2541377ac9107551c701a763938f64573c184fbe506335258fe8ab9849ed0e2f",
+          "ntw2ks32.dll": "2a4662d9d6c4ed258fbb0d8f9a837bdd71edbe6654461ce26460ed303ce915ac",
+          "ntw2ks64.dll": "915a4a483ee7790a8d1034e35dc595e4b54da2a9802817b7657890a91f61cea0",
+          "ntwshk32.dll": "5f517b77da87ed4870e496fd75de7ba5a94906478a5db3fb46294a9557bf1728",
+          "ntwshk64.dll": "5dbbb6d1914c8c3d26bd4c477eac566d71388ae229afecd7d598f08a2e5ab146",
+          "run16s.exe": "90367d158aeae0e7fe55a7cf9244734e7459e79659975c5ed7fa36d2b7195b6a"
+        },
+        "status": "failed-or-inconclusive",
+        "jobs": 1,
+        "coverage": "bounded-session-integration",
+        "skipped": [],
+        "requested_cases": [],
+        "physical_input": "not-tested",
+        "core_matrix": "separate Build-Core matrix required",
+        "progress_sharing_conflicts": 0,
+        "cases": 245,
+        "issues": [
+          {
+            "reason": "exit 1",
+            "name": "rollback"
+          }
+        ],
+        "selected_cases": [
+          "process-lifecycle-x86",
+          "process-lifecycle-x64",
+          "ntw2ks-static-x86",
+          "ntw2ks-static-aware-x86",
+          "ntw2ks-static-startup-x86",
+          "ntw2ks-static-v6-x86",
+          "ntw2ks-static-v6-aware-x86",
+          "ntw2ks-static-v6-startup-x86",
+          "ntw2ks-static-x64",
+          "ntw2ks-static-aware-x64",
+          "ntw2ks-static-startup-x64",
+          "ntw2ks-static-v6-x64",
+          "ntw2ks-static-v6-aware-x64",
+          "ntw2ks-static-v6-startup-x64",
+          "ntw2ks-edit-x86",
+          "ntw2ks-edit-aware-x86",
+          "ntw2ks-edit-startup-x86",
+          "ntw2ks-edit-v6-x86",
+          "ntw2ks-edit-v6-aware-x86",
+          "ntw2ks-edit-v6-startup-x86",
+          "ntw2ks-edit-x64",
+          "ntw2ks-edit-aware-x64",
+          "ntw2ks-edit-startup-x64",
+          "ntw2ks-edit-v6-x64",
+          "ntw2ks-edit-v6-aware-x64",
+          "ntw2ks-edit-v6-startup-x64",
+          "ntw2ks-button-x86",
+          "ntw2ks-button-x64",
+          "ntw2ks-control-buttons-x86",
+          "ntw2ks-control-buttons-aware-x86",
+          "ntw2ks-control-buttons-startup-x86",
+          "ntw2ks-control-theme-x86",
+          "ntw2ks-control-buttons-x64",
+          "ntw2ks-control-buttons-aware-x64",
+          "ntw2ks-control-buttons-startup-x64",
+          "ntw2ks-control-theme-x64",
+          "ntw2ks-control-buttons-v6-x86",
+          "ntw2ks-control-buttons-v6-startup-x86",
+          "ntw2ks-control-buttons-v6-x64",
+          "ntw2ks-control-buttons-v6-startup-x64",
+          "ntw2ks-staging-x86-x86",
+          "ntw2ks-staging-x86-x64",
+          "ntw2ks-staging-x64-x86",
+          "ntw2ks-staging-x64-x64",
+          "ntw2ks-propagate-x86-x86",
+          "ntw2ks-propagate-x86-x64",
+          "ntw2ks-propagate-x64-x86",
+          "ntw2ks-propagate-x64-x64",
+          "ntw2ks-propagate-frame-x86-x86",
+          "ntw2ks-propagate-frame-x86-x64",
+          "ntw2ks-propagate-frame-x64-x86",
+          "ntw2ks-propagate-frame-x64-x64",
+          "ntw2ks-control-native-x86",
+          "ntw2ks-control-native-x64",
+          "ntw2ks-control-launch-x86",
+          "ntw2ks-control-launch-x64",
+          "ntw2ks-frame-x86",
+          "ntw2ks-frame-x64",
+          "ntw2ks-startup-size-x86",
+          "ntw2ks-startup-size-x64",
+          "ntw2ks-style-transition-x86",
+          "ntw2ks-style-transition-x64",
+          "ntw2ks-caption-added-x86",
+          "ntw2ks-caption-added-x64",
+          "ntw2ks-zoom-cycle-default-x86",
+          "ntw2ks-zoom-cycle-aware-x86",
+          "ntw2ks-zoom-cycle-default-x64",
+          "ntw2ks-zoom-cycle-aware-x64",
+          "ntw2ks-resize-natural-default-x86",
+          "ntw2ks-resize-natural-aware-x86",
+          "ntw2ks-resize-natural-default-x64",
+          "ntw2ks-resize-natural-aware-x64",
+          "ntw2ks-resize-cycle-default-x86",
+          "ntw2ks-resize-cycle-aware-x86",
+          "ntw2ks-resize-cycle-default-x64",
+          "ntw2ks-resize-cycle-aware-x64",
+          "ntw2ks-frame-fixed-x86",
+          "ntw2ks-frame-fixed-x64",
+          "ntw2ks-frame-resize-x86",
+          "ntw2ks-frame-resize-x64",
+          "ntw2ks-frame-fixed-menu-x86",
+          "ntw2ks-frame-fixed-menu-x64",
+          "ntw2ks-frame-resize-menu-x86",
+          "ntw2ks-frame-resize-menu-x64",
+          "ntw2ks-frame-aware-fixed-x86",
+          "ntw2ks-frame-aware-fixed-x64",
+          "ntw2ks-frame-aware-resize-x86",
+          "ntw2ks-frame-aware-resize-x64",
+          "ntw2ks-tool-x86",
+          "ntw2ks-tool-x64",
+          "ntw2ks-tool-resize-x86",
+          "ntw2ks-tool-resize-x64",
+          "ntw2ks-default-icon-x86",
+          "ntw2ks-default-icon-x64",
+          "ntw2ks-commands-x86",
+          "ntw2ks-commands-x64",
+          "ntw2ks-capture-loss-x86",
+          "ntw2ks-capture-loss-x64",
+          "ntw2ks-button-order-x86",
+          "ntw2ks-button-order-x64",
+          "ntw2ks-disabled-commands-x86",
+          "ntw2ks-disabled-commands-x64",
+          "ntw2ks-button-cancel-x86",
+          "ntw2ks-button-cancel-x64",
+          "ntw2ks-help-button-x86",
+          "ntw2ks-help-button-x64",
+          "ntw2ks-system-icon-x86",
+          "ntw2ks-system-icon-x64",
+          "ntw2ks-custom-hit-x86",
+          "ntw2ks-custom-hit-x64",
+          "ntw2ks-geometry-x86",
+          "ntw2ks-geometry-x64",
+          "ntw2ks-geometry-bare-x86",
+          "ntw2ks-geometry-bare-x64",
+          "ntw2ks-scroll-geometry-x86",
+          "ntw2ks-scroll-geometry-x64",
+          "ntw2ks-menu-transition-x86",
+          "ntw2ks-menu-transition-x64",
+          "progress-sharing",
+          "plan-selection",
+          "abi-x86",
+          "abi-x64",
+          "demo-boundary",
+          "automatic",
+          "propagation",
+          "ntw2ks-scroll-layout-32",
+          "ntw2ks-scroll-32",
+          "ntw2ks-scroll-aware-32",
+          "ntw2ks-scroll-startup-32",
+          "ntw2ks-trackbar-32",
+          "ntw2ks-trackbar-aware-32",
+          "ntw2ks-trackbar-startup-32",
+          "ntw2ks-trackbar-v6-32",
+          "ntw2ks-trackbar-v6-aware-32",
+          "ntw2ks-trackbar-v6-startup-32",
+          "ntw2ks-updown-32",
+          "ntw2ks-updown-aware-32",
+          "ntw2ks-updown-startup-32",
+          "ntw2ks-updown-v6-32",
+          "ntw2ks-updown-v6-aware-32",
+          "ntw2ks-updown-v6-startup-32",
+          "ntw2ks-bars-32",
+          "ntw2ks-bars-aware-32",
+          "ntw2ks-bars-startup-32",
+          "ntw2ks-bars-v6-32",
+          "ntw2ks-bars-v6-aware-32",
+          "ntw2ks-bars-v6-startup-32",
+          "ntw2ks-dates-32",
+          "ntw2ks-dates-aware-32",
+          "ntw2ks-dates-startup-32",
+          "ntw2ks-dates-v6-32",
+          "ntw2ks-dates-v6-aware-32",
+          "ntw2ks-dates-v6-startup-32",
+          "ntw2ks-runtime-roles-32",
+          "ntw2ks-runtime-roles-aware-32",
+          "ntw2ks-runtime-roles-startup-32",
+          "ntw2ks-runtime-roles-v6-32",
+          "ntw2ks-runtime-roles-v6-aware-32",
+          "ntw2ks-runtime-roles-v6-startup-32",
+          "ntw2ks-progress-paint-32",
+          "ntw2ks-progress-32",
+          "ntw2ks-progress-aware-32",
+          "ntw2ks-progress-startup-32",
+          "ntw2ks-progress-v6-32",
+          "ntw2ks-progress-v6-aware-32",
+          "ntw2ks-progress-v6-startup-32",
+          "ntw2ks-report-tree-32",
+          "ntw2ks-report-tree-aware-32",
+          "ntw2ks-report-tree-startup-32",
+          "ntw2ks-report-tree-v6-32",
+          "ntw2ks-report-tree-v6-aware-32",
+          "ntw2ks-report-tree-v6-startup-32",
+          "ntw2ks-tab-header-32",
+          "ntw2ks-tab-header-aware-32",
+          "ntw2ks-tab-header-startup-32",
+          "ntw2ks-tab-header-v6-32",
+          "ntw2ks-tab-header-v6-aware-32",
+          "ntw2ks-tab-header-v6-startup-32",
+          "ntw2ks-list-combo-32",
+          "ntw2ks-list-combo-aware-32",
+          "ntw2ks-list-combo-startup-32",
+          "ntw2ks-list-combo-v6-32",
+          "ntw2ks-list-combo-v6-aware-32",
+          "ntw2ks-list-combo-v6-startup-32",
+          "ntw2ks-scroll-layout-64",
+          "ntw2ks-scroll-64",
+          "ntw2ks-scroll-aware-64",
+          "ntw2ks-scroll-startup-64",
+          "ntw2ks-trackbar-64",
+          "ntw2ks-trackbar-aware-64",
+          "ntw2ks-trackbar-startup-64",
+          "ntw2ks-trackbar-v6-64",
+          "ntw2ks-trackbar-v6-aware-64",
+          "ntw2ks-trackbar-v6-startup-64",
+          "ntw2ks-updown-64",
+          "ntw2ks-updown-aware-64",
+          "ntw2ks-updown-startup-64",
+          "ntw2ks-updown-v6-64",
+          "ntw2ks-updown-v6-aware-64",
+          "ntw2ks-updown-v6-startup-64",
+          "ntw2ks-bars-64",
+          "ntw2ks-bars-aware-64",
+          "ntw2ks-bars-startup-64",
+          "ntw2ks-bars-v6-64",
+          "ntw2ks-bars-v6-aware-64",
+          "ntw2ks-bars-v6-startup-64",
+          "ntw2ks-dates-64",
+          "ntw2ks-dates-aware-64",
+          "ntw2ks-dates-startup-64",
+          "ntw2ks-dates-v6-64",
+          "ntw2ks-dates-v6-aware-64",
+          "ntw2ks-dates-v6-startup-64",
+          "ntw2ks-runtime-roles-64",
+          "ntw2ks-runtime-roles-aware-64",
+          "ntw2ks-runtime-roles-startup-64",
+          "ntw2ks-runtime-roles-v6-64",
+          "ntw2ks-runtime-roles-v6-aware-64",
+          "ntw2ks-runtime-roles-v6-startup-64",
+          "ntw2ks-progress-paint-64",
+          "ntw2ks-progress-64",
+          "ntw2ks-progress-aware-64",
+          "ntw2ks-progress-startup-64",
+          "ntw2ks-progress-v6-64",
+          "ntw2ks-progress-v6-aware-64",
+          "ntw2ks-progress-v6-startup-64",
+          "ntw2ks-report-tree-64",
+          "ntw2ks-report-tree-aware-64",
+          "ntw2ks-report-tree-startup-64",
+          "ntw2ks-report-tree-v6-64",
+          "ntw2ks-report-tree-v6-aware-64",
+          "ntw2ks-report-tree-v6-startup-64",
+          "ntw2ks-tab-header-64",
+          "ntw2ks-tab-header-aware-64",
+          "ntw2ks-tab-header-startup-64",
+          "ntw2ks-tab-header-v6-64",
+          "ntw2ks-tab-header-v6-aware-64",
+          "ntw2ks-tab-header-v6-startup-64",
+          "ntw2ks-list-combo-64",
+          "ntw2ks-list-combo-aware-64",
+          "ntw2ks-list-combo-startup-64",
+          "ntw2ks-list-combo-v6-64",
+          "ntw2ks-list-combo-v6-aware-64",
+          "ntw2ks-list-combo-v6-startup-64",
+          "creation-contract",
+          "rollback"
+        ],
+        "omitted_cases": [
+          "style-edit-protocol-x86",
+          "style-edit-protocol-x64",
+          "win2k-paint-x86",
+          "win2k-paint-x64",
+          "ntw2ks-modal-no-icon-x86",
+          "ntw2ks-modal-no-icon-x64",
+          "ntw2ks-real-modal-no-icon-x86",
+          "ntw2ks-real-modal-no-icon-x64",
+          "ntw2ks-real-modal-icon-x86",
+          "ntw2ks-real-modal-icon-x64",
+          "ntw2ks-inactive-menu-x86",
+          "ntw2ks-inactive-menu-x64",
+          "ntw2ks-dialog-frame-x86",
+          "ntw2ks-dialog-frame-x64",
+          "ntw2ks-system-menu-live-x86",
+          "ntw2ks-system-menu-hover-x86",
+          "ntw2ks-system-menu-custom-x86",
+          "ntw2ks-system-menu-live-x64",
+          "ntw2ks-system-menu-switch-x86",
+          "ntw2ks-system-menu-switch-x64",
+          "ntw2ks-system-menu-keyboard-x86",
+          "ntw2ks-system-menu-keyboard-x64",
+          "native-system-menu-cancel-x86",
+          "ntw2ks-system-menu-cancel-x86",
+          "native-system-menu-cancel-x64",
+          "ntw2ks-system-menu-cancel-x64",
+          "ntw2ks-system-menu-context-x86",
+          "ntw2ks-system-menu-context-x64",
+          "ntw2ks-system-menu-hover-x64",
+          "ntw2ks-system-menu-custom-x64",
+          "ntw2ks-system-menu-glyph-x86",
+          "ntw2ks-system-menu-glyph-x64",
+          "ntw2ks-system-menu-default-x86",
+          "ntw2ks-system-menu-default-x64",
+          "ntw2ks-message-frame-x86",
+          "ntw2ks-message-frame-x64",
+          "ntw2ks-find-frame-x86",
+          "ntw2ks-find-frame-x64",
+          "ntw2ks-file-frame-x86",
+          "ntw2ks-file-frame-x64",
+          "ntw2ks-file-select-x86",
+          "ntw2ks-file-select-x64",
+          "ntw2ks-color-font-x86",
+          "ntw2ks-color-accept-x86",
+          "ntw2ks-color-font-x64",
+          "ntw2ks-color-accept-x64",
+          "ntw2ks-print-frame-x86",
+          "ntw2ks-print-frame-x64",
+          "ntw2ks-printex-frame-x86",
+          "ntw2ks-printex-frame-x64",
+          "ntw2ks-menu-input-x86",
+          "ntw2ks-menu-input-x64",
+          "ntw2ks-menu-key-x86",
+          "ntw2ks-menu-key-x64",
+          "ntw2ks-menu-f10-x86",
+          "ntw2ks-menu-f10-x64",
+          "ntw2ks-menu-f10-select-x86",
+          "ntw2ks-menu-f10-select-x64",
+          "ntw2ks-menu-hover-x86",
+          "ntw2ks-menu-hover-x64",
+          "ntw2ks-menu-arrow-x86",
+          "ntw2ks-menu-arrow-x64",
+          "ntw2ks-menu-nested-x86",
+          "ntw2ks-menu-nested-x64",
+          "ntw2ks-menu-special-x86",
+          "ntw2ks-menu-special-x64",
+          "global-e2e",
+          "global-parent-owned",
+          "global-start-failure",
+          "global-sweep-failure",
+          "global-sweep-timeout",
+          "global-cross-directory",
+          "global-e2e-unaware",
+          "global-common",
+          "global-vb-e2e",
+          "global-propagation-lifecycle",
+          "global-ordinary-restart",
+          "global-propagation-new-x86",
+          "global-propagation-new-x64",
+          "global-propagation-headless-x86",
+          "global-propagation-headless-x64",
+          "global-cross-headless-gui-x86",
+          "global-cross-headless-gui-x64",
+          "global-low-target-x86",
+          "global-low-target-x64",
+          "global-headless-parent32-child32",
+          "global-headless-parent32-child64",
+          "global-headless-existing-x86",
+          "global-headless-existing-x64",
+          "global-startup-break",
+          "global-cross-origin-window-x86",
+          "global-cross-origin-window-x64",
+          "global-cross-origin-menu-x86",
+          "global-cross-origin-menu-x64",
+          "global-cross-origin-system-menu-x86",
+          "global-cross-origin-system-menu-x64",
+          "global-hook-local-x86",
+          "global-hook-local-x64",
+          "desktop-cleanup",
+          "import-scan-x86",
+          "import-scan-x64",
+          "import-patch-x86",
+          "import-patch-x64",
+          "global-thread-x86",
+          "global-thread-x64",
+          "global-thread-owner-loss-x86",
+          "global-thread-owner-loss-x64",
+          "global-remote-x86",
+          "global-remote-x64",
+          "global-load-x86",
+          "global-load-x64",
+          "global-start-x86",
+          "global-start-x64",
+          "global-start-remote-x86",
+          "global-start-remote-x64",
+          "global-discover-x86",
+          "global-discover-x64",
+          "global-policy-x86",
+          "global-policy-x64",
+          "global-attach-x86",
+          "global-attach-x64",
+          "global-unsupported-later-x86",
+          "global-unsupported-later-x64",
+          "global-unsupported-existing-x86",
+          "global-unsupported-existing-x64",
+          "global-manager-x86",
+          "global-manager-x64",
+          "global-manager-stop-race-x86",
+          "global-manager-stop-race-x64",
+          "global-vb-text-x86",
+          "global-vb-text-x64",
+          "global-threads",
+          "global-threads-visible",
+          "global-lifecycle",
+          "global-lifecycle-x86",
+          "global-host-failure",
+          "global-real-demo",
+          "global-system-menu-x86",
+          "global-system-menu-x64",
+          "global-menu-initial-x86",
+          "global-menu-initial-x64",
+          "global-menu-keyboard-x86",
+          "global-menu-keyboard-x64",
+          "global-late-dialog-x86",
+          "global-late-dialog-x64",
+          "normal-propagation-entry-x86",
+          "normal-propagation-entry-x64",
+          "native-menu-keyboard-x86",
+          "native-menu-keyboard-x64",
+          "demo-system-menu",
+          "demo-pair",
+          "demo-win2000",
+          "global-style-cycle-x86",
+          "global-style-cycle-x64",
+          "wait-contract",
+          "font-layout-x86",
+          "font-layout-x64",
+          "menu-cancel-x86",
+          "menu-cancel-x64",
+          "startup-errors",
+          "startup-error-unit-32",
+          "startup-error-unit-64",
+          "console-rebind-32",
+          "console-rebind-64",
+          "legacy-rejection",
+          "cli",
+          "cmd-nested",
+          "long-path",
+          "cli-failures",
+          "late-process-x86-x86-a",
+          "late-only-x86-x86-a",
+          "late-process-x86-x86-w",
+          "late-only-x86-x86-w",
+          "late-process-x86-x64-a",
+          "late-only-x86-x64-a",
+          "late-process-x86-x64-w",
+          "late-only-x86-x64-w",
+          "late-process-x64-x86-a",
+          "late-only-x64-x86-a",
+          "late-process-x64-x86-w",
+          "late-only-x64-x86-w",
+          "late-process-x64-x64-a",
+          "late-only-x64-x64-a",
+          "late-process-x64-x64-w",
+          "late-only-x64-x64-w",
+          "dialog-file-custom-filter-x86-a",
+          "dialog-file-spaced-x86-a",
+          "dialog-file-custom-filter-x86-w",
+          "dialog-file-spaced-x86-w",
+          "dialog-link-flag-native-x86-ansi-old-keep",
+          "dialog-link-flag-native-x86-ansi-old-resolve",
+          "dialog-link-flag-native-x86-ansi-modern-keep",
+          "dialog-link-flag-native-x86-ansi-modern-resolve",
+          "dialog-link-flag-styled-x86-ansi",
+          "dialog-link-flag-cancel-x86-ansi",
+          "dialog-link-default-x86-ansi",
+          "dialog-link-default-small-x86-ansi",
+          "dialog-link-default-cancel-x86-ansi",
+          "dialog-link-default-list-x86-ansi",
+          "dialog-link-flag-native-x86-wide-old-keep",
+          "dialog-link-flag-native-x86-wide-old-resolve",
+          "dialog-link-flag-native-x86-wide-modern-keep",
+          "dialog-link-flag-native-x86-wide-modern-resolve",
+          "dialog-link-flag-styled-x86-wide",
+          "dialog-link-flag-cancel-x86-wide",
+          "dialog-link-default-x86-wide",
+          "dialog-link-default-small-x86-wide",
+          "dialog-link-default-cancel-x86-wide",
+          "dialog-link-default-list-x86-wide",
+          "dialog-folder-edit-x86-ansi-valid",
+          "dialog-folder-edit-x86-ansi-invalid",
+          "dialog-folder-edit-x86-ansi-cancel",
+          "dialog-folder-edit-x86-wide-valid",
+          "dialog-folder-edit-x86-wide-invalid",
+          "dialog-folder-edit-x86-wide-cancel",
+          "dialog-tree-x86-shell-accept",
+          "dialog-tree-x86-shell-cancel",
+          "dialog-tree-x86-com-accept",
+          "dialog-tree-x86-com-cancel",
+          "dialog-tree-x86-shell-simple-accept",
+          "dialog-tree-x86-shell-simple-cancel",
+          "dialog-tree-x86-shell-new-accept",
+          "dialog-tree-x86-shell-new-cancel",
+          "dialog-tree-x86-shell-new-ansi-accept",
+          "dialog-tree-x86-shell-new-ansi-cancel",
+          "dialog-tree-x86-shell-new-root-accept",
+          "dialog-tree-x86-shell-new-root-cancel",
+          "dialog-tree-x86-shell-new-ansi-root-accept",
+          "dialog-tree-x86-shell-new-ansi-root-cancel",
+          "dialog-tree-x86-shell-simple-callback-accept",
+          "dialog-tree-x86-shell-simple-callback-cancel",
+          "dialog-tree-x86-shell-new-nonew-accept",
+          "dialog-tree-x86-shell-new-nonew-cancel",
+          "dialog-tree-x86-shell-new-ansi-nonew-accept",
+          "dialog-tree-x86-shell-new-ansi-nonew-cancel",
+          "dialog-tree-x86-shell-new-callback-accept",
+          "dialog-tree-x86-shell-new-callback-cancel",
+          "dialog-tree-x86-shell-validate",
+          "dialog-tree-x86-shell-recover",
+          "dialog-folder-filter-x86-wide",
+          "dialog-folder-filter-x86-ansi",
+          "dialog-color-edge-native-x86",
+          "menu-initial-x86",
+          "global-window-x86",
+          "system-menu-visual-x86",
+          "system-menu-native-string-x86",
+          "system-menu-hover-x86",
+          "system-menu-custom-x86",
+          "dialog-print-ex-initial-option-x86-ansi-collate",
+          "dialog-print-ex-option-apply-x86-ansi-collate",
+          "dialog-print-ex-initial-option-x86-ansi-file",
+          "dialog-print-ex-option-apply-x86-ansi-file",
+          "dialog-print-ex-initial-option-x86-ansi-disable",
+          "dialog-print-ex-option-apply-x86-ansi-disable",
+          "dialog-print-ex-initial-selection-x86-ansi",
+          "dialog-print-ex-selection-print-x86-ansi",
+          "dialog-print-ex-selection-apply-x86-ansi",
+          "dialog-print-ex-initial-option-x86-wide-collate",
+          "dialog-print-ex-option-apply-x86-wide-collate",
+          "dialog-print-ex-initial-option-x86-wide-file",
+          "dialog-print-ex-option-apply-x86-wide-file",
+          "dialog-print-ex-initial-option-x86-wide-disable",
+          "dialog-print-ex-option-apply-x86-wide-disable",
+          "dialog-print-ex-initial-selection-x86-wide",
+          "dialog-print-ex-selection-print-x86-wide",
+          "dialog-print-ex-selection-apply-x86-wide",
+          "dialog-print-ex-driver-x86-ansi-print",
+          "dialog-print-ex-driver-x86-ansi-apply",
+          "dialog-print-ex-driver-x86-ansi-cancel",
+          "dialog-print-ex-driver-x86-wide-print",
+          "dialog-print-ex-driver-x86-wide-apply",
+          "dialog-print-ex-driver-x86-wide-cancel",
+          "dialog-print-ex-driver-initial-collate-x86-ansi",
+          "dialog-print-ex-driver-initial-collate-x86-wide",
+          "dialog-print-host-policy-x86",
+          "dialog-print-ranges-x86",
+          "dialog-com-x86-open-accept",
+          "dialog-com-x86-open-cancel",
+          "dialog-com-x86-save-accept",
+          "dialog-com-x86-save-cancel",
+          "dialog-com-x86-folder-accept",
+          "dialog-com-x86-folder-cancel",
+          "dialog-shadow-x86-ansi",
+          "dialog-shadow-gap-x86-ansi",
+          "dialog-shadow-naive-x86-ansi",
+          "dialog-shadow-matrix-x86-ansi",
+          "dialog-shadow-nested-legacy-x86-ansi",
+          "dialog-shadow-nested-fixed-x86-ansi",
+          "dialog-extended-error-x86-ansi-native",
+          "dialog-extended-error-x86-ansi-native-nested",
+          "dialog-win32-navigation-x86-ansi-native",
+          "dialog-win32-selection-x86-ansi-single-native",
+          "dialog-win32-selection-x86-ansi-multi-native",
+          "dialog-win32-selection-x86-ansi-small-native",
+          "dialog-extended-error-x86-ansi-styled",
+          "dialog-extended-error-x86-ansi-styled-nested",
+          "dialog-win32-navigation-x86-ansi-styled",
+          "dialog-win32-selection-x86-ansi-single-styled",
+          "dialog-win32-selection-x86-ansi-multi-styled",
+          "dialog-win32-selection-x86-ansi-small-styled",
+          "dialog-win32-single-reference-x86-ansi",
+          "dialog-win32-multi-x86-ansi-old-short",
+          "dialog-win32-multi-x86-ansi-native-long",
+          "dialog-win32-multi-x86-ansi-styled-long",
+          "dialog-win32-multi-x86-ansi-small",
+          "dialog-win32-prototype-x86-ansi-supplement-native",
+          "dialog-win32-prototype-x86-ansi-supplement-small-native",
+          "dialog-win32-prototype-x86-ansi-supplement-cancel-native",
+          "dialog-win32-prototype-x86-ansi-supplement-styled",
+          "dialog-win32-prototype-x86-ansi-supplement-small-styled",
+          "dialog-win32-prototype-x86-ansi-supplement-cancel-styled",
+          "dialog-shadow-x86-wide",
+          "dialog-shadow-gap-x86-wide",
+          "dialog-shadow-naive-x86-wide",
+          "dialog-shadow-matrix-x86-wide",
+          "dialog-shadow-nested-legacy-x86-wide",
+          "dialog-shadow-nested-fixed-x86-wide",
+          "dialog-extended-error-x86-wide-native",
+          "dialog-extended-error-x86-wide-native-nested",
+          "dialog-win32-navigation-x86-wide-native",
+          "dialog-win32-selection-x86-wide-single-native",
+          "dialog-win32-selection-x86-wide-multi-native",
+          "dialog-win32-selection-x86-wide-small-native",
+          "dialog-extended-error-x86-wide-styled",
+          "dialog-extended-error-x86-wide-styled-nested",
+          "dialog-win32-navigation-x86-wide-styled",
+          "dialog-win32-selection-x86-wide-single-styled",
+          "dialog-win32-selection-x86-wide-multi-styled",
+          "dialog-win32-selection-x86-wide-small-styled",
+          "dialog-win32-single-reference-x86-wide",
+          "dialog-win32-multi-x86-wide-old-short",
+          "dialog-win32-multi-x86-wide-native-long",
+          "dialog-win32-multi-x86-wide-styled-long",
+          "dialog-win32-multi-x86-wide-small",
+          "dialog-win32-prototype-x86-wide-supplement-native",
+          "dialog-win32-prototype-x86-wide-supplement-small-native",
+          "dialog-win32-prototype-x86-wide-supplement-cancel-native",
+          "dialog-win32-prototype-x86-wide-supplement-styled",
+          "dialog-win32-prototype-x86-wide-supplement-small-styled",
+          "dialog-win32-prototype-x86-wide-supplement-cancel-styled",
+          "dialog-com-x86-folder-native-negative",
+          "dialog-com-ex-x86",
+          "dialog-com-missing-interface-x86-open",
+          "dialog-com-missing-interface-x86-save",
+          "dialog-com-missing-interface-x86-folder",
+          "dialog-com-missing-control-x86-open",
+          "dialog-com-missing-control-x86-save",
+          "dialog-com-missing-control-x86-folder",
+          "dialog-com-foreign-interface-x86",
+          "dialog-com-factory-x86",
+          "dialog-com-label-x86-open",
+          "dialog-com-cancel-label-x86-open-accept",
+          "dialog-com-cancel-label-x86-open-cancel",
+          "dialog-com-label-x86-save",
+          "dialog-com-cancel-label-x86-save-accept",
+          "dialog-com-cancel-label-x86-save-cancel",
+          "dialog-com-label-x86-folder",
+          "dialog-com-cancel-label-x86-folder-accept",
+          "dialog-com-cancel-label-x86-folder-cancel",
+          "dialog-com-multi-x86",
+          "dialog-com-multi-single-x86",
+          "dialog-com-multi-cancel-x86",
+          "dialog-com-multi-concurrent-x86",
+          "dialog-com-multi-vetocancel-native-x86",
+          "dialog-com-multi-vetocancel-styled-x86",
+          "dialog-old-event-x86",
+          "dialog-old-nested-x86",
+          "creation-wndproc-x86",
+          "dialog-com-event-x86-normal",
+          "dialog-com-event-x86-release",
+          "dialog-com-event-x86-self",
+          "dialog-com-event-x86-remove",
+          "dialog-com-folder-event-native-x86",
+          "dialog-com-folder-event-styled-x86",
+          "dialog-com-overwrite-native-x86",
+          "dialog-com-overwrite-styled-x86",
+          "dialog-com-overwrite-multi-native-x86",
+          "dialog-com-overwrite-multi-styled-x86",
+          "dialog-com-overwrite-notimpl-native-x86",
+          "dialog-com-overwrite-notimpl-styled-x86",
+          "dialog-com-overwrite-denied-native-x86",
+          "dialog-com-overwrite-denied-styled-x86",
+          "dialog-com-overwrite-ext-native-x86",
+          "dialog-com-x86-multi-notimpl-native",
+          "dialog-com-x86-multi-notimpl-styled",
+          "dialog-com-x86-multi-error-native",
+          "dialog-com-x86-multi-error-styled",
+          "dialog-com-x86-fileok-error-native",
+          "dialog-com-x86-fileok-error-styled",
+          "dialog-com-x86-fileok-notimpl-native",
+          "dialog-com-x86-fileok-notimpl-styled",
+          "dialog-com-x86-fileok-success2-native",
+          "dialog-com-x86-fileok-success2-styled",
+          "dialog-com-overwrite-ext-styled-x86",
+          "dialog-com-share-native-x86",
+          "dialog-com-share-styled-x86",
+          "dialog-com-share-refuse-native-x86",
+          "dialog-com-share-refuse-styled-x86",
+          "dialog-com-root-native-x86",
+          "dialog-com-root-styled-x86",
+          "dialog-com-hidden-native-x86",
+          "dialog-com-nav-native-x86",
+          "dialog-com-nav-styled-x86",
+          "dialog-com-nav-multi-x86-file-native",
+          "dialog-com-nav-multi-x86-file-styled",
+          "dialog-com-nav-multi-x86-folder-native",
+          "dialog-com-nav-multi-x86-folder-styled",
+          "dialog-com-nav-notimpl-x86-file-native",
+          "dialog-com-nav-notimpl-x86-file-styled",
+          "dialog-com-nav-notimpl-x86-folder-native",
+          "dialog-com-nav-notimpl-x86-folder-styled",
+          "dialog-com-nav-success2-x86-file-native",
+          "dialog-com-nav-success2-x86-file-styled",
+          "dialog-com-nav-success2-x86-folder-native",
+          "dialog-com-nav-success2-x86-folder-styled",
+          "dialog-com-folder-nav-native-x86",
+          "dialog-com-folder-nav-styled-x86",
+          "dialog-com-redirect-native-x86",
+          "dialog-com-redirect-styled-x86",
+          "dialog-com-initial-redirect-native-x86",
+          "dialog-com-initial-redirect-styled-x86",
+          "dialog-com-initial-x86-file-close-native",
+          "dialog-com-initial-x86-file-close-styled",
+          "dialog-com-initial-x86-folder-close-native",
+          "dialog-com-initial-x86-folder-close-styled",
+          "dialog-com-initial-x86-file-close-ok-native",
+          "dialog-com-initial-x86-file-close-ok-styled",
+          "dialog-com-initial-x86-folder-close-ok-native",
+          "dialog-com-initial-x86-folder-close-ok-styled",
+          "dialog-com-initial-x86-file-close-changed-native",
+          "dialog-com-initial-x86-file-close-changed-styled",
+          "dialog-com-initial-x86-folder-close-changed-native",
+          "dialog-com-initial-x86-folder-close-changed-styled",
+          "dialog-com-initial-x86-file-close-changed-ok-native",
+          "dialog-com-initial-x86-file-close-changed-ok-styled",
+          "dialog-com-initial-x86-folder-close-changed-ok-native",
+          "dialog-com-initial-x86-folder-close-changed-ok-styled",
+          "dialog-com-folder-redirect-native-x86",
+          "dialog-com-folder-redirect-styled-x86",
+          "dialog-com-initial-veto-native-x86-once",
+          "dialog-com-initial-veto-styled-x86-once",
+          "dialog-com-initial-veto-native-x86-twice",
+          "dialog-com-initial-veto-styled-x86-twice",
+          "dialog-com-folder-veto-native-x86",
+          "dialog-com-folder-veto-styled-x86",
+          "dialog-com-live-folder-x86-native",
+          "dialog-com-set-folder-x86-open-native",
+          "dialog-com-live-filter-x86-open-native",
+          "dialog-com-set-folder-x86-save-native",
+          "dialog-com-live-filter-x86-save-native",
+          "dialog-com-live-folder-x86-styled",
+          "dialog-com-set-folder-x86-open-styled",
+          "dialog-com-live-filter-x86-open-styled",
+          "dialog-com-set-folder-x86-save-styled",
+          "dialog-com-live-filter-x86-save-styled",
+          "dialog-com-live-x86-open-native",
+          "dialog-com-live-x86-open-styled",
+          "dialog-com-live-x86-save-native",
+          "dialog-com-live-x86-save-styled",
+          "dialog-com-link-x86-keep-native",
+          "dialog-com-link-x86-keep-styled",
+          "dialog-com-multi-link-x86-keep",
+          "dialog-com-link-x86-follow-native",
+          "dialog-com-link-x86-follow-styled",
+          "dialog-com-multi-link-x86-follow",
+          "dialog-com-identity-x86",
+          "dialog-com-v2-x86",
+          "dialog-com-custom-x86",
+          "scroll-frame-x86",
+          "scroll-list-x86",
+          "scroll-edit-x86",
+          "scroll-behavior-frame-x86",
+          "scroll-behavior-list-x86",
+          "scroll-behavior-edit-x86",
+          "dialog-modern-api-x86-1",
+          "dialog-modern-api-x86-2",
+          "dialog-modern-api-x86-3",
+          "dialog-task-x86",
+          "dialog-print-ex-context-print-ic-x86-ansi",
+          "dialog-print-ex-context-print-ic-x86-wide",
+          "dialog-print-ex-context-apply-ic-x86-ansi",
+          "dialog-print-ex-context-apply-ic-x86-wide",
+          "dialog-print-ex-context-cancel-ic-x86-ansi",
+          "dialog-print-ex-context-cancel-ic-x86-wide",
+          "dialog-print-ex-context-print-none-x86-ansi",
+          "dialog-print-ex-context-print-none-x86-wide",
+          "dialog-print-ex-context-apply-none-x86-ansi",
+          "dialog-print-ex-context-apply-none-x86-wide",
+          "dialog-print-ex-context-cancel-none-x86-ansi",
+          "dialog-print-ex-context-cancel-none-x86-wide",
+          "dialog-print-ex-context-print-both-x86-ansi",
+          "dialog-print-ex-context-print-both-x86-wide",
+          "dialog-print-ex-context-apply-both-x86-ansi",
+          "dialog-print-ex-context-apply-both-x86-wide",
+          "dialog-print-ex-context-cancel-both-x86-ansi",
+          "dialog-print-ex-context-cancel-both-x86-wide",
+          "dialog-print-ex-apply-state-x86-ansi",
+          "dialog-print-ex-apply-state-x86-wide",
+          "dialog-print-ex-device-print-x86-ansi",
+          "dialog-print-ex-device-print-x86-wide",
+          "dialog-print-ex-device-apply-x86-ansi",
+          "dialog-print-ex-device-apply-x86-wide",
+          "dialog-print-ex-device-cancel-x86-ansi",
+          "dialog-print-ex-device-cancel-x86-wide",
+          "dialog-print-ex-device-locked-x86-ansi",
+          "dialog-print-ex-device-locked-x86-wide",
+          "dialog-print-ex-initial-all-x86-ansi",
+          "dialog-print-ex-initial-all-x86-wide",
+          "dialog-print-ex-initial-print-x86-ansi",
+          "dialog-print-ex-initial-print-x86-wide",
+          "dialog-print-ex-initial-apply-x86-ansi",
+          "dialog-print-ex-initial-apply-x86-wide",
+          "dialog-print-ex-initial-cancel-x86-ansi",
+          "dialog-print-ex-initial-cancel-x86-wide",
+          "dialog-print-ex-ansi-cancel-x86",
+          "dialog-print-ex-ansi-fallback-x86",
+          "dialog-print-ex-ansi-ranges-x86",
+          "dialog-print-ex-ansi-apply-x86",
+          "dialog-print-current-print-x86-wide",
+          "dialog-print-current-print-x86-ansi",
+          "dialog-print-current-apply-x86-wide",
+          "dialog-print-current-apply-x86-ansi",
+          "dialog-print-current-initial-x86-wide",
+          "dialog-print-current-initial-x86-ansi",
+          "dialog-print-current-switch-x86-wide",
+          "dialog-print-current-switch-x86-ansi",
+          "dialog-print-current-keyboard-x86-wide",
+          "dialog-print-current-keyboard-x86-ansi",
+          "dialog-print-current-pages-x86-wide",
+          "dialog-print-current-pages-x86-ansi",
+          "dialog-print-current-selection-x86-wide",
+          "dialog-print-current-selection-x86-ansi",
+          "dialog-print-current-keyboard-aware-x86",
+          "dialog-print-ex-nopages-print-x86",
+          "dialog-print-ex-nopages-apply-x86",
+          "dialog-print-ex-nopages-cancel-x86",
+          "dialog-print-ex-options-print-x86",
+          "dialog-print-ex-options-apply-x86",
+          "dialog-print-ex-options-cancel-x86",
+          "dialog-print-ex-nowarning-print-x86",
+          "dialog-print-ex-nowarning-apply-x86",
+          "dialog-print-ex-nowarning-cancel-x86",
+          "dialog-print-ex-nocurrent-print-x86",
+          "dialog-print-ex-nocurrent-apply-x86",
+          "dialog-print-ex-nocurrent-cancel-x86",
+          "dialog-print-ex-cancel-x86",
+          "dialog-print-ex-fallback-x86",
+          "dialog-print-ex-ranges-x86",
+          "dialog-print-ex-apply-x86",
+          "dialog-print-ex-invalid-x86",
+          "dialog-print-classic-x86-ansi-accept",
+          "dialog-print-classic-x86-ansi-cancel",
+          "dialog-sheet-x86-ansi",
+          "dialog-find-x86-ansi",
+          "dialog-replace-x86-ansi",
+          "dialog-font-x86-ansi-ok",
+          "dialog-font-x86-ansi-cancel",
+          "dialog-color-x86-ansi-ok",
+          "dialog-color-x86-ansi-cancel",
+          "dialog-color-x86-ansi-expand",
+          "dialog-color-x86-ansi-keyboard",
+          "dialog-print-x86-ansi",
+          "dialog-page-x86-ansi",
+          "dialog-print-classic-x86-wide-accept",
+          "dialog-print-classic-x86-wide-cancel",
+          "dialog-sheet-x86-wide",
+          "dialog-find-x86-wide",
+          "dialog-replace-x86-wide",
+          "dialog-font-x86-wide-ok",
+          "dialog-font-x86-wide-cancel",
+          "dialog-color-x86-wide-ok",
+          "dialog-color-x86-wide-cancel",
+          "dialog-color-x86-wide-expand",
+          "dialog-color-x86-wide-keyboard",
+          "dialog-print-x86-wide",
+          "dialog-page-x86-wide",
+          "dialog-file-negative-x86",
+          "dialog-file-oldhook-accept-native-x86",
+          "dialog-file-oldhook-accept-styled-x86",
+          "dialog-file-oldhook-dynamic-native-x86",
+          "dialog-file-oldhook-dynamic-styled-x86",
+          "dialog-file-x86-open-ansi",
+          "dialog-file-x86-open-wide",
+          "dialog-file-x86-save-ansi",
+          "dialog-file-x86-save-wide",
+          "dialog-file-x86-ansi-v400",
+          "dialog-file-x86-ansi-default",
+          "dialog-file-x86-ansi-oldhook",
+          "dialog-file-x86-wide-v400",
+          "dialog-file-x86-wide-default",
+          "dialog-file-x86-wide-oldhook",
+          "dialog-file-x86-cancel",
+          "dialog-file-x86-hook",
+          "dialog-com-select-folder-x86-open",
+          "dialog-com-select-folder-x86-save",
+          "dialog-com-folder-create-x86",
+          "dialog-com-folder-create-selected-x86",
+          "dialog-com-folder-create-cwd-x86",
+          "dialog-com-folder-create-existing-x86",
+          "dialog-com-folder-create-invalid-x86",
+          "dialog-folder-create-typed-x86",
+          "dialog-folder-create-enter-x86",
+          "dialog-folder-create-x86-ansi-newclassic",
+          "dialog-folder-create-x86-ansi-newclassiccancel",
+          "dialog-folder-create-x86-wide-newclassic",
+          "dialog-folder-create-x86-wide-newclassiccancel",
+          "dialog-folder-x86-ansi-select",
+          "dialog-folder-x86-ansi-cancel",
+          "dialog-folder-x86-wide-select",
+          "dialog-folder-x86-wide-cancel",
+          "dialog-folder-x86-same",
+          "dialog-folder-x86-newfolder",
+          "dialog-folder-x86-controls",
+          "dialog-folder-x86-theme",
+          "dialog-file-custom-filter-x64-a",
+          "dialog-file-spaced-x64-a",
+          "dialog-file-custom-filter-x64-w",
+          "dialog-file-spaced-x64-w",
+          "dialog-link-flag-native-x64-ansi-old-keep",
+          "dialog-link-flag-native-x64-ansi-old-resolve",
+          "dialog-link-flag-native-x64-ansi-modern-keep",
+          "dialog-link-flag-native-x64-ansi-modern-resolve",
+          "dialog-link-flag-styled-x64-ansi",
+          "dialog-link-flag-cancel-x64-ansi",
+          "dialog-link-default-x64-ansi",
+          "dialog-link-default-small-x64-ansi",
+          "dialog-link-default-cancel-x64-ansi",
+          "dialog-link-default-list-x64-ansi",
+          "dialog-link-flag-native-x64-wide-old-keep",
+          "dialog-link-flag-native-x64-wide-old-resolve",
+          "dialog-link-flag-native-x64-wide-modern-keep",
+          "dialog-link-flag-native-x64-wide-modern-resolve",
+          "dialog-link-flag-styled-x64-wide",
+          "dialog-link-flag-cancel-x64-wide",
+          "dialog-link-default-x64-wide",
+          "dialog-link-default-small-x64-wide",
+          "dialog-link-default-cancel-x64-wide",
+          "dialog-link-default-list-x64-wide",
+          "dialog-folder-edit-x64-ansi-valid",
+          "dialog-folder-edit-x64-ansi-invalid",
+          "dialog-folder-edit-x64-ansi-cancel",
+          "dialog-folder-edit-x64-wide-valid",
+          "dialog-folder-edit-x64-wide-invalid",
+          "dialog-folder-edit-x64-wide-cancel",
+          "dialog-tree-x64-shell-accept",
+          "dialog-tree-x64-shell-cancel",
+          "dialog-tree-x64-com-accept",
+          "dialog-tree-x64-com-cancel",
+          "dialog-tree-x64-shell-simple-accept",
+          "dialog-tree-x64-shell-simple-cancel",
+          "dialog-tree-x64-shell-new-accept",
+          "dialog-tree-x64-shell-new-cancel",
+          "dialog-tree-x64-shell-new-ansi-accept",
+          "dialog-tree-x64-shell-new-ansi-cancel",
+          "dialog-tree-x64-shell-new-root-accept",
+          "dialog-tree-x64-shell-new-root-cancel",
+          "dialog-tree-x64-shell-new-ansi-root-accept",
+          "dialog-tree-x64-shell-new-ansi-root-cancel",
+          "dialog-tree-x64-shell-simple-callback-accept",
+          "dialog-tree-x64-shell-simple-callback-cancel",
+          "dialog-tree-x64-shell-new-nonew-accept",
+          "dialog-tree-x64-shell-new-nonew-cancel",
+          "dialog-tree-x64-shell-new-ansi-nonew-accept",
+          "dialog-tree-x64-shell-new-ansi-nonew-cancel",
+          "dialog-tree-x64-shell-new-callback-accept",
+          "dialog-tree-x64-shell-new-callback-cancel",
+          "dialog-tree-x64-shell-validate",
+          "dialog-tree-x64-shell-recover",
+          "dialog-folder-filter-x64-wide",
+          "dialog-folder-filter-x64-ansi",
+          "dialog-color-edge-native-x64",
+          "menu-initial-x64",
+          "global-window-x64",
+          "system-menu-visual-x64",
+          "system-menu-native-string-x64",
+          "system-menu-hover-x64",
+          "system-menu-custom-x64",
+          "dialog-print-ex-initial-option-x64-ansi-collate",
+          "dialog-print-ex-option-apply-x64-ansi-collate",
+          "dialog-print-ex-initial-option-x64-ansi-file",
+          "dialog-print-ex-option-apply-x64-ansi-file",
+          "dialog-print-ex-initial-option-x64-ansi-disable",
+          "dialog-print-ex-option-apply-x64-ansi-disable",
+          "dialog-print-ex-initial-selection-x64-ansi",
+          "dialog-print-ex-selection-print-x64-ansi",
+          "dialog-print-ex-selection-apply-x64-ansi",
+          "dialog-print-ex-initial-option-x64-wide-collate",
+          "dialog-print-ex-option-apply-x64-wide-collate",
+          "dialog-print-ex-initial-option-x64-wide-file",
+          "dialog-print-ex-option-apply-x64-wide-file",
+          "dialog-print-ex-initial-option-x64-wide-disable",
+          "dialog-print-ex-option-apply-x64-wide-disable",
+          "dialog-print-ex-initial-selection-x64-wide",
+          "dialog-print-ex-selection-print-x64-wide",
+          "dialog-print-ex-selection-apply-x64-wide",
+          "dialog-print-ex-driver-x64-ansi-print",
+          "dialog-print-ex-driver-x64-ansi-apply",
+          "dialog-print-ex-driver-x64-ansi-cancel",
+          "dialog-print-ex-driver-x64-wide-print",
+          "dialog-print-ex-driver-x64-wide-apply",
+          "dialog-print-ex-driver-x64-wide-cancel",
+          "dialog-print-ex-driver-initial-collate-x64-ansi",
+          "dialog-print-ex-driver-initial-collate-x64-wide",
+          "dialog-print-host-policy-x64",
+          "dialog-print-ranges-x64",
+          "dialog-com-x64-open-accept",
+          "dialog-com-x64-open-cancel",
+          "dialog-com-x64-save-accept",
+          "dialog-com-x64-save-cancel",
+          "dialog-com-x64-folder-accept",
+          "dialog-com-x64-folder-cancel",
+          "dialog-shadow-x64-ansi",
+          "dialog-shadow-gap-x64-ansi",
+          "dialog-shadow-naive-x64-ansi",
+          "dialog-shadow-matrix-x64-ansi",
+          "dialog-shadow-nested-legacy-x64-ansi",
+          "dialog-shadow-nested-fixed-x64-ansi",
+          "dialog-extended-error-x64-ansi-native",
+          "dialog-extended-error-x64-ansi-native-nested",
+          "dialog-win32-navigation-x64-ansi-native",
+          "dialog-win32-selection-x64-ansi-single-native",
+          "dialog-win32-selection-x64-ansi-multi-native",
+          "dialog-win32-selection-x64-ansi-small-native",
+          "dialog-extended-error-x64-ansi-styled",
+          "dialog-extended-error-x64-ansi-styled-nested",
+          "dialog-win32-navigation-x64-ansi-styled",
+          "dialog-win32-selection-x64-ansi-single-styled",
+          "dialog-win32-selection-x64-ansi-multi-styled",
+          "dialog-win32-selection-x64-ansi-small-styled",
+          "dialog-win32-single-reference-x64-ansi",
+          "dialog-win32-multi-x64-ansi-old-short",
+          "dialog-win32-multi-x64-ansi-native-long",
+          "dialog-win32-multi-x64-ansi-styled-long",
+          "dialog-win32-multi-x64-ansi-small",
+          "dialog-win32-prototype-x64-ansi-supplement-native",
+          "dialog-win32-prototype-x64-ansi-supplement-small-native",
+          "dialog-win32-prototype-x64-ansi-supplement-cancel-native",
+          "dialog-win32-prototype-x64-ansi-supplement-styled",
+          "dialog-win32-prototype-x64-ansi-supplement-small-styled",
+          "dialog-win32-prototype-x64-ansi-supplement-cancel-styled",
+          "dialog-shadow-x64-wide",
+          "dialog-shadow-gap-x64-wide",
+          "dialog-shadow-naive-x64-wide",
+          "dialog-shadow-matrix-x64-wide",
+          "dialog-shadow-nested-legacy-x64-wide",
+          "dialog-shadow-nested-fixed-x64-wide",
+          "dialog-extended-error-x64-wide-native",
+          "dialog-extended-error-x64-wide-native-nested",
+          "dialog-win32-navigation-x64-wide-native",
+          "dialog-win32-selection-x64-wide-single-native",
+          "dialog-win32-selection-x64-wide-multi-native",
+          "dialog-win32-selection-x64-wide-small-native",
+          "dialog-extended-error-x64-wide-styled",
+          "dialog-extended-error-x64-wide-styled-nested",
+          "dialog-win32-navigation-x64-wide-styled",
+          "dialog-win32-selection-x64-wide-single-styled",
+          "dialog-win32-selection-x64-wide-multi-styled",
+          "dialog-win32-selection-x64-wide-small-styled",
+          "dialog-win32-single-reference-x64-wide",
+          "dialog-win32-multi-x64-wide-old-short",
+          "dialog-win32-multi-x64-wide-native-long",
+          "dialog-win32-multi-x64-wide-styled-long",
+          "dialog-win32-multi-x64-wide-small",
+          "dialog-win32-prototype-x64-wide-supplement-native",
+          "dialog-win32-prototype-x64-wide-supplement-small-native",
+          "dialog-win32-prototype-x64-wide-supplement-cancel-native",
+          "dialog-win32-prototype-x64-wide-supplement-styled",
+          "dialog-win32-prototype-x64-wide-supplement-small-styled",
+          "dialog-win32-prototype-x64-wide-supplement-cancel-styled",
+          "dialog-com-x64-folder-native-negative",
+          "dialog-com-ex-x64",
+          "dialog-com-missing-interface-x64-open",
+          "dialog-com-missing-interface-x64-save",
+          "dialog-com-missing-interface-x64-folder",
+          "dialog-com-missing-control-x64-open",
+          "dialog-com-missing-control-x64-save",
+          "dialog-com-missing-control-x64-folder",
+          "dialog-com-foreign-interface-x64",
+          "dialog-com-factory-x64",
+          "dialog-com-label-x64-open",
+          "dialog-com-cancel-label-x64-open-accept",
+          "dialog-com-cancel-label-x64-open-cancel",
+          "dialog-com-label-x64-save",
+          "dialog-com-cancel-label-x64-save-accept",
+          "dialog-com-cancel-label-x64-save-cancel",
+          "dialog-com-label-x64-folder",
+          "dialog-com-cancel-label-x64-folder-accept",
+          "dialog-com-cancel-label-x64-folder-cancel",
+          "dialog-com-multi-x64",
+          "dialog-com-multi-single-x64",
+          "dialog-com-multi-cancel-x64",
+          "dialog-com-multi-concurrent-x64",
+          "dialog-com-multi-vetocancel-native-x64",
+          "dialog-com-multi-vetocancel-styled-x64",
+          "dialog-old-event-x64",
+          "dialog-old-nested-x64",
+          "creation-wndproc-x64",
+          "dialog-com-event-x64-normal",
+          "dialog-com-event-x64-release",
+          "dialog-com-event-x64-self",
+          "dialog-com-event-x64-remove",
+          "dialog-com-folder-event-native-x64",
+          "dialog-com-folder-event-styled-x64",
+          "dialog-com-overwrite-native-x64",
+          "dialog-com-overwrite-styled-x64",
+          "dialog-com-overwrite-multi-native-x64",
+          "dialog-com-overwrite-multi-styled-x64",
+          "dialog-com-overwrite-notimpl-native-x64",
+          "dialog-com-overwrite-notimpl-styled-x64",
+          "dialog-com-overwrite-denied-native-x64",
+          "dialog-com-overwrite-denied-styled-x64",
+          "dialog-com-overwrite-ext-native-x64",
+          "dialog-com-x64-multi-notimpl-native",
+          "dialog-com-x64-multi-notimpl-styled",
+          "dialog-com-x64-multi-error-native",
+          "dialog-com-x64-multi-error-styled",
+          "dialog-com-x64-fileok-error-native",
+          "dialog-com-x64-fileok-error-styled",
+          "dialog-com-x64-fileok-notimpl-native",
+          "dialog-com-x64-fileok-notimpl-styled",
+          "dialog-com-x64-fileok-success2-native",
+          "dialog-com-x64-fileok-success2-styled",
+          "dialog-com-overwrite-ext-styled-x64",
+          "dialog-com-share-native-x64",
+          "dialog-com-share-styled-x64",
+          "dialog-com-share-refuse-native-x64",
+          "dialog-com-share-refuse-styled-x64",
+          "dialog-com-root-native-x64",
+          "dialog-com-root-styled-x64",
+          "dialog-com-hidden-native-x64",
+          "dialog-com-nav-native-x64",
+          "dialog-com-nav-styled-x64",
+          "dialog-com-nav-multi-x64-file-native",
+          "dialog-com-nav-multi-x64-file-styled",
+          "dialog-com-nav-multi-x64-folder-native",
+          "dialog-com-nav-multi-x64-folder-styled",
+          "dialog-com-nav-notimpl-x64-file-native",
+          "dialog-com-nav-notimpl-x64-file-styled",
+          "dialog-com-nav-notimpl-x64-folder-native",
+          "dialog-com-nav-notimpl-x64-folder-styled",
+          "dialog-com-nav-success2-x64-file-native",
+          "dialog-com-nav-success2-x64-file-styled",
+          "dialog-com-nav-success2-x64-folder-native",
+          "dialog-com-nav-success2-x64-folder-styled",
+          "dialog-com-folder-nav-native-x64",
+          "dialog-com-folder-nav-styled-x64",
+          "dialog-com-redirect-native-x64",
+          "dialog-com-redirect-styled-x64",
+          "dialog-com-initial-redirect-native-x64",
+          "dialog-com-initial-redirect-styled-x64",
+          "dialog-com-initial-x64-file-close-native",
+          "dialog-com-initial-x64-file-close-styled",
+          "dialog-com-initial-x64-folder-close-native",
+          "dialog-com-initial-x64-folder-close-styled",
+          "dialog-com-initial-x64-file-close-ok-native",
+          "dialog-com-initial-x64-file-close-ok-styled",
+          "dialog-com-initial-x64-folder-close-ok-native",
+          "dialog-com-initial-x64-folder-close-ok-styled",
+          "dialog-com-initial-x64-file-close-changed-native",
+          "dialog-com-initial-x64-file-close-changed-styled",
+          "dialog-com-initial-x64-folder-close-changed-native",
+          "dialog-com-initial-x64-folder-close-changed-styled",
+          "dialog-com-initial-x64-file-close-changed-ok-native",
+          "dialog-com-initial-x64-file-close-changed-ok-styled",
+          "dialog-com-initial-x64-folder-close-changed-ok-native",
+          "dialog-com-initial-x64-folder-close-changed-ok-styled",
+          "dialog-com-folder-redirect-native-x64",
+          "dialog-com-folder-redirect-styled-x64",
+          "dialog-com-initial-veto-native-x64-once",
+          "dialog-com-initial-veto-styled-x64-once",
+          "dialog-com-initial-veto-native-x64-twice",
+          "dialog-com-initial-veto-styled-x64-twice",
+          "dialog-com-folder-veto-native-x64",
+          "dialog-com-folder-veto-styled-x64",
+          "dialog-com-live-folder-x64-native",
+          "dialog-com-set-folder-x64-open-native",
+          "dialog-com-live-filter-x64-open-native",
+          "dialog-com-set-folder-x64-save-native",
+          "dialog-com-live-filter-x64-save-native",
+          "dialog-com-live-folder-x64-styled",
+          "dialog-com-set-folder-x64-open-styled",
+          "dialog-com-live-filter-x64-open-styled",
+          "dialog-com-set-folder-x64-save-styled",
+          "dialog-com-live-filter-x64-save-styled",
+          "dialog-com-live-x64-open-native",
+          "dialog-com-live-x64-open-styled",
+          "dialog-com-live-x64-save-native",
+          "dialog-com-live-x64-save-styled",
+          "dialog-com-link-x64-keep-native",
+          "dialog-com-link-x64-keep-styled",
+          "dialog-com-multi-link-x64-keep",
+          "dialog-com-link-x64-follow-native",
+          "dialog-com-link-x64-follow-styled",
+          "dialog-com-multi-link-x64-follow",
+          "dialog-com-identity-x64",
+          "dialog-com-v2-x64",
+          "dialog-com-custom-x64",
+          "scroll-frame-x64",
+          "scroll-list-x64",
+          "scroll-edit-x64",
+          "scroll-behavior-frame-x64",
+          "scroll-behavior-list-x64",
+          "scroll-behavior-edit-x64",
+          "dialog-modern-api-x64-1",
+          "dialog-modern-api-x64-2",
+          "dialog-modern-api-x64-3",
+          "dialog-task-x64",
+          "dialog-print-ex-context-print-ic-x64-ansi",
+          "dialog-print-ex-context-print-ic-x64-wide",
+          "dialog-print-ex-context-apply-ic-x64-ansi",
+          "dialog-print-ex-context-apply-ic-x64-wide",
+          "dialog-print-ex-context-cancel-ic-x64-ansi",
+          "dialog-print-ex-context-cancel-ic-x64-wide",
+          "dialog-print-ex-context-print-none-x64-ansi",
+          "dialog-print-ex-context-print-none-x64-wide",
+          "dialog-print-ex-context-apply-none-x64-ansi",
+          "dialog-print-ex-context-apply-none-x64-wide",
+          "dialog-print-ex-context-cancel-none-x64-ansi",
+          "dialog-print-ex-context-cancel-none-x64-wide",
+          "dialog-print-ex-context-print-both-x64-ansi",
+          "dialog-print-ex-context-print-both-x64-wide",
+          "dialog-print-ex-context-apply-both-x64-ansi",
+          "dialog-print-ex-context-apply-both-x64-wide",
+          "dialog-print-ex-context-cancel-both-x64-ansi",
+          "dialog-print-ex-context-cancel-both-x64-wide",
+          "dialog-print-ex-apply-state-x64-ansi",
+          "dialog-print-ex-apply-state-x64-wide",
+          "dialog-print-ex-device-print-x64-ansi",
+          "dialog-print-ex-device-print-x64-wide",
+          "dialog-print-ex-device-apply-x64-ansi",
+          "dialog-print-ex-device-apply-x64-wide",
+          "dialog-print-ex-device-cancel-x64-ansi",
+          "dialog-print-ex-device-cancel-x64-wide",
+          "dialog-print-ex-device-locked-x64-ansi",
+          "dialog-print-ex-device-locked-x64-wide",
+          "dialog-print-ex-initial-all-x64-ansi",
+          "dialog-print-ex-initial-all-x64-wide",
+          "dialog-print-ex-initial-print-x64-ansi",
+          "dialog-print-ex-initial-print-x64-wide",
+          "dialog-print-ex-initial-apply-x64-ansi",
+          "dialog-print-ex-initial-apply-x64-wide",
+          "dialog-print-ex-initial-cancel-x64-ansi",
+          "dialog-print-ex-initial-cancel-x64-wide",
+          "dialog-print-ex-ansi-cancel-x64",
+          "dialog-print-ex-ansi-fallback-x64",
+          "dialog-print-ex-ansi-ranges-x64",
+          "dialog-print-ex-ansi-apply-x64",
+          "dialog-print-current-print-x64-wide",
+          "dialog-print-current-print-x64-ansi",
+          "dialog-print-current-apply-x64-wide",
+          "dialog-print-current-apply-x64-ansi",
+          "dialog-print-current-initial-x64-wide",
+          "dialog-print-current-initial-x64-ansi",
+          "dialog-print-current-switch-x64-wide",
+          "dialog-print-current-switch-x64-ansi",
+          "dialog-print-current-keyboard-x64-wide",
+          "dialog-print-current-keyboard-x64-ansi",
+          "dialog-print-current-pages-x64-wide",
+          "dialog-print-current-pages-x64-ansi",
+          "dialog-print-current-selection-x64-wide",
+          "dialog-print-current-selection-x64-ansi",
+          "dialog-print-current-keyboard-aware-x64",
+          "dialog-print-ex-nopages-print-x64",
+          "dialog-print-ex-nopages-apply-x64",
+          "dialog-print-ex-nopages-cancel-x64",
+          "dialog-print-ex-options-print-x64",
+          "dialog-print-ex-options-apply-x64",
+          "dialog-print-ex-options-cancel-x64",
+          "dialog-print-ex-nowarning-print-x64",
+          "dialog-print-ex-nowarning-apply-x64",
+          "dialog-print-ex-nowarning-cancel-x64",
+          "dialog-print-ex-nocurrent-print-x64",
+          "dialog-print-ex-nocurrent-apply-x64",
+          "dialog-print-ex-nocurrent-cancel-x64",
+          "dialog-print-ex-cancel-x64",
+          "dialog-print-ex-fallback-x64",
+          "dialog-print-ex-ranges-x64",
+          "dialog-print-ex-apply-x64",
+          "dialog-print-ex-invalid-x64",
+          "dialog-print-classic-x64-ansi-accept",
+          "dialog-print-classic-x64-ansi-cancel",
+          "dialog-sheet-x64-ansi",
+          "dialog-find-x64-ansi",
+          "dialog-replace-x64-ansi",
+          "dialog-font-x64-ansi-ok",
+          "dialog-font-x64-ansi-cancel",
+          "dialog-color-x64-ansi-ok",
+          "dialog-color-x64-ansi-cancel",
+          "dialog-color-x64-ansi-expand",
+          "dialog-color-x64-ansi-keyboard",
+          "dialog-print-x64-ansi",
+          "dialog-page-x64-ansi",
+          "dialog-print-classic-x64-wide-accept",
+          "dialog-print-classic-x64-wide-cancel",
+          "dialog-sheet-x64-wide",
+          "dialog-find-x64-wide",
+          "dialog-replace-x64-wide",
+          "dialog-font-x64-wide-ok",
+          "dialog-font-x64-wide-cancel",
+          "dialog-color-x64-wide-ok",
+          "dialog-color-x64-wide-cancel",
+          "dialog-color-x64-wide-expand",
+          "dialog-color-x64-wide-keyboard",
+          "dialog-print-x64-wide",
+          "dialog-page-x64-wide",
+          "dialog-file-negative-x64",
+          "dialog-file-oldhook-accept-native-x64",
+          "dialog-file-oldhook-accept-styled-x64",
+          "dialog-file-oldhook-dynamic-native-x64",
+          "dialog-file-oldhook-dynamic-styled-x64",
+          "dialog-file-x64-open-ansi",
+          "dialog-file-x64-open-wide",
+          "dialog-file-x64-save-ansi",
+          "dialog-file-x64-save-wide",
+          "dialog-file-x64-ansi-v400",
+          "dialog-file-x64-ansi-default",
+          "dialog-file-x64-ansi-oldhook",
+          "dialog-file-x64-wide-v400",
+          "dialog-file-x64-wide-default",
+          "dialog-file-x64-wide-oldhook",
+          "dialog-file-x64-cancel",
+          "dialog-file-x64-hook",
+          "dialog-com-select-folder-x64-open",
+          "dialog-com-select-folder-x64-save",
+          "dialog-com-folder-create-x64",
+          "dialog-com-folder-create-selected-x64",
+          "dialog-com-folder-create-cwd-x64",
+          "dialog-com-folder-create-existing-x64",
+          "dialog-com-folder-create-invalid-x64",
+          "dialog-folder-create-typed-x64",
+          "dialog-folder-create-enter-x64",
+          "dialog-folder-create-x64-ansi-newclassic",
+          "dialog-folder-create-x64-ansi-newclassiccancel",
+          "dialog-folder-create-x64-wide-newclassic",
+          "dialog-folder-create-x64-wide-newclassiccancel",
+          "dialog-folder-x64-ansi-select",
+          "dialog-folder-x64-ansi-cancel",
+          "dialog-folder-x64-wide-select",
+          "dialog-folder-x64-wide-cancel",
+          "dialog-folder-x64-same",
+          "dialog-folder-x64-newfolder",
+          "dialog-folder-x64-controls",
+          "dialog-folder-x64-theme",
+          "legacy-iat-32",
+          "legacy-iat-64",
+          "theme-track-32",
+          "theme-track-64",
+          "theme-track-cancel-32",
+          "theme-track-cancel-64",
+          "console-host-errors",
+          "explorer-snapshot-errors-32",
+          "explorer-snapshot-errors-64",
+          "window-module-enum-errors-32",
+          "window-module-enum-errors-64",
+          "image-path-io-32",
+          "image-path-io-64",
+          "token-user-errors-32",
+          "token-user-errors-64",
+          "user-security-32",
+          "user-security-64",
+          "remote-loader-errors-32",
+          "remote-loader-errors-64",
+          "dispatch-errors-32",
+          "dispatch-errors-64",
+          "worker-errors-32",
+          "worker-errors-64",
+          "window-start-errors-32",
+          "window-start-errors-64",
+          "remote-memory-errors-32",
+          "remote-memory-errors-64",
+          "payload-memory-errors-32",
+          "payload-memory-errors-64",
+          "image-access-32",
+          "image-access-64",
+          "uac-unit-32",
+          "uac-unit-64",
+          "vb5-checklist-dpi144-32",
+          "vb6-checklist-dpi144-32",
+          "vb5-checklist-dpi144-64",
+          "vb6-checklist-dpi144-64",
+          "vb-checklist-32",
+          "vb-checklist-64",
+          "vb-user-edge-32",
+          "vb-user-edge-64",
+          "vb-data-border-32",
+          "vb-data-border-64",
+          "vb-data-arrows-32",
+          "vb-data-arrows-64",
+          "vb5-user-edge-32",
+          "vb5-user-edge-64",
+          "coolbar-lifetime-32",
+          "coolbar-lifetime-64",
+          "vcl-mdi-ref-32",
+          "vcl-mdi-ref-64",
+          "vcl-mdi-32",
+          "vcl-mdi-64",
+          "vb5-mdi-32",
+          "vb5-mdi-64",
+          "vb6-mdi-32",
+          "vb6-mdi-64",
+          "vb5-checklist-32",
+          "vb5-checklist-64",
+          "vb5-owner-check-32",
+          "vb5-owner-check-64",
+          "vb-owner-option-32",
+          "vb-owner-option-64",
+          "vb-graphical-choice-32",
+          "vb-graphical-choice-64",
+          "vb-queue-32",
+          "vb-queue-64",
+          "vb-control-text-32",
+          "vb-control-text-64",
+          "vb-font-32",
+          "vb-font-64",
+          "vb-controls-32",
+          "vb-controls-64",
+          "dialog-classic-result-32",
+          "dialog-classic-result-64",
+          "control-eligibility-32",
+          "control-eligibility-64",
+          "control-scope-32",
+          "control-scope-64",
+          "control-extensions-32",
+          "control-extensions-64",
+          "control-protocol-owner-32",
+          "control-protocol-owner-64",
+          "toolbar-bounds-v5-32",
+          "toolbar-bounds-v5-64",
+          "toolbar-bounds-v6-32",
+          "toolbar-bounds-v6-64",
+          "tab-controls-32",
+          "tab-controls-64",
+          "tab-controls-dpi-32",
+          "tab-controls-dpi-64",
+          "tab-controls-v5-32",
+          "tab-controls-v5-64",
+          "tab-controls-v5-dpi-32",
+          "tab-controls-v5-dpi-64",
+          "pending-control-owner-32",
+          "pending-control-owner-64",
+          "header-v5-32",
+          "header-v5-64",
+          "header-v5-dpi-32",
+          "header-v5-dpi-64",
+          "header-v6-32",
+          "header-v6-64",
+          "header-v6-dpi-32",
+          "header-v6-dpi-64",
+          "list-report-v5-32",
+          "list-report-v5-64",
+          "list-report-v6-32",
+          "list-report-v6-64",
+          "pending-frame-owner-32",
+          "pending-frame-owner-64",
+          "tree-v5-32",
+          "tree-v5-64",
+          "tree-v6-32",
+          "tree-v6-64",
+          "updown-v5-32",
+          "updown-v5-64",
+          "updown-v6-32",
+          "updown-v6-64",
+          "updown-owner-32",
+          "updown-owner-64",
+          "startup-hooks-32",
+          "startup-hooks-64",
+          "trackbar-v5-32",
+          "trackbar-v5-64",
+          "trackbar-v6-32",
+          "trackbar-v6-64",
+          "progress-v5-32",
+          "progress-v5-64",
+          "progress-color-v5-32",
+          "progress-color-v5-64",
+          "progress-detour-v5-32",
+          "progress-detour-v5-64",
+          "progress-v6-32",
+          "progress-v6-64",
+          "header-owner-32",
+          "header-owner-64",
+          "control-visibility-32",
+          "control-visibility-64",
+          "dialog-scope-32",
+          "dialog-scope-64",
+          "dialog-show-32",
+          "dialog-show-64",
+          "theme-stage-32",
+          "theme-stage-64",
+          "superclass-32",
+          "superclass-64",
+          "checklist-32",
+          "checklist-64",
+          "vcl-static-32",
+          "vcl-static-64",
+          "vcl-static-bare-32",
+          "vcl-static-bare-64",
+          "vcl-mask-module-32",
+          "vcl-mask-module-64",
+          "vcl-memo-module-32",
+          "vcl-memo-module-64",
+          "vcl-linklabel-32",
+          "vcl-linklabel-64",
+          "vcl-spinedit-32",
+          "vcl-spinedit-64",
+          "vcl-modern-spin-32",
+          "vcl-modern-spin-64",
+          "vcl-numberbox-32",
+          "vcl-numberbox-64",
+          "vcl-labeled-edit-32",
+          "vcl-labeled-edit-64",
+          "vcl-edit-module-32",
+          "vcl-edit-module-64",
+          "vcl-trackbar-module-32",
+          "vcl-trackbar-module-64",
+          "vcl-drive-combo-32",
+          "vcl-drive-combo-64",
+          "vcl-color-module-32",
+          "vcl-color-module-64",
+          "vcl-status-pane-font-32",
+          "vcl-status-pane-font-64",
+          "month-model-32",
+          "month-model-64",
+          "inplace-model-32",
+          "inplace-model-64",
+          "dbnav-model-32",
+          "dbnav-model-64",
+          "lookup-popup-model-32",
+          "lookup-popup-model-64",
+          "vcl-directory-model-32",
+          "vcl-directory-model-64",
+          "vcl-button-group-model-32",
+          "vcl-button-group-model-64",
+          "vcl-category-buttons-model-32",
+          "vcl-category-buttons-model-64",
+          "vcl-category-external-32",
+          "vcl-category-external-64",
+          "vcl-outline-model-32",
+          "vcl-outline-model-64",
+          "popup-list-model-32",
+          "popup-list-model-64",
+          "controlbar-model-32",
+          "controlbar-model-64",
+          "hotkey-model-32",
+          "hotkey-model-64",
+          "box-model-32",
+          "box-model-64",
+          "rich-wide-32",
+          "rich-wide-64",
+          "rich-model-32",
+          "rich-model-64",
+          "vcl-status-pane-32",
+          "vcl-status-pane-64",
+          "vcl-status-module-32",
+          "vcl-status-module-64",
+          "vcl-status-module-dpi-32",
+          "vcl-status-module-dpi-64",
+          "owner-draw-transition-32",
+          "owner-draw-transition-64",
+          "vcl-report-module-32",
+          "vcl-report-module-64",
+          "vcl-page-module-32",
+          "vcl-page-module-64",
+          "vcl-notebook-32",
+          "vcl-notebook-64",
+          "vcl-tab-module-32",
+          "vcl-tab-module-64",
+          "vcl-toolbar-module-32",
+          "vcl-toolbar-module-64",
+          "vcl-grid-module-32",
+          "vcl-grid-module-64",
+          "vcl-panel-aware-32",
+          "vcl-panel-aware-64",
+          "vcl-scroll-module-32",
+          "vcl-scroll-module-64",
+          "vcl-scroll-module-aware-32",
+          "vcl-scroll-module-aware-64",
+          "vcl-panel-frame-32",
+          "vcl-panel-frame-64",
+          "vcl-popup-aware-32",
+          "vcl-popup-aware-64",
+          "vcl-popup-scope-32",
+          "vcl-popup-scope-64",
+          "vcl-radio-module-32",
+          "vcl-radio-module-64",
+          "vcl-radio-frame-32",
+          "vcl-radio-frame-64",
+          "vcl-group-frame-32",
+          "vcl-group-frame-64",
+          "vcl-group-module-32",
+          "vcl-group-module-64",
+          "vcl-push-module-32",
+          "vcl-push-module-64",
+          "dbcombo-ansi-32",
+          "dbcombo-ansi-64",
+          "vcl-combo-module-32",
+          "vcl-combo-module-64",
+          "vcl-status-simple-32",
+          "vcl-status-simple-64",
+          "status-font-stock-live-32",
+          "status-font-stock-live-64",
+          "status-font-stock-32",
+          "status-font-stock-64",
+          "status-font-isolation-32",
+          "status-font-isolation-64",
+          "vcl-status-font-alias-32",
+          "vcl-status-font-alias-64",
+          "vcl-combo-simple-module-32",
+          "vcl-combo-simple-module-64",
+          "vcl-combo-list-module-32",
+          "vcl-combo-list-module-64",
+          "vcl-check-module-32",
+          "vcl-check-module-64",
+          "vcl-bitbtn-module-32",
+          "vcl-bitbtn-module-64",
+          "vcl-date-module-32",
+          "vcl-date-module-64",
+          "spin-32",
+          "spin-64",
+          "spin-dpi-32",
+          "spin-dpi-64",
+          "spin-passive-32",
+          "spin-passive-64",
+          "status-v5-32",
+          "status-v5-64",
+          "status-v6-32",
+          "status-v6-64",
+          "status-v5-dpi-32",
+          "status-v5-dpi-64",
+          "status-v6-dpi-32",
+          "status-v6-dpi-64",
+          "status-passive-v5-32",
+          "status-passive-v5-64",
+          "status-passive-v6-32",
+          "status-passive-v6-64",
+          "font-stress-32",
+          "font-stress-64",
+          "dialogs",
+          "messages"
+        ]
+      },
+      "startup_size_initial_failure": {
+        "error": "Package test failed: ntw2ks-startup-size-x86, exit 3",
+        "status": "failed-or-inconclusive"
+      },
+      "startup_size_same_session_baseline": [
+        {
+          "package": "assets",
+          "arch": "x86",
+          "exit_code": 0,
+          "output": "WIN2K STARTUP SIZE bits=32 early=0 late=1\nDIALOG_DRIVER exit=0"
+        },
+        {
+          "package": "assets",
+          "arch": "x64",
+          "exit_code": 0,
+          "output": "WIN2K STARTUP SIZE bits=64 early=0 late=1\nDIALOG_DRIVER exit=0"
+        },
+        {
+          "package": "O:/winnt",
+          "arch": "x86",
+          "exit_code": 3,
+          "output": "WIN2K STARTUP SIZE bits=32 early=0 late=0\nDIALOG_DRIVER exit=3"
+        },
+        {
+          "package": "O:/winnt",
+          "arch": "x64",
+          "exit_code": 0,
+          "output": "WIN2K STARTUP SIZE bits=64 early=0 late=1\nDIALOG_DRIVER exit=0"
+        }
+      ],
+      "startup_size_repeat": [
+        {
+          "package": "build/t28-package/s1-uwp-handoff/candidate",
+          "attempt": 0,
+          "exit_code": 0,
+          "output": "WIN2K STARTUP SIZE bits=32 early=0 late=1\nDIALOG_DRIVER exit=0"
+        },
+        {
+          "package": "build/t28-package/s1-uwp-handoff/candidate",
+          "attempt": 1,
+          "exit_code": 3,
+          "output": "WIN2K STARTUP SIZE bits=32 early=0 late=0\nDIALOG_DRIVER exit=3"
+        },
+        {
+          "package": "build/t28-package/s1-uwp-handoff/candidate",
+          "attempt": 2,
+          "exit_code": 3,
+          "output": "WIN2K STARTUP SIZE bits=32 early=0 late=0\nDIALOG_DRIVER exit=3"
+        },
+        {
+          "package": "build/t28-package/s1-caption-parity/candidate",
+          "attempt": 0,
+          "exit_code": 0,
+          "output": "WIN2K STARTUP SIZE bits=32 early=0 late=1\nDIALOG_DRIVER exit=0"
+        },
+        {
+          "package": "build/t28-package/s1-caption-parity/candidate",
+          "attempt": 1,
+          "exit_code": 0,
+          "output": "WIN2K STARTUP SIZE bits=32 early=0 late=1\nDIALOG_DRIVER exit=0"
+        },
+        {
+          "package": "build/t28-package/s1-caption-parity/candidate",
+          "attempt": 2,
+          "exit_code": 0,
+          "output": "WIN2K STARTUP SIZE bits=32 early=0 late=1\nDIALOG_DRIVER exit=0"
+        }
+      ],
+      "rollback_first_failure": {
+        "rollback-r1a0/parent.txt": "entry 596\nwindow-attached 596\nactive-before 2\nactive-after 3\ntotal-before 2\ntotal-after 3\nmember-after 596\nmember-image 596 O:\\repos.hobby\\win16style\\build\\t28-package\\s1-session-matrix\\rollback\\rollback-r1a0\\rollback64.exe\nmember-after 31152\nmember-image 31152 O:\\repos.hobby\\win16style\\build\\t28-package\\s1-session-matrix\\rollback\\rollback-r1a0\\rollback64.exe\nFAIL 62 error=183 account && after.ActiveProcesses==before.ActiveProcesses\n",
+        "rollback-r1a0/sibling.txt": "entry 31152\nwindow-attached 31152\nready 31152\n",
+        "stderr.log": "ROLLBACK MATRIX FAIL 34 error=0: wait==WAIT_OBJECT_0 && !code\n",
+        "stdout.log": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\n"
+      },
+      "rollback_repeat": [
+        {
+          "package": "t27",
+          "attempt": 0,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled"
+        },
+        {
+          "package": "t27",
+          "attempt": 1,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled"
+        },
+        {
+          "package": "early_t28",
+          "attempt": 0,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled"
+        },
+        {
+          "package": "early_t28",
+          "attempt": 1,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled"
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 0,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled"
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 1,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled"
+        }
+      ],
+      "classification": "244 passed. Initial x86 startup-size failure is intermittent and reproduced on the original T28 candidate. The selected suite recorded a rollback failure with JOB_OBJECT_MSG_EXIT_PROCESS already observed but ActiveProcesses still one higher than baseline. T27, early T28 and current preview all passed two isolated repeat invocations. The failure is retained. Unfiltered full suite, real desktop-wide tray and final owner visual approval remain open."
+    },
+    "rollback_fixture_fix": {
+      "fixture_source_sha256": "ba663a8d227bc99d1b681e632565496a4703cfcd4689688bb6fbaef9eb2f8d8f",
+      "windows_observation": "owned exited process: list=1 assigned=1 accounting_while_reference_held=1 accounting_after_release=0 list_after_release=0",
+      "contract": "Matching birth and exit notifications; exact parent/sibling membership before and after; temporarily one extra accounting entry may settle within 1000 ms following the matching exit; failed child must not enter; parent, sibling and subsequent styled launch must survive.",
+      "product_files": "The same eight published artifacts were tested, no binary replacement.",
+      "matrix": [
+        {
+          "package": "t27",
+          "attempt": 0,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 1,
+          "failures": []
+        },
+        {
+          "package": "t27",
+          "attempt": 1,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "t27",
+          "attempt": 2,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "early_t28",
+          "attempt": 0,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "early_t28",
+          "attempt": 1,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "early_t28",
+          "attempt": 2,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 1,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 0,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 1,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 2,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 3,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 4,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 5,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 6,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 7,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 8,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 9,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 10,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        },
+        {
+          "package": "preview_t28",
+          "attempt": 11,
+          "exit_code": 0,
+          "output": "ROLLBACK PASS parent=32 failed child=64 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=32 failed child=64 API=A, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=W, exact job creation/exit, parent/sibling survived and restyled\nROLLBACK PASS parent=64 failed child=32 API=A, exact job creation/exit, parent/sibling survived and restyled\n",
+          "accounting_updates": 0,
+          "failures": []
+        }
+      ]
+    },
+    "tray_uwp_fixture": {
+      "fixture_source_sha256": "c27547c94bde8d13f0912934c5eaa52169de30e448be9d2e78b3b86b9f6badfd",
+      "fixture_sha256": "93353e90e7e1b5e59599375dc0727d5fbf5f5d8a7d5c9c04f8a39be3fb78d9e8",
+      "core_model": [
+        {
+          "architecture": "x86",
+          "exit_code": 0,
+          "output": "TRAY CONTROLLER PASS bits=32 switch=both toggle=off failure=1 mutually_exclusive=1"
+        },
+        {
+          "architecture": "x64",
+          "exit_code": 0,
+          "output": "TRAY CONTROLLER PASS bits=64 switch=both toggle=off failure=1 mutually_exclusive=1"
+        }
+      ],
+      "non_elevated_guard": "DPI_SET ok=1 awareness=2\nTOKEN elevated=0 window_events_only=0\nSKIP elevated probe required",
+      "desktop_wide_status": "Passed for the two owned UWP targets using the published Windows tray in console session 4, with explicit owner authorization.",
+      "actual_published_tray": {
+        "run": "2026-11-18T07:28:51-08:00",
+        "console_session": 4,
+        "probe_exit": 0,
+        "cleanup": {
+          "active_managed_top_level": 0,
+          "tray_present": false,
+          "owned_test_processes_remaining": 0
+        },
+        "probe_log": "DPI_SET ok=1 awareness=2\nTOKEN elevated=1 window_events_only=0\nACTIVATE hr=0 pid=20740\nFRAME hwnd=00000000000c00be dpi=144\nTRAY pid=36988 hwnd=00000000000404a0 icon_hr=0 rect=1389,1008,1437,1080\nMENU win16_checked=0 win2k_checked=0 disabled=0 expected=0 exit=0\nMENU_TYPE type=0 state=0\nMENU_PROVIDER children=3 name_hr=0 name=Enable Win16 Style action_hr=0 action=Execute state_hr=0 state=132\nMENU_ACCESSIBLE hr=0\nEXISTING_UWP_STYLED\nACTIVATE hr=0 pid=24700\nFRAME hwnd=0000000000d00590 dpi=144\nNEW_UWP_STYLED\nSESSION_READY style=0 wait_ms=63\nMENU win16_checked=1 win2k_checked=0 disabled=0 expected=1 exit=0\nMENU_TYPE type=0 state=0\nMENU_PROVIDER children=3 name_hr=0 name=Enable Windows 2000 Style action_hr=0 action=Execute state_hr=0 state=0\nMENU_ACCESSIBLE hr=0\nSESSION_READY style=1 wait_ms=1141\nPUBLISHED_TRAY_UWP_SWITCH_2K_PASS\nMENU win16_checked=0 win2k_checked=1 disabled=0 expected=2 exit=0\nMENU_TYPE type=0 state=0\nMENU_PROVIDER children=3 name_hr=0 name=Enable Win16 Style action_hr=0 action=Execute state_hr=0 state=0\nMENU_ACCESSIBLE hr=0\nSESSION_READY style=0 wait_ms=1750\nPUBLISHED_TRAY_UWP_SWITCH_16_PASS\nMENU win16_checked=1 win2k_checked=0 disabled=0 expected=1 exit=0\nMENU_TYPE type=0 state=8\nMENU_PROVIDER children=3 name_hr=0 name=Enable Win16 Style action_hr=0 action=Execute state_hr=0 state=16\nMENU_ACCESSIBLE hr=0\nPUBLISHED_TRAY_UWP_DISABLE_PASS\nMENU win16_checked=0 win2k_checked=0 disabled=0 expected=0 exit=1\nMENU_TYPE type=0 state=0\nMENU_PROVIDER children=3 name_hr=0 name=Exit action_hr=0 action=Execute state_hr=0 state=0\nMENU_ACCESSIBLE hr=0\nCONTROLLER_EXIT before_cleanup=0\nUWP_TRAY_PASS mode=uwp-styles enabled_at_cleanup=0\n",
+        "controller_log": "run16s: global start: 286 windows notified, 7 timed out or failed\nrun16s: global active; press Ctrl+C to stop\nrun16s: global stop: 293 windows notified, 7 timed out or failed\nrun16s: global start: 291 windows notified, 7 timed out or failed\nrun16s: global active; press Ctrl+C to stop\nrun16s: global stop: 291 windows notified, 7 timed out or failed\nrun16s: global start: 292 windows notified, 7 timed out or failed\nrun16s: global active; press Ctrl+C to stop\nrun16s: global stop: 293 windows notified, 7 timed out or failed\n",
+        "coverage_limit": "Each desktop broadcast recorded seven timeout-or-failure events. Zero visible-session top-level windows with the global-manager property were observed afterward. Restoration of each broadcast recipient was not independently verified."
+      }
+    },
+    "close_button_owner_followup": {
+      "dpi": 144,
+      "runs": {
+        "calc": "launch=0 pid=22956 frame=00000000000e0480 frame style=94cf0000 surface=00000000000208cc\nclose size=24x21 dpi=144 titlebar_state=00008000 black=149 white=29 down=1 capture=1 up=1 closed=1 surface_removed=1",
+        "scan": "launch=0 pid=27768 frame=00000000000f0480 frame style=95cf0000 surface=00000000000b0864\nclose size=24x21 dpi=144 titlebar_state=00008000 black=149 white=40 down=1 capture=1 up=1 closed=1 surface_removed=1",
+        "calc-mouse": "launch=0 pid=25204 frame=000000000021054e frame style=94cf0000 surface=00000000012707ca\nclose size=24x21 dpi=144 titlebar_state=00008000 black=149 white=29 actual_down=1 hit_owned_surface=1 actual_up=1 closed=1 surface_removed=1",
+        "scan-mouse": "launch=0 pid=31168 frame=000000000022054e frame style=95cf0000 surface=0000000000040900\nclose size=24x21 dpi=144 titlebar_state=00008000 black=149 white=40 actual_down=1 hit_owned_surface=1 actual_up=1 closed=1 surface_removed=1"
+      },
+      "scope": "Owned Calculator and Scan, normally sized, by ordinary startup from published T28. Verified direct mouse messages and an actual OS mouse-input click, targeting the verified owned overlay at the center. Exact user-observed symptom to be confirmed."
+    },
+    "caption_layer_followup": {
+      "published_mixed_awareness_observation": "Solitaire dpi 96 awareness 0 window physical (45, 131, 947, 796)\nCalculator dpi 144 awareness 2 layer physical (987, 130, 1489, 892)\nSolitaire WM_GETTITLEBARINFOEX close (915, 138, 939, 159) state 0x0\nSolitaire virtual close (610, 92, 626, 106) virtual window (30, 87, 631, 530)\nscreen pixel validity 0 of 504\nown window DC valid 504 of 504\nWin32 close rect (915, 138, 939, 159) size (24, 21) unique 4 black 118 white 62 dark gray 58 face 266\nscreen pixel validity 0 of 504\nown window DC valid 0 of 504\nUWP close rect (1458, 138, 1482, 159) size (24, 21) unique 0 black 0 white 0 dark gray 0 face 0\n",
+      "interpretation": "Both physical button rectangles are 24 by 21 at 144 physical DPI, but Solitaire uses a 96 DPI virtual surface and Calculator is per-monitor aware. This follow-up did not yield final screen pixels from both actual windows.",
+      "development_checks": {
+        "x86": [
+          "core/win2k-caption",
+          "core/dc-failure",
+          "core/uwp-frame",
+          "core/win2k-uwp-frame"
+        ],
+        "x64": [
+          "core/win2k-caption",
+          "core/dc-failure",
+          "core/uwp-frame",
+          "core/win2k-uwp-frame"
+        ]
+      },
+      "new_renderer_contract": "Win16 and Win2000 caption rendering accept resolved drawing inputs; HWND queries run in the bridge. Development sources have not replaced the preview."
+    }
+  }
+}

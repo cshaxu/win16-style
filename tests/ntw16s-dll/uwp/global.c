@@ -82,8 +82,14 @@ static DWORD image_pid(PCWSTR image)
 int wmain(int argc,WCHAR **argv)
 {
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    PCWSTR package_dll=NULL;
+    if(argc>=3&&!wcscmp(argv[argc-2],L"--package-dll")){
+        package_dll=argv[argc-1];
+        argc-=2;
+    }
     BOOL new_target=argc==4&&!wcscmp(argv[3],L"new");
-    BOOL prestyled=argc==6&&!wcscmp(argv[3],L"pair-styled");
+    BOOL win2k=argc==6&&!wcscmp(argv[3],L"pair-switch-2k");
+    BOOL prestyled=win2k || (argc==6&&!wcscmp(argv[3],L"pair-styled"));
     BOOL command=argc==6&&!wcscmp(argv[3],L"pair-cli");
     BOOL pair=command||prestyled||(argc==6&&!wcscmp(argv[3],L"pair"));
     if((argc!=3&&!new_target&&!pair)||sizeof(void*)!=8){puts("SKIP explicit AUMID/image and x64 host required");return 77;}
@@ -91,6 +97,12 @@ int wmain(int argc,WCHAR **argv)
     WCHAR name[NTW16S_GLOBAL_NAME_CAP],stop_name[NTW16S_GLOBAL_NAME_CAP+16],dll[32768];DWORD n=GetModuleFileNameW(NULL,dll,ARRAYSIZE(dll));
     WCHAR *tail=wcsrchr(dll,L'\\');if(!n||n>=ARRAYSIZE(dll)||!tail||(size_t)(tail-dll)+20>=ARRAYSIZE(dll))return 1;
     wcscpy(tail+1,L"ntw16s64.dll");
+    if(package_dll){
+        DWORD length=GetFullPathNameW(package_dll,ARRAYSIZE(dll),dll,&tail);
+        if(!length||length>=ARRAYSIZE(dll)||!tail||_wcsicmp(tail,L"ntw16s64.dll"))return 2;
+        DWORD attributes=GetFileAttributesW(dll);
+        if(attributes==INVALID_FILE_ATTRIBUTES||(attributes&FILE_ATTRIBUTE_DIRECTORY))return 2;
+    }
     if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return 1;
     if(swprintf(stop_name,ARRAYSIZE(stop_name),L"%ls.stop",name)<0)return 1;
     HANDLE mapping=CreateFileMappingW(INVALID_HANDLE_VALUE,NULL,PAGE_READWRITE,0,sizeof(ntw16s_global_session),name);
@@ -103,7 +115,8 @@ int wmain(int argc,WCHAR **argv)
     HRESULT hr=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);BOOL com=SUCCEEDED(hr);
     HWINEVENTHOOK event_hook=SetWinEventHook(EVENT_OBJECT_CREATE,EVENT_OBJECT_UNCLOAKED,NULL,events,0,0,WINEVENT_OUTOFCONTEXT);
     if(!s||!stop||!com)goto done;
-    *s=(ntw16s_global_session){.magic=NTW16S_GLOBAL_MAGIC,.version=NTW16S_GLOBAL_VERSION,.owner_pid=GetCurrentProcessId(),.cookie=GetCurrentProcessId(),.phase=NTW16S_GLOBAL_ACTIVE};
+    *s=(ntw16s_global_session){.magic=NTW16S_GLOBAL_MAGIC,.version=NTW16S_GLOBAL_VERSION,.owner_pid=GetCurrentProcessId(),.cookie=GetCurrentProcessId(),.phase=NTW16S_GLOBAL_ACTIVE,
+        .style=win2k?NTW16S_GLOBAL_STYLE_2K:NTW16S_GLOBAL_STYLE_16};
     if(!win32_process_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high))goto done;
     if(new_target){
         style_global_manager_test_filter(MAXDWORD);
@@ -143,6 +156,7 @@ int wmain(int argc,WCHAR **argv)
     frame=target.frame;EnumWindows(owned,0);
     printf("BEFORE frame=%p core=%p surfaces=%u\n",(void*)frame,(void*)target.core,surfaces);
     if(!frame||(command?(surfaces!=1||!IsWindowVisible(surface)):(!new_target&&surfaces)))goto done;
+    HWND prior_surface=NULL;
     if(pair){
         GetSystemTimeAsFileTime(&start);DWORD second_pid=0;
         manager=NULL;hr=CoCreateInstance(&CLSID_ApplicationActivationManager,NULL,CLSCTX_LOCAL_SERVER,&IID_IApplicationActivationManager,(void**)&manager);
@@ -159,7 +173,12 @@ int wmain(int argc,WCHAR **argv)
         DWORD host1=0,host2=0;GetWindowThreadProcessId(frame,&host1);GetWindowThreadProcessId(second_target.frame,&host2);
         printf("PAIR_TARGET first=%lu second=%lu host1=%lu host2=%lu\n",pid,second_pid,host1,host2);
         if(!second_target.frame||!host1||host1!=host2||frame==second_target.frame)goto done;
-        if(prestyled){error=ntw16s_uwp_target_change(&target,dll,TRUE);printf("PAIR_PRESTYLE error=%lu\n",error);if(error)goto done;}
+        if(prestyled){
+            error=ntw16s_uwp_target_change(&target,dll,TRUE,FALSE);printf("PAIR_PRESTYLE error=%lu\n",error);if(error)goto done;
+            surfaces=0;surface=NULL;EnumWindows(owned,0);
+            if(surfaces!=1 || !surface || !IsWindowVisible(surface))goto done;
+            prior_surface=surface;
+        }
     }
     if(!new_target){error=style_global_manager_start(&ntw16s_global_manager_config,dll,IMAGE_FILE_MACHINE_AMD64,&global);if(error)goto done;}
     BOOL admitted=new_target||!style_global_manager_refresh(global);
@@ -175,6 +194,11 @@ int wmain(int argc,WCHAR **argv)
     error=style_global_manager_wait_idle(global,7000);
     surfaces=0;surface=NULL;EnumWindows(owned,0);
     ok=!error&&admitted&&surfaces==1&&surface&&IsWindowVisible(surface);
+    if(win2k){
+        BOOL switched=prior_surface && surface!=prior_surface && !IsWindow(prior_surface);
+        printf("GLOBAL_UWP_SWITCH old_removed=%d selected=%lu\n",switched,(unsigned long)s->style);
+        ok=ok&&switched;
+    }
     printf("GLOBAL_APPLY admitted=%d idle_error=%lu surfaces=%u visible=%d\n",admitted,error,surfaces,surface?IsWindowVisible(surface):0);
     style_global_manager_stats stats;style_global_manager_stats_read(global,&stats);
     printf("GLOBAL_STATS queued=%ld active=%ld failed=%ld\n",stats.queued,stats.active,stats.failed);

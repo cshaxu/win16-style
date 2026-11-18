@@ -54,6 +54,7 @@ BOOL style_uwp_frame_start(style_uwp_frame *,HWND,HWND,const style_uwp_frame_ops
     const style_uwp_frame_action *,unsigned,style_uwp_frame_action_entry *storage);
 BOOL style_uwp_frame_remove(HWND);
 HWND style_uwp_frame_surface(HWND);
+BOOL style_uwp_frame_uses(HWND,const style_uwp_frame_ops *);
 /* Menu renderer selection notification; context is the complete frame. */
 void style_uwp_frame_menu_selection(HWND,void *,BOOL);
 #endif

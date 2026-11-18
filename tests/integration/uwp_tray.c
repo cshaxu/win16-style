@@ -121,6 +121,15 @@ static BOOL wait_style(application *app,BOOL wanted)
     do{if(styled(app)==wanted)return TRUE;pump(30);}while(GetTickCount64()<end);
     return FALSE;
 }
+static BOOL wait_replaced(application *app,HWND previous)
+{
+    ULONGLONG end=GetTickCount64()+15000;
+    do{
+        if(!IsWindow(previous) && styled(app) && app->surface!=previous)return TRUE;
+        pump(30);
+    }while(GetTickCount64()<end);
+    return FALSE;
+}
 static BOOL activate(application *app,PCWSTR aumid)
 {
     FILETIME start,birth,a,b,c;GetSystemTimeAsFileTime(&start);
@@ -316,6 +325,7 @@ int wmain(int argc,WCHAR **argv)
 {
     BOOL dpi_set=SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     BOOL menu_only=argc==4&&!wcscmp(argv[3],L"--menu-only");
+    BOOL uwp_styles=argc==4&&!wcscmp(argv[3],L"--uwp-styles");
     BOOL rapid=argc==6&&!wcscmp(argv[3],L"--rapid");
     BOOL early_switch=argc==6&&!wcscmp(argv[3],L"--early-switch");
     BOOL mouse_existing=argc==6&&!wcscmp(argv[3],L"--sol-mouse");
@@ -326,7 +336,7 @@ int wmain(int argc,WCHAR **argv)
     BOOL styles=sol||rapid||early_switch||(argc==6&&!wcscmp(argv[3],L"--styles"));
     BOOL window_events=argc==4&&!wcscmp(argv[3],L"--window-events");
     BOOL toggle=window_events||(argc==4&&!wcscmp(argv[3],L"--toggle"));
-    if(argc!=3&&!menu_only&&!toggle&&!styles){puts("SKIP opt-in executable and log path required");return 77;}
+    if(argc!=3&&!menu_only&&!toggle&&!styles&&!uwp_styles){puts("SKIP opt-in executable and log path required");return 77;}
     if(!_wfreopen(argv[2],L"w",stdout))return 1;
     setvbuf(stdout,NULL,_IONBF,0);
     printf("DPI_SET ok=%d awareness=%d\n",dpi_set,(int)GetAwarenessFromDpiAwarenessContext(GetThreadDpiAwarenessContext()));
@@ -440,6 +450,22 @@ int wmain(int argc,WCHAR **argv)
     if(!activate(&apps[1],L"Microsoft.WindowsScan_8wekyb3d8bbwe!App")||!wait_style(&apps[1],TRUE))goto done;
     puts("NEW_UWP_STYLED");
     HWND first=apps[0].surface,second=apps[1].surface;
+    if(uwp_styles){
+        if(!wait_ready_style(NTW16S_GLOBAL_STYLE_16) || !choose_item(1,1) ||
+           !wait_ready_style(NTW16S_GLOBAL_STYLE_2K) ||
+           !wait_replaced(&apps[0],first) || !wait_replaced(&apps[1],second))goto done;
+        puts("PUBLISHED_TRAY_UWP_SWITCH_2K_PASS");
+        first=apps[0].surface;second=apps[1].surface;
+        if(!choose_item(2,0) || !wait_ready_style(NTW16S_GLOBAL_STYLE_16) ||
+           !wait_replaced(&apps[0],first) || !wait_replaced(&apps[1],second))goto done;
+        puts("PUBLISHED_TRAY_UWP_SWITCH_16_PASS");
+        first=apps[0].surface;second=apps[1].surface;
+        if(!choose_item(1,0) || !wait_session_stopped() || !wait_style(&apps[0],FALSE) ||
+           !wait_style(&apps[1],FALSE) || IsWindow(first) || IsWindow(second))goto done;
+        enabled=FALSE;
+        puts("PUBLISHED_TRAY_UWP_DISABLE_PASS");
+        goto exit_tray;
+    }
     if(toggle&&!wait_ready()){puts("FAIL session not ready for Uncheck");goto done;}
     /* The controller may still be finishing discovery when the first surface
        appears. Allow its UI to process the ready notification before the menu. */
@@ -492,5 +518,5 @@ done:
     if(input_handle!=INVALID_HANDLE_VALUE)CloseHandle(input_handle);
     cleanup(&apps[1]);cleanup(&apps[0]);for(unsigned i=0;i<ARRAYSIZE(frames_test);++i)frame_cleanup(&frames_test[i]);CoUninitialize();
     if(restore_pointer)SetCursorPos(pointer.x,pointer.y);
-    printf("UWP_TRAY_%s mode=%s enabled_at_cleanup=%d\n",ok?"PASS":"FAIL",styles?"published-styles":menu_only?"menu-exit":toggle?"toggle-resident":"enable-shutdown",enabled);return ok?0:1;
+    printf("UWP_TRAY_%s mode=%s enabled_at_cleanup=%d\n",ok?"PASS":"FAIL",uwp_styles?"uwp-styles":styles?"published-styles":menu_only?"menu-exit":toggle?"toggle-resident":"enable-shutdown",enabled);return ok?0:1;
 }

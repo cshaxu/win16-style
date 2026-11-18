@@ -82,6 +82,8 @@ static BOOL menu_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,BOO
     return style_menu_owner_message(&s->frame.menu,w,message,a,b,&win16_style_menu_operations,&theme,result);
 }
 static const style_uwp_frame_ops operations={refresh_geometry,refresh_paint,input_hit,input_button,input_invoke,menu_message,dispose};
+BOOL win16_uwp_frame_uses(HWND w)
+{return style_uwp_frame_uses(w,&operations);}
 static BOOL apply_actions(HWND w,HWND title,const style_uwp_frame_action *actions,unsigned count)
 {
     if(!style_uwp_frame_validate(w,title,actions,count))return FALSE;

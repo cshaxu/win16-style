@@ -8,9 +8,18 @@ int main(void)
         UINT dpi=scales[scale];
         SIZE outer={MulDiv(500,dpi,96),MulDiv(400,dpi,96)};
         RECT content={MulDiv(8,dpi,96),MulDiv(40,dpi,96),outer.cx-MulDiv(8,dpi,96),outer.cy-MulDiv(8,dpi,96)};
-        win16_style_layout l;RECT overlap;
+        win16_style_layout l,native;RECT overlap;
+        CHECK(win16_style_measure(outer.cx,outer.cy,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&native));
         CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,&l));
         CHECK(EqualRect(&content,&l.client));
+        CHECK(EqualRect(&native.caption,&l.caption) && EqualRect(&native.title,&l.title) &&
+              EqualRect(&native.system,&l.system) && EqualRect(&native.minimize,&l.minimize) &&
+              EqualRect(&native.maximize,&l.maximize));
+        RECT taller=content;taller.top+=MulDiv(15,dpi,96);
+        CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,taller,&l));
+        CHECK(EqualRect(&taller,&l.client) && EqualRect(&native.caption,&l.caption) &&
+              EqualRect(&native.maximize,&l.maximize));
+        CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,&l));
         CHECK(!IntersectRect(&overlap,&l.title,&l.maximize));
         CHECK(!IntersectRect(&overlap,&l.minimize,&l.maximize));
         POINT p={content.left+1,content.top+1};CHECK(win16_uwp_frame_hit(&l,p)==HTCLIENT);

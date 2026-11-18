@@ -1,4 +1,15 @@
 #include "contract_support.h"
+
+static BOOL only_survivors(HANDLE job,DWORD parent,DWORD sibling)
+{
+    ULONG_PTR storage[sizeof(JOBOBJECT_BASIC_PROCESS_ID_LIST)/sizeof(ULONG_PTR)+1]={0};
+    JOBOBJECT_BASIC_PROCESS_ID_LIST *list=(void *)storage;
+    if(!QueryInformationJobObject(job,JobObjectBasicProcessIdList,list,sizeof(storage),NULL) ||
+       list->NumberOfAssignedProcesses!=2 || list->NumberOfProcessIdsInList!=2)return FALSE;
+    ULONG_PTR first=list->ProcessIdList[0],second=list->ProcessIdList[1];
+    return (first==parent && second==sibling) || (first==sibling && second==parent);
+}
+
 static int standby(int argc,WCHAR **argv)
 {
     CHECK(argc==7 && !wcscpy_s(contract_report,MAX_PATH,argv[2]));contract_log("entry",GetCurrentProcessId());
@@ -28,7 +39,8 @@ int wmain(int argc,WCHAR **argv)
         (unsigned long long)(ULONG_PTR)ready,(unsigned long long)(ULONG_PTR)release,(unsigned)(sizeof(void *)*8))>0);
     CHECK(CreateProcessW(argv[3],command,NULL,NULL,TRUE,0,NULL,NULL,&startup,&sibling) && contract_wait(ready,30000)==WAIT_OBJECT_0);
     JOBOBJECT_BASIC_ACCOUNTING_INFORMATION before,after;
-    CHECK(QueryInformationJobObject(job,JobObjectBasicAccountingInformation,&before,sizeof(before),NULL) && before.ActiveProcesses>=2);
+    CHECK(QueryInformationJobObject(job,JobObjectBasicAccountingInformation,&before,sizeof(before),NULL) && before.ActiveProcesses==2);
+    CHECK(only_survivors(job,GetCurrentProcessId(),sibling.dwProcessId));
     DWORD message;ULONG_PTR key;LPOVERLAPPED data;
     while(GetQueuedCompletionStatus(port,&message,&key,&data,0)){}CHECK(GetLastError()==WAIT_TIMEOUT);
     CHECK(swprintf_s(missing,MAX_PATH,L"%ls\\ntw16s%u.dll",argv[4],sizeof(void *)==8?32:64)>0 && DeleteFileW(missing));
@@ -48,6 +60,15 @@ int wmain(int argc,WCHAR **argv)
     }
     CHECK(born==exited && born!=GetCurrentProcessId() && born!=sibling.dwProcessId);
     BOOL account=QueryInformationJobObject(job,JobObjectBasicAccountingInformation,&after,sizeof(after),NULL);
+    DWORD initial_active=account?after.ActiveProcesses:0;
+    /* After the matching exit notification, job accounting can retain the
+     * exited process until the last reference is released. */
+    ULONGLONG accounting_deadline=GetTickCount64()+1000;
+    while(account && after.ActiveProcesses==before.ActiveProcesses+1 &&
+          GetTickCount64()<accounting_deadline){
+        Sleep(1);
+        account=QueryInformationJobObject(job,JobObjectBasicAccountingInformation,&after,sizeof(after),NULL);
+    }
     if(!account || after.ActiveProcesses!=before.ActiveProcesses){
         contract_log("active-before",before.ActiveProcesses);contract_log("active-after",after.ActiveProcesses);
         contract_log("total-before",before.TotalProcesses);contract_log("total-after",after.TotalProcesses);
@@ -60,6 +81,8 @@ int wmain(int argc,WCHAR **argv)
         }
     }
     CHECK(account && after.ActiveProcesses==before.ActiveProcesses);
+    CHECK(only_survivors(job,GetCurrentProcessId(),sibling.dwProcessId));
+    if(initial_active!=after.ActiveProcesses)contract_log("accounting-settled-from",initial_active);
     CHECK(GetFileAttributesW(failed_marker)==INVALID_FILE_ATTRIBUTES);
     DWORD code;CHECK(GetExitCodeProcess(sibling.hProcess,&code) && code==STILL_ACTIVE);contract_window(TRUE,argv[4]);
     /* A failed A/W call must not leave the TLS guard disabling later launches. */

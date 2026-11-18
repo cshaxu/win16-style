@@ -312,3 +312,8 @@
 - [T27 S14 VB、VCL 与复合控件](evidence/t27-s14-runtime.json)；[实际远端](evidence/t27-s14-remote.json)。
 - [T27 S15 Demo 与六方向切换](evidence/t27-s15-demo.json)；[实际远端](evidence/t27-s15-remote.json)。
 - [T27 S16 全任务复核](evidence/t27-s16-final-audit.json)包含冻结组与当前实包用例的逐项对照。
+
+- [UWP Win2000 外框与风格选择](evidence/t28-s1-uwp-delivery.json)记录真实计算器、Scan、公开命令和有限全局切换的证据。
+- [WinUI Win2000 外框候选](evidence/t28-s2-winui-frame.json)记录双宽构建、两处发布、实际记事本回归及恢复和取色待办。
+- [WinUI 外框恢复修正版](evidence/t28-s2-restore-delivery.json)记录同包发布、31 项原生回归、DWM 修正对照和实际 UWP 宿主缺失。
+- [WinUI 合成边界恢复交付](evidence/t28-s2-composition-delivery.json)记录同快照八件、真实 WinUI/UWP 和双位宽 Win32 对照。

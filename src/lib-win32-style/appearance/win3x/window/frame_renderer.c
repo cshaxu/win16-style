@@ -2,6 +2,8 @@
 #include "frame_paint.h"
 #include "../menu/menu_bar.h"
 #include "lib-win32-style/application/graphics/present.h"
+#include "lib-win32-style/application/window/window_text.h"
+#include <stdlib.h>
 #include <windowsx.h>
 
 void win16_control_frame_button_press(HWND w,const win16_control_frame_button_view *s,int hit)
@@ -30,6 +32,19 @@ BOOL win16_control_frame_button_cancel(HWND w,const win16_control_frame_button_v
     int pressed=style_caption_button_cancel(w,s->state,msg);
     if(!s->instance->detached)s->paint(w,s->context,pressed);
     return TRUE;
+}
+
+static void render_caption(HWND window,const style_instance *instance,HDC dc,
+    const win16_style_layout *layout,const win16_style_palette *palette,
+    void *context,win16_frame_state_read read)
+{
+    WCHAR *title=style_window_text_copy(window);
+    if(!instance->detached){
+        win16_frame_paint_state state;read(context,&state);
+        BOOL child=(GetWindowLongPtrW(window,GWL_STYLE)&WS_CHILD)!=0;
+        win16_control_frame_caption(dc,layout,palette,&state,title,child,IsZoomed(window));
+    }
+    free(title);
 }
 
 void win16_control_paint_frame(HWND w,style_instance *instance,void *context,const win16_frame_renderer_ops *ops,HDC target)
@@ -69,7 +84,7 @@ void win16_control_paint_frame(HWND w,style_instance *instance,void *context,con
     if(IsRectEmpty(&l.caption)){
         RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);return;
     }
-    win16_control_frame_caption(w,dc,&l,&p,context,ops->state);
+    render_caption(w,instance,dc,&l,&p,context,ops->state);
     RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);
 }
 

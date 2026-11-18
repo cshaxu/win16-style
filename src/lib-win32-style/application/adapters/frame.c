@@ -146,3 +146,11 @@ HWND style_uwp_frame_surface(HWND w)
     if(!local(w))return NULL;
     style_uwp_host *s=lookup(w);return s&&!s->instance.detached?s->surface:NULL;
 }
+BOOL style_uwp_frame_uses(HWND w,const style_uwp_frame_ops *ops)
+{
+    if(!local(w))return FALSE;
+    style_uwp_host *host=lookup(w);
+    if(!host || host->instance.detached)return FALSE;
+    const style_uwp_frame *frame=host->instance.context;
+    return frame->ops==ops;
+}

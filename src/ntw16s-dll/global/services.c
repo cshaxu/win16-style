@@ -7,7 +7,9 @@
 static BOOL uwp_active(void *context)
 {return ntw16s_global_policy_active((DWORD)(uintptr_t)context);}
 static DWORD uwp_change(const style_uwp_target *target,PCWSTR dll,BOOL apply,void *context)
-{(void)context;return ntw16s_uwp_target_change(target,dll,apply);}
+{(void)context;return ntw16s_uwp_target_change(target,dll,apply,FALSE);}
+static DWORD uwp_change_2k(const style_uwp_target *target,PCWSTR dll,BOOL apply,void *context)
+{(void)context;return ntw16s_uwp_target_change(target,dll,apply,TRUE);}
 static void uwp_report(const style_uwp_target *target,DWORD error,void *context)
 {
     (void)context;
@@ -18,8 +20,10 @@ static void uwp_report(const style_uwp_target *target,DWORD error,void *context)
 }
 static BOOL uwp_services(DWORD style,DWORD cookie,WORD machine,style_uwp_global_services *services,void *context)
 {
-    (void)context;if(machine!=IMAGE_FILE_MACHINE_AMD64 || style!=NTW16S_GLOBAL_STYLE_16)return FALSE;
-    *services=(style_uwp_global_services){machine,style_uwp_host_image,uwp_active,uwp_change,uwp_report,(void *)(uintptr_t)cookie};
+    (void)context;
+    if(machine!=IMAGE_FILE_MACHINE_AMD64 || (style!=NTW16S_GLOBAL_STYLE_16 && style!=NTW16S_GLOBAL_STYLE_2K))return FALSE;
+    *services=(style_uwp_global_services){machine,style_uwp_host_image,uwp_active,
+        style==NTW16S_GLOBAL_STYLE_2K?uwp_change_2k:uwp_change,uwp_report,(void *)(uintptr_t)cookie};
     return TRUE;
 }
 static void report(const style_global_report *detail,void *context)

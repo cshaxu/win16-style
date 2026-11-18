@@ -171,7 +171,7 @@ int wmain(int argc,WCHAR **argv)
         SetRect(&title_layout.caption,0,0,320,30);title_layout.title=title_layout.caption;title_layout.unit=1;
         CHECK(SetWindowSubclass(w,reentrant_title,77,(DWORD_PTR)&title_state));
         int saved=SaveDC(dc);CHECK(saved);title_callbacks=0;
-        win16_control_frame_caption(w,dc,&title_layout,&palette,&title_state,paint_state);
+        render_caption(w,&title_state.instance,dc,&title_layout,&palette,&title_state,paint_state);
         CHECK(title_callbacks && title_state.native.active &&
             GetCurrentObject(dc,OBJ_FONT)==GetStockObject(DEFAULT_GUI_FONT) && GetTextColor(dc)==palette.active_text);
         CHECK(RestoreDC(dc,saved) && RemoveWindowSubclass(w,reentrant_title,77));

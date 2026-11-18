@@ -61,7 +61,16 @@ static inline HRESULT style_native_frame_restore_policy(HWND window,
 static inline void style_native_frame_restore_geometry(HWND window,
     const style_native_frame *state,const RECT *client,BOOL normal)
 {
-    if(IsWindow(window) && !state->pending)
-        style_frame_changed_restore(window,client,normal && !state->keep_outer);
+    if(!IsWindow(window) || state->pending)return;
+    style_frame_changed_restore(window,client,normal && !state->keep_outer);
+    if(state->keep_outer && IsWindow(window)){
+        /* The former caption occupies client pixels again. Discard its old
+         * backing pixels and invalidate the composed children without a hide. */
+        SetWindowPos(window,NULL,0,0,0,0,SWP_FRAMECHANGED|SWP_NOCOPYBITS|
+            SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOOWNERZORDER);
+        RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN|RDW_NOFRAME);
+        /* Let the app reestablish its own composition margins after detach. */
+        PostMessageW(window,WM_DWMCOMPOSITIONCHANGED,0,0);
+    }
 }
 #endif

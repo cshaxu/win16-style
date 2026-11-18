@@ -26,8 +26,16 @@ static BOOL reentrant_removed,reentrant_attached,retained_during_callback;
 static BOOL remove_on_caption,caption_removed,caption_retained;
 static BOOL testing_buttons;
 static UINT last_command,commands;
+static unsigned composed_paints;
+static BOOL watch_composed_paints;
+static BOOL extends_client;
 static LRESULT CALLBACK native(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
+    if(extends_client && message==WM_NCCALCSIZE)return 0;
+    if(watch_composed_paints && message==WM_NCPAINT){
+        frame_window *frame=frame_state(window);
+        if(frame && frame->composed_repaint.repainting)++composed_paints;
+    }
     if(testing_buttons && message==WM_SYSCOMMAND){last_command=(UINT)wp&0xfff0;++commands;return 0;}
     if(message==WM_GETTITLEBARINFOEX && remove_on_caption){
         remove_on_caption=FALSE;
@@ -42,6 +50,16 @@ static LRESULT CALLBACK native(HWND window,UINT message,WPARAM wp,LPARAM lp)
         reentrant_attached=win2k_frame_attach(window);
     }
     return DefWindowProcW(window,message,wp,lp);
+}
+static BOOL pump_repaint(frame_window *frame)
+{
+    ULONGLONG deadline=GetTickCount64()+2000;
+    MSG message;
+    while(frame->composed_repaint.pending && GetTickCount64()<deadline){
+        while(PeekMessageW(&message,NULL,0,0,PM_REMOVE))DispatchMessageW(&message);
+        if(frame->composed_repaint.pending)MsgWaitForMultipleObjects(0,NULL,FALSE,20,QS_ALLINPUT);
+    }
+    return !frame->composed_repaint.pending;
 }
 int main(void)
 {
@@ -111,7 +129,46 @@ int main(void)
     SendMessageW(window,WM_CANCELMODE,0,0);
     CHECK(GetCapture()!=window && commands==3 && win2k_frame_remove(window));
     testing_buttons=FALSE;CHECK(DestroyWindow(window) && allocations==releases);
+
+    WNDCLASSW bridge={.lpfnWndProc=DefWindowProcW,.hInstance=cls.hInstance,
+                       .lpszClassName=L"Microsoft.UI.Content.DesktopChildSiteBridge"};
+    CHECK(RegisterClassW(&bridge));
+    extends_client=TRUE;
+    window=CreateWindowW(cls.lpszClassName,L"Composed frame",WS_OVERLAPPEDWINDOW,20,20,300,180,
+                         NULL,NULL,cls.hInstance,NULL);
+    HWND child=CreateWindowW(bridge.lpszClassName,L"",WS_CHILD,0,0,100,30,window,NULL,cls.hInstance,NULL);
+    RECT original_outer;
+    CHECK(GetWindowRect(window,&original_outer));
+    CHECK(window && child && win2k_frame_attach(window));
+    frame_window *frame=frame_state(window);
+    CHECK(frame && frame->native.refresh_pending);
+    SendMessageW(window,frame->native.refresh_message,0,0);
+    CHECK(frame->native.refresh_pending && frame->composed_repaint.waiting && frame->composed_repaint.pending);
+    ShowWindow(window,SW_SHOWNOACTIVATE);
+    ShowWindow(child,SW_SHOWNOACTIVATE);
+    CHECK(pump_repaint(frame) && !frame->native.refresh_pending && !frame->composed_repaint.waiting);
+    RECT outer,client;
+    CHECK(GetWindowRect(window,&outer));
+    style_client_screen(window,&client);
+    CHECK(client.top>=outer.top+caption_height(window) &&
+          client.left==outer.left && client.right==outer.right && client.bottom==outer.bottom);
+    watch_composed_paints=TRUE;
+    HDC dc=GetDC(window);CHECK(dc);
+    SendMessageW(window,WM_ERASEBKGND,(WPARAM)dc,0);
+    SendMessageW(window,WM_ERASEBKGND,(WPARAM)dc,0);
+    CHECK(frame->composed_repaint.pending && pump_repaint(frame) && composed_paints==1);
+    watch_composed_paints=FALSE;
+    SendMessageW(window,WM_ERASEBKGND,(WPARAM)dc,0);
+    ReleaseDC(window,dc);
+    HWND timer=frame->composed_repaint.timer;
+    CHECK(frame->composed_repaint.pending && IsWindow(timer));
+    CHECK(win2k_frame_remove(window) && !IsWindow(timer) && allocations==releases);
+    CHECK(GetWindowRect(window,&outer));
+    style_client_screen(window,&client);
+    CHECK(EqualRect(&outer,&client) && EqualRect(&outer,&original_outer));
+    CHECK(DestroyWindow(window) && UnregisterClassW(bridge.lpszClassName,cls.hInstance));
+
     CHECK(UnregisterClassW(cls.lpszClassName,cls.hInstance));
-    puts("WIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 caption_reentry=1 caption_commands=3 caption_busy_cancel=1 cleanup=1");
+    puts("WIN2K_INSTANCE_OK repeat=8 remove=1 terminal=1 reentrant_replace=1 pending=1 pending_repeat=1 allocation_failure=1 attach_failure=1 caption_reentry=1 caption_commands=3 caption_busy_cancel=1 composed_show=1 composed_repaint=1 composed_cancel=1 cleanup=1");
     return 0;
 }

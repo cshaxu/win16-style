@@ -34,11 +34,11 @@ int wmain(int argc,WCHAR **argv)
     if((explicit16 || win2k) && argc>=2 && (!wcscmp(argv[1],L"--16") || !wcscmp(argv[1],L"--2k"))){
         fwprintf(stderr,L"run16s: specify at most one style\n");return 2;
     }
-    if(win2k && argc>=2 && (!wcscmp(argv[1],L"--app") || !wcscmp(argv[1],L"--global") || !wcscmp(argv[1],L"--global-elevated")))
+    if(win2k && argc>=2 && (!wcscmp(argv[1],L"--global") || !wcscmp(argv[1],L"--global-elevated")))
         return diagnostic(10,ERROR_NOT_SUPPORTED,L"Windows 2000 style for this launch mode");
     if(argc>=2 && !wcscmp(argv[1],L"--app")){
         if(argc!=3){fwprintf(stderr,L"Usage: run16s.exe --app <AUMID>\n");return 2;}
-        DWORD error=run16s_uwp_activate(argv[2],NULL);return error?diagnostic(10,error,L"UWP frame activation"):0;
+        DWORD error=run16s_uwp_activate(argv[2],win2k,NULL);return error?diagnostic(10,error,L"UWP frame activation"):0;
     }
     if(argc>=2 && !wcscmp(argv[1],L"--global-elevated")){
         WCHAR *end=NULL;DWORD error=0;errno=0;
@@ -89,11 +89,11 @@ int wmain(int argc,WCHAR **argv)
     }
     DWORD length=SearchPathW(NULL,argv[first],L".exe",STYLE_STARTUP_PATH_CAP,image,NULL);
     if(!length || length>=STYLE_STARTUP_PATH_CAP)return diagnostic(3,length?ERROR_FILENAME_EXCED_RANGE:GetLastError(),L"target resolution");
-    if(win2k && (run16s_uwp_calculator_image(image) || run16s_explorer_default(image,win32_process_next_argument(raw)) ||
+    if(win2k && (run16s_explorer_default(image,win32_process_next_argument(raw)) ||
         run16s_terminal_image(image) || run16s_console_host_image(image)))
         return diagnostic(10,ERROR_NOT_SUPPORTED,L"Windows 2000 style for this target");
     BOOL uwp_handled=FALSE;
-    error=win2k?ERROR_SUCCESS:run16s_uwp_command(image,win32_process_next_argument(raw),wait,&uwp_handled);
+    error=run16s_uwp_command(image,win32_process_next_argument(raw),wait,win2k,&uwp_handled);
     if(error||uwp_handled)return error?diagnostic(10,error,L"UWP frame activation"):0;
     error=win32_process_image_validate_ex(image,IMAGE_FILE_MACHINE_AMD64,FALSE,&subsystem);
     if(error==ERROR_BAD_EXE_FORMAT)error=win32_process_image_validate_ex(image,IMAGE_FILE_MACHINE_I386,FALSE,&subsystem);

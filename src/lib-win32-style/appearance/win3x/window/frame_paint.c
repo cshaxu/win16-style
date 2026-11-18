@@ -1,7 +1,5 @@
 #include "frame_paint.h"
 #include "../resources/frame_buttons.h"
-#include <stdlib.h>
-#include "lib-win32-style/application/window/window_text.h"
 
 void win16_control_fill(HDC dc,RECT r,COLORREF c)
 {
@@ -78,21 +76,19 @@ void win16_control_frame_sizing(HDC dc,const win16_style_layout *layout,const wi
     }
 }
 
-void win16_control_frame_caption(HWND w,HDC dc,const win16_style_layout *layout,const win16_style_palette *palette,
-    void *context,win16_frame_state_read read)
+void win16_control_frame_caption(HDC dc,const win16_style_layout *layout,const win16_style_palette *palette,
+    const win16_frame_paint_state *snapshot,PCWSTR title,BOOL child,BOOL zoomed)
 {
-    win16_style_layout l=*layout;win16_style_palette p=*palette;RECT r;int len;WCHAR *title;
-    win16_frame_paint_state state;read(context,&state);
+    win16_style_layout l=*layout;win16_style_palette p=*palette;RECT r;
+    win16_frame_paint_state state=*snapshot;
     win16_control_fill(dc,l.caption,state.active?p.active:p.inactive);
     r=l.caption;r.top=r.bottom;r.bottom+=l.unit;win16_control_fill(dc,r,p.edge);
     win16_control_frame_button(dc,l.system,HTSYSMENU,state.system_menu||(state.bar_keyboard&&state.bar_selected==-2)||(state.button.pressed==HTSYSMENU&&state.button.hot),FALSE,
-        (GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD)!=0,l.unit,&p);
+        child,l.unit,&p);
     win16_control_frame_button(dc,l.minimize,HTMINBUTTON,state.button.pressed==HTMINBUTTON&&state.button.hot,FALSE,FALSE,l.unit,&p);
-    win16_control_frame_button(dc,l.maximize,HTMAXBUTTON,state.button.pressed==HTMAXBUTTON&&state.button.hot,IsZoomed(w),FALSE,l.unit,&p);
-    title=style_window_text_copy(w);
+    win16_control_frame_button(dc,l.maximize,HTMAXBUTTON,state.button.pressed==HTMAXBUTTON&&state.button.hot,zoomed,FALSE,l.unit,&p);
     if(title){
-        read(context,&state);
-        SIZE extent;len=lstrlenW(title);
+        SIZE extent;int len=lstrlenW(title);
         r=l.title;
         SelectObject(dc,state.fonts->title);SetBkMode(dc,TRANSPARENT);
         SetTextColor(dc,state.active?p.active_text:p.inactive_text);
@@ -101,6 +97,5 @@ void win16_control_frame_caption(HWND w,HDC dc,const win16_style_layout *layout,
         if(GetTextExtentPoint32W(dc,title,len,&extent))
             ExtTextOutW(dc,r.left+max(1,(r.right-r.left-extent.cx)/2),
                 r.top+max(0,(r.bottom-r.top-extent.cy)/2),ETO_CLIPPED,&r,title,(UINT)len,NULL);
-        free(title);
     }
 }

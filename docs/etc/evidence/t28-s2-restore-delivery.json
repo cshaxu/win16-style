@@ -1,0 +1,516 @@
+{
+  "task": "M0 T28 S2",
+  "stage": "published-restoration-candidate",
+  "previous_evidence": "t28-s2-winui-frame.json",
+  "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Task 28 -RunName s2-winui-restoration",
+  "source_snapshot_sha256": "83d93e8ec84b79a57e89cf10c167ae1131a57b3f46e8b019d2ec0f79c974b29e",
+  "build": [
+    {
+      "passed": 1,
+      "build_seconds": 190.37769079999998,
+      "skipped": [],
+      "architecture": "x86",
+      "configure_seconds": 7.512645799899474,
+      "tests": 1,
+      "test_seconds": 0.48063520004507154
+    },
+    {
+      "passed": 1,
+      "build_seconds": 215.14684320008382,
+      "skipped": [],
+      "architecture": "x64",
+      "configure_seconds": 6.76820679998491,
+      "tests": 1,
+      "test_seconds": 0.42935220000799745
+    }
+  ],
+  "toolchains": {
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "toolchains": [
+      {
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
+        "architecture": "x86",
+        "version": "16.1.0",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "target": "i686-w64-mingw32"
+      },
+      {
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
+        "architecture": "x64",
+        "version": "16.1.0",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "target": "x86_64-w64-mingw32"
+      }
+    ],
+    "ccache_version": "ccache version 4.13.6",
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
+  },
+  "ccache_delta": {
+    "x86": {
+      "direct_cache_hit": 952,
+      "preprocessed_cache_hit": 0,
+      "cache_miss": 3
+    },
+    "x64": {
+      "direct_cache_hit": 1040,
+      "preprocessed_cache_hit": 0,
+      "cache_miss": 3
+    }
+  },
+  "package": {
+    "status": "PACKAGE PASS",
+    "artifacts": {
+      "run16s.exe": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "375bffd3117dff6a0903cd7ce535cb746416300950773afd9527ba39d3bc51b8",
+        "imports": [
+          "advapi32.dll",
+          "dwmapi.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "oleaut32.dll",
+          "shell32.dll",
+          "user32.dll",
+          "ntwshk64.dll"
+        ]
+      },
+      "ntw16s32.dll": {
+        "architecture": "x86",
+        "version": "M0 T28",
+        "sha256": "3de49f1ce78ceba162b5296014eb8ee4049c714a3514d5313e31b73f04b5a20c",
+        "imports": [
+          "ADVAPI32.dll",
+          "COMCTL32.dll",
+          "COMDLG32.DLL",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.DLL",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "ole32.dll",
+          "OLEAUT32.dll",
+          "SHELL32.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk32.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw16s64.dll": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "91dadce33e072803cb093b033fb755f8888ed413269bcb564dffc565d7fe57a5",
+        "imports": [
+          "ADVAPI32.dll",
+          "COMCTL32.dll",
+          "comdlg32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "OLEAUT32.dll",
+          "SHELL32.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk64.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw2ks32.dll": {
+        "architecture": "x86",
+        "version": "M0 T28",
+        "sha256": "1de12b711a22cc081703a7adab37d5adb3ae023ca5b3e2c117bfa5864925735a",
+        "imports": [
+          "COMCTL32.dll",
+          "COMDLG32.DLL",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.DLL",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll",
+          "SHCORE.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk32.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntw2ks64.dll": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "e9645be6e0fdc34c8e66cbdcf7b433cfeab610b0130ee6eb7aab56f17bb7a383",
+        "imports": [
+          "COMCTL32.dll",
+          "comdlg32.dll",
+          "dwmapi.dll",
+          "GDI32.dll",
+          "KERNEL32.dll",
+          "MSIMG32.dll",
+          "msvcrt.dll",
+          "SHCORE.dll",
+          "USER32.dll",
+          "UxTheme.dll",
+          "ntwshk64.dll",
+          "COMCTL32.dll"
+        ]
+      },
+      "ntwshk32.dll": {
+        "architecture": "x86",
+        "version": "M0 T28",
+        "sha256": "71f6933b2924df936ecf5fecc524e9b935bc1830c791ee6ad3b046be95282e25",
+        "imports": [
+          "ADVAPI32.dll",
+          "KERNEL32.dll",
+          "api-ms-win-crt-convert-l1-1-0.dll",
+          "api-ms-win-crt-heap-l1-1-0.dll",
+          "api-ms-win-crt-private-l1-1-0.dll",
+          "api-ms-win-crt-runtime-l1-1-0.dll",
+          "api-ms-win-crt-stdio-l1-1-0.dll",
+          "api-ms-win-crt-string-l1-1-0.dll"
+        ]
+      },
+      "ntwshk64.dll": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "3c3fd2ad5c0c5db2fa37dfb838fedfaa406210e196af399708386e1af203fe4f",
+        "imports": [
+          "ADVAPI32.dll",
+          "KERNEL32.dll",
+          "msvcrt.dll"
+        ]
+      },
+      "demo.exe": {
+        "architecture": "x64",
+        "version": "M0 T28",
+        "sha256": "fa7c7bbc1f49a2efb3d2c72b492ba5761521a2e9d573c8247384c5c529a57254",
+        "imports": [
+          "comctl32.dll",
+          "comdlg32.dll",
+          "gdi32.dll",
+          "kernel32.dll",
+          "msvcrt.dll",
+          "ole32.dll",
+          "shell32.dll",
+          "user32.dll"
+        ]
+      }
+    },
+    "original_resource_tables_per_ntw16s_dll": 18
+  },
+  "publication": {
+    "files": [
+      {
+        "after": "fa7c7bbc1f49a2efb3d2c72b492ba5761521a2e9d573c8247384c5c529a57254",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-0",
+        "before": "161ccbd1916f0eff4558ea2f85feb2f148571ce77c8c85d04467be36723fb7db",
+        "expected": "fa7c7bbc1f49a2efb3d2c72b492ba5761521a2e9d573c8247384c5c529a57254",
+        "path": "O:\\repos.hobby\\win16style\\assets\\demo.exe"
+      },
+      {
+        "after": "3de49f1ce78ceba162b5296014eb8ee4049c714a3514d5313e31b73f04b5a20c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-0",
+        "before": "2cc973e150c76e5c1d9d4b7514c3f6fa40e4000d68bb6ee0ba9d462737155750",
+        "expected": "3de49f1ce78ceba162b5296014eb8ee4049c714a3514d5313e31b73f04b5a20c",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s32.dll"
+      },
+      {
+        "after": "91dadce33e072803cb093b033fb755f8888ed413269bcb564dffc565d7fe57a5",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-0",
+        "before": "0a687298fae39b61b7c1cf2837fb80a3fffb3489cf7dc9e6ab936b735540871c",
+        "expected": "91dadce33e072803cb093b033fb755f8888ed413269bcb564dffc565d7fe57a5",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw16s64.dll"
+      },
+      {
+        "after": "1de12b711a22cc081703a7adab37d5adb3ae023ca5b3e2c117bfa5864925735a",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-0",
+        "before": "03291a60eb0b93b8cb1b5003b3f009992af7c3f9ff475ad15a40338e99827514",
+        "expected": "1de12b711a22cc081703a7adab37d5adb3ae023ca5b3e2c117bfa5864925735a",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks32.dll"
+      },
+      {
+        "after": "e9645be6e0fdc34c8e66cbdcf7b433cfeab610b0130ee6eb7aab56f17bb7a383",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-0",
+        "before": "820db0d2677ecf2c85fa2853a8ae5082b6a1876280df48a02276d0c4ea1fb923",
+        "expected": "e9645be6e0fdc34c8e66cbdcf7b433cfeab610b0130ee6eb7aab56f17bb7a383",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntw2ks64.dll"
+      },
+      {
+        "after": "71f6933b2924df936ecf5fecc524e9b935bc1830c791ee6ad3b046be95282e25",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-0",
+        "before": "e93b0ea84a602aecb48cc07ef144bc6f2a6af3ea32cda81af8f5e82e909e25a3",
+        "expected": "71f6933b2924df936ecf5fecc524e9b935bc1830c791ee6ad3b046be95282e25",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk32.dll"
+      },
+      {
+        "after": "3c3fd2ad5c0c5db2fa37dfb838fedfaa406210e196af399708386e1af203fe4f",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-0",
+        "before": "0af1c4bb92a939dbaf689aab8e6f2d7373755fde6fd74e1f8a885796a816f793",
+        "expected": "3c3fd2ad5c0c5db2fa37dfb838fedfaa406210e196af399708386e1af203fe4f",
+        "path": "O:\\repos.hobby\\win16style\\assets\\ntwshk64.dll"
+      },
+      {
+        "after": "375bffd3117dff6a0903cd7ce535cb746416300950773afd9527ba39d3bc51b8",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-0",
+        "before": "c9269d1529ed62a90232c85ce3ebd3876b74f124a2b9bdf10e2b5a5114e0b8e4",
+        "expected": "375bffd3117dff6a0903cd7ce535cb746416300950773afd9527ba39d3bc51b8",
+        "path": "O:\\repos.hobby\\win16style\\assets\\run16s.exe"
+      },
+      {
+        "after": "fa7c7bbc1f49a2efb3d2c72b492ba5761521a2e9d573c8247384c5c529a57254",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-1",
+        "before": "161ccbd1916f0eff4558ea2f85feb2f148571ce77c8c85d04467be36723fb7db",
+        "expected": "fa7c7bbc1f49a2efb3d2c72b492ba5761521a2e9d573c8247384c5c529a57254",
+        "path": "O:\\winnt\\demo.exe"
+      },
+      {
+        "after": "3de49f1ce78ceba162b5296014eb8ee4049c714a3514d5313e31b73f04b5a20c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-1",
+        "before": "2cc973e150c76e5c1d9d4b7514c3f6fa40e4000d68bb6ee0ba9d462737155750",
+        "expected": "3de49f1ce78ceba162b5296014eb8ee4049c714a3514d5313e31b73f04b5a20c",
+        "path": "O:\\winnt\\ntw16s32.dll"
+      },
+      {
+        "before": "0a687298fae39b61b7c1cf2837fb80a3fffb3489cf7dc9e6ab936b735540871c",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-1",
+        "after": "91dadce33e072803cb093b033fb755f8888ed413269bcb564dffc565d7fe57a5",
+        "expected": "91dadce33e072803cb093b033fb755f8888ed413269bcb564dffc565d7fe57a5",
+        "path": "O:\\winnt\\ntw16s64.dll"
+      },
+      {
+        "before": "03291a60eb0b93b8cb1b5003b3f009992af7c3f9ff475ad15a40338e99827514",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-1",
+        "after": "1de12b711a22cc081703a7adab37d5adb3ae023ca5b3e2c117bfa5864925735a",
+        "expected": "1de12b711a22cc081703a7adab37d5adb3ae023ca5b3e2c117bfa5864925735a",
+        "path": "O:\\winnt\\ntw2ks32.dll"
+      },
+      {
+        "before": "820db0d2677ecf2c85fa2853a8ae5082b6a1876280df48a02276d0c4ea1fb923",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-1",
+        "after": "e9645be6e0fdc34c8e66cbdcf7b433cfeab610b0130ee6eb7aab56f17bb7a383",
+        "expected": "e9645be6e0fdc34c8e66cbdcf7b433cfeab610b0130ee6eb7aab56f17bb7a383",
+        "path": "O:\\winnt\\ntw2ks64.dll"
+      },
+      {
+        "before": "e93b0ea84a602aecb48cc07ef144bc6f2a6af3ea32cda81af8f5e82e909e25a3",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-1",
+        "after": "71f6933b2924df936ecf5fecc524e9b935bc1830c791ee6ad3b046be95282e25",
+        "expected": "71f6933b2924df936ecf5fecc524e9b935bc1830c791ee6ad3b046be95282e25",
+        "path": "O:\\winnt\\ntwshk32.dll"
+      },
+      {
+        "before": "0af1c4bb92a939dbaf689aab8e6f2d7373755fde6fd74e1f8a885796a816f793",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-1",
+        "after": "3c3fd2ad5c0c5db2fa37dfb838fedfaa406210e196af399708386e1af203fe4f",
+        "expected": "3c3fd2ad5c0c5db2fa37dfb838fedfaa406210e196af399708386e1af203fe4f",
+        "path": "O:\\winnt\\ntwshk64.dll"
+      },
+      {
+        "before": "c9269d1529ed62a90232c85ce3ebd3876b74f124a2b9bdf10e2b5a5114e0b8e4",
+        "backup_directory": "O:\\repos.hobby\\win16style\\build\\t28-package\\s2-winui-restoration-publish\\before-1",
+        "after": "375bffd3117dff6a0903cd7ce535cb746416300950773afd9527ba39d3bc51b8",
+        "expected": "375bffd3117dff6a0903cd7ce535cb746416300950773afd9527ba39d3bc51b8",
+        "path": "O:\\winnt\\run16s.exe"
+      }
+    ],
+    "status": "passed",
+    "error": null
+  },
+  "native_passed": {
+    "x86": [
+      "core/win2k-instance-lifetime",
+      "core/win2k-frame-lifecycle",
+      "core/win2k-caption",
+      "core/style-uwp-repaint",
+      "core/abi",
+      "core/uwp-frame",
+      "core/uwp-frame_layout",
+      "core/uwp-frame-hidden",
+      "core/win2k-uwp-frame",
+      "core/uwp-surface-present",
+      "core/modern-frame",
+      "core/uwp-input",
+      "core/uwp-host",
+      "core/uwp-host-start",
+      "core/uwp-target"
+    ],
+    "x64": [
+      "core/win2k-instance-lifetime",
+      "core/win2k-frame-lifecycle",
+      "core/win2k-caption",
+      "core/style-uwp-repaint",
+      "core/abi",
+      "core/uwp-frame",
+      "core/uwp-frame_layout",
+      "core/uwp-frame-hidden",
+      "core/win2k-uwp-frame",
+      "core/uwp-surface-present",
+      "core/modern-frame",
+      "core/uwp-input",
+      "core/uwp-host",
+      "core/uwp-host-start",
+      "core/uwp-target",
+      "launch/uwp-resolve"
+    ]
+  },
+  "published_win32": {
+    "zoom_cycles": {
+      "x86": 8,
+      "x64": 8
+    }
+  },
+  "composed_client_aba": {
+    "window": "self-owned window with an extended client and a composition-bridge class, no WinUI runtime",
+    "previous_published": {
+      "x86": [
+        1,
+        0,
+        0
+      ],
+      "x64": [
+        1,
+        0,
+        0
+      ]
+    },
+    "new_published": {
+      "x86": [
+        1,
+        0,
+        1
+      ],
+      "x64": [
+        1,
+        0,
+        1
+      ]
+    },
+    "dwm_order": "before, attached, removed",
+    "geometry": "original outer limits and client origin restored",
+    "bridge": "child stayed visible",
+    "theme_notification_after_detach": 1
+  },
+  "published_winui_notepad": {
+    "dpi": 144,
+    "button_dimensions": [
+      24,
+      21
+    ],
+    "rgb24_sha256_equal_to_published_win32_demo": "da5e6c3363efea1d88b4ebda129e8fd08267149532b818588c2695a82f6c4712",
+    "all_caption_button_rgb24_sha256_equal_to_published_win32_demo": {
+      "minimize": "1d0cbda47ab71066055e27963322bd308d099ce36b53797e65f1fa91303e7420",
+      "maximize": "a85b048cddf1cf7ffc87122733171ed464544c79a8270ec88070f5baf7abd7f3",
+      "close": "da5e6c3363efea1d88b4ebda129e8fd08267149532b818588c2695a82f6c4712"
+    },
+    "capture": "window DC via BitBlt",
+        "live_detach_and_compositor_pixels": "actual window detached, DWM and geometry restored; no usable compositor capture",
+        "owned_window_detach": {
+          "scope": "new packaged Notepad, verified activation-child identity, existing single-PID test filter, normal desktop",
+          "outer_rect_all_phases": [0,0,641,408],
+          "client_rect_before_and_restored": [9,0,632,399],
+          "client_rect_after_apply": [9,33,632,399],
+          "dwm_before_applied_restored": [1,0,1],
+          "attachment_before_applied_restored": [0,1,0],
+          "controller_stop": 0,
+          "window_capture_before_applied_restored": ["0x800705b4","0x800705b4","0x800705b4"],
+          "window_dc_control": "native and restored sample rectangles returned uniform pixels",
+          "foreground_request": "denied when requested for the owned window"
+        }
+  },
+  "published_paint_before_restore_fix": {
+    "package": "Microsoft.Paint 11.2609.401.0 x64",
+    "command": "run16s --2k with app binary path from installed manifest",
+    "attached": true,
+    "xaml_loaded": true,
+    "dpi": 144,
+    "maximized_and_restored_caption_hit": "HTCAPTION",
+    "bridge_y_from_outer": 45,
+    "button_pixels": "invalid zero crop"
+  },
+  "published_uwp": {
+    "win2k_and_win16_launcher_error": 1460,
+    "observed_topology": "UWP CoreWindow existed without an owned ApplicationFrameWindow before style application",
+    "stale_empty_host_control": "Releasing PID 32976 cleared the prior mapped modules but did not change the result",
+    "system_calculator_without_launcher": "New calculator PID and its own HWND observed, no ApplicationFrameWindow within 9s",
+    "scan_app_control": {
+      "entrypoint": "Microsoft.WindowsScan_8wekyb3d8bbwe!App",
+      "image": "ScanApp.exe",
+      "launcher_error": 1460,
+      "topology": "root and CoreWindow were the same HWND, no style surface",
+      "native_activation_without_launcher": {
+        "hresult": 0,
+        "own_window_class": "Windows.UI.Core.CoreWindow",
+        "observed_application_frame_within_9_seconds": false
+      }
+    },
+    "session_observation": {
+      "terminal_services_state_code": 0,
+      "probe_in_active_console_session": true,
+      "window_station": "WinSta0",
+      "thread_desktop": "Default",
+      "foreground_present": false
+    },
+    "rdp_retest": {
+      "same_active_rdp_session": true,
+      "verified_published_files": 16,
+      "calculator_win16": {"probe_exit": 0, "button_actions": true, "remove_and_geometry": true},
+      "calculator_win2000": {"launcher_exit": 0, "probe_exit": 1, "button_actions": true, "remove_and_geometry": true},
+      "scan_win2000": {"launcher_exit": 0, "probe_exit": 1, "button_actions": true, "remove_and_geometry": true},
+      "visual_capture": "Scan WindowFromPoint matched the style surface but both screen GetPixel values were CLR_INVALID; calculator screen BitBlt failed at a verified style-surface point.",
+      "separate_interaction_probe": {
+        "scope": "temporary variant of the existing probe, no screen-pixel assertion, production binaries unchanged",
+        "calculator": {"exit": 0, "height_delta": 24, "surface_followed": true, "system_menu_opened_and_dismissed": true},
+        "scan": {"exit": 0, "height_delta": 24, "surface_followed": true, "system_menu_opened_and_dismissed": true},
+        "two_axis_trial": "requested +32 width, +24 height; observed calculator +4/+24 and Scan +0/+24, surface followed both actual window sizes"
+      },
+      "desktop_duplication_hresult": "0x80070005",
+      "composited_button_crops": {
+        "capture": "Windows Graphics Capture of each owned style surface, no full desktop or saved image",
+        "dpi": 144,
+        "button_dimensions": [24,21],
+        "targets": ["Calculator","Scan"],
+        "states_matched_to_win32_reference": ["restored","maximized"],
+        "rgb24_sha256": {
+          "minimize": "1d0cbda47ab71066055e27963322bd308d099ce36b53797e65f1fa91303e7420",
+          "maximize": "a85b048cddf1cf7ffc87122733171ed464544c79a8270ec88070f5baf7abd7f3",
+          "restore": "bb2ea1fe16b50f948ca38713a2fecdf6daed683a39eb43150d0b86d8584eed12",
+          "close": "da5e6c3363efea1d88b4ebda129e8fd08267149532b818588c2695a82f6c4712"
+        },
+        "calculator_gradient_two_samples_rgb": ["9d9d9d","aaaaaa"]
+      },
+      "remaining": "real WinUI detach appearance and release review"
+    },
+    "visual_and_interaction_for_this_package": "unverified"
+  },
+  "winui_rdp_composited_detach_retest": {
+    "capture": "Windows Graphics Capture, 340x58 window-local title region",
+    "scope": "owned Notepad on the reconnected RDP session, published candidate, single target",
+    "baseline_repeat_equal": true,
+    "appearance_changes_after_apply": true,
+    "dwm_before_applied_restored": [1,0,1],
+    "attachment_before_applied_restored": [0,1,0],
+    "same_geometry_after_removal": true,
+    "same_pixels_after_direct_removal": false,
+    "visible_regression": "Light duplicate caption buttons overlay the native dark caption",
+    "hide_and_show_clears_duplicate_buttons": true,
+    "probe_only_nocopybits_then_client_invalidation_is_pixel_exact_without_hiding": true
+  },
+  "remaining": [
+    "real UWP visual and interaction on the latest package",
+    "fix duplicate buttons in production WinUI style removal and retest the composed pixels",
+    "commit, push and remote verification"
+  ]
+}
