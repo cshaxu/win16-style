@@ -856,6 +856,12 @@
     "environment": "The only reported monitor was WinDisc with a 427 by 272 work area. Actual large-work-area or alternate-DPI rendering, native extended print General and caller pages, and the administrative tray end-to-end path remain open.",
     "delivery": "Verification and documentation only. Published P17 eight-file hashes at assets and O:/winnt were checked against each other and the recorded release."
   },
+  "print_page_lifecycle_p21": {
+    "contract": "Microsoft documents the caller's page handles and the initial page index in PRINTDLGEXW: https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-printdlgexw.",
+    "fixture_control": "On x86 and x64, the same application-owned resource, dialog procedure and property page callback were used for an ordinary modeless PropertySheetW control and for a fresh page handle passed to PrintDlgExW. In all four control runs the page was current, received one PSPCB_CREATE and one WM_INITDIALOG, and received one PSPCB_RELEASE when the owned sheet was destroyed.",
+    "native_fallback": "PrintDlgExW used the documented index 0 to request the caller page. Native and published --2k each timed out on x86 and x64 after the bounded observation interval. Each observed an external visible zero-size ProxyModalWindow owned by the fixture; counters for PSPCB_CREATE, WM_INITDIALOG and PSPCB_RELEASE were all zero. This locates the observed stall before caller-page creation and leaves interactive General, custom-page navigation and returned handle ownership unverified. The observer did not send messages to the external window.",
+    "delivery": "Documentation only. The probe was job-contained on the ordinary disconnected desktop, ended only itself on timeout, submitted no print job and removed its temporary build. Both deployment locations retained the P17 eight-file hashes."
+  },
   "places_reflow_trial": {
     "package": "P9 published launcher and DLLs with temporary caller-owned ANSI and Unicode OPENFILENAME hooks. The probe used the ordinary desktop and owned dialogs at 96 DPI with a 427 by 272 work area. The temporary sources, objects, binaries and output were removed after the run.",
     "stock_geometry": "The native 421 by 247 client exposed the stock Places toolbar, a Shell directory view, and a ComboBoxEx filename field. In Open the default OK button began at (484,313), beyond both client bounds.",

@@ -66,6 +66,9 @@ P19 验证文件对话框原生回退。双宽原生、Win16、Win2000 的 Win32
 P20 用发布版验证 `MessageBoxIndirect` 的调用方图标、帮助回调、默认按钮及
 返回值，原生和两种风格的双宽 A/W 共 12/12。发布 DLL 的本地颜色对话框
 应用／撤销也通过双宽复验，客户区和 RGB 回写保持。八件摘要未变。
+P21 用同一份自有属性页做双宽对照。`PropertySheetW` 正常创建、初始化、
+释放页面；原生和发布版 `--2k` 的 `PrintDlgExW` 均只显示系统代理窗，
+未到达应用属性页创建回调。等可用桌面复验实际 General 及调用方属性页。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
