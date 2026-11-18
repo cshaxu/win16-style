@@ -3074,9 +3074,9 @@
       "path": "tests/ntw16s-dll/print_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6ad7a30edad9089a9a6b8d28b2d0a38f70e201847e59502c78002319f8637712",
+      "sha256": "e2eae90418ab46141504da8b67857f7ec0efe5f956d5fcb2e49cede8d99d4fff",
       "disposition": "authored",
-      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
+      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T28 S3 use the existing PrintDlgEx fixture for both released styles",
       "notice": "Project-authored fixture; manifest based on project demo manifest; no external resources copied"
     },
     {

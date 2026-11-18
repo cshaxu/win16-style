@@ -5,11 +5,15 @@
 #include <cderr.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
+#include <wchar.h>
 static BOOL (__cdecl *attached)(HWND);static int initialized;static BOOL frame;
 static DWORD main_thread;
 static BOOL classic_test,classic_found,classic_accept;
 static int extended_case,extended_step;
 static BOOL extended_old,extended_option_state,initial_range_state,initial_device_state;
+static BOOL selected_device_ready,alternate_device_available;
+static WCHAR selected_device[512];
 static HGLOBAL device_to_lock;static void *device_lock;static BOOL apply_initial,apply_changed,apply_done,apply_again,apply_done_again;
 static uint64_t global_digest(HGLOBAL h){SIZE_T n=GlobalSize(h);BYTE *p=GlobalLock(h);uint64_t hash=14695981039346656037ull;if(!p)return 0;for(SIZE_T i=0;i<n;++i)hash=(hash^p[i])*1099511628211ull;GlobalUnlock(h);return hash;}
 static int observed_dpi;static HWND range_radio,range_edit;static BOOL current_seen,current_checked,others_clear,current_layout;
@@ -31,8 +35,27 @@ static BOOL current_layout_valid(HWND window,HWND current)
     return drawn>0 && text_rect.right-text_rect.left+inset<=cur.right-cur.left &&
         GetNextDlgGroupItem(window,GetDlgItem(window,1057),FALSE)==current;
 }
+static void select_alternate_device(HWND window)
+{
+    HWND combo=GetDlgItem(window,1139);
+    if(!combo)return;
+    extended_old=TRUE;
+    LRESULT count=SendMessageW(combo,CB_GETCOUNT,0,0),initial=SendMessageW(combo,CB_GETCURSEL,0,0);
+    alternate_device_available=count>=2 && initial>=0 && initial<count;
+    if(!alternate_device_available)return;
+    LRESULT changed=(initial+1)%count;
+    LRESULT length=SendMessageW(combo,CB_GETLBTEXTLEN,(WPARAM)changed,0);
+    if(length<1 || length>=(LRESULT)ARRAYSIZE(selected_device))return;
+    if(SendMessageW(combo,CB_GETLBTEXT,(WPARAM)changed,(LPARAM)selected_device)==CB_ERR)return;
+    selected_device_ready=SendMessageW(combo,CB_SETCURSEL,(WPARAM)changed,0)==changed;
+    if(selected_device_ready)SendMessageW(window,WM_COMMAND,MAKEWPARAM(1139,CBN_SELCHANGE),(LPARAM)combo);
+}
 static void CALLBACK close_dialog(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {(void)message;(void)time;
+ if(extended_case==43){
+    KillTimer(window,timer);select_alternate_device(window);frame=attached&&attached(window);
+    PostMessageW(window,WM_COMMAND,selected_device_ready?IDOK:IDCANCEL,0);return;
+ }
  if(extended_case==42){HWND check=GetDlgItem(window,1041);extended_old=GetDlgItem(window,1139)!=NULL;initial_range_state=check && SendMessageW(check,BM_GETCHECK,0,0)==BST_CHECKED;KillTimer(window,timer);frame=attached&&attached(window);PostMessageW(window,WM_COMMAND,IDCANCEL,0);return;}
  if(extended_case>=34){HWND cur=GetDlgItem(window,9003);current_layout=current_layout_valid(window,cur);extended_old=GetDlgItem(window,1139)!=NULL;
     if(extended_case==39 && !extended_step){HWND select=GetDlgItem(window,1057);SendMessageW(select,BM_CLICK,0,0);SetFocus(select);PostMessageW(select,WM_KEYDOWN,VK_RIGHT,0);extended_step=1;return;}
@@ -123,12 +146,56 @@ static int open_print_observer(HWND *owner,HHOOK *observer)
 }
 static void close_print_observer(HWND owner,HHOOK observer)
 {UnhookWindowsHookEx(observer);DestroyWindow(owner);CoUninitialize();}
+static BOOL __cdecl win2k_frame_attached(HWND window)
+{return GetPropW(window,L"Win2kStyle.Frame")!=NULL;}
+static int test_device_choice(BOOL ansi)
+{
+    extended_case=43;
+    if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return 9;
+    HWND owner;HHOOK observer;
+    int setup=open_print_observer(&owner,&observer);if(setup)return setup;
+    const DWORD flags=PD_NOPAGENUMS|PD_NOCURRENTPAGE;
+    PRINTDLGEXA a={.lStructSize=sizeof(a),.hwndOwner=owner,.Flags=flags,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
+    PRINTDLGEXW w={.lStructSize=sizeof(w),.hwndOwner=owner,.Flags=flags,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
+    HRESULT hr=ansi?PrintDlgExA(&a):PrintDlgExW(&w);
+    HGLOBAL mode=ansi?a.hDevMode:w.hDevMode,names=ansi?a.hDevNames:w.hDevNames;
+    HDC dc=ansi?a.hDC:w.hDC;
+    DWORD action=ansi?a.dwResultAction:w.dwResultAction;
+    SIZE_T bytes=names?GlobalSize(names):0;
+    DEVNAMES *info=bytes>=sizeof(DEVNAMES)?GlobalLock(names):NULL;
+    WCHAR device[ARRAYSIZE(selected_device)]={0};
+    if(info){
+        SIZE_T offset=info->wDeviceOffset,extent=ansi?bytes:bytes/sizeof(WCHAR);
+        if(offset<extent){
+            if(ansi){
+                const char *value=(const char *)info+offset;
+                if(memchr(value,'\0',extent-offset))MultiByteToWideChar(CP_ACP,0,value,-1,device,ARRAYSIZE(device));
+            }else{
+                const WCHAR *value=(const WCHAR *)info+offset;
+                if(wmemchr(value,L'\0',extent-offset))lstrcpynW(device,value,ARRAYSIZE(device));
+            }
+        }
+        GlobalUnlock(names);
+    }
+    BOOL match=selected_device_ready && !lstrcmpiW(selected_device,device);
+    BOOL valid=initialized==1 && frame && match && hr==S_OK && action==PD_RESULT_PRINT && mode && names;
+    printf("PRINT DEVICE CHOICE bits=%u ansi=%d changed=%d match=%d frame=%d hr=%08lx result=%lu valid=%d\n",
+        (unsigned)(sizeof(void *)*8),ansi,selected_device_ready,match,frame,(DWORD)hr,action,valid);
+    release_print_resources(dc,mode,names);
+    close_print_observer(owner,observer);
+    if(initialized==1 && frame && extended_old && hr==S_OK && action==PD_RESULT_CANCEL && !alternate_device_available){
+        puts("PRINT DEVICE CHOICE SKIP no_alternate_printer");return 77;
+    }
+    return valid?0:1;
+}
 int wmain(int argc,WCHAR **argv)
 {
     if(argc!=3 && argc!=4)return 2;
     BOOL page=argv[1][0]==L'p' && argv[1][1]==L'a',extended=!lstrcmpW(argv[1],L"printex"),ansi=argv[2][0]==L'a';
     HMODULE m=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");
     attached=m?(BOOL (__cdecl *)(HWND))(void *)GetProcAddress(m,"Ntw16sWindowAttached"):NULL;
+    if(!attached && GetModuleHandleW(sizeof(void*)==4?L"ntw2ks32.dll":L"ntw2ks64.dll"))attached=win2k_frame_attached;
+    if(!lstrcmpW(argv[1],L"ex-device-choice"))return test_device_choice(ansi);
     BOOL result;HGLOBAL devmode=NULL,devnames=NULL;
     if(!wcsncmp(argv[1],L"current-",8)){
       if(argc==4 && !lstrcmpW(argv[3],L"aware") && !SetProcessDPIAware())return 3;
