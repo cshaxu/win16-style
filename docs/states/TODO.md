@@ -10,7 +10,7 @@
 
 - [ ] TODO(High): T25 当前完整包测试包含用户禁止的隔离桌面用例，尚未完成；Owner：T25 最终审计。Evidence：[S5 P9](../history/M0-T25-S5-P9-caption-command-order.md)仅有发布版聚焦检查；Admission：使用符合当前桌面约束的实际包路径验证可运行项，不能运行的明确列为未覆盖，不以聚焦结果代替全矩阵。
 
-- [ ] TODO(High): Windows 2000 常用控件和公共对话框的完整外观及原版对照尚未实现；Owner：未来经准入的控件和对话框工作。Evidence：[T25 S1 研究](../proposals/windows-2000-classic.md)与[实验包](../history/M0-T25-S1-P1-delivery.md)；用户已将 T25 收窄为普通 Win32 窗口外框。Admission：按常用控件、对话框和菜单的优先级实现并验证，不将禁用视觉主题视为像素一致。
+- [ ] TODO(High): Win2000 公共对话框完整呈现，以及常用控件以外的复杂变体，需单独准入。Owner 为各自后续样式任务。Evidence 见 [T27 逐组终审](../history/M0-T27-S16-final-audit.md)，标准组已按有限范围交付，系统保留的 SysLink、客户内容、专用 VCL/OCX 和未覆盖变体均有单列。Admission 先冻结原版源码、真实样例、状态和范围，再为实际未覆盖的能力添加验证。
 
 - [ ] TODO(Medium): 全局模式旧 `global-e2e` 仍假设启动即启用，而当前托盘默认关闭；私有桌面真实托盘创建失败。Owner：后续全局测试维护。Evidence：[T25 S1 调查](../proposals/windows-2000-classic.md)和 T24 同条件对照；专用托盘夹具非管理员运行亦未通过。Admission：更新测试以符合用户主动启用语义，并在可用会话验证实际托盘与目标清理，不把桩替代真实托盘。
 

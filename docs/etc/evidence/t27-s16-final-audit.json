@@ -1,0 +1,971 @@
+{
+  "milestone": "M0",
+  "task": "T27",
+  "subtask": "S16",
+  "current_product_delivery": "73f60c5a916afb19d3796d47987fe89a682de540",
+  "current_product_input_cohort": 1228,
+  "historical_publications": [
+    {
+      "S": 1,
+      "delivery": "0742a00f1b25361676269479e9b21b7a24e6f890",
+      "evidence": "t27-s1-controls-reference.json",
+      "passed": null,
+      "skipped_client_print_subchecks": null
+    },
+    {
+      "S": 2,
+      "delivery": "4912b70d9408c008f30f3e32ddc29903926b3a7f",
+      "evidence": "t27-s2-buttons.json",
+      "passed": 36,
+      "skipped_client_print_subchecks": null
+    },
+    {
+      "S": 3,
+      "delivery": "b4ca7bf2b841a5ec6ac5b8309865f56cc13604c1",
+      "evidence": "t27-s3-choice-controls.json",
+      "passed": 36,
+      "skipped_client_print_subchecks": null
+    },
+    {
+      "S": 4,
+      "delivery": "802fe1feef963a828c37886c569334d7ac4b4930",
+      "evidence": "t27-s4-static-group.json",
+      "passed": 48,
+      "skipped_client_print_subchecks": null
+    },
+    {
+      "S": 5,
+      "delivery": "8325ccbb8e710687dfa94de2fc0dcc9ba8312746",
+      "evidence": "t27-s5-edit-controls.json",
+      "passed": 62,
+      "skipped_client_print_subchecks": 36
+    },
+    {
+      "S": 6,
+      "delivery": "a18524415b607e1ee0b60b4d796c831da3990ef0",
+      "evidence": "t27-s6-list-combo.json",
+      "passed": 76,
+      "skipped_client_print_subchecks": 36
+    },
+    {
+      "S": 7,
+      "delivery": "d3a5dd4cc9370467675536f59e46d41a5489be00",
+      "evidence": "t27-s7-scroll.json",
+      "passed": 84,
+      "skipped_client_print_subchecks": 36
+    },
+    {
+      "S": 8,
+      "delivery": "90f2b90b3d71a9de2a1f4049d84a6d6e23e4db55",
+      "evidence": "t27-s8-tab-header.json",
+      "passed": 96,
+      "skipped_client_print_subchecks": 36
+    },
+    {
+      "S": 9,
+      "delivery": "2afaa0f622283444cfa9fb4df18a8b7b28242aa1",
+      "evidence": "t27-s9-report-tree.json",
+      "passed": 108,
+      "skipped_client_print_subchecks": 36
+    },
+    {
+      "S": 10,
+      "delivery": "95fbc3af1384fe15d84ee6d08d0b43c6a37015f5",
+      "evidence": "t27-s10-progress.json",
+      "passed": 122,
+      "skipped_client_print_subchecks": 36
+    },
+    {
+      "S": 11,
+      "delivery": "5f46114145835f9eb5ea440ea7c43cdb376077cc",
+      "evidence": "t27-s11-track-spin.json",
+      "passed": 146,
+      "skipped_client_print_subchecks": 36
+    },
+    {
+      "S": 12,
+      "delivery": "c357ba3751c8c725dd5fade8f46d364da849a9ba",
+      "evidence": "t27-s12-bars.json",
+      "passed": 158,
+      "skipped_client_print_subchecks": 36
+    },
+    {
+      "S": 13,
+      "delivery": "971638b91f2d69be79a48c4a3e717b7c951bfafc",
+      "evidence": "t27-s13-dates.json",
+      "passed": 170,
+      "skipped_client_print_subchecks": 36
+    },
+    {
+      "S": 14,
+      "delivery": "5c9b33edf66e6e1d9b1e5a66ce110603511171c1",
+      "evidence": "t27-s14-runtime.json",
+      "passed": 182,
+      "skipped_client_print_subchecks": 36
+    },
+    {
+      "S": 15,
+      "delivery": "73f60c5a916afb19d3796d47987fe89a682de540",
+      "evidence": "t27-s15-demo.json",
+      "passed": 185,
+      "skipped_client_print_subchecks": 36
+    }
+  ],
+  "original_reference_commit": "fd809a81098565b33f52d0f65925159de8f4c337",
+  "frozen_original_file_count": 32,
+  "frozen_original_file_sha256": {
+    "private/ntos/w32/ntuser/client/btnctl.c": "f44a25484dbcaff4c972e4bd9bd2cd168f5fd1c0ea04cb989ec961fee9441ba6",
+    "private/ntos/w32/ntuser/rtl/draw.c": "9aac299560301d0cab3de437210e428cd1e2dadf013f8a7c39477090cb6d2e50",
+    "private/ntos/w32/ntuser/kernel/inctlpan.c": "811b46564e55365a524be50efc3a2f8d486c5b07189b6ae3dd5dc7af21c969d2",
+    "private/ntos/w32/ntuser/client/statctl.c": "56960a5eb2f65ae5d4f83e12ff8e6818908e8e94b0700352565e6852c7877a43",
+    "private/ntos/w32/ntuser/client/editec.c": "f2a78523d7f4bec2024c0303dd0b1a6a60ea2b58886ffda264c736b744931d73",
+    "private/ntos/w32/ntuser/client/editsl.c": "23c0f0f0b4c52fe9e165564ddc38ccbb5c85dc1de713646650ab770b9e694a0e",
+    "private/ntos/w32/ntuser/client/editml.c": "c48afb28ba169076d07f7f5d3a3e2a8d8f14649476b90fcb7075f494511eef63",
+    "private/ntos/w32/ntuser/client/lboxctl1.c": "2dc5c3bdaa066a4a4276df6dd9b5133a2efec6ab55e281c47e5754be8d603bc6",
+    "private/ntos/w32/ntuser/client/lboxctl2.c": "4cf3f3d5d52e80d64093f1c06cc49f716e832541b71b1fc4aa85d6f9454869f6",
+    "private/ntos/w32/ntuser/client/lboxctl3.c": "8347a813f40be1364d1c61a8edacffe2e0df48591b5982db2e03ec022350e89d",
+    "private/ntos/w32/ntuser/client/combo.c": "3aa5783e5124d4efe481dd78dee7fd554930d428495f1f464d527c996cd5fa07",
+    "private/ntos/w32/ntuser/client/comboini.c": "ea592beaa6746df6522ac169b2dcc5c1d72b2f12d567a69a0c246b520e983312",
+    "private/ntos/w32/ntuser/kernel/sbctl.c": "e8dd22690ada4d63c60bf5959226dfdf3e263a44c6aadaa9b284af46aed78a16",
+    "private/ntos/w32/ntuser/kernel/scrollw.c": "33dc302ecb9076e27d99e9787213e0a0ba5377ab5434f94c3813b41b8c9b481d",
+    "private/shell/comctl32/tab.c": "e8c8ac77936cfdedf8c31c4883e63c5d4515bd374e31b905a57dfe7dc0772f76",
+    "private/shell/comctl32/header.c": "12a316020e2221af6f0bb4bdbbe5e492ac35d9bd99f9fbaa2dda026ab4020547",
+    "private/shell/comctl32/listview.c": "cfb0ee3d6489b22255aa3648e237bc7d0e4c55a404ebd0c044ea714622fb0ea6",
+    "private/shell/comctl32/lvlist.c": "048fa6d6df8063f3315b88fd44cc580b72b2c1322f935e409f876966110024fb",
+    "private/shell/comctl32/treeview.c": "cc18f7c3ca7c1d1f4168617c3af93902d29294f2b6339632e91b0ab00b2a3829",
+    "private/shell/comctl32/progress.c": "168e47045d001f530df1a7837609c0c0f8182d173bb53aa7a18dd9479c6e51ab",
+    "private/shell/comctl32/trackbar.c": "0ba4b54faa734d915d8c6e51f3494ac484641205604f9eeabb79a0c0c8119981",
+    "private/shell/comctl32/updown.c": "bc20d94285afe85bbeeab0a75b66397c136fdd800744cdc062c4a68ad54bdf98",
+    "private/shell/comctl32/toolbar.c": "63da0c594e63811a0da1bd2bf27c5992b1022d3f427b7f8ba5439d2bb7fc213c",
+    "private/shell/comctl32/status.c": "e6a09a7b1399ce8ad31c0cdf389b3aab04d13730537829967807c657a3832d96",
+    "private/shell/comctl32/rebar.c": "40b5177147747d969f718dcfeb9a2db0efa5880720d183976e7dcb30aafe71cf",
+    "private/shell/comctl32/scdttime.c": "edd79eb375b20ac03d3809aa84c862c43f6e847119a9d7ce4ac9364e9561ad80",
+    "private/shell/comctl32/monthcal.c": "356661821146427f36c7fa7b49244c099f6200671c0134bcae965fb47e04c127",
+    "private/shell/comctl32/hotkey.c": "4c2d374954c69460fadb3105ba5dd60c1b8f65ad640a3c70403a8e5873dc5d99",
+    "private/ntos/w32/ntuser/kernel/globals.c": "0983d5b102a7baca49118f59ecad450c0377094b7766bc9bcb539ae91fa256e1",
+    "private/ntos/w32/ntuser/client/clres.c": "4d4f7eb72dc15272328a860b70466ff72cbfa7f4a91a0046ebc7d4c7380a7552",
+    "private/shell/comctl32/commctrl.rc": "1704120292c831d6190bb79e5c4a3a03d508d0a3a05c5d5098a3e3c26052ee01",
+    "private/shell/comctl32/commctrl.rcv": "c1213cabfa7aaed0d9e26ef3672d2b8a7e271c6e00b9de4cf8422b3d482652ed"
+  },
+  "controls": [
+    {
+      "id": "push-button",
+      "source_batch": 2,
+      "reference_paths": [
+        "private/ntos/w32/ntuser/client/btnctl.c",
+        "private/ntos/w32/ntuser/rtl/draw.c"
+      ],
+      "evidence": "t27-s2-buttons.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/button_paint.c",
+      "demo_page": "Buttons and states",
+      "disposition": "有限呈现",
+      "scope": "普通/默认、按下、禁用、焦点、原生图文借用；应用自绘和独立的现代图片列表路径保持原样。",
+      "current_package_case_names": [
+        "win2k-button-32-aware-0",
+        "win2k-button-32-aware-1",
+        "win2k-button-v6-32-aware-0",
+        "win2k-button-v6-32-aware-1",
+        "win2k-button-v6-startup-x32",
+        "win2k-button-startup-x32",
+        "win2k-button-64-aware-0",
+        "win2k-button-64-aware-1",
+        "win2k-button-v6-64-aware-0",
+        "win2k-button-v6-64-aware-1",
+        "win2k-button-v6-startup-x64",
+        "win2k-button-startup-x64"
+      ]
+    },
+    {
+      "id": "checkbox",
+      "source_batch": 3,
+      "reference_paths": [
+        "private/ntos/w32/ntuser/client/btnctl.c",
+        "private/ntos/w32/ntuser/kernel/inctlpan.c",
+        "private/ntos/w32/ntuser/rtl/draw.c"
+      ],
+      "evidence": "t27-s3-choice-controls.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/button_paint.c",
+      "demo_page": "Buttons and states",
+      "disposition": "有限呈现",
+      "scope": "原版状态字形、按下/禁用和 push-like；原生复选值、通知及父背景。",
+      "current_package_case_names": [
+        "win2k-button-32-aware-0",
+        "win2k-button-32-aware-1",
+        "win2k-button-v6-32-aware-0",
+        "win2k-button-v6-32-aware-1",
+        "win2k-button-v6-startup-x32",
+        "win2k-button-startup-x32",
+        "win2k-button-64-aware-0",
+        "win2k-button-64-aware-1",
+        "win2k-button-v6-64-aware-0",
+        "win2k-button-v6-64-aware-1",
+        "win2k-button-v6-startup-x64",
+        "win2k-button-startup-x64"
+      ]
+    },
+    {
+      "id": "radio-button",
+      "source_batch": 3,
+      "reference_paths": [
+        "private/ntos/w32/ntuser/client/btnctl.c",
+        "private/ntos/w32/ntuser/kernel/inctlpan.c",
+        "private/ntos/w32/ntuser/rtl/draw.c"
+      ],
+      "evidence": "t27-s3-choice-controls.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/button_paint.c",
+      "demo_page": "Buttons and states",
+      "disposition": "有限呈现",
+      "scope": "普通/自动单选、原版权重与字形；原生分组、键盘和消息。",
+      "current_package_case_names": [
+        "win2k-button-32-aware-0",
+        "win2k-button-32-aware-1",
+        "win2k-button-v6-32-aware-0",
+        "win2k-button-v6-32-aware-1",
+        "win2k-button-v6-startup-x32",
+        "win2k-button-startup-x32",
+        "win2k-button-64-aware-0",
+        "win2k-button-64-aware-1",
+        "win2k-button-v6-64-aware-0",
+        "win2k-button-v6-64-aware-1",
+        "win2k-button-v6-startup-x64",
+        "win2k-button-startup-x64"
+      ]
+    },
+    {
+      "id": "three-state",
+      "source_batch": 3,
+      "reference_paths": [
+        "private/ntos/w32/ntuser/client/btnctl.c",
+        "private/ntos/w32/ntuser/kernel/inctlpan.c"
+      ],
+      "evidence": "t27-s3-choice-controls.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/button_paint.c",
+      "demo_page": "Buttons and states",
+      "disposition": "有限呈现",
+      "scope": "空、勾选、半选及正常/按下/禁用；保持原生三态。",
+      "current_package_case_names": [
+        "win2k-button-32-aware-0",
+        "win2k-button-32-aware-1",
+        "win2k-button-v6-32-aware-0",
+        "win2k-button-v6-32-aware-1",
+        "win2k-button-v6-startup-x32",
+        "win2k-button-startup-x32",
+        "win2k-button-64-aware-0",
+        "win2k-button-64-aware-1",
+        "win2k-button-v6-64-aware-0",
+        "win2k-button-v6-64-aware-1",
+        "win2k-button-v6-startup-x64",
+        "win2k-button-startup-x64"
+      ]
+    },
+    {
+      "id": "static",
+      "source_batch": 4,
+      "reference_paths": [
+        "private/ntos/w32/ntuser/client/statctl.c",
+        "private/ntos/w32/ntuser/rtl/draw.c"
+      ],
+      "evidence": "t27-s4-static-group.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/static_paint.c",
+      "demo_page": "Containers and drawing",
+      "disposition": "有限呈现",
+      "scope": "普通文字、色块、边线和蚀刻；原生图标、位图、应用自绘与复杂组合按其专属路径。",
+      "current_package_case_names": [
+        "win2k-static-32-aware-0",
+        "win2k-static-32-aware-1",
+        "win2k-static-startup-32",
+        "win2k-static-v6-32-aware-0",
+        "win2k-static-v6-32-aware-1",
+        "win2k-static-v6-startup-32",
+        "win2k-static-64-aware-0",
+        "win2k-static-64-aware-1",
+        "win2k-static-startup-64",
+        "win2k-static-v6-64-aware-0",
+        "win2k-static-v6-64-aware-1",
+        "win2k-static-v6-startup-64"
+      ]
+    },
+    {
+      "id": "group-box",
+      "source_batch": 4,
+      "reference_paths": [
+        "private/ntos/w32/ntuser/client/btnctl.c",
+        "private/ntos/w32/ntuser/rtl/draw.c"
+      ],
+      "evidence": "t27-s4-static-group.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/static_paint.c",
+      "demo_page": "Containers and drawing",
+      "disposition": "有限呈现",
+      "scope": "普通分组线和标题间断，父背景、借用字体和对齐；应用自绘容器保留。",
+      "current_package_case_names": [
+        "win2k-static-32-aware-0",
+        "win2k-static-32-aware-1",
+        "win2k-static-startup-32",
+        "win2k-static-v6-32-aware-0",
+        "win2k-static-v6-32-aware-1",
+        "win2k-static-v6-startup-32",
+        "win2k-static-64-aware-0",
+        "win2k-static-64-aware-1",
+        "win2k-static-startup-64",
+        "win2k-static-v6-64-aware-0",
+        "win2k-static-v6-64-aware-1",
+        "win2k-static-v6-startup-64"
+      ]
+    },
+    {
+      "id": "edit",
+      "source_batch": 5,
+      "reference_paths": [
+        "private/ntos/w32/ntuser/client/editec.c",
+        "private/ntos/w32/ntuser/client/editsl.c",
+        "private/ntos/w32/ntuser/client/editml.c",
+        "private/ntos/w32/ntuser/rtl/draw.c"
+      ],
+      "evidence": "t27-s5-edit-controls.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/edit_paint.c",
+      "demo_page": "Editing and lists",
+      "disposition": "有限呈现",
+      "scope": "标准边缘、默认画刷、只读、密码与禁用；文字、选择、输入法、应用刷与数据继续原生。",
+      "current_package_case_names": [
+        "win2k-edit-v6-32-aware-0",
+        "win2k-edit-v6-startup-64",
+        "win2k-edit-32-aware-0",
+        "win2k-edit-32-aware-1",
+        "win2k-edit-startup-32",
+        "win2k-edit-v6-32-aware-1",
+        "win2k-edit-v6-startup-32",
+        "win2k-edit-64-aware-0",
+        "win2k-edit-64-aware-1",
+        "win2k-edit-startup-64",
+        "win2k-edit-v6-64-aware-0",
+        "win2k-edit-v6-64-aware-1"
+      ]
+    },
+    {
+      "id": "listbox",
+      "source_batch": 6,
+      "reference_paths": [
+        "private/ntos/w32/ntuser/client/lboxctl1.c",
+        "private/ntos/w32/ntuser/client/lboxctl2.c",
+        "private/ntos/w32/ntuser/client/lboxctl3.c"
+      ],
+      "evidence": "t27-s6-list-combo.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/list_combo.c",
+      "demo_page": "Editing and lists / Files and scrollbars",
+      "disposition": "有限呈现",
+      "scope": "普通列表及验证的 TAB stops、选择和边框；owner-draw 由应用处理。",
+      "current_package_case_names": [
+        "list-combo-32-aware0-hooked0",
+        "list-combo-32-aware1-hooked0",
+        "list-combo-32-aware0-hooked1",
+        "list-combo-v6-32-aware0-hooked0",
+        "list-combo-v6-32-aware1-hooked0",
+        "list-combo-v6-32-aware0-hooked1",
+        "list-combo-64-aware0-hooked0",
+        "list-combo-64-aware1-hooked0",
+        "list-combo-64-aware0-hooked1",
+        "list-combo-v6-64-aware0-hooked0",
+        "list-combo-v6-64-aware1-hooked0",
+        "list-combo-v6-64-aware0-hooked1"
+      ]
+    },
+    {
+      "id": "combobox",
+      "source_batch": 6,
+      "reference_paths": [
+        "private/ntos/w32/ntuser/client/combo.c",
+        "private/ntos/w32/ntuser/client/comboini.c",
+        "private/ntos/w32/ntuser/rtl/draw.c"
+      ],
+      "evidence": "t27-s6-list-combo.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/list_combo.c",
+      "demo_page": "Editing and lists",
+      "disposition": "有限呈现",
+      "scope": "普通 SIMPLE / DROPDOWN / DROPDOWNLIST 与原生子窗；数据、通知和特殊绘制保留。",
+      "current_package_case_names": [
+        "list-combo-32-aware0-hooked0",
+        "list-combo-32-aware1-hooked0",
+        "list-combo-32-aware0-hooked1",
+        "list-combo-v6-32-aware0-hooked0",
+        "list-combo-v6-32-aware1-hooked0",
+        "list-combo-v6-32-aware0-hooked1",
+        "list-combo-64-aware0-hooked0",
+        "list-combo-64-aware1-hooked0",
+        "list-combo-64-aware0-hooked1",
+        "list-combo-v6-64-aware0-hooked0",
+        "list-combo-v6-64-aware1-hooked0",
+        "list-combo-v6-64-aware0-hooked1"
+      ]
+    },
+    {
+      "id": "scrollbar",
+      "source_batch": 7,
+      "reference_paths": [
+        "private/ntos/w32/ntuser/kernel/sbctl.c",
+        "private/ntos/w32/ntuser/kernel/scrollw.c",
+        "private/ntos/w32/ntuser/rtl/draw.c"
+      ],
+      "evidence": "t27-s7-scroll.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/scroll.c",
+      "demo_page": "Files and scrollbars",
+      "disposition": "有限呈现",
+      "scope": "独立横纵、非客户区、滚动轨迹和 sizebox；镜像非客户布局保留原生。",
+      "current_package_case_names": [
+        "scroll-32-aware0-hooked0",
+        "scroll-32-aware1-hooked0",
+        "scroll-32-aware0-hooked1",
+        "scroll-layout-32",
+        "scroll-64-aware0-hooked0",
+        "scroll-64-aware1-hooked0",
+        "scroll-64-aware0-hooked1",
+        "scroll-layout-64"
+      ]
+    },
+    {
+      "id": "tab",
+      "source_batch": 8,
+      "reference_paths": [
+        "private/shell/comctl32/tab.c"
+      ],
+      "evidence": "t27-s8-tab-header.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/tab_paint.c",
+      "demo_page": "Lists and toolbars",
+      "disposition": "有限呈现",
+      "scope": "普通标签及文图、选中、焦点和热点；非标准方向、自绘与高级变体保持原生。",
+      "current_package_case_names": [
+        "tab-header-32-attach",
+        "tab-header-32-aware",
+        "tab-header-32-startup",
+        "tab-header-v6-32-attach",
+        "tab-header-v6-32-aware",
+        "tab-header-v6-32-startup",
+        "tab-header-64-attach",
+        "tab-header-64-aware",
+        "tab-header-64-startup",
+        "tab-header-v6-64-attach",
+        "tab-header-v6-64-aware",
+        "tab-header-v6-64-startup"
+      ]
+    },
+    {
+      "id": "header",
+      "source_batch": 8,
+      "reference_paths": [
+        "private/shell/comctl32/header.c"
+      ],
+      "evidence": "t27-s8-tab-header.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/header_paint.c",
+      "demo_page": "Lists and toolbars",
+      "disposition": "有限呈现",
+      "scope": "普通表头尽量使用原样式边线和背景；复杂排序、过滤、调整列宽和数据由原生/应用处理。",
+      "current_package_case_names": [
+        "tab-header-32-attach",
+        "tab-header-32-aware",
+        "tab-header-32-startup",
+        "tab-header-v6-32-attach",
+        "tab-header-v6-32-aware",
+        "tab-header-v6-32-startup",
+        "tab-header-64-attach",
+        "tab-header-64-aware",
+        "tab-header-64-startup",
+        "tab-header-v6-64-attach",
+        "tab-header-v6-64-aware",
+        "tab-header-v6-64-startup"
+      ]
+    },
+    {
+      "id": "listview",
+      "source_batch": 9,
+      "reference_paths": [
+        "private/shell/comctl32/listview.c",
+        "private/shell/comctl32/lvlist.c"
+      ],
+      "evidence": "t27-s9-report-tree.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/report_paint.c",
+      "demo_page": "Lists and toolbars",
+      "disposition": "有限呈现",
+      "scope": "普通文本项及验证的选择状态；复杂图像、整行选择、透明、owner-data、自绘保持原生。",
+      "current_package_case_names": [
+        "report-tree-32-attach",
+        "report-tree-32-aware",
+        "report-tree-32-startup",
+        "report-tree-v6-32-attach",
+        "report-tree-v6-32-aware",
+        "report-tree-v6-32-startup",
+        "report-tree-64-attach",
+        "report-tree-64-aware",
+        "report-tree-64-startup",
+        "report-tree-v6-64-attach",
+        "report-tree-v6-64-aware",
+        "report-tree-v6-64-startup"
+      ]
+    },
+    {
+      "id": "treeview",
+      "source_batch": 9,
+      "reference_paths": [
+        "private/shell/comctl32/treeview.c"
+      ],
+      "evidence": "t27-s9-report-tree.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/report_paint.c",
+      "demo_page": "Lists and toolbars",
+      "disposition": "有限呈现",
+      "scope": "普通树的颜色与边缘；层级、展开、图像、连接线和展开方框由原生拥有。",
+      "current_package_case_names": [
+        "report-tree-32-attach",
+        "report-tree-32-aware",
+        "report-tree-32-startup",
+        "report-tree-v6-32-attach",
+        "report-tree-v6-32-aware",
+        "report-tree-v6-32-startup",
+        "report-tree-64-attach",
+        "report-tree-64-aware",
+        "report-tree-64-startup",
+        "report-tree-v6-64-attach",
+        "report-tree-v6-64-aware",
+        "report-tree-v6-64-startup"
+      ]
+    },
+    {
+      "id": "progress",
+      "source_batch": 10,
+      "reference_paths": [
+        "private/shell/comctl32/progress.c"
+      ],
+      "evidence": "t27-s10-progress.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/progress_paint.c",
+      "demo_page": "Ranges and dates",
+      "disposition": "有限呈现",
+      "scope": "v6 普通分段/平滑、横纵和颜色；v5 仅经典边缘，动态模式原生保留。",
+      "current_package_case_names": [
+        "progress-32-attach",
+        "progress-32-aware",
+        "progress-32-startup",
+        "progress-v6-32-attach",
+        "progress-v6-32-aware",
+        "progress-v6-32-startup",
+        "progress-paint-32",
+        "progress-64-attach",
+        "progress-64-aware",
+        "progress-64-startup",
+        "progress-v6-64-attach",
+        "progress-v6-64-aware",
+        "progress-v6-64-startup",
+        "progress-paint-64"
+      ]
+    },
+    {
+      "id": "trackbar",
+      "source_batch": 11,
+      "reference_paths": [
+        "private/shell/comctl32/trackbar.c"
+      ],
+      "evidence": "t27-s11-track-spin.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/trackbar_paint.c",
+      "demo_page": "Ranges and dates",
+      "disposition": "有限呈现",
+      "scope": "原版通道、滑块与刻度；特殊几何、方向变体及未验证的选择通道保留原生。",
+      "current_package_case_names": [
+        "trackbar-32-attach",
+        "trackbar-32-aware",
+        "trackbar-32-startup",
+        "trackbar-v6-32-attach",
+        "trackbar-v6-32-aware",
+        "trackbar-v6-32-startup",
+        "trackbar-64-attach",
+        "trackbar-64-aware",
+        "trackbar-64-startup",
+        "trackbar-v6-64-attach",
+        "trackbar-v6-64-aware",
+        "trackbar-v6-64-startup"
+      ]
+    },
+    {
+      "id": "updown",
+      "source_batch": 11,
+      "reference_paths": [
+        "private/shell/comctl32/updown.c",
+        "private/ntos/w32/ntuser/rtl/draw.c"
+      ],
+      "evidence": "t27-s11-track-spin.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/updown_paint.c",
+      "demo_page": "Ranges and dates",
+      "disposition": "有限呈现",
+      "scope": "正常、按下、禁用箭头与框线；伙伴控件、数值和通知留在原生。",
+      "current_package_case_names": [
+        "updown-32-attach",
+        "updown-32-aware",
+        "updown-32-startup",
+        "updown-v6-32-attach",
+        "updown-v6-32-aware",
+        "updown-v6-32-startup",
+        "updown-64-attach",
+        "updown-64-aware",
+        "updown-64-startup",
+        "updown-v6-64-attach",
+        "updown-v6-64-aware",
+        "updown-v6-64-startup"
+      ]
+    },
+    {
+      "id": "toolbar",
+      "source_batch": 12,
+      "reference_paths": [
+        "private/shell/comctl32/toolbar.c"
+      ],
+      "evidence": "t27-s12-bars.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/toolbar_paint.c",
+      "demo_page": "Lists and toolbars",
+      "disposition": "有限呈现",
+      "scope": "普通或平面按钮和平面分隔，保留应用文字、图像、分裂按钮等复杂路径。",
+      "current_package_case_names": [
+        "bars-32-attach",
+        "bars-32-aware",
+        "bars-32-startup",
+        "bars-v6-32-attach",
+        "bars-v6-32-aware",
+        "bars-v6-32-startup",
+        "bars-64-attach",
+        "bars-64-aware",
+        "bars-64-startup",
+        "bars-v6-64-attach",
+        "bars-v6-64-aware",
+        "bars-v6-64-startup"
+      ]
+    },
+    {
+      "id": "statusbar",
+      "source_batch": 12,
+      "reference_paths": [
+        "private/shell/comctl32/status.c"
+      ],
+      "evidence": "t27-s12-bars.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/status_paint.c",
+      "demo_page": "Lists and toolbars",
+      "disposition": "有限呈现",
+      "scope": "普通分区、凸起、无边框与 sizegrip；原生分区和所有者数据保留。",
+      "current_package_case_names": [
+        "bars-32-attach",
+        "bars-32-aware",
+        "bars-32-startup",
+        "bars-v6-32-attach",
+        "bars-v6-32-aware",
+        "bars-v6-32-startup",
+        "bars-64-attach",
+        "bars-64-aware",
+        "bars-64-startup",
+        "bars-v6-64-attach",
+        "bars-v6-64-aware",
+        "bars-v6-64-startup"
+      ]
+    },
+    {
+      "id": "rebar",
+      "source_batch": 12,
+      "reference_paths": [
+        "private/shell/comctl32/rebar.c"
+      ],
+      "evidence": "t27-s12-bars.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/rebar_paint.c",
+      "demo_page": "Lists and toolbars",
+      "disposition": "有限呈现",
+      "scope": "普通水平抓手；原生布局、伙伴、带文字和带图、自定背景保留。",
+      "current_package_case_names": [
+        "bars-32-attach",
+        "bars-32-aware",
+        "bars-32-startup",
+        "bars-v6-32-attach",
+        "bars-v6-32-aware",
+        "bars-v6-32-startup",
+        "bars-64-attach",
+        "bars-64-aware",
+        "bars-64-startup",
+        "bars-v6-64-attach",
+        "bars-v6-64-aware",
+        "bars-v6-64-startup"
+      ]
+    },
+    {
+      "id": "datetime",
+      "source_batch": 13,
+      "reference_paths": [
+        "private/shell/comctl32/scdttime.c"
+      ],
+      "evidence": "t27-s13-dates.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/date_paint.c",
+      "demo_page": "Ranges and dates",
+      "disposition": "有限呈现",
+      "scope": "普通下拉按钮、弹层与默认原版角色；时间微调、复选框和自定义解析保留原生。",
+      "current_package_case_names": [
+        "dates-32-attach",
+        "dates-32-aware",
+        "dates-32-startup",
+        "dates-v6-32-attach",
+        "dates-v6-32-aware",
+        "dates-v6-32-startup",
+        "dates-64-attach",
+        "dates-64-aware",
+        "dates-64-startup",
+        "dates-v6-64-attach",
+        "dates-v6-64-aware",
+        "dates-v6-64-startup"
+      ]
+    },
+    {
+      "id": "monthcalendar",
+      "source_batch": 13,
+      "reference_paths": [
+        "private/shell/comctl32/monthcal.c"
+      ],
+      "evidence": "t27-s13-dates.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/date_paint.c",
+      "demo_page": "Ranges and dates",
+      "disposition": "有限呈现",
+      "scope": "普通单选月历的标题、选择，应用自设颜色及导航保留；多选继续原生。",
+      "current_package_case_names": [
+        "dates-32-attach",
+        "dates-32-aware",
+        "dates-32-startup",
+        "dates-v6-32-attach",
+        "dates-v6-32-aware",
+        "dates-v6-32-startup",
+        "dates-64-attach",
+        "dates-64-aware",
+        "dates-64-startup",
+        "dates-v6-64-attach",
+        "dates-v6-64-aware",
+        "dates-v6-64-startup"
+      ]
+    },
+    {
+      "id": "richtext-and-hotkey",
+      "source_batch": 5,
+      "reference_paths": [
+        "private/shell/comctl32/hotkey.c",
+        "private/ntos/w32/ntuser/rtl/draw.c"
+      ],
+      "evidence": "t27-s5-edit-controls.json",
+      "production_path": "src/lib-win32-style/appearance/win2000/control/edit_paint.c",
+      "demo_page": "Text and special objects",
+      "disposition": "仅经典边缘",
+      "scope": "RichEdit 20A/20W、50W 及原生热键的边缘/已有编辑协议；富文本内容、格式、快捷键状态由原生拥有。部分原生离屏客户打印跳过。",
+      "current_package_case_names": [
+        "win2k-edit-v6-32-aware-0",
+        "win2k-edit-v6-startup-64",
+        "win2k-edit-32-aware-0",
+        "win2k-edit-32-aware-1",
+        "win2k-edit-startup-32",
+        "win2k-edit-v6-32-aware-1",
+        "win2k-edit-v6-startup-32",
+        "win2k-edit-64-aware-0",
+        "win2k-edit-64-aware-1",
+        "win2k-edit-startup-64",
+        "win2k-edit-v6-64-aware-0",
+        "win2k-edit-v6-64-aware-1"
+      ]
+    },
+    {
+      "id": "syslink-modern-only",
+      "source_batch": 4,
+      "reference_paths": [],
+      "evidence": "t27-s4-static-group.json",
+      "production_path": null,
+      "demo_page": "—",
+      "disposition": "原生保留",
+      "scope": "Win2000 无对应 SysLink。沿用现代原生链接显示和输入，本行无年代复刻。",
+      "current_package_case_names": []
+    }
+  ],
+  "runtime_groups": [
+    {
+      "id": "vb-native",
+      "disposition": "有限呈现",
+      "scope": "角色匹配标准控件后复用相应年代呈现。已观察原作者 VB5/6 各 20 个控件，Actor x86 的 5 个按钮/复选框。64 位为模型。",
+      "reference_scope": "Native VB5/6 buttons/choice/edit/list/combo; original runtime font/value/events",
+      "evidence": "t27-s14-runtime.json",
+      "same_test_binary_case_names": [
+        "runtime-roles-32-attach",
+        "runtime-roles-32-aware",
+        "runtime-roles-32-startup",
+        "runtime-roles-v6-32-attach",
+        "runtime-roles-v6-32-aware",
+        "runtime-roles-v6-32-startup",
+        "runtime-roles-64-attach",
+        "runtime-roles-64-aware",
+        "runtime-roles-64-startup",
+        "runtime-roles-v6-64-attach",
+        "runtime-roles-v6-64-aware",
+        "runtime-roles-v6-64-startup"
+      ]
+    },
+    {
+      "id": "vb-containers-and-owner-roles",
+      "disposition": "有限呈现",
+      "scope": "标准 Frame 和实际原生子窗由共同协议接收；文件列表、Checklist 和窗口外绘制交给应用。",
+      "reference_scope": "VB frames/PictureBox/UserControl and verified owner file/checklist modes; native/windowless contents preserved",
+      "evidence": "t27-s14-runtime.json",
+      "same_test_binary_case_names": [
+        "runtime-roles-32-attach",
+        "runtime-roles-32-aware",
+        "runtime-roles-32-startup",
+        "runtime-roles-v6-32-attach",
+        "runtime-roles-v6-32-aware",
+        "runtime-roles-v6-32-startup",
+        "runtime-roles-64-attach",
+        "runtime-roles-64-aware",
+        "runtime-roles-64-startup",
+        "runtime-roles-v6-64-attach",
+        "runtime-roles-v6-64-aware",
+        "runtime-roles-v6-64-startup"
+      ]
+    },
+    {
+      "id": "vcl-native-wrappers",
+      "disposition": "有限呈现",
+      "scope": "已确认标准公开协议与来源的包装。同一实现验证 DoubleKiller x86 的 10 个按钮；MD5summer 主窗跳过。",
+      "reference_scope": "Verified VCL standard/common controls and source-identical public protocol identities",
+      "evidence": "t27-s14-runtime.json",
+      "same_test_binary_case_names": [
+        "runtime-roles-32-attach",
+        "runtime-roles-32-aware",
+        "runtime-roles-32-startup",
+        "runtime-roles-v6-32-attach",
+        "runtime-roles-v6-32-aware",
+        "runtime-roles-v6-32-startup",
+        "runtime-roles-64-attach",
+        "runtime-roles-64-aware",
+        "runtime-roles-64-startup",
+        "runtime-roles-v6-64-attach",
+        "runtime-roles-v6-64-aware",
+        "runtime-roles-v6-64-startup"
+      ]
+    },
+    {
+      "id": "vcl-text-and-containers",
+      "disposition": "部分保留",
+      "scope": "可确认的原生 STATIC 或 BUTTON 子窗沿用标准呈现；专用 Panel、Group 和 ControlBar 外壳保留应用绘制。",
+      "reference_scope": "Static/LinkLabel/Group/Panel/ScrollBox/ControlBar and guarded parent-child overlays",
+      "evidence": "t27-s14-runtime.json",
+      "same_test_binary_case_names": [
+        "runtime-roles-32-attach",
+        "runtime-roles-32-aware",
+        "runtime-roles-32-startup",
+        "runtime-roles-v6-32-attach",
+        "runtime-roles-v6-32-aware",
+        "runtime-roles-v6-32-startup",
+        "runtime-roles-64-attach",
+        "runtime-roles-64-aware",
+        "runtime-roles-64-startup",
+        "runtime-roles-v6-64-attach",
+        "runtime-roles-v6-64-aware",
+        "runtime-roles-v6-64-startup"
+      ]
+    },
+    {
+      "id": "vcl-grid-file-inplace",
+      "disposition": "部分保留",
+      "scope": "已确认的标准编辑/列表/组合子窗可应用；表格、文件驱动器、就地业务和自绘按原控件处理。",
+      "reference_scope": "Grid/file/lookup/inplace/popups: existing frame/scroll/font and owner-draw boundaries",
+      "evidence": "t27-s14-runtime.json",
+      "same_test_binary_case_names": [
+        "runtime-roles-32-attach",
+        "runtime-roles-32-aware",
+        "runtime-roles-32-startup",
+        "runtime-roles-v6-32-attach",
+        "runtime-roles-v6-32-aware",
+        "runtime-roles-v6-32-startup",
+        "runtime-roles-64-attach",
+        "runtime-roles-64-aware",
+        "runtime-roles-64-startup",
+        "runtime-roles-v6-64-attach",
+        "runtime-roles-v6-64-aware",
+        "runtime-roles-v6-64-startup"
+      ]
+    },
+    {
+      "id": "vcl-data-navigation-media",
+      "disposition": "部分保留",
+      "scope": "原生标准子窗适用；导航、媒体、图表、位图和应用定义内容由应用拥有。",
+      "reference_scope": "Existing data/nav/media button roles and app-data/image ownership",
+      "evidence": "t27-s14-runtime.json",
+      "same_test_binary_case_names": [
+        "runtime-roles-32-attach",
+        "runtime-roles-32-aware",
+        "runtime-roles-32-startup",
+        "runtime-roles-v6-32-attach",
+        "runtime-roles-v6-32-aware",
+        "runtime-roles-v6-32-startup",
+        "runtime-roles-64-attach",
+        "runtime-roles-64-aware",
+        "runtime-roles-64-startup",
+        "runtime-roles-v6-64-attach",
+        "runtime-roles-v6-64-aware",
+        "runtime-roles-v6-64-startup"
+      ]
+    },
+    {
+      "id": "vcl-special-composites",
+      "disposition": "部分保留",
+      "scope": "公开协议证实的公用控件可应用；专用色盒、日期、状态栏及富编辑包装无独立见证时保留。",
+      "reference_scope": "Color/drive/date/bit/speed/rich/status specialized existing roles",
+      "evidence": "t27-s14-runtime.json",
+      "same_test_binary_case_names": [
+        "runtime-roles-32-attach",
+        "runtime-roles-32-aware",
+        "runtime-roles-32-startup",
+        "runtime-roles-v6-32-attach",
+        "runtime-roles-v6-32-aware",
+        "runtime-roles-v6-32-startup",
+        "runtime-roles-64-attach",
+        "runtime-roles-64-aware",
+        "runtime-roles-64-startup",
+        "runtime-roles-v6-64-attach",
+        "runtime-roles-v6-64-aware",
+        "runtime-roles-v6-64-startup"
+      ]
+    },
+    {
+      "id": "ocx-and-unsupported",
+      "disposition": "原生保留",
+      "scope": "仅沿用已证实同模块原生子窗协议，未知或非可视的 OCX、windowless ActiveX、ownerdraw 无新增认证。",
+      "reference_scope": "Only existing validated native OCX wrappers; unknown/custom/nonvisual/previously excluded long tail remains explicit",
+      "evidence": "t27-s14-runtime.json",
+      "same_test_binary_case_names": [
+        "runtime-roles-32-attach",
+        "runtime-roles-32-aware",
+        "runtime-roles-32-startup",
+        "runtime-roles-v6-32-attach",
+        "runtime-roles-v6-32-aware",
+        "runtime-roles-v6-32-startup",
+        "runtime-roles-64-attach",
+        "runtime-roles-64-aware",
+        "runtime-roles-64-startup",
+        "runtime-roles-v6-64-attach",
+        "runtime-roles-v6-64-aware",
+        "runtime-roles-v6-64-startup"
+      ]
+    }
+  ],
+  "verified_process_cases": 185,
+  "skipped_client_print_subchecks": 36,
+  "unverified": [
+    "FullIntegration",
+    "physical mouse/keyboard",
+    "actual elevated tray endpoint",
+    "arbitrary application-drawn or third-party controls",
+    "new Win2000 common-dialog conversions",
+    "UWP/WinUI client controls",
+    "MD5summer main controls"
+  ],
+  "assets_and_winnt_sha256": {
+    "run16s.exe": "290cf3d68e33d92f86ed14def864bb33558074b0c2f44fabbe33b2e135e00bd3",
+    "ntw16s32.dll": "50713ef8181c7e400776784421666855ca3fa1d98c5cd202234ca1156062b791",
+    "ntw16s64.dll": "b6a7814c85f7f55a295be73f0f80a58d34d930eb3cf6e169a825e570702fafb7",
+    "ntw2ks32.dll": "2f72a46c14b57c3709a01153b29d26f4071a1b23840b63aece21110585741287",
+    "ntw2ks64.dll": "4ec45743af1743532045611302d561759d820cc3f3140557855d8fdf94597283",
+    "ntwshk32.dll": "12fb1778dfd19d7c6835898be4dd0288190412ef6fa683fe6d9a3e64df3adea0",
+    "ntwshk64.dll": "deda5939f3004287dc1e475eca9ca7c4a6869ca0aad0bfac91971282e80ee858",
+    "demo.exe": "d693b22d3568cef4b5784f405247c2ba98fad49723f10f3bf01df679f45ad3f2"
+  },
+  "same_package_as_s15": true
+}

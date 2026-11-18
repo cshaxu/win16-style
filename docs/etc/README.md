@@ -296,32 +296,19 @@
 
 - [T26 S14 actual remote](evidence/t26-s14-remote.json): fetched P1 blobs, exact final source inputs and eight formal product identities verified.
 
-- [T27 S1 control references](evidence/t27-s1-controls-reference.json): frozen Win3.x parity groups/aliases, user Windows2000 source identities, original screenshot observations and explicit reference gaps.
-
-- [T27 S1 actual remote](evidence/t27-s1-remote.json): fetched seven changed blobs and unchanged eight-file baseline verified.
-
-- [T27 S2 source-based buttons](evidence/t27-s2-buttons.json): original source identities, development failures and real DLL rendering/lifecycle verification; formal delivery status recorded in evidence.
-
-- [T27 S2 actual remote](evidence/t27-s2-remote.json): fetched 38 changed blobs/eight tested binaries byte-verified; 1181 inputs inspected, nine pre-existing CRLF/LF-only differences explicitly recorded.
-
-- [T27 S3 choice control references](evidence/t27-s3-choice-controls.json): pinned source facts, genuine image digests, four exact 13-pixel glyph matches, dark-shadow correction and finite planned coverage.
-
-- [T27 S3实际远端](evidence/t27-s3-remote.json)：32变更/八文件实际fetch字节验证与9个旧行尾差异。
-
-- [T27 S4静态/分组](evidence/t27-s4-static-group.json)：固定源/原图及17角色有限审计、实现和实际交付证据（当前审计阶段）。
-
-- [T27 S4实际远端](evidence/t27-s4-remote.json)：批量对象复核30变更/八文件，1187输入和9个旧行尾差异。
-
-- [T27 S5编辑控件](evidence/t27-s5-edit-controls.json)：固定原源码/原图、公共编辑协议、62项实际包及原生打印skip；首次失败/原生销毁对照保留。
-
-- [T27 S5实际远端](evidence/t27-s5-remote.json)：25变更/八文件实际fetch字节核对；1191输入仅9项旧行尾差异。
-
-- [T27 S6列表/组合框](evidence/t27-s6-list-combo.json)：七份固定原源码/四张真实原图，有限设计和增量实施证据；未交付范围明确。
-
-- [T27 S6实际远端](evidence/t27-s6-remote.json)记录取回的源码和八件发布物摘要。
-
-- [T27 S7滚动条](evidence/t27-s7-scroll.json)记录原版源码、截图依据与滚动几何验证。
-
-- [T27 S7实际远端](evidence/t27-s7-remote.json)记录取回的源码和八件发布物摘要。
-
-- [T27 S15 Demo 与切换](evidence/t27-s15-demo.json)记录九页原生示例、两种年代与系统原样的普通启动、双位宽六方向切换、已发布实包及各自的验证边界。
+- [T27 S1 冻结范围和原版参考](evidence/t27-s1-controls-reference.json)；[实际远端](evidence/t27-s1-remote.json)。
+- [T27 S2 标准按钮](evidence/t27-s2-buttons.json)；[实际远端](evidence/t27-s2-remote.json)。
+- [T27 S3 复选、单选与三态](evidence/t27-s3-choice-controls.json)；[实际远端](evidence/t27-s3-remote.json)。
+- [T27 S4 静态与分组](evidence/t27-s4-static-group.json)；[实际远端](evidence/t27-s4-remote.json)。
+- [T27 S5 编辑、富文本边缘和热键](evidence/t27-s5-edit-controls.json)；[实际远端](evidence/t27-s5-remote.json)。
+- [T27 S6 列表与组合框](evidence/t27-s6-list-combo.json)；[实际远端](evidence/t27-s6-remote.json)。
+- [T27 S7 滚动条和尺寸框](evidence/t27-s7-scroll.json)；[实际远端](evidence/t27-s7-remote.json)。
+- [T27 S8 标签和表头](evidence/t27-s8-tab-header.json)；[实际远端](evidence/t27-s8-remote.json)。
+- [T27 S9 列表视图与树](evidence/t27-s9-report-tree.json)；[实际远端](evidence/t27-s9-remote.json)。
+- [T27 S10 进度条](evidence/t27-s10-progress.json)；[实际远端](evidence/t27-s10-remote.json)。
+- [T27 S11 滑块与微调](evidence/t27-s11-track-spin.json)；[实际远端](evidence/t27-s11-remote.json)。
+- [T27 S12 工具栏、可重排栏与状态栏](evidence/t27-s12-bars.json)；[实际远端](evidence/t27-s12-remote.json)。
+- [T27 S13 日期选择与月历](evidence/t27-s13-dates.json)；[实际远端](evidence/t27-s13-remote.json)。
+- [T27 S14 VB、VCL 与复合控件](evidence/t27-s14-runtime.json)；[实际远端](evidence/t27-s14-remote.json)。
+- [T27 S15 Demo 与六方向切换](evidence/t27-s15-demo.json)；[实际远端](evidence/t27-s15-remote.json)。
+- [T27 S16 全任务复核](evidence/t27-s16-final-audit.json)包含冻结组与当前实包用例的逐项对照。
