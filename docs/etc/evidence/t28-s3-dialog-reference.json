@@ -1,6 +1,6 @@
 {
   "task": "M0 T28 S3",
-  "stage": "P1 ordinary startup candidate, published and verified locally",
+  "stage": "P1 ordinary startup candidate, published and verified against origin/main",
   "find_incremental": {
     "change": "Compact the stock Find window only when its optional wrap control is hidden and the client matches 236 by 74 dialog units. Reuse the common client-geometry restore after refreshing the frame. Requests with a hook or custom template retain their native layout.",
     "published_negative_control": "x86/x64 each failed the new stock Find geometry assertion in ANSI and Unicode. The existing termination notification assertions passed.",
@@ -364,6 +364,9 @@
     "combined": "36/36 including the eight Find/Replace cases."
   },
   "delivery": {
+    "verified_delivery_commit": "3bf842f230f03e593310668b3116682b30126be1",
+    "remote_readback": "Queried origin/main after push. The observed commit matched the delivery, and all eight committed asset blobs matched the SHA-256 at both publication locations. The committed Win2000 assembly, COM Show implementation and Find appearance were checked against the worktree.",
+    "cleanup": "Removed S3-owned clean build, temporary candidates, publisher backups and runtime probe output after verification. The canonical incremental build/cache and the two published copies are retained.",
     "build_command": "tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-dialog-candidate",
     "snapshot_manifest_sha256": "fe7b3b818f92fe63df5ab9527ebea766623a69351123c756208b4caf93b963fc",
     "compiler": "C17, MinGW GCC 16.1.0 (i686 UCRT and x86_64 MSVCRT), Ninja 1.13.2, ccache 4.13.6",

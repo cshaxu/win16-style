@@ -23,8 +23,8 @@ M0 T28 S3 已准入，目标为 Windows 2000 公共对话框的功能对等。�
 16/16，带诊断的确认对照也为双宽 16/16。普通 Shell 目录选择的发布基线通过。
 兼容的 COM 目录请求接到经典目录树，兼容的 COM 文件请求接到原生 Explorer
 型 Win32 文件框，两者共用参数和结果转换。P1 候选同快照八件已先发布至
-两处。发布版普通桌面 42/42 组、核心 24/24、Shell 目录 16/16、扩展打印
-设置确认和 Apply 对照 8/8。原生系统对照同样无法取得打印机 DC。
+两处，并完成远端核对。发布版普通桌面 42/42 组、核心 24/24、Shell 目录
+16/16、扩展打印设置确认和 Apply 对照 8/8。原生系统对照同样无法取得打印机 DC。
 S3 仍开放，原版 Explorer、扩展打印属性页及自定义颜色的视觉差异、
 打印机 DC 和全局路径仍待验证。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
@@ -61,14 +61,14 @@ S3 仍开放，原版 Explorer、扩展打印属性页及自定义颜色的视�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S2 P1，73774837；八件和构建输入远端核对。
+- Last verified remote delivery: M0 T28 S3 P1，3bf842f2；八件均与远端所指提交及两处发布一致。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S2 合成恢复包](../etc/evidence/t28-s2-composition-delivery.json)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1135回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
