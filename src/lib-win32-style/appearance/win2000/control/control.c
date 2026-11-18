@@ -9,6 +9,7 @@
 #include "progress_paint.h"
 #include "trackbar_paint.h"
 #include "updown_paint.h"
+#include "bars.h"
 #include "lib-win32-style/application/control/combo.h"
 #include "lib-win32-style/application/control/list.h"
 #include "lib-win32-style/application/control/edit.h"
@@ -22,6 +23,7 @@
 #include <stdlib.h>
 
 typedef enum win2k_report_role { WIN2K_REPORT_NONE,WIN2K_REPORT_LIST,WIN2K_REPORT_TREE } win2k_report_role;
+typedef enum win2k_bar_role { WIN2K_BAR_NONE,WIN2K_BAR_TOOL,WIN2K_BAR_REBAR,WIN2K_BAR_STATUS } win2k_bar_role;
 typedef struct win2k_control {
     style_instance instance;
     style_control_state state;
@@ -35,6 +37,8 @@ typedef struct win2k_control {
     BOOL tab_control,header_control,track_control,updown_control;
     BOOL progress_control,legacy_progress;
     win2k_report_role report;
+    win2k_bar_role bar;
+    style_control_status_state status;
 } win2k_control;
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK parent_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
@@ -76,6 +80,8 @@ BOOL win2k_control_supported(HWND window)
     if(!lstrcmpiW(name,PROGRESS_CLASSW))return win2k_progress_supported(window);
     if(!lstrcmpiW(name,TRACKBAR_CLASSW))return win2k_trackbar_supported(window);
     if(!lstrcmpiW(name,UPDOWN_CLASSW))return win2k_updown_supported(window);
+    if(!lstrcmpiW(name,TOOLBARCLASSNAMEW) || !lstrcmpiW(name,REBARCLASSNAMEW) || !lstrcmpiW(name,STATUSCLASSNAMEW))
+        return TRUE;
     if(!lstrcmpiW(name,L"SCROLLBAR"))return TRUE;
     if(!lstrcmpiW(name,L"COMBOBOX"))
         return (style&3) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
@@ -165,6 +171,18 @@ static void render(HWND window,void *context,HDC dc,BOOL buffered)
         style_present(window,&control->instance,control,win2k_standard_palette.face,&ops,dc);}
     else paint(window,control,dc);
 }
+static void status_render(HWND window,void *context,HDC dc,BOOL buffered)
+{
+    win2k_control *control=context;
+    (void)buffered;
+    if(!dc)return;
+    int saved=SaveDC(dc);
+    if(!saved)return;
+    unsigned epoch=control->status.epoch;
+    DefSubclassProc(window,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
+    RestoreDC(dc,saved);
+    if(epoch==control->status.epoch)win2k_status_panes(window,dc,&control->instance,&control->status);
+}
 static void edit_border(HWND window,void *context,HDC dc)
 {(void)context;(void)win2k_edit_border(window,dc,&win2k_standard_palette);}
 static BOOL embedded_input(HWND window,void *context,UINT message,WPARAM a,LPARAM b)
@@ -194,6 +212,7 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
     win2k_control *control=context;LRESULT result;
     style_control_native_kind kind=control->progress_control?STYLE_CONTROL_PROGRESS:STYLE_CONTROL_TAB;
     if(control->progress_control || control->tab_control)style_control_native_observe(&control->native,kind,message);
+    if(control->bar==WIN2K_BAR_STATUS)style_control_status_invalidate(message,NULL,&control->status);
     if(message==WM_NCDESTROY){
         (void)retire(window,control,TRUE);result=DefSubclassProc(window,message,a,b);
     }else if(!control_supported(window,control) ||
@@ -211,7 +230,11 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
         const style_control_draw draw={control,render};
         result=style_control_native_message(window,&control->instance,&control->native,kind,message,a,b,
             control->progress_control?win2k_progress_supported:win2k_tab_supported,&draw);
-    }else if(control->header_control || control->track_control){
+    }else if(control->bar==WIN2K_BAR_STATUS){
+        const style_control_draw draw={control,status_render};
+        result=style_control_native_message(window,&control->instance,&control->native,STYLE_CONTROL_STATUS,
+            message,a,b,win2k_control_supported,&draw);
+    }else if(control->header_control || control->track_control || control->bar){
         result=DefSubclassProc(window,message,a,b);
     }else if(class_is(window,L"SCROLLBAR")){
         if(GetWindowLongPtrW(window,GWL_STYLE)&(SBS_SIZEBOX|SBS_SIZEGRIP)){
@@ -248,12 +271,16 @@ static void finish_call(void *context,BOOL completed)
 static LRESULT parent_dispatch(void *context,HWND parent,UINT message,WPARAM a,LPARAM b)
 {
     win2k_control *control=context;
-    if(control->header_control || control->track_control || control->report){
+    if(control->bar || control->header_control || control->track_control || control->report){
+        style_control_notify_ops toolbar=win2k_toolbar_notify;
+        toolbar.context=&control->instance;
+        const style_control_notify_ops rebar={.context=&control->instance,.supported=win2k_rebar_supported,.finish_item=win2k_rebar_grip};
         const style_control_notify_ops header={.context=&control->instance,.supported=win2k_header_supported,.part=win2k_header_paint};
         const style_control_notify_ops track={.supported=win2k_trackbar_supported,.part=win2k_trackbar_part};
         const style_control_notify_ops list={.context=&control->instance,.supported=win2k_listview_plain,.prepare_item=win2k_listview_colors};
         const style_control_notify_ops tree={.supported=win2k_treeview_supported,.prepare_item=win2k_treeview_colors};
-        const style_control_notify_ops *ops=control->header_control?&header:control->track_control?&track:
+        const style_control_notify_ops *ops=control->bar==WIN2K_BAR_TOOL?&toolbar:control->bar==WIN2K_BAR_REBAR?&rebar:
+            control->header_control?&header:control->track_control?&track:
             control->report==WIN2K_REPORT_LIST?&list:&tree;
         return style_control_notify_message(parent,message,a,b,(UINT_PTR)control->parent_binding.window,
             &control->instance,&control->parent_binding,parent_proc,NULL,ops);
@@ -291,7 +318,7 @@ static BOOL install_combo_list(HWND window,void *context)
 static BOOL setup(HWND window,void *context)
 {
     win2k_control *control=context;
-    if((control->header_control || control->track_control || control->report ||
+    if((control->bar==WIN2K_BAR_TOOL || control->bar==WIN2K_BAR_REBAR || control->header_control || control->track_control || control->report ||
         win2k_edit_class(window)==WIN2K_EDIT_STANDARD) &&
        !style_control_notify_bind(window,&control->parent_binding,parent_proc,control))return FALSE;
     if(!style_theme_capture(window) || !style_theme_suppress(window,control,control->native_theme))return FALSE;
@@ -325,6 +352,8 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     control->header_control=class_is(window,WC_HEADERW);
     control->track_control=class_is(window,TRACKBAR_CLASSW);
     control->updown_control=class_is(window,UPDOWN_CLASSW);
+    control->bar=class_is(window,TOOLBARCLASSNAMEW)?WIN2K_BAR_TOOL:class_is(window,REBARCLASSNAMEW)?WIN2K_BAR_REBAR:
+        class_is(window,STATUSCLASSNAMEW)?WIN2K_BAR_STATUS:WIN2K_BAR_NONE;
     control->progress_control=progress;control->legacy_progress=legacy;
     control->report=report;
     style_control_native_init(&control->native);

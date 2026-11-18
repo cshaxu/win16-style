@@ -27,3 +27,5 @@ source files; no duplicate constant-only tests are added to manufacture counts.
 | control/trackbar_paint.c | control/trackbar_paint.c verifies the original groove, square and four pointed directions, disabled dither, keyboard state and notifications, child custom draw, DPI awareness and detach. |
 
 | control/updown_paint.c | control/updown_paint.c verifies borrowed native image roles, horizontal and vertical odd seams, disabled and pressed pixels, notification veto, edit buddy identity/data, DPI awareness and detach. |
+
+| control/toolbar_paint.c, control/rebar_paint.c, control/status_paint.c | control/bars.c verifies regular and flat toolbar edges, separators, image list and application drawing, band gripper and child identity, status pane edges, native simple text and owner draw, custom background and size hit test, both manifests, DPI awareness, removal and standard startup. |

@@ -3,7 +3,7 @@
 #include "basic.h"
 /* Actual COMCTL protocol families, independent of a rendering profile. */
 typedef enum style_control_native_kind {
-    STYLE_CONTROL_TAB,STYLE_CONTROL_HEADER,STYLE_CONTROL_PROGRESS,STYLE_CONTROL_UPDOWN
+    STYLE_CONTROL_TAB,STYLE_CONTROL_HEADER,STYLE_CONTROL_PROGRESS,STYLE_CONTROL_UPDOWN,STYLE_CONTROL_STATUS
 } style_control_native_kind;
 typedef struct style_control_native_state {
     unsigned epoch;

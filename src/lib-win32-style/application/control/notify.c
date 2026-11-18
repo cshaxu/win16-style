@@ -51,8 +51,16 @@ LRESULT style_control_notify_message(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_P
     if(draw && !instance->detached){
         if(internal && draw->dwDrawStage==CDDS_ITEMPREPAINT && ops->prepare_item)
             ops->prepare_item(state->window,draw,ops->context);
-        if(!instance->detached)result=style_control_custom_draw_after(state->window,draw,&state->internal,internal,result,
-            ops->context,ops->supported,ops->part);
+        if(!instance->detached){
+            result=style_control_custom_draw_after(state->window,draw,&state->internal,internal,result,
+                ops->context,ops->supported,ops->part);
+            if(internal && ops->finish_item){
+                if(draw->dwDrawStage==CDDS_ITEMPREPAINT && result==CDRF_DODEFAULT)result=CDRF_NOTIFYPOSTPAINT;
+                if(draw->dwDrawStage==CDDS_ITEMPOSTPAINT)ops->finish_item(state->window,draw,ops->context);
+            }
+            if(internal && draw->dwDrawStage==CDDS_POSTPAINT && ops->finish_paint)
+                ops->finish_paint(state->window,draw,ops->context);
+        }
     }
     style_instance_release(instance);
     SetLastError(error);return result;

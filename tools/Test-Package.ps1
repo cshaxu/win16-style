@@ -832,8 +832,13 @@ try{
         Case "ntw2ks-scroll-$bits" $scroll @($win2k) @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=0",$scrollScope) 20
         Case "ntw2ks-scroll-aware-$bits" $scroll @($win2k,'aware') @("WIN2K_SCROLL_OK bits=$bits aware=1 hooked=0",$scrollScope) 20
         Case "ntw2ks-scroll-startup-$bits" $run @('--2k','--wait',$scroll,$win2k,'hooked') @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=1",$scrollScope) 25
-        foreach($kind in @('trackbar','updown')){
-            $scope=if($kind -eq 'trackbar'){'WIN2K_TRACKBAR_OK rectangular=2 pointed=4'}else{'WIN2K_UPDOWN_OK axes=2 native_seam=2'}
+        $controlScopes=[ordered]@{
+            trackbar='WIN2K_TRACKBAR_OK rectangular=2 pointed=4'
+            updown='WIN2K_UPDOWN_OK axes=2 native_seam=2'
+            bars='WIN2K_BARS_OK toolbar=1 rebar=1 status=1'
+        }
+        foreach($kind in $controlScopes.Keys){
+            $scope=$controlScopes[$kind]
             foreach($suffix in @('','-v6')){
                 $probe=Join-Path $tree "core-win2k-$kind$suffix.exe"
                 Case "ntw2ks-$kind$suffix-$bits" $probe @($win2k) @($scope) 20
