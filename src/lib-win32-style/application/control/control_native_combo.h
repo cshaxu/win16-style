@@ -10,6 +10,7 @@ typedef struct style_control_native_combo_state {
     BOOL candidate,attempted,installed;
     HWND parent;
     HMODULE owner;
+    BOOL native_legacy_date;
 } style_control_native_combo_state;
 BOOL style_control_color_identity(HWND,const style_instance *,const style_control_native_combo_state *,COMBOBOXINFO *);
 BOOL style_control_date_identity(HWND,const style_instance *,const style_control_native_combo_state *,DATETIMEPICKERINFO *);

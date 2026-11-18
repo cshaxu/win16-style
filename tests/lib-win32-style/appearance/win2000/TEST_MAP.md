@@ -29,3 +29,5 @@ source files; no duplicate constant-only tests are added to manufacture counts.
 | control/updown_paint.c | control/updown_paint.c verifies borrowed native image roles, horizontal and vertical odd seams, disabled and pressed pixels, notification veto, edit buddy identity/data, DPI awareness and detach. |
 
 | control/toolbar_paint.c, control/rebar_paint.c, control/status_paint.c | control/bars.c verifies regular and flat toolbar edges, separators, image list and application drawing, band gripper and child identity, status pane edges, native simple text and owner draw, custom background and size hit test, both manifests, DPI awareness, removal and standard startup. |
+
+| control/date_paint.c and application/control/calendar_colors.c | control/date_paint.c verifies original palette pixels, date picker's visible popup, application colors, selection notices, invalid date, shared native arrow and print clip, disabled and spin roles, removal and actual launch with both manifests and DPI awareness. |

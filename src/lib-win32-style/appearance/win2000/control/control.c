@@ -10,12 +10,14 @@
 #include "trackbar_paint.h"
 #include "updown_paint.h"
 #include "bars.h"
+#include "date_paint.h"
 #include "lib-win32-style/application/control/combo.h"
 #include "lib-win32-style/application/control/list.h"
 #include "lib-win32-style/application/control/edit.h"
 #include "lib-win32-style/application/control/notify.h"
 #include "lib-win32-style/application/control/basic.h"
 #include "lib-win32-style/application/control/retire.h"
+#include "lib-win32-style/application/control/native_overlay.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/lifecycle/install.h"
 #include "lib-win32-style/application/lifecycle/dispatch.h"
@@ -39,6 +41,10 @@ typedef struct win2k_control {
     win2k_report_role report;
     win2k_bar_role bar;
     style_control_status_state status;
+    BOOL date_control,month_control;
+    style_control_native_combo_state date;
+    style_calendar_colors calendar;
+    HWND date_popup;
 } win2k_control;
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK parent_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
@@ -80,6 +86,8 @@ BOOL win2k_control_supported(HWND window)
     if(!lstrcmpiW(name,PROGRESS_CLASSW))return win2k_progress_supported(window);
     if(!lstrcmpiW(name,TRACKBAR_CLASSW))return win2k_trackbar_supported(window);
     if(!lstrcmpiW(name,UPDOWN_CLASSW))return win2k_updown_supported(window);
+    if(!lstrcmpiW(name,DATETIMEPICK_CLASSW))return win2k_date_supported(window);
+    if(!lstrcmpiW(name,MONTHCAL_CLASSW))return win2k_month_supported(window);
     if(!lstrcmpiW(name,TOOLBARCLASSNAMEW) || !lstrcmpiW(name,REBARCLASSNAMEW) || !lstrcmpiW(name,STATUSCLASSNAMEW))
         return TRUE;
     if(!lstrcmpiW(name,L"SCROLLBAR"))return TRUE;
@@ -111,6 +119,13 @@ static void dispose(void *context)
     win2k_control *control=context;
     style_control_state_dispose(&control->state);free(control);
 }
+static void close_date_popup(win2k_control *control)
+{
+    HWND popup=control->date_popup;
+    control->date_popup=NULL;
+    if(popup && style_theme_owned(popup,control))
+        style_theme_remove(popup,control,control->native_theme);
+}
 static style_control_retired release_theme(HWND window,void *context,BOOL terminal)
 {
     win2k_control *control=context;
@@ -118,6 +133,9 @@ static style_control_retired release_theme(HWND window,void *context,BOOL termin
     BOOL list_removed=style_control_combo_list_retire(&control->combo,&control->instance,
         lookup_state,win2k_control_remove);
     style_control_notify_unbind(&control->parent_binding,parent_proc,control);
+    if(control->date_control)close_date_popup(control);
+    if(!terminal && (control->date_control || control->month_control))
+        style_calendar_colors_restore(window,&control->calendar,control->date_control);
     if(terminal)(void)style_theme_terminal(window,control);
     else style_theme_remove(window,control,control->native_theme);
     BOOL result=terminal || !control->frame_owned || !IsWindow(window) ||
@@ -213,10 +231,13 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
     style_control_native_kind kind=control->progress_control?STYLE_CONTROL_PROGRESS:STYLE_CONTROL_TAB;
     if(control->progress_control || control->tab_control)style_control_native_observe(&control->native,kind,message);
     if(control->bar==WIN2K_BAR_STATUS)style_control_status_invalidate(message,NULL,&control->status);
+    if(control->date_control || control->month_control)
+        style_calendar_colors_observe(&control->calendar,control->date_control,message,a);
     if(message==WM_NCDESTROY){
         (void)retire(window,control,TRUE);result=DefSubclassProc(window,message,a,b);
     }else if(!control_supported(window,control) ||
-        (control->parent_binding.parent && GetParent(window)!=control->parent_binding.parent)){
+        (control->parent_binding.parent && GetParent(window)!=control->parent_binding.parent) ||
+        (control->date.parent && GetParent(window)!=control->date.parent)){
         result=DefSubclassProc(window,message,a,b);
         if(!control->instance.detached)(void)retire(window,control,FALSE);
     }else if(control->progress_control && (control->legacy_progress || message==WM_NCPAINT || message==WM_PRINT)){
@@ -234,7 +255,7 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
         const style_control_draw draw={control,status_render};
         result=style_control_native_message(window,&control->instance,&control->native,STYLE_CONTROL_STATUS,
             message,a,b,win2k_control_supported,&draw);
-    }else if(control->header_control || control->track_control || control->bar){
+    }else if(control->header_control || control->track_control || control->bar || control->date_control || control->month_control){
         result=DefSubclassProc(window,message,a,b);
     }else if(class_is(window,L"SCROLLBAR")){
         if(GetWindowLongPtrW(window,GWL_STYLE)&(SBS_SIZEBOX|SBS_SIZEGRIP)){
@@ -268,6 +289,63 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
 }
 static void finish_call(void *context,BOOL completed)
 {win2k_control *control=context;(void)completed;style_instance_release(&control->instance);}
+
+typedef struct win2k_date_call {
+    win2k_control *control;
+    style_control_native_overlay overlay;
+    HDC dc;
+    int saved;
+} win2k_date_call;
+
+static LRESULT date_dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b)
+{
+    win2k_date_call *call=context;
+    win2k_control *control=call->control;
+    const style_control_native_combo_state no_color_combo={0};
+    style_control_native_overlay_begin(window,message,a,&control->instance,&no_color_combo,&control->date,&call->overlay);
+    if(message==WM_PRINTCLIENT && a){
+        call->dc=(HDC)a;
+        call->saved=SaveDC(call->dc);
+        if(call->saved)SetMetaRgn(call->dc);
+    }
+    LRESULT result=dispatch(control,window,message,a,b);
+    DWORD error=GetLastError();
+    if(call->saved){
+        RestoreDC(call->dc,call->saved);
+        call->saved=0;
+    }
+    style_control_native_overlay_finish(window,message,a,&control->instance,&no_color_combo,
+        &control->date,&call->overlay,win2k_date_button);
+    SetLastError(error);
+    return result;
+}
+
+static void date_finish(void *context,BOOL completed)
+{
+    win2k_date_call *call=context;
+    if(!completed){
+        if(call->saved)RestoreDC(call->dc,call->saved);
+        style_control_native_overlay_dispose(&call->overlay);
+    }
+    finish_call(call->control,completed);
+}
+
+static void date_notify(win2k_control *control,HWND parent,const NMHDR *notice)
+{
+    HWND picker=control->instance.window;
+    if(notice->hwndFrom!=picker || control->instance.detached || GetParent(picker)!=parent)return;
+    if(notice->code==DTN_CLOSEUP)close_date_popup(control);
+    if(notice->code!=DTN_DROPDOWN)return;
+    HWND popup=(HWND)SendMessageW(picker,DTM_GETMONTHCAL,0,0);
+    if(control->instance.detached || !win32_style_window_current_thread(popup) ||
+        !class_is(popup,MONTHCAL_CLASSW) || style_theme_retained(popup) || !style_theme_capture(popup))return;
+    control->date_popup=popup;
+    if(!style_theme_suppress(popup,control,control->native_theme)){
+        control->date_popup=NULL;
+        (void)style_theme_terminal(popup,control);
+    }
+}
+
 static LRESULT parent_dispatch(void *context,HWND parent,UINT message,WPARAM a,LPARAM b)
 {
     win2k_control *control=context;
@@ -286,6 +364,11 @@ static LRESULT parent_dispatch(void *context,HWND parent,UINT message,WPARAM a,L
             &control->instance,&control->parent_binding,parent_proc,NULL,ops);
     }
     if(message==WM_NCDESTROY)style_control_notify_unbind(&control->parent_binding,parent_proc,control);
+    if(control->date_control && message==WM_NOTIFY && b){
+        DWORD entry=GetLastError();
+        date_notify(control,parent,(const NMHDR *)b);
+        SetLastError(entry);
+    }
     LRESULT result=DefSubclassProc(parent,message,a,b);DWORD error=GetLastError();
     if(!control->instance.detached && (message==WM_CTLCOLOREDIT || message==WM_CTLCOLORSTATIC) &&
        (HWND)b==control->parent_binding.window && GetParent((HWND)b)==parent)
@@ -303,6 +386,11 @@ static LRESULT CALLBACK control_proc(HWND window,UINT message,WPARAM a,LPARAM b,
 {
     win2k_control *control=(win2k_control *)data;(void)id;
     style_instance_retain(&control->instance);
+    if(control->date_control && (message==WM_PAINT || message==WM_PRINTCLIENT)){
+        win2k_date_call call={.control=control};
+        const style_dispatch_ops ops={&call,&call,date_dispatch,date_finish};
+        return style_dispatch_message(window,message,a,b,&ops);
+    }
     const style_dispatch_ops ops={control,control,dispatch,finish_call};
     return style_dispatch_message(window,message,a,b,&ops);
 }
@@ -318,10 +406,17 @@ static BOOL install_combo_list(HWND window,void *context)
 static BOOL setup(HWND window,void *context)
 {
     win2k_control *control=context;
-    if((control->bar==WIN2K_BAR_TOOL || control->bar==WIN2K_BAR_REBAR || control->header_control || control->track_control || control->report ||
+    if((control->date_control || control->bar==WIN2K_BAR_TOOL || control->bar==WIN2K_BAR_REBAR || control->header_control || control->track_control || control->report ||
         win2k_edit_class(window)==WIN2K_EDIT_STANDARD) &&
        !style_control_notify_bind(window,&control->parent_binding,parent_proc,control))return FALSE;
     if(!style_theme_capture(window) || !style_theme_suppress(window,control,control->native_theme))return FALSE;
+    if(control->date_control){
+        control->date=(style_control_native_combo_state){.candidate=TRUE,.parent=GetParent(window),
+            .owner=(HMODULE)GetClassLongPtrW(window,GCLP_HMODULE),.native_legacy_date=TRUE};
+        style_control_native_combo_settle(window,WM_PAINT,&control->instance,&control->date,TRUE);
+    }
+    if(control->date_control || control->month_control)
+        win2k_date_colors(window,&control->instance,&control->calendar,control->date_control);
     if(class_is(window,L"COMBOBOX")){
         const style_control_combo_ops bindings={.lookup=lookup_state};
         const style_control_combo_setup_ops children={
@@ -352,6 +447,8 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     control->header_control=class_is(window,WC_HEADERW);
     control->track_control=class_is(window,TRACKBAR_CLASSW);
     control->updown_control=class_is(window,UPDOWN_CLASSW);
+    control->date_control=class_is(window,DATETIMEPICK_CLASSW);
+    control->month_control=class_is(window,MONTHCAL_CLASSW);
     control->bar=class_is(window,TOOLBARCLASSNAMEW)?WIN2K_BAR_TOOL:class_is(window,REBARCLASSNAMEW)?WIN2K_BAR_REBAR:
         class_is(window,STATUSCLASSNAMEW)?WIN2K_BAR_STATUS:WIN2K_BAR_NONE;
     control->progress_control=progress;control->legacy_progress=legacy;

@@ -33,9 +33,25 @@ BOOL style_control_date_identity(HWND w,const style_instance *instance,const sty
        GetWindowThreadProcessId(GetParent(w),NULL)!=GetCurrentThreadId() ||
        !GetClassInfoExW(NULL,DATETIMEPICK_CLASSW,&native) ||
        GetClassLongPtrW(w,GCL_CBWNDEXTRA)<(ULONG_PTR)native.cbWndExtra ||
-       !SendMessageW(w,DTM_GETDATETIMEPICKERINFO,0,(LPARAM)info) || instance->detached ||
+       !GetClientRect(w,&client))return FALSE;
+    if(!SendMessageW(w,DTM_GETDATETIMEPICKERINFO,0,(LPARAM)info)){
+        WCHAR name[32];
+        if(instance->detached || !state->native_legacy_date ||
+            !GetClassNameW(w,name,ARRAYSIZE(name)) || lstrcmpiW(name,DATETIMEPICK_CLASSW) ||
+            GetClassLongPtrW(w,GCLP_WNDPROC)!=(ULONG_PTR)native.lpfnWndProc)return FALSE;
+        /* The v5 native control reserves one scrollbar width in the client
+         * but does not implement the DTM button-info message. */
+        UINT dpi=GetDpiForWindow(w);
+        int width=dpi?GetSystemMetricsForDpi(SM_CXVSCROLL,dpi):0;
+        if(width<5 || client.right-client.left<2*width)return FALSE;
+        info->rcButton=client;
+        info->rcButton.left=client.right-width;
+        HWND popup=(HWND)SendMessageW(w,DTM_GETMONTHCAL,0,0);
+        if(popup && IsWindowVisible(popup))info->stateButton|=STATE_SYSTEM_PRESSED;
+    }
+    if(instance->detached ||
        info->hwndEdit || info->hwndUD || !IsRectEmpty(&info->rcCheck) ||
-       !GetClientRect(w,&client) || info->rcButton.left<client.left || info->rcButton.top<client.top ||
+       info->rcButton.left<client.left || info->rcButton.top<client.top ||
        info->rcButton.right>client.right || info->rcButton.bottom>client.bottom || IsRectEmpty(&info->rcButton))return FALSE;
     LRESULT status=SendMessageW(w,DTM_GETSYSTEMTIME,0,(LPARAM)&value);
     return !instance->detached && IsWindow(w) && status==GDT_VALID;

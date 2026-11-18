@@ -71,6 +71,7 @@ add_library(win2k-control STATIC
   src/lib-win32-style/appearance/win2000/control/toolbar_paint.c
   src/lib-win32-style/appearance/win2000/control/rebar_paint.c
   src/lib-win32-style/appearance/win2000/control/status_paint.c
+  src/lib-win32-style/appearance/win2000/control/date_paint.c
   src/lib-win32-style/appearance/win2000/control/scroll.c
   src/lib-win32-style/appearance/win2000/control/scroll_layout.c
   src/lib-win32-style/appearance/win2000/control/list_combo.c
@@ -200,6 +201,7 @@ add_library(style-control-common STATIC
   src/lib-win32-style/application/control/dialog_combo.c
   src/lib-win32-style/application/control/control_native_combo.c
   src/lib-win32-style/application/control/control_status.c
+  src/lib-win32-style/application/control/calendar_colors.c
   src/lib-win32-style/application/control/control_vcl_spin.c
   src/lib-win32-style/application/control/control_vcl_identity.c)
 target_include_directories(style-control-common PUBLIC src)
@@ -590,6 +592,21 @@ if(BUILD_TESTING)
   target_sources(core-win2k-bars-v6 PRIVATE tests/ntw16s-dll/control_extensions.rc)
   target_include_directories(core-win2k-bars-v6 PRIVATE src)
   target_link_options(core-win2k-bars-v6 PRIVATE ${explicit_manifest_options})
+  foreach(target core-win2k-dates core-win2k-dates-v6)
+    add_executable(${target} tests/lib-win32-style/appearance/win2000/control/date_paint.c)
+    target_compile_definitions(${target} PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    target_link_libraries(${target} PRIVATE user32 gdi32 comctl32 uxtheme)
+    target_link_options(${target} PRIVATE -municode)
+    add_dependencies(${target} ntw2ks)
+    string(REGEX REPLACE "^core-" "" case_name "${target}")
+    add_test(NAME core/${case_name} COMMAND $<TARGET_FILE:${target}> $<TARGET_FILE:ntw2ks>)
+    add_test(NAME core/${case_name}-aware COMMAND $<TARGET_FILE:${target}> $<TARGET_FILE:ntw2ks> aware)
+  endforeach()
+  target_sources(core-win2k-dates-v6 PRIVATE tests/ntw16s-dll/control_extensions.rc)
+  target_include_directories(core-win2k-dates-v6 PRIVATE src)
+  target_link_options(core-win2k-dates-v6 PRIVATE ${explicit_manifest_options})
+  set_tests_properties(core/win2k-dates core/win2k-dates-aware core/win2k-dates-v6 core/win2k-dates-v6-aware
+    PROPERTIES TIMEOUT 15)
   add_executable(core-win2k-scroll tests/lib-win32-style/appearance/win2000/control/scroll.c)
   target_compile_definitions(core-win2k-scroll PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-win2k-scroll PRIVATE user32 gdi32)

@@ -1,22 +1,22 @@
 {
   "schema": 1,
-  "delivery": "M0 T27 S12 P1",
-  "stage": "development: Win2000 toolbar, rebar and status bar profiles",
+  "delivery": "M0 T27 S13 P1",
+  "stage": "development: Win2000 date picker and calendar profiles",
   "version": "0.27.0.0",
   "version_contract": "M0 T27",
   "package_directory": "assets",
-  "source_snapshot_sha256": "3a8b34323b841b249e6e5f75456a2e58aee5647617028bbbecb0aa24bf2aaf24",
+  "source_snapshot_sha256": "825b382d54a25f690ec1604d77761a56c1164a93db525b6821f8a08c294e3ae1",
   "source_snapshot_format": "SHA256 of clean Build-Package snapshot.json bytes",
   "source_input_cohort": {
-    "count": 1222,
-    "sha256": "0ff052eef8ec8cb67299772013c162f75f07da85fe46b2482b73e7129452e125",
+    "count": 1227,
+    "sha256": "6564f251d43ac1c95c3cdd90c3ab1d218043caa6f81f55f2e2452f7511d2d458",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "7761dec08b77d933fef66b803c77172ca114f8a8c48d7d6afb3373d02a0b1020",
+      "sha256": "49edabddfc11adc9714c3bc88d13f71c5d868317b4d131ce0768c161b184c7ac",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "87467694ac11e423d164dc0bc8e4d317cd6e66f3cf12ff7be96b8ab599c8ca63",
+      "sha256": "f04dc30d8cf2cea09d6c5bcc43a6c575065be3493b548da277384552bc7e7961",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -58,7 +58,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "46d79127c6777892b989226708658e7c055db91ff2d2285d2864600695980fc9",
+      "sha256": "dbb49e34de3fffbd134163cf2aef1d943fc76d99c3db672f4d6ac1a938a8c459",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -79,7 +79,7 @@
     "ntw2ks32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "79addcf1a8da59d6e0967fdac6b5ea96a0c85fa3fb00f7c153aac7c2d8331a89",
+      "sha256": "a9ab329bfece57d670836223a01fea705dae26bfb3df39410edcc75748a8a3d8",
       "imports": [
         "COMCTL32.dll",
         "COMDLG32.DLL",
@@ -103,7 +103,7 @@
     "ntw2ks64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "0123eff88d4769ad469dab03a061a3bfd0edf8648668e1338e0de3f8d4dfa333",
+      "sha256": "2a528f37796cc23114d1c48e60a3d03bd81e1ee1f9fff68da8fe9d504f7f08c4",
       "imports": [
         "COMCTL32.dll",
         "comdlg32.dll",
@@ -122,7 +122,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "9208b02afc7260e3e52f04b349e9936c38393059293ccac772367721c392f41f",
+      "sha256": "b7a9624f2cf56173c83cf7204ba74d86899af18ddb5cc914bbaf63831f3bd543",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -137,7 +137,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "b2fc1f5c04a4dc2573f06f53b1cabe8bf3f267293cc407d9cc96a6326cb93b7d",
+      "sha256": "7711e1f2494e717d9cd9d4ef286b0b636e785ce400952e00e998f1cb7ebb89a3",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -147,7 +147,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "a572ab385b144fa400de527248f12e2b08a1d421f2d62f45840ff896158d189b",
+      "sha256": "41bb41b7edfafb75973fd8df89ffcb322fdefab6b76b5b2ac10679943e13a636",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -163,85 +163,84 @@
   "architecture": {
     "x86": {
       "configure-time.json": {
-        "seconds": 7.104289099923335,
+        "seconds": 6.9141180999577045,
         "exit_code": 0
       },
       "build-time.json": {
-        "seconds": 298.2386486000614,
+        "seconds": 294.580382599961,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.5123665999853984,
+        "seconds": 0.6341475000372157,
         "exit_code": 0
       },
       "cache": {
-        "direct_cache_hit": 920,
+        "direct_cache_hit": 927,
         "preprocessed_cache_hit": 1,
-        "cache_miss": 26
+        "cache_miss": 23
       }
     },
     "x64": {
       "configure-time.json": {
-        "seconds": 7.839821200002916,
+        "seconds": 7.102515000035055,
         "exit_code": 0
       },
       "build-time.json": {
-        "seconds": 355.90175089996774,
+        "seconds": 328.9933378000278,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.5023649999639019,
+        "seconds": 0.4738152000354603,
         "exit_code": 0
       },
       "cache": {
-        "direct_cache_hit": 1008,
-        "preprocessed_cache_hit": 0,
-        "cache_miss": 27
+        "direct_cache_hit": 1015,
+        "preprocessed_cache_hit": 1,
+        "cache_miss": 23
       }
     }
   },
   "toolchains": {
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "ccache_version": "ccache version 4.13.6",
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "toolchains": [
       {
-        "target": "i686-w64-mingw32",
         "architecture": "x86",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "version": "16.1.0"
+        "target": "i686-w64-mingw32",
+        "version": "16.1.0",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe"
       },
       {
-        "target": "x86_64-w64-mingw32",
         "architecture": "x64",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "version": "16.1.0"
+        "target": "x86_64-w64-mingw32",
+        "version": "16.1.0",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe"
       }
-    ],
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
+    ]
   },
   "verification": {
-    "actual_package_cases": 158,
-    "passed": 158,
+    "actual_package_cases": 170,
+    "passed": 170,
     "skipped_client_print_subchecks": 36,
-    "evidence": "evidence/t27-s12-bars.json",
-    "coverage": "focused",
-    "actual_remote": "evidence/t27-s12-remote.json"
+    "evidence": "evidence/t27-s13-dates.json",
+    "coverage": "focused"
   },
   "validation": {
     "physical_keyboard_mouse": "not tested",
     "private_desktops_created": false,
     "limitations": [
-      "Horizontal standard Toolbar with ordinary or flat buttons and ordinary flat separators. Split buttons, unexpected owner styles, vertical/wrapped separators and outer background remain native.",
-      "Horizontal standard Rebar grabber on default backgrounds. Keep native layouts, band data, children, text, image and explicit/bitmap backgrounds.",
-      "Single-pixel normal and pop-out StatusBar borders, native no-border, native text/icons/owner draw, and limited native sizegrip palette mapping outside the last pane. Simple mode uses native drawing.",
-      "Probes exercise controlled windows and real Windows painting and message APIs. Physical mouse or keyboard, RTL, high contrast, mixed-monitors and printer DCs were not exercised."
+      "Standard native date dropdown and single-selection calendars. Native calendar dimensions and arrow shapes remain; default palette and active date button use the original color and border roles.",
+      "Time and checkable date variants, custom parser, multi-select/RTL calendar and witnessed VCL/OCX aliases retain their original application behavior in this stage.",
+      "App colors different from defaults are preserved when applied before attachment; an explicit setter during attachment also reclaims ownership, including same RGB.",
+      "Physical keyboard and mouse, arbitrary print devices and all calendar locales were not exercised by the native window/message probes."
     ]
   },
   "closure": {
-    "S12": "closed after fetched remote audit",
-    "T27": "open; S13 admitted",
+    "S13": "verified locally; remote verification pending",
+    "T27": "open",
     "M0": "fixed"
   }
 }

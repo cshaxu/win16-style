@@ -7322,18 +7322,18 @@
       "path": "src/lib-win32-style/application/control/control_native_combo.c",
       "source": null,
       "source_blob": null,
-      "sha256": "50c9ade7395a5b0d8fee39e30ad6ad60152f80783ca084bba1e4f431d0437fa2",
+      "sha256": "55ac7b1a82f9a412123910243386568eee4db8a65ddefa9de4b32efe0e6b5168",
       "disposition": "authored",
-      "review": "T26 S1 shared native combo and date control identity; T26 S1 shared native combo edit identity; T26 S1 shared classic dialog combo eligibility; T26 S2 mechanical path/include relocation; T26 S10 native combo whole-state owner and first-paint transaction, unchanged rendering/role policy; T26 S10 native button snapshot and shared overlay clip/DC ownership; actual consumer migrated",
+      "review": "T26 S1 shared native combo and date control identity; T26 S1 shared native combo edit identity; T26 S1 shared classic dialog combo eligibility; T26 S2 mechanical path/include relocation; T26 S10 native combo whole-state owner and first-paint transaction, unchanged rendering/role policy; T26 S10 native button snapshot and shared overlay clip/DC ownership; actual consumer migrated; T27 S13 日期与月历",
       "notice": "Project-authored C; no imported code or artwork"
     },
     {
       "path": "src/lib-win32-style/application/control/control_native_combo.h",
       "source": null,
       "source_blob": null,
-      "sha256": "c4592ceb27e75a8881a438d97981b2e323a981b33d70b63880b8cd26029c2c0c",
+      "sha256": "64881c2cdcd3257f9b13ba7bf4e2f27391a30f9e44a0890818b95936922e8dc6",
       "disposition": "authored",
-      "review": "T26 S1 shared native combo and date control identity; T26 S1 shared native combo edit identity; T26 S1 shared classic dialog combo eligibility; T26 S2 mechanical path/include relocation; T26 S10 native combo whole-state owner and first-paint transaction, unchanged rendering/role policy; T26 S10 native button snapshot and shared overlay clip/DC ownership; actual consumer migrated",
+      "review": "T26 S1 shared native combo and date control identity; T26 S1 shared native combo edit identity; T26 S1 shared classic dialog combo eligibility; T26 S2 mechanical path/include relocation; T26 S10 native combo whole-state owner and first-paint transaction, unchanged rendering/role policy; T26 S10 native button snapshot and shared overlay clip/DC ownership; actual consumer migrated; T27 S13 日期与月历",
       "notice": "Project-authored C; no imported code or artwork"
     },
     {
@@ -9753,9 +9753,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "0c082728ece6a719bbd4845e630203b834cc1f9b9f0ac74db9a075feb9d82773"
+      "sha256": "1eb20747dfdba087c344a369834363d28c79fab6b96c0efbca594455747ca27a"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -9771,9 +9771,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab/header validation mapping; T27 S9 common selection roles and native draw preparation; T27 S10 test mapping; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab/header validation mapping; T27 S9 common selection roles and native draw preparation; T27 S10 test mapping; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "629cbbf076b38e162c7a3dba0abd73c19083df9b82515004b51d9d5baf7117f7"
+      "sha256": "d56a54217db72e9114f7e9439c4f7e5aa4feeb93733c4f83522c77a715e9183c"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/common/paint.c",
@@ -10160,6 +10160,51 @@
       "sha256": "a285ba483af031a268ec72115c72e7802cd6872a791afdd4ccc6d09186e07d24",
       "disposition": "authored",
       "review": "T27 S12 工具栏、可重排栏与状态栏",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/calendar_colors.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6d2f33db24f1d98afa0a7d90a1d1a230db34106e33f1e8e9ee5dc7d32d61a971",
+      "disposition": "authored",
+      "review": "T27 S13 日期与月历",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/application/control/calendar_colors.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "129f9907a2fc4958821d1f70d7f296cb2d74f0c0d90e7bd006fd3ee17b021229",
+      "disposition": "authored",
+      "review": "T27 S13 日期与月历",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/date_paint.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "6e4f6f1fd2fb8328409d563d6f4d11a6e924b31e97ca071b7f531d1618f3c84d",
+      "disposition": "authored",
+      "review": "T27 S13 日期与月历",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/date_paint.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "86a0d7752e86bf260c640d5e422c96069786806ad9597d705c0c118ebfa65501",
+      "disposition": "authored",
+      "review": "T27 S13 日期与月历",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/date_paint.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "fe2c60216fdac5dade48151dec61a9904e985bfd690cb58dfc93e341d53ac4af",
+      "disposition": "authored",
+      "review": "T27 S13 日期与月历",
       "notice": "Project-authored C; no external implementation or artwork imported"
     }
   ]
