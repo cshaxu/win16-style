@@ -73,7 +73,7 @@ P9 紧凑 Explorer 已通过增量验证，在 427×272 工作区内原生重排
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P5，5c75703a；八件均与远端所指提交及两处发布一致。
+- Last verified remote delivery: M0 T28 S3 P9，71e71996；八件均与远端所指提交及两处发布一致。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。

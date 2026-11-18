@@ -631,6 +631,9 @@
     "incremental": "P5 failed the compact assertion in all eight measured A/W open/save geometry checks. The rebuilt candidate passed Win32 confirmation 16/16 (eight compact and eight legacy), cancellation 16/16, file buffer errors 8/8, and COM and Win16 comparisons 18/18. The 8/8 compact confirmations included preserved caller flags, correct filename and filter output, and unchanged working directory.",
     "release": {
       "build_command": "tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-adaptive-file-package",
+      "verified_delivery_commit": "71e719964395bd635c6583607057909f2b821479",
+      "remote_readback": "Observed actual origin/main after push. All eight committed asset blobs and both published copies matched SHA-256. The shared appearance helper and startup adapter matched their committed blobs.",
+      "cleanup": "Removed S3-owned clean build, temporary packages, backups and runtime fixtures after verifying release. No S3 scratch remains under build/t28-package.",
       "snapshot_manifest_sha256": "68a013b96afaca96f205fbda186928c521c05b599421166b6d3210a3a8705667",
       "compiler": "C17, MinGW GCC 16.1.0 (i686 UCRT and x86_64 MSVCRT), Ninja 1.13.2, ccache 4.13.6",
       "build_seconds": {
