@@ -6251,9 +6251,9 @@
       "path": "tests/ntw2ks-dll/frame_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ddcb7bf71070c9d7184ed273aab8a4c41a2f10fe50b44a38d5506a94d3f14da0",
+      "sha256": "e71501acdc9dc97098322e745ee9550fb5d31d0a349070e3e88f093a01c22bf2",
       "disposition": "authored",
-      "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T28 S3 expanded stock color contract fixture; T28 S3 Color size and message contract assertions; T28 S3 file results, filtering and working directory assertions; T28 S3 short file buffer and required size fixture; T28 S3 measured compact Explorer bounds and caller flags; T28 S3 actual-work-area Places geometry assertions",
+      "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T28 S3 expanded stock color contract fixture; T28 S3 Color size and message contract assertions; T28 S3 file results, filtering and working directory assertions; T28 S3 short file buffer and required size fixture; T28 S3 measured compact Explorer bounds and caller flags; T28 S3 actual-work-area Places geometry assertions; T28 S3 verify PrintDlgEx default settings on native, Win16 and Win2000 paths",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {

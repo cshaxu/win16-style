@@ -308,6 +308,46 @@ static int test_expanded_color(void)
     return all?0:3;
 }
 
+static int test_print_ex_default(HINSTANCE instance)
+{
+    PRINTDLGW defaults={.lStructSize=sizeof(defaults),.Flags=PD_RETURNDEFAULT};
+    BOOL available=PrintDlgW(&defaults);
+    DWORD error=CommDlgExtendedError();
+    if(defaults.hDevNames)GlobalFree(defaults.hDevNames);
+    if(defaults.hDevMode)GlobalFree(defaults.hDevMode);
+    if(!available){
+        if(error!=PDERR_NODEFAULTPRN && error!=PDERR_NODEVICES)return 3;
+        puts("WIN2K PRINTEX DEFAULT SKIP no_default_printer");
+        return 77;
+    }
+    HRESULT initialized=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);
+    if(FAILED(initialized))return 2;
+    HWND owner=CreateWindowW(L"STATIC",L"Print defaults fixture",WS_OVERLAPPEDWINDOW,
+        0,0,120,80,NULL,NULL,instance,NULL);
+    if(!owner){CoUninitialize();return 2;}
+    unsigned passed=0;
+    const DWORD flags=PD_RETURNDEFAULT|PD_NOPAGENUMS|PD_NOCURRENTPAGE|PD_NOWARNING;
+    for(unsigned ansi=0;ansi<2;++ansi){
+        PRINTDLGEXA a={.lStructSize=sizeof(a),.hwndOwner=owner,.Flags=flags,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
+        PRINTDLGEXW w={.lStructSize=sizeof(w),.hwndOwner=owner,.Flags=flags,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
+        HRESULT result=ansi?PrintDlgExA(&a):PrintDlgExW(&w);
+        HGLOBAL mode=ansi?a.hDevMode:w.hDevMode,names=ansi?a.hDevNames:w.hDevNames;
+        HDC dc=ansi?a.hDC:w.hDC;
+        DWORD action=ansi?a.dwResultAction:w.dwResultAction;
+        BOOL settings=mode && names && mode!=names && GlobalSize(mode)>0 && GlobalSize(names)>sizeof(DEVNAMES);
+        BOOL pass=result==S_OK && action==0 && settings && !dc;
+        if(pass)++passed;
+        printf("WIN2K PRINTEX DEFAULT bits=%u ansi=%u hr=%08lx action=%lu settings=%d dc=%d pass=%d\n",
+            (unsigned)(sizeof(void *)*8),ansi,(unsigned long)result,action,settings,dc!=NULL,pass);
+        if(dc)DeleteDC(dc);
+        if(names && names!=mode)GlobalFree(names);
+        if(mode)GlobalFree(mode);
+    }
+    DestroyWindow(owner);
+    CoUninitialize();
+    return passed==2?0:3;
+}
+
 static UINT_PTR CALLBACK file_classic_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {(void)window;(void)message;(void)wp;(void)lp;return 0;}
 
@@ -631,6 +671,7 @@ int wmain(int argc,WCHAR **argv)
         }
         return all?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--print-ex-default"))return test_print_ex_default(instance);
     if(argc==2 && (!lstrcmpW(argv[1],L"--print-ex-frame") || !lstrcmpW(argv[1],L"--print-ex-accept") ||
         !lstrcmpW(argv[1],L"--print-ex-accept-dc"))){
         BOOL require_dc=!lstrcmpW(argv[1],L"--print-ex-accept-dc");
