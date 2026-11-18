@@ -370,6 +370,13 @@
     "remaining": "The native expanded client measured 447 by 299 pixels. The styled client measured 449 by 305 after expanding from compact mode. The swatch comparison covers one slot against the current OS and the source algorithm; an original Windows 2000 runtime screenshot was not used.",
     "artifact_identity": "All eight P1 files matched their recorded SHA-256 at assets and O:/winnt before the run. This test-only change does not rebuild or republish the product."
   },
+  "printer_dc_p4": {
+    "native_host": "Outside the command sandbox, stock PrintDlgW with PD_RETURNDEFAULT and PD_RETURNDC returned a valid printer DC, DEVNAMES and DEVMODE with zero extended error on x86 and x64. All handles were released.",
+    "published_contract": "Verified the eight published hashes at assets and O:/winnt. On the ordinary host desktop, --2k --print-ex-accept-dc passed for x86 and x64, ANSI and Unicode. Each window was styled and returned S_OK, PD_RESULT_PRINT, a non-null hDC, DEVNAMES and DEVMODE, and pages 2 through 4. The fixture released all three resources.",
+    "environment": "The earlier null DC is specific to the command sandbox in this comparison. No actual print job was submitted.",
+    "native_extended_surface": "The exact owned native PrintDlgExW comparison on the normal host saw a visible 0 by 0 ProxyModalWindow owned by the fixture window but belonging to a different process on both widths. Closing that proxy did not return the modal call, so the bounded test terminated its two fixture processes. The published --2k comparison instead exposed a same-process #32770 dialog with printer combo, range, copies, and Apply controls, and cancelled cleanly on both widths. This identifies the broker boundary; it does not establish a property sheet visual match to SP2.",
+    "artifact_identity": "Test of the existing P1 files. No production change or republication."
+  },
   "delivery": {
     "verified_delivery_commit": "3bf842f230f03e593310668b3116682b30126be1",
     "remote_readback": "Queried origin/main after push. The observed commit matched the delivery, and all eight committed asset blobs matched the SHA-256 at both publication locations. The committed Win2000 assembly, COM Show implementation and Find appearance were checked against the worktree.",
@@ -592,7 +599,7 @@
       "demo": "Published x64 demo PE boundary passed. The existing package demo-pair command requires a private desktop and was omitted.",
       "remaining": [
         "Win2000-specific Explorer content and extended print property-page visual comparison",
-        "actual printer DC and physical printing",
+        "physical printing",
         "original expanded Color client-size comparison",
         "real administrator/global dialog matrix"
       ]
