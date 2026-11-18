@@ -65,7 +65,7 @@ P5 修复原生色板展开时复用旧外框尺寸的问题，双宽 8/8 恢复
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P1，3bf842f2；八件均与远端所指提交及两处发布一致。
+- Last verified remote delivery: M0 T28 S3 P5，5c75703a；八件均与远端所指提交及两处发布一致。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。

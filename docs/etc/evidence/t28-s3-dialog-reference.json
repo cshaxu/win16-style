@@ -385,6 +385,9 @@
     "page_setup_host": "Four PageSetupDlg A/W tests across both widths selected landscape, changed the left margin from 1.0 to 1.25 inches and accepted. Each returned landscape DEVMODE, 11 by 8.5 inch paper dimensions, the edited margin and a DEVNAMES handle. All handles were freed and no print job was sent.",
     "explorer_layout_trial": "A stock OPENFILENAME request with OFN_EX_NOPLACESBAR exposed SHELLDLL_DefView without the DirectUI wrapper; it retained native cancellation. A separate OFN_EXPLORER and OFN_ENABLEHOOK trial kept the standard places toolbar (ID 1184) and SHELLDLL_DefView. On the measured 427 by 272 normal-host work area, the trial was clipped in unstyled Windows as well as in P1. In the settled styled sample, the Open button started at x=484, y=313 while the client was 421 by 247. The probe confirmed the legacy host option but the complete with-places layout remains unverified. P5 keeps the existing mode selection.",
     "release": {
+      "verified_delivery_commit": "5c75703a76415ee21f6cd5f9d40ddd72343408b8",
+      "remote_readback": "Observed actual origin/main after push. All eight committed asset blobs and both published copies matched the package SHA-256 records. The two production source files also matched their committed blobs.",
+      "cleanup": "Removed the S3-owned clean build and intermediate copied bundles, publishing backups and probe outputs after recording results. No S3 scratch remains under build/t28-package.",
       "build_command": "tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-dialog-refinement-package",
       "snapshot_manifest_sha256": "f1680e75f73a9d02333b619f2f6882c5625baf79dc4c59f6b132538ef3f06a1d",
       "compiler": "C17, MinGW GCC 16.1.0 (i686 UCRT and x86_64 MSVCRT), Ninja 1.13.2, ccache 4.13.6",
