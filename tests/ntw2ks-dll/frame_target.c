@@ -273,6 +273,49 @@ static int test_expanded_color(void)
 static UINT_PTR CALLBACK file_classic_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {(void)window;(void)message;(void)wp;(void)lp;return 0;}
 
+static int test_short_file_buffer(PCWSTR directory)
+{
+    WCHAR path[MAX_PATH];
+    if(!GetTempFileNameW(directory,L"w2k",0,path))return 2;
+    const WCHAR *name_w=wcsrchr(path,L'\\');
+    if(!name_w){DeleteFileW(path);return 2;}
+    ++name_w;
+    char dir_a[MAX_PATH],name_a[16];
+    int expected_a=WideCharToMultiByte(CP_ACP,0,path,-1,NULL,0,NULL,NULL);
+    size_t expected_w=wcslen(path)+1;
+    if(!expected_a || !WideCharToMultiByte(CP_ACP,0,directory,-1,dir_a,ARRAYSIZE(dir_a),NULL,NULL) ||
+       !WideCharToMultiByte(CP_ACP,0,name_w,-1,name_a,ARRAYSIZE(name_a),NULL,NULL)){
+        DeleteFileW(path);return 2;
+    }
+    BOOL all=TRUE;
+    InterlockedExchange(&message_accept,1);
+    for(int ansi=0;ansi<2;++ansi)for(int save=0;save<2;++save){
+        InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
+        char short_a[16];WCHAR short_w[16];
+        lstrcpynA(short_a,name_a,ARRAYSIZE(short_a));
+        lstrcpynW(short_w,name_w,ARRAYSIZE(short_w));
+        DWORD flags=OFN_EXPLORER|OFN_NOCHANGEDIR|OFN_DONTADDTORECENT|OFN_FILEMUSTEXIST;
+        OPENFILENAMEA a={.lStructSize=sizeof(a),.lpstrInitialDir=dir_a,.lpstrFile=short_a,.nMaxFile=ARRAYSIZE(short_a),
+            .lpstrTitle="Win2kMessageFixture",.Flags=flags};
+        OPENFILENAMEW w={.lStructSize=sizeof(w),.lpstrInitialDir=directory,.lpstrFile=short_w,.nMaxFile=ARRAYSIZE(short_w),
+            .lpstrTitle=L"Win2kMessageFixture",.Flags=flags};
+        HANDLE thread=CreateThread(NULL,0,close_message,NULL,0,NULL);
+        if(!thread){all=FALSE;break;}
+        BOOL result=ansi?(save?GetSaveFileNameA(&a):GetOpenFileNameA(&a)):(save?GetSaveFileNameW(&w):GetOpenFileNameW(&w));
+        DWORD error=CommDlgExtendedError();WORD required=0;
+        CopyMemory(&required,ansi?(const void *)short_a:(const void *)short_w,sizeof(required));
+        DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
+        BOOL styled=InterlockedCompareExchange(&message_attached,0,0)!=0;
+        size_t expected=ansi?(size_t)expected_a:expected_w;
+        BOOL pass=wait==WAIT_OBJECT_0 && !result && error==FNERR_BUFFERTOOSMALL &&
+            required==expected && required>ARRAYSIZE(short_w) && styled;
+        printf("WIN2K SHORT FILE bits=%u ansi=%d save=%d styled=%d result=%d error=%lx required=%u pass=%d\n",
+            (unsigned)(sizeof(void*)*8),ansi,save,styled,result,(unsigned long)error,required,pass);
+        all=all&&pass;
+    }
+    return DeleteFileW(path) && all?0:3;
+}
+
 static UINT find_message;
 static unsigned find_terms;
 static DWORD find_actions;
@@ -733,6 +776,7 @@ int wmain(int argc,WCHAR **argv)
         }
         InterlockedExchange(&message_accept,0);return all?0:3;
     }
+    if(argc==3 && !lstrcmpW(argv[1],L"--file-buffer"))return test_short_file_buffer(argv[2]);
     if(argc==2 && !lstrcmpW(argv[1],L"--file-frame")){
         BOOL all=TRUE;
         for(int ansi=0;ansi<2;++ansi)for(int save=0;save<2;++save)for(int explorer=0;explorer<2;++explorer){

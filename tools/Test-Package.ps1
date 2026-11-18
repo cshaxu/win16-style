@@ -377,6 +377,13 @@ try{
             (Join-Path $tree 'ntw2ks-frame-target.exe'),'--message-choices') ($markers+@('DIALOG_DRIVER exit=0')) 20
     }
     $cases+=Pair { param($bits,$tree,$dll)
+        $markers=@(foreach($ansi in @(0,1)){foreach($save in @(0,1)){
+            "WIN2K SHORT FILE bits=$bits ansi=$ansi save=$save styled=1 result=0 error=3003"
+        }})
+        Case "ntw2ks-file-buffer-$bits" $dialogDriver @('--direct',$run,'--2k','--wait',
+            (Join-Path $tree 'ntw2ks-frame-target.exe'),'--file-buffer',$scratch) ($markers+@('DIALOG_DRIVER exit=0')) 30
+    }
+    $cases+=Pair { param($bits,$tree,$dll)
             Case "ntw2ks-printex-accept-$bits" $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $tree 'ntw2ks-frame-target.exe'),'--print-ex-accept') @(
                 "WIN2K PRINTEX bits=$bits ansi=0 attached=1 result=00000000 action=1",
                 "WIN2K PRINTEX bits=$bits ansi=1 attached=1 result=00000000 action=1",

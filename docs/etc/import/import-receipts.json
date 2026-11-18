@@ -6251,9 +6251,9 @@
       "path": "tests/ntw2ks-dll/frame_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3b475f78c33337756cd5f8fa0d63cc568e79683725d81dc0b1e59aea99179f99",
+      "sha256": "00214e68e67a3510e54e2a89687ac5a16a7c1a098166542f164cba02248ea9b5",
       "disposition": "authored",
-      "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T28 S3 expanded stock color contract fixture; T28 S3 Color size and message contract assertions; T28 S3 file results, filtering and working directory assertions",
+      "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T28 S3 expanded stock color contract fixture; T28 S3 Color size and message contract assertions; T28 S3 file results, filtering and working directory assertions; T28 S3 short file buffer and required size fixture",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
