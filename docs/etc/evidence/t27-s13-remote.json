@@ -1,0 +1,90 @@
+{
+  "task": "M0 T27 S13 P1",
+  "commit": "971638b91f2d69be79a48c4a3e717b7c951bfafc",
+  "changed_sha256": {
+    "CMakeLists.txt": "c186502a23dcef37058935f20a864ddb4a2a93be92085aae070a88073532c41b",
+    "assets/demo.exe": "41bb41b7edfafb75973fd8df89ffcb322fdefab6b76b5b2ac10679943e13a636",
+    "assets/ntw16s32.dll": "f04dc30d8cf2cea09d6c5bcc43a6c575065be3493b548da277384552bc7e7961",
+    "assets/ntw16s64.dll": "dbb49e34de3fffbd134163cf2aef1d943fc76d99c3db672f4d6ac1a938a8c459",
+    "assets/ntw2ks32.dll": "a9ab329bfece57d670836223a01fea705dae26bfb3df39410edcc75748a8a3d8",
+    "assets/ntw2ks64.dll": "2a528f37796cc23114d1c48e60a3d03bd81e1ee1f9fff68da8fe9d504f7f08c4",
+    "assets/ntwshk32.dll": "b7a9624f2cf56173c83cf7204ba74d86899af18ddb5cc914bbaf63831f3bd543",
+    "assets/ntwshk64.dll": "7711e1f2494e717d9cd9d4ef286b0b636e785ce400952e00e998f1cb7ebb89a3",
+    "assets/run16s.exe": "49edabddfc11adc9714c3bc88d13f71c5d868317b4d131ce0768c161b184c7ac",
+    "docs/etc/evidence/t27-s13-dates.json": "faa749c0c456dcf59715da9a5a7623d2b766896fd26f1624b514074efa5be49d",
+    "docs/etc/import/import-receipts.json": "f05dd7cac9767214249e1aed4d9e40e7c6309d9ca4b9c95e413b3bb44a494560",
+    "docs/etc/release.json": "dd386750110d9269838d356723007a33df59ebad4d312986af1599c8b6816d1c",
+    "docs/history/M0-T27-S13-date-month.md": "8ae833e185fc21ec8b638b2be392dc7dc63ca1586a51a9d9534f68e99b36d900",
+    "src/lib-win32-style/appearance/win2000/control/control.c": "1eb20747dfdba087c344a369834363d28c79fab6b96c0efbca594455747ca27a",
+    "src/lib-win32-style/appearance/win2000/control/date_paint.c": "86a0d7752e86bf260c640d5e422c96069786806ad9597d705c0c118ebfa65501",
+    "src/lib-win32-style/appearance/win2000/control/date_paint.h": "6e4f6f1fd2fb8328409d563d6f4d11a6e924b31e97ca071b7f531d1618f3c84d",
+    "src/lib-win32-style/application/control/calendar_colors.c": "6d2f33db24f1d98afa0a7d90a1d1a230db34106e33f1e8e9ee5dc7d32d61a971",
+    "src/lib-win32-style/application/control/calendar_colors.h": "129f9907a2fc4958821d1f70d7f296cb2d74f0c0d90e7bd006fd3ee17b021229",
+    "src/lib-win32-style/application/control/control_native_combo.c": "55ac7b1a82f9a412123910243386568eee4db8a65ddefa9de4b32efe0e6b5168",
+    "src/lib-win32-style/application/control/control_native_combo.h": "64881c2cdcd3257f9b13ba7bf4e2f27391a30f9e44a0890818b95936922e8dc6",
+    "tests/lib-win32-style/appearance/win2000/TEST_MAP.md": "d56a54217db72e9114f7e9439c4f7e5aa4feeb93733c4f83522c77a715e9183c",
+    "tests/lib-win32-style/appearance/win2000/control/date_paint.c": "fe2c60216fdac5dade48151dec61a9904e985bfd690cb58dfc93e341d53ac4af",
+    "tools/Test-Package.ps1": "619d26c25ad854c9fe1bdeb66ac757d5bef1b03238f2b302b04f09d5bf6bfedc"
+  },
+  "input_count": 1227,
+  "remote_input_cohort_sha256": "06429afd1af8add4e161e9db47f0f2a471edf2dbbdb072c1ab07e78777dd93cb",
+  "working_clean_build_cohort": "6564f251d43ac1c95c3cdd90c3ab1d218043caa6f81f55f2e2452f7511d2d458",
+  "baseline_line_endings_only": [
+    {
+      "path": "src/lib-win32/process-hook/LICENSE.win16style",
+      "working_sha256": "71337277c6c03463ca6d7b56aba20fed81d3e6f1c8a823f7d5ab30760de8a389",
+      "remote_sha256": "bf37952d329b48cee37b42d90b96d30dc049940902e42d69338a19cf72003543"
+    },
+    {
+      "path": "tests/integration/vb5_custom_compare.py",
+      "working_sha256": "47a33b4f6cb5ca50bec6d3c395746df6c70e93cf13a19b1f7da67b42eea347ad",
+      "remote_sha256": "360258c70d40e86d2f12fe5d3ba7523d1c8b7e4e86886330039d5971fbbc67cc"
+    },
+    {
+      "path": "tests/integration/vb_disabled_picture_compare.py",
+      "working_sha256": "7b9585aa7a7c618d20be819fe2eef6d729f1f5fbad312b4ac0fe9a857075e1ee",
+      "remote_sha256": "b4d9d37c36ff085d5e6e8cc8029f2a86d1e655d4c45085d037ea8cb9225e87e7"
+    },
+    {
+      "path": "tests/integration/vb_picture_compare.py",
+      "working_sha256": "ab9e2e8676e61afe5b91d676ff51362094f887312a39123f98554a86da4002a1",
+      "remote_sha256": "9187eafb4c4ae715f4101d8a1858787d710a3598701e0eecddc9a63f55429e4c"
+    },
+    {
+      "path": "tests/ntw16s-dll/commdlg_error_target.c",
+      "working_sha256": "fafee5345f2c9af0b2e4c02d7e0f98a37a8ac684be939dd7dc72ea3283b93dc0",
+      "remote_sha256": "6404d46682a578d4a698e1bb6795c491a1dccdc894712bed79215847fa95cbc4"
+    },
+    {
+      "path": "tests/ntw16s-dll/task_dialog.rc",
+      "working_sha256": "82f36069e7567ea0dd86882912d82da3cd56d55a1151ba1f744468a0f92caf34",
+      "remote_sha256": "79aaa95930350669976ba69a0a252522d360ec1e2917ea9017d9a18e0e69e73d"
+    },
+    {
+      "path": "tests/ntw16s-dll/win32_multi_navigation.c",
+      "working_sha256": "90c9ac4d8051a6666e34a9fa817d14c2a0ea49dbe5d51c0690e55164775ce20c",
+      "remote_sha256": "0a7328b7ae310a6ac7496de95b521bf38654cd0aa6107c117736f54537d76a2f"
+    },
+    {
+      "path": "tests/ntw16s-dll/win32_multi_target.c",
+      "working_sha256": "8ff42f04fb46b3a32b7d2ee48397d8fa11fb901431f536e177a6e98f9a70876c",
+      "remote_sha256": "8c73cbbfebc50bbd50e91621158518507a378827930c8e3642d18a685dad0652"
+    },
+    {
+      "path": "tools/Verify-Governance.ps1",
+      "working_sha256": "fcce057e5caa39ec15074a0aa02d2a07ad3e4350902f49dc84d104464d054f14",
+      "remote_sha256": "a8a9a7fb17ed9d7fb7a1a8101ccea2ece268e66a6584422f1e88bdbe6cd8861b"
+    }
+  ],
+  "product_sha256": {
+    "run16s.exe": "49edabddfc11adc9714c3bc88d13f71c5d868317b4d131ce0768c161b184c7ac",
+    "ntw16s32.dll": "f04dc30d8cf2cea09d6c5bcc43a6c575065be3493b548da277384552bc7e7961",
+    "ntw16s64.dll": "dbb49e34de3fffbd134163cf2aef1d943fc76d99c3db672f4d6ac1a938a8c459",
+    "ntw2ks32.dll": "a9ab329bfece57d670836223a01fea705dae26bfb3df39410edcc75748a8a3d8",
+    "ntw2ks64.dll": "2a528f37796cc23114d1c48e60a3d03bd81e1ee1f9fff68da8fe9d504f7f08c4",
+    "ntwshk32.dll": "b7a9624f2cf56173c83cf7204ba74d86899af18ddb5cc914bbaf63831f3bd543",
+    "ntwshk64.dll": "7711e1f2494e717d9cd9d4ef286b0b636e785ce400952e00e998f1cb7ebb89a3",
+    "demo.exe": "41bb41b7edfafb75973fd8df89ffcb322fdefab6b76b5b2ac10679943e13a636"
+  },
+  "status": "Fetched commit and actual blobs verified; eight binaries match both release locations"
+}
