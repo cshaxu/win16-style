@@ -833,6 +833,13 @@ try{
         Case "ntw2ks-scroll-aware-$bits" $scroll @($win2k,'aware') @("WIN2K_SCROLL_OK bits=$bits aware=1 hooked=0",$scrollScope) 20
         Case "ntw2ks-scroll-startup-$bits" $run @('--2k','--wait',$scroll,$win2k,'hooked') @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=1",$scrollScope) 25
         foreach($suffix in @('','-v6')){
+            $probe=Join-Path $tree "core-win2k-tab-header$suffix.exe"
+            $scope='WIN2K_TAB_HEADER_CONTRACTS_OK'
+            Case "ntw2ks-tab-header$suffix-$bits" $probe @($win2k) @($scope) 20
+            Case "ntw2ks-tab-header$suffix-aware-$bits" $probe @($win2k,'aware') @($scope) 20
+            Case "ntw2ks-tab-header$suffix-startup-$bits" $run @('--2k','--wait',$probe,$win2k,'hooked') @($scope) 25
+        }
+        foreach($suffix in @('','-v6')){
             $probe=Join-Path $tree "core-win2k-list-combo$suffix.exe"
             $scope='list_modes=5 combo_modes=3 child_retire=3 native_tabs=1 owner_draw=1'
             Case "ntw2ks-list-combo$suffix-$bits" $probe @($win2k) @("WIN2K_LIST_COMBO_OK bits=$bits aware=0 hooked=0",$scope) 20

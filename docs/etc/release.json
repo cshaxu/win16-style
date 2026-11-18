@@ -1,22 +1,22 @@
 {
   "schema": 1,
-  "delivery": "M0 T27 S7 P1",
-  "stage": "development: Win2000 standalone and nonclient scrollbar controls",
+  "delivery": "M0 T27 S8 P1",
+  "stage": "development: Win2000 tab and header control profiles",
   "version": "0.27.0.0",
   "version_contract": "M0 T27",
   "package_directory": "assets",
-  "source_snapshot_sha256": "4cb10615102bae01bf995e74e76aac3e0ac729e44ba69cfcab3070498a3e5518",
+  "source_snapshot_sha256": "349a052e36b98232cab04bd2cd46c9a2462645fb68c143ac2efb50d5029264a9",
   "source_snapshot_format": "SHA256 of clean Build-Package snapshot.json bytes",
   "source_input_cohort": {
-    "count": 1200,
-    "sha256": "729825db4d477ad387b7355afececf2e6e3404e021cb7ac61bd27bed90212b2c",
+    "count": 1204,
+    "sha256": "a5feb96c77c1124392428b7776a086a022ec0563556f13d252ab89b07af63ed6",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "40629d5783af6bc99b95b003c81124e9ac0bbd2afaac1c4f8548ffeccccd3a4e",
+      "sha256": "12332557a236427d5265d1ed1a72a9fb33e8700a324253c88dd4f94262a7071b",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "9e36cfe05e9db989a6227277a2ca9e7a6d4839d2bea85c04d94c5ff642939e72",
+      "sha256": "971abf3aed1d7c1a0ffd318fd0ac349a2d2dc3b6271e2e5f98b16147bdfb7f50",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -58,7 +58,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "0174a766645737521de0c2a5c9b2219d22d652331848d361c1077a496879035b",
+      "sha256": "5c629689bf08e771b0f707cede5b8b4bb748ef5ec2bdfd3600a520c0cc12eef3",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -79,7 +79,7 @@
     "ntw2ks32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "f551443a0ec00f78db930442d149f6c7517c85ef01efef3226f21508c08207a1",
+      "sha256": "7417e3eacb59ac5312d6703b25975e7a6518fbe23b2b25a88e76df2ad2033c97",
       "imports": [
         "COMCTL32.dll",
         "COMDLG32.DLL",
@@ -103,7 +103,7 @@
     "ntw2ks64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "a1315ade4549098b4490807538048780db876f99f450921118cacbb993843ae3",
+      "sha256": "ddec90d055feb131ffef3eebc3937e11bb2525ef065dbb2e2905c5014a27060a",
       "imports": [
         "COMCTL32.dll",
         "comdlg32.dll",
@@ -122,7 +122,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "2cfbfc9a304b637ce48145b3755f08d504b5f62d53fd4153f9c66cc9657fed4e",
+      "sha256": "a1fd58d0b3eb5d5e27c00bb931ece52059c33017e8c47006e6ce65fd35222919",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -137,7 +137,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "c64099a6905cb3b69ff877178abc59226e1acc00a8f56ff5fa70b0ff9d74ec80",
+      "sha256": "4077d668223d679e579905a8a29052dc838b76cf7aa69c7c616513df0146d8ac",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -147,7 +147,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "f5b4fa8251c658517ab87293a373e99876bb6f8c9618813fa9316fcd48d9ad1a",
+      "sha256": "6abe12cdfae40d6b97a2cabc6a965f284a228a49f7d786585679b72118e4cec0",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -162,86 +162,84 @@
   },
   "architecture": {
     "x86": {
-      "build-time.json": {
-        "seconds": 293.53849259996787,
+      "configure-time.json": {
+        "seconds": 6.390603699954227,
         "exit_code": 0
       },
-      "configure-time.json": {
-        "seconds": 6.588122899993323,
+      "build-time.json": {
+        "seconds": 279.92208099993877,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.45641250000335276,
+        "seconds": 0.6336198999779299,
         "exit_code": 0
       },
       "cache": {
-        "direct_cache_hit": 904,
-        "preprocessed_cache_hit": 1,
-        "cache_miss": 20
+        "direct_cache_hit": 926,
+        "preprocessed_cache_hit": 0,
+        "cache_miss": 3
       }
     },
     "x64": {
-      "build-time.json": {
-        "seconds": 301.68328810005914,
+      "configure-time.json": {
+        "seconds": 7.398839499917813,
         "exit_code": 0
       },
-      "configure-time.json": {
-        "seconds": 6.937306300038472,
+      "build-time.json": {
+        "seconds": 320.78636100003496,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.4778298999881372,
+        "seconds": 0.6487922000233084,
         "exit_code": 0
       },
       "cache": {
-        "direct_cache_hit": 992,
-        "preprocessed_cache_hit": 1,
-        "cache_miss": 20
+        "direct_cache_hit": 1014,
+        "preprocessed_cache_hit": 0,
+        "cache_miss": 3
       }
     }
   },
   "toolchains": {
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "toolchains": [
       {
         "target": "i686-w64-mingw32",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "version": "16.1.0",
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "architecture": "x86",
-        "version": "16.1.0"
+        "architecture": "x86"
       },
       {
         "target": "x86_64-w64-mingw32",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "version": "16.1.0",
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "architecture": "x64",
-        "version": "16.1.0"
+        "architecture": "x64"
       }
     ],
     "ccache_version": "ccache version 4.13.6",
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe"
   },
   "verification": {
-    "actual_package_cases": 84,
-    "passed": 84,
+    "actual_package_cases": 96,
+    "passed": 96,
     "skipped_client_print_subchecks": 36,
-    "evidence": "evidence/t27-s7-scroll.json",
-    "coverage": "focused",
-    "actual_remote": "evidence/t27-s7-remote.json"
+    "evidence": "evidence/t27-s8-tab-header.json",
+    "coverage": "focused"
   },
   "validation": {
     "physical_keyboard_mouse": "not tested",
     "private_desktops_created": false,
     "limitations": [
-      "Synthetic pointer and keyboard messages; no physical-input claim",
-      "RTL nonclient geometry retains native painting and input",
-      "Default and application brush handling covered for standard controls; native unsupported styles retain baseline behavior",
-      "Stock Marlett glyphs used; no claim of original font binary identity"
+      "Tab body palette and ordinary top tabs, with native item layout and selection. Other orientations and owner-drawn variants use native painting.",
+      "Header default simple text items get the style. Custom application draw, complex formats, and the unoccupied trailing strip use native painting.",
+      "Physical focus travel or keyboard accelerators, resize drag, and exact historic font rasterization are outside the recorded coverage."
     ]
   },
   "closure": {
-    "S7": "closed after fetched remote audit",
-    "T27": "open; S8 admitted",
+    "S8": "verified locally; remote verification pending",
+    "T27": "open",
     "M0": "fixed"
   }
 }

@@ -40,7 +40,11 @@ int main(void)
     win2k_palette different=*p;different.window=RGB(20,40,60);different.highlight=RGB(70,80,90);
     r=(RECT){0,0,40,30};CHECK(win2k_edge(dc,&r,EDGE_RAISED,BF_RECT|BF_MONO|BF_MIDDLE,&different));
     CHECK(GetPixel(dc,1,8)==different.window && GetPixel(dc,5,8)==different.window);
-    CHECK(!win2k_edge(dc,&r,EDGE_RAISED,BF_TOP,p));
+    CHECK(win2k_edge(dc,&r,EDGE_RAISED,BF_TOP|BF_RIGHT|BF_ADJUST,p));
+    CHECK(r.left==0 && r.top==2 && r.right==38 && r.bottom==30);
+    CHECK(GetPixel(dc,39,0)==p->dark && GetPixel(dc,10,0)==p->light && GetPixel(dc,10,1)==p->highlight);
+    CHECK(GetPixel(dc,10,2)==different.window && GetPixel(dc,0,8)==p->text);
+    CHECK(!win2k_edge(dc,&r,EDGE_RAISED,BF_DIAGONAL_ENDBOTTOMRIGHT,p));
     /* Genuine Effects/Mouse screenshot crops, not renderer-generated goldens.
      * URLs, source image SHA256 and crop coordinates: t27-s3-choice-controls.json. */
     const UINT glyph_states[]={DFCS_BUTTONCHECK,DFCS_BUTTONCHECK|DFCS_CHECKED,DFCS_BUTTONRADIO,DFCS_BUTTONRADIO|DFCS_CHECKED};

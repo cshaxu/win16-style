@@ -10,7 +10,7 @@ BOOL win2k_fill(HDC dc,const RECT *rect,COLORREF color)
     if(SetDCBrushColor(dc,old)==CLR_INVALID)result=FALSE;
     return result;
 }
-static BOOL layer(HDC dc,RECT *r,COLORREF top_left,COLORREF bottom_right)
+static BOOL layer(HDC dc,RECT *r,UINT sides,COLORREF top_left,COLORREF bottom_right)
 {
     if(r->right>r->left && r->bottom>r->top){
         RECT left={r->left,r->top,r->left+1,r->bottom};
@@ -18,14 +18,19 @@ static BOOL layer(HDC dc,RECT *r,COLORREF top_left,COLORREF bottom_right)
         RECT right={r->right-1,r->top,r->right,r->bottom};
         RECT bottom={r->left,r->bottom-1,r->right,r->bottom};
         /* USER favors bottom/right at the corners. */
-        if(!win2k_fill(dc,&left,top_left) || !win2k_fill(dc,&top,top_left) ||
-           !win2k_fill(dc,&right,bottom_right) || !win2k_fill(dc,&bottom,bottom_right))return FALSE;
+        if(((sides&BF_LEFT) && !win2k_fill(dc,&left,top_left)) ||
+           ((sides&BF_TOP) && !win2k_fill(dc,&top,top_left)) ||
+           ((sides&BF_RIGHT) && !win2k_fill(dc,&right,bottom_right)) ||
+           ((sides&BF_BOTTOM) && !win2k_fill(dc,&bottom,bottom_right)))return FALSE;
     }
-    InflateRect(r,-1,-1);return TRUE;
+    r->left+=!!(sides&BF_LEFT);r->top+=!!(sides&BF_TOP);
+    r->right-=!!(sides&BF_RIGHT);r->bottom-=!!(sides&BF_BOTTOM);
+    return TRUE;
 }
 BOOL win2k_edge(HDC dc,RECT *bounds,UINT edge,UINT flags,const win2k_palette *p)
 {
-    if(!dc || !bounds || !p || (flags&BF_RECT)!=BF_RECT || (flags&BF_DIAGONAL))return FALSE;
+    UINT sides=flags&BF_RECT;
+    if(!dc || !bounds || !p || !sides || (flags&BF_DIAGONAL))return FALSE;
     RECT r=*bounds;BOOL soft=(flags&BF_SOFT)!=0,flat=(flags&(BF_FLAT|BF_MONO))!=0;
     for(unsigned pass=0;pass<2;++pass){
         UINT part=edge&(pass?BDR_INNER:BDR_OUTER);COLORREF tl,br;
@@ -38,7 +43,7 @@ BOOL win2k_edge(HDC dc,RECT *bounds,UINT edge,UINT flags,const win2k_palette *p)
         case BDR_SUNKENINNER:tl=soft?p->shadow:p->dark;br=p->light;break;
         default:return FALSE;
         }
-        if(!layer(dc,&r,tl,br))return FALSE;
+        if(!layer(dc,&r,sides,tl,br))return FALSE;
     }
     if((flags&BF_MIDDLE) && !win2k_fill(dc,&r,(flags&BF_MONO)?p->window:p->face))return FALSE;
     if(flags&BF_ADJUST)*bounds=r;

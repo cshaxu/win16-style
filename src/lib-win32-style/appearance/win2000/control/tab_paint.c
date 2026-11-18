@@ -1,0 +1,119 @@
+/* Classic top tabs follow the Windows 2000 comctl32 tab.c geometry. */
+#include "tab_header.h"
+#include "../common/paint.h"
+#include "lib-win32-style/application/control/tab_snapshot.h"
+
+static const win2k_palette *const palette=&win2k_standard_palette;
+typedef struct tab_paint {
+    HFONT font;
+    int hot;
+} tab_paint;
+
+BOOL win2k_tab_supported(HWND window)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
+    return !(style&(TCS_VERTICAL|TCS_BOTTOM|TCS_BUTTONS|TCS_OWNERDRAWFIXED|TCS_SCROLLOPPOSITE|
+        TCS_FORCEICONLEFT|TCS_FORCELABELLEFT));
+}
+
+static void surface(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
+{
+    (void)window;(void)context;
+    RECT page=snapshot->page;
+    InflateRect(&page,4,4);
+    page.top+=2;
+    win2k_fill(dc,&snapshot->client,palette->face);
+    win2k_edge(dc,&page,EDGE_RAISED,BF_RECT|BF_SOFT,palette);
+}
+
+static void prepare(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
+{
+    (void)window;(void)snapshot;
+    HFONT font=((const tab_paint *)context)->font;
+    SelectObject(dc,font?font:GetStockObject(DEFAULT_GUI_FONT));
+    SetBkMode(dc,TRANSPARENT);
+}
+
+static void pixel(HDC dc,int x,int y,COLORREF color)
+{
+    RECT cell={x,y,x+1,y+1};
+    win2k_fill(dc,&cell,color);
+}
+
+/* The original DoCorners clears two columns, then draws the two diagonal
+ * soft edge layers in the remaining two rows. */
+static void corners(HDC dc,const RECT *r)
+{
+    if(r->right-r->left<4 || r->bottom-r->top<3)return;
+    RECT left={r->left,r->top,r->left+2,r->top+3};
+    RECT right={r->right-2,r->top,r->right,r->top+3};
+    win2k_fill(dc,&left,palette->face);
+    win2k_fill(dc,&right,palette->face);
+    pixel(dc,left.left+1,left.top+1,palette->highlight);
+    pixel(dc,left.left,left.top+2,palette->highlight);
+    pixel(dc,left.left+1,left.top+2,palette->light);
+    pixel(dc,right.right-2,right.top+1,palette->dark);
+    pixel(dc,right.right-1,right.top+2,palette->dark);
+    pixel(dc,right.right-2,right.top+2,palette->shadow);
+}
+
+static void paint_item(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot,
+    const style_control_tab_item *item)
+{
+    const tab_paint *paint=context;
+    RECT frame=item->rect,content=item->rect;
+    BOOL enabled=IsWindowEnabled(window);
+    BOOL highlight=(item->native.dwState&TCIS_HIGHLIGHTED)!=0;
+    if(item->active){
+        InflateRect(&frame,2,2);
+        --frame.bottom;
+        OffsetRect(&content,0,-2);
+    }
+    int saved=SaveDC(dc);
+    if(!saved)return;
+    IntersectClipRect(dc,frame.left,frame.top,frame.right,frame.bottom);
+    win2k_fill(dc,&frame,palette->face);
+    win2k_edge(dc,&frame,EDGE_RAISED,BF_LEFT|BF_TOP|BF_RIGHT|BF_SOFT,palette);
+    corners(dc,&frame);
+    content.left+=2;
+    content.right-=2;
+    RECT measured={0};
+    DrawTextW(dc,item->text,-1,&measured,DT_CALCRECT|DT_SINGLELINE);
+    int gap=item->image && *item->text?3:0;
+    int width=measured.right+(item->image?item->image_size.cx+gap:0);
+    content.left+=max(0,(content.right-content.left-width)/2);
+    if(item->image){
+        int y=content.top+(content.bottom-content.top-item->image_size.cy)/2;
+        ImageList_DrawEx(item->images,item->native.iImage,dc,content.left,y,0,0,CLR_NONE,
+            highlight?GetSysColor(COLOR_HIGHLIGHT):CLR_DEFAULT,highlight?ILD_BLEND50:ILD_NORMAL);
+        content.left+=item->image_size.cx+gap;
+    }
+    RECT label=content;
+    label.right=min(label.right,label.left+measured.right);
+    label.top+=(label.bottom-label.top-measured.bottom)/2;
+    label.bottom=label.top+measured.bottom;
+    if(highlight)win2k_fill(dc,&label,GetSysColor(COLOR_HIGHLIGHT));
+    SetTextColor(dc,highlight?GetSysColor(COLOR_HIGHLIGHTTEXT):
+        item->index==paint->hot?GetSysColor(COLOR_HOTLIGHT):palette->text);
+    UINT flags=DT_LEFT|DT_VCENTER|DT_SINGLELINE;
+    if(snapshot->cues&UISF_HIDEACCEL)flags|=DT_HIDEPREFIX;
+    DrawTextW(dc,item->text,-1,&content,flags);
+    if(enabled && GetFocus()==window && item->index==snapshot->focus && !(snapshot->cues&UISF_HIDEFOCUS)){
+        InflateRect(&label,1,1);
+        DrawFocusRect(dc,&label);
+    }
+    RestoreDC(dc,saved);
+}
+
+BOOL win2k_tab_paint(HWND window,HDC dc,HFONT font,const style_instance *instance,const style_control_native_state *state)
+{
+    const unsigned epoch=state->epoch;
+    tab_paint paint={.font=font,.hot=-1};
+    TCHITTESTINFO hit={0};
+    if((GetWindowLongPtrW(window,GWL_STYLE)&TCS_HOTTRACK) && IsWindowEnabled(window) &&
+       GetCursorPos(&hit.pt) && WindowFromPoint(hit.pt)==window && ScreenToClient(window,&hit.pt))
+        paint.hot=(int)SendMessageW(window,TCM_HITTEST,0,(LPARAM)&hit);
+    if(!style_control_native_current(window,instance,state,epoch))return FALSE;
+    const style_control_tab_painter painter={&paint,surface,prepare,paint_item};
+    return style_control_tab_paint(window,dc,instance,state,&painter);
+}

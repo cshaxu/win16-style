@@ -9699,9 +9699,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 shared original partial rectangular edge rules",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "cd6d8dc8f343792ef69b9e6597698a17a87bb72c830b9657efca286664cc46a7"
+      "sha256": "f1f11deb4ccefbf9d16aca2842089b640e788c4c0c8d7d134c02baceb52668d6"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/common/paint.h",
@@ -9753,9 +9753,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "bad55fef7f31bc54ffc1110d30bff657550d2d641fa789122c7724168d0db814"
+      "sha256": "95b4e7e9ca7ba900d561b565c28e1ea953a7400d9c8039737b59e3b49e4651de"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -9771,18 +9771,18 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab/header validation mapping",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "baf2eaad490df35b82ac2edb079bb36207aed2fe693782bbea6d5fcfcf637851"
+      "sha256": "824b20a6994e641aa20f2676791e9d704f9fc0bdd7177073b567c6f95f093c76"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/common/paint.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 regression for original partial edges",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "14d791a2e221573a87e2ba25d6a3ed5bdc9aaf4f86e0f5177c55502f32a2a7c3"
+      "sha256": "a782967ee01fdfc01bd39799827c60dd0c09e095242e8c204e65e35f8214c188"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/control/button_paint.c",
@@ -9963,6 +9963,42 @@
       "review": "S7 native scroll presentation and product validation",
       "notice": "Project-authored C with pinned behavior references",
       "sha256": "b68a2d9c0c86a9193b19b603c5f87b4b55f2177f47b0dcdda82e371f2e19c09b"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/tab_paint.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "391095fc762dfeb95060af18071daa506ac6dd21395416bcb6589cad345cc3e1",
+      "disposition": "authored",
+      "review": "T27 S8 original Tab geometry adapted to existing snapshots",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/header_paint.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "dd022231d8ce76af2e3b38fb223e7fb81d36404a3e68f35a4be0f5f407b06e5c",
+      "disposition": "authored",
+      "review": "T27 S8 original Header edge and text roles via native custom draw",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/tab_header.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1eed2b5784457780a274420f7aa794b48593f600b000ccff7d61698b03d2575c",
+      "disposition": "authored",
+      "review": "T27 S8 local tab and header appearance declarations",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/tab_header.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "5a58c0b81c42df225530524b189781d8b91f70dcea45c2b433dd0ed7ffc32b03",
+      "disposition": "authored",
+      "review": "T27 S8 native v5/v6 tab and header consumer verification",
+      "notice": "Project-authored C; no external implementation or artwork imported"
     }
   ]
 }
