@@ -19,6 +19,7 @@ typedef struct style_control_notify_ops {
     BOOL (*supported)(HWND);
     BOOL (*part)(HWND,const NMCUSTOMDRAW *,const void *);
     BOOL (*runtime_border)(HWND,const NMCUSTOMDRAW *,const void *);
+    void (*prepare_item)(HWND,NMCUSTOMDRAW *,const void *);
 } style_control_notify_ops;
 /* Caller owns and pins instance/state and provides one GUI-thread-local stack.
  * Bind/unbind preserve the native parent's subclass ownership. No style is

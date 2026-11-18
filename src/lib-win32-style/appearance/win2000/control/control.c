@@ -5,6 +5,7 @@
 #include "list_combo.h"
 #include "scroll.h"
 #include "tab_header.h"
+#include "report_paint.h"
 #include "lib-win32-style/application/control/combo.h"
 #include "lib-win32-style/application/control/list.h"
 #include "lib-win32-style/application/control/edit.h"
@@ -17,6 +18,7 @@
 #include "lib-win32-style/application/window/window_identity.h"
 #include <stdlib.h>
 
+typedef enum win2k_report_role { WIN2K_REPORT_NONE,WIN2K_REPORT_LIST,WIN2K_REPORT_TREE } win2k_report_role;
 typedef struct win2k_control {
     style_instance instance;
     style_control_state state;
@@ -28,6 +30,7 @@ typedef struct win2k_control {
     win2k_scroll scroll;
     style_control_native_state tab;
     BOOL tab_control,header_control;
+    win2k_report_role report;
 } win2k_control;
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static LRESULT CALLBACK parent_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
@@ -64,6 +67,8 @@ BOOL win2k_control_supported(HWND window)
     if(!lstrcmpiW(name,L"LISTBOX"))return list_style(style);
     if(!lstrcmpiW(name,WC_TABCONTROLW))return win2k_tab_supported(window);
     if(!lstrcmpiW(name,WC_HEADERW))return win2k_header_supported(window);
+    if(!lstrcmpiW(name,WC_LISTVIEWW))return win2k_listview_supported(window);
+    if(!lstrcmpiW(name,WC_TREEVIEWW))return win2k_treeview_supported(window);
     if(!lstrcmpiW(name,L"SCROLLBAR"))return TRUE;
     if(!lstrcmpiW(name,L"COMBOBOX"))
         return (style&3) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
@@ -208,7 +213,7 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
     }else if(class_is(window,L"COMBOBOX")){
         const style_control_draw draw={control,render};
         result=style_control_combo_message(window,&control->instance,&control->state,message,a,b,&draw);
-    }else if(win2k_edit_class(window)!=WIN2K_EDIT_NONE){
+    }else if(control->report || win2k_edit_class(window)!=WIN2K_EDIT_NONE){
         const style_control_edit_ops ops={.context=control,.input=embedded_input,.scrollbars=embedded_paint,.border=edit_border};
         result=style_control_edit_message(window,&control->instance,&control->state,NULL,message,a,b,&ops);
     }else{
@@ -222,10 +227,13 @@ static void finish_call(void *context,BOOL completed)
 static LRESULT parent_dispatch(void *context,HWND parent,UINT message,WPARAM a,LPARAM b)
 {
     win2k_control *control=context;
-    if(control->header_control){
-        const style_control_notify_ops ops={&control->instance,win2k_header_supported,win2k_header_paint,NULL};
+    if(control->header_control || control->report){
+        const style_control_notify_ops header={.context=&control->instance,.supported=win2k_header_supported,.part=win2k_header_paint};
+        const style_control_notify_ops list={.context=&control->instance,.supported=win2k_listview_plain,.prepare_item=win2k_listview_colors};
+        const style_control_notify_ops tree={.supported=win2k_treeview_supported,.prepare_item=win2k_treeview_colors};
+        const style_control_notify_ops *ops=control->header_control?&header:control->report==WIN2K_REPORT_LIST?&list:&tree;
         return style_control_notify_message(parent,message,a,b,(UINT_PTR)control->parent_binding.window,
-            &control->instance,&control->parent_binding,parent_proc,NULL,&ops);
+            &control->instance,&control->parent_binding,parent_proc,NULL,ops);
     }
     if(message==WM_NCDESTROY)style_control_notify_unbind(&control->parent_binding,parent_proc,control);
     LRESULT result=DefSubclassProc(parent,message,a,b);DWORD error=GetLastError();
@@ -260,7 +268,7 @@ static BOOL install_combo_list(HWND window,void *context)
 static BOOL setup(HWND window,void *context)
 {
     win2k_control *control=context;
-    if((control->header_control || win2k_edit_class(window)==WIN2K_EDIT_STANDARD) &&
+    if((control->header_control || control->report || win2k_edit_class(window)==WIN2K_EDIT_STANDARD) &&
        !style_control_notify_bind(window,&control->parent_binding,parent_proc,control))return FALSE;
     if(!style_theme_capture(window) || !style_theme_suppress(window,control,control->native_theme))return FALSE;
     if(class_is(window,L"COMBOBOX")){
@@ -279,6 +287,9 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     if(!win32_style_window_current_thread(window)){SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;}
     if(lookup(window))return TRUE;
     if(!native_theme || (!combo_parent && !win2k_control_supported(window))){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    win2k_report_role report=class_is(window,WC_LISTVIEWW)?WIN2K_REPORT_LIST:
+        class_is(window,WC_TREEVIEWW)?WIN2K_REPORT_TREE:WIN2K_REPORT_NONE;
+    if(report==WIN2K_REPORT_LIST && !win2k_listview_plain(window)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     if(style_theme_retained(window)){SetLastError(ERROR_BUSY);return FALSE;}
     if(!style_instance_preflight(window,control_proc))return FALSE;
     win2k_control *control=calloc(1,sizeof(*control));
@@ -286,12 +297,13 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     style_instance_init(&control->instance,control,dispose);
     control->tab_control=class_is(window,WC_TABCONTROLW);
     control->header_control=class_is(window,WC_HEADERW);
+    control->report=report;
     style_control_native_init(&control->tab);
     win2k_scroll_init(&control->scroll,&control->instance);
     control->scroll.controller.resources.list=combo_parent || class_is(window,L"LISTBOX");
     control->scroll.controller.resources.edit=win2k_edit_class(window)==WIN2K_EDIT_STANDARD &&
         (GetWindowLongPtrW(window,GWL_STYLE)&ES_MULTILINE);
-    control->scroll.controller.resources.frame=win2k_edit_class(window)==WIN2K_EDIT_NATIVE_CLIENT;
+    control->scroll.controller.resources.frame=report || win2k_edit_class(window)==WIN2K_EDIT_NATIVE_CLIENT;
     style_control_state_init(&control->state,NULL);control->native_theme=native_theme;
     control->combo_parent=combo_parent;
     control->frame_owned=basic_kind(window)==STYLE_CONTROL_SEPARATOR;

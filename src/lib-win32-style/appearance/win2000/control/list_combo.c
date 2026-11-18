@@ -5,8 +5,6 @@
 #include "lib-win32-style/application/control/list_snapshot.h"
 #include <oleacc.h>
 
-static const COLORREF selection=RGB(10,36,106);
-
 static HFONT native_font(HWND window,void *context)
 {
     (void)context;
@@ -37,8 +35,8 @@ static void list_item(HWND window,void *context,HDC dc,const style_control_list_
 {
     const list_colors *colors=context;
     const win2k_palette *p=&win2k_standard_palette;
-    if(item->selected>0)win2k_fill(dc,&item->row,selection);
-    SetTextColor(dc,!IsWindowEnabled(window)?p->gray:item->selected>0?p->highlight:colors->text);
+    if(item->selected>0)win2k_fill(dc,&item->row,p->selection);
+    SetTextColor(dc,!IsWindowEnabled(window)?p->gray:item->selected>0?p->selection_text:colors->text);
     RECT label=item->row;
     if(!(snapshot->style&LBS_MULTICOLUMN))label.left+=2;
     DrawTextW(dc,item->text,item->length,&label,DT_LEFT|DT_SINGLELINE|DT_NOPREFIX);
@@ -105,9 +103,9 @@ BOOL win2k_combo_paint(HWND window,style_instance *instance,HDC dc)
     }
     if(!snapshot.editable){
         BOOL focused=enabled && GetFocus()==window && !snapshot.pressed;
-        if(focused)win2k_fill(dc,&item,selection);
+        if(focused)win2k_fill(dc,&item,p->selection);
         select_font(dc,snapshot.font);
-        if(focused || !enabled)SetTextColor(dc,focused?p->highlight:p->gray);
+        if(focused || !enabled)SetTextColor(dc,focused?p->selection_text:p->gray);
         SetBkMode(dc,TRANSPARENT);
         RECT label=item;
         label.left+=2;

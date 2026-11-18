@@ -7,6 +7,7 @@
  * a request to change the machine's system colors. */
 typedef struct win2k_palette {
     COLORREF face,light,highlight,shadow,dark,text,gray,window;
+    COLORREF selection,selection_text;
 } win2k_palette;
 extern const win2k_palette win2k_standard_palette;
 #endif

@@ -85,15 +85,15 @@ static void paint_item(HWND window,void *context,HDC dc,const style_control_tab_
     if(item->image){
         int y=content.top+(content.bottom-content.top-item->image_size.cy)/2;
         ImageList_DrawEx(item->images,item->native.iImage,dc,content.left,y,0,0,CLR_NONE,
-            highlight?GetSysColor(COLOR_HIGHLIGHT):CLR_DEFAULT,highlight?ILD_BLEND50:ILD_NORMAL);
+            highlight?palette->selection:CLR_DEFAULT,highlight?ILD_BLEND50:ILD_NORMAL);
         content.left+=item->image_size.cx+gap;
     }
     RECT label=content;
     label.right=min(label.right,label.left+measured.right);
     label.top+=(label.bottom-label.top-measured.bottom)/2;
     label.bottom=label.top+measured.bottom;
-    if(highlight)win2k_fill(dc,&label,GetSysColor(COLOR_HIGHLIGHT));
-    SetTextColor(dc,highlight?GetSysColor(COLOR_HIGHLIGHTTEXT):
+    if(highlight)win2k_fill(dc,&label,palette->selection);
+    SetTextColor(dc,highlight?palette->selection_text:
         item->index==paint->hot?GetSysColor(COLOR_HOTLIGHT):palette->text);
     UINT flags=DT_LEFT|DT_VCENTER|DT_SINGLELINE;
     if(snapshot->cues&UISF_HIDEACCEL)flags|=DT_HIDEPREFIX;

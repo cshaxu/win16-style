@@ -1,22 +1,22 @@
 {
   "schema": 1,
-  "delivery": "M0 T27 S8 P1",
-  "stage": "development: Win2000 tab and header control profiles",
+  "delivery": "M0 T27 S9 P1",
+  "stage": "development: Win2000 ListView and TreeView control profiles",
   "version": "0.27.0.0",
   "version_contract": "M0 T27",
   "package_directory": "assets",
-  "source_snapshot_sha256": "349a052e36b98232cab04bd2cd46c9a2462645fb68c143ac2efb50d5029264a9",
+  "source_snapshot_sha256": "881887ca36d5610ed156e053b6952fa2095c640bfd04b1acc2d9dfe88d94a082",
   "source_snapshot_format": "SHA256 of clean Build-Package snapshot.json bytes",
   "source_input_cohort": {
-    "count": 1204,
-    "sha256": "a5feb96c77c1124392428b7776a086a022ec0563556f13d252ab89b07af63ed6",
+    "count": 1207,
+    "sha256": "bb4d27792846316fae6fe1f8db0e4997f4d8eaf9f98dc41a75130023f6f3ddc3",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "12332557a236427d5265d1ed1a72a9fb33e8700a324253c88dd4f94262a7071b",
+      "sha256": "81a7baf4f98d5da81c2f3634d2e5157d0725d7f677c7f5e5fafc7fc14cbb08ce",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "971abf3aed1d7c1a0ffd318fd0ac349a2d2dc3b6271e2e5f98b16147bdfb7f50",
+      "sha256": "d4ce9a0099d6fdbc06f21f85971916550e7e6fb76c3b2956f88a9719589fce84",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -58,7 +58,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "5c629689bf08e771b0f707cede5b8b4bb748ef5ec2bdfd3600a520c0cc12eef3",
+      "sha256": "9621acde569350e7b4427b594a4e73db999ba4e928853687681d988498b2a91a",
       "imports": [
         "ADVAPI32.dll",
         "COMCTL32.dll",
@@ -79,7 +79,7 @@
     "ntw2ks32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "7417e3eacb59ac5312d6703b25975e7a6518fbe23b2b25a88e76df2ad2033c97",
+      "sha256": "eb2d780631f008e0554d2ff46db39c669a7a106dde6475d3afa19a312865553a",
       "imports": [
         "COMCTL32.dll",
         "COMDLG32.DLL",
@@ -103,7 +103,7 @@
     "ntw2ks64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "ddec90d055feb131ffef3eebc3937e11bb2525ef065dbb2e2905c5014a27060a",
+      "sha256": "68baf319dd863df6976ebfaa329a9e6ad0475939a0f8bcbd8cba9509b8796a34",
       "imports": [
         "COMCTL32.dll",
         "comdlg32.dll",
@@ -122,7 +122,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T27",
-      "sha256": "a1fd58d0b3eb5d5e27c00bb931ece52059c33017e8c47006e6ce65fd35222919",
+      "sha256": "b2f8cecd79c10580bbf8c430cd4bd5d6e72e55be2600f1520e4d8ef0d5c64ddb",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -137,7 +137,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "4077d668223d679e579905a8a29052dc838b76cf7aa69c7c616513df0146d8ac",
+      "sha256": "4e83e86af7e32021a76940d905f62aee9a0359a9b4a6fd5d681bc26bc0006674",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -147,7 +147,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T27",
-      "sha256": "6abe12cdfae40d6b97a2cabc6a965f284a228a49f7d786585679b72118e4cec0",
+      "sha256": "883464c80247c9f79d39cc59bbc9c2815ec07e4750cd7f836f5aaa241d770b7a",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -163,84 +163,83 @@
   "architecture": {
     "x86": {
       "configure-time.json": {
-        "seconds": 6.390603699954227,
+        "seconds": 8.639552100095898,
         "exit_code": 0
       },
       "build-time.json": {
-        "seconds": 279.92208099993877,
+        "seconds": 274.4554394999286,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.6336198999779299,
+        "seconds": 0.42935079999733716,
         "exit_code": 0
       },
       "cache": {
-        "direct_cache_hit": 926,
+        "direct_cache_hit": 911,
         "preprocessed_cache_hit": 0,
-        "cache_miss": 3
+        "cache_miss": 21
       }
     },
     "x64": {
       "configure-time.json": {
-        "seconds": 7.398839499917813,
+        "seconds": 7.7162064999574795,
         "exit_code": 0
       },
       "build-time.json": {
-        "seconds": 320.78636100003496,
+        "seconds": 325.68567789997905,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.6487922000233084,
+        "seconds": 0.4634911000030115,
         "exit_code": 0
       },
       "cache": {
-        "direct_cache_hit": 1014,
+        "direct_cache_hit": 999,
         "preprocessed_cache_hit": 0,
-        "cache_miss": 3
+        "cache_miss": 21
       }
     }
   },
   "toolchains": {
     "toolchains": [
       {
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
         "target": "i686-w64-mingw32",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
         "version": "16.1.0",
-        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
         "architecture": "x86"
       },
       {
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
         "target": "x86_64-w64-mingw32",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
         "version": "16.1.0",
-        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
         "architecture": "x64"
       }
     ],
-    "ccache_version": "ccache version 4.13.6",
     "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
+    "ccache_version": "ccache version 4.13.6",
     "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe"
   },
   "verification": {
-    "actual_package_cases": 96,
-    "passed": 96,
+    "actual_package_cases": 108,
+    "passed": 108,
     "skipped_client_print_subchecks": 36,
-    "evidence": "evidence/t27-s8-tab-header.json",
-    "coverage": "focused",
-    "actual_remote": "evidence/t27-s8-remote.json"
+    "evidence": "evidence/t27-s9-report-tree.json",
+    "coverage": "focused"
   },
   "validation": {
     "physical_keyboard_mouse": "not tested",
     "private_desktops_created": false,
     "limitations": [
-      "Tab body palette and ordinary top tabs, with native item layout and selection. Other orientations and owner-drawn variants use native painting.",
-      "Header default simple text items get the style. Custom application draw, complex formats, and the unoccupied trailing strip use native painting.",
-      "Physical focus travel or keyboard accelerators, resize drag, and exact historic font rasterization are outside the recorded coverage."
+      "Ordinary no-image/non-full-row ListView label coloring only. Image lists, full-row/border select, themed background image, group/owner data or draw, and transparency keep native handling.",
+      "Tree expand/collapse, normal branch glyphs, inactive selection and app custom draw verified. No claim for physical focus changes, drag/drop images, or every state-image/label-editor variant.",
+      "Application data, callbacks, image ownership and column/branch geometry remain under native control."
     ]
   },
   "closure": {
-    "S8": "closed after fetched remote audit",
-    "T27": "open; S9 admitted",
+    "S9": "verified locally; remote verification pending",
+    "T27": "open",
     "M0": "fixed"
   }
 }

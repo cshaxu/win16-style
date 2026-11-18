@@ -48,8 +48,12 @@ LRESULT style_control_notify_message(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_P
     if(m==WM_NCDESTROY){RemoveWindowSubclass(parent,callback,id);state->parent=NULL;state->internal=FALSE;}
     SetLastError(entry);
     result=internal?CDRF_DODEFAULT:DefSubclassProc(parent,m,p,l);DWORD error=GetLastError();
-    if(draw && !instance->detached)result=style_control_custom_draw_after(state->window,draw,&state->internal,internal,result,
-        ops->context,ops->supported,ops->part);
+    if(draw && !instance->detached){
+        if(internal && draw->dwDrawStage==CDDS_ITEMPREPAINT && ops->prepare_item)
+            ops->prepare_item(state->window,draw,ops->context);
+        if(!instance->detached)result=style_control_custom_draw_after(state->window,draw,&state->internal,internal,result,
+            ops->context,ops->supported,ops->part);
+    }
     style_instance_release(instance);
     SetLastError(error);return result;
 }

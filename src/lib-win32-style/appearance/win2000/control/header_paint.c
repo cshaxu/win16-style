@@ -5,7 +5,7 @@
 BOOL win2k_header_supported(HWND window)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
-    return !(style&(HDS_FILTERBAR|HDS_CHECKBOXES|HDS_OVERFLOW|HDS_HIDDEN|HDS_HOTTRACK|HDS_DRAGDROP));
+    return !(style&(HDS_FILTERBAR|HDS_CHECKBOXES|HDS_OVERFLOW|HDS_HIDDEN|HDS_HOTTRACK));
 }
 
 BOOL win2k_header_paint(HWND window,const NMCUSTOMDRAW *draw,const void *context)

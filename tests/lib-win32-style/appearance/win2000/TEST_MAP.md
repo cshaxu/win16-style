@@ -19,3 +19,5 @@ source files; no duplicate constant-only tests are added to manufacture counts.
 | control/scroll_layout.c, control/scroll.c | scroll_layout.c verifies the shared layout geometry. scroll.c verifies attached standalone and nonclient bars, list wheel, drag notifications, borrowed GDI, custom groove and resize grip. |
 
 | control/tab_paint.c, control/header_paint.c | control/tab_header.c verifies original edge colors and selected corners, tab image/font borrowing, native selection and disable, header press/click/reorder, application custom draw and detach. The same probe runs with both common-control manifests, DPI awareness and regular startup. |
+
+| control/report_paint.c | control/report_tree.c verifies four native ListView modes, inactive selection, column sizing through Header, tree expand/collapse glyphs and notifications, application custom draw, borrowed images, native owner-data fallback and detach. Both common-control manifests, DPI awareness and standard startup. |

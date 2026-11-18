@@ -6,7 +6,7 @@ LRESULT style_control_custom_draw_after(HWND window,const NMCUSTOMDRAW *draw,BOO
     if(draw->dwDrawStage==CDDS_PREPAINT){
         *active=result==CDRF_DODEFAULT && supported(window);
         if(*active)result=CDRF_NOTIFYITEMDRAW|CDRF_NOTIFYPOSTPAINT;
-    }else if(internal && draw->dwDrawStage==CDDS_ITEMPREPAINT && paint_part(window,draw,context))result=CDRF_SKIPDEFAULT;
+    }else if(internal && draw->dwDrawStage==CDDS_ITEMPREPAINT && paint_part && paint_part(window,draw,context))result=CDRF_SKIPDEFAULT;
     else if(internal && draw->dwDrawStage==CDDS_POSTPAINT)*active=FALSE;
     return result;
 }

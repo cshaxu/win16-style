@@ -21,5 +21,35 @@ Task Manager Processes 提供 Report 样式对照，树至少一张真实原版�
 | --- | --- | --- |
 | `listview.c` | `eddeee5122b5474f2033b67efe8f08e69d40035a` | `cfb0ee3d6489b22255aa3648e237bc7d0e4c55a404ebd0c044ea714622fb0ea6` |
 | `lvrept.c` | `241dd7a5bf270061850b196b33d6c0a6d797b11f` | `62833080508b44cbd0546948506a33b673ae9a0b937e49bca206f28ad6ced339` |
+| `lvicon.c` | `3a4d03459268101f504e1fffe508d20a7e7af906` | `a1a35a4b0fc784730a30eac2d52c7e98089b1a617b67143e8da4deffa9fd2d23` |
 | `treeview.c` | `d8ac6480227cb0863d9de4fc36a5e060a77b7d53` | `cc18f7c3ca7c1d1f4168617c3af93902d29294f2b6339632e91b0ab00b2a3829` |
 | `tvpaint.c` | `ddaf12f5b26f4681aa09c5e483ec600978a3fb68` | `7dd6274f64e5146c2c550d635728cc7d72646e8eb75f0535db90001c9857ba0e` |
+
+原版树的 TV_DrawItem 先区分活动选中、禁用和失焦选中，再让应用从
+`NM_CUSTOMDRAW` 覆盖文本及背景。报告视图的列宽和顺序由 Header 提供，
+网格线采用 `COLOR_3DFACE`。先共用 S6 已核对的 Windows Standard
+选中色与文本色，在原生绘制回调中验证默认色映射和应用覆盖，之后再决定
+哪些像素确实需要由年代呈现绘制。独立测试不复制系统布局或图标状态机。
+
+首批增量回归登记 `build/t27-package/s9-palette-dev-01`。验证共用
+Win2000 选中色表后的 ListBox、Combo 和 Tab 旧用例。
+
+选中色表回归双宽 18/18。独立原生见证使用同一控件行为，变化仅是
+清单和绘制通知处理。Win11 的 v6 ListView 在保持本次绘制快照的
+`CDIS_SELECTED` 时，覆盖明确提交的背景色。v5 的非报告模式也有
+同类现象。对普通文本项，解除的只是本次 `NM_CUSTOMDRAW` 的
+绘制标记，保留原生 `LVIS_SELECTED`、输入、布局和应用拥有的数据。
+图像列表、整行选中、边框选择、透明背景和复杂格式保持原生呈现。
+TreeView 原生直接消费填入的颜色，继续拥有分支线和方形加减框。
+
+内嵌 Header 的实际原生样式 `0x500000c2` 含列拖放及全拖动。
+现有 S8 表头绘制可复用，列顺序、列宽和拖动仍由 ListView/Header
+处理。首次展开后，原生 `TVIS_EXPANDEDONCE` 会抑制后续相同消息
+的展开通知，探针分别检查首次通知、后续状态及加减框像素。
+[TVM_EXPAND 原生契约](https://learn.microsoft.com/windows/win32/controls/tvm-expand)。
+
+双宽合并回归 20/20。另用开发探针验证 v5/v6 两宽标准 `run16s --2k` 入口，
+4/4。应用图像列表与自绘保持，树的加减框像素由原生绘制并经独立断言。
+登记正式构建 s9-report-tree-release-01、发布 s9-report-tree-publish-01
+及发布包验证 s9-report-tree-test-01。保留图像项、整行选择与复杂样式的原生
+呈现，真实焦点切换另计。[开发实测证据](../etc/evidence/t27-s9-report-tree.json)。

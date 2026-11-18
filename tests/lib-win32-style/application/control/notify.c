@@ -21,7 +21,7 @@ static LRESULT CALLBACK app(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PT
 }
 static LRESULT CALLBACK notify(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
-    (void)data;const style_control_notify_ops ops={NULL,supported,part,NULL};
+    (void)data;const style_control_notify_ops ops={NULL,supported,part,NULL,NULL};
     return style_control_notify_message(w,m,a,b,id,&instance,&state,notify,NULL,&ops);
 }
 static LRESULT CALLBACK native(HWND w,UINT m,WPARAM a,LPARAM b)

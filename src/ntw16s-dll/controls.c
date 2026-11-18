@@ -65,13 +65,13 @@ static BOOL track_border(HWND w,const NMCUSTOMDRAW *draw,const void *context)
 static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;
-    const style_control_notify_ops ops={&s->palette,win16_style_trackbar_supported,win16_style_trackbar_part,track_border};
+    const style_control_notify_ops ops={&s->palette,win16_style_trackbar_supported,win16_style_trackbar_part,track_border,NULL};
     return style_control_notify_message(parent,m,p,l,id,&s->instance,&s->bindings.track,trackbar_notify,&track_calls,&ops);
 }
 static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;
-    const style_control_notify_ops ops={&s->palette,win16_style_toolbar_supported,win16_style_toolbar_part,NULL};
+    const style_control_notify_ops ops={&s->palette,win16_style_toolbar_supported,win16_style_toolbar_part,NULL,NULL};
     return style_control_notify_message(parent,m,p,l,id,&s->instance,&s->bindings.toolbar,toolbar_notify,NULL,&ops);
 }
 static BOOL is_exact_native_button(HWND w)
