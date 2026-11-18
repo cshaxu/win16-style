@@ -623,6 +623,236 @@
     "print_owner_chain": "A separate x64 comparison walked the visible owner chain up to eight links. The native request exposed only an immediate zero-size proxy and timed out. The ordinary released --2k request exposed its same-process dialog, including range and Apply controls, and returned S_OK with PD_RESULT_CANCEL. The probe acted only on visible nonempty windows linked to its own owner.",
     "status": "Package artifacts are unchanged. The original General property page and full Explorer layout are still outstanding, as is the administrator desktop path."
   },
+  "compact_explorer_p9": {
+    "reference": "Windows 2000 SP2 has two native Explorer templates, including 1547 without a Places toolbar. The Windows 11 no-Places path in both widths still uses SHELLDLL_DefView and a native ComboBoxEx32 filename edit.",
+    "behavior": "For a full-size OPENFILENAME Explorer request with no caller hook, template, or multiselect, choose the stock compact variant when the work area can fit it and falls short of the Places layout envelope. The caller's structure and protocol options are preserved across the native call. Native Shell view, filter and selection are retained. The COM single-file bridge uses the same Win32 path.",
+    "fit": "At 96 DPI with a 427 by 272 work area, the unadjusted compact Save window measured 436 by 306. Resizing the stock window after it initializes lets its own WM_SIZE handler place the directory view, filename edit, confirm and cancel controls inside the work area. Both the open and save outer bounds then fit 427 by 272.",
+    "scope": "The wider Places layout, caller customization, multiselect and smaller work areas use the existing native flow. The metric decision is DPI-normalized; the 427 by 272 at 96 DPI runtime was the measured positive case. A full Places-layout visual match remains outstanding.",
+    "incremental": "P5 failed the compact assertion in all eight measured A/W open/save geometry checks. The rebuilt candidate passed Win32 confirmation 16/16 (eight compact and eight legacy), cancellation 16/16, file buffer errors 8/8, and COM and Win16 comparisons 18/18. The 8/8 compact confirmations included preserved caller flags, correct filename and filter output, and unchanged working directory.",
+    "release": {
+      "build_command": "tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-adaptive-file-package",
+      "snapshot_manifest_sha256": "68a013b96afaca96f205fbda186928c521c05b599421166b6d3210a3a8705667",
+      "compiler": "C17, MinGW GCC 16.1.0 (i686 UCRT and x86_64 MSVCRT), Ninja 1.13.2, ccache 4.13.6",
+      "build_seconds": {
+        "x86": 218.62,
+        "x64": 236.3
+      },
+      "destinations": [
+        "assets/",
+        "O:/winnt"
+      ],
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "6bb4abbc3e153701385f764d8d4edba9999285a5562d9ff58fd5201c93676706",
+          "imports": [
+            "advapi32.dll",
+            "dwmapi.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "oleaut32.dll",
+            "shell32.dll",
+            "user32.dll",
+            "ntwshk64.dll"
+          ]
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "0b17f5641c85a7e211d3eed212552811ddb60dd1a7ba072b292b266cde532ee9",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "5c29bd0136e60e9ef53101abdc9ea732352a81a70a99d75604e2a04d16591cd1",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "fa85a021a26287b6168e54ccaffd25d9cf6109d8450745d46a7fa61e83618913",
+          "imports": [
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "17aa28b5a6f5f216bc556163529dfb330d80a78eb104ad36b758a0e6d3b2fa82",
+          "imports": [
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "dfda66e0ac6576a72919dfadae52f29d82380ae1ff32ecb9dfebfbb60a4f6212",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll"
+          ]
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "862871dcc77864260f67bea7dbb050f8a3c8e3e61c9bc28e0323d580983d5c6d",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "msvcrt.dll"
+          ]
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "3b7b09d1ebff9d75e2aa38b1c7ec45d428eb2077bd2cd6991446b1bacf998bba",
+          "imports": [
+            "comctl32.dll",
+            "comdlg32.dll",
+            "gdi32.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "shell32.dll",
+            "user32.dll"
+          ]
+        }
+      },
+      "verification": {
+        "package": "48/48 grouped ordinary desktop runs after publishing and checking both destinations. Uses the owned dialog driver in --direct mode.",
+        "compact_fit": "8/8 A/W open/save calls at the measured 427 by 272 work area and 96 DPI. File view, filename and both decision buttons were within the work area. Caller flags, selection path and index, offsets and current directory passed.",
+        "group_runs": [
+          "x86-message-frame",
+          "x86-message-choices",
+          "x86-find-frame",
+          "x86-color-font-frame",
+          "x86-font-accept",
+          "x86-color-accept",
+          "x86-color-expanded",
+          "x86-file-frame",
+          "x86-file-select",
+          "x86-file-buffer",
+          "x86-print-frame",
+          "x86-print-ex-frame",
+          "x86-print-ex-accept",
+          "x86-com-open-accept",
+          "x86-com-open-cancel",
+          "x86-com-save-accept",
+          "x86-com-save-cancel",
+          "x86-com-open-custom",
+          "x86-com-folder-accept",
+          "x86-com-folder-cancel",
+          "x86-com-folder-custom",
+          "x86-win16-com-open",
+          "x86-win16-com-folder",
+          "x86-assets-find",
+          "x64-message-frame",
+          "x64-message-choices",
+          "x64-find-frame",
+          "x64-color-font-frame",
+          "x64-font-accept",
+          "x64-color-accept",
+          "x64-color-expanded",
+          "x64-file-frame",
+          "x64-file-select",
+          "x64-file-buffer",
+          "x64-print-frame",
+          "x64-print-ex-frame",
+          "x64-print-ex-accept",
+          "x64-com-open-accept",
+          "x64-com-open-cancel",
+          "x64-com-save-accept",
+          "x64-com-save-cancel",
+          "x64-com-open-custom",
+          "x64-com-folder-accept",
+          "x64-com-folder-cancel",
+          "x64-com-folder-custom",
+          "x64-win16-com-open",
+          "x64-win16-com-folder",
+          "x64-assets-find"
+        ],
+        "core": "30/30 focused CTest checks including shared dialog, frame lifecycle and local global-style bridge. No administrator sweep was initiated.",
+        "demo": "Published x64 demo PE boundary passed. The package demo-pair requires a private desktop and was omitted."
+      }
+    }
+  },
   "delivery": {
     "verified_delivery_commit": "3bf842f230f03e593310668b3116682b30126be1",
     "remote_readback": "Queried origin/main after push. The observed commit matched the delivery, and all eight committed asset blobs matched the SHA-256 at both publication locations. The committed Win2000 assembly, COM Show implementation and Find appearance were checked against the worktree.",
