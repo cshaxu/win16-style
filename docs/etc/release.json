@@ -226,7 +226,8 @@
     "passed": 146,
     "skipped_client_print_subchecks": 36,
     "evidence": "evidence/t27-s11-track-spin.json",
-    "coverage": "focused"
+    "coverage": "focused",
+    "actual_remote": "evidence/t27-s11-remote.json"
   },
   "validation": {
     "physical_keyboard_mouse": "not tested",
@@ -238,8 +239,8 @@
     ]
   },
   "closure": {
-    "S11": "verified locally; remote verification pending",
-    "T27": "open",
+    "S11": "closed after fetched remote audit",
+    "T27": "open; S12 admitted",
     "M0": "fixed"
   }
 }
