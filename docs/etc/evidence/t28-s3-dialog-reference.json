@@ -377,6 +377,236 @@
     "native_extended_surface": "The exact owned native PrintDlgExW comparison on the normal host saw a visible 0 by 0 ProxyModalWindow owned by the fixture window but belonging to a different process on both widths. Closing that proxy did not return the modal call, so the bounded test terminated its two fixture processes. The published --2k comparison instead exposed a same-process #32770 dialog with printer combo, range, copies, and Apply controls, and cancelled cleanly on both widths. This identifies the broker boundary; it does not establish a property sheet visual match to SP2.",
     "artifact_identity": "Test of the existing P1 files. No production change or republication."
   },
+  "client_refinement_p5": {
+    "color_geometry": "Stock Windows caches a 453 by 328 outer rectangle for the expanded picker at 96 DPI before Win2000 attaches. Both the native control and P1 reused it after Define Custom Colors. The resulting client was 447 by 299 native and 449 by 305 styled.",
+    "implementation": "After the stock button completes its native expansion, require the standard picker controls and the exact old outer extent computed for the dialog DPI. Restore the shared 298 by 184 DLU stock client rectangle while keeping its current screen origin. ChooseColor requests with a caller template use the ordinary observer.",
+    "incremental_color": "The same strengthened regression fixture failed only the size assertion in 8/8 cases against P1. The incremental candidate passed all eight, including ANSI/Unicode, both widths, confirmation and cancellation, callback, stock geometry and color writeback. Four compact-color confirmations also passed.",
+    "incremental_message": "Both widths passed all six MessageBox, MessageBoxEx and MessageBoxIndirect A/W entry points with the warning icon, Yes/No/Cancel, the second button selected by DM_GETDEFID, and IDNO returned. The twelve existing OK cases also passed.",
+    "page_setup_host": "Four PageSetupDlg A/W tests across both widths selected landscape, changed the left margin from 1.0 to 1.25 inches and accepted. Each returned landscape DEVMODE, 11 by 8.5 inch paper dimensions, the edited margin and a DEVNAMES handle. All handles were freed and no print job was sent.",
+    "explorer_layout_trial": "A stock OPENFILENAME request with OFN_EX_NOPLACESBAR exposed SHELLDLL_DefView without the DirectUI wrapper; it retained native cancellation. A separate OFN_EXPLORER and OFN_ENABLEHOOK trial kept the standard places toolbar (ID 1184) and SHELLDLL_DefView. On the measured 427 by 272 normal-host work area, the trial was clipped in unstyled Windows as well as in P1. In the settled styled sample, the Open button started at x=484, y=313 while the client was 421 by 247. The probe confirmed the legacy host option but the complete with-places layout remains unverified. P5 keeps the existing mode selection.",
+    "release": {
+      "build_command": "tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-dialog-refinement-package",
+      "snapshot_manifest_sha256": "f1680e75f73a9d02333b619f2f6882c5625baf79dc4c59f6b132538ef3f06a1d",
+      "compiler": "C17, MinGW GCC 16.1.0 (i686 UCRT and x86_64 MSVCRT), Ninja 1.13.2, ccache 4.13.6",
+      "build_seconds": {
+        "x86": 215.05,
+        "x64": 242.8
+      },
+      "destinations": [
+        "assets/",
+        "O:/winnt"
+      ],
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "6fd69754a993a63656899a76f5a9b2a501133f468083a51a2a66afd2bce02dd4",
+          "imports": [
+            "advapi32.dll",
+            "dwmapi.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "oleaut32.dll",
+            "shell32.dll",
+            "user32.dll",
+            "ntwshk64.dll"
+          ]
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "7d39dbb125063fdf5688502e54d7fe2b406761f38c66aa81dd108e1a67700b3a",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "029e22794fa17a4fd9a2f07b2c50a115bcb139ad823e210729e2a96a69fc4952",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "26252d9626f115d142c291cfa6852fe34467b4052e2871efe257181fe0014ae5",
+          "imports": [
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "677309a80a4e20c2eb67f37c1cafdc96429cb784df8f59511884179b56ca10be",
+          "imports": [
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "0aeeaa01b93c70ab66f3049c600d9aee9276ca82e34c186412dabd8c9b5d2a98",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll"
+          ]
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "622657524773e8e8f44926fe6efed01dfc8eb1da742685d9f569a5105e470a10",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "msvcrt.dll"
+          ]
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "92e69ce1e340c8aa2c9cedf65597163d2a34a703030cd5d66e383879662f1fbd",
+          "imports": [
+            "comctl32.dll",
+            "comdlg32.dll",
+            "gdi32.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "shell32.dll",
+            "user32.dll"
+          ]
+        }
+      },
+      "verification": {
+        "package": "46/46 grouped ordinary desktop runs after publishing. Owned driver uses --direct. Includes both widths, expanded Color size, message default/icon group, and Win16 open/folder control comparisons.",
+        "group_runs": [
+          "x86-message-frame",
+          "x86-message-choices",
+          "x86-find-frame",
+          "x86-color-font-frame",
+          "x86-font-accept",
+          "x86-color-accept",
+          "x86-color-expanded",
+          "x86-file-frame",
+          "x86-file-select",
+          "x86-print-frame",
+          "x86-print-ex-frame",
+          "x86-print-ex-accept",
+          "x86-com-open-accept",
+          "x86-com-open-cancel",
+          "x86-com-save-accept",
+          "x86-com-save-cancel",
+          "x86-com-open-custom",
+          "x86-com-folder-accept",
+          "x86-com-folder-cancel",
+          "x86-com-folder-custom",
+          "x86-win16-com-open",
+          "x86-win16-com-folder",
+          "x86-assets-find",
+          "x64-message-frame",
+          "x64-message-choices",
+          "x64-find-frame",
+          "x64-color-font-frame",
+          "x64-font-accept",
+          "x64-color-accept",
+          "x64-color-expanded",
+          "x64-file-frame",
+          "x64-file-select",
+          "x64-print-frame",
+          "x64-print-ex-frame",
+          "x64-print-ex-accept",
+          "x64-com-open-accept",
+          "x64-com-open-cancel",
+          "x64-com-save-accept",
+          "x64-com-save-cancel",
+          "x64-com-open-custom",
+          "x64-com-folder-accept",
+          "x64-com-folder-cancel",
+          "x64-com-folder-custom",
+          "x64-win16-com-open",
+          "x64-win16-com-folder",
+          "x64-assets-find"
+        ],
+        "core": "30/30 focused CTest checks in the clean build, including Win2000 frame lifecycle, local global-style bridge and session style. No administrator global sweep was initiated.",
+        "host_printing": "Same published package passed PageSetupDlg landscape/margin acceptance 4/4 and PrintDlgEx printer DC acceptance 4/4. No print jobs were sent.",
+        "demo": "Published x64 demo PE boundary passed. The package demo-pair test was omitted because it requires a private desktop."
+      }
+    },
+    "file_changes": "One appearance helper, one startup adapter, one dialog fixture, and package case markers. Both color front doors retain the original parameter structure, callback and single cleanup scope. The ordinary observer remains the path for caller templates."
+  },
   "delivery": {
     "verified_delivery_commit": "3bf842f230f03e593310668b3116682b30126be1",
     "remote_readback": "Queried origin/main after push. The observed commit matched the delivery, and all eight committed asset blobs matched the SHA-256 at both publication locations. The committed Win2000 assembly, COM Show implementation and Find appearance were checked against the worktree.",

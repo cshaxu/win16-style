@@ -366,10 +366,15 @@ try{
     }
     $cases+=Pair { param($bits,$tree,$dll)
         $markers=@(foreach($ansi in @(0,1)){foreach($confirm in @(0,1)){
-            "WIN2K COLOR EXPANDED bits=$bits ansi=$ansi confirm=$confirm attached=1 rgb=1 slots=1 error=0"
+            "WIN2K COLOR EXPANDED bits=$bits ansi=$ansi confirm=$confirm attached=1 rgb=1 slots=1 size=1 error=0"
         }})
         Case "ntw2ks-color-expanded-$bits" $dialogDriver @('--direct',$run,'--2k','--wait',
             (Join-Path $tree 'ntw2ks-frame-target.exe'),'--color-expanded') ($markers+@('DIALOG_DRIVER exit=0')) 20
+    }
+    $cases+=Pair { param($bits,$tree,$dll)
+        $markers=@(foreach($api in (0..5)){"WIN2K MESSAGE bits=$bits api=$api attached=1 result=7 choices=1"})
+        Case "ntw2ks-message-choices-$bits" $dialogDriver @('--direct',$run,'--2k','--wait',
+            (Join-Path $tree 'ntw2ks-frame-target.exe'),'--message-choices') ($markers+@('DIALOG_DRIVER exit=0')) 20
     }
     $cases+=Pair { param($bits,$tree,$dll)
             Case "ntw2ks-printex-accept-$bits" $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $tree 'ntw2ks-frame-target.exe'),'--print-ex-accept') @(

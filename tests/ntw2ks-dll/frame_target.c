@@ -130,6 +130,19 @@ static INT_PTR CALLBACK frame_dialog_proc(HWND window,UINT message,WPARAM wp,LPA
 }
 
 static volatile LONG message_seen,message_attached,message_accept;
+static BOOL message_choices;
+static volatile LONG message_choice_checks;
+static BOOL CALLBACK find_message_icon(HWND child,LPARAM found)
+{
+    if(IsWindowVisible(child) && (GetWindowLongPtrW(child,GWL_STYLE)&SS_TYPEMASK)==SS_ICON){
+        DWORD_PTR icon=0;
+        if(SendMessageTimeoutW(child,STM_GETICON,0,0,SMTO_ABORTIFHUNG,500,&icon) && icon){
+            *(BOOL *)found=TRUE;
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
 static BOOL CALLBACK find_message_window(HWND window,LPARAM unused)
 {
     (void)unused;DWORD pid=0;WCHAR title[64]={0};GetWindowThreadProcessId(window,&pid);
@@ -139,8 +152,18 @@ static BOOL CALLBACK find_message_window(HWND window,LPARAM unused)
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     if(sent && GetPropW(window,L"Win2kStyle.Frame") && info.rcTitleBar.bottom-info.rcTitleBar.top==MulDiv(19,(int)dpi,96))InterlockedExchange(&message_attached,1);
     InterlockedExchange(&message_seen,1);
-    if(InterlockedCompareExchange(&message_accept,0,0)){
-        HWND button=GetDlgItem(window,IDOK);PostMessageW(window,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)button);
+    if(message_choices || InterlockedCompareExchange(&message_accept,0,0)){
+        int id=message_choices?IDNO:IDOK;
+        HWND button=GetDlgItem(window,id);
+        if(message_choices){
+            DWORD_PTR selected=0;BOOL icon=FALSE;
+            EnumChildWindows(window,find_message_icon,(LPARAM)&icon);
+            if(icon && IsWindowVisible(GetDlgItem(window,IDYES)) && IsWindowVisible(button) &&
+               IsWindowVisible(GetDlgItem(window,IDCANCEL)) &&
+               SendMessageTimeoutW(window,DM_GETDEFID,0,0,SMTO_ABORTIFHUNG,500,&selected) &&
+               HIWORD(selected)==DC_HASDEFID && LOWORD(selected)==id)InterlockedExchange(&message_choice_checks,1);
+        }
+        PostMessageW(window,WM_COMMAND,MAKEWPARAM(id,BN_CLICKED),(LPARAM)button);
         ULONGLONG deadline=GetTickCount64()+1500;
         while(IsWindow(window) && GetTickCount64()<deadline)Sleep(25);
         if(IsWindow(window)){PostMessageW(window,WM_CLOSE,0,0);Sleep(1000);if(IsWindow(window))ExitProcess(4);}
@@ -187,7 +210,7 @@ enum {
     COLOR_FIXTURE_TIMER=751
 };
 static const COLORREF custom_colors[]={RGB(21,105,197),RGB(194,81,32)};
-static BOOL custom_expanded,custom_edited,custom_styled,custom_confirm;
+static BOOL custom_expanded,custom_edited,custom_styled,custom_confirm,custom_size;
 
 static UINT_PTR CALLBACK expanded_color_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
@@ -204,6 +227,10 @@ static UINT_PTR CALLBACK expanded_color_hook(HWND window,UINT message,WPARAM wp,
     }
     KillTimer(window,COLOR_FIXTURE_TIMER);
     custom_styled=GetPropW(window,L"Win2kStyle.Frame")!=NULL;
+    RECT client={0},expected={0,0,298,184};
+    custom_size=GetClientRect(window,&client) && MapDialogRect(window,&expected) && EqualRect(&client,&expected);
+    if(!custom_size)printf("WIN2K COLOR SIZE actual=%ldx%ld expected=%ldx%ld\n",
+        client.right,client.bottom,expected.right,expected.bottom);
     HWND add=GetDlgItem(window,COLOR_ADD_CUSTOM);
     custom_edited=IsWindowVisible(add) && IsWindowEnabled(add);
     for(unsigned i=0;custom_edited && i<ARRAYSIZE(custom_colors);++i){
@@ -228,14 +255,14 @@ static int test_expanded_color(void)
             .Flags=flags,.lpfnHook=expanded_color_hook};
         CHOOSECOLORW w={.lStructSize=sizeof(w),.rgbResult=initial,.lpCustColors=colors,
             .Flags=flags,.lpfnHook=expanded_color_hook};
-        custom_expanded=custom_edited=custom_styled=FALSE;custom_confirm=confirm;
+        custom_expanded=custom_edited=custom_styled=custom_size=FALSE;custom_confirm=confirm;
         BOOL selected=ansi?ChooseColorA(&a):ChooseColorW(&w);
         DWORD error=CommDlgExtendedError();
         BOOL color=(ansi?a.rgbResult:w.rgbResult)==(confirm?custom_colors[1]:initial);
         BOOL palette=colors[0]==custom_colors[0] && colors[8]==custom_colors[1];
-        BOOL pass=selected==confirm && !error && custom_styled && custom_edited && color && palette;
-        printf("WIN2K COLOR EXPANDED bits=%u ansi=%d confirm=%d attached=%d rgb=%d slots=%d error=%lu\n",
-            (unsigned)(sizeof(void*)*8),ansi,confirm,custom_styled,color,palette,(unsigned long)error);
+        BOOL pass=selected==confirm && !error && custom_styled && custom_edited && color && palette && custom_size;
+        printf("WIN2K COLOR EXPANDED bits=%u ansi=%d confirm=%d attached=%d rgb=%d slots=%d size=%d error=%lu\n",
+            (unsigned)(sizeof(void*)*8),ansi,confirm,custom_styled,color,palette,custom_size,(unsigned long)error);
         if(!pass)all=FALSE;
     }
     return all?0:3;
@@ -496,21 +523,27 @@ int wmain(int argc,WCHAR **argv)
         printf("WIN2K DIALOG FRAME bits=%u modeless=%d,%d modal=%d,%d no_proc=%d,%d named=%d,%d named_modal=%d,%d\n",(unsigned)(sizeof(void*)*8),modeless[0],modeless[1],modal[0],modal[1],no_proc[0],no_proc[1],named[0],named[1],named_modal[0],named_modal[1]);
         return modeless[0] && modeless[1] && modal[0] && modal[1] && no_proc[0] && no_proc[1] && named[0] && named[1] && named_modal[0] && named_modal[1]?0:3;
     }
-    if(argc==2 && !lstrcmpW(argv[1],L"--message-frame")){
+    if(argc==2 && (!lstrcmpW(argv[1],L"--message-frame") || !lstrcmpW(argv[1],L"--message-choices"))){
         BOOL all=TRUE;
+        message_choices=!lstrcmpW(argv[1],L"--message-choices");
+        UINT buttons=message_choices?MB_YESNOCANCEL|MB_ICONWARNING|MB_DEFBUTTON2:MB_OK;
         for(int i=0;i<6;++i){
             InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
+            InterlockedExchange(&message_choice_checks,0);
             HANDLE thread=CreateThread(NULL,0,close_message,NULL,0,NULL);if(!thread)return 2;
-            int result=0;MSGBOXPARAMSA a={.cbSize=sizeof(a),.hwndOwner=NULL,.lpszText="Text",.lpszCaption="Win2kMessageFixture",.dwStyle=MB_OK};
-            MSGBOXPARAMSW w={.cbSize=sizeof(w),.hwndOwner=NULL,.lpszText=L"Text",.lpszCaption=L"Win2kMessageFixture",.dwStyle=MB_OK};
-            switch(i){case 0:result=MessageBoxA(NULL,"Text","Win2kMessageFixture",MB_OK);break;
-                case 1:result=MessageBoxW(NULL,L"Text",L"Win2kMessageFixture",MB_OK);break;
-                case 2:result=MessageBoxExA(NULL,"Text","Win2kMessageFixture",MB_OK,0);break;
-                case 3:result=MessageBoxExW(NULL,L"Text",L"Win2kMessageFixture",MB_OK,0);break;
+            int result=0;MSGBOXPARAMSA a={.cbSize=sizeof(a),.hwndOwner=NULL,.lpszText="Text",.lpszCaption="Win2kMessageFixture",.dwStyle=buttons};
+            MSGBOXPARAMSW w={.cbSize=sizeof(w),.hwndOwner=NULL,.lpszText=L"Text",.lpszCaption=L"Win2kMessageFixture",.dwStyle=buttons};
+            switch(i){case 0:result=MessageBoxA(NULL,"Text","Win2kMessageFixture",buttons);break;
+                case 1:result=MessageBoxW(NULL,L"Text",L"Win2kMessageFixture",buttons);break;
+                case 2:result=MessageBoxExA(NULL,"Text","Win2kMessageFixture",buttons,0);break;
+                case 3:result=MessageBoxExW(NULL,L"Text",L"Win2kMessageFixture",buttons,0);break;
                 case 4:result=MessageBoxIndirectA(&a);break;default:result=MessageBoxIndirectW(&w);break;}
             DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
-            BOOL pass=wait==WAIT_OBJECT_0 && result==IDOK && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
-            printf("WIN2K MESSAGE bits=%u api=%d attached=%ld result=%d\n",(unsigned)(sizeof(void*)*8),i,(long)InterlockedCompareExchange(&message_attached,0,0),result);
+            BOOL choices_ok=InterlockedCompareExchange(&message_choice_checks,0,0)!=0;
+            BOOL pass=wait==WAIT_OBJECT_0 && result==(message_choices?IDNO:IDOK) && (!message_choices || choices_ok) &&
+                InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            printf("WIN2K MESSAGE bits=%u api=%d attached=%ld result=%d choices=%d\n",
+                (unsigned)(sizeof(void*)*8),i,(long)InterlockedCompareExchange(&message_attached,0,0),result,choices_ok);
             if(!pass)all=FALSE;
         }
         return all?0:3;

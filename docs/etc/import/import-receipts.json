@@ -6044,9 +6044,9 @@
       "path": "src/ntw2ks-dll/controls.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3abc122878b87cfa788b3b4905e1fe711a151973d092b5946c2da92f3436f15f",
+      "sha256": "bb2efdb8c40900bcb996003f96b58ce28b568a4dc36501de81199f1ad6887f8a",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 shared control theme lifecycle; T26 S1 Win2000 native theme interception; T26 S1 control thread ownership; T26 S1 shared ordinary dialog hook lifecycle; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S14 VB、VCL 与复合控件",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 shared control theme lifecycle; T26 S1 Win2000 native theme interception; T26 S1 control thread ownership; T26 S1 shared ordinary dialog hook lifecycle; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S14 VB、VCL 与复合控件; T28 S3 observe stock Color foldout completion",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -6251,9 +6251,9 @@
       "path": "tests/ntw2ks-dll/frame_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2e92d511159f944e2e6b7ea38e889da66f3bc626dfba2aeec6270730e1491c04",
+      "sha256": "f44279e5f6f21f0bf47c98590b44e43d9d9d67a192bbc5400badd9bc531cde93",
       "disposition": "authored",
-      "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T28 S3 expanded stock color contract fixture",
+      "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T28 S3 expanded stock color contract fixture; T28 S3 Color size and message contract assertions",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
@@ -10260,6 +10260,15 @@
       "disposition": "authored",
       "review": "T28 S1 shared classic caption and UWP appearance model; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/dialog/color.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "8d31d53efffa6408d887eae85e04132a9e41fdc3069273cbe13f809ce34659e3",
+      "disposition": "authored",
+      "review": "T28 S3 stock expanded Color client restoration based on measured native layout",
+      "notice": "Project-authored C implementation; Windows 2000 SP2 dialog metrics used as reference"
     }
   ]
 }

@@ -1,3 +1,4 @@
+#define _WIN32_WINNT 0x0a00
 #include <windows.h>
 #include <commdlg.h>
 #include <uxtheme.h>
@@ -6,6 +7,7 @@
 #include "lib-win32/process-hook/startup_hooks.h"
 #include "lib-win32/process-hook/unwind.h"
 #include "lib-win32-style/appearance/win2000/window/frame.h"
+#include "lib-win32-style/appearance/win2000/dialog/color.h"
 #include "lib-win32-style/appearance/win2000/dialog/find.h"
 #include "lib-win32-style/application/lifecycle/global_window.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
@@ -84,6 +86,17 @@ static LRESULT CALLBACK dialog_created(int code,WPARAM wp,LPARAM lp)
     if(event)attach_dialog(event->hwnd);
     SetLastError(incoming);return CallNextHookEx(NULL,code,wp,lp);
 }
+static LRESULT CALLBACK color_dialog_created(int code,WPARAM wp,LPARAM lp)
+{
+    DWORD incoming=GetLastError();
+    if(code>=0 && lp){
+        const CWPRETSTRUCT *message=(const CWPRETSTRUCT *)lp;
+        if(message->message==WM_COMMAND && win2k_frame_attached(message->hwnd))
+            win2k_color_restore_expanded_client(message);
+    }
+    SetLastError(incoming);
+    return dialog_created(code,wp,lp);
+}
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT observe_dialog(HRESULT (*show)(void *),void *context)
 {
     style_dialog_observation scope;
@@ -151,10 +164,18 @@ COMMON_MODAL_HOOK(GetSaveFileNameA,OPENFILENAMEA)
 COMMON_MODAL_HOOK(GetSaveFileNameW,OPENFILENAMEW)
 COMMON_MODAL_HOOK(ChooseFontA,CHOOSEFONTA)
 COMMON_MODAL_HOOK(ChooseFontW,CHOOSEFONTW)
-COMMON_MODAL_HOOK(ChooseColorA,CHOOSECOLORA)
-COMMON_MODAL_HOOK(ChooseColorW,CHOOSECOLORW)
 COMMON_MODAL_HOOK(PageSetupDlgA,PAGESETUPDLGA)
 COMMON_MODAL_HOOK(PageSetupDlgW,PAGESETUPDLGW)
+
+#define CLASSIC_COLOR_BEGIN(state,incoming) ((void)(incoming),style_dialog_observation_begin(state,NULL, \
+    parameters && parameters->lStructSize==sizeof(*parameters) && !(parameters->Flags&(CC_ENABLETEMPLATE|CC_ENABLETEMPLATEHANDLE)) \
+        ?color_dialog_created:dialog_created,FALSE))
+#define COLOR_HOOK(NAME,TYPE) \
+    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),BOOL,FALSE,FALSE,style_dialog_observation,CLASSIC_COLOR_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_PARAM_FINISH)
+COLOR_HOOK(ChooseColorA,CHOOSECOLORA)
+COLOR_HOOK(ChooseColorW,CHOOSECOLORW)
+#undef COLOR_HOOK
+#undef CLASSIC_COLOR_BEGIN
 
 static UINT_PTR CALLBACK print_dialog_hook(HWND window,UINT message,WPARAM a,LPARAM b)
 {(void)window;(void)message;(void)a;(void)b;return 0;}
