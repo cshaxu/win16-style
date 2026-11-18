@@ -37,7 +37,8 @@ RDP 恢复后，修正版已在真实计算器的 Win16/Win2000 和 Scan 的 Win
 前一致。Paint 使用实际 WinUI 窗口交叉验证，计算器与 Scan 的两种状态按钮
 与 Win32 参考一致。Win32 生命周期几何断言在 T27、上一 T28 包及本包
 均失败；双宽的 96/144 DPI 最大化与还原直测通过。见
-[合成恢复实包证据](../etc/evidence/t28-s2-composition-delivery.json)。S2 待远端复核。
+[合成恢复实包证据](../etc/evidence/t28-s2-composition-delivery.json)。P1 已推送
+并读取实包复核。S2 保持开放，双宽 Win32 生命周期几何断言未通过。
 
 ## M0 T28 S2 Packet
 
@@ -71,14 +72,14 @@ RDP 恢复后，修正版已在真实计算器的 Win16/Win2000 和 Scan 的 Win
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T27 S16 P1，7448d0be；终审与 S15 八件远端核对。
+- Last verified remote delivery: M0 T28 S2 P1，73774837；八件和构建输入远端核对。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 2
 - Open task: M0 T28 S2；WinUI Windows 2000 桌面外框。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端已审基线为 [T27](../etc/evidence/t27-s15-demo.json)，O:/winnt 和 assets 已更新 [T28 S2 合成恢复包](../etc/evidence/t28-s2-composition-delivery.json)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S2 合成恢复包](../etc/evidence/t28-s2-composition-delivery.json)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1135回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。

@@ -1,6 +1,18 @@
 {
   "task": "M0 T28 S2",
-  "stage": "published-and-verified-locally",
+  "stage": "published-and-verified-on-remote",
+  "remote_review": {
+    "branch": "main",
+    "delivery_commit": "737748372eb4a45f6dde3cb8e229bba8463dd128",
+    "matching_release_digests_remote_and_two_destinations": 24,
+    "source_and_build_inputs": 1232,
+    "exact_source_and_build_inputs": 1224,
+    "line_ending_only_source_and_build_inputs": 8
+  },
+  "cleanup": {
+    "bytes_removed": 351030607,
+    "retained_mapped_previous": "build/t28-package/s2-winui-composition-publish/mapped-previous; remove the two old DLL files after their existing mappings have ended"
+  },
   "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Task 28 -RunName s2-winui-composition-package",
   "source_snapshot_sha256": "af635c7b9b770a5be48313402730a345ac0e6b09c583ad8751c7383df9e18e31",
   "source_snapshot_entries": 2171,
