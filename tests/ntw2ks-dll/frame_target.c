@@ -181,6 +181,66 @@ static DWORD WINAPI close_common(void *unused)
     ExitProcess(4);return 1;
 }
 
+enum {
+    COLOR_DEFINE_CUSTOM=719, COLOR_ADD_CUSTOM=712,
+    COLOR_RED_EDIT=706, COLOR_GREEN_EDIT=707, COLOR_BLUE_EDIT=708,
+    COLOR_FIXTURE_TIMER=751
+};
+static const COLORREF custom_colors[]={RGB(21,105,197),RGB(194,81,32)};
+static BOOL custom_expanded,custom_edited,custom_styled,custom_confirm;
+
+static UINT_PTR CALLBACK expanded_color_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
+{
+    (void)lp;
+    if(message==WM_INITDIALOG){
+        if(!SetTimer(window,COLOR_FIXTURE_TIMER,80,NULL))PostMessageW(window,WM_CLOSE,0,0);
+        return 0;
+    }
+    if(message!=WM_TIMER || wp!=COLOR_FIXTURE_TIMER)return 0;
+    if(!custom_expanded){
+        custom_expanded=TRUE;
+        SendDlgItemMessageW(window,COLOR_DEFINE_CUSTOM,BM_CLICK,0,0);
+        return 1;
+    }
+    KillTimer(window,COLOR_FIXTURE_TIMER);
+    custom_styled=GetPropW(window,L"Win2kStyle.Frame")!=NULL;
+    HWND add=GetDlgItem(window,COLOR_ADD_CUSTOM);
+    custom_edited=IsWindowVisible(add) && IsWindowEnabled(add);
+    for(unsigned i=0;custom_edited && i<ARRAYSIZE(custom_colors);++i){
+        COLORREF color=custom_colors[i];
+        custom_edited=SetDlgItemInt(window,COLOR_RED_EDIT,GetRValue(color),FALSE) &&
+            SetDlgItemInt(window,COLOR_GREEN_EDIT,GetGValue(color),FALSE) &&
+            SetDlgItemInt(window,COLOR_BLUE_EDIT,GetBValue(color),FALSE);
+        if(custom_edited)SendMessageW(add,BM_CLICK,0,0);
+    }
+    int id=custom_confirm?IDOK:IDCANCEL;
+    PostMessageW(window,WM_COMMAND,MAKEWPARAM(id,BN_CLICKED),(LPARAM)GetDlgItem(window,id));
+    return 1;
+}
+
+static int test_expanded_color(void)
+{
+    BOOL all=TRUE;
+    for(int ansi=0;ansi<2;++ansi)for(int confirm=0;confirm<2;++confirm){
+        COLORREF colors[16]={0},initial=RGB(10,20,30);
+        DWORD flags=CC_RGBINIT|CC_ENABLEHOOK;
+        CHOOSECOLORA a={.lStructSize=sizeof(a),.rgbResult=initial,.lpCustColors=colors,
+            .Flags=flags,.lpfnHook=expanded_color_hook};
+        CHOOSECOLORW w={.lStructSize=sizeof(w),.rgbResult=initial,.lpCustColors=colors,
+            .Flags=flags,.lpfnHook=expanded_color_hook};
+        custom_expanded=custom_edited=custom_styled=FALSE;custom_confirm=confirm;
+        BOOL selected=ansi?ChooseColorA(&a):ChooseColorW(&w);
+        DWORD error=CommDlgExtendedError();
+        BOOL color=(ansi?a.rgbResult:w.rgbResult)==(confirm?custom_colors[1]:initial);
+        BOOL palette=colors[0]==custom_colors[0] && colors[8]==custom_colors[1];
+        BOOL pass=selected==confirm && !error && custom_styled && custom_edited && color && palette;
+        printf("WIN2K COLOR EXPANDED bits=%u ansi=%d confirm=%d attached=%d rgb=%d slots=%d error=%lu\n",
+            (unsigned)(sizeof(void*)*8),ansi,confirm,custom_styled,color,palette,(unsigned long)error);
+        if(!pass)all=FALSE;
+    }
+    return all?0:3;
+}
+
 static UINT_PTR CALLBACK file_classic_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {(void)window;(void)message;(void)wp;(void)lp;return 0;}
 
@@ -542,6 +602,7 @@ int wmain(int argc,WCHAR **argv)
         }
         DestroyWindow(common_owner);common_owner=NULL;UnregisterClassW(owner_class.lpszClassName,instance);return all?0:3;
     }
+    if(argc==2 && !lstrcmpW(argv[1],L"--color-expanded"))return test_expanded_color();
     if(argc==2 && !lstrcmpW(argv[1],L"--color-accept")){
         BOOL all=TRUE;InterlockedExchange(&message_accept,1);
         for(int ansi=0;ansi<2;++ansi){

@@ -363,6 +363,13 @@
     "message": "Twelve MessageBox, MessageBoxEx and MessageBoxIndirect A/W native cases on both widths. Each attached and returned IDOK.",
     "combined": "36/36 including the eight Find/Replace cases."
   },
+  "expanded_color_p3": {
+    "reference": "The Windows 2000 SP2 and Windows 11 expanded Color templates are both 298 by 184 dialog units. All 27 controls match in position and size except the compact expansion button, which is 140 units wide in SP2 and 138 in Windows 11. The SP2 FillBox implementation draws EDGE_SUNKEN and the default Add action advances from slot 0 to slot 8.",
+    "published_contract": "The registered --color-expanded fixture passed 8/8 ANSI/Unicode x86/x64 confirmation and cancellation cases against P1. Two RGB edits write back to slots 0 and 8 even on cancel. Confirm changes rgbResult; cancel retains the incoming value. Win2000 frame attached in all eight.",
+    "visual_witness": "Independent same-thread sampling compared six controls and custom swatch one on both widths. Styled and native control rectangles agreed, including the same one-pixel rounding of three control heights. All eight styled samples and six readable unstyled samples had 195 fill pixels, shadow above, highlight below and the same sampled pixel hash ae1a3c21. The first unstyled sample in each width was unreadable and excluded from the visual comparison.",
+    "remaining": "The native expanded client measured 447 by 299 pixels. The styled client measured 449 by 305 after expanding from compact mode. The swatch comparison covers one slot against the current OS and the source algorithm; an original Windows 2000 runtime screenshot was not used.",
+    "artifact_identity": "All eight P1 files matched their recorded SHA-256 at assets and O:/winnt before the run. This test-only change does not rebuild or republish the product."
+  },
   "delivery": {
     "verified_delivery_commit": "3bf842f230f03e593310668b3116682b30126be1",
     "remote_readback": "Queried origin/main after push. The observed commit matched the delivery, and all eight committed asset blobs matched the SHA-256 at both publication locations. The committed Win2000 assembly, COM Show implementation and Find appearance were checked against the worktree.",
@@ -586,7 +593,7 @@
       "remaining": [
         "Win2000-specific Explorer content and extended print property-page visual comparison",
         "actual printer DC and physical printing",
-        "expanded custom-color palette comparison",
+        "original expanded Color client-size comparison",
         "real administrator/global dialog matrix"
       ]
     }

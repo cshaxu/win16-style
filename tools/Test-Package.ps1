@@ -365,6 +365,13 @@ try{
                 "WIN2K FONT bits=$bits ansi=1 attached=1 accepted=1 selected=1 point_size=120 error=0",'DIALOG_DRIVER exit=0') 20
     }
     $cases+=Pair { param($bits,$tree,$dll)
+        $markers=@(foreach($ansi in @(0,1)){foreach($confirm in @(0,1)){
+            "WIN2K COLOR EXPANDED bits=$bits ansi=$ansi confirm=$confirm attached=1 rgb=1 slots=1 error=0"
+        }})
+        Case "ntw2ks-color-expanded-$bits" $dialogDriver @('--direct',$run,'--2k','--wait',
+            (Join-Path $tree 'ntw2ks-frame-target.exe'),'--color-expanded') ($markers+@('DIALOG_DRIVER exit=0')) 20
+    }
+    $cases+=Pair { param($bits,$tree,$dll)
             Case "ntw2ks-printex-accept-$bits" $dialogDriver @('--direct',$run,'--2k','--wait',(Join-Path $tree 'ntw2ks-frame-target.exe'),'--print-ex-accept') @(
                 "WIN2K PRINTEX bits=$bits ansi=0 attached=1 result=00000000 action=1",
                 "WIN2K PRINTEX bits=$bits ansi=1 attached=1 result=00000000 action=1",
