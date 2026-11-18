@@ -1,0 +1,87 @@
+{
+  "task": "M0 T27 S10 P1",
+  "commit": "95fbc3af1384fe15d84ee6d08d0b43c6a37015f5",
+  "changed_sha256": {
+    "CMakeLists.txt": "e08d8090a3c63dfa08ae252e6e634ae89b03d9e7a1148bdaa8e9f93d6b371258",
+    "assets/demo.exe": "269700ee307a5a385f25a7c5431a36c8a04310d81f478fdf2bf9f062a96f872c",
+    "assets/ntw16s32.dll": "e3c44e46046179a776a6667e31388812e54d29dc516331599911dff0e7b8ce4c",
+    "assets/ntw16s64.dll": "3fde1d67f2e5fc16902fded3593da6f552ad545748b61ceb43fc4aa54fa49f0b",
+    "assets/ntw2ks32.dll": "19b35e805dffeb7d165bf2ac72e2cef44ee2d585d0e96071470c80296203e457",
+    "assets/ntw2ks64.dll": "7f9bb0ac49fcc8397b02cb33ce3601aaecd3f9f0d24d85fdbb3a05b0add20004",
+    "assets/ntwshk32.dll": "cfdb46d479838b324b475427dec8e57c8d030b7ac6415d500b74f1e706599981",
+    "assets/ntwshk64.dll": "ba8cf2770011ff8d0fa47fc7244bba81968f07087d1abed18714458bfbbf1e93",
+    "assets/run16s.exe": "60d13668c3a45a39d93e0a5cf732a689b96349735c7eac87876c90d785ea76b5",
+    "docs/etc/evidence/t27-s10-progress.json": "206e0af34bef9286ab7c19060ca7a2a11b27b2b2e7e35fed5df245825dec67a1",
+    "docs/etc/import/import-receipts.json": "53547a7b47f46775375992b337db10fb80002d51c690c6dfe3ab4fe2708b66dc",
+    "docs/etc/release.json": "21b99bdf8beddbd18c01901085a51068f5d3ff11de8e90f97d5dc1a042ef739d",
+    "docs/history/M0-T27-S10-progress.md": "79bba8e3eed40df80f78b40d182ee246ca5afba5779cd45c409e6d564d4ab56c",
+    "src/lib-win32-style/appearance/win2000/control/control.c": "88b22b53426074404c3b11d07c08270a8b9600d5df0506c327896b13fd2b01d3",
+    "src/lib-win32-style/appearance/win2000/control/progress_paint.c": "36f1ab241b3030e373179b6f3b8477cf548e2186fa31dd236774068c57fed9a0",
+    "src/lib-win32-style/appearance/win2000/control/progress_paint.h": "590ee5cecfe8a030294757b6b3749791e1d79d74a447f9aef8972787c6a89c83",
+    "tests/lib-win32-style/appearance/win2000/TEST_MAP.md": "fed21fceca452da5687051f02c35759c9b8ba606a25e0d92eff8d24af0cd3262",
+    "tests/lib-win32-style/appearance/win2000/control/progress.c": "a14a00a3c4bc504422f8c371df583dcbfa6f460b4c9dfbfc3692a9318412a8bd",
+    "tests/lib-win32-style/appearance/win2000/control/progress_paint.c": "263d728d57757997a16dcdc637dc98d8fd7884938e3147d730a52f7cea706223",
+    "tools/Test-Package.ps1": "61d1925fb8a3c91e406f01777eabf358710006629afb4f80a57113c475e9d484"
+  },
+  "input_count": 1211,
+  "remote_input_cohort_sha256": "f8ae5c71d7613dd2355d49b14f932f127671742c12acb860791da69d003961ce",
+  "working_clean_build_cohort": "d88fb7439a896cb12d1813bcaf61b6e028b8624da51ff77311d566974205ed2e",
+  "baseline_line_endings_only": [
+    {
+      "path": "src/lib-win32/process-hook/LICENSE.win16style",
+      "working_sha256": "71337277c6c03463ca6d7b56aba20fed81d3e6f1c8a823f7d5ab30760de8a389",
+      "remote_sha256": "bf37952d329b48cee37b42d90b96d30dc049940902e42d69338a19cf72003543"
+    },
+    {
+      "path": "tests/integration/vb5_custom_compare.py",
+      "working_sha256": "47a33b4f6cb5ca50bec6d3c395746df6c70e93cf13a19b1f7da67b42eea347ad",
+      "remote_sha256": "360258c70d40e86d2f12fe5d3ba7523d1c8b7e4e86886330039d5971fbbc67cc"
+    },
+    {
+      "path": "tests/integration/vb_disabled_picture_compare.py",
+      "working_sha256": "7b9585aa7a7c618d20be819fe2eef6d729f1f5fbad312b4ac0fe9a857075e1ee",
+      "remote_sha256": "b4d9d37c36ff085d5e6e8cc8029f2a86d1e655d4c45085d037ea8cb9225e87e7"
+    },
+    {
+      "path": "tests/integration/vb_picture_compare.py",
+      "working_sha256": "ab9e2e8676e61afe5b91d676ff51362094f887312a39123f98554a86da4002a1",
+      "remote_sha256": "9187eafb4c4ae715f4101d8a1858787d710a3598701e0eecddc9a63f55429e4c"
+    },
+    {
+      "path": "tests/ntw16s-dll/commdlg_error_target.c",
+      "working_sha256": "fafee5345f2c9af0b2e4c02d7e0f98a37a8ac684be939dd7dc72ea3283b93dc0",
+      "remote_sha256": "6404d46682a578d4a698e1bb6795c491a1dccdc894712bed79215847fa95cbc4"
+    },
+    {
+      "path": "tests/ntw16s-dll/task_dialog.rc",
+      "working_sha256": "82f36069e7567ea0dd86882912d82da3cd56d55a1151ba1f744468a0f92caf34",
+      "remote_sha256": "79aaa95930350669976ba69a0a252522d360ec1e2917ea9017d9a18e0e69e73d"
+    },
+    {
+      "path": "tests/ntw16s-dll/win32_multi_navigation.c",
+      "working_sha256": "90c9ac4d8051a6666e34a9fa817d14c2a0ea49dbe5d51c0690e55164775ce20c",
+      "remote_sha256": "0a7328b7ae310a6ac7496de95b521bf38654cd0aa6107c117736f54537d76a2f"
+    },
+    {
+      "path": "tests/ntw16s-dll/win32_multi_target.c",
+      "working_sha256": "8ff42f04fb46b3a32b7d2ee48397d8fa11fb901431f536e177a6e98f9a70876c",
+      "remote_sha256": "8c73cbbfebc50bbd50e91621158518507a378827930c8e3642d18a685dad0652"
+    },
+    {
+      "path": "tools/Verify-Governance.ps1",
+      "working_sha256": "fcce057e5caa39ec15074a0aa02d2a07ad3e4350902f49dc84d104464d054f14",
+      "remote_sha256": "a8a9a7fb17ed9d7fb7a1a8101ccea2ece268e66a6584422f1e88bdbe6cd8861b"
+    }
+  ],
+  "product_sha256": {
+    "run16s.exe": "60d13668c3a45a39d93e0a5cf732a689b96349735c7eac87876c90d785ea76b5",
+    "ntw16s32.dll": "e3c44e46046179a776a6667e31388812e54d29dc516331599911dff0e7b8ce4c",
+    "ntw16s64.dll": "3fde1d67f2e5fc16902fded3593da6f552ad545748b61ceb43fc4aa54fa49f0b",
+    "ntw2ks32.dll": "19b35e805dffeb7d165bf2ac72e2cef44ee2d585d0e96071470c80296203e457",
+    "ntw2ks64.dll": "7f9bb0ac49fcc8397b02cb33ce3601aaecd3f9f0d24d85fdbb3a05b0add20004",
+    "ntwshk32.dll": "cfdb46d479838b324b475427dec8e57c8d030b7ac6415d500b74f1e706599981",
+    "ntwshk64.dll": "ba8cf2770011ff8d0fa47fc7244bba81968f07087d1abed18714458bfbbf1e93",
+    "demo.exe": "269700ee307a5a385f25a7c5431a36c8a04310d81f478fdf2bf9f062a96f872c"
+  },
+  "status": "Fetched commit and actual blobs verified; eight binaries match both release locations"
+}
