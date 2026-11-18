@@ -610,6 +610,13 @@
     },
     "file_changes": "One appearance helper, one startup adapter, one dialog fixture, and package case markers. Both color front doors retain the original parameter structure, callback and single cleanup scope. The ordinary observer remains the path for caller templates."
   },
+  "file_and_local_color_p7": {
+    "published_package": "Verified all eight P5 artifact hashes at assets and O:/winnt. The local-style fixture used matching copies of the three released DLLs for each architecture. Only fixture build and package expectations changed.",
+    "file_selection": "16/16 on the released launcher. ANSI and Unicode, x86 and x64, open and save with both legacy-hook and ordinary Explorer callers. Each passed a relative executable name, its directory as lpstrInitialDir and two filters with index 2 selected. Verified exact full path, nFileOffset, nFileExtension, unchanged process current directory and zero extended error.",
+    "local_color_style": "2/2 on the real local per-window global-style adapter. The fixture applied Win2000 to its own open native Color dialog and OK control, removed the style, verified the original client size at both transitions, and confirmed the same original RGB. This exercises the callback and lifecycle for a single owned window; the administrative desktop-wide path is still unverified.",
+    "explorer_resize_limit": "On the 427 by 272 work area, SetWindowPos returned success on x86 and x64 but the hooked Explorer client stayed 421 by 247. Bypassing WM_WINDOWPOSCHANGING in an x64 diagnostic raised the client to the intended 555 by 320 offscreen. Native resize anchoring moved the Open button by the same 134 by 73 delta, from (484,313) to (618,386), outside the new client. No production layout relies on bypassing the clamp.",
+    "print_callback_limit": "Native PrintDlgExW with an application-owned IPrintDialogCallback was tested on the ordinary host in both widths, both with and without --2k. All four calls exposed only an external zero-size ProxyModalWindow owned by the fixture. This proxy did not allow a bounded close of the modal call, so the owned fixture was ended at its timeout. Callback dispatch and original-style General page appearance remain inconclusive."
+  },
   "delivery": {
     "verified_delivery_commit": "3bf842f230f03e593310668b3116682b30126be1",
     "remote_readback": "Queried origin/main after push. The observed commit matched the delivery, and all eight committed asset blobs matched the SHA-256 at both publication locations. The committed Win2000 assembly, COM Show implementation and Find appearance were checked against the worktree.",

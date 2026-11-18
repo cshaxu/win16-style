@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <limits.h>
+#include <string.h>
+#include <wchar.h>
 
 static unsigned menu_scenario,menu_entries,menu_exits,menu_commands,menu_idle,menu_popup_inits;
 static volatile LONG menu_frame_paints;
@@ -690,21 +692,43 @@ int wmain(int argc,WCHAR **argv)
         return all?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--file-select")){
-        char path_a[260];WCHAR path_w[260];
-        if(!GetModuleFileNameA(NULL,path_a,ARRAYSIZE(path_a)) || !GetModuleFileNameW(NULL,path_w,ARRAYSIZE(path_w)))return 2;
+        char path_a[MAX_PATH],directory_a[MAX_PATH];WCHAR path_w[MAX_PATH],directory_w[MAX_PATH],cwd[MAX_PATH];
+        DWORD count_a=GetModuleFileNameA(NULL,path_a,ARRAYSIZE(path_a)),count_w=GetModuleFileNameW(NULL,path_w,ARRAYSIZE(path_w));
+        DWORD cwd_count=GetCurrentDirectoryW(ARRAYSIZE(cwd),cwd);
+        if(!count_a || count_a>=ARRAYSIZE(path_a) || !count_w || count_w>=ARRAYSIZE(path_w) ||
+           !cwd_count || cwd_count>=ARRAYSIZE(cwd))return 2;
+        const char *leaf_a=strrchr(path_a,'\\'),*suffix_a=strrchr(path_a,'.');
+        const WCHAR *leaf_w=wcsrchr(path_w,L'\\'),*suffix_w=wcsrchr(path_w,L'.');
+        if(!leaf_a || !leaf_w || !suffix_a || !suffix_w || suffix_a<leaf_a || suffix_w<leaf_w)return 2;
+        ++leaf_a;++leaf_w;++suffix_a;++suffix_w;
+        lstrcpynA(directory_a,path_a,(int)(leaf_a-path_a)+1);
+        lstrcpynW(directory_w,path_w,(int)(leaf_w-path_w)+1);
         BOOL all=TRUE;InterlockedExchange(&message_accept,1);
         for(int ansi=0;ansi<2;++ansi)for(int save=0;save<2;++save)for(int explorer=0;explorer<2;++explorer){
             InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
             HANDLE thread=CreateThread(NULL,0,close_message,NULL,0,NULL);if(!thread)return 2;
-            char file_a[260];WCHAR file_w[260];lstrcpynA(file_a,path_a,ARRAYSIZE(file_a));lstrcpynW(file_w,path_w,ARRAYSIZE(file_w));
+            char file_a[MAX_PATH];WCHAR file_w[MAX_PATH],after[MAX_PATH];
+            lstrcpynA(file_a,leaf_a,ARRAYSIZE(file_a));lstrcpynW(file_w,leaf_w,ARRAYSIZE(file_w));
             DWORD flags=OFN_NOCHANGEDIR|OFN_FILEMUSTEXIST|OFN_DONTADDTORECENT|(explorer?OFN_EXPLORER:OFN_ENABLEHOOK);
-            OPENFILENAMEA a={.lStructSize=sizeof(a),.lpstrFilter="All\0*.*\0\0",.lpstrFile=file_a,.nMaxFile=ARRAYSIZE(file_a),.lpstrTitle="Win2kMessageFixture",.Flags=flags,.lpfnHook=file_classic_hook};
-            OPENFILENAMEW w={.lStructSize=sizeof(w),.lpstrFilter=L"All\0*.*\0\0",.lpstrFile=file_w,.nMaxFile=ARRAYSIZE(file_w),.lpstrTitle=L"Win2kMessageFixture",.Flags=flags,.lpfnHook=file_classic_hook};
+            OPENFILENAMEA a={.lStructSize=sizeof(a),.lpstrFilter="Text\0*.txt\0Programs\0*.exe\0",.nFilterIndex=2,
+                .lpstrInitialDir=directory_a,.lpstrFile=file_a,.nMaxFile=ARRAYSIZE(file_a),.lpstrTitle="Win2kMessageFixture",
+                .Flags=flags,.lpfnHook=file_classic_hook};
+            OPENFILENAMEW w={.lStructSize=sizeof(w),.lpstrFilter=L"Text\0*.txt\0Programs\0*.exe\0",.nFilterIndex=2,
+                .lpstrInitialDir=directory_w,.lpstrFile=file_w,.nMaxFile=ARRAYSIZE(file_w),.lpstrTitle=L"Win2kMessageFixture",
+                .Flags=flags,.lpfnHook=file_classic_hook};
             BOOL result=ansi?(save?GetSaveFileNameA(&a):GetOpenFileNameA(&a)):(save?GetSaveFileNameW(&w):GetOpenFileNameW(&w));
             DWORD error=CommDlgExtendedError();DWORD wait=WaitForSingleObject(thread,1000);CloseHandle(thread);
             BOOL same=ansi?!lstrcmpiA(file_a,path_a):!lstrcmpiW(file_w,path_w);
-            BOOL pass=wait==WAIT_OBJECT_0 && result && error==0 && same && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
-            printf("WIN2K SELECT bits=%u ansi=%d save=%d explorer=%d attached=%ld result=%d same=%d error=%lu\n",(unsigned)(sizeof(void*)*8),ansi,save,explorer,(long)InterlockedCompareExchange(&message_attached,0,0),result,same,(unsigned long)error);
+            BOOL offsets=ansi?(a.nFileOffset==leaf_a-path_a && a.nFileExtension==suffix_a-path_a):
+                (w.nFileOffset==leaf_w-path_w && w.nFileExtension==suffix_w-path_w);
+            DWORD after_count=GetCurrentDirectoryW(ARRAYSIZE(after),after);
+            BOOL unchanged=after_count && after_count<ARRAYSIZE(after) && !lstrcmpiW(cwd,after);
+            DWORD filter=ansi?a.nFilterIndex:w.nFilterIndex;
+            BOOL pass=wait==WAIT_OBJECT_0 && result && !error && same && offsets && filter==2 && unchanged &&
+                InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            printf("WIN2K SELECT bits=%u ansi=%d save=%d explorer=%d attached=%ld result=%d same=%d error=%lu filter=%lu offsets=%d cwd=%d\n",
+                (unsigned)(sizeof(void*)*8),ansi,save,explorer,(long)InterlockedCompareExchange(&message_attached,0,0),
+                result,same,(unsigned long)error,(unsigned long)filter,offsets,unchanged);
             if(!pass)all=FALSE;
         }
         InterlockedExchange(&message_accept,0);return all?0:3;

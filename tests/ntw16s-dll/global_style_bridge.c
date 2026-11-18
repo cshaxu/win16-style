@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <commdlg.h>
 #include <stdio.h>
 #include "ntw16s-dll/global/window.h"
 #include "ntw16s-dll/global/session.h"
@@ -90,6 +91,51 @@ static BOOL style_cycle(HWND window,HINSTANCE instance,BOOL (__cdecl *attached2k
     puts("GLOBAL STYLE CYCLE PASS edges=6 frame=1 children=2 state=1 draw_restore=1");
     return TRUE;
 }
+
+static BOOL color_cycle_ok;
+static BOOL (__cdecl *color_child_styled)(HWND);
+static UINT_PTR CALLBACK color_cycle_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
+{
+    (void)lp;
+    if(message==WM_INITDIALOG){
+        if(!SetTimer(window,1,60,NULL))PostMessageW(window,WM_CLOSE,0,0);
+        return 0;
+    }
+    if(message!=WM_TIMER || wp!=1)return 0;
+    KillTimer(window,1);
+
+    HWND ok=GetDlgItem(window,IDOK);
+    RECT initial={0},active={0},restored={0};
+    BOOL before=ok && color_child_styled && GetClientRect(window,&initial) &&
+        !GetPropW(window,L"Win2kStyle.Frame") && !color_child_styled(ok);
+    BOOL applied=ntw16s_global_window_apply_style(window,NTW16S_GLOBAL_STYLE_2K);
+    ntw16s_global_window_children(window,TRUE,NTW16S_GLOBAL_STYLE_2K);
+    BOOL styled=applied && GetPropW(window,L"Win2kStyle.Frame") && color_child_styled && color_child_styled(ok) &&
+        GetClientRect(window,&active) && EqualRect(&initial,&active);
+    ntw16s_global_window_children(window,FALSE,NTW16S_GLOBAL_STYLE_2K);
+    BOOL removed=ntw16s_global_window_remove_style(window,NTW16S_GLOBAL_STYLE_2K);
+    BOOL native=removed && !GetPropW(window,L"Win2kStyle.Frame") && color_child_styled && !color_child_styled(ok) &&
+        GetClientRect(window,&restored) && EqualRect(&initial,&restored);
+    color_cycle_ok=before && styled && native;
+    printf("GLOBAL COLOR local initial=%d styled=%d restored=%d\n",before,styled,native);
+    PostMessageW(window,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)ok);
+    return 1;
+}
+
+static BOOL color_cycle(HWND owner,BOOL (__cdecl *attached)(HWND))
+{
+    COLORREF custom[16]={0},initial=RGB(10,20,30);
+    CHOOSECOLORW color={.lStructSize=sizeof(color),.hwndOwner=owner,.rgbResult=initial,
+        .lpCustColors=custom,.Flags=CC_RGBINIT|CC_ENABLEHOOK,.lpfnHook=color_cycle_hook};
+    color_child_styled=attached;
+    BOOL selected=ChooseColorW(&color);
+    DWORD error=CommDlgExtendedError();
+    BOOL pass=color_cycle_ok && selected && !error && color.rgbResult==initial;
+    printf("GLOBAL COLOR bits=%u selected=%d rgb=%d error=%lu pass=%d\n",
+        (unsigned)(sizeof(void *)*8),selected,color.rgbResult==initial,(unsigned long)error,pass);
+    return pass;
+}
+
 int main(void)
 {
     HINSTANCE instance=GetModuleHandleW(NULL);
@@ -147,9 +193,10 @@ int main(void)
     if(takeover16)(void)ntw16s_global_window_remove_style(window,NTW16S_GLOBAL_STYLE_16);
     BOOL (__cdecl *attached2k)(HWND)=module?(void *)GetProcAddress(module,"Ntw2ksWindowAttached"):NULL;
     BOOL cycle=style_cycle(window,instance,attached2k);
+    BOOL color=color_cycle(window,attached2k);
     DestroyWindow(window);UnregisterClassW(cls.lpszClassName,instance);
     printf("GLOBAL STYLE BRIDGE bits=%u apply2k=%d switch16=%d switch2k=%d client_clean=%d immediate=%d clean_after=%d click_clean=%d footer=%d overlap=%d refreshed=%d remove2k=%d apply16=%d remove16=%d reverse=%d existing=%d takeover=%d existing2k=%d takeover16=%d\n",
            (unsigned)(sizeof(void *)*8),apply2k,switched16,switched2k,client_clean,clean_immediate,clean_after,click_clean,footer_ok,overlap_exists,refreshed,remove2k,apply16,remove16,reverse,existing,takeover,existing2k,takeover16);
     return apply2k && switched16 && switched2k && client_clean && clean_immediate && clean_after && click_clean && footer_ok &&
-        (!overlap_exists || refreshed || repainted) && remove2k && apply16 && remove16 && reverse && takeover && takeover16 && cycle?0:3;
+        (!overlap_exists || refreshed || repainted) && remove2k && apply16 && remove16 && reverse && takeover && takeover16 && cycle && color?0:3;
 }
