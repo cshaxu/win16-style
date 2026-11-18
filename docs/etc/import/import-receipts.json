@@ -8654,18 +8654,18 @@
       "path": "src/lib-win32-style/application/control/native.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d4c4102a41c4437a07ae0783655dd870817449beca934cc26838faa112a2ca35",
+      "sha256": "f9073da38dc01c5ede18d401dc9c4c68d5baeb7184edd6cabbe122b2938e5496",
       "disposition": "authored",
-      "review": "T26 S10 native control state/messages and owned native header/progress snapshots with pure C independent contract tests; T26 S13 native renderer font lease/fallback uses existing complete control state; normal-return cleanup preserved",
+      "review": "T26 S10 native control state/messages and owned native header/progress snapshots with pure C independent contract tests; T26 S13 native renderer font lease/fallback uses existing complete control state; normal-return cleanup preserved; T27 S11 TrackBar and UpDown native painting profiles",
       "notice": "Project-authored pure C; no imported artwork"
     },
     {
       "path": "src/lib-win32-style/application/control/native.h",
       "source": null,
       "source_blob": null,
-      "sha256": "a2d6b83de07ab79879a6c465d96b3b261060703e04923b3331da8507e25ec5ff",
+      "sha256": "32a41bb4b8d86602b4e966aaebebab7ca3688bd43f576a5691592a81fd8634aa",
       "disposition": "authored",
-      "review": "T26 S10 native control state/messages and owned native header/progress snapshots with pure C independent contract tests; T26 S13 native renderer font lease/fallback uses existing complete control state; normal-return cleanup preserved",
+      "review": "T26 S10 native control state/messages and owned native header/progress snapshots with pure C independent contract tests; T26 S13 native renderer font lease/fallback uses existing complete control state; normal-return cleanup preserved; T27 S11 TrackBar and UpDown native painting profiles",
       "notice": "Project-authored pure C; no imported artwork"
     },
     {
@@ -9753,9 +9753,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge; T27 S11 TrackBar and UpDown native painting profiles",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "88b22b53426074404c3b11d07c08270a8b9600d5df0506c327896b13fd2b01d3"
+      "sha256": "f446cb4719a85656b0a76b5a9aa7d9d4c15800ee9364a1662759f553f18c6298"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -9771,9 +9771,9 @@
       "source": null,
       "source_blob": null,
       "disposition": "authored",
-      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab/header validation mapping; T27 S9 common selection roles and native draw preparation; T27 S10 test mapping",
+      "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab/header validation mapping; T27 S9 common selection roles and native draw preparation; T27 S10 test mapping; T27 S11 TrackBar and UpDown native painting profiles",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "fed21fceca452da5687051f02c35759c9b8ba606a25e0d92eff8d24af0cd3262"
+      "sha256": "769d63e8b24f57adc3115ca161f7bb07b3a870ca7fbe1b8cafcd891cfa61c6e3"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/common/paint.c",
@@ -10061,6 +10061,60 @@
       "sha256": "a14a00a3c4bc504422f8c371df583dcbfa6f460b4c9dfbfc3692a9318412a8bd",
       "disposition": "authored",
       "review": "T27 S10 actual profile v5/v6 consumer test",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/trackbar_paint.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d2df0932b81ab041d474fb0682383d5e78f456bc6d34fa5cf9d8dc341b8745c8",
+      "disposition": "authored",
+      "review": "T27 S11 TrackBar and UpDown native painting profiles",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/trackbar_paint.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "449d881659c6c600a6caa669ae62e3172db0f54dd25d0c408c49a940d7a97923",
+      "disposition": "authored",
+      "review": "T27 S11 TrackBar and UpDown native painting profiles",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/updown_paint.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "71698da22bb1ef76620bc154dc7650e7ddf8b0d6fe6871d53508cc6aa531442f",
+      "disposition": "authored",
+      "review": "T27 S11 TrackBar and UpDown native painting profiles",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/control/updown_paint.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7c6788da412e30f6879cb7e9dbae5e88363753128f709d7efd812f199e7f8466",
+      "disposition": "authored",
+      "review": "T27 S11 TrackBar and UpDown native painting profiles",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/trackbar_paint.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f1b7209e546f59a03d8ea234893b4f07a604b5568d62fe41581c4b9c17883d1f",
+      "disposition": "authored",
+      "review": "T27 S11 TrackBar and UpDown native painting profiles",
+      "notice": "Project-authored C; no external implementation or artwork imported"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/win2000/control/updown_paint.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e39d3627ece0fac40173f1798f697ee58b4bea090c3e7587d2c02ffde1f168eb",
+      "disposition": "authored",
+      "review": "T27 S11 TrackBar and UpDown native painting profiles",
       "notice": "Project-authored C; no external implementation or artwork imported"
     }
   ]

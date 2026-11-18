@@ -23,3 +23,7 @@ source files; no duplicate constant-only tests are added to manufacture counts.
 | control/report_paint.c | control/report_tree.c verifies four native ListView modes, inactive selection, column sizing through Header, tree expand/collapse glyphs and notifications, application custom draw, borrowed images, native owner-data fallback and detach. Both common-control manifests, DPI awareness and standard startup. |
 
 | control/progress_paint.c | control/progress_paint.c verifies original block rounding, period, terminal clearance, both axes, signed-range math and borrowed DC. control/progress.c verifies v5 edge-only and v6 client rendering, native values, caller colors, disabled appearance, removal and standard startup. |
+
+| control/trackbar_paint.c | control/trackbar_paint.c verifies the original groove, square and four pointed directions, disabled dither, keyboard state and notifications, child custom draw, DPI awareness and detach. |
+
+| control/updown_paint.c | control/updown_paint.c verifies borrowed native image roles, horizontal and vertical odd seams, disabled and pressed pixels, notification veto, edit buddy identity/data, DPI awareness and detach. |

@@ -66,6 +66,8 @@ add_library(win2k-control STATIC
   src/lib-win32-style/appearance/win2000/control/header_paint.c
   src/lib-win32-style/appearance/win2000/control/report_paint.c
   src/lib-win32-style/appearance/win2000/control/progress_paint.c
+  src/lib-win32-style/appearance/win2000/control/trackbar_paint.c
+  src/lib-win32-style/appearance/win2000/control/updown_paint.c
   src/lib-win32-style/appearance/win2000/control/scroll.c
   src/lib-win32-style/appearance/win2000/control/scroll_layout.c
   src/lib-win32-style/appearance/win2000/control/list_combo.c
@@ -78,7 +80,7 @@ target_include_directories(win2k-control PUBLIC src)
 target_compile_definitions(win2k-control PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 # Theme state is supplied by the existing shared ntwshk runtime. Do not link
 # a second static theme-state owner into this profile.
-target_link_libraries(win2k-control PUBLIC win2k-common style-control-common style-instance style-present user32 gdi32 comctl32)
+target_link_libraries(win2k-control PUBLIC win2k-common style-control-common style-instance style-present user32 gdi32 comctl32 msimg32)
 target_link_libraries(win2k-window PUBLIC win2k-control)
 add_library(lib-tray STATIC src/lib-win32/tray/tray.c)
 target_compile_definitions(lib-tray PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -546,6 +548,32 @@ if(BUILD_TESTING)
   target_include_directories(core-win2k-progress-v6 PRIVATE src)
   target_compile_definitions(core-win2k-progress-v6 PRIVATE WIN2K_PROGRESS_V6)
   target_link_options(core-win2k-progress-v6 PRIVATE ${explicit_manifest_options})
+  foreach(target core-win2k-trackbar core-win2k-trackbar-v6)
+    add_executable(${target} tests/lib-win32-style/appearance/win2000/control/trackbar_paint.c)
+    target_compile_definitions(${target} PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    target_link_libraries(${target} PRIVATE user32 gdi32 comctl32)
+    target_link_options(${target} PRIVATE -municode)
+    add_dependencies(${target} ntw2ks)
+    string(REGEX REPLACE "^core-" "" case_name "${target}")
+    add_test(NAME core/${case_name} COMMAND $<TARGET_FILE:${target}> $<TARGET_FILE:ntw2ks>)
+    add_test(NAME core/${case_name}-aware COMMAND $<TARGET_FILE:${target}> $<TARGET_FILE:ntw2ks> aware)
+  endforeach()
+  target_sources(core-win2k-trackbar-v6 PRIVATE tests/ntw16s-dll/control_extensions.rc)
+  target_include_directories(core-win2k-trackbar-v6 PRIVATE src)
+  target_link_options(core-win2k-trackbar-v6 PRIVATE ${explicit_manifest_options})
+  foreach(target core-win2k-updown core-win2k-updown-v6)
+    add_executable(${target} tests/lib-win32-style/appearance/win2000/control/updown_paint.c)
+    target_compile_definitions(${target} PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    target_link_libraries(${target} PRIVATE user32 gdi32 comctl32)
+    target_link_options(${target} PRIVATE -municode)
+    add_dependencies(${target} ntw2ks)
+    string(REGEX REPLACE "^core-" "" case_name "${target}")
+    add_test(NAME core/${case_name} COMMAND $<TARGET_FILE:${target}> $<TARGET_FILE:ntw2ks>)
+    add_test(NAME core/${case_name}-aware COMMAND $<TARGET_FILE:${target}> $<TARGET_FILE:ntw2ks> aware)
+  endforeach()
+  target_sources(core-win2k-updown-v6 PRIVATE tests/ntw16s-dll/control_extensions.rc)
+  target_include_directories(core-win2k-updown-v6 PRIVATE src)
+  target_link_options(core-win2k-updown-v6 PRIVATE ${explicit_manifest_options})
   add_executable(core-win2k-scroll tests/lib-win32-style/appearance/win2000/control/scroll.c)
   target_compile_definitions(core-win2k-scroll PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-win2k-scroll PRIVATE user32 gdi32)

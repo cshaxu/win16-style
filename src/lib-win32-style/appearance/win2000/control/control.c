@@ -7,6 +7,8 @@
 #include "tab_header.h"
 #include "report_paint.h"
 #include "progress_paint.h"
+#include "trackbar_paint.h"
+#include "updown_paint.h"
 #include "lib-win32-style/application/control/combo.h"
 #include "lib-win32-style/application/control/list.h"
 #include "lib-win32-style/application/control/edit.h"
@@ -30,7 +32,7 @@ typedef struct win2k_control {
     HWND combo_parent;
     win2k_scroll scroll;
     style_control_native_state native;
-    BOOL tab_control,header_control;
+    BOOL tab_control,header_control,track_control,updown_control;
     BOOL progress_control,legacy_progress;
     win2k_report_role report;
 } win2k_control;
@@ -72,6 +74,8 @@ BOOL win2k_control_supported(HWND window)
     if(!lstrcmpiW(name,WC_LISTVIEWW))return win2k_listview_supported(window);
     if(!lstrcmpiW(name,WC_TREEVIEWW))return win2k_treeview_supported(window);
     if(!lstrcmpiW(name,PROGRESS_CLASSW))return win2k_progress_supported(window);
+    if(!lstrcmpiW(name,TRACKBAR_CLASSW))return win2k_trackbar_supported(window);
+    if(!lstrcmpiW(name,UPDOWN_CLASSW))return win2k_updown_supported(window);
     if(!lstrcmpiW(name,L"SCROLLBAR"))return TRUE;
     if(!lstrcmpiW(name,L"COMBOBOX"))
         return (style&3) && !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));
@@ -128,7 +132,9 @@ static void paint(HWND window,void *context,HDC dc)
 {
     win2k_control *control=context;
     BOOL painted=TRUE;
-    if(control->progress_control){
+    if(control->updown_control){
+        painted=win2k_updown_paint(window,&control->instance,dc);
+    }else if(control->progress_control){
         style_progress_snapshot snapshot;
         painted=style_progress_snapshot_read(window,&control->instance,&control->native,win2k_progress_supported,&snapshot) &&
             win2k_progress_paint(dc,&snapshot,(DWORD)GetWindowLongPtrW(window,GWL_STYLE),&win2k_standard_palette);
@@ -155,7 +161,7 @@ static BOOL is_group(HWND window,void *context)
 static void render(HWND window,void *context,HDC dc,BOOL buffered)
 {
     win2k_control *control=context;
-    if(buffered){const style_present_ops ops={paint,is_group};
+    if(buffered && !control->updown_control){const style_present_ops ops={paint,is_group};
         style_present(window,&control->instance,control,win2k_standard_palette.face,&ops,dc);}
     else paint(window,control,dc);
 }
@@ -197,11 +203,15 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
     }else if(control->progress_control && (control->legacy_progress || message==WM_NCPAINT || message==WM_PRINT)){
         const style_control_edit_ops ops={.context=control,.border=edit_border};
         result=style_control_edit_message(window,&control->instance,&control->state,NULL,message,a,b,&ops);
+    }else if(control->updown_control){
+        const style_control_draw draw={control,render};
+        result=style_control_native_message(window,&control->instance,&control->native,STYLE_CONTROL_UPDOWN,
+            message,a,b,win2k_updown_supported,&draw);
     }else if(control->tab_control || control->progress_control){
         const style_control_draw draw={control,render};
         result=style_control_native_message(window,&control->instance,&control->native,kind,message,a,b,
             control->progress_control?win2k_progress_supported:win2k_tab_supported,&draw);
-    }else if(control->header_control){
+    }else if(control->header_control || control->track_control){
         result=DefSubclassProc(window,message,a,b);
     }else if(class_is(window,L"SCROLLBAR")){
         if(GetWindowLongPtrW(window,GWL_STYLE)&(SBS_SIZEBOX|SBS_SIZEGRIP)){
@@ -238,11 +248,13 @@ static void finish_call(void *context,BOOL completed)
 static LRESULT parent_dispatch(void *context,HWND parent,UINT message,WPARAM a,LPARAM b)
 {
     win2k_control *control=context;
-    if(control->header_control || control->report){
+    if(control->header_control || control->track_control || control->report){
         const style_control_notify_ops header={.context=&control->instance,.supported=win2k_header_supported,.part=win2k_header_paint};
+        const style_control_notify_ops track={.supported=win2k_trackbar_supported,.part=win2k_trackbar_part};
         const style_control_notify_ops list={.context=&control->instance,.supported=win2k_listview_plain,.prepare_item=win2k_listview_colors};
         const style_control_notify_ops tree={.supported=win2k_treeview_supported,.prepare_item=win2k_treeview_colors};
-        const style_control_notify_ops *ops=control->header_control?&header:control->report==WIN2K_REPORT_LIST?&list:&tree;
+        const style_control_notify_ops *ops=control->header_control?&header:control->track_control?&track:
+            control->report==WIN2K_REPORT_LIST?&list:&tree;
         return style_control_notify_message(parent,message,a,b,(UINT_PTR)control->parent_binding.window,
             &control->instance,&control->parent_binding,parent_proc,NULL,ops);
     }
@@ -279,7 +291,8 @@ static BOOL install_combo_list(HWND window,void *context)
 static BOOL setup(HWND window,void *context)
 {
     win2k_control *control=context;
-    if((control->header_control || control->report || win2k_edit_class(window)==WIN2K_EDIT_STANDARD) &&
+    if((control->header_control || control->track_control || control->report ||
+        win2k_edit_class(window)==WIN2K_EDIT_STANDARD) &&
        !style_control_notify_bind(window,&control->parent_binding,parent_proc,control))return FALSE;
     if(!style_theme_capture(window) || !style_theme_suppress(window,control,control->native_theme))return FALSE;
     if(class_is(window,L"COMBOBOX")){
@@ -310,6 +323,8 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     style_instance_init(&control->instance,control,dispose);
     control->tab_control=class_is(window,WC_TABCONTROLW);
     control->header_control=class_is(window,WC_HEADERW);
+    control->track_control=class_is(window,TRACKBAR_CLASSW);
+    control->updown_control=class_is(window,UPDOWN_CLASSW);
     control->progress_control=progress;control->legacy_progress=legacy;
     control->report=report;
     style_control_native_init(&control->native);

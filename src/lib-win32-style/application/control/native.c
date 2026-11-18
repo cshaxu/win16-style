@@ -36,7 +36,11 @@ static BOOL progress_changes(UINT m)
 void style_control_native_init(style_control_native_state *state)
 {*state=(style_control_native_state){.pressed=-1};}
 BOOL style_control_native_changes(style_control_native_kind kind,UINT message)
-{return kind==STYLE_CONTROL_TAB?tab_changes(message):kind==STYLE_CONTROL_HEADER?header_changes(message):progress_changes(message);}
+{
+    if(kind==STYLE_CONTROL_TAB)return tab_changes(message);
+    if(kind==STYLE_CONTROL_HEADER)return header_changes(message);
+    return kind==STYLE_CONTROL_PROGRESS && progress_changes(message);
+}
 void style_control_native_observe(style_control_native_state *state,style_control_native_kind kind,UINT message)
 {if(style_control_native_changes(kind,message))++state->epoch;}
 LRESULT style_control_native_message(HWND w,style_instance *instance,style_control_native_state *state,style_control_native_kind kind,

@@ -832,6 +832,15 @@ try{
         Case "ntw2ks-scroll-$bits" $scroll @($win2k) @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=0",$scrollScope) 20
         Case "ntw2ks-scroll-aware-$bits" $scroll @($win2k,'aware') @("WIN2K_SCROLL_OK bits=$bits aware=1 hooked=0",$scrollScope) 20
         Case "ntw2ks-scroll-startup-$bits" $run @('--2k','--wait',$scroll,$win2k,'hooked') @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=1",$scrollScope) 25
+        foreach($kind in @('trackbar','updown')){
+            $scope=if($kind -eq 'trackbar'){'WIN2K_TRACKBAR_OK rectangular=2 pointed=4'}else{'WIN2K_UPDOWN_OK axes=2 native_seam=2'}
+            foreach($suffix in @('','-v6')){
+                $probe=Join-Path $tree "core-win2k-$kind$suffix.exe"
+                Case "ntw2ks-$kind$suffix-$bits" $probe @($win2k) @($scope) 20
+                Case "ntw2ks-$kind$suffix-aware-$bits" $probe @($win2k,'aware') @($scope) 20
+                Case "ntw2ks-$kind$suffix-startup-$bits" $run @('--2k','--wait',$probe,$win2k,'hooked') @($scope) 25
+            }
+        }
         Case "ntw2ks-progress-paint-$bits" (Join-Path $tree 'core-win2k-progress-paint.exe') @() @('WIN2K_PROGRESS_PAINT_OK') 20
         foreach($suffix in @('','-v6')){
             $probe=Join-Path $tree "core-win2k-progress$suffix.exe"
