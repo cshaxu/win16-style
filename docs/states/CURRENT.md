@@ -43,7 +43,11 @@ P9 紧凑 Explorer 已通过增量验证，在 427×272 工作区内原生重排
 首次回写 6/8；关闭重排也复现 x86 打开失败。显式返回测试目录后，开启重排的
 双宽八种组合均正确回写。Shell 切换目录会替换目录视图，重新读取句柄后新版
 视图均在客户区内。窄工作区的原生图标和文字无法容纳于压缩行高；按原版模板
-客户区做几何对照时，双宽八种组合的两轮缩放和导航均保持控件完整。原型未接入产品。
+客户区做几何对照时，双宽八种组合的两轮缩放和导航均保持控件完整。
+P14 已交付带常用位置栏的打开／保存及 COM 复用路径。以测试工作区尺寸验证
+完整版双宽 Win32 8/8、COM 8/8；正式八件发布两处后，普通桌面 48/48 组、
+同包原生 14/14 组、核心 42/42。实际大工作区与其他 DPI、扩展打印属性页和
+管理员全局路径仍待验，S3 开放。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -78,7 +82,7 @@ P9 紧凑 Explorer 已通过增量验证，在 427×272 工作区内原生重排
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P9，71e71996；八件均与远端所指提交及两处发布一致。
+- Last verified remote delivery: M0 T28 S3 P14；构建快照和八件摘要见公共对话框证据。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。

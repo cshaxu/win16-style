@@ -635,6 +635,196 @@
     "reference_size_p13": "Mapped the SP2 1552 resource dimensions (370 by 197 DLU) using the native dialog's font. On the same ordinary desktop, forced only the owned probe dialog to the resulting 555 by 320 client, which exceeded the screen work area. With Places row height refreshed after each native resize, 8/8 retained the five row rectangles (52 pixels per row, 49 at the 539 by 304 test size), directory view, filename and action controls through two shrink/restore cycles and two navigations back to the fixture directory. The selected file, offsets, filter and working directory passed in 8/8. Cleanup removed the repeat, toolbar and reference-size probe directories.",
     "pending": "The original-size trial establishes owned-window geometry, not measured operation on a larger physical desktop or a full Win2000 visual match. Real toolbar and dropdown rendering, product selection of the native Places host, and preserving row fit over native resize remain open. Keep the published compact variant for the small work area."
   },
+  "places_integration_p14": {
+    "production": "Eligible full-size Explorer single-file requests use the installed native Places host if the DPI-normalized work area is at least 565 by 345. The private form callback selects that standard host without forwarding synthetic flags to the caller. Layout takes 370 by 197 dialog units from the SP2 1552 reference. Native view and input controls remain in place as Windows controls; the observer updates the Places rows after native resizing. Caller hooks or templates, multiselect, and unsupported extended flags take the existing fallback. Compact work areas continue using the existing no-Places path.",
+    "real_work_area_incremental": "Without a work-area override, tested the incremental candidate in a transient package on the current ordinary desktop at 427 by 272 and 96 DPI. File accept 16/16 including eight measured compact Explorer calls; cancel 16/16; insufficient buffers 8/8. The initial fixture tried flag equality even for the untouched old-style path and observed native flag updates. The assertion is confined to the two adapted Explorer paths.",
+    "large_area_integration": "A transient adapter redirected only the work-area query to 720 by 480, with the product selection, reflow and resize observer compiled as implemented. It did not change the display configuration. x86/x64 A/W Win32 open/save passed 8/8 with native Places navigation, two shrink/restore cycles, two directory round trips, and exact file, filter and offset results. COM open/save confirmation and cancellation passed 8/8 and each observed a 555 by 320 Places client.",
+    "rendering": "With the same synthetic work area, PrintWindow on the owned rendered toolbar detected colored upper pixels and dark lower pixels in all five rows, on both x86 and x64 at 96 DPI. This is window rendering into a local bitmap; it does not verify actual physical input, fullscreen desktop visibility, pixel identity with the original, or other DPI values. The temporary integration, paint and incremental candidate files were removed.",
+    "release": {
+      "command": "tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-places-package",
+      "toolchain": "C17, MinGW GCC 16.1.0 (i686 UCRT and x86_64 MSVCRT), Ninja 1.13.2, ccache 4.13.6",
+      "build_seconds": {
+        "x86": 212.93,
+        "x64": 237.41
+      },
+      "snapshot_sha256": "e0911564e402b908a9efa7f1d5a000ff54d35e9d6e55825844a1ca40d3cd9036",
+      "changed_input_sha256": {
+        "src/lib-win32-style/appearance/win2000/dialog/file.h": "42f7b6138f86a1474ac0dc283ee8f2854fce20c82ab0c3c152ad17a5804347ae",
+        "src/ntw2ks-dll/controls.c": "3bc7a9b8321abe83dd9f79bc7b37b27bdb2de272f5c25b9e701deb5edcf87560",
+        "tests/ntw2ks-dll/frame_target.c": "ddcb7bf71070c9d7184ed273aab8a4c41a2f10fe50b44a38d5506a94d3f14da0",
+        "docs/etc/import/import-receipts.json": "13d7263adfc3fbdd7f7972ef5385b8305924955528184d483d3f4463326b4089"
+      },
+      "locations": [
+        "assets/",
+        "O:/winnt"
+      ],
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "ee9694b07efa7ff57268f584261f707514452a8342832088a8b659cd217cd9e2",
+          "imports": [
+            "advapi32.dll",
+            "dwmapi.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "oleaut32.dll",
+            "shell32.dll",
+            "user32.dll",
+            "ntwshk64.dll"
+          ]
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "8d24196ed1a0781df495076ed6f75ed2de58381490bfef755e061ad07884673a",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "909d35c1cd79a2df54631d995cd52b51d7cdbc73dbf28b1cfbdce5021d57b031",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "8358963842970d78bf5cffbbdc05ccbd1cd91f009ad10e99ecf3b9641b7a985e",
+          "imports": [
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "184720f234ed0f92d13a8ffd1c7085c379bf5d2088dd6b5663ec1d4318eec6de",
+          "imports": [
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "a9889efb631bea7fdbbfc8e5547bc447a552a711b1f5a910543d4a7727c83740",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll"
+          ]
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "aef474eca4420234f501b04ff850d030020f0781da297c5c58d277e6c4ce5c1b",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "msvcrt.dll"
+          ]
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "c0c718adf16e50ab14f510d5ff27562836955869c8a78e76a1936c16e22a7a4f",
+          "imports": [
+            "comctl32.dll",
+            "comdlg32.dll",
+            "gdi32.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "shell32.dll",
+            "user32.dll"
+          ]
+        }
+      },
+      "verification": {
+        "published": "48/48 ordinary-desktop groups after publishing to both destinations, including 8 measured compact file geometry results, accepted/canceled files, COM files and folders, PrintDlg and bridge PrintDlgEx, Find, Color, Font, message boxes and Win16 COM. Uses owned GUI fixtures and direct driver.",
+        "matching_candidate": "14/14 same-package native groups through the owned ordinary-desktop driver, covering Win32 file confirmation, cancellation and short buffer plus COM open/save confirmation and cancellation. The standard package harness separately passed both ABI checks and the demo PE boundary plus two tooling checks and a demo worker which bypasses desktop creation. The standard harness automatically attempted private desktop creation for the 14 requested GUI cases and for its automatic/propagation cases. Windows rejected these attempts with access denied, so no desktop was created or switched and those runs are excluded from the totals.",
+        "core": "42/42 in the clean build (21 per architecture), including shared dialog observation, Win16 linkage, print policy and ranges, Win2000 frame lifecycle, and the local style bridge.",
+        "cleanup": "Removed the clean build, matching package test, publication backups and transient dialog fixtures. Both deployment locations and the reusable incremental/cache trees are retained.",
+        "remaining": [
+          "real large work area and other DPI values",
+          "extended print General/custom property-page visual and native interactivity",
+          "administrator full desktop global path"
+        ]
+      }
+    }
+  },
   "compact_explorer_p9": {
     "reference": "Windows 2000 SP2 has two native Explorer templates, including 1547 without a Places toolbar. The Windows 11 no-Places path in both widths still uses SHELLDLL_DefView and a native ComboBoxEx32 filename edit.",
     "behavior": "For a full-size OPENFILENAME Explorer request with no caller hook, template, or multiselect, choose the stock compact variant when the work area can fit it and falls short of the Places layout envelope. The caller's structure and protocol options are preserved across the native call. Native Shell view, filter and selection are retained. The COM single-file bridge uses the same Win32 path.",

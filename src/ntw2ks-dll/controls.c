@@ -111,6 +111,28 @@ static LRESULT CALLBACK compact_file_created(int code,WPARAM wp,LPARAM lp)
     SetLastError(incoming);
     return dialog_created(code,wp,lp);
 }
+
+static UINT_PTR CALLBACK places_file_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
+{(void)window;(void)message;(void)wp;(void)lp;return 0;}
+
+static LRESULT CALLBACK places_file_created(int code,WPARAM wp,LPARAM lp)
+{
+    DWORD incoming=GetLastError();
+    if(code>=0 && lp){
+        const CWPRETSTRUCT *event=(const CWPRETSTRUCT *)lp;
+        HWND dialog=event->hwnd;
+        if(event->message==WM_WINDOWPOSCHANGED && event->lParam &&
+           (((const WINDOWPOS *)event->lParam)->flags&SWP_SHOWWINDOW) && win2k_frame_attached(dialog)){
+            MONITORINFO monitor={.cbSize=sizeof(monitor)};
+            if(GetMonitorInfoW(MonitorFromWindow(dialog,MONITOR_DEFAULTTONEAREST),&monitor))
+                win2k_file_fit_places(dialog,&monitor.rcWork);
+        }
+        if(event->message==WM_SIZE && event->wParam!=SIZE_MINIMIZED && win2k_frame_attached(dialog))
+            win2k_file_fit_place_rows(win2k_file_toolbar(dialog,1184));
+    }
+    SetLastError(incoming);
+    return dialog_created(code,wp,lp);
+}
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT observe_dialog(HRESULT (*show)(void *),void *context)
 {
     style_dialog_observation scope;
@@ -182,17 +204,23 @@ static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { \
     DWORD incoming=GetLastError(); \
-    BOOL compact=parameters && parameters->lStructSize==sizeof(*parameters) && \
-        win2k_file_compact(parameters->hwndOwner,parameters->Flags,parameters->FlagsEx); \
+    win2k_file_layout layout=parameters && parameters->lStructSize==sizeof(*parameters)? \
+        win2k_file_layout_at(parameters->hwndOwner,parameters->Flags,parameters->FlagsEx):WIN2K_FILE_NATIVE; \
     TYPE local; \
-    if(compact){local=*parameters;local.Flags|=OFN_ENABLESIZING;local.FlagsEx|=OFN_EX_NOPLACESBAR;} \
+    if(layout!=WIN2K_FILE_NATIVE){ \
+        local=*parameters;local.Flags|=OFN_ENABLESIZING; \
+        if(layout==WIN2K_FILE_COMPACT)local.FlagsEx|=OFN_EX_NOPLACESBAR; \
+        else{local.Flags|=OFN_ENABLEHOOK;local.lpfnHook=places_file_hook;} \
+    } \
+    HOOKPROC observer=layout==WIN2K_FILE_PLACES?places_file_created: \
+        layout==WIN2K_FILE_COMPACT?compact_file_created:dialog_created; \
     style_dialog_observation scope;process_hook_unwind_scope unwind; \
-    if(!style_dialog_observation_begin(&scope,NULL,compact?compact_file_created:dialog_created,FALSE))return FALSE; \
+    if(!style_dialog_observation_begin(&scope,NULL,observer,FALSE))return FALSE; \
     PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); \
     SetLastError(incoming); \
-    BOOL result=real_##NAME(compact?&local:parameters);DWORD error=GetLastError(); \
+    BOOL result=real_##NAME(layout==WIN2K_FILE_NATIVE?parameters:&local);DWORD error=GetLastError(); \
     PROCESS_HOOK_UNWIND_END(unwind); \
-    if(compact)style_classic_file_result_##SUFFIX(parameters,&local); \
+    if(layout!=WIN2K_FILE_NATIVE)style_classic_file_result_##SUFFIX(parameters,&local); \
     SetLastError(error);return result; \
 }
 FILE_HOOK(GetOpenFileNameA,OPENFILENAMEA,a)

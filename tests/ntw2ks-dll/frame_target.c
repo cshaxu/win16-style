@@ -1,6 +1,7 @@
 #define _WIN32_WINNT 0x0A00
 #include <windows.h>
 #include <commdlg.h>
+#include <commctrl.h>
 #include <cderr.h>
 #include <dlgs.h>
 #include <oleacc.h>
@@ -132,7 +133,7 @@ static INT_PTR CALLBACK frame_dialog_proc(HWND window,UINT message,WPARAM wp,LPA
 }
 
 static volatile LONG message_seen,message_attached,message_accept;
-static BOOL message_choices,message_expect_compact;
+static BOOL message_choices,message_expect_compact,message_expect_places;
 static volatile LONG message_choice_checks,message_compact_fit;
 static BOOL CALLBACK find_message_icon(HWND child,LPARAM found)
 {
@@ -165,6 +166,21 @@ static BOOL compact_file_fits(HWND window)
         within(GetDlgItem(window,1148),&monitor.rcWork) &&
         within(GetDlgItem(window,IDOK),&monitor.rcWork) && within(GetDlgItem(window,IDCANCEL),&monitor.rcWork);
 }
+static BOOL places_file_fits(HWND window)
+{
+    MONITORINFO monitor={.cbSize=sizeof(monitor)};
+    HWND toolbar=GetDlgItem(window,1184);
+    RECT reference={0,0,370,197},client,sidebar,last;
+    if(!IsWindowVisible(toolbar) || !MapDialogRect(window,&reference) || !GetClientRect(window,&client) ||
+       client.right!=reference.right || client.bottom!=reference.bottom || !GetClientRect(toolbar,&sidebar))return FALSE;
+    LRESULT rows=SendMessageW(toolbar,TB_BUTTONCOUNT,0,0);
+    if(rows<=0 || !SendMessageW(toolbar,TB_GETITEMRECT,(WPARAM)(rows-1),(LPARAM)&last) || last.bottom>sidebar.bottom)
+        return FALSE;
+    if(!GetMonitorInfoW(MonitorFromWindow(window,MONITOR_DEFAULTTONEAREST),&monitor))return FALSE;
+    return within(window,&monitor.rcWork) && within(toolbar,&monitor.rcWork) &&
+        within(GetDlgItem(window,1121),&monitor.rcWork) && within(GetDlgItem(window,1148),&monitor.rcWork) &&
+        within(GetDlgItem(window,IDOK),&monitor.rcWork) && within(GetDlgItem(window,IDCANCEL),&monitor.rcWork);
+}
 static BOOL CALLBACK find_message_window(HWND window,LPARAM unused)
 {
     (void)unused;DWORD pid=0;WCHAR title[64]={0};GetWindowThreadProcessId(window,&pid);
@@ -173,7 +189,8 @@ static BOOL CALLBACK find_message_window(HWND window,LPARAM unused)
     BOOL sent=SendMessageTimeoutW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info,SMTO_ABORTIFHUNG,1000,&response)!=0;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     if(sent && GetPropW(window,L"Win2kStyle.Frame") && info.rcTitleBar.bottom-info.rcTitleBar.top==MulDiv(19,(int)dpi,96))InterlockedExchange(&message_attached,1);
-    if(message_expect_compact && compact_file_fits(window))InterlockedExchange(&message_compact_fit,1);
+    if((message_expect_compact && compact_file_fits(window)) || (message_expect_places && places_file_fits(window)))
+        InterlockedExchange(&message_compact_fit,1);
     InterlockedExchange(&message_seen,1);
     if(message_choices || InterlockedCompareExchange(&message_accept,0,0)){
         int id=message_choices?IDNO:IDOK;
@@ -768,13 +785,15 @@ int wmain(int argc,WCHAR **argv)
         lstrcpynA(directory_a,path_a,(int)(leaf_a-path_a)+1);
         lstrcpynW(directory_w,path_w,(int)(leaf_w-path_w)+1);
         MONITORINFO monitor={.cbSize=sizeof(monitor)};
-        BOOL measured_viewport=GetDpiForSystem()==96 &&
-            GetMonitorInfoW(MonitorFromWindow(NULL,MONITOR_DEFAULTTOPRIMARY),&monitor) &&
-            monitor.rcWork.right-monitor.rcWork.left==427 && monitor.rcWork.bottom-monitor.rcWork.top==272;
+        BOOL known_dpi=GetDpiForSystem()==96 && GetMonitorInfoW(MonitorFromWindow(NULL,MONITOR_DEFAULTTOPRIMARY),&monitor);
+        LONG width=monitor.rcWork.right-monitor.rcWork.left,height=monitor.rcWork.bottom-monitor.rcWork.top;
+        BOOL measured_viewport=known_dpi && width==427 && height==272;
+        BOOL full_viewport=known_dpi && width>=565 && height>=345;
         BOOL all=TRUE;InterlockedExchange(&message_accept,1);
         for(int ansi=0;ansi<2;++ansi)for(int save=0;save<2;++save)for(int explorer=0;explorer<2;++explorer){
             InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
             message_expect_compact=measured_viewport && explorer;
+            message_expect_places=full_viewport && explorer;
             InterlockedExchange(&message_compact_fit,0);
             HANDLE thread=CreateThread(NULL,0,close_message,NULL,0,NULL);if(!thread)return 2;
             char file_a[MAX_PATH];WCHAR file_w[MAX_PATH],after[MAX_PATH];
@@ -794,8 +813,9 @@ int wmain(int argc,WCHAR **argv)
             DWORD after_count=GetCurrentDirectoryW(ARRAYSIZE(after),after);
             BOOL unchanged=after_count && after_count<ARRAYSIZE(after) && !lstrcmpiW(cwd,after);
             DWORD filter=ansi?a.nFilterIndex:w.nFilterIndex;
-            BOOL contract=!message_expect_compact || ((ansi?a.Flags:w.Flags)==flags && (ansi?a.FlagsEx:w.FlagsEx)==0);
-            BOOL fit=!message_expect_compact || InterlockedCompareExchange(&message_compact_fit,0,0)!=0;
+            BOOL check_layout=message_expect_compact || message_expect_places;
+            BOOL contract=!check_layout || ((ansi?a.Flags:w.Flags)==flags && (ansi?a.FlagsEx:w.FlagsEx)==0);
+            BOOL fit=!check_layout || InterlockedCompareExchange(&message_compact_fit,0,0)!=0;
             BOOL pass=wait==WAIT_OBJECT_0 && result && !error && same && offsets && filter==2 && unchanged && contract && fit &&
                 InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
             printf("WIN2K SELECT bits=%u ansi=%d save=%d explorer=%d attached=%ld result=%d same=%d error=%lu filter=%lu offsets=%d cwd=%d flags=%d fit=%d measured=%d\n",

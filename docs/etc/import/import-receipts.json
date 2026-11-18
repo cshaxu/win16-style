@@ -6044,9 +6044,9 @@
       "path": "src/ntw2ks-dll/controls.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2c5c07ba7d54c078db0872463f94713935ec29ed9faed54730dd461b45779db1",
+      "sha256": "3bc7a9b8321abe83dd9f79bc7b37b27bdb2de272f5c25b9e701deb5edcf87560",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 shared control theme lifecycle; T26 S1 Win2000 native theme interception; T26 S1 control thread ownership; T26 S1 shared ordinary dialog hook lifecycle; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S14 VB、VCL 与复合控件; T28 S3 observe stock Color foldout completion; T28 S3 native compact Explorer launch integration",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 shared control theme lifecycle; T26 S1 Win2000 native theme interception; T26 S1 control thread ownership; T26 S1 shared ordinary dialog hook lifecycle; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S14 VB、VCL 与复合控件; T28 S3 observe stock Color foldout completion; T28 S3 native compact Explorer launch integration; T28 S3 native Places launch and resize integration",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -6251,9 +6251,9 @@
       "path": "tests/ntw2ks-dll/frame_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "56096a10b183e1f68758b9f86960fb6b5665faf78d0a743842686cdfbc97b543",
+      "sha256": "ddcb7bf71070c9d7184ed273aab8a4c41a2f10fe50b44a38d5506a94d3f14da0",
       "disposition": "authored",
-      "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T28 S3 expanded stock color contract fixture; T28 S3 Color size and message contract assertions; T28 S3 file results, filtering and working directory assertions; T28 S3 short file buffer and required size fixture; T28 S3 measured compact Explorer bounds and caller flags",
+      "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T28 S3 expanded stock color contract fixture; T28 S3 Color size and message contract assertions; T28 S3 file results, filtering and working directory assertions; T28 S3 short file buffer and required size fixture; T28 S3 measured compact Explorer bounds and caller flags; T28 S3 actual-work-area Places geometry assertions",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
@@ -10274,9 +10274,9 @@
       "path": "src/lib-win32-style/appearance/win2000/dialog/file.h",
       "source": null,
       "source_blob": null,
-      "sha256": "e041dde701d2c29361a6f8ee02f7a71fca49cdc1633d8d0b9360710609272b37",
+      "sha256": "42f7b6138f86a1474ac0dc283ee8f2854fce20c82ab0c3c152ad17a5804347ae",
       "disposition": "authored",
-      "review": "T28 S3 adaptive stock Explorer sizing and appearance policy",
+      "review": "T28 S3 adaptive stock Explorer sizing and appearance policy; T28 S3 native Places layout based on SP2 template dimensions",
       "notice": "Project-authored C implementation; Windows 2000 SP2 dialog variants used as reference"
     }
   ]
