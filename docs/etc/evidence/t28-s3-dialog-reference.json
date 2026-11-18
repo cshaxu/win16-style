@@ -642,6 +642,199 @@
     },
     "delivery": "Fixture and documentation only. The P14 product input sources and the eight published artifacts are unchanged. The temporary diagnostic runs and runner output directories were removed."
   },
+  "font_apply_and_stock_size_p17": {
+    "reference": "The Windows 2000 SP2 Font template and the installed Windows 11 resource both use a 287 by 196 DLU client. The read-only original font.c (SHA-256 a4347159b7c9f76ccd1ad43276f81bc9e031f95aa8d674cf73218b3691407f18) handles the optional Apply and effects controls and fills the LOGFONT in the caller's encoding.",
+    "baseline": "24/24 behavioral comparisons before asserting geometry, x86/x64 A/W, native and both P14 styles, with confirmation and cancellation. The Apply callback reads a 14-point Arial snapshot with underline and strikeout. After Apply then Cancel, the ANSI caller's LOGFONT retained the two effect bits and the Unicode caller's did not, consistently across all three modes. Native and Win16 geometry was 431 by 319; Win2000 was 433 by 325 (eight cases).",
+    "change": "Reuse the stock client-size correction for Font and expanded Color. Font runs after the native show position change has completed and only resizes the standard layout if its outer size still matches the native template. Caller-supplied templates use the existing observer. The first-show check is shared with both Explorer modes.",
+    "incremental": "Baseline Win2000 failed the geometry assertion 8/8. The show-position candidate passed 8/8 with 431 by 319 clients and preserved callbacks, font return and cancel. Both widths also passed expanded Color, basic font confirmation and combined font/color cancellation, for six grouped checks. An earlier WM_SHOWWINDOW trial had two early ANSI failures; it was replaced by the show-position observation. The fixture now performs Apply only after its dialog is visible.",
+    "caller_templates": "12/12 CF_ENABLETEMPLATE confirmations with the installed named Font resource explicitly supplied by the caller. Native measured 431 by 319; baseline and candidate --2k both measured 433 by 325 and returned correct Apply and confirmation results. This proves exclusion from the stock correction. For CF_ENABLETEMPLATEHANDLE, the temporary modified memory template was rejected with CDERR_DIALOGFAILURE or did not return within 35 seconds in the baseline; the corresponding candidate calls were also rejected. This does not establish positive memory-template coverage. Both temporary probe directories were removed.",
+    "release": {
+      "command": "tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-font-stock-package",
+      "toolchain": "C17, MinGW GCC 16.1.0 (i686 UCRT and x86_64 MSVCRT), Ninja 1.13.2, ccache 4.13.6",
+      "build_seconds": {
+        "x86": 207.28,
+        "x64": 235.23
+      },
+      "snapshot_sha256": "82015883a751141c68a09a540a83eb3a3bf61bce9b1b4cfa31829c5cb89d72d1",
+      "changed_input_sha256": {
+        "src/lib-win32-style/appearance/win2000/dialog/stock.h": "12423223a29c330fd81810022dc92b8d9e56b046295f342e7cc7cdce0bebeb08",
+        "src/lib-win32-style/appearance/win2000/dialog/color.h": "44985363b4cba04b664646a1b6fbada8960e706253d511fb2a5c422b2c29ebd8",
+        "src/ntw2ks-dll/controls.c": "cbb4f9243958e722829d388f28322af72ba3aec51e1751a306f6fae8d7c50b28",
+        "tests/ntw16s-dll/common_dialog_target.c": "541f466ae947a6391cb5a4c9a0541a9e420c7c6e81d85fee5d0ceddd5edb6444",
+        "docs/etc/import/import-receipts.json": "56e4abb7a741e4aa5dda1ec507dc222dc48e746afb1580fb7527686805a42ffe"
+      },
+      "locations": [
+        "assets/",
+        "O:/winnt"
+      ],
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "a9c6d85a35ba96e4b1a2951d3b5c028e3ddbc3182dc7b3a9a17ef63ad667510b",
+          "imports": [
+            "advapi32.dll",
+            "dwmapi.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "oleaut32.dll",
+            "shell32.dll",
+            "user32.dll",
+            "ntwshk64.dll"
+          ]
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "d98d31fceeb68fc6f8eb871468aedd953fc2ede8c157c0ef257471b216fc5025",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "e545be39402e18ecf47be6db4ae5366c8ca4df946a56d8659b769535eb14391a",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "13f330f7283ac1eb037fd2f2a02f96388966eaf5e4b055563eb5d536b86744a4",
+          "imports": [
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "c7374831ab7981a3ab44de1d0fdaf3569d8858d4d18b7183a01641741526590e",
+          "imports": [
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "24bdfc015d0eb1a686f4dbdf25e51c388733531635e3e77526738a1436a0f1ed",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll"
+          ]
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "f494924a8cff209fd65e0d929d66b62f497e6d072c4b7299bb25f9f32168f3c8",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "msvcrt.dll"
+          ]
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "6d735e65cda78ed1c1768db0ab7afeb44f69298bedce95a657eca882569ed12e",
+          "imports": [
+            "comctl32.dll",
+            "comdlg32.dll",
+            "gdi32.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "shell32.dll",
+            "user32.dll"
+          ]
+        }
+      },
+      "verification": {
+        "published": "48/48 grouped native ordinary-desktop regression after publishing, including file and COM cases, expanded Color, font, printing and message boxes. Both publication directories were used.",
+        "font_apply": "24/24 on the native, Win16 and Win2000 ordinary startup paths. Win2000 client restored to 431 by 319; Apply reads 14-point Arial with both effects. Confirm and Cancel match the native A/W results. Matching eight-artifact candidate independently passed its eight Win2000 font Apply/Cancel cases.",
+        "core": "42/42 (21 per architecture) in the clean snapshot, including ABI, shared dialog and local global-style adapter.",
+        "cleanup": "Removed clean build, publication backups and temporary caller/control probes after verification. The two published copies and reusable cache/build trees are retained.",
+        "remaining": [
+          "stock dialog pixel appearance at other DPI and a real larger work area",
+          "native font memory-template positive lifecycle",
+          "native PrintDlgEx General/custom property-page interactivity",
+          "administrator full desktop global path"
+        ]
+      }
+    }
+  },
   "places_reflow_trial": {
     "package": "P9 published launcher and DLLs with temporary caller-owned ANSI and Unicode OPENFILENAME hooks. The probe used the ordinary desktop and owned dialogs at 96 DPI with a 427 by 272 work area. The temporary sources, objects, binaries and output were removed after the run.",
     "stock_geometry": "The native 421 by 247 client exposed the stock Places toolbar, a Shell directory view, and a ComboBoxEx filename field. In Open the default OK button began at (484,313), beyond both client bounds.",

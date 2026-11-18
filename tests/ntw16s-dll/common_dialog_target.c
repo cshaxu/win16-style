@@ -8,9 +8,45 @@ static BOOL (__cdecl *attached)(HWND);
 static BOOL cancel_mode,font_mode,color_mode,color_expand,color_keyboard_mode;
 static BOOL color_expand_ok;
 static BOOL font_controls_ok,color_grid_ok,color_edge_ok,color_keyboard_ok,color_unrelated_ok;
+static BOOL font_apply_mode,font_apply_ansi,font_apply_seen,font_apply_initial,font_apply_match;
+static UINT font_apply_dpi;
+static RECT font_apply_client,font_apply_reference;
 static COLORREF color_expected,color_result;
 static int inits,ticks;
 static BOOL frame_attached;
+static BOOL __cdecl win2k_frame_attached(HWND window)
+{return GetPropW(window,L"Win2kStyle.Frame")!=NULL;}
+
+static BOOL font_apply_logfont(HWND window)
+{
+    if(font_apply_ansi){
+        LOGFONTA font={0};
+        SendMessageA(window,WM_CHOOSEFONT_GETLOGFONT,0,(LPARAM)&font);
+        return font.lfHeight==-MulDiv(14,(int)font_apply_dpi,72) && font.lfUnderline && font.lfStrikeOut &&
+            !lstrcmpiA(font.lfFaceName,"Arial");
+    }
+    LOGFONTW font={0};
+    SendMessageW(window,WM_CHOOSEFONT_GETLOGFONT,0,(LPARAM)&font);
+    return font.lfHeight==-MulDiv(14,(int)font_apply_dpi,72) && font.lfUnderline && font.lfStrikeOut &&
+        !lstrcmpiW(font.lfFaceName,L"Arial");
+}
+
+static void apply_test_font(HWND window)
+{
+    HWND apply=GetDlgItem(window,psh3);
+    font_apply_reference=(RECT){0,0,287,196};
+    if(!GetClientRect(window,&font_apply_client) || !MapDialogRect(window,&font_apply_reference))return;
+    HDC dc=GetDC(window);
+    font_apply_dpi=dc?(UINT)GetDeviceCaps(dc,LOGPIXELSY):0;
+    if(dc)ReleaseDC(window,dc);
+    if(!font_apply_dpi || !IsWindowVisible(apply) || !IsWindowEnabled(apply))return;
+    font_apply_initial=IsDlgButtonChecked(window,chx1)==BST_UNCHECKED &&
+        IsDlgButtonChecked(window,chx2)==BST_UNCHECKED;
+    SetDlgItemTextW(window,cmb3,L"14");
+    SendDlgItemMessageW(window,chx1,BM_CLICK,0,0);
+    SendDlgItemMessageW(window,chx2,BM_CLICK,0,0);
+    SendMessageW(apply,BM_CLICK,0,0);
+}
 static BOOL capture_dialog(HWND window,PCWSTR path)
 {
     RECT bounds;if(!GetWindowRect(window,&bounds))return FALSE;int width=bounds.right-bounds.left,height=bounds.bottom-bounds.top;
@@ -37,8 +73,18 @@ static UINT_PTR CALLBACK app_hook(HWND window,UINT message,WPARAM wparam,LPARAM 
 {
     (void)lparam;
     if(message==WM_INITDIALOG){++inits;SetTimer(window,916,100,NULL);}
+    if(font_apply_mode && message==WM_COMMAND && LOWORD(wparam)==psh3 && HIWORD(wparam)==BN_CLICKED){
+        font_apply_seen=TRUE;font_apply_match=font_apply_logfont(window);
+        return TRUE;
+    }
     if(message==WM_TIMER && wparam==916){
+        if(font_apply_mode && !IsWindowVisible(window))return 0;
         ++ticks;KillTimer(window,916);frame_attached=attached&&attached(window);
+        if(font_apply_mode){
+            apply_test_font(window);
+            PostMessageW(window,WM_COMMAND,cancel_mode?IDCANCEL:IDOK,0);
+            return 0;
+        }
         if(color_mode){
             HDC screen=GetDC(window),memory=screen?CreateCompatibleDC(screen):NULL;
             HBITMAP bitmap=memory?CreateCompatibleBitmap(screen,20,20):NULL;HGDIOBJ previous=bitmap?SelectObject(memory,bitmap):NULL;
@@ -127,6 +173,30 @@ int wmain(int argc,WCHAR **argv)
     BOOL font=argv[1][0]==L'f',ansi=argv[2][0]==L'a';font_mode=font;color_mode=!font;color_expand=color_mode && argv[3][0]==L'e';color_keyboard_mode=color_mode&&argv[3][0]==L'k';cancel_mode=argv[3][0]==L'c' || color_expand;
     HMODULE module=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");
     attached=module?(BOOL (__cdecl *)(HWND))(void *)GetProcAddress(module,"Ntw16sWindowAttached"):NULL;
+    if(!attached && GetModuleHandleW(sizeof(void*)==4?L"ntw2ks32.dll":L"ntw2ks64.dll"))attached=win2k_frame_attached;
+    font_apply_mode=font && (!lstrcmpW(argv[3],L"apply-ok") || !lstrcmpW(argv[3],L"apply-cancel"));
+    if(font_apply_mode){
+        font_apply_ansi=ansi;cancel_mode=!lstrcmpW(argv[3],L"apply-cancel");
+        DWORD flags=CF_SCREENFONTS|CF_ENABLEHOOK|CF_APPLY|CF_EFFECTS|CF_INITTOLOGFONTSTRUCT|CF_LIMITSIZE;
+        LOGFONTA a={.lfHeight=-16,.lfWeight=FW_NORMAL,.lfFaceName="Arial"};
+        LOGFONTW w={.lfHeight=-16,.lfWeight=FW_NORMAL,.lfFaceName=L"Arial"};
+        CHOOSEFONTA params_a={.lStructSize=sizeof(params_a),.lpLogFont=&a,.Flags=flags,.lpfnHook=app_hook,.nSizeMin=8,.nSizeMax=24};
+        CHOOSEFONTW params_w={.lStructSize=sizeof(params_w),.lpLogFont=&w,.Flags=flags,.lpfnHook=app_hook,.nSizeMin=8,.nSizeMax=24};
+        BOOL result=ansi?ChooseFontA(&params_a):ChooseFontW(&params_w);
+        DWORD error=CommDlgExtendedError();
+        int points=ansi?params_a.iPointSize:params_w.iPointSize;
+        BOOL effects=(ansi?a.lfUnderline:w.lfUnderline) && (ansi?a.lfStrikeOut:w.lfStrikeOut);
+        BOOL returned=cancel_mode?!result:(result && effects && points==140);
+        BOOL layout=font_apply_client.right==font_apply_reference.right && font_apply_client.bottom==font_apply_reference.bottom;
+        BOOL valid=(!attached || frame_attached) && inits==1 && ticks==1 && font_apply_initial && font_apply_seen &&
+            font_apply_match && returned && !error && layout;
+        printf("FONT APPLY bits=%u ansi=%d cancel=%d frame=%d initial=%d notified=%d snapshot=%d points=%d effects=%d returned=%d error=%lu valid=%d\n",
+            (unsigned)(sizeof(void*)*8),ansi,cancel_mode,frame_attached,font_apply_initial,font_apply_seen,font_apply_match,
+            points,effects,returned,(unsigned long)error,valid);
+        printf("FONT CLIENT measured=%ldx%ld reference=%ldx%ld\n",font_apply_client.right,font_apply_client.bottom,
+            font_apply_reference.right,font_apply_reference.bottom);
+        return valid?0:1;
+    }
     BOOL result;COLORREF custom[16]={0};custom[0]=RGB(12,34,56);LOGFONTA la={0};LOGFONTW lw={0};
     if(font && ansi){CHOOSEFONTA x={0};x.lStructSize=sizeof(x);x.lpLogFont=&la;x.Flags=CF_SCREENFONTS|CF_ENABLEHOOK;x.lpfnHook=app_hook;result=ChooseFontA(&x);}
     else if(font){CHOOSEFONTW x={0};x.lStructSize=sizeof(x);x.lpLogFont=&lw;x.Flags=CF_SCREENFONTS|CF_ENABLEHOOK;x.lpfnHook=app_hook;result=ChooseFontW(&x);}

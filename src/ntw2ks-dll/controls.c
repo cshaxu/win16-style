@@ -99,14 +99,30 @@ static LRESULT CALLBACK color_dialog_created(int code,WPARAM wp,LPARAM lp)
     SetLastError(incoming);
     return dialog_created(code,wp,lp);
 }
+
+static BOOL dialog_first_show(const CWPRETSTRUCT *event)
+{
+    return event->message==WM_WINDOWPOSCHANGED && event->lParam &&
+        (((const WINDOWPOS *)event->lParam)->flags&SWP_SHOWWINDOW) && win2k_frame_attached(event->hwnd);
+}
+
+static LRESULT CALLBACK font_dialog_created(int code,WPARAM wp,LPARAM lp)
+{
+    DWORD incoming=GetLastError();
+    if(code>=0 && lp){
+        const CWPRETSTRUCT *event=(const CWPRETSTRUCT *)lp;
+        if(dialog_first_show(event) &&
+           style_classic_font_template(event->hwnd))win2k_restore_stock_dialog_client(event->hwnd,287,196);
+    }
+    SetLastError(incoming);
+    return dialog_created(code,wp,lp);
+}
 static LRESULT CALLBACK compact_file_created(int code,WPARAM wp,LPARAM lp)
 {
     DWORD incoming=GetLastError();
     if(code>=0 && lp){
         const CWPRETSTRUCT *message=(const CWPRETSTRUCT *)lp;
-        if(message->message==WM_WINDOWPOSCHANGED && message->lParam &&
-           (((const WINDOWPOS *)message->lParam)->flags&SWP_SHOWWINDOW) &&
-           win2k_frame_attached(message->hwnd))win2k_file_fit_compact(message->hwnd);
+        if(dialog_first_show(message))win2k_file_fit_compact(message->hwnd);
     }
     SetLastError(incoming);
     return dialog_created(code,wp,lp);
@@ -121,8 +137,7 @@ static LRESULT CALLBACK places_file_created(int code,WPARAM wp,LPARAM lp)
     if(code>=0 && lp){
         const CWPRETSTRUCT *event=(const CWPRETSTRUCT *)lp;
         HWND dialog=event->hwnd;
-        if(event->message==WM_WINDOWPOSCHANGED && event->lParam &&
-           (((const WINDOWPOS *)event->lParam)->flags&SWP_SHOWWINDOW) && win2k_frame_attached(dialog)){
+        if(dialog_first_show(event)){
             MONITORINFO monitor={.cbSize=sizeof(monitor)};
             if(GetMonitorInfoW(MonitorFromWindow(dialog,MONITOR_DEFAULTTONEAREST),&monitor))
                 win2k_file_fit_places(dialog,&monitor.rcWork);
@@ -194,10 +209,17 @@ FIND_HOOK(ReplaceTextW,FINDREPLACEW,CLASSIC_PARAM_FINISH)
 /* Common dialogs can create their window without exported dialog calls. */
 #define COMMON_MODAL_HOOK(NAME,TYPE) \
     STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),BOOL,FALSE,FALSE,style_dialog_observation,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_PARAM_FINISH)
-COMMON_MODAL_HOOK(ChooseFontA,CHOOSEFONTA)
-COMMON_MODAL_HOOK(ChooseFontW,CHOOSEFONTW)
 COMMON_MODAL_HOOK(PageSetupDlgA,PAGESETUPDLGA)
 COMMON_MODAL_HOOK(PageSetupDlgW,PAGESETUPDLGW)
+#define FONT_DIALOG_BEGIN(state,incoming) ((void)(incoming),style_dialog_observation_begin(state,NULL, \
+    parameters && parameters->lStructSize==sizeof(*parameters) && \
+    !(parameters->Flags&(CF_ENABLETEMPLATE|CF_ENABLETEMPLATEHANDLE))?font_dialog_created:dialog_created,FALSE))
+#define FONT_HOOK(NAME,TYPE) \
+    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),BOOL,FALSE,FALSE,style_dialog_observation,FONT_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_PARAM_FINISH)
+FONT_HOOK(ChooseFontA,CHOOSEFONTA)
+FONT_HOOK(ChooseFontW,CHOOSEFONTW)
+#undef FONT_HOOK
+#undef FONT_DIALOG_BEGIN
 
 #define FILE_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \

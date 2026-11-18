@@ -3065,9 +3065,9 @@
       "path": "tests/ntw16s-dll/common_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d72843ab73c327930478f2794017c138a927f89a997e58a4ed5eeb3767759852",
+      "sha256": "541f466ae947a6391cb5a4c9a0541a9e420c7c6e81d85fee5d0ceddd5edb6444",
       "disposition": "authored",
-      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture",
+      "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T28 S3 shared ChooseFont Apply and LOGFONT contract on native and both styles",
       "notice": "Project-authored fixture; manifest based on project demo manifest; no external resources copied"
     },
     {
@@ -6044,9 +6044,9 @@
       "path": "src/ntw2ks-dll/controls.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3bc7a9b8321abe83dd9f79bc7b37b27bdb2de272f5c25b9e701deb5edcf87560",
+      "sha256": "cbb4f9243958e722829d388f28322af72ba3aec51e1751a306f6fae8d7c50b28",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 shared control theme lifecycle; T26 S1 Win2000 native theme interception; T26 S1 control thread ownership; T26 S1 shared ordinary dialog hook lifecycle; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S14 VB、VCL 与复合控件; T28 S3 observe stock Color foldout completion; T28 S3 native compact Explorer launch integration; T28 S3 native Places launch and resize integration",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 shared control theme lifecycle; T26 S1 Win2000 native theme interception; T26 S1 control thread ownership; T26 S1 shared ordinary dialog hook lifecycle; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S14 VB、VCL 与复合控件; T28 S3 observe stock Color foldout completion; T28 S3 native compact Explorer launch integration; T28 S3 native Places launch and resize integration; T28 S3 restore stock font client after native show",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -10265,9 +10265,9 @@
       "path": "src/lib-win32-style/appearance/win2000/dialog/color.h",
       "source": null,
       "source_blob": null,
-      "sha256": "8d31d53efffa6408d887eae85e04132a9e41fdc3069273cbe13f809ce34659e3",
+      "sha256": "44985363b4cba04b664646a1b6fbada8960e706253d511fb2a5c422b2c29ebd8",
       "disposition": "authored",
-      "review": "T28 S3 stock expanded Color client restoration based on measured native layout",
+      "review": "T28 S3 stock expanded Color client restoration based on measured native layout; T28 S3 share stock client geometry with font",
       "notice": "Project-authored C implementation; Windows 2000 SP2 dialog metrics used as reference"
     },
     {
@@ -10278,6 +10278,15 @@
       "disposition": "authored",
       "review": "T28 S3 adaptive stock Explorer sizing and appearance policy; T28 S3 native Places layout based on SP2 template dimensions",
       "notice": "Project-authored C implementation; Windows 2000 SP2 dialog variants used as reference"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/dialog/stock.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "12423223a29c330fd81810022dc92b8d9e56b046295f342e7cc7cdce0bebeb08",
+      "disposition": "authored",
+      "review": "T28 S3 share fixed stock native-dialog client recovery",
+      "notice": "Project-authored C; stock Windows 2000 dialog-unit metrics used as reference"
     }
   ]
 }

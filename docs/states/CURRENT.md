@@ -54,6 +54,9 @@ P15 补充 `PrintDlgEx` 默认打印机回退，原生、Win16、Win2000 双宽 
 P16 复用 Win16 的扩展打印夹具，发布版 Win16／Win2000 合计 188/188。
 包括范围、当前页、Apply、调用方设置句柄和设备上下文，以及实际切换本地打印机后
 返回设备名称。系统 General 属性页和打印作业仍无验收证据。
+P17 修正 `ChooseFont` 加框后的尺寸偏差，由 433×325 恢复至原版模板换算的
+431×319。八件已发布两处，原生及双风格字体 24/24，同包 Win2000 复验 8/8，
+普通桌面 48/48 组、核心 42/42。命名模板保留原有行为，内存模板正例待验。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -88,7 +91,7 @@ P16 复用 Win16 的扩展打印夹具，发布版 Win16／Win2000 合计 188/18
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P14；构建快照和八件摘要见公共对话框证据。
+- Last verified remote delivery: M0 T28 S3 P17；构建快照和八件摘要见公共对话框证据。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。
