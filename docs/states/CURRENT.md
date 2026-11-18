@@ -2,30 +2,30 @@
 
 ## Current Work
 
-M0固定。T27 Win2000常用控件保持开放。S1–S14 已按有限范围交付收口，当前S15Demo 控件目录与风格切换。按[16个S规划](../proposals/windows-2000-controls.md)合批，逐项记录Win3.x覆盖对照。
+M0固定。T27 Win2000常用控件保持开放。S1–S15 已按有限范围交付收口，当前S16全任务终审。按[16个S规划](../proposals/windows-2000-controls.md)合批，逐项记录Win3.x覆盖对照。
 
-正式八文件为[T27 S14VB、VCL 与复合控件批次](../etc/evidence/t27-s14-runtime.json)，两宽同快照，先发布后182/182进程用例通过，既有36项客户区打印子检查明确跳过。[实际远端](../etc/evidence/t27-s14-remote.json)已核验20个变更文件和八件发布物。T26既有失败保留在[终审](../etc/evidence/t26-s14-final-audit.json)。
+正式八文件为[T27 S15 Demo 控件目录与风格切换批次](../etc/evidence/t27-s15-demo.json)，两宽同快照，先发布后185/185进程用例通过，既有36项客户区打印子检查明确跳过。[实际远端](../etc/evidence/t27-s15-remote.json)已核验19个变更文件和八件发布物。T26既有失败保留在[终审](../etc/evidence/t26-s14-final-audit.json)。
 
-## M0 T27 S15 Packet
+## M0 T27 S16 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation 保持 M0、T27 和既定 S 序。 |
-| Admission And Approval | T27 Win2000 常用控件既有授权。 |
-| Objective | 让用户从现有 demo 控件目录直接验证各实际支持组及主要状态，回归普通启动和六种风格切换。 |
-| Non-goals | 新控件年代、修改托盘或全局安全策略、模拟第三方绑定或自绘内容。 |
-| Reference Baseline | S14 同快照八件及 182/182 有限实包用例，远端已核验。 |
-| Candidate Proposal | docs/proposals/windows-2000-controls.md；brief docs/history/M0-T27-S15-demo-transition.md。 |
-| Files And ABI Surface | 原生 demo 控件例子、既有外部观测与两宽过渡测试。五组件八件 ABI 保持。 |
-| Applicable Rules | 两宽 C17 GCC、Ninja、ccache、同快照、先发布后测。 |
-| Verification | demo 普通 Win2000、Win3.x 和原生路径，六种切换及其窗口、控件像素和状态。 |
-| Expected Markers | 原生示例可操作，附着和绘制有独立证据，失败或未覆盖范围可复查。 |
-| Asset Needs | 已有 demo 例子和控件 API，S2–S14 已核准来源及实图。 |
-| Reporting Requirements | 按页列出手测入口、自动验证结果、远端实物和清理。 |
-| Stop Conditions | 禁 computer-use 或私有桌面，不修改全局安全设置、不要求反复物理操作。 |
-| Exit Criteria | 布局与功能、合批八件先发布后测、提交推送取回、清理后进入最终 S16 审计。 |
-| Original Owner Request | Win2000 常用控件参考原版，达到可核实的 Win3.x 常用范围对照。 |
-| Similar-Issue Sweep | 两位宽启动、已有或后加窗口、三风格六方向、窗口菜单或控件数据残留。 |
+| Admission And Approval | T27 Win2000 常用控件既有授权，执行最终审计。 |
+| Objective | 将 S1 冻结的 24 个标准控件组与 8 个运行库/复合组逐项对上已验证范围、来源、产品路径和未覆盖边界。 |
+| Non-goals | 新控件、新图形资源、新主题、新 T 或扩大已交付的 Win32 适用范围。 |
+| Reference Baseline | S15 已发布同快照八件、185 项自有进程用例与实际取回。 |
+| Candidate Proposal | docs/proposals/windows-2000-controls.md；brief docs/history/M0-T27-S16-final-audit.md。 |
+| Files And ABI Surface | 审计台账、任务状态和未覆盖记录。沿用现有产品构建输入、ABI 与八件。 |
+| Applicable Rules | 复核实际远端来源与发布物；无产品输入变化沿用已发布验证，不重建。 |
+| Verification | 逐条冻结组对账，历史 P1 来源和交付校验，确认两处八件、实际远端与源输入身份。 |
+| Expected Markers | 24 + 8 项各有独立处置，原图可见状态与源码规则区分，交付范围和跳过项可复查。 |
+| Asset Needs | 不新增资产；复核五份既有原资源和各阶段只读参考。 |
+| Reporting Requirements | 各页验证和产品入口，有限 Win3.x 对照，欠项、包摘要、用户入口及清理。 |
+| Stop Conditions | 禁 computer-use 或私有桌面，不改变全局安全设置。 |
+| Exit Criteria | 完成审计、发布身份保持并实际复核远端，收口 S16 与 T27，不准入新 T。 |
+| Original Owner Request | 原版 Win2000 源码、资源与真实截图优先，和现有 Win3.x 常用控件范围逐项对照。 |
+| Similar-Issue Sweep | 分别审查未覆盖主题、复杂及远期窗口框架、原生保留和真实托盘输入。 |
 
 ## Identifier State
 
@@ -38,13 +38,13 @@ M0固定。T27 Win2000常用控件保持开放。S1–S14 已按有限范围交�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T27 S14 P1，5c9b33ed；20个变更文件及八件取回核对。
-- Last allocated T27 S: 15
-- Open task: M0 T27 S15；Win2000Demo 控件目录与风格切换。
+- Last verified remote delivery: M0 T27 S15 P1，73f60c5a；19个变更文件及八件取回核对。
+- Last allocated T27 S: 16
+- Open task: M0 T27 S16；Win2000全任务终审。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；正式文件在assets根与O:/winnt，当前摘要/版本/有限验证见[T27 S14证据](../etc/evidence/t27-s14-runtime.json)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；正式文件在assets根与O:/winnt，当前摘要/版本/有限验证见[T27 S15证据](../etc/evidence/t27-s15-demo.json)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1135回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
