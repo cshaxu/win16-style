@@ -323,3 +323,5 @@
 - [T27 S7滚动条](evidence/t27-s7-scroll.json)记录原版源码、截图依据与滚动几何验证。
 
 - [T27 S7实际远端](evidence/t27-s7-remote.json)记录取回的源码和八件发布物摘要。
+
+- [T27 S15 Demo 与切换](evidence/t27-s15-demo.json)记录九页原生示例、两种年代与系统原样的普通启动、双位宽六方向切换、已发布实包及各自的验证边界。

@@ -13,6 +13,13 @@ in-memory record examples do not implement external binding or embedded OLE.
 Images, shapes and charts illustrate application content boundaries. Legacy
 grids, windowless ActiveX and other unmatched families remain separate work.
 
+After publishing on Windows, use `O:/winnt/run16s.exe --2k O:/winnt/demo.exe`
+to inspect the classic controls. In **Lists and toolbars**, the toolbar has
+an image, a separator and a toggle, and the status bar shows ordinary, raised
+and borderless parts. In **Ranges and dates**, Step advances the smooth and
+segmented progress bars together. In **Text and special objects**, the
+editable Hotkey field starts at Ctrl+H.
+
 Windows owns controls, menus, fonts, focus, input and notifications. The only
 dynamic library load is fixed system Msftedit.dll for native RichEdit. The retained-modern examples dynamically use the public ntw16s modern-dialog API when run16s has loaded the DLL; they report its absence when run directly. Other examples use Windows APIs directly. Run the same demo.exe directly for native appearance or through run16s.exe for styling.
 External observers live in tests. Native counterparts demonstrate existing

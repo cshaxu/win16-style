@@ -53,19 +53,23 @@ static void text(HWND window,int id,PCWSTR expected)
  BOOL sent=(BOOL)SendMessageTimeoutW(id?GetDlgItem(window,id):window,WM_GETTEXT,ARRAYSIZE(actual),(LPARAM)actual,SMTO_ABORTIFHUNG,5000,&result);
  if(!sent || !result || wcscmp(actual,expected))fwprintf(stderr,L"TEXT id=%d actual=[%ls] expected=[%ls] sent=%d result=%llu\n",id,actual,expected,sent,(unsigned long long)result);
  CHECK(sent && result && !wcscmp(actual,expected));}
-static void modules(DWORD pid,BOOL styled,PCWSTR package,PCWSTR image)
+enum demo_style {DEMO_ORIGINAL,DEMO_WIN16,DEMO_WIN2K};
+static void modules(DWORD pid,enum demo_style style,PCWSTR package,PCWSTR image)
 {
     HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPMODULE|TH32CS_SNAPMODULE32,pid);CHECK(snapshot!=INVALID_HANDLE_VALUE);
     MODULEENTRY32W entry={.dwSize=sizeof(entry)};BOOL found=FALSE,main=FALSE;WCHAR wanted[MAX_PATH];
-    CHECK(swprintf_s(wanted,MAX_PATH,L"%ls\\ntw16s64.dll",package)>0 && Module32FirstW(snapshot,&entry));
+    PCWSTR style_dll=style==DEMO_WIN2K?L"ntw2ks64.dll":L"ntw16s64.dll";
+    CHECK(swprintf_s(wanted,MAX_PATH,L"%ls\\%ls",package,style_dll)>0 && Module32FirstW(snapshot,&entry));
     do{
-        if(!_wcsicmp(entry.szModule,L"ntw16s32.dll"))CHECK(FALSE);
-        if(!_wcsicmp(entry.szModule,L"ntw16s64.dll")){CHECK(styled && !_wcsicmp(entry.szExePath,wanted));found=TRUE;}
+        if(!_wcsicmp(entry.szModule,L"ntw16s32.dll") || !_wcsicmp(entry.szModule,L"ntw2ks32.dll"))CHECK(FALSE);
+        if(!_wcsicmp(entry.szModule,L"ntw16s64.dll") || !_wcsicmp(entry.szModule,L"ntw2ks64.dll")){
+            CHECK(style!=DEMO_ORIGINAL && !_wcsicmp(entry.szExePath,wanted));found=TRUE;
+        }
         if(!_wcsicmp(entry.szExePath,image))main=TRUE;
     }while(Module32NextW(snapshot,&entry));
-    CHECK(found==styled && main);CloseHandle(snapshot);
+    CHECK(found==(style!=DEMO_ORIGINAL) && main);CloseHandle(snapshot);
 }
-typedef struct pixels {uint64_t hash;unsigned caption;} pixels;
+typedef struct pixels {uint64_t hash;unsigned caption,classic_blue;} pixels;
 static pixels capture(HWND window,PCWSTR file)
 {
     RECT r;CHECK(GetWindowRect(window,&r));int width=r.right-r.left,height=r.bottom-r.top;CHECK(width>0 && height>0);
@@ -75,9 +79,12 @@ static pixels capture(HWND window,PCWSTR file)
     HBITMAP bitmap=CreateDIBSection(screen,&info,DIB_RGB_COLORS,&data,NULL,0);CHECK(screen && dc && bitmap && data);
     HGDIOBJ previous=SelectObject(dc,bitmap);memset(data,0xff,(size_t)width*height*4);
     CHECK(PrintWindow(window,dc,0));
-    pixels value={14695981039346656037ull,0};BYTE *bytes=data;
+    pixels value={.hash=14695981039346656037ull};BYTE *bytes=data;
     for(size_t i=0;i<(size_t)width*height*4;++i)value.hash=(value.hash^bytes[i])*1099511628211ull;
-    for(size_t i=0;i<(size_t)width*height;++i)if(bytes[i*4]==240 && bytes[i*4+1]==200 && bytes[i*4+2]==164)++value.caption;
+    for(size_t i=0;i<(size_t)width*height;++i){
+        if(bytes[i*4]==240 && bytes[i*4+1]==200 && bytes[i*4+2]==164)++value.caption;
+        if(bytes[i*4]==106 && bytes[i*4+1]==36 && bytes[i*4+2]==10)++value.classic_blue;
+    }
     BITMAPFILEHEADER header={0};header.bfType=0x4d42;header.bfOffBits=sizeof(header)+sizeof(info.bmiHeader);
     DWORD size=(DWORD)((size_t)width*height*4),written;header.bfSize=header.bfOffBits+size;
     HANDLE output=CreateFileW(file,GENERIC_WRITE,0,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);CHECK(output!=INVALID_HANDLE_VALUE);
@@ -202,7 +209,7 @@ static void demo_dialog_paths(HWND page,DWORD thread,const WCHAR *scratch)
     CHECK(!_wcsicmp(actual,expected));
     puts("DEMO FOLDER TREE SELECT PASS filesystem=1");
 }
-static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const WCHAR *scratch)
+static void catalog_pages(HWND main,DWORD thread,HANDLE target,enum demo_style styled,const WCHAR *scratch)
 {
     static const WCHAR *titles[]={L"Buttons and states",L"Editing and lists",L"Files and scrollbars",L"Containers and drawing",L"Lists and toolbars",L"Ranges and dates",L"Text and special objects",L"MDI windows",L"Common dialogs"};
     DWORD initial=GetGuiResources(target,GR_GDIOBJECTS);WCHAR file[MAX_PATH];
@@ -214,8 +221,22 @@ static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const
         if(i==1){for(int id=2211;id<=2213;++id)CHECK(SendDlgItemMessageW(w,id,CB_GETCOUNT,0,0)==8);CHECK(SendDlgItemMessageW(w,2222,LB_SETSEL,TRUE,0)!=LB_ERR && SendDlgItemMessageW(w,2222,LB_SETSEL,TRUE,2)!=LB_ERR && SendDlgItemMessageW(w,2222,LB_GETSELCOUNT,0,0)==2);CHECK(GetWindowLongPtrW(GetDlgItem(w,2202),GWL_STYLE)&ES_READONLY);}
         if(i==2){CHECK(SendDlgItemMessageW(w,2302,LB_GETCOUNT,0,0)>=0 && SendDlgItemMessageW(w,2303,LB_GETCOUNT,0,0)>=0);CHECK(GetScrollPos(GetDlgItem(w,2311),SB_CTL)==30);SendMessageW(w,WM_HSCROLL,SB_LINERIGHT,(LPARAM)GetDlgItem(w,2311));CHECK(GetScrollPos(GetDlgItem(w,2311),SB_CTL)==31);}
         if(i==3){CHECK(GetDlgItem(w,2400) && GetDlgItem(w,2405));}
-        if(i==4){CHECK(SendDlgItemMessageW(w,2502,TVM_GETCOUNT,0,0)==2 && SendDlgItemMessageW(w,2503,LVM_GETITEMCOUNT,0,0)==1 && SendDlgItemMessageW(w,2504,TCM_GETITEMCOUNT,0,0)==2);}
-        if(i==5){CHECK(SendDlgItemMessageW(w,2601,PBM_GETPOS,0,0)==45);SendMessageW(w,WM_COMMAND,2602,0);CHECK(SendDlgItemMessageW(w,2601,PBM_GETPOS,0,0)==50 && SendDlgItemMessageW(w,2603,TBM_GETPOS,0,0)==40 && SendDlgItemMessageW(w,2605,UDM_GETPOS,0,0)==25);}
+        if(i==4){
+            CHECK(SendDlgItemMessageW(w,2502,TVM_GETCOUNT,0,0)==2 && SendDlgItemMessageW(w,2503,LVM_GETITEMCOUNT,0,0)==1 && SendDlgItemMessageW(w,2504,TCM_GETITEMCOUNT,0,0)==2);
+            HWND rebar=GetDlgItem(w,2500);
+            CHECK(SendMessageW(rebar,RB_GETBANDCOUNT,0,0)==1 && SendMessageW(rebar,RB_IDTOINDEX,2520,0)==0);
+            HWND toolbar=GetDlgItem(rebar,2501);
+            CHECK(SendMessageW(toolbar,TB_BUTTONCOUNT,0,0)==3 && SendMessageW(toolbar,TB_COMMANDTOINDEX,2511,0)==2);
+            CHECK(SendDlgItemMessageW(w,2505,SB_GETPARTS,0,0)==3);
+        }
+        if(i==5){
+            CHECK(SendDlgItemMessageW(w,2601,PBM_GETPOS,0,0)==45 && SendDlgItemMessageW(w,2606,PBM_GETPOS,0,0)==45);
+            SendMessageW(w,WM_COMMAND,2602,0);
+            CHECK(SendDlgItemMessageW(w,2601,PBM_GETPOS,0,0)==50 && SendDlgItemMessageW(w,2606,PBM_GETPOS,0,0)==50);
+            CHECK(SendDlgItemMessageW(w,2603,TBM_GETPOS,0,0)==40 && SendDlgItemMessageW(w,2605,UDM_GETPOS,0,0)==25);
+            if(styled==DEMO_WIN2K)CHECK(SendDlgItemMessageW(w,2612,MCM_GETCOLOR,MCSC_TITLEBK,0)==RGB(10,36,106));
+        }
+        if(i==6)CHECK(SendDlgItemMessageW(w,2714,HKM_GETHOTKEY,0,0)==MAKEWORD('H',HOTKEYF_CONTROL));
         if(i==6){WCHAR cls[80];CHECK(GetClassNameW(GetDlgItem(w,2701),cls,80) && !_wcsicmp(cls,L"RICHEDIT50W"));SendMessageW(w,WM_COMMAND,2721,0);text(w,2722,L"Record 2: Beta");SendMessageW(w,WM_COMMAND,2712,0);text(w,2712,L"&Stop timer");SendMessageW(w,WM_COMMAND,2712,0);text(w,2712,L"&Start timer");property_window=NULL;SendMessageW(w,WM_COMMAND,2731,0);EnumThreadWindows(thread,find_property,(LPARAM)w);CHECK(property_window);HWND tab=(HWND)SendMessageW(property_window,PSM_GETTABCONTROL,0,0);CHECK(tab && SendMessageW(tab,TCM_GETITEMCOUNT,0,0)==2);CHECK(SendMessageW(property_window,PSM_SETCURSEL,1,0));CHECK(ResetEvent(property_closed));CHECK(PostMessageW(property_window,WM_CLOSE,0,0) && PostMessageW(w,WM_NULL,0,0));DWORD closed=pump_wait(property_closed,3000);printf("DEMO PROPERTY CLOSE styled=%u wait=%lu exists=%d current=%p visible=%d\n",(unsigned)styled,closed,IsWindow(property_window),(void *)SendMessageW(property_window,PSM_GETCURRENTPAGEHWND,0,0),IsWindowVisible(property_window));fflush(stdout);CHECK(closed==WAIT_OBJECT_0 && !IsWindow(property_window));}
         if(i==7){HWND client=GetDlgItem(w,2800);CHECK(client && GetWindow(client,GW_CHILD) && GetWindow(GetWindow(client,GW_CHILD),GW_HWNDNEXT));}
         if(i==8){
@@ -236,9 +257,15 @@ static void catalog_pages(HWND main,DWORD thread,HANDLE target,BOOL styled,const
                 CHECK(ra.left>=0 && ra.top>=0 && ra.right<=client.right && ra.bottom<=client.bottom);
                 for(unsigned b=a+1;b<ARRAYSIZE(ids);++b){RECT rb,intersection;CHECK(GetWindowRect(GetDlgItem(w,ids[b]),&rb));MapWindowPoints(NULL,w,(POINT *)&rb,2);CHECK(!IntersectRect(&intersection,&ra,&rb));}}
              puts("DEMO DIALOG LAYOUT PASS 27 visible nonoverlapping buttons");}
-            if(styled)demo_dialog_paths(w,thread,scratch);
+            if(styled==DEMO_WIN16)demo_dialog_paths(w,thread,scratch);
         }
         CHECK(swprintf_s(file,MAX_PATH,L"%ls\\catalog-%u-%u.bmp",scratch,(unsigned)styled,i)>0);SendMessageW(w,WM_NCACTIVATE,TRUE,0);UpdateWindow(w);pixels screenshot=capture(w,file);CHECK(screenshot.hash);
+        if(i==5 && styled==DEMO_WIN2K){
+            CHECK(swprintf_s(file,MAX_PATH,L"%ls\\classic-progress.bmp",scratch)>0);
+            pixels progress=capture(GetDlgItem(w,2606),file);
+            CHECK(progress.classic_blue>100);
+            printf("DEMO CLASSIC CONTROL PIXELS PASS segmented_fill=%u\n",progress.classic_blue);
+        }
         SendMessageW(w,WM_CLOSE,0,0);CHECK(!IsWindow(w));printf("DEMO CATALOG PAGE PASS styled=%u page=%u gdi=%lu\n",(unsigned)styled,i,GetGuiResources(target,GR_GDIOBJECTS));
     }
     /* One representative reopened page checks application-owned font retirement
@@ -256,22 +283,27 @@ static int matrix(int argc,WCHAR **argv)
 {
     WCHAR scratch[MAX_PATH],package[MAX_PATH],launcher[MAX_PATH],image[MAX_PATH],path[MAX_PATH],command[32768];
     CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
-    CHECK(argc==5 && GetEnvironmentVariableW(L"WIN16STYLE_CAPTURE_DIR",scratch,MAX_PATH));
-    CHECK(swprintf_s(package,MAX_PATH,L"%ls\\demo package",scratch)>0 && CreateDirectoryW(package,NULL));
+    CHECK((argc==5 || argc==7) && GetEnvironmentVariableW(L"WIN16STYLE_CAPTURE_DIR",scratch,MAX_PATH));
+    BOOL classic=argc==7;
+    CHECK(swprintf_s(package,MAX_PATH,L"%ls\\demo package%ls",scratch,classic?L" 2k":L"")>0 && CreateDirectoryW(package,NULL));
     CHECK(swprintf_s(launcher,MAX_PATH,L"%ls\\run16s.exe",package)>0 && CopyFileW(argv[1],launcher,FALSE));
     CHECK(swprintf_s(path,MAX_PATH,L"%ls\\ntw16s64.dll",package)>0 && CopyFileW(argv[2],path,FALSE));
     CHECK(swprintf_s(path,MAX_PATH,L"%ls\\ntw16s32.dll",package)>0 && CopyFileW(argv[3],path,FALSE));
     CHECK(copy_shared_dlls(package,argv[3],argv[2]));
+    if(classic){
+        CHECK(swprintf_s(path,MAX_PATH,L"%ls\\ntw2ks64.dll",package)>0 && CopyFileW(argv[5],path,FALSE));
+        CHECK(swprintf_s(path,MAX_PATH,L"%ls\\ntw2ks32.dll",package)>0 && CopyFileW(argv[6],path,FALSE));
+    }
     CHECK(swprintf_s(image,MAX_PATH,L"%ls\\demo.exe",package)>0 && CopyFileW(argv[4],image,FALSE));
     ready=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(ready);
     focus_ready=CreateEventW(NULL,TRUE,FALSE,NULL);property_closed=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(focus_ready && property_closed);
     HWINEVENTHOOK events=SetWinEventHook(EVENT_OBJECT_SHOW,EVENT_OBJECT_SHOW,NULL,shown,0,0,WINEVENT_OUTOFCONTEXT|WINEVENT_SKIPOWNPROCESS);CHECK(events);
     HWINEVENTHOOK interaction=SetWinEventHook(EVENT_OBJECT_CREATE,EVENT_OBJECT_VALUECHANGE,NULL,interaction_event,0,0,WINEVENT_OUTOFCONTEXT|WINEVENT_SKIPOWNPROCESS);CHECK(interaction);
     pixels screenshots[2];int advances[2];
-    for(unsigned styled=0;styled<2;++styled){
+    for(unsigned styled=classic?DEMO_WIN2K:DEMO_ORIGINAL;styled<=(classic?DEMO_WIN2K:DEMO_WIN16);++styled){
         tree=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
         CHECK(tree && SetInformationJobObject(tree,JobObjectExtendedLimitInformation,&limits,sizeof(limits)) && ResetEvent(ready));observed=NULL;
-        if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\"",launcher,image)>0);
+        if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" %ls--wait \"%ls\"",launcher,classic?L"--2k ":L"",image)>0);
         else CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\"",image)>0);
         STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
         startup.dwFlags=STARTF_USESHOWWINDOW;startup.wShowWindow=SW_SHOWNORMAL;
@@ -281,6 +313,14 @@ static int matrix(int argc,WCHAR **argv)
         HWND w=observed;DWORD pid;GetWindowThreadProcessId(w,&pid);modules(pid,styled,package,image);text(w,0,L"Win16 Style Demo");
         HANDLE target=OpenProcess(SYNCHRONIZE|PROCESS_QUERY_INFORMATION,FALSE,pid);CHECK(target && WaitForInputIdle(target,10000)==0);
         DWORD gui_thread=GetWindowThreadProcessId(w,NULL);GUITHREADINFO gui={.cbSize=sizeof(gui)};
+        if(classic){
+            catalog_pages(w,gui_thread,target,DEMO_WIN2K,scratch);
+            CHECK(PostMessageW(w,WM_COMMAND,1002,0) && pump_wait(process.hProcess,10000)==WAIT_OBJECT_0);
+            DWORD code;CHECK(GetExitCodeProcess(process.hProcess,&code) && !code);
+            CHECK(WaitForSingleObject(target,10000)==WAIT_OBJECT_0 && CloseHandle(target));
+            CloseHandle(process.hThread);CloseHandle(process.hProcess);CloseHandle(tree);tree=NULL;
+            break;
+        }
         CHECK(GetGUIThreadInfo(gui_thread,&gui) && gui.hwndFocus==GetDlgItem(w,101));
         HWND previous=gui.hwndFocus;
         for(int tab=0;tab<7;++tab){
@@ -333,8 +373,10 @@ static int matrix(int argc,WCHAR **argv)
         CloseHandle(process.hThread);CloseHandle(process.hProcess);CloseHandle(tree);tree=NULL;
         printf("DEMO OBSERVE PASS styled=%u same image, six classes, data/notifications/menu/window commands, text advance=%d caption pixels=%u\n",styled,advances[styled],screenshots[styled].caption);
     }
-    CHECK(screenshots[0].hash!=screenshots[1].hash && screenshots[1].caption>screenshots[0].caption+500 && advances[1]==advances[0]);
-    CHECK(UnhookWinEvent(interaction) && UnhookWinEvent(events) && CloseHandle(focus_ready) && CloseHandle(property_closed) && CloseHandle(ready));puts("DEMO PAIR PASS external module/appearance/business observations on private desktop; physical input not claimed");return 0;
+    if(!classic)CHECK(screenshots[0].hash!=screenshots[1].hash && screenshots[1].caption>screenshots[0].caption+500 && advances[1]==advances[0]);
+    CHECK(UnhookWinEvent(interaction) && UnhookWinEvent(events) && CloseHandle(focus_ready) && CloseHandle(property_closed) && CloseHandle(ready));
+    puts(classic?"DEMO WIN2000 PASS exact module, native state and classic control pixels":"DEMO PAIR PASS external module, appearance and application observations");
+    return 0;
 }
 int wmain(int argc,WCHAR **argv)
 {return isolated_process(argc,argv,matrix);}

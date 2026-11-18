@@ -1526,18 +1526,18 @@
       "path": "src/demo-exe/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "f1c81a65b0655b9cac8b3876eb359097d53d7c8a950fdc93ca88f4ce375c5bf7",
+      "sha256": "ba2e36d2608dd18164618060996446b3d48d2d497c7e85ab8e823fef621b5443",
       "disposition": "authored",
-      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed",
+      "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T27 S15 native demo and six-direction style verification",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
     },
     {
       "path": "tests/demo-exe/observe.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e8e379b9588a515af403cd0ed48471d8579f2228245080062b9045d81e1a13c3",
+      "sha256": "0d0d5901a54733099db393ff291926668d1fa2f025c0836b7dfe6abb55005cf0",
       "disposition": "authored",
-      "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T18 S6 corrects the observer's one-time native cache timing: a second identical reopen/close must equal the post-warm count, preserving recurring-leak detection without calling an OS lazy cache a product leak; T25 S2 shared runtime extraction",
+      "review": "T5 S2 external owned demo observer; docs/history/M0-T5-S2-pair.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T17 S8 exact observed VB6 FileListBox/DirListBox roles, dual-version file protocol models and authentic private-activation witness; native image/font/data ownership and original notices preserved; T18 S6 corrects the observer's one-time native cache timing: a second identical reopen/close must equal the post-warm count, preserving recurring-leak detection without calling an OS lazy cache a product leak; T25 S2 shared runtime extraction; T27 S15 native demo and six-direction style verification",
       "notice": "Project-authored fixture, repository MIT; T18 S7 allows a measured decrease after reopening while still rejecting growth above the settled baseline"
     },
     {
@@ -2392,8 +2392,8 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17/native resource; project MIT license",
-      "review": "T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed",
-      "sha256": "8b37f847eab9f0b2ed664c9e93d257a2fc38cd9c2b26dc911c2fa7e2f5918605"
+      "review": "T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T27 S15 native demo and six-direction style verification",
+      "sha256": "bf8c0182250e3e792947eb219b4032709018dc63dc5606f5d777130d3306988f"
     },
     {
       "path": "src/demo-exe/catalog.rc",
@@ -6386,9 +6386,9 @@
       "path": "tests/ntw16s-dll/global_style_bridge.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6356c9733ab7cc2e34a257ff7142f0b01c2bbc67812545894e9c17d2444df0c5",
+      "sha256": "eca4084574c14ee03d8558c2633b9e53f23edb2783d9bdba717917723ef423d1",
       "disposition": "authored",
-      "review": "T25 S8 shared global style bridge; T26 S1 shared control theme lifecycle; T26 S1 shared global child dispatch",
+      "review": "T25 S8 shared global style bridge; T26 S1 shared control theme lifecycle; T26 S1 shared global child dispatch; T27 S15 native demo and six-direction style verification",
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {

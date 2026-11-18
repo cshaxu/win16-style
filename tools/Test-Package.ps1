@@ -337,7 +337,10 @@ try{
         (Case 'abi-x86' (Join-Path $x86 'core-abi.exe') @($d32) @('ABI PASS width=32')),
         (Case 'abi-x64' (Join-Path $x64 'core-abi.exe') @($d64) @('ABI PASS width=64')),
         (Case 'demo-boundary' $python @('-B',(Join-Path $SourceRoot 'tests/demo-exe/boundary.py'),$demo) @('DEMO BOUNDARY PASS')),
-        (Case 'demo-pair' (Join-Path $x64 'demo-observe.exe') @($run,$d64,$d32,$demo) @('DEMO OBSERVE PASS styled=0','DEMO OBSERVE PASS styled=1','DEMO DIALOG ENTRIES PASS open=3 save=3 folder=4','DEMO EXTRA ENTRIES PASS 7','DEMO DIALOG LAYOUT PASS 27 visible nonoverlapping buttons','DEMO EXTRA DIALOG PASS opened=7 cancelled=7 shell_tree=1','DEMO DIALOG PATHS PASS opened=9 cancelled=9','DEMO DIALOG SELECT PASS legacy=1 bridge=1 save=1 cleanup=1','DEMO FOLDER TREE SELECT PASS filesystem=1','DEMO PAIR PASS')),
+        (Case 'demo-pair' (Join-Path $x64 'demo-observe.exe') @('--private-worker',$run,$d64,$d32,$demo) @('DEMO OBSERVE PASS styled=0','DEMO OBSERVE PASS styled=1','DEMO DIALOG ENTRIES PASS open=3 save=3 folder=4','DEMO EXTRA ENTRIES PASS 7','DEMO DIALOG LAYOUT PASS 27 visible nonoverlapping buttons','DEMO EXTRA DIALOG PASS opened=7 cancelled=7 shell_tree=1','DEMO DIALOG PATHS PASS opened=9 cancelled=9','DEMO DIALOG SELECT PASS legacy=1 bridge=1 save=1 cleanup=1','DEMO FOLDER TREE SELECT PASS filesystem=1','DEMO PAIR PASS') 90),
+        (Case 'demo-win2000' (Join-Path $x64 'demo-observe.exe') @('--private-worker',$run,$d64,$d32,$demo,(Join-Path $Package 'ntw2ks64.dll'),(Join-Path $Package 'ntw2ks32.dll')) @('DEMO CATALOG PASS styled=2 pages=9','DEMO CLASSIC CONTROL PIXELS PASS','DEMO WIN2000 PASS') 90),
+        (Case 'global-style-cycle-x86' (Join-Path $scratch 'style-cycle-x86/core-global-style-bridge.exe') @() @('GLOBAL STYLE BRIDGE bits=32','GLOBAL STYLE CYCLE PASS edges=6 frame=1 children=2 state=1 draw_restore=1') 30),
+        (Case 'global-style-cycle-x64' (Join-Path $scratch 'style-cycle-x64/core-global-style-bridge.exe') @() @('GLOBAL STYLE BRIDGE bits=64','GLOBAL STYLE CYCLE PASS edges=6 frame=1 children=2 state=1 draw_restore=1') 30),
         (Case 'wait-contract' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/wait.py'),$run,$d32,$d64,(Join-Path $x86 'wait-target.exe'),(Join-Path $x64 'wait-target.exe'),(Join-Path $x64 'wait-gui-target.exe')) @('WAIT CONTRACT PASS 6 cases') 190),
         (Case 'font-layout-x86' (Join-Path $x86 'core-font-layout.exe') @($d32) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
         (Case 'font-layout-x64' (Join-Path $x64 'core-font-layout.exe') @($d64) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
@@ -1004,6 +1007,17 @@ try{
         }
     }
     foreach($arch in @('x86','x64')){
+        if(@($cases|Where-Object name -eq "global-style-cycle-$arch").Count){
+            $bits=if($arch -eq 'x86'){'32'}else{'64'}
+            $fixture=Join-Path $scratch "style-cycle-$arch"
+            New-Item -ItemType Directory -Path $fixture | Out-Null
+            Copy-Item -LiteralPath (Join-Path $BuildRoot "$arch/core-global-style-bridge.exe") -Destination $fixture
+            foreach($name in @("ntw16s$bits.dll","ntw2ks$bits.dll","ntwshk$bits.dll")){
+                $target=Join-Path $fixture $name
+                Copy-Item -LiteralPath (Join-Path $Package $name) -Destination $target
+                if((Get-FileHash -LiteralPath $target).Hash -ne $before[$name]){throw "Style cycle fixture differs: $name"}
+            }
+        }
         if(@($cases|Where-Object { $_.name -in @("global-start-$arch","global-start-remote-$arch") }).Count){
             $fixture=Join-Path $scratch "start-$arch";New-Item -ItemType Directory -Path $fixture | Out-Null
             Copy-Item -LiteralPath (Join-Path (Join-Path $BuildRoot $arch) 'global-start-fixture/run16s.exe') -Destination (Join-Path $fixture 'run16s.exe')

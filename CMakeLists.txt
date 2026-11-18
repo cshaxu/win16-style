@@ -1156,7 +1156,7 @@ if(BUILD_TESTING)
     target_compile_definitions(demo-observe PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 
     target_link_libraries(demo-observe PRIVATE user32 gdi32)
-    add_test(NAME demo/pair COMMAND ${test_driver} --name demo/pair -- $<TARGET_FILE:demo-observe> $<TARGET_FILE:run16s> $<TARGET_FILE:ntw16s>
+    add_test(NAME demo/pair COMMAND ${test_driver} --name demo/pair -- $<TARGET_FILE:demo-observe> --private-worker $<TARGET_FILE:run16s> $<TARGET_FILE:ntw16s>
       ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:demo>)
     set_tests_properties(demo/pair PROPERTIES TIMEOUT 100 RUN_SERIAL TRUE)
     add_executable(startup-errors tests/run16s-exe/startup_errors.c)
@@ -1622,7 +1622,7 @@ if(BUILD_TESTING)
   add_executable(core-global-style-bridge tests/ntw16s-dll/global_style_bridge.c src/ntw16s-dll/global/window.c src/ntw16s-dll/global/session.c)
   add_dependencies(core-global-style-bridge style-subclass ntw2ks)
   target_include_directories(core-global-style-bridge PRIVATE src)
-  target_link_libraries(core-global-style-bridge PRIVATE style-global-window style-companion process-global ntw16s "${subclass_import}" user32 comctl32)
+  target_link_libraries(core-global-style-bridge PRIVATE style-global-window style-companion process-global ntw16s "${subclass_import}" user32 comctl32 gdi32)
   add_test(NAME core/global-style-bridge COMMAND $<TARGET_FILE:core-global-style-bridge>)
   add_executable(core-style-global-receiver tests/lib-win32-style/access/global/receiver.c)
   target_link_libraries(core-style-global-receiver PRIVATE style-global)

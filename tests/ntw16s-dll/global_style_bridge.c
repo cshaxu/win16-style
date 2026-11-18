@@ -29,6 +29,67 @@ static BOOL footer_aligned(HWND window)
     printf("FOOTER child_bottom=%ld client_bottom=%ld\n",child.bottom,origin.y+client.bottom);
     return child.bottom==origin.y+client.bottom;
 }
+static COLORREF button_face(HWND button)
+{
+    RECT client;
+    if(!GetClientRect(button,&client))return CLR_INVALID;
+    HDC screen=GetDC(button);
+    if(!screen)return CLR_INVALID;
+    HDC dc=CreateCompatibleDC(screen);
+    HBITMAP bitmap=CreateCompatibleBitmap(screen,client.right,client.bottom);
+    ReleaseDC(button,screen);
+    HGDIOBJ previous=dc && bitmap?SelectObject(dc,bitmap):NULL;
+    COLORREF color=CLR_INVALID;
+    if(previous){
+        PatBlt(dc,0,0,client.right,client.bottom,WHITENESS);
+        SendMessageW(button,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
+        color=GetPixel(dc,client.right/2,client.bottom/2);
+        SelectObject(dc,previous);
+    }
+    if(bitmap)DeleteObject(bitmap);
+    if(dc)DeleteDC(dc);
+    return color;
+}
+static BOOL style_cycle(HWND window,HINSTANCE instance,BOOL (__cdecl *attached2k)(HWND))
+{
+    HWND button=CreateWindowW(L"BUTTON",L"",WS_CHILD|WS_VISIBLE,8,30,120,32,window,NULL,instance,NULL);
+    if(!button || !attached2k)return FALSE;
+    COLORREF native=button_face(button);
+    if(native==CLR_INVALID)return FALSE;
+    HWND later=NULL;
+    const DWORD original=MAXDWORD;
+    const DWORD path[]={original,NTW16S_GLOBAL_STYLE_16,NTW16S_GLOBAL_STYLE_2K,original,
+        NTW16S_GLOBAL_STYLE_2K,NTW16S_GLOBAL_STYLE_16,original};
+    for(unsigned i=1;i<ARRAYSIZE(path);++i){
+        DWORD style=path[i],before=path[i-1];
+        BOOL frame;
+        if(style!=original){
+            frame=ntw16s_global_window_apply_style(window,style);
+            if(i==1){
+                later=CreateWindowW(L"BUTTON",L"Option",WS_CHILD|WS_VISIBLE|BS_AUTOCHECKBOX,
+                    140,30,90,32,window,NULL,instance,NULL);
+                if(!later)return FALSE;
+                SendMessageW(later,BM_SETCHECK,BST_CHECKED,0);
+            }
+            ntw16s_global_window_children(window,TRUE,style);
+        }else{
+            ntw16s_global_window_children(window,FALSE,before);
+            frame=ntw16s_global_window_remove_style(window,before);
+        }
+        BOOL classic16=style==NTW16S_GLOBAL_STYLE_16,classic2k=style==NTW16S_GLOBAL_STYLE_2K;
+        frame=frame && (GetPropW(window,L"Win2kStyle.Frame")!=NULL)==classic2k &&
+            Ntw16sWindowAttached(window)==classic16;
+        BOOL children=Ntw16sWindowAttached(button)==classic16 && Ntw16sWindowAttached(later)==classic16 &&
+            attached2k(button)==classic2k && attached2k(later)==classic2k;
+        BOOL data=SendMessageW(later,BM_GETCHECK,0,0)==BST_CHECKED;
+        COLORREF color=button_face(button),expected=classic2k?RGB(212,208,200):classic16?RGB(192,192,192):native;
+        printf("GLOBAL STYLE CYCLE step=%u from=%lu to=%lu frame=%d children=%d state=%d pixel=%06lx expected=%06lx\n",
+               i,(unsigned long)before,(unsigned long)style,frame,children,data,(unsigned long)color,(unsigned long)expected);
+        if(!frame || !children || !data || color!=expected)return FALSE;
+    }
+    puts("GLOBAL STYLE CYCLE PASS edges=6 frame=1 children=2 state=1 draw_restore=1");
+    return TRUE;
+}
 int main(void)
 {
     HINSTANCE instance=GetModuleHandleW(NULL);
@@ -84,23 +145,11 @@ int main(void)
     BOOL takeover16=existing2k && ntw16s_global_window_apply_style(window,NTW16S_GLOBAL_STYLE_16) &&
                     Ntw16sWindowAttached(window) && !GetPropW(window,L"Win2kStyle.Frame");
     if(takeover16)(void)ntw16s_global_window_remove_style(window,NTW16S_GLOBAL_STYLE_16);
-    HWND button=CreateWindowW(L"BUTTON",L"Test",WS_CHILD|WS_VISIBLE,0,0,50,20,window,NULL,instance,NULL);
     BOOL (__cdecl *attached2k)(HWND)=module?(void *)GetProcAddress(module,"Ntw2ksWindowAttached"):NULL;
-    ntw16s_global_window_children(window,TRUE,NTW16S_GLOBAL_STYLE_2K);
-    BOOL child2k=button && attached2k && attached2k(button);
-    ntw16s_global_window_children(window,TRUE,NTW16S_GLOBAL_STYLE_16);
-    BOOL child16=child2k && Ntw16sWindowAttached(button) && !attached2k(button);
-    ntw16s_global_window_children(window,TRUE,NTW16S_GLOBAL_STYLE_2K);
-    BOOL childback=child16 && !Ntw16sWindowAttached(button) && attached2k(button);
-    HWND later=CreateWindowW(L"BUTTON",L"Later",WS_CHILD|WS_VISIBLE,55,0,50,20,window,NULL,instance,NULL);
-    ntw16s_global_window_children(window,TRUE,NTW16S_GLOBAL_STYLE_2K);
-    BOOL newchild=childback && later && attached2k(later) && attached2k(button);
-    ntw16s_global_window_children(window,FALSE,NTW16S_GLOBAL_STYLE_2K);
-    BOOL childremove=newchild && !attached2k(button) && !attached2k(later);
-    printf("GLOBAL CHILD BRIDGE 2k=%d 16=%d back=%d new=%d remove=%d\n",child2k,child16,childback,newchild,childremove);
+    BOOL cycle=style_cycle(window,instance,attached2k);
     DestroyWindow(window);UnregisterClassW(cls.lpszClassName,instance);
     printf("GLOBAL STYLE BRIDGE bits=%u apply2k=%d switch16=%d switch2k=%d client_clean=%d immediate=%d clean_after=%d click_clean=%d footer=%d overlap=%d refreshed=%d remove2k=%d apply16=%d remove16=%d reverse=%d existing=%d takeover=%d existing2k=%d takeover16=%d\n",
            (unsigned)(sizeof(void *)*8),apply2k,switched16,switched2k,client_clean,clean_immediate,clean_after,click_clean,footer_ok,overlap_exists,refreshed,remove2k,apply16,remove16,reverse,existing,takeover,existing2k,takeover16);
     return apply2k && switched16 && switched2k && client_clean && clean_immediate && clean_after && click_clean && footer_ok &&
-        (!overlap_exists || refreshed || repainted) && remove2k && apply16 && remove16 && reverse && takeover && takeover16 && childremove?0:3;
+        (!overlap_exists || refreshed || repainted) && remove2k && apply16 && remove16 && reverse && takeover && takeover16 && cycle?0:3;
 }

@@ -37,6 +37,11 @@ static void button(HWND w,page *s,const WCHAR *text,DWORD style,int x,int y,int 
 {add(w,s,L"BUTTON",text,style|WS_TABSTOP,0,x,y,cx,28,id);}
 static void populate_list(HWND child,BOOL combo)
 {for(unsigned i=0;i<8;++i){WCHAR text[40];swprintf_s(text,40,L"Item %u",i+1);SendMessageW(child,combo?CB_ADDSTRING:LB_ADDSTRING,0,(LPARAM)text);}}
+static BOOL status_parts(HWND w,HWND status)
+{
+    int edges[]={px(w,200),px(w,452),-1};
+    return SendMessageW(status,SB_SETPARTS,ARRAYSIZE(edges),(LPARAM)edges)!=0;
+}
 static void relayout(HWND w,page *s)
 {
     NONCLIENTMETRICSW n={.cbSize=sizeof(n)};HFONT next=NULL;
@@ -44,6 +49,8 @@ static void relayout(HWND w,page *s)
     if(next){HFONT old=s->font;s->font=next;for(unsigned i=0;i<s->count;++i)if(IsWindow(s->items[i].window))SendMessageW(s->items[i].window,WM_SETFONT,(WPARAM)next,TRUE);if(old)DeleteObject(old);}
     for(unsigned i=0;i<s->count;++i){item *a=&s->items[i];if(GetParent(a->window)==w)SetWindowPos(a->window,NULL,px(w,a->x),px(w,a->y),px(w,a->cx),px(w,a->cy),SWP_NOACTIVATE|SWP_NOZORDER);}
     if(s->mdi){RECT r;GetClientRect(w,&r);SetWindowPos(s->mdi,NULL,0,0,r.right,r.bottom,SWP_NOACTIVATE|SWP_NOZORDER);}
+    HWND status=GetDlgItem(w,2505);
+    if(status)status_parts(w,status);
 }
 static void files(HWND w,page *s,const WCHAR *path)
 {
@@ -122,24 +129,44 @@ static void containers(HWND w,page *s)
 static void common_lists(HWND w,page *s)
 {
     HWND rebar=add(w,s,REBARCLASSNAMEW,L"",WS_CLIPCHILDREN|RBS_VARHEIGHT|RBS_AUTOSIZE|CCS_NODIVIDER,0,0,0,700,36,2500);
+    if(!rebar)return;
+    s->images=ImageList_Create(px(w,16),px(w,16),ILC_COLOR32|ILC_MASK,1,1);
+    if(!s->images || ImageList_AddIcon(s->images,LoadIconW(NULL,IDI_APPLICATION))<0){s->failed=TRUE;return;}
     HWND toolbar=CreateWindowExW(0,TOOLBARCLASSNAMEW,NULL,WS_CHILD|WS_VISIBLE|TBSTYLE_FLAT|TBSTYLE_LIST|CCS_NORESIZE|CCS_NOPARENTALIGN,0,0,0,0,rebar,(HMENU)2501,GetModuleHandleW(NULL),NULL);
     if(!toolbar){s->failed=TRUE;return;}
-    SendMessageW(toolbar,TB_BUTTONSTRUCTSIZE,sizeof(TBBUTTON),0);TBBUTTON buttons[2]={{.iBitmap=I_IMAGENONE,.idCommand=2510,.fsState=TBSTATE_ENABLED,.fsStyle=BTNS_BUTTON|BTNS_AUTOSIZE,.iString=(INT_PTR)L"New"},{.iBitmap=I_IMAGENONE,.idCommand=2511,.fsState=TBSTATE_ENABLED,.fsStyle=BTNS_CHECK|BTNS_AUTOSIZE,.iString=(INT_PTR)L"Toggle"}};
-    SendMessageW(toolbar,TB_ADDBUTTONSW,2,(LPARAM)buttons);SendMessageW(toolbar,TB_AUTOSIZE,0,0);
-    REBARBANDINFOW band={.cbSize=sizeof(band),.fMask=RBBIM_CHILD|RBBIM_CHILDSIZE|RBBIM_SIZE|RBBIM_STYLE,.fStyle=RBBS_GRIPPERALWAYS,.hwndChild=toolbar,.cxMinChild=(UINT)px(w,200),.cyMinChild=(UINT)px(w,30),.cx=(UINT)px(w,600)};SendMessageW(rebar,RB_INSERTBANDW,(WPARAM)-1,(LPARAM)&band);
-    s->images=ImageList_Create(px(w,16),px(w,16),ILC_COLOR32|ILC_MASK,1,1);if(!s->images){s->failed=TRUE;return;}ImageList_AddIcon(s->images,LoadIconW(NULL,IDI_APPLICATION));
+    SendMessageW(toolbar,TB_BUTTONSTRUCTSIZE,sizeof(TBBUTTON),0);
+    SendMessageW(toolbar,TB_SETIMAGELIST,0,(LPARAM)s->images);
+    TBBUTTON buttons[]={
+        {.iBitmap=0,.idCommand=2510,.fsState=TBSTATE_ENABLED,.fsStyle=BTNS_BUTTON|BTNS_AUTOSIZE,.iString=(INT_PTR)L"New"},
+        {.iBitmap=px(w,8),.fsStyle=BTNS_SEP},
+        {.iBitmap=I_IMAGENONE,.idCommand=2511,.fsState=TBSTATE_ENABLED,.fsStyle=BTNS_CHECK|BTNS_AUTOSIZE,.iString=(INT_PTR)L"Toggle"}
+    };
+    if(!SendMessageW(toolbar,TB_ADDBUTTONSW,ARRAYSIZE(buttons),(LPARAM)buttons)){s->failed=TRUE;return;}
+    SendMessageW(toolbar,TB_AUTOSIZE,0,0);
+    REBARBANDINFOW band={.cbSize=sizeof(band),.fMask=RBBIM_CHILD|RBBIM_CHILDSIZE|RBBIM_SIZE|RBBIM_STYLE|RBBIM_ID,
+        .fStyle=RBBS_GRIPPERALWAYS,.hwndChild=toolbar,.cxMinChild=(UINT)px(w,200),.cyMinChild=(UINT)px(w,30),.cx=(UINT)px(w,600),.wID=2520};
+    if(!SendMessageW(rebar,RB_INSERTBANDW,(WPARAM)-1,(LPARAM)&band)){s->failed=TRUE;return;}
     HWND tree=add(w,s,WC_TREEVIEWW,L"",WS_TABSTOP|TVS_HASBUTTONS|TVS_HASLINES|TVS_LINESATROOT,WS_EX_CLIENTEDGE,16,56,210,256,2502);TreeView_SetImageList(tree,s->images,TVSIL_NORMAL);
     TVINSERTSTRUCTW item={.hParent=TVI_ROOT,.hInsertAfter=TVI_LAST,.item={.mask=TVIF_TEXT|TVIF_IMAGE|TVIF_SELECTEDIMAGE,.pszText=L"Root",.iImage=0,.iSelectedImage=0}};HTREEITEM root=TreeView_InsertItem(tree,&item);item.hParent=root;item.item.pszText=L"Child";TreeView_InsertItem(tree,&item);TreeView_Expand(tree,root,TVE_EXPAND);
     HWND list=add(w,s,WC_LISTVIEWW,L"",WS_TABSTOP|LVS_REPORT|LVS_SHAREIMAGELISTS,WS_EX_CLIENTEDGE,244,56,440,256,2503);ListView_SetImageList(list,s->images,LVSIL_SMALL);
     LVCOLUMNW column={.mask=LVCF_TEXT|LVCF_WIDTH,.cx=px(w,210),.pszText=L"Name"};ListView_InsertColumn(list,0,&column);column.pszText=L"Value";ListView_InsertColumn(list,1,&column);
     LVITEMW row={.mask=LVIF_TEXT|LVIF_IMAGE,.iItem=0,.pszText=L"First row",.iImage=0};ListView_InsertItem(list,&row);ListView_SetItemText(list,0,1,L"Native report cells");
     HWND tab=add(w,s,WC_TABCONTROLW,L"",WS_TABSTOP,0,16,340,668,146,2504);TCITEMW ti={.mask=TCIF_TEXT,.pszText=L"First tab"};TabCtrl_InsertItem(tab,0,&ti);ti.pszText=L"Second tab";TabCtrl_InsertItem(tab,1,&ti);
-    add(w,s,STATUSCLASSNAMEW,L"ImageList, header and notifications are owned by native controls.",SBARS_SIZEGRIP|CCS_NOPARENTALIGN|CCS_NORESIZE,0,0,520,700,24,2505);
+    HWND status=add(w,s,STATUSCLASSNAMEW,L"",SBARS_SIZEGRIP|CCS_NOPARENTALIGN|CCS_NORESIZE,0,0,520,700,24,2505);
+    if(!status || !status_parts(w,status) ||
+       !SendMessageW(status,SB_SETTEXTW,0,(LPARAM)L"Ordinary") ||
+       !SendMessageW(status,SB_SETTEXTW,1|SBT_POPOUT,(LPARAM)L"Raised") ||
+       !SendMessageW(status,SB_SETTEXTW,2|SBT_NOBORDERS,(LPARAM)L"No border"))s->failed=TRUE;
 }
 static void ranges(HWND w,page *s)
 {
-    label(w,s,L"Progress / slider / numeric up-down",16,16,660,2600);
-    HWND progress=add(w,s,PROGRESS_CLASSW,L"",PBS_SMOOTH,0,16,48,500,24,2601);SendMessageW(progress,PBM_SETPOS,45,0);SendMessageW(progress,PBM_SETSTEP,5,0);button(w,s,L"&Step",BS_PUSHBUTTON,544,46,140,2602);
+    label(w,s,L"Smooth progress",16,16,244,2600);
+    label(w,s,L"Segmented progress",276,16,240,2607);
+    HWND smooth=add(w,s,PROGRESS_CLASSW,L"",PBS_SMOOTH,0,16,48,240,24,2601);
+    HWND segmented=add(w,s,PROGRESS_CLASSW,L"",0,0,276,48,240,24,2606);
+    SendMessageW(smooth,PBM_SETPOS,45,0);SendMessageW(smooth,PBM_SETSTEP,5,0);
+    SendMessageW(segmented,PBM_SETPOS,45,0);SendMessageW(segmented,PBM_SETSTEP,5,0);
+    button(w,s,L"&Step",BS_PUSHBUTTON,544,46,140,2602);
     HWND slider=add(w,s,TRACKBAR_CLASSW,L"",WS_TABSTOP|TBS_AUTOTICKS,0,16,92,500,48,2603);SendMessageW(slider,TBM_SETRANGE,TRUE,MAKELPARAM(0,100));SendMessageW(slider,TBM_SETPOS,TRUE,40);
     HWND edit=add(w,s,L"EDIT",L"25",WS_TABSTOP|ES_NUMBER|ES_AUTOHSCROLL,WS_EX_CLIENTEDGE,544,100,112,28,2604);HWND up=add(w,s,UPDOWN_CLASSW,L"",UDS_SETBUDDYINT|UDS_ALIGNRIGHT|UDS_ARROWKEYS,0,656,100,28,28,2605);SendMessageW(up,UDM_SETBUDDY,(WPARAM)edit,0);SendMessageW(up,UDM_SETRANGE32,0,100);SendMessageW(up,UDM_SETPOS32,0,25);
     label(w,s,L"Date picker / month calendar",16,164,660,2610);add(w,s,DATETIMEPICK_CLASSW,L"",WS_TABSTOP|DTS_SHORTDATEFORMAT,0,16,196,260,28,2611);add(w,s,MONTHCAL_CLASSW,L"",WS_TABSTOP,0,310,196,374,272,2612);
@@ -162,7 +189,10 @@ static void special(HWND w,page *s)
     label(w,s,L"Rich text (native system RichEdit)",16,16,660,2700);
     if(rich_library){HWND rich=add(w,s,MSFTEDIT_CLASS,L"Rich text: select, edit, copy and paste.",WS_TABSTOP|ES_MULTILINE|WS_VSCROLL,WS_EX_CLIENTEDGE,16,48,668,100,2701);CHARFORMAT2W format={.cbSize=sizeof(format),.dwMask=CFM_BOLD,.dwEffects=CFE_BOLD};SendMessageW(rich,EM_SETSEL,0,9);SendMessageW(rich,EM_SETCHARFORMAT,SCF_SELECTION,(LPARAM)&format);SendMessageW(rich,EM_SETSEL,0,0);}
     else label(w,s,L"System RichEdit is unavailable.",16,48,660,2701);
-    label(w,s,L"Numeric edit / timer / in-memory record navigation",16,172,660,2710);add(w,s,L"EDIT",L"12345",ES_NUMBER|WS_TABSTOP,WS_EX_CLIENTEDGE,16,204,130,28,2711);button(w,s,L"&Start timer",BS_PUSHBUTTON,170,204,170,2712);label(w,s,L"Ticks: 0",360,208,300,2713);
+    label(w,s,L"Numeric edit / timer / in-memory record navigation",16,172,660,2710);add(w,s,L"EDIT",L"12345",ES_NUMBER|WS_TABSTOP,WS_EX_CLIENTEDGE,16,204,130,28,2711);button(w,s,L"&Start timer",BS_PUSHBUTTON,170,204,170,2712);label(w,s,L"Ticks: 0",360,208,110,2713);
+    label(w,s,L"Hotkey",480,208,62,2715);
+    HWND hotkey=add(w,s,HOTKEY_CLASSW,L"",WS_TABSTOP,WS_EX_CLIENTEDGE,552,204,132,28,2714);
+    SendMessageW(hotkey,HKM_SETHOTKEY,MAKEWORD('H',HOTKEYF_CONTROL),0);
     button(w,s,L"&Previous",BS_PUSHBUTTON,16,256,130,2720);button(w,s,L"&Next",BS_PUSHBUTTON,170,256,130,2721);label(w,s,L"Record 1: Alpha",330,260,330,2722);
     button(w,s,L"Open &file...",BS_PUSHBUTTON,16,316,180,2730);button(w,s,L"Property &pages...",BS_PUSHBUTTON,220,316,220,2731);
     label(w,s,L"OLE / UserControl hosts retain the embedded application's contents.",16,384,668,2740);
@@ -230,7 +260,7 @@ static LRESULT CALLBACK page_proc(HWND w,UINT m,WPARAM a,LPARAM b)
         if(s->index==2 && id==2301){WCHAR path[32768];GetDlgItemTextW(w,2300,path,32768);files(w,s,path);}
         if(s->index==2 && id==2310 && HIWORD(a)==CBN_SELCHANGE){WCHAR drive[8];LRESULT n=SendDlgItemMessageW(w,2310,CB_GETCURSEL,0,0);if(n!=CB_ERR && SendDlgItemMessageW(w,2310,CB_GETLBTEXTLEN,n,0)<8 && SendDlgItemMessageW(w,2310,CB_GETLBTEXT,n,(LPARAM)drive)!=CB_ERR)files(w,s,drive);}
         if(s->index==2 && id==2302 && HIWORD(a)==LBN_DBLCLK){WCHAR name[260],path[32768];LRESULT n=SendDlgItemMessageW(w,2302,LB_GETCURSEL,0,0);if(n!=LB_ERR && SendDlgItemMessageW(w,2302,LB_GETTEXTLEN,n,0)<260 && SendDlgItemMessageW(w,2302,LB_GETTEXT,n,(LPARAM)name)!=LB_ERR && swprintf_s(path,32768,L"%ls\\%ls",s->path,name)>0)files(w,s,path);}
-        if(id==2602)SendDlgItemMessageW(w,2601,PBM_STEPIT,0,0);
+        if(id==2602){SendDlgItemMessageW(w,2601,PBM_STEPIT,0,0);SendDlgItemMessageW(w,2606,PBM_STEPIT,0,0);}
         if(id==2712){if(s->running){KillTimer(w,1);s->running=FALSE;}else s->running=SetTimer(w,1,500,NULL)!=0;SetDlgItemTextW(w,2712,s->running?L"&Stop timer":L"&Start timer");}
         if(id==2720 || id==2721){s->record=(s->record+(id==2721?1:2))%3;swprintf_s(text,400,L"Record %u: %ls",s->record+1,s->record==0?L"Alpha":s->record==1?L"Beta":L"Gamma");SetDlgItemTextW(w,2722,text);}
         if(id==2730){WCHAR file[32768]=L"";OPENFILENAMEW open={.lStructSize=sizeof(open),.hwndOwner=w,.lpstrFilter=L"All files\0*.*\0\0",.lpstrFile=file,.nMaxFile=32768,.Flags=OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST|OFN_NOCHANGEDIR};if(GetOpenFileNameW(&open)){note(w,file);return 0;}demo_dialog_failure(w,L"File selection cancelled; no file was opened.");return 0;}
