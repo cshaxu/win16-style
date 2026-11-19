@@ -72,31 +72,31 @@ S8 P1 同批发布后聚焦回归 73/73，直接复验 36 项通过、2 项 x86 
 已复核远端 `79dc7c2e` 的 12 个发布文件，S8 收口。S9 接续现代外框。
 用户确认 T29 最终发行包为七件。启动器和两份 `ntwshk` 加两组主题，
 见[主题构建契约](../proposals/msstyles-build-contract.md)。S11 负责独立七件目录验收与切换。
-S9 两种直接 UWP 外框已接入共用主题模型，双宽自有窗口的开发对照通过。
-S9 P1 已发布两处，聚焦实包 29/29、双宽自有窗口补充 24/24，
-复验真实 Calculator、Scan 和 WinUI 记事本通过。实际远端复核待完成。
-见[验证记录](../history/M0-T29-S9-modern-frames.md)。
+S9 已收口。直接 UWP 与 Win32、WinUI 共用主题模型及呈现。P1 聚焦实包
+29/29、两处双宽补充 24/24。真实 Calculator、Scan 和 WinUI 记事本复验通过。
+已核对实际远端 `407e14d0` 的源码及 12 个文件摘要。
+见[验证记录](../history/M0-T29-S9-modern-frames.md)。S10 接续中性运行时。
 
-## M0 T29 S9 Packet
+## M0 T29 S10 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；M0 固定。 |
-| Admission And Approval | 用户批准按 T29 S2–S12 连续实施；S8 实际远端通过后接续。 |
-| Objective | 迁移 S2 台账 43、46 的 Win16 与 Win2K 现代外框；三类宿主使用同一主题模型和已有呈现器。 |
-| Non-goals | 不增加客户区控件、宿主资格、权限或接入面；中性运行时和正式七件包由 S10–S11 完成。 |
-| Reference Baseline | S8 P1 同批八件开发运行包和四份主题，以及 T28 双风格外框、撤销和现代宿主证据。 |
+| Admission And Approval | 用户批准按 T29 S2–S12 连续实施；S9 实际远端通过后接续。 |
+| Objective | 将两套旧年代装配合入双位宽 ntwshk，使两套外部主题驱动同一运行时。落实 S2 兼容调用逐项处置。 |
+| Non-goals | 七件包的正式交付门禁和两处旧文件退役由 S11 执行；不扩展样式能力、目标、权限或调度范围。 |
+| Reference Baseline | S9 P1 的两处八件开发运行包、四个主题文件及 S2 的 44 项导出判据。 |
 | Candidate Proposal | docs/proposals/msstyles-classic-runtime.md。 |
-| Files And ABI Surface | 两年代窗口呈现、UWP/WinUI 适配和主题读取加现有自有夹具；保持既有接入和窗口消息协议。 |
-| Applicable Rules | C17、双位宽、原有窗口撤销与资源所有权，固定来源及原始绘图资源；不得增加 OS 或第三方依赖。 |
-| Verification | 同 DPI 对照 Win32 和现代宿主的标题、按钮、焦点、重排、最大化与恢复；覆盖自有外框及允许的既有样本。 |
-| Expected Markers | 同一主题修改产生可核对的标题像素变化，按钮与命中共用度量，客户区和原生窗口几何按适配契约保留及恢复。 |
-| Asset Needs | 现有两套主题、原始图形及自有现代外框／合成夹具；已确认的实际宿主可按批准范围复验。 |
-| Reporting Requirements | 区分同像素呈现、窗口和合成尺寸、真实宿主及自有模型；逐项报告两年代待证范围。 |
-| Stop Conditions | 保留已批准的桌面和权限限制；适配资格、错误回退及会话清理继续用当前行为。 |
-| Exit Criteria | 台账 43、46 有双宽可核对的代码与样本结论，同快照候选两处发布，发布后回归并复核实际远端。 |
-| Original Owner Request | 将 Win16、Win2000 风格迁入同一主题编译及运行机制，保持既有外观和公开行为。 |
-| Similar-Issue Sweep | 核对常规外框、合成外框和直接覆盖面是否各用颜色、标题字体、按钮度量或图形默认值。 |
+| Files And ABI Surface | 两位宽运行时、启动器的模块选择、现有生命周期装配、主题来源与各消费者、原资源和兼容接口。 |
+| Applicable Rules | C17、MinGW GCC、Ninja 和 ccache；主题只读资源映射；保留原始资源及来源、既有权限和恢复语义。 |
+| Verification | 双宽验证启动、同一窗口切换与撤销、既有受限全局接收路径、两主题文件失效时的事务结果，以及兼容入口。 |
+| Expected Markers | 每个位宽读取同一对外部主题；模型、资源、实际绘制和原生行为可分别观察；生产选择路径只装配 ntwshk。 |
+| Asset Needs | 两套正式格式主题、原图、双宽自有窗口与公共对话框夹具、S9 兼容对照。 |
+| Reporting Requirements | 逐项记录旧调用者迁移、占用和释放、主题读入及样式呈现，区分 S10 运行时替换和 S11 包发布切换。 |
+| Stop Conditions | 维持已批准的桌面、权限及目标限制；在七件包验证通过前保留活动发布基线和回滚证据。 |
+| Exit Criteria | 既有产品路径使用双宽中性运行时及外部主题。双宽运行时边界、兼容入口和恢复已验证，具备 S11 独立成包条件。 |
+| Original Owner Request | 正式产物为 run16s、两份 ntwshk 和两组主题。旧年代 DLL 的样式能力由主题数据与同一运行时承接。 |
+| Similar-Issue Sweep | 查找运行时、启动器和适配器中的旧 DLL 名、旧导出和 ordinal、嵌入主题读取及延迟资源所有权。 |
 
 ## Identifier State
 
@@ -109,15 +109,15 @@ S9 P1 已发布两处，聚焦实包 29/29、双宽自有窗口补充 24/24，
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S8 P1；八件开发运行包及四个主题预览。
+- Last verified remote delivery: M0 T29 S9 P1；八件开发运行包及四个主题预览。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 9
-- Open task: M0 T29 S9；UWP/WinUI 外框。
+- Last allocated T29 S: 10
+- Open task: M0 T29 S10；双位宽中性样式运行时。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll。O:/winnt、assets 与远端已核对 [T29 S8 P1](../history/M0-T29-S8-common-dialogs.md)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll。O:/winnt、assets 与远端已核对 [T29 S9 P1](../history/M0-T29-S9-modern-frames.md)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1183回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
