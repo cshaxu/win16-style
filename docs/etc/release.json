@@ -438,7 +438,7 @@
     ]
   },
   "closure": {
-    "S6": "tested locally, pending remote audit",
+    "S6": "closed after remote audit of P1 (99c04b6f)",
     "T29": "active",
     "M0": "fixed"
   }
