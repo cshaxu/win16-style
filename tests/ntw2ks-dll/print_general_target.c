@@ -13,6 +13,7 @@ static BOOL styled,ready, applied, two, initial_ok;
 static unsigned expected_copies=1;
 static unsigned action;
 static DWORD context_flag;
+static DWORD output_flags;
 static BOOL test_preferences,preferences_pending,preferences_seen,no_context_device;
 static BOOL fits_work_area;
 static WCHAR choice[300];
@@ -71,6 +72,14 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
         fits_work_area=fits_work_area && buttons>=3;
         printf("GENERAL GEOMETRY fits=%d sheet=%ld,%ld,%ld,%ld work=%ld,%ld,%ld,%ld\n",
             fits_work_area,bounds.left,bounds.top,bounds.right,bounds.bottom,work->left,work->top,work->right,work->bottom);
+        RECT client,reference={0,0,292,198};
+        if(MapDialogRect(page,&reference) && GetClientRect(page,&client)){
+            LONG width=bounds.right-bounds.left+reference.right-client.right;
+            LONG height=bounds.bottom-bounds.top+reference.bottom-client.bottom;
+            printf("GENERAL REFERENCE client=%ldx%ld original=%ldx%ld estimated_sheet=%ldx%ld work=%ldx%ld\n",
+                client.right,client.bottom,reference.right,reference.bottom,width,height,
+                work->right-work->left,work->bottom-work->top);
+        }
     }
     if(test_preferences){
         preferences_pending=TRUE;
@@ -94,7 +103,13 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
             SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_DEVICE,CBN_SELCHANGE),(LPARAM)list);
         }
         SetDlgItemInt(page,WIN2K_PRINT_COPIES,3,FALSE);
-        SetDlgItemTextW(page,WIN2K_PRINT_RANGE,L"2,4-5");
+        if(output_flags){
+            UINT option=output_flags&PD_SELECTION?WIN2K_PRINT_SELECTION:WIN2K_PRINT_CURRENT;
+            HWND radio=GetDlgItem(page,option);
+            SendMessageW(radio,BM_CLICK,0,0);
+            UINT output=output_flags&PD_PRINTTOFILE?WIN2K_PRINT_FILE:WIN2K_PRINT_COLLATE;
+            SendMessageW(GetDlgItem(page,output),BM_CLICK,0,0);
+        }else SetDlgItemTextW(page,WIN2K_PRINT_RANGE,L"2,4-5");
         if(action==PD_RESULT_APPLY){
             applied=PropSheet_Apply(window);
             if(two){
@@ -123,6 +138,8 @@ int wmain(int argc,WCHAR **argv)
        !SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))return 77;
     if(argc==4 && !wcscmp(argv[3],L"dc"))context_flag=PD_RETURNDC;
     if(argc==4 && !wcscmp(argv[3],L"ic"))context_flag=PD_RETURNIC;
+    if(argc==4 && !wcscmp(argv[3],L"selection-file"))output_flags=PD_SELECTION|PD_PRINTTOFILE;
+    if(argc==4 && !wcscmp(argv[3],L"current-driver"))output_flags=PD_CURRENTPAGE|PD_USEDEVMODECOPIESANDCOLLATE;
     BOOL ansi=!wcscmp(argv[1],L"a");
     action=!wcscmp(argv[2],L"apply")?PD_RESULT_APPLY:!wcscmp(argv[2],L"confirm")?PD_RESULT_PRINT:PD_RESULT_CANCEL;
     INITCOMMONCONTROLSEX controls={sizeof(controls),ICC_WIN95_CLASSES};
@@ -136,7 +153,7 @@ int wmain(int argc,WCHAR **argv)
         .lpPageRanges=ranges,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
     PRINTDLGEXW w={.lStructSize=sizeof(w),.hwndOwner=owner,.nMinPage=1,.nMaxPage=50,.nMaxPageRanges=4,
         .lpPageRanges=ranges,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
-    a.Flags=w.Flags=context_flag;
+    a.Flags=w.Flags=context_flag|(output_flags&PD_USEDEVMODECOPIESANDCOLLATE);
     HGLOBAL initial_mode=NULL,initial_names=NULL;
     if(initial){
         PRINTDLGA da={.lStructSize=sizeof(da),.Flags=PD_RETURNDEFAULT};
@@ -161,9 +178,15 @@ int wmain(int argc,WCHAR **argv)
     HDC dc=ansi?a.hDC:w.hDC;
     DEVNAMES *data=names?GlobalLock(names):NULL;
     WCHAR actual[300]=L"";
+    BOOL file=FALSE;
     if(data){
-        if(ansi)MultiByteToWideChar(CP_ACP,0,(char *)data+data->wDeviceOffset,-1,actual,ARRAYSIZE(actual));
-        else lstrcpynW(actual,(WCHAR *)data+data->wDeviceOffset,ARRAYSIZE(actual));
+        if(ansi){
+            MultiByteToWideChar(CP_ACP,0,(char *)data+data->wDeviceOffset,-1,actual,ARRAYSIZE(actual));
+            file=!strcmp((char *)data+data->wOutputOffset,"FILE:");
+        }else{
+            lstrcpynW(actual,(WCHAR *)data+data->wDeviceOffset,ARRAYSIZE(actual));
+            file=!wcscmp((WCHAR *)data+data->wOutputOffset,L"FILE:");
+        }
         GlobalUnlock(names);
     }
     BOOL match=two && !wcscmp(actual,choice);
@@ -172,9 +195,27 @@ int wmain(int argc,WCHAR **argv)
     if(context_flag && action!=PD_RESULT_CANCEL)pass=pass && (no_context_device?!dc:dc && GetDeviceCaps(dc,TECHNOLOGY)==DT_RASPRINTER);
     if(no_context_device)action=PD_RESULT_CANCEL;
     if(action==PD_RESULT_CANCEL)pass=pass && mode==initial_mode && names==initial_names && !range_count;
-    else pass=pass && mode && mode!=initial_mode && names!=initial_names && match && copies==3 && range_count==2 &&
-        ranges[0].nFromPage==2 && ranges[0].nToPage==2 && ranges[1].nFromPage==4 && ranges[1].nToPage==5 &&
-        (action!=PD_RESULT_APPLY || applied);
+    else{
+        pass=pass && mode && mode!=initial_mode && names!=initial_names && match &&
+            (action!=PD_RESULT_APPLY || applied);
+        if(output_flags){
+            DWORD flags=ansi?a.Flags:w.Flags;
+            BOOL driver=(output_flags&PD_USEDEVMODECOPIESANDCOLLATE)!=0;
+            void *settings=mode?GlobalLock(mode):NULL;
+            short device_copies=0,collate=0;
+            if(settings){
+                device_copies=ansi?((DEVMODEA *)settings)->dmCopies:((DEVMODEW *)settings)->dmCopies;
+                collate=ansi?((DEVMODEA *)settings)->dmCollate:((DEVMODEW *)settings)->dmCollate;
+                GlobalUnlock(mode);
+            }
+            pass=pass && flags==output_flags && !range_count && copies==(driver?1:3) &&
+                file==((output_flags&PD_PRINTTOFILE)!=0) && device_copies==(driver?3:1) &&
+                collate==(driver?DMCOLLATE_TRUE:DMCOLLATE_FALSE);
+            printf("GENERAL OPTIONS requested=%08lx returned=%08lx file=%d device_copies=%d collate=%d\n",
+                output_flags,flags,file,device_copies,collate);
+        }else pass=pass && copies==3 && range_count==2 && ranges[0].nFromPage==2 &&
+            ranges[0].nToPage==2 && ranges[1].nFromPage==4 && ranges[1].nToPage==5;
+    }
     printf("GENERAL ENTRY bits=%u ansi=%d initial=%d requested=%u result=%lu hr=%08lx frame=%d copies=%lu pages=%lu selected=%d dc=%d preferences=%d pass=%d\n",
        (unsigned)(sizeof(void *)*8),ansi,initial,action,code,(unsigned long)hr,styled,copies,range_count,match,dc!=NULL,preferences_seen,pass);
     if(dc)DeleteDC(dc);
