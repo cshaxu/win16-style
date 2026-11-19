@@ -138,6 +138,10 @@ P40 用 Microsoft Print to PDF 显式初始化 Unicode 打印设置。双宽普�
 P41 核对 Win2000 启动注册的 38 个入口均由现有全局接收路径注册。双宽测试实证
 同一目标进入同一批次两次时事务拒绝，初始调用位置不变。双宽晚期事务、会话选择、
 窗口切换及真实颜色对话框本地恢复用例 6/6。全局按调用选择 Win2000 呈现仍待接入。
+P42 将现有全局 PrintDlgExA/W 接到普通 --2k 共用的 Win2000 General 页。两处发布
+及同摘要包各通过双宽全局接收器 24/24、普通 Win2000 8/8 和 Win16 4/4。全局
+验证使用自有目标线程；管理员托盘和其他全局 API 仍待验证。有效原生自定义页、
+真实域打印机回写仍开放。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -172,17 +176,17 @@ P41 核对 Win2000 启动注册的 38 个入口均由现有全局接收路径注
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P39；构建快照和八件摘要见公共对话框证据。
+- Last verified remote delivery: M0 T28 S3 P42；构建快照和八件摘要见公共对话框证据。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 P39 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 P42 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
-- 来源1151回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
+- 来源1152回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
 - propagation停用、窗口恢复、thread hook解除与物理DLL/late patch卸载分别报告；原有进程存活期固定/保留能力不改称安全卸载。
 - 禁止computer-use、创建或切换私有桌面；只用自有有界当前桌面探针。用户已永久授权非computer-use验证及按身份处理正式文件实际占用者；不重复请求同一授权，不改系统安全设置。
 - 历史逐文件来源及迁移见[原顺序台账](../history/M0-T26-S1-ordered-audit.md)、各S证据与T26规划；早期lib-style/lib-win32/style路径是历史路径，当前旧生产目录已删除。

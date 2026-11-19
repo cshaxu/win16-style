@@ -12,8 +12,6 @@
 #include <string.h>
 #include <wchar.h>
 
-extern IMAGE_DOS_HEADER __ImageBase;
-
 enum { range_limit=32, fit_page_message=WM_APP+1, select_printer_message=WM_APP+2, printer_view_message=WM_APP+3 };
 typedef struct general_page {
     BOOL ansi, full;
@@ -351,9 +349,8 @@ static UINT general_template(HWND owner,DWORD flags)
     return height>=MulDiv(450,(int)dpi,96)?WIN2K_PRINT_GENERAL_FULL:WIN2K_PRINT_GENERAL;
 }
 
-static HRESULT show_sheet(HWND owner,general_page *page)
+static HRESULT show_sheet(HINSTANCE module,HWND owner,general_page *page)
 {
-    HINSTANCE module=(HINSTANCE)&__ImageBase;
     UINT layout=general_template(owner,page->flags);
     page->full=layout!=WIN2K_PRINT_GENERAL;
     PROPSHEETPAGEW details={.dwSize=sizeof(details),.dwFlags=PSP_USETITLE,.hInstance=module,
@@ -463,9 +460,9 @@ static BOOL supports_flags(DWORD flags,DWORD count,DWORD capacity,DWORD minimum,
 }
 
 #define PRINT_GENERAL(NAME,TYPE,ANSI) \
-BOOL NAME(TYPE *p,HRESULT *result) \
+BOOL NAME(HINSTANCE resources,TYPE *p,HRESULT *result) \
 { \
-    if(!p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || \
+    if(!resources || !p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || \
        p->Flags2 || p->ExclusionFlags || p->hDC || (!!p->hDevMode!=!!p->hDevNames) || \
        (p->hDevMode && p->hDevMode==p->hDevNames) || \
        !style_print_global_available(p->hDevMode) || !style_print_global_available(p->hDevNames) || \
@@ -477,7 +474,7 @@ BOOL NAME(TYPE *p,HRESULT *result) \
     if(p->nPageRanges && !style_print_ranges_format(p->lpPageRanges,p->nPageRanges,p->nMinPage,p->nMaxPage, \
        page.range_text,ARRAYSIZE(page.range_text)))return FALSE; \
     if(!prepare_devices(&page,p->hDevMode,p->hDevNames)){dispose_page(&page);return FALSE;} \
-    *result=show_sheet(p->hwndOwner,&page); \
+    *result=show_sheet(resources,p->hwndOwner,&page); \
     if(SUCCEEDED(*result) && page.saved.mode && (!style_print_global_available(p->hDevMode) || \
        !style_print_global_available(p->hDevNames)))*result=E_FAIL; \
     if(SUCCEEDED(*result)){ \

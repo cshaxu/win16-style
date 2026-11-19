@@ -2334,5 +2334,94 @@
     "local_regression": "The two-width CTest group passed 6/6 with WIN16STYLE_CAPTURE_DIR set to owned scratch. It covers duplicate-target transactional rejection, existing per-cookie style validation, and local window/control style transitions including owned native ChooseColorW selection and restoration. The first test invocation lacked the capture directory and its runner aborted before the batch test. The full group was rerun with the capture directory.",
     "implementation_boundary": "Use one owner and one original-call slot per target. Dispatch eligible global calls by the active session and have ordinary launch select its own presenter through the same call contract. Use the existing return-value, unwind, and native fallback behavior. Resolve COM presentation when Show is invoked so an object retained across a session transition uses that call's current policy. The HWND attachment and removal path already has separate ownership.",
     "limits": "This is test and documentation evidence. The shared call routing, real administrator tray workflow, valid native PrintDlgEx custom-page display, and a real domain printer result are still open. The eight release hashes at both locations match P39. The capture directory was removed."
+  },
+  "global_print_general_p42": {
+    "implementation": "The existing late PrintDlgExA/W entry checks the active Win2000 session and selects the same General presentation used by ordinary --2k. The caller supplies the verified companion module that owns the existing templates. Existing PrintDlgEx bridge and native fallbacks still handle unsupported requests. The Win2000 presentation lives in one archive and needs no new exports or product artifacts.",
+    "package_imports": "The late consumer now links Windows spooler and directory services imports already used by the ordinary Win2000 consumer. ABI gates continue to check the existing exports and ordinals.",
+    "footprint": "Source, build, tests and validation tooling changed by +114/-20 lines. General owns the settings snapshot and input/output memory. The companion module owns the templates and the existing receiver owns each original-call slot.",
+    "fixture": "The owning test executable is staged as run16s.exe beside an exact copy of the candidate DLLs. It creates an owned session only if the desktop namespace is unused. The sole target is a child started by that fixture. The child installs the real existing receiver on its own GUI thread and waits for its window to acquire a Win2000 frame before invoking PrintDlgEx. The modal tests verify selection, exact page ranges, copies and handle results, plus standard/large geometry, cancellation and restored ownership. No printer job is submitted.",
+    "incremental": "36/36, including 24/24 local late entry through the actual receiver, 8/8 ordinary Win2000 and 4/4 ordinary Win16.",
+    "released_runtime": {
+      "assets": {
+        "late": 24,
+        "ordinary_win2000": 8,
+        "ordinary_win16": 4,
+        "fail": 0
+      },
+      "winnt": {
+        "late": 24,
+        "ordinary_win2000": 8,
+        "ordinary_win16": 4,
+        "fail": 0
+      },
+      "built": {
+        "late": 24,
+        "ordinary_win2000": 8,
+        "ordinary_win16": 4,
+        "fail": 0
+      }
+    },
+    "limits": "This validates the existing receiver on owned x86/x64 target threads. The administrator tray sweep, targets already styled at startup, global entry families outside PrintDlgEx, the native custom property page display, and a real domain queue positive result remain open.",
+    "release": {
+      "source_parent": "b304558532ce322009dd9b25149dea786e342e29",
+      "snapshot_manifest_sha256": "a2d8f7bf45ba29425c669c5e8fa8a0d5a001e996c6fdad63f9e09b716dc96cec",
+      "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Task 28 -RunName s3-global-print-package -Worker",
+      "toolchain": "C17, MinGW-w64 GCC 16.1.0, Ninja and repository ccache; clean x86/x64 Release.",
+      "build_seconds": {
+        "x86": 294.36,
+        "x64": 330.17
+      },
+      "ccache_direct_hits": {
+        "x86": 950,
+        "x64": 1040
+      },
+      "ccache_misses": {
+        "x86": 9,
+        "x64": 9
+      },
+      "gate": "Exact eight same-snapshot files; source, glyph, ABI, dependency and import/export gates passed. Published both destinations before testing. The candidate and both published directories match all SHA-256 values.",
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "4f4f0e970f13be20ef9142976a3a73b631d1b6b765affa5771c82b75e54169b2"
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "56f424ef77aea2126c42083aa4d4a6a249063e5487b5f28ec1f119ee4a7cef21"
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "9fb21cac7c861530b104e9f91e5a6ac3819808d8658280159139eb94d47cf1af"
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "e6538e915a23be36caad2b38ca4f35fbd24ef56a83b90051194eb70b67e436ed"
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "9deb95cc8e312cb92622bb614773a87958a2c3926a34258f4e1911e18c2c681d"
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "da1848cc420dcc4ec2131549810748a84081d10076c845544a024ced9c574d57"
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "60b53b6da9785ae11bdf872082e4b4e99ac43fec8cdf5ecfd065951a8f50320b"
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "db8fcc4d4a5ab17fea417e02f9eeb1e27839987782f628c89392338b59876cbe"
+        }
+      }
+    }
   }
 }

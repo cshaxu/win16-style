@@ -21,7 +21,7 @@
 #ifndef RC_INVOKED
 #include <windows.h>
 #include <commdlg.h>
-BOOL win2k_print_general_a(PRINTDLGEXA *,HRESULT *);
-BOOL win2k_print_general_w(PRINTDLGEXW *,HRESULT *);
+BOOL win2k_print_general_a(HINSTANCE resources,PRINTDLGEXA *,HRESULT *);
+BOOL win2k_print_general_w(HINSTANCE resources,PRINTDLGEXW *,HRESULT *);
 #endif
 #endif

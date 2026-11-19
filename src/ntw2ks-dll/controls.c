@@ -308,6 +308,7 @@ PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
 #undef PRINT_HOOK
 
 /* Extended requests outside the classic bridge contract retain their property sheet. */
+extern IMAGE_DOS_HEADER __ImageBase;
 #define PRINT_EXTENDED_HOOK(NAME,TYPE,GENERAL,BRIDGE,PRINT) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
@@ -315,7 +316,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters)
   DWORD incoming=GetLastError(),error;HRESULT result; \
   if(!style_dialog_observation_begin(&scope,NULL,dialog_created,FALSE))return E_FAIL; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); \
-  SetLastError(incoming);if(!GENERAL(parameters,&result) && !BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
+  SetLastError(incoming);if(!GENERAL((HINSTANCE)&__ImageBase,parameters,&result) && !BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
   error=GetLastError();PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result; }
 PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,win2k_print_general_a,style_print_extended_a,real_PrintDlgA)
 PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,win2k_print_general_w,style_print_extended_w,real_PrintDlgW)

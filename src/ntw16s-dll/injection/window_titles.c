@@ -12,6 +12,9 @@
 #include "lib-win32-style/application/lifecycle/theme_track.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/dialog/print_extended.h"
+#include "lib-win32-style/appearance/win2000/dialog/print_general.h"
+#include "ntw16s-dll/global/session.h"
+#include "ntw16s-dll/global/window.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/attachment.h"
 #include "ntw16s-dll/native_api.h"
@@ -207,17 +210,31 @@ PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
 /* Synchronous common dialogs also create their own internal windows. */
 SIMPLE_DIALOG_HOOK(PageSetupDlgA,PAGESETUPDLGA *,BOOL,FALSE,(void)0)
 SIMPLE_DIALOG_HOOK(PageSetupDlgW,PAGESETUPDLGW *,BOOL,FALSE,(void)0)
-#define PRINT_EXTENDED_HOOK(NAME,TYPE,BRIDGE,PRINT) \
+static HMODULE global_print_resources(void)
+{
+    DWORD flags=__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE);
+    if(!(flags&NTWSHK_POLICY_GLOBAL_SESSION))return NULL;
+    DWORD cookie=__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE);
+    if(!ntw16s_global_policy_style(cookie,NTW16S_GLOBAL_STYLE_2K))return NULL;
+    return ntw16s_global_win2k_resources();
+}
+#define PRINT_EXTENDED_HOOK(NAME,TYPE,GENERAL,BRIDGE,PRINT) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
-{ process_hook_unwind_scope unwind;title_scope scope;HRESULT result=E_FAIL;DWORD error=ERROR_SUCCESS; \
+{ DWORD incoming=GetLastError();HMODULE resources=global_print_resources();HRESULT result=E_FAIL; \
+  SetLastError(incoming); \
+  if(resources){ \
+    if(GENERAL(resources,parameters,&result) || BRIDGE(parameters,PRINT,&result))return result; \
+    SetLastError(incoming);return real_##NAME(parameters); \
+  } \
+  process_hook_unwind_scope unwind;title_scope scope;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError()); \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { \
     if(!scope.enabled || !BRIDGE(parameters,PRINT,&result)){result=real_##NAME(parameters);}error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result; }
-PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,style_print_extended_a,real_PrintDlgA)
-PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,style_print_extended_w,real_PrintDlgW)
+PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,win2k_print_general_a,style_print_extended_a,real_PrintDlgA)
+PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,win2k_print_general_w,style_print_extended_w,real_PrintDlgW)
 #undef PRINT_EXTENDED_HOOK
 
 /* Property sheets may create internal pages without public DialogBox calls. */

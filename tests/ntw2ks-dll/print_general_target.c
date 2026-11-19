@@ -183,8 +183,28 @@ static void CALLBACK observe(HWND window,UINT message,UINT_PTR timer,DWORD time)
     else if(secondary_pending && !secondary_seen)EnumThreadWindows(GetCurrentThreadId(),cancel_secondary,0);
     if(++ticks>=40){KillTimer(window,timer);ExitProcess(4);}
 }
+static BOOL wait_late_attachment(void)
+{
+    ULONGLONG deadline=GetTickCount64()+5000;
+    while(!GetPropW(owner,L"Win2kStyle.Frame")){
+        if(GetTickCount64()>=deadline)return FALSE;
+        if(MsgWaitForMultipleObjects(0,NULL,FALSE,50,QS_ALLINPUT)==WAIT_OBJECT_0){
+            MSG msg;
+            while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE))DispatchMessageW(&msg);
+        }
+    }
+    return TRUE;
+}
 int wmain(int argc,WCHAR **argv)
 {
+    HHOOK thread_hook=NULL;
+    BOOL late=argc>=5 && !wcscmp(argv[1],L"--late");
+    if(late){
+        HMODULE module=LoadLibraryW(argv[2]);
+        HOOKPROC receiver=module?(HOOKPROC)(void *)GetProcAddress(module,"Ntw16sGlobalHook"):NULL;
+        if(!receiver || !(thread_hook=SetWindowsHookExW(WH_CALLWNDPROC,receiver,NULL,GetCurrentThreadId())))return 2;
+        argc-=2;argv+=2;
+    }
     request_large=argc>=4 && !wcscmp(argv[argc-1],L"large");
     if(request_large)--argc;
     if(argc!=3 && argc!=4)return 2;
@@ -205,8 +225,10 @@ int wmain(int argc,WCHAR **argv)
     if(!InitCommonControlsEx(&controls))return 2;
     owner=CreateWindowExW(0,L"STATIC",L"Owned PrintDlgEx test",WS_OVERLAPPEDWINDOW,0,0,240,120,
         NULL,NULL,GetModuleHandleW(NULL),NULL);
-    if(!owner || !SetTimer(owner,42,150,observe))return 2;
+    if(!owner)return 2;
     ShowWindow(owner,SW_SHOWNOACTIVATE);
+    if(late && !wait_late_attachment()){puts("GENERAL late attachment timeout");return 5;}
+    if(!SetTimer(owner,42,150,observe))return 2;
     PRINTPAGERANGE ranges[4]={{0}};
     PRINTDLGEXA a={.lStructSize=sizeof(a),.hwndOwner=owner,.nMinPage=1,.nMaxPage=50,.nMaxPageRanges=4,
         .lpPageRanges=ranges,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
@@ -231,6 +253,10 @@ int wmain(int argc,WCHAR **argv)
         expected_copies=7;
     }
     HRESULT hr=ansi?PrintDlgExA(&a):PrintDlgExW(&w);
+    if(late){
+        printf("GENERAL late receiver=1\n");
+        UnhookWindowsHookEx(thread_hook);
+    }
     KillTimer(owner,42);
     DWORD code=ansi?a.dwResultAction:w.dwResultAction, copies=ansi?a.nCopies:w.nCopies;
     DWORD range_count=ansi?a.nPageRanges:w.nPageRanges;

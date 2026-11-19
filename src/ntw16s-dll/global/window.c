@@ -10,6 +10,7 @@ static const style_global_window_ops ops={
 };
 typedef BOOL (__cdecl *window_op)(HWND);
 static INIT_ONCE win2k_once=INIT_ONCE_STATIC_INIT;
+static HMODULE win2k_module;
 static style_global_window_ops win2k_ops={.active=ntw16s_global_policy_active,
     .control=NTW16S_GLOBAL_CONTROL,.query=NTW16S_GLOBAL_QUERY,.acknowledgement=NTW16S_GLOBAL_ATTACHED};
 static BOOL CALLBACK load_win2k(PINIT_ONCE once,void *parameter,void **result)
@@ -19,14 +20,20 @@ static BOOL CALLBACK load_win2k(PINIT_ONCE once,void *parameter,void **result)
     FARPROC entries[ARRAYSIZE(names)];
     if(!win32_style_companion((const void *)&load_win2k,
         sizeof(void *)==8?L"ntw2ks64.dll":L"ntw2ks32.dll",names,entries,ARRAYSIZE(entries),1))return FALSE;
+    if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+        (LPCWSTR)(void *)entries[1],&win2k_module))return FALSE;
     win2k_ops.attached=(window_op)(void *)entries[0];win2k_ops.apply=(window_op)(void *)entries[1];
     win2k_ops.remove=(window_op)(void *)entries[2];return TRUE;
+}
+HMODULE ntw16s_global_win2k_resources(void)
+{
+    return InitOnceExecuteOnce(&win2k_once,load_win2k,NULL,NULL)?win2k_module:NULL;
 }
 static const style_global_window_ops *style_ops(DWORD style)
 {
     if(style==NTW16S_GLOBAL_STYLE_16)return &ops;
     if(style==NTW16S_GLOBAL_STYLE_2K){
-        if(InitOnceExecuteOnce(&win2k_once,load_win2k,NULL,NULL))return &win2k_ops;
+        if(ntw16s_global_win2k_resources())return &win2k_ops;
         return NULL;
     }
     SetLastError(ERROR_INVALID_PARAMETER);return NULL;
