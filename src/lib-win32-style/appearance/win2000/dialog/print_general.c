@@ -13,7 +13,7 @@ extern IMAGE_DOS_HEADER __ImageBase;
 
 enum { range_limit=32, fit_page_message=WM_APP+1 };
 typedef struct general_page {
-    BOOL ansi;
+    BOOL ansi, full;
     DWORD flags,minimum,maximum,capacity,copies,action,range_count;
     PRINTPAGERANGE ranges[range_limit];
     WCHAR range_text[512];
@@ -24,6 +24,15 @@ typedef struct general_page {
     style_print_snapshot saved;
     BOOL initialized;
 } general_page;
+
+typedef struct device_messages {
+    UINT add, set_data, select, current, data, find, changed;
+} device_messages;
+
+static const device_messages device_controls[]={
+    {CB_ADDSTRING,CB_SETITEMDATA,CB_SETCURSEL,CB_GETCURSEL,CB_GETITEMDATA,CB_FINDSTRINGEXACT,CBN_SELCHANGE},
+    {LB_ADDSTRING,LB_SETITEMDATA,LB_SETCURSEL,LB_GETCURSEL,LB_GETITEMDATA,LB_FINDSTRINGEXACT,LBN_SELCHANGE}
+};
 
 static HGLOBAL device_names(const void *name,const void *port,BOOL ansi,BOOL is_default)
 {
@@ -113,15 +122,42 @@ static BOOL read_snapshot(HWND window,general_page *page,BOOL confirm)
     return TRUE;
 }
 
+static void present_device(HWND window,PCWSTR device)
+{
+    HANDLE printer=NULL;
+    DWORD bytes=0;
+    PRINTER_INFO_2W *info=NULL;
+    PCWSTR status=L"Unavailable",location=L"",comment=L"";
+    if(OpenPrinterW((PWSTR)device,&printer,NULL)){
+        GetPrinterW(printer,2,NULL,0,&bytes);
+        info=bytes?malloc(bytes):NULL;
+        if(info && GetPrinterW(printer,2,(BYTE *)info,bytes,&bytes)){
+            status=info->Status&(PRINTER_STATUS_ERROR|PRINTER_STATUS_OFFLINE)?L"Offline or unavailable":
+                info->Status&PRINTER_STATUS_PAUSED?L"Paused":
+                info->Status&PRINTER_STATUS_PRINTING?L"Printing":
+                info->Status?L"Busy":L"Ready";
+            if(info->pLocation)location=info->pLocation;
+            if(info->pComment)comment=info->pComment;
+        }
+        ClosePrinter(printer);
+    }
+    SetDlgItemTextW(window,WIN2K_PRINT_DEVICE_STATUS,status);
+    SetDlgItemTextW(window,WIN2K_PRINT_DEVICE_LOCATION,location);
+    SetDlgItemTextW(window,WIN2K_PRINT_DEVICE_COMMENT,comment);
+    free(info);
+}
+
 static void initialize_page(HWND window,const general_page *page)
 {
+    const device_messages *messages=&device_controls[page->full];
     for(DWORD i=0;i<page->device_count;++i){
         PCWSTR name=page->devices[i].pPrinterName;
-        LRESULT index=SendDlgItemMessageW(window,WIN2K_PRINT_DEVICE,CB_ADDSTRING,0,(LPARAM)name);
+        LRESULT index=SendDlgItemMessageW(window,WIN2K_PRINT_DEVICE,messages->add,0,(LPARAM)name);
         if(index<0)continue;
-        SendDlgItemMessageW(window,WIN2K_PRINT_DEVICE,CB_SETITEMDATA,(WPARAM)index,(LPARAM)name);
-        if(name==page->selected)SendDlgItemMessageW(window,WIN2K_PRINT_DEVICE,CB_SETCURSEL,(WPARAM)index,0);
+        SendDlgItemMessageW(window,WIN2K_PRINT_DEVICE,messages->set_data,(WPARAM)index,(LPARAM)name);
+        if(name==page->selected)SendDlgItemMessageW(window,WIN2K_PRINT_DEVICE,messages->select,(WPARAM)index,0);
     }
+    if(page->full)present_device(window,page->selected);
     int checked=WIN2K_PRINT_ALL;
     if(page->flags&PD_SELECTION)checked=WIN2K_PRINT_SELECTION;
     if(page->flags&PD_CURRENTPAGE)checked=WIN2K_PRINT_CURRENT;
@@ -178,14 +214,17 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
     }
     if(message==WM_COMMAND){
         UINT control=LOWORD(wp),notice=HIWORD(wp);
-        if(control==WIN2K_PRINT_DEVICE && notice==CBN_SELCHANGE){
-            LRESULT index=SendDlgItemMessageW(window,control,CB_GETCURSEL,0,0);
-            LRESULT device=index>=0?SendDlgItemMessageW(window,control,CB_GETITEMDATA,(WPARAM)index,0):CB_ERR;
-            if(device==CB_ERR || !load_device(page,(PCWSTR)device,NULL,NULL)){
-                SendDlgItemMessageW(window,control,CB_SELECTSTRING,(WPARAM)-1,(LPARAM)page->selected);
+        const device_messages *messages=&device_controls[page->full];
+        if(control==WIN2K_PRINT_DEVICE && notice==messages->changed){
+            LRESULT index=SendDlgItemMessageW(window,control,messages->current,0,0);
+            LRESULT device=index>=0?SendDlgItemMessageW(window,control,messages->data,(WPARAM)index,0):0;
+            if(!device || device==-1 || !load_device(page,(PCWSTR)device,NULL,NULL)){
+                LRESULT old=SendDlgItemMessageW(window,control,messages->find,(WPARAM)-1,(LPARAM)page->selected);
+                SendDlgItemMessageW(window,control,messages->select,(WPARAM)old,0);
                 SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"Could not read settings for the selected printer.");
                 return TRUE;
             }
+            if(page->full)present_device(window,page->selected);
         }else if(control==WIN2K_PRINT_PREFERENCES && notice==BN_CLICKED){
             if(!load_device(page,page->selected,window,page->live_mode))return TRUE;
         }else if(notice==EN_CHANGE && control==WIN2K_PRINT_RANGE){
@@ -205,11 +244,22 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
     return FALSE;
 }
 
+static BOOL full_page_fits(HWND owner)
+{
+    MONITORINFO monitor={.cbSize=sizeof(monitor)};
+    UINT dpi=GetDpiForWindow(owner);
+    /* Include the native tab, action buttons and frame around the 292 x 198 DLU page. */
+    return dpi && GetMonitorInfoW(MonitorFromWindow(owner,MONITOR_DEFAULTTONEAREST),&monitor) &&
+        monitor.rcWork.right-monitor.rcWork.left>=MulDiv(500,(int)dpi,96) &&
+        monitor.rcWork.bottom-monitor.rcWork.top>=MulDiv(450,(int)dpi,96);
+}
+
 static HRESULT show_sheet(HWND owner,general_page *page)
 {
     HINSTANCE module=(HINSTANCE)&__ImageBase;
+    page->full=full_page_fits(owner);
     PROPSHEETPAGEW details={.dwSize=sizeof(details),.dwFlags=PSP_USETITLE,.hInstance=module,
-        .pszTemplate=MAKEINTRESOURCEW(WIN2K_PRINT_GENERAL),.pszTitle=L"General",
+        .pszTemplate=MAKEINTRESOURCEW(page->full?WIN2K_PRINT_GENERAL_FULL:WIN2K_PRINT_GENERAL),.pszTitle=L"General",
         .pfnDlgProc=general_proc,.lParam=(LPARAM)page};
     PROPSHEETHEADERW sheet={.dwSize=sizeof(sheet),.dwFlags=PSH_PROPSHEETPAGE,.hwndParent=owner,
         .hInstance=module,.pszCaption=L"Print",.nPages=1,.ppsp=&details};

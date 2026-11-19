@@ -6071,7 +6071,7 @@
       "path": "src/ntw2ks-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "c550c0c4d510058b74af7ad30e2657ac77c6b2d2e7dbd56ac29559ad04e2fec4",
+      "sha256": "b3609257110cdc467b3b3f600ca3257e473c69e97b00433324638bd8ed7252d9",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T27 product build version; T28 S1 Win2000 UWP exterior and verification; T28 S3 preview the Windows 2000 General print sheet",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -10292,7 +10292,7 @@
       "path": "src/lib-win32-style/appearance/win2000/dialog/print_general.c",
       "source": null,
       "source_blob": null,
-      "sha256": "30e0689a57b711627837aa2eeb0753cbd1f1b4b68e7d703de437daede5ca3c97",
+      "sha256": "b67506a057f4bf6618b807135b476cd967544fd1be4ffe1d0142f908852be40d",
       "disposition": "authored",
       "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
       "notice": "Project-authored; no imported source or resources"
@@ -10301,7 +10301,7 @@
       "path": "src/lib-win32-style/appearance/win2000/dialog/print_general.h",
       "source": null,
       "source_blob": null,
-      "sha256": "b0ee47b7b808d615903790ef7c7ec869a093554dc19f970a43143e5af968ff82",
+      "sha256": "bd16c5763b31af1ab659cea9b39964cede41f0e0d0ddc75265508f45fb20c4fe",
       "disposition": "authored",
       "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
       "notice": "Project-authored; no imported source or resources"
@@ -10310,7 +10310,7 @@
       "path": "tests/ntw2ks-dll/print_general_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9eb28d2a108df4a79f062df674e55290c2d2ca03a122ede3f1747476640f535e",
+      "sha256": "4e6533c94e1c6bf691306e19820382cd3a275037cb4f6dab0da1e0b0142c4d94",
       "disposition": "authored",
       "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
       "notice": "Project-authored; no imported source or resources"

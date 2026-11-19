@@ -1029,6 +1029,187 @@
     "visual_reference": "Rechecked the original Windows 2000 source printnew.dlg (SHA-256 7746b5113318c536b8336acc27ed14df74e7381737ceda29293627d7b371a42a) and printnew.cpp. Standard and PD_USELARGETEMPLATE pages are 292 by 198 and 292 by 218 DLU. The original replaces a hidden listbox placeholder with a Shell printer-folder view and has status, location, comment and a policy-gated Find Printer action. The released 194 by 91 DLU resource uses a device combo and Preferences and has no full-size variant. The geometry probe mapped the original standard client to 438 by 322 for virtualized callers and 657 by 495 physical pixels for 144-DPI aware callers, exceeding the 427 by 272 logical or 640 by 408 physical work area before frame and sheet margins. This measures available space from the current page font; the original was not rendered and no source or artwork was copied.",
     "status": "The compact General page has useful verified call behavior. Full-size stock Win2000 presentation is an implementation gap, distinct from the native custom-page display and administrator global verification gaps. This test did not change monitor settings or require an interactive UAC prompt. No temporary build tree was created."
   },
+  "print_general_full_p31": {
+    "implementation": "The stock --2k PrintDlgEx A/W path chooses a 292 by 198 DLU General page on work areas at least 500 by 450 pixels normalized to 96 DPI. It uses a printer listbox and reads status, location and comment for the selected installed queue. It shares the same preference, range, snapshot and handle writeback code as the compact page. The original Shell printer folder view and directory Find Printer command are not reproduced. PD_USELARGETEMPLATE, caller property pages, custom templates and callbacks retain the existing native fallback. No external source or artwork was copied.",
+    "full": "108/108 owned PrintDlgEx A/W cases on the ordinary desktop. The 1280 by 672 workspace selected the full layout without a test override; the page was 438 by 322 and the styled sheet was 464 by 420 with its action buttons in bounds. Each of assets, O:/winnt and the identical clean-build candidate passed 36 cases across both widths and encodings, Print/Apply/Cancel, caller settings, selected content and file port, and current page with driver copies and collation. The initial runner asserted the previous compact viewport; corrected the harness expectation and reran the actual package.",
+    "incremental": "The full resource passed 36/36 direct presenter trials on an owned ordinary desktop with a synthetic 1000 by 800 work query. The incremental staged launcher passed 36/36 in the actual 427 by 272 environment with the compact resource, the styled frame, three action buttons inside work bounds and exact return data. The narrow work area was no longer reported when the clean release tests started.",
+    "regression": "On the published O:/winnt package, 16/16 Win2000 groups passed across both widths: PrintDlg and Page Setup, extended print accept/cancel, Find/Replace, Font, expanded Color, MessageBox choices and file dialog frames. Six focused classic, extended and resource CTests passed. Four Win16 A/W cancellation controls passed using the repository's actual ex-ansi-cancel and ex-cancel cases, preserving the caller results and classic frame. An initial launcher invoked the legacy printex fixture, which supplies nCopies=0 and falls through both bridge contracts; these four native timeouts are excluded from passing cases. Their jobs were closed by the bounded test driver. No jobs were printed and no printer or display settings changed.",
+    "release": {
+      "source_parent": "00ff30a3f70b46909e6867381530d5be7a51cf64",
+      "snapshot_manifest_sha256": "38b313ba0d9fb47b63c02d0c9d7ddc9036be0d3e2ccee131b37a5eafb4a33515",
+      "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-full-general-package",
+      "toolchain": "C17, MinGW-w64 GCC 16.1.0, Ninja and repository ccache; clean x86/x64 Release.",
+      "build_seconds": {
+        "x86": 233.72,
+        "x64": 281.86
+      },
+      "ccache_direct_hits": {
+        "x86": 954,
+        "x64": 1042
+      },
+      "ccache_misses": {
+        "x86": 3,
+        "x64": 3
+      },
+      "gate": "Verified eight same-snapshot artifacts, source receipts, native and style boundaries, original glyph resources and both ABI checks. Published to assets root and O:/winnt before runtime tests; both sets matched the build.",
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "6dd1032fb7a307b3cec92ea7eb1a8e151169e9661d09304b3942e334a89a10fe",
+          "imports": [
+            "advapi32.dll",
+            "dwmapi.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "oleaut32.dll",
+            "shell32.dll",
+            "user32.dll",
+            "ntwshk64.dll"
+          ]
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "021b9fa66764b04613d799735dddc661f8e1b51189bd9e9cf4c923c031160b37",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "dac749b86ecf2513ae0b1223325f1c252684a99958940e3fd02d941eda3ebce6",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "242e5c238e05b4a974dd111e298c15f43f3308ab829420bb3e4dc8cce2c1d056",
+          "imports": [
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "WINSPOOL.DRV",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "75a5882f992c649ada59bfc1f96dacadc687d1cd7f733eefb1196a66ccc8c717",
+          "imports": [
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "WINSPOOL.DRV",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "ac74c397af8a491fd2002d01e79118026ed1002ce356c576b7b9b9296a14eb6d",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll"
+          ]
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "8fca1b4fac827dc847aa41de9a2647f03c57aceccb4f86330d949337c30dc66f",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "msvcrt.dll"
+          ]
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "a6987bbdb57750549feee54f52c3dde592289873e3b90da6d62ebbe25c7041a5",
+          "imports": [
+            "comctl32.dll",
+            "comdlg32.dll",
+            "gdi32.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "shell32.dll",
+            "user32.dll"
+          ]
+        }
+      }
+    }
+  },
   "global_dialog_entry_audit": {
     "baseline": "Source inspected at 35f46f84. All eight files in assets and O:/winnt match the P27 SHA-256s. The product sources and assets have no Git diff from the P27 delivery through P28. This was a source audit with artifact identity verification; no administrator or cross-process runtime trial was performed.",
     "startup": "src/ntw2ks-dll/dllmain.c calls ntw2ks_controls_attach through the ordinary ntw2ks startup bootstrap. src/ntw2ks-dll/controls.c installs the common-dialog handlers and the COM controller from that one call site.",

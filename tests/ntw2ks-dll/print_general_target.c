@@ -17,14 +17,18 @@ static DWORD output_flags;
 static BOOL test_preferences,preferences_pending,preferences_seen,no_context_device;
 static BOOL fits_work_area;
 static WCHAR choice[300];
+static BOOL full,device_details;
+
+static LRESULT device_message(HWND list,UINT combo,UINT box,WPARAM wp,LPARAM lp)
+{return SendMessageW(list,full?box:combo,wp,lp);}
 
 static LRESULT choose_device(HWND list,LRESULT current,LRESULT count)
 {
     if(!context_flag)return count>1?(current==0?1:0):CB_ERR;
     for(LRESULT index=0;index<count;++index){
-        LRESULT length=SendMessageW(list,CB_GETLBTEXTLEN,(WPARAM)index,0);
+        LRESULT length=device_message(list,CB_GETLBTEXTLEN,LB_GETTEXTLEN,(WPARAM)index,0);
         if(length<0 || length>=(LRESULT)ARRAYSIZE(choice))continue;
-        SendMessageW(list,CB_GETLBTEXT,(WPARAM)index,(LPARAM)choice);
+        device_message(list,CB_GETLBTEXT,LB_GETTEXT,(WPARAM)index,(LPARAM)choice);
         HDC context=context_flag==PD_RETURNIC?
             CreateICW(L"WINSPOOL",choice,NULL,NULL):CreateDCW(L"WINSPOOL",choice,NULL,NULL);
         if(context){DeleteDC(context);return index;}
@@ -50,6 +54,10 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
     HWND page=PropSheet_GetCurrentPageHwnd(window);
     HWND list=page?GetDlgItem(page,WIN2K_PRINT_DEVICE):NULL;
     if(!list)return TRUE;
+    WCHAR class_name[16];
+    full=GetClassNameW(list,class_name,ARRAYSIZE(class_name)) && !lstrcmpiW(class_name,L"ListBox");
+    device_details=!full || (GetWindowTextLengthW(GetDlgItem(page,WIN2K_PRINT_DEVICE_STATUS))>0 &&
+        GetDlgItem(page,WIN2K_PRINT_DEVICE_LOCATION) && GetDlgItem(page,WIN2K_PRINT_DEVICE_COMMENT));
     ready=TRUE;
     sheet_window=window;
     initial_ok=GetDlgItemInt(page,WIN2K_PRINT_COPIES,NULL,FALSE)==expected_copies;
@@ -88,19 +96,19 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
         preferences_pending=FALSE;
     }
     if(action!=PD_RESULT_CANCEL){
-        LRESULT current=SendMessageW(list,CB_GETCURSEL,0,0);
-        LRESULT count=SendMessageW(list,CB_GETCOUNT,0,0);
+        LRESULT current=device_message(list,CB_GETCURSEL,LB_GETCURSEL,0,0);
+        LRESULT count=device_message(list,CB_GETCOUNT,LB_GETCOUNT,0,0);
         LRESULT next=choose_device(list,current,count);
         if(no_context_device){
             PostMessageW(window,PSM_PRESSBUTTON,PSBTN_CANCEL,0);
             return FALSE;
         }
-        LRESULT length=next>=0?SendMessageW(list,CB_GETLBTEXTLEN,(WPARAM)next,0):CB_ERR;
+        LRESULT length=next>=0?device_message(list,CB_GETLBTEXTLEN,LB_GETTEXTLEN,(WPARAM)next,0):CB_ERR;
         two=length>=0 && length<(LRESULT)ARRAYSIZE(choice);
         if(two){
-            SendMessageW(list,CB_SETCURSEL,(WPARAM)next,0);
-            SendMessageW(list,CB_GETLBTEXT,(WPARAM)next,(LPARAM)choice);
-            SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_DEVICE,CBN_SELCHANGE),(LPARAM)list);
+            device_message(list,CB_SETCURSEL,LB_SETCURSEL,(WPARAM)next,0);
+            device_message(list,CB_GETLBTEXT,LB_GETTEXT,(WPARAM)next,(LPARAM)choice);
+            SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_DEVICE,full?LBN_SELCHANGE:CBN_SELCHANGE),(LPARAM)list);
         }
         SetDlgItemInt(page,WIN2K_PRINT_COPIES,3,FALSE);
         if(output_flags){
@@ -113,8 +121,8 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
         if(action==PD_RESULT_APPLY){
             applied=PropSheet_Apply(window);
             if(two){
-                SendMessageW(list,CB_SETCURSEL,(WPARAM)current,0);
-                SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_DEVICE,CBN_SELCHANGE),(LPARAM)list);
+                device_message(list,CB_SETCURSEL,LB_SETCURSEL,(WPARAM)current,0);
+                SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_DEVICE,full?LBN_SELCHANGE:CBN_SELCHANGE),(LPARAM)list);
             }
             SetDlgItemInt(page,WIN2K_PRINT_COPIES,5,FALSE);
         }
@@ -190,7 +198,7 @@ int wmain(int argc,WCHAR **argv)
         GlobalUnlock(names);
     }
     BOOL match=two && !wcscmp(actual,choice);
-    BOOL pass=hr==S_OK && ready && styled && initial_ok && fits_work_area && code==(no_context_device?PD_RESULT_CANCEL:action) &&
+    BOOL pass=hr==S_OK && ready && styled && initial_ok && fits_work_area && device_details && code==(no_context_device?PD_RESULT_CANCEL:action) &&
         IsWindowEnabled(owner) && (!test_preferences || preferences_seen);
     if(context_flag && action!=PD_RESULT_CANCEL)pass=pass && (no_context_device?!dc:dc && GetDeviceCaps(dc,TECHNOLOGY)==DT_RASPRINTER);
     if(no_context_device)action=PD_RESULT_CANCEL;
@@ -216,8 +224,8 @@ int wmain(int argc,WCHAR **argv)
         }else pass=pass && copies==3 && range_count==2 && ranges[0].nFromPage==2 &&
             ranges[0].nToPage==2 && ranges[1].nFromPage==4 && ranges[1].nToPage==5;
     }
-    printf("GENERAL ENTRY bits=%u ansi=%d initial=%d requested=%u result=%lu hr=%08lx frame=%d copies=%lu pages=%lu selected=%d dc=%d preferences=%d pass=%d\n",
-       (unsigned)(sizeof(void *)*8),ansi,initial,action,code,(unsigned long)hr,styled,copies,range_count,match,dc!=NULL,preferences_seen,pass);
+    printf("GENERAL ENTRY bits=%u ansi=%d initial=%d requested=%u result=%lu hr=%08lx frame=%d copies=%lu pages=%lu selected=%d dc=%d preferences=%d full=%d details=%d pass=%d\n",
+       (unsigned)(sizeof(void *)*8),ansi,initial,action,code,(unsigned long)hr,styled,copies,range_count,match,dc!=NULL,preferences_seen,full,device_details,pass);
     if(dc)DeleteDC(dc);
     if(mode)GlobalFree(mode);
     if(names)GlobalFree(names);
