@@ -34,3 +34,16 @@ the project license does not replace third-party notices. Review the
 
 For a source build, follow the [build notes](../docs/etc/operations/BUILD.md).
 A normal user does not need to copy anything into a Windows system directory.
+
+## T29 theme previews
+
+Keep each description beside its visual style resource.
+
+| Style | Description | Visual style |
+| --- | --- | --- |
+| Windows 3.x | `themes/Win16/Win16.theme` | `themes/Win16/Win16.msstyles` |
+| Windows 2000 | `themes/Win2K/Win2K.theme` | `themes/Win2K/Win2K.msstyles` |
+
+The published launcher still uses the eight-file runtime above. The seven-file
+package and runtime loading of companion themes are tracked in the
+[T29 build contract](../docs/proposals/msstyles-build-contract.md).

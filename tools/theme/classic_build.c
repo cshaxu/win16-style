@@ -56,6 +56,17 @@ static bool button(FILE *output,uint32_t cls,uint32_t part,const classic_theme_s
         property(output,TMT_FILLTYPE,TMT_ENUM,cls,part,0,FT_SOLID);
 }
 
+static bool push_button(FILE *output,const classic_theme_source *source)
+{
+    const uint32_t states[]={PBS_NORMAL,PBS_PRESSED,PBS_DISABLED,PBS_DEFAULTED};
+    if(!button(output,button_class,BP_PUSHBUTTON,source))return false;
+    for(size_t i=0;i<ARRAYSIZE(states);++i)
+        if(!property(output,TMT_FILLCOLOR,TMT_COLOR,button_class,BP_PUSHBUTTON,states[i],source->face) ||
+           !property(output,TMT_BORDERCOLOR,TMT_COLOR,button_class,BP_PUSHBUTTON,states[i],source->edge))
+            return false;
+    return true;
+}
+
 static bool scroll_surface(FILE *output,uint32_t part,const classic_theme_source *source)
 {
     return button(output,scrollbar_class,part,source) &&
@@ -76,19 +87,38 @@ static bool title_metrics(FILE *output,const classic_caption_metrics *metrics)
           property(output,TMT_HEIGHT,TMT_INT,window_class,WP_SMALLCLOSEBUTTON,0,metrics->tool_button.cy)));
 }
 
+static bool image_property(FILE *output,uint32_t part,uint32_t state,uint32_t resource_id)
+{
+    unsigned char record[32];
+    size_t length;
+    const msstyles_v4_property image={
+        TMT_IMAGEFILE,TMT_FILENAME,window_class,part,state,resource_id,16,NULL
+    };
+    return msstyles_v4_property_write(record,sizeof(record),ARRAYSIZE(classes),&image,&length) &&
+        bytes(output,record,length);
+}
+
+static bool caption_images(FILE *output)
+{
+    const struct {uint32_t part,pressed,base_image,pressed_image;} parts[]={
+        {WP_MINBUTTON,MINBS_PUSHED,CLASSIC_MINIMIZE_IMAGE_ID,CLASSIC_MINIMIZE_DOWN_IMAGE_ID},
+        {WP_MAXBUTTON,MAXBS_PUSHED,CLASSIC_MAXIMIZE_IMAGE_ID,CLASSIC_MAXIMIZE_DOWN_IMAGE_ID},
+        {WP_RESTOREBUTTON,RBS_PUSHED,CLASSIC_RESTORE_IMAGE_ID,CLASSIC_RESTORE_DOWN_IMAGE_ID},
+        {WP_SYSBUTTON,SBS_PUSHED,CLASSIC_SYSTEM_IMAGE_ID,CLASSIC_SYSTEM_DOWN_IMAGE_ID}
+    };
+    for(size_t i=0;i<ARRAYSIZE(parts);++i){
+        if(!property(output,TMT_BGTYPE,TMT_ENUM,window_class,parts[i].part,0,BT_IMAGEFILE) ||
+           !image_property(output,parts[i].part,0,parts[i].base_image) ||
+           !image_property(output,parts[i].part,parts[i].pressed,parts[i].pressed_image))
+            return false;
+    }
+    return true;
+}
+
 static bool write_properties(FILE *output,const classic_theme_source *source)
 {
-    if(source->legacy_minimize){
-        unsigned char record[32];
-        size_t length;
-        const msstyles_v4_property image={
-            TMT_IMAGEFILE,TMT_FILENAME,window_class,WP_MINBUTTON,0,CLASSIC_MINIMIZE_IMAGE_ID,16,NULL
-        };
-        if(!property(output,TMT_BGTYPE,TMT_ENUM,window_class,WP_MINBUTTON,0,BT_IMAGEFILE) ||
-           !msstyles_v4_property_write(record,sizeof(record),ARRAYSIZE(classes),&image,&length) ||
-           !bytes(output,record,length))return false;
-    }
-    return title_metrics(output,&source->caption_metrics) && button(output,button_class,BP_PUSHBUTTON,source) &&
+    if(source->legacy_caption_images && !caption_images(output))return false;
+    return title_metrics(output,&source->caption_metrics) && push_button(output,source) &&
         button(output,scrollbar_class,SBP_ARROWBTN,source) &&
         scroll_surface(output,SBP_THUMBBTNHORZ,source) &&
         scroll_surface(output,SBP_THUMBBTNVERT,source) &&
@@ -153,8 +183,8 @@ static bool write_description(FILE *output,const classic_theme_source *source)
 
 static bool write_extension(FILE *output,const classic_theme_source *source)
 {
-    unsigned char buffer[CLASSIC_STYLE_BUTTON_RESOURCE_CAPACITY];
-    size_t length=classic_style_write(buffer,sizeof(buffer),&source->buttons);
+    unsigned char buffer[CLASSIC_STYLE_RESOURCE_CAPACITY];
+    size_t length=classic_style_write(buffer,sizeof(buffer),&source->buttons,&source->scroll_metrics);
     return length && bytes(output,buffer,length);
 }
 
@@ -187,10 +217,12 @@ int main(int argc,char **argv)
             return 1;
         }
     }
-    if(source->legacy_minimize){
-        HRESULT result=classic_write_minimize_png(L"minimize.png");
+    for(unsigned id=CLASSIC_MINIMIZE_IMAGE_ID;source->legacy_caption_images && id<=CLASSIC_CHILD_SYSTEM_DOWN_IMAGE_ID;++id){
+        WCHAR filename[24];
+        swprintf(filename,ARRAYSIZE(filename),L"caption%u.png",id);
+        HRESULT result=classic_write_caption_png(id,filename);
         if(FAILED(result)){
-            fprintf(stderr,"Failed to write original minimize bitmap (0x%08lx)\n",(unsigned long)result);
+            fprintf(stderr,"Failed to write original caption bitmap %u (0x%08lx)\n",id,(unsigned long)result);
             return 1;
         }
     }

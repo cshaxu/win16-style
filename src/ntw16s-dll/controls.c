@@ -91,15 +91,8 @@ BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
  * layout; only the text image is fitted inside the button's existing face. */
 static void draw(HWND w,control_style *s,HDC dc)
 {
-    win16_style_palette palette=s->palette;
-    if(s->themed && style_control_class_is(w,L"BUTTON")){
-        DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-        if(style_control_button_type(w,style)<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE)){
-            palette.face=s->push_colors.face;
-            palette.edge=s->push_colors.edge;
-        }
-    }
-    const win16_control_choice_view view={&s->instance,&s->state,&palette,
+    const classic_push_colors *push=s->themed && style_control_class_is(w,L"BUTTON")?&s->push_colors:NULL;
+    const win16_control_choice_view view={&s->instance,&s->state,&s->palette,push,
         style_control_button_type,style_control_is_static,style_control_vb_frame,style_control_vb_button,
         ntw16s_group_choice_button,ntw16s_group_push_button};
     win16_control_draw_choice(w,&view,dc);
@@ -126,10 +119,15 @@ void win16_style_vb_data_arrow(HDC dc,int x,int y,int width,int height,HDC sourc
     win16_control_vb_data_arrow_candidate(dc,x,y,width,height,source,sx,sy,sw,sh,rop,caller,ntw16s_vb_data_attached);
 }
 
+static classic_scroll_metrics scroll_metrics(HWND window)
+{
+    const style_instance *instance=style_instance_lookup(window,control_proc);
+    return instance?((const control_style *)instance->context)->scroll_metrics:(classic_scroll_metrics){0};
+}
 static BOOL scroll_layout(HWND w,style_scroll_layout *layout)
-{return win16_scroll_control_layout(w,ntw16s_native_get_scroll_info,layout);}
+{return win16_scroll_control_layout(w,ntw16s_native_get_scroll_info,scroll_metrics(w),layout);}
 static BOOL embedded_scroll_layout(HWND w,LONG object,style_scroll_layout *layout,POINT *screen_origin)
-{return win16_scroll_embedded_layout(w,object,ntw16s_native_get_scroll_info,layout,screen_origin);}
+{return win16_scroll_embedded_layout(w,object,ntw16s_native_get_scroll_info,scroll_metrics(w),layout,screen_origin);}
 
 static BOOL list_axis_owned(HWND w,LONG object)
 {return style_scroll_list_axis_owned(w,object,ntw16s_native_get_scroll_info);}

@@ -46,7 +46,7 @@ static void paint_state(void *context,win16_frame_paint_state *result)
 {
     uwp_frame *s=context;
     *result=(win16_frame_paint_state){&s->fonts,s->frame.active,s->frame.no_menu,FALSE,-1,
-        {s->frame.pressed,s->frame.hot}};
+        {s->frame.pressed,s->frame.hot},NULL};
 }
 static const win16_frame_renderer_ops renderer={cached_layout,paint_state,colors,no_scrollbars};
 static void refresh_paint(void *context,HDC dc)

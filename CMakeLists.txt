@@ -121,6 +121,7 @@ target_include_directories(style-menu-items PUBLIC src)
 target_compile_definitions(style-menu-items PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-menu-items PUBLIC user32 gdi32)
 add_library(win16-window STATIC
+  src/lib-win32-style/appearance/win3x/window/caption_art.c
   src/lib-win32-style/appearance/win3x/menu/menu_paint.c
   src/lib-win32-style/appearance/win3x/menu/menu_bar.c src/lib-win32-style/appearance/win3x/menu/menu_bar_paint.c
   src/lib-win32-style/appearance/win3x/menu/menu_items.c src/lib-win32-style/appearance/win3x/menu/menu_scope.c
@@ -131,7 +132,7 @@ add_library(win16-window STATIC
   src/lib-win32-style/appearance/win3x/window/frame_state.c)
 target_include_directories(win16-window PUBLIC src/lib-win32-style/appearance/win3x/window PRIVATE src)
 target_compile_definitions(win16-window PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-window PUBLIC style-menu-owner style-window style-instance style-menu-items style-uwp-repaint win16-common user32 gdi32 comctl32 uxtheme)
+target_link_libraries(win16-window PUBLIC style-menu-owner style-window style-instance style-menu-items style-uwp-repaint win16-common user32 gdi32 comctl32 uxtheme PRIVATE ole32 uuid)
 add_library(win16-window-uwp STATIC
   src/lib-win32-style/appearance/win3x/window/modern_frame.c
   src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c)
@@ -270,6 +271,7 @@ add_library(style-msstyles STATIC
   src/lib-win32-style/appearance/msstyles/v4_property.c
   src/lib-win32-style/appearance/msstyles/v4_tables.c)
 target_include_directories(style-msstyles PUBLIC src)
+target_compile_definitions(style-msstyles PRIVATE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-window PRIVATE style-msstyles)
 target_link_libraries(win16-window PRIVATE style-msstyles)
 target_link_libraries(win16-control PRIVATE style-msstyles)
@@ -279,13 +281,15 @@ target_include_directories(classic-theme-compiler PRIVATE src)
 target_link_libraries(classic-theme-compiler PRIVATE style-msstyles windowscodecs ole32 uuid)
 set(classic_theme_artifacts)
 set(classic_theme_rc "${CMAKE_CURRENT_SOURCE_DIR}/tools/theme/classic_resources.rc")
-foreach(stem IN ITEMS Win16 Win2000)
+foreach(stem IN ITEMS Win16 Win2K)
   set(out "${CMAKE_BINARY_DIR}/themes/${stem}")
   unset(image_flag)
-  unset(image_file)
+  unset(image_files)
   if(stem STREQUAL "Win16")
-    set(image_flag -D PACK_ORIGINAL_MINIMIZE)
-    set(image_file "${out}/minimize.png")
+    set(image_flag -D PACK_ORIGINAL_CAPTION)
+    foreach(id RANGE 501 510)
+      list(APPEND image_files "${out}/caption${id}.png")
+    endforeach()
   endif()
   file(MAKE_DIRECTORY "${out}")
   set(theme_object "${out}/theme.res.o")
@@ -293,7 +297,7 @@ foreach(stem IN ITEMS Win16 Win2000)
   add_custom_command(
     OUTPUT "${theme_object}" "${out}/${stem}.theme"
     BYPRODUCTS "${out}/cmap.bin" "${out}/bcmap.bin" "${out}/vmap.bin"
-      "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" ${image_file}
+      "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" ${image_files}
     COMMAND "$<TARGET_FILE:classic-theme-compiler>" "${stem}"
     COMMAND "${CMAKE_RC_COMPILER}" ${image_flag} -i "${classic_theme_rc}" -O coff -o theme.res.o
     DEPENDS classic-theme-compiler "${classic_theme_rc}"
@@ -314,7 +318,7 @@ endforeach()
 if(classic_theme_artifacts)
   add_custom_target(classic-themes DEPENDS ${classic_theme_artifacts})
 endif()
-target_sources(ntw2ks PRIVATE "${theme_object_Win2000}")
+target_sources(ntw2ks PRIVATE "${theme_object_Win2K}")
 add_library(win2k-file STATIC src/lib-win32-style/appearance/win2000/dialog/file_call.c)
 target_link_libraries(win2k-file PUBLIC style-dialog-common)
 add_library(win2k-stock STATIC src/lib-win32-style/appearance/win2000/dialog/stock_call.c)

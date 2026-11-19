@@ -68,7 +68,7 @@ static void paint_state(void *context,win16_frame_paint_state *result)
 {
     style_window *s=context;
     *result=(win16_frame_paint_state){&s->fonts,s->native.active,s->menu.system,
-        s->menu.bar.keyboard,s->menu.bar.selected,s->button};
+        s->menu.bar.keyboard,s->menu.bar.selected,s->button,&s->art};
 }
 static const win16_frame_renderer_ops renderer={paint_layout,paint_state,paint_colors,win16_style_scrollbars_paint};
 static void paint(HWND w,void *context,HDC target)

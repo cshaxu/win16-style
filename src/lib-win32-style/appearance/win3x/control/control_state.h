@@ -11,8 +11,10 @@ typedef struct control_style {
     style_instance instance;
     style_control_state state;
     win16_style_palette palette;
-    classic_surface_colors push_colors, scroll_arrow_colors;
+    classic_push_colors push_colors;
+    classic_surface_colors scroll_arrow_colors;
     classic_scroll_colors scroll_colors;
+    classic_scroll_metrics scroll_metrics;
     BOOL themed;
     BOOL file_owner;
     BOOL edit_border;

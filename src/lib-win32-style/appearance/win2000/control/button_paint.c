@@ -67,8 +67,10 @@ static BOOL label(HWND window,style_instance *instance,HDC dc,const style_contro
     }
     return result;
 }
-BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const win2k_palette *p)
+BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classic_push_colors *colors)
 {
+    win2k_palette palette=win2k_standard_palette;
+    const win2k_palette *p=&palette;
     int saved=SaveDC(dc);if(!saved)return FALSE;
     BOOL result=FALSE;RECT client,bounds,glyph;HBRUSH brush=NULL;
     DWORD initial_style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);HWND parent=GetParent(window);
@@ -113,6 +115,12 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const win2k_
     UINT state=(snapshot.state&BST_PUSHED)?DFCS_PUSHED:0;
     if(snapshot.style&BS_FLAT)state|=DFCS_FLAT|DFCS_MONO;
     if(push){
+        if(colors){
+            classic_surface_colors surface=classic_push_color(colors,(snapshot.style&WS_DISABLED)!=0,
+                (state&DFCS_PUSHED) || snapshot.check!=BST_UNCHECKED,snapshot.role.type==BS_DEFPUSHBUTTON);
+            palette.face=surface.face;
+            palette.dark=surface.edge;
+        }
         SetBkMode(dc,TRANSPARENT);SetTextColor(dc,p->text);SetBkColor(dc,p->face);
         if(snapshot.check)state|=DFCS_CHECKED;
         if(!win2k_push_button_frame(dc,&bounds,state|DFCS_ADJUSTRECT,snapshot.role.type==BS_DEFPUSHBUTTON,p))goto done;

@@ -15,27 +15,27 @@ void win16_control_outline(HDC dc,RECT r,int u,COLORREF c)
     q=r;q.left=q.right-u;FillRect(dc,&q,brush);
 }
 
-void win16_control_frame_button(HDC dc,RECT r,int kind,BOOL down,BOOL zoom,BOOL child,int u,
-    const win16_style_palette *p)
+static void paint_button(HDC dc,RECT r,int kind,BOOL down,BOOL zoom,BOOL child,int u,
+    const win16_style_palette *p,const win16_caption_art *art)
 {
-    BITMAPINFO bi={0};DWORD pixels[19*18];int x,y,width,stride;
-    const char *bits;
+    BITMAPINFO bi={0};DWORD pixels[19*18];int x,y;
+    const BOOL system=kind==HTSYSMENU;
+    const int width=system?18:19;
+    const unsigned role=system?(child?CLASSIC_IMAGE_ROLE_COUNT:CLASSIC_IMAGE_SYSTEM):
+        kind==HTMINBUTTON?CLASSIC_IMAGE_MINIMIZE:zoom?CLASSIC_IMAGE_RESTORE:CLASSIC_IMAGE_MAXIMIZE;
+    const BYTE *roles=art && art->available?art->roles[role][!!down]:NULL;
+    const char *fallback=system?&system_menu_bitmap[0][child?18:0]:&frame_buttons[role+(down?3:0)][0][0];
+    const int stride=system?37:20;
     COLORREF palette[4]={p->edge,p->light,p->shadow,p->face};
     if(IsRectEmpty(&r))return;
-    win16_control_fill(dc,r,kind==HTSYSMENU&&down?p->shadow:p->face);win16_control_outline(dc,r,u,p->edge);
-    if(kind==HTSYSMENU){
-        /* Original CLOSE atlas: top-level left half, WS_CHILD right half. */
-        bits=&system_menu_bitmap[0][child?18:0];width=18;stride=37;
-        /* VGA selection inverts palette roles, not RGB bytes: light grey
-         * becomes dark grey, black becomes white. No second CLOSE bitmap. */
-        if(down){palette[0]=p->light;palette[1]=p->edge;
-            palette[2]=p->face;palette[3]=p->shadow;}
-    }else{
-        int index=(kind==HTMINBUTTON?0:zoom?2:1)+(down?3:0);
-        bits=&frame_buttons[index][0][0];width=19;stride=20;
+    win16_control_fill(dc,r,system&&down?p->shadow:p->face);win16_control_outline(dc,r,u,p->edge);
+    if(!roles && system && down){
+        /* The original CLOSE atlas has one half per window role. */
+        palette[0]=p->light;palette[1]=p->edge;
+        palette[2]=p->face;palette[3]=p->shadow;
     }
     for(y=0;y<18;++y)for(x=0;x<width;++x){
-        COLORREF c=palette[bits[y*stride+x]-'0'];
+        COLORREF c=palette[roles?roles[y*width+x]:fallback[y*stride+x]-'0'];
         pixels[y*width+x]=((DWORD)GetRValue(c)<<16)|((DWORD)GetGValue(c)<<8)|GetBValue(c);
     }
     bi.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
@@ -44,13 +44,13 @@ void win16_control_frame_button(HDC dc,RECT r,int kind,BOOL down,BOOL zoom,BOOL 
     /* Original arrow artwork includes its left separator; CLOSE does not.
      * The caption supplies the other separators. Scale the raster once. */
     SetStretchBltMode(dc,COLORONCOLOR);
-    StretchDIBits(dc,r.left,r.top,r.right-r.left-(kind==HTSYSMENU?u:0),r.bottom-r.top,
+    StretchDIBits(dc,r.left,r.top,r.right-r.left-(system?u:0),r.bottom-r.top,
         0,0,width,18,pixels,&bi,DIB_RGB_COLORS,SRCCOPY);
 }
 
 void win16_style_merged_control(HDC dc,RECT bounds,BOOL system,BOOL selected,int unit,const win16_style_palette *palette)
 {
-    win16_control_frame_button(dc,bounds,system?HTSYSMENU:HTMAXBUTTON,selected,!system,system,unit,palette);
+    paint_button(dc,bounds,system?HTSYSMENU:HTMAXBUTTON,selected,!system,system,unit,palette,NULL);
 }
 
 
@@ -83,10 +83,10 @@ void win16_control_frame_caption(HDC dc,const win16_style_layout *layout,const w
     win16_frame_paint_state state=*snapshot;
     win16_control_fill(dc,l.caption,state.active?p.active:p.inactive);
     r=l.caption;r.top=r.bottom;r.bottom+=l.unit;win16_control_fill(dc,r,p.edge);
-    win16_control_frame_button(dc,l.system,HTSYSMENU,state.system_menu||(state.bar_keyboard&&state.bar_selected==-2)||(state.button.pressed==HTSYSMENU&&state.button.hot),FALSE,
-        child,l.unit,&p);
-    win16_control_frame_button(dc,l.minimize,HTMINBUTTON,state.button.pressed==HTMINBUTTON&&state.button.hot,FALSE,FALSE,l.unit,&p);
-    win16_control_frame_button(dc,l.maximize,HTMAXBUTTON,state.button.pressed==HTMAXBUTTON&&state.button.hot,zoomed,FALSE,l.unit,&p);
+    paint_button(dc,l.system,HTSYSMENU,state.system_menu||(state.bar_keyboard&&state.bar_selected==-2)||(state.button.pressed==HTSYSMENU&&state.button.hot),FALSE,
+        child,l.unit,&p,state.art);
+    paint_button(dc,l.minimize,HTMINBUTTON,state.button.pressed==HTMINBUTTON&&state.button.hot,FALSE,FALSE,l.unit,&p,state.art);
+    paint_button(dc,l.maximize,HTMAXBUTTON,state.button.pressed==HTMAXBUTTON&&state.button.hot,zoomed,FALSE,l.unit,&p,state.art);
     if(title){
         SIZE extent;int len=lstrlenW(title);
         r=l.title;

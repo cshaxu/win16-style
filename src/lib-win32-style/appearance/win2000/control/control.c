@@ -34,7 +34,7 @@ typedef struct win2k_control {
     style_control_state state;
     style_native_theme_fn native_theme;
     BOOL frame_owned;
-    win2k_palette push_palette;
+    classic_push_colors push;
     style_control_notify_state parent_binding;
     style_control_combo combo;
     HWND combo_parent;
@@ -187,13 +187,7 @@ static void paint(HWND window,void *context,HDC dc)
         painted=win2k_combo_paint(window,&control->instance,dc);
     }else if(static_class(window)){
         painted=win2k_static_paint(window,&control->instance,dc,&win2k_standard_palette);
-    }else{
-        DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
-        UINT type=style_control_button_type(window,style);
-        const win2k_palette *palette=type<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE)?
-            &control->push_palette:&win2k_standard_palette;
-        painted=win2k_button_paint(window,&control->instance,dc,palette);
-    }
+    }else painted=win2k_button_paint(window,&control->instance,dc,&control->push);
     if(!painted &&
        !control->instance.detached){
         int saved=SaveDC(dc);
@@ -488,11 +482,11 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     control->report=report;
     style_control_native_init(&control->native);
     win2k_scroll_init(&control->scroll,&control->instance);
-    control->push_palette=win2k_standard_palette;
+    for(unsigned i=0;i<CLASSIC_PUSH_STATE_COUNT;++i)
+        control->push.state[i]=(classic_surface_colors){win2k_standard_palette.face,win2k_standard_palette.dark};
     classic_theme theme;
     if(classic_theme_default((HMODULE)&__ImageBase,&theme)){
-        control->push_palette.face=theme.button.face;
-        control->push_palette.dark=theme.button.edge;
+        control->push=theme.push;
         win2k_scroll_theme(&control->scroll,&theme);
     }
     control->scroll.controller.resources.list=combo_parent || class_is(window,L"LISTBOX");

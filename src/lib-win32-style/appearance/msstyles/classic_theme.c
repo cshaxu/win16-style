@@ -88,9 +88,16 @@ static HRESULT read_fields(const msstyles_v4_property *item,const size_t indices
         theme_field *field=&fields[i];
         if(item->class_id!=indices[field->cls] || item->part_id!=field->part ||
            item->state_id!=field->state || item->name_id!=field->name)continue;
-        if(field->present || item->type_id!=field->type || !item->data || item->declared_size!=4)
+        if(field->present || item->type_id!=field->type)
             return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
-        field->value=msstyles_v4_read_word(item->data);
+        if(field->type==TMT_FILENAME){
+            if(item->data || item->declared_size!=16 || !item->short_value || item->short_value>UINT16_MAX)
+                return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+            field->value=item->short_value;
+        }else{
+            if(!item->data || item->declared_size!=4)return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+            field->value=msstyles_v4_read_word(item->data);
+        }
         if(field->type==TMT_COLOR && field->value>0xffffffu)
             return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
         field->present=true;
@@ -137,6 +144,12 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
         COLOR_FIELD(class_window,WP_CAPTION,CS_INACTIVE,TMT_GRADIENTCOLOR1),
         COLOR_FIELD(class_window,WP_CAPTION,CS_INACTIVE,TMT_GRADIENTCOLOR2)
     };
+    const unsigned push_states[]={PBS_NORMAL,PBS_PRESSED,PBS_DISABLED,PBS_DEFAULTED};
+    theme_field push[CLASSIC_PUSH_STATE_COUNT*2];
+    for(size_t i=0;i<ARRAYSIZE(push_states);++i){
+        push[2*i]=(theme_field)COLOR_FIELD(class_button,BP_PUSHBUTTON,push_states[i],TMT_FILLCOLOR);
+        push[2*i+1]=(theme_field)COLOR_FIELD(class_button,BP_PUSHBUTTON,push_states[i],TMT_BORDERCOLOR);
+    }
     const unsigned scroll_parts[]={SBP_THUMBBTNHORZ,SBP_THUMBBTNVERT,SBP_LOWERTRACKHORZ,
         SBP_LOWERTRACKVERT,SBP_SIZEBOX};
     const unsigned color_ids[]={TMT_FILLCOLOR,TMT_EDGELIGHTCOLOR,TMT_EDGEHIGHLIGHTCOLOR,
@@ -153,6 +166,13 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
         {class_window,WP_SMALLCLOSEBUTTON,0,TMT_WIDTH,TMT_INT,0,false},
         {class_window,WP_SMALLCLOSEBUTTON,0,TMT_HEIGHT,TMT_INT,0,false}
     };
+    const uint32_t caption_parts[]={WP_MINBUTTON,WP_MAXBUTTON,WP_RESTOREBUTTON,WP_SYSBUTTON};
+    const uint32_t caption_pressed[]={MINBS_PUSHED,MAXBS_PUSHED,RBS_PUSHED,SBS_PUSHED};
+    theme_field images[CLASSIC_IMAGE_ROLE_COUNT*2];
+    for(size_t i=0;i<CLASSIC_IMAGE_ROLE_COUNT;++i){
+        images[2*i]=(theme_field){class_window,caption_parts[i],0,TMT_IMAGEFILE,TMT_FILENAME,0,false};
+        images[2*i+1]=(theme_field){class_window,caption_parts[i],caption_pressed[i],TMT_IMAGEFILE,TMT_FILENAME,0,false};
+    }
     size_t indices[class_count],class_total;
     HRESULT result=class_indices(map,indices,&class_total);
     if(FAILED(result))return result;
@@ -163,8 +183,14 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
             return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
         result=read_fields(&item,indices,fields,ARRAYSIZE(fields));
         if(FAILED(result))return result;
+        if(item.class_id==indices[class_button] && item.part_id==BP_PUSHBUTTON){
+            result=read_fields(&item,indices,push,ARRAYSIZE(push));
+            if(FAILED(result))return result;
+        }
         if(item.class_id==indices[class_window]){
             result=read_fields(&item,indices,dimensions,ARRAYSIZE(dimensions));
+            if(FAILED(result))return result;
+            result=read_fields(&item,indices,images,ARRAYSIZE(images));
             if(FAILED(result))return result;
         }
         for(size_t i=0;i<ARRAYSIZE(scroll_parts);++i)
@@ -189,7 +215,10 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
         theme->inactive.start=fields[first_gradient+2].value;
         theme->inactive.end=fields[first_gradient+3].value;
     }
-    theme->button=(classic_surface_colors){fields[button_face].value,fields[button_edge].value};
+    for(size_t i=0;i<CLASSIC_PUSH_STATE_COUNT;++i)
+        theme->push.state[i]=(classic_surface_colors){
+            push[2*i].present?push[2*i].value:fields[button_face].value,
+            push[2*i+1].present?push[2*i+1].value:fields[button_edge].value};
     theme->scroll_arrow=(classic_surface_colors){fields[scroll_face].value,fields[scroll_edge].value};
     BOOL has_thumb,has_track;
     if(!scroll_colors(scroll,scroll_track_pairs,theme->scroll.thumb,&has_thumb) ||
@@ -207,6 +236,9 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
     }
     theme->caption_metrics=(classic_caption_metrics){dimensions[0].value,dimensions[3].value,
         {dimensions[1].value,dimensions[2].value},{dimensions[4].value,dimensions[5].value}};
+    for(size_t i=0;i<CLASSIC_IMAGE_ROLE_COUNT;++i)
+        for(size_t state=0;state<2;++state)
+            theme->caption_images.id[i][state]=(WORD)images[2*i+state].value;
     return S_OK;
 }
 
@@ -221,7 +253,8 @@ HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme
         variant_resource(module,size,color,&variant):HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
     if(SUCCEEDED(result))result=palette(resource(module,L"CMAP",L"CMAP"),variant,&value);
     if(SUCCEEDED(result)){
-        enum classic_style_result status=classic_style_read(extension.bytes,extension.size,&value.title_buttons);
+        enum classic_style_result status=classic_style_read(extension.bytes,extension.size,
+            &value.title_buttons,&value.scroll_metrics);
         if(status!=CLASSIC_STYLE_OK)result=HRESULT_FROM_WIN32(
             status==CLASSIC_STYLE_VERSION || status==CLASSIC_STYLE_REQUIRED_RECORD?
             ERROR_NOT_SUPPORTED:ERROR_INVALID_DATA);
@@ -246,4 +279,13 @@ BOOL classic_theme_default(HMODULE module,classic_theme *theme)
     BOOL loaded=SUCCEEDED(classic_theme_read(module,L"NormalSize",L"NormalColor",theme));
     SetLastError(prior);
     return loaded;
+}
+
+int classic_scroll_nominal(classic_scroll_metrics metrics,enum classic_scroll_extent_source fallback,
+    const RECT *bar,BOOL vertical,UINT dpi)
+{
+    unsigned source=metrics.source?metrics.source:fallback;
+    if(source==CLASSIC_SCROLL_EXTENT_FIXED)return max(1,MulDiv(metrics.logical_extent,(int)dpi,96));
+    if(source==CLASSIC_SCROLL_EXTENT_CROSS_AXIS)return vertical?bar->right-bar->left:bar->bottom-bar->top;
+    return GetSystemMetricsForDpi(vertical?SM_CYVSCROLL:SM_CXHSCROLL,dpi);
 }

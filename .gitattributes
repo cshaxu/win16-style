@@ -1,4 +1,5 @@
 * text=auto
+/.gitattributes text eol=lf
 *.md text eol=lf
 *.json text eol=lf
 *.ps1 text eol=lf
@@ -14,4 +15,6 @@
 *.cmake text eol=lf
 *.exe binary
 *.dll binary
+assets/themes/**/*.theme -text whitespace=trailing-space,space-before-tab,cr-at-eol
+*.msstyles binary
 *.manifest text eol=lf

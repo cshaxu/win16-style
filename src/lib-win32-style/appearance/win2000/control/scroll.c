@@ -14,23 +14,22 @@ static BOOL vertical_axis(HWND window,LONG object)
         (object==OBJID_CLIENT && (GetWindowLongPtrW(window,GWL_STYLE)&SBS_VERT));
 }
 
-static BOOL measure(HWND window,LONG object,const RECT *bar,style_scroll_layout *out)
+static BOOL measure(HWND window,const win2k_scroll *scroll,LONG object,const RECT *bar,style_scroll_layout *out)
 {
     BOOL vertical=vertical_axis(window,object);
     UINT dpi=GetDpiForWindow(window);
     SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
-    int metric=GetSystemMetricsForDpi(vertical?SM_CYVSCROLL:SM_CXHSCROLL,dpi?dpi:96);
+    int metric=classic_scroll_nominal(scroll->metrics,CLASSIC_SCROLL_EXTENT_SYSTEM,bar,vertical,dpi?dpi:96);
     int axis=object==OBJID_CLIENT?SB_CTL:vertical?SB_VERT:SB_HORZ;
     return read_info(window,axis,&info) && win2k_scroll_measure(bar,vertical,metric,&info,out);
 }
 
 static BOOL layout(HWND window,void *context,LONG object,style_scroll_layout *out,POINT *origin)
 {
-    (void)context;
     style_scroll_surface surface;
     if(!style_scroll_surface_read(window,object,&surface))return FALSE;
     if(origin)*origin=(POINT){surface.info.rcScrollBar.left,surface.info.rcScrollBar.top};
-    return measure(window,object,&surface.bar,out);
+    return measure(window,context,object,&surface.bar,out);
 }
 
 static style_scroll_part hit(const style_scroll_layout *l,POINT p,UINT disabled)
@@ -106,7 +105,7 @@ static void draw(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
     style_scroll_surface surface;
     style_scroll_layout l;
     if(!dc || scroll->instance->detached || !style_scroll_surface_read(window,object,&surface) ||
-        !measure(window,object,&surface.target,&l) || scroll->instance->detached)return;
+        !measure(window,scroll,object,&surface.target,&l) || scroll->instance->detached)return;
     int saved=SaveDC(dc);
     if(!saved)return;
     const classic_scroll_colors *colors=&scroll->colors;
@@ -255,6 +254,7 @@ void win2k_scroll_theme(win2k_scroll *scroll,const classic_theme *theme)
     scroll->arrow_palette.face=theme->scroll_arrow.face;
     scroll->arrow_palette.dark=theme->scroll_arrow.edge;
     scroll->colors=theme->scroll;
+    scroll->metrics=theme->scroll_metrics;
 }
 
 style_scroll_ops win2k_scroll_operations(win2k_scroll *scroll)

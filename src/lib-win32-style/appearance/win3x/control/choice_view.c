@@ -56,7 +56,17 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
         if(!parent_painted)FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
     }
     if(label_control || type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX || (style&BS_PUSHLIKE)){
-        win16_control_other(w,view->instance,view->palette,dc,r,font,text,label_control,view->button_type,view->group_push);RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;}
+        win16_style_palette palette=*view->palette;
+        if(view->push && !label_control && (type<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE))){
+            BOOL pressed=(state&BST_PUSHED) || ((style&BS_PUSHLIKE) && check!=BST_UNCHECKED);
+            classic_surface_colors colors=classic_push_color(view->push,(style&WS_DISABLED)!=0,pressed,
+                type==BS_DEFPUSHBUTTON);
+            palette.face=colors.face;
+            palette.edge=colors.edge;
+        }
+        win16_control_other(w,view->instance,&palette,dc,r,font,text,label_control,view->button_type,view->group_push);
+        RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;
+    }
     height=MulDiv(13,(int)dpi,96);glyph=r;glyph.top+=(r.bottom-height)/2;
     glyph.bottom=glyph.top+height;glyph.right=glyph.left+MulDiv(14,(int)dpi,96);
     if(style&BS_LEFTTEXT)OffsetRect(&glyph,r.right-glyph.right,0);

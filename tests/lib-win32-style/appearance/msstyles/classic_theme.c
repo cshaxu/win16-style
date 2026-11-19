@@ -5,7 +5,7 @@
 #include "lib-win32-style/appearance/win2000/control/scroll_layout.h"
 #include "lib-win32-style/appearance/win3x/window/frame_paint.h"
 #include "lib-win32-style/appearance/win3x/control/basic_paint.h"
-#include "lib-win32-style/appearance/win3x/control/other_paint.h"
+#include "lib-win32-style/appearance/win3x/control/choice_view.h"
 #include "lib-win32-style/appearance/win3x/control/scroll_layout.h"
 #include "lib-win32-style/appearance/win3x/resources/scroll_assets.h"
 #include <stdio.h>
@@ -57,6 +57,38 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
     return win16_style_hit(&layout,center)==HTCAPTION && GetPixel(dc,center.x,center.y)==colors.start;
 }
 
+static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *theme,const win16_caption_art *art,UINT dpi)
+{
+    win16_style_layout layout;
+    if(!win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
+        &theme->title_buttons,&theme->caption_metrics,&layout))return FALSE;
+
+    win16_style_palette palette;
+    win16_style_default_palette(&palette);
+    palette.edge=RGB(5,20,34);
+    palette.light=RGB(29,60,91);
+    palette.shadow=RGB(93,55,64);
+    palette.face=RGB(117,39,46);
+    const int hits[]={HTMINBUTTON,HTMAXBUTTON,HTSYSMENU};
+    DWORD reference[240*64];
+    for(unsigned flags=0;flags<8;++flags){
+        win16_frame_paint_state state={0};
+        BOOL pressed=(flags&1)!=0,child=(flags&2)!=0,zoomed=(flags&4)!=0;
+        for(unsigned i=0;i<ARRAYSIZE(hits);++i){
+            state.button=(style_caption_button){pressed?hits[i]:0,pressed};
+            state.art=NULL;
+            win16_control_frame_caption(dc,&layout,&palette,&state,NULL,child,zoomed);
+            GdiFlush();
+            memcpy(reference,pixels,sizeof(reference));
+            state.art=art;
+            win16_control_frame_caption(dc,&layout,&palette,&state,NULL,child,zoomed);
+            GdiFlush();
+            if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
+        }
+    }
+    return TRUE;
+}
+
 static UINT button_type(HWND window,DWORD style)
 {
     (void)window;
@@ -70,36 +102,33 @@ static BOOL button_fit(HWND window)
 }
 
 static BOOL draw_button(HDC dc,HWND window,const classic_theme *theme,BOOL win2000,
-    BOOL disabled,BOOL pressed)
+    BOOL disabled,BOOL pressed,BOOL defaulted,enum classic_push_state expected)
 {
     EnableWindow(window,!disabled);
+    SendMessageW(window,BM_SETSTYLE,defaulted?BS_DEFPUSHBUTTON:BS_PUSHBUTTON,FALSE);
     SendMessageW(window,BM_SETSTATE,pressed,0);
-    RECT r={0,0,80,28};
     if(((SendMessageW(window,BM_GETSTATE,0,0)&BST_PUSHED)!=0)!=pressed ||
        IsWindowEnabled(window)==disabled)return FALSE;
     style_instance instance={0};
     if(win2000){
-        win2k_palette palette=win2k_standard_palette;
-        palette.face=theme->button.face;
-        palette.dark=theme->button.edge;
-        if(!win2k_button_paint(window,&instance,dc,&palette))return FALSE;
+        if(!win2k_button_paint(window,&instance,dc,&theme->push))return FALSE;
     }else{
         win16_style_palette palette;
         win16_style_default_palette(&palette);
-        palette.face=theme->button.face;
-        palette.edge=theme->button.edge;
-        win16_control_other(window,&instance,&palette,dc,r,(HFONT)GetStockObject(DEFAULT_GUI_FONT),L"",
-            FALSE,button_type,button_fit);
+        style_control_state control={0};
+        const win16_control_choice_view view={&instance,&control,&palette,&theme->push,button_type,
+            button_fit,button_fit,button_fit,button_fit,button_fit};
+        win16_control_draw_choice(window,&view,dc);
     }
-    return GetPixel(dc,40,14)==theme->button.face;
+    return GetPixel(dc,40,14)==theme->push.state[expected].face;
 }
 
 static BOOL draw_scroll(HDC dc,const classic_theme *theme,BOOL win2000,UINT dpi,unsigned state)
 {
-    int nominal=MulDiv(17,(int)dpi,96);
-    RECT bar={0,0,nominal,60};
+    RECT bar={0,0,MulDiv(17,(int)dpi,96),60};
+    int nominal=classic_scroll_nominal(theme->scroll_metrics,CLASSIC_SCROLL_EXTENT_DEFAULT,&bar,TRUE,dpi);
     style_scroll_layout geometry;
-    if(!PatBlt(dc,0,0,nominal,60,WHITENESS))return FALSE;
+    if(!PatBlt(dc,0,0,bar.right,60,WHITENESS))return FALSE;
     if(win2000){
         const SCROLLINFO info={.nMin=0,.nMax=100,.nPage=5,.nPos=30};
         if(!win2k_scroll_measure(&bar,TRUE,nominal,&info,&geometry))return FALSE;
@@ -128,7 +157,7 @@ static BOOL draw_scroll(HDC dc,const classic_theme *theme,BOOL win2000,UINT dpi,
     return FALSE;
 }
 
-static BOOL render(const classic_theme *theme,BOOL win2000)
+static BOOL render(const classic_theme *theme,BOOL win2000,const win16_caption_art *art)
 {
     HDC dc=CreateCompatibleDC(NULL);
     if(!dc)return FALSE;
@@ -138,12 +167,19 @@ static BOOL render(const classic_theme *theme,BOOL win2000)
     HBITMAP bitmap=CreateDIBSection(dc,&info,DIB_RGB_COLORS,&bits,NULL,0);
     HGDIOBJ saved=bitmap?SelectObject(dc,bitmap):NULL;
     HWND window=CreateWindowExW(0,L"BUTTON",L"",WS_CHILD,0,0,80,28,HWND_MESSAGE,NULL,NULL,NULL);
+    classic_theme altered=*theme;
+    altered.push.state[CLASSIC_PUSH_PRESSED].face=RGB(37,86,173);
+    altered.push.state[CLASSIC_PUSH_DISABLED].face=RGB(173,52,39);
+    altered.push.state[CLASSIC_PUSH_DEFAULTED].face=RGB(40,152,63);
     BOOL passed=saved && saved!=HGDI_ERROR &&
         draw_band(dc,theme,win2000,TRUE,96) && draw_band(dc,theme,win2000,FALSE,96) &&
         draw_band(dc,theme,win2000,TRUE,144) && draw_band(dc,theme,win2000,FALSE,144) &&
-        window && draw_button(dc,window,theme,win2000,FALSE,FALSE) &&
-        draw_button(dc,window,theme,win2000,FALSE,TRUE) &&
-        draw_button(dc,window,theme,win2000,TRUE,FALSE);
+        (win2000 || (draw_caption_art(dc,bits,theme,art,96) && draw_caption_art(dc,bits,theme,art,144))) &&
+        window && draw_button(dc,window,&altered,win2000,FALSE,FALSE,FALSE,CLASSIC_PUSH_NORMAL) &&
+        draw_button(dc,window,&altered,win2000,FALSE,TRUE,FALSE,CLASSIC_PUSH_PRESSED) &&
+        draw_button(dc,window,&altered,win2000,TRUE,FALSE,TRUE,CLASSIC_PUSH_DISABLED) &&
+        draw_button(dc,window,&altered,win2000,FALSE,FALSE,TRUE,CLASSIC_PUSH_DEFAULTED) &&
+        draw_button(dc,window,&altered,win2000,FALSE,TRUE,TRUE,CLASSIC_PUSH_PRESSED);
     for(unsigned state=0;passed && state<3;++state)
         passed=draw_scroll(dc,theme,win2000,96,state) && draw_scroll(dc,theme,win2000,144,state);
     if(window)DestroyWindow(window);
@@ -168,7 +204,9 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     CHECK(theme.inactive.start==(gradient?RGB(128,128,128):RGB(255,255,255)));
     CHECK(theme.inactive.text==(gradient?RGB(192,192,192):RGB(0,0,0)));
     COLORREF state_face=gradient?RGB(212,208,200):RGB(192,192,192);
-    CHECK(theme.button.face==(recolored?RGB(251,37,52):state_face));
+    for(unsigned state=0;state<CLASSIC_PUSH_STATE_COUNT;++state)
+        CHECK(theme.push.state[state].face==(recolored?RGB(251,37,52):state_face) &&
+              theme.push.state[state].edge==(gradient?RGB(64,64,64):RGB(0,0,0)));
     CHECK(theme.scroll_arrow.face==(recolored?RGB(89,97,163):state_face));
     CHECK(theme.scroll_arrow.edge==(gradient?RGB(64,64,64):RGB(0,0,0)));
     CHECK(theme.scroll.tracks_and_thumbs && theme.scroll.own_sizebox==gradient);
@@ -183,7 +221,18 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     }
     if(gradient)CHECK(theme.scroll.sizebox.face==state_face);
     CHECK(theme.title_buttons.count==(gradient?4:3));
-    CHECK(render(&theme,gradient));
+    win16_caption_art art={0};
+    if(!gradient){
+        HMODULE module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
+        CHECK(module);
+        CHECK(SUCCEEDED(win16_caption_art_read(module,&theme.caption_images,&art)) && art.available);
+        classic_caption_images wrong=theme.caption_images;
+        wrong.id[CLASSIC_IMAGE_SYSTEM][0]=wrong.id[CLASSIC_IMAGE_MINIMIZE][0];
+        win16_caption_art prior_art=art;
+        CHECK(FAILED(win16_caption_art_read(module,&wrong,&art)) && !memcmp(&prior_art,&art,sizeof(art)));
+        CHECK(FreeLibrary(module));
+    }
+    CHECK(render(&theme,gradient,&art));
     unsigned char prior[sizeof(theme)];
     memcpy(prior,&theme,sizeof(theme));
     CHECK(classic_theme_load(path,L"MissingSize",L"NormalColor",&theme)==
@@ -196,5 +245,5 @@ int wmain(int argc,WCHAR **argv)
 {
     BOOL recolored=argc==3 && !wcscmp(argv[2],L"--recolor");
     if(argc!=2 && !recolored)return 2;
-    return check(argv[1],L"Win16",FALSE,recolored) || check(argv[1],L"Win2000",TRUE,recolored);
+    return check(argv[1],L"Win16",FALSE,recolored) || check(argv[1],L"Win2K",TRUE,recolored);
 }

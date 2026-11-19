@@ -56,15 +56,18 @@ static bool original_image(HMODULE module,uint32_t image_id)
 {
     DWORD length=0;
     CHECK(image_id && image_id<=UINT16_MAX);
-    const unsigned char *bytes=resource(module,L"IMAGE",MAKEINTRESOURCEW(image_id),&length);
+    PCWSTR name=image_id==509?L"CLASSIC_CHILD_SYSTEM":
+        image_id==510?L"CLASSIC_CHILD_SYSTEM_PRESSED":MAKEINTRESOURCEW(image_id);
+    const unsigned char *bytes=resource(module,L"IMAGE",name,&length);
     CHECK(bytes && length>8 && !memcmp(bytes,"\x89PNG\r\n\x1a\n",8));
     IWICImagingFactory *factory=NULL;
     IWICStream *stream=NULL;
     IWICBitmapDecoder *decoder=NULL;
     IWICBitmapFrameDecode *frame=NULL;
     IWICFormatConverter *converter=NULL;
-    enum {width=19,height=18,stride=width*3};
-    BYTE bits[height][stride];
+    bool system=image_id>=507,child=image_id>=509;
+    const UINT width=system?18:19,height=18,stride=width*3;
+    BYTE bits[18*19*3];
     UINT x=0,y=0;
     HRESULT result=CoCreateInstance(&CLSID_WICImagingFactory,NULL,CLSCTX_INPROC_SERVER,
                                     &IID_IWICImagingFactory,(void **)&factory);
@@ -78,7 +81,7 @@ static bool original_image(HMODULE module,uint32_t image_id)
     if(SUCCEEDED(result))result=IWICImagingFactory_CreateFormatConverter(factory,&converter);
     if(SUCCEEDED(result))result=IWICFormatConverter_Initialize(converter,(IWICBitmapSource *)frame,
         &GUID_WICPixelFormat24bppBGR,WICBitmapDitherTypeNone,NULL,0,WICBitmapPaletteTypeCustom);
-    if(SUCCEEDED(result))result=IWICFormatConverter_CopyPixels(converter,NULL,stride,sizeof(bits),bits[0]);
+    if(SUCCEEDED(result))result=IWICFormatConverter_CopyPixels(converter,NULL,stride,sizeof(bits),bits);
     if(converter)IWICFormatConverter_Release(converter);
     if(frame)IWICBitmapFrameDecode_Release(frame);
     if(decoder)IWICBitmapDecoder_Release(decoder);
@@ -86,10 +89,16 @@ static bool original_image(HMODULE module,uint32_t image_id)
     if(factory)IWICImagingFactory_Release(factory);
     CHECK(SUCCEEDED(result));
     const unsigned char gray[]={0,255,128,192};
-    for(y=0;y<height;++y)
-        for(x=0;x<width;++x)
+    bool inverted=image_id==508 || image_id==510;
+    const unsigned pressed[]={1,0,3,2};
+    for(y=0;y<height;++y){
+        const char *row=system?system_menu_bitmap[y]+(child?18:0):frame_buttons[image_id-501][y];
+        for(x=0;x<width;++x){
+            unsigned role=(unsigned)(row[x]-'0');
             for(unsigned band=0;band<3;++band)
-                CHECK(bits[y][x*3+band]==gray[frame_buttons[0][y][x]-'0']);
+                CHECK(bits[y*stride+x*3+band]==gray[inverted?pressed[role]:role]);
+        }
+    }
     return true;
 }
 
@@ -119,7 +128,11 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect
     CHECK(indices[0] && indices[1] && indices[2]);
     const uint32_t values[]={face,face,caption};
     unsigned observed=0;
-    bool found_image=false;
+    const struct {unsigned part,state,image;} image_props[]={
+        {15,0,501},{17,0,502},{21,0,503},{15,3,504},
+        {17,3,505},{21,3,506},{13,0,507},{13,3,508}
+    };
+    unsigned found_images=0;
     data=resource(module,L"VARIANT",L"NORMAL",&size);
     CHECK(data);
     while(size){
@@ -130,10 +143,13 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect
         data+=sizeof(item);
         CHECK(item[2]<classes && !item[6]);
         if(item[5]){
-            CHECK(expect_image && !found_image && item[0]==3001 && item[1]==206 &&
-                  item[2]+1==indices[2] && item[3]==15 && !item[4] && item[7]==16);
+            CHECK(expect_image && item[0]==3001 && item[1]==206 && item[2]+1==indices[2] && item[7]==16);
+            size_t j=0;
+            while(j<ARRAYSIZE(image_props) && (item[3]!=image_props[j].part ||
+                item[4]!=image_props[j].state || item[5]!=image_props[j].image))++j;
+            CHECK(j<ARRAYSIZE(image_props) && !(found_images&(1u<<j)));
             CHECK(original_image(module,item[5]));
-            found_image=true;
+            found_images|=1u<<j;
             continue;
         }
         CHECK(item[7]<=size);
@@ -150,7 +166,8 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect
         data+=length+pad;
     }
     CHECK(observed==7);
-    CHECK(found_image==expect_image);
+    CHECK(found_images==(expect_image?(1u<<ARRAYSIZE(image_props))-1:0));
+    if(expect_image)CHECK(original_image(module,509) && original_image(module,510));
     return true;
 }
 
@@ -176,7 +193,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc!=2)return 2;
     if(FAILED(CoInitializeEx(NULL,COINIT_MULTITHREADED)))return 1;
     bool passed=check_pair(argv[1],L"Win16",L"Windows 3.x",RGB(164,200,240),RGB(192,192,192),true) &&
-        check_pair(argv[1],L"Win2000",L"Windows 2000",RGB(0,0,128),RGB(212,208,200),false);
+        check_pair(argv[1],L"Win2K",L"Windows 2000",RGB(0,0,128),RGB(212,208,200),false);
     CoUninitialize();
     if(!passed)return 1;
     puts("Classic themes: both companion descriptions and v4 resources passed");

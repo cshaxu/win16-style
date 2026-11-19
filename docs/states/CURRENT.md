@@ -44,6 +44,10 @@ S4 P2 同批八件已发布至 `assets` 与 `O:/winnt`，实际包验证覆盖�
 直接回归和 16 组资源消费。S4 接续其余度量、状态及原始资源迁移。
 S4 P3 接入标题度量与横纵滚动轨道、滑块和尺寸框数据。同批八件已发布两处，
 直接测试 30/30、替换资源对照 16/16 通过，干净树四主题文件通过独立读回。
+S4 P4 接入 Win16 标题图像、两风格四种按钮状态和滚动端钮度量。
+同快照双宽开发运行包与四个主题预览已发布，直接实包 32/32 及资源替换对照通过。
+用户确认 T29 最终发行包为七件。启动器和两份 `ntwshk` 加两组主题，
+见[主题构建契约](../proposals/msstyles-build-contract.md)。S11 负责独立七件目录验收与切换。
 
 ## M0 T29 S4 Packet
 
@@ -77,7 +81,7 @@ S4 P3 接入标题度量与横纵滚动轨道、滑块和尺寸框数据。同�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S4 P3；T29 同批八件。
+- Last verified remote delivery: M0 T29 S4 P4；八件开发运行包及四个主题预览。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 4
@@ -85,10 +89,10 @@ S4 P3 接入标题度量与横纵滚动轨道、滑块和尺寸框数据。同�
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 核对 [T29 S4 P3](../history/M0-T29-S4-representative-rendering.md)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 核对 [T29 S4 P4](../history/M0-T29-S4-representative-rendering.md)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
-- 来源1176回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
+- 来源1178回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
 - propagation停用、窗口恢复、thread hook解除与物理DLL/late patch卸载分别报告；原有进程存活期固定/保留能力不改称安全卸载。
 - 禁止computer-use、创建或切换私有桌面；只用自有有界当前桌面探针。用户已永久授权非computer-use验证及按身份处理正式文件实际占用者；不重复请求同一授权，不改系统安全设置。
 - 历史逐文件来源及迁移见[原顺序台账](../history/M0-T26-S1-ordered-audit.md)、各S证据与T26规划；早期lib-style/lib-win32/style路径是历史路径，当前旧生产目录已删除。

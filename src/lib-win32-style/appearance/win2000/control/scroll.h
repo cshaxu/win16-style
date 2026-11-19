@@ -10,6 +10,7 @@ typedef struct win2k_scroll {
     style_instance *instance;
     win2k_palette arrow_palette;
     classic_scroll_colors colors;
+    classic_scroll_metrics metrics;
 } win2k_scroll;
 
 void win2k_scroll_init(win2k_scroll *,style_instance *);

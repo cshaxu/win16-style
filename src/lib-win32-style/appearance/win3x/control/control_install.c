@@ -59,9 +59,11 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
         DWORD error=GetLastError();win16_control_state_dispose(s);SetLastError(error);return FALSE;}
     if(palette)s->palette=*palette;else win16_style_default_palette(&s->palette);
     classic_theme theme;
-    s->themed=!palette && classic_theme_default((HMODULE)&__ImageBase,&theme);
+    BOOL have_theme=classic_theme_default((HMODULE)&__ImageBase,&theme);
+    if(have_theme)s->scroll_metrics=theme.scroll_metrics;
+    s->themed=!palette && have_theme;
     if(s->themed){
-        s->push_colors=theme.button;
+        s->push_colors=theme.push;
         s->scroll_arrow_colors=theme.scroll_arrow;
         s->scroll_colors=theme.scroll;
     }

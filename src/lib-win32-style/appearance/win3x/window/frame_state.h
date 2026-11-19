@@ -1,6 +1,7 @@
 #ifndef WIN16_CONTROL_FRAME_STATE_H
 #define WIN16_CONTROL_FRAME_STATE_H
 #include "../common/palette.h"
+#include "caption_art.h"
 #include "lib-win32-style/application/graphics/font_pair.h"
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include "lib-win32-style/application/window/native_frame.h"
@@ -14,6 +15,7 @@ typedef struct style_window {
     win16_style_palette palette;
     classic_button_group title_buttons;
     classic_caption_metrics caption_metrics;
+    win16_caption_art art;
     style_font_pair fonts;
     BOOL dialog, menu_only;
     style_menu_owner menu;

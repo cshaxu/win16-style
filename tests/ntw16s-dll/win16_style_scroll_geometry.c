@@ -44,7 +44,7 @@ static void tracking_tests(void)
     CHECK(parent && child);
     EnableWindow(child,FALSE);CHECK(style_scroll_disabled(child,OBJID_CLIENT)==ESB_DISABLE_BOTH);
     EnableWindow(child,TRUE);
-    CHECK(win16_scroll_control_layout(child,fake_info,&from_native));
+    CHECK(win16_scroll_control_layout(child,fake_info,(classic_scroll_metrics){0},&from_native));
     CHECK(from_native.vertical && from_native.first.bottom-from_native.first.top==20);
     style_instance instance={0};style_control_state owner={0};
     style_scroll_controller controller={.epoch=5,.report=77,.object=OBJID_CLIENT};
@@ -69,11 +69,11 @@ static void tracking_tests(void)
     DestroyWindow(child);DestroyWindow(parent);CHECK(UnregisterClassW(cls.lpszClassName,cls.hInstance));
     POINT point={8,100};
     SCROLLINFO native={.cbSize=sizeof(native),.nMin=0,.nMax=109,.nPage=10,.nPos=50};
-    CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,&from_native));
+    CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,(classic_scroll_metrics){0},&from_native));
     CHECK(from_native.maximum==100 && from_native.position==50 && from_native.first.bottom==17);
-    native.nPage=200;CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,&from_native) && from_native.maximum==0);
-    CHECK(!win16_scroll_measure_native(NULL,TRUE,96,&native,&from_native));
-    CHECK(!win16_scroll_measure_native(&bar,TRUE,96,NULL,&from_native));
+    native.nPage=200;CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,(classic_scroll_metrics){0},&from_native) && from_native.maximum==0);
+    CHECK(!win16_scroll_measure_native(NULL,TRUE,96,&native,(classic_scroll_metrics){0},&from_native));
+    CHECK(!win16_scroll_measure_native(&bar,TRUE,96,NULL,(classic_scroll_metrics){0},&from_native));
     CHECK(win16_scroll_measure(&bar,TRUE,&metrics,0,100,50,&l));
     CHECK(style_scroll_begin(&t,&l,0,point,&limit,&a,&win16_scroll_policy));
     CHECK(t.active && t.part==STYLE_SCROLL_THUMB && t.grab_offset==8 && t.pixel==92);
