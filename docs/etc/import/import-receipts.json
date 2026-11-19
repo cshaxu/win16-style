@@ -10413,6 +10413,33 @@
       "disposition": "authored",
       "review": "T28 S3 shared Windows 2000 stock dialog calls and presentation",
       "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/v4_property.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c20e33fcfc958092bb9d52b5e6f313e5019cb875ecb0f39f765a38a76686e328",
+      "disposition": "authored",
+      "review": "T29 S3 bounded MSStyles v4 property roundtrip",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/v4_property.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ad5be43e52db818b9c9351430815a6a78a7600e9d9fb2593bc0fde78b4d6ca14",
+      "disposition": "authored",
+      "review": "T29 S3 bounded MSStyles v4 property roundtrip",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/msstyles/v4_property.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0d2b320bc9c63ba9841956845d3cb5c5c19db51bff890e9d2d251672281f4223",
+      "disposition": "authored",
+      "review": "T29 S3 bounded MSStyles v4 property roundtrip",
+      "notice": "Project-authored; no imported source or resources"
     }
   ]
 }

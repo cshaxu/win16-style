@@ -37,7 +37,29 @@ M0 T29 S2 已完成主题源和构建契约、113 单元迁移验证与 44 个�
 见 [主题构建契约](../proposals/msstyles-build-contract.md)和
 [逐项迁移与 ABI 台账](../history/M0-T29-S2-theme-and-abi.md)。
 
-当前无活动任务包。T29 保持开放，S3 接续主题文件读写。
+M0 T29 S3 已准入，当前接续实际 MSStyles 记录与配套主题构建。
+[S3 P1 记录](../history/M0-T29-S3-msstyles-v4.md)已完成标准 v4 属性记录双位宽读写。
+
+## M0 T29 S3 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation；M0 固定。 |
+| Admission And Approval | 用户批准 T29 执行现有队列，要求生成合规 MSStyles 和相关主题文件。 |
+| Objective | 可编辑源生成真实 v4 MSStyles 与配套 theme 描述，分别核对标准与扩展。 |
+| Non-goals | 本 S 保持已发布执行件、系统主题、权限和支持目标。 |
+| Reference Baseline | S2 主题与 ABI 冻结、本机 Aero 与 Aero Lite 只读样本、P45 原资源。 |
+| Candidate Proposal | docs/proposals/msstyles-classic-runtime.md。 |
+| Files And ABI Surface | 独立主题读写与验证构建入口，保留既有产品导出。 |
+| Applicable Rules | C17、原资源身份、双位宽共享主题字节。 |
+| Verification | 同源可重复生成、独立解析、资源引用、变体绑定及负例。 |
+| Expected Markers | 两份主题和描述、标准可读、扩展独立、重复构建同摘要。 |
+| Asset Needs | 原资源与只读本机样本，不复制第三方主题至产品。 |
+| Reporting Requirements | 分别记录格式互操作、扩展、包路径及渲染范围。 |
+| Stop Conditions | 数据映射且不执行主题样本；不应用系统主题或修改注册表。 |
+| Exit Criteria | 双主题最小构建及独立校验通过，缺失部件、截断、错误引用及不支持版本可区分。 |
+| Original Owner Request | 源代码能编译成合规 MSStyles 和 theme 相关文件。 |
+| Similar-Issue Sweep | S1 三类部件、S2 扩展与 ABI、原始资源门禁及 T28 实包基线。 |
 
 ## Identifier State
 
@@ -50,18 +72,18 @@ M0 T29 S2 已完成主题源和构建契约、113 单元迁移验证与 44 个�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S2 P2；二进制仍为 P45 八件。
+- Last verified remote delivery: M0 T29 S3 P1；二进制仍为 P45 八件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 2
-- Open task: 无活动任务包。
+- Last allocated T29 S: 3
+- Open task: M0 T29 S3；MSStyles 与配套主题读写。
 
 ## Technical Baseline
 
 - 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 P45 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
-- 来源1157回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
+- 来源1160回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
 - propagation停用、窗口恢复、thread hook解除与物理DLL/late patch卸载分别报告；原有进程存活期固定/保留能力不改称安全卸载。
 - 禁止computer-use、创建或切换私有桌面；只用自有有界当前桌面探针。用户已永久授权非computer-use验证及按身份处理正式文件实际占用者；不重复请求同一授权，不改系统安全设置。
 - 历史逐文件来源及迁移见[原顺序台账](../history/M0-T26-S1-ordered-audit.md)、各S证据与T26规划；早期lib-style/lib-win32/style路径是历史路径，当前旧生产目录已删除。
