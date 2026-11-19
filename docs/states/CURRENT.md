@@ -79,6 +79,9 @@ P24 在已连接的 RDP 会话复测。用户同意本轮跳过真实大工作�
 Places。发布版双宽 A/W 标准 `PrintDlgEx` 经典桥接与取消 8/8；
 调用方属性页在原生及两种风格仍停在 Explorer 代理窗，非沙箱对照一致。
 原生属性页和管理员托盘端到端仍待验。
+P25 排除 `PD_USELARGETEMPLATE` 作为当前宿主的原生属性页修复。用公开
+打印 API 验证了自有 General 页所需的设备枚举与驱动设置读回，双宽各 4/4。
+这只验证了驱动接口。General 页尚未接入正式产品。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
