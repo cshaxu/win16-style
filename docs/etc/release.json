@@ -319,7 +319,7 @@
     ]
   },
   "closure": {
-    "S5": "pending remote audit and remaining S5 scope",
+    "S5": "closed after remote audit of P1 (fe51bb15)",
     "T29": "active",
     "M0": "fixed"
   }

@@ -51,31 +51,32 @@ S5 已验证双宽标题及菜单字体、Win32 外框和菜单栏配色、实�
 Win16 弹出菜单列位移及勾选和箭头原图。Win16 位图字体继续按主题描述采样宿主，
 独立历史字形待可核验来源和许可，见
 [验证记录](../history/M0-T29-S5-window-menus-fonts.md)。
-S5 P1 双宽干净开发包及四个主题已发布两处，发布后聚焦验证 58/58；
-P1 远端复核和 S5 收口仍在进行。
+S5 P1 双宽干净开发包及四个主题已发布两处，发布后聚焦验证 58/58。
+GitHub main 已复核 `fe51bb15` 的源码和十二个发布文件，S5 收口。
+S6 接续已交付的 Win32 标准控件。
 用户确认 T29 最终发行包为七件。启动器和两份 `ntwshk` 加两组主题，
 见[主题构建契约](../proposals/msstyles-build-contract.md)。S11 负责独立七件目录验收与切换。
 
-## M0 T29 S5 Packet
+## M0 T29 S6 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；M0 固定。 |
-| Admission And Approval | 用户批准 T29 现有 S2–S12 连续执行。 |
-| Objective | S2 台账 01、03–06、11–14、47、50 的窗口、菜单和字体数据及原应用契约。 |
-| Non-goals | 客户区控件专题、公共对话框、现代宿主整体验证、系统主题安装和运行时切包按后续阶段执行。 |
-| Reference Baseline | 双宽 S4 P4 的八件开发运行包、四个主题文件、按钮及外框结果。字体格式以同机 Aero 短记录及只读原生参考为对照。 |
+| Admission And Approval | 用户批准 T29 现有 S2–S12 连续执行，先完成 Win32 标准控件。 |
+| Objective | S2 台账 16–21、25–36、48 的已交付 Win32 标准控件状态、图形资源与原生协议。 |
+| Non-goals | 专属 VB/VCL、公共对话框、现代宿主和运行时切包按 S7–S11 执行。 |
+| Reference Baseline | S5 P1 双宽同批开发包，按钮与滚动条主题数据，以及两种风格各自已交付的控件范围。 |
 | Candidate Proposal | docs/proposals/msstyles-classic-runtime.md。 |
-| Files And ABI Surface | MSStyles 主题编译与读取、经典窗口外框、系统菜单、菜单绘制、字体所有者和对应双宽夹具；保留现有导出。 |
-| Applicable Rules | C17 双位宽，主题数据只读，原资源身份和原应用语义。 |
-| Verification | 两宽 96/144 DPI 对照普通和最大化外框、标题图标、菜单普通／选中／禁用及列度量、原字体字段与引用回收。用主题资源替换核验真实消费。 |
-| Expected Markers | 标准字体和配色被独立读回，菜单主题源控制列和保留栅格，命中、通知和恢复使用现有契约。 |
-| Asset Needs | 同机 Aero 只读字体参考，项目已有原始栅格及来源，Win16 标题、普通菜单和 Win2K 系统菜单自有夹具。 |
-| Reporting Requirements | 分类说明标准字段、版本扩展与借用数据，保存双宽基线对照和未运行项。 |
-| Stop Conditions | 保持既有权限、来源和桌面边界。 |
-| Exit Criteria | 主题状态及布局通过独立格式、绘制、输入消息和所有权验证，已发布同批包和实际远端摘要复核。 |
-| Original Owner Request | 共用主题机制，以可编译的 MSStyles 和 theme 文件承载 Win16、Win2000 风格。 |
-| Similar-Issue Sweep | S4 标题槽、Win16 菜单合并图与字体缓存、Win2K 菜单颜色与标题字体、现有菜单控制器和字体对用例。 |
+| Files And ABI Surface | MSStyles 标准控件记录、共用控件状态和两套年代 renderer；保留已发布 ABI。 |
+| Applicable Rules | C17 双位宽，保留原资源及来源。沿现有原生状态、应用回调、所有权以及失败传播。 |
+| Verification | 按基础输入控件、列表与容器、范围与日期三批迁移。读取标准类和状态，覆盖双位宽、受支持 Common Controls 版本、96/144 DPI 以及实际绘制和通知。 |
+| Expected Markers | 更换主题记录后实际状态像素改变；默认像素、控件数据、值、回调和清理与基线一致。 |
+| Asset Needs | 五份已固定图形头、项目既有 Win32 控件夹具、真实类及已验收系统状态。 |
+| Reporting Requirements | 逐台账记清两种风格、原生保留和测试边界。聚焦测试与最终同批发布分开。 |
+| Stop Conditions | 保持现有来源、权限及桌面范围，区域或角色不明时守住既有原生边界。 |
+| Exit Criteria | 已交付控件组成完整双宽主题输入、实际绘制和协议验证；发布同批构建并复核远端。 |
+| Original Owner Request | 共用可编译主题承载现有 Win16、Win2000 风格，按原能力逐项迁移。 |
+| Similar-Issue Sweep | 已验证 Win32 标准控件与画笔来源；梳理原生保留路径，集中共用主题状态，保留 S4 按钮／滚动路径。 |
 
 ## Identifier State
 
@@ -88,15 +89,15 @@ P1 远端复核和 S5 收口仍在进行。
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S4 P4；八件开发运行包及四个主题预览。
+- Last verified remote delivery: M0 T29 S5 P1；八件开发运行包及四个主题预览。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 5
-- Open task: M0 T29 S5；窗口、菜单和字体。
+- Last allocated T29 S: 6
+- Open task: M0 T29 S6；Win32 标准控件。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 核对 [T29 S4 P4](../history/M0-T29-S4-representative-rendering.md)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 核对 [T29 S5 P1](../history/M0-T29-S5-window-menus-fonts.md)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1178回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。

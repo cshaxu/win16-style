@@ -2,6 +2,8 @@
 
 # Deferred Debt
 
+- [ ] TODO(Low): Win16 主题中独立历史 System 字形与 advance 仍待可核验来源及相应使用许可。Owner：主题资源后续扩展。Evidence：[T29 S5 验证](../history/M0-T29-S5-window-menus-fonts.md)。Admission：先确定可使用的字形数据，再验证与当前宿主采样的像素、度量和字库所有权。
+
 - [ ] TODO(Medium): 有效 PrintDlgEx 自定义打印属性页的实际显示和回调。Owner：后续打印兼容验证。Evidence：[S3 收口审计](../history/M0-T28-S3-common-dialogs.md)。Admission：提供原生扩展打印属性页可用的 Windows 主机，再验证双宽 A/W 的显示、回调和退出。
 
 - [ ] TODO(Medium): 真实域打印机选中后的驱动设置及回写。Owner：后续打印兼容验证。Evidence：[S3 收口审计](../history/M0-T28-S3-common-dialogs.md)。Admission：提供可访问的真实域打印队列，以有界探针验证选择、驱动设置和结果，避免提交打印任务。
