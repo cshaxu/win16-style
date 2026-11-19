@@ -31,6 +31,8 @@ M0 T29 S1 完成 MSStyles 可迁移性调研。冻结 113 个按年代计的适�
 本机三类部件样本 20 项完成只读探针。见 [S1 审计台账](../history/M0-T29-S1-msstyles-audit.md)
 和 [调研提案](../proposals/msstyles-classic-runtime.md)。
 
+用户确认 Win16 与 Win2000 的主题整理继续在 T29 内实施。
+[S2–S12 实施规划](../proposals/msstyles-classic-runtime.md)已记录。
 当前无活动任务包。T29 保持开放。
 
 ## Identifier State
@@ -44,7 +46,7 @@ M0 T29 S1 完成 MSStyles 可迁移性调研。冻结 113 个按年代计的适�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S1 P2；二进制仍为 P45 八件。
+- Last verified remote delivery: M0 T29 S1 P3；二进制仍为 P45 八件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 1
