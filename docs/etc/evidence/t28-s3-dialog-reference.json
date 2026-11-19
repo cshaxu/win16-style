@@ -1360,6 +1360,16 @@
       }
     }
   },
+  "directory_printer_query_p36": {
+    "original": "Read-only Windows 2000 printnew.cpp (SHA-256 a01e6907056a549677a856dd98b879543285c3c56d78d73ba570b820ef93a221) calls the print host's FindPrinter, obtains a printer name, merges its DEVMODE or inserts a device page, and then switches selection. The separate Shell automation implementation in shell32/unicpp/sdmain.cpp (SHA-256 a428d3d78ce99b5743fa6763004c1fdc22815bd24d5eda6afbd054edb9c6077d) opens the CLSID_DsFindPrinter form on a worker without returning selected data to its caller. No original code or resources were copied.",
+    "system_probe": "Fresh owned x86 and x64 C17 processes activated CLSID_CommonQuery and invoked ICommonQuery::OpenQueryWindow with CLSID_DsQuery, CLSID_DsFindPrinter, single selection, OK/Cancel and DSQPF_NOSAVE. Both ran on the ordinary desktop with NetSetupWorkgroup (2); each exposed one owned dialog, returned S_FALSE on close, returned no IDataObject and restored the parent. The bounded probe did not issue a search, supply credentials or change a queue.",
+    "selection_contract": "The native modal API can return CFSTR_DSOBJECTNAMES through IDataObject after a successful selection. That data identifies directory objects. The printQueue schema supplies uNCName for the spooler identity; a real proof must select one published queue, resolve it to the expected share, and verify it can enter the existing printer settings and result transaction. The Shell automation FindPrinter entry has no equivalent selected-data output.",
+    "api_references": [
+      "https://learn.microsoft.com/en-us/windows/win32/api/cmnquery/nf-cmnquery-icommonquery-openquerywindow",
+      "https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-rprn/3f4f0a52-e417-495a-ad46-0466a9d0ef9d"
+    ],
+    "limits": "A directory-published queue was not available on this host. Dialog activation and cancel are verified; domain results, queue handoff and product integration are open. Removed the temporary probes and rechecked sixteen deployed P35 hashes. No product binary changed."
+  },
   "global_dialog_entry_audit": {
     "baseline": "Source inspected at 35f46f84. All eight files in assets and O:/winnt match the P27 SHA-256s. The product sources and assets have no Git diff from the P27 delivery through P28. This was a source audit with artifact identity verification; no administrator or cross-process runtime trial was performed.",
     "startup": "src/ntw2ks-dll/dllmain.c calls ntw2ks_controls_attach through the ordinary ntw2ks startup bootstrap. src/ntw2ks-dll/controls.c installs the common-dialog handlers and the COM controller from that one call site.",
