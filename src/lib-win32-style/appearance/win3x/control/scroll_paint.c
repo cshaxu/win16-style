@@ -14,11 +14,23 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
     saved=SaveDC(dc);if(!saved)return FALSE;
     if(object!=OBJID_CLIENT)OffsetViewportOrgEx(dc,surface.origin.x,surface.origin.y,NULL);
     IntersectClipRect(dc,r.left,r.top,r.right,r.bottom);
+    const classic_scroll_colors *colors=v->colors;
+    win16_style_palette track=*v->palette,thumb_colors=*v->palette;
+    if(colors && colors->tracks_and_thumbs){
+        const classic_scroll_surface *groove=&colors->track[!!vertical],*thumb=&colors->thumb[!!vertical];
+        track.face=groove->face;
+        track.light=groove->highlight;
+        track.edge=groove->dark;
+        thumb_colors.face=thumb->face;
+        thumb_colors.edge=thumb->dark;
+        thumb_colors.light=thumb->highlight;
+        thumb_colors.shadow=thumb->shadow;
+    }
     /* Native state remains authoritative; opted-in bars replace geometry
      * below with the same fixed-thumb layout used for hit testing. */
     {static const WORD checks[8]={0x55,0xaa,0x55,0xaa,0x55,0xaa,0x55,0xaa};
         HBITMAP bitmap=CreateBitmap(8,8,1,1,checks);HBRUSH brush=bitmap?CreatePatternBrush(bitmap):NULL;
-        SetTextColor(dc,v->palette->face);SetBkColor(dc,v->palette->light);
+        SetTextColor(dc,track.face);SetBkColor(dc,track.light);
         if(brush){FillRect(dc,&r,brush);DeleteObject(brush);}
         if(bitmap)DeleteObject(bitmap);
         if(!brush){RestoreDC(dc,saved);return FALSE;}}
@@ -41,7 +53,7 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
                 if(v->scroll->track.part==STYLE_SCROLL_LINE_AFTER)info.rgstate[5]|=STATE_SYSTEM_PRESSED;}
         }
     }
-    style_paint_solid_frame(dc,r,v->palette->edge,1);
+    style_paint_solid_frame(dc,r,track.edge,1);
     const win16_style_palette *arrow_palette=v->arrow_palette?v->arrow_palette:v->palette;
     win16_control_scroll_arrow(dc,first,(info.rgstate[1]&STATE_SYSTEM_UNAVAILABLE)?(vertical?win16_control_scroll_glyph(WIN16_SCROLL_UP_DISABLED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT_DISABLED)):
         vertical?(info.rgstate[1]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_UP_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_UP)):
@@ -50,11 +62,11 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
         vertical?(info.rgstate[5]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_DOWN_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_DOWN)):
         (info.rgstate[5]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT)),arrow_palette);
     if(info.xyThumbBottom>info.xyThumbTop){
-        SetDCBrushColor(dc,v->palette->face);FillRect(dc,&thumb,(HBRUSH)GetStockObject(DC_BRUSH));
-        style_paint_solid_frame(dc,thumb,v->palette->edge,1);InflateRect(&thumb,-1,-1);
-        SetDCBrushColor(dc,v->palette->light);pixel=thumb;pixel.bottom=pixel.top+1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
+        SetDCBrushColor(dc,thumb_colors.face);FillRect(dc,&thumb,(HBRUSH)GetStockObject(DC_BRUSH));
+        style_paint_solid_frame(dc,thumb,thumb_colors.edge,1);InflateRect(&thumb,-1,-1);
+        SetDCBrushColor(dc,thumb_colors.light);pixel=thumb;pixel.bottom=pixel.top+1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
         pixel=thumb;pixel.right=pixel.left+1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-        SetDCBrushColor(dc,v->palette->shadow);pixel=thumb;pixel.top=pixel.bottom-1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
+        SetDCBrushColor(dc,thumb_colors.shadow);pixel=thumb;pixel.top=pixel.bottom-1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
         pixel=thumb;pixel.left=pixel.right-1;FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
     }
     RestoreDC(dc,saved);return TRUE;

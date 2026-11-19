@@ -89,7 +89,7 @@ void win16_style_month_arrow(HDC dc,const RECT *r,const RECT *clip,int part,int 
 /* USER18:0208..027F: scrollbar-class size box shares the inner border
  * and fills with the system scrollbar brush, not a later sizing-grip image.
  * Native creation/alignment and parent size/maximize commands stay native. */
-void win16_control_draw_sizebox(HWND w,HDC dc)
+void win16_control_draw_sizebox(HWND w,HDC dc,const COLORREF *face)
 {
     RECT outer,client,r;UINT dpi=GetDpiForWindow(w);int saved,cx,cy,bx,by;
     if(!dc || !GetWindowRect(w,&outer) || !GetClientRect(w,&client))return;
@@ -99,7 +99,12 @@ void win16_control_draw_sizebox(HWND w,HDC dc)
     SetRect(&r,outer.right-outer.left-cx+bx,outer.bottom-outer.top-cy+by,
         outer.right-outer.left,outer.bottom-outer.top);
     IntersectClipRect(dc,client.left,client.top,client.right,client.bottom);
-    FillRect(dc,&r,GetSysColorBrush(COLOR_SCROLLBAR));RestoreDC(dc,saved);
+    HBRUSH brush=GetSysColorBrush(COLOR_SCROLLBAR);
+    if(face){
+        SetDCBrushColor(dc,*face);
+        brush=GetStockObject(DC_BRUSH);
+    }
+    FillRect(dc,&r,brush);RestoreDC(dc,saved);
 }
 void win16_control_legacy_progress_border(HWND w,const win16_style_palette *palette,HDC target)
 {

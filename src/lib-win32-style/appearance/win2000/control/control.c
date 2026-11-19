@@ -279,7 +279,7 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
         result=DefSubclassProc(window,message,a,b);
     }else if(class_is(window,L"SCROLLBAR")){
         if(GetWindowLongPtrW(window,GWL_STYLE)&(SBS_SIZEBOX|SBS_SIZEGRIP)){
-            const style_control_draw draw={control,win2k_scroll_sizebox};
+            const style_control_draw draw={&control->scroll,win2k_scroll_sizebox};
             result=style_scroll_sizebox_message(window,message,a,b,&draw);
         }else{
             const style_scroll_ops ops=win2k_scroll_operations(&control->scroll);
@@ -493,8 +493,7 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     if(classic_theme_default((HMODULE)&__ImageBase,&theme)){
         control->push_palette.face=theme.button.face;
         control->push_palette.dark=theme.button.edge;
-        control->scroll.arrow_palette.face=theme.scroll_arrow.face;
-        control->scroll.arrow_palette.dark=theme.scroll_arrow.edge;
+        win2k_scroll_theme(&control->scroll,&theme);
     }
     control->scroll.controller.resources.list=combo_parent || class_is(window,L"LISTBOX");
     control->scroll.controller.resources.edit=win2k_edit_class(window)==WIN2K_EDIT_STANDARD &&

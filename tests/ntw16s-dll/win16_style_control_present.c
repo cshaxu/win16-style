@@ -161,7 +161,7 @@ int main(int argc,char **argv)
      SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=0,.nMax=100,.nPage=10,.nPos=25};
      SetScrollInfo(w,SB_VERT,&range,TRUE);control_style state={0};win16_style_default_palette(&state.palette);
      const win16_control_scroll_view view={&state.palette,&state.bindings.scroll,scroll_layout,
-        embedded_scroll_layout,edit_thumb_messages,list_axis_owned,NULL};
+        embedded_scroll_layout,edit_thumb_messages,list_axis_owned,NULL,NULL};
      SCROLLBARINFO info={.cbSize=sizeof(info)};RECT outer;
      CHECK(GetScrollBarInfo(w,OBJID_VSCROLL,&info) && !(info.rgstate[0]&STATE_SYSTEM_INVISIBLE) && GetWindowRect(w,&outer));
      RECT bar=info.rcScrollBar;OffsetRect(&bar,-outer.left,-outer.top);

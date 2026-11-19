@@ -39,13 +39,20 @@ BOOL win16_scroll_measure_native(const RECT *bar,BOOL vertical,UINT dpi,
 void win16_control_managed_frame_scrollbars_palette_owned(HWND w,const win16_style_palette *palette,const void *owner,const style_scroll_managed_ops *ops)
 {
     style_scroll_binding binding=ops->lookup(w);
-    if(binding.instance && binding.scroll->resources.frame && binding.instance->owner==owner)
-        ((control_style *)binding.instance->context)->palette=*palette;
+    if(binding.instance && binding.scroll->resources.frame && binding.instance->owner==owner){
+        control_style *s=binding.instance->context;
+        s->palette=*palette;
+        s->themed=FALSE;
+    }
 }
 void win16_control_managed_frame_scrollbars_palette(HWND w,const win16_style_palette *palette,const style_scroll_managed_ops *ops)
 {
     style_scroll_binding binding=ops->lookup(w);
-    if(binding.instance && binding.scroll->resources.frame)((control_style *)binding.instance->context)->palette=*palette;
+    if(binding.instance && binding.scroll->resources.frame){
+        control_style *s=binding.instance->context;
+        s->palette=*palette;
+        s->themed=FALSE;
+    }
 }
 
 void win16_control_scrollbars_paint(HWND w,HDC target,const win16_style_palette *palette,SUBCLASSPROC proc,
@@ -55,7 +62,12 @@ void win16_control_scrollbars_paint(HWND w,HDC target,const win16_style_palette 
     if(palette)s.palette=*palette;else win16_style_default_palette(&s.palette);
     if(GetWindowSubclass(w,proc,(UINT_PTR)proc,&attached)){
         control_style *owner=(control_style *)attached;
-        if(!palette)s.palette=owner->palette;
+        if(!palette){
+            s.palette=owner->palette;
+            s.themed=owner->themed;
+            s.scroll_arrow_colors=owner->scroll_arrow_colors;
+            s.scroll_colors=owner->scroll_colors;
+        }
         s.bindings.scroll.resources.list=owner->bindings.scroll.resources.list;s.bindings.scroll.resources.edit=owner->bindings.scroll.resources.edit;s.bindings.scroll.track=owner->bindings.scroll.track;
         s.bindings.scroll.resources.frame=owner->bindings.scroll.resources.frame;
         s.bindings.scroll.object=owner->bindings.scroll.object;

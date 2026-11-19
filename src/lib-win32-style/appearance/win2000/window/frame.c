@@ -44,7 +44,13 @@ static frame_window *frame_state(HWND window)
 static int caption_height(HWND window)
 {
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    return win2k_caption_height(dpi,(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0);
+    BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
+    frame_window *frame=frame_state(window);
+    if(frame && frame->themed){
+        int height=tool?frame->theme.caption_metrics.tool_height:frame->theme.caption_metrics.height;
+        if(height>0)return MulDiv(height,(int)dpi,96);
+    }
+    return win2k_caption_height(dpi,tool);
 }
 
 /* Preserve the native path for menus needing application-owned rendering. */
@@ -189,7 +195,8 @@ static void classic_buttons(HWND window,const frame_window *frame,TITLEBARINFOEX
     }
     BOOL tool=(ex&WS_EX_TOOLWINDOW)!=0;
     BOOL result=frame->themed?win2k_caption_buttons_with_group(&info->rcTitleBar,dpi,tool,present,
-        &frame->theme.title_buttons,bounds):win2k_caption_buttons(&info->rcTitleBar,dpi,tool,present,bounds);
+        &frame->theme.title_buttons,&frame->theme.caption_metrics,bounds):
+        win2k_caption_buttons(&info->rcTitleBar,dpi,tool,present,bounds);
     if(result)
         for(unsigned i=0;i<ARRAYSIZE(bounds);++i)if(present[i])info->rgrect[i+2]=bounds[i];
 }
@@ -582,10 +589,7 @@ BOOL win2k_frame_attach(HWND window)
     frame->menu.bar.selected=frame->menu.bar.highlighted=-1;
     style_instance_init(&frame->instance,frame,dispose_frame);
     win2k_scroll_init(&frame->scroll,&frame->instance);
-    if(frame->themed){
-        frame->scroll.arrow_palette.face=frame->theme.scroll_arrow.face;
-        frame->scroll.arrow_palette.dark=frame->theme.scroll_arrow.edge;
-    }
+    if(frame->themed)win2k_scroll_theme(&frame->scroll,&frame->theme);
     frame->scroll.controller.resources.frame=TRUE;
     const style_instance_install_ops ops={.context=frame,.setup=pending?NULL:setup_frame,.rollback=rollback_frame};
     return style_instance_install(&frame->instance,window,pending?pending_frame_proc:frame_proc,NULL,&ops);

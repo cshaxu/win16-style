@@ -148,12 +148,12 @@ int wmain(int argc,WCHAR **argv)
         RECT outer;win16_style_layout measured,base;CHECK(GetWindowRect(owner,&outer));
         CHECK(win16_style_measure(outer.right-outer.left,outer.bottom-outer.top,96,
             (DWORD)GetWindowLongPtrW(owner,GWL_STYLE),(DWORD)GetWindowLongPtrW(owner,GWL_EXSTYLE),FALSE,&base));
-        CHECK(win16_control_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,NULL,&measured));
+        CHECK(win16_control_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,NULL,NULL,&measured));
         CHECK(fixture.calls && fixture.fonts.dpi==144 &&
             fixture.fonts.menu==GetStockObject(DEFAULT_GUI_FONT) &&
             measured.client.right==base.client.right-GetSystemMetricsForDpi(SM_CXVSCROLL,144)+base.unit);
         fixture.retire=TRUE;fixture.calls=0;fixture.fonts.dpi=96;
-        CHECK(!win16_control_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,NULL,&measured) &&
+        CHECK(!win16_control_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,NULL,NULL,&measured) &&
             fixture.calls && fixture.instance.detached);
         CHECK(DestroyWindow(owner) && UnregisterClassW(cls.lpszClassName,wc.hInstance));
         puts("PASS frame measurement reentry: live whole font pair DPI and instance retirement after native owner-draw callback");

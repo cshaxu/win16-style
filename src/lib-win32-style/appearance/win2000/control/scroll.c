@@ -87,6 +87,19 @@ static void paint_track(HDC dc,RECT r,BOOL vertical,HBRUSH brush,const win2k_pal
     }
 }
 
+static win2k_palette surface_palette(const classic_scroll_surface *surface)
+{
+    win2k_palette palette=win2k_standard_palette;
+    if(surface){
+        palette.face=surface->face;
+        palette.light=surface->light;
+        palette.highlight=surface->highlight;
+        palette.shadow=surface->shadow;
+        palette.dark=surface->dark;
+    }
+    return palette;
+}
+
 static void draw(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
 {
     win2k_scroll *scroll=context;
@@ -96,7 +109,8 @@ static void draw(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
         !measure(window,object,&surface.target,&l) || scroll->instance->detached)return;
     int saved=SaveDC(dc);
     if(!saved)return;
-    const win2k_palette *p=&win2k_standard_palette;
+    const classic_scroll_colors *colors=&scroll->colors;
+    win2k_palette track_colors=surface_palette(colors->tracks_and_thumbs?&colors->track[!!vertical]:NULL);
     HBRUSH brush=object==OBJID_CLIENT?track_brush(window,dc):NULL;
     if(scroll->instance->detached){RestoreDC(dc,saved);return;}
     IntersectClipRect(dc,l.bar.left,l.bar.top,l.bar.right,l.bar.bottom);
@@ -117,8 +131,9 @@ static void draw(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
         groove.left=l.first.right;
         groove.right=l.last.left;
     }
-    paint_track(dc,groove,vertical,brush,p);
+    paint_track(dc,groove,vertical,brush,&track_colors);
     if(l.thumb_fits && disabled!=ESB_DISABLE_BOTH){
+        win2k_palette thumb_colors=surface_palette(colors->tracks_and_thumbs?&colors->thumb[!!vertical]:NULL);
         RECT thumb=l.thumb;
         if(tracking && track->part==STYLE_SCROLL_THUMB){
             if(vertical)OffsetRect(&thumb,0,surface.origin.y+track->pixel-thumb.top);
@@ -132,18 +147,18 @@ static void draw(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
             if(vertical)page.top=thumb.bottom;else page.left=thumb.right;
             InvertRect(dc,&page);
         }
-        win2k_edge(dc,&thumb,EDGE_RAISED,BF_RECT|BF_ADJUST,p);
-        win2k_fill(dc,&thumb,p->face);
+        win2k_edge(dc,&thumb,EDGE_RAISED,BF_RECT|BF_ADJUST,&thumb_colors);
+        win2k_fill(dc,&thumb,thumb_colors.face);
     }
     arrow(dc,l.first,first,&scroll->arrow_palette);
     arrow(dc,l.last,last,&scroll->arrow_palette);
     RestoreDC(dc,saved);
 }
 
-static void sizebox(HDC dc,RECT r,BOOL grip)
+static void sizebox(HDC dc,RECT r,BOOL grip,const win2k_scroll *scroll)
 {
-    const win2k_palette *p=&win2k_standard_palette;
-    win2k_fill(dc,&r,p->face);
+    win2k_palette palette=surface_palette(scroll->colors.own_sizebox?&scroll->colors.sizebox:NULL);
+    win2k_fill(dc,&r,palette.face);
     if(!grip)return;
     int size=min(r.right-r.left,r.bottom-r.top);
     if(size<=0)return;
@@ -157,9 +172,9 @@ static void sizebox(HDC dc,RECT r,BOOL grip)
         if(old && old!=HGDI_ERROR && GetTextFaceW(dc,ARRAYSIZE(family),family) && !lstrcmpiW(family,L"Marlett")){
             SetBkMode(dc,TRANSPARENT);
             SetTextAlign(dc,TA_LEFT|TA_TOP);
-            SetTextColor(dc,p->highlight);
+            SetTextColor(dc,palette.highlight);
             TextOutW(dc,r.right-size,r.bottom-size,L"o",1);
-            SetTextColor(dc,p->shadow);
+            SetTextColor(dc,palette.shadow);
             TextOutW(dc,r.right-size,r.bottom-size,L"p",1);
         }
     }
@@ -169,11 +184,10 @@ static void sizebox(HDC dc,RECT r,BOOL grip)
 
 void win2k_scroll_sizebox(HWND window,void *context,HDC dc,BOOL buffered)
 {
-    (void)context;
     (void)buffered;
     RECT bounds;
     if(dc && GetClientRect(window,&bounds))
-        sizebox(dc,bounds,(GetWindowLongPtrW(window,GWL_STYLE)&SBS_SIZEGRIP)!=0);
+        sizebox(dc,bounds,(GetWindowLongPtrW(window,GWL_STYLE)&SBS_SIZEGRIP)!=0,context);
 }
 
 void win2k_scroll_paint_nc(HWND window,win2k_scroll *scroll,HDC borrowed)
@@ -189,7 +203,7 @@ void win2k_scroll_paint_nc(HWND window,win2k_scroll *scroll,HDC borrowed)
        style_scroll_surface_read(window,OBJID_VSCROLL,&vertical)){
         RECT corner={vertical.target.left,horizontal.target.top,vertical.target.right,horizontal.target.bottom};
         LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
-        if(!IsRectEmpty(&corner))sizebox(dc,corner,(style&(WS_CHILD|WS_THICKFRAME))==WS_THICKFRAME && !IsZoomed(window));
+        if(!IsRectEmpty(&corner))sizebox(dc,corner,(style&(WS_CHILD|WS_THICKFRAME))==WS_THICKFRAME && !IsZoomed(window),scroll);
     }
     if(!borrowed)ReleaseDC(window,dc);
 }
@@ -230,9 +244,17 @@ void win2k_scroll_init(win2k_scroll *scroll,style_instance *instance)
 {
     scroll->instance=instance;
     scroll->arrow_palette=win2k_standard_palette;
+    scroll->colors=(classic_scroll_colors){0};
     UINT delay=GetDoubleClickTime()*4/5;
     scroll->policy=(style_scroll_policy){.initial_repeat_ms=max(1,delay),.repeat_ms=max(1,delay/8),
         .hit=hit,.drag_bounds=drag_bounds};
+}
+
+void win2k_scroll_theme(win2k_scroll *scroll,const classic_theme *theme)
+{
+    scroll->arrow_palette.face=theme->scroll_arrow.face;
+    scroll->arrow_palette.dark=theme->scroll_arrow.edge;
+    scroll->colors=theme->scroll;
 }
 
 style_scroll_ops win2k_scroll_operations(win2k_scroll *scroll)

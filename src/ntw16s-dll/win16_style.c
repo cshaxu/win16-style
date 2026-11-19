@@ -47,7 +47,8 @@ static BOOL local_window(HWND w)
 static BOOL layout(HWND w,style_window *s,win16_style_layout *l)
 {
     RECT r;
-    return GetWindowRect(w,&r) && win16_control_measure_window(w,&s->instance,&s->fonts,&r,&s->title_buttons,l);
+    return GetWindowRect(w,&r) && win16_control_measure_window(w,&s->instance,&s->fonts,&r,
+        &s->title_buttons,&s->caption_metrics,l);
 }
 
 BOOL win16_style_hit_test(HWND w,LPARAM lp,LRESULT *result)
@@ -155,7 +156,8 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,UINT_PTR 
 static BOOL measure_client(HWND w,void *context,const RECT *outer,RECT *client)
 {
     style_window *s=context;win16_style_layout layout;
-    if(!win16_control_measure_window(w,&s->instance,&s->fonts,outer,&s->title_buttons,&layout))return FALSE;
+    if(!win16_control_measure_window(w,&s->instance,&s->fonts,outer,&s->title_buttons,&s->caption_metrics,&layout))
+        return FALSE;
     *client=layout.client;return TRUE;
 }
 static BOOL frame_hit(HWND w,void *context,LPARAM point,LRESULT *result)

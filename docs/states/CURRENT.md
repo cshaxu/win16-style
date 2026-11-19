@@ -42,6 +42,8 @@ M0 T29 S3 已收口。[S3 记录](../history/M0-T29-S3-msstyles-v4.md)保存两�
 [S4 记录](../history/M0-T29-S4-representative-rendering.md)保存双宽只读模型和标题颜色离屏证据。
 S4 P2 同批八件已发布至 `assets` 与 `O:/winnt`，实际包验证覆盖双宽 20 项
 直接回归和 16 组资源消费。S4 接续其余度量、状态及原始资源迁移。
+S4 P3 接入标题度量与横纵滚动轨道、滑块和尺寸框数据。同批八件已发布两处，
+直接测试 30/30、替换资源对照 16/16 通过，干净树四主题文件通过独立读回。
 
 ## M0 T29 S4 Packet
 
@@ -75,7 +77,7 @@ S4 P2 同批八件已发布至 `assets` 与 `O:/winnt`，实际包验证覆盖�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S4 P2；T29 同批八件。
+- Last verified remote delivery: M0 T29 S4 P3；T29 同批八件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 4
@@ -83,7 +85,7 @@ S4 P2 同批八件已发布至 `assets` 与 `O:/winnt`，实际包验证覆盖�
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 核对 [T29 S4 P2](../history/M0-T29-S4-representative-rendering.md)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 核对 [T29 S4 P3](../history/M0-T29-S4-representative-rendering.md)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1176回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。

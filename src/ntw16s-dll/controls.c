@@ -144,7 +144,7 @@ static void draw_scroll(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical
         arrows.edge=s->scroll_arrow_colors.edge;
     }
     const win16_control_scroll_view view={&s->palette,&s->bindings.scroll,scroll_layout,
-        embedded_scroll_layout,edit_thumb_messages,list_axis_owned,&arrows};
+        embedded_scroll_layout,edit_thumb_messages,list_axis_owned,&arrows,s->themed?&s->scroll_colors:NULL};
     win16_control_draw_scroll(w,&view,dc,object,vertical);
 }
 
@@ -185,7 +185,7 @@ static BOOL embedded_scroll_input(HWND w,control_style *s,UINT m,WPARAM a,LPARAM
 {const style_scroll_ops ops=scroll_operations(s);return style_scroll_embedded_input(w,&s->instance,&s->state,&s->bindings.scroll,&ops,m,a,b);}
 
 static void draw_sizebox(HWND w,control_style *s,HDC dc)
-{(void)s;win16_control_draw_sizebox(w,dc);}
+{win16_control_draw_sizebox(w,dc,s->themed && s->scroll_colors.own_sizebox?&s->scroll_colors.sizebox.face:NULL);}
 /* The v5 progress color and state getters are unavailable. Only paint the
  * verified static edge, after the native procedure; leave the client intact. */
 static LRESULT control_dispatch(HWND w,void *context,style_control_message *call)

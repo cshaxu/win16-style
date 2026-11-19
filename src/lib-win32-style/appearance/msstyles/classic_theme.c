@@ -81,6 +81,43 @@ typedef struct theme_field {
 
 #define COLOR_FIELD(cls,part,state,name) {cls,part,state,name,TMT_COLOR,0,false}
 
+static HRESULT read_fields(const msstyles_v4_property *item,const size_t indices[class_count],
+    theme_field *fields,size_t count)
+{
+    for(size_t i=0;i<count;++i){
+        theme_field *field=&fields[i];
+        if(item->class_id!=indices[field->cls] || item->part_id!=field->part ||
+           item->state_id!=field->state || item->name_id!=field->name)continue;
+        if(field->present || item->type_id!=field->type || !item->data || item->declared_size!=4)
+            return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+        field->value=msstyles_v4_read_word(item->data);
+        if(field->type==TMT_COLOR && field->value>0xffffffu)
+            return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+        field->present=true;
+        break;
+    }
+    return S_OK;
+}
+
+enum { scroll_surface_fields=5, scroll_track_pairs=2 };
+
+static bool scroll_colors(theme_field fields[][scroll_surface_fields],size_t surfaces,
+    classic_scroll_surface *colors,BOOL *loaded)
+{
+    size_t count=surfaces*scroll_surface_fields,found=0;
+    for(size_t i=0;i<surfaces;++i)
+        for(size_t j=0;j<scroll_surface_fields;++j)
+            if(fields[i][j].present)++found;
+    if(found && found!=count)return false;
+    *loaded=found!=0;
+    if(*loaded){
+        for(size_t i=0;i<surfaces;++i)
+            colors[i]=(classic_scroll_surface){fields[i][0].value,fields[i][1].value,
+                fields[i][2].value,fields[i][3].value,fields[i][4].value};
+    }
+    return true;
+}
+
 static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *theme)
 {
     enum {fill_type, active_face, active_text, inactive_face, inactive_text,
@@ -100,6 +137,22 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
         COLOR_FIELD(class_window,WP_CAPTION,CS_INACTIVE,TMT_GRADIENTCOLOR1),
         COLOR_FIELD(class_window,WP_CAPTION,CS_INACTIVE,TMT_GRADIENTCOLOR2)
     };
+    const unsigned scroll_parts[]={SBP_THUMBBTNHORZ,SBP_THUMBBTNVERT,SBP_LOWERTRACKHORZ,
+        SBP_LOWERTRACKVERT,SBP_SIZEBOX};
+    const unsigned color_ids[]={TMT_FILLCOLOR,TMT_EDGELIGHTCOLOR,TMT_EDGEHIGHLIGHTCOLOR,
+        TMT_EDGESHADOWCOLOR,TMT_EDGEDKSHADOWCOLOR};
+    theme_field scroll[ARRAYSIZE(scroll_parts)][ARRAYSIZE(color_ids)];
+    for(size_t i=0;i<ARRAYSIZE(scroll_parts);++i)
+        for(size_t j=0;j<ARRAYSIZE(color_ids);++j)
+            scroll[i][j]=(theme_field)COLOR_FIELD(class_scroll_arrow,scroll_parts[i],0,color_ids[j]);
+    theme_field dimensions[]={
+        {class_window,WP_CAPTION,0,TMT_HEIGHT,TMT_INT,0,false},
+        {class_window,WP_MINBUTTON,0,TMT_WIDTH,TMT_INT,0,false},
+        {class_window,WP_MINBUTTON,0,TMT_HEIGHT,TMT_INT,0,false},
+        {class_window,WP_SMALLCAPTION,0,TMT_HEIGHT,TMT_INT,0,false},
+        {class_window,WP_SMALLCLOSEBUTTON,0,TMT_WIDTH,TMT_INT,0,false},
+        {class_window,WP_SMALLCLOSEBUTTON,0,TMT_HEIGHT,TMT_INT,0,false}
+    };
     size_t indices[class_count],class_total;
     HRESULT result=class_indices(map,indices,&class_total);
     if(FAILED(result))return result;
@@ -108,16 +161,18 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
         size_t used;
         if(!msstyles_v4_property_read(variant.bytes+pos,variant.size-pos,class_total,&item,&used))
             return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
-        for(size_t i=0;i<ARRAYSIZE(fields);++i){
-            theme_field *field=&fields[i];
-            if(item.class_id!=indices[field->cls] || item.part_id!=field->part ||
-               item.state_id!=field->state || item.name_id!=field->name)continue;
-            if(field->present || item.type_id!=field->type || !item.data || item.declared_size!=4)
-                return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
-            field->value=msstyles_v4_read_word(item.data);
-            field->present=true;
-            break;
+        result=read_fields(&item,indices,fields,ARRAYSIZE(fields));
+        if(FAILED(result))return result;
+        if(item.class_id==indices[class_window]){
+            result=read_fields(&item,indices,dimensions,ARRAYSIZE(dimensions));
+            if(FAILED(result))return result;
         }
+        for(size_t i=0;i<ARRAYSIZE(scroll_parts);++i)
+            if(item.part_id==scroll_parts[i] && item.class_id==indices[class_scroll_arrow]){
+                result=read_fields(&item,indices,scroll[i],ARRAYSIZE(color_ids));
+                if(FAILED(result))return result;
+                break;
+            }
         pos+=used;
     }
     theme->gradient=fields[fill_type].value==FT_HORZGRADIENT;
@@ -136,6 +191,22 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
     }
     theme->button=(classic_surface_colors){fields[button_face].value,fields[button_edge].value};
     theme->scroll_arrow=(classic_surface_colors){fields[scroll_face].value,fields[scroll_edge].value};
+    BOOL has_thumb,has_track;
+    if(!scroll_colors(scroll,scroll_track_pairs,theme->scroll.thumb,&has_thumb) ||
+       !scroll_colors(scroll+scroll_track_pairs,scroll_track_pairs,theme->scroll.track,&has_track) ||
+       has_thumb!=has_track ||
+       !scroll_colors(scroll+2*scroll_track_pairs,1,&theme->scroll.sizebox,&theme->scroll.own_sizebox))
+        return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+    theme->scroll.tracks_and_thumbs=has_thumb;
+    for(size_t i=0;i<ARRAYSIZE(dimensions);i+=3){
+        if(!dimensions[i].present && !dimensions[i+1].present && !dimensions[i+2].present)continue;
+        for(size_t j=0;j<3;++j)
+            if(!dimensions[i+j].present || !dimensions[i+j].value || dimensions[i+j].value>UINT16_MAX)
+                return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+        if(dimensions[i+2].value>dimensions[i].value)return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+    }
+    theme->caption_metrics=(classic_caption_metrics){dimensions[0].value,dimensions[3].value,
+        {dimensions[1].value,dimensions[2].value},{dimensions[4].value,dimensions[5].value}};
     return S_OK;
 }
 

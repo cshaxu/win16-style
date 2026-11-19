@@ -18,14 +18,14 @@ BOOL win16_control_frame_hit_test(HWND w,const win16_style_layout *l,LPARAM lp,L
 }
 
 BOOL win16_control_measure_window(HWND w,const style_instance *instance,const style_font_pair *fonts,
-    const RECT *outer,const classic_button_group *buttons,win16_style_layout *l)
+    const RECT *outer,const classic_button_group *buttons,const classic_caption_metrics *metrics,win16_style_layout *l)
 {
     RECT visible=*outer;BOOL zoom=IsZoomed(w);int dx,dy;
     if(zoom)(void)style_frame_work_area(w,outer,&visible);
     DWORD style=(DWORD)GetWindowLongPtr(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtr(w,GWL_EXSTYLE);
     int width=visible.right-visible.left,height=visible.bottom-visible.top;
     BOOL measured=buttons && buttons->count?
-        win16_style_measure_with_buttons(width,height,fonts->dpi,style,ex,zoom,buttons,l):
+        win16_style_measure_with_buttons(width,height,fonts->dpi,style,ex,zoom,buttons,metrics,l):
         win16_style_measure(width,height,fonts->dpi,style,ex,zoom,l);
     if(!measured)return FALSE;
     /* Native maximized resize borders can lie outside the work area. Keep

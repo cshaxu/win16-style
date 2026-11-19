@@ -13,6 +13,7 @@ typedef struct style_window {
     style_instance instance;
     win16_style_palette palette;
     classic_button_group title_buttons;
+    classic_caption_metrics caption_metrics;
     style_font_pair fonts;
     BOOL dialog, menu_only;
     style_menu_owner menu;

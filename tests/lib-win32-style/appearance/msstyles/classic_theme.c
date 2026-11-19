@@ -24,8 +24,8 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
         classic_button_group changed=theme->title_buttons;
         changed.slots[3].gap_before+=2;
         if(!win2k_caption_buttons(&r,dpi,FALSE,present,reference) ||
-           !win2k_caption_buttons_with_group(&r,dpi,FALSE,present,&theme->title_buttons,actual) ||
-           !win2k_caption_buttons_with_group(&r,dpi,FALSE,present,&changed,alternate) ||
+           !win2k_caption_buttons_with_group(&r,dpi,FALSE,present,&theme->title_buttons,&theme->caption_metrics,actual) ||
+           !win2k_caption_buttons_with_group(&r,dpi,FALSE,present,&changed,&theme->caption_metrics,alternate) ||
            memcmp(actual,reference,sizeof(actual)) ||
            !EqualRect(&actual[WIN2K_CLOSE],&alternate[WIN2K_CLOSE]) ||
            actual[WIN2K_MAXIMIZE].left-alternate[WIN2K_MAXIMIZE].left!=MulDiv(4,(int)dpi,96)-MulDiv(2,(int)dpi,96))
@@ -38,8 +38,8 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
     classic_button_group changed=theme->title_buttons;
     changed.slots[2].gap_before=4;
     if(!win16_style_measure(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&reference) ||
-       !win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&theme->title_buttons,&layout) ||
-       !win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&changed,&alternate) ||
+       !win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&theme->title_buttons,&theme->caption_metrics,&layout) ||
+       !win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&changed,&theme->caption_metrics,&alternate) ||
        !EqualRect(&reference.title,&layout.title) || !EqualRect(&reference.minimize,&layout.minimize) ||
        !EqualRect(&reference.maximize,&layout.maximize) || !EqualRect(&reference.system,&layout.system) ||
        !EqualRect(&alternate.maximize,&layout.maximize) ||
@@ -171,6 +171,17 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     CHECK(theme.button.face==(recolored?RGB(251,37,52):state_face));
     CHECK(theme.scroll_arrow.face==(recolored?RGB(89,97,163):state_face));
     CHECK(theme.scroll_arrow.edge==(gradient?RGB(64,64,64):RGB(0,0,0)));
+    CHECK(theme.scroll.tracks_and_thumbs && theme.scroll.own_sizebox==gradient);
+    CHECK(theme.caption_metrics.height==(gradient?19:18) &&
+          theme.caption_metrics.button.cx==(gradient?16:19) &&
+          theme.caption_metrics.button.cy==(gradient?14:18));
+    for(unsigned axis=0;axis<2;++axis){
+        CHECK(theme.scroll.track[axis].face==state_face &&
+              theme.scroll.track[axis].highlight==RGB(255,255,255));
+        CHECK(theme.scroll.thumb[axis].face==state_face &&
+              theme.scroll.thumb[axis].dark==theme.scroll_arrow.edge);
+    }
+    if(gradient)CHECK(theme.scroll.sizebox.face==state_face);
     CHECK(theme.title_buttons.count==(gradient?4:3));
     CHECK(render(&theme,gradient));
     unsigned char prior[sizeof(theme)];

@@ -56,6 +56,26 @@ static bool button(FILE *output,uint32_t cls,uint32_t part,const classic_theme_s
         property(output,TMT_FILLTYPE,TMT_ENUM,cls,part,0,FT_SOLID);
 }
 
+static bool scroll_surface(FILE *output,uint32_t part,const classic_theme_source *source)
+{
+    return button(output,scrollbar_class,part,source) &&
+        property(output,TMT_EDGELIGHTCOLOR,TMT_COLOR,scrollbar_class,part,0,source->bevel_light) &&
+        property(output,TMT_EDGEHIGHLIGHTCOLOR,TMT_COLOR,scrollbar_class,part,0,RGB(255,255,255)) &&
+        property(output,TMT_EDGESHADOWCOLOR,TMT_COLOR,scrollbar_class,part,0,RGB(128,128,128)) &&
+        property(output,TMT_EDGEDKSHADOWCOLOR,TMT_COLOR,scrollbar_class,part,0,source->edge);
+}
+
+static bool title_metrics(FILE *output,const classic_caption_metrics *metrics)
+{
+    return property(output,TMT_HEIGHT,TMT_INT,window_class,WP_CAPTION,0,metrics->height) &&
+        property(output,TMT_WIDTH,TMT_INT,window_class,WP_MINBUTTON,0,metrics->button.cx) &&
+        property(output,TMT_HEIGHT,TMT_INT,window_class,WP_MINBUTTON,0,metrics->button.cy) &&
+        (!metrics->tool_height ||
+         (property(output,TMT_HEIGHT,TMT_INT,window_class,WP_SMALLCAPTION,0,metrics->tool_height) &&
+          property(output,TMT_WIDTH,TMT_INT,window_class,WP_SMALLCLOSEBUTTON,0,metrics->tool_button.cx) &&
+          property(output,TMT_HEIGHT,TMT_INT,window_class,WP_SMALLCLOSEBUTTON,0,metrics->tool_button.cy)));
+}
+
 static bool write_properties(FILE *output,const classic_theme_source *source)
 {
     if(source->legacy_minimize){
@@ -68,8 +88,15 @@ static bool write_properties(FILE *output,const classic_theme_source *source)
            !msstyles_v4_property_write(record,sizeof(record),ARRAYSIZE(classes),&image,&length) ||
            !bytes(output,record,length))return false;
     }
-    return button(output,button_class,BP_PUSHBUTTON,source) &&
+    return title_metrics(output,&source->caption_metrics) && button(output,button_class,BP_PUSHBUTTON,source) &&
         button(output,scrollbar_class,SBP_ARROWBTN,source) &&
+        scroll_surface(output,SBP_THUMBBTNHORZ,source) &&
+        scroll_surface(output,SBP_THUMBBTNVERT,source) &&
+        scroll_surface(output,SBP_LOWERTRACKHORZ,source) &&
+        scroll_surface(output,SBP_UPPERTRACKHORZ,source) &&
+        scroll_surface(output,SBP_LOWERTRACKVERT,source) &&
+        scroll_surface(output,SBP_UPPERTRACKVERT,source) &&
+        (!source->own_sizebox || scroll_surface(output,SBP_SIZEBOX,source)) &&
         property(output,TMT_BGTYPE,TMT_ENUM,window_class,WP_CAPTION,0,BT_BORDERFILL) &&
         property(output,TMT_FILLTYPE,TMT_ENUM,window_class,WP_CAPTION,0,
                  source->gradient?FT_HORZGRADIENT:FT_SOLID) &&

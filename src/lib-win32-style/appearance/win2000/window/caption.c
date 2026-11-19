@@ -30,13 +30,18 @@ BOOL win2k_caption_buttons(const RECT *title,UINT dpi,BOOL tool,
                           const BOOL present[WIN2K_CAPTION_PARTS],RECT bounds[WIN2K_CAPTION_PARTS])
 {
     static const classic_button_group group=WIN2000_TITLE_BUTTON_GROUP;
-    return win2k_caption_buttons_with_group(title,dpi,tool,present,&group,bounds);
+    return win2k_caption_buttons_with_group(title,dpi,tool,present,&group,NULL,bounds);
 }
 
 BOOL win2k_caption_buttons_with_group(const RECT *title,UINT dpi,BOOL tool,
-    const BOOL present[WIN2K_CAPTION_PARTS],const classic_button_group *group,RECT bounds[WIN2K_CAPTION_PARTS])
+    const BOOL present[WIN2K_CAPTION_PARTS],const classic_button_group *group,
+    const classic_caption_metrics *metrics,RECT bounds[WIN2K_CAPTION_PARTS])
 {
     SIZE size=button_size(tool);
+    if(metrics){
+        SIZE defined=tool?metrics->tool_button:metrics->button;
+        if(defined.cx>0 && defined.cy>0)size=defined;
+    }
     size=(SIZE){MulDiv(size.cx,(int)dpi,96),MulDiv(size.cy,(int)dpi,96)};
     static const unsigned roles[]={CLASSIC_BUTTON_MINIMIZE,CLASSIC_BUTTON_MAXIMIZE,
         CLASSIC_BUTTON_HELP,CLASSIC_BUTTON_CLOSE};

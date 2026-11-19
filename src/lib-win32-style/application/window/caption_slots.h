@@ -20,6 +20,11 @@ typedef struct classic_button_group {
     classic_button_slot slots[CLASSIC_BUTTON_CLOSE];
 } classic_button_group;
 
+typedef struct classic_caption_metrics {
+    int height, tool_height;
+    SIZE button, tool_button;
+} classic_caption_metrics;
+
 /* The mask uses 1u << role. Omitted roles leave empty rectangles. The
  * clipping policy lets a right slot shrink on very narrow captions. */
 BOOL style_caption_slots(const classic_button_group *group,const RECT *band,UINT dpi,

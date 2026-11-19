@@ -6,16 +6,17 @@ BOOL win16_style_measure(int width,int height,UINT dpi,DWORD style,DWORD ex_styl
     BOOL maximized,win16_style_layout *l)
 {
     static const classic_button_group group=WIN16_TITLE_BUTTON_GROUP;
-    return win16_style_measure_with_buttons(width,height,dpi,style,ex_style,maximized,&group,l);
+    return win16_style_measure_with_buttons(width,height,dpi,style,ex_style,maximized,&group,NULL,l);
 }
 
 BOOL win16_style_measure_with_buttons(int width,int height,UINT dpi,DWORD style,DWORD ex_style,
-    BOOL maximized,const classic_button_group *group,win16_style_layout *l)
+    BOOL maximized,const classic_button_group *group,const classic_caption_metrics *metrics,
+    win16_style_layout *l)
 {
     int top,button,caption_height;BOOL caption=(style&WS_CAPTION)==WS_CAPTION;
     if(!l || width<1 || height<1 || dpi<48 || dpi>768)return FALSE;
     memset(l,0,sizeof(*l));
-    button=MulDiv(19,(int)dpi,96);
+    button=MulDiv(metrics && metrics->button.cx?metrics->button.cx:19,(int)dpi,96);
     /* Round the one-pixel stroke like the scaled OEM separator, not down.
      * floor(dpi/96) left a one-column gap at 144 DPI. */
     l->unit=max(1,MulDiv(1,(int)dpi,96));
@@ -27,7 +28,7 @@ BOOL win16_style_measure_with_buttons(int width,int height,UINT dpi,DWORD style,
     /* Original VGA: 18-pixel artwork, 19-pixel button pitch. USER's
      * 20-pixel CYCAPTION includes both boundary lines, not 20 content rows. */
     /* Owner's unified20-pixel type must also fit on a96-DPI display. */
-    caption_height=MulDiv(18,(int)dpi,96);
+    caption_height=MulDiv(metrics && metrics->height?metrics->height:18,(int)dpi,96);
     if(caption)caption_height=max(20,caption_height);
     l->corner.cx=l->border+button;
     l->corner.cy=l->border+caption_height+l->unit;

@@ -63,6 +63,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     if(s->themed){
         s->push_colors=theme.button;
         s->scroll_arrow_colors=theme.scroll_arrow;
+        s->scroll_colors=theme.scroll;
     }
     control_install install={s,services,palette,frame_bars};
     const style_instance_install_ops ops={&install,cancelled,setup_control,NULL};

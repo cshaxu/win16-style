@@ -12,10 +12,23 @@ typedef struct classic_surface_colors {
     COLORREF face, edge;
 } classic_surface_colors;
 
+typedef struct classic_scroll_surface {
+    COLORREF face, light, highlight, shadow, dark;
+} classic_scroll_surface;
+
+typedef struct classic_scroll_colors {
+    classic_scroll_surface thumb[2], track[2]; /* horizontal, vertical */
+    classic_scroll_surface sizebox;
+    BOOL tracks_and_thumbs;
+    BOOL own_sizebox;
+} classic_scroll_colors;
+
 typedef struct classic_theme {
     classic_caption_colors active, inactive;
     classic_surface_colors button, scroll_arrow;
     classic_button_group title_buttons;
+    classic_caption_metrics caption_metrics;
+    classic_scroll_colors scroll;
     BOOL gradient;
 } classic_theme;
 

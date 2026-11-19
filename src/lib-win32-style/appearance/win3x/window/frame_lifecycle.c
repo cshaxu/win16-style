@@ -62,6 +62,7 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     classic_theme theme;
     if(classic_theme_default((HMODULE)&__ImageBase,&theme)){
         s->title_buttons=theme.title_buttons;
+        s->caption_metrics=theme.caption_metrics;
         if(!p){
             s->palette.active=theme.active.start;
             s->palette.inactive=theme.inactive.start;
