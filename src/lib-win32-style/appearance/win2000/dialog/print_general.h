@@ -17,6 +17,7 @@
 #define WIN2K_PRINT_DEVICE_STATUS 1211
 #define WIN2K_PRINT_DEVICE_LOCATION 1212
 #define WIN2K_PRINT_DEVICE_COMMENT 1213
+#define WIN2K_PRINT_FIND_DEVICE 1214
 #ifndef RC_INVOKED
 #include <windows.h>
 #include <commdlg.h>

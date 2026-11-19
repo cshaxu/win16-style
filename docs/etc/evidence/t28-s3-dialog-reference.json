@@ -2114,5 +2114,203 @@
         "real administrator/global dialog matrix"
       ]
     }
+  },
+  "directory_printer_general_p39": {
+    "footprint": "Product build and dialog code: +173/-6 lines. Native fixture: +21/-15. Package import gate: +1/-1. General owns the selected queue and print result; the directory selector releases COM data before returning. The Shell list and existing print transaction remain in use.",
+    "implementation": "Regular and large Win2000 General pages expose Find Printer under the existing shell restriction policy. The real system ICommonQuery supplies one printQueue selection. The application reads its UNC name with the current directory credentials and passes a valid queue to the existing printer settings and return-value transaction. No queue installation or print job occurs. A queue missing from the native Shell list uses the existing ListBox on this page; the next invocation still follows the existing native fallback when its caller supplies a non-enumerated queue.",
+    "build_dependency": "The Win2000 resource object remained older than print_general_full.rcinc during the first incremental test and the button was missing. The explicit resource dependency caused Ninja to rebuild the resource; the test then observed the native query on both widths.",
+    "restored_desktop": "The previous published package passed 32/32 actual x86/x64 A/W open/save calls in both DPI contexts. Sixteen calls observed the complete Places toolbar and reference geometry. The physical work area was 1920 by 1008 at 144 DPI and the virtualized work area was 1280 by 672 at 96 DPI.",
+    "incremental": "24/24 native query cancellations followed by General cancel, confirm or Apply across x86/x64, A/W and regular/large sheets. An isolated directory data fixture passed 12/12, covering valid selection and five rejected inputs across both widths. The fixture supplied the directory data and ADSI binding result; it did not contact a real directory.",
+    "released_runtime_each_of_three_paths": {
+      "places_fail": 0,
+      "places_pass": 8,
+      "places_skip": 0,
+      "print_pass": 16,
+      "win16_fail": 0,
+      "win16_pass": 4,
+      "print_fail": 0,
+      "directory_pass": 24,
+      "directory_fail": 0
+    },
+    "limits": "This machine is a workgroup. Real domain printer selection and driver/result handoff remain unverified. Directory selection currently requires an STA-compatible caller. Native application property-page display remains unverified because native and styled PrintDlgEx reached the same system proxy in P33. Win2000 global per-API dialog integration remains absent. No private desktop, physical input, print jobs or machine settings changed.",
+    "release": {
+      "source_parent": "a8f15bbf1f92543103433da8e73e4616f5cc53d5",
+      "snapshot_manifest_sha256": "1869480178db29ecbddbe43977a67d8e06b4f3b6bf2f5a7f345090e6b31fb8f7",
+      "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-directory-printer-package",
+      "toolchain": "C17, MinGW-w64 GCC 16.1.0, Ninja and repository ccache; clean x86/x64 Release.",
+      "build_seconds": {
+        "x86": 205.04,
+        "x64": 251.5
+      },
+      "ccache_direct_hits": {
+        "x86": 956,
+        "x64": 1044
+      },
+      "ccache_misses": {
+        "x86": 3,
+        "x64": 3
+      },
+      "gate": "Exact eight same-snapshot files; source receipts, resource identity, process and style boundaries, both ABI checks and package import/export checks passed. Both release destinations were populated before runtime tests. All deployed hashes match the tested candidate.",
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "c542019d40aa3bb49625fb3d69a7ef088cf6779dfe02bd464e71e45df8de8fa9",
+          "imports": [
+            "advapi32.dll",
+            "dwmapi.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "oleaut32.dll",
+            "shell32.dll",
+            "user32.dll",
+            "ntwshk64.dll"
+          ]
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "d3bfbd8b6ce35da8c05844e9eca1de2e32e8fb2bc2a0365aac543b6d2adc8bd9",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "4905ea731f6567aea3326aa3a0462e900575c25f8b4ff3aa571e1d560db58134",
+          "imports": [
+            "ADVAPI32.dll",
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "4b9f0a19990f4e0cededdf6e6ae225a0270b0259cf32f542a4ba007f53facb20",
+          "imports": [
+            "ACTIVEDS.dll",
+            "COMCTL32.dll",
+            "COMDLG32.DLL",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.DLL",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "WINSPOOL.DRV",
+            "ntwshk32.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "ba08fa8e497fc97721c320e5778e23d597b4393efb1097c43a20ef15e42413d1",
+          "imports": [
+            "ACTIVEDS.dll",
+            "COMCTL32.dll",
+            "comdlg32.dll",
+            "dwmapi.dll",
+            "GDI32.dll",
+            "KERNEL32.dll",
+            "MSIMG32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "OLEAUT32.dll",
+            "SHCORE.dll",
+            "SHELL32.dll",
+            "USER32.dll",
+            "UxTheme.dll",
+            "WINSPOOL.DRV",
+            "ntwshk64.dll",
+            "COMCTL32.dll"
+          ]
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "10494d75e0e8f9ea46149baeefef178ced608a66e7bb8d0893eff2c72107c3a0",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-private-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll"
+          ]
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "b0e58404cfe7ff479d4a33c7554ff3d53fe0bc83d2c83e8dc932290a53c95aaf",
+          "imports": [
+            "ADVAPI32.dll",
+            "KERNEL32.dll",
+            "msvcrt.dll"
+          ]
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "08512303ef2fc066bc2df723ea41a0b5bbb5f26c4d9b136f960eb848f19713e1",
+          "imports": [
+            "comctl32.dll",
+            "comdlg32.dll",
+            "gdi32.dll",
+            "kernel32.dll",
+            "msvcrt.dll",
+            "ole32.dll",
+            "shell32.dll",
+            "user32.dll"
+          ]
+        }
+      }
+    }
   }
 }

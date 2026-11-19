@@ -125,6 +125,11 @@ P37 标准 `--2k PrintDlgEx` 支持 `PD_USELARGETEMPLATE` 的 292×218 DLU 页�
 按工作区选择常规或紧凑页。两处及同摘要构建包的大模板通过 180/180，
 常规页 12/12、Win16 取消 4/4，另有 24/24 布局边界探针。
 P38 固定 `.rcinc` 的检出换行符为 LF，保持原始资源收据在 Windows 检出时有效。
+P39 在常规及大版 General 增加系统“查找打印机”，复用现有驱动设置和结果事务。
+三处同摘要包各通过 24/24 查询取消后确认、应用和取消，其他打印回归各 16/16，
+实机完整版 Places 各 8/8，Win16 扩展打印取消各 4/4。恢复的原生桌面还用
+P37 正式包复验文件打开／保存 32/32，其中完整 Places 16/16。
+工作组无法实测域队列选中回写。调用方原生属性页及 Win2000 全局 API 接入仍开放。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -159,17 +164,17 @@ P38 固定 `.rcinc` 的检出换行符为 LF，保持原始资源收据在 Windo
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P37；构建快照和八件摘要见公共对话框证据。
+- Last verified remote delivery: M0 T28 S3 P39；构建快照和八件摘要见公共对话框证据。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 P37 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 P39 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
-- 来源1135回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
+- 来源1151回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
 - propagation停用、窗口恢复、thread hook解除与物理DLL/late patch卸载分别报告；原有进程存活期固定/保留能力不改称安全卸载。
 - 禁止computer-use、创建或切换私有桌面；只用自有有界当前桌面探针。用户已永久授权非computer-use验证及按身份处理正式文件实际占用者；不重复请求同一授权，不改系统安全设置。
 - 历史逐文件来源及迁移见[原顺序台账](../history/M0-T26-S1-ordered-audit.md)、各S证据与T26规划；早期lib-style/lib-win32/style路径是历史路径，当前旧生产目录已删除。

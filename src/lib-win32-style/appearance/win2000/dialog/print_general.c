@@ -1,9 +1,11 @@
 #define _WIN32_WINNT 0x0A00
 #include "print_general.h"
+#include "print_directory.h"
 #include "print_shell.h"
 #include "lib-win32-style/application/dialog/print_ranges.h"
 #include "lib-win32-style/application/dialog/print_resources.h"
 #include <commctrl.h>
+#include <shlobj.h>
 #include <winspool.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -20,6 +22,7 @@ typedef struct general_page {
     WCHAR range_text[512];
     PRINTER_INFO_4W *devices;
     PCWSTR selected,default_device;
+    PWSTR directory_device;
     DWORD device_count;
     HGLOBAL live_mode,live_names;
     style_print_snapshot saved;
@@ -159,7 +162,10 @@ static void initialize_page(HWND window,const general_page *page)
         SendDlgItemMessageW(window,WIN2K_PRINT_DEVICE,messages->set_data,(WPARAM)index,(LPARAM)name);
         if(name==page->selected)SendDlgItemMessageW(window,WIN2K_PRINT_DEVICE,messages->select,(WPARAM)index,0);
     }
-    if(page->full)present_device(window,page->selected);
+    if(page->full){
+        present_device(window,page->selected);
+        EnableWindow(GetDlgItem(window,WIN2K_PRINT_FIND_DEVICE),!SHRestricted(REST_NOPRINTERADD));
+    }
     int checked=WIN2K_PRINT_ALL;
     if(page->flags&PD_SELECTION)checked=WIN2K_PRINT_SELECTION;
     if(page->flags&PD_CURRENTPAGE)checked=WIN2K_PRINT_CURRENT;
@@ -215,6 +221,50 @@ static BOOL select_shell_printer(HWND window,general_page *page)
     return FALSE;
 }
 
+static BOOL add_directory_printer(HWND window,general_page *page,PCWSTR device)
+{
+    HWND list=GetDlgItem(window,WIN2K_PRINT_DEVICE);
+    LRESULT index=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)device);
+    if(index>=0){
+        LRESULT existing=SendMessageW(list,LB_GETITEMDATA,(WPARAM)index,0);
+        if(!existing || existing==LB_ERR || !load_device(page,(PCWSTR)existing,NULL,NULL))return FALSE;
+        if(page->shell_visible && win2k_print_shell_select(page->shell,page->selected))return TRUE;
+    }else{
+        index=SendMessageW(list,LB_ADDSTRING,0,(LPARAM)device);
+        if(index<0)return FALSE;
+        if(SendMessageW(list,LB_SETITEMDATA,(WPARAM)index,(LPARAM)device)==LB_ERR ||
+           !load_device(page,device,NULL,NULL)){
+            SendMessageW(list,LB_DELETESTRING,(WPARAM)index,0);
+            return FALSE;
+        }
+        if(page->directory_device){
+            LRESULT old=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)page->directory_device);
+            if(old>=0)SendMessageW(list,LB_DELETESTRING,(WPARAM)old,0);
+            CoTaskMemFree(page->directory_device);
+        }
+        page->directory_device=(PWSTR)device;
+        index=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)device);
+    }
+    win2k_print_shell_close(page->shell);
+    page->shell=NULL;
+    page->shell_visible=FALSE;
+    ShowWindow(list,SW_SHOW);
+    SendMessageW(list,LB_SETCURSEL,(WPARAM)index,0);
+    return TRUE;
+}
+
+static BOOL find_directory_printer(HWND window,general_page *page)
+{
+    if(!page->full || SHRestricted(REST_NOPRINTERADD))return FALSE;
+    PWSTR device=NULL;
+    HRESULT result=win2k_print_directory_select(window,&device);
+    BOOL selected=result==S_OK && add_directory_printer(window,page,device);
+    if(device!=page->directory_device)CoTaskMemFree(device);
+    if(selected)present_device(window,page->selected);
+    else if(result!=S_FALSE)SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"Could not select a directory printer.");
+    return selected;
+}
+
 static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
     if(message==WM_INITDIALOG){
@@ -266,6 +316,8 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
                 return TRUE;
             }
             if(page->full)present_device(window,page->selected);
+        }else if(control==WIN2K_PRINT_FIND_DEVICE && notice==BN_CLICKED){
+            if(!find_directory_printer(window,page))return TRUE;
         }else if(control==WIN2K_PRINT_PREFERENCES && notice==BN_CLICKED){
             if(page->shell_visible && !select_shell_printer(window,page))return TRUE;
             if(!load_device(page,page->selected,window,page->live_mode))return TRUE;
@@ -387,6 +439,7 @@ static BOOL prepare_devices(general_page *page,HGLOBAL initial_mode,HGLOBAL init
 
 static void dispose_page(general_page *page)
 {
+    CoTaskMemFree(page->directory_device);
     free((void *)page->default_device);
     free(page->devices);
     if(page->live_mode)GlobalFree(page->live_mode);

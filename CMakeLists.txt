@@ -256,13 +256,17 @@ else()
   set(dll_name ntw16s64)
 endif()
 add_library(ntw2ks SHARED src/ntw2ks-dll/dllmain.c src/ntw2ks-dll/button.c src/ntw2ks-dll/controls.c src/ntw2ks-dll/window.c src/ntw2ks-dll/version.rc src/ntw2ks-dll/ntw2ks.def)
-target_sources(ntw2ks PRIVATE src/lib-win32-style/appearance/win2000/dialog/print_general.c src/lib-win32-style/appearance/win2000/dialog/print_shell.c)
+set_property(SOURCE src/ntw2ks-dll/version.rc APPEND PROPERTY OBJECT_DEPENDS
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general_full.rcinc")
+target_sources(ntw2ks PRIVATE src/lib-win32-style/appearance/win2000/dialog/print_general.c
+  src/lib-win32-style/appearance/win2000/dialog/print_shell.c
+  src/lib-win32-style/appearance/win2000/dialog/print_directory.c)
 if(WIN16STYLE_ARCH STREQUAL "x86")
   set_target_properties(ntw2ks PROPERTIES OUTPUT_NAME ntw2ks32 PREFIX "")
 else()
   set_target_properties(ntw2ks PROPERTIES OUTPUT_NAME ntw2ks64 PREFIX "")
 endif()
-target_link_libraries(ntw2ks PRIVATE style-dialog-common user32 uxtheme comdlg32 comctl32 winspool)
+target_link_libraries(ntw2ks PRIVATE style-dialog-common user32 uxtheme comdlg32 comctl32 winspool activeds adsiid oleaut32)
 target_include_directories(ntw2ks PRIVATE src ${CMAKE_SOURCE_DIR})
 target_link_options(ntw2ks PRIVATE -Wl,--kill-at)
 add_library(ntw16s SHARED ${core_sources}

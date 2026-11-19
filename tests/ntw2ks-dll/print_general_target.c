@@ -15,7 +15,7 @@ static unsigned expected_copies=1;
 static unsigned action;
 static DWORD context_flag;
 static DWORD output_flags;
-static BOOL test_preferences,preferences_pending,preferences_seen,no_context_device;
+static BOOL test_preferences,test_directory,secondary_pending,secondary_seen,no_context_device;
 static BOOL fits_work_area;
 static WCHAR choice[300];
 static BOOL full,device_details,shell_list,force_fallback,request_large,large_page,expected_layout;
@@ -64,13 +64,14 @@ static LRESULT choose_device(HWND list,LRESULT current,LRESULT count)
     return CB_ERR;
 }
 
-static BOOL CALLBACK cancel_preferences(HWND window,LPARAM unused)
+static BOOL CALLBACK cancel_secondary(HWND window,LPARAM unused)
 {
     (void)unused;
-    if(window==sheet_window || GetAncestor(window,GA_ROOTOWNER)!=owner || !IsWindowVisible(window) ||
-       !GetDlgItem(window,IDCANCEL))return TRUE;
-    preferences_seen=TRUE;
-    if(PropSheet_GetCurrentPageHwnd(window))PostMessageW(window,PSM_PRESSBUTTON,PSBTN_CANCEL,0);
+    if(window==sheet_window || GetAncestor(window,GA_ROOTOWNER)!=owner || !IsWindowVisible(window))return TRUE;
+    if(!test_directory && !GetDlgItem(window,IDCANCEL))return TRUE;
+    secondary_seen=TRUE;
+    if(test_directory)PostMessageW(window,WM_CLOSE,0,0);
+    else if(PropSheet_GetCurrentPageHwnd(window))PostMessageW(window,PSM_PRESSBUTTON,PSBTN_CANCEL,0);
     else PostMessageW(window,WM_COMMAND,MAKEWPARAM(IDCANCEL,BN_CLICKED),(LPARAM)GetDlgItem(window,IDCANCEL));
     return FALSE;
 }
@@ -131,11 +132,14 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
             }
         }
     }
-    if(test_preferences){
-        preferences_pending=TRUE;
-        HWND preferences=GetDlgItem(page,WIN2K_PRINT_PREFERENCES);
-        SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_PREFERENCES,BN_CLICKED),(LPARAM)preferences);
-        preferences_pending=FALSE;
+    if(test_preferences || test_directory){
+        UINT command=test_directory?WIN2K_PRINT_FIND_DEVICE:WIN2K_PRINT_PREFERENCES;
+        HWND button=GetDlgItem(page,command);
+        if(button && IsWindowEnabled(button)){
+            secondary_pending=TRUE;
+            SendMessageW(page,WM_COMMAND,MAKEWPARAM(command,BN_CLICKED),(LPARAM)button);
+            secondary_pending=FALSE;
+        }
     }
     if(action!=PD_RESULT_CANCEL){
         LRESULT current=device_message(list,CB_GETCURSEL,LB_GETCURSEL,0,0);
@@ -176,7 +180,7 @@ static void CALLBACK observe(HWND window,UINT message,UINT_PTR timer,DWORD time)
 {
     (void)message;(void)time;
     if(!ready)EnumThreadWindows(GetCurrentThreadId(),sheet,0);
-    else if(preferences_pending && !preferences_seen)EnumThreadWindows(GetCurrentThreadId(),cancel_preferences,0);
+    else if(secondary_pending && !secondary_seen)EnumThreadWindows(GetCurrentThreadId(),cancel_secondary,0);
     if(++ticks>=40){KillTimer(window,timer);ExitProcess(4);}
 }
 int wmain(int argc,WCHAR **argv)
@@ -186,6 +190,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc!=3 && argc!=4)return 2;
     BOOL initial=argc==4 && !wcscmp(argv[3],L"initial");
     test_preferences=argc==4 && !wcscmp(argv[3],L"preferences");
+    test_directory=argc==4 && !wcscmp(argv[3],L"directory");
     if(argc==4 && !wcscmp(argv[3],L"aware") &&
        !SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))return 77;
     if(argc==4 && !wcscmp(argv[3],L"dc"))context_flag=PD_RETURNDC;
@@ -249,7 +254,7 @@ int wmain(int argc,WCHAR **argv)
     BOOL pass=hr==S_OK && ready && styled && initial_ok && fits_work_area && expected_layout && device_details &&
         (result_flags&PD_USELARGETEMPLATE)==layout_flag &&
         (!force_fallback || !shell_list) && code==(no_context_device?PD_RESULT_CANCEL:action) &&
-        IsWindowEnabled(owner) && (!test_preferences || preferences_seen);
+        IsWindowEnabled(owner) && (!(test_preferences || test_directory) || secondary_seen);
     if(context_flag && action!=PD_RESULT_CANCEL)pass=pass && (no_context_device?!dc:dc && GetDeviceCaps(dc,TECHNOLOGY)==DT_RASPRINTER);
     if(no_context_device)action=PD_RESULT_CANCEL;
     if(action==PD_RESULT_CANCEL)pass=pass && mode==initial_mode && names==initial_names && !range_count;
@@ -274,8 +279,9 @@ int wmain(int argc,WCHAR **argv)
         }else pass=pass && copies==3 && range_count==2 && ranges[0].nFromPage==2 &&
             ranges[0].nToPage==2 && ranges[1].nFromPage==4 && ranges[1].nToPage==5;
     }
-    printf("GENERAL ENTRY bits=%u ansi=%d initial=%d requested=%u result=%lu hr=%08lx frame=%d copies=%lu pages=%lu selected=%d dc=%d preferences=%d full=%d details=%d shell=%d large=%d pass=%d\n",
-       (unsigned)(sizeof(void *)*8),ansi,initial,action,code,(unsigned long)hr,styled,copies,range_count,match,dc!=NULL,preferences_seen,full,device_details,shell_list,large_page,pass);
+    printf("GENERAL ENTRY bits=%u ansi=%d initial=%d requested=%u result=%lu hr=%08lx frame=%d copies=%lu pages=%lu selected=%d dc=%d preferences=%d directory=%d full=%d details=%d shell=%d large=%d pass=%d\n",
+       (unsigned)(sizeof(void *)*8),ansi,initial,action,code,(unsigned long)hr,styled,copies,range_count,match,dc!=NULL,
+       test_preferences&&secondary_seen,test_directory&&secondary_seen,full,device_details,shell_list,large_page,pass);
     if(dc)DeleteDC(dc);
     if(mode)GlobalFree(mode);
     if(names)GlobalFree(names);

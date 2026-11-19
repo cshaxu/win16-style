@@ -10292,7 +10292,7 @@
       "path": "src/lib-win32-style/appearance/win2000/dialog/print_general.c",
       "source": null,
       "source_blob": null,
-      "sha256": "847ae0fa0916718c92f16e3e15ee880a75a2cc8a885eb2d94637d7f5868b9cfc",
+      "sha256": "d477fcdab875d5592eade54445c3bd7b2f091c2150c312f16399113fdbc96297",
       "disposition": "authored",
       "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
       "notice": "Project-authored; no imported source or resources"
@@ -10301,7 +10301,7 @@
       "path": "src/lib-win32-style/appearance/win2000/dialog/print_general.h",
       "source": null,
       "source_blob": null,
-      "sha256": "6cacd538901c4d9ad2cedc8be3f1571b2e217aa94e609f3fc44fdeeaa3b0de99",
+      "sha256": "7346ea16166663ff03e26ca7a0f45e9de4dc0a06dca37f53d41b9f4ab725035d",
       "disposition": "authored",
       "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
       "notice": "Project-authored; no imported source or resources"
@@ -10310,7 +10310,7 @@
       "path": "tests/ntw2ks-dll/print_general_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "44a42c5cc65a4bff4c8305e6432c0ea37cfc53e65ae7610080739bb06181a0a7",
+      "sha256": "d6e80668ccb9abf1cf7f3ea5baa0c5d84e67d6beeb07a3f132aec209d23ec331",
       "disposition": "authored",
       "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
       "notice": "Project-authored; no imported source or resources"
@@ -10337,10 +10337,28 @@
       "path": "src/lib-win32-style/appearance/win2000/dialog/print_general_full.rcinc",
       "source": null,
       "source_blob": null,
-      "sha256": "729835b0c2efedd785791a0fa5c4ba4503138380b3466c08ce029b19feba6c3f",
+      "sha256": "e9372a1dcff575f66d3ae2662139b266ec5d07a52b411cd94a7e2a562d75586f",
       "disposition": "authored",
       "review": "T28 S3 shared full and large Win2000 General format",
       "notice": "Project-authored resource geometry; no imported Windows artwork or templates"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/dialog/print_directory.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "4588d818c63b0eb40886b36653f16b9332f06b90d9bb00b099b490cab6cbd1d8",
+      "disposition": "authored",
+      "review": "T28 S3 native directory printer selection for the Windows 2000 General page",
+      "notice": "Project-authored using Windows SDK; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/dialog/print_directory.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "7ecd8fa05f37a6b75f068f81f7f9e201587045727575175580d876d1e3743b24",
+      "disposition": "authored",
+      "review": "T28 S3 native directory printer selection for the Windows 2000 General page",
+      "notice": "Project-authored using Windows SDK; no imported source or resources"
     }
   ]
 }
