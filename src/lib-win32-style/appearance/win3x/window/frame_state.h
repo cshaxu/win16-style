@@ -15,6 +15,10 @@ typedef struct style_window {
     win16_style_palette palette;
     classic_button_group title_buttons;
     classic_caption_metrics caption_metrics;
+    msstyles_font caption_font,menu_font;
+    classic_menu_colors menu_bar, menu_popup;
+    classic_menu_metrics menu_metrics;
+    win16_menu_art menu_art;
     win16_caption_art art;
     style_font_pair fonts;
     BOOL dialog, menu_only;

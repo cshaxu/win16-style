@@ -3,6 +3,8 @@
 
 #include "lib-win32-style/application/window/caption_slots.h"
 
+#define WIN16_POPUP_MENU_METRICS {18,8,12,4}
+
 #define WIN16_TITLE_BUTTON_GROUP \
     {3,0,0,{{CLASSIC_BUTTON_SYSTEM,CLASSIC_BUTTON_LEFT,0}, \
             {CLASSIC_BUTTON_MINIMIZE,CLASSIC_BUTTON_RIGHT,0}, \

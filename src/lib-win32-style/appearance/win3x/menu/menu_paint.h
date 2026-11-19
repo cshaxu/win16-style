@@ -2,6 +2,8 @@
 #define WIN16_STYLE_MENU_PAINT_H
 #include "../common/control_api.h"
 #include "../common/palette.h"
+#include "../window/caption_art.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 typedef enum win16_style_menu_kind {
     WIN16_STYLE_MENU_ROW,
     WIN16_STYLE_MENU_SEPARATOR,
@@ -23,6 +25,8 @@ BOOL win16_style_menu_columns_read(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
     win16_style_menu_columns *columns);
 BOOL win16_style_menu_text_columns(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
     const win16_style_palette *palette,const WCHAR *text,UINT state,
-    win16_style_menu_kind kind,BOOL submenu,const win16_style_menu_columns *columns);
-int win16_style_menu_columns_width(const win16_style_menu_columns *columns,UINT dpi,BOOL arrows);
+    win16_style_menu_kind kind,BOOL submenu,const win16_style_menu_columns *columns,
+    const classic_menu_colors *colors,const classic_menu_metrics *metrics,const win16_menu_art *art);
+int win16_style_menu_columns_width(const win16_style_menu_columns *columns,UINT dpi,BOOL arrows,
+    const classic_menu_metrics *metrics);
 #endif

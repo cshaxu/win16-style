@@ -63,12 +63,24 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     if(classic_theme_default((HMODULE)&__ImageBase,&theme)){
         s->title_buttons=theme.title_buttons;
         s->caption_metrics=theme.caption_metrics;
+        s->caption_font=theme.caption_font;
+        s->menu_font=theme.menu_font;
+        s->menu_metrics=theme.menu_metrics;
+        (void)win16_menu_art_read((HMODULE)&__ImageBase,theme.menu_images,&s->menu_art);
         (void)win16_caption_art_read((HMODULE)&__ImageBase,&theme.caption_images,&s->art);
         if(!p){
+            s->menu_bar=theme.menu_bar;
+            s->menu_popup=theme.menu_popup;
             s->palette.active=theme.active.start;
             s->palette.inactive=theme.inactive.start;
             s->palette.active_text=theme.active.text;
             s->palette.inactive_text=theme.inactive.text;
+            if(theme.frame.present){
+                s->palette.face=theme.frame.face;
+                s->palette.light=theme.frame.light;
+                s->palette.shadow=theme.frame.shadow;
+                s->palette.edge=theme.frame.edge;
+            }
         }
     }
     s->native.active=(ex&WS_EX_MDICHILD)?
@@ -88,7 +100,14 @@ BOOL win16_control_menu_owner_install(HWND w,const void *owner,const BOOL *cance
  if(v->state(w)){SetLastError(ERROR_INVALID_STATE);return FALSE;}
  style_window *s=win16_control_frame_state_create();if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
  s->instance.owner=owner;s->menu_only=TRUE;s->fonts.dpi=GetDpiForWindow(w);if(!s->fonts.dpi)s->fonts.dpi=96;
- win16_style_default_palette(&s->palette);s->fonts.menu=win16_style_menu_font_acquire(s->fonts.dpi);
+ win16_style_default_palette(&s->palette);
+ classic_theme theme;
+ if(classic_theme_default((HMODULE)&__ImageBase,&theme)){
+  s->menu_popup=theme.menu_popup;s->menu_metrics=theme.menu_metrics;
+  s->menu_font=theme.menu_font;
+  (void)win16_menu_art_read((HMODULE)&__ImageBase,theme.menu_images,&s->menu_art);
+ }
+ s->fonts.menu=win16_style_menu_font_acquire(s->fonts.dpi,&s->menu_font);
  if(!s->fonts.menu || (cancelled&&*cancelled)){
   DWORD error=cancelled&&*cancelled?ERROR_CANCELLED:ERROR_INVALID_DATA;
   win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;

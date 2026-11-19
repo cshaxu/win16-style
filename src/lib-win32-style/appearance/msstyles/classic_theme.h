@@ -2,15 +2,26 @@
 #define STYLE_MSSTYLES_CLASSIC_THEME_H
 
 #include "classic_style.h"
+#include "v4_font.h"
 #include <windows.h>
 
 typedef struct classic_caption_colors {
     COLORREF start, end, text;
 } classic_caption_colors;
 
+typedef struct classic_menu_colors {
+    COLORREF background, selection, text, selected_text, disabled_text, separator;
+    BOOL present;
+} classic_menu_colors;
+
 typedef struct classic_surface_colors {
     COLORREF face, edge;
 } classic_surface_colors;
+
+typedef struct classic_frame_colors {
+    COLORREF face, light, shadow, edge;
+    BOOL present;
+} classic_frame_colors;
 
 enum classic_push_state {
     CLASSIC_PUSH_NORMAL, CLASSIC_PUSH_PRESSED, CLASSIC_PUSH_DISABLED,
@@ -50,6 +61,11 @@ typedef struct classic_caption_images {
 
 typedef struct classic_theme {
     classic_caption_colors active, inactive;
+    classic_frame_colors frame;
+    msstyles_font caption_font, small_caption_font, menu_font;
+    classic_menu_colors menu_bar, menu_popup;
+    classic_menu_metrics menu_metrics;
+    WORD menu_images[2]; /* check, submenu */
     classic_push_colors push;
     classic_surface_colors scroll_arrow;
     classic_button_group title_buttons;

@@ -3,7 +3,8 @@
 #include <string.h>
 #include <wincodec.h>
 
-static HRESULT decode(IWICImagingFactory *factory,HMODULE module,PCWSTR name,UINT width,BYTE *roles)
+static HRESULT decode(IWICImagingFactory *factory,HMODULE module,PCWSTR name,
+    UINT width,UINT height,BYTE *roles)
 {
     const BYTE signature[]={137,'P','N','G',13,10,26,10};
     HRSRC item=FindResourceW(module,name,L"IMAGE");
@@ -25,7 +26,7 @@ static HRESULT decode(IWICImagingFactory *factory,HMODULE module,PCWSTR name,UIN
     if(SUCCEEDED(result))result=IWICBitmapDecoder_Initialize(decoder,(IStream *)stream,WICDecodeMetadataCacheOnDemand);
     if(SUCCEEDED(result))result=IWICBitmapDecoder_GetFrame(decoder,0,&frame);
     if(SUCCEEDED(result))result=IWICBitmapFrameDecode_GetSize(frame,&actual_width,&actual_height);
-    if(SUCCEEDED(result) && (actual_width!=width || actual_height!=WIN16_CAPTION_ART_HEIGHT))
+    if(SUCCEEDED(result) && (actual_width!=width || actual_height!=height))
         result=WINCODEC_ERR_BADIMAGE;
     if(SUCCEEDED(result))result=IWICImagingFactory_CreateFormatConverter(factory,&converter);
     if(SUCCEEDED(result))result=IWICFormatConverter_Initialize(converter,(IWICBitmapSource *)frame,
@@ -38,7 +39,7 @@ static HRESULT decode(IWICImagingFactory *factory,HMODULE module,PCWSTR name,UIN
     if(FAILED(result))return result;
 
     const BYTE gray[]={0,255,128,192};
-    for(UINT i=0;i<width*WIN16_CAPTION_ART_HEIGHT;++i){
+    for(UINT i=0;i<width*height;++i){
         const BYTE *pixel=pixels+i*4;
         const BYTE *role=memchr(gray,pixel[0],sizeof(gray));
         if(!role || pixel[0]!=pixel[1] || pixel[1]!=pixel[2] || pixel[3]!=255)
@@ -66,8 +67,38 @@ HRESULT win16_caption_art_read(HMODULE module,const classic_caption_images *imag
         for(unsigned state=0;SUCCEEDED(result) && state<2;++state){
             PCWSTR name=child?(state?L"CLASSIC_CHILD_SYSTEM_PRESSED":L"CLASSIC_CHILD_SYSTEM"):
                 MAKEINTRESOURCEW(images->id[role][state]);
-            result=decode(factory,module,name,width,value.roles[role][state]);
+            result=decode(factory,module,name,width,WIN16_CAPTION_ART_HEIGHT,value.roles[role][state]);
         }
+    }
+    if(factory)IWICImagingFactory_Release(factory);
+    if(SUCCEEDED(apartment))CoUninitialize();
+    if(SUCCEEDED(result)){
+        value.available=TRUE;
+        *art=value;
+    }
+    return result;
+}
+
+HRESULT win16_menu_art_read(HMODULE module,const WORD images[2],win16_menu_art *art)
+{
+    if(!images[0] || !images[1])return HRESULT_FROM_WIN32(ERROR_RESOURCE_DATA_NOT_FOUND);
+    HRESULT apartment=CoInitializeEx(NULL,COINIT_MULTITHREADED);
+    if(FAILED(apartment) && apartment!=RPC_E_CHANGED_MODE)return apartment;
+    IWICImagingFactory *factory=NULL;
+    HRESULT result=CoCreateInstance(&CLSID_WICImagingFactory,NULL,CLSCTX_INPROC_SERVER,
+        &IID_IWICImagingFactory,(void **)&factory);
+    win16_menu_art value={0};
+    CHAR *const rows[]={&value.check[0][0],&value.arrow[0][0]};
+    const UINT widths[]={14,7},heights[]={14,11};
+    for(unsigned i=0;SUCCEEDED(result) && i<ARRAYSIZE(rows);++i){
+        BYTE roles[14*14];
+        result=decode(factory,module,MAKEINTRESOURCEW(images[i]),widths[i],heights[i],roles);
+        for(UINT y=0;SUCCEEDED(result) && y<heights[i];++y)
+            for(UINT x=0;x<widths[i];++x){
+                BYTE role=roles[y*widths[i]+x];
+                if(role>1){result=WINCODEC_ERR_BADIMAGE;break;}
+                rows[i][y*(widths[i]+1)+x]=(CHAR)('0'+role);
+            }
     }
     if(factory)IWICImagingFactory_Release(factory);
     if(SUCCEEDED(apartment))CoUninitialize();

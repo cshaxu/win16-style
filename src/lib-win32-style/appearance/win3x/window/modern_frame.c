@@ -27,7 +27,7 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
     SIZE size={outer->right-outer->left,outer->bottom-outer->top};
     UINT dpi=GetDpiForWindow(s->frame.host.owner);
     if(!win16_uwp_frame_layout(size,dpi,(DWORD)GetWindowLongPtrW(s->frame.host.owner,GWL_STYLE),zoomed,content,&s->layout))return FALSE;
-    if(dpi!=s->fonts.dpi && !win16_control_refresh_frame_fonts(s->frame.host.owner,&s->fonts))return FALSE;
+    if(dpi!=s->fonts.dpi && !win16_control_refresh_frame_fonts(s->frame.host.owner,&s->fonts,NULL,NULL))return FALSE;
     return !s->frame.host.instance.detached;
 }
 static BOOL cached_layout(HWND w,void *context,win16_style_layout *layout)
@@ -46,7 +46,7 @@ static void paint_state(void *context,win16_frame_paint_state *result)
 {
     uwp_frame *s=context;
     *result=(win16_frame_paint_state){&s->fonts,s->frame.active,s->frame.no_menu,FALSE,-1,
-        {s->frame.pressed,s->frame.hot},NULL};
+        {s->frame.pressed,s->frame.hot},NULL,NULL};
 }
 static const win16_frame_renderer_ops renderer={cached_layout,paint_state,colors,no_scrollbars};
 static void refresh_paint(void *context,HDC dc)
@@ -78,7 +78,7 @@ static BOOL menu_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,BOO
     uwp_frame *s=context;
     win16_style_palette palette;win16_style_default_palette(&palette);
     win16_style_menu_theme theme={&palette,s->fonts.menu,s->fonts.dpi,
-        owner?&s->frame:NULL,owner?style_uwp_frame_menu_selection:NULL};
+        owner?&s->frame:NULL,owner?style_uwp_frame_menu_selection:NULL,NULL,NULL,NULL};
     return style_menu_owner_message(&s->frame.menu,w,message,a,b,&win16_style_menu_operations,&theme,result);
 }
 static const style_uwp_frame_ops operations={refresh_geometry,refresh_paint,input_hit,input_button,input_invoke,menu_message,dispose};

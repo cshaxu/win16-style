@@ -3,6 +3,7 @@
  * This does not import USER's private menu structures or tracking state. */
 #include "menu_paint.h"
 #include "../resources/menu_glyphs.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include <wchar.h>
 
 typedef struct menu_text {
@@ -36,10 +37,22 @@ BOOL win16_style_menu_columns_read(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
     RestoreDC(dc,saved);return TRUE;
 }
 
-int win16_style_menu_columns_width(const win16_style_menu_columns *c,UINT dpi,BOOL arrows)
+typedef struct popup_spacing {int check,gap,arrow,plain;} popup_spacing;
+
+static popup_spacing spacing(const classic_menu_metrics *metrics,UINT dpi)
 {
-    return MulDiv(18,(int)dpi,96)+c->label+
-        (c->shortcut?MulDiv(8,(int)dpi,96)+c->shortcut:0)+MulDiv(arrows?12:4,(int)dpi,96);
+    static const classic_menu_metrics fallback=WIN16_POPUP_MENU_METRICS;
+    if(!metrics || !metrics->check_column)metrics=&fallback;
+    return (popup_spacing){MulDiv(metrics->check_column,(int)dpi,96),
+        MulDiv(metrics->shortcut_gap,(int)dpi,96),MulDiv(metrics->arrow_column,(int)dpi,96),
+        MulDiv(metrics->plain_column,(int)dpi,96)};
+}
+
+int win16_style_menu_columns_width(const win16_style_menu_columns *c,UINT dpi,BOOL arrows,
+    const classic_menu_metrics *metrics)
+{
+    popup_spacing m=spacing(metrics,dpi);
+    return m.check+c->label+(c->shortcut?m.gap+c->shortcut:0)+(arrows?m.arrow:m.plain);
 }
 
 BOOL win16_style_menu_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
@@ -50,7 +63,8 @@ BOOL win16_style_menu_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
         !win16_style_menu_columns_read(dc,font,dpi,text,&c))return FALSE;
     /* The exported row helper has no submenu flag: reserve an arrow cell.
      * Native popup adapters know the complete HMENU and omit it when unused. */
-    size->cx=kind==WIN16_STYLE_MENU_BAR?c.label+MulDiv(12,(int)dpi,96):win16_style_menu_columns_width(&c,dpi,TRUE);
+    size->cx=kind==WIN16_STYLE_MENU_BAR?c.label+MulDiv(12,(int)dpi,96):
+        win16_style_menu_columns_width(&c,dpi,TRUE,NULL);
     size->cy=kind==WIN16_STYLE_MENU_SEPARATOR?2*max(1,MulDiv(1,(int)dpi,96)):c.height;
     return TRUE;
 }
@@ -78,7 +92,9 @@ static void glyph(HDC dc,int left,int top,const char *bits,int width,int height,
 }
 
 BOOL win16_style_menu_text_columns(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
-    const win16_style_palette *p,const WCHAR *text,UINT state,win16_style_menu_kind kind,BOOL submenu,const win16_style_menu_columns *columns)
+    const win16_style_palette *p,const WCHAR *text,UINT state,win16_style_menu_kind kind,BOOL submenu,
+    const win16_style_menu_columns *columns,const classic_menu_colors *colors,const classic_menu_metrics *metrics,
+    const win16_menu_art *art)
 {
     int saved,u,padding;RECT r;COLORREF background,foreground;const WCHAR *tab;
     menu_text item;BOOL result=TRUE,disabled;
@@ -87,34 +103,39 @@ BOOL win16_style_menu_text_columns(HDC dc,const RECT *bounds,HFONT font,UINT dpi
        kind<WIN16_STYLE_MENU_ROW || kind>WIN16_STYLE_MENU_BAR)return FALSE;
     saved=SaveDC(dc);if(!saved)return FALSE;
     IntersectClipRect(dc,bounds->left,bounds->top,bounds->right,bounds->bottom);
-    u=max(1,MulDiv(1,(int)dpi,96));padding=MulDiv(kind==WIN16_STYLE_MENU_BAR?6:18,(int)dpi,96);
-    background=(state&ODS_SELECTED)?p->active:p->light;
-    foreground=(state&ODS_SELECTED)?p->active_text:p->edge;
+    popup_spacing m=spacing(metrics,dpi);
+    u=max(1,MulDiv(1,(int)dpi,96));padding=kind==WIN16_STYLE_MENU_BAR?MulDiv(6,(int)dpi,96):m.check;
+    BOOL selected=(state&ODS_SELECTED)!=0;
+    disabled=(state&(ODS_DISABLED|ODS_GRAYED))!=0;
+    BOOL themed=colors && colors->present;
+    background=themed?(selected?colors->selection:colors->background):(selected?p->active:p->light);
+    foreground=themed?(disabled?colors->disabled_text:selected?colors->selected_text:colors->text):
+        (selected?p->active_text:p->edge);
     SetDCBrushColor(dc,background);FillRect(dc,bounds,(HBRUSH)GetStockObject(DC_BRUSH));
     if(kind==WIN16_STYLE_MENU_SEPARATOR){
         r=*bounds;r.top=(r.top+r.bottom)/2;r.bottom=r.top+u;
-        SetDCBrushColor(dc,p->edge);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
+        SetDCBrushColor(dc,themed?colors->separator:p->edge);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
     }else{
         SelectObject(dc,font);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,foreground);
         tab=wcschr(text,L'\t');item.text=text;item.count=tab?(int)(tab-text):-1;
-        item.bounds=*bounds;item.bounds.left+=padding;item.bounds.right-=MulDiv(kind==WIN16_STYLE_MENU_BAR?6:submenu?12:4,(int)dpi,96);
+        item.bounds=*bounds;item.bounds.left+=padding;
+        item.bounds.right-=kind==WIN16_STYLE_MENU_BAR?padding:submenu?m.arrow:m.plain;
         if(columns && kind==WIN16_STYLE_MENU_ROW)item.bounds.right=item.bounds.left+columns->label;
         item.flags=DT_LEFT|DT_SINGLELINE|DT_VCENTER;
-        disabled=(state&(ODS_DISABLED|ODS_GRAYED))!=0;
         /* DSS_UNION produces the original stippled silhouette, unlike the
          * raised/shadowed DSS_DISABLED treatment of later Windows styles. */
         result=render_text(dc,item,disabled,foreground);
         if(tab && tab[1]){
             item.text=tab+1;item.count=-1;item.flags=DT_LEFT|DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX;
-            if(columns){item.bounds.left=bounds->left+padding+columns->label+MulDiv(8,(int)dpi,96);
+            if(columns){item.bounds.left=bounds->left+padding+columns->label+m.gap;
                 item.bounds.right=item.bounds.left+columns->shortcut;}
             else {item.bounds=*bounds;item.bounds.left+=padding;item.bounds.right-=padding;item.flags|=DT_RIGHT;}
             result=render_text(dc,item,disabled,foreground)&&result;
         }
         if(kind==WIN16_STYLE_MENU_ROW && (state&ODS_CHECKED))glyph(dc,bounds->left+MulDiv(2,(int)dpi,96),
-            (bounds->top+bounds->bottom-MulDiv(14,(int)dpi,96))/2,&menu_check[0][0],14,14,dpi,foreground);
+            (bounds->top+bounds->bottom-MulDiv(14,(int)dpi,96))/2,art && art->available?&art->check[0][0]:&menu_check[0][0],14,14,dpi,foreground);
         if(kind==WIN16_STYLE_MENU_ROW && submenu)glyph(dc,bounds->right-MulDiv(11,(int)dpi,96),
-            (bounds->top+bounds->bottom-MulDiv(11,(int)dpi,96))/2,&menu_arrow[0][0],7,11,dpi,foreground);
+            (bounds->top+bounds->bottom-MulDiv(11,(int)dpi,96))/2,art && art->available?&art->arrow[0][0]:&menu_arrow[0][0],7,11,dpi,foreground);
     }
     RestoreDC(dc,saved);return result;
 }
@@ -124,5 +145,5 @@ BOOL win16_style_menu_text(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
 {
     win16_style_menu_columns c={0};
     if(!win16_style_menu_columns_read(dc,font,dpi,text,&c))return FALSE;
-    return win16_style_menu_text_columns(dc,bounds,font,dpi,p,text,state,kind,submenu,&c);
+    return win16_style_menu_text_columns(dc,bounds,font,dpi,p,text,state,kind,submenu,&c,NULL,NULL,NULL);
 }

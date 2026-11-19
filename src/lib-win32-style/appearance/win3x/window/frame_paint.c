@@ -48,9 +48,10 @@ static void paint_button(HDC dc,RECT r,int kind,BOOL down,BOOL zoom,BOOL child,i
         0,0,width,18,pixels,&bi,DIB_RGB_COLORS,SRCCOPY);
 }
 
-void win16_style_merged_control(HDC dc,RECT bounds,BOOL system,BOOL selected,int unit,const win16_style_palette *palette)
+void win16_style_merged_control(HDC dc,RECT bounds,BOOL system,BOOL selected,int unit,
+    const win16_style_palette *palette,const win16_caption_art *art)
 {
-    paint_button(dc,bounds,system?HTSYSMENU:HTMAXBUTTON,selected,!system,system,unit,palette,NULL);
+    paint_button(dc,bounds,system?HTSYSMENU:HTMAXBUTTON,selected,!system,system,unit,palette,art);
 }
 
 

@@ -1,6 +1,7 @@
 #ifndef WIN16_STYLE_FONT_H
 #define WIN16_STYLE_FONT_H
 #include "control_api.h"
+#include "lib-win32-style/appearance/msstyles/v4_font.h"
 /* Legacy explicit API, no longer the default frame/control typography.
  * Same-GUI-thread references to a process-private, 20-pixel System bitmap
  * font. No guest font, disk asset or global font installation. Release only
@@ -16,7 +17,7 @@ BOOL win16_style_system_try_retain(HFONT font);
 /* VB client text keeps thin strokes when reducing to the native cell. */
 HFONT win16_style_vb_font_acquire(HFONT source);
 /* Private menu lease: System16 uniformly scaled by window DPI. */
-HFONT win16_style_menu_font_acquire(UINT dpi);
+HFONT win16_style_menu_font_acquire(UINT dpi,const msstyles_font *defined);
 /* Single-calendar text at the witnessed 96-DPI size. */
 HFONT win16_style_calendar_font_acquire(void);
 void win16_style_system_release(HFONT font);

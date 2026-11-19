@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "lib-win32-style/appearance/msstyles/classic_style.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 
 typedef struct classic_caption_source {
     uint32_t start, end, text;
@@ -19,6 +20,9 @@ typedef struct classic_theme_source {
     classic_button_group buttons;
     classic_caption_metrics caption_metrics;
     classic_scroll_metrics scroll_metrics;
+    const char *fonts[3]; /* caption, small caption, menu */
+    classic_menu_colors menu;
+    classic_menu_metrics menu_metrics;
 } classic_theme_source;
 
 static const classic_theme_source classic_sources[]={
@@ -29,7 +33,10 @@ static const classic_theme_source classic_sources[]={
         RGB(192,192,192),RGB(0,0,0),RGB(255,255,255),false,true,false,
         WIN16_TITLE_BUTTON_GROUP,
         {18,0,{19,18},{0,0}},
-        {CLASSIC_SCROLL_EXTENT_CROSS_AXIS,0}
+        {CLASSIC_SCROLL_EXTENT_CROSS_AXIS,0},
+        {"MS Sans Serif, 10, Bold, Quality:NonAntialiased",NULL,"System, 12, Bold, Quality:NonAntialiased"},
+        {RGB(255,255,255),RGB(164,200,240),RGB(0,0,0),RGB(0,0,0),RGB(0,0,0),RGB(0,0,0),TRUE},
+        WIN16_POPUP_MENU_METRICS
     },
     {
         "Win2K","Windows 2000",
@@ -38,7 +45,10 @@ static const classic_theme_source classic_sources[]={
         RGB(212,208,200),RGB(64,64,64),RGB(212,208,200),true,false,true,
         WIN2000_TITLE_BUTTON_GROUP,
         {19,16,{16,14},{15,15}},
-        {CLASSIC_SCROLL_EXTENT_SYSTEM,0}
+        {CLASSIC_SCROLL_EXTENT_SYSTEM,0},
+        {"Tahoma, 8, Bold","Tahoma, 6, Bold","Tahoma, 8"},
+        {RGB(212,208,200),RGB(0,0,128),RGB(0,0,0),RGB(255,255,255),RGB(128,128,128),RGB(128,128,128),TRUE},
+        {0}
     }
 };
 

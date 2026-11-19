@@ -1,7 +1,9 @@
 #define COBJMACROS
 #include <windows.h>
 #include <wincodec.h>
+#include <vsstyle.h>
 #include "lib-win32-style/appearance/win3x/resources/frame_buttons.h"
+#include "lib-win32-style/appearance/win3x/resources/menu_glyphs.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -65,8 +67,8 @@ static bool original_image(HMODULE module,uint32_t image_id)
     IWICBitmapDecoder *decoder=NULL;
     IWICBitmapFrameDecode *frame=NULL;
     IWICFormatConverter *converter=NULL;
-    bool system=image_id>=507,child=image_id>=509;
-    const UINT width=system?18:19,height=18,stride=width*3;
+    bool system=image_id>=507,child=image_id>=509,menu=image_id>=511,check=image_id==511;
+    const UINT width=menu?(check?14:7):system?18:19,height=menu?(check?14:11):18,stride=width*3;
     BYTE bits[18*19*3];
     UINT x=0,y=0;
     HRESULT result=CoCreateInstance(&CLSID_WICImagingFactory,NULL,CLSCTX_INPROC_SERVER,
@@ -92,7 +94,8 @@ static bool original_image(HMODULE module,uint32_t image_id)
     bool inverted=image_id==508 || image_id==510;
     const unsigned pressed[]={1,0,3,2};
     for(y=0;y<height;++y){
-        const char *row=system?system_menu_bitmap[y]+(child?18:0):frame_buttons[image_id-501][y];
+        const char *row=menu?(check?menu_check[y]:menu_arrow[y]):
+            system?system_menu_bitmap[y]+(child?18:0):frame_buttons[image_id-501][y];
         for(x=0;x<width;++x){
             unsigned role=(unsigned)(row[x]-'0');
             for(unsigned band=0;band<3;++band)
@@ -109,7 +112,7 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect
     CHECK(data && size==2 && data[0]==4 && data[1]==0);
     data=resource(module,L"CMAP",L"CMAP",&size);
     CHECK(data && size>=2 && !(size%2) && !(data[size-1]|data[size-2]));
-    unsigned indices[3]={0},classes=0;
+    unsigned indices[3]={0},classes=0,metrics=0,menu=0;
     WCHAR value[48];
     size_t units=0;
     for(size_t i=0;i<size;i+=2){
@@ -122,17 +125,19 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect
             if(!wcscmp(value,L"Button"))indices[0]=classes;
             if(!wcscmp(value,L"ScrollBar"))indices[1]=classes;
             if(!wcscmp(value,L"Window"))indices[2]=classes;
+            if(!wcscmp(value,L"sysmetrics"))metrics=classes;
+            if(!wcscmp(value,L"Menu"))menu=classes;
             units=0;
         }
     }
-    CHECK(indices[0] && indices[1] && indices[2]);
+    CHECK(indices[0] && indices[1] && indices[2] && metrics && menu);
     const uint32_t values[]={face,face,caption};
     unsigned observed=0;
     const struct {unsigned part,state,image;} image_props[]={
         {15,0,501},{17,0,502},{21,0,503},{15,3,504},
         {17,3,505},{21,3,506},{13,0,507},{13,3,508}
     };
-    unsigned found_images=0;
+    unsigned found_images=0,found_fonts=0,found_menu=0;
     data=resource(module,L"VARIANT",L"NORMAL",&size);
     CHECK(data);
     while(size){
@@ -143,7 +148,29 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect
         data+=sizeof(item);
         CHECK(item[2]<classes && !item[6]);
         if(item[5]){
-            CHECK(expect_image && item[0]==3001 && item[1]==206 && item[2]+1==indices[2] && item[7]==16);
+            if(item[1]==210){
+                CHECK(item[0]>=801 && item[0]<=803 && item[2]+1==metrics &&
+                    !item[3] && !item[4] && item[7]==sizeof(LOGFONTW));
+                unsigned role=item[0]-801;
+                const PCWSTR win2k_fonts[]={L"Tahoma, 8, Bold",L"Tahoma, 6, Bold",L"Tahoma, 8"};
+                const PCWSTR win16_fonts[]={L"MS Sans Serif, 10, Bold, Quality:NonAntialiased",NULL,
+                    L"System, 12, Bold, Quality:NonAntialiased"};
+                PCWSTR expected=expect_image?win16_fonts[role]:win2k_fonts[role];
+                WCHAR font[80];
+                CHECK(!(found_fonts&(1u<<role)) && expected &&
+                    LoadStringW(module,item[5],font,ARRAYSIZE(font)) && !wcscmp(font,expected));
+                found_fonts|=1u<<role;
+                continue;
+            }
+            CHECK(expect_image && item[0]==3001 && item[1]==206 && item[7]==16);
+            if(item[2]+1==menu){
+                CHECK((item[3]==MENU_POPUPCHECK || item[3]==MENU_POPUPSUBMENU) && !item[4]);
+                unsigned role=item[3]==MENU_POPUPSUBMENU;
+                CHECK(!(found_menu&(1u<<role)) && item[5]==511+role && original_image(module,item[5]));
+                found_menu|=1u<<role;
+                continue;
+            }
+            CHECK(item[2]+1==indices[2]);
             size_t j=0;
             while(j<ARRAYSIZE(image_props) && (item[3]!=image_props[j].part ||
                 item[4]!=image_props[j].state || item[5]!=image_props[j].image))++j;
@@ -166,7 +193,9 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect
         data+=length+pad;
     }
     CHECK(observed==7);
+    CHECK(found_fonts==(expect_image?5:7));
     CHECK(found_images==(expect_image?(1u<<ARRAYSIZE(image_props))-1:0));
+    CHECK(found_menu==(expect_image?3:0));
     if(expect_image)CHECK(original_image(module,509) && original_image(module,510));
     return true;
 }

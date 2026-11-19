@@ -11,7 +11,7 @@ int main(void)
     SIZE size={30,16};UINT flags=0;RECT item={0};int height=0;
     win16_style_default_palette(&palette);
     if(palette.face!=RGB(192,192,192) || palette.edge!=RGB(0,0,0))return 10;
-    font=win16_style_menu_font_acquire(96);
+    font=win16_style_menu_font_acquire(96,NULL);
     if(!font)return 11;
     if(!style_classic_menu_arrange((POINT){0,0},100,&size,&flags,1,&item,&height) ||
        item.right<=item.left || height<=0){

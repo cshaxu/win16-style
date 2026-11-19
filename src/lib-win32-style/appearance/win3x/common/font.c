@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <wchar.h>
 
 static _Thread_local style_memory_font shared;
 
@@ -77,13 +78,17 @@ void win16_style_font_release(HFONT font)
 
 static _Thread_local style_font_pool variants;
 static LONG variant_serial;
+enum { menu_dpi_bits=9, menu_dpi_mask=(1u<<menu_dpi_bits)-1, default_menu_points=12 };
 
 HFONT win16_style_system_source(HFONT font)
 {return style_font_pool_source(&variants,font);}
 
 static HFONT system_create(HFONT source,UINT key,void *context,style_font_pool_entry **owned)
 {
-    UINT menu_dpi=(UINT)(key>>1);BOOL preserve_strokes=(key&1)!=0;(void)context;
+    UINT menu_dpi=(key>>1)&menu_dpi_mask;
+    unsigned points=key>>(1+menu_dpi_bits);
+    if(!points)points=default_menu_points;
+    BOOL preserve_strokes=(key&1)!=0;(void)context;
     HDC original=NULL,src=NULL,dst=NULL;HFONT base=NULL,font=NULL;
     HBITMAP a=NULL;HGDIOBJ oa=NULL,of=NULL,oo=NULL;style_bitmap rendered={0};
     BYTE *data=NULL;DWORD *pixels=NULL;HANDLE resource=NULL;DWORD count=0;
@@ -104,7 +109,7 @@ static HFONT system_create(HFONT source,UINT key,void *context,style_font_pool_e
     a=CreateBitmap(128,64,1,1,NULL);
     SIZE dimensions={128,64};
     if(style_bitmap_ensure(&rendered,NULL,dimensions)){dst=rendered.dc;pixels=(DWORD *)rendered.pixels;}
-    base=CreateFontW(16,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,ANSI_CHARSET,
+    base=CreateFontW(MulDiv((int)points,96,72),0,0,0,FW_BOLD,FALSE,FALSE,FALSE,ANSI_CHARSET,
         OUT_RASTER_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,L"System");
     if(!src || !dst || !a || !base)goto done;
     oa=SelectObject(src,a);of=SelectObject(src,base);
@@ -137,7 +142,7 @@ static HFONT system_create(HFONT source,UINT key,void *context,style_font_pool_e
     }
     style_bitmap_font_metrics metrics={(unsigned)tm.tmHeight,(unsigned)tm.tmAscent,
         (unsigned)tm.tmInternalLeading,(unsigned)tm.tmExternalLeading,(unsigned)system.tmWeight,
-        menu_dpi?12u:8u,sum,maxwidth};
+        menu_dpi?points:8u,sum,maxwidth};
     cursor=style_bitmap_font_finish(data,cursor,face,&metrics);
     resource=AddFontMemResourceEx(data,cursor,NULL,&count);if(!resource || count!=1)goto done;
     font=CreateFontA(tm.tmHeight,0,0,0,system.tmWeight,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_RASTER_PRECIS,
@@ -176,10 +181,18 @@ HFONT win16_style_system_acquire_isolated(HFONT source)
 HFONT win16_style_vb_font_acquire(HFONT source)
 {return system_acquire(source,0,TRUE,FALSE);}
 
-HFONT win16_style_menu_font_acquire(UINT dpi)
+HFONT win16_style_menu_font_acquire(UINT dpi,const msstyles_font *defined)
 {
     if(dpi<48 || dpi>384)return NULL;
-    return system_acquire(NULL,dpi,FALSE,FALSE);
+    unsigned points=default_menu_points;
+    /* A LOGFONT descriptor selects the existing host System raster source.
+     * Other faces and text styles require a different renderer. */
+    if(defined && defined->points && defined->points<=48 &&
+       !_wcsicmp(defined->logical.lfFaceName,L"System") && defined->logical.lfWeight==FW_BOLD &&
+       !defined->logical.lfItalic && !defined->logical.lfUnderline && !defined->logical.lfStrikeOut)
+        points=defined->points;
+    UINT key=(dpi<<1)|((points==default_menu_points?0:points)<<(1+menu_dpi_bits));
+    return style_font_pool_get(&variants,NULL,key,FALSE,system_create,NULL);
 }
 
 /* 13/16 of the stock System bitmap, preserving the glyph aspect ratio.

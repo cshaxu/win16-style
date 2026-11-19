@@ -230,11 +230,11 @@ int wmain(int argc,WCHAR **argv)
         }
         printf("PASS menu text state/clip/separator cases (not interactive menu acceptance)\n");
     }
-    {win16_style_menu_scope *outer=win16_style_menu_begin(NULL),*inner;
-        CHECK(outer);inner=win16_style_menu_begin(NULL);CHECK(inner);
+    {win16_style_menu_scope *outer=win16_style_menu_begin(NULL,NULL,NULL,NULL),*inner;
+        CHECK(outer);inner=win16_style_menu_begin(NULL,NULL,NULL,NULL);CHECK(inner);
         CHECK(style_menu_popup_end(outer)); /* detached owner during inner loop */
         CHECK(style_menu_popup_end(inner));
-        outer=win16_style_menu_begin(NULL);CHECK(outer);CHECK(style_menu_popup_end(outer));
+        outer=win16_style_menu_begin(NULL,NULL,NULL,NULL);CHECK(outer);CHECK(style_menu_popup_end(outer));
         printf("PASS nested menu scope outer-owner teardown and restart\n");}
     {style_window *installed;HMENU outer=CreatePopupMenu(),inner=CreatePopupMenu();MENUITEMINFOW info={.cbSize=sizeof(info)};
         CHECK(outer && inner && AppendMenuW(outer,MF_STRING,1,L"&Outer") && AppendMenuW(inner,MF_STRING,2,L"&Inner"));

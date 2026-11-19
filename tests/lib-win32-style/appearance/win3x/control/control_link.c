@@ -136,8 +136,8 @@ int main(void)
     control_style *control=win16_control_state_create();
     if(!control || control->state.font || control->state.protocol || control->state.tab_positions || control->instance.calls)return 38;
     control->state.tab_positions=malloc(2*sizeof(*control->state.tab_positions));
-    control->state.font=win16_style_menu_font_acquire(96);
-    control->bindings.combo.fonts[0]=win16_style_menu_font_acquire(96);control->bindings.combo.font_count=1;
+    control->state.font=win16_style_menu_font_acquire(96,NULL);
+    control->bindings.combo.fonts[0]=win16_style_menu_font_acquire(96,NULL);control->bindings.combo.font_count=1;
     if(!control->state.tab_positions || !control->state.font || !control->bindings.combo.fonts[0]){win16_control_state_dispose(control);return 39;}
     win16_control_state_dispose(control);
     style_window *owned=win16_control_frame_state_create();
@@ -145,7 +145,7 @@ int main(void)
     /* Failed inner-entry ownership is covered through the public menu owner
      * contract test; this component test retains its actual font disposal. */
     owned->fonts.title=CreateFontW(-12,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Arial");
-    owned->fonts.menu=win16_style_menu_font_acquire(96);
+    owned->fonts.menu=win16_style_menu_font_acquire(96,NULL);
     if(!owned->fonts.title || !owned->fonts.menu){win16_control_frame_state_dispose(owned);return 35;}
     HFONT former_title=owned->fonts.title;win16_control_frame_state_dispose(owned);
     LOGFONTW disposed;if(GetObjectW(former_title,sizeof(disposed),&disposed))return 36;
@@ -204,7 +204,7 @@ int main(void)
     style_menu_tracking_input(&input,&message);
     if(!input.escape || message.message!=WM_KEYDOWN)return 15;
     style_font_pair fonts={0};LOGFONTW info={0};
-    if(!win16_control_refresh_frame_fonts(NULL,&fonts) || fonts.dpi!=96 || !fonts.title || !fonts.menu ||
+    if(!win16_control_refresh_frame_fonts(NULL,&fonts,NULL,NULL) || fonts.dpi!=96 || !fonts.title || !fonts.menu ||
        GetObjectW(fonts.title,sizeof(info),&info)!=sizeof(info) || info.lfHeight!=-MulDiv(10,96,72) || info.lfWeight!=FW_BOLD){
         style_font_pair_dispose(&fonts,win16_control_release_frame_fonts);return 8;
     }

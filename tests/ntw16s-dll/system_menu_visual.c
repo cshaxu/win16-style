@@ -24,7 +24,7 @@ static BOOL sample_menu(void){
     if(screen)ReleaseDC(NULL,screen);
     if(!prev||prev==HGDI_ERROR){if(bitmap)DeleteObject(bitmap);if(dc)DeleteDC(dc);return FALSE;}
     SendMessageW(popup,WM_PRINT,(WPARAM)dc,PRF_NONCLIENT|PRF_CLIENT|PRF_ERASEBKGND);
-    if(win2k_paint && !win2k_system_menu_paint(popup,system_menu,dc,TRUE)){SelectObject(dc,prev);DeleteObject(bitmap);DeleteDC(dc);return FALSE;}
+    if(win2k_paint && !win2k_system_menu_paint(popup,system_menu,dc,TRUE,NULL)){SelectObject(dc,prev);DeleteObject(bitmap);DeleteDC(dc);return FALSE;}
     GdiFlush();
     sample=GetPixel(dc,row.left-window.left+4,(row.top+row.bottom)/2-window.top);
     if(win2k_default){

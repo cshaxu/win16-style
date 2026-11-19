@@ -268,6 +268,7 @@ add_library(style-msstyles STATIC
   src/lib-win32-style/appearance/msstyles/classic_style.c
   src/lib-win32-style/appearance/msstyles/classic_theme.c
   src/lib-win32-style/appearance/msstyles/theme_file.c
+  src/lib-win32-style/appearance/msstyles/v4_font.c
   src/lib-win32-style/appearance/msstyles/v4_property.c
   src/lib-win32-style/appearance/msstyles/v4_tables.c)
 target_include_directories(style-msstyles PUBLIC src)
@@ -290,6 +291,7 @@ foreach(stem IN ITEMS Win16 Win2K)
     foreach(id RANGE 501 510)
       list(APPEND image_files "${out}/caption${id}.png")
     endforeach()
+    list(APPEND image_files "${out}/menu511.png" "${out}/menu512.png")
   endif()
   file(MAKE_DIRECTORY "${out}")
   set(theme_object "${out}/theme.res.o")
@@ -297,9 +299,9 @@ foreach(stem IN ITEMS Win16 Win2K)
   add_custom_command(
     OUTPUT "${theme_object}" "${out}/${stem}.theme"
     BYPRODUCTS "${out}/cmap.bin" "${out}/bcmap.bin" "${out}/vmap.bin"
-      "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" ${image_files}
+      "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" "${out}/fonts.rcinc" ${image_files}
     COMMAND "$<TARGET_FILE:classic-theme-compiler>" "${stem}"
-    COMMAND "${CMAKE_RC_COMPILER}" ${image_flag} -i "${classic_theme_rc}" -O coff -o theme.res.o
+    COMMAND "${CMAKE_RC_COMPILER}" ${image_flag} -I "${out}" -i "${classic_theme_rc}" -O coff -o theme.res.o
     DEPENDS classic-theme-compiler "${classic_theme_rc}"
       "${CMAKE_CURRENT_SOURCE_DIR}/tools/theme/legacy_image.h"
     WORKING_DIRECTORY "${out}"
@@ -799,7 +801,8 @@ if(BUILD_TESTING)
   add_executable(core-style-classic-theme EXCLUDE_FROM_ALL tests/lib-win32-style/appearance/msstyles/classic_theme.c)
   target_include_directories(core-style-classic-theme PRIVATE src)
   target_compile_definitions(core-style-classic-theme PRIVATE NTW16S_STATIC)
-  target_link_libraries(core-style-classic-theme PRIVATE style-msstyles win16-window win2k-window win16-control win2k-control)
+  target_link_libraries(core-style-classic-theme PRIVATE style-msstyles win16-window win2k-window win16-control
+    win2k-control "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>")
   target_link_options(core-style-classic-theme PRIVATE -municode)
   add_executable(ntw2ks-frame-target tests/ntw2ks-dll/frame_target.c tests/ntw2ks-dll/frame_target.rc)
   target_link_libraries(ntw2ks-frame-target PRIVATE user32 gdi32 comdlg32 ole32 shcore)

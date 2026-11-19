@@ -4,6 +4,9 @@
 #include "lib-win32-style/appearance/win2000/control/button_paint.h"
 #include "lib-win32-style/appearance/win2000/control/scroll_layout.h"
 #include "lib-win32-style/appearance/win3x/window/frame_paint.h"
+#include "lib-win32-style/appearance/win3x/menu/menu_bar.h"
+#include "lib-win32-style/appearance/win3x/menu/menu_items.h"
+#include "lib-win32-style/appearance/win3x/common/font.h"
 #include "lib-win32-style/appearance/win3x/control/basic_paint.h"
 #include "lib-win32-style/appearance/win3x/control/choice_view.h"
 #include "lib-win32-style/appearance/win3x/control/scroll_layout.h"
@@ -57,6 +60,27 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
     return win16_style_hit(&layout,center)==HTCAPTION && GetPixel(dc,center.x,center.y)==colors.start;
 }
 
+static BOOL draw_win2k_border(HDC dc,const DWORD *pixels,const classic_theme *theme)
+{
+    DWORD reference[240*64];
+    win2k_window_border_paint(dc,240,64,4,NULL);
+    GdiFlush();
+    memcpy(reference,pixels,sizeof(reference));
+    win2k_window_border_paint(dc,240,64,4,&theme->frame);
+    GdiFlush();
+    if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
+    const classic_frame_colors variant={RGB(10,74,95),RGB(26,193,180),
+        RGB(89,26,175),RGB(187,64,28),TRUE};
+    win2k_window_border_paint(dc,240,64,4,&variant);
+    if(GetPixel(dc,0,32)!=variant.face || GetPixel(dc,1,32)!=variant.light ||
+       GetPixel(dc,238,32)!=variant.shadow || GetPixel(dc,239,32)!=variant.edge)return FALSE;
+    win2k_caption_layout caption={.band={4,4,236,23}};
+    const UINT flags[WIN2K_CAPTION_PARTS]={0};
+    win2k_caption_render_with_colors(dc,&caption,L"",NULL,(HFONT)GetStockObject(DEFAULT_GUI_FONT),
+        96,win2k_caption_palette(TRUE),&variant,TRUE,flags);
+    return GetPixel(dc,100,22)==variant.face && GetPixel(dc,4,4)==theme->active.start;
+}
+
 static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *theme,const win16_caption_art *art,UINT dpi)
 {
     win16_style_layout layout;
@@ -85,6 +109,17 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
             GdiFlush();
             if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
         }
+    }
+    for(unsigned flags=0;flags<4;++flags){
+        BOOL system=(flags&1)!=0,pressed=(flags&2)!=0;
+        RECT bounds={0,0,MulDiv(19,(int)dpi,96),MulDiv(18,(int)dpi,96)};
+        int unit=max(1,MulDiv(1,(int)dpi,96));
+        win16_style_merged_control(dc,bounds,system,pressed,unit,&palette,NULL);
+        GdiFlush();
+        memcpy(reference,pixels,sizeof(reference));
+        win16_style_merged_control(dc,bounds,system,pressed,unit,&palette,art);
+        GdiFlush();
+        if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
     }
     return TRUE;
 }
@@ -157,7 +192,90 @@ static BOOL draw_scroll(HDC dc,const classic_theme *theme,BOOL win2000,UINT dpi,
     return FALSE;
 }
 
-static BOOL render(const classic_theme *theme,BOOL win2000,const win16_caption_art *art)
+static int first_ink(HDC dc,int left,int right,int height,COLORREF background)
+{
+    for(int x=left;x<right;++x)
+        for(int y=0;y<height;++y)
+            if(GetPixel(dc,x,y)!=background)return x;
+    return -1;
+}
+
+static BOOL draw_popup(HDC dc,const DWORD *pixels,const classic_theme *theme,const win16_menu_art *art,
+    UINT dpi,HFONT font)
+{
+    WCHAR text[]=L"MMMM\tF10";
+    style_menu_item item={.text=text,.submenu=TRUE};
+    win16_style_palette palette;
+    win16_style_default_palette(&palette);
+    const classic_menu_metrics variant={22,12,16,6};
+    const classic_menu_metrics *metrics[]={&theme->menu_metrics,&variant};
+    unsigned widths[2],heights[2];
+    int label[2],shortcut[2],arrow[2];
+    win16_style_menu_columns columns={0};
+    if(!win16_style_menu_columns_read(dc,font,dpi,text,&columns))return FALSE;
+    for(unsigned i=0;i<ARRAYSIZE(metrics);++i){
+        MEASUREITEMSTRUCT measure={.CtlType=ODT_MENU,.itemData=(ULONG_PTR)&item};
+        if(!win16_style_menu_size(&item,&measure,font,dpi,metrics[i]))return FALSE;
+        widths[i]=measure.itemWidth;
+        heights[i]=measure.itemHeight;
+        int width=win16_style_menu_columns_width(&columns,dpi,TRUE,metrics[i]);
+        int label_x=MulDiv(metrics[i]->check_column,(int)dpi,96);
+        int shortcut_x=label_x+columns.label+MulDiv(metrics[i]->shortcut_gap,(int)dpi,96);
+        int arrow_x=width-MulDiv(11,(int)dpi,96);
+        DRAWITEMSTRUCT draw={.CtlType=ODT_MENU,.itemData=(ULONG_PTR)&item,.hDC=dc,
+            .rcItem={0,0,width,(LONG)heights[i]},.itemState=ODS_SELECTED};
+        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],art))return FALSE;
+        COLORREF background=theme->menu_popup.selection;
+        if(GetPixel(dc,0,0)!=background)return FALSE;
+        label[i]=first_ink(dc,0,shortcut_x,(int)heights[i],background);
+        shortcut[i]=first_ink(dc,shortcut_x,arrow_x,(int)heights[i],background);
+        arrow[i]=first_ink(dc,arrow_x,width,(int)heights[i],background);
+        if(label[i]<label_x || shortcut[i]<shortcut_x || arrow[i]<arrow_x)return FALSE;
+        draw.itemState|=ODS_CHECKED;
+        DWORD reference[240*64];
+        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],NULL))return FALSE;
+        GdiFlush();
+        memcpy(reference,pixels,sizeof(reference));
+        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],art))return FALSE;
+        GdiFlush();
+        if(memcmp(reference,pixels,sizeof(reference)) ||
+           first_ink(dc,0,label_x,(int)heights[i],background)<0)return FALSE;
+        win16_menu_art blank=*art;
+        memset(blank.check,'1',sizeof(blank.check));
+        memset(blank.arrow,'1',sizeof(blank.arrow));
+        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],&blank) ||
+           first_ink(dc,0,label_x,(int)heights[i],background)>=0 ||
+           first_ink(dc,arrow_x,width,(int)heights[i],background)>=0)return FALSE;
+    }
+    int step=MulDiv(4,(int)dpi,96);
+    return widths[1]-widths[0]==(unsigned)(3*step) && heights[1]==heights[0] &&
+        label[1]-label[0]==step && shortcut[1]-shortcut[0]==2*step && arrow[1]-arrow[0]==3*step;
+}
+
+static BOOL draw_themed_popup(HDC dc,const DWORD *pixels,const classic_theme *theme,
+    const win16_menu_art *art,UINT dpi)
+{
+    msstyles_font alternate=theme->menu_font;
+    alternate.points=24;
+    HFONT font=win16_style_menu_font_acquire(dpi,&theme->menu_font);
+    HFONT legacy=win16_style_menu_font_acquire(dpi,NULL);
+    HFONT smaller=win16_style_menu_font_acquire(dpi,&alternate);
+    BOOL ok=font && legacy==font && smaller && smaller!=font;
+    if(ok){
+        LOGFONTW before={0},after={0};
+        ok=GetObjectW(font,sizeof(before),&before)==sizeof(before) &&
+            GetObjectW(smaller,sizeof(after),&after)==sizeof(after) &&
+            after.lfHeight>before.lfHeight && draw_popup(dc,pixels,theme,art,dpi,font);
+        if(!ok)fprintf(stderr,"Win16 popup DPI %u base height %ld alternate %ld\n",
+            dpi,(long)before.lfHeight,(long)after.lfHeight);
+    }
+    win16_style_system_release(smaller);
+    win16_style_system_release(legacy);
+    win16_style_system_release(font);
+    return ok;
+}
+
+static BOOL render(const classic_theme *theme,BOOL win2000,const win16_caption_art *art,const win16_menu_art *menu_art)
 {
     HDC dc=CreateCompatibleDC(NULL);
     if(!dc)return FALSE;
@@ -174,6 +292,7 @@ static BOOL render(const classic_theme *theme,BOOL win2000,const win16_caption_a
     BOOL passed=saved && saved!=HGDI_ERROR &&
         draw_band(dc,theme,win2000,TRUE,96) && draw_band(dc,theme,win2000,FALSE,96) &&
         draw_band(dc,theme,win2000,TRUE,144) && draw_band(dc,theme,win2000,FALSE,144) &&
+        (!win2000 || draw_win2k_border(dc,bits,theme)) &&
         (win2000 || (draw_caption_art(dc,bits,theme,art,96) && draw_caption_art(dc,bits,theme,art,144))) &&
         window && draw_button(dc,window,&altered,win2000,FALSE,FALSE,FALSE,CLASSIC_PUSH_NORMAL) &&
         draw_button(dc,window,&altered,win2000,FALSE,TRUE,FALSE,CLASSIC_PUSH_PRESSED) &&
@@ -182,6 +301,8 @@ static BOOL render(const classic_theme *theme,BOOL win2000,const win16_caption_a
         draw_button(dc,window,&altered,win2000,FALSE,TRUE,TRUE,CLASSIC_PUSH_PRESSED);
     for(unsigned state=0;passed && state<3;++state)
         passed=draw_scroll(dc,theme,win2000,96,state) && draw_scroll(dc,theme,win2000,144,state);
+    if(passed && !win2000)passed=draw_themed_popup(dc,bits,theme,menu_art,96) &&
+        draw_themed_popup(dc,bits,theme,menu_art,144);
     if(window)DestroyWindow(window);
     if(saved && saved!=HGDI_ERROR)SelectObject(dc,saved);
     if(bitmap)DeleteObject(bitmap);
@@ -198,12 +319,31 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     if(FAILED(result))fprintf(stderr,"classic theme load HRESULT=%08lx\n",(unsigned long)result);
     CHECK(result==S_OK);
     CHECK(theme.gradient==gradient);
+    CHECK(theme.menu_bar.present && theme.menu_popup.present);
+    CHECK(theme.menu_bar.background==(gradient?RGB(212,208,200):RGB(255,255,255)) &&
+        theme.menu_bar.selection==(gradient?RGB(0,0,128):RGB(164,200,240)) &&
+        theme.menu_popup.separator==(gradient?RGB(128,128,128):RGB(0,0,0)));
+    for(UINT dpi=96;dpi<=192;dpi+=48){
+        LOGFONTW title=msstyles_font_at_dpi(&theme.caption_font,dpi);
+        CHECK(title.lfHeight==-MulDiv(gradient?8:10,(int)dpi,72) && title.lfWeight==FW_BOLD &&
+              title.lfQuality==(gradient?DEFAULT_QUALITY:NONANTIALIASED_QUALITY) &&
+              !wcscmp(title.lfFaceName,gradient?L"Tahoma":L"MS Sans Serif"));
+        LOGFONTW menu=msstyles_font_at_dpi(&theme.menu_font,dpi);
+        if(gradient){
+            LOGFONTW small=msstyles_font_at_dpi(&theme.small_caption_font,dpi);
+            CHECK(small.lfHeight==-MulDiv(8,(int)dpi,96) && small.lfWeight==FW_BOLD &&
+                  menu.lfHeight==-MulDiv(8,(int)dpi,72) && menu.lfWeight==FW_NORMAL);
+        }else CHECK(menu.lfHeight==-MulDiv(12,(int)dpi,72) && menu.lfWeight==FW_BOLD &&
+            !wcscmp(menu.lfFaceName,L"System"));
+    }
     COLORREF start=recolored?RGB(37,77,123):gradient?RGB(0,0,128):RGB(164,200,240);
     CHECK(theme.active.start==start);
     CHECK(theme.active.end==(gradient?RGB(166,202,240):start));
     CHECK(theme.inactive.start==(gradient?RGB(128,128,128):RGB(255,255,255)));
     CHECK(theme.inactive.text==(gradient?RGB(192,192,192):RGB(0,0,0)));
     COLORREF state_face=gradient?RGB(212,208,200):RGB(192,192,192);
+    CHECK(theme.frame.present && theme.frame.face==state_face && theme.frame.light==RGB(255,255,255) &&
+        theme.frame.shadow==RGB(128,128,128) && theme.frame.edge==RGB(0,0,0));
     for(unsigned state=0;state<CLASSIC_PUSH_STATE_COUNT;++state)
         CHECK(theme.push.state[state].face==(recolored?RGB(251,37,52):state_face) &&
               theme.push.state[state].edge==(gradient?RGB(64,64,64):RGB(0,0,0)));
@@ -222,6 +362,7 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     if(gradient)CHECK(theme.scroll.sizebox.face==state_face);
     CHECK(theme.title_buttons.count==(gradient?4:3));
     win16_caption_art art={0};
+    win16_menu_art menu_art={0};
     if(!gradient){
         HMODULE module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
         CHECK(module);
@@ -230,9 +371,14 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
         wrong.id[CLASSIC_IMAGE_SYSTEM][0]=wrong.id[CLASSIC_IMAGE_MINIMIZE][0];
         win16_caption_art prior_art=art;
         CHECK(FAILED(win16_caption_art_read(module,&wrong,&art)) && !memcmp(&prior_art,&art,sizeof(art)));
+        CHECK(SUCCEEDED(win16_menu_art_read(module,theme.menu_images,&menu_art)) && menu_art.available);
+        win16_menu_art prior_menu=menu_art;
+        WORD wrong_menu[]={theme.menu_images[1],theme.menu_images[0]};
+        CHECK(FAILED(win16_menu_art_read(module,wrong_menu,&menu_art)) &&
+            !memcmp(&prior_menu,&menu_art,sizeof(menu_art)));
         CHECK(FreeLibrary(module));
-    }
-    CHECK(render(&theme,gradient,&art));
+    }else CHECK(!theme.menu_images[0] && !theme.menu_images[1]);
+    CHECK(render(&theme,gradient,&art,&menu_art));
     unsigned char prior[sizeof(theme)];
     memcpy(prior,&theme,sizeof(theme));
     CHECK(classic_theme_load(path,L"MissingSize",L"NormalColor",&theme)==

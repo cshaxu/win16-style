@@ -49,7 +49,7 @@ static BOOL geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
             if(present[i] && s->caption.buttons[i].left<=s->caption.icon.right)return FALSE;
     }
     if(s->dpi!=dpi){
-        HFONT font=win2k_caption_font(dpi,FALSE);
+        HFONT font=win2k_caption_font(dpi,FALSE,NULL);
         if(!font)return FALSE;
         if(s->font)DeleteObject(s->font);
         s->font=font;s->dpi=dpi;
@@ -70,7 +70,7 @@ static void paint(void *context,HDC dc)
     if(!saved)return;
     SetDCBrushColor(dc,RGB(212,208,200));
     FillRect(dc,&s->bounds,GetStockObject(DC_BRUSH));
-    if(!s->maximized)win2k_window_border_paint(dc,s->bounds.right,s->bounds.bottom,s->caption.band.top);
+    if(!s->maximized)win2k_window_border_paint(dc,s->bounds.right,s->bounds.bottom,s->caption.band.top,NULL);
     UINT flags[WIN2K_CAPTION_PARTS]={0};
     if(!IsRectEmpty(&s->caption.buttons[WIN2K_CLOSE]) && !button(s,HTCLOSE))
         flags[WIN2K_CLOSE]|=DFCS_INACTIVE;

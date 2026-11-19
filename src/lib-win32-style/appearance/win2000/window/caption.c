@@ -9,8 +9,12 @@ win2k_caption_colors win2k_caption_palette(BOOL active)
         :(win2k_caption_colors){RGB(128,128,128),RGB(181,181,181),RGB(192,192,192),TRUE};
 }
 
-HFONT win2k_caption_font(UINT dpi,BOOL tool)
+HFONT win2k_caption_font(UINT dpi,BOOL tool,const msstyles_font *defined)
 {
+    if(defined && defined->points){
+        LOGFONTW logical=msstyles_font_at_dpi(defined,dpi);
+        return CreateFontIndirectW(&logical);
+    }
     int height=MulDiv(8,(int)dpi,tool?96:72);
     return CreateFontW(-height,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,DEFAULT_CHARSET,
         OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
@@ -109,11 +113,16 @@ static void paint_button(HDC target,const RECT *rect,UINT state)
     style_bitmap_dispose(&bitmap);
 }
 
-void win2k_window_border_paint(HDC dc,int width,int height,int thickness)
+static const classic_frame_colors default_frame={
+    RGB(212,208,200),RGB(255,255,255),RGB(128,128,128),RGB(0,0,0),TRUE
+};
+
+void win2k_window_border_paint(HDC dc,int width,int height,int thickness,const classic_frame_colors *frame)
 {
-    static const COLORREF colors[]={RGB(212,208,200),RGB(0,0,0),RGB(255,255,255),RGB(128,128,128)};
+    if(!frame || !frame->present)frame=&default_frame;
+    const COLORREF colors[]={frame->face,frame->edge,frame->light,frame->shadow};
     if(thickness>0 && width>2*thickness && height>2*thickness){
-        HBRUSH face=CreateSolidBrush(RGB(212,208,200));
+        HBRUSH face=CreateSolidBrush(frame->face);
         if(face){
             RECT top={0,0,width,thickness},bottom={0,height-thickness,width,height};
             RECT left={0,thickness,thickness,height-thickness},right={width-thickness,thickness,width,height-thickness};
@@ -147,11 +156,12 @@ void win2k_caption_render(HDC dc,const win2k_caption_layout *layout,PCWSTR title
                          const UINT button_flags[WIN2K_CAPTION_PARTS])
 {
     win2k_caption_render_with_colors(dc,layout,title,icon,font,dpi,win2k_caption_palette(active),
-        maximized,button_flags);
+        NULL,maximized,button_flags);
 }
 
 void win2k_caption_render_with_colors(HDC dc,const win2k_caption_layout *layout,PCWSTR title,HICON icon,
-    HFONT font,UINT dpi,win2k_caption_colors colors,BOOL maximized,const UINT button_flags[WIN2K_CAPTION_PARTS])
+    HFONT font,UINT dpi,win2k_caption_colors colors,const classic_frame_colors *frame,BOOL maximized,
+    const UINT button_flags[WIN2K_CAPTION_PARTS])
 {
     RECT band=layout->band;
     if(IsRectEmpty(&band))return;
@@ -161,7 +171,7 @@ void win2k_caption_render_with_colors(HDC dc,const win2k_caption_layout *layout,
     if(band.bottom-band.top>separator){
         RECT line=band;
         line.top=band.bottom-separator;
-        SetDCBrushColor(dc,RGB(212,208,200));
+        SetDCBrushColor(dc,frame && frame->present?frame->face:default_frame.face);
         FillRect(dc,&line,GetStockObject(DC_BRUSH));
         band.bottom=line.top;
     }

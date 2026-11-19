@@ -11,12 +11,12 @@
 
 #define THEME_NAME(s) {(const unsigned char *)(s),ARRAYSIZE(s)}
 
-enum { button_class=6, scrollbar_class, window_class };
+enum { sysmetrics_class=5, button_class, scrollbar_class, window_class, menu_class, first_font_id=601 };
 static const msstyles_v4_name classes[]={
     THEME_NAME(L"documentation"),THEME_NAME(L"sizevariant.NormalSize"),
     THEME_NAME(L"sizevariant.Default"),THEME_NAME(L"colorvariant.NormalColor"),
     THEME_NAME(L"globals"),THEME_NAME(L"sysmetrics"),
-    THEME_NAME(L"Button"),THEME_NAME(L"ScrollBar"),THEME_NAME(L"Window")
+    THEME_NAME(L"Button"),THEME_NAME(L"ScrollBar"),THEME_NAME(L"Window"),THEME_NAME(L"Menu")
 };
 static const msstyles_v4_variant variant={
     THEME_NAME(L"Normal"),THEME_NAME(L"NormalSize"),THEME_NAME(L"NormalColor")
@@ -87,18 +87,15 @@ static bool title_metrics(FILE *output,const classic_caption_metrics *metrics)
           property(output,TMT_HEIGHT,TMT_INT,window_class,WP_SMALLCLOSEBUTTON,0,metrics->tool_button.cy)));
 }
 
-static bool image_property(FILE *output,uint32_t part,uint32_t state,uint32_t resource_id)
+static bool short_property(FILE *output,msstyles_v4_property value)
 {
     unsigned char record[32];
     size_t length;
-    const msstyles_v4_property image={
-        TMT_IMAGEFILE,TMT_FILENAME,window_class,part,state,resource_id,16,NULL
-    };
-    return msstyles_v4_property_write(record,sizeof(record),ARRAYSIZE(classes),&image,&length) &&
+    return msstyles_v4_property_write(record,sizeof(record),ARRAYSIZE(classes),&value,&length) &&
         bytes(output,record,length);
 }
 
-static bool caption_images(FILE *output)
+static bool legacy_images(FILE *output)
 {
     const struct {uint32_t part,pressed,base_image,pressed_image;} parts[]={
         {WP_MINBUTTON,MINBS_PUSHED,CLASSIC_MINIMIZE_IMAGE_ID,CLASSIC_MINIMIZE_DOWN_IMAGE_ID},
@@ -108,17 +105,52 @@ static bool caption_images(FILE *output)
     };
     for(size_t i=0;i<ARRAYSIZE(parts);++i){
         if(!property(output,TMT_BGTYPE,TMT_ENUM,window_class,parts[i].part,0,BT_IMAGEFILE) ||
-           !image_property(output,parts[i].part,0,parts[i].base_image) ||
-           !image_property(output,parts[i].part,parts[i].pressed,parts[i].pressed_image))
+           !short_property(output,(msstyles_v4_property){TMT_IMAGEFILE,TMT_FILENAME,window_class,
+               parts[i].part,0,parts[i].base_image,16,NULL}) ||
+           !short_property(output,(msstyles_v4_property){TMT_IMAGEFILE,TMT_FILENAME,window_class,
+               parts[i].part,parts[i].pressed,parts[i].pressed_image,16,NULL}))
             return false;
     }
+    const unsigned menu_parts[]={MENU_POPUPCHECK,MENU_POPUPSUBMENU};
+    for(unsigned i=0;i<ARRAYSIZE(menu_parts);++i)
+        if(!property(output,TMT_BGTYPE,TMT_ENUM,menu_class,menu_parts[i],0,BT_IMAGEFILE) ||
+           !property(output,TMT_TRANSPARENT,TMT_BOOL,menu_class,menu_parts[i],0,TRUE) ||
+           !property(output,TMT_TRANSPARENTCOLOR,TMT_COLOR,menu_class,menu_parts[i],0,RGB(255,255,255)) ||
+           !short_property(output,(msstyles_v4_property){TMT_IMAGEFILE,TMT_FILENAME,menu_class,
+               menu_parts[i],0,CLASSIC_MENU_CHECK_IMAGE_ID+i,16,NULL}))return false;
     return true;
+}
+
+static bool menu_colors(FILE *output,const classic_menu_colors *menu)
+{
+    if(!menu->present)return true;
+    const struct {unsigned background,item,normal,hot,disabled;} roles[]={
+        {MENU_BARBACKGROUND,MENU_BARITEM,MBI_NORMAL,MBI_HOT,MBI_DISABLED},
+        {MENU_POPUPBACKGROUND,MENU_POPUPITEM,MPI_NORMAL,MPI_HOT,MPI_DISABLED}
+    };
+    for(size_t i=0;i<ARRAYSIZE(roles);++i)
+        if(!property(output,TMT_FILLCOLOR,TMT_COLOR,menu_class,roles[i].background,0,menu->background) ||
+           !property(output,TMT_FILLCOLOR,TMT_COLOR,menu_class,roles[i].item,roles[i].hot,menu->selection) ||
+           !property(output,TMT_TEXTCOLOR,TMT_COLOR,menu_class,roles[i].item,roles[i].normal,menu->text) ||
+           !property(output,TMT_TEXTCOLOR,TMT_COLOR,menu_class,roles[i].item,roles[i].hot,menu->selected_text) ||
+           !property(output,TMT_TEXTCOLOR,TMT_COLOR,menu_class,roles[i].item,roles[i].disabled,menu->disabled_text))
+            return false;
+    return property(output,TMT_BORDERCOLOR,TMT_COLOR,menu_class,MENU_POPUPSEPARATOR,0,menu->separator);
 }
 
 static bool write_properties(FILE *output,const classic_theme_source *source)
 {
-    if(source->legacy_caption_images && !caption_images(output))return false;
-    return title_metrics(output,&source->caption_metrics) && push_button(output,source) &&
+    const unsigned font_properties[]={TMT_CAPTIONFONT,TMT_SMALLCAPTIONFONT,TMT_MENUFONT};
+    for(unsigned i=0;i<ARRAYSIZE(font_properties);++i)
+        if(source->fonts[i] && !short_property(output,(msstyles_v4_property){font_properties[i],TMT_FONT,
+            sysmetrics_class,0,0,first_font_id+i,sizeof(LOGFONTW),NULL}))return false;
+    if(source->legacy_caption_images && !legacy_images(output))return false;
+    return property(output,TMT_BTNFACE,TMT_COLOR,sysmetrics_class,0,0,source->face) &&
+        property(output,TMT_BTNHIGHLIGHT,TMT_COLOR,sysmetrics_class,0,0,RGB(255,255,255)) &&
+        property(output,TMT_BTNSHADOW,TMT_COLOR,sysmetrics_class,0,0,RGB(128,128,128)) &&
+        property(output,TMT_WINDOWFRAME,TMT_COLOR,sysmetrics_class,0,0,RGB(0,0,0)) &&
+        menu_colors(output,&source->menu) &&
+        title_metrics(output,&source->caption_metrics) && push_button(output,source) &&
         button(output,scrollbar_class,SBP_ARROWBTN,source) &&
         scroll_surface(output,SBP_THUMBBTNHORZ,source) &&
         scroll_surface(output,SBP_THUMBBTNVERT,source) &&
@@ -184,8 +216,20 @@ static bool write_description(FILE *output,const classic_theme_source *source)
 static bool write_extension(FILE *output,const classic_theme_source *source)
 {
     unsigned char buffer[CLASSIC_STYLE_RESOURCE_CAPACITY];
-    size_t length=classic_style_write(buffer,sizeof(buffer),&source->buttons,&source->scroll_metrics);
+    const classic_menu_metrics *menu=source->menu_metrics.check_column?&source->menu_metrics:NULL;
+    size_t length=classic_style_write(buffer,sizeof(buffer),&source->buttons,&source->scroll_metrics,menu);
     return length && bytes(output,buffer,length);
+}
+
+static bool write_fonts(FILE *output,const classic_theme_source *source)
+{
+    if(fputs("STRINGTABLE\nBEGIN\n",output)<0)return false;
+    for(unsigned i=0;i<ARRAYSIZE(source->fonts);++i){
+        const char *font=source->fonts[i];
+        if(font && (strpbrk(font,"\"\\\r\n") || fprintf(output,"  %u \"%s\"\n",first_font_id+i,font)<0))
+            return false;
+    }
+    return fputs("END\n",output)>=0;
 }
 
 static const struct {
@@ -194,7 +238,8 @@ static const struct {
 } outputs[]={
     {"cmap.bin",write_classes},{"bcmap.bin",write_base_classes},
     {"vmap.bin",write_variant},{"rmap.bin",write_metadata},
-    {"normal.bin",write_properties},{"classic.bin",write_extension},{NULL,write_description}
+    {"normal.bin",write_properties},{"classic.bin",write_extension},{"fonts.rcinc",write_fonts},
+    {NULL,write_description}
 };
 
 int main(int argc,char **argv)
@@ -217,12 +262,12 @@ int main(int argc,char **argv)
             return 1;
         }
     }
-    for(unsigned id=CLASSIC_MINIMIZE_IMAGE_ID;source->legacy_caption_images && id<=CLASSIC_CHILD_SYSTEM_DOWN_IMAGE_ID;++id){
+    for(unsigned id=CLASSIC_MINIMIZE_IMAGE_ID;source->legacy_caption_images && id<=CLASSIC_MENU_ARROW_IMAGE_ID;++id){
         WCHAR filename[24];
-        swprintf(filename,ARRAYSIZE(filename),L"caption%u.png",id);
-        HRESULT result=classic_write_caption_png(id,filename);
+        swprintf(filename,ARRAYSIZE(filename),id<CLASSIC_MENU_CHECK_IMAGE_ID?L"caption%u.png":L"menu%u.png",id);
+        HRESULT result=classic_write_legacy_png(id,filename);
         if(FAILED(result)){
-            fprintf(stderr,"Failed to write original caption bitmap %u (0x%08lx)\n",id,(unsigned long)result);
+            fprintf(stderr,"Failed to write original bitmap %u (0x%08lx)\n",id,(unsigned long)result);
             return 1;
         }
     }

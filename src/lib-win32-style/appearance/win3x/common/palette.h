@@ -8,5 +8,6 @@ typedef struct win16_style_palette {
 } win16_style_palette;
 NTW16S_API void win16_style_default_palette(win16_style_palette *palette);
 void win16_control_resolve_palette(const win16_style_palette *source,win16_style_palette *palette);
+BOOL win16_control_high_contrast(void);
 LRESULT win16_control_dialog_colors(HDC dc,const win16_style_palette *palette);
 #endif

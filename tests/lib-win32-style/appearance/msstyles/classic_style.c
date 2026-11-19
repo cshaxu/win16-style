@@ -12,53 +12,61 @@ static int fixtures(void)
         {CLASSIC_BUTTON_CLOSE,CLASSIC_BUTTON_RIGHT,2}}};
     classic_button_group group={0};
     unsigned char bytes[96],reference[96],second[96];
-    size_t length=classic_style_write(reference,sizeof(reference),&original,NULL);
+    size_t length=classic_style_write(reference,sizeof(reference),&original,NULL,NULL);
     CHECK(length==40 && !memcmp(reference,"CSTY\x01\0\0\0\x28\0\0\0\x01\0\0\0",16));
-    CHECK(!classic_style_write(bytes,length-1,&original,NULL));
+    CHECK(!classic_style_write(bytes,length-1,&original,NULL,NULL));
     for(size_t end=0;end<length;++end)
-        CHECK(classic_style_read(reference,end,&group,NULL)==CLASSIC_STYLE_INVALID && !group.count);
-    CHECK(classic_style_read(reference,length,&group,NULL)==CLASSIC_STYLE_OK);
-    CHECK(classic_style_write(second,sizeof(second),&group,NULL)==length && !memcmp(reference,second,length));
+        CHECK(classic_style_read(reference,end,&group,NULL,NULL)==CLASSIC_STYLE_INVALID && !group.count);
+    CHECK(classic_style_read(reference,length,&group,NULL,NULL)==CLASSIC_STYLE_OK);
+    CHECK(classic_style_write(second,sizeof(second),&group,NULL,NULL)==length && !memcmp(reference,second,length));
 
     memcpy(bytes,reference,length);
     bytes[4]=2;
-    CHECK(classic_style_read(bytes,length,&group,NULL)==CLASSIC_STYLE_VERSION);
+    CHECK(classic_style_read(bytes,length,&group,NULL,NULL)==CLASSIC_STYLE_VERSION);
     bytes[4]=1;
     bytes[36]=bytes[32];
-    CHECK(classic_style_read(bytes,length,&group,NULL)==CLASSIC_STYLE_INVALID);
+    CHECK(classic_style_read(bytes,length,&group,NULL,NULL)==CLASSIC_STYLE_INVALID);
     bytes[36]=reference[36];
     bytes[20]=0xff;
-    CHECK(classic_style_read(bytes,length,&group,NULL)==CLASSIC_STYLE_INVALID);
+    CHECK(classic_style_read(bytes,length,&group,NULL,NULL)==CLASSIC_STYLE_INVALID);
     bytes[20]=reference[20];
 
     memcpy(bytes+length,"\x09\0\0\0\x01\0\0\0\xab",9);
     bytes[6]=1;
     bytes[8]=(unsigned char)(length+9);
     bytes[12]=2;
-    CHECK(classic_style_read(bytes,length+9,&group,NULL)==CLASSIC_STYLE_OK && group.count==2);
+    CHECK(classic_style_read(bytes,length+9,&group,NULL,NULL)==CLASSIC_STYLE_OK && group.count==2);
     bytes[length+2]=1;
-    CHECK(classic_style_read(bytes,length+9,&group,NULL)==CLASSIC_STYLE_REQUIRED_RECORD && group.count==2);
+    CHECK(classic_style_read(bytes,length+9,&group,NULL,NULL)==CLASSIC_STYLE_REQUIRED_RECORD && group.count==2);
     bytes[16]=9;
     bytes[18]=0;
-    CHECK(classic_style_read(bytes,length,&group,NULL)==CLASSIC_STYLE_INVALID);
+    CHECK(classic_style_read(bytes,length,&group,NULL,NULL)==CLASSIC_STYLE_INVALID);
     bytes[6]=0;
     bytes[8]=(unsigned char)length;
     bytes[12]=1;
-    CHECK(classic_style_read(bytes,length,&group,NULL)==CLASSIC_STYLE_NO_BUTTON_GROUP);
+    CHECK(classic_style_read(bytes,length,&group,NULL,NULL)==CLASSIC_STYLE_NO_BUTTON_GROUP);
 
     memcpy(bytes,reference,length);
     memcpy(bytes+length,bytes+16,length-16);
     bytes[12]=2;
     bytes[8]=(unsigned char)(length*2-16);
-    CHECK(classic_style_read(bytes,length*2-16,&group,NULL)==CLASSIC_STYLE_INVALID);
+    CHECK(classic_style_read(bytes,length*2-16,&group,NULL,NULL)==CLASSIC_STYLE_INVALID);
     const classic_scroll_metrics fixed={CLASSIC_SCROLL_EXTENT_FIXED,11};
     classic_scroll_metrics metrics={0};
-    CHECK(classic_style_write(bytes,sizeof(bytes),&original,&fixed)==length+12);
-    CHECK(classic_style_read(bytes,length+12,&group,&metrics)==CLASSIC_STYLE_OK &&
+    CHECK(classic_style_write(bytes,sizeof(bytes),&original,&fixed,NULL)==length+12);
+    CHECK(classic_style_read(bytes,length+12,&group,&metrics,NULL)==CLASSIC_STYLE_OK &&
         metrics.source==fixed.source && metrics.logical_extent==11);
     bytes[length+10]=0;
-    CHECK(classic_style_read(bytes,length+12,&group,&metrics)==CLASSIC_STYLE_INVALID &&
+    CHECK(classic_style_read(bytes,length+12,&group,&metrics,NULL)==CLASSIC_STYLE_INVALID &&
         metrics.logical_extent==11);
+    const classic_menu_metrics menu={22,10,15,5};
+    classic_menu_metrics columns={0};
+    CHECK(classic_style_write(bytes,sizeof(bytes),&original,&fixed,&menu)==length+28);
+    CHECK(classic_style_read(bytes,length+28,&group,&metrics,&columns)==CLASSIC_STYLE_OK &&
+        !memcmp(&columns,&menu,sizeof(menu)));
+    bytes[length+24]=5;
+    CHECK(classic_style_read(bytes,length+28,&group,&metrics,&columns)==CLASSIC_STYLE_INVALID &&
+        !memcmp(&columns,&menu,sizeof(menu)));
     return 0;
 }
 
@@ -74,11 +82,15 @@ static int packaged(PCWSTR root,PCWSTR name,unsigned expected_count,unsigned exp
     HGLOBAL handle=resource?LoadResource(module,resource):NULL;
     classic_button_group group;
     classic_scroll_metrics metrics;
-    enum classic_style_result result=classic_style_read(handle?LockResource(handle):NULL,size,&group,&metrics);
+    classic_menu_metrics columns;
+    enum classic_style_result result=classic_style_read(handle?LockResource(handle):NULL,size,&group,&metrics,&columns);
     FreeLibrary(module);
     CHECK(result==CLASSIC_STYLE_OK && group.count==expected_count);
     CHECK(group.slots[group.count-1].role==expected_last && group.slots[group.count-1].gap_before==expected_gap);
     CHECK(metrics.source==measure && !metrics.logical_extent);
+    if(measure==CLASSIC_SCROLL_EXTENT_CROSS_AXIS)
+        CHECK(columns.check_column==18 && columns.shortcut_gap==8 && columns.arrow_column==12 && columns.plain_column==4);
+    else CHECK(!columns.check_column);
     return 0;
 }
 

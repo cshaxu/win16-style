@@ -69,12 +69,15 @@ void win16_control_paint_frame(HWND w,style_instance *instance,void *context,con
     win16_control_outline(dc,r,l.unit,l.dialog_frame?p.light:p.edge);
     if(!IsRectEmpty(&l.menu)){
         style_menu_bar_snapshot bar;POINT origin={l.menu.left,l.menu.top};
-        win16_control_fill(dc,l.menu,p.light);
+        const classic_menu_colors *menu=state.menu_bar && state.menu_bar->present &&
+            !win16_control_high_contrast()?state.menu_bar:NULL;
+        win16_control_fill(dc,l.menu,menu?menu->background:p.light);
         if(win16_style_bar_read_for_window(w,GetMenu(w),state.fonts->menu,state.fonts->dpi,origin,l.menu.right-l.menu.left,&bar)){
             ops->state(context,&state);
             if(state.bar_selected>=0 && (UINT)state.bar_selected<bar.count)
                 bar.items[state.bar_selected].state|=MFS_HILITE;
-            win16_style_bar_paint(&bar,dc,state.fonts->menu,state.fonts->dpi,&p);style_menu_bar_free(&bar);
+            win16_style_bar_paint(&bar,dc,state.fonts->menu,state.fonts->dpi,&p,menu,state.art);
+            style_menu_bar_free(&bar);
             if(instance->detached){RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);return;}
         }
         r=l.menu;r.top=r.bottom-l.unit;win16_control_fill(dc,r,p.edge);

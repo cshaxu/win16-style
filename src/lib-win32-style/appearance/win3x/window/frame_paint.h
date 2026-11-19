@@ -11,6 +11,7 @@ typedef struct win16_frame_paint_state {
     int bar_selected;
     style_caption_button button;
     const win16_caption_art *art;
+    const classic_menu_colors *menu_bar;
 } win16_frame_paint_state;
 typedef void (*win16_frame_state_read)(void *,win16_frame_paint_state *);
 void win16_control_fill(HDC dc,RECT r,COLORREF color);

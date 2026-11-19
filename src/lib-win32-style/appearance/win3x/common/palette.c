@@ -18,12 +18,17 @@ void win16_style_default_palette(win16_style_palette *p)
 }
 
 
-void win16_control_resolve_palette(const win16_style_palette *source,win16_style_palette *p)
+BOOL win16_control_high_contrast(void)
 {
     HIGHCONTRASTW hc={.cbSize=sizeof(hc)};
+    return SystemParametersInfoW(SPI_GETHIGHCONTRAST,sizeof(hc),&hc,0) &&
+        (hc.dwFlags&HCF_HIGHCONTRASTON);
+}
+
+void win16_control_resolve_palette(const win16_style_palette *source,win16_style_palette *p)
+{
     *p=*source;
-    if(SystemParametersInfoW(SPI_GETHIGHCONTRAST,sizeof(hc),&hc,0) &&
-        (hc.dwFlags&HCF_HIGHCONTRASTON)){
+    if(win16_control_high_contrast()){
         p->active=GetSysColor(COLOR_ACTIVECAPTION);
         p->inactive=GetSysColor(COLOR_INACTIVECAPTION);
         p->active_text=GetSysColor(COLOR_CAPTIONTEXT);

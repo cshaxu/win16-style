@@ -31,7 +31,28 @@ static void system_glyph(HDC dc,const RECT *row,HBITMAP bitmap,int unit,COLORREF
     DeleteObject(pen);
 }
 
-BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinates)
+HFONT win2k_menu_font(UINT dpi,const msstyles_font *defined,BOOL bold)
+{
+    if(defined && defined->points){
+        LOGFONTW logical=msstyles_font_at_dpi(defined,dpi);
+        if(bold)logical.lfWeight=FW_BOLD;
+        return CreateFontIndirectW(&logical);
+    }
+    return CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,bold?FW_BOLD:FW_NORMAL,FALSE,FALSE,FALSE,
+        DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
+}
+
+const classic_menu_colors *win2k_menu_colors(const classic_menu_colors *defined)
+{
+    static const classic_menu_colors fallback={
+        RGB(212,208,200),RGB(0,0,128),RGB(0,0,0),RGB(255,255,255),
+        RGB(128,128,128),RGB(128,128,128),TRUE
+    };
+    return defined && defined->present?defined:&fallback;
+}
+
+BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinates,
+    const win2k_menu_style *style)
 {
     MENUBARINFO info={.cbSize=sizeof(info)};
     if(!popup || !menu || !dc || !GetMenuBarInfo(popup,OBJID_CLIENT,0,&info) || info.hMenu!=menu)return FALSE;
@@ -46,10 +67,10 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     if(!saved){free(rows);return FALSE;}
     UINT dpi=GetDpiForWindow(popup);if(!dpi)dpi=96;
     int unit=max(1,MulDiv(1,(int)dpi,96));
-    HFONT font=CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,
-        DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
-    HFONT bold=CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,FW_BOLD,FALSE,FALSE,FALSE,
-        DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
+    const msstyles_font *defined=style?&style->font:NULL;
+    const classic_menu_colors *colors=win2k_menu_colors(style?&style->colors:NULL);
+    HFONT font=win2k_menu_font(dpi,defined,FALSE);
+    HFONT bold=win2k_menu_font(dpi,defined,TRUE);
     HFONT normal=font?font:(HFONT)GetCurrentObject(dc,OBJ_FONT);
     if(normal)SelectObject(dc,normal);
     SetBkMode(dc,TRANSPARENT);
@@ -58,18 +79,19 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     for(int i=0;valid && i<count;++i){
         RECT r=rows[i].rect;MapWindowPoints(NULL,popup,(POINT *)&r,2);OffsetRect(&r,origin.x,origin.y);
         BOOL selected=(rows[i].state&MFS_HILITE)!=0;
-        HBRUSH background=CreateSolidBrush(selected?RGB(0,0,128):RGB(212,208,200));
+        HBRUSH background=CreateSolidBrush(selected?colors->selection:colors->background);
         if(!background){valid=FALSE;break;}
         FillRect(dc,&r,background);DeleteObject(background);
         if(rows[i].type&MFT_SEPARATOR){
             RECT line={r.left+unit,r.top+(r.bottom-r.top)/2,r.right-unit,r.top+(r.bottom-r.top)/2+unit};
-            HBRUSH shadow=CreateSolidBrush(RGB(128,128,128));
+            HBRUSH shadow=CreateSolidBrush(colors->separator);
             if(shadow){FillRect(dc,&line,shadow);DeleteObject(shadow);}continue;
         }
         if((rows[i].state&MFS_DEFAULT) && bold)SelectObject(dc,bold);
         else if(normal)SelectObject(dc,normal);
-        SetTextColor(dc,(rows[i].state&MFS_DISABLED)?RGB(128,128,128):selected?RGB(255,255,255):RGB(0,0,0));
-        system_glyph(dc,&r,rows[i].bitmap,unit,(rows[i].state&MFS_DISABLED)?RGB(128,128,128):selected?RGB(255,255,255):RGB(0,0,0));
+        COLORREF text=(rows[i].state&MFS_DISABLED)?colors->disabled_text:selected?colors->selected_text:colors->text;
+        SetTextColor(dc,text);
+        system_glyph(dc,&r,rows[i].bitmap,unit,text);
         RECT label=r;label.left+=MulDiv(22,(int)dpi,96);label.right-=MulDiv(16,(int)dpi,96);
         WCHAR *tab=wcschr(rows[i].text,L'\t');
         if(tab){*tab=0;RECT shortcut=label;DrawTextW(dc,tab+1,-1,&shortcut,DT_SINGLELINE|DT_VCENTER|DT_RIGHT|DT_NOPREFIX);}
@@ -82,7 +104,10 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     RestoreDC(dc,saved);if(bold)DeleteObject(bold);if(font)DeleteObject(font);free(rows);return valid;
 }
 
-typedef struct menu_presentation { HMENU menu; } menu_presentation;
+typedef struct menu_presentation {
+    HMENU menu;
+    win2k_menu_style style;
+} menu_presentation;
 static BOOL accept_popup(void *context,HWND window)
 {
     menu_presentation *s=context;
@@ -107,18 +132,20 @@ static BOOL popup_paint(style_menu_popup *popup,HDC target,BOOL window_coordinat
     if(!target && GetClientRect(window,&client)){
         style_present_buffer buffer;
         BOOL ready=style_present_buffer_begin(&buffer,dc,&client,TRUE);
-        if(ready)painted=win2k_system_menu_paint(window,s->menu,buffer.memory,FALSE);
+        if(ready)painted=win2k_system_menu_paint(window,s->menu,buffer.memory,FALSE,&s->style);
         BOOL committed=style_present_buffer_end(&buffer,ready && painted && style_menu_popup_live(popup));
         painted=painted && committed;
     }
-    if(!painted && style_menu_popup_live(popup))painted=win2k_system_menu_paint(window,s->menu,dc,window_coordinates);
+    if(!painted && style_menu_popup_live(popup))painted=win2k_system_menu_paint(window,s->menu,dc,window_coordinates,&s->style);
     if(!target)ReleaseDC(window,dc);
     return painted;
 }
 static const style_menu_popup_ops popup_ops={accept_popup,NULL,popup_paint,selected_item,free,FALSE,TRUE};
 static style_menu_popup_scope *begin_menu(void *context,HWND owner)
 {
-    (void)context;menu_presentation *s=calloc(1,sizeof(*s));if(!s)return NULL;
+    const classic_theme *theme=context;
+    menu_presentation *s=calloc(1,sizeof(*s));if(!s)return NULL;
+    if(theme)s->style=(win2k_menu_style){theme->menu_font,theme->menu_popup};
     style_menu_popup_scope *scope=style_menu_popup_begin(owner,&popup_ops,s);
     if(!scope)free(s);
     return scope;

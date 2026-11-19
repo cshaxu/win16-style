@@ -11,10 +11,12 @@
 #define CLASSIC_SYSTEM_DOWN_IMAGE_ID 508
 #define CLASSIC_CHILD_SYSTEM_IMAGE_ID 509
 #define CLASSIC_CHILD_SYSTEM_DOWN_IMAGE_ID 510
+#define CLASSIC_MENU_CHECK_IMAGE_ID 511
+#define CLASSIC_MENU_ARROW_IMAGE_ID 512
 
 #ifndef RC_INVOKED
 #include <windows.h>
-HRESULT classic_write_caption_png(unsigned image_id,PCWSTR path);
+HRESULT classic_write_legacy_png(unsigned image_id,PCWSTR path);
 #endif
 
 #endif

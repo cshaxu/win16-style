@@ -2,6 +2,7 @@
 #define WIN2K_WINDOW_CAPTION_H
 #include <windows.h>
 #include "lib-win32-style/application/window/caption_slots.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 
 typedef struct win2k_caption_colors {
     COLORREF left, right, text;
@@ -12,7 +13,7 @@ typedef struct win2k_caption_colors {
 BOOL win2k_caption_paint(HDC dc,const RECT *bounds,PCWSTR title,HFONT font,
                          const win2k_caption_colors *colors);
 win2k_caption_colors win2k_caption_palette(BOOL active);
-HFONT win2k_caption_font(UINT dpi,BOOL tool);
+HFONT win2k_caption_font(UINT dpi,BOOL tool,const msstyles_font *defined);
 enum win2k_caption_part { WIN2K_MINIMIZE, WIN2K_MAXIMIZE, WIN2K_HELP, WIN2K_CLOSE, WIN2K_CAPTION_PARTS };
 typedef struct win2k_caption_layout {
     RECT band, icon, buttons[WIN2K_CAPTION_PARTS];
@@ -27,6 +28,7 @@ void win2k_caption_render(HDC dc,const win2k_caption_layout *layout,PCWSTR title
                          HFONT font,UINT dpi,BOOL active,BOOL maximized,
                          const UINT button_flags[WIN2K_CAPTION_PARTS]);
 void win2k_caption_render_with_colors(HDC dc,const win2k_caption_layout *layout,PCWSTR title,HICON icon,
-    HFONT font,UINT dpi,win2k_caption_colors colors,BOOL maximized,const UINT button_flags[WIN2K_CAPTION_PARTS]);
-void win2k_window_border_paint(HDC dc,int width,int height,int thickness);
+    HFONT font,UINT dpi,win2k_caption_colors colors,const classic_frame_colors *frame,BOOL maximized,
+    const UINT button_flags[WIN2K_CAPTION_PARTS]);
+void win2k_window_border_paint(HDC dc,int width,int height,int thickness,const classic_frame_colors *frame);
 #endif

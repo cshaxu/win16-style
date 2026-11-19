@@ -5,7 +5,7 @@
       "path": "src/lib-win32-style/appearance/win3x/common/palette.h",
       "source": null,
       "source_blob": null,
-      "sha256": "f3a47af9ce56a40f6afa6785fbb67033b46965f7e6fd538f00316d6307e40a36",
+      "sha256": "a16f0f736d6256fdb37b84e2378e3a4b7c7b1da088bb7510ca0e3b0d295fd674",
       "disposition": "authored",
       "review": "T21 S22 shared palette declaration; layout preserved; T21 S22 frame layout and high-contrast palette extraction; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored C interface; no imported artwork"
@@ -455,7 +455,7 @@
       "path": "tests/ntw16s-dll/system_menu_visual.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ccc9ce2ca1f471ce1f80c809be827a4100dc9384b5a1d62314b31683f637775a",
+      "sha256": "529e647c99a2d44a4632ef467d094770bd2820e1228b365615a3eb30c4db505c",
       "disposition": "authored",
       "review": "T20 S19 native system menu regression witness; T23 S1 native system-menu hover buffering and unchanged-selection regression; T26 S1 native string live popup repaint; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored test; no imported code or resources"
@@ -851,7 +851,7 @@
       "path": "src/lib-win32-style/appearance/win3x/common/font.c",
       "source": "src/ntw16s-dll/font.c",
       "source_blob": "3bce01032d506f05bb571f8be35392f12c4dcebb",
-      "sha256": "d49e6d0fc16a0276bfa9e80ed9ec3743bb3d7ac7d0db83ebbef1dbe050c48ccd",
+      "sha256": "17bb0ad16ea60554cdb4478f79b3f525d6115d5cb5730be668ffe6d5317f681c",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P118 prevent freeing an existing font variant on isolated stock-font fast path; T18 S64 P128 bounded calendar text; T21 S22 font library extraction and independent API include; T26 S1 reuse shared DIB for font rasterization; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -860,7 +860,7 @@
       "path": "src/lib-win32-style/appearance/win3x/common/font.h",
       "source": "src/ntw16s-dll/font.h",
       "source_blob": "772af2b70b85d897ea842003229b5d3e5795803e",
-      "sha256": "63256a509950663b489a187ca6a912510fd5e8e658d8b864d86c7e3f53e04fd3",
+      "sha256": "2d063c825d6ab1ba20c09a5cc9d61b13707ddf9b19edca38a19ac3ec74f9cc11",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P128 bounded calendar text; T21 S22 font library extraction and independent API include; T24 S1 removed forwarding header src/ntw16s-dll/font.h SHA256 56294291f4c2a046f8dc2ff2e9ab7b557161ef3ea963bf42ba51c45629341cce; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -896,7 +896,7 @@
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_bar.h",
       "source": "src/ntw16s-dll/menu_bar.h",
       "source_blob": "dbf916ef7759d4c3a249a56712c10ec946ec70de",
-      "sha256": "e4be6e2776378f8a2092c6b670ca827cd2666844f7568a27096b3b0216aaa14e",
+      "sha256": "1fe9ea022fb8832e8b96edab87213c943457c77c3c79dede0d23a9b5d78a30be",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T21 S22 library migration; T24 S1 removed forwarding header src/ntw16s-dll/menu_bar.h SHA256 b7d39b522884d056ef7b1a5126d26e6388677303fecbce8a4590913e934c3bb4; T26 S2 mechanical path/include relocation; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -905,7 +905,7 @@
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_bar_paint.c",
       "source": "src/ntw16s-dll/menu_bar_paint.c",
       "source_blob": "e8d1450ac63e3364fcbad23c926e458785c3bf88",
-      "sha256": "4f733078e7caea6196604663b1317e996f27c04e42f7b2d7ab86da35a27b0dba",
+      "sha256": "30e7164419141a6fcdd2fd2c7d05a2837a265c8b0dbff0cc03a299216bd78e81",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T21 S22 library migration, original resource bytes unchanged; T26 S2 mechanical path/include relocation; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -914,7 +914,7 @@
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_items.c",
       "source": "src/ntw16s-dll/menu_items.c",
       "source_blob": "e4515547a7ec174558bfd2923536d190b62f5fb7",
-      "sha256": "5ea07f5e6c589dc9c1bfb6234a210c164594e72cca3acb46e7edca7e1f1d10dd",
+      "sha256": "690db6f5d55757e04c3280ccc2dfca2f55477357ada69ac6f4a36e1ddb1c4285",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T21 S22 menu item presentation library migration; T26 S1 share USER alphabet metrics; T26 S1 shared native menu metrics; T26 S2 mechanical path/include relocation; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -923,7 +923,7 @@
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_items.h",
       "source": "src/ntw16s-dll/menu_items.h",
       "source_blob": "4aab35cbb7a6fa674d7a0cbcf729b3bc9cff49d9",
-      "sha256": "0fe06093f7fc2900998f4a992ca887c155d58090156891463ae3d3772198dddb",
+      "sha256": "0dfcdf88e31c5905b74bf2631c23726bdb44953460264a9731dfabcd68524878",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T21 S22 menu item presentation library migration; T24 S1 removed forwarding header src/ntw16s-dll/menu_items.h SHA256 cb3b1c11b6916b2925d84fdafc2391c9316034a6e3695a0347ceda61ebe01ce1; T26 S1 move generic menu item lifecycle to shared component; T26 S2 mechanical path/include relocation; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -950,7 +950,7 @@
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_paint.c",
       "source": "src/ntw16s-dll/menu_paint.c",
       "source_blob": "b9ba84a7ac43981013b1319d0019ee18cd1ff6b7",
-      "sha256": "4ea377a908634e745e8a2f1b4c3c4bf2a8c18b4749c33b5e27b6bd95f09ab5b8",
+      "sha256": "ef45d527d7c2102632f1fc808e257bac3c1155ab5c52b5f82404c446bbc62b16",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T21 S22 location migration; original resource bytes unchanged; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -959,7 +959,7 @@
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_paint.h",
       "source": "src/ntw16s-dll/menu_paint.h",
       "source_blob": "8473ec9496b45d043be33bbf90fb43b14f8f148d",
-      "sha256": "0fd85ed32bf9f387cff389e6329b49a0e09e55a07ff0e8e43b736a582f9ab59d",
+      "sha256": "b37326a797fbe94a84c96e5c9de0cdd45503f4c60822951e1513cefd7b924f13",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T21 S22 location migration; original resource bytes unchanged; T24 S1 removed forwarding header src/ntw16s-dll/menu_paint.h SHA256 f41f78f58ad00fee51f4aa498928c528128c5e86895dad64e927037dff978934; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -968,7 +968,7 @@
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_scope.c",
       "source": "src/ntw16s-dll/menu_scope.c",
       "source_blob": "b27da79667d1dce3f17336721ef7c6be06fc18f7",
-      "sha256": "39ebd1257858f512362c7237fa75eadef7cb6c27aa1ce896bb94c2f8d8635b82",
+      "sha256": "6f5ed016c6c78d21c82f3ded4ef206b8d957b264179f759fa7e4da41f285098f",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 S3 scoped USER SysShadow suppression and actual popup border/shadow regression; T21 S22 unchanged same-thread popup scope migration; T23 S1 native system-menu hover buffering and unchanged-selection regression; T26 S1 shared popup observation messages; T26 S1 shared popup presentation buffer; T26 S1 shared popup print coordinate conversion; T26 S2 mechanical path/include relocation; T26 S8 shared popup scope/observer ownership and current-desktop native regression; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -977,7 +977,7 @@
       "path": "src/lib-win32-style/appearance/win3x/menu/menu_scope.h",
       "source": "src/ntw16s-dll/menu_scope.h",
       "source_blob": "2f793a46215944cf6219f478db14715fd59d4f06",
-      "sha256": "04fd3a9dc46f8e902399b5510081f3bc6ff140ad7c16ca77cbcc0d84efa00120",
+      "sha256": "4fa0387d6f72c0afe79c7d3394c8999c0a08fa5d616e7ffdd91619f6afc253ff",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T21 S22 unchanged same-thread popup scope migration; T24 S1 removed forwarding header src/ntw16s-dll/menu_scope.h SHA256 6978037ff7b65c28263832fe201aa76b7b644a78c8e20225953b1f408017e108; T26 S2 mechanical path/include relocation; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S7 explicit retain-to-adapt decision for direct palette include; original blob and declaration ownership retained; T26 S8 shared popup scope/observer ownership and current-desktop native regression; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1067,7 +1067,7 @@
       "path": "src/ntw16s-dll/win16_style.c",
       "source": "src/ntw16s-dll/win16_style.c",
       "source_blob": "4235f085cb00c0d17145deec2d04a57c97b98d47",
-      "sha256": "3f5b040b88673937237c5da6a78c90c4c095e675b6b1c2b879e1ccf231364370",
+      "sha256": "49181c8ef23da28d677f295416c91fcb5853661edbaf0d9ecdf6626e4b7e3bed",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T21 S22 frame painter extracted; T21 S22 caption and sizing-band presentation extracted with live state references; T21 S22 frame presentation extraction, preserving fault instrumentation; T21 S22 buffered frame/menu/button presentation extraction; T21 S22 frame layout and high-contrast palette extraction; T26 S1 share frame thread identity; T26 S1 shared XAML work-area frame protection; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; S13 complete frame measurement root borrowing and real ownerdraw reentry proof",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1562,7 +1562,7 @@
       "path": "tests/ntw16s-dll/win16_style_dc_failure.c",
       "source": "tests/app/win16_style_dc_failure.c",
       "source_blob": "0bbdc27c4e17eaf1dce1ec51715b26c66b610d75",
-      "sha256": "152148e8fb8538327d5587cdc616fa45dcb72ea96640feca4d1ac3b633ae8cb7",
+      "sha256": "8718aa933f0c03e77da60916f616fafebc2625754a70bff3f885fcbd9ade3aea",
       "disposition": "adapt",
       "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S22 header path update; T21 S22 frame presentation extraction, preserving fault instrumentation; T26 S2 mechanical path/include relocation; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S13 actual title callback changes font/activation, renderer must reread after text snapshot; S13 complete frame measurement root borrowing and real ownerdraw reentry proof",
       "notice": "Project-authored fixed-source fixture; original comments retained"
@@ -3652,7 +3652,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "078b03b259fc5c6777ce6c2ff8b47968289e69089e9cf741b1d700562b894fbc",
+      "sha256": "cbe7c1d717721f4b3173e1b21c897d8e446459bbabc405a0bc10f19b84c0f7da",
       "review": "T21 S22 extraction from existing project-authored frame painter; T21 S22 caption and sizing-band presentation extracted with live state references; T26 S2 mechanical path/include relocation; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained"
     },
     {
@@ -3661,7 +3661,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "ca8b812a908327965f7d308dbb2934a8a64f68ceb0a2a080c51b6bd63b23368f",
+      "sha256": "e9e4e3a12f253722e4a119f6db607453b868b3fdb7d7f3de1067fcde5e32284d",
       "review": "T21 S22 extraction from existing project-authored frame painter; T21 S22 caption and sizing-band presentation extracted with live state references; T26 S2 mechanical path/include relocation"
     },
     {
@@ -3814,7 +3814,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "c7487eede32ec62a4d803d98bc26f72e890fee6751be31676374e0e0d5b3d9ae",
+      "sha256": "5b33aec9dceb23c23fd0983846731f3ace4e57dccec1e3f9cd171aa33d817be6",
       "review": "T21 S22 palette extraction and compatibility headers; T21 S22 frame layout and high-contrast palette extraction; T26 S2 mechanical path/include relocation"
     },
     {
@@ -3823,7 +3823,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "dde3dc878a3c9dbf06cb189277eed0d8bbb5d924ee8a31ebebb3a46233999c48",
+      "sha256": "cf218ea56291330e7250c727cb889918f3691b09c8776422d9b6c80a01c66beb",
       "review": "T21 S22 extraction of existing frame presentation with caller-owned state; T21 S22 buffered frame/menu/button presentation extraction; T24 S1 unify buffered frame, menu and button paint; T26 S1 shared nonclient and control presentation buffer; T26 S2 mechanical path/include relocation; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; T26 S13 whole renderer operations; field-pointer view removed, existing reentrant rereads preserved"
     },
     {
@@ -3859,7 +3859,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "afee40a299b2e5fead8f57f6b0d9eb89113c9d4f6a8426f518ed50c7b4d4a6b5",
+      "sha256": "dda3c313d2248a160b36134cad0b8456996b1bfb3d0cf87c628deb444a2be09b",
       "review": "T21 S22 standalone whole-archive linkage and original glyph smoke test; T26 S1 shared classic dialog combo eligibility; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common basic control resource lifecycle and real consumers; T26 S10 native caller classification moved to common runtime text; original identity predicates retained; T26 S10 public attachment root/lifecycle consumed; private state/consumer accesses migrated, normal/terminal cleanup contract retained; T26 S10 complete control message borrow/font/native observation transaction moved to public message; profile consumes full operation object; T26 S10 native runtime initialization/selection moved to public attachment/runtime, complete owner-policy phase and original query/reference order preserved; S13 complete text-fit resource operation and actual-native test mapping; S13 complete glyph translation temporary ownership and real consumer retained"
     },
     {
@@ -4289,7 +4289,7 @@
       "path": "src/lib-win32-style/appearance/win3x/window/frame_font.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8fc21068060be28507b807cc426a82e033a89fc09d8b58874157e29f7688c586",
+      "sha256": "bec7123b32a9587f1adca78fdb6307d144fb3347f8fcb1632fceaf8e85515290",
       "disposition": "authored",
       "review": "T21 S24 extract frame font policy and preserve independent font fixture compiler contract; T23 S6 Chromium composed frame and stock menu font fallback; T26 S2 mechanical path/include relocation; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained",
       "notice": "Project-authored C implementation; no imported artwork"
@@ -4361,7 +4361,7 @@
       "path": "src/lib-win32-style/appearance/win3x/window/frame_state.h",
       "source": null,
       "source_blob": null,
-      "sha256": "56fd004d7357e41c576029ffc3cef3bdca8d43f6f15bac08b5c59edbb28f3468",
+      "sha256": "05508fe21bb8fc8e5bfb3751c45e7ddebf9e7c26814e77b4104db35093417e6f",
       "disposition": "authored",
       "review": "T21 S24 extract frame presentation state and resource lifetime; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4658,7 +4658,7 @@
       "path": "src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "057307084714de2e904f64f1b242af3cdf288f304216caaa3c01814a73d0205b",
+      "sha256": "0b647df429aca16e71e8391b6d5370e82acb5eab0fb08f6782fa9b6f9a6265ec",
       "disposition": "authored",
       "review": "T21 S24 extract frame lifecycle; T23 S1 preserve documented DWM rendering state on removal; T23 S4 console and Terminal window adaptation and native tests; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4802,7 +4802,7 @@
       "path": "src/lib-win32-style/appearance/win3x/window/frame_dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1173481d0957d6cea1ee8ededfc40ae06482bb87aa615f87a94d9856b08e04e1",
+      "sha256": "212a595fae7693b5d940a06b05abc9bc65f841a7ff84bf6a322080beb1767917",
       "disposition": "authored",
       "review": "T21 S24 extracted frame message dispatch from project-authored src/ntw16s-dll/win16_style.c; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed",
       "notice": "Project-authored source; existing resource and provenance notices retained"
@@ -5504,7 +5504,7 @@
       "path": "src/lib-win32-style/appearance/win3x/window/modern_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "db385ea45bd2ad02e42ac877f5543a1039890aa06c093329d74644b254be649e",
+      "sha256": "a3a8ac3f57c342ed674c3d8fd36203b6686c4c37c779e2d71e2239df4c60aa87",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 system-menu temporary command state and native cursor handling; T23 S4 console and Terminal window adaptation and native tests; T23 S7 maximize work-area geometry regression and fix; T26 S1 share DIB buffer across UWP and Win2000; T26 S1 shared window thread identity; T26 S1 shared resize cursor mapping; T26 S1 shared surface refresh lifecycle; T26 S1 shared host detach and reentrant lifetime; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S12 complete common modern frame ownership; existing host/menu/native contracts retained; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6197,7 +6197,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/caption.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c0a0791cf9ea8423303b70ea12a8f72b0cb97b485a021f936b71a58fe1c583c1",
+      "sha256": "271223c2ca251fd3766a7ebc3865ee33a79dde377bbe2df7c94a6b14661b196f",
       "disposition": "authored",
       "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T28 S1 shared classic caption and UWP appearance model; T28 S2 shared buttons rasterized at final dimensions using the original Win32 path",
       "notice": "Project-authored implementation; historical source observed only"
@@ -6206,7 +6206,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/caption.h",
       "source": null,
       "source_blob": null,
-      "sha256": "9e8b9ba57cc6e177aae8e1ab4639878e9e4cce409476ad60b7c9be00f311e608",
+      "sha256": "dc55439d061e28c56a480f82370b8cb9efdbaddeecbb32b4833c066dd379211c",
       "disposition": "authored",
       "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T28 S1 shared classic caption and UWP appearance model; T28 S2 shared renderer no longer accepts a button raster template selector",
       "notice": "Project-authored implementation; historical source observed only"
@@ -6224,7 +6224,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a31d9c7fb155c08103dc08dc41af0c40673893ebdb808b4b20ee64e58adf7181",
+      "sha256": "d08711d2ebe15ee7fe173e52ffa08dc029929dfcafa90ccd092a291a9df6d513",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal; T26 S1 shared frame change and client restore; T26 S1 share DIB buffer across UWP and Win2000; T26 S1 shared window thread identity; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T28 S1 shared classic caption and UWP appearance model; T28 S2 reuse composed redraw and reserve caption space for the extended client",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6269,7 +6269,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/system_menu.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dc0754272dbaadd3241f25375acb086a3a72e6c43861a954df97c7a397d5accf",
+      "sha256": "015d886b918646cc557cfe70b5dbde423fb8a2be708dd7b7f1022877c6ca056b",
       "disposition": "authored",
       "review": "T25 S4 Win2000 system menu presentation candidate; T26 S1 shared popup observation messages; T26 S1 shared popup print coordinate conversion; T26 S2 mechanical path/include relocation; T26 S8 shared popup scope/observer ownership and current-desktop native regression; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6278,7 +6278,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/system_menu.h",
       "source": null,
       "source_blob": null,
-      "sha256": "0beb161774a9675fc6b9180f337c276bb8eaaf7d6f2aebd09e9e34941043b9aa",
+      "sha256": "0291e122d145217e37441ee59179b1f8305aa805c08fb0b9ba60a4da31450bc8",
       "disposition": "authored",
       "review": "T25 S4 Win2000 system menu presentation candidate; T26 S2 mechanical path/include relocation; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -7484,7 +7484,7 @@
       "path": "src/lib-win32-style/appearance/win3x/window/frame_font.h",
       "source": null,
       "source_blob": null,
-      "sha256": "658e4a3db51071aeb1b8bf2305308ed42f0b536c052c248f4a9d8f010313ff43",
+      "sha256": "508297e139fef1773c73e3374622b044cfddde6e0de298a1372c2681489e89d4",
       "disposition": "authored",
       "review": "T26 S1 ordered audit: frame font declaration ownership; T26 S2 mechanical path/include relocation; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained",
       "notice": "Project-authored C interface; no imported artwork"
@@ -10238,7 +10238,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/modern_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b70eb7b4bd7a0a3fb9432be40abaf96ead71250f9b5e46d1e0bd97ac6dff88b1",
+      "sha256": "32052d10d26b865bdc6c31f33a52c9232d94bf1dddfbfd637d56132bb399a2e0",
       "disposition": "authored",
       "review": "T28 S1 shared classic caption and UWP appearance model; T28 S1 shared classic caption and UWP appearance model; T28 S2 use the same final-size button painter",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10499,7 +10499,7 @@
       "path": "tests/tooling/classic_themes.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a9fc8c53360c349e9101d5601d00995d7d311041aa79c739048b2bf5f7694d4c",
+      "sha256": "bea9dd5ef5f419672a150d8ead0a27d6e88664d346bea58dfe96bc48ee09d325",
       "disposition": "authored",
       "review": "T29 S3 dual classic theme build and independent resource checks",
       "notice": "Project-authored; no imported source or resources"
@@ -10508,7 +10508,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_style.c",
       "source": null,
       "source_blob": null,
-      "sha256": "220def6021b24b92f2d5dd48b027f6fd49a0bfa87bfe635893f94154d3141771",
+      "sha256": "e7e23574827051d1c3ce25da8d3873057c3902e4a4c2d192751940a6187bec99",
       "disposition": "authored",
       "review": "T29 S3 versioned project-style extension and packaged tests",
       "notice": "Project-authored; no imported source or resources"
@@ -10517,7 +10517,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_style.h",
       "source": null,
       "source_blob": null,
-      "sha256": "4f01d840394ea64eec009a3bb0aa67fc8d9c0ea1b4836b8fbf12006d341bfdd7",
+      "sha256": "2a1d6c3aa6f5774a4686a324d2ce3f299403623cc9c0fe517be33af98cbadeeb",
       "disposition": "authored",
       "review": "T29 S3 versioned project-style extension and packaged tests",
       "notice": "Project-authored; no imported source or resources"
@@ -10526,7 +10526,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/classic_style.c",
       "source": null,
       "source_blob": null,
-      "sha256": "59fcbe2470f8bdb661ed5a6e8b2f02e5b2406ec53fcce61a40be3a362f48a220",
+      "sha256": "b489b5f5a0b4dadc3cd81765d66ca49cb55f2d7bd122adb73d186fa65af99076",
       "disposition": "authored",
       "review": "T29 S3 versioned project-style extension and packaged tests",
       "notice": "Project-authored; no imported source or resources"
@@ -10535,7 +10535,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "80c8814bb169e4019536fca56ca93afebf944a2859f122129efbecafd35ba99f",
+      "sha256": "347f5a47356c8300f1c6286f69fe4c00c0acb14bfba5439ad6bf8b3fea92a275",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10544,7 +10544,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "45262176bc9c376826e1ab4ebe85e83239848c645399d5b52448c6bbe566dbff",
+      "sha256": "919af08005fb372ca6f34d4fec861675571cb57904ff5f3db5b3bc18d4b60237",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10553,7 +10553,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "afb9e6ccf7f08fd2d477644a25610289ebe3b4fbc18fd83c6e474cf4cd1cab28",
+      "sha256": "1ecae40b55115ba9f8cb761a56b00bfaf181f32a1f41e13ce7d86bf9ae29c963",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10562,7 +10562,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_presets.h",
       "source": null,
       "source_blob": null,
-      "sha256": "3d07364c1cca406fb1bdaca4bf7a9fdc99b9a251aa1d54a5d85cb944a069a837",
+      "sha256": "9d47e09e0b39b577c0b81b4eee309963dfc52dbfb18dae4517a41e3bbbe0d78c",
       "disposition": "authored",
       "review": "T29 S4 shared title-button slots and preserved classic geometry",
       "notice": "Project-authored; no imported source or resources"
@@ -10589,7 +10589,7 @@
       "path": "src/lib-win32-style/appearance/win3x/window/caption_art.c",
       "source": null,
       "source_blob": null,
-      "sha256": "035676e92ea697483a93caf6942f8f9e4986cd1d9d04af88f1e974949309990d",
+      "sha256": "8c18c0e8af56ebb68d5cbc0279dd99f763c1424f1b0099800ea388aff0601ffe",
       "disposition": "authored",
       "review": "T29 S4 theme-backed caption art using Windows PNG decoding and original palette roles",
       "notice": "Project-authored; no imported source or resources"
@@ -10598,9 +10598,27 @@
       "path": "src/lib-win32-style/appearance/win3x/window/caption_art.h",
       "source": null,
       "source_blob": null,
-      "sha256": "501502c4a969d042b7ebcb7eee13af9b72cbf51623c3c60305cb9858c4d04f1e",
+      "sha256": "90c7082d7af81de072db37ba2cf2b40f1f7b107c8cd56c6258342ef34c76e969",
       "disposition": "authored",
       "review": "T29 S4 theme-backed caption art using Windows PNG decoding and original palette roles",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/v4_font.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c9272ab6d54bd93a79fa79251b6feecd2ca2c96c8fd32b5a4c423aec6f7b35a4",
+      "disposition": "authored",
+      "review": "T29 S5 bounded v4 theme font descriptor parsing and DPI realization",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/v4_font.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9d8304a5d20b79f3057c115a2d4144cb1ae9f76ecc7b71768cbba92aa258b972",
+      "disposition": "authored",
+      "review": "T29 S5 bounded v4 theme font descriptor parsing and DPI realization",
       "notice": "Project-authored; no imported source or resources"
     }
   ]

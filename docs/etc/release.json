@@ -1,22 +1,22 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S4 P4",
-  "stage": "development: representative Windows theme rendering",
+  "delivery": "M0 T29 S5 P1",
+  "stage": "development: classic windows, menus and fonts",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "3f00acffb63ef5a40552f44af9bc52ca08fbde746e37332ac016f12b07979cfd",
+  "source_snapshot_sha256": "e8aca2fabbdaa7728dc4a4d3af06c79f1fb2b9bf1a920adaf304bc0350123590",
   "source_snapshot_format": "SHA256 of clean Build-Package snapshot.json bytes",
   "source_input_cohort": {
-    "count": 1276,
-    "sha256": "c38d5002d35882b52286765e7741c3cbdc460c0a0908ba1214ea39d1163ae44b",
+    "count": 1278,
+    "sha256": "9da59c82e57f16299e2a8a1cd38bec31ecdbd72fdc6fd6b85be653ef5e529954",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "0a35f63d5e4923f5d2955abff6d03341bb14bf5fe42361f5ec4912e0ff782759",
+      "sha256": "6aa50e5abf9f5ee20546b5ccbf0b29b875becd4e4b43fdad4f75347a91351b86",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "8352b46150cfed8d5b17e73dbfa5a9241e99e161f150b918734cb726c09321db",
+      "sha256": "82fd418345325dcaed7e7d633f8c05fe95ea8f7f3595d2cdfaf92addf0dd78c4",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -61,7 +61,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "a763d02479d94b8711b4825c8c57a3382eecfda861ea4bdd39703649676ccabc",
+      "sha256": "b5cee005325c7d1cfe788189b297fe008b10659a43adc617f38ebe224765a74f",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -85,7 +85,7 @@
     "ntw2ks32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "a639d3082cfea8746f9a30c07d9ef77901d38721ca0ef21a8fd3f71e78060f41",
+      "sha256": "abd2fc3ed131455c299b2d0b127db897a01d3e0bec2e7b62c5f512ee65e6a8e1",
       "imports": [
         "ACTIVEDS.dll",
         "COMCTL32.dll",
@@ -114,7 +114,7 @@
     "ntw2ks64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "89edd964e079ca3a4e2b0746ed8bc69fd154196cdec6f3d76d7c72a540e6fa37",
+      "sha256": "924e6fd305911b03debbc5e2ab0b6f8ecdf3c24497d2460f89801c4fcff6c691",
       "imports": [
         "ACTIVEDS.dll",
         "COMCTL32.dll",
@@ -138,7 +138,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "da62a8af233e44e89696982001db9b2fbf426436a0d224307bc089243c52d125",
+      "sha256": "e9783bf9f358d323eef56687ab853e4175a63b673dd0f36a97f07ad914e87a8b",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -153,7 +153,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "4b235727e07854ac803ee51b1a8f1c0c23cdc8448b048daf5601f62a49d453ab",
+      "sha256": "5cd1cddf1b240701de068bf06f7b64d8958c69b6bc0156d8cfc864bf22217f10",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -163,7 +163,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "485afd4e2f1551c1ffb918f8390d387b87e31fa58afda8c546d83cfac4eaf7ce",
+      "sha256": "5ae4321b9faf82e7d194034e302ce8af202e629bbfa3c64230a0937ca912943f",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -177,93 +177,149 @@
     }
   },
   "theme_previews": {
+    "themes/Win16/Win16.msstyles": {
+      "sha256": "d4ce51a54f0df818af2b3009ef9f63f92f8571e2043a53cf31f72ac4cfc60a2f"
+    },
     "themes/Win16/Win16.theme": {
       "sha256": "0dcbf80bb67ea283a81265c670ae6c6c07ee776b8ac2449c0a05b0818f2984a8"
     },
-    "themes/Win16/Win16.msstyles": {
-      "sha256": "b03e57520038710a94b276af71dd6e5f09dc86ddf2923430b372e2e2639a3d40"
+    "themes/Win2K/Win2K.msstyles": {
+      "sha256": "92191971333b63a1c246f8c8d339fee2058a8f3ec794f7abb0b7ed894b794b11"
     },
     "themes/Win2K/Win2K.theme": {
       "sha256": "f4acd885ec052c06daaa09e2423a4882ef3c53fd072509ef04890d05c1ad85f1"
-    },
-    "themes/Win2K/Win2K.msstyles": {
-      "sha256": "242917d0c16dfdaff024778b955d14ae0e9b774528e4840e0130d43facfcc0a7"
     }
   },
   "architecture": {
     "x86": {
       "configure-time.json": {
-        "seconds": 12.322554299957119,
+        "seconds": 13.263370900065638,
         "exit_code": 0
       },
       "build-time.json": {
-        "seconds": 248.90234699996654,
+        "seconds": 360.8576878999593,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.6849024000111967,
+        "seconds": 1.0527982999337837,
         "exit_code": 0
       }
     },
     "x64": {
       "configure-time.json": {
-        "seconds": 12.842417899984866,
+        "seconds": 16.76816029998008,
         "exit_code": 0
       },
       "build-time.json": {
-        "seconds": 357.46652889996767,
+        "seconds": 320.0957511999877,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.7051532999612391,
+        "seconds": 0.7749257999239489,
         "exit_code": 0
       }
     }
   },
   "toolchains": {
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
-    "ccache_version": "ccache version 4.13.6",
     "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
     "toolchains": [
       {
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
-        "target": "i686-w64-mingw32",
         "version": "16.1.0",
-        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "architecture": "x86"
+        "target": "i686-w64-mingw32",
+        "architecture": "x86",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6"
       },
       {
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
-        "target": "x86_64-w64-mingw32",
         "version": "16.1.0",
-        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "architecture": "x64"
+        "target": "x86_64-w64-mingw32",
+        "architecture": "x64",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad"
       }
-    ]
+    ],
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache_version": "ccache version 4.13.6"
   },
   "verification": {
     "coverage": "focused",
-    "actual_package_cases": 32,
-    "passed": 32,
-    "resource_cases": {
-      "caption_images": 12,
-      "state_and_surface": 16,
-      "paired_scroll_geometry": 32,
-      "independent_theme_resource_matches": 52
-    },
-    "evidence": "../history/M0-T29-S4-representative-rendering.md"
+    "actual_package_cases": 36,
+    "passed": 36,
+    "total_focused_cases": 58,
+    "cases": [
+      "x64/core-classic-themes-assets",
+      "x64/core-classic-themes-winnt",
+      "x64/core-dc-failure",
+      "x64/core-font",
+      "x64/core-style-classic-extension-assets",
+      "x64/core-style-classic-extension-winnt",
+      "x64/core-style-classic-theme-assets",
+      "x64/core-style-classic-theme-winnt",
+      "x64/core-win16-common-link",
+      "x64/core-win16-control-link",
+      "x64/core-win2k-instance-lifetime",
+      "x64/win16-menu-cancel",
+      "x64/win16-system-menu-custom",
+      "x64/win16-system-menu-hover",
+      "x64/win16-system-menu-native-string",
+      "x64/win16-system-menu-normal",
+      "x64/win2k-frame---dpi-aware/--zoom-cycle",
+      "x64/win2k-frame---frame-bounds/0/0",
+      "x64/win2k-frame---inactive-menu",
+      "x64/win2k-frame---real-modal-icon",
+      "x64/win2k-frame---real-modal-no-icon",
+      "x64/win2k-frame---zoom-cycle",
+      "x64/win2k-system-menu-cancel",
+      "x64/win2k-system-menu-custom",
+      "x64/win2k-system-menu-default",
+      "x64/win2k-system-menu-glyph",
+      "x64/win2k-system-menu-hover",
+      "x64/win2k-system-menu-keyboard",
+      "x64/win2k-system-menu-live",
+      "x86/core-classic-themes-assets",
+      "x86/core-classic-themes-winnt",
+      "x86/core-dc-failure",
+      "x86/core-font",
+      "x86/core-style-classic-extension-assets",
+      "x86/core-style-classic-extension-winnt",
+      "x86/core-style-classic-theme-assets",
+      "x86/core-style-classic-theme-winnt",
+      "x86/core-win16-common-link",
+      "x86/core-win16-control-link",
+      "x86/core-win2k-instance-lifetime",
+      "x86/win16-menu-cancel",
+      "x86/win16-system-menu-custom",
+      "x86/win16-system-menu-hover",
+      "x86/win16-system-menu-native-string",
+      "x86/win16-system-menu-normal",
+      "x86/win2k-frame---dpi-aware/--zoom-cycle",
+      "x86/win2k-frame---frame-bounds/0/0",
+      "x86/win2k-frame---inactive-menu",
+      "x86/win2k-frame---real-modal-icon",
+      "x86/win2k-frame---real-modal-no-icon",
+      "x86/win2k-frame---zoom-cycle",
+      "x86/win2k-system-menu-cancel",
+      "x86/win2k-system-menu-custom",
+      "x86/win2k-system-menu-default",
+      "x86/win2k-system-menu-glyph",
+      "x86/win2k-system-menu-hover",
+      "x86/win2k-system-menu-keyboard",
+      "x86/win2k-system-menu-live"
+    ],
+    "evidence": "../history/M0-T29-S5-window-menus-fonts.md"
   },
   "validation": {
     "physical_keyboard_mouse": "not tested",
     "private_desktops_created": false,
     "limitations": [
       "Global attachment and application as a Windows system theme were not exercised",
+      "Win16 System glyphs are sampled from the host; no independent historical raster font is bundled",
       "Standalone theme previews accompany the legacy development runtime",
       "The seven-file runtime switch remains assigned to T29 S11"
     ]
   },
   "closure": {
-    "S4": "closed after remote audit of P4 (53ab9307)",
+    "S5": "pending remote audit and remaining S5 scope",
     "T29": "active",
     "M0": "fixed"
   }

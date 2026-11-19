@@ -47,11 +47,11 @@ static HRESULT variant_resource(HMODULE module,PCWSTR size,PCWSTR color,theme_re
     return S_OK;
 }
 
-enum theme_class { class_window, class_button, class_scroll_arrow, class_count };
+enum theme_class { class_window, class_button, class_scroll_arrow, class_sysmetrics, class_menu, class_count };
 
 static HRESULT class_indices(theme_resource map,size_t indices[class_count],size_t *count)
 {
-    const PCWSTR names[class_count]={L"Window",L"Button",L"ScrollBar"};
+    const PCWSTR names[class_count]={L"Window",L"Button",L"ScrollBar",L"SysMetrics",L"Menu"};
     if(!map.bytes || !map.size)return HRESULT_FROM_WIN32(ERROR_RESOURCE_DATA_NOT_FOUND);
     for(unsigned i=0;i<class_count;++i)indices[i]=SIZE_MAX;
     *count=0;
@@ -67,7 +67,7 @@ static HRESULT class_indices(theme_resource map,size_t indices[class_count],size
         }
         pos+=used;
     }
-    for(unsigned i=0;i<class_count;++i)
+    for(unsigned i=0;i<class_menu;++i)
         if(indices[i]==SIZE_MAX)return HRESULT_FROM_WIN32(ERROR_RESOURCE_NAME_NOT_FOUND);
     return S_OK;
 }
@@ -90,8 +90,9 @@ static HRESULT read_fields(const msstyles_v4_property *item,const size_t indices
            item->state_id!=field->state || item->name_id!=field->name)continue;
         if(field->present || item->type_id!=field->type)
             return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
-        if(field->type==TMT_FILENAME){
-            if(item->data || item->declared_size!=16 || !item->short_value || item->short_value>UINT16_MAX)
+        if(field->type==TMT_FILENAME || field->type==TMT_FONT){
+            size_t size=field->type==TMT_FONT?sizeof(LOGFONTW):16;
+            if(item->data || item->declared_size!=size || !item->short_value || item->short_value>UINT16_MAX)
                 return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
             field->value=item->short_value;
         }else{
@@ -125,7 +126,7 @@ static bool scroll_colors(theme_field fields[][scroll_surface_fields],size_t sur
     return true;
 }
 
-static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *theme)
+static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,classic_theme *theme)
 {
     enum {fill_type, active_face, active_text, inactive_face, inactive_text,
         button_face, button_edge, scroll_face, scroll_edge, first_gradient};
@@ -166,6 +167,37 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
         {class_window,WP_SMALLCLOSEBUTTON,0,TMT_WIDTH,TMT_INT,0,false},
         {class_window,WP_SMALLCLOSEBUTTON,0,TMT_HEIGHT,TMT_INT,0,false}
     };
+    theme_field font_refs[]={
+        {class_sysmetrics,0,0,TMT_CAPTIONFONT,TMT_FONT,0,false},
+        {class_sysmetrics,0,0,TMT_SMALLCAPTIONFONT,TMT_FONT,0,false},
+        {class_sysmetrics,0,0,TMT_MENUFONT,TMT_FONT,0,false}
+    };
+    msstyles_font *fonts[]={&theme->caption_font,&theme->small_caption_font,&theme->menu_font};
+    theme_field frame_colors[]={
+        COLOR_FIELD(class_sysmetrics,0,0,TMT_BTNFACE),
+        COLOR_FIELD(class_sysmetrics,0,0,TMT_BTNHIGHLIGHT),
+        COLOR_FIELD(class_sysmetrics,0,0,TMT_BTNSHADOW),
+        COLOR_FIELD(class_sysmetrics,0,0,TMT_WINDOWFRAME)
+    };
+    theme_field bar[]={
+        COLOR_FIELD(class_menu,MENU_BARBACKGROUND,0,TMT_FILLCOLOR),
+        COLOR_FIELD(class_menu,MENU_BARITEM,MBI_HOT,TMT_FILLCOLOR),
+        COLOR_FIELD(class_menu,MENU_BARITEM,MBI_NORMAL,TMT_TEXTCOLOR),
+        COLOR_FIELD(class_menu,MENU_BARITEM,MBI_HOT,TMT_TEXTCOLOR),
+        COLOR_FIELD(class_menu,MENU_BARITEM,MBI_DISABLED,TMT_TEXTCOLOR)
+    };
+    theme_field popup[]={
+        COLOR_FIELD(class_menu,MENU_POPUPBACKGROUND,0,TMT_FILLCOLOR),
+        COLOR_FIELD(class_menu,MENU_POPUPITEM,MPI_HOT,TMT_FILLCOLOR),
+        COLOR_FIELD(class_menu,MENU_POPUPITEM,MPI_NORMAL,TMT_TEXTCOLOR),
+        COLOR_FIELD(class_menu,MENU_POPUPITEM,MPI_HOT,TMT_TEXTCOLOR),
+        COLOR_FIELD(class_menu,MENU_POPUPITEM,MPI_DISABLED,TMT_TEXTCOLOR),
+        COLOR_FIELD(class_menu,MENU_POPUPSEPARATOR,0,TMT_BORDERCOLOR)
+    };
+    theme_field menu_images[]={
+        {class_menu,MENU_POPUPCHECK,0,TMT_IMAGEFILE,TMT_FILENAME,0,false},
+        {class_menu,MENU_POPUPSUBMENU,0,TMT_IMAGEFILE,TMT_FILENAME,0,false}
+    };
     const uint32_t caption_parts[]={WP_MINBUTTON,WP_MAXBUTTON,WP_RESTOREBUTTON,WP_SYSBUTTON};
     const uint32_t caption_pressed[]={MINBS_PUSHED,MAXBS_PUSHED,RBS_PUSHED,SBS_PUSHED};
     theme_field images[CLASSIC_IMAGE_ROLE_COUNT*2];
@@ -187,6 +219,20 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
             result=read_fields(&item,indices,push,ARRAYSIZE(push));
             if(FAILED(result))return result;
         }
+        if(item.class_id==indices[class_sysmetrics]){
+            result=read_fields(&item,indices,font_refs,ARRAYSIZE(font_refs));
+            if(FAILED(result))return result;
+            result=read_fields(&item,indices,frame_colors,ARRAYSIZE(frame_colors));
+            if(FAILED(result))return result;
+        }
+        if(item.class_id==indices[class_menu]){
+            result=read_fields(&item,indices,bar,ARRAYSIZE(bar));
+            if(FAILED(result))return result;
+            result=read_fields(&item,indices,popup,ARRAYSIZE(popup));
+            if(FAILED(result))return result;
+            result=read_fields(&item,indices,menu_images,ARRAYSIZE(menu_images));
+            if(FAILED(result))return result;
+        }
         if(item.class_id==indices[class_window]){
             result=read_fields(&item,indices,dimensions,ARRAYSIZE(dimensions));
             if(FAILED(result))return result;
@@ -202,6 +248,28 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
         pos+=used;
     }
     theme->gradient=fields[fill_type].value==FT_HORZGRADIENT;
+    unsigned frame_fields=0;
+    for(size_t i=0;i<ARRAYSIZE(frame_colors);++i)frame_fields+=frame_colors[i].present;
+    if(frame_fields && frame_fields!=ARRAYSIZE(frame_colors))return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+    if(frame_fields)theme->frame=(classic_frame_colors){frame_colors[0].value,frame_colors[1].value,
+        frame_colors[2].value,frame_colors[3].value,TRUE};
+    for(size_t i=0;i<ARRAYSIZE(menu_images);++i)
+        theme->menu_images[i]=(WORD)menu_images[i].value;
+    for(size_t i=0;i<ARRAYSIZE(font_refs);++i)
+        if(font_refs[i].present && !msstyles_font_read(module,font_refs[i].value,fonts[i]))
+            return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+    theme_field *menu_fields[]={bar,popup};
+    size_t menu_counts[]={ARRAYSIZE(bar),ARRAYSIZE(popup)};
+    classic_menu_colors *menus[]={&theme->menu_bar,&theme->menu_popup};
+    for(size_t i=0;i<ARRAYSIZE(menus);++i){
+        theme_field *rows=menu_fields[i];
+        unsigned present=0;
+        for(size_t j=0;j<menu_counts[i];++j)present+=rows[j].present;
+        if(!present)continue;
+        if(present!=menu_counts[i])return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+        *menus[i]=(classic_menu_colors){rows[0].value,rows[1].value,rows[2].value,
+            rows[3].value,rows[4].value,i?rows[5].value:0,TRUE};
+    }
     if(fields[fill_type].value!=FT_SOLID && !theme->gradient)
         return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
     size_t required=theme->gradient?ARRAYSIZE(fields):first_gradient;
@@ -251,10 +319,10 @@ HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme
     classic_theme value={0};
     HRESULT result=version.bytes && version.size==2 && version.bytes[0]==4 && !version.bytes[1]?
         variant_resource(module,size,color,&variant):HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
-    if(SUCCEEDED(result))result=palette(resource(module,L"CMAP",L"CMAP"),variant,&value);
+    if(SUCCEEDED(result))result=palette(module,resource(module,L"CMAP",L"CMAP"),variant,&value);
     if(SUCCEEDED(result)){
         enum classic_style_result status=classic_style_read(extension.bytes,extension.size,
-            &value.title_buttons,&value.scroll_metrics);
+            &value.title_buttons,&value.scroll_metrics,&value.menu_metrics);
         if(status!=CLASSIC_STYLE_OK)result=HRESULT_FROM_WIN32(
             status==CLASSIC_STYLE_VERSION || status==CLASSIC_STYLE_REQUIRED_RECORD?
             ERROR_NOT_SUPPORTED:ERROR_INVALID_DATA);

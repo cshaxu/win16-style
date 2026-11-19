@@ -150,23 +150,25 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
         POINT right={client_rect.right,0};
         if(ClientToScreen(window,&right))area.right=max(area.right,right.x-outer->left);
     }
-    HBRUSH face=CreateSolidBrush(RGB(212,208,200));if(!face)return;
+    frame_window *frame=frame_state(window);
+    const classic_menu_colors *colors=win2k_menu_colors(frame && frame->themed?&frame->theme.menu_bar:NULL);
+    HBRUSH face=CreateSolidBrush(colors->background);if(!face)return;
     FillRect(dc,&area,face);DeleteObject(face);
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    HFONT font=CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,
-        DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
+    HFONT font=win2k_menu_font(dpi,frame && frame->themed?&frame->theme.menu_font:NULL,FALSE);
     int saved=SaveDC(dc);if(saved){
         if(font)SelectObject(dc,font);
         SetBkMode(dc,TRANSPARENT);
-        style_menu_bar_snapshot snapshot;frame_window *frame=frame_state(window);
+        style_menu_bar_snapshot snapshot;
         int selected=frame?frame->menu.bar.highlighted:-1;BOOL inactive=!frame || !frame->native.active;
         if(menu_snapshot(window,&snapshot)){
             for(UINT i=0;i<snapshot.count;++i){
                 const style_menu_bar_item *item=&snapshot.items[i];RECT r=snapshot.rects[i];
                 offset_menu(window,&r);OffsetRect(&r,-outer->left,-outer->top);
                 BOOL highlighted=selected==(int)item->position;
-                if(highlighted){HBRUSH active=CreateSolidBrush(RGB(0,0,128));if(active){FillRect(dc,&r,active);DeleteObject(active);}}
-                SetTextColor(dc,(inactive || (item->state&MFS_DISABLED))?RGB(128,128,128):highlighted?RGB(255,255,255):RGB(0,0,0));
+                if(highlighted){HBRUSH active=CreateSolidBrush(colors->selection);if(active){FillRect(dc,&r,active);DeleteObject(active);}}
+                SetTextColor(dc,(inactive || (item->state&MFS_DISABLED))?colors->disabled_text:
+                    highlighted?colors->selected_text:colors->text);
                 DrawTextW(dc,item->text,min(511,lstrlenW(item->text)),&r,DT_SINGLELINE|DT_VCENTER|DT_CENTER);
             }
             style_menu_bar_free(&snapshot);
@@ -231,6 +233,7 @@ static void paint(HWND window)
     int width=outer.right-outer.left,height=outer.bottom-outer.top;
     if(caption.left<0 || caption.top<0 || caption.right>width || caption.bottom>height)goto done;
     HDC dc=GetWindowDC(window);if(!dc)goto done;
+    const classic_frame_colors *frame_colors=frame->themed?&frame->theme.frame:NULL;
     BOOL maximized=IsZoomed(window);
     if(!maximized){
         int border_saved=SaveDC(dc);MENUBARINFO system={.cbSize=sizeof(system)};
@@ -238,7 +241,7 @@ static void paint(HWND window)
             RECT icon=system.rcBar;OffsetRect(&icon,-outer.left-frame_shift(window,TRUE),-outer.top-frame_shift(window,FALSE));
             ExcludeClipRect(dc,icon.left,icon.top,icon.right,icon.bottom);
         }
-        win2k_window_border_paint(dc,width,height,caption.top);
+        win2k_window_border_paint(dc,width,height,caption.top,frame_colors);
         if(border_saved)RestoreDC(dc,border_saved);
     }
     paint_menu(window,dc,&outer);
@@ -258,14 +261,16 @@ static void paint(HWND window)
         }
         UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
         BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
-        HFONT font=win2k_caption_font(dpi,tool);
+        const msstyles_font *defined=frame->themed?
+            (tool?&frame->theme.small_caption_font:&frame->theme.caption_font):NULL;
+        HFONT font=win2k_caption_font(dpi,tool,defined);
         win2k_caption_colors colors=win2k_caption_palette(frame->native.active);
         if(frame->themed){
             classic_caption_colors value=frame->native.active?frame->theme.active:frame->theme.inactive;
             colors=(win2k_caption_colors){value.start,value.end,value.text,frame->theme.gradient};
         }
         win2k_caption_render_with_colors(dc,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
-            dpi,colors,maximized,flags);
+            dpi,colors,frame_colors,maximized,flags);
         if(font)DeleteObject(font);
     }
     ReleaseDC(window,dc);
@@ -418,7 +423,8 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
     }
     LRESULT menu_result=0;
     if(message==WM_NCDESTROY)style_menu_owner_stop(&frame->menu);
-    else if(style_menu_owner_message(&frame->menu,window,message,wp,lp,&win2k_system_menu_operations,NULL,&menu_result)){
+    else if(style_menu_owner_message(&frame->menu,window,message,wp,lp,&win2k_system_menu_operations,
+        frame->themed?&frame->theme:NULL,&menu_result)){
         SetLastError(incoming);return menu_result;
     }
     const style_menu_bar_target menu=menu_target(window,frame);

@@ -68,7 +68,7 @@ static void paint_state(void *context,win16_frame_paint_state *result)
 {
     style_window *s=context;
     *result=(win16_frame_paint_state){&s->fonts,s->native.active,s->menu.system,
-        s->menu.bar.keyboard,s->menu.bar.selected,s->button,&s->art};
+        s->menu.bar.keyboard,s->menu.bar.selected,s->button,&s->art,&s->menu_bar};
 }
 static const win16_frame_renderer_ops renderer={paint_layout,paint_state,paint_colors,win16_style_scrollbars_paint};
 static void paint(HWND w,void *context,HDC target)
@@ -115,7 +115,7 @@ static style_menu_bar_target menu_target(HWND w,style_window *s)
 static void leave_bar(HWND w,style_window *s,BOOL restore_focus)
 {const style_menu_bar_target t=menu_target(w,s);style_menu_bar_finish(&t,restore_focus);}
 static BOOL refresh_font(HWND w,void *context)
-{style_window *s=context;return win16_control_refresh_frame_fonts(w,&s->fonts);}
+{style_window *s=context;return win16_control_refresh_frame_fonts(w,&s->fonts,&s->caption_font,&s->menu_font);}
 
 static void activate_frame(HWND w,void *context,const RECT *client,BOOL normal)
 {
