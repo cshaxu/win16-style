@@ -2312,5 +2312,19 @@
         }
       }
     }
+  },
+  "native_print_seeded_p40": {
+    "baseline": "Released P39 da33d7b9. All eight assets and all eight O:/winnt files still match P39. Product source and binaries are unchanged.",
+    "scope": "Real PrintDlgEx caller-page validation and ownership, focusing on explicit printer settings and the start-page boundary. The x86/x64 C17 fixture uses an owned visible STA window and an application-created in-memory property page. The observer reads the system proxy window's metadata. A six-second watchdog terminates only the fixture.",
+    "unicode_valid": "The independent PropertySheetW positive control passed 2/2, observing one PSPCB_CREATE, WM_INITDIALOG and PSPCB_RELEASE per width. PrintDlgExW with Microsoft Print to PDF DEVMODE and DEVNAMES, nPropertyPages=1 and nStartPage=0 reached a zero-size visible ProxyModalWindow in native, released Win16 and released Win2000, 6/6 timed out before any page callback. The local native stall also occurs with a valid seeded device.",
+    "unicode_invalid": "Changing only nStartPage from 0 to 1 with one page returned E_INVALIDARG (0x80070057) immediately in native, released Win16 and released Win2000 on both widths, 6/6. Initial DEVMODE/DEVNAMES, flags and page pointer were preserved, the owner stayed enabled, and the caller could destroy its unconsumed page, which emitted its one release callback. This verifies the error and ownership contract at that boundary. Valid custom-page display remains unverified.",
+    "ansi": "With ANSI initial handles returned by the native default-printer request, PrintDlgExA reached the proxy before any page callback in both the in-range and out-of-range start-page scenarios, across both widths and all three entry modes (12/12 timed out). ANSI early validation remains inconclusive. The fixture used read-only printer settings and cancelled within the owned process.",
+    "source": "https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-printdlgexw",
+    "probe_sha256": {
+      "ansi.c": "47450a61ee441dc8e2e31a7e033ec123fab9dbc59cc9a79d9db0c25fb132f161",
+      "negative.c": "a2e51522006d17174a37e0c18edfefca05df96d8b360042968d63dc9e44cd765",
+      "probe.c": "a54e87a4c024447e0560700f6e777ba20d2da9072bc99f8ef4939264a10345a8"
+    },
+    "next_verification": "The same native failure reproduces with and without an explicit initial queue and across A/W. A future valid-page interactive test requires a Windows host that can present the stock native PrintDlgEx surface. No further repeats on the same host are needed without a new hypothesis. Global dialog integration and real domain queue selection are separate open items."
   }
 }
