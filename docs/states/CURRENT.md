@@ -69,6 +69,10 @@ P20 用发布版验证 `MessageBoxIndirect` 的调用方图标、帮助回调、
 P21 用同一份自有属性页做双宽对照。`PropertySheetW` 正常创建、初始化、
 释放页面；原生和发布版 `--2k` 的 `PrintDlgExW` 均只显示系统代理窗，
 未到达应用属性页创建回调。等可用桌面复验实际 General 及调用方属性页。
+P22 修复 144 DPI 下紧凑 Explorer 保存对话框超出工作区一个物理像素。
+双宽同批包先发布两处，三处实际文件回写 96/96，其中紧凑几何实测 48/48。
+文件缓冲区 8/8，其他对话框回归 32 组，核心 20/20。物理工作区为
+640×408（144 DPI），完整版 Places 按真实工作区明确跳过。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -103,7 +107,7 @@ P21 用同一份自有属性页做双宽对照。`PropertySheetW` 正常创建�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P17；构建快照和八件摘要见公共对话框证据。
+- Last verified remote delivery: M0 T28 S3 P22；构建快照和八件摘要见公共对话框证据。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。

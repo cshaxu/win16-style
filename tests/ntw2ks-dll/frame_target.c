@@ -157,14 +157,22 @@ static BOOL within(HWND child, const RECT *area)
 static BOOL compact_file_fits(HWND window)
 {
     MONITORINFO monitor={.cbSize=sizeof(monitor)};
+    if(!GetMonitorInfoW(MonitorFromWindow(window,MONITOR_DEFAULTTONEAREST),&monitor))return FALSE;
     HWND view=GetDlgItem(window,1121);
     WCHAR cls[32]={0};
-    return !GetDlgItem(window,1184) && GetClassNameW(view,cls,ARRAYSIZE(cls)) &&
-        !lstrcmpW(cls,L"SHELLDLL_DefView") &&
-        GetMonitorInfoW(MonitorFromWindow(window,MONITOR_DEFAULTTONEAREST),&monitor) &&
-        within(window,&monitor.rcWork) && within(view,&monitor.rcWork) &&
-        within(GetDlgItem(window,1148),&monitor.rcWork) &&
-        within(GetDlgItem(window,IDOK),&monitor.rcWork) && within(GetDlgItem(window,IDCANCEL),&monitor.rcWork);
+    BOOL stock_view=GetClassNameW(view,cls,ARRAYSIZE(cls)) && !lstrcmpW(cls,L"SHELLDLL_DefView");
+    HWND windows[]={window,view,GetDlgItem(window,1148),GetDlgItem(window,IDOK),GetDlgItem(window,IDCANCEL)};
+    BOOL fit=stock_view && !GetDlgItem(window,1184);
+    for(unsigned i=0;i<ARRAYSIZE(windows);++i){
+        if(within(windows[i],&monitor.rcWork))continue;
+        RECT bounds={0};
+        GetWindowRect(windows[i],&bounds);
+        printf("WIN2K COMPACT outside index=%u visible=%d rect=%ld,%ld,%ld,%ld work=%ld,%ld,%ld,%ld\n",
+            i,IsWindowVisible(windows[i]),bounds.left,bounds.top,bounds.right,bounds.bottom,
+            monitor.rcWork.left,monitor.rcWork.top,monitor.rcWork.right,monitor.rcWork.bottom);
+        fit=FALSE;
+    }
+    return fit;
 }
 static BOOL places_file_fits(HWND window)
 {
@@ -210,9 +218,10 @@ static BOOL CALLBACK find_message_window(HWND window,LPARAM unused)
     }else PostMessageW(window,WM_CLOSE,0,0);
     return FALSE;
 }
-static DWORD WINAPI close_message(void *unused)
+static DWORD WINAPI close_message(void *dpi_context)
 {
-    (void)unused;ULONGLONG deadline=GetTickCount64()+3000;
+    if(dpi_context && !SetThreadDpiAwarenessContext(dpi_context))ExitProcess(2);
+    ULONGLONG deadline=GetTickCount64()+3000;
     do{EnumWindows(find_message_window,0);if(InterlockedCompareExchange(&message_seen,0,0))return 0;Sleep(25);}while(GetTickCount64()<deadline);
     ExitProcess(4);
     return 1;
@@ -813,7 +822,21 @@ int wmain(int argc,WCHAR **argv)
         }
         return all?0:3;
     }
-    if(argc==2 && !lstrcmpW(argv[1],L"--file-select")){
+    if(argc==2 && (!lstrcmpW(argv[1],L"--file-select") || !lstrcmpW(argv[1],L"--file-select-places"))){
+        BOOL require_places=!lstrcmpW(argv[1],L"--file-select-places");
+        DPI_AWARENESS_CONTEXT dpi_context=GetThreadDpiAwarenessContext();
+        UINT dpi=GetDpiForSystem();
+        MONITORINFO monitor={.cbSize=sizeof(monitor)};
+        if(!dpi || !GetMonitorInfoW(MonitorFromWindow(NULL,MONITOR_DEFAULTTOPRIMARY),&monitor))return 2;
+        LONG width=monitor.rcWork.right-monitor.rcWork.left,height=monitor.rcWork.bottom-monitor.rcWork.top;
+        int width_96=MulDiv(width,96,(int)dpi),height_96=MulDiv(height,96,(int)dpi);
+        BOOL full_viewport=width_96>=565 && height_96>=345;
+        BOOL compact_viewport=!full_viewport && width_96>=427 && height_96>=272;
+        if(require_places && (!AreDpiAwarenessContextsEqual(dpi_context,DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) || !full_viewport)){
+            printf("WIN2K PLACES SKIP dpi=%u work=%ldx%ld normalized=%dx%d requires=565x345 awareness=per-monitor-v2\n",
+                dpi,width,height,width_96,height_96);
+            return 77;
+        }
         char path_a[MAX_PATH],directory_a[MAX_PATH];WCHAR path_w[MAX_PATH],directory_w[MAX_PATH],cwd[MAX_PATH];
         DWORD count_a=GetModuleFileNameA(NULL,path_a,ARRAYSIZE(path_a)),count_w=GetModuleFileNameW(NULL,path_w,ARRAYSIZE(path_w));
         DWORD cwd_count=GetCurrentDirectoryW(ARRAYSIZE(cwd),cwd);
@@ -825,18 +848,13 @@ int wmain(int argc,WCHAR **argv)
         ++leaf_a;++leaf_w;++suffix_a;++suffix_w;
         lstrcpynA(directory_a,path_a,(int)(leaf_a-path_a)+1);
         lstrcpynW(directory_w,path_w,(int)(leaf_w-path_w)+1);
-        MONITORINFO monitor={.cbSize=sizeof(monitor)};
-        BOOL known_dpi=GetDpiForSystem()==96 && GetMonitorInfoW(MonitorFromWindow(NULL,MONITOR_DEFAULTTOPRIMARY),&monitor);
-        LONG width=monitor.rcWork.right-monitor.rcWork.left,height=monitor.rcWork.bottom-monitor.rcWork.top;
-        BOOL measured_viewport=known_dpi && width==427 && height==272;
-        BOOL full_viewport=known_dpi && width>=565 && height>=345;
         BOOL all=TRUE;InterlockedExchange(&message_accept,1);
         for(int ansi=0;ansi<2;++ansi)for(int save=0;save<2;++save)for(int explorer=0;explorer<2;++explorer){
             InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
-            message_expect_compact=measured_viewport && explorer;
+            message_expect_compact=compact_viewport && explorer;
             message_expect_places=full_viewport && explorer;
             InterlockedExchange(&message_compact_fit,0);
-            HANDLE thread=CreateThread(NULL,0,close_message,NULL,0,NULL);if(!thread)return 2;
+            HANDLE thread=CreateThread(NULL,0,close_message,dpi_context,0,NULL);if(!thread)return 2;
             char file_a[MAX_PATH];WCHAR file_w[MAX_PATH],after[MAX_PATH];
             lstrcpynA(file_a,leaf_a,ARRAYSIZE(file_a));lstrcpynW(file_w,leaf_w,ARRAYSIZE(file_w));
             DWORD flags=OFN_NOCHANGEDIR|OFN_FILEMUSTEXIST|OFN_DONTADDTORECENT|(explorer?OFN_EXPLORER:OFN_ENABLEHOOK);
@@ -859,9 +877,9 @@ int wmain(int argc,WCHAR **argv)
             BOOL fit=!check_layout || InterlockedCompareExchange(&message_compact_fit,0,0)!=0;
             BOOL pass=wait==WAIT_OBJECT_0 && result && !error && same && offsets && filter==2 && unchanged && contract && fit &&
                 InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
-            printf("WIN2K SELECT bits=%u ansi=%d save=%d explorer=%d attached=%ld result=%d same=%d error=%lu filter=%lu offsets=%d cwd=%d flags=%d fit=%d measured=%d\n",
+            printf("WIN2K SELECT bits=%u ansi=%d save=%d explorer=%d attached=%ld result=%d same=%d error=%lu filter=%lu offsets=%d cwd=%d flags=%d fit=%d measured=%d places=%d dpi=%u work=%ldx%ld\n",
                 (unsigned)(sizeof(void*)*8),ansi,save,explorer,(long)InterlockedCompareExchange(&message_attached,0,0),
-                result,same,(unsigned long)error,(unsigned long)filter,offsets,unchanged,contract,fit,message_expect_compact);
+                result,same,(unsigned long)error,(unsigned long)filter,offsets,unchanged,contract,fit,check_layout,message_expect_places,dpi,width,height);
             if(!pass)all=FALSE;
         }
         InterlockedExchange(&message_accept,0);return all?0:3;

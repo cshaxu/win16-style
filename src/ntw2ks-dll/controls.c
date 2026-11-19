@@ -122,7 +122,13 @@ static LRESULT CALLBACK compact_file_created(int code,WPARAM wp,LPARAM lp)
     DWORD incoming=GetLastError();
     if(code>=0 && lp){
         const CWPRETSTRUCT *message=(const CWPRETSTRUCT *)lp;
-        if(dialog_first_show(message))win2k_file_fit_compact(message->hwnd);
+        if(dialog_first_show(message)){
+            /* The Shell may create a DPI-unaware dialog in a DPI-aware caller.
+             * Clamp in physical pixels before Windows rounds its logical size. */
+            DPI_AWARENESS_CONTEXT prior=SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+            win2k_file_fit_compact(message->hwnd);
+            if(prior)SetThreadDpiAwarenessContext(prior);
+        }
     }
     SetLastError(incoming);
     return dialog_created(code,wp,lp);

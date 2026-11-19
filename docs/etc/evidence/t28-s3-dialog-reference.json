@@ -862,6 +862,65 @@
     "native_fallback": "PrintDlgExW used the documented index 0 to request the caller page. Native and published --2k each timed out on x86 and x64 after the bounded observation interval. Each observed an external visible zero-size ProxyModalWindow owned by the fixture; counters for PSPCB_CREATE, WM_INITDIALOG and PSPCB_RELEASE were all zero. This locates the observed stall before caller-page creation and leaves interactive General, custom-page navigation and returned handle ownership unverified. The observer did not send messages to the external window.",
     "delivery": "Documentation only. The probe was job-contained on the ordinary disconnected desktop, ended only itself on timeout, submitted no print job and removed its temporary build. Both deployment locations retained the P17 eight-file hashes."
   },
+  "compact_real_dpi_p22": {
+    "baseline": "The ordinary disconnected host reports 96 DPI and 427 by 272 through the default DPI-unaware context. Per-monitor-v2 reports the same work area as a physical 640 by 408 at 144 DPI. In published P17, all four A/W Explorer Save cases (x86/x64) returned the correct file but failed the physical geometry check. A trace of the x64 cases showed Windows rounding a 427-unit clamp on the DPI-unaware Shell window to 641 physical pixels. The directory view, name field and buttons were each within the work area.",
+    "change": "Only the Compact Explorer first-show clamp runs in a temporary per-monitor-v2 context. The observer restores the prior context and last error, leaves the native layout handler active and preserves the original result contract. The test observer inherits the caller awareness and distinguishes checked geometry from absent coverage; --dpi-aware --file-select-places returns skip 77 when the real normalized work area cannot fit the full layout.",
+    "verification": {
+      "selection": "96/96 real owned get-open/save confirmations across O:/winnt, assets and the matching candidate. Each location passed x86/x64, A/W, old-hook/Explorer, and default or per-monitor-v2 client awareness. 48 Explorer calls measured compact dialog and child geometry, including 24 measurements in the 144 DPI context. Each call checked exact path, offsets, filter, cwd, applicable flags and frame attachment.",
+      "short_buffer": "8/8 on O:/winnt. x86/x64 A/W Open and Save returned FNERR_BUFFERTOOSMALL and the exact required length.",
+      "related": "32/32 release groups: Win2000 file cancellation, Find/Replace, MessageBox choices, Color/Font cancellation, expanded Color, accepted Font, classic Print and Page Setup, extended Print settings, COM Explorer Open/Save accept and cancel, and Win16 Find/Replace A/W. 20/20 focused CTests across both widths, plus both build ABI tests. No print jobs submitted.",
+      "skips": "2 explicit skips for full Places at 144 DPI, normalized 427 by 272 versus the minimum 565 by 345. Full layout on a sufficiently large actual desktop, PrintDlgEx native General/caller property pages, and the administrative tray integration remain unverified."
+    },
+    "release": {
+      "source_parent": "2ea328befc3e502a373f5e50add39d1bf7276a4e",
+      "snapshot_manifest_sha256": "85c4fb66ee2123b91a37303bf8382f7b93547bcfefb7c51b74208692441e1dc5",
+      "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-compact-real-dpi-package",
+      "toolchain": "MinGW-w64 GCC 16.1.0 C17, Ninja, repository ccache, Release, clean x86 and x64.",
+      "gate": "Source/resource provenance, ABI and PE, archive/import boundaries, matching clean build identity and original 18 raster tables per ntw16s DLL passed. Published to assets root and O:/winnt before functional tests.",
+      "artifacts": {
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "06faf9c18151180e438a9212a33013a01333bae31c7ccfe4b69740978ba15035"
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "0696c5e6b9404f6d25c39ed8c3df8e392f0a60ccaf277eb5bff388804999b3c9"
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "0a98307f1af797fa3c78b596b76e94dcc36e21b1e52f6ba210cb728158b4631d"
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "6051662a16b52f85ee01e6c90b2c54b74e4b56857e3b1c3a5d5d9871d345c930"
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "b6b8e9835efc3c8c477044f141923fd3bad191f8f12f0c712d49f4b6ce2aee3b"
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "84946db2acdf02edd3c77f0cc7cd634753cc7994c267b98108d45d7dc9dd5e42"
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "125480f3f8c8ccf18915c4c9a2f5d55c95621a1cb303f51dfeb58d3a08b5e64b"
+        },
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "1d76b7837636fb6bb795ef5b984891934f7988af289eed8e3242e6b654396654"
+        }
+      }
+    }
+  },
   "places_reflow_trial": {
     "package": "P9 published launcher and DLLs with temporary caller-owned ANSI and Unicode OPENFILENAME hooks. The probe used the ordinary desktop and owned dialogs at 96 DPI with a 427 by 272 work area. The temporary sources, objects, binaries and output were removed after the run.",
     "stock_geometry": "The native 421 by 247 client exposed the stock Places toolbar, a Shell directory view, and a ComboBoxEx filename field. In Open the default OK button began at (484,313), beyond both client bounds.",
