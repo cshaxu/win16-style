@@ -21,7 +21,7 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
 {
     classic_caption_colors colors=active?theme->active:theme->inactive;
     if(win2000){
-        RECT r={0,0,240,win2k_caption_height(dpi,FALSE)};
+        RECT r={0,0,240,win2k_caption_theme_height(dpi,FALSE,theme)};
         const BOOL present[]={TRUE,TRUE,FALSE,TRUE};
         RECT actual[4],reference[4],alternate[4];
         classic_button_group changed=theme->title_buttons;
@@ -33,7 +33,7 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
            !EqualRect(&actual[WIN2K_CLOSE],&alternate[WIN2K_CLOSE]) ||
            actual[WIN2K_MAXIMIZE].left-alternate[WIN2K_MAXIMIZE].left!=MulDiv(4,(int)dpi,96)-MulDiv(2,(int)dpi,96))
             return FALSE;
-        win2k_caption_colors fill={colors.start,colors.end,colors.text,theme->gradient};
+        win2k_caption_colors fill=win2k_caption_theme_palette(active,theme);
         return win2k_caption_paint(dc,&r,L"",(HFONT)GetStockObject(DEFAULT_GUI_FONT),&fill) &&
             GetPixel(dc,0,5)==colors.start && GetPixel(dc,239,5)!=colors.start;
     }
@@ -52,8 +52,7 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
        win16_style_hit(&layout,changed_min)!=HTCAPTION)return FALSE;
     win16_style_palette palette;
     win16_style_default_palette(&palette);
-    palette.active=theme->active.start;
-    palette.inactive=theme->inactive.start;
+    win16_style_theme_palette(&palette,theme);
     win16_frame_paint_state state={.active=active};
     POINT center={120,layout.caption.top+1};
     win16_control_frame_caption(dc,&layout,&palette,&state,NULL,FALSE,FALSE);

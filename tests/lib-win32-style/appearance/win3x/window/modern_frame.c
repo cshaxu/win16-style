@@ -69,19 +69,32 @@ static void settle(void)
     }while(GetTickCount64()<end);
     pump();
 }
+static BOOL position_fixture(HWND window,HWND anchor)
+{
+    return SetWindowPos(window,anchor,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+}
+
 static int worker(int argc,WCHAR **argv)
 {
     (void)argc;(void)argv;
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    /* Keep the layered restack within windows owned by this fixture. */
+    HWND anchor=CreateWindowExW(WS_EX_NOACTIVATE|WS_EX_TOOLWINDOW,L"STATIC",L"",
+        WS_POPUP,20,20,1,1,NULL,NULL,NULL,NULL);
+    CHECK(anchor);
     HWND w=CreateWindowExW(0,L"STATIC",L"Frame fixture",WS_OVERLAPPEDWINDOW|WS_VISIBLE,20,20,500,400,NULL,NULL,NULL,NULL);
     CHECK(w);ShowWindow(w,SW_SHOWNOACTIVATE);RECT client,before,after;GetClientRect(w,&client);
+    ShowWindow(anchor,SW_SHOWNOACTIVATE);
+    CHECK(position_fixture(w,anchor));
     {
         HWND nonclient=CreateWindowExW(WS_EX_NOREDIRECTIONBITMAP,L"STATIC",L"Non-client fixture",
             WS_OVERLAPPEDWINDOW|WS_VISIBLE,20,20,500,400,NULL,NULL,NULL,NULL);
         CHECK(nonclient);LONG_PTR original=GetWindowLongPtrW(nonclient,GWL_EXSTYLE);
+        CHECK(position_fixture(nonclient,anchor));
         CHECK(win16_uwp_frame_apply_nonclient(nonclient));
         HWND nonclient_surface=style_uwp_frame_surface(nonclient);CHECK(nonclient_surface);
         ShowWindow(nonclient,SW_MAXIMIZE);pump();
+        CHECK(position_fixture(nonclient,anchor));
         CHECK(SetWindowSubclass(nonclient,expanded_maximized_client,2,0));
         MONITORINFO monitor={.cbSize=sizeof(monitor)};
         CHECK(GetMonitorInfoW(MonitorFromWindow(nonclient,MONITOR_DEFAULTTONEAREST),&monitor));
@@ -104,6 +117,7 @@ static int worker(int argc,WCHAR **argv)
         ShowWindow(w,SW_MINIMIZE);ShowWindow(w,SW_RESTORE);
         ShowWindow(w,SW_MAXIMIZE);ShowWindow(w,SW_RESTORE);settle();
     }
+    CHECK(position_fixture(w,anchor));
     DWORD gdi=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
     DWORD user=GetGuiResources(GetCurrentProcess(),GR_USEROBJECTS);
     for(int i=0;i<3;++i){
@@ -118,11 +132,12 @@ static int worker(int argc,WCHAR **argv)
         RECT band;GetWindowRect(title,&band);POINT origin={0,0};ClientToScreen(w,&origin);
         RECT hole={origin.x-before.left,band.bottom-before.top,origin.x-before.left+client.right,origin.y-before.top+client.bottom};
         SIZE size={before.right-before.left,before.bottom-before.top};win16_style_layout layout;
-        CHECK(win16_uwp_frame_layout(size,GetDpiForWindow(w),(DWORD)style,FALSE,hole,&layout));
+        CHECK(win16_uwp_frame_layout(size,GetDpiForWindow(w),(DWORD)style,FALSE,hole,NULL,NULL,&layout));
         LPARAM click=MAKELPARAM(layout.minimize.left+2,layout.minimize.top+2);
         command=0;SendMessageW(surface,WM_LBUTTONDOWN,MK_LBUTTON,click);
         SendMessageW(surface,WM_LBUTTONUP,0,click);pump();CHECK(command==SC_MINIMIZE);
         ShowWindow(w,SW_HIDE);CHECK(!IsWindowVisible(surface));ShowWindow(w,SW_SHOWNOACTIVATE);
+        CHECK(position_fixture(w,anchor));
         CHECK(IsWindowVisible(surface));
         /* Native full-screen modes may temporarily hide the title. Keep the
          * adapter installed, but never leave an input surface over content. */
@@ -153,9 +168,11 @@ static int worker(int argc,WCHAR **argv)
             CHECK(SetWindowPos(w,NULL,before.left+20,before.top+20,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE));
             RECT moved,layer;GetWindowRect(w,&moved);GetWindowRect(surface,&layer);CHECK(EqualRect(&moved,&layer));
             ShowWindow(w,SW_MINIMIZE);CHECK(!IsWindowVisible(surface));ShowWindow(w,SW_RESTORE);
+            CHECK(position_fixture(w,anchor));
             GetClientRect(w,&client);CHECK(SetWindowPos(title,NULL,0,0,client.right,48,SWP_NOZORDER|SWP_NOACTIVATE));
             CHECK(IsWindowVisible(surface));
             ShowWindow(w,SW_MAXIMIZE);GetClientRect(w,&client);
+            CHECK(position_fixture(w,anchor));
             CHECK(SetWindowPos(title,NULL,0,0,client.right,48,SWP_NOZORDER|SWP_NOACTIVATE));
             GetWindowRect(w,&moved);GetWindowRect(surface,&layer);
             MONITORINFO monitor={.cbSize=sizeof(monitor)};RECT visible;
@@ -173,6 +190,7 @@ static int worker(int argc,WCHAR **argv)
                 EnableMenuItem(menu,SC_CLOSE,MF_BYCOMMAND|MF_ENABLED);
             }
             ShowWindow(w,SW_RESTORE);GetClientRect(w,&client);
+            CHECK(position_fixture(w,anchor));
             CHECK(SetWindowPos(title,NULL,0,0,client.right,48,SWP_NOZORDER|SWP_NOACTIVATE));
             CHECK(SetWindowPos(w,NULL,before.left,before.top,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE));
         }
@@ -221,6 +239,7 @@ static int worker(int argc,WCHAR **argv)
      * one native title inside TrackPopupMenu's nested loop, then reattach it. */
     HWND peer=CreateWindowExW(0,L"STATIC",L"Other hosted app",WS_OVERLAPPEDWINDOW|WS_VISIBLE,
         550,20,400,300,NULL,NULL,NULL,NULL);CHECK(peer);ShowWindow(peer,SW_SHOWNOACTIVATE);
+    CHECK(position_fixture(peer,anchor));
     RECT peer_client;CHECK(GetClientRect(peer,&peer_client));
     HWND peer_title=CreateWindowExW(0,L"STATIC",L"Other native title",WS_CHILD|WS_VISIBLE,
         0,0,peer_client.right,48,peer,NULL,NULL,NULL);CHECK(peer_title);
@@ -242,11 +261,12 @@ static int worker(int argc,WCHAR **argv)
     CHECK(!IsWindow(peer_surface)&&style_uwp_frame_surface(w));
     CHECK(DestroyWindow(peer));CHECK(style_uwp_frame_remove(w));
     puts("UWP_FRAME_SHARED_THREAD_PASS menu-title-destroy=1 explicit-reattach=1 peer-isolated=1");
+    CHECK(position_fixture(w,anchor));
     CHECK(win16_uwp_frame_apply_actions(w,title,NULL,0));HWND surface=style_uwp_frame_surface(w);
     CHECK(DestroyWindow(title));CHECK(!IsWindow(surface));CHECK(!style_uwp_frame_surface(w));
     title=CreateWindowExW(0,L"STATIC",L"Native title",WS_CHILD|WS_VISIBLE,0,0,client.right,48,w,NULL,NULL,NULL);CHECK(title);
     CHECK(win16_uwp_frame_apply_actions(w,title,NULL,0));surface=style_uwp_frame_surface(w);
-    CHECK(DestroyWindow(w));CHECK(!IsWindow(surface));
+    CHECK(DestroyWindow(w));CHECK(!IsWindow(surface));CHECK(DestroyWindow(anchor));
     puts("UWP_FRAME_LIFECYCLE_PASS repeat=3 owner-destroy=1");return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}

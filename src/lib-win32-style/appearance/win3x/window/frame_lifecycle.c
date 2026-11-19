@@ -71,16 +71,7 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
         if(!p){
             s->menu_bar=theme.menu_bar;
             s->menu_popup=theme.menu_popup;
-            s->palette.active=theme.active.start;
-            s->palette.inactive=theme.inactive.start;
-            s->palette.active_text=theme.active.text;
-            s->palette.inactive_text=theme.inactive.text;
-            if(theme.frame.present){
-                s->palette.face=theme.frame.face;
-                s->palette.light=theme.frame.light;
-                s->palette.shadow=theme.frame.shadow;
-                s->palette.edge=theme.frame.edge;
-            }
+            win16_style_theme_palette(&s->palette,&theme);
         }
     }
     s->native.active=(ex&WS_EX_MDICHILD)?

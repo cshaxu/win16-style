@@ -7,10 +7,16 @@
 #include "lib-win32-style/appearance/win3x/menu/menu_items.h"
 #include <stdlib.h>
 
+extern IMAGE_DOS_HEADER __ImageBase;
+
 typedef struct uwp_frame {
     style_uwp_frame frame;
     style_font_pair fonts;
     win16_style_layout layout;
+    classic_theme theme;
+    win16_style_palette palette;
+    win16_menu_art menu_art;
+    win16_caption_art caption_art;
     style_uwp_frame_action_entry actions[];
 } uwp_frame;
 
@@ -26,14 +32,17 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
     if(!style_uwp_frame_bounds(s->frame.host.owner,s->frame.host.title,outer,&content,&zoomed))return FALSE;
     SIZE size={outer->right-outer->left,outer->bottom-outer->top};
     UINT dpi=GetDpiForWindow(s->frame.host.owner);
-    if(!win16_uwp_frame_layout(size,dpi,(DWORD)GetWindowLongPtrW(s->frame.host.owner,GWL_STYLE),zoomed,content,&s->layout))return FALSE;
-    if(dpi!=s->fonts.dpi && !win16_control_refresh_frame_fonts(s->frame.host.owner,&s->fonts,NULL,NULL))return FALSE;
+    DWORD style=(DWORD)GetWindowLongPtrW(s->frame.host.owner,GWL_STYLE);
+    if(!win16_uwp_frame_layout(size,dpi,style,zoomed,content,
+        &s->theme.title_buttons,&s->theme.caption_metrics,&s->layout))return FALSE;
+    if(dpi!=s->fonts.dpi && !win16_control_refresh_frame_fonts(s->frame.host.owner,&s->fonts,
+        &s->theme.caption_font,&s->theme.menu_font))return FALSE;
     return !s->frame.host.instance.detached;
 }
 static BOOL cached_layout(HWND w,void *context,win16_style_layout *layout)
 {(void)w;*layout=((uwp_frame *)context)->layout;return TRUE;}
 static void colors(void *context,win16_style_palette *palette)
-{(void)context;win16_style_default_palette(palette);}
+{*palette=((uwp_frame *)context)->palette;}
 static void no_scrollbars(HWND w,HDC dc,const win16_style_palette *palette)
 {(void)w;(void)dc;(void)palette;}
 static BOOL refresh_geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
@@ -46,7 +55,7 @@ static void paint_state(void *context,win16_frame_paint_state *result)
 {
     uwp_frame *s=context;
     *result=(win16_frame_paint_state){&s->fonts,s->frame.active,s->frame.no_menu,FALSE,-1,
-        {s->frame.pressed,s->frame.hot},NULL,NULL};
+        {s->frame.pressed,s->frame.hot},&s->caption_art,&s->theme.menu_bar};
 }
 static const win16_frame_renderer_ops renderer={cached_layout,paint_state,colors,no_scrollbars};
 static void refresh_paint(void *context,HDC dc)
@@ -76,9 +85,9 @@ static void input_invoke(void *context,int hit,UINT message)
 static BOOL menu_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,BOOL owner,LRESULT *result)
 {
     uwp_frame *s=context;
-    win16_style_palette palette;win16_style_default_palette(&palette);
-    win16_style_menu_theme theme={&palette,s->fonts.menu,s->fonts.dpi,
-        owner?&s->frame:NULL,owner?style_uwp_frame_menu_selection:NULL,NULL,NULL,NULL};
+    win16_style_menu_theme theme={&s->palette,s->fonts.menu,s->fonts.dpi,
+        owner?&s->frame:NULL,owner?style_uwp_frame_menu_selection:NULL,
+        &s->theme.menu_popup,&s->theme.menu_metrics,&s->menu_art};
     return style_menu_owner_message(&s->frame.menu,w,message,a,b,&win16_style_menu_operations,&theme,result);
 }
 static const style_uwp_frame_ops operations={refresh_geometry,refresh_paint,input_hit,input_button,input_invoke,menu_message,dispose};
@@ -89,6 +98,13 @@ static BOOL apply_actions(HWND w,HWND title,const style_uwp_frame_action *action
     if(!style_uwp_frame_validate(w,title,actions,count))return FALSE;
     uwp_frame *s=calloc(1,sizeof(*s)+(size_t)count*sizeof(*s->actions));
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    HMODULE module=(HMODULE)&__ImageBase;
+    win16_style_default_palette(&s->palette);
+    if(classic_theme_default(module,&s->theme)){
+        win16_style_theme_palette(&s->palette,&s->theme);
+        (void)win16_menu_art_read(module,s->theme.menu_images,&s->menu_art);
+        (void)win16_caption_art_read(module,&s->theme.caption_images,&s->caption_art);
+    }
     return style_uwp_frame_start(&s->frame,w,title,&operations,s,actions,count,s->actions);
 }
 BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const style_uwp_frame_action *actions,unsigned count)

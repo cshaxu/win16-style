@@ -18,6 +18,20 @@ void win16_style_default_palette(win16_style_palette *p)
 }
 
 
+void win16_style_theme_palette(win16_style_palette *p,const classic_theme *theme)
+{
+    p->active=theme->active.start;
+    p->inactive=theme->inactive.start;
+    p->active_text=theme->active.text;
+    p->inactive_text=theme->inactive.text;
+    if(theme->frame.present){
+        p->face=theme->frame.face;
+        p->light=theme->frame.light;
+        p->shadow=theme->frame.shadow;
+        p->edge=theme->frame.edge;
+    }
+}
+
 BOOL win16_control_high_contrast(void)
 {
     HIGHCONTRASTW hc={.cbSize=sizeof(hc)};

@@ -12,8 +12,9 @@ typedef struct modern_frame {
     RECT bounds,client;
     win2k_caption_layout caption;
     UINT dpi;
-    BOOL maximized,sizeable;
+    BOOL maximized,sizeable,themed;
     HFONT font;
+    classic_theme theme;
     style_uwp_frame_action_entry actions[];
 } modern_frame;
 
@@ -34,13 +35,17 @@ static BOOL geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
     UINT dpi=GetDpiForWindow(owner);
     if(!dpi || s->frame.host.instance.detached)return FALSE;
     int border=s->maximized?0:4;
-    int height=win2k_caption_height(dpi,FALSE);
+    const classic_theme *theme=s->themed?&s->theme:NULL;
+    int height=win2k_caption_theme_height(dpi,FALSE,theme);
     s->caption.band=(RECT){border,border,s->bounds.right-border,border+height};
     if(s->caption.band.bottom>=s->client.top || s->caption.band.right<=s->caption.band.left)return FALSE;
     BOOL system=(style&WS_SYSMENU)!=0;
     BOOL present[]={system && (style&WS_MINIMIZEBOX),system && (style&WS_MAXIMIZEBOX),
         system && (ex&WS_EX_CONTEXTHELP),system};
-    if(!win2k_caption_buttons(&s->caption.band,dpi,FALSE,present,s->caption.buttons))return FALSE;
+    BOOL measured=theme?win2k_caption_buttons_with_group(&s->caption.band,dpi,FALSE,present,
+        &theme->title_buttons,&theme->caption_metrics,s->caption.buttons):
+        win2k_caption_buttons(&s->caption.band,dpi,FALSE,present,s->caption.buttons);
+    if(!measured)return FALSE;
     SetRectEmpty(&s->caption.icon);
     if(system){
         s->caption.icon=s->caption.band;
@@ -49,7 +54,7 @@ static BOOL geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
             if(present[i] && s->caption.buttons[i].left<=s->caption.icon.right)return FALSE;
     }
     if(s->dpi!=dpi){
-        HFONT font=win2k_caption_font(dpi,FALSE,NULL);
+        HFONT font=win2k_caption_font(dpi,FALSE,theme?&theme->caption_font:NULL);
         if(!font)return FALSE;
         if(s->font)DeleteObject(s->font);
         s->font=font;s->dpi=dpi;
@@ -68,9 +73,10 @@ static void paint(void *context,HDC dc)
     if(s->frame.host.instance.detached)return;
     int saved=SaveDC(dc);
     if(!saved)return;
-    SetDCBrushColor(dc,RGB(212,208,200));
+    const classic_frame_colors *colors=s->themed?&s->theme.frame:NULL;
+    SetDCBrushColor(dc,colors && colors->present?colors->face:RGB(212,208,200));
     FillRect(dc,&s->bounds,GetStockObject(DC_BRUSH));
-    if(!s->maximized)win2k_window_border_paint(dc,s->bounds.right,s->bounds.bottom,s->caption.band.top,NULL);
+    if(!s->maximized)win2k_window_border_paint(dc,s->bounds.right,s->bounds.bottom,s->caption.band.top,colors);
     UINT flags[WIN2K_CAPTION_PARTS]={0};
     if(!IsRectEmpty(&s->caption.buttons[WIN2K_CLOSE]) && !button(s,HTCLOSE))
         flags[WIN2K_CLOSE]|=DFCS_INACTIVE;
@@ -81,8 +87,8 @@ static void paint(void *context,HDC dc)
     HICON icon=!s->frame.host.instance.detached && !IsRectEmpty(&s->caption.icon)?
         style_window_caption_icon(owner):NULL;
     if(!s->frame.host.instance.detached)
-        win2k_caption_render(dc,&s->caption,title,icon,s->font,s->dpi,
-                             s->frame.active,s->maximized,flags);
+        win2k_caption_render_with_colors(dc,&s->caption,title,icon,s->font,s->dpi,
+            win2k_caption_theme_palette(s->frame.active,s->themed?&s->theme:NULL),colors,s->maximized,flags);
     RestoreDC(dc,saved);
 }
 
@@ -135,7 +141,8 @@ static BOOL menu(void *context,HWND window,UINT message,WPARAM a,LPARAM b,BOOL o
     modern_frame *s=context;
     if(message==WM_INITMENUPOPUP && s->frame.tracking && (HMENU)a==GetSystemMenu(s->frame.host.owner,FALSE))
         b=MAKELPARAM(LOWORD(b),TRUE);
-    return style_menu_owner_message(&s->frame.menu,window,message,a,b,&win2k_system_menu_operations,NULL,result);
+    return style_menu_owner_message(&s->frame.menu,window,message,a,b,&win2k_system_menu_operations,
+        s->themed?&s->theme:NULL,result);
 }
 
 static void dispose(void *context)
@@ -150,11 +157,14 @@ static const style_uwp_frame_ops ops={geometry,paint,hit,button,invoke,menu,disp
 BOOL win2k_uwp_frame_uses(HWND owner)
 {return style_uwp_frame_uses(owner,&ops);}
 
-BOOL win2k_uwp_frame_apply(HWND owner,HWND title,const style_uwp_frame_action *actions,unsigned count)
+BOOL win2k_uwp_frame_apply(HWND owner,HWND title,const style_uwp_frame_action *actions,unsigned count,
+    const classic_theme *theme)
 {
     if(!title){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     if(!style_uwp_frame_validate(owner,title,actions,count))return FALSE;
     modern_frame *s=calloc(1,sizeof(*s)+(size_t)count*sizeof(*s->actions));
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    s->themed=theme!=NULL;
+    if(theme)s->theme=*theme;
     return style_uwp_frame_start(&s->frame,owner,title,&ops,s,actions,count,s->actions);
 }

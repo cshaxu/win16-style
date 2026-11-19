@@ -46,11 +46,7 @@ static int caption_height(HWND window)
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
     frame_window *frame=frame_state(window);
-    if(frame && frame->themed){
-        int height=tool?frame->theme.caption_metrics.tool_height:frame->theme.caption_metrics.height;
-        if(height>0)return MulDiv(height,(int)dpi,96);
-    }
-    return win2k_caption_height(dpi,tool);
+    return win2k_caption_theme_height(dpi,tool,frame && frame->themed?&frame->theme:NULL);
 }
 
 /* Preserve the native path for menus needing application-owned rendering. */
@@ -264,11 +260,8 @@ static void paint(HWND window)
         const msstyles_font *defined=frame->themed?
             (tool?&frame->theme.small_caption_font:&frame->theme.caption_font):NULL;
         HFONT font=win2k_caption_font(dpi,tool,defined);
-        win2k_caption_colors colors=win2k_caption_palette(frame->native.active);
-        if(frame->themed){
-            classic_caption_colors value=frame->native.active?frame->theme.active:frame->theme.inactive;
-            colors=(win2k_caption_colors){value.start,value.end,value.text,frame->theme.gradient};
-        }
+        win2k_caption_colors colors=win2k_caption_theme_palette(frame->native.active,
+            frame->themed?&frame->theme:NULL);
         win2k_caption_render_with_colors(dc,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
             dpi,colors,frame_colors,maximized,flags);
         if(font)DeleteObject(font);

@@ -9,6 +9,13 @@ win2k_caption_colors win2k_caption_palette(BOOL active)
         :(win2k_caption_colors){RGB(128,128,128),RGB(181,181,181),RGB(192,192,192),TRUE};
 }
 
+win2k_caption_colors win2k_caption_theme_palette(BOOL active,const classic_theme *theme)
+{
+    if(!theme)return win2k_caption_palette(active);
+    classic_caption_colors colors=active?theme->active:theme->inactive;
+    return (win2k_caption_colors){colors.start,colors.end,colors.text,theme->gradient};
+}
+
 HFONT win2k_caption_font(UINT dpi,BOOL tool,const msstyles_font *defined)
 {
     if(defined && defined->points){
@@ -23,6 +30,12 @@ HFONT win2k_caption_font(UINT dpi,BOOL tool,const msstyles_font *defined)
 int win2k_caption_height(UINT dpi,BOOL tool)
 {
     return MulDiv(tool?16:19,(int)dpi,96);
+}
+
+int win2k_caption_theme_height(UINT dpi,BOOL tool,const classic_theme *theme)
+{
+    int height=theme?(tool?theme->caption_metrics.tool_height:theme->caption_metrics.height):0;
+    return height>0?MulDiv(height,(int)dpi,96):win2k_caption_height(dpi,tool);
 }
 
 static SIZE button_size(BOOL tool)

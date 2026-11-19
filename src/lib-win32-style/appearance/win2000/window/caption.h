@@ -13,6 +13,7 @@ typedef struct win2k_caption_colors {
 BOOL win2k_caption_paint(HDC dc,const RECT *bounds,PCWSTR title,HFONT font,
                          const win2k_caption_colors *colors);
 win2k_caption_colors win2k_caption_palette(BOOL active);
+win2k_caption_colors win2k_caption_theme_palette(BOOL active,const classic_theme *theme);
 HFONT win2k_caption_font(UINT dpi,BOOL tool,const msstyles_font *defined);
 enum win2k_caption_part { WIN2K_MINIMIZE, WIN2K_MAXIMIZE, WIN2K_HELP, WIN2K_CLOSE, WIN2K_CAPTION_PARTS };
 typedef struct win2k_caption_layout {
@@ -20,6 +21,7 @@ typedef struct win2k_caption_layout {
 } win2k_caption_layout;
 
 int win2k_caption_height(UINT dpi,BOOL tool);
+int win2k_caption_theme_height(UINT dpi,BOOL tool,const classic_theme *theme);
 BOOL win2k_caption_buttons(const RECT *title,UINT dpi,BOOL tool,
                           const BOOL present[4],RECT bounds[4]);
 BOOL win2k_caption_buttons_with_group(const RECT *title,UINT dpi,BOOL tool,

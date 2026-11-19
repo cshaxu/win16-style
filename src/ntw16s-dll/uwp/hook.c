@@ -4,8 +4,24 @@
 #include "lib-win32-style/appearance/win3x/window/modern_frame.h"
 #include "lib-win32-style/appearance/win2000/window/modern_frame.h"
 #include <stdint.h>
+#include <wchar.h>
 static _Thread_local BOOL busy;
-static BOOL apply_frame(HWND frame,BOOL fullscreen,BOOL win2k)
+
+static BOOL read_win2k_theme(HMODULE module,classic_theme *theme)
+{
+    WCHAR path[32768];
+    DWORD length=GetModuleFileNameW(module,path,ARRAYSIZE(path));
+    if(!length || length>=ARRAYSIZE(path))return FALSE;
+    WCHAR *name=wcsrchr(path,L'\\');
+    if(!name)return FALSE;
+    ++name;
+    if(wcscpy_s(name,ARRAYSIZE(path)-(size_t)(name-path),
+        sizeof(void *)==8?L"ntw2ks64.dll":L"ntw2ks32.dll"))return FALSE;
+    /* Read the desktop theme resources without executing the companion DLL. */
+    return SUCCEEDED(classic_theme_load(path,L"NormalSize",L"NormalColor",theme));
+}
+
+static BOOL apply_frame(HWND frame,BOOL fullscreen,BOOL win2k,HMODULE module)
 {
     HWND auxiliary=NULL,title=style_uwp_title(frame,&auxiliary);
     if(!title){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
@@ -14,12 +30,14 @@ static BOOL apply_frame(HWND frame,BOOL fullscreen,BOOL win2k)
     if(fullscreen)actions[count++]=(style_uwp_frame_action){L"Toggle full screen",style_uwp_fullscreen,title};
     HWND surface=style_uwp_frame_surface(frame);
     BOOL previous2k=surface && win2k_uwp_frame_uses(frame);
+    classic_theme model;
+    const classic_theme *theme=(win2k || previous2k) && read_win2k_theme(module,&model)?&model:NULL;
     if(surface && !style_uwp_frame_remove(frame))return FALSE;
-    BOOL ok=win2k?win2k_uwp_frame_apply(frame,title,actions,count):
+    BOOL ok=win2k?win2k_uwp_frame_apply(frame,title,actions,count,theme):
         win16_uwp_frame_apply_actions(frame,title,actions,count);
     if(!ok && surface){
         DWORD error=GetLastError();
-        if(previous2k)(void)win2k_uwp_frame_apply(frame,title,actions,count);
+        if(previous2k)(void)win2k_uwp_frame_apply(frame,title,actions,count,theme);
         else (void)win16_uwp_frame_apply_actions(frame,title,actions,count);
         SetLastError(error);
     }
@@ -37,7 +55,7 @@ static DWORD perform_action(HWND frame,HWND core,WPARAM action,void *context)
     else if(matches)ok=TRUE;
     else ok=GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
         (PCWSTR)(uintptr_t)Ntw16sUwpFrameHook,&module)&&apply_frame(frame,
-            action==NTW16S_UWP_APPLY_FULLSCREEN || action==NTW16S_UWP_APPLY_FULLSCREEN_2K,win2k);
+            action==NTW16S_UWP_APPLY_FULLSCREEN || action==NTW16S_UWP_APPLY_FULLSCREEN_2K,win2k,module);
     DWORD error=ok?ERROR_SUCCESS:GetLastError();return !ok&&!error?ERROR_NOT_SUPPORTED:error;
 }
 LRESULT CALLBACK Ntw16sUwpFrameHook(int code,WPARAM parameter,LPARAM message)

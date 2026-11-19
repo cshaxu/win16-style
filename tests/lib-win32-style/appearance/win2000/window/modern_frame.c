@@ -1,5 +1,6 @@
 #include "lib-win32-style/appearance/win2000/window/modern_frame.h"
 #include "lib-win32-style/appearance/win2000/window/caption.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "ntw16s-dll/uwp/hook.h"
 #include <stdio.h>
 #include <stdint.h>
@@ -82,11 +83,24 @@ int main(void)
     HWND content=CreateWindowW(child.lpszClassName,L"Client stays native",WS_VISIBLE|WS_CHILD,
         0,60,client.right,30,root,NULL,module,NULL);
     CHECK(content);
+    /* Keep the fixture's initial layered restack within its own windows. */
+    HWND anchor=CreateWindowExW(WS_EX_NOACTIVATE|WS_EX_TOOLWINDOW,L"STATIC",L"",
+        WS_POPUP,80,80,1,1,NULL,NULL,module,NULL);
+    CHECK(anchor);
     ShowWindow(root,SW_SHOWNOACTIVATE);
+    ShowWindow(anchor,SW_SHOWNOACTIVATE);
+    CHECK(SetWindowPos(root,anchor,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE));
     RECT before,after,outer,title_screen;
     CHECK(GetWindowRect(content,&before) && GetWindowRect(root,&outer) && GetWindowRect(title,&title_screen));
+    const classic_theme modified={
+        .title_buttons=WIN2000_TITLE_BUTTON_GROUP,
+        .caption_metrics={.height=25,.button={25,16}},
+        .active={RGB(32,64,96),RGB(32,64,96),RGB(255,255,255)},
+        .inactive={RGB(64,32,96),RGB(64,32,96),RGB(255,255,255)}
+    };
     for(unsigned i=0;i<3;++i){
-        CHECK(win2k_uwp_frame_apply(root,title,NULL,0));
+        const classic_theme *theme=i==1?&modified:NULL;
+        CHECK(win2k_uwp_frame_apply(root,title,NULL,0,theme));
         HWND surface=style_uwp_frame_surface(root);
         CHECK(surface && IsWindowVisible(surface));
         CHECK(GetWindowRect(content,&after) && EqualRect(&before,&after));
@@ -96,10 +110,14 @@ int main(void)
         DeleteObject(region);
 
         UINT dpi=GetDpiForWindow(root);
-        RECT band={4,4,outer.right-outer.left-4,4+win2k_caption_height(dpi,FALSE)},buttons[4];
+        RECT band={4,4,outer.right-outer.left-4,4+win2k_caption_theme_height(dpi,FALSE,theme)},buttons[4];
         BOOL present[]={TRUE,TRUE,FALSE,TRUE};
-        CHECK(win2k_caption_buttons(&band,dpi,FALSE,present,buttons));
-        LPARAM close=MAKELPARAM((buttons[3].left+buttons[3].right)/2,(buttons[3].top+buttons[3].bottom)/2);
+        if(theme){
+            CHECK(win2k_caption_buttons_with_group(&band,dpi,FALSE,present,
+                &theme->title_buttons,&theme->caption_metrics,buttons));
+            CHECK(buttons[3].right-buttons[3].left==MulDiv(25,(int)dpi,96));
+        }else CHECK(win2k_caption_buttons(&band,dpi,FALSE,present,buttons));
+        LPARAM close=MAKELPARAM(buttons[3].left+1,(buttons[3].top+buttons[3].bottom)/2);
         SendMessageW(surface,WM_LBUTTONDOWN,MK_LBUTTON,close);
         CHECK(GetCapture()==surface);
         SendMessageW(surface,WM_LBUTTONUP,0,close);
@@ -111,20 +129,23 @@ int main(void)
             ShowWindow(root,SW_MINIMIZE);
             CHECK(IsIconic(root) && !IsWindowVisible(surface));
             ShowWindow(root,SW_RESTORE);
+            CHECK(SetWindowPos(root,anchor,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE));
             CHECK(!IsIconic(root) && IsWindowVisible(surface));
             ShowWindow(root,SW_MAXIMIZE);
+            CHECK(SetWindowPos(root,anchor,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE));
             CHECK(IsZoomed(root) && IsWindowVisible(surface) && style_uwp_frame_surface(root)==surface);
             ShowWindow(root,SW_RESTORE);
+            CHECK(SetWindowPos(root,anchor,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE));
             CHECK(!IsZoomed(root) && IsWindowVisible(surface));
         }
         CHECK(style_uwp_frame_remove(root) && !IsWindow(surface));
         CHECK(IsWindowVisible(title) && GetWindowRect(title,&after) && EqualRect(&title_screen,&after));
     }
     CHECK(!product_modes(root,content));
-    CHECK(win2k_uwp_frame_apply(root,title,NULL,0));
+    CHECK(win2k_uwp_frame_apply(root,title,NULL,0,NULL));
     HWND surface=style_uwp_frame_surface(root);
     CHECK(DestroyWindow(title) && !IsWindow(surface));
-    CHECK(DestroyWindow(root) && UnregisterClassW(cls.lpszClassName,module) &&
+    CHECK(DestroyWindow(root) && DestroyWindow(anchor) && UnregisterClassW(cls.lpszClassName,module) &&
         UnregisterClassW(child.lpszClassName,module) && UnregisterClassW(L"ApplicationFrameTitleBarWindow",module));
     puts("WIN2K UWP FRAME PASS client hole, caption close, resize states, repeat, title restoration and destruction");
     return 0;
