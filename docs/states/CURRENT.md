@@ -24,6 +24,8 @@ M0 T28 S3 Windows 2000 公共对话框已按用户批准的范围收口。P45 �
 详见 [S3 收口审计](../history/M0-T28-S3-common-dialogs.md)和
 [实包与原版参考](../etc/evidence/t28-s3-dialog-reference.json)。
 
+T28 已获用户批准收口，范围和双宽交付证据见 [T28 总验收](../history/M0-T28-closure-audit.md)。
+
 当前无活动任务包。
 
 ## Identifier State
@@ -37,7 +39,7 @@ M0 T28 S3 Windows 2000 公共对话框已按用户批准的范围收口。P45 �
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P50；二进制仍为 P45 八件。
+- Last verified remote delivery: M0 T28 S3 P51；二进制仍为 P45 八件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: 无活动任务包。
