@@ -69,29 +69,30 @@ S7 P1 已完成同批发布与实包验证，聚焦包 39/39 和两处发布路�
 S8 已把 Win2K 已有对话框度量及打印 General 三份模板接入主题，
 双宽开发回归详见[验证记录](../history/M0-T29-S8-common-dialogs.md)。
 S8 P1 同批发布后聚焦回归 73/73，直接复验 36 项通过、2 项 x86 打印上下文跳过。
+已复核远端 `79dc7c2e` 的 12 个发布文件，S8 收口。S9 接续现代外框。
 用户确认 T29 最终发行包为七件。启动器和两份 `ntwshk` 加两组主题，
 见[主题构建契约](../proposals/msstyles-build-contract.md)。S11 负责独立七件目录验收与切换。
 
-## M0 T29 S8 Packet
+## M0 T29 S9 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；M0 固定。 |
-| Admission And Approval | 用户批准按 T29 S2–S12 连续实施；S7 实际远端通过后接续。 |
-| Objective | 迁移 S2 台账 38–42、51–55 的既有公共对话框呈现与布局，保持 Win32、Shell/COM 与打印契约。 |
-| Non-goals | 保留 T28 批准跳过的真实域队列和有效打印扩展页验收；现代外框及七件运行时切换在 S9–S11。 |
-| Reference Baseline | S7 P1 同批八件运行包和四份主题；T20 与 T28 S3 验证范围。 |
+| Admission And Approval | 用户批准按 T29 S2–S12 连续实施；S8 实际远端通过后接续。 |
+| Objective | 迁移 S2 台账 43、46 的 Win16 与 Win2K 现代外框；三类宿主使用同一主题模型和已有呈现器。 |
+| Non-goals | 不增加客户区控件、宿主资格、权限或接入面；中性运行时和正式七件包由 S10–S11 完成。 |
+| Reference Baseline | S8 P1 同批八件开发运行包和四份主题，以及 T28 双风格外框、撤销和现代宿主证据。 |
 | Candidate Proposal | docs/proposals/msstyles-classic-runtime.md。 |
-| Files And ABI Surface | 主题编译及读取、已交付对话框模板与呈现、公共对话框应用层和自有夹具；保持现有 API、ABI 及回调协议。 |
-| Applicable Rules | C17、双位宽、原始资源与来源字节保持；回调和内存、PIDL、打印句柄归属不变。 |
-| Verification | 固定文件与目录、查找替换、字体、展开色板、标准与扩展打印、页面设置及消息框。逐项对照布局、结果和回退，覆盖 A/W、普通启动和自有全局接收路径。 |
-| Expected Markers | 独立主题读回成立，渲染和布局对照保留原基线，所选路径、打印与页面数据、取消、命令、帮助和回调均按既有语义返回。 |
-| Asset Needs | 既有对话框资源与来源声明、固定样式主题、现有双宽测试程序和自有临时文件目录。 |
-| Reporting Requirements | 记录每个台账单元的主题字段或运行时归属、实际验证路径、跳过和回退范围。 |
-| Stop Conditions | 遵守已批准的桌面、权限及目标范围；保留原生模板、回退和两项打印验收债务，不提交真实打印任务。 |
-| Exit Criteria | 台账十项均有双宽可核对结论，同快照候选两处发布并完成已发布包回归与远端复核。 |
+| Files And ABI Surface | 两年代窗口呈现、UWP/WinUI 适配和主题读取加现有自有夹具；保持既有接入和窗口消息协议。 |
+| Applicable Rules | C17、双位宽、原有窗口撤销与资源所有权，固定来源及原始绘图资源；不得增加 OS 或第三方依赖。 |
+| Verification | 同 DPI 对照 Win32 和现代宿主的标题、按钮、焦点、重排、最大化与恢复；覆盖自有外框及允许的既有样本。 |
+| Expected Markers | 同一主题修改产生可核对的标题像素变化，按钮与命中共用度量，客户区和原生窗口几何按适配契约保留及恢复。 |
+| Asset Needs | 现有两套主题、原始图形及自有现代外框／合成夹具；已确认的实际宿主可按批准范围复验。 |
+| Reporting Requirements | 区分同像素呈现、窗口和合成尺寸、真实宿主及自有模型；逐项报告两年代待证范围。 |
+| Stop Conditions | 保留已批准的桌面和权限限制；适配资格、错误回退及会话清理继续用当前行为。 |
+| Exit Criteria | 台账 43、46 有双宽可核对的代码与样本结论，同快照候选两处发布，发布后回归并复核实际远端。 |
 | Original Owner Request | 将 Win16、Win2000 风格迁入同一主题编译及运行机制，保持既有外观和公开行为。 |
-| Similar-Issue Sweep | 核对 A/W、普通与自有全局接收入口是否仍使用不同模板、颜色或调用结果路径。 |
+| Similar-Issue Sweep | 核对常规外框、合成外框和直接覆盖面是否各用颜色、标题字体、按钮度量或图形默认值。 |
 
 ## Identifier State
 
@@ -104,18 +105,18 @@ S8 P1 同批发布后聚焦回归 73/73，直接复验 36 项通过、2 项 x86 
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S7 P1；八件开发运行包及四个主题预览。
+- Last verified remote delivery: M0 T29 S8 P1；八件开发运行包及四个主题预览。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 8
-- Open task: M0 T29 S8；公共对话框。
+- Last allocated T29 S: 9
+- Open task: M0 T29 S9；UWP/WinUI 外框。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll。O:/winnt、assets 与远端已核对 [T29 S7 P1](../history/M0-T29-S7-composite-controls.md)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll。O:/winnt、assets 与远端已核对 [T29 S8 P1](../history/M0-T29-S8-common-dialogs.md)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
-- 来源1182回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
+- 来源1183回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
 - propagation停用、窗口恢复、thread hook解除与物理DLL/late patch卸载分别报告；原有进程存活期固定/保留能力不改称安全卸载。
 - 禁止computer-use、创建或切换私有桌面；只用自有有界当前桌面探针。用户已永久授权非computer-use验证及按身份处理正式文件实际占用者；不重复请求同一授权，不改系统安全设置。
 - 历史逐文件来源及迁移见[原顺序台账](../history/M0-T26-S1-ordered-audit.md)、各S证据与T26规划；早期lib-style/lib-win32/style路径是历史路径，当前旧生产目录已删除。

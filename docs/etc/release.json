@@ -607,7 +607,7 @@
     ]
   },
   "closure": {
-    "S8": "local delivery verified; remote audit pending",
+    "S8": "closed after remote audit of P1 (79dc7c2e)",
     "T29": "active",
     "M0": "fixed"
   }
