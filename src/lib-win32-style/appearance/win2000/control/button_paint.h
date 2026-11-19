@@ -6,5 +6,6 @@
 
 /* Synchronous native BUTTON snapshot. Caller pins instance and owns the DC;
  * application font/images are borrowed and its input protocol stays native. */
-BOOL win2k_button_paint(HWND,style_instance *,HDC,const classic_push_colors *);
+BOOL win2k_button_paint(HWND,style_instance *,HDC,const classic_push_colors *,const classic_choice_colors *,
+    const classic_group_colors *);
 #endif

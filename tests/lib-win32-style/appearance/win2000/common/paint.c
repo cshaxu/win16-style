@@ -51,22 +51,22 @@ int main(void)
     const unsigned long long golden[]={0xc68eca65c0304287ull,0x2f492bf0b4662f9aull,0x1bfea9cb15233217ull,0xf36f079a80b8802bull};
     RECT cell={0,0,13,13},canvas={0,0,40,30};HGDIOBJ borrowed_font=GetCurrentObject(dc,OBJ_FONT);
     for(unsigned sample=0;sample<4;++sample){
-        CHECK(win2k_fill(dc,&canvas,p->face)&&win2k_choice_glyph(dc,&cell,glyph_states[sample],p));
+        CHECK(win2k_fill(dc,&canvas,p->face)&&win2k_choice_glyph(dc,&cell,glyph_states[sample],p,NULL));
         CHECK(glyph_hash(dc)==golden[sample] && GetCurrentObject(dc,OBJ_FONT)==borrowed_font);
         win2k_palette old_dark=*p;old_dark.dark=RGB(0,0,0);
-        CHECK(win2k_fill(dc,&canvas,p->face)&&win2k_choice_glyph(dc,&cell,glyph_states[sample],&old_dark));
+        CHECK(win2k_fill(dc,&canvas,p->face)&&win2k_choice_glyph(dc,&cell,glyph_states[sample],&old_dark,NULL));
         CHECK(glyph_hash(dc)!=golden[sample]);
     }
-    CHECK(win2k_choice_glyph(dc,&cell,DFCS_BUTTONCHECK|DFCS_CHECKED|DFCS_INACTIVE,p));
+    CHECK(win2k_choice_glyph(dc,&cell,DFCS_BUTTONCHECK|DFCS_CHECKED|DFCS_INACTIVE,p,NULL));
     CHECK(GetPixel(dc,6,6)==RGB(128,128,128) && GetPixel(dc,3,3)==RGB(212,208,200));
-    CHECK(win2k_choice_glyph(dc,&cell,DFCS_BUTTON3STATE|DFCS_CHECKED,p));
+    CHECK(win2k_choice_glyph(dc,&cell,DFCS_BUTTON3STATE|DFCS_CHECKED,p,NULL));
     COLORREF a=GetPixel(dc,2,2),b=GetPixel(dc,3,2);
     CHECK(a!=b && (a==p->face || a==p->highlight) && (b==p->face || b==p->highlight));
     CHECK(GetPixel(dc,6,6)==p->shadow);
-    CHECK(win2k_choice_glyph(dc,&cell,DFCS_BUTTONCHECK|DFCS_FLAT,p)&&GetPixel(dc,1,1)==p->text);
-    CHECK(!win2k_choice_glyph(dc,&cell,DFCS_BUTTONRADIO|DFCS_HOT,p));
+    CHECK(win2k_choice_glyph(dc,&cell,DFCS_BUTTONCHECK|DFCS_FLAT,p,NULL)&&GetPixel(dc,1,1)==p->text);
+    CHECK(!win2k_choice_glyph(dc,&cell,DFCS_BUTTONRADIO|DFCS_HOT,p,NULL));
     DWORD gdi=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);CHECK(gdi);
-    for(unsigned repeat=0;repeat<64;++repeat)CHECK(win2k_choice_glyph(dc,&cell,DFCS_BUTTONRADIO|DFCS_CHECKED,p));
+    for(unsigned repeat=0;repeat<64;++repeat)CHECK(win2k_choice_glyph(dc,&cell,DFCS_BUTTONRADIO|DFCS_CHECKED,p,NULL));
     CHECK(GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS)==gdi);
     /* Original Display Properties normal down-arrow: seven/five/three/one
      * black pixels, recorded independently in t27-s6-list-combo.json. */

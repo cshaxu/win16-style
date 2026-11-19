@@ -67,7 +67,8 @@ static BOOL label(HWND window,style_instance *instance,HDC dc,const style_contro
     }
     return result;
 }
-BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classic_push_colors *colors)
+BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classic_push_colors *colors,
+    const classic_choice_colors *choice,const classic_group_colors *group_colors)
 {
     win2k_palette palette=win2k_standard_palette;
     const win2k_palette *p=&palette;
@@ -83,6 +84,12 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
     if(!GetClientRect(window,&client))goto done;
     UINT type=style_control_button_type(window,initial_style);
     BOOL group=type==BS_GROUPBOX;
+    if(group && group_colors && group_colors->text.present){
+        palette.text=group_colors->text.normal;
+        palette.gray=group_colors->text.disabled;
+        palette.shadow=group_colors->shadow;
+        palette.highlight=group_colors->highlight;
+    }
     if(!push_style(type,initial_style)){
         brush=win2k_control_brush(window,instance,dc,p);if(!brush)goto done;
         if(!group && !FillRect(dc,&client,brush))goto done;
@@ -143,7 +150,9 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
         state|=radio?DFCS_BUTTONRADIO:snapshot.check==BST_INDETERMINATE?DFCS_BUTTON3STATE:DFCS_BUTTONCHECK;
         if(snapshot.check)state|=DFCS_CHECKED;
         if(snapshot.style&WS_DISABLED)state|=DFCS_INACTIVE;
-        result=win2k_choice_glyph(dc,&glyph,state,p);
+        const classic_choice_surface *entry=classic_choice_entry(choice,radio,snapshot.check,
+            (snapshot.style&WS_DISABLED)!=0,snapshot.state);
+        result=win2k_choice_glyph(dc,&glyph,state,p,classic_choice_color(entry));
     }
 done:
     if(!RestoreDC(dc,saved))result=FALSE;

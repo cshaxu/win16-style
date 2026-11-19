@@ -9,7 +9,8 @@ static DWORD pixel(COLORREF color)
     return ((DWORD)GetRValue(color)<<16)|((DWORD)GetGValue(color)<<8)|GetBValue(color);
 }
 
-static void tint_grip(HWND window,HDC dc,const RECT *client,int pane_end,const style_instance *instance)
+static void tint_grip(HWND window,HDC dc,const RECT *client,int pane_end,const style_instance *instance,
+    COLORREF shadow)
 {
     if(!(GetWindowLongPtrW(window,GWL_STYLE)&SBARS_SIZEGRIP) || IsZoomed(GetParent(window)))return;
     SIZE size={client->right-pane_end,client->bottom};
@@ -17,7 +18,7 @@ static void tint_grip(HWND window,HDC dc,const RECT *client,int pane_end,const s
     POINT point={client->right-3,client->bottom-3};
     if(!ClientToScreen(window,&point) ||
         SendMessageW(window,WM_NCHITTEST,0,MAKELPARAM(point.x,point.y))!=HTBOTTOMRIGHT || instance->detached)return;
-    DWORD native=pixel(GetSysColor(COLOR_3DSHADOW)),classic=pixel(win2k_standard_palette.shadow);
+    DWORD native=pixel(GetSysColor(COLOR_3DSHADOW)),classic=pixel(shadow);
     if(native==classic || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL))return;
     style_bitmap grip={0};
     if(!style_bitmap_ensure(&grip,dc,size))return;
@@ -35,7 +36,8 @@ static void tint_grip(HWND window,HDC dc,const RECT *client,int pane_end,const s
     style_bitmap_dispose(&grip);
 }
 
-void win2k_status_panes(HWND window,HDC dc,const style_instance *instance,const style_control_status_state *state)
+void win2k_status_panes(HWND window,HDC dc,const style_instance *instance,
+    const style_control_status_state *state,const win2k_palette *palette)
 {
     if(!dc || instance->detached || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL))return;
     unsigned epoch=state->epoch;
@@ -56,9 +58,9 @@ void win2k_status_panes(HWND window,HDC dc,const style_instance *instance,const 
     for(LRESULT i=0;i<count;++i){
         RECT pane=panes[i],inside;
         if((flags[i]&SBT_NOBORDERS) || !IntersectRect(&inside,&client,&pane) || !EqualRect(&inside,&pane))continue;
-        win2k_edge(dc,&pane,(flags[i]&SBT_POPOUT)?BDR_RAISEDINNER:BDR_SUNKENOUTER,BF_RECT,&win2k_standard_palette);
+        win2k_edge(dc,&pane,(flags[i]&SBT_POPOUT)?BDR_RAISEDINNER:BDR_SUNKENOUTER,BF_RECT,palette);
     }
     /* The native layout keeps the grip outside the last pane. */
     if(panes[count-1].right>0 && (flags[count-1]&SBT_OWNERDRAW)==0)
-        tint_grip(window,dc,&client,panes[count-1].right,instance);
+        tint_grip(window,dc,&client,panes[count-1].right,instance,palette->shadow);
 }

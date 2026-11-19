@@ -20,9 +20,8 @@ static DWORD dib_color(COLORREF color)
     return ((DWORD)GetRValue(color)<<16)|((DWORD)GetGValue(color)<<8)|GetBValue(color);
 }
 
-BOOL win2k_updown_paint(HWND window,style_instance *instance,HDC target)
+BOOL win2k_updown_paint(HWND window,style_instance *instance,HDC target,const win2k_palette *p)
 {
-    const win2k_palette *p=&win2k_standard_palette;
     const COLORREF key=RGB(253,11,239);
     const int indices[]={COLOR_BTNFACE,COLOR_3DLIGHT,COLOR_3DSHADOW,COLOR_3DDKSHADOW,COLOR_3DHIGHLIGHT,COLOR_BTNTEXT};
     const COLORREF colors[]={p->face,p->light,p->shadow,p->dark,p->highlight,p->text};

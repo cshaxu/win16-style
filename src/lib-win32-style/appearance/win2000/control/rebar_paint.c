@@ -10,7 +10,8 @@ BOOL win2k_rebar_supported(HWND window)
 
 void win2k_rebar_grip(HWND window,const NMCUSTOMDRAW *draw,const void *context)
 {
-    const style_instance *instance=context;
+    const win2k_bar_draw *parameters=context;
+    const style_instance *instance=parameters->instance;
     UINT dpi=GetDpiForWindow(window);
     if(!draw->hdc || !dpi)return;
     int border=GetSystemMetricsForDpi(SM_CXBORDER,dpi);
@@ -26,5 +27,5 @@ void win2k_rebar_grip(HWND window,const NMCUSTOMDRAW *draw,const void *context)
     COLORREF background=band.clrBack;
     if(background==CLR_DEFAULT)background=(COLORREF)SendMessageW(window,RB_GETBKCOLOR,0,0);
     if(instance->detached || (background!=CLR_DEFAULT && background!=GetSysColor(COLOR_BTNFACE)))return;
-    win2k_edge(draw->hdc,&grip,BDR_RAISEDINNER,BF_RECT|BF_MIDDLE,&win2k_standard_palette);
+    win2k_edge(draw->hdc,&grip,BDR_RAISEDINNER,BF_RECT|BF_MIDDLE,&parameters->palette);
 }

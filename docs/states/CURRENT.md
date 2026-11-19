@@ -53,7 +53,15 @@ Win16 弹出菜单列位移及勾选和箭头原图。Win16 位图字体继续�
 [验证记录](../history/M0-T29-S5-window-menus-fonts.md)。
 S5 P1 双宽干净开发包及四个主题已发布两处，发布后聚焦验证 58/58。
 GitHub main 已复核 `fe51bb15` 的源码和十二个发布文件，S5 收口。
-S6 接续已交付的 Win32 标准控件。
+S6 接续已交付的 Win32 标准控件。复选框、单选框、静态文字、蚀刻边缘和分组框已通过双宽原生对照，
+标准编辑框、列表框、组合框、标签页和表头已通过双宽主题资源原生对照，
+列表视图、树视图、进度条、滑杆和微调按钮的已支持路径已完成阶段性双宽对照，
+工具栏、状态栏及 Rebar 已完成阶段性双宽对照，
+Win2K 日期、月历、RichEdit 和热键边线已完成双宽原生及换色对照，
+见[开发验证](../history/M0-T29-S6-win32-controls.md)。
+S6 P1 八件开发运行包和四份主题已发布两处，聚焦包 102 项通过。
+10 项私有桌面外层跳过后以直接 worker 复测通过。实包摘要与逐项证据
+见[发布记录](../etc/release.json)，S6 待实际远端复核。
 用户确认 T29 最终发行包为七件。启动器和两份 `ntwshk` 加两组主题，
 见[主题构建契约](../proposals/msstyles-build-contract.md)。S11 负责独立七件目录验收与切换。
 
@@ -97,7 +105,7 @@ S6 接续已交付的 Win32 标准控件。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 核对 [T29 S5 P1](../history/M0-T29-S5-window-menus-fonts.md)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll。O:/winnt 与 assets 已核对 [T29 S6 P1](../history/M0-T29-S6-win32-controls.md)，远端仍待复核。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1178回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。

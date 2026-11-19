@@ -1,6 +1,7 @@
 /* Rectangular edge behavior follows Win2000 ntuser/rtl/draw.c DrawEdge;
  * see the pinned source and original-image evidence for T27. */
 #include "paint.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 
 BOOL win2k_fill(HDC dc,const RECT *rect,COLORREF color)
 {
@@ -118,7 +119,8 @@ done:
 
 /* Win2000 rtl/draw.c DrawBox and DrawFrameControl; original screenshot hashes
  * validate the system font's covered outlines separately from the color rule. */
-BOOL win2k_choice_glyph(HDC dc,const RECT *rect,UINT state,const win2k_palette *p)
+BOOL win2k_choice_glyph(HDC dc,const RECT *rect,UINT state,const win2k_palette *p,
+    const classic_surface_colors *surface)
 {
     if(!dc||!rect||!p||rect->right<=rect->left||rect->right-rect->left!=rect->bottom-rect->top)return FALSE;
     UINT kind=state&0xff;
@@ -141,9 +143,13 @@ BOOL win2k_choice_glyph(HDC dc,const RECT *rect,UINT state,const win2k_palette *
         flat?p->text:p->light,flat?p->text:p->dark,flat?p->text:p->highlight,flat?p->text:p->shadow,
         (state&(DFCS_BUTTON3STATE|DFCS_INACTIVE))?p->shadow:p->text
     };
+    if(surface){
+        colors[0]=surface->face;
+        colors[5]=surface->edge;
+    }
     const WCHAR *layers=kind==DFCS_BUTTONRADIO?L"nmlkji":L"gfedcb";
     unsigned first=0;
-    if(mixed && p->highlight==RGB(255,255,255)){
+    if(mixed && colors[0]==RGB(255,255,255) && p->highlight==RGB(255,255,255)){
         if(!win2k_dither(dc,rect,p))goto done;
         first=1;
     }

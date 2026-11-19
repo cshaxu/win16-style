@@ -3,10 +3,11 @@
 #include "../common/paint.h"
 #include "lib-win32-style/application/control/tab_snapshot.h"
 
-static const win2k_palette *const palette=&win2k_standard_palette;
 typedef struct tab_paint {
     HFONT font;
     int hot;
+    win2k_palette palette;
+    COLORREF normal,selected;
 } tab_paint;
 
 BOOL win2k_tab_supported(HWND window)
@@ -18,7 +19,8 @@ BOOL win2k_tab_supported(HWND window)
 
 static void surface(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
 {
-    (void)window;(void)context;
+    (void)window;
+    const win2k_palette *palette=&((const tab_paint *)context)->palette;
     RECT page=snapshot->page;
     InflateRect(&page,4,4);
     page.top+=2;
@@ -42,7 +44,7 @@ static void pixel(HDC dc,int x,int y,COLORREF color)
 
 /* The original DoCorners clears two columns, then draws the two diagonal
  * soft edge layers in the remaining two rows. */
-static void corners(HDC dc,const RECT *r)
+static void corners(HDC dc,const RECT *r,const win2k_palette *palette)
 {
     if(r->right-r->left<4 || r->bottom-r->top<3)return;
     RECT left={r->left,r->top,r->left+2,r->top+3};
@@ -61,6 +63,7 @@ static void paint_item(HWND window,void *context,HDC dc,const style_control_tab_
     const style_control_tab_item *item)
 {
     const tab_paint *paint=context;
+    const win2k_palette *palette=&paint->palette;
     RECT frame=item->rect,content=item->rect;
     BOOL enabled=IsWindowEnabled(window);
     BOOL highlight=(item->native.dwState&TCIS_HIGHLIGHTED)!=0;
@@ -72,9 +75,9 @@ static void paint_item(HWND window,void *context,HDC dc,const style_control_tab_
     int saved=SaveDC(dc);
     if(!saved)return;
     IntersectClipRect(dc,frame.left,frame.top,frame.right,frame.bottom);
-    win2k_fill(dc,&frame,palette->face);
+    win2k_fill(dc,&frame,item->active?paint->selected:paint->normal);
     win2k_edge(dc,&frame,EDGE_RAISED,BF_LEFT|BF_TOP|BF_RIGHT|BF_SOFT,palette);
-    corners(dc,&frame);
+    corners(dc,&frame,palette);
     content.left+=2;
     content.right-=2;
     RECT measured={0};
@@ -105,10 +108,18 @@ static void paint_item(HWND window,void *context,HDC dc,const style_control_tab_
     RestoreDC(dc,saved);
 }
 
-BOOL win2k_tab_paint(HWND window,HDC dc,HFONT font,const style_instance *instance,const style_control_native_state *state)
+BOOL win2k_tab_paint(HWND window,HDC dc,HFONT font,const style_instance *instance,
+    const style_control_native_state *state,const classic_tab_colors *colors)
 {
     const unsigned epoch=state->epoch;
-    tab_paint paint={.font=font,.hot=-1};
+    tab_paint paint={.font=font,.hot=-1,.palette=win2k_standard_palette,
+        .normal=win2k_standard_palette.face,.selected=win2k_standard_palette.face};
+    if(colors->present){
+        paint.palette.face=colors->pane;
+        paint.palette.dark=colors->border;
+        paint.normal=colors->normal;
+        paint.selected=colors->selected;
+    }
     TCHITTESTINFO hit={0};
     if((GetWindowLongPtrW(window,GWL_STYLE)&TCS_HOTTRACK) && IsWindowEnabled(window) &&
        GetCursorPos(&hit.pt) && WindowFromPoint(hit.pt)==window && ScreenToClient(window,&hit.pt))

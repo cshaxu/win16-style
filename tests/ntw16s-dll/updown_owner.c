@@ -3,6 +3,7 @@
 #include <string.h>
 #include "../../src/lib-win32-style/appearance/win3x/control/updown_paint.h"
 #include "lib-win32-style/appearance/win3x/resources/scroll_glyphs.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"UPDOWN_OWNER_FAIL line=%u error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static _Thread_local HWND scope_window;static _Thread_local HDC scope_dc;
@@ -21,6 +22,19 @@ static int worker(int argc,WCHAR **argv)
     HWND w=CreateWindowW(cls.lpszClassName,L"",WS_CHILD,0,0,17,34,root,(HMENU)1,cls.hInstance,NULL),other=CreateWindowW(cls.lpszClassName,L"",WS_CHILD,20,0,17,34,root,(HMENU)2,cls.hInstance,NULL);CHECK(w&&other);HDC source=GetDC(w);CHECK(source);
     win16_style_palette palette={.face=RGB(192,192,192),.light=RGB(255,255,255),.shadow=RGB(128,128,128),.edge=0};owner first,second;CHECK(!style_control_updown_api_enabled());style_control_updown_api_enable();CHECK(style_control_updown_api_enabled());owner_bind(&first,w,&palette);
     RECT rect={0,0,17,17};CHECK(draw(source));CHECK(!first.refs&&!first.errors);CHECK(!style_control_updown_draw_frame(source,&rect,DFC_SCROLL,DFCS_SCROLLUP,(void*)(UINT_PTR)GetCurrentProcessId,ntw16s_native_paint_target));CHECK(!first.refs);
+    const classic_frame_colors frame={RGB(31,88,147),RGB(214,235,249),RGB(90,83,75),RGB(17,26,31),TRUE};
+    HDC themed=CreateCompatibleDC(source);CHECK(themed);
+    HBITMAP bitmap=CreateBitmap(17,17,1,32,NULL);CHECK(bitmap);
+    HGDIOBJ prior=SelectObject(themed,bitmap);CHECK(prior && prior!=HGDI_ERROR);
+    first.paint.frame=&frame;
+    style_control_updown_dc_created(source,themed,(void*)(UINT_PTR)anchor,ntw16s_native_paint_target);
+    CHECK(draw(themed) && GetPixel(themed,0,0)==frame.edge);
+    unsigned face=0;
+    for(int y=2;y<15;++y)for(int x=2;x<15;++x)face+=GetPixel(themed,x,y)==frame.face;
+    CHECK(face && !first.refs);
+    first.paint.frame=NULL;
+    CHECK(SelectObject(themed,prior)==bitmap && DeleteObject(bitmap) && DeleteDC(themed));
+    style_control_updown_dc_deleted(themed);
     /* Real native DC handles; repeated delete events must actually recover
      * capacity, not merely hide stale entries behind a detached HWND. */
     for(unsigned cycle=0;cycle<130;++cycle){HDC dc=CreateCompatibleDC(source);CHECK(dc);style_control_updown_dc_created(source,dc,(void*)(UINT_PTR)anchor,ntw16s_native_paint_target);CHECK(draw(dc)&&!first.refs);CHECK(DeleteDC(dc));style_control_updown_dc_deleted(dc);CHECK(SaveDC(dc)==0);}

@@ -54,9 +54,9 @@ typedef struct native_render {control_style *state;style_control_native_kind kin
 static BOOL native_policy_paint(HWND window,void *context,HDC dc,HFONT font)
 {
     const native_render *render=context;control_style *s=render->state;
-    if(render->kind==STYLE_CONTROL_TAB)return win16_style_tab_paint(window,dc,&s->palette,font,&s->instance,&s->bindings.tab);
-    if(render->kind==STYLE_CONTROL_HEADER)return win16_style_header_paint(window,dc,&s->palette,font,&s->instance,&s->bindings.header);
-    return win16_style_progress_paint(window,dc,&s->palette,&s->instance,&s->bindings.progress);
+    if(render->kind==STYLE_CONTROL_TAB)return win16_style_tab_paint(window,dc,&s->palette,font,&s->instance,&s->bindings.tab,&s->tab_colors);
+    if(render->kind==STYLE_CONTROL_HEADER)return win16_style_header_paint(window,dc,&s->palette,font,&s->instance,&s->bindings.header,&s->header_colors);
+    return win16_style_progress_paint(window,dc,s);
 }
 static void native_paint(HWND window,void *context,HDC dc)
 {

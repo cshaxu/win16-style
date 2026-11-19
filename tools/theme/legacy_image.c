@@ -2,24 +2,28 @@
 #include "legacy_image.h"
 #include "lib-win32-style/appearance/win3x/resources/frame_buttons.h"
 #include "lib-win32-style/appearance/win3x/resources/menu_glyphs.h"
+#include "lib-win32-style/appearance/win3x/resources/control_glyphs.h"
 #include <wincodec.h>
 
 HRESULT classic_write_legacy_png(unsigned image_id,PCWSTR path)
 {
-    if(image_id<CLASSIC_MINIMIZE_IMAGE_ID || image_id>CLASSIC_MENU_ARROW_IMAGE_ID)
+    if(image_id<CLASSIC_MINIMIZE_IMAGE_ID || image_id>CLASSIC_CHOICE_LAST_IMAGE_ID)
         return E_INVALIDARG;
+    const BOOL choice=image_id>=CLASSIC_CHOICE_FIRST_IMAGE_ID;
+    const unsigned cell=choice?image_id-CLASSIC_CHOICE_FIRST_IMAGE_ID:0;
     const BOOL menu=image_id>=CLASSIC_MENU_CHECK_IMAGE_ID;
     const BOOL check=image_id==CLASSIC_MENU_CHECK_IMAGE_ID;
     const BOOL system=image_id>=CLASSIC_SYSTEM_IMAGE_ID;
     const BOOL child=image_id>=CLASSIC_CHILD_SYSTEM_IMAGE_ID;
     const BOOL down=image_id==CLASSIC_SYSTEM_DOWN_IMAGE_ID || image_id==CLASSIC_CHILD_SYSTEM_DOWN_IMAGE_ID;
-    const unsigned width=menu?(check?14:7):system?18:19;
-    const unsigned height=menu?(check?14:11):18, stride=width*3;
+    const unsigned width=choice?14:menu?(check?14:7):system?18:19;
+    const unsigned height=choice?13:menu?(check?14:11):18, stride=width*3;
     const BYTE gray[]={0,255,128,192};
     const BYTE pressed_roles[]={1,0,3,2};
     BYTE pixels[18*19*3];
     for(unsigned y=0;y<height;++y){
-        const char *row=menu?(check?menu_check[y]:menu_arrow[y]):system?system_menu_bitmap[y]+(child?18:0):
+        const char *row=choice?control_checks[(cell/4)*13+y]+(cell%4)*14:
+            menu?(check?menu_check[y]:menu_arrow[y]):system?system_menu_bitmap[y]+(child?18:0):
             frame_buttons[image_id-CLASSIC_MINIMIZE_IMAGE_ID][y];
         for(unsigned x=0;x<width;++x){
             BYTE role=(BYTE)(row[x]-'0');

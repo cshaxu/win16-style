@@ -5,6 +5,7 @@
 #include "lib-win32-style/application/control/control_state.h"
 #include "lib-win32-style/application/control/bindings.h"
 #include "updown_paint.h"
+#include "choice_paint.h"
 #include "lib-win32-style/application/control/message.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 typedef struct control_style {
@@ -12,6 +13,19 @@ typedef struct control_style {
     style_control_state state;
     win16_style_palette palette;
     classic_push_colors push_colors;
+    classic_choice_colors choice_colors;
+    win16_choice_art choice_art;
+    HMODULE choice_module;
+    classic_text_colors label_colors;
+    classic_group_colors group_colors;
+    classic_edit_border edit_colors[CLASSIC_EDIT_STATE_COUNT];
+    classic_list_colors list_colors;
+    classic_combo_colors combo_colors;
+    classic_tab_colors tab_colors;
+    classic_header_colors header_colors;
+    classic_progress_colors progress_colors[2];
+    classic_trackbar_colors trackbar_colors[2];
+    classic_frame_colors frame_colors;
     classic_surface_colors scroll_arrow_colors;
     classic_scroll_colors scroll_colors;
     classic_scroll_metrics scroll_metrics;

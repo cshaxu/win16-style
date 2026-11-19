@@ -13,14 +13,17 @@
 #include <commctrl.h>
 #include <vssym32.h>
 
-BOOL win16_control_black_frame(HDC dc,const RECT *bounds,const RECT *clip)
+BOOL win16_control_color_frame(HDC dc,const RECT *bounds,const RECT *clip,COLORREF color)
 {
     int saved=SaveDC(dc);if(!saved)return FALSE;
     BOOL drew=FALSE;
-    if(!clip || IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)!=ERROR)
-        drew=FrameRect(dc,bounds,(HBRUSH)GetStockObject(BLACK_BRUSH));
+    if((!clip || IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)!=ERROR) &&
+       SetDCBrushColor(dc,color)!=CLR_INVALID)
+        drew=FrameRect(dc,bounds,(HBRUSH)GetStockObject(DC_BRUSH));
     RestoreDC(dc,saved);return drew;
 }
+BOOL win16_control_black_frame(HDC dc,const RECT *bounds,const RECT *clip)
+{return win16_control_color_frame(dc,bounds,clip,RGB(0,0,0));}
 
 BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original)
 {
@@ -44,12 +47,11 @@ void win16_control_panel_shadow(HDC dc,const POINT points[3],BOOL (WINAPI *draw)
     RestoreDC(dc,saved);
 }
 
-void win16_control_month_fill(HDC dc,const RECT *bounds,const RECT *clip)
+void win16_control_month_fill(HDC dc,const RECT *bounds,const RECT *clip,COLORREF color)
 {
     int saved=SaveDC(dc);if(!saved)return;
     if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return;}
-    win16_style_palette palette;win16_style_default_palette(&palette);
-    HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);SetDCBrushColor(dc,palette.active);
+    HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);SetDCBrushColor(dc,color);
     FillRect(dc,bounds,brush);RestoreDC(dc,saved);
 }
 
@@ -79,11 +81,11 @@ BOOL win16_control_cool_grip(HDC dc,const RECT *bounds)
     RestoreDC(dc,saved);return drew;
 }
 
-void win16_style_month_arrow(HDC dc,const RECT *r,const RECT *clip,int part,int state)
+void win16_style_month_arrow(HDC dc,const RECT *r,const RECT *clip,int part,int state,const win16_style_palette *palette)
 {if(!dc || !r || r->right<=r->left || r->bottom<=r->top || r->right-r->left>128 || r->bottom-r->top>128 || r->right-r->left!=r->bottom-r->top)return;
  int saved=SaveDC(dc);if(!saved)return;if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return;}
- win16_style_palette palette;win16_style_default_palette(&palette);const char (*bits)[18]=part==MC_NAVPREV?(state==MCNP_DISABLED?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_DISABLED):state==MCNP_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT)):(state==MCNN_DISABLED?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_DISABLED):state==MCNN_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT));
- win16_control_scroll_arrow(dc,*r,bits,&palette);RestoreDC(dc,saved);
+ const char (*bits)[18]=part==MC_NAVPREV?(state==MCNP_DISABLED?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_DISABLED):state==MCNP_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT)):(state==MCNN_DISABLED?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_DISABLED):state==MCNN_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT));
+ win16_control_scroll_arrow(dc,*r,bits,palette);RestoreDC(dc,saved);
 }
 
 /* USER18:0208..027F: scrollbar-class size box shares the inner border

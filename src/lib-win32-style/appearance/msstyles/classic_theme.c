@@ -1,4 +1,5 @@
 #include "classic_theme.h"
+#include <commctrl.h>
 #include "v4_endian.h"
 #include "v4_property.h"
 #include "v4_tables.h"
@@ -47,11 +48,13 @@ static HRESULT variant_resource(HMODULE module,PCWSTR size,PCWSTR color,theme_re
     return S_OK;
 }
 
-enum theme_class { class_window, class_button, class_scroll_arrow, class_sysmetrics, class_menu, class_count };
+enum theme_class { class_window, class_button, class_scroll_arrow, class_sysmetrics,
+    class_menu, class_edit, class_combo, class_tab, class_header, class_progress, class_trackbar, class_count };
 
 static HRESULT class_indices(theme_resource map,size_t indices[class_count],size_t *count)
 {
-    const PCWSTR names[class_count]={L"Window",L"Button",L"ScrollBar",L"SysMetrics",L"Menu"};
+    const PCWSTR names[class_count]={L"Window",L"Button",L"ScrollBar",L"SysMetrics",L"Menu",
+        L"Edit",L"ComboBox",L"Tab",L"Header",L"Progress",L"TrackBar"};
     if(!map.bytes || !map.size)return HRESULT_FROM_WIN32(ERROR_RESOURCE_DATA_NOT_FOUND);
     for(unsigned i=0;i<class_count;++i)indices[i]=SIZE_MAX;
     *count=0;
@@ -80,6 +83,41 @@ typedef struct theme_field {
 } theme_field;
 
 #define COLOR_FIELD(cls,part,state,name) {cls,part,state,name,TMT_COLOR,0,false}
+
+enum { choice_face=1, choice_ink=2 };
+
+const classic_choice_surface *classic_choice_entry(const classic_choice_colors *colors,
+    BOOL radio,LRESULT check,BOOL disabled,LRESULT button_state)
+{
+    if(!colors)return NULL;
+    unsigned value=check==BST_UNCHECKED?0:(!radio && check==BST_INDETERMINATE?2:1);
+    unsigned state=4*value+(disabled?3:(button_state&BST_PUSHED)?2:(button_state&BST_HOT)?1:0);
+    return radio?&colors->radio[state]:&colors->check[state];
+}
+
+static BOOL read_choice(const msstyles_v4_property *item,classic_choice_colors *colors)
+{
+    BOOL radio=item->part_id==BP_RADIOBUTTON;
+    if(!radio && item->part_id!=BP_CHECKBOX)return TRUE;
+    if(item->state_id==0 || item->state_id>(radio?CLASSIC_RADIO_STATES:CLASSIC_CHECK_STATES))return TRUE;
+    classic_choice_surface *surface=(radio?colors->radio:colors->check)+item->state_id-1;
+    if(item->name_id==TMT_IMAGEFILE){
+        if(surface->image || item->type_id!=TMT_FILENAME || item->data || item->declared_size!=16 ||
+           !item->short_value || item->short_value>UINT16_MAX)return FALSE;
+        surface->image=(WORD)item->short_value;
+        return TRUE;
+    }
+    unsigned field=item->name_id==TMT_FILLCOLOR?choice_face:
+        item->name_id==TMT_GLYPHTEXTCOLOR?choice_ink:0;
+    if(!field)return TRUE;
+    if(item->type_id!=TMT_COLOR || !item->data || item->declared_size!=4)return FALSE;
+    COLORREF value=msstyles_v4_read_word(item->data);
+    if((surface->fields&field) || value>0xffffffu)return FALSE;
+    surface->fields|=field;
+    if(field==choice_face)surface->colors.face=value;
+    else surface->colors.edge=value;
+    return TRUE;
+}
 
 static HRESULT read_fields(const msstyles_v4_property *item,const size_t indices[class_count],
     theme_field *fields,size_t count)
@@ -179,6 +217,62 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
         COLOR_FIELD(class_sysmetrics,0,0,TMT_BTNSHADOW),
         COLOR_FIELD(class_sysmetrics,0,0,TMT_WINDOWFRAME)
     };
+    theme_field label_colors[]={
+        COLOR_FIELD(class_sysmetrics,0,0,TMT_WINDOWTEXT),
+        COLOR_FIELD(class_sysmetrics,0,0,TMT_GRAYTEXT)
+    };
+    theme_field list_colors[]={
+        COLOR_FIELD(class_sysmetrics,0,0,TMT_WINDOW),
+        COLOR_FIELD(class_sysmetrics,0,0,TMT_HIGHLIGHT),
+        COLOR_FIELD(class_sysmetrics,0,0,TMT_HIGHLIGHTTEXT),
+        COLOR_FIELD(class_sysmetrics,0,0,TMT_DKSHADOW3D)
+    };
+    theme_field group_colors[]={
+        COLOR_FIELD(class_button,BP_GROUPBOX,GBS_NORMAL,TMT_TEXTCOLOR),
+        COLOR_FIELD(class_button,BP_GROUPBOX,GBS_DISABLED,TMT_TEXTCOLOR),
+        COLOR_FIELD(class_button,BP_GROUPBOX,0,TMT_EDGESHADOWCOLOR),
+        COLOR_FIELD(class_button,BP_GROUPBOX,0,TMT_EDGEHIGHLIGHTCOLOR)
+    };
+    const unsigned edit_states[]={ETS_NORMAL,ETS_READONLY,ETS_DISABLED};
+    theme_field edit[CLASSIC_EDIT_STATE_COUNT][2];
+    for(size_t i=0;i<ARRAYSIZE(edit);++i){
+        edit[i][0]=(theme_field)COLOR_FIELD(class_edit,EP_EDITTEXT,edit_states[i],TMT_BORDERCOLOR);
+        edit[i][1]=(theme_field)COLOR_FIELD(class_edit,EP_EDITTEXT,edit_states[i],TMT_EDGEDKSHADOWCOLOR);
+    }
+    theme_field combo[]={
+        COLOR_FIELD(class_combo,CP_DROPDOWNBUTTON,CBXS_NORMAL,TMT_FILLCOLOR),
+        COLOR_FIELD(class_combo,CP_DROPDOWNBUTTON,CBXS_PRESSED,TMT_FILLCOLOR),
+        COLOR_FIELD(class_combo,CP_DROPDOWNBUTTON,CBXS_DISABLED,TMT_FILLCOLOR),
+        COLOR_FIELD(class_combo,CP_BORDER,CBB_NORMAL,TMT_BORDERCOLOR),
+        COLOR_FIELD(class_combo,CP_BORDER,CBB_DISABLED,TMT_BORDERCOLOR)
+    };
+    theme_field tab[]={
+        COLOR_FIELD(class_tab,TABP_PANE,0,TMT_FILLCOLOR),
+        COLOR_FIELD(class_tab,TABP_TABITEM,TIS_NORMAL,TMT_FILLCOLOR),
+        COLOR_FIELD(class_tab,TABP_TABITEM,TIS_SELECTED,TMT_FILLCOLOR),
+        COLOR_FIELD(class_tab,TABP_PANE,0,TMT_BORDERCOLOR)
+    };
+    theme_field header[]={
+        COLOR_FIELD(class_header,HP_HEADERITEM,HIS_NORMAL,TMT_FILLCOLOR),
+        COLOR_FIELD(class_header,HP_HEADERITEM,HIS_PRESSED,TMT_FILLCOLOR)
+    };
+    const unsigned progress_bar[]={PP_BAR,PP_BARVERT};
+    const unsigned progress_fill[]={PP_FILL,PP_FILLVERT};
+    theme_field progress[2][5];
+    for(size_t i=0;i<ARRAYSIZE(progress);++i){
+        progress[i][0]=(theme_field)COLOR_FIELD(class_progress,progress_bar[i],0,TMT_FILLCOLOR);
+        progress[i][1]=(theme_field)COLOR_FIELD(class_progress,progress_fill[i],PBFS_NORMAL,TMT_FILLCOLOR);
+        progress[i][2]=(theme_field)COLOR_FIELD(class_progress,progress_bar[i],0,TMT_BORDERCOLOR);
+        progress[i][3]=(theme_field)COLOR_FIELD(class_progress,progress_fill[i],PBFS_ERROR,TMT_FILLCOLOR);
+        progress[i][4]=(theme_field)COLOR_FIELD(class_progress,progress_fill[i],PBFS_PAUSED,TMT_FILLCOLOR);
+    }
+    const unsigned track_part[]={TKP_TRACK,TKP_TRACKVERT},thumb_part[]={TKP_THUMB,TKP_THUMBVERT};
+    theme_field trackbar[2][3];
+    for(size_t i=0;i<ARRAYSIZE(trackbar);++i){
+        trackbar[i][0]=(theme_field)COLOR_FIELD(class_trackbar,track_part[i],0,TMT_FILLCOLOR);
+        trackbar[i][1]=(theme_field)COLOR_FIELD(class_trackbar,thumb_part[i],0,TMT_FILLCOLOR);
+        trackbar[i][2]=(theme_field)COLOR_FIELD(class_trackbar,track_part[i],0,TMT_BORDERCOLOR);
+    }
     theme_field bar[]={
         COLOR_FIELD(class_menu,MENU_BARBACKGROUND,0,TMT_FILLCOLOR),
         COLOR_FIELD(class_menu,MENU_BARITEM,MBI_HOT,TMT_FILLCOLOR),
@@ -215,16 +309,50 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
             return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
         result=read_fields(&item,indices,fields,ARRAYSIZE(fields));
         if(FAILED(result))return result;
-        if(item.class_id==indices[class_button] && item.part_id==BP_PUSHBUTTON){
+        if(item.class_id==indices[class_tab]){
+            result=read_fields(&item,indices,tab,ARRAYSIZE(tab));
+            if(FAILED(result))return result;
+        }
+        if(item.class_id==indices[class_header]){
+            result=read_fields(&item,indices,header,ARRAYSIZE(header));
+            if(FAILED(result))return result;
+        }
+        if(item.class_id==indices[class_progress])
+            for(size_t i=0;i<ARRAYSIZE(progress);++i){
+                result=read_fields(&item,indices,progress[i],ARRAYSIZE(progress[i]));
+                if(FAILED(result))return result;
+            }
+        if(item.class_id==indices[class_trackbar])
+            for(size_t i=0;i<ARRAYSIZE(trackbar);++i){
+                result=read_fields(&item,indices,trackbar[i],ARRAYSIZE(trackbar[i]));
+                if(FAILED(result))return result;
+            }
+        if(item.class_id==indices[class_combo]){
+            result=read_fields(&item,indices,combo,ARRAYSIZE(combo));
+            if(FAILED(result))return result;
+        }
+        if(item.class_id==indices[class_button]){
             result=read_fields(&item,indices,push,ARRAYSIZE(push));
             if(FAILED(result))return result;
+            result=read_fields(&item,indices,group_colors,ARRAYSIZE(group_colors));
+            if(FAILED(result))return result;
+            if(!read_choice(&item,&theme->choice))return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
         }
         if(item.class_id==indices[class_sysmetrics]){
             result=read_fields(&item,indices,font_refs,ARRAYSIZE(font_refs));
             if(FAILED(result))return result;
             result=read_fields(&item,indices,frame_colors,ARRAYSIZE(frame_colors));
             if(FAILED(result))return result;
+            result=read_fields(&item,indices,label_colors,ARRAYSIZE(label_colors));
+            if(FAILED(result))return result;
+            result=read_fields(&item,indices,list_colors,ARRAYSIZE(list_colors));
+            if(FAILED(result))return result;
         }
+        if(item.class_id==indices[class_edit])
+            for(size_t i=0;i<ARRAYSIZE(edit);++i){
+                result=read_fields(&item,indices,edit[i],ARRAYSIZE(edit[i]));
+                if(FAILED(result))return result;
+            }
         if(item.class_id==indices[class_menu]){
             result=read_fields(&item,indices,bar,ARRAYSIZE(bar));
             if(FAILED(result))return result;
@@ -253,6 +381,40 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
     if(frame_fields && frame_fields!=ARRAYSIZE(frame_colors))return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
     if(frame_fields)theme->frame=(classic_frame_colors){frame_colors[0].value,frame_colors[1].value,
         frame_colors[2].value,frame_colors[3].value,TRUE};
+    if(label_colors[0].present && label_colors[1].present)
+        theme->label=(classic_text_colors){label_colors[0].value,label_colors[1].value,TRUE};
+    if(list_colors[0].present && list_colors[1].present && list_colors[2].present && list_colors[3].present)
+        theme->list=(classic_list_colors){list_colors[0].value,list_colors[1].value,
+            list_colors[2].value,list_colors[3].value,TRUE};
+    if(group_colors[0].present && group_colors[1].present && group_colors[2].present && group_colors[3].present)
+        theme->group=(classic_group_colors){{group_colors[0].value,group_colors[1].value,TRUE},
+            group_colors[2].value,group_colors[3].value};
+    for(size_t i=0;i<ARRAYSIZE(edit);++i){
+        if(edit[i][0].present!=edit[i][1].present)return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+        if(edit[i][0].present)
+            theme->edit[i]=(classic_edit_border){edit[i][0].value,edit[i][1].value,TRUE};
+    }
+    size_t combo_fields=0;
+    for(size_t i=0;i<ARRAYSIZE(combo);++i)combo_fields+=combo[i].present;
+    if(combo_fields && combo_fields!=ARRAYSIZE(combo))return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+    if(combo_fields)
+        theme->combo=(classic_combo_colors){{combo[0].value,combo[1].value,combo[2].value},
+            combo[3].value,combo[4].value,TRUE};
+    if(tab[0].present && tab[1].present && tab[2].present && tab[3].present)
+        theme->tab=(classic_tab_colors){tab[0].value,tab[1].value,tab[2].value,tab[3].value,TRUE};
+    if(header[0].present && header[1].present)
+        theme->header=(classic_header_colors){header[0].value,header[1].value,TRUE};
+    for(size_t i=0;i<ARRAYSIZE(progress);++i){
+        const theme_field *p=progress[i];
+        if(p[0].present && p[1].present)
+            theme->progress[i]=(classic_progress_colors){p[0].value,p[1].value,p[2].value,p[3].value,
+                p[4].value,TRUE,p[2].present && p[3].present && p[4].present};
+    }
+    for(size_t i=0;i<ARRAYSIZE(trackbar);++i){
+        const theme_field *t=trackbar[i];
+        if(t[0].present && t[1].present && t[2].present)
+            theme->trackbar[i]=(classic_trackbar_colors){t[0].value,t[1].value,t[2].value,TRUE};
+    }
     for(size_t i=0;i<ARRAYSIZE(menu_images);++i)
         theme->menu_images[i]=(WORD)menu_images[i].value;
     for(size_t i=0;i<ARRAYSIZE(font_refs);++i)

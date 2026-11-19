@@ -1,53 +1,6 @@
 #define COBJMACROS
 #include "caption_art.h"
-#include <string.h>
-#include <wincodec.h>
-
-static HRESULT decode(IWICImagingFactory *factory,HMODULE module,PCWSTR name,
-    UINT width,UINT height,BYTE *roles)
-{
-    const BYTE signature[]={137,'P','N','G',13,10,26,10};
-    HRSRC item=FindResourceW(module,name,L"IMAGE");
-    HGLOBAL handle=item?LoadResource(module,item):NULL;
-    const BYTE *source=handle?LockResource(handle):NULL;
-    DWORD size=source?SizeofResource(module,item):0;
-    if(!source || size<sizeof(signature) || memcmp(source,signature,sizeof(signature)))
-        return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
-
-    IWICStream *stream=NULL;
-    IWICBitmapDecoder *decoder=NULL;
-    IWICBitmapFrameDecode *frame=NULL;
-    IWICFormatConverter *converter=NULL;
-    UINT actual_width,actual_height;
-    BYTE pixels[WIN16_CAPTION_ART_WIDTH*WIN16_CAPTION_ART_HEIGHT*4];
-    HRESULT result=IWICImagingFactory_CreateStream(factory,&stream);
-    if(SUCCEEDED(result))result=IWICStream_InitializeFromMemory(stream,(BYTE *)source,size);
-    if(SUCCEEDED(result))result=IWICImagingFactory_CreateDecoder(factory,&GUID_ContainerFormatPng,&GUID_VendorMicrosoft,&decoder);
-    if(SUCCEEDED(result))result=IWICBitmapDecoder_Initialize(decoder,(IStream *)stream,WICDecodeMetadataCacheOnDemand);
-    if(SUCCEEDED(result))result=IWICBitmapDecoder_GetFrame(decoder,0,&frame);
-    if(SUCCEEDED(result))result=IWICBitmapFrameDecode_GetSize(frame,&actual_width,&actual_height);
-    if(SUCCEEDED(result) && (actual_width!=width || actual_height!=height))
-        result=WINCODEC_ERR_BADIMAGE;
-    if(SUCCEEDED(result))result=IWICImagingFactory_CreateFormatConverter(factory,&converter);
-    if(SUCCEEDED(result))result=IWICFormatConverter_Initialize(converter,(IWICBitmapSource *)frame,
-        &GUID_WICPixelFormat32bppBGRA,WICBitmapDitherTypeNone,NULL,0,WICBitmapPaletteTypeCustom);
-    if(SUCCEEDED(result))result=IWICFormatConverter_CopyPixels(converter,NULL,width*4,sizeof(pixels),pixels);
-    if(converter)IWICFormatConverter_Release(converter);
-    if(frame)IWICBitmapFrameDecode_Release(frame);
-    if(decoder)IWICBitmapDecoder_Release(decoder);
-    if(stream)IWICStream_Release(stream);
-    if(FAILED(result))return result;
-
-    const BYTE gray[]={0,255,128,192};
-    for(UINT i=0;i<width*height;++i){
-        const BYTE *pixel=pixels+i*4;
-        const BYTE *role=memchr(gray,pixel[0],sizeof(gray));
-        if(!role || pixel[0]!=pixel[1] || pixel[1]!=pixel[2] || pixel[3]!=255)
-            return WINCODEC_ERR_BADIMAGE;
-        roles[i]=(BYTE)(role-gray);
-    }
-    return S_OK;
-}
+#include "lib-win32-style/appearance/msstyles/v4_png.h"
 
 HRESULT win16_caption_art_read(HMODULE module,const classic_caption_images *images,win16_caption_art *art)
 {
@@ -67,7 +20,7 @@ HRESULT win16_caption_art_read(HMODULE module,const classic_caption_images *imag
         for(unsigned state=0;SUCCEEDED(result) && state<2;++state){
             PCWSTR name=child?(state?L"CLASSIC_CHILD_SYSTEM_PRESSED":L"CLASSIC_CHILD_SYSTEM"):
                 MAKEINTRESOURCEW(images->id[role][state]);
-            result=decode(factory,module,name,width,WIN16_CAPTION_ART_HEIGHT,value.roles[role][state]);
+            result=msstyles_png_roles(factory,module,name,width,WIN16_CAPTION_ART_HEIGHT,value.roles[role][state]);
         }
     }
     if(factory)IWICImagingFactory_Release(factory);
@@ -92,7 +45,7 @@ HRESULT win16_menu_art_read(HMODULE module,const WORD images[2],win16_menu_art *
     const UINT widths[]={14,7},heights[]={14,11};
     for(unsigned i=0;SUCCEEDED(result) && i<ARRAYSIZE(rows);++i){
         BYTE roles[14*14];
-        result=decode(factory,module,MAKEINTRESOURCEW(images[i]),widths[i],heights[i],roles);
+        result=msstyles_png_roles(factory,module,MAKEINTRESOURCEW(images[i]),widths[i],heights[i],roles);
         for(UINT y=0;SUCCEEDED(result) && y<heights[i];++y)
             for(UINT x=0;x<widths[i];++x){
                 BYTE role=roles[y*widths[i]+x];

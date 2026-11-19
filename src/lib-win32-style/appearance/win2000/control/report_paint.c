@@ -1,6 +1,4 @@
 #include "report_paint.h"
-#include "../common/palette.h"
-#include "lib-win32-style/application/lifecycle/instance.h"
 
 BOOL win2k_listview_supported(HWND window)
 {
@@ -26,9 +24,9 @@ BOOL win2k_treeview_supported(HWND window)
 /* comctl32 tvpaint.c TV_DrawItem and lvrept.c ListView_RDrawItem own layout,
  * app text/image access and custom-draw decisions. Supply standard selection
  * colors only at default item-draw stages, with the native renderer still active. */
-static void selection_colors(HWND window,const NMCUSTOMDRAW *draw,COLORREF *text,COLORREF *background)
+static void selection_colors(HWND window,const NMCUSTOMDRAW *draw,const win2k_palette *p,
+    COLORREF *text,COLORREF *background)
 {
-    const win2k_palette *p=&win2k_standard_palette;
     if(!IsWindowEnabled(window)){
         *text=p->gray;
         *background=p->face;
@@ -45,7 +43,8 @@ static void selection_colors(HWND window,const NMCUSTOMDRAW *draw,COLORREF *text
 
 void win2k_listview_colors(HWND window,NMCUSTOMDRAW *draw,const void *context)
 {
-    const style_instance *instance=context;
+    const win2k_report_draw *parameters=context;
+    const style_instance *instance=parameters->instance;
     NMLVCUSTOMDRAW *item=(NMLVCUSTOMDRAW *)draw;
     if((draw->uItemState&CDIS_SELECTED) && !(draw->uItemState&CDIS_DROPHILITED)){
         DWORD extended=(DWORD)SendMessageW(window,LVM_GETEXTENDEDLISTVIEWSTYLE,0,0);
@@ -54,18 +53,18 @@ void win2k_listview_colors(HWND window,NMCUSTOMDRAW *draw,const void *context)
             return;
         DWORD view=(DWORD)GetWindowLongPtrW(window,GWL_STYLE)&LVS_TYPEMASK;
         if(SendMessageW(window,LVM_GETIMAGELIST,view==LVS_ICON?LVSIL_NORMAL:LVSIL_SMALL,0) || instance->detached)return;
-        selection_colors(window,draw,&item->clrText,&item->clrTextBk);
+        selection_colors(window,draw,&parameters->palette,&item->clrText,&item->clrTextBk);
         /* Selected native items can ignore clrTextBk. This affects only the
          * current draw notification. The item's LVIS_SELECTED stays native. */
         draw->uItemState&=~CDIS_SELECTED;
         return;
     }
-    selection_colors(window,draw,&item->clrText,&item->clrTextBk);
+    selection_colors(window,draw,&parameters->palette,&item->clrText,&item->clrTextBk);
 }
 
 void win2k_treeview_colors(HWND window,NMCUSTOMDRAW *draw,const void *context)
 {
-    (void)context;
+    const win2k_report_draw *parameters=context;
     NMTVCUSTOMDRAW *item=(NMTVCUSTOMDRAW *)draw;
-    selection_colors(window,draw,&item->clrText,&item->clrTextBk);
+    selection_colors(window,draw,&parameters->palette,&item->clrText,&item->clrTextBk);
 }

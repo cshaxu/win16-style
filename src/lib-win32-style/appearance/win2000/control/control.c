@@ -25,6 +25,7 @@
 #include "lib-win32-style/application/window/window_identity.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include <stdlib.h>
+#include <string.h>
 
 extern IMAGE_DOS_HEADER __ImageBase;
 typedef enum win2k_report_role { WIN2K_REPORT_NONE,WIN2K_REPORT_LIST,WIN2K_REPORT_TREE } win2k_report_role;
@@ -35,6 +36,17 @@ typedef struct win2k_control {
     style_native_theme_fn native_theme;
     BOOL frame_owned;
     classic_push_colors push;
+    classic_choice_colors choice;
+    classic_text_colors label;
+    classic_edit_border edit[CLASSIC_EDIT_STATE_COUNT];
+    classic_list_colors list;
+    classic_combo_colors combo_colors;
+    classic_tab_colors tab_colors;
+    classic_header_colors header_colors;
+    classic_progress_colors progress_colors[2];
+    classic_trackbar_colors trackbar_colors[2];
+    classic_group_colors group;
+    classic_frame_colors frame;
     style_control_notify_state parent_binding;
     style_control_combo combo;
     HWND combo_parent;
@@ -165,29 +177,75 @@ static BOOL retire(HWND window,win2k_control *control,BOOL terminal)
     static const style_control_retire_ops ops={finish_input,release_theme};
     return style_control_retire(window,&control->instance,&control->state,terminal,control,&ops);
 }
+static win2k_palette list_palette(const win2k_control *control)
+{
+    win2k_palette palette=win2k_standard_palette;
+    if(control->list.present){
+        palette.window=control->list.background;
+        palette.selection=control->list.selection;
+        palette.selection_text=control->list.selection_text;
+    }
+    if(control->label.present){
+        palette.text=control->label.normal;
+        palette.gray=control->label.disabled;
+    }
+    return palette;
+}
+static win2k_palette frame_palette(const win2k_control *control)
+{
+    win2k_palette palette=win2k_standard_palette;
+    if(control->frame.present){
+        palette.face=palette.light=control->frame.face;
+        palette.highlight=control->frame.light;
+        palette.shadow=control->frame.shadow;
+    }
+    if(control->list.present)palette.dark=control->list.dark;
+    if(control->label.present)palette.text=control->label.normal;
+    return palette;
+}
 static void paint(HWND window,void *context,HDC dc)
 {
     win2k_control *control=context;
     BOOL painted=TRUE;
     if(control->updown_control){
-        painted=win2k_updown_paint(window,&control->instance,dc);
+        win2k_palette palette=frame_palette(control);
+        painted=win2k_updown_paint(window,&control->instance,dc,&palette);
     }else if(control->progress_control){
         style_progress_snapshot snapshot;
-        painted=style_progress_snapshot_read(window,&control->instance,&control->native,win2k_progress_supported,&snapshot) &&
-            win2k_progress_paint(dc,&snapshot,(DWORD)GetWindowLongPtrW(window,GWL_STYLE),&win2k_standard_palette);
+        painted=style_progress_snapshot_read(window,&control->instance,&control->native,win2k_progress_supported,&snapshot);
+        if(painted){
+            DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
+            const classic_progress_colors *colors=&control->progress_colors[(style&PBS_VERTICAL)!=0];
+            win2k_palette palette=win2k_standard_palette;
+            if(colors->present){
+                palette.face=colors->trough;
+                palette.selection=colors->fill;
+            }
+            painted=win2k_progress_paint(dc,&snapshot,style,&palette);
+        }
     }else if(control->tab_control){
         unsigned epoch=control->native.epoch;
         HFONT font=(HFONT)SendMessageW(window,WM_GETFONT,0,0);
         painted=style_control_native_current(window,&control->instance,&control->native,epoch) &&
-            win2k_tab_paint(window,dc,font,&control->instance,&control->native);
+            win2k_tab_paint(window,dc,font,&control->instance,&control->native,&control->tab_colors);
     }else if(control->combo_parent || class_is(window,L"LISTBOX")){
         HWND parent=control->combo_parent?control->combo_parent:GetParent(window);
-        win2k_list_paint(window,&control->instance,parent,dc);
+        win2k_palette palette=list_palette(control);
+        win2k_list_paint(window,&control->instance,parent,dc,&palette);
     }else if(class_is(window,L"COMBOBOX")){
-        painted=win2k_combo_paint(window,&control->instance,dc);
+        painted=win2k_combo_paint(window,&control->instance,dc,&control->combo_colors);
     }else if(static_class(window)){
-        painted=win2k_static_paint(window,&control->instance,dc,&win2k_standard_palette);
-    }else painted=win2k_button_paint(window,&control->instance,dc,&control->push);
+        win2k_palette palette=win2k_standard_palette;
+        if(control->label.present){
+            palette.text=control->label.normal;
+            palette.gray=control->label.disabled;
+        }
+        if(control->frame.present){
+            palette.shadow=control->frame.shadow;
+            palette.highlight=control->frame.light;
+        }
+        painted=win2k_static_paint(window,&control->instance,dc,&palette);
+    }else painted=win2k_button_paint(window,&control->instance,dc,&control->push,&control->choice,&control->group);
     if(!painted &&
        !control->instance.detached){
         int saved=SaveDC(dc);
@@ -213,10 +271,35 @@ static void status_render(HWND window,void *context,HDC dc,BOOL buffered)
     unsigned epoch=control->status.epoch;
     DefSubclassProc(window,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
     RestoreDC(dc,saved);
-    if(epoch==control->status.epoch)win2k_status_panes(window,dc,&control->instance,&control->status);
+    if(epoch==control->status.epoch){
+        win2k_palette palette=frame_palette(control);
+        win2k_status_panes(window,dc,&control->instance,&control->status,&palette);
+    }
 }
 static void edit_border(HWND window,void *context,HDC dc)
-{(void)context;(void)win2k_edit_border(window,dc,&win2k_standard_palette);}
+{
+    const win2k_control *control=context;
+    win2k_palette palette=win2k_standard_palette;
+    if(control->scroll.controller.resources.list){
+        if(control->list.present)palette.dark=control->list.dark;
+        if(control->frame.present){
+            palette.highlight=control->frame.light;
+            palette.shadow=control->frame.shadow;
+        }
+    }
+    win2k_edit_kind kind=win2k_edit_class(window);
+    if(kind==WIN2K_EDIT_STANDARD){
+        const classic_edit_border *border=&control->edit[classic_edit_state_for(window)];
+        if(border->present){
+            palette.text=border->line;
+            palette.dark=border->dark;
+        }
+    }else if(kind==WIN2K_EDIT_NATIVE_CLIENT){
+        palette=frame_palette(control);
+        if(control->frame.present)palette.text=control->frame.edge;
+    }
+    (void)win2k_edit_border(window,dc,&palette);
+}
 static BOOL embedded_input(HWND window,void *context,UINT message,WPARAM a,LPARAM b)
 {
     win2k_control *control=context;
@@ -311,6 +394,13 @@ typedef struct win2k_date_call {
     int saved;
 } win2k_date_call;
 
+static void date_button(HWND window,const style_instance *instance,HDC dc,const RECT *dirty,
+    const style_control_native_button *button)
+{
+    win2k_palette palette=frame_palette(instance->context);
+    win2k_date_button(window,instance,dc,dirty,button,&palette);
+}
+
 static LRESULT date_dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b)
 {
     win2k_date_call *call=context;
@@ -329,7 +419,7 @@ static LRESULT date_dispatch(void *context,HWND window,UINT message,WPARAM a,LPA
         call->saved=0;
     }
     style_control_native_overlay_finish(window,message,a,&control->instance,&no_color_combo,
-        &control->date,&call->overlay,win2k_date_button);
+        &control->date,&call->overlay,date_button);
     SetLastError(error);
     return result;
 }
@@ -364,13 +454,22 @@ static LRESULT parent_dispatch(void *context,HWND parent,UINT message,WPARAM a,L
 {
     win2k_control *control=context;
     if(control->bar || control->header_control || control->track_control || control->report){
+        win2k_bar_draw bar={.instance=&control->instance};
+        if(control->bar)bar.palette=frame_palette(control);
         style_control_notify_ops toolbar=win2k_toolbar_notify;
-        toolbar.context=&control->instance;
-        const style_control_notify_ops rebar={.context=&control->instance,.supported=win2k_rebar_supported,.finish_item=win2k_rebar_grip};
-        const style_control_notify_ops header={.context=&control->instance,.supported=win2k_header_supported,.part=win2k_header_paint};
-        const style_control_notify_ops track={.supported=win2k_trackbar_supported,.part=win2k_trackbar_part};
-        const style_control_notify_ops list={.context=&control->instance,.supported=win2k_listview_plain,.prepare_item=win2k_listview_colors};
-        const style_control_notify_ops tree={.supported=win2k_treeview_supported,.prepare_item=win2k_treeview_colors};
+        toolbar.context=&bar;
+        const style_control_notify_ops rebar={.context=&bar,.supported=win2k_rebar_supported,.finish_item=win2k_rebar_grip};
+        const win2k_header_draw header_draw={&control->instance,&control->header_colors};
+        const style_control_notify_ops header={.context=(void *)&header_draw,.supported=win2k_header_supported,.part=win2k_header_paint};
+        const style_control_notify_ops track={.context=control->trackbar_colors,
+            .supported=win2k_trackbar_supported,.part=win2k_trackbar_part};
+        win2k_report_draw report={.instance=&control->instance};
+        if(control->report){
+            report.palette=list_palette(control);
+            if(control->frame.present)report.palette.face=control->frame.face;
+        }
+        const style_control_notify_ops list={.context=&report,.supported=win2k_listview_plain,.prepare_item=win2k_listview_colors};
+        const style_control_notify_ops tree={.context=&report,.supported=win2k_treeview_supported,.prepare_item=win2k_treeview_colors};
         const style_control_notify_ops *ops=control->bar==WIN2K_BAR_TOOL?&toolbar:control->bar==WIN2K_BAR_REBAR?&rebar:
             control->header_control?&header:control->track_control?&track:
             control->report==WIN2K_REPORT_LIST?&list:&tree;
@@ -429,8 +528,10 @@ static BOOL setup(HWND window,void *context)
             .owner=(HMODULE)GetClassLongPtrW(window,GCLP_HMODULE),.native_legacy_date=TRUE};
         style_control_native_combo_settle(window,WM_PAINT,&control->instance,&control->date,TRUE);
     }
-    if(control->date_control || control->month_control)
-        win2k_date_colors(window,&control->instance,&control->calendar,control->date_control);
+    if(control->date_control || control->month_control){
+        win2k_palette palette=list_palette(control);
+        win2k_date_colors(window,&control->instance,&control->calendar,control->date_control,&palette);
+    }
     if(class_is(window,L"COMBOBOX")){
         const style_control_combo_ops bindings={.lookup=lookup_state};
         const style_control_combo_setup_ops children={
@@ -487,6 +588,17 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     classic_theme theme;
     if(classic_theme_default((HMODULE)&__ImageBase,&theme)){
         control->push=theme.push;
+        control->choice=theme.choice;
+        control->label=theme.label;
+        memcpy(control->edit,theme.edit,sizeof(control->edit));
+        control->list=theme.list;
+        control->combo_colors=theme.combo;
+        control->tab_colors=theme.tab;
+        control->header_colors=theme.header;
+        memcpy(control->progress_colors,theme.progress,sizeof(control->progress_colors));
+        memcpy(control->trackbar_colors,theme.trackbar,sizeof(control->trackbar_colors));
+        control->group=theme.group;
+        control->frame=theme.frame;
         win2k_scroll_theme(&control->scroll,&theme);
     }
     control->scroll.controller.resources.list=combo_parent || class_is(window,L"LISTBOX");

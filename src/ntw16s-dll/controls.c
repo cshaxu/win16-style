@@ -60,19 +60,17 @@ static style_control_state *lookup_control(HWND window)
     return instance?&((control_style *)instance)->state:NULL;
 }
 static const style_control_combo_ops combo_operations={win16_style_vb_font_acquire,lookup_control};
-static BOOL track_border(HWND w,const NMCUSTOMDRAW *draw,const void *context)
-{return win16_style_trackbar_runtime_border(w,draw,context);}
 static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;
-    const style_control_notify_ops ops={.context=&s->palette,.supported=win16_style_trackbar_supported,
-        .part=win16_style_trackbar_part,.runtime_border=track_border};
+    const style_control_notify_ops ops={.context=s,.supported=win16_style_trackbar_supported,
+        .part=win16_style_trackbar_part,.runtime_border=win16_style_trackbar_runtime_border};
     return style_control_notify_message(parent,m,p,l,id,&s->instance,&s->bindings.track,trackbar_notify,&track_calls,&ops);
 }
 static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;
-    const style_control_notify_ops ops={.context=&s->palette,.supported=win16_style_toolbar_supported,
+    const style_control_notify_ops ops={.context=s,.supported=win16_style_toolbar_supported,
         .part=win16_style_toolbar_part};
     return style_control_notify_message(parent,m,p,l,id,&s->instance,&s->bindings.toolbar,toolbar_notify,NULL,&ops);
 }
@@ -91,24 +89,27 @@ BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
  * layout; only the text image is fitted inside the button's existing face. */
 static void draw(HWND w,control_style *s,HDC dc)
 {
-    const classic_push_colors *push=s->themed && style_control_class_is(w,L"BUTTON")?&s->push_colors:NULL;
-    const win16_control_choice_view view={&s->instance,&s->state,&s->palette,push,
+    BOOL themed=s->themed && style_control_class_is(w,L"BUTTON");
+    BOOL label=s->themed && style_control_class_is(w,L"STATIC");
+    const win16_control_choice_view view={&s->instance,&s->state,&s->palette,
+        themed?&s->push_colors:NULL,themed?&s->choice_colors:NULL,
         style_control_button_type,style_control_is_static,style_control_vb_frame,style_control_vb_button,
-        ntw16s_group_choice_button,ntw16s_group_push_button};
+        ntw16s_group_choice_button,ntw16s_group_push_button,s->choice_module,&s->choice_art,
+        label?&s->label_colors:NULL,themed?&s->group_colors:NULL,label?&s->frame_colors:NULL};
     win16_control_draw_choice(w,&view,dc);
 }
 
 /* The native list owns strings, sorting, selection and scrolling. Query only
  * visible rows; never replace item data or convert application owner-draw. */
 static void draw_list(HWND w,control_style *s,HDC dc)
-{win16_control_draw_list(w,&s->instance,&s->state,&s->palette,dc);}
+{win16_control_draw_list(w,s,dc);}
 static void edit_border(HWND w,control_style *s,HDC target)
-{win16_control_edit_border(w,s->edit_border,&s->palette,target);}
+{win16_control_edit_border(w,s,target);}
 static void list_border(HWND w,control_style *s,HDC target)
-{win16_control_list_border(w,&s->palette,target);}
+{win16_control_list_border(w,s,target);}
 
 static void draw_combo(HWND w,control_style *s,HDC dc)
-{win16_control_draw_combo(w,&s->instance,&s->state,s->common_dialog_combo,&s->palette,dc,
+{win16_control_draw_combo(w,s,dc,
     ntw16s_native_get_combo_info,style_control_vb_combo,style_control_vb_drive);}
 
 

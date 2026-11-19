@@ -19,6 +19,7 @@ BOOL win16_control_special_updown_install(HWND w,const win16_style_palette *pale
     HMODULE native=style_control_protocol_updown_module(w);
     if(!native || !style_control_updown_api_enabled()){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
+    s->updown.frame=&s->frame_colors;
     win16_control_updown_register(&s->updown,&s->bindings.updown,w,native,&s->palette,win16_control_scroll_glyphs(),&s->instance,style_instance_acquire_owned,style_instance_return_owned);
     return TRUE;
 }

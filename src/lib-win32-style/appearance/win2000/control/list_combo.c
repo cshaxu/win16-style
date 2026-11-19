@@ -19,6 +19,7 @@ static void select_font(HDC dc,HFONT font)
 typedef struct list_colors {
     HBRUSH background;
     COLORREF text;
+    const win2k_palette *palette;
 } list_colors;
 
 static void list_begin(HWND window,void *context,HDC dc,const style_control_list_snapshot *snapshot)
@@ -34,7 +35,7 @@ static void list_item(HWND window,void *context,HDC dc,const style_control_list_
     const style_control_list_item *item)
 {
     const list_colors *colors=context;
-    const win2k_palette *p=&win2k_standard_palette;
+    const win2k_palette *p=colors->palette;
     if(item->selected>0)win2k_fill(dc,&item->row,p->selection);
     SetTextColor(dc,!IsWindowEnabled(window)?p->gray:item->selected>0?p->selection_text:colors->text);
     RECT label=item->row;
@@ -45,9 +46,8 @@ static void list_item(HWND window,void *context,HDC dc,const style_control_list_
         DrawFocusRect(dc,&item->row);
 }
 
-void win2k_list_paint(HWND window,style_instance *instance,HWND parent,HDC dc)
+void win2k_list_paint(HWND window,style_instance *instance,HWND parent,HDC dc,const win2k_palette *p)
 {
-    const win2k_palette *p=&win2k_standard_palette;
     int saved=SaveDC(dc);
     if(!saved)return;
     HBRUSH brush=win2k_control_color_brush(window,parent,instance,dc,WM_CTLCOLORLISTBOX,p,p->window);
@@ -56,7 +56,7 @@ void win2k_list_paint(HWND window,style_instance *instance,HWND parent,HDC dc)
         brush=(HBRUSH)GetStockObject(DC_BRUSH);
     }
     if(brush){
-        list_colors colors={brush,GetTextColor(dc)};
+        list_colors colors={brush,GetTextColor(dc),p};
         const style_control_list_painter painter={&colors,native_font,list_begin,list_item};
         style_control_list_paint(window,instance,dc,&painter);
     }
@@ -68,7 +68,7 @@ BOOL win2k_combo_info(HWND window,PCOMBOBOXINFO info)
     return GetComboBoxInfo(window,info);
 }
 
-BOOL win2k_combo_paint(HWND window,style_instance *instance,HDC dc)
+BOOL win2k_combo_paint(HWND window,style_instance *instance,HDC dc,const classic_combo_colors *colors)
 {
     const win2k_palette *p=&win2k_standard_palette;
     const style_control_combo_reader reader={NULL,win2k_combo_info,native_font};
@@ -94,12 +94,17 @@ BOOL win2k_combo_paint(HWND window,style_instance *instance,HDC dc)
     if(instance->detached)goto done;
     if(brush)FillRect(dc,&frame,brush);
     else win2k_fill(dc,&frame,enabled && !read_only?p->window:p->face);
-    painted=win2k_edge(dc,&frame,EDGE_SUNKEN,BF_RECT|BF_ADJUST,p);
+    win2k_palette chrome=*p;
+    if(colors->present)chrome.dark=enabled?colors->border:colors->disabled_border;
+    painted=win2k_edge(dc,&frame,EDGE_SUNKEN,BF_RECT|BF_ADJUST,&chrome);
     if(!snapshot.simple){
+        chrome=*p;
         UINT state=DFCS_SCROLLCOMBOBOX;
         if(!enabled)state|=DFCS_INACTIVE;
-        if(snapshot.info.stateButton&STATE_SYSTEM_PRESSED)state|=DFCS_PUSHED|DFCS_FLAT;
-        painted=win2k_scroll_arrow_button(dc,&snapshot.info.rcButton,state,p) && painted;
+        BOOL pressed=(snapshot.info.stateButton&STATE_SYSTEM_PRESSED)!=0;
+        if(pressed)state|=DFCS_PUSHED|DFCS_FLAT;
+        if(colors->present)chrome.face=colors->button[classic_combo_state_for(enabled,pressed)];
+        painted=win2k_scroll_arrow_button(dc,&snapshot.info.rcButton,state,&chrome) && painted;
     }
     if(!snapshot.editable){
         BOOL focused=enabled && GetFocus()==window && !snapshot.pressed;

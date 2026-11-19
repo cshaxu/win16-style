@@ -16,6 +16,9 @@
 typedef struct attachment {
     style_runtime_attachment base;
     BOOL file_owner,picture,button_owner,checklist;
+    COLORREF status_edge;
+    win16_style_palette calendar_palette;
+    COLORREF calendar_selection;
     HFONT month_cached_font;style_font_snapshot_cache status_font;
     style_font_cache fonts;
 } attachment;

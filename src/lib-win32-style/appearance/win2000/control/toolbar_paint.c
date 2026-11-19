@@ -12,9 +12,9 @@ static BOOL supported(HWND window)
 static void prepare(HWND window,NMCUSTOMDRAW *draw,const void *context)
 {
     (void)window;
-    (void)context;
+    const win2k_bar_draw *parameters=context;
     NMTBCUSTOMDRAW *item=(NMTBCUSTOMDRAW *)draw;
-    const win2k_palette *palette=&win2k_standard_palette;
+    const win2k_palette *palette=&parameters->palette;
     if(item->clrBtnFace==GetSysColor(COLOR_BTNFACE))item->clrBtnFace=palette->face;
     if(item->clrBtnHighlight==GetSysColor(COLOR_BTNHIGHLIGHT))item->clrBtnHighlight=palette->highlight;
     if(item->clrText==GetSysColor(COLOR_BTNTEXT))item->clrText=palette->text;
@@ -22,8 +22,9 @@ static void prepare(HWND window,NMCUSTOMDRAW *draw,const void *context)
 
 static void paint(HWND window,const NMCUSTOMDRAW *draw,const void *context)
 {
-    const win2k_palette *palette=&win2k_standard_palette;
-    const style_instance *instance=context;
+    const win2k_bar_draw *parameters=context;
+    const win2k_palette *palette=&parameters->palette;
+    const style_instance *instance=parameters->instance;
     RECT bounds=draw->rc;
     UINT edge,flags=BF_RECT;
     DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
@@ -46,7 +47,8 @@ static void paint(HWND window,const NMCUSTOMDRAW *draw,const void *context)
 
 static void separators(HWND window,const NMCUSTOMDRAW *draw,const void *context)
 {
-    const style_instance *instance=context;
+    const win2k_bar_draw *parameters=context;
+    const style_instance *instance=parameters->instance;
     if(!(GetWindowLongPtrW(window,GWL_STYLE)&TBSTYLE_FLAT) || !draw->hdc)return;
     int inset=GetSystemMetricsForDpi(SM_CYEDGE,GetDpiForWindow(window));
     LRESULT count=SendMessageW(window,TB_BUTTONCOUNT,0,0);
@@ -59,7 +61,7 @@ static void separators(HWND window,const NMCUSTOMDRAW *draw,const void *context)
         rect.left+=(rect.right-rect.left-1)/2;
         InflateRect(&rect,0,-inset);
         if(rect.right-rect.left>=2 && rect.top<rect.bottom)
-            win2k_edge(draw->hdc,&rect,EDGE_ETCHED,BF_LEFT,&win2k_standard_palette);
+            win2k_edge(draw->hdc,&rect,EDGE_ETCHED,BF_LEFT,&parameters->palette);
     }
 }
 

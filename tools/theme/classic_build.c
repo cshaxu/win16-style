@@ -11,12 +11,15 @@
 
 #define THEME_NAME(s) {(const unsigned char *)(s),ARRAYSIZE(s)}
 
-enum { sysmetrics_class=5, button_class, scrollbar_class, window_class, menu_class, first_font_id=601 };
+enum { sysmetrics_class=5, button_class, scrollbar_class, window_class, menu_class,
+    edit_class, combo_class, tab_class, header_class, progress_class, trackbar_class, first_font_id=601 };
 static const msstyles_v4_name classes[]={
     THEME_NAME(L"documentation"),THEME_NAME(L"sizevariant.NormalSize"),
     THEME_NAME(L"sizevariant.Default"),THEME_NAME(L"colorvariant.NormalColor"),
     THEME_NAME(L"globals"),THEME_NAME(L"sysmetrics"),
-    THEME_NAME(L"Button"),THEME_NAME(L"ScrollBar"),THEME_NAME(L"Window"),THEME_NAME(L"Menu")
+    THEME_NAME(L"Button"),THEME_NAME(L"ScrollBar"),THEME_NAME(L"Window"),THEME_NAME(L"Menu"),
+    THEME_NAME(L"Edit"),THEME_NAME(L"ComboBox"),THEME_NAME(L"Tab"),THEME_NAME(L"Header"),THEME_NAME(L"Progress"),
+    THEME_NAME(L"TrackBar")
 };
 static const msstyles_v4_variant variant={
     THEME_NAME(L"Normal"),THEME_NAME(L"NormalSize"),THEME_NAME(L"NormalColor")
@@ -64,6 +67,35 @@ static bool push_button(FILE *output,const classic_theme_source *source)
         if(!property(output,TMT_FILLCOLOR,TMT_COLOR,button_class,BP_PUSHBUTTON,states[i],source->face) ||
            !property(output,TMT_BORDERCOLOR,TMT_COLOR,button_class,BP_PUSHBUTTON,states[i],source->edge))
             return false;
+    return true;
+}
+
+static bool short_property(FILE *output,msstyles_v4_property value);
+
+static bool choice_buttons(FILE *output,const classic_theme_source *source)
+{
+    const unsigned parts[]={BP_CHECKBOX,BP_RADIOBUTTON};
+    for(unsigned i=0;i<ARRAYSIZE(parts);++i){
+        if(source->legacy_caption_images &&
+           !property(output,TMT_BGTYPE,TMT_ENUM,button_class,parts[i],0,BT_IMAGEFILE))return false;
+        unsigned count=i?CLASSIC_RADIO_STATES:CLASSIC_CHECK_STATES;
+        for(unsigned state=0;state<count;++state){
+            BOOL pressed_or_disabled=state%4>=2;
+            BOOL muted=state%4==3 || state>=8;
+            COLORREF fill=pressed_or_disabled?source->choice_pressed_face:source->choice_face;
+            COLORREF ink=muted?source->choice_muted_ink:source->choice_ink;
+            if(!property(output,TMT_FILLCOLOR,TMT_COLOR,button_class,parts[i],state+1,fill) ||
+               !property(output,TMT_GLYPHTEXTCOLOR,TMT_COLOR,button_class,parts[i],state+1,ink))
+                return false;
+            if(source->legacy_caption_images){
+                unsigned row=state>=8?2:i;
+                unsigned column=(state>=4)+2*(state%4==2);
+                unsigned id=CLASSIC_CHOICE_FIRST_IMAGE_ID+4*row+column;
+                if(!short_property(output,(msstyles_v4_property){TMT_IMAGEFILE,TMT_FILENAME,button_class,
+                    parts[i],state+1,id,16,NULL}))return false;
+            }
+        }
+    }
     return true;
 }
 
@@ -138,6 +170,22 @@ static bool menu_colors(FILE *output,const classic_menu_colors *menu)
     return property(output,TMT_BORDERCOLOR,TMT_COLOR,menu_class,MENU_POPUPSEPARATOR,0,menu->separator);
 }
 
+static bool progress_colors(FILE *output,const classic_theme_source *source)
+{
+    const unsigned bar[]={PP_BAR,PP_BARVERT},fill[]={PP_FILL,PP_FILLVERT};
+    for(size_t i=0;i<ARRAYSIZE(bar);++i){
+        if(!property(output,TMT_FILLCOLOR,TMT_COLOR,progress_class,bar[i],0,source->progress_trough) ||
+           !property(output,TMT_FILLCOLOR,TMT_COLOR,progress_class,fill[i],PBFS_NORMAL,source->selection))
+            return false;
+        if(source->own_progress_states &&
+           (!property(output,TMT_BORDERCOLOR,TMT_COLOR,progress_class,bar[i],0,source->edge) ||
+            !property(output,TMT_FILLCOLOR,TMT_COLOR,progress_class,fill[i],PBFS_ERROR,RGB(192,0,0)) ||
+            !property(output,TMT_FILLCOLOR,TMT_COLOR,progress_class,fill[i],PBFS_PAUSED,RGB(192,192,0))))
+            return false;
+    }
+    return true;
+}
+
 static bool write_properties(FILE *output,const classic_theme_source *source)
 {
     const unsigned font_properties[]={TMT_CAPTIONFONT,TMT_SMALLCAPTIONFONT,TMT_MENUFONT};
@@ -145,12 +193,46 @@ static bool write_properties(FILE *output,const classic_theme_source *source)
         if(source->fonts[i] && !short_property(output,(msstyles_v4_property){font_properties[i],TMT_FONT,
             sysmetrics_class,0,0,first_font_id+i,sizeof(LOGFONTW),NULL}))return false;
     if(source->legacy_caption_images && !legacy_images(output))return false;
+    const unsigned edit_states[]={ETS_NORMAL,ETS_READONLY,ETS_DISABLED};
+    for(size_t i=0;i<ARRAYSIZE(edit_states);++i)
+        if(!property(output,TMT_BORDERCOLOR,TMT_COLOR,edit_class,EP_EDITTEXT,edit_states[i],RGB(0,0,0)) ||
+           !property(output,TMT_EDGEDKSHADOWCOLOR,TMT_COLOR,edit_class,EP_EDITTEXT,edit_states[i],source->edge))
+            return false;
+    const unsigned combo_states[]={CBXS_NORMAL,CBXS_PRESSED,CBXS_DISABLED};
+    for(size_t i=0;i<ARRAYSIZE(combo_states);++i)
+        if(!property(output,TMT_FILLCOLOR,TMT_COLOR,combo_class,CP_DROPDOWNBUTTON,combo_states[i],source->face))
+            return false;
+    const unsigned track_part[]={TKP_TRACK,TKP_TRACKVERT},thumb_part[]={TKP_THUMB,TKP_THUMBVERT};
+    for(size_t i=0;i<ARRAYSIZE(track_part);++i)
+        if(!property(output,TMT_FILLCOLOR,TMT_COLOR,trackbar_class,track_part[i],0,RGB(255,255,255)) ||
+           !property(output,TMT_FILLCOLOR,TMT_COLOR,trackbar_class,thumb_part[i],0,source->face) ||
+           !property(output,TMT_BORDERCOLOR,TMT_COLOR,trackbar_class,track_part[i],0,source->edge))
+            return false;
     return property(output,TMT_BTNFACE,TMT_COLOR,sysmetrics_class,0,0,source->face) &&
         property(output,TMT_BTNHIGHLIGHT,TMT_COLOR,sysmetrics_class,0,0,RGB(255,255,255)) &&
         property(output,TMT_BTNSHADOW,TMT_COLOR,sysmetrics_class,0,0,RGB(128,128,128)) &&
         property(output,TMT_WINDOWFRAME,TMT_COLOR,sysmetrics_class,0,0,RGB(0,0,0)) &&
-        menu_colors(output,&source->menu) &&
-        title_metrics(output,&source->caption_metrics) && push_button(output,source) &&
+        property(output,TMT_WINDOWTEXT,TMT_COLOR,sysmetrics_class,0,0,RGB(0,0,0)) &&
+        property(output,TMT_GRAYTEXT,TMT_COLOR,sysmetrics_class,0,0,RGB(128,128,128)) &&
+        property(output,TMT_WINDOW,TMT_COLOR,sysmetrics_class,0,0,RGB(255,255,255)) &&
+        property(output,TMT_HIGHLIGHT,TMT_COLOR,sysmetrics_class,0,0,source->selection) &&
+        property(output,TMT_HIGHLIGHTTEXT,TMT_COLOR,sysmetrics_class,0,0,source->selection_text) &&
+        property(output,TMT_DKSHADOW3D,TMT_COLOR,sysmetrics_class,0,0,source->edge) &&
+        property(output,TMT_BORDERCOLOR,TMT_COLOR,combo_class,CP_BORDER,CBB_NORMAL,source->edge) &&
+        property(output,TMT_BORDERCOLOR,TMT_COLOR,combo_class,CP_BORDER,CBB_DISABLED,source->edge) &&
+        property(output,TMT_FILLCOLOR,TMT_COLOR,tab_class,TABP_PANE,0,source->face) &&
+        property(output,TMT_BORDERCOLOR,TMT_COLOR,tab_class,TABP_PANE,0,source->edge) &&
+        property(output,TMT_FILLCOLOR,TMT_COLOR,tab_class,TABP_TABITEM,TIS_NORMAL,source->face) &&
+        property(output,TMT_FILLCOLOR,TMT_COLOR,tab_class,TABP_TABITEM,TIS_SELECTED,
+            source->selected_tab) &&
+        property(output,TMT_FILLCOLOR,TMT_COLOR,header_class,HP_HEADERITEM,HIS_NORMAL,source->face) &&
+        property(output,TMT_FILLCOLOR,TMT_COLOR,header_class,HP_HEADERITEM,HIS_PRESSED,source->face) &&
+        property(output,TMT_TEXTCOLOR,TMT_COLOR,button_class,BP_GROUPBOX,GBS_NORMAL,RGB(0,0,0)) &&
+        property(output,TMT_TEXTCOLOR,TMT_COLOR,button_class,BP_GROUPBOX,GBS_DISABLED,source->group_disabled_text) &&
+        property(output,TMT_EDGESHADOWCOLOR,TMT_COLOR,button_class,BP_GROUPBOX,0,RGB(128,128,128)) &&
+        property(output,TMT_EDGEHIGHLIGHTCOLOR,TMT_COLOR,button_class,BP_GROUPBOX,0,RGB(255,255,255)) &&
+        menu_colors(output,&source->menu) && progress_colors(output,source) &&
+        title_metrics(output,&source->caption_metrics) && push_button(output,source) && choice_buttons(output,source) &&
         button(output,scrollbar_class,SBP_ARROWBTN,source) &&
         scroll_surface(output,SBP_THUMBBTNHORZ,source) &&
         scroll_surface(output,SBP_THUMBBTNVERT,source) &&
@@ -262,9 +344,11 @@ int main(int argc,char **argv)
             return 1;
         }
     }
-    for(unsigned id=CLASSIC_MINIMIZE_IMAGE_ID;source->legacy_caption_images && id<=CLASSIC_MENU_ARROW_IMAGE_ID;++id){
+    for(unsigned id=CLASSIC_MINIMIZE_IMAGE_ID;source->legacy_caption_images && id<=CLASSIC_CHOICE_LAST_IMAGE_ID;++id){
         WCHAR filename[24];
-        swprintf(filename,ARRAYSIZE(filename),id<CLASSIC_MENU_CHECK_IMAGE_ID?L"caption%u.png":L"menu%u.png",id);
+        const WCHAR *pattern=id>=CLASSIC_CHOICE_FIRST_IMAGE_ID?L"choice%u.png":
+            id>=CLASSIC_MENU_CHECK_IMAGE_ID?L"menu%u.png":L"caption%u.png";
+        swprintf(filename,ARRAYSIZE(filename),pattern,id);
         HRESULT result=classic_write_legacy_png(id,filename);
         if(FAILED(result)){
             fprintf(stderr,"Failed to write original bitmap %u (0x%08lx)\n",id,(unsigned long)result);

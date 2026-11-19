@@ -57,6 +57,20 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
     }
     if(label_control || type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX || (style&BS_PUSHLIKE)){
         win16_style_palette palette=*view->palette;
+        UINT static_type=style&SS_TYPEMASK;
+        BOOL static_shape=(static_type>=SS_BLACKRECT && static_type<=SS_WHITEFRAME) ||
+            (static_type>=SS_ETCHEDHORZ && static_type<=SS_ETCHEDFRAME);
+        if(label_control && static_shape && view->frame && view->frame->present){
+            palette.edge=view->frame->edge;
+            palette.shadow=view->frame->shadow;
+            palette.light=view->frame->light;
+        }else if(label_control && view->label && view->label->present){
+            palette.edge=view->label->normal;
+            palette.shadow=view->label->disabled;
+        }else if(!label_control && type==BS_GROUPBOX && view->group && view->group->text.present){
+            palette.edge=style&WS_DISABLED?view->group->text.disabled:view->group->text.normal;
+            palette.shadow=view->group->shadow;
+        }
         if(view->push && !label_control && (type<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE))){
             BOOL pressed=(state&BST_PUSHED) || ((style&BS_PUSHLIKE) && check!=BST_UNCHECKED);
             classic_surface_colors colors=classic_push_color(view->push,(style&WS_DISABLED)!=0,pressed,
@@ -72,7 +86,17 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
     if(style&BS_LEFTTEXT)OffsetRect(&glyph,r.right-glyph.right,0);
     row=radio?1:check==BST_INDETERMINATE?2:0;
     column=(check!=BST_UNCHECKED?1:0)+((state&BST_PUSHED)?2:0);
-    win16_control_choice_glyph(dc,glyph,dpi,row,column,view->palette);
+    win16_style_palette tile=*view->palette;
+    const classic_choice_surface *entry=classic_choice_entry(view->choice,radio,check,
+        (style&WS_DISABLED)!=0,state);
+    const classic_surface_colors *colors=classic_choice_color(entry);
+    if(colors){
+        tile.light=colors->face;
+        tile.edge=colors->edge;
+    }
+    const char *image=entry?win16_choice_art_get(view->module,entry->image,view->art):NULL;
+    if(view->instance->detached){RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;}
+    win16_control_choice_glyph(dc,glyph,dpi,row,column,&tile,image);
     label=r;if(style&BS_LEFTTEXT)label.right=glyph.left-MulDiv(4,(int)dpi,96);
     else label.left=glyph.right+MulDiv(4,(int)dpi,96);
     SelectObject(dc,font);GetTextMetricsW(dc,&tm);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,view->palette->edge);

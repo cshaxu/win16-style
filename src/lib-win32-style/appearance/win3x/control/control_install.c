@@ -4,6 +4,7 @@
 #include "control_guard.h"
 #include "control_class.h"
 #include "../common/font.h"
+#include <string.h>
 
 extern IMAGE_DOS_HEADER __ImageBase;
 
@@ -64,6 +65,18 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     s->themed=!palette && have_theme;
     if(s->themed){
         s->push_colors=theme.push;
+        s->choice_colors=theme.choice;
+        s->choice_module=(HMODULE)&__ImageBase;
+        s->label_colors=theme.label;
+        memcpy(s->edit_colors,theme.edit,sizeof(s->edit_colors));
+        s->list_colors=theme.list;
+        s->combo_colors=theme.combo;
+        s->tab_colors=theme.tab;
+        s->header_colors=theme.header;
+        memcpy(s->progress_colors,theme.progress,sizeof(s->progress_colors));
+        memcpy(s->trackbar_colors,theme.trackbar,sizeof(s->trackbar_colors));
+        s->group_colors=theme.group;
+        s->frame_colors=theme.frame;
         s->scroll_arrow_colors=theme.scroll_arrow;
         s->scroll_colors=theme.scroll;
     }

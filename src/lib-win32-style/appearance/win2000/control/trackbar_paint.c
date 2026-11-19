@@ -2,6 +2,7 @@
  * Let the native notification supply client geometry and interaction state. */
 #include "trackbar_paint.h"
 #include "../common/paint.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 
 static RECT transpose(RECT r)
 {
@@ -59,7 +60,6 @@ BOOL win2k_trackbar_supported(HWND window)
 
 BOOL win2k_trackbar_part(HWND window,const NMCUSTOMDRAW *draw,const void *context)
 {
-    (void)context;
     BOOL channel=draw->dwItemSpec==TBCD_CHANNEL;
     DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
     BOOL thumb=draw->dwItemSpec==TBCD_THUMB && !(style&TBS_NOTHUMB);
@@ -69,11 +69,18 @@ BOOL win2k_trackbar_part(HWND window,const NMCUSTOMDRAW *draw,const void *contex
        IsRectEmpty(&r) || r.left<0 || r.top<0 || r.right>client.right || r.bottom>client.bottom)return FALSE;
     int saved=SaveDC(dc);
     if(!saved)return FALSE;
-    const win2k_palette *p=&win2k_standard_palette;
+    const classic_trackbar_colors *axes=context;
+    const classic_trackbar_colors *colors=&axes[(style&TBS_VERT)!=0];
+    win2k_palette palette=win2k_standard_palette;
+    if(colors->present){
+        palette.face=colors->thumb;
+        palette.dark=colors->edge;
+    }
+    const win2k_palette *p=&palette;
     BOOL patterned=thumb && ((draw->uItemState&CDIS_SELECTED) || !IsWindowEnabled(window));
     BOOL painted=IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)!=ERROR;
     if(painted && thumb && !(style&TBS_BOTH))painted=pointed_thumb(dc,r,style,patterned,p);
     else if(painted)painted=win2k_edge(dc,&r,channel?EDGE_SUNKEN:EDGE_RAISED,BF_RECT|BF_ADJUST|(thumb?BF_SOFT:0),p) &&
-        (thumb?thumb_fill(dc,&r,patterned,p):win2k_fill(dc,&r,p->highlight));
+        (thumb?thumb_fill(dc,&r,patterned,p):win2k_fill(dc,&r,colors->present?colors->channel:p->highlight));
     return RestoreDC(dc,saved) && painted;
 }

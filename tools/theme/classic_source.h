@@ -23,6 +23,12 @@ typedef struct classic_theme_source {
     const char *fonts[3]; /* caption, small caption, menu */
     classic_menu_colors menu;
     classic_menu_metrics menu_metrics;
+    COLORREF choice_face,choice_pressed_face,choice_ink,choice_muted_ink;
+    COLORREF group_disabled_text;
+    COLORREF selection,selection_text;
+    COLORREF selected_tab;
+    COLORREF progress_trough;
+    bool own_progress_states;
 } classic_theme_source;
 
 static const classic_theme_source classic_sources[]={
@@ -36,7 +42,12 @@ static const classic_theme_source classic_sources[]={
         {CLASSIC_SCROLL_EXTENT_CROSS_AXIS,0},
         {"MS Sans Serif, 10, Bold, Quality:NonAntialiased",NULL,"System, 12, Bold, Quality:NonAntialiased"},
         {RGB(255,255,255),RGB(164,200,240),RGB(0,0,0),RGB(0,0,0),RGB(0,0,0),RGB(0,0,0),TRUE},
-        WIN16_POPUP_MENU_METRICS
+        WIN16_POPUP_MENU_METRICS,
+        RGB(255,255,255),RGB(255,255,255),RGB(0,0,0),RGB(0,0,0),
+        RGB(0,0,0),
+        RGB(164,200,240),RGB(0,0,0),
+        RGB(255,255,255),
+        RGB(255,255,255),true
     },
     {
         "Win2K","Windows 2000",
@@ -48,7 +59,12 @@ static const classic_theme_source classic_sources[]={
         {CLASSIC_SCROLL_EXTENT_SYSTEM,0},
         {"Tahoma, 8, Bold","Tahoma, 6, Bold","Tahoma, 8"},
         {RGB(212,208,200),RGB(0,0,128),RGB(0,0,0),RGB(255,255,255),RGB(128,128,128),RGB(128,128,128),TRUE},
-        {0}
+        {0},
+        RGB(255,255,255),RGB(212,208,200),RGB(0,0,0),RGB(128,128,128),
+        RGB(128,128,128),
+        RGB(10,36,106),RGB(255,255,255),
+        RGB(212,208,200),
+        RGB(212,208,200),false
     }
 };
 

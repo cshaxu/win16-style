@@ -269,13 +269,15 @@ add_library(style-msstyles STATIC
   src/lib-win32-style/appearance/msstyles/classic_theme.c
   src/lib-win32-style/appearance/msstyles/theme_file.c
   src/lib-win32-style/appearance/msstyles/v4_font.c
+  src/lib-win32-style/appearance/msstyles/v4_png.c
   src/lib-win32-style/appearance/msstyles/v4_property.c
   src/lib-win32-style/appearance/msstyles/v4_tables.c)
 target_include_directories(style-msstyles PUBLIC src)
 target_compile_definitions(style-msstyles PRIVATE _WIN32_WINNT=0x0A00)
+target_link_libraries(style-msstyles PRIVATE uuid)
 target_link_libraries(win2k-window PRIVATE style-msstyles)
 target_link_libraries(win16-window PRIVATE style-msstyles)
-target_link_libraries(win16-control PRIVATE style-msstyles)
+target_link_libraries(win16-control PRIVATE style-msstyles ole32 uuid)
 target_link_libraries(win2k-control PRIVATE style-msstyles)
 add_executable(classic-theme-compiler EXCLUDE_FROM_ALL tools/theme/classic_build.c tools/theme/legacy_image.c)
 target_include_directories(classic-theme-compiler PRIVATE src)
@@ -292,6 +294,9 @@ foreach(stem IN ITEMS Win16 Win2K)
       list(APPEND image_files "${out}/caption${id}.png")
     endforeach()
     list(APPEND image_files "${out}/menu511.png" "${out}/menu512.png")
+    foreach(id RANGE 513 524)
+      list(APPEND image_files "${out}/choice${id}.png")
+    endforeach()
   endif()
   file(MAKE_DIRECTORY "${out}")
   set(theme_object "${out}/theme.res.o")

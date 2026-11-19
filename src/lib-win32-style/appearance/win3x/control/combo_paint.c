@@ -1,5 +1,7 @@
 #include "combo_paint.h"
 #include "basic_paint.h"
+#include "control_state.h"
+#include "lib-win32-style/application/control/control_class.h"
 #include "../../../application/graphics/paint_frame.h"
 #include "../../../application/control/control_protocol.h"
 #include "../../../application/graphics/dc_geometry.h"
@@ -15,14 +17,20 @@ static HFONT combo_font(HWND window,void *context)
     return reader->state->font && (reader->is_vb_combo(window) || style_control_protocol_is(window,L"COMBOBOX"))?
         reader->state->font:(HFONT)SendMessageW(window,WM_GETFONT,0,0);
 }
-void win16_control_draw_combo(HWND w,style_instance *instance,const style_control_state *state,BOOL common_dialog_combo,const win16_style_palette *palette,HDC dc,BOOL (*get_info)(HWND,PCOMBOBOXINFO),BOOL (*is_vb_combo)(HWND),BOOL (*is_vb_drive)(HWND))
+void win16_control_draw_combo(HWND w,control_style *style,HDC dc,BOOL (*get_info)(HWND,PCOMBOBOXINFO),BOOL (*is_vb_combo)(HWND),BOOL (*is_vb_drive)(HWND))
 {
     RECT client,button,text,pixel;int saved,left,top,u;BOOL selected;
     if(!dc)return;
-    combo_reader_context context={state,is_vb_combo};const style_control_combo_reader reader={&context,get_info,combo_font};
-    style_control_combo_snapshot snapshot;if(!style_control_combo_snapshot_read(w,instance,&reader,&snapshot))return;
+    combo_reader_context context={&style->state,is_vb_combo};const style_control_combo_reader reader={&context,get_info,combo_font};
+    style_control_combo_snapshot snapshot;if(!style_control_combo_snapshot_read(w,&style->instance,&reader,&snapshot))return;
     COMBOBOXINFO info=snapshot.info;WCHAR *label=snapshot.text;HFONT font=snapshot.font;
     BOOL pressed=snapshot.pressed,simple=snapshot.simple,editable=snapshot.editable;
+    BOOL enabled=IsWindowEnabled(w),common_dialog_combo=style->common_dialog_combo;
+    const win16_style_palette *palette=&style->palette;
+    const classic_combo_colors *colors=&style->combo_colors;
+    BOOL themed=colors->present && !common_dialog_combo && style_control_is_combo(w);
+    COLORREF border=themed?(enabled?colors->border:colors->disabled_border):palette->edge;
+    COLORREF face=themed?colors->button[classic_combo_state_for(enabled,pressed)]:palette->face;
     saved=SaveDC(dc);if(!saved){style_control_combo_snapshot_clear(&snapshot);return;}
     u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));GetClientRect(w,&client);
     /* Native child EDIT owns its caret, text, selection and IME. Do not paint
@@ -32,12 +40,12 @@ void win16_control_draw_combo(HWND w,style_instance *instance,const style_contro
         if(GetWindowRect(info.hwndList,&list)){
             MapWindowPoints(NULL,w,(POINT *)&list,2);ExcludeClipRect(dc,list.left,list.top,list.right,list.bottom);}
         SetDCBrushColor(dc,(*palette).light);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
-        text=info.rcItem;InflateRect(&text,u,u);style_paint_solid_frame(dc,text,(*palette).edge,u);
+        text=info.rcItem;InflateRect(&text,u,u);style_paint_solid_frame(dc,text,border,u);
         RestoreDC(dc,saved);style_control_combo_snapshot_clear(&snapshot);return;
     }
     SetDCBrushColor(dc,(*palette).light);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
-    style_paint_solid_frame(dc,client,(*palette).edge,u);
-    button=info.rcButton;SetDCBrushColor(dc,(*palette).face);FillRect(dc,&button,(HBRUSH)GetStockObject(DC_BRUSH));
+    style_paint_solid_frame(dc,client,border,u);
+    button=info.rcButton;SetDCBrushColor(dc,face);FillRect(dc,&button,(HBRUSH)GetStockObject(DC_BRUSH));
     style_paint_solid_frame(dc,button,(*palette).edge,u);InflateRect(&button,-u,-u);
     pixel=button;pixel.bottom=pixel.top+u;SetDCBrushColor(dc,pressed?(*palette).shadow:(*palette).light);
     FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));pixel=button;pixel.right=pixel.left+u;
@@ -60,7 +68,7 @@ void win16_control_draw_combo(HWND w,style_instance *instance,const style_contro
 }
 
 
-void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC dc,const RECT *dirty,const style_control_native_button *button)
+void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC dc,const RECT *dirty,const style_control_native_button *button,const win16_style_palette *theme)
 {
     RECT r=button->bounds;BOOL pressed=button->pressed;
     RECT q;win16_style_palette palette;
@@ -73,7 +81,8 @@ void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC
        (dirty && IntersectClipRect(dc,dirty->left,dirty->top,dirty->right,dirty->bottom)==ERROR)){
         RestoreDC(dc,saved);return;
     }
-    win16_style_default_palette(&palette);HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
+    if(theme)palette=*theme;else win16_style_default_palette(&palette);
+    HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
     SetDCBrushColor(dc,palette.face);FillRect(dc,&r,brush);SetDCBrushColor(dc,palette.edge);
     for(int i=0;i<u;++i){FrameRect(dc,&r,brush);InflateRect(&r,-1,-1);}
     q=r;SetDCBrushColor(dc,pressed?palette.shadow:palette.light);q.bottom=q.top+u;FillRect(dc,&q,brush);

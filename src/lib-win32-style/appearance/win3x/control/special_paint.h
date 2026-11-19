@@ -3,7 +3,7 @@
 #include "../common/palette.h"
 #include <uxtheme.h>
 #include <commctrl.h>
-void win16_style_month_arrow(HDC dc,const RECT *bounds,const RECT *clip,int part,int state);
+void win16_style_month_arrow(HDC dc,const RECT *bounds,const RECT *clip,int part,int state,const win16_style_palette *);
 void win16_control_draw_sizebox(HWND window,HDC dc,const COLORREF *face);
 void win16_control_legacy_progress_border(HWND window,const win16_style_palette *palette,HDC dc);
 void win16_control_vb_data_arrow(HWND window,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds);
@@ -16,8 +16,9 @@ BOOL win16_control_graphical_face(HWND window,HDC dc,const RECT *bounds,UINT fla
 BOOL win16_control_cool_grip_identity(HWND,void *,const NMCUSTOMDRAW *,WNDPROC,BOOL (*)(HWND,void *));
 BOOL win16_control_cool_grip(HDC dc,const RECT *bounds);
 BOOL win16_control_black_frame(HDC dc,const RECT *bounds,const RECT *clip);
+BOOL win16_control_color_frame(HDC dc,const RECT *bounds,const RECT *clip,COLORREF color);
 BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original);
-void win16_control_month_fill(HDC dc,const RECT *bounds,const RECT *clip);
+void win16_control_month_fill(HDC dc,const RECT *bounds,const RECT *clip,COLORREF);
 BOOL win16_control_month_text(HTHEME theme,HDC dc,int part,int state,HFONT font,LPCWSTR text,int count,DWORD flags,const RECT *bounds,
     int (WINAPI *draw)(HDC,LPCWSTR,int,LPRECT,UINT),BOOL (*room)(void *,int),void *context);
 void win16_control_group_frame(HDC dc,const RECT *bounds,const RECT *clip,const RECT *exclude,void (*drawn)(void *),void *context);

@@ -1,4 +1,5 @@
 #include "updown_paint.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include <commctrl.h>
 
 BOOL win16_control_updown_paint(HWND window,const win16_style_palette *palette,ntw16s_updown_glyph *const *glyphs,HDC dc,const RECT *bounds,const RECT *clip,unsigned direction,BOOL pressed,BOOL disabled)
@@ -41,7 +42,14 @@ static BOOL updown_supported(DWORD style,DWORD ex)
 static BOOL updown_render(HWND w,void *context,HDC dc,const RECT *rect,const RECT *clip,unsigned direction,BOOL pressed,BOOL disabled)
 {
     const win16_control_updown *s=context;
-    return win16_control_updown_paint(w,s->palette,s->glyphs,dc,rect,clip,direction,pressed,disabled);
+    win16_style_palette palette=*s->palette;
+    if(s->frame && s->frame->present){
+        palette.face=s->frame->face;
+        palette.light=s->frame->light;
+        palette.shadow=s->frame->shadow;
+        palette.edge=s->frame->edge;
+    }
+    return win16_control_updown_paint(w,&palette,s->glyphs,dc,rect,clip,direction,pressed,disabled);
 }
 void win16_control_updown_register(win16_control_updown *s,style_control_updown *binding,HWND w,HMODULE native,const win16_style_palette *palette,ntw16s_updown_glyph *const *glyphs,void *owner,BOOL (*acquire)(void *),void (*release)(void *))
 {

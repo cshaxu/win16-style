@@ -23,6 +23,70 @@ typedef struct classic_frame_colors {
     BOOL present;
 } classic_frame_colors;
 
+typedef struct classic_text_colors {
+    COLORREF normal, disabled;
+    BOOL present;
+} classic_text_colors;
+
+typedef struct classic_list_colors {
+    COLORREF background,selection,selection_text,dark;
+    BOOL present;
+} classic_list_colors;
+
+typedef struct classic_tab_colors {
+    COLORREF pane,normal,selected,border;
+    BOOL present;
+} classic_tab_colors;
+
+typedef struct classic_header_colors {
+    COLORREF normal,pressed;
+    BOOL present;
+} classic_header_colors;
+
+typedef struct classic_progress_colors {
+    COLORREF trough,fill,border,error,paused;
+    BOOL present,extra_states;
+} classic_progress_colors;
+
+typedef struct classic_trackbar_colors {
+    COLORREF channel,thumb,edge;
+    BOOL present;
+} classic_trackbar_colors;
+
+enum classic_combo_state {
+    CLASSIC_COMBO_NORMAL, CLASSIC_COMBO_PRESSED, CLASSIC_COMBO_DISABLED, CLASSIC_COMBO_STATE_COUNT
+};
+
+typedef struct classic_combo_colors {
+    COLORREF button[CLASSIC_COMBO_STATE_COUNT],border,disabled_border;
+    BOOL present;
+} classic_combo_colors;
+
+static inline enum classic_combo_state classic_combo_state_for(BOOL enabled,BOOL pressed)
+{
+    return !enabled?CLASSIC_COMBO_DISABLED:pressed?CLASSIC_COMBO_PRESSED:CLASSIC_COMBO_NORMAL;
+}
+
+typedef struct classic_group_colors {
+    classic_text_colors text;
+    COLORREF shadow, highlight;
+} classic_group_colors;
+
+enum classic_edit_state {
+    CLASSIC_EDIT_NORMAL, CLASSIC_EDIT_READONLY, CLASSIC_EDIT_DISABLED, CLASSIC_EDIT_STATE_COUNT
+};
+
+typedef struct classic_edit_border {
+    COLORREF line, dark;
+    BOOL present;
+} classic_edit_border;
+
+static inline enum classic_edit_state classic_edit_state_for(HWND window)
+{
+    if(!IsWindowEnabled(window))return CLASSIC_EDIT_DISABLED;
+    return GetWindowLongPtrW(window,GWL_STYLE)&ES_READONLY?CLASSIC_EDIT_READONLY:CLASSIC_EDIT_NORMAL;
+}
+
 enum classic_push_state {
     CLASSIC_PUSH_NORMAL, CLASSIC_PUSH_PRESSED, CLASSIC_PUSH_DISABLED,
     CLASSIC_PUSH_DEFAULTED, CLASSIC_PUSH_STATE_COUNT
@@ -31,6 +95,24 @@ enum classic_push_state {
 typedef struct classic_push_colors {
     classic_surface_colors state[CLASSIC_PUSH_STATE_COUNT];
 } classic_push_colors;
+
+enum { CLASSIC_CHECK_STATES=12, CLASSIC_RADIO_STATES=8 };
+typedef struct classic_choice_surface {
+    classic_surface_colors colors;
+    unsigned fields;
+    WORD image;
+} classic_choice_surface;
+
+typedef struct classic_choice_colors {
+    classic_choice_surface check[CLASSIC_CHECK_STATES],radio[CLASSIC_RADIO_STATES];
+} classic_choice_colors;
+
+const classic_choice_surface *classic_choice_entry(const classic_choice_colors *colors,
+    BOOL radio,LRESULT check,BOOL disabled,LRESULT button_state);
+static inline const classic_surface_colors *classic_choice_color(const classic_choice_surface *entry)
+{
+    return entry && entry->fields==3?&entry->colors:NULL;
+}
 
 static inline classic_surface_colors classic_push_color(const classic_push_colors *colors,
     BOOL disabled,BOOL pressed,BOOL defaulted)
@@ -62,11 +144,21 @@ typedef struct classic_caption_images {
 typedef struct classic_theme {
     classic_caption_colors active, inactive;
     classic_frame_colors frame;
+    classic_text_colors label;
+    classic_group_colors group;
+    classic_edit_border edit[CLASSIC_EDIT_STATE_COUNT];
+    classic_list_colors list;
+    classic_combo_colors combo;
+    classic_tab_colors tab;
+    classic_header_colors header;
+    classic_progress_colors progress[2]; /* horizontal, vertical */
+    classic_trackbar_colors trackbar[2]; /* horizontal, vertical */
     msstyles_font caption_font, small_caption_font, menu_font;
     classic_menu_colors menu_bar, menu_popup;
     classic_menu_metrics menu_metrics;
     WORD menu_images[2]; /* check, submenu */
     classic_push_colors push;
+    classic_choice_colors choice;
     classic_surface_colors scroll_arrow;
     classic_button_group title_buttons;
     classic_caption_metrics caption_metrics;

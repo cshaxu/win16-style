@@ -8,7 +8,7 @@
 void win16_control_month_arrow(const win16_control_month_view *v,HTHEME theme,HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {
     if(!v || !r || (part!=MC_NAVNEXT && part!=MC_NAVPREV) || state<MCNN_NORMAL || state>MCNN_DISABLED || !style_control_month_draw_identity(&v->native,theme,dc,address))return;
-    win16_style_month_arrow(dc,r,clip,part,state);
+    win16_style_month_arrow(dc,r,clip,part,state,v->palette);
 }
 static BOOL month_text_allowed(const win16_control_month_view *s,HTHEME theme,HDC dc,int part,int state,DWORD flags,DWORD flags2,const RECT *r,const void *address)
 {return s && r && (part==MC_GRIDCELL || part==MC_GRIDCELLUPPER) && state>=0 && state<=7 && flags2==0 && (flags==0x925 || flags==0x926 || flags==0x924) && IsWindowEnabled(s->native.window) && style_control_month_draw_identity(&s->native,theme,dc,address);}
@@ -21,11 +21,11 @@ BOOL win16_control_month_text_room(const win16_control_month_view *v,HTHEME them
 void win16_control_month_header_text(const win16_control_month_view *v,HTHEME theme,HDC dc,int part,int state,const RECT *r,DWORD flags,const void *address)
 {const win16_control_month_view *s=v;COLORREF text;if(!s || !s->native.state->header_valid || !IsWindowEnabled(s->native.window) || part!=MC_GRIDCELL || state!=0 || !r || (flags&DT_CALCRECT) || !EqualRect(r,&s->native.state->header) ||
  !style_control_month_draw_identity(&s->native,theme,dc,address) || FAILED(GetThemeColor(theme,part,state,TMT_TEXTCOLOR,&text)) || text!=RGB(0,0,0))return;
- s->native.state->header_valid=FALSE;win16_control_month_fill(dc,r,NULL);}
+ s->native.state->header_valid=FALSE;win16_control_month_fill(dc,r,NULL,s->palette->active);}
 void win16_control_month_selection_text(const win16_control_month_view *v,HTHEME theme,HDC dc,int part,int state,const RECT *r,DWORD flags,const void *address)
 {
     style_control_month_selection selected;COLORREF foreground;
     if(!v || !style_control_month_selection_take(&v->native,theme,dc,part,state,r,flags,address,&selected) ||
         FAILED(GetThemeColor(theme,part,state,TMT_TEXTCOLOR,&foreground)) || foreground!=RGB(0,0,0))return;
-    win16_control_month_fill(dc,&selected.rect,selected.has_clip?&selected.clip:NULL);
+    win16_control_month_fill(dc,&selected.rect,selected.has_clip?&selected.clip:NULL,v->selection);
 }

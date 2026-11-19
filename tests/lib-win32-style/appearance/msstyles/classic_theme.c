@@ -136,6 +136,21 @@ static BOOL button_fit(HWND window)
     return FALSE;
 }
 
+static BOOL paint_native_button(HDC dc,HWND window,BOOL win2000,const classic_push_colors *push,
+    const classic_choice_colors *choice,HMODULE module)
+{
+    style_instance instance={0};
+    if(win2000)return win2k_button_paint(window,&instance,dc,push,choice,NULL);
+    win16_style_palette palette;
+    win16_style_default_palette(&palette);
+    style_control_state control={0};
+    win16_choice_art art={0};
+    const win16_control_choice_view view={&instance,&control,&palette,push,choice,button_type,
+        button_fit,button_fit,button_fit,button_fit,button_fit,module,&art,NULL,NULL,NULL};
+    win16_control_draw_choice(window,&view,dc);
+    return TRUE;
+}
+
 static BOOL draw_button(HDC dc,HWND window,const classic_theme *theme,BOOL win2000,
     BOOL disabled,BOOL pressed,BOOL defaulted,enum classic_push_state expected)
 {
@@ -144,18 +159,60 @@ static BOOL draw_button(HDC dc,HWND window,const classic_theme *theme,BOOL win20
     SendMessageW(window,BM_SETSTATE,pressed,0);
     if(((SendMessageW(window,BM_GETSTATE,0,0)&BST_PUSHED)!=0)!=pressed ||
        IsWindowEnabled(window)==disabled)return FALSE;
-    style_instance instance={0};
-    if(win2000){
-        if(!win2k_button_paint(window,&instance,dc,&theme->push))return FALSE;
-    }else{
-        win16_style_palette palette;
-        win16_style_default_palette(&palette);
-        style_control_state control={0};
-        const win16_control_choice_view view={&instance,&control,&palette,&theme->push,button_type,
-            button_fit,button_fit,button_fit,button_fit,button_fit};
-        win16_control_draw_choice(window,&view,dc);
+    return paint_native_button(dc,window,win2000,&theme->push,&theme->choice,NULL) &&
+        GetPixel(dc,40,14)==theme->push.state[expected].face;
+}
+
+static BOOL draw_choice_role(HDC dc,const DWORD *pixels,HWND window,const classic_theme *theme,BOOL win2000,
+    unsigned radio,HMODULE module)
+{
+    const UINT modes[]={0,2,3};
+    DWORD reference[240*64];
+    for(unsigned check=0;check<3-radio;++check){
+        for(unsigned i=0;i<ARRAYSIZE(modes);++i){
+            unsigned mode=modes[i];
+            EnableWindow(window,mode!=3);
+            SendMessageW(window,BM_SETCHECK,check,0);
+            SendMessageW(window,BM_SETSTATE,mode==2,0);
+            if(SendMessageW(window,BM_GETCHECK,0,0)!=(LRESULT)check ||
+               !paint_native_button(dc,window,win2000,NULL,NULL,NULL))return FALSE;
+            GdiFlush();
+            memcpy(reference,pixels,sizeof(reference));
+            if(!paint_native_button(dc,window,win2000,NULL,&theme->choice,module))return FALSE;
+            GdiFlush();
+            if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
+            classic_choice_colors altered=theme->choice;
+            classic_choice_surface *entry=(radio?altered.radio:altered.check)+4*check+mode;
+            if(!entry->fields)return FALSE;
+            entry->colors.face=RGB(89,37,102);
+            entry->colors.edge=RGB(17,165,123);
+            if(!paint_native_button(dc,window,win2000,NULL,&altered,module))return FALSE;
+            BOOL saw_face=FALSE,saw_ink=FALSE;
+            for(int y=0;y<28;++y)for(int x=0;x<24;++x){
+                COLORREF c=GetPixel(dc,x,y);
+                saw_face|=c==entry->colors.face;
+                saw_ink|=c==entry->colors.edge;
+            }
+            if(!saw_face || ((check || !win2000) && !saw_ink)){
+                fprintf(stderr,"choice state era=%d radio=%u check=%u mode=%u face=%d ink=%d\n",
+                    win2000,radio,check,mode,saw_face,saw_ink);
+                return FALSE;
+            }
+        }
     }
-    return GetPixel(dc,40,14)==theme->push.state[expected].face;
+    return TRUE;
+}
+
+static BOOL draw_choices(HDC dc,const DWORD *pixels,const classic_theme *theme,BOOL win2000,HMODULE module)
+{
+    HWND parent=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,0,0,120,64,NULL,NULL,NULL,NULL);
+    if(!parent)return FALSE;
+    HWND check=CreateWindowExW(0,L"BUTTON",L"",WS_CHILD|BS_AUTO3STATE,0,0,80,28,parent,NULL,NULL,NULL);
+    HWND radio=CreateWindowExW(0,L"BUTTON",L"",WS_CHILD|BS_AUTORADIOBUTTON,0,28,80,28,parent,NULL,NULL,NULL);
+    BOOL passed=check && radio && draw_choice_role(dc,pixels,check,theme,win2000,0,module) &&
+        draw_choice_role(dc,pixels,radio,theme,win2000,1,module);
+    DestroyWindow(parent);
+    return passed;
 }
 
 static BOOL draw_scroll(HDC dc,const classic_theme *theme,BOOL win2000,UINT dpi,unsigned state)
@@ -275,7 +332,7 @@ static BOOL draw_themed_popup(HDC dc,const DWORD *pixels,const classic_theme *th
     return ok;
 }
 
-static BOOL render(const classic_theme *theme,BOOL win2000,const win16_caption_art *art,const win16_menu_art *menu_art)
+static BOOL render(const classic_theme *theme,BOOL win2000,const win16_caption_art *art,const win16_menu_art *menu_art,HMODULE module)
 {
     HDC dc=CreateCompatibleDC(NULL);
     if(!dc)return FALSE;
@@ -298,7 +355,8 @@ static BOOL render(const classic_theme *theme,BOOL win2000,const win16_caption_a
         draw_button(dc,window,&altered,win2000,FALSE,TRUE,FALSE,CLASSIC_PUSH_PRESSED) &&
         draw_button(dc,window,&altered,win2000,TRUE,FALSE,TRUE,CLASSIC_PUSH_DISABLED) &&
         draw_button(dc,window,&altered,win2000,FALSE,FALSE,TRUE,CLASSIC_PUSH_DEFAULTED) &&
-        draw_button(dc,window,&altered,win2000,FALSE,TRUE,TRUE,CLASSIC_PUSH_PRESSED);
+        draw_button(dc,window,&altered,win2000,FALSE,TRUE,TRUE,CLASSIC_PUSH_PRESSED) &&
+        draw_choices(dc,bits,theme,win2000,module);
     for(unsigned state=0;passed && state<3;++state)
         passed=draw_scroll(dc,theme,win2000,96,state) && draw_scroll(dc,theme,win2000,144,state);
     if(passed && !win2000)passed=draw_themed_popup(dc,bits,theme,menu_art,96) &&
@@ -344,6 +402,33 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     COLORREF state_face=gradient?RGB(212,208,200):RGB(192,192,192);
     CHECK(theme.frame.present && theme.frame.face==state_face && theme.frame.light==RGB(255,255,255) &&
         theme.frame.shadow==RGB(128,128,128) && theme.frame.edge==RGB(0,0,0));
+    CHECK(theme.label.present && theme.label.normal==RGB(0,0,0) && theme.label.disabled==RGB(128,128,128));
+    CHECK(theme.group.text.present && theme.group.text.normal==RGB(0,0,0) &&
+        theme.group.text.disabled==(gradient?RGB(128,128,128):RGB(0,0,0)) &&
+        theme.group.shadow==RGB(128,128,128) && theme.group.highlight==RGB(255,255,255));
+    for(size_t i=0;i<ARRAYSIZE(theme.edit);++i)
+        CHECK(theme.edit[i].present && theme.edit[i].line==RGB(0,0,0) &&
+            theme.edit[i].dark==(gradient?RGB(64,64,64):RGB(0,0,0)));
+    CHECK(theme.list.present && theme.list.background==RGB(255,255,255) &&
+        theme.list.selection==(gradient?RGB(10,36,106):RGB(164,200,240)) &&
+        theme.list.selection_text==(gradient?RGB(255,255,255):RGB(0,0,0)) &&
+        theme.list.dark==(gradient?RGB(64,64,64):RGB(0,0,0)));
+    CHECK(theme.combo.present && theme.combo.border==theme.list.dark && theme.combo.disabled_border==theme.combo.border);
+    for(size_t i=0;i<ARRAYSIZE(theme.combo.button);++i)
+        CHECK(theme.combo.button[i]==state_face);
+    CHECK(theme.tab.present && theme.tab.pane==state_face && theme.tab.normal==state_face &&
+        theme.tab.selected==(gradient?state_face:RGB(255,255,255)) && theme.tab.border==theme.list.dark);
+    CHECK(theme.header.present && theme.header.normal==state_face && theme.header.pressed==state_face);
+    for(size_t i=0;i<ARRAYSIZE(theme.trackbar);++i)
+        CHECK(theme.trackbar[i].present && theme.trackbar[i].channel==RGB(255,255,255) &&
+            theme.trackbar[i].thumb==state_face && theme.trackbar[i].edge==theme.list.dark);
+    for(size_t i=0;i<ARRAYSIZE(theme.progress);++i){
+        const classic_progress_colors *progress=&theme.progress[i];
+        CHECK(progress->present && progress->trough==(gradient?state_face:RGB(255,255,255)) &&
+            progress->fill==theme.list.selection && progress->extra_states==!gradient);
+        if(!gradient)CHECK(progress->border==RGB(0,0,0) && progress->error==RGB(192,0,0) &&
+            progress->paused==RGB(192,192,0));
+    }
     for(unsigned state=0;state<CLASSIC_PUSH_STATE_COUNT;++state)
         CHECK(theme.push.state[state].face==(recolored?RGB(251,37,52):state_face) &&
               theme.push.state[state].edge==(gradient?RGB(64,64,64):RGB(0,0,0)));
@@ -363,8 +448,9 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     CHECK(theme.title_buttons.count==(gradient?4:3));
     win16_caption_art art={0};
     win16_menu_art menu_art={0};
+    HMODULE module=NULL;
     if(!gradient){
-        HMODULE module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
+        module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
         CHECK(module);
         CHECK(SUCCEEDED(win16_caption_art_read(module,&theme.caption_images,&art)) && art.available);
         classic_caption_images wrong=theme.caption_images;
@@ -376,9 +462,10 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
         WORD wrong_menu[]={theme.menu_images[1],theme.menu_images[0]};
         CHECK(FAILED(win16_menu_art_read(module,wrong_menu,&menu_art)) &&
             !memcmp(&prior_menu,&menu_art,sizeof(menu_art)));
-        CHECK(FreeLibrary(module));
     }else CHECK(!theme.menu_images[0] && !theme.menu_images[1]);
-    CHECK(render(&theme,gradient,&art,&menu_art));
+    BOOL rendered=render(&theme,gradient,&art,&menu_art,module);
+    if(module)CHECK(FreeLibrary(module));
+    CHECK(rendered);
     unsigned char prior[sizeof(theme)];
     memcpy(prior,&theme,sizeof(theme));
     CHECK(classic_theme_load(path,L"MissingSize",L"NormalColor",&theme)==

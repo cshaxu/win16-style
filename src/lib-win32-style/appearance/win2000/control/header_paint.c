@@ -10,7 +10,8 @@ BOOL win2k_header_supported(HWND window)
 
 BOOL win2k_header_paint(HWND window,const NMCUSTOMDRAW *draw,const void *context)
 {
-    const style_instance *instance=context;
+    const win2k_header_draw *parameters=context;
+    const style_instance *instance=parameters->instance;
     DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
     const win2k_palette *p=&win2k_standard_palette;
     WCHAR text[256]={0};
@@ -27,10 +28,12 @@ BOOL win2k_header_paint(HWND window,const NMCUSTOMDRAW *draw,const void *context
     int saved=SaveDC(dc);
     if(!saved)return FALSE;
     BOOL pressed=(style&HDS_BUTTONS) && (draw->uItemState&CDIS_SELECTED);
+    const classic_header_colors *colors=parameters->colors;
+    COLORREF face=colors->present?(pressed?colors->pressed:colors->normal):p->face;
     UINT sides=style&HDS_BUTTONS?BF_RECT|BF_SOFT:(style&WS_BORDER?BF_RIGHT:BF_BOTTOMRIGHT);
     UINT edge=style&HDS_BUTTONS?(pressed?EDGE_SUNKEN:EDGE_RAISED):EDGE_ETCHED;
     BOOL painted=IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)!=ERROR &&
-        win2k_fill(dc,&r,p->face) && win2k_edge(dc,&r,edge,sides|(pressed?BF_FLAT:0),p);
+        win2k_fill(dc,&r,face) && win2k_edge(dc,&r,edge,sides|(pressed?BF_FLAT:0),p);
     if(painted && *text){
         InflateRect(&r,-6,0);
         if(pressed)OffsetRect(&r,1,1);

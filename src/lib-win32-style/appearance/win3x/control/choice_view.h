@@ -1,6 +1,7 @@
 #ifndef WIN16_CONTROL_CHOICE_VIEW_H
 #define WIN16_CONTROL_CHOICE_VIEW_H
 #include "../common/palette.h"
+#include "choice_paint.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/control/control_state.h"
 typedef struct win16_control_choice_view {
@@ -8,10 +9,16 @@ typedef struct win16_control_choice_view {
     const style_control_state *state;
     const win16_style_palette *palette;
     const classic_push_colors *push;
+    const classic_choice_colors *choice;
     UINT (*button_type)(HWND,DWORD);
     BOOL (*is_static)(HWND);
     BOOL (*vb_frame)(HWND),(*vb_button)(HWND);
     BOOL (*group_choice)(HWND),(*group_push)(HWND);
+    HMODULE module;
+    win16_choice_art *art;
+    const classic_text_colors *label;
+    const classic_group_colors *group;
+    const classic_frame_colors *frame;
 } win16_control_choice_view;
 void win16_control_draw_choice(HWND window,const win16_control_choice_view *view,HDC dc);
 #endif

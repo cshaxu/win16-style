@@ -1,4 +1,5 @@
 #include "trackbar_paint.h"
+#include "control_state.h"
 #include "../../../application/control/control_protocol.h"
 #include "../../../application/graphics/dc_geometry.h"
 
@@ -12,7 +13,7 @@ BOOL win16_style_trackbar_supported(HWND w)
         !(style&(WS_BORDER|WS_HSCROLL|WS_VSCROLL)) &&
         !(ex&(WS_EX_CLIENTEDGE|WS_EX_STATICEDGE|WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
 }
-BOOL win16_style_trackbar_runtime_border(HWND w,const NMCUSTOMDRAW *draw,const win16_style_palette *palette)
+BOOL win16_style_trackbar_runtime_border(HWND w,const NMCUSTOMDRAW *draw,const void *context)
 {
     RECT client,r=draw->rc;
     if(!style_control_protocol_runtime_trackbar(w) || !win16_style_trackbar_supported(w) || !draw->hdc ||
@@ -21,13 +22,16 @@ BOOL win16_style_trackbar_runtime_border(HWND w,const NMCUSTOMDRAW *draw,const w
        r.left<client.left || r.top<client.top || r.right>client.right || r.bottom>client.bottom ||
        r.right<=r.left || r.bottom<=r.top)return FALSE;
     int saved=SaveDC(draw->hdc);if(!saved)return FALSE;
-    SetDCBrushColor(draw->hdc,palette->edge);
+    const control_style *control=context;
+    const classic_trackbar_colors *colors=&control->trackbar_colors[(GetWindowLongPtrW(w,GWL_STYLE)&TBS_VERT)!=0];
+    SetDCBrushColor(draw->hdc,colors->present?colors->edge:control->palette.edge);
     FrameRect(draw->hdc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
     RestoreDC(draw->hdc,saved);return TRUE;
 }
 BOOL win16_style_trackbar_part(HWND w,const NMCUSTOMDRAW *draw,const void *context)
 {
-    const win16_style_palette *palette=context;
+    const control_style *control=context;
+    const win16_style_palette *palette=&control->palette;
     if(!draw->hdc || (draw->dwItemSpec!=TBCD_CHANNEL && draw->dwItemSpec!=TBCD_THUMB) ||
         !win16_style_trackbar_supported(w))return FALSE;
     RECT r=draw->rc,client;
@@ -35,8 +39,12 @@ BOOL win16_style_trackbar_part(HWND w,const NMCUSTOMDRAW *draw,const void *conte
         r.right<=r.left || r.bottom<=r.top)return FALSE;
     int saved=SaveDC(draw->hdc);if(!saved)return FALSE;
     HBRUSH brush=GetStockObject(DC_BRUSH);int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    SetDCBrushColor(draw->hdc,draw->dwItemSpec==TBCD_CHANNEL?palette->light:palette->face);FillRect(draw->hdc,&r,brush);
-    SetDCBrushColor(draw->hdc,palette->edge);
+    const classic_trackbar_colors *colors=&control->trackbar_colors[(GetWindowLongPtrW(w,GWL_STYLE)&TBS_VERT)!=0];
+    BOOL channel=draw->dwItemSpec==TBCD_CHANNEL;
+    COLORREF fill=channel?palette->light:palette->face;
+    if(colors->present)fill=channel?colors->channel:colors->thumb;
+    SetDCBrushColor(draw->hdc,fill);FillRect(draw->hdc,&r,brush);
+    SetDCBrushColor(draw->hdc,colors->present?colors->edge:palette->edge);
     for(int i=0;i<unit && r.left<r.right && r.top<r.bottom;++i){FrameRect(draw->hdc,&r,brush);InflateRect(&r,-1,-1);}
     if(draw->dwItemSpec==TBCD_THUMB && r.right>r.left && r.bottom>r.top){
         BOOL pressed=(draw->uItemState&CDIS_SELECTED)!=0;RECT strip=r;

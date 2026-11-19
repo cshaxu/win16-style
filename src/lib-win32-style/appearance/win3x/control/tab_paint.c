@@ -1,6 +1,7 @@
 #include "tab_paint.h"
 #include <commctrl.h>
 #include "lib-win32-style/application/control/tab_snapshot.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include <wchar.h>
 
 BOOL win16_style_tab_supported(HWND w)
@@ -24,6 +25,7 @@ static void edge(HDC dc,RECT r,COLORREF color,int width,BOOL bottom)
 }
 typedef struct tab_paint {
     const win16_style_palette *palette;
+    classic_tab_colors colors;
     HFONT font;
     int unit;
     RECT body;
@@ -32,7 +34,8 @@ static void surface(HWND w,void *context,HDC dc,const style_control_tab_snapshot
 {
     tab_paint *paint=context;paint->unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
     paint->body=snapshot->client;paint->body.top=max(snapshot->client.top,snapshot->page.top-3*paint->unit);
-    fill(dc,&snapshot->client,paint->palette->face);edge(dc,paint->body,paint->palette->edge,paint->unit,TRUE);
+    fill(dc,&snapshot->client,paint->colors.pane);
+    edge(dc,paint->body,paint->colors.border,paint->unit,TRUE);
 }
 static void prepare(HWND w,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
 {
@@ -47,7 +50,8 @@ static void paint_item(HWND w,void *context,HDC dc,const style_control_tab_snaps
     HIMAGELIST images=item->images;const WCHAR *text=item->text;
     if(active){InflateRect(&r,u,u);r.bottom=max(r.bottom,body.top+u);}
     BOOL highlighted=(item->native.dwState&TCIS_HIGHLIGHTED)!=0;
-    fill(dc,&r,highlighted?p->active:active?p->light:p->face);edge(dc,r,p->edge,u,!active);
+    fill(dc,&r,highlighted?p->active:active?paint->colors.selected:paint->colors.normal);
+    edge(dc,r,paint->colors.border,u,!active);
     RECT content=r;InflateRect(&content,-2*u,-u);SIZE size={0};
     GetTextExtentPoint32W(dc,text,(int)wcslen(text),&size);
     int gap=image && *text?3*u:0,total=size.cx+(image?cx+gap:0);
@@ -69,10 +73,11 @@ static void paint_item(HWND w,void *context,HDC dc,const style_control_tab_snaps
     }
 }
 BOOL win16_style_tab_paint(HWND w,HDC dc,const win16_style_palette *p,HFONT font,
-    const style_instance *instance,const style_control_native_state *state)
+    const style_instance *instance,const style_control_native_state *state,const classic_tab_colors *colors)
 {
     if(!dc || !win16_style_tab_supported(w))return FALSE;
-    tab_paint paint={.palette=p,.font=font};
+    tab_paint paint={.palette=p,.font=font,
+        .colors=colors->present?*colors:(classic_tab_colors){p->face,p->face,p->light,p->edge,FALSE}};
     const style_control_tab_painter painter={&paint,surface,prepare,paint_item};
     return style_control_tab_paint(w,dc,instance,state,&painter);
 }
