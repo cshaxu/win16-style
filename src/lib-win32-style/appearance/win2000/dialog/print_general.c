@@ -287,22 +287,25 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
     return FALSE;
 }
 
-static BOOL full_page_fits(HWND owner)
+static UINT general_template(HWND owner,DWORD flags)
 {
     MONITORINFO monitor={.cbSize=sizeof(monitor)};
     UINT dpi=GetDpiForWindow(owner);
-    /* Include the native tab, action buttons and frame around the 292 x 198 DLU page. */
-    return dpi && GetMonitorInfoW(MonitorFromWindow(owner,MONITOR_DEFAULTTONEAREST),&monitor) &&
-        monitor.rcWork.right-monitor.rcWork.left>=MulDiv(500,(int)dpi,96) &&
-        monitor.rcWork.bottom-monitor.rcWork.top>=MulDiv(450,(int)dpi,96);
+    if(!dpi || !GetMonitorInfoW(MonitorFromWindow(owner,MONITOR_DEFAULTTONEAREST),&monitor) ||
+       monitor.rcWork.right-monitor.rcWork.left<MulDiv(500,(int)dpi,96))return WIN2K_PRINT_GENERAL;
+    /* Leave room for the native tab, action buttons and frame around the page. */
+    LONG height=monitor.rcWork.bottom-monitor.rcWork.top;
+    if((flags&PD_USELARGETEMPLATE) && height>=MulDiv(490,(int)dpi,96))return WIN2K_PRINT_GENERAL_LARGE;
+    return height>=MulDiv(450,(int)dpi,96)?WIN2K_PRINT_GENERAL_FULL:WIN2K_PRINT_GENERAL;
 }
 
 static HRESULT show_sheet(HWND owner,general_page *page)
 {
     HINSTANCE module=(HINSTANCE)&__ImageBase;
-    page->full=full_page_fits(owner);
+    UINT layout=general_template(owner,page->flags);
+    page->full=layout!=WIN2K_PRINT_GENERAL;
     PROPSHEETPAGEW details={.dwSize=sizeof(details),.dwFlags=PSP_USETITLE,.hInstance=module,
-        .pszTemplate=MAKEINTRESOURCEW(page->full?WIN2K_PRINT_GENERAL_FULL:WIN2K_PRINT_GENERAL),.pszTitle=L"General",
+        .pszTemplate=MAKEINTRESOURCEW(layout),.pszTitle=L"General",
         .pfnDlgProc=general_proc,.lParam=(LPARAM)page};
     PROPSHEETHEADERW sheet={.dwSize=sizeof(sheet),.dwFlags=PSH_PROPSHEETPAGE,.hwndParent=owner,
         .hInstance=module,.pszCaption=L"Print",.nPages=1,.ppsp=&details};
@@ -396,7 +399,7 @@ static BOOL supports_flags(DWORD flags,DWORD count,DWORD capacity,DWORD minimum,
 {
     const DWORD supported=PD_NOPAGENUMS|PD_NOSELECTION|PD_NOCURRENTPAGE|PD_NOWARNING|
         PD_CURRENTPAGE|PD_HIDEPRINTTOFILE|PD_DISABLEPRINTTOFILE|PD_PRINTTOFILE|PD_COLLATE|
-        PD_PAGENUMS|PD_SELECTION|PD_RETURNDC|PD_RETURNIC|PD_USEDEVMODECOPIESANDCOLLATE;
+        PD_PAGENUMS|PD_SELECTION|PD_RETURNDC|PD_RETURNIC|PD_USEDEVMODECOPIESANDCOLLATE|PD_USELARGETEMPLATE;
     if(flags&~supported)return FALSE;
     if((flags&PD_SELECTION) && (flags&(PD_NOSELECTION|PD_CURRENTPAGE|PD_PAGENUMS)))return FALSE;
     if((flags&PD_CURRENTPAGE) && (flags&(PD_NOCURRENTPAGE|PD_PAGENUMS)))return FALSE;

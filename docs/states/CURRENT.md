@@ -121,6 +121,9 @@ MTA 线程保留 ListBox。两处与同摘要构建包通过 144/144，含原生
 原生自定义页与全局 API 路径仍开放。
 P36 用双宽原生探针验证目录打印机查询窗可创建并取消。工作组环境下均返回
 `S_FALSE`，无选中结果，父窗口恢复可用。域队列选中及回写仍缺实测；P35 八件摘要未变。
+P37 标准 `--2k PrintDlgEx` 支持 `PD_USELARGETEMPLATE` 的 292×218 DLU 页，
+按工作区选择常规或紧凑页。两处及同摘要构建包的大模板通过 180/180，
+常规页 12/12、Win16 取消 4/4，另有 24/24 布局边界探针。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -155,14 +158,14 @@ P36 用双宽原生探针验证目录打印机查询窗可创建并取消。工�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P35；构建快照和八件摘要见公共对话框证据。
+- Last verified remote delivery: M0 T28 S3 P37；构建快照和八件摘要见公共对话框证据。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 P35 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 P37 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1135回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。

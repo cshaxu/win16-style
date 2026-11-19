@@ -1370,6 +1370,74 @@
     ],
     "limits": "A directory-published queue was not available on this host. Dialog activation and cancel are verified; domain results, queue handoff and product integration are open. Removed the temporary probes and rechecked sixteen deployed P35 hashes. No product binary changed."
   },
+  "print_general_large_p37": {
+    "reference": "Windows 2000 SP2 printnew.dlg (SHA-256 7746b5113318c536b8336acc27ed14df74e7381737ceda29293627d7b371a42a) defines 292 by 198 and 292 by 218 DLU General templates; printnew.cpp selects the taller one when PD_USELARGETEMPLATE is set. The SDK documents the flag at https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-printdlgexw.",
+    "implementation": "The stock --2k A/W presenter now accepts PD_USELARGETEMPLATE and preserves it in settings results. The two full-size variants use one resource definition with the taller page and expanded lower group boxes. Width and height gates are 500 by 490 at 96 DPI for large and 500 by 450 for full; requests use the best available layout. Caller-supplied callbacks, page arrays and custom templates continue to use native fallback.",
+    "incremental": "60/60 real owned PrintDlgEx cases selected the advertised large layout. A separate source-level test with a substituted work-area query proved 24/24 layout decisions around the width and height thresholds at effective 96 and 144 DPI across both widths. The geometry substitution did not resize the desktop or verify visible fallback rendering.",
+    "released_runtime": "Each of assets, O:/winnt and the identical clean-build candidate passed 60/60 large requests. The matrix covers x86/x64, ANSI/Unicode, Print/Apply/Cancel, preset handles, MTA fallback, selection and file port, current page and driver copies/Collate, and per-monitor DPI. Each confirmed a 292 by 218 DLU client, in-work-area action buttons, preserved layout flag and expected return data. O:/winnt also passed 12/12 standard 292 by 198 DLU requests and 4/4 Win16 extended print cancels. No jobs sent.",
+    "limits": "Native caller-page display, directory printer selection, and global API integration remain open. The actual desktop had space for the large template. The narrow-work-area decision was verified separately with substituted bounds. Temporary build, staging and probe directories were removed after validation.",
+    "release": {
+      "source_parent": "071866f937dd7d33106fb8ed4657f93a39108b3e",
+      "snapshot_manifest_sha256": "b8a3d886e85bbfb33caee8baf62ff4c3f441bf600a4cb871ff921084543d4f6b",
+      "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-general-large-package",
+      "toolchain": "C17, MinGW-w64 GCC 16.1.0, Ninja and repository ccache; clean x86/x64 Release.",
+      "build_seconds": {
+        "x86": 190.44,
+        "x64": 248.86
+      },
+      "ccache_direct_hits": {
+        "x86": 955,
+        "x64": 1043
+      },
+      "ccache_misses": {
+        "x86": 3,
+        "x64": 3
+      },
+      "gate": "Exactly eight same-snapshot artifacts; source receipts, native/style boundaries, both ABI tests, import/export contracts and original glyphs passed. Package published to assets and O:/winnt before the runtime tests.",
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "cc0a913fa10c1a3820665029b4f7beda54eba146a5297f825ac521c9fb3a7d2a"
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "04f0d6685a2d47b1045014147ac5a70745825b7799223980dee3a2fb937a0da2"
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "91d5342f5c8d2a4606e0900da0f68db0a0328b53ac01cd96a01402503a09b93a"
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "5b5c08eb6e3f763feba5fdfb70981d869db6bd8f33f69ed573edadb413ade4b6"
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "dd2522097d5e80ee26dfc4fa2098f81c86106c9dc6beb6e28500d27efbdac4e5"
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "007e2cb750c08af821a5c793067803de58c60f2f111218975cee239ab90b5034"
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "fdffabce21cba5e84af49180275129a92841d7054f31e89c08db690a38cc8f89"
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "c4438837d909274023cd73f0bdea79e09579f9eb7e9ad09af3d0882a17a9bbe4"
+        }
+      }
+    }
+  },
   "global_dialog_entry_audit": {
     "baseline": "Source inspected at 35f46f84. All eight files in assets and O:/winnt match the P27 SHA-256s. The product sources and assets have no Git diff from the P27 delivery through P28. This was a source audit with artifact identity verification; no administrator or cross-process runtime trial was performed.",
     "startup": "src/ntw2ks-dll/dllmain.c calls ntw2ks_controls_attach through the ordinary ntw2ks startup bootstrap. src/ntw2ks-dll/controls.c installs the common-dialog handlers and the COM controller from that one call site.",

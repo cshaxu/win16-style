@@ -18,7 +18,7 @@ static DWORD output_flags;
 static BOOL test_preferences,preferences_pending,preferences_seen,no_context_device;
 static BOOL fits_work_area;
 static WCHAR choice[300];
-static BOOL full,device_details,shell_list,force_fallback;
+static BOOL full,device_details,shell_list,force_fallback,request_large,large_page,expected_layout;
 
 static LRESULT device_message(HWND list,UINT combo,UINT box,WPARAM wp,LPARAM lp)
 {
@@ -121,6 +121,14 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
             printf("GENERAL REFERENCE client=%ldx%ld original=%ldx%ld estimated_sheet=%ldx%ld work=%ldx%ld\n",
                 client.right,client.bottom,reference.right,reference.bottom,width,height,
                 work->right-work->left,work->bottom-work->top);
+            RECT large={0,0,292,218};
+            if(MapDialogRect(page,&large)){
+                UINT dpi=GetDpiForWindow(owner);
+                BOOL use_large=request_large && full && work->bottom-work->top>=MulDiv(490,(int)dpi,96);
+                const RECT *layout=use_large?&large:&reference;
+                large_page=full && client.right==large.right && client.bottom==large.bottom;
+                expected_layout=!full || (client.right==layout->right && client.bottom==layout->bottom);
+            }
         }
     }
     if(test_preferences){
@@ -173,6 +181,8 @@ static void CALLBACK observe(HWND window,UINT message,UINT_PTR timer,DWORD time)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    request_large=argc>=4 && !wcscmp(argv[argc-1],L"large");
+    if(request_large)--argc;
     if(argc!=3 && argc!=4)return 2;
     BOOL initial=argc==4 && !wcscmp(argv[3],L"initial");
     test_preferences=argc==4 && !wcscmp(argv[3],L"preferences");
@@ -197,7 +207,8 @@ int wmain(int argc,WCHAR **argv)
         .lpPageRanges=ranges,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
     PRINTDLGEXW w={.lStructSize=sizeof(w),.hwndOwner=owner,.nMinPage=1,.nMaxPage=50,.nMaxPageRanges=4,
         .lpPageRanges=ranges,.nCopies=1,.nStartPage=START_PAGE_GENERAL};
-    a.Flags=w.Flags=context_flag|(output_flags&PD_USEDEVMODECOPIESANDCOLLATE);
+    DWORD layout_flag=request_large?PD_USELARGETEMPLATE:0;
+    a.Flags=w.Flags=context_flag|layout_flag|(output_flags&PD_USEDEVMODECOPIESANDCOLLATE);
     HGLOBAL initial_mode=NULL,initial_names=NULL;
     if(initial){
         PRINTDLGA da={.lStructSize=sizeof(da),.Flags=PD_RETURNDEFAULT};
@@ -234,7 +245,9 @@ int wmain(int argc,WCHAR **argv)
         GlobalUnlock(names);
     }
     BOOL match=two && !wcscmp(actual,choice);
-    BOOL pass=hr==S_OK && ready && styled && initial_ok && fits_work_area && device_details &&
+    DWORD result_flags=ansi?a.Flags:w.Flags;
+    BOOL pass=hr==S_OK && ready && styled && initial_ok && fits_work_area && expected_layout && device_details &&
+        (result_flags&PD_USELARGETEMPLATE)==layout_flag &&
         (!force_fallback || !shell_list) && code==(no_context_device?PD_RESULT_CANCEL:action) &&
         IsWindowEnabled(owner) && (!test_preferences || preferences_seen);
     if(context_flag && action!=PD_RESULT_CANCEL)pass=pass && (no_context_device?!dc:dc && GetDeviceCaps(dc,TECHNOLOGY)==DT_RASPRINTER);
@@ -253,7 +266,7 @@ int wmain(int argc,WCHAR **argv)
                 collate=ansi?((DEVMODEA *)settings)->dmCollate:((DEVMODEW *)settings)->dmCollate;
                 GlobalUnlock(mode);
             }
-            pass=pass && flags==output_flags && !range_count && copies==(driver?1:3) &&
+            pass=pass && flags==(output_flags|layout_flag) && !range_count && copies==(driver?1:3) &&
                 file==((output_flags&PD_PRINTTOFILE)!=0) && device_copies==(driver?3:1) &&
                 collate==(driver?DMCOLLATE_TRUE:DMCOLLATE_FALSE);
             printf("GENERAL OPTIONS requested=%08lx returned=%08lx file=%d device_copies=%d collate=%d\n",
@@ -261,8 +274,8 @@ int wmain(int argc,WCHAR **argv)
         }else pass=pass && copies==3 && range_count==2 && ranges[0].nFromPage==2 &&
             ranges[0].nToPage==2 && ranges[1].nFromPage==4 && ranges[1].nToPage==5;
     }
-    printf("GENERAL ENTRY bits=%u ansi=%d initial=%d requested=%u result=%lu hr=%08lx frame=%d copies=%lu pages=%lu selected=%d dc=%d preferences=%d full=%d details=%d shell=%d pass=%d\n",
-       (unsigned)(sizeof(void *)*8),ansi,initial,action,code,(unsigned long)hr,styled,copies,range_count,match,dc!=NULL,preferences_seen,full,device_details,shell_list,pass);
+    printf("GENERAL ENTRY bits=%u ansi=%d initial=%d requested=%u result=%lu hr=%08lx frame=%d copies=%lu pages=%lu selected=%d dc=%d preferences=%d full=%d details=%d shell=%d large=%d pass=%d\n",
+       (unsigned)(sizeof(void *)*8),ansi,initial,action,code,(unsigned long)hr,styled,copies,range_count,match,dc!=NULL,preferences_seen,full,device_details,shell_list,large_page,pass);
     if(dc)DeleteDC(dc);
     if(mode)GlobalFree(mode);
     if(names)GlobalFree(names);
