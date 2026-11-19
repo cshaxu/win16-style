@@ -346,7 +346,7 @@
     ]
   },
   "closure": {
-    "S7": "local delivery verified; remote audit pending",
+    "S7": "closed after remote audit of P1 (c0efd378)",
     "T29": "active",
     "M0": "fixed"
   }

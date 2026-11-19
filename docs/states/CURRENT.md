@@ -65,29 +65,30 @@ S6 P1 八件开发运行包和四份主题已发布两处，聚焦包 102 项通
 S7 已完成首轮双宽开发候选的 VB/VCL 和复合控件调色板对照，
 见[开发验证](../history/M0-T29-S7-composite-controls.md)。
 S7 P1 已完成同批发布与实包验证，聚焦包 39/39 和两处发布路径 8/8 通过。
+已复核远端 `c0efd378` 的 12 个发布文件，S7 收口。S8 接续公共对话框。
 用户确认 T29 最终发行包为七件。启动器和两份 `ntwshk` 加两组主题，
 见[主题构建契约](../proposals/msstyles-build-contract.md)。S11 负责独立七件目录验收与切换。
 
-## M0 T29 S7 Packet
+## M0 T29 S8 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；M0 固定。 |
-| Admission And Approval | 用户批准按 T29 S2–S12 连续实施；S6 实际远端通过后接续。 |
-| Objective | S2 台账 37、56 的既有 VB/VCL 及复合控件角色，共用 Win16、Win2000 主题数据。 |
-| Non-goals | 公共对话框、现代外框和七件运行时切换按 S8–S11 处理；保留当前宿主适用范围。 |
-| Reference Baseline | S6 P1 双宽实包及两套主题，和既有自有宿主及单角色模型。 |
+| Admission And Approval | 用户批准按 T29 S2–S12 连续实施；S7 实际远端通过后接续。 |
+| Objective | 迁移 S2 台账 38–42、51–55 的既有公共对话框呈现与布局，保持 Win32、Shell/COM 与打印契约。 |
+| Non-goals | 保留 T28 批准跳过的真实域队列和有效打印扩展页验收；现代外框及七件运行时切换在 S9–S11。 |
+| Reference Baseline | S7 P1 同批八件运行包和四份主题；T20 与 T28 S3 验证范围。 |
 | Candidate Proposal | docs/proposals/msstyles-classic-runtime.md。 |
-| Files And ABI Surface | 已有 Win32 宿主适配器、经典渲染器、主题读写及自有宿主测试；保持现有 ABI。 |
-| Applicable Rules | C17、双位宽、固定来源和资源，应用自绘及回退归属保持。 |
-| Verification | 核对直接读取标准主题记录、专属宿主的实际像素、应用自绘及原生回退；区分实机样本和模型。 |
-| Expected Markers | 已验证的外观角色读取相同主题记录；原生值、绘制范围、应用回调及撤销与基线相符。 |
-| Asset Needs | 已固定的原始图形头、现有自有 VB/VCL 原生夹具及记录的截屏与来源证据。 |
-| Reporting Requirements | 对两年代及台账逐项记录宿主、模型、原生回退和实际未覆盖验证。 |
-| Stop Conditions | 遵守已批准的宿主、文件、权限及桌面范围；保留未知私有角色的现有返还路径。 |
-| Exit Criteria | 已交付角色完成双宽验证及边界审计，发布同快照候选并复核实际远端。 |
+| Files And ABI Surface | 主题编译及读取、已交付对话框模板与呈现、公共对话框应用层和自有夹具；保持现有 API、ABI 及回调协议。 |
+| Applicable Rules | C17、双位宽、原始资源与来源字节保持；回调和内存、PIDL、打印句柄归属不变。 |
+| Verification | 固定文件与目录、查找替换、字体、展开色板、标准与扩展打印、页面设置及消息框。逐项对照布局、结果和回退，覆盖 A/W、普通启动和自有全局接收路径。 |
+| Expected Markers | 独立主题读回成立，渲染和布局对照保留原基线，所选路径、打印与页面数据、取消、命令、帮助和回调均按既有语义返回。 |
+| Asset Needs | 既有对话框资源与来源声明、固定样式主题、现有双宽测试程序和自有临时文件目录。 |
+| Reporting Requirements | 记录每个台账单元的主题字段或运行时归属、实际验证路径、跳过和回退范围。 |
+| Stop Conditions | 遵守已批准的桌面、权限及目标范围；保留原生模板、回退和两项打印验收债务，不提交真实打印任务。 |
+| Exit Criteria | 台账十项均有双宽可核对结论，同快照候选两处发布并完成已发布包回归与远端复核。 |
 | Original Owner Request | 将 Win16、Win2000 风格迁入同一主题编译及运行机制，保持既有外观和公开行为。 |
-| Similar-Issue Sweep | 核对重复颜色常量、应用自绘路径和只由模型证明的角色，保留现有资格检查。 |
+| Similar-Issue Sweep | 核对 A/W、普通与自有全局接收入口是否仍使用不同模板、颜色或调用结果路径。 |
 
 ## Identifier State
 
@@ -100,15 +101,15 @@ S7 P1 已完成同批发布与实包验证，聚焦包 39/39 和两处发布路�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S6 P1；八件开发运行包及四个主题预览。
+- Last verified remote delivery: M0 T29 S7 P1；八件开发运行包及四个主题预览。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 7
-- Open task: M0 T29 S7；VB/VCL 和复合控件。
+- Last allocated T29 S: 8
+- Open task: M0 T29 S8；公共对话框。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll。O:/winnt、assets 与远端已核对 [T29 S6 P1](../history/M0-T29-S6-win32-controls.md)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll。O:/winnt、assets 与远端已核对 [T29 S7 P1](../history/M0-T29-S7-composite-controls.md)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1182回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
