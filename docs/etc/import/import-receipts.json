@@ -10530,6 +10530,33 @@
       "disposition": "authored",
       "review": "T29 S3 versioned project-style extension and packaged tests",
       "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/classic_theme.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "85c2e4a00bece34f441820ed095f6568f5a22016df1cf3bdc9c846bc7600b96e",
+      "disposition": "authored",
+      "review": "T29 S4 typed classic theme loading and renderer data witness",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/classic_theme.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "181159782aecce415b27513706697c6a4e190fa18623b95b61cad25ce8b9539b",
+      "disposition": "authored",
+      "review": "T29 S4 typed classic theme loading and renderer data witness",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/msstyles/classic_theme.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "98508b2a8558c868eb557be683a9d73dea90813139fad9479d22278695d19294",
+      "disposition": "authored",
+      "review": "T29 S4 typed classic theme loading and renderer data witness",
+      "notice": "Project-authored; no imported source or resources"
     }
   ]
 }

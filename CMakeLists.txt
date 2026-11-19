@@ -264,6 +264,7 @@ add_library(win2k-print STATIC src/lib-win32-style/appearance/win2000/dialog/pri
 target_link_libraries(win2k-print PUBLIC style-dialog-common comctl32 winspool activeds adsiid oleaut32)
 add_library(style-msstyles STATIC
   src/lib-win32-style/appearance/msstyles/classic_style.c
+  src/lib-win32-style/appearance/msstyles/classic_theme.c
   src/lib-win32-style/appearance/msstyles/theme_file.c
   src/lib-win32-style/appearance/msstyles/v4_property.c
   src/lib-win32-style/appearance/msstyles/v4_tables.c)
@@ -774,6 +775,11 @@ if(BUILD_TESTING)
   target_link_libraries(core-style-classic-extension PRIVATE style-msstyles)
   target_link_options(core-style-classic-extension PRIVATE -municode)
   add_test(NAME core/style-classic-extension COMMAND $<TARGET_FILE:core-style-classic-extension>)
+  add_executable(core-style-classic-theme EXCLUDE_FROM_ALL tests/lib-win32-style/appearance/msstyles/classic_theme.c)
+  target_include_directories(core-style-classic-theme PRIVATE src)
+  target_compile_definitions(core-style-classic-theme PRIVATE NTW16S_STATIC)
+  target_link_libraries(core-style-classic-theme PRIVATE style-msstyles win16-window win2k-window)
+  target_link_options(core-style-classic-theme PRIVATE -municode)
   add_executable(ntw2ks-frame-target tests/ntw2ks-dll/frame_target.c tests/ntw2ks-dll/frame_target.rc)
   target_link_libraries(ntw2ks-frame-target PRIVATE user32 gdi32 comdlg32 ole32 shcore)
   target_link_options(ntw2ks-frame-target PRIVATE -municode)
@@ -1002,7 +1008,8 @@ if(BUILD_TESTING)
     add_custom_target(check-classic-themes
       COMMAND "$<TARGET_FILE:core-classic-themes>" "${CMAKE_BINARY_DIR}/themes"
       COMMAND "$<TARGET_FILE:core-style-classic-extension>" "${CMAKE_BINARY_DIR}/themes"
-      DEPENDS classic-themes core-classic-themes core-style-classic-extension
+      COMMAND "$<TARGET_FILE:core-style-classic-theme>" "${CMAKE_BINARY_DIR}/themes"
+      DEPENDS classic-themes core-classic-themes core-style-classic-extension core-style-classic-theme
       VERBATIM)
   endif()
   set(test_driver ${test_python} ${CMAKE_SOURCE_DIR}/tools/run_test.py)
