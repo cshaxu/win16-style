@@ -1017,6 +1017,12 @@
       }
     }
   },
+  "print_general_native_fallback_p28": {
+    "package": "All eight SHA-256 values matched P27 in assets and O:/winnt before running the owned probes.",
+    "control": "The ordinary PropertySheetW using the same caller-owned page registered exactly one create, initialization and release on every x86/x64 trial.",
+    "fallback": "A valid caller page selected at startup in PrintDlgExW was tried in native, released Win16 and released Win2000 on both widths. All six timed out with the external zero-size proxy and no page callback. Neither the new General page nor the existing classic bridge is selected for caller pages. This confirms the observed native fallback boundary on this host and leaves actual page display and interaction open.",
+    "environment": "Session 4 was disconnected and the test token was not an elevated administrator. No desktop-wide style sweep or system change was made. Temporary native fixtures and logs were removed. No product binaries changed."
+  },
   "places_reflow_trial": {
     "package": "P9 published launcher and DLLs with temporary caller-owned ANSI and Unicode OPENFILENAME hooks. The probe used the ordinary desktop and owned dialogs at 96 DPI with a 427 by 272 work area. The temporary sources, objects, binaries and output were removed after the run.",
     "stock_geometry": "The native 421 by 247 client exposed the stock Places toolbar, a Shell directory view, and a ComboBoxEx filename field. In Open the default OK button began at (484,313), beyond both client bounds.",
