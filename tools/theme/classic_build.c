@@ -1,7 +1,9 @@
 #include "lib-win32-style/appearance/msstyles/theme_file.h"
+#include "lib-win32-style/appearance/msstyles/classic_style.h"
 #include "lib-win32-style/appearance/msstyles/v4_endian.h"
 #include "lib-win32-style/appearance/msstyles/v4_property.h"
 #include "classic_source.h"
+#include "legacy_image.h"
 #include <vsstyle.h>
 #include <vssym32.h>
 #include <string.h>
@@ -56,6 +58,16 @@ static bool button(FILE *output,uint32_t cls,uint32_t part,const classic_theme_s
 
 static bool write_properties(FILE *output,const classic_theme_source *source)
 {
+    if(source->legacy_minimize){
+        unsigned char record[32];
+        size_t length;
+        const msstyles_v4_property image={
+            TMT_IMAGEFILE,TMT_FILENAME,window_class,WP_MINBUTTON,0,CLASSIC_MINIMIZE_IMAGE_ID,16,NULL
+        };
+        if(!property(output,TMT_BGTYPE,TMT_ENUM,window_class,WP_MINBUTTON,0,BT_IMAGEFILE) ||
+           !msstyles_v4_property_write(record,sizeof(record),ARRAYSIZE(classes),&image,&length) ||
+           !bytes(output,record,length))return false;
+    }
     return button(output,button_class,BP_PUSHBUTTON,source) &&
         button(output,scrollbar_class,SBP_ARROWBTN,source) &&
         property(output,TMT_BGTYPE,TMT_ENUM,window_class,WP_CAPTION,0,BT_BORDERFILL) &&
@@ -112,13 +124,20 @@ static bool write_description(FILE *output,const classic_theme_source *source)
     return msstyles_theme_file_write(output,source->label,source->stem,&variant);
 }
 
+static bool write_extension(FILE *output,const classic_theme_source *source)
+{
+    unsigned char buffer[CLASSIC_STYLE_BUTTON_RESOURCE_CAPACITY];
+    size_t length=classic_style_write(buffer,sizeof(buffer),&source->buttons);
+    return length && bytes(output,buffer,length);
+}
+
 static const struct {
     const char *filename;
     bool (*write)(FILE *,const classic_theme_source *);
 } outputs[]={
     {"cmap.bin",write_classes},{"bcmap.bin",write_base_classes},
     {"vmap.bin",write_variant},{"rmap.bin",write_metadata},
-    {"normal.bin",write_properties},{NULL,write_description}
+    {"normal.bin",write_properties},{"classic.bin",write_extension},{NULL,write_description}
 };
 
 int main(int argc,char **argv)
@@ -138,6 +157,13 @@ int main(int argc,char **argv)
         bool written=outputs[i].write(output,source);
         if(fclose(output)!=0 || !written){
             fprintf(stderr,"Failed to write %s\n",name);
+            return 1;
+        }
+    }
+    if(source->legacy_minimize){
+        HRESULT result=classic_write_minimize_png(L"minimize.png");
+        if(FAILED(result)){
+            fprintf(stderr,"Failed to write original minimize bitmap (0x%08lx)\n",(unsigned long)result);
             return 1;
         }
     }

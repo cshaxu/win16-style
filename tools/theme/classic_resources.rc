@@ -6,3 +6,8 @@ BCMAP BCMAP "bcmap.bin"
 VMAP VMAP "vmap.bin"
 RMAP RMAP "rmap.bin"
 NORMAL VARIANT "normal.bin"
+CLASSIC_STYLE RCDATA "classic.bin"
+#ifdef PACK_ORIGINAL_MINIMIZE
+#include "legacy_image.h"
+CLASSIC_MINIMIZE_IMAGE_ID IMAGE "minimize.png"
+#endif

@@ -263,26 +263,34 @@ add_library(win2k-print STATIC src/lib-win32-style/appearance/win2000/dialog/pri
   src/lib-win32-style/appearance/win2000/dialog/print_directory.c)
 target_link_libraries(win2k-print PUBLIC style-dialog-common comctl32 winspool activeds adsiid oleaut32)
 add_library(style-msstyles STATIC
+  src/lib-win32-style/appearance/msstyles/classic_style.c
   src/lib-win32-style/appearance/msstyles/theme_file.c
   src/lib-win32-style/appearance/msstyles/v4_property.c
   src/lib-win32-style/appearance/msstyles/v4_tables.c)
-add_executable(classic-theme-compiler EXCLUDE_FROM_ALL tools/theme/classic_build.c)
+add_executable(classic-theme-compiler EXCLUDE_FROM_ALL tools/theme/classic_build.c tools/theme/legacy_image.c)
 target_include_directories(classic-theme-compiler PRIVATE src)
-target_link_libraries(classic-theme-compiler PRIVATE style-msstyles)
+target_link_libraries(classic-theme-compiler PRIVATE style-msstyles windowscodecs ole32 uuid)
 if(WIN16STYLE_ARCH STREQUAL "x64")
   set(classic_theme_artifacts)
   set(classic_theme_rc "${CMAKE_CURRENT_SOURCE_DIR}/tools/theme/classic_resources.rc")
   foreach(stem IN ITEMS Win16 Win2000)
     set(out "${CMAKE_BINARY_DIR}/themes/${stem}")
+    unset(image_flag)
+    unset(image_file)
+    if(stem STREQUAL "Win16")
+      set(image_flag -D PACK_ORIGINAL_MINIMIZE)
+      set(image_file "${out}/minimize.png")
+    endif()
     file(MAKE_DIRECTORY "${out}")
     add_custom_command(
       OUTPUT "${out}/${stem}.msstyles" "${out}/${stem}.theme"
       BYPRODUCTS "${out}/cmap.bin" "${out}/bcmap.bin" "${out}/vmap.bin"
-        "${out}/rmap.bin" "${out}/normal.bin" "${out}/theme.res.o"
+        "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" "${out}/theme.res.o" ${image_file}
       COMMAND "$<TARGET_FILE:classic-theme-compiler>" "${stem}"
-      COMMAND "${CMAKE_RC_COMPILER}" -i "${classic_theme_rc}" -O coff -o theme.res.o
+      COMMAND "${CMAKE_RC_COMPILER}" ${image_flag} -i "${classic_theme_rc}" -O coff -o theme.res.o
       COMMAND "${CMAKE_C_COMPILER}" -shared -nostdlib -Wl,--entry,0,--no-insert-timestamp -o "${stem}.msstyles" theme.res.o
       DEPENDS classic-theme-compiler "${classic_theme_rc}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tools/theme/legacy_image.h"
       WORKING_DIRECTORY "${out}"
       VERBATIM)
     list(APPEND classic_theme_artifacts "${out}/${stem}.msstyles" "${out}/${stem}.theme")
@@ -761,6 +769,11 @@ if(BUILD_TESTING)
   target_include_directories(core-style-theme-file PRIVATE src)
   target_link_libraries(core-style-theme-file PRIVATE style-msstyles)
   add_test(NAME core/style-theme-file COMMAND $<TARGET_FILE:core-style-theme-file>)
+  add_executable(core-style-classic-extension tests/lib-win32-style/appearance/msstyles/classic_style.c)
+  target_include_directories(core-style-classic-extension PRIVATE src)
+  target_link_libraries(core-style-classic-extension PRIVATE style-msstyles)
+  target_link_options(core-style-classic-extension PRIVATE -municode)
+  add_test(NAME core/style-classic-extension COMMAND $<TARGET_FILE:core-style-classic-extension>)
   add_executable(ntw2ks-frame-target tests/ntw2ks-dll/frame_target.c tests/ntw2ks-dll/frame_target.rc)
   target_link_libraries(ntw2ks-frame-target PRIVATE user32 gdi32 comdlg32 ole32 shcore)
   target_link_options(ntw2ks-frame-target PRIVATE -municode)
@@ -982,11 +995,14 @@ if(BUILD_TESTING)
   set_tests_properties(core/theme-track core/theme-track-cancel PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
   find_program(test_python python REQUIRED)
   add_executable(core-classic-themes EXCLUDE_FROM_ALL tests/tooling/classic_themes.c)
+  target_include_directories(core-classic-themes PRIVATE src)
+  target_link_libraries(core-classic-themes PRIVATE windowscodecs ole32 uuid)
   target_link_options(core-classic-themes PRIVATE -municode)
   if(TARGET classic-themes)
     add_custom_target(check-classic-themes
       COMMAND "$<TARGET_FILE:core-classic-themes>" "${CMAKE_BINARY_DIR}/themes"
-      DEPENDS classic-themes core-classic-themes
+      COMMAND "$<TARGET_FILE:core-style-classic-extension>" "${CMAKE_BINARY_DIR}/themes"
+      DEPENDS classic-themes core-classic-themes core-style-classic-extension
       VERBATIM)
   endif()
   set(test_driver ${test_python} ${CMAKE_SOURCE_DIR}/tools/run_test.py)

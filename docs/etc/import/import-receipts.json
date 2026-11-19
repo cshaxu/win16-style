@@ -10499,9 +10499,36 @@
       "path": "tests/tooling/classic_themes.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e81cea8db11f45a442116e1ccb1cd9007ca0a12e180deafdd9faa232307f2811",
+      "sha256": "c63ab23be7ed00c2cae53f37dcf2bb7579403d8428c166cea897bb7e65a65163",
       "disposition": "authored",
       "review": "T29 S3 dual classic theme build and independent resource checks",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/classic_style.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1cbd495b5f401856b3b3799a01c10f6042511a5d7a4ee3873eba74f6a07ab713",
+      "disposition": "authored",
+      "review": "T29 S3 versioned project-style extension and packaged tests",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/classic_style.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "da50ac9eb9d43dbaf4c673f2b2addae9acdeca27d8119eead19fc058edd420b7",
+      "disposition": "authored",
+      "review": "T29 S3 versioned project-style extension and packaged tests",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/msstyles/classic_style.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d3d2bb8a56ada6ac35155e3dd2469b0b2c3957b94336b3cf2fb4122330b743b0",
+      "disposition": "authored",
+      "review": "T29 S3 versioned project-style extension and packaged tests",
       "notice": "Project-authored; no imported source or resources"
     }
   ]

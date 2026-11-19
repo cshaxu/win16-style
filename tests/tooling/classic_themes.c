@@ -1,4 +1,7 @@
+#define COBJMACROS
 #include <windows.h>
+#include <wincodec.h>
+#include "lib-win32-style/appearance/win3x/resources/frame_buttons.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -49,7 +52,48 @@ static bool variant_fields(HMODULE module,PCWSTR theme)
     return size==0;
 }
 
-static bool style_data(HMODULE module,uint32_t caption,uint32_t face)
+static bool original_image(HMODULE module,uint32_t image_id)
+{
+    DWORD length=0;
+    CHECK(image_id && image_id<=UINT16_MAX);
+    const unsigned char *bytes=resource(module,L"IMAGE",MAKEINTRESOURCEW(image_id),&length);
+    CHECK(bytes && length>8 && !memcmp(bytes,"\x89PNG\r\n\x1a\n",8));
+    IWICImagingFactory *factory=NULL;
+    IWICStream *stream=NULL;
+    IWICBitmapDecoder *decoder=NULL;
+    IWICBitmapFrameDecode *frame=NULL;
+    IWICFormatConverter *converter=NULL;
+    enum {width=19,height=18,stride=width*3};
+    BYTE bits[height][stride];
+    UINT x=0,y=0;
+    HRESULT result=CoCreateInstance(&CLSID_WICImagingFactory,NULL,CLSCTX_INPROC_SERVER,
+                                    &IID_IWICImagingFactory,(void **)&factory);
+    if(SUCCEEDED(result))result=IWICImagingFactory_CreateStream(factory,&stream);
+    if(SUCCEEDED(result))result=IWICStream_InitializeFromMemory(stream,(BYTE *)bytes,length);
+    if(SUCCEEDED(result))result=IWICImagingFactory_CreateDecoderFromStream(factory,(IStream *)stream,NULL,
+                                        WICDecodeMetadataCacheOnDemand,&decoder);
+    if(SUCCEEDED(result))result=IWICBitmapDecoder_GetFrame(decoder,0,&frame);
+    if(SUCCEEDED(result))result=IWICBitmapFrameDecode_GetSize(frame,&x,&y);
+    if(SUCCEEDED(result) && (x!=width || y!=height))result=E_FAIL;
+    if(SUCCEEDED(result))result=IWICImagingFactory_CreateFormatConverter(factory,&converter);
+    if(SUCCEEDED(result))result=IWICFormatConverter_Initialize(converter,(IWICBitmapSource *)frame,
+        &GUID_WICPixelFormat24bppBGR,WICBitmapDitherTypeNone,NULL,0,WICBitmapPaletteTypeCustom);
+    if(SUCCEEDED(result))result=IWICFormatConverter_CopyPixels(converter,NULL,stride,sizeof(bits),bits[0]);
+    if(converter)IWICFormatConverter_Release(converter);
+    if(frame)IWICBitmapFrameDecode_Release(frame);
+    if(decoder)IWICBitmapDecoder_Release(decoder);
+    if(stream)IWICStream_Release(stream);
+    if(factory)IWICImagingFactory_Release(factory);
+    CHECK(SUCCEEDED(result));
+    const unsigned char gray[]={0,255,128,192};
+    for(y=0;y<height;++y)
+        for(x=0;x<width;++x)
+            for(unsigned band=0;band<3;++band)
+                CHECK(bits[y][x*3+band]==gray[frame_buttons[0][y][x]-'0']);
+    return true;
+}
+
+static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect_image)
 {
     DWORD size=0;
     const unsigned char *data=resource(module,L"PACKTHEM_VERSION",MAKEINTRESOURCEW(1),&size);
@@ -75,6 +119,7 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face)
     CHECK(indices[0] && indices[1] && indices[2]);
     const uint32_t values[]={face,face,caption};
     unsigned observed=0;
+    bool found_image=false;
     data=resource(module,L"VARIANT",L"NORMAL",&size);
     CHECK(data);
     while(size){
@@ -83,7 +128,15 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face)
         memcpy(item,data,sizeof(item));
         size-=sizeof(item);
         data+=sizeof(item);
-        CHECK(item[2]<classes && !item[5] && !item[6] && item[7]<=size);
+        CHECK(item[2]<classes && !item[6]);
+        if(item[5]){
+            CHECK(expect_image && !found_image && item[0]==3001 && item[1]==206 &&
+                  item[2]+1==indices[2] && item[3]==15 && !item[4] && item[7]==16);
+            CHECK(original_image(module,item[5]));
+            found_image=true;
+            continue;
+        }
+        CHECK(item[7]<=size);
         size_t length=item[7],pad=(8-length%8)%8;
         CHECK(pad<=size-length);
         for(unsigned i=0;i<ARRAYSIZE(indices);++i){
@@ -96,10 +149,12 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face)
         size-=length+pad;
         data+=length+pad;
     }
-    return observed==7;
+    CHECK(observed==7);
+    CHECK(found_image==expect_image);
+    return true;
 }
 
-static bool check_pair(PCWSTR root,PCWSTR stem,PCWSTR label,uint32_t caption,uint32_t face)
+static bool check_pair(PCWSTR root,PCWSTR stem,PCWSTR label,uint32_t caption,uint32_t face,bool expect_image)
 {
     WCHAR descriptor[MAX_PATH],carrier[MAX_PATH],filename[48];
     CHECK(swprintf(descriptor,ARRAYSIZE(descriptor),L"%ls/%ls/%ls.theme",root,stem,stem)>0);
@@ -111,7 +166,7 @@ static bool check_pair(PCWSTR root,PCWSTR stem,PCWSTR label,uint32_t caption,uin
     CHECK(field(descriptor,L"MasterThemeSelector",L"MTSM",L"DABJDKT"));
     HMODULE module=LoadLibraryExW(carrier,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
     CHECK(module);
-    bool valid=variant_fields(module,descriptor) && style_data(module,caption,face);
+    bool valid=variant_fields(module,descriptor) && style_data(module,caption,face,expect_image);
     FreeLibrary(module);
     return valid;
 }
@@ -119,8 +174,11 @@ static bool check_pair(PCWSTR root,PCWSTR stem,PCWSTR label,uint32_t caption,uin
 int wmain(int argc,WCHAR **argv)
 {
     if(argc!=2)return 2;
-    if(!check_pair(argv[1],L"Win16",L"Windows 3.x",RGB(164,200,240),RGB(192,192,192)) ||
-       !check_pair(argv[1],L"Win2000",L"Windows 2000",RGB(0,0,128),RGB(212,208,200)))return 1;
+    if(FAILED(CoInitializeEx(NULL,COINIT_MULTITHREADED)))return 1;
+    bool passed=check_pair(argv[1],L"Win16",L"Windows 3.x",RGB(164,200,240),RGB(192,192,192),true) &&
+        check_pair(argv[1],L"Win2000",L"Windows 2000",RGB(0,0,128),RGB(212,208,200),false);
+    CoUninitialize();
+    if(!passed)return 1;
     puts("Classic themes: both companion descriptions and v4 resources passed");
     return 0;
 }
