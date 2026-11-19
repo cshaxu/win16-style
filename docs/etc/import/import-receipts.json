@@ -10494,6 +10494,15 @@
       "disposition": "authored",
       "review": "T29 S3 companion theme description and native INI checks",
       "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "tests/tooling/classic_themes.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e81cea8db11f45a442116e1ccb1cd9007ca0a12e180deafdd9faa232307f2811",
+      "disposition": "authored",
+      "review": "T29 S3 dual classic theme build and independent resource checks",
+      "notice": "Project-authored; no imported source or resources"
     }
   ]
 }

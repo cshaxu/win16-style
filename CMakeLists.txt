@@ -266,6 +266,29 @@ add_library(style-msstyles STATIC
   src/lib-win32-style/appearance/msstyles/theme_file.c
   src/lib-win32-style/appearance/msstyles/v4_property.c
   src/lib-win32-style/appearance/msstyles/v4_tables.c)
+add_executable(classic-theme-compiler EXCLUDE_FROM_ALL tools/theme/classic_build.c)
+target_include_directories(classic-theme-compiler PRIVATE src)
+target_link_libraries(classic-theme-compiler PRIVATE style-msstyles)
+if(WIN16STYLE_ARCH STREQUAL "x64")
+  set(classic_theme_artifacts)
+  set(classic_theme_rc "${CMAKE_CURRENT_SOURCE_DIR}/tools/theme/classic_resources.rc")
+  foreach(stem IN ITEMS Win16 Win2000)
+    set(out "${CMAKE_BINARY_DIR}/themes/${stem}")
+    file(MAKE_DIRECTORY "${out}")
+    add_custom_command(
+      OUTPUT "${out}/${stem}.msstyles" "${out}/${stem}.theme"
+      BYPRODUCTS "${out}/cmap.bin" "${out}/bcmap.bin" "${out}/vmap.bin"
+        "${out}/rmap.bin" "${out}/normal.bin" "${out}/theme.res.o"
+      COMMAND "$<TARGET_FILE:classic-theme-compiler>" "${stem}"
+      COMMAND "${CMAKE_RC_COMPILER}" -i "${classic_theme_rc}" -O coff -o theme.res.o
+      COMMAND "${CMAKE_C_COMPILER}" -shared -nostdlib -Wl,--entry,0,--no-insert-timestamp -o "${stem}.msstyles" theme.res.o
+      DEPENDS classic-theme-compiler "${classic_theme_rc}"
+      WORKING_DIRECTORY "${out}"
+      VERBATIM)
+    list(APPEND classic_theme_artifacts "${out}/${stem}.msstyles" "${out}/${stem}.theme")
+  endforeach()
+  add_custom_target(classic-themes DEPENDS ${classic_theme_artifacts})
+endif()
 add_library(win2k-file STATIC src/lib-win32-style/appearance/win2000/dialog/file_call.c)
 target_link_libraries(win2k-file PUBLIC style-dialog-common)
 add_library(win2k-stock STATIC src/lib-win32-style/appearance/win2000/dialog/stock_call.c)
@@ -958,6 +981,14 @@ if(BUILD_TESTING)
   add_test(NAME core/theme-track-cancel COMMAND $<TARGET_FILE:core-theme-track> cancel)
   set_tests_properties(core/theme-track core/theme-track-cancel PROPERTIES TIMEOUT 15 RUN_SERIAL TRUE)
   find_program(test_python python REQUIRED)
+  add_executable(core-classic-themes EXCLUDE_FROM_ALL tests/tooling/classic_themes.c)
+  target_link_options(core-classic-themes PRIVATE -municode)
+  if(TARGET classic-themes)
+    add_custom_target(check-classic-themes
+      COMMAND "$<TARGET_FILE:core-classic-themes>" "${CMAKE_BINARY_DIR}/themes"
+      DEPENDS classic-themes core-classic-themes
+      VERBATIM)
+  endif()
   set(test_driver ${test_python} ${CMAKE_SOURCE_DIR}/tools/run_test.py)
   plain_test(wait-target tests/run16s-exe/wait_target.c)
   native_test(startup-error-unit tests/run16s-exe/startup_error_unit.c process-image shell32 ole32)
