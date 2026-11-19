@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <commdlg.h>
+#include <objbase.h>
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
@@ -17,10 +18,36 @@ static DWORD output_flags;
 static BOOL test_preferences,preferences_pending,preferences_seen,no_context_device;
 static BOOL fits_work_area;
 static WCHAR choice[300];
-static BOOL full,device_details;
+static BOOL full,device_details,shell_list,force_fallback;
 
 static LRESULT device_message(HWND list,UINT combo,UINT box,WPARAM wp,LPARAM lp)
-{return SendMessageW(list,full?box:combo,wp,lp);}
+{
+    if(!shell_list)return SendMessageW(list,full?box:combo,wp,lp);
+    switch(box){
+    case LB_GETCURSEL:return SendMessageW(list,LVM_GETNEXTITEM,(WPARAM)-1,LVNI_SELECTED);
+    case LB_GETCOUNT:return SendMessageW(list,LVM_GETITEMCOUNT,0,0);
+    case LB_SETCURSEL:{
+        LVITEMW item={.stateMask=LVIS_SELECTED|LVIS_FOCUSED};
+        SendMessageW(list,LVM_SETITEMSTATE,(WPARAM)-1,(LPARAM)&item);
+        item.state=LVIS_SELECTED|LVIS_FOCUSED;
+        SendMessageW(list,LVM_SETSELECTIONMARK,0,(LPARAM)wp);
+        return SendMessageW(list,LVM_SETITEMSTATE,wp,(LPARAM)&item);
+    }
+    default:{
+        WCHAR text[ARRAYSIZE(choice)];
+        LVITEMW item={.pszText=lp?(PWSTR)lp:text,.cchTextMax=ARRAYSIZE(choice)};
+        return SendMessageW(list,LVM_GETITEMTEXTW,wp,(LPARAM)&item);
+    }
+    }
+}
+
+static BOOL CALLBACK find_printer_list(HWND child,LPARAM result)
+{
+    WCHAR cls[32];
+    if(!IsWindowVisible(child) || !GetClassNameW(child,cls,ARRAYSIZE(cls)) || lstrcmpiW(cls,WC_LISTVIEWW))return TRUE;
+    *(HWND *)result=child;
+    return FALSE;
+}
 
 static LRESULT choose_device(HWND list,LRESULT current,LRESULT count)
 {
@@ -56,6 +83,13 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
     if(!list)return TRUE;
     WCHAR class_name[16];
     full=GetClassNameW(list,class_name,ARRAYSIZE(class_name)) && !lstrcmpiW(class_name,L"ListBox");
+    if(full && !force_fallback && IsWindowVisible(list) && ticks<8)return FALSE;
+    shell_list=full && !IsWindowVisible(list);
+    if(shell_list){
+        HWND visible=NULL;
+        EnumChildWindows(page,find_printer_list,(LPARAM)&visible);
+        if(visible)list=visible;
+    }
     device_details=!full || (GetWindowTextLengthW(GetDlgItem(page,WIN2K_PRINT_DEVICE_STATUS))>0 &&
         GetDlgItem(page,WIN2K_PRINT_DEVICE_LOCATION) && GetDlgItem(page,WIN2K_PRINT_DEVICE_COMMENT));
     ready=TRUE;
@@ -108,7 +142,7 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
         if(two){
             device_message(list,CB_SETCURSEL,LB_SETCURSEL,(WPARAM)next,0);
             device_message(list,CB_GETLBTEXT,LB_GETTEXT,(WPARAM)next,(LPARAM)choice);
-            SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_DEVICE,full?LBN_SELCHANGE:CBN_SELCHANGE),(LPARAM)list);
+            if(!shell_list)SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_DEVICE,full?LBN_SELCHANGE:CBN_SELCHANGE),(LPARAM)list);
         }
         SetDlgItemInt(page,WIN2K_PRINT_COPIES,3,FALSE);
         if(output_flags){
@@ -122,7 +156,7 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
             applied=PropSheet_Apply(window);
             if(two){
                 device_message(list,CB_SETCURSEL,LB_SETCURSEL,(WPARAM)current,0);
-                SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_DEVICE,full?LBN_SELCHANGE:CBN_SELCHANGE),(LPARAM)list);
+                if(!shell_list)SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_DEVICE,full?LBN_SELCHANGE:CBN_SELCHANGE),(LPARAM)list);
             }
             SetDlgItemInt(page,WIN2K_PRINT_COPIES,5,FALSE);
         }
@@ -148,6 +182,8 @@ int wmain(int argc,WCHAR **argv)
     if(argc==4 && !wcscmp(argv[3],L"ic"))context_flag=PD_RETURNIC;
     if(argc==4 && !wcscmp(argv[3],L"selection-file"))output_flags=PD_SELECTION|PD_PRINTTOFILE;
     if(argc==4 && !wcscmp(argv[3],L"current-driver"))output_flags=PD_CURRENTPAGE|PD_USEDEVMODECOPIESANDCOLLATE;
+    force_fallback=argc==4 && !wcscmp(argv[3],L"fallback");
+    if(force_fallback && FAILED(CoInitializeEx(NULL,COINIT_MULTITHREADED)))return 2;
     BOOL ansi=!wcscmp(argv[1],L"a");
     action=!wcscmp(argv[2],L"apply")?PD_RESULT_APPLY:!wcscmp(argv[2],L"confirm")?PD_RESULT_PRINT:PD_RESULT_CANCEL;
     INITCOMMONCONTROLSEX controls={sizeof(controls),ICC_WIN95_CLASSES};
@@ -198,7 +234,8 @@ int wmain(int argc,WCHAR **argv)
         GlobalUnlock(names);
     }
     BOOL match=two && !wcscmp(actual,choice);
-    BOOL pass=hr==S_OK && ready && styled && initial_ok && fits_work_area && device_details && code==(no_context_device?PD_RESULT_CANCEL:action) &&
+    BOOL pass=hr==S_OK && ready && styled && initial_ok && fits_work_area && device_details &&
+        (!force_fallback || !shell_list) && code==(no_context_device?PD_RESULT_CANCEL:action) &&
         IsWindowEnabled(owner) && (!test_preferences || preferences_seen);
     if(context_flag && action!=PD_RESULT_CANCEL)pass=pass && (no_context_device?!dc:dc && GetDeviceCaps(dc,TECHNOLOGY)==DT_RASPRINTER);
     if(no_context_device)action=PD_RESULT_CANCEL;
@@ -224,12 +261,13 @@ int wmain(int argc,WCHAR **argv)
         }else pass=pass && copies==3 && range_count==2 && ranges[0].nFromPage==2 &&
             ranges[0].nToPage==2 && ranges[1].nFromPage==4 && ranges[1].nToPage==5;
     }
-    printf("GENERAL ENTRY bits=%u ansi=%d initial=%d requested=%u result=%lu hr=%08lx frame=%d copies=%lu pages=%lu selected=%d dc=%d preferences=%d full=%d details=%d pass=%d\n",
-       (unsigned)(sizeof(void *)*8),ansi,initial,action,code,(unsigned long)hr,styled,copies,range_count,match,dc!=NULL,preferences_seen,full,device_details,pass);
+    printf("GENERAL ENTRY bits=%u ansi=%d initial=%d requested=%u result=%lu hr=%08lx frame=%d copies=%lu pages=%lu selected=%d dc=%d preferences=%d full=%d details=%d shell=%d pass=%d\n",
+       (unsigned)(sizeof(void *)*8),ansi,initial,action,code,(unsigned long)hr,styled,copies,range_count,match,dc!=NULL,preferences_seen,full,device_details,shell_list,pass);
     if(dc)DeleteDC(dc);
     if(mode)GlobalFree(mode);
     if(names)GlobalFree(names);
     DestroyWindow(owner);
+    if(force_fallback)CoUninitialize();
     if(!pass)return 3;
     if(no_context_device){puts("GENERAL SKIP native printer context unavailable");return 77;}
     return 0;

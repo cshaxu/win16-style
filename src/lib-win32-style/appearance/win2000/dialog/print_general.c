@@ -1,5 +1,6 @@
 #define _WIN32_WINNT 0x0A00
 #include "print_general.h"
+#include "print_shell.h"
 #include "lib-win32-style/application/dialog/print_ranges.h"
 #include "lib-win32-style/application/dialog/print_resources.h"
 #include <commctrl.h>
@@ -11,7 +12,7 @@
 
 extern IMAGE_DOS_HEADER __ImageBase;
 
-enum { range_limit=32, fit_page_message=WM_APP+1 };
+enum { range_limit=32, fit_page_message=WM_APP+1, select_printer_message=WM_APP+2, printer_view_message=WM_APP+3 };
 typedef struct general_page {
     BOOL ansi, full;
     DWORD flags,minimum,maximum,capacity,copies,action,range_count;
@@ -22,7 +23,8 @@ typedef struct general_page {
     DWORD device_count;
     HGLOBAL live_mode,live_names;
     style_print_snapshot saved;
-    BOOL initialized;
+    win2k_print_shell *shell;
+    BOOL initialized,shell_visible;
 } general_page;
 
 typedef struct device_messages {
@@ -193,6 +195,26 @@ static void fit_sheet(HWND window)
             SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOSENDCHANGING);
 }
 
+static BOOL select_shell_printer(HWND window,general_page *page)
+{
+    PWSTR name=win2k_print_shell_selected(page->shell);
+    PCWSTR device=NULL;
+    for(DWORD i=0;name && i<page->device_count;++i){
+        if(!lstrcmpiW(name,page->devices[i].pPrinterName)){device=page->devices[i].pPrinterName;break;}
+    }
+    CoTaskMemFree(name);
+    if(device==page->selected)return TRUE;
+    if(device && load_device(page,device,NULL,NULL)){
+        present_device(window,device);
+        SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"");
+        PropSheet_Changed(GetParent(window),window);
+        return TRUE;
+    }
+    win2k_print_shell_select(page->shell,page->selected);
+    SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"Could not read settings for the selected printer.");
+    return FALSE;
+}
+
 static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {
     if(message==WM_INITDIALOG){
@@ -200,12 +222,31 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
         initialize_page(window,page);
         SetDlgItemTextW(GetParent(window),IDOK,L"Print");
         SetWindowLongPtrW(window,DWLP_USER,(LONG_PTR)page);
+        if(page->full)page->shell=win2k_print_shell_open(window,GetDlgItem(window,WIN2K_PRINT_DEVICE),
+            select_printer_message,printer_view_message);
         page->initialized=TRUE;
         PostMessageW(window,fit_page_message,0,0);
         return TRUE;
     }
     general_page *page=(void *)GetWindowLongPtrW(window,DWLP_USER);
     if(!page)return FALSE;
+    if(message==WM_DESTROY){
+        SetWindowLongPtrW(window,DWLP_USER,0);
+        win2k_print_shell_close(page->shell);
+        page->shell=NULL;
+        return FALSE;
+    }
+    if(message==printer_view_message){
+        if(page->shell && !page->shell_visible){
+            page->shell_visible=wp && win2k_print_shell_show(page->shell,GetDlgItem(window,WIN2K_PRINT_DEVICE),page->selected);
+            if(!page->shell_visible){win2k_print_shell_close(page->shell);page->shell=NULL;}
+        }
+        return TRUE;
+    }
+    if(message==select_printer_message){
+        if(page->shell_visible)select_shell_printer(window,page);
+        return TRUE;
+    }
     if(message==fit_page_message){
         DPI_AWARENESS_CONTEXT previous=SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
         fit_sheet(GetParent(window));
@@ -215,7 +256,7 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
     if(message==WM_COMMAND){
         UINT control=LOWORD(wp),notice=HIWORD(wp);
         const device_messages *messages=&device_controls[page->full];
-        if(control==WIN2K_PRINT_DEVICE && notice==messages->changed){
+        if(!page->shell_visible && control==WIN2K_PRINT_DEVICE && notice==messages->changed){
             LRESULT index=SendDlgItemMessageW(window,control,messages->current,0,0);
             LRESULT device=index>=0?SendDlgItemMessageW(window,control,messages->data,(WPARAM)index,0):0;
             if(!device || device==-1 || !load_device(page,(PCWSTR)device,NULL,NULL)){
@@ -226,6 +267,7 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
             }
             if(page->full)present_device(window,page->selected);
         }else if(control==WIN2K_PRINT_PREFERENCES && notice==BN_CLICKED){
+            if(page->shell_visible && !select_shell_printer(window,page))return TRUE;
             if(!load_device(page,page->selected,window,page->live_mode))return TRUE;
         }else if(notice==EN_CHANGE && control==WIN2K_PRINT_RANGE){
             CheckRadioButton(window,WIN2K_PRINT_ALL,WIN2K_PRINT_PAGES,WIN2K_PRINT_PAGES);
@@ -236,8 +278,9 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
         return TRUE;
     }
     if(message==WM_NOTIFY && ((NMHDR *)lp)->code==PSN_APPLY){
-        BOOL ok=read_snapshot(window,page,((PSHNOTIFY *)lp)->lParam!=0);
-        if(!ok)SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"Check the page range, copy count, or printer settings.");
+        BOOL selected=!page->shell_visible || select_shell_printer(window,page);
+        BOOL ok=selected && read_snapshot(window,page,((PSHNOTIFY *)lp)->lParam!=0);
+        if(selected && !ok)SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"Check the page range, copy count, or printer settings.");
         SetWindowLongPtrW(window,DWLP_MSGRESULT,ok?PSNRET_NOERROR:PSNRET_INVALID);
         return TRUE;
     }

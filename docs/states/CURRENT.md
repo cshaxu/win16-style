@@ -115,6 +115,10 @@ P33 在恢复的 Default 输入桌面复测。双宽普通属性页 2/2。原生
 P34 双宽探针在自有窗口嵌入系统 Shell 打印机列表。四个安装队列均匹配 Shell 名称
 和图标，双宽各四次选择均收到通知；销毁时窗口和站点引用正常退场。该路径已验证为
 可行，General 页尚未接入。目录查找及原生自定义属性页仍开放。P32 正式包摘要未变。
+P35 完整 General 页接入系统 Shell 打印机视图。初始队列选定后切换显示，
+MTA 线程保留 ListBox。两处与同摘要构建包通过 144/144，含原生视图 108 项、
+回退 36 项；另通过 20 项打印及文件回归。域目录打印机查找尚未实现，
+原生自定义页与全局 API 路径仍开放。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -149,14 +153,14 @@ P34 双宽探针在自有窗口嵌入系统 Shell 打印机列表。四个安装
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P32；构建快照和八件摘要见公共对话框证据。
+- Last verified remote delivery: M0 T28 S3 P35；构建快照和八件摘要见公共对话框证据。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 P32 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 P35 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1135回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。

@@ -1292,6 +1292,74 @@
     "api_reference": "https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nn-shobjidl_core-iexplorerbrowser",
     "limits": "Owned feasibility probes only. The published General page has not been changed. Default commands and context-menu behavior, fallback for unsuitable COM apartments, initial and restored selection, directory search, and actual integration with PrintDlgEx remain unverified. No queue was added, removed, configured or sent a job. Scratch was removed and the sixteen deployed P32 hashes matched."
   },
+  "print_shell_general_p35": {
+    "implementation": "The full --2k PrintDlgEx General page hosts the real Windows Printers Shell namespace in FVM_LIST, using IExplorerBrowser with navigation limited to the first location, no travel log and no persisted view state. The Shell host owns its COM interfaces and window; the General page owns device and result data. The original ListBox stays available until the Shell view has enumerated and the initial printer can be selected. MTA or unsuccessful Shell setup retains the ListBox, and the compact page retains its ComboBox.",
+    "startup_order": "A first incremental integration observed successful OnNavigationComplete with zero items in IFolderView. The working implementation keeps the Shell child visible behind the existing control, listens for the real Shell enumeration-complete event, then selects the existing printer before showing the list. Selection change posts to the page and Apply and Preferences read the actual selected PIDL before consuming printer settings. The named queue must match the existing spooler list and load successfully. No directory search, device installation or print job was triggered.",
+    "incremental": "48/48 on x86/x64, ANSI/Unicode, Print/Apply/Cancel and four input modes. Real Shell list 36/36 and the forced MTA list fallback 12/12. The test selected the visible Shell list item and asserted result queue identity, flags, pages, original handles on Cancel, and that Apply preserves its snapshot across a later unsaved selection.",
+    "release_runtime": "Each of assets, O:/winnt and the identical clean-build candidate passed 48/48 General requests, for 144/144 overall (108 with the Shell list, 36 with forced MTA fallback). The O:/winnt follow-up passed 4/4 Win16 A/W print cancellation and 16/16 Win32 file calls, including 8/8 Places geometry at 144 DPI. All owned tests were bounded on the ordinary desktop. No queue settings changed and no jobs sent.",
+    "limits": "The local machine was confirmed as a workgroup by NetGetJoinInformation (status 2). The original directory Find Printer action is still unimplemented. Native application print-property page display and the global per-API presentation gap remain open. The physical shortcut and context-menu interaction matrix was outside these focused tests.",
+    "release": {
+      "source_parent": "682697942b227ab8a5e8c3c1907c442af99a1864",
+      "snapshot_manifest_sha256": "b78ab29a5bfe173b2b184639d60d093a96d17cf248ff9b0ebe6dcf065ea3bf25",
+      "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-shell-printer-package",
+      "toolchain": "C17, MinGW-w64 GCC 16.1.0, Ninja and repository ccache; clean x86/x64 Release.",
+      "build_seconds": {
+        "x86": 196.42,
+        "x64": 226.55
+      },
+      "ccache_direct_hits": {
+        "x86": 955,
+        "x64": 1043
+      },
+      "ccache_misses": {
+        "x86": 3,
+        "x64": 3
+      },
+      "gate": "Exactly eight same-snapshot artifacts; source receipts, native/style boundaries, both ABI tests, import/export contracts and original glyphs passed. Package published to assets and O:/winnt before the runtime tests.",
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "f3c6db147abe580ef5fc4f67e7bf4a01750ce5f9ffec5b5dad4889720175b3a9"
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "2114c40856da4ab79f7457c68d19a22cf3cd8232fcccbbbea56de53f8ef9399e"
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "07a856bfaad9dbd6ebef1d14a247f8b89f35a5d4a71f050589f1d691abd2cbcc"
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "2837fbe8f3a1b476fff1ae9339feec360ee140690634e7b7562b422ef748edf0"
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "05e6202942e9a9352b23162ad97b4a28f9a23e82acaffa45dd819be511c23978"
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "dc1b3ba6656f2782508aeb25bdb7d861fb6db1aa46f0237bd68059c294290a98"
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "bf098aa322b1905672456230034f2d64342dc099dabe691edd0d1a4e1672fddd"
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "d37856bac47943fdb76bcd5c9318e0b8762028be895a2e61367b19c3feab18bc"
+        }
+      }
+    }
+  },
   "global_dialog_entry_audit": {
     "baseline": "Source inspected at 35f46f84. All eight files in assets and O:/winnt match the P27 SHA-256s. The product sources and assets have no Git diff from the P27 delivery through P28. This was a source audit with artifact identity verification; no administrator or cross-process runtime trial was performed.",
     "startup": "src/ntw2ks-dll/dllmain.c calls ntw2ks_controls_attach through the ordinary ntw2ks startup bootstrap. src/ntw2ks-dll/controls.c installs the common-dialog handlers and the COM controller from that one call site.",

@@ -10292,7 +10292,7 @@
       "path": "src/lib-win32-style/appearance/win2000/dialog/print_general.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b67506a057f4bf6618b807135b476cd967544fd1be4ffe1d0142f908852be40d",
+      "sha256": "e5b2af8dfa2810c8126b73d840392b36e7ba2caefd4379f89fc9c568148d1c88",
       "disposition": "authored",
       "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
       "notice": "Project-authored; no imported source or resources"
@@ -10310,10 +10310,28 @@
       "path": "tests/ntw2ks-dll/print_general_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4e6533c94e1c6bf691306e19820382cd3a275037cb4f6dab0da1e0b0142c4d94",
+      "sha256": "06c3d1cc1c2bf3eaea347ed751745560790ba90d25b77fb0207c993c977674c0",
       "disposition": "authored",
       "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
       "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/dialog/print_shell.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1097e5c08cc66e6d20b2e43e5b6b7095bfa388ded99588ccfa3c88fbff3bb71c",
+      "disposition": "authored",
+      "review": "T28 S3 native Shell printer view for the complete General page",
+      "notice": "Project-authored using Windows SDK; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/dialog/print_shell.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c1dab2cf13ef0d9306425f55c806cd70a65b314f92cf8e05fa7311bbe1eb1d25",
+      "disposition": "authored",
+      "review": "T28 S3 native Shell printer view for the complete General page",
+      "notice": "Project-authored using Windows SDK; no imported source or resources"
     }
   ]
 }
