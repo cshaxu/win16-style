@@ -10,6 +10,7 @@
 *.txt text eol=lf
 *.def text eol=lf
 *.rc text eol=lf
+*.rcinc text eol=lf
 *.cmake text eol=lf
 *.exe binary
 *.dll binary

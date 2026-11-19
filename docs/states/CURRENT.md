@@ -124,6 +124,7 @@ P36 用双宽原生探针验证目录打印机查询窗可创建并取消。工�
 P37 标准 `--2k PrintDlgEx` 支持 `PD_USELARGETEMPLATE` 的 292×218 DLU 页，
 按工作区选择常规或紧凑页。两处及同摘要构建包的大模板通过 180/180，
 常规页 12/12、Win16 取消 4/4，另有 24/24 布局边界探针。
+P38 固定 `.rcinc` 的检出换行符为 LF，保持原始资源收据在 Windows 检出时有效。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
