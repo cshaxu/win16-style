@@ -1,4 +1,5 @@
 /* Real COM call through the launcher; does not explicitly request bridging. */
+#define _WIN32_WINNT 0x0A00
 #define UNICODE
 #define _UNICODE
 #define COBJMACROS
@@ -11,10 +12,30 @@
 #include <wchar.h>
 static DWORD owner;static volatile LONG seen,old,filter_seen,label_seen,cancel_label_seen,hidden_seen;static HWND dialog;static BOOL cancel;
 static BOOL folder_mode;static WCHAR folder_path[MAX_PATH];
-static BOOL explorer_mode,explorer_seen;
+static BOOL explorer_mode,explorer_seen,compact_dpi_mode,compact_fit;
 static WCHAR hidden_name[MAX_PATH],hidden_system_name[MAX_PATH],hidden_system_path[MAX_PATH];
 static volatile LONG hidden_system_seen;
 static const WCHAR title[]=L"Win16S COM bridge integration";
+static BOOL compact_explorer_fits(HWND window)
+{
+    MONITORINFO monitor={.cbSize=sizeof(monitor)};
+    if(!GetMonitorInfoW(MonitorFromWindow(window,MONITOR_DEFAULTTONEAREST),&monitor))return FALSE;
+    HWND windows[]={window,GetDlgItem(window,1121),GetDlgItem(window,1148),
+        GetDlgItem(window,IDOK),GetDlgItem(window,IDCANCEL)};
+    const RECT *work=&monitor.rcWork;
+    BOOL fits=!GetDlgItem(window,1184);
+    for(unsigned i=0;i<ARRAYSIZE(windows);++i){
+        RECT r={0};
+        if(!IsWindowVisible(windows[i]) || !GetWindowRect(windows[i],&r) || IsRectEmpty(&r) ||
+           r.left<work->left || r.top<work->top || r.right>work->right || r.bottom>work->bottom){
+            printf("COM_COMPACT outside index=%u rect=%ld,%ld,%ld,%ld work=%ld,%ld,%ld,%ld\n",
+                i,r.left,r.top,r.right,r.bottom,work->left,work->top,work->right,work->bottom);
+            fits=FALSE;
+        }
+    }
+    printf("COM_COMPACT fit=%d dpi=%u work=%ldx%ld\n",fits,GetDpiForSystem(),work->right-work->left,work->bottom-work->top);
+    return fits;
+}
 static BOOL CALLBACK find_dialog(HWND w,LPARAM value)
 {
     (void)value;WCHAR text[128]=L"",cls[64]=L"";
@@ -36,6 +57,7 @@ static BOOL CALLBACK find_dialog(HWND w,LPARAM value)
             GetClassNameW(placeholder,kind,ARRAYSIZE(kind)) && !lstrcmpW(kind,L"ListBox") &&
             GetPropW(w,L"Win2kStyle.Frame");
         printf("COM_EXPLORER_LAYOUT bridged=%d\n",explorer_seen);
+        if(compact_dpi_mode)compact_fit=compact_explorer_fits(w);
     }
     HWND files=GetDlgItem(w,1120);if(hidden_name[0] && files){LRESULT count=SendMessageW(files,LB_GETCOUNT,0,0);
         printf("HIDDEN_LIST expected=%ls count=%lld\n",hidden_name,(long long)count);
@@ -54,6 +76,7 @@ static BOOL CALLBACK find_dialog(HWND w,LPARAM value)
 }
 static DWORD WINAPI observer(void *unused)
 {
+    if(compact_dpi_mode && !SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))ExitProcess(2);
     (void)unused;BOOL selected=FALSE;
     for(unsigned i=0;i<200;++i){
         if(!seen)EnumThreadWindows(owner,find_dialog,0);
@@ -87,7 +110,20 @@ int wmain(int argc,WCHAR **argv)
     BOOL noinitial=argc==4 && !lstrcmpW(argv[3],L"noinitial");
     BOOL tempinitial=argc==4 && !lstrcmpW(argv[3],L"tempinitial");
     BOOL native=argc==4 && !lstrcmpW(argv[3],L"native");
-    explorer_mode=argc==4 && !lstrcmpW(argv[3],L"explorer");
+    compact_dpi_mode=argc==4 && !lstrcmpW(argv[3],L"explorer-compact-dpi");
+    explorer_mode=compact_dpi_mode || (argc==4 && !lstrcmpW(argv[3],L"explorer"));
+    if(compact_dpi_mode){
+        if(!SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))return 2;
+        UINT dpi=GetDpiForSystem();
+        MONITORINFO monitor={.cbSize=sizeof(monitor)};
+        if(!dpi || !GetMonitorInfoW(MonitorFromWindow(NULL,MONITOR_DEFAULTTOPRIMARY),&monitor))return 2;
+        int width=MulDiv(monitor.rcWork.right-monitor.rcWork.left,96,(int)dpi);
+        int height=MulDiv(monitor.rcWork.bottom-monitor.rcWork.top,96,(int)dpi);
+        if(dpi==96 || width<427 || height<272 || (width>=565 && height>=345)){
+            printf("COM_COMPACT SKIP dpi=%u normalized=%dx%d\n",dpi,width,height);
+            return 77;
+        }
+    }
     BOOL folder=argv[1][0]==L'f';BOOL save=argv[1][0]==L's';cancel=argv[2][0]==L'c';
     WCHAR dir[MAX_PATH],path[MAX_PATH];if(!GetTempPathW(MAX_PATH,dir)||!GetTempFileNameW(dir,L"w16",0,path))return 3;
     if((save || folder) && !DeleteFileW(path))return 4;
@@ -212,6 +248,7 @@ int wmain(int argc,WCHAR **argv)
     IFileDialog2_Release(v2);IFileDialog_Release(d);CoUninitialize();if(hidden_system_path[0]){SetFileAttributesW(hidden_system_path,FILE_ATTRIBUTE_NORMAL);DeleteFileW(hidden_system_path);}if(folder && tempinitial)RemoveDirectoryW(path);else if(!folder)DeleteFileW(path);
     printf("COM_BRIDGE bits=%u save=%d folder=%d cancel=%d seen=%ld old=%ld hr=%08lx result=%08lx same=%d wait=%lu filter=%ld array=%d labels=%ld hidden=%ld hidden_system=%ld\n",(unsigned)(sizeof(void*)*8),save,folder,cancel,seen,old,(unsigned long)hr,(unsigned long)result,same,wait,filter_seen,array_ok,label_seen,hidden_seen,hidden_system_seen);
     printf("COM_CANCEL_LABEL seen=%ld\n",cancel_label_seen);
-    BOOL layout=explorer_mode?explorer_seen:((customized||foreign_query||native)?!old:old);
+    BOOL layout=explorer_mode?(explorer_seen && (!compact_dpi_mode || compact_fit)):
+        ((customized||foreign_query||native)?!old:old);
     return wait==WAIT_OBJECT_0 && seen && layout && (!filtered || filter_seen) && (!labels || label_seen) && (!cancel_label || cancel_label_seen) && (!hidden || (hidden_seen && !hidden_system_seen)) && array_ok && (cancel?hr==HRESULT_FROM_WIN32(ERROR_CANCELLED):(SUCCEEDED(hr)&&SUCCEEDED(result)&&same))?0:1;
 }

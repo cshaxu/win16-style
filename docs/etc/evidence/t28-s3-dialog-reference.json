@@ -921,6 +921,12 @@
       }
     }
   },
+  "com_compact_real_dpi_p23": {
+    "entry": "The COM proxy classic_show calls the normal GetOpenFileNameW or GetSaveFileNameW exports. Both eligible COM entry points therefore reach the same Compact Explorer observer tested at P22.",
+    "fixture": "The repository com-dialog-target accepts open or save and accept or cancel with explorer-compact-dpi. It sets per-monitor-v2 in both test threads, requires an actual scaled Compact work area, observes the owned COM dialog, and checks its outer window, Shell view, filename and action buttons against the physical monitor work area. Ineligible monitors explicitly skip with exit 77.",
+    "comparison": "P17 (849039c8) was restored only in an isolated scratch directory with all eight hashes verified. Its x86/x64 IFileOpenDialog and IFileSaveDialog, both confirm and cancel, measured 641 by 408 inside a 640 by 408 work area at 144 DPI, so geometry failed 8/8 while result and cancellation behaviors matched the expected values. The released P22 passed all 8 cases on the same host, including expected path and open result array on confirmation, ERROR_CANCELLED on cancellation, and target controls visible within bounds.",
+    "delivery": "Only the existing fixture and records changed. Incremental C17 Ninja build passed for x86 and x64. The ordinary session remains disconnected. Both deployment locations retain all eight P22 hashes. Historical package copies and scratch files were removed."
+  },
   "places_reflow_trial": {
     "package": "P9 published launcher and DLLs with temporary caller-owned ANSI and Unicode OPENFILENAME hooks. The probe used the ordinary desktop and owned dialogs at 96 DPI with a 427 by 272 work area. The temporary sources, objects, binaries and output were removed after the run.",
     "stock_geometry": "The native 421 by 247 client exposed the stock Places toolbar, a Shell directory view, and a ComboBoxEx filename field. In Open the default OK button began at (484,313), beyond both client bounds.",

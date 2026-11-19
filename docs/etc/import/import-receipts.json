@@ -3146,9 +3146,9 @@
       "path": "tests/ntw16s-dll/com_dialog_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3f08ab1025c849c5e22944ae9beee2eee053e32911e004c42687827e12202d4c",
+      "sha256": "e0f9a93d5691b39a9f2c67099003d53a07ff02ce43b03ce480340eaed69db7cb",
       "disposition": "authored",
-      "review": "T20 S1 COM dialog bridge and real native probe under development; T28 S3 native Explorer bridge fixture",
+      "review": "T20 S1 COM dialog bridge and real native probe under development; T28 S3 native Explorer bridge fixture; T28 S3 verify compact COM geometry on a real scaled work area",
       "notice": "Project-authored; no imported code or resources"
     },
     {
