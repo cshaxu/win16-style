@@ -2765,5 +2765,11 @@
       "timing_control_sha256": "1eba4c01603169cbe0d45e0ed7497287284b6374129190281364df628913eaa4"
     },
     "limits": "The owned direct receiver tests cover the product entry and the dialog contract. Valid native PrintDlgEx custom-page presentation, a real domain-printer positive return and the administrator tray transaction remain unverified. No change to P45 product files, Windows configuration or permissions."
+  },
+  "administrator_tray_acceptance_p48": {
+    "criterion": "The owner confirmed that S3 administrator tray acceptance requires the production capability and passing unit tests. Actual administrator desktop and tray operation is outside this acceptance check.",
+    "production": "run16s-exe/main.c implements the --global token check, elevation handoff, elevated token validation and parent-aware tray entry. run16s-exe/elevation.c builds the runas request. run16s-exe/tray_controller.c connects the Windows 2000 and Win16 menu items and Off state to the global control lifecycle; run16s-exe/global.c accepts and dispatches both styles.",
+    "tests": "12/12 across x86/x64 with launch/elevation-unit, core/common-tray, core/tray-controller, core/style-global-session, core/global-session-style, and core/global-style-bridge. Elevation uses a ShellExecuteEx substitute to validate request, success/exit code, cancellation and invalid handle. The controller verifies menu state, switching both ways, disabling and error handling with an owned worker substitute. The initial CTest call omitted the capture-directory environment variable; it stopped before executing the elevation unit. With the owned scratch set, both widths passed all six.",
+    "result": "S3 administrator tray criterion satisfied by production code and tests. No administrator prompt or system-wide tray session was exercised. Valid native PrintDlgEx caller-page display and real domain printer selection/writeback still await evidence. No product binary change."
   }
 }

@@ -165,6 +165,8 @@ P47 用 P45 发布包复核页面设置的横向纸张、边距、句柄和取�
 Shell 目录选框的旧树和新版树在普通 Win2000 与自有全局接收路径共 32/32，
 确认返回所选 PIDL，取消返回空。新版树选择通知需等待，另以原生四项对照。
 发布八件摘要未变，S3 保持开放。
+P48 按用户确认的口径核对管理员托盘生产接线，双宽六组单元及回归 12/12。
+管理员托盘已满足本 S 的代码和单测验收条件。有效自定义打印页显示和真实域打印机回写仍待验。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -179,7 +181,7 @@ Shell 目录选框的旧树和新版树在普通 Win2000 与自有全局接收�
 | Candidate Proposal | docs/proposals/windows-2000-common-dialogs.md。 |
 | Files And ABI Surface | application/dialog 共用契约、Win2000 对话框呈现、ntw2ks 装配及相应测试。维持五组件八件。 |
 | Applicable Rules | C17、MinGW GCC、Ninja、ccache；先增量验证，再进行同快照双宽交付。 |
-| Verification | 自有普通桌面双宽样本，逐类验证正常操作、取消、结果及资源所有权，按证据保留原生回退，并复测 Win16。 |
+| Verification | 自有普通桌面双宽样本，逐类验证正常操作、取消、结果及资源所有权，按证据保留原生回退，并复测 Win16。管理员托盘按用户确认的生产能力和单元测试验收。 |
 | Expected Markers | 记录实际入口、拥有者、所用布局、确认／取消、返回值和回退路径，提供原版视觉对照。 |
 | Asset Needs | 从固定本地 Win2000 源码和实机样本取证；保留原图形资源、来源与声明。 |
 | Reporting Requirements | 逐入口说明呈现、契约和验证条件；区分通过、回退、跳过和未覆盖。 |
@@ -199,7 +201,7 @@ Shell 目录选框的旧树和新版树在普通 Win2000 与自有全局接收�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P47；二进制仍为 P45 八件。
+- Last verified remote delivery: M0 T28 S3 P48；二进制仍为 P45 八件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。
