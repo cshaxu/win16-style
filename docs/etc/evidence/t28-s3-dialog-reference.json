@@ -1278,6 +1278,12 @@
       }
     }
   },
+  "print_default_desktop_p33": {
+    "environment": "After the owner restored the desktop, OpenInputDesktop returned Default with zero error and 1280 by 720 virtual screen metrics in every owned probe. O:/winnt matched all eight P32 hashes before testing.",
+    "custom_page": "Ordinary PropertySheetW passed its owned-page create, initialization, active cancellation and release checks on both widths. Native PrintDlgExW, released Win16 and released Win2000 each timed out on x86 and x64 with the external zero-size ProxyModalWindow and no caller-page callbacks. This leaves real custom-page display and handoff unverified.",
+    "stock_control": "In a distinct comparison with no caller property page, native x64 PrintDlgExW reached the same zero-size proxy and the probe observed no owned sheet before its timeout. Released --2k on the same desktop and inputs displayed its local General sheet with an active page, returned S_OK and PD_RESULT_CANCEL, and re-enabled the owner. The observed native stall therefore also occurs without an application-provided page.",
+    "limits": "Timed-out probes were bounded, made no calls to interact with the external proxy, and did not submit print jobs. The temporary test files were removed. The product binaries and publish locations were unchanged."
+  },
   "global_dialog_entry_audit": {
     "baseline": "Source inspected at 35f46f84. All eight files in assets and O:/winnt match the P27 SHA-256s. The product sources and assets have no Git diff from the P27 delivery through P28. This was a source audit with artifact identity verification; no administrator or cross-process runtime trial was performed.",
     "startup": "src/ntw2ks-dll/dllmain.c calls ntw2ks_controls_attach through the ordinary ntw2ks startup bootstrap. src/ntw2ks-dll/controls.c installs the common-dialog handlers and the COM controller from that one call site.",
