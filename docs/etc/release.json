@@ -1,22 +1,23 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S6 P1",
-  "stage": "development: standard Win32 controls",
+  "delivery": "M0 T29 S7 P1",
+  "stage": "development: VB/VCL and compound controls",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "b2c1452b5d180277dcc2f8dfc3240ef98045f212c3317dd450845ab1a56d2070",
+  "source_snapshot_sha256": "7a3eb5269cd771ab37f5c4ebda92163dc4a7af3c7fcceff601a32de349d8ef91",
   "source_snapshot_format": "SHA256 of clean Build-Package snapshot.json bytes",
   "source_input_cohort": {
     "count": 1280,
-    "sha256": "f1a830208d5328eac607d60893efa2e7ff37d7c75438784356e9ba5ceead6eb3",
-    "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
+    "sha256": "9b0fdb2f75277fcdcaa2b68b35360aeeeb2b26b7a00c8c3f82289475da67669f",
+    "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF",
+    "worktree_newline_only_differences": []
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "56b0661c8d0716719fab4ded37e577b78747385ba45d3658d6c09b0460563f6b",
+      "sha256": "7156ede149c7b67a922c0daf96dd6efa0c4b803838408e9085a70906ff615aad",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +33,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "f654196cfc8d7d1dfad6f4bc85e2f8307db8ad1355556be8d8db38d7678ad584",
+      "sha256": "61d7091f72a9c544fbe5be439af10a61e8269d2acba222b61d572336aa557bfa",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -61,7 +62,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "09eae9e946fd0f4bc6572e20ca336c8e361d5c85ad5c7f87728266d475224a3a",
+      "sha256": "115a804ef0e0596eea43759c779984e08b50e72db9424c2dd576f9906987422a",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -85,7 +86,7 @@
     "ntw2ks32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "c6d87aa02078db65d639bb87089e9dd336df101ff933e8840e13f8579be26951",
+      "sha256": "719e6058e29f38290de499202e8c25a1efd2c875ccfa4219c0621618bc609346",
       "imports": [
         "ACTIVEDS.dll",
         "COMCTL32.dll",
@@ -114,7 +115,7 @@
     "ntw2ks64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "b21ae34b57ff0473c33a5d442f75b773d10767ce1cfacbaff4142cfca3008581",
+      "sha256": "36a45980031fe9d24bdba4b6524faf6c2386944f9f1b9f4b276219cd4420b5af",
       "imports": [
         "ACTIVEDS.dll",
         "COMCTL32.dll",
@@ -138,7 +139,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "2230d3f62e286f090ab786f50cecd56d1c7e17acfc43def2a566a5f39a218755",
+      "sha256": "e6c1ac0c66ad708faf30162fdcb9890f47ec0391af02dfff0f498b9d0e3e1f25",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -153,7 +154,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "e54204c296e01759c8b50622dda12246b17f701a3e09fcf63e090ff106d8cfb0",
+      "sha256": "cf2aac5f63f6fc9eb438c52a23d7743db25513e25e052c9c27d57f9a8d10a680",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -163,7 +164,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "d51d9a5a902f42671e88a05c8f0bd7ac4a0616cca552ad018173627b74425a45",
+      "sha256": "cff4c24f5fe2e15b46948d666bbcacf36b562a034c00b4cb28f751af5a84532c",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -177,268 +178,175 @@
     }
   },
   "theme_previews": {
-    "themes/Win16/Win16.msstyles": {
-      "sha256": "eb6f7a92cf2d9dd6ef1a2b5efe434e2c6724efd1f4dcb6a20440f5a5deccb13d"
-    },
     "themes/Win16/Win16.theme": {
       "sha256": "0dcbf80bb67ea283a81265c670ae6c6c07ee776b8ac2449c0a05b0818f2984a8"
     },
-    "themes/Win2K/Win2K.msstyles": {
-      "sha256": "13929659b4f9104d11f469f8318cd2051ffe2c2ffea09b830ddd77967dd84707"
+    "themes/Win16/Win16.msstyles": {
+      "sha256": "eb6f7a92cf2d9dd6ef1a2b5efe434e2c6724efd1f4dcb6a20440f5a5deccb13d"
     },
     "themes/Win2K/Win2K.theme": {
       "sha256": "f4acd885ec052c06daaa09e2423a4882ef3c53fd072509ef04890d05c1ad85f1"
+    },
+    "themes/Win2K/Win2K.msstyles": {
+      "sha256": "13929659b4f9104d11f469f8318cd2051ffe2c2ffea09b830ddd77967dd84707"
     }
   },
   "architecture": {
     "x86": {
       "configure-time.json": {
-        "seconds": 15.78371160000097,
+        "seconds": 13.228934100014158,
         "exit_code": 0
       },
       "build-time.json": {
-        "seconds": 236.11272119998466,
+        "seconds": 267.2652378999628,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.6960455999942496,
+        "seconds": 0.6478490000590682,
         "exit_code": 0
       }
     },
     "x64": {
       "configure-time.json": {
-        "seconds": 15.0791748999618,
+        "seconds": 14.088668099953793,
         "exit_code": 0
       },
       "build-time.json": {
-        "seconds": 299.59930270002224,
+        "seconds": 293.3416261000093,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.8440242999931797,
+        "seconds": 0.613203400047496,
         "exit_code": 0
       }
     }
   },
   "toolchains": {
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
-    "ccache_version": "ccache version 4.13.6",
     "toolchains": [
       {
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "version": "16.1.0",
+        "architecture": "x86",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
         "target": "i686-w64-mingw32",
-        "architecture": "x86"
+        "version": "16.1.0"
       },
       {
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "version": "16.1.0",
+        "architecture": "x64",
+        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
         "target": "x86_64-w64-mingw32",
-        "architecture": "x64"
+        "version": "16.1.0"
       }
-    ]
+    ],
+    "ccache_version": "ccache version 4.13.6",
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
+    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
   },
   "verification": {
     "coverage": "focused",
-    "actual_package_cases": 112,
-    "passed": 102,
-    "skipped": [
-      "automatic",
-      "propagation",
-      "status-v5-32",
-      "status-v5-64",
-      "status-v6-64",
-      "status-v6-32",
-      "status-v5-dpi-64",
-      "status-v5-dpi-32",
-      "status-v6-dpi-64",
-      "status-v6-dpi-32"
-    ],
-    "published_direct_cases": 48,
-    "total_focused_cases": 160,
-    "cases": [
-      "ntw2ks-static-x86",
-      "ntw2ks-static-aware-x86",
-      "ntw2ks-static-v6-x86",
-      "ntw2ks-static-v6-aware-x86",
-      "ntw2ks-static-x64",
-      "ntw2ks-static-aware-x64",
-      "ntw2ks-static-v6-x64",
-      "ntw2ks-static-v6-aware-x64",
-      "ntw2ks-edit-x86",
-      "ntw2ks-edit-aware-x86",
-      "ntw2ks-edit-v6-x86",
-      "ntw2ks-edit-v6-aware-x86",
-      "ntw2ks-edit-x64",
-      "ntw2ks-edit-aware-x64",
-      "ntw2ks-edit-v6-x64",
-      "ntw2ks-edit-v6-aware-x64",
-      "ntw2ks-control-buttons-x86",
-      "ntw2ks-control-buttons-aware-x86",
-      "ntw2ks-control-buttons-x64",
-      "ntw2ks-control-buttons-aware-x64",
-      "ntw2ks-control-buttons-v6-x86",
-      "ntw2ks-control-buttons-v6-x64",
+    "actual_package_cases": 39,
+    "passed": 39,
+    "skipped": [],
+    "selected_cases": [
       "progress-sharing",
       "plan-selection",
       "abi-x86",
       "abi-x64",
       "demo-boundary",
       "demo-pair",
+      "demo-win2000",
       "automatic",
       "propagation",
-      "control-eligibility-32",
-      "control-eligibility-64",
-      "control-scope-32",
-      "control-scope-64",
-      "toolbar-bounds-v5-32",
-      "toolbar-bounds-v5-64",
-      "toolbar-bounds-v6-32",
-      "toolbar-bounds-v6-64",
-      "ntw2ks-trackbar-32",
-      "ntw2ks-trackbar-aware-32",
-      "ntw2ks-trackbar-v6-32",
-      "ntw2ks-trackbar-v6-aware-32",
-      "ntw2ks-updown-32",
-      "ntw2ks-updown-aware-32",
-      "ntw2ks-updown-v6-32",
-      "ntw2ks-updown-v6-aware-32",
-      "ntw2ks-bars-32",
-      "ntw2ks-bars-aware-32",
-      "ntw2ks-bars-v6-32",
-      "ntw2ks-bars-v6-aware-32",
-      "ntw2ks-dates-32",
-      "ntw2ks-dates-aware-32",
-      "ntw2ks-dates-v6-32",
-      "ntw2ks-dates-v6-aware-32",
-      "ntw2ks-progress-paint-32",
-      "ntw2ks-progress-32",
-      "ntw2ks-progress-aware-32",
-      "ntw2ks-progress-v6-32",
-      "ntw2ks-progress-v6-aware-32",
-      "ntw2ks-report-tree-32",
-      "ntw2ks-report-tree-aware-32",
-      "ntw2ks-report-tree-v6-32",
-      "ntw2ks-report-tree-v6-aware-32",
-      "ntw2ks-tab-header-32",
-      "ntw2ks-tab-header-aware-32",
-      "ntw2ks-tab-header-v6-32",
-      "ntw2ks-tab-header-v6-aware-32",
-      "ntw2ks-list-combo-32",
-      "ntw2ks-list-combo-aware-32",
-      "ntw2ks-list-combo-v6-32",
-      "ntw2ks-list-combo-v6-aware-32",
-      "ntw2ks-trackbar-64",
-      "ntw2ks-trackbar-aware-64",
-      "ntw2ks-trackbar-v6-64",
-      "ntw2ks-trackbar-v6-aware-64",
-      "ntw2ks-updown-64",
-      "ntw2ks-updown-aware-64",
-      "ntw2ks-updown-v6-64",
-      "ntw2ks-updown-v6-aware-64",
-      "ntw2ks-bars-64",
-      "ntw2ks-bars-aware-64",
-      "ntw2ks-bars-v6-64",
-      "ntw2ks-bars-v6-aware-64",
-      "ntw2ks-dates-64",
-      "ntw2ks-dates-aware-64",
-      "ntw2ks-dates-v6-64",
-      "ntw2ks-dates-v6-aware-64",
-      "ntw2ks-progress-paint-64",
-      "ntw2ks-progress-64",
-      "ntw2ks-progress-aware-64",
-      "ntw2ks-progress-v6-64",
-      "ntw2ks-progress-v6-aware-64",
-      "ntw2ks-report-tree-64",
-      "ntw2ks-report-tree-aware-64",
-      "ntw2ks-report-tree-v6-64",
-      "ntw2ks-report-tree-v6-aware-64",
-      "ntw2ks-tab-header-64",
-      "ntw2ks-tab-header-aware-64",
-      "ntw2ks-tab-header-v6-64",
-      "ntw2ks-tab-header-v6-aware-64",
-      "ntw2ks-list-combo-64",
-      "ntw2ks-list-combo-aware-64",
-      "ntw2ks-list-combo-v6-64",
-      "ntw2ks-list-combo-v6-aware-64",
-      "status-v5-32",
-      "status-v5-64",
-      "status-v6-32",
-      "status-v6-64",
-      "status-v5-dpi-32",
-      "status-v5-dpi-64",
-      "status-v6-dpi-32",
-      "status-v6-dpi-64"
+      "vb-data-border-32",
+      "vb-data-border-64",
+      "vb-data-arrows-32",
+      "vb-data-arrows-64",
+      "vb5-owner-check-32",
+      "vb5-owner-check-64",
+      "vb-owner-option-32",
+      "vb-owner-option-64",
+      "ntw2ks-runtime-roles-32",
+      "ntw2ks-runtime-roles-v6-32",
+      "ntw2ks-runtime-roles-64",
+      "ntw2ks-runtime-roles-v6-64",
+      "vcl-modern-spin-32",
+      "vcl-modern-spin-64",
+      "inplace-model-32",
+      "inplace-model-64",
+      "dbnav-model-32",
+      "dbnav-model-64",
+      "controlbar-model-32",
+      "controlbar-model-64",
+      "vcl-status-pane-32",
+      "vcl-status-pane-64",
+      "vcl-bitbtn-module-32",
+      "vcl-bitbtn-module-64",
+      "vcl-date-module-32",
+      "vcl-date-module-64",
+      "spin-32",
+      "spin-64",
+      "spin-dpi-32",
+      "spin-dpi-64"
     ],
-    "published_direct": [
-      "x86/core-classic-themes-assets",
-      "x86/core-style-classic-extension-assets",
-      "x86/core-style-classic-theme-assets",
-      "x86/core-classic-themes-winnt",
-      "x86/core-style-classic-extension-winnt",
-      "x86/core-style-classic-theme-winnt",
-      "x86/published-win2k-button",
-      "x86/published-win2k-static",
-      "x86/published-win2k-edit",
-      "x86/published-win2k-list-combo",
-      "x86/published-win2k-tab-header",
-      "x86/published-win2k-report-tree",
-      "x86/published-win2k-progress",
-      "x86/published-win2k-trackbar",
-      "x86/published-win2k-updown",
-      "x86/published-win2k-bars",
-      "x86/published-win2k-dates",
-      "x86/published-win16-month",
-      "x86/published-win16-date",
-      "x64/core-classic-themes-assets",
-      "x64/core-style-classic-extension-assets",
-      "x64/core-style-classic-theme-assets",
-      "x64/core-classic-themes-winnt",
-      "x64/core-style-classic-extension-winnt",
-      "x64/core-style-classic-theme-winnt",
-      "x64/published-win2k-button",
-      "x64/published-win2k-static",
-      "x64/published-win2k-edit",
-      "x64/published-win2k-list-combo",
-      "x64/published-win2k-tab-header",
-      "x64/published-win2k-report-tree",
-      "x64/published-win2k-progress",
-      "x64/published-win2k-trackbar",
-      "x64/published-win2k-updown",
-      "x64/published-win2k-bars",
-      "x64/published-win2k-dates",
-      "x64/published-win16-date",
-      "x86/published-win16-status-unaware",
-      "x86/published-win16-status-aware",
-      "x86/published-win16-status-v6-unaware",
-      "x86/published-win16-status-v6-aware",
-      "x64/published-win16-status-unaware",
-      "x64/published-win16-status-aware",
-      "x64/published-win16-status-v6-unaware",
-      "x64/published-win16-status-v6-aware",
-      "x64/published-win16-month",
-      "published-automatic",
-      "published-propagation"
+    "published_smoke": [
+      {
+        "name": "assets-bitbtn-32",
+        "marker": "VCL_BITBTN_MODULE_OK",
+        "exit_code": 0
+      },
+      {
+        "name": "assets-runtime-roles-32",
+        "marker": "WIN2K_RUNTIME_ROLES_OK",
+        "exit_code": 0
+      },
+      {
+        "name": "assets-bitbtn-64",
+        "marker": "VCL_BITBTN_MODULE_OK",
+        "exit_code": 0
+      },
+      {
+        "name": "assets-runtime-roles-64",
+        "marker": "WIN2K_RUNTIME_ROLES_OK",
+        "exit_code": 0
+      },
+      {
+        "name": "winnt-bitbtn-32",
+        "marker": "VCL_BITBTN_MODULE_OK",
+        "exit_code": 0
+      },
+      {
+        "name": "winnt-runtime-roles-32",
+        "marker": "WIN2K_RUNTIME_ROLES_OK",
+        "exit_code": 0
+      },
+      {
+        "name": "winnt-bitbtn-64",
+        "marker": "VCL_BITBTN_MODULE_OK",
+        "exit_code": 0
+      },
+      {
+        "name": "winnt-runtime-roles-64",
+        "marker": "WIN2K_RUNTIME_ROLES_OK",
+        "exit_code": 0
+      }
     ],
-    "evidence": "../history/M0-T29-S6-win32-controls.md"
+    "publication_roots": [
+      "assets",
+      "O:/winnt"
+    ],
+    "theme_identity_passed": 4
   },
   "validation": {
     "physical_keyboard_mouse": "not tested",
     "private_desktops_created": false,
     "limitations": [
-      "RichEdit20 and HotKey native client print markers were skipped when both baseline clients remained blank",
-      "Win16 Rebar grips retain their native system colors",
-      "Specialized VB and VCL cases remain governed by S7",
-      "The seven-file runtime switch remains assigned to T29 S11",
-      "The focused runner skipped ten private desktop wrappers. Their worker bodies passed against O:/winnt",
-      "First x64 live month capture changed between reads. A sequential repeat passed"
+      "S7 pixel and behavior checks use owned host fixtures",
+      "Private Win16 and Win2000 VB/VCL variant mapping remains open in T29 S2 ledger row 37",
+      "The seven-file runtime and deployment switch remains in S10–S11"
     ]
   },
   "closure": {
-    "S6": "closed after remote audit of P1 (99c04b6f)",
+    "S7": "local delivery verified; remote audit pending",
     "T29": "active",
     "M0": "fixed"
   }

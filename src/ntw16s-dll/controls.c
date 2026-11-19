@@ -7,7 +7,6 @@ BOOL ntw16s_control_role_valid(HWND);
 BOOL ntw16s_vcl_combo_candidate(HWND);
 BOOL ntw16s_group_push_button(HWND);
 BOOL ntw16s_group_choice_button(HWND);
-BOOL ntw16s_vb_data_attached(HWND);
 BOOL ntw16s_vb_user_edge_dormant(HWND);
 #include "controls.h"
 #include "../lib-win32-style/appearance/win3x/control/basic_paint.h"
@@ -16,6 +15,7 @@ BOOL ntw16s_vb_user_edge_dormant(HWND);
 #include "../lib-win32-style/appearance/win3x/control/combo_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/scroll_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/special_paint.h"
+BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *);
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/control/scroll_state.h"
 #include "lib-win32-style/application/control/control_scope.h"
@@ -117,7 +117,7 @@ static void draw_combo(HWND w,control_style *s,HDC dc)
  * bounded overlay accepts only observed 96/144-DPI public-DC geometry. */
 void win16_style_vb_data_arrow(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller)
 {
-    win16_control_vb_data_arrow_candidate(dc,x,y,width,height,source,sx,sy,sw,sh,rop,caller,ntw16s_vb_data_attached);
+    win16_control_vb_data_arrow_candidate(dc,x,y,width,height,source,sx,sy,sw,sh,rop,caller,ntw16s_vb_data_palette);
 }
 
 static classic_scroll_metrics scroll_metrics(HWND window)

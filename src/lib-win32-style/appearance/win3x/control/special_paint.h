@@ -6,16 +6,14 @@
 void win16_style_month_arrow(HDC dc,const RECT *bounds,const RECT *clip,int part,int state,const win16_style_palette *);
 void win16_control_draw_sizebox(HWND window,HDC dc,const COLORREF *face);
 void win16_control_legacy_progress_border(HWND window,const win16_style_palette *palette,HDC dc);
-void win16_control_vb_data_arrow(HWND window,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds);
-void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller,BOOL (*attached)(HWND));
-BOOL win16_style_bitbtn_face(HWND window,HDC dc,const RECT *bounds,const RECT *clip,UINT state);
+void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller,BOOL (*attached_palette)(HWND,win16_style_palette *));
+BOOL win16_style_bitbtn_face(HWND window,HDC dc,const RECT *bounds,const RECT *clip,UINT state,const win16_style_palette *);
 BOOL win16_control_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,BOOL (*target)(HDC,const RECT *,const void *));
 BOOL win16_control_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy,SUBCLASSPROC proc);
 BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,SUBCLASSPROC proc);
 BOOL win16_control_graphical_face(HWND window,HDC dc,const RECT *bounds,UINT flags,const win16_style_palette *palette);
 BOOL win16_control_cool_grip_identity(HWND,void *,const NMCUSTOMDRAW *,WNDPROC,BOOL (*)(HWND,void *));
 BOOL win16_control_cool_grip(HDC dc,const RECT *bounds);
-BOOL win16_control_black_frame(HDC dc,const RECT *bounds,const RECT *clip);
 BOOL win16_control_color_frame(HDC dc,const RECT *bounds,const RECT *clip,COLORREF color);
 BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original);
 void win16_control_month_fill(HDC dc,const RECT *bounds,const RECT *clip,COLORREF);

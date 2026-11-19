@@ -22,9 +22,6 @@ BOOL win16_control_color_frame(HDC dc,const RECT *bounds,const RECT *clip,COLORR
         drew=FrameRect(dc,bounds,(HBRUSH)GetStockObject(DC_BRUSH));
     RestoreDC(dc,saved);return drew;
 }
-BOOL win16_control_black_frame(HDC dc,const RECT *bounds,const RECT *clip)
-{return win16_control_color_frame(dc,bounds,clip,RGB(0,0,0));}
-
 BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original)
 {
     if(!FrameRect(dc,original,(HBRUSH)GetStockObject(BLACK_BRUSH)))return FALSE;
@@ -125,20 +122,23 @@ void win16_control_legacy_progress_border(HWND w,const win16_style_palette *pale
 done: SetLastError(saved_error);
 }
 
-void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller,BOOL (*attached)(HWND))
+static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds,const win16_style_palette *palette);
+
+void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller,BOOL (*attached_palette)(HWND,win16_style_palette *))
 {
     HWND w=WindowFromDC(dc);RECT client;POINT origin,viewport;BITMAP bitmap={0};HMODULE owner=NULL;
-    if(!w || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() || !attached(w) ||
+    if(!w || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
        !style_control_vb_class(w,L"ThunderRT6Data") || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)caller,&owner) ||
        owner!=GetModuleHandleW(L"MSVBVM60.DLL") ||
        !GetClientRect(w,&client) || client.right<70 || !((GetDpiForWindow(w)==96 && client.bottom==22) || (GetDpiForWindow(w)==144 && client.bottom==29)) || rop!=SRCCOPY || sx || sy || height!=13 || sh!=13 || width!=sw || (y!=(client.bottom-13)/2 && y!=(client.bottom-13)/2+1) ||
        GetMapMode(dc)!=MM_TEXT || GetLayout(dc)!=0 || !GetWindowOrgEx(dc,&origin) || origin.x || origin.y ||
        !GetViewportOrgEx(dc,&viewport) || viewport.x || viewport.y ||
        !GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap) || bitmap.bmWidth!=sw || bitmap.bmHeight!=sh)return;
-    win16_control_vb_data_arrow(w,dc,x,y,width,source,&client);
+    win16_style_palette palette;
+    if(attached_palette(w,&palette))vb_data_arrow(w,dc,x,y,width,source,&client,&palette);
 }
 
-void win16_control_vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds)
+static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds,const win16_style_palette *palette)
 {
     RECT client=*client_bounds;
     int n=-1;const int xs[4]={4,24,client.right-33,client.right-15};
@@ -149,15 +149,14 @@ void win16_control_vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,
     BOOL disabled=!IsWindowEnabled(w),pressed=(y==base_y+1);const char (*bits)[18]=n<2?
         (disabled?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_DISABLED):pressed?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT)):
         (disabled?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_DISABLED):pressed?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT));
-    win16_style_palette palette;win16_style_default_palette(&palette);
-    COLORREF colors[4]={palette.edge,palette.light,palette.shadow,palette.face};DWORD pixels[18*29];
+    COLORREF colors[4]={palette->edge,palette->light,palette->shadow,palette->face};DWORD pixels[18*29];
     int extra=client.bottom-17,mid=extra/2;
     for(int j=0;j<client.bottom;++j){int by=j<2?j:j>=client.bottom-2?j-extra:j<2+mid?2:j<15+mid?j-mid:14;
         for(int i=0;i<widths[n];++i){int bx=i<2?i:i>=widths[n]-2?i-(widths[n]-17):i;if(bx>14)bx=14;
             COLORREF c=colors[bits[by][bx]-'0'];pixels[j*widths[n]+i]=((DWORD)GetRValue(c)<<16)|((DWORD)GetGValue(c)<<8)|GetBValue(c);}}
     if(n==0 || n==3){int column=n==0?1:8;unsigned mark=0;
         for(int j=0;j<13;++j)for(int i=0;i<2;++i)if(GetPixel(source,column+i,j)==RGB(0,0,0)){
-            int px=x+column+i-starts[n],py=y+j;if(px>=0 && px<widths[n] && py>=0 && py<client.bottom){COLORREF c=disabled?palette.shadow:palette.edge;
+            int px=x+column+i-starts[n],py=y+j;if(px>=0 && px<widths[n] && py>=0 && py<client.bottom){COLORREF c=disabled?palette->shadow:palette->edge;
                 pixels[py*widths[n]+px]=((DWORD)GetRValue(c)<<16)|((DWORD)GetGValue(c)<<8)|GetBValue(c);++mark;}}
         if(mark!=22)return;
     }
@@ -165,14 +164,14 @@ void win16_control_vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,
     (void)SetDIBitsToDevice(dc,starts[n],0,widths[n],client.bottom,0,0,0,client.bottom,pixels,&info,DIB_RGB_COLORS);
 }
 
-BOOL win16_style_bitbtn_face(HWND w,HDC dc,const RECT *rect,const RECT *clip,UINT state)
+BOOL win16_style_bitbtn_face(HWND w,HDC dc,const RECT *rect,const RECT *clip,UINT state,const win16_style_palette *palette)
 {
     if(!w || !dc || !rect || rect->right-rect->left<4 || rect->bottom-rect->top<4)return FALSE;
     int saved=SaveDC(dc);if(!saved)return FALSE;
     if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return FALSE;}
-    win16_style_palette palette;win16_style_default_palette(&palette);int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    SetDCBrushColor(dc,palette.face);FillRect(dc,rect,(HBRUSH)GetStockObject(DC_BRUSH));
-    (void)win16_control_button_border(dc,*rect,&palette,u,u,(state&ODS_SELECTED)!=0);RestoreDC(dc,saved);return TRUE;
+    int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
+    SetDCBrushColor(dc,palette->face);FillRect(dc,rect,(HBRUSH)GetStockObject(DC_BRUSH));
+    (void)win16_control_button_border(dc,*rect,palette,u,u,(state&ODS_SELECTED)!=0);RestoreDC(dc,saved);return TRUE;
 }
 
 BOOL win16_control_graphical_face(HWND w,HDC dc,const RECT *rect,UINT flags,const win16_style_palette *palette)
@@ -220,7 +219,18 @@ BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,
     HWND w;RECT client;control_style *s=graphical_target(dc,type,flags,address,&w,proc);
     if(!s || !rect || !GetClientRect(w,&client) || !EqualRect(rect,&client) ||
             !style_dc_pixel_viewport(dc))return FALSE;
-    return win16_control_graphical_face(w,dc,rect,flags,&s->palette);
+    win16_style_palette palette=s->palette;
+    if(s->frame_colors.present){
+        palette.light=s->frame_colors.light;
+        palette.shadow=s->frame_colors.shadow;
+    }
+    if(s->themed){
+        const classic_surface_colors surface=classic_push_color(&s->push_colors,(flags&DFCS_INACTIVE)!=0,
+            (flags&(DFCS_PUSHED|DFCS_CHECKED))!=0,FALSE);
+        palette.face=surface.face;
+        palette.edge=surface.edge;
+    }
+    return win16_control_graphical_face(w,dc,rect,flags,&palette);
 }
 
 BOOL win16_control_cool_grip_identity(HWND w,void *owner,const NMCUSTOMDRAW *n,WNDPROC native,BOOL (*valid)(HWND,void *))
