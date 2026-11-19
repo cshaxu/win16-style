@@ -26,29 +26,12 @@ M0 T28 S3 Windows 2000 公共对话框已按用户批准的范围收口。P45 �
 
 T28 已获用户批准收口，范围和双宽交付证据见 [T28 总验收](../history/M0-T28-closure-audit.md)。
 
-M0 T29 已准入，当前 S1 研究用 MSStyles 定义 Win16 和 Win2000，并为移除按年代分发的 DLL 确定边界。
-初步格式与产品职责实证见 [研究提案](../proposals/msstyles-classic-runtime.md)。
+M0 T29 S1 完成 MSStyles 可迁移性调研。冻结 113 个按年代计的适用单元，
+其中 66 项可用标准属性、13 项需项目扩展、30 项必须由运行时执行、4 项待证。
+本机三类部件样本 20 项完成只读探针。见 [S1 审计台账](../history/M0-T29-S1-msstyles-audit.md)
+和 [调研提案](../proposals/msstyles-classic-runtime.md)。
 
-## M0 T29 S1 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New；M0 保持固定。 |
-| Admission And Approval | 用户批准收口 T28 并准入新 T，先研究用 MSStyles 定义 Win16 与 Win2000 并移除按年代发布的 DLL。 |
-| Objective | 查清 NTW16S 与 NTW2KS 的生产职责、消费者和替换边界，验证真实 MSStyles 容器与属性的可表达性，提出共享运行时方案。 |
-| Non-goals | 本 S 不删除 DLL、不换发布契约、不实现 Luna/Aero、不修改系统主题或权限。 |
-| Reference Baseline | T28 P51 总验收、P45 双宽八件，以及当前三层样式架构。 |
-| Candidate Proposal | docs/proposals/msstyles-classic-runtime.md。 |
-| Files And ABI Surface | 先只读审计 CLI、现代宿主、共享运行时、两套风格 DLL、组件导出及打包门禁。 |
-| Applicable Rules | 固定 M0；来源只读取证；有界本地样本；研究阶段不变更产品二进制。 |
-| Verification | 比较可获取样本的 PE 资源、格式版本和部件状态；确认两年代标题栏、按钮和滚动条的属性映射与缺口；列出生产调用端和保留行为。 |
-| Expected Markers | 可复现的样本摘要和解析边界、逐职责保留／迁移清单、一对共享运行时和合并方案的量化判据。 |
-| Asset Needs | 已安装 Aero/Aero Lite、有来源的 XP Luna 文件及现有 Win16/2000 固定原资源；缺失样本注明未验证。 |
-| Reporting Requirements | 分清本地实证、源代码或文档推断、待验证假设和包契约风险。 |
-| Stop Conditions | 不执行读入的资源文件；不改系统、注册表、发布目录或现有目标范围。 |
-| Exit Criteria | 得出可复核的格式和布局结论，明确仍需共享代码的功能，给出保留 ABI 与原表现的迁移、验证和回滚计划。 |
-| Original Owner Request | 批准收口本 T；准入新 T，先调研如何去除 ntw16s、ntw2ks，用 msstyles 定义 Win16 和 Win2000 风格。 |
-| Similar-Issue Sweep | 核对 T26 三层重组约束、T28 外框和公共对话框回归、本机 UxTheme 公开 API 与 XP／后期资源结构。 |
+当前无活动任务包。T29 保持开放。
 
 ## Identifier State
 
@@ -61,11 +44,11 @@ M0 T29 已准入，当前 S1 研究用 MSStyles 定义 Win16 和 Win2000，并�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P51；二进制仍为 P45 八件。
+- Last verified remote delivery: M0 T29 S1 P2；二进制仍为 P45 八件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 1
-- Open task: M0 T29 S1；MSStyles 格式与共享运行时调研。
+- Open task: 无活动任务包。
 
 ## Technical Baseline
 

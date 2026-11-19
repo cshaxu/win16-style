@@ -19,7 +19,7 @@
 
 Aero 样本 SHA-256 为 `ed9515aea9a98fdda8a4a37655b701e74bf8e5bfc97428cff04a60276d4e34d9`，Aero Lite 为 `4d3934ed39f7604c9fdcb1a5a6ad4bee064105788ac66556fa4ed159b28a131b`。本地 Luna 构建描述 `makefile.inc` 摘要为 `7fb9b3feb5c7209b017b327aa8df77059cd4776b87cb74d002f40fcc7468970c`，主题索引 `themes.ini` 为 `d3d71664c8f9b81709c8a3b6bd782037d11442c3bbadc0489a9bafd603d087ea`。样本及第三方实现均未导入。
 
-Wine 的解析实现展示了另一条 INI 资源路线，读取 themes_ini、配色和尺寸名称。后期格式的类映射与二进制属性表由 msstyleEditor 作者记录。由这些实现和本机样本推断，XP 和后期文件应独立识别和验证，再归一到公共数据模型。目前仅实证了本机文件容器与资源类型。[Wine 解析源码](https://github.com/wine-mirror/wine/blob/master/dlls/uxtheme/msstyles.c) · [msstyleEditor 格式记录](https://github.com/nptr/msstyleEditor/wiki/.msstyles-Format)
+Wine 的解析实现展示了另一条 INI 资源路线，读取 themes_ini、配色和尺寸名称。后期格式的类映射与二进制属性表由 msstyleEditor 作者记录。由这些实现和本机样本推断，XP 和后期文件应独立识别和验证，再归一到公共数据模型。本机文件容器、资源类型和三个部件类的公开接口对照见 [S1 审计台账](../history/M0-T29-S1-msstyles-audit.md)。[Wine 解析源码](https://github.com/wine-mirror/wine/blob/master/dlls/uxtheme/msstyles.c) · [msstyleEditor 格式记录](https://github.com/nptr/msstyleEditor/wiki/.msstyles-Format)
 
 ## 迁移边界
 
