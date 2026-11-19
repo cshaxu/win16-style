@@ -167,6 +167,10 @@ Shell 目录选框的旧树和新版树在普通 Win2000 与自有全局接收�
 发布八件摘要未变，S3 保持开放。
 P48 按用户确认的口径核对管理员托盘生产接线，双宽六组单元及回归 12/12。
 管理员托盘已满足本 S 的代码和单测验收条件。有效自定义打印页显示和真实域打印机回写仍待验。
+P49 确认当前输入桌面为 Default，NetGetJoinInformation 返回工作组状态。
+S3 暂时受验证环境阻塞。有效 PrintDlgEx 自定义页须在原生属性页可工作的 Windows 主机
+上复测原生与 Win2000 的双宽 A/W 显示、回调和退场。目录打印机须在可访问真实域队列的
+环境复测选择、驱动设置和结果回写。S3 执行者在具备相应环境后恢复，现有 P45 包继续作为基线。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -201,7 +205,7 @@ P48 按用户确认的口径核对管理员托盘生产接线，双宽六组单�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P48；二进制仍为 P45 八件。
+- Last verified remote delivery: M0 T28 S3 P49；二进制仍为 P45 八件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。
