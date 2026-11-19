@@ -8,6 +8,23 @@ static __attribute__((noinline)) int sample(int n){return n+7;}
 #endif
 static sample_fn original;static sample_fn volatile call;
 static int detour(int n){return original(n)+100;}
+static BOOL duplicate_target_rejected(void)
+{
+    process_hook_late_batch batch={0};
+    process_hook_late_patch patches[2]={{0}};
+    process_hook_late_patch *items[2]={0};
+    sample_fn first=sample,second=sample;
+    if(process_hook_late_batch_begin(&batch,patches,items,ARRAYSIZE(items)))return FALSE;
+    DWORD error=process_hook_late_batch_prepare(&batch,&first,(void *)detour);
+    if(!error)error=process_hook_late_batch_prepare(&batch,&second,(void *)detour);
+    if(error){
+        (void)process_hook_late_batch_commit(&batch,error,1,0);
+        return FALSE;
+    }
+    return process_hook_late_batch_commit(&batch,ERROR_SUCCESS,1,0)==ERROR_INVALID_PARAMETER &&
+        !batch.installed && !batch.sticky_error && !batch.count &&
+        first==sample && second==sample && call(5)==12;
+}
 int main(void)
 {
     process_hook_late_batch batch={0};process_hook_late_patch patches[1]={{0}};process_hook_late_patch *items[1]={0};
@@ -20,6 +37,7 @@ int main(void)
        process_hook_late_batch_commit(&boundary,ERROR_ACCESS_DENIED,1,0)!=ERROR_ACCESS_DENIED || boundary.count)return 9;
     if(process_hook_late_batch_begin(&batch,patches,items,PROCESS_HOOK_LATE_PATCH_LIMIT+1)!=ERROR_INVALID_PARAMETER || batch.patches)return 8;
     original=sample;call=sample;
+    if(!duplicate_target_rejected())return 10;
     if(process_hook_late_batch_begin(&batch,patches,items,1) || process_hook_late_batch_prepare(&batch,&original,(void *)detour))return 1;
     if(process_hook_late_batch_prepare(&batch,&original,(void *)detour)!=ERROR_INSUFFICIENT_BUFFER)return 2;
     if(process_hook_late_batch_commit(&batch,ERROR_ACCESS_DENIED,100,1)!=ERROR_ACCESS_DENIED || batch.count || original!=sample || call(5)!=12)return 3;
@@ -34,5 +52,5 @@ int main(void)
     if(process_hook_late_batch_begin(&sticky,patches,items,1)!=ERROR_ACCESS_DENIED ||
        process_hook_late_batch_prepare(&sticky,&original,(void *)detour)!=ERROR_ACCESS_DENIED ||
        process_hook_late_batch_commit(&sticky,0,1,0)!=ERROR_ACCESS_DENIED)return 7;
-    printf("PROCESS HOOK LATE BATCH PASS bits=%u abort=1 retry=1 installed=1 retained=1 sticky=1 limit=1 boundary_0_88_89=1\n",(unsigned)(sizeof(void*)*8));return 0;
+    printf("PROCESS HOOK LATE BATCH PASS bits=%u abort=1 retry=1 installed=1 retained=1 sticky=1 limit=1 boundary_0_88_89=1 duplicate_target=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }

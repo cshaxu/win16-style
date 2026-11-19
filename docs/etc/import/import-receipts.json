@@ -5486,7 +5486,7 @@
       "path": "tests/lib-win32/process-hook/late_batch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ee21feb9db2c4d0134901ea7169ed453b7b99b46b75665cf168da5e163e81c5b",
+      "sha256": "309e8f9b1cea7c8b8264c1b4909ba5314dcec7701aeb851a7ae1e7fec555fe76",
       "disposition": "authored",
       "review": "T21 S41 shared late hook batch lifecycle; T21 S41 P24 compiler compatibility and boundary testing",
       "notice": "Project-authored C code; project MIT LICENSE"
