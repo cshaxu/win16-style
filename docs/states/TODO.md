@@ -2,6 +2,10 @@
 
 # Deferred Debt
 
+- [ ] TODO(Medium): 有效 PrintDlgEx 自定义打印属性页的实际显示和回调。Owner：后续打印兼容验证。Evidence：[S3 收口审计](../history/M0-T28-S3-common-dialogs.md)。Admission：提供原生扩展打印属性页可用的 Windows 主机，再验证双宽 A/W 的显示、回调和退出。
+
+- [ ] TODO(Medium): 真实域打印机选中后的驱动设置及回写。Owner：后续打印兼容验证。Evidence：[S3 收口审计](../history/M0-T28-S3-common-dialogs.md)。Admission：提供可访问的真实域打印队列，以有界探针验证选择、驱动设置和结果，避免提交打印任务。
+
 - [ ] TODO(High): 普通 `--2k` 在超出窗口尺寸上限或自定义布局下的运行中移除仍需核对。Owner：Win2000 外框恢复。Evidence：[T28 S2 实包](../etc/evidence/t28-s2-composition-delivery.json)的双宽普通窗口恢复了 DWM 及客户区，超宽对照由 USER32 限制尺寸；复杂应用和真实合成像素未全面覆盖。[T26 S3 记录](../etc/evidence/t26-s3-delivery.json)保留旧包 DWM 失败。Admission：按自有窗口、真实画面和原生几何核验，不将移除返回值或窗口销毁算作完整恢复。
 
 - [ ] TODO(High): Win2000 外框真实拖动/缩放的连续画面、瞬时闪烁、跨屏 DPI 和跨进程前台焦点未完成；Owner：T25 最终审计。Evidence：[S7 P11](../history/M0-T25-S7-P11-physical-frame-drag.md)通过双位宽自有窗口一次真实拖动和拉伸及末帧采样，[S6 P3](../history/M0-T25-S6-P3-activation-foreground.md)中后续测试窗口未获前台而跳过；连续画面和跨屏仍未覆盖。Admission：不创建/切换隔离桌面、不妨碍用户操作；以自有窗口与有限清理验证动态画面，不能将末帧采样或跳过算通过。
