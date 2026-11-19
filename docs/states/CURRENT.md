@@ -85,6 +85,10 @@ P25 排除 `PD_USELARGETEMPLATE` 作为当前宿主的原生属性页修复。�
 P26 独立 General 页原型通过双宽 6/6。应用后再换打印机并取消时，
 保留应用时的设置快照；确认返回当时选择的设备，直接取消不产生快照。
 复用现有内存克隆函数，尚未接入 `PrintDlgEx` 发布路径。
+P27 将独立 General 页发布到 `--2k PrintDlgExA/W`。同批八件发布两处，
+三个同摘要入口的双宽 A/W、初始句柄、确认／应用／取消及 DPI 几何
+108/108。x64 驱动首选项、DC 和 IC 共 6/6；x86 当前没有可创建上下文的
+队列，驱动首选项的原生对照也超时。调用方原生属性页和管理员托盘仍待验。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -119,7 +123,7 @@ P26 独立 General 页原型通过双宽 6/6。应用后再换打印机并取消
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P22；构建快照和八件摘要见公共对话框证据。
+- Last verified remote delivery: M0 T28 S3 P27；构建快照和八件摘要见公共对话框证据。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。

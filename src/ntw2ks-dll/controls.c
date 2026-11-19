@@ -10,6 +10,7 @@
 #include "lib-win32-style/appearance/win2000/dialog/color.h"
 #include "lib-win32-style/appearance/win2000/dialog/file.h"
 #include "lib-win32-style/appearance/win2000/dialog/find.h"
+#include "lib-win32-style/appearance/win2000/dialog/print_general.h"
 #include "lib-win32-style/application/lifecycle/global_window.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
 #include "lib-win32-style/application/dialog/observation.h"
@@ -286,17 +287,17 @@ PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
 #undef PRINT_HOOK
 
 /* Extended requests outside the classic bridge contract retain their property sheet. */
-#define PRINT_EXTENDED_HOOK(NAME,TYPE,BRIDGE,PRINT) \
+#define PRINT_EXTENDED_HOOK(NAME,TYPE,GENERAL,BRIDGE,PRINT) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
 { style_dialog_observation scope;process_hook_unwind_scope unwind; \
   DWORD incoming=GetLastError(),error;HRESULT result; \
   if(!style_dialog_observation_begin(&scope,NULL,dialog_created,FALSE))return E_FAIL; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); \
-  SetLastError(incoming);if(!BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
+  SetLastError(incoming);if(!GENERAL(parameters,&result) && !BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
   error=GetLastError();PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result; }
-PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,style_print_extended_a,real_PrintDlgA)
-PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,style_print_extended_w,real_PrintDlgW)
+PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,win2k_print_general_a,style_print_extended_a,real_PrintDlgA)
+PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,win2k_print_general_w,style_print_extended_w,real_PrintDlgW)
 #undef PRINT_EXTENDED_HOOK
 
 DWORD ntw2ks_controls_attach_using(DWORD (*attach)(void *,void *))

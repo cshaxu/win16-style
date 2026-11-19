@@ -945,6 +945,78 @@
     "boundary": "The prototype verifies a viable General-page transaction using normal property-sheet notifications and shared memory handling. It does not enter the released PrintDlgEx path and does not verify ANSI driver data, range editing, DC or DEVNAMES production, preferences UI, caller pages, or original rendering. No product or fixture source change; both deployment locations keep the P22 package. Scratch was removed.",
     "api_reference": "https://learn.microsoft.com/en-us/windows/win32/controls/psn-apply"
   },
+  "print_general_device_transaction_trial": {
+    "driver_names": "A native PrintDlg PD_RETURNDEFAULT comparison showed that DEVNAMES uses winspool as the driver on this host, the system-selected port, and DN_DEFAULTPRN. The scratch General backend used GetPrinter level 5 in the matching A/W encoding and DocumentProperties to build owned DEVNAMES and DEVMODE. Its results passed through the working-tree style_print_snapshot_create implementation, checking independent ownership, device name, port, default flag, output copies and collation.",
+    "results": "16/16 A/W settings results, four local queues on each architecture. Two x64 DC results for the same queue (A/W) also returned DT_RASPRINTER. No x86 queue produced a DC. A separate naked CreateDC comparison gave 0/4 on x86 and 1/4 on x64, and both encodings of native default-printer settings produced no DC regardless of using the DEVNAMES fields or WINSPOOL and a null port. This distinguishes the default-device failure seen in the incremental bridge tests from a failure to populate the settings handles.",
+    "limits": "Scratch test only, not a published path. No print jobs, persisted preferences or device changes. The temporary probes were cleaned. The live General page, caller property pages and administrator tray remain open.",
+    "api_reference": "https://learn.microsoft.com/en-us/windows/win32/printdocs/retrieving-a-printer-device-context"
+  },
+  "print_general_product_candidate": {
+    "scope": "The ntw2ks stock PrintDlgExA/W entry now tries an owned General property sheet before the existing classic bridge. The page uses a printer combo, native document-preferences API, numeric page ranges, copy count, collation and print-to-file controls. The shared snapshot helper owns settings allocation and optional printer context. Explicit caller pages, callbacks and templates still fall through to the native function.",
+    "development_verification": "An incremental build and the new ntw2ks-print-general-target used a transient staged launcher with the candidate style DLLs. x86/x64 A/W confirm, Apply then unsaved edits and Cancel, and direct Cancel all passed with and without caller-supplied DEVMODE and DEVNAMES, 24/24. Tested the actual PrintDlgEx entry, styled General sheet, range 2 and 4-5, printer changes and result handles. Preset copies were visible; cancellation preserved original handle identity.",
+    "driver_and_context": "On x64, the staged candidate's ANSI and Unicode General paths returned a printer DC and IC from a queue confirmed usable by native CreateDC/CreateIC, and opened and cancelled the driver Preferences dialog. On x86, both context types explicitly skipped in both encodings after no native queue could create a context. Both x86 Preferences waits timed out; independent naked DocumentPropertiesA/W using the same default queue timed out too, while both x64 native controls showed and cancelled.",
+    "limits": "Development candidate with no full-package publication. x86 driver Preferences and DC-positive cases, uncommon stock flags, and native caller-page evidence remain open. No jobs were sent. Temporary staged launchers and probes were removed."
+  },
+  "print_general_p27": {
+    "implementation": "The released --2k PrintDlgEx A/W stock path now uses an independent General property sheet with a project-authored page and Windows printer settings. Its device and print settings update a shared result snapshot; it retains the original handles on Cancel. Caller-owned sheets, templates, callbacks and unsupported requests retain their existing fallback. Win16 remains on its classic presentation with the shared result snapshot.",
+    "geometry": "The original draft measured 389 by 342 and overflowed the 427 by 272 work area. The compact layout and bottom-margin fit after native initialization retained all three action buttons, all content, and an in-work-area frame. The tests covered both the 427 by 272 DPI-virtualized view and the physical 640 by 408 at 144 DPI without changing the display.",
+    "verification": {
+      "general": "108/108 across x86/x64, A/W, confirm, Apply then unsaved edits and cancel, and direct cancel, with standard, initial-settings and per-monitor-aware caller variants. Ran against assets, O:/winnt and the identical clean-build package. Each observed General and its frame, sheet and button geometry, range, printer and ownership semantics.",
+      "driver": "6/6 x64 native-prompt cancel and positive printer DC/IC A/W on O:/winnt. Four x86 context skips reflect no queue passing the independent native DC/IC check. x86 A/W Preferences timed out with the incremental candidate and the independent native DocumentProperties control. Win16 default-device Apply state lost the default-device DC on both the preceding package and candidate; these comparative negatives are not counted as passes.",
+      "printing": "12/12 established print regression groups across both widths and styles, including Win16 A/W direct cancel and context-free Apply, styled PrintDlgEx accept/cancel under Win2000, and PrintDlg/PageSetupDlg. 4/4 clean-build core snapshot and bridge tests passed.",
+      "other_dialogs": "32/32 ordinary launch file open/save selections at default and per-monitor awareness; 16/16 checked compact geometry. Another 28 non-printing groups passed across both widths, including file cancellation, Find/Replace, message choices, Color/Font, COM Explorer Open/Save, and Win16 Find/Replace.",
+      "limits": "No print jobs, global style sweep, private desktop, or printer setting changes. Caller-provided PrintDlgEx property-page display and administrative tray end-to-end acceptance remain open; full Places in the constrained RDP work area stays owner-approved skip."
+    },
+    "release": {
+      "source_parent": "0c049f7443a6bfbf7c949971a512f418740d9219",
+      "snapshot_manifest_sha256": "051dc6c8257493a23eb70669d832e82210855dcfe99e3e11db7926f3c2f5d891",
+      "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-general-sheet-package",
+      "toolchain": "C17, MinGW-w64 GCC 16.1.0, Ninja and repository ccache, clean x86/x64 Release.",
+      "gate": "Eight same-snapshot artifacts, both ABI gates, source receipts and original resources. Win2000 DLLs add only the Windows WINSPOOL.DRV import; export and product-file counts remain unchanged.",
+      "artifacts": {
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "502154213653505f90431dcf48a8c955d020e03fd7ca9a7a8be4bcbea0aa8104"
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "1171d266b8256beb2ba0a16395faaa165fa33275e2956c76b28082650251d982"
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "f6b562a898a9553fee3da4e13b287257e0fdce48a396022b4073aca91a0f9e72"
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "7479339e2ca842890754ca95d2140c0fc876cd7ebfacc7304eb14be9b76872cc"
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "fccecfdb971b6e1090d9cd2baef535dae5d9058fe6dc5e7753d0b6086306693f"
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "969cba6cf6ce7b50890e61f188430d77abbc8d4fc72c05e850e2452ba26d6672"
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "fb51e5f84c45ce2d720afa38c719ceef5662ffd52a436977267e5879a9e760df"
+        },
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "574b347f040232939330eebf98b0cf08e67c13212369a3cde99fb40af64ec6db"
+        }
+      }
+    }
+  },
   "places_reflow_trial": {
     "package": "P9 published launcher and DLLs with temporary caller-owned ANSI and Unicode OPENFILENAME hooks. The probe used the ordinary desktop and owned dialogs at 96 DPI with a 427 by 272 work area. The temporary sources, objects, binaries and output were removed after the run.",
     "stock_geometry": "The native 421 by 247 client exposed the stock Places toolbar, a Shell directory view, and a ComboBoxEx filename field. In Open the default OK button began at (484,313), beyond both client bounds.",

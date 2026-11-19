@@ -9,17 +9,15 @@
 #define CONTEXT_PROPERTY L"style.classic.print.extended.v1"
 typedef struct state {
     HGLOBAL *live_mode,*live_names;HWND edit,apply,current;DWORD input_flags,minimum,maximum,capacity;BOOL ansi,initializing,current_selected;WCHAR initial[512];
-    PRINTPAGERANGE ranges[MAX_RANGES],applied_ranges[MAX_RANGES];DWORD count,applied_count,copies,flags;
-    HGLOBAL applied_mode,applied_names;HDC applied_dc;BOOL applied,failed;
+    PRINTPAGERANGE ranges[MAX_RANGES],applied_ranges[MAX_RANGES];DWORD count,applied_count;
+    style_print_snapshot applied;BOOL failed;
 } state;
-static void free_snapshot(state *s)
-{if(s->applied_dc)DeleteDC(s->applied_dc);if(s->applied_mode)GlobalFree(s->applied_mode);if(s->applied_names)GlobalFree(s->applied_names);s->applied_dc=NULL;s->applied_mode=NULL;s->applied_names=NULL;s->applied=FALSE;}
 static void free_print_result(state *s,HDC dc,HGLOBAL mode,HGLOBAL names)
 {
     if(dc)DeleteDC(dc);
     if(mode)GlobalFree(mode);
     if(names)GlobalFree(names);
-    free_snapshot(s);
+    style_print_snapshot_dispose(&s->applied);
 }
 static BOOL read_ranges(HWND window,state *s)
 {
@@ -41,23 +39,10 @@ static DWORD input_flags(HWND window,const state *s)
 static BOOL save_snapshot(HWND window,state *s)
 {
     BOOL translated=FALSE;DWORD copies=GetDlgItemInt(window,1154,&translated,FALSE);if(!translated || !copies || copies>32767 || !read_ranges(window,s))return FALSE;
-    DWORD flags=input_flags(window,s);
-    HGLOBAL mode=style_print_clone_global(*s->live_mode),names=(flags&PD_PRINTTOFILE)?style_print_clone_file_devnames(*s->live_names,s->ansi):style_print_clone_global(*s->live_names),dc_mode=style_print_clone_global(*s->live_mode);
-    if(!mode || !names || !dc_mode){if(mode)GlobalFree(mode);if(names)GlobalFree(names);if(dc_mode)GlobalFree(dc_mode);return FALSE;}
-    void *mode_data=GlobalLock(mode),*dc_data=GlobalLock(dc_mode);DEVNAMES *dn=GlobalLock(names);HDC dc=NULL;
-    BOOL ready=mode_data && dc_data && dn;
-    if(ready){
-        BOOL driver_copies=(flags&PD_USEDEVMODECOPIESANDCOLLATE)!=0;
-        style_print_set_copies(mode_data,s->ansi,driver_copies?(short)copies:1,driver_copies && (flags&PD_COLLATE));
-        style_print_set_copies(dc_data,s->ansi,(short)copies,(flags&PD_COLLATE)!=0);
-        dc=style_print_create_dc(dc_data,dn,s->ansi,flags);
-    }
-    if(mode_data)GlobalUnlock(mode);
-    if(dc_data)GlobalUnlock(dc_mode);
-    if(dn)GlobalUnlock(names);
-    GlobalFree(dc_mode);
-    if(!ready || ((flags & (PD_RETURNDC|PD_RETURNIC)) && !dc)){GlobalFree(mode);GlobalFree(names);return FALSE;}
-    free_snapshot(s);s->applied=TRUE;s->applied_mode=mode;s->applied_names=names;s->applied_dc=dc;s->copies=(flags&PD_USEDEVMODECOPIESANDCOLLATE)?1:copies;s->flags=(flags&PD_USEDEVMODECOPIESANDCOLLATE)?flags&~(DWORD)PD_COLLATE:flags;
+    style_print_snapshot snapshot;
+    if(!style_print_snapshot_create(*s->live_mode,*s->live_names,s->ansi,copies,input_flags(window,s),&snapshot))return FALSE;
+    style_print_snapshot_dispose(&s->applied);
+    s->applied=snapshot;
     s->applied_count=s->count;CopyMemory(s->applied_ranges,s->ranges,s->count*sizeof(PRINTPAGERANGE));return TRUE;
 }
 static UINT_PTR print_hook_common(HWND window,UINT message,WPARAM wparam,state *initial)
@@ -141,14 +126,14 @@ BOOL NAME(EX_TYPE *p,PRINT_TYPE print,HRESULT *result) \
         if(d.hDC){DeleteDC(d.hDC);}d.hDC=replacement;} \
     if(ok && (p->Flags & PD_USEDEVMODECOPIESANDCOLLATE) && !style_print_normalize_driver_copies(d.hDevMode,IS_ANSI,&d.nCopies,&d.Flags)){free_print_result(&s,d.hDC,d.hDevMode,d.hDevNames);*result=E_FAIL;return TRUE;} \
     if(ok && (!style_print_global_available(p->hDevMode) || !style_print_global_available(p->hDevNames))){free_print_result(&s,d.hDC,d.hDevMode,d.hDevNames);*result=E_FAIL;return TRUE;} \
-    if(ok){if(p->hDevMode)GlobalFree(p->hDevMode);if(p->hDevNames)GlobalFree(p->hDevNames);p->hDevMode=d.hDevMode;p->hDevNames=d.hDevNames;p->hDC=d.hDC;p->Flags=(d.Flags & ~(PD_ENABLEPRINTHOOK|PD_RETURNDC|PD_RETURNIC))|(p->Flags & (PD_RETURNDC|PD_RETURNIC|PD_NOCURRENTPAGE));if(s.current_selected)p->Flags=(p->Flags & ~(DWORD)(PD_SELECTION|PD_PAGENUMS))|PD_CURRENTPAGE;p->nCopies=d.nCopies;p->nPageRanges=s.count;if(s.count)CopyMemory(p->lpPageRanges,s.ranges,s.count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_PRINT;free_snapshot(&s);*result=S_OK;return TRUE;} \
+    if(ok){if(p->hDevMode)GlobalFree(p->hDevMode);if(p->hDevNames)GlobalFree(p->hDevNames);p->hDevMode=d.hDevMode;p->hDevNames=d.hDevNames;p->hDC=d.hDC;p->Flags=(d.Flags & ~(PD_ENABLEPRINTHOOK|PD_RETURNDC|PD_RETURNIC))|(p->Flags & (PD_RETURNDC|PD_RETURNIC|PD_NOCURRENTPAGE));if(s.current_selected)p->Flags=(p->Flags & ~(DWORD)(PD_SELECTION|PD_PAGENUMS))|PD_CURRENTPAGE;p->nCopies=d.nCopies;p->nPageRanges=s.count;if(s.count)CopyMemory(p->lpPageRanges,s.ranges,s.count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_PRINT;style_print_snapshot_dispose(&s.applied);*result=S_OK;return TRUE;} \
     if(d.hDC)DeleteDC(d.hDC); \
     if(d.hDevMode)GlobalFree(d.hDevMode); \
     if(d.hDevNames)GlobalFree(d.hDevNames); \
-    if(s.failed){free_snapshot(&s);return FALSE;} \
-    if(error){free_snapshot(&s);*result=E_FAIL;return TRUE;} \
-    if(s.applied && (!style_print_global_available(p->hDevMode) || !style_print_global_available(p->hDevNames))){free_snapshot(&s);*result=E_FAIL;return TRUE;} \
-    if(s.applied){if(p->hDevMode)GlobalFree(p->hDevMode);if(p->hDevNames)GlobalFree(p->hDevNames);p->hDevMode=s.applied_mode;p->hDevNames=s.applied_names;p->hDC=s.applied_dc;p->Flags=s.flags;p->nCopies=s.copies;p->nPageRanges=s.applied_count;if(s.applied_count)CopyMemory(p->lpPageRanges,s.applied_ranges,s.applied_count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_APPLY;} \
+    if(s.failed){style_print_snapshot_dispose(&s.applied);return FALSE;} \
+    if(error){style_print_snapshot_dispose(&s.applied);*result=E_FAIL;return TRUE;} \
+    if(s.applied.mode && (!style_print_global_available(p->hDevMode) || !style_print_global_available(p->hDevNames))){style_print_snapshot_dispose(&s.applied);*result=E_FAIL;return TRUE;} \
+    if(s.applied.mode){if(p->hDevMode)GlobalFree(p->hDevMode);if(p->hDevNames)GlobalFree(p->hDevNames);p->hDevMode=s.applied.mode;p->hDevNames=s.applied.names;p->hDC=s.applied.dc;p->Flags=s.applied.flags;p->nCopies=s.applied.copies;p->nPageRanges=s.applied_count;if(s.applied_count)CopyMemory(p->lpPageRanges,s.applied_ranges,s.applied_count*sizeof(PRINTPAGERANGE));p->dwResultAction=PD_RESULT_APPLY;} \
     else p->dwResultAction=PD_RESULT_CANCEL; \
     *result=S_OK;return TRUE; \
 }

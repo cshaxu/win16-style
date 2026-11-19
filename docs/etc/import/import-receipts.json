@@ -3380,9 +3380,9 @@
       "path": "src/lib-win32-style/application/dialog/print_extended.c",
       "source": null,
       "source_blob": null,
-      "sha256": "888d7a8b65048945520f8b574cf8f9379255829c2c6734303f755c3fbcecf49f",
+      "sha256": "0595de8a13b893226d0598bf920c300538c89f57419f0ecf6ac07f078e2a4bf2",
       "disposition": "authored",
-      "review": "T20 S1 bounded extended print dialog bridge; T21 S23 shared dialog library extraction; T24 S1 quality refactor; T26 S1 shared classic extended print bridge; T26 S2 mechanical path/include relocation",
+      "review": "T20 S1 bounded extended print dialog bridge; T21 S23 shared dialog library extraction; T24 S1 quality refactor; T26 S1 shared classic extended print bridge; T26 S2 mechanical path/include relocation; T28 S3 share the printer result snapshot transaction without a window",
       "notice": "Project-authored C code; no imported resources"
     },
     {
@@ -6044,9 +6044,9 @@
       "path": "src/ntw2ks-dll/controls.c",
       "source": null,
       "source_blob": null,
-      "sha256": "efab72a32adee424dc6b253f81d449458edcf3df9676ad670e0bf669c7246ad9",
+      "sha256": "fb755cd4993cbb70a6336e0b0bc3874e1456bf5086f5451a8b78c6ba14235585",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 shared control theme lifecycle; T26 S1 Win2000 native theme interception; T26 S1 control thread ownership; T26 S1 shared ordinary dialog hook lifecycle; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S14 VB、VCL 与复合控件; T28 S3 observe stock Color foldout completion; T28 S3 native compact Explorer launch integration; T28 S3 native Places launch and resize integration; T28 S3 restore stock font client after native show; T28 S3 clamp compact Explorer in physical pixels",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 shared control theme lifecycle; T26 S1 Win2000 native theme interception; T26 S1 control thread ownership; T26 S1 shared ordinary dialog hook lifecycle; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S14 VB、VCL 与复合控件; T28 S3 observe stock Color foldout completion; T28 S3 native compact Explorer launch integration; T28 S3 native Places launch and resize integration; T28 S3 restore stock font client after native show; T28 S3 clamp compact Explorer in physical pixels; T28 S3 preview the Windows 2000 General print sheet",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -6071,9 +6071,9 @@
       "path": "src/ntw2ks-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "2ee8060d85693d29588e232d7384d005f35b279f11ce0b9616e8128f3e894da5",
+      "sha256": "c550c0c4d510058b74af7ad30e2657ac77c6b2d2e7dbd56ac29559ad04e2fec4",
       "disposition": "authored",
-      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T27 product build version; T28 S1 Win2000 UWP exterior and verification",
+      "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T27 product build version; T28 S1 Win2000 UWP exterior and verification; T28 S3 preview the Windows 2000 General print sheet",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
     },
     {
@@ -6782,27 +6782,27 @@
       "path": "src/lib-win32-style/application/dialog/print_resources.c",
       "source": null,
       "source_blob": null,
-      "sha256": "32fc8224df8299a0de63403b3e9a6208ab3f00b9507321aa55593f7c4b292b72",
+      "sha256": "b0a6ba164bd0dbff79a33079d17258a40f5d6531dee82d668c1d1f0cbf863fbf",
       "disposition": "authored",
-      "review": "T26 S1 shared printer resource helpers and native test; T26 S2 mechanical path/include relocation",
+      "review": "T26 S1 shared printer resource helpers and native test; T26 S2 mechanical path/include relocation; T28 S3 share the printer result snapshot transaction without a window",
       "notice": "Project-authored C; no imported artwork"
     },
     {
       "path": "src/lib-win32-style/application/dialog/print_resources.h",
       "source": null,
       "source_blob": null,
-      "sha256": "c14cfc2b9dbf05a509a2ec65b7eefae318fc0cd164271805f003ac39e5edc2d6",
+      "sha256": "309cb5c2cfb5adce85297d56c938a8e21fd79b03fc79924f980298a2cfb0dca2",
       "disposition": "authored",
-      "review": "T26 S1 shared printer resource helpers and native test; T26 S2 mechanical path/include relocation",
+      "review": "T26 S1 shared printer resource helpers and native test; T26 S2 mechanical path/include relocation; T28 S3 share the printer result snapshot transaction without a window",
       "notice": "Project-authored C; no imported artwork"
     },
     {
       "path": "tests/lib-win32-style/application/dialog/print_resources.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d81e7b6c91c273f2158b4b3cc572e72479544a7855d8bf657cea232c0282c289",
+      "sha256": "f460a391ff71648422302c518952c559c48f4ec96bbc46b78e6282912272d1e8",
       "disposition": "authored",
-      "review": "T26 S1 shared printer resource helpers and native test; T26 S2 mechanical path/include relocation",
+      "review": "T26 S1 shared printer resource helpers and native test; T26 S2 mechanical path/include relocation; T28 S3 share the printer result snapshot transaction without a window",
       "notice": "Project-authored C; no imported artwork"
     },
     {
@@ -10287,6 +10287,33 @@
       "disposition": "authored",
       "review": "T28 S3 share fixed stock native-dialog client recovery",
       "notice": "Project-authored C; stock Windows 2000 dialog-unit metrics used as reference"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/dialog/print_general.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "30e0689a57b711627837aa2eeb0753cbd1f1b4b68e7d703de437daede5ca3c97",
+      "disposition": "authored",
+      "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/win2000/dialog/print_general.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "b0ee47b7b808d615903790ef7c7ec869a093554dc19f970a43143e5af968ff82",
+      "disposition": "authored",
+      "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "tests/ntw2ks-dll/print_general_target.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "9eb28d2a108df4a79f062df674e55290c2d2ca03a122ede3f1747476640f535e",
+      "disposition": "authored",
+      "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
+      "notice": "Project-authored; no imported source or resources"
     }
   ]
 }

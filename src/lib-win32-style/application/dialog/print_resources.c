@@ -74,3 +74,38 @@ BOOL style_print_normalize_driver_copies(HGLOBAL mode,BOOL ansi,WORD *copies,DWO
     }
     *copies=1;*flags &= ~(DWORD)PD_COLLATE;return TRUE;
 }
+
+void style_print_snapshot_dispose(style_print_snapshot *snapshot)
+{
+    if(snapshot->dc)DeleteDC(snapshot->dc);
+    if(snapshot->mode)GlobalFree(snapshot->mode);
+    if(snapshot->names)GlobalFree(snapshot->names);
+    *snapshot=(style_print_snapshot){0};
+}
+
+BOOL style_print_snapshot_create(HGLOBAL mode,HGLOBAL names,BOOL ansi,DWORD copies,DWORD flags,
+    style_print_snapshot *result)
+{
+    if(!copies || copies>32767)return FALSE;
+    BOOL driver_copies=(flags&PD_USEDEVMODECOPIESANDCOLLATE)!=0;
+    style_print_snapshot snapshot={
+        .mode=style_print_clone_global(mode),
+        .names=(flags&PD_PRINTTOFILE)?style_print_clone_file_devnames(names,ansi):style_print_clone_global(names),
+        .copies=driver_copies?1:copies,
+        .flags=driver_copies?flags&~(DWORD)PD_COLLATE:flags,
+    };
+    if(snapshot.mode && snapshot.names){
+        void *data=GlobalLock(snapshot.mode);
+        if(data){
+            style_print_set_copies(data,ansi,driver_copies?(short)copies:1,driver_copies && (flags&PD_COLLATE));
+            GlobalUnlock(snapshot.mode);
+            if(flags&(PD_RETURNDC|PD_RETURNIC))snapshot.dc=style_print_create_print_dc(mode,snapshot.names,ansi,copies,flags);
+            if(snapshot.dc || !(flags&(PD_RETURNDC|PD_RETURNIC))){
+                *result=snapshot;
+                return TRUE;
+            }
+        }
+    }
+    style_print_snapshot_dispose(&snapshot);
+    return FALSE;
+}
