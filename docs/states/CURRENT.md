@@ -33,7 +33,28 @@ M0 T29 S1 完成 MSStyles 可迁移性调研。冻结 113 个按年代计的适�
 
 用户确认 Win16 与 Win2000 的主题整理继续在 T29 内实施。
 [S2–S12 实施规划](../proposals/msstyles-classic-runtime.md)已记录。
-当前无活动任务包。T29 保持开放。
+M0 T29 S2 已准入，先确定主题与 ABI 契约。两套主题源必须能生成合规的 MSStyles、theme 描述及所需引用资源。参见 [主题构建契约](../proposals/msstyles-build-contract.md)。
+
+## M0 T29 S2 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation；M0 固定，T29 按已确认队列实施。 |
+| Admission And Approval | 用户要求自行设定目标并开始执行，要求可编辑源正确编译为合规 MSStyles 及相关主题文件。 |
+| Objective | 冻结两年代主题源、合规输出、项目扩展及旧 DLL ABI 的迁移契约。 |
+| Non-goals | S2 为契约与取证，不提前替换正式包、删旧 DLL、设置系统主题或扩大适用目标。 |
+| Reference Baseline | T29 S1 P3 规划、S1 的 113 单元账本和 T28 P45 发布八件。 |
+| Candidate Proposal | docs/proposals/msstyles-classic-runtime.md。 |
+| Files And ABI Surface | 主题源生成真实 MSStyles、theme 和引用资源；审计 Win16 39 个及 Win2000 5 个导出。 |
+| Applicable Rules | M0、纯 C17 产品运行时、原资源与来源保留、双宽共用主题数据。 |
+| Verification | 本机只读资源与描述对照，核对生产消费者与公开格式，按 113 单元列迁移和验证归属。 |
+| Expected Markers | 两套可编辑源和生成件定义、独立解析及路径校验判据、扩展最小字段与 ABI 处置。 |
+| Asset Needs | 已冻结旧资源和本机 Aero 样本；S3 自有最小主题用于互操作正负例。 |
+| Reporting Requirements | 区分已观察的标准样本、设计决定以及仍待 S3/S4 实测的内容。 |
+| Stop Conditions | 无系统主题设置、权限调整或二进制发布变更。 |
+| Exit Criteria | 完成首批格式、默认值、所有权、13 扩展、113 单元和 44 个导出的可复核契约。 |
+| Original Owner Request | 自行设定目标开始执行；源代码能正确编译成合规的 MSStyles 和 theme 相关文件。 |
+| Similar-Issue Sweep | 复用 S1 标准槽映射、当前八件来源门禁及 T28 双宽回归。 |
 
 ## Identifier State
 
@@ -46,11 +67,11 @@ M0 T29 S1 完成 MSStyles 可迁移性调研。冻结 113 个按年代计的适�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S1 P3；二进制仍为 P45 八件。
+- Last verified remote delivery: M0 T29 S2 P1；二进制仍为 P45 八件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 1
-- Open task: 无活动任务包。
+- Last allocated T29 S: 2
+- Open task: M0 T29 S2；主题文件与 ABI 契约。
 
 ## Technical Baseline
 

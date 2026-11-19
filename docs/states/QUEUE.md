@@ -13,6 +13,8 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 
 [MSStyles 经典风格与共享运行时](../proposals/msstyles-classic-runtime.md)已按用户要求准入，当前调研范围见 [CURRENT](CURRENT.md)。
 
+[MSStyles 与主题文件构建契约](../proposals/msstyles-build-contract.md)从属于前述实施任务，当前活动范围见 [CURRENT](CURRENT.md)。
+
 [Windows 2000常用控件](../proposals/windows-2000-controls.md)已按终审范围收口。
 
 [Windows 2000 UWP 窗口外框](../proposals/windows-2000-uwp-frame.md)已按用户要求准入，活动范围见 CURRENT。
