@@ -105,6 +105,10 @@ P31 增加 292×198 DLU 的完整 General 页，提供安装队列列表、状�
 108/108，确认窗口及按钮没有裁切。实际窄工作区的候选包为 36/36。完整页使用
 安装队列列表，原版 Shell 打印机视图与目录查找未实现。原生自定义打印属性页
 仍待验证。S3 保持开放。
+P32 在可用的大工作区复现并修复 Places 的 150% 双重缩放。布局观察器沿用调用者的
+DPI 上下文。两处和同摘要构建包通过 96/96，其中实际 Places 几何 48/48，覆盖
+144 DPI 和 96 DPI 虚拟坐标；另有 COM 8/8、General 4/4、Win16 4/4。
+原生 `PrintDlgExW` 自定义页在大工作区仍停在系统代理窗，普通属性页对照通过。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -139,14 +143,14 @@ P31 增加 292×198 DLU 的完整 General 页，提供安装队列列表、状�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P31；构建快照和八件摘要见公共对话框证据。
+- Last verified remote delivery: M0 T28 S3 P32；构建快照和八件摘要见公共对话框证据。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 P31 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll；远端、O:/winnt 和 assets 已核对 [T28 S3 P32 公共对话框候选](../etc/evidence/t28-s3-dialog-reference.json)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1135回执、五原资源、包内原始栅格表和ABI/PE门禁通过；两宽各23公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。

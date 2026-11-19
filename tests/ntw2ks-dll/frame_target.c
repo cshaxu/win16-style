@@ -178,12 +178,19 @@ static BOOL places_file_fits(HWND window)
 {
     MONITORINFO monitor={.cbSize=sizeof(monitor)};
     HWND toolbar=GetDlgItem(window,1184);
-    RECT reference={0,0,370,197},client,sidebar,last;
+    RECT reference={0,0,370,197},client={0},sidebar={0},last={0};
     if(!IsWindowVisible(toolbar) || !MapDialogRect(window,&reference) || !GetClientRect(window,&client) ||
-       client.right!=reference.right || client.bottom!=reference.bottom || !GetClientRect(toolbar,&sidebar))return FALSE;
-    LRESULT rows=SendMessageW(toolbar,TB_BUTTONCOUNT,0,0);
-    if(rows<=0 || !SendMessageW(toolbar,TB_GETITEMRECT,(WPARAM)(rows-1),(LPARAM)&last) || last.bottom>sidebar.bottom)
+       client.right!=reference.right || client.bottom!=reference.bottom || !GetClientRect(toolbar,&sidebar)){
+        printf("WIN2K PLACES client=%ldx%ld expected=%ldx%ld toolbar=%d dialog_dpi=%u awareness=%d\n",
+            client.right,client.bottom,reference.right,reference.bottom,IsWindowVisible(toolbar),GetDpiForWindow(window),
+            (int)GetAwarenessFromDpiAwarenessContext(GetWindowDpiAwarenessContext(window)));
         return FALSE;
+    }
+    LRESULT rows=SendMessageW(toolbar,TB_BUTTONCOUNT,0,0);
+    if(rows<=0 || !SendMessageW(toolbar,TB_GETITEMRECT,(WPARAM)(rows-1),(LPARAM)&last) || last.bottom>sidebar.bottom){
+        printf("WIN2K PLACES rows=%lld last=%ld sidebar=%ld\n",(long long)rows,last.bottom,sidebar.bottom);
+        return FALSE;
+    }
     if(!GetMonitorInfoW(MonitorFromWindow(window,MONITOR_DEFAULTTONEAREST),&monitor))return FALSE;
     return within(window,&monitor.rcWork) && within(toolbar,&monitor.rcWork) &&
         within(GetDlgItem(window,1121),&monitor.rcWork) && within(GetDlgItem(window,1148),&monitor.rcWork) &&
@@ -875,11 +882,12 @@ int wmain(int argc,WCHAR **argv)
             BOOL check_layout=message_expect_compact || message_expect_places;
             BOOL contract=!check_layout || ((ansi?a.Flags:w.Flags)==flags && (ansi?a.FlagsEx:w.FlagsEx)==0);
             BOOL fit=!check_layout || InterlockedCompareExchange(&message_compact_fit,0,0)!=0;
-            BOOL pass=wait==WAIT_OBJECT_0 && result && !error && same && offsets && filter==2 && unchanged && contract && fit &&
+            BOOL awareness=AreDpiAwarenessContextsEqual(dpi_context,GetThreadDpiAwarenessContext());
+            BOOL pass=wait==WAIT_OBJECT_0 && result && !error && same && offsets && filter==2 && unchanged && contract && fit && awareness &&
                 InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
-            printf("WIN2K SELECT bits=%u ansi=%d save=%d explorer=%d attached=%ld result=%d same=%d error=%lu filter=%lu offsets=%d cwd=%d flags=%d fit=%d measured=%d places=%d dpi=%u work=%ldx%ld\n",
+            printf("WIN2K SELECT bits=%u ansi=%d save=%d explorer=%d attached=%ld result=%d same=%d error=%lu filter=%lu offsets=%d cwd=%d flags=%d fit=%d measured=%d places=%d dpi=%u work=%ldx%ld aware_restored=%d\n",
                 (unsigned)(sizeof(void*)*8),ansi,save,explorer,(long)InterlockedCompareExchange(&message_attached,0,0),
-                result,same,(unsigned long)error,(unsigned long)filter,offsets,unchanged,contract,fit,check_layout,message_expect_places,dpi,width,height);
+                result,same,(unsigned long)error,(unsigned long)filter,offsets,unchanged,contract,fit,check_layout,message_expect_places,dpi,width,height,awareness);
             if(!pass)all=FALSE;
         }
         InterlockedExchange(&message_accept,0);return all?0:3;

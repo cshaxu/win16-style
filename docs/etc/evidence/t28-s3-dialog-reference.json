@@ -1210,6 +1210,74 @@
       }
     }
   },
+  "places_real_dpi_p32": {
+    "baseline": "P31 released all eight hashes at both locations. At a real 1920 x 1008 work area and 144 DPI, x86/x64 A/W Explorer Open/Save returned all requested paths, offsets and original flags, but all eight Places geometry checks failed. On x64 the physical client was 1251 x 740, while the 370 x 197 DLU reference mapped to 833 x 493. The toolbar was visible. A first physical-only candidate corrected the DPI-aware branch but reduced the virtualized viewport client to 371 x 214 instead of 555 x 320.",
+    "fix": "The observer now measures and lays out the Places frame and toolbar in the awareness context of the API caller, then restores its previous thread context. The caller value is scoped with the existing dialog observation and unwind. A/W Open and Save share the path. The fixture logs native extents for failed assertions and checks that the caller's DPI context is restored. Microsoft documents that USER switches the thread to the target window's DPI context on window procedure dispatch: https://learn.microsoft.com/en-us/windows/win32/hidpi/high-dpi-improvements-for-desktop-applications",
+    "incremental": "32/32 Win32 calls including 16 measured Places cases at physical and virtualized DPI. Additional COM Explorer Open/Save accept and cancel 8/8. Both widths had expected file paths and layouts; all applicable Win32 calls retained original filter, file offsets, starting directory, flags and DPI awareness.",
+    "released_runtime": "All three paths tested: assets, O:/winnt, and the identical build candidate. Each passed 32/32 Win32 calls covering both widths, both encodings, Open/Save, both DPI caller modes and Explorer/legacy. Each had 16/16 measured Places cases with matching client size and final toolbar row and action buttons in bounds. The overall counts were Win32 96/96, Places 48/48 within those calls. Measured physical work area 1920 by 1008 at 144 DPI, virtualized 1280 by 672 at 96 DPI. O:/winnt also passed COM Explorer 8/8, full General PrintDlgEx confirmation 4/4 and Win16 extended print cancel 4/4. No physical input or printer jobs.",
+    "native_property_page": "On the newly available ordinary large work area, an x64 direct PropertySheetW control called the owned page's create, init and release exactly once and closed by cancelling the active page. Native PrintDlgExW reached an external zero-size ProxyModalWindow and timed out without any of the three page callbacks. The same environmental limit reproduces without run16s on this larger desktop. The test cannot establish the actual caller-page behavior in either style and did not send messages to the external proxy. Microsoft documents lphPropertyPages and page ownership at https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-printdlgexw.",
+    "release": {
+      "source_parent": "f4cd61c94b37e2953f97acddc0e3a4df6cf8c47e",
+      "snapshot_manifest_sha256": "2784f5ea696af97bf838000ad226615234171866a407d7435e391bd702be1a1d",
+      "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Worker -Task 28 -RunName s3-places-144-package",
+      "toolchain": "C17, MinGW-w64 GCC 16.1.0, Ninja and repository ccache; clean x86/x64 Release.",
+      "build_seconds": {
+        "x86": 214.48,
+        "x64": 254.68
+      },
+      "ccache_direct_hits": {
+        "x86": 954,
+        "x64": 1042
+      },
+      "ccache_misses": {
+        "x86": 3,
+        "x64": 3
+      },
+      "gate": "Exactly eight same-snapshot artifacts; source receipts, native/style boundaries, both ABI tests, import/export contracts and original glyphs passed. Package published to assets and O:/winnt before running the tests.",
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "37d26f8d3c707ceb1265d0e454bd7a70be2e3b8220c388b221fbcff1b6225036"
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "6d52c4843fc6bee619ee13755397e6fd4804ec35d090ded1640bbf3606790a10"
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "df549fab98570959dcdfa4a3d201ac91b4f96a17d3c79d81c71ed2a03921907c"
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "359bf0a088b04ebcc1269f9d9b630a4957d426918323fccb8435f24aa72b28c6"
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "3cd201663466513c86c6f0cfcb1f50f7ff0141bf52b5c4f4818c13588b3d9f05"
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "7828c6877af4def53a068d57c937891dfb1779b0a8c29d38ec4a2421eb7db048"
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "5cf56d8a952c55db7b08bb2f8536e85fce7ef1f1b1fca7dd54787e47b709b3b2"
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "c42b2c8163f17927960f052350f433c4d2e0c8ef7b17d272341453c47933cbc8"
+        }
+      }
+    }
+  },
   "global_dialog_entry_audit": {
     "baseline": "Source inspected at 35f46f84. All eight files in assets and O:/winnt match the P27 SHA-256s. The product sources and assets have no Git diff from the P27 delivery through P28. This was a source audit with artifact identity verification; no administrator or cross-process runtime trial was performed.",
     "startup": "src/ntw2ks-dll/dllmain.c calls ntw2ks_controls_attach through the ordinary ntw2ks startup bootstrap. src/ntw2ks-dll/controls.c installs the common-dialog handlers and the COM controller from that one call site.",

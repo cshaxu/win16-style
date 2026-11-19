@@ -138,19 +138,27 @@ static LRESULT CALLBACK compact_file_created(int code,WPARAM wp,LPARAM lp)
 static UINT_PTR CALLBACK places_file_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {(void)window;(void)message;(void)wp;(void)lp;return 0;}
 
+static _Thread_local DPI_AWARENESS_CONTEXT file_caller_dpi;
+
 static LRESULT CALLBACK places_file_created(int code,WPARAM wp,LPARAM lp)
 {
     DWORD incoming=GetLastError();
     if(code>=0 && lp){
         const CWPRETSTRUCT *event=(const CWPRETSTRUCT *)lp;
         HWND dialog=event->hwnd;
-        if(dialog_first_show(event)){
-            MONITORINFO monitor={.cbSize=sizeof(monitor)};
-            if(GetMonitorInfoW(MonitorFromWindow(dialog,MONITOR_DEFAULTTONEAREST),&monitor))
-                win2k_file_fit_places(dialog,&monitor.rcWork);
+        BOOL first=dialog_first_show(event);
+        BOOL resized=event->message==WM_SIZE && event->wParam!=SIZE_MINIMIZED && win2k_frame_attached(dialog);
+        if(first || resized){
+            /* The Shell may dispatch notifications in the window's DPI context.
+             * Use the API caller's units for both measurement and placement. */
+            DPI_AWARENESS_CONTEXT prior=SetThreadDpiAwarenessContext(file_caller_dpi);
+            if(first){
+                MONITORINFO monitor={.cbSize=sizeof(monitor)};
+                if(GetMonitorInfoW(MonitorFromWindow(dialog,MONITOR_DEFAULTTONEAREST),&monitor))
+                    win2k_file_fit_places(dialog,&monitor.rcWork);
+            }else win2k_file_fit_place_rows(win2k_file_toolbar(dialog,1184));
+            if(prior)SetThreadDpiAwarenessContext(prior);
         }
-        if(event->message==WM_SIZE && event->wParam!=SIZE_MINIMIZED && win2k_frame_attached(dialog))
-            win2k_file_fit_place_rows(win2k_file_toolbar(dialog,1184));
     }
     SetLastError(incoming);
     return dialog_created(code,wp,lp);
@@ -228,6 +236,18 @@ FONT_HOOK(ChooseFontW,CHOOSEFONTW)
 #undef FONT_HOOK
 #undef FONT_DIALOG_BEGIN
 
+typedef struct file_observation {
+    style_dialog_observation dialog;
+    DPI_AWARENESS_CONTEXT previous;
+} file_observation;
+
+static void end_file_observation(void *data)
+{
+    file_observation *scope=data;
+    style_dialog_observation_end(&scope->dialog);
+    file_caller_dpi=scope->previous;
+}
+
 #define FILE_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
@@ -243,9 +263,10 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
     } \
     HOOKPROC observer=layout==WIN2K_FILE_PLACES?places_file_created: \
         layout==WIN2K_FILE_COMPACT?compact_file_created:dialog_created; \
-    style_dialog_observation scope;process_hook_unwind_scope unwind; \
-    if(!style_dialog_observation_begin(&scope,NULL,observer,FALSE))return FALSE; \
-    PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); \
+    file_observation scope={.previous=file_caller_dpi};process_hook_unwind_scope unwind; \
+    if(!style_dialog_observation_begin(&scope.dialog,NULL,observer,FALSE))return FALSE; \
+    file_caller_dpi=GetThreadDpiAwarenessContext(); \
+    PROCESS_HOOK_UNWIND_BEGIN(unwind,end_file_observation,&scope); \
     SetLastError(incoming); \
     BOOL result=real_##NAME(layout==WIN2K_FILE_NATIVE?parameters:&local);DWORD error=GetLastError(); \
     PROCESS_HOOK_UNWIND_END(unwind); \
