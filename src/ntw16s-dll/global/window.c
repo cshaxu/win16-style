@@ -29,6 +29,10 @@ HMODULE ntw16s_global_win2k_resources(void)
 {
     return InitOnceExecuteOnce(&win2k_once,load_win2k,NULL,NULL)?win2k_module:NULL;
 }
+BOOL ntw16s_global_win2k_attached(HWND window)
+{
+    return ntw16s_global_win2k_resources() && win2k_ops.attached(window);
+}
 static const style_global_window_ops *style_ops(DWORD style)
 {
     if(style==NTW16S_GLOBAL_STYLE_16)return &ops;

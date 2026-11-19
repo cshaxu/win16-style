@@ -13,7 +13,6 @@
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/dialog/print_extended.h"
 #include "lib-win32-style/appearance/win2000/dialog/print_general.h"
-#include "ntw16s-dll/global/session.h"
 #include "ntw16s-dll/global/window.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/attachment.h"
@@ -212,11 +211,7 @@ SIMPLE_DIALOG_HOOK(PageSetupDlgA,PAGESETUPDLGA *,BOOL,FALSE,(void)0)
 SIMPLE_DIALOG_HOOK(PageSetupDlgW,PAGESETUPDLGW *,BOOL,FALSE,(void)0)
 static HMODULE global_print_resources(void)
 {
-    DWORD flags=__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE);
-    if(!(flags&NTWSHK_POLICY_GLOBAL_SESSION))return NULL;
-    DWORD cookie=__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE);
-    if(!ntw16s_global_policy_style(cookie,NTW16S_GLOBAL_STYLE_2K))return NULL;
-    return ntw16s_global_win2k_resources();
+    return ntw16s_win2k_session_active()?ntw16s_global_win2k_resources():NULL;
 }
 #define PRINT_EXTENDED_HOOK(NAME,TYPE,GENERAL,BRIDGE,PRINT) \
 static __typeof__(&NAME) real_##NAME; \

@@ -125,7 +125,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION void catch_call(void)
 int main(void)
 {
     MSG message;PeekMessageW(&message,NULL,0,0,PM_NOREMOVE);
-    style_classic_file_options options={session,scope,chrome,FALSE};
+    style_classic_file_options options={.active=session,.scope=scope,.chrome=chrome};
     CHECK(style_classic_file_attach(NULL,&options)==ERROR_INVALID_PARAMETER && !attaches);
     fail_at=3;CHECK(style_classic_file_attach(capture,&options)==ERROR_ACCESS_DENIED && attaches==3);
     attaches=fail_at=0;CHECK(!style_classic_file_attach(capture,&options) && attaches==4);

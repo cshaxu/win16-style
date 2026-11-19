@@ -627,8 +627,34 @@ static DWORD WINAPI drag_thread(void *parameter)
     PostMessageW(w,WM_APP+1,0,0);return 0;
 }
 
+static BOOL initialize_late_receiver(PCWSTR path)
+{
+    HMODULE module=LoadLibraryW(path);
+    HOOKPROC receiver=module?(HOOKPROC)(void *)GetProcAddress(module,"Ntw16sGlobalHook"):NULL;
+    HHOOK hook=receiver?SetWindowsHookExW(WH_CALLWNDPROC,receiver,NULL,GetCurrentThreadId()):NULL;
+    if(!hook)return FALSE;
+    HWND owner=CreateWindowExW(0,L"STATIC",L"Owned late dialog fixture",WS_OVERLAPPEDWINDOW,0,0,240,120,
+        NULL,NULL,GetModuleHandleW(NULL),NULL);
+    if(!owner)return FALSE;
+    ShowWindow(owner,SW_SHOWNOACTIVATE);
+    ULONGLONG deadline=GetTickCount64()+5000;
+    while(!GetPropW(owner,L"Win2kStyle.Frame") && GetTickCount64()<deadline){
+        if(MsgWaitForMultipleObjects(0,NULL,FALSE,50,QS_ALLINPUT)==WAIT_OBJECT_0){
+            MSG msg;
+            while(PeekMessageW(&msg,NULL,0,0,PM_REMOVE))DispatchMessageW(&msg);
+        }
+    }
+    BOOL ready=GetPropW(owner,L"Win2kStyle.Frame")!=NULL;
+    DestroyWindow(owner);
+    return ready;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc>=4 && !lstrcmpW(argv[1],L"--late")){
+        if(!initialize_late_receiver(argv[2])){puts("WIN2K late attachment timeout");return 5;}
+        argc-=2;argv+=2;
+    }
     if(argc>1 && !lstrcmpW(argv[1],L"--dpi-aware")){
         if(!SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)){
             printf("WIN2K DPI AWARE SKIP error=%lu\n",GetLastError());return 77;

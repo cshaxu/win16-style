@@ -1,12 +1,24 @@
 /* Product activation and appearance policy; native call state is shared. */
 #include "intercept.h"
 #include "lib-win32-style/application/dialog/classic_file_controller.h"
+#include "lib-win32-style/appearance/win2000/dialog/file_call.h"
+#include "ntw16s-dll/global/session.h"
+#include "ntw16s-dll/global/window.h"
+static void initialize_win2k(HWND window)
+{
+    if(ntw16s_win2k_session_active() && ntw16s_global_window_eligible(window)){
+        ntw16s_global_window_apply_style(window,NTW16S_GLOBAL_STYLE_2K);
+        ntw16s_global_window_children(window,TRUE,NTW16S_GLOBAL_STYLE_2K);
+    }
+}
 LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;
     if(!(ntw16s_process_context.flags & NTWSHK_POLICY_STYLE))return NO_ERROR;
     const style_classic_file_options options={.active=ntw16s_process_session_active,
         .scope=ntw16s_dialog_style_scope,.chrome=ntw16s_old_dialog_chrome,
+        .alternate_active=ntw16s_win2k_session_active,.alternate_a=win2k_file_call_a,
+        .alternate_w=win2k_file_call_w,.alternate_windows={initialize_win2k,ntw16s_global_win2k_attached},
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
         .subclass_observer=TRUE,
 #endif

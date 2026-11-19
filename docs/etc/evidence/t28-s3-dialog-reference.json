@@ -2423,5 +2423,99 @@
         }
       }
     }
+  },
+  "global_file_presenter_p43": {
+    "implementation": "Ordinary --2k and the existing global GetOpenFileName and GetSaveFileName A/W callbacks share the same Places/compact selection, geometry observer and result copy. The active global cookie selects the alternate presenter on the existing native slot. Each product policy supplies its window attachment callbacks and continues to own frame state. The global observer queries the verified companion's frame state before reflow.",
+    "geometry_reproduction": "During integration, using the local static frame implementation to query a global companion's frame yielded 565 by 396 or 399 DLU-mapped client pixels in the 96-DPI fixture rather than 555 by 320. The companion's actual subclass owns the frame instance. The same cases passed after using the owner's query callback.",
+    "buffer_reproduction": "The released P42 full Places variant returned TRUE with FNERR_BUFFERTOOSMALL and the exact required count for all four x64 A/W open/save calls. The native baseline returned FALSE for the same four calls and values. Removing the synthetic callback also removed the measured Places bar in all four x64 full-layout cases. The final selector retained the callback. When the adapted result lacks an in-bounds filename offset, carries a required count beyond capacity and reports that specific native error, the wrapper corrects the Boolean and leaves the buffer and native extended error intact. Caller paths with OFN_NOVALIDATE retain their native Boolean.",
+    "reference": "https://learn.microsoft.com/en-us/windows/win32/api/commdlg/nf-commdlg-commdlgextendederror",
+    "incremental": "Both ABI and classic file controller checks passed. The final matrix passed 112/112 individual calls: 56 ordinary and 56 through the real receiver on individually owned GUI threads. Each width and route passed eight select calls per DPI context (four Explorer and four native legacy), eight cancel calls, and four buffer errors. Physical 144-DPI work area was 1920x1008 and virtualized 96-DPI work area was 1280x672.",
+    "released_runtime": {
+      "assets": {
+        "late_groups": 8,
+        "startup_groups": 8,
+        "failed": 0,
+        "late_print": 2,
+        "win16_file": 2
+      },
+      "winnt": {
+        "late_groups": 8,
+        "startup_groups": 8,
+        "failed": 0,
+        "late_print": 2,
+        "win16_file": 2
+      },
+      "built": {
+        "late_groups": 8,
+        "startup_groups": 8,
+        "failed": 0,
+        "late_print": 2,
+        "win16_file": 2
+      }
+    },
+    "released_counts": "Each of the three same-hash package paths passed 112 file calls plus four regression calls for the P42 global General page and standalone Win16 file cancellation, 348/348 overall.",
+    "footprint": "Source, build and test changes total +188/-100 lines. No product artifact or export was added. Layout state is scoped to the current call; the native slot remains with its existing registration.",
+    "limits": "The narrow compact condition retains the shared selector, and this release exercised actual full-size geometry. Remaining global families, the administrator tray workflow, native custom page display and real domain printer results are open. Fixture staging and clean build files were removed after testing.",
+    "release": {
+      "source_parent": "1d20d8ef353e3d82db6b116a980e9ac829c0195a",
+      "snapshot_manifest_sha256": "e18c6f84ce108f782117282ebac6973e6d7bd22fe02bf909816373786e6cf44d",
+      "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Task 28 -RunName s3-global-file-package -Worker",
+      "toolchain": "C17, MinGW-w64 GCC 16.1.0, Ninja and repository ccache; clean x86/x64 Release.",
+      "build_seconds": {
+        "x86": 229.28,
+        "x64": 302.82
+      },
+      "ccache_direct_hits": {
+        "x86": 945,
+        "x64": 1035
+      },
+      "ccache_misses": {
+        "x86": 14,
+        "x64": 14
+      },
+      "gate": "Source, glyph, ABI, dependency and PE gates passed. Published eight package files before suite execution. Both deployed paths match the clean candidate.",
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "aec2fbb9c250d8967b6b6a3f8011ec5855b958027aca429234671f1c0fa22d50"
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "ddc5db30bad344ad84bc6fa35d6c3c1196effc27758dd6823417c63bd1c546bc"
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "467dc03f0146f91348d6d80bc66bc0f0c9e03e390a4c3814fc55cc050afdea6d"
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "ed27c7cd55e1ac0456ff8eec8cf7bfaedb80868e49edce07e03dff88b872ec72"
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "ff1881980adcc98526708a5b978325d2867cb16405f28cd115b5fd0c4f904f08"
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "d1099249be8d256678055f721a2554e5cf3b0ac924f21cc9f9800a159b664b2b"
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "49ec27c8c7f7625577828a77e883fccc88f0db0bbcdc77cb59ebe78242a6f82d"
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "d660b0e0fbf44b6aeb7845567ffc7ba76cfb688fcc3e08a1298561428fd25903"
+        }
+      }
+    }
   }
 }

@@ -39,6 +39,13 @@ static BOOL WINAPI redirect_self_elevation(SHELLEXECUTEINFOW *info)
 }
 BOOL ntw16s_process_session_active(void)
 {return !(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTWSHK_POLICY_GLOBAL_SESSION) || ntw16s_global_policy_style(__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE),NTW16S_GLOBAL_STYLE_16);}
+BOOL ntw16s_win2k_session_active(void)
+{
+    DWORD flags=__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE);
+    if(!(flags&NTWSHK_POLICY_GLOBAL_SESSION))return FALSE;
+    DWORD cookie=__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE);
+    return ntw16s_global_policy_style(cookie,NTW16S_GLOBAL_STYLE_2K);
+}
 static BOOL active(void *unused)
 {(void)unused;return !(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTWSHK_POLICY_GLOBAL_SESSION) || ntw16s_global_policy_active(__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE));}
 static const style_startup_propagation propagation={&ntw16s_process_context,L"ntwshk",active,NULL};

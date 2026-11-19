@@ -58,6 +58,8 @@ static void old_dialog_begin(old_dialog_scope *scope)
         call->result=original(call->value);call->error=GetLastError();return S_OK;} \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI name(structure *value) \
 { \
+    if(configuration.alternate_active && configuration.alternate_active()) \
+        return configuration.alternate_##suffix(value,original,&configuration.alternate_windows); \
     if(!configuration.active())return original(value); \
     structure local;structure *passed=value; \
     BOOL eligible=style_classic_file_prepare_##suffix(value,&local,extra_flags,old_dialog_hook); \
@@ -82,6 +84,9 @@ BRIDGE(bridge_save_w, OPENFILENAMEW, w, native_save_w, 0)
 DWORD style_classic_file_attach(DWORD (*attach)(void *,void *),const style_classic_file_options *options)
 {
     if(!attach || !options || !options->active || !options->scope || !options->chrome)return ERROR_INVALID_PARAMETER;
+    if(options->alternate_active && (!options->alternate_a || !options->alternate_w ||
+        !options->alternate_windows.initialized || !options->alternate_windows.attached))
+        return ERROR_INVALID_PARAMETER;
     configuration=*options;
     native_open_a=GetOpenFileNameA;native_open_w=GetOpenFileNameW;
     native_save_a=GetSaveFileNameA;native_save_w=GetSaveFileNameW;

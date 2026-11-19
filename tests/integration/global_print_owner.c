@@ -5,12 +5,14 @@
 #include "ntw16s-dll/global/session.h"
 int wmain(int argc,WCHAR **argv)
 {
-    if(argc!=6)return 2;
+    if(argc<4 || argc>6)return 2;
     /* The caller stages this executable as run16s.exe beside the tested DLLs.
      * The child installs the production receiver on its own thread only. */
-    if((wcscmp(argv[3],L"a") && wcscmp(argv[3],L"w")) ||
-       (wcscmp(argv[4],L"cancel") && wcscmp(argv[4],L"confirm") && wcscmp(argv[4],L"apply")) ||
-       (wcscmp(argv[5],L"regular") && wcscmp(argv[5],L"large")))return 2;
+    for(int i=3;i<argc;++i)
+        if(!argv[i][0] || wcspbrk(argv[i],L" \t\""))return 2;
+    WCHAR command[8192];
+    if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --late \"%ls\" %ls %ls %ls",
+        argv[1],argv[2],argv[3],argc>4?argv[4]:L"",argc>5?argv[5]:L"")<0)return 2;
     WCHAR name[NTW16S_GLOBAL_NAME_CAP];
     if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return 3;
     HANDLE mapping=CreateFileMappingW(INVALID_HANDLE_VALUE,NULL,PAGE_READWRITE,0,sizeof(ntw16s_global_session),name);
@@ -24,12 +26,10 @@ int wmain(int argc,WCHAR **argv)
     DWORD code=4;
     if(win32_process_global_birth(GetCurrentProcess(),&session->owner_birth_low,&session->owner_birth_high)){
         InterlockedExchange(&session->phase,NTW16S_GLOBAL_ACTIVE);
-        WCHAR command[8192];
         STARTUPINFOW start={.cb=sizeof(start)};
         PROCESS_INFORMATION child={0};
-        if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --late \"%ls\" %ls %ls %ls",argv[1],argv[2],argv[3],argv[4],argv[5])>0 &&
-            CreateProcessW(argv[1],command,NULL,NULL,TRUE,0,NULL,NULL,&start,&child)){
-            if(WaitForSingleObject(child.hProcess,14000)==WAIT_OBJECT_0)GetExitCodeProcess(child.hProcess,&code);
+        if(CreateProcessW(argv[1],command,NULL,NULL,TRUE,0,NULL,NULL,&start,&child)){
+            if(WaitForSingleObject(child.hProcess,24000)==WAIT_OBJECT_0)GetExitCodeProcess(child.hProcess,&code);
             else{TerminateProcess(child.hProcess,ERROR_TIMEOUT);WaitForSingleObject(child.hProcess,2000);code=6;}
             CloseHandle(child.hThread);
             CloseHandle(child.hProcess);
@@ -37,6 +37,6 @@ int wmain(int argc,WCHAR **argv)
     }
     InterlockedExchange(&session->phase,NTW16S_GLOBAL_STOPPING);
     UnmapViewOfFile(session);CloseHandle(mapping);
-    printf("OWNED LATE PRINT exit=%lu\n",code);
+    printf("OWNED LATE DIALOG exit=%lu\n",code);
     return (int)code;
 }
