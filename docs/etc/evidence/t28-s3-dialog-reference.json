@@ -2733,5 +2733,23 @@
       "ownership": "The existing startup and late hook registration owners remain. Their callbacks retain module-specific frame ownership. The stock wrapper owns only its observation scope and local native request. No second installation or observer implementation remains for these Win2000 cases.",
       "search": "rg -n 'FIND_(ENTRY|DIALOG_HOOK)|STOCK_ENTRY|OBSERVED_DIALOG_HOOK|PRINT_HOOK|PageSetupDlg' src/ntw2ks-dll/controls.c src/ntw16s-dll/injection/window_titles.c"
     }
+  },
+  "print_contract_p46": {
+    "package": "P45 732d2610510eead5930c23e784653139cb97b2a6. All eight SHA-256 values in each of assets and O:/winnt match the P45 clean snapshot. Documentation and verification only.",
+    "negative_custom_page": {
+      "result": "8/8. x86/x64 PrintDlgExW in native Windows, published Win16, published ordinary Win2000 and the actual receiver on a test-owned target thread. One caller page, nStartPage=1, default-queue settings. Every call returned E_INVALIDARG, left the owner enabled and preserved flags, input settings handles, and page-array identity. No page callback was invoked by the print API; destroying the retained page invoked one caller-side release.",
+      "probe_sha256": "efa9c6fd9e242251ffbcc27e4a09fa27c3ec3d699b746e8f2af1a8d3bc3046b6"
+    },
+    "standard_confirmation": {
+      "result": "12/12 outside the command sandbox. x86/x64, A/W, native traditional printer dialog with a no-op caller hook, published ordinary Win2000, and the production receiver on an owned target thread. Selecting the local Microsoft Print to PDF queue and pressing OK returned TRUE, no extended error, one copy, a DC, DEVMODE and DEVNAMES with the chosen queue name. The styled variants attached the frame and restored the caller's original hook fields. The fixture freed the handles and did not submit jobs.",
+      "initial_diagnostics": "With the default queue, the in-sandbox native and styled x86/x64 calls all returned no DC. With the local PDF queue, the in-sandbox x64 calls returned a DC but x86 still did not in any mode. The non-sandbox comparison established the positive on both widths. Native and styled results agreed in each environment.",
+      "probe_sha256": "ba4c6f8609516f77f3c82c3ea2af13f94dd296110fd273b8e4049c594bd601e6"
+    },
+    "valid_custom_page": {
+      "result": "4 skips outside the command sandbox. A preceding standard print dialog selected the local PDF queue and returned both settings handles. With those exact handles, one valid caller page and nStartPage=0, x86/x64 native and published Win2000 PrintDlgExW each reached a zero-size ProxyModalWindow without any caller-page callback, despite the standard PrintDlg DC positive on that queue. The bounded probe stopped only its own instance after 4.5 seconds and sent no messages to the proxy.",
+      "probe_sha256": "f0d46c50562426fa4b5e6dd90a0432d0307aa1fa3c3f749f918d315b0639e624"
+    },
+    "limits": "Valid custom-page display still requires a host with a working native extended print sheet. The query/cancel evidence on the workgroup host cannot establish live domain printer selection or writeback. The owned thread receiver tests do not exercise administrator elevation, a real tray command or process discovery.",
+    "execution_hygiene": "Incremental C17 probes only, with the published package held constant. Both temporary sources and binaries were test-owned. No print job, queue addition, persisted driver change or desktop switch."
   }
 }

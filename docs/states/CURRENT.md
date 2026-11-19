@@ -156,6 +156,11 @@ assets 的一个 x64 展开色板用例首次提前返回，同摘要定向复�
 桌面恢复后，目录打印机查询确认能打开和取消 4/4；本机属于工作组，域队列回写待验。
 原生和 P44 发布版的自定义打印页都停在零尺寸系统代理窗，八项跳过。
 管理员托盘端到端仍未验证，S3 保持开放。
+P46 用 P45 发布包补测。双宽自定义打印页越界回退 8/8，包含自有目标线程的全局入口，
+调用方保留页面和输入设置。非沙箱会话的本机 PDF 队列标准打印确认 12/12，
+覆盖原生、普通 Win2000 和自有全局接收路径，实测返回 DC、设置及设备名。
+以同队列显式初始化的有效自定义页在原生和 Win2000 下仍停在系统代理窗，四项跳过。
+发布八件摘要未变。S3 保持开放。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet
@@ -190,7 +195,7 @@ assets 的一个 x64 展开色板用例首次提前返回，同摘要定向复�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T28 S3 P45；构建快照和八件摘要见公共对话框证据。
+- Last verified remote delivery: M0 T28 S3 P46；二进制仍为 P45 八件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Open task: M0 T28 S3；Windows 2000 公共对话框。
