@@ -37,30 +37,29 @@ M0 T29 S2 已完成主题源和构建契约、113 单元迁移验证与 44 个�
 见 [主题构建契约](../proposals/msstyles-build-contract.md)和
 [逐项迁移与 ABI 台账](../history/M0-T29-S2-theme-and-abi.md)。
 
-M0 T29 S3 已准入，当前接续实际 MSStyles 记录与配套主题构建。
-[S3 记录](../history/M0-T29-S3-msstyles-v4.md)已完成代表部件数据同源生成两对 v4 MSStyles 和配套主题描述。
-两对候选的独立读取、版本与引用负例、标题按钮组扩展及原图像素校验完成。
+M0 T29 S3 已收口。[S3 记录](../history/M0-T29-S3-msstyles-v4.md)保存两对最小主题构建、
+独立读回、版本与引用负例、标题按钮组扩展及原图像素证据。S4 接续三类代表部件的实际消费。
 
-## M0 T29 S3 Packet
+## M0 T29 S4 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；M0 固定。 |
-| Admission And Approval | 用户批准 T29 执行现有队列，要求生成合规 MSStyles 和相关主题文件。 |
-| Objective | 可编辑源生成真实 v4 MSStyles 与配套 theme 描述，分别核对标准与扩展。 |
-| Non-goals | 本 S 保持已发布执行件、系统主题、权限和支持目标。 |
-| Reference Baseline | S2 主题与 ABI 冻结、本机 Aero 与 Aero Lite 只读样本、P45 原资源。 |
+| Admission And Approval | 用户批准 T29 现有 S2–S12 连续执行。 |
+| Objective | 标题栏、普通按钮和滚动条从同源主题资源进入真实布局、绘制与命中。 |
+| Non-goals | 不改系统主题、权限或接入目标；其他部件及完整运行时替换按后续 S 执行。 |
+| Reference Baseline | S2 逐项台账、S3 同源四件、已发布 P45 双宽呈现。 |
 | Candidate Proposal | docs/proposals/msstyles-classic-runtime.md。 |
-| Files And ABI Surface | 独立主题读写与验证构建入口，保留既有产品导出。 |
-| Applicable Rules | C17、原资源身份、双位宽共享主题字节。 |
-| Verification | 同源可重复生成、独立解析、资源引用、变体绑定及负例。 |
-| Expected Markers | 两份主题和描述、标准可读、扩展独立、重复构建同摘要。 |
-| Asset Needs | 原资源与只读本机样本，不复制第三方主题至产品。 |
-| Reporting Requirements | 分别记录格式互操作、扩展、包路径及渲染范围。 |
-| Stop Conditions | 数据映射且不执行主题样本；不应用系统主题或修改注册表。 |
-| Exit Criteria | 双主题最小构建及独立校验通过，缺失部件、截断、错误引用及不支持版本可区分。 |
-| Original Owner Request | 源代码能编译成合规 MSStyles 和 theme 相关文件。 |
-| Similar-Issue Sweep | S1 三类部件、S2 扩展与 ABI、原始资源门禁及 T28 实包基线。 |
+| Files And ABI Surface | MSStyles 读取与主题模型、窗口标题栏和按钮/滚动条共享应用入口、自有 Win32 验证；保留既有产品 ABI。 |
+| Applicable Rules | C17 双位宽，主题数据只读，原资源身份和原应用语义。 |
+| Verification | 96/144 DPI、普通及适用禁用或按压状态的区域、像素、命中和恢复；以候选主题属性替换证明实际消费。 |
+| Expected Markers | 双宽两种主题使用同一输入契约，三类代表部件证据与旧路径对照。 |
+| Asset Needs | S3 主题、既有原版栅格与样式定义、自有窗口或离屏原生测试。 |
+| Reporting Requirements | 逐项记录标准与扩展数据、实际消费者、同源构建、适用状态及缺口。 |
+| Stop Conditions | 保持既有支持范围、安全策略和桌面约束。 |
+| Exit Criteria | 三部件实际应用通路、双宽 DPI 和适用状态的回归成立，格式验证不能替代绘制与恢复证据。 |
+| Original Owner Request | 共用主题机制，以可编译的 MSStyles 和 theme 文件承载 Win16、Win2000 风格。 |
+| Similar-Issue Sweep | P45 标题栏及滚动条窗口、Win16 原栅格、Win2000 标准按钮、S2 逐项接收者和已有 focused 测试。 |
 
 ## Identifier State
 
@@ -73,11 +72,11 @@ M0 T29 S3 已准入，当前接续实际 MSStyles 记录与配套主题构建。
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S3 P5；二进制仍为 P45 八件。
+- Last verified remote delivery: M0 T29 S3 P6；二进制仍为 P45 八件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 3
-- Open task: M0 T29 S3；MSStyles 与配套主题读写。
+- Last allocated T29 S: 4
+- Open task: M0 T29 S4；三类代表部件闭环。
 
 ## Technical Baseline
 
