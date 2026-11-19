@@ -23,8 +23,10 @@
 #include "lib-win32-style/application/lifecycle/install.h"
 #include "lib-win32-style/application/lifecycle/dispatch.h"
 #include "lib-win32-style/application/window/window_identity.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include <stdlib.h>
 
+extern IMAGE_DOS_HEADER __ImageBase;
 typedef enum win2k_report_role { WIN2K_REPORT_NONE,WIN2K_REPORT_LIST,WIN2K_REPORT_TREE } win2k_report_role;
 typedef enum win2k_bar_role { WIN2K_BAR_NONE,WIN2K_BAR_TOOL,WIN2K_BAR_REBAR,WIN2K_BAR_STATUS } win2k_bar_role;
 typedef struct win2k_control {
@@ -32,6 +34,7 @@ typedef struct win2k_control {
     style_control_state state;
     style_native_theme_fn native_theme;
     BOOL frame_owned;
+    win2k_palette push_palette;
     style_control_notify_state parent_binding;
     style_control_combo combo;
     HWND combo_parent;
@@ -182,8 +185,15 @@ static void paint(HWND window,void *context,HDC dc)
         win2k_list_paint(window,&control->instance,parent,dc);
     }else if(class_is(window,L"COMBOBOX")){
         painted=win2k_combo_paint(window,&control->instance,dc);
-    }else painted=static_class(window)?win2k_static_paint(window,&control->instance,dc,&win2k_standard_palette):
-        win2k_button_paint(window,&control->instance,dc,&win2k_standard_palette);
+    }else if(static_class(window)){
+        painted=win2k_static_paint(window,&control->instance,dc,&win2k_standard_palette);
+    }else{
+        DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
+        UINT type=style_control_button_type(window,style);
+        const win2k_palette *palette=type<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE)?
+            &control->push_palette:&win2k_standard_palette;
+        painted=win2k_button_paint(window,&control->instance,dc,palette);
+    }
     if(!painted &&
        !control->instance.detached){
         int saved=SaveDC(dc);
@@ -478,6 +488,14 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     control->report=report;
     style_control_native_init(&control->native);
     win2k_scroll_init(&control->scroll,&control->instance);
+    control->push_palette=win2k_standard_palette;
+    classic_theme theme;
+    if(classic_theme_default((HMODULE)&__ImageBase,&theme)){
+        control->push_palette.face=theme.button.face;
+        control->push_palette.dark=theme.button.edge;
+        control->scroll.arrow_palette.face=theme.scroll_arrow.face;
+        control->scroll.arrow_palette.dark=theme.scroll_arrow.edge;
+    }
     control->scroll.controller.resources.list=combo_parent || class_is(window,L"LISTBOX");
     control->scroll.controller.resources.edit=win2k_edit_class(window)==WIN2K_EDIT_STANDARD &&
         (GetWindowLongPtrW(window,GWL_STYLE)&ES_MULTILINE);

@@ -135,8 +135,8 @@ static void draw(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
         win2k_edge(dc,&thumb,EDGE_RAISED,BF_RECT|BF_ADJUST,p);
         win2k_fill(dc,&thumb,p->face);
     }
-    arrow(dc,l.first,first,p);
-    arrow(dc,l.last,last,p);
+    arrow(dc,l.first,first,&scroll->arrow_palette);
+    arrow(dc,l.last,last,&scroll->arrow_palette);
     RestoreDC(dc,saved);
 }
 
@@ -229,6 +229,7 @@ static RECT drag_bounds(HWND window,const style_scroll_layout *l)
 void win2k_scroll_init(win2k_scroll *scroll,style_instance *instance)
 {
     scroll->instance=instance;
+    scroll->arrow_palette=win2k_standard_palette;
     UINT delay=GetDoubleClickTime()*4/5;
     scroll->policy=(style_scroll_policy){.initial_repeat_ms=max(1,delay),.repeat_ms=max(1,delay/8),
         .hit=hit,.drag_bounds=drag_bounds};

@@ -6,10 +6,13 @@
 #include "lib-win32-style/application/control/bindings.h"
 #include "updown_paint.h"
 #include "lib-win32-style/application/control/message.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 typedef struct control_style {
     style_instance instance;
     style_control_state state;
     win16_style_palette palette;
+    classic_surface_colors push_colors, scroll_arrow_colors;
+    BOOL themed;
     BOOL file_owner;
     BOOL edit_border;
     BOOL combo_passthrough,common_dialog_combo;

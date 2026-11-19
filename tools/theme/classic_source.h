@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include "lib-win32-style/appearance/msstyles/classic_style.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 
 typedef struct classic_caption_source {
     uint32_t start, end, text;
@@ -24,19 +24,14 @@ static const classic_theme_source classic_sources[]={
         {RGB(164,200,240),RGB(164,200,240),RGB(0,0,0)},
         {RGB(255,255,255),RGB(255,255,255),RGB(0,0,0)},
         RGB(192,192,192),RGB(0,0,0),false,true,
-        {3,0,0,{{CLASSIC_BUTTON_SYSTEM,CLASSIC_BUTTON_LEFT,0},
-                {CLASSIC_BUTTON_MINIMIZE,CLASSIC_BUTTON_RIGHT,0},
-                {CLASSIC_BUTTON_MAXIMIZE,CLASSIC_BUTTON_RIGHT,0}}}
+        WIN16_TITLE_BUTTON_GROUP
     },
     {
         "Win2000","Windows 2000",
         {RGB(0,0,128),RGB(166,202,240),RGB(255,255,255)},
         {RGB(128,128,128),RGB(181,181,181),RGB(192,192,192)},
         RGB(212,208,200),RGB(64,64,64),true,false,
-        {4,0,2,{{CLASSIC_BUTTON_MINIMIZE,CLASSIC_BUTTON_RIGHT,0},
-                {CLASSIC_BUTTON_MAXIMIZE,CLASSIC_BUTTON_RIGHT,0},
-                {CLASSIC_BUTTON_HELP,CLASSIC_BUTTON_RIGHT,0},
-                {CLASSIC_BUTTON_CLOSE,CLASSIC_BUTTON_RIGHT,2}}}
+        WIN2000_TITLE_BUTTON_GROUP
     }
 };
 

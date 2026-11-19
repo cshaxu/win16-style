@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(win16_style VERSION 0.27.0 LANGUAGES C RC)
+project(win16_style VERSION 0.29.0 LANGUAGES C RC)
 if(NOT MINGW OR NOT CMAKE_C_COMPILER_ID STREQUAL "GNU")
   message(FATAL_ERROR "The product profile requires native MinGW-w64 GCC C17")
 endif()
@@ -19,6 +19,7 @@ include(tools/build_cache.cmake)
 add_library(style-instance STATIC src/lib-win32-style/application/lifecycle/install.c src/lib-win32-style/application/lifecycle/instance.c)
 target_include_directories(style-instance PUBLIC src)
 add_library(style-window STATIC src/lib-win32-style/application/window/messages.c)
+add_library(style-caption-slots STATIC src/lib-win32-style/application/window/caption_slots.c)
 target_include_directories(style-window PUBLIC src)
 target_link_libraries(style-window PUBLIC style-instance style-present user32 gdi32)
 add_library(style-bitmap STATIC src/lib-win32-style/application/graphics/bitmap.c)
@@ -54,7 +55,7 @@ target_link_libraries(style-global-window PUBLIC user32 comctl32)
 add_library(win2k-window STATIC src/lib-win32-style/appearance/win2000/window/caption.c src/lib-win32-style/appearance/win2000/window/frame.c src/lib-win32-style/appearance/win2000/window/system_menu.c)
 target_include_directories(win2k-window PUBLIC src)
 target_compile_definitions(win2k-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win2k-window PUBLIC style-menu-owner style-window style-instance style-bitmap style-present user32 gdi32 msimg32 comctl32 dwmapi shcore)
+target_link_libraries(win2k-window PUBLIC style-caption-slots style-menu-owner style-window style-instance style-bitmap style-present user32 gdi32 msimg32 comctl32 dwmapi shcore)
 add_library(win2k-window-uwp STATIC src/lib-win32-style/appearance/win2000/window/modern_frame.c)
 target_compile_definitions(win2k-window-uwp PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-window-uwp PUBLIC win2k-window style-uwp-native style-menu-items)
@@ -96,9 +97,9 @@ target_link_libraries(lib-tray PUBLIC user32 shell32)
 add_library(win16-common STATIC
   src/lib-win32-style/appearance/win3x/common/layout.c
   src/lib-win32-style/appearance/win3x/common/font.c src/lib-win32-style/appearance/win3x/common/palette.c)
-target_include_directories(win16-common PUBLIC src/lib-win32-style/appearance/win3x/common)
+target_include_directories(win16-common PUBLIC src src/lib-win32-style/appearance/win3x/common)
 target_compile_definitions(win16-common PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-common PUBLIC style-font-cache style-bitmap style-menu-items style-present user32 gdi32 comctl32 uxtheme)
+target_link_libraries(win16-common PUBLIC style-caption-slots style-font-cache style-bitmap style-menu-items style-present user32 gdi32 comctl32 uxtheme)
 add_library(style-uwp-hook STATIC src/lib-win32-style/access/runtime/uwp_hook.c)
 target_include_directories(style-uwp-hook PUBLIC src)
 target_compile_definitions(style-uwp-hook PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -268,36 +269,52 @@ add_library(style-msstyles STATIC
   src/lib-win32-style/appearance/msstyles/theme_file.c
   src/lib-win32-style/appearance/msstyles/v4_property.c
   src/lib-win32-style/appearance/msstyles/v4_tables.c)
+target_include_directories(style-msstyles PUBLIC src)
+target_link_libraries(win2k-window PRIVATE style-msstyles)
+target_link_libraries(win16-window PRIVATE style-msstyles)
+target_link_libraries(win16-control PRIVATE style-msstyles)
+target_link_libraries(win2k-control PRIVATE style-msstyles)
 add_executable(classic-theme-compiler EXCLUDE_FROM_ALL tools/theme/classic_build.c tools/theme/legacy_image.c)
 target_include_directories(classic-theme-compiler PRIVATE src)
 target_link_libraries(classic-theme-compiler PRIVATE style-msstyles windowscodecs ole32 uuid)
-if(WIN16STYLE_ARCH STREQUAL "x64")
-  set(classic_theme_artifacts)
-  set(classic_theme_rc "${CMAKE_CURRENT_SOURCE_DIR}/tools/theme/classic_resources.rc")
-  foreach(stem IN ITEMS Win16 Win2000)
-    set(out "${CMAKE_BINARY_DIR}/themes/${stem}")
-    unset(image_flag)
-    unset(image_file)
-    if(stem STREQUAL "Win16")
-      set(image_flag -D PACK_ORIGINAL_MINIMIZE)
-      set(image_file "${out}/minimize.png")
-    endif()
-    file(MAKE_DIRECTORY "${out}")
+set(classic_theme_artifacts)
+set(classic_theme_rc "${CMAKE_CURRENT_SOURCE_DIR}/tools/theme/classic_resources.rc")
+foreach(stem IN ITEMS Win16 Win2000)
+  set(out "${CMAKE_BINARY_DIR}/themes/${stem}")
+  unset(image_flag)
+  unset(image_file)
+  if(stem STREQUAL "Win16")
+    set(image_flag -D PACK_ORIGINAL_MINIMIZE)
+    set(image_file "${out}/minimize.png")
+  endif()
+  file(MAKE_DIRECTORY "${out}")
+  set(theme_object "${out}/theme.res.o")
+  set(theme_object_${stem} "${theme_object}")
+  add_custom_command(
+    OUTPUT "${theme_object}" "${out}/${stem}.theme"
+    BYPRODUCTS "${out}/cmap.bin" "${out}/bcmap.bin" "${out}/vmap.bin"
+      "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" ${image_file}
+    COMMAND "$<TARGET_FILE:classic-theme-compiler>" "${stem}"
+    COMMAND "${CMAKE_RC_COMPILER}" ${image_flag} -i "${classic_theme_rc}" -O coff -o theme.res.o
+    DEPENDS classic-theme-compiler "${classic_theme_rc}"
+      "${CMAKE_CURRENT_SOURCE_DIR}/tools/theme/legacy_image.h"
+    WORKING_DIRECTORY "${out}"
+    VERBATIM)
+  set_source_files_properties("${theme_object}" PROPERTIES GENERATED TRUE EXTERNAL_OBJECT TRUE)
+  if(WIN16STYLE_ARCH STREQUAL "x64")
     add_custom_command(
-      OUTPUT "${out}/${stem}.msstyles" "${out}/${stem}.theme"
-      BYPRODUCTS "${out}/cmap.bin" "${out}/bcmap.bin" "${out}/vmap.bin"
-        "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" "${out}/theme.res.o" ${image_file}
-      COMMAND "$<TARGET_FILE:classic-theme-compiler>" "${stem}"
-      COMMAND "${CMAKE_RC_COMPILER}" ${image_flag} -i "${classic_theme_rc}" -O coff -o theme.res.o
+      OUTPUT "${out}/${stem}.msstyles"
       COMMAND "${CMAKE_C_COMPILER}" -shared -nostdlib -Wl,--entry,0,--no-insert-timestamp -o "${stem}.msstyles" theme.res.o
-      DEPENDS classic-theme-compiler "${classic_theme_rc}"
-        "${CMAKE_CURRENT_SOURCE_DIR}/tools/theme/legacy_image.h"
+      DEPENDS "${theme_object}"
       WORKING_DIRECTORY "${out}"
       VERBATIM)
     list(APPEND classic_theme_artifacts "${out}/${stem}.msstyles" "${out}/${stem}.theme")
-  endforeach()
+  endif()
+endforeach()
+if(classic_theme_artifacts)
   add_custom_target(classic-themes DEPENDS ${classic_theme_artifacts})
 endif()
+target_sources(ntw2ks PRIVATE "${theme_object_Win2000}")
 add_library(win2k-file STATIC src/lib-win32-style/appearance/win2000/dialog/file_call.c)
 target_link_libraries(win2k-file PUBLIC style-dialog-common)
 add_library(win2k-stock STATIC src/lib-win32-style/appearance/win2000/dialog/stock_call.c)
@@ -311,7 +328,7 @@ target_link_libraries(ntw2ks PRIVATE win2k-print win2k-file win2k-stock user32 u
 target_include_directories(ntw2ks PRIVATE src ${CMAKE_SOURCE_DIR})
 target_link_options(ntw2ks PRIVATE -Wl,--kill-at)
 add_library(ntw16s SHARED ${core_sources}
-  src/ntw16s-dll/${dll_name}.def src/ntw16s-dll/version.rc)
+  src/ntw16s-dll/${dll_name}.def src/ntw16s-dll/version.rc "${theme_object_Win16}")
 set_target_properties(ntw16s PROPERTIES OUTPUT_NAME ${dll_name} PREFIX "")
 target_include_directories(ntw16s PRIVATE src ${CMAKE_SOURCE_DIR})
 target_compile_definitions(ntw16s PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -778,7 +795,7 @@ if(BUILD_TESTING)
   add_executable(core-style-classic-theme EXCLUDE_FROM_ALL tests/lib-win32-style/appearance/msstyles/classic_theme.c)
   target_include_directories(core-style-classic-theme PRIVATE src)
   target_compile_definitions(core-style-classic-theme PRIVATE NTW16S_STATIC)
-  target_link_libraries(core-style-classic-theme PRIVATE style-msstyles win16-window win2k-window)
+  target_link_libraries(core-style-classic-theme PRIVATE style-msstyles win16-window win2k-window win16-control win2k-control)
   target_link_options(core-style-classic-theme PRIVATE -municode)
   add_executable(ntw2ks-frame-target tests/ntw2ks-dll/frame_target.c tests/ntw2ks-dll/frame_target.rc)
   target_link_libraries(ntw2ks-frame-target PRIVATE user32 gdi32 comdlg32 ole32 shcore)

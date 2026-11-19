@@ -139,11 +139,9 @@ static HRESULT palette(theme_resource map,theme_resource variant,classic_theme *
     return S_OK;
 }
 
-HRESULT classic_theme_load(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme *theme)
+HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme *theme)
 {
-    if(!path || !size || !color || !theme)return E_INVALIDARG;
-    HMODULE module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
-    if(!module)return HRESULT_FROM_WIN32(GetLastError());
+    if(!module || !size || !color || !theme)return E_INVALIDARG;
     theme_resource version=resource(module,L"PACKTHEM_VERSION",MAKEINTRESOURCEW(1));
     theme_resource extension=resource(module,MAKEINTRESOURCEW(10),L"CLASSIC_STYLE");
     theme_resource variant;
@@ -157,7 +155,24 @@ HRESULT classic_theme_load(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme *t
             status==CLASSIC_STYLE_VERSION || status==CLASSIC_STYLE_REQUIRED_RECORD?
             ERROR_NOT_SUPPORTED:ERROR_INVALID_DATA);
     }
-    FreeLibrary(module);
     if(SUCCEEDED(result))*theme=value;
     return result;
+}
+
+HRESULT classic_theme_load(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme *theme)
+{
+    if(!path || !size || !color || !theme)return E_INVALIDARG;
+    HMODULE module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
+    if(!module)return HRESULT_FROM_WIN32(GetLastError());
+    HRESULT result=classic_theme_read(module,size,color,theme);
+    FreeLibrary(module);
+    return result;
+}
+
+BOOL classic_theme_default(HMODULE module,classic_theme *theme)
+{
+    DWORD prior=GetLastError();
+    BOOL loaded=SUCCEEDED(classic_theme_read(module,L"NormalSize",L"NormalColor",theme));
+    SetLastError(prior);
+    return loaded;
 }

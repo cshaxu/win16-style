@@ -19,6 +19,10 @@ typedef struct classic_theme {
     BOOL gradient;
 } classic_theme;
 
+/* Reads the selected variant from an already mapped resource module. */
+HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme *theme);
+BOOL classic_theme_default(HMODULE module,classic_theme *theme);
+
 /* Reads the selected variant of a v4 classic theme as data only. All output
  * values are owned by the caller and the output is unchanged on failure. */
 HRESULT classic_theme_load(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme *theme);

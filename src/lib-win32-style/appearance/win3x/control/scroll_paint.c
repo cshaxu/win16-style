@@ -42,12 +42,13 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
         }
     }
     style_paint_solid_frame(dc,r,v->palette->edge,1);
+    const win16_style_palette *arrow_palette=v->arrow_palette?v->arrow_palette:v->palette;
     win16_control_scroll_arrow(dc,first,(info.rgstate[1]&STATE_SYSTEM_UNAVAILABLE)?(vertical?win16_control_scroll_glyph(WIN16_SCROLL_UP_DISABLED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT_DISABLED)):
         vertical?(info.rgstate[1]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_UP_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_UP)):
-        (info.rgstate[1]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT)),v->palette);
+        (info.rgstate[1]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT)),arrow_palette);
     win16_control_scroll_arrow(dc,last,(info.rgstate[5]&STATE_SYSTEM_UNAVAILABLE)?(vertical?win16_control_scroll_glyph(WIN16_SCROLL_DOWN_DISABLED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_DISABLED)):
         vertical?(info.rgstate[5]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_DOWN_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_DOWN)):
-        (info.rgstate[5]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT)),v->palette);
+        (info.rgstate[5]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT)),arrow_palette);
     if(info.xyThumbBottom>info.xyThumbTop){
         SetDCBrushColor(dc,v->palette->face);FillRect(dc,&thumb,(HBRUSH)GetStockObject(DC_BRUSH));
         style_paint_solid_frame(dc,thumb,v->palette->edge,1);InflateRect(&thumb,-1,-1);

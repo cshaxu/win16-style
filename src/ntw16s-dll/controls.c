@@ -91,7 +91,15 @@ BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,co
  * layout; only the text image is fitted inside the button's existing face. */
 static void draw(HWND w,control_style *s,HDC dc)
 {
-    const win16_control_choice_view view={&s->instance,&s->state,&s->palette,
+    win16_style_palette palette=s->palette;
+    if(s->themed && style_control_class_is(w,L"BUTTON")){
+        DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+        if(style_control_button_type(w,style)<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE)){
+            palette.face=s->push_colors.face;
+            palette.edge=s->push_colors.edge;
+        }
+    }
+    const win16_control_choice_view view={&s->instance,&s->state,&palette,
         style_control_button_type,style_control_is_static,style_control_vb_frame,style_control_vb_button,
         ntw16s_group_choice_button,ntw16s_group_push_button};
     win16_control_draw_choice(w,&view,dc);
@@ -130,8 +138,13 @@ static BOOL edit_thumb_messages(HWND w,LONG object)
 
 static void draw_scroll(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical)
 {
+    win16_style_palette arrows=s->palette;
+    if(s->themed){
+        arrows.face=s->scroll_arrow_colors.face;
+        arrows.edge=s->scroll_arrow_colors.edge;
+    }
     const win16_control_scroll_view view={&s->palette,&s->bindings.scroll,scroll_layout,
-        embedded_scroll_layout,edit_thumb_messages,list_axis_owned};
+        embedded_scroll_layout,edit_thumb_messages,list_axis_owned,&arrows};
     win16_control_draw_scroll(w,&view,dc,object,vertical);
 }
 

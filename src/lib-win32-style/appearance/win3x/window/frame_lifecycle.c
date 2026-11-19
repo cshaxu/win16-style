@@ -4,8 +4,11 @@
 #include "frame_layout.h"
 #include "frame_dispatch.h"
 #include "../common/font.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/window/dwm.h"
 #include <dwmapi.h>
+
+extern IMAGE_DOS_HEADER __ImageBase;
 
 typedef struct frame_install {
     style_window *state;
@@ -56,6 +59,16 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     s->native.pending=creating && normal && !(style&WS_VISIBLE);
     {WCHAR name[32];s->dialog=GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"#32770");}
     if(p)s->palette=*p;else win16_style_default_palette(&s->palette);
+    classic_theme theme;
+    if(classic_theme_default((HMODULE)&__ImageBase,&theme)){
+        s->title_buttons=theme.title_buttons;
+        if(!p){
+            s->palette.active=theme.active.start;
+            s->palette.inactive=theme.inactive.start;
+            s->palette.active_text=theme.active.text;
+            s->palette.inactive_text=theme.inactive.text;
+        }
+    }
     s->native.active=(ex&WS_EX_MDICHILD)?
         (HWND)SendMessageW(GetParent(w),WM_MDIGETACTIVE,0,0)==w:GetActiveWindow()==w;
     if(!v->refresh_font(w,s)){win16_control_frame_state_dispose(s);SetLastError(ERROR_INVALID_DATA);return FALSE;}

@@ -1,11 +1,13 @@
 #ifndef WIN2K_SCROLL_H
 #define WIN2K_SCROLL_H
 #include "lib-win32-style/application/control/scroll_message.h"
+#include "../common/palette.h"
 
 typedef struct win2k_scroll {
     style_scroll_controller controller;
     style_scroll_policy policy;
     style_instance *instance;
+    win2k_palette arrow_palette;
 } win2k_scroll;
 
 void win2k_scroll_init(win2k_scroll *,style_instance *);

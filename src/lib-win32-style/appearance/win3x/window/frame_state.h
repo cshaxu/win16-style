@@ -5,12 +5,14 @@
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include "lib-win32-style/application/window/native_frame.h"
 #include "lib-win32-style/application/window/caption_button.h"
+#include "lib-win32-style/application/window/caption_slots.h"
 #include "../menu/menu_scope.h"
 #include "../menu/menu_items.h"
 #include "lib-win32-style/application/adapters/repaint.h"
 typedef struct style_window {
     style_instance instance;
     win16_style_palette palette;
+    classic_button_group title_buttons;
     style_font_pair fonts;
     BOOL dialog, menu_only;
     style_menu_owner menu;

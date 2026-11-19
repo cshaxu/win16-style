@@ -1,5 +1,6 @@
 #include "caption.h"
 #include "lib-win32-style/application/graphics/bitmap.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 
 win2k_caption_colors win2k_caption_palette(BOOL active)
 {
@@ -28,21 +29,22 @@ static SIZE button_size(BOOL tool)
 BOOL win2k_caption_buttons(const RECT *title,UINT dpi,BOOL tool,
                           const BOOL present[WIN2K_CAPTION_PARTS],RECT bounds[WIN2K_CAPTION_PARTS])
 {
+    static const classic_button_group group=WIN2000_TITLE_BUTTON_GROUP;
+    return win2k_caption_buttons_with_group(title,dpi,tool,present,&group,bounds);
+}
+
+BOOL win2k_caption_buttons_with_group(const RECT *title,UINT dpi,BOOL tool,
+    const BOOL present[WIN2K_CAPTION_PARTS],const classic_button_group *group,RECT bounds[WIN2K_CAPTION_PARTS])
+{
     SIZE size=button_size(tool);
-    int width=MulDiv(size.cx,(int)dpi,96),height=MulDiv(size.cy,(int)dpi,96);
-    int gap=MulDiv(2,(int)dpi,96);
-    if(width<=0 || height<=0 || title->bottom-title->top<height)return FALSE;
-    int top=title->top+(title->bottom-title->top-height)/2,right=title->right-gap;
-    BOOL after_close=FALSE;
-    for(int i=WIN2K_CLOSE;i>=0;--i){
-        SetRectEmpty(&bounds[i]);
-        if(!present[i])continue;
-        if(after_close){right-=gap;after_close=FALSE;}
-        if(right-width<title->left)return FALSE;
-        bounds[i]=(RECT){right-width,top,right,top+height};
-        right-=width;
-        after_close=i==WIN2K_CLOSE;
-    }
+    size=(SIZE){MulDiv(size.cx,(int)dpi,96),MulDiv(size.cy,(int)dpi,96)};
+    static const unsigned roles[]={CLASSIC_BUTTON_MINIMIZE,CLASSIC_BUTTON_MAXIMIZE,
+        CLASSIC_BUTTON_HELP,CLASSIC_BUTTON_CLOSE};
+    unsigned mask=0;
+    for(unsigned i=0;i<ARRAYSIZE(roles);++i)if(present[i])mask|=1u<<roles[i];
+    RECT slots[CLASSIC_BUTTON_CLOSE+1];
+    if(!style_caption_slots(group,title,dpi,size,mask,FALSE,slots))return FALSE;
+    for(unsigned i=0;i<ARRAYSIZE(roles);++i)bounds[i]=slots[roles[i]];
     return TRUE;
 }
 
@@ -139,6 +141,13 @@ void win2k_caption_render(HDC dc,const win2k_caption_layout *layout,PCWSTR title
                          HFONT font,UINT dpi,BOOL active,BOOL maximized,
                          const UINT button_flags[WIN2K_CAPTION_PARTS])
 {
+    win2k_caption_render_with_colors(dc,layout,title,icon,font,dpi,win2k_caption_palette(active),
+        maximized,button_flags);
+}
+
+void win2k_caption_render_with_colors(HDC dc,const win2k_caption_layout *layout,PCWSTR title,HICON icon,
+    HFONT font,UINT dpi,win2k_caption_colors colors,BOOL maximized,const UINT button_flags[WIN2K_CAPTION_PARTS])
+{
     RECT band=layout->band;
     if(IsRectEmpty(&band))return;
     int saved=SaveDC(dc);
@@ -156,7 +165,6 @@ void win2k_caption_render(HDC dc,const win2k_caption_layout *layout,PCWSTR title
         RECT r=layout->buttons[i];
         if(!IsRectEmpty(&r) && r.left>=band.left)gradient.right=min(gradient.right,r.left);
     }
-    win2k_caption_colors colors=win2k_caption_palette(active);
     win2k_caption_paint(dc,&gradient,L"",font,&colors);
     RECT tail=band;
     tail.left=gradient.right;

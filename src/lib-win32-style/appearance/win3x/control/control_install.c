@@ -5,6 +5,7 @@
 #include "control_class.h"
 #include "../common/font.h"
 
+extern IMAGE_DOS_HEADER __ImageBase;
 
 typedef struct control_install {
     control_style *state;
@@ -57,6 +58,12 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     if(!frame_bars && !style_control_font_read(w,&s->state,services->control_proc,cancelled)){
         DWORD error=GetLastError();win16_control_state_dispose(s);SetLastError(error);return FALSE;}
     if(palette)s->palette=*palette;else win16_style_default_palette(&s->palette);
+    classic_theme theme;
+    s->themed=!palette && classic_theme_default((HMODULE)&__ImageBase,&theme);
+    if(s->themed){
+        s->push_colors=theme.button;
+        s->scroll_arrow_colors=theme.scroll_arrow;
+    }
     control_install install={s,services,palette,frame_bars};
     const style_instance_install_ops ops={&install,cancelled,setup_control,NULL};
     return style_instance_install(&s->instance,w,services->control_proc,creation_owner,&ops);

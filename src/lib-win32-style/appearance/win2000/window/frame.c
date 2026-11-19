@@ -2,6 +2,7 @@
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include <stdlib.h>
 #include "caption.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "system_menu.h"
 #include "../control/scroll.h"
 #include "lib-win32-style/application/menu/menu_input.h"
@@ -24,6 +25,7 @@
 #include <windowsx.h>
 
 static const WCHAR frame_property[]=L"Win2kStyle.Frame";
+extern IMAGE_DOS_HEADER __ImageBase;
 typedef struct frame_window {
     style_instance instance;
     style_native_frame native;
@@ -32,6 +34,8 @@ typedef struct frame_window {
     win2k_scroll scroll;
     style_uwp_repaint composed_repaint;
     BOOL composed_icon_update;
+    BOOL themed;
+    classic_theme theme;
 } frame_window;
 static LRESULT CALLBACK frame_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static frame_window *frame_state(HWND window)
@@ -173,7 +177,7 @@ static void repaint_menu(HWND window)
     paint_menu(window,dc,&outer);ReleaseDC(window,dc);
 }
 
-static void classic_buttons(HWND window,TITLEBARINFOEX *info)
+static void classic_buttons(HWND window,const frame_window *frame,TITLEBARINFOEX *info)
 {
     LONG_PTR ex=GetWindowLongPtrW(window,GWL_EXSTYLE);
     if(ex&WS_EX_LAYOUTRTL)return;
@@ -183,7 +187,10 @@ static void classic_buttons(HWND window,TITLEBARINFOEX *info)
         RECT r=info->rgrect[i+2];
         present[i]=!(info->rgstate[i+2]&STATE_SYSTEM_INVISIBLE) && r.right>r.left;
     }
-    if(win2k_caption_buttons(&info->rcTitleBar,dpi,(ex&WS_EX_TOOLWINDOW)!=0,present,bounds))
+    BOOL tool=(ex&WS_EX_TOOLWINDOW)!=0;
+    BOOL result=frame->themed?win2k_caption_buttons_with_group(&info->rcTitleBar,dpi,tool,present,
+        &frame->theme.title_buttons,bounds):win2k_caption_buttons(&info->rcTitleBar,dpi,tool,present,bounds);
+    if(result)
         for(unsigned i=0;i<ARRAYSIZE(bounds);++i)if(present[i])info->rgrect[i+2]=bounds[i];
 }
 
@@ -245,8 +252,13 @@ static void paint(HWND window)
         UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
         BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
         HFONT font=win2k_caption_font(dpi,tool);
-        win2k_caption_render(dc,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
-                             dpi,frame->native.active,maximized,flags);
+        win2k_caption_colors colors=win2k_caption_palette(frame->native.active);
+        if(frame->themed){
+            classic_caption_colors value=frame->native.active?frame->theme.active:frame->theme.inactive;
+            colors=(win2k_caption_colors){value.start,value.end,value.text,frame->theme.gradient};
+        }
+        win2k_caption_render_with_colors(dc,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
+            dpi,colors,maximized,flags);
         if(font)DeleteObject(font);
     }
     ReleaseDC(window,dc);
@@ -465,7 +477,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
             if(compact_enabled(window) &&
                height>0 && info->rcTitleBar.bottom-info->rcTitleBar.top>height)
                 info->rcTitleBar.bottom=info->rcTitleBar.top+height;
-            classic_buttons(window,info);
+            classic_buttons(window,frame,info);
             if(tracked->pressed>=2 && tracked->pressed<=CCHILDREN_TITLEBAR && tracked->hot)info->rgstate[tracked->pressed]|=STATE_SYSTEM_PRESSED;
         }
     }
@@ -566,9 +578,14 @@ BOOL win2k_frame_attach(HWND window)
     if(pending && style_instance_lookup(window,pending_frame_proc))return TRUE;
     frame_window *frame=calloc(1,sizeof(*frame));
     if(!frame){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    frame->themed=!pending && classic_theme_default((HMODULE)&__ImageBase,&frame->theme);
     frame->menu.bar.selected=frame->menu.bar.highlighted=-1;
     style_instance_init(&frame->instance,frame,dispose_frame);
     win2k_scroll_init(&frame->scroll,&frame->instance);
+    if(frame->themed){
+        frame->scroll.arrow_palette.face=frame->theme.scroll_arrow.face;
+        frame->scroll.arrow_palette.dark=frame->theme.scroll_arrow.edge;
+    }
     frame->scroll.controller.resources.frame=TRUE;
     const style_instance_install_ops ops={.context=frame,.setup=pending?NULL:setup_frame,.rollback=rollback_frame};
     return style_instance_install(&frame->instance,window,pending?pending_frame_proc:frame_proc,NULL,&ops);

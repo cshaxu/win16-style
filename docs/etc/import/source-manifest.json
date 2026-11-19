@@ -455,10 +455,10 @@
       "blob": "a9ba79fb962c41bbb5d8ffab0bbb3632213d282e",
       "size": 3363,
       "sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/lib-win32-style/appearance/win3x/common/layout.c",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "T29 S4 uses shared title-button group layout, retaining the existing frame geometry and hit-test policy",
       "receiver": "style-core"
     },
     {
@@ -467,10 +467,10 @@
       "blob": "397587ca491a9aef181ae8bca9404ddf0e9d0672",
       "size": 580,
       "sha256": "a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3",
-      "action": "retain",
+      "action": "adapt",
       "destination": "src/lib-win32-style/appearance/win3x/common/layout.h",
       "notice": "project-authored-review",
-      "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
+      "reason": "T29 S4 uses shared title-button group layout, retaining the existing frame geometry and hit-test policy",
       "receiver": "style-core"
     },
     {
