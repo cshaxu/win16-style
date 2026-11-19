@@ -262,7 +262,9 @@ add_library(win2k-print STATIC src/lib-win32-style/appearance/win2000/dialog/pri
   src/lib-win32-style/appearance/win2000/dialog/print_shell.c
   src/lib-win32-style/appearance/win2000/dialog/print_directory.c)
 target_link_libraries(win2k-print PUBLIC style-dialog-common comctl32 winspool activeds adsiid oleaut32)
-add_library(style-msstyles STATIC src/lib-win32-style/appearance/msstyles/v4_property.c)
+add_library(style-msstyles STATIC
+  src/lib-win32-style/appearance/msstyles/v4_property.c
+  src/lib-win32-style/appearance/msstyles/v4_tables.c)
 add_library(win2k-file STATIC src/lib-win32-style/appearance/win2000/dialog/file_call.c)
 target_link_libraries(win2k-file PUBLIC style-dialog-common)
 add_library(win2k-stock STATIC src/lib-win32-style/appearance/win2000/dialog/stock_call.c)

@@ -10418,7 +10418,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/v4_property.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c20e33fcfc958092bb9d52b5e6f313e5019cb875ecb0f39f765a38a76686e328",
+      "sha256": "5734ff0297dee26f413a76d79803bb140b64d150cbf3c7a03e1764528f7f4742",
       "disposition": "authored",
       "review": "T29 S3 bounded MSStyles v4 property roundtrip",
       "notice": "Project-authored; no imported source or resources"
@@ -10436,9 +10436,36 @@
       "path": "tests/lib-win32-style/appearance/msstyles/v4_property.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0d2b320bc9c63ba9841956845d3cb5c5c19db51bff890e9d2d251672281f4223",
+      "sha256": "1db13178b379e50f1b94bbcdb59a54bdc5f550749d7766871a825ef858d1a2fb",
       "disposition": "authored",
       "review": "T29 S3 bounded MSStyles v4 property roundtrip",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/v4_endian.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "c251d1bae2213de0fc4503a508e0b632e329cacea203b65785514efb360330fb",
+      "disposition": "authored",
+      "review": "T29 S3 MSStyles v4 class and variant resource tables",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/v4_tables.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "285a14b66e75a598c39e58119537ab2df3e04ec6a14761d17ea63bb43b120dde",
+      "disposition": "authored",
+      "review": "T29 S3 MSStyles v4 class and variant resource tables",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/v4_tables.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "16685cdef49e7f74cc2eeb6b090dc89e855ae8972737a37c07273ec1aa8ad2ab",
+      "disposition": "authored",
+      "review": "T29 S3 MSStyles v4 class and variant resource tables",
       "notice": "Project-authored; no imported source or resources"
     }
   ]
