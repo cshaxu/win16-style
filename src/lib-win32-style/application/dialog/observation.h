@@ -1,6 +1,12 @@
 #ifndef STYLE_DIALOG_OBSERVATION_H
 #define STYLE_DIALOG_OBSERVATION_H
 #include "../lifecycle/creation_call.h"
+typedef struct style_dialog_windows {
+    void (*initialized)(HWND);
+    BOOL (*attached)(HWND);
+    HMODULE (*resources)(void);
+} style_dialog_windows;
+
 /* Strictly nested on the same GUI thread. Observer code outlives its hook.
  * NULL creation context selects observation only, without creation hooks.
  * A tracked call temporarily masks the outer target, even when inactive;

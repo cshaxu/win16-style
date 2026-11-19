@@ -3,20 +3,28 @@
 #include <windows.h>
 #include <commdlg.h>
 #include <commctrl.h>
+#include "lib-win32-style/appearance/msstyles/classic_style.h"
 #include "lib-win32-style/application/window/window_identity.h"
 
 typedef enum { WIN2K_FILE_NATIVE, WIN2K_FILE_COMPACT, WIN2K_FILE_PLACES } win2k_file_layout;
 
-static inline win2k_file_layout win2k_file_layout_for(int width,int height,DWORD flags,DWORD extended)
+static inline BOOL win2k_file_stock(DWORD flags,DWORD extended)
 {
-    if(!(flags&OFN_EXPLORER) || (flags&(OFN_ENABLEHOOK|OFN_ENABLETEMPLATE|OFN_ENABLETEMPLATEHANDLE|OFN_ALLOWMULTISELECT)) ||
-       (extended&~(DWORD)OFN_EX_NOPLACESBAR))return WIN2K_FILE_NATIVE;
-    if(width<427 || height<272)return WIN2K_FILE_NATIVE;
-    if(width<565 || height<345)return WIN2K_FILE_COMPACT;
+    return (flags&OFN_EXPLORER) && !(flags&(OFN_ENABLEHOOK|OFN_ENABLETEMPLATE|OFN_ENABLETEMPLATEHANDLE|OFN_ALLOWMULTISELECT)) &&
+        !(extended&~(DWORD)OFN_EX_NOPLACESBAR);
+}
+
+static inline win2k_file_layout win2k_file_layout_for(int width,int height,DWORD flags,DWORD extended,
+    const classic_file_metrics *metrics)
+{
+    if(!win2k_file_stock(flags,extended))return WIN2K_FILE_NATIVE;
+    if(width<metrics->compact_width || height<metrics->compact_height)return WIN2K_FILE_NATIVE;
+    if(width<metrics->places_width || height<metrics->places_height)return WIN2K_FILE_COMPACT;
     return extended&OFN_EX_NOPLACESBAR?WIN2K_FILE_NATIVE:WIN2K_FILE_PLACES;
 }
 
-static inline win2k_file_layout win2k_file_layout_at(HWND owner,DWORD flags,DWORD extended)
+static inline win2k_file_layout win2k_file_layout_at(HWND owner,DWORD flags,DWORD extended,
+    const classic_file_metrics *metrics)
 {
     MONITORINFO monitor={.cbSize=sizeof(monitor)};
     if(!GetMonitorInfoW(MonitorFromWindow(owner,MONITOR_DEFAULTTOPRIMARY),&monitor))return WIN2K_FILE_NATIVE;
@@ -25,7 +33,7 @@ static inline win2k_file_layout win2k_file_layout_at(HWND owner,DWORD flags,DWOR
     const RECT *work=&monitor.rcWork;
     int width=MulDiv(work->right-work->left,96,(int)dpi);
     int height=MulDiv(work->bottom-work->top,96,(int)dpi);
-    return win2k_file_layout_for(width,height,flags,extended);
+    return win2k_file_layout_for(width,height,flags,extended,metrics);
 }
 
 static inline void win2k_file_fit_compact(HWND dialog)
@@ -84,7 +92,7 @@ static inline void win2k_file_fit_place_rows(HWND places)
 
 /* Reflow the installed Shell view and navigation controls. 1552 in the
  * Windows 2000 resource uses a 370 by 197 dialog-unit client. */
-static inline void win2k_file_fit_places(HWND dialog,const RECT *work)
+static inline void win2k_file_fit_places(HWND dialog,const RECT *work,const classic_file_metrics *metrics)
 {
     HWND places=win2k_file_toolbar(dialog,1184),navigation=win2k_file_toolbar(dialog,1088);
     HWND view=GetDlgItem(dialog,1121),name=GetDlgItem(dialog,1148),filter=GetDlgItem(dialog,1136);
@@ -94,7 +102,7 @@ static inline void win2k_file_fit_places(HWND dialog,const RECT *work)
        !win32_style_window_class(view,L"SHELLDLL_DefView") ||
        !win32_style_window_class(name,L"ComboBoxEx32"))return;
 
-    RECT reference={0,0,370,197},client,outer;
+    RECT reference={0,0,metrics->client_dlu_width,metrics->client_dlu_height},client,outer;
     if(!MapDialogRect(dialog,&reference) || !GetClientRect(dialog,&client) || !GetWindowRect(dialog,&outer))return;
     LONG width=reference.right+outer.right-outer.left-client.right;
     LONG height=reference.bottom+outer.bottom-outer.top-client.bottom;
@@ -105,7 +113,7 @@ static inline void win2k_file_fit_places(HWND dialog,const RECT *work)
        !GetClientRect(dialog,&client))return;
 
     int dpi=(int)GetDpiForWindow(dialog);
-    LONG gap=MulDiv(7,dpi,96),reserve=MulDiv(20,dpi,96);
+    LONG gap=MulDiv(metrics->gap,dpi,96),reserve=MulDiv(metrics->bottom_reserve,dpi,96);
     RECT cancel_bounds=win2k_file_child_bounds(dialog,cancel),name_bounds=win2k_file_child_bounds(dialog,name);
     LONG dx=max(0,cancel_bounds.right-client.right+gap);
     LONG bottom=max(cancel_bounds.bottom,win2k_file_child_bounds(dialog,filter).bottom);

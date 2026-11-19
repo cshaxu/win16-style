@@ -8,6 +8,12 @@ RMAP RMAP "rmap.bin"
 NORMAL VARIANT "normal.bin"
 CLASSIC_STYLE RCDATA "classic.bin"
 #include <fonts.rcinc>
+#ifdef PACK_WIN2000_DIALOGS
+#include <windows.h>
+#include "lib-win32-style/appearance/win2000/dialog/print_general.h"
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#include "lib-win32-style/appearance/win2000/dialog/print_general.rcinc"
+#endif
 #ifdef PACK_ORIGINAL_CAPTION
 #include "legacy_image.h"
 CLASSIC_MINIMIZE_IMAGE_ID IMAGE "caption501.png"

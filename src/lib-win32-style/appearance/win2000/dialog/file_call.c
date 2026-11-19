@@ -1,6 +1,8 @@
 #define _WIN32_WINNT 0x0A00
 #include "file_call.h"
 #include "file.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/dialog/classic_file_contract.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
 #include "lib-win32-style/application/dialog/observation.h"
@@ -11,11 +13,18 @@ typedef struct file_observation {
     style_dialog_observation dialog;
     DPI_AWARENESS_CONTEXT dpi;
     win2k_file_layout layout;
-    const style_file_window_ops *windows;
+    classic_file_metrics metrics;
+    const style_dialog_windows *windows;
     struct file_observation *previous;
 } file_observation;
 
 static _Thread_local file_observation *observing;
+
+static classic_file_metrics file_metrics(const style_dialog_windows *windows)
+{
+    HMODULE module=windows->resources?windows->resources():NULL;
+    return classic_theme_dialog_metrics(module,(classic_dialog_metrics)WIN2000_DIALOG_METRICS).file;
+}
 
 static UINT_PTR CALLBACK places_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)
 {(void)window;(void)message;(void)wp;(void)lp;return 0;}
@@ -51,7 +60,7 @@ static LRESULT CALLBACK observe(int code,WPARAM wp,LPARAM lp)
                 if(first){
                     MONITORINFO monitor={.cbSize=sizeof(monitor)};
                     if(GetMonitorInfoW(MonitorFromWindow(dialog,MONITOR_DEFAULTTONEAREST),&monitor))
-                        win2k_file_fit_places(dialog,&monitor.rcWork);
+                        win2k_file_fit_places(dialog,&monitor.rcWork,&call->metrics);
                 }else win2k_file_fit_place_rows(win2k_file_toolbar(dialog,1184));
                 if(prior)SetThreadDpiAwarenessContext(prior);
             }
@@ -70,18 +79,22 @@ static void end_observation(void *data)
 }
 
 #define FILE_CALL(SUFFIX,TYPE) \
-PROCESS_HOOK_UNWIND_FUNCTION BOOL win2k_file_call_##SUFFIX(TYPE *parameters,BOOL (WINAPI *native)(TYPE *),const style_file_window_ops *windows) \
+PROCESS_HOOK_UNWIND_FUNCTION BOOL win2k_file_call_##SUFFIX(TYPE *parameters,BOOL (WINAPI *native)(TYPE *),const style_dialog_windows *windows) \
 { \
     DWORD incoming=GetLastError(); \
-    win2k_file_layout layout=parameters && parameters->lStructSize==sizeof(*parameters)? \
-        win2k_file_layout_at(parameters->hwndOwner,parameters->Flags,parameters->FlagsEx):WIN2K_FILE_NATIVE; \
+    classic_file_metrics metrics={0}; \
+    win2k_file_layout layout=WIN2K_FILE_NATIVE; \
+    if(parameters && parameters->lStructSize==sizeof(*parameters) && win2k_file_stock(parameters->Flags,parameters->FlagsEx)){ \
+        metrics=file_metrics(windows); \
+        layout=win2k_file_layout_at(parameters->hwndOwner,parameters->Flags,parameters->FlagsEx,&metrics); \
+    } \
     TYPE local; \
     if(layout!=WIN2K_FILE_NATIVE){ \
         local=*parameters;local.Flags|=OFN_ENABLESIZING; \
         if(layout==WIN2K_FILE_COMPACT)local.FlagsEx|=OFN_EX_NOPLACESBAR; \
         else{local.Flags|=OFN_ENABLEHOOK;local.lpfnHook=places_hook;} \
     } \
-    file_observation scope={.dpi=GetThreadDpiAwarenessContext(),.layout=layout,.windows=windows,.previous=observing}; \
+    file_observation scope={.dpi=GetThreadDpiAwarenessContext(),.layout=layout,.metrics=metrics,.windows=windows,.previous=observing}; \
     process_hook_unwind_scope unwind; \
     if(!style_dialog_observation_begin(&scope.dialog,NULL,observe,FALSE))return FALSE; \
     observing=&scope; \

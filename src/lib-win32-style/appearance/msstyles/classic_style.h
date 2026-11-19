@@ -23,14 +23,27 @@ typedef struct classic_menu_metrics {
     uint16_t check_column, shortcut_gap, arrow_column, plain_column;
 } classic_menu_metrics;
 
+typedef struct classic_file_metrics {
+    uint16_t compact_width, compact_height, places_width, places_height;
+    uint16_t client_dlu_width, client_dlu_height, gap, bottom_reserve;
+} classic_file_metrics;
+
+typedef struct classic_dialog_metrics {
+    classic_file_metrics file;
+    uint16_t print_width, print_full_height, print_large_height;
+    uint16_t color_width, color_height;
+    uint16_t find_width, find_native_height, find_classic_height;
+    uint16_t font_width, font_height;
+} classic_dialog_metrics;
+
 /* Parse project RCDATA CLASSIC_STYLE v1. The caller's output changes only on success. */
 enum classic_style_result classic_style_read(const unsigned char *bytes,size_t length,
-    classic_button_group *group,classic_scroll_metrics *scroll,classic_menu_metrics *menu);
+    classic_button_group *group,classic_scroll_metrics *scroll,classic_menu_metrics *menu,classic_dialog_metrics *dialog);
 
 /* Encode a title-button group and optional metrics. Returns size or zero. */
 size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_button_group *group,
-    const classic_scroll_metrics *scroll,const classic_menu_metrics *menu);
+    const classic_scroll_metrics *scroll,const classic_menu_metrics *menu,const classic_dialog_metrics *dialog);
 
-enum { CLASSIC_STYLE_RESOURCE_CAPACITY=80 };
+enum { CLASSIC_STYLE_RESOURCE_CAPACITY=124 };
 
 #endif

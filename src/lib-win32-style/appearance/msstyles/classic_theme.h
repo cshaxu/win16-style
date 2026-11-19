@@ -156,6 +156,7 @@ typedef struct classic_theme {
     msstyles_font caption_font, small_caption_font, menu_font;
     classic_menu_colors menu_bar, menu_popup;
     classic_menu_metrics menu_metrics;
+    classic_dialog_metrics dialog_metrics;
     WORD menu_images[2]; /* check, submenu */
     classic_push_colors push;
     classic_choice_colors choice;
@@ -173,6 +174,7 @@ int classic_scroll_nominal(classic_scroll_metrics metrics,enum classic_scroll_ex
 /* Reads the selected variant from an already mapped resource module. */
 HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme *theme);
 BOOL classic_theme_default(HMODULE module,classic_theme *theme);
+classic_dialog_metrics classic_theme_dialog_metrics(HMODULE module,classic_dialog_metrics fallback);
 
 /* Reads the selected variant of a v4 classic theme as data only. All output
  * values are owned by the caller and the output is unchanged on failure. */

@@ -1,5 +1,7 @@
 #define _WIN32_WINNT 0x0A00
 #include "stock_call.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "color.h"
 #include "find.h"
 #include "lib-win32-style/application/dialog/classic_print_contract.h"
@@ -10,11 +12,19 @@
 typedef enum { STOCK_PLAIN, STOCK_FONT, STOCK_FONT_WITH_CALLBACK, STOCK_COLOR } stock_layout;
 typedef struct stock_scope {
     style_dialog_observation dialog;
-    const win2k_stock_windows *windows;
+    const style_dialog_windows *windows;
     stock_layout layout;
+    classic_dialog_metrics metrics;
     struct stock_scope *previous;
 } stock_scope;
 static _Thread_local stock_scope *active_stock;
+
+static classic_dialog_metrics stock_metrics(const style_dialog_windows *windows)
+{
+    HMODULE module=windows->resources?windows->resources():NULL;
+    return classic_theme_dialog_metrics(module,(classic_dialog_metrics)WIN2000_DIALOG_METRICS);
+}
+
 static LRESULT CALLBACK observe_stock(int code,WPARAM wp,LPARAM lp)
 {
     DWORD incoming=GetLastError();
@@ -23,22 +33,24 @@ static LRESULT CALLBACK observe_stock(int code,WPARAM wp,LPARAM lp)
         HWND window=event->hwnd;
         if(event->message==WM_INITDIALOG)active_stock->windows->initialized(window);
         else if(active_stock->layout==STOCK_COLOR && event->message==WM_COMMAND &&
-                active_stock->windows->attached(window))win2k_color_restore_expanded_client(event);
+                active_stock->windows->attached(window))win2k_color_restore_expanded_client(event,&active_stock->metrics);
         else if((active_stock->layout==STOCK_FONT || active_stock->layout==STOCK_FONT_WITH_CALLBACK) &&
                 event->message==WM_WINDOWPOSCHANGED &&
                 event->lParam && (((const WINDOWPOS *)event->lParam)->flags&SWP_SHOWWINDOW) &&
                 active_stock->windows->attached(window) && style_classic_font_template(window)){
             BOOL callback=active_stock->layout==STOCK_FONT_WITH_CALLBACK;
-            win2k_restore_stock_dialog_client(window,callback?287:0,callback?196:0);
+            win2k_restore_stock_dialog_client(window,callback?active_stock->metrics.font_width:0,
+                callback?active_stock->metrics.font_height:0);
         }
     }
     SetLastError(incoming);
     return CallNextHookEx(NULL,code,wp,lp);
 }
-static BOOL begin_stock(stock_scope *scope,const win2k_stock_windows *windows,stock_layout layout)
+static BOOL begin_stock(stock_scope *scope,const style_dialog_windows *windows,stock_layout layout)
 {
     scope->windows=windows;
     scope->layout=layout;
+    if(layout==STOCK_COLOR || layout==STOCK_FONT_WITH_CALLBACK)scope->metrics=stock_metrics(windows);
     scope->previous=active_stock;
     if(!style_dialog_observation_begin(&scope->dialog,NULL,observe_stock,FALSE))return FALSE;
     active_stock=scope;
@@ -60,7 +72,7 @@ static stock_layout font_layout(DWORD flags)
 }
 
 #define STOCK_BOOL(NAME,TYPE,LAYOUT) \
-PROCESS_HOOK_UNWIND_FUNCTION BOOL NAME(TYPE *parameters,BOOL (WINAPI *native)(TYPE *),const win2k_stock_windows *windows) \
+PROCESS_HOOK_UNWIND_FUNCTION BOOL NAME(TYPE *parameters,BOOL (WINAPI *native)(TYPE *),const style_dialog_windows *windows) \
 { \
     stock_scope scope;process_hook_unwind_scope unwind; \
     DWORD incoming=GetLastError(); \
@@ -71,7 +83,7 @@ PROCESS_HOOK_UNWIND_FUNCTION BOOL NAME(TYPE *parameters,BOOL (WINAPI *native)(TY
     SetLastError(error);return result; \
 }
 #define STOCK_PRINT(S,TYPE) \
-PROCESS_HOOK_UNWIND_FUNCTION BOOL win2k_print_##S(TYPE *parameters,BOOL (WINAPI *native)(TYPE *),const win2k_stock_windows *windows) \
+PROCESS_HOOK_UNWIND_FUNCTION BOOL win2k_print_##S(TYPE *parameters,BOOL (WINAPI *native)(TYPE *),const style_dialog_windows *windows) \
 { \
     stock_scope scope;process_hook_unwind_scope unwind;TYPE request; \
     BOOL adapted=style_classic_print_prepare_##S(parameters,&request,STYLE_CLASSIC_PRINT_FLAGS,classic_print); \
@@ -84,7 +96,7 @@ PROCESS_HOOK_UNWIND_FUNCTION BOOL win2k_print_##S(TYPE *parameters,BOOL (WINAPI 
     SetLastError(error);return result; \
 }
 #define STOCK_FIND(S,TYPE) \
-PROCESS_HOOK_UNWIND_FUNCTION HWND win2k_find_##S(TYPE *parameters,HWND (WINAPI *native)(TYPE *),const win2k_stock_windows *windows,BOOL compact) \
+PROCESS_HOOK_UNWIND_FUNCTION HWND win2k_find_##S(TYPE *parameters,HWND (WINAPI *native)(TYPE *),const style_dialog_windows *windows,BOOL compact) \
 { \
     stock_scope scope;process_hook_unwind_scope unwind;DWORD incoming=GetLastError(); \
     if(!begin_stock(&scope,windows,STOCK_PLAIN))return NULL; \
@@ -93,8 +105,10 @@ PROCESS_HOOK_UNWIND_FUNCTION HWND win2k_find_##S(TYPE *parameters,HWND (WINAPI *
     PROCESS_HOOK_UNWIND_END(unwind); \
     if(result){ \
         windows->initialized(result); \
-        if(compact && !(parameters->Flags&(FR_ENABLEHOOK|FR_ENABLETEMPLATE|FR_ENABLETEMPLATEHANDLE))) \
-            win2k_find_compact(result); \
+        if(compact && !(parameters->Flags&(FR_ENABLEHOOK|FR_ENABLETEMPLATE|FR_ENABLETEMPLATEHANDLE))){ \
+            classic_dialog_metrics metrics=stock_metrics(windows); \
+            win2k_find_compact(result,&metrics); \
+        } \
     } \
     SetLastError(error);return result; \
 }

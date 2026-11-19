@@ -118,11 +118,13 @@ MESSAGE_HOOK(MessageBoxExW,(HWND owner,LPCWSTR text,LPCWSTR title,UINT type,WORD
 MESSAGE_HOOK(MessageBoxIndirectA,(const MSGBOXPARAMSA *parameters),(parameters))
 MESSAGE_HOOK(MessageBoxIndirectW,(const MSGBOXPARAMSW *parameters),(parameters))
 
-static const win2k_stock_windows stock_windows={attach_dialog,win2k_frame_attached};
+extern IMAGE_DOS_HEADER __ImageBase;
+static HMODULE dialog_resources(void){return (HMODULE)&__ImageBase;}
+static const style_dialog_windows dialog_windows={attach_dialog,win2k_frame_attached,dialog_resources};
 #define STOCK_ENTRY(NAME,TYPE,CALL) \
 static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{return CALL(parameters,real_##NAME,&stock_windows);}
+{return CALL(parameters,real_##NAME,&dialog_windows);}
 STOCK_ENTRY(PageSetupDlgA,PAGESETUPDLGA,win2k_page_setup_a)
 STOCK_ENTRY(PageSetupDlgW,PAGESETUPDLGW,win2k_page_setup_w)
 STOCK_ENTRY(ChooseFontA,CHOOSEFONTA,win2k_font_a)
@@ -135,18 +137,17 @@ STOCK_ENTRY(PrintDlgW,PRINTDLGW,win2k_print_w)
 #define FIND_ENTRY(NAME,TYPE,CALL,COMPACT) \
 static __typeof__(&NAME) real_##NAME; \
 static HWND WINAPI hook_##NAME(TYPE *parameters) \
-{return CALL(parameters,real_##NAME,&stock_windows,COMPACT);}
+{return CALL(parameters,real_##NAME,&dialog_windows,COMPACT);}
 FIND_ENTRY(FindTextA,FINDREPLACEA,win2k_find_a,TRUE)
 FIND_ENTRY(FindTextW,FINDREPLACEW,win2k_find_w,TRUE)
 FIND_ENTRY(ReplaceTextA,FINDREPLACEA,win2k_find_a,FALSE)
 FIND_ENTRY(ReplaceTextW,FINDREPLACEW,win2k_find_w,FALSE)
 #undef FIND_ENTRY
 
-static const style_file_window_ops file_windows={attach_dialog,win2k_frame_attached};
 #define FILE_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{return win2k_file_call_##SUFFIX(parameters,real_##NAME,&file_windows);}
+{return win2k_file_call_##SUFFIX(parameters,real_##NAME,&dialog_windows);}
 FILE_HOOK(GetOpenFileNameA,OPENFILENAMEA,a)
 FILE_HOOK(GetOpenFileNameW,OPENFILENAMEW,w)
 FILE_HOOK(GetSaveFileNameA,OPENFILENAMEA,a)
@@ -154,7 +155,6 @@ FILE_HOOK(GetSaveFileNameW,OPENFILENAMEW,w)
 #undef FILE_HOOK
 
 /* Extended requests outside the classic bridge contract retain their property sheet. */
-extern IMAGE_DOS_HEADER __ImageBase;
 #define PRINT_EXTENDED_HOOK(NAME,TYPE,GENERAL,BRIDGE,PRINT) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \

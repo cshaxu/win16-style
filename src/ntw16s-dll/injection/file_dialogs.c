@@ -18,7 +18,7 @@ LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *))
     const style_classic_file_options options={.active=ntw16s_process_session_active,
         .scope=ntw16s_dialog_style_scope,.chrome=ntw16s_old_dialog_chrome,
         .alternate_active=ntw16s_win2k_session_active,.alternate_a=win2k_file_call_a,
-        .alternate_w=win2k_file_call_w,.alternate_windows={ntw16s_win2k_dialog_initialize,ntw16s_global_win2k_attached},
+        .alternate_w=win2k_file_call_w,.alternate_windows={ntw16s_win2k_dialog_initialize,ntw16s_global_win2k_attached,ntw16s_global_win2k_resources},
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
         .subclass_observer=TRUE,
 #endif

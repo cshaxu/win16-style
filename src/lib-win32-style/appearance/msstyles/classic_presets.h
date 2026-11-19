@@ -4,6 +4,7 @@
 #include "lib-win32-style/application/window/caption_slots.h"
 
 #define WIN16_POPUP_MENU_METRICS {18,8,12,4}
+#define WIN2000_DIALOG_METRICS {{427,272,565,345,370,197,7,20},500,450,490,298,184,236,74,62,287,196}
 
 #define WIN16_TITLE_BUTTON_GROUP \
     {3,0,0,{{CLASSIC_BUTTON_SYSTEM,CLASSIC_BUTTON_LEFT,0}, \

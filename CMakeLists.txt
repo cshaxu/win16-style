@@ -264,6 +264,7 @@ add_library(win2k-print STATIC src/lib-win32-style/appearance/win2000/dialog/pri
   src/lib-win32-style/appearance/win2000/dialog/print_shell.c
   src/lib-win32-style/appearance/win2000/dialog/print_directory.c)
 target_link_libraries(win2k-print PUBLIC style-dialog-common comctl32 winspool activeds adsiid oleaut32)
+target_link_libraries(win2k-print PRIVATE style-msstyles)
 add_library(style-msstyles STATIC
   src/lib-win32-style/appearance/msstyles/classic_style.c
   src/lib-win32-style/appearance/msstyles/classic_theme.c
@@ -288,6 +289,7 @@ foreach(stem IN ITEMS Win16 Win2K)
   set(out "${CMAKE_BINARY_DIR}/themes/${stem}")
   unset(image_flag)
   unset(image_files)
+  unset(dialog_resources)
   if(stem STREQUAL "Win16")
     set(image_flag -D PACK_ORIGINAL_CAPTION)
     foreach(id RANGE 501 510)
@@ -297,6 +299,12 @@ foreach(stem IN ITEMS Win16 Win2K)
     foreach(id RANGE 513 524)
       list(APPEND image_files "${out}/choice${id}.png")
     endforeach()
+  else()
+    set(image_flag -D PACK_WIN2000_DIALOGS)
+    set(dialog_resources
+      "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general.h"
+      "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general.rcinc"
+      "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general_full.rcinc")
   endif()
   file(MAKE_DIRECTORY "${out}")
   set(theme_object "${out}/theme.res.o")
@@ -306,8 +314,8 @@ foreach(stem IN ITEMS Win16 Win2K)
     BYPRODUCTS "${out}/cmap.bin" "${out}/bcmap.bin" "${out}/vmap.bin"
       "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" "${out}/fonts.rcinc" ${image_files}
     COMMAND "$<TARGET_FILE:classic-theme-compiler>" "${stem}"
-    COMMAND "${CMAKE_RC_COMPILER}" ${image_flag} -I "${out}" -i "${classic_theme_rc}" -O coff -o theme.res.o
-    DEPENDS classic-theme-compiler "${classic_theme_rc}"
+    COMMAND "${CMAKE_RC_COMPILER}" ${image_flag} -I "${out}" -I "${CMAKE_CURRENT_SOURCE_DIR}/src" -i "${classic_theme_rc}" -O coff -o theme.res.o
+    DEPENDS classic-theme-compiler "${classic_theme_rc}" ${dialog_resources}
       "${CMAKE_CURRENT_SOURCE_DIR}/tools/theme/legacy_image.h"
     WORKING_DIRECTORY "${out}"
     VERBATIM)
@@ -327,9 +335,10 @@ if(classic_theme_artifacts)
 endif()
 target_sources(ntw2ks PRIVATE "${theme_object_Win2K}")
 add_library(win2k-file STATIC src/lib-win32-style/appearance/win2000/dialog/file_call.c)
-target_link_libraries(win2k-file PUBLIC style-dialog-common)
+target_link_libraries(win2k-file PUBLIC style-dialog-common PRIVATE style-msstyles)
 add_library(win2k-stock STATIC src/lib-win32-style/appearance/win2000/dialog/stock_call.c)
 target_link_libraries(win2k-stock PUBLIC style-dialog-common style-window)
+target_link_libraries(win2k-stock PRIVATE style-msstyles)
 if(WIN16STYLE_ARCH STREQUAL "x86")
   set_target_properties(ntw2ks PROPERTIES OUTPUT_NAME ntw2ks32 PREFIX "")
 else()

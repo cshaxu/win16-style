@@ -142,7 +142,7 @@ DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,TRUE,-1)
 #define TITLE_PARAM_FINISH(state,rollback,result,error,fail) do { \
     if((state)->failure){rollback;(result)=(fail);(error)=(state)->failure;} \
 } while(0)
-static const win2k_stock_windows stock_windows={ntw16s_win2k_dialog_initialize,ntw16s_global_win2k_attached};
+static const style_dialog_windows stock_windows={ntw16s_win2k_dialog_initialize,ntw16s_global_win2k_attached,ntw16s_global_win2k_resources};
 #define SIMPLE_DIALOG_HOOK(NAME,PARAM,RET,FAIL,CLEANUP,ROUTE) \
     STYLE_DIALOG_HOOK_ROUTED(NAME,(PARAM parameters),(parameters),RET,FAIL,CLEANUP,title_scope,TITLE_DIALOG_BEGIN,TITLE_DIALOG_PREPARE,end_titles,TITLE_PARAM_FINISH,ROUTE)
 #define FIND_DIALOG_HOOK(NAME,PARAM,CALL,COMPACT) \

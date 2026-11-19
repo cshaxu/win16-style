@@ -2,6 +2,8 @@
 #include "print_general.h"
 #include "print_directory.h"
 #include "print_shell.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/dialog/print_ranges.h"
 #include "lib-win32-style/application/dialog/print_resources.h"
 #include <commctrl.h>
@@ -337,21 +339,22 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
     return FALSE;
 }
 
-static UINT general_template(HWND owner,DWORD flags)
+static UINT general_template(HINSTANCE module,HWND owner,DWORD flags)
 {
     MONITORINFO monitor={.cbSize=sizeof(monitor)};
     UINT dpi=GetDpiForWindow(owner);
-    if(!dpi || !GetMonitorInfoW(MonitorFromWindow(owner,MONITOR_DEFAULTTONEAREST),&monitor) ||
-       monitor.rcWork.right-monitor.rcWork.left<MulDiv(500,(int)dpi,96))return WIN2K_PRINT_GENERAL;
+    if(!dpi || !GetMonitorInfoW(MonitorFromWindow(owner,MONITOR_DEFAULTTONEAREST),&monitor))return WIN2K_PRINT_GENERAL;
+    const classic_dialog_metrics metrics=classic_theme_dialog_metrics(module,(classic_dialog_metrics)WIN2000_DIALOG_METRICS);
+    if(monitor.rcWork.right-monitor.rcWork.left<MulDiv(metrics.print_width,(int)dpi,96))return WIN2K_PRINT_GENERAL;
     /* Leave room for the native tab, action buttons and frame around the page. */
     LONG height=monitor.rcWork.bottom-monitor.rcWork.top;
-    if((flags&PD_USELARGETEMPLATE) && height>=MulDiv(490,(int)dpi,96))return WIN2K_PRINT_GENERAL_LARGE;
-    return height>=MulDiv(450,(int)dpi,96)?WIN2K_PRINT_GENERAL_FULL:WIN2K_PRINT_GENERAL;
+    if((flags&PD_USELARGETEMPLATE) && height>=MulDiv(metrics.print_large_height,(int)dpi,96))return WIN2K_PRINT_GENERAL_LARGE;
+    return height>=MulDiv(metrics.print_full_height,(int)dpi,96)?WIN2K_PRINT_GENERAL_FULL:WIN2K_PRINT_GENERAL;
 }
 
 static HRESULT show_sheet(HINSTANCE module,HWND owner,general_page *page)
 {
-    UINT layout=general_template(owner,page->flags);
+    UINT layout=general_template(module,owner,page->flags);
     page->full=layout!=WIN2K_PRINT_GENERAL;
     PROPSHEETPAGEW details={.dwSize=sizeof(details),.dwFlags=PSP_USETITLE,.hInstance=module,
         .pszTemplate=MAKEINTRESOURCEW(layout),.pszTitle=L"General",

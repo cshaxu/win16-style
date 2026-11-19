@@ -484,7 +484,7 @@ HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme
     if(SUCCEEDED(result))result=palette(module,resource(module,L"CMAP",L"CMAP"),variant,&value);
     if(SUCCEEDED(result)){
         enum classic_style_result status=classic_style_read(extension.bytes,extension.size,
-            &value.title_buttons,&value.scroll_metrics,&value.menu_metrics);
+            &value.title_buttons,&value.scroll_metrics,&value.menu_metrics,&value.dialog_metrics);
         if(status!=CLASSIC_STYLE_OK)result=HRESULT_FROM_WIN32(
             status==CLASSIC_STYLE_VERSION || status==CLASSIC_STYLE_REQUIRED_RECORD?
             ERROR_NOT_SUPPORTED:ERROR_INVALID_DATA);
@@ -509,6 +509,13 @@ BOOL classic_theme_default(HMODULE module,classic_theme *theme)
     BOOL loaded=SUCCEEDED(classic_theme_read(module,L"NormalSize",L"NormalColor",theme));
     SetLastError(prior);
     return loaded;
+}
+
+classic_dialog_metrics classic_theme_dialog_metrics(HMODULE module,classic_dialog_metrics fallback)
+{
+    classic_theme theme;
+    return classic_theme_default(module,&theme) && theme.dialog_metrics.print_width?
+        theme.dialog_metrics:fallback;
 }
 
 int classic_scroll_nominal(classic_scroll_metrics metrics,enum classic_scroll_extent_source fallback,

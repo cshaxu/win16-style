@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S7 P1",
-  "stage": "development: VB/VCL and compound controls",
+  "delivery": "M0 T29 S8 P1",
+  "stage": "development: common dialogs",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "7a3eb5269cd771ab37f5c4ebda92163dc4a7af3c7fcceff601a32de349d8ef91",
+  "source_snapshot_sha256": "1d33e23df477279d3393e26574933fdc4a4ea10c389cb760182b031e31243324",
   "source_snapshot_format": "SHA256 of clean Build-Package snapshot.json bytes",
   "source_input_cohort": {
-    "count": 1280,
-    "sha256": "9b0fdb2f75277fcdcaa2b68b35360aeeeb2b26b7a00c8c3f82289475da67669f",
+    "count": 1281,
+    "sha256": "7ec108115ad8392524590dc6dcf44917a467b780d20ec96756b878cc19435163",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF",
     "worktree_newline_only_differences": []
   },
@@ -17,7 +17,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "7156ede149c7b67a922c0daf96dd6efa0c4b803838408e9085a70906ff615aad",
+      "sha256": "055f794b480e1f3267367139d72e596f6066bfec66d03f55d9f14ccdcc372b43",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -33,7 +33,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "61d7091f72a9c544fbe5be439af10a61e8269d2acba222b61d572336aa557bfa",
+      "sha256": "85677d07fae598fbd08b96ef2a67fc0fe305949bd3c0c7b2c77c57ab045c68c3",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -62,7 +62,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "115a804ef0e0596eea43759c779984e08b50e72db9424c2dd576f9906987422a",
+      "sha256": "1e654b4b22850424318e0fbc55d84bad21a8428a9e7a10b2ac5af972a0307cb3",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -86,7 +86,7 @@
     "ntw2ks32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "719e6058e29f38290de499202e8c25a1efd2c875ccfa4219c0621618bc609346",
+      "sha256": "1021768e96a789a45d841532b4f2d10099898b0a403e8857425e3a553b923290",
       "imports": [
         "ACTIVEDS.dll",
         "COMCTL32.dll",
@@ -115,7 +115,7 @@
     "ntw2ks64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "36a45980031fe9d24bdba4b6524faf6c2386944f9f1b9f4b276219cd4420b5af",
+      "sha256": "0b128a62dcf7759987205df94b8c9e18165bf140ab7f0f4d277b72659cd63e2e",
       "imports": [
         "ACTIVEDS.dll",
         "COMCTL32.dll",
@@ -139,7 +139,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "e6c1ac0c66ad708faf30162fdcb9890f47ec0391af02dfff0f498b9d0e3e1f25",
+      "sha256": "03ef50655b4fd97867e154e33de45eec2642c187d10fe3f0c7bf6de17a54e100",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -154,7 +154,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "cf2aac5f63f6fc9eb438c52a23d7743db25513e25e052c9c27d57f9a8d10a680",
+      "sha256": "01df122ec2f0cf0b76ca8cb558ccd90ed19db30cd073feeae567f012f59e1d2a",
       "imports": [
         "ADVAPI32.dll",
         "KERNEL32.dll",
@@ -164,7 +164,7 @@
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "cff4c24f5fe2e15b46948d666bbcacf36b562a034c00b4cb28f751af5a84532c",
+      "sha256": "64447f3a02e324b1a48057f94ab4db4f4f448c45323323c83a7561a78239fd14",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -188,66 +188,80 @@
       "sha256": "f4acd885ec052c06daaa09e2423a4882ef3c53fd072509ef04890d05c1ad85f1"
     },
     "themes/Win2K/Win2K.msstyles": {
-      "sha256": "13929659b4f9104d11f469f8318cd2051ffe2c2ffea09b830ddd77967dd84707"
+      "sha256": "ebb9ba7beb197e5a498c2dad642ab6b7be18937305c903cdec1b2606f74d849f"
     }
   },
   "architecture": {
     "x86": {
       "configure-time.json": {
-        "seconds": 13.228934100014158,
+        "seconds": 12.896138099953532,
         "exit_code": 0
       },
       "build-time.json": {
-        "seconds": 267.2652378999628,
+        "seconds": 252.00066580006387,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.6478490000590682,
+        "seconds": 0.6075489000650123,
         "exit_code": 0
       }
     },
     "x64": {
       "configure-time.json": {
-        "seconds": 14.088668099953793,
+        "seconds": 12.133532900013961,
         "exit_code": 0
       },
       "build-time.json": {
-        "seconds": 293.3416261000093,
+        "seconds": 303.7951367000351,
         "exit_code": 0
       },
       "test-time.json": {
-        "seconds": 0.613203400047496,
+        "seconds": 0.6359935000073165,
         "exit_code": 0
       }
     }
   },
   "toolchains": {
+    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "toolchains": [
       {
         "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "architecture": "x86",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
+        "architecture": "x86",
         "target": "i686-w64-mingw32",
         "version": "16.1.0"
       },
       {
         "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "architecture": "x64",
         "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
+        "architecture": "x64",
         "target": "x86_64-w64-mingw32",
         "version": "16.1.0"
       }
     ],
     "ccache_version": "ccache version 4.13.6",
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
     "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe"
   },
   "verification": {
     "coverage": "focused",
-    "actual_package_cases": 39,
-    "passed": 39,
+    "actual_package_cases": 73,
+    "passed": 73,
     "skipped": [],
     "selected_cases": [
+      "ntw2ks-message-frame-x86",
+      "ntw2ks-message-frame-x64",
+      "ntw2ks-find-frame-x86",
+      "ntw2ks-find-frame-x64",
+      "ntw2ks-file-frame-x86",
+      "ntw2ks-file-frame-x64",
+      "ntw2ks-file-select-x86",
+      "ntw2ks-file-select-x64",
+      "ntw2ks-color-font-x86",
+      "ntw2ks-color-accept-x86",
+      "ntw2ks-color-font-x64",
+      "ntw2ks-color-accept-x64",
+      "ntw2ks-printex-frame-x86",
+      "ntw2ks-printex-frame-x64",
       "progress-sharing",
       "plan-selection",
       "abi-x86",
@@ -257,77 +271,323 @@
       "demo-win2000",
       "automatic",
       "propagation",
-      "vb-data-border-32",
-      "vb-data-border-64",
-      "vb-data-arrows-32",
-      "vb-data-arrows-64",
-      "vb5-owner-check-32",
-      "vb5-owner-check-64",
-      "vb-owner-option-32",
-      "vb-owner-option-64",
-      "ntw2ks-runtime-roles-32",
-      "ntw2ks-runtime-roles-v6-32",
-      "ntw2ks-runtime-roles-64",
-      "ntw2ks-runtime-roles-v6-64",
-      "vcl-modern-spin-32",
-      "vcl-modern-spin-64",
-      "inplace-model-32",
-      "inplace-model-64",
-      "dbnav-model-32",
-      "dbnav-model-64",
-      "controlbar-model-32",
-      "controlbar-model-64",
-      "vcl-status-pane-32",
-      "vcl-status-pane-64",
-      "vcl-bitbtn-module-32",
-      "vcl-bitbtn-module-64",
-      "vcl-date-module-32",
-      "vcl-date-module-64",
-      "spin-32",
-      "spin-64",
-      "spin-dpi-32",
-      "spin-dpi-64"
+      "ntw2ks-font-accept-32",
+      "ntw2ks-font-accept-64",
+      "ntw2ks-color-expanded-32",
+      "ntw2ks-color-expanded-64",
+      "ntw2ks-message-choices-32",
+      "ntw2ks-message-choices-64",
+      "ntw2ks-file-buffer-32",
+      "ntw2ks-file-buffer-64",
+      "ntw2ks-com-explorer-open-accept-32",
+      "ntw2ks-com-explorer-open-cancel-32",
+      "ntw2ks-com-explorer-save-accept-32",
+      "ntw2ks-com-explorer-save-cancel-32",
+      "ntw2ks-com-explorer-open-accept-64",
+      "ntw2ks-com-explorer-open-cancel-64",
+      "ntw2ks-com-explorer-save-accept-64",
+      "ntw2ks-com-explorer-save-cancel-64",
+      "dialog-tree-x86-com-accept",
+      "dialog-tree-x86-com-cancel",
+      "dialog-tree-x86-shell-new-accept",
+      "dialog-tree-x86-shell-new-cancel",
+      "dialog-tree-x86-shell-new-ansi-accept",
+      "dialog-tree-x86-shell-new-ansi-cancel",
+      "dialog-print-classic-x86-ansi-cancel",
+      "dialog-find-x86-ansi",
+      "dialog-replace-x86-ansi",
+      "dialog-color-x86-ansi-expand",
+      "dialog-page-x86-ansi",
+      "dialog-print-classic-x86-wide-cancel",
+      "dialog-find-x86-wide",
+      "dialog-replace-x86-wide",
+      "dialog-color-x86-wide-expand",
+      "dialog-page-x86-wide",
+      "dialog-file-oldhook-accept-styled-x86",
+      "dialog-tree-x64-com-accept",
+      "dialog-tree-x64-com-cancel",
+      "dialog-tree-x64-shell-new-accept",
+      "dialog-tree-x64-shell-new-cancel",
+      "dialog-tree-x64-shell-new-ansi-accept",
+      "dialog-tree-x64-shell-new-ansi-cancel",
+      "dialog-print-classic-x64-ansi-cancel",
+      "dialog-find-x64-ansi",
+      "dialog-replace-x64-ansi",
+      "dialog-color-x64-ansi-expand",
+      "dialog-page-x64-ansi",
+      "dialog-print-classic-x64-wide-cancel",
+      "dialog-find-x64-wide",
+      "dialog-replace-x64-wide",
+      "dialog-color-x64-wide-expand",
+      "dialog-page-x64-wide",
+      "dialog-file-oldhook-accept-styled-x64"
     ],
     "published_smoke": [
       {
-        "name": "assets-bitbtn-32",
-        "marker": "VCL_BITBTN_MODULE_OK",
-        "exit_code": 0
+        "name": "assets/win16-message-matrix",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop"
       },
       {
-        "name": "assets-runtime-roles-32",
-        "marker": "WIN2K_RUNTIME_ROLES_OK",
-        "exit_code": 0
+        "name": "assets/core-classic-themes",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 0,
+        "last_marker": null
       },
       {
-        "name": "assets-bitbtn-64",
-        "marker": "VCL_BITBTN_MODULE_OK",
-        "exit_code": 0
+        "name": "assets/core-style-classic-theme",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 0,
+        "last_marker": null
       },
       {
-        "name": "assets-runtime-roles-64",
-        "marker": "WIN2K_RUNTIME_ROLES_OK",
-        "exit_code": 0
+        "name": "assets/core-style-classic-extension",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 0,
+        "last_marker": null
       },
       {
-        "name": "winnt-bitbtn-32",
-        "marker": "VCL_BITBTN_MODULE_OK",
-        "exit_code": 0
+        "name": "assets/places-32",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 8,
+        "last_marker": "WIN2K SELECT bits=32 ansi=1 save=1 explorer=1 attached=1 result=1 same=1 error=0 filter=2 offsets=1 cwd=1 flags=1 fit=1 measured=1 places=1 dpi=144 work=1920x1008 aware_restored=1"
       },
       {
-        "name": "winnt-runtime-roles-32",
-        "marker": "WIN2K_RUNTIME_ROLES_OK",
-        "exit_code": 0
+        "name": "assets/shell-folder-32",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "TREE_FOLDER bits=32 com=0 cancel=0 tree=1 windows=1 result=1 hr=80004005 wait=0 worker=0 validated=0 direct=1 callback=0 unknown=0"
       },
       {
-        "name": "winnt-bitbtn-64",
-        "marker": "VCL_BITBTN_MODULE_OK",
-        "exit_code": 0
+        "name": "assets/general-apply-32",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=32 ansi=0 initial=0 requested=2 result=2 hr=00000000 frame=1 copies=3 pages=2 selected=1 dc=0 preferences=0 directory=0 full=1 details=1 shell=1 large=1 pass=1"
       },
       {
-        "name": "winnt-runtime-roles-64",
-        "marker": "WIN2K_RUNTIME_ROLES_OK",
-        "exit_code": 0
+        "name": "assets/places-64",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 8,
+        "last_marker": "WIN2K SELECT bits=64 ansi=1 save=1 explorer=1 attached=1 result=1 same=1 error=0 filter=2 offsets=1 cwd=1 flags=1 fit=1 measured=1 places=1 dpi=144 work=1920x1008 aware_restored=1"
+      },
+      {
+        "name": "assets/shell-folder-64",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "TREE_FOLDER bits=64 com=0 cancel=0 tree=1 windows=1 result=1 hr=80004005 wait=0 worker=0 validated=0 direct=1 callback=0 unknown=0"
+      },
+      {
+        "name": "assets/general-apply-64",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=64 ansi=0 initial=0 requested=2 result=2 hr=00000000 frame=1 copies=3 pages=2 selected=1 dc=0 preferences=0 directory=0 full=1 details=1 shell=1 large=1 pass=1"
+      },
+      {
+        "name": "winnt/win16-message-matrix",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop"
+      },
+      {
+        "name": "winnt/core-classic-themes",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 0,
+        "last_marker": null
+      },
+      {
+        "name": "winnt/core-style-classic-theme",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 0,
+        "last_marker": null
+      },
+      {
+        "name": "winnt/core-style-classic-extension",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 0,
+        "last_marker": null
+      },
+      {
+        "name": "winnt/places-32",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 8,
+        "last_marker": "WIN2K SELECT bits=32 ansi=1 save=1 explorer=1 attached=1 result=1 same=1 error=0 filter=2 offsets=1 cwd=1 flags=1 fit=1 measured=1 places=1 dpi=144 work=1920x1008 aware_restored=1"
+      },
+      {
+        "name": "winnt/shell-folder-32",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "TREE_FOLDER bits=32 com=0 cancel=0 tree=1 windows=1 result=1 hr=80004005 wait=0 worker=0 validated=0 direct=1 callback=0 unknown=0"
+      },
+      {
+        "name": "winnt/general-apply-32",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=32 ansi=0 initial=0 requested=2 result=2 hr=00000000 frame=1 copies=3 pages=2 selected=1 dc=0 preferences=0 directory=0 full=1 details=1 shell=1 large=1 pass=1"
+      },
+      {
+        "name": "winnt/places-64",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 8,
+        "last_marker": "WIN2K SELECT bits=64 ansi=1 save=1 explorer=1 attached=1 result=1 same=1 error=0 filter=2 offsets=1 cwd=1 flags=1 fit=1 measured=1 places=1 dpi=144 work=1920x1008 aware_restored=1"
+      },
+      {
+        "name": "winnt/shell-folder-64",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "TREE_FOLDER bits=64 com=0 cancel=0 tree=1 windows=1 result=1 hr=80004005 wait=0 worker=0 validated=0 direct=1 callback=0 unknown=0"
+      },
+      {
+        "name": "winnt/general-apply-64",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=64 ansi=0 initial=0 requested=2 result=2 hr=00000000 frame=1 copies=3 pages=2 selected=1 dc=0 preferences=0 directory=0 full=1 details=1 shell=1 large=1 pass=1"
+      },
+      {
+        "name": "owned/32/--file-select",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 8,
+        "last_marker": "WIN2K SELECT bits=32 ansi=1 save=1 explorer=1 attached=1 result=1 same=1 error=0 filter=2 offsets=1 cwd=1 flags=1 fit=1 measured=1 places=1 dpi=96 work=1280x672 aware_restored=1"
+      },
+      {
+        "name": "owned/32/--find-frame",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 4,
+        "last_marker": "WIN2K FIND bits=32 ansi=1 replace=1 attached=1 gone=1 terms=1 layout=1 actions=38"
+      },
+      {
+        "name": "owned/32/--color-expanded",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 4,
+        "last_marker": "WIN2K COLOR EXPANDED bits=32 ansi=1 confirm=1 attached=1 rgb=1 slots=1 size=1 error=0"
+      },
+      {
+        "name": "owned/32/--font-accept",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 2,
+        "last_marker": "WIN2K FONT bits=32 ansi=1 attached=1 accepted=1 selected=1 point_size=120 error=0"
+      },
+      {
+        "name": "owned/32/--message-choices",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 6,
+        "last_marker": "WIN2K MESSAGE bits=32 api=5 attached=1 result=7 choices=1"
+      },
+      {
+        "name": "owned/32/general-a-confirm",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=32 ansi=1 initial=0 requested=1 result=1 hr=00000000 frame=1 copies=3 pages=2 selected=1 dc=0 preferences=0 directory=0 full=1 details=1 shell=1 large=0 pass=1"
+      },
+      {
+        "name": "owned/32/general-w-apply",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=32 ansi=0 initial=0 requested=2 result=2 hr=00000000 frame=1 copies=3 pages=2 selected=1 dc=0 preferences=0 directory=0 full=1 details=1 shell=1 large=1 pass=1"
+      },
+      {
+        "name": "winnt/general-dc-32-a",
+        "exit_code": 77,
+        "skipped": true,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=32 ansi=1 initial=0 requested=0 result=0 hr=00000000 frame=1 copies=1 pages=0 selected=0 dc=0 preferences=0 directory=0 full=1 details=1 shell=1 large=0 pass=1"
+      },
+      {
+        "name": "winnt/general-dc-32-w",
+        "exit_code": 77,
+        "skipped": true,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=32 ansi=0 initial=0 requested=0 result=0 hr=00000000 frame=1 copies=1 pages=0 selected=0 dc=0 preferences=0 directory=0 full=1 details=1 shell=1 large=0 pass=1"
+      },
+      {
+        "name": "owned/64/--file-select",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 8,
+        "last_marker": "WIN2K SELECT bits=64 ansi=1 save=1 explorer=1 attached=1 result=1 same=1 error=0 filter=2 offsets=1 cwd=1 flags=1 fit=1 measured=1 places=1 dpi=96 work=1280x672 aware_restored=1"
+      },
+      {
+        "name": "owned/64/--find-frame",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 4,
+        "last_marker": "WIN2K FIND bits=64 ansi=1 replace=1 attached=1 gone=1 terms=1 layout=1 actions=38"
+      },
+      {
+        "name": "owned/64/--color-expanded",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 4,
+        "last_marker": "WIN2K COLOR EXPANDED bits=64 ansi=1 confirm=1 attached=1 rgb=1 slots=1 size=1 error=0"
+      },
+      {
+        "name": "owned/64/--font-accept",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 2,
+        "last_marker": "WIN2K FONT bits=64 ansi=1 attached=1 accepted=1 selected=1 point_size=120 error=0"
+      },
+      {
+        "name": "owned/64/--message-choices",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 6,
+        "last_marker": "WIN2K MESSAGE bits=64 api=5 attached=1 result=7 choices=1"
+      },
+      {
+        "name": "owned/64/general-a-confirm",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=64 ansi=1 initial=0 requested=1 result=1 hr=00000000 frame=1 copies=3 pages=2 selected=1 dc=0 preferences=0 directory=0 full=1 details=1 shell=1 large=0 pass=1"
+      },
+      {
+        "name": "owned/64/general-w-apply",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=64 ansi=0 initial=0 requested=2 result=2 hr=00000000 frame=1 copies=3 pages=2 selected=1 dc=0 preferences=0 directory=0 full=1 details=1 shell=1 large=1 pass=1"
+      },
+      {
+        "name": "winnt/general-dc-64-a",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=64 ansi=1 initial=0 requested=1 result=1 hr=00000000 frame=1 copies=3 pages=2 selected=1 dc=1 preferences=0 directory=0 full=1 details=1 shell=1 large=0 pass=1"
+      },
+      {
+        "name": "winnt/general-dc-64-w",
+        "exit_code": 0,
+        "skipped": false,
+        "markers": 1,
+        "last_marker": "GENERAL ENTRY bits=64 ansi=0 initial=0 requested=1 result=1 hr=00000000 frame=1 copies=3 pages=2 selected=1 dc=1 preferences=0 directory=0 full=1 details=1 shell=1 large=0 pass=1"
       }
     ],
     "publication_roots": [
@@ -340,13 +600,14 @@
     "physical_keyboard_mouse": "not tested",
     "private_desktops_created": false,
     "limitations": [
-      "S7 pixel and behavior checks use owned host fixtures",
-      "Private Win16 and Win2000 VB/VCL variant mapping remains open in T29 S2 ledger row 37",
+      "S8 pixel and behavior checks use owned host fixtures",
+      "T28 custom print pages and real domain print selections retain the approved skips",
+      "x86 printer context availability is recorded separately from the Print/Apply results",
       "The seven-file runtime and deployment switch remains in S10–S11"
     ]
   },
   "closure": {
-    "S7": "closed after remote audit of P1 (c0efd378)",
+    "S8": "local delivery verified; remote audit pending",
     "T29": "active",
     "M0": "fixed"
   }
