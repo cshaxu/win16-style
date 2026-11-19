@@ -263,7 +263,7 @@
     ]
   },
   "closure": {
-    "S4": "P4 verification; close after remote artifact audit",
+    "S4": "closed after remote audit of P4 (53ab9307)",
     "T29": "active",
     "M0": "fixed"
   }

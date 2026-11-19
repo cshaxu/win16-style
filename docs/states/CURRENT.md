@@ -46,29 +46,30 @@ S4 P3 接入标题度量与横纵滚动轨道、滑块和尺寸框数据。同�
 直接测试 30/30、替换资源对照 16/16 通过，干净树四主题文件通过独立读回。
 S4 P4 接入 Win16 标题图像、两风格四种按钮状态和滚动端钮度量。
 同快照双宽开发运行包与四个主题预览已发布，直接实包 32/32 及资源替换对照通过。
+S4 已在 `53ab9307` 复核远端源码和全部发布摘要后收口。S5 接续窗口、菜单和字体。
 用户确认 T29 最终发行包为七件。启动器和两份 `ntwshk` 加两组主题，
 见[主题构建契约](../proposals/msstyles-build-contract.md)。S11 负责独立七件目录验收与切换。
 
-## M0 T29 S4 Packet
+## M0 T29 S5 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；M0 固定。 |
 | Admission And Approval | 用户批准 T29 现有 S2–S12 连续执行。 |
-| Objective | 标题栏、普通按钮和滚动条从同源主题资源进入真实布局、绘制与命中。 |
-| Non-goals | 不改系统主题、权限或接入目标；其他部件及完整运行时替换按后续 S 执行。 |
-| Reference Baseline | S2 逐项台账、S3 同源四件、已发布 P45 双宽呈现。 |
+| Objective | S2 台账 01、03–06、11–14、47、50 的窗口、菜单和字体数据及原应用契约。 |
+| Non-goals | 客户区控件专题、公共对话框、现代宿主整体验证、系统主题安装和运行时切包按后续阶段执行。 |
+| Reference Baseline | 双宽 S4 P4 的八件开发运行包、四个主题文件、按钮及外框结果。字体格式以同机 Aero 短记录及只读原生参考为对照。 |
 | Candidate Proposal | docs/proposals/msstyles-classic-runtime.md。 |
-| Files And ABI Surface | MSStyles 读取与主题模型、窗口标题栏和按钮/滚动条共享应用入口、自有 Win32 验证；保留既有产品 ABI。 |
+| Files And ABI Surface | MSStyles 主题编译与读取、经典窗口外框、系统菜单、菜单绘制、字体所有者和对应双宽夹具；保留现有导出。 |
 | Applicable Rules | C17 双位宽，主题数据只读，原资源身份和原应用语义。 |
-| Verification | 96/144 DPI、普通及适用禁用或按压状态的区域、像素、命中和恢复；以候选主题属性替换证明实际消费。 |
-| Expected Markers | 双宽两种主题使用同一输入契约，三类代表部件证据与旧路径对照。 |
-| Asset Needs | S3 主题、既有原版栅格与样式定义、自有窗口或离屏原生测试。 |
-| Reporting Requirements | 逐项记录标准与扩展数据、实际消费者、同源构建、适用状态及缺口。 |
-| Stop Conditions | 保持既有支持范围、安全策略和桌面约束。 |
-| Exit Criteria | 三部件实际应用通路、双宽 DPI 和适用状态的回归成立，格式验证不能替代绘制与恢复证据。 |
+| Verification | 两宽 96/144 DPI 对照普通和最大化外框、标题图标、菜单普通／选中／禁用及列度量、原字体字段与引用回收。用主题资源替换核验真实消费。 |
+| Expected Markers | 标准字体和配色被独立读回，菜单主题源控制列和保留栅格，命中、通知和恢复使用现有契约。 |
+| Asset Needs | 同机 Aero 只读字体参考，项目已有原始栅格及来源，Win16 标题、普通菜单和 Win2K 系统菜单自有夹具。 |
+| Reporting Requirements | 分类说明标准字段、版本扩展与借用数据，保存双宽基线对照和未运行项。 |
+| Stop Conditions | 保持既有权限、来源和桌面边界。 |
+| Exit Criteria | 主题状态及布局通过独立格式、绘制、输入消息和所有权验证，已发布同批包和实际远端摘要复核。 |
 | Original Owner Request | 共用主题机制，以可编译的 MSStyles 和 theme 文件承载 Win16、Win2000 风格。 |
-| Similar-Issue Sweep | P45 标题栏及滚动条窗口、Win16 原栅格、Win2000 标准按钮、S2 逐项接收者和已有 focused 测试。 |
+| Similar-Issue Sweep | S4 标题槽、Win16 菜单合并图与字体缓存、Win2K 菜单颜色与标题字体、现有菜单控制器和字体对用例。 |
 
 ## Identifier State
 
@@ -84,8 +85,8 @@ S4 P4 接入 Win16 标题图像、两风格四种按钮状态和滚动端钮度�
 - Last verified remote delivery: M0 T29 S4 P4；八件开发运行包及四个主题预览。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 4
-- Open task: M0 T29 S4；三类代表部件闭环。
+- Last allocated T29 S: 5
+- Open task: M0 T29 S5；窗口、菜单和字体。
 
 ## Technical Baseline
 
