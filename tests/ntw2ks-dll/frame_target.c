@@ -237,6 +237,7 @@ static DWORD WINAPI close_message(void *dpi_context)
 
 static HWND common_owner;
 static volatile LONG common_done;
+static BOOL check_stock_font;
 static BOOL CALLBACK find_common_window(HWND window,LPARAM unused)
 {
     (void)unused;DWORD pid=0;WCHAR cls[32]={0};GetWindowThreadProcessId(window,&pid);
@@ -245,6 +246,11 @@ static BOOL CALLBACK find_common_window(HWND window,LPARAM unused)
     BOOL sent=SendMessageTimeoutW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info,SMTO_ABORTIFHUNG,1000,&response)!=0;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     if(sent && GetPropW(window,L"Win2kStyle.Frame") && info.rcTitleBar.bottom-info.rcTitleBar.top==MulDiv(19,(int)dpi,96))InterlockedExchange(&message_attached,1);
+    if(check_stock_font){
+        RECT client={0};
+        GetClientRect(window,&client);
+        printf("WIN2K FONT CLIENT %ldx%ld\n",client.right,client.bottom);
+    }
     InterlockedExchange(&message_seen,1);
     if(InterlockedCompareExchange(&message_accept,0,0)){
         HWND button=GetDlgItem(window,IDOK);PostMessageW(window,WM_COMMAND,MAKEWPARAM(IDOK,BN_CLICKED),(LPARAM)button);
@@ -745,7 +751,9 @@ int wmain(int argc,WCHAR **argv)
         }
         DestroyWindow(common_owner);common_owner=NULL;UnregisterClassW(owner_class.lpszClassName,instance);CoUninitialize();return all?0:3;
     }
-    if(argc==2 && !lstrcmpW(argv[1],L"--print-frame")){
+    if(argc==2 && (!lstrcmpW(argv[1],L"--print-frame") || !lstrcmpW(argv[1],L"--print-dlg-frame") ||
+        !lstrcmpW(argv[1],L"--page-setup-frame"))){
+        BOOL print_only=!lstrcmpW(argv[1],L"--print-dlg-frame"),setup_only=!lstrcmpW(argv[1],L"--page-setup-frame");
         PRINTDLGW defaults={.lStructSize=sizeof(defaults),.Flags=PD_RETURNDEFAULT};
         BOOL available=PrintDlgW(&defaults);DWORD printer_error=CommDlgExtendedError();
         if(defaults.hDevMode)GlobalFree(defaults.hDevMode);
@@ -760,6 +768,7 @@ int wmain(int argc,WCHAR **argv)
         if(!common_owner)return 2;
         BOOL all=TRUE;
         for(int ansi=0;ansi<2;++ansi)for(int setup=0;setup<2;++setup){
+            if((setup && print_only) || (!setup && setup_only))continue;
             InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);
             HANDLE thread=CreateThread(NULL,0,close_common,NULL,0,NULL);if(!thread)return 2;
             PRINTDLGA pa={.lStructSize=sizeof(pa),.hwndOwner=common_owner};PRINTDLGW pw={.lStructSize=sizeof(pw),.hwndOwner=common_owner};
@@ -797,8 +806,11 @@ int wmain(int argc,WCHAR **argv)
         }
         InterlockedExchange(&message_accept,0);return all?0:3;
     }
-    if(argc==2 && (!lstrcmpW(argv[1],L"--color-font-frame") || !lstrcmpW(argv[1],L"--font-accept"))){
-        BOOL all=TRUE,accept=!lstrcmpW(argv[1],L"--font-accept");
+    if(argc==2 && (!lstrcmpW(argv[1],L"--color-font-frame") || !lstrcmpW(argv[1],L"--font-accept") ||
+        !lstrcmpW(argv[1],L"--font-native"))){
+        BOOL native=!lstrcmpW(argv[1],L"--font-native");
+        BOOL all=TRUE,accept=native || !lstrcmpW(argv[1],L"--font-accept");
+        check_stock_font=accept;
         InterlockedExchange(&message_accept,accept);
         for(int ansi=0;ansi<2;++ansi)for(int font=0;font<2;++font){
             if(accept && !font)continue;
@@ -822,7 +834,8 @@ int wmain(int argc,WCHAR **argv)
             BOOL selected=!accept || (ansi?
                 log_a.lfWeight==FW_BOLD && fa.iPointSize==120 && !lstrcmpiA(log_a.lfFaceName,"Arial"):
                 log_w.lfWeight==FW_BOLD && fw.iPointSize==120 && !lstrcmpiW(log_w.lfFaceName,L"Arial"));
-            BOOL pass=wait==WAIT_OBJECT_0 && result==accept && selected && error==0 && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+            BOOL pass=wait==WAIT_OBJECT_0 && result==accept && selected && error==0 && InterlockedCompareExchange(&message_seen,0,0) &&
+                (native || InterlockedCompareExchange(&message_attached,0,0));
             long attached=InterlockedCompareExchange(&message_attached,0,0);
             if(accept)
                 printf("WIN2K FONT bits=%u ansi=%d attached=%ld accepted=%d selected=%d point_size=%d error=%lu\n",

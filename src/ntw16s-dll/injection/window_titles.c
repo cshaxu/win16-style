@@ -13,6 +13,7 @@
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/dialog/print_extended.h"
 #include "lib-win32-style/appearance/win2000/dialog/print_general.h"
+#include "lib-win32-style/appearance/win2000/dialog/stock_call.h"
 #include "ntw16s-dll/global/window.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/attachment.h"
@@ -141,12 +142,17 @@ DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,TRUE,-1)
 #define TITLE_PARAM_FINISH(state,rollback,result,error,fail) do { \
     if((state)->failure){rollback;(result)=(fail);(error)=(state)->failure;} \
 } while(0)
-#define SIMPLE_DIALOG_HOOK(NAME,PARAM,RET,FAIL,CLEANUP) \
-    STYLE_DIALOG_HOOK(NAME,(PARAM parameters),(parameters),RET,FAIL,CLEANUP,title_scope,TITLE_DIALOG_BEGIN,TITLE_DIALOG_PREPARE,end_titles,TITLE_PARAM_FINISH)
-SIMPLE_DIALOG_HOOK(FindTextA,FINDREPLACEA *,HWND,NULL,if(result)DestroyWindow(result))
-SIMPLE_DIALOG_HOOK(FindTextW,FINDREPLACEW *,HWND,NULL,if(result)DestroyWindow(result))
-SIMPLE_DIALOG_HOOK(ReplaceTextA,FINDREPLACEA *,HWND,NULL,if(result)DestroyWindow(result))
-SIMPLE_DIALOG_HOOK(ReplaceTextW,FINDREPLACEW *,HWND,NULL,if(result)DestroyWindow(result))
+static const win2k_stock_windows stock_windows={ntw16s_win2k_dialog_initialize,ntw16s_global_win2k_attached};
+#define SIMPLE_DIALOG_HOOK(NAME,PARAM,RET,FAIL,CLEANUP,ROUTE) \
+    STYLE_DIALOG_HOOK_ROUTED(NAME,(PARAM parameters),(parameters),RET,FAIL,CLEANUP,title_scope,TITLE_DIALOG_BEGIN,TITLE_DIALOG_PREPARE,end_titles,TITLE_PARAM_FINISH,ROUTE)
+#define FIND_DIALOG_HOOK(NAME,PARAM,CALL,COMPACT) \
+    SIMPLE_DIALOG_HOOK(NAME,PARAM *,HWND,NULL,if(result)DestroyWindow(result), \
+        if(ntw16s_win2k_session_active())return CALL(parameters,real_##NAME,&stock_windows,COMPACT))
+FIND_DIALOG_HOOK(FindTextA,FINDREPLACEA,win2k_find_a,TRUE)
+FIND_DIALOG_HOOK(FindTextW,FINDREPLACEW,win2k_find_w,TRUE)
+FIND_DIALOG_HOOK(ReplaceTextA,FINDREPLACEA,win2k_find_a,FALSE)
+FIND_DIALOG_HOOK(ReplaceTextW,FINDREPLACEW,win2k_find_w,FALSE)
+#undef FIND_DIALOG_HOOK
 
 /* Font selection uses owner-drawn system combos.  Observe only the current
  * thread and only the standard font dialog's three required combo IDs; keep
@@ -171,18 +177,19 @@ static LRESULT CALLBACK color_dialog_return(int code,WPARAM wparam,LPARAM lparam
     }
     return CallNextHookEx(NULL,code,wparam,lparam);
 }
-#define OBSERVED_DIALOG_HOOK(NAME,TYPE,OBSERVER,TRACKED) \
+#define OBSERVED_DIALOG_HOOK(NAME,TYPE,OBSERVER,TRACKED,CALL) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { process_hook_unwind_scope unwind;style_dialog_observation scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+  if(ntw16s_win2k_session_active())return CALL(parameters,real_##NAME,&stock_windows); \
   if(!style_dialog_observation_begin(&scope,&title_context,OBSERVER,TRACKED))return FALSE; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.creation.failure){result=FALSE;error=scope.creation.failure;}SetLastError(error);return result; }
-OBSERVED_DIALOG_HOOK(ChooseFontA,CHOOSEFONTA,font_dialog_return,FALSE)
-OBSERVED_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW,font_dialog_return,FALSE)
-OBSERVED_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA,color_dialog_return,TRUE)
-OBSERVED_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW,color_dialog_return,TRUE)
+OBSERVED_DIALOG_HOOK(ChooseFontA,CHOOSEFONTA,font_dialog_return,FALSE,win2k_font_a)
+OBSERVED_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW,font_dialog_return,FALSE,win2k_font_w)
+OBSERVED_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA,color_dialog_return,TRUE,win2k_color_a)
+OBSERVED_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW,color_dialog_return,TRUE,win2k_color_w)
 #undef OBSERVED_DIALOG_HOOK
 
 /* A no-op print hook selects the system's traditional PrintDlg layout.
@@ -193,6 +200,7 @@ static UINT_PTR CALLBACK classic_print_hook(HWND w,UINT m,WPARAM a,LPARAM b)
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { process_hook_unwind_scope unwind;title_scope scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+  if(ntw16s_win2k_session_active())return win2k_print_##SUFFIX(parameters,real_##NAME,&stock_windows); \
   if(!begin_titles(&scope,TRUE))return FALSE; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { \
     TYPE copy; \
@@ -207,8 +215,10 @@ PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
 #undef PRINT_HOOK
 
 /* Synchronous common dialogs also create their own internal windows. */
-SIMPLE_DIALOG_HOOK(PageSetupDlgA,PAGESETUPDLGA *,BOOL,FALSE,(void)0)
-SIMPLE_DIALOG_HOOK(PageSetupDlgW,PAGESETUPDLGW *,BOOL,FALSE,(void)0)
+SIMPLE_DIALOG_HOOK(PageSetupDlgA,PAGESETUPDLGA *,BOOL,FALSE,(void)0,
+    if(ntw16s_win2k_session_active())return win2k_page_setup_a(parameters,real_PageSetupDlgA,&stock_windows))
+SIMPLE_DIALOG_HOOK(PageSetupDlgW,PAGESETUPDLGW *,BOOL,FALSE,(void)0,
+    if(ntw16s_win2k_session_active())return win2k_page_setup_w(parameters,real_PageSetupDlgW,&stock_windows))
 static HMODULE global_print_resources(void)
 {
     return ntw16s_win2k_session_active()?ntw16s_global_win2k_resources():NULL;
@@ -233,8 +243,8 @@ PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,win2k_print_general_w,style_print_ex
 #undef PRINT_EXTENDED_HOOK
 
 /* Property sheets may create internal pages without public DialogBox calls. */
-SIMPLE_DIALOG_HOOK(PropertySheetA,const PROPSHEETHEADERA *,INT_PTR,-1,(void)0)
-SIMPLE_DIALOG_HOOK(PropertySheetW,const PROPSHEETHEADERW *,INT_PTR,-1,(void)0)
+SIMPLE_DIALOG_HOOK(PropertySheetA,const PROPSHEETHEADERA *,INT_PTR,-1,(void)0,(void)0)
+SIMPLE_DIALOG_HOOK(PropertySheetW,const PROPSHEETHEADERW *,INT_PTR,-1,(void)0,(void)0)
 #undef SIMPLE_DIALOG_HOOK
 
 /* TaskDialog lives in ComCtl32 v6; bind only when that module exports it. */

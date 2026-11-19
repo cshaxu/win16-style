@@ -5,6 +5,7 @@
 #include <dlgs.h>
 #include <stdio.h>
 #include <string.h>
+#include "../integration/global_dialog_thread.h"
 static BOOL (__cdecl *attached)(HWND);
 static BOOL cancel_mode,font_mode,color_mode,color_expand,color_keyboard_mode;
 static BOOL color_expand_ok;
@@ -193,11 +194,18 @@ static UINT_PTR CALLBACK app_hook(HWND window,UINT message,WPARAM wparam,LPARAM 
 }
 int wmain(int argc,WCHAR **argv)
 {
+    BOOL late=argc==6 && !lstrcmpW(argv[1],L"--late");
+    if(late){
+        if(!initialize_late_receiver(argv[2]))return 5;
+        argc-=2;
+        argv+=2;
+    }
     if(argc!=4)return 2;
     BOOL font=argv[1][0]==L'f',ansi=argv[2][0]==L'a';font_mode=font;color_mode=!font;color_expand=color_mode && argv[3][0]==L'e';color_keyboard_mode=color_mode&&argv[3][0]==L'k';cancel_mode=argv[3][0]==L'c' || color_expand;
     HMODULE module=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");
     attached=module?(BOOL (__cdecl *)(HWND))(void *)GetProcAddress(module,"Ntw16sWindowAttached"):NULL;
-    if(!attached && GetModuleHandleW(sizeof(void*)==4?L"ntw2ks32.dll":L"ntw2ks64.dll"))attached=win2k_frame_attached;
+    if(late || (!attached && GetModuleHandleW(sizeof(void*)==4?L"ntw2ks32.dll":L"ntw2ks64.dll")))
+        attached=win2k_frame_attached;
     font_memory_template=font && (!lstrcmpW(argv[3],L"apply-memory-ok") || !lstrcmpW(argv[3],L"apply-memory-cancel"));
     font_apply_mode=font_memory_template || (font && (!lstrcmpW(argv[3],L"apply-ok") || !lstrcmpW(argv[3],L"apply-cancel")));
     if(font_apply_mode){

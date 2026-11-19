@@ -2611,5 +2611,127 @@
         }
       }
     }
+  },
+  "global_stock_p45": {
+    "scope": "M0 T28 S3. Ordinary Win2000 startup and the global dialog receiver in an owned GUI target now share the Windows 2000 presenters for FindText, ReplaceText, ChooseFont, ChooseColor, PrintDlg and PageSetupDlg, both A and W. Callers retain the installed native trampolines, their own window initialization and frame ownership. No new process, hook target, DLL export, runtime product file or graphic resource.",
+    "implementation": "The typed stock call presenter owns current-thread observation and exception cleanup. The two product callers provide frame callbacks. Find compacts the hidden-wrap stock template after restoring the native client. Expanded Color preserves the 298×184 DLU client and RGB/custom-slot writeback. Font restores the native stock extent when no application callback supplied its own size; the known 287×196 DLU classic case with a callback retains its guarded repair. Legacy printing reuses the common request and result contract. Existing late-trampoline ownership and Win16 routing stay in their original product entry points.",
+    "incremental": {
+      "passed": 108,
+      "native": 12,
+      "owned_global_receiver": 44,
+      "normal_win2k": 44,
+      "win16": 8,
+      "font": "On the desktop with a 144 DPI display the basic font fixture in both widths measured 425×439 native and 427×445 on the preceding package. After the repair, ordinary and late Win2000 both measured 425×439 and returned the selected 12-point Arial Bold. The separate Win32 font Apply fixture measures 431×319 for the classic template and verifies Apply, confirmation and cancellation. Its A/W effect results match the native reference."
+    },
+    "restored_desktop": {
+      "work_area": "1920×1008 physical at 144 DPI",
+      "file_selection": "32/32 on the published P44 ordinary path plus the P45 incremental owned late receiver. 16 verified complete Places geometry and 16 are classic unexpanded file selections. Each returned the correct named file, filter, offsets and flags with the caller DPI context restored.",
+      "native_print_page": "2/2 independent PropertySheetW controls entered create, init and release once. All four A/W x86/x64 native PrintDlgEx requests with an actual caller property page, valid start index, and handles from the default queue stopped at a zero-size ProxyModalWindow before any callback. Bounded at 4.5 seconds per fixture, all four are skips. No messages were sent to the proxy and no print job was submitted.",
+      "native_print_probe_sha256": "8941be68a38bb278dcf4e34ad5adb314e3c8dbd542e581f6952781b2260dd9a9",
+      "followup_window": "A second bounded run at the owner's request, using the restored desktop, repeated both widths and encodings in native Windows and published P44 --2k. Both independent PropertySheetW controls passed. All eight PrintDlgEx caller page requests reached a zero-size ProxyModalWindow without a page callback and were skipped at the timeout. Published P44 General opened and cancelled the directory query 4/4, and its own print sheet remained usable. NetGetJoinInformation returned success, status NetSetupWorkgroupName (2). No actual domain queue was available. No print job was submitted."
+    },
+    "limits": "The native PrintDlgEx custom-page fallback still needs a host that displays its native print property sheet. A real domain printer selection and driver/result handoff remain unverified; only directory query/cancel and local queue results have evidence on this workgroup host. Product global UI/UAC/tray acquisition and system-wide behavior were not exercised by the owned receiver matrix. It used only self-created processes on the normal desktop. Modern/basic font variant geometry follows native client extent; classic Apply geometry is separately tested.",
+    "execution_hygiene": "One incremental batch followed by one same-snapshot dual-width Release packaging run; the task-owned incremental scratch was removed once the evidence was collected. Shared build/.ninja and build/.ccache were retained.",
+    "release": {
+      "source_parent": "f8e9359571faffb0d915e7197fe2bc5e0e3a2f07",
+      "snapshot_manifest_sha256": "59b358ac6d152a0dfa606d1ca487772b710ab2fdea27581ce0ab9eab5c7e4b04",
+      "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Task 28 -RunName s3-global-stock-package -Worker",
+      "toolchain": "C17, MinGW-w64 GCC 16.1.0, Ninja and repository ccache; clean x86/x64 Release.",
+      "build_seconds": {
+        "x86": 225.07,
+        "x64": 264.5
+      },
+      "ccache_direct_hits": {
+        "x86": 957,
+        "x64": 1047
+      },
+      "ccache_misses": {
+        "x86": 4,
+        "x64": 4
+      },
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "6ab2182b4353f4cf7af9a468c747e684ff7e537dc4a9e9e2b6b1eb49797082e3"
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "b6e1b9972fcfe90e77de60b80c2e761a411f72a595ab2bfa0372f361a3079512"
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "f6a006c33ca54163f59a0fb86a94bd6b1f7a80be462d7a199662e36bffc1c006"
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "5e0c41b3a327a59ddcb4b0f29cb208e62b93f26fc83f226a781ce922ecd364b3"
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "f649359bca1e77deff37b051f0d5b4689dadb13fee79bc1c94c2c1a09420bfe1"
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "4617a08fac7064aa34a648b9e29a881534ea644e0c4087b7273e8fec73570c5c"
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "3a4b139e08d960d3b75f7792655535cc5f096904123cd75a641d27db27a8b887"
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "126755ae1331f3d523aec08a4939ee36b74ff96f86541f13e56ef17f6783aea4"
+        }
+      },
+      "gate": "Clean source, resource, process/style boundaries, ABI and PE markers passed. Published both roots before runtime tests. Same-snapshot candidate, assets root and O:/winnt verified against their eight SHA-256 values."
+    },
+    "published_tests": {
+      "deployed": {
+        "native": 12,
+        "owned_global_receiver": 44,
+        "normal_win2k": 44,
+        "win16": 8,
+        "file_selections": 32,
+        "places_subset": 16,
+        "failed": 0
+      },
+      "assets": {
+        "native": 12,
+        "owned_global_receiver": 44,
+        "normal_win2k": 44,
+        "win16": 8,
+        "file_selections": 32,
+        "places_subset": 16,
+        "failed_after_focused_repeat": 0
+      },
+      "candidate": {
+        "native": 12,
+        "owned_global_receiver": 44,
+        "normal_win2k": 44,
+        "win16": 8,
+        "file_selections": 32,
+        "places_subset": 16,
+        "failed": 0
+      },
+      "core": "10/10 after publication, five per width: dialog observation, classic print, extended print, dialog combo and Win2000 caption.",
+      "assets_first_pass": "The first startup x64 Unicode expanded-color cancel call returned before the fixture observed its frame and color-slot writes (error 0); the other three expanded-color cases passed. The unchanged assets package passed three full grouped repeats of this exact lane (12/12), with frame, client geometry, RGB and both slots. The cause of the one early return is unconfirmed.",
+      "geometry": "All three roots exercised the restored physical 1920×1008 work area at 144 DPI. Each completed 16 complete Places geometry cases within the 32 file selections; 0 Places groups skipped."
+    },
+    "change_audit": {
+      "production_added": 204,
+      "production_deleted": 112,
+      "tests_added": 26,
+      "tests_deleted": 5,
+      "ownership": "The existing startup and late hook registration owners remain. Their callbacks retain module-specific frame ownership. The stock wrapper owns only its observation scope and local native request. No second installation or observer implementation remains for these Win2000 cases.",
+      "search": "rg -n 'FIND_(ENTRY|DIALOG_HOOK)|STOCK_ENTRY|OBSERVED_DIALOG_HOOK|PRINT_HOOK|PageSetupDlg' src/ntw2ks-dll/controls.c src/ntw16s-dll/injection/window_titles.c"
+    }
   }
 }

@@ -6,10 +6,13 @@
 /* The caller supplies scope ownership and finish policy. The original call's
  * error survives cleanup and finish; exceptions unwind the scope unchanged. */
 #define STYLE_DIALOG_HOOK(NAME,ARGS,CALL,RET,FAIL,MODE,SCOPE,BEGIN,PREPARE,CLEANUP,FINISH) \
+    STYLE_DIALOG_HOOK_ROUTED(NAME,ARGS,CALL,RET,FAIL,MODE,SCOPE,BEGIN,PREPARE,CLEANUP,FINISH,(void)0)
+#define STYLE_DIALOG_HOOK_ROUTED(NAME,ARGS,CALL,RET,FAIL,MODE,SCOPE,BEGIN,PREPARE,CLEANUP,FINISH,ROUTE) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION RET WINAPI hook_##NAME ARGS \
 { SCOPE state;process_hook_unwind_scope unwind;RET result=FAIL; \
   DWORD incoming=GetLastError(),error=ERROR_SUCCESS; \
+  ROUTE; \
   if(!BEGIN(&state,incoming))return FAIL; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,CLEANUP,&state); \
   { PREPARE(&state,incoming);result=real_##NAME CALL;error=GetLastError(); } \

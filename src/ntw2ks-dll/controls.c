@@ -7,16 +7,14 @@
 #include "lib-win32/process-hook/startup_hooks.h"
 #include "lib-win32/process-hook/unwind.h"
 #include "lib-win32-style/appearance/win2000/window/frame.h"
-#include "lib-win32-style/appearance/win2000/dialog/color.h"
 #include "lib-win32-style/appearance/win2000/dialog/file_call.h"
-#include "lib-win32-style/appearance/win2000/dialog/find.h"
 #include "lib-win32-style/appearance/win2000/dialog/print_general.h"
 #include "lib-win32-style/application/lifecycle/global_window.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
 #include "lib-win32-style/application/dialog/observation.h"
 #include "lib-win32-style/application/dialog/dialog_hook.h"
 #include "lib-win32-style/application/dialog/classic_com_controller.h"
-#include "lib-win32-style/application/dialog/classic_print_contract.h"
+#include "lib-win32-style/appearance/win2000/dialog/stock_call.h"
 #include "lib-win32-style/application/dialog/print_extended.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/window/window_identity.h"
@@ -88,35 +86,6 @@ static LRESULT CALLBACK dialog_created(int code,WPARAM wp,LPARAM lp)
     if(event)attach_dialog(event->hwnd);
     SetLastError(incoming);return CallNextHookEx(NULL,code,wp,lp);
 }
-static LRESULT CALLBACK color_dialog_created(int code,WPARAM wp,LPARAM lp)
-{
-    DWORD incoming=GetLastError();
-    if(code>=0 && lp){
-        const CWPRETSTRUCT *message=(const CWPRETSTRUCT *)lp;
-        if(message->message==WM_COMMAND && win2k_frame_attached(message->hwnd))
-            win2k_color_restore_expanded_client(message);
-    }
-    SetLastError(incoming);
-    return dialog_created(code,wp,lp);
-}
-
-static BOOL dialog_first_show(const CWPRETSTRUCT *event)
-{
-    return event->message==WM_WINDOWPOSCHANGED && event->lParam &&
-        (((const WINDOWPOS *)event->lParam)->flags&SWP_SHOWWINDOW) && win2k_frame_attached(event->hwnd);
-}
-
-static LRESULT CALLBACK font_dialog_created(int code,WPARAM wp,LPARAM lp)
-{
-    DWORD incoming=GetLastError();
-    if(code>=0 && lp){
-        const CWPRETSTRUCT *event=(const CWPRETSTRUCT *)lp;
-        if(dialog_first_show(event) &&
-           style_classic_font_template(event->hwnd))win2k_restore_stock_dialog_client(event->hwnd,287,196);
-    }
-    SetLastError(incoming);
-    return dialog_created(code,wp,lp);
-}
 static HRESULT observe_dialog(HRESULT (*show)(void *),void *context)
 {return style_dialog_observe(show,context,attach_dialog);}
 static BOOL com_session_active(void){return TRUE;}
@@ -149,33 +118,29 @@ MESSAGE_HOOK(MessageBoxExW,(HWND owner,LPCWSTR text,LPCWSTR title,UINT type,WORD
 MESSAGE_HOOK(MessageBoxIndirectA,(const MSGBOXPARAMSA *parameters),(parameters))
 MESSAGE_HOOK(MessageBoxIndirectW,(const MSGBOXPARAMSW *parameters),(parameters))
 
-/* Find and replace create modeless dialogs inside COMDLG32. */
-#define CLASSIC_FIND_FINISH(state,modeless,result,error,fail) do { \
-    CLASSIC_PARAM_FINISH(state,modeless,result,error,fail); \
-    if((result) && !(parameters->Flags&(FR_ENABLEHOOK|FR_ENABLETEMPLATE|FR_ENABLETEMPLATEHANDLE))) \
-        win2k_find_compact(result); \
-} while(0)
-#define FIND_HOOK(NAME,TYPE,FINISH) \
-    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),HWND,NULL,TRUE,style_dialog_observation,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,FINISH)
-FIND_HOOK(FindTextA,FINDREPLACEA,CLASSIC_FIND_FINISH)
-FIND_HOOK(FindTextW,FINDREPLACEW,CLASSIC_FIND_FINISH)
-FIND_HOOK(ReplaceTextA,FINDREPLACEA,CLASSIC_PARAM_FINISH)
-FIND_HOOK(ReplaceTextW,FINDREPLACEW,CLASSIC_PARAM_FINISH)
-
-/* Common dialogs can create their window without exported dialog calls. */
-#define COMMON_MODAL_HOOK(NAME,TYPE) \
-    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),BOOL,FALSE,FALSE,style_dialog_observation,CLASSIC_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_PARAM_FINISH)
-COMMON_MODAL_HOOK(PageSetupDlgA,PAGESETUPDLGA)
-COMMON_MODAL_HOOK(PageSetupDlgW,PAGESETUPDLGW)
-#define FONT_DIALOG_BEGIN(state,incoming) ((void)(incoming),style_dialog_observation_begin(state,NULL, \
-    parameters && parameters->lStructSize==sizeof(*parameters) && \
-    !(parameters->Flags&(CF_ENABLETEMPLATE|CF_ENABLETEMPLATEHANDLE))?font_dialog_created:dialog_created,FALSE))
-#define FONT_HOOK(NAME,TYPE) \
-    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),BOOL,FALSE,FALSE,style_dialog_observation,FONT_DIALOG_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_PARAM_FINISH)
-FONT_HOOK(ChooseFontA,CHOOSEFONTA)
-FONT_HOOK(ChooseFontW,CHOOSEFONTW)
-#undef FONT_HOOK
-#undef FONT_DIALOG_BEGIN
+static const win2k_stock_windows stock_windows={attach_dialog,win2k_frame_attached};
+#define STOCK_ENTRY(NAME,TYPE,CALL) \
+static __typeof__(&NAME) real_##NAME; \
+static BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{return CALL(parameters,real_##NAME,&stock_windows);}
+STOCK_ENTRY(PageSetupDlgA,PAGESETUPDLGA,win2k_page_setup_a)
+STOCK_ENTRY(PageSetupDlgW,PAGESETUPDLGW,win2k_page_setup_w)
+STOCK_ENTRY(ChooseFontA,CHOOSEFONTA,win2k_font_a)
+STOCK_ENTRY(ChooseFontW,CHOOSEFONTW,win2k_font_w)
+STOCK_ENTRY(ChooseColorA,CHOOSECOLORA,win2k_color_a)
+STOCK_ENTRY(ChooseColorW,CHOOSECOLORW,win2k_color_w)
+STOCK_ENTRY(PrintDlgA,PRINTDLGA,win2k_print_a)
+STOCK_ENTRY(PrintDlgW,PRINTDLGW,win2k_print_w)
+#undef STOCK_ENTRY
+#define FIND_ENTRY(NAME,TYPE,CALL,COMPACT) \
+static __typeof__(&NAME) real_##NAME; \
+static HWND WINAPI hook_##NAME(TYPE *parameters) \
+{return CALL(parameters,real_##NAME,&stock_windows,COMPACT);}
+FIND_ENTRY(FindTextA,FINDREPLACEA,win2k_find_a,TRUE)
+FIND_ENTRY(FindTextW,FINDREPLACEW,win2k_find_w,TRUE)
+FIND_ENTRY(ReplaceTextA,FINDREPLACEA,win2k_find_a,FALSE)
+FIND_ENTRY(ReplaceTextW,FINDREPLACEW,win2k_find_w,FALSE)
+#undef FIND_ENTRY
 
 static const style_file_window_ops file_windows={attach_dialog,win2k_frame_attached};
 #define FILE_HOOK(NAME,TYPE,SUFFIX) \
@@ -187,34 +152,6 @@ FILE_HOOK(GetOpenFileNameW,OPENFILENAMEW,w)
 FILE_HOOK(GetSaveFileNameA,OPENFILENAMEA,a)
 FILE_HOOK(GetSaveFileNameW,OPENFILENAMEW,w)
 #undef FILE_HOOK
-
-#define CLASSIC_COLOR_BEGIN(state,incoming) ((void)(incoming),style_dialog_observation_begin(state,NULL, \
-    parameters && parameters->lStructSize==sizeof(*parameters) && !(parameters->Flags&(CC_ENABLETEMPLATE|CC_ENABLETEMPLATEHANDLE)) \
-        ?color_dialog_created:dialog_created,FALSE))
-#define COLOR_HOOK(NAME,TYPE) \
-    STYLE_DIALOG_HOOK(NAME,(TYPE *parameters),(parameters),BOOL,FALSE,FALSE,style_dialog_observation,CLASSIC_COLOR_BEGIN,CLASSIC_DIALOG_PREPARE,style_dialog_observation_end,CLASSIC_PARAM_FINISH)
-COLOR_HOOK(ChooseColorA,CHOOSECOLORA)
-COLOR_HOOK(ChooseColorW,CHOOSECOLORW)
-#undef COLOR_HOOK
-#undef CLASSIC_COLOR_BEGIN
-
-static UINT_PTR CALLBACK print_dialog_hook(HWND window,UINT message,WPARAM a,LPARAM b)
-{(void)window;(void)message;(void)a;(void)b;return 0;}
-#define PRINT_HOOK(NAME,TYPE,SUFFIX) \
-static __typeof__(&NAME) real_##NAME; \
-static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{ style_dialog_observation scope;process_hook_unwind_scope unwind;TYPE native; \
-  BOOL classic=style_classic_print_prepare_##SUFFIX(parameters,&native,STYLE_CLASSIC_PRINT_FLAGS,print_dialog_hook); \
-  DWORD incoming=GetLastError(),error;BOOL result; \
-  if(!style_dialog_observation_begin(&scope,NULL,dialog_created,FALSE))return FALSE; \
-  PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); \
-  SetLastError(incoming);result=real_##NAME(classic?&native:parameters);error=GetLastError(); \
-  PROCESS_HOOK_UNWIND_END(unwind); \
-  if(classic)style_classic_print_result_##SUFFIX(parameters,&native); \
-  SetLastError(error);return result; }
-PRINT_HOOK(PrintDlgA,PRINTDLGA,a)
-PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
-#undef PRINT_HOOK
 
 /* Extended requests outside the classic bridge contract retain their property sheet. */
 extern IMAGE_DOS_HEADER __ImageBase;
