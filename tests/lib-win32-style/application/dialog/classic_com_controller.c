@@ -11,11 +11,15 @@ static create_ex_fn create_ex;
 static class_fn class_object;
 static unsigned attaches,fail_at,scopes;
 static BOOL active=TRUE;
+static BOOL explorer;
 static BOOL session(void){return active;}
+static BOOL explorer_session(void){return explorer;}
 /* Abort before invoking a native or classic UI: this exercises the actual
  * public proxy/controller and its scope while never displaying a dialog. */
 static HRESULT scope(HRESULT (*callback)(void *),void *context)
 {(void)callback;(void)context;++scopes;return E_ABORT;}
+static HRESULT explorer_scope(HRESULT (*callback)(void *),void *context)
+{(void)callback;(void)context;return E_ACCESSDENIED;}
 static DWORD capture(void *target,void *replacement)
 {
     (void)target;++attaches;
@@ -104,6 +108,19 @@ int main(void)
     attaches=0;options.experimental_events=TRUE;options.experimental_hidden=TRUE;
     CHECK(!style_classic_com_attach(capture,&options) && attaches==3);
     CHECK(!exercise(FALSE) && !exercise(TRUE) && event_refs==1);
+    attaches=0;options.experimental_events=FALSE;options.experimental_hidden=FALSE;
+    options.explorer_active=explorer_session;options.explorer_scope=explorer_scope;
+    CHECK(!style_classic_com_attach(capture,&options) && attaches==3);
+    active=FALSE;explorer=TRUE;
+    IFileDialog *retained=NULL;
+    CHECK(SUCCEEDED(create(&CLSID_FileOpenDialog,NULL,CLSCTX_INPROC_SERVER,&IID_IFileDialog,(void **)&retained)));
+    CHECK(proxy_identity((IUnknown *)retained,FALSE,TRUE) && IFileDialog_Show(retained,NULL)==E_ACCESSDENIED);
+    explorer=FALSE;active=TRUE;
+    CHECK(IFileDialog_Show(retained,NULL)==E_ABORT);
+    active=FALSE;
+    CHECK(IFileDialog_Show(retained,NULL)==E_ABORT);
+    explorer=TRUE;
+    CHECK(IFileDialog_Show(retained,NULL)==E_ACCESSDENIED && IFileDialog_Release(retained)==0);
     CoUninitialize();
-    printf("COM_CONTROLLER_OK bits=%u direct=1 multi_qi=1 factory=1 scope=1 events_refs=1 inactive=1 experimental=1 attach_failure=1\n",(unsigned)(sizeof(void *)*8));return 0;
+    printf("COM_CONTROLLER_OK bits=%u direct=1 multi_qi=1 factory=1 scope=1 events_refs=1 inactive=1 experimental=1 attach_failure=1 retained=1\n",(unsigned)(sizeof(void *)*8));return 0;
 }

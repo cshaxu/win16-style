@@ -11,6 +11,8 @@ typedef struct style_classic_com_options {
     PCWSTR property,folder_message,hidden_message;
     BOOL experimental_events,experimental_hidden;
     BOOL explorer_files;
+    BOOL (*explorer_active)(void);
+    HRESULT (*explorer_scope)(HRESULT (*)(void *),void *);
 } style_classic_com_options;
 DWORD style_classic_com_attach(DWORD (*)(void *,void *),const style_classic_com_options *);
 #endif

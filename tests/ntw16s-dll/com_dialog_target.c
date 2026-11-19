@@ -10,6 +10,7 @@
 #include <dlgs.h>
 #include <stdio.h>
 #include <wchar.h>
+#include "../integration/global_dialog_thread.h"
 static DWORD owner;static volatile LONG seen,old,filter_seen,label_seen,cancel_label_seen,hidden_seen;static HWND dialog;static BOOL cancel;
 static BOOL folder_mode;static WCHAR folder_path[MAX_PATH];
 static BOOL explorer_mode,explorer_seen,compact_dpi_mode,compact_fit;
@@ -94,6 +95,10 @@ static DWORD WINAPI observer(void *unused)
 }
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc>=5 && !lstrcmpW(argv[1],L"--late")){
+        if(!initialize_late_receiver(argv[2])){puts("COM late attachment timeout");return 21;}
+        argc-=2;argv+=2;
+    }
     setvbuf(stdout,NULL,_IONBF,0);
     if(argc!=3 && argc!=4)return 2;
     BOOL foreign_query=argc==4 && !lstrcmpW(argv[3],L"foreign");
@@ -102,8 +107,8 @@ int wmain(int argc,WCHAR **argv)
     BOOL filtered=argc==4 && !lstrcmpW(argv[3],L"filter");
     BOOL customized=argc==4 && !lstrcmpW(argv[3],L"custom");
     BOOL use_v2=argc==4 && !lstrcmpW(argv[3],L"v2");
-    BOOL use_ex=argc==4 && !lstrcmpW(argv[3],L"ex");
-    BOOL factory_mode=argc==4 && !lstrcmpW(argv[3],L"factory");
+    BOOL use_ex=argc==4 && (!lstrcmpW(argv[3],L"ex") || !lstrcmpW(argv[3],L"explorer-ex"));
+    BOOL factory_mode=argc==4 && (!lstrcmpW(argv[3],L"factory") || !lstrcmpW(argv[3],L"explorer-factory"));
     BOOL labels=argc==4 && !lstrcmpW(argv[3],L"labels");
     BOOL cancel_label=argc==4 && !lstrcmpW(argv[3],L"cancel-label");
     BOOL hidden=argc==4 && !lstrcmpW(argv[3],L"hidden");
@@ -111,7 +116,8 @@ int wmain(int argc,WCHAR **argv)
     BOOL tempinitial=argc==4 && !lstrcmpW(argv[3],L"tempinitial");
     BOOL native=argc==4 && !lstrcmpW(argv[3],L"native");
     compact_dpi_mode=argc==4 && !lstrcmpW(argv[3],L"explorer-compact-dpi");
-    explorer_mode=compact_dpi_mode || (argc==4 && !lstrcmpW(argv[3],L"explorer"));
+    explorer_mode=compact_dpi_mode || (argc==4 && (!lstrcmpW(argv[3],L"explorer") ||
+        !lstrcmpW(argv[3],L"explorer-ex") || !lstrcmpW(argv[3],L"explorer-factory")));
     if(compact_dpi_mode){
         if(!SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))return 2;
         UINT dpi=GetDpiForSystem();

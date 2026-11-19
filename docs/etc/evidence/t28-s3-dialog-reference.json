@@ -2517,5 +2517,99 @@
         }
       }
     }
+  },
+  "global_com_presenter_p44": {
+    "implementation": "The existing global COM factory slots now recognize Win2000 sessions. Eligible file and folder calls reuse the ordinary Win2000 COM bridge, including Explorer file presentation and the native directory tree. Show selects the active presentation for the retained proxy. Actual COM identity, native fallback and cleanup stay in the existing common controller.",
+    "controller_tests": "Four x86/x64 core checks passed. With the same retained IFileDialog proxy, a controlled presentation scope observed Win2000, Win16, inactive fallback and Win2000 again, including final Release. Factory and multi-QI identity, event references and failed registration also passed. This transition test exercises the controller without displaying UI.",
+    "incremental": "36/36 GUI calls passed. Both widths covered open and save acceptance/cancellation, folder acceptance/cancellation, CoCreateInstanceEx, IClassFactory, and native cancellation with a customer-supplied control. The late calls use the real existing receiver solely on the owned child thread. Twelve subsequent real message-box calls passed across the six A/W APIs and both widths, checking the button group, default No action, icon, and visible frame.",
+    "release_fixture_environment": "The first release run observed two CoCreateInstanceEx accept failures in the late fixtures at the launcher-provided sandbox temporary directory. The same released DLLs and fixtures passed both cases immediately with TEMP and TMP set to the owned staging directory. The entire suite was repeated for all release paths using that directory. No binary change was required.",
+    "released_runtime": {
+      "assets": {
+        "late": 18,
+        "startup": 18,
+        "failed": 0,
+        "late_messages": 12,
+        "win16_com": 2
+      },
+      "winnt": {
+        "late": 18,
+        "startup": 18,
+        "failed": 0,
+        "late_messages": 12,
+        "win16_com": 2
+      },
+      "built": {
+        "late": 18,
+        "startup": 18,
+        "failed": 0,
+        "late_messages": 12,
+        "win16_com": 2
+      }
+    },
+    "released_counts": "The three same-hash package paths passed 108 COM cases, 36 existing global message-box cases, and six Win16 COM regressions, 150/150 overall.",
+    "remaining_baseline": "Owned fixture comparisons identified the next layout work. Find A/W had a 356x126 client versus the 354x101 fixture reference on both widths, while Replace layout and Find/Replace notification tests passed. Expanded color returned correct RGB and custom slots in all eight cases but measured 449x305 rather than 447x299. Four basic font selection cases returned the requested 12-point result; dedicated font layout remains to be checked. The combined standard print and page-setup fixture timed out on both widths, so those calls require an individual diagnosis.",
+    "limits": "The administrator tray workflow, additional late layout work, valid native application print page display and real domain printer result remain open. Objects originating before the receiver installed its factory slots keep their original native identity. Temporary package, publication backups and probe trees were removed after verification.",
+    "footprint": "Source and test changes total +120/-52 lines. Existing COM factories, file-dialog trampolines and frame owners remain in use. Product artifacts and exports follow the existing inventory.",
+    "release": {
+      "source_parent": "50c12861473dd5be31f2ab2158ce82de5d3e18f4",
+      "snapshot_manifest_sha256": "23908723839b7a52e1835f4ba78827b0718f0edc443bf0329b2e1f7bc5b33290",
+      "build_command": "pwsh -NoProfile -File tools/Build-Package.ps1 -Task 28 -RunName s3-global-com-package -Worker",
+      "toolchain": "C17, MinGW-w64 GCC 16.1.0, Ninja and repository ccache; clean x86/x64 Release.",
+      "build_seconds": {
+        "x86": 359.22,
+        "x64": 275.08
+      },
+      "ccache_direct_hits": {
+        "x86": 950,
+        "x64": 1040
+      },
+      "ccache_misses": {
+        "x86": 9,
+        "x64": 9
+      },
+      "gate": "Source, glyph, ABI, dependency and PE gates passed. Published eight same-snapshot files before running the package suite. Both deployed paths match the clean candidate.",
+      "artifacts": {
+        "run16s.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "f7eddaa5873c53881cad2ed703cf63d011d7bab4491cc9a8468a5c0a00c93989"
+        },
+        "ntw16s32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "f1694e6f2aff9ea5d7b94af15658f55c00a519b744476e111250f22bb57cd574"
+        },
+        "ntw16s64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "02bc378a67051cd7b7c868549706e103c38782c4f24da5aecc601b0779e1237c"
+        },
+        "ntw2ks32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "0be7fcc7c4b36894b34961d5b7207aeb608264be782de0c5a8501f3e6aa63161"
+        },
+        "ntw2ks64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "bc5e1cffa0e59fe9e89521d48f40fa461c43f18954257b2a7aff7163c1032d6d"
+        },
+        "ntwshk32.dll": {
+          "architecture": "x86",
+          "version": "M0 T28",
+          "sha256": "f2301cf7ab59b44ab3d3a92d712ba8d147ffd977ebc714bf8bcd7ec546f26cc7"
+        },
+        "ntwshk64.dll": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "9e7e6f6c21e83f566630238effa89812fca3b8e8c9abe5c888331e0039bcdc1f"
+        },
+        "demo.exe": {
+          "architecture": "x64",
+          "version": "M0 T28",
+          "sha256": "b97830ce8753a1276fea3b2fa54a781b0da2b3a464b09ec18238ef1f3cbb93d5"
+        }
+      }
+    }
   }
 }

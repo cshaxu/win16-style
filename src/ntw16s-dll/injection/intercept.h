@@ -4,6 +4,7 @@
 extern ntwshk_context ntw16s_process_context;
 BOOL ntw16s_process_session_active(void);
 BOOL ntw16s_win2k_session_active(void);
+void ntw16s_win2k_dialog_initialize(HWND window);
 LONG ntw16s_attach_titles(void); /* joins the current startup transaction */
 LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *));
 LONG ntw16s_attach_processes(void);

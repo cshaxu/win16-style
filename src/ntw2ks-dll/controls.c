@@ -117,21 +117,8 @@ static LRESULT CALLBACK font_dialog_created(int code,WPARAM wp,LPARAM lp)
     SetLastError(incoming);
     return dialog_created(code,wp,lp);
 }
-static PROCESS_HOOK_UNWIND_FUNCTION HRESULT observe_dialog(HRESULT (*show)(void *),void *context)
-{
-    style_dialog_observation scope;
-    process_hook_unwind_scope unwind;
-    DWORD incoming=GetLastError(),error;
-    HRESULT result;
-    if(!style_dialog_observation_begin(&scope,NULL,dialog_created,FALSE))return E_FAIL;
-    PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope);
-    SetLastError(incoming);
-    result=show(context);
-    error=GetLastError();
-    PROCESS_HOOK_UNWIND_END(unwind);
-    SetLastError(error);
-    return result;
-}
+static HRESULT observe_dialog(HRESULT (*show)(void *),void *context)
+{return style_dialog_observe(show,context,attach_dialog);}
 static BOOL com_session_active(void){return TRUE;}
 #define CLASSIC_DIALOG_BEGIN(state,incoming) ((void)(incoming),style_dialog_observation_begin(state,NULL,dialog_created,FALSE))
 #define CLASSIC_DIALOG_PREPARE(state,incoming) ((void)(state),SetLastError(incoming))

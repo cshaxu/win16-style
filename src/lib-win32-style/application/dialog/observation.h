@@ -18,4 +18,5 @@ BOOL style_dialog_observation_begin(style_dialog_observation *,style_creation_co
 void style_dialog_observation_end(void *);
 void style_dialog_observation_found(HWND);
 HWND style_dialog_observation_current(void);
+HRESULT style_dialog_observe(HRESULT (*call)(void *),void *context,void (*initialized)(HWND));
 #endif

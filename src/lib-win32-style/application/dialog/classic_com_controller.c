@@ -166,14 +166,20 @@ static PROCESS_HOOK_UNWIND_FUNCTION UINT_PTR classic_event_file_ok(file_proxy *p
     result.revoke=hr==S_FALSE || FAILED(hr);
     PROCESS_HOOK_UNWIND_END(unwind);return result.revoke?1:0;
 }
+static BOOL explorer_active(void)
+{return configuration.explorer_active && configuration.explorer_active();}
+static BOOL use_proxy(void)
+{return configuration.session_active() || explorer_active();}
+static BOOL selected(void){return TRUE;}
 static HRESULT proxy_show(file_proxy *p,HWND owner)
 {
+    BOOL explorer=explorer_active();
     const style_classic_com_show_services services={
-        .classic_hook=classic_hook,.session_active=configuration.session_active,
-        .scope=configuration.scope,
-        .experimental_events=configuration.experimental_events,
-        .experimental_hidden=configuration.experimental_hidden,
-        .explorer_files=configuration.explorer_files,
+        .classic_hook=classic_hook,.session_active=explorer?selected:configuration.session_active,
+        .scope=explorer?configuration.explorer_scope:configuration.scope,
+        .experimental_events=!explorer && configuration.experimental_events,
+        .experimental_hidden=!explorer && configuration.experimental_hidden,
+        .explorer_files=explorer || configuration.explorer_files,
     };
     return style_classic_com_show(p,owner,&services);
 }
@@ -197,7 +203,7 @@ static void proxy_replace(REFIID iid,void **out,BOOL save)
 static void creation_end(void *unused){(void)unused;--native_creation_depth;}
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI bridge_create(REFCLSID clsid,LPUNKNOWN outer,DWORD context,REFIID iid,LPVOID *out)
 {
-    if(!configuration.session_active())return native_create(clsid,outer,context,iid,out);
+    if(!use_proxy())return native_create(clsid,outer,context,iid,out);
     BOOL nested=native_creation_depth!=0;process_hook_unwind_scope unwind;HRESULT original_hr;
     ++native_creation_depth;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=native_create(clsid,outer,context,iid,out);}
@@ -210,7 +216,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI bridge_create(REFCLSID clsid,
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI bridge_create_ex(REFCLSID clsid,IUnknown *outer,DWORD context,
     COSERVERINFO *server,DWORD count,MULTI_QI *results)
 {
-    if(!configuration.session_active())return native_create_ex(clsid,outer,context,server,count,results);
+    if(!use_proxy())return native_create_ex(clsid,outer,context,server,count,results);
     BOOL nested=native_creation_depth!=0;process_hook_unwind_scope unwind;HRESULT original_hr;
     ++native_creation_depth;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=native_create_ex(clsid,outer,context,server,count,results);}
@@ -254,7 +260,7 @@ static ULONG STDMETHODCALLTYPE factory_release(IClassFactory *self)
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT STDMETHODCALLTYPE factory_create(IClassFactory *self,IUnknown *outer,REFIID iid,void **out)
 {
     factory_proxy *factory=(factory_proxy *)self;process_hook_unwind_scope unwind;HRESULT original_hr;
-    if(!configuration.session_active())return IClassFactory_CreateInstance(factory->native,outer,iid,out);
+    if(!use_proxy())return IClassFactory_CreateInstance(factory->native,outer,iid,out);
     ++native_creation_depth;
     PROCESS_HOOK_UNWIND_BEGIN(unwind,creation_end,NULL); {original_hr=IClassFactory_CreateInstance(factory->native,outer,iid,out);}
     PROCESS_HOOK_UNWIND_END(unwind);
@@ -266,7 +272,7 @@ static HRESULT STDMETHODCALLTYPE factory_lock(IClassFactory *self,BOOL lock)
 static IClassFactoryVtbl factory_vtable={factory_query,factory_add,factory_release,factory_create,factory_lock};
 static HRESULT WINAPI bridge_class_object(REFCLSID clsid,DWORD context,LPVOID server,REFIID iid,LPVOID *out)
 {
-    if(!configuration.session_active())return native_class_object(clsid,context,server,iid,out);
+    if(!use_proxy())return native_class_object(clsid,context,server,iid,out);
     HRESULT original_hr=native_class_object(clsid,context,server,iid,out);
     if(FAILED(original_hr)||!out||!*out||server||native_creation_depth||style_dialog_modern_active()||
        !(context&CLSCTX_INPROC_SERVER)||!(IsEqualIID(iid,&IID_IUnknown)||IsEqualIID(iid,&IID_IClassFactory)))return original_hr;
@@ -283,6 +289,7 @@ DWORD style_classic_com_attach(DWORD (*attach)(void *,void *),const style_classi
 {
     if(!attach || !options || !options->session_active || !options->scope ||
        !options->property || !options->folder_message || !options->hidden_message)return ERROR_INVALID_PARAMETER;
+    if(options->explorer_active && !options->explorer_scope)return ERROR_INVALID_PARAMETER;
     configuration=*options;
     classic_messages=(style_classic_dialog_message_services){
         .property=configuration.property,.hidden_message=configuration.hidden_message,
