@@ -2751,5 +2751,19 @@
     },
     "limits": "Valid custom-page display still requires a host with a working native extended print sheet. The query/cancel evidence on the workgroup host cannot establish live domain printer selection or writeback. The owned thread receiver tests do not exercise administrator elevation, a real tray command or process discovery.",
     "execution_hygiene": "Incremental C17 probes only, with the published package held constant. Both temporary sources and binaries were test-owned. No print job, queue addition, persisted driver change or desktop switch."
+  },
+  "page_and_shell_result_p47": {
+    "package": "Verification and documentation only. Both published roots match all eight hashes recorded in the P45 clean package.",
+    "page_setup": {
+      "result": "32/32 on the ordinary desktop outside the command sandbox. x86/x64, A/W, native Windows, released Win16 and Win2000, and the production global receiver on self-owned GUI threads. Each route edited the left margin from 1 to 1.25 inches and selected landscape. Confirm returned a landscape DEVMODE, DEVNAMES and 11000×8500 thousandths-of-an-inch paper dimensions, and the edited margin. Cancel returned no settings handles and kept the initial margin. The caller hook and input flags were preserved, the owner was enabled after the call and returned handles freed successfully. Styled paths checked their respective window frame. No job or persistent setting change.",
+      "probe_sha256": "acde8ab6ccda2cef498f3035cd69df2c897b19d1c362b207ab962e9b9c1ef3ad"
+    },
+    "shell_browse": {
+      "result": "32/32 released Win2000 ordinary startup and production global receiver on owned targets, across x86/x64 A/W, Shell legacy and BIF_USENEWUI layouts, and confirmation/cancellation. A caller BFFM_INITIALIZED callback selected the child under an owned filesystem root. Both styled routes retained their Win2000 frame, returned the requested absolute PIDL on confirmation and NULL on cancellation, and restored the owner. The fixture freed the returned and input PIDLs. Four additional native new-layout cancellation controls passed.",
+      "timing": "Initial 220 ms timer: 24/32 passed, and all eight modern-layout cancellation calls closed correctly before the expected BFFM_SELCHANGED was observed. At 1000 ms the eight same-package styled cases and four native controls all observed the requested selection callback once before cancellation and returned NULL. No product changes or blind retries.",
+      "initial_probe_sha256": "59695761f75e04a759f31823640ae12a487143b9300e0779c1e4f18480518055",
+      "timing_control_sha256": "1eba4c01603169cbe0d45e0ed7497287284b6374129190281364df628913eaa4"
+    },
+    "limits": "The owned direct receiver tests cover the product entry and the dialog contract. Valid native PrintDlgEx custom-page presentation, a real domain-printer positive return and the administrator tray transaction remain unverified. No change to P45 product files, Windows configuration or permissions."
   }
 }
