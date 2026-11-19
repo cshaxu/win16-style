@@ -263,6 +263,7 @@ add_library(win2k-print STATIC src/lib-win32-style/appearance/win2000/dialog/pri
   src/lib-win32-style/appearance/win2000/dialog/print_directory.c)
 target_link_libraries(win2k-print PUBLIC style-dialog-common comctl32 winspool activeds adsiid oleaut32)
 add_library(style-msstyles STATIC
+  src/lib-win32-style/appearance/msstyles/theme_file.c
   src/lib-win32-style/appearance/msstyles/v4_property.c
   src/lib-win32-style/appearance/msstyles/v4_tables.c)
 add_library(win2k-file STATIC src/lib-win32-style/appearance/win2000/dialog/file_call.c)
@@ -733,6 +734,10 @@ if(BUILD_TESTING)
   target_link_libraries(core-style-msstyles-v4 PRIVATE style-msstyles)
   target_link_options(core-style-msstyles-v4 PRIVATE -municode)
   add_test(NAME core/style-msstyles-v4 COMMAND $<TARGET_FILE:core-style-msstyles-v4>)
+  add_executable(core-style-theme-file tests/lib-win32-style/appearance/msstyles/theme_file.c)
+  target_include_directories(core-style-theme-file PRIVATE src)
+  target_link_libraries(core-style-theme-file PRIVATE style-msstyles)
+  add_test(NAME core/style-theme-file COMMAND $<TARGET_FILE:core-style-theme-file>)
   add_executable(ntw2ks-frame-target tests/ntw2ks-dll/frame_target.c tests/ntw2ks-dll/frame_target.rc)
   target_link_libraries(ntw2ks-frame-target PRIVATE user32 gdi32 comdlg32 ole32 shcore)
   target_link_options(ntw2ks-frame-target PRIVATE -municode)

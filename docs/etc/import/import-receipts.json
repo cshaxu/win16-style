@@ -10467,6 +10467,33 @@
       "disposition": "authored",
       "review": "T29 S3 MSStyles v4 class and variant resource tables",
       "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/theme_file.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "99388c2f6b66c93f36e15d03eb0739bddc6fc668ebedf45adc4ea360146c5b99",
+      "disposition": "authored",
+      "review": "T29 S3 companion theme description and native INI checks",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/theme_file.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "e62c970ba7cdffdace30e76e277a66c13e88365bd84dfba333097db001bb214c",
+      "disposition": "authored",
+      "review": "T29 S3 companion theme description and native INI checks",
+      "notice": "Project-authored; no imported source or resources"
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/msstyles/theme_file.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "5073909ef82a40e1fa8bf2af0d83cbe3bafe7e9467f3cfc7155fde125b9f10a0",
+      "disposition": "authored",
+      "review": "T29 S3 companion theme description and native INI checks",
+      "notice": "Project-authored; no imported source or resources"
     }
   ]
 }

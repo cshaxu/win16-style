@@ -23,4 +23,8 @@ P1 交付属性记录层。完整主题编译仍需实现类表和变体映射�
 
 x86、x64 独立通过合成负例，以及 Aero、Aero Lite 的类名、变体与全部属性记录字节级往返。合成负例覆盖截断的名称、越界长度、嵌入终止符、非零类名填充和输出空间不足。
 
-描述文件生成按 Microsoft 要求提供 `[Control Panel\Desktop]`、`[VisualStyles]` 和 `[MasterThemeSelector]`。其中 `Size` 与 `ColorStyle` 由同源 `VMAP` 绑定。[Microsoft Theme File Format](https://learn.microsoft.com/en-us/windows/win32/controls/themesfileformat-overview)
+## P3 配套主题描述
+
+描述写入器按 Microsoft 的格式提供 `[Control Panel\Desktop]`、`[VisualStyles]` 和 `[MasterThemeSelector]`。其中 `Size` 与 `ColorStyle` 直接取自生成 `VMAP` 所用的变体对象。项目便携布局使用同目录的样式文件名，并拒绝目录穿越和换行注入。[Microsoft Theme File Format](https://learn.microsoft.com/en-us/windows/win32/controls/themesfileformat-overview)
+
+x86、x64 用 Windows `GetPrivateProfileStringW` 独立复读生成文件的六个字段，拒绝的输入未写出字节，测试文件随后删除。此验证覆盖 INI 语法和字段绑定。交付布局的实际文件引用仍需用两份完整候选核对，系统个性化对相对路径的行为尚未验证。
