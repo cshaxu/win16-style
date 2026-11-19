@@ -82,6 +82,9 @@ Places。发布版双宽 A/W 标准 `PrintDlgEx` 经典桥接与取消 8/8；
 P25 排除 `PD_USELARGETEMPLATE` 作为当前宿主的原生属性页修复。用公开
 打印 API 验证了自有 General 页所需的设备枚举与驱动设置读回，双宽各 4/4。
 这只验证了驱动接口。General 页尚未接入正式产品。
+P26 独立 General 页原型通过双宽 6/6。应用后再换打印机并取消时，
+保留应用时的设置快照；确认返回当时选择的设备，直接取消不产生快照。
+复用现有内存克隆函数，尚未接入 `PrintDlgEx` 发布路径。
 [参考与开发证据](../etc/evidence/t28-s3-dialog-reference.json)
 
 ## M0 T28 S3 Packet

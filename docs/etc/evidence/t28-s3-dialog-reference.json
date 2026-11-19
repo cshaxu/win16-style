@@ -939,6 +939,12 @@
     "next_implementation": "The native option does not provide the original General page on this host. The independently verified spooler calls can back an application-owned stock General presentation integrated with the existing print result transaction. Driver preference UI, live selection, Apply and caller property pages still require separate evidence. No product source or published binary changed; all temporary probes were removed.",
     "api_reference": "https://learn.microsoft.com/en-us/windows/win32/api/commdlg/ns-commdlg-printdlgexw"
   },
+  "print_general_transaction_p26": {
+    "trial": "A C17 test-only application hosted an original minimal General page in a native modal PropertySheetW on the ordinary test desktop. It enumerated local printer queues, selected two of them in sequence, acquired fresh document DEVMODE buffers using DocumentPropertiesW, and called the existing style_print_clone_global helper from print_resources.c for the applied snapshot. No printer setting was persisted.",
+    "results": "6/6 on x86/x64. Cancel produced no snapshot. Apply on the second printer followed by an unsaved switch to the first and Cancel retained the second printer snapshot in independently owned global memory. Confirm on the second printer returned the current snapshot. In each case the property page released exactly once and modality restored the owner. The driver exercised the page by programmatic property sheet messages and submitted no jobs.",
+    "boundary": "The prototype verifies a viable General-page transaction using normal property-sheet notifications and shared memory handling. It does not enter the released PrintDlgEx path and does not verify ANSI driver data, range editing, DC or DEVNAMES production, preferences UI, caller pages, or original rendering. No product or fixture source change; both deployment locations keep the P22 package. Scratch was removed.",
+    "api_reference": "https://learn.microsoft.com/en-us/windows/win32/controls/psn-apply"
+  },
   "places_reflow_trial": {
     "package": "P9 published launcher and DLLs with temporary caller-owned ANSI and Unicode OPENFILENAME hooks. The probe used the ordinary desktop and owned dialogs at 96 DPI with a 427 by 272 work area. The temporary sources, objects, binaries and output were removed after the run.",
     "stock_geometry": "The native 421 by 247 client exposed the stock Places toolbar, a Shell directory view, and a ComboBoxEx filename field. In Open the default OK button began at (484,313), beyond both client bounds.",
