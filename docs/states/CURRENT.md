@@ -118,29 +118,31 @@ S16 P1 同批七件已发布两处，聚焦验证 23/23。实际远端
 S16 收口。三类接入统一目录标识，仍用现有兼容绘制适配器，
 见 [S16 验证记录](../history/M0-T29-S16-theme-identity.md)。
 
-## M0 T29 S17 Packet
+M0 T29 S17 已收口。双位宽 Win32 外框共享主题定义的标题、边框、按钮与命中。
+同批七件发布两处，发布后聚焦 12/12 及补充实窗动作 24/24。两项历史综合夹具失败与
+S16 同条件逐字节一致。实际远端 P1 `7f72b60a` 的七件、九个退役路径和 1,286 项构建
+输入已核验。见 [S17 记录](../history/M0-T29-S17-shared-frame.md)及[发布清单](../etc/release.json)。
+
+## M0 T29 S18 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | Continuation；固定 M0 与 T29。 |
-| Admission And Approval | 用户要求用同一运行件复现已有外观，按 T29 规划执行 S17。 |
-| Objective | Win32 外框共用由主题定义的绘制、几何和命中模型，覆盖左侧系统菜单按钮。 |
-| Non-goals | 宿主接入政策和权限保持。现代宿主迁移由 S18 承接，弹出菜单与字体后续处理由 S19 承接。 |
-| Reference Baseline | S16 P1 `cd7b6178` 的同批七件和 S13 已知边界。 |
-| Candidate Proposal | [T29 主题驱动提案的 S17 验收拆分](../proposals/msstyles-classic-runtime.md#s17-win32-外框验收拆分)。 |
-| Files And ABI Surface | 公共窗口层、图形原语、主题读写、两个旧外框调用方及对应双宽夹具。公开导出和非客户区原生窗口消息保持兼容。 |
+| Identifier Mode | Continuation |
+| Admission And Approval | 按用户要求在 T29 内持续迁移现有 Win16 和 Win2000 外观，S17 远端复核通过后准入。 |
+| Objective | 让已有 UWP 和 WinUI 外框消费 S17 的主题绘制、几何和命中模型，保留宿主标题区与恢复契约。 |
+| Non-goals | 内部控件、扩展接入范围、权限和系统设置；弹出菜单及字体共用化由 S19 承接。 |
+| Reference Baseline | S17 P1 `7f72b60a`，含正式两处同摘要七件；参照 T28 已验收的现代窗口路径。 |
+| Candidate Proposal | [T29 主题驱动实施顺序](../proposals/msstyles-classic-runtime.md#s15s24-拟定顺序)。 |
+| Files And ABI Surface | 共享外框、合成宿主应用层、既有两供应者和对应夹具。兼容导出、宿主参数及主题目录协议。 |
 | Applicable Rules | C17、双位宽 MinGW/Ninja/ccache，同快照先发布后测试。 |
-| Verification | 双宽对照标题、边沿、按钮、像素、命中及按键。覆盖系统菜单点击、Alt+Space、取消、定制项、MDI、调整大小、激活、最大化／还原和撤销。 |
-| Expected Markers | 只换主题就改变验证中的标题、边沿和按钮属性。左侧系统菜单角色沿用真实窗口菜单，正确还原原生客户区。 |
-| Asset Needs | 同批七件，保留原始按钮栅格表及回执。 |
-| Reporting Requirements | 记录已迁移属性与原生消息所有权。逐项列出两风格、混搭主题及 S13 已知差异的证据。 |
-| Stop Conditions | 不使用 computer-use 或私有桌面。测试只操作自有有界实例。 |
-| Exit Criteria | 两个 Win32 外框的绘制和几何消费同一主题模型，双宽实包与远端均核验并记录实际行为。 |
+| Verification | 双宽自有 UWP 合成表面及 WinUI 夹具对照，同主题共享区域像素和 DPI 几何、主题替换、命中、刷新、撤销及标签／菜单区保留。具备桌面条件时复验已有真实宿主。 |
+| Expected Markers | 图像及系统字形按同一主题声明绘制，Win32 对应同角色像素一致。去除后客户区、标题及合成层回到原样。 |
+| Asset Needs | 同批七件、原始按钮图像与来源；混搭主题仅供独立对照。 |
+| Reporting Requirements | 区分自有合成夹具、实际宿主、物理交互、已知旧失败与环境跳过。 |
+| Stop Conditions | 不使用 computer-use 或私有桌面，应用样本必须是自有有界实例。 |
+| Exit Criteria | 两类现有现代宿主共用主题外框执行器，双宽验证、同批七件发布后测试和实际远端复核完成。 |
 | Original Owner Request | 只换主题文件复现已支持 Win16 和 Win2000，EXE/DLL 无年代分派及专属绘制。 |
-| Similar-Issue Sweep | 原生和合成非客户区入口、系统菜单、MDI、标题按钮的图形、坐标、消息和还原。 |
-
-[S17 记录](../history/M0-T29-S17-shared-frame.md)记录共享绘制、几何、命中和发布后实包结果。
-P1 两处七件已发布且复验，保留两项与 S16 逐字节一致的既有夹具失败，远端复核待完成。
+| Similar-Issue Sweep | 共查原生与合成标题区域的主题读入、按钮资源、命中、DPI、标题替换、刷新和撤销。 |
 
 ## Identifier State
 
@@ -153,20 +155,20 @@ P1 两处七件已发布且复验，保留两项与 S16 逐字节一致的既有
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S16 P1 `cd7b6178`，两处七件正式文件和九个退役路径。
+- Last verified remote delivery: M0 T29 S17 P1 `7f72b60a`，两处七件正式文件和九个退役路径。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 17
-- Open task: M0 T29 S17，Win32 外框共享模型。
+- Last allocated T29 S: 18
+- Open task: M0 T29 S18，UWP／WinUI 外框接入。
 
 ## Technical Baseline
 
 - [正式契约](../etc/product-contract.json)为 run16s.exe、ntwshk32/64.dll 和两对主题。两处与实际远端均已核验 [T29 S11 P1](../history/M0-T29-S11-seven-file-package.md)。
 - 托盘菜单名称来自已验证的主题描述，显示目录以区分同名主题。
-- CLASSIC_STYLE 1.4 显式声明外观和文件、目录、打印策略，标准主题描述与七件布局保持。
+- CLASSIC_STYLE 1.8 进一步声明标题、按钮、边框绘制及几何。外观与文件、目录、打印策略沿用记录 9 的契约。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
-- 来源1183回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
+- 来源1187回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
 - propagation停用、窗口恢复、thread hook解除与物理DLL/late patch卸载分别报告；原有进程存活期固定/保留能力不改称安全卸载。
 - 禁止computer-use、创建或切换私有桌面；只用自有有界当前桌面探针。用户已永久授权非computer-use验证及按身份处理正式文件实际占用者；不重复请求同一授权，不改系统安全设置。
 - 历史逐文件来源及迁移见[原顺序台账](../history/M0-T26-S1-ordered-audit.md)、各S证据与T26规划；早期lib-style/lib-win32/style路径是历史路径，当前旧生产目录已删除。
