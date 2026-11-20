@@ -104,30 +104,9 @@ S13 P1 已在两处发布。本次主题发现、按名启动、托盘目录和�
 发布前后均复现最大化、还原失败，详见 [S13 记录](../history/M0-T29-S13-theme-folder-cli.md)。
 七件发布文件和两处安装已在远端 P2 逐件复核。两项既有断言转入 TODO，按用户指令继续 S14。
 
-S14 同批七件已发布两处，19 项聚焦用例通过。内置主题及三种混搭主题的文件、
-目录、打印路径均有双宽证据。提交及远端复核前保持活动，见
-[S14 记录](../history/M0-T29-S14-dialog-policy.md)。
-
-## M0 T29 S14 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；固定 M0，T29 不变。 |
-| Admission And Approval | 用户准入新 S，将对话框转接策略放入主题资源。 |
-| Objective | 主题显式声明呈现类别，并独立选择文件、目录和打印对话框的既有路径。 |
-| Non-goals | 不引入新对话框实现、不扩大权限或接入范围、不新增发布文件。 |
-| Reference Baseline | S13 P3，Win16 和 Win2K 按主题目录加载并已发布。 |
-| Candidate Proposal | CLASSIC_STYLE 增加版本化的外观和对话框策略记录，旧主题兼容。 |
-| Files And ABI Surface | 主题编译器、资源解析器、文件／目录／打印分派和原生测试；现有 PE 导出保持。 |
-| Applicable Rules | C17、MinGW、Ninja、ccache；双宽同批打包，先发布再测试。 |
-| Verification | 扩展合法／损坏／旧版读回；两套默认行为、混合主题、原生直通和托盘选定主题的作用域；双宽实际包聚焦测试。 |
-| Expected Markers | 改标题按钮不改变策略；三个类别按独立声明分派；两处七件摘要一致。 |
-| Asset Needs | 沿用可核验的现有资源、模板和字形。 |
-| Reporting Requirements | 报告支持范围、具体测试结果、未覆盖项和双宽包摘要。 |
-| Stop Conditions | 不使用私有桌面或 computer-use。失败单列，保留错误证据。 |
-| Exit Criteria | 双位宽干净构建、实包发布和验证、提交推送和实际远端复核。 |
-| Original Owner Request | 主题通过资源字段告诉共享运行时如何转接各类对话框。 |
-| Similar-Issue Sweep | 核对标题按钮推断、启动与全局的 A/W 文件／目录／打印入口及 COM Show。 |
+S14 同批七件已发布两处，19 项聚焦用例全部通过。双宽原生探针覆盖内置与混搭
+主题的文件、目录、打印及自有线程晚接入。远端 P1 摘要已核对，S14 已收口，
+T29 保持开放。详见 [S14 记录](../history/M0-T29-S14-dialog-policy.md)。
 
 ## Identifier State
 
@@ -140,15 +119,16 @@ S14 同批七件已发布两处，19 项聚焦用例通过。内置主题及三�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S13 P2 `41f61fe1`；两处七件正式文件和九个退役路径。
+- Last verified remote delivery: M0 T29 S14 P1 `5263e650`；两处七件正式文件和九个退役路径。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 14
-- Open task: M0 T29 S14；主题声明公共对话框策略。
+- Open task: 无活动任务包。
 
 ## Technical Baseline
 
 - [正式契约](../etc/product-contract.json)为 run16s.exe、ntwshk32/64.dll 和两对主题。两处与实际远端均已核验 [T29 S11 P1](../history/M0-T29-S11-seven-file-package.md)。
+- CLASSIC_STYLE 1.4 显式声明外观和文件、目录、打印策略，标准主题描述与七件布局保持。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1183回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。

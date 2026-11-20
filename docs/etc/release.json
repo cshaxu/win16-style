@@ -201,5 +201,26 @@
     "full_matrix": "not run",
     "administrator_desktop_tray": "not run; owned tray fixture and owned receiver were tested"
   },
-  "closure": "local delivery verified; remote review recorded separately"
+  "closure": "M0 T29 S14 closed in the verified scope; T29 remains open.",
+  "remote_audit": {
+    "ref": "refs/heads/main",
+    "publication_commit": "5263e650e17bca11af2bc50fc1050f2bcf786913",
+    "matched_assets": 7,
+    "retired_asset_paths_returning_http_404": 9,
+    "matched_source_inputs": 1282,
+    "newline_only_differences": [
+      "src/lib-win32/process-hook/LICENSE.win16style",
+      "tests/integration/vb5_custom_compare.py",
+      "tests/integration/vb_disabled_picture_compare.py",
+      "tests/integration/vb_picture_compare.py",
+      "tests/ntw16s-dll/commdlg_error_target.c",
+      "tests/ntw16s-dll/task_dialog.rc",
+      "tests/ntw16s-dll/win32_multi_navigation.c",
+      "tests/ntw16s-dll/win32_multi_target.c"
+    ]
+  },
+  "cleanup": {
+    "scratch_directories_removed": 8,
+    "scratch_bytes_removed": 879343168
+  }
 }
