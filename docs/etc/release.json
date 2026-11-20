@@ -406,8 +406,16 @@
     ]
   },
   "closure": {
-    "S10": "local delivery verified; remote audit pending",
+    "S10": "closed after remote verification",
     "T29": "active",
-    "M0": "fixed"
+    "M0": "fixed",
+    "S11": "active"
+  },
+  "remote_audit": {
+    "revision": "8a0f39fe4a45b4a10a6c673836579705bd34143d",
+    "ref": "refs/heads/main",
+    "files_verified": 12,
+    "source_inputs_verified": 1281,
+    "text_newline_only_inputs": 9
   }
 }

@@ -84,29 +84,29 @@ S10 已实现外部主题只读装入，双宽实际标题、按钮、UWP 及打
 受限 Win32 接收器 36/36 次切换通过，包含普通启动两种样式及新会话重启。
 Win16 晚期传播四种位宽组合及普通启动 COM 回归 12/12 通过。
 S10 P1 已发布两处，聚焦实包 18/18，Scan、Calculator 与 WinUI Notepad 实样通过。
-本地已核验，待实际远端复核。四个旧 DLL 和演示仍属 S10 过渡包。
+S10 P1 的 12 个远端文件和 1,281 个构建输入已复核，S10 收口。四个旧 DLL 和演示仍属 S10 过渡包，S11 接续正式切换。
 见[开发记录](../history/M0-T29-S10-neutral-runtime.md)。
 
-## M0 T29 S10 Packet
+## M0 T29 S11 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；M0 固定。 |
-| Admission And Approval | 用户批准按 T29 S2–S12 连续实施；S9 实际远端通过后接续。 |
-| Objective | 将两套旧年代装配合入双位宽 ntwshk，使两套外部主题驱动同一运行时。落实 S2 兼容调用逐项处置。 |
-| Non-goals | 七件包的正式交付门禁和两处旧文件退役由 S11 执行；不扩展样式能力、目标、权限或调度范围。 |
-| Reference Baseline | S9 P1 的两处八件开发运行包、四个主题文件及 S2 的 44 项导出判据。 |
-| Candidate Proposal | docs/proposals/msstyles-classic-runtime.md。 |
-| Files And ABI Surface | 两位宽运行时、启动器的模块选择、现有生命周期装配、主题来源与各消费者、原资源和兼容接口。 |
-| Applicable Rules | C17、MinGW GCC、Ninja 和 ccache；主题只读资源映射；保留原始资源及来源、既有权限和恢复语义。 |
-| Verification | 双宽验证启动、同一窗口切换与撤销、既有受限全局接收路径、两主题文件失效时的事务结果，以及兼容入口。 |
-| Expected Markers | 每个位宽读取同一对外部主题；模型、资源、实际绘制和原生行为可分别观察；生产选择路径只装配 ntwshk。 |
-| Asset Needs | 两套正式格式主题、原图、双宽自有窗口与公共对话框夹具、S9 兼容对照。 |
-| Reporting Requirements | 逐项记录旧调用者迁移、占用和释放、主题读入及样式呈现，区分 S10 运行时替换和 S11 包发布切换。 |
-| Stop Conditions | 维持已批准的桌面、权限及目标限制；在七件包验证通过前保留活动发布基线和回滚证据。 |
-| Exit Criteria | 既有产品路径使用双宽中性运行时及外部主题。双宽运行时边界、兼容入口和恢复已验证，具备 S11 独立成包条件。 |
-| Original Owner Request | 正式产物为 run16s、两份 ntwshk 和两组主题。旧年代 DLL 的样式能力由主题数据与同一运行时承接。 |
-| Similar-Issue Sweep | 查找运行时、启动器和适配器中的旧 DLL 名、旧导出和 ordinal、嵌入主题读取及延迟资源所有权。 |
+| Admission And Approval | 用户已确认正式七件清单并授权连续实施 S2–S12；S10 P1 实际远端、本机两处摘要及源码已复核。 |
+| Objective | 制作严格七件的独立候选，切换构建、发行、实包测试与可恢复部署。两处正式发行退役 demo 和四个年代 DLL。 |
+| Non-goals | 不扩展风格、应用支持、系统权限或钩子范围。演示和兼容测试保留在构建树；其产物不进入正式包。 |
+| Reference Baseline | S10 P1 过渡包与十二项 SHA-256，实际 GitHub main 复核 8a0f39fe。 |
+| Candidate Proposal | docs/proposals/msstyles-classic-runtime.md；docs/proposals/msstyles-build-contract.md 的正式包条款。 |
+| Files And ABI Surface | product-contract、构建器、包门禁和部署器、双宽中性 ABI、两个主题各自两个正式文件。 |
+| Applicable Rules | C17、MinGW GCC、Ninja、ccache。用项目实际发行契约核对清单，同快照先发布后测，实际远端复核。 |
+| Verification | 对只含七件的独立目录核对 PE、导出、数据记录和引用。测两风格双宽启动和传播、运行中应用和撤销、自有线程全局接收、现代样本和相应主题失效负例。 |
+| Expected Markers | 三个运行文件及四个主题，两个发行目录与实际远端逐件同摘要；产品加载路径无旧年代 DLL。 |
+| Asset Needs | 两套主题及保留来源，双宽临时自有探针，S10 同盘映射留存及回滚证据。 |
+| Reporting Requirements | 区分活动路径退役、旧进程映射留存、实验限制、实际文件移除；记录回滚验证和独立候选装入路径。 |
+| Stop Conditions | 不触碰非项目发布文件。不结束与试验无关的共享宿主，不使用私有桌面或物理输入。部署失败保持或恢复一致基线。 |
+| Exit Criteria | 正式七件通过独立验证并完成两处部署、回归、推送和实际远端验证。S12 接续全 T 逐项终审。 |
+| Original Owner Request | run16s.exe、ntwshk32/64.dll、Win16 的 .theme 与 .msstyles、Win2K 的 .theme 与 .msstyles。 |
+| Similar-Issue Sweep | 审计仍引用旧发行清单、模块名、目录、嵌入主题和裸文件替换的所有发布路径与测试夹具。 |
 
 ## Identifier State
 
@@ -119,15 +119,15 @@ S10 P1 已发布两处，聚焦实包 18/18，Scan、Calculator 与 WinUI Notepa
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S9 P1；八件开发运行包及四个主题预览。
+- Last verified remote delivery: M0 T29 S10 P1；八件过渡运行包及四个主题文件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 10
-- Open task: M0 T29 S10；双位宽中性样式运行时。
+- Last allocated T29 S: 11
+- Open task: M0 T29 S11；独立七件候选与正式切换。
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll。O:/winnt、assets 与远端已核对 [T29 S9 P1](../history/M0-T29-S9-modern-frames.md)。
+- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll。O:/winnt、assets 与远端已核对 [T29 S10 P1](../history/M0-T29-S10-neutral-runtime.md)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1183回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。
