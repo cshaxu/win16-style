@@ -167,7 +167,7 @@
     "historical_skip_scope": "S5 through S10 retain their recorded limitations",
     "development_transient": "Initial incremental demo-pair dialog cancellation sync failure; unchanged single case and final focused release matrix passed"
   },
-  "closure": "S11 closed; S12 final T29 audit open",
+  "closure": "M0 T29 closed in the approved classic-theme migration scope",
   "remote_audit": {
     "ref": "refs/heads/main",
     "publication_commit": "a810d5b242ea10fc330e834b23ef41975becabdb",
@@ -184,5 +184,13 @@
       "tests/ntw16s-dll/win32_multi_navigation.c",
       "tests/ntw16s-dll/win32_multi_target.c"
     ]
+  },
+  "final_audit": {
+    "verified_commit": "b4e66f86647f39b2b6701b5e20035f4bf16985c4",
+    "record": "docs/history/M0-T29-S12-final-audit.md",
+    "ledger_applicable_units": 113,
+    "legacy_abi_entries": 44,
+    "native_theme_readback_checks_passed": 12,
+    "product_payload_changed": false
   }
 }

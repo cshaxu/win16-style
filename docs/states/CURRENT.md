@@ -95,29 +95,9 @@ Scan 和真实 WinUI 记事本的样本复验。GitHub `main` 的 `a810d5b2` 已
 [S11 验证记录](../history/M0-T29-S11-seven-file-package.md)。
 
 S12 已逐项核对 113 个适用单元、44 个旧入口和两处正式包。两宽主题读回
-及扩展／模型探针共 12 项通过，范围与限制见
-[S12 终审](../history/M0-T29-S12-final-audit.md)。收口以远端核验为准。
-
-## M0 T29 S12 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | Continuation；M0 固定。 |
-| Admission And Approval | 用户已确认正式七件清单并授权连续实施 S2–S12，S11 P1 实际远端和两个发布位置已核对。 |
-| Objective | 逐项核对 113 个适用单元、44 个旧接口处置、原图及来源、当前产品加载路径和实际七件发行。 |
-| Non-goals | 保持按年代已有功能和已批准验证范围；不新增 Luna、Aero、现代客户区或系统范围能力。 |
-| Reference Baseline | S1 分类、S2 迁移与 ABI 台账，S11 P1 `a810d5b2` 实际远端和两处七件发行。 |
-| Candidate Proposal | docs/proposals/msstyles-classic-runtime.md 的 S12 收口条款。 |
-| Files And ABI Surface | 终审记录、发布清单、两份 .theme、两份 .msstyles、启动器与两个中性 DLL。 |
-| Applicable Rules | M0 固定。逐项引用可观察证据，区分样本通过、保留原生、批准跳过与待证。 |
-| Verification | 台账逐行回查阶段记录、生产引用及当前发布。按双宽加载职责区分退役发行、受控探针和构建树兼容夹具。 |
-| Expected Markers | 58 行对应 113 个适用单元、44 个旧入口有去向，七份正式文件和原图来源可复核。 |
-| Asset Needs | 已发布两份主题及两份描述、双宽中性 DLL 与启动器，核对原始图形和来源。 |
-| Reporting Requirements | 报告原生归属、批准跳过和未覆盖面，保留禁止私有桌面与物理输入的验收范围，以及仍映射的旧备份事实。 |
-| Stop Conditions | 不扩大权限、系统作用范围或结束无关共享宿主。若缺证，维持 T29 开放并记录具体项。 |
-| Exit Criteria | 113 单元及 ABI 逐项核对，落实实际远端、assets 与 O:/winnt 的七件证据，记录批准的限制后收口 T29。 |
-| Original Owner Request | 两套主题标准文件及双宽中性运行时，保留原使用方式并去除四个旧年代 DLL 的发行。 |
-| Similar-Issue Sweep | 对照正式文件、运行路径、构建测试产物和历史治理说明，检查旧模块与主题副本边界。 |
+及扩展／模型探针 12/12 通过。实际 GitHub 提交 b4e66f86 的终审、七件文件和
+五个退役路径已复核。S12 和 T29 按既定范围收口，验收与待证范围见
+[S12 终审](../history/M0-T29-S12-final-audit.md)。
 
 ## Identifier State
 
@@ -134,7 +114,7 @@ S12 已逐项核对 113 个适用单元、44 个旧入口和两处正式包。�
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 12
-- Open task: M0 T29 S12；主题迁移和七件发行终审。
+- Open task: 无活动任务包。
 
 ## Technical Baseline
 
