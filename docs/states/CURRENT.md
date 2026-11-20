@@ -113,30 +113,31 @@ S15 冻结正式运行件的年代依赖，并将托盘名称和菜单命令分�
 T29 全主题驱动目标保持开放。后续顺序见 [T29 规划](../proposals/msstyles-classic-runtime.md)，
 迁移接收者及验证见 [S15 台账](../history/M0-T29-S15-theme-runtime-boundary.md)。
 
-## M0 T29 S16 Packet
+S16 P1 同批七件已发布两处，聚焦验证 23/23。实际远端
+`cd7b6178` 的七件、九个退役路径和 1,282 项构建输入已复核。
+S16 收口。三类接入统一目录标识，仍用现有兼容绘制适配器，
+见 [S16 验证记录](../history/M0-T29-S16-theme-identity.md)。
+
+## M0 T29 S17 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；固定 M0 与 T29。 |
-| Admission And Approval | 用户要求最终运行件去除年代依赖，按 T29 规划继续执行。 |
-| Objective | 将宿主接入能力与年代分派分离，再将主题身份与暂留绘制器从三条接入路径逐项分离。 |
-| Non-goals | 保持既有已支持宿主、窗口/线程所有权、适用目标、权限及七件包数目；绘制归 S17 起各批。 |
-| Reference Baseline | S15 P1 32ca7ac0 及已核对的实包、样式迁移台账。 |
-| Candidate Proposal | T29 主题驱动终态及 S16 计划。 |
-| Files And ABI Surface | 主题描述编译读取、启动判断、现代宿主、共享身份和既有私有选样协议。公开导出签名与既有安全边界保持。 |
+| Admission And Approval | 用户要求用同一运行件复现已有外观，按 T29 规划执行 S17。 |
+| Objective | Win32 外框共用由主题定义的绘制、几何和命中模型，覆盖左侧系统菜单按钮。 |
+| Non-goals | 宿主接入政策和权限保持。现代宿主迁移由 S18 承接，弹出菜单与字体后续处理由 S19 承接。 |
+| Reference Baseline | S16 P1 `cd7b6178` 的同批七件和 S13 已知边界。 |
+| Candidate Proposal | [T29 主题驱动提案的 S17 验收拆分](../proposals/msstyles-classic-runtime.md#s17-win32-外框验收拆分)。 |
+| Files And ABI Surface | 公共窗口层、图形原语、主题读写、两个旧外框调用方及对应双宽夹具。公开导出和非客户区原生窗口消息保持兼容。 |
 | Applicable Rules | C17、双位宽 MinGW/Ninja/ccache，同快照先发布后测试。 |
-| Verification | 必测独立关闭转发 Explorer、Windows Terminal 和控制台接入、旧主题缺省、主题别名、双宽传播及现有宿主接入回归。 |
-| Expected Markers | 产品主入口按操作能力分派；同主题更名仍能选择，未知声明报错，普通 GUI 控制不受转发宿主开关影响。 |
-| Asset Needs | 同批七件和现有源／图形回执。 |
-| Reporting Requirements | 分别记录声明驱动的已迁部分、身份协议进度、实测能力与未覆盖。 |
-| Stop Conditions | 不使用 computer-use 或私有桌面；不为验证扩大适用目标。 |
-| Exit Criteria | 完成该阶段主题身份和接入分离、双宽同包验证及远端复核后收口。 |
+| Verification | 双宽对照标题、边沿、按钮、像素、命中及按键。覆盖系统菜单点击、Alt+Space、取消、定制项、MDI、调整大小、激活、最大化／还原和撤销。 |
+| Expected Markers | 只换主题就改变验证中的标题、边沿和按钮属性。左侧系统菜单角色沿用真实窗口菜单，正确还原原生客户区。 |
+| Asset Needs | 同批七件，保留原始按钮栅格表及回执。 |
+| Reporting Requirements | 记录已迁移属性与原生消息所有权。逐项列出两风格、混搭主题及 S13 已知差异的证据。 |
+| Stop Conditions | 不使用 computer-use 或私有桌面。测试只操作自有有界实例。 |
+| Exit Criteria | 两个 Win32 外框的绘制和几何消费同一主题模型，双宽实包与远端均核验并记录实际行为。 |
 | Original Owner Request | 只换主题文件复现已支持 Win16 和 Win2000，EXE/DLL 无年代分派及专属绘制。 |
-| Similar-Issue Sweep | 启动器、提权重进、子孙、主题 profile、全局 session、现代窗口及已有兼容入口。 |
-
-[S16 开发记录](../history/M0-T29-S16-theme-identity.md)保存三类接入统一的目录标识、
-双位宽验证和兼容适配器边界。S16 P1 同批七件已发布两处，聚焦验证
-通过 23/23，无跳过。S16 等待远端复核。
+| Similar-Issue Sweep | 原生和合成非客户区入口、系统菜单、MDI、标题按钮的图形、坐标、消息和还原。 |
 
 ## Identifier State
 
@@ -149,11 +150,11 @@ T29 全主题驱动目标保持开放。后续顺序见 [T29 规划](../proposal
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S15 P1 `32ca7ac0`；两处七件正式文件和九个退役路径。
+- Last verified remote delivery: M0 T29 S16 P1 `cd7b6178`，两处七件正式文件和九个退役路径。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 16
-- Open task: M0 T29 S16；主题身份与接入能力。
+- Last allocated T29 S: 17
+- Open task: M0 T29 S17，Win32 外框共享模型。
 
 ## Technical Baseline
 
