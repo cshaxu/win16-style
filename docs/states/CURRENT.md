@@ -94,6 +94,10 @@ Scan 和真实 WinUI 记事本的样本复验。GitHub `main` 的 `a810d5b2` 已
 复核七份产物、五个退役路径和 1,281 个构建输入，S11 收口。见
 [S11 验证记录](../history/M0-T29-S11-seven-file-package.md)。
 
+S12 已逐项核对 113 个适用单元、44 个旧入口和两处正式包。两宽主题读回
+及扩展／模型探针共 12 项通过，范围与限制见
+[S12 终审](../history/M0-T29-S12-final-audit.md)。收口以远端核验为准。
+
 ## M0 T29 S12 Packet
 
 | Field | Required record |
