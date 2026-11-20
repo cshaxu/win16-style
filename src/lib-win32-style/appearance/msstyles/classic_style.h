@@ -36,14 +36,24 @@ typedef struct classic_dialog_metrics {
     uint16_t font_width, font_height;
 } classic_dialog_metrics;
 
+typedef enum classic_dialog_route {
+    CLASSIC_DIALOG_NATIVE, CLASSIC_DIALOG_WIN16, CLASSIC_DIALOG_WIN2K
+} classic_dialog_route;
+
+typedef struct classic_dialog_policy {
+    uint8_t appearance, file, folder, print;
+} classic_dialog_policy;
+
 /* Parse project RCDATA CLASSIC_STYLE v1. The caller's output changes only on success. */
 enum classic_style_result classic_style_read(const unsigned char *bytes,size_t length,
-    classic_button_group *group,classic_scroll_metrics *scroll,classic_menu_metrics *menu,classic_dialog_metrics *dialog);
+    classic_button_group *group,classic_scroll_metrics *scroll,classic_menu_metrics *menu,classic_dialog_metrics *dialog,
+    classic_dialog_policy *policy);
 
 /* Encode a title-button group and optional metrics. Returns size or zero. */
 size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_button_group *group,
-    const classic_scroll_metrics *scroll,const classic_menu_metrics *menu,const classic_dialog_metrics *dialog);
+    const classic_scroll_metrics *scroll,const classic_menu_metrics *menu,const classic_dialog_metrics *dialog,
+    const classic_dialog_policy *policy);
 
-enum { CLASSIC_STYLE_RESOURCE_CAPACITY=124 };
+enum { CLASSIC_STYLE_RESOURCE_CAPACITY=136 };
 
 #endif

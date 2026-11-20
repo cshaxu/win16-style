@@ -238,6 +238,8 @@ static DWORD WINAPI close_message(void *dpi_context)
 static HWND common_owner;
 static volatile LONG common_done;
 static BOOL check_stock_font;
+static int expected_print_route=-1;
+static volatile LONG observed_print_route;
 static BOOL CALLBACK find_common_window(HWND window,LPARAM unused)
 {
     (void)unused;DWORD pid=0;WCHAR cls[32]={0};GetWindowThreadProcessId(window,&pid);
@@ -246,6 +248,12 @@ static BOOL CALLBACK find_common_window(HWND window,LPARAM unused)
     BOOL sent=SendMessageTimeoutW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info,SMTO_ABORTIFHUNG,1000,&response)!=0;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     if(sent && GetPropW(window,L"Win2kStyle.Frame") && info.rcTitleBar.bottom-info.rcTitleBar.top==MulDiv(19,(int)dpi,96))InterlockedExchange(&message_attached,1);
+    if(expected_print_route>=0){
+        DWORD_PTR page=0;
+        SendMessageTimeoutW(window,PSM_GETCURRENTPAGEHWND,0,0,SMTO_ABORTIFHUNG,500,&page);
+        int route=GetDlgItem((HWND)page,1200)?2:GetDlgItem(window,9002)?1:0;
+        InterlockedExchange(&observed_print_route,route);
+    }
     if(check_stock_font){
         RECT client={0};
         GetClientRect(window,&client);
@@ -715,8 +723,12 @@ int wmain(int argc,WCHAR **argv)
         return all?0:3;
     }
     if(argc==2 && !lstrcmpW(argv[1],L"--print-ex-default"))return test_print_ex_default(instance);
-    if(argc==2 && (!lstrcmpW(argv[1],L"--print-ex-frame") || !lstrcmpW(argv[1],L"--print-ex-accept") ||
-        !lstrcmpW(argv[1],L"--print-ex-accept-dc"))){
+    if(argc==3 && !lstrcmpW(argv[1],L"--print-ex-policy")){
+        if(wcslen(argv[2])!=1 || argv[2][0]<L'0' || argv[2][0]>L'2')return 2;
+        expected_print_route=argv[2][0]-L'0';
+    }
+    if(expected_print_route>=0 || (argc==2 && (!lstrcmpW(argv[1],L"--print-ex-frame") ||
+        !lstrcmpW(argv[1],L"--print-ex-accept") || !lstrcmpW(argv[1],L"--print-ex-accept-dc")))){
         BOOL require_dc=!lstrcmpW(argv[1],L"--print-ex-accept-dc");
         BOOL accept=require_dc || !lstrcmpW(argv[1],L"--print-ex-accept");
         InterlockedExchange(&message_accept,accept);
@@ -736,6 +748,7 @@ int wmain(int argc,WCHAR **argv)
         BOOL all=TRUE;
         for(int ansi=0;ansi<2;++ansi){
             InterlockedExchange(&message_seen,0);InterlockedExchange(&message_attached,0);InterlockedExchange(&common_done,0);
+            InterlockedExchange(&observed_print_route,-1);
             HANDLE thread=CreateThread(NULL,0,close_common,NULL,0,NULL);if(!thread){all=FALSE;break;}
             PRINTPAGERANGE pages={2,4};
             DWORD flags=accept?PD_PAGENUMS|PD_NOCURRENTPAGE:PD_NOPAGENUMS;
@@ -753,7 +766,11 @@ int wmain(int argc,WCHAR **argv)
             BOOL settings=!accept || ((ansi?a.hDevMode:w.hDevMode) && (ansi?a.hDevNames:w.hDevNames) &&
                 (!require_dc || (ansi?a.hDC:w.hDC)) && (ansi?a.nPageRanges:w.nPageRanges)==1 && pages.nFromPage==2 && pages.nToPage==4);
             BOOL pass=wait==WAIT_OBJECT_0 && result==S_OK && action==(accept?PD_RESULT_PRINT:PD_RESULT_CANCEL) &&
-                settings && InterlockedCompareExchange(&message_seen,0,0) && InterlockedCompareExchange(&message_attached,0,0);
+                settings && InterlockedCompareExchange(&message_seen,0,0) &&
+                (expected_print_route>=0?InterlockedCompareExchange(&observed_print_route,0,0)==expected_print_route:
+                 InterlockedCompareExchange(&message_attached,0,0)!=0);
+            if(expected_print_route>=0)
+                printf("PRINT POLICY ansi=%d expected=%d observed=%ld\n",ansi,expected_print_route,observed_print_route);
             printf("WIN2K PRINTEX bits=%u ansi=%d attached=%ld result=%08lx action=%lu\n",(unsigned)(sizeof(void*)*8),ansi,(long)InterlockedCompareExchange(&message_attached,0,0),(unsigned long)result,(unsigned long)action);
             if(accept)printf("WIN2K PRINTEX SETTINGS valid=%d from=%lu to=%lu error=%lu dc=%d\n",
                 settings,pages.nFromPage,pages.nToPage,error,require_dc);

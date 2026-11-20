@@ -486,7 +486,8 @@ HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme
     if(SUCCEEDED(result))result=palette(module,resource(module,L"CMAP",L"CMAP"),variant,&value);
     if(SUCCEEDED(result)){
         enum classic_style_result status=classic_style_read(extension.bytes,extension.size,
-            &value.title_buttons,&value.scroll_metrics,&value.menu_metrics,&value.dialog_metrics);
+            &value.title_buttons,&value.scroll_metrics,&value.menu_metrics,&value.dialog_metrics,
+            &value.dialog_policy);
         if(status!=CLASSIC_STYLE_OK)result=HRESULT_FROM_WIN32(
             status==CLASSIC_STYLE_VERSION || status==CLASSIC_STYLE_REQUIRED_RECORD?
             ERROR_NOT_SUPPORTED:ERROR_INVALID_DATA);
@@ -639,6 +640,10 @@ HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_m
     classic_theme_mapping candidate={0};
     HRESULT result=classic_theme_open(path,&candidate);
     if(FAILED(result))return result;
+    if(candidate.model.dialog_policy.appearance){
+        *family=(classic_theme_family)(candidate.model.dialog_policy.appearance-1);
+        *source=candidate;return S_OK;
+    }
     const classic_button_group *buttons=&candidate.model.title_buttons;
     unsigned roles=0;
     for(unsigned i=0;i<buttons->count;++i)roles|=1u<<buttons->slots[i].role;

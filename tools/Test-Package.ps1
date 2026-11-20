@@ -368,6 +368,7 @@ try{
         (Case 'console-rebind-32' (Join-Path $x86 'console-rebind-unit.exe') @() @('CONSOLE REBIND PASS restored=1 no_console=1')),
         (Case 'console-rebind-64' (Join-Path $x64 'console-rebind-unit.exe') @() @('CONSOLE REBIND PASS restored=1 no_console=1')),
         (Case 'legacy-rejection' (Join-Path $x64 'legacy-rejection.exe') @($run) @('LEGACY REJECTION PASS 4 cases stderr193 exit4 no_retry_ui exact_owned_processes') 100),
+        (Case 'theme-dialog-policy' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/theme_dialog_policy.py'),$Package,$dialogDriver,(Join-Path $x86 'com-dialog-target.exe'),(Join-Path $x64 'com-dialog-target.exe'),(Join-Path $x86 'ntw2ks-frame-target.exe'),(Join-Path $x64 'ntw2ks-frame-target.exe')) @('DIALOG POLICY PASS') 180),
         (Case 'cli'  $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli.py'),$run) @('CLI PASS')),
         (Case 'automatic' (Join-Path $x64 'launch-automatic.exe') (@('--private-worker')+$pair) @('LAUNCH MATRIX PASS')),
         (Case 'propagation' (Join-Path $x64 'propagate-basic.exe') (@('--private-worker')+$tree) @('PROPAGATION BASIC PASS') 320),

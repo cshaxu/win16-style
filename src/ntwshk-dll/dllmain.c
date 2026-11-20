@@ -35,7 +35,8 @@ static DWORD bootstrap(void)
     if(win2k && (context.flags&STYLE_STARTUP_POLICY_GLOBAL_SESSION))return ERROR_INVALID_DATA;
     error=process_hook_stage_restore();
     if(error)return error;
-    classic_theme_set_process_profile(context.flags>>STYLE_STARTUP_PROFILE_SHIFT);
+    unsigned profile=context.flags>>STYLE_STARTUP_PROFILE_SHIFT;
+    classic_theme_set_process_profile(profile?profile:(unsigned)win2k);
     if(win2k)return win32_style_startup(ntw2ks_prepare_startup,&context);
     ntw16s_process_context=context;
     return win32_style_startup(ntw16s_prepare_startup,NULL);

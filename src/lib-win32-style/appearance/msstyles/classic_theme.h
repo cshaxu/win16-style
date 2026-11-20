@@ -162,6 +162,7 @@ typedef struct classic_theme {
     classic_choice_colors choice;
     classic_surface_colors scroll_arrow;
     classic_button_group title_buttons;
+    classic_dialog_policy dialog_policy;
     classic_caption_metrics caption_metrics;
     classic_caption_images caption_images;
     classic_scroll_colors scroll;

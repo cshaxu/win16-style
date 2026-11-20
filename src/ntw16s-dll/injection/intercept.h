@@ -1,9 +1,12 @@
 #ifndef NTW16S_INTERCEPT_H
 #define NTW16S_INTERCEPT_H
 #include "ntwshk-dll/injection.h"
+#include "lib-win32-style/appearance/msstyles/classic_style.h"
 extern ntwshk_context ntw16s_process_context;
 BOOL ntw16s_process_session_active(void);
 BOOL ntw16s_win2k_session_active(void);
+typedef enum ntw_dialog_kind { NTW_DIALOG_FILE,NTW_DIALOG_FOLDER,NTW_DIALOG_PRINT } ntw_dialog_kind;
+classic_dialog_route ntw16s_dialog_route(ntw_dialog_kind kind);
 void ntw16s_win2k_dialog_initialize(HWND window);
 LONG ntw16s_attach_titles(void); /* joins the current startup transaction */
 LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *));
@@ -13,6 +16,9 @@ void ntw16s_discard_processes(void);
 LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *));
 LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *));
 #ifdef NTWSHK_UNIFIED
+void ntw2ks_dialog_initialize(HWND window);
+LONG ntw16s_attach_win2k_file_dialogs_using(DWORD (*attach)(void *,void *));
+LONG ntw16s_attach_win2k_folder_dialogs_using(DWORD (*attach)(void *,void *));
 DWORD ntw16s_attach_win2k_com_dialogs_using(DWORD (*attach)(void *,void *),
     HRESULT (*scope)(HRESULT (*)(void *),void *));
 #endif

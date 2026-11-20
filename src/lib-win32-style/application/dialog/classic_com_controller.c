@@ -169,16 +169,32 @@ static PROCESS_HOOK_UNWIND_FUNCTION UINT_PTR classic_event_file_ok(file_proxy *p
 static BOOL explorer_active(void)
 {return configuration.explorer_active && configuration.explorer_active();}
 static BOOL use_proxy(void)
-{return configuration.session_active() || explorer_active();}
+{
+    if(configuration.route)return configuration.route(FALSE)!=STYLE_COM_NATIVE ||
+        configuration.route(TRUE)!=STYLE_COM_NATIVE;
+    return configuration.session_active() || explorer_active();
+}
 static BOOL selected(void){return TRUE;}
+static BOOL not_selected(void){return FALSE;}
+static HRESULT native_scope(HRESULT (*show)(void *),void *context){return show(context);}
 static HRESULT proxy_show(file_proxy *p,HWND owner)
 {
-    BOOL explorer=explorer_active();
+    BOOL explorer=FALSE,native=FALSE;
+    if(configuration.route){
+        FILEOPENDIALOGOPTIONS flags=0;
+        if(FAILED(IFileDialog_GetOptions(p->native,&flags)))native=TRUE;
+        else{
+            style_classic_com_route route=configuration.route((flags&FOS_PICKFOLDERS)!=0);
+            explorer=route==STYLE_COM_EXPLORER;
+            native=route==STYLE_COM_NATIVE;
+        }
+    }else explorer=explorer_active();
     const style_classic_com_show_services services={
-        .classic_hook=classic_hook,.session_active=explorer?selected:configuration.session_active,
-        .scope=explorer?configuration.explorer_scope:configuration.scope,
-        .experimental_events=!explorer && configuration.experimental_events,
-        .experimental_hidden=!explorer && configuration.experimental_hidden,
+        .classic_hook=classic_hook,.session_active=native?not_selected:
+            (explorer || configuration.route)?selected:configuration.session_active,
+        .scope=native?native_scope:explorer?configuration.explorer_scope:configuration.scope,
+        .experimental_events=!native && !explorer && configuration.experimental_events,
+        .experimental_hidden=!native && !explorer && configuration.experimental_hidden,
         .explorer_files=explorer || configuration.explorer_files,
     };
     return style_classic_com_show(p,owner,&services);
@@ -289,7 +305,7 @@ DWORD style_classic_com_attach(DWORD (*attach)(void *,void *),const style_classi
 {
     if(!attach || !options || !options->session_active || !options->scope ||
        !options->property || !options->folder_message || !options->hidden_message)return ERROR_INVALID_PARAMETER;
-    if(options->explorer_active && !options->explorer_scope)return ERROR_INVALID_PARAMETER;
+    if((options->explorer_active || options->route) && !options->explorer_scope)return ERROR_INVALID_PARAMETER;
     configuration=*options;
     classic_messages=(style_classic_dialog_message_services){
         .property=configuration.property,.hidden_message=configuration.hidden_message,

@@ -300,7 +300,8 @@ static bool write_extension(FILE *output,const classic_theme_source *source)
     unsigned char buffer[CLASSIC_STYLE_RESOURCE_CAPACITY];
     const classic_menu_metrics *menu=source->menu_metrics.check_column?&source->menu_metrics:NULL;
     const classic_dialog_metrics *dialog=source->dialog_metrics.print_width?&source->dialog_metrics:NULL;
-    size_t length=classic_style_write(buffer,sizeof(buffer),&source->buttons,&source->scroll_metrics,menu,dialog);
+    size_t length=classic_style_write(buffer,sizeof(buffer),&source->buttons,&source->scroll_metrics,menu,dialog,
+        &source->dialog_policy);
     return length && bytes(output,buffer,length);
 }
 

@@ -1,5 +1,7 @@
 字体任务已按用户指令关闭；独立生命周期待核实债务列于下方。字体交付见[记录](../history/M0-T8-S2-system-font.md)。
 
+- [ ] TODO(Medium): Win2000 Win32 外框的自动最大化／还原断言在 S13 新旧实包一致失败。Owner：Win2000 外框回归。Evidence：[S13 记录](../history/M0-T29-S13-theme-folder-cli.md)。Admission：验证自有窗口在可用桌面的激活、最大化图形及还原，不把基线失败计作通过。
+
 # Deferred Debt
 
 - [ ] TODO(Low): Win16 主题中独立历史 System 字形与 advance 仍待可核验来源及相应使用许可。Owner：主题资源后续扩展。Evidence：[T29 S5 验证](../history/M0-T29-S5-window-menus-fonts.md)。Admission：先确定可使用的字形数据，再验证与当前宿主采样的像素、度量和字库所有权。

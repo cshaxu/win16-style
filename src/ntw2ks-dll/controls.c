@@ -16,8 +16,10 @@
 #include "lib-win32-style/application/dialog/observation.h"
 #include "lib-win32-style/application/dialog/dialog_hook.h"
 #include "lib-win32-style/application/dialog/classic_com_controller.h"
+#include "lib-win32-style/appearance/msstyles/classic_style.h"
 #include "lib-win32-style/appearance/win2000/dialog/stock_call.h"
 #include "lib-win32-style/application/dialog/print_extended.h"
+#include "lib-win32-style/application/dialog/classic_print_contract.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/window/window_identity.h"
 #include "lib-win32-style/appearance/win2000/control/control.h"
@@ -82,6 +84,9 @@ static BOOL CALLBACK attach_dialog_child(HWND child,LPARAM context)
 {(void)context;(void)ntw2ks_control_attach(child);return TRUE;}
 static void attach_dialog(HWND dialog)
 {attach_frame(dialog);if(IsWindow(dialog))EnumChildWindows(dialog,attach_dialog_child,0);}
+#ifdef NTWSHK_UNIFIED
+void ntw2ks_dialog_initialize(HWND dialog){attach_dialog(dialog);}
+#endif
 
 /* Dialog manager windows can bypass the exported CreateWindowEx entry points. */
 static LRESULT CALLBACK dialog_created(int code,WPARAM wp,LPARAM lp)
@@ -132,15 +137,39 @@ static const style_dialog_windows dialog_windows={attach_dialog,win2k_frame_atta
 static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
 {return CALL(parameters,real_##NAME,&dialog_windows);}
-STOCK_ENTRY(PageSetupDlgA,PAGESETUPDLGA,win2k_page_setup_a)
-STOCK_ENTRY(PageSetupDlgW,PAGESETUPDLGW,win2k_page_setup_w)
 STOCK_ENTRY(ChooseFontA,CHOOSEFONTA,win2k_font_a)
 STOCK_ENTRY(ChooseFontW,CHOOSEFONTW,win2k_font_w)
 STOCK_ENTRY(ChooseColorA,CHOOSECOLORA,win2k_color_a)
 STOCK_ENTRY(ChooseColorW,CHOOSECOLORW,win2k_color_w)
-STOCK_ENTRY(PrintDlgA,PRINTDLGA,win2k_print_a)
-STOCK_ENTRY(PrintDlgW,PRINTDLGW,win2k_print_w)
 #undef STOCK_ENTRY
+
+static classic_dialog_route print_route(void)
+{
+#ifdef NTWSHK_UNIFIED
+    return ntw16s_dialog_route(NTW_DIALOG_PRINT);
+#else
+    return CLASSIC_DIALOG_WIN2K;
+#endif
+}
+#define PRINT_ENTRY(NAME,TYPE,SUFFIX) \
+static __typeof__(&NAME) real_##NAME; \
+static BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{ \
+    classic_dialog_route route=print_route(); \
+    if(route==CLASSIC_DIALOG_WIN2K)return win2k_print_##SUFFIX(parameters,real_##NAME,&dialog_windows); \
+    if(route==CLASSIC_DIALOG_WIN16)return style_classic_print_call_##SUFFIX(parameters,real_##NAME); \
+    return real_##NAME(parameters); \
+}
+#define PAGE_ENTRY(NAME,TYPE,SUFFIX) \
+static __typeof__(&NAME) real_##NAME; \
+static BOOL WINAPI hook_##NAME(TYPE *parameters) \
+{return print_route()==CLASSIC_DIALOG_WIN2K?win2k_page_setup_##SUFFIX(parameters,real_##NAME,&dialog_windows):real_##NAME(parameters);}
+PRINT_ENTRY(PrintDlgA,PRINTDLGA,a)
+PRINT_ENTRY(PrintDlgW,PRINTDLGW,w)
+PAGE_ENTRY(PageSetupDlgA,PAGESETUPDLGA,a)
+PAGE_ENTRY(PageSetupDlgW,PAGESETUPDLGW,w)
+#undef PRINT_ENTRY
+#undef PAGE_ENTRY
 #define FIND_ENTRY(NAME,TYPE,CALL,COMPACT) \
 static __typeof__(&NAME) real_##NAME; \
 static HWND WINAPI hook_##NAME(TYPE *parameters) \
@@ -151,6 +180,7 @@ FIND_ENTRY(ReplaceTextA,FINDREPLACEA,win2k_find_a,FALSE)
 FIND_ENTRY(ReplaceTextW,FINDREPLACEW,win2k_find_w,FALSE)
 #undef FIND_ENTRY
 
+#ifndef NTWSHK_UNIFIED
 #define FILE_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
@@ -160,6 +190,7 @@ FILE_HOOK(GetOpenFileNameW,OPENFILENAMEW,w)
 FILE_HOOK(GetSaveFileNameA,OPENFILENAMEA,a)
 FILE_HOOK(GetSaveFileNameW,OPENFILENAMEW,w)
 #undef FILE_HOOK
+#endif
 
 /* Extended requests outside the classic bridge contract retain their property sheet. */
 #define PRINT_EXTENDED_HOOK(NAME,TYPE,GENERAL,BRIDGE,PRINT) \
@@ -167,9 +198,11 @@ static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
 { style_dialog_observation scope;process_hook_unwind_scope unwind; \
   DWORD incoming=GetLastError(),error;HRESULT result; \
+  classic_dialog_route route=print_route(); \
+  if(route==CLASSIC_DIALOG_NATIVE)return real_##NAME(parameters); \
   if(!style_dialog_observation_begin(&scope,NULL,dialog_created,FALSE))return E_FAIL; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); \
-  SetLastError(incoming);if(!GENERAL((HINSTANCE)&__ImageBase,parameters,&result) && !BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
+  SetLastError(incoming);if((route!=CLASSIC_DIALOG_WIN2K || !GENERAL((HINSTANCE)&__ImageBase,parameters,&result)) && !BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
   error=GetLastError();PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result; }
 PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,win2k_print_general_a,style_print_extended_a,real_PrintDlgA)
 PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,win2k_print_general_w,style_print_extended_w,real_PrintDlgW)
@@ -192,8 +225,10 @@ DWORD ntw2ks_controls_attach_using(DWORD (*attach)(void *,void *))
     ATTACH_DIALOG(MessageBoxIndirectA);ATTACH_DIALOG(MessageBoxIndirectW);
     ATTACH_DIALOG(FindTextA);ATTACH_DIALOG(FindTextW);
     ATTACH_DIALOG(ReplaceTextA);ATTACH_DIALOG(ReplaceTextW);
+#ifndef NTWSHK_UNIFIED
     ATTACH_DIALOG(GetOpenFileNameA);ATTACH_DIALOG(GetOpenFileNameW);
     ATTACH_DIALOG(GetSaveFileNameA);ATTACH_DIALOG(GetSaveFileNameW);
+#endif
     ATTACH_DIALOG(ChooseFontA);ATTACH_DIALOG(ChooseFontW);
     ATTACH_DIALOG(ChooseColorA);ATTACH_DIALOG(ChooseColorW);
     ATTACH_DIALOG(PrintDlgA);ATTACH_DIALOG(PrintDlgW);
@@ -202,7 +237,10 @@ DWORD ntw2ks_controls_attach_using(DWORD (*attach)(void *,void *))
 #undef ATTACH_DIALOG
     if(error)return error;
 #ifdef NTWSHK_UNIFIED
-    return ntw16s_attach_win2k_com_dialogs_using(attach,observe_dialog);
+    error=(DWORD)ntw16s_attach_win2k_file_dialogs_using(attach);
+    if(!error)error=(DWORD)ntw16s_attach_win2k_folder_dialogs_using(attach);
+    if(!error)error=ntw16s_attach_win2k_com_dialogs_using(attach,observe_dialog);
+    return error;
 #else
     const style_classic_com_options com={
         .session_active=com_session_active,.scope=observe_dialog,

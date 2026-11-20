@@ -7,6 +7,7 @@
 #include "lib-win32-style/application/lifecycle/creation_call.h"
 #include "lib-win32-style/application/dialog/observation.h"
 #include "intercept.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "../../lib-win32/process-hook/unwind.h"
 #include "lib-win32-style/application/lifecycle/theme_track.h"
@@ -89,7 +90,14 @@ typedef style_creation_call title_scope;
 /* Shell COM dialogs can create their window without passing the exported
  * CreateWindow entry points. Keep attachment active during their modal Show. */
 HRESULT ntw16s_dialog_style_scope(HRESULT (*callback)(void *),void *context)
-{return style_creation_call_invoke(&title_context,callback,context);}
+{
+#ifdef NTWSHK_UNIFIED
+    DWORD flags=__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE);
+    if(!(flags&NTWSHK_POLICY_GLOBAL_SESSION) &&
+       classic_theme_profile_family(classic_theme_process_profile())==CLASSIC_THEME_WIN2K)return callback(context);
+#endif
+    return style_creation_call_invoke(&title_context,callback,context);
+}
 
 #define WINDOW_HOOK(S,T) \
 static __typeof__(&CreateWindowEx##S) create_##S; \
@@ -194,20 +202,16 @@ OBSERVED_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW,color_dialog_return,TRUE,win2k_co
 
 /* A no-op print hook selects the system's traditional PrintDlg layout.
  * Preserve caller-owned customization and less common flag contracts unchanged. */
-static UINT_PTR CALLBACK classic_print_hook(HWND w,UINT m,WPARAM a,LPARAM b)
-{(void)w;(void)m;(void)a;(void)b;return 0;}
 #define PRINT_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { process_hook_unwind_scope unwind;title_scope scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
-  if(ntw16s_win2k_session_active())return win2k_print_##SUFFIX(parameters,real_##NAME,&stock_windows); \
+  classic_dialog_route route=ntw16s_dialog_route(NTW_DIALOG_PRINT); \
+  if(route==CLASSIC_DIALOG_NATIVE)return real_##NAME(parameters); \
+  if(route==CLASSIC_DIALOG_WIN2K)return win2k_print_##SUFFIX(parameters,real_##NAME,&stock_windows); \
   if(!begin_titles(&scope,TRUE))return FALSE; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { \
-    TYPE copy; \
-    if(scope.enabled && style_classic_print_prepare_##SUFFIX(parameters,&copy,STYLE_CLASSIC_PRINT_FLAGS,classic_print_hook)) { \
-      result=real_##NAME(&copy);error=GetLastError(); \
-      style_classic_print_result_##SUFFIX(parameters,&copy); \
-    } else { result=real_##NAME(parameters);error=GetLastError(); } \
+    result=style_classic_print_call_##SUFFIX(parameters,real_##NAME);error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.failure){result=FALSE;error=scope.failure;}SetLastError(error);return result; }
 PRINT_HOOK(PrintDlgA,PRINTDLGA,a)
@@ -216,26 +220,28 @@ PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
 
 /* Synchronous common dialogs also create their own internal windows. */
 SIMPLE_DIALOG_HOOK(PageSetupDlgA,PAGESETUPDLGA *,BOOL,FALSE,(void)0,
-    if(ntw16s_win2k_session_active())return win2k_page_setup_a(parameters,real_PageSetupDlgA,&stock_windows))
+    classic_dialog_route route=ntw16s_dialog_route(NTW_DIALOG_PRINT);
+    if(route==CLASSIC_DIALOG_NATIVE)return real_PageSetupDlgA(parameters);
+    if(route==CLASSIC_DIALOG_WIN2K)return win2k_page_setup_a(parameters,real_PageSetupDlgA,&stock_windows))
 SIMPLE_DIALOG_HOOK(PageSetupDlgW,PAGESETUPDLGW *,BOOL,FALSE,(void)0,
-    if(ntw16s_win2k_session_active())return win2k_page_setup_w(parameters,real_PageSetupDlgW,&stock_windows))
-static HMODULE global_print_resources(void)
-{
-    return ntw16s_win2k_session_active()?ntw16s_global_win2k_resources():NULL;
-}
+    classic_dialog_route route=ntw16s_dialog_route(NTW_DIALOG_PRINT);
+    if(route==CLASSIC_DIALOG_NATIVE)return real_PageSetupDlgW(parameters);
+    if(route==CLASSIC_DIALOG_WIN2K)return win2k_page_setup_w(parameters,real_PageSetupDlgW,&stock_windows))
 #define PRINT_EXTENDED_HOOK(NAME,TYPE,GENERAL,BRIDGE,PRINT) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
-{ DWORD incoming=GetLastError();HMODULE resources=global_print_resources();HRESULT result=E_FAIL; \
+{ DWORD incoming=GetLastError();classic_dialog_route route=ntw16s_dialog_route(NTW_DIALOG_PRINT);HRESULT result=E_FAIL; \
   SetLastError(incoming); \
-  if(resources){ \
-    if(GENERAL(resources,parameters,&result) || BRIDGE(parameters,PRINT,&result))return result; \
+  if(route==CLASSIC_DIALOG_NATIVE)return real_##NAME(parameters); \
+  if(route==CLASSIC_DIALOG_WIN2K){ \
+    HMODULE resources=ntw16s_global_win2k_resources(); \
+    if((resources && GENERAL(resources,parameters,&result)) || BRIDGE(parameters,PRINT,&result))return result; \
     SetLastError(incoming);return real_##NAME(parameters); \
   } \
   process_hook_unwind_scope unwind;title_scope scope;DWORD error=ERROR_SUCCESS; \
   if(!begin_titles(&scope,TRUE))return HRESULT_FROM_WIN32(GetLastError()); \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { \
-    if(!scope.enabled || !BRIDGE(parameters,PRINT,&result)){result=real_##NAME(parameters);}error=GetLastError(); \
+    if(!BRIDGE(parameters,PRINT,&result)){result=real_##NAME(parameters);}error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result; }
 PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,win2k_print_general_a,style_print_extended_a,real_PrintDlgA)
@@ -667,8 +673,13 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
     ATTACH(TrackPopupMenu);
     ATTACH(FindTextA);ATTACH(FindTextW);ATTACH(ReplaceTextA);ATTACH(ReplaceTextW);
     ATTACH(ChooseColorA);ATTACH(ChooseColorW);ATTACH(ChooseFontA);ATTACH(ChooseFontW);
-    ATTACH(PrintDlgA);ATTACH(PrintDlgW);ATTACH(PageSetupDlgA);ATTACH(PageSetupDlgW);
-    ATTACH(PrintDlgExA);ATTACH(PrintDlgExW);
+#ifdef NTWSHK_UNIFIED
+    if(classic_theme_profile_family(classic_theme_process_profile())!=CLASSIC_THEME_WIN2K)
+#endif
+    {
+        ATTACH(PrintDlgA);ATTACH(PrintDlgW);ATTACH(PageSetupDlgA);ATTACH(PageSetupDlgW);
+        ATTACH(PrintDlgExA);ATTACH(PrintDlgExW);
+    }
     ATTACH(PropertySheetA);ATTACH(PropertySheetW);
     FARPROC task_symbol=GetProcAddress(GetModuleHandleW(L"comctl32.dll"),"TaskDialog");
     memcpy(&real_TaskDialog,&task_symbol,sizeof(task_symbol));

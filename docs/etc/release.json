@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S13 P1",
-  "stage": "folder-selected seven-file release",
+  "delivery": "M0 T29 S14 P1",
+  "stage": "theme-declared dialog policy",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "25c8b290463326aa1831d9a4ca03f474144374edeef29d45359a7b0e3c97c971",
+  "source_snapshot_sha256": "b22325e832f3bc24a5916ccd51ba1b6b0035dd62a38905be68408d1ef3e699f5",
   "source_input_cohort": {
-    "count": 1281,
-    "sha256": "df1faba46828c3a43ac9dea44aca695517671dcf3edc4f8b75b8ca6b245cd76a",
+    "count": 1282,
+    "sha256": "62fb81e6d5cdf5ee8e79f5ac48ddcd3f84c10e5bd291427ad77024a85b409c62",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot",
@@ -16,7 +16,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "4cacec71a6b556c36042bd17d1e31f945e6c7233729f9e87a81c6cd4e3f6f7d4",
+      "sha256": "a1fde13fda41ee3be0d709aa0f3268d9538696103a9314f5b6cebc2eb47b223b",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "1ac9adcd0f010512904351c516b7024bfdec1462571df9490c5de940d5e61fa1",
+      "sha256": "4fa0622c641bd70f09d1d285a278172f2548c995d422edccc1e337834afb3ca0",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -61,7 +61,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "313741b5bc6c06178b1a02bfddfe58e047a7186662c374c162978ea0918670a0",
+      "sha256": "31ba27f05b2bdff3a5edd726a2312d9b755634fc27cf4152c7d4e480a14681e8",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -84,22 +84,25 @@
     }
   },
   "theme_artifacts": {
-    "Win16/Win16.msstyles": "eb6f7a92cf2d9dd6ef1a2b5efe434e2c6724efd1f4dcb6a20440f5a5deccb13d",
+    "Win16/Win16.msstyles": "5eeb358aafe810ed676850a17eaadf124699e026b995b0a4d3bec857e91ad4ee",
     "Win16/Win16.theme": "0dcbf80bb67ea283a81265c670ae6c6c07ee776b8ac2449c0a05b0818f2984a8",
-    "Win2K/Win2K.msstyles": "ebb9ba7beb197e5a498c2dad642ab6b7be18937305c903cdec1b2606f74d849f",
+    "Win2K/Win2K.msstyles": "522f2ab9a236b2fa2f2546052d6abb0cc13b89cd090ab364bcddae39f68886ba",
     "Win2K/Win2K.theme": "f4acd885ec052c06daaa09e2423a4882ef3c53fd072509ef04890d05c1ad85f1"
   },
   "build": {
     "toolchain": "pure C17, MinGW GCC, Ninja, ccache",
-    "last_worker_seconds": {
-      "x86": 34.193702599965036,
-      "x64": 351.16624839999713
+    "seconds": {
+      "x86": 295.24,
+      "x64": 323.38
     },
-    "x86_note": "Two failures of old test fixture linkage corrected. Final successful run resumed the original empty-tree build.",
-    "changed_source_test_tool_build_files": 82,
-    "insertions": 844,
-    "deletions": 547,
-    "net_lines": 297,
+    "canonical_profile_rebuild_seconds": {
+      "x86": 10.733333599986508,
+      "x64": 13.285602900083177
+    },
+    "changed_source_test_tool_build_files": 21,
+    "insertions": 493,
+    "deletions": 93,
+    "net_lines": 400,
     "checks": [
       "quick ABI tests (x86, x64)",
       "package identity and original resource tables",
@@ -128,11 +131,9 @@
   "focused_post_publication": {
     "status": "passed-focused",
     "coverage": "focused",
-    "seconds": 69.7442528,
-    "cases": 22,
+    "seconds": 146.0867365,
+    "cases": 19,
     "selected_cases": [
-      "ntw2ks-control-launch-x86",
-      "ntw2ks-control-launch-x64",
       "progress-sharing",
       "plan-selection",
       "abi-x86",
@@ -141,105 +142,64 @@
       "demo-pair",
       "demo-win2000",
       "wait-contract",
+      "theme-dialog-policy",
       "cli",
       "automatic",
       "propagation",
       "cli-failures",
       "ntw2ks-com-explorer-open-cancel-32",
+      "ntw2ks-com-explorer-save-cancel-32",
       "ntw2ks-com-explorer-open-cancel-64",
-      "neutral-uwp-frame-32",
+      "ntw2ks-com-explorer-save-cancel-64",
       "neutral-global-switch-32",
-      "neutral-uwp-frame-64",
-      "neutral-global-switch-64",
-      "uac-unit-32",
-      "uac-unit-64"
+      "neutral-global-switch-64"
     ],
     "skipped": []
   },
   "supplemental_post_publication": {
-    "custom_folders": "THEME FOLDER PASS catalog, custom names, unsupported/missing data, four cross-width samples, CWD and forwarding",
-    "idle_tray": "TRAY STARTUP PASS three valid folders, broken excluded, no styles active, owned fixture exited",
-    "owned_switching": "OWNED GLOBAL PROFILE PASS two custom profiles, two widths, restore, no desktop-wide activation",
-    "self_elevation_units": {
-      "x86": "shell redirect unit pass",
-      "x64": "shell redirect unit pass"
+    "mixed_shell_modal_cases": [
+      "DIALOG POLICY bits=32 theme=Mixed Classic operation=open COM_EXPLORER_LAYOUT bridged=1",
+      "DIALOG POLICY bits=32 theme=Mixed Classic operation=folder COM_FOLDER_LAYOUT tree=0",
+      "DIALOG POLICY bits=64 theme=Mixed Classic operation=open COM_EXPLORER_LAYOUT bridged=1",
+      "DIALOG POLICY bits=64 theme=Mixed Classic operation=folder COM_FOLDER_LAYOUT tree=0",
+      "DIALOG POLICY bits=32 theme=Mixed 2000 operation=open old=1",
+      "DIALOG POLICY bits=32 theme=Mixed 2000 operation=folder COM_FOLDER_LAYOUT tree=1",
+      "DIALOG POLICY bits=64 theme=Mixed 2000 operation=open old=1",
+      "DIALOG POLICY bits=64 theme=Mixed 2000 operation=folder COM_FOLDER_LAYOUT tree=1",
+      "DIALOG POLICY bits=32 theme=Native Files operation=open old=0",
+      "DIALOG POLICY bits=32 theme=Native Files operation=folder COM_FOLDER_LAYOUT tree=1",
+      "DIALOG POLICY bits=64 theme=Native Files operation=open old=0",
+      "DIALOG POLICY bits=64 theme=Native Files operation=folder COM_FOLDER_LAYOUT tree=1"
+    ],
+    "mixed_print_cases": [
+      "DIALOG POLICY PRINT bits=32 theme=Mixed Classic mode=0 ANSI and Unicode",
+      "DIALOG POLICY PRINT bits=64 theme=Mixed Classic mode=0 ANSI and Unicode",
+      "DIALOG POLICY PRINT bits=32 theme=Mixed 2000 mode=1 ANSI and Unicode",
+      "DIALOG POLICY PRINT bits=64 theme=Mixed 2000 mode=1 ANSI and Unicode",
+      "DIALOG POLICY PRINT bits=32 theme=Native Files mode=2 ANSI and Unicode",
+      "DIALOG POLICY PRINT bits=64 theme=Native Files mode=2 ANSI and Unicode"
+    ],
+    "print_skipped": [],
+    "native_extended_print": "ANSI/Unicode defaults and result handles verified; native modal UI not asserted",
+    "owned_live_session": [
+      "OWNED DIALOG POLICY 32 Owned Explorer Files COM_EXPLORER_LAYOUT bridged=1",
+      "OWNED DIALOG POLICY 64 Owned Explorer Files COM_EXPLORER_LAYOUT bridged=1",
+      "OWNED DIALOG POLICY 32 Owned Legacy Files old=1",
+      "OWNED DIALOG POLICY 64 Owned Legacy Files old=1",
+      "OWNED DIALOG POLICY PASS"
+    ],
+    "win2000_print_general": {
+      "x86": "ANSI/Unicode General template observed; cancel result preserved",
+      "x64": "ANSI/Unicode General template observed; cancel result preserved"
     },
-    "tray_controller_units": {
-      "x86": "TRAY CONTROLLER PASS bits=32 switch=both toggle=off failure=1 mutually_exclusive=1",
-      "x64": "TRAY CONTROLLER PASS bits=64 switch=both toggle=off failure=1 mutually_exclusive=1"
-    },
-    "preexisting_win32_frame_assertion": {
-      "status": "failed in both prior and published binaries; count separately from the 22 passes",
-      "comparison": [
-        {
-          "arch": "x86",
-          "fixture": "unchanged",
-          "exit_code": 3,
-          "diagnostics": [
-            "WIN2K FRAME bits=32 attached=1 title=392x19 button_size=1 button_hits=1 frame_width=3 button_top=5 button_edge=ffffff pixels=93221c/ab4f41 end=efc8a4 inactive=898989/b4b4b4 frame=ffffffff button_gray=117 close_disabled=1 close_changed=40 icon_pixels=85 icon_changed=139 text_pixels=551 hit=2",
-            "FRAME DIAGNOSTIC dpi=96 screen=0,0,1280,720 work=0,0,1280,672 separator=c8d0d4 resized=1 maximized=0 restored=0 closed=1",
-            "DIALOG_DRIVER exit=3"
-          ]
-        },
-        {
-          "arch": "x86",
-          "fixture": "smaller",
-          "exit_code": 3,
-          "diagnostics": [
-            "WIN2K FRAME bits=32 attached=1 title=208x19 button_size=1 button_hits=1 frame_width=3 button_top=5 button_edge=ffffff pixels=a74639/d9a184 end=eec6a3 inactive=929292/b4b4b4 frame=ffffffff button_gray=117 close_disabled=1 close_changed=40 icon_pixels=85 icon_changed=139 text_pixels=515 hit=2",
-            "FRAME DIAGNOSTIC dpi=96 screen=0,0,1280,720 work=0,0,1280,672 separator=c8d0d4 resized=1 maximized=0 restored=0 closed=1",
-            "DIALOG_DRIVER exit=3"
-          ]
-        },
-        {
-          "arch": "x64",
-          "fixture": "unchanged",
-          "exit_code": 3,
-          "diagnostics": [
-            "WIN2K FRAME bits=64 attached=1 title=392x19 button_size=1 button_hits=1 frame_width=3 button_top=5 button_edge=ffffff pixels=93221c/ab4f41 end=efc8a4 inactive=898989/b4b4b4 frame=ffffffff button_gray=117 close_disabled=1 close_changed=40 icon_pixels=85 icon_changed=139 text_pixels=551 hit=2",
-            "FRAME DIAGNOSTIC dpi=96 screen=0,0,1280,720 work=0,0,1280,672 separator=c8d0d4 resized=1 maximized=0 restored=0 closed=1",
-            "DIALOG_DRIVER exit=3"
-          ]
-        },
-        {
-          "arch": "x64",
-          "fixture": "smaller",
-          "exit_code": 3,
-          "diagnostics": [
-            "WIN2K FRAME bits=64 attached=1 title=208x19 button_size=1 button_hits=1 frame_width=3 button_top=5 button_edge=ffffff pixels=a74639/d9a184 end=eec6a3 inactive=929292/b4b4b4 frame=ffffffff button_gray=117 close_disabled=1 close_changed=40 icon_pixels=85 icon_changed=139 text_pixels=515 hit=2",
-            "FRAME DIAGNOSTIC dpi=96 screen=0,0,1280,720 work=0,0,1280,672 separator=c8d0d4 resized=1 maximized=0 restored=0 closed=1",
-            "DIALOG_DRIVER exit=3"
-          ]
-        }
-      ],
-      "old_layout_source": "S11 installed originals backed up by the S13 publisher"
-    }
+    "units": "Dual-width COM controller, PrintDlg contract and deployed CLASSIC_STYLE policy readback passed",
+    "corrected_initial_release_case": "Built-in Win2K process with an omitted packed profile defaulted to Win16. DLL now selects the canonical profile using the preexisting startup appearance bit.",
+    "focused_retry": "Recorded an intermittent demo combo drop-state assertion after redeploy."
   },
   "validation": {
     "physical_input": "not tested",
     "full_matrix": "not run",
     "administrator_desktop_tray": "not run; owned tray fixture and owned receiver were tested"
   },
-  "closure": "S13 remains open. Two existing Win32 frame assertions failed in the same way before and after publication.",
-  "remote_audit": {
-    "ref": "refs/heads/main",
-    "publication_commit": "41f61fe1e8259092d971e2dd24c62dda988b9471",
-    "matched_assets": 7,
-    "retired_asset_paths_returning_http_404": 9,
-    "matched_source_inputs": 1281,
-    "newline_only_differences": [
-      "src/lib-win32/process-hook/LICENSE.win16style",
-      "tests/integration/vb5_custom_compare.py",
-      "tests/integration/vb_disabled_picture_compare.py",
-      "tests/integration/vb_picture_compare.py",
-      "tests/ntw16s-dll/commdlg_error_target.c",
-      "tests/ntw16s-dll/task_dialog.rc",
-      "tests/ntw16s-dll/win32_multi_navigation.c",
-      "tests/ntw16s-dll/win32_multi_target.c"
-    ]
-  },
-  "cleanup": {
-    "s13_p1_final_scratch_directories_removed": 6,
-    "s13_p1_final_scratch_bytes_removed": 494405738
-  }
+  "closure": "local delivery verified; remote review recorded separately"
 }
