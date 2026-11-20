@@ -17,10 +17,13 @@ typedef struct msstyles_theme_descriptor {
     char file[MSSTYLES_THEME_TOKEN_CAPACITY+sizeof(".msstyles")-1];
     char size[MSSTYLES_THEME_TOKEN_CAPACITY];
     char color[MSSTYLES_THEME_TOKEN_CAPACITY];
+    char display_name[MSSTYLES_THEME_TOKEN_CAPACITY];
 } msstyles_theme_descriptor;
 
 /* Reads the packaged ASCII profile. The style file must be a simple sibling
- * name. A malformed or incomplete descriptor leaves the output unchanged. */
+ * name. The optional display name is a literal UTF-8 label. It is empty for
+ * absent, indirect or ambiguous display metadata. A malformed or incomplete
+ * visual style descriptor leaves the output unchanged. */
 bool msstyles_theme_file_read(FILE *input,msstyles_theme_descriptor *descriptor);
 
 #endif

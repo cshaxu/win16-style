@@ -546,7 +546,12 @@ HRESULT classic_theme_open(PCWSTR descriptor,classic_theme_mapping *source)
        !MultiByteToWideChar(CP_UTF8,0,parsed.size,-1,size,ARRAYSIZE(size)) ||
        !MultiByteToWideChar(CP_UTF8,0,parsed.color,-1,color,ARRAYSIZE(color)))
         return HRESULT_FROM_WIN32(GetLastError());
-    return map_theme(path,size,color,source);
+    HRESULT result=map_theme(path,size,color,source);
+    if(SUCCEEDED(result) && parsed.display_name[0] &&
+       !MultiByteToWideChar(CP_UTF8,MB_ERR_INVALID_CHARS,parsed.display_name,-1,
+           source->display_name,ARRAYSIZE(source->display_name)))
+        source->display_name[0]=0;
+    return result;
 }
 
 void classic_theme_close(classic_theme_mapping *source)
@@ -667,8 +672,9 @@ void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void
            (entry.dwFileAttributes&FILE_ATTRIBUTE_REPARSE_POINT) || !folder_name(entry.cFileName))continue;
         classic_theme_mapping candidate={0};classic_theme_family family;
         if(FAILED(classic_theme_open_folder(renderer,entry.cFileName,&candidate,&family)))continue;
+        BOOL more=visit(entry.cFileName,candidate.display_name,family,context);
         classic_theme_close(&candidate);
-        if(!visit(entry.cFileName,family,context))break;
+        if(!more)break;
     }while(FindNextFileW(search,&entry));
     FindClose(search);
 }

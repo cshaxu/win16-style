@@ -108,6 +108,31 @@ S14 同批七件已发布两处，19 项聚焦用例全部通过。双宽原生�
 主题的文件、目录、打印及自有线程晚接入。远端 P1 摘要已核对，S14 已收口，
 T29 保持开放。详见 [S14 记录](../history/M0-T29-S14-dialog-policy.md)。
 
+S15 准入，补齐 T29 的全主题驱动终态。[T29 规划](../proposals/msstyles-classic-runtime.md)
+定义后续顺序和验收。[S15 依赖台账](../history/M0-T29-S15-theme-runtime-boundary.md)
+冻结 S14 正式包的年代依赖，S15 已接入主题目录显示名称。两处已发布，15 项实包聚焦通过，待远端复核。
+
+## M0 T29 S15 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation；固定 M0 与 T29。 |
+| Admission And Approval | 用户确认三件运行文件清除年代分派和专属呈现，要求规划并准入 S15。 |
+| Objective | 冻结产品依赖与后续接收者，将托盘主题名称及菜单项分配接到已验证主题目录。 |
+| Non-goals | 本 S 不改变接入资格、载荷格式、绘制、对话框行为或七件包数目。 |
+| Reference Baseline | S14 P1 5263e650 与 P2 的实际远端复核及现有覆盖。 |
+| Candidate Proposal | T29 用户追加终态与 S15–S24 规划。 |
+| Files And ABI Surface | 主题描述读取、主题目录访问、托盘菜单、对应夹具及文档。正式导出签名保持。 |
+| Applicable Rules | Pure C17、MinGW、Ninja、ccache；同快照先发布后测试。 |
+| Verification | 目录名称和主题名称独立，验证显示名缺失及无效时回退、重复名称可辨认、两宽菜单选择和取消；实包聚焦回归。 |
+| Expected Markers | 菜单项名称来自 DisplayName 或目录，命令分配无需内置主题名单，既有启动与全局用例保持。 |
+| Asset Needs | 同一双宽正式七件、原有主题字节和资源。 |
+| Reporting Requirements | 报告冻结范围、已迁移/延后依赖、实测证据和未覆盖。 |
+| Stop Conditions | 禁止 computer-use、创建或切换私有桌面；不得扩大全局接入范围。 |
+| Exit Criteria | 依赖台账及主题目录验证完成，变更产品时完成双宽同包交付与远端复核。 |
+| Original Owner Request | 只换主题文件复现已支持 Win16 和 Win2000，正式 EXE 与 DLL 无年代分派或专属绘制。 |
+| Similar-Issue Sweep | 核对主题读取、启动与 UWP 请求、托盘、全局策略、资源回退、链接和适配器。 |
+
 ## Identifier State
 
 - Milestone: M0 (fixed)
@@ -122,8 +147,8 @@ T29 保持开放。详见 [S14 记录](../history/M0-T29-S14-dialog-policy.md)�
 - Last verified remote delivery: M0 T29 S14 P1 `5263e650`；两处七件正式文件和九个退役路径。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 14
-- Open task: 无活动任务包。
+- Last allocated T29 S: 15
+- Open task: M0 T29 S15；生产依赖冻结与主题目录。
 
 ## Technical Baseline
 

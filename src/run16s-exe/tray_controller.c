@@ -8,14 +8,17 @@
 #include <stdlib.h>
 #include <wchar.h>
 
-typedef struct tray_theme { unsigned profile,command;WCHAR folder[MAX_PATH]; } tray_theme;
+typedef struct tray_theme {
+    unsigned profile;
+    WCHAR folder[MAX_PATH],display_name[MSSTYLES_THEME_TOKEN_CAPACITY];
+} tray_theme;
 typedef struct controller {
     style_global_control control;tray_icon *tray;HICON icon;
     tray_theme *themes;unsigned count;
 } controller;
 
-enum { MENU_ENABLE=1001, MENU_EXIT=1002, MENU_ENABLE_2K=1003, MENU_FIRST_THEME=1100, STYLE_NONE=2 };
-static BOOL remember_theme(PCWSTR folder,classic_theme_family family,void *value)
+enum { MENU_EXIT=1002, MENU_FIRST_THEME=1100, STYLE_NONE=2 };
+static BOOL remember_theme(PCWSTR folder,PCWSTR display_name,classic_theme_family family,void *value)
 {
     controller *state=value;
     unsigned profile=classic_theme_profile(folder,family);
@@ -27,14 +30,13 @@ static BOOL remember_theme(PCWSTR folder,classic_theme_family family,void *value
     state->themes=items;
     tray_theme *item=&items[state->count];
     item->profile=profile;
-    item->command=profile==0?MENU_ENABLE:profile==1?MENU_ENABLE_2K:MENU_FIRST_THEME+state->count;
+    wcscpy(item->display_name,display_name);
     wcscpy(item->folder,folder);
     ++state->count;return TRUE;
 }
 static int order_theme(const void *left,const void *right)
 {
     const tray_theme *a=left,*b=right;
-    if(a->profile<2 || b->profile<2)return (a->profile>b->profile)-(a->profile<b->profile);
     return _wcsicmp(a->folder,b->folder);
 }
 static HMENU make_menu(void *value)
@@ -44,14 +46,17 @@ static HMENU make_menu(void *value)
     for(unsigned i=0;i<state->count;++i){
         const tray_theme *item=&state->themes[i];
         UINT flags=MF_STRING|(state->control.desired==item->profile?MF_CHECKED:MF_UNCHECKED);
-        WCHAR literal[2*MAX_PATH],*end=literal;
-        for(PCWSTR name=item->folder;*name;++name){
+        WCHAR title[MAX_PATH+MSSTYLES_THEME_TOKEN_CAPACITY+3];
+        if(!item->display_name[0] || !_wcsicmp(item->display_name,item->folder))
+            wcscpy(title,item->folder);
+        else swprintf_s(title,ARRAYSIZE(title),L"%ls [%ls]",item->display_name,item->folder);
+        WCHAR literal[2*ARRAYSIZE(title)],*end=literal;
+        for(PCWSTR name=title;*name;++name){
             if(*name==L'&')*end++=L'&';
             *end++=*name;
         }
         *end=0;
-        PCWSTR label=item->profile==0?L"Enable Win16 Style":item->profile==1?L"Enable Windows 2000 Style":literal;
-        if(!AppendMenuW(menu,flags,item->command,label)){
+        if(!AppendMenuW(menu,flags,MENU_FIRST_THEME+i,literal)){
             DestroyMenu(menu);return NULL;
         }
     }
@@ -67,9 +72,8 @@ static void action(unsigned command,void *value)
 {
     controller *state=(controller *)value;
     if(command==MENU_EXIT)ExitProcess(0);
-    unsigned i=0;
-    while(i<state->count && state->themes[i].command!=command)++i;
-    if(i==state->count)return;
+    unsigned i=command-MENU_FIRST_THEME;
+    if(i>=state->count)return;
     DWORD selected=state->themes[i].profile;
     if(selected!=state->control.desired){
         classic_theme_mapping source={0};
@@ -80,20 +84,28 @@ static void action(unsigned command,void *value)
     style_global_control_select(&state->control,selected);
 }
 #ifdef RUN16S_TRAY_TEST
+static unsigned test_theme_command(controller *state,unsigned profile)
+{
+    for(unsigned i=0;i<state->count;++i)
+        if(state->themes[i].profile==profile)return MENU_FIRST_THEME+i;
+    return 0;
+}
 static LRESULT test_control(WPARAM request,void *value)
 {
     controller *state=(controller *)value;
-    if(request==1)action(MENU_ENABLE,state);
-    else if(request==6)action(MENU_ENABLE_2K,state);
+    unsigned first_command=test_theme_command(state,NTW16S_GLOBAL_STYLE_16);
+    unsigned second_command=test_theme_command(state,NTW16S_GLOBAL_STYLE_2K);
+    if(request==1)action(first_command,state);
+    else if(request==6)action(second_command,state);
     else if(request==2)action(MENU_EXIT,state);
     else if(request==3)return (state->control.enabled?1:0)|(state->control.busy?2:0)|((state->control.enabled && (state->control.style&1))?4:0);
     else if(request==4){
         WCHAR first[64]={0},second[64]={0},third[64]={0};HMENU menu=make_menu(state);if(!menu)return 0;
         BOOL valid=GetMenuItemCount(menu)==3 && GetMenuStringW(menu,0,first,ARRAYSIZE(first),MF_BYPOSITION) &&
             GetMenuStringW(menu,1,second,ARRAYSIZE(second),MF_BYPOSITION) && GetMenuStringW(menu,2,third,ARRAYSIZE(third),MF_BYPOSITION) &&
-            !lstrcmpW(first,L"Enable Win16 Style") && !lstrcmpW(second,L"Enable Windows 2000 Style") && !lstrcmpW(third,L"Exit") &&
-            !!(GetMenuState(menu,MENU_ENABLE,MF_BYCOMMAND)&MF_CHECKED)==(state->control.desired==NTW16S_GLOBAL_STYLE_16) &&
-            !!(GetMenuState(menu,MENU_ENABLE_2K,MF_BYCOMMAND)&MF_CHECKED)==(state->control.desired==NTW16S_GLOBAL_STYLE_2K);
+            !lstrcmpW(first,L"Windows 3.x [Win16]") && !lstrcmpW(second,L"Windows 2000 [Win2K]") && !lstrcmpW(third,L"Exit") &&
+            !!(GetMenuState(menu,first_command,MF_BYCOMMAND)&MF_CHECKED)==(state->control.desired==NTW16S_GLOBAL_STYLE_16) &&
+            !!(GetMenuState(menu,second_command,MF_BYCOMMAND)&MF_CHECKED)==(state->control.desired==NTW16S_GLOBAL_STYLE_2K);
         DestroyMenu(menu);return valid;
     }else if(request==7)return state->count;
     else if(request==5){
@@ -110,7 +122,7 @@ static LRESULT test_control(WPARAM request,void *value)
 int run16s_tray_global(HANDLE parent)
 {
     controller state={0};
-    if(!style_global_control_init(&state.control,parent,NTW16S_GLOBAL_STYLE_16,STYLE_NONE,
+    if(!style_global_control_init(&state.control,parent,STYLE_NONE,STYLE_NONE,
         &ntw16s_global_namespace,&operations,NULL)){
         fwprintf(stderr,L"run16s: cannot prepare the tray session\n");return 10;
     }

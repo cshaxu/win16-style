@@ -491,9 +491,9 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     return 0;
 }
 
-static BOOL print_folder(PCWSTR folder,classic_theme_family family,void *context)
+static BOOL print_folder(PCWSTR folder,PCWSTR display_name,classic_theme_family family,void *context)
 {
-    (void)context;wprintf(L"CLASSIC THEME FOLDER %ls family=%u\n",folder,(unsigned)family);
+    (void)context;wprintf(L"CLASSIC THEME FOLDER %ls family=%u display=%ls\n",folder,(unsigned)family,display_name);
     return TRUE;
 }
 

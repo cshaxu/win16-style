@@ -86,7 +86,7 @@
       "path": "src/run16s-exe/tray_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fdc05c28b485a74f8e04997d3808e5f23c1f5ab3625ea19aeb7b2b4b63c21dd3",
+      "sha256": "89b9efbf47287d8a3d074eb5e17741f776d4c612ad79279b032153cc7d1074a1",
       "disposition": "authored",
       "review": "T21 S19 tray control using existing global session; T21 S20 tray library split; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored C orchestration; no imported hook implementation"
@@ -5675,7 +5675,7 @@
       "path": "tests/integration/uwp_tray.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c27547c94bde8d13f0912934c5eaa52169de30e448be9d2e78b3b86b9f6badfd",
+      "sha256": "ff1c25508b94e222c1a1a2e17fe1d0088be9cd475c64c9b838b94633f53274dc",
       "disposition": "authored",
       "review": "T22 S1 P38 opt-in published tray controller UWP integration; native menu input and owned targets; T26 S6 shared global coordination/configuration and callback-context migration; T28 opt-in UWP both styles and restoration via the published tray",
       "notice": "Project-authored pure C test; no imported artwork"
@@ -6404,7 +6404,7 @@
       "path": "tests/run16s-exe/tray_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "16e467232a8ba9fb454a4be56199c616381f9f778334c7f4d8915ee3ca970a36",
+      "sha256": "9ef2a185df069e0e3bbf59864c860e673f9289e41b9586871780f3fce31f975f",
       "disposition": "authored",
       "review": "T25 S8 global style lifecycle and tray selection tests; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored native C; no imported artwork"
@@ -10472,7 +10472,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/theme_file.c",
       "source": null,
       "source_blob": null,
-      "sha256": "081fa4a26d43beaa7c1d176f70bc8ac4a4be3ead7191b6ca29e24a772d685d8a",
+      "sha256": "e8d273ed9142c61f51e94bb89aa9e8cb7afdf647f128b2ca6fe402474b3638f4",
       "disposition": "authored",
       "review": "T29 S3 companion theme description and native INI checks",
       "notice": "Project-authored; no imported source or resources"
@@ -10481,7 +10481,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/theme_file.h",
       "source": null,
       "source_blob": null,
-      "sha256": "ff6e8d571341e894dcb2e8a4e548b3822eee41594955d0ed62ec3ce5850472e9",
+      "sha256": "32c3d69203934f526444fd9d18de4277c02dad8986ceb42a0722c7685c89246c",
       "disposition": "authored",
       "review": "T29 S3 companion theme description and native INI checks",
       "notice": "Project-authored; no imported source or resources"
@@ -10490,7 +10490,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/theme_file.c",
       "source": null,
       "source_blob": null,
-      "sha256": "75f87cda35554923fd1ee7482578d979ef0b8b8da5d8500979d5bf50157ba587",
+      "sha256": "f66bb44c909a1a5f2ff9510d67b352c22e44cbb863e9c5bb6e462d901279e775",
       "disposition": "authored",
       "review": "T29 S3 companion theme description and native INI checks",
       "notice": "Project-authored; no imported source or resources"
@@ -10535,7 +10535,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6c4e9195110ad34b2b2784de1b6f43b02c6a71bc2d29cbf30755856d957d9b16",
+      "sha256": "deb5571f9acc39e90f05a8acab1192d2ccc55587d242257193f697c49e72eb1c",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10544,7 +10544,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "2d07a688866cf6fff8104fb0be50b003fc3011712a05dd12ff56826eb09b2971",
+      "sha256": "99cf737245db2eaaf0551a827f9cc08a148939934dd0a79b44593e3cec6170e2",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10553,7 +10553,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "37c528c7c48acdf1252e057c51a270f3f619c6f781d723a8619534967fa98db4",
+      "sha256": "d28fac84a00f0014290bb162168d84bdd02e2de91159a692156a1c874040b134",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"

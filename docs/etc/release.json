@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S14 P1",
-  "stage": "theme-declared dialog policy",
+  "delivery": "M0 T29 S15 P1",
+  "stage": "data-driven theme catalogue",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "b22325e832f3bc24a5916ccd51ba1b6b0035dd62a38905be68408d1ef3e699f5",
+  "source_snapshot_sha256": "cd6310b7553451f2e11e8bad236bc60b8447db519737f852a3c26e62f2cac2a3",
   "source_input_cohort": {
     "count": 1282,
-    "sha256": "62fb81e6d5cdf5ee8e79f5ac48ddcd3f84c10e5bd291427ad77024a85b409c62",
+    "sha256": "bdeed5b5b08733ff59a9bb74d302219e3ee00b0b09fbb2d83463ecf999ecf792",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot",
@@ -16,7 +16,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "a1fde13fda41ee3be0d709aa0f3268d9538696103a9314f5b6cebc2eb47b223b",
+      "sha256": "914a59faef2973ab8f6e250d0c97c4018f7a6a21f94967744754bae9ee3c3368",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "4fa0622c641bd70f09d1d285a278172f2548c995d422edccc1e337834afb3ca0",
+      "sha256": "3d11a6d89e5b3f5ac55cdca0598db2fa0cbf18b7c0f74aa4cb881efbc80eef98",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -61,7 +61,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "31ba27f05b2bdff3a5edd726a2312d9b755634fc27cf4152c7d4e480a14681e8",
+      "sha256": "5f875f00127a943903fab10eb2348a33e17dba0e135842c0326ec9aa43aa9d84",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -92,17 +92,13 @@
   "build": {
     "toolchain": "pure C17, MinGW GCC, Ninja, ccache",
     "seconds": {
-      "x86": 295.24,
-      "x64": 323.38
+      "x86": 328.377819599933,
+      "x64": 343.97515720000956
     },
-    "canonical_profile_rebuild_seconds": {
-      "x86": 10.733333599986508,
-      "x64": 13.285602900083177
-    },
-    "changed_source_test_tool_build_files": 21,
-    "insertions": 493,
-    "deletions": 93,
-    "net_lines": 400,
+    "changed_source_test_tool_build_files": 9,
+    "insertions": 114,
+    "deletions": 47,
+    "net_lines": 67,
     "checks": [
       "quick ABI tests (x86, x64)",
       "package identity and original resource tables",
@@ -131,8 +127,8 @@
   "focused_post_publication": {
     "status": "passed-focused",
     "coverage": "focused",
-    "seconds": 146.0867365,
-    "cases": 19,
+    "seconds": 121.7025644,
+    "cases": 15,
     "selected_cases": [
       "progress-sharing",
       "plan-selection",
@@ -147,80 +143,28 @@
       "automatic",
       "propagation",
       "cli-failures",
-      "ntw2ks-com-explorer-open-cancel-32",
-      "ntw2ks-com-explorer-save-cancel-32",
-      "ntw2ks-com-explorer-open-cancel-64",
-      "ntw2ks-com-explorer-save-cancel-64",
       "neutral-global-switch-32",
       "neutral-global-switch-64"
     ],
     "skipped": []
   },
   "supplemental_post_publication": {
-    "mixed_shell_modal_cases": [
-      "DIALOG POLICY bits=32 theme=Mixed Classic operation=open COM_EXPLORER_LAYOUT bridged=1",
-      "DIALOG POLICY bits=32 theme=Mixed Classic operation=folder COM_FOLDER_LAYOUT tree=0",
-      "DIALOG POLICY bits=64 theme=Mixed Classic operation=open COM_EXPLORER_LAYOUT bridged=1",
-      "DIALOG POLICY bits=64 theme=Mixed Classic operation=folder COM_FOLDER_LAYOUT tree=0",
-      "DIALOG POLICY bits=32 theme=Mixed 2000 operation=open old=1",
-      "DIALOG POLICY bits=32 theme=Mixed 2000 operation=folder COM_FOLDER_LAYOUT tree=1",
-      "DIALOG POLICY bits=64 theme=Mixed 2000 operation=open old=1",
-      "DIALOG POLICY bits=64 theme=Mixed 2000 operation=folder COM_FOLDER_LAYOUT tree=1",
-      "DIALOG POLICY bits=32 theme=Native Files operation=open old=0",
-      "DIALOG POLICY bits=32 theme=Native Files operation=folder COM_FOLDER_LAYOUT tree=1",
-      "DIALOG POLICY bits=64 theme=Native Files operation=open old=0",
-      "DIALOG POLICY bits=64 theme=Native Files operation=folder COM_FOLDER_LAYOUT tree=1"
+    "catalogue": [
+      "CATALOGUE PASS x86: five valid directories, two same display names, absent label, invalid resource excluded",
+      "CATALOGUE PASS x64: five valid directories, two same display names, absent label, invalid resource excluded"
     ],
-    "mixed_print_cases": [
-      "DIALOG POLICY PRINT bits=32 theme=Mixed Classic mode=0 ANSI and Unicode",
-      "DIALOG POLICY PRINT bits=64 theme=Mixed Classic mode=0 ANSI and Unicode",
-      "DIALOG POLICY PRINT bits=32 theme=Mixed 2000 mode=1 ANSI and Unicode",
-      "DIALOG POLICY PRINT bits=64 theme=Mixed 2000 mode=1 ANSI and Unicode",
-      "DIALOG POLICY PRINT bits=32 theme=Native Files mode=2 ANSI and Unicode",
-      "DIALOG POLICY PRINT bits=64 theme=Native Files mode=2 ANSI and Unicode"
+    "owned_idle_tray": [
+      "TRAY STARTUP PASS custom=False, metadata captions, idle and owned exit",
+      "TRAY STARTUP PASS custom=True, metadata captions, idle and owned exit"
     ],
-    "print_skipped": [],
-    "native_extended_print": "ANSI/Unicode defaults and result handles verified; native modal UI not asserted",
-    "owned_live_session": [
-      "OWNED DIALOG POLICY 32 Owned Explorer Files COM_EXPLORER_LAYOUT bridged=1",
-      "OWNED DIALOG POLICY 64 Owned Explorer Files COM_EXPLORER_LAYOUT bridged=1",
-      "OWNED DIALOG POLICY 32 Owned Legacy Files old=1",
-      "OWNED DIALOG POLICY 64 Owned Legacy Files old=1",
-      "OWNED DIALOG POLICY PASS"
-    ],
-    "win2000_print_general": {
-      "x86": "ANSI/Unicode General template observed; cancel result preserved",
-      "x64": "ANSI/Unicode General template observed; cancel result preserved"
-    },
-    "units": "Dual-width COM controller, PrintDlg contract and deployed CLASSIC_STYLE policy readback passed",
-    "corrected_initial_release_case": "Built-in Win2K process with an omitted packed profile defaulted to Win16. DLL now selects the canonical profile using the preexisting startup appearance bit.",
-    "focused_retry": "Recorded an intermittent demo combo drop-state assertion after redeploy."
+    "native_units": "Both architectures passed the descriptor and tray controller tests",
+    "product_exe": "No compiled presets for the theme-selection menu",
+    "theme_bytes_unchanged_from_S14": true
   },
   "validation": {
     "physical_input": "not tested",
     "full_matrix": "not run",
     "administrator_desktop_tray": "not run; owned tray fixture and owned receiver were tested"
   },
-  "closure": "M0 T29 S14 closed in the verified scope; T29 remains open.",
-  "remote_audit": {
-    "ref": "refs/heads/main",
-    "publication_commit": "5263e650e17bca11af2bc50fc1050f2bcf786913",
-    "matched_assets": 7,
-    "retired_asset_paths_returning_http_404": 9,
-    "matched_source_inputs": 1282,
-    "newline_only_differences": [
-      "src/lib-win32/process-hook/LICENSE.win16style",
-      "tests/integration/vb5_custom_compare.py",
-      "tests/integration/vb_disabled_picture_compare.py",
-      "tests/integration/vb_picture_compare.py",
-      "tests/ntw16s-dll/commdlg_error_target.c",
-      "tests/ntw16s-dll/task_dialog.rc",
-      "tests/ntw16s-dll/win32_multi_navigation.c",
-      "tests/ntw16s-dll/win32_multi_target.c"
-    ]
-  },
-  "cleanup": {
-    "scratch_directories_removed": 8,
-    "scratch_bytes_removed": 879343168
-  }
+  "closure": "local delivery verified; remote review recorded separately"
 }

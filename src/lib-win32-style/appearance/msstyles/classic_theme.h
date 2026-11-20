@@ -3,6 +3,7 @@
 
 #include "classic_style.h"
 #include "v4_font.h"
+#include "theme_file.h"
 #include <windows.h>
 
 typedef struct classic_caption_colors {
@@ -183,6 +184,7 @@ HRESULT classic_theme_load(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme *t
 typedef struct classic_theme_mapping {
     HMODULE resources;
     classic_theme model;
+    WCHAR display_name[MSSTYLES_THEME_TOKEN_CAPACITY];
 } classic_theme_mapping;
 
 /* Opens a packaged .theme descriptor from an absolute path outside loader
@@ -193,8 +195,9 @@ void classic_theme_close(classic_theme_mapping *source);
 
 typedef enum classic_theme_family { CLASSIC_THEME_WIN16, CLASSIC_THEME_WIN2K } classic_theme_family;
 /* A folder contains one .theme descriptor. Its resources determine the
- * renderer. The callback borrows each folder name for that invocation only. */
-typedef BOOL (*classic_theme_visit)(PCWSTR folder,classic_theme_family family,void *context);
+ * renderer. The callback borrows the folder and optional display name for
+ * that invocation only. */
+typedef BOOL (*classic_theme_visit)(PCWSTR folder,PCWSTR display_name,classic_theme_family family,void *context);
 HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_mapping *,
     classic_theme_family *family);
 void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void *context);

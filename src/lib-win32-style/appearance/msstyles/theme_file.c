@@ -61,6 +61,15 @@ static bool copy_token(char *target,const char *value,const char *extension)
     return true;
 }
 
+static void read_display_name(char *target,const char *value)
+{
+    size_t length=strlen(value);
+    if(!length || length>=MSSTYLES_THEME_TOKEN_CAPACITY || *value=='@')return;
+    for(const unsigned char *p=(const unsigned char *)value;*p;++p)
+        if(*p<32 || *p==127)return;
+    memcpy(target,value,length+1);
+}
+
 bool msstyles_theme_file_read(FILE *input,msstyles_theme_descriptor *descriptor)
 {
     if(!input || !descriptor)return false;
@@ -69,14 +78,20 @@ bool msstyles_theme_file_read(FILE *input,msstyles_theme_descriptor *descriptor)
     if(ferror(input) || !length || length==sizeof(text) || memchr(text,0,length))return false;
     text[length]=0;
     msstyles_theme_descriptor parsed={0};
-    bool visual=false;
+    bool visual=false,theme=false,display_seen=false;
     for(char *line=text;line;){
         char *next=strchr(line,'\n');
         if(next)*next++=0;
         char *end=line+strlen(line);
         if(end!=line && end[-1]=='\r')end[-1]=0;
-        if(*line=='[')visual=!strcmp(line,"[VisualStyles]");
-        else if(visual){
+        if(*line=='['){
+            visual=!strcmp(line,"[VisualStyles]");
+            theme=!strcmp(line,"[Theme]");
+        }else if(theme && !strncmp(line,"DisplayName=",12)){
+            if(display_seen)parsed.display_name[0]=0;
+            else read_display_name(parsed.display_name,line+12);
+            display_seen=true;
+        }else if(visual){
             char *value=strchr(line,'=');
             if(value){
                 *value++=0;

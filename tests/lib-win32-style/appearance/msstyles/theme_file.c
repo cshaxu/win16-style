@@ -28,7 +28,7 @@ static bool check_file(PCWSTR path)
     msstyles_theme_descriptor parsed={0};
     valid=msstyles_theme_file_read(file,&parsed);
     if(fclose(file)!=0 || !valid)return false;
-    return !strcmp(parsed.file,"Win16.msstyles") && !strcmp(parsed.size,"NormalSize") &&
+    return !strcmp(parsed.display_name,"Windows 3.x") && !strcmp(parsed.file,"Win16.msstyles") && !strcmp(parsed.size,"NormalSize") &&
         !strcmp(parsed.color,"NormalColor") &&
         has_key(path,L"Theme",L"DisplayName",L"Windows 3.x") &&
         has_key(path,L"Control Panel\\Desktop",L"TileWallpaper",L"0") &&
@@ -38,11 +38,22 @@ static bool check_file(PCWSTR path)
         has_key(path,L"MasterThemeSelector",L"MTSM",L"DABJDKT");
 }
 
+static bool optional_name(PCWSTR path,const char *input,const char *name)
+{
+    FILE *file=_wfopen(path,L"w+b");
+    if(!file)return false;
+    msstyles_theme_descriptor parsed={0};
+    bool valid=fputs(input,file)!=EOF &&
+        fputs("[VisualStyles]\nPath=Sample.msstyles\nSize=S\nColorStyle=C\n",file)!=EOF &&
+        fseek(file,0,SEEK_SET)==0 && msstyles_theme_file_read(file,&parsed);
+    return fclose(file)==0 && valid && !strcmp(parsed.display_name,name);
+}
+
 static bool reject(PCWSTR path,const char *text)
 {
     FILE *file=_wfopen(path,L"w+b");
     if(!file)return false;
-    msstyles_theme_descriptor original={"before.msstyles","BeforeSize","BeforeColor"};
+    msstyles_theme_descriptor original={"before.msstyles","BeforeSize","BeforeColor","BeforeName"};
     msstyles_theme_descriptor parsed=original;
     bool passed=fputs(text,file)!=EOF && fseek(file,0,SEEK_SET)==0 &&
         !msstyles_theme_file_read(file,&parsed) && !memcmp(&original,&parsed,sizeof(original));
@@ -59,6 +70,11 @@ int main(void)
     if(!length || length>=ARRAYSIZE(folder) || !GetTempFileNameW(folder,L"wst",0,path))
         return 1;
     bool passed=check_file(path) &&
+        optional_name(path,"[Theme]\nDisplayName=Clair & Nuit\n","Clair & Nuit") &&
+        optional_name(path,"[Theme]\nDisplayName=@themeui.dll,-1\n","") &&
+        optional_name(path,"[Theme]\nDisplayName=One\nDisplayName=Two\n","") &&
+        optional_name(path,"[Theme]\nDisplayName=Invalid\tTab\n","") &&
+        optional_name(path,"","") &&
         reject(path,"[VisualStyles]\nPath=../Win16.msstyles\nSize=S\nColorStyle=C\n") &&
         reject(path,"[VisualStyles]\nPath=C:\\Win16.msstyles\nSize=S\nColorStyle=C\n") &&
         reject(path,"[VisualStyles]\nPath=Win16.msstyles\nSize=S\nSize=S2\nColorStyle=C\n") &&

@@ -179,8 +179,8 @@ static BOOL choose_item(unsigned expected,unsigned item)
     if(!menu_window){puts("TRAY_MENU_NOT_FOUND");return FALSE;}
     DWORD_PTR result=0;
     if(!SendMessageTimeoutW(menu_window,0x01e1,0,0,SMTO_ABORTIFHUNG,500,&result))return FALSE;
-    HMENU menu=(HMENU)result;UINT state=GetMenuState(menu,1001,MF_BYCOMMAND);
-    UINT state2k=GetMenuState(menu,1003,MF_BYCOMMAND);
+    HMENU menu=(HMENU)result;UINT state=GetMenuState(menu,0,MF_BYPOSITION);
+    UINT state2k=GetMenuState(menu,1,MF_BYPOSITION);
     WCHAR first[64]={0},second[64]={0},third[64]={0};
     printf("MENU win16_checked=%d win2k_checked=%d disabled=%d expected=%d exit=%d\n",
         !!(state&MF_CHECKED),!!(state2k&MF_CHECKED),!!(state&(MF_GRAYED|MF_DISABLED)),expected,item==2);
@@ -188,7 +188,7 @@ static BOOL choose_item(unsigned expected,unsigned item)
        !GetMenuStringW(menu,0,first,ARRAYSIZE(first),MF_BYPOSITION)||
        !GetMenuStringW(menu,1,second,ARRAYSIZE(second),MF_BYPOSITION)||
        !GetMenuStringW(menu,2,third,ARRAYSIZE(third),MF_BYPOSITION)||
-       lstrcmpW(first,L"Enable Win16 Style")||lstrcmpW(second,L"Enable Windows 2000 Style")||lstrcmpW(third,L"Exit")||
+       lstrcmpW(first,L"Windows 3.x [Win16]")||lstrcmpW(second,L"Windows 2000 [Win2K]")||lstrcmpW(third,L"Exit")||
        !!(state&MF_CHECKED)!=(expected==1)||!!(state2k&MF_CHECKED)!=(expected==2)||
        (item!=2&&((state|state2k)&(MF_GRAYED|MF_DISABLED)))){
         PostMessageW(menu_window,WM_CANCELMODE,0,0);return FALSE;
