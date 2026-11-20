@@ -166,5 +166,26 @@
     "full_matrix": "not run",
     "administrator_desktop_tray": "not run; owned tray fixture and owned receiver were tested"
   },
-  "closure": "local delivery verified; remote review recorded separately"
+  "closure": "M0 T29 S15 closed; the T29 runtime-neutrality goal remains open.",
+  "remote_audit": {
+    "ref": "refs/heads/main",
+    "publication_commit": "32ca7ac04f5b0122d85a511c0fd3859c6a2e5c89",
+    "matched_assets": 7,
+    "retired_asset_paths_returning_http_404": 9,
+    "matched_source_inputs": 1282,
+    "newline_only_differences": [
+      "src/lib-win32/process-hook/LICENSE.win16style",
+      "tests/integration/vb5_custom_compare.py",
+      "tests/integration/vb_disabled_picture_compare.py",
+      "tests/integration/vb_picture_compare.py",
+      "tests/ntw16s-dll/commdlg_error_target.c",
+      "tests/ntw16s-dll/task_dialog.rc",
+      "tests/ntw16s-dll/win32_multi_navigation.c",
+      "tests/ntw16s-dll/win32_multi_target.c"
+    ]
+  },
+  "cleanup": {
+    "scratch_directories_removed": 4,
+    "scratch_bytes_removed": 462129327
+  }
 }
