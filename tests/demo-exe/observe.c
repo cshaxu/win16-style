@@ -58,11 +58,12 @@ static void modules(DWORD pid,enum demo_style style,PCWSTR package,PCWSTR image)
 {
     HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPMODULE|TH32CS_SNAPMODULE32,pid);CHECK(snapshot!=INVALID_HANDLE_VALUE);
     MODULEENTRY32W entry={.dwSize=sizeof(entry)};BOOL found=FALSE,main=FALSE;WCHAR wanted[MAX_PATH];
-    PCWSTR style_dll=style==DEMO_WIN2K?L"ntw2ks64.dll":L"ntw16s64.dll";
-    CHECK(swprintf_s(wanted,MAX_PATH,L"%ls\\%ls",package,style_dll)>0 && Module32FirstW(snapshot,&entry));
+    CHECK(swprintf_s(wanted,MAX_PATH,L"%ls\\ntwshk64.dll",package)>0 && Module32FirstW(snapshot,&entry));
     do{
-        if(!_wcsicmp(entry.szModule,L"ntw16s32.dll") || !_wcsicmp(entry.szModule,L"ntw2ks32.dll"))CHECK(FALSE);
-        if(!_wcsicmp(entry.szModule,L"ntw16s64.dll") || !_wcsicmp(entry.szModule,L"ntw2ks64.dll")){
+        if(!_wcsicmp(entry.szModule,L"ntw16s32.dll") || !_wcsicmp(entry.szModule,L"ntw2ks32.dll") ||
+           !_wcsicmp(entry.szModule,L"ntw16s64.dll") || !_wcsicmp(entry.szModule,L"ntw2ks64.dll") ||
+           !_wcsicmp(entry.szModule,L"ntwshk32.dll"))CHECK(FALSE);
+        if(!_wcsicmp(entry.szModule,L"ntwshk64.dll")){
             CHECK(style!=DEMO_ORIGINAL && !_wcsicmp(entry.szExePath,wanted));found=TRUE;
         }
         if(!_wcsicmp(entry.szExePath,image))main=TRUE;
@@ -287,13 +288,7 @@ static int matrix(int argc,WCHAR **argv)
     BOOL classic=argc==7;
     CHECK(swprintf_s(package,MAX_PATH,L"%ls\\demo package%ls",scratch,classic?L" 2k":L"")>0 && CreateDirectoryW(package,NULL));
     CHECK(swprintf_s(launcher,MAX_PATH,L"%ls\\run16s.exe",package)>0 && CopyFileW(argv[1],launcher,FALSE));
-    CHECK(swprintf_s(path,MAX_PATH,L"%ls\\ntw16s64.dll",package)>0 && CopyFileW(argv[2],path,FALSE));
-    CHECK(swprintf_s(path,MAX_PATH,L"%ls\\ntw16s32.dll",package)>0 && CopyFileW(argv[3],path,FALSE));
-    CHECK(copy_shared_dlls(package,argv[3],argv[2]));
-    if(classic){
-        CHECK(swprintf_s(path,MAX_PATH,L"%ls\\ntw2ks64.dll",package)>0 && CopyFileW(argv[5],path,FALSE));
-        CHECK(swprintf_s(path,MAX_PATH,L"%ls\\ntw2ks32.dll",package)>0 && CopyFileW(argv[6],path,FALSE));
-    }
+    CHECK(copy_shared_dlls(package,argv[3],argv[2]) && copy_package_themes(package,argv[1]));
     CHECK(swprintf_s(image,MAX_PATH,L"%ls\\demo.exe",package)>0 && CopyFileW(argv[4],image,FALSE));
     ready=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(ready);
     focus_ready=CreateEventW(NULL,TRUE,FALSE,NULL);property_closed=CreateEventW(NULL,TRUE,FALSE,NULL);CHECK(focus_ready && property_closed);

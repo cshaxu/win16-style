@@ -584,7 +584,12 @@ BOOL win2k_frame_attach(HWND window)
     if(pending && style_instance_lookup(window,pending_frame_proc))return TRUE;
     frame_window *frame=calloc(1,sizeof(*frame));
     if(!frame){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    frame->themed=!pending && classic_theme_default((HMODULE)&__ImageBase,&frame->theme);
+    classic_theme_mapping source={0};
+    if(!pending && SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN2K,TRUE,&source))){
+        frame->theme=source.model;
+        frame->themed=TRUE;
+        classic_theme_close(&source);
+    }
     frame->menu.bar.selected=frame->menu.bar.highlighted=-1;
     style_instance_init(&frame->instance,frame,dispose_frame);
     win2k_scroll_init(&frame->scroll,&frame->instance);

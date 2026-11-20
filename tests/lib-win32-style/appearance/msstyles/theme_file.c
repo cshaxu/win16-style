@@ -1,3 +1,4 @@
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/appearance/msstyles/theme_file.h"
 #include <windows.h>
 #include <string.h>
@@ -22,12 +23,33 @@ static bool check_file(PCWSTR path)
         !msstyles_theme_file_write(file,"Win16\n[Injected]","Win16",&variant) &&
         ftell(file)==0 && msstyles_theme_file_write(file,"Windows 3.x","Win16",&variant);
     if(fclose(file)!=0 || !valid)return false;
-    return has_key(path,L"Theme",L"DisplayName",L"Windows 3.x") &&
+    file=_wfopen(path,L"rb");
+    if(!file)return false;
+    msstyles_theme_descriptor parsed={0};
+    valid=msstyles_theme_file_read(file,&parsed);
+    if(fclose(file)!=0 || !valid)return false;
+    return !strcmp(parsed.file,"Win16.msstyles") && !strcmp(parsed.size,"NormalSize") &&
+        !strcmp(parsed.color,"NormalColor") &&
+        has_key(path,L"Theme",L"DisplayName",L"Windows 3.x") &&
         has_key(path,L"Control Panel\\Desktop",L"TileWallpaper",L"0") &&
         has_key(path,L"VisualStyles",L"Path",L"Win16.msstyles") &&
         has_key(path,L"VisualStyles",L"Size",L"NormalSize") &&
         has_key(path,L"VisualStyles",L"ColorStyle",L"NormalColor") &&
         has_key(path,L"MasterThemeSelector",L"MTSM",L"DABJDKT");
+}
+
+static bool reject(PCWSTR path,const char *text)
+{
+    FILE *file=_wfopen(path,L"w+b");
+    if(!file)return false;
+    msstyles_theme_descriptor original={"before.msstyles","BeforeSize","BeforeColor"};
+    msstyles_theme_descriptor parsed=original;
+    bool passed=fputs(text,file)!=EOF && fseek(file,0,SEEK_SET)==0 &&
+        !msstyles_theme_file_read(file,&parsed) && !memcmp(&original,&parsed,sizeof(original));
+    if(fclose(file)!=0 || !passed)return false;
+    classic_theme_mapping source={0};
+    return classic_theme_open(path,&source)==HRESULT_FROM_WIN32(ERROR_INVALID_DATA) &&
+        !source.resources;
 }
 
 int main(void)
@@ -36,7 +58,11 @@ int main(void)
     DWORD length=GetTempPathW(ARRAYSIZE(folder),folder);
     if(!length || length>=ARRAYSIZE(folder) || !GetTempFileNameW(folder,L"wst",0,path))
         return 1;
-    bool passed=check_file(path);
+    bool passed=check_file(path) &&
+        reject(path,"[VisualStyles]\nPath=../Win16.msstyles\nSize=S\nColorStyle=C\n") &&
+        reject(path,"[VisualStyles]\nPath=C:\\Win16.msstyles\nSize=S\nColorStyle=C\n") &&
+        reject(path,"[VisualStyles]\nPath=Win16.msstyles\nSize=S\nSize=S2\nColorStyle=C\n") &&
+        reject(path,"[VisualStyles]\nPath=Win16.msstyles\nSize=S\n[Theme]\nColorStyle=C\n");
     if(!DeleteFileW(path) || !passed){
         fputs("Companion theme roundtrip failed\n",stderr);
         return 1;

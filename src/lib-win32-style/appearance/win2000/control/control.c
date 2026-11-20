@@ -585,21 +585,23 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     win2k_scroll_init(&control->scroll,&control->instance);
     for(unsigned i=0;i<CLASSIC_PUSH_STATE_COUNT;++i)
         control->push.state[i]=(classic_surface_colors){win2k_standard_palette.face,win2k_standard_palette.dark};
-    classic_theme theme;
-    if(classic_theme_default((HMODULE)&__ImageBase,&theme)){
-        control->push=theme.push;
-        control->choice=theme.choice;
-        control->label=theme.label;
-        memcpy(control->edit,theme.edit,sizeof(control->edit));
-        control->list=theme.list;
-        control->combo_colors=theme.combo;
-        control->tab_colors=theme.tab;
-        control->header_colors=theme.header;
-        memcpy(control->progress_colors,theme.progress,sizeof(control->progress_colors));
-        memcpy(control->trackbar_colors,theme.trackbar,sizeof(control->trackbar_colors));
-        control->group=theme.group;
-        control->frame=theme.frame;
-        win2k_scroll_theme(&control->scroll,&theme);
+    classic_theme_mapping source={0};
+    if(SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN2K,TRUE,&source))){
+        const classic_theme *theme=&source.model;
+        control->push=theme->push;
+        control->choice=theme->choice;
+        control->label=theme->label;
+        memcpy(control->edit,theme->edit,sizeof(control->edit));
+        control->list=theme->list;
+        control->combo_colors=theme->combo;
+        control->tab_colors=theme->tab;
+        control->header_colors=theme->header;
+        memcpy(control->progress_colors,theme->progress,sizeof(control->progress_colors));
+        memcpy(control->trackbar_colors,theme->trackbar,sizeof(control->trackbar_colors));
+        control->group=theme->group;
+        control->frame=theme->frame;
+        win2k_scroll_theme(&control->scroll,theme);
+        classic_theme_close(&source);
     }
     control->scroll.controller.resources.list=combo_parent || class_is(window,L"LISTBOX");
     control->scroll.controller.resources.edit=win2k_edit_class(window)==WIN2K_EDIT_STANDARD &&

@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S9 P1",
-  "stage": "development: modern frames",
+  "delivery": "M0 T29 S10 P1",
+  "stage": "development: unified neutral runtime",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "909e3d0085d9307763fee50d7d11d3a833ca0e1cac30f97cf4b097cf28f420b1",
-  "source_snapshot_format": "SHA256 of clean Build-Package snapshot.json bytes",
+  "source_snapshot_sha256": "c3a448144822c8cb2a79591f1d334c9e16c3f7dba1b147e40a3fb4ff7022fe2c",
+  "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot, with a fresh demo-only rebuild for the sole subsequent product-source change",
   "source_input_cohort": {
     "count": 1281,
-    "sha256": "c7bc6d363f900cad44bef0325493eac3c821fd07a5c3f1843fe62e83b60978b8",
+    "sha256": "56297abd0db17b88445d1dc8401f2343fc9cecd712690c37099bfd0bc0f562c6",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF",
     "worktree_newline_only_differences": []
   },
@@ -17,7 +17,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "f93b3eff0f6464893bcef90c3c1934a9d3c114bdf746122921eb6099f9ab6907",
+      "sha256": "e3cc04eaa30a43872bc31e96f253ead383197c8b14359c7010a8f20905553211",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -33,7 +33,7 @@
     "ntw16s32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "c2a2a38f7ba61b4a34339859d2719a51773676e99d09f95852c725d35d14770e",
+      "sha256": "29b3f3b867aa6fc463f4a1d9a8a853a37aa1b99158cf2cc13f7abb17381fc3b4",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -62,7 +62,7 @@
     "ntw16s64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "b41f2a671a210f55fae3d92f6b490c0db6a86c55f764b1ddbef34914013cf06c",
+      "sha256": "203bfd2932f7b09b06695c392e8e3ab3a970abef965634f2d86544cbe33c586c",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -86,7 +86,7 @@
     "ntw2ks32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "2cbcfd9625ae8d88350f469de4cd67d5d20ee4a595fcbbf09b9a6d609c398fec",
+      "sha256": "02a883e0cae3a8d583063bc6c4115cafe91d6051182b93d5a7ecb973bb3b32dd",
       "imports": [
         "ACTIVEDS.dll",
         "COMCTL32.dll",
@@ -115,7 +115,7 @@
     "ntw2ks64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "8bce6f398235d7ab65bea90f3d78317fe453bb9e66a7dff11a55517b2c69a59f",
+      "sha256": "7c8de5042ebd994a7ca2cbece12b6d19f4087dda0419082e108cc81e4885c046",
       "imports": [
         "ACTIVEDS.dll",
         "COMCTL32.dll",
@@ -139,32 +139,60 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "1a264cee77c56505c8c87254ee756464b97e03b276cec066eb858ab2971f4902",
+      "sha256": "e71a416879dc19c34a35c2cfa84bc74982815053fe0704726e6859ce1f43a192",
       "imports": [
+        "ACTIVEDS.dll",
         "ADVAPI32.dll",
+        "COMCTL32.dll",
+        "COMDLG32.DLL",
+        "dwmapi.dll",
+        "GDI32.dll",
         "KERNEL32.dll",
+        "MSIMG32.DLL",
         "api-ms-win-crt-convert-l1-1-0.dll",
         "api-ms-win-crt-heap-l1-1-0.dll",
         "api-ms-win-crt-private-l1-1-0.dll",
         "api-ms-win-crt-runtime-l1-1-0.dll",
         "api-ms-win-crt-stdio-l1-1-0.dll",
-        "api-ms-win-crt-string-l1-1-0.dll"
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "ole32.dll",
+        "OLEAUT32.dll",
+        "SHCORE.dll",
+        "SHELL32.dll",
+        "USER32.dll",
+        "UxTheme.dll",
+        "WINSPOOL.DRV",
+        "COMCTL32.dll"
       ]
     },
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "2033d6267bacd0374b57bda0bdad618375715cba7905e6189ccd864bc2a76881",
+      "sha256": "c0dac00002cdf019614ae871f4acbc3f3d15d69cd6d509bd937d77ba7a61b304",
       "imports": [
+        "ACTIVEDS.dll",
         "ADVAPI32.dll",
+        "COMCTL32.dll",
+        "comdlg32.dll",
+        "dwmapi.dll",
+        "GDI32.dll",
         "KERNEL32.dll",
-        "msvcrt.dll"
+        "MSIMG32.dll",
+        "msvcrt.dll",
+        "ole32.dll",
+        "OLEAUT32.dll",
+        "SHCORE.dll",
+        "SHELL32.dll",
+        "USER32.dll",
+        "UxTheme.dll",
+        "WINSPOOL.DRV",
+        "COMCTL32.dll"
       ]
     },
     "demo.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "34216fc0641e6c6a7fc040161ef51e0cb3c5742fe3a1c1289c05ec043bd26c4b",
+      "sha256": "9c29d531e5c1db60ff105c8470b9e18c24601b558166facd7e43576028b09e02",
       "imports": [
         "comctl32.dll",
         "comdlg32.dll",
@@ -177,455 +205,208 @@
       ]
     }
   },
-  "theme_previews": {
-    "themes/Win16/Win16.theme": {
-      "sha256": "0dcbf80bb67ea283a81265c670ae6c6c07ee776b8ac2449c0a05b0818f2984a8"
-    },
-    "themes/Win16/Win16.msstyles": {
-      "sha256": "eb6f7a92cf2d9dd6ef1a2b5efe434e2c6724efd1f4dcb6a20440f5a5deccb13d"
-    },
-    "themes/Win2K/Win2K.theme": {
-      "sha256": "f4acd885ec052c06daaa09e2423a4882ef3c53fd072509ef04890d05c1ad85f1"
-    },
-    "themes/Win2K/Win2K.msstyles": {
-      "sha256": "ebb9ba7beb197e5a498c2dad642ab6b7be18937305c903cdec1b2606f74d849f"
-    }
+  "theme_artifacts": {
+    "themes/Win16/Win16.theme": "0dcbf80bb67ea283a81265c670ae6c6c07ee776b8ac2449c0a05b0818f2984a8",
+    "themes/Win16/Win16.msstyles": "eb6f7a92cf2d9dd6ef1a2b5efe434e2c6724efd1f4dcb6a20440f5a5deccb13d",
+    "themes/Win2K/Win2K.theme": "f4acd885ec052c06daaa09e2423a4882ef3c53fd072509ef04890d05c1ad85f1",
+    "themes/Win2K/Win2K.msstyles": "ebb9ba7beb197e5a498c2dad642ab6b7be18937305c903cdec1b2606f74d849f"
   },
-  "architecture": {
-    "x86": {
-      "configure-time.json": {
-        "seconds": 10.93119419994764,
-        "exit_code": 0
-      },
-      "build-time.json": {
-        "seconds": 270.56703560007736,
-        "exit_code": 0
-      },
-      "test-time.json": {
-        "seconds": 0.6180639000376686,
-        "exit_code": 0
-      }
+  "build": {
+    "toolchain": "MinGW GCC 16.1.0 + Ninja + ccache 4.13.6, C17",
+    "seconds": {
+      "x86": 356.61220660002436,
+      "x64": 400.4987849999452
     },
-    "x64": {
-      "configure-time.json": {
-        "seconds": 14.255106900003739,
-        "exit_code": 0
-      },
-      "build-time.json": {
-        "seconds": 343.1380216999678,
-        "exit_code": 0
-      },
-      "test-time.json": {
-        "seconds": 0.8446009000763297,
-        "exit_code": 0
-      }
-    }
+    "changed_source_test_tool_build_files": 52,
+    "insertions": 766,
+    "deletions": 202,
+    "net_lines": 564,
+    "checks": [
+      "source receipts",
+      "original resource identity",
+      "four independent theme file reads",
+      "both ABI cases",
+      "both native archive/dependency gates",
+      "both 18-table glyph sets and provenance in neutral DLL",
+      "demo PE boundary"
+    ]
   },
-  "toolchains": {
-    "ccache": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/ccache.exe",
-    "ccache_version": "ccache version 4.13.6",
-    "ninja": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/ninja.exe",
-    "toolchains": [
+  "publication": {
+    "destinations": [
+      "assets",
+      "O:\\winnt"
+    ],
+    "sha256_verified_at_each_destination": 12,
+    "initial_copy": "failed on a mapped x64 provider; all affected paths restored and verified",
+    "successful_replacement": "staged copies exchanged by same-volume rename, old file handles preserved and rollback copies kept"
+  },
+  "focused_post_publication": {
+    "passed": 18,
+    "total": 18,
+    "cases": [
       {
-        "architecture": "x86",
-        "version": "16.1.0",
-        "compiler_sha256": "d8e40b4e557e1dc04deb09ce2edc2fd6106e5ca866044f5d293ceee7e82d92b6",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw32/bin/gcc.exe",
-        "target": "i686-w64-mingw32"
+        "destination": "O:\\repos.hobby\\win16style\\assets",
+        "probe": "launch-automatic.exe",
+        "exit": 0,
+        "marker": "LAUNCH MATRIX PASS",
+        "pass": true
       },
       {
-        "architecture": "x64",
-        "version": "16.1.0",
-        "compiler_sha256": "7222d1a1d37b6bfb86b72c2645d14d855717761e7382c3bf6da8824f218dc1ad",
-        "compiler": "C:/Users/neko/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.MSVCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin/gcc.exe",
-        "target": "x86_64-w64-mingw32"
+        "destination": "O:\\repos.hobby\\win16style\\assets",
+        "probe": "propagate-basic.exe",
+        "exit": 0,
+        "marker": "PROPAGATION BASIC PASS",
+        "pass": true
+      },
+      {
+        "destination": "O:\\repos.hobby\\win16style\\assets",
+        "probe": "core-abi.exe",
+        "exit": 0,
+        "marker": "ABI PASS width=32",
+        "pass": true
+      },
+      {
+        "destination": "O:\\repos.hobby\\win16style\\assets",
+        "probe": "dialog-test-driver.exe",
+        "exit": 0,
+        "marker": "WIN2K FRAME bits=32 attached=1",
+        "pass": true
+      },
+      {
+        "destination": "O:\\repos.hobby\\win16style\\assets",
+        "probe": "dialog-test-driver.exe",
+        "exit": 0,
+        "marker": "COM_EXPLORER_LAYOUT bridged=1",
+        "pass": true
+      },
+      {
+        "destination": "O:\\repos.hobby\\win16style\\assets",
+        "probe": "core-abi.exe",
+        "exit": 0,
+        "marker": "ABI PASS width=64",
+        "pass": true
+      },
+      {
+        "destination": "O:\\repos.hobby\\win16style\\assets",
+        "probe": "dialog-test-driver.exe",
+        "exit": 0,
+        "marker": "WIN2K FRAME bits=64 attached=1",
+        "pass": true
+      },
+      {
+        "destination": "O:\\repos.hobby\\win16style\\assets",
+        "probe": "dialog-test-driver.exe",
+        "exit": 0,
+        "marker": "COM_EXPLORER_LAYOUT bridged=1",
+        "pass": true
+      },
+      {
+        "destination": "O:\\winnt",
+        "probe": "launch-automatic.exe",
+        "exit": 0,
+        "marker": "LAUNCH MATRIX PASS",
+        "pass": true
+      },
+      {
+        "destination": "O:\\winnt",
+        "probe": "propagate-basic.exe",
+        "exit": 0,
+        "marker": "PROPAGATION BASIC PASS",
+        "pass": true
+      },
+      {
+        "destination": "O:\\winnt",
+        "probe": "core-abi.exe",
+        "exit": 0,
+        "marker": "ABI PASS width=32",
+        "pass": true
+      },
+      {
+        "destination": "O:\\winnt",
+        "probe": "dialog-test-driver.exe",
+        "exit": 0,
+        "marker": "WIN2K FRAME bits=32 attached=1",
+        "pass": true
+      },
+      {
+        "destination": "O:\\winnt",
+        "probe": "dialog-test-driver.exe",
+        "exit": 0,
+        "marker": "COM_EXPLORER_LAYOUT bridged=1",
+        "pass": true
+      },
+      {
+        "destination": "O:\\winnt",
+        "probe": "core-abi.exe",
+        "exit": 0,
+        "marker": "ABI PASS width=64",
+        "pass": true
+      },
+      {
+        "destination": "O:\\winnt",
+        "probe": "dialog-test-driver.exe",
+        "exit": 0,
+        "marker": "WIN2K FRAME bits=64 attached=1",
+        "pass": true
+      },
+      {
+        "destination": "O:\\winnt",
+        "probe": "dialog-test-driver.exe",
+        "exit": 0,
+        "marker": "COM_EXPLORER_LAYOUT bridged=1",
+        "pass": true
+      },
+      {
+        "destination": "O:\\winnt",
+        "probe": "demo-observe.exe",
+        "exit": 0,
+        "marker": "DEMO PAIR PASS",
+        "pass": true
+      },
+      {
+        "destination": "O:\\winnt",
+        "probe": "demo-observe.exe",
+        "exit": 0,
+        "marker": "DEMO WIN2000 PASS",
+        "pass": true
       }
     ]
   },
-  "verification": {
-    "coverage": "focused",
-    "actual_package_cases": 29,
-    "passed": 29,
-    "skipped": [],
-    "selected_cases": [
-      "ntw2ks-frame-x86",
-      "ntw2ks-frame-x64",
-      "ntw2ks-style-transition-x86",
-      "ntw2ks-style-transition-x64",
-      "ntw2ks-caption-added-x86",
-      "ntw2ks-caption-added-x64",
-      "ntw2ks-zoom-cycle-default-x86",
-      "ntw2ks-zoom-cycle-aware-x86",
-      "ntw2ks-zoom-cycle-default-x64",
-      "ntw2ks-zoom-cycle-aware-x64",
-      "ntw2ks-resize-natural-default-x86",
-      "ntw2ks-resize-natural-aware-x86",
-      "ntw2ks-resize-natural-default-x64",
-      "ntw2ks-resize-natural-aware-x64",
-      "ntw2ks-geometry-x86",
-      "ntw2ks-geometry-x64",
-      "ntw2ks-geometry-bare-x86",
-      "ntw2ks-geometry-bare-x64",
-      "ntw2ks-menu-transition-x86",
-      "ntw2ks-menu-transition-x64",
-      "progress-sharing",
-      "plan-selection",
-      "abi-x86",
-      "abi-x64",
-      "demo-boundary",
-      "demo-pair",
-      "demo-win2000",
-      "automatic",
-      "propagation"
-    ],
-    "published_smoke": [
-      {
-        "name": "assets/x86/core-uwp-frame_layout",
-        "exit_code": 0,
-        "stdout": [
-          "UWP_FRAME_LAYOUT_PASS dpi=96,120,144,168,192,240,288 edges=8 native-margin=3 fixed-maximized=2"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "assets/x86/core-uwp-frame-hidden",
-        "exit_code": 0,
-        "stdout": [
-          "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "assets/x86/core-uwp-frame",
-        "exit_code": 0,
-        "stdout": [
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "SYSTEM_MENU_STATE zoomed=1 restore=100 maximize=101",
-          "RESOURCES iteration=1 gdi=10/10 user=6/6",
-          "RESOURCES iteration=2 gdi=10/10 user=6/6",
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "UWP_FRAME_SHARED_THREAD_PASS menu-title-destroy=1 explicit-reattach=1 peer-isolated=1",
-          "UWP_FRAME_LIFECYCLE_PASS repeat=3 owner-destroy=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "assets/x86/core-win2k-uwp-frame",
-        "exit_code": 0,
-        "stdout": [
-          "UWP PRODUCT MODE PASS two providers, reuse, switch both ways, style-specific removal",
-          "WIN2K UWP FRAME PASS client hole, caption close, resize states, repeat, title restoration and destruction"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "assets/x86/core-uwp-surface-present",
-        "exit_code": 0,
-        "stdout": [
-          "UWP PRESENT PASS alpha=1 region=1 ownership=1 update=1 position=1 detached=1 refresh=1 reentry=1 failure=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "assets/x86/core-style-classic-theme",
-        "exit_code": 0,
-        "stdout": [],
-        "stderr": []
-      },
-      {
-        "name": "assets/x64/core-uwp-frame_layout",
-        "exit_code": 0,
-        "stdout": [
-          "UWP_FRAME_LAYOUT_PASS dpi=96,120,144,168,192,240,288 edges=8 native-margin=3 fixed-maximized=2"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "assets/x64/core-uwp-frame-hidden",
-        "exit_code": 0,
-        "stdout": [
-          "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "assets/x64/core-uwp-frame",
-        "exit_code": 0,
-        "stdout": [
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "SYSTEM_MENU_STATE zoomed=1 restore=100 maximize=101",
-          "RESOURCES iteration=1 gdi=10/10 user=6/6",
-          "RESOURCES iteration=2 gdi=10/10 user=6/6",
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "UWP_FRAME_SHARED_THREAD_PASS menu-title-destroy=1 explicit-reattach=1 peer-isolated=1",
-          "UWP_FRAME_LIFECYCLE_PASS repeat=3 owner-destroy=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "assets/x64/core-win2k-uwp-frame",
-        "exit_code": 0,
-        "stdout": [
-          "UWP PRODUCT MODE PASS two providers, reuse, switch both ways, style-specific removal",
-          "WIN2K UWP FRAME PASS client hole, caption close, resize states, repeat, title restoration and destruction"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "assets/x64/core-uwp-surface-present",
-        "exit_code": 0,
-        "stdout": [
-          "UWP PRESENT PASS alpha=1 region=1 ownership=1 update=1 position=1 detached=1 refresh=1 reentry=1 failure=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "assets/x64/core-style-classic-theme",
-        "exit_code": 0,
-        "stdout": [],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x86/core-uwp-frame_layout",
-        "exit_code": 0,
-        "stdout": [
-          "UWP_FRAME_LAYOUT_PASS dpi=96,120,144,168,192,240,288 edges=8 native-margin=3 fixed-maximized=2"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x86/core-uwp-frame-hidden",
-        "exit_code": 0,
-        "stdout": [
-          "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x86/core-uwp-frame",
-        "exit_code": 0,
-        "stdout": [
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "SYSTEM_MENU_STATE zoomed=1 restore=100 maximize=101",
-          "RESOURCES iteration=1 gdi=10/10 user=6/6",
-          "RESOURCES iteration=2 gdi=10/10 user=6/6",
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "UWP_FRAME_SHARED_THREAD_PASS menu-title-destroy=1 explicit-reattach=1 peer-isolated=1",
-          "UWP_FRAME_LIFECYCLE_PASS repeat=3 owner-destroy=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x86/core-win2k-uwp-frame",
-        "exit_code": 0,
-        "stdout": [
-          "UWP PRODUCT MODE PASS two providers, reuse, switch both ways, style-specific removal",
-          "WIN2K UWP FRAME PASS client hole, caption close, resize states, repeat, title restoration and destruction"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x86/core-uwp-surface-present",
-        "exit_code": 0,
-        "stdout": [
-          "UWP PRESENT PASS alpha=1 region=1 ownership=1 update=1 position=1 detached=1 refresh=1 reentry=1 failure=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x86/core-style-classic-theme",
-        "exit_code": 0,
-        "stdout": [],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x64/core-uwp-frame_layout",
-        "exit_code": 0,
-        "stdout": [
-          "UWP_FRAME_LAYOUT_PASS dpi=96,120,144,168,192,240,288 edges=8 native-margin=3 fixed-maximized=2"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x64/core-uwp-frame-hidden",
-        "exit_code": 0,
-        "stdout": [
-          "UWP HIDDEN FRAME PASS repeat=3 remove=1 title_destroy=1 owner_destroy=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x64/core-uwp-frame",
-        "exit_code": 0,
-        "stdout": [
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "SYSTEM_MENU_STATE zoomed=1 restore=100 maximize=101",
-          "RESOURCES iteration=1 gdi=10/10 user=6/6",
-          "RESOURCES iteration=2 gdi=10/10 user=6/6",
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "SYSTEM_MENU_STATE zoomed=0 restore=101 maximize=100",
-          "UWP_FRAME_SHARED_THREAD_PASS menu-title-destroy=1 explicit-reattach=1 peer-isolated=1",
-          "UWP_FRAME_LIFECYCLE_PASS repeat=3 owner-destroy=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x64/core-win2k-uwp-frame",
-        "exit_code": 0,
-        "stdout": [
-          "UWP PRODUCT MODE PASS two providers, reuse, switch both ways, style-specific removal",
-          "WIN2K UWP FRAME PASS client hole, caption close, resize states, repeat, title restoration and destruction"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x64/core-uwp-surface-present",
-        "exit_code": 0,
-        "stdout": [
-          "UWP PRESENT PASS alpha=1 region=1 ownership=1 update=1 position=1 detached=1 refresh=1 reentry=1 failure=1"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "winnt/x64/core-style-classic-theme",
-        "exit_code": 0,
-        "stdout": [],
-        "stderr": []
-      }
-    ],
-    "publication_roots": [
-      "assets",
-      "O:/winnt"
-    ],
-    "theme_identity_passed": 4,
-    "real_uwp": [
-      {
-        "name": "Calculator Win16",
-        "exit_code": 0,
-        "stdout": [
-          "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions",
-          "CALC_COMMAND exit=0",
-          "ACTIVATE error=0 own_pid=17572",
-          "TARGET core=0000000006da0874 frame=00000000000801c0 surface=00000000034108aa dpi=144",
-          "FRAME phase=before hwnd=00000000000801c0 surface_exists=1",
-          "TITLE hwnd=00000000000c06f2 visible=1",
-          "TITLE hwnd=0000000003cf0a0a visible=0",
-          "BUTTONS maximize_restore=1 minimize=1 restored=1 surface_visible=1",
-          "FRAME phase=restored hwnd=00000000000801c0 surface_exists=1",
-          "TITLE hwnd=00000000000c06f2 visible=1",
-          "TITLE hwnd=0000000003cf0a0a visible=0",
-          "REMOVE status=1",
-          "REMOVE_AND_GEOMETRY=1",
-          "UWP_LAUNCH_REAL_PASS"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "Calculator Win2K",
-        "exit_code": 0,
-        "stdout": [
-          "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions",
-          "CALC_COMMAND exit=0",
-          "ACTIVATE error=0 own_pid=30072",
-          "TARGET core=00000000003204e0 frame=0000000000a70064 surface=00000000025e0ab0 dpi=144",
-          "FRAME phase=before hwnd=0000000000a70064 surface_exists=1",
-          "TITLE hwnd=0000000001a60866 visible=1",
-          "TITLE hwnd=00000000000d06f2 visible=0",
-          "BUTTONS maximize_restore=1 minimize=1 restored=1 surface_visible=1",
-          "FRAME phase=restored hwnd=0000000000a70064 surface_exists=1",
-          "TITLE hwnd=0000000001a60866 visible=1",
-          "TITLE hwnd=00000000000d06f2 visible=0",
-          "UWP CLASSIC PIXELS visible=1 matched=1 first=bd6e5a second=d9a184",
-          "REMOVE status=1",
-          "REMOVE_AND_GEOMETRY=1",
-          "UWP_LAUNCH_REAL_PASS"
-        ],
-        "stderr": []
-      },
-      {
-        "name": "Scan Win2K",
-        "exit_code": 0,
-        "stdout": [
-          "DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions",
-          "CALC_COMMAND exit=0",
-          "ACTIVATE error=0 own_pid=15492",
-          "TARGET core=0000000006dc0874 frame=0000000000a80064 surface=00000000000a01c0 dpi=144",
-          "FRAME phase=before hwnd=0000000000a80064 surface_exists=1",
-          "TITLE hwnd=0000000001a70866 visible=1",
-          "TITLE hwnd=0000000003d10a0a visible=1",
-          "BUTTONS maximize_restore=1 minimize=1 restored=1 surface_visible=1",
-          "FRAME phase=restored hwnd=0000000000a80064 surface_exists=1",
-          "TITLE hwnd=0000000001a70866 visible=1",
-          "TITLE hwnd=0000000003d10a0a visible=1",
-          "UWP CLASSIC PIXELS visible=1 matched=1 first=bd6f5b second=d8a083",
-          "REMOVE status=1",
-          "REMOVE_AND_GEOMETRY=1",
-          "UWP_LAUNCH_REAL_PASS"
-        ],
-        "stderr": []
-      }
-    ],
-    "winui_notepad": {
-      "win2000": {
-        "launcher_exit": 0,
-        "stdout": "",
-        "stderr": "",
-        "styled": true,
-        "bridges": [
-          "Microsoft.UI.Content.DesktopChildSiteBridge",
-          "Microsoft.UI.Content.DesktopChildSiteBridge",
-          "Microsoft.UI.Content.DesktopChildSiteBridge"
-        ],
-        "dpi": 144,
-        "width": 568,
-        "dwm_hr": 0,
-        "dwm_enabled": false,
-        "title_samples": [
-          "0xa03a30",
-          "0xb96755"
-        ],
-        "close_posted": true,
-        "closed": true
-      },
-      "win16": {
-        "launcher_exit": 0,
-        "stdout": "",
-        "stderr": "",
-        "styled": false,
-        "bridges": [
-          "Microsoft.UI.Content.DesktopChildSiteBridge",
-          "Microsoft.UI.Content.DesktopChildSiteBridge",
-          "Microsoft.UI.Content.DesktopChildSiteBridge",
-          "Microsoft.UI.Content.DesktopChildSiteBridge",
-          "Microsoft.UI.Content.DesktopChildSiteBridge"
-        ],
-        "dpi": 144,
-        "width": 564,
-        "dwm_hr": 0,
-        "dwm_enabled": false,
-        "title_samples": [
-          "0xf0c8a4",
-          "0xf0c8a4"
-        ],
-        "close_posted": true,
-        "closed": true
-      }
+  "real_apps": {
+    "Windows_Scan_Win2K": "PASS native title pixels, maximize/minimize/restore, detachment and geometry",
+    "Calculator_Win16": "PASS on repeat, maximize/minimize/restore, detachment and geometry",
+    "Calculator_Win2K": "PASS on repeat, native title pixels, maximize/minimize/restore, detachment and geometry",
+    "WinUI_Notepad_Win16": {
+      "state": "PASS",
+      "title": [
+        "0xf0c8a4",
+        "0xf0c8a4"
+      ],
+      "content_bridge_present": true,
+      "closed": true
+    },
+    "WinUI_Notepad_Win2K": {
+      "state": "PASS",
+      "title": [
+        "0xa03a30",
+        "0xb96755"
+      ],
+      "content_bridge_present": true,
+      "closed": true
     }
   },
   "validation": {
     "physical_keyboard_mouse": "not tested",
     "private_desktops_created": false,
     "limitations": [
-      "Native fixtures use synthetic window messages and test-owned z-order anchors",
-      "Real application coverage is recorded separately in the S9 history",
-      "The seven-file runtime and deployment switch remains in S10–S11"
+      "Calculator initial activation timed out twice; old-package comparison attached and both new versions passed immediately afterward",
+      "Real Notepad check asserts frame pixels and content bridge, not real-app detachment",
+      "Global receiver only exercised on test-owned threads, not as a desktop-wide sweep",
+      "Final seven-file deployment and compatibility retirement remain S11"
     ]
   },
   "closure": {
-    "S9": "local delivery verified; remote audit pending",
+    "S10": "local delivery verified; remote audit pending",
     "T29": "active",
     "M0": "fixed"
   }

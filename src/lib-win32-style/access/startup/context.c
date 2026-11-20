@@ -24,7 +24,9 @@ DWORD style_startup_packet_parse(const void *data,DWORD bytes,DWORD machine,styl
     memcpy(&h,data,sizeof(h));
     if(h.bytes!=bytes || h.version!=2 || h.machine!=machine ||
         (machine!=IMAGE_FILE_MACHINE_I386 && machine!=IMAGE_FILE_MACHINE_AMD64) ||
-        !(h.flags&(STYLE_STARTUP_POLICY_STYLE|STYLE_STARTUP_POLICY_PROPAGATE)) || (h.flags&~7u) ||
+       !(h.flags&(STYLE_STARTUP_POLICY_STYLE|STYLE_STARTUP_POLICY_PROPAGATE)) ||
+       (h.flags&~(STYLE_STARTUP_POLICY_STYLE|STYLE_STARTUP_POLICY_PROPAGATE|
+          STYLE_STARTUP_POLICY_GLOBAL_SESSION|STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE)) ||
         (!!(h.flags&STYLE_STARTUP_POLICY_GLOBAL_SESSION)!=!!h.reserved0) ||
         h.directory_offset!=sizeof(h) || h.directory_bytes<8 || h.directory_bytes%2 ||
         h.reserved1<4 || h.reserved1%2 || h.reserved1>sizeof(context->module) ||

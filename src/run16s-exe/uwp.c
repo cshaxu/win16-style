@@ -40,7 +40,7 @@ static DWORD install(const style_uwp_target *app,BOOL win2k)
     if(!length||length>=ARRAYSIZE(path))return ERROR_INSUFFICIENT_BUFFER;
     WCHAR *tail=wcsrchr(path,L'\\');if(!tail || (size_t)(tail-path)+20>=ARRAYSIZE(path))return ERROR_BAD_PATHNAME;
     /* Both presentations use the same host entry and frame ownership. */
-    wcscpy(tail+1,L"ntw16s64.dll");
+    wcscpy(tail+1,L"ntwshk64.dll");
     return ntw16s_uwp_target_change(app,path,TRUE,win2k);
 }
 static DWORD activate(PCWSTR app_id,PCWSTR arguments,BOOL wait,BOOL win2k,DWORD *created_pid)

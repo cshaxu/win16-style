@@ -4,6 +4,7 @@
 #include "ntw16s-dll/uwp/hook.h"
 #include <stdio.h>
 #include <stdint.h>
+#include <wchar.h>
 
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"WIN2K UWP FRAME FAIL line=%d error=%lu: %s\n", +    __LINE__,(unsigned long)GetLastError(),#x);return 1;}}while(0)
 
@@ -39,9 +40,19 @@ static LRESULT CALLBACK owner_proc(HWND window,UINT message,WPARAM a,LPARAM b)
     return DefWindowProcW(window,message,a,b);
 }
 
-static int product_modes(HWND root,HWND core)
+static BOOL missing_theme_retains(HWND root,HWND core,PCWSTR descriptor,WPARAM action,HWND surface)
 {
-    HMODULE module=LoadLibraryW(sizeof(void *)==8?L"ntw16s64.dll":L"ntw16s32.dll");
+    WCHAR backup[MAX_PATH];
+    if(swprintf_s(backup,ARRAYSIZE(backup),L"%ls.fixture",descriptor)<0 ||
+       !MoveFileW(descriptor,backup))return FALSE;
+    BOOL applied=request(root,core,action);
+    BOOL restored=MoveFileW(backup,descriptor);
+    return restored && !applied && surface_of(root)==surface && IsWindow(surface);
+}
+
+static int product_modes(HWND root,HWND core,PCWSTR renderer,PCWSTR win16,PCWSTR win2k)
+{
+    HMODULE module=LoadLibraryW(renderer);
     CHECK(module);
     HOOKPROC callback=(HOOKPROC)(uintptr_t)GetProcAddress(module,"Ntw16sUwpFrameHook");
     CHECK(callback);
@@ -50,8 +61,10 @@ static int product_modes(HWND root,HWND core)
     CHECK(request(root,core,NTW16S_UWP_APPLY_2K));
     HWND classic=surface_of(root);
     CHECK(classic && request(root,core,NTW16S_UWP_APPLY_2K) && surface_of(root)==classic);
+    if(win16)CHECK(missing_theme_retains(root,core,win16,NTW16S_UWP_APPLY,classic));
     CHECK(request(root,core,NTW16S_UWP_APPLY) && !IsWindow(classic));
     HWND legacy=surface_of(root);
+    if(win2k)CHECK(legacy && missing_theme_retains(root,core,win2k,NTW16S_UWP_APPLY_2K,legacy));
     CHECK(legacy && request(root,core,NTW16S_UWP_APPLY_2K) && !IsWindow(legacy));
     classic=surface_of(root);
     CHECK(classic && request(root,core,NTW16S_UWP_REMOVE) && surface_of(root)==classic);
@@ -61,11 +74,14 @@ static int product_modes(HWND root,HWND core)
     CHECK(legacy && request(root,core,NTW16S_UWP_REMOVE) && !IsWindow(legacy) && !surface_of(root));
     CHECK(UnhookWindowsHookEx(observer) && FreeLibrary(module));
     puts("UWP PRODUCT MODE PASS two providers, reuse, switch both ways, style-specific removal");
+    if(win16 && win2k)puts("UWP MISSING THEME PASS previous surface retained in both directions");
     return 0;
 }
 
-int main(void)
+int wmain(int argc,WCHAR **argv)
 {
+    if(argc!=1 && argc!=2 && argc!=4)return 2;
+    PCWSTR renderer=argc>=2?argv[1]:sizeof(void *)==8?L"ntw16s64.dll":L"ntw16s32.dll";
     HINSTANCE module=GetModuleHandleW(NULL);
     WNDCLASSW cls={.lpfnWndProc=owner_proc,.hInstance=module,.lpszClassName=L"ApplicationFrameWindow"};
     CHECK(RegisterClassW(&cls));
@@ -141,7 +157,7 @@ int main(void)
         CHECK(style_uwp_frame_remove(root) && !IsWindow(surface));
         CHECK(IsWindowVisible(title) && GetWindowRect(title,&after) && EqualRect(&title_screen,&after));
     }
-    CHECK(!product_modes(root,content));
+    CHECK(!product_modes(root,content,renderer,argc==4?argv[2]:NULL,argc==4?argv[3]:NULL));
     CHECK(win2k_uwp_frame_apply(root,title,NULL,0,NULL));
     HWND surface=style_uwp_frame_surface(root);
     CHECK(DestroyWindow(title) && !IsWindow(surface));

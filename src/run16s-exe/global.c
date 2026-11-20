@@ -1,28 +1,19 @@
 #include "global.h"
 #include "ntw16s-dll/global/session.h"
 #include "lib-win32-style/access/global/owner.h"
+#include "lib-win32-style/access/startup/context.h"
 #include "lib-win32/process-image/image.h"
 #include "lib-win32/security/elevation.h"
-#include "ntwshk-dll/injection.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <wchar.h>
 static DWORD paths(DWORD style,WCHAR *dll64,WCHAR *dll32,DWORD capacity,void *unused)
 {
-    DWORD error=0;(void)unused;
-    ntwshk_context *context=(ntwshk_context *)calloc(1,sizeof(*context));if(!context){error=ERROR_NOT_ENOUGH_MEMORY;goto done;}
-    error=ntwshk_context_paths(context,NULL);if(error)goto done;
-    if(style==NTW16S_GLOBAL_STYLE_2K){
-        if(swprintf(dll64,capacity,L"%lsntw2ks64.dll",context->directory)<0 ||
-           swprintf(dll32,capacity,L"%lsntw2ks32.dll",context->directory)<0){error=ERROR_INSUFFICIENT_BUFFER;goto done;}
-        error=win32_process_image_validate(dll64,IMAGE_FILE_MACHINE_AMD64,TRUE);if(error)goto done;
-        error=win32_process_image_validate(dll32,IMAGE_FILE_MACHINE_I386,TRUE);if(error)goto done;
-    }
-    if(swprintf(dll64,capacity,L"%lsntw16s64.dll",context->directory)<0 || swprintf(dll32,capacity,L"%lsntw16s32.dll",context->directory)<0){error=ERROR_INSUFFICIENT_BUFFER;goto done;}
-    error=win32_process_image_validate(dll64,IMAGE_FILE_MACHINE_AMD64,TRUE);if(error)goto done;
-    error=win32_process_image_validate(dll32,IMAGE_FILE_MACHINE_I386,TRUE);if(error)goto done;
-done:
-    free(context);return error;
+    (void)style;(void)unused;
+    style_startup_context context;
+    DWORD error=style_startup_paths(&context,NULL);if(error)return error;
+    error=style_startup_module_path(&context,IMAGE_FILE_MACHINE_AMD64,L"ntwshk",dll64,capacity);if(error)return error;
+    error=style_startup_module_path(&context,IMAGE_FILE_MACHINE_I386,L"ntwshk",dll32,capacity);if(error)return error;
+    error=win32_process_image_validate(dll64,IMAGE_FILE_MACHINE_AMD64,TRUE);if(error)return error;
+    return win32_process_image_validate(dll32,IMAGE_FILE_MACHINE_I386,TRUE);
 }
 static void report(const style_global_owner_notice *notice,void *context)
 {

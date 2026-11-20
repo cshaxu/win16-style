@@ -26,7 +26,7 @@ static void window_check(void)
 {
     WNDCLASSW cls={0};HWND root,button;
     typedef BOOL (__cdecl *attached_fn)(HWND);
-    HMODULE dll=GetModuleHandleW(sizeof(void *)==8?L"ntw16s64.dll":L"ntw16s32.dll");CHECK(dll);
+    HMODULE dll=GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll");CHECK(dll);
     attached_fn attached=(attached_fn)(void *)GetProcAddress(dll,"Ntw16sWindowAttached");CHECK(attached);
     cls.lpfnWndProc=owner;cls.lpszClassName=L"PropagatedNativeWindow";cls.hInstance=GetModuleHandleW(NULL);CHECK(RegisterClassW(&cls));
     root=CreateWindowW(cls.lpszClassName,L"Inherited native window",WS_OVERLAPPEDWINDOW,0,0,360,240,NULL,NULL,cls.hInstance,NULL);CHECK(root && attached(root));

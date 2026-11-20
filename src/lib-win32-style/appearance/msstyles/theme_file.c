@@ -9,7 +9,9 @@ static bool token(unsigned char c)
 
 static bool label(const char *text)
 {
-    if(!text || !*text || *text==' ' || text[strlen(text)-1]==' ')return false;
+    if(!text || !*text)return false;
+    size_t length=strlen(text);
+    if(length>=MSSTYLES_THEME_TOKEN_CAPACITY || *text==' ' || text[length-1]==' ')return false;
     for(const unsigned char *p=(const unsigned char *)text;*p;++p)
         if(!token(*p) && *p!=' ' && *p!='.')return false;
     return true;
@@ -18,7 +20,7 @@ static bool label(const char *text)
 static bool variant_token(msstyles_v4_name name)
 {
     size_t units=name.units;
-    if(!name.bytes || units<2 || units>SIZE_MAX/2)return false;
+    if(!name.bytes || units<2 || units>MSSTYLES_THEME_TOKEN_CAPACITY)return false;
     for(size_t pos=0;pos<units-1;++pos)
         if(!token(name.bytes[2*pos]) || name.bytes[2*pos+1])return false;
     size_t end=2*(units-1);
@@ -35,7 +37,7 @@ static bool write_token(FILE *output,msstyles_v4_name name)
 bool msstyles_theme_file_write(FILE *output,const char *display_name,const char *stem,
     const msstyles_v4_variant *variant)
 {
-    if(!output || !label(display_name) || !stem || !*stem || !variant ||
+    if(!output || !label(display_name) || !stem || !*stem || strlen(stem)>=MSSTYLES_THEME_TOKEN_CAPACITY || !variant ||
        !variant_token(variant->size) || !variant_token(variant->color))return false;
     for(const unsigned char *p=(const unsigned char *)stem;*p;++p)
         if(!token(*p))return false;
@@ -46,4 +48,46 @@ bool msstyles_theme_file_write(FILE *output,const char *display_name,const char 
         write_token(output,variant->color) &&
         fputs("\r\nSize=",output)!=EOF && write_token(output,variant->size) &&
         fputs("\r\n\r\n[MasterThemeSelector]\r\nMTSM=DABJDKT\r\n",output)!=EOF;
+}
+
+static bool copy_token(char *target,const char *value,const char *extension)
+{
+    size_t length=strlen(value),suffix=strlen(extension);
+    if(*target || length<=suffix || length-suffix>=MSSTYLES_THEME_TOKEN_CAPACITY ||
+       strcmp(value+length-suffix,extension))return false;
+    for(size_t i=0;i<length-suffix;++i)
+        if(!token((unsigned char)value[i]))return false;
+    memcpy(target,value,length+1);
+    return true;
+}
+
+bool msstyles_theme_file_read(FILE *input,msstyles_theme_descriptor *descriptor)
+{
+    if(!input || !descriptor)return false;
+    char text[4096];
+    size_t length=fread(text,1,sizeof(text),input);
+    if(ferror(input) || !length || length==sizeof(text) || memchr(text,0,length))return false;
+    text[length]=0;
+    msstyles_theme_descriptor parsed={0};
+    bool visual=false;
+    for(char *line=text;line;){
+        char *next=strchr(line,'\n');
+        if(next)*next++=0;
+        char *end=line+strlen(line);
+        if(end!=line && end[-1]=='\r')end[-1]=0;
+        if(*line=='[')visual=!strcmp(line,"[VisualStyles]");
+        else if(visual){
+            char *value=strchr(line,'=');
+            if(value){
+                *value++=0;
+                if(!strcmp(line,"Path") && !copy_token(parsed.file,value,".msstyles"))return false;
+                if(!strcmp(line,"Size") && !copy_token(parsed.size,value,""))return false;
+                if(!strcmp(line,"ColorStyle") && !copy_token(parsed.color,value,""))return false;
+            }
+        }
+        line=next;
+    }
+    if(!parsed.file[0] || !parsed.size[0] || !parsed.color[0])return false;
+    *descriptor=parsed;
+    return true;
 }

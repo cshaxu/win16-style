@@ -6,6 +6,7 @@ DWORD __cdecl Ntw16sGetAbiVersion(void)
     return NTW16S_ABI_VERSION;
 }
 
+#ifndef NTWSHK_UNIFIED
 BOOL WINAPI DllMain(HINSTANCE module,DWORD reason,LPVOID reserved)
 {
     /* Static TLS and /MT require notifications. Only memory/API address
@@ -14,3 +15,4 @@ BOOL WINAPI DllMain(HINSTANCE module,DWORD reason,LPVOID reserved)
     if(reason==DLL_PROCESS_ATTACH)return ntw16s_bootstrap();
     return TRUE;
 }
+#endif

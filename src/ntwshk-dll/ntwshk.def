@@ -1,5 +1,5 @@
 EXPORTS
-    process_hook_install_helper @1
+    process_hook_install_helper
     process_hook_run_helper
     process_hook_stage_process
     process_hook_stage_pair

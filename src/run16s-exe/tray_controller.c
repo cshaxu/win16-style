@@ -3,6 +3,7 @@
 #include "global.h"
 #include "ntw16s-dll/global/session.h"
 #include "lib-win32-style/access/global/control.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include <stdio.h>
 #include <wchar.h>
 
@@ -35,6 +36,11 @@ static void action(unsigned command,void *value)
     if(command==MENU_EXIT)ExitProcess(0);
     if(command!=MENU_ENABLE && command!=MENU_ENABLE_2K)return;
     DWORD selected=command==MENU_ENABLE?NTW16S_GLOBAL_STYLE_16:NTW16S_GLOBAL_STYLE_2K;
+    if(selected!=state->control.desired){
+        DWORD error=classic_theme_validate_packaged(GetModuleHandleW(NULL),
+            selected==NTW16S_GLOBAL_STYLE_2K?CLASSIC_THEME_WIN2K:CLASSIC_THEME_WIN16);
+        if(error){failed(error,state);return;}
+    }
     style_global_control_select(&state->control,selected);
 }
 #ifdef RUN16S_TRAY_TEST

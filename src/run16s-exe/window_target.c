@@ -9,7 +9,7 @@ DWORD run16s_window_module_open(DWORD pid,PCWSTR directory,HMODULE *module,HOOKP
 {
     WCHAR path[32768];size_t length=wcslen(directory);
     if(length+14>=ARRAYSIZE(path))return ERROR_FILENAME_EXCED_RANGE;
-    wcscpy(path,directory);wcscat(path,L"ntw16s64.dll");
+    wcscpy(path,directory);wcscat(path,L"ntwshk64.dll");
     return win32_style_module_open(pid,path,"Ntw16sWindowThreadHook",module,callback);
 }
 

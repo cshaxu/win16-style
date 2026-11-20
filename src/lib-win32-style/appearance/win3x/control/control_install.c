@@ -59,27 +59,30 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     if(!frame_bars && !style_control_font_read(w,&s->state,services->control_proc,cancelled)){
         DWORD error=GetLastError();win16_control_state_dispose(s);SetLastError(error);return FALSE;}
     if(palette)s->palette=*palette;else win16_style_default_palette(&s->palette);
-    classic_theme theme;
-    BOOL have_theme=classic_theme_default((HMODULE)&__ImageBase,&theme);
-    if(have_theme)s->scroll_metrics=theme.scroll_metrics;
+    classic_theme_mapping source={0};
+    BOOL have_theme=SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN16,TRUE,&source));
+    const classic_theme *theme=&source.model;
+    if(have_theme)s->scroll_metrics=theme->scroll_metrics;
     s->themed=!palette && have_theme;
     if(s->themed){
-        s->push_colors=theme.push;
-        s->choice_colors=theme.choice;
-        s->choice_module=(HMODULE)&__ImageBase;
-        s->label_colors=theme.label;
-        memcpy(s->edit_colors,theme.edit,sizeof(s->edit_colors));
-        s->list_colors=theme.list;
-        s->combo_colors=theme.combo;
-        s->tab_colors=theme.tab;
-        s->header_colors=theme.header;
-        memcpy(s->progress_colors,theme.progress,sizeof(s->progress_colors));
-        memcpy(s->trackbar_colors,theme.trackbar,sizeof(s->trackbar_colors));
-        s->group_colors=theme.group;
-        s->frame_colors=theme.frame;
-        s->scroll_arrow_colors=theme.scroll_arrow;
-        s->scroll_colors=theme.scroll;
+        s->push_colors=theme->push;
+        s->choice_colors=theme->choice;
+        s->choice_module=source.resources;
+        source.resources=NULL;
+        s->label_colors=theme->label;
+        memcpy(s->edit_colors,theme->edit,sizeof(s->edit_colors));
+        s->list_colors=theme->list;
+        s->combo_colors=theme->combo;
+        s->tab_colors=theme->tab;
+        s->header_colors=theme->header;
+        memcpy(s->progress_colors,theme->progress,sizeof(s->progress_colors));
+        memcpy(s->trackbar_colors,theme->trackbar,sizeof(s->trackbar_colors));
+        s->group_colors=theme->group;
+        s->frame_colors=theme->frame;
+        s->scroll_arrow_colors=theme->scroll_arrow;
+        s->scroll_colors=theme->scroll;
     }
+    classic_theme_close(&source);
     control_install install={s,services,palette,frame_bars};
     const style_instance_install_ops ops={&install,cancelled,setup_control,NULL};
     return style_instance_install(&s->instance,w,services->control_proc,creation_owner,&ops);

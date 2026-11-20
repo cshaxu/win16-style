@@ -107,7 +107,7 @@ static void modern_file(HWND owner,BOOL save,BOOL folder)
 static void forced_modern_file(HWND owner,UINT kind)
 {
     typedef HRESULT (__cdecl *show_modern_fn)(HWND,UINT,PWSTR,DWORD);
-    HMODULE module=GetModuleHandleW(L"ntw16s64.dll");
+    HMODULE module=GetModuleHandleW(L"ntwshk64.dll");
     FARPROC address=module?GetProcAddress(module,"Ntw16sShowModernFileDialog"):NULL;
     show_modern_fn show=NULL;memcpy(&show,&address,sizeof(show));
     if(!show){note(owner,L"This example requires run16s and its modern-dialog API.");return;}

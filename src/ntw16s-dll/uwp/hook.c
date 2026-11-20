@@ -9,6 +9,17 @@ static _Thread_local BOOL busy;
 
 static BOOL read_win2k_theme(HMODULE module,classic_theme *theme)
 {
+    classic_theme_mapping source={0};
+    HRESULT result=classic_theme_open_packaged(module,CLASSIC_THEME_WIN2K,FALSE,&source);
+    if(SUCCEEDED(result)){
+        *theme=source.model;
+        classic_theme_close(&source);
+        return TRUE;
+    }
+#ifdef NTWSHK_UNIFIED
+    return FALSE;
+#else
+    if(result!=HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND))return FALSE;
     WCHAR path[32768];
     DWORD length=GetModuleFileNameW(module,path,ARRAYSIZE(path));
     if(!length || length>=ARRAYSIZE(path))return FALSE;
@@ -19,6 +30,7 @@ static BOOL read_win2k_theme(HMODULE module,classic_theme *theme)
         sizeof(void *)==8?L"ntw2ks64.dll":L"ntw2ks32.dll"))return FALSE;
     /* Read the desktop theme resources without executing the companion DLL. */
     return SUCCEEDED(classic_theme_load(path,L"NormalSize",L"NormalColor",theme));
+#endif
 }
 
 static BOOL apply_frame(HWND frame,BOOL fullscreen,BOOL win2k,HMODULE module)
@@ -28,6 +40,10 @@ static BOOL apply_frame(HWND frame,BOOL fullscreen,BOOL win2k,HMODULE module)
     style_uwp_frame_action actions[2];unsigned count=0;
     if(auxiliary)actions[count++]=(style_uwp_frame_action){L"Application menu...",style_uwp_application_menu,auxiliary};
     if(fullscreen)actions[count++]=(style_uwp_frame_action){L"Toggle full screen",style_uwp_fullscreen,title};
+#ifdef NTWSHK_UNIFIED
+    DWORD theme_error=classic_theme_validate_packaged(module,win2k?CLASSIC_THEME_WIN2K:CLASSIC_THEME_WIN16);
+    if(theme_error){SetLastError(theme_error);return FALSE;}
+#endif
     HWND surface=style_uwp_frame_surface(frame);
     BOOL previous2k=surface && win2k_uwp_frame_uses(frame);
     classic_theme model;

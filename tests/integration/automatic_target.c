@@ -107,7 +107,7 @@ int wmain(int argc,WCHAR **argv)
     CHECK(!wcscmp(argv[2],L"two words") && !wcscmp(argv[3],L"quote\"inside") &&
         !wcscmp(argv[4],L"trailing\\") && !wcscmp(argv[5],L"") && !wcscmp(argv[6],L"中文 αβ"));
     CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
-    dll=GetModuleHandleW(sizeof(void *)==8?L"ntw16s64.dll":L"ntw16s32.dll");
+    dll=GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll");
     CHECK(!!dll==!!expected);
     if(expected){attached=(BOOL (__cdecl *)(HWND))(void *)GetProcAddress(dll,"Ntw16sWindowAttached");CHECK(attached);}
     windows(NULL);thread=CreateThread(NULL,0,windows,NULL,0,NULL);CHECK(thread);

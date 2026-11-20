@@ -4,6 +4,9 @@
 
 static HANDLE stop_event;
 static DWORD observed_style,forced_result;
+static DWORD theme_error;
+DWORD classic_theme_validate_packaged(HMODULE renderer,classic_theme_family family)
+{(void)renderer;(void)family;return theme_error;}
 int run16s_global_with_parent(HANDLE parent,DWORD style)
 {
     (void)parent;
@@ -38,6 +41,11 @@ int main(void)
     action(MENU_ENABLE,&state);
     if(!state.control.worker || !state.control.busy || state.control.enabled)return 4;
     if(!menu_has(&state,TRUE,FALSE))return 14;
+    theme_error=ERROR_INVALID_DATA;
+    action(MENU_ENABLE_2K,&state);
+    if(state.control.stopping || !menu_has(&state,TRUE,FALSE) ||
+       WaitForSingleObject(stop_event,0)!=WAIT_TIMEOUT)return 20;
+    theme_error=ERROR_SUCCESS;
     action(MENU_ENABLE_2K,&state);
     if(!state.control.stopping || !menu_has(&state,FALSE,TRUE))return 15;
     action(MENU_ENABLE,&state);
@@ -57,7 +65,9 @@ int main(void)
     if(style_global_control_finished(&state.control,&code))return 18;
     if(!state.control.worker || !state.control.busy || state.control.style!=NTW16S_GLOBAL_STYLE_16)return 10;
     state.control.enabled=TRUE;state.control.busy=FALSE;
+    theme_error=ERROR_FILE_NOT_FOUND;
     action(MENU_ENABLE,&state);
+    theme_error=ERROR_SUCCESS;
     if(state.control.desired!=STYLE_NONE || !wait_stopped(&state,&code) || code)return 11;
     if(style_global_control_finished(&state.control,&code))return 18;
     if(state.control.worker || state.control.enabled || state.control.busy || !menu_has(&state,FALSE,FALSE))return 12;

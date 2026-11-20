@@ -375,6 +375,21 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     HRESULT result=classic_theme_load(path,L"NormalSize",L"NormalColor",&theme);
     if(FAILED(result))fprintf(stderr,"classic theme load HRESULT=%08lx\n",(unsigned long)result);
     CHECK(result==S_OK);
+    classic_theme_mapping source={0};
+    if(!recolored){
+        WCHAR descriptor[MAX_PATH];
+        CHECK(swprintf(descriptor,ARRAYSIZE(descriptor),L"%ls/%ls/%ls.theme",root,name,name)>0);
+        CHECK(classic_theme_open(descriptor,&source)==S_OK && source.resources);
+        CHECK(!memcmp(&source.model,&theme,sizeof(theme)));
+        if(gradient){
+            for(WORD id=201;id<=203;++id){
+                HRSRC dialog=FindResourceW(source.resources,MAKEINTRESOURCEW(id),MAKEINTRESOURCEW(5));
+                CHECK(dialog && SizeofResource(source.resources,dialog)>0);
+            }
+        }
+        CHECK(classic_theme_open(descriptor,&source)==E_INVALIDARG);
+        CHECK(!memcmp(&source.model,&theme,sizeof(theme)));
+    }
     CHECK(theme.gradient==gradient);
     CHECK(theme.menu_bar.present && theme.menu_popup.present);
     CHECK(theme.menu_bar.background==(gradient?RGB(212,208,200):RGB(255,255,255)) &&
@@ -447,9 +462,9 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     CHECK(theme.title_buttons.count==(gradient?4:3));
     win16_caption_art art={0};
     win16_menu_art menu_art={0};
-    HMODULE module=NULL;
+    HMODULE module=source.resources;
     if(!gradient){
-        module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
+        if(!module)module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
         CHECK(module);
         CHECK(SUCCEEDED(win16_caption_art_read(module,&theme.caption_images,&art)) && art.available);
         classic_caption_images wrong=theme.caption_images;
@@ -463,7 +478,10 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
             !memcmp(&prior_menu,&menu_art,sizeof(menu_art)));
     }else CHECK(!theme.menu_images[0] && !theme.menu_images[1]);
     BOOL rendered=render(&theme,gradient,&art,&menu_art,module);
-    if(module)CHECK(FreeLibrary(module));
+    if(source.resources){
+        classic_theme_close(&source);
+        CHECK(!source.resources);
+    }else if(module)CHECK(FreeLibrary(module));
     CHECK(rendered);
     unsigned char prior[sizeof(theme)];
     memcpy(prior,&theme,sizeof(theme));

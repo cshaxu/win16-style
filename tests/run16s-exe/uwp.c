@@ -338,7 +338,13 @@ int wmain(int argc,WCHAR **argv)
         BOOL actions=motion&&minimize&&restored&&IsWindowVisible(surface);
         BOOL appearance=!win2k || (actions && settled_classic_pixels());
         if(appearance && interactions)appearance=menu_and_resize();
-        RECT before,after;GetWindowRect(frame,&before);HMODULE module=LoadLibraryW(L"ntw16s64.dll");
+        WCHAR renderer[32768];WCHAR *filename=NULL;
+        DWORD length=command_mode?GetFullPathNameW(argv[2],ARRAYSIZE(renderer),renderer,&filename):0;
+        HMODULE module=command_mode?
+            (length && length<ARRAYSIZE(renderer) && filename &&
+                !wcscpy_s(filename,ARRAYSIZE(renderer)-(size_t)(filename-renderer),L"ntwshk64.dll")?
+                LoadLibraryW(renderer):NULL):GetModuleHandleW(L"ntwshk64.dll");
+        RECT before,after;GetWindowRect(frame,&before);
         HOOKPROC callback=module?(HOOKPROC)(uintptr_t)GetProcAddress(module,"Ntw16sUwpFrameHook"):NULL;
         HHOOK hook=callback?SetWindowsHookExW(WH_CALLWNDPROC,callback,module,GetWindowThreadProcessId(frame,NULL)):NULL;
         DWORD_PTR ignored=0;UINT message=RegisterWindowMessageW(NTW16S_UWP_MESSAGE);
@@ -348,7 +354,7 @@ int wmain(int argc,WCHAR **argv)
         RemovePropW(frame,NTW16S_UWP_RESULT);GetWindowRect(frame,&after);
         ok=ok&&!IsWindow(surface)&&EqualRect(&before,&after);
         if(hook)ok=UnhookWindowsHookEx(hook)&&ok;
-        if(module)FreeLibrary(module);
+        if(module && command_mode)FreeLibrary(module);
         printf("REMOVE_AND_GEOMETRY=%d\n",ok);
         ok=ok&&actions&&pointer_ok&&appearance;
     }

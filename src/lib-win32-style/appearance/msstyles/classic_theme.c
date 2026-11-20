@@ -3,6 +3,8 @@
 #include "v4_endian.h"
 #include "v4_property.h"
 #include "v4_tables.h"
+#include "theme_file.h"
+#include <errno.h>
 #include <limits.h>
 #include <vsstyle.h>
 #include <vssym32.h>
@@ -493,29 +495,115 @@ HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme
     return result;
 }
 
-HRESULT classic_theme_load(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme *theme)
+static HRESULT map_theme(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme_mapping *source)
 {
-    if(!path || !size || !color || !theme)return E_INVALIDARG;
     HMODULE module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
     if(!module)return HRESULT_FROM_WIN32(GetLastError());
-    HRESULT result=classic_theme_read(module,size,color,theme);
-    FreeLibrary(module);
+    classic_theme_mapping candidate={.resources=module};
+    HRESULT result=classic_theme_read(module,size,color,&candidate.model);
+    if(SUCCEEDED(result))*source=candidate;
+    else FreeLibrary(module);
     return result;
 }
 
-BOOL classic_theme_default(HMODULE module,classic_theme *theme)
+HRESULT classic_theme_load(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme *theme)
 {
-    DWORD prior=GetLastError();
-    BOOL loaded=SUCCEEDED(classic_theme_read(module,L"NormalSize",L"NormalColor",theme));
-    SetLastError(prior);
-    return loaded;
+    if(!path || !size || !color || !theme)return E_INVALIDARG;
+    classic_theme_mapping source={0};
+    HRESULT result=map_theme(path,size,color,&source);
+    if(SUCCEEDED(result))*theme=source.model;
+    classic_theme_close(&source);
+    return result;
+}
+
+HRESULT classic_theme_open(PCWSTR descriptor,classic_theme_mapping *source)
+{
+    if(!descriptor || !source || source->resources)return E_INVALIDARG;
+    if(!descriptor[0] || !descriptor[1])return E_INVALIDARG;
+    BOOL unc=descriptor[0]==L'\\' && descriptor[1]==L'\\';
+    BOOL drive=descriptor[1]==L':' && (descriptor[2]==L'\\' || descriptor[2]==L'/');
+    if(!unc && !drive)return E_INVALIDARG;
+    WCHAR path[32768];
+    const WCHAR *basename=descriptor;
+    for(const WCHAR *p=descriptor;*p;++p)
+        if(*p==L'\\' || *p==L'/')basename=p+1;
+    size_t parent=(size_t)(basename-descriptor);
+    msstyles_theme_descriptor parsed;
+    if(parent+sizeof(parsed.file)>ARRAYSIZE(path))return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
+    FILE *file=_wfopen(descriptor,L"rb");
+    if(!file){
+        int error=errno;
+        return HRESULT_FROM_WIN32(error==ENOENT?ERROR_FILE_NOT_FOUND:
+            error==EACCES?ERROR_ACCESS_DENIED:ERROR_OPEN_FAILED);
+    }
+    bool valid=msstyles_theme_file_read(file,&parsed);
+    fclose(file);
+    if(!valid)return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+    wmemcpy(path,descriptor,parent);
+    WCHAR size[MSSTYLES_THEME_TOKEN_CAPACITY],color[MSSTYLES_THEME_TOKEN_CAPACITY];
+    if(!MultiByteToWideChar(CP_UTF8,0,parsed.file,-1,path+parent,(int)(ARRAYSIZE(path)-parent)) ||
+       !MultiByteToWideChar(CP_UTF8,0,parsed.size,-1,size,ARRAYSIZE(size)) ||
+       !MultiByteToWideChar(CP_UTF8,0,parsed.color,-1,color,ARRAYSIZE(color)))
+        return HRESULT_FROM_WIN32(GetLastError());
+    return map_theme(path,size,color,source);
+}
+
+void classic_theme_close(classic_theme_mapping *source)
+{
+    if(source->resources)FreeLibrary(source->resources);
+    *source=(classic_theme_mapping){0};
+}
+
+HRESULT classic_theme_open_packaged(HMODULE renderer,classic_theme_family family,
+    BOOL embedded,classic_theme_mapping *source)
+{
+    static const WCHAR *const filenames[]={L"\\Win16\\Win16.theme",L"\\Win2K\\Win2K.theme"};
+    if(!renderer || !source || source->resources || (unsigned)family>=ARRAYSIZE(filenames))
+        return E_INVALIDARG;
+    WCHAR path[32768];
+    DWORD length=GetModuleFileNameW(renderer,path,ARRAYSIZE(path));
+    if(!length)return HRESULT_FROM_WIN32(GetLastError());
+    if(length>=ARRAYSIZE(path))return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
+    WCHAR *tail=wcsrchr(path,L'\\');
+    if(!tail)return HRESULT_FROM_WIN32(ERROR_INVALID_NAME);
+    size_t parent=(size_t)(tail+1-path),capacity=ARRAYSIZE(path)-parent;
+    if(wcscpy_s(tail+1,capacity,L"themes"))return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
+    if(GetFileAttributesW(path)!=INVALID_FILE_ATTRIBUTES){
+        if(wcscat_s(tail+1,capacity,filenames[family]))return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
+        return classic_theme_open(path,source);
+    }
+    DWORD error=GetLastError();
+    if(error!=ERROR_FILE_NOT_FOUND && error!=ERROR_PATH_NOT_FOUND)return HRESULT_FROM_WIN32(error);
+    if(!embedded)return HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND);
+    if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,(PCWSTR)renderer,&renderer))
+        return HRESULT_FROM_WIN32(GetLastError());
+    classic_theme_mapping candidate={.resources=renderer};
+    HRESULT result=classic_theme_read(renderer,L"NormalSize",L"NormalColor",&candidate.model);
+    if(SUCCEEDED(result))*source=candidate;
+    else FreeLibrary(renderer);
+    return result;
+}
+
+DWORD classic_theme_validate_packaged(HMODULE renderer,classic_theme_family family)
+{
+    classic_theme_mapping source={0};
+    HRESULT result=classic_theme_open_packaged(renderer,family,FALSE,&source);
+    if(FAILED(result))
+        return HRESULT_FACILITY(result)==FACILITY_WIN32?HRESULT_CODE(result):ERROR_INVALID_DATA;
+    classic_theme_close(&source);
+    return ERROR_SUCCESS;
 }
 
 classic_dialog_metrics classic_theme_dialog_metrics(HMODULE module,classic_dialog_metrics fallback)
 {
-    classic_theme theme;
-    return classic_theme_default(module,&theme) && theme.dialog_metrics.print_width?
-        theme.dialog_metrics:fallback;
+    DWORD prior=GetLastError();
+    classic_theme_mapping source={0};
+    if(SUCCEEDED(classic_theme_open_packaged(module,CLASSIC_THEME_WIN2K,TRUE,&source))){
+        if(source.model.dialog_metrics.print_width)fallback=source.model.dialog_metrics;
+        classic_theme_close(&source);
+    }
+    SetLastError(prior);
+    return fallback;
 }
 
 int classic_scroll_nominal(classic_scroll_metrics metrics,enum classic_scroll_extent_source fallback,

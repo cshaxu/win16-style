@@ -12,6 +12,10 @@ LONG ntw16s_attach_processes_using(DWORD (*attach)(void *,void *));
 void ntw16s_discard_processes(void);
 LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *));
 LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *));
+#ifdef NTWSHK_UNIFIED
+DWORD ntw16s_attach_win2k_com_dialogs_using(DWORD (*attach)(void *,void *),
+    HRESULT (*scope)(HRESULT (*)(void *),void *));
+#endif
 LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *));
 HRESULT ntw16s_dialog_style_scope(HRESULT (*callback)(void *),void *context);
 void ntw16s_old_dialog_chrome(HWND window);

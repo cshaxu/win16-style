@@ -173,11 +173,29 @@ int classic_scroll_nominal(classic_scroll_metrics metrics,enum classic_scroll_ex
     const RECT *bar,BOOL vertical,UINT dpi);
 /* Reads the selected variant from an already mapped resource module. */
 HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme *theme);
-BOOL classic_theme_default(HMODULE module,classic_theme *theme);
 classic_dialog_metrics classic_theme_dialog_metrics(HMODULE module,classic_dialog_metrics fallback);
 
 /* Reads the selected variant of a v4 classic theme as data only. All output
  * values are owned by the caller and the output is unchanged on failure. */
 HRESULT classic_theme_load(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme *theme);
+
+typedef struct classic_theme_mapping {
+    HMODULE resources;
+    classic_theme model;
+} classic_theme_mapping;
+
+/* Opens a packaged .theme descriptor from an absolute path outside loader
+ * lock. Pass an empty destination. The source owns the data mapping that
+ * resolves image and dialog IDs until classic_theme_close. */
+HRESULT classic_theme_open(PCWSTR descriptor,classic_theme_mapping *source);
+void classic_theme_close(classic_theme_mapping *source);
+
+typedef enum classic_theme_family { CLASSIC_THEME_WIN16, CLASSIC_THEME_WIN2K } classic_theme_family;
+
+/* Resolves a packaged theme beside its renderer. If the package directory
+ * is absent, an embedded fallback can use resources in that same renderer. */
+HRESULT classic_theme_open_packaged(HMODULE renderer,classic_theme_family family,
+    BOOL embedded,classic_theme_mapping *source);
+DWORD classic_theme_validate_packaged(HMODULE renderer,classic_theme_family family);
 
 #endif

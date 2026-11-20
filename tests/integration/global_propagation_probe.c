@@ -57,7 +57,9 @@ static BOOL wait_global_ready(DWORD timeout)
 static BOOL create_owned(const WCHAR *argument,DWORD *code)
 {
     WCHAR image[32768],command[32780];STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION child={0};
-    DWORD length=GetModuleFileNameW(NULL,image,ARRAYSIZE(image));
+    DWORD length=!wcscmp(argument,L"child")?
+        GetEnvironmentVariableW(L"WIN16S_TEST_OWNED_CHILD",image,ARRAYSIZE(image)):0;
+    if(!length)length=GetModuleFileNameW(NULL,image,ARRAYSIZE(image));
     if(!length || length>=ARRAYSIZE(image) || swprintf(command,ARRAYSIZE(command),L"\"%ls\" %ls",image,argument)<0)return FALSE;
     if(!CreateProcessW(image,command,NULL,NULL,TRUE,0,NULL,NULL,&si,&child))return FALSE;
     BOOL done=WaitForSingleObject(child.hProcess,5000)==WAIT_OBJECT_0;
@@ -66,10 +68,22 @@ static BOOL create_owned(const WCHAR *argument,DWORD *code)
     CloseHandle(child.hThread);CloseHandle(child.hProcess);return done;
 }
 static HMODULE module(void)
-{return GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");}
+{
+    WCHAR value[2];
+    if(GetEnvironmentVariableW(L"WIN16S_TEST_NEUTRAL_RUNTIME",value,ARRAYSIZE(value)))
+        return GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll");
+    return GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
+}
 static LRESULT CALLBACK proc(HWND w,UINT message,WPARAM a,LPARAM b)
 {
     if(message==WM_APP+110){HMODULE dll=module();attached_fn attached=dll?(attached_fn)(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL;return attached&&attached(w);}
+    if(message==WM_APP+113){
+        HMODULE dll=module();
+        attached_fn classic=dll?(attached_fn)(void*)GetProcAddress(dll,"Ntw2ksWindowAttached"):NULL;
+        attached_fn legacy=dll?(attached_fn)(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL;
+        if(!classic || !legacy)return -1;
+        return (legacy(w)?1:0)|(classic(w)?2:0);
+    }
     if(message==WM_APP+111){DWORD code=99;return create_owned(L"grandchild",&code)?(LRESULT)code:-1;}
     if(message==WM_APP+112){
         HWND created=CreateWindowW(L"GlobalPropagationProbe",L"Owned late window",WS_OVERLAPPEDWINDOW,70,70,200,120,NULL,NULL,GetModuleHandleW(NULL),NULL);
@@ -89,15 +103,20 @@ static LRESULT CALLBACK proc(HWND w,UINT message,WPARAM a,LPARAM b)
         if(GetTickCount64()>deadline){printf("GLOBAL PROPAGATION root_timeout\n");DestroyWindow(w);}return 0;
     }
     if(message==WM_DESTROY && w==root_window){PostQuitMessage(0);return 0;}
+    if(message==WM_NCDESTROY && w==root_window)RemovePropW(w,L"Owned.Propagation.TestReady");
     return DefWindowProcW(w,message,a,b);
 }
 int wmain(int argc,WCHAR **argv)
 {
     HMODULE local_module=NULL;HHOOK local_hook=NULL;
+    HOOKPROC callback=NULL;
+    WCHAR switching[2];
+    BOOL owned_switch=GetEnvironmentVariableW(L"WIN16S_TEST_OWNED_SWITCH",switching,ARRAYSIZE(switching))!=0;
     if(argc==3 && !wcscmp(argv[1],L"localhook")){
         local_module=LoadLibraryW(argv[2]);if(!local_module)return 45;
-        HOOKPROC callback=(HOOKPROC)(void *)GetProcAddress(local_module,"Ntw16sGlobalHook");
-        if(!callback || !(local_hook=SetWindowsHookExW(WH_CALLWNDPROC,callback,NULL,GetCurrentThreadId())))return 46;
+        callback=(HOOKPROC)(void *)GetProcAddress(local_module,"Ntw16sGlobalHook");
+        if(!callback || (!owned_switch &&
+           !(local_hook=SetWindowsHookExW(WH_CALLWNDPROC,callback,NULL,GetCurrentThreadId()))))return 46;
     }
     if(argc==4 && !wcscmp(argv[1],L"wait")){
         if(!module())return 41;
@@ -143,6 +162,17 @@ int wmain(int argc,WCHAR **argv)
     if(argc==2 && (!wcscmp(argv[1],L"child") || !wcscmp(argv[1],L"grandchild"))){
         BOOL loaded=module()!=NULL;printf("PROPAGATION ENTRY bits=%u role=%ls dll=%d\n",(unsigned)(sizeof(void*)*8),argv[1],loaded);
         if(!loaded)return 41;
+        WCHAR neutral[2];
+        if(GetEnvironmentVariableW(L"WIN16S_TEST_NEUTRAL_RUNTIME",neutral,ARRAYSIZE(neutral))){
+            HWND window=CreateWindowW(L"STATIC",L"Owned propagated window",WS_OVERLAPPEDWINDOW,
+                20,20,160,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
+            attached_fn attached=(attached_fn)(void*)GetProcAddress(module(),"Ntw16sWindowAttached");
+            if(window)ShowWindow(window,SW_SHOWNOACTIVATE);
+            BOOL styled=window && attached && attached(window);
+            if(window)DestroyWindow(window);
+            printf("OWNED PROPAGATION DRAW bits=%u role=%ls attached=%d\n",(unsigned)(sizeof(void*)*8),argv[1],styled);
+            if(!styled)return 46;
+        }
         WCHAR only[2];
         if(GetEnvironmentVariableW(L"WIN16S_TEST_PROPAGATION_ONLY",only,ARRAYSIZE(only))){
             WNDCLASSW klass={.hInstance=GetModuleHandleW(NULL),.lpfnWndProc=DefWindowProcW,.lpszClassName=L"PropagationOnlyOwned"};
@@ -164,12 +194,17 @@ int wmain(int argc,WCHAR **argv)
         printf("PROPAGATION ONLY ROOT create=%d child_exit=%lu\n",made,code);
         return made && code==0?0:47;
     }
-    managed=argc==2 && !wcscmp(argv[1],L"managed");
+    managed=(argc==2 && !wcscmp(argv[1],L"managed")) || (callback && owned_switch);
     WNDCLASSW c={.hInstance=GetModuleHandleW(NULL),.lpfnWndProc=proc,.lpszClassName=L"GlobalPropagationProbe"};
     if(!RegisterClassW(&c))return 2;
-    HWND w=CreateWindowW(c.lpszClassName,L"Owned propagation root",WS_OVERLAPPEDWINDOW|WS_VISIBLE,50,50,300,180,NULL,NULL,c.hInstance,NULL);
+    HWND w=CreateWindowW(c.lpszClassName,L"Owned propagation root",WS_OVERLAPPEDWINDOW|(owned_switch?0:WS_VISIBLE),50,50,300,180,NULL,NULL,c.hInstance,NULL);
     if(!w)return 3;
     root_window=w;
+    if(callback && owned_switch){
+        ShowWindow(w,SW_SHOWNOACTIVATE);
+        local_hook=SetWindowsHookExW(WH_CALLWNDPROC,callback,NULL,GetCurrentThreadId());
+        if(!local_hook || !SetPropW(w,L"Owned.Propagation.TestReady",(HANDLE)1))return 46;
+    }
     deadline=GetTickCount64()+5000;if(!managed && !SetTimer(w,1,50,NULL)){DestroyWindow(w);return 4;}
     MSG m;while(GetMessageW(&m,NULL,0,0)>0){TranslateMessage(&m);DispatchMessageW(&m);}
     if(local_hook)UnhookWindowsHookEx(local_hook);

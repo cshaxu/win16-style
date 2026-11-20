@@ -98,12 +98,14 @@ static BOOL apply_actions(HWND w,HWND title,const style_uwp_frame_action *action
     if(!style_uwp_frame_validate(w,title,actions,count))return FALSE;
     uwp_frame *s=calloc(1,sizeof(*s)+(size_t)count*sizeof(*s->actions));
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    HMODULE module=(HMODULE)&__ImageBase;
     win16_style_default_palette(&s->palette);
-    if(classic_theme_default(module,&s->theme)){
+    classic_theme_mapping source={0};
+    if(SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN16,TRUE,&source))){
+        s->theme=source.model;
         win16_style_theme_palette(&s->palette,&s->theme);
-        (void)win16_menu_art_read(module,s->theme.menu_images,&s->menu_art);
-        (void)win16_caption_art_read(module,&s->theme.caption_images,&s->caption_art);
+        (void)win16_menu_art_read(source.resources,s->theme.menu_images,&s->menu_art);
+        (void)win16_caption_art_read(source.resources,&s->theme.caption_images,&s->caption_art);
+        classic_theme_close(&source);
     }
     return style_uwp_frame_start(&s->frame,w,title,&operations,s,actions,count,s->actions);
 }

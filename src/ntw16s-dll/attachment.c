@@ -431,16 +431,18 @@ static BOOL install_created(HWND w,DWORD original_style)
     a->calendar_selection=a->palette.active;
     if(status || candidates.status_candidate || candidates.date_candidate || extra.rich_month || extra.vb_data_edge || spin ||
        candidates.bit_candidate || candidates.inplace_candidate || candidates.nav_candidate || extra.controlbar_candidate){
-        classic_theme theme;
-        if(classic_theme_default((HMODULE)&__ImageBase,&theme)){
-            if(theme.frame.present){
-                a->palette.face=theme.frame.face;
-                a->palette.light=theme.frame.light;
-                a->palette.shadow=theme.frame.shadow;
-                a->palette.edge=theme.frame.edge;
+        classic_theme_mapping source={0};
+        if(SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN16,TRUE,&source))){
+            const classic_theme *theme=&source.model;
+            if(theme->frame.present){
+                a->palette.face=theme->frame.face;
+                a->palette.light=theme->frame.light;
+                a->palette.shadow=theme->frame.shadow;
+                a->palette.edge=theme->frame.edge;
             }
-            a->palette.active=theme.active.start;
-            if(theme.list.present)a->calendar_selection=theme.list.selection;
+            a->palette.active=theme->active.start;
+            if(theme->list.present)a->calendar_selection=theme->list.selection;
+            classic_theme_close(&source);
         }
     }
     if(!style_runtime_attachment_publish(w,&a->base,attachment_proc,free))return FALSE;

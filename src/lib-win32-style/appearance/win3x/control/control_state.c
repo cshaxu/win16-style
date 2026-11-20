@@ -20,7 +20,9 @@ void win16_control_state_dispose(void *context)
 {
     control_style *s=context;
     style_control_bindings_dispose(&s->bindings,&s->state);
-    style_control_state_dispose(&s->state);free(s);
+    style_control_state_dispose(&s->state);
+    if(s->choice_module)FreeLibrary(s->choice_module);
+    free(s);
 }
 BOOL win16_control_state_prepare_font(HWND w,void *context,style_control_message *call)
 {

@@ -8,7 +8,7 @@
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"LAUNCH MATRIX FAIL line=%d error=%lu: %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static int matrix(int argc,WCHAR **argv)
 {
-    WCHAR scratch[MAX_PATH],package[MAX_PATH],launcher[MAX_PATH],dll32[MAX_PATH],dll64[MAX_PATH],command[32768];
+    WCHAR scratch[MAX_PATH],package[MAX_PATH],launcher[MAX_PATH],command[32768];
     WCHAR targets[2][MAX_PATH];unsigned suite;
     DWORD code;STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};
     CHECK(argc==6 || argc==7);
@@ -17,10 +17,8 @@ static int matrix(int argc,WCHAR **argv)
     CHECK(swprintf_s(package,MAX_PATH,L"%ls\\package with spaces",scratch)>0);
     CHECK(CreateDirectoryW(package,NULL) || GetLastError()==ERROR_ALREADY_EXISTS);
     CHECK(swprintf_s(launcher,MAX_PATH,L"%ls\\run16s.exe",package)>0);
-    CHECK(swprintf_s(dll32,MAX_PATH,L"%ls\\ntw16s32.dll",package)>0);
-    CHECK(swprintf_s(dll64,MAX_PATH,L"%ls\\ntw16s64.dll",package)>0);
-    CHECK(CopyFileW(argv[1],launcher,FALSE) && CopyFileW(argv[2],dll32,FALSE) && CopyFileW(argv[3],dll64,FALSE));
-    CHECK(copy_shared_dlls(package,argv[2],argv[3]));
+    CHECK(CopyFileW(argv[1],launcher,FALSE) && copy_shared_dlls(package,argv[2],argv[3]));
+    CHECK(copy_package_themes(package,argv[1]));
     for(unsigned i=0;i<2;++i){CHECK(swprintf_s(targets[i],MAX_PATH,L"%ls\\目标 程序%u.exe",scratch,i?64:32)>0);
         CHECK(CopyFileW(argv[4+i],targets[i],FALSE));}
     for(unsigned width=0;width<2;++width)for(unsigned styled=0;styled<2;++styled){
@@ -44,7 +42,7 @@ static int matrix(int argc,WCHAR **argv)
             fclose(file);CHECK(entries==1 && complete==1 && threads==2);
             CHECK(apis==(suite?2u:0u) && observations==(suite==1?8u:suite==2?12u:0u));}
     }
-    puts("LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls on private desktop");return 0;
+    puts("LAUNCH MATRIX PASS actual x64 CLI -> x86/x64 plus native controls");return 0;
 }
 int wmain(int argc,WCHAR **argv)
 {return isolated_process(argc,argv,matrix);}

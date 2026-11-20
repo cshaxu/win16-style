@@ -12,7 +12,11 @@ static DWORD prepare(DWORD (*attach)(void *,void *),BOOL reuse,DWORD flags,void 
     return error;
 }
 static void discard(void *context){(void)context;ntw16s_discard_processes();}
+#ifdef NTWSHK_UNIFIED
+static const style_runtime_process_ops operations={L"ntwshk",prepare,discard,NULL};
+#else
 static const style_runtime_process_ops operations={L"ntw16s",prepare,discard,NULL};
+#endif
 DWORD ntw16s_late_process_init(PCWSTR directory,DWORD cookie)
 {return style_runtime_process_init(&process,&ntw16s_process_context,&operations,directory,cookie,
     NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE,FALSE);}

@@ -4,6 +4,11 @@
 #include "lib-win32-style/application/lifecycle/global_window.h"
 #include "lib-win32-style/access/runtime/companion.h"
 
+#ifdef NTWSHK_UNIFIED
+#include "ntw2ks-dll/window.h"
+extern IMAGE_DOS_HEADER __ImageBase;
+#endif
+
 static const style_global_window_ops ops={
     Ntw16sWindowAttached,Ntw16sWindowAttach,Ntw16sWindowRemove,
     ntw16s_global_policy_active,NTW16S_GLOBAL_CONTROL,NTW16S_GLOBAL_QUERY,NTW16S_GLOBAL_ATTACHED
@@ -16,6 +21,12 @@ static style_global_window_ops win2k_ops={.active=ntw16s_global_policy_active,
 static BOOL CALLBACK load_win2k(PINIT_ONCE once,void *parameter,void **result)
 {
     (void)once;(void)parameter;(void)result;
+#ifdef NTWSHK_UNIFIED
+    win2k_module=(HMODULE)&__ImageBase;
+    win2k_ops.attached=Ntw2ksWindowAttached;
+    win2k_ops.apply=Ntw2ksWindowAttach;
+    win2k_ops.remove=Ntw2ksWindowRemove;
+#else
     static const char *const names[]={"Ntw2ksWindowAttached","Ntw2ksWindowAttach","Ntw2ksWindowRemove"};
     FARPROC entries[ARRAYSIZE(names)];
     if(!win32_style_companion((const void *)&load_win2k,
@@ -23,7 +34,9 @@ static BOOL CALLBACK load_win2k(PINIT_ONCE once,void *parameter,void **result)
     if(!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
         (LPCWSTR)(void *)entries[1],&win2k_module))return FALSE;
     win2k_ops.attached=(window_op)(void *)entries[0];win2k_ops.apply=(window_op)(void *)entries[1];
-    win2k_ops.remove=(window_op)(void *)entries[2];return TRUE;
+    win2k_ops.remove=(window_op)(void *)entries[2];
+#endif
+    return TRUE;
 }
 HMODULE ntw16s_global_win2k_resources(void)
 {
@@ -47,10 +60,14 @@ BOOL ntw16s_global_window_apply_style(HWND window,DWORD style)
     const style_global_window_ops *selected=style_ops(style),*other=NULL;
     if(!selected)return FALSE;
     if(style==NTW16S_GLOBAL_STYLE_2K)other=&ops;
+#ifdef NTWSHK_UNIFIED
+    else other=style_ops(NTW16S_GLOBAL_STYLE_2K);
+#else
     else if(style==NTW16S_GLOBAL_STYLE_16 && GetModuleHandleW(sizeof(void *)==8?L"ntw2ks64.dll":L"ntw2ks32.dll")){
         other=style_ops(NTW16S_GLOBAL_STYLE_2K);
         if(!other)return FALSE;
     }
+#endif
     return style_global_window_transition(window,selected,other);
 }
 BOOL ntw16s_global_window_remove_style(HWND window,DWORD style)

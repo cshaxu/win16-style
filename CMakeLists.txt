@@ -257,7 +257,8 @@ if(WIN16STYLE_ARCH STREQUAL "x86")
 else()
   set(dll_name ntw16s64)
 endif()
-add_library(ntw2ks SHARED src/ntw2ks-dll/dllmain.c src/ntw2ks-dll/button.c src/ntw2ks-dll/controls.c src/ntw2ks-dll/window.c src/ntw2ks-dll/version.rc src/ntw2ks-dll/ntw2ks.def)
+set(win2k_providers src/ntw2ks-dll/button.c src/ntw2ks-dll/controls.c src/ntw2ks-dll/window.c)
+add_library(ntw2ks SHARED src/ntw2ks-dll/dllmain.c ${win2k_providers} src/ntw2ks-dll/version.rc src/ntw2ks-dll/ntw2ks.def)
 set_property(SOURCE src/ntw2ks-dll/version.rc APPEND PROPERTY OBJECT_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general_full.rcinc")
 add_library(win2k-print STATIC src/lib-win32-style/appearance/win2000/dialog/print_general.c
@@ -408,22 +409,38 @@ add_library(process-hook STATIC
 target_include_directories(process-hook PUBLIC src)
 target_link_libraries(process-hook PUBLIC win32-unwind advapi32)
 target_compile_definitions(process-hook PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-set(ntwshk_def "${CMAKE_SOURCE_DIR}/src/ntwshk-dll/ntwshk.def")
-set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${ntwshk_def}")
+set(ntwshk_export_source "${CMAKE_SOURCE_DIR}/src/ntwshk-dll/ntwshk.def")
+set(win16_export_source "${CMAKE_SOURCE_DIR}/src/ntw16s-dll/${dll_name}.def")
+set(win2k_export_source "${CMAKE_SOURCE_DIR}/src/ntw2ks-dll/ntw2ks.def")
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+  "${ntwshk_export_source}" "${win16_export_source}" "${win2k_export_source}")
+file(READ "${ntwshk_export_source}" ntwshk_exports)
+foreach(provider IN ITEMS "${win16_export_source}" "${win2k_export_source}")
+  file(STRINGS "${provider}" provider_exports REGEX "^ +[^ ]+ +@[0-9]+$")
+  foreach(entry IN LISTS provider_exports)
+    string(REGEX REPLACE " +@[0-9]+$" "" entry "${entry}")
+    if(WIN16STYLE_ARCH STREQUAL "x86" AND entry MATCHES "Ntw2ksDrawButton$")
+      string(APPEND entry "=Ntw2ksDrawButton@12")
+    endif()
+    string(APPEND ntwshk_exports "${entry}\n")
+  endforeach()
+endforeach()
 if(WIN16STYLE_ARCH STREQUAL "x64")
-  file(READ "${ntwshk_def}" ntwshk_exports)
-  set(ntwshk_def "${CMAKE_CURRENT_BINARY_DIR}/ntwshk64.def")
-  file(WRITE "${ntwshk_def}" "${ntwshk_exports}    process_hook_unwind_handler\n")
+  string(APPEND ntwshk_exports "    process_hook_unwind_handler\n    NtwshkFinishHelper @1 NONAME\n")
+else()
+  string(APPEND ntwshk_exports "    NtwshkFinishHelper=NtwshkFinishHelper@16 @1 NONAME\n")
 endif()
+set(ntwshk_def "${CMAKE_CURRENT_BINARY_DIR}/ntwshk-provider.def")
+file(WRITE "${ntwshk_def}" "${ntwshk_exports}")
 add_library(ntwshk SHARED src/ntwshk-dll/dllmain.c "${ntwshk_def}" src/ntwshk-dll/version.rc
-  src/ntwshk-dll/startup.c)
+  src/ntwshk-dll/startup.c ${core_sources} ${win2k_providers} src/ntw2ks-dll/dllmain.c)
 if(WIN16STYLE_ARCH STREQUAL "x86")
   set_target_properties(ntwshk PROPERTIES OUTPUT_NAME ntwshk32 PREFIX "")
 else()
   set_target_properties(ntwshk PROPERTIES OUTPUT_NAME ntwshk64 PREFIX "")
 endif()
 target_include_directories(ntwshk PRIVATE src ${CMAKE_SOURCE_DIR})
-target_compile_definitions(ntwshk PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_compile_definitions(ntwshk PRIVATE NTW16S_STATIC NTWSHK_UNIFIED UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(ntwshk PRIVATE process-hook process-image win32-handle style-theme-state style-menu-popup)
 add_library(style-startup STATIC
   src/lib-win32-style/access/startup/context.c src/lib-win32-style/access/startup/install.c
@@ -441,10 +458,18 @@ target_compile_definitions(style-runtime-process PRIVATE UNICODE _UNICODE _WIN32
 target_link_libraries(ntw16s PRIVATE style-runtime-process)
 add_dependencies(ntw2ks style-subclass)
 target_link_libraries(ntw2ks PRIVATE style-startup win2k-window win2k-control style-global-window "$<LINK_GROUP:RESCAN,style-menu-owner,ntwshk>" "${subclass_import}")
-target_sources(ntw16s PRIVATE ${injection_root}/entry.c ${injection_root}/window_titles.c ${injection_root}/file_dialogs.c ${injection_root}/folder_dialogs.c ${injection_root}/modern_dialogs.c ${injection_root}/com_dialogs.c
+set(win16_intercepts ${injection_root}/entry.c ${injection_root}/window_titles.c ${injection_root}/file_dialogs.c ${injection_root}/folder_dialogs.c ${injection_root}/modern_dialogs.c ${injection_root}/com_dialogs.c
   ${injection_root}/create_process.c ${injection_root}/late_process.c)
+target_sources(ntw16s PRIVATE ${win16_intercepts})
+target_sources(ntwshk PRIVATE ${win16_intercepts})
+add_dependencies(ntwshk style-subclass)
+target_link_libraries(ntwshk PRIVATE style-runtime-process style-creation style-uwp-hook style-global-window
+  win16-window-uwp win2k-window-uwp win16-window win16-control win2k-window win2k-control
+  win2k-print win2k-file win2k-stock style-dialog-common style-theme-track style-companion module-import process-global
+  "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}" user32 gdi32 comctl32 comdlg32
+  shell32 ole32 oleaut32 uuid dwmapi uxtheme advapi32)
 target_link_libraries(ntw16s PRIVATE style-theme-track)
-target_link_libraries(ntw16s PRIVATE style-startup "$<LINK_GROUP:RESCAN,style-menu-owner,ntwshk>" style-companion process-global)
+target_link_libraries(ntw16s PRIVATE style-startup "$<LINK_GROUP:RESCAN,win16-common,style-menu-owner,ntwshk>" style-companion process-global)
 set(explicit_manifest_options)
 # Some native MinGW distributions add a manifest from the GCC endfile spec.
 # Preserve that toolchain's other CRT endfiles; this target owns its manifest.
@@ -469,9 +494,9 @@ if(WIN16STYLE_ARCH STREQUAL "x64")
   target_link_options(demo PRIVATE ${explicit_manifest_options})
   add_executable(run16s src/run16s-exe/main.c src/run16s-exe/global.c src/run16s-exe/tray_controller.c src/ntw16s-dll/global/session.c src/ntw16s-dll/global/policy.c src/run16s-exe/elevation.c src/run16s-exe/startup_error.c src/run16s-exe/version.rc)
   target_sources(run16s PRIVATE src/run16s-exe/uwp.c src/run16s-exe/explorer.c src/run16s-exe/window_target.c src/run16s-exe/console_host.c src/ntw16s-dll/uwp/target.c)
-  target_link_libraries(run16s PRIVATE oleaut32)
+  target_link_libraries(run16s PRIVATE oleaut32 style-msstyles)
   target_link_libraries(run16s PRIVATE uuid dwmapi)
-  target_compile_definitions(run16s PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_compile_definitions(run16s PRIVATE NTWSHK_LAUNCHER UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 
   target_link_libraries(run16s PRIVATE lib-tray style-companion style-startup ntwshk process-global process-launch win32-security shell32 ole32 advapi32 user32)
   target_include_directories(run16s PRIVATE ${CMAKE_SOURCE_DIR})
@@ -976,10 +1001,10 @@ if(BUILD_TESTING)
   if(WIN16STYLE_ARCH STREQUAL "x64")
     get_target_property(tray_fixture_sources run16s SOURCES)
     add_executable(tray-fixture ${tray_fixture_sources} src/lib-win32/tray/tray.c)
-    target_compile_definitions(tray-fixture PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00 RUN16S_TRAY_TEST TRAY_TESTING)
+    target_compile_definitions(tray-fixture PRIVATE NTWSHK_LAUNCHER UNICODE _UNICODE _WIN32_WINNT=0x0A00 RUN16S_TRAY_TEST TRAY_TESTING)
     target_include_directories(tray-fixture PRIVATE ${CMAKE_SOURCE_DIR})
     target_link_options(tray-fixture PRIVATE -municode ${explicit_manifest_options})
-    target_link_libraries(tray-fixture PRIVATE style-companion style-startup ntwshk process-global process-launch win32-security shell32 ole32 uuid dwmapi advapi32 user32)
+    target_link_libraries(tray-fixture PRIVATE style-companion style-msstyles style-startup ntwshk process-global process-launch win32-security shell32 ole32 uuid dwmapi advapi32 user32)
     native_test(tray-global tests/integration/tray_global.c user32)
     native_test(tray-styles-current tests/integration/tray_styles_current.c user32)
     global_session_test(global-e2e tests/integration/global_mode.c)
@@ -987,14 +1012,14 @@ if(BUILD_TESTING)
       src/ntw16s-dll/global/session.c
       src/ntw16s-dll/global/policy.c)
     target_include_directories(global-parent-owned PRIVATE src ${CMAKE_SOURCE_DIR})
-    target_compile_definitions(global-parent-owned PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    target_compile_definitions(global-parent-owned PRIVATE NTWSHK_LAUNCHER UNICODE _UNICODE _WIN32_WINNT=0x0A00)
     target_link_options(global-parent-owned PRIVATE -municode)
     target_link_libraries(global-parent-owned PRIVATE style-startup ntwshk process-global win32-security shell32 ole32 advapi32 user32)
     add_executable(global-start-failure tests/integration/global_start_failure.c src/run16s-exe/elevation.c
       src/ntw16s-dll/global/session.c
       src/ntw16s-dll/global/policy.c)
     target_include_directories(global-start-failure PRIVATE src ${CMAKE_SOURCE_DIR})
-    target_compile_definitions(global-start-failure PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+    target_compile_definitions(global-start-failure PRIVATE NTWSHK_LAUNCHER UNICODE _UNICODE _WIN32_WINNT=0x0A00)
     target_link_options(global-start-failure PRIVATE -municode)
     target_link_libraries(global-start-failure PRIVATE style-startup ntwshk process-global win32-security shell32 ole32 advapi32 user32)
     global_session_test(global-common tests/integration/global_common.c)
@@ -2556,6 +2581,7 @@ if(BUILD_TESTING)
   add_executable(core-win2k-uwp-frame tests/lib-win32-style/appearance/win2000/window/modern_frame.c)
   add_dependencies(core-win2k-uwp-frame style-subclass ntw16s)
   target_compile_definitions(core-win2k-uwp-frame PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_options(core-win2k-uwp-frame PRIVATE -municode)
   target_link_libraries(core-win2k-uwp-frame PRIVATE win2k-window-uwp "${subclass_import}")
   add_test(NAME core/win2k-uwp-frame COMMAND $<TARGET_FILE:core-win2k-uwp-frame>)
   add_dependencies(core-win16-window-link style-subclass)
@@ -2601,7 +2627,7 @@ if(BUILD_TESTING)
     target_include_directories(launch-uwp-live PRIVATE src)
     target_compile_definitions(launch-uwp-live PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
     target_link_options(launch-uwp-live PRIVATE -municode)
-    target_link_libraries(launch-uwp-live PRIVATE style-uwp-dispatch style-uwp-native style-companion process-image win16-window-uwp win2k-window "$<LINK_GROUP:RESCAN,style-menu-owner,ntwshk>" user32 ole32 oleaut32 uuid dwmapi)
+    target_link_libraries(launch-uwp-live PRIVATE style-uwp-dispatch style-uwp-native style-companion process-image win16-window-uwp win2k-window "$<LINK_GROUP:RESCAN,win16-common,style-menu-owner,ntwshk>" user32 ole32 oleaut32 uuid dwmapi)
     add_test(NAME compatibility/uwp-real COMMAND launch-uwp-live)
     add_test(NAME launch/uwp-resolve COMMAND ${test_driver} --name launch/uwp-resolve -- $<TARGET_FILE:launch-uwp-live> --resolve)
     set_tests_properties(compatibility/uwp-real PROPERTIES SKIP_RETURN_CODE 77 TIMEOUT 25)
@@ -2693,7 +2719,7 @@ foreach(target IN ITEMS demo run16s creation-contract rollback-contract propagat
 endforeach()
 
 # Product UWP coordination is shared by the launcher, DLL and manager fixtures.
-foreach(uwp_consumer ntw16s run16s tray-fixture global-parent-owned global-start-failure core-global-manager core-global-manager-unsupported)
+foreach(uwp_consumer ntwshk ntw16s run16s tray-fixture global-parent-owned global-start-failure core-global-manager core-global-manager-unsupported)
   if(TARGET ${uwp_consumer})
     target_sources(${uwp_consumer} PRIVATE src/ntw16s-dll/uwp/target.c)
     target_link_libraries(${uwp_consumer} PRIVATE style-uwp-global style-uwp-dispatch style-uwp-native style-companion process-image ole32 oleaut32 uuid dwmapi)
@@ -2719,7 +2745,7 @@ if(BUILD_TESTING)
 endif()
 
 # Direct session consumers, including fixtures compiling product bindings.
-foreach(client IN ITEMS ntw16s run16s tray-fixture global-propagation-probe
+foreach(client IN ITEMS ntwshk ntw16s run16s tray-fixture global-propagation-probe
     global-headless-existing late-process-prototype global-relay global-parent-owned
     global-start-failure core-global-window core-global-style-bridge core-global-session-style
     core-tray-controller core-global-thread core-global-start core-global-attach
@@ -2730,7 +2756,7 @@ foreach(client IN ITEMS ntw16s run16s tray-fixture global-propagation-probe
 endforeach()
 
 # Product protocol/target policy is linked only where the global transaction is composed.
-foreach(client IN ITEMS ntw16s run16s tray-fixture global-headless-existing
+foreach(client IN ITEMS ntwshk ntw16s run16s tray-fixture global-headless-existing
     global-parent-owned global-start-failure core-global-attach core-global-manager
     core-global-manager-unsupported core-uwp-global)
   if(TARGET ${client})
@@ -2738,7 +2764,7 @@ foreach(client IN ITEMS ntw16s run16s tray-fixture global-headless-existing
   endif()
 endforeach()
 
-foreach(client IN ITEMS ntw16s run16s tray-fixture global-parent-owned global-start-failure
+foreach(client IN ITEMS ntwshk ntw16s run16s tray-fixture global-parent-owned global-start-failure
     core-global-manager core-global-manager-unsupported core-uwp-global)
   if(TARGET ${client})
     target_sources(${client} PRIVATE src/ntw16s-dll/global/services.c)

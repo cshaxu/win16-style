@@ -1,5 +1,6 @@
 #include "lib-win32/process-image/image.h"
 #include "lib-win32-style/access/startup/install.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "elevation.h"
 #include "lib-win32/security/elevation.h"
 #include "lib-win32/process-launch/command_line.h"
@@ -112,7 +113,10 @@ int wmain(int argc,WCHAR **argv)
      * targets stay asynchronous unless --wait explicitly requests otherwise. */
     wait=wait || subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI;
     error=style_startup_paths(&context,NULL);if(error)return diagnostic(6,error,L"package directory");
-    wcscpy(context.module,win2k?L"ntw2ks":L"ntw16s");
+    error=classic_theme_validate_packaged(GetModuleHandleW(NULL),win2k?CLASSIC_THEME_WIN2K:CLASSIC_THEME_WIN16);
+    if(error)return diagnostic(6,error,L"theme load");
+    wcscpy(context.module,L"ntwshk");
+    if(win2k)context.flags|=STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE;
     command=_wcsdup(raw);if(!command)return diagnostic(5,ERROR_NOT_ENOUGH_MEMORY,L"command allocation");
     if(win32_process_create(image,command,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&startup,&child))error=ERROR_SUCCESS;
     else{error=GetLastError();if(!error)error=ERROR_GEN_FAILURE;}

@@ -134,10 +134,18 @@ def main():
             pe = struct.unpack_from('<I', raw, 60)[0]
             assert struct.unpack_from('<H', raw, pe+22)[0] & 0x2000, 'DLL flag missing'
             assert machine == (0x14c if arch == 'x86' else 0x8664)
-            exports = {line.strip().split()[0].split("=", 1)[0] for line in (root/'src/ntwshk-dll/ntwshk.def').read_text().splitlines() if line.startswith('    ')}
+            bits = 32 if arch == 'x86' else 64
+            definitions = ('ntwshk-dll/ntwshk.def', f'ntw16s-dll/ntw16s{bits}.def', 'ntw2ks-dll/ntw2ks.def')
+            exports = {line.strip().split()[0].split("=", 1)[0]
+                       for definition in definitions
+                       for line in (root/'src'/definition).read_text().splitlines()
+                       if line.startswith('    ') and 'NONAME' not in line}
             if arch == 'x64': exports.add('process_hook_unwind_handler')
-            assert set(public) == exports and ordinals['process_hook_install_helper'] == 1
-            assert {n.lower() for n in imports if not core.system_crt(n)} == {'kernel32.dll', 'advapi32.dll'}
+            assert set(public) == exports and live-set(ordinals.values()) == {1}
+            assert {n.lower() for n in imports if not core.system_crt(n)} == {
+                'activeds.dll', 'advapi32.dll', 'comctl32.dll', 'comdlg32.dll', 'dwmapi.dll',
+                'gdi32.dll', 'kernel32.dll', 'msimg32.dll', 'ole32.dll', 'oleaut32.dll',
+                'shcore.dll', 'shell32.dll', 'user32.dll', 'uxtheme.dll', 'winspool.drv'}
         else:
             subsystem, imports = application(path)
             assert subsystem == (2 if name == 'demo.exe' else 3)

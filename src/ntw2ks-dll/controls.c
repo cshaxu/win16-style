@@ -1,4 +1,6 @@
-#define _WIN32_WINNT 0x0a00
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0A00
+#endif
 #include <windows.h>
 #include <commdlg.h>
 #include <uxtheme.h>
@@ -19,6 +21,9 @@
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/window/window_identity.h"
 #include "lib-win32-style/appearance/win2000/control/control.h"
+#ifdef NTWSHK_UNIFIED
+#include "ntw16s-dll/injection/intercept.h"
+#endif
 
 static __typeof__(&CreateWindowExW) create_W;
 static __typeof__(&CreateWindowExA) create_A;
@@ -88,7 +93,9 @@ static LRESULT CALLBACK dialog_created(int code,WPARAM wp,LPARAM lp)
 }
 static HRESULT observe_dialog(HRESULT (*show)(void *),void *context)
 {return style_dialog_observe(show,context,attach_dialog);}
+#ifndef NTWSHK_UNIFIED
 static BOOL com_session_active(void){return TRUE;}
+#endif
 #define CLASSIC_DIALOG_BEGIN(state,incoming) ((void)(incoming),style_dialog_observation_begin(state,NULL,dialog_created,FALSE))
 #define CLASSIC_DIALOG_PREPARE(state,incoming) ((void)(state),SetLastError(incoming))
 #define CLASSIC_DIALOG_FINISH(state,modal,result,error,fail) do { \
@@ -194,12 +201,16 @@ DWORD ntw2ks_controls_attach_using(DWORD (*attach)(void *,void *))
     ATTACH_DIALOG(PageSetupDlgA);ATTACH_DIALOG(PageSetupDlgW);
 #undef ATTACH_DIALOG
     if(error)return error;
+#ifdef NTWSHK_UNIFIED
+    return ntw16s_attach_win2k_com_dialogs_using(attach,observe_dialog);
+#else
     const style_classic_com_options com={
         .session_active=com_session_active,.scope=observe_dialog,
         .property=L"Win2kStyle.ComDialog",.folder_message=L"Win2kStyle.ComSetFolder",
         .hidden_message=L"Win2kStyle.HiddenFilesRefresh",.explorer_files=TRUE
     };
     return style_classic_com_attach(attach,&com);
+#endif
 }
 
 DWORD ntw2ks_controls_attach(void)

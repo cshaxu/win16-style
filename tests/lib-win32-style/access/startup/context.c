@@ -20,6 +20,10 @@ int main(void)
     memcpy(copy,raw,h.bytes);((DWORD *)copy)[3]=STYLE_STARTUP_POLICY_STYLE|STYLE_STARTUP_POLICY_GLOBAL_SESSION;
     CHECK(style_startup_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);
     ((DWORD *)copy)[6]=123;CHECK(!style_startup_packet_parse(copy,h.bytes,machine,&context));CHECK(context.session_cookie==123);
+    memcpy(copy,raw,h.bytes);
+    ((DWORD *)copy)[3]=STYLE_STARTUP_POLICY_STYLE|STYLE_STARTUP_POLICY_PROPAGATE|STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE;
+    CHECK(!style_startup_packet_parse(copy,h.bytes,machine,&context));
+    CHECK(context.flags==((DWORD *)copy)[3] && !context.session_cookie);
     memcpy(copy,raw,h.bytes);((WCHAR *)(copy+sizeof(h)+sizeof(directory)))[1]=L'\\';CHECK(style_startup_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);
     memcpy(copy,raw,h.bytes);copy[h.bytes-2]=1;CHECK(style_startup_packet_parse(copy,h.bytes,machine,&context)==ERROR_INVALID_DATA);
     puts("PAYLOAD PASS generic module, machine, bounds, policy, path, termination");return 0;

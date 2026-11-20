@@ -12,7 +12,7 @@ static DWORD initialize(HMODULE module,DWORD cookie,void *context)
 {
     (void)context;ntwshk_context *paths=calloc(1,sizeof(*paths));
     if(!paths)return ERROR_NOT_ENOUGH_MEMORY;
-    DWORD error=ntwshk_context_paths(paths,module);
+    DWORD error=style_startup_paths(paths,module);
     if(!error)error=ntw16s_late_process_init(paths->directory,cookie);
     free(paths);return error;
 }

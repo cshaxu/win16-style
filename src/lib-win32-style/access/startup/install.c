@@ -22,7 +22,7 @@ DWORD style_startup_install(HANDLE child,const style_startup_context *context,PC
 {
     typedef struct install_work {BYTE data[65536];style_startup_context parsed;WCHAR path[STYLE_STARTUP_PATH_CAP],shared[STYLE_STARTUP_PATH_CAP];char dll[4096],dependency[4096];} install_work;
     style_startup_packet header={0};install_work *work;WORD machine=0;DWORD error;
-    if(!child || !context || !create_helper)return ERROR_INVALID_PARAMETER;
+    if(!child || !context || !dependency || !create_helper)return ERROR_INVALID_PARAMETER;
     size_t length=wcsnlen_s(context->directory,STYLE_STARTUP_PATH_CAP);
     if(!length || length>=STYLE_STARTUP_PATH_CAP)return ERROR_INVALID_DATA;
     size_t module_length=wcsnlen_s(context->module,STYLE_STARTUP_MODULE_CAP);
@@ -41,12 +41,16 @@ DWORD style_startup_install(HANDLE child,const style_startup_context *context,PC
     error=style_startup_library(context,machine,work->path,STYLE_STARTUP_PATH_CAP);if(error)goto done;
     error=win32_process_image_validate(work->path,machine,TRUE);if(error)goto done;
     error=import_path(work->path,work->dll,sizeof(work->dll));if(error)goto done;
-    error=style_startup_module_path(context,machine,dependency,work->shared,STYLE_STARTUP_PATH_CAP);if(error)goto done;
-    error=win32_process_image_validate(work->shared,machine,TRUE);if(error)goto done;
-    error=import_path(work->shared,work->dependency,sizeof(work->dependency));if(error)goto done;
-    if(machine==(sizeof(void *)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386))
-        error=process_hook_stage_pair(child,work->dependency,work->dll,work->data,header.bytes);
-    else error=process_hook_install_helper(child,work->path,work->data,header.bytes,create_helper);
+    BOOL unified=!_wcsicmp(context->module,dependency);
+    if(!unified){
+        error=style_startup_module_path(context,machine,dependency,work->shared,STYLE_STARTUP_PATH_CAP);if(error)goto done;
+        error=win32_process_image_validate(work->shared,machine,TRUE);if(error)goto done;
+        error=import_path(work->shared,work->dependency,sizeof(work->dependency));if(error)goto done;
+    }
+    if(machine!=(sizeof(void *)==8?IMAGE_FILE_MACHINE_AMD64:IMAGE_FILE_MACHINE_I386))
+        error=process_hook_install_helper(child,work->path,work->data,header.bytes,create_helper);
+    else if(unified)error=process_hook_stage_process(child,work->dll,work->data,header.bytes);
+    else error=process_hook_stage_pair(child,work->dependency,work->dll,work->data,header.bytes);
 done:
     HeapFree(GetProcessHeap(),0,work);return error;
 }
