@@ -141,26 +141,30 @@ M0 T29 S21 已收口。P1 `627034800fb4` 的双宽正式七件已发布两处并
 四种 VCL 模型均验证换主题改变实际像素、换父撤销后恢复原样。
 见 [S21 记录](../history/M0-T29-S21-composite-controls.md)。
 
-## M0 T29 S22 Packet
+M0 T29 S22 已收口。P1 076779b0a999 的双宽正式七件先发布两处，聚焦
+实包 37/37，无跳过。已从实际远端复核七件、九个退役路径和 1,291 项
+构建输入。补测与未覆盖项见 [S22 台账](../history/M0-T29-S22-dialog-routes.md)。
+
+## M0 T29 S23 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation |
-| Admission And Approval | 按已批准的 T29 实施顺序继续，S21 已发布并核对实际远端。 |
-| Objective | 让文件、目录、打印和已支持的公共对话框按主题声明选择机制、模板及呈现，清除年代分派和跨主题回退。 |
-| Non-goals | 新增对话框、第三方宿主能力、扩大已有复杂参数支持；通用旧产物退出归 S23。 |
-| Reference Baseline | S21 P1 627034800fb4 的正式七件包，已有行为以 T20、T28 S3 及 T29 S14 为依据。 |
-| Candidate Proposal | [T29 实施顺序](../proposals/msstyles-classic-runtime.md#s15s24-拟定顺序)及[首轮路由台账](../history/M0-T29-S22-dialog-routes.md)。 |
-| Files And ABI Surface | 主题扩展、解析与生成；公共对话框控制器、原生窗口观察和现有入口的装配，保持 Win32 A/W、COM 与 Shell ABI。 |
-| Applicable Rules | 纯 C17，双宽 MinGW/Ninja/ccache，同批七件先发布再测试；保持原图和来源证据。 |
-| Verification | 同一运行件测试两主题、混搭主题和原生路线。覆盖 Win32 A/W、COM 文件/目录、Shell 目录、标准扩展框及打印/页面设置，核对取消、回写、回退、外框和资源归还。 |
-| Expected Markers | 每项路线独立从主题取值，原生参数或能力回退保留相应语义，选择经典或 Explorer 文件布局时仍应用当前主题。 |
-| Asset Needs | 保留随包 Win16、Win2K 的现有对话框形态、资源和来源；用临时混搭包对照实际选择。 |
-| Reporting Requirements | 区分主题路线、原生交互、像素、应用参数回退和环境导致的跳过。 |
-| Stop Conditions | 不使用 computer-use，不创建或切换私有桌面，只运行有界自有夹具。 |
-| Exit Criteria | 冻结路由逐项迁移与核对，双宽实包、两处发布、远端复核完成。 |
-| Original Owner Request | 只换主题文件复现已支持 Win16 和 Win2000，EXE/DLL 无年代分派及专属绘制。 |
-| Similar-Issue Sweep | 查找年代枚举、主题路径推断、固定模板、备用主题、启动与全局的不同策略及所有调用者。 |
+| Admission And Approval | 沿用户批准的 T29 终态顺序继续。S22 实包和远端验收已完成。 |
+| Objective | 从正式启动器和双位宽中性运行时的真实链接闭包移除年代专属制式、配方、选择分支及旧生产装配。 |
+| Non-goals | 多增发行文件、改变已有接入权限、扩张主题覆盖或准入下一 T。 |
+| Reference Baseline | S22 P1 076779b0a9992b5a30fcf45e4b64b9568cbd85c6。 |
+| Candidate Proposal | [T29 实施顺序](../proposals/msstyles-classic-runtime.md)及[S23 链接台账](../history/M0-T29-S23-runtime-link-closure.md)。 |
+| Files And ABI Surface | run16s、ntwshk、两套旧装配、主题加载器、Win32 和现代框架及相应归档。保留逐项证实所需的薄 ABI。 |
+| Applicable Rules | 纯 C17，双宽 MinGW/Ninja/ccache。合批干净构建且同批七件先发布后测试。 |
+| Verification | 双宽真实链接输入、归档成员、PE 资源、导入导出与调用闭包。以原主题和混搭主题验证已交付的宿主、控件、对话框能力及还原。 |
+| Expected Markers | 只换同目录主题文件即可改变风格，正式运行件隐藏及公开分派均不绑定 Win16 或 Win2000。 |
+| Asset Needs | 现有两组主题与原图、模板、来源证据。只在自有夹具临时生成混搭数据。 |
+| Reporting Requirements | 逐项区分产品装配、通用机制、主题数据、已退役旧路径、经验证的兼容 ABI 与剩余未验证项。 |
+| Stop Conditions | 禁止 computer-use 和私有桌面，只运行有界自有夹具。 |
+| Exit Criteria | 双宽链接闭包和实际运行验证满足终态，正式七件两处发布后测试、提交推送、实际远端复核完成。 |
+| Original Owner Request | EXE 和 DLL 完全遵循主题文件，当前 Win16 和 Win2000 效果及能力保留。 |
+| Similar-Issue Sweep | 启动、全局托盘、传播、窗口宿主和对话框，核对名称、年代枚举、嵌入表、链接与退役路径。 |
 
 ## Identifier State
 
@@ -173,16 +177,16 @@ M0 T29 S21 已收口。P1 `627034800fb4` 的双宽正式七件已发布两处并
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S21 P1 `627034800fb4`，两处七件正式文件和九个退役路径。
+- Last verified remote delivery: M0 T29 S22 P1 `076779b0a999`，两处七件正式文件和九个退役路径。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 22
-- Open task: M0 T29 S22，公共对话框路线、模板与呈现。
+- Last allocated T29 S: 23
+- Open task: M0 T29 S23，正式运行件旧产物和年代链接退出。
 
 ## Technical Baseline
 
 - [正式契约](../etc/product-contract.json)为 run16s.exe、ntwshk32/64.dll 和两对主题。两处与实际远端均已核验 [T29 S11 P1](../history/M0-T29-S11-seven-file-package.md)。
-- CLASSIC_STYLE 1.17 已发布。Win32 基础控件和复合控件读取主题的边缘、几何和颜色，端钮资源随主题交付。菜单呈现沿用双宽 S19 模型。
+- CLASSIC_STYLE 1.18 已发布，颜色、字体与查找路线可独立声明。Win32 基础控件和复合控件读取主题的边缘、几何和颜色，端钮资源随主题交付。菜单呈现沿用双宽 S19 模型。
 - 托盘菜单名称来自已验证的主题描述，显示目录以区分同名主题。
 - CLASSIC_STYLE 1.8 进一步声明标题、按钮、边框绘制及几何。外观与文件、目录、打印策略沿用记录 9 的契约。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
