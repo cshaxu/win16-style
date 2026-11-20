@@ -177,3 +177,5 @@ S15包测试进度文件共享冲突已由[S17记录](../history/M0-T18-S17-test
 
 
 - [ ] TODO(High): T26 S12正式包真实产品thread hook在x86/x64返回126（普通及composed各一），完整S11上版八文件控制同样126；直接DLL入口/composed表面安装显示移除通过，不能代替原生hook成功。Owner：运行时接入兼容候选（未准入）；T26 S14四个原生hook仍126，直接入口/表面通过不作替代；Evidence：[S12整组](../etc/evidence/t26-s12-modern-delivery.json)含6个原始失败及3次上版控制。真实计算器当前与旧CLI均1460且core==frame，原AFH关系未满足；global在frame发现前失败，未执行旧global控制。准入条件：保持原策略，以符合既有宿主契约的自有目标或明确新增框架任务验证，不扩权限/系统设置来通过重构测试。
+
+- [ ] TODO(Medium): Win16 现代外框额外最大化夹具在 480×911 当前桌面触发第 104 行断言。Owner：T29 S24 最终回归。Evidence：[S19 记录](../history/M0-T29-S19-menu-font.md)中 S18 原源码与 S19 双宽同样复现，普通无样式窗口保持最大化。Admission：在保持自有有界窗口约束下，分别采样原生最大化位与合成外框可见性，核对小工作区窗口行为。

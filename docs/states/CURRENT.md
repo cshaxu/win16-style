@@ -127,28 +127,32 @@ M0 T29 S18 已收口。P1 `acf79b8fb32a` 的双宽现代外框读取同一已选
 复用标题、边框、按钮图形和命中。两处实际发布与远端七件已核对。双宽混搭主题和
 自有窗口恢复通过。真实 Scan 和计算器附着前超时，见 [S18 记录](../history/M0-T29-S18-modern-frame-model.md)。
 
-## M0 T29 S19 Packet
+M0 T29 S19 已收口。两宽共用主题声明的菜单文字、行列、字体和图形。P1 ebe2a34300ff 已发布并从实际远端复核，聚焦实包 22/22。
+混搭菜单资源、离屏像素和原生菜单状态通过。S18 原版也复现现代外框最大化断言。
+见 [S19 记录](../history/M0-T29-S19-menu-font.md)。
+
+## M0 T29 S20 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation |
-| Admission And Approval | 按用户要求在 T29 内继续清除年代专属呈现，S18 已完成实际远端复核。 |
-| Objective | 让已有菜单行列、各状态、图标与字体从统一主题描述取得，把 Win16 和 Win2000 可观察配方迁移到主题源。 |
-| Non-goals | 新增控件、窗口接入范围与权限；新增字体资产需可追溯且不依赖外部仓库。 |
-| Reference Baseline | S18 P1 `acf79b8fb32a`，含两处同摘要七件及共享现代外框。 |
+| Admission And Approval | 按用户要求在 T29 内完成运行时主题配置化，S19 远端复核后准入。 |
+| Objective | 让已有 Win32 基础控件通过共享方法按主题应用按钮、编辑、列表和组合、静态和分组、滚动条。 |
+| Non-goals | 新增控件类型、进程权限、接入范围及资源来源。复合控件和专用框架留给 S21。 |
+| Reference Baseline | S19 P1 ebe2a34300ff，两处实包和远端一致。共享控件双宽 18/18，Win2000 原生控件双宽 30/30。 |
 | Candidate Proposal | [T29 主题驱动实施顺序](../proposals/msstyles-classic-runtime.md#s15s24-拟定顺序)。 |
-| Files And ABI Surface | MSStyles 菜单和字体模型，公共菜单状态、绘制与图形字体租约，现有 Win32 与现代菜单适配。保留菜单句柄、应用自绘回调和兼容导出。 |
-| Applicable Rules | C17、双位宽 MinGW/Ninja/ccache、同快照先发布后测试，保留资源来源。 |
-| Verification | 先冻结 Win32 菜单栏、弹出及子菜单、系统菜单、现代菜单和字体调用方。双宽聚焦测试对照像素和度量、模态键鼠、取消、嵌套、重绘、主题交换和资源归还；再验证同批发布。 |
-| Expected Markers | 混搭主题独立改变行列、状态、图标及字体，标题与菜单仍可用，命令及恢复符合各宿主契约。 |
-| Asset Needs | 七件正式包、原菜单图像与来源、可核对的混搭主题夹具。 |
-| Reporting Requirements | 区分像素、消息、实际宿主、原生保留和真实交互。已有未覆盖字形和历史验收债务明确记录。 |
-| Stop Conditions | 不使用 computer-use 或私有桌面。运行验证选自有有界实例。 |
-| Exit Criteria | 现有菜单及字体共用机制，风格配方由主题选择；双宽聚焦、发布后测试和实际远端复核完成。 |
+| Files And ABI Surface | 主题控件颜色、布局与位图，公共控件快照、按钮形状、字体和滚动条，现有两套 Win32 接入。保留原 ABI、命令、数据及所有者。 |
+| Applicable Rules | C17，双宽 MinGW/Ninja/ccache，同快照先发布后测试。 |
+| Verification | 冻结基础控件表面、生产入口和旧包像素。两宽比对典型 DPI、状态、命中、通知、切换、取消及恢复。只改主题的混搭样本验证共享执行。 |
+| Expected Markers | 同运行文件下替换主题可改变基础控件图形、颜色及几何，保持已支持原生通知、捕获与应用绘制边界。 |
+| Asset Needs | 原控件图形、出处记录、七件同批包及混搭夹具。 |
+| Reporting Requirements | 区分自有测试、已交付程序外观、Vista 后系统变化及环境跳过。 |
+| Stop Conditions | 不使用 computer-use，不创建或切换私有桌面，只运行自有有界探针。 |
+| Exit Criteria | 冻结的基础控件迁移完毕，双宽验证通过，两处发布和实际远端核验完成。 |
 | Original Owner Request | 只换主题文件复现已支持 Win16 和 Win2000，EXE/DLL 无年代分派及专属绘制。 |
-| Similar-Issue Sweep | 共查标题、菜单栏、系统／上下文／子菜单、现代外框、应用自绘和字体租约生命周期。 |
+| Similar-Issue Sweep | 共查基础控件的资源解析、共享呈现、窗口接入、状态失效、输入通知及撤销。 |
 
-[S19 迁移清单](../history/M0-T29-S19-menu-font.md)记录生产入口、接收位置和验证顺序。
+[S20 基线记录](../history/M0-T29-S20-basic-controls.md)记录生产清单和首轮基线。
 
 ## Identifier State
 
@@ -161,15 +165,16 @@ M0 T29 S18 已收口。P1 `acf79b8fb32a` 的双宽现代外框读取同一已选
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S18 P1 `acf79b8fb32a`，两处七件正式文件和九个退役路径。
+- Last verified remote delivery: M0 T29 S19 P1 `ebe2a34300ff`，两处七件正式文件和九个退役路径。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 19
-- Open task: M0 T29 S19，菜单与字体。
+- Last allocated T29 S: 20
+- Open task: M0 T29 S20，Win32 基础控件。
 
 ## Technical Baseline
 
 - [正式契约](../etc/product-contract.json)为 run16s.exe、ntwshk32/64.dll 和两对主题。两处与实际远端均已核验 [T29 S11 P1](../history/M0-T29-S11-seven-file-package.md)。
+- CLASSIC_STYLE 1.9 的菜单呈现沿用已发布的双宽 S19 模型。
 - 托盘菜单名称来自已验证的主题描述，显示目录以区分同名主题。
 - CLASSIC_STYLE 1.8 进一步声明标题、按钮、边框绘制及几何。外观与文件、目录、打印策略沿用记录 9 的契约。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
