@@ -4,6 +4,7 @@
 #include <wchar.h>
 #include <tlhelp32.h>
 #include "ntw16s-dll/global/session.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 
 typedef struct owned_window {DWORD pid;HWND window;} owned_window;
 static BOOL CALLBACK find_owned_window(HWND window,LPARAM value)
@@ -39,6 +40,10 @@ static BOOL switch_styles(DWORD pid,ntw16s_global_session *session,unsigned init
     if(!owned.window)return FALSE;
     UINT control=RegisterWindowMessageW(NTW16S_GLOBAL_CONTROL);
     const unsigned expected[]={1,2,0,2,1,0};
+    const unsigned themes[]={
+        classic_theme_encode_selection((classic_theme_selection){classic_theme_folder_id(L"Win16"),CLASSIC_THEME_WIN16}),
+        classic_theme_encode_selection((classic_theme_selection){classic_theme_folder_id(L"Win2K"),CLASSIC_THEME_WIN2K})
+    };
     DWORD_PTR current=MAXDWORD;
     BOOL passed=control && SendMessageTimeoutW(owned.window,WM_APP+113,0,0,SMTO_ABORTIFHUNG,300,&current) &&
         current==initial;
@@ -46,24 +51,29 @@ static BOOL switch_styles(DWORD pid,ntw16s_global_session *session,unsigned init
     for(unsigned i=0;passed && i<ARRAYSIZE(expected);++i){
         BOOL apply=expected[i]!=0;
         if(apply && i && !expected[i-1])++session->cookie;
-        if(apply)session->style=expected[i]==1?NTW16S_GLOBAL_STYLE_16:NTW16S_GLOBAL_STYLE_2K;
+        if(apply)session->style=themes[expected[i]-1];
         InterlockedExchange(&session->phase,apply?NTW16S_GLOBAL_ACTIVE:NTW16S_GLOBAL_STOPPING);
         ULONGLONG until=GetTickCount64()+1000;
         DWORD_PTR observed=MAXDWORD;
+        UINT_PTR selection=0,wanted=apply?(UINT_PTR)session->style+1u:0;
         do {
             DWORD_PTR ignored;DWORD current_pid=0;
             GetWindowThreadProcessId(owned.window,&current_pid);
             if(current_pid!=owned.pid || !SendMessageTimeoutW(owned.window,control,session->cookie,
                 apply?NTW16S_GLOBAL_APPLY:NTW16S_GLOBAL_REMOVE,SMTO_ABORTIFHUNG,300,&ignored) ||
                !SendMessageTimeoutW(owned.window,WM_APP+113,0,0,SMTO_ABORTIFHUNG,300,&observed))break;
-            if(observed!=expected[i])Sleep(20);
-        } while(observed!=expected[i] && GetTickCount64()<until);
-        passed=observed==expected[i];
-        printf("OWNED GLOBAL SWITCH step=%u expected=%u observed=%llu\n",i+1,expected[i],(unsigned long long)observed);
+            selection=(UINT_PTR)GetPropW(owned.window,L"Win16Style.Global.Profile");
+            if(observed==expected[i] && selection==wanted)break;
+            Sleep(20);
+        } while(GetTickCount64()<until);
+        passed=observed==expected[i] && selection==wanted;
+        printf("OWNED GLOBAL SWITCH step=%u expected=%u observed=%llu selection=%llu wanted=%llu\n",
+            i+1,expected[i],(unsigned long long)observed,(unsigned long long)selection,(unsigned long long)wanted);
     }
     DWORD current_pid=0;
     if(GetWindowThreadProcessId(owned.window,&current_pid) && current_pid==owned.pid)
         PostMessageW(owned.window,WM_CLOSE,0,0);
+    if(passed)puts("OWNED GLOBAL THEME ID PASS");
     return passed;
 }
 

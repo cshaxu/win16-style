@@ -5,12 +5,19 @@
 static HANDLE stop_event;
 static DWORD observed_style,forced_result;
 static DWORD theme_error;
-unsigned classic_theme_profile(PCWSTR folder,classic_theme_family family)
-{(void)folder;return (unsigned)family;}
+static classic_theme_family first_family=CLASSIC_THEME_WIN16;
+enum { first_id=15, second_id=31 };
+unsigned classic_theme_folder_id(PCWSTR folder)
+{return !wcscmp(folder,L"Win16")?first_id:second_id;}
 HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH])
-{(void)renderer;wcscpy(folder,profile?L"Win2K":L"Win16");return S_OK;}
-HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_theme_mapping *source)
-{(void)renderer;(void)profile;(void)source;return HRESULT_FROM_WIN32(theme_error);}
+{(void)renderer;wcscpy(folder,profile==first_id?L"Win16":L"Win2K");return S_OK;}
+HRESULT classic_theme_open_profile(HMODULE renderer,unsigned id,classic_theme_mapping *source)
+{
+    (void)renderer;
+    if(id!=first_id && id!=second_id)return E_INVALIDARG;
+    source->family=id==first_id?first_family:CLASSIC_THEME_WIN2K;
+    return HRESULT_FROM_WIN32(theme_error);
+}
 void classic_theme_close(classic_theme_mapping *source)
 {(void)source;}
 void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void *context)
@@ -51,7 +58,9 @@ int main(void)
     controller state={0};DWORD code=0;
     WCHAR prefix[80];swprintf(prefix,ARRAYSIZE(prefix),L"Local\\TrayControllerTest.%lu",GetCurrentProcessId());
     style_global_namespace space={.prefix=prefix,.launcher=L"owned.exe",.module=L"owned.dll",.magic=7,.version=1};
-    if(!style_global_control_init(&state.control,NULL,NTW16S_GLOBAL_STYLE_16,STYLE_NONE,&space,&operations,NULL))return 2;
+    DWORD first=classic_theme_encode_selection((classic_theme_selection){first_id,CLASSIC_THEME_WIN16});
+    DWORD second=classic_theme_encode_selection((classic_theme_selection){second_id,CLASSIC_THEME_WIN2K});
+    if(!style_global_control_init(&state.control,NULL,first,STYLE_NONE,&space,&operations,NULL))return 2;
     stop_event=CreateEventW(NULL,TRUE,FALSE,state.control.request_name);if(!stop_event)return 2;
     classic_theme_visit_folders(NULL,remember_theme,&state);
     state.themes[0].display_name[0]=0;
@@ -75,19 +84,19 @@ int main(void)
     action(MENU_FIRST_THEME,&state);
     if(!menu_has(&state,TRUE,FALSE) || !wait_stopped(&state,&code) || code)return 16;
     if(style_global_control_finished(&state.control,&code))return 18;
-    if(!state.control.worker || state.control.style!=NTW16S_GLOBAL_STYLE_16)return 17;
+    if(!state.control.worker || state.control.style!=first)return 17;
     state.control.enabled=TRUE;state.control.busy=FALSE;
     if(!menu_has(&state,TRUE,FALSE))return 5;
     action((MENU_FIRST_THEME+1),&state);
-    if(!state.control.stopping || state.control.desired!=NTW16S_GLOBAL_STYLE_2K || !wait_stopped(&state,&code) || code)return 6;
+    if(!state.control.stopping || state.control.desired!=second || !wait_stopped(&state,&code) || code)return 6;
     if(style_global_control_finished(&state.control,&code))return 18;
-    if(!state.control.worker || !state.control.busy || state.control.enabled || state.control.style!=NTW16S_GLOBAL_STYLE_2K)return 7;
+    if(!state.control.worker || !state.control.busy || state.control.enabled || state.control.style!=second)return 7;
     state.control.enabled=TRUE;state.control.busy=FALSE;
     if(!menu_has(&state,FALSE,TRUE))return 8;
     action(MENU_FIRST_THEME,&state);
-    if(state.control.desired!=NTW16S_GLOBAL_STYLE_16 || !wait_stopped(&state,&code) || code || observed_style!=NTW16S_GLOBAL_STYLE_2K)return 9;
+    if(state.control.desired!=first || !wait_stopped(&state,&code) || code || observed_style!=second)return 9;
     if(style_global_control_finished(&state.control,&code))return 18;
-    if(!state.control.worker || !state.control.busy || state.control.style!=NTW16S_GLOBAL_STYLE_16)return 10;
+    if(!state.control.worker || !state.control.busy || state.control.style!=first)return 10;
     state.control.enabled=TRUE;state.control.busy=FALSE;
     theme_error=ERROR_FILE_NOT_FOUND;
     action(MENU_FIRST_THEME,&state);
@@ -95,6 +104,12 @@ int main(void)
     if(state.control.desired!=STYLE_NONE || !wait_stopped(&state,&code) || code)return 11;
     if(style_global_control_finished(&state.control,&code))return 18;
     if(state.control.worker || state.control.enabled || state.control.busy || !menu_has(&state,FALSE,FALSE))return 12;
+    first_family=CLASSIC_THEME_WIN2K;
+    action(MENU_FIRST_THEME,&state);
+    DWORD replaced=classic_theme_encode_selection((classic_theme_selection){first_id,first_family});
+    if(state.control.style!=replaced || !menu_has(&state,TRUE,FALSE))return 24;
+    action(MENU_FIRST_THEME,&state);
+    if(!wait_stopped(&state,&code) || code || style_global_control_finished(&state.control,&code))return 25;
     forced_result=ERROR_ACCESS_DENIED;action((MENU_FIRST_THEME+1),&state);action((MENU_FIRST_THEME+1),&state);
     if(!wait_stopped(&state,&code) || code!=ERROR_ACCESS_DENIED || style_global_control_finished(&state.control,&code))return 19;
     if(state.control.worker || state.control.enabled || state.control.busy || state.control.desired!=STYLE_NONE)return 13;

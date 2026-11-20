@@ -235,7 +235,8 @@ int wmain(int argc,WCHAR **argv)
         ok=ok&&!run16s_uwp_calculator_image(NULL)&&!run16s_uwp_calculator_image(L"calc.exe")&&
             !run16s_uwp_calculator_image(L"C:\\other\\calc.exe")&&!run16s_uwp_calculator_image(L"C:\\other\\notepad.exe");
         BOOL handled=TRUE;
-        ok=ok&&!run16s_uwp_command(L"C:\\other\\calc.exe",L"",FALSE,FALSE,&handled)&&!handled;
+        ok=ok&&!run16s_uwp_command(L"C:\\other\\calc.exe",L"",FALSE,
+            (classic_theme_selection){0,CLASSIC_THEME_WIN16},&handled)&&!handled;
         printf("UWP_CALCULATOR_RESOLVE_%s\n",ok?"PASS":"FAIL");return ok?0:1;
     }
     BOOL interactions=(argc==3&&!wcscmp(argv[1],L"--interactions-2k")) ||
@@ -306,7 +307,9 @@ int wmain(int argc,WCHAR **argv)
         HOOKPROC callback=module?(HOOKPROC)(uintptr_t)GetProcAddress(module,"Ntw16sUwpFrameHook"):NULL;
         HHOOK hook=callback?SetWindowsHookExW(WH_CALLWNDPROC,callback,module,GetWindowThreadProcessId(frame,NULL)):NULL;
         DWORD_PTR ignored=0;UINT message=RegisterWindowMessageW(NTW16S_UWP_MESSAGE);
-        ok=hook&&SendMessageTimeoutW(frame,message,win2k?NTW16S_UWP_REMOVE_2K:NTW16S_UWP_REMOVE,(LPARAM)core,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,3000,&ignored)&&
+        WPARAM remove=win2k?NTW16S_UWP_REMOVE_2K:NTW16S_UWP_REMOVE;
+        if(command_mode)remove|=(WPARAM)classic_theme_folder_id(win2k?L"Win2K":L"Win16")<<NTW16S_UWP_PROFILE_SHIFT;
+        ok=hook&&SendMessageTimeoutW(frame,message,remove,(LPARAM)core,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,3000,&ignored)&&
             (uintptr_t)GetPropW(frame,NTW16S_UWP_RESULT)==1;
         printf("REMOVE status=%llu\n",(unsigned long long)(uintptr_t)GetPropW(frame,NTW16S_UWP_RESULT));
         RemovePropW(frame,NTW16S_UWP_RESULT);GetWindowRect(frame,&after);

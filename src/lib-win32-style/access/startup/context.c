@@ -17,26 +17,42 @@ static BOOL absolute(PCWSTR p,size_t n)
 }
 DWORD style_startup_packet_parse(const void *data,DWORD bytes,DWORD machine,style_startup_context *context)
 {
-    style_startup_packet h;const WCHAR *directory;
+    style_startup_packet h;
     if(!data || !context)return ERROR_INVALID_PARAMETER;
     ZeroMemory(context,sizeof(*context));
     if(bytes<sizeof(h) || bytes>65536)return ERROR_INVALID_DATA;
     memcpy(&h,data,sizeof(h));
-    DWORD profile=h.flags>>STYLE_STARTUP_PROFILE_SHIFT;
-    if(h.bytes!=bytes || h.version!=(profile?3u:2u) ||
-       (profile && (profile<8 || (profile&1u)!=!!(h.flags&STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE))) ||
-       h.machine!=machine ||
+    DWORD header_bytes=sizeof(h),flags=h.flags;
+    if(h.version==STYLE_STARTUP_PACKET_VERSION){
+        style_startup_selection selection;
+        header_bytes+=sizeof(selection);
+        if(bytes<header_bytes || (flags&~(STYLE_STARTUP_POLICY_MASK&~STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE)))
+            return ERROR_INVALID_DATA;
+        memcpy(&selection,(const BYTE *)data+sizeof(h),sizeof(selection));
+        if(selection.theme_id>(UINT32_MAX>>STYLE_STARTUP_PROFILE_SHIFT) || selection.adapter>1u)
+            return ERROR_INVALID_DATA;
+        /* The exported context retains its layout. Its selection bits are
+         * storage for the two independent values in the new packet. */
+        flags|=selection.theme_id<<STYLE_STARTUP_PROFILE_SHIFT;
+        if(selection.adapter)flags|=STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE;
+    }else{
+        DWORD profile=flags>>STYLE_STARTUP_PROFILE_SHIFT;
+        if(h.version!=(profile?3u:2u) ||
+           (profile && (profile<8 || (profile&1u)!=!!(flags&STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE))))
+            return ERROR_INVALID_DATA;
+    }
+    if(h.bytes!=bytes || h.machine!=machine ||
         (machine!=IMAGE_FILE_MACHINE_I386 && machine!=IMAGE_FILE_MACHINE_AMD64) ||
        !(h.flags&(STYLE_STARTUP_POLICY_STYLE|STYLE_STARTUP_POLICY_PROPAGATE)) ||
         (!!(h.flags&STYLE_STARTUP_POLICY_GLOBAL_SESSION)!=!!h.reserved0) ||
-        h.directory_offset!=sizeof(h) || h.directory_bytes<8 || h.directory_bytes%2 ||
+        h.directory_offset!=header_bytes || h.directory_bytes<8 || h.directory_bytes%2 ||
         h.reserved1<4 || h.reserved1%2 || h.reserved1>sizeof(context->module) ||
         h.directory_bytes>sizeof(context->directory) ||
-        h.directory_bytes+h.reserved1!=bytes-sizeof(h))return ERROR_INVALID_DATA;
+        h.directory_bytes+h.reserved1!=bytes-header_bytes)return ERROR_INVALID_DATA;
     /* Do not assume the external payload pointer's alignment. */
-    memcpy(context->directory,(const BYTE *)data+sizeof(h),h.directory_bytes);
-    memcpy(context->module,(const BYTE *)data+sizeof(h)+h.directory_bytes,h.reserved1);
-    directory=context->directory;
+    memcpy(context->directory,(const BYTE *)data+header_bytes,h.directory_bytes);
+    memcpy(context->module,(const BYTE *)data+header_bytes+h.directory_bytes,h.reserved1);
+    PCWSTR directory=context->directory;
     size_t count=h.directory_bytes/sizeof(WCHAR);
     size_t module_count=h.reserved1/sizeof(WCHAR);
     if(directory[count-1] || wcsnlen_s(directory,count)!=count-1 || !absolute(directory,count-1) ||
@@ -48,7 +64,7 @@ DWORD style_startup_packet_parse(const void *data,DWORD bytes,DWORD machine,styl
             ZeroMemory(context,sizeof(*context));return ERROR_INVALID_DATA;
         }
     }
-    context->flags=h.flags;context->session_cookie=h.reserved0;return ERROR_SUCCESS;
+    context->flags=flags;context->session_cookie=h.reserved0;return ERROR_SUCCESS;
 }
 static DWORD consume_packet(const void *data,DWORD bytes,DWORD machine,void *context)
 {return style_startup_packet_parse(data,bytes,machine,(style_startup_context *)context);}

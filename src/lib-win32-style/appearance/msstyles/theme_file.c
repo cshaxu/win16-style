@@ -35,10 +35,10 @@ static bool write_token(FILE *output,msstyles_v4_name name)
 }
 
 bool msstyles_theme_file_write(FILE *output,const char *display_name,const char *stem,
-    const msstyles_v4_variant *variant)
+    const msstyles_v4_variant *variant,unsigned host_options)
 {
     if(!output || !label(display_name) || !stem || !*stem || strlen(stem)>=MSSTYLES_THEME_TOKEN_CAPACITY || !variant ||
-       !variant_token(variant->size) || !variant_token(variant->color))return false;
+       !variant_token(variant->size) || !variant_token(variant->color) || (host_options&~MSSTYLES_HOST_ALL))return false;
     for(const unsigned char *p=(const unsigned char *)stem;*p;++p)
         if(!token(*p))return false;
 
@@ -47,7 +47,12 @@ bool msstyles_theme_file_write(FILE *output,const char *display_name,const char 
                "[VisualStyles]\r\nPath=%s.msstyles\r\nColorStyle=",display_name,stem)>=0 &&
         write_token(output,variant->color) &&
         fputs("\r\nSize=",output)!=EOF && write_token(output,variant->size) &&
-        fputs("\r\n\r\n[MasterThemeSelector]\r\nMTSM=DABJDKT\r\n",output)!=EOF;
+        fprintf(output,"\r\n\r\n[WindowAttachment]\r\nVersion=1\r\n"
+            "Explorer=%u\r\nTerminal=%u\r\nConsole=%u\r\n\r\n"
+            "[MasterThemeSelector]\r\nMTSM=DABJDKT\r\n",
+            (host_options&MSSTYLES_HOST_EXPLORER)?1u:0u,
+            (host_options&MSSTYLES_HOST_TERMINAL)?1u:0u,
+            (host_options&MSSTYLES_HOST_CONSOLE)?1u:0u)>=0;
 }
 
 static bool copy_token(char *target,const char *value,const char *extension)
@@ -70,6 +75,27 @@ static void read_display_name(char *target,const char *value)
     memcpy(target,value,length+1);
 }
 
+enum { host_version_key=8u, host_required_keys=MSSTYLES_HOST_ALL|host_version_key };
+
+static bool read_host_option(char *line,unsigned *seen,msstyles_host_options *hosts)
+{
+    if(!*line || *line==';' || *line=='#')return true;
+    char *value=strchr(line,'=');
+    if(!value)return false;
+    *value++=0;
+    unsigned key;
+    if(!strcmp(line,"Version"))key=host_version_key;
+    else if(!strcmp(line,"Explorer"))key=MSSTYLES_HOST_EXPLORER;
+    else if(!strcmp(line,"Terminal"))key=MSSTYLES_HOST_TERMINAL;
+    else if(!strcmp(line,"Console"))key=MSSTYLES_HOST_CONSOLE;
+    else return false;
+    if((*seen&key) || (strcmp(value,"1") && (key==host_version_key || strcmp(value,"0"))))
+        return false;
+    *seen|=key;
+    if(key!=host_version_key && *value=='1')hosts->enabled|=key;
+    return true;
+}
+
 bool msstyles_theme_file_read(FILE *input,msstyles_theme_descriptor *descriptor)
 {
     if(!input || !descriptor)return false;
@@ -78,7 +104,8 @@ bool msstyles_theme_file_read(FILE *input,msstyles_theme_descriptor *descriptor)
     if(ferror(input) || !length || length==sizeof(text) || memchr(text,0,length))return false;
     text[length]=0;
     msstyles_theme_descriptor parsed={0};
-    bool visual=false,theme=false,display_seen=false;
+    bool visual=false,theme=false,attachment=false,display_seen=false;
+    unsigned host_keys=0;
     for(char *line=text;line;){
         char *next=strchr(line,'\n');
         if(next)*next++=0;
@@ -87,6 +114,13 @@ bool msstyles_theme_file_read(FILE *input,msstyles_theme_descriptor *descriptor)
         if(*line=='['){
             visual=!strcmp(line,"[VisualStyles]");
             theme=!strcmp(line,"[Theme]");
+            attachment=!strcmp(line,"[WindowAttachment]");
+            if(attachment){
+                if(parsed.hosts.declared)return false;
+                parsed.hosts.declared=true;
+            }
+        }else if(attachment){
+            if(!read_host_option(line,&host_keys,&parsed.hosts))return false;
         }else if(theme && !strncmp(line,"DisplayName=",12)){
             if(display_seen)parsed.display_name[0]=0;
             else read_display_name(parsed.display_name,line+12);
@@ -102,7 +136,8 @@ bool msstyles_theme_file_read(FILE *input,msstyles_theme_descriptor *descriptor)
         }
         line=next;
     }
-    if(!parsed.file[0] || !parsed.size[0] || !parsed.color[0])return false;
+    if(!parsed.file[0] || !parsed.size[0] || !parsed.color[0] ||
+       (parsed.hosts.declared && host_keys!=host_required_keys))return false;
     *descriptor=parsed;
     return true;
 }

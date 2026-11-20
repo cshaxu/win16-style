@@ -5,6 +5,7 @@
 #include "ntw16s-dll/injection/late_process.h"
 #include "ntwshk-dll/injection.h"
 #include "lib-win32-style/access/global/worker.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include <stdlib.h>
 #include "lib-win32-style/access/global/receiver.h"
 #include "lib-win32-style/access/global/host.h"
@@ -35,8 +36,10 @@ static void change(HWND window,DWORD style,BOOL apply,void *context)
 {
     (void)context;
     if(apply){
+        classic_theme_selection selection;
+        if(!classic_theme_decode_selection(style,&selection))return;
         BOOL attached=ntw16s_global_window_apply_style(window,style),text_changed=FALSE;
-        if(!(style&1u) && attached && !ntw16s_global_vb_text(window,&text_changed) && text_changed)
+        if(selection.family==CLASSIC_THEME_WIN16 && attached && !ntw16s_global_vb_text(window,&text_changed) && text_changed)
             RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN);
         ntw16s_global_window_children(window,TRUE,style);
     }else{

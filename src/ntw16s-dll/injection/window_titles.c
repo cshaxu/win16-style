@@ -94,7 +94,7 @@ HRESULT ntw16s_dialog_style_scope(HRESULT (*callback)(void *),void *context)
 #ifdef NTWSHK_UNIFIED
     DWORD flags=__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE);
     if(!(flags&NTWSHK_POLICY_GLOBAL_SESSION) &&
-       classic_theme_profile_family(classic_theme_process_profile())==CLASSIC_THEME_WIN2K)return callback(context);
+       classic_theme_process_family()==CLASSIC_THEME_WIN2K)return callback(context);
 #endif
     return style_creation_call_invoke(&title_context,callback,context);
 }
@@ -674,7 +674,7 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
     ATTACH(FindTextA);ATTACH(FindTextW);ATTACH(ReplaceTextA);ATTACH(ReplaceTextW);
     ATTACH(ChooseColorA);ATTACH(ChooseColorW);ATTACH(ChooseFontA);ATTACH(ChooseFontW);
 #ifdef NTWSHK_UNIFIED
-    if(classic_theme_profile_family(classic_theme_process_profile())!=CLASSIC_THEME_WIN2K)
+    if(classic_theme_process_family()!=CLASSIC_THEME_WIN2K)
 #endif
     {
         ATTACH(PrintDlgA);ATTACH(PrintDlgW);ATTACH(PageSetupDlgA);ATTACH(PageSetupDlgW);

@@ -17,6 +17,11 @@ typedef struct style_startup_packet {
     uint32_t bytes,version,machine,flags,directory_offset,directory_bytes,reserved0,reserved1;
 } style_startup_packet;
 C_ASSERT(sizeof(style_startup_packet)==32);
+typedef struct style_startup_selection {
+    uint32_t theme_id,adapter;
+} style_startup_selection;
+C_ASSERT(sizeof(style_startup_selection)==8);
+#define STYLE_STARTUP_PACKET_VERSION 4u
 typedef struct style_startup_context {DWORD flags,session_cookie;WCHAR directory[STYLE_STARTUP_PATH_CAP],module[STYLE_STARTUP_MODULE_CAP];} style_startup_context;
 DWORD style_startup_packet_parse(const void *data,DWORD bytes,DWORD machine,style_startup_context *context);
 DWORD style_startup_read(style_startup_context *context,BOOL *found);

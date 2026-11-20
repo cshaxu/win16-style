@@ -9,5 +9,11 @@ Path=Win2K.msstyles
 ColorStyle=NormalColor
 Size=NormalSize
 
+[WindowAttachment]
+Version=1
+Explorer=0
+Terminal=0
+Console=0
+
 [MasterThemeSelector]
 MTSM=DABJDKT

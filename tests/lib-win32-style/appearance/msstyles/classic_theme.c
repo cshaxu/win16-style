@@ -497,11 +497,33 @@ static BOOL print_folder(PCWSTR folder,PCWSTR display_name,classic_theme_family 
     return TRUE;
 }
 
+static int check_identity(PCWSTR folder,classic_theme_family selected)
+{
+    HMODULE module=GetModuleHandleW(NULL);
+    WCHAR actual[MAX_PATH];
+    unsigned id=classic_theme_folder_id(folder);
+    CHECK(id>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM && id<CLASSIC_THEME_PROFILE_CAP);
+    CHECK(SUCCEEDED(classic_theme_profile_folder(module,id,actual)) && !_wcsicmp(folder,actual));
+    classic_theme_mapping source={0};
+    CHECK(SUCCEEDED(classic_theme_open_profile(module,id,&source)) && source.family==selected);
+    classic_theme_close(&source);
+    classic_theme_set_process_profile(id,selected);
+    CHECK(SUCCEEDED(classic_theme_open_packaged(module,selected,FALSE,&source)) && source.family==selected);
+    classic_theme_close(&source);
+    printf("CLASSIC THEME ID id=%u adapter=%u\n",id,(unsigned)selected);
+    return 0;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
     if(argc==2 && !wcscmp(argv[1],L"--discover")){
         classic_theme_visit_folders(GetModuleHandleW(NULL),print_folder,NULL);
         return 0;
+    }
+    if(argc==4 && !wcscmp(argv[1],L"--identity")){
+        if(!wcscmp(argv[3],L"0"))return check_identity(argv[2],CLASSIC_THEME_WIN16);
+        if(!wcscmp(argv[3],L"1"))return check_identity(argv[2],CLASSIC_THEME_WIN2K);
+        return 2;
     }
     BOOL recolored=argc==3 && !wcscmp(argv[2],L"--recolor");
     if(argc!=2 && !recolored)return 2;

@@ -113,6 +113,31 @@ S15 冻结正式运行件的年代依赖，并将托盘名称和菜单命令分�
 T29 全主题驱动目标保持开放。后续顺序见 [T29 规划](../proposals/msstyles-classic-runtime.md)，
 迁移接收者及验证见 [S15 台账](../history/M0-T29-S15-theme-runtime-boundary.md)。
 
+## M0 T29 S16 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Continuation；固定 M0 与 T29。 |
+| Admission And Approval | 用户要求最终运行件去除年代依赖，按 T29 规划继续执行。 |
+| Objective | 将宿主接入能力与年代分派分离，再将主题身份与暂留绘制器从三条接入路径逐项分离。 |
+| Non-goals | 保持既有已支持宿主、窗口/线程所有权、适用目标、权限及七件包数目；绘制归 S17 起各批。 |
+| Reference Baseline | S15 P1 32ca7ac0 及已核对的实包、样式迁移台账。 |
+| Candidate Proposal | T29 主题驱动终态及 S16 计划。 |
+| Files And ABI Surface | 主题描述编译读取、启动判断、现代宿主、共享身份和既有私有选样协议。公开导出签名与既有安全边界保持。 |
+| Applicable Rules | C17、双位宽 MinGW/Ninja/ccache，同快照先发布后测试。 |
+| Verification | 必测独立关闭转发 Explorer、Windows Terminal 和控制台接入、旧主题缺省、主题别名、双宽传播及现有宿主接入回归。 |
+| Expected Markers | 产品主入口按操作能力分派；同主题更名仍能选择，未知声明报错，普通 GUI 控制不受转发宿主开关影响。 |
+| Asset Needs | 同批七件和现有源／图形回执。 |
+| Reporting Requirements | 分别记录声明驱动的已迁部分、身份协议进度、实测能力与未覆盖。 |
+| Stop Conditions | 不使用 computer-use 或私有桌面；不为验证扩大适用目标。 |
+| Exit Criteria | 完成该阶段主题身份和接入分离、双宽同包验证及远端复核后收口。 |
+| Original Owner Request | 只换主题文件复现已支持 Win16 和 Win2000，EXE/DLL 无年代分派及专属绘制。 |
+| Similar-Issue Sweep | 启动器、提权重进、子孙、主题 profile、全局 session、现代窗口及已有兼容入口。 |
+
+[S16 开发记录](../history/M0-T29-S16-theme-identity.md)保存三类接入统一的目录标识、
+双位宽验证和兼容适配器边界。S16 P1 同批七件已发布两处，聚焦验证
+通过 23/23，无跳过。S16 等待远端复核。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)
@@ -127,8 +152,8 @@ T29 全主题驱动目标保持开放。后续顺序见 [T29 规划](../proposal
 - Last verified remote delivery: M0 T29 S15 P1 `32ca7ac0`；两处七件正式文件和九个退役路径。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 15
-- Open task: 无活动任务包。
+- Last allocated T29 S: 16
+- Open task: M0 T29 S16；主题身份与接入能力。
 
 ## Technical Baseline
 

@@ -4,8 +4,8 @@
 #include "lib-win32-style/access/runtime/uwp_dispatch.h"
 static DWORD select_action(const style_uwp_target *app,BOOL apply,WPARAM *action,void *context)
 {
-    unsigned profile=*(const unsigned *)context;
-    BOOL win2k=(profile&1u)!=0;
+    const classic_theme_selection *selection=context;
+    BOOL win2k=selection->family==CLASSIC_THEME_WIN2K;
     *action=win2k?NTW16S_UWP_REMOVE_2K:NTW16S_UWP_REMOVE;
     if(apply){
         HWND auxiliary=NULL,title=style_uwp_title(app->frame,&auxiliary);
@@ -15,12 +15,13 @@ static DWORD select_action(const style_uwp_target *app,BOOL apply,WPARAM *action
         if(win2k)*action=capability==S_OK?NTW16S_UWP_APPLY_FULLSCREEN_2K:NTW16S_UWP_APPLY_2K;
         else *action=capability==S_OK?NTW16S_UWP_APPLY_FULLSCREEN:NTW16S_UWP_APPLY;
     }
-    if(profile>=2)*action|=(WPARAM)profile<<NTW16S_UWP_PROFILE_SHIFT;
+    if(selection->id>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM)
+        *action|=(WPARAM)selection->id<<NTW16S_UWP_PROFILE_SHIFT;
     return ERROR_SUCCESS;
 }
-DWORD ntw16s_uwp_target_change(const style_uwp_target *app,PCWSTR path,BOOL apply,unsigned profile)
+DWORD ntw16s_uwp_target_change(const style_uwp_target *app,PCWSTR path,BOOL apply,classic_theme_selection selection)
 {
     const style_uwp_dispatch_spec spec={IMAGE_FILE_MACHINE_AMD64,"Ntw16sUwpFrameHook",
-        NTW16S_UWP_MESSAGE,NTW16S_UWP_RESULT,3000,select_action,&profile};
+        NTW16S_UWP_MESSAGE,NTW16S_UWP_RESULT,3000,select_action,&selection};
     return style_uwp_dispatch_change(app,path,apply,&spec);
 }

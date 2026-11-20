@@ -416,14 +416,28 @@ try{
             }
     }
     $owned=Join-Path $scratch 'owned-neutral'
+    $uwpIdentity=Join-Path $scratch 'uwp-theme-identity'
     $cases+=Pair { param($bits,$tree,$dll)
         $shared=if($bits -eq 32){$shared32}else{$shared64}
         Case "neutral-uwp-frame-$bits" (Join-Path $tree 'core-win2k-uwp-frame.exe') @($shared) @(
             'UWP PRODUCT MODE PASS','WIN2K UWP FRAME PASS') 20
+        $fixture=Join-Path $uwpIdentity $bits
+        Case "neutral-uwp-theme-id-$bits" (Join-Path $tree 'core-win2k-uwp-frame.exe') @(
+            (Join-Path $fixture "ntwshk$bits.dll"),(Join-Path $fixture 'Win16/Win16.theme'),
+            (Join-Path $fixture 'Win2K/Win2K.theme')) @(
+            'UWP THEME ID PASS','UWP MISSING THEME PASS','WIN2K UWP FRAME PASS') 20
         Case "neutral-global-switch-$bits" (Join-Path $owned 'run16s.exe') @(
             (Join-Path $tree 'global-propagation-probe.exe'),(Join-Path $owned "ntwshk$bits.dll"),'--owned-switch') @(
             'OWNED GLOBAL INITIAL expected=0 observed=0','OWNED GLOBAL SWITCH step=6 expected=0 observed=0',
-            'LOCAL GLOBAL HOOK target_exit=0') 25
+            'OWNED GLOBAL THEME ID PASS','LOCAL GLOBAL HOOK target_exit=0') 25
+        foreach($initial in '16','2k'){
+            $expected=if($initial -eq '16'){1}else{2}
+            Case "neutral-global-switch-$bits-from-$initial" (Join-Path $owned 'run16s.exe') @(
+                (Join-Path $tree 'global-propagation-probe.exe'),(Join-Path $owned "ntwshk$bits.dll"),'--owned-switch',
+                (Join-Path $owned 'candidate.exe'),$initial) @(
+                "OWNED GLOBAL INITIAL expected=$expected observed=$expected",
+                'OWNED GLOBAL THEME ID PASS','LOCAL GLOBAL HOOK target_exit=0') 25
+        }
     }
     foreach($parent in @('x86','x64')){foreach($child in @('x86','x64')){foreach($encoding in @('a','w')){
         $parentBits=if($parent -eq 'x86'){'32'}else{'64'}
@@ -1057,9 +1071,21 @@ try{
     $plan=if($focusSpecified){Select-PackageCases -Cases $cases -Focus $Focus}else{Select-PackageCases -Cases $cases}
     if($FullIntegration){$plan.coverage='full-integration'}
     $cases=@($plan.cases)
+    foreach($bits in 32,64){
+        if(!($cases | Where-Object name -eq "neutral-uwp-theme-id-$bits")){continue}
+        $fixture=Join-Path $uwpIdentity $bits
+        New-Item -ItemType Directory -Path $fixture | Out-Null
+        Copy-Item -LiteralPath (Join-Path $Package "ntwshk$bits.dll") -Destination $fixture
+        foreach($name in $contract.themes){
+            $target=Join-Path $fixture $name
+            New-Item -ItemType Directory -Force -Path (Split-Path $target -Parent) | Out-Null
+            Copy-Item -LiteralPath (Join-Path $Package $name) -Destination $target
+        }
+    }
     if(@($cases | Where-Object name -Like 'neutral-global-switch-*').Count){
         New-Item -ItemType Directory -Path $owned | Out-Null
         Copy-Item -LiteralPath (Join-Path $x64 'global-hook-owner.exe') -Destination (Join-Path $owned 'run16s.exe')
+        Copy-Item -LiteralPath $run -Destination (Join-Path $owned 'candidate.exe')
         Copy-Item -LiteralPath $shared32,$shared64 -Destination $owned
         foreach($name in $contract.themes){
             $target=Join-Path $owned $name
@@ -1128,7 +1154,7 @@ try{
             $used=0;foreach($entry in $running){$used+=$entry.cost}
             while($pending.Count){
                 $case=$pending[0]
-                $cost=if($case.name -match '^(vcl-status-font-alias-|scroll-(frame|list|edit)-|ntw2ks-propagate-frame-)' ){$Jobs}elseif($case.name -match '^(font-layout|menu-cancel|dialogs|messages|tree-v[56]-)'){[Math]::Min(2,$Jobs)}else{1}
+                $cost=if($case.name -match '^(vcl-status-font-alias-|scroll-(frame|list|edit)-|ntw2ks-propagate-frame-|neutral-global-switch-)' ){$Jobs}elseif($case.name -match '^(font-layout|menu-cancel|dialogs|messages|tree-v[56]-)'){[Math]::Min(2,$Jobs)}else{1}
                 if($used+$cost -gt $Jobs){break}
                 $pending.RemoveAt(0)
                 $directory=Join-Path $scratch $case.name;New-Item -ItemType Directory -Path $directory | Out-Null

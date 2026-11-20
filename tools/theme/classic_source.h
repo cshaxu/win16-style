@@ -31,6 +31,7 @@ typedef struct classic_theme_source {
     bool own_progress_states;
     classic_dialog_metrics dialog_metrics;
     classic_dialog_policy dialog_policy;
+    unsigned host_options;
 } classic_theme_source;
 
 static const classic_theme_source classic_sources[]={
@@ -51,7 +52,8 @@ static const classic_theme_source classic_sources[]={
         RGB(255,255,255),
         RGB(255,255,255),true,
         {.file={0}},
-        {CLASSIC_DIALOG_WIN16,CLASSIC_DIALOG_WIN16,CLASSIC_DIALOG_WIN16,CLASSIC_DIALOG_WIN16}
+        {CLASSIC_DIALOG_WIN16,CLASSIC_DIALOG_WIN16,CLASSIC_DIALOG_WIN16,CLASSIC_DIALOG_WIN16},
+        MSSTYLES_HOST_ALL
     },
     {
         "Win2K","Windows 2000",
@@ -70,7 +72,8 @@ static const classic_theme_source classic_sources[]={
         RGB(212,208,200),
         RGB(212,208,200),false,
         WIN2000_DIALOG_METRICS,
-        {CLASSIC_DIALOG_WIN2K,CLASSIC_DIALOG_WIN2K,CLASSIC_DIALOG_WIN2K,CLASSIC_DIALOG_WIN2K}
+        {CLASSIC_DIALOG_WIN2K,CLASSIC_DIALOG_WIN2K,CLASSIC_DIALOG_WIN2K,CLASSIC_DIALOG_WIN2K},
+        0
     }
 };
 

@@ -9,7 +9,7 @@
 #include <wchar.h>
 
 typedef struct tray_theme {
-    unsigned profile;
+    unsigned id;
     WCHAR folder[MAX_PATH],display_name[MSSTYLES_THEME_TOKEN_CAPACITY];
 } tray_theme;
 typedef struct controller {
@@ -20,16 +20,17 @@ typedef struct controller {
 enum { MENU_EXIT=1002, MENU_FIRST_THEME=1100, STYLE_NONE=2 };
 static BOOL remember_theme(PCWSTR folder,PCWSTR display_name,classic_theme_family family,void *value)
 {
+    (void)family;
     controller *state=value;
-    unsigned profile=classic_theme_profile(folder,family);
+    unsigned id=classic_theme_folder_id(folder);
     WCHAR confirmed[MAX_PATH];
-    if(FAILED(classic_theme_profile_folder(GetModuleHandleW(NULL),profile,confirmed)) ||
+    if(FAILED(classic_theme_profile_folder(GetModuleHandleW(NULL),id,confirmed)) ||
        _wcsicmp(folder,confirmed))return TRUE;
     tray_theme *items=realloc(state->themes,((size_t)state->count+1)*sizeof(*items));
     if(!items)return FALSE;
     state->themes=items;
     tray_theme *item=&items[state->count];
-    item->profile=profile;
+    item->id=id;
     wcscpy(item->display_name,display_name);
     wcscpy(item->folder,folder);
     ++state->count;return TRUE;
@@ -39,13 +40,18 @@ static int order_theme(const void *left,const void *right)
     const tray_theme *a=left,*b=right;
     return _wcsicmp(a->folder,b->folder);
 }
+static BOOL theme_checked(const controller *state,unsigned id)
+{
+    classic_theme_selection selection;
+    return classic_theme_decode_selection(state->control.desired,&selection) && selection.id==id;
+}
 static HMENU make_menu(void *value)
 {
     controller *state=(controller *)value;
     HMENU menu=CreatePopupMenu();if(!menu)return NULL;
     for(unsigned i=0;i<state->count;++i){
         const tray_theme *item=&state->themes[i];
-        UINT flags=MF_STRING|(state->control.desired==item->profile?MF_CHECKED:MF_UNCHECKED);
+        UINT flags=MF_STRING|(theme_checked(state,item->id)?MF_CHECKED:MF_UNCHECKED);
         WCHAR title[MAX_PATH+MSSTYLES_THEME_TOKEN_CAPACITY+3];
         if(!item->display_name[0] || !_wcsicmp(item->display_name,item->folder))
             wcscpy(title,item->folder);
@@ -74,38 +80,49 @@ static void action(unsigned command,void *value)
     if(command==MENU_EXIT)ExitProcess(0);
     unsigned i=command-MENU_FIRST_THEME;
     if(i>=state->count)return;
-    DWORD selected=state->themes[i].profile;
-    if(selected!=state->control.desired){
-        classic_theme_mapping source={0};
-        HRESULT loaded=classic_theme_open_profile(GetModuleHandleW(NULL),selected,&source);
-        if(FAILED(loaded)){failed(HRESULT_CODE(loaded),state);return;}
-        classic_theme_close(&source);
+    unsigned id=state->themes[i].id;
+    if(theme_checked(state,id)){
+        style_global_control_select(&state->control,state->control.desired);
+        return;
     }
+    classic_theme_mapping source={0};
+    HRESULT loaded=classic_theme_open_profile(GetModuleHandleW(NULL),id,&source);
+    if(FAILED(loaded)){failed(HRESULT_CODE(loaded),state);return;}
+    DWORD selected=classic_theme_encode_selection((classic_theme_selection){id,source.family});
+    classic_theme_close(&source);
     style_global_control_select(&state->control,selected);
 }
 #ifdef RUN16S_TRAY_TEST
-static unsigned test_theme_command(controller *state,unsigned profile)
+static unsigned test_theme_command(controller *state,PCWSTR folder)
 {
     for(unsigned i=0;i<state->count;++i)
-        if(state->themes[i].profile==profile)return MENU_FIRST_THEME+i;
+        if(!_wcsicmp(state->themes[i].folder,folder))return MENU_FIRST_THEME+i;
     return 0;
 }
 static LRESULT test_control(WPARAM request,void *value)
 {
     controller *state=(controller *)value;
-    unsigned first_command=test_theme_command(state,NTW16S_GLOBAL_STYLE_16);
-    unsigned second_command=test_theme_command(state,NTW16S_GLOBAL_STYLE_2K);
+    unsigned first_command=test_theme_command(state,L"Win16");
+    unsigned second_command=test_theme_command(state,L"Win2K");
     if(request==1)action(first_command,state);
     else if(request==6)action(second_command,state);
     else if(request==2)action(MENU_EXIT,state);
-    else if(request==3)return (state->control.enabled?1:0)|(state->control.busy?2:0)|((state->control.enabled && (state->control.style&1))?4:0);
+    else if(request==3){
+        classic_theme_selection selection;
+        BOOL alternate=state->control.enabled && classic_theme_decode_selection(state->control.style,&selection) &&
+            selection.family==CLASSIC_THEME_WIN2K;
+        return (state->control.enabled?1:0)|(state->control.busy?2:0)|(alternate?4:0);
+    }
     else if(request==4){
         WCHAR first[64]={0},second[64]={0},third[64]={0};HMENU menu=make_menu(state);if(!menu)return 0;
         BOOL valid=GetMenuItemCount(menu)==3 && GetMenuStringW(menu,0,first,ARRAYSIZE(first),MF_BYPOSITION) &&
             GetMenuStringW(menu,1,second,ARRAYSIZE(second),MF_BYPOSITION) && GetMenuStringW(menu,2,third,ARRAYSIZE(third),MF_BYPOSITION) &&
             !lstrcmpW(first,L"Windows 3.x [Win16]") && !lstrcmpW(second,L"Windows 2000 [Win2K]") && !lstrcmpW(third,L"Exit") &&
-            !!(GetMenuState(menu,first_command,MF_BYCOMMAND)&MF_CHECKED)==(state->control.desired==NTW16S_GLOBAL_STYLE_16) &&
-            !!(GetMenuState(menu,second_command,MF_BYCOMMAND)&MF_CHECKED)==(state->control.desired==NTW16S_GLOBAL_STYLE_2K);
+            first_command && second_command &&
+            !!(GetMenuState(menu,first_command,MF_BYCOMMAND)&MF_CHECKED)==
+                theme_checked(state,state->themes[first_command-MENU_FIRST_THEME].id) &&
+            !!(GetMenuState(menu,second_command,MF_BYCOMMAND)&MF_CHECKED)==
+                theme_checked(state,state->themes[second_command-MENU_FIRST_THEME].id);
         DestroyMenu(menu);return valid;
     }else if(request==7)return state->count;
     else if(request==5){

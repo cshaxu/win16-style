@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S15 P1",
-  "stage": "data-driven theme catalogue",
+  "delivery": "M0 T29 S16 P1",
+  "stage": "shared theme identity and window attachment policy",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "cd6310b7553451f2e11e8bad236bc60b8447db519737f852a3c26e62f2cac2a3",
+  "source_snapshot_sha256": "6c8fad8d16b07bcb5263e0a2c48f2beb9ae2ad53f08ce756578aa2937615b272",
   "source_input_cohort": {
     "count": 1282,
-    "sha256": "bdeed5b5b08733ff59a9bb74d302219e3ee00b0b09fbb2d83463ecf999ecf792",
+    "sha256": "a473e9f23e72847f98a9c01974ceb025336a73b02c8569ee8e26e96290d69384",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot",
@@ -16,7 +16,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "914a59faef2973ab8f6e250d0c97c4018f7a6a21f94967744754bae9ee3c3368",
+      "sha256": "e49f7b299182b3a85a780cbf35132d1771994cad64a3261e9da0a93686e42fde",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "3d11a6d89e5b3f5ac55cdca0598db2fa0cbf18b7c0f74aa4cb881efbc80eef98",
+      "sha256": "425b48d2512948b7bd2b050103e2b17738aecb588a0c21aec97d0f05e9a7f7d2",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -61,7 +61,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "5f875f00127a943903fab10eb2348a33e17dba0e135842c0326ec9aa43aa9d84",
+      "sha256": "b065fc0ea533b2ea8b123516072b490f126c19b85d0c9eb25d44e90c5880b9e8",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -85,20 +85,20 @@
   },
   "theme_artifacts": {
     "Win16/Win16.msstyles": "5eeb358aafe810ed676850a17eaadf124699e026b995b0a4d3bec857e91ad4ee",
-    "Win16/Win16.theme": "0dcbf80bb67ea283a81265c670ae6c6c07ee776b8ac2449c0a05b0818f2984a8",
+    "Win16/Win16.theme": "24532dbb589f8acf8e71909b8aaf361c3c05511a2b0f730fa84b2a6b9e52aede",
     "Win2K/Win2K.msstyles": "522f2ab9a236b2fa2f2546052d6abb0cc13b89cd090ab364bcddae39f68886ba",
-    "Win2K/Win2K.theme": "f4acd885ec052c06daaa09e2423a4882ef3c53fd072509ef04890d05c1ad85f1"
+    "Win2K/Win2K.theme": "1217c8240721b28e7f92d4d6a8c9b9b0d259e2d026829be6612a70c877dbee68"
   },
   "build": {
     "toolchain": "pure C17, MinGW GCC, Ninja, ccache",
     "seconds": {
-      "x86": 328.377819599933,
-      "x64": 343.97515720000956
+      "x86": 317.0791394999251,
+      "x64": 454.079053799971
     },
-    "changed_source_test_tool_build_files": 9,
-    "insertions": 114,
-    "deletions": 47,
-    "net_lines": 67,
+    "changed_source_test_tool_build_files": 37,
+    "insertions": 586,
+    "deletions": 190,
+    "net_lines": 396,
     "checks": [
       "quick ABI tests (x86, x64)",
       "package identity and original resource tables",
@@ -127,8 +127,8 @@
   "focused_post_publication": {
     "status": "passed-focused",
     "coverage": "focused",
-    "seconds": 121.7025644,
-    "cases": 15,
+    "seconds": 109.3620136,
+    "cases": 23,
     "selected_cases": [
       "progress-sharing",
       "plan-selection",
@@ -143,49 +143,63 @@
       "automatic",
       "propagation",
       "cli-failures",
+      "neutral-uwp-frame-32",
+      "neutral-uwp-theme-id-32",
       "neutral-global-switch-32",
-      "neutral-global-switch-64"
+      "neutral-global-switch-32-from-16",
+      "neutral-global-switch-32-from-2k",
+      "neutral-uwp-frame-64",
+      "neutral-uwp-theme-id-64",
+      "neutral-global-switch-64",
+      "neutral-global-switch-64-from-16",
+      "neutral-global-switch-64-from-2k"
     ],
     "skipped": []
   },
   "supplemental_post_publication": {
-    "catalogue": [
-      "CATALOGUE PASS x86: five valid directories, two same display names, absent label, invalid resource excluded",
-      "CATALOGUE PASS x64: five valid directories, two same display names, absent label, invalid resource excluded"
+    "native": {
+      "x86/launch-payload": "PAYLOAD PASS generic module, machine, bounds, policy, path, termination",
+      "x86/core-style-theme-file": "exit=0",
+      "x86/core-tray-controller": "TRAY CONTROLLER PASS bits=32 switch=both toggle=off failure=1 mutually_exclusive=1 metadata=1 fallback=1",
+      "x64/launch-payload": "PAYLOAD PASS generic module, machine, bounds, policy, path, termination",
+      "x64/core-style-theme-file": "exit=0",
+      "x64/core-tray-controller": "TRAY CONTROLLER PASS bits=64 switch=both toggle=off failure=1 mutually_exclusive=1 metadata=1 fallback=1"
+    },
+    "published_roots": [
+      "assets",
+      "O:\\winnt"
     ],
-    "owned_idle_tray": [
-      "TRAY STARTUP PASS custom=False, metadata captions, idle and owned exit",
-      "TRAY STARTUP PASS custom=True, metadata captions, idle and owned exit"
+    "all_seven_match": true,
+    "both_published_launchers_usage_exit": 2,
+    "published_owned_thread_attachment": {
+      "x86": [
+        "direct",
+        "direct-composed"
+      ],
+      "x64": [
+        "direct",
+        "direct-composed"
+      ]
+    },
+    "published_synthetic_uwp_frame": [
+      "x86",
+      "x64"
     ],
-    "native_units": "Both architectures passed the descriptor and tray controller tests",
-    "product_exe": "No compiled presets for the theme-selection menu",
-    "theme_bytes_unchanged_from_S14": true
+    "published_win2000_renamed_propagation": {
+      "32->64": {
+        "parent_frame": true,
+        "child_frame": true
+      },
+      "64->32": {
+        "parent_frame": true,
+        "child_frame": true
+      }
+    }
   },
   "validation": {
     "physical_input": "not tested",
     "full_matrix": "not run",
     "administrator_desktop_tray": "not run; owned tray fixture and owned receiver were tested"
   },
-  "closure": "M0 T29 S15 closed; the T29 runtime-neutrality goal remains open.",
-  "remote_audit": {
-    "ref": "refs/heads/main",
-    "publication_commit": "32ca7ac04f5b0122d85a511c0fd3859c6a2e5c89",
-    "matched_assets": 7,
-    "retired_asset_paths_returning_http_404": 9,
-    "matched_source_inputs": 1282,
-    "newline_only_differences": [
-      "src/lib-win32/process-hook/LICENSE.win16style",
-      "tests/integration/vb5_custom_compare.py",
-      "tests/integration/vb_disabled_picture_compare.py",
-      "tests/integration/vb_picture_compare.py",
-      "tests/ntw16s-dll/commdlg_error_target.c",
-      "tests/ntw16s-dll/task_dialog.rc",
-      "tests/ntw16s-dll/win32_multi_navigation.c",
-      "tests/ntw16s-dll/win32_multi_target.c"
-    ]
-  },
-  "cleanup": {
-    "scratch_directories_removed": 4,
-    "scratch_bytes_removed": 462129327
-  }
+  "closure": "local delivery verified; remote review recorded separately"
 }

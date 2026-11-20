@@ -292,7 +292,7 @@ static bool write_metadata(FILE *output,const classic_theme_source *source)
 
 static bool write_description(FILE *output,const classic_theme_source *source)
 {
-    return msstyles_theme_file_write(output,source->label,source->stem,&variant);
+    return msstyles_theme_file_write(output,source->label,source->stem,&variant,source->host_options);
 }
 
 static bool write_extension(FILE *output,const classic_theme_source *source)

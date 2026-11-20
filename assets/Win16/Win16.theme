@@ -9,5 +9,11 @@ Path=Win16.msstyles
 ColorStyle=NormalColor
 Size=NormalSize
 
+[WindowAttachment]
+Version=1
+Explorer=1
+Terminal=1
+Console=1
+
 [MasterThemeSelector]
 MTSM=DABJDKT

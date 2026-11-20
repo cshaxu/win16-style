@@ -34,16 +34,16 @@ BOOL run16s_uwp_calculator_image(PCWSTR image)
     }
     return FALSE;
 }
-static DWORD install(const style_uwp_target *app,unsigned profile)
+static DWORD install(const style_uwp_target *app,classic_theme_selection selection)
 {
     WCHAR path[32768];DWORD length=GetModuleFileNameW(NULL,path,ARRAYSIZE(path));
     if(!length||length>=ARRAYSIZE(path))return ERROR_INSUFFICIENT_BUFFER;
     WCHAR *tail=wcsrchr(path,L'\\');if(!tail || (size_t)(tail-path)+20>=ARRAYSIZE(path))return ERROR_BAD_PATHNAME;
     /* Both presentations use the same host entry and frame ownership. */
     wcscpy(tail+1,L"ntwshk64.dll");
-    return ntw16s_uwp_target_change(app,path,TRUE,profile);
+    return ntw16s_uwp_target_change(app,path,TRUE,selection);
 }
-static DWORD activate(PCWSTR app_id,PCWSTR arguments,BOOL wait,unsigned profile,DWORD *created_pid)
+static DWORD activate(PCWSTR app_id,PCWSTR arguments,BOOL wait,classic_theme_selection selection,DWORD *created_pid)
 {
     if(created_pid)*created_pid=0;
     if(!app_id||!wcschr(app_id,L'!'))return ERROR_INVALID_PARAMETER;
@@ -73,15 +73,18 @@ static DWORD activate(PCWSTR app_id,PCWSTR arguments,BOOL wait,unsigned profile,
             if(wait==WAIT_FAILED){error=GetLastError();break;}
             MSG message;while(PeekMessageW(&message,NULL,0,0,PM_REMOVE)){TranslateMessage(&message);DispatchMessageW(&message);}
         }while(GetTickCount64()<deadline);
-        if(!error)error=app.frame?install(&app,profile):ERROR_TIMEOUT;
+        if(!error)error=app.frame?install(&app,selection):ERROR_TIMEOUT;
     }
     if(!error&&wait&&WaitForSingleObject(process,INFINITE)==WAIT_FAILED)error=GetLastError();
     if(process)CloseHandle(process);
     CoUninitialize();return error;
 }
 DWORD run16s_uwp_activate(PCWSTR app_id,BOOL win2k,DWORD *created_pid)
-{return activate(app_id,NULL,FALSE,win2k,created_pid);}
-DWORD run16s_uwp_command(PCWSTR image,PCWSTR arguments,BOOL wait,unsigned profile,BOOL *handled)
+{
+    classic_theme_family family=win2k?CLASSIC_THEME_WIN2K:CLASSIC_THEME_WIN16;
+    return activate(app_id,NULL,FALSE,(classic_theme_selection){(unsigned)family,family},created_pid);
+}
+DWORD run16s_uwp_command(PCWSTR image,PCWSTR arguments,BOOL wait,classic_theme_selection selection,BOOL *handled)
 {
     if(!handled)return ERROR_INVALID_PARAMETER;
     *handled=FALSE;
@@ -91,5 +94,5 @@ DWORD run16s_uwp_command(PCWSTR image,PCWSTR arguments,BOOL wait,unsigned profil
     if(error!=ERROR_SUCCESS&&error!=ERROR_INSUFFICIENT_BUFFER)return (DWORD)error;
     if(!count)return ERROR_SUCCESS; /* Older Windows can still have native calc. */
     *handled=TRUE;
-    return activate(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App",arguments,wait,profile,NULL);
+    return activate(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App",arguments,wait,selection,NULL);
 }

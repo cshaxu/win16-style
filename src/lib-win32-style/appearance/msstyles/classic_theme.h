@@ -181,10 +181,17 @@ classic_dialog_metrics classic_theme_dialog_metrics(HMODULE module,classic_dialo
  * values are owned by the caller and the output is unchanged on failure. */
 HRESULT classic_theme_load(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme *theme);
 
+typedef enum classic_theme_family { CLASSIC_THEME_WIN16, CLASSIC_THEME_WIN2K } classic_theme_family;
+typedef struct classic_theme_selection {
+    unsigned id;
+    classic_theme_family family;
+} classic_theme_selection;
 typedef struct classic_theme_mapping {
     HMODULE resources;
     classic_theme model;
     WCHAR display_name[MSSTYLES_THEME_TOKEN_CAPACITY];
+    msstyles_host_options hosts;
+    classic_theme_family family;
 } classic_theme_mapping;
 
 /* Opens a packaged .theme descriptor from an absolute path outside loader
@@ -193,7 +200,6 @@ typedef struct classic_theme_mapping {
 HRESULT classic_theme_open(PCWSTR descriptor,classic_theme_mapping *source);
 void classic_theme_close(classic_theme_mapping *source);
 
-typedef enum classic_theme_family { CLASSIC_THEME_WIN16, CLASSIC_THEME_WIN2K } classic_theme_family;
 /* A folder contains one .theme descriptor. Its resources determine the
  * renderer. The callback borrows the folder and optional display name for
  * that invocation only. */
@@ -201,18 +207,41 @@ typedef BOOL (*classic_theme_visit)(PCWSTR folder,PCWSTR display_name,classic_th
 HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_mapping *,
     classic_theme_family *family);
 void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void *context);
-/* A stable, pointer-free choice used by the startup and global protocols.
- * Zero and one preserve the published canonical renderer IDs. */
-unsigned classic_theme_profile(PCWSTR folder,classic_theme_family family);
+/* A stable, pointer-free directory ID used by all three entry paths. */
+unsigned classic_theme_folder_id(PCWSTR folder);
 HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH]);
 HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_theme_mapping *);
-enum { CLASSIC_THEME_PROFILE_CAP = 0x10000000u, CLASSIC_THEME_PROFILE_FIRST_CUSTOM = 8 };
+HRESULT classic_theme_open_selected(HMODULE renderer,classic_theme_selection selection,classic_theme_mapping *);
+enum { CLASSIC_THEME_PROFILE_CAP = 0x10000000u, CLASSIC_THEME_PROFILE_FIRST_CUSTOM = 8,
+    CLASSIC_THEME_FOLDER_ID_MARKER = 6 };
 static inline classic_theme_family classic_theme_profile_family(unsigned profile)
 {return (classic_theme_family)(profile&1u);}
-void classic_theme_set_process_profile(unsigned profile);
+static inline BOOL classic_theme_is_folder_id(unsigned id)
+{
+    return id>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM && id<CLASSIC_THEME_PROFILE_CAP &&
+        (id&CLASSIC_THEME_FOLDER_ID_MARKER)==CLASSIC_THEME_FOLDER_ID_MARKER;
+}
+/* The global protocol has one DWORD for the selection. The high field
+ * carries the adapter independently from the bounded directory ID. */
+static inline unsigned classic_theme_encode_selection(classic_theme_selection selection)
+{return selection.id|(CLASSIC_THEME_PROFILE_CAP*(unsigned)selection.family);}
+static inline BOOL classic_theme_decode_selection(unsigned value,classic_theme_selection *selection)
+{
+    unsigned id=value&(CLASSIC_THEME_PROFILE_CAP-1u),adapter=value/CLASSIC_THEME_PROFILE_CAP;
+    if(classic_theme_is_folder_id(id)){
+        if(adapter>1u)return FALSE;
+    }else{
+        if(adapter || (id>1 && id<CLASSIC_THEME_PROFILE_FIRST_CUSTOM))return FALSE;
+        adapter=(unsigned)classic_theme_profile_family(id);
+    }
+    *selection=(classic_theme_selection){id,(classic_theme_family)adapter};
+    return TRUE;
+}
+void classic_theme_set_process_profile(unsigned profile,classic_theme_family family);
 void classic_theme_set_global_profile_reader(BOOL (*read)(unsigned *));
 unsigned classic_theme_process_profile(void);
-unsigned classic_theme_enter_profile(unsigned profile);
+classic_theme_family classic_theme_process_family(void);
+unsigned classic_theme_enter_profile(classic_theme_selection selection);
 void classic_theme_leave_profile(unsigned previous);
 
 /* Resolves a packaged theme beside its renderer. If the package directory

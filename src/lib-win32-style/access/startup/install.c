@@ -22,22 +22,29 @@ DWORD style_startup_install(HANDLE child,const style_startup_context *context,PC
 {
     typedef struct install_work {BYTE data[65536];style_startup_context parsed;WCHAR path[STYLE_STARTUP_PATH_CAP],shared[STYLE_STARTUP_PATH_CAP];char dll[4096],dependency[4096];} install_work;
     style_startup_packet header={0};install_work *work;WORD machine=0;DWORD error;
+    const DWORD header_bytes=sizeof(header)+sizeof(style_startup_selection);
     if(!child || !context || !dependency || !create_helper)return ERROR_INVALID_PARAMETER;
     size_t length=wcsnlen_s(context->directory,STYLE_STARTUP_PATH_CAP);
     if(!length || length>=STYLE_STARTUP_PATH_CAP)return ERROR_INVALID_DATA;
     size_t module_length=wcsnlen_s(context->module,STYLE_STARTUP_MODULE_CAP);
     if(!module_length || module_length>=STYLE_STARTUP_MODULE_CAP ||
-       sizeof(header)+(length+module_length+2)*sizeof(WCHAR)>sizeof(work->data))return ERROR_INVALID_DATA;
+       header_bytes+(length+module_length+2)*sizeof(WCHAR)>sizeof(work->data))return ERROR_INVALID_DATA;
     error=win32_process_image_machine(child,&machine);if(error)return error;
     work=HeapAlloc(GetProcessHeap(),0,sizeof(*work));if(!work)return ERROR_NOT_ENOUGH_MEMORY;
-    header.bytes=(DWORD)(sizeof(header)+(length+module_length+2)*sizeof(WCHAR));
-    header.machine=machine;header.flags=__atomic_load_n(&context->flags,__ATOMIC_ACQUIRE);header.directory_offset=sizeof(header);
-    header.version=header.flags>>STYLE_STARTUP_PROFILE_SHIFT?3u:2u;
+    header.bytes=(DWORD)(header_bytes+(length+module_length+2)*sizeof(WCHAR));
+    DWORD flags=__atomic_load_n(&context->flags,__ATOMIC_ACQUIRE);
+    style_startup_selection selection={flags>>STYLE_STARTUP_PROFILE_SHIFT,
+        !!(flags&STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE)};
+    header.machine=machine;header.flags=flags&(STYLE_STARTUP_POLICY_MASK&~STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE);
+    header.directory_offset=header_bytes;
+    header.version=STYLE_STARTUP_PACKET_VERSION;
     header.reserved0=(header.flags&STYLE_STARTUP_POLICY_GLOBAL_SESSION)?
         __atomic_load_n(&context->session_cookie,__ATOMIC_ACQUIRE):0;
     header.directory_bytes=(DWORD)((length+1)*sizeof(WCHAR));header.reserved1=(DWORD)((module_length+1)*sizeof(WCHAR));
-    memcpy(work->data,&header,sizeof(header));memcpy(work->data+sizeof(header),context->directory,header.directory_bytes);
-    memcpy(work->data+sizeof(header)+header.directory_bytes,context->module,header.reserved1);
+    memcpy(work->data,&header,sizeof(header));
+    memcpy(work->data+sizeof(header),&selection,sizeof(selection));
+    memcpy(work->data+header_bytes,context->directory,header.directory_bytes);
+    memcpy(work->data+header_bytes+header.directory_bytes,context->module,header.reserved1);
     error=style_startup_packet_parse(work->data,header.bytes,machine,&work->parsed);if(error)goto done;
     error=style_startup_library(context,machine,work->path,STYLE_STARTUP_PATH_CAP);if(error)goto done;
     error=win32_process_image_validate(work->path,machine,TRUE);if(error)goto done;

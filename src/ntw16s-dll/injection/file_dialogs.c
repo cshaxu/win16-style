@@ -19,15 +19,16 @@ static classic_dialog_policy read_policy(unsigned profile)
     extern IMAGE_DOS_HEADER __ImageBase;
     classic_theme_mapping source={0};
     HRESULT result=classic_theme_open_profile((HMODULE)&__ImageBase,profile,&source);
-    unsigned fallback=classic_theme_profile_family(profile)==CLASSIC_THEME_WIN2K?
-        CLASSIC_DIALOG_WIN2K:CLASSIC_DIALOG_WIN16;
     if(SUCCEEDED(result)){
+        unsigned fallback=source.family==CLASSIC_THEME_WIN2K?CLASSIC_DIALOG_WIN2K:CLASSIC_DIALOG_WIN16;
         policy=source.model.dialog_policy;
         if(!policy.appearance)policy=(classic_dialog_policy){fallback,fallback,fallback,fallback};
         classic_theme_close(&source);
     }else if(profile<CLASSIC_THEME_PROFILE_FIRST_CUSTOM &&
        (result==HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND) || result==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))){
         /* Older standalone DLL fixtures may use embedded appearance resources. */
+        unsigned fallback=classic_theme_profile_family(profile)==CLASSIC_THEME_WIN2K?
+            CLASSIC_DIALOG_WIN2K:CLASSIC_DIALOG_WIN16;
         policy=(classic_dialog_policy){fallback,fallback,fallback,fallback};
     }else policy=(classic_dialog_policy){0};
 
@@ -44,9 +45,13 @@ classic_dialog_route ntw16s_dialog_route(ntw_dialog_kind kind)
     DWORD profile=classic_theme_process_profile();
     if(flags&NTWSHK_POLICY_GLOBAL_SESSION){
         DWORD cookie=__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE);
-        if(!style_global_policy_current(&ntw16s_global_namespace,cookie,&profile)){
+        DWORD current;
+        classic_theme_selection selection;
+        if(!style_global_policy_current(&ntw16s_global_namespace,cookie,&current) ||
+           !classic_theme_decode_selection(current,&selection)){
             SetLastError(incoming);return CLASSIC_DIALOG_NATIVE;
         }
+        profile=selection.id;
     }
     classic_dialog_policy policy=read_policy(profile);
     SetLastError(incoming);
@@ -71,9 +76,11 @@ void ntw16s_win2k_dialog_initialize(HWND window)
 #endif
     DWORD style;
     DWORD cookie=__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE);
+    classic_theme_selection selection;
     if(ntw16s_global_window_eligible(window) &&
-       style_global_policy_current(&ntw16s_global_namespace,cookie,&style)){
-        if(!(style&1u))style=NTW16S_GLOBAL_STYLE_2K;
+       style_global_policy_current(&ntw16s_global_namespace,cookie,&style) &&
+       classic_theme_decode_selection(style,&selection)){
+        if(selection.family!=CLASSIC_THEME_WIN2K)style=NTW16S_GLOBAL_STYLE_2K;
         ntw16s_global_window_apply_style(window,style);
         ntw16s_global_window_children(window,TRUE,style);
     }

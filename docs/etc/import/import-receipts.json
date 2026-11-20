@@ -86,7 +86,7 @@
       "path": "src/run16s-exe/tray_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "89b9efbf47287d8a3d074eb5e17741f776d4c612ad79279b032153cc7d1074a1",
+      "sha256": "733d77b45056a0ad72c0be3955a777f87748e5db211636452b2b921e832dc818",
       "disposition": "authored",
       "review": "T21 S19 tray control using existing global session; T21 S20 tray library split; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored C orchestration; no imported hook implementation"
@@ -158,7 +158,7 @@
       "path": "tests/integration/global_hook_owner.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8d88975d9d24996e8cb74f10085155b8d1421b4610708a5afefdeae52d830ce2",
+      "sha256": "74b01616b6600d1908abbf555b9616ba7293de4e4d50db7dad662a1a76c27251",
       "disposition": "authored",
       "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S42 direct public calls and product-side cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -374,7 +374,7 @@
       "path": "src/run16s-exe/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "23be16f9681f80821ed6dcd2e11f0456194dcc11db3adeda2f9f0104494476f7",
+      "sha256": "73ad15204690cfd23fb0e9b257345002503a94a03e7f68dad38eb6a3dbd0a681",
       "disposition": "authored",
       "review": "T21 S13 bounded startup attachment completion; T21 S42 direct public calls and product-side cleanup; T24 S1 quality refactor; T24 S1 directly use process-image interface; T24 S1 preserve global startup wait error; T24 S1 report sweep enumeration errors; T25 S2 shared runtime extraction; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -392,7 +392,7 @@
       "path": "src/ntw16s-dll/global/session.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4f4851f683c7be8670045236c588fd5d8251777ffe5017998fb7d8c50bf420c1",
+      "sha256": "159976939488e537f95d9456ef95792e4d346f2dfce82d0127b2aa119d486263",
       "disposition": "authored",
       "review": "T21 S3 global controller and private-desktop integration; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 cross-directory compatible module reuse; T21 S42 direct public calls and product-side cleanup; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -401,7 +401,7 @@
       "path": "src/ntw16s-dll/global/hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8cf713ac7fd5f1e908a8387f5206abf3e67831ba47489c59c4f3e21a3c081687",
+      "sha256": "574e748aa756a71874d4641e94af98b51fb5181470471e0b1e518aa17e1ad1f7",
       "disposition": "authored",
       "review": "T21 S13 bounded startup attachment completion; T21 S13 cross-directory compatible module reuse; T21 S42 product adapter directory cleanup; T26 S1 shared control theme lifecycle; T26 S1 shared global child dispatch; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -428,7 +428,7 @@
       "path": "src/ntw16s-dll/global/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "22c9bce1003841aa6e0a618b385cfddc18752f124e1add5fae6b2cde26364dd4",
+      "sha256": "d1e809fbdb7a9098f965662a98179cfbb08df807062e98814a89b2b360526d5d",
       "disposition": "authored",
       "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics; T21 S13 attached-window acknowledgement candidate; T21 S13 hidden ordinary-window global stop regression; T21 S42 product adapter directory cleanup; T26 S1 shared global child dispatch; T26 S1 shared same-thread child visitation; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored source; no imported code or resources"
@@ -797,7 +797,7 @@
       "path": "src/ntw16s-dll/attachment.c",
       "source": "src/ntw16s-dll/attachment.c",
       "source_blob": "e467006ab99ada1846f9298b650c30605807466b",
-      "sha256": "9f56be4a0cadffa382e2107693074a489e30ae5b9684973eac8d533fa0cab8af",
+      "sha256": "fc39d3c134f19d01956641b41434f534484c7106605130696d26f410a528cbbc",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: bounded newly created early-dialog attachment and same-thread application-owned menu callback preservation; native dual-width protocol/lifetime tests, no external code copied or resource changes; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S23 bounded v5 TProgressBar static edge, native client and colors retained; dual-width public-protocol and fallback model; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S54 scoped runtime grid nonclient border/scrollbars with actual public scroll check, guarded retirement and self-owned dual-width model; original resources retained; T18 S57 witnessed VCL toolbar print forwarding, unique zero-command text-only painting and native fallback, dual-width self-owned tests; original graphics retained; T18 S60 witnessed runtime TTabControl native WM_PAINT forwarding, existing public tab protocol and parent lifetime guard; resources preserved; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P23 real VB5 checkbox list; T18 S64 P30 exact VB MDI frame identity and self-contained public-window model; T18 S64 P36 bounded VB6 UserControl client-edge renderer, pending paint and role retirement, no external code or graphic changes; T18 S64 P47 limited VB6 Data border; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64 P52 observed VB6 Data 144 DPI; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64: extend witnessed group frame to ordinary TRadioGroup, original notices retained; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64: disabled ordinary Delphi group frame, state-consistent paint and reentrant-state regression; T18 S64: disabled Delphi panel outer bevel with mid-pair state validation; T18 S64: witnessed Delphi scrollbar role and disabled direct-key native semantics; T18 S64 exact witnessed TLabeledEdit role; T18 S64 witnessed TNumberBox role; T18 S64 witnessed Delphi SysLink protocol and native typography; no graphics or external code changed; T18 S64 delayed text link retry with fresh native witness; T18 S64 witnessed runtime SpinEdit EDIT protocol, native button retained; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P111 scoped runtime-owned Delphi push button; T18 S64 P112 runtime-owned Delphi checkbox and parent-background regression; T18 S64 P113 Delphi radio parent-background preservation; T18 S64 P114 witnessed runtime-owned editable Delphi combo; T18 S64 P115 verified Delphi dropdown-list combo ownership, role and font lifecycle; T18 S64 P116 verified Delphi simple combo mode; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P120 ordinary no-border pane text; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P124 hotkey witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 popup list native forwarding and nonclient adaptation; T18 S64 short popup list and dynamic scrollbar transitions; T18 S64 value editor native frame; T18 S64 ordinary grids without visible scrollbars; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 witnessed TMaskEdit; T18 S64 bounded app-owned TDBGrid frame and model; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P156: bounded same-owner TDBLookupComboBox dropdown paint witness; original resources and notices retained; T18 S64 P158: scoped lookup popup lifecycle and scrollbar rendering; T18 S64 P159: Alt+Down lookup popup creation scope; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T18 S64 P161: bounded TMediaPlayer normal/pressed button backgrounds; T18 S64 P162: bounded disabled/focused TMediaPlayer button backgrounds; T18 S64: same-owner Delphi MDI frame identity and lifecycle; T18 S64: modeled TDBLookupListBox nonclient frame and scrollbar; T18 S64: release MDI host reference on failed subclass installation; T18 S64: candidate bounded same-owner TCoolBar grip custom draw and paint scope; T18 S64 P192: extend witnessed native tab attachment to TPageControl, preserve parent and fallback; T18 S64 runtime-owned tree/report native-paint witness and public-protocol reuse; project-authored adaptation, no graphic changes; preserve existing main-EXE list path after package regression; T18 S64 bounded witnessed list view modes, app-owned images and native state preserved; T21 S5 shared creation and late-attachment classifier; T21 S22 native embedded combo button painter extracted; T23 S4 console and Terminal window adaptation and native tests; T23 S6 Chromium composed frame and stock menu font fallback; T23 S7 composed frame reuse for Paint and XamlWindow; T24 S1 remove same-signature callback forwarding; T26 S1 reuse shared thread dialog observer; T26 S1 neutral message-observer naming; T26 S1 shared thread window message dispatch; T26 S1 simplify shared window hook interface; T26 S1 shared window thread identity; T26 S1 creation records and host refresh reentry; T26 S1 shared native combo identity; T26 S1 shared status identity; T26 S1 shared print clip snapshot; T26 S1 shared VCL MDI identity; T26 S1 shared VCL CoolBar identity; T26 S1 remove unused choice paint include; T26 ordered audit remove unused combo paint include; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S5 runtime state, notification/module operations or owned current-desktop fixture extraction; see M0-T26-S5-runtime.md; T26 S10 native combo whole-state owner and first-paint transaction, unchanged rendering/role policy; T26 S10 status whole state/snapshot ownership and real production consumer; native ordering preserved; T26 S10 native button snapshot and shared overlay clip/DC ownership; actual consumer migrated; T26 S10 common runtime state/protocol ownership and first-paint install/rollback transaction; T26 S10 edit/report whole-state protocol/notification lifetime; old product/profile plumbing removed; T26 S10 common grid/VB edge state and delayed binding lifecycle; T26 S10 checklist owner-draw association moved to public runtime, native sequence preserved; T26 S10 complete runtime message transaction and native report prepare migration, original phase/resource order preserved; T26 S10 parent report notification transaction moved to common message, policy retained and original native scope/cleanup order preserved; T26 S10 public attachment root/lifecycle consumed; private state/consumer accesses migrated, normal/terminal cleanup contract retained; T26 S10 native runtime initialization/selection moved to public attachment/runtime, complete owner-policy phase and original query/reference order preserved; T26 S10 native install/theme/scrollbar settlement common, render selection retained; existing error/cancellation order preserved; T26 S10 complete common runtime-current ordered validation, six private/product guards removed; provider VB policy and fresh-lookup semantics preserved; T26 S10 late runtime edit theme/scrollbar/remove settlement common; full renderer operations and original variant failure boundaries retained; T26 S10 complete publication/discard transaction, native success and duplicate rejection; original protocol/reference/raw-owner order and failure error retained; T26 S11 primary creation lifecycle moves to public creation transaction; preserve renderer operations and ABI; T26 S12 complete common modern frame ownership; existing host/menu/native contracts retained; T26 S13 complete generic font/glyph and snapshot cache ownership; profile eligibility and native borrow/resource contracts retained",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1265,7 +1265,7 @@
       "path": "src/lib-win32-style/access/startup/context.h",
       "source": "src/nthook32-dll/hook.h",
       "source_blob": "ed368c6a8b71cda0a1a84e57a542ddf8452de1ad",
-      "sha256": "8451a92d1cc567c93953e25c01c481489161ff5f3a251eebc21da2ac9349b25c",
+      "sha256": "84ad18b93aec27f7ad9e3f3e86a7608b2d0bd0d73975bff004732b8783c7fb09",
       "disposition": "adapt",
       "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1274,7 +1274,7 @@
       "path": "src/lib-win32-style/access/startup/context.c",
       "source": "src/nthook32-dll/context.cpp",
       "source_blob": "f435db72a3475ef34d921a57d1632d6990d407af",
-      "sha256": "66d1271985831b2b40ec85a12e5dfc4b8594f7b4b35d402491ea4fe92f70c7ae",
+      "sha256": "7938cadc5dd30000abbc2f4e8163750567b70ecd664025deb7e7dfea72c52268",
       "disposition": "adapt",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1283,7 +1283,7 @@
       "path": "src/lib-win32-style/access/startup/install.c",
       "source": "src/nthook32-dll/installer.cpp",
       "source_blob": "84e78935b3079089569b9167eaed994df3220ebd",
-      "sha256": "aadf5ae6900f508a78de7baba9f8f24eb9fd9c704a1edcfc196828641595ecf1",
+      "sha256": "b766e4e881cdc74807e5ecce221e7042bbc4745a9faac97e21e2317729fd408b",
       "disposition": "adapt",
       "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S3 Console-default wait / validated PE subsystem output, GUI stays async unless explicit wait; T21 S13 global session propagation policy; T21 S13 global late process propagation integration; T21 S13 unified session stop semantics; T21 S28 image operations extracted to process-image; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1292,7 +1292,7 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "27daff11e36156ad3b6b115095b248c4aa0aa74a538b9782596237d236c37f1c",
+      "sha256": "c0df112505eee5d2501248267a2e7b825ee48bdf2041eaaed0b18d74f042b7ae",
       "disposition": "authored",
       "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T23 S4 console and Terminal window adaptation and native tests; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T25 S3 Win2000 frame; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project MIT; upstream ntvdm64 source identity recorded"
@@ -1319,7 +1319,7 @@
       "path": "tests/lib-win32-style/access/startup/context.c",
       "source": null,
       "source_blob": null,
-      "sha256": "dfae5f7e934c0e7d6177b153280c2bb0410bce54fff0fa48029dec2560d569fe",
+      "sha256": "0bd493422e3b0a68e45c32013f5d457748a2cd92b0b91f197f7af736b761796f",
       "disposition": "authored",
       "review": "T3 S3 final path/CLI contract audit; UNC namespace case and actual exit/I-O cases; docs/proposals/launcher-injection.md; T21 S13 global session propagation policy; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1337,7 +1337,7 @@
       "path": "tests/run16s-exe/cli.py",
       "source": null,
       "source_blob": null,
-      "sha256": "d2baac67247504a85444f849514968fe9906df0112a73b38c3f4bdce94555666",
+      "sha256": "82c16257306b7f301e5aec4ac27d2c26eec26f8b136f3a14ea093f6eaec26509",
       "disposition": "authored",
       "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1364,7 +1364,7 @@
       "path": "src/ntw16s-dll/injection/window_titles.c",
       "source": "src/nthook32-dll/window_titles.cpp",
       "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
-      "sha256": "287c87d269e1682e0d2b241052ffebcc16273e177b5ed5eef2fb4be82a92ce57",
+      "sha256": "17d6cbccf29b757a9fcdf8f9a97d52e3ebeb398b417a21fc4bbf76591d0d4b62",
       "disposition": "adapt",
       "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T20 S1 common find/replace creation scope; T21 S13 unified late style hooks and stop semantics; T24 S1 unify simple common dialog scope hooks; T25 S2 shared runtime extraction; T26 S1 shared menu owner identity extraction; T26 S1 shared extended print bridge caller; T26 S1 common classic dialog controls; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 explicit theme interception; T26 S1 shared ordinary dialog hook lifecycle; T26 S1 shared color dialog identification; T26 S2 mechanical path/include relocation; T26 S10 checklist native protocol extraction, existing behavior and resources retained; T26 S10 native caller classification moved to common runtime text; original identity predicates retained; T26 S13 complete generic font/glyph and snapshot cache ownership; profile eligibility and native borrow/resource contracts retained; S13 complete glyph translation temporary ownership and real consumer retained",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
@@ -2993,7 +2993,7 @@
       "path": "src/ntw16s-dll/injection/file_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f23f849665f236c11736d3d3a5c22045309ef0f10234be32520dd97fede99917",
+      "sha256": "cf4d5cb3d1190444b993966684c051de4a8a33dbde73314b3d9961a8f6d0f00e",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics; T25 S2 shared runtime extraction; T26 S1 shared classic dialog message dispatch; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -5540,7 +5540,7 @@
       "path": "src/ntw16s-dll/uwp/hook.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d27525b238f96f53bbaee648eaaeda9f9d6f70d8e04d169fdbf1aae8f07359a5",
+      "sha256": "24d9cbdf70e9c2397fbdc7d09bff2eb24582b566dba3a6a100bbb6fc78755c37",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T26 S2 mechanical path/include relocation; T26 S5 runtime state, notification/module operations or owned current-desktop fixture extraction; see M0-T26-S5-runtime.md; T26 S12 complete common modern frame ownership; existing host/menu/native contracts retained; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -5558,7 +5558,7 @@
       "path": "src/run16s-exe/uwp.c",
       "source": null,
       "source_blob": null,
-      "sha256": "addd08ee8680816cc7627075377a54b84e6071cafbe90ff86b04b67a05c1af2c",
+      "sha256": "fdca6b3df2267823a671b32b43cc5e7c9936187c24c2d773aaec4a4de9f5c39d",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T22 S1 P32 shared UWP target coordination and window-scoped global admission; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -5567,7 +5567,7 @@
       "path": "src/run16s-exe/uwp.h",
       "source": null,
       "source_blob": null,
-      "sha256": "0ace3417ccf8a66e17e6baeb45448dbc74a7b807fbd4d17d9ac3b4486b1aa697",
+      "sha256": "ac976b666cfa1b82677dd92f1623acf85903c326836c9c5bce6f55f3778339aa",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -5594,7 +5594,7 @@
       "path": "tests/run16s-exe/uwp.c",
       "source": null,
       "source_blob": null,
-      "sha256": "34837687b2ee6e9c4dcf4981f0dc5371625294cf47158e0c48ba8ca2a8425560",
+      "sha256": "6f4b4d146c488d778b37d8a3ef02fcc770eb5fb0a11097973f99f1947719e0d0",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T22 S1 P25 explicit native fixture target identity; T22 S1 P27 optional real pointer sampling, fresh CURSORINFO per call and bounded restoration; T22 S1 P28 real published launcher wait/close fixture with bounded owned-target cleanup; T22 S1 P29 reactivate after removal, distinguish reuse/new PID and observe hidden surface after close; T22 S1 P30 await actual asynchronous overlay destruction, not just hidden state; T26 S2 mechanical path/include relocation; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -5648,7 +5648,7 @@
       "path": "src/ntw16s-dll/uwp/target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2b756824375fdc2ebbb4bd6d1b5111e47b7a23794ae80059694a100a45e7c224",
+      "sha256": "98bcdf5ccf91e1a9541f76ea0a35fa1cd9a942751cc3fbe7a351ab35e3d8185b",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import; T26 S2 mechanical path/include relocation; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project-authored C; original resource bytes unchanged"
@@ -5657,7 +5657,7 @@
       "path": "src/ntw16s-dll/uwp/target.h",
       "source": null,
       "source_blob": null,
-      "sha256": "b638f4fa7d941c1e9a183a92f65621374ef039d192c57d22d670ca367fb1596e",
+      "sha256": "a9bab592f01f2d236039a6d7b6d4870a0b3d52b019322b03aebd9c188df6ba15",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import; T26 S2 mechanical path/include relocation; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project-authored C; original resource bytes unchanged"
@@ -5666,7 +5666,7 @@
       "path": "tests/ntw16s-dll/uwp/global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "39f2fc4756ef8104a18a1a735dcabfcf5ffd41e0021b9bbc8ba4280ce4fbc6d1",
+      "sha256": "c711c52a4d3dc31128902ab50892da935e3a7d13e28410133b929006a2b4d883",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import; T26 S6 shared global coordination/configuration and callback-context migration; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project-authored C; original resource bytes unchanged"
@@ -6116,7 +6116,7 @@
       "path": "src/ntwshk-dll/dllmain.c",
       "source": null,
       "source_blob": null,
-      "sha256": "959532a9571315912cfdb0cee6b35a1b88400880367d0812a6d7893b2cf25395",
+      "sha256": "cf9fff8768e8989808ff6034e0dcf5c55da4cf3a38e3b65121d2354c3a36f0f7",
       "disposition": "authored",
       "review": "T25 S2 shared runtime and native verification",
       "notice": "Project-authored; no imported artwork"
@@ -6404,7 +6404,7 @@
       "path": "tests/run16s-exe/tray_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9ef2a185df069e0e3bbf59864c860e673f9289e41b9586871780f3fce31f975f",
+      "sha256": "9a6bea9b12976b82e41dc0717de07baa045511286defb92b636f458cfd29c4b3",
       "disposition": "authored",
       "review": "T25 S8 global style lifecycle and tray selection tests; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored native C; no imported artwork"
@@ -7754,7 +7754,7 @@
       "path": "src/ntw16s-dll/global/services.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2c2000e468f5e2e945b1327856bef3dad842c04c640fb8fa490c2ecbd7d26799",
+      "sha256": "59f3c500c9967197e2003de68b045e0a28ef34dba825afa4f4ea1a954b7cbc06",
       "disposition": "authored",
       "review": "T26 S6 extract/integrate existing global lifecycle with generic callbacks/configuration; native independent and product tests; see M0-T26-S6-global.md; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project-authored C; no imported artwork or external runtime dependency"
@@ -9626,7 +9626,7 @@
       "path": "tests/ntw16s-dll/window_thread.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3a300803349e4c320b365e7e13fc03f3a878bf71656c3f53b83bf94704fd4429",
+      "sha256": "9ad84281611a6af62fdba0d0d437357adee2251dbcf355c09e48ba9782433c9f",
       "disposition": "authored",
       "review": "T26 S12 existing product thread-hook fixture adds owned composed-frame apply/remove assertions; original scenarios retained",
       "notice": "Project-authored pure C; no imported artwork"
@@ -10256,7 +10256,7 @@
       "path": "tests/lib-win32-style/appearance/win2000/window/modern_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9e10e92d827485c734c9bee74b1a0342300d8a03841265176708f84c025831cc",
+      "sha256": "50893053c01f836207fcc41a9899646c31044d692941d217503949788e48080a",
       "disposition": "authored",
       "review": "T28 S1 shared classic caption and UWP appearance model; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10472,7 +10472,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/theme_file.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e8d273ed9142c61f51e94bb89aa9e8cb7afdf647f128b2ca6fe402474b3638f4",
+      "sha256": "0fc51f4ac8463097f96b9e205caf8fb26c1322aa950045d2da2996f79c422778",
       "disposition": "authored",
       "review": "T29 S3 companion theme description and native INI checks",
       "notice": "Project-authored; no imported source or resources"
@@ -10481,7 +10481,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/theme_file.h",
       "source": null,
       "source_blob": null,
-      "sha256": "32c3d69203934f526444fd9d18de4277c02dad8986ceb42a0722c7685c89246c",
+      "sha256": "494cb385475fcf6c0397cf8100af2b7b7fcaff71bf16061afdfcf3132b132148",
       "disposition": "authored",
       "review": "T29 S3 companion theme description and native INI checks",
       "notice": "Project-authored; no imported source or resources"
@@ -10490,7 +10490,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/theme_file.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f66bb44c909a1a5f2ff9510d67b352c22e44cbb863e9c5bb6e462d901279e775",
+      "sha256": "4aaf6169678f6bb30540182ef71e935032d9bde95ee259c92bf623a9ea285e47",
       "disposition": "authored",
       "review": "T29 S3 companion theme description and native INI checks",
       "notice": "Project-authored; no imported source or resources"
@@ -10535,7 +10535,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "deb5571f9acc39e90f05a8acab1192d2ccc55587d242257193f697c49e72eb1c",
+      "sha256": "91fb775d286bfe03d83815b5f6acd71f62a8109c26b8ae42309a2d7989ed1e3f",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10544,7 +10544,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "99cf737245db2eaaf0551a827f9cc08a148939934dd0a79b44593e3cec6170e2",
+      "sha256": "bd6d91f74d34a9bdba7378d01dbf6de8c5aad298d849dcc220d11070ed8e28d2",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10553,7 +10553,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d28fac84a00f0014290bb162168d84bdd02e2de91159a692156a1c874040b134",
+      "sha256": "4e2d7a33792630e36bece02957d2fea3455ca565af23fdb01f4a705c3d4a16d6",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"

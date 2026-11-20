@@ -174,7 +174,8 @@ int wmain(int argc,WCHAR **argv)
         printf("PAIR_TARGET first=%lu second=%lu host1=%lu host2=%lu\n",pid,second_pid,host1,host2);
         if(!second_target.frame||!host1||host1!=host2||frame==second_target.frame)goto done;
         if(prestyled){
-            error=ntw16s_uwp_target_change(&target,dll,TRUE,FALSE);printf("PAIR_PRESTYLE error=%lu\n",error);if(error)goto done;
+            error=ntw16s_uwp_target_change(&target,dll,TRUE,(classic_theme_selection){0,CLASSIC_THEME_WIN16});
+            printf("PAIR_PRESTYLE error=%lu\n",error);if(error)goto done;
             surfaces=0;surface=NULL;EnumWindows(owned,0);
             if(surfaces!=1 || !surface || !IsWindowVisible(surface))goto done;
             prior_surface=surface;

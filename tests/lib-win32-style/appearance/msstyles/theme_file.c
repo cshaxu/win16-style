@@ -19,9 +19,11 @@ static bool check_file(PCWSTR path)
     };
     FILE *file=_wfopen(path,L"wb");
     if(!file)return false;
-    bool valid=!msstyles_theme_file_write(file,"Win16", "../Win16",&variant) &&
-        !msstyles_theme_file_write(file,"Win16\n[Injected]","Win16",&variant) &&
-        ftell(file)==0 && msstyles_theme_file_write(file,"Windows 3.x","Win16",&variant);
+    const unsigned hosts=MSSTYLES_HOST_EXPLORER|MSSTYLES_HOST_CONSOLE;
+    bool valid=!msstyles_theme_file_write(file,"Win16", "../Win16",&variant,hosts) &&
+        !msstyles_theme_file_write(file,"Win16\n[Injected]","Win16",&variant,hosts) &&
+        !msstyles_theme_file_write(file,"Win16","Win16",&variant,MSSTYLES_HOST_ALL+1u) &&
+        ftell(file)==0 && msstyles_theme_file_write(file,"Windows 3.x","Win16",&variant,hosts);
     if(fclose(file)!=0 || !valid)return false;
     file=_wfopen(path,L"rb");
     if(!file)return false;
@@ -29,12 +31,16 @@ static bool check_file(PCWSTR path)
     valid=msstyles_theme_file_read(file,&parsed);
     if(fclose(file)!=0 || !valid)return false;
     return !strcmp(parsed.display_name,"Windows 3.x") && !strcmp(parsed.file,"Win16.msstyles") && !strcmp(parsed.size,"NormalSize") &&
-        !strcmp(parsed.color,"NormalColor") &&
+        !strcmp(parsed.color,"NormalColor") && parsed.hosts.declared && parsed.hosts.enabled==hosts &&
         has_key(path,L"Theme",L"DisplayName",L"Windows 3.x") &&
         has_key(path,L"Control Panel\\Desktop",L"TileWallpaper",L"0") &&
         has_key(path,L"VisualStyles",L"Path",L"Win16.msstyles") &&
         has_key(path,L"VisualStyles",L"Size",L"NormalSize") &&
         has_key(path,L"VisualStyles",L"ColorStyle",L"NormalColor") &&
+        has_key(path,L"WindowAttachment",L"Version",L"1") &&
+        has_key(path,L"WindowAttachment",L"Explorer",L"1") &&
+        has_key(path,L"WindowAttachment",L"Terminal",L"0") &&
+        has_key(path,L"WindowAttachment",L"Console",L"1") &&
         has_key(path,L"MasterThemeSelector",L"MTSM",L"DABJDKT");
 }
 
@@ -46,14 +52,14 @@ static bool optional_name(PCWSTR path,const char *input,const char *name)
     bool valid=fputs(input,file)!=EOF &&
         fputs("[VisualStyles]\nPath=Sample.msstyles\nSize=S\nColorStyle=C\n",file)!=EOF &&
         fseek(file,0,SEEK_SET)==0 && msstyles_theme_file_read(file,&parsed);
-    return fclose(file)==0 && valid && !strcmp(parsed.display_name,name);
+    return fclose(file)==0 && valid && !strcmp(parsed.display_name,name) && !parsed.hosts.declared;
 }
 
 static bool reject(PCWSTR path,const char *text)
 {
     FILE *file=_wfopen(path,L"w+b");
     if(!file)return false;
-    msstyles_theme_descriptor original={"before.msstyles","BeforeSize","BeforeColor","BeforeName"};
+    msstyles_theme_descriptor original={"before.msstyles","BeforeSize","BeforeColor","BeforeName",{0}};
     msstyles_theme_descriptor parsed=original;
     bool passed=fputs(text,file)!=EOF && fseek(file,0,SEEK_SET)==0 &&
         !msstyles_theme_file_read(file,&parsed) && !memcmp(&original,&parsed,sizeof(original));
@@ -79,6 +85,20 @@ int main(void)
         reject(path,"[VisualStyles]\nPath=C:\\Win16.msstyles\nSize=S\nColorStyle=C\n") &&
         reject(path,"[VisualStyles]\nPath=Win16.msstyles\nSize=S\nSize=S2\nColorStyle=C\n") &&
         reject(path,"[VisualStyles]\nPath=Win16.msstyles\nSize=S\n[Theme]\nColorStyle=C\n");
+    static const char *const invalid_hosts[]={
+        "Version=2\nExplorer=1\nTerminal=0\nConsole=1\n",
+        "Version=1\nExplorer=1\nConsole=1\n",
+        "Version=1\nExplorer=1\nTerminal=0\nConsole=1\nExplorer=0\n",
+        "Version=1\nExplorer=1\nTerminal=0\nConsole=2\n",
+        "Version=1\nExplorer=1\nTerminal=0\nConsole=1\nUnknown=0\n"
+    };
+    for(size_t i=0;passed && i<ARRAYSIZE(invalid_hosts);i++){
+        char input[256];
+        int length=snprintf(input,ARRAYSIZE(input),
+            "[VisualStyles]\nPath=Win16.msstyles\nSize=S\nColorStyle=C\n"
+            "[WindowAttachment]\n%s",invalid_hosts[i]);
+        passed=length>0 && (size_t)length<ARRAYSIZE(input) && reject(path,input);
+    }
     if(!DeleteFileW(path) || !passed){
         fputs("Companion theme roundtrip failed\n",stderr);
         return 1;

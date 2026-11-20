@@ -72,6 +72,23 @@ static int product_modes(HWND root,HWND core,PCWSTR renderer,PCWSTR win16,PCWSTR
     CHECK(request(root,core,NTW16S_UWP_APPLY));
     legacy=surface_of(root);
     CHECK(legacy && request(root,core,NTW16S_UWP_REMOVE) && !IsWindow(legacy) && !surface_of(root));
+    if(win16 && win2k){
+        WPARAM first=(WPARAM)classic_theme_folder_id(L"Win16")<<NTW16S_UWP_PROFILE_SHIFT;
+        WPARAM second=(WPARAM)classic_theme_folder_id(L"Win2K")<<NTW16S_UWP_PROFILE_SHIFT;
+        CHECK(request(root,core,first|NTW16S_UWP_APPLY));
+        legacy=surface_of(root);
+        CHECK(legacy && !request(root,core,first|NTW16S_UWP_APPLY_2K) && surface_of(root)==legacy);
+        CHECK(missing_theme_retains(root,core,win2k,second|NTW16S_UWP_APPLY_2K,legacy));
+        CHECK(request(root,core,second|NTW16S_UWP_APPLY_2K) && !IsWindow(legacy));
+        classic=surface_of(root);
+        CHECK(classic && request(root,core,first|NTW16S_UWP_REMOVE) && surface_of(root)==classic);
+        WCHAR backup[MAX_PATH];
+        CHECK(swprintf_s(backup,ARRAYSIZE(backup),L"%ls.fixture",win2k)>0 && MoveFileW(win2k,backup));
+        BOOL removed=request(root,core,second|NTW16S_UWP_REMOVE_2K);
+        CHECK(MoveFileW(backup,win2k));
+        CHECK(removed && !IsWindow(classic) && !surface_of(root));
+        puts("UWP THEME ID PASS selected identity, mismatch preserves surface, removal without descriptor");
+    }
     CHECK(UnhookWindowsHookEx(observer) && FreeLibrary(module));
     puts("UWP PRODUCT MODE PASS two providers, reuse, switch both ways, style-specific removal");
     if(win16 && win2k)puts("UWP MISSING THEME PASS previous surface retained in both directions");

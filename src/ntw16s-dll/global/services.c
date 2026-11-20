@@ -8,7 +8,12 @@
 static BOOL uwp_active(void *context)
 {return ntw16s_global_policy_active((DWORD)(uintptr_t)context);}
 static DWORD uwp_change(const style_uwp_target *target,PCWSTR dll,BOOL apply,void *context)
-{return ntw16s_uwp_target_change(target,dll,apply,(unsigned)((uint64_t)(uintptr_t)context>>32));}
+{
+    unsigned value=(unsigned)((uint64_t)(uintptr_t)context>>32);
+    classic_theme_selection selection;
+    if(!classic_theme_decode_selection(value,&selection))return ERROR_INVALID_DATA;
+    return ntw16s_uwp_target_change(target,dll,apply,selection);
+}
 static void uwp_report(const style_uwp_target *target,DWORD error,void *context)
 {
     (void)context;
@@ -20,11 +25,12 @@ static void uwp_report(const style_uwp_target *target,DWORD error,void *context)
 static BOOL uwp_services(DWORD style,DWORD cookie,WORD machine,style_uwp_global_services *services,void *context)
 {
     (void)context;
-    if(sizeof(void *)!=8 || machine!=IMAGE_FILE_MACHINE_AMD64 || style>=CLASSIC_THEME_PROFILE_CAP ||
-       (style>1 && style<CLASSIC_THEME_PROFILE_FIRST_CUSTOM))return FALSE;
-    uint64_t selection=((uint64_t)style<<32)|cookie;
+    classic_theme_selection selection;
+    if(sizeof(void *)!=8 || machine!=IMAGE_FILE_MACHINE_AMD64 ||
+       !classic_theme_decode_selection(style,&selection))return FALSE;
+    uint64_t context_bits=((uint64_t)style<<32)|cookie;
     *services=(style_uwp_global_services){machine,style_uwp_host_image,uwp_active,
-        uwp_change,uwp_report,(void *)(uintptr_t)selection};
+        uwp_change,uwp_report,(void *)(uintptr_t)context_bits};
     return TRUE;
 }
 static void report(const style_global_report *detail,void *context)

@@ -19,6 +19,7 @@ static INIT_ONCE win2k_once=INIT_ONCE_STATIC_INIT;
 static HMODULE win2k_module;
 static style_global_window_ops win2k_ops={.active=ntw16s_global_policy_active,
     .control=NTW16S_GLOBAL_CONTROL,.query=NTW16S_GLOBAL_QUERY,.acknowledgement=NTW16S_GLOBAL_ATTACHED};
+static const WCHAR selection_property[]=L"Win16Style.Global.Profile";
 static BOOL CALLBACK load_win2k(PINIT_ONCE once,void *parameter,void **result)
 {
     (void)once;(void)parameter;(void)result;
@@ -47,11 +48,10 @@ BOOL ntw16s_global_win2k_attached(HWND window)
 {
     return ntw16s_global_win2k_resources() && win2k_ops.attached(window);
 }
-static const style_global_window_ops *style_ops(DWORD style)
+static const style_global_window_ops *style_ops(classic_theme_family family)
 {
-    style&=1u;
-    if(style==NTW16S_GLOBAL_STYLE_16)return &ops;
-    if(style==NTW16S_GLOBAL_STYLE_2K){
+    if(family==CLASSIC_THEME_WIN16)return &ops;
+    if(family==CLASSIC_THEME_WIN2K){
         if(ntw16s_global_win2k_resources())return &win2k_ops;
         return NULL;
     }
@@ -59,32 +59,38 @@ static const style_global_window_ops *style_ops(DWORD style)
 }
 BOOL ntw16s_global_window_apply_style(HWND window,DWORD style)
 {
-    static const WCHAR property[]=L"Win16Style.Global.Profile";
-    const style_global_window_ops *selected=style_ops(style),*other=NULL;
+    classic_theme_selection selection;
+    if(!classic_theme_decode_selection(style,&selection)){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    const style_global_window_ops *selected=style_ops(selection.family),*other=NULL;
     if(!selected)return FALSE;
-    if(style&1u)other=&ops;
+    if(selection.family==CLASSIC_THEME_WIN2K)other=&ops;
 #ifdef NTWSHK_UNIFIED
-    else other=style_ops(NTW16S_GLOBAL_STYLE_2K);
+    else other=style_ops(CLASSIC_THEME_WIN2K);
 #else
-    else if(style==NTW16S_GLOBAL_STYLE_16 && GetModuleHandleW(sizeof(void *)==8?L"ntw2ks64.dll":L"ntw2ks32.dll")){
-        other=style_ops(NTW16S_GLOBAL_STYLE_2K);
+    else if(GetModuleHandleW(sizeof(void *)==8?L"ntw2ks64.dll":L"ntw2ks32.dll")){
+        other=style_ops(CLASSIC_THEME_WIN2K);
         if(!other)return FALSE;
     }
 #endif
-    HANDLE mark=GetPropW(window,property),wanted=(HANDLE)(UINT_PTR)(style+1u);
-    if(mark!=wanted && (style>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM || mark) && selected->attached(window) &&
+    HANDLE mark=GetPropW(window,selection_property),wanted=(HANDLE)(UINT_PTR)(style+1u);
+    if(mark!=wanted && (selection.id>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM || mark) && selected->attached(window) &&
        !style_global_window_remove(window,selected))return FALSE;
-    unsigned previous=classic_theme_enter_profile(style);
+    unsigned previous=classic_theme_enter_profile(selection);
     BOOL applied=style_global_window_transition(window,selected,other);
     classic_theme_leave_profile(previous);
-    if(applied)(void)SetPropW(window,property,wanted);
+    if(applied)(void)SetPropW(window,selection_property,wanted);
     return applied;
 }
 BOOL ntw16s_global_window_remove_style(HWND window,DWORD style)
 {
-    const style_global_window_ops *selected=style_ops(style);
+    UINT_PTR mark=(UINT_PTR)GetPropW(window,selection_property);
+    classic_theme_selection selection;
+    if(!classic_theme_decode_selection(mark?(DWORD)(mark-1u):style,&selection)){
+        SetLastError(ERROR_INVALID_PARAMETER);return FALSE;
+    }
+    const style_global_window_ops *selected=style_ops(selection.family);
     if(!selected || !style_global_window_remove(window,selected))return FALSE;
-    RemovePropW(window,L"Win16Style.Global.Profile");return TRUE;
+    RemovePropW(window,selection_property);return TRUE;
 }
 BOOL ntw16s_global_window_eligible(HWND window)
 {

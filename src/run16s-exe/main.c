@@ -86,23 +86,28 @@ int wmain(int argc,WCHAR **argv)
     HMODULE launcher=GetModuleHandleW(NULL);
     HRESULT loaded=classic_theme_open_folder(launcher,theme,&source,&family);
     if(FAILED(loaded))return diagnostic(6,HRESULT_CODE(loaded),L"theme load");
+    unsigned hosts=source.hosts.enabled;
     classic_theme_close(&source);
-    unsigned profile=classic_theme_profile(theme,family);
     BOOL win2k=family==CLASSIC_THEME_WIN2K;
-    if(profile>=2){
-        loaded=classic_theme_open_profile(launcher,profile,&source);
-        if(FAILED(loaded))return diagnostic(6,HRESULT_CODE(loaded),L"theme load");
-        classic_theme_close(&source);
-    }
-    if(!win2k)run16s_window_set_profile(profile);
+    unsigned theme_id=classic_theme_folder_id(theme);
+    WCHAR resolved_folder[MAX_PATH];
+    loaded=classic_theme_profile_folder(launcher,theme_id,resolved_folder);
+    if(FAILED(loaded))return diagnostic(6,HRESULT_CODE(loaded),L"theme identity");
+    if(_wcsicmp(theme,resolved_folder))return diagnostic(6,ERROR_INVALID_DATA,L"theme identity");
+    if(hosts)run16s_window_set_profile(theme_id);
     raw=win32_process_next_argument(raw);
     DWORD length=SearchPathW(NULL,argv[target_index],L".exe",STYLE_STARTUP_PATH_CAP,image,NULL);
     if(!length || length>=STYLE_STARTUP_PATH_CAP)return diagnostic(3,length?ERROR_FILENAME_EXCED_RANGE:GetLastError(),L"target resolution");
-    if(win2k && (run16s_explorer_default(image,win32_process_next_argument(raw)) ||
-        run16s_terminal_image(image) || run16s_console_host_image(image)))
-        return diagnostic(10,ERROR_NOT_SUPPORTED,L"Windows 2000 style for this target");
+    BOOL explorer=run16s_explorer_default(image,win32_process_next_argument(raw));
+    BOOL terminal=!explorer && run16s_terminal_image(image);
+    BOOL console=run16s_console_host_image(image);
+    if((explorer && !(hosts&MSSTYLES_HOST_EXPLORER)) ||
+       (terminal && !(hosts&MSSTYLES_HOST_TERMINAL)) ||
+       (console && !(hosts&MSSTYLES_HOST_CONSOLE)))
+        return diagnostic(10,ERROR_NOT_SUPPORTED,L"theme window attachment for this target");
     BOOL uwp_handled=FALSE;
-    error=run16s_uwp_command(image,win32_process_next_argument(raw),FALSE,profile,&uwp_handled);
+    error=run16s_uwp_command(image,win32_process_next_argument(raw),FALSE,
+        (classic_theme_selection){theme_id,family},&uwp_handled);
     if(error||uwp_handled)return error?diagnostic(10,error,L"UWP frame activation"):0;
     error=win32_process_image_validate_ex(image,IMAGE_FILE_MACHINE_AMD64,FALSE,&subsystem);
     if(error==ERROR_BAD_EXE_FORMAT)error=win32_process_image_validate_ex(image,IMAGE_FILE_MACHINE_I386,FALSE,&subsystem);
@@ -121,7 +126,7 @@ int wmain(int argc,WCHAR **argv)
     error=style_startup_paths(&context,NULL);if(error)return diagnostic(6,error,L"package directory");
     wcscpy(context.module,L"ntwshk");
     if(win2k)context.flags|=STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE;
-    if(profile>=2)context.flags|=profile<<STYLE_STARTUP_PROFILE_SHIFT;
+    context.flags|=theme_id<<STYLE_STARTUP_PROFILE_SHIFT;
     command=_wcsdup(raw);if(!command)return diagnostic(5,ERROR_NOT_ENOUGH_MEMORY,L"command allocation");
     if(win32_process_create(image,command,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&startup,&child))error=ERROR_SUCCESS;
     else{error=GetLastError();if(!error)error=ERROR_GEN_FAILURE;}
@@ -138,8 +143,6 @@ int wmain(int argc,WCHAR **argv)
         }
         return diagnostic(5,error,L"target creation");
     }
-    BOOL explorer=run16s_explorer_default(image,win32_process_next_argument(raw));
-    BOOL terminal=!explorer && run16s_terminal_image(image);
     run16s_explorer_snapshot *folders=explorer?run16s_explorer_snapshot_create():
         terminal?run16s_terminal_snapshot_create():NULL;
     if((explorer || terminal) && !folders)diagnostic(0,GetLastError(),L"window snapshot");
@@ -152,12 +155,12 @@ int wmain(int argc,WCHAR **argv)
         if(attached && attached!=ERROR_NOT_FOUND)diagnostic(0,attached,L"Explorer window attachment");
         run16s_explorer_snapshot_free(folders);
     }
-    if(!win2k && run16s_console_host_image(image)){
+    if(console){
         DWORD attached=run16s_console_host_attach(child.hProcess,context.directory);
         if(attached && attached!=ERROR_NOT_FOUND && attached!=ERROR_PROCESS_ABORTED)
             diagnostic(0,attached,L"console window attachment");
     }
-    else if(!win2k && subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI){
+    else if((hosts&MSSTYLES_HOST_CONSOLE) && subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI){
         DWORD attached=run16s_console_host_attach_current(context.directory);
         if(attached && attached!=ERROR_NOT_FOUND)
             diagnostic(0,attached,L"terminal window attachment");

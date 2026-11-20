@@ -497,7 +497,9 @@ static BOOL window_thread_accept(const CWPSTRUCT *message,void *context)
     return (HWND)message->lParam==message->hwnd &&
         ((action==NTW16S_WINDOW_THREAD_REMOVE && !profile) ||
          (action==NTW16S_WINDOW_THREAD_ATTACH && (!profile ||
-           (profile>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM && profile<CLASSIC_THEME_PROFILE_CAP && !(profile&1u)))));
+           (profile>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM && profile<CLASSIC_THEME_PROFILE_CAP &&
+            (classic_theme_is_folder_id((unsigned)profile) ||
+             classic_theme_profile_family((unsigned)profile)==CLASSIC_THEME_WIN16)))));
 }
 static DWORD window_thread_perform(const CWPSTRUCT *message,void *context)
 {
@@ -512,14 +514,21 @@ static DWORD window_thread_perform(const CWPSTRUCT *message,void *context)
         if(ok)RemovePropW(message->hwnd,property);
     }else{
         unsigned profile=(unsigned)(message->wParam>>NTW16S_WINDOW_THREAD_PROFILE_SHIFT);
+        classic_theme_selection selection={profile,CLASSIC_THEME_WIN16};
         HANDLE wanted=(HANDLE)(UINT_PTR)(profile+1u),previous=GetPropW(message->hwnd,property);
         BOOL attached=Ntw16sWindowAttached(message->hwnd);
+        if(classic_theme_is_folder_id(profile) && (!attached || previous!=wanted)){
+            classic_theme_mapping source={0};
+            HRESULT loaded=classic_theme_open_selected((HMODULE)&__ImageBase,selection,&source);
+            if(FAILED(loaded))return HRESULT_CODE(loaded);
+            classic_theme_close(&source);
+        }
         if(attached && previous!=wanted && (previous || profile) && !Ntw16sWindowRemove(message->hwnd))
             return GetLastError();
         if(Ntw16sWindowAttached(message->hwnd))ok=TRUE;
         else if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
               (PCWSTR)(uintptr_t)Ntw16sWindowThreadHook,&pinned)){
-            unsigned scope=classic_theme_enter_profile(profile);
+            unsigned scope=classic_theme_enter_profile(selection);
             ok=Ntw16sWindowAttach(message->hwnd);
             classic_theme_leave_profile(scope);
         }
