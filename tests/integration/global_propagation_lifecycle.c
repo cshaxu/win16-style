@@ -11,7 +11,7 @@ static int run(const WCHAR *launcher,const WCHAR *target,const WCHAR *request,BO
 {
  PROCESS_INFORMATION app={0},manager={0};HANDLE event=NULL;HWND window=NULL;int result=1;
  WCHAR argument[32768];
- if(ordinary){if(swprintf(argument,ARRAYSIZE(argument),L"--wait \"%ls\" managed",target)<0 || !launch(launcher,argument,&app))goto done;}
+ if(ordinary){if(swprintf(argument,ARRAYSIZE(argument),L"Win16 \"%ls\" managed",target)<0 || !launch(launcher,argument,&app))goto done;}
  else if(!launch(target,L"managed",&app))goto done;
  for(unsigned i=0;i<100&&!window;++i){window=FindWindowW(L"GlobalPropagationProbe",L"Owned propagation root");if(!window)Sleep(30);}
  if(!window || query(window,WM_APP+110,1000)!=(ordinary?1:0))goto done;

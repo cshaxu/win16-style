@@ -6,7 +6,7 @@ import subprocess
 import sys
 import tempfile
 
-if len(sys.argv) != 9 or sys.argv[1] not in ('--default', '--16', '--2k'):
+if len(sys.argv) != 9 or sys.argv[1] not in ('Win16', 'Win2K'):
     raise SystemExit('expected style, launcher, four DLLs, x86 target and x64 target')
 style = sys.argv[1]
 launcher, style32, style64, shared32, shared64, target32, target64 = map(
@@ -19,6 +19,11 @@ with tempfile.TemporaryDirectory(prefix='shared dll ', dir=root) as temp:
         directory.mkdir()
     for source in (launcher, style32, style64, shared32, shared64):
         shutil.copyfile(source, package / source.name)
+    for theme in ('Win16', 'Win2K'):
+        (package/theme).mkdir()
+        for extension in ('.theme', '.msstyles'):
+            path=Path(theme)/(theme+extension)
+            shutil.copyfile(launcher.parent/path, package/path)
     targets = []
     for source, name in ((target32, 'target32.exe'), (target64, 'target64.exe')):
         destination = app / name
@@ -26,8 +31,7 @@ with tempfile.TemporaryDirectory(prefix='shared dll ', dir=root) as temp:
         targets.append(destination)
     for parent in targets:
         for child in targets:
-            options = [] if style == '--default' else [style]
-            result = subprocess.run([str(package / launcher.name), *options, '--wait', str(parent), str(child)],
+            result = subprocess.run([str(package / launcher.name), style, str(parent), str(child)],
                                     cwd=working, capture_output=True, timeout=25)
             if result.returncode:
                 raise SystemExit(f'SHARED PATH FAIL {parent.name}->{child.name} exit={result.returncode} '

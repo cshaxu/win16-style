@@ -6,16 +6,15 @@ ShellExecuteExW with verb runas for the launcher's own absolute path. The elevat
 copy validates its token, cannot recurse, and uses the original injection/resume
 transaction. DLL propagation hooks retain the original CreateProcess contract.
 
-The resolved absolute target, untouched argument tail, original CWD and wait
-policy are passed on the shell command line. There is no request file, named pipe,
+The resolved absolute target, untouched argument tail, original CWD and theme
+name are passed on the shell command line. There is no request file, named pipe,
 credential storage, global hook, new service, or fifth product. The private
 --elevated flag grants no privilege; a non-elevated invocation is rejected.
 
 Windows creates the elevated environment and separate console. Caller custom
 variables and stdin/stdout/stderr are not forwarded across this boundary. This is
 intentional: elevation is not ordinary CreateProcess inheritance. Console targets
-wait and propagate their exit code; --wait does the same for GUI targets. GUI
-launches otherwise return after the elevated launcher finishes installation and
+wait and propagate their exit code. GUI launches return after the elevated launcher finishes installation and
 resume. Cancellation returns1223; shell failure reports its native error. Other
 creation errors are not automatically converted into an elevation request.
 
@@ -24,7 +23,7 @@ creation errors are not automatically converted into an elevation request.
 Build with the standard GCC/Ninja/ccache entry. Both architectures register
 launch/elevation-unit, which uses real production elevation.c with a controlled
 ShellExecute function: request fields, empty/spaced/trailing-backslash args, CWD,
-wait flags, cancel1223, denied5, missing handle6, failed-without-error31, child exit73,
+theme selection, cancel1223, denied5, missing handle6, failed-without-error31, child exit73,
 overlong request rejection and steady handle counts. It does not interact with
 secure-desktop UI. Each width executes8 bounded cases.
 

@@ -10,7 +10,7 @@ int _dowildcard=0;
 static int target(int argc,WCHAR **argv)
 {
     CHECK(argc==4);
-    CHECK(GetModuleHandleW(sizeof(void *)==8?L"ntw16s64.dll":L"ntw16s32.dll"));
+    CHECK(GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll"));
     DWORD self=GetCurrentProcessId(),parent=0,ids[64],count=GetConsoleProcessList(ids,ARRAYSIZE(ids));
     HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);CHECK(snapshot!=INVALID_HANDLE_VALUE);
     PROCESSENTRY32W entry={.dwSize=sizeof(entry)};CHECK(Process32FirstW(snapshot,&entry));

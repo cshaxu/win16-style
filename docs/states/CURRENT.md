@@ -99,6 +99,32 @@ S12 已逐项核对 113 个适用单元、44 个旧入口和两处正式包。�
 五个退役路径已复核。S12 和 T29 按既定范围收口，验收与待证范围见
 [S12 终审](../history/M0-T29-S12-final-audit.md)。
 
+S13 P1 已在两处发布。本次主题发现、按名启动、托盘目录和自有窗口
+切换校验通过。独立的 22 项聚焦用例通过，两项既有 Win32 外框测试在
+发布前后均复现最大化、还原失败，详见 [S13 记录](../history/M0-T29-S13-theme-folder-cli.md)。
+S13 保持开放。
+
+## M0 T29 S13 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | Owner-Reopen；M0、T29 保持原编号。 |
+| Admission And Approval | 用户要求重开 T29，追加严格启动语法、托盘主题发现，并对齐产物。 |
+| Objective | 仅支持 `run16s <主题> <程序> [参数]` 和独立 `run16s --global`。托盘发现启动器旁的受支持主题。 |
+| Non-goals | 保持 Win16 与 Win2K 两套既有呈现范围。XP Luna 进入其排队任务。 |
+| Reference Baseline | T29 S12 `8d31a7cc`，双宽中性 DLL 与原七件产物。 |
+| Candidate Proposal | 当前用户请求；采用 Luna 候选的主题目录首参数契约。 |
+| Files And ABI Surface | 启动器、托盘和提权参数、主题目录解析与七件包契约。 |
+| Applicable Rules | M0 T29，C17 GCC Ninja ccache；同快照先发布后测试。 |
+| Verification | 两主题目录参数、旧参数拒绝及参数转发；托盘主题发现和提权参数以自有测试核验；核对两处实包和旧目录退役。 |
+| Expected Markers | 三运行件和 `Win16/`、`Win2K/` 各两件；两处发布摘要与实际远端匹配。 |
+| Asset Needs | 原有两套主题字节与资源来源。 |
+| Reporting Requirements | 记录发布路径、旧参数退役、全局测试范围和退役文件。 |
+| Stop Conditions | 不扩大适用目标、系统权限、测试桌面或实际桌面验证范围。 |
+| Exit Criteria | 干净双宽构建、同批发布、实包聚焦验证、提交推送且实际远端复核。 |
+| Original Owner Request | 重开本 T 并追加 S；普通启动强制主题目录名及目标程序；全局入口不接受附加参数并发现合法主题。 |
+| Similar-Issue Sweep | 检查所有主题路径消费者、构建器、测试夹具、发布器与公开用法。 |
+
 ## Identifier State
 
 - Milestone: M0 (fixed)
@@ -113,8 +139,8 @@ S12 已逐项核对 113 个适用单元、44 个旧入口和两处正式包。�
 - Last verified remote delivery: M0 T29 S11 P1 `a810d5b2`；三件运行文件和四件主题文件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 12
-- Open task: 无活动任务包。
+- Last allocated T29 S: 13
+- Open task: M0 T29 S13；主题目录首参数与同级发布布局。
 
 ## Technical Baseline
 

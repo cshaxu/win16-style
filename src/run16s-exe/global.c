@@ -4,6 +4,7 @@
 #include "lib-win32-style/access/startup/context.h"
 #include "lib-win32/process-image/image.h"
 #include "lib-win32/security/elevation.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include <stdio.h>
 static DWORD paths(DWORD style,WCHAR *dll64,WCHAR *dll32,DWORD capacity,void *unused)
 {
@@ -34,7 +35,8 @@ static int fail(DWORD error,PCWSTR what)
 {fwprintf(stderr,L"run16s: global %ls failed (%lu)\n",what,error);return 10;}
 int run16s_global_with_parent(HANDLE parent,DWORD style)
 {
-    if(style!=NTW16S_GLOBAL_STYLE_16 && style!=NTW16S_GLOBAL_STYLE_2K)return fail(ERROR_NOT_SUPPORTED,L"style");
+    if(style>=CLASSIC_THEME_PROFILE_CAP || (style>1 && style<CLASSIC_THEME_PROFILE_FIRST_CUSTOM))
+        return fail(ERROR_NOT_SUPPORTED,L"style");
     if(parent){DWORD state=WaitForSingleObject(parent,0);if(state==WAIT_OBJECT_0)return 0;
         if(state!=WAIT_TIMEOUT)return fail(state==WAIT_FAILED?GetLastError():ERROR_INVALID_HANDLE,L"parent wait");}
     DWORD elevation_error=0;

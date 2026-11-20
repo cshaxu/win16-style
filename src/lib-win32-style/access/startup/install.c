@@ -30,8 +30,9 @@ DWORD style_startup_install(HANDLE child,const style_startup_context *context,PC
        sizeof(header)+(length+module_length+2)*sizeof(WCHAR)>sizeof(work->data))return ERROR_INVALID_DATA;
     error=win32_process_image_machine(child,&machine);if(error)return error;
     work=HeapAlloc(GetProcessHeap(),0,sizeof(*work));if(!work)return ERROR_NOT_ENOUGH_MEMORY;
-    header.bytes=(DWORD)(sizeof(header)+(length+module_length+2)*sizeof(WCHAR));header.version=2;
+    header.bytes=(DWORD)(sizeof(header)+(length+module_length+2)*sizeof(WCHAR));
     header.machine=machine;header.flags=__atomic_load_n(&context->flags,__ATOMIC_ACQUIRE);header.directory_offset=sizeof(header);
+    header.version=header.flags>>STYLE_STARTUP_PROFILE_SHIFT?3u:2u;
     header.reserved0=(header.flags&STYLE_STARTUP_POLICY_GLOBAL_SESSION)?
         __atomic_load_n(&context->session_cookie,__ATOMIC_ACQUIRE):0;
     header.directory_bytes=(DWORD)((length+1)*sizeof(WCHAR));header.reserved1=(DWORD)((module_length+1)*sizeof(WCHAR));

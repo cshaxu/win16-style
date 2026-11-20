@@ -16,6 +16,6 @@ for bits, source in ((32, dll32), (64, dll64)):
     shared = source.with_name(f"ntwshk{bits}.dll")
     shutil.copy2(shared, package / shared.name)
 native = subprocess.run([str(package / fixture.name), mode], timeout=15, capture_output=True)
-styled = subprocess.run([str(package / launcher.name), "--wait", str(package / fixture.name), mode], timeout=15, capture_output=True)
+styled = subprocess.run([str(package / launcher.name), "Win16", str(package / fixture.name), mode], timeout=15, capture_output=True)
 print(f"native={native.returncode} {native.stdout!r}; styled={styled.returncode} {styled.stdout!r}")
 sys.exit(0 if native.returncode == 0 and styled.returncode == 0 and native.stdout == styled.stdout else 1)

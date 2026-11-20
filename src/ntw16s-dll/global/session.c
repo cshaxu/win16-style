@@ -17,4 +17,4 @@ const style_global_start_config ntw16s_global_start_config={
 BOOL ntw16s_global_policy_active(DWORD cookie)
 {return style_global_policy_active(&ntw16s_global_namespace,cookie);}
 BOOL ntw16s_global_policy_style(DWORD cookie,DWORD style)
-{return style_global_policy_style(&ntw16s_global_namespace,cookie,style);}
+{DWORD current;return style_global_policy_current(&ntw16s_global_namespace,cookie,&current) && (current&1u)==style;}

@@ -5,7 +5,7 @@ static int owned_control_matrix(int argc,WCHAR **argv,DWORD timeout,const char *
 {
     CHECK(argc==2);WCHAR self[MAX_PATH],command[2048];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
     for(unsigned aware=0;aware<2;++aware)for(unsigned mode=0;mode<2;++mode){
-        if(mode)swprintf_s(command,2048,L"\"%ls\" --wait \"%ls\" --child %ls",argv[1],self,aware?L"styled-aware":L"styled");
+        if(mode)swprintf_s(command,2048,L"\"%ls\" Win16 \"%ls\" --child %ls",argv[1],self,aware?L"styled-aware":L"styled");
         else swprintf_s(command,2048,L"\"%ls\" --child %ls",self,aware?L"bare-aware":L"bare");
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};
         limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;

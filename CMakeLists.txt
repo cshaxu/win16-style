@@ -287,7 +287,7 @@ target_link_libraries(classic-theme-compiler PRIVATE style-msstyles windowscodec
 set(classic_theme_artifacts)
 set(classic_theme_rc "${CMAKE_CURRENT_SOURCE_DIR}/tools/theme/classic_resources.rc")
 foreach(stem IN ITEMS Win16 Win2K)
-  set(out "${CMAKE_BINARY_DIR}/themes/${stem}")
+  set(out "${CMAKE_BINARY_DIR}/${stem}")
   unset(image_flag)
   unset(image_files)
   unset(dialog_resources)
@@ -975,7 +975,7 @@ if(BUILD_TESTING)
   target_include_directories(late-process-prototype PRIVATE src)
   target_compile_definitions(late-process-prototype PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_options(late-process-prototype PRIVATE -municode)
-  target_link_libraries(late-process-prototype PRIVATE process-global style-runtime-process style-startup process-hook user32 advapi32 uxtheme)
+  target_link_libraries(late-process-prototype PRIVATE process-global style-runtime-process style-startup style-msstyles process-hook user32 advapi32 uxtheme)
   add_test(NAME core/late-process-existing COMMAND $<TARGET_FILE:late-process-prototype> existing)
   set_tests_properties(core/late-process-existing PROPERTIES TIMEOUT 10)
   add_test(NAME core/late-process-existing-propagation COMMAND $<TARGET_FILE:late-process-prototype> existing-propagation)
@@ -1069,9 +1069,9 @@ if(BUILD_TESTING)
   target_link_options(core-classic-themes PRIVATE -municode)
   if(TARGET classic-themes)
     add_custom_target(check-classic-themes
-      COMMAND "$<TARGET_FILE:core-classic-themes>" "${CMAKE_BINARY_DIR}/themes"
-      COMMAND "$<TARGET_FILE:core-style-classic-extension>" "${CMAKE_BINARY_DIR}/themes"
-      COMMAND "$<TARGET_FILE:core-style-classic-theme>" "${CMAKE_BINARY_DIR}/themes"
+      COMMAND "$<TARGET_FILE:core-classic-themes>" "${CMAKE_BINARY_DIR}"
+      COMMAND "$<TARGET_FILE:core-style-classic-extension>" "${CMAKE_BINARY_DIR}"
+      COMMAND "$<TARGET_FILE:core-style-classic-theme>" "${CMAKE_BINARY_DIR}"
       DEPENDS classic-themes core-classic-themes core-style-classic-extension core-style-classic-theme
       VERBATIM)
   endif()
@@ -1109,7 +1109,7 @@ if(BUILD_TESTING)
   add_executable(uac-self-elevate-unit tests/run16s-exe/self_elevate_unit.c src/ntw16s-dll/injection/create_process.c)
   target_include_directories(uac-self-elevate-unit PRIVATE src)
   target_link_options(uac-self-elevate-unit PRIVATE -municode)
-  target_link_libraries(uac-self-elevate-unit PRIVATE shell32)
+  target_link_libraries(uac-self-elevate-unit PRIVATE style-msstyles shell32)
   add_test(NAME launch/self-elevate-unit COMMAND ${test_driver} --name launch/self-elevate-unit -- $<TARGET_FILE:uac-self-elevate-unit>)
   set_tests_properties(launch/self-elevate-unit PROPERTIES TIMEOUT 20)
   plain_test(window-band-fixture tests/run16s-exe/window_band.c user32 gdi32)
@@ -1160,7 +1160,7 @@ if(BUILD_TESTING)
     target_compile_definitions(wait-gui-target PRIVATE WAIT_GUI)
     target_link_options(wait-gui-target PRIVATE -municode)
     add_test(NAME launch/wait COMMAND ${test_driver} --name launch/wait -- ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/wait.py
-      $<TARGET_FILE:run16s> ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
+      $<TARGET_FILE:run16s>
       ${WIN16STYLE_X86_BUILD}/wait-target.exe $<TARGET_FILE:wait-target> $<TARGET_FILE:wait-gui-target>)
     set_tests_properties(launch/wait PROPERTIES TIMEOUT 190 RUN_SERIAL TRUE)
   endif()
@@ -1770,7 +1770,7 @@ if(BUILD_TESTING)
   add_executable(core-global-style-bridge tests/ntw16s-dll/global_style_bridge.c src/ntw16s-dll/global/window.c src/ntw16s-dll/global/session.c)
   add_dependencies(core-global-style-bridge style-subclass ntw2ks)
   target_include_directories(core-global-style-bridge PRIVATE src)
-  target_link_libraries(core-global-style-bridge PRIVATE style-global-window style-companion process-global ntw16s "${subclass_import}" user32 comctl32 comdlg32 gdi32)
+  target_link_libraries(core-global-style-bridge PRIVATE style-global-window style-companion style-msstyles process-global ntw16s "${subclass_import}" user32 comctl32 comdlg32 gdi32)
   add_test(NAME core/global-style-bridge COMMAND $<TARGET_FILE:core-global-style-bridge>)
   add_executable(core-style-global-receiver tests/lib-win32-style/access/global/receiver.c)
   target_link_libraries(core-style-global-receiver PRIVATE style-global)
@@ -1807,7 +1807,7 @@ if(BUILD_TESTING)
   target_include_directories(core-global-window PRIVATE src tests/ntw16s-dll)
   target_compile_definitions(core-global-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_options(core-global-window PRIVATE -municode)
-  target_link_libraries(core-global-window PRIVATE style-global-window style-companion process-global ntw16s "${subclass_import}" user32 gdi32 comctl32)
+  target_link_libraries(core-global-window PRIVATE style-global-window style-companion style-msstyles process-global ntw16s "${subclass_import}" user32 gdi32 comctl32)
   add_test(NAME core/global-window COMMAND ${test_driver} --name core/global-window -- $<TARGET_FILE:core-global-window>)
   add_executable(core-abi tests/ntw16s-dll/abi.c)
   target_include_directories(core-abi PRIVATE src)
@@ -2677,7 +2677,7 @@ if(BUILD_TESTING)
       ${WIN16STYLE_X86_BUILD}/launch-failures.exe $<TARGET_FILE:launch-failures>)
     set_tests_properties(launch/long-path PROPERTIES TIMEOUT 70 RUN_SERIAL TRUE)
     add_test(NAME launch/cli-failures COMMAND ${test_driver} --name launch/cli-failures -- ${test_python} ${CMAKE_SOURCE_DIR}/tests/run16s-exe/cli_failures.py
-      $<TARGET_FILE:run16s> ${WIN16STYLE_X86_BUILD}/ntw16s32.dll $<TARGET_FILE:ntw16s>
+      $<TARGET_FILE:run16s> ${WIN16STYLE_X86_BUILD}/ntwshk32.dll $<TARGET_FILE:ntwshk>
       ${WIN16STYLE_X86_BUILD}/launch-target.exe $<TARGET_FILE:launch-target>)
     set_tests_properties(launch/cli-failures PROPERTIES TIMEOUT 130 RUN_SERIAL TRUE)
   endif()

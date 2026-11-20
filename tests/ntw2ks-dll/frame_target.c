@@ -647,6 +647,22 @@ int wmain(int argc,WCHAR **argv)
         --argc;++argv;
     }
     HINSTANCE instance=GetModuleHandleW(NULL);
+    if(argc==3 && !wcscmp(argv[1],L"--theme-button-width")){
+        WNDCLASSW window_class={.lpfnWndProc=DefWindowProcW,.hInstance=instance,.lpszClassName=L"ClassicThemeFolderFixture"};
+        if(!RegisterClassW(&window_class))return 2;
+        HWND window=CreateWindowExW(0,window_class.lpszClassName,L"Theme folder width",
+            WS_OVERLAPPEDWINDOW,60,60,440,260,NULL,NULL,instance,NULL);
+        if(!window)return 2;
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};
+        SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        int width=info.rgrect[2].right-info.rgrect[2].left;
+        int expected=MulDiv((int)wcstol(argv[2],NULL,10),(int)GetDpiForWindow(window),96);
+        BOOL attached=GetPropW(window,L"Win2kStyle.Frame")!=NULL;
+        printf("THEME FOLDER BUTTON bits=%u width=%d expected=%d attached=%d\n",
+            (unsigned)(sizeof(void *)*8),width,expected,attached);
+        DestroyWindow(window);
+        return attached && width==expected?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--dialog-frame")){
         struct { DLGTEMPLATE header; WORD menu,klass,title; } templ={0};
         templ.header.style=WS_POPUP|WS_CAPTION|WS_SYSMENU;templ.header.cx=160;templ.header.cy=80;

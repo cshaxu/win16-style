@@ -91,8 +91,8 @@ int wmain(int argc,WCHAR **argv)
     s->magic=NTW16S_GLOBAL_MAGIC;s->version=NTW16S_GLOBAL_VERSION;s->owner_pid=GetCurrentProcessId();s->cookie=0x672ad713;
     if(!win32_process_global_birth(GetCurrentProcess(),&s->owner_birth_low,&s->owner_birth_high))return 7;
     s->phase=switching?NTW16S_GLOBAL_STOPPING:NTW16S_GLOBAL_ACTIVE;STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION child={0};
-    int length=initial?swprintf(command,ARRAYSIZE(command),L"\"%ls\" %ls--wait \"%ls\" localhook \"%ls\"",
-        argv[4],initial==2?L"--2k ":L"",argv[1],argv[2]):
+    int length=initial?swprintf(command,ARRAYSIZE(command),L"\"%ls\" %ls\"%ls\" localhook \"%ls\"",
+        argv[4],initial==2?L"Win2K ":L"Win16 ",argv[1],argv[2]):
         swprintf(command,ARRAYSIZE(command),L"\"%ls\" localhook \"%ls\"",argv[1],argv[2]);
     if(length<0 || !CreateProcessW(initial?argv[4]:argv[1],command,NULL,NULL,TRUE,0,NULL,NULL,&si,&child))return 8;
     BOOL switched=!switching || switch_styles(child.dwProcessId,s,initial);

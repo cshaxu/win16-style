@@ -5,8 +5,19 @@
 static HANDLE stop_event;
 static DWORD observed_style,forced_result;
 static DWORD theme_error;
-DWORD classic_theme_validate_packaged(HMODULE renderer,classic_theme_family family)
-{(void)renderer;(void)family;return theme_error;}
+unsigned classic_theme_profile(PCWSTR folder,classic_theme_family family)
+{(void)folder;return (unsigned)family;}
+HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH])
+{(void)renderer;wcscpy(folder,profile?L"Win2K":L"Win16");return S_OK;}
+HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_theme_mapping *source)
+{(void)renderer;(void)profile;(void)source;return HRESULT_FROM_WIN32(theme_error);}
+void classic_theme_close(classic_theme_mapping *source)
+{(void)source;}
+void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void *context)
+{
+    (void)renderer;
+    if(visit(L"Win16",CLASSIC_THEME_WIN16,context))visit(L"Win2K",CLASSIC_THEME_WIN2K,context);
+}
 int run16s_global_with_parent(HANDLE parent,DWORD style)
 {
     (void)parent;
@@ -37,6 +48,7 @@ int main(void)
     style_global_namespace space={.prefix=prefix,.launcher=L"owned.exe",.module=L"owned.dll",.magic=7,.version=1};
     if(!style_global_control_init(&state.control,NULL,NTW16S_GLOBAL_STYLE_16,STYLE_NONE,&space,&operations,NULL))return 2;
     stop_event=CreateEventW(NULL,TRUE,FALSE,state.control.request_name);if(!stop_event)return 2;
+    classic_theme_visit_folders(NULL,remember_theme,&state);
     if(!menu_has(&state,FALSE,FALSE))return 3;
     action(MENU_ENABLE,&state);
     if(!state.control.worker || !state.control.busy || state.control.enabled)return 4;
@@ -74,7 +86,7 @@ int main(void)
     forced_result=ERROR_ACCESS_DENIED;action(MENU_ENABLE_2K,&state);action(MENU_ENABLE_2K,&state);
     if(!wait_stopped(&state,&code) || code!=ERROR_ACCESS_DENIED || style_global_control_finished(&state.control,&code))return 19;
     if(state.control.worker || state.control.enabled || state.control.busy || state.control.desired!=STYLE_NONE)return 13;
-    CloseHandle(stop_event);
+    CloseHandle(stop_event);free(state.themes);
     printf("TRAY CONTROLLER PASS bits=%u switch=both toggle=off failure=1 mutually_exclusive=1\n",(unsigned)(sizeof(void *)*8));
     return 0;
 }

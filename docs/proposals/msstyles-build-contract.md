@@ -10,7 +10,8 @@
 | `Win16.theme`、`Win2K.theme` | 按 Windows 的主题描述语法生成，包含显示名称及 VisualStyles 的 Path、ColorStyle、Size。Path 指向同目录的 `.msstyles`，配色及尺寸必须能在目标文件中找到。发布配置不得引用额外文件或构建目录。 |
 
 用户确认正式包共七个文件。包根目录提供 `run16s.exe`、`ntwshk32.dll` 和
-`ntwshk64.dll`，在 `themes/Win16` 与 `themes/Win2K` 下各提供一对主题。
+`ntwshk64.dll`，在启动器的直接子目录 `Win16` 与 `Win2K` 下各提供一对主题。
+普通启动必须先写主题目录名，再写程序。`--global` 单独调用时进入托盘并扫描可用主题。
 双位宽运行时装配归 `ntwshk`。演示程序留在构建树用于验收。
 
 标准格式验证与系统加载测试分别记录。发布的目标是格式和引用合规，同时由项目运行时只读消费数据。Windows 系统主题的签名、安装和全桌面应用属于另外的能力；本任务的样本验证不修改系统主题、注册表、系统文件或安全策略。[Microsoft Theme File Format](https://learn.microsoft.com/en-us/windows/win32/controls/themesfileformat-overview)

@@ -203,7 +203,7 @@ static int worker(int argc,WCHAR **argv)
     if(argc==4 && !wcscmp(argv[1],L"--child"))return child(argv[2],!wcsncmp(argv[3],L"styled",6),wcsstr(argv[3],L"aware")!=NULL);
     CHECK(argc==3);WCHAR self[MAX_PATH],command[2048];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
     for(unsigned aware=0;aware<2;++aware)for(unsigned mode=0;mode<2;++mode){
-        if(mode)swprintf_s(command,2048,L"\"%ls\" --wait \"%ls\" --child \"%ls\" %ls",argv[1],self,argv[2],aware?L"styled-aware":L"styled");
+        if(mode)swprintf_s(command,2048,L"\"%ls\" Win16 \"%ls\" --child \"%ls\" %ls",argv[1],self,argv[2],aware?L"styled-aware":L"styled");
         else swprintf_s(command,2048,L"\"%ls\" --child \"%ls\" %ls",self,argv[2],aware?L"bare-aware":L"bare");
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};
         limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;

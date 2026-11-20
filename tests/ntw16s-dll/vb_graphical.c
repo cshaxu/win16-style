@@ -142,7 +142,7 @@ static int worker(int argc,WCHAR **argv)
 {
     CHECK(argc==4);WCHAR self[MAX_PATH],command[4096];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
     for(unsigned styled=0;styled<2;++styled){
-        if(styled)swprintf_s(command,4096,L"\"%ls\" --wait \"%ls\" --child \"%ls\" \"%ls\" 1",argv[1],self,argv[2],argv[3]);
+        if(styled)swprintf_s(command,4096,L"\"%ls\" Win16 \"%ls\" --child \"%ls\" \"%ls\" 1",argv[1],self,argv[2],argv[3]);
         else swprintf_s(command,4096,L"\"%ls\" --child \"%ls\" \"%ls\" 0",self,argv[2],argv[3]);
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits)));
         STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION p={0};si.dwFlags=STARTF_USESTDHANDLES;si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);si.hStdOutput=GetStdHandle(STD_OUTPUT_HANDLE);si.hStdError=GetStdHandle(STD_ERROR_HANDLE);

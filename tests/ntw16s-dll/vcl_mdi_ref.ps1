@@ -8,5 +8,5 @@ $symbol=[Convert]::ToUInt64((($line[0].ToString().Trim() -split '\s+')[0]),16)
 $imageBase=[Convert]::ToUInt64((($base[0].ToString().Trim() -split '\s+')[1]),16)
 if($symbol -lt $imageBase){throw 'invalid attachment symbol address'}
 $rva='{0:x}' -f ($symbol-$imageBase)
-& $Launcher --wait $Probe $Fixture $rva
+& $Launcher Win16 $Probe $Fixture $rva
 if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}

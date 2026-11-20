@@ -17,7 +17,7 @@ typedef struct target {PROCESS_INFORMATION process;HWND window;} target;
 static BOOL launch(target *t,const WCHAR *image,const WCHAR *launcher,const WCHAR *title)
 {
     WCHAR command[8192];STARTUPINFOW startup={.cb=sizeof(startup)};
-    if(launcher){if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\" %ls",launcher,image,title)<0)return FALSE;}
+    if(launcher){if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" Win16 \"%ls\" %ls",launcher,image,title)<0)return FALSE;}
     else if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" %ls",image,title)<0)return FALSE;
     if(!CreateProcessW(launcher?launcher:image,command,NULL,NULL,TRUE,0,NULL,NULL,&startup,&t->process))return FALSE;
     for(unsigned i=0;i<160;++i){t->window=FindWindowW(cls,title);if(t->window && IsWindowVisible(t->window))return TRUE;

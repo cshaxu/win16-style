@@ -105,9 +105,10 @@ function Test-Governance([hashtable]$Files) {
         $contract = $Files['docs/etc/product-contract.json'] | ConvertFrom-Json
         $expected = @('run16s-exe|run16s.exe|x64','ntwshk-dll|ntwshk32.dll|x86',
             'ntwshk-dll|ntwshk64.dll|x64') | Sort-Object
-        $themes = @('themes/Win16/Win16.theme','themes/Win16/Win16.msstyles',
-            'themes/Win2K/Win2K.theme','themes/Win2K/Win2K.msstyles') | Sort-Object
-        $retired = @('demo.exe','ntw16s32.dll','ntw16s64.dll','ntw2ks32.dll','ntw2ks64.dll')
+        $themes = @('Win16/Win16.theme','Win16/Win16.msstyles',
+            'Win2K/Win2K.theme','Win2K/Win2K.msstyles') | Sort-Object
+        $retired = @('demo.exe','ntw16s32.dll','ntw16s64.dll','ntw2ks32.dll','ntw2ks64.dll') +
+            @($themes | ForEach-Object { "themes/$_" })
         $actual = @($contract.components | ForEach-Object {
             $component = $_.id
             foreach ($artifact in $_.artifacts) { "$component|$($artifact.name)|$($artifact.architecture)" }

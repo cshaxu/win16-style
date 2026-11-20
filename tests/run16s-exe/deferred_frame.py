@@ -14,7 +14,7 @@ for bits, source in ((32, dll32), (64, dll64)):
     shutil.copy2(shared, package / shared.name)
 for kind in ("legacy", "modern"):
     result = subprocess.run(
-        [str(package / launcher.name), "--wait", str(package / fixture.name), kind],
+        [str(package / launcher.name), "Win16", str(package / fixture.name), kind],
         capture_output=True,
         timeout=15,
     )

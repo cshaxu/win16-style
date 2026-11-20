@@ -30,7 +30,7 @@ static int matrix(int argc,WCHAR **argv)
         WCHAR folder[MAX_PATH],tail[32768];STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};DWORD code;
         CHECK(swprintf_s(folder,MAX_PATH,L"%ls\\r%uc%us%u",scratch,root,child,styled)>0 && CreateDirectoryW(folder,NULL));
         CHECK(swprintf_s(tail,ARRAYSIZE(tail),L"\"%ls\" --parent \"%ls\" \"%ls\" %u %u \"%ls\" \"%ls\" %u",files[2+root],files[2+child],unicode[child],child?64:32,styled,package,folder,root?64:32)>0);
-        if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait %ls",launcher,tail)>0);
+        if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" Win16 %ls",launcher,tail)>0);
         else CHECK(!wcscpy_s(command,ARRAYSIZE(command),tail));
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
         CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits)));

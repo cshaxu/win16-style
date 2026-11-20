@@ -5,5 +5,5 @@
  * COM before apply; handles are observations, not ownership or stable identity.
  * change revalidates the current frame/CoreWindow association and process ID.
  * Removal detaches the renderer; the host-pinned DLL is not unloaded. */
-DWORD ntw16s_uwp_target_change(const style_uwp_target *target,PCWSTR dll_path,BOOL apply,BOOL win2k);
+DWORD ntw16s_uwp_target_change(const style_uwp_target *target,PCWSTR dll_path,BOOL apply,unsigned profile);
 #endif

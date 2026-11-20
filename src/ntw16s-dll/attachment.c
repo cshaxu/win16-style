@@ -492,8 +492,12 @@ BOOL __cdecl Ntw16sWindowAttach(HWND w)
 }
 static BOOL window_thread_accept(const CWPSTRUCT *message,void *context)
 {
-    (void)context;return (message->wParam==NTW16S_WINDOW_THREAD_ATTACH || message->wParam==NTW16S_WINDOW_THREAD_REMOVE) &&
-        (HWND)message->lParam==message->hwnd;
+    (void)context;
+    WPARAM action=message->wParam&15u,profile=message->wParam>>NTW16S_WINDOW_THREAD_PROFILE_SHIFT;
+    return (HWND)message->lParam==message->hwnd &&
+        ((action==NTW16S_WINDOW_THREAD_REMOVE && !profile) ||
+         (action==NTW16S_WINDOW_THREAD_ATTACH && (!profile ||
+           (profile>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM && profile<CLASSIC_THEME_PROFILE_CAP && !(profile&1u)))));
 }
 static DWORD window_thread_perform(const CWPSTRUCT *message,void *context)
 {
@@ -502,10 +506,25 @@ static DWORD window_thread_perform(const CWPSTRUCT *message,void *context)
     if(!win32_style_window_current_thread(message->hwnd))
         return ERROR_INVALID_THREAD_ID;
     SetLastError(0);
-    if(message->wParam==NTW16S_WINDOW_THREAD_REMOVE)ok=Ntw16sWindowRemove(message->hwnd);
-    else if(Ntw16sWindowAttached(message->hwnd))ok=TRUE;
-    else if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
-              (PCWSTR)(uintptr_t)Ntw16sWindowThreadHook,&pinned))ok=Ntw16sWindowAttach(message->hwnd);
+    static const WCHAR property[]=L"Win16Style.WindowThread.Profile";
+    if(message->wParam==NTW16S_WINDOW_THREAD_REMOVE){
+        ok=Ntw16sWindowRemove(message->hwnd);
+        if(ok)RemovePropW(message->hwnd,property);
+    }else{
+        unsigned profile=(unsigned)(message->wParam>>NTW16S_WINDOW_THREAD_PROFILE_SHIFT);
+        HANDLE wanted=(HANDLE)(UINT_PTR)(profile+1u),previous=GetPropW(message->hwnd,property);
+        BOOL attached=Ntw16sWindowAttached(message->hwnd);
+        if(attached && previous!=wanted && (previous || profile) && !Ntw16sWindowRemove(message->hwnd))
+            return GetLastError();
+        if(Ntw16sWindowAttached(message->hwnd))ok=TRUE;
+        else if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
+              (PCWSTR)(uintptr_t)Ntw16sWindowThreadHook,&pinned)){
+            unsigned scope=classic_theme_enter_profile(profile);
+            ok=Ntw16sWindowAttach(message->hwnd);
+            classic_theme_leave_profile(scope);
+        }
+        if(ok)(void)SetPropW(message->hwnd,property,wanted);
+    }
     if(!ok)error=GetLastError()?GetLastError():ERROR_GEN_FAILURE;
     return error;
 }

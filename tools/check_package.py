@@ -132,7 +132,7 @@ def main():
                 for component in contract['components'] for artifact in component['artifacts']}
     assert expected == {'run16s.exe': 'x64', 'ntwshk32.dll': 'x86', 'ntwshk64.dll': 'x64'}
     themes = set(contract['themes'])
-    assert themes == {f'themes/{name}/{name}.{extension}'
+    assert themes == {f'{name}/{name}.{extension}'
                       for name in ('Win16', 'Win2K') for extension in ('theme', 'msstyles')}
     assert args.task > 0
     verify_layout(package, set(expected) | themes)

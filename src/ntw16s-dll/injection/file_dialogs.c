@@ -6,9 +6,12 @@
 #include "ntw16s-dll/global/window.h"
 void ntw16s_win2k_dialog_initialize(HWND window)
 {
-    if(ntw16s_win2k_session_active() && ntw16s_global_window_eligible(window)){
-        ntw16s_global_window_apply_style(window,NTW16S_GLOBAL_STYLE_2K);
-        ntw16s_global_window_children(window,TRUE,NTW16S_GLOBAL_STYLE_2K);
+    DWORD style;
+    DWORD cookie=__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE);
+    if(ntw16s_win2k_session_active() && ntw16s_global_window_eligible(window) &&
+       style_global_policy_current(&ntw16s_global_namespace,cookie,&style) && (style&1u)){
+        ntw16s_global_window_apply_style(window,style);
+        ntw16s_global_window_children(window,TRUE,style);
     }
 }
 LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *))

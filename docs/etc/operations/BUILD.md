@@ -40,14 +40,12 @@ T6 S1曾从干净复制树通过双宽全构建及同包测试；当前发布状
 普通使用：
 
 ```powershell
-.\run16s.exe notepad.exe
-.\run16s.exe --2k notepad.exe
-.\run16s.exe --wait <application.exe> [arguments]
+.\run16s.exe Win16 notepad.exe
+.\run16s.exe Win2K notepad.exe
+.\run16s.exe --global
 ```
 
-默认同时启用样式和后代传播；--wait等待根目标并返回它的实际退出码，不等待全部
-后代。默认等待Console目标；GUI目标无--wait在暂存/恢复成功后返回0。等待时可观察到loader退出码。
-Console目标默认等待根目标并返回实际退出码；GUI目标默认恢复后返回0，--wait则等待。
+程序参数原样转交目标。Console 目标返回其实际退出码，GUI 目标在恢复后返回 0。
 CLI阶段错误2/3/4/5/6/7/8分别表示用法、解析、PE、创建、安装、恢复、等待。
 Windows错误码在stderr，失败不继续裸运行。原始参数尾串、环境/cwd/继承保持原生语义。
 
@@ -93,7 +91,7 @@ pwsh -NoProfile -File tools/Test-Package.ps1 -RunName package-test-new -Package 
 全部18个原始栅格表及RCDATA5完整来源说明；禁止构建时生成替代图形。
 
 run16s保持Console子系统，交互cmd自然等待启动器；控制台目标默认同步，GUI目标
-默认异步，显式--wait始终等待。GUI子系统试验已被用户否决且从未发布。
+现用 CLI 对 GUI 启动异步返回。GUI子系统试验已被用户否决且从未发布。
 
 占用时按EXECUTION核对实际PID/映像/启动时间，正常关闭、有限等待后可结束该已确认进程并继续替换；权限失败记录并停止，不扩大权限。无binary change记录摘要比较。
 当前交互验收使用原生探针，不用computer-use；私有剪贴板权限跳过和物理输入未覆盖

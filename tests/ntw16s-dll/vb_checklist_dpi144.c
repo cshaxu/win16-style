@@ -82,7 +82,7 @@ static int worker(int argc,WCHAR **argv)
 {
     CHECK(argc==3);WCHAR self[MAX_PATH],cmd[4096];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
     for(int styled=0;styled<2;++styled){
-        if(styled)swprintf_s(cmd,4096,L"\"%ls\" --wait \"%ls\" --child \"%ls\" 1",argv[1],self,argv[2]);
+        if(styled)swprintf_s(cmd,4096,L"\"%ls\" Win16 \"%ls\" --child \"%ls\" 1",argv[1],self,argv[2]);
         else swprintf_s(cmd,4096,L"\"%ls\" --child \"%ls\" 0",self,argv[2]);
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limit={0};
         limit.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;

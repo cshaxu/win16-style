@@ -1,15 +1,14 @@
 #include "session.h"
 #include "ntw16s-dll/uwp/target.h"
 #include "lib-win32-style/access/global/manager.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <wchar.h>
 static BOOL uwp_active(void *context)
 {return ntw16s_global_policy_active((DWORD)(uintptr_t)context);}
 static DWORD uwp_change(const style_uwp_target *target,PCWSTR dll,BOOL apply,void *context)
-{(void)context;return ntw16s_uwp_target_change(target,dll,apply,FALSE);}
-static DWORD uwp_change_2k(const style_uwp_target *target,PCWSTR dll,BOOL apply,void *context)
-{(void)context;return ntw16s_uwp_target_change(target,dll,apply,TRUE);}
+{return ntw16s_uwp_target_change(target,dll,apply,(unsigned)((uint64_t)(uintptr_t)context>>32));}
 static void uwp_report(const style_uwp_target *target,DWORD error,void *context)
 {
     (void)context;
@@ -21,9 +20,11 @@ static void uwp_report(const style_uwp_target *target,DWORD error,void *context)
 static BOOL uwp_services(DWORD style,DWORD cookie,WORD machine,style_uwp_global_services *services,void *context)
 {
     (void)context;
-    if(machine!=IMAGE_FILE_MACHINE_AMD64 || (style!=NTW16S_GLOBAL_STYLE_16 && style!=NTW16S_GLOBAL_STYLE_2K))return FALSE;
+    if(sizeof(void *)!=8 || machine!=IMAGE_FILE_MACHINE_AMD64 || style>=CLASSIC_THEME_PROFILE_CAP ||
+       (style>1 && style<CLASSIC_THEME_PROFILE_FIRST_CUSTOM))return FALSE;
+    uint64_t selection=((uint64_t)style<<32)|cookie;
     *services=(style_uwp_global_services){machine,style_uwp_host_image,uwp_active,
-        style==NTW16S_GLOBAL_STYLE_2K?uwp_change_2k:uwp_change,uwp_report,(void *)(uintptr_t)cookie};
+        uwp_change,uwp_report,(void *)(uintptr_t)selection};
     return TRUE;
 }
 static void report(const style_global_report *detail,void *context)

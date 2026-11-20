@@ -1,0 +1,13 @@
+[Theme]
+DisplayName=Windows 2000
+
+[Control Panel\Desktop]
+TileWallpaper=0
+
+[VisualStyles]
+Path=Win2K.msstyles
+ColorStyle=NormalColor
+Size=NormalSize
+
+[MasterThemeSelector]
+MTSM=DABJDKT

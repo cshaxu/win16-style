@@ -191,6 +191,25 @@ HRESULT classic_theme_open(PCWSTR descriptor,classic_theme_mapping *source);
 void classic_theme_close(classic_theme_mapping *source);
 
 typedef enum classic_theme_family { CLASSIC_THEME_WIN16, CLASSIC_THEME_WIN2K } classic_theme_family;
+/* A folder contains one .theme descriptor. Its resources determine the
+ * renderer. The callback borrows each folder name for that invocation only. */
+typedef BOOL (*classic_theme_visit)(PCWSTR folder,classic_theme_family family,void *context);
+HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_mapping *,
+    classic_theme_family *family);
+void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void *context);
+/* A stable, pointer-free choice used by the startup and global protocols.
+ * Zero and one preserve the published canonical renderer IDs. */
+unsigned classic_theme_profile(PCWSTR folder,classic_theme_family family);
+HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH]);
+HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_theme_mapping *);
+enum { CLASSIC_THEME_PROFILE_CAP = 0x10000000u, CLASSIC_THEME_PROFILE_FIRST_CUSTOM = 8 };
+static inline classic_theme_family classic_theme_profile_family(unsigned profile)
+{return (classic_theme_family)(profile&1u);}
+void classic_theme_set_process_profile(unsigned profile);
+void classic_theme_set_global_profile_reader(BOOL (*read)(unsigned *));
+unsigned classic_theme_process_profile(void);
+unsigned classic_theme_enter_profile(unsigned profile);
+void classic_theme_leave_profile(unsigned previous);
 
 /* Resolves a packaged theme beside its renderer. If the package directory
  * is absent, an embedded fallback can use resources in that same renderer. */

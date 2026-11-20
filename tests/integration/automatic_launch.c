@@ -23,7 +23,7 @@ static int matrix(int argc,WCHAR **argv)
         CHECK(CopyFileW(argv[4+i],targets[i],FALSE));}
     for(unsigned width=0;width<2;++width)for(unsigned styled=0;styled<2;++styled){
         /* All argument encodings are intentional CRT vectors. */
-        if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\" styled \"two words\" \"quote\\\"inside\" \"trailing\\\\\" \"\" \"中文 αβ\"",launcher,targets[width])>0);
+        if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" Win16 \"%ls\" styled \"two words\" \"quote\\\"inside\" \"trailing\\\\\" \"\" \"中文 αβ\"",launcher,targets[width])>0);
         else CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" native \"two words\" \"quote\\\"inside\" \"trailing\\\\\" \"\" \"中文 αβ\"",targets[width])>0);
         if(argc==7)CHECK(!wcscat_s(command,ARRAYSIZE(command),L" ") && !wcscat_s(command,ARRAYSIZE(command),argv[6]));
         CHECK(CreateProcessW(styled?launcher:targets[width],command,NULL,NULL,TRUE,CREATE_NO_WINDOW,NULL,NULL,&startup,&child));

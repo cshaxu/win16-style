@@ -6,7 +6,7 @@ static int control_matrix(const WCHAR *launcher,const char *label,BOOL detailed)
 {
     WCHAR self[MAX_PATH],command[2048];CHECK(GetModuleFileNameW(NULL,self,MAX_PATH));
     for(unsigned aware=0;aware<2;++aware)for(unsigned styled=0;styled<2;++styled){
-        if(styled)swprintf_s(command,2048,L"\"%ls\" --wait \"%ls\" --child %ls",launcher,self,aware?L"styled-aware":L"styled");
+        if(styled)swprintf_s(command,2048,L"\"%ls\" Win16 \"%ls\" --child %ls",launcher,self,aware?L"styled-aware":L"styled");
         else swprintf_s(command,2048,L"\"%ls\" --child %ls",self,aware?L"native-aware":L"native");
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limit={0};limit.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
         CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limit,sizeof(limit)));

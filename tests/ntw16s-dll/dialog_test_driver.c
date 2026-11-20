@@ -53,7 +53,7 @@ int wmain(int argc,WCHAR **argv)
     BOOL isolated=low || visible || !lstrcmpW(argv[1],L"--private");int offset=isolated?1:0;
     if(argc<3+offset)return 2;
     BOOL direct=!lstrcmpW(argv[1+offset],L"--direct");
-    WCHAR command[8192];int used=direct?swprintf(command,8192,L"\"%ls\"",argv[2+offset]):swprintf(command,8192,L"\"%ls\" --wait \"%ls\"",argv[1+offset],argv[2+offset]);
+    WCHAR command[8192];int used=direct?swprintf(command,8192,L"\"%ls\"",argv[2+offset]):swprintf(command,8192,L"\"%ls\" Win16 \"%ls\"",argv[1+offset],argv[2+offset]);
     if(used<0)return 3;
     for(int i=3+offset;i<argc;++i){int n=swprintf(command+used,8192-(size_t)used,L" \"%ls\"",argv[i]);if(n<0)return 3;used+=n;}
     HANDLE job=CreateJobObjectW(NULL,NULL);if(!job)return 4;

@@ -26,16 +26,14 @@ static inline BOOL copy_package_themes(PCWSTR package,PCWSTR launcher)
     DWORD count=GetFullPathNameW(launcher,ARRAYSIZE(source),source,&filename);
     if(!count || count>=ARRAYSIZE(source) || !filename)return FALSE;
     size_t capacity=ARRAYSIZE(source)-(size_t)(filename-source);
-    if(swprintf_s(directory,ARRAYSIZE(directory),L"%ls\\themes",package)<0 ||
-       !CreateDirectoryW(directory,NULL))return FALSE;
     static const WCHAR *const families[]={L"Win16",L"Win2K"};
     static const WCHAR *const extensions[]={L"theme",L"msstyles"};
     for(unsigned family=0;family<ARRAYSIZE(families);++family){
         PCWSTR name=families[family];
-        if(swprintf_s(directory,ARRAYSIZE(directory),L"%ls\\themes\\%ls",package,name)<0 ||
+        if(swprintf_s(directory,ARRAYSIZE(directory),L"%ls\\%ls",package,name)<0 ||
            !CreateDirectoryW(directory,NULL))return FALSE;
         for(unsigned i=0;i<ARRAYSIZE(extensions);++i)
-            if(swprintf_s(filename,capacity,L"themes\\%ls\\%ls.%ls",name,name,extensions[i])<0 ||
+            if(swprintf_s(filename,capacity,L"%ls\\%ls.%ls",name,name,extensions[i])<0 ||
                swprintf_s(destination,ARRAYSIZE(destination),L"%ls\\%ls.%ls",directory,name,extensions[i])<0 ||
                !CopyFileW(source,destination,TRUE))return FALSE;
     }

@@ -105,9 +105,9 @@ static int run_case(PCWSTR package,PCWSTR scratch,PCWSTR backend,unsigned mode,u
     startup.StartupInfo.cb=sizeof(startup);startup.StartupInfo.dwFlags=STARTF_USESTDHANDLES;
     startup.StartupInfo.hStdInput=in_read;startup.StartupInfo.hStdOutput=startup.StartupInfo.hStdError=out_write;startup.lpAttributeList=attributes;
     REQUIRE(swprintf_s(launcher,ARRAYSIZE(launcher),L"%ls\\run16s.exe",package)>0);
-    if(mode==0)REQUIRE(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\" /d /q",launcher,root_cmd)>0);
+    if(mode==0)REQUIRE(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" Win16 \"%ls\" /d /q",launcher,root_cmd)>0);
     else if(mode==1)REQUIRE(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\" /d /q",backend,root_cmd)>0);
-    else REQUIRE(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\" --wait \"%ls\" /d /q",launcher,backend,root_cmd)>0);
+    else REQUIRE(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" Win16 \"%ls\" --wait \"%ls\" /d /q",launcher,backend,root_cmd)>0);
     DWORD creation_flags=CREATE_SUSPENDED|EXTENDED_STARTUPINFO_PRESENT|(mode?0:CREATE_NO_WINDOW);
     SetLastError(0);BOOL created=CreateProcessW(NULL,command,NULL,NULL,TRUE,creation_flags,NULL,NULL,&startup.StartupInfo,&root);
     DWORD create_error=created?0:GetLastError();fprintf(report,"ROOT CREATE ok=%d win32_error=%lu pid=%lu command=%ls\n",created,create_error,root.dwProcessId,command);

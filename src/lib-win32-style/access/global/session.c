@@ -28,21 +28,25 @@ BOOL style_global_session_matches(const style_global_namespace *space,const styl
     return s && cookie && s->cookie==cookie && s->phase==STYLE_GLOBAL_ACTIVE && s->style==style &&
            style_global_owner_alive(space,s);
 }
-static BOOL policy(const style_global_namespace *space,DWORD cookie,DWORD style,BOOL match_style)
+BOOL style_global_policy_current(const style_global_namespace *space,DWORD cookie,DWORD *style)
 {
     DWORD saved=GetLastError();BOOL active=FALSE;WCHAR name[STYLE_GLOBAL_NAME_CAP];
     if(cookie && style_global_session_name(space,name,ARRAYSIZE(name))){
         HANDLE mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
         style_global_session *s=mapping?(style_global_session *)MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*s)):NULL;
-        if(s && (match_style?style_global_session_matches(space,s,cookie,style):
-                 (s->cookie==cookie && s->phase==STYLE_GLOBAL_ACTIVE && style_global_owner_alive(space,s))))active=TRUE;
+        if(s && s->cookie==cookie && s->phase==STYLE_GLOBAL_ACTIVE && style_global_owner_alive(space,s)){
+            if(style)*style=s->style;
+            active=TRUE;
+        }
         if(s)UnmapViewOfFile(s);
         if(mapping)CloseHandle(mapping);
     }
     SetLastError(saved);return active;
 }
-BOOL style_global_policy_active(const style_global_namespace *space,DWORD cookie){return policy(space,cookie,0,FALSE);}
-BOOL style_global_policy_style(const style_global_namespace *space,DWORD cookie,DWORD style){return policy(space,cookie,style,TRUE);}
+BOOL style_global_policy_active(const style_global_namespace *space,DWORD cookie)
+{return style_global_policy_current(space,cookie,NULL);}
+BOOL style_global_policy_style(const style_global_namespace *space,DWORD cookie,DWORD style)
+{DWORD current;return style_global_policy_current(space,cookie,&current) && style==current;}
 BOOL style_global_owner_matches(style_global_namespace *space,const style_global_session *s,HMODULE module)
 {
     BOOL ok=FALSE;DWORD size=32752;WCHAR *owner=(WCHAR *)calloc(size,sizeof(WCHAR));

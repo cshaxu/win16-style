@@ -19,7 +19,7 @@ static int matrix(int argc,WCHAR **argv)
     for(unsigned root=0;root<2;++root)for(unsigned child=0;child<2;++child)for(unsigned api=0;api<2;++api){
         WCHAR id[40];DWORD code;STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
         CHECK(swprintf_s(id,40,L"r%uc%ua%u",root,child,api)>0);
-        CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\" 2 \"%ls\" \"%ls\" %u %u \"%ls\"",launcher,files[root],files[child],files[1-root],api,(root+child+api)&1,id)>0);
+        CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" Win16 \"%ls\" 2 \"%ls\" \"%ls\" %u %u \"%ls\"",launcher,files[root],files[child],files[1-root],api,(root+child+api)&1,id)>0);
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
         CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits)));
         CHECK(CreateProcessW(launcher,command,NULL,NULL,TRUE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&startup,&process));

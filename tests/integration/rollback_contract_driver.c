@@ -23,7 +23,7 @@ static int matrix(int argc,WCHAR **argv)
         CHECK(swprintf_s(launcher,MAX_PATH,L"%ls\\run16s.exe",folder)>0 && CopyFileW(argv[1],launcher,FALSE));
         CHECK(copy_shared_dlls(folder,argv[2],argv[3]));
         for(unsigned i=0;i<4;++i)CHECK(swprintf_s(paths[i],MAX_PATH,L"%ls\\%ls",folder,names[i])>0 && CopyFileW(argv[2+i],paths[i],FALSE));
-        CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\" --parent \"%ls\" \"%ls\" \"%ls\" \"%ls\" %u %u",launcher,paths[2+root],paths[3-root],paths[2+root],folder,folder,ansi,root?64:32)>0);
+        CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" Win16 \"%ls\" --parent \"%ls\" \"%ls\" \"%ls\" \"%ls\" %u %u",launcher,paths[2+root],paths[3-root],paths[2+root],folder,folder,ansi,root?64:32)>0);
         HANDLE job=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
         CHECK(job && SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits)));
         STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};DWORD code;

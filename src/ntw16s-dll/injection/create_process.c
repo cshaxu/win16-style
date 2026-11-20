@@ -2,6 +2,7 @@
 #include "intercept.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "lib-win32-style/access/startup/propagate.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "ntw16s-dll/global/session.h"
 #include "lib-win32/process-hook/propagate.h"
 #include <shellapi.h>
@@ -14,7 +15,7 @@ static BOOL WINAPI redirect_self_elevation(SHELLEXECUTEINFOW *info)
     if(!info || info->cbSize!=sizeof(*info) || info->fMask!=SEE_MASK_FLAG_NO_UI ||
        !info->lpVerb || _wcsicmp(info->lpVerb,L"runas") || !info->lpFile ||
        !ntw16s_process_session_active() ||
-       __atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)!=(NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE))
+       (__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&STYLE_STARTUP_POLICY_MASK)!=(NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE))
         return shell_execute_w(info);
     WCHAR *paths=calloc(3u*NTWSHK_PATH_CAP,sizeof(*paths));
     if(!paths)return shell_execute_w(info);
@@ -28,11 +29,16 @@ static BOOL WINAPI redirect_self_elevation(SHELLEXECUTEINFOW *info)
         free(paths);return shell_execute_w(info);
     }
     PCWSTR tail=info->lpParameters?info->lpParameters:L"";
-    size_t count=wcslen(self)+wcslen(tail)+32;
+    extern IMAGE_DOS_HEADER __ImageBase;
+    WCHAR theme[MAX_PATH];
+    if(FAILED(classic_theme_profile_folder((HMODULE)&__ImageBase,classic_theme_process_profile(),theme))){
+        free(paths);return shell_execute_w(info);
+    }
+    size_t count=wcslen(self)+wcslen(tail)+wcslen(theme)+24;
     if(count>32767){free(paths);return shell_execute_w(info);}
     WCHAR *parameters=calloc(count,sizeof(*parameters));
     if(!parameters){free(paths);return shell_execute_w(info);}
-    if(swprintf(parameters,count,L"--elevated \"%ls\"%ls%ls",self,*tail?L" ":L"",tail)<0){free(parameters);free(paths);return shell_execute_w(info);}
+    if(swprintf(parameters,count,L"--elevated \"%ls\" \"%ls\"%ls%ls",theme,self,*tail?L" ":L"",tail)<0){free(parameters);free(paths);return shell_execute_w(info);}
     SHELLEXECUTEINFOW request=*info;request.lpFile=launcher;request.lpParameters=parameters;
     BOOL result=shell_execute_w(&request);DWORD error=GetLastError();
     info->hInstApp=request.hInstApp;free(parameters);free(paths);SetLastError(error);return result;
@@ -53,7 +59,7 @@ void ntw16s_discard_processes(void){style_startup_propagation_discard(&propagati
 LONG ntw16s_attach_processes_using(DWORD (*attach)(void *,void *))
 {
     DWORD error=style_startup_propagate(attach,&propagation);
-    if(!error && __atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)==(NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE)){
+    if(!error && (__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&STYLE_STARTUP_POLICY_MASK)==(NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE)){
         HMODULE shell=GetModuleHandleW(L"shell32.dll");
         FARPROC address=shell?GetProcAddress(shell,"ShellExecuteExW"):NULL;
         if(address){shell_execute_w=(void *)address;error=attach(&shell_execute_w,(void *)redirect_self_elevation);}

@@ -40,7 +40,7 @@ int wmain(int argc,WCHAR **argv)
     SetEnvironmentVariableW(L"WIN16STYLE_UAC_MARKER",elevated()?L"BATCH_HIGH":L"MEDIUM_NOT_FORWARDED");
     /* --once launcher target report nonce. The only user operation is the
      * genuine OS consent/credentials dialog; all application checks are native. */
-    WCHAR command[32768];REQUIRE(swprintf(command,32768,L"\"%ls\" %ls\"%ls\" \"%ls\" \"%ls\" \"\" \"a b\" tail\\",argv[2],async?L"":L"--wait ",argv[3],argv[4],argv[5])>0);
+    WCHAR command[32768];REQUIRE(swprintf(command,32768,L"\"%ls\" Win16 \"%ls\" \"%ls\" \"%ls\" \"\" \"a b\" tail\\",argv[2],argv[3],argv[4],argv[5])>0);
     STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION p={0};
     REQUIRE(CreateProcessW(argv[2],command,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&si,&p));CloseHandle(p.hThread);
     DWORD waited=WaitForSingleObject(p.hProcess,90000),code=STILL_ACTIVE;

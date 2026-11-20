@@ -62,7 +62,7 @@ static int worker(int argc,WCHAR **argv)
     JOBOBJECT_ASSOCIATE_COMPLETION_PORT associate={job,completion};
     if(!completion || !SetInformationJobObject(job,JobObjectAssociateCompletionPortInformation,&associate,sizeof(associate)))goto cleanup;
     if(!wcscmp(argv[1],L"bare"))swprintf_s(command,2048,L"\"%ls\"",argv[2]);
-    else swprintf_s(command,2048,L"\"%ls\" --wait \"%ls\"",argv[1],argv[2]);
+    else swprintf_s(command,2048,L"\"%ls\" Win16 \"%ls\"",argv[1],argv[2]);
     si.dwFlags=STARTF_USESHOWWINDOW;si.wShowWindow=SW_SHOWNORMAL;
     if(!CreateProcessW(NULL,command,NULL,NULL,FALSE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&si,&pi))goto cleanup;
     if(!AssignProcessToJobObject(job,pi.hProcess)){TerminateProcess(pi.hProcess,1);goto cleanup;}

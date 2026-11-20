@@ -298,7 +298,7 @@ static int matrix(int argc,WCHAR **argv)
     for(unsigned styled=classic?DEMO_WIN2K:DEMO_ORIGINAL;styled<=(classic?DEMO_WIN2K:DEMO_WIN16);++styled){
         tree=CreateJobObjectW(NULL,NULL);JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
         CHECK(tree && SetInformationJobObject(tree,JobObjectExtendedLimitInformation,&limits,sizeof(limits)) && ResetEvent(ready));observed=NULL;
-        if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" %ls--wait \"%ls\"",launcher,classic?L"--2k ":L"",image)>0);
+        if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" %ls\"%ls\"",launcher,classic?L"Win2K ":L"Win16 ",image)>0);
         else CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\"",image)>0);
         STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION process={0};
         startup.dwFlags=STARTF_USESHOWWINDOW;startup.wShowWindow=SW_SHOWNORMAL;

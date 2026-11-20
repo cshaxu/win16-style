@@ -22,27 +22,18 @@ Use a modern **64-bit Windows** host. Download the seven files from
 [assets](assets/README.md) and keep the theme subdirectories intact.
 
 ```powershell
-.\run16s.exe notepad.exe
-.\run16s.exe --2k "C:\Games\Solitaire\sol.exe"
+.\run16s.exe Win16 notepad.exe
+.\run16s.exe Win2K "C:\Games\Solitaire\sol.exe"
 ```
 
 Solitaire is an example, not part of the package. Use your own copy; the Windows
 XP version also uses its matching `cards.dll` beside `sol.exe`.
 
-### Waiting and child processes
+### Target arguments and waiting
 
-```powershell
-# Console targets wait by default and return their exit code.
-.\run16s.exe cmd.exe
-
-# Wait explicitly for a GUI target and return its exit code.
-.\run16s.exe --wait notepad.exe
-```
-
-GUI targets normally return control to the launcher caller after startup.
-`--wait` waits for the initial target, rather than every descendant. The
-launcher keeps the Console subsystem so an interactive `cmd.exe` naturally
-waits for it.
+The theme folder is required before the executable name. Every subsequent
+argument goes to the executable. Console targets return their exit code,
+and GUI launches return once startup completes.
 
 Styling is enabled by default. Supported descendants created with
 `CreateProcessA/W` receive the appropriate x86 or x64 DLL too; a 32-bit child can
@@ -50,9 +41,10 @@ follow a 64-bit parent, or vice versa. There is no extra `--win16-style-all` fla
 
 ### Manual global mode
 
-Run `run16s.exe --global` in a console to apply the style to eligible existing
-and newly shown traditional Win32 windows on the current desktop. Press Ctrl+C
-to stop. The controller uses both DLLs and the Windows x86 host; no additional
+Run `run16s.exe --global` on its own to open the tray with styling off.
+The tray scans the launcher's subdirectories and offers the supported themes
+whose descriptors and visual style files are valid. Press Ctrl+C to stop.
+The controller uses both DLLs and the Windows x86 host; no additional
 project file or login startup is needed. Attached processes also attempt to
 propagate the hook to their children.
 
@@ -92,15 +84,13 @@ is not guaranteed to be styled.
 Launch the system Calculator without remembering an application ID:
 
 ```powershell
-.\run16s.exe calc.exe
+.\run16s.exe Win16 calc.exe
 ```
 
 This route styles the outer frame of the activated app hosted by the x64
 Windows ApplicationFrameHost. It leaves XAML content and controls untouched.
 The system Calculator executable and byte-identical copies are redirected when its UWP
 package is installed; unrelated programs named calc.exe retain normal launching.
-`--app <AUMID>` remains available for other supported applications. Activation
-may create a new instance or return an existing one; the returned target is used.
 Global UWP styling, WinUI 3 and other hosting arrangements are not yet supported.
 
 Native tests on Calculator cover activation, caption-button commands and frame
@@ -172,7 +162,9 @@ architecture, then releases the suspension it added. The DLL handles window
 styling and supported descendant propagation inside that process.
 
 The package contains **seven files**. The launcher and two runtime DLLs use
-the Win16 and Windows 2000 theme pairs in `themes/Win16` and `themes/Win2K`.
+the Win16 and Windows 2000 theme pairs in `Win16\` and `Win2K\` beside the launcher.
+The folder name is required and case-insensitive on the command line. A custom
+folder with a compatible descriptor and visual style file can use its own name.
 The native demo is available from a source build.
 
 Supported presentation includes classic title bars and system buttons, menu

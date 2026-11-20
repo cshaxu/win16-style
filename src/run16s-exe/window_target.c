@@ -5,6 +5,10 @@
 #include <stdint.h>
 #include <wchar.h>
 
+static unsigned selected_profile;
+void run16s_window_set_profile(unsigned profile)
+{selected_profile=profile;}
+
 DWORD run16s_window_module_open(DWORD pid,PCWSTR directory,HMODULE *module,HOOKPROC *callback)
 {
     WCHAR path[32768];size_t length=wcslen(directory);
@@ -15,7 +19,7 @@ DWORD run16s_window_module_open(DWORD pid,PCWSTR directory,HMODULE *module,HOOKP
 
 DWORD run16s_window_send(HWND window,UINT message)
 {return win32_style_window_request(window,message,NTW16S_WINDOW_THREAD_RESULT,
-    NTW16S_WINDOW_THREAD_ATTACH,(LPARAM)window,3000);}
+    NTW16S_WINDOW_THREAD_ATTACH|((WPARAM)selected_profile<<NTW16S_WINDOW_THREAD_PROFILE_SHIFT),(LPARAM)window,3000);}
 
 DWORD run16s_window_attach(HWND window,DWORD expected_pid,DWORD expected_thread,PCWSTR directory)
 {
@@ -23,6 +27,7 @@ DWORD run16s_window_attach(HWND window,DWORD expected_pid,DWORD expected_thread,
     DWORD error=run16s_window_module_open(expected_pid,directory,&module,&callback);
     if(error)return error;
     error=win32_style_window_dispatch_loaded(window,expected_pid,expected_thread,module,callback,
-        NTW16S_WINDOW_THREAD_MESSAGE,NTW16S_WINDOW_THREAD_RESULT,NTW16S_WINDOW_THREAD_ATTACH,(LPARAM)window,3000);
+        NTW16S_WINDOW_THREAD_MESSAGE,NTW16S_WINDOW_THREAD_RESULT,
+        NTW16S_WINDOW_THREAD_ATTACH|((WPARAM)selected_profile<<NTW16S_WINDOW_THREAD_PROFILE_SHIFT),(LPARAM)window,3000);
     FreeLibrary(module);return error;
 }

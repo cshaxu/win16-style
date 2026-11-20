@@ -126,7 +126,7 @@ int wmain(int argc,WCHAR **argv)
     FILETIME start;GetSystemTimeAsFileTime(&start);DWORD pid=0;IApplicationActivationManager *manager=NULL;
     if(command){
         WCHAR launcher[32768],line[33024];wcscpy(launcher,dll);WCHAR *slash=wcsrchr(launcher,L'\\');wcscpy(slash+1,L"run16s.exe");
-        int length=swprintf(line,ARRAYSIZE(line),L"\"%ls\" --app \"%ls\"",launcher,argv[1]);
+        int length=swprintf(line,ARRAYSIZE(line),L"\"%ls\" Win16 calc.exe",launcher);
         STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child={0};DWORD code=MAXDWORD;
         if(length<=0||(size_t)length>=ARRAYSIZE(line)||!CreateProcessW(launcher,line,NULL,NULL,FALSE,CREATE_NO_WINDOW,NULL,NULL,&startup,&child))goto done;
         CloseHandle(child.hThread);

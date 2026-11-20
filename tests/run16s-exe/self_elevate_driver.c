@@ -13,7 +13,7 @@ int wmain(int argc, WCHAR **argv)
     if(!timeout || timeout>120000 || (end && *end))return 2;
     if(GetFileAttributesW(argv[3])!=INVALID_FILE_ATTRIBUTES)return 8;
     WCHAR command[32768];
-    if(swprintf(command,32768,L"\"%ls\" --wait \"%ls\" --nohandle \"%ls\"",argv[1],argv[2],argv[3])<0)return 3;
+    if(swprintf(command,32768,L"\"%ls\" Win16 \"%ls\" --nohandle \"%ls\"",argv[1],argv[2],argv[3])<0)return 3;
     HANDLE job=CreateJobObjectW(NULL,NULL);if(!job)return 4;
     JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits={0};limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
     if(!SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits))){CloseHandle(job);return 5;}

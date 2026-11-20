@@ -5,6 +5,7 @@
 #define NTW16S_UWP_RESULT L"Win16Style.UwpFrame.Result.v1"
 enum { NTW16S_UWP_APPLY=1, NTW16S_UWP_REMOVE=2, NTW16S_UWP_APPLY_FULLSCREEN=3,
     NTW16S_UWP_APPLY_2K=4, NTW16S_UWP_REMOVE_2K=5, NTW16S_UWP_APPLY_FULLSCREEN_2K=6 };
+enum { NTW16S_UWP_PROFILE_SHIFT=4, NTW16S_UWP_ACTION_MASK=15 };
 /* WH_CALLWNDPROC, selected host GUI thread only. Message HWND is the frame,
  * LPARAM its current CoreWindow, WPARAM an action above. Result property is
  * Win32 error+1 (1=success); the coordinator removes it after reading.

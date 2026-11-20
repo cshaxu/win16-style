@@ -5,22 +5,11 @@ import os
 import json
 from pathlib import Path
 import subprocess
-import shutil
 import sys
 
-launcher,dll32,dll64,probe32,probe64,gui=map(lambda p:Path(p).resolve(),sys.argv[1:7])
-style=sys.argv[7:]
-if style not in ([],['--16']):
-    raise SystemExit('optional style must be --16')
+launcher,probe32,probe64,gui=map(lambda p:Path(p).resolve(),sys.argv[1:])
 root=Path(os.environ['WIN16STYLE_CAPTURE_DIR'])/'wait-contract'
 root.mkdir()
-package=root/'package';package.mkdir()
-for src,name in ((launcher,'run16s.exe'),(dll32,'ntw16s32.dll'),(dll64,'ntw16s64.dll')):
-    shutil.copyfile(src,package/name)
-for bits,source in ((32,dll32),(64,dll64)):
-    shared=source.with_name(f'ntwshk{bits}.dll')
-    shutil.copyfile(shared,package/shared.name)
-launcher=package/'run16s.exe'
 k=ctypes.WinDLL('kernel32',use_last_error=True)
 k.CreateEventW.argtypes=[ctypes.c_void_p,W.BOOL,W.BOOL,W.LPCWSTR];k.CreateEventW.restype=W.HANDLE
 k.SetEvent.argtypes=[W.HANDLE];k.CloseHandle.argtypes=[W.HANDLE]
@@ -28,14 +17,13 @@ k.WaitForSingleObject.argtypes=[W.HANDLE,W.DWORD];k.WaitForSingleObject.restype=
 k.OpenProcess.argtypes=[W.DWORD,W.BOOL,W.DWORD];k.OpenProcess.restype=W.HANDLE
 k.GetExitCodeProcess.argtypes=[W.HANDLE,ctypes.POINTER(W.DWORD)]
 cmd=Path(os.environ['SystemRoot'])/'System32/cmd.exe'
-for index,(probe,force,blocking) in enumerate([(probe32,False,True),(probe64,False,True),
-        (probe32,True,True),(probe64,True,True),(gui,False,False),(gui,True,True)]):
+for index,(probe,blocking) in enumerate([(probe32,True),(probe64,True),(gui,False)]):
     case=root/str(index);case.mkdir();report=case/'ready.txt';after=case/'returned.txt'
     ready_name=f'Local\\Win16WaitReady-{os.getpid()}-{index}'
     release_name=f'Local\\Win16WaitRelease-{os.getpid()}-{index}'
     ready=k.CreateEventW(None,True,False,ready_name);release=k.CreateEventW(None,True,False,release_name)
     assert ready and release
-    line=f'"{launcher}" '+('--16 ' if style else '')+('--wait ' if force else '')+f'"{probe}" "{report}" "{ready_name}" "{release_name}"'
+    line=f'"{launcher}" Win16 "{probe}" "{report}" "{ready_name}" "{release_name}"'
     tail=f'{line} & set "code=!errorlevel!" & echo returned>"{after}" & exit /b !code!'
     command=f'"{cmd}" /d /v:on /s /c "{tail}"'
     startup=subprocess.STARTUPINFO();startup.dwFlags=subprocess.STARTF_USESHOWWINDOW;startup.wShowWindow=0
@@ -63,7 +51,7 @@ for index,(probe,force,blocking) in enumerate([(probe32,False,True),(probe64,Fal
         assert k.WaitForSingleObject(target,10000)==0
         code=W.DWORD();assert k.GetExitCodeProcess(target,ctypes.byref(code)) and code.value==42
         (case/'stdout.log').write_bytes(out);(case/'stderr.log').write_bytes(err)
-        print(f'WAIT CASE PASS case={index} console={probe!=gui} forced={force} blocking={blocking} cmd={process.pid} target={pid} members={count} code={process.returncode}',flush=True)
+        print(f'WAIT CASE PASS case={index} console={probe!=gui} blocking={blocking} cmd={process.pid} target={pid} members={count} code={process.returncode}',flush=True)
     finally:
         k.SetEvent(release)
         if not collected:
@@ -72,4 +60,4 @@ for index,(probe,force,blocking) in enumerate([(probe32,False,True),(probe64,Fal
             (case/'stdout.log').write_bytes(out);(case/'stderr.log').write_bytes(err)
         if target:k.CloseHandle(target)
         k.CloseHandle(ready);k.CloseHandle(release)
-print('WAIT CONTRACT PASS 6 cases: console default/explicit sync42, GUI default async0/explicit sync42, parent cmd blocked, shared console, injected target')
+print('WAIT CONTRACT PASS 3 cases: x86/x64 console sync42, GUI async0, shared console, injected target')

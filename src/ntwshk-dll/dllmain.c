@@ -2,11 +2,21 @@
 #include <wchar.h>
 #include "staging.h"
 #include "lib-win32-style/access/startup/startup.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
+#include "ntw16s-dll/global/session.h"
 
 extern ntwshk_context ntw16s_process_context;
 DWORD ntw16s_prepare_startup(void *);
 DWORD ntw2ks_prepare_startup(void *);
 static ntwshk_context context;
+static BOOL global_profile(unsigned *profile)
+{
+    DWORD selected;
+    if(!(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTWSHK_POLICY_GLOBAL_SESSION) ||
+       !style_global_policy_current(&ntw16s_global_namespace,
+           __atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE),&selected))return FALSE;
+    *profile=selected;return TRUE;
+}
 
 void CALLBACK NtwshkFinishHelper(HWND window,HINSTANCE instance,LPSTR command,INT show)
 {
@@ -25,6 +35,7 @@ static DWORD bootstrap(void)
     if(win2k && (context.flags&STYLE_STARTUP_POLICY_GLOBAL_SESSION))return ERROR_INVALID_DATA;
     error=process_hook_stage_restore();
     if(error)return error;
+    classic_theme_set_process_profile(context.flags>>STYLE_STARTUP_PROFILE_SHIFT);
     if(win2k)return win32_style_startup(ntw2ks_prepare_startup,&context);
     ntw16s_process_context=context;
     return win32_style_startup(ntw16s_prepare_startup,NULL);
@@ -34,6 +45,7 @@ BOOL WINAPI DllMain(HINSTANCE instance,DWORD reason,LPVOID reserved)
 {
     (void)instance;(void)reserved;
     if(reason==DLL_PROCESS_ATTACH){
+        classic_theme_set_global_profile_reader(global_profile);
         DWORD error=bootstrap();
         if(error){SetLastError(error);return FALSE;}
     }

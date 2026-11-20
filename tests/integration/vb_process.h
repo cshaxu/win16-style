@@ -47,7 +47,7 @@ static HWINEVENTHOOK vb_process_start(WCHAR **argv,BOOL styled,WINEVENTPROC show
     HWINEVENTHOOK hook=SetWinEventHook(EVENT_OBJECT_SHOW,EVENT_OBJECT_SHOW,NULL,shown,0,0,WINEVENT_OUTOFCONTEXT|WINEVENT_SKIPOWNPROCESS);
     CHECK(ready && hook);
     STARTUPINFOW si={.cb=sizeof(si)};
-    if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" --wait \"%ls\"",argv[1],argv[2])>0);
+    if(styled)CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\" Win16 \"%ls\"",argv[1],argv[2])>0);
     else CHECK(swprintf_s(command,ARRAYSIZE(command),L"\"%ls\"",argv[2])>0);
     CHECK(CreateProcessW(styled?argv[1]:argv[2],command,NULL,NULL,FALSE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&si,process));
     CHECK(AssignProcessToJobObject(job,process->hProcess) && ResumeThread(process->hThread)==1 && pump(ready,12000)==WAIT_OBJECT_0);

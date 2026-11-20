@@ -491,8 +491,18 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     return 0;
 }
 
+static BOOL print_folder(PCWSTR folder,classic_theme_family family,void *context)
+{
+    (void)context;wprintf(L"CLASSIC THEME FOLDER %ls family=%u\n",folder,(unsigned)family);
+    return TRUE;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==2 && !wcscmp(argv[1],L"--discover")){
+        classic_theme_visit_folders(GetModuleHandleW(NULL),print_folder,NULL);
+        return 0;
+    }
     BOOL recolored=argc==3 && !wcscmp(argv[2],L"--recolor");
     if(argc!=2 && !recolored)return 2;
     return check(argv[1],L"Win16",FALSE,recolored) || check(argv[1],L"Win2K",TRUE,recolored);

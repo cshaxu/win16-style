@@ -38,7 +38,7 @@ DWORD run16s_elevate_global(DWORD parent_pid,run16s_shell_execute execute,DWORD 
     error=win32_security_shell_wait(&info,execute,TRUE,exit_code);
     return error;
 }
-DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,BOOL wait,BOOL win2k,
+DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,PCWSTR theme,
     run16s_shell_execute execute,DWORD *exit_code)
 {
     WCHAR self[32768],directory[32768];DWORD n=GetModuleFileNameW(NULL,self,32768);
@@ -47,12 +47,12 @@ DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,BOOL wait,BOOL win2k,
     if(!n||n>=32768)return n?ERROR_FILENAME_EXCED_RANGE:GetLastError();
     /* Pin the target resolved by the original caller. Only argv[0] is
      * canonicalized; the argument tail is copied verbatim, never reparsed. */
-    size_t length=wcslen(image)+wcslen(arguments)+40;
+    size_t length=wcslen(image)+wcslen(arguments)+wcslen(theme)+18;
     if(length>32767)return ERROR_FILENAME_EXCED_RANGE;
     WCHAR *parameters=calloc(length,sizeof(WCHAR));
     if(!parameters)return ERROR_NOT_ENOUGH_MEMORY;
-    swprintf(parameters,length,L"%ls--elevated %ls\"%ls\"%ls%ls",
-        win2k?L"--2k ":L"",wait?L"--wait ":L"",image,*arguments?L" ":L"",arguments);
+    swprintf(parameters,length,L"--elevated \"%ls\" \"%ls\"%ls%ls",
+        theme,image,*arguments?L" ":L"",arguments);
     SHELLEXECUTEINFOW info={.cbSize=sizeof(info),
         .fMask=SEE_MASK_NOCLOSEPROCESS|SEE_MASK_NOASYNC|SEE_MASK_FLAG_NO_UI,
         .lpVerb=L"runas",.lpFile=self,.lpParameters=parameters,

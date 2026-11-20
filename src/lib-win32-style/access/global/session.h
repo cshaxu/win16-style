@@ -29,5 +29,6 @@ BOOL style_global_session_matches(const style_global_namespace *,const style_glo
  * and preserve the calling thread's LastError. */
 BOOL style_global_policy_active(const style_global_namespace *,DWORD);
 BOOL style_global_policy_style(const style_global_namespace *,DWORD,DWORD);
+BOOL style_global_policy_current(const style_global_namespace *,DWORD,DWORD *);
 BOOL style_global_owner_matches(style_global_namespace *,const style_global_session *,HMODULE);
 #endif

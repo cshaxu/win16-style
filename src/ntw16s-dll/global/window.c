@@ -3,6 +3,7 @@
 #include "ntw16s-dll/global/session.h"
 #include "lib-win32-style/application/lifecycle/global_window.h"
 #include "lib-win32-style/access/runtime/companion.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 
 #ifdef NTWSHK_UNIFIED
 #include "ntw2ks-dll/window.h"
@@ -48,6 +49,7 @@ BOOL ntw16s_global_win2k_attached(HWND window)
 }
 static const style_global_window_ops *style_ops(DWORD style)
 {
+    style&=1u;
     if(style==NTW16S_GLOBAL_STYLE_16)return &ops;
     if(style==NTW16S_GLOBAL_STYLE_2K){
         if(ntw16s_global_win2k_resources())return &win2k_ops;
@@ -57,9 +59,10 @@ static const style_global_window_ops *style_ops(DWORD style)
 }
 BOOL ntw16s_global_window_apply_style(HWND window,DWORD style)
 {
+    static const WCHAR property[]=L"Win16Style.Global.Profile";
     const style_global_window_ops *selected=style_ops(style),*other=NULL;
     if(!selected)return FALSE;
-    if(style==NTW16S_GLOBAL_STYLE_2K)other=&ops;
+    if(style&1u)other=&ops;
 #ifdef NTWSHK_UNIFIED
     else other=style_ops(NTW16S_GLOBAL_STYLE_2K);
 #else
@@ -68,10 +71,21 @@ BOOL ntw16s_global_window_apply_style(HWND window,DWORD style)
         if(!other)return FALSE;
     }
 #endif
-    return style_global_window_transition(window,selected,other);
+    HANDLE mark=GetPropW(window,property),wanted=(HANDLE)(UINT_PTR)(style+1u);
+    if(mark!=wanted && (style>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM || mark) && selected->attached(window) &&
+       !style_global_window_remove(window,selected))return FALSE;
+    unsigned previous=classic_theme_enter_profile(style);
+    BOOL applied=style_global_window_transition(window,selected,other);
+    classic_theme_leave_profile(previous);
+    if(applied)(void)SetPropW(window,property,wanted);
+    return applied;
 }
 BOOL ntw16s_global_window_remove_style(HWND window,DWORD style)
-{const style_global_window_ops *selected=style_ops(style);return selected && style_global_window_remove(window,selected);}
+{
+    const style_global_window_ops *selected=style_ops(style);
+    if(!selected || !style_global_window_remove(window,selected))return FALSE;
+    RemovePropW(window,L"Win16Style.Global.Profile");return TRUE;
+}
 BOOL ntw16s_global_window_eligible(HWND window)
 {
     WCHAR name[64];DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);

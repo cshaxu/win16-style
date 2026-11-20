@@ -6,5 +6,5 @@
 DWORD run16s_uwp_activate(PCWSTR app_id,BOOL win2k,DWORD *created_pid);
 /* System calculator entry or byte-identical copy; other same-name files stay native. */
 BOOL run16s_uwp_calculator_image(PCWSTR image);
-DWORD run16s_uwp_command(PCWSTR image,PCWSTR arguments,BOOL wait,BOOL win2k,BOOL *handled);
+DWORD run16s_uwp_command(PCWSTR image,PCWSTR arguments,BOOL wait,unsigned profile,BOOL *handled);
 #endif

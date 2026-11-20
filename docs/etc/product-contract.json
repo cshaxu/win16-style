@@ -19,17 +19,21 @@
     }
   ],
   "themes": [
-    "themes/Win16/Win16.theme",
-    "themes/Win16/Win16.msstyles",
-    "themes/Win2K/Win2K.theme",
-    "themes/Win2K/Win2K.msstyles"
+    "Win16/Win16.theme",
+    "Win16/Win16.msstyles",
+    "Win2K/Win2K.theme",
+    "Win2K/Win2K.msstyles"
   ],
   "retired": [
     "demo.exe",
     "ntw16s32.dll",
     "ntw16s64.dll",
     "ntw2ks32.dll",
-    "ntw2ks64.dll"
+    "ntw2ks64.dll",
+    "themes/Win16/Win16.theme",
+    "themes/Win16/Win16.msstyles",
+    "themes/Win2K/Win2K.theme",
+    "themes/Win2K/Win2K.msstyles"
   ],
   "demo": {
     "direct": "native",

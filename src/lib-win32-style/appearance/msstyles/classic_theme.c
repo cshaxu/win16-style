@@ -554,24 +554,176 @@ void classic_theme_close(classic_theme_mapping *source)
     *source=(classic_theme_mapping){0};
 }
 
+static const WCHAR *const theme_folders[]={L"Win16",L"Win2K"};
+static volatile LONG process_profile;
+static _Thread_local unsigned thread_profile;
+static BOOL (*read_global_profile)(unsigned *);
+
+static PWSTR sibling_path(HMODULE renderer,PWSTR path,DWORD capacity)
+{
+    DWORD length=GetModuleFileNameW(renderer,path,capacity);
+    if(!length)return NULL;
+    if(length>=capacity){SetLastError(ERROR_FILENAME_EXCED_RANGE);return NULL;}
+    WCHAR *tail=wcsrchr(path,L'\\');
+    if(!tail){SetLastError(ERROR_INVALID_NAME);return NULL;}
+    return tail+1;
+}
+
+static BOOL folder_name(PCWSTR name)
+{
+    size_t n=name?wcsnlen_s(name,MAX_PATH):0;
+    return n && n<MAX_PATH && wcsncmp(name,L"--",2) && name[n-1]!=L'.' && name[n-1]!=L' ' &&
+        !wcspbrk(name,L"\\/:*?\"<>|");
+}
+
+unsigned classic_theme_profile(PCWSTR folder,classic_theme_family family)
+{
+    if(!_wcsicmp(folder,theme_folders[family]))return (unsigned)family;
+    WCHAR folded[3*MAX_PATH];
+    if(!LCMapStringW(LOCALE_INVARIANT,LCMAP_UPPERCASE,folder,-1,folded,ARRAYSIZE(folded)))
+        return CLASSIC_THEME_PROFILE_CAP;
+    unsigned hash=2166136261u;
+    for(PCWSTR p=folded;*p;++p)hash=(hash^(unsigned)*p)*16777619u;
+    return ((hash&0x07fffffcu)|4u)*2u+(unsigned)family;
+}
+
+void classic_theme_set_process_profile(unsigned profile)
+{InterlockedExchange(&process_profile,(LONG)profile);}
+
+void classic_theme_set_global_profile_reader(BOOL (*read)(unsigned *))
+{read_global_profile=read;}
+
+unsigned classic_theme_process_profile(void)
+{return (unsigned)InterlockedCompareExchange(&process_profile,0,0);}
+
+unsigned classic_theme_enter_profile(unsigned profile)
+{
+    unsigned previous=thread_profile;
+    thread_profile=profile+1u;
+    return previous;
+}
+
+void classic_theme_leave_profile(unsigned previous)
+{thread_profile=previous;}
+
+HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_mapping *source,
+    classic_theme_family *family)
+{
+    if(!renderer || !folder_name(folder) || !source || source->resources || !family)
+        return E_INVALIDARG;
+    WCHAR path[32768];PWSTR filename=sibling_path(renderer,path,ARRAYSIZE(path));
+    if(!filename)return HRESULT_FROM_WIN32(GetLastError());
+    size_t capacity=ARRAYSIZE(path)-(size_t)(filename-path);
+    if(wcscpy_s(filename,capacity,folder))return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
+    DWORD attributes=GetFileAttributesW(path);
+    if(attributes==INVALID_FILE_ATTRIBUTES)return HRESULT_FROM_WIN32(GetLastError());
+    if(!(attributes&FILE_ATTRIBUTE_DIRECTORY) || (attributes&FILE_ATTRIBUTE_REPARSE_POINT))
+        return HRESULT_FROM_WIN32(ERROR_DIRECTORY);
+    if(wcscat_s(filename,capacity,L"\\*.theme"))return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
+
+    WIN32_FIND_DATAW entry;WCHAR descriptor[MAX_PATH]={0};
+    HANDLE search=FindFirstFileW(path,&entry);
+    if(search==INVALID_HANDLE_VALUE)return HRESULT_FROM_WIN32(GetLastError());
+    do{
+        PCWSTR ext=wcsrchr(entry.cFileName,L'.');
+        if(!ext || _wcsicmp(ext,L".theme") ||
+           (entry.dwFileAttributes&(FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_REPARSE_POINT)))continue;
+        if(descriptor[0]){FindClose(search);return HRESULT_FROM_WIN32(ERROR_DUP_NAME);}
+        wcscpy(descriptor,entry.cFileName);
+    }while(FindNextFileW(search,&entry));
+    DWORD error=GetLastError();FindClose(search);
+    if(error!=ERROR_NO_MORE_FILES)return HRESULT_FROM_WIN32(error);
+    if(!descriptor[0])return HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
+    if(swprintf_s(filename,capacity,L"%ls\\%ls",folder,descriptor)<0)
+        return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
+    classic_theme_mapping candidate={0};
+    HRESULT result=classic_theme_open(path,&candidate);
+    if(FAILED(result))return result;
+    const classic_button_group *buttons=&candidate.model.title_buttons;
+    unsigned roles=0;
+    for(unsigned i=0;i<buttons->count;++i)roles|=1u<<buttons->slots[i].role;
+    if(roles&(1u<<CLASSIC_BUTTON_CLOSE))*family=CLASSIC_THEME_WIN2K;
+    else if(roles&(1u<<CLASSIC_BUTTON_SYSTEM))*family=CLASSIC_THEME_WIN16;
+    else{classic_theme_close(&candidate);return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);}
+    *source=candidate;return S_OK;
+}
+
+void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void *context)
+{
+    if(!renderer || !visit)return;
+    WCHAR path[32768];PWSTR filename=sibling_path(renderer,path,ARRAYSIZE(path));
+    if(!filename ||
+       wcscpy_s(filename,ARRAYSIZE(path)-(size_t)(filename-path),L"*"))return;
+    WIN32_FIND_DATAW entry;
+    HANDLE search=FindFirstFileW(path,&entry);
+    if(search==INVALID_HANDLE_VALUE)return;
+    do{
+        if(!(entry.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY) ||
+           (entry.dwFileAttributes&FILE_ATTRIBUTE_REPARSE_POINT) || !folder_name(entry.cFileName))continue;
+        classic_theme_mapping candidate={0};classic_theme_family family;
+        if(FAILED(classic_theme_open_folder(renderer,entry.cFileName,&candidate,&family)))continue;
+        classic_theme_close(&candidate);
+        if(!visit(entry.cFileName,family,context))break;
+    }while(FindNextFileW(search,&entry));
+    FindClose(search);
+}
+
+HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH])
+{
+    if(profile>=CLASSIC_THEME_PROFILE_CAP || (profile>1 && profile<CLASSIC_THEME_PROFILE_FIRST_CUSTOM))
+        return E_INVALIDARG;
+    classic_theme_family family=classic_theme_profile_family(profile);
+    if(profile<2){
+        wcscpy(folder,theme_folders[family]);return S_OK;
+    }
+    WCHAR path[32768];PWSTR filename=sibling_path(renderer,path,ARRAYSIZE(path));
+    if(!filename)return HRESULT_FROM_WIN32(GetLastError());
+    if(wcscpy_s(filename,ARRAYSIZE(path)-(size_t)(filename-path),L"*"))
+        return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
+    WIN32_FIND_DATAW entry;folder[0]=0;
+    HANDLE search=FindFirstFileW(path,&entry);
+    if(search==INVALID_HANDLE_VALUE)return HRESULT_FROM_WIN32(GetLastError());
+    do{
+        if(!(entry.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY) ||
+           (entry.dwFileAttributes&FILE_ATTRIBUTE_REPARSE_POINT) || !folder_name(entry.cFileName) ||
+           classic_theme_profile(entry.cFileName,family)!=profile)continue;
+        if(folder[0]){FindClose(search);return HRESULT_FROM_WIN32(ERROR_DUP_NAME);}
+        wcscpy(folder,entry.cFileName);
+    }while(FindNextFileW(search,&entry));
+    DWORD error=GetLastError();FindClose(search);
+    if(error!=ERROR_NO_MORE_FILES)return HRESULT_FROM_WIN32(error);
+    return folder[0]?S_OK:HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND);
+}
+
+HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_theme_mapping *source)
+{
+    WCHAR folder[MAX_PATH];
+    HRESULT result=classic_theme_profile_folder(renderer,profile,folder);
+    if(FAILED(result))return result;
+    classic_theme_family family=classic_theme_profile_family(profile),found;
+    result=classic_theme_open_folder(renderer,folder,source,&found);
+    if(SUCCEEDED(result) && found!=family){classic_theme_close(source);return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);}
+    return result;
+}
+
 HRESULT classic_theme_open_packaged(HMODULE renderer,classic_theme_family family,
     BOOL embedded,classic_theme_mapping *source)
 {
-    static const WCHAR *const filenames[]={L"\\Win16\\Win16.theme",L"\\Win2K\\Win2K.theme"};
-    if(!renderer || !source || source->resources || (unsigned)family>=ARRAYSIZE(filenames))
+    if(!renderer || !source || source->resources || (unsigned)family>=ARRAYSIZE(theme_folders))
         return E_INVALIDARG;
-    WCHAR path[32768];
-    DWORD length=GetModuleFileNameW(renderer,path,ARRAYSIZE(path));
-    if(!length)return HRESULT_FROM_WIN32(GetLastError());
-    if(length>=ARRAYSIZE(path))return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
-    WCHAR *tail=wcsrchr(path,L'\\');
-    if(!tail)return HRESULT_FROM_WIN32(ERROR_INVALID_NAME);
-    size_t parent=(size_t)(tail+1-path),capacity=ARRAYSIZE(path)-parent;
-    if(wcscpy_s(tail+1,capacity,L"themes"))return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
-    if(GetFileAttributesW(path)!=INVALID_FILE_ATTRIBUTES){
-        if(wcscat_s(tail+1,capacity,filenames[family]))return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
-        return classic_theme_open(path,source);
-    }
+    unsigned profile=classic_theme_process_profile(),global;
+    if(thread_profile)profile=thread_profile-1u;
+    else if(read_global_profile && read_global_profile(&global) && classic_theme_profile_family(global)==family)
+        profile=global;
+    if(profile>=2 && classic_theme_profile_family(profile)==family)
+        return classic_theme_open_profile(renderer,profile,source);
+    WCHAR path[32768];PWSTR filename=sibling_path(renderer,path,ARRAYSIZE(path));
+    if(!filename)return HRESULT_FROM_WIN32(GetLastError());
+    size_t capacity=ARRAYSIZE(path)-(size_t)(filename-path);
+    PCWSTR directory=theme_folders[family];
+    if(wcscpy_s(filename,capacity,directory))return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
+    if(GetFileAttributesW(path)!=INVALID_FILE_ATTRIBUTES)
+        return classic_theme_open_profile(renderer,(unsigned)family,source);
     DWORD error=GetLastError();
     if(error!=ERROR_FILE_NOT_FOUND && error!=ERROR_PATH_NOT_FOUND)return HRESULT_FROM_WIN32(error);
     if(!embedded)return HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND);

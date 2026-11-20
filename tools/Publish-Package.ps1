@@ -58,9 +58,13 @@ foreach($destination in $destinations){
         Assert-RegularPath $target $false
         $before=if(Test-Path -LiteralPath $target){Hash $target}else{$null}
         $retired=$name -in $contract.retired
-        if($retired -and $before -and (!$baseline.artifacts.Contains($name) -or
-               $baseline.artifacts[$name].sha256 -ne $before)){throw "Unrecognized file at retirement path: $target"}
+        $previous=if($baseline.artifacts.Contains($name)){$baseline.artifacts[$name].sha256}
+            elseif($baseline.theme_artifacts.Contains($name)){$baseline.theme_artifacts[$name]}
+        if($retired -and $before -and $previous -ne $before){throw "Unrecognized file at retirement path: $target"}
         $after=if(!$retired){$tested.sha256.($name)}else{$null}
+        if($name -in $contract.themes -and $before -and $before -ne $after -and $before -ne $previous){
+            throw "Unrecognized file at theme destination: $target"
+        }
         if($before -ne $after){
             $index=$records.Count
             $records.Add([pscustomobject]@{name=$name;path=$target;before=$before;expected=$after;

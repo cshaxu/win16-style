@@ -36,7 +36,7 @@ static void change(HWND window,DWORD style,BOOL apply,void *context)
     (void)context;
     if(apply){
         BOOL attached=ntw16s_global_window_apply_style(window,style),text_changed=FALSE;
-        if(style==NTW16S_GLOBAL_STYLE_16 && attached && !ntw16s_global_vb_text(window,&text_changed) && text_changed)
+        if(!(style&1u) && attached && !ntw16s_global_vb_text(window,&text_changed) && text_changed)
             RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN);
         ntw16s_global_window_children(window,TRUE,style);
     }else{

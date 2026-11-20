@@ -13,7 +13,7 @@ in-memory record examples do not implement external binding or embedded OLE.
 Images, shapes and charts illustrate application content boundaries. Legacy
 grids, windowless ActiveX and other unmatched families remain separate work.
 
-After publishing on Windows, use `O:/winnt/run16s.exe --2k O:/winnt/demo.exe`
+After publishing on Windows, use `O:/winnt/run16s.exe Win2K <build-dir>/demo.exe`
 to inspect the classic controls. In **Lists and toolbars**, the toolbar has
 an image, a separator and a toggle, and the status bar shows ordinary, raised
 and borderless parts. In **Ranges and dates**, Step advances the smooth and

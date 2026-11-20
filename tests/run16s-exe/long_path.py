@@ -24,7 +24,7 @@ for width, source in [(32, target32), (64, target64)]:
     shutil.copy2(source, target)
     assert len(str(target)) > 300
     marker = scratch/f'entry-{width}.txt'
-    result = subprocess.run([str(package/'run16s.exe'), '--wait', str(target), '--entry', str(marker)],
+    result = subprocess.run([str(package/'run16s.exe'), 'Win16', str(target), '--entry', str(marker)],
                             capture_output=True, timeout=30)
     assert result.returncode == 42 and marker.exists(), (width, result.returncode, result.stderr)
     print(f'LONG PATH PASS width={width} characters={len(str(target))}, actual CLI/install/entry/exit42')
