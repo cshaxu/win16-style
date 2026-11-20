@@ -123,28 +123,30 @@ M0 T29 S17 已收口。双位宽 Win32 外框共享主题定义的标题、边�
 S16 同条件逐字节一致。实际远端 P1 `7f72b60a` 的七件、九个退役路径和 1,286 项构建
 输入已核验。见 [S17 记录](../history/M0-T29-S17-shared-frame.md)及[发布清单](../etc/release.json)。
 
-## M0 T29 S18 Packet
+M0 T29 S18 已收口。P1 `acf79b8fb32a` 的双宽现代外框读取同一已选主题模型，
+复用标题、边框、按钮图形和命中。两处实际发布与远端七件已核对。双宽混搭主题和
+自有窗口恢复通过。真实 Scan 和计算器附着前超时，见 [S18 记录](../history/M0-T29-S18-modern-frame-model.md)。
+
+## M0 T29 S19 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation |
-| Admission And Approval | 按用户要求在 T29 内持续迁移现有 Win16 和 Win2000 外观，S17 远端复核通过后准入。 |
-| Objective | 让已有 UWP 和 WinUI 外框消费 S17 的主题绘制、几何和命中模型，保留宿主标题区与恢复契约。 |
-| Non-goals | 内部控件、扩展接入范围、权限和系统设置；弹出菜单及字体共用化由 S19 承接。 |
-| Reference Baseline | S17 P1 `7f72b60a`，含正式两处同摘要七件；参照 T28 已验收的现代窗口路径。 |
+| Admission And Approval | 按用户要求在 T29 内继续清除年代专属呈现，S18 已完成实际远端复核。 |
+| Objective | 让已有菜单行列、各状态、图标与字体从统一主题描述取得，把 Win16 和 Win2000 可观察配方迁移到主题源。 |
+| Non-goals | 新增控件、窗口接入范围与权限；新增字体资产需可追溯且不依赖外部仓库。 |
+| Reference Baseline | S18 P1 `acf79b8fb32a`，含两处同摘要七件及共享现代外框。 |
 | Candidate Proposal | [T29 主题驱动实施顺序](../proposals/msstyles-classic-runtime.md#s15s24-拟定顺序)。 |
-| Files And ABI Surface | 共享外框、合成宿主应用层、既有两供应者和对应夹具。兼容导出、宿主参数及主题目录协议。 |
-| Applicable Rules | C17、双位宽 MinGW/Ninja/ccache，同快照先发布后测试。 |
-| Verification | 双宽自有 UWP 合成表面及 WinUI 夹具对照，同主题共享区域像素和 DPI 几何、主题替换、命中、刷新、撤销及标签／菜单区保留。具备桌面条件时复验已有真实宿主。 |
-| Expected Markers | 图像及系统字形按同一主题声明绘制，Win32 对应同角色像素一致。去除后客户区、标题及合成层回到原样。 |
-| Asset Needs | 同批七件、原始按钮图像与来源；混搭主题仅供独立对照。 |
-| Reporting Requirements | 区分自有合成夹具、实际宿主、物理交互、已知旧失败与环境跳过。 |
-| Stop Conditions | 不使用 computer-use 或私有桌面，应用样本必须是自有有界实例。 |
-| Exit Criteria | 两类现有现代宿主共用主题外框执行器，双宽验证、同批七件发布后测试和实际远端复核完成。 |
+| Files And ABI Surface | MSStyles 菜单和字体模型，公共菜单状态、绘制与图形字体租约，现有 Win32 与现代菜单适配。保留菜单句柄、应用自绘回调和兼容导出。 |
+| Applicable Rules | C17、双位宽 MinGW/Ninja/ccache、同快照先发布后测试，保留资源来源。 |
+| Verification | 先冻结 Win32 菜单栏、弹出及子菜单、系统菜单、现代菜单和字体调用方。双宽聚焦测试对照像素和度量、模态键鼠、取消、嵌套、重绘、主题交换和资源归还；再验证同批发布。 |
+| Expected Markers | 混搭主题独立改变行列、状态、图标及字体，标题与菜单仍可用，命令及恢复符合各宿主契约。 |
+| Asset Needs | 七件正式包、原菜单图像与来源、可核对的混搭主题夹具。 |
+| Reporting Requirements | 区分像素、消息、实际宿主、原生保留和真实交互。已有未覆盖字形和历史验收债务明确记录。 |
+| Stop Conditions | 不使用 computer-use 或私有桌面。运行验证选自有有界实例。 |
+| Exit Criteria | 现有菜单及字体共用机制，风格配方由主题选择；双宽聚焦、发布后测试和实际远端复核完成。 |
 | Original Owner Request | 只换主题文件复现已支持 Win16 和 Win2000，EXE/DLL 无年代分派及专属绘制。 |
-| Similar-Issue Sweep | 共查原生与合成标题区域的主题读入、按钮资源、命中、DPI、标题替换、刷新和撤销。 |
-
-[S18 开发记录](../history/M0-T29-S18-modern-frame-model.md)保存双宽合成验证与真实应用对照。P1 已在两处发布并完成聚焦实包 12/12，待实际远端复核后收口。
+| Similar-Issue Sweep | 共查标题、菜单栏、系统／上下文／子菜单、现代外框、应用自绘和字体租约生命周期。 |
 
 ## Identifier State
 
@@ -157,11 +159,11 @@ S16 同条件逐字节一致。实际远端 P1 `7f72b60a` 的七件、九个退�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S17 P1 `7f72b60a`，两处七件正式文件和九个退役路径。
+- Last verified remote delivery: M0 T29 S18 P1 `acf79b8fb32a`，两处七件正式文件和九个退役路径。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 18
-- Open task: M0 T29 S18，UWP／WinUI 外框接入。
+- Last allocated T29 S: 19
+- Open task: M0 T29 S19，菜单与字体。
 
 ## Technical Baseline
 
