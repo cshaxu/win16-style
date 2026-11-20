@@ -214,5 +214,5 @@
     "full_matrix": "not run; 50 focused cases and 12 supplemental post-publication runs",
     "legacy_startup_static_oracle": "Ntw2ksWindowAttached in the standalone compatibility DLL cannot observe the neutral runtime subclass. Identical line 53 on S19, S20 candidate and S20 install in both widths. Replaced for this delivery by the native pixel observation."
   },
-  "closure": "local delivery verified; remote review pending"
+  "closure": "verified against remote main at c1edb6c5856f949dfac3c8d94e5a9b78bc2c072a"
 }
