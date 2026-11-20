@@ -7,5 +7,5 @@
 BOOL win16_style_tab_supported(HWND);
 struct classic_tab_colors;
 BOOL win16_style_tab_paint(HWND,HDC,const win16_style_palette *,HFONT,const style_instance *,
-    const style_control_native_state *,const struct classic_tab_colors *);
+    const style_control_native_state *,const struct classic_tab_colors *,style_line_profile);
 #endif

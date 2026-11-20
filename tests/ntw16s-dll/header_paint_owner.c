@@ -42,7 +42,7 @@ static int worker(int argc,WCHAR **argv)
         HWND w=CreateWindowW(cls.lpszClassName,L"",WS_CHILD|WS_VISIBLE|HDS_BUTTONS,0,0,360,26,parent,NULL,instance,NULL);CHECK(w);
         for(unsigned i=0;i<2;++i){HDITEMW item={.mask=HDI_WIDTH|HDI_TEXT|HDI_FORMAT,.cxy=100,.pszText=L"Owned header",.fmt=HDF_STRING};CHECK(SendMessageW(w,HDM_INSERTITEMW,i,(LPARAM)&item)==(LRESULT)i);}
         armed=mode!=0;instance_state.detached=FALSE;style_control_native_init(&native_state);attempts=0;fail_on=fault;
-        BOOL painted=win16_style_header_paint(w,dc,&palette,source,&instance_state,&native_state,NULL);
+        BOOL painted=win16_style_header_paint(w,dc,&palette,source,&instance_state,&native_state,NULL,STYLE_LINE_DEFAULT);
         CHECK(painted==(mode==0 && fault==0));CHECK(!allocations);
         CHECK(GetCurrentObject(dc,OBJ_FONT)==source && GetTextColor(dc)==RGB(27,53,71));
         armed=FALSE;if(IsWindow(w))CHECK(DestroyWindow(w));++cases;

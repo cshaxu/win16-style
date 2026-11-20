@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <wchar.h>
 
 typedef BOOL (__cdecl *window_op)(HWND);
@@ -30,17 +31,28 @@ static LRESULT CALLBACK parent_proc(HWND window,UINT message,WPARAM a,LPARAM b)
 
 int wmain(int argc,WCHAR **argv)
 {
-    CHECK(argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
+    BOOL themed=argc==3 && !wcscmp(argv[2],L"theme-edge");
+    CHECK(argc==2 || (argc==3 && (themed || !wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
     const INITCOMMONCONTROLSEX icc={sizeof(icc),ICC_BAR_CLASSES};
     CHECK(InitCommonControlsEx(&icc));
-    HMODULE dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
-    CHECK(dll);
-    window_op attach=(void *)GetProcAddress(dll,"Ntw2ksWindowAttach");
-    window_op attached=(void *)GetProcAddress(dll,"Ntw2ksWindowAttached");
-    window_op remove=(void *)GetProcAddress(dll,"Ntw2ksWindowRemove");
-    CHECK(attach && attached && remove);
+    HMODULE dll=NULL;
+    window_op attach=NULL,attached=NULL,remove=NULL;
+    COLORREF edge=0;
+    if(themed){
+        WCHAR *end;
+        unsigned long value=wcstoul(argv[1],&end,16);
+        CHECK(end!=argv[1] && !*end && value<=0xffffff);
+        edge=(COLORREF)value;
+    }else{
+        dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
+        CHECK(dll);
+        attach=(void *)GetProcAddress(dll,"Ntw2ksWindowAttach");
+        attached=(void *)GetProcAddress(dll,"Ntw2ksWindowAttached");
+        remove=(void *)GetProcAddress(dll,"Ntw2ksWindowRemove");
+        CHECK(attach && attached && remove);
+    }
     HINSTANCE instance=GetModuleHandleW(NULL);
     const WNDCLASSW cls={.lpfnWndProc=parent_proc,.hInstance=instance,.lpszClassName=L"OwnedWin2kTrack"};
     CHECK(RegisterClassW(&cls));
@@ -60,7 +72,7 @@ int wmain(int argc,WCHAR **argv)
     for(int vertical=0;vertical<2;++vertical){
         track=CreateWindowW(TRACKBAR_CLASSW,NULL,WS_CHILD|WS_VISIBLE|TBS_AUTOTICKS|TBS_BOTH|(vertical?TBS_VERT:0),
             0,0,vertical?across:length,vertical?length:across,root,NULL,instance,NULL);
-        CHECK(track && (!hooked || attached(track)) && attach(track));
+        CHECK(track && (themed || ((!hooked || attached(track)) && attach(track))));
         SendMessageW(track,TBM_SETRANGE,TRUE,MAKELPARAM(0,10));
         SendMessageW(track,TBM_SETPOS,TRUE,5);
         RECT thumb,channel;
@@ -68,6 +80,13 @@ int wmain(int argc,WCHAR **argv)
         SendMessageW(track,TBM_GETCHANNELRECT,0,(LPARAM)&channel);
         int x=(thumb.left+thumb.right)/2,y=(thumb.top+thumb.bottom)/2;
         SendMessageW(track,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT|PRF_ERASEBKGND);
+        if(themed){
+            COLORREF actual=GetPixel(dc,thumb.left,thumb.top);
+            printf("THEME_TRACKBAR_EDGE axis=%d pixel=%06lx\n",vertical,actual);
+            CHECK(actual==edge && SendMessageW(track,TBM_GETPOS,0,0)==5);
+            CHECK(DestroyWindow(track));
+            continue;
+        }
         if(GetPixel(dc,x,y)!=face)
             fprintf(stderr,"square axis=%d dpi=%u thumb=%ld,%ld,%ld,%ld pixel=%06lx\n",
                 vertical,dpi,thumb.left,thumb.top,thumb.right,thumb.bottom,GetPixel(dc,x,y));
@@ -96,7 +115,7 @@ int wmain(int argc,WCHAR **argv)
         custom_parts=0;
     }
     const DWORD points[]={0,TBS_TOP,TBS_VERT,TBS_VERT|TBS_TOP};
-    for(unsigned i=0;i<ARRAYSIZE(points);++i){
+    for(unsigned i=0;!themed && i<ARRAYSIZE(points);++i){
         BOOL vertical=(points[i]&TBS_VERT)!=0,start=(points[i]&TBS_TOP)!=0;
         track=CreateWindowW(TRACKBAR_CLASSW,NULL,WS_CHILD|WS_VISIBLE|TBS_AUTOTICKS|points[i],
             0,0,vertical?across:length,vertical?length:across,root,NULL,instance,NULL);
@@ -117,7 +136,9 @@ int wmain(int argc,WCHAR **argv)
         CHECK(remove(track) && DestroyWindow(track));
     }
     CHECK(DestroyWindow(root));
-    SelectObject(dc,old);DeleteObject(bmp);DeleteDC(dc);FreeLibrary(dll);
-    puts("WIN2K_TRACKBAR_OK rectangular=2 pointed=4 disabled=2 native_notifications=2 custom_draw=2 detach=6");
+    SelectObject(dc,old);DeleteObject(bmp);DeleteDC(dc);
+    if(dll)FreeLibrary(dll);
+    if(themed)puts("THEME_TRACKBAR_OK axes=2 position_preserved=1");
+    else puts("WIN2K_TRACKBAR_OK rectangular=2 pointed=4 disabled=2 native_notifications=2 custom_draw=2 detach=6");
     return 0;
 }

@@ -2,6 +2,8 @@
 #define STYLE_MSSTYLES_CLASSIC_STYLE_H
 
 #include <stddef.h>
+#include "lib-win32-style/application/control/progress_paint.h"
+#include "lib-win32-style/application/control/trackbar_paint.h"
 #include "lib-win32-style/application/control/scroll_geometry.h"
 #include "lib-win32-style/application/graphics/paint_frame.h"
 #include "lib-win32-style/application/window/caption_slots.h"
@@ -53,6 +55,10 @@ typedef struct classic_dialog_policy {
 typedef struct classic_control_presentation {
     style_line_profile separator,group,edit;
     style_push_profile push;
+    style_progress_layout progress;
+    style_trackbar_profile trackbar;
+    style_line_profile header;
+    style_line_profile tab;
 } classic_control_presentation;
 
 /* Parse project RCDATA CLASSIC_STYLE v1. The caller's output changes only on success. */
@@ -66,6 +72,6 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
     const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border,
     const classic_control_presentation *controls);
 
-enum { CLASSIC_STYLE_RESOURCE_CAPACITY=220 };
+enum { CLASSIC_STYLE_RESOURCE_CAPACITY=261 };
 
 #endif

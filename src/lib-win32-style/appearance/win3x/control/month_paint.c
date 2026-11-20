@@ -5,10 +5,17 @@
 #include <vssym32.h>
 #include <commctrl.h>
 
+COLORREF win16_control_month_selected_color(const classic_theme *theme,COLORREF fallback)
+{
+    if(theme->calendar.present&(1u<<CLASSIC_CALENDAR_SELECTED))
+        return theme->calendar.values[CLASSIC_CALENDAR_SELECTED];
+    return theme->list.present?theme->list.selection:fallback;
+}
+
 void win16_control_month_arrow(const win16_control_month_view *v,HTHEME theme,HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {
     if(!v || !r || (part!=MC_NAVNEXT && part!=MC_NAVPREV) || state<MCNN_NORMAL || state>MCNN_DISABLED || !style_control_month_draw_identity(&v->native,theme,dc,address))return;
-    win16_style_month_arrow(dc,r,clip,part,state,v->palette);
+    win16_style_month_arrow(dc,r,clip,part,state,v->palette,v->arrows);
 }
 static BOOL month_text_allowed(const win16_control_month_view *s,HTHEME theme,HDC dc,int part,int state,DWORD flags,DWORD flags2,const RECT *r,const void *address)
 {return s && r && (part==MC_GRIDCELL || part==MC_GRIDCELLUPPER) && state>=0 && state<=7 && flags2==0 && (flags==0x925 || flags==0x926 || flags==0x924) && IsWindowEnabled(s->native.window) && style_control_month_draw_identity(&s->native,theme,dc,address);}

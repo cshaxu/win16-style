@@ -13,14 +13,22 @@ BOOL win2k_month_supported(HWND window)
     return !(GetWindowLongPtrW(window,GWL_STYLE)&MCS_MULTISELECT);
 }
 
-void win2k_date_colors(HWND window,const style_instance *instance,style_calendar_colors *colors,BOOL picker,const win2k_palette *p)
+void win2k_date_colors(HWND window,const style_instance *instance,style_calendar_colors *colors,BOOL picker,
+    const win2k_palette *p,const classic_calendar_colors *theme)
 {
-    const COLORREF roles[STYLE_CALENDAR_COLOR_COUNT]={p->window,p->text,p->selection,p->selection_text,p->window,p->gray};
+    COLORREF roles[STYLE_CALENDAR_COLOR_COUNT]={p->window,p->text,p->selection,p->selection_text,p->window,p->gray};
+    static const unsigned native_role[CLASSIC_CALENDAR_ROLE_COUNT]={
+        [CLASSIC_CALENDAR_OUTSIDE]=MCSC_BACKGROUND,[CLASSIC_CALENDAR_TEXT]=MCSC_TEXT,
+        [CLASSIC_CALENDAR_SELECTED]=MCSC_TITLEBK,[CLASSIC_CALENDAR_SELECTED_TEXT]=MCSC_TITLETEXT,
+        [CLASSIC_CALENDAR_GRID]=MCSC_MONTHBK,[CLASSIC_CALENDAR_TRAILING_TEXT]=MCSC_TRAILINGTEXT
+    };
+    for(unsigned i=0;i<ARRAYSIZE(native_role);++i)
+        if(theme->present&(1u<<i))roles[native_role[i]]=theme->values[i];
     style_calendar_colors_apply(window,instance,colors,picker,roles);
 }
 
 void win2k_date_button(HWND window,const style_instance *instance,HDC dc,const RECT *dirty,
-    const style_control_native_button *button,const win2k_palette *palette)
+    const style_control_native_button *button,const win2k_palette *palette,const style_scroll_arrow_art *art)
 {
     if(instance->detached || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL))return;
     UINT state=DFCS_SCROLLDOWN;
@@ -29,6 +37,6 @@ void win2k_date_button(HWND window,const style_instance *instance,HDC dc,const R
     int saved=SaveDC(dc);
     if(!saved)return;
     if(!dirty || IntersectClipRect(dc,dirty->left,dirty->top,dirty->right,dirty->bottom)>NULLREGION)
-        style_paint_scroll_system_arrow(dc,&button->bounds,state,palette);
+        style_paint_scroll_arrow(dc,&button->bounds,state,palette,art);
     RestoreDC(dc,saved);
 }

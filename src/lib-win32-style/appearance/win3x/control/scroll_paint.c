@@ -1,7 +1,6 @@
 #include "scroll_paint.h"
 #include "basic_paint.h"
 #include "../../../application/graphics/paint_frame.h"
-#include "../resources/scroll_assets.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include <oleacc.h>
 #include "lib-win32-style/application/control/scroll_surface.h"
@@ -9,14 +8,9 @@
 static void paint_arrow(HDC dc,RECT bounds,UINT direction,DWORD native,const win16_style_palette *palette,
     const style_scroll_arrow_art *art)
 {
-    unsigned state=(native&STATE_SYSTEM_UNAVAILABLE)?2u:(native&STATE_SYSTEM_PRESSED)?1u:0u;
-    if(art && art->source){
-        UINT flags=direction|(state==2?DFCS_INACTIVE:state==1?DFCS_PUSHED|DFCS_FLAT:0);
-        style_relief_palette colors=win16_control_push_palette(palette);
-        if(style_paint_scroll_arrow(dc,&bounds,flags,&colors,art))return;
-    }
-    unsigned glyph=state*STYLE_SCROLL_ARROW_DIRECTIONS+direction;
-    win16_control_scroll_arrow(dc,bounds,win16_control_scroll_glyph((enum win16_control_scroll_asset)glyph),palette);
+    UINT state=direction|((native&STATE_SYSTEM_UNAVAILABLE)?DFCS_INACTIVE:
+        (native&STATE_SYSTEM_PRESSED)?DFCS_PUSHED|DFCS_FLAT:0);
+    win16_control_scroll_arrow_art(dc,bounds,state,palette,art);
 }
 
 static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG object,BOOL vertical)

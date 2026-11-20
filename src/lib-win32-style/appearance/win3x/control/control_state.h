@@ -26,6 +26,7 @@ typedef struct control_style {
     classic_progress_colors progress_colors[2];
     classic_trackbar_colors trackbar_colors[2];
     classic_frame_colors frame_colors;
+    classic_bar_colors toolbar_colors;
     classic_control_presentation controls;
     classic_surface_colors scroll_arrow_colors;
     style_scroll_arrow_art scroll_art;

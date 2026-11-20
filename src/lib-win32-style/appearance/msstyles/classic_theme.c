@@ -73,12 +73,14 @@ static HRESULT variant_resource(HMODULE module,PCWSTR size,PCWSTR color,theme_re
 }
 
 enum theme_class { class_window, class_button, class_scroll_arrow, class_sysmetrics,
-    class_menu, class_edit, class_combo, class_tab, class_header, class_progress, class_trackbar, class_count };
+    class_menu, class_edit, class_combo, class_tab, class_header, class_progress, class_trackbar,
+    class_listview, class_treeview, class_toolbar, class_rebar, class_status, class_monthcal, class_datepicker, class_count };
 
 static HRESULT class_indices(theme_resource map,size_t indices[class_count],size_t *count)
 {
     const PCWSTR names[class_count]={L"Window",L"Button",L"ScrollBar",L"SysMetrics",L"Menu",
-        L"Edit",L"ComboBox",L"Tab",L"Header",L"Progress",L"TrackBar"};
+        L"Edit",L"ComboBox",L"Tab",L"Header",L"Progress",L"TrackBar",L"ListView",L"TreeView",
+        L"Toolbar",L"Rebar",L"Status",L"MonthCal",L"DatePicker"};
     if(!map.bytes || !map.size)return HRESULT_FROM_WIN32(ERROR_RESOURCE_DATA_NOT_FOUND);
     for(unsigned i=0;i<class_count;++i)indices[i]=SIZE_MAX;
     *count=0;
@@ -304,6 +306,38 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
         trackbar[i][1]=(theme_field)COLOR_FIELD(class_trackbar,thumb_part[i],0,TMT_FILLCOLOR);
         trackbar[i][2]=(theme_field)COLOR_FIELD(class_trackbar,track_part[i],0,TMT_BORDERCOLOR);
     }
+    const enum theme_class report_classes[]={class_listview,class_treeview};
+    const unsigned report_parts[]={LVP_LISTITEM,TVP_TREEITEM};
+    const unsigned report_states[][CLASSIC_REPORT_STATE_COUNT]={
+        {LISS_SELECTED,LISS_SELECTEDNOTFOCUS,LISS_DISABLED},
+        {TREIS_SELECTED,TREIS_SELECTEDNOTFOCUS,TREIS_DISABLED}
+    };
+    theme_field report[CLASSIC_REPORT_ROLE_COUNT][2*CLASSIC_REPORT_STATE_COUNT];
+    for(size_t role=0;role<ARRAYSIZE(report);++role)
+        for(size_t state=0;state<CLASSIC_REPORT_STATE_COUNT;++state){
+            report[role][2*state]=(theme_field)COLOR_FIELD(report_classes[role],report_parts[role],
+                report_states[role][state],TMT_TEXTCOLOR);
+            report[role][2*state+1]=(theme_field)COLOR_FIELD(report_classes[role],report_parts[role],
+                report_states[role][state],TMT_FILLCOLOR);
+        }
+    const enum theme_class bar_classes[]={class_toolbar,class_rebar,class_status};
+    const unsigned bar_parts[]={TP_BUTTON,RP_GRIPPER,SP_PANE};
+    const unsigned bar_properties[]={TMT_FILLCOLOR,TMT_FILLCOLOR,TMT_EDGEHIGHLIGHTCOLOR,TMT_EDGESHADOWCOLOR,
+        TMT_BORDERCOLOR,TMT_TEXTCOLOR};
+    theme_field bars[CLASSIC_BAR_ROLE_COUNT][CLASSIC_BAR_COLOR_COUNT];
+    for(size_t role=0;role<ARRAYSIZE(bars);++role)
+        for(size_t color=0;color<CLASSIC_BAR_COLOR_COUNT;++color)
+            bars[role][color]=(theme_field)COLOR_FIELD(bar_classes[role],bar_parts[role],
+                role==CLASSIC_BAR_TOOLBAR && color==CLASSIC_BAR_PRESSED?TS_PRESSED:0,bar_properties[color]);
+    theme_field calendar[CLASSIC_CALENDAR_ROLE_COUNT]={
+        [CLASSIC_CALENDAR_OUTSIDE]=COLOR_FIELD(class_monthcal,MC_BACKGROUND,0,TMT_FILLCOLOR),
+        [CLASSIC_CALENDAR_TEXT]=COLOR_FIELD(class_monthcal,MC_GRIDCELL,0,TMT_TEXTCOLOR),
+        [CLASSIC_CALENDAR_SELECTED]=COLOR_FIELD(class_monthcal,MC_GRIDCELLBACKGROUND,MCGCB_SELECTED,TMT_FILLCOLOR),
+        [CLASSIC_CALENDAR_SELECTED_TEXT]=COLOR_FIELD(class_monthcal,MC_GRIDCELLBACKGROUND,MCGCB_SELECTED,TMT_TEXTCOLOR),
+        [CLASSIC_CALENDAR_GRID]=COLOR_FIELD(class_monthcal,MC_GRIDBACKGROUND,0,TMT_FILLCOLOR),
+        [CLASSIC_CALENDAR_TRAILING_TEXT]=COLOR_FIELD(class_monthcal,MC_TRAILINGGRIDCELL,0,TMT_TEXTCOLOR)
+    };
+    theme_field date_button=COLOR_FIELD(class_datepicker,DP_SHOWCALENDARBUTTONRIGHT,0,TMT_FILLCOLOR);
     theme_field bar[]={
         COLOR_FIELD(class_menu,MENU_BARBACKGROUND,0,TMT_FILLCOLOR),
         COLOR_FIELD(class_menu,MENU_BARITEM,MBI_HOT,TMT_FILLCOLOR),
@@ -344,6 +378,14 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
             result=read_fields(&item,indices,tab,ARRAYSIZE(tab));
             if(FAILED(result))return result;
         }
+        if(item.class_id==indices[class_monthcal]){
+            result=read_fields(&item,indices,calendar,ARRAYSIZE(calendar));
+            if(FAILED(result))return result;
+        }
+        if(item.class_id==indices[class_datepicker]){
+            result=read_fields(&item,indices,&date_button,1);
+            if(FAILED(result))return result;
+        }
         if(item.class_id==indices[class_header]){
             result=read_fields(&item,indices,header,ARRAYSIZE(header));
             if(FAILED(result))return result;
@@ -357,6 +399,20 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
             for(size_t i=0;i<ARRAYSIZE(trackbar);++i){
                 result=read_fields(&item,indices,trackbar[i],ARRAYSIZE(trackbar[i]));
                 if(FAILED(result))return result;
+            }
+        for(size_t role=0;role<ARRAYSIZE(report);++role)
+            if(item.class_id==indices[report_classes[role]]){
+                result=read_fields(&item,indices,report[role],ARRAYSIZE(report[role]));
+                if(FAILED(result))return result;
+            }
+        for(size_t role=0;role<ARRAYSIZE(bars);++role)
+            if(item.class_id==indices[bar_classes[role]]){
+                /* Only Toolbar exposes a pressed face. Skip that slot for the other parts. */
+                for(size_t color=0;color<CLASSIC_BAR_COLOR_COUNT;++color){
+                    if(role!=CLASSIC_BAR_TOOLBAR && color==CLASSIC_BAR_PRESSED)continue;
+                    result=read_fields(&item,indices,&bars[role][color],1);
+                    if(FAILED(result))return result;
+                }
             }
         if(item.class_id==indices[class_combo]){
             result=read_fields(&item,indices,combo,ARRAYSIZE(combo));
@@ -417,9 +473,20 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
     if(list_colors[0].present && list_colors[1].present && list_colors[2].present && list_colors[3].present)
         theme->list=(classic_list_colors){list_colors[0].value,list_colors[1].value,
             list_colors[2].value,list_colors[3].value,TRUE};
+    for(size_t role=0;role<ARRAYSIZE(report);++role)
+        for(size_t state=0;state<CLASSIC_REPORT_STATE_COUNT;++state){
+            const theme_field *text=&report[role][2*state],*fill=text+1;
+            theme->report[role][state]=(classic_report_item_colors){text->value,fill->value,text->present,fill->present};
+        }
     if(group_colors[0].present && group_colors[1].present && group_colors[2].present && group_colors[3].present)
         theme->group=(classic_group_colors){{group_colors[0].value,group_colors[1].value,TRUE},
             group_colors[2].value,group_colors[3].value};
+    for(size_t role=0;role<ARRAYSIZE(bars);++role)
+        for(size_t color=0;color<CLASSIC_BAR_COLOR_COUNT;++color)
+            if(bars[role][color].present){
+                theme->bars[role].values[color]=bars[role][color].value;
+                theme->bars[role].present|=1u<<color;
+            }
     for(size_t i=0;i<ARRAYSIZE(edit);++i){
         if(edit[i][0].present!=edit[i][1].present)return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
         if(edit[i][0].present)
@@ -433,6 +500,13 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
             combo[3].value,combo[4].value,TRUE};
     if(tab[0].present && tab[1].present && tab[2].present && tab[3].present)
         theme->tab=(classic_tab_colors){tab[0].value,tab[1].value,tab[2].value,tab[3].value,TRUE};
+    for(size_t role=0;role<ARRAYSIZE(calendar);++role)
+        if(calendar[role].present){
+            theme->calendar.present|=1u<<role;
+            theme->calendar.values[role]=calendar[role].value;
+        }
+    theme->has_date_button_face=date_button.present;
+    theme->date_button_face=date_button.value;
     if(header[0].present && header[1].present)
         theme->header=(classic_header_colors){header[0].value,header[1].value,TRUE};
     for(size_t i=0;i<ARRAYSIZE(progress);++i){

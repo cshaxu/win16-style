@@ -13,14 +13,17 @@
 #define THEME_NAME(s) {(const unsigned char *)(s),ARRAYSIZE(s)}
 
 enum { sysmetrics_class=5, button_class, scrollbar_class, window_class, menu_class,
-    edit_class, combo_class, tab_class, header_class, progress_class, trackbar_class, first_font_id=601 };
+    edit_class, combo_class, tab_class, header_class, progress_class, trackbar_class,
+    listview_class, treeview_class, toolbar_class, rebar_class, status_class,
+    monthcal_class, datepicker_class, first_font_id=601 };
 static const msstyles_v4_name classes[]={
     THEME_NAME(L"documentation"),THEME_NAME(L"sizevariant.NormalSize"),
     THEME_NAME(L"sizevariant.Default"),THEME_NAME(L"colorvariant.NormalColor"),
     THEME_NAME(L"globals"),THEME_NAME(L"sysmetrics"),
     THEME_NAME(L"Button"),THEME_NAME(L"ScrollBar"),THEME_NAME(L"Window"),THEME_NAME(L"Menu"),
     THEME_NAME(L"Edit"),THEME_NAME(L"ComboBox"),THEME_NAME(L"Tab"),THEME_NAME(L"Header"),THEME_NAME(L"Progress"),
-    THEME_NAME(L"TrackBar")
+    THEME_NAME(L"TrackBar"),THEME_NAME(L"ListView"),THEME_NAME(L"TreeView"),
+    THEME_NAME(L"Toolbar"),THEME_NAME(L"Rebar"),THEME_NAME(L"Status"),THEME_NAME(L"MonthCal"),THEME_NAME(L"DatePicker")
 };
 static const msstyles_v4_variant variant={
     THEME_NAME(L"Normal"),THEME_NAME(L"NormalSize"),THEME_NAME(L"NormalColor")
@@ -187,6 +190,40 @@ static bool progress_colors(FILE *output,const classic_theme_source *source)
     return true;
 }
 
+static bool report_colors(FILE *output,const classic_theme_source *source)
+{
+    const unsigned classes_by_role[]={listview_class,treeview_class},parts[]={LVP_LISTITEM,TVP_TREEITEM};
+    const unsigned states[][CLASSIC_REPORT_STATE_COUNT]={
+        {LISS_SELECTED,LISS_SELECTEDNOTFOCUS,LISS_DISABLED},
+        {TREIS_SELECTED,TREIS_SELECTEDNOTFOCUS,TREIS_DISABLED}
+    };
+    const COLORREF text[]={source->selection_text,RGB(0,0,0),RGB(128,128,128)};
+    const COLORREF fill[]={source->selection,source->face,source->face};
+    for(size_t role=0;role<ARRAYSIZE(parts);++role)
+        for(size_t state=0;state<ARRAYSIZE(text);++state)
+            if(!property(output,TMT_TEXTCOLOR,TMT_COLOR,classes_by_role[role],parts[role],states[role][state],text[state]) ||
+               !property(output,TMT_FILLCOLOR,TMT_COLOR,classes_by_role[role],parts[role],states[role][state],fill[state]))
+                return false;
+    return true;
+}
+
+static bool control_bar_colors(FILE *output,const classic_theme_source *source)
+{
+    const COLORREF highlight=RGB(255,255,255),shadow=RGB(128,128,128);
+    return property(output,TMT_FILLCOLOR,TMT_COLOR,toolbar_class,TP_BUTTON,0,source->face) &&
+        property(output,TMT_FILLCOLOR,TMT_COLOR,toolbar_class,TP_BUTTON,TS_PRESSED,source->pressed_toolbar) &&
+        property(output,TMT_BORDERCOLOR,TMT_COLOR,toolbar_class,TP_BUTTON,0,source->edge) &&
+        property(output,TMT_EDGEHIGHLIGHTCOLOR,TMT_COLOR,toolbar_class,TP_BUTTON,0,highlight) &&
+        property(output,TMT_EDGESHADOWCOLOR,TMT_COLOR,toolbar_class,TP_BUTTON,0,shadow) &&
+        property(output,TMT_TEXTCOLOR,TMT_COLOR,toolbar_class,TP_BUTTON,0,RGB(0,0,0)) &&
+        property(output,TMT_FILLCOLOR,TMT_COLOR,rebar_class,RP_GRIPPER,0,source->face) &&
+        property(output,TMT_EDGEHIGHLIGHTCOLOR,TMT_COLOR,rebar_class,RP_GRIPPER,0,highlight) &&
+        property(output,TMT_EDGESHADOWCOLOR,TMT_COLOR,rebar_class,RP_GRIPPER,0,shadow) &&
+        property(output,TMT_BORDERCOLOR,TMT_COLOR,status_class,SP_PANE,0,RGB(0,0,0)) &&
+        property(output,TMT_EDGEHIGHLIGHTCOLOR,TMT_COLOR,status_class,SP_PANE,0,highlight) &&
+        property(output,TMT_EDGESHADOWCOLOR,TMT_COLOR,status_class,SP_PANE,0,shadow);
+}
+
 static bool write_properties(FILE *output,const classic_theme_source *source)
 {
     const unsigned font_properties[]={TMT_CAPTIONFONT,TMT_SMALLCAPTIONFONT,TMT_MENUFONT};
@@ -232,7 +269,15 @@ static bool write_properties(FILE *output,const classic_theme_source *source)
         property(output,TMT_TEXTCOLOR,TMT_COLOR,button_class,BP_GROUPBOX,GBS_DISABLED,source->group_disabled_text) &&
         property(output,TMT_EDGESHADOWCOLOR,TMT_COLOR,button_class,BP_GROUPBOX,0,RGB(128,128,128)) &&
         property(output,TMT_EDGEHIGHLIGHTCOLOR,TMT_COLOR,button_class,BP_GROUPBOX,0,RGB(255,255,255)) &&
-        menu_colors(output,&source->menu) && progress_colors(output,source) &&
+        menu_colors(output,&source->menu) && progress_colors(output,source) && report_colors(output,source) &&
+        control_bar_colors(output,source) &&
+        property(output,TMT_FILLCOLOR,TMT_COLOR,monthcal_class,MC_BACKGROUND,0,RGB(255,255,255)) &&
+        property(output,TMT_FILLCOLOR,TMT_COLOR,monthcal_class,MC_GRIDBACKGROUND,0,RGB(255,255,255)) &&
+        property(output,TMT_TEXTCOLOR,TMT_COLOR,monthcal_class,MC_GRIDCELL,0,RGB(0,0,0)) &&
+        property(output,TMT_TEXTCOLOR,TMT_COLOR,monthcal_class,MC_TRAILINGGRIDCELL,0,RGB(128,128,128)) &&
+        property(output,TMT_FILLCOLOR,TMT_COLOR,monthcal_class,MC_GRIDCELLBACKGROUND,MCGCB_SELECTED,source->selection) &&
+        property(output,TMT_TEXTCOLOR,TMT_COLOR,monthcal_class,MC_GRIDCELLBACKGROUND,MCGCB_SELECTED,source->selection_text) &&
+        property(output,TMT_FILLCOLOR,TMT_COLOR,datepicker_class,DP_SHOWCALENDARBUTTONRIGHT,0,source->face) &&
         title_metrics(output,&source->caption_metrics) && push_button(output,source) && choice_buttons(output,source) &&
         button(output,scrollbar_class,SBP_ARROWBTN,source) &&
         scroll_surface(output,SBP_THUMBBTNHORZ,source) &&

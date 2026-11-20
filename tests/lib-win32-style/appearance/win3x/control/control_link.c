@@ -6,6 +6,7 @@
 #include "lib-win32-style/appearance/win3x/common/palette.h"
 #include "lib-win32-style/appearance/win3x/control/basic_paint.h"
 #include "lib-win32-style/appearance/win3x/control/other_paint.h"
+#include "lib-win32-style/appearance/win3x/control/special_paint.h"
 #include "lib-win32-style/appearance/win3x/resources/scroll_assets.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_bar.h"
 #include "lib-win32-style/appearance/win3x/common/font.h"
@@ -76,8 +77,73 @@ static BOOL actual_fitted_button(void)
     if(w)DestroyWindow(w);
     return ok;
 }
+static void frame_drawn(void *context)
+{
+    ++*(unsigned *)context;
+}
+
+static BOOL runtime_frame_pixels(COLORREF edge,const classic_bar_colors *grip)
+{
+    HDC dc=CreateCompatibleDC(NULL);
+    BITMAPINFO info={.bmiHeader={sizeof(BITMAPINFOHEADER),32,-32,1,32,BI_RGB}};
+    void *pixels;
+    HBITMAP bitmap=dc?CreateDIBSection(dc,&info,DIB_RGB_COLORS,&pixels,NULL,0):NULL;
+    HGDIOBJ old=bitmap?SelectObject(dc,bitmap):NULL;
+    BOOL ok=old && old!=HGDI_ERROR && PatBlt(dc,0,0,32,32,WHITENESS);
+    if(ok){
+        const RECT group={2,2,24,14},clip={0,0,22,15},label={6,0,12,6};
+        const POINT shadow[]={{2,26},{2,18},{24,18}};
+        unsigned drawn=0;
+        HGDIOBJ pen=GetCurrentObject(dc,OBJ_PEN);
+        COLORREF brush=GetDCBrushColor(dc),pen_color=GetDCPenColor(dc);
+        win16_control_group_frame(dc,&group,&clip,&label,edge,frame_drawn,&drawn);
+        win16_control_panel_shadow(dc,shadow,Polyline,edge,frame_drawn,&drawn);
+        ok=drawn==2 && GetPixel(dc,4,2)==edge && GetPixel(dc,5,18)==edge &&
+            GetPixel(dc,8,2)==RGB(255,255,255) && GetPixel(dc,23,8)==RGB(255,255,255) &&
+            GetCurrentObject(dc,OBJ_PEN)==pen && GetDCBrushColor(dc)==brush && GetDCPenColor(dc)==pen_color;
+        const RECT grip_bounds={26,3,31,16};
+        int saved=SaveDC(dc);
+        if(!saved)ok=FALSE;
+        else{
+            COLORREF face=classic_bar_color(grip,CLASSIC_BAR_FACE,GetSysColor(COLOR_BTNFACE));
+            COLORREF light=classic_bar_color(grip,CLASSIC_BAR_HIGHLIGHT,GetSysColor(COLOR_BTNHIGHLIGHT));
+            COLORREF shadow_color=classic_bar_color(grip,CLASSIC_BAR_SHADOW,GetSysColor(COLOR_BTNSHADOW));
+            ok=ok && IntersectClipRect(dc,25,3,32,14)!=ERROR &&
+                win16_control_cool_grip(dc,&grip_bounds,grip);
+            RestoreDC(dc,saved);
+            ok=ok && GetPixel(dc,28,9)==face && GetPixel(dc,26,9)==light &&
+                GetPixel(dc,30,9)==shadow_color && GetPixel(dc,30,15)==RGB(255,255,255) &&
+                GetDCBrushColor(dc)==brush;
+            if(ok)printf("RUNTIME_GRIP_PIXELS_OK face=%06lx light=%06lx shadow=%06lx\n",face,light,shadow_color);
+        }
+    }
+    if(old && old!=HGDI_ERROR)SelectObject(dc,old);
+    if(bitmap)DeleteObject(bitmap);
+    if(dc)DeleteDC(dc);
+    return ok;
+}
+
 int main(void)
 {
+    WCHAR descriptor[MAX_PATH],expected[16];
+    DWORD length=GetEnvironmentVariableW(L"WIN16STYLE_TEST_FRAME_THEME",descriptor,ARRAYSIZE(descriptor));
+    if(length){
+        classic_theme_mapping source={0};
+        if(length>=ARRAYSIZE(descriptor) ||
+           !GetEnvironmentVariableW(L"WIN16STYLE_TEST_FRAME_EDGE",expected,ARRAYSIZE(expected)) ||
+           classic_theme_open(descriptor,&source)!=S_OK)return 1;
+        COLORREF edge=source.model.frame.edge;
+        classic_bar_colors grip=source.model.bars[CLASSIC_BAR_REBAR];
+        classic_theme_close(&source);
+        if(edge!=wcstoul(expected,NULL,16) || !runtime_frame_pixels(edge,&grip))return 2;
+        printf("THEME_VCL_FRAME_OK edge=%06lx group=1 panel=1 clip=1 dc=1\n",edge);
+        return 0;
+    }
+    const classic_bar_colors grip={.values={[CLASSIC_BAR_FACE]=RGB(32,45,56),
+        [CLASSIC_BAR_HIGHLIGHT]=RGB(11,99,177),[CLASSIC_BAR_SHADOW]=RGB(127,154,13)},
+        .present=(1u<<CLASSIC_BAR_FACE)|(1u<<CLASSIC_BAR_HIGHLIGHT)|(1u<<CLASSIC_BAR_SHADOW)};
+    if(!runtime_frame_pixels(RGB(49,103,157),&grip))return 3;
+    puts("RUNTIME_FRAME_PIXELS_OK group=1 panel=1 clip=1 dc=1");
     if(!actual_fitted_button())return 93;
     puts("WIN16_FITTED_BUTTON_OK actual_renderer=1 shared_text_fit=1");
 

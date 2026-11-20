@@ -1,37 +1,42 @@
 #include "updown_paint.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
+#include "lib-win32-style/application/graphics/pixel_grid.h"
 #include <commctrl.h>
 
-BOOL win16_control_updown_paint(HWND window,const win16_style_palette *palette,ntw16s_updown_glyph *const *glyphs,HDC dc,const RECT *bounds,const RECT *clip,unsigned direction,BOOL pressed,BOOL disabled)
+static BOOL updown_paint(HWND window,const win16_style_palette *palette,const win16_control_updown *s,
+    HDC dc,const RECT *bounds,const RECT *clip,unsigned direction,BOOL pressed,BOOL disabled)
 {
     RECT client,r=*bounds;if(!GetClientRect(window,&client) || r.left<0 || r.top<0 || r.right>client.right || r.bottom>client.bottom ||
         r.left>=r.right || r.top>=r.bottom || r.right>32767 || r.bottom>32767)return FALSE;
     int saved=SaveDC(dc);if(!saved)return FALSE;
     if(clip)IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom);
     IntersectClipRect(dc,r.left,r.top,r.right,r.bottom);
-    win16_style_palette p=*palette;COLORREF colors[4]={p.edge,p.light,p.shadow,p.face};
-    HBRUSH brush=GetStockObject(DC_BRUSH);int unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
-    SetDCBrushColor(dc,p.face);FillRect(dc,&r,brush);SetDCBrushColor(dc,p.edge);
-    for(int i=0;i<unit && r.left<r.right && r.top<r.bottom;++i){FrameRect(dc,&r,brush);InflateRect(&r,-1,-1);}
-    if(r.left<r.right && r.top<r.bottom){
-        RECT strip=r;SetDCBrushColor(dc,pressed?p.shadow:p.light);strip.bottom=min(r.top+unit,r.bottom);FillRect(dc,&strip,brush);
-        strip=r;strip.right=min(r.left+unit,r.right);FillRect(dc,&strip,brush);
-        SetDCBrushColor(dc,pressed?p.light:p.shadow);strip=r;strip.top=max(r.bottom-unit,r.top);FillRect(dc,&strip,brush);
-        strip=r;strip.left=max(r.right-unit,r.left);FillRect(dc,&strip,brush);
+    const style_relief_palette p={.face=palette->face,.light=palette->light,.highlight=palette->light,
+        .shadow=palette->shadow,.dark=palette->edge,.text=palette->edge};
+    UINT state=direction|(pressed?DFCS_PUSHED:0)|(disabled?DFCS_INACTIVE:0);
+    BOOL painted=TRUE;
+    if(s->art && s->art->source==STYLE_SCROLL_ARROW_SYMBOL){
+        painted=style_paint_scroll_arrow(dc,&r,state,&p,s->art);
+    }else{
+        int dpi=(int)GetDpiForWindow(window),unit=max(1,MulDiv(1,dpi,96));
+        r=style_paint_outlined_face(dc,r,unit,TRUE,pressed,p.face,&p);
         InflateRect(&r,-unit,-unit);
-        int side=min(MulDiv(11,(int)GetDpiForWindow(window),96),min(r.right-r.left,r.bottom-r.top));
+        enum { inset=3, image=STYLE_SCROLL_ARROW_SIDE-2*inset };
+        int side=min(MulDiv(image,dpi,96),min(r.right-r.left,r.bottom-r.top));
         if(side>0){
-            /* The original arrow interior scales equally in both axes. The
-             * native hit rectangle may be wide/short; never stretch the art. */
-            int left=r.left+(r.right-r.left-side)/2,top=r.top+(r.bottom-r.top-side)/2;
-            const char (*bits)[18]=*glyphs[direction+(disabled?8:pressed?4:0)];
-            for(int y=0;y<11;++y)for(int x=0;x<11;++x){
-                RECT pixel={left+MulDiv(x,side,11),top+MulDiv(y,side,11),left+MulDiv(x+1,side,11),top+MulDiv(y+1,side,11)};
-                SetDCBrushColor(dc,colors[bits[y+3][x+3]-'0']);FillRect(dc,&pixel,brush);
+            /* Center the square glyph inside the native button rectangle. */
+            LONG left=r.left+(r.right-r.left-side)/2,top=r.top+(r.bottom-r.top-side)/2;
+            RECT box={left,top,left+side,top+side};
+            if(!style_paint_scroll_arrow_crop(dc,&box,state,&p,s->art)){
+                const char (*bits)[18]=*s->glyphs[direction+(disabled?8:pressed?4:0)];
+                const COLORREF colors[]={p.dark,p.highlight,p.shadow,p.face};
+                const style_pixel_grid grid={&bits[inset][inset],image,image,sizeof(*bits),-1,colors,
+                    {left,top},{side,side},{image,image}};
+                style_paint_pixel_grid(dc,&grid);
             }
         }
     }
-    RestoreDC(dc,saved);return TRUE;
+    return RestoreDC(dc,saved) && painted;
 }
 
 static BOOL updown_supported(DWORD style,DWORD ex)
@@ -49,7 +54,7 @@ static BOOL updown_render(HWND w,void *context,HDC dc,const RECT *rect,const REC
         palette.shadow=s->frame->shadow;
         palette.edge=s->frame->edge;
     }
-    return win16_control_updown_paint(w,&palette,s->glyphs,dc,rect,clip,direction,pressed,disabled);
+    return updown_paint(w,&palette,s,dc,rect,clip,direction,pressed,disabled);
 }
 void win16_control_updown_register(win16_control_updown *s,style_control_updown *binding,HWND w,HMODULE native,const win16_style_palette *palette,ntw16s_updown_glyph *const *glyphs,void *owner,BOOL (*acquire)(void *),void (*release)(void *))
 {

@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S20 P1",
-  "stage": "theme-driven basic Win32 controls",
+  "delivery": "M0 T29 S21 P1",
+  "stage": "theme-driven Win32 composite controls",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "928fc1186363e8fe2cc59e53bd689d642fe1557be18796bf6894cf2e3a2981ad",
+  "source_snapshot_sha256": "79cb0d4679ad9759dd77c9287be573175cc120c1ee83f77d4bbbcf0231cf501a",
   "source_input_cohort": {
-    "count": 1287,
-    "sha256": "aff2c7b0747b4432d69fc254ae2d800e93ad92808a227d943c2d3493cf8442de",
+    "count": 1291,
+    "sha256": "a48ea8d755c436f4e2e76030ce4144b59276e50228d388d66b195b14ae5837dd",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot",
@@ -16,7 +16,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "cdaa2c43d5eafa4fb6b9b9713d0f958c55caef00147e35482b914af57caaa7d6",
+      "sha256": "2eccb09c9bcf3255faaa2096e18269833da641c9c2cf30919a4a2b9020879ec9",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "5886d1ea1858fbe3660e2989f9e2d887e3a0693d94aadfeba83e782bf8cbd3e0",
+      "sha256": "3f3b212b974263e07cfe7c6e9440a0c03cf75af46eb967aa7a2209c4ab095b67",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "2c2830d64465f035b7d18933c059879ac09ef9a923a0b3374f475fb9e0406bae",
+      "sha256": "0019f2be9fc148f487979522bedd810fe7b796b8db240392aa4496f61487eba0",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -79,27 +79,23 @@
     }
   },
   "theme_artifacts": {
-    "Win16/Win16.msstyles": "1c2fc45ad936db93860128320c7bb08e841239067bcc789bc161e3520179a598",
+    "Win16/Win16.msstyles": "4234d5070c8bb28ee36623d64293bacd14f7dfb11568c0b4a5edf7c4dce82203",
     "Win16/Win16.theme": "24532dbb589f8acf8e71909b8aaf361c3c05511a2b0f730fa84b2a6b9e52aede",
-    "Win2K/Win2K.msstyles": "4c8f20885bee5a5c06016d4a3c4ccfb209228e0c85e19dea32a7ac87348dbde3",
+    "Win2K/Win2K.msstyles": "4d861ff0be09edf03044d27329991752a73bae76b238206d32dbdcbcc810ebe5",
     "Win2K/Win2K.theme": "1217c8240721b28e7f92d4d6a8c9b9b0d259e2d026829be6612a70c877dbee68"
   },
   "build": {
-    "command": "tools/Build-Package.ps1 -Task 29 -RunName s20-basic-controls-p1",
+    "command": "tools/Build-Package.ps1 -Task 29 -RunName s21-composite-p1",
     "toolchain": "pure C17, MinGW GCC MSVCRT, Ninja 1.13.2, ccache",
     "compiler_versions": {
       "x86": "16.1.0",
       "x64": "16.1.0"
     },
     "ccache_version": "ccache version 4.13.6",
-    "seconds": {
-      "x86_clean": 92.81001699999979,
-      "x64_clean": 89.03614120000202
-    },
-    "changed_source_test_tool_build_files": 67,
-    "insertions": 1201,
-    "deletions": 673,
-    "net_lines": 528,
+    "changed_source_test_tool_build_files": 72,
+    "insertions": 1545,
+    "deletions": 479,
+    "net_lines": 1066,
     "checks": [
       "quick ABI and PE for x86 and x64",
       "source and archive boundaries",
@@ -123,39 +119,13 @@
       "themes/Win2K/Win2K.theme",
       "themes/Win2K/Win2K.msstyles"
     ],
-    "rollback_backups": "saved by same-volume rename"
+    "rollback_backups": "same-volume rename during publication"
   },
   "focused_post_publication": {
     "status": "passed-focused",
     "coverage": "focused",
-    "cases": 50,
+    "cases": 56,
     "selected_cases": [
-      "ntw2ks-static-x86",
-      "ntw2ks-static-aware-x86",
-      "ntw2ks-static-v6-x86",
-      "ntw2ks-static-v6-aware-x86",
-      "ntw2ks-static-x64",
-      "ntw2ks-static-aware-x64",
-      "ntw2ks-static-v6-x64",
-      "ntw2ks-static-v6-aware-x64",
-      "style-edit-protocol-x86",
-      "ntw2ks-edit-x86",
-      "ntw2ks-edit-aware-x86",
-      "ntw2ks-edit-v6-x86",
-      "ntw2ks-edit-v6-aware-x86",
-      "style-edit-protocol-x64",
-      "ntw2ks-edit-x64",
-      "ntw2ks-edit-aware-x64",
-      "ntw2ks-edit-v6-x64",
-      "ntw2ks-edit-v6-aware-x64",
-      "win2k-paint-x86",
-      "win2k-paint-x64",
-      "ntw2ks-control-buttons-x86",
-      "ntw2ks-control-buttons-aware-x86",
-      "ntw2ks-control-buttons-x64",
-      "ntw2ks-control-buttons-aware-x64",
-      "ntw2ks-control-buttons-v6-x86",
-      "ntw2ks-control-buttons-v6-x64",
       "progress-sharing",
       "plan-selection",
       "abi-x86",
@@ -164,55 +134,87 @@
       "demo-pair",
       "automatic",
       "propagation",
-      "control-extensions-32",
-      "control-extensions-64",
-      "ntw2ks-scroll-layout-32",
-      "ntw2ks-scroll-32",
-      "ntw2ks-scroll-aware-32",
-      "ntw2ks-list-combo-32",
-      "ntw2ks-list-combo-aware-32",
-      "ntw2ks-list-combo-v6-32",
-      "ntw2ks-list-combo-v6-aware-32",
-      "ntw2ks-scroll-layout-64",
-      "ntw2ks-scroll-64",
-      "ntw2ks-scroll-aware-64",
-      "ntw2ks-list-combo-64",
-      "ntw2ks-list-combo-aware-64",
-      "ntw2ks-list-combo-v6-64",
-      "ntw2ks-list-combo-v6-aware-64"
+      "control-eligibility-32",
+      "control-eligibility-64",
+      "theme-trackbar-win16-32",
+      "theme-trackbar-win2k-32",
+      "theme-updown-art-32",
+      "theme-report-tree-32",
+      "theme-header-win16-32",
+      "theme-header-win2k-32",
+      "theme-tab-win16-32",
+      "theme-tab-win2k-32",
+      "theme-bars-win2k-32",
+      "theme-status-win16-32",
+      "theme-dates-win2k-32",
+      "theme-vcl-toolbar-win16-32",
+      "ntw2ks-trackbar-v6-32",
+      "ntw2ks-updown-v6-32",
+      "ntw2ks-bars-v6-32",
+      "ntw2ks-dates-v6-32",
+      "ntw2ks-runtime-roles-v6-32",
+      "ntw2ks-progress-paint-32",
+      "ntw2ks-progress-v6-32",
+      "ntw2ks-report-tree-v6-32",
+      "theme-trackbar-win16-64",
+      "theme-trackbar-win2k-64",
+      "theme-updown-art-64",
+      "theme-report-tree-64",
+      "theme-header-win16-64",
+      "theme-header-win2k-64",
+      "theme-tab-win16-64",
+      "theme-tab-win2k-64",
+      "theme-bars-win2k-64",
+      "theme-status-win16-64",
+      "theme-dates-win2k-64",
+      "theme-vcl-toolbar-win16-64",
+      "ntw2ks-trackbar-v6-64",
+      "ntw2ks-updown-v6-64",
+      "ntw2ks-bars-v6-64",
+      "ntw2ks-dates-v6-64",
+      "ntw2ks-runtime-roles-v6-64",
+      "ntw2ks-progress-paint-64",
+      "ntw2ks-progress-v6-64",
+      "ntw2ks-report-tree-v6-64",
+      "theme-month-painter-32",
+      "theme-month-painter-64",
+      "theme-vcl-date-32",
+      "theme-vcl-date-64",
+      "theme-vcl-push-32",
+      "theme-vcl-push-64"
     ],
     "skipped": []
   },
   "supplemental_post_publication": {
-    "installed_theme_readback_and_pixels": [
-      "x86",
-      "x64"
-    ],
-    "native_startup_pixels": {
-      "runs": 8,
+    "theme_readback": {
+      "runs": 10,
       "roots": [
-        "O:/winnt",
-        "candidate"
+        "assets",
+        "O:/winnt"
       ],
       "architectures": [
         "x86",
         "x64"
-      ],
-      "themes": [
-        "Win16",
-        "Win2K"
+      ]
+    },
+    "installed_startup_pixels": {
+      "runs": 6,
+      "root": "O:/winnt",
+      "architectures": [
+        "x86",
+        "x64"
       ],
       "witnesses": [
-        "push-button edge and face",
-        "selected ListBox row",
-        "STATIC separator"
+        "Win16 Header",
+        "Win2K Header",
+        "Win2K MonthCal and DateTimePicker"
       ]
     }
   },
   "validation": {
     "physical_input": "not tested; bounded owned windows and message-level checks",
-    "full_matrix": "not run; 50 focused cases and 12 supplemental post-publication runs",
-    "legacy_startup_static_oracle": "Ntw2ksWindowAttached in the standalone compatibility DLL cannot observe the neutral runtime subclass. Identical line 53 on S19, S20 candidate and S20 install in both widths. Replaced for this delivery by the native pixel observation."
+    "full_matrix": "not run; 56 focused cases and 16 supplemental post-publication runs",
+    "coverage_limits": "Win16 month, VCL group and panel frame, and VCL CoolBar theme variations validated using resolved themes and production painters. Live VCL application attachment and removal are not proven by these pixel checks."
   },
-  "closure": "verified against remote main at c1edb6c5856f949dfac3c8d94e5a9b78bc2c072a"
+  "closure": "pending remote source and package digest verification"
 }

@@ -8,6 +8,9 @@ typedef struct tab_paint {
     int hot;
     win2k_palette palette;
     COLORREF normal,selected;
+    style_line_profile profile;
+    RECT page;
+    int unit;
 } tab_paint;
 
 BOOL win2k_tab_supported(HWND window)
@@ -19,13 +22,9 @@ BOOL win2k_tab_supported(HWND window)
 
 static void surface(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
 {
-    (void)window;
-    const win2k_palette *palette=&((const tab_paint *)context)->palette;
-    RECT page=snapshot->page;
-    InflateRect(&page,4,4);
-    page.top+=2;
-    style_paint_color(dc,&snapshot->client,palette->face);
-    style_paint_relief(dc,&page,EDGE_RAISED,BF_RECT|BF_SOFT,palette);
+    tab_paint *paint=context;
+    paint->unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
+    paint->page=style_paint_tab_page(dc,snapshot->client,snapshot->page,paint->unit,paint->profile,&paint->palette);
 }
 
 static void prepare(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
@@ -36,48 +35,20 @@ static void prepare(HWND window,void *context,HDC dc,const style_control_tab_sna
     SetBkMode(dc,TRANSPARENT);
 }
 
-static void pixel(HDC dc,int x,int y,COLORREF color)
-{
-    RECT cell={x,y,x+1,y+1};
-    style_paint_color(dc,&cell,color);
-}
-
-/* The original DoCorners clears two columns, then draws the two diagonal
- * soft edge layers in the remaining two rows. */
-static void corners(HDC dc,const RECT *r,const win2k_palette *palette)
-{
-    if(r->right-r->left<4 || r->bottom-r->top<3)return;
-    RECT left={r->left,r->top,r->left+2,r->top+3};
-    RECT right={r->right-2,r->top,r->right,r->top+3};
-    style_paint_color(dc,&left,palette->face);
-    style_paint_color(dc,&right,palette->face);
-    pixel(dc,left.left+1,left.top+1,palette->highlight);
-    pixel(dc,left.left,left.top+2,palette->highlight);
-    pixel(dc,left.left+1,left.top+2,palette->light);
-    pixel(dc,right.right-2,right.top+1,palette->dark);
-    pixel(dc,right.right-1,right.top+2,palette->dark);
-    pixel(dc,right.right-2,right.top+2,palette->shadow);
-}
-
 static void paint_item(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot,
     const style_control_tab_item *item)
 {
     const tab_paint *paint=context;
     const win2k_palette *palette=&paint->palette;
-    RECT frame=item->rect,content=item->rect;
+    RECT content=item->rect;
     BOOL enabled=IsWindowEnabled(window);
     BOOL highlight=(item->native.dwState&TCIS_HIGHLIGHTED)!=0;
-    if(item->active){
-        InflateRect(&frame,2,2);
-        --frame.bottom;
-        OffsetRect(&content,0,-2);
-    }
+    if(item->active)OffsetRect(&content,0,-2);
     int saved=SaveDC(dc);
     if(!saved)return;
+    RECT frame=style_paint_tab_item(dc,item->rect,paint->page,item->active,paint->unit,paint->profile,
+        item->active?paint->selected:paint->normal,palette);
     IntersectClipRect(dc,frame.left,frame.top,frame.right,frame.bottom);
-    style_paint_color(dc,&frame,item->active?paint->selected:paint->normal);
-    style_paint_relief(dc,&frame,EDGE_RAISED,BF_LEFT|BF_TOP|BF_RIGHT|BF_SOFT,palette);
-    corners(dc,&frame,palette);
     content.left+=2;
     content.right-=2;
     RECT measured={0};
@@ -109,11 +80,12 @@ static void paint_item(HWND window,void *context,HDC dc,const style_control_tab_
 }
 
 BOOL win2k_tab_paint(HWND window,HDC dc,HFONT font,const style_instance *instance,
-    const style_control_native_state *state,const classic_tab_colors *colors)
+    const style_control_native_state *state,const classic_tab_colors *colors,style_line_profile profile)
 {
     const unsigned epoch=state->epoch;
     tab_paint paint={.font=font,.hot=-1,.palette=win2k_standard_palette,
-        .normal=win2k_standard_palette.face,.selected=win2k_standard_palette.face};
+        .normal=win2k_standard_palette.face,.selected=win2k_standard_palette.face,
+        .profile=profile?profile:STYLE_LINE_RELIEF};
     if(colors->present){
         paint.palette.face=colors->pane;
         paint.palette.dark=colors->border;

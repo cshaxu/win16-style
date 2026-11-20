@@ -14,19 +14,30 @@ enum {
     border_presentation_type=11, border_presentation_legacy_size=10, border_presentation_size=17,
     menu_text_type=12, menu_text_size=2, separator_type=13, separator_size=1,
     thumb_type=14, thumb_size=1, push_type=15, push_size=1,
-    control_lines_type=16, control_lines_size=2, required_flag=1
+    control_lines_type=16, control_lines_size=2, progress_type=17, progress_size=6,
+    trackbar_type=18, trackbar_size=1, header_frame_type=19, header_frame_size=1,
+    tab_frame_type=20, tab_frame_size=1, required_flag=1
 };
 
 _Static_assert(sizeof(style_border_presentation)==border_presentation_size,"border resource layout");
 _Static_assert(sizeof(style_caption_presentation)==caption_presentation_size,"caption resource layout");
-_Static_assert(header_size+12*record_size+group_header_size+slot_size*CLASSIC_BUTTON_CLOSE+
+_Static_assert(sizeof(style_progress_layout)==progress_size,"progress record layout");
+_Static_assert(header_size+13*record_size+group_header_size+slot_size*CLASSIC_BUTTON_CLOSE+
     scroll_metrics_size+menu_metrics_size+dialog_metrics_size+dialog_policy_size+
-    caption_presentation_size+border_presentation_size+menu_text_size+separator_size+thumb_size+push_size+control_lines_size==
+    caption_presentation_size+border_presentation_size+menu_text_size+separator_size+thumb_size+push_size+control_lines_size+
+    progress_size+trackbar_size+header_frame_size+tab_frame_size+3*record_size==
     CLASSIC_STYLE_RESOURCE_CAPACITY,"classic resource capacity");
 
 static uint16_t read_half(const unsigned char *bytes)
 {
     return (uint16_t)(bytes[0]|(bytes[1]<<8));
+}
+
+static bool valid_progress(style_progress_layout layout)
+{
+    return (layout.flags&STYLE_PROGRESS_DEFINED) && !(layout.flags&~31u) &&
+        layout.inset<=16 && layout.clearance<=16 && layout.gap<=16 &&
+        layout.block_part>0 && layout.block_part<=layout.block_whole && layout.block_whole<=16;
 }
 
 static void write_half(unsigned char *bytes,uint16_t value)
@@ -226,6 +237,25 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
             if((!control_presentation.group && !control_presentation.edit) ||
                control_presentation.group>STYLE_LINE_RELIEF || control_presentation.edit>STYLE_LINE_RELIEF)
                 return CLASSIC_STYLE_INVALID;
+        }else if(type==progress_type){
+            if(control_presentation.progress.flags || flags || payload!=progress_size)return CLASSIC_STYLE_INVALID;
+            memcpy(&control_presentation.progress,record+record_size,progress_size);
+            if(!valid_progress(control_presentation.progress))return CLASSIC_STYLE_INVALID;
+        }else if(type==trackbar_type){
+            if(control_presentation.trackbar || flags || payload!=trackbar_size)return CLASSIC_STYLE_INVALID;
+            unsigned profile=record[record_size];
+            if(profile!=STYLE_TRACKBAR_OUTLINED && profile!=STYLE_TRACKBAR_RELIEF)return CLASSIC_STYLE_INVALID;
+            control_presentation.trackbar=(style_trackbar_profile)profile;
+        }else if(type==header_frame_type){
+            if(control_presentation.header || flags || payload!=header_frame_size)return CLASSIC_STYLE_INVALID;
+            unsigned profile=record[record_size];
+            if(profile!=STYLE_LINE_FLAT && profile!=STYLE_LINE_RELIEF)return CLASSIC_STYLE_INVALID;
+            control_presentation.header=(style_line_profile)profile;
+        }else if(type==tab_frame_type){
+            if(control_presentation.tab || flags || payload!=tab_frame_size)return CLASSIC_STYLE_INVALID;
+            unsigned profile=record[record_size];
+            if(profile!=STYLE_LINE_FLAT && profile!=STYLE_LINE_RELIEF)return CLASSIC_STYLE_INVALID;
+            control_presentation.tab=(style_line_profile)profile;
         }else if(flags&required_flag)return CLASSIC_STYLE_REQUIRED_RECORD;
         record+=record_size+payload;
         remaining-=record_size+payload;
@@ -254,13 +284,20 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
     style_line_profile separator=controls?controls->separator:STYLE_LINE_DEFAULT;
     style_push_profile push=controls?controls->push:STYLE_PUSH_DEFAULT;
     bool lines=controls && (controls->group || controls->edit);
+    bool progress=controls && controls->progress.flags;
+    bool trackbar=controls && controls->trackbar;
+    style_line_profile header=controls?controls->header:STYLE_LINE_DEFAULT;
+    style_line_profile tab=controls?controls->tab:STYLE_LINE_DEFAULT;
     if(!bytes || !group || !valid_group(group) ||
        (scroll && (!valid_scroll(*scroll) || (unsigned)scroll->thumb>STYLE_SCROLL_THUMB_PAGE)) ||
        (menu && !valid_menu(*menu)) || (dialog && !valid_dialog(*dialog)) ||
        (policy && !valid_policy(*policy)) || (caption && !valid_caption(*caption)) ||
        (border && !valid_border(*border)) || (unsigned)separator>STYLE_LINE_RELIEF ||
        (unsigned)push>STYLE_PUSH_RELIEF || (lines &&
-       ((unsigned)controls->group>STYLE_LINE_RELIEF || (unsigned)controls->edit>STYLE_LINE_RELIEF)))return 0;
+       ((unsigned)controls->group>STYLE_LINE_RELIEF || (unsigned)controls->edit>STYLE_LINE_RELIEF)) ||
+       (progress && !valid_progress(controls->progress)) ||
+       (trackbar && controls->trackbar!=STYLE_TRACKBAR_OUTLINED && controls->trackbar!=STYLE_TRACKBAR_RELIEF) ||
+       (unsigned)header>STYLE_LINE_RELIEF || (unsigned)tab>STYLE_LINE_RELIEF)return 0;
     size_t caption_size=caption && caption->button_source?caption_presentation_size:caption_presentation_legacy_size;
     size_t border_size=border && border->geometry.scale?border_presentation_size:border_presentation_legacy_size;
     bool menu_text=menu && menu->text_flags;
@@ -272,15 +309,16 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
         (policy?record_size+dialog_policy_size:0)+(caption?record_size+caption_size:0)+
         (border?record_size+border_size:0)+(separator?record_size+separator_size:0)+
         (thumb?record_size+thumb_size:0)+(push?record_size+push_size:0)+
-        (lines?record_size+control_lines_size:0);
+        (lines?record_size+control_lines_size:0)+(progress?record_size+progress_size:0)+(trackbar?record_size+trackbar_size:0)+
+        (header?record_size+header_frame_size:0)+(tab?record_size+tab_frame_size:0);
     if(capacity<length)return 0;
     memcpy(bytes,"CSTY",4);
     write_half(bytes+4,1);
-    write_half(bytes+6,lines?13:push?12:thumb?11:separator?10:menu_text?9:border_size==border_presentation_size?8:caption_size==caption_presentation_size?7:
+    write_half(bytes+6,tab?17:header?16:trackbar?15:progress?14:lines?13:push?12:thumb?11:separator?10:menu_text?9:border_size==border_presentation_size?8:caption_size==caption_presentation_size?7:
         border?6:caption?5:policy?4:dialog?3:menu?2:scroll?1:0);
     msstyles_v4_write_word(bytes+8,(uint32_t)length);
     msstyles_v4_write_word(bytes+12,1+(scroll!=NULL)+(menu!=NULL)+menu_text+(dialog!=NULL)+(policy!=NULL)+
-        (caption!=NULL)+(border!=NULL)+(separator!=0)+thumb+(push!=0)+lines);
+        (caption!=NULL)+(border!=NULL)+(separator!=0)+thumb+(push!=0)+lines+progress+trackbar+(header!=0)+(tab!=0));
     write_half(bytes+16,button_group_type);
     write_half(bytes+18,required_flag);
     msstyles_v4_write_word(bytes+20,(uint32_t)payload);
@@ -395,6 +433,34 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
         msstyles_v4_write_word(slot+4,control_lines_size);
         slot[record_size]=(unsigned char)controls->group;
         slot[record_size+1]=(unsigned char)controls->edit;
+        slot+=record_size+control_lines_size;
+    }
+    if(progress){
+        write_half(slot,progress_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,progress_size);
+        memcpy(slot+record_size,&controls->progress,progress_size);
+        slot+=record_size+progress_size;
+    }
+    if(trackbar){
+        write_half(slot,trackbar_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,trackbar_size);
+        slot[record_size]=(unsigned char)controls->trackbar;
+        slot+=record_size+trackbar_size;
+    }
+    if(header){
+        write_half(slot,header_frame_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,header_frame_size);
+        slot[record_size]=(unsigned char)header;
+        slot+=record_size+header_frame_size;
+    }
+    if(tab){
+        write_half(slot,tab_frame_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,tab_frame_size);
+        slot[record_size]=(unsigned char)tab;
     }
     return length;
 }

@@ -37,7 +37,7 @@ static void tint_grip(HWND window,HDC dc,const RECT *client,int pane_end,const s
 }
 
 void win2k_status_panes(HWND window,HDC dc,const style_instance *instance,
-    const style_control_status_state *state,const win2k_palette *palette)
+    const style_control_status_state *state,const win2k_palette *palette,const classic_bar_colors *colors)
 {
     if(!dc || instance->detached || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL))return;
     unsigned epoch=state->epoch;
@@ -48,6 +48,9 @@ void win2k_status_panes(HWND window,HDC dc,const style_instance *instance,
     RECT client,panes[64];
     UINT flags[64];
     if(!GetClientRect(window,&client))return;
+    win2k_palette edge=*palette;
+    edge.highlight=classic_bar_color(colors,CLASSIC_BAR_HIGHLIGHT,edge.highlight);
+    edge.shadow=classic_bar_color(colors,CLASSIC_BAR_SHADOW,edge.shadow);
     for(LRESULT i=0;i<count;++i){
         WPARAM pane=(WPARAM)i;
         flags[i]=HIWORD(SendMessageW(window,SB_GETTEXTLENGTHW,pane,0));
@@ -58,7 +61,7 @@ void win2k_status_panes(HWND window,HDC dc,const style_instance *instance,
     for(LRESULT i=0;i<count;++i){
         RECT pane=panes[i],inside;
         if((flags[i]&SBT_NOBORDERS) || !IntersectRect(&inside,&client,&pane) || !EqualRect(&inside,&pane))continue;
-        style_paint_relief(dc,&pane,(flags[i]&SBT_POPOUT)?BDR_RAISEDINNER:BDR_SUNKENOUTER,BF_RECT,palette);
+        style_paint_relief(dc,&pane,(flags[i]&SBT_POPOUT)?BDR_RAISEDINNER:BDR_SUNKENOUTER,BF_RECT,&edge);
     }
     /* The native layout keeps the grip outside the last pane. */
     if(panes[count-1].right>0 && (flags[count-1]&SBT_OWNERDRAW)==0)

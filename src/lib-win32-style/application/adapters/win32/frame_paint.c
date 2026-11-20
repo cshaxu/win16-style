@@ -29,7 +29,8 @@ void style_runtime_group_frame(const style_runtime_frame_paint *v,const style_ru
     if(GetWindowTextLengthW(w)!=0||rect->top!=0)return;
     frame=*rect;}
  if(v->instance->detached||v->state->retired||!v->current(scope)||!v->owned(w,a)||GetParent(w)!=parent||IsWindowEnabled(w)!=(state==1))return;
- frame_result result={v->instance,v->state,parent};renderer->group(dc,&frame,clip,is_text?rect:NULL,frame_drawn,&result);
+ frame_result result={v->instance,v->state,parent};
+ renderer->group(dc,&frame,clip,is_text?rect:NULL,renderer->edge,frame_drawn,&result);
 }
 /* Accept only paired outer bevel strokes from the panel owner in its paint. */
 void style_runtime_panel_polyline(const style_runtime_frame_paint *v,const style_runtime_frame_renderer *renderer,HDC dc,const POINT *points,int count,const void *caller,BOOL (WINAPI *draw)(HDC,const POINT*,int))
@@ -52,7 +53,7 @@ void style_runtime_panel_polyline(const style_runtime_frame_paint *v,const style
     !((scope->panel_color==hi&&pen.lopnColor==lo)||(scope->panel_color==lo&&pen.lopnColor==hi))){scope->panel_first=FALSE;return;}
  scope->panel_first=FALSE;if(scope->panel_enabled!=IsWindowEnabled(w)||GetParent(w)!=parent)return;
  const POINT *shadow=scope->panel_color==lo?scope->panel_points:points;frame_result result={v->instance,v->state,parent};
- renderer->panel(dc,shadow,draw,frame_drawn,&result);
+ renderer->panel(dc,shadow,draw,renderer->edge,frame_drawn,&result);
 }
 
 BOOL style_runtime_controlbar_edge_allowed(UINT edge)

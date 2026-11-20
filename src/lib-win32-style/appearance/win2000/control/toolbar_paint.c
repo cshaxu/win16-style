@@ -15,7 +15,8 @@ static void prepare(HWND window,NMCUSTOMDRAW *draw,const void *context)
     const win2k_bar_draw *parameters=context;
     NMTBCUSTOMDRAW *item=(NMTBCUSTOMDRAW *)draw;
     const win2k_palette *palette=&parameters->palette;
-    if(item->clrBtnFace==GetSysColor(COLOR_BTNFACE))item->clrBtnFace=palette->face;
+    if(item->clrBtnFace==GetSysColor(COLOR_BTNFACE))
+        item->clrBtnFace=(draw->uItemState&(CDIS_SELECTED|CDIS_CHECKED))?parameters->pressed_face:palette->face;
     if(item->clrBtnHighlight==GetSysColor(COLOR_BTNHIGHLIGHT))item->clrBtnHighlight=palette->highlight;
     if(item->clrText==GetSysColor(COLOR_BTNTEXT))item->clrText=palette->text;
 }

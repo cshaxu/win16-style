@@ -39,6 +39,8 @@ target_include_directories(style-font-cache PUBLIC src)
 target_compile_definitions(style-font-cache PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-font-cache PUBLIC gdi32)
 add_library(style-present STATIC src/lib-win32-style/application/graphics/present.c
+  src/lib-win32-style/application/control/progress_paint.c
+  src/lib-win32-style/application/control/trackbar_paint.c
   src/lib-win32-style/application/graphics/paint_frame.c
   src/lib-win32-style/application/graphics/text_metrics.c)
 target_include_directories(style-present PUBLIC src)
@@ -1992,7 +1994,7 @@ if(BUILD_TESTING)
   native_test(core-pending-frame-owner tests/ntw16s-dll/pending_frame_owner.c user32 gdi32 imm32)
   target_include_directories(core-pending-frame-owner PRIVATE src)
   add_test(NAME core/pending-frame-owner COMMAND ${test_driver} --name core/pending-frame-owner -- $<TARGET_FILE:core-pending-frame-owner> $<TARGET_FILE:ntw16s>)
-  native_test(core-header-owner tests/ntw16s-dll/header_paint_owner.c user32 gdi32 comctl32 style-control-common)
+  native_test(core-header-owner tests/ntw16s-dll/header_paint_owner.c user32 gdi32 comctl32 style-control-common style-present)
   add_test(NAME core/header-owner COMMAND ${test_driver} --name core/header-owner -- $<TARGET_FILE:core-header-owner>)
 
   add_executable(core-dialog-scope tests/ntw16s-dll/dialog_scope.c src/ntw16s-dll/controls.c src/ntw16s-dll/win16_style.c)

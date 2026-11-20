@@ -1,12 +1,14 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <wchar.h>
 
 typedef BOOL (__cdecl *window_op)(HWND);
 typedef struct window_ops {window_op attach,attached,remove;BOOL hooked;} window_ops;
 #define CHECK(x) do {if(!(x)){fprintf(stderr,"WIN2K_DATES_FAIL line=%d error=%lu: %s\n",__LINE__,GetLastError(),#x);return FALSE;}}while(0)
-static const COLORREF navy=RGB(10,36,106),white=RGB(255,255,255),face=RGB(212,208,200),clear=RGB(246,27,193);
+static const COLORREF white=RGB(255,255,255),clear=RGB(246,27,193);
+static COLORREF title=RGB(10,36,106),face=RGB(212,208,200);
 static const SYSTEMTIME first={.wYear=2000,.wMonth=2,.wDay=18,.wHour=9};
 static HWND selection_source,picker_source;
 static unsigned selection_notices,opened,closed,popup_pixels;
@@ -69,16 +71,16 @@ static BOOL calendar(HWND root,HDC dc,const window_ops *ops)
 {
     HWND window=CreateWindowW(MONTHCAL_CLASSW,NULL,WS_CHILD|WS_VISIBLE|WS_TABSTOP,
         0,0,295,240,root,NULL,NULL,NULL);
-    CHECK(window && (!ops->hooked || ops->attached(window)) && ops->attach(window));
+    CHECK(window && (!ops->attach || ((!ops->hooked || ops->attached(window)) && ops->attach(window))));
     CHECK(SendMessageW(window,MCM_SETCURSEL,0,(LPARAM)&first));
     RECT bounds;
     CHECK(SendMessageW(window,MCM_GETMINREQRECT,0,(LPARAM)&bounds));
     CHECK(SetWindowPos(window,NULL,0,0,bounds.right+10,bounds.bottom+10,SWP_NOMOVE|SWP_NOACTIVATE|SWP_NOZORDER));
-    CHECK((COLORREF)SendMessageW(window,MCM_GETCOLOR,MCSC_TITLEBK,0)==navy);
+    CHECK((COLORREF)SendMessageW(window,MCM_GETCOLOR,MCSC_TITLEBK,0)==title);
     CHECK((COLORREF)SendMessageW(window,MCM_GETCOLOR,MCSC_TITLETEXT,0)==white);
     print(window,dc);
     CHECK(bounds.left>=0 && bounds.top>=0 && bounds.right<=500 && bounds.bottom<=300);
-    CHECK(pixels(bounds,navy)>200 && pixels(bounds,white)>1000);
+    CHECK(pixels(bounds,title)>200 && pixels(bounds,white)>1000);
     selection_source=window;
     SetFocus(window);
     SendMessageW(window,WM_KEYDOWN,VK_RIGHT,0);
@@ -91,7 +93,7 @@ static BOOL calendar(HWND root,HDC dc,const window_ops *ops)
     print(window,dc);
     CHECK(pixels(bounds,user)>200 && (COLORREF)SendMessageW(window,MCM_GETCOLOR,MCSC_TITLEBK,0)==user);
     SendMessageW(window,MCM_SETCOLOR,MCSC_TITLETEXT,white);
-    CHECK(ops->remove(window) && !ops->attached(window));
+    CHECK(!ops->remove || (ops->remove(window) && !ops->attached(window)));
     CHECK((COLORREF)SendMessageW(window,MCM_GETCOLOR,MCSC_TITLEBK,0)==user &&
         (COLORREF)SendMessageW(window,MCM_GETCOLOR,MCSC_TITLETEXT,0)==white);
     SYSTEMTIME after;
@@ -126,12 +128,12 @@ static BOOL picker(HWND root,HDC dc,const window_ops *ops)
 {
     HWND window=CreateWindowW(DATETIMEPICK_CLASSW,NULL,WS_CHILD|WS_VISIBLE|WS_TABSTOP,
         0,0,230,36,root,NULL,NULL,NULL);
-    CHECK(window && (!ops->hooked || ops->attached(window)) && ops->attach(window));
+    CHECK(window && (!ops->attach || ((!ops->hooked || ops->attached(window)) && ops->attach(window))));
     CHECK(SendMessageW(window,DTM_SETSYSTEMTIME,GDT_VALID,(LPARAM)&first));
     CHECK(SendMessageW(window,DTM_SETFORMATW,0,(LPARAM)L"yyyy'-'MM'-'dd"));
     SYSTEMTIME value;
     CHECK(SendMessageW(window,DTM_GETSYSTEMTIME,0,(LPARAM)&value)==GDT_VALID && same_date(&value,&first));
-    CHECK((COLORREF)SendMessageW(window,DTM_GETMCCOLOR,MCSC_TITLEBK,0)==navy);
+    CHECK((COLORREF)SendMessageW(window,DTM_GETMCCOLOR,MCSC_TITLEBK,0)==title);
     RECT client;
     CHECK(GetClientRect(window,&client));
     DATETIMEPICKERINFO info={.cbSize=sizeof(info)};
@@ -153,21 +155,21 @@ static BOOL picker(HWND root,HDC dc,const window_ops *ops)
     SendMessageW(window,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
     CHECK(RestoreDC(dc,saved));
     CHECK(pixels(clipped,face)>20 && GetPixel(dc,button.right-2,button.top+3)==clear);
-    CHECK(popup_calendar(window,dc,navy));
+    CHECK(popup_calendar(window,dc,title));
     COLORREF background=RGB(86,21,137);
     SendMessageW(window,DTM_SETMCCOLOR,MCSC_TITLEBK,background);
     CHECK(popup_calendar(window,dc,background));
     EnableWindow(window,FALSE);
     print(window,dc);
     CHECK(pixels(button,face)>20 && pixels(button,RGB(0,0,0))==0);
-    CHECK(ops->remove(window) && !ops->attached(window));
-    CHECK((COLORREF)SendMessageW(window,DTM_GETMCCOLOR,MCSC_TITLETEXT,0)==GetSysColor(COLOR_CAPTIONTEXT));
+    CHECK(!ops->remove || (ops->remove(window) && !ops->attached(window)));
+    CHECK(!ops->remove || (COLORREF)SendMessageW(window,DTM_GETMCCOLOR,MCSC_TITLETEXT,0)==GetSysColor(COLOR_CAPTIONTEXT));
     CHECK((COLORREF)SendMessageW(window,DTM_GETMCCOLOR,MCSC_TITLEBK,0)==background);
     CHECK(SendMessageW(window,DTM_GETSYSTEMTIME,0,(LPARAM)&value)==GDT_VALID && same_date(&value,&first));
     CHECK(DestroyWindow(window));
     HWND spin=CreateWindowW(DATETIMEPICK_CLASSW,NULL,WS_CHILD|WS_VISIBLE|DTS_TIMEFORMAT|DTS_UPDOWN,
         0,0,180,29,root,NULL,NULL,NULL);
-    CHECK(spin && !ops->attached(spin) && !ops->attach(spin));
+    CHECK(spin && (!ops->attach || (!ops->attached(spin) && !ops->attach(spin))));
     HWND child=FindWindowExW(spin,NULL,UPDOWN_CLASSW,NULL);
     CHECK(child && DestroyWindow(spin));
     return TRUE;
@@ -175,16 +177,29 @@ static BOOL picker(HWND root,HDC dc,const window_ops *ops)
 
 static BOOL run(int argc,WCHAR **argv)
 {
-    CHECK(argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
+    BOOL themed=argc==4 && !wcscmp(argv[1],L"--theme-colors");
+    CHECK(themed || argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
     const INITCOMMONCONTROLSEX icc={sizeof(icc),ICC_DATE_CLASSES};
     CHECK(InitCommonControlsEx(&icc));
-    HMODULE dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
-    CHECK(dll);
-    const window_ops ops={(void *)GetProcAddress(dll,"Ntw2ksWindowAttach"),(void *)GetProcAddress(dll,"Ntw2ksWindowAttached"),
-        (void *)GetProcAddress(dll,"Ntw2ksWindowRemove"),hooked};
-    CHECK(ops.attach && ops.attached && ops.remove);
+    HMODULE dll=NULL;
+    window_ops ops={0};
+    if(themed){
+        COLORREF *roles[]={&title,&face};
+        for(size_t i=0;i<ARRAYSIZE(roles);++i){
+            WCHAR *end;
+            unsigned long value=wcstoul(argv[i+2],&end,16);
+            CHECK(end!=argv[i+2] && !*end && value<=0xffffff);
+            *roles[i]=(COLORREF)value;
+        }
+    }else{
+        dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
+        CHECK(dll);
+        ops=(window_ops){(void *)GetProcAddress(dll,"Ntw2ksWindowAttach"),(void *)GetProcAddress(dll,"Ntw2ksWindowAttached"),
+            (void *)GetProcAddress(dll,"Ntw2ksWindowRemove"),hooked};
+        CHECK(ops.attach && ops.attached && ops.remove);
+    }
     HINSTANCE instance=GetModuleHandleW(NULL);
     const WNDCLASSW cls={.lpfnWndProc=root_proc,.hInstance=instance,.lpszClassName=L"OwnedWin2kDates"};
     CHECK(RegisterClassW(&cls));
@@ -205,8 +220,9 @@ static BOOL run(int argc,WCHAR **argv)
     SelectObject(dc,old);
     DeleteObject(dib);
     DeleteDC(dc);
-    FreeLibrary(dll);
-    puts("WIN2K_DATES_OK month=1 picker=1 native_state=1 popup=2 clip=1");
+    if(dll)FreeLibrary(dll);
+    if(themed)printf("THEME_DATES_OK calendar=%06lx button=%06lx popup=2 clip=1\n",title,face);
+    else puts("WIN2K_DATES_OK month=1 picker=1 native_state=1 popup=2 clip=1");
     return TRUE;
 }
 

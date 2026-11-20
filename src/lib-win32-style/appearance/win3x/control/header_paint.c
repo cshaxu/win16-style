@@ -11,7 +11,8 @@ BOOL win16_style_header_supported(HWND w)
 static void fill(HDC dc,RECT r,COLORREF color)
 {SetDCBrushColor(dc,color);FillRect(dc,&r,GetStockObject(DC_BRUSH));}
 BOOL win16_style_header_paint(HWND w,HDC dc,const win16_style_palette *p,HFONT font,
-    const style_instance *instance,const style_control_native_state *state,const classic_header_colors *colors)
+    const style_instance *instance,const style_control_native_state *state,const classic_header_colors *colors,
+    style_line_profile profile)
 {
     BOOL painted=FALSE;int saved=0;style_header_snapshot snapshot;
     if(!dc || !win16_style_header_supported(w) || !style_header_snapshot_read(w,instance,state,HDF_STRING|HDF_JUSTIFYMASK|HDF_RTLREADING,&snapshot))return FALSE;
@@ -23,18 +24,27 @@ BOOL win16_style_header_paint(HWND w,HDC dc,const win16_style_palette *p,HFONT f
     SetTextColor(dc,IsWindowEnabled(w)?p->edge:p->shadow);
     int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
     RECT bottom=client;bottom.top=max(bottom.top,bottom.bottom-u);fill(dc,bottom,p->edge);
-    BOOL captured=GetCapture()==w && (GetWindowLongPtrW(w,GWL_STYLE)&HDS_BUTTONS);
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+    BOOL button=(style&HDS_BUTTONS)!=0,captured=button && GetCapture()==w;
+    const style_relief_palette edge={.face=normal,.light=p->face,.highlight=p->light,.shadow=p->shadow,.dark=p->edge};
+    if(!profile)profile=STYLE_LINE_FLAT;
     for(int i=0;i<count;++i){
         RECT r=items[i].rect,visible;if(!IntersectRect(&visible,&client,&r))continue;
         int inner=SaveDC(dc);if(!inner)goto done;
         IntersectClipRect(dc,r.left,r.top,r.right,r.bottom);
-        for(int n=0;n<u && !IsRectEmpty(&r);++n){SetDCBrushColor(dc,p->edge);FrameRect(dc,&r,GetStockObject(DC_BRUSH));InflateRect(&r,-1,-1);}
-        if(captured && i==state->pressed){
+        BOOL pressed=captured && i==state->pressed;
+        RECT frame=r;
+        for(int n=0;n<u && !IsRectEmpty(&r);++n)InflateRect(&r,-1,-1);
+        if(pressed){
             if(colors && colors->present && colors->pressed!=normal){
                 RECT interior=r;interior.bottom=min(interior.bottom,bottom.top);
                 fill(dc,interior,colors->pressed);
             }
             OffsetRect(&r,u,u);
+        }
+        if(!style_paint_header_edge(dc,frame,button,(style&WS_BORDER)!=0,pressed,u,profile,&edge)){
+            RestoreDC(dc,inner);
+            goto done;
         }
         InflateRect(&r,-3*u,0);
         UINT flags=DT_VCENTER|DT_SINGLELINE|DT_NOPREFIX|DT_END_ELLIPSIS;

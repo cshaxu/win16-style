@@ -18,8 +18,9 @@ typedef struct style_runtime_frame_paint {
     BOOL (*current)(style_runtime_frame_scope *);
 } style_runtime_frame_paint;
 typedef struct style_runtime_frame_renderer {
-    void (*group)(HDC,const RECT *,const RECT *,const RECT *,void (*)(void *),void *);
-    void (*panel)(HDC,const POINT *,BOOL (WINAPI *)(HDC,const POINT *,int),void (*)(void *),void *);
+    void (*group)(HDC,const RECT *,const RECT *,const RECT *,COLORREF,void (*)(void *),void *);
+    void (*panel)(HDC,const POINT *,BOOL (WINAPI *)(HDC,const POINT *,int),COLORREF,void (*)(void *),void *);
+    COLORREF edge;
 } style_runtime_frame_renderer;
 void style_runtime_group_frame(const style_runtime_frame_paint *,const style_runtime_frame_renderer *,HDC,int,int,const RECT *,const RECT *,LPCWSTR,int,DWORD,const void *,BOOL);
 void style_runtime_panel_polyline(const style_runtime_frame_paint *,const style_runtime_frame_renderer *,HDC,const POINT *,int,const void *,BOOL (WINAPI *)(HDC,const POINT *,int));

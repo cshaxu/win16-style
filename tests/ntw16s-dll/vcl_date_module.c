@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <setjmp.h>
 #include "isolated_process.h"
@@ -107,4 +108,49 @@ static int run(int argc,WCHAR **argv)
     CHECK(DestroyWindow(root));CHECK(FreeLibrary(fixture));
     printf("VCL_DATE_MODULE_OK bits=%u fake=1 checked_rejected=1 date=1 keyboard=1 popup=1 pixels=1 clip=1 dc_state=1 unwind=1 exact_region=1 leak_negative=1 repeated_gdi=1 retire=1 destroy=1 cleanup=1\n",(unsigned)(sizeof(void*)*8));return 0;
 }
-int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,run);}
+static int theme_face(PCWSTR fixture,PCWSTR color)
+{
+    WCHAR *end;
+    unsigned long expected=wcstoul(color,&end,16);
+    CHECK(end!=color && !*end && expected<=0xffffff);
+    DWORD dib=GetRValue(expected)<<16 | GetGValue(expected)<<8 | GetBValue(expected);
+    HMODULE module=LoadLibraryW(fixture);
+    CHECK(module);
+    reg_fn reg=(void *)GetProcAddress(module,"FixtureRegister");
+    create_fn create=(void *)GetProcAddress(module,"FixtureCreate");
+    unreg_fn unreg=(void *)GetProcAddress(module,"FixtureUnregister");
+    CHECK(reg && create && unreg && reg(FALSE));
+    HWND root=CreateWindowExW(WS_EX_TOOLWINDOW|WS_EX_NOACTIVATE,L"STATIC",L"",
+        WS_OVERLAPPEDWINDOW|WS_VISIBLE,-10000,-10000,400,210,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    HWND picker=root?create(root,FALSE):NULL;
+    CHECK(picker && RedrawWindow(picker,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));
+    const SYSTEMTIME before={.wYear=2026,.wMonth=10,.wDay=27};
+    SYSTEMTIME after={0};
+    CHECK(SendMessageW(picker,DTM_SETSYSTEMTIME,GDT_VALID,(LPARAM)&before));
+    DATETIMEPICKERINFO info={.cbSize=sizeof(info)};
+    RECT client;
+    CHECK(SendMessageW(picker,DTM_GETDATETIMEPICKERINFO,0,(LPARAM)&info) && GetClientRect(picker,&client));
+    CHECK(client.right>0 && client.right<=220 && client.bottom>0 && client.bottom<=64);
+    RECT button;
+    CHECK(IntersectRect(&button,&client,&info.rcButton) && EqualRect(&button,&info.rcButton));
+    DWORD pixels[220*64];
+    CHECK(capture(picker,pixels,client.right,client.bottom,&button,NULL));
+    unsigned count=0,outside=0;
+    for(int y=0;y<client.bottom;++y)for(int x=0;x<client.right;++x){
+        DWORD pixel=pixels[y*client.right+x]&0xffffff;
+        if(PtInRect(&button,(POINT){x,y}))count+=pixel==dib;
+        else outside+=pixel!=0x5a5a5a;
+    }
+    printf("THEME_VCL_DATE_FACE pixels=%u outside=%u\n",count,outside);
+    CHECK(count>20 && !outside && SendMessageW(picker,DTM_GETSYSTEMTIME,0,(LPARAM)&after)==GDT_VALID &&
+        after.wYear==before.wYear && after.wMonth==before.wMonth && after.wDay==before.wDay);
+    CHECK(DestroyWindow(root) && unreg() && FreeLibrary(module));
+    puts("THEME_VCL_DATE_OK date=1 clip=1");
+    return 0;
+}
+
+int wmain(int argc,WCHAR **argv)
+{
+    if(argc==4 && !wcscmp(argv[1],L"--theme-face"))return theme_face(argv[2],argv[3]);
+    return isolated_process(argc,argv,run);
+}

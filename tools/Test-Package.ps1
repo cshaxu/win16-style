@@ -888,7 +888,7 @@ try{
     $cases+=Pair { param($bits,$tree,$dll) Case "vb-font-${bits}" (Join-Path $tree 'core-vb-font.exe') @((Join-Path $tree 'vb-fixture/MSVBVM60.dll')) @('VB_FONT_ZERO_OK requested=12','VB_FONT_ZERO_OK requested=14','VB_FONT_ZERO_OK requested=16','VB_OWNERSHIP_OK leases_retired=32 maps_freed=32 sources_preserved=33','REPORT_TEXT_OWNERSHIP_OK exact_dc=1 barrier=1 cancelled=1') }
     $cases+=Pair { param($bits,$tree,$dll) Case "vb-controls-${bits}" (Join-Path $tree 'core-vb.exe') @($run,(Join-Path $tree 'vb-fixture/MSVBVM60.dll')) @("VB_WINDOWED_OK bits=${bits} styled=1",'VB_EDIT_OK undo=1','VB_EDIT_FONT_PIXELS changed=1','VB_CONTAINER_PAINT_OK label_changed=1','VB_CLEANUP_OK') }
     $cases+=Pair { param($bits,$tree,$dll) Case "dialog-classic-result-${bits}" (Join-Path $tree 'core-win16-dialog-link.exe') @() @('CLASSIC_RESULT_OK folder=1 commit=1 revoke=1 invalid_multi=1','CLASSIC_MESSAGE_OK reject=1 navigating=1 fileok=1 hidden=1','CLASSIC_NAVIGATION_OK scope=1 events=1 cleanup=1','WIN16_DIALOG_STANDALONE_LINK_OK') }
-    $cases+=Pair { param($bits,$tree,$dll) Case "control-eligibility-${bits}" (Join-Path $tree 'core-win16-control-link.exe') @() @('ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1','ATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1','CONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1') }
+    $cases+=Pair { param($bits,$tree,$dll) Case "control-eligibility-${bits}" (Join-Path $tree 'core-win16-control-link.exe') @() @('ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1','ATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1','CONTROL_SEPARATOR_OK etched=3 plain=1 nonstatic=1','RUNTIME_FRAME_PIXELS_OK group=1 panel=1 clip=1 dc=1','RUNTIME_GRIP_PIXELS_OK face=382d20 light=b1630b shadow=0d9a7f') }
     $cases+=Pair { param($bits,$tree,$dll) Case "control-scope-${bits}" (Join-Path $tree 'core-win16-control-scope.exe') @() @('CONTROL_SCOPE_OK nested=1 counts=1 reentrant=1 cleanup=1') }
     $cases+=Pair { param($bits,$tree,$dll) Case "control-extensions-${bits}" (Join-Path $tree 'core-control-extensions.exe') @($dll) @('CONTROL_EXTENSION_NATIVE_OK','CONTROL_EXTENSION_IMAGELIST_OK',"CONTROL_EXTENSION_OK bits=${bits} protocol_cases=60") }
     $cases+=Pair { param($bits,$tree,$dll) Case "control-protocol-owner-${bits}" (Join-Path $tree 'core-control-protocol-owner.exe') @() @("PROTOCOL_OWNER_OK bits=${bits} allocations=0 bindings=0") }
@@ -915,6 +915,35 @@ try{
         Case "ntw2ks-scroll-$bits" $scroll @($win2k) @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=0",$scrollScope) 20
         Case "ntw2ks-scroll-aware-$bits" $scroll @($win2k,'aware') @("WIN2K_SCROLL_OK bits=$bits aware=1 hooked=0",$scrollScope) 20
         Case "ntw2ks-scroll-startup-$bits" $run @('Win2K',$scroll,$win2k,'hooked') @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=1",$scrollScope) 25
+        $themedTrack=Join-Path $tree 'core-win2k-trackbar-v6.exe'
+        $trackScope='THEME_TRACKBAR_OK axes=2 position_preserved=1'
+        Case "theme-trackbar-win16-$bits" $run @('Win16',$themedTrack,'000000','theme-edge') @($trackScope) 20
+        Case "theme-trackbar-win2k-$bits" $run @('Win2K',$themedTrack,'ffffff','theme-edge') @($trackScope) 20
+        $themedUpdown=Join-Path $tree 'core-win2k-updown-v6.exe'
+        Case "theme-updown-art-$bits" $run @('Win16',$themedUpdown,'--theme-art') @(
+            'THEME_UPDOWN_ART axis=0 dark=25 shadow=0','THEME_UPDOWN_ART axis=1 dark=25 shadow=0',
+            'THEME_UPDOWN_ART_OK axes=2 position_preserved=1') 20
+        $themedReport=Join-Path $tree 'core-win2k-report-tree-v6.exe'
+        Case "theme-report-tree-$bits" $run @('Win2K',$themedReport,'--theme-colors','c8d0d4','c8d0d4') @(
+            'THEME_REPORT_TREE_OK list=c8d0d4 tree=c8d0d4 views=4 app_custom=2') 20
+        $themedHeader=Join-Path $tree 'core-win2k-tab-header-v6.exe'
+        Case "theme-header-win16-$bits" $run @('Win16',$themedHeader,'--header-edge','000000') @('THEME_HEADER_OK click=1') 20
+        Case "theme-header-win2k-$bits" $run @('Win2K',$themedHeader,'--header-edge','ffffff') @('THEME_HEADER_OK click=1') 20
+        Case "theme-tab-win16-$bits" $run @('Win16',$themedHeader,'--tab-edge','000000','1') @(
+            'THEME_TAB_OK selection=1 client_clip=1') 20
+        Case "theme-tab-win2k-$bits" $run @('Win2K',$themedHeader,'--tab-edge','ffffff','2') @(
+            'THEME_TAB_OK selection=1 client_clip=1') 20
+        $themedBars=Join-Path $tree 'core-win2k-bars-v6.exe'
+        Case "theme-bars-win2k-$bits" $run @('Win2K',$themedBars,'--theme-colors','ffffff','ffffff','808080') @(
+            'THEME_BARS_OK toolbar=ffffff rebar=ffffff status=808080') 20
+        Case "theme-status-win16-$bits" $run @('Win16',$themedBars,'--theme-flat-status','000000') @(
+            'THEME_FLAT_STATUS_OK') 20
+        $themedDates=Join-Path $tree 'core-win2k-dates-v6.exe'
+        Case "theme-dates-win2k-$bits" $run @('Win2K',$themedDates,'--theme-colors','6a240a','c8d0d4') @(
+            'THEME_DATES_OK calendar=6a240a button=c8d0d4 popup=2 clip=1') 20
+        Case "theme-vcl-toolbar-win16-$bits" $run @('Win16',(Join-Path $tree 'core-vcl-toolbar-module.exe'),
+            '--theme-edge',(Join-Path $tree 'vcl-toolbar-module-fixture.dll'),'000000') @(
+            'THEME_VCL_TOOLBAR_OK command=1') 20
         $controlScopes=[ordered]@{
             trackbar='WIN2K_TRACKBAR_OK rectangular=2 pointed=4'
             updown='WIN2K_UPDOWN_OK axes=2 native_seam=2'
@@ -995,6 +1024,15 @@ try{
     $cases+=Pair { param($bits,$tree,$dll) Case "vcl-color-module-${bits}" $run @('Win16',(Join-Path $tree 'core-vcl-color-module.exe'),(Join-Path $tree 'vcl-color-module-fixture.dll')) @('COLOR_OS_ROOT_CLEANUP process_exit=1',"VCL_COLOR_MODULE_OK bits=${bits} fake=1 selection=1 keyboard=1 popup=1 ownerdraw=1 nested=1 pixels=1 clip=1 dc_state=1 print_resources=1 unwind=1 retire=1 destroy=1 cleanup=1") }
     $cases+=Pair { param($bits,$tree,$dll) Case "vcl-status-pane-font-${bits}" $run @('Win16',(Join-Path $tree 'core-vcl-status-pane-font.exe'),(Join-Path $tree 'vcl-status-module-fixture.dll')) @('PANE_FONT_OK ascii=1 unicode=1 ownerdraw=1 noborder=1 icon=1 mutation=1 unwind=1 cleanup=1') }
     $cases+=Pair { param($bits,$tree,$dll) Case "month-model-${bits}" $run @('Win16',(Join-Path $tree 'core-month-model.exe'),(Join-Path $tree 'month-fixture.dll')) @('MONTH_MODEL_OK multi=1 owner=1 fake=1 caller=1 witness=1 unwind=1 stale=1 query=1 date=1 layout=1 colors=1 theme=1 selection=1 header=1 font=1 fontbounds=1 fontlease=1 dpi=1 selectfail=1 text=1 fallback=1 pixels=1 cleanup=1') }
+    $cases+=Pair { param($bits,$tree,$dll) Case "theme-month-painter-$bits" (Join-Path $tree 'core-month-model.exe') @(
+        '--theme-painter',(Join-Path $Package 'Win16/Win16.theme'),'f0c8a4','000000') @(
+        'THEME_MONTH_PAINTER_OK selection=1 arrows=2') }
+    $cases+=Pair { param($bits,$tree,$dll) Case "theme-vcl-date-$bits" $run @('Win16',
+        (Join-Path $tree 'core-vcl-date-module.exe'),'--theme-face',(Join-Path $tree 'vcl-date-module-fixture.dll'),'c0c0c0') @(
+        'THEME_VCL_DATE_OK date=1 clip=1') }
+    $cases+=Pair { param($bits,$tree,$dll) Case "theme-vcl-push-$bits" $run @('Win16',
+        (Join-Path $tree 'core-vcl-bitbtn-module.exe'),'--theme-faces',(Join-Path $tree 'vcl-bitbtn-module-fixture.dll'),
+        'c0c0c0','c0c0c0','000000') @('THEME_VCL_PUSH_OK states=2 glyph=1 clip=1 click=1') }
     $cases+=Pair { param($bits,$tree,$dll) Case "inplace-model-${bits}" $run @('Win16',(Join-Path $tree 'core-inplace-model.exe'),(Join-Path $tree 'inplace-fixture.dll')) @('INPLACE_MODEL_OK owner=1 fake=1 unwind=1 normal=1 pressed=1 hotfallback=1 geometry=1 foreign=1 clip=1 disabled=1 pixel=1 glyph=1 dropdown=1 dropclip=1 dropforeign=1 drophot=1 dropdisabled=1 droppressedfallback=1 click=1 reparent=1 cleanup=1','LOOKUP_MODEL_OK owner=1 edge=1 fake=1 theme=1 ansi=1 unicode=1 glyph=1 reparent=1 cleanup=1') }
     $cases+=Pair { param($bits,$tree,$dll) Case "dbnav-model-${bits}" $run @('Win16',(Join-Path $tree 'core-dbnav-model.exe'),(Join-Path $tree 'dbnav-fixture.dll')) @("DBNAV_MODEL_OK width=${bits} wrong_parent=1 foreign=1 origin=1 normal=1 pressed=1 disabled=1 hot_fallback=1 glyph=1 clip=1 click=1 reparent=1 media=1 media_foreign=1 media_module=1 media_fallback=1 media_clip=1 media_disabled=1 media_focus=1 focus_pixels=1 cleanup=1") }
     $cases+=Pair { param($bits,$tree,$dll) Case "lookup-popup-model-${bits}" $run @('Win16',(Join-Path $tree 'core-lookup-popup-model.exe')) @("LOOKUP_POP_MODEL_OK width=${bits} scoped=1 alt_down=1 wrong_key=1 wrong_owner=1 outside=1 owner_change=1 source_destroy=1 exception=1 cleanup=1") }

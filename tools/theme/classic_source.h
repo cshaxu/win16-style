@@ -36,6 +36,7 @@ typedef struct classic_theme_source {
     style_border_presentation border_presentation;
     classic_control_presentation controls;
     style_scroll_arrow_source arrow_source;
+    COLORREF pressed_toolbar;
 } classic_theme_source;
 
 static const classic_theme_source classic_sources[]={
@@ -60,8 +61,9 @@ static const classic_theme_source classic_sources[]={
         MSSTYLES_HOST_ALL,
         {STYLE_CAPTION_TEXT_CENTER_CLIP,STYLE_CAPTION_SEPARATOR_AFTER,STYLE_CAPTION_BUTTON_INDEXED,
             STYLE_CAPTION_BUTTON_EDGE_OUTLINE},
-        WIN16_FRAME_BORDER,{.separator=STYLE_LINE_FLAT,.group=STYLE_LINE_FLAT,.edit=STYLE_LINE_FLAT,.push=STYLE_PUSH_STEPPED},
-        STYLE_SCROLL_ARROW_INDEXED
+        WIN16_FRAME_BORDER,{.separator=STYLE_LINE_FLAT,.group=STYLE_LINE_FLAT,.edit=STYLE_LINE_FLAT,.push=STYLE_PUSH_STEPPED,
+            .progress=STYLE_PROGRESS_OUTLINED,.trackbar=STYLE_TRACKBAR_OUTLINED,.header=STYLE_LINE_FLAT,.tab=STYLE_LINE_FLAT},
+        STYLE_SCROLL_ARROW_INDEXED,RGB(128,128,128)
     },
     {
         "Win2K","Windows 2000",
@@ -84,8 +86,9 @@ static const classic_theme_source classic_sources[]={
         0,
         {STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,STYLE_CAPTION_SEPARATOR_INSIDE,STYLE_CAPTION_BUTTON_SYSTEM,
             STYLE_CAPTION_BUTTON_NO_OUTLINE},
-        WIN2000_FRAME_BORDER,{.separator=STYLE_LINE_RELIEF,.group=STYLE_LINE_RELIEF,.edit=STYLE_LINE_RELIEF,.push=STYLE_PUSH_RELIEF},
-        STYLE_SCROLL_ARROW_SYMBOL
+        WIN2000_FRAME_BORDER,{.separator=STYLE_LINE_RELIEF,.group=STYLE_LINE_RELIEF,.edit=STYLE_LINE_RELIEF,.push=STYLE_PUSH_RELIEF,
+            .progress=STYLE_PROGRESS_INSET,.trackbar=STYLE_TRACKBAR_RELIEF,.header=STYLE_LINE_RELIEF,.tab=STYLE_LINE_RELIEF},
+        STYLE_SCROLL_ARROW_SYMBOL,RGB(212,208,200)
     }
 };
 

@@ -69,7 +69,7 @@ void ntw16s_modern_spin_theme(HDC dc,int part,int state,const RECT *r,const RECT
 static BOOL spin_face(HWND w,HDC dc,const RECT *r,const RECT *clip,UINT state)
 {
     const attachment *a=paint_runtime.spin->instance->context;
-    return win16_style_bitbtn_face(w,dc,r,clip,state,&a->palette);
+    return win16_style_bitbtn_face(w,dc,r,clip,state,&a->palette,&a->push);
 }
 void ntw16s_modern_spin_blit(HDC dst,int x,int y,int w,int h,HDC src,int sx,int sy,DWORD rop)
 {style_control_spin_blit(paint_runtime.spin,dst,x,y,w,h,src,sx,sy,rop,spin_face);}
@@ -84,7 +84,7 @@ void ntw16s_spin_frame(HDC dc,const RECT *r,UINT type,UINT flags,const void *cal
 static BOOL bit_face(HWND w,HDC dc,const RECT *r,const RECT *clip,UINT state)
 {
     const attachment *a=paint_runtime.bit->observation.owner;
-    return win16_style_bitbtn_face(w,dc,r,clip,state,&a->palette);
+    return win16_style_bitbtn_face(w,dc,r,clip,state,&a->palette,&a->push);
 }
 void ntw16s_bit_theme_frame(HDC dc,int part,const RECT *rect,const RECT *clip,const void *address)
 {
@@ -96,14 +96,16 @@ static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *cli
 {
     style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return;
     const attachment *a=s->observation.owner;
-    const win16_control_vcl_paint_view v={s->observation.window,s->observation.instance,&s->observation.runtime->roles.inplace,&a->palette};
+    const win16_control_vcl_paint_view v={s->observation.window,s->observation.instance,
+        &s->observation.runtime->roles.inplace,&a->palette,&a->push};
     win16_control_vcl_inplace_draw(&v,dc,part,state,r,clip,address,drop);
 }
 void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {
     style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return;
     const attachment *a=s->observation.owner;
-    const win16_control_vcl_paint_view v={s->observation.window,s->observation.instance,&s->observation.runtime->roles.nav,&a->palette};
+    const win16_control_vcl_paint_view v={s->observation.window,s->observation.instance,
+        &s->observation.runtime->roles.nav,&a->palette,&a->push};
     win16_control_vcl_nav_draw(&v,dc,part,state,r,clip,address);
 }
 BOOL ntw16s_inplace_paint(HDC dc)
@@ -136,7 +138,7 @@ void ntw16s_status_simple_return(void *token,HFONT font)
 static void draw_status_edge(const style_control_status_scope *scope,HDC dc,const RECT *pane,const RECT *clip)
 {
     const attachment *a=scope->context;
-    win16_control_color_frame(dc,pane,clip,a->palette.edge);
+    win16_control_color_frame(dc,pane,clip,a->status_edge);
 }
 void ntw16s_status_text_frame(HDC dc,const RECT *text,UINT flags,const void *address)
 {RECT pane;const style_control_status_scope *scope=paint_runtime.status;if(style_control_status_text_frame(scope,dc,text,flags,address,&pane))draw_status_edge(scope,dc,&pane,NULL);}
@@ -203,17 +205,18 @@ HFONT ntw16s_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,const voi
 #define class_is style_control_class_is
 static BOOL vcl_frame_owned(HWND w,void *owner){return lookup(w)==owner;}
 static BOOL vcl_frame_current(style_runtime_frame_scope *scope){return paint_runtime.paint && &paint_runtime.paint->frame==scope;}
-static const style_runtime_frame_renderer frame_renderer={win16_control_group_frame,win16_control_panel_shadow};
 void ntw16s_group_frame(HDC dc,int part,int state,const RECT *rect,const RECT *clip,LPCWSTR text,int count,DWORD flags,const void *caller,BOOL is_text)
 {
     style_runtime_paint_scope *scope=paint_runtime.paint;if(!scope || !scope->observation.owner)return;attachment *a=scope->observation.owner;
     const style_runtime_frame_paint v={&scope->frame,&a->base.instance,&a->base.runtime.group_frame,a,scope->observation.window,vcl_frame_owned,vcl_frame_current};
+    const style_runtime_frame_renderer frame_renderer={win16_control_group_frame,win16_control_panel_shadow,a->palette.edge};
     style_runtime_group_frame(&v,&frame_renderer,dc,part,state,rect,clip,text,count,flags,caller,is_text);
 }
 void ntw16s_panel_polyline(HDC dc,const POINT *points,int count,const void *caller,BOOL (WINAPI *draw)(HDC,const POINT*,int))
 {
     style_runtime_paint_scope *scope=paint_runtime.paint;if(!scope)return;if(!scope->observation.owner){scope->frame.panel_first=FALSE;return;}attachment *a=scope->observation.owner;
     const style_runtime_frame_paint v={&scope->frame,&a->base.instance,&a->base.runtime.panel_frame,a,scope->observation.window,vcl_frame_owned,vcl_frame_current};
+    const style_runtime_frame_renderer frame_renderer={win16_control_group_frame,win16_control_panel_shadow,a->palette.edge};
     style_runtime_panel_polyline(&v,&frame_renderer,dc,points,count,caller,draw);
 }
 
@@ -246,7 +249,8 @@ static win16_control_month_view month_view(style_runtime_paint_scope *s)
     return (win16_control_month_view){
         .native={.context=s,.window=s->observation.window,.instance=&a->base.instance,.rich=&a->base.runtime.rich,
             .state=&s->month,.rejected_styles=MCS_MULTISELECT,.current=month_view_current},
-        .cached_font=&a->month_cached_font,.palette=&a->palette,.selection=a->calendar_selection};
+        .cached_font=&a->month_cached_font,.palette=&a->palette,
+        .arrows=a->base.runtime.rich.month?a->month_arrows:NULL,.selection=a->calendar_selection};
 }
 
 void ntw16s_month_arrow(HTHEME t,HDC dc,int p,int state,const RECT *r,const RECT *clip,const void *addr)
@@ -280,7 +284,10 @@ static BOOL cool_grip(HWND w,attachment *a,const NMCUSTOMDRAW *n)
     return win16_control_cool_grip_identity(w,a,n,native,cool_identity_callback);
 }
 static BOOL cool_grip_callback(HWND w,void *owner,const NMCUSTOMDRAW *draw)
-{return cool_grip(w,(attachment *)owner,draw) && win16_control_cool_grip(draw->hdc,&draw->rc);}
+{
+    attachment *a=owner;
+    return cool_grip(w,a,draw) && win16_control_cool_grip(draw->hdc,&draw->rc,&a->grip);
+}
 static LRESULT CALLBACK cool_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     (void)id;attachment *a=(attachment *)data;style_runtime_cool_scope *s=paint_runtime.cool;
@@ -323,8 +330,9 @@ static void date_button(HWND w,const style_instance *instance,HDC dc,const RECT 
     const style_control_native_button *button)
 {
     const attachment *a=instance->context;
-    const win16_style_palette *palette=a->base.runtime.date.installed?&a->palette:NULL;
-    win16_control_native_combo_button(w,instance,dc,dirty,button,palette);
+    win16_style_palette palette=a->palette;
+    palette.face=a->date_button_face;
+    win16_control_native_combo_button(w,instance,dc,dirty,button,a->base.runtime.date.installed?&palette:NULL);
 }
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
@@ -419,7 +427,8 @@ static BOOL install_created(HWND w,DWORD original_style)
     BOOL vcl_mdi_probe=style_control_vcl_mdi_identity(w,GetParent(w),GetParent(GetParent(w)),owner,mdi_host_attached);
     int rejected=win16_attachment_eligibility(original_style,picture,checklist,status,spin,vcl_mdi_probe,&initial,&candidates,&extra);
     if(rejected){if(rejected==1)style_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-    a=calloc(1,sizeof(*a));
+    size_t arrow_bytes=extra.rich_month?sizeof(style_scroll_arrow_art):0;
+    a=calloc(1,sizeof(*a)+arrow_bytes);
     if(!a){style_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     style_instance_init(&a->base.instance,a,attachment_dispose);
     owner_selection selection={a,picture,checklist};
@@ -429,8 +438,11 @@ static BOOL install_created(HWND w,DWORD original_style)
     style_runtime_attachment_initialize(w,original_style,&a->base,&seed);
     win16_style_default_palette(&a->palette);
     a->calendar_selection=a->palette.active;
+    a->status_edge=a->palette.edge;
+    a->date_button_face=a->palette.face;
     if(status || candidates.status_candidate || candidates.date_candidate || extra.rich_month || extra.vb_data_edge || spin ||
-       candidates.bit_candidate || candidates.inplace_candidate || candidates.nav_candidate || extra.controlbar_candidate){
+       candidates.bit_candidate || candidates.inplace_candidate || candidates.nav_candidate || extra.controlbar_candidate ||
+       candidates.group_frame_candidate || candidates.panel_frame_candidate || cool_candidate){
         classic_theme_mapping source={0};
         if(SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN16,TRUE,&source))){
             const classic_theme *theme=&source.model;
@@ -441,7 +453,12 @@ static BOOL install_created(HWND w,DWORD original_style)
                 a->palette.edge=theme->frame.edge;
             }
             a->palette.active=theme->active.start;
-            if(theme->list.present)a->calendar_selection=theme->list.selection;
+            a->push=(win16_runtime_push){theme->push,theme->controls.push?theme->controls.push:STYLE_PUSH_STEPPED};
+            if(cool_candidate)a->grip=theme->bars[CLASSIC_BAR_REBAR];
+            a->calendar_selection=win16_control_month_selected_color(theme,a->calendar_selection);
+            a->status_edge=classic_bar_color(&theme->bars[CLASSIC_BAR_STATUS],CLASSIC_BAR_EDGE,a->palette.edge);
+            a->date_button_face=theme->has_date_button_face?theme->date_button_face:a->palette.face;
+            if(extra.rich_month)a->month_arrows[0]=theme->scroll_art;
             classic_theme_close(&source);
         }
     }

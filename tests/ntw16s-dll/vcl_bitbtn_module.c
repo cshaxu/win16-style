@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <setjmp.h>
 #include <uxtheme.h>
@@ -35,4 +36,58 @@ static int worker(int argc,WCHAR **argv){CHECK(argc==2);INITCOMMONCONTROLSEX ic=
  fake=2;target=create(root);CHECK(target);CHECK(RedrawWindow(target,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));CHECK(!attached(target));CHECK(DestroyWindow(target));target=NULL;
  fake=FALSE;target=create(root);CHECK(target);CHECK(RedrawWindow(target,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));CHECK(attached(target));target2=create(root);CHECK(target2);nested=TRUE;nested_hits=0;DWORD nestpixels[180*40];CHECK(capture(target,nestpixels,180,40,NULL));fprintf(stderr,"NESTED_EVIDENCE armed=%d hits=%u outer=%d inner=%d\n",nested,nested_hits,attached(target),attached(target2));CHECK(!nested && nested_hits==1 && attached(target) && attached(target2));CHECK(DestroyWindow(target2));target2=NULL;RECT r;CHECK(GetClientRect(target,&r)&&r.right==180&&r.bottom==40);DWORD styled[180*40],native[180*40],clipped[180*40];RECT clip={0,0,40,40};CHECK(capture(target,styled,180,40,NULL));HDC screen=GetDC(NULL),udc=CreateCompatibleDC(screen);HBITMAP ub=CreateCompatibleBitmap(screen,180,40);HGDIOBJ uold=SelectObject(udc,ub);CHECK(udc&&ub&&uold);CHECK(test_unwind(target,udc));CHECK(attached(target));SelectObject(udc,uold);CHECK(DeleteObject(ub));CHECK(DeleteDC(udc));CHECK(ReleaseDC(NULL,screen));CHECK(capture(target,clipped,180,40,&clip));unsigned outside=0;for(int y=0;y<40;y++)for(int x=40;x<180;x++)if(clipped[y*180+x]!=0x55555555)outside++;CHECK(!outside);clicks=0;SendMessageW(target,BM_CLICK,0,0);CHECK(clicks==1);CHECK(remove_style(target)&&!attached(target));CHECK(capture(target,native,180,40,NULL));unsigned changed=0,glyph=0,altered=0;for(int y=0;y<40;y++)for(int x=0;x<180;x++){DWORD a=styled[y*180+x]&0xffffff,b=native[y*180+x]&0xffffff;if(a!=b)changed++;if(b==RGB(25,40,220)){glyph++;if(a!=b)altered++;}}printf("BIT_PIXELS changed=%u glyph=%u altered=%u clip_outside=%u\n",changed,glyph,altered,outside);CHECK(changed&&glyph==100&&!altered);CHECK(DestroyWindow(target));target=NULL;
  target=create(root);CHECK(target);CHECK(RedrawWindow(target,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));CHECK(attached(target));retire=TRUE;retired=FALSE;retire_next();CHECK(capture(target,styled,180,40,NULL));CHECK(!retire&&retired&&!attached(target));CHECK(DestroyWindow(target));target=NULL;CHECK(DestroyWindow(root));CHECK(UnregisterClassW(cls.lpszClassName,cls.hInstance));CHECK(unreg());CHECK(FreeLibrary(fixture));printf("VCL_BITBTN_MODULE_OK bits=%u fake=1 foreign=1 unwind=1 nested=1 click=1 pixels=1 glyph=1 clip=1 retire=1 cleanup=1\n",(unsigned)sizeof(void*)*8);return 0;}
-int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}
+static int theme_faces(PCWSTR path,PCWSTR normal,PCWSTR pressed,PCWSTR rim)
+{
+    WCHAR *end;
+    unsigned long colors[]={wcstoul(normal,&end,16),0};
+    CHECK(end!=normal && !*end && colors[0]<=0xffffff);
+    colors[1]=wcstoul(pressed,&end,16);
+    CHECK(end!=pressed && !*end && colors[1]<=0xffffff);
+    unsigned long border=wcstoul(rim,&end,16);
+    CHECK(end!=rim && !*end && border<=0xffffff);
+    DWORD expected_rim=(DWORD)GetRValue(border)<<16 | (DWORD)GetGValue(border)<<8 | GetBValue(border);
+    HMODULE fixture=LoadLibraryW(path);
+    CHECK(fixture);
+    register_fn reg=(void *)GetProcAddress(fixture,"FixtureRegister");
+    register_fn unreg=(void *)GetProcAddress(fixture,"FixtureUnregister");
+    create_fn create=(void *)GetProcAddress(fixture,"FixtureCreate");
+    fixture_draw=(void *)GetProcAddress(fixture,"FixtureDraw");
+    CHECK(reg && unreg && create && fixture_draw && reg());
+    WNDCLASSW cls={.hInstance=GetModuleHandleW(NULL),.lpfnWndProc=parent,.lpszClassName=L"OwnedThemedBitButton"};
+    CHECK(RegisterClassW(&cls));
+    HWND root=CreateWindowExW(WS_EX_TOOLWINDOW|WS_EX_NOACTIVATE,cls.lpszClassName,L"",
+        WS_OVERLAPPEDWINDOW|WS_VISIBLE,-10000,-10000,350,180,NULL,NULL,cls.hInstance,NULL);
+    target=root?create(root):NULL;
+    CHECK(target && RedrawWindow(target,NULL,NULL,RDW_INVALIDATE|RDW_UPDATENOW));
+    const RECT clip={0,0,80,40};
+    DWORD pixels[180*40];
+    for(unsigned state=0;state<ARRAYSIZE(colors);++state){
+        SendMessageW(target,BM_SETSTATE,state,0);
+        CHECK(capture(target,pixels,180,40,&clip));
+        DWORD expected=(DWORD)GetRValue(colors[state])<<16 | (DWORD)GetGValue(colors[state])<<8 |
+            GetBValue(colors[state]);
+        unsigned face=0,glyph=0,outside=0;
+        for(int y=0;y<40;++y)for(int x=0;x<180;++x){
+            DWORD pixel=pixels[y*180+x];
+            if(x>=clip.right)outside+=pixel!=0x55555555;
+            else{
+                face+=(pixel&0xffffff)==expected;
+                glyph+=(pixel&0xffffff)==RGB(25,40,220);
+            }
+        }
+        printf("THEME_VCL_PUSH_FACE state=%u face=%u glyph=%u outside=%u\n",state,face,glyph,outside);
+        CHECK(face>100 && glyph==100 && !outside);
+        if(!state)CHECK((pixels[12]&0xffffff)==expected_rim);
+    }
+    SendMessageW(target,BM_SETSTATE,0,0);
+    SendMessageW(target,BM_CLICK,0,0);
+    CHECK(clicks==1 && DestroyWindow(root) && UnregisterClassW(cls.lpszClassName,cls.hInstance) && unreg() && FreeLibrary(fixture));
+    puts("THEME_VCL_PUSH_OK states=2 glyph=1 clip=1 click=1");
+    return 0;
+}
+
+int wmain(int argc,WCHAR **argv)
+{
+    if(argc==6 && !wcscmp(argv[1],L"--theme-faces"))return theme_faces(argv[2],argv[3],argv[4],argv[5]);
+    return isolated_process(argc,argv,worker);
+}

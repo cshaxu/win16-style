@@ -37,6 +37,39 @@ typedef struct classic_list_colors {
     BOOL present;
 } classic_list_colors;
 
+enum classic_report_role { CLASSIC_REPORT_LIST,CLASSIC_REPORT_TREE,CLASSIC_REPORT_ROLE_COUNT };
+enum classic_report_state {
+    CLASSIC_REPORT_SELECTED,CLASSIC_REPORT_UNFOCUSED,CLASSIC_REPORT_DISABLED,CLASSIC_REPORT_STATE_COUNT
+};
+typedef struct classic_report_item_colors {
+    COLORREF text,background;
+    BOOL has_text,has_background;
+} classic_report_item_colors;
+
+enum classic_bar_role { CLASSIC_BAR_TOOLBAR,CLASSIC_BAR_REBAR,CLASSIC_BAR_STATUS,CLASSIC_BAR_ROLE_COUNT };
+enum classic_bar_color_role {
+    CLASSIC_BAR_FACE,CLASSIC_BAR_PRESSED,CLASSIC_BAR_HIGHLIGHT,CLASSIC_BAR_SHADOW,
+    CLASSIC_BAR_EDGE,CLASSIC_BAR_TEXT,CLASSIC_BAR_COLOR_COUNT
+};
+typedef struct classic_bar_colors {
+    COLORREF values[CLASSIC_BAR_COLOR_COUNT];
+    unsigned present;
+} classic_bar_colors;
+
+enum classic_calendar_role {
+    CLASSIC_CALENDAR_OUTSIDE,CLASSIC_CALENDAR_TEXT,CLASSIC_CALENDAR_SELECTED,CLASSIC_CALENDAR_SELECTED_TEXT,
+    CLASSIC_CALENDAR_GRID,CLASSIC_CALENDAR_TRAILING_TEXT,CLASSIC_CALENDAR_ROLE_COUNT
+};
+typedef struct classic_calendar_colors {
+    COLORREF values[CLASSIC_CALENDAR_ROLE_COUNT];
+    unsigned present;
+} classic_calendar_colors;
+static inline COLORREF classic_bar_color(const classic_bar_colors *colors,enum classic_bar_color_role role,
+    COLORREF fallback)
+{
+    return colors->present&(1u<<role)?colors->values[role]:fallback;
+}
+
 typedef struct classic_tab_colors {
     COLORREF pane,normal,selected,border;
     BOOL present;
@@ -173,6 +206,11 @@ typedef struct classic_theme {
     classic_group_colors group;
     classic_edit_border edit[CLASSIC_EDIT_STATE_COUNT];
     classic_list_colors list;
+    classic_report_item_colors report[CLASSIC_REPORT_ROLE_COUNT][CLASSIC_REPORT_STATE_COUNT];
+    classic_bar_colors bars[CLASSIC_BAR_ROLE_COUNT];
+    classic_calendar_colors calendar;
+    COLORREF date_button_face;
+    BOOL has_date_button_face;
     classic_combo_colors combo;
     classic_tab_colors tab;
     classic_header_colors header;

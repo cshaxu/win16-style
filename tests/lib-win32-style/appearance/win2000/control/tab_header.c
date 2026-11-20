@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <wchar.h>
 
 typedef BOOL (__cdecl *window_op)(HWND);
@@ -42,17 +43,24 @@ static void print_client(HWND window,HDC dc)
 
 int wmain(int argc,WCHAR **argv)
 {
-    CHECK(argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
+    BOOL themed_header=argc==3 && !wcscmp(argv[1],L"--header-edge");
+    BOOL themed_tab=argc==4 && !wcscmp(argv[1],L"--tab-edge");
+    BOOL themed=themed_header || themed_tab;
+    CHECK(themed || argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
     const INITCOMMONCONTROLSEX classes={sizeof(classes),ICC_TAB_CLASSES|ICC_LISTVIEW_CLASSES};
     CHECK(InitCommonControlsEx(&classes));
-    HMODULE dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
-    CHECK(dll);
-    window_op attach=(void *)GetProcAddress(dll,"Ntw2ksWindowAttach");
-    window_op attached=(void *)GetProcAddress(dll,"Ntw2ksWindowAttached");
-    window_op remove=(void *)GetProcAddress(dll,"Ntw2ksWindowRemove");
-    CHECK(attach && attached && remove);
+    HMODULE dll=NULL;
+    window_op attach=NULL,attached=NULL,remove=NULL;
+    if(!themed){
+        dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
+        CHECK(dll);
+        attach=(void *)GetProcAddress(dll,"Ntw2ksWindowAttach");
+        attached=(void *)GetProcAddress(dll,"Ntw2ksWindowAttached");
+        remove=(void *)GetProcAddress(dll,"Ntw2ksWindowRemove");
+        CHECK(attach && attached && remove);
+    }
     HINSTANCE module=GetModuleHandleW(NULL);
     WNDCLASSW cls={.lpfnWndProc=parent_proc,.hInstance=module,.lpszClassName=L"OwnedWin2kTabHeader"};
     CHECK(RegisterClassW(&cls));
@@ -67,8 +75,55 @@ int wmain(int argc,WCHAR **argv)
     HGDIOBJ old=SelectObject(dc,bitmap);
     CHECK(old && old!=HGDI_ERROR);
 
+    if(themed_header){
+        WCHAR *end;
+        unsigned long value=wcstoul(argv[2],&end,16);
+        CHECK(end!=argv[2] && !*end && value<=0xffffff);
+        header_control=CreateWindowW(WC_HEADERW,NULL,WS_CHILD|WS_VISIBLE|HDS_BUTTONS,
+            0,0,250,24,root,NULL,module,NULL);
+        CHECK(header_control);
+        HDITEMW column={.mask=HDI_WIDTH|HDI_FORMAT|HDI_TEXT,.cxy=90,.fmt=HDF_STRING,.pszText=L"Name"};
+        CHECK(SendMessageW(header_control,HDM_INSERTITEMW,0,(LPARAM)&column)==0);
+        print_client(header_control,dc);
+        COLORREF edge=GetPixel(dc,4,0);
+        printf("THEME_HEADER_EDGE pixel=%06lx\n",edge);
+        CHECK(edge==(COLORREF)value);
+        SendMessageW(header_control,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(25,9));
+        SendMessageW(header_control,WM_LBUTTONUP,0,MAKELPARAM(25,9));
+        CHECK(header_clicks==1 && DestroyWindow(root));
+        SelectObject(dc,old);DeleteObject(bitmap);DeleteDC(dc);
+        puts("THEME_HEADER_OK click=1");
+        return 0;
+    }
+
     HWND tab=CreateWindowW(WC_TABCONTROLW,NULL,WS_CHILD|WS_VISIBLE|TCS_FIXEDWIDTH|TCS_MULTILINE,
         0,30,230,190,root,NULL,module,NULL);
+    if(themed_tab){
+        WCHAR *end;
+        unsigned long value=wcstoul(argv[2],&end,16);
+        CHECK(tab && end!=argv[2] && !*end && value<=0xffffff);
+        unsigned long offset=wcstoul(argv[3],&end,10);
+        CHECK(end!=argv[3] && !*end && (offset==1 || offset==2));
+        SendMessageW(tab,TCM_SETITEMSIZE,0,MAKELPARAM(70,24));
+        TCITEMW first_item={.mask=TCIF_TEXT,.pszText=L"General"};
+        TCITEMW second_item={.mask=TCIF_TEXT,.pszText=L"Details"};
+        CHECK(SendMessageW(tab,TCM_INSERTITEMW,0,(LPARAM)&first_item)==0 &&
+            SendMessageW(tab,TCM_INSERTITEMW,1,(LPARAM)&second_item)==1);
+        RECT first,second;
+        CHECK(SendMessageW(tab,TCM_GETITEMRECT,0,(LPARAM)&first) &&
+            SendMessageW(tab,TCM_GETITEMRECT,1,(LPARAM)&second));
+        print_client(tab,dc);
+        COLORREF edge=GetPixel(dc,(first.left+first.right)/2,first.top-(int)offset);
+        printf("THEME_TAB_EDGE pixel=%06lx offset=%lu\n",edge,offset);
+        CHECK(edge==(COLORREF)value && GetPixel(dc,120,120)==RGB(199,55,141));
+        LPARAM point=MAKELPARAM((second.left+second.right)/2,(second.top+second.bottom)/2);
+        SendMessageW(tab,WM_LBUTTONDOWN,MK_LBUTTON,point);
+        SendMessageW(tab,WM_LBUTTONUP,0,point);
+        CHECK(SendMessageW(tab,TCM_GETCURSEL,0,0)==1 && tab_changes==1 && DestroyWindow(root));
+        SelectObject(dc,old);DeleteObject(bitmap);DeleteDC(dc);
+        puts("THEME_TAB_OK selection=1 client_clip=1");
+        return 0;
+    }
     CHECK(tab && (!hooked || attached(tab)) && attach(tab));
     HFONT font=GetStockObject(ANSI_VAR_FONT),borrowed=GetStockObject(ANSI_FIXED_FONT);
     SendMessageW(tab,WM_SETFONT,(WPARAM)font,FALSE);

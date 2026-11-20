@@ -37,23 +37,14 @@ BOOL win16_style_trackbar_part(HWND w,const NMCUSTOMDRAW *draw,const void *conte
     RECT r=draw->rc,client;
     if(!GetClientRect(w,&client) || r.left<0 || r.top<0 || r.right>client.right || r.bottom>client.bottom ||
         r.right<=r.left || r.bottom<=r.top)return FALSE;
-    int saved=SaveDC(draw->hdc);if(!saved)return FALSE;
-    HBRUSH brush=GetStockObject(DC_BRUSH);int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    const classic_trackbar_colors *colors=&control->trackbar_colors[(GetWindowLongPtrW(w,GWL_STYLE)&TBS_VERT)!=0];
-    BOOL channel=draw->dwItemSpec==TBCD_CHANNEL;
-    COLORREF fill=channel?palette->light:palette->face;
-    if(colors->present)fill=channel?colors->channel:colors->thumb;
-    SetDCBrushColor(draw->hdc,fill);FillRect(draw->hdc,&r,brush);
-    SetDCBrushColor(draw->hdc,colors->present?colors->edge:palette->edge);
-    for(int i=0;i<unit && r.left<r.right && r.top<r.bottom;++i){FrameRect(draw->hdc,&r,brush);InflateRect(&r,-1,-1);}
-    if(draw->dwItemSpec==TBCD_THUMB && r.right>r.left && r.bottom>r.top){
-        BOOL pressed=(draw->uItemState&CDIS_SELECTED)!=0;RECT strip=r;
-        SetDCBrushColor(draw->hdc,pressed?palette->shadow:palette->light);
-        strip.bottom=min(r.top+unit,r.bottom);FillRect(draw->hdc,&strip,brush);
-        strip=r;strip.right=min(r.left+unit,r.right);FillRect(draw->hdc,&strip,brush);
-        SetDCBrushColor(draw->hdc,pressed?palette->light:palette->shadow);
-        strip=r;strip.top=max(r.bottom-unit,r.top);FillRect(draw->hdc,&strip,brush);
-        strip=r;strip.left=max(r.right-unit,r.left);FillRect(draw->hdc,&strip,brush);
-    }
-    RestoreDC(draw->hdc,saved);return TRUE;
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+    const classic_trackbar_colors *colors=&control->trackbar_colors[(style&TBS_VERT)!=0];
+    const style_relief_palette paint={
+        .face=colors->present?colors->thumb:palette->face,.light=palette->light,
+        .highlight=palette->light,.shadow=palette->shadow,.dark=colors->present?colors->edge:palette->edge
+    };
+    style_trackbar_profile profile=control->controls.trackbar?control->controls.trackbar:STYLE_TRACKBAR_OUTLINED;
+    return style_trackbar_paint(draw->hdc,r,style,GetDpiForWindow(w),draw->dwItemSpec==TBCD_CHANNEL,
+        (draw->uItemState&CDIS_SELECTED)!=0,!IsWindowEnabled(w),profile,
+        colors->present?colors->channel:palette->light,&paint);
 }

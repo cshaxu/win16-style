@@ -787,7 +787,37 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
         theme.list.selection==(gradient?RGB(10,36,106):RGB(164,200,240)) &&
         theme.list.selection_text==(gradient?RGB(255,255,255):RGB(0,0,0)) &&
         theme.list.dark==(gradient?RGB(64,64,64):RGB(0,0,0)));
+    for(size_t role=0;role<ARRAYSIZE(theme.report);++role){
+        const classic_report_item_colors *selection=theme.report[role];
+        for(size_t state=0;state<CLASSIC_REPORT_STATE_COUNT;++state)
+            CHECK(selection[state].has_text && selection[state].has_background);
+        CHECK(selection[CLASSIC_REPORT_SELECTED].text==theme.list.selection_text &&
+            selection[CLASSIC_REPORT_SELECTED].background==theme.list.selection);
+        CHECK(selection[CLASSIC_REPORT_UNFOCUSED].text==RGB(0,0,0) &&
+            selection[CLASSIC_REPORT_UNFOCUSED].background==state_face);
+        CHECK(selection[CLASSIC_REPORT_DISABLED].text==RGB(128,128,128) &&
+            selection[CLASSIC_REPORT_DISABLED].background==state_face);
+    }
     CHECK(theme.combo.present && theme.combo.border==theme.list.dark && theme.combo.disabled_border==theme.combo.border);
+    CHECK(theme.calendar.present==(1u<<CLASSIC_CALENDAR_ROLE_COUNT)-1 &&
+        theme.calendar.values[CLASSIC_CALENDAR_OUTSIDE]==theme.list.background &&
+        theme.calendar.values[CLASSIC_CALENDAR_GRID]==theme.list.background &&
+        theme.calendar.values[CLASSIC_CALENDAR_TEXT]==theme.label.normal &&
+        theme.calendar.values[CLASSIC_CALENDAR_TRAILING_TEXT]==theme.label.disabled &&
+        theme.calendar.values[CLASSIC_CALENDAR_SELECTED]==theme.list.selection &&
+        theme.calendar.values[CLASSIC_CALENDAR_SELECTED_TEXT]==theme.list.selection_text);
+    CHECK(theme.has_date_button_face && theme.date_button_face==state_face);
+    const classic_bar_colors *toolbar=&theme.bars[CLASSIC_BAR_TOOLBAR];
+    const classic_bar_colors *rebar=&theme.bars[CLASSIC_BAR_REBAR];
+    const classic_bar_colors *status=&theme.bars[CLASSIC_BAR_STATUS];
+    CHECK(classic_bar_color(toolbar,CLASSIC_BAR_FACE,CLR_INVALID)==state_face &&
+        classic_bar_color(toolbar,CLASSIC_BAR_PRESSED,CLR_INVALID)==(gradient?state_face:RGB(128,128,128)) &&
+        classic_bar_color(toolbar,CLASSIC_BAR_EDGE,CLR_INVALID)==theme.list.dark);
+    CHECK(classic_bar_color(rebar,CLASSIC_BAR_HIGHLIGHT,CLR_INVALID)==RGB(255,255,255) &&
+        classic_bar_color(rebar,CLASSIC_BAR_FACE,CLR_INVALID)==state_face);
+    CHECK(classic_bar_color(status,CLASSIC_BAR_SHADOW,CLR_INVALID)==RGB(128,128,128) &&
+        classic_bar_color(status,CLASSIC_BAR_EDGE,CLR_INVALID)==RGB(0,0,0) &&
+        classic_bar_color(status,CLASSIC_BAR_FACE,CLR_INVALID)==CLR_INVALID);
     for(size_t i=0;i<ARRAYSIZE(theme.combo.button);++i)
         CHECK(theme.combo.button[i]==state_face);
     CHECK(theme.tab.present && theme.tab.pane==state_face && theme.tab.normal==state_face &&

@@ -5,18 +5,21 @@ static style_runtime_frame_scope scope;
 static style_runtime_frame_state state;
 static style_instance instance;
 static unsigned groups,panels,bars,bits,mode,failed;
+static const COLORREF theme_edge=RGB(49,103,157);
 static BOOL current=TRUE,owned=TRUE;
 static BOOL frame_owned(HWND w,void *owner){return IsWindow(w) && owner==&instance && owned;}
 static BOOL frame_current(style_runtime_frame_scope *s){return current && s==&scope;}
 static LRESULT CALLBACK native(HWND w,UINT m,WPARAM a,LPARAM b){return DefWindowProcW(w,m,a,b);}
-static void group_render(HDC dc,const RECT *bounds,const RECT *clip,const RECT *exclude,void (*done)(void *),void *context)
+static void group_render(HDC dc,const RECT *bounds,const RECT *clip,const RECT *exclude,COLORREF edge,
+    void (*done)(void *),void *context)
 {
-    (void)dc;(void)clip;++groups;if(bounds->left || bounds->right!=200 || bounds->bottom!=100 || (exclude && bounds->top!=10))failed=1;
+    (void)dc;(void)clip;++groups;if(edge!=theme_edge || bounds->left || bounds->right!=200 || bounds->bottom!=100 || (exclude && bounds->top!=10))failed=1;
     if(mode==1)instance.detached=TRUE;
     if(mode!=2)done(context);
 }
-static void panel_render(HDC dc,const POINT *points,BOOL (WINAPI *draw)(HDC,const POINT *,int),void (*done)(void *),void *context)
-{(void)dc;++panels;if(!points || draw!=Polyline)failed=1;done(context);}
+static void panel_render(HDC dc,const POINT *points,BOOL (WINAPI *draw)(HDC,const POINT *,int),COLORREF edge,
+    void (*done)(void *),void *context)
+{(void)dc;++panels;if(!points || draw!=Polyline || edge!=theme_edge)failed=1;done(context);}
 static BOOL bar_render(HDC dc,const RECT *rect,const RECT *clip)
 {(void)dc;++bars;if(clip || rect->left || rect->top || rect->right!=200 || rect->bottom!=100)failed=1;if(mode==2)instance.detached=TRUE;return mode!=1;}
 static BOOL bit_render(HWND w,HDC dc,const RECT *rect,const RECT *clip,UINT flags)
@@ -33,7 +36,7 @@ int main(void)
     HWND group=CreateWindowW(names[1],L"Group",WS_CHILD|WS_VISIBLE,0,0,200,100,parent,NULL,module,NULL);CHECK(group);
     HDC dc=GetDC(group);CHECK(dc);state=(style_runtime_frame_state){.candidate=TRUE};
     style_runtime_frame_paint paint={&scope,&instance,&state,&instance,group,frame_owned,frame_current};
-    const style_runtime_frame_renderer renderer={group_render,panel_render};
+    const style_runtime_frame_renderer renderer={group_render,panel_render,theme_edge};
     RECT background={0,10,200,100},text={6,0,66,20};
     style_runtime_group_frame(&paint,&renderer,dc,4,1,&text,NULL,L"Group",5,0,native,TRUE);CHECK(!groups && !state.verified);
     style_runtime_group_frame(&paint,&renderer,dc,4,1,&background,NULL,NULL,0,0,native,FALSE);CHECK(scope.group_background && !groups);

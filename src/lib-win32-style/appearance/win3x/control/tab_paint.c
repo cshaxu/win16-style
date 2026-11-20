@@ -11,21 +11,11 @@ BOOL win16_style_tab_supported(HWND w)
         TCS_FORCEICONLEFT|TCS_FORCELABELLEFT));
 }
 
-static void fill(HDC dc,const RECT *r,COLORREF color)
-{SetDCBrushColor(dc,color);FillRect(dc,r,GetStockObject(DC_BRUSH));}
-static void edge(HDC dc,RECT r,COLORREF color,int width,BOOL bottom)
-{
-    for(int i=0;i<width && r.right>r.left && r.bottom>r.top;++i){
-        RECT line=r;line.bottom=line.top+1;fill(dc,&line,color);
-        line=r;line.right=line.left+1;fill(dc,&line,color);
-        line=r;line.left=line.right-1;fill(dc,&line,color);
-        if(bottom){line=r;line.top=line.bottom-1;fill(dc,&line,color);}
-        InflateRect(&r,-1,-1);
-    }
-}
 typedef struct tab_paint {
     const win16_style_palette *palette;
     classic_tab_colors colors;
+    style_relief_palette frame;
+    style_line_profile profile;
     HFONT font;
     int unit;
     RECT body;
@@ -33,9 +23,7 @@ typedef struct tab_paint {
 static void surface(HWND w,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
 {
     tab_paint *paint=context;paint->unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    paint->body=snapshot->client;paint->body.top=max(snapshot->client.top,snapshot->page.top-3*paint->unit);
-    fill(dc,&snapshot->client,paint->colors.pane);
-    edge(dc,paint->body,paint->colors.border,paint->unit,TRUE);
+    paint->body=style_paint_tab_page(dc,snapshot->client,snapshot->page,paint->unit,paint->profile,&paint->frame);
 }
 static void prepare(HWND w,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
 {
@@ -46,12 +34,10 @@ static void paint_item(HWND w,void *context,HDC dc,const style_control_tab_snaps
 {
     tab_paint *paint=context;const win16_style_palette *p=paint->palette;
     int u=paint->unit,cx=item->image_size.cx,cy=item->image_size.cy;
-    RECT r=item->rect,body=paint->body;BOOL active=item->active,image=item->image;
+    BOOL image=item->image,highlighted=(item->native.dwState&TCIS_HIGHLIGHTED)!=0;
     HIMAGELIST images=item->images;const WCHAR *text=item->text;
-    if(active){InflateRect(&r,u,u);r.bottom=max(r.bottom,body.top+u);}
-    BOOL highlighted=(item->native.dwState&TCIS_HIGHLIGHTED)!=0;
-    fill(dc,&r,highlighted?p->active:active?paint->colors.selected:paint->colors.normal);
-    edge(dc,r,paint->colors.border,u,!active);
+    COLORREF face=highlighted?p->active:item->active?paint->colors.selected:paint->colors.normal;
+    RECT r=style_paint_tab_item(dc,item->rect,paint->body,item->active,u,paint->profile,face,&paint->frame);
     RECT content=r;InflateRect(&content,-2*u,-u);SIZE size={0};
     GetTextExtentPoint32W(dc,text,(int)wcslen(text),&size);
     int gap=image && *text?3*u:0,total=size.cx+(image?cx+gap:0);
@@ -73,11 +59,13 @@ static void paint_item(HWND w,void *context,HDC dc,const style_control_tab_snaps
     }
 }
 BOOL win16_style_tab_paint(HWND w,HDC dc,const win16_style_palette *p,HFONT font,
-    const style_instance *instance,const style_control_native_state *state,const classic_tab_colors *colors)
+    const style_instance *instance,const style_control_native_state *state,const classic_tab_colors *colors,style_line_profile profile)
 {
     if(!dc || !win16_style_tab_supported(w))return FALSE;
-    tab_paint paint={.palette=p,.font=font,
+    tab_paint paint={.palette=p,.font=font,.profile=profile?profile:STYLE_LINE_FLAT,
         .colors=colors->present?*colors:(classic_tab_colors){p->face,p->face,p->light,p->edge,FALSE}};
+    paint.frame=(style_relief_palette){.face=paint.colors.pane,.dark=paint.colors.border,
+        .light=p->face,.highlight=p->light,.shadow=p->shadow};
     const style_control_tab_painter painter={&paint,surface,prepare,paint_item};
     return style_control_tab_paint(w,dc,instance,state,&painter);
 }

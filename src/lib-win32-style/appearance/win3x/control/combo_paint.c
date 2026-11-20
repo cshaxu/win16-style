@@ -78,7 +78,7 @@ void win16_control_draw_combo(HWND w,control_style *style,HDC dc,BOOL (*get_info
 void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC dc,const RECT *dirty,const style_control_native_button *button,const win16_style_palette *theme)
 {
     RECT r=button->bounds;BOOL pressed=button->pressed;
-    RECT q;win16_style_palette palette;
+    win16_style_palette palette;
     if(!dc || !style_dc_unmirrored_origin_pixels(dc))return;
     int dpi=(int)GetDpiForWindow(w);if(dpi<=0 || dpi>768)return;
     int u=max(1,MulDiv(1,dpi,96)),gw=MulDiv(7,dpi,96),gh=MulDiv(9,dpi,96);
@@ -89,13 +89,8 @@ void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC
         RestoreDC(dc,saved);return;
     }
     if(theme)palette=*theme;else win16_style_default_palette(&palette);
-    HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
-    SetDCBrushColor(dc,palette.face);FillRect(dc,&r,brush);SetDCBrushColor(dc,palette.edge);
-    for(int i=0;i<u;++i){FrameRect(dc,&r,brush);InflateRect(&r,-1,-1);}
-    q=r;SetDCBrushColor(dc,pressed?palette.shadow:palette.light);q.bottom=q.top+u;FillRect(dc,&q,brush);
-    q=r;q.right=q.left+u;FillRect(dc,&q,brush);
-    q=r;SetDCBrushColor(dc,pressed?palette.light:palette.shadow);q.top=q.bottom-u;FillRect(dc,&q,brush);
-    q=r;q.left=q.right-u;FillRect(dc,&q,brush);
+    style_relief_palette frame=win16_control_push_palette(&palette);
+    r=style_paint_outlined_face(dc,r,u,TRUE,pressed,palette.face,&frame);
     int left=(r.left+r.right-gw)/2+(pressed?u:0),top=(r.top+r.bottom-gh)/2+(pressed?u:0);
     SetDCBrushColor(dc,IsWindowEnabled(w)?palette.edge:palette.shadow);
     win16_control_combo_arrow(dc,left,top,dpi);

@@ -19,8 +19,6 @@ BOOL win16_style_toolbar_supported(HWND w)
         (WS_EX_CLIENTEDGE|WS_EX_STATICEDGE|WS_EX_LAYOUTRTL|WS_EX_RTLREADING)))return FALSE;
     return style_toolbar_text_supported(w,item_accepted);
 }
-static void fill(HDC dc,const RECT *r,COLORREF color)
-{SetDCBrushColor(dc,color);FillRect(dc,r,GetStockObject(DC_BRUSH));}
 BOOL win16_style_toolbar_part(HWND w,const NMCUSTOMDRAW *draw,const void *context)
 {
     const control_style *control=context;
@@ -33,20 +31,25 @@ BOOL win16_style_toolbar_part(HWND w,const NMCUSTOMDRAW *draw,const void *contex
         palette.shadow=control->frame_colors.shadow;
         palette.edge=control->frame_colors.edge;
     }
+    const classic_bar_colors *colors=&control->toolbar_colors;
+    palette.face=classic_bar_color(colors,CLASSIC_BAR_FACE,palette.face);
+    palette.shadow=classic_bar_color(colors,CLASSIC_BAR_SHADOW,palette.shadow);
+    palette.edge=classic_bar_color(colors,CLASSIC_BAR_EDGE,palette.edge);
+    COLORREF ink=classic_bar_color(colors,CLASSIC_BAR_TEXT,palette.edge);
+    COLORREF pressed=classic_bar_color(colors,CLASSIC_BAR_PRESSED,palette.shadow);
     if(!style_toolbar_text_find(w,draw->dwItemSpec,&item,item_accepted))return FALSE;
     rect=item.rect;
     if(!IntersectRect(&inner,&client,&rect) || !EqualRect(&inner,&rect))return FALSE;
     saved=SaveDC(draw->hdc);if(!saved)return FALSE;
     IntersectClipRect(draw->hdc,rect.left,rect.top,rect.right,rect.bottom);
-    fill(draw->hdc,&rect,(draw->uItemState&(CDIS_SELECTED|CDIS_CHECKED))?palette.shadow:palette.face);
-    unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));inner=rect;
-    for(int i=0;i<unit && inner.right>inner.left && inner.bottom>inner.top;++i){
-        SetDCBrushColor(draw->hdc,palette.edge);FrameRect(draw->hdc,&inner,GetStockObject(DC_BRUSH));InflateRect(&inner,-1,-1);
-    }
+    BOOL pushed=(draw->uItemState&(CDIS_SELECTED|CDIS_CHECKED))!=0;
+    unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
+    style_relief_palette frame={.dark=palette.edge};
+    inner=style_paint_outlined_face(draw->hdc,rect,unit,FALSE,FALSE,pushed?pressed:palette.face,&frame);
     if(draw->uItemState&(CDIS_SELECTED|CDIS_CHECKED))OffsetRect(&inner,unit,unit);
     InflateRect(&inner,-2*unit,-unit);
     source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);font=win16_style_system_acquire(source);old=SelectObject(draw->hdc,font?font:GetStockObject(SYSTEM_FONT));
-    SetBkMode(draw->hdc,TRANSPARENT);SetTextColor(draw->hdc,(draw->uItemState&CDIS_DISABLED)?palette.shadow:palette.edge);
+    SetBkMode(draw->hdc,TRANSPARENT);SetTextColor(draw->hdc,(draw->uItemState&CDIS_DISABLED)?palette.shadow:ink);
     DrawTextW(draw->hdc,item.text,-1,&inner,DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_END_ELLIPSIS|DT_NOPREFIX);
     SelectObject(draw->hdc,old);win16_style_system_release(font);RestoreDC(draw->hdc,saved);return TRUE;
 }

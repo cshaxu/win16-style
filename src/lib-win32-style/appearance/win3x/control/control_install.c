@@ -79,6 +79,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
         memcpy(s->trackbar_colors,theme->trackbar,sizeof(s->trackbar_colors));
         s->group_colors=theme->group;
         s->frame_colors=theme->frame;
+        s->toolbar_colors=theme->bars[CLASSIC_BAR_TOOLBAR];
         s->controls=theme->controls;
         s->scroll_arrow_colors=theme->scroll_arrow;
         s->scroll_art=theme->scroll_art;

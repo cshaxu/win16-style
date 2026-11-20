@@ -173,6 +173,34 @@ static int fixtures(void)
     bytes[length+9]=255;
     CHECK(classic_style_read(bytes,length+10,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_INVALID &&
         controls.edit==STYLE_LINE_FLAT);
+    const classic_control_presentation progress={.progress=STYLE_PROGRESS_OUTLINED};
+    CHECK(classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,NULL,NULL,NULL,&progress)==length+14);
+    CHECK(bytes[6]==14 && classic_style_read(bytes,length+14,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_OK &&
+        !memcmp(&controls.progress,&progress.progress,sizeof(progress.progress)));
+    bytes[length+13]=0;
+    CHECK(classic_style_read(bytes,length+14,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_INVALID &&
+        controls.progress.block_whole==4);
+    const classic_control_presentation trackbar={.trackbar=STYLE_TRACKBAR_RELIEF};
+    CHECK(classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,NULL,NULL,NULL,&trackbar)==length+9);
+    CHECK(bytes[6]==15 && classic_style_read(bytes,length+9,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_OK &&
+        controls.trackbar==STYLE_TRACKBAR_RELIEF && !controls.progress.flags);
+    bytes[length+8]=0;
+    CHECK(classic_style_read(bytes,length+9,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_INVALID &&
+        controls.trackbar==STYLE_TRACKBAR_RELIEF);
+    const classic_control_presentation header={.header=STYLE_LINE_FLAT};
+    CHECK(classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,NULL,NULL,NULL,&header)==length+9);
+    CHECK(bytes[6]==16 && classic_style_read(bytes,length+9,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_OK &&
+        controls.header==STYLE_LINE_FLAT && !controls.trackbar);
+    bytes[length+8]=255;
+    CHECK(classic_style_read(bytes,length+9,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_INVALID &&
+        controls.header==STYLE_LINE_FLAT);
+    const classic_control_presentation tab={.tab=STYLE_LINE_RELIEF};
+    CHECK(classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,NULL,NULL,NULL,&tab)==length+9);
+    CHECK(bytes[6]==17 && classic_style_read(bytes,length+9,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_OK &&
+        controls.tab==STYLE_LINE_RELIEF && !controls.header);
+    bytes[length+8]=0;
+    CHECK(classic_style_read(bytes,length+9,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_INVALID &&
+        controls.tab==STYLE_LINE_RELIEF);
     return 0;
 }
 
@@ -208,6 +236,11 @@ static int packaged(PCWSTR root,PCWSTR name,unsigned expected_count,unsigned exp
     CHECK(controls.separator==(measure==CLASSIC_SCROLL_EXTENT_SYSTEM?STYLE_LINE_RELIEF:STYLE_LINE_FLAT));
     CHECK(controls.push==(measure==CLASSIC_SCROLL_EXTENT_SYSTEM?STYLE_PUSH_RELIEF:STYLE_PUSH_STEPPED));
     CHECK(controls.group==controls.separator && controls.edit==controls.separator);
+    const style_progress_layout outlined=STYLE_PROGRESS_OUTLINED,inset=STYLE_PROGRESS_INSET;
+    CHECK(!memcmp(&controls.progress,measure==CLASSIC_SCROLL_EXTENT_SYSTEM?&inset:&outlined,sizeof(outlined)));
+    CHECK(controls.trackbar==(measure==CLASSIC_SCROLL_EXTENT_SYSTEM?STYLE_TRACKBAR_RELIEF:STYLE_TRACKBAR_OUTLINED));
+    CHECK(controls.header==(measure==CLASSIC_SCROLL_EXTENT_SYSTEM?STYLE_LINE_RELIEF:STYLE_LINE_FLAT));
+    CHECK(controls.tab==controls.header);
     unsigned route=measure==CLASSIC_SCROLL_EXTENT_SYSTEM?CLASSIC_DIALOG_WIN2K:CLASSIC_DIALOG_WIN16;
     CHECK(policy.appearance==route && policy.file==route && policy.folder==route && policy.print==route);
     if(measure==CLASSIC_SCROLL_EXTENT_CROSS_AXIS){

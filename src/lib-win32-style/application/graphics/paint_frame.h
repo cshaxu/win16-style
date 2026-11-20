@@ -24,8 +24,12 @@ typedef struct style_relief_palette {
     COLORREF selection,selection_text;
 } style_relief_palette;
 BOOL style_paint_color(HDC,const RECT *,COLORREF);
+RECT style_paint_outlined_face(HDC,RECT,int,BOOL,BOOL,COLORREF,const style_relief_palette *);
 BOOL style_paint_relief(HDC,RECT *,UINT,UINT,const style_relief_palette *);
 BOOL style_paint_line_frame(HDC,RECT *,UINT,UINT,int,COLORREF,style_line_profile,const style_relief_palette *);
+BOOL style_paint_header_edge(HDC,RECT,BOOL,BOOL,BOOL,int,style_line_profile,const style_relief_palette *);
+RECT style_paint_tab_page(HDC,RECT,RECT,int,style_line_profile,const style_relief_palette *);
+RECT style_paint_tab_item(HDC,RECT,RECT,BOOL,int,style_line_profile,COLORREF,const style_relief_palette *);
 BOOL style_paint_dither(HDC,const RECT *,const style_relief_palette *);
 RECT style_paint_stepped_border(HDC,RECT,const style_relief_palette *,int,int,BOOL);
 BOOL style_paint_push_frame(HDC,RECT *,UINT,BOOL,int,style_push_profile,const style_relief_palette *);
@@ -43,6 +47,7 @@ typedef struct style_scroll_arrow_art {
 } style_scroll_arrow_art;
 BOOL style_paint_scroll_system_arrow(HDC,const RECT *,UINT,const style_relief_palette *);
 BOOL style_paint_scroll_arrow(HDC,const RECT *,UINT,const style_relief_palette *,const style_scroll_arrow_art *);
+BOOL style_paint_scroll_arrow_crop(HDC,const RECT *,UINT,const style_relief_palette *,const style_scroll_arrow_art *);
 
 static inline BOOL style_paint_checker(HDC dc,const RECT *rect,COLORREF zero,COLORREF one)
 {

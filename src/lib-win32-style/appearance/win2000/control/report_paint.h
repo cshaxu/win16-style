@@ -3,11 +3,13 @@
 #include <windows.h>
 #include <commctrl.h>
 #include "../common/palette.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/lifecycle/instance.h"
 
 typedef struct win2k_report_draw {
     const style_instance *instance;
     win2k_palette palette;
+    const classic_report_item_colors *colors;
 } win2k_report_draw;
 
 BOOL win2k_listview_supported(HWND);

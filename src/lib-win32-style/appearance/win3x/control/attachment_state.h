@@ -13,13 +13,20 @@
 #include "vb_text.h"
 #include "lib-win32-style/application/adapters/win32/paint_dispatch.h"
 #include "vcl_identity.h"
+#include "special_paint.h"
 typedef struct attachment {
     style_runtime_attachment base;
     BOOL file_owner,picture,button_owner,checklist;
     win16_style_palette palette;
+    win16_runtime_push push;
+    classic_bar_colors grip;
     COLORREF calendar_selection;
+    COLORREF status_edge;
+    COLORREF date_button_face;
     HFONT month_cached_font;style_font_snapshot_cache status_font;
     style_font_cache fonts;
+    /* Appended only to attachments whose native role is a rich month control. */
+    style_scroll_arrow_art month_arrows[];
 } attachment;
 typedef struct win16_attachment_guard_services {
     BOOL (*host_attached)(HWND);

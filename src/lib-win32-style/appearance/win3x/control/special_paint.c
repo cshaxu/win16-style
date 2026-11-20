@@ -28,19 +28,22 @@ BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original)
     *bounds=*original;InflateRect(bounds,-1,-1);return TRUE;
 }
 
-void win16_control_group_frame(HDC dc,const RECT *bounds,const RECT *clip,const RECT *exclude,void (*drawn)(void *),void *context)
+void win16_control_group_frame(HDC dc,const RECT *bounds,const RECT *clip,const RECT *exclude,
+    COLORREF color,void (*drawn)(void *),void *context)
 {
     int saved=SaveDC(dc);if(!saved)return;
     if(clip)IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom);
     if(exclude)ExcludeClipRect(dc,exclude->left,exclude->top,exclude->right,exclude->bottom);
-    if(FrameRect(dc,bounds,(HBRUSH)GetStockObject(BLACK_BRUSH)) && drawn)drawn(context);
+    if(SetDCBrushColor(dc,color)!=CLR_INVALID && FrameRect(dc,bounds,(HBRUSH)GetStockObject(DC_BRUSH)) && drawn)drawn(context);
     RestoreDC(dc,saved);
 }
 
-void win16_control_panel_shadow(HDC dc,const POINT points[3],BOOL (WINAPI *draw)(HDC,const POINT *,int),void (*drawn)(void *),void *context)
+void win16_control_panel_shadow(HDC dc,const POINT *points,BOOL (WINAPI *draw)(HDC,const POINT *,int),
+    COLORREF color,void (*drawn)(void *),void *context)
 {
     int saved=SaveDC(dc);if(!saved)return;
-    if(SelectObject(dc,GetStockObject(BLACK_PEN)) && draw(dc,points,3) && drawn)drawn(context);
+    if(SelectObject(dc,GetStockObject(DC_PEN)) && SetDCPenColor(dc,color)!=CLR_INVALID &&
+        draw(dc,points,3) && drawn)drawn(context);
     RestoreDC(dc,saved);
 }
 
@@ -67,22 +70,30 @@ BOOL win16_control_month_text(HTHEME theme,HDC dc,int part,int state,HFONT font,
     return FALSE;
 }
 
-BOOL win16_control_cool_grip(HDC dc,const RECT *bounds)
+BOOL win16_control_cool_grip(HDC dc,const RECT *bounds,const classic_bar_colors *colors)
 {
-    int saved=SaveDC(dc);if(!saved)return FALSE;
-    RECT r=*bounds;BOOL drew=FALSE;
-    if(IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)!=ERROR){
-        FillRect(dc,&r,GetSysColorBrush(COLOR_BTNFACE));
-        DrawEdge(dc,&r,BDR_RAISEDINNER,BF_RECT);drew=TRUE;
-    }
-    RestoreDC(dc,saved);return drew;
+    RECT r=*bounds;
+    const style_relief_palette palette={
+        .face=classic_bar_color(colors,CLASSIC_BAR_FACE,GetSysColor(COLOR_BTNFACE)),
+        .highlight=classic_bar_color(colors,CLASSIC_BAR_HIGHLIGHT,GetSysColor(COLOR_BTNHIGHLIGHT)),
+        .shadow=classic_bar_color(colors,CLASSIC_BAR_SHADOW,GetSysColor(COLOR_BTNSHADOW))
+    };
+    return style_paint_relief(dc,&r,BDR_RAISEDINNER,BF_RECT|BF_MIDDLE,&palette);
 }
 
-void win16_style_month_arrow(HDC dc,const RECT *r,const RECT *clip,int part,int state,const win16_style_palette *palette)
-{if(!dc || !r || r->right<=r->left || r->bottom<=r->top || r->right-r->left>128 || r->bottom-r->top>128 || r->right-r->left!=r->bottom-r->top)return;
- int saved=SaveDC(dc);if(!saved)return;if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return;}
- const char (*bits)[18]=part==MC_NAVPREV?(state==MCNP_DISABLED?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_DISABLED):state==MCNP_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT)):(state==MCNN_DISABLED?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_DISABLED):state==MCNN_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT));
- win16_control_scroll_arrow(dc,*r,bits,palette);RestoreDC(dc,saved);
+void win16_style_month_arrow(HDC dc,const RECT *r,const RECT *clip,int part,int state,const win16_style_palette *palette,
+    const style_scroll_arrow_art *art)
+{
+    if(!dc || !r || IsRectEmpty(r) || r->right-r->left>128 || r->right-r->left!=r->bottom-r->top)return;
+    int saved=SaveDC(dc);
+    if(!saved)return;
+    BOOL previous=part==MC_NAVPREV;
+    UINT flags=previous?DFCS_SCROLLLEFT:DFCS_SCROLLRIGHT;
+    if(state==(previous?MCNP_DISABLED:MCNN_DISABLED))flags|=DFCS_INACTIVE;
+    else if(state==(previous?MCNP_PRESSED:MCNN_PRESSED))flags|=DFCS_PUSHED;
+    if(!clip || IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)!=ERROR)
+        win16_control_scroll_arrow_art(dc,*r,flags,palette,art);
+    RestoreDC(dc,saved);
 }
 
 /* USER18:0208..027F: scrollbar-class size box shares the inner border
@@ -164,25 +175,31 @@ static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const R
     (void)SetDIBitsToDevice(dc,starts[n],0,widths[n],client.bottom,0,0,0,client.bottom,pixels,&info,DIB_RGB_COLORS);
 }
 
-BOOL win16_style_bitbtn_face(HWND w,HDC dc,const RECT *rect,const RECT *clip,UINT state,const win16_style_palette *palette)
+static BOOL runtime_push_frame(HWND w,HDC dc,RECT bounds,UINT state,const win16_style_palette *palette,
+    const win16_runtime_push *theme)
+{
+    int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
+    style_relief_palette colors=win16_control_push_palette(palette);
+    style_push_profile profile=STYLE_PUSH_STEPPED;
+    if(theme->profile){
+        const classic_surface_colors part=classic_push_color(&theme->colors,(state&DFCS_INACTIVE)!=0,
+            (state&(DFCS_PUSHED|DFCS_CHECKED))!=0,FALSE);
+        colors.face=colors.light=part.face;
+        colors.dark=part.edge;
+        profile=theme->profile;
+    }
+    return style_paint_push_frame(dc,&bounds,state,FALSE,unit,profile,&colors);
+}
+
+BOOL win16_style_bitbtn_face(HWND w,HDC dc,const RECT *rect,const RECT *clip,UINT state,
+    const win16_style_palette *palette,const win16_runtime_push *theme)
 {
     if(!w || !dc || !rect || rect->right-rect->left<4 || rect->bottom-rect->top<4)return FALSE;
     int saved=SaveDC(dc);if(!saved)return FALSE;
     if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return FALSE;}
-    int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    SetDCBrushColor(dc,palette->face);FillRect(dc,rect,(HBRUSH)GetStockObject(DC_BRUSH));
-    (void)win16_control_button_border(dc,*rect,palette,u,u,(state&ODS_SELECTED)!=0);RestoreDC(dc,saved);return TRUE;
-}
-
-BOOL win16_control_graphical_face(HWND w,HDC dc,const RECT *rect,UINT flags,const win16_style_palette *palette)
-{
-    int saved=SaveDC(dc);if(!saved)return FALSE;
-    int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    /* This native primitive owns its face before VB draws the caption/image.
-     * The native call has already preserved its return/rect/error semantics. */
-    SetDCBrushColor(dc,palette->face);FillRect(dc,rect,(HBRUSH)GetStockObject(DC_BRUSH));
-    (void)win16_control_button_border(dc,*rect,palette,u,u,(flags&(DFCS_PUSHED|DFCS_CHECKED))!=0);
-    RestoreDC(dc,saved);return TRUE;
+    UINT flags=((state&ODS_SELECTED)?DFCS_PUSHED:0)|((state&ODS_DISABLED)?DFCS_INACTIVE:0);
+    BOOL painted=runtime_push_frame(w,dc,*rect,flags,palette,theme);
+    RestoreDC(dc,saved);return painted;
 }
 
 BOOL win16_control_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,BOOL (*target)(HDC,const RECT *,const void *))
@@ -224,13 +241,12 @@ BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,
         palette.light=s->frame_colors.light;
         palette.shadow=s->frame_colors.shadow;
     }
-    if(s->themed){
-        const classic_surface_colors surface=classic_push_color(&s->push_colors,(flags&DFCS_INACTIVE)!=0,
-            (flags&(DFCS_PUSHED|DFCS_CHECKED))!=0,FALSE);
-        palette.face=surface.face;
-        palette.edge=surface.edge;
-    }
-    return win16_control_graphical_face(w,dc,rect,flags,&palette);
+    const win16_runtime_push theme={s->push_colors,s->themed?
+        (s->controls.push?s->controls.push:STYLE_PUSH_STEPPED):STYLE_PUSH_DEFAULT};
+    int saved=SaveDC(dc);
+    if(!saved)return FALSE;
+    BOOL painted=runtime_push_frame(w,dc,*rect,flags,&palette,&theme);
+    RestoreDC(dc,saved);return painted;
 }
 
 BOOL win16_control_cool_grip_identity(HWND w,void *owner,const NMCUSTOMDRAW *n,WNDPROC native,BOOL (*valid)(HWND,void *))

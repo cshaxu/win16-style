@@ -40,17 +40,23 @@ static void print(HWND window,HDC dc,RECT r)
 
 int wmain(int argc,WCHAR **argv)
 {
+    BOOL theme_symbol=argc==2 && !wcscmp(argv[1],L"--theme-symbol");
+    BOOL theme_art=theme_symbol || (argc==2 && !wcscmp(argv[1],L"--theme-art"));
     CHECK(argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
     const INITCOMMONCONTROLSEX icc={sizeof(icc),ICC_UPDOWN_CLASS};
     CHECK(InitCommonControlsEx(&icc));
-    HMODULE dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
-    CHECK(dll);
-    window_op attach=(void *)GetProcAddress(dll,"Ntw2ksWindowAttach");
-    window_op attached=(void *)GetProcAddress(dll,"Ntw2ksWindowAttached");
-    window_op remove=(void *)GetProcAddress(dll,"Ntw2ksWindowRemove");
-    CHECK(attach && attached && remove);
+    HMODULE dll=NULL;
+    window_op attach=NULL,attached=NULL,remove=NULL;
+    if(!theme_art){
+        dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
+        CHECK(dll);
+        attach=(void *)GetProcAddress(dll,"Ntw2ksWindowAttach");
+        attached=(void *)GetProcAddress(dll,"Ntw2ksWindowAttached");
+        remove=(void *)GetProcAddress(dll,"Ntw2ksWindowRemove");
+        CHECK(attach && attached && remove);
+    }
     HINSTANCE instance=GetModuleHandleW(NULL);
     const WNDCLASSW cls={.lpfnWndProc=parent_proc,.hInstance=instance,.lpszClassName=L"OwnedWin2kUpDown"};
     CHECK(RegisterClassW(&cls));
@@ -69,13 +75,22 @@ int wmain(int argc,WCHAR **argv)
     for(int axis=0;axis<2;++axis){
         spin=CreateWindowW(UPDOWN_CLASSW,NULL,WS_CHILD|WS_VISIBLE|(axis?UDS_HORZ:0),
             0,0,axis?39:19,axis?19:39,root,NULL,instance,NULL);
-        CHECK(spin && (!hooked || attached(spin)) && attach(spin));
+        CHECK(spin && (theme_art || ((!hooked || attached(spin)) && attach(spin))));
         SendMessageW(spin,UDM_SETRANGE32,0,40);
         SendMessageW(spin,UDM_SETPOS32,0,20);
         RECT r;
         CHECK(GetClientRect(spin,&r));
         SetTextColor(dc,RGB(5,21,69));
         print(spin,dc,r);
+        if(theme_art){
+            RECT interior={4,4,15,15};
+            COLORREF edge=theme_symbol?RGB(255,255,255):RGB(0,0,0);
+            CHECK(GetPixel(dc,0,0)==edge && SendMessageW(spin,UDM_GETPOS32,0,0)==20);
+            printf("THEME_UPDOWN_ART axis=%d dark=%u shadow=%u\n",axis,
+                count(dc,interior,RGB(0,0,0)),count(dc,interior,RGB(128,128,128)));
+            CHECK(DestroyWindow(spin));
+            continue;
+        }
         CHECK(count(dc,r,face)>20 && count(dc,r,dark)>10 && count(dc,r,RGB(0,0,0))>10);
         CHECK(count(dc,r,untouched)==(unsigned)(axis?r.bottom:r.right));
         CHECK(GetTextColor(dc)==RGB(5,21,69));
@@ -99,6 +114,12 @@ int wmain(int argc,WCHAR **argv)
         CHECK(notices>=2 && value!=20);
         CHECK(remove(spin) && !attached(spin) && SendMessageW(spin,UDM_GETPOS32,0,0)==value);
         CHECK(DestroyWindow(spin));
+    }
+    if(theme_art){
+        CHECK(DestroyWindow(root));
+        SelectObject(dc,old);DeleteObject(dib);DeleteDC(dc);
+        puts("THEME_UPDOWN_ART_OK axes=2 position_preserved=1");
+        return 0;
     }
     spin=CreateWindowW(UPDOWN_CLASSW,NULL,WS_CHILD|WS_VISIBLE|UDS_SETBUDDYINT|UDS_ALIGNRIGHT|UDS_ARROWKEYS,
         110,80,16,26,root,NULL,instance,NULL);
