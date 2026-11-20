@@ -525,7 +525,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
         unsigned visible=0;
         for(unsigned role=CLASSIC_BUTTON_MINIMIZE;role<=CLASSIC_BUTTON_CLOSE;++role)
             if(!(info.rgstate[role]&STATE_SYSTEM_INVISIBLE))visible|=1u<<role;
-        int button=style_caption_hit(info.rgrect,visible,point);
+        int button=style_caption_hit(info.rgrect+CLASSIC_BUTTON_MINIMIZE,CLASSIC_BUTTON_MINIMIZE,visible,point);
         if(button)result=button;
         MENUBARINFO system={.cbSize=sizeof(system)};int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
         BOOL icon=FALSE;

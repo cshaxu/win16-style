@@ -5,8 +5,6 @@
 #include "lib-win32-style/application/window/window_icon.h"
 #include <stdlib.h>
 
-static const int hits[]={HTMINBUTTON,HTMAXBUTTON,HTHELP,HTCLOSE};
-
 typedef struct modern_frame {
     style_uwp_frame frame;
     RECT bounds,client;
@@ -15,6 +13,7 @@ typedef struct modern_frame {
     BOOL maximized,sizeable,themed;
     HFONT font;
     classic_theme theme;
+    classic_caption_art art;
     style_uwp_frame_action_entry actions[];
 } modern_frame;
 
@@ -34,11 +33,15 @@ static BOOL geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
     s->sizeable=!s->maximized && (style&WS_THICKFRAME);
     UINT dpi=GetDpiForWindow(owner);
     if(!dpi || s->frame.host.instance.detached)return FALSE;
-    int border=s->maximized?0:4;
     const classic_theme *theme=s->themed?&s->theme:NULL;
+    const style_frame_geometry *profile=theme?&theme->border_presentation.geometry:NULL;
+    enum style_frame_border_kind kind=s->sizeable?STYLE_FRAME_SIZEABLE:
+        ex&WS_EX_DLGMODALFRAME?STYLE_FRAME_DIALOG:STYLE_FRAME_FIXED;
+    int border=s->maximized?0:profile && profile->scale?style_frame_border_width(profile,kind,dpi,dpi):4;
     int height=win2k_caption_theme_height(dpi,FALSE,theme);
     s->caption.band=(RECT){border,border,s->bounds.right-border,border+height};
-    if(s->caption.band.bottom>=s->client.top || s->caption.band.right<=s->caption.band.left)return FALSE;
+    int separator=profile?profile->separator_units*max(1,MulDiv(1,(int)dpi,96)):0;
+    if(s->caption.band.bottom+separator>=s->client.top || s->caption.band.right<=s->caption.band.left)return FALSE;
     BOOL system=(style&WS_SYSMENU)!=0;
     BOOL present[]={system && (style&WS_MINIMIZEBOX),system && (style&WS_MAXIMIZEBOX),
         system && (ex&WS_EX_CONTEXTHELP),system};
@@ -82,15 +85,15 @@ static void paint(void *context,HDC dc)
     if(!IsRectEmpty(&s->caption.buttons[WIN2K_CLOSE]) && !button(s,HTCLOSE))
         flags[WIN2K_CLOSE]|=DFCS_INACTIVE;
     if(s->frame.hot){
-        for(unsigned i=0;i<WIN2K_CAPTION_PARTS;++i)
-            if(s->frame.pressed==hits[i])flags[i]|=DFCS_PUSHED;
+        unsigned index=style_caption_role(s->frame.pressed)-CLASSIC_BUTTON_MINIMIZE;
+        if(index<ARRAYSIZE(flags))flags[index]|=DFCS_PUSHED;
     }
     HICON icon=!s->frame.host.instance.detached && !IsRectEmpty(&s->caption.icon)?
         style_window_caption_icon(owner):NULL;
     if(!s->frame.host.instance.detached)
         win2k_caption_render_with_colors(dc,&s->caption,title,icon,s->font,s->dpi,
             win2k_caption_theme_palette(s->frame.active,s->themed?&s->theme:NULL),colors,
-            s->themed?&s->theme.caption_presentation:NULL,s->maximized,flags,NULL);
+            s->themed?&s->theme.caption_presentation:NULL,s->maximized,flags,&s->art);
     RestoreDC(dc,saved);
 }
 
@@ -99,8 +102,8 @@ static LRESULT hit(void *context,POINT point)
     modern_frame *s=context;
     if(PtInRect(&s->client,point))return HTCLIENT;
     if(!PtInRect(&s->bounds,point))return HTNOWHERE;
-    for(unsigned i=0;i<ARRAYSIZE(s->caption.buttons);++i)
-        if(PtInRect(&s->caption.buttons[i],point))return hits[i];
+    int part=style_caption_hit(s->caption.buttons,CLASSIC_BUTTON_MINIMIZE,~0u,point);
+    if(part)return part;
     if(PtInRect(&s->caption.icon,point))return HTSYSMENU;
     if(PtInRect(&s->caption.band,point))return HTCAPTION;
     if(s->sizeable && point.y<s->caption.band.top && point.x>=s->client.left && point.x<s->client.right)
@@ -122,18 +125,9 @@ static void invoke(void *context,int part,UINT message)
 {
     modern_frame *s=context;
     HWND owner=s->frame.host.owner;
-    UINT command=0;
-    if(message==WM_LBUTTONUP){
-        if(part==HTMINBUTTON)command=SC_MINIMIZE;
-        else if(part==HTMAXBUTTON)command=IsZoomed(owner)?SC_RESTORE:SC_MAXIMIZE;
-        else if(part==HTCLOSE)command=SC_CLOSE;
-        else if(part==HTHELP)command=SC_CONTEXTHELP;
-        else if(part==HTSYSMENU)command=SC_KEYMENU;
-    }else if(message==WM_LBUTTONDBLCLK){
-        if(part==HTSYSMENU && button(s,HTCLOSE))command=SC_CLOSE;
-        else if(part==HTCAPTION && !IsRectEmpty(&s->caption.buttons[WIN2K_MAXIMIZE]))
-            command=IsZoomed(owner)?SC_RESTORE:SC_MAXIMIZE;
-    }else if(message==WM_RBUTTONUP && (part==HTCAPTION || part==HTSYSMENU))command=SC_KEYMENU;
+    BOOL can_close=message!=WM_LBUTTONDBLCLK || part!=HTSYSMENU || button(s,HTCLOSE);
+    UINT command=style_caption_gesture(part,message,IsZoomed(owner),
+        !IsRectEmpty(&s->caption.buttons[WIN2K_MAXIMIZE]),can_close);
     if(command)PostMessageW(owner,WM_SYSCOMMAND,command,command==SC_KEYMENU?L' ':0);
 }
 
@@ -160,13 +154,17 @@ BOOL win2k_uwp_frame_uses(HWND owner)
 {return style_uwp_frame_uses(owner,&ops);}
 
 BOOL win2k_uwp_frame_apply(HWND owner,HWND title,const style_uwp_frame_action *actions,unsigned count,
-    const classic_theme *theme)
+    const classic_theme_mapping *source)
 {
     if(!title){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     if(!style_uwp_frame_validate(owner,title,actions,count))return FALSE;
     modern_frame *s=calloc(1,sizeof(*s)+(size_t)count*sizeof(*s->actions));
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    s->themed=theme!=NULL;
-    if(theme)s->theme=*theme;
+    s->themed=source!=NULL;
+    if(source){
+        s->theme=source->model;
+        if(source->resources && s->theme.caption_presentation.button_source==STYLE_CAPTION_BUTTON_INDEXED)
+            (void)classic_caption_art_read(source->resources,&s->theme.caption_images,&s->art);
+    }
     return style_uwp_frame_start(&s->frame,owner,title,&ops,s,actions,count,s->actions);
 }

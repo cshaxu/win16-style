@@ -29,9 +29,10 @@ typedef struct classic_caption_metrics {
  * clipping policy lets a right slot shrink on very narrow captions. */
 BOOL style_caption_slots(const classic_button_group *group,const RECT *band,UINT dpi,
     SIZE dimensions,unsigned present,BOOL clip_right,RECT bounds[CLASSIC_BUTTON_CLOSE+1]);
-/* Returns zero outside visible button rectangles. */
-int style_caption_hit(const RECT bounds[CLASSIC_BUTTON_CLOSE+1],unsigned visible,POINT point);
+/* Rectangles start at first and cover visible roles through CLOSE. */
+int style_caption_hit(const RECT *bounds,enum classic_button_role first,unsigned visible,POINT point);
 enum classic_button_role style_caption_role(int hit);
 UINT style_caption_command(enum classic_button_role role,BOOL maximized);
+UINT style_caption_gesture(int hit,UINT message,BOOL maximized,BOOL can_maximize,BOOL can_close);
 
 #endif

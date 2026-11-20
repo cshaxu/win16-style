@@ -64,7 +64,7 @@ LRESULT win16_style_hit(const win16_style_layout *l,POINT p)
 {
     BOOL left,right,top,bottom;
     if(!l || !PtInRect(&l->outer,p))return HTNOWHERE;
-    int button=style_caption_hit(l->buttons,~0u,p);
+    int button=style_caption_hit(l->buttons+CLASSIC_BUTTON_SYSTEM,CLASSIC_BUTTON_SYSTEM,~0u,p);
     if(button)return button;
     if(PtInRect(&l->caption,p))return HTCAPTION;
     if(PtInRect(&l->client,p))return HTCLIENT;

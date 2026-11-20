@@ -4,10 +4,10 @@
 
 static const int hits[]={0,HTSYSMENU,HTMINBUTTON,HTMAXBUTTON,HTHELP,HTCLOSE};
 
-int style_caption_hit(const RECT bounds[CLASSIC_BUTTON_CLOSE+1],unsigned visible,POINT point)
+int style_caption_hit(const RECT *bounds,enum classic_button_role first,unsigned visible,POINT point)
 {
-    for(unsigned role=CLASSIC_BUTTON_SYSTEM;role<=CLASSIC_BUTTON_CLOSE;++role)
-        if((visible&(1u<<role)) && PtInRect(&bounds[role],point))return hits[role];
+    for(unsigned role=first;role<=CLASSIC_BUTTON_CLOSE;++role)
+        if((visible&(1u<<role)) && PtInRect(&bounds[role-first],point))return hits[role];
     return 0;
 }
 
@@ -28,6 +28,17 @@ UINT style_caption_command(enum classic_button_role role,BOOL maximized)
     case CLASSIC_BUTTON_CLOSE:return SC_CLOSE;
     default:return 0;
     }
+}
+
+UINT style_caption_gesture(int hit,UINT message,BOOL maximized,BOOL can_maximize,BOOL can_close)
+{
+    if(message==WM_LBUTTONUP)return style_caption_command(style_caption_role(hit),maximized);
+    if(message==WM_LBUTTONDBLCLK){
+        if(hit==HTSYSMENU && can_close)return SC_CLOSE;
+        if(hit==HTCAPTION && can_maximize)return style_caption_command(CLASSIC_BUTTON_MAXIMIZE,maximized);
+    }
+    if(message==WM_RBUTTONUP && (hit==HTCAPTION || hit==HTSYSMENU))return SC_KEYMENU;
+    return 0;
 }
 
 BOOL style_caption_slots(const classic_button_group *group,const RECT *band,UINT dpi,

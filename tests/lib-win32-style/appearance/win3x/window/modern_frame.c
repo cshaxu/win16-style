@@ -123,8 +123,8 @@ static int worker(int argc,WCHAR **argv)
     for(int i=0;i<3;++i){
         int left=i?client.right/2:0;
         CHECK(SetWindowPos(title,NULL,left,0,client.right-left,48,SWP_NOZORDER|SWP_NOACTIVATE));
-        CHECK(win16_uwp_frame_apply_actions(w,title,NULL,0));HWND surface=style_uwp_frame_surface(w);CHECK(surface);
-        CHECK(!win16_uwp_frame_apply_actions(w,title,NULL,0)&&GetLastError()==ERROR_ALREADY_EXISTS);
+        CHECK(win16_uwp_frame_apply_actions(w,title,NULL,0,NULL));HWND surface=style_uwp_frame_surface(w);CHECK(surface);
+        CHECK(!win16_uwp_frame_apply_actions(w,title,NULL,0,NULL)&&GetLastError()==ERROR_ALREADY_EXISTS);
         CHECK(GetWindow(surface,GW_OWNER)==w);
         HRGN region=CreateRectRgn(0,0,0,0);CHECK(GetWindowRgn(surface,region)!=ERROR);
         POINT p={10,60};ClientToScreen(w,&p);p.x-=before.left;p.y-=before.top;
@@ -132,7 +132,7 @@ static int worker(int argc,WCHAR **argv)
         RECT band;GetWindowRect(title,&band);POINT origin={0,0};ClientToScreen(w,&origin);
         RECT hole={origin.x-before.left,band.bottom-before.top,origin.x-before.left+client.right,origin.y-before.top+client.bottom};
         SIZE size={before.right-before.left,before.bottom-before.top};win16_style_layout layout;
-        CHECK(win16_uwp_frame_layout(size,GetDpiForWindow(w),(DWORD)style,FALSE,hole,NULL,NULL,&layout));
+        CHECK(win16_uwp_frame_layout(size,GetDpiForWindow(w),(DWORD)style,FALSE,hole,NULL,NULL,NULL,&layout));
         LPARAM click=MAKELPARAM(layout.buttons[CLASSIC_BUTTON_MINIMIZE].left+2,layout.buttons[CLASSIC_BUTTON_MINIMIZE].top+2);
         command=0;SendMessageW(surface,WM_LBUTTONDOWN,MK_LBUTTON,click);
         SendMessageW(surface,WM_LBUTTONUP,0,click);pump();CHECK(command==SC_MINIMIZE);
@@ -207,15 +207,15 @@ static int worker(int argc,WCHAR **argv)
     CHECK(AppendMenuW(extras,MF_STRING,0xeff0,L"Application-owned collision"));
     int count=GetMenuItemCount(extras);
     style_uwp_frame_action invalid={0};
-    CHECK(!win16_uwp_frame_apply_actions(w,title,&invalid,1)&&GetLastError()==ERROR_INVALID_PARAMETER);
+    CHECK(!win16_uwp_frame_apply_actions(w,title,&invalid,1,NULL)&&GetLastError()==ERROR_INVALID_PARAMETER);
     style_uwp_frame_action action={L"Application menu...",extra_action,&action_calls};
     style_uwp_frame_action actions[]={action,{L"Second action",extra_action,&action_calls}};
-    CHECK(!win16_uwp_frame_apply_actions(w,title,NULL,1)&&GetLastError()==ERROR_INVALID_PARAMETER);
-    CHECK(!win16_uwp_frame_apply_actions(w,title,actions,257)&&GetLastError()==ERROR_INVALID_PARAMETER);
+    CHECK(!win16_uwp_frame_apply_actions(w,title,NULL,1,NULL)&&GetLastError()==ERROR_INVALID_PARAMETER);
+    CHECK(!win16_uwp_frame_apply_actions(w,title,actions,257,NULL)&&GetLastError()==ERROR_INVALID_PARAMETER);
     for(int iteration=0;iteration<2;++iteration){
         expected_actions=(unsigned)iteration+1;
-        CHECK(win16_uwp_frame_apply_actions(w,title,actions,expected_actions));
-        CHECK(!win16_uwp_frame_apply_actions(w,title,&action,1)&&GetLastError()==ERROR_ALREADY_EXISTS);
+        CHECK(win16_uwp_frame_apply_actions(w,title,actions,expected_actions,NULL));
+        CHECK(!win16_uwp_frame_apply_actions(w,title,&action,1,NULL)&&GetLastError()==ERROR_ALREADY_EXISTS);
         CHECK(GetMenuItemCount(extras)==count);
         expect_action=TRUE;action_seen=FALSE;CHECK(SetTimer(w,1,200,cancel_menu));
         SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ');KillTimer(w,1);expect_action=FALSE;
@@ -228,7 +228,7 @@ static int worker(int argc,WCHAR **argv)
     /* Leave one free command for two actions: partial insertion must unwind. */
     for(UINT id=0xefd0;id>=0xe000;id-=16)CHECK(AppendMenuW(extras,MF_STRING,id,L"Reserved"));
     count=GetMenuItemCount(extras);
-    CHECK(win16_uwp_frame_apply_actions(w,title,actions,2));
+    CHECK(win16_uwp_frame_apply_actions(w,title,actions,2,NULL));
     SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ');
     CHECK(GetMenuItemCount(extras)==count&&!action_calls);
     CHECK(GetMenuState(extras,0xefe0,MF_BYCOMMAND)==(UINT)-1);
@@ -243,10 +243,10 @@ static int worker(int argc,WCHAR **argv)
     RECT peer_client;CHECK(GetClientRect(peer,&peer_client));
     HWND peer_title=CreateWindowExW(0,L"STATIC",L"Other native title",WS_CHILD|WS_VISIBLE,
         0,0,peer_client.right,48,peer,NULL,NULL,NULL);CHECK(peer_title);
-    CHECK(win16_uwp_frame_apply_actions(peer,peer_title,NULL,0));
+    CHECK(win16_uwp_frame_apply_actions(peer,peer_title,NULL,0,NULL));
     HWND peer_surface=style_uwp_frame_surface(peer);CHECK(peer_surface);
     RECT peer_before,peer_after;CHECK(GetWindowRect(peer,&peer_before));
-    CHECK(win16_uwp_frame_apply_actions(w,title,actions,2));
+    CHECK(win16_uwp_frame_apply_actions(w,title,actions,2,NULL));
     HWND retiring_surface=style_uwp_frame_surface(w);CHECK(retiring_surface);
     count=GetMenuItemCount(extras);retiring_title=title;retired_in_menu=FALSE;
     CHECK(SetTimer(w,2,100,retire_title));
@@ -257,15 +257,15 @@ static int worker(int argc,WCHAR **argv)
     CHECK(GetWindowRect(peer,&peer_after)&&EqualRect(&peer_before,&peer_after));
     title=CreateWindowExW(0,L"STATIC",L"Replacement title",WS_CHILD|WS_VISIBLE,
         0,0,client.right,48,w,NULL,NULL,NULL);CHECK(title);
-    CHECK(win16_uwp_frame_apply_actions(w,title,NULL,0));CHECK(style_uwp_frame_remove(peer));
+    CHECK(win16_uwp_frame_apply_actions(w,title,NULL,0,NULL));CHECK(style_uwp_frame_remove(peer));
     CHECK(!IsWindow(peer_surface)&&style_uwp_frame_surface(w));
     CHECK(DestroyWindow(peer));CHECK(style_uwp_frame_remove(w));
     puts("UWP_FRAME_SHARED_THREAD_PASS menu-title-destroy=1 explicit-reattach=1 peer-isolated=1");
     CHECK(position_fixture(w,anchor));
-    CHECK(win16_uwp_frame_apply_actions(w,title,NULL,0));HWND surface=style_uwp_frame_surface(w);
+    CHECK(win16_uwp_frame_apply_actions(w,title,NULL,0,NULL));HWND surface=style_uwp_frame_surface(w);
     CHECK(DestroyWindow(title));CHECK(!IsWindow(surface));CHECK(!style_uwp_frame_surface(w));
     title=CreateWindowExW(0,L"STATIC",L"Native title",WS_CHILD|WS_VISIBLE,0,0,client.right,48,w,NULL,NULL,NULL);CHECK(title);
-    CHECK(win16_uwp_frame_apply_actions(w,title,NULL,0));surface=style_uwp_frame_surface(w);
+    CHECK(win16_uwp_frame_apply_actions(w,title,NULL,0,NULL));surface=style_uwp_frame_surface(w);
     CHECK(DestroyWindow(w));CHECK(!IsWindow(surface));CHECK(DestroyWindow(anchor));
     puts("UWP_FRAME_LIFECYCLE_PASS repeat=3 owner-destroy=1");return 0;
 }

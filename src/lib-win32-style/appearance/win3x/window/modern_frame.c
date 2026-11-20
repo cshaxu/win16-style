@@ -34,7 +34,7 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
     UINT dpi=GetDpiForWindow(s->frame.host.owner);
     DWORD style=(DWORD)GetWindowLongPtrW(s->frame.host.owner,GWL_STYLE);
     if(!win16_uwp_frame_layout(size,dpi,style,zoomed,content,
-        &s->theme.title_buttons,&s->theme.caption_metrics,&s->layout))return FALSE;
+        &s->theme.title_buttons,&s->theme.caption_metrics,&s->theme.border_presentation.geometry,&s->layout))return FALSE;
     if(dpi!=s->fonts.dpi && !win16_control_refresh_frame_fonts(s->frame.host.owner,&s->fonts,
         &s->theme.caption_font,&s->theme.menu_font))return FALSE;
     return !s->frame.host.instance.detached;
@@ -65,12 +65,6 @@ static void refresh_paint(void *context,HDC dc)
     uwp_frame *s=context;
     win16_control_paint_frame(s->frame.host.owner,&s->frame.host.instance,s,&renderer,dc);
 }
-static void invoke(uwp_frame *s,int hit)
-{
-    UINT command=hit==HTMINBUTTON?SC_MINIMIZE:hit==HTMAXBUTTON?
-        (IsZoomed(s->frame.host.owner)?SC_RESTORE:SC_MAXIMIZE):SC_KEYMENU;
-    PostMessageW(s->frame.host.owner,WM_SYSCOMMAND,command,command==SC_KEYMENU?L' ':0);
-}
 static LRESULT input_hit(void *context,POINT point)
 {return win16_uwp_frame_hit(&((uwp_frame *)context)->layout,point);}
 static BOOL input_button(void *context,int hit)
@@ -78,11 +72,10 @@ static BOOL input_button(void *context,int hit)
 static void input_invoke(void *context,int hit,UINT message)
 {
     uwp_frame *s=context;
-    if(message==WM_LBUTTONUP)invoke(s,hit);
-    else if(message==WM_LBUTTONDBLCLK){
-        if(hit==HTSYSMENU)PostMessageW(s->frame.host.owner,WM_SYSCOMMAND,SC_CLOSE,0);
-        else if(hit==HTCAPTION && (GetWindowLongPtrW(s->frame.host.owner,GWL_STYLE)&WS_MAXIMIZEBOX))invoke(s,HTMAXBUTTON);
-    }else if(message==WM_RBUTTONUP && (hit==HTCAPTION || hit==HTSYSMENU))invoke(s,HTSYSMENU);
+    HWND owner=s->frame.host.owner;
+    UINT command=style_caption_gesture(hit,message,IsZoomed(owner),
+        (GetWindowLongPtrW(owner,GWL_STYLE)&WS_MAXIMIZEBOX)!=0,TRUE);
+    if(command)PostMessageW(owner,WM_SYSCOMMAND,command,command==SC_KEYMENU?L' ':0);
 }
 static BOOL menu_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,BOOL owner,LRESULT *result)
 {
@@ -95,26 +88,30 @@ static BOOL menu_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,BOO
 static const style_uwp_frame_ops operations={refresh_geometry,refresh_paint,input_hit,input_button,input_invoke,menu_message,dispose};
 BOOL win16_uwp_frame_uses(HWND w)
 {return style_uwp_frame_uses(w,&operations);}
-static BOOL apply_actions(HWND w,HWND title,const style_uwp_frame_action *actions,unsigned count)
+static BOOL apply_actions(HWND w,HWND title,const style_uwp_frame_action *actions,unsigned count,
+    const classic_theme_mapping *source)
 {
     if(!style_uwp_frame_validate(w,title,actions,count))return FALSE;
     uwp_frame *s=calloc(1,sizeof(*s)+(size_t)count*sizeof(*s->actions));
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     win16_style_default_palette(&s->palette);
-    classic_theme_mapping source={0};
-    if(SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN16,TRUE,&source))){
-        s->theme=source.model;
+    classic_theme_mapping packaged={0};
+    if(!source && SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN16,TRUE,&packaged)))
+        source=&packaged;
+    if(source){
+        s->theme=source->model;
         win16_style_theme_palette(&s->palette,&s->theme);
-        (void)win16_menu_art_read(source.resources,s->theme.menu_images,&s->menu_art);
-        (void)classic_caption_art_read(source.resources,&s->theme.caption_images,&s->caption_art);
-        classic_theme_close(&source);
+        (void)win16_menu_art_read(source->resources,s->theme.menu_images,&s->menu_art);
+        (void)classic_caption_art_read(source->resources,&s->theme.caption_images,&s->caption_art);
     }
+    if(packaged.resources)classic_theme_close(&packaged);
     return style_uwp_frame_start(&s->frame,w,title,&operations,s,actions,count,s->actions);
 }
-BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const style_uwp_frame_action *actions,unsigned count)
+BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const style_uwp_frame_action *actions,unsigned count,
+    const classic_theme_mapping *source)
 {
     if(!title){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    return apply_actions(w,title,actions,count);
+    return apply_actions(w,title,actions,count,source);
 }
 BOOL win16_uwp_frame_apply_nonclient(HWND w)
-{return apply_actions(w,NULL,NULL,0);}
+{return apply_actions(w,NULL,NULL,0,NULL);}

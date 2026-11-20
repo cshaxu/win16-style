@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S17 P1",
-  "stage": "theme-driven shared Win32 frame",
+  "delivery": "M0 T29 S18 P1",
+  "stage": "shared theme model for modern window frames",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "b50a9a1f2cc0d184856470cd37dae97846ac2d55ea206be3e9e1e5c5c227a8a4",
+  "source_snapshot_sha256": "132ba11e0447880d66182543f725e179961f33506888ccb7ed22f5d09051d285",
   "source_input_cohort": {
     "count": 1286,
-    "sha256": "7e1f885f575e859f42ebf3ee9b3bea7ba0c7cf1c8bda2893479a8d904e30a411",
+    "sha256": "efc10c350b4522665a593d2565ef882a97344236fa6b3be18315ceb4e28aed41",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot",
@@ -16,7 +16,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "4d273039792d92ab4b1114bb7394265cb80b99c5c94e82a4e2f239cba99fb452",
+      "sha256": "86c58bead7c74a6fefb385a6e59fb952ce74c2408bca8aa095e16bb4f1478b71",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "e3887743af987a8428d522ba07baebdf3452f92087307a146335d62c66731a93",
+      "sha256": "954961f63bc1d44565e13d79f07b0408dffb1481b123f53ad6e1486dfed2c40a",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "b926f58081c522d8a2d922c231813c75d0a06f158efa90842810f8ac3d5d503c",
+      "sha256": "c0c1123e4ebf4a60fe8b79b4a03af3b9c58a892a6c05aabbaac5c50b208ddaf0",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -92,19 +92,17 @@
     },
     "ccache_version": "ccache version 4.13.6",
     "seconds": {
-      "x86_clean": 494.06845110002905,
-      "x86_recheck": 5.333085000049323,
-      "x64_clean": 457.8259761999361
+      "x86_clean": 328.99659370002337,
+      "x64_clean": 362.30506119993515
     },
-    "changed_source_test_tool_build_files": 47,
-    "insertions": 1037,
-    "deletions": 387,
-    "net_lines": 650,
+    "changed_source_test_tool_build_files": 17,
+    "insertions": 227,
+    "deletions": 117,
+    "net_lines": 110,
     "checks": [
       "quick ABI and core PE checks (x86, x64)",
       "source and archive boundaries",
-      "independent theme readback and original glyph tables",
-      "compatibility core explicitly admits existing product dependency SHCORE.dll"
+      "independent theme readback and original glyph tables"
     ]
   },
   "publication": {
@@ -129,7 +127,7 @@
   "focused_post_publication": {
     "status": "passed-focused",
     "coverage": "focused",
-    "seconds": 52.4526779,
+    "seconds": 47.0057509,
     "cases": 12,
     "selected_cases": [
       "progress-sharing",
@@ -148,21 +146,13 @@
     "skipped": []
   },
   "supplemental_post_publication": {
-    "published_launcher_native_frame_actions": 24,
-    "theme_only_inset_pairs": {
-      "Win16": {
-        "x86_delta": 3,
-        "x64_delta": 3
-      },
-      "Win2K": {
-        "x86_delta": 2,
-        "x64_delta": 2
-      },
-      "dpi": 144
-    },
-    "win16_mdi": [
-      "x86: system hit, maximize, restore",
-      "x64: system hit, maximize, restore"
+    "named_mixed_profile": [
+      "x86",
+      "x64"
+    ],
+    "indexed_repaint_restore": [
+      "x86",
+      "x64"
     ],
     "owned_thread_attachment": [
       "x86 normal",
@@ -170,22 +160,17 @@
       "x64 normal",
       "x64 composed"
     ],
-    "published_theme_parsing": [
-      "x86 extension",
-      "x86 render",
-      "x64 extension",
-      "x64 render"
+    "local_adapters": [
+      "x86 geometry, hidden, menu",
+      "x64 geometry, hidden, menu"
     ]
   },
   "validation": {
-    "known_baseline_failures": [
-      "ntw2ks-frame-x86",
-      "ntw2ks-frame-x64"
-    ],
-    "baseline_comparison": "Both complete diagnostics and exit 3 match the saved S16 package byte-for-byte on the same fixture.",
+    "real_uwp": "Calculator timed out before attachment on S17 and S18; Scan timed out on S18; owned test instances cleaned",
+    "real_winui": "Development candidate attached both Win16 and Win2K to fresh owned Notepad windows, with the XAML content bridge preserved; Win2K sampled the caption gradient",
+    "real_winui_runtime_restoration": "Not measured on actual Notepad",
     "physical_input": "not tested",
-    "full_matrix": "not run",
-    "real_uwp_winui": "not tested in S17"
+    "full_matrix": "not run"
   },
   "closure": "local delivery verified; remote review pending"
 }

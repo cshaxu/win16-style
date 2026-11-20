@@ -11,16 +11,16 @@ int main(void)
         RECT content={MulDiv(8,dpi,96),MulDiv(40,dpi,96),outer.cx-MulDiv(8,dpi,96),outer.cy-MulDiv(8,dpi,96)};
         win16_style_layout l,native;RECT overlap;
         CHECK(win16_style_measure(outer.cx,outer.cy,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&native));
-        CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,NULL,NULL,&l));
+        CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,NULL,NULL,NULL,&l));
         CHECK(EqualRect(&content,&l.client));
         CHECK(EqualRect(&native.caption,&l.caption) && EqualRect(&native.title,&l.title) &&
               EqualRect(&native.buttons[CLASSIC_BUTTON_SYSTEM],&l.buttons[CLASSIC_BUTTON_SYSTEM]) && EqualRect(&native.buttons[CLASSIC_BUTTON_MINIMIZE],&l.buttons[CLASSIC_BUTTON_MINIMIZE]) &&
               EqualRect(&native.buttons[CLASSIC_BUTTON_MAXIMIZE],&l.buttons[CLASSIC_BUTTON_MAXIMIZE]));
         RECT taller=content;taller.top+=MulDiv(15,dpi,96);
-        CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,taller,NULL,NULL,&l));
+        CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,taller,NULL,NULL,NULL,&l));
         CHECK(EqualRect(&taller,&l.client) && EqualRect(&native.caption,&l.caption) &&
               EqualRect(&native.buttons[CLASSIC_BUTTON_MAXIMIZE],&l.buttons[CLASSIC_BUTTON_MAXIMIZE]));
-        CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,NULL,NULL,&l));
+        CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,NULL,NULL,NULL,&l));
         CHECK(!IntersectRect(&overlap,&l.title,&l.buttons[CLASSIC_BUTTON_MAXIMIZE]));
         CHECK(!IntersectRect(&overlap,&l.buttons[CLASSIC_BUTTON_MINIMIZE],&l.buttons[CLASSIC_BUTTON_MAXIMIZE]));
         POINT p={content.left+1,content.top+1};CHECK(win16_uwp_frame_hit(&l,p)==HTCLIENT);
@@ -45,23 +45,27 @@ int main(void)
         /* Maximized and fixed-size windows must not advertise resizing. */
         for(unsigned mode=0;mode<2;++mode){
             CHECK(win16_uwp_frame_layout(outer,dpi,mode?WS_OVERLAPPEDWINDOW&~WS_THICKFRAME:WS_OVERLAPPEDWINDOW,
-                !mode,content,NULL,NULL,&l));
+                !mode,content,NULL,NULL,NULL,&l));
             CHECK(EqualRect(&content,&l.client));
             for(unsigned i=0;i<ARRAYSIZE(edges);++i)CHECK(win16_uwp_frame_hit(&l,edges[i])==HTBORDER);
         }
         const classic_button_group group=WIN16_TITLE_BUTTON_GROUP;
         const classic_caption_metrics metrics={.height=22,.button={23,22}};
+        const style_frame_geometry frame={STYLE_FRAME_MONITOR_PIXELS,2,2,2,1,20,1};
         CHECK(win16_style_measure_with_buttons(outer.cx,outer.cy,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
-            &group,&metrics,NULL,dpi,&native));
-        CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,&group,&metrics,&l));
-        CHECK(EqualRect(&content,&l.client) && EqualRect(&native.caption,&l.caption) &&
+            &group,&metrics,&frame,dpi,&native));
+        CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,&group,&metrics,&frame,&l));
+        CHECK(l.border==2 && EqualRect(&content,&l.client) && EqualRect(&native.caption,&l.caption) &&
             EqualRect(&native.buttons[CLASSIC_BUTTON_SYSTEM],&l.buttons[CLASSIC_BUTTON_SYSTEM]) && EqualRect(&native.buttons[CLASSIC_BUTTON_MINIMIZE],&l.buttons[CLASSIC_BUTTON_MINIMIZE]) &&
             EqualRect(&native.buttons[CLASSIC_BUTTON_MAXIMIZE],&l.buttons[CLASSIC_BUTTON_MAXIMIZE]));
         CHECK(l.buttons[CLASSIC_BUTTON_MAXIMIZE].right-l.buttons[CLASSIC_BUTTON_MAXIMIZE].left==MulDiv(23,(int)dpi,96));
         p=(POINT){l.buttons[CLASSIC_BUTTON_MAXIMIZE].left+1,l.buttons[CLASSIC_BUTTON_MAXIMIZE].top+1};
         CHECK(win16_uwp_frame_hit(&l,p)==HTMAXBUTTON);
+        CHECK(style_caption_gesture(HTSYSMENU,WM_LBUTTONUP,FALSE,TRUE,TRUE)==SC_KEYMENU);
+        CHECK(style_caption_gesture(HTSYSMENU,WM_LBUTTONDBLCLK,FALSE,TRUE,FALSE)==0);
+        CHECK(style_caption_gesture(HTCAPTION,WM_LBUTTONDBLCLK,TRUE,TRUE,TRUE)==SC_RESTORE);
         content.right=outer.cx+1;
-        CHECK(!win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,NULL,NULL,&l));
+        CHECK(!win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,NULL,NULL,NULL,&l));
     }
     puts("UWP_FRAME_LAYOUT_PASS dpi=96,120,144,168,192,240,288 edges=8 native-margin=3 fixed-maximized=2");return 0;
 }

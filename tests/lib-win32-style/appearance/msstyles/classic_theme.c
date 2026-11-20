@@ -61,7 +61,7 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
     POINT old_point={old_system.left,old_system.top},new_point={new_system.left,new_system.top};
     if(win16_style_hit(&layout,old_point)!=HTSYSMENU || win16_style_hit(&alternate,old_point)!=HTCAPTION ||
        win16_style_hit(&alternate,new_point)!=HTSYSMENU ||
-       style_caption_hit(alternate.buttons,0,new_point)!=HTNOWHERE ||
+       style_caption_hit(alternate.buttons+CLASSIC_BUTTON_SYSTEM,CLASSIC_BUTTON_SYSTEM,0,new_point)!=HTNOWHERE ||
        style_caption_command(style_caption_role(HTSYSMENU),FALSE)!=SC_KEYMENU ||
        style_caption_command(style_caption_role(HTMAXBUTTON),TRUE)!=SC_RESTORE)return FALSE;
     win16_style_palette palette;

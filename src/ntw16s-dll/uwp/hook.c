@@ -7,44 +7,43 @@
 #include <wchar.h>
 static _Thread_local BOOL busy;
 
-static BOOL read_win2k_theme(HMODULE module,classic_theme *theme)
+static HRESULT open_frame_profile(HMODULE module,classic_theme_selection selection,classic_theme_mapping *source)
 {
-    classic_theme_mapping source={0};
-    HRESULT result=classic_theme_open_packaged(module,CLASSIC_THEME_WIN2K,FALSE,&source);
-    if(SUCCEEDED(result)){
-        *theme=source.model;
-        classic_theme_close(&source);
-        return TRUE;
-    }
 #ifdef NTWSHK_UNIFIED
-    return FALSE;
+    return classic_theme_open_selected(module,selection,source);
 #else
-    if(result!=HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND))return FALSE;
+    BOOL win2k=selection.family==CLASSIC_THEME_WIN2K;
+    unsigned previous=classic_theme_enter_profile(selection);
+    HRESULT result=classic_theme_open_packaged(module,selection.family,!win2k,source);
+    classic_theme_leave_profile(previous);
+    if(SUCCEEDED(result))return S_OK;
+    if(!win2k || result!=HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND))return S_FALSE;
     WCHAR path[32768];
     DWORD length=GetModuleFileNameW(module,path,ARRAYSIZE(path));
-    if(!length || length>=ARRAYSIZE(path))return FALSE;
+    if(!length || length>=ARRAYSIZE(path))return S_FALSE;
     WCHAR *name=wcsrchr(path,L'\\');
-    if(!name)return FALSE;
+    if(!name)return S_FALSE;
     ++name;
     if(wcscpy_s(name,ARRAYSIZE(path)-(size_t)(name-path),
-        sizeof(void *)==8?L"ntw2ks64.dll":L"ntw2ks32.dll"))return FALSE;
+        sizeof(void *)==8?L"ntw2ks64.dll":L"ntw2ks32.dll"))return S_FALSE;
     /* Read the desktop theme resources without executing the companion DLL. */
-    return SUCCEEDED(classic_theme_load(path,L"NormalSize",L"NormalColor",theme));
+    return SUCCEEDED(classic_theme_load(path,L"NormalSize",L"NormalColor",&source->model))?S_OK:S_FALSE;
 #endif
 }
 
 static const WCHAR profile_property[]=L"Win16Style.UwpProfile";
 
 static BOOL render_profile(HWND frame,HWND title,const style_uwp_frame_action *actions,unsigned count,
-    classic_theme_selection selection,HMODULE module)
+    classic_theme_selection selection,HRESULT loaded,classic_theme_mapping *source)
 {
+    if(FAILED(loaded)){SetLastError(HRESULT_CODE(loaded));return FALSE;}
     unsigned previous=classic_theme_enter_profile(selection);
-    classic_theme model;
-    BOOL win2k=selection.family==CLASSIC_THEME_WIN2K;
-    const classic_theme *theme=win2k && read_win2k_theme(module,&model)?&model:NULL;
-    BOOL ok=win2k?win2k_uwp_frame_apply(frame,title,actions,count,theme):
-        win16_uwp_frame_apply_actions(frame,title,actions,count);
-    classic_theme_leave_profile(previous);return ok;
+    const classic_theme_mapping *theme=loaded==S_OK?source:NULL;
+    BOOL ok=selection.family==CLASSIC_THEME_WIN2K?win2k_uwp_frame_apply(frame,title,actions,count,theme):
+        win16_uwp_frame_apply_actions(frame,title,actions,count,theme);
+    DWORD error=GetLastError();
+    classic_theme_close(source);
+    classic_theme_leave_profile(previous);SetLastError(error);return ok;
 }
 
 static BOOL apply_frame(HWND frame,BOOL fullscreen,classic_theme_selection selection,HMODULE module)
@@ -54,22 +53,22 @@ static BOOL apply_frame(HWND frame,BOOL fullscreen,classic_theme_selection selec
     style_uwp_frame_action actions[2];unsigned count=0;
     if(auxiliary)actions[count++]=(style_uwp_frame_action){L"Application menu...",style_uwp_application_menu,auxiliary};
     if(fullscreen)actions[count++]=(style_uwp_frame_action){L"Toggle full screen",style_uwp_fullscreen,title};
-#ifdef NTWSHK_UNIFIED
     classic_theme_mapping source={0};
-    HRESULT loaded=classic_theme_open_selected(module,selection,&source);
+    HRESULT loaded=open_frame_profile(module,selection,&source);
     if(FAILED(loaded)){SetLastError(HRESULT_CODE(loaded));return FALSE;}
-    classic_theme_close(&source);
-#endif
     HWND surface=style_uwp_frame_surface(frame);
     UINT_PTR remembered=(UINT_PTR)GetPropW(frame,profile_property);
     classic_theme_family old_family=surface && win2k_uwp_frame_uses(frame)?CLASSIC_THEME_WIN2K:CLASSIC_THEME_WIN16;
     classic_theme_selection previous={remembered?(unsigned)(remembered-1u):(unsigned)old_family,old_family};
-    if(surface && !style_uwp_frame_remove(frame))return FALSE;
-    BOOL ok=render_profile(frame,title,actions,count,selection,module);
+    if(surface && !style_uwp_frame_remove(frame)){
+        DWORD error=GetLastError();classic_theme_close(&source);SetLastError(error);return FALSE;
+    }
+    BOOL ok=render_profile(frame,title,actions,count,selection,loaded,&source);
     if(ok)(void)SetPropW(frame,profile_property,(HANDLE)(UINT_PTR)(selection.id+1u));
     if(!ok && surface){
         DWORD error=GetLastError();
-        (void)render_profile(frame,title,actions,count,previous,module);
+        loaded=open_frame_profile(module,previous,&source);
+        (void)render_profile(frame,title,actions,count,previous,loaded,&source);
         SetLastError(error);
     }
     return ok;

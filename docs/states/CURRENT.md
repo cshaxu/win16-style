@@ -144,6 +144,8 @@ S16 同条件逐字节一致。实际远端 P1 `7f72b60a` 的七件、九个退�
 | Original Owner Request | 只换主题文件复现已支持 Win16 和 Win2000，EXE/DLL 无年代分派及专属绘制。 |
 | Similar-Issue Sweep | 共查原生与合成标题区域的主题读入、按钮资源、命中、DPI、标题替换、刷新和撤销。 |
 
+[S18 开发记录](../history/M0-T29-S18-modern-frame-model.md)保存双宽合成验证与真实应用对照。P1 已在两处发布并完成聚焦实包 12/12，待实际远端复核后收口。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)

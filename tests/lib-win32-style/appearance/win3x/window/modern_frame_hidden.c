@@ -9,14 +9,14 @@ int main(void)
     HWND title=CreateWindowW(L"STATIC",L"",WS_CHILD,0,0,100,20,owner,NULL,GetModuleHandleW(NULL),NULL);
     CHECK(title);
     for(int i=0;i<3;++i){
-        CHECK(win16_uwp_frame_apply_actions(owner,title,NULL,0));
+        CHECK(win16_uwp_frame_apply_actions(owner,title,NULL,0,NULL));
         HWND surface=style_uwp_frame_surface(owner);CHECK(surface && IsWindow(surface));
         CHECK(SendMessageW(surface,WM_MOUSEACTIVATE,0,0)==MA_NOACTIVATE);
         CHECK(SendMessageW(surface,WM_NCHITTEST,0,0)==HTCLIENT);
         CHECK(style_uwp_frame_remove(owner));
         CHECK(!IsWindow(surface) && !style_uwp_frame_surface(owner));
     }
-    CHECK(win16_uwp_frame_apply_actions(owner,title,NULL,0));
+    CHECK(win16_uwp_frame_apply_actions(owner,title,NULL,0,NULL));
     HWND surface=style_uwp_frame_surface(owner);CHECK(surface);
     CHECK(DestroyWindow(title));CHECK(!IsWindow(surface) && !style_uwp_frame_surface(owner));
     CHECK(win16_uwp_frame_apply_nonclient(owner));
