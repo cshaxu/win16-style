@@ -181,16 +181,32 @@ HFONT win16_style_system_acquire_isolated(HFONT source)
 HFONT win16_style_vb_font_acquire(HFONT source)
 {return system_acquire(source,0,TRUE,FALSE);}
 
+static HFONT logical_menu_create(HFONT source,UINT dpi,void *context,style_font_pool_entry **owned)
+{
+    (void)source;
+    LOGFONTW logical=msstyles_font_at_dpi(context,dpi);
+    style_font_pool_entry *entry=calloc(1,sizeof(*entry));
+    if(!entry)return NULL;
+    entry->lease.font=CreateFontIndirectW(&logical);
+    if(!entry->lease.font){free(entry);return NULL;}
+    *owned=entry;
+    return entry->lease.font;
+}
+
 HFONT win16_style_menu_font_acquire(UINT dpi,const msstyles_font *defined)
 {
     if(dpi<48 || dpi>384)return NULL;
     unsigned points=default_menu_points;
-    /* A LOGFONT descriptor selects the existing host System raster source.
-     * Other faces and text styles require a different renderer. */
-    if(defined && defined->points && defined->points<=48 &&
-       !_wcsicmp(defined->logical.lfFaceName,L"System") && defined->logical.lfWeight==FW_BOLD &&
-       !defined->logical.lfItalic && !defined->logical.lfUnderline && !defined->logical.lfStrikeOut)
+    /* Preserve the original host raster path for the System recipe. */
+    if(defined && defined->points){
+        if(defined->points>48 || _wcsicmp(defined->logical.lfFaceName,L"System") ||
+           defined->logical.lfWeight!=FW_BOLD || defined->logical.lfItalic ||
+           defined->logical.lfUnderline || defined->logical.lfStrikeOut){
+            msstyles_font request=*defined;
+            return style_font_pool_get(&variants,NULL,dpi,TRUE,logical_menu_create,&request);
+        }
         points=defined->points;
+    }
     UINT key=(dpi<<1)|((points==default_menu_points?0:points)<<(1+menu_dpi_bits));
     return style_font_pool_get(&variants,NULL,key,FALSE,system_create,NULL);
 }

@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S18 P1",
-  "stage": "shared theme model for modern window frames",
+  "delivery": "M0 T29 S19 P1",
+  "stage": "shared theme presentation for classic window menus",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "132ba11e0447880d66182543f725e179961f33506888ccb7ed22f5d09051d285",
+  "source_snapshot_sha256": "63b68706d82b598e6ba26b5acf1b3d6d7fc617f352c6666a7fd89520a0482d04",
   "source_input_cohort": {
-    "count": 1286,
-    "sha256": "efc10c350b4522665a593d2565ef882a97344236fa6b3be18315ceb4e28aed41",
+    "count": 1289,
+    "sha256": "91c824e0470ba99673474d3f4836cdff9edb28e29876a96f7b549cae5eafe4ed",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot",
@@ -16,7 +16,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "86c58bead7c74a6fefb385a6e59fb952ce74c2408bca8aa095e16bb4f1478b71",
+      "sha256": "31c4ef2a03de3fe0625e4df0c29596c5a2ba1cbc9f83751fb01ca3be48738c5c",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "954961f63bc1d44565e13d79f07b0408dffb1481b123f53ad6e1486dfed2c40a",
+      "sha256": "322e0a599e0ea6b44c81d4eb96cf86d24e7bd56f6d63a35d844915ff91116267",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "c0c1123e4ebf4a60fe8b79b4a03af3b9c58a892a6c05aabbaac5c50b208ddaf0",
+      "sha256": "708b1d3c14353e3fab991ce47234ab1505975df70db02dd79ed0147cdc6db354",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -79,9 +79,9 @@
     }
   },
   "theme_artifacts": {
-    "Win16/Win16.msstyles": "0191215a5ad5282b5f4caf7da42ad068d96ccd3a413cb4de552468ab505970eb",
+    "Win16/Win16.msstyles": "624272b9f28c458b0b845968cea7fb09620aedc5b2ce0eec33c41041d7348bed",
     "Win16/Win16.theme": "24532dbb589f8acf8e71909b8aaf361c3c05511a2b0f730fa84b2a6b9e52aede",
-    "Win2K/Win2K.msstyles": "cfe86d8f3ea6e8a4469ef39f51f5e4e6486c36167f8e6a373fd1323bc5a6e76b",
+    "Win2K/Win2K.msstyles": "03e8f1c4c2ef54a9908b23945f50df8a916c70f12f2cec3caf941d2aa1c2bc57",
     "Win2K/Win2K.theme": "1217c8240721b28e7f92d4d6a8c9b9b0d259e2d026829be6612a70c877dbee68"
   },
   "build": {
@@ -92,15 +92,17 @@
     },
     "ccache_version": "ccache version 4.13.6",
     "seconds": {
-      "x86_clean": 328.99659370002337,
-      "x64_clean": 362.30506119993515
+      "x86_clean": 347.980676200008,
+      "x86_recheck": 4.4767289999981585,
+      "x64_after_resume": 59.82635759999903
     },
-    "changed_source_test_tool_build_files": 17,
-    "insertions": 227,
-    "deletions": 117,
-    "net_lines": 110,
+    "continuity": "The original Windows build stopped during x64. Resumed the same verified source snapshot and Ninja build trees, retaining original x86 evidence.",
+    "changed_source_test_tool_build_files": 37,
+    "insertions": 568,
+    "deletions": 202,
+    "net_lines": 366,
     "checks": [
-      "quick ABI and core PE checks (x86, x64)",
+      "quick ABI and PE for x86 and x64",
       "source and archive boundaries",
       "independent theme readback and original glyph tables"
     ]
@@ -127,9 +129,19 @@
   "focused_post_publication": {
     "status": "passed-focused",
     "coverage": "focused",
-    "seconds": 47.0057509,
-    "cases": 12,
+    "seconds": 46.5939341,
+    "cases": 22,
     "selected_cases": [
+      "ntw2ks-system-menu-live-x86",
+      "ntw2ks-system-menu-live-x64",
+      "ntw2ks-system-menu-keyboard-x86",
+      "ntw2ks-system-menu-keyboard-x64",
+      "ntw2ks-system-menu-cancel-x86",
+      "ntw2ks-system-menu-cancel-x64",
+      "ntw2ks-system-menu-glyph-x86",
+      "ntw2ks-system-menu-glyph-x64",
+      "ntw2ks-system-menu-default-x86",
+      "ntw2ks-system-menu-default-x64",
       "progress-sharing",
       "plan-selection",
       "abi-x86",
@@ -139,38 +151,34 @@
       "automatic",
       "propagation",
       "neutral-uwp-frame-32",
-      "neutral-uwp-theme-id-32",
       "neutral-uwp-frame-64",
-      "neutral-uwp-theme-id-64"
+      "system-menu-native-string-x86",
+      "system-menu-native-string-x64"
     ],
     "skipped": []
   },
   "supplemental_post_publication": {
-    "named_mixed_profile": [
+    "theme_extension_and_pixels": [
       "x86",
       "x64"
     ],
-    "indexed_repaint_restore": [
+    "owned_native_system_menu": [
       "x86",
       "x64"
     ],
-    "owned_thread_attachment": [
-      "x86 normal",
-      "x86 composed",
-      "x64 normal",
-      "x64 composed"
+    "mixed_art_and_policy_toggles": [
+      "x86",
+      "x64"
     ],
-    "local_adapters": [
-      "x86 geometry, hidden, menu",
-      "x64 geometry, hidden, menu"
+    "win16_menu_cancellation_matrix": [
+      "x86",
+      "x64"
     ]
   },
   "validation": {
-    "real_uwp": "Calculator timed out before attachment on S17 and S18; Scan timed out on S18; owned test instances cleaned",
-    "real_winui": "Development candidate attached both Win16 and Win2K to fresh owned Notepad windows, with the XAML content bridge preserved; Win2K sampled the caption gradient",
-    "real_winui_runtime_restoration": "Not measured on actual Notepad",
-    "physical_input": "not tested",
-    "full_matrix": "not run"
+    "physical_input": "not tested; bounded owned windows and message-level checks",
+    "full_matrix": "not run; focused package and supplemental cases",
+    "modern_maximize": "Supplementary direct Win16 frame test fails identically on x86/x64 with S19 and rebuilt S18 at line 104. Native unstyled maximize succeeds on the same desktop. Focused package UWP cases pass."
   },
   "closure": "local delivery verified; remote review pending"
 }

@@ -2,7 +2,7 @@
 #define WIN16_CONTROL_FRAME_PAINT_H
 #include "../common/palette.h"
 #include "../common/layout.h"
-#include "caption_art.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/graphics/font_pair.h"
 #include "lib-win32-style/application/window/caption_button.h"
 typedef struct win16_frame_paint_state {
@@ -16,6 +16,7 @@ typedef struct win16_frame_paint_state {
     BOOL gradient;
     COLORREF end;
     style_border_presentation border;
+    const classic_menu_metrics *menu_metrics;
 } win16_frame_paint_state;
 typedef void (*win16_frame_state_read)(void *,win16_frame_paint_state *);
 void win16_control_fill(HDC dc,RECT r,COLORREF color);

@@ -4,7 +4,7 @@
 #include "lib-win32-style/application/menu/owner.h"
 BOOL win16_style_menu_draw(style_menu_item *items,const DRAWITEMSTRUCT *draw,
     HFONT font,UINT dpi,const win16_style_palette *palette,const classic_menu_colors *colors,
-    const classic_menu_metrics *metrics,const win16_menu_art *art);
+    const classic_menu_metrics *metrics,const style_menu_art *art);
 BOOL win16_style_menu_size(style_menu_item *items,MEASUREITEMSTRUCT *measure,HFONT font,UINT dpi,
     const classic_menu_metrics *metrics);
 typedef struct win16_style_menu_theme {
@@ -15,7 +15,7 @@ typedef struct win16_style_menu_theme {
     void (*selection)(HWND,void *,BOOL);
     const classic_menu_colors *colors;
     const classic_menu_metrics *metrics;
-    const win16_menu_art *art;
+    const style_menu_art *art;
 } win16_style_menu_theme;
 extern const style_menu_owner_ops win16_style_menu_operations;
 #endif

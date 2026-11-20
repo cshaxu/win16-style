@@ -148,6 +148,8 @@ M0 T29 S18 已收口。P1 `acf79b8fb32a` 的双宽现代外框读取同一已选
 | Original Owner Request | 只换主题文件复现已支持 Win16 和 Win2000，EXE/DLL 无年代分派及专属绘制。 |
 | Similar-Issue Sweep | 共查标题、菜单栏、系统／上下文／子菜单、现代外框、应用自绘和字体租约生命周期。 |
 
+[S19 迁移清单](../history/M0-T29-S19-menu-font.md)记录生产入口、接收位置和验证顺序。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)

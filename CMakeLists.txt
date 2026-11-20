@@ -121,12 +121,11 @@ target_link_libraries(style-menu-owner PUBLIC style-menu-items style-instance us
 add_library(style-menu-popup STATIC src/lib-win32-style/application/menu/popup.c src/lib-win32-style/application/menu/tracking.c)
 target_include_directories(style-menu-popup PUBLIC src)
 target_compile_definitions(style-menu-popup PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-add_library(style-menu-items STATIC src/lib-win32-style/application/menu/menu_items.c src/lib-win32-style/application/menu/classic_menu_layout.c src/lib-win32-style/application/menu/bar_snapshot.c)
+add_library(style-menu-items STATIC src/lib-win32-style/application/menu/menu_items.c src/lib-win32-style/application/menu/classic_menu_layout.c src/lib-win32-style/application/menu/bar_snapshot.c src/lib-win32-style/application/menu/row_text.c src/lib-win32-style/application/menu/menu_glyph.c)
 target_include_directories(style-menu-items PUBLIC src)
 target_compile_definitions(style-menu-items PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-menu-items PUBLIC user32 gdi32)
 add_library(win16-window STATIC
-  src/lib-win32-style/appearance/win3x/window/caption_art.c
   src/lib-win32-style/appearance/win3x/menu/menu_paint.c
   src/lib-win32-style/appearance/win3x/menu/menu_bar.c src/lib-win32-style/appearance/win3x/menu/menu_bar_paint.c
   src/lib-win32-style/appearance/win3x/menu/menu_items.c src/lib-win32-style/appearance/win3x/menu/menu_scope.c
@@ -274,6 +273,7 @@ target_link_libraries(win2k-print PRIVATE style-msstyles)
 add_library(style-msstyles STATIC
   src/lib-win32-style/appearance/msstyles/classic_style.c
   src/lib-win32-style/appearance/msstyles/classic_theme.c
+  src/lib-win32-style/appearance/msstyles/menu_art.c
   src/lib-win32-style/appearance/msstyles/theme_file.c
   src/lib-win32-style/appearance/msstyles/v4_font.c
   src/lib-win32-style/appearance/msstyles/v4_png.c

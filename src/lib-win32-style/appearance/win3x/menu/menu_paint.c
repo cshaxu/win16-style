@@ -4,21 +4,8 @@
 #include "menu_paint.h"
 #include "../resources/menu_glyphs.h"
 #include "lib-win32-style/appearance/msstyles/classic_presets.h"
+#include "lib-win32-style/application/menu/row_text.h"
 #include <wchar.h>
-
-typedef struct menu_text {
-    const WCHAR *text;
-    int count;
-    RECT bounds;
-    UINT flags;
-} menu_text;
-
-static BOOL CALLBACK draw_text(HDC dc,LPARAM data,WPARAM unused,int width,int height)
-{
-    menu_text *t=(menu_text *)data;RECT r=t->bounds;
-    (void)unused;(void)width;(void)height;
-    return DrawTextW(dc,t->text,t->count,&r,t->flags)!=0;
-}
 
 BOOL win16_style_menu_columns_read(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
     win16_style_menu_columns *columns)
@@ -69,35 +56,14 @@ BOOL win16_style_menu_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
     return TRUE;
 }
 
-static BOOL render_text(HDC dc,menu_text item,BOOL disabled,COLORREF color)
-{
-    HBRUSH brush;BOOL result;int x,y;
-    if(!item.count || !item.text[0])return TRUE;
-    if(!disabled)return draw_text(dc,(LPARAM)&item,0,0,0);
-    brush=CreateSolidBrush(color);if(!brush)return FALSE;
-    x=item.bounds.left;y=item.bounds.top;OffsetRect(&item.bounds,-x,-y);
-    result=DrawStateW(dc,brush,draw_text,(LPARAM)&item,0,x,y,
-        item.bounds.right,item.bounds.bottom,DST_COMPLEX|DSS_UNION|DSS_MONO);
-    DeleteObject(brush);return result;
-}
-
-static void glyph(HDC dc,int left,int top,const char *bits,int width,int height,UINT dpi,COLORREF color)
-{
-    int x,y;RECT pixel;SetDCBrushColor(dc,color);
-    for(y=0;y<height;++y)for(x=0;x<width;++x)if(bits[y*(width+1)+x]=='0'){
-        SetRect(&pixel,left+MulDiv(x,(int)dpi,96),top+MulDiv(y,(int)dpi,96),
-            left+MulDiv(x+1,(int)dpi,96),top+MulDiv(y+1,(int)dpi,96));
-        FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-    }
-}
-
 BOOL win16_style_menu_text_columns(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
     const win16_style_palette *p,const WCHAR *text,UINT state,win16_style_menu_kind kind,BOOL submenu,
     const win16_style_menu_columns *columns,const classic_menu_colors *colors,const classic_menu_metrics *metrics,
-    const win16_menu_art *art)
+    const style_menu_art *art,HBITMAP command)
 {
-    int saved,u,padding;RECT r;COLORREF background,foreground;const WCHAR *tab;
-    menu_text item;BOOL result=TRUE,disabled;
+    int saved,u,padding;RECT r;COLORREF background,foreground;
+    BOOL result=TRUE,disabled;
+    HFONT bold=NULL;
     if(!dc || !bounds || !font || !p || !text || dpi<48 || dpi>768 ||
        bounds->right<=bounds->left || bounds->bottom<=bounds->top ||
        kind<WIN16_STYLE_MENU_ROW || kind>WIN16_STYLE_MENU_BAR)return FALSE;
@@ -116,28 +82,35 @@ BOOL win16_style_menu_text_columns(HDC dc,const RECT *bounds,HFONT font,UINT dpi
         r=*bounds;r.top=(r.top+r.bottom)/2;r.bottom=r.top+u;
         SetDCBrushColor(dc,themed?colors->separator:p->edge);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
     }else{
-        SelectObject(dc,font);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,foreground);
-        tab=wcschr(text,L'\t');item.text=text;item.count=tab?(int)(tab-text):-1;
-        item.bounds=*bounds;item.bounds.left+=padding;
-        item.bounds.right-=kind==WIN16_STYLE_MENU_BAR?padding:submenu?m.arrow:m.plain;
-        if(columns && kind==WIN16_STYLE_MENU_ROW)item.bounds.right=item.bounds.left+columns->label;
-        item.flags=DT_LEFT|DT_SINGLELINE|DT_VCENTER;
-        /* DSS_UNION produces the original stippled silhouette, unlike the
-         * raised/shadowed DSS_DISABLED treatment of later Windows styles. */
-        result=render_text(dc,item,disabled,foreground);
-        if(tab && tab[1]){
-            item.text=tab+1;item.count=-1;item.flags=DT_LEFT|DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX;
-            if(columns){item.bounds.left=bounds->left+padding+columns->label+m.gap;
-                item.bounds.right=item.bounds.left+columns->shortcut;}
-            else {item.bounds=*bounds;item.bounds.left+=padding;item.bounds.right-=padding;item.flags|=DT_RIGHT;}
-            result=render_text(dc,item,disabled,foreground)&&result;
+        unsigned text_flags=metrics?metrics->text_flags:0;
+        if(kind==WIN16_STYLE_MENU_ROW && (state&ODS_DEFAULT) && (text_flags&STYLE_MENU_TEXT_BOLD_DEFAULT))
+            bold=style_menu_bold_font(font);
+        SelectObject(dc,bold?bold:font);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,foreground);
+        BOOL right=text_flags?(text_flags&STYLE_MENU_TEXT_SHORTCUT_RIGHT)!=0:columns==NULL;
+        style_menu_text_layout layout={.label=*bounds,.shortcut=*bounds,.shortcut_right=right,
+            .label_center=kind==WIN16_STYLE_MENU_BAR && (text_flags&STYLE_MENU_TEXT_CENTER_BAR)};
+        layout.label.left+=padding;
+        layout.label.right-=kind==WIN16_STYLE_MENU_BAR?padding:submenu?m.arrow:m.plain;
+        if(columns && kind==WIN16_STYLE_MENU_ROW)layout.label.right=layout.label.left+columns->label;
+        if(columns && !right){
+            layout.shortcut.left+=padding+columns->label+m.gap;
+            layout.shortcut.right=layout.shortcut.left+columns->shortcut;
+        }else{
+            layout.shortcut.left+=padding+(right && columns?columns->label+m.gap:0);
+            layout.shortcut.right-=kind==WIN16_STYLE_MENU_BAR || !columns?padding:submenu?m.arrow:m.plain;
         }
-        if(kind==WIN16_STYLE_MENU_ROW && (state&ODS_CHECKED))glyph(dc,bounds->left+MulDiv(2,(int)dpi,96),
-            (bounds->top+bounds->bottom-MulDiv(14,(int)dpi,96))/2,art && art->available?&art->check[0][0]:&menu_check[0][0],14,14,dpi,foreground);
-        if(kind==WIN16_STYLE_MENU_ROW && submenu)glyph(dc,bounds->right-MulDiv(11,(int)dpi,96),
-            (bounds->top+bounds->bottom-MulDiv(11,(int)dpi,96))/2,art && art->available?&art->arrow[0][0]:&menu_arrow[0][0],7,11,dpi,foreground);
+        BOOL stipple=disabled && (!text_flags || (text_flags&STYLE_MENU_TEXT_STIPPLE_DISABLED));
+        result=style_menu_draw_labels(dc,text,&layout,stipple,foreground);
+        if(kind==WIN16_STYLE_MENU_ROW && (text_flags&STYLE_MENU_COMMAND_GLYPHS))
+            style_menu_draw_command(dc,bounds,command,u,foreground);
+        if(kind==WIN16_STYLE_MENU_ROW && (state&ODS_CHECKED))
+            style_menu_draw_mark(dc,bounds,FALSE,dpi,foreground,art && art->available?&art->check[0][0]:&menu_check[0][0]);
+        if(kind==WIN16_STYLE_MENU_ROW && submenu)
+            style_menu_draw_mark(dc,bounds,TRUE,dpi,foreground,art && art->available?&art->arrow[0][0]:&menu_arrow[0][0]);
     }
-    RestoreDC(dc,saved);return result;
+    RestoreDC(dc,saved);
+    if(bold)DeleteObject(bold);
+    return result;
 }
 
 BOOL win16_style_menu_text(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
@@ -145,5 +118,5 @@ BOOL win16_style_menu_text(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
 {
     win16_style_menu_columns c={0};
     if(!win16_style_menu_columns_read(dc,font,dpi,text,&c))return FALSE;
-    return win16_style_menu_text_columns(dc,bounds,font,dpi,p,text,state,kind,submenu,&c,NULL,NULL,NULL);
+    return win16_style_menu_text_columns(dc,bounds,font,dpi,p,text,state,kind,submenu,&c,NULL,NULL,NULL,NULL);
 }

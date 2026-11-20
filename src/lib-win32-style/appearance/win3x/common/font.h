@@ -16,7 +16,7 @@ HFONT win16_style_system_acquire_isolated(HFONT source);
 BOOL win16_style_system_try_retain(HFONT font);
 /* VB client text keeps thin strokes when reducing to the native cell. */
 HFONT win16_style_vb_font_acquire(HFONT source);
-/* Private menu lease: System16 uniformly scaled by window DPI. */
+/* Private menu lease realized from a theme descriptor at window DPI. */
 HFONT win16_style_menu_font_acquire(UINT dpi,const msstyles_font *defined);
 /* Single-calendar text at the witnessed 96-DPI size. */
 HFONT win16_style_calendar_font_acquire(void);

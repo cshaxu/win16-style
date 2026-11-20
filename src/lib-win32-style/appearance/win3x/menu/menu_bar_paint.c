@@ -1,7 +1,8 @@
 #include "menu_bar.h"
 
 void win16_style_bar_paint(const style_menu_bar_snapshot *bar,HDC dc,HFONT font,UINT dpi,
-    const win16_style_palette *palette,const classic_menu_colors *colors,const classic_caption_art *art)
+    const win16_style_palette *palette,const classic_menu_colors *colors,const classic_menu_metrics *metrics,
+    const classic_caption_art *art)
 {
     UINT i;
     for(i=0;i<bar->count;++i){
@@ -17,7 +18,7 @@ void win16_style_bar_paint(const style_menu_bar_snapshot *bar,HDC dc,HFONT font,
             win16_style_menu_columns columns={0};
             if(win16_style_menu_columns_read(dc,font,dpi,bar->items[i].text,&columns))
                 win16_style_menu_text_columns(dc,&bar->rects[i],font,dpi,palette,bar->items[i].text,
-                    state,WIN16_STYLE_MENU_BAR,FALSE,&columns,colors,NULL,NULL);
+                    state,WIN16_STYLE_MENU_BAR,FALSE,&columns,colors,metrics,NULL,NULL);
         }
     }
 }

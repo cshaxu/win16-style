@@ -14,6 +14,7 @@ typedef struct modern_frame {
     HFONT font;
     classic_theme theme;
     classic_caption_art art;
+    win2k_menu_style menu_style;
     style_uwp_frame_action_entry actions[];
 } modern_frame;
 
@@ -138,7 +139,7 @@ static BOOL menu(void *context,HWND window,UINT message,WPARAM a,LPARAM b,BOOL o
     if(message==WM_INITMENUPOPUP && s->frame.tracking && (HMENU)a==GetSystemMenu(s->frame.host.owner,FALSE))
         b=MAKELPARAM(LOWORD(b),TRUE);
     return style_menu_owner_message(&s->frame.menu,window,message,a,b,&win2k_system_menu_operations,
-        s->themed?&s->theme:NULL,result);
+        s->themed?&s->menu_style:NULL,result);
 }
 
 static void dispose(void *context)
@@ -163,6 +164,7 @@ BOOL win2k_uwp_frame_apply(HWND owner,HWND title,const style_uwp_frame_action *a
     s->themed=source!=NULL;
     if(source){
         s->theme=source->model;
+        win2k_menu_style_read(&s->menu_style,source);
         if(source->resources && s->theme.caption_presentation.button_source==STYLE_CAPTION_BUTTON_INDEXED)
             (void)classic_caption_art_read(source->resources,&s->theme.caption_images,&s->art);
     }

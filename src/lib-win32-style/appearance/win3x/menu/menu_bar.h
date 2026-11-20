@@ -1,7 +1,6 @@
 #ifndef WIN16_STYLE_MENU_BAR_H
 #define WIN16_STYLE_MENU_BAR_H
 #include "menu_paint.h"
-#include "../window/caption_art.h"
 #include "lib-win32-style/application/menu/classic_menu_layout.h"
 #include "../common/layout.h"
 #include "lib-win32-style/application/menu/owner.h"
@@ -9,7 +8,8 @@
 /* Bind era measurement and MDI presentation to the common snapshot reader. */
 BOOL win16_style_bar_read_for_window(HWND,HMENU,HFONT,UINT,POINT,int,style_menu_bar_snapshot *);
 void win16_style_bar_paint(const style_menu_bar_snapshot *bar,HDC dc,HFONT font,UINT dpi,
-    const win16_style_palette *palette,const classic_menu_colors *colors,const classic_caption_art *art);
+    const win16_style_palette *palette,const classic_menu_colors *colors,const classic_menu_metrics *metrics,
+    const classic_caption_art *art);
 /* Internal shared original-resource painter for MDI's system/restore cells. */
 void win16_style_merged_control(HDC dc,RECT bounds,BOOL system,BOOL selected,int unit,
     const win16_style_palette *palette,const classic_caption_art *art);

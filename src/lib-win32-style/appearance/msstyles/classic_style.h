@@ -23,6 +23,7 @@ typedef struct classic_scroll_metrics {
 
 typedef struct classic_menu_metrics {
     uint16_t check_column, shortcut_gap, arrow_column, plain_column;
+    uint16_t text_flags;
 } classic_menu_metrics;
 
 typedef struct classic_file_metrics {
@@ -56,6 +57,6 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
     const classic_scroll_metrics *scroll,const classic_menu_metrics *menu,const classic_dialog_metrics *dialog,
     const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border);
 
-enum { CLASSIC_STYLE_RESOURCE_CAPACITY=173 };
+enum { CLASSIC_STYLE_RESOURCE_CAPACITY=183 };
 
 #endif

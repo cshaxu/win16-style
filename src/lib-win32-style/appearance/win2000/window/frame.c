@@ -9,6 +9,7 @@
 #include "lib-win32-style/application/menu/menu_input.h"
 #include "lib-win32-style/application/menu/tracking.h"
 #include "lib-win32-style/application/menu/bar_controller.h"
+#include "lib-win32-style/application/menu/row_text.h"
 #include "lib-win32-style/application/window/native_frame.h"
 #include "lib-win32-style/application/window/messages.h"
 #include "lib-win32-style/application/lifecycle/install.h"
@@ -37,6 +38,7 @@ typedef struct frame_window {
     BOOL themed;
     classic_theme theme;
     classic_caption_art art;
+    win2k_menu_style menu_style;
 } frame_window;
 static LRESULT CALLBACK frame_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static frame_window *frame_state(HWND window)
@@ -159,7 +161,9 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
     HBRUSH face=CreateSolidBrush(colors->background);if(!face)return;
     FillRect(dc,&area,face);DeleteObject(face);
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    HFONT font=win2k_menu_font(dpi,frame && frame->themed?&frame->theme.menu_font:NULL,FALSE);
+    HFONT font=win2k_menu_font(dpi,frame && frame->themed?&frame->theme.menu_font:NULL);
+    unsigned text_flags=frame && frame->themed?frame->theme.menu_metrics.text_flags:0;
+    BOOL centered=!text_flags || (text_flags&STYLE_MENU_TEXT_CENTER_BAR);
     int saved=SaveDC(dc);if(saved){
         if(font)SelectObject(dc,font);
         SetBkMode(dc,TRANSPARENT);
@@ -171,9 +175,11 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
                 offset_menu(window,&r);OffsetRect(&r,-outer->left,-outer->top);
                 BOOL highlighted=selected==(int)item->position;
                 if(highlighted){HBRUSH active=CreateSolidBrush(colors->selection);if(active){FillRect(dc,&r,active);DeleteObject(active);}}
-                SetTextColor(dc,(inactive || (item->state&MFS_DISABLED))?colors->disabled_text:
-                    highlighted?colors->selected_text:colors->text);
-                DrawTextW(dc,item->text,min(511,lstrlenW(item->text)),&r,DT_SINGLELINE|DT_VCENTER|DT_CENTER);
+                BOOL disabled=inactive || (item->state&MFS_DISABLED);
+                COLORREF text=disabled?colors->disabled_text:highlighted?colors->selected_text:colors->text;
+                SetTextColor(dc,text);
+                (void)style_menu_draw_label(dc,item->text,&r,centered,
+                    disabled && (text_flags&STYLE_MENU_TEXT_STIPPLE_DISABLED),text);
             }
             style_menu_bar_free(&snapshot);
         }
@@ -440,7 +446,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
     LRESULT menu_result=0;
     if(message==WM_NCDESTROY)style_menu_owner_stop(&frame->menu);
     else if(style_menu_owner_message(&frame->menu,window,message,wp,lp,&win2k_system_menu_operations,
-        frame->themed?&frame->theme:NULL,&menu_result)){
+        frame->themed?&frame->menu_style:NULL,&menu_result)){
         SetLastError(incoming);return menu_result;
     }
     const style_menu_bar_target menu=menu_target(window,frame);
@@ -613,6 +619,7 @@ BOOL win2k_frame_attach(HWND window)
     if(!pending && SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN2K,TRUE,&source))){
         frame->theme=source.model;
         frame->themed=TRUE;
+        win2k_menu_style_read(&frame->menu_style,&source);
         if(frame->theme.caption_presentation.button_source==STYLE_CAPTION_BUTTON_INDEXED)
             (void)classic_caption_art_read(source.resources,&frame->theme.caption_images,&frame->art);
         classic_theme_close(&source);

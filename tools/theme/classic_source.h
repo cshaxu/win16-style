@@ -70,7 +70,7 @@ static const classic_theme_source classic_sources[]={
         {CLASSIC_SCROLL_EXTENT_SYSTEM,0},
         {"Tahoma, 8, Bold","Tahoma, 6, Bold","Tahoma, 8"},
         {RGB(212,208,200),RGB(0,0,128),RGB(0,0,0),RGB(255,255,255),RGB(128,128,128),RGB(128,128,128),TRUE},
-        {0},
+        WIN2000_POPUP_MENU_METRICS,
         RGB(255,255,255),RGB(212,208,200),RGB(0,0,0),RGB(128,128,128),
         RGB(128,128,128),
         RGB(10,36,106),RGB(255,255,255),

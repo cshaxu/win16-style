@@ -3,13 +3,15 @@
 #include "../window/frame_paint.h"
 #include "lib-win32-style/application/menu/menu_snapshot.h"
 #include "lib-win32-style/application/graphics/present.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
+#include "lib-win32-style/application/menu/row_text.h"
 #include <stdlib.h>
 
 typedef struct menu_presentation {
     win16_style_palette palette;
     classic_menu_colors colors;
     classic_menu_metrics metrics;
-    win16_menu_art art;
+    style_menu_art art;
     HMENU system;
     HFONT font;
     UINT dpi;
@@ -45,11 +47,14 @@ static BOOL paint_system(style_menu_popup *p,HDC target,BOOL window_coordinates)
     HDC dc=target?target:GetDC(w);if(!dc){free(rows);return FALSE;}
     int saved=SaveDC(dc);win16_style_menu_columns columns={0};BOOL valid=saved!=0,arrows=FALSE;
     POINT delta={0,0};if(valid&&!style_menu_client_offset(w,window_coordinates,&delta))valid=FALSE;
+    HFONT bold=s->metrics.text_flags&STYLE_MENU_TEXT_BOLD_DEFAULT?style_menu_bold_font(font):NULL;
     for(int i=0;valid&&i<count;++i){
         if(!style_menu_read_row(menu,(UINT)i,&rows[i],NULL)||!style_menu_popup_live(p))valid=FALSE;
-        else if(!(rows[i].type&MFT_SEPARATOR)&&!win16_style_menu_columns_read(dc,font,dpi,rows[i].text,&columns))valid=FALSE;
+        else if(!(rows[i].type&MFT_SEPARATOR) && !win16_style_menu_columns_read(dc,
+            bold&&(rows[i].state&MFS_DEFAULT)?bold:font,dpi,rows[i].text,&columns))valid=FALSE;
         if(valid)arrows|=rows[i].submenu;
     }
+    if(bold)DeleteObject(bold);
     /* Compose the popup before presenting it; clearing each row directly on
      * the screen exposes blank text/background between GDI calls. */
     RECT client;HDC output=dc;style_present_buffer buffer;BOOL attempted=FALSE;
@@ -60,11 +65,16 @@ static BOOL paint_system(style_menu_popup *p,HDC target,BOOL window_coordinates)
     int theme_width=win16_style_menu_columns_width(&columns,dpi,arrows,&s->metrics);
     for(int i=0;valid&&i<count&&style_menu_popup_live(p);++i){RECT r=rows[i].rect;
         MapWindowPoints(NULL,w,(POINT *)&r,2);OffsetRect(&r,delta.x,delta.y);
-        const classic_menu_metrics *metrics=theme_width<=r.right-r.left?&s->metrics:NULL;
+        classic_menu_metrics metrics=s->metrics;
+        if(theme_width>r.right-r.left){
+            metrics=(classic_menu_metrics)WIN16_POPUP_MENU_METRICS;
+            metrics.text_flags=s->metrics.text_flags;
+        }
         UINT state=0;if(rows[i].state&MFS_HILITE)state|=ODS_SELECTED;if(rows[i].state&MFS_DISABLED)state|=ODS_DISABLED;if(rows[i].state&MFS_CHECKED)state|=ODS_CHECKED;
+        if(rows[i].state&MFS_DEFAULT)state|=ODS_DEFAULT;
         (void)win16_style_menu_text_columns(dc,&r,font,dpi,&s->palette,rows[i].text,state,
             (rows[i].type&MFT_SEPARATOR)?WIN16_STYLE_MENU_SEPARATOR:WIN16_STYLE_MENU_ROW,
-            rows[i].submenu,&columns,&s->colors,metrics,&s->art);
+            rows[i].submenu,&columns,&s->colors,&metrics,&s->art,rows[i].bitmap);
     }
     if(attempted)(void)style_present_buffer_end(&buffer,dc==buffer.memory&&style_menu_popup_live(p));
     if(saved)RestoreDC(output,saved);
@@ -98,7 +108,7 @@ void win16_style_menu_system(win16_style_menu_scope *scope,HMENU menu,HFONT font
     if(s){s->system=menu;s->font=font;s->dpi=dpi;}
 }
 win16_style_menu_scope *win16_style_menu_begin(const win16_style_palette *palette,
-    const classic_menu_colors *colors,const classic_menu_metrics *metrics,const win16_menu_art *art)
+    const classic_menu_colors *colors,const classic_menu_metrics *metrics,const style_menu_art *art)
 {
     menu_presentation *s=calloc(1,sizeof(*s));if(!s)return NULL;
     if(palette)s->palette=*palette;else win16_style_default_palette(&s->palette);

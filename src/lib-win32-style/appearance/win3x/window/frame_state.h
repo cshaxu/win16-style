@@ -1,7 +1,7 @@
 #ifndef WIN16_CONTROL_FRAME_STATE_H
 #define WIN16_CONTROL_FRAME_STATE_H
 #include "../common/palette.h"
-#include "caption_art.h"
+#include "lib-win32-style/application/menu/menu_art.h"
 #include "lib-win32-style/application/graphics/font_pair.h"
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include "lib-win32-style/application/window/native_frame.h"
@@ -22,7 +22,7 @@ typedef struct style_window {
     msstyles_font caption_font,menu_font;
     classic_menu_colors menu_bar, menu_popup;
     classic_menu_metrics menu_metrics;
-    win16_menu_art menu_art;
+    style_menu_art menu_art;
     classic_caption_art art;
     style_font_pair fonts;
     BOOL dialog, menu_only;

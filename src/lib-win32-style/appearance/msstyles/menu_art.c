@@ -1,8 +1,8 @@
 #define COBJMACROS
-#include "caption_art.h"
-#include "lib-win32-style/appearance/msstyles/v4_png.h"
+#include "classic_theme.h"
+#include "v4_png.h"
 
-HRESULT win16_menu_art_read(HMODULE module,const WORD images[2],win16_menu_art *art)
+HRESULT style_menu_art_read(HMODULE module,const WORD images[2],style_menu_art *art)
 {
     if(!images[0] || !images[1])return HRESULT_FROM_WIN32(ERROR_RESOURCE_DATA_NOT_FOUND);
     HRESULT apartment=CoInitializeEx(NULL,COINIT_MULTITHREADED);
@@ -10,7 +10,7 @@ HRESULT win16_menu_art_read(HMODULE module,const WORD images[2],win16_menu_art *
     IWICImagingFactory *factory=NULL;
     HRESULT result=CoCreateInstance(&CLSID_WICImagingFactory,NULL,CLSCTX_INPROC_SERVER,
         &IID_IWICImagingFactory,(void **)&factory);
-    win16_menu_art value={0};
+    style_menu_art value={0};
     CHAR *const rows[]={&value.check[0][0],&value.arrow[0][0]};
     const UINT widths[]={14,7},heights[]={14,11};
     for(unsigned i=0;SUCCEEDED(result) && i<ARRAYSIZE(rows);++i){

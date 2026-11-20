@@ -74,7 +74,7 @@ void win16_control_paint_frame(HWND w,style_instance *instance,void *context,con
             ops->state(context,&state);
             if(state.bar_selected>=0 && (UINT)state.bar_selected<bar.count)
                 bar.items[state.bar_selected].state|=MFS_HILITE;
-            win16_style_bar_paint(&bar,dc,state.fonts->menu,state.fonts->dpi,&p,menu,state.art);
+            win16_style_bar_paint(&bar,dc,state.fonts->menu,state.fonts->dpi,&p,menu,state.menu_metrics,state.art);
             style_menu_bar_free(&bar);
             if(instance->detached){RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);return;}
         }

@@ -4,6 +4,7 @@
 #include "classic_style.h"
 #include "v4_font.h"
 #include "theme_file.h"
+#include "lib-win32-style/application/menu/menu_art.h"
 #include <windows.h>
 
 typedef struct classic_caption_colors {
@@ -14,6 +15,8 @@ typedef struct classic_menu_colors {
     COLORREF background, selection, text, selected_text, disabled_text, separator;
     BOOL present;
 } classic_menu_colors;
+
+HRESULT style_menu_art_read(HMODULE module,const WORD images[2],style_menu_art *art);
 
 typedef struct classic_surface_colors {
     COLORREF face, edge;

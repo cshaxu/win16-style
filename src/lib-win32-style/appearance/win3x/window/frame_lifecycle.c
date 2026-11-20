@@ -72,7 +72,7 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
         s->caption_font=theme->caption_font;
         s->menu_font=theme->menu_font;
         s->menu_metrics=theme->menu_metrics;
-        (void)win16_menu_art_read(source.resources,theme->menu_images,&s->menu_art);
+        (void)style_menu_art_read(source.resources,theme->menu_images,&s->menu_art);
         (void)classic_caption_art_read(source.resources,&theme->caption_images,&s->art);
         if(!p){
             s->menu_bar=theme->menu_bar;
@@ -103,7 +103,7 @@ BOOL win16_control_menu_owner_install(HWND w,const void *owner,const BOOL *cance
  if(SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN16,TRUE,&source))){
   s->menu_popup=source.model.menu_popup;s->menu_metrics=source.model.menu_metrics;
   s->menu_font=source.model.menu_font;
-  (void)win16_menu_art_read(source.resources,source.model.menu_images,&s->menu_art);
+  (void)style_menu_art_read(source.resources,source.model.menu_images,&s->menu_art);
   classic_theme_close(&source);
  }
  s->fonts.menu=win16_style_menu_font_acquire(s->fonts.dpi,&s->menu_font);

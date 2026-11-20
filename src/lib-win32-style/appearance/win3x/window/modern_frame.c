@@ -15,7 +15,7 @@ typedef struct uwp_frame {
     win16_style_layout layout;
     classic_theme theme;
     win16_style_palette palette;
-    win16_menu_art menu_art;
+    style_menu_art menu_art;
     classic_caption_art caption_art;
     style_uwp_frame_action_entry actions[];
 } uwp_frame;
@@ -57,7 +57,7 @@ static void paint_state(void *context,win16_frame_paint_state *result)
     *result=(win16_frame_paint_state){&s->fonts,s->frame.active,s->frame.no_menu,FALSE,-1,
         {s->frame.pressed,s->frame.hot},&s->caption_art,&s->theme.menu_bar,
         s->theme.caption_presentation,s->theme.gradient,s->frame.active?s->theme.active.end:s->theme.inactive.end,
-        s->theme.border_presentation};
+        s->theme.border_presentation,&s->theme.menu_metrics};
 }
 static const win16_frame_renderer_ops renderer={cached_layout,paint_state,colors,no_scrollbars};
 static void refresh_paint(void *context,HDC dc)
@@ -101,7 +101,7 @@ static BOOL apply_actions(HWND w,HWND title,const style_uwp_frame_action *action
     if(source){
         s->theme=source->model;
         win16_style_theme_palette(&s->palette,&s->theme);
-        (void)win16_menu_art_read(source->resources,s->theme.menu_images,&s->menu_art);
+        (void)style_menu_art_read(source->resources,s->theme.menu_images,&s->menu_art);
         (void)classic_caption_art_read(source->resources,&s->theme.caption_images,&s->caption_art);
     }
     if(packaged.resources)classic_theme_close(&packaged);

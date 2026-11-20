@@ -1,4 +1,5 @@
 #include "lib-win32-style/appearance/msstyles/classic_style.h"
+#include "lib-win32-style/application/menu/row_text.h"
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
@@ -60,7 +61,7 @@ static int fixtures(void)
     bytes[length+10]=0;
     CHECK(classic_style_read(bytes,length+12,&group,&metrics,NULL,NULL,NULL,NULL,NULL)==CLASSIC_STYLE_INVALID &&
         metrics.logical_extent==11);
-    const classic_menu_metrics menu={22,10,15,5};
+    const classic_menu_metrics menu={22,10,15,5,0};
     classic_menu_metrics columns={0};
     CHECK(classic_style_write(bytes,sizeof(bytes),&original,&fixed,&menu,NULL,NULL,NULL,NULL)==length+28);
     CHECK(classic_style_read(bytes,length+28,&group,&metrics,&columns,NULL,NULL,NULL,NULL)==CLASSIC_STYLE_OK &&
@@ -68,6 +69,17 @@ static int fixtures(void)
     bytes[length+24]=5;
     CHECK(classic_style_read(bytes,length+28,&group,&metrics,&columns,NULL,NULL,NULL,NULL)==CLASSIC_STYLE_INVALID &&
         !memcmp(&columns,&menu,sizeof(menu)));
+    classic_menu_metrics configured=menu;
+    configured.text_flags=STYLE_MENU_TEXT_DEFINED|STYLE_MENU_TEXT_STIPPLE_DISABLED|
+        STYLE_MENU_TEXT_BOLD_DEFAULT|STYLE_MENU_TEXT_CENTER_BAR|STYLE_MENU_COMMAND_GLYPHS;
+    CHECK(classic_style_write(bytes,sizeof(bytes),&original,NULL,&configured,NULL,NULL,NULL,NULL)==length+26);
+    CHECK(bytes[6]==9 && classic_style_read(bytes,length+26,&group,NULL,&columns,NULL,NULL,NULL,NULL)==CLASSIC_STYLE_OK &&
+        !memcmp(&columns,&configured,sizeof(configured)));
+    bytes[length+24]|=0x40;
+    CHECK(classic_style_read(bytes,length+26,&group,NULL,&columns,NULL,NULL,NULL,NULL)==CLASSIC_STYLE_INVALID &&
+        !memcmp(&columns,&configured,sizeof(configured)));
+    configured.text_flags=STYLE_MENU_TEXT_SHORTCUT_RIGHT;
+    CHECK(!classic_style_write(bytes,sizeof(bytes),&original,NULL,&configured,NULL,NULL,NULL,NULL));
     const classic_dialog_metrics dialog={{430,275,575,350,375,199,8,21},510,460,500,300,185,240,80,65,290,198};
     classic_dialog_metrics dimensions={0};
     CHECK(classic_style_write(bytes,sizeof(bytes),&original,&fixed,&menu,&dialog,NULL,NULL,NULL)==length+72);
@@ -172,7 +184,8 @@ static int packaged(PCWSTR root,PCWSTR name,unsigned expected_count,unsigned exp
         CHECK(border.geometry.scale==STYLE_FRAME_LOGICAL && border.geometry.sizeable==4 &&
             border.geometry.fixed==3 && border.geometry.dialog==6 && border.geometry.line==1 &&
             border.geometry.caption_floor==20 && border.geometry.separator_units==1);
-        CHECK(columns.check_column==18 && columns.shortcut_gap==8 && columns.arrow_column==12 && columns.plain_column==4);
+        CHECK(columns.check_column==18 && columns.shortcut_gap==8 && columns.arrow_column==12 && columns.plain_column==4 &&
+            columns.text_flags==(STYLE_MENU_TEXT_DEFINED|STYLE_MENU_TEXT_STIPPLE_DISABLED));
         CHECK(!dialog.file.compact_width && !dialog.print_width);
     }else{
         CHECK(caption.text_mode==STYLE_CAPTION_TEXT_LEFT_ELLIPSIS && caption.separator==STYLE_CAPTION_SEPARATOR_INSIDE);
@@ -182,7 +195,9 @@ static int packaged(PCWSTR root,PCWSTR name,unsigned expected_count,unsigned exp
             border.dialog_inner==STYLE_BORDER_KEEP && border.divider==STYLE_BORDER_KEEP);
         CHECK(border.geometry.scale==STYLE_FRAME_MONITOR_PIXELS && border.geometry.sizeable==4 &&
             border.geometry.fixed==3 && !border.geometry.caption_floor && !border.geometry.separator_units);
-        CHECK(!columns.check_column);
+        CHECK(columns.check_column==22 && !columns.shortcut_gap && columns.arrow_column==16 && columns.plain_column==16 &&
+            columns.text_flags==(STYLE_MENU_TEXT_DEFINED|STYLE_MENU_TEXT_SHORTCUT_RIGHT|
+                STYLE_MENU_TEXT_BOLD_DEFAULT|STYLE_MENU_TEXT_CENTER_BAR|STYLE_MENU_COMMAND_GLYPHS));
         CHECK(dialog.file.compact_width==427 && dialog.file.compact_height==272 &&
             dialog.file.places_width==565 && dialog.file.places_height==345 &&
             dialog.file.client_dlu_width==370 && dialog.file.client_dlu_height==197 &&

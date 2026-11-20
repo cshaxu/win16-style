@@ -61,10 +61,3 @@ bool msstyles_font_read(HMODULE module,UINT string_id,msstyles_font *font)
     *font=value;
     return true;
 }
-
-LOGFONTW msstyles_font_at_dpi(const msstyles_font *font,UINT dpi)
-{
-    LOGFONTW logical=font->logical;
-    logical.lfHeight=-MulDiv((int)font->points,(int)dpi,72);
-    return logical;
-}
