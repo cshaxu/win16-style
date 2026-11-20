@@ -220,5 +220,26 @@
     "full_matrix": "not run",
     "administrator_desktop_tray": "not run; owned tray fixture and owned receiver were tested"
   },
-  "closure": "local delivery verified; remote review recorded separately"
+  "closure": "S13 remains open. Two existing Win32 frame assertions failed in the same way before and after publication.",
+  "remote_audit": {
+    "ref": "refs/heads/main",
+    "publication_commit": "41f61fe1e8259092d971e2dd24c62dda988b9471",
+    "matched_assets": 7,
+    "retired_asset_paths_returning_http_404": 9,
+    "matched_source_inputs": 1281,
+    "newline_only_differences": [
+      "src/lib-win32/process-hook/LICENSE.win16style",
+      "tests/integration/vb5_custom_compare.py",
+      "tests/integration/vb_disabled_picture_compare.py",
+      "tests/integration/vb_picture_compare.py",
+      "tests/ntw16s-dll/commdlg_error_target.c",
+      "tests/ntw16s-dll/task_dialog.rc",
+      "tests/ntw16s-dll/win32_multi_navigation.c",
+      "tests/ntw16s-dll/win32_multi_target.c"
+    ]
+  },
+  "cleanup": {
+    "s13_p1_final_scratch_directories_removed": 6,
+    "s13_p1_final_scratch_bytes_removed": 494405738
+  }
 }

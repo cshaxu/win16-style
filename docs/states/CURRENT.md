@@ -102,7 +102,7 @@ S12 已逐项核对 113 个适用单元、44 个旧入口和两处正式包。�
 S13 P1 已在两处发布。本次主题发现、按名启动、托盘目录和自有窗口
 切换校验通过。独立的 22 项聚焦用例通过，两项既有 Win32 外框测试在
 发布前后均复现最大化、还原失败，详见 [S13 记录](../history/M0-T29-S13-theme-folder-cli.md)。
-S13 保持开放。
+七件发布文件和两处安装已在远端 P2 逐件复核。S13 保持开放。
 
 ## M0 T29 S13 Packet
 
@@ -136,7 +136,7 @@ S13 保持开放。
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S11 P1 `a810d5b2`；三件运行文件和四件主题文件。
+- Last verified remote delivery: M0 T29 S13 P2 `41f61fe1`；两处七件正式文件和九个退役路径。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 13
