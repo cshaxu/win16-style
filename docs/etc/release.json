@@ -209,12 +209,35 @@
         "Win2K Header",
         "Win2K MonthCal and DateTimePicker"
       ]
+    },
+    "owned_vcl_window_comparison": {
+      "runs": 24,
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "roles": [
+        "TGroupBox",
+        "TRadioGroup",
+        "TPanel",
+        "TCoolBar"
+      ],
+      "paths": [
+        "native baseline",
+        "O:/winnt/Win16",
+        "same runtime with four theme color changes"
+      ],
+      "checks": [
+        "native restoration after reparenting",
+        "controls remain alive",
+        "CoolBar retains child and band"
+      ]
     }
   },
   "validation": {
     "physical_input": "not tested; bounded owned windows and message-level checks",
-    "full_matrix": "not run; 56 focused cases and 16 supplemental post-publication runs",
-    "coverage_limits": "Win16 month, VCL group and panel frame, and VCL CoolBar theme variations validated using resolved themes and production painters. Live VCL application attachment and removal are not proven by these pixel checks."
+    "full_matrix": "not run; 56 focused cases, 16 supplemental post-publication runs, and 24 window comparisons",
+    "coverage_limits": "Real windows from self-owned VCL protocol models verify application and removal for GroupBox, RadioGroup, Panel and CoolBar. Delphi application binaries and live Win16 MonthCal attachment were not exercised by this supplement."
   },
-  "closure": "pending remote source and package digest verification"
+  "closure": "verified against remote main at 627034800fb4cecaa232f94f7c07c49fe54bae68"
 }
