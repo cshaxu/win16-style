@@ -90,29 +90,30 @@ S11 已切换七件契约、构建器、验包和可回滚部署。独立七件�
 13/13，旧文件、多余目录、跨目录主题引用负例及独立两处部署回滚通过。
 S11 P1 双宽干净构建通过，七件已发布到两处并逐件核对摘要。四个年代 DLL
 和演示已从两个发布路径退役。发布后聚焦回归 17/17，并完成当前 Calculator、
-Scan 和真实 WinUI 记事本的样本复验。实际远端复核待完成，见
+Scan 和真实 WinUI 记事本的样本复验。GitHub `main` 的 `a810d5b2` 已逐件
+复核七份产物、五个退役路径和 1,281 个构建输入，S11 收口。见
 [S11 验证记录](../history/M0-T29-S11-seven-file-package.md)。
 
-## M0 T29 S11 Packet
+## M0 T29 S12 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation；M0 固定。 |
-| Admission And Approval | 用户已确认正式七件清单并授权连续实施 S2–S12；S10 P1 实际远端、本机两处摘要及源码已复核。 |
-| Objective | 制作严格七件的独立候选，切换构建、发行、实包测试与可恢复部署。两处正式发行退役 demo 和四个年代 DLL。 |
-| Non-goals | 不扩展风格、应用支持、系统权限或钩子范围。演示和兼容测试保留在构建树；其产物不进入正式包。 |
-| Reference Baseline | S10 P1 过渡包与十二项 SHA-256，实际 GitHub main 复核 8a0f39fe。 |
-| Candidate Proposal | docs/proposals/msstyles-classic-runtime.md；docs/proposals/msstyles-build-contract.md 的正式包条款。 |
-| Files And ABI Surface | product-contract、构建器、包门禁和部署器、双宽中性 ABI、两个主题各自两个正式文件。 |
-| Applicable Rules | C17、MinGW GCC、Ninja、ccache。用项目实际发行契约核对清单，同快照先发布后测，实际远端复核。 |
-| Verification | 对只含七件的独立目录核对 PE、导出、数据记录和引用。测两风格双宽启动和传播、运行中应用和撤销、自有线程全局接收、现代样本和相应主题失效负例。 |
-| Expected Markers | 三个运行文件及四个主题，两个发行目录与实际远端逐件同摘要；产品加载路径无旧年代 DLL。 |
-| Asset Needs | 两套主题及保留来源，双宽临时自有探针，S10 同盘映射留存及回滚证据。 |
-| Reporting Requirements | 区分活动路径退役、旧进程映射留存、实验限制、实际文件移除；记录回滚验证和独立候选装入路径。 |
-| Stop Conditions | 不触碰非项目发布文件。不结束与试验无关的共享宿主，不使用私有桌面或物理输入。部署失败保持或恢复一致基线。 |
-| Exit Criteria | 正式七件通过独立验证并完成两处部署、回归、推送和实际远端验证。S12 接续全 T 逐项终审。 |
-| Original Owner Request | run16s.exe、ntwshk32/64.dll、Win16 的 .theme 与 .msstyles、Win2K 的 .theme 与 .msstyles。 |
-| Similar-Issue Sweep | 审计仍引用旧发行清单、模块名、目录、嵌入主题和裸文件替换的所有发布路径与测试夹具。 |
+| Admission And Approval | 用户已确认正式七件清单并授权连续实施 S2–S12，S11 P1 实际远端和两个发布位置已核对。 |
+| Objective | 逐项核对 113 个适用单元、44 个旧接口处置、原图及来源、当前产品加载路径和实际七件发行。 |
+| Non-goals | 保持按年代已有功能和已批准验证范围；不新增 Luna、Aero、现代客户区或系统范围能力。 |
+| Reference Baseline | S1 分类、S2 迁移与 ABI 台账，S11 P1 `a810d5b2` 实际远端和两处七件发行。 |
+| Candidate Proposal | docs/proposals/msstyles-classic-runtime.md 的 S12 收口条款。 |
+| Files And ABI Surface | 终审记录、发布清单、两份 .theme、两份 .msstyles、启动器与两个中性 DLL。 |
+| Applicable Rules | M0 固定。逐项引用可观察证据，区分样本通过、保留原生、批准跳过与待证。 |
+| Verification | 台账逐行回查阶段记录、生产引用及当前发布。按双宽加载职责区分退役发行、受控探针和构建树兼容夹具。 |
+| Expected Markers | 58 行对应 113 个适用单元、44 个旧入口有去向，七份正式文件和原图来源可复核。 |
+| Asset Needs | 已发布两份主题及两份描述、双宽中性 DLL 与启动器，核对原始图形和来源。 |
+| Reporting Requirements | 报告原生归属、批准跳过和未覆盖面，保留禁止私有桌面与物理输入的验收范围，以及仍映射的旧备份事实。 |
+| Stop Conditions | 不扩大权限、系统作用范围或结束无关共享宿主。若缺证，维持 T29 开放并记录具体项。 |
+| Exit Criteria | 113 单元及 ABI 逐项核对，落实实际远端、assets 与 O:/winnt 的七件证据，记录批准的限制后收口 T29。 |
+| Original Owner Request | 两套主题标准文件及双宽中性运行时，保留原使用方式并去除四个旧年代 DLL 的发行。 |
+| Similar-Issue Sweep | 对照正式文件、运行路径、构建测试产物和历史治理说明，检查旧模块与主题副本边界。 |
 
 ## Identifier State
 
@@ -125,15 +126,15 @@ Scan 和真实 WinUI 记事本的样本复验。实际远端复核待完成，�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S10 P1；八件过渡运行包及四个主题文件。
+- Last verified remote delivery: M0 T29 S11 P1 `a810d5b2`；三件运行文件和四件主题文件。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 11
-- Open task: M0 T29 S11；独立七件候选与正式切换。
+- Last allocated T29 S: 12
+- Open task: M0 T29 S12；主题迁移和七件发行终审。
 
 ## Technical Baseline
 
-- [正式契约](../etc/product-contract.json)为 run16s.exe、ntwshk32/64.dll 和两对主题。当前两处已验证的存量发行仍为 [T29 S10 P1](../history/M0-T29-S10-neutral-runtime.md)。
+- [正式契约](../etc/product-contract.json)为 run16s.exe、ntwshk32/64.dll 和两对主题。两处与实际远端均已核验 [T29 S11 P1](../history/M0-T29-S11-seven-file-package.md)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1183回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。

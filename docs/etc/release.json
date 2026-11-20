@@ -167,5 +167,22 @@
     "historical_skip_scope": "S5 through S10 retain their recorded limitations",
     "development_transient": "Initial incremental demo-pair dialog cancellation sync failure; unchanged single case and final focused release matrix passed"
   },
-  "closure": "S11 actual remote audit pending"
+  "closure": "S11 closed; S12 final T29 audit open",
+  "remote_audit": {
+    "ref": "refs/heads/main",
+    "publication_commit": "a810d5b242ea10fc330e834b23ef41975becabdb",
+    "matched_assets": 7,
+    "retired_asset_paths_returning_http_404": 5,
+    "matched_source_inputs": 1281,
+    "newline_only_differences": [
+      "src/lib-win32/process-hook/LICENSE.win16style",
+      "tests/integration/vb5_custom_compare.py",
+      "tests/integration/vb_disabled_picture_compare.py",
+      "tests/integration/vb_picture_compare.py",
+      "tests/ntw16s-dll/commdlg_error_target.c",
+      "tests/ntw16s-dll/task_dialog.rc",
+      "tests/ntw16s-dll/win32_multi_navigation.c",
+      "tests/ntw16s-dll/win32_multi_target.c"
+    ]
+  }
 }
