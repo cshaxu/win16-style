@@ -44,12 +44,28 @@ typedef struct classic_dialog_metrics {
     uint16_t font_width, font_height;
 } classic_dialog_metrics;
 
-typedef enum classic_dialog_route {
-    CLASSIC_DIALOG_NATIVE, CLASSIC_DIALOG_WIN16, CLASSIC_DIALOG_WIN2K
-} classic_dialog_route;
+/* Record 9 has four independent fields with stable wire values. */
+enum classic_window_provider {
+    CLASSIC_WINDOW_PROVIDER_UNSPECIFIED,
+    CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,
+    CLASSIC_WINDOW_PROVIDER_NONCLIENT
+};
+enum classic_file_route {
+    CLASSIC_FILE_NATIVE, CLASSIC_FILE_LEGACY_LAYOUT, CLASSIC_FILE_EXPLORER_LAYOUT
+};
+enum classic_folder_route {
+    CLASSIC_FOLDER_NATIVE, CLASSIC_FOLDER_LEGACY_TREE, CLASSIC_FOLDER_OBSERVED_NATIVE
+};
+enum classic_print_route {
+    CLASSIC_PRINT_NATIVE, CLASSIC_PRINT_LEGACY_BRIDGE, CLASSIC_PRINT_GENERAL_PAGE
+};
+enum classic_stock_route {
+    CLASSIC_STOCK_DEFAULT, CLASSIC_STOCK_NATIVE, CLASSIC_STOCK_OWNER_CHROME, CLASSIC_STOCK_OBSERVED_LAYOUT
+};
 
 typedef struct classic_dialog_policy {
-    uint8_t appearance, file, folder, print;
+    uint8_t window_provider, file, folder, print;
+    uint8_t color, font, find;
 } classic_dialog_policy;
 
 typedef struct classic_control_presentation {
@@ -72,6 +88,6 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
     const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border,
     const classic_control_presentation *controls);
 
-enum { CLASSIC_STYLE_RESOURCE_CAPACITY=261 };
+enum { CLASSIC_STYLE_RESOURCE_CAPACITY=272 };
 
 #endif

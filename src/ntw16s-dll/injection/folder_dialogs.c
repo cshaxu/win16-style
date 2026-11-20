@@ -20,9 +20,9 @@ void ntw16s_font_dialog_chrome(HWND window)
 {static int owner;style_classic_font_controls(window,&owner,&dialog_chrome_services);}
 
 static PIDLIST_ABSOLUTE WINAPI browse_a(LPBROWSEINFOA info)
-{return style_classic_browse_a(info,native_browse_a,ntw16s_dialog_route(NTW_DIALOG_FOLDER)==CLASSIC_DIALOG_WIN16);}
+{return style_classic_browse_a(info,native_browse_a,ntw16s_dialog_policy().folder==CLASSIC_FOLDER_LEGACY_TREE);}
 static PIDLIST_ABSOLUTE WINAPI browse_w(LPBROWSEINFOW info)
-{return style_classic_browse_w(info,native_browse_w,ntw16s_dialog_route(NTW_DIALOG_FOLDER)==CLASSIC_DIALOG_WIN16);}
+{return style_classic_browse_w(info,native_browse_w,ntw16s_dialog_policy().folder==CLASSIC_FOLDER_LEGACY_TREE);}
 static LONG attach_dialogs(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;

@@ -3,14 +3,19 @@
 #include "lib-win32-style/application/dialog/classic_com_controller.h"
 #include "lib-win32-style/application/dialog/observation.h"
 
-static HRESULT win2k_scope(HRESULT (*show)(void *),void *context)
-{return style_dialog_observe(show,context,ntw16s_win2k_dialog_initialize);}
+static HRESULT observed_scope(HRESULT (*show)(void *),void *context)
+{return style_dialog_observe(show,context,ntw16s_observed_dialog_initialize);}
 
 static style_classic_com_route dialog_route(BOOL folder)
 {
-    classic_dialog_route route=ntw16s_dialog_route(folder?NTW_DIALOG_FOLDER:NTW_DIALOG_FILE);
-    if(route==CLASSIC_DIALOG_WIN16)return STYLE_COM_CLASSIC;
-    if(route==CLASSIC_DIALOG_WIN2K)return STYLE_COM_EXPLORER;
+    const classic_dialog_policy policy=ntw16s_dialog_policy();
+    if(folder){
+        if(policy.folder==CLASSIC_FOLDER_LEGACY_TREE)return STYLE_COM_CLASSIC;
+        if(policy.folder==CLASSIC_FOLDER_OBSERVED_NATIVE)return STYLE_COM_EXPLORER;
+    }else{
+        if(policy.file==CLASSIC_FILE_LEGACY_LAYOUT)return STYLE_COM_CLASSIC;
+        if(policy.file==CLASSIC_FILE_EXPLORER_LAYOUT)return STYLE_COM_EXPLORER;
+    }
     return STYLE_COM_NATIVE;
 }
 
@@ -22,12 +27,11 @@ static BOOL global_win16(void)
     return (flags&NTWSHK_POLICY_GLOBAL_SESSION) && ntw16s_process_session_active();
 }
 
-DWORD ntw16s_attach_win2k_com_dialogs_using(DWORD (*attach)(void *,void *),
-    HRESULT (*scope)(HRESULT (*)(void *),void *))
+DWORD ntw16s_attach_win2k_com_dialogs_using(DWORD (*attach)(void *,void *))
 {
     const style_classic_com_options options={
         .session_active=global_win16,.scope=ntw16s_dialog_style_scope,
-        .route=dialog_route,.explorer_scope=scope,
+        .route=dialog_route,.explorer_scope=observed_scope,
         .property=L"Win2kStyle.ComDialog",.folder_message=L"Win2kStyle.ComSetFolder",
         .hidden_message=L"Win2kStyle.HiddenFilesRefresh"
     };
@@ -47,7 +51,7 @@ LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *))
     if(!(ntw16s_process_context.flags & NTWSHK_POLICY_STYLE))return NO_ERROR;
     const style_classic_com_options options={
         .session_active=ntw16s_process_session_active,.scope=ntw16s_dialog_style_scope,
-        .route=dialog_route,.explorer_scope=win2k_scope,
+        .route=dialog_route,.explorer_scope=observed_scope,
         .property=L"Win16Style.T20.ComDialog",.folder_message=L"Win16Style.T20.ComSetFolder",
         .hidden_message=L"Win16Style.T20.HiddenFilesRefresh",
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS

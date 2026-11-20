@@ -13,10 +13,34 @@
 #include "../integration/global_dialog_thread.h"
 static DWORD owner;static volatile LONG seen,old,filter_seen,label_seen,cancel_label_seen,hidden_seen;static HWND dialog;static BOOL cancel;
 static BOOL folder_mode;static WCHAR folder_path[MAX_PATH];
-static BOOL explorer_mode,explorer_seen,compact_dpi_mode,compact_fit;
+static BOOL explorer_mode,explorer_seen,compact_dpi_mode,compact_fit,themed_explorer;
+static BOOL themed_legacy,legacy_frame_seen;
 static WCHAR hidden_name[MAX_PATH],hidden_system_name[MAX_PATH],hidden_system_path[MAX_PATH];
 static volatile LONG hidden_system_seen;
 static const WCHAR title[]=L"Win16S COM bridge integration";
+static BOOL themed_caption(HWND window)
+{
+    RECT bounds;
+    if(!GetWindowRect(window,&bounds))return FALSE;
+    HDC screen=GetDC(NULL);
+    HDC dc=screen?CreateCompatibleDC(screen):NULL;
+    HBITMAP bitmap=dc?CreateCompatibleBitmap(screen,bounds.right-bounds.left,bounds.bottom-bounds.top):NULL;
+    if(screen)ReleaseDC(NULL,screen);
+    HGDIOBJ old=bitmap?SelectObject(dc,bitmap):NULL;
+    COLORREF color=CLR_INVALID;
+    DWORD_PTR ignored;
+    if(old && old!=HGDI_ERROR){
+        PatBlt(dc,0,0,bounds.right-bounds.left,bounds.bottom-bounds.top,BLACKNESS);
+        if(SendMessageTimeoutW(window,WM_PRINT,(WPARAM)dc,PRF_NONCLIENT,SMTO_ABORTIFHUNG|SMTO_BLOCK,500,&ignored))
+            color=GetPixel(dc,40,12);
+        SelectObject(dc,old);
+    }
+    if(bitmap)DeleteObject(bitmap);
+    if(dc)DeleteDC(dc);
+    BOOL selected=!GetPropW(window,L"Win2kStyle.Frame") && (color==RGB(164,200,240) || color==RGB(255,255,255));
+    printf("COM_EXPLORER_SELECTED_FRAME selected=%d pixel=%06lx\n",selected,color);
+    return selected;
+}
 static BOOL compact_explorer_fits(HWND window)
 {
     MONITORINFO monitor={.cbSize=sizeof(monitor)};
@@ -51,12 +75,16 @@ static BOOL CALLBACK find_dialog(HWND w,LPARAM value)
     BOOL tree=direct_tree && GetParent(direct_tree)==w && GetClassNameW(direct_tree,tree_class,ARRAYSIZE(tree_class)) && !lstrcmpiW(tree_class,L"SysTreeView32");
     if(folder_mode)printf("COM_FOLDER_LAYOUT tree=%d ok=%d enabled=%d\n",tree,GetDlgItem(w,IDOK)!=NULL,IsWindowEnabled(GetDlgItem(w,IDOK)));
     InterlockedExchange(&old,folder_mode?tree:(folders && drives));
+    if(themed_legacy){
+        legacy_frame_seen=GetPropW(w,L"Win2kStyle.Frame")!=NULL;
+        printf("COM_LEGACY_SELECTED_FRAME selected=%d\n",legacy_frame_seen);
+    }
     if(explorer_mode){
         HWND placeholder=GetDlgItem(w,lst1);
         WCHAR kind[32]={0};
         explorer_seen=placeholder && !(GetWindowLongPtrW(placeholder,GWL_STYLE)&WS_VISIBLE) &&
             GetClassNameW(placeholder,kind,ARRAYSIZE(kind)) && !lstrcmpW(kind,L"ListBox") &&
-            GetPropW(w,L"Win2kStyle.Frame");
+            (themed_explorer?themed_caption(w):GetPropW(w,L"Win2kStyle.Frame")!=NULL);
         printf("COM_EXPLORER_LAYOUT bridged=%d\n",explorer_seen);
         if(compact_dpi_mode)compact_fit=compact_explorer_fits(w);
     }
@@ -116,7 +144,9 @@ int wmain(int argc,WCHAR **argv)
     BOOL tempinitial=argc==4 && !lstrcmpW(argv[3],L"tempinitial");
     BOOL native=argc==4 && !lstrcmpW(argv[3],L"native");
     compact_dpi_mode=argc==4 && !lstrcmpW(argv[3],L"explorer-compact-dpi");
-    explorer_mode=compact_dpi_mode || (argc==4 && (!lstrcmpW(argv[3],L"explorer") ||
+    themed_explorer=argc==4 && !lstrcmpW(argv[3],L"explorer-themed");
+    themed_legacy=argc==4 && !lstrcmpW(argv[3],L"legacy-themed");
+    explorer_mode=themed_explorer || compact_dpi_mode || (argc==4 && (!lstrcmpW(argv[3],L"explorer") ||
         !lstrcmpW(argv[3],L"explorer-ex") || !lstrcmpW(argv[3],L"explorer-factory")));
     if(compact_dpi_mode){
         if(!SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))return 2;
@@ -256,5 +286,6 @@ int wmain(int argc,WCHAR **argv)
     printf("COM_CANCEL_LABEL seen=%ld\n",cancel_label_seen);
     BOOL layout=explorer_mode?(explorer_seen && (!compact_dpi_mode || compact_fit)):
         ((customized||foreign_query||native)?!old:old);
+    if(themed_legacy)layout=layout && legacy_frame_seen;
     return wait==WAIT_OBJECT_0 && seen && layout && (!filtered || filter_seen) && (!labels || label_seen) && (!cancel_label || cancel_label_seen) && (!hidden || (hidden_seen && !hidden_system_seen)) && array_ok && (cancel?hr==HRESULT_FROM_WIN32(ERROR_CANCELLED):(SUCCEEDED(hr)&&SUCCEEDED(result)&&same))?0:1;
 }

@@ -23,6 +23,7 @@ BOOL win16_style_menu_owner_install_created(HWND window,const void *owner,const 
 NTW16S_API BOOL win16_style_remove(HWND window);
 /* Private terminal leaf, shared with the native NCDESTROY handler. */
 BOOL win16_style_frame_terminal(HWND window);
+COLORREF win16_style_dialog_edge(HWND window);
 NTW16S_API BOOL win16_style_set_palette(HWND window, const win16_style_palette *palette);
 /* Same-thread geometry query, with exactly the subclass's WM_NCHITTEST
  * result. FALSE leaves result untouched and means use the native default.

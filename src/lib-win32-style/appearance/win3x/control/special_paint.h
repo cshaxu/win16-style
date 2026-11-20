@@ -20,7 +20,7 @@ BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,
 BOOL win16_control_cool_grip_identity(HWND,void *,const NMCUSTOMDRAW *,WNDPROC,BOOL (*)(HWND,void *));
 BOOL win16_control_cool_grip(HDC dc,const RECT *bounds,const classic_bar_colors *);
 BOOL win16_control_color_frame(HDC dc,const RECT *bounds,const RECT *clip,COLORREF color);
-BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original);
+BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original,COLORREF color);
 void win16_control_month_fill(HDC dc,const RECT *bounds,const RECT *clip,COLORREF);
 BOOL win16_control_month_text(HTHEME theme,HDC dc,int part,int state,HFONT font,LPCWSTR text,int count,DWORD flags,const RECT *bounds,
     int (WINAPI *draw)(HDC,LPCWSTR,int,LPRECT,UINT),BOOL (*room)(void *,int),void *context);

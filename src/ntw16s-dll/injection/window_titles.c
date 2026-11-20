@@ -92,9 +92,8 @@ typedef style_creation_call title_scope;
 HRESULT ntw16s_dialog_style_scope(HRESULT (*callback)(void *),void *context)
 {
 #ifdef NTWSHK_UNIFIED
-    DWORD flags=__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE);
-    if(!(flags&NTWSHK_POLICY_GLOBAL_SESSION) &&
-       classic_theme_process_family()==CLASSIC_THEME_WIN2K)return callback(context);
+    if(ntw16s_dialog_policy().window_provider==CLASSIC_WINDOW_PROVIDER_NONCLIENT)
+        return style_dialog_observe(callback,context,ntw16s_observed_dialog_initialize);
 #endif
     return style_creation_call_invoke(&title_context,callback,context);
 }
@@ -150,12 +149,14 @@ DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,TRUE,-1)
 #define TITLE_PARAM_FINISH(state,rollback,result,error,fail) do { \
     if((state)->failure){rollback;(result)=(fail);(error)=(state)->failure;} \
 } while(0)
-static const style_dialog_windows stock_windows={ntw16s_win2k_dialog_initialize,ntw16s_global_win2k_attached,ntw16s_global_win2k_resources};
 #define SIMPLE_DIALOG_HOOK(NAME,PARAM,RET,FAIL,CLEANUP,ROUTE) \
     STYLE_DIALOG_HOOK_ROUTED(NAME,(PARAM parameters),(parameters),RET,FAIL,CLEANUP,title_scope,TITLE_DIALOG_BEGIN,TITLE_DIALOG_PREPARE,end_titles,TITLE_PARAM_FINISH,ROUTE)
 #define FIND_DIALOG_HOOK(NAME,PARAM,CALL,COMPACT) \
     SIMPLE_DIALOG_HOOK(NAME,PARAM *,HWND,NULL,if(result)DestroyWindow(result), \
-        if(ntw16s_win2k_session_active())return CALL(parameters,real_##NAME,&stock_windows,COMPACT))
+        const classic_dialog_policy policy=ntw16s_dialog_policy(); \
+        if(policy.find<=CLASSIC_STOCK_NATIVE)return real_##NAME(parameters); \
+        if(policy.find==CLASSIC_STOCK_OBSERVED_LAYOUT || policy.window_provider==CLASSIC_WINDOW_PROVIDER_NONCLIENT) \
+            return CALL(parameters,real_##NAME,&ntw16s_observed_dialog_windows,COMPACT && policy.find==CLASSIC_STOCK_OBSERVED_LAYOUT))
 FIND_DIALOG_HOOK(FindTextA,FINDREPLACEA,win2k_find_a,TRUE)
 FIND_DIALOG_HOOK(FindTextW,FINDREPLACEW,win2k_find_w,TRUE)
 FIND_DIALOG_HOOK(ReplaceTextA,FINDREPLACEA,win2k_find_a,FALSE)
@@ -168,7 +169,10 @@ FIND_DIALOG_HOOK(ReplaceTextW,FINDREPLACEW,win2k_find_w,FALSE)
 static LRESULT CALLBACK font_dialog_return(int code,WPARAM wparam,LPARAM lparam)
 {
     const CWPRETSTRUCT *message=style_message_dialog_initialized(code,lparam);
-    if(message && style_classic_font_template(message->hwnd))ntw16s_font_dialog_chrome(message->hwnd);
+    if(message && style_classic_font_template(message->hwnd)){
+        ntw16s_observed_dialog_initialize(message->hwnd);
+        ntw16s_font_dialog_chrome(message->hwnd);
+    }
     return CallNextHookEx(NULL,code,wparam,lparam);
 }
 /* The system's colour picker subclasses several STATIC surfaces and owns
@@ -180,24 +184,28 @@ static LRESULT CALLBACK color_dialog_return(int code,WPARAM wparam,LPARAM lparam
     const CWPRETSTRUCT *message=style_message_dialog_initialized(code,lparam);
     if(message && style_classic_color_template(message->hwnd)){
         const int ids[]={720,721,710,702,709};
+        ntw16s_observed_dialog_initialize(message->hwnd);
         style_dialog_observation_found(message->hwnd);
         style_classic_color_controls(message->hwnd,ids,ARRAYSIZE(ids),color_dialog_remove_surface);
     }
     return CallNextHookEx(NULL,code,wparam,lparam);
 }
-#define OBSERVED_DIALOG_HOOK(NAME,TYPE,OBSERVER,TRACKED,CALL) \
+#define OBSERVED_DIALOG_HOOK(NAME,TYPE,FIELD,OBSERVER,TRACKED,CALL) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { process_hook_unwind_scope unwind;style_dialog_observation scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
-  if(ntw16s_win2k_session_active())return CALL(parameters,real_##NAME,&stock_windows); \
-  if(!style_dialog_observation_begin(&scope,&title_context,OBSERVER,TRACKED))return FALSE; \
+  const classic_dialog_policy policy=ntw16s_dialog_policy(); \
+  if(policy.FIELD<=CLASSIC_STOCK_NATIVE)return real_##NAME(parameters); \
+  if(policy.FIELD==CLASSIC_STOCK_OBSERVED_LAYOUT)return CALL(parameters,real_##NAME,&ntw16s_observed_dialog_windows); \
+  style_creation_context *creation=policy.window_provider==CLASSIC_WINDOW_PROVIDER_NONCLIENT?NULL:&title_context; \
+  if(!style_dialog_observation_begin(&scope,creation,OBSERVER,TRACKED))return FALSE; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.creation.failure){result=FALSE;error=scope.creation.failure;}SetLastError(error);return result; }
-OBSERVED_DIALOG_HOOK(ChooseFontA,CHOOSEFONTA,font_dialog_return,FALSE,win2k_font_a)
-OBSERVED_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW,font_dialog_return,FALSE,win2k_font_w)
-OBSERVED_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA,color_dialog_return,TRUE,win2k_color_a)
-OBSERVED_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW,color_dialog_return,TRUE,win2k_color_w)
+OBSERVED_DIALOG_HOOK(ChooseFontA,CHOOSEFONTA,font,font_dialog_return,FALSE,win2k_font_a)
+OBSERVED_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW,font,font_dialog_return,FALSE,win2k_font_w)
+OBSERVED_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA,color,color_dialog_return,TRUE,win2k_color_a)
+OBSERVED_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW,color,color_dialog_return,TRUE,win2k_color_w)
 #undef OBSERVED_DIALOG_HOOK
 
 /* A no-op print hook selects the system's traditional PrintDlg layout.
@@ -206,9 +214,9 @@ OBSERVED_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW,color_dialog_return,TRUE,win2k_co
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { process_hook_unwind_scope unwind;title_scope scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
-  classic_dialog_route route=ntw16s_dialog_route(NTW_DIALOG_PRINT); \
-  if(route==CLASSIC_DIALOG_NATIVE)return real_##NAME(parameters); \
-  if(route==CLASSIC_DIALOG_WIN2K)return win2k_print_##SUFFIX(parameters,real_##NAME,&stock_windows); \
+  enum classic_print_route route=ntw16s_dialog_policy().print; \
+  if(route==CLASSIC_PRINT_NATIVE)return real_##NAME(parameters); \
+  if(route==CLASSIC_PRINT_GENERAL_PAGE)return win2k_print_##SUFFIX(parameters,real_##NAME,&ntw16s_observed_dialog_windows); \
   if(!begin_titles(&scope,TRUE))return FALSE; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { \
     result=style_classic_print_call_##SUFFIX(parameters,real_##NAME);error=GetLastError(); \
@@ -220,21 +228,21 @@ PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
 
 /* Synchronous common dialogs also create their own internal windows. */
 SIMPLE_DIALOG_HOOK(PageSetupDlgA,PAGESETUPDLGA *,BOOL,FALSE,(void)0,
-    classic_dialog_route route=ntw16s_dialog_route(NTW_DIALOG_PRINT);
-    if(route==CLASSIC_DIALOG_NATIVE)return real_PageSetupDlgA(parameters);
-    if(route==CLASSIC_DIALOG_WIN2K)return win2k_page_setup_a(parameters,real_PageSetupDlgA,&stock_windows))
+    enum classic_print_route route=ntw16s_dialog_policy().print;
+    if(route==CLASSIC_PRINT_NATIVE)return real_PageSetupDlgA(parameters);
+    if(route==CLASSIC_PRINT_GENERAL_PAGE)return win2k_page_setup_a(parameters,real_PageSetupDlgA,&ntw16s_observed_dialog_windows))
 SIMPLE_DIALOG_HOOK(PageSetupDlgW,PAGESETUPDLGW *,BOOL,FALSE,(void)0,
-    classic_dialog_route route=ntw16s_dialog_route(NTW_DIALOG_PRINT);
-    if(route==CLASSIC_DIALOG_NATIVE)return real_PageSetupDlgW(parameters);
-    if(route==CLASSIC_DIALOG_WIN2K)return win2k_page_setup_w(parameters,real_PageSetupDlgW,&stock_windows))
+    enum classic_print_route route=ntw16s_dialog_policy().print;
+    if(route==CLASSIC_PRINT_NATIVE)return real_PageSetupDlgW(parameters);
+    if(route==CLASSIC_PRINT_GENERAL_PAGE)return win2k_page_setup_w(parameters,real_PageSetupDlgW,&ntw16s_observed_dialog_windows))
 #define PRINT_EXTENDED_HOOK(NAME,TYPE,GENERAL,BRIDGE,PRINT) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
-{ DWORD incoming=GetLastError();classic_dialog_route route=ntw16s_dialog_route(NTW_DIALOG_PRINT);HRESULT result=E_FAIL; \
+{ DWORD incoming=GetLastError();enum classic_print_route route=ntw16s_dialog_policy().print;HRESULT result=E_FAIL; \
   SetLastError(incoming); \
-  if(route==CLASSIC_DIALOG_NATIVE)return real_##NAME(parameters); \
-  if(route==CLASSIC_DIALOG_WIN2K){ \
-    HMODULE resources=ntw16s_global_win2k_resources(); \
+  if(route==CLASSIC_PRINT_NATIVE)return real_##NAME(parameters); \
+  if(route==CLASSIC_PRINT_GENERAL_PAGE){ \
+    HMODULE resources=ntw16s_observed_dialog_windows.resources(); \
     if((resources && GENERAL(resources,parameters,&result)) || BRIDGE(parameters,PRINT,&result))return result; \
     SetLastError(incoming);return real_##NAME(parameters); \
   } \
@@ -592,7 +600,7 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
     }
     if(eligible || controlbar || color)original=*rect;
     SetLastError(incoming);BOOL result=real_DrawEdge(dc,rect,edge,flags);DWORD error=GetLastError();
-    if(result&&color)win16_control_color_swatch_frame(dc,rect,&original);
+    if(result&&color)win16_control_color_swatch_frame(dc,rect,&original,win16_style_dialog_edge(dialog));
     if(result && eligible)ntw16s_status_frame(dc,&original,NULL,__builtin_return_address(0));
     if(result && controlbar)ntw16s_controlbar_edge(dc,&original,edge,flags,__builtin_return_address(0));
     SetLastError(error);return result;
@@ -644,6 +652,16 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_TrackPopupMenu(HMENU m,UINT
  PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 
+LONG ntw16s_attach_stock_dialogs_using(DWORD (*attach)(void *,void *))
+{
+    LONG error=NO_ERROR;
+#define ATTACH(NAME) do { if(!error){real_##NAME=NAME;error=(LONG)attach(&real_##NAME,(void *)hook_##NAME);} } while(0)
+    ATTACH(FindTextA);ATTACH(FindTextW);ATTACH(ReplaceTextA);ATTACH(ReplaceTextW);
+    ATTACH(ChooseColorA);ATTACH(ChooseColorW);ATTACH(ChooseFontA);ATTACH(ChooseFontW);
+#undef ATTACH
+    return error;
+}
+
 LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;
@@ -671,8 +689,7 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
     memcpy(&real_OpenThemeDataForDpi,&dpi_symbol,sizeof(dpi_symbol));
     if(real_OpenThemeDataForDpi && !error)error=(LONG)attach(&real_OpenThemeDataForDpi,(void *)hook_OpenThemeDataForDpi);
     ATTACH(TrackPopupMenu);
-    ATTACH(FindTextA);ATTACH(FindTextW);ATTACH(ReplaceTextA);ATTACH(ReplaceTextW);
-    ATTACH(ChooseColorA);ATTACH(ChooseColorW);ATTACH(ChooseFontA);ATTACH(ChooseFontW);
+    if(!error)error=ntw16s_attach_stock_dialogs_using(attach);
 #ifdef NTWSHK_UNIFIED
     if(classic_theme_process_family()!=CLASSIC_THEME_WIN2K)
 #endif

@@ -297,7 +297,10 @@ foreach(stem IN ITEMS Win16 Win2K)
   set(out "${CMAKE_BINARY_DIR}/${stem}")
   unset(image_flag)
   unset(image_files)
-  unset(dialog_resources)
+  set(dialog_resources
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general.rcinc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general_full.rcinc")
   if(stem STREQUAL "Win16")
     set(image_flag -D PACK_ORIGINAL_CAPTION)
     foreach(id RANGE 501 510)
@@ -307,12 +310,6 @@ foreach(stem IN ITEMS Win16 Win2K)
     foreach(id RANGE 513 524)
       list(APPEND image_files "${out}/choice${id}.png")
     endforeach()
-  else()
-    set(image_flag -D PACK_WIN2000_DIALOGS)
-    set(dialog_resources
-      "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general.h"
-      "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general.rcinc"
-      "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general_full.rcinc")
   endif()
   file(MAKE_DIRECTORY "${out}")
   set(theme_object "${out}/theme.res.o")
@@ -950,7 +947,7 @@ if(BUILD_TESTING)
   plain_test(com-concurrent-target tests/ntw16s-dll/com_concurrent_target.c user32 shell32 shlwapi ole32 uuid)
   plain_test(com-multi-target tests/ntw16s-dll/com_multi_target.c user32 shell32 ole32 uuid)
   plain_test(com-identity-target tests/ntw16s-dll/com_identity_target.c shell32 ole32 uuid)
-  plain_test(com-dialog-target tests/ntw16s-dll/com_dialog_target.c user32 shell32 ole32 uuid)
+  plain_test(com-dialog-target tests/ntw16s-dll/com_dialog_target.c user32 gdi32 shell32 ole32 uuid)
   plain_test(modern-dialog-target tests/ntw16s-dll/modern_dialog_target.c user32)
   add_executable(task-dialog-target tests/ntw16s-dll/task_dialog_target.c tests/ntw16s-dll/task_dialog.rc)
   target_include_directories(task-dialog-target PRIVATE ${CMAKE_SOURCE_DIR})

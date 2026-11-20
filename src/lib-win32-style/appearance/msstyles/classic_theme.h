@@ -277,7 +277,9 @@ void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void
 unsigned classic_theme_folder_id(PCWSTR folder);
 HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH]);
 HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_theme_mapping *);
+classic_dialog_policy classic_theme_dialog_policy_for_profile(HMODULE renderer,unsigned profile);
 HRESULT classic_theme_open_selected(HMODULE renderer,classic_theme_selection selection,classic_theme_mapping *);
+HRESULT classic_theme_open_dialog(HMODULE renderer,classic_theme_mapping *source);
 enum { CLASSIC_THEME_PROFILE_CAP = 0x10000000u, CLASSIC_THEME_PROFILE_FIRST_CUSTOM = 8,
     CLASSIC_THEME_FOLDER_ID_MARKER = 6 };
 static inline classic_theme_family classic_theme_profile_family(unsigned profile)

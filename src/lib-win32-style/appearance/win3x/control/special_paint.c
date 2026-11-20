@@ -22,9 +22,9 @@ BOOL win16_control_color_frame(HDC dc,const RECT *bounds,const RECT *clip,COLORR
         drew=FrameRect(dc,bounds,(HBRUSH)GetStockObject(DC_BRUSH));
     RestoreDC(dc,saved);return drew;
 }
-BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original)
+BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original,COLORREF color)
 {
-    if(!FrameRect(dc,original,(HBRUSH)GetStockObject(BLACK_BRUSH)))return FALSE;
+    if(!win16_control_color_frame(dc,original,NULL,color))return FALSE;
     *bounds=*original;InflateRect(bounds,-1,-1);return TRUE;
 }
 

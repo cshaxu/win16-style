@@ -64,6 +64,14 @@ static BOOL paint_layout(HWND w,void *context,win16_style_layout *result)
 {return layout(w,(style_window *)context,result);}
 static void paint_colors(void *context,win16_style_palette *palette)
 {win16_control_resolve_palette(&((style_window *)context)->palette,palette);}
+COLORREF win16_style_dialog_edge(HWND window)
+{
+    style_window *frame=state(window);
+    win16_style_palette palette;
+    if(frame && !frame->instance.detached)paint_colors(frame,&palette);
+    else win16_style_default_palette(&palette);
+    return palette.edge;
+}
 static void paint_state(void *context,win16_frame_paint_state *result)
 {
     style_window *s=context;

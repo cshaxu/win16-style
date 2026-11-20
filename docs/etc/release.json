@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S21 P1",
-  "stage": "theme-driven Win32 composite controls",
+  "delivery": "M0 T29 S22 P1",
+  "stage": "theme-driven common-dialog routes and resources",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "79cb0d4679ad9759dd77c9287be573175cc120c1ee83f77d4bbbcf0231cf501a",
+  "source_snapshot_sha256": "0af6136d863a6992e664d363ce81fc16ca2f38f6e680abc6f600bf8b84e570a6",
   "source_input_cohort": {
     "count": 1291,
-    "sha256": "a48ea8d755c436f4e2e76030ce4144b59276e50228d388d66b195b14ae5837dd",
+    "sha256": "266e506eae5847cc8d6d708760582502e89dac466bacfbf8fc88182159dd9f9d",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot",
@@ -16,7 +16,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "2eccb09c9bcf3255faaa2096e18269833da641c9c2cf30919a4a2b9020879ec9",
+      "sha256": "d838c43e45fe89e66b8dfe7759e41956f0828ba7a0b3a3f4fb2f8edf598a8179",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "3f3b212b974263e07cfe7c6e9440a0c03cf75af46eb967aa7a2209c4ab095b67",
+      "sha256": "71b46b5b4cd0c958c27972cd66cdeb81b2ce0872ea7ff297248689e1533b392c",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "0019f2be9fc148f487979522bedd810fe7b796b8db240392aa4496f61487eba0",
+      "sha256": "b058f6504c94dbd7f515f3a10daa20988a4446874e477481a7c559a87f0d5b65",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -79,23 +79,23 @@
     }
   },
   "theme_artifacts": {
-    "Win16/Win16.msstyles": "4234d5070c8bb28ee36623d64293bacd14f7dfb11568c0b4a5edf7c4dce82203",
+    "Win16/Win16.msstyles": "79e8b46e54eaaad324017b4f82a65e90d6cad81aba3d1bf73947f720e8393f92",
     "Win16/Win16.theme": "24532dbb589f8acf8e71909b8aaf361c3c05511a2b0f730fa84b2a6b9e52aede",
-    "Win2K/Win2K.msstyles": "4d861ff0be09edf03044d27329991752a73bae76b238206d32dbdcbcc810ebe5",
+    "Win2K/Win2K.msstyles": "956d928d43f6f865ca89fa5ee56fa06041edbf42d3cc472196dc7fe5566f6db8",
     "Win2K/Win2K.theme": "1217c8240721b28e7f92d4d6a8c9b9b0d259e2d026829be6612a70c877dbee68"
   },
   "build": {
-    "command": "tools/Build-Package.ps1 -Task 29 -RunName s21-composite-p1",
+    "command": "tools/Build-Package.ps1 -Task 29 -RunName s22-dialogs-p1",
     "toolchain": "pure C17, MinGW GCC MSVCRT, Ninja 1.13.2, ccache",
     "compiler_versions": {
       "x86": "16.1.0",
       "x64": "16.1.0"
     },
     "ccache_version": "ccache version 4.13.6",
-    "changed_source_test_tool_build_files": 72,
-    "insertions": 1545,
-    "deletions": 479,
-    "net_lines": 1066,
+    "changed_source_test_tool_build_files": 25,
+    "insertions": 497,
+    "deletions": 204,
+    "net_lines": 293,
     "checks": [
       "quick ABI and PE for x86 and x64",
       "source and archive boundaries",
@@ -186,58 +186,105 @@
     "skipped": []
   },
   "supplemental_post_publication": {
-    "theme_readback": {
-      "runs": 10,
-      "roots": [
-        "assets",
-        "O:/winnt"
-      ],
+    "global_session_style": {
+      "passes": 2,
       "architectures": [
         "x86",
         "x64"
-      ]
+      ],
+      "scope": "owned identity and style state only"
     },
-    "installed_startup_pixels": {
-      "runs": 6,
-      "root": "O:/winnt",
-      "architectures": [
-        "x86",
-        "x64"
-      ],
-      "witnesses": [
-        "Win16 Header",
-        "Win2K Header",
-        "Win2K MonthCal and DateTimePicker"
-      ]
+    "installed_shell_directory": {
+      "passes": 4,
+      "baseline_matching_native_behavior": 4,
+      "scope": "Win16 direct-tree A/W, Win2K native A/W, cancel and writeback",
+      "terminal_diagnostic": "Win16 installed console harness logged 1306, not reproduced in the temporary S21 directory"
     },
-    "owned_vcl_window_comparison": {
-      "runs": 24,
-      "architectures": [
-        "x86",
-        "x64"
-      ],
-      "roles": [
-        "TGroupBox",
-        "TRadioGroup",
-        "TPanel",
-        "TCoolBar"
-      ],
-      "paths": [
-        "native baseline",
-        "O:/winnt/Win16",
-        "same runtime with four theme color changes"
-      ],
-      "checks": [
-        "native restoration after reparenting",
-        "controls remain alive",
-        "CoolBar retains child and band"
-      ]
+    "installed_find_dialog": {
+      "behavioral_checks": 8,
+      "edit_border_color_witness": "not observed; same as S21 control",
+      "scope": "x86/x64 FindTextW and ReplaceTextA"
     }
   },
   "validation": {
     "physical_input": "not tested; bounded owned windows and message-level checks",
-    "full_matrix": "not run; 56 focused cases, 16 supplemental post-publication runs, and 24 window comparisons",
-    "coverage_limits": "Real windows from self-owned VCL protocol models verify application and removal for GroupBox, RadioGroup, Panel and CoolBar. Delphi application binaries and live Win16 MonthCal attachment were not exercised by this supplement."
+    "full_matrix": "not run; 37 focused cases without skips",
+    "coverage_limits": "Actual administrator tray, visible Explorer Places and Win16 find edit pixel substitution were not verified. Terminal diagnostic 1306 remains outside the common-dialog validation."
   },
-  "closure": "verified against remote main at 627034800fb4cecaa232f94f7c07c49fe54bae68"
+  "closure": "Built, published and tested; remote verification recorded in CURRENT and S22 history after push",
+  "actual_package_test": {
+    "status": "passed-focused",
+    "cases": 37,
+    "requested_cases": [
+      "theme-dialog-policy",
+      "ntw2ks-find-frame-x86",
+      "ntw2ks-file-frame-x86",
+      "ntw2ks-file-select-x86",
+      "ntw2ks-color-font-x86",
+      "ntw2ks-color-accept-x86",
+      "ntw2ks-print-frame-x86",
+      "ntw2ks-printex-frame-x86",
+      "ntw2ks-find-frame-x64",
+      "ntw2ks-file-frame-x64",
+      "ntw2ks-file-select-x64",
+      "ntw2ks-color-font-x64",
+      "ntw2ks-color-accept-x64",
+      "ntw2ks-print-frame-x64",
+      "ntw2ks-printex-frame-x64",
+      "ntw2ks-font-accept-32",
+      "ntw2ks-color-expanded-32",
+      "ntw2ks-file-buffer-32",
+      "ntw2ks-printex-accept-32",
+      "ntw2ks-com-explorer-open-cancel-32",
+      "ntw2ks-com-explorer-save-accept-32",
+      "ntw2ks-font-accept-64",
+      "ntw2ks-color-expanded-64",
+      "ntw2ks-file-buffer-64",
+      "ntw2ks-printex-accept-64",
+      "ntw2ks-com-explorer-open-cancel-64",
+      "ntw2ks-com-explorer-save-accept-64",
+      "dialog-color-edge-native-x86",
+      "dialog-color-edge-native-x64"
+    ],
+    "selected_cases": [
+      "ntw2ks-find-frame-x86",
+      "ntw2ks-find-frame-x64",
+      "ntw2ks-file-frame-x86",
+      "ntw2ks-file-frame-x64",
+      "ntw2ks-file-select-x86",
+      "ntw2ks-file-select-x64",
+      "ntw2ks-color-font-x86",
+      "ntw2ks-color-accept-x86",
+      "ntw2ks-color-font-x64",
+      "ntw2ks-color-accept-x64",
+      "ntw2ks-print-frame-x86",
+      "ntw2ks-print-frame-x64",
+      "ntw2ks-printex-frame-x86",
+      "ntw2ks-printex-frame-x64",
+      "progress-sharing",
+      "plan-selection",
+      "abi-x86",
+      "abi-x64",
+      "demo-boundary",
+      "demo-pair",
+      "theme-dialog-policy",
+      "automatic",
+      "propagation",
+      "ntw2ks-font-accept-32",
+      "ntw2ks-font-accept-64",
+      "ntw2ks-color-expanded-32",
+      "ntw2ks-color-expanded-64",
+      "ntw2ks-file-buffer-32",
+      "ntw2ks-file-buffer-64",
+      "ntw2ks-printex-accept-32",
+      "ntw2ks-printex-accept-64",
+      "ntw2ks-com-explorer-open-cancel-32",
+      "ntw2ks-com-explorer-save-accept-32",
+      "ntw2ks-com-explorer-open-cancel-64",
+      "ntw2ks-com-explorer-save-accept-64",
+      "dialog-color-edge-native-x86",
+      "dialog-color-edge-native-x64"
+    ],
+    "skipped": []
+  }
 }

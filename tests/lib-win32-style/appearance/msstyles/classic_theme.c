@@ -9,6 +9,7 @@
 #include "lib-win32-style/appearance/win2000/control/edit_paint.h"
 #include "lib-win32-style/appearance/win2000/control/list_combo.h"
 #include "lib-win32-style/appearance/win2000/control/static_paint.h"
+#include "lib-win32-style/appearance/win2000/dialog/file.h"
 #include "lib-win32-style/appearance/win3x/window/frame_paint.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_bar.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_items.h"
@@ -740,11 +741,9 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
         CHECK(swprintf(descriptor,ARRAYSIZE(descriptor),L"%ls/%ls/%ls.theme",root,name,name)>0);
         CHECK(classic_theme_open(descriptor,&source)==S_OK && source.resources);
         CHECK(!memcmp(&source.model,&theme,sizeof(theme)));
-        if(gradient){
-            for(WORD id=201;id<=203;++id){
-                HRSRC dialog=FindResourceW(source.resources,MAKEINTRESOURCEW(id),MAKEINTRESOURCEW(5));
-                CHECK(dialog && SizeofResource(source.resources,dialog)>0);
-            }
+        for(WORD id=201;id<=203;++id){
+            HRSRC dialog=FindResourceW(source.resources,MAKEINTRESOURCEW(id),MAKEINTRESOURCEW(5));
+            CHECK(dialog && SizeofResource(source.resources,dialog)>0);
         }
         CHECK(classic_theme_open(descriptor,&source)==E_INVALIDARG);
         CHECK(!memcmp(&source.model,&theme,sizeof(theme)));
@@ -904,6 +903,29 @@ static int check_identity(PCWSTR folder,classic_theme_family selected)
     return 0;
 }
 
+static int check_dialog_layout(PCWSTR folder,BOOL expect_compact)
+{
+    HMODULE module=GetModuleHandleW(NULL);
+    classic_theme_mapping source={0};
+    classic_theme_family provider;
+    CHECK(classic_theme_open_folder(module,folder,&source,&provider)==S_OK);
+    classic_theme_close(&source);
+    classic_theme_set_process_profile(classic_theme_folder_id(folder),provider);
+    const classic_dialog_metrics metrics=classic_theme_dialog_metrics(module,(classic_dialog_metrics){0});
+    CHECK(metrics.file.places_width==4096 && metrics.print_width==4096);
+    win2k_file_layout layout=win2k_file_layout_for(600,380,OFN_EXPLORER,0,&metrics.file);
+    CHECK(layout==(expect_compact?WIN2K_FILE_COMPACT:WIN2K_FILE_NATIVE));
+    unsigned previous=classic_theme_enter_profile((classic_theme_selection){1,CLASSIC_THEME_WIN2K});
+    const classic_dialog_metrics scoped=classic_theme_dialog_metrics(module,(classic_dialog_metrics){0});
+    classic_theme_leave_profile(previous);
+    const classic_dialog_metrics restored=classic_theme_dialog_metrics(module,(classic_dialog_metrics){0});
+    CHECK(scoped.file.compact_width==427 && scoped.print_width==500 &&
+        restored.file.compact_width==metrics.file.compact_width && restored.print_width==metrics.print_width);
+    printf("DIALOG_LAYOUT compact_width=%u places_width=%u result=%d\n",
+        metrics.file.compact_width,metrics.file.places_width,layout);
+    return 0;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
     if(argc==2 && !wcscmp(argv[1],L"--discover")){
@@ -915,6 +937,8 @@ int wmain(int argc,WCHAR **argv)
         if(!wcscmp(argv[3],L"1"))return check_identity(argv[2],CLASSIC_THEME_WIN2K);
         return 2;
     }
+    if(argc==4 && !wcscmp(argv[1],L"--dialog-layout"))
+        return check_dialog_layout(argv[2],!wcscmp(argv[3],L"compact"));
     BOOL recolored=argc==3 && !wcscmp(argv[2],L"--recolor");
     if(argc!=2 && !recolored)return 2;
     return check(argv[1],L"Win16",FALSE,recolored) || check(argv[1],L"Win2K",TRUE,recolored);

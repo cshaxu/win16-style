@@ -96,9 +96,9 @@ static LRESULT CALLBACK dialog_created(int code,WPARAM wp,LPARAM lp)
     if(event)attach_dialog(event->hwnd);
     SetLastError(incoming);return CallNextHookEx(NULL,code,wp,lp);
 }
+#ifndef NTWSHK_UNIFIED
 static HRESULT observe_dialog(HRESULT (*show)(void *),void *context)
 {return style_dialog_observe(show,context,attach_dialog);}
-#ifndef NTWSHK_UNIFIED
 static BOOL com_session_active(void){return TRUE;}
 #endif
 #define CLASSIC_DIALOG_BEGIN(state,incoming) ((void)(incoming),style_dialog_observation_begin(state,NULL,dialog_created,FALSE))
@@ -133,6 +133,7 @@ MESSAGE_HOOK(MessageBoxIndirectW,(const MSGBOXPARAMSW *parameters),(parameters))
 extern IMAGE_DOS_HEADER __ImageBase;
 static HMODULE dialog_resources(void){return (HMODULE)&__ImageBase;}
 static const style_dialog_windows dialog_windows={attach_dialog,win2k_frame_attached,dialog_resources};
+#ifndef NTWSHK_UNIFIED
 #define STOCK_ENTRY(NAME,TYPE,CALL) \
 static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
@@ -142,34 +143,36 @@ STOCK_ENTRY(ChooseFontW,CHOOSEFONTW,win2k_font_w)
 STOCK_ENTRY(ChooseColorA,CHOOSECOLORA,win2k_color_a)
 STOCK_ENTRY(ChooseColorW,CHOOSECOLORW,win2k_color_w)
 #undef STOCK_ENTRY
+#endif
 
-static classic_dialog_route print_route(void)
+static enum classic_print_route print_route(void)
 {
 #ifdef NTWSHK_UNIFIED
-    return ntw16s_dialog_route(NTW_DIALOG_PRINT);
+    return ntw16s_dialog_policy().print;
 #else
-    return CLASSIC_DIALOG_WIN2K;
+    return CLASSIC_PRINT_GENERAL_PAGE;
 #endif
 }
 #define PRINT_ENTRY(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { \
-    classic_dialog_route route=print_route(); \
-    if(route==CLASSIC_DIALOG_WIN2K)return win2k_print_##SUFFIX(parameters,real_##NAME,&dialog_windows); \
-    if(route==CLASSIC_DIALOG_WIN16)return style_classic_print_call_##SUFFIX(parameters,real_##NAME); \
+    enum classic_print_route route=print_route(); \
+    if(route==CLASSIC_PRINT_GENERAL_PAGE)return win2k_print_##SUFFIX(parameters,real_##NAME,&dialog_windows); \
+    if(route==CLASSIC_PRINT_LEGACY_BRIDGE)return style_classic_print_call_##SUFFIX(parameters,real_##NAME); \
     return real_##NAME(parameters); \
 }
 #define PAGE_ENTRY(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{return print_route()==CLASSIC_DIALOG_WIN2K?win2k_page_setup_##SUFFIX(parameters,real_##NAME,&dialog_windows):real_##NAME(parameters);}
+{return print_route()==CLASSIC_PRINT_GENERAL_PAGE?win2k_page_setup_##SUFFIX(parameters,real_##NAME,&dialog_windows):real_##NAME(parameters);}
 PRINT_ENTRY(PrintDlgA,PRINTDLGA,a)
 PRINT_ENTRY(PrintDlgW,PRINTDLGW,w)
 PAGE_ENTRY(PageSetupDlgA,PAGESETUPDLGA,a)
 PAGE_ENTRY(PageSetupDlgW,PAGESETUPDLGW,w)
 #undef PRINT_ENTRY
 #undef PAGE_ENTRY
+#ifndef NTWSHK_UNIFIED
 #define FIND_ENTRY(NAME,TYPE,CALL,COMPACT) \
 static __typeof__(&NAME) real_##NAME; \
 static HWND WINAPI hook_##NAME(TYPE *parameters) \
@@ -180,7 +183,6 @@ FIND_ENTRY(ReplaceTextA,FINDREPLACEA,win2k_find_a,FALSE)
 FIND_ENTRY(ReplaceTextW,FINDREPLACEW,win2k_find_w,FALSE)
 #undef FIND_ENTRY
 
-#ifndef NTWSHK_UNIFIED
 #define FILE_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
@@ -198,11 +200,11 @@ static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
 { style_dialog_observation scope;process_hook_unwind_scope unwind; \
   DWORD incoming=GetLastError(),error;HRESULT result; \
-  classic_dialog_route route=print_route(); \
-  if(route==CLASSIC_DIALOG_NATIVE)return real_##NAME(parameters); \
+  enum classic_print_route route=print_route(); \
+  if(route==CLASSIC_PRINT_NATIVE)return real_##NAME(parameters); \
   if(!style_dialog_observation_begin(&scope,NULL,dialog_created,FALSE))return E_FAIL; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); \
-  SetLastError(incoming);if((route!=CLASSIC_DIALOG_WIN2K || !GENERAL((HINSTANCE)&__ImageBase,parameters,&result)) && !BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
+  SetLastError(incoming);if((route!=CLASSIC_PRINT_GENERAL_PAGE || !GENERAL((HINSTANCE)&__ImageBase,parameters,&result)) && !BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
   error=GetLastError();PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result; }
 PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,win2k_print_general_a,style_print_extended_a,real_PrintDlgA)
 PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,win2k_print_general_w,style_print_extended_w,real_PrintDlgW)
@@ -223,23 +225,24 @@ DWORD ntw2ks_controls_attach_using(DWORD (*attach)(void *,void *))
     ATTACH_DIALOG(MessageBoxA);ATTACH_DIALOG(MessageBoxW);
     ATTACH_DIALOG(MessageBoxExA);ATTACH_DIALOG(MessageBoxExW);
     ATTACH_DIALOG(MessageBoxIndirectA);ATTACH_DIALOG(MessageBoxIndirectW);
+#ifndef NTWSHK_UNIFIED
     ATTACH_DIALOG(FindTextA);ATTACH_DIALOG(FindTextW);
     ATTACH_DIALOG(ReplaceTextA);ATTACH_DIALOG(ReplaceTextW);
-#ifndef NTWSHK_UNIFIED
     ATTACH_DIALOG(GetOpenFileNameA);ATTACH_DIALOG(GetOpenFileNameW);
     ATTACH_DIALOG(GetSaveFileNameA);ATTACH_DIALOG(GetSaveFileNameW);
-#endif
     ATTACH_DIALOG(ChooseFontA);ATTACH_DIALOG(ChooseFontW);
     ATTACH_DIALOG(ChooseColorA);ATTACH_DIALOG(ChooseColorW);
+#endif
     ATTACH_DIALOG(PrintDlgA);ATTACH_DIALOG(PrintDlgW);
     ATTACH_DIALOG(PrintDlgExA);ATTACH_DIALOG(PrintDlgExW);
     ATTACH_DIALOG(PageSetupDlgA);ATTACH_DIALOG(PageSetupDlgW);
 #undef ATTACH_DIALOG
     if(error)return error;
 #ifdef NTWSHK_UNIFIED
-    error=(DWORD)ntw16s_attach_win2k_file_dialogs_using(attach);
+    error=(DWORD)ntw16s_attach_stock_dialogs_using(attach);
+    if(!error)error=(DWORD)ntw16s_attach_win2k_file_dialogs_using(attach);
     if(!error)error=(DWORD)ntw16s_attach_win2k_folder_dialogs_using(attach);
-    if(!error)error=ntw16s_attach_win2k_com_dialogs_using(attach,observe_dialog);
+    if(!error)error=ntw16s_attach_win2k_com_dialogs_using(attach);
     return error;
 #else
     const style_classic_com_options com={

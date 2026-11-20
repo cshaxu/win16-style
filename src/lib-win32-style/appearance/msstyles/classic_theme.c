@@ -666,7 +666,7 @@ void classic_theme_close(classic_theme_mapping *source)
 }
 
 static const WCHAR *const theme_folders[]={L"Win16",L"Win2K"};
-static volatile LONG process_profile;
+static volatile LONG process_profile=-1;
 static _Thread_local unsigned thread_profile;
 static BOOL (*read_global_profile)(unsigned *);
 
@@ -721,10 +721,16 @@ void classic_theme_set_global_profile_reader(BOOL (*read)(unsigned *))
 {read_global_profile=read;}
 
 unsigned classic_theme_process_profile(void)
-{return (unsigned)InterlockedCompareExchange(&process_profile,0,0)&(CLASSIC_THEME_PROFILE_CAP-1u);}
+{
+    LONG encoded=InterlockedCompareExchange(&process_profile,0,0);
+    return encoded<0?0:(unsigned)encoded&(CLASSIC_THEME_PROFILE_CAP-1u);
+}
 
 classic_theme_family classic_theme_process_family(void)
-{return (classic_theme_family)((unsigned)InterlockedCompareExchange(&process_profile,0,0)/CLASSIC_THEME_PROFILE_CAP);}
+{
+    LONG encoded=InterlockedCompareExchange(&process_profile,0,0);
+    return encoded<0?CLASSIC_THEME_WIN16:(classic_theme_family)((unsigned)encoded/CLASSIC_THEME_PROFILE_CAP);
+}
 
 unsigned classic_theme_enter_profile(classic_theme_selection selection)
 {
@@ -770,8 +776,8 @@ HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_m
     HRESULT result=classic_theme_open(path,&candidate);
     if(FAILED(result))return result;
     classic_theme_family selected;
-    if(candidate.model.dialog_policy.appearance)
-        selected=(classic_theme_family)(candidate.model.dialog_policy.appearance-1);
+    if(candidate.model.dialog_policy.window_provider)
+        selected=(classic_theme_family)(candidate.model.dialog_policy.window_provider-1);
     else{
         const classic_button_group *buttons=&candidate.model.title_buttons;
         unsigned roles=0;
@@ -856,6 +862,39 @@ HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_the
     return result;
 }
 
+static classic_dialog_policy compatibility_dialog_policy(classic_theme_family family)
+{
+    if(family==CLASSIC_THEME_WIN2K)return (classic_dialog_policy){CLASSIC_WINDOW_PROVIDER_NONCLIENT,
+        CLASSIC_FILE_EXPLORER_LAYOUT,CLASSIC_FOLDER_OBSERVED_NATIVE,CLASSIC_PRINT_GENERAL_PAGE,
+        CLASSIC_STOCK_OBSERVED_LAYOUT,CLASSIC_STOCK_OBSERVED_LAYOUT,CLASSIC_STOCK_OBSERVED_LAYOUT};
+    return (classic_dialog_policy){CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,
+        CLASSIC_FILE_LEGACY_LAYOUT,CLASSIC_FOLDER_LEGACY_TREE,CLASSIC_PRINT_LEGACY_BRIDGE,
+        CLASSIC_STOCK_OWNER_CHROME,CLASSIC_STOCK_OWNER_CHROME,CLASSIC_STOCK_OWNER_CHROME};
+}
+
+classic_dialog_policy classic_theme_dialog_policy_for_profile(HMODULE renderer,unsigned profile)
+{
+    classic_theme_mapping source={0};
+    HRESULT result=classic_theme_open_profile(renderer,profile,&source);
+    if(SUCCEEDED(result)){
+        classic_dialog_policy policy=source.model.dialog_policy;
+        const classic_dialog_policy defaults=compatibility_dialog_policy(source.family);
+        if(!policy.window_provider)policy=defaults;
+        else{
+            if(!policy.color)policy.color=defaults.color;
+            if(!policy.font)policy.font=defaults.font;
+            if(!policy.find)policy.find=defaults.find;
+        }
+        classic_theme_close(&source);
+        return policy;
+    }
+    /* The standalone compatibility fixtures predate external theme files. */
+    if(profile<CLASSIC_THEME_PROFILE_FIRST_CUSTOM &&
+       (result==HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND) || result==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)))
+        return compatibility_dialog_policy(classic_theme_profile_family(profile));
+    return (classic_dialog_policy){0};
+}
+
 HRESULT classic_theme_open_selected(HMODULE renderer,classic_theme_selection selection,classic_theme_mapping *source)
 {
     HRESULT result=classic_theme_open_profile(renderer,selection.id,source);
@@ -914,11 +953,27 @@ DWORD classic_theme_validate_packaged(HMODULE renderer,classic_theme_family fami
     return ERROR_SUCCESS;
 }
 
+HRESULT classic_theme_open_dialog(HMODULE renderer,classic_theme_mapping *source)
+{
+    if(!renderer || !source || source->resources)return E_INVALIDARG;
+    classic_theme_selection selection;
+    unsigned global;
+    if(!thread_profile && read_global_profile && read_global_profile(&global)){
+        if(!classic_theme_decode_selection(global,&selection))return E_INVALIDARG;
+    }else{
+        LONG local=thread_profile?(LONG)(thread_profile-1u):InterlockedCompareExchange(&process_profile,0,0);
+        if(local<0)return classic_theme_open_packaged(renderer,CLASSIC_THEME_WIN2K,TRUE,source);
+        selection=(classic_theme_selection){(unsigned)local&(CLASSIC_THEME_PROFILE_CAP-1u),
+            (classic_theme_family)((unsigned)local/CLASSIC_THEME_PROFILE_CAP)};
+    }
+    return classic_theme_open_selected(renderer,selection,source);
+}
+
 classic_dialog_metrics classic_theme_dialog_metrics(HMODULE module,classic_dialog_metrics fallback)
 {
     DWORD prior=GetLastError();
     classic_theme_mapping source={0};
-    if(SUCCEEDED(classic_theme_open_packaged(module,CLASSIC_THEME_WIN2K,TRUE,&source))){
+    if(SUCCEEDED(classic_theme_open_dialog(module,&source))){
         if(source.model.dialog_metrics.print_width)fallback=source.model.dialog_metrics;
         classic_theme_close(&source);
     }

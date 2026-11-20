@@ -238,6 +238,7 @@ static DWORD WINAPI close_message(void *dpi_context)
 static HWND common_owner;
 static volatile LONG common_done;
 static BOOL check_stock_font;
+static BOOL measure_common;
 static int expected_print_route=-1;
 static volatile LONG observed_print_route;
 static BOOL CALLBACK find_common_window(HWND window,LPARAM unused)
@@ -258,6 +259,12 @@ static BOOL CALLBACK find_common_window(HWND window,LPARAM unused)
         RECT client={0};
         GetClientRect(window,&client);
         printf("WIN2K FONT CLIENT %ldx%ld\n",client.right,client.bottom);
+    }
+    if(measure_common){
+        RECT client={0},outer={0};
+        GetClientRect(window,&client);GetWindowRect(window,&outer);
+        printf("WIN2K COMMON GEOMETRY client=%ldx%ld outer=%ldx%ld\n",
+            client.right,client.bottom,outer.right-outer.left,outer.bottom-outer.top);
     }
     InterlockedExchange(&message_seen,1);
     if(InterlockedCompareExchange(&message_accept,0,0)){
@@ -862,8 +869,12 @@ int wmain(int argc,WCHAR **argv)
         InterlockedExchange(&message_accept,0);return all?0:3;
     }
     if(argc==2 && (!lstrcmpW(argv[1],L"--color-font-frame") || !lstrcmpW(argv[1],L"--font-accept") ||
-        !lstrcmpW(argv[1],L"--font-native"))){
+        !lstrcmpW(argv[1],L"--font-native") || !lstrcmpW(argv[1],L"--color-native-policy") ||
+        !lstrcmpW(argv[1],L"--font-native-policy"))){
         BOOL native=!lstrcmpW(argv[1],L"--font-native");
+        BOOL native_color=!lstrcmpW(argv[1],L"--color-native-policy");
+        BOOL native_font=!lstrcmpW(argv[1],L"--font-native-policy");
+        measure_common=native_color || native_font;
         BOOL all=TRUE,accept=native || !lstrcmpW(argv[1],L"--font-accept");
         check_stock_font=accept;
         InterlockedExchange(&message_accept,accept);
@@ -889,9 +900,9 @@ int wmain(int argc,WCHAR **argv)
             BOOL selected=!accept || (ansi?
                 log_a.lfWeight==FW_BOLD && fa.iPointSize==120 && !lstrcmpiA(log_a.lfFaceName,"Arial"):
                 log_w.lfWeight==FW_BOLD && fw.iPointSize==120 && !lstrcmpiW(log_w.lfFaceName,L"Arial"));
-            BOOL pass=wait==WAIT_OBJECT_0 && result==accept && selected && error==0 && InterlockedCompareExchange(&message_seen,0,0) &&
-                (native || InterlockedCompareExchange(&message_attached,0,0));
             long attached=InterlockedCompareExchange(&message_attached,0,0);
+            BOOL pass=wait==WAIT_OBJECT_0 && result==accept && selected && error==0 && InterlockedCompareExchange(&message_seen,0,0) &&
+                (native || (font && native_font) || (attached!=0)==(font || !native_color));
             if(accept)
                 printf("WIN2K FONT bits=%u ansi=%d attached=%ld accepted=%d selected=%d point_size=%d error=%lu\n",
                     (unsigned)(sizeof(void*)*8),ansi,attached,result,selected,ansi?fa.iPointSize:fw.iPointSize,(unsigned long)error);
@@ -982,7 +993,8 @@ int wmain(int argc,WCHAR **argv)
         }
         return all?0:3;
     }
-    if(argc==2 && !lstrcmpW(argv[1],L"--find-frame")){
+    if(argc==2 && (!lstrcmpW(argv[1],L"--find-frame") || !lstrcmpW(argv[1],L"--find-native-policy"))){
+        BOOL native_find=!lstrcmpW(argv[1],L"--find-native-policy");
         find_message=RegisterWindowMessageW(FINDMSGSTRINGW);
         WNDCLASSW owner_class={.lpfnWndProc=find_owner_proc,.hInstance=instance,.lpszClassName=L"Win2kFindFixture"};
         if(!find_message || !RegisterClassW(&owner_class))return 2;
@@ -997,7 +1009,7 @@ int wmain(int argc,WCHAR **argv)
             HWND dialog=ansi?(replace?ReplaceTextA(&a):FindTextA(&a)):(replace?ReplaceTextW(&w):FindTextW(&w));
             BOOL attached=dialog && GetPropW(dialog,L"Win2kStyle.Frame")!=NULL;
             BOOL layout=TRUE;
-            if(dialog && !replace){
+            if(dialog && !replace && !native_find){
                 HWND wrap=GetDlgItem(dialog,chx3);
                 if(wrap && !(GetWindowLongPtrW(wrap,GWL_STYLE)&WS_VISIBLE)){
                     RECT client={0},reference={0,0,236,62};
@@ -1016,7 +1028,7 @@ int wmain(int argc,WCHAR **argv)
                 SendMessageW(dialog,WM_CLOSE,0,0);pump_messages();
             }
             DWORD expected=FR_FINDNEXT|(replace?(FR_REPLACE|FR_REPLACEALL):0);
-            BOOL gone=dialog && !IsWindow(dialog);BOOL pass=attached && gone && find_terms==1 && layout && find_actions==expected;
+            BOOL gone=dialog && !IsWindow(dialog);BOOL pass=attached==!native_find && gone && find_terms==1 && layout && find_actions==expected;
             printf("WIN2K FIND bits=%u ansi=%d replace=%d attached=%d gone=%d terms=%u layout=%d actions=%lx\n",
                 (unsigned)(sizeof(void*)*8),ansi,replace,attached,gone,find_terms,layout,(unsigned long)find_actions);
             if(!pass)all=FALSE;

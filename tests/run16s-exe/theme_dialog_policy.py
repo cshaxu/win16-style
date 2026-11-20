@@ -37,7 +37,7 @@ def checked(value):
     return value
 
 
-def set_policy(path, declaration):
+def set_policy(path, declaration, record=9):
     module = checked(load(str(path), None, 0x22))
     try:
         handle = checked(find(module, "CLASSIC_STYLE", 10))
@@ -50,13 +50,13 @@ def set_policy(path, declaration):
     for _ in range(struct.unpack_from("<I", data, 12)[0]):
         kind, flags, length = struct.unpack_from("<HHI", data, cursor)
         cursor += 8
-        if kind == 9:
-            assert flags == 1 and length == len(declaration)
+        if kind == record:
+            assert flags == (1 if record == 9 else 0) and length == len(declaration)
             data[cursor:cursor + length] = declaration
             break
         cursor += length
     else:
-        raise AssertionError("The built theme lacks a dialog policy")
+        raise AssertionError(f"The built theme lacks dialog record {record}")
     transaction = checked(begin(str(path), False))
     buffer = ctypes.create_string_buffer(bytes(data))
     written = update(transaction, 10, "CLASSIC_STYLE", 0, buffer, len(data))
@@ -69,10 +69,10 @@ def set_policy(path, declaration):
 def verify(package, driver, targets, print_targets):
     settings = (
         ("Mixed Classic", "Win16", bytes((1, 2, 0, 0)),
-         (("open", "explorer", "COM_EXPLORER_LAYOUT bridged=1"),
+         (("open", "explorer-themed", "COM_EXPLORER_LAYOUT bridged=1"),
           ("folder", "native", "COM_FOLDER_LAYOUT tree=0"))),
         ("Mixed 2000", "Win2K", bytes((2, 1, 1, 1)),
-         (("open", None, "old=1"), ("folder", None, "COM_FOLDER_LAYOUT tree=1"))),
+         (("open", "legacy-themed", "COM_LEGACY_SELECTED_FRAME selected=1"), ("folder", None, "COM_FOLDER_LAYOUT tree=1"))),
         ("Native Files", "Win2K", bytes((2, 0, 1, 2)),
          (("open", "native", "old=0"), ("folder", None, "COM_FOLDER_LAYOUT tree=1"))),
     )
@@ -113,6 +113,37 @@ def verify(package, driver, targets, print_targets):
                     raise AssertionError((folder, bits, "print", result.returncode,
                                           result.stdout, result.stderr))
                 print(f"DIALOG POLICY PRINT bits={bits} theme={folder} mode={expected} ANSI and Unicode")
+        stock_settings = (
+            ("Native Color and Find", bytes((1, 3, 1)), "--color-native-policy", "--find-native-policy"),
+            ("Native Font", bytes((3, 1, 3)), "--font-native-policy", "--find-frame"),
+        )
+        font_clients = {}
+        for folder, declaration, common, find_mode in stock_settings:
+            shutil.copytree(package / "Win2K", root / folder)
+            set_policy(root / folder / "Win2K.msstyles", declaration, record=21)
+            for bits, target in zip((32, 64), print_targets):
+                for mode in (common, find_mode):
+                    result = subprocess.run(
+                        [driver, "--direct", root / "run16s.exe", folder, target, mode],
+                        capture_output=True, text=True, errors="replace", timeout=16)
+                    marker = "WIN2K COMMON" if mode == common else "WIN2K FIND"
+                    lines = [line for line in result.stdout.splitlines()
+                             if line.startswith(marker + " bits=")]
+                    if result.returncode or len(lines) != 4:
+                        raise AssertionError((folder, bits, mode, result.returncode, result.stdout, result.stderr))
+                    if mode == common:
+                        geometry = [line.split()[3] for line in result.stdout.splitlines()
+                                    if line.startswith("WIN2K COMMON GEOMETRY ")]
+                        if len(geometry) != len(lines):
+                            raise AssertionError((folder, bits, "missing common dialog geometry", result.stdout))
+                        font_clients[bits, declaration[1]] = [size for size, call in zip(geometry, lines)
+                                                               if " font=1 " in call]
+                    print(f"DIALOG STOCK POLICY bits={bits} theme={folder} {mode} ANSI and Unicode")
+        for bits in (32, 64):
+            native, observed = font_clients[bits, 1], font_clients[bits, 3]
+            if len(native) != 2 or len(observed) != 2 or any(a == b for a, b in zip(native, observed)):
+                raise AssertionError((bits, "font route client dimensions", native, observed))
+            print(f"DIALOG FONT CLIENT bits={bits} plain={native} observed={observed}")
     print("DIALOG POLICY PASS")
 
 

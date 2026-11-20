@@ -98,20 +98,32 @@ static int fixtures(void)
         !memcmp(&dimensions,&dialog,sizeof(dialog)));
     CHECK(classic_style_read(reference,length,&group,NULL,NULL,&dimensions,NULL,NULL,NULL,NULL)==CLASSIC_STYLE_OK &&
         !dimensions.file.compact_width && !dimensions.print_width);
-    classic_dialog_policy mixed={CLASSIC_DIALOG_WIN16,CLASSIC_DIALOG_WIN2K,
-        CLASSIC_DIALOG_WIN16,CLASSIC_DIALOG_NATIVE},policy={0};
+    classic_dialog_policy mixed={CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,CLASSIC_FILE_EXPLORER_LAYOUT,
+        CLASSIC_FOLDER_LEGACY_TREE,CLASSIC_PRINT_NATIVE,0,0,0},policy={0};
     CHECK(classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,&mixed,NULL,NULL,NULL)==length+12);
     CHECK(classic_style_read(bytes,length+12,&group,NULL,NULL,NULL,&policy,NULL,NULL,NULL)==CLASSIC_STYLE_OK &&
         !memcmp(&mixed,&policy,sizeof(policy)) && group.slots[1].role==CLASSIC_BUTTON_CLOSE);
-    bytes[length+11]=3;
-    CHECK(classic_style_read(bytes,length+12,&group,NULL,NULL,NULL,&policy,NULL,NULL,NULL)==CLASSIC_STYLE_INVALID &&
-        !memcmp(&mixed,&policy,sizeof(policy)));
-    bytes[length+11]=0;
+    const unsigned char legacy_wire[]={1,2,1,0};
+    CHECK(!memcmp(bytes+length+8,legacy_wire,sizeof(legacy_wire)));
+    for(size_t i=0;i<sizeof(legacy_wire);++i){
+        bytes[length+8+i]=3;
+        CHECK(classic_style_read(bytes,length+12,&group,NULL,NULL,NULL,&policy,NULL,NULL,NULL)==CLASSIC_STYLE_INVALID &&
+            !memcmp(&mixed,&policy,sizeof(policy)));
+        bytes[length+8+i]=legacy_wire[i];
+    }
     memcpy(bytes+length+12,bytes+length,12);
     bytes[8]=(unsigned char)(length+24);bytes[12]=3;
     CHECK(classic_style_read(bytes,length+24,&group,NULL,NULL,NULL,&policy,NULL,NULL,NULL)==CLASSIC_STYLE_INVALID);
     CHECK(classic_style_read(reference,length,&group,NULL,NULL,NULL,&policy,NULL,NULL,NULL)==CLASSIC_STYLE_OK &&
-        !policy.appearance);
+        !policy.window_provider);
+    mixed.color=CLASSIC_STOCK_NATIVE;mixed.font=CLASSIC_STOCK_OWNER_CHROME;mixed.find=CLASSIC_STOCK_OBSERVED_LAYOUT;
+    CHECK(classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,&mixed,NULL,NULL,NULL)==length+23 &&
+        bytes[6]==18 && bytes[length+12]==21);
+    CHECK(classic_style_read(bytes,length+23,&group,NULL,NULL,NULL,&policy,NULL,NULL,NULL)==CLASSIC_STYLE_OK &&
+        !memcmp(&mixed,&policy,sizeof(policy)));
+    bytes[length+22]=4;
+    CHECK(classic_style_read(bytes,length+23,&group,NULL,NULL,NULL,&policy,NULL,NULL,NULL)==CLASSIC_STYLE_INVALID &&
+        !memcmp(&mixed,&policy,sizeof(policy)));
     style_caption_presentation caption={.text_mode=STYLE_CAPTION_TEXT_CENTER_CLIP,
         .separator=STYLE_CAPTION_SEPARATOR_INSIDE},decoded={0};
     CHECK(classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,NULL,&caption,NULL,NULL)==length+10);
@@ -224,10 +236,8 @@ static int packaged(PCWSTR root,PCWSTR name,unsigned expected_count,unsigned exp
     classic_control_presentation controls;
     enum classic_style_result result=classic_style_read(handle?LockResource(handle):NULL,size,&group,&metrics,&columns,&dialog,&policy,&caption,&border,&controls);
     const WORD language=MAKELANGID(LANG_ENGLISH,SUBLANG_ENGLISH_US);
-    if(measure==CLASSIC_SCROLL_EXTENT_SYSTEM){
-        for(WORD id=201;id<=203;++id)
-            CHECK(FindResourceExW(module,MAKEINTRESOURCEW(5),MAKEINTRESOURCEW(id),language));
-    }else CHECK(!FindResourceExW(module,MAKEINTRESOURCEW(5),MAKEINTRESOURCEW(201),language));
+    for(WORD id=201;id<=203;++id)
+        CHECK(FindResourceExW(module,MAKEINTRESOURCEW(5),MAKEINTRESOURCEW(id),language));
     FreeLibrary(module);
     CHECK(result==CLASSIC_STYLE_OK && group.count==expected_count);
     CHECK(group.slots[group.count-1].role==expected_last && group.slots[group.count-1].gap_before==expected_gap);
@@ -241,8 +251,14 @@ static int packaged(PCWSTR root,PCWSTR name,unsigned expected_count,unsigned exp
     CHECK(controls.trackbar==(measure==CLASSIC_SCROLL_EXTENT_SYSTEM?STYLE_TRACKBAR_RELIEF:STYLE_TRACKBAR_OUTLINED));
     CHECK(controls.header==(measure==CLASSIC_SCROLL_EXTENT_SYSTEM?STYLE_LINE_RELIEF:STYLE_LINE_FLAT));
     CHECK(controls.tab==controls.header);
-    unsigned route=measure==CLASSIC_SCROLL_EXTENT_SYSTEM?CLASSIC_DIALOG_WIN2K:CLASSIC_DIALOG_WIN16;
-    CHECK(policy.appearance==route && policy.file==route && policy.folder==route && policy.print==route);
+    const classic_dialog_policy expected=measure==CLASSIC_SCROLL_EXTENT_SYSTEM?
+        (classic_dialog_policy){CLASSIC_WINDOW_PROVIDER_NONCLIENT,CLASSIC_FILE_EXPLORER_LAYOUT,
+            CLASSIC_FOLDER_OBSERVED_NATIVE,CLASSIC_PRINT_GENERAL_PAGE,CLASSIC_STOCK_OBSERVED_LAYOUT,
+            CLASSIC_STOCK_OBSERVED_LAYOUT,CLASSIC_STOCK_OBSERVED_LAYOUT}:
+        (classic_dialog_policy){CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,CLASSIC_FILE_LEGACY_LAYOUT,
+            CLASSIC_FOLDER_LEGACY_TREE,CLASSIC_PRINT_LEGACY_BRIDGE,CLASSIC_STOCK_OWNER_CHROME,
+            CLASSIC_STOCK_OWNER_CHROME,CLASSIC_STOCK_OWNER_CHROME};
+    CHECK(!memcmp(&policy,&expected,sizeof(policy)));
     if(measure==CLASSIC_SCROLL_EXTENT_CROSS_AXIS){
         CHECK(caption.text_mode==STYLE_CAPTION_TEXT_CENTER_CLIP && caption.separator==STYLE_CAPTION_SEPARATOR_AFTER);
         CHECK(caption.button_source==STYLE_CAPTION_BUTTON_INDEXED && caption.button_outline==STYLE_CAPTION_BUTTON_EDGE_OUTLINE);
@@ -255,7 +271,6 @@ static int packaged(PCWSTR root,PCWSTR name,unsigned expected_count,unsigned exp
             border.geometry.caption_floor==20 && border.geometry.separator_units==1);
         CHECK(columns.check_column==18 && columns.shortcut_gap==8 && columns.arrow_column==12 && columns.plain_column==4 &&
             columns.text_flags==(STYLE_MENU_TEXT_DEFINED|STYLE_MENU_TEXT_STIPPLE_DISABLED));
-        CHECK(!dialog.file.compact_width && !dialog.print_width);
     }else{
         CHECK(caption.text_mode==STYLE_CAPTION_TEXT_LEFT_ELLIPSIS && caption.separator==STYLE_CAPTION_SEPARATOR_INSIDE);
         CHECK(caption.button_source==STYLE_CAPTION_BUTTON_SYSTEM && caption.button_outline==STYLE_CAPTION_BUTTON_NO_OUTLINE);
@@ -267,14 +282,14 @@ static int packaged(PCWSTR root,PCWSTR name,unsigned expected_count,unsigned exp
         CHECK(columns.check_column==22 && !columns.shortcut_gap && columns.arrow_column==16 && columns.plain_column==16 &&
             columns.text_flags==(STYLE_MENU_TEXT_DEFINED|STYLE_MENU_TEXT_SHORTCUT_RIGHT|
                 STYLE_MENU_TEXT_BOLD_DEFAULT|STYLE_MENU_TEXT_CENTER_BAR|STYLE_MENU_COMMAND_GLYPHS));
-        CHECK(dialog.file.compact_width==427 && dialog.file.compact_height==272 &&
-            dialog.file.places_width==565 && dialog.file.places_height==345 &&
-            dialog.file.client_dlu_width==370 && dialog.file.client_dlu_height==197 &&
-            dialog.file.gap==7 && dialog.file.bottom_reserve==20);
-        CHECK(dialog.print_width==500 && dialog.print_full_height==450 && dialog.print_large_height==490);
-        CHECK(dialog.color_width==298 && dialog.color_height==184 && dialog.find_width==236 &&
-            dialog.find_native_height==74 && dialog.find_classic_height==62 && dialog.font_width==287 && dialog.font_height==196);
     }
+    CHECK(dialog.file.compact_width==427 && dialog.file.compact_height==272 &&
+        dialog.file.places_width==565 && dialog.file.places_height==345 &&
+        dialog.file.client_dlu_width==370 && dialog.file.client_dlu_height==197 &&
+        dialog.file.gap==7 && dialog.file.bottom_reserve==20);
+    CHECK(dialog.print_width==500 && dialog.print_full_height==450 && dialog.print_large_height==490);
+    CHECK(dialog.color_width==298 && dialog.color_height==184 && dialog.find_width==236 &&
+        dialog.find_native_height==74 && dialog.find_classic_height==62 && dialog.font_width==287 && dialog.font_height==196);
     return 0;
 }
 

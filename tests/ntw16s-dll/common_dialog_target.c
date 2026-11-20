@@ -5,6 +5,8 @@
 #include <dlgs.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <wchar.h>
 #include "../integration/global_dialog_thread.h"
 static BOOL (__cdecl *attached)(HWND);
 static BOOL cancel_mode,font_mode,color_mode,color_expand,color_keyboard_mode;
@@ -14,11 +16,36 @@ static BOOL font_apply_mode,font_apply_ansi,font_apply_seen,font_apply_initial,f
 static BOOL font_memory_template;
 static UINT font_apply_dpi;
 static RECT font_apply_client,font_apply_reference;
-static COLORREF color_expected,color_result;
+static COLORREF color_expected,color_result,edge_expected;
 static int inits,ticks;
 static BOOL frame_attached;
 static BOOL __cdecl win2k_frame_attached(HWND window)
 {return GetPropW(window,L"Win2kStyle.Frame")!=NULL;}
+
+static BOOL __cdecl neutral_frame_painted(HWND window)
+{
+    HDC screen=GetDC(NULL);
+    HDC dc=screen?CreateCompatibleDC(screen):NULL;
+    HBITMAP bitmap=dc?CreateCompatibleBitmap(screen,128,24):NULL;
+    if(screen)ReleaseDC(NULL,screen);
+    HGDIOBJ old=bitmap?SelectObject(dc,bitmap):NULL;
+    unsigned selected=0;
+    COLORREF color=CLR_INVALID;
+    if(old && old!=HGDI_ERROR){
+        PatBlt(dc,0,0,128,24,BLACKNESS);
+        SendMessageW(window,WM_PRINT,(WPARAM)dc,PRF_NONCLIENT);
+        color=GetPixel(dc,40,12);
+        for(int x=25;x<115;++x){
+            COLORREF sample=GetPixel(dc,x,12);
+            selected+=sample==RGB(164,200,240) || sample==RGB(255,255,255);
+        }
+        SelectObject(dc,old);
+    }
+    if(bitmap)DeleteObject(bitmap);
+    if(dc)DeleteDC(dc);
+    printf("COMMON_FRAME sample=%06lx background=%u\n",color,selected);
+    return selected>40;
+}
 
 enum { font_width=287, font_height=196, memory_width=299, memory_height=204 };
 
@@ -135,7 +162,7 @@ static UINT_PTR CALLBACK app_hook(HWND window,UINT message,WPARAM wparam,LPARAM 
                 printf("COLOR_EDGE corner=%08lx inner=%08lx center=%08lx at=%d,%d dpi=%d\n",(DWORD)corner,(DWORD)inner,(DWORD)color_expected,bx,by,dpi);
                 HWND other=GetDlgItem(window,721);HDC other_dc=other?GetDC(other):NULL;
                 if(other_dc){COLORREF custom_corner=GetPixel(other_dc,bx,by),custom_inner=GetPixel(other_dc,bx+1,by+1);
-                    color_edge_ok=dpi==96&&corner==RGB(0,0,0)&&inner==color_expected&&custom_corner==RGB(0,0,0)&&custom_inner==RGB(12,34,56);
+                    color_edge_ok=dpi==96&&corner==edge_expected&&inner==color_expected&&custom_corner==edge_expected&&custom_inner==RGB(12,34,56);
                     printf("COLOR_CUSTOM_EDGE corner=%08lx inner=%08lx flat=%d\n",(DWORD)custom_corner,(DWORD)custom_inner,color_edge_ok);ReleaseDC(other,other_dc);}
                 POINT point={x,y};MapWindowPoints(grid,window,&point,1);
                 SendMessageW(window,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(point.x,point.y));
@@ -200,12 +227,20 @@ int wmain(int argc,WCHAR **argv)
         argc-=2;
         argv+=2;
     }
-    if(argc!=4)return 2;
+    if(argc!=4 && argc!=5)return 2;
     BOOL font=argv[1][0]==L'f',ansi=argv[2][0]==L'a';font_mode=font;color_mode=!font;color_expand=color_mode && argv[3][0]==L'e';color_keyboard_mode=color_mode&&argv[3][0]==L'k';cancel_mode=argv[3][0]==L'c' || color_expand;
     HMODULE module=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");
     attached=module?(BOOL (__cdecl *)(HWND))(void *)GetProcAddress(module,"Ntw16sWindowAttached"):NULL;
     if(late || (!attached && GetModuleHandleW(sizeof(void*)==4?L"ntw2ks32.dll":L"ntw2ks64.dll")))
         attached=win2k_frame_attached;
+    if(!attached && GetModuleHandleW(sizeof(void*)==4?L"ntwshk32.dll":L"ntwshk64.dll"))
+        attached=neutral_frame_painted;
+    if(argc==5){
+        WCHAR *end;
+        unsigned long color=wcstoul(argv[4],&end,16);
+        if(font || end==argv[4] || *end || color>0xfffffful)return 2;
+        edge_expected=(COLORREF)color;
+    }
     font_memory_template=font && (!lstrcmpW(argv[3],L"apply-memory-ok") || !lstrcmpW(argv[3],L"apply-memory-cancel"));
     font_apply_mode=font_memory_template || (font && (!lstrcmpW(argv[3],L"apply-ok") || !lstrcmpW(argv[3],L"apply-cancel")));
     if(font_apply_mode){

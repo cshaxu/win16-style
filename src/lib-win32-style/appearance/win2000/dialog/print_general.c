@@ -354,11 +354,15 @@ static UINT general_template(HWND owner,DWORD flags,const classic_dialog_metrics
 static HRESULT show_sheet(HINSTANCE module,HWND owner,general_page *page)
 {
     classic_theme_mapping source={0};
-    HRESULT loaded=classic_theme_open_packaged(module,CLASSIC_THEME_WIN2K,TRUE,&source);
+    HRESULT loaded=classic_theme_open_dialog(module,&source);
     if(FAILED(loaded))return loaded;
     const classic_dialog_metrics fallback=WIN2000_DIALOG_METRICS;
     const classic_dialog_metrics *metrics=source.model.dialog_metrics.print_width?&source.model.dialog_metrics:&fallback;
     UINT layout=general_template(owner,page->flags,metrics);
+    if(!FindResourceW(source.resources,MAKEINTRESOURCEW(layout),MAKEINTRESOURCEW(5))){
+        classic_theme_close(&source);
+        return S_FALSE;
+    }
     page->full=layout!=WIN2K_PRINT_GENERAL;
     PROPSHEETPAGEW details={.dwSize=sizeof(details),.dwFlags=PSP_USETITLE,.hInstance=source.resources,
         .pszTemplate=MAKEINTRESOURCEW(layout),.pszTitle=L"General",
@@ -483,6 +487,7 @@ BOOL NAME(HINSTANCE resources,TYPE *p,HRESULT *result) \
        page.range_text,ARRAYSIZE(page.range_text)))return FALSE; \
     if(!prepare_devices(&page,p->hDevMode,p->hDevNames)){dispose_page(&page);return FALSE;} \
     *result=show_sheet(resources,p->hwndOwner,&page); \
+    if(*result==S_FALSE){dispose_page(&page);return FALSE;} \
     if(SUCCEEDED(*result) && page.saved.mode && (!style_print_global_available(p->hDevMode) || \
        !style_print_global_available(p->hDevNames)))*result=E_FAIL; \
     if(SUCCEEDED(*result)){ \

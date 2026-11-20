@@ -16,7 +16,7 @@ enum {
     thumb_type=14, thumb_size=1, push_type=15, push_size=1,
     control_lines_type=16, control_lines_size=2, progress_type=17, progress_size=6,
     trackbar_type=18, trackbar_size=1, header_frame_type=19, header_frame_size=1,
-    tab_frame_type=20, tab_frame_size=1, required_flag=1
+    tab_frame_type=20, tab_frame_size=1, stock_dialog_type=21, stock_dialog_size=3, required_flag=1
 };
 
 _Static_assert(sizeof(style_border_presentation)==border_presentation_size,"border resource layout");
@@ -25,7 +25,7 @@ _Static_assert(sizeof(style_progress_layout)==progress_size,"progress record lay
 _Static_assert(header_size+13*record_size+group_header_size+slot_size*CLASSIC_BUTTON_CLOSE+
     scroll_metrics_size+menu_metrics_size+dialog_metrics_size+dialog_policy_size+
     caption_presentation_size+border_presentation_size+menu_text_size+separator_size+thumb_size+push_size+control_lines_size+
-    progress_size+trackbar_size+header_frame_size+tab_frame_size+3*record_size==
+    progress_size+trackbar_size+header_frame_size+tab_frame_size+4*record_size+stock_dialog_size==
     CLASSIC_STYLE_RESOURCE_CAPACITY,"classic resource capacity");
 
 static uint16_t read_half(const unsigned char *bytes)
@@ -114,9 +114,11 @@ static bool valid_dialog(classic_dialog_metrics dialog)
 
 static bool valid_policy(classic_dialog_policy policy)
 {
-    return policy.appearance>=CLASSIC_DIALOG_WIN16 && policy.appearance<=CLASSIC_DIALOG_WIN2K &&
-        policy.file<=CLASSIC_DIALOG_WIN2K && policy.folder<=CLASSIC_DIALOG_WIN2K &&
-        policy.print<=CLASSIC_DIALOG_WIN2K;
+    return policy.window_provider>=CLASSIC_WINDOW_PROVIDER_FULL_CLIENT &&
+        policy.window_provider<=CLASSIC_WINDOW_PROVIDER_NONCLIENT &&
+        policy.file<=CLASSIC_FILE_EXPLORER_LAYOUT && policy.folder<=CLASSIC_FOLDER_OBSERVED_NATIVE &&
+        policy.print<=CLASSIC_PRINT_GENERAL_PAGE && policy.color<=CLASSIC_STOCK_OBSERVED_LAYOUT &&
+        policy.font<=CLASSIC_STOCK_OBSERVED_LAYOUT && policy.find<=CLASSIC_STOCK_OBSERVED_LAYOUT;
 }
 
 static bool valid_caption(style_caption_presentation caption)
@@ -164,6 +166,7 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
     uint16_t menu_text=0;
     classic_dialog_metrics dimensions={0};
     classic_dialog_policy routes={0};
+    bool stock_dialog_seen=false;
     style_caption_presentation presentation={0};
     style_border_presentation strokes={0};
     classic_control_presentation control_presentation={0};
@@ -204,11 +207,18 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
                 read_half(data+30),read_half(data+32),read_half(data+34)};
             if(!valid_dialog(dimensions))return CLASSIC_STYLE_INVALID;
         }else if(type==dialog_policy_type){
-            if(routes.appearance || payload!=dialog_policy_size || flags!=required_flag)
+            if(routes.window_provider || payload!=dialog_policy_size || flags!=required_flag)
                 return CLASSIC_STYLE_INVALID;
             const unsigned char *data=record+record_size;
-            routes=(classic_dialog_policy){data[0],data[1],data[2],data[3]};
+            routes.window_provider=data[0];routes.file=data[1];routes.folder=data[2];routes.print=data[3];
             if(!valid_policy(routes))return CLASSIC_STYLE_INVALID;
+        }else if(type==stock_dialog_type){
+            if(stock_dialog_seen || flags || payload!=stock_dialog_size)return CLASSIC_STYLE_INVALID;
+            stock_dialog_seen=true;
+            const unsigned char *data=record+record_size;
+            routes.color=data[0];routes.font=data[1];routes.find=data[2];
+            if(routes.color>CLASSIC_STOCK_OBSERVED_LAYOUT || routes.font>CLASSIC_STOCK_OBSERVED_LAYOUT ||
+               routes.find>CLASSIC_STOCK_OBSERVED_LAYOUT)return CLASSIC_STYLE_INVALID;
         }else if(type==caption_presentation_type){
             if(presentation.text_mode || (payload!=caption_presentation_size &&
                payload!=caption_presentation_legacy_size))return CLASSIC_STYLE_INVALID;
@@ -260,7 +270,8 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
         record+=record_size+payload;
         remaining-=record_size+payload;
     }
-    if(remaining || (menu_text && !columns.check_column) || (thumb && !metrics.source))
+    if(remaining || (menu_text && !columns.check_column) || (thumb && !metrics.source) ||
+       (stock_dialog_seen && !routes.window_provider))
         return CLASSIC_STYLE_INVALID;
     metrics.thumb=thumb;
     columns.text_flags=menu_text;
@@ -288,6 +299,7 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
     bool trackbar=controls && controls->trackbar;
     style_line_profile header=controls?controls->header:STYLE_LINE_DEFAULT;
     style_line_profile tab=controls?controls->tab:STYLE_LINE_DEFAULT;
+    bool stock=policy && (policy->color || policy->font || policy->find);
     if(!bytes || !group || !valid_group(group) ||
        (scroll && (!valid_scroll(*scroll) || (unsigned)scroll->thumb>STYLE_SCROLL_THUMB_PAGE)) ||
        (menu && !valid_menu(*menu)) || (dialog && !valid_dialog(*dialog)) ||
@@ -310,15 +322,16 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
         (border?record_size+border_size:0)+(separator?record_size+separator_size:0)+
         (thumb?record_size+thumb_size:0)+(push?record_size+push_size:0)+
         (lines?record_size+control_lines_size:0)+(progress?record_size+progress_size:0)+(trackbar?record_size+trackbar_size:0)+
-        (header?record_size+header_frame_size:0)+(tab?record_size+tab_frame_size:0);
+        (header?record_size+header_frame_size:0)+(tab?record_size+tab_frame_size:0)+
+        (stock?record_size+stock_dialog_size:0);
     if(capacity<length)return 0;
     memcpy(bytes,"CSTY",4);
     write_half(bytes+4,1);
-    write_half(bytes+6,tab?17:header?16:trackbar?15:progress?14:lines?13:push?12:thumb?11:separator?10:menu_text?9:border_size==border_presentation_size?8:caption_size==caption_presentation_size?7:
+    write_half(bytes+6,stock?18:tab?17:header?16:trackbar?15:progress?14:lines?13:push?12:thumb?11:separator?10:menu_text?9:border_size==border_presentation_size?8:caption_size==caption_presentation_size?7:
         border?6:caption?5:policy?4:dialog?3:menu?2:scroll?1:0);
     msstyles_v4_write_word(bytes+8,(uint32_t)length);
     msstyles_v4_write_word(bytes+12,1+(scroll!=NULL)+(menu!=NULL)+menu_text+(dialog!=NULL)+(policy!=NULL)+
-        (caption!=NULL)+(border!=NULL)+(separator!=0)+thumb+(push!=0)+lines+progress+trackbar+(header!=0)+(tab!=0));
+        (caption!=NULL)+(border!=NULL)+(separator!=0)+thumb+(push!=0)+lines+progress+trackbar+(header!=0)+(tab!=0)+stock);
     write_half(bytes+16,button_group_type);
     write_half(bytes+18,required_flag);
     msstyles_v4_write_word(bytes+20,(uint32_t)payload);
@@ -386,7 +399,7 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
         write_half(slot,dialog_policy_type);
         write_half(slot+2,required_flag);
         msstyles_v4_write_word(slot+4,dialog_policy_size);
-        slot[8]=policy->appearance;
+        slot[8]=policy->window_provider;
         slot[9]=policy->file;
         slot[10]=policy->folder;
         slot[11]=policy->print;
@@ -461,6 +474,13 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
         write_half(slot+2,0);
         msstyles_v4_write_word(slot+4,tab_frame_size);
         slot[record_size]=(unsigned char)tab;
+        slot+=record_size+tab_frame_size;
+    }
+    if(stock){
+        write_half(slot,stock_dialog_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,stock_dialog_size);
+        slot[8]=policy->color;slot[9]=policy->font;slot[10]=policy->find;
     }
     return length;
 }
