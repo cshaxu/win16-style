@@ -15,10 +15,11 @@ typedef struct win16_control_choice_view {
     BOOL (*vb_frame)(HWND),(*vb_button)(HWND);
     BOOL (*group_choice)(HWND),(*group_push)(HWND);
     HMODULE module;
-    win16_choice_art *art;
+    classic_choice_art *art;
     const classic_text_colors *label;
     const classic_group_colors *group;
     const classic_frame_colors *frame;
+    classic_control_presentation controls;
 } win16_control_choice_view;
 void win16_control_draw_choice(HWND window,const win16_control_choice_view *view,HDC dc);
 #endif

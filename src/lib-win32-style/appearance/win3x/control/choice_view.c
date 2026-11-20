@@ -78,7 +78,7 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
             palette.face=colors.face;
             palette.edge=colors.edge;
         }
-        win16_control_other(w,view->instance,&palette,dc,r,font,text,label_control,view->button_type,view->group_push);
+        win16_control_other(w,view->instance,&palette,dc,r,font,text,label_control,view->button_type,view->group_push,view->controls);
         RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;
     }
     height=MulDiv(13,(int)dpi,96);glyph=r;glyph.top+=(r.bottom-height)/2;
@@ -94,7 +94,7 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
         tile.light=colors->face;
         tile.edge=colors->edge;
     }
-    const char *image=entry?win16_choice_art_get(view->module,entry->image,view->art):NULL;
+    const char *image=entry?classic_choice_art_get(view->module,entry->image,view->art):NULL;
     if(view->instance->detached){RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;}
     win16_control_choice_glyph(dc,glyph,dpi,row,column,&tile,image);
     label=r;if(style&BS_LEFTTEXT)label.right=glyph.left-MulDiv(4,(int)dpi,96);

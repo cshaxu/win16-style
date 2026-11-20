@@ -22,6 +22,28 @@ static theme_resource resource(HMODULE module,PCWSTR type,PCWSTR name)
     return loaded?(theme_resource){LockResource(loaded),SizeofResource(module,entry)}:(theme_resource){0};
 }
 
+static HRESULT read_scroll_arrows(HMODULE module,style_scroll_arrow_art *art)
+{
+    theme_resource data=resource(module,MAKEINTRESOURCEW(10),L"CLASSIC_SCROLL_ARROWS");
+    if(!data.bytes)return S_OK;
+    const unsigned char magic[]={'S','A','R',1};
+    size_t header=sizeof(magic)+1;
+    HRESULT invalid=HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+    if(data.size<header || memcmp(data.bytes,magic,sizeof(magic)))return invalid;
+    unsigned source=data.bytes[sizeof(magic)];
+    if(source==STYLE_SCROLL_ARROW_SYMBOL && data.size==header){
+        art->source=STYLE_SCROLL_ARROW_SYMBOL;
+        return S_OK;
+    }
+    if(source!=STYLE_SCROLL_ARROW_INDEXED || data.size!=header+sizeof(art->cells))return invalid;
+    const BYTE *cells=data.bytes+header;
+    for(unsigned cell=0;cell<STYLE_SCROLL_ARROW_STATES*STYLE_SCROLL_ARROW_DIRECTIONS;++cell)
+        if(cells[(cell+1)*STYLE_SCROLL_ARROW_BYTES-1]&0xfcu)return invalid;
+    memcpy(art->cells,cells,sizeof(art->cells));
+    art->source=STYLE_SCROLL_ARROW_INDEXED;
+    return S_OK;
+}
+
 static bool name_equals(msstyles_v4_name name,PCWSTR expected)
 {
     return name.units<=INT_MAX && CompareStringOrdinal((PCWSTR)name.bytes,(int)name.units-1,
@@ -87,6 +109,13 @@ typedef struct theme_field {
 #define COLOR_FIELD(cls,part,state,name) {cls,part,state,name,TMT_COLOR,0,false}
 
 enum { choice_face=1, choice_ink=2 };
+
+BOOL classic_choice_has_art(const classic_choice_colors *colors)
+{
+    for(unsigned i=0;i<ARRAYSIZE(colors->check);++i)if(colors->check[i].image)return TRUE;
+    for(unsigned i=0;i<ARRAYSIZE(colors->radio);++i)if(colors->radio[i].image)return TRUE;
+    return FALSE;
+}
 
 const classic_choice_surface *classic_choice_entry(const classic_choice_colors *colors,
     BOOL radio,LRESULT check,BOOL disabled,LRESULT button_state)
@@ -487,11 +516,12 @@ HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme
     if(SUCCEEDED(result)){
         enum classic_style_result status=classic_style_read(extension.bytes,extension.size,
             &value.title_buttons,&value.scroll_metrics,&value.menu_metrics,&value.dialog_metrics,
-            &value.dialog_policy,&value.caption_presentation,&value.border_presentation);
+            &value.dialog_policy,&value.caption_presentation,&value.border_presentation,&value.controls);
         if(status!=CLASSIC_STYLE_OK)result=HRESULT_FROM_WIN32(
             status==CLASSIC_STYLE_VERSION || status==CLASSIC_STYLE_REQUIRED_RECORD?
             ERROR_NOT_SUPPORTED:ERROR_INVALID_DATA);
     }
+    if(SUCCEEDED(result))result=read_scroll_arrows(module,&value.scroll_art);
     if(SUCCEEDED(result))*theme=value;
     return result;
 }

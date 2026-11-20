@@ -39,3 +39,49 @@ void style_control_list_paint(HWND window,style_instance *instance,HDC dc,const 
     }
     RestoreDC(dc,saved);
 }
+
+static HFONT string_font(HWND window,void *context)
+{
+    const style_list_appearance *style=context;
+    return style->font_override?style->font_override:(HFONT)SendMessageW(window,WM_GETFONT,0,0);
+}
+
+static void string_background(HWND window,void *context,HDC dc,const style_control_list_snapshot *snapshot)
+{
+    (void)window;
+    const style_list_appearance *style=context;
+    HBRUSH brush=style->parent_brush;
+    if(!brush){
+        SetDCBrushColor(dc,style->background);
+        brush=(HBRUSH)GetStockObject(DC_BRUSH);
+    }
+    FillRect(dc,&snapshot->client,brush);
+    SelectObject(dc,snapshot->font?snapshot->font:GetStockObject(SYSTEM_FONT));
+    SetBkMode(dc,TRANSPARENT);
+}
+
+static void string_row(HWND window,void *context,HDC dc,const style_control_list_snapshot *snapshot,
+    const style_control_list_item *item)
+{
+    const style_list_appearance *style=context;
+    BOOL selected=item->selected>0;
+    if(selected || !style->parent_brush){
+        SetDCBrushColor(dc,selected?style->selection:style->background);
+        FillRect(dc,&item->row,(HBRUSH)GetStockObject(DC_BRUSH));
+    }
+    SetTextColor(dc,!IsWindowEnabled(window)?style->disabled_text:selected?style->selected_text:style->text);
+    RECT label=item->row;
+    if(!(snapshot->style&LBS_MULTICOLUMN))label.left+=2;
+    if(style->use_tabs && (snapshot->style&LBS_USETABSTOPS))
+        TabbedTextOutW(dc,label.left,label.top,item->text,item->length,style->tab_count,style->tabs,item->row.left);
+    else DrawTextW(dc,item->text,item->length,&label,DT_LEFT|DT_SINGLELINE|DT_NOPREFIX);
+    if(GetFocus()==window && snapshot->caret==item->index &&
+       (!style->honor_focus_cues || !(SendMessageW(window,WM_QUERYUISTATE,0,0)&UISF_HIDEFOCUS)))
+        DrawFocusRect(dc,&item->row);
+}
+
+void style_control_list_strings(HWND window,style_instance *instance,HDC dc,const style_list_appearance *style)
+{
+    const style_control_list_painter painter={(void *)style,string_font,string_background,string_row};
+    style_control_list_paint(window,instance,dc,&painter);
+}

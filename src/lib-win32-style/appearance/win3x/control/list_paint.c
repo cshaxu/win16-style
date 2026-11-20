@@ -5,48 +5,21 @@
 #include "lib-win32-style/application/control/list_snapshot.h"
 #include "lib-win32-style/application/control/control_class.h"
 
-typedef struct list_render {
-    const win16_style_palette *palette;
-    const style_control_state *state;
-} list_render;
-static HFONT list_font(HWND window,void *context)
-{
-    const list_render *render=context;
-    return render->state->font && style_control_vb_list(window)?render->state->font:(HFONT)SendMessageW(window,WM_GETFONT,0,0);
-}
-static void list_begin(HWND window,void *context,HDC dc,const style_control_list_snapshot *snapshot)
-{
-    (void)window;const list_render *render=context;
-    SetDCBrushColor(dc,render->palette->light);FillRect(dc,&snapshot->client,(HBRUSH)GetStockObject(DC_BRUSH));
-    SelectObject(dc,snapshot->font?snapshot->font:GetStockObject(SYSTEM_FONT));SetBkMode(dc,TRANSPARENT);
-}
-static void list_item(HWND window,void *context,HDC dc,const style_control_list_snapshot *snapshot,const style_control_list_item *item)
-{
-    const list_render *render=context;const win16_style_palette *palette=render->palette;
-    SetDCBrushColor(dc,item->selected>0?palette->active:palette->light);FillRect(dc,&item->row,(HBRUSH)GetStockObject(DC_BRUSH));
-    SetTextColor(dc,!IsWindowEnabled(window)?palette->shadow:item->selected>0?palette->active_text:palette->edge);
-    /* Original LBPrintCallback starts multicolumn text at0, ordinary text at2. */
-    RECT label=item->row;if(!(snapshot->style&LBS_MULTICOLUMN))label.left+=2;
-    if(snapshot->style&LBS_USETABSTOPS)
-        TabbedTextOutW(dc,label.left,label.top,item->text,item->length,render->state->tab_count,render->state->tab_positions,item->row.left);
-    else DrawTextW(dc,item->text,-1,&label,DT_LEFT|DT_SINGLELINE|DT_NOPREFIX);
-    if(GetFocus()==window && snapshot->caret==item->index)DrawFocusRect(dc,&item->row);
-}
 void win16_control_draw_list(HWND window,control_style *style,HDC dc)
 {
-    win16_style_palette palette=style->palette;
-    if(style->list_colors.present){
-        palette.light=style->list_colors.background;
-        palette.active=style->list_colors.selection;
-        palette.active_text=style->list_colors.selection_text;
-    }
-    if(style->label_colors.present){
-        palette.edge=style->label_colors.normal;
-        palette.shadow=style->label_colors.disabled;
-    }
-    list_render render={&palette,&style->state};
-    const style_control_list_painter painter={&render,list_font,list_begin,list_item};
-    style_control_list_paint(window,&style->instance,dc,&painter);
+    const classic_list_colors *list=&style->list_colors;
+    const classic_text_colors *label=&style->label_colors;
+    const win16_style_palette *palette=&style->palette;
+    const style_list_appearance appearance={
+        .font_override=style->state.font && style_control_vb_list(window)?style->state.font:NULL,
+        .background=list->present?list->background:palette->light,
+        .selection=list->present?list->selection:palette->active,
+        .text=label->present?label->normal:palette->edge,
+        .selected_text=list->present?list->selection_text:palette->active_text,
+        .disabled_text=label->present?label->disabled:palette->shadow,
+        .tabs=style->state.tab_positions,.tab_count=style->state.tab_count,.use_tabs=TRUE
+    };
+    style_control_list_strings(window,&style->instance,dc,&appearance);
 }
 
 void win16_control_edit_border(HWND w,const control_style *style,HDC target)
@@ -57,7 +30,14 @@ void win16_control_edit_border(HWND w,const control_style *style,HDC target)
     COLORREF edge=border->present?border->line:style->palette.edge;
     dc=target?target:GetDC(w);if(!dc)return;
     saved=SaveDC(dc);if(saved){
-        GetClientRect(w,&bounds);style_paint_solid_frame(dc,bounds,edge,max(1,MulDiv(1,(int)GetDpiForWindow(w),96)));
+        style_relief_palette colors=win16_control_push_palette(&style->palette);
+        if(style->frame_colors.present){
+            colors.shadow=style->frame_colors.shadow;
+            colors.highlight=style->frame_colors.light;
+        }
+        style_line_profile profile=style->controls.edit?style->controls.edit:STYLE_LINE_FLAT;
+        if(GetClientRect(w,&bounds))style_paint_line_frame(dc,&bounds,BDR_SUNKENOUTER,0,
+            max(1,MulDiv(1,(int)GetDpiForWindow(w),96)),edge,profile,&colors);
         RestoreDC(dc,saved);
     }
     if(!target)ReleaseDC(w,dc);

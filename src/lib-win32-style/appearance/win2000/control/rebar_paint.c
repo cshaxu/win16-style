@@ -27,5 +27,5 @@ void win2k_rebar_grip(HWND window,const NMCUSTOMDRAW *draw,const void *context)
     COLORREF background=band.clrBack;
     if(background==CLR_DEFAULT)background=(COLORREF)SendMessageW(window,RB_GETBKCOLOR,0,0);
     if(instance->detached || (background!=CLR_DEFAULT && background!=GetSysColor(COLOR_BTNFACE)))return;
-    win2k_edge(draw->hdc,&grip,BDR_RAISEDINNER,BF_RECT|BF_MIDDLE,&parameters->palette);
+    style_paint_relief(draw->hdc,&grip,BDR_RAISEDINNER,BF_RECT|BF_MIDDLE,&parameters->palette);
 }

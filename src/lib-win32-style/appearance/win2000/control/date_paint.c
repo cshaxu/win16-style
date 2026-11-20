@@ -29,6 +29,6 @@ void win2k_date_button(HWND window,const style_instance *instance,HDC dc,const R
     int saved=SaveDC(dc);
     if(!saved)return;
     if(!dirty || IntersectClipRect(dc,dirty->left,dirty->top,dirty->right,dirty->bottom)>NULLREGION)
-        win2k_scroll_arrow_button(dc,&button->bounds,state,palette);
+        style_paint_scroll_system_arrow(dc,&button->bounds,state,palette);
     RestoreDC(dc,saved);
 }

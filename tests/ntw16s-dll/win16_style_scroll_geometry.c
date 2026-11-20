@@ -1,4 +1,4 @@
-#include "lib-win32-style/appearance/win3x/control/scroll_layout.h"
+#include "lib-win32-style/application/control/scroll_geometry.h"
 #include "lib-win32-style/appearance/win3x/control/scroll_native.h"
 #include "lib-win32-style/application/control/scroll_track.h"
 #include "lib-win32-style/application/control/scroll_state.h"
@@ -24,7 +24,7 @@ static BOOL no_embedded_layout(HWND w,void *context,LONG object,style_scroll_lay
 #define CHECK(x) do { ++checks; if(!(x)){fprintf(stderr,"SCROLL GEOMETRY FAIL %d: %s\n",__LINE__,#x);exit(1);} } while(0)
 static void tracking_tests(void)
 {
-    const win16_scroll_metrics metrics={17,17,1};RECT bar={0,0,17,200},limit={-4,-1,21,201};
+    const style_scroll_fixed_metrics metrics={17,17,1};RECT bar={0,0,17,200},limit={-4,-1,21,201};
     style_scroll_layout l,from_native;style_scroll_track t={0};style_scroll_actions a;
     style_scroll_resources caret={.caret_shown=TRUE};
     style_scroll_caret_destroy(NULL,&caret);CHECK(!caret.caret && !caret.caret_shown);
@@ -71,10 +71,15 @@ static void tracking_tests(void)
     SCROLLINFO native={.cbSize=sizeof(native),.nMin=0,.nMax=109,.nPage=10,.nPos=50};
     CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,(classic_scroll_metrics){0},&from_native));
     CHECK(from_native.maximum==100 && from_native.position==50 && from_native.first.bottom==17);
+    CHECK(from_native.thumb.bottom-from_native.thumb.top==17);
+    const classic_scroll_metrics mixed={CLASSIC_SCROLL_EXTENT_CROSS_AXIS,0,STYLE_SCROLL_THUMB_PAGE};
+    CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,mixed,&l));
+    CHECK(l.maximum==from_native.maximum && l.thumb.bottom-l.thumb.top==15 && l.minimum_pixel==17);
+    CHECK(style_scroll_hit(&l,(POINT){8,l.thumb.top},0)==STYLE_SCROLL_THUMB);
     native.nPage=200;CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,(classic_scroll_metrics){0},&from_native) && from_native.maximum==0);
     CHECK(!win16_scroll_measure_native(NULL,TRUE,96,&native,(classic_scroll_metrics){0},&from_native));
     CHECK(!win16_scroll_measure_native(&bar,TRUE,96,NULL,(classic_scroll_metrics){0},&from_native));
-    CHECK(win16_scroll_measure(&bar,TRUE,&metrics,0,100,50,&l));
+    CHECK(style_scroll_measure_fixed(&bar,TRUE,&metrics,0,100,50,&l));
     CHECK(style_scroll_begin(&t,&l,0,point,&limit,&a,&win16_scroll_policy));
     CHECK(t.active && t.part==STYLE_SCROLL_THUMB && t.grab_offset==8 && t.pixel==92);
     CHECK(a.count==1 && a.notices[0].command==SB_THUMBTRACK && a.notices[0].position==50 && !a.timer_ms);
@@ -107,7 +112,7 @@ static void tracking_tests(void)
     CHECK(!style_scroll_begin(&t,&l,ESB_DISABLE_BOTH,point,&limit,&a,&win16_scroll_policy) && !t.active);
     point.y=50;CHECK(style_scroll_begin(&t,&l,0,point,&limit,&a,&win16_scroll_policy));
     CHECK(a.count==1 && a.notices[0].command==SB_PAGEUP);
-    CHECK(win16_scroll_measure(&bar,TRUE,&metrics,0,100,0,&l));
+    CHECK(style_scroll_measure_fixed(&bar,TRUE,&metrics,0,100,0,&l));
     style_scroll_motion(&t,&l,0,point,TRUE,&a,&win16_scroll_policy);
     CHECK(!t.inside && !a.count && !a.timer_ms);
     style_scroll_end(&t,FALSE,&a);CHECK(!t.active && a.count==1);
@@ -115,31 +120,31 @@ static void tracking_tests(void)
 }
 int main(void)
 {
-    const win16_scroll_metrics vga={17,17,1};
+    const style_scroll_fixed_metrics vga={17,17,1};
     style_scroll_layout l,h;RECT v={10,20,27,220},r={20,10,220,27};int p,length;
     /* Hand-calculated original-profile vectors: 17-pixel arrows/thumb and
      * the one-pixel shared boundary, not native SCROLLBARINFO as an oracle. */
-    CHECK(win16_scroll_measure(&v,TRUE,&vga,0,100,0,&l));
+    CHECK(style_scroll_measure_fixed(&v,TRUE,&vga,0,100,0,&l));
     CHECK(l.first.bottom==37 && l.last.top==203 && l.minimum_pixel==36 && l.travel==151);
     CHECK(l.thumb.top==36 && l.thumb.bottom==53 && l.thumb_fits);
     {POINT p1={12,36},p2={12,37},p3={12,53},p4={27,37};
-        CHECK(win16_scroll_hit(&l,p1,0)==STYLE_SCROLL_LINE_BEFORE);
-        CHECK(win16_scroll_hit(&l,p2,0)==STYLE_SCROLL_THUMB);
-        CHECK(win16_scroll_hit(&l,p3,0)==STYLE_SCROLL_PAGE_AFTER);
-        CHECK(win16_scroll_hit(&l,p4,0)==STYLE_SCROLL_NONE);
-        CHECK(win16_scroll_hit(&l,p1,ESB_DISABLE_UP)==STYLE_SCROLL_NONE);
-        CHECK(win16_scroll_hit(&l,p2,ESB_DISABLE_BOTH)==STYLE_SCROLL_NONE);}
-    CHECK(win16_scroll_measure(&v,TRUE,&vga,0,100,50,&l));
+        CHECK(style_scroll_hit(&l,p1,0)==STYLE_SCROLL_LINE_BEFORE);
+        CHECK(style_scroll_hit(&l,p2,0)==STYLE_SCROLL_THUMB);
+        CHECK(style_scroll_hit(&l,p3,0)==STYLE_SCROLL_PAGE_AFTER);
+        CHECK(style_scroll_hit(&l,p4,0)==STYLE_SCROLL_NONE);
+        CHECK(style_scroll_hit(&l,p1,ESB_DISABLE_UP)==STYLE_SCROLL_NONE);
+        CHECK(style_scroll_hit(&l,p2,ESB_DISABLE_BOTH)==STYLE_SCROLL_NONE);}
+    CHECK(style_scroll_measure_fixed(&v,TRUE,&vga,0,100,50,&l));
     CHECK(l.thumb.top==112 && l.thumb.bottom==129);
-    CHECK(win16_scroll_measure(&v,TRUE,&vga,0,100,100,&l));
+    CHECK(style_scroll_measure_fixed(&v,TRUE,&vga,0,100,100,&l));
     CHECK(l.thumb.top==187 && l.thumb.bottom==204);
     CHECK(style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,36)==0 && style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,187)==100);
     CHECK(style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,INT_MIN)==0 && style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,INT_MAX)==100);
     for(length=2;length<=400;++length){
         LONG previous=LONG_MIN;v.bottom=v.top+length;r.right=r.left+length;
         for(p=-101;p<=101;++p){
-            CHECK(win16_scroll_measure(&v,TRUE,&vga,-100,100,p,&l));
-            CHECK(win16_scroll_measure(&r,FALSE,&vga,-100,100,p,&h));
+            CHECK(style_scroll_measure_fixed(&v,TRUE,&vga,-100,100,p,&l));
+            CHECK(style_scroll_measure_fixed(&r,FALSE,&vga,-100,100,p,&h));
             CHECK(l.first.bottom==h.first.right && l.last.top==h.last.left);
             CHECK(l.thumb.top==h.thumb.left && l.thumb.bottom==h.thumb.right);
             CHECK(l.thumb.bottom-l.thumb.top==17);
@@ -157,15 +162,15 @@ int main(void)
         }
     }
     v.bottom=220;
-    CHECK(win16_scroll_measure(&v,TRUE,&vga,LONG_MIN,LONG_MAX,LONG_MAX,&l));
+    CHECK(style_scroll_measure_fixed(&v,TRUE,&vga,LONG_MIN,LONG_MAX,LONG_MAX,&l));
     CHECK(l.thumb.top==187);
     CHECK(style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,36)==LONG_MIN && style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,187)==LONG_MAX);
-    CHECK(win16_scroll_measure(&v,TRUE,&vga,5,5,500,&l) && l.position==5);
+    CHECK(style_scroll_measure_fixed(&v,TRUE,&vga,5,5,500,&l) && l.position==5);
     CHECK(style_scroll_position(l.minimum_pixel,l.travel,l.minimum,l.maximum,100)==5);
-    CHECK(!win16_scroll_measure(&v,TRUE,&vga,1,0,0,&l));
-    CHECK(!win16_scroll_measure(NULL,TRUE,&vga,0,100,0,&l));
+    CHECK(!style_scroll_measure_fixed(&v,TRUE,&vga,1,0,0,&l));
+    CHECK(!style_scroll_measure_fixed(NULL,TRUE,&vga,0,100,0,&l));
     v.top=LONG_MIN;v.bottom=LONG_MAX;
-    CHECK(!win16_scroll_measure(&v,TRUE,&vga,0,100,0,&l));
+    CHECK(!style_scroll_measure_fixed(&v,TRUE,&vga,0,100,0,&l));
     tracking_tests();
     printf("SCROLL GEOMETRY PASS %u checks: original vectors, shared borders, short bars, transpose, monotonic mapping, native-width bounds\n",checks);
     return 0;

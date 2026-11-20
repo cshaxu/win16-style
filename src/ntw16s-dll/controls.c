@@ -95,7 +95,7 @@ static void draw(HWND w,control_style *s,HDC dc)
         themed?&s->push_colors:NULL,themed?&s->choice_colors:NULL,
         style_control_button_type,style_control_is_static,style_control_vb_frame,style_control_vb_button,
         ntw16s_group_choice_button,ntw16s_group_push_button,s->choice_module,&s->choice_art,
-        label?&s->label_colors:NULL,themed?&s->group_colors:NULL,label?&s->frame_colors:NULL};
+        label?&s->label_colors:NULL,themed?&s->group_colors:NULL,label?&s->frame_colors:NULL,s->controls};
     win16_control_draw_choice(w,&view,dc);
 }
 
@@ -143,7 +143,8 @@ static void draw_scroll(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical
         arrows.edge=s->scroll_arrow_colors.edge;
     }
     const win16_control_scroll_view view={&s->palette,&s->bindings.scroll,scroll_layout,
-        embedded_scroll_layout,edit_thumb_messages,list_axis_owned,&arrows,s->themed?&s->scroll_colors:NULL};
+        embedded_scroll_layout,edit_thumb_messages,list_axis_owned,&arrows,
+        s->themed?&s->scroll_colors:NULL,s->themed?&s->scroll_art:NULL};
     win16_control_draw_scroll(w,&view,dc,object,vertical);
 }
 

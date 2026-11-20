@@ -14,7 +14,7 @@ typedef struct control_style {
     win16_style_palette palette;
     classic_push_colors push_colors;
     classic_choice_colors choice_colors;
-    win16_choice_art choice_art;
+    classic_choice_art choice_art;
     HMODULE choice_module;
     classic_text_colors label_colors;
     classic_group_colors group_colors;
@@ -26,7 +26,9 @@ typedef struct control_style {
     classic_progress_colors progress_colors[2];
     classic_trackbar_colors trackbar_colors[2];
     classic_frame_colors frame_colors;
+    classic_control_presentation controls;
     classic_surface_colors scroll_arrow_colors;
+    style_scroll_arrow_art scroll_art;
     classic_scroll_colors scroll_colors;
     classic_scroll_metrics scroll_metrics;
     BOOL themed;

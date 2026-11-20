@@ -33,7 +33,7 @@ BOOL win2k_header_paint(HWND window,const NMCUSTOMDRAW *draw,const void *context
     UINT sides=style&HDS_BUTTONS?BF_RECT|BF_SOFT:(style&WS_BORDER?BF_RIGHT:BF_BOTTOMRIGHT);
     UINT edge=style&HDS_BUTTONS?(pressed?EDGE_SUNKEN:EDGE_RAISED):EDGE_ETCHED;
     BOOL painted=IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)!=ERROR &&
-        win2k_fill(dc,&r,face) && win2k_edge(dc,&r,edge,sides|(pressed?BF_FLAT:0),p);
+        style_paint_color(dc,&r,face) && style_paint_relief(dc,&r,edge,sides|(pressed?BF_FLAT:0),p);
     if(painted && *text){
         InflateRect(&r,-6,0);
         if(pressed)OffsetRect(&r,1,1);

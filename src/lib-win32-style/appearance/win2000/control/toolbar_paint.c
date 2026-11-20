@@ -42,7 +42,7 @@ static void paint(HWND window,const NMCUSTOMDRAW *draw,const void *context)
         edge=pressed?EDGE_SUNKEN:EDGE_RAISED;
         flags|=BF_SOFT;
     }
-    win2k_edge(draw->hdc,&bounds,edge,flags,palette);
+    style_paint_relief(draw->hdc,&bounds,edge,flags,palette);
 }
 
 static void separators(HWND window,const NMCUSTOMDRAW *draw,const void *context)
@@ -61,7 +61,7 @@ static void separators(HWND window,const NMCUSTOMDRAW *draw,const void *context)
         rect.left+=(rect.right-rect.left-1)/2;
         InflateRect(&rect,0,-inset);
         if(rect.right-rect.left>=2 && rect.top<rect.bottom)
-            win2k_edge(draw->hdc,&rect,EDGE_ETCHED,BF_LEFT,&parameters->palette);
+            style_paint_relief(draw->hdc,&rect,EDGE_ETCHED,BF_LEFT,&parameters->palette);
     }
 }
 

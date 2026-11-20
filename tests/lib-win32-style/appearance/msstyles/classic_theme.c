@@ -1,17 +1,23 @@
+#define _WIN32_WINNT 0x0A00
+#include "lib-win32-style/application/control/scroll_geometry.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/menu/row_text.h"
 #include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "lib-win32-style/appearance/win2000/window/caption.h"
 #include "lib-win32-style/appearance/win2000/common/paint.h"
 #include "lib-win32-style/appearance/win2000/control/button_paint.h"
-#include "lib-win32-style/appearance/win2000/control/scroll_layout.h"
+#include "lib-win32-style/appearance/win2000/control/edit_paint.h"
+#include "lib-win32-style/appearance/win2000/control/list_combo.h"
+#include "lib-win32-style/appearance/win2000/control/static_paint.h"
 #include "lib-win32-style/appearance/win3x/window/frame_paint.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_bar.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_items.h"
 #include "lib-win32-style/appearance/win3x/common/font.h"
 #include "lib-win32-style/appearance/win3x/control/basic_paint.h"
 #include "lib-win32-style/appearance/win3x/control/choice_view.h"
-#include "lib-win32-style/appearance/win3x/control/scroll_layout.h"
+#include "lib-win32-style/appearance/win3x/control/combo_paint.h"
+#include "lib-win32-style/appearance/win3x/control/control_state.h"
+#include "lib-win32-style/appearance/win3x/control/list_paint.h"
 #include "lib-win32-style/appearance/win3x/resources/scroll_assets.h"
 #include <stdio.h>
 #include <string.h>
@@ -273,16 +279,17 @@ static BOOL button_fit(HWND window)
 }
 
 static BOOL paint_native_button(HDC dc,HWND window,BOOL win2000,const classic_push_colors *push,
-    const classic_choice_colors *choice,HMODULE module)
+    const classic_choice_colors *choice,HMODULE module,style_push_profile profile)
 {
     style_instance instance={0};
-    if(win2000)return win2k_button_paint(window,&instance,dc,push,choice,NULL);
+    classic_choice_art art={0};
+    if(win2000)return win2k_button_paint(window,&instance,dc,push,choice,NULL,module,&art,
+        (classic_control_presentation){.push=profile});
     win16_style_palette palette;
     win16_style_default_palette(&palette);
     style_control_state control={0};
-    win16_choice_art art={0};
     const win16_control_choice_view view={&instance,&control,&palette,push,choice,button_type,
-        button_fit,button_fit,button_fit,button_fit,button_fit,module,&art,NULL,NULL,NULL};
+        button_fit,button_fit,button_fit,button_fit,button_fit,module,&art,NULL,NULL,NULL,{.push=profile}};
     win16_control_draw_choice(window,&view,dc);
     return TRUE;
 }
@@ -295,8 +302,58 @@ static BOOL draw_button(HDC dc,HWND window,const classic_theme *theme,BOOL win20
     SendMessageW(window,BM_SETSTATE,pressed,0);
     if(((SendMessageW(window,BM_GETSTATE,0,0)&BST_PUSHED)!=0)!=pressed ||
        IsWindowEnabled(window)==disabled)return FALSE;
-    return paint_native_button(dc,window,win2000,&theme->push,&theme->choice,NULL) &&
+    return paint_native_button(dc,window,win2000,&theme->push,&theme->choice,NULL,theme->controls.push) &&
         GetPixel(dc,40,14)==theme->push.state[expected].face;
+}
+
+static BOOL draw_mixed_button(HDC dc,HWND window,const classic_theme *theme,BOOL win2000)
+{
+    classic_theme mixed=*theme;
+    const COLORREF edge=RGB(25,46,70),face=RGB(133,155,177);
+    mixed.push.state[CLASSIC_PUSH_NORMAL]=(classic_surface_colors){face,edge};
+    mixed.controls.push=STYLE_PUSH_STEPPED;
+    if(!draw_button(dc,window,&mixed,win2000,FALSE,FALSE,FALSE,CLASSIC_PUSH_NORMAL) ||
+       GetPixel(dc,0,10)!=edge)return FALSE;
+    mixed.controls.push=STYLE_PUSH_RELIEF;
+    return draw_button(dc,window,&mixed,win2000,FALSE,FALSE,FALSE,CLASSIC_PUSH_NORMAL) &&
+        GetPixel(dc,0,10)==RGB(255,255,255) && GetPixel(dc,79,10)==edge;
+}
+
+static BOOL draw_control_lines(HDC dc,const classic_theme *theme,BOOL win2000)
+{
+    HWND parent=CreateWindowW(L"STATIC",L"",WS_POPUP,0,0,120,64,NULL,NULL,NULL,NULL);
+    if(!parent)return FALSE;
+    HWND group=CreateWindowW(L"BUTTON",L"",WS_CHILD|BS_GROUPBOX,0,0,80,28,parent,NULL,NULL,NULL);
+    HWND edit=CreateWindowExW(WS_EX_CLIENTEDGE,L"EDIT",L"",WS_CHILD,0,28,80,28,parent,NULL,NULL,NULL);
+    RECT before,after;
+    BOOL passed=group && edit && GetClientRect(edit,&before);
+    style_instance instance={0};
+    win16_style_palette palette;
+    win16_style_default_palette(&palette);
+    style_control_state native={0};
+    win2k_palette relief=win2k_standard_palette;
+    for(style_line_profile profile=STYLE_LINE_FLAT;passed && profile<=STYLE_LINE_RELIEF;++profile){
+        classic_control_presentation controls=theme->controls;
+        controls.group=controls.edit=profile;
+        if(win2000){
+            passed=win2k_button_paint(group,&instance,dc,NULL,NULL,&theme->group,NULL,NULL,controls);
+        }else{
+            win16_control_choice_view view={&instance,&native,&palette,NULL,NULL,button_type,
+                button_fit,button_fit,button_fit,button_fit,button_fit,NULL,NULL,NULL,&theme->group,NULL,controls};
+            win16_control_draw_choice(group,&view,dc);
+        }
+        passed=passed && GetPixel(dc,10,27)==(profile==STYLE_LINE_FLAT?theme->group.shadow:RGB(255,255,255));
+        if(win2000)passed=passed && win2k_edit_border(edit,dc,&relief,profile);
+        else{
+            control_style state={.palette=palette,.controls=controls,.edit_border=TRUE};
+            memcpy(state.edit_colors,theme->edit,sizeof(state.edit_colors));
+            win16_control_edit_border(edit,&state,dc);
+        }
+        passed=passed && GetPixel(dc,0,10)==(profile==STYLE_LINE_FLAT?RGB(0,0,0):relief.shadow) &&
+            GetClientRect(edit,&after) && EqualRect(&before,&after);
+    }
+    DestroyWindow(parent);
+    return passed;
 }
 
 static BOOL draw_choice_role(HDC dc,const DWORD *pixels,HWND window,const classic_theme *theme,BOOL win2000,
@@ -311,10 +368,10 @@ static BOOL draw_choice_role(HDC dc,const DWORD *pixels,HWND window,const classi
             SendMessageW(window,BM_SETCHECK,check,0);
             SendMessageW(window,BM_SETSTATE,mode==2,0);
             if(SendMessageW(window,BM_GETCHECK,0,0)!=(LRESULT)check ||
-               !paint_native_button(dc,window,win2000,NULL,NULL,NULL))return FALSE;
+               !paint_native_button(dc,window,win2000,NULL,NULL,NULL,STYLE_PUSH_DEFAULT))return FALSE;
             GdiFlush();
             memcpy(reference,pixels,sizeof(reference));
-            if(!paint_native_button(dc,window,win2000,NULL,&theme->choice,module))return FALSE;
+            if(!paint_native_button(dc,window,win2000,NULL,&theme->choice,module,STYLE_PUSH_DEFAULT))return FALSE;
             GdiFlush();
             if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
             classic_choice_colors altered=theme->choice;
@@ -322,7 +379,7 @@ static BOOL draw_choice_role(HDC dc,const DWORD *pixels,HWND window,const classi
             if(!entry->fields)return FALSE;
             entry->colors.face=RGB(89,37,102);
             entry->colors.edge=RGB(17,165,123);
-            if(!paint_native_button(dc,window,win2000,NULL,&altered,module))return FALSE;
+            if(!paint_native_button(dc,window,win2000,NULL,&altered,module,STYLE_PUSH_DEFAULT))return FALSE;
             BOOL saw_face=FALSE,saw_ink=FALSE;
             for(int y=0;y<28;++y)for(int x=0;x<24;++x){
                 COLORREF c=GetPixel(dc,x,y);
@@ -351,38 +408,126 @@ static BOOL draw_choices(HDC dc,const DWORD *pixels,const classic_theme *theme,B
     return passed;
 }
 
-static BOOL draw_scroll(HDC dc,const classic_theme *theme,BOOL win2000,UINT dpi,unsigned state)
+static BOOL draw_mixed_choice_art(HDC dc,HWND window,const classic_theme *theme,HMODULE module,BOOL radio)
+{
+    classic_choice_art art={0};
+    const classic_choice_surface *entry=classic_choice_entry(&theme->choice,radio,BST_CHECKED,FALSE,0);
+    const classic_surface_colors *colors=classic_choice_color(entry);
+    if(!colors || !classic_choice_art_get(module,entry->image,&art))return FALSE;
+    if(!paint_native_button(dc,window,TRUE,NULL,&theme->choice,module,STYLE_PUSH_DEFAULT))return FALSE;
+    const int side=13,top=(28-side)/2;
+    for(int y=0;y<CLASSIC_CHOICE_HEIGHT;++y){
+        for(int x=0;x<CLASSIC_CHOICE_WIDTH;++x){
+            int left=MulDiv(x,side,CLASSIC_CHOICE_WIDTH);
+            int right=MulDiv(x+1,side,CLASSIC_CHOICE_WIDTH);
+            COLORREF expected=art.cell[y*CLASSIC_CHOICE_WIDTH+x]=='0'?colors->edge:colors->face;
+            if(left<right && GetPixel(dc,left,top+y)!=expected)return FALSE;
+        }
+    }
+    return TRUE;
+}
+
+static BOOL mixed_choice_art(HDC dc,const classic_theme *theme,HMODULE module)
+{
+    HWND parent=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,0,0,120,64,NULL,NULL,NULL,NULL);
+    if(!parent)return FALSE;
+    BOOL passed=TRUE;
+    for(unsigned radio=0;passed && radio<2;++radio){
+        HWND control=CreateWindowExW(0,L"BUTTON",L"",WS_CHILD|(radio?BS_AUTORADIOBUTTON:BS_AUTO3STATE),
+            0,0,80,28,parent,NULL,NULL,NULL);
+        if(!control){passed=FALSE;break;}
+        SendMessageW(control,BM_SETCHECK,BST_CHECKED,0);
+        passed=draw_mixed_choice_art(dc,control,theme,module,radio);
+        DestroyWindow(control);
+    }
+    DestroyWindow(parent);
+    return passed;
+}
+
+static BOOL draw_separator(HDC dc,const classic_theme *theme,BOOL relief)
+{
+    HWND control=CreateWindowW(L"STATIC",L"",WS_CHILD|SS_ETCHEDFRAME,0,0,32,32,HWND_MESSAGE,NULL,NULL,NULL);
+    if(!control)return FALSE;
+    style_instance instance={0};
+    win2k_palette palette=win2k_standard_palette;
+    palette.dark=RGB(31,48,65);palette.shadow=RGB(82,99,116);palette.highlight=RGB(133,150,167);
+    COLORREF untouched=RGB(219,220,221);
+    RECT bounds={0,0,32,32};
+    int unit=max(1,MulDiv(1,(int)GetDpiForWindow(control),96));
+    BOOL passed=style_paint_color(dc,&bounds,untouched) &&
+        win2k_static_paint(control,&instance,dc,&palette,theme->controls.separator) &&
+        GetPixel(dc,0,5)==(relief?palette.shadow:palette.dark) &&
+        GetPixel(dc,relief?1:unit,5)==(relief?palette.highlight:untouched) &&
+        GetPixel(dc,5,5)==untouched;
+    DestroyWindow(control);
+    return passed;
+}
+
+static BOOL draw_combo_surface(HDC dc,const classic_theme *theme,BOOL win2000)
+{
+    HWND parent=CreateWindowW(L"STATIC",L"",WS_POPUP,0,0,160,80,NULL,NULL,NULL,NULL);
+    if(!parent)return FALSE;
+    HWND combo=CreateWindowW(L"COMBOBOX",L"",WS_CHILD|CBS_DROPDOWNLIST,0,0,120,70,parent,NULL,NULL,NULL);
+    COMBOBOXINFO info={.cbSize=sizeof(info)};
+    RECT bounds={0,0,120,64};
+    COLORREF background=RGB(37,79,117);
+    BOOL passed=combo && GetComboBoxInfo(combo,&info) && style_paint_color(dc,&bounds,RGB(97,33,51));
+    if(passed && win2000){
+        win2k_palette palette=win2k_standard_palette;
+        palette.window=background;
+        style_instance instance={0};
+        passed=win2k_combo_paint(combo,&instance,dc,&palette,&theme->combo);
+    }else if(passed){
+        control_style state={.combo_colors=theme->combo,.list_colors=theme->list,.label_colors=theme->label};
+        win16_style_default_palette(&state.palette);
+        state.list_colors.background=background;
+        win16_control_draw_combo(combo,&state,dc,win2k_combo_info,button_fit,button_fit);
+    }
+    if(passed)passed=GetPixel(dc,info.rcItem.right-4,(info.rcItem.top+info.rcItem.bottom)/2)==background;
+    DestroyWindow(parent);
+    return passed;
+}
+
+static BOOL draw_scroll(HDC dc,const classic_theme *theme,UINT dpi,unsigned state)
 {
     RECT bar={0,0,MulDiv(17,(int)dpi,96),60};
     int nominal=classic_scroll_nominal(theme->scroll_metrics,CLASSIC_SCROLL_EXTENT_DEFAULT,&bar,TRUE,dpi);
     style_scroll_layout geometry;
-    if(!PatBlt(dc,0,0,bar.right,60,WHITENESS))return FALSE;
-    if(win2000){
-        const SCROLLINFO info={.nMin=0,.nMax=100,.nPage=5,.nPos=30};
-        if(!win2k_scroll_measure(&bar,TRUE,nominal,&info,&geometry))return FALSE;
-        win2k_palette palette=win2k_standard_palette;
-        palette.face=theme->scroll_arrow.face;
-        palette.dark=theme->scroll_arrow.edge;
-        const UINT flags[]={0,DFCS_PUSHED,DFCS_INACTIVE};
-        if(!win2k_scroll_arrow_button(dc,&geometry.first,DFCS_SCROLLUP|flags[state],&palette))return FALSE;
-    }else{
-        const win16_scroll_metrics metrics={nominal,nominal,1};
-        if(!win16_scroll_measure(&bar,TRUE,&metrics,0,100,30,&geometry))return FALSE;
-        win16_style_palette palette;
-        win16_style_default_palette(&palette);
-        palette.face=theme->scroll_arrow.face;
-        palette.edge=theme->scroll_arrow.edge;
-        const enum win16_control_scroll_asset asset[]={WIN16_SCROLL_UP,WIN16_SCROLL_UP_PRESSED,
-            WIN16_SCROLL_UP_DISABLED};
-        POINT p={nominal/2,nominal/2};
-        if(win16_scroll_hit(&geometry,p,state==2?ESB_DISABLE_UP:0)!=
-           (state==2?STYLE_SCROLL_NONE:STYLE_SCROLL_LINE_BEFORE))return FALSE;
-        win16_control_scroll_arrow(dc,geometry.first,win16_control_scroll_glyph(asset[state]),&palette);
-    }
+    const SCROLLINFO info={.nMin=0,.nMax=100,.nPage=5,.nPos=30};
+    if(!PatBlt(dc,0,0,bar.right,60,WHITENESS) ||
+        !style_scroll_measure(&bar,TRUE,nominal,max(1,MulDiv(1,(int)dpi,96)),&info,theme->scroll_metrics.thumb,&geometry))return FALSE;
+    POINT p={bar.right/2,geometry.first.bottom/2};
+    if(style_scroll_hit(&geometry,p,state==2?ESB_DISABLE_UP:0)!=
+       (state==2?STYLE_SCROLL_NONE:STYLE_SCROLL_LINE_BEFORE))return FALSE;
+    win2k_palette palette=win2k_standard_palette;
+    palette.face=theme->scroll_arrow.face;
+    palette.dark=theme->scroll_arrow.edge;
+    const UINT flags[]={0,DFCS_PUSHED,DFCS_INACTIVE};
+    if(!style_paint_scroll_arrow(dc,&geometry.first,DFCS_SCROLLUP|flags[state],&palette,&theme->scroll_art))return FALSE;
     for(LONG y=geometry.first.top;y<geometry.first.bottom;++y)
         for(LONG x=geometry.first.left;x<geometry.first.right;++x)
             if(GetPixel(dc,x,y)==theme->scroll_arrow.face)return TRUE;
     return FALSE;
+}
+
+static BOOL draw_indexed_arrows(HDC dc,const classic_theme *theme)
+{
+    RECT cell={0,0,STYLE_SCROLL_ARROW_SIDE,STYLE_SCROLL_ARROW_SIDE};
+    const style_relief_palette palette={.dark=RGB(19,37,63),.highlight=RGB(213,225,237),
+        .shadow=RGB(111,129,147),.face=RGB(177,159,141)};
+    const COLORREF roles[]={palette.dark,palette.highlight,palette.shadow,palette.face};
+    const UINT flags[]={0,DFCS_PUSHED,DFCS_INACTIVE};
+    for(unsigned state=0;state<ARRAYSIZE(flags);++state){
+        for(unsigned direction=0;direction<STYLE_SCROLL_ARROW_DIRECTIONS;++direction){
+            unsigned asset=state*STYLE_SCROLL_ARROW_DIRECTIONS+direction;
+            const char (*original)[18]=win16_control_scroll_glyph((enum win16_control_scroll_asset)asset);
+            if(!original || !style_paint_scroll_arrow(dc,&cell,direction|flags[state],&palette,&theme->scroll_art))
+                return FALSE;
+            for(int y=0;y<STYLE_SCROLL_ARROW_SIDE;++y)for(int x=0;x<STYLE_SCROLL_ARROW_SIDE;++x)
+                if(GetPixel(dc,x,y)!=roles[original[y][x]-'0'])return FALSE;
+        }
+    }
+    return TRUE;
 }
 
 static int first_ink(HDC dc,int left,int right,int height,COLORREF background)
@@ -564,9 +709,14 @@ static BOOL render(const classic_theme *theme,BOOL win2000,const classic_caption
         draw_button(dc,window,&altered,win2000,TRUE,FALSE,TRUE,CLASSIC_PUSH_DISABLED) &&
         draw_button(dc,window,&altered,win2000,FALSE,FALSE,TRUE,CLASSIC_PUSH_DEFAULTED) &&
         draw_button(dc,window,&altered,win2000,FALSE,TRUE,TRUE,CLASSIC_PUSH_PRESSED) &&
-        draw_choices(dc,bits,theme,win2000,module);
+        draw_mixed_button(dc,window,theme,win2000) &&
+        draw_control_lines(dc,theme,win2000) &&
+        draw_choices(dc,bits,theme,win2000,module) && draw_separator(dc,theme,win2000) &&
+        draw_combo_surface(dc,theme,win2000) &&
+        (win2000 || mixed_choice_art(dc,theme,module));
     for(unsigned state=0;passed && state<3;++state)
-        passed=draw_scroll(dc,theme,win2000,96,state) && draw_scroll(dc,theme,win2000,144,state);
+        passed=draw_scroll(dc,theme,96,state) && draw_scroll(dc,theme,144,state);
+    if(passed && !win2000)passed=draw_indexed_arrows(dc,theme);
     if(passed && !win2000)passed=draw_themed_popup(dc,bits,theme,menu_art,96) &&
         draw_themed_popup(dc,bits,theme,menu_art,144);
     if(window)DestroyWindow(window);
@@ -600,6 +750,7 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
         CHECK(!memcmp(&source.model,&theme,sizeof(theme)));
     }
     CHECK(theme.gradient==gradient);
+    CHECK(theme.scroll_art.source==(gradient?STYLE_SCROLL_ARROW_SYMBOL:STYLE_SCROLL_ARROW_INDEXED));
     CHECK(theme.menu_bar.present && theme.menu_popup.present);
     CHECK(theme.menu_bar.background==(gradient?RGB(212,208,200):RGB(255,255,255)) &&
         theme.menu_bar.selection==(gradient?RGB(0,0,128):RGB(164,200,240)) &&

@@ -23,14 +23,14 @@ static BOOL progress_run(HDC dc,RECT lane,BOOL vertical,int start,int end,COLORR
         lane.right=lane.left+end;
         lane.left+=start;
     }
-    return win2k_fill(dc,&lane,color);
+    return style_paint_color(dc,&lane,color);
 }
 
 BOOL win2k_progress_paint(HDC dc,const style_progress_snapshot *snapshot,DWORD style,const win2k_palette *palette)
 {
     if(snapshot->state!=PBST_NORMAL)return FALSE;
     COLORREF background=snapshot->background==CLR_DEFAULT?palette->face:snapshot->background;
-    if(!win2k_fill(dc,&snapshot->client,background))return FALSE;
+    if(!style_paint_color(dc,&snapshot->client,background))return FALSE;
     RECT lane=snapshot->client;
     InflateRect(&lane,-1,-1);
     if(IsRectEmpty(&lane))return TRUE;

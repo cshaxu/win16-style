@@ -5,6 +5,7 @@
 #include "../common/paint.h"
 #include "lib-win32-style/application/control/button_snapshot.h"
 #include "lib-win32-style/application/control/control_class.h"
+#include "lib-win32-style/application/graphics/pixel_grid.h"
 #include <wchar.h>
 
 static style_control_button_role role(HWND window,void *context,DWORD style)
@@ -68,7 +69,8 @@ static BOOL label(HWND window,style_instance *instance,HDC dc,const style_contro
     return result;
 }
 BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classic_push_colors *colors,
-    const classic_choice_colors *choice,const classic_group_colors *group_colors)
+    const classic_choice_colors *choice,const classic_group_colors *group_colors,HMODULE module,classic_choice_art *art,
+    classic_control_presentation controls)
 {
     win2k_palette palette=win2k_standard_palette;
     const win2k_palette *p=&palette;
@@ -104,7 +106,9 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
         SIZE zero;TEXTMETRICW system;RECT text={0};HGDIOBJ old=SelectObject(dc,GetStockObject(SYSTEM_FONT));
         if(!old||old==HGDI_ERROR||!GetTextMetricsW(dc,&system)||!SelectObject(dc,old)||!GetTextExtentPoint32W(dc,L"0",1,&zero))goto done;
         bounds=client;bounds.top+=zero.cy/2;
-        if(!win2k_edge(dc,&bounds,EDGE_ETCHED,BF_RECT|((snapshot.style&BS_FLAT)?BF_FLAT|BF_MONO:0),p))goto done;
+        style_line_profile profile=controls.group?controls.group:STYLE_LINE_RELIEF;
+        if(!style_paint_line_frame(dc,&bounds,EDGE_ETCHED,(snapshot.style&BS_FLAT)?BF_FLAT|BF_MONO:0,
+            1,p->shadow,profile,p))goto done;
         if(*snapshot.text){
             if(!DrawTextW(dc,snapshot.text,-1,&text,DT_CALCRECT|DT_SINGLELINE))goto done;
             int width=text.right-text.left+4;bounds=client;
@@ -130,7 +134,11 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
         }
         SetBkMode(dc,TRANSPARENT);SetTextColor(dc,p->text);SetBkColor(dc,p->face);
         if(snapshot.check)state|=DFCS_CHECKED;
-        if(!win2k_push_button_frame(dc,&bounds,state|DFCS_ADJUSTRECT,snapshot.role.type==BS_DEFPUSHBUTTON,p))goto done;
+        if(snapshot.style&WS_DISABLED)state|=DFCS_INACTIVE;
+        style_push_profile profile=controls.push?controls.push:STYLE_PUSH_RELIEF;
+        int unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
+        if(!style_paint_push_frame(dc,&bounds,state|DFCS_ADJUSTRECT,snapshot.role.type==BS_DEFPUSHBUTTON,unit,profile,p))
+            goto done;
         IntersectClipRect(dc,bounds.left,bounds.top,bounds.right,bounds.bottom);
     }else{
         SIZE zero;if(!GetTextExtentPoint32W(dc,L"0",1,&zero))goto done;
@@ -152,7 +160,16 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
         if(snapshot.style&WS_DISABLED)state|=DFCS_INACTIVE;
         const classic_choice_surface *entry=classic_choice_entry(choice,radio,snapshot.check,
             (snapshot.style&WS_DISABLED)!=0,snapshot.state);
-        result=win2k_choice_glyph(dc,&glyph,state,p,classic_choice_color(entry));
+        const classic_surface_colors *surface=classic_choice_color(entry);
+        const char *image=entry?classic_choice_art_get(module,entry->image,art):NULL;
+        if(instance->detached){result=FALSE;goto done;}
+        if(image){
+            const COLORREF ink[2]={surface?surface->edge:p->text,surface?surface->face:p->window};
+            const style_pixel_grid grid={image,CLASSIC_CHOICE_WIDTH,CLASSIC_CHOICE_HEIGHT,CLASSIC_CHOICE_WIDTH,
+                -1,ink,{glyph.left,glyph.top},{glyph.right-glyph.left,glyph.bottom-glyph.top},
+                {CLASSIC_CHOICE_WIDTH,CLASSIC_CHOICE_HEIGHT}};
+            style_paint_pixel_grid(dc,&grid);
+        }else result=win2k_choice_glyph(dc,&glyph,state,p,surface);
     }
 done:
     if(!RestoreDC(dc,saved))result=FALSE;

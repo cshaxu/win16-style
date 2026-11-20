@@ -2,6 +2,7 @@
 #include "lib-win32-style/appearance/msstyles/classic_style.h"
 #include "lib-win32-style/appearance/msstyles/v4_endian.h"
 #include "lib-win32-style/appearance/msstyles/v4_property.h"
+#include "lib-win32-style/appearance/win3x/resources/scroll_glyphs.h"
 #include "classic_source.h"
 #include "legacy_image.h"
 #include <vsstyle.h>
@@ -301,7 +302,7 @@ static bool write_extension(FILE *output,const classic_theme_source *source)
     const classic_menu_metrics *menu=source->menu_metrics.check_column?&source->menu_metrics:NULL;
     const classic_dialog_metrics *dialog=source->dialog_metrics.print_width?&source->dialog_metrics:NULL;
     size_t length=classic_style_write(buffer,sizeof(buffer),&source->buttons,&source->scroll_metrics,menu,dialog,
-        &source->dialog_policy,&source->caption_presentation,&source->border_presentation);
+        &source->dialog_policy,&source->caption_presentation,&source->border_presentation,&source->controls);
     return length && bytes(output,buffer,length);
 }
 
@@ -316,6 +317,30 @@ static bool write_fonts(FILE *output,const classic_theme_source *source)
     return fputs("END\n",output)>=0;
 }
 
+static bool write_scroll_arrows(FILE *output,const classic_theme_source *source)
+{
+    const unsigned char header[]={'S','A','R',1,(unsigned char)source->arrow_source};
+    if(!bytes(output,header,sizeof(header)))return false;
+    if(source->arrow_source==STYLE_SCROLL_ARROW_SYMBOL)return true;
+    static const char (*const originals[])[STYLE_SCROLL_ARROW_SIDE+1]={
+        scroll_uparrow,scroll_dnarrow,scroll_lfarrow,scroll_rgarrow,
+        scroll_uparrowd,scroll_dnarrowd,scroll_lfarrowd,scroll_rgarrowd,
+        scroll_uparrowi,scroll_dnarrowi,scroll_lfarrowi,scroll_rgarrowi
+    };
+    _Static_assert(ARRAYSIZE(originals)==STYLE_SCROLL_ARROW_STATES*STYLE_SCROLL_ARROW_DIRECTIONS,"arrow order");
+    if(source->arrow_source!=STYLE_SCROLL_ARROW_INDEXED)return false;
+    for(unsigned image=0;image<ARRAYSIZE(originals);++image){
+        unsigned char cell[STYLE_SCROLL_ARROW_BYTES]={0};
+        for(unsigned i=0;i<STYLE_SCROLL_ARROW_SIDE*STYLE_SCROLL_ARROW_SIDE;++i){
+            unsigned role=(unsigned)(originals[image][i/STYLE_SCROLL_ARROW_SIDE][i%STYLE_SCROLL_ARROW_SIDE]-'0');
+            if(role>3)return false;
+            cell[i/4]|=(unsigned char)(role<<(2*(i%4)));
+        }
+        if(!bytes(output,cell,sizeof(cell)))return false;
+    }
+    return true;
+}
+
 static const struct {
     const char *filename;
     bool (*write)(FILE *,const classic_theme_source *);
@@ -323,6 +348,7 @@ static const struct {
     {"cmap.bin",write_classes},{"bcmap.bin",write_base_classes},
     {"vmap.bin",write_variant},{"rmap.bin",write_metadata},
     {"normal.bin",write_properties},{"classic.bin",write_extension},{"fonts.rcinc",write_fonts},
+    {"arrows.bin",write_scroll_arrows},
     {NULL,write_description}
 };
 

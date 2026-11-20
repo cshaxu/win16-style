@@ -1,6 +1,6 @@
 #ifndef WIN16_CONTROL_SCROLL_NATIVE_H
 #define WIN16_CONTROL_SCROLL_NATIVE_H
-#include "scroll_layout.h"
+#include "lib-win32-style/application/control/scroll_geometry.h"
 #include "lib-win32-style/application/control/scroll_track.h"
 #include "control_state.h"
 #include "lib-win32-style/application/control/scroll_managed.h"

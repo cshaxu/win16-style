@@ -58,7 +58,7 @@ void win2k_status_panes(HWND window,HDC dc,const style_instance *instance,
     for(LRESULT i=0;i<count;++i){
         RECT pane=panes[i],inside;
         if((flags[i]&SBT_NOBORDERS) || !IntersectRect(&inside,&client,&pane) || !EqualRect(&inside,&pane))continue;
-        win2k_edge(dc,&pane,(flags[i]&SBT_POPOUT)?BDR_RAISEDINNER:BDR_SUNKENOUTER,BF_RECT,palette);
+        style_paint_relief(dc,&pane,(flags[i]&SBT_POPOUT)?BDR_RAISEDINNER:BDR_SUNKENOUTER,BF_RECT,palette);
     }
     /* The native layout keeps the grip outside the last pane. */
     if(panes[count-1].right>0 && (flags[count-1]&SBT_OWNERDRAW)==0)

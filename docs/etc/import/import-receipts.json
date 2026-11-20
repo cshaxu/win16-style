@@ -824,7 +824,7 @@
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "0b4bca9ea092a44c6cd326cff777c293effc6bd7a7a1c804e727b62fed50e045",
+      "sha256": "4e372691ffb8f7bd2477f7b3bd9f7962cfc583daaa8667e06b69e4bd38e6199d",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: only begin transient native redraw brackets on WS_VISIBLE controls, preserving hidden state; font/render algorithms unchanged; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; BCM_GETIMAGELIST borrowed images, state pixels, explicit COMCTL6 and native disabled notification comparison; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T15 S6 finite verified native header public protocol and string-only painter; native geometry/font/notifications retained; fixed item formats use original painter; callback/lifetime/OOM tests; no external code copied or original resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S3 exact runtime-owned plain VB6 CheckBox; reuse existing glyph/font painter, preserve native Value/events; unsupported graphical variants and live transition retire to native; independent C non-superclass regression and optional actual Actor observer; no external code or original resources changed; S3 self-review: forward native message before retirement, pinned callback can destroy HWND without late forwarding; native destruction fixture; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 exact runtime50/60 Combo/List/Scroll aliases, public combo native EDIT identity and bounded private-font binding with reentrant retirement, original application font restoration; no external implementation or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S23 bounded v5 TProgressBar static edge, native client and colors retained; dual-width public-protocol and fallback model; T18 S54 scoped runtime grid nonclient border/scrollbars with actual public scroll check, guarded retirement and self-owned dual-width model; original resources retained; T18 S57 witnessed VCL toolbar print forwarding, unique zero-command text-only painting and native fallback, dual-width self-owned tests; original graphics retained; T18 S60 witnessed runtime TTabControl native WM_PAINT forwarding, existing public tab protocol and parent lifetime guard; resources preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P23 real VB5 checkbox list; T18 S64 P36 bounded VB6 UserControl client-edge renderer, pending paint and role retirement, no external code or graphic changes; T18 S64 P47 limited VB6 Data border; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64 P52 observed VB6 Data 144 DPI; T18 S64 P55 observed VB6 checklist 144 DPI; T18 S64 P57 observed VB5 checklist 144 DPI; T18 S64: witnessed Delphi scrollbar role and disabled direct-key native semantics; disabled direct mouse forwarding follows real VCL native baseline; T18 S64 witnessed Delphi SysLink protocol and native typography; no graphics or external code changed; T18 S64 preserve witnessed SpinEdit text reservation on font change; T18 S64 P111 scoped runtime-owned Delphi push button; T18 S64 P112 runtime-owned Delphi checkbox and parent-background regression; T18 S64 P113 Delphi radio parent-background preservation; T18 S64 P114 witnessed runtime-owned editable Delphi combo; T18 S64 P115 verified Delphi dropdown-list combo ownership, role and font lifecycle; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P125 native month calendar arrows; T18 S64 multiline nonclient frame; T19 S1 retire native ordinary BUTTON on live owner-draw transition, preserving parent painting; T21 S22 basic presentation extracted; T21 S22 button and static presentation extracted with same-thread callbacks; T21 S22 list and edit presentation extracted with live state references; T21 S22 combo presentation extracted with live state and native-info callbacks; T21 S22 buffered scrollbar presentation extracted with live state and native layout callbacks; T21 S22 standard button and static presentation view extraction; T21 S22 sizebox, progress border and calendar arrow presentation extraction; T21 S22 VB data arrow pixel presentation extracted; T21 S22 buffered control presentation extraction; T21 S22 graphical and bitmap-button face presentation extraction; T24 S1 share list and combo list classification; T26 S1 shared owned subclass removal; T26 S1 remove unused basic message include; T26 S1 remove unused choice paint include; T26 ordered audit shared VB frame button type; T26 ordered audit VCL spin edit layout lifecycle; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 list controller and actual render adapter; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T26 S9 common native list/scroll surface snapshots and base resource preparation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained; T26 S10 shared custom-draw state/binding/protocol and native dispatch unwind; private duplicate removed; T26 S10 complete control message borrow/font/native observation transaction moved to public message; profile consumes full operation object; T26 S10 complete common runtime-current ordered validation, six private/product guards removed; provider VB policy and fresh-lookup semantics preserved; T26 S13 complete-instance present/print contract and direct renderer consumer; original fallback/order preserved; T27 S9 common selection roles and native draw preparation; T27 S12 工具栏、可重排栏与状态栏",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -1010,21 +1010,21 @@
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32-style/appearance/win3x/control/scroll_layout.c",
+      "path": "src/lib-win32-style/application/control/scroll_geometry.c",
       "source": "src/ntw16s-dll/scroll_layout.c",
       "source_blob": "891f118725eed946da93e45e8bad2dde1753eef9",
-      "sha256": "5b83f219d3df03ad44bdf7b3e57d60e007fca10be5036fd8f2388f1cdd2b7490",
+      "sha256": "98572fb9a57f1accf774256041e17062fba22e887cb18821e69f1b878bc02cd1",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T21 S22 byte-exact library move; T26 S1 shared scrollbar position mapping; T26 S2 mechanical path/include relocation; T26 S9 scroll controller/native management composition; current-desktop native API fixture",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T21 S22 byte-exact library move; T26 S1 shared scrollbar position mapping; T26 S2 mechanical path/include relocation; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T29 S20 joined fixed and proportional thumb geometry and shared hit rules",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
-      "path": "src/lib-win32-style/appearance/win3x/control/scroll_layout.h",
+      "path": "src/lib-win32-style/application/control/scroll_geometry.h",
       "source": "src/ntw16s-dll/scroll_layout.h",
       "source_blob": "63fda7674d27d2c0949374669f6c86a58263f5b3",
-      "sha256": "ae252625ba1e840c1a1ced3f970553d856112e1e8a3d7156f8335d795c9c3096",
+      "sha256": "3b360d6d51064d514aa0fd8e1911cf4174946e8bdf624dad0e9b891168eaf5d8",
       "disposition": "adapt",
-      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T21 S22 byte-exact library move; T26 S1 shared scrollbar position mapping; T26 S2 mechanical path/include relocation; T26 S9 scroll controller/native management composition; current-desktop native API fixture",
+      "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T21 S22 byte-exact library move; T26 S1 shared scrollbar position mapping; T26 S2 mechanical path/include relocation; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T29 S20 joined fixed and proportional thumb geometry and shared hit rules",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
     },
     {
@@ -1220,7 +1220,7 @@
       "path": "tests/ntw16s-dll/win16_style_scroll_geometry.c",
       "source": "tests/app/win16_style_scroll_geometry.c",
       "source_blob": "a152cfe652660138fbbf8147ef24cb23552ee64d",
-      "sha256": "ed14b167b51ca7f1e27756f5e2337c309d6449e6b673f6983d31b17b476493fb",
+      "sha256": "b242e531baee24b05349389e14cb5bfb75b56caa0c37f71e13d8cbd816598d7e",
       "disposition": "adapt",
       "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md; T21 S22 header path update; T26 S1 shared native scrollbar state; T26 S2 mechanical path/include relocation; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 scroll controller/native management composition; current-desktop native API fixture",
       "notice": "Project-authored source fixture, original notices preserved"
@@ -1553,7 +1553,7 @@
       "path": "tests/ntw16s-dll/win16_style_control_present.c",
       "source": "tests/app/win16_style_control_present.c",
       "source_blob": "a44a8cf711985ae62d847021b037b8bb308f8cc7",
-      "sha256": "400b3a73b4f0679200a5a0bd47fc94a97275c019a3c0c4e350cccec62123a5db",
+      "sha256": "037095e38c7acc0a863a4e32a6cb2efd26b039ee8f5980890d2a6c709f4f2032",
       "disposition": "adapt",
       "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 S3 fixed64 full-workload USER cache warmup; strict assertions unchanged; T21 S22 retain GDI instrumentation after painter extraction; T21 S22 standard button and static presentation view extraction; T21 S22 sizebox, progress border and calendar arrow presentation extraction; T21 S22 buffered control presentation extraction; T26 S2 mechanical path/include relocation; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture",
       "notice": "Project-authored fixed-source fixture; original comments retained"
@@ -3670,7 +3670,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "5553a078b046b27b35b85f9df4ec35a4c9f5a4a90a61404d02660799f864cc98",
+      "sha256": "f6f31037ff7df25d36c65361c2c947bb6f831e807e9d2084cdc4b5b8aada00f9",
       "review": "T21 S22 extraction from existing project-authored control presentation; T26 S1 shared solid frame painter; T26 S1 shared indexed pixel grid; T26 S1 direct shared painter include; T26 S2 mechanical path/include relocation"
     },
     {
@@ -3679,7 +3679,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "de72a7755446e4a0fafd82a61aa37dc85582dfb4352bd15923ebe30c14e6f8e8",
+      "sha256": "52233bab1045ae36d62ea3e4bea337e4e55b0da8e150a5d2a7aba56aee5f2139",
       "review": "T21 S22 extraction from existing project-authored control presentation; T26 S1 shared solid frame painter; T26 S1 direct shared painter include; T26 S2 mechanical path/include relocation"
     },
     {
@@ -3706,7 +3706,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "17e7bc231c0725d3feea25408147fc42a6368b3e49d9bd0956518de222475746",
+      "sha256": "f31aa1851a10647b86b1c4f617128f53e41e4ed6006e523cd4b22afcef9a071e",
       "review": "T21 S22 extraction of existing choice glyph presentation; T24 S1 share pixel viewport validation; T26 S1 shared device-context geometry; T26 S1 shared indexed pixel grid; T26 S1 shared indexed DIB painter; T26 S2 mechanical path/include relocation; T26 S10 checklist native protocol extraction, existing behavior and resources retained"
     },
     {
@@ -3715,7 +3715,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "e045d93f1fbfb52ab0a168f063acd9c7b4018f18d4506168cd697683a18df699",
+      "sha256": "67ed4ac744ca5e6c23baca76e772e5bde11d038e69a662d35abdeb824bc644bd",
       "review": "T21 S22 extraction of existing choice glyph presentation; T26 S2 mechanical path/include relocation; T26 S10 checklist native protocol extraction, existing behavior and resources retained"
     },
     {
@@ -3742,7 +3742,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "83c7b04d4ed587ea9e8d308a96afd2c15e2a9d21f36959eeb4b3192aa0f96da6",
+      "sha256": "9824a81816f8390d2d60177295da191374bec9ed20d5333b05564036a4e5340b",
       "review": "T21 S22 extraction of existing button and static presentation; T26 S1 shared solid frame painter; T26 S1 direct shared painter include; T26 S1 shared icon size and resource cleanup; T26 S2 mechanical path/include relocation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction; S13 complete text-fit resource operation and actual-native test mapping"
     },
     {
@@ -3751,7 +3751,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "e5478a2378b698683aa306b4761cf247239fd349c68de0a0fb9235eb50f69f24",
+      "sha256": "eba2d36b3241a2cecc001205d720e1e0e948824c1fcc2825f37add2f709a64fe",
       "review": "T21 S22 extraction of existing button and static presentation; T26 S2 mechanical path/include relocation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction"
     },
     {
@@ -3760,7 +3760,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "838555a37120bc079dbed0bfb4be91e0096bc933dacf2a6137fdb0184f253abe",
+      "sha256": "3b6534f512073455b58add6e0aea69b314e838adec94d5b643df078fce24e8a4",
       "review": "T21 S22 extraction of existing list and edit presentation; T26 S1 share USER alphabet metrics; T26 S1 shared solid frame painter; T26 S1 direct shared painter include; T26 S2 mechanical path/include relocation; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common native list/scroll surface snapshots and base resource preparation"
     },
     {
@@ -3778,7 +3778,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "9a3d7b671896d60d76eefb2347141e6124d73df81aa75b3b18faaaa8c4ee2089",
+      "sha256": "66aeaad56d981dae82d5b67e367b2005aa45bbe648b96d4968d5ee80101c7a91",
       "review": "T21 S22 extraction of existing combo presentation; T21 S22 native embedded combo button painter extracted; T26 S1 shared solid frame painter; T26 S1 direct shared painter include; T26 S1 shared window text snapshot; T26 ordered audit shared unmirrored DC origin check; T26 S2 mechanical path/include relocation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction; T26 S10 native combo whole-state owner and first-paint transaction, unchanged rendering/role policy; T26 S10 native button snapshot and shared overlay clip/DC ownership; actual consumer migrated"
     },
     {
@@ -3796,7 +3796,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "010fa85d431deaaa917b1901f73f7498db523f9ed004dd0de23643084973ccf8",
+      "sha256": "9f6bb7f465c768739686e24d8286324d040a3bc382d24073c45f18451ebd691d",
       "review": "T21 S22 extraction of existing scrollbar presentation; T26 S1 shared solid frame painter; T26 S1 direct shared painter include; T26 S2 mechanical path/include relocation; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T26 S9 common native list/scroll surface snapshots and base resource preparation"
     },
     {
@@ -3805,7 +3805,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "5ec4182c8ebf8569b064a52cd276efb4cfde1670ea4a4b1d4617902e9e7f8ee8",
+      "sha256": "b6ca0aa2d20b258e1ddef244e89bab16083940ffdc7bd146a8d53755006d1568",
       "review": "T21 S22 extraction of existing scrollbar presentation; T26 S2 mechanical path/include relocation; T26 S9 scroll controller/native management composition; current-desktop native API fixture"
     },
     {
@@ -3841,7 +3841,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "ac9501ee3c7811e131f4fdbc2c388f5463ad16976fa59396bfef364dcb1873d0",
+      "sha256": "2762f543e360a100ba0b537ce4b31316038018344ef1e511fa0a50bfc82012a6",
       "review": "T21 S22 extraction of standard button and static presentation; T26 S1 shared icon size and resource cleanup; T26 S1 shared window text snapshot; T26 S2 mechanical path/include relocation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction"
     },
     {
@@ -3850,7 +3850,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "647c643c21aeedba109bb63d787a4160f661ab263c3143bffaa850c2d33be42f",
+      "sha256": "e20d1f53bd32cac63f661bddf9511119d8552cdaaf8b717cc8e7374bbaa3ab6f",
       "review": "T21 S22 extraction of standard button and static presentation; T26 S2 mechanical path/include relocation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction"
     },
     {
@@ -3859,7 +3859,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "f8838ea4c91a1ed3b0bee606e1500af667a89fcf2d722ffca70730f39ae93df0",
+      "sha256": "fddcc373f0d5662bff8333d3cecc2b9bf44e4c7a6faf57e71c81ead07a9740fc",
       "review": "T21 S22 standalone whole-archive linkage and original glyph smoke test; T26 S1 shared classic dialog combo eligibility; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common basic control resource lifecycle and real consumers; T26 S10 native caller classification moved to common runtime text; original identity predicates retained; T26 S10 public attachment root/lifecycle consumed; private state/consumer accesses migrated, normal/terminal cleanup contract retained; T26 S10 complete control message borrow/font/native observation transaction moved to public message; profile consumes full operation object; T26 S10 native runtime initialization/selection moved to public attachment/runtime, complete owner-policy phase and original query/reference order preserved; S13 complete text-fit resource operation and actual-native test mapping; S13 complete glyph translation temporary ownership and real consumer retained"
     },
     {
@@ -4271,7 +4271,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/scroll_native.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6483bb2883d2da4ce94eb4e40d949d81f2bcb5c7525bbde58db84a837834f6db",
+      "sha256": "9956668f5acb3b694f362ec9eb31fcc95633f50a21a60d1ab0c5c8df78fd9a68",
       "disposition": "authored",
       "review": "T21 S24 extract existing native scroll metrics and range adaptation; T26 S1 shared native scrollbar state; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture",
       "notice": "Project-authored C implementation; no imported artwork"
@@ -4280,7 +4280,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/scroll_native.h",
       "source": null,
       "source_blob": null,
-      "sha256": "2e7fa514b24ea33b88e9b00eb8f0d8897b87f996b85991b443012ae215aca39a",
+      "sha256": "a8b841fa9c539bc750303e4dd7a662cbd904809c6cf0b1a8888708f70c64de63",
       "disposition": "authored",
       "review": "T21 S24 extract existing native scroll metrics and range adaptation; T26 S1 shared native scrollbar state; T26 S2 mechanical path/include relocation; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 scroll controller/native management composition; current-desktop native API fixture",
       "notice": "Project-authored C implementation; no imported artwork"
@@ -4379,7 +4379,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/control_state.h",
       "source": null,
       "source_blob": null,
-      "sha256": "6306dc59bebcf1198580b4cffd321f09ccc9ce5ed40229db376776c3b1fc38bf",
+      "sha256": "40f254bc0e9fb970de44ccfdaa0782a4e2aa5b4787e9ddf69610391c54570c5a",
       "disposition": "authored",
       "review": "T21 S24 extract control presentation state and resource ownership; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T26 S9 common native list/scroll surface snapshots and base resource preparation; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained; T26 S10 shared custom-draw state/binding/protocol and native dispatch unwind; private duplicate removed; T26 S10 complete control message borrow/font/native observation transaction moved to public message; profile consumes full operation object; T26 S13 complete-instance present/print contract and direct renderer consumer; original fallback/order preserved",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4640,7 +4640,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/control_install.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b1620a604836235c8ebb99c84ff3928f2fb48363d13caece556ac931a20e8bd1",
+      "sha256": "9e94b608dd0d721261a02ee8e3bca3face900b9e8190ba42aa927bb07c09b79c",
       "disposition": "authored",
       "review": "T21 S24 extract control install lifecycle; T24 S1 share list and combo list classification; T26 S1 shared native combo edit identity; T26 S1 shared classic dialog combo eligibility; T26 ordered audit reduce install interface state dependency; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T26 S9 common native list/scroll surface snapshots and base resource preparation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained; T26 S10 existing bindings setup now owns optional list-theme capture/owned-publication/enable/final-cancel in exact former grid order; normal default options unchanged",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -6035,7 +6035,7 @@
       "path": "src/ntw2ks-dll/button.c",
       "source": null,
       "source_blob": null,
-      "sha256": "984142d8b20f647970717593ca787f5be4727668401c4839ec1ef4527745a3db",
+      "sha256": "75687ce52c508649037a88401dbe063f5a396a405a94365cf875e825cdfa2f00",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -7508,10 +7508,19 @@
       "notice": "Project-authored C interface; no imported artwork"
     },
     {
+      "path": "src/lib-win32-style/application/graphics/paint_frame.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "ca5e2a7f3e54abe6bf8b77fee29fe1fce1aa61e429a0697cf1e5f72baa70f1bd",
+      "disposition": "authored",
+      "review": "T29 S20 shared button chrome, fill and relief; reuses project painting reviewed against USER and DrawEdge",
+      "notice": "Project-authored C from the existing Win3.x and Windows 2000 paint modules; no imported artwork"
+    },
+    {
       "path": "src/lib-win32-style/application/graphics/paint_frame.h",
       "source": null,
       "source_blob": null,
-      "sha256": "4689ef38be900a31906e85cd1d129e0983cd7105259b54d64c2548dff3207522",
+      "sha256": "26fa6a99f5c52811ea48b5e75059fc692da75a841bd584bdc770440a63d83a5a",
       "disposition": "authored",
       "review": "T26 S1 shared solid rectangular frame painter; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored C interface; no imported artwork"
@@ -8462,15 +8471,6 @@
       "notice": "Project-authored pure C; no imported artwork"
     },
     {
-      "path": "src/lib-win32-style/application/control/scroll_geometry.h",
-      "source": null,
-      "source_blob": null,
-      "sha256": "08c661658808715deac3621d7c4fc197550e5ad5091f1c693c21a80865be2e78",
-      "disposition": "authored",
-      "review": "T26 S9 shared scroll data contracts, controller/native management and independent native tests; profile geometry/timing remains caller-owned",
-      "notice": "Project-authored pure C; no imported artwork"
-    },
-    {
       "path": "src/lib-win32-style/application/control/scroll_managed.c",
       "source": null,
       "source_blob": null,
@@ -8519,7 +8519,7 @@
       "path": "src/lib-win32-style/application/control/list_snapshot.c",
       "source": null,
       "source_blob": null,
-      "sha256": "702c7e0ac09277efc14e6e6b4c53163d4a03054c466d862793ca8400dcf31ec8",
+      "sha256": "55d144be19ed6c3251bea1ffeee52d15af915b936d2ae3d04a7a101b5ecdd4f6",
       "disposition": "authored",
       "review": "T26 S9 shared native list/scroll snapshots, control message and real native contract tests",
       "notice": "Project-authored pure C; no imported artwork"
@@ -8528,7 +8528,7 @@
       "path": "src/lib-win32-style/application/control/list_snapshot.h",
       "source": null,
       "source_blob": null,
-      "sha256": "a05953bb502cd63d75c75d27b0b07a32d1451daccb20a17a1a25b912e53c7b0b",
+      "sha256": "840975e065f3ee21f78ce30c11b8253d63cc1ee961981d85cf5822943920bb21",
       "disposition": "authored",
       "review": "T26 S9 shared native list/scroll snapshots, control message and real native contract tests",
       "notice": "Project-authored pure C; no imported artwork"
@@ -9719,7 +9719,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 shared original partial rectangular edge rules",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "c6224a0eb86437dd85b0adef1fbff8101ebaea4ca5aa5a5c921e84abca6415e1"
+      "sha256": "e3e01212a685bc040f0abef5943870cfa1abc2b924182563fe8b41fce5ca88bc"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/common/paint.h",
@@ -9728,7 +9728,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "32a300490290dca2704c9fec337cce5b2b8499166d273c66b94f1c7876cd9bdf"
+      "sha256": "638e45d4e76cf3c132e4862cc2c2904c8dd55f816c8063878801df4914a89105"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/common/palette.c",
@@ -9746,7 +9746,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S9 common selection roles and native draw preparation",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "74bfbe920fb24aa3d65fd826d868187c29e224c0cb8b67ee81f1a6993c40445c"
+      "sha256": "e16a5e41c7b62f2ea18475184b0f1385abd77ba8d18d198d8e96d10895e24826"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/button_paint.c",
@@ -9755,7 +9755,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "1216baaaf9a2c1997960f53bd6d77a2a6f15bb13f6624a0f9cd61aff9cc26ef1"
+      "sha256": "41c968e14d927d5afe2c59c67b28bf9c13c4110cfaba1d0527ef53205ef3e032"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/button_paint.h",
@@ -9764,7 +9764,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "fa8dc4c10d20eb3131754aafd883f3c194a0f13528c9dcc943c9ccfa556e457f"
+      "sha256": "13f26f130c32b7f5ee75fe9ba5afe0427d485c7eb694f55dc7d7add8ee4635fd"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.c",
@@ -9773,7 +9773,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "91abdcee02b04bb965afecdad94a09a7e11792cc7d3f292dd28b52e05876601d"
+      "sha256": "9296b572a1ffd0ae29b30f909215edc5b0a1d88d041a19b6a02b704d3c192bbb"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -9800,7 +9800,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 regression for original partial edges",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "c979d4d17af94facff8ce11c3b14488b943d0664317526de39c674a9625ba078"
+      "sha256": "3028b6dacbd901566a0039698a444e9bbfa544e1cd4b98bed243878913fd3884"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/control/button_paint.c",
@@ -9836,7 +9836,7 @@
       "disposition": "authored",
       "review": "T27 S4 independently authored source-based STATIC/GROUPBOX integration or real native consumer; pinned Win2000 reference and genuine original-image pixel samples; no imported art/font",
       "notice": "Project-authored C/RC; original Windows2000 reference is read-only, not a build/run/test dependency",
-      "sha256": "eb15af07d98dd2e13e75f32a5622d30fc3453b9b0a5362584f0e2d87d0b5dfb5"
+      "sha256": "b43027f6c0f0fb7fafd1a43a068691a85f4d620bdea76ffdcb8928a1833ed02a"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/static_paint.h",
@@ -9845,7 +9845,7 @@
       "disposition": "authored",
       "review": "T27 S4 independently authored source-based STATIC/GROUPBOX integration or real native consumer; pinned Win2000 reference and genuine original-image pixel samples; no imported art/font",
       "notice": "Project-authored C/RC; original Windows2000 reference is read-only, not a build/run/test dependency",
-      "sha256": "e119f11d2850c8f40aab9f39414c8a18453448b8fc48c0a2ad0930c5c3e268ef"
+      "sha256": "7825bbbdcaa5d21082398341fc57673730a84222495c282e02ad7f892fc0f42e"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/control/static_paint.c",
@@ -9872,7 +9872,7 @@
       "disposition": "authored",
       "review": "T27 S5 source-based native-edit edge/default brush role implementation or actual native consumer; no imported client editor/art/font; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored C/RC; pinned Windows2000 source/read-only screenshots for research, no external product/build dependency",
-      "sha256": "c54d33ac9b3605683291f815784aca11f312f8a52c4cd531e3a608a30044f8ac"
+      "sha256": "f5c3037e0994945dc992c6947119c883beca71464ecf09709578d7f62ff816f5"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/edit_paint.h",
@@ -9881,7 +9881,7 @@
       "disposition": "authored",
       "review": "T27 S5 source-based native-edit edge/default brush role implementation or actual native consumer; no imported client editor/art/font",
       "notice": "Project-authored C/RC; pinned Windows2000 source/read-only screenshots for research, no external product/build dependency",
-      "sha256": "fa72eda01e1d5209c63cadb94677efafe6089eed6ec3b5143ec0a24d7775369e"
+      "sha256": "1c97f9579102dd11c81cbc64016c4ac9904b84e247fb7ebab526ec0f8b783162"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/control/edit_paint.c",
@@ -9908,7 +9908,7 @@
       "disposition": "authored",
       "review": "T27 S6 source-informed list/combo appearance or native product test; T27 S9 common selection roles and native draw preparation",
       "notice": "Project-authored C; references consulted without importing external code or assets",
-      "sha256": "fae9f49be2adbb25c7fdd1257b89fd80a89e56680d76cf3fffaec1427f95c2ba"
+      "sha256": "8bc7fb0f84ee691fdd4caeaffe09208b272b7fe33a793affabdaaf5224727a5d"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/list_combo.h",
@@ -9917,7 +9917,7 @@
       "disposition": "authored",
       "review": "T27 S6 source-informed list/combo appearance or native product test",
       "notice": "Project-authored C; references consulted without importing external code or assets",
-      "sha256": "e63099ef2c773ef65bd18fef6fc97193c90633000d2c5f930182048b51bd68da"
+      "sha256": "706f0c1fb3309bfcde47cf65ca277cb2ff36ae5caa92b93126dd5035ce1980f0"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/control/list_combo.c",
@@ -9929,31 +9929,13 @@
       "sha256": "e35e6768c004193917e5feee1ec30cbff9dc621b629dad60ba381db7e57da101"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/control/scroll_layout.c",
-      "source": null,
-      "source_blob": null,
-      "disposition": "authored",
-      "review": "S7 native scroll geometry in the shared layout contract",
-      "notice": "Project-authored C informed by fixed Windows 2000 reference",
-      "sha256": "f1b2680c14ea925718dbf3c46136d28cacc70a633a6893ac7a81019d6cc16cf2"
-    },
-    {
-      "path": "src/lib-win32-style/appearance/win2000/control/scroll_layout.h",
-      "source": null,
-      "source_blob": null,
-      "disposition": "authored",
-      "review": "S7 native scroll geometry in the shared layout contract",
-      "notice": "Project-authored C informed by fixed Windows 2000 reference",
-      "sha256": "ecc64fdd075ca12b75c37e7723b845ff4519db0cc4d733edf7ae5976254ecd84"
-    },
-    {
       "path": "tests/lib-win32-style/appearance/win2000/control/scroll_layout.c",
       "source": null,
       "source_blob": null,
       "disposition": "authored",
       "review": "S7 native scroll geometry in the shared layout contract",
       "notice": "Project-authored C informed by fixed Windows 2000 reference",
-      "sha256": "f8473213289ef2e51f0995d4a57f7b74b597cfb04a6bd13a589030b7dd7960ca"
+      "sha256": "397887be5b765dd2bbca700c2a99768b15ea5a305d023e840081a3d85d74682b"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/scroll.c",
@@ -9962,7 +9944,7 @@
       "disposition": "authored",
       "review": "S7 native scroll presentation and product validation",
       "notice": "Project-authored C with pinned behavior references",
-      "sha256": "e64a55fd4be89abb7e023b25fd1066da5ad6262a222bbed48937fe4634f7e5ed"
+      "sha256": "b7636438cbda5c4aa95c7cdab7825b72d24c8f315f78b3a57dda1510be95fca0"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/scroll.h",
@@ -9971,7 +9953,7 @@
       "disposition": "authored",
       "review": "S7 native scroll presentation and product validation",
       "notice": "Project-authored C with pinned behavior references",
-      "sha256": "757c8e8e4ff42f0c35d8caf5c40a767d2e481dfd779fb8506fa7e7c82432f328"
+      "sha256": "5c3c183b643e0ecac715d6fb8423a2f7d04af0cbdcead93cded4327fd20405e8"
     },
     {
       "path": "tests/lib-win32-style/appearance/win2000/control/scroll.c",
@@ -9986,7 +9968,7 @@
       "path": "src/lib-win32-style/appearance/win2000/control/tab_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "436d8b6d5ac1b52138441e826f72a6e465645e9ed91f80b86c6ba047e6ab4a46",
+      "sha256": "526ba68969a3cb80ac637e449f450d9ce9eb87ee79228773a2a584fdfc4f903b",
       "disposition": "authored",
       "review": "T27 S8 original Tab geometry adapted to existing snapshots; T27 S9 common selection roles and native draw preparation",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -9995,7 +9977,7 @@
       "path": "src/lib-win32-style/appearance/win2000/control/header_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c6ae5e74e8cd005a59b81f5644829079ea3301eb48552a3d629daa006c8ad1c3",
+      "sha256": "d2deca588af58a5805663a13369328955ecfb199676a3691aa521ccfeb844ade",
       "disposition": "authored",
       "review": "T27 S8 original Header edge and text roles via native custom draw; T27 S9 native report, tree and shared notification integration",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10049,7 +10031,7 @@
       "path": "src/lib-win32-style/appearance/win2000/control/progress_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "36f1ab241b3030e373179b6f3b8477cf548e2186fa31dd236774068c57fed9a0",
+      "sha256": "5e003918006eec1e45500a5e6e59adaeb9ff74e8181129171215e9c8780abbf4",
       "disposition": "authored",
       "review": "T27 S10 classic block/smooth progress painter",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10085,7 +10067,7 @@
       "path": "src/lib-win32-style/appearance/win2000/control/trackbar_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0958237d8e2772422bdf13571de6dabac81149557832fb170051ce21ab0dd51c",
+      "sha256": "5c9c17cf030208c88dd502b9dbbaef7d8cc84ec9c7ad52e4c0405379405356c8",
       "disposition": "authored",
       "review": "T27 S11 TrackBar and UpDown native painting profiles",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10103,7 +10085,7 @@
       "path": "src/lib-win32-style/appearance/win2000/control/updown_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "de236007a076d0338c4ca29c1c4486bacbf43ca3b7887ea3e55beb26bf3babb5",
+      "sha256": "f3b99568bf7d100198890e6fc57888ec3bab45c46358e762589a698e3a61ae8b",
       "disposition": "authored",
       "review": "T27 S11 TrackBar and UpDown native painting profiles",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10148,7 +10130,7 @@
       "path": "src/lib-win32-style/appearance/win2000/control/toolbar_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e78d2ec05c737cdd7bb5848ecad8dc15bf681d04b2180d805b181a3f151a43b0",
+      "sha256": "484f5ae0183cc3d1e1ef79d0aa1057509fcb7c6f90750c9e26124038b01f45a2",
       "disposition": "authored",
       "review": "T27 S12 工具栏、可重排栏与状态栏",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10157,7 +10139,7 @@
       "path": "src/lib-win32-style/appearance/win2000/control/rebar_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0de902a7f63face43388f7512485f74fa99858203daa34c69a3bb47034c9cd30",
+      "sha256": "56692c95321150304a25f253872a72495ed379d4c0b1bd0a0199d70a3dd9ee97",
       "disposition": "authored",
       "review": "T27 S12 工具栏、可重排栏与状态栏",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10166,7 +10148,7 @@
       "path": "src/lib-win32-style/appearance/win2000/control/status_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ad6742a1b44d5bb1baaa4c2f365a98e6bb863349417d9aaf12e88c5770d4f391",
+      "sha256": "bc08ff47787fd13c2927e2a1edc7dc8c95d9df9fe4cdaf76422ecddd8cfa8020",
       "disposition": "authored",
       "review": "T27 S12 工具栏、可重排栏与状态栏",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10211,7 +10193,7 @@
       "path": "src/lib-win32-style/appearance/win2000/control/date_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "64d70cf43d7bbc99e7a2783f75326ff141bd326a6cd5e81fc3e60da8f01dbc9c",
+      "sha256": "1f16f4071dfc06578983a703b122ab04765e4586b5459e7d5b62b1d87e7e3d36",
       "disposition": "authored",
       "review": "T27 S13 日期与月历",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10508,7 +10490,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_style.c",
       "source": null,
       "source_blob": null,
-      "sha256": "38c9de5d7ad3fa8f3e5fe24a9687d0c6eaaa3e73d11f1b9b6ce72ebec838fb0f",
+      "sha256": "a0bda1a3d19d9613689d004d86aad71b7c3b80efa95b31bf07c70a960a26211f",
       "disposition": "authored",
       "review": "T29 S3 versioned project-style extension and packaged tests",
       "notice": "Project-authored; no imported source or resources"
@@ -10517,7 +10499,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_style.h",
       "source": null,
       "source_blob": null,
-      "sha256": "5fa063c8a3a41f525e5009aa2cb0d066fe670fc4bf787adabae7ddd2fc5b7095",
+      "sha256": "2a0647c14687b29e828919519a0478417876d9b38b4ab7aaefbb1601a53a0d9c",
       "disposition": "authored",
       "review": "T29 S3 versioned project-style extension and packaged tests",
       "notice": "Project-authored; no imported source or resources"
@@ -10526,7 +10508,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/classic_style.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8559c214514fab11402728dcc4df48858bbdd58b3f87701278a718693301ced2",
+      "sha256": "ddcf8ae7004bc79a7ccf872d4108ed766cc98dc58d3a95b123a943c7a76d98f3",
       "disposition": "authored",
       "review": "T29 S3 versioned project-style extension and packaged tests",
       "notice": "Project-authored; no imported source or resources"
@@ -10535,7 +10517,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5e2c54424f2330e2ba09b8426bbcbbd13a7e7f602548e405f623e54049e943dc",
+      "sha256": "ea82d88fb624bdc3bc80fb955d6e92fc74341771022d43e8ec543781370b60f3",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10544,7 +10526,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "6ea8585588bc235dbf21bec3503499edfa42a8afbd80279a71056f849c93fd5a",
+      "sha256": "ad33ca8813cf622b3debccd736b3742dee89e869edc43db26bf6e2a170268291",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10553,7 +10535,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f9852f32f0b6809e4938bb60d64a50147467c3b25cfb46ea92d3aa0375f2c127",
+      "sha256": "46cc86bb6f0b03686c155b24ded5e7c8e4bbcc66b9e5e0fc4db81e5a1d6e5e91",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10625,7 +10607,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/v4_png.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9ac3806888e01b2049de873d8a2dad60e2782677df75c0753df0d5052c625751",
+      "sha256": "3756ce862e112ac40997dc83875688e873ddc6f45d5412c605efff09c6f9bd9f",
       "disposition": "authored",
       "review": "T29 S6 shared bounded MSStyles PNG palette-role decoder",
       "notice": "Project-authored; no imported source or resources"

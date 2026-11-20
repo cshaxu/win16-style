@@ -39,6 +39,7 @@ target_include_directories(style-font-cache PUBLIC src)
 target_compile_definitions(style-font-cache PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-font-cache PUBLIC gdi32)
 add_library(style-present STATIC src/lib-win32-style/application/graphics/present.c
+  src/lib-win32-style/application/graphics/paint_frame.c
   src/lib-win32-style/application/graphics/text_metrics.c)
 target_include_directories(style-present PUBLIC src)
 target_compile_definitions(style-present PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -69,7 +70,7 @@ add_library(win2k-common STATIC
   src/lib-win32-style/appearance/win2000/common/paint.c)
 target_include_directories(win2k-common PUBLIC src)
 target_compile_definitions(win2k-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win2k-common PUBLIC user32 gdi32)
+target_link_libraries(win2k-common PUBLIC style-present user32 gdi32)
 add_library(win2k-control STATIC
   src/lib-win32-style/appearance/win2000/control/tab_paint.c
   src/lib-win32-style/appearance/win2000/control/header_paint.c
@@ -82,7 +83,6 @@ add_library(win2k-control STATIC
   src/lib-win32-style/appearance/win2000/control/status_paint.c
   src/lib-win32-style/appearance/win2000/control/date_paint.c
   src/lib-win32-style/appearance/win2000/control/scroll.c
-  src/lib-win32-style/appearance/win2000/control/scroll_layout.c
   src/lib-win32-style/appearance/win2000/control/list_combo.c
   src/lib-win32-style/appearance/win2000/control/background.c
   src/lib-win32-style/appearance/win2000/control/edit_paint.c
@@ -200,6 +200,7 @@ add_library(style-control-common STATIC
   src/lib-win32-style/application/control/edit.c
   src/lib-win32-style/application/control/retire.c
   src/lib-win32-style/application/control/scroll_resources.c
+  src/lib-win32-style/application/control/scroll_geometry.c
   src/lib-win32-style/application/control/scroll_track.c
   src/lib-win32-style/application/control/scroll_controller.c
   src/lib-win32-style/application/control/scroll_managed.c
@@ -219,7 +220,6 @@ target_compile_definitions(style-control-common PRIVATE UNICODE _UNICODE _WIN32_
 add_dependencies(style-control-common style-subclass)
 target_link_libraries(style-control-common PUBLIC module-import style-bitmap win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme)
 add_library(win16-control STATIC
-  src/lib-win32-style/appearance/win3x/control/scroll_layout.c
   src/lib-win32-style/appearance/win3x/control/tab_paint.c
   src/lib-win32-style/appearance/win3x/control/header_paint.c
   src/lib-win32-style/appearance/win3x/control/progress_paint.c src/lib-win32-style/appearance/win3x/control/trackbar_paint.c
@@ -318,7 +318,7 @@ foreach(stem IN ITEMS Win16 Win2K)
   add_custom_command(
     OUTPUT "${theme_object}" "${out}/${stem}.theme"
     BYPRODUCTS "${out}/cmap.bin" "${out}/bcmap.bin" "${out}/vmap.bin"
-      "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" "${out}/fonts.rcinc" ${image_files}
+      "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" "${out}/fonts.rcinc" "${out}/arrows.bin" ${image_files}
     COMMAND "$<TARGET_FILE:classic-theme-compiler>" "${stem}"
     COMMAND "${CMAKE_RC_COMPILER}" ${image_flag} -I "${out}" -I "${CMAKE_CURRENT_SOURCE_DIR}/src" -i "${classic_theme_rc}" -O coff -o theme.res.o
     DEPENDS classic-theme-compiler "${classic_theme_rc}" ${dialog_resources}

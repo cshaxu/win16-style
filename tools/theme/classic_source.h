@@ -34,6 +34,8 @@ typedef struct classic_theme_source {
     unsigned host_options;
     style_caption_presentation caption_presentation;
     style_border_presentation border_presentation;
+    classic_control_presentation controls;
+    style_scroll_arrow_source arrow_source;
 } classic_theme_source;
 
 static const classic_theme_source classic_sources[]={
@@ -44,7 +46,7 @@ static const classic_theme_source classic_sources[]={
         RGB(192,192,192),RGB(0,0,0),RGB(255,255,255),false,true,false,
         WIN16_TITLE_BUTTON_GROUP,
         {18,0,{19,18},{0,0}},
-        {CLASSIC_SCROLL_EXTENT_CROSS_AXIS,0},
+        {CLASSIC_SCROLL_EXTENT_CROSS_AXIS,0,STYLE_SCROLL_THUMB_FIXED},
         {"MS Sans Serif, 10, Bold, Quality:NonAntialiased",NULL,"System, 12, Bold, Quality:NonAntialiased"},
         {RGB(255,255,255),RGB(164,200,240),RGB(0,0,0),RGB(0,0,0),RGB(0,0,0),RGB(0,0,0),TRUE},
         WIN16_POPUP_MENU_METRICS,
@@ -58,7 +60,8 @@ static const classic_theme_source classic_sources[]={
         MSSTYLES_HOST_ALL,
         {STYLE_CAPTION_TEXT_CENTER_CLIP,STYLE_CAPTION_SEPARATOR_AFTER,STYLE_CAPTION_BUTTON_INDEXED,
             STYLE_CAPTION_BUTTON_EDGE_OUTLINE},
-        WIN16_FRAME_BORDER
+        WIN16_FRAME_BORDER,{.separator=STYLE_LINE_FLAT,.group=STYLE_LINE_FLAT,.edit=STYLE_LINE_FLAT,.push=STYLE_PUSH_STEPPED},
+        STYLE_SCROLL_ARROW_INDEXED
     },
     {
         "Win2K","Windows 2000",
@@ -67,7 +70,7 @@ static const classic_theme_source classic_sources[]={
         RGB(212,208,200),RGB(64,64,64),RGB(212,208,200),true,false,true,
         WIN2000_TITLE_BUTTON_GROUP,
         {19,16,{16,14},{15,15}},
-        {CLASSIC_SCROLL_EXTENT_SYSTEM,0},
+        {CLASSIC_SCROLL_EXTENT_SYSTEM,0,STYLE_SCROLL_THUMB_PAGE},
         {"Tahoma, 8, Bold","Tahoma, 6, Bold","Tahoma, 8"},
         {RGB(212,208,200),RGB(0,0,128),RGB(0,0,0),RGB(255,255,255),RGB(128,128,128),RGB(128,128,128),TRUE},
         WIN2000_POPUP_MENU_METRICS,
@@ -81,7 +84,8 @@ static const classic_theme_source classic_sources[]={
         0,
         {STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,STYLE_CAPTION_SEPARATOR_INSIDE,STYLE_CAPTION_BUTTON_SYSTEM,
             STYLE_CAPTION_BUTTON_NO_OUTLINE},
-        WIN2000_FRAME_BORDER
+        WIN2000_FRAME_BORDER,{.separator=STYLE_LINE_RELIEF,.group=STYLE_LINE_RELIEF,.edit=STYLE_LINE_RELIEF,.push=STYLE_PUSH_RELIEF},
+        STYLE_SCROLL_ARROW_SYMBOL
     }
 };
 

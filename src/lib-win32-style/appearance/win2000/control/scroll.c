@@ -1,5 +1,5 @@
 #include "scroll.h"
-#include "scroll_layout.h"
+#include "lib-win32-style/application/control/scroll_geometry.h"
 #include "../common/paint.h"
 #include "lib-win32-style/application/control/scroll_surface.h"
 
@@ -19,9 +19,12 @@ static BOOL measure(HWND window,const win2k_scroll *scroll,LONG object,const REC
     BOOL vertical=vertical_axis(window,object);
     UINT dpi=GetDpiForWindow(window);
     SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
-    int metric=classic_scroll_nominal(scroll->metrics,CLASSIC_SCROLL_EXTENT_SYSTEM,bar,vertical,dpi?dpi:96);
+    if(!dpi)dpi=96;
+    int metric=classic_scroll_nominal(scroll->metrics,CLASSIC_SCROLL_EXTENT_SYSTEM,bar,vertical,dpi);
     int axis=object==OBJID_CLIENT?SB_CTL:vertical?SB_VERT:SB_HORZ;
-    return read_info(window,axis,&info) && win2k_scroll_measure(bar,vertical,metric,&info,out);
+    style_scroll_thumb thumb=scroll->metrics.thumb?scroll->metrics.thumb:STYLE_SCROLL_THUMB_PAGE;
+    return read_info(window,axis,&info) &&
+        style_scroll_measure(bar,vertical,metric,max(1,MulDiv(1,(int)dpi,96)),&info,thumb,out);
 }
 
 static BOOL layout(HWND window,void *context,LONG object,style_scroll_layout *out,POINT *origin)
@@ -32,23 +35,14 @@ static BOOL layout(HWND window,void *context,LONG object,style_scroll_layout *ou
     return measure(window,context,object,&surface.bar,out);
 }
 
-static style_scroll_part hit(const style_scroll_layout *l,POINT p,UINT disabled)
-{
-    if(!PtInRect(&l->bar,p) || disabled==ESB_DISABLE_BOTH)return STYLE_SCROLL_NONE;
-    if(PtInRect(&l->first,p))return disabled&ESB_DISABLE_UP?STYLE_SCROLL_NONE:STYLE_SCROLL_LINE_BEFORE;
-    if(PtInRect(&l->last,p))return disabled&ESB_DISABLE_DOWN?STYLE_SCROLL_NONE:STYLE_SCROLL_LINE_AFTER;
-    if(!l->thumb_fits)return STYLE_SCROLL_NONE;
-    if(PtInRect(&l->thumb,p))return l->thumb_draggable?STYLE_SCROLL_THUMB:STYLE_SCROLL_NONE;
-    return (l->vertical?p.y<l->thumb.top:p.x<l->thumb.left)?STYLE_SCROLL_PAGE_BEFORE:STYLE_SCROLL_PAGE_AFTER;
-}
-
-static void arrow(HDC dc,RECT r,UINT state,const win2k_palette *p)
+static void arrow(HDC dc,RECT r,UINT state,const win2k_scroll *scroll)
 {
     if(IsRectEmpty(&r))return;
-    if(!win2k_scroll_arrow_button(dc,&r,state,p)){
+    const win2k_palette *p=&scroll->arrow_palette;
+    if(!style_paint_scroll_arrow(dc,&r,state,p,&scroll->arrow_art)){
         UINT edge=(state&DFCS_PUSHED)?EDGE_SUNKEN:EDGE_RAISED;
-        win2k_edge(dc,&r,edge,BF_RECT|BF_ADJUST,p);
-        win2k_fill(dc,&r,p->face);
+        style_paint_relief(dc,&r,edge,BF_RECT|BF_ADJUST,p);
+        style_paint_color(dc,&r,p->face);
     }
 }
 
@@ -64,7 +58,7 @@ static HBRUSH track_brush(HWND window,HDC dc)
 static void paint_track(HDC dc,RECT r,BOOL vertical,HBRUSH brush,const win2k_palette *p)
 {
     if(IsRectEmpty(&r))return;
-    if(!brush){win2k_dither(dc,&r,p);return;}
+    if(!brush){style_paint_dither(dc,&r,p);return;}
     FillRect(dc,&r,brush);
     int width=vertical?r.right-r.left:r.bottom-r.top;
     for(int layer=0;layer<2 && width>2*layer;++layer){
@@ -81,8 +75,8 @@ static void paint_track(HDC dc,RECT r,BOOL vertical,HBRUSH brush,const win2k_pal
             last.top=last.bottom-1;
         }
         COLORREF color=layer?p->face:p->shadow;
-        win2k_fill(dc,&first,color);
-        win2k_fill(dc,&last,color);
+        style_paint_color(dc,&first,color);
+        style_paint_color(dc,&last,color);
     }
 }
 
@@ -146,18 +140,18 @@ static void draw(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
             if(vertical)page.top=thumb.bottom;else page.left=thumb.right;
             InvertRect(dc,&page);
         }
-        win2k_edge(dc,&thumb,EDGE_RAISED,BF_RECT|BF_ADJUST,&thumb_colors);
-        win2k_fill(dc,&thumb,thumb_colors.face);
+        style_paint_relief(dc,&thumb,EDGE_RAISED,BF_RECT|BF_ADJUST,&thumb_colors);
+        style_paint_color(dc,&thumb,thumb_colors.face);
     }
-    arrow(dc,l.first,first,&scroll->arrow_palette);
-    arrow(dc,l.last,last,&scroll->arrow_palette);
+    arrow(dc,l.first,first,scroll);
+    arrow(dc,l.last,last,scroll);
     RestoreDC(dc,saved);
 }
 
 static void sizebox(HDC dc,RECT r,BOOL grip,const win2k_scroll *scroll)
 {
     win2k_palette palette=surface_palette(scroll->colors.own_sizebox?&scroll->colors.sizebox:NULL);
-    win2k_fill(dc,&r,palette.face);
+    style_paint_color(dc,&r,palette.face);
     if(!grip)return;
     int size=min(r.right-r.left,r.bottom-r.top);
     if(size<=0)return;
@@ -243,16 +237,18 @@ void win2k_scroll_init(win2k_scroll *scroll,style_instance *instance)
 {
     scroll->instance=instance;
     scroll->arrow_palette=win2k_standard_palette;
+    scroll->arrow_art=(style_scroll_arrow_art){0};
     scroll->colors=(classic_scroll_colors){0};
     UINT delay=GetDoubleClickTime()*4/5;
     scroll->policy=(style_scroll_policy){.initial_repeat_ms=max(1,delay),.repeat_ms=max(1,delay/8),
-        .hit=hit,.drag_bounds=drag_bounds};
+        .hit=style_scroll_hit,.drag_bounds=drag_bounds};
 }
 
 void win2k_scroll_theme(win2k_scroll *scroll,const classic_theme *theme)
 {
     scroll->arrow_palette.face=theme->scroll_arrow.face;
     scroll->arrow_palette.dark=theme->scroll_arrow.edge;
+    scroll->arrow_art=theme->scroll_art;
     scroll->colors=theme->scroll;
     scroll->metrics=theme->scroll_metrics;
 }

@@ -14,7 +14,7 @@ static style_control_button_role role(HWND window,void *context,DWORD style)
 {(void)window;(void)context;return (style_control_button_role){style&SS_TYPEMASK,TRUE};}
 static HFONT font(HWND window,void *context)
 {(void)context;HFONT value=(HFONT)SendMessageW(window,WM_GETFONT,0,0);return value?value:(HFONT)GetStockObject(SYSTEM_FONT);}
-BOOL win2k_static_paint(HWND window,style_instance *instance,HDC dc,const win2k_palette *p)
+BOOL win2k_static_paint(HWND window,style_instance *instance,HDC dc,const win2k_palette *p,style_line_profile separator)
 {
     int saved=SaveDC(dc);if(!saved)return FALSE;
     BOOL result=FALSE;RECT client;HWND parent=GetParent(window);
@@ -51,10 +51,12 @@ BOOL win2k_static_paint(HWND window,style_instance *instance,HDC dc,const win2k_
         else result=!*snapshot.text || DrawTextW(dc,snapshot.text,-1,&client,DT_SINGLELINE|((cues&UISF_HIDEACCEL)?DT_HIDEPREFIX:0));
     }else if(type>=SS_BLACKRECT && type<=SS_WHITEFRAME){
         unsigned color=(type-SS_BLACKRECT)%3;COLORREF value=color==0?p->dark:color==1?p->shadow:p->highlight;
-        if(type<=SS_WHITERECT)result=win2k_fill(dc,&client,value);
+        if(type<=SS_WHITERECT)result=style_paint_color(dc,&client,value);
         else {HBRUSH frame=CreateSolidBrush(value);if(frame){result=FrameRect(dc,&client,frame)!=0;DeleteObject(frame);}}
     }else if(type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME){
-        result=win2k_edge(dc,&client,type==SS_ETCHEDFRAME?EDGE_ETCHED:BDR_SUNKENOUTER,BF_RECT,p);
+        int unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
+        result=style_paint_separator(dc,client,type,separator?separator:STYLE_LINE_RELIEF,
+            unit,p->dark,p->shadow,p->highlight);
     }
 done:
     if(!RestoreDC(dc,saved))result=FALSE;

@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S19 P1",
-  "stage": "shared theme presentation for classic window menus",
+  "delivery": "M0 T29 S20 P1",
+  "stage": "theme-driven basic Win32 controls",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "63b68706d82b598e6ba26b5acf1b3d6d7fc617f352c6666a7fd89520a0482d04",
+  "source_snapshot_sha256": "928fc1186363e8fe2cc59e53bd689d642fe1557be18796bf6894cf2e3a2981ad",
   "source_input_cohort": {
-    "count": 1289,
-    "sha256": "91c824e0470ba99673474d3f4836cdff9edb28e29876a96f7b549cae5eafe4ed",
+    "count": 1287,
+    "sha256": "aff2c7b0747b4432d69fc254ae2d800e93ad92808a227d943c2d3493cf8442de",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot",
@@ -16,7 +16,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "31c4ef2a03de3fe0625e4df0c29596c5a2ba1cbc9f83751fb01ca3be48738c5c",
+      "sha256": "cdaa2c43d5eafa4fb6b9b9713d0f958c55caef00147e35482b914af57caaa7d6",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "322e0a599e0ea6b44c81d4eb96cf86d24e7bd56f6d63a35d844915ff91116267",
+      "sha256": "5886d1ea1858fbe3660e2989f9e2d887e3a0693d94aadfeba83e782bf8cbd3e0",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "708b1d3c14353e3fab991ce47234ab1505975df70db02dd79ed0147cdc6db354",
+      "sha256": "2c2830d64465f035b7d18933c059879ac09ef9a923a0b3374f475fb9e0406bae",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -79,32 +79,31 @@
     }
   },
   "theme_artifacts": {
-    "Win16/Win16.msstyles": "624272b9f28c458b0b845968cea7fb09620aedc5b2ce0eec33c41041d7348bed",
+    "Win16/Win16.msstyles": "1c2fc45ad936db93860128320c7bb08e841239067bcc789bc161e3520179a598",
     "Win16/Win16.theme": "24532dbb589f8acf8e71909b8aaf361c3c05511a2b0f730fa84b2a6b9e52aede",
-    "Win2K/Win2K.msstyles": "03e8f1c4c2ef54a9908b23945f50df8a916c70f12f2cec3caf941d2aa1c2bc57",
+    "Win2K/Win2K.msstyles": "4c8f20885bee5a5c06016d4a3c4ccfb209228e0c85e19dea32a7ac87348dbde3",
     "Win2K/Win2K.theme": "1217c8240721b28e7f92d4d6a8c9b9b0d259e2d026829be6612a70c877dbee68"
   },
   "build": {
-    "toolchain": "pure C17, MinGW GCC MSVCRT, Ninja, ccache",
+    "command": "tools/Build-Package.ps1 -Task 29 -RunName s20-basic-controls-p1",
+    "toolchain": "pure C17, MinGW GCC MSVCRT, Ninja 1.13.2, ccache",
     "compiler_versions": {
       "x86": "16.1.0",
       "x64": "16.1.0"
     },
     "ccache_version": "ccache version 4.13.6",
     "seconds": {
-      "x86_clean": 347.980676200008,
-      "x86_recheck": 4.4767289999981585,
-      "x64_after_resume": 59.82635759999903
+      "x86_clean": 92.81001699999979,
+      "x64_clean": 89.03614120000202
     },
-    "continuity": "The original Windows build stopped during x64. Resumed the same verified source snapshot and Ninja build trees, retaining original x86 evidence.",
-    "changed_source_test_tool_build_files": 37,
-    "insertions": 568,
-    "deletions": 202,
-    "net_lines": 366,
+    "changed_source_test_tool_build_files": 67,
+    "insertions": 1201,
+    "deletions": 673,
+    "net_lines": 528,
     "checks": [
       "quick ABI and PE for x86 and x64",
       "source and archive boundaries",
-      "independent theme readback and original glyph tables"
+      "independent companion theme readback and original glyph tables"
     ]
   },
   "publication": {
@@ -129,19 +128,34 @@
   "focused_post_publication": {
     "status": "passed-focused",
     "coverage": "focused",
-    "seconds": 46.5939341,
-    "cases": 22,
+    "cases": 50,
     "selected_cases": [
-      "ntw2ks-system-menu-live-x86",
-      "ntw2ks-system-menu-live-x64",
-      "ntw2ks-system-menu-keyboard-x86",
-      "ntw2ks-system-menu-keyboard-x64",
-      "ntw2ks-system-menu-cancel-x86",
-      "ntw2ks-system-menu-cancel-x64",
-      "ntw2ks-system-menu-glyph-x86",
-      "ntw2ks-system-menu-glyph-x64",
-      "ntw2ks-system-menu-default-x86",
-      "ntw2ks-system-menu-default-x64",
+      "ntw2ks-static-x86",
+      "ntw2ks-static-aware-x86",
+      "ntw2ks-static-v6-x86",
+      "ntw2ks-static-v6-aware-x86",
+      "ntw2ks-static-x64",
+      "ntw2ks-static-aware-x64",
+      "ntw2ks-static-v6-x64",
+      "ntw2ks-static-v6-aware-x64",
+      "style-edit-protocol-x86",
+      "ntw2ks-edit-x86",
+      "ntw2ks-edit-aware-x86",
+      "ntw2ks-edit-v6-x86",
+      "ntw2ks-edit-v6-aware-x86",
+      "style-edit-protocol-x64",
+      "ntw2ks-edit-x64",
+      "ntw2ks-edit-aware-x64",
+      "ntw2ks-edit-v6-x64",
+      "ntw2ks-edit-v6-aware-x64",
+      "win2k-paint-x86",
+      "win2k-paint-x64",
+      "ntw2ks-control-buttons-x86",
+      "ntw2ks-control-buttons-aware-x86",
+      "ntw2ks-control-buttons-x64",
+      "ntw2ks-control-buttons-aware-x64",
+      "ntw2ks-control-buttons-v6-x86",
+      "ntw2ks-control-buttons-v6-x64",
       "progress-sharing",
       "plan-selection",
       "abi-x86",
@@ -150,35 +164,55 @@
       "demo-pair",
       "automatic",
       "propagation",
-      "neutral-uwp-frame-32",
-      "neutral-uwp-frame-64",
-      "system-menu-native-string-x86",
-      "system-menu-native-string-x64"
+      "control-extensions-32",
+      "control-extensions-64",
+      "ntw2ks-scroll-layout-32",
+      "ntw2ks-scroll-32",
+      "ntw2ks-scroll-aware-32",
+      "ntw2ks-list-combo-32",
+      "ntw2ks-list-combo-aware-32",
+      "ntw2ks-list-combo-v6-32",
+      "ntw2ks-list-combo-v6-aware-32",
+      "ntw2ks-scroll-layout-64",
+      "ntw2ks-scroll-64",
+      "ntw2ks-scroll-aware-64",
+      "ntw2ks-list-combo-64",
+      "ntw2ks-list-combo-aware-64",
+      "ntw2ks-list-combo-v6-64",
+      "ntw2ks-list-combo-v6-aware-64"
     ],
     "skipped": []
   },
   "supplemental_post_publication": {
-    "theme_extension_and_pixels": [
+    "installed_theme_readback_and_pixels": [
       "x86",
       "x64"
     ],
-    "owned_native_system_menu": [
-      "x86",
-      "x64"
-    ],
-    "mixed_art_and_policy_toggles": [
-      "x86",
-      "x64"
-    ],
-    "win16_menu_cancellation_matrix": [
-      "x86",
-      "x64"
-    ]
+    "native_startup_pixels": {
+      "runs": 8,
+      "roots": [
+        "O:/winnt",
+        "candidate"
+      ],
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "themes": [
+        "Win16",
+        "Win2K"
+      ],
+      "witnesses": [
+        "push-button edge and face",
+        "selected ListBox row",
+        "STATIC separator"
+      ]
+    }
   },
   "validation": {
     "physical_input": "not tested; bounded owned windows and message-level checks",
-    "full_matrix": "not run; focused package and supplemental cases",
-    "modern_maximize": "Supplementary direct Win16 frame test fails identically on x86/x64 with S19 and rebuilt S18 at line 104. Native unstyled maximize succeeds on the same desktop. Focused package UWP cases pass."
+    "full_matrix": "not run; 50 focused cases and 12 supplemental post-publication runs",
+    "legacy_startup_static_oracle": "Ntw2ksWindowAttached in the standalone compatibility DLL cannot observe the neutral runtime subclass. Identical line 53 on S19, S20 candidate and S20 install in both widths. Replaced for this delivery by the native pixel observation."
   },
   "closure": "local delivery verified; remote review pending"
 }

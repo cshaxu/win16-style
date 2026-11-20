@@ -12,6 +12,7 @@ typedef struct win16_control_scroll_view {
     BOOL (*list_axis_owned)(HWND,LONG);
     const win16_style_palette *arrow_palette;
     const classic_scroll_colors *colors;
+    const style_scroll_arrow_art *art;
 } win16_control_scroll_view;
 void win16_control_draw_scroll(HWND window,const win16_control_scroll_view *view,HDC dc,LONG object,BOOL vertical);
 #endif

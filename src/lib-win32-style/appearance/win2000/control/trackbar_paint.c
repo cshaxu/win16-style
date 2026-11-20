@@ -11,7 +11,7 @@ static RECT transpose(RECT r)
 
 static BOOL thumb_fill(HDC dc,const RECT *r,BOOL patterned,const win2k_palette *palette)
 {
-    return patterned?win2k_dither(dc,r,palette):win2k_fill(dc,r,palette->face);
+    return patterned?style_paint_dither(dc,r,palette):style_paint_color(dc,r,palette->face);
 }
 
 /* The original DrawThumb uses an odd width, a soft raised body with one open
@@ -28,7 +28,7 @@ static BOOL pointed_thumb(HDC dc,RECT rect,DWORD style,BOOL patterned,const win2
     if(vertical)body=transpose(body);
     UINT open=vertical?(at_start?BF_LEFT:BF_RIGHT):(at_start?BF_TOP:BF_BOTTOM);
     if(!thumb_fill(dc,&body,patterned,p) ||
-       !win2k_edge(dc,&body,EDGE_RAISED,(BF_RECT&~open)|BF_SOFT,p))return FALSE;
+       !style_paint_relief(dc,&body,EDGE_RAISED,(BF_RECT&~open)|BF_SOFT,p))return FALSE;
 
     int center=r.left+nose;
     for(int depth=0;depth<nose;++depth){
@@ -38,12 +38,12 @@ static BOOL pointed_thumb(HDC dc,RECT rect,DWORD style,BOOL patterned,const win2
         if(!thumb_fill(dc,&pixels,patterned,p))return FALSE;
         RECT dark=row;dark.left=dark.right-1;
         pixels=vertical?transpose(dark):dark;
-        if(!win2k_fill(dc,&pixels,p->dark))return FALSE;
+        if(!style_paint_color(dc,&pixels,p->dark))return FALSE;
         if(depth){
             RECT light=row;light.right=light.left+1;
             RECT shadow=dark;OffsetRect(&shadow,-1,0);
             RECT a=vertical?transpose(light):light,b=vertical?transpose(shadow):shadow;
-            if(!win2k_fill(dc,&a,p->highlight) || !win2k_fill(dc,&b,p->shadow))return FALSE;
+            if(!style_paint_color(dc,&a,p->highlight) || !style_paint_color(dc,&b,p->shadow))return FALSE;
         }
     }
     return TRUE;
@@ -80,7 +80,7 @@ BOOL win2k_trackbar_part(HWND window,const NMCUSTOMDRAW *draw,const void *contex
     BOOL patterned=thumb && ((draw->uItemState&CDIS_SELECTED) || !IsWindowEnabled(window));
     BOOL painted=IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)!=ERROR;
     if(painted && thumb && !(style&TBS_BOTH))painted=pointed_thumb(dc,r,style,patterned,p);
-    else if(painted)painted=win2k_edge(dc,&r,channel?EDGE_SUNKEN:EDGE_RAISED,BF_RECT|BF_ADJUST|(thumb?BF_SOFT:0),p) &&
-        (thumb?thumb_fill(dc,&r,patterned,p):win2k_fill(dc,&r,colors->present?colors->channel:p->highlight));
+    else if(painted)painted=style_paint_relief(dc,&r,channel?EDGE_SUNKEN:EDGE_RAISED,BF_RECT|BF_ADJUST|(thumb?BF_SOFT:0),p) &&
+        (thumb?thumb_fill(dc,&r,patterned,p):style_paint_color(dc,&r,colors->present?colors->channel:p->highlight));
     return RestoreDC(dc,saved) && painted;
 }

@@ -16,36 +16,6 @@ static void select_font(HDC dc,HFONT font)
     SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));
 }
 
-typedef struct list_colors {
-    HBRUSH background;
-    COLORREF text;
-    const win2k_palette *palette;
-} list_colors;
-
-static void list_begin(HWND window,void *context,HDC dc,const style_control_list_snapshot *snapshot)
-{
-    const list_colors *colors=context;
-    (void)window;
-    FillRect(dc,&snapshot->client,colors->background);
-    select_font(dc,snapshot->font);
-    SetBkMode(dc,TRANSPARENT);
-}
-
-static void list_item(HWND window,void *context,HDC dc,const style_control_list_snapshot *snapshot,
-    const style_control_list_item *item)
-{
-    const list_colors *colors=context;
-    const win2k_palette *p=colors->palette;
-    if(item->selected>0)win2k_fill(dc,&item->row,p->selection);
-    SetTextColor(dc,!IsWindowEnabled(window)?p->gray:item->selected>0?p->selection_text:colors->text);
-    RECT label=item->row;
-    if(!(snapshot->style&LBS_MULTICOLUMN))label.left+=2;
-    DrawTextW(dc,item->text,item->length,&label,DT_LEFT|DT_SINGLELINE|DT_NOPREFIX);
-    if(GetFocus()==window && snapshot->caret==item->index &&
-       !(SendMessageW(window,WM_QUERYUISTATE,0,0)&UISF_HIDEFOCUS))
-        DrawFocusRect(dc,&item->row);
-}
-
 void win2k_list_paint(HWND window,style_instance *instance,HWND parent,HDC dc,const win2k_palette *p)
 {
     int saved=SaveDC(dc);
@@ -56,9 +26,11 @@ void win2k_list_paint(HWND window,style_instance *instance,HWND parent,HDC dc,co
         brush=(HBRUSH)GetStockObject(DC_BRUSH);
     }
     if(brush){
-        list_colors colors={brush,GetTextColor(dc),p};
-        const style_control_list_painter painter={&colors,native_font,list_begin,list_item};
-        style_control_list_paint(window,instance,dc,&painter);
+        const style_list_appearance appearance={
+            .parent_brush=brush,.selection=p->selection,.text=GetTextColor(dc),
+            .selected_text=p->selection_text,.disabled_text=p->gray,.honor_focus_cues=TRUE
+        };
+        style_control_list_strings(window,instance,dc,&appearance);
     }
     RestoreDC(dc,saved);
 }
@@ -68,9 +40,8 @@ BOOL win2k_combo_info(HWND window,PCOMBOBOXINFO info)
     return GetComboBoxInfo(window,info);
 }
 
-BOOL win2k_combo_paint(HWND window,style_instance *instance,HDC dc,const classic_combo_colors *colors)
+BOOL win2k_combo_paint(HWND window,style_instance *instance,HDC dc,const win2k_palette *p,const classic_combo_colors *colors)
 {
-    const win2k_palette *p=&win2k_standard_palette;
     const style_control_combo_reader reader={NULL,win2k_combo_info,native_font};
     style_control_combo_snapshot snapshot;
     int saved=SaveDC(dc);
@@ -93,10 +64,10 @@ BOOL win2k_combo_paint(HWND window,style_instance *instance,HDC dc,const classic
     BOOL painted=FALSE;
     if(instance->detached)goto done;
     if(brush)FillRect(dc,&frame,brush);
-    else win2k_fill(dc,&frame,enabled && !read_only?p->window:p->face);
+    else style_paint_color(dc,&frame,enabled && !read_only?p->window:p->face);
     win2k_palette chrome=*p;
     if(colors->present)chrome.dark=enabled?colors->border:colors->disabled_border;
-    painted=win2k_edge(dc,&frame,EDGE_SUNKEN,BF_RECT|BF_ADJUST,&chrome);
+    painted=style_paint_relief(dc,&frame,EDGE_SUNKEN,BF_RECT|BF_ADJUST,&chrome);
     if(!snapshot.simple){
         chrome=*p;
         UINT state=DFCS_SCROLLCOMBOBOX;
@@ -104,13 +75,14 @@ BOOL win2k_combo_paint(HWND window,style_instance *instance,HDC dc,const classic
         BOOL pressed=(snapshot.info.stateButton&STATE_SYSTEM_PRESSED)!=0;
         if(pressed)state|=DFCS_PUSHED|DFCS_FLAT;
         if(colors->present)chrome.face=colors->button[classic_combo_state_for(enabled,pressed)];
-        painted=win2k_scroll_arrow_button(dc,&snapshot.info.rcButton,state,&chrome) && painted;
+        painted=style_paint_scroll_system_arrow(dc,&snapshot.info.rcButton,state,&chrome) && painted;
     }
     if(!snapshot.editable){
         BOOL focused=enabled && GetFocus()==window && !snapshot.pressed;
-        if(focused)win2k_fill(dc,&item,p->selection);
+        if(focused)style_paint_color(dc,&item,p->selection);
         select_font(dc,snapshot.font);
-        if(focused || !enabled)SetTextColor(dc,focused?p->selection_text:p->gray);
+        if(!brush || focused || !enabled)
+            SetTextColor(dc,focused?p->selection_text:enabled?p->text:p->gray);
         SetBkMode(dc,TRANSPARENT);
         RECT label=item;
         label.left+=2;

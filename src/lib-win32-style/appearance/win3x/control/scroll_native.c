@@ -1,7 +1,7 @@
 #include "scroll_native.h"
 #include "lib-win32-style/application/control/scroll_state.h"
 /* Pinned USER18 initial/repeat delay and 4*CXBORDER/CYBORDER drag tolerance. */
-const style_scroll_policy win16_scroll_policy={200,50,4,1,win16_scroll_hit,NULL};
+const style_scroll_policy win16_scroll_policy={200,50,4,1,style_scroll_hit,NULL};
 RECT win16_scroll_caret_rectangle(HWND window,const style_scroll_layout *layout,const style_scroll_track *track)
 {
     RECT rectangle=layout->thumb;
@@ -31,10 +31,8 @@ BOOL win16_scroll_measure_native(const RECT *bar,BOOL vertical,UINT dpi,
 {
     if(!bar || !info)return FALSE;
     int nominal=classic_scroll_nominal(theme,CLASSIC_SCROLL_EXTENT_CROSS_AXIS,bar,vertical,dpi);
-    win16_scroll_metrics metrics={nominal,nominal,max(1,MulDiv(1,(int)dpi,96))};
-    LONGLONG maximum=(LONGLONG)info->nMax-(info->nPage?info->nPage-1:0);
-    if(maximum<info->nMin)maximum=info->nMin;
-    return win16_scroll_measure(bar,vertical,&metrics,info->nMin,(LONG)maximum,info->nPos,layout);
+    style_scroll_thumb thumb=theme.thumb?theme.thumb:STYLE_SCROLL_THUMB_FIXED;
+    return style_scroll_measure(bar,vertical,nominal,max(1,MulDiv(1,(int)dpi,96)),info,thumb,layout);
 }
 
 void win16_control_managed_frame_scrollbars_palette_owned(HWND w,const win16_style_palette *palette,const void *owner,const style_scroll_managed_ops *ops)
@@ -67,6 +65,7 @@ void win16_control_scrollbars_paint(HWND w,HDC target,const win16_style_palette 
             s.palette=owner->palette;
             s.themed=owner->themed;
             s.scroll_arrow_colors=owner->scroll_arrow_colors;
+            s.scroll_art=owner->scroll_art;
             s.scroll_colors=owner->scroll_colors;
         }
         s.bindings.scroll.resources.list=owner->bindings.scroll.resources.list;s.bindings.scroll.resources.edit=owner->bindings.scroll.resources.edit;s.bindings.scroll.track=owner->bindings.scroll.track;

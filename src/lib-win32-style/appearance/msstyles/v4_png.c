@@ -50,6 +50,30 @@ HRESULT msstyles_png_roles(IWICImagingFactory *factory,HMODULE module,PCWSTR nam
     return S_OK;
 }
 
+const char *classic_choice_art_get(HMODULE module,WORD image,classic_choice_art *art)
+{
+    if(!module || !image || !art)return NULL;
+    if(art->image==image)return art->available?art->cell:NULL;
+    HRESULT apartment=CoInitializeEx(NULL,COINIT_MULTITHREADED);
+    if(FAILED(apartment) && apartment!=RPC_E_CHANGED_MODE)return NULL;
+    IWICImagingFactory *factory=NULL;
+    HRESULT result=CoCreateInstance(&CLSID_WICImagingFactory,NULL,CLSCTX_INPROC_SERVER,
+        &IID_IWICImagingFactory,(void **)&factory);
+    BYTE roles[CLASSIC_CHOICE_WIDTH*CLASSIC_CHOICE_HEIGHT];
+    if(SUCCEEDED(result))result=msstyles_png_roles(factory,module,MAKEINTRESOURCEW(image),
+        CLASSIC_CHOICE_WIDTH,CLASSIC_CHOICE_HEIGHT,roles);
+    if(factory)IWICImagingFactory_Release(factory);
+    if(SUCCEEDED(apartment))CoUninitialize();
+    classic_choice_art value={.image=image};
+    for(unsigned i=0;SUCCEEDED(result) && i<ARRAYSIZE(roles);++i){
+        if(roles[i]>1){result=WINCODEC_ERR_BADIMAGE;break;}
+        value.cell[i]=(char)('0'+roles[i]);
+    }
+    value.available=SUCCEEDED(result);
+    *art=value;
+    return art->available?art->cell:NULL;
+}
+
 HRESULT classic_caption_art_read(HMODULE module,const classic_caption_images *images,classic_caption_art *art)
 {
     for(unsigned role=0;role<CLASSIC_IMAGE_ROLE_COUNT;++role)

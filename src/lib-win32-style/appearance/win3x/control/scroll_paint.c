@@ -6,6 +6,19 @@
 #include <oleacc.h>
 #include "lib-win32-style/application/control/scroll_surface.h"
 
+static void paint_arrow(HDC dc,RECT bounds,UINT direction,DWORD native,const win16_style_palette *palette,
+    const style_scroll_arrow_art *art)
+{
+    unsigned state=(native&STATE_SYSTEM_UNAVAILABLE)?2u:(native&STATE_SYSTEM_PRESSED)?1u:0u;
+    if(art && art->source){
+        UINT flags=direction|(state==2?DFCS_INACTIVE:state==1?DFCS_PUSHED|DFCS_FLAT:0);
+        style_relief_palette colors=win16_control_push_palette(palette);
+        if(style_paint_scroll_arrow(dc,&bounds,flags,&colors,art))return;
+    }
+    unsigned glyph=state*STYLE_SCROLL_ARROW_DIRECTIONS+direction;
+    win16_control_scroll_arrow(dc,bounds,win16_control_scroll_glyph((enum win16_control_scroll_asset)glyph),palette);
+}
+
 static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG object,BOOL vertical)
 {
     style_scroll_surface surface;RECT r,first,last,thumb,pixel;int saved;
@@ -28,12 +41,9 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
     }
     /* Native state remains authoritative; opted-in bars replace geometry
      * below with the same fixed-thumb layout used for hit testing. */
-    {static const WORD checks[8]={0x55,0xaa,0x55,0xaa,0x55,0xaa,0x55,0xaa};
-        HBITMAP bitmap=CreateBitmap(8,8,1,1,checks);HBRUSH brush=bitmap?CreatePatternBrush(bitmap):NULL;
-        SetTextColor(dc,track.face);SetBkColor(dc,track.light);
-        if(brush){FillRect(dc,&r,brush);DeleteObject(brush);}
-        if(bitmap)DeleteObject(bitmap);
-        if(!brush){RestoreDC(dc,saved);return FALSE;}}
+    if(!style_paint_checker(dc,&r,track.face,track.light)){
+        RestoreDC(dc,saved);return FALSE;
+    }
     first=last=thumb=r;
     if(vertical){first.bottom=first.top+info.dxyLineButton;last.top=last.bottom-info.dxyLineButton;
         thumb.top=info.xyThumbTop;thumb.bottom=info.xyThumbBottom;}
@@ -55,12 +65,8 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
     }
     style_paint_solid_frame(dc,r,track.edge,1);
     const win16_style_palette *arrow_palette=v->arrow_palette?v->arrow_palette:v->palette;
-    win16_control_scroll_arrow(dc,first,(info.rgstate[1]&STATE_SYSTEM_UNAVAILABLE)?(vertical?win16_control_scroll_glyph(WIN16_SCROLL_UP_DISABLED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT_DISABLED)):
-        vertical?(info.rgstate[1]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_UP_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_UP)):
-        (info.rgstate[1]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT)),arrow_palette);
-    win16_control_scroll_arrow(dc,last,(info.rgstate[5]&STATE_SYSTEM_UNAVAILABLE)?(vertical?win16_control_scroll_glyph(WIN16_SCROLL_DOWN_DISABLED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_DISABLED)):
-        vertical?(info.rgstate[5]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_DOWN_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_DOWN)):
-        (info.rgstate[5]&STATE_SYSTEM_PRESSED?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT)),arrow_palette);
+    paint_arrow(dc,first,vertical?DFCS_SCROLLUP:DFCS_SCROLLLEFT,info.rgstate[1],arrow_palette,v->art);
+    paint_arrow(dc,last,vertical?DFCS_SCROLLDOWN:DFCS_SCROLLRIGHT,info.rgstate[5],arrow_palette,v->art);
     if(info.xyThumbBottom>info.xyThumbTop){
         SetDCBrushColor(dc,thumb_colors.face);FillRect(dc,&thumb,(HBRUSH)GetStockObject(DC_BRUSH));
         style_paint_solid_frame(dc,thumb,thumb_colors.edge,1);InflateRect(&thumb,-1,-1);

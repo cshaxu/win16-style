@@ -39,7 +39,7 @@ BOOL win2k_updown_paint(HWND window,style_instance *instance,HDC target,const wi
     SIZE size={client.right,client.bottom};
     if(!style_bitmap_ensure(&surface,target,size))return FALSE;
     BOOL painted=FALSE;
-    if(!win2k_fill(surface.dc,&client,key))goto done;
+    if(!style_paint_color(surface.dc,&client,key))goto done;
     DefSubclassProc(window,WM_PRINTCLIENT,(WPARAM)surface.dc,PRF_CLIENT);
     if(instance->detached || !GdiFlush())goto done;
     DWORD *pixels=(DWORD *)surface.pixels;

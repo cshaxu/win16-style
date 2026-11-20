@@ -11,21 +11,24 @@ win2k_edit_kind win2k_edit_class(HWND window)
     for(unsigned i=0;i<ARRAYSIZE(native);++i)if(!lstrcmpiW(name,native[i]))return WIN2K_EDIT_NATIVE_CLIENT;
     return WIN2K_EDIT_NONE;
 }
-BOOL win2k_edit_border(HWND window,HDC target,const win2k_palette *p)
+BOOL win2k_edit_border(HWND window,HDC target,const win2k_palette *p,style_line_profile profile)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(window,GWL_EXSTYLE);
     RECT bounds;if(!GetWindowRect(window,&bounds))return FALSE;
     OffsetRect(&bounds,-bounds.left,-bounds.top);
     HDC dc=target?target:GetWindowDC(window);if(!dc)return FALSE;
     int saved=SaveDC(dc);BOOL result=FALSE;if(!saved)goto done;
-    if(ex&WS_EX_WINDOWEDGE){if(!win2k_edge(dc,&bounds,EDGE_RAISED,BF_RECT|BF_ADJUST,p))goto done;}
-    else if(ex&WS_EX_STATICEDGE){if(!win2k_edge(dc,&bounds,BDR_SUNKENOUTER,BF_RECT|BF_ADJUST,p))goto done;}
+    if(ex&WS_EX_WINDOWEDGE){
+        if(!style_paint_line_frame(dc,&bounds,EDGE_RAISED,BF_ADJUST,2,p->text,profile,p))goto done;
+    }else if(ex&WS_EX_STATICEDGE){
+        if(!style_paint_line_frame(dc,&bounds,BDR_SUNKENOUTER,BF_ADJUST,1,p->text,profile,p))goto done;
+    }
     if(style&(WS_BORDER|WS_DLGFRAME)){
         HBRUSH brush=CreateSolidBrush(p->text);if(!brush)goto done;
         BOOL framed=FrameRect(dc,&bounds,brush)!=0;DeleteObject(brush);if(!framed)goto done;
         InflateRect(&bounds,-1,-1);
     }
-    result=!(ex&WS_EX_CLIENTEDGE) || win2k_edge(dc,&bounds,EDGE_SUNKEN,BF_RECT,p);
+    result=!(ex&WS_EX_CLIENTEDGE) || style_paint_line_frame(dc,&bounds,EDGE_SUNKEN,0,2,p->text,profile,p);
 done:
     {DWORD error=GetLastError();
      if(saved && !RestoreDC(dc,saved)){if(result)error=GetLastError();result=FALSE;}

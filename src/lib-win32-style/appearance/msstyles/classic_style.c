@@ -12,14 +12,17 @@ enum {
     dialog_policy_type=9, dialog_policy_size=4,
     caption_presentation_type=10, caption_presentation_legacy_size=2, caption_presentation_size=4,
     border_presentation_type=11, border_presentation_legacy_size=10, border_presentation_size=17,
-    menu_text_type=12, menu_text_size=2, required_flag=1
+    menu_text_type=12, menu_text_size=2, separator_type=13, separator_size=1,
+    thumb_type=14, thumb_size=1, push_type=15, push_size=1,
+    control_lines_type=16, control_lines_size=2, required_flag=1
 };
 
 _Static_assert(sizeof(style_border_presentation)==border_presentation_size,"border resource layout");
 _Static_assert(sizeof(style_caption_presentation)==caption_presentation_size,"caption resource layout");
-_Static_assert(header_size+8*record_size+group_header_size+slot_size*CLASSIC_BUTTON_CLOSE+
+_Static_assert(header_size+12*record_size+group_header_size+slot_size*CLASSIC_BUTTON_CLOSE+
     scroll_metrics_size+menu_metrics_size+dialog_metrics_size+dialog_policy_size+
-    caption_presentation_size+border_presentation_size+menu_text_size==CLASSIC_STYLE_RESOURCE_CAPACITY,"classic resource capacity");
+    caption_presentation_size+border_presentation_size+menu_text_size+separator_size+thumb_size+push_size+control_lines_size==
+    CLASSIC_STYLE_RESOURCE_CAPACITY,"classic resource capacity");
 
 static uint16_t read_half(const unsigned char *bytes)
 {
@@ -135,7 +138,7 @@ static bool valid_border(style_border_presentation border)
 
 enum classic_style_result classic_style_read(const unsigned char *bytes,size_t length,
     classic_button_group *group,classic_scroll_metrics *scroll,classic_menu_metrics *menu,classic_dialog_metrics *dialog,
-    classic_dialog_policy *policy,style_caption_presentation *caption,style_border_presentation *border)
+    classic_dialog_policy *policy,style_caption_presentation *caption,style_border_presentation *border,classic_control_presentation *controls)
 {
     if(!bytes || !group || length<header_size || memcmp(bytes,"CSTY",4) ||
        msstyles_v4_read_word(bytes+8)!=length)return CLASSIC_STYLE_INVALID;
@@ -145,12 +148,14 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
     size_t remaining=length-header_size;
     classic_button_group value={0};
     classic_scroll_metrics metrics={0};
+    style_scroll_thumb thumb=STYLE_SCROLL_THUMB_DEFAULT;
     classic_menu_metrics columns={0};
     uint16_t menu_text=0;
     classic_dialog_metrics dimensions={0};
     classic_dialog_policy routes={0};
     style_caption_presentation presentation={0};
     style_border_presentation strokes={0};
+    classic_control_presentation control_presentation={0};
     for(uint32_t i=0;i<count;++i){
         if(remaining<record_size)return CLASSIC_STYLE_INVALID;
         uint16_t type=read_half(record),flags=read_half(record+2);
@@ -160,8 +165,14 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
             if(value.count || !read_group(record+record_size,payload,&value))return CLASSIC_STYLE_INVALID;
         }else if(type==scroll_metrics_type){
             if(metrics.source || payload!=scroll_metrics_size)return CLASSIC_STYLE_INVALID;
-            metrics=(classic_scroll_metrics){read_half(record+record_size),read_half(record+record_size+2)};
+            metrics.source=read_half(record+record_size);
+            metrics.logical_extent=read_half(record+record_size+2);
             if(!valid_scroll(metrics))return CLASSIC_STYLE_INVALID;
+        }else if(type==thumb_type){
+            if(thumb || flags || payload!=thumb_size)return CLASSIC_STYLE_INVALID;
+            thumb=record[record_size];
+            if(thumb!=STYLE_SCROLL_THUMB_FIXED && thumb!=STYLE_SCROLL_THUMB_PAGE)
+                return CLASSIC_STYLE_INVALID;
         }else if(type==menu_metrics_type){
             if(columns.check_column || payload!=menu_metrics_size)return CLASSIC_STYLE_INVALID;
             const unsigned char *data=record+record_size;
@@ -197,11 +208,31 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
                payload!=border_presentation_legacy_size))return CLASSIC_STYLE_INVALID;
             memcpy(&strokes,record+record_size,payload);
             if(!valid_border(strokes))return CLASSIC_STYLE_INVALID;
+        }else if(type==separator_type){
+            if(control_presentation.separator || flags || payload!=separator_size)return CLASSIC_STYLE_INVALID;
+            control_presentation.separator=record[record_size];
+            if(control_presentation.separator!=STYLE_LINE_FLAT && control_presentation.separator!=STYLE_LINE_RELIEF)
+                return CLASSIC_STYLE_INVALID;
+        }else if(type==push_type){
+            if(control_presentation.push || flags || payload!=push_size)return CLASSIC_STYLE_INVALID;
+            control_presentation.push=record[record_size];
+            if(control_presentation.push!=STYLE_PUSH_STEPPED && control_presentation.push!=STYLE_PUSH_RELIEF)
+                return CLASSIC_STYLE_INVALID;
+        }else if(type==control_lines_type){
+            if(control_presentation.group || control_presentation.edit || flags || payload!=control_lines_size)
+                return CLASSIC_STYLE_INVALID;
+            control_presentation.group=record[record_size];
+            control_presentation.edit=record[record_size+1];
+            if((!control_presentation.group && !control_presentation.edit) ||
+               control_presentation.group>STYLE_LINE_RELIEF || control_presentation.edit>STYLE_LINE_RELIEF)
+                return CLASSIC_STYLE_INVALID;
         }else if(flags&required_flag)return CLASSIC_STYLE_REQUIRED_RECORD;
         record+=record_size+payload;
         remaining-=record_size+payload;
     }
-    if(remaining || (menu_text && !columns.check_column))return CLASSIC_STYLE_INVALID;
+    if(remaining || (menu_text && !columns.check_column) || (thumb && !metrics.source))
+        return CLASSIC_STYLE_INVALID;
+    metrics.thumb=thumb;
     columns.text_flags=menu_text;
     if(!value.count)return CLASSIC_STYLE_NO_BUTTON_GROUP;
     *group=value;
@@ -211,33 +242,45 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
     if(policy)*policy=routes;
     if(caption)*caption=presentation;
     if(border)*border=strokes;
+    if(controls)*controls=control_presentation;
     return CLASSIC_STYLE_OK;
 }
 
 size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_button_group *group,
     const classic_scroll_metrics *scroll,const classic_menu_metrics *menu,const classic_dialog_metrics *dialog,
-    const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border)
+    const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border,
+    const classic_control_presentation *controls)
 {
-    if(!bytes || !group || !valid_group(group) || (scroll && !valid_scroll(*scroll)) ||
+    style_line_profile separator=controls?controls->separator:STYLE_LINE_DEFAULT;
+    style_push_profile push=controls?controls->push:STYLE_PUSH_DEFAULT;
+    bool lines=controls && (controls->group || controls->edit);
+    if(!bytes || !group || !valid_group(group) ||
+       (scroll && (!valid_scroll(*scroll) || (unsigned)scroll->thumb>STYLE_SCROLL_THUMB_PAGE)) ||
        (menu && !valid_menu(*menu)) || (dialog && !valid_dialog(*dialog)) ||
        (policy && !valid_policy(*policy)) || (caption && !valid_caption(*caption)) ||
-       (border && !valid_border(*border)))return 0;
+       (border && !valid_border(*border)) || (unsigned)separator>STYLE_LINE_RELIEF ||
+       (unsigned)push>STYLE_PUSH_RELIEF || (lines &&
+       ((unsigned)controls->group>STYLE_LINE_RELIEF || (unsigned)controls->edit>STYLE_LINE_RELIEF)))return 0;
     size_t caption_size=caption && caption->button_source?caption_presentation_size:caption_presentation_legacy_size;
     size_t border_size=border && border->geometry.scale?border_presentation_size:border_presentation_legacy_size;
     bool menu_text=menu && menu->text_flags;
+    bool thumb=scroll && scroll->thumb;
     size_t payload=group_header_size+slot_size*(unsigned)group->count;
     size_t length=header_size+record_size+payload+(scroll?record_size+scroll_metrics_size:0)+
         (menu?record_size+menu_metrics_size:0)+(menu_text?record_size+menu_text_size:0)+
         (dialog?record_size+dialog_metrics_size:0)+
         (policy?record_size+dialog_policy_size:0)+(caption?record_size+caption_size:0)+
-        (border?record_size+border_size:0);
+        (border?record_size+border_size:0)+(separator?record_size+separator_size:0)+
+        (thumb?record_size+thumb_size:0)+(push?record_size+push_size:0)+
+        (lines?record_size+control_lines_size:0);
     if(capacity<length)return 0;
     memcpy(bytes,"CSTY",4);
     write_half(bytes+4,1);
-    write_half(bytes+6,menu_text?9:border_size==border_presentation_size?8:caption_size==caption_presentation_size?7:
+    write_half(bytes+6,lines?13:push?12:thumb?11:separator?10:menu_text?9:border_size==border_presentation_size?8:caption_size==caption_presentation_size?7:
         border?6:caption?5:policy?4:dialog?3:menu?2:scroll?1:0);
     msstyles_v4_write_word(bytes+8,(uint32_t)length);
-    msstyles_v4_write_word(bytes+12,1+(scroll!=NULL)+(menu!=NULL)+menu_text+(dialog!=NULL)+(policy!=NULL)+(caption!=NULL)+(border!=NULL));
+    msstyles_v4_write_word(bytes+12,1+(scroll!=NULL)+(menu!=NULL)+menu_text+(dialog!=NULL)+(policy!=NULL)+
+        (caption!=NULL)+(border!=NULL)+(separator!=0)+thumb+(push!=0)+lines);
     write_half(bytes+16,button_group_type);
     write_half(bytes+18,required_flag);
     msstyles_v4_write_word(bytes+20,(uint32_t)payload);
@@ -323,6 +366,35 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
         write_half(slot+2,0);
         msstyles_v4_write_word(slot+4,(uint32_t)border_size);
         memcpy(slot+record_size,border,border_size);
+        slot+=record_size+border_size;
+    }
+    if(separator){
+        write_half(slot,separator_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,separator_size);
+        slot[record_size]=(unsigned char)separator;
+        slot+=record_size+separator_size;
+    }
+    if(thumb){
+        write_half(slot,thumb_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,thumb_size);
+        slot[record_size]=(unsigned char)scroll->thumb;
+        slot+=record_size+thumb_size;
+    }
+    if(push){
+        write_half(slot,push_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,push_size);
+        slot[record_size]=(unsigned char)push;
+        slot+=record_size+push_size;
+    }
+    if(lines){
+        write_half(slot,control_lines_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,control_lines_size);
+        slot[record_size]=(unsigned char)controls->group;
+        slot[record_size+1]=(unsigned char)controls->edit;
     }
     return length;
 }

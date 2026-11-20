@@ -2,6 +2,8 @@
 #define STYLE_MSSTYLES_CLASSIC_STYLE_H
 
 #include <stddef.h>
+#include "lib-win32-style/application/control/scroll_geometry.h"
+#include "lib-win32-style/application/graphics/paint_frame.h"
 #include "lib-win32-style/application/window/caption_slots.h"
 #include "lib-win32-style/application/window/caption_paint.h"
 #include "lib-win32-style/application/window/frame_border.h"
@@ -19,6 +21,7 @@ enum classic_scroll_extent_source {
 typedef struct classic_scroll_metrics {
     uint16_t source;
     uint16_t logical_extent;
+    style_scroll_thumb thumb;
 } classic_scroll_metrics;
 
 typedef struct classic_menu_metrics {
@@ -47,16 +50,22 @@ typedef struct classic_dialog_policy {
     uint8_t appearance, file, folder, print;
 } classic_dialog_policy;
 
+typedef struct classic_control_presentation {
+    style_line_profile separator,group,edit;
+    style_push_profile push;
+} classic_control_presentation;
+
 /* Parse project RCDATA CLASSIC_STYLE v1. The caller's output changes only on success. */
 enum classic_style_result classic_style_read(const unsigned char *bytes,size_t length,
     classic_button_group *group,classic_scroll_metrics *scroll,classic_menu_metrics *menu,classic_dialog_metrics *dialog,
-    classic_dialog_policy *policy,style_caption_presentation *caption,style_border_presentation *border);
+    classic_dialog_policy *policy,style_caption_presentation *caption,style_border_presentation *border,classic_control_presentation *controls);
 
 /* Encode a title-button group and optional metrics. Returns size or zero. */
 size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_button_group *group,
     const classic_scroll_metrics *scroll,const classic_menu_metrics *menu,const classic_dialog_metrics *dialog,
-    const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border);
+    const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border,
+    const classic_control_presentation *controls);
 
-enum { CLASSIC_STYLE_RESOURCE_CAPACITY=183 };
+enum { CLASSIC_STYLE_RESOURCE_CAPACITY=220 };
 
 #endif

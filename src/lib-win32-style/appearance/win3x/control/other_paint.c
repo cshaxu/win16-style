@@ -5,21 +5,21 @@
 #include "../../../application/graphics/paint_frame.h"
 #include <commctrl.h>
 
-void win16_control_other(HWND w,style_instance *instance,const win16_style_palette *palette,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label,UINT (*button_type)(HWND,DWORD),BOOL (*group_push)(HWND))
+void win16_control_other(HWND w,style_instance *instance,const win16_style_palette *palette,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label,UINT (*button_type)(HWND,DWORD),BOOL (*group_push)(HWND),classic_control_presentation controls)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);UINT type=(label?(style&SS_TYPEMASK):button_type(w,style));
     int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));RECT bounds=r;TEXTMETRICW tm;
     LRESULT button_state=label?0:SendMessageW(w,BM_GETSTATE,0,0);
     UINT flags=DT_LEFT;BOOL pushed=(button_state&BST_PUSHED)!=0,fit=!label && group_push(w);SIZE fitted={0};
-    if(!label && (style&BS_PUSHLIKE))pushed=pushed || SendMessageW(w,BM_GETCHECK,0,0)!=BST_UNCHECKED;
+    BOOL checked=!label && (style&BS_PUSHLIKE) && (!pushed || controls.push==STYLE_PUSH_RELIEF) &&
+        SendMessageW(w,BM_GETCHECK,0,0)!=BST_UNCHECKED;
+    pushed=pushed || checked;
     if(instance->detached)return;
     SelectObject(dc,font);GetTextMetricsW(dc,&tm);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,(*palette).edge);
     if(label && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME){
-        /* A later STATIC separator has no Win3.x etched relief. Keep its
-         * geometry and express it using the same flat border as SS_*FRAME. */
-        if(type==SS_ETCHEDHORZ)r.bottom=min(r.bottom,r.top+u);
-        if(type==SS_ETCHEDVERT)r.right=min(r.right,r.left+u);
-        style_paint_solid_frame(dc,r,(*palette).edge,u);return;
+        style_paint_separator(dc,r,type,controls.separator?controls.separator:STYLE_LINE_FLAT,
+            u,palette->edge,palette->shadow,palette->light);
+        return;
     }
     if(label && type>=SS_BLACKRECT && type<=SS_WHITEFRAME){
         COLORREF color=(type==SS_BLACKRECT || type==SS_BLACKFRAME)?(*palette).edge:
@@ -29,18 +29,22 @@ void win16_control_other(HWND w,style_instance *instance,const win16_style_palet
     }
     if(!label && type==BS_GROUPBOX){
         RECT title=r;title.left+=8*u;DrawTextW(dc,text,-1,&title,DT_CALCRECT|DT_SINGLELINE);
-        bounds.top+=tm.tmHeight/2;style_paint_solid_frame(dc,bounds,(*palette).shadow,u);
+        bounds.top+=tm.tmHeight/2;
+        style_relief_palette colors=win16_control_push_palette(palette);
+        style_line_profile profile=controls.group?controls.group:STYLE_LINE_FLAT;
+        style_paint_line_frame(dc,&bounds,EDGE_ETCHED,0,u,palette->shadow,profile,&colors);
         InflateRect(&title,u,0);SetDCBrushColor(dc,(*palette).light);FillRect(dc,&title,(HBRUSH)GetStockObject(DC_BRUSH));
         title.left+=u;DrawTextW(dc,text,-1,&title,DT_SINGLELINE);return;
     }
     if(!label){
-        /* Retail USER 1:8E0C draws one continuous frame: two border units
-         * for an enabled default, one otherwise. It does not add a spaced
-         * second rectangle. USER 25:18BC suppresses default emphasis when
-         * disabled. Native BUTTON/dialog code still owns all these states. */
-        int border=(type==BS_DEFPUSHBUTTON && IsWindowEnabled(w)?2:1)*u;
-        SetDCBrushColor(dc,(*palette).face);FillRect(dc,&bounds,(HBRUSH)GetStockObject(DC_BRUSH));
-        bounds=win16_control_button_border(dc,r,&(*palette),u,border,pushed);
+        UINT state=DFCS_ADJUSTRECT;
+        if(button_state&BST_PUSHED)state|=DFCS_PUSHED;
+        if(checked)state|=DFCS_CHECKED;
+        if(style&BS_FLAT)state|=DFCS_FLAT|DFCS_MONO;
+        if(!IsWindowEnabled(w))state|=DFCS_INACTIVE;
+        style_relief_palette colors=win16_control_push_palette(palette);
+        style_push_profile profile=controls.push?controls.push:STYLE_PUSH_STEPPED;
+        if(!style_paint_push_frame(dc,&bounds,state,type==BS_DEFPUSHBUTTON,u,profile,&colors))return;
         InflateRect(&bounds,-3*u,fit?-u:-3*u);if(pushed)OffsetRect(&bounds,u,u);
         flags=DT_CENTER|DT_VCENTER|DT_SINGLELINE;
     }else {flags=type==SS_CENTER?DT_CENTER:type==SS_RIGHT?DT_RIGHT:DT_LEFT;

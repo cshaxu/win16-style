@@ -111,6 +111,17 @@ typedef struct classic_choice_colors {
     classic_choice_surface check[CLASSIC_CHECK_STATES],radio[CLASSIC_RADIO_STATES];
 } classic_choice_colors;
 
+enum { CLASSIC_CHOICE_WIDTH=14, CLASSIC_CHOICE_HEIGHT=13 };
+typedef struct classic_choice_art {
+    WORD image;
+    BOOL available;
+    char cell[CLASSIC_CHOICE_WIDTH*CLASSIC_CHOICE_HEIGHT];
+} classic_choice_art;
+
+/* A one-entry cache for a caller-owned mapping. Decoded pixels are copied. */
+const char *classic_choice_art_get(HMODULE module,WORD image,classic_choice_art *art);
+BOOL classic_choice_has_art(const classic_choice_colors *colors);
+
 const classic_choice_surface *classic_choice_entry(const classic_choice_colors *colors,
     BOOL radio,LRESULT check,BOOL disabled,LRESULT button_state);
 static inline const classic_surface_colors *classic_choice_color(const classic_choice_surface *entry)
@@ -175,11 +186,13 @@ typedef struct classic_theme {
     classic_push_colors push;
     classic_choice_colors choice;
     classic_surface_colors scroll_arrow;
+    style_scroll_arrow_art scroll_art;
     classic_button_group title_buttons;
     classic_dialog_policy dialog_policy;
     classic_caption_metrics caption_metrics;
     style_caption_presentation caption_presentation;
     style_border_presentation border_presentation;
+    classic_control_presentation controls;
     classic_caption_images caption_images;
     classic_scroll_colors scroll;
     classic_scroll_metrics scroll_metrics;

@@ -29,6 +29,10 @@ void win16_control_draw_combo(HWND w,control_style *style,HDC dc,BOOL (*get_info
     const win16_style_palette *palette=&style->palette;
     const classic_combo_colors *colors=&style->combo_colors;
     BOOL themed=colors->present && !common_dialog_combo && style_control_is_combo(w);
+    const classic_list_colors *list=&style->list_colors;
+    const classic_text_colors *ink=&style->label_colors;
+    BOOL list_themed=themed && list->present,text_themed=themed && ink->present;
+    COLORREF background=list_themed?list->background:palette->light;
     COLORREF border=themed?(enabled?colors->border:colors->disabled_border):palette->edge;
     COLORREF face=themed?colors->button[classic_combo_state_for(enabled,pressed)]:palette->face;
     saved=SaveDC(dc);if(!saved){style_control_combo_snapshot_clear(&snapshot);return;}
@@ -39,11 +43,11 @@ void win16_control_draw_combo(HWND w,control_style *style,HDC dc,BOOL (*get_info
     if(simple){RECT list;
         if(GetWindowRect(info.hwndList,&list)){
             MapWindowPoints(NULL,w,(POINT *)&list,2);ExcludeClipRect(dc,list.left,list.top,list.right,list.bottom);}
-        SetDCBrushColor(dc,(*palette).light);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
+        SetDCBrushColor(dc,background);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
         text=info.rcItem;InflateRect(&text,u,u);style_paint_solid_frame(dc,text,border,u);
         RestoreDC(dc,saved);style_control_combo_snapshot_clear(&snapshot);return;
     }
-    SetDCBrushColor(dc,(*palette).light);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
+    SetDCBrushColor(dc,background);FillRect(dc,&client,(HBRUSH)GetStockObject(DC_BRUSH));
     style_paint_solid_frame(dc,client,border,u);
     button=info.rcButton;SetDCBrushColor(dc,face);FillRect(dc,&button,(HBRUSH)GetStockObject(DC_BRUSH));
     style_paint_solid_frame(dc,button,(*palette).edge,u);InflateRect(&button,-u,-u);
@@ -59,9 +63,12 @@ void win16_control_draw_combo(HWND w,control_style *style,HDC dc,BOOL (*get_info
     win16_control_combo_arrow(dc,left,top,96*u);
     if(editable || is_vb_drive(w) || common_dialog_combo){RestoreDC(dc,saved);style_control_combo_snapshot_clear(&snapshot);return;}
     text=info.rcItem;selected=GetFocus()==w && !pressed;
-    SetDCBrushColor(dc,selected?(*palette).active:(*palette).light);FillRect(dc,&text,(HBRUSH)GetStockObject(DC_BRUSH));
+    COLORREF selection=list_themed?list->selection:palette->active;
+    COLORREF selected_text=list_themed?list->selection_text:palette->active_text;
+    COLORREF normal_text=text_themed?ink->normal:palette->edge,disabled_text=text_themed?ink->disabled:palette->shadow;
+    SetDCBrushColor(dc,selected?selection:background);FillRect(dc,&text,(HBRUSH)GetStockObject(DC_BRUSH));
     SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));SetBkMode(dc,TRANSPARENT);
-    SetTextColor(dc,!IsWindowEnabled(w)?(*palette).shadow:selected?(*palette).active_text:(*palette).edge);
+    SetTextColor(dc,!enabled?disabled_text:selected?selected_text:normal_text);
     text.left+=2;DrawTextW(dc,label,-1,&text,DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX);
     if(selected)DrawFocusRect(dc,&info.rcItem);
     RestoreDC(dc,saved);style_control_combo_snapshot_clear(&snapshot);

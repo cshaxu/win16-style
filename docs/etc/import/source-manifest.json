@@ -684,7 +684,7 @@
       "size": 3936,
       "sha256": "0b1b344fcbe0ef2a8060ef140c539cefeb5fa79c7b93c322452513d15b95b4d0",
       "action": "adapt",
-      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_layout.c",
+      "destination": "src/lib-win32-style/application/control/scroll_geometry.c",
       "notice": "project-authored-review",
       "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
       "receiver": "style-core"
@@ -696,7 +696,7 @@
       "size": 1340,
       "sha256": "b8398eafbc51af77a5e5ce72c4dd06f12e51a6cdf6bdd51cf2ef6275b0b9fcb4",
       "action": "adapt",
-      "destination": "src/lib-win32-style/appearance/win3x/control/scroll_layout.h",
+      "destination": "src/lib-win32-style/application/control/scroll_geometry.h",
       "notice": "project-authored-review",
       "reason": "One local renderer; preserve notices and review import delta, bound API and resources in core task",
       "receiver": "style-core"

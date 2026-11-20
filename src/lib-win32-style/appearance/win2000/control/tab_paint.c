@@ -24,8 +24,8 @@ static void surface(HWND window,void *context,HDC dc,const style_control_tab_sna
     RECT page=snapshot->page;
     InflateRect(&page,4,4);
     page.top+=2;
-    win2k_fill(dc,&snapshot->client,palette->face);
-    win2k_edge(dc,&page,EDGE_RAISED,BF_RECT|BF_SOFT,palette);
+    style_paint_color(dc,&snapshot->client,palette->face);
+    style_paint_relief(dc,&page,EDGE_RAISED,BF_RECT|BF_SOFT,palette);
 }
 
 static void prepare(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
@@ -39,7 +39,7 @@ static void prepare(HWND window,void *context,HDC dc,const style_control_tab_sna
 static void pixel(HDC dc,int x,int y,COLORREF color)
 {
     RECT cell={x,y,x+1,y+1};
-    win2k_fill(dc,&cell,color);
+    style_paint_color(dc,&cell,color);
 }
 
 /* The original DoCorners clears two columns, then draws the two diagonal
@@ -49,8 +49,8 @@ static void corners(HDC dc,const RECT *r,const win2k_palette *palette)
     if(r->right-r->left<4 || r->bottom-r->top<3)return;
     RECT left={r->left,r->top,r->left+2,r->top+3};
     RECT right={r->right-2,r->top,r->right,r->top+3};
-    win2k_fill(dc,&left,palette->face);
-    win2k_fill(dc,&right,palette->face);
+    style_paint_color(dc,&left,palette->face);
+    style_paint_color(dc,&right,palette->face);
     pixel(dc,left.left+1,left.top+1,palette->highlight);
     pixel(dc,left.left,left.top+2,palette->highlight);
     pixel(dc,left.left+1,left.top+2,palette->light);
@@ -75,8 +75,8 @@ static void paint_item(HWND window,void *context,HDC dc,const style_control_tab_
     int saved=SaveDC(dc);
     if(!saved)return;
     IntersectClipRect(dc,frame.left,frame.top,frame.right,frame.bottom);
-    win2k_fill(dc,&frame,item->active?paint->selected:paint->normal);
-    win2k_edge(dc,&frame,EDGE_RAISED,BF_LEFT|BF_TOP|BF_RIGHT|BF_SOFT,palette);
+    style_paint_color(dc,&frame,item->active?paint->selected:paint->normal);
+    style_paint_relief(dc,&frame,EDGE_RAISED,BF_LEFT|BF_TOP|BF_RIGHT|BF_SOFT,palette);
     corners(dc,&frame,palette);
     content.left+=2;
     content.right-=2;
@@ -95,7 +95,7 @@ static void paint_item(HWND window,void *context,HDC dc,const style_control_tab_
     label.right=min(label.right,label.left+measured.right);
     label.top+=(label.bottom-label.top-measured.bottom)/2;
     label.bottom=label.top+measured.bottom;
-    if(highlight)win2k_fill(dc,&label,palette->selection);
+    if(highlight)style_paint_color(dc,&label,palette->selection);
     SetTextColor(dc,highlight?palette->selection_text:
         item->index==paint->hot?GetSysColor(COLOR_HOTLIGHT):palette->text);
     UINT flags=DT_LEFT|DT_VCENTER|DT_SINGLELINE;
