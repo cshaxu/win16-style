@@ -1,23 +1,22 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S10 P1",
-  "stage": "development: unified neutral runtime",
+  "delivery": "M0 T29 S11 P1",
+  "stage": "seven-file release",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "c3a448144822c8cb2a79591f1d334c9e16c3f7dba1b147e40a3fb4ff7022fe2c",
-  "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot, with a fresh demo-only rebuild for the sole subsequent product-source change",
+  "source_snapshot_sha256": "37e84ab926611136d2476a11cf62153dc0b140043825fcbbdc307b57aaf688ce",
+  "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot",
   "source_input_cohort": {
     "count": 1281,
-    "sha256": "56297abd0db17b88445d1dc8401f2343fc9cecd712690c37099bfd0bc0f562c6",
-    "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF",
-    "worktree_newline_only_differences": []
+    "sha256": "85a4bd313c1442d875a050b999594155d7c7d4cb1e3698a4c27519a492f368e6",
+    "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "e3cc04eaa30a43872bc31e96f253ead383197c8b14359c7010a8f20905553211",
+      "sha256": "b9e3f01dd19b3591e98ca76da3f294d059fd88e3df4cdddaae36ad856625be5e",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -30,116 +29,10 @@
         "ntwshk64.dll"
       ]
     },
-    "ntw16s32.dll": {
-      "architecture": "x86",
-      "version": "M0 T29",
-      "sha256": "29b3f3b867aa6fc463f4a1d9a8a853a37aa1b99158cf2cc13f7abb17381fc3b4",
-      "imports": [
-        "ACTIVEDS.dll",
-        "ADVAPI32.dll",
-        "COMCTL32.dll",
-        "COMDLG32.DLL",
-        "dwmapi.dll",
-        "GDI32.dll",
-        "KERNEL32.dll",
-        "MSIMG32.DLL",
-        "api-ms-win-crt-convert-l1-1-0.dll",
-        "api-ms-win-crt-heap-l1-1-0.dll",
-        "api-ms-win-crt-private-l1-1-0.dll",
-        "api-ms-win-crt-runtime-l1-1-0.dll",
-        "api-ms-win-crt-stdio-l1-1-0.dll",
-        "api-ms-win-crt-string-l1-1-0.dll",
-        "ole32.dll",
-        "OLEAUT32.dll",
-        "SHELL32.dll",
-        "USER32.dll",
-        "UxTheme.dll",
-        "WINSPOOL.DRV",
-        "ntwshk32.dll",
-        "COMCTL32.dll"
-      ]
-    },
-    "ntw16s64.dll": {
-      "architecture": "x64",
-      "version": "M0 T29",
-      "sha256": "203bfd2932f7b09b06695c392e8e3ab3a970abef965634f2d86544cbe33c586c",
-      "imports": [
-        "ACTIVEDS.dll",
-        "ADVAPI32.dll",
-        "COMCTL32.dll",
-        "comdlg32.dll",
-        "dwmapi.dll",
-        "GDI32.dll",
-        "KERNEL32.dll",
-        "MSIMG32.dll",
-        "msvcrt.dll",
-        "ole32.dll",
-        "OLEAUT32.dll",
-        "SHELL32.dll",
-        "USER32.dll",
-        "UxTheme.dll",
-        "WINSPOOL.DRV",
-        "ntwshk64.dll",
-        "COMCTL32.dll"
-      ]
-    },
-    "ntw2ks32.dll": {
-      "architecture": "x86",
-      "version": "M0 T29",
-      "sha256": "02a883e0cae3a8d583063bc6c4115cafe91d6051182b93d5a7ecb973bb3b32dd",
-      "imports": [
-        "ACTIVEDS.dll",
-        "COMCTL32.dll",
-        "COMDLG32.DLL",
-        "dwmapi.dll",
-        "GDI32.dll",
-        "KERNEL32.dll",
-        "MSIMG32.DLL",
-        "api-ms-win-crt-convert-l1-1-0.dll",
-        "api-ms-win-crt-heap-l1-1-0.dll",
-        "api-ms-win-crt-private-l1-1-0.dll",
-        "api-ms-win-crt-runtime-l1-1-0.dll",
-        "api-ms-win-crt-stdio-l1-1-0.dll",
-        "api-ms-win-crt-string-l1-1-0.dll",
-        "ole32.dll",
-        "OLEAUT32.dll",
-        "SHCORE.dll",
-        "SHELL32.dll",
-        "USER32.dll",
-        "UxTheme.dll",
-        "WINSPOOL.DRV",
-        "ntwshk32.dll",
-        "COMCTL32.dll"
-      ]
-    },
-    "ntw2ks64.dll": {
-      "architecture": "x64",
-      "version": "M0 T29",
-      "sha256": "7c8de5042ebd994a7ca2cbece12b6d19f4087dda0419082e108cc81e4885c046",
-      "imports": [
-        "ACTIVEDS.dll",
-        "COMCTL32.dll",
-        "comdlg32.dll",
-        "dwmapi.dll",
-        "GDI32.dll",
-        "KERNEL32.dll",
-        "MSIMG32.dll",
-        "msvcrt.dll",
-        "ole32.dll",
-        "OLEAUT32.dll",
-        "SHCORE.dll",
-        "SHELL32.dll",
-        "USER32.dll",
-        "UxTheme.dll",
-        "WINSPOOL.DRV",
-        "ntwshk64.dll",
-        "COMCTL32.dll"
-      ]
-    },
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "e71a416879dc19c34a35c2cfa84bc74982815053fe0704726e6859ce1f43a192",
+      "sha256": "7fd7c90a33ffccf9c14f32f250ac5c030dc08395efdfbf0d1912060a6380800c",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -168,7 +61,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "c0dac00002cdf019614ae871f4acbc3f3d15d69cd6d509bd937d77ba7a61b304",
+      "sha256": "88e9c0a218ce206b5caec0807853fd4a2f6529d2035f531b5fbdf78efbe0bbae",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -188,234 +81,91 @@
         "WINSPOOL.DRV",
         "COMCTL32.dll"
       ]
-    },
-    "demo.exe": {
-      "architecture": "x64",
-      "version": "M0 T29",
-      "sha256": "9c29d531e5c1db60ff105c8470b9e18c24601b558166facd7e43576028b09e02",
-      "imports": [
-        "comctl32.dll",
-        "comdlg32.dll",
-        "gdi32.dll",
-        "kernel32.dll",
-        "msvcrt.dll",
-        "ole32.dll",
-        "shell32.dll",
-        "user32.dll"
-      ]
     }
   },
   "theme_artifacts": {
-    "themes/Win16/Win16.theme": "0dcbf80bb67ea283a81265c670ae6c6c07ee776b8ac2449c0a05b0818f2984a8",
     "themes/Win16/Win16.msstyles": "eb6f7a92cf2d9dd6ef1a2b5efe434e2c6724efd1f4dcb6a20440f5a5deccb13d",
-    "themes/Win2K/Win2K.theme": "f4acd885ec052c06daaa09e2423a4882ef3c53fd072509ef04890d05c1ad85f1",
-    "themes/Win2K/Win2K.msstyles": "ebb9ba7beb197e5a498c2dad642ab6b7be18937305c903cdec1b2606f74d849f"
+    "themes/Win16/Win16.theme": "0dcbf80bb67ea283a81265c670ae6c6c07ee776b8ac2449c0a05b0818f2984a8",
+    "themes/Win2K/Win2K.msstyles": "ebb9ba7beb197e5a498c2dad642ab6b7be18937305c903cdec1b2606f74d849f",
+    "themes/Win2K/Win2K.theme": "f4acd885ec052c06daaa09e2423a4882ef3c53fd072509ef04890d05c1ad85f1"
   },
   "build": {
-    "toolchain": "MinGW GCC 16.1.0 + Ninja + ccache 4.13.6, C17",
+    "toolchain": "pure C17, MinGW GCC, Ninja, ccache",
     "seconds": {
-      "x86": 356.61220660002436,
-      "x64": 400.4987849999452
+      "x86": 260.65,
+      "x64": 304.45
     },
-    "changed_source_test_tool_build_files": 52,
-    "insertions": 766,
-    "deletions": 202,
-    "net_lines": 564,
+    "changed_source_test_tool_build_files": 6,
+    "insertions": 295,
+    "deletions": 148,
+    "net_lines": 147,
     "checks": [
-      "source receipts",
-      "original resource identity",
-      "four independent theme file reads",
-      "both ABI cases",
-      "both native archive/dependency gates",
-      "both 18-table glyph sets and provenance in neutral DLL",
-      "demo PE boundary"
+      "quick ABI tests (x86, x64)",
+      "classic themes, independent native model readback",
+      "exact seven-file package and same build identity",
+      "PE ABI, original resource tables and provenance",
+      "public process/style archive boundaries and build dependency paths"
     ]
   },
   "publication": {
     "destinations": [
       "assets",
-      "O:\\winnt"
+      "O:/winnt"
     ],
-    "sha256_verified_at_each_destination": 12,
-    "initial_copy": "failed on a mapped x64 provider; all affected paths restored and verified",
-    "successful_replacement": "staged copies exchanged by same-volume rename, old file handles preserved and rollback copies kept"
+    "sha256_verified_at_each_destination": true,
+    "retired_paths_absent_at_each_destination": [
+      "demo.exe",
+      "ntw16s32.dll",
+      "ntw16s64.dll",
+      "ntw2ks32.dll",
+      "ntw2ks64.dll"
+    ],
+    "rollback_backups": "saved by same-volume rename"
   },
   "focused_post_publication": {
-    "passed": 18,
-    "total": 18,
-    "cases": [
-      {
-        "destination": "O:\\repos.hobby\\win16style\\assets",
-        "probe": "launch-automatic.exe",
-        "exit": 0,
-        "marker": "LAUNCH MATRIX PASS",
-        "pass": true
-      },
-      {
-        "destination": "O:\\repos.hobby\\win16style\\assets",
-        "probe": "propagate-basic.exe",
-        "exit": 0,
-        "marker": "PROPAGATION BASIC PASS",
-        "pass": true
-      },
-      {
-        "destination": "O:\\repos.hobby\\win16style\\assets",
-        "probe": "core-abi.exe",
-        "exit": 0,
-        "marker": "ABI PASS width=32",
-        "pass": true
-      },
-      {
-        "destination": "O:\\repos.hobby\\win16style\\assets",
-        "probe": "dialog-test-driver.exe",
-        "exit": 0,
-        "marker": "WIN2K FRAME bits=32 attached=1",
-        "pass": true
-      },
-      {
-        "destination": "O:\\repos.hobby\\win16style\\assets",
-        "probe": "dialog-test-driver.exe",
-        "exit": 0,
-        "marker": "COM_EXPLORER_LAYOUT bridged=1",
-        "pass": true
-      },
-      {
-        "destination": "O:\\repos.hobby\\win16style\\assets",
-        "probe": "core-abi.exe",
-        "exit": 0,
-        "marker": "ABI PASS width=64",
-        "pass": true
-      },
-      {
-        "destination": "O:\\repos.hobby\\win16style\\assets",
-        "probe": "dialog-test-driver.exe",
-        "exit": 0,
-        "marker": "WIN2K FRAME bits=64 attached=1",
-        "pass": true
-      },
-      {
-        "destination": "O:\\repos.hobby\\win16style\\assets",
-        "probe": "dialog-test-driver.exe",
-        "exit": 0,
-        "marker": "COM_EXPLORER_LAYOUT bridged=1",
-        "pass": true
-      },
-      {
-        "destination": "O:\\winnt",
-        "probe": "launch-automatic.exe",
-        "exit": 0,
-        "marker": "LAUNCH MATRIX PASS",
-        "pass": true
-      },
-      {
-        "destination": "O:\\winnt",
-        "probe": "propagate-basic.exe",
-        "exit": 0,
-        "marker": "PROPAGATION BASIC PASS",
-        "pass": true
-      },
-      {
-        "destination": "O:\\winnt",
-        "probe": "core-abi.exe",
-        "exit": 0,
-        "marker": "ABI PASS width=32",
-        "pass": true
-      },
-      {
-        "destination": "O:\\winnt",
-        "probe": "dialog-test-driver.exe",
-        "exit": 0,
-        "marker": "WIN2K FRAME bits=32 attached=1",
-        "pass": true
-      },
-      {
-        "destination": "O:\\winnt",
-        "probe": "dialog-test-driver.exe",
-        "exit": 0,
-        "marker": "COM_EXPLORER_LAYOUT bridged=1",
-        "pass": true
-      },
-      {
-        "destination": "O:\\winnt",
-        "probe": "core-abi.exe",
-        "exit": 0,
-        "marker": "ABI PASS width=64",
-        "pass": true
-      },
-      {
-        "destination": "O:\\winnt",
-        "probe": "dialog-test-driver.exe",
-        "exit": 0,
-        "marker": "WIN2K FRAME bits=64 attached=1",
-        "pass": true
-      },
-      {
-        "destination": "O:\\winnt",
-        "probe": "dialog-test-driver.exe",
-        "exit": 0,
-        "marker": "COM_EXPLORER_LAYOUT bridged=1",
-        "pass": true
-      },
-      {
-        "destination": "O:\\winnt",
-        "probe": "demo-observe.exe",
-        "exit": 0,
-        "marker": "DEMO PAIR PASS",
-        "pass": true
-      },
-      {
-        "destination": "O:\\winnt",
-        "probe": "demo-observe.exe",
-        "exit": 0,
-        "marker": "DEMO WIN2000 PASS",
-        "pass": true
-      }
-    ]
+    "coverage": "focused",
+    "seconds": 58.9,
+    "cases": 17,
+    "selected_cases": [
+      "ntw2ks-frame-x86",
+      "ntw2ks-frame-x64",
+      "progress-sharing",
+      "plan-selection",
+      "abi-x86",
+      "abi-x64",
+      "demo-boundary",
+      "demo-pair",
+      "demo-win2000",
+      "automatic",
+      "propagation",
+      "ntw2ks-com-explorer-open-cancel-32",
+      "ntw2ks-com-explorer-open-cancel-64",
+      "neutral-uwp-frame-32",
+      "neutral-global-switch-32",
+      "neutral-uwp-frame-64",
+      "neutral-global-switch-64"
+    ],
+    "skipped": [],
+    "binary_source": "candidate with both installed roots matching all seven digests"
+  },
+  "supplemental_post_publication": {
+    "win2k_propagation": "8 passed, both A/W across four width pairs, styled windows and font in three generations, no retired DLL loaded",
+    "startup_descriptors": "4 passed, both styles missing/malformed rejected before target creation",
+    "uwp_missing_theme": "x86 and x64 passed, previous surface retained when switching to either missing descriptor"
   },
   "real_apps": {
-    "Windows_Scan_Win2K": "PASS native title pixels, maximize/minimize/restore, detachment and geometry",
-    "Calculator_Win16": "PASS on repeat, maximize/minimize/restore, detachment and geometry",
-    "Calculator_Win2K": "PASS on repeat, native title pixels, maximize/minimize/restore, detachment and geometry",
-    "WinUI_Notepad_Win16": {
-      "state": "PASS",
-      "title": [
-        "0xf0c8a4",
-        "0xf0c8a4"
-      ],
-      "content_bridge_present": true,
-      "closed": true
-    },
-    "WinUI_Notepad_Win2K": {
-      "state": "PASS",
-      "title": [
-        "0xa03a30",
-        "0xb96755"
-      ],
-      "content_bridge_present": true,
-      "closed": true
-    }
+    "calculator_win16": "passed, app/host/surface, minimize maximize restore, remove and native geometry",
+    "calculator_win2k": "passed, includes visible caption gradient color samples",
+    "scan_win2k": "passed, includes visible caption gradient color samples",
+    "winui_notepad_win16": "passed, real Store image/WinUI content bridge, DWM disabled, two matching Win16 title samples; owned window closed",
+    "winui_notepad_win2k": "passed, real Store image/WinUI content bridge, DWM disabled, two differing title samples and Win2K attachment marker; owned window closed"
   },
   "validation": {
-    "physical_keyboard_mouse": "not tested",
-    "private_desktops_created": false,
-    "limitations": [
-      "Calculator initial activation timed out twice; old-package comparison attached and both new versions passed immediately afterward",
-      "Real Notepad check asserts frame pixels and content bridge, not real-app detachment",
-      "Global receiver only exercised on test-owned threads, not as a desktop-wide sweep",
-      "Final seven-file deployment and compatibility retirement remain S11"
-    ]
+    "physical_input": "not tested",
+    "full_matrix": "not run for this packaging-only change",
+    "administrator_desktop_tray": "user approved source/unit scope; owned receivers validated all six transitions by width",
+    "historical_skip_scope": "S5 through S10 retain their recorded limitations",
+    "development_transient": "Initial incremental demo-pair dialog cancellation sync failure; unchanged single case and final focused release matrix passed"
   },
-  "closure": {
-    "S10": "closed after remote verification",
-    "T29": "active",
-    "M0": "fixed",
-    "S11": "active"
-  },
-  "remote_audit": {
-    "revision": "8a0f39fe4a45b4a10a6c673836579705bd34143d",
-    "ref": "refs/heads/main",
-    "files_verified": 12,
-    "source_inputs_verified": 1281,
-    "text_newline_only_inputs": 9
-  }
+  "closure": "S11 actual remote audit pending"
 }

@@ -1,11 +1,14 @@
 """Verify the product package against source, PE and Windows version data."""
 import argparse
+import configparser
 import ctypes
 import hashlib
 import importlib.util
 import json
+import os
 import re
 from pathlib import Path
+import stat
 import struct
 import sys
 
@@ -61,6 +64,60 @@ def version(path, task):
     assert ctypes.wstring_at(value) == '0.'+str(task)+'.0.0'
 
 
+def verify_layout(package, names):
+    directories = {parent.as_posix() for name in names for parent in Path(name).parents if parent != Path(".")}
+    actual = set()
+    for directory, subdirs, files in os.walk(package):
+        for child in subdirs + files:
+            path = Path(directory)/child
+            relative = path.relative_to(package).as_posix()
+            mode = path.lstat()
+            assert not mode.st_file_attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT, relative
+            if child in subdirs:
+                assert relative in directories, f"unexpected package directory: {relative}"
+            else:
+                assert stat.S_ISREG(mode.st_mode), relative
+                actual.add(relative)
+    assert actual == names, f"package file mismatch: missing {names-actual}, extra {actual-names}"
+
+
+def verify_theme(path):
+    if path.suffix == ".theme":
+        descriptor = configparser.ConfigParser(interpolation=None)
+        descriptor.read_string(path.read_text(encoding="ascii"))
+        assert dict(descriptor["VisualStyles"]) == {
+            "path": path.with_suffix(".msstyles").name, "colorstyle": "NormalColor", "size": "NormalSize"
+        }, path
+        assert descriptor["Theme"]["DisplayName"].strip(), path
+    else:
+        raw = path.read_bytes()
+        assert raw[:2] == b"MZ", path
+        pe = struct.unpack_from("<I", raw, 60)[0]
+        assert raw[pe:pe+4] == b"PE\0\0", path
+        assert struct.unpack_from("<H", raw, pe+22)[0] & 0x2000, path
+        optional = pe+24
+        magic = struct.unpack_from("<H", raw, optional)[0]
+        assert magic in (0x10b, 0x20b), path
+        directories = optional+(112 if magic == 0x20b else 96)
+        assert struct.unpack_from("<I", raw, optional+16)[0] == 0, path
+        exports, _, imports, _, resources, size = struct.unpack_from("<6I", raw, directories)
+        assert resources and size, path
+        sections = optional+struct.unpack_from("<H", raw, pe+20)[0]
+        def mapped(rva, length):
+            for index in range(struct.unpack_from("<H", raw, pe+6)[0]):
+                _, base, size, start = struct.unpack_from("<4I", raw, sections+40*index+8)
+                if base <= rva and rva-base+length <= size:
+                    offset = start+rva-base
+                    assert offset+length <= len(raw), path
+                    return raw[offset:offset+length]
+            raise AssertionError(f"unmapped theme directory: {path}")
+        if exports:
+            assert struct.unpack_from("<II", mapped(exports, 40), 20) == (0, 0), path
+        if imports:
+            assert mapped(imports, 20) == bytes(20), path
+        assert "PACKTHEM_VERSION".encode("utf-16-le") in raw, path
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('package', type=Path)
@@ -68,16 +125,20 @@ def main():
     parser.add_argument('--built-root', type=Path)
     parser.add_argument('--task', type=int, required=True)
     args = parser.parse_args()
+    assert not args.package.lstat().st_file_attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT
     package, root = args.package.resolve(), args.source_root.resolve()
-    expected = {'run16s.exe': 'x64', 'ntw16s32.dll': 'x86', 'ntw16s64.dll': 'x64',
-                'ntw2ks32.dll': 'x86', 'ntw2ks64.dll': 'x64',
-                'ntwshk32.dll': 'x86', 'ntwshk64.dll': 'x64', 'demo.exe': 'x64'}
-    assert args.task > 0 and {p.name for p in package.iterdir()} == set(expected), 'package must contain exactly eight files'
+    contract = json.loads((root/'docs/etc/product-contract.json').read_text(encoding='utf-8'))
+    expected = {artifact['name']: artifact['architecture']
+                for component in contract['components'] for artifact in component['artifacts']}
+    assert expected == {'run16s.exe': 'x64', 'ntwshk32.dll': 'x86', 'ntwshk64.dll': 'x64'}
+    themes = set(contract['themes'])
+    assert themes == {f'themes/{name}/{name}.{extension}'
+                      for name in ('Win16', 'Win2K') for extension in ('theme', 'msstyles')}
+    assert args.task > 0
+    verify_layout(package, set(expected) | themes)
     spec = importlib.util.spec_from_file_location('core_pe', root/'tools/check_core_binary.py')
     core = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(core)
-    abi = json.loads((root/'docs/etc/import/abi-decisions.json').read_text(encoding='utf-8'))
-    names = sorted({e['symbol'] for e in abi['exports'] if e['decision'] == 'retain-public'})
     license_bytes = (root/'LICENSE').read_bytes()
     minhook_license = (root/'src/lib-win32/process-hook/minhook/LICENSE.txt').read_bytes()
     # Independently read the retained C atlas rows and require those exact
@@ -107,29 +168,11 @@ def main():
         raw = path.read_bytes()
         version(path, args.task)
         assert license_bytes in raw, 'project license missing from '+name
-        if name.startswith('ntw16s'):
+        if name.endswith('.dll'):
             assert minhook_license in raw, 'MinHook/HDE license missing from '+name
             assert provenance in raw, 'original resource provenance missing from '+name
             for symbol, data in glyph_tables.items():
                 assert data in raw, 'original resource table missing/changed: '+name+':'+symbol
-            machine, public, imports, digest, ordinals, live = core.inspect(path)
-            pe = struct.unpack_from('<I', raw, 60)[0]
-            assert struct.unpack_from('<H', raw, pe+22)[0] & 0x2000, 'DLL flag missing'
-            assert machine == (0x14c if arch == 'x86' else 0x8664)
-            assert public == sorted(names + ['Ntw16sShowModernFileDialog','Ntw16sGlobalHook','Ntw16sGlobalHost','Ntw16sWindowAttach','Ntw16sGlobalThread','Ntw16sUwpFrameHook','Ntw16sWindowThreadHook']) and ordinals == {**{n: i+2 for i, n in enumerate(names)}, 'Ntw16sShowModernFileDialog': 33, 'Ntw16sGlobalHook': 34, 'Ntw16sGlobalHost': 35, 'Ntw16sWindowAttach': 36, 'Ntw16sGlobalThread': 37, 'Ntw16sUwpFrameHook': 38, 'Ntw16sWindowThreadHook': 39} and live == set(range(1, 40))
-            assert {n.lower() for n in imports if not core.system_crt(n)} == {'kernel32.dll', 'user32.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll', 'shell32.dll', 'ole32.dll', 'oleaut32.dll', 'dwmapi.dll', 'uxtheme.dll', 'advapi32.dll', 'msimg32.dll', 'winspool.drv', 'activeds.dll', f'ntwshk{32 if arch == "x86" else 64}.dll'}
-        elif name.startswith('ntw2ks'):
-            assert minhook_license in raw, 'MinHook/HDE license missing from '+name
-            machine, public, imports, digest, ordinals, live = core.inspect(path)
-            pe = struct.unpack_from('<I', raw, 60)[0]
-            assert struct.unpack_from('<H', raw, pe+22)[0] & 0x2000, 'DLL flag missing'
-            assert machine == (0x14c if arch == 'x86' else 0x8664)
-            assert public == ['Ntw2ksDrawButton', 'Ntw2ksWindowAttach', 'Ntw2ksWindowAttached', 'Ntw2ksWindowRemove']
-            assert ordinals == {'Ntw2ksDrawButton': 2, 'Ntw2ksWindowAttach': 3,
-                                'Ntw2ksWindowAttached': 4, 'Ntw2ksWindowRemove': 5} and live == set(range(1, 6))
-            assert {n.lower() for n in imports if not core.system_crt(n)} == {'kernel32.dll', 'user32.dll', 'uxtheme.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll', 'dwmapi.dll', 'msimg32.dll', 'shcore.dll', 'ole32.dll', 'oleaut32.dll', 'shell32.dll', 'winspool.drv', 'activeds.dll', f'ntwshk{32 if arch == "x86" else 64}.dll'}
-        elif name.startswith('ntwshk'):
-            assert minhook_license in raw, 'MinHook/HDE license missing from '+name
             machine, public, imports, digest, ordinals, live = core.inspect(path)
             pe = struct.unpack_from('<I', raw, 60)[0]
             assert struct.unpack_from('<H', raw, pe+22)[0] & 0x2000, 'DLL flag missing'
@@ -148,13 +191,24 @@ def main():
                 'shcore.dll', 'shell32.dll', 'user32.dll', 'uxtheme.dll', 'winspool.drv'}
         else:
             subsystem, imports = application(path)
-            assert subsystem == (2 if name == 'demo.exe' else 3)
-            assert {n for n in imports if not core.system_crt(n)} == ({'kernel32.dll', 'user32.dll', 'gdi32.dll', 'comctl32.dll', 'comdlg32.dll', 'shell32.dll', 'ole32.dll'} if name == 'demo.exe' else {'kernel32.dll', 'user32.dll', 'shell32.dll', 'ole32.dll', 'oleaut32.dll', 'advapi32.dll', 'dwmapi.dll', 'ntwshk64.dll'})
+            assert subsystem == 3
+            assert {n for n in imports if not core.system_crt(n)} == {
+                'kernel32.dll', 'user32.dll', 'shell32.dll', 'ole32.dll', 'oleaut32.dll',
+                'advapi32.dll', 'dwmapi.dll', 'ntwshk64.dll'}
             digest = hashlib.sha256(raw).hexdigest()
         if args.built_root:
             assert hashlib.sha256((args.built_root/arch/name).read_bytes()).hexdigest() == digest, 'mixed build'
         result[name] = dict(architecture=arch, version='M0 T'+str(args.task), sha256=digest, imports=imports)
-    print(json.dumps(dict(status='PACKAGE PASS', artifacts=result, original_resource_tables_per_ntw16s_dll=len(glyph_tables)), indent=2))
+    theme_artifacts = {}
+    for name in sorted(themes):
+        path = package/name
+        verify_theme(path)
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if args.built_root:
+            assert hashlib.sha256((args.built_root/'x64'/name).read_bytes()).hexdigest() == digest, 'mixed theme build'
+        theme_artifacts[name] = digest
+    print(json.dumps(dict(status='PACKAGE PASS', artifacts=result, theme_artifacts=theme_artifacts,
+                          original_resource_tables_per_ntwshk_dll=len(glyph_tables)), indent=2))
 
 
 if __name__ == '__main__':

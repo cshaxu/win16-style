@@ -17,11 +17,11 @@ src/lib-win32-style/appearance/
   luna/ aero/                         未来规划，按实际实现建立
 src/run16s-exe/                        CLI 与托盘业务装配
 src/ntwshk-dll/                        双位宽共享运行时装配
-src/ntw16s-dll/ src/ntw2ks-dll/         双位宽具体风格装配及导出
+src/ntw16s-dll/ src/ntw2ks-dll/         合入中性运行时的年代装配源码
 src/demo-exe/                         原生示例
  tests/                              按源码组件对应目录，产品组合测试另列 integration
  tools/                              构建、检查及观测
- assets/                             当前五组件八文件正式包
+ assets/                             三件运行文件和四件主题文件
  build/                              生成物，保留 .ninja 和 .ccache
 ```
 
@@ -39,7 +39,7 @@ build/.ninja/ 与可选 build/.ccache/ 可复用；其他 scratch 必须在活�
 scratch；每次测试完成即按执行规则清理已不再需要的临时构建及副本，
 仅为未完成的后续验证或发布暂留有明确用途的最小集合。不得清理用户目录、
 系统目录、其他任务正在使用的内容或跟随 reparse point。
-当前产品包八文件均在同一目录，构建输出与正式发布相互区分。
+正式包根目录为启动器和双宽中性 DLL，两对主题分别位于 themes/Win16、themes/Win2K。
 
 T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及旧入口
 已在T6 S1退休，历史可从T1提交复取。当前工具链直接构建实际产品和C测试，

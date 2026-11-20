@@ -4,15 +4,15 @@
 
 本项目是运行时 Windows 外观框架。接入、样式应用和年代呈现独立组合；当前能力与实际应用覆盖由 [CURRENT](../states/CURRENT.md) 及其证据说明。三层实现不能等同于所有框架或主题已经支持。
 
-[product-contract.json](../etc/product-contract.json) 固定五组件八文件。公共源码组件静态链接到这些既有产品，不要求增加 DLL。
+[product-contract.json](../etc/product-contract.json) 固定七件正式文件。公共源码组件静态链接到中性运行时，风格数据由两对外部主题提供。
 
 | 产品组件 | 产物 | 职责 |
 | --- | --- | --- |
 | run16s-exe | run16s.exe，x64 | CLI、托盘业务、风格与目标选择、提权 UX 和最终错误报告 |
 | ntwshk-dll | ntwshk32.dll、ntwshk64.dll | 共享运行时装配、进程内接入和公共状态导出 |
-| ntw16s-dll | ntw16s32.dll、ntw16s64.dll | Win3.x 风格装配、原 API trampoline、兼容导出及产品协议 |
-| ntw2ks-dll | ntw2ks32.dll、ntw2ks64.dll | Win2000 风格装配、兼容导出、呈现策略及原生主题协调 |
-| demo-exe | demo.exe，x64 | 原生示例与手动测试入口，直接启动保持系统原生行为 |
+| themes | Win16、Win2K 各一份 .theme 和 .msstyles | 外部风格数据与原图资源 |
+
+Win16、Win2K 的兼容 DLL 和原生 demo 留在构建树用于验证。
 
 ## 三层结构
 

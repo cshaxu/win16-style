@@ -86,6 +86,12 @@ Win16 晚期传播四种位宽组合及普通启动 COM 回归 12/12 通过。
 S10 P1 已发布两处，聚焦实包 18/18，Scan、Calculator 与 WinUI Notepad 实样通过。
 S10 P1 的 12 个远端文件和 1,281 个构建输入已复核，S10 收口。四个旧 DLL 和演示仍属 S10 过渡包，S11 接续正式切换。
 见[开发记录](../history/M0-T29-S10-neutral-runtime.md)。
+S11 已切换七件契约、构建器、验包和可回滚部署。独立七件的增量聚焦回归
+13/13，旧文件、多余目录、跨目录主题引用负例及独立两处部署回滚通过。
+S11 P1 双宽干净构建通过，七件已发布到两处并逐件核对摘要。四个年代 DLL
+和演示已从两个发布路径退役。发布后聚焦回归 17/17，并完成当前 Calculator、
+Scan 和真实 WinUI 记事本的样本复验。实际远端复核待完成，见
+[S11 验证记录](../history/M0-T29-S11-seven-file-package.md)。
 
 ## M0 T29 S11 Packet
 
@@ -127,7 +133,7 @@ S10 P1 的 12 个远端文件和 1,281 个构建输入已复核，S10 收口。�
 
 ## Technical Baseline
 
-- 产品为[契约](../etc/product-contract.json)固定五组件八文件：run16s.exe、demo.exe、ntw16s32/64.dll、ntw2ks32/64.dll、ntwshk32/64.dll。O:/winnt、assets 与远端已核对 [T29 S10 P1](../history/M0-T29-S10-neutral-runtime.md)。
+- [正式契约](../etc/product-contract.json)为 run16s.exe、ntwshk32/64.dll 和两对主题。当前两处已验证的存量发行仍为 [T29 S10 P1](../history/M0-T29-S10-neutral-runtime.md)。
 - 样式统一src/lib-win32-style的access/application/appearance；通用无样式Windows能力在src/lib-win32。当前结构和接口见[ARCHITECTURE](../design/ARCHITECTURE.md)及[CODING](../design/CODING.md)。
 - 三接入、共同生命周期/窗口/菜单/控件协议/对话框/现代宿主/图形根已有真实消费者；年代保留度量、绘制、字体、资源与支持策略。产品保留CLI/托盘业务、目标/会话选择、原API trampoline、兼容ABI和装配。Win2000控件、其他框架与Luna/Aero不因公共根存在即得到完整支持。
 - 来源1183回执、五原资源、包内原始栅格表和ABI/PE门禁通过；发布基线两宽各25公共样式归档与4进程归档无产品/年代反向依赖。所有当前构建/运行/测试不依赖或修改兄弟仓库。

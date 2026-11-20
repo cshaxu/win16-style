@@ -11,47 +11,25 @@
       ]
     },
     {
-      "id": "ntw16s-dll",
-      "artifacts": [
-        {
-          "name": "ntw16s32.dll",
-          "architecture": "x86"
-        },
-        {
-          "name": "ntw16s64.dll",
-          "architecture": "x64"
-        }
-      ]
-    },
-    {
-      "id": "ntw2ks-dll",
-      "artifacts": [
-        {
-          "name": "ntw2ks32.dll",
-          "architecture": "x86"
-        },
-        {
-          "name": "ntw2ks64.dll",
-          "architecture": "x64"
-        }
-      ]
-    },
-    {
       "id": "ntwshk-dll",
       "artifacts": [
         { "name": "ntwshk32.dll", "architecture": "x86" },
         { "name": "ntwshk64.dll", "architecture": "x64" }
       ]
-    },
-    {
-      "id": "demo-exe",
-      "artifacts": [
-        {
-          "name": "demo.exe",
-          "architecture": "x64"
-        }
-      ]
     }
+  ],
+  "themes": [
+    "themes/Win16/Win16.theme",
+    "themes/Win16/Win16.msstyles",
+    "themes/Win2K/Win2K.theme",
+    "themes/Win2K/Win2K.msstyles"
+  ],
+  "retired": [
+    "demo.exe",
+    "ntw16s32.dll",
+    "ntw16s64.dll",
+    "ntw2ks32.dll",
+    "ntw2ks64.dll"
   ],
   "demo": {
     "direct": "native",

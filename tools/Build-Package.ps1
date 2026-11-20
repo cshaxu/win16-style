@@ -63,8 +63,16 @@ try{
         $compilerRoots=@($toolchains.toolchains | ForEach-Object {
             [IO.Path]::GetFullPath((Split-Path (Split-Path $_.compiler -Parent) -Parent))+[IO.Path]::DirectorySeparatorChar
         })
-        foreach($pair in @(@('x64','run16s.exe'),@('x86','ntw16s32.dll'),@('x64','ntw16s64.dll'),@('x86','ntw2ks32.dll'),@('x64','ntw2ks64.dll'),@('x86','ntwshk32.dll'),@('x64','ntwshk64.dll'),@('x64','demo.exe'))){
-            Copy-Item -LiteralPath (Join-Path $tree "$($pair[0])/$($pair[1])") -Destination (Join-Path $candidate $pair[1])
+        $contract=Get-Content -LiteralPath (Join-Path $clean 'docs/etc/product-contract.json') -Raw | ConvertFrom-Json
+        & cmake --build (Join-Path $tree 'x64') --target check-classic-themes --parallel 6
+        if($LASTEXITCODE){throw 'Theme build and independent readback failed'}
+        foreach($artifact in $contract.components.artifacts){
+            Copy-Item -LiteralPath (Join-Path $tree "$($artifact.architecture)/$($artifact.name)") -Destination (Join-Path $candidate $artifact.name)
+        }
+        foreach($name in $contract.themes){
+            $target=Join-Path $candidate $name
+            New-Item -ItemType Directory -Force -Path (Split-Path $target -Parent) | Out-Null
+            Copy-Item -LiteralPath (Join-Path $tree "x64/$name") -Destination $target
         }
         foreach($arch in @('x86','x64')){
             $compiler=($toolchains.toolchains | Where-Object architecture -eq $arch).compiler
@@ -85,14 +93,17 @@ try{
             if($LASTEXITCODE){throw "Public style binary boundary gate failed: $arch"}
             $dependencies=& ninja -C (Join-Path $tree $arch) -t deps
             if($LASTEXITCODE){throw 'Dependency trace failed'}
-            $dependencies | Set-Content (Join-Path $scratch "$arch-deps.txt") -Encoding utf8
+            $inputs=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
             foreach($line in $dependencies){
                 if(!$line.StartsWith('    ')){continue}
-                $inputPath=[IO.Path]::GetFullPath($line.Trim(),(Join-Path $tree $arch))
+                $dependency=$line.Trim()
+                if(!$inputs.Add($dependency)){continue}
+                $inputPath=[IO.Path]::GetFullPath($dependency,(Join-Path $tree $arch))
                 if($inputPath.StartsWith($clean+'\',[StringComparison]::OrdinalIgnoreCase)){continue}
                 $allowed=@($compilerRoots | Where-Object { $inputPath.StartsWith($_,[StringComparison]::OrdinalIgnoreCase) })
                 if(!$allowed.Count){throw "Foreign build input: $inputPath"}
             }
+            $inputs | Sort-Object | Set-Content (Join-Path $scratch "$arch-deps.txt") -Encoding utf8
         }
         $verification=& python (Join-Path $clean 'tools/check_package.py') $candidate --source-root $clean --built-root $tree --task $Task
         if($LASTEXITCODE){throw 'Candidate package gate failed'}

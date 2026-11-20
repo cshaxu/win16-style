@@ -31,17 +31,17 @@ pwsh -NoProfile -File tools/Build-Core.ps1 -CacheRoot $projectCompilerCache -Tas
 
 结果区分passed、passed-with-skips和failed-or-inconclusive；逐架构JUnit摘要列出
 跳过名称。原生私有window-station权限不足时剪贴板77不可用，保持待验收，不等于通过。
-所有失败/必需跳过均须有处置。每个产品S的同批包测试通过后发布、提交推送并
+所有失败/必需跳过均须有处置。每个产品 S 的同批包先发布、再测试、提交推送并
 复核；开发包不等同M0最终通过。真实桌面验收及跨任务审计完成后才关闭M0。
 T6 S1曾从干净复制树通过双宽全构建及同包测试；当前发布状态和验收边界见
 [发布清单](../release.json)。完整矩阵与必要真实交互仍由后续S验证。
 
-三组件四文件须始终同目录：run16s.exe、ntw16s32.dll、ntw16s64.dll、demo.exe。
+正式包布局见 [assets](../../../assets/README.md)。demo 是构建树中的验收程序。
 普通使用：
 
 ```powershell
-.\demo.exe
-.\run16s.exe .\demo.exe
+.\run16s.exe notepad.exe
+.\run16s.exe --2k notepad.exe
 .\run16s.exe --wait <application.exe> [arguments]
 ```
 

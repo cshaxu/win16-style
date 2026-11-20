@@ -72,7 +72,8 @@ static HMODULE module(void)
     WCHAR value[2];
     if(GetEnvironmentVariableW(L"WIN16S_TEST_NEUTRAL_RUNTIME",value,ARRAYSIZE(value)))
         return GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll");
-    return GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
+    HMODULE legacy=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
+    return legacy?legacy:GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll");
 }
 static LRESULT CALLBACK proc(HWND w,UINT message,WPARAM a,LPARAM b)
 {

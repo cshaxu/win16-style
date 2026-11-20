@@ -12,33 +12,18 @@ Windows, with the same executable and application logic.
 Win16 Style launcher. The cards, game board, and Score/Time display are drawn by
 Solitaire itself.*
 
-[Quick start](#quick-start) · [Screenshots](#screenshots) ·
-[How it works](#how-it-works) · [Build](#build-from-source) ·
-[Compatibility](#compatibility-and-scope) · [Licenses](#licenses-and-origins)
+[Quick start](#quick-start) Â· [Screenshots](#screenshots) Â·
+[How it works](#how-it-works) Â· [Build](#build-from-source) Â·
+[Compatibility](#compatibility-and-scope) Â· [Licenses](#licenses-and-origins)
 
 ## Quick start
 
-Use a modern **64-bit Windows** host. Get the four files from
-[assets](assets/README.md) and keep them together in one directory:
-
-| File | Architecture | Purpose |
-| --- | --- | --- |
-| [run16s.exe](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/run16s.exe) | x64 | Starts an application and installs the matching styling DLL. |
-| [ntw16s32.dll](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/ntw16s32.dll) | x86 | Styles 32-bit applications and propagates hooks to descendants. |
-| [ntw16s64.dll](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/ntw16s64.dll) | x64 | Styles 64-bit applications and propagates hooks to descendants. |
-| [demo.exe](https://raw.githubusercontent.com/cshaxu/win16-style/main/assets/demo.exe) | x64 | A native Windows controls demo for direct comparison. |
-
-From that directory, in PowerShell:
+Use a modern **64-bit Windows** host. Download the seven files from
+[assets](assets/README.md) and keep the theme subdirectories intact.
 
 ```powershell
-# Run the demo with its normal Windows appearance.
-.\demo.exe
-
-# Run the exact same demo with Win16 Style.
-.\run16s.exe .\demo.exe
-
-# Launch your own 32-bit or 64-bit desktop application.
-.\run16s.exe "C:\Games\Solitaire\sol.exe"
+.\run16s.exe notepad.exe
+.\run16s.exe --2k "C:\Games\Solitaire\sol.exe"
 ```
 
 Solitaire is an example, not part of the package. Use your own copy; the Windows
@@ -51,7 +36,7 @@ XP version also uses its matching `cards.dll` beside `sol.exe`.
 .\run16s.exe cmd.exe
 
 # Wait explicitly for a GUI target and return its exit code.
-.\run16s.exe --wait .\demo.exe
+.\run16s.exe --wait notepad.exe
 ```
 
 GUI targets normally return control to the launcher caller after startup.
@@ -178,7 +163,7 @@ for application versions, package hashes, and image provenance.
 run16s.exe (x64)
   |
   +-- application.exe (x86 or x64)
-        +-- ntw16s32.dll or ntw16s64.dll
+        +-- ntwshk32.dll or ntwshk64.dll
         +-- supported child processes receive matching hooks
 ```
 
@@ -186,10 +171,9 @@ The launcher creates the target suspended, installs the DLL matching the target
 architecture, then releases the suspension it added. The DLL handles window
 styling and supported descendant propagation inside that process.
 
-The project has **three components and four product files**: a launcher, a
-single styling/injection implementation built for two architectures, and a
-native demo. It does not require NTVDM, a background service, or a system-wide
-theme change.
+The package contains **seven files**. The launcher and two runtime DLLs use
+the Win16 and Windows 2000 theme pairs in `themes/Win16` and `themes/Win2K`.
+The native demo is available from a source build.
 
 Supported presentation includes classic title bars and system buttons, menu
 bars and popups, common standard controls, and scrollbars with square end

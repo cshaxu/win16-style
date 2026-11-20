@@ -103,16 +103,21 @@ function Test-Governance([hashtable]$Files) {
     }
     try {
         $contract = $Files['docs/etc/product-contract.json'] | ConvertFrom-Json
-        $expected = @('run16s-exe|run16s.exe|x64','ntw16s-dll|ntw16s32.dll|x86',
-            'ntw16s-dll|ntw16s64.dll|x64','ntw2ks-dll|ntw2ks32.dll|x86',
-            'ntw2ks-dll|ntw2ks64.dll|x64','ntwshk-dll|ntwshk32.dll|x86',
-            'ntwshk-dll|ntwshk64.dll|x64','demo-exe|demo.exe|x64') | Sort-Object
+        $expected = @('run16s-exe|run16s.exe|x64','ntwshk-dll|ntwshk32.dll|x86',
+            'ntwshk-dll|ntwshk64.dll|x64') | Sort-Object
+        $themes = @('themes/Win16/Win16.theme','themes/Win16/Win16.msstyles',
+            'themes/Win2K/Win2K.theme','themes/Win2K/Win2K.msstyles') | Sort-Object
+        $retired = @('demo.exe','ntw16s32.dll','ntw16s64.dll','ntw2ks32.dll','ntw2ks64.dll')
         $actual = @($contract.components | ForEach-Object {
             $component = $_.id
             foreach ($artifact in $_.artifacts) { "$component|$($artifact.name)|$($artifact.architecture)" }
         } | Sort-Object)
-        if ($contract.milestone -ne 0 -or @($contract.components).Count -ne 5 -or
-            @(Compare-Object $expected $actual).Count) { $issues.Add('Invalid five-component/eight-artifact contract') }
+        if ($contract.milestone -ne 0 -or @($contract.components).Count -ne 2 -or
+            @(Compare-Object $expected $actual -CaseSensitive).Count -or
+            @(Compare-Object $themes @($contract.themes | Sort-Object) -CaseSensitive).Count -or
+            @(Compare-Object $retired @($contract.retired | Sort-Object) -CaseSensitive).Count) {
+            $issues.Add('Invalid seven-file product contract or retirement list')
+        }
         if ($contract.demo.direct -ne 'native' -or $contract.demo.launched -ne 'win16' -or
             $contract.demo.links_style_dll -ne $false) { $issues.Add('Invalid demo dual-launch contract') }
         if ($contract.import_status -eq 'not-imported' -and @($Files.Keys | Where-Object { $_ -like 'src/*' }).Count) {
