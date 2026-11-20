@@ -1,7 +1,7 @@
 #include "menu_bar.h"
 
 void win16_style_bar_paint(const style_menu_bar_snapshot *bar,HDC dc,HFONT font,UINT dpi,
-    const win16_style_palette *palette,const classic_menu_colors *colors,const win16_caption_art *art)
+    const win16_style_palette *palette,const classic_menu_colors *colors,const classic_caption_art *art)
 {
     UINT i;
     for(i=0;i<bar->count;++i){

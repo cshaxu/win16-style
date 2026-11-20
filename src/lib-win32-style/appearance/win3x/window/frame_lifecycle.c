@@ -64,11 +64,16 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
         const classic_theme *theme=&source.model;
         s->title_buttons=theme->title_buttons;
         s->caption_metrics=theme->caption_metrics;
+        s->caption_presentation=theme->caption_presentation;
+        s->border_presentation=theme->border_presentation;
+        s->caption_gradient=theme->gradient;
+        s->active_end=theme->active.end;
+        s->inactive_end=theme->inactive.end;
         s->caption_font=theme->caption_font;
         s->menu_font=theme->menu_font;
         s->menu_metrics=theme->menu_metrics;
         (void)win16_menu_art_read(source.resources,theme->menu_images,&s->menu_art);
-        (void)win16_caption_art_read(source.resources,&theme->caption_images,&s->art);
+        (void)classic_caption_art_read(source.resources,&theme->caption_images,&s->art);
         if(!p){
             s->menu_bar=theme->menu_bar;
             s->menu_popup=theme->menu_popup;

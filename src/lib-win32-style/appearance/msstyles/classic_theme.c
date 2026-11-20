@@ -487,7 +487,7 @@ HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme
     if(SUCCEEDED(result)){
         enum classic_style_result status=classic_style_read(extension.bytes,extension.size,
             &value.title_buttons,&value.scroll_metrics,&value.menu_metrics,&value.dialog_metrics,
-            &value.dialog_policy);
+            &value.dialog_policy,&value.caption_presentation,&value.border_presentation);
         if(status!=CLASSIC_STYLE_OK)result=HRESULT_FROM_WIN32(
             status==CLASSIC_STYLE_VERSION || status==CLASSIC_STYLE_REQUIRED_RECORD?
             ERROR_NOT_SUPPORTED:ERROR_INVALID_DATA);

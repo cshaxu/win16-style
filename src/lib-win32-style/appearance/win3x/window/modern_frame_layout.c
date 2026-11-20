@@ -8,7 +8,7 @@ BOOL win16_uwp_frame_layout(SIZE outer,UINT dpi,DWORD style,BOOL maximized,
        content.bottom>outer.cy || content.left>=content.right || content.top>=content.bottom ||
        (style&WS_CAPTION)!=WS_CAPTION)return FALSE;
     BOOL measured=buttons && buttons->count?
-        win16_style_measure_with_buttons(outer.cx,outer.cy,dpi,style,0,maximized,buttons,metrics,l):
+        win16_style_measure_with_buttons(outer.cx,outer.cy,dpi,style,0,maximized,buttons,metrics,NULL,dpi,l):
         win16_style_measure(outer.cx,outer.cy,dpi,style,0,maximized,l);
     if(!measured)return FALSE;
     if(content.top<l->client.top)return FALSE;

@@ -139,6 +139,9 @@ S16 收口。三类接入统一目录标识，仍用现有兼容绘制适配器�
 | Original Owner Request | 只换主题文件复现已支持 Win16 和 Win2000，EXE/DLL 无年代分派及专属绘制。 |
 | Similar-Issue Sweep | 原生和合成非客户区入口、系统菜单、MDI、标题按钮的图形、坐标、消息和还原。 |
 
+[S17 记录](../history/M0-T29-S17-shared-frame.md)记录共享绘制、几何、命中和发布后实包结果。
+P1 两处七件已发布且复验，保留两项与 S16 逐字节一致的既有夹具失败，远端复核待完成。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)

@@ -1,4 +1,5 @@
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "lib-win32-style/appearance/win2000/window/caption.h"
 #include "lib-win32-style/appearance/win2000/common/paint.h"
 #include "lib-win32-style/appearance/win2000/control/button_paint.h"
@@ -41,19 +42,32 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
     classic_button_group changed=theme->title_buttons;
     changed.slots[2].gap_before=4;
     if(!win16_style_measure(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&reference) ||
-       !win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&theme->title_buttons,&theme->caption_metrics,&layout) ||
-       !win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&changed,&theme->caption_metrics,&alternate) ||
-       !EqualRect(&reference.title,&layout.title) || !EqualRect(&reference.minimize,&layout.minimize) ||
-       !EqualRect(&reference.maximize,&layout.maximize) || !EqualRect(&reference.system,&layout.system) ||
-       !EqualRect(&alternate.maximize,&layout.maximize) ||
-       layout.minimize.left-alternate.minimize.left!=MulDiv(4,(int)dpi,96))return FALSE;
-    POINT changed_min={alternate.minimize.left,alternate.minimize.top};
+       !win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&theme->title_buttons,&theme->caption_metrics,
+           &theme->border_presentation.geometry,dpi,&layout) ||
+       !win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&changed,&theme->caption_metrics,
+           NULL,dpi,&alternate) ||
+       !EqualRect(&reference.title,&layout.title) || !EqualRect(&reference.buttons[CLASSIC_BUTTON_MINIMIZE],&layout.buttons[CLASSIC_BUTTON_MINIMIZE]) ||
+       !EqualRect(&reference.buttons[CLASSIC_BUTTON_MAXIMIZE],&layout.buttons[CLASSIC_BUTTON_MAXIMIZE]) || !EqualRect(&reference.buttons[CLASSIC_BUTTON_SYSTEM],&layout.buttons[CLASSIC_BUTTON_SYSTEM]) ||
+       !EqualRect(&alternate.buttons[CLASSIC_BUTTON_MAXIMIZE],&layout.buttons[CLASSIC_BUTTON_MAXIMIZE]) ||
+       layout.buttons[CLASSIC_BUTTON_MINIMIZE].left-alternate.buttons[CLASSIC_BUTTON_MINIMIZE].left!=MulDiv(4,(int)dpi,96))return FALSE;
+    POINT changed_min={alternate.buttons[CLASSIC_BUTTON_MINIMIZE].left,alternate.buttons[CLASSIC_BUTTON_MINIMIZE].top};
     if(win16_style_hit(&alternate,changed_min)!=HTMINBUTTON ||
        win16_style_hit(&layout,changed_min)!=HTCAPTION)return FALSE;
+    changed=theme->title_buttons;
+    changed.slots[0].side=CLASSIC_BUTTON_RIGHT;
+    if(!win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
+        &changed,&theme->caption_metrics,NULL,dpi,&alternate))return FALSE;
+    RECT old_system=layout.buttons[CLASSIC_BUTTON_SYSTEM],new_system=alternate.buttons[CLASSIC_BUTTON_SYSTEM];
+    POINT old_point={old_system.left,old_system.top},new_point={new_system.left,new_system.top};
+    if(win16_style_hit(&layout,old_point)!=HTSYSMENU || win16_style_hit(&alternate,old_point)!=HTCAPTION ||
+       win16_style_hit(&alternate,new_point)!=HTSYSMENU ||
+       style_caption_hit(alternate.buttons,0,new_point)!=HTNOWHERE ||
+       style_caption_command(style_caption_role(HTSYSMENU),FALSE)!=SC_KEYMENU ||
+       style_caption_command(style_caption_role(HTMAXBUTTON),TRUE)!=SC_RESTORE)return FALSE;
     win16_style_palette palette;
     win16_style_default_palette(&palette);
     win16_style_theme_palette(&palette,theme);
-    win16_frame_paint_state state={.active=active};
+    win16_frame_paint_state state={.active=active,.presentation=theme->caption_presentation};
     POINT center={120,layout.caption.top+1};
     win16_control_frame_caption(dc,&layout,&palette,&state,NULL,FALSE,FALSE);
     return win16_style_hit(&layout,center)==HTCAPTION && GetPixel(dc,center.x,center.y)==colors.start;
@@ -62,29 +76,127 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
 static BOOL draw_win2k_border(HDC dc,const DWORD *pixels,const classic_theme *theme)
 {
     DWORD reference[240*64];
-    win2k_window_border_paint(dc,240,64,4,NULL);
+    win2k_window_border_paint(dc,240,64,4,NULL,TRUE,FALSE);
     GdiFlush();
     memcpy(reference,pixels,sizeof(reference));
-    win2k_window_border_paint(dc,240,64,4,&theme->frame);
+    win2k_window_border_paint(dc,240,64,4,theme,TRUE,FALSE);
     GdiFlush();
     if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
     const classic_frame_colors variant={RGB(10,74,95),RGB(26,193,180),
         RGB(89,26,175),RGB(187,64,28),TRUE};
-    win2k_window_border_paint(dc,240,64,4,&variant);
+    classic_theme recolored=*theme;
+    recolored.frame=variant;
+    win2k_window_border_paint(dc,240,64,4,&recolored,TRUE,FALSE);
     if(GetPixel(dc,0,32)!=variant.face || GetPixel(dc,1,32)!=variant.light ||
        GetPixel(dc,238,32)!=variant.shadow || GetPixel(dc,239,32)!=variant.edge)return FALSE;
     win2k_caption_layout caption={.band={4,4,236,23}};
     const UINT flags[WIN2K_CAPTION_PARTS]={0};
     win2k_caption_render_with_colors(dc,&caption,L"",NULL,(HFONT)GetStockObject(DEFAULT_GUI_FONT),
-        96,win2k_caption_palette(TRUE),&variant,TRUE,flags);
-    return GetPixel(dc,100,22)==variant.face && GetPixel(dc,4,4)==theme->active.start;
+        96,win2k_caption_palette(TRUE),&variant,&theme->caption_presentation,TRUE,flags,NULL);
+    if(GetPixel(dc,100,22)!=variant.face || GetPixel(dc,4,4)!=theme->active.start)return FALSE;
+    /* Give the same adapter a clipped fill and choose different stroke positions. */
+    recolored.border_presentation=(style_border_presentation){STYLE_BORDER_CLIPPED,STYLE_BORDER_TITLE,
+        {STYLE_BORDER_OUTER,STYLE_BORDER_EDGE,STYLE_BORDER_EDGE},
+        {STYLE_BORDER_INNER,STYLE_BORDER_SHADOW,STYLE_BORDER_SHADOW},STYLE_BORDER_LIGHT,STYLE_BORDER_KEEP,{0}};
+    RECT bounds={0,0,240,64};
+    COLORREF client=RGB(19,201,87);
+    if(!style_caption_fill(dc,bounds,client,client,FALSE))return FALSE;
+    int saved=SaveDC(dc);
+    if(!saved)return FALSE;
+    ExcludeClipRect(dc,4,4,236,60);
+    win2k_window_border_paint(dc,240,64,4,&recolored,FALSE,TRUE);
+    RestoreDC(dc,saved);
+    return GetPixel(dc,0,32)==variant.edge && GetPixel(dc,3,32)==variant.light &&
+        GetPixel(dc,2,32)==theme->inactive.start && GetPixel(dc,4,32)==client;
 }
 
-static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *theme,const win16_caption_art *art,UINT dpi)
+static BOOL draw_win16_border(HDC dc,const DWORD *pixels,const classic_theme *theme)
+{
+    const RECT bounds={0,0,240,64};
+    const COLORREF client=RGB(19,201,87);
+    const style_border_palette palette={theme->frame.face,theme->frame.edge,
+        theme->frame.light,theme->frame.shadow,theme->active.start};
+    const style_border_presentation fallback=WIN16_FRAME_BORDER;
+    const style_border_presentation *border=theme->border_presentation.fill?&theme->border_presentation:&fallback;
+    DWORD reference[240*64];
+    for(unsigned i=0;i<4;++i){
+        BOOL dialog=(i&1u)!=0;
+        int unit=i<2?1:2,thickness=(dialog?6:4)*unit;
+        if(!style_caption_fill(dc,bounds,client,client,FALSE))return FALSE;
+        int saved=SaveDC(dc);
+        if(!saved)return FALSE;
+        ExcludeClipRect(dc,thickness,thickness,240-thickness,64-thickness);
+        win16_control_fill(dc,bounds,dialog?palette.title:palette.face);
+        win16_control_outline(dc,bounds,unit,palette.edge);
+        RECT inner=bounds;
+        InflateRect(&inner,-thickness+unit,-thickness+unit);
+        win16_control_outline(dc,inner,unit,dialog?palette.light:palette.edge);
+        GdiFlush();
+        memcpy(reference,pixels,sizeof(reference));
+        RestoreDC(dc,saved);
+        if(!style_caption_fill(dc,bounds,client,client,FALSE))return FALSE;
+        saved=SaveDC(dc);
+        if(!saved)return FALSE;
+        ExcludeClipRect(dc,thickness,thickness,240-thickness,64-thickness);
+        style_frame_border_paint(dc,bounds,thickness,unit,dialog,NULL,border,&palette);
+        GdiFlush();
+        RestoreDC(dc,saved);
+        if(memcmp(reference,pixels,sizeof(reference)) || GetPixel(dc,120,32)!=client)return FALSE;
+    }
+    const SIZE corners={22,18};
+    style_border_presentation marked=*border;
+    marked.divider=STYLE_BORDER_SHADOW;
+    int saved=SaveDC(dc);
+    if(!saved)return FALSE;
+    ExcludeClipRect(dc,4,4,236,60);
+    style_frame_border_paint(dc,bounds,4,1,FALSE,&corners,&marked,&palette);
+    RestoreDC(dc,saved);
+    return GetPixel(dc,21,1)==palette.shadow && GetPixel(dc,1,17)==palette.shadow &&
+        GetPixel(dc,24,1)==palette.face && GetPixel(dc,120,32)==client;
+}
+
+static BOOL draw_caption_presentation(HDC dc,BOOL win2000)
+{
+    const RECT band={2,2,202,22};
+    const COLORREF background=RGB(255,255,255),line=RGB(50,70,100);
+    const UINT flags[WIN2K_CAPTION_PARTS]={0};
+    HFONT font=(HFONT)GetStockObject(ANSI_FIXED_FONT);
+    const style_caption_presentation variants[]={
+        {.text_mode=STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,.separator=STYLE_CAPTION_SEPARATOR_INSIDE},
+        {.text_mode=STYLE_CAPTION_TEXT_CENTER_CLIP,.separator=STYLE_CAPTION_SEPARATOR_AFTER}
+    };
+    int first_ink[ARRAYSIZE(variants)];
+    for(unsigned i=0;i<ARRAYSIZE(variants);++i){
+        RECT clean={0,0,240,64};
+        if(!style_caption_fill(dc,clean,background,background,FALSE))return FALSE;
+        if(win2000){
+            const win2k_caption_layout layout={.band=band};
+            const classic_frame_colors frame={.face=line,.present=TRUE};
+            win2k_caption_colors colors={background,background,RGB(0,0,0),FALSE};
+            win2k_caption_render_with_colors(dc,&layout,L"Test",NULL,font,96,colors,&frame,
+                &variants[i],FALSE,flags,NULL);
+        }else{
+            const win16_style_layout layout={.caption=band,.title=band,.unit=1};
+            style_font_pair fonts={.title=font};
+            win16_frame_paint_state state={.fonts=&fonts,.active=TRUE,.presentation=variants[i]};
+            win16_style_palette colors={.active=background,.edge=line};
+            win16_control_frame_caption(dc,&layout,&colors,&state,L"Test",FALSE,FALSE);
+        }
+        first_ink[i]=band.right;
+        for(int x=band.left;x<first_ink[i];++x)
+            for(int y=band.top;y<band.bottom-1;++y)
+                if(GetPixel(dc,x,y)!=background){first_ink[i]=x;break;}
+        if(GetPixel(dc,200,21)!=(i?background:line) || GetPixel(dc,200,22)!=(i?line:background))
+            return FALSE;
+    }
+    return first_ink[0]<15 && first_ink[1]>65 && first_ink[1]<band.right;
+}
+
+static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *theme,const classic_caption_art *art,UINT dpi)
 {
     win16_style_layout layout;
     if(!win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
-        &theme->title_buttons,&theme->caption_metrics,&layout))return FALSE;
+        &theme->title_buttons,&theme->caption_metrics,&theme->border_presentation.geometry,dpi,&layout))return FALSE;
 
     win16_style_palette palette;
     win16_style_default_palette(&palette);
@@ -120,7 +232,31 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
         GdiFlush();
         if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
     }
-    return TRUE;
+    RECT changed=layout.buttons[CLASSIC_BUTTON_MINIMIZE];
+    win2k_caption_layout other={.band=layout.caption,.buttons={[WIN2K_MINIMIZE]=changed}};
+    classic_frame_colors frame={palette.face,palette.light,palette.shadow,palette.edge,TRUE};
+    COLORREF band_color=palette.active;
+    win2k_caption_colors colors={band_color,band_color,RGB(0,0,0),FALSE};
+    const UINT flags[WIN2K_CAPTION_PARTS]={[WIN2K_MINIMIZE]=DFCS_PUSHED};
+    const unsigned sources[]={STYLE_CAPTION_BUTTON_INDEXED,STYLE_CAPTION_BUTTON_SYSTEM};
+    DWORD signature[ARRAYSIZE(sources)]={0};
+    for(unsigned i=0;i<ARRAYSIZE(sources);++i){
+        style_caption_presentation paint={STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,
+            STYLE_CAPTION_SEPARATOR_NONE,sources[i],STYLE_CAPTION_BUTTON_NO_OUTLINE};
+        win16_frame_paint_state state={.active=TRUE,.button={HTMINBUTTON,TRUE},.art=art,.presentation=paint};
+        win16_control_frame_caption(dc,&layout,&palette,&state,NULL,FALSE,FALSE);
+        GdiFlush();memcpy(reference,pixels,sizeof(reference));
+        win2k_caption_render_with_colors(dc,&other,L"",NULL,GetStockObject(DEFAULT_GUI_FONT),
+            dpi,colors,&frame,&paint,FALSE,flags,art);
+        GdiFlush();
+        for(LONG y=changed.top;y<changed.bottom;++y)
+            for(LONG x=changed.left;x<changed.right;++x){
+                unsigned index=(unsigned)y*240+(unsigned)x;
+                if(pixels[index]!=reference[index])return FALSE;
+                signature[i]=signature[i]*31u+pixels[index];
+            }
+    }
+    return signature[0]!=signature[1];
 }
 
 static UINT button_type(HWND window,DWORD style)
@@ -331,7 +467,7 @@ static BOOL draw_themed_popup(HDC dc,const DWORD *pixels,const classic_theme *th
     return ok;
 }
 
-static BOOL render(const classic_theme *theme,BOOL win2000,const win16_caption_art *art,const win16_menu_art *menu_art,HMODULE module)
+static BOOL render(const classic_theme *theme,BOOL win2000,const classic_caption_art *art,const win16_menu_art *menu_art,HMODULE module)
 {
     HDC dc=CreateCompatibleDC(NULL);
     if(!dc)return FALSE;
@@ -348,7 +484,8 @@ static BOOL render(const classic_theme *theme,BOOL win2000,const win16_caption_a
     BOOL passed=saved && saved!=HGDI_ERROR &&
         draw_band(dc,theme,win2000,TRUE,96) && draw_band(dc,theme,win2000,FALSE,96) &&
         draw_band(dc,theme,win2000,TRUE,144) && draw_band(dc,theme,win2000,FALSE,144) &&
-        (!win2000 || draw_win2k_border(dc,bits,theme)) &&
+        draw_caption_presentation(dc,win2000) &&
+        (win2000?draw_win2k_border(dc,bits,theme):draw_win16_border(dc,bits,theme)) &&
         (win2000 || (draw_caption_art(dc,bits,theme,art,96) && draw_caption_art(dc,bits,theme,art,144))) &&
         window && draw_button(dc,window,&altered,win2000,FALSE,FALSE,FALSE,CLASSIC_PUSH_NORMAL) &&
         draw_button(dc,window,&altered,win2000,FALSE,TRUE,FALSE,CLASSIC_PUSH_PRESSED) &&
@@ -460,17 +597,17 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     }
     if(gradient)CHECK(theme.scroll.sizebox.face==state_face);
     CHECK(theme.title_buttons.count==(gradient?4:3));
-    win16_caption_art art={0};
+    classic_caption_art art={0};
     win16_menu_art menu_art={0};
     HMODULE module=source.resources;
     if(!gradient){
         if(!module)module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
         CHECK(module);
-        CHECK(SUCCEEDED(win16_caption_art_read(module,&theme.caption_images,&art)) && art.available);
+        CHECK(SUCCEEDED(classic_caption_art_read(module,&theme.caption_images,&art)) && art.available);
         classic_caption_images wrong=theme.caption_images;
         wrong.id[CLASSIC_IMAGE_SYSTEM][0]=wrong.id[CLASSIC_IMAGE_MINIMIZE][0];
-        win16_caption_art prior_art=art;
-        CHECK(FAILED(win16_caption_art_read(module,&wrong,&art)) && !memcmp(&prior_art,&art,sizeof(art)));
+        classic_caption_art prior_art=art;
+        CHECK(FAILED(classic_caption_art_read(module,&wrong,&art)) && !memcmp(&prior_art,&art,sizeof(art)));
         CHECK(SUCCEEDED(win16_menu_art_read(module,theme.menu_images,&menu_art)) && menu_art.available);
         win16_menu_art prior_menu=menu_art;
         WORD wrong_menu[]={theme.menu_images[1],theme.menu_images[0]};

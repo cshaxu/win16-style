@@ -2,6 +2,7 @@
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include <stdlib.h>
 #include "caption.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "system_menu.h"
 #include "../control/scroll.h"
@@ -20,7 +21,6 @@
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <oleacc.h>
-#include <shellscalingapi.h>
 #include <stdint.h>
 #include <windowsx.h>
 
@@ -36,6 +36,7 @@ typedef struct frame_window {
     BOOL composed_icon_update;
     BOOL themed;
     classic_theme theme;
+    classic_caption_art art;
 } frame_window;
 static LRESULT CALLBACK frame_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static frame_window *frame_state(HWND window)
@@ -47,6 +48,13 @@ static int caption_height(HWND window)
     BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
     frame_window *frame=frame_state(window);
     return win2k_caption_theme_height(dpi,tool,frame && frame->themed?&frame->theme:NULL);
+}
+
+static int caption_client_height(HWND window,UINT dpi)
+{
+    const frame_window *frame=frame_state(window);
+    unsigned separator=frame && frame->themed?frame->theme.border_presentation.geometry.separator_units:0;
+    return caption_height(window)+(int)separator*max(1,MulDiv(1,(int)dpi,96));
 }
 
 /* Preserve the native path for menus needing application-owned rendering. */
@@ -67,7 +75,7 @@ static int menu_shift(HWND window)
 {
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     int metric=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)?SM_CYSMCAPTION:SM_CYCAPTION;
-    return max(0,GetSystemMetricsForDpi(metric,dpi)-caption_height(window));
+    return max(0,GetSystemMetricsForDpi(metric,dpi)-caption_client_height(window,dpi));
 }
 
 static BOOL compact_enabled(HWND window)
@@ -87,16 +95,16 @@ static int frame_shift(HWND window,BOOL horizontal)
     LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
     if((style&WS_CAPTION)!=WS_CAPTION || IsZoomed(window) || !compact_enabled(window))return 0;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    UINT x=dpi,y=dpi;DWORD error=GetLastError();
-    DPI_AWARENESS_CONTEXT prior=SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-    if(prior){
-        HMONITOR monitor=MonitorFromWindow(window,MONITOR_DEFAULTTONEAREST);
-        if(FAILED(GetDpiForMonitor(monitor,MDT_EFFECTIVE_DPI,&x,&y)) || !x || !y)x=y=dpi;
-        SetThreadDpiAwarenessContext(prior);
-    }
-    SetLastError(error);
+    const frame_window *frame=frame_state(window);
+    static const style_frame_geometry fallback=WIN2000_FRAME_GEOMETRY;
+    const style_frame_geometry *geometry=frame && frame->themed && frame->theme.border_presentation.geometry.scale?
+        &frame->theme.border_presentation.geometry:&fallback;
+    SIZE monitor=geometry->scale==STYLE_FRAME_MONITOR_PIXELS?style_frame_monitor_dpi(window,dpi):(SIZE){dpi,dpi};
     BOOL sizeable=(style&WS_THICKFRAME)!=0;
-    int target=max(1,MulDiv(sizeable?4:3,(int)dpi,(int)(horizontal?x:y)));
+    enum style_frame_border_kind kind=sizeable?STYLE_FRAME_SIZEABLE:
+        (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_DLGMODALFRAME)?STYLE_FRAME_DIALOG:STYLE_FRAME_FIXED;
+    int target=style_frame_border_width(geometry,kind,
+        dpi,(UINT)(horizontal?monitor.cx:monitor.cy));
     return max(0,frame_metric(sizeable,horizontal,dpi)-target);
 }
 
@@ -181,6 +189,11 @@ static void repaint_menu(HWND window)
     paint_menu(window,dc,&outer);ReleaseDC(window,dc);
 }
 
+/* TITLEBARINFOEX uses the same order as the shared roles, starting at index 1. */
+_Static_assert(CLASSIC_BUTTON_SYSTEM==1 && CLASSIC_BUTTON_MINIMIZE==2 &&
+    CLASSIC_BUTTON_MAXIMIZE==3 && CLASSIC_BUTTON_HELP==4 && CLASSIC_BUTTON_CLOSE==CCHILDREN_TITLEBAR,
+    "Title bar roles must match TITLEBARINFOEX");
+
 static void classic_buttons(HWND window,const frame_window *frame,TITLEBARINFOEX *info)
 {
     LONG_PTR ex=GetWindowLongPtrW(window,GWL_EXSTYLE);
@@ -229,7 +242,8 @@ static void paint(HWND window)
     int width=outer.right-outer.left,height=outer.bottom-outer.top;
     if(caption.left<0 || caption.top<0 || caption.right>width || caption.bottom>height)goto done;
     HDC dc=GetWindowDC(window);if(!dc)goto done;
-    const classic_frame_colors *frame_colors=frame->themed?&frame->theme.frame:NULL;
+    const classic_theme *theme=frame->themed?&frame->theme:NULL;
+    const classic_frame_colors *frame_colors=theme?&theme->frame:NULL;
     BOOL maximized=IsZoomed(window);
     if(!maximized){
         int border_saved=SaveDC(dc);MENUBARINFO system={.cbSize=sizeof(system)};
@@ -237,7 +251,17 @@ static void paint(HWND window)
             RECT icon=system.rcBar;OffsetRect(&icon,-outer.left-frame_shift(window,TRUE),-outer.top-frame_shift(window,FALSE));
             ExcludeClipRect(dc,icon.left,icon.top,icon.right,icon.bottom);
         }
-        win2k_window_border_paint(dc,width,height,caption.top,frame_colors);
+        BOOL border_ready=TRUE;
+        if(theme && theme->border_presentation.fill==STYLE_BORDER_CLIPPED){
+            RECT client;POINT origin={0};
+            border_ready=border_saved && GetClientRect(window,&client) && ClientToScreen(window,&origin);
+            if(border_ready){
+                OffsetRect(&client,origin.x-outer.left,origin.y-outer.top);
+                border_ready=ExcludeClipRect(dc,client.left,client.top,client.right,client.bottom)!=ERROR;
+            }
+        }
+        if(border_ready)win2k_window_border_paint(dc,width,height,caption.top,theme,frame->native.active,
+            (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_DLGMODALFRAME)!=0);
         if(border_saved)RestoreDC(dc,border_saved);
     }
     paint_menu(window,dc,&outer);
@@ -263,7 +287,7 @@ static void paint(HWND window)
         win2k_caption_colors colors=win2k_caption_theme_palette(frame->native.active,
             frame->themed?&frame->theme:NULL);
         win2k_caption_render_with_colors(dc,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
-            dpi,colors,frame_colors,maximized,flags);
+            dpi,colors,frame_colors,frame->themed?&frame->theme.caption_presentation:NULL,maximized,flags,&frame->art);
         if(font)DeleteObject(font);
     }
     ReleaseDC(window,dc);
@@ -293,8 +317,8 @@ static BOOL button_input(HWND window,frame_window *frame,UINT message,WPARAM wp,
     style_caption_button *tracked=&frame->button;
     if((message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONDBLCLK) && !tracked->pressed){
         if(IsIconic(window))return FALSE;
-        unsigned index=wp==HTMINBUTTON?2:wp==HTMAXBUTTON?3:wp==HTHELP?4:wp==HTCLOSE?5:0;
-        if(!index)return FALSE;
+        enum classic_button_role index=style_caption_role((int)wp);
+        if(index<CLASSIC_BUTTON_MINIMIZE)return FALSE;
         TITLEBARINFOEX info={.cbSize=sizeof(info)};
         SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
         if(info.rgstate[index]&(STATE_SYSTEM_INVISIBLE|STATE_SYSTEM_UNAVAILABLE))return FALSE;
@@ -311,8 +335,7 @@ static BOOL button_input(HWND window,frame_window *frame,UINT message,WPARAM wp,
             (void)style_caption_button_move(window,tracked,inside,TRUE,FALSE);
             if(IsWindow(window))paint(window);
             if(inside && IsWindow(window)){
-                UINT command=index==2?SC_MINIMIZE:index==3?(IsZoomed(window)?SC_RESTORE:SC_MAXIMIZE):
-                    index==4?SC_CONTEXTHELP:SC_CLOSE;
+                UINT command=style_caption_command((enum classic_button_role)index,IsZoomed(window));
                 HMENU system=GetSystemMenu(window,FALSE);
                 if(command==SC_CONTEXTHELP || !(GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) ||
                    (system && !(GetMenuState(system,command,MF_BYCOMMAND)&MFS_DISABLED)))
@@ -456,7 +479,8 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
        !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL)){
         UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
         int metric=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)?SM_CYSMCAPTION:SM_CYCAPTION;
-        int difference=GetSystemMetricsForDpi(metric,dpi)-caption_height(window);
+        int reserved=caption_client_height(window,dpi);
+        int difference=GetSystemMetricsForDpi(metric,dpi)-reserved;
         int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
         RECT client=*calculated;
         if(style_frame_xaml_bridge(window,FALSE)){
@@ -464,7 +488,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
              * only the caption row and let the application lay out its children. */
             frame->native.keep_outer=TRUE;
             BOOL sizeable=(GetWindowLongPtrW(window,GWL_STYLE)&WS_THICKFRAME)!=0;
-            LONG caption_end=proposed_top+frame_metric(sizeable,FALSE,dpi)-dy+caption_height(window);
+            LONG caption_end=proposed_top+frame_metric(sizeable,FALSE,dpi)-dy+reserved;
             if(caption_end<client.bottom)client.top=max(client.top,caption_end);
         }else{
             client.left-=dx;client.right+=dx;client.top-=max(0,difference)+dy;client.bottom+=dy;
@@ -498,10 +522,11 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
        (GetWindowLongPtrW(window,GWL_STYLE)&WS_CAPTION)==WS_CAPTION){
         TITLEBARINFOEX info={.cbSize=sizeof(info)};POINT point={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
         SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
-        static const LRESULT hits[]={0,0,HTMINBUTTON,HTMAXBUTTON,HTHELP,HTCLOSE};
-        BOOL button=FALSE;
-        for(unsigned i=2;i<ARRAYSIZE(hits);++i)
-            if(!(info.rgstate[i]&STATE_SYSTEM_INVISIBLE) && PtInRect(&info.rgrect[i],point)){result=hits[i];button=TRUE;break;}
+        unsigned visible=0;
+        for(unsigned role=CLASSIC_BUTTON_MINIMIZE;role<=CLASSIC_BUTTON_CLOSE;++role)
+            if(!(info.rgstate[role]&STATE_SYSTEM_INVISIBLE))visible|=1u<<role;
+        int button=style_caption_hit(info.rgrect,visible,point);
+        if(button)result=button;
         MENUBARINFO system={.cbSize=sizeof(system)};int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
         BOOL icon=FALSE;
         if((dx || dy) && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
@@ -588,6 +613,8 @@ BOOL win2k_frame_attach(HWND window)
     if(!pending && SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN2K,TRUE,&source))){
         frame->theme=source.model;
         frame->themed=TRUE;
+        if(frame->theme.caption_presentation.button_source==STYLE_CAPTION_BUTTON_INDEXED)
+            (void)classic_caption_art_read(source.resources,&frame->theme.caption_images,&frame->art);
         classic_theme_close(&source);
     }
     frame->menu.bar.selected=frame->menu.bar.highlighted=-1;

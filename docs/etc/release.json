@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S16 P1",
-  "stage": "shared theme identity and window attachment policy",
+  "delivery": "M0 T29 S17 P1",
+  "stage": "theme-driven shared Win32 frame",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "source_snapshot_sha256": "6c8fad8d16b07bcb5263e0a2c48f2beb9ae2ad53f08ce756578aa2937615b272",
+  "source_snapshot_sha256": "b50a9a1f2cc0d184856470cd37dae97846ac2d55ea206be3e9e1e5c5c227a8a4",
   "source_input_cohort": {
-    "count": 1282,
-    "sha256": "a473e9f23e72847f98a9c01974ceb025336a73b02c8569ee8e26e96290d69384",
+    "count": 1286,
+    "sha256": "7e1f885f575e859f42ebf3ee9b3bea7ba0c7cf1c8bda2893479a8d904e30a411",
     "definition": "Sorted source/test/tool inputs and CMakeLists.txt, relative path + NUL + SHA-256 + LF"
   },
   "source_snapshot_format": "SHA256 of the reviewed clean Build-Package source snapshot",
@@ -16,7 +16,7 @@
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "e49f7b299182b3a85a780cbf35132d1771994cad64a3261e9da0a93686e42fde",
+      "sha256": "4d273039792d92ab4b1114bb7394265cb80b99c5c94e82a4e2f239cba99fb452",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -32,7 +32,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "425b48d2512948b7bd2b050103e2b17738aecb588a0c21aec97d0f05e9a7f7d2",
+      "sha256": "e3887743af987a8428d522ba07baebdf3452f92087307a146335d62c66731a93",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -42,12 +42,7 @@
         "GDI32.dll",
         "KERNEL32.dll",
         "MSIMG32.DLL",
-        "api-ms-win-crt-convert-l1-1-0.dll",
-        "api-ms-win-crt-heap-l1-1-0.dll",
-        "api-ms-win-crt-private-l1-1-0.dll",
-        "api-ms-win-crt-runtime-l1-1-0.dll",
-        "api-ms-win-crt-stdio-l1-1-0.dll",
-        "api-ms-win-crt-string-l1-1-0.dll",
+        "msvcrt.dll",
         "ole32.dll",
         "OLEAUT32.dll",
         "SHCORE.dll",
@@ -61,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "b065fc0ea533b2ea8b123516072b490f126c19b85d0c9eb25d44e90c5880b9e8",
+      "sha256": "b926f58081c522d8a2d922c231813c75d0a06f158efa90842810f8ac3d5d503c",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -84,25 +79,32 @@
     }
   },
   "theme_artifacts": {
-    "Win16/Win16.msstyles": "5eeb358aafe810ed676850a17eaadf124699e026b995b0a4d3bec857e91ad4ee",
+    "Win16/Win16.msstyles": "0191215a5ad5282b5f4caf7da42ad068d96ccd3a413cb4de552468ab505970eb",
     "Win16/Win16.theme": "24532dbb589f8acf8e71909b8aaf361c3c05511a2b0f730fa84b2a6b9e52aede",
-    "Win2K/Win2K.msstyles": "522f2ab9a236b2fa2f2546052d6abb0cc13b89cd090ab364bcddae39f68886ba",
+    "Win2K/Win2K.msstyles": "cfe86d8f3ea6e8a4469ef39f51f5e4e6486c36167f8e6a373fd1323bc5a6e76b",
     "Win2K/Win2K.theme": "1217c8240721b28e7f92d4d6a8c9b9b0d259e2d026829be6612a70c877dbee68"
   },
   "build": {
-    "toolchain": "pure C17, MinGW GCC, Ninja, ccache",
-    "seconds": {
-      "x86": 317.0791394999251,
-      "x64": 454.079053799971
+    "toolchain": "pure C17, MinGW GCC MSVCRT, Ninja, ccache",
+    "compiler_versions": {
+      "x86": "16.1.0",
+      "x64": "16.1.0"
     },
-    "changed_source_test_tool_build_files": 37,
-    "insertions": 586,
-    "deletions": 190,
-    "net_lines": 396,
+    "ccache_version": "ccache version 4.13.6",
+    "seconds": {
+      "x86_clean": 494.06845110002905,
+      "x86_recheck": 5.333085000049323,
+      "x64_clean": 457.8259761999361
+    },
+    "changed_source_test_tool_build_files": 47,
+    "insertions": 1037,
+    "deletions": 387,
+    "net_lines": 650,
     "checks": [
-      "quick ABI tests (x86, x64)",
-      "package identity and original resource tables",
-      "public archive and toolchain checks"
+      "quick ABI and core PE checks (x86, x64)",
+      "source and archive boundaries",
+      "independent theme readback and original glyph tables",
+      "compatibility core explicitly admits existing product dependency SHCORE.dll"
     ]
   },
   "publication": {
@@ -127,8 +129,8 @@
   "focused_post_publication": {
     "status": "passed-focused",
     "coverage": "focused",
-    "seconds": 109.3620136,
-    "cases": 23,
+    "seconds": 52.4526779,
+    "cases": 12,
     "selected_cases": [
       "progress-sharing",
       "plan-selection",
@@ -136,70 +138,54 @@
       "abi-x64",
       "demo-boundary",
       "demo-pair",
-      "demo-win2000",
-      "wait-contract",
-      "theme-dialog-policy",
-      "cli",
       "automatic",
       "propagation",
-      "cli-failures",
       "neutral-uwp-frame-32",
       "neutral-uwp-theme-id-32",
-      "neutral-global-switch-32",
-      "neutral-global-switch-32-from-16",
-      "neutral-global-switch-32-from-2k",
       "neutral-uwp-frame-64",
-      "neutral-uwp-theme-id-64",
-      "neutral-global-switch-64",
-      "neutral-global-switch-64-from-16",
-      "neutral-global-switch-64-from-2k"
+      "neutral-uwp-theme-id-64"
     ],
     "skipped": []
   },
   "supplemental_post_publication": {
-    "native": {
-      "x86/launch-payload": "PAYLOAD PASS generic module, machine, bounds, policy, path, termination",
-      "x86/core-style-theme-file": "exit=0",
-      "x86/core-tray-controller": "TRAY CONTROLLER PASS bits=32 switch=both toggle=off failure=1 mutually_exclusive=1 metadata=1 fallback=1",
-      "x64/launch-payload": "PAYLOAD PASS generic module, machine, bounds, policy, path, termination",
-      "x64/core-style-theme-file": "exit=0",
-      "x64/core-tray-controller": "TRAY CONTROLLER PASS bits=64 switch=both toggle=off failure=1 mutually_exclusive=1 metadata=1 fallback=1"
-    },
-    "published_roots": [
-      "assets",
-      "O:\\winnt"
-    ],
-    "all_seven_match": true,
-    "both_published_launchers_usage_exit": 2,
-    "published_owned_thread_attachment": {
-      "x86": [
-        "direct",
-        "direct-composed"
-      ],
-      "x64": [
-        "direct",
-        "direct-composed"
-      ]
-    },
-    "published_synthetic_uwp_frame": [
-      "x86",
-      "x64"
-    ],
-    "published_win2000_renamed_propagation": {
-      "32->64": {
-        "parent_frame": true,
-        "child_frame": true
+    "published_launcher_native_frame_actions": 24,
+    "theme_only_inset_pairs": {
+      "Win16": {
+        "x86_delta": 3,
+        "x64_delta": 3
       },
-      "64->32": {
-        "parent_frame": true,
-        "child_frame": true
-      }
-    }
+      "Win2K": {
+        "x86_delta": 2,
+        "x64_delta": 2
+      },
+      "dpi": 144
+    },
+    "win16_mdi": [
+      "x86: system hit, maximize, restore",
+      "x64: system hit, maximize, restore"
+    ],
+    "owned_thread_attachment": [
+      "x86 normal",
+      "x86 composed",
+      "x64 normal",
+      "x64 composed"
+    ],
+    "published_theme_parsing": [
+      "x86 extension",
+      "x86 render",
+      "x64 extension",
+      "x64 render"
+    ]
   },
   "validation": {
+    "known_baseline_failures": [
+      "ntw2ks-frame-x86",
+      "ntw2ks-frame-x64"
+    ],
+    "baseline_comparison": "Both complete diagnostics and exit 3 match the saved S16 package byte-for-byte on the same fixture.",
     "physical_input": "not tested",
     "full_matrix": "not run",
-    "administrator_desktop_tray": "not run; owned tray fixture and owned receiver were tested"
+    "real_uwp_winui": "not tested in S17"
   },
-  "closure": "local delivery verified; remote review recorded separately"
+  "closure": "local delivery verified; remote review pending"
 }

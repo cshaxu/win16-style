@@ -75,7 +75,7 @@ def main():
     if len(names)!=38 or set(names)!=expected | {'Ntw16sShowModernFileDialog','Ntw16sGlobalHook','Ntw16sGlobalHost','Ntw16sWindowAttach','Ntw16sGlobalThread','Ntw16sUwpFrameHook','Ntw16sWindowThreadHook'}:raise SystemExit('PE exports differ from standalone core plan: '+repr(names))
     if ordinals!={**{name:index+2 for index,name in enumerate(sorted(expected))}, 'Ntw16sShowModernFileDialog':33, 'Ntw16sGlobalHook':34, 'Ntw16sGlobalHost':35, 'Ntw16sWindowAttach':36, 'Ntw16sGlobalThread':37, 'Ntw16sUwpFrameHook':38, 'Ntw16sWindowThreadHook':39} or live!=set(range(1,40)):
         raise SystemExit('PE ordinal map differs from core plan; helper ordinal 1 must be NONAME')
-    native={'kernel32.dll','user32.dll','gdi32.dll','comctl32.dll','comdlg32.dll','shell32.dll','ole32.dll','oleaut32.dll','dwmapi.dll','uxtheme.dll','advapi32.dll','msimg32.dll','winspool.drv','activeds.dll'}
+    native={'kernel32.dll','user32.dll','gdi32.dll','comctl32.dll','comdlg32.dll','shell32.dll','ole32.dll','oleaut32.dll','dwmapi.dll','uxtheme.dll','advapi32.dll','msimg32.dll','winspool.drv','activeds.dll','shcore.dll'}
     native.add('ntwshk32.dll' if args.arch=='x86' else 'ntwshk64.dll')
     if any(name.lower() not in native and not system_crt(name) for name in imports):
         raise SystemExit('Forbidden external/compiler runtime import: '+repr(imports))

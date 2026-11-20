@@ -20,7 +20,7 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
             MENUBARINFO menu={.cbSize=sizeof(menu)};
             if((s->menu.bar.keyboard && s->menu.bar.selected==-2) ||
                 (GetMenuBarInfo(w,OBJID_SYSMENU,0,&menu) && IsRectEmpty(&menu.rcBar))){
-                RECT outer,button=l.system;GetWindowRect(w,&outer);OffsetRect(&button,outer.left,outer.top);
+                RECT outer,button=l.buttons[CLASSIC_BUTTON_SYSTEM];GetWindowRect(w,&outer);OffsetRect(&button,outer.left,outer.top);
                 *result=style_menu_bar_system(&menu_target,button,
                     s->menu.bar.keyboard && s->menu.bar.selected==STYLE_MENU_SYSTEM_ITEM,msg,wp,lp);
                 return TRUE;

@@ -42,7 +42,7 @@ static HRESULT test_native_theme(HWND w,LPCWSTR app,LPCWSTR ids)
 {if(!w && app && ids && !lstrcmpW(app,L"Test") && !lstrcmpW(ids,L"Demo"))++theme_calls;return S_FALSE;}
 static int button_paints;
 static BOOL test_button_layout(HWND w,void *context,win16_style_layout *layout)
-{(void)w;(void)context;ZeroMemory(layout,sizeof(*layout));SetRect(&layout->outer,0,0,200,200);layout->minimize=layout->outer;return TRUE;}
+{(void)w;(void)context;ZeroMemory(layout,sizeof(*layout));SetRect(&layout->outer,0,0,200,200);layout->buttons[CLASSIC_BUTTON_MINIMIZE]=layout->outer;return TRUE;}
 static void test_button_paint(HWND w,void *context,int hit)
 {(void)w;(void)context;if(hit==HTMINBUTTON)++button_paints;}
 static BOOL test_decode(HDC dc,const WCHAR *input,UINT count,WCHAR *output)

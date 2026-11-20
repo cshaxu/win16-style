@@ -30,7 +30,8 @@ void win2k_caption_render(HDC dc,const win2k_caption_layout *layout,PCWSTR title
                          HFONT font,UINT dpi,BOOL active,BOOL maximized,
                          const UINT button_flags[WIN2K_CAPTION_PARTS]);
 void win2k_caption_render_with_colors(HDC dc,const win2k_caption_layout *layout,PCWSTR title,HICON icon,
-    HFONT font,UINT dpi,win2k_caption_colors colors,const classic_frame_colors *frame,BOOL maximized,
-    const UINT button_flags[WIN2K_CAPTION_PARTS]);
-void win2k_window_border_paint(HDC dc,int width,int height,int thickness,const classic_frame_colors *frame);
+    HFONT font,UINT dpi,win2k_caption_colors colors,const classic_frame_colors *frame,
+    const style_caption_presentation *presentation,BOOL maximized,
+    const UINT button_flags[WIN2K_CAPTION_PARTS],const classic_caption_art *art);
+void win2k_window_border_paint(HDC dc,int width,int height,int thickness,const classic_theme *theme,BOOL active,BOOL dialog);
 #endif

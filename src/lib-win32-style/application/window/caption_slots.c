@@ -2,6 +2,34 @@
 #include <limits.h>
 #include <string.h>
 
+static const int hits[]={0,HTSYSMENU,HTMINBUTTON,HTMAXBUTTON,HTHELP,HTCLOSE};
+
+int style_caption_hit(const RECT bounds[CLASSIC_BUTTON_CLOSE+1],unsigned visible,POINT point)
+{
+    for(unsigned role=CLASSIC_BUTTON_SYSTEM;role<=CLASSIC_BUTTON_CLOSE;++role)
+        if((visible&(1u<<role)) && PtInRect(&bounds[role],point))return hits[role];
+    return 0;
+}
+
+enum classic_button_role style_caption_role(int hit)
+{
+    for(unsigned role=CLASSIC_BUTTON_SYSTEM;role<=CLASSIC_BUTTON_CLOSE;++role)
+        if(hits[role]==hit)return (enum classic_button_role)role;
+    return 0;
+}
+
+UINT style_caption_command(enum classic_button_role role,BOOL maximized)
+{
+    switch(role){
+    case CLASSIC_BUTTON_SYSTEM:return SC_KEYMENU;
+    case CLASSIC_BUTTON_MINIMIZE:return SC_MINIMIZE;
+    case CLASSIC_BUTTON_MAXIMIZE:return maximized?SC_RESTORE:SC_MAXIMIZE;
+    case CLASSIC_BUTTON_HELP:return SC_CONTEXTHELP;
+    case CLASSIC_BUTTON_CLOSE:return SC_CLOSE;
+    default:return 0;
+    }
+}
+
 BOOL style_caption_slots(const classic_button_group *group,const RECT *band,UINT dpi,
     SIZE dimensions,unsigned present,BOOL clip_right,RECT bounds[CLASSIC_BUTTON_CLOSE+1])
 {

@@ -655,6 +655,28 @@ int wmain(int argc,WCHAR **argv)
         --argc;++argv;
     }
     HINSTANCE instance=GetModuleHandleW(NULL);
+    if(argc==2 && !wcscmp(argv[1],L"--theme-frame-insets")){
+        WNDCLASSW window_class={.lpfnWndProc=DefWindowProcW,.hInstance=instance,
+            .lpszClassName=L"ClassicFrameInsetsFixture"};
+        if(!RegisterClassW(&window_class))return 2;
+        HWND window=CreateWindowExW(0,window_class.lpszClassName,L"Theme frame insets",
+            WS_OVERLAPPEDWINDOW,60,60,340,220,NULL,NULL,instance,NULL);
+        if(!window)return 2;
+        ShowWindow(window,SW_SHOWNOACTIVATE);
+        RECT outer,client;
+        POINT origin={0};
+        int result=3;
+        if(GetWindowRect(window,&outer) && GetClientRect(window,&client) && ClientToScreen(window,&origin)){
+            POINT point={origin.x+5,origin.y+6};
+            BOOL hit=SendMessageW(window,WM_NCHITTEST,0,MAKELPARAM(point.x,point.y))==HTCLIENT;
+            printf("THEME FRAME INSETS bits=%u dpi=%u left=%ld top=%ld right=%ld bottom=%ld hit=%d\n",
+                (unsigned)(sizeof(void *)*8),GetDpiForWindow(window),origin.x-outer.left,origin.y-outer.top,
+                outer.right-origin.x-client.right,outer.bottom-origin.y-client.bottom,hit);
+            result=hit?0:3;
+        }
+        DestroyWindow(window);
+        return result;
+    }
     if(argc==3 && !wcscmp(argv[1],L"--theme-button-width")){
         WNDCLASSW window_class={.lpfnWndProc=DefWindowProcW,.hInstance=instance,.lpszClassName=L"ClassicThemeFolderFixture"};
         if(!RegisterClassW(&window_class))return 2;

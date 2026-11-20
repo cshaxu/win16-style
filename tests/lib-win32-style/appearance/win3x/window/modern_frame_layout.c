@@ -14,17 +14,17 @@ int main(void)
         CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,NULL,NULL,&l));
         CHECK(EqualRect(&content,&l.client));
         CHECK(EqualRect(&native.caption,&l.caption) && EqualRect(&native.title,&l.title) &&
-              EqualRect(&native.system,&l.system) && EqualRect(&native.minimize,&l.minimize) &&
-              EqualRect(&native.maximize,&l.maximize));
+              EqualRect(&native.buttons[CLASSIC_BUTTON_SYSTEM],&l.buttons[CLASSIC_BUTTON_SYSTEM]) && EqualRect(&native.buttons[CLASSIC_BUTTON_MINIMIZE],&l.buttons[CLASSIC_BUTTON_MINIMIZE]) &&
+              EqualRect(&native.buttons[CLASSIC_BUTTON_MAXIMIZE],&l.buttons[CLASSIC_BUTTON_MAXIMIZE]));
         RECT taller=content;taller.top+=MulDiv(15,dpi,96);
         CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,taller,NULL,NULL,&l));
         CHECK(EqualRect(&taller,&l.client) && EqualRect(&native.caption,&l.caption) &&
-              EqualRect(&native.maximize,&l.maximize));
+              EqualRect(&native.buttons[CLASSIC_BUTTON_MAXIMIZE],&l.buttons[CLASSIC_BUTTON_MAXIMIZE]));
         CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,NULL,NULL,&l));
-        CHECK(!IntersectRect(&overlap,&l.title,&l.maximize));
-        CHECK(!IntersectRect(&overlap,&l.minimize,&l.maximize));
+        CHECK(!IntersectRect(&overlap,&l.title,&l.buttons[CLASSIC_BUTTON_MAXIMIZE]));
+        CHECK(!IntersectRect(&overlap,&l.buttons[CLASSIC_BUTTON_MINIMIZE],&l.buttons[CLASSIC_BUTTON_MAXIMIZE]));
         POINT p={content.left+1,content.top+1};CHECK(win16_uwp_frame_hit(&l,p)==HTCLIENT);
-        p=(POINT){l.minimize.left+1,l.minimize.top+1};CHECK(win16_uwp_frame_hit(&l,p)==HTMINBUTTON);
+        p=(POINT){l.buttons[CLASSIC_BUTTON_MINIMIZE].left+1,l.buttons[CLASSIC_BUTTON_MINIMIZE].top+1};CHECK(win16_uwp_frame_hit(&l,p)==HTMINBUTTON);
         p=(POINT){l.title.left+1,l.title.top+1};CHECK(win16_uwp_frame_hit(&l,p)==HTCAPTION);
         const POINT edges[]={
             {0,0},{outer.cx/2,0},{outer.cx-1,0},
@@ -52,13 +52,13 @@ int main(void)
         const classic_button_group group=WIN16_TITLE_BUTTON_GROUP;
         const classic_caption_metrics metrics={.height=22,.button={23,22}};
         CHECK(win16_style_measure_with_buttons(outer.cx,outer.cy,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
-            &group,&metrics,&native));
+            &group,&metrics,NULL,dpi,&native));
         CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,&group,&metrics,&l));
         CHECK(EqualRect(&content,&l.client) && EqualRect(&native.caption,&l.caption) &&
-            EqualRect(&native.system,&l.system) && EqualRect(&native.minimize,&l.minimize) &&
-            EqualRect(&native.maximize,&l.maximize));
-        CHECK(l.maximize.right-l.maximize.left==MulDiv(23,(int)dpi,96));
-        p=(POINT){l.maximize.left+1,l.maximize.top+1};
+            EqualRect(&native.buttons[CLASSIC_BUTTON_SYSTEM],&l.buttons[CLASSIC_BUTTON_SYSTEM]) && EqualRect(&native.buttons[CLASSIC_BUTTON_MINIMIZE],&l.buttons[CLASSIC_BUTTON_MINIMIZE]) &&
+            EqualRect(&native.buttons[CLASSIC_BUTTON_MAXIMIZE],&l.buttons[CLASSIC_BUTTON_MAXIMIZE]));
+        CHECK(l.buttons[CLASSIC_BUTTON_MAXIMIZE].right-l.buttons[CLASSIC_BUTTON_MAXIMIZE].left==MulDiv(23,(int)dpi,96));
+        p=(POINT){l.buttons[CLASSIC_BUTTON_MAXIMIZE].left+1,l.buttons[CLASSIC_BUTTON_MAXIMIZE].top+1};
         CHECK(win16_uwp_frame_hit(&l,p)==HTMAXBUTTON);
         content.right=outer.cx+1;
         CHECK(!win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,FALSE,content,NULL,NULL,&l));

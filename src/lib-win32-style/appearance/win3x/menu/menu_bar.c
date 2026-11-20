@@ -23,7 +23,7 @@ int win16_control_menu_bar_hit_screen(HWND w,const win16_style_layout *layout,
     style_menu_bar_snapshot bar;RECT outer;POINT origin;int hit;
     if(!layout || !GetWindowRect(w,&outer))return -3;
     point.x-=outer.left;point.y-=outer.top;
-    if(PtInRect(&layout->system,point))return -2;
+    if(PtInRect(&layout->buttons[CLASSIC_BUTTON_SYSTEM],point))return -2;
     if(!PtInRect(&layout->menu,point))return -3;
     origin.x=layout->menu.left;origin.y=layout->menu.top;
     if(!win16_style_bar_read_for_window(w,GetMenu(w),font,dpi,origin,layout->menu.right-layout->menu.left,&bar))return -3;

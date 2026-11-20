@@ -1,6 +1,6 @@
 #include "caption.h"
-#include "lib-win32-style/application/graphics/bitmap.h"
 #include "lib-win32-style/appearance/msstyles/classic_presets.h"
+#include <string.h>
 
 win2k_caption_colors win2k_caption_palette(BOOL active)
 {
@@ -29,13 +29,14 @@ HFONT win2k_caption_font(UINT dpi,BOOL tool,const msstyles_font *defined)
 
 int win2k_caption_height(UINT dpi,BOOL tool)
 {
-    return MulDiv(tool?16:19,(int)dpi,96);
+    return style_frame_caption_height(tool?16:19,dpi,0);
 }
 
 int win2k_caption_theme_height(UINT dpi,BOOL tool,const classic_theme *theme)
 {
     int height=theme?(tool?theme->caption_metrics.tool_height:theme->caption_metrics.height):0;
-    return height>0?MulDiv(height,(int)dpi,96):win2k_caption_height(dpi,tool);
+    return style_frame_caption_height(height>0?height:tool?16:19,dpi,
+        theme?theme->border_presentation.geometry.caption_floor:0);
 }
 
 static SIZE button_size(BOOL tool)
@@ -60,13 +61,12 @@ BOOL win2k_caption_buttons_with_group(const RECT *title,UINT dpi,BOOL tool,
         if(defined.cx>0 && defined.cy>0)size=defined;
     }
     size=(SIZE){MulDiv(size.cx,(int)dpi,96),MulDiv(size.cy,(int)dpi,96)};
-    static const unsigned roles[]={CLASSIC_BUTTON_MINIMIZE,CLASSIC_BUTTON_MAXIMIZE,
-        CLASSIC_BUTTON_HELP,CLASSIC_BUTTON_CLOSE};
     unsigned mask=0;
-    for(unsigned i=0;i<ARRAYSIZE(roles);++i)if(present[i])mask|=1u<<roles[i];
+    for(unsigned i=0;i<WIN2K_CAPTION_PARTS;++i)
+        if(present[i])mask|=1u<<(CLASSIC_BUTTON_MINIMIZE+i);
     RECT slots[CLASSIC_BUTTON_CLOSE+1];
     if(!style_caption_slots(group,title,dpi,size,mask,FALSE,slots))return FALSE;
-    for(unsigned i=0;i<ARRAYSIZE(roles);++i)bounds[i]=slots[roles[i]];
+    memcpy(bounds,slots+CLASSIC_BUTTON_MINIMIZE,sizeof(*bounds)*WIN2K_CAPTION_PARTS);
     return TRUE;
 }
 
@@ -76,84 +76,25 @@ BOOL win2k_caption_paint(HDC dc,const RECT *bounds,PCWSTR title,HFONT font,
     if(!dc || !bounds || !title || !font || !colors ||
        bounds->right<=bounds->left || bounds->bottom<=bounds->top)return FALSE;
     int saved=SaveDC(dc);if(!saved)return FALSE;
-    BOOL ok=TRUE;
-    if(colors->gradient){
-        TRIVERTEX vertices[2]={
-            {bounds->left,bounds->top,(COLOR16)(GetRValue(colors->left)<<8),
-             (COLOR16)(GetGValue(colors->left)<<8),(COLOR16)(GetBValue(colors->left)<<8),0},
-            {bounds->right,bounds->bottom,(COLOR16)(GetRValue(colors->right)<<8),
-             (COLOR16)(GetGValue(colors->right)<<8),(COLOR16)(GetBValue(colors->right)<<8),0}};
-        GRADIENT_RECT gradient={0,1};
-        ok=GradientFill(dc,vertices,2,&gradient,1,GRADIENT_FILL_RECT_H);
-    }else{
-        HBRUSH brush=CreateSolidBrush(colors->left);
-        if(!brush)ok=FALSE;
-        else{ok=FillRect(dc,bounds,brush)!=0;DeleteObject(brush);}
-    }
-    if(ok){
-        RECT text=*bounds;
-        if(!SelectObject(dc,font) || SetBkMode(dc,TRANSPARENT)==0 || SetTextColor(dc,colors->text)==CLR_INVALID)ok=FALSE;
-        else if(*title && !DrawTextW(dc,title,-1,&text,DT_SINGLELINE|DT_VCENTER|DT_END_ELLIPSIS|DT_NOPREFIX))ok=FALSE;
-    }
+    BOOL ok=style_caption_fill(dc,*bounds,colors->left,colors->right,colors->gradient) &&
+        style_caption_title(dc,*bounds,title,font,colors->text,STYLE_CAPTION_TEXT_LEFT_ELLIPSIS);
     if(!RestoreDC(dc,saved))ok=FALSE;
     return ok;
-}
-
-/* DrawFrameControl uses the host's palette; remap its classic shades locally. */
-static void paint_button(HDC target,const RECT *rect,UINT state)
-{
-    int width=rect->right-rect->left,height=rect->bottom-rect->top;
-    if(width<=0 || height<=0)return;
-    style_bitmap bitmap={0};SIZE size={width,height};
-    if(style_bitmap_ensure(&bitmap,target,size)){
-        HDC memory=bitmap.dc;
-        RECT local={0,0,size.cx,size.cy};
-        if(DrawFrameControl(memory,&local,DFC_CAPTION,state)){
-            static const int indices[]={COLOR_3DFACE,COLOR_3DSHADOW,COLOR_3DDKSHADOW,COLOR_3DLIGHT};
-            static const COLORREF values[]={RGB(212,208,200),RGB(128,128,128),RGB(0,0,0),RGB(212,208,200)};
-            DWORD from[ARRAYSIZE(indices)],to[ARRAYSIZE(indices)];
-            for(unsigned i=0;i<ARRAYSIZE(indices);++i){
-                COLORREF c=GetSysColor(indices[i]),v=values[i];
-                from[i]=(DWORD)GetRValue(c)<<16 | (DWORD)GetGValue(c)<<8 | GetBValue(c);
-                to[i]=(DWORD)GetRValue(v)<<16 | (DWORD)GetGValue(v)<<8 | GetBValue(v);
-            }
-            GdiFlush();DWORD *pixels=(DWORD *)bitmap.pixels;
-            for(int i=0;i<size.cx*size.cy;++i)for(unsigned j=0;j<ARRAYSIZE(indices);++j)
-                if((pixels[i]&0xffffff)==from[j]){pixels[i]=to[j];break;}
-            BitBlt(target,rect->left,rect->top,width,height,memory,0,0,SRCCOPY);
-        }
-    }
-    style_bitmap_dispose(&bitmap);
 }
 
 static const classic_frame_colors default_frame={
     RGB(212,208,200),RGB(255,255,255),RGB(128,128,128),RGB(0,0,0),TRUE
 };
 
-void win2k_window_border_paint(HDC dc,int width,int height,int thickness,const classic_frame_colors *frame)
+void win2k_window_border_paint(HDC dc,int width,int height,int thickness,const classic_theme *theme,BOOL active,BOOL dialog)
 {
-    if(!frame || !frame->present)frame=&default_frame;
-    const COLORREF colors[]={frame->face,frame->edge,frame->light,frame->shadow};
-    if(thickness>0 && width>2*thickness && height>2*thickness){
-        HBRUSH face=CreateSolidBrush(frame->face);
-        if(face){
-            RECT top={0,0,width,thickness},bottom={0,height-thickness,width,height};
-            RECT left={0,thickness,thickness,height-thickness},right={width-thickness,thickness,width,height-thickness};
-            FillRect(dc,&top,face);FillRect(dc,&bottom,face);FillRect(dc,&left,face);FillRect(dc,&right,face);
-            DeleteObject(face);
-        }
-    }
-    for(int inset=0;inset<2;++inset){
-        HBRUSH light=CreateSolidBrush(colors[inset*2]),dark=CreateSolidBrush(colors[inset*2+1]);
-        if(light && dark && width>2*inset && height>2*inset){
-            RECT top={inset,inset,width-inset,inset+1},left={inset,inset+1,inset+1,height-inset};
-            RECT bottom={inset,height-inset-1,width-inset,height-inset},right={width-inset-1,inset,width-inset,height-inset};
-            FillRect(dc,&top,light);FillRect(dc,&left,light);
-            FillRect(dc,&bottom,dark);FillRect(dc,&right,dark);
-        }
-        if(light)DeleteObject(light);
-        if(dark)DeleteObject(dark);
-    }
+    static const style_border_presentation fallback=WIN2000_FRAME_BORDER;
+    const classic_frame_colors *frame=theme && theme->frame.present?&theme->frame:&default_frame;
+    const style_border_presentation *presentation=theme && theme->border_presentation.fill?
+        &theme->border_presentation:&fallback;
+    const style_border_palette palette={frame->face,frame->edge,frame->light,frame->shadow,
+        win2k_caption_theme_palette(active,theme).left};
+    style_frame_border_paint(dc,(RECT){0,0,width,height},thickness,1,dialog,NULL,presentation,&palette);
 }
 
 static void paint_icon(HDC dc,const RECT *icon,HICON image,UINT dpi)
@@ -169,47 +110,45 @@ void win2k_caption_render(HDC dc,const win2k_caption_layout *layout,PCWSTR title
                          const UINT button_flags[WIN2K_CAPTION_PARTS])
 {
     win2k_caption_render_with_colors(dc,layout,title,icon,font,dpi,win2k_caption_palette(active),
-        NULL,maximized,button_flags);
+        NULL,NULL,maximized,button_flags,NULL);
 }
 
 void win2k_caption_render_with_colors(HDC dc,const win2k_caption_layout *layout,PCWSTR title,HICON icon,
-    HFONT font,UINT dpi,win2k_caption_colors colors,const classic_frame_colors *frame,BOOL maximized,
-    const UINT button_flags[WIN2K_CAPTION_PARTS])
+    HFONT font,UINT dpi,win2k_caption_colors colors,const classic_frame_colors *frame,
+    const style_caption_presentation *presentation,BOOL maximized,
+    const UINT button_flags[WIN2K_CAPTION_PARTS],const classic_caption_art *art)
 {
     RECT band=layout->band;
     if(IsRectEmpty(&band))return;
     int saved=SaveDC(dc);
     if(!saved)return;
-    int separator=max(1,MulDiv(1,(int)dpi,96));
-    if(band.bottom-band.top>separator){
-        RECT line=band;
-        line.top=band.bottom-separator;
-        SetDCBrushColor(dc,frame && frame->present?frame->face:default_frame.face);
-        FillRect(dc,&line,GetStockObject(DC_BRUSH));
-        band.bottom=line.top;
+    if(!presentation || !presentation->text_mode){
+        static const style_caption_presentation fallback={.text_mode=STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,
+            .separator=STYLE_CAPTION_SEPARATOR_INSIDE};
+        presentation=&fallback;
     }
-    RECT gradient=band;
+    int fill_right=band.right;
     for(unsigned i=0;i<WIN2K_CAPTION_PARTS;++i){
         RECT r=layout->buttons[i];
-        if(!IsRectEmpty(&r) && r.left>=band.left)gradient.right=min(gradient.right,r.left);
+        if(!IsRectEmpty(&r) && r.left>=band.left)fill_right=min(fill_right,r.left);
     }
-    win2k_caption_paint(dc,&gradient,L"",font,&colors);
-    RECT tail=band;
-    tail.left=gradient.right;
-    win2k_caption_colors solid={colors.right,colors.right,colors.text,FALSE};
-    win2k_caption_paint(dc,&tail,L"",font,&solid);
-    RECT text=gradient;
+    if(!frame || !frame->present)frame=&default_frame;
+    const COLORREF button_colors[]={frame->edge,frame->light,frame->shadow,frame->face};
+    const int unit=max(1,MulDiv(1,(int)dpi,96));
+    RECT text=style_caption_band(dc,band,fill_right,colors.left,colors.right,colors.gradient,
+        presentation->separator,unit,frame->face);
     text.left=max(text.left,layout->icon.right)+2;
-    if(!IsRectEmpty(&text)){
-        SelectObject(dc,font);
-        SetBkMode(dc,TRANSPARENT);
-        SetTextColor(dc,colors.text);
-        DrawTextW(dc,title,-1,&text,DT_SINGLELINE|DT_VCENTER|DT_END_ELLIPSIS|DT_NOPREFIX);
-    }
-    static const UINT glyphs[]={DFCS_CAPTIONMIN,DFCS_CAPTIONMAX,DFCS_CAPTIONHELP,DFCS_CAPTIONCLOSE};
+    style_caption_title(dc,text,title,font,colors.text,presentation->text_mode);
     for(unsigned i=0;i<WIN2K_CAPTION_PARTS;++i){
-        UINT glyph=i==WIN2K_MAXIMIZE && maximized?DFCS_CAPTIONRESTORE:glyphs[i];
-        paint_button(dc,&layout->buttons[i],glyph|button_flags[i]);
+        style_caption_raster raster={0};
+        if(art && art->available && i<=WIN2K_MAXIMIZE && !(button_flags[i]&DFCS_INACTIVE)){
+            unsigned image=i==WIN2K_MINIMIZE?CLASSIC_IMAGE_MINIMIZE:
+                maximized?CLASSIC_IMAGE_RESTORE:CLASSIC_IMAGE_MAXIMIZE;
+            raster=(style_caption_raster){.roles=art->roles[image][(button_flags[i]&DFCS_PUSHED)!=0],
+                .width=CLASSIC_CAPTION_ART_WIDTH,.height=CLASSIC_CAPTION_ART_HEIGHT,.stride=CLASSIC_CAPTION_ART_WIDTH};
+        }
+        style_caption_button_paint(dc,layout->buttons[i],(enum classic_button_role)(CLASSIC_BUTTON_MINIMIZE+i),
+            maximized,button_flags[i],unit,presentation,&raster,button_colors);
     }
     if(icon && !IsRectEmpty(&layout->icon))paint_icon(dc,&layout->icon,icon,dpi);
     RestoreDC(dc,saved);

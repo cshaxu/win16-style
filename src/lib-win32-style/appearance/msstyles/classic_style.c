@@ -7,11 +7,16 @@ enum {
     header_size=16, record_size=8, group_header_size=8, slot_size=4,
     button_group_type=1, scroll_metrics_type=3, scroll_metrics_size=4,
     menu_metrics_type=7, menu_metrics_size=8, dialog_metrics_type=8, dialog_metrics_size=36,
-    dialog_policy_type=9, dialog_policy_size=4, required_flag=1
+    dialog_policy_type=9, dialog_policy_size=4,
+    caption_presentation_type=10, caption_presentation_legacy_size=2, caption_presentation_size=4,
+    border_presentation_type=11, border_presentation_legacy_size=10, border_presentation_size=17, required_flag=1
 };
 
-_Static_assert(header_size+5*record_size+group_header_size+slot_size*CLASSIC_BUTTON_CLOSE+
-    scroll_metrics_size+menu_metrics_size+dialog_metrics_size+dialog_policy_size==CLASSIC_STYLE_RESOURCE_CAPACITY,"classic resource capacity");
+_Static_assert(sizeof(style_border_presentation)==border_presentation_size,"border resource layout");
+_Static_assert(sizeof(style_caption_presentation)==caption_presentation_size,"caption resource layout");
+_Static_assert(header_size+7*record_size+group_header_size+slot_size*CLASSIC_BUTTON_CLOSE+
+    scroll_metrics_size+menu_metrics_size+dialog_metrics_size+dialog_policy_size+
+    caption_presentation_size+border_presentation_size==CLASSIC_STYLE_RESOURCE_CAPACITY,"classic resource capacity");
 
 static uint16_t read_half(const unsigned char *bytes)
 {
@@ -89,9 +94,37 @@ static bool valid_policy(classic_dialog_policy policy)
         policy.print<=CLASSIC_DIALOG_WIN2K;
 }
 
+static bool valid_caption(style_caption_presentation caption)
+{
+    return (caption.text_mode==STYLE_CAPTION_TEXT_CENTER_CLIP ||
+        caption.text_mode==STYLE_CAPTION_TEXT_LEFT_ELLIPSIS) &&
+        caption.separator<=STYLE_CAPTION_SEPARATOR_AFTER &&
+        caption.button_source<=STYLE_CAPTION_BUTTON_SYSTEM &&
+        caption.button_outline<=STYLE_CAPTION_BUTTON_EDGE_OUTLINE &&
+        (!caption.button_outline || caption.button_source==STYLE_CAPTION_BUTTON_INDEXED);
+}
+
+static bool valid_stroke(style_border_stroke stroke)
+{
+    return stroke.anchor<=STYLE_BORDER_INNER &&
+        stroke.leading<=STYLE_BORDER_TITLE && stroke.trailing<=STYLE_BORDER_TITLE;
+}
+
+static bool valid_border(style_border_presentation border)
+{
+    const style_frame_geometry g=border.geometry;
+    return (border.fill==STYLE_BORDER_CLIPPED || border.fill==STYLE_BORDER_PERIMETER) &&
+        border.dialog_fill<=STYLE_BORDER_TITLE &&
+        valid_stroke(border.outer) && valid_stroke(border.inner) &&
+        (border.dialog_inner<=STYLE_BORDER_TITLE || border.dialog_inner==STYLE_BORDER_KEEP) &&
+        (border.divider<=STYLE_BORDER_TITLE || border.divider==STYLE_BORDER_KEEP) &&
+        g.scale<=STYLE_FRAME_MONITOR_PIXELS && g.separator_units<=1 &&
+        (g.scale || !(g.sizeable || g.fixed || g.dialog || g.line || g.caption_floor || g.separator_units));
+}
+
 enum classic_style_result classic_style_read(const unsigned char *bytes,size_t length,
     classic_button_group *group,classic_scroll_metrics *scroll,classic_menu_metrics *menu,classic_dialog_metrics *dialog,
-    classic_dialog_policy *policy)
+    classic_dialog_policy *policy,style_caption_presentation *caption,style_border_presentation *border)
 {
     if(!bytes || !group || length<header_size || memcmp(bytes,"CSTY",4) ||
        msstyles_v4_read_word(bytes+8)!=length)return CLASSIC_STYLE_INVALID;
@@ -104,6 +137,8 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
     classic_menu_metrics columns={0};
     classic_dialog_metrics dimensions={0};
     classic_dialog_policy routes={0};
+    style_caption_presentation presentation={0};
+    style_border_presentation strokes={0};
     for(uint32_t i=0;i<count;++i){
         if(remaining<record_size)return CLASSIC_STYLE_INVALID;
         uint16_t type=read_half(record),flags=read_half(record+2);
@@ -136,6 +171,16 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
             const unsigned char *data=record+record_size;
             routes=(classic_dialog_policy){data[0],data[1],data[2],data[3]};
             if(!valid_policy(routes))return CLASSIC_STYLE_INVALID;
+        }else if(type==caption_presentation_type){
+            if(presentation.text_mode || (payload!=caption_presentation_size &&
+               payload!=caption_presentation_legacy_size))return CLASSIC_STYLE_INVALID;
+            memcpy(&presentation,record+record_size,payload);
+            if(!valid_caption(presentation))return CLASSIC_STYLE_INVALID;
+        }else if(type==border_presentation_type){
+            if(strokes.fill || (payload!=border_presentation_size &&
+               payload!=border_presentation_legacy_size))return CLASSIC_STYLE_INVALID;
+            memcpy(&strokes,record+record_size,payload);
+            if(!valid_border(strokes))return CLASSIC_STYLE_INVALID;
         }else if(flags&required_flag)return CLASSIC_STYLE_REQUIRED_RECORD;
         record+=record_size+payload;
         remaining-=record_size+payload;
@@ -147,26 +192,33 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
     if(menu)*menu=columns;
     if(dialog)*dialog=dimensions;
     if(policy)*policy=routes;
+    if(caption)*caption=presentation;
+    if(border)*border=strokes;
     return CLASSIC_STYLE_OK;
 }
 
 size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_button_group *group,
     const classic_scroll_metrics *scroll,const classic_menu_metrics *menu,const classic_dialog_metrics *dialog,
-    const classic_dialog_policy *policy)
+    const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border)
 {
     if(!bytes || !group || !valid_group(group) || (scroll && !valid_scroll(*scroll)) ||
        (menu && !valid_menu(*menu)) || (dialog && !valid_dialog(*dialog)) ||
-       (policy && !valid_policy(*policy)))return 0;
+       (policy && !valid_policy(*policy)) || (caption && !valid_caption(*caption)) ||
+       (border && !valid_border(*border)))return 0;
+    size_t caption_size=caption && caption->button_source?caption_presentation_size:caption_presentation_legacy_size;
+    size_t border_size=border && border->geometry.scale?border_presentation_size:border_presentation_legacy_size;
     size_t payload=group_header_size+slot_size*(unsigned)group->count;
     size_t length=header_size+record_size+payload+(scroll?record_size+scroll_metrics_size:0)+
         (menu?record_size+menu_metrics_size:0)+(dialog?record_size+dialog_metrics_size:0)+
-        (policy?record_size+dialog_policy_size:0);
+        (policy?record_size+dialog_policy_size:0)+(caption?record_size+caption_size:0)+
+        (border?record_size+border_size:0);
     if(capacity<length)return 0;
     memcpy(bytes,"CSTY",4);
     write_half(bytes+4,1);
-    write_half(bytes+6,policy?4:dialog?3:menu?2:scroll?1:0);
+    write_half(bytes+6,border_size==border_presentation_size?8:caption_size==caption_presentation_size?7:
+        border?6:caption?5:policy?4:dialog?3:menu?2:scroll?1:0);
     msstyles_v4_write_word(bytes+8,(uint32_t)length);
-    msstyles_v4_write_word(bytes+12,1+(scroll!=NULL)+(menu!=NULL)+(dialog!=NULL)+(policy!=NULL));
+    msstyles_v4_write_word(bytes+12,1+(scroll!=NULL)+(menu!=NULL)+(dialog!=NULL)+(policy!=NULL)+(caption!=NULL)+(border!=NULL));
     write_half(bytes+16,button_group_type);
     write_half(bytes+18,required_flag);
     msstyles_v4_write_word(bytes+20,(uint32_t)payload);
@@ -231,6 +283,20 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
         slot[9]=policy->file;
         slot[10]=policy->folder;
         slot[11]=policy->print;
+        slot+=record_size+dialog_policy_size;
+    }
+    if(caption){
+        write_half(slot,caption_presentation_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,(uint32_t)caption_size);
+        memcpy(slot+record_size,caption,caption_size);
+        slot+=record_size+caption_size;
+    }
+    if(border){
+        write_half(slot,border_presentation_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,(uint32_t)border_size);
+        memcpy(slot+record_size,border,border_size);
     }
     return length;
 }

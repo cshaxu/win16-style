@@ -3,6 +3,8 @@
 
 #include <stddef.h>
 #include "lib-win32-style/application/window/caption_slots.h"
+#include "lib-win32-style/application/window/caption_paint.h"
+#include "lib-win32-style/application/window/frame_border.h"
 
 enum classic_style_result {
     CLASSIC_STYLE_OK, CLASSIC_STYLE_INVALID, CLASSIC_STYLE_VERSION,
@@ -47,13 +49,13 @@ typedef struct classic_dialog_policy {
 /* Parse project RCDATA CLASSIC_STYLE v1. The caller's output changes only on success. */
 enum classic_style_result classic_style_read(const unsigned char *bytes,size_t length,
     classic_button_group *group,classic_scroll_metrics *scroll,classic_menu_metrics *menu,classic_dialog_metrics *dialog,
-    classic_dialog_policy *policy);
+    classic_dialog_policy *policy,style_caption_presentation *caption,style_border_presentation *border);
 
 /* Encode a title-button group and optional metrics. Returns size or zero. */
 size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_button_group *group,
     const classic_scroll_metrics *scroll,const classic_menu_metrics *menu,const classic_dialog_metrics *dialog,
-    const classic_dialog_policy *policy);
+    const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border);
 
-enum { CLASSIC_STYLE_RESOURCE_CAPACITY=136 };
+enum { CLASSIC_STYLE_RESOURCE_CAPACITY=173 };
 
 #endif

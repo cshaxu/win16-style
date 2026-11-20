@@ -15,11 +15,15 @@ typedef struct style_window {
     win16_style_palette palette;
     classic_button_group title_buttons;
     classic_caption_metrics caption_metrics;
+    style_caption_presentation caption_presentation;
+    style_border_presentation border_presentation;
+    BOOL caption_gradient;
+    COLORREF active_end,inactive_end;
     msstyles_font caption_font,menu_font;
     classic_menu_colors menu_bar, menu_popup;
     classic_menu_metrics menu_metrics;
     win16_menu_art menu_art;
-    win16_caption_art art;
+    classic_caption_art art;
     style_font_pair fonts;
     BOOL dialog, menu_only;
     style_menu_owner menu;

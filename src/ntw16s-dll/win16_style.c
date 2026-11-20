@@ -48,7 +48,7 @@ static BOOL layout(HWND w,style_window *s,win16_style_layout *l)
 {
     RECT r;
     return GetWindowRect(w,&r) && win16_control_measure_window(w,&s->instance,&s->fonts,&r,
-        &s->title_buttons,&s->caption_metrics,l);
+        &s->title_buttons,&s->caption_metrics,&s->border_presentation.geometry,l);
 }
 
 BOOL win16_style_hit_test(HWND w,LPARAM lp,LRESULT *result)
@@ -68,7 +68,9 @@ static void paint_state(void *context,win16_frame_paint_state *result)
 {
     style_window *s=context;
     *result=(win16_frame_paint_state){&s->fonts,s->native.active,s->menu.system,
-        s->menu.bar.keyboard,s->menu.bar.selected,s->button,&s->art,&s->menu_bar};
+        s->menu.bar.keyboard,s->menu.bar.selected,s->button,&s->art,&s->menu_bar,
+        s->caption_presentation,s->caption_gradient,s->native.active?s->active_end:s->inactive_end,
+        s->border_presentation};
 }
 static const win16_frame_renderer_ops renderer={paint_layout,paint_state,paint_colors,win16_style_scrollbars_paint};
 static void paint(HWND w,void *context,HDC target)
@@ -156,7 +158,8 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,UINT_PTR 
 static BOOL measure_client(HWND w,void *context,const RECT *outer,RECT *client)
 {
     style_window *s=context;win16_style_layout layout;
-    if(!win16_control_measure_window(w,&s->instance,&s->fonts,outer,&s->title_buttons,&s->caption_metrics,&layout))
+    if(!win16_control_measure_window(w,&s->instance,&s->fonts,outer,&s->title_buttons,&s->caption_metrics,
+        &s->border_presentation.geometry,&layout))
         return FALSE;
     *client=layout.client;return TRUE;
 }

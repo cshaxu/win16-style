@@ -133,7 +133,7 @@ static int worker(int argc,WCHAR **argv)
         RECT hole={origin.x-before.left,band.bottom-before.top,origin.x-before.left+client.right,origin.y-before.top+client.bottom};
         SIZE size={before.right-before.left,before.bottom-before.top};win16_style_layout layout;
         CHECK(win16_uwp_frame_layout(size,GetDpiForWindow(w),(DWORD)style,FALSE,hole,NULL,NULL,&layout));
-        LPARAM click=MAKELPARAM(layout.minimize.left+2,layout.minimize.top+2);
+        LPARAM click=MAKELPARAM(layout.buttons[CLASSIC_BUTTON_MINIMIZE].left+2,layout.buttons[CLASSIC_BUTTON_MINIMIZE].top+2);
         command=0;SendMessageW(surface,WM_LBUTTONDOWN,MK_LBUTTON,click);
         SendMessageW(surface,WM_LBUTTONUP,0,click);pump();CHECK(command==SC_MINIMIZE);
         ShowWindow(w,SW_HIDE);CHECK(!IsWindowVisible(surface));ShowWindow(w,SW_SHOWNOACTIVATE);

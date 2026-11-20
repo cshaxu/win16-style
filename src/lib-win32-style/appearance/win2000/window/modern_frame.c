@@ -76,7 +76,8 @@ static void paint(void *context,HDC dc)
     const classic_frame_colors *colors=s->themed?&s->theme.frame:NULL;
     SetDCBrushColor(dc,colors && colors->present?colors->face:RGB(212,208,200));
     FillRect(dc,&s->bounds,GetStockObject(DC_BRUSH));
-    if(!s->maximized)win2k_window_border_paint(dc,s->bounds.right,s->bounds.bottom,s->caption.band.top,colors);
+    if(!s->maximized)win2k_window_border_paint(dc,s->bounds.right,s->bounds.bottom,s->caption.band.top,
+        s->themed?&s->theme:NULL,s->frame.active,(GetWindowLongPtrW(owner,GWL_EXSTYLE)&WS_EX_DLGMODALFRAME)!=0);
     UINT flags[WIN2K_CAPTION_PARTS]={0};
     if(!IsRectEmpty(&s->caption.buttons[WIN2K_CLOSE]) && !button(s,HTCLOSE))
         flags[WIN2K_CLOSE]|=DFCS_INACTIVE;
@@ -88,7 +89,8 @@ static void paint(void *context,HDC dc)
         style_window_caption_icon(owner):NULL;
     if(!s->frame.host.instance.detached)
         win2k_caption_render_with_colors(dc,&s->caption,title,icon,s->font,s->dpi,
-            win2k_caption_theme_palette(s->frame.active,s->themed?&s->theme:NULL),colors,s->maximized,flags);
+            win2k_caption_theme_palette(s->frame.active,s->themed?&s->theme:NULL),colors,
+            s->themed?&s->theme.caption_presentation:NULL,s->maximized,flags,NULL);
     RestoreDC(dc,saved);
 }
 

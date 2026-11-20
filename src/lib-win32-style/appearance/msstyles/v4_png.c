@@ -1,5 +1,6 @@
 #define COBJMACROS
 #include "v4_png.h"
+#include "classic_theme.h"
 #include <string.h>
 
 HRESULT msstyles_png_roles(IWICImagingFactory *factory,HMODULE module,PCWSTR name,
@@ -47,4 +48,34 @@ HRESULT msstyles_png_roles(IWICImagingFactory *factory,HMODULE module,PCWSTR nam
         roles[i]=(BYTE)(role-gray);
     }
     return S_OK;
+}
+
+HRESULT classic_caption_art_read(HMODULE module,const classic_caption_images *images,classic_caption_art *art)
+{
+    for(unsigned role=0;role<CLASSIC_IMAGE_ROLE_COUNT;++role)
+        if(!images->id[role][0] || !images->id[role][1])
+            return HRESULT_FROM_WIN32(ERROR_RESOURCE_DATA_NOT_FOUND);
+
+    HRESULT apartment=CoInitializeEx(NULL,COINIT_MULTITHREADED);
+    if(FAILED(apartment) && apartment!=RPC_E_CHANGED_MODE)return apartment;
+    IWICImagingFactory *factory=NULL;
+    HRESULT result=CoCreateInstance(&CLSID_WICImagingFactory,NULL,CLSCTX_INPROC_SERVER,
+        &IID_IWICImagingFactory,(void **)&factory);
+    classic_caption_art value={0};
+    for(unsigned role=0;SUCCEEDED(result) && role<=CLASSIC_IMAGE_ROLE_COUNT;++role){
+        const UINT width=role>=CLASSIC_IMAGE_SYSTEM?CLASSIC_SYSTEM_ART_WIDTH:CLASSIC_CAPTION_ART_WIDTH;
+        const BOOL child=role==CLASSIC_IMAGE_ROLE_COUNT;
+        for(unsigned state=0;SUCCEEDED(result) && state<2;++state){
+            PCWSTR name=child?(state?L"CLASSIC_CHILD_SYSTEM_PRESSED":L"CLASSIC_CHILD_SYSTEM"):
+                MAKEINTRESOURCEW(images->id[role][state]);
+            result=msstyles_png_roles(factory,module,name,width,CLASSIC_CAPTION_ART_HEIGHT,value.roles[role][state]);
+        }
+    }
+    if(factory)IWICImagingFactory_Release(factory);
+    if(SUCCEEDED(apartment))CoUninitialize();
+    if(SUCCEEDED(result)){
+        value.available=TRUE;
+        *art=value;
+    }
+    return result;
 }

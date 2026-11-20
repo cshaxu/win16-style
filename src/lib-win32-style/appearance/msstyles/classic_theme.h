@@ -142,6 +142,16 @@ typedef struct classic_caption_images {
     WORD id[CLASSIC_IMAGE_ROLE_COUNT][2]; /* normal, pressed */
 } classic_caption_images;
 
+enum { CLASSIC_CAPTION_ART_WIDTH=19, CLASSIC_SYSTEM_ART_WIDTH=18, CLASSIC_CAPTION_ART_HEIGHT=18 };
+
+typedef struct classic_caption_art {
+    BYTE roles[CLASSIC_IMAGE_ROLE_COUNT+1][2][CLASSIC_CAPTION_ART_WIDTH*CLASSIC_CAPTION_ART_HEIGHT];
+    BOOL available;
+} classic_caption_art;
+
+/* Copies palette roles out of the mapped resource. Call outside loader lock. */
+HRESULT classic_caption_art_read(HMODULE module,const classic_caption_images *images,classic_caption_art *art);
+
 typedef struct classic_theme {
     classic_caption_colors active, inactive;
     classic_frame_colors frame;
@@ -165,6 +175,8 @@ typedef struct classic_theme {
     classic_button_group title_buttons;
     classic_dialog_policy dialog_policy;
     classic_caption_metrics caption_metrics;
+    style_caption_presentation caption_presentation;
+    style_border_presentation border_presentation;
     classic_caption_images caption_images;
     classic_scroll_colors scroll;
     classic_scroll_metrics scroll_metrics;

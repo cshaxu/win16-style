@@ -98,7 +98,7 @@ static BOOL button(int hit,BOOL win2k)
     }else{
         win16_style_layout layout;
         if(!win16_uwp_frame_layout(size,dpi,style,IsZoomed(frame),client,NULL,NULL,&layout))return FALSE;
-        r=hit==HTMAXBUTTON?layout.maximize:layout.minimize;
+        r=hit==HTMAXBUTTON?layout.buttons[CLASSIC_BUTTON_MAXIMIZE]:layout.buttons[CLASSIC_BUTTON_MINIMIZE];
     }
     LPARAM point=MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2);DWORD_PTR ignored;
     return SendMessageTimeoutW(surface,WM_LBUTTONDOWN,MK_LBUTTON,point,SMTO_ABORTIFHUNG,1000,&ignored)&&

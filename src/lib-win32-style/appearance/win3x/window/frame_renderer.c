@@ -3,6 +3,7 @@
 #include "../menu/menu_bar.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/window/window_text.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include <stdlib.h>
 #include <windowsx.h>
 
@@ -19,8 +20,7 @@ BOOL win16_control_frame_button_motion(HWND w,const win16_control_frame_button_v
     GetWindowRect(w,&r);point.x-=r.left;point.y-=r.top;
     BOOL invoke=style_caption_button_move(w,s->state,win16_style_hit(&l,point)==pressed,msg==WM_LBUTTONUP,TRUE);
     if(msg==WM_LBUTTONUP){
-        if(invoke)PostMessageW(w,WM_SYSCOMMAND,pressed==HTSYSMENU?SC_KEYMENU:
-            pressed==HTMINBUTTON?SC_MINIMIZE:(IsZoomed(w)?SC_RESTORE:SC_MAXIMIZE),
+        if(invoke)PostMessageW(w,WM_SYSCOMMAND,style_caption_command(style_caption_role(pressed),IsZoomed(w)),
             pressed==HTSYSMENU?L' ':0);
     }
     if(!s->instance->detached && (msg==WM_LBUTTONUP || was_hot!=s->state->hot))s->paint(w,s->context,pressed);
@@ -61,12 +61,10 @@ void win16_control_paint_frame(HWND w,style_instance *instance,void *context,con
      * saved. This is failure containment, not a menu-animation workaround. */
     if(!saved){if(!target)ReleaseDC(w,dc);return;}
     ExcludeClipRect(dc,l.client.left,l.client.top,l.client.right,l.client.bottom);
-    win16_control_fill(dc,l.outer,l.dialog_frame?(state.active?p.active:p.inactive):p.face);
-    win16_control_outline(dc,l.outer,l.unit,p.edge);
-    /* The reference frame has a grey band between two dark outlines, not
-     * the white upper/left bevel used by later Windows non-client frames. */
-    r=l.outer;InflateRect(&r,-l.border+l.unit,-l.border+l.unit);
-    win16_control_outline(dc,r,l.unit,l.dialog_frame?p.light:p.edge);
+    static const style_border_presentation fallback=WIN16_FRAME_BORDER;
+    const style_border_palette palette={p.face,p.edge,p.light,p.shadow,state.active?p.active:p.inactive};
+    style_frame_border_paint(dc,l.outer,l.border,l.unit,l.dialog_frame,l.sizeable?&l.corner:NULL,
+        state.border.fill?&state.border:&fallback,&palette);
     if(!IsRectEmpty(&l.menu)){
         style_menu_bar_snapshot bar;POINT origin={l.menu.left,l.menu.top};
         const classic_menu_colors *menu=state.menu_bar && state.menu_bar->present &&
@@ -82,7 +80,6 @@ void win16_control_paint_frame(HWND w,style_instance *instance,void *context,con
         }
         r=l.menu;r.top=r.bottom-l.unit;win16_control_fill(dc,r,p.edge);
     }
-    win16_control_frame_sizing(dc,&l,&p);
     ops->scrollbars(w,dc,&p);
     if(IsRectEmpty(&l.caption)){
         RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);return;
@@ -134,7 +131,7 @@ void win16_control_frame_menu_state(HWND w,style_instance *instance,void *contex
     if(!ops->layout(w,context,&l))return;
     dc=GetWindowDC(w);if(!dc)return;saved=SaveDC(dc);
     if(!saved){ReleaseDC(w,dc);return;}
-    clip=CreateRectRgnIndirect(&l.menu);system=CreateRectRgnIndirect(&l.system);
+    clip=CreateRectRgnIndirect(&l.menu);system=CreateRectRgnIndirect(&l.buttons[CLASSIC_BUTTON_SYSTEM]);
     if(clip && system && CombineRgn(clip,clip,system,RGN_OR)!=ERROR &&
         ExtSelectClipRgn(dc,clip,RGN_AND)!=ERROR && GetRgnBox(clip,&bounds)!=ERROR &&
         bounds.right>bounds.left && bounds.bottom>bounds.top){
@@ -150,7 +147,7 @@ void win16_control_frame_button_state(HWND w,style_instance *instance,void *cont
 {
     win16_style_layout l;RECT r;HDC dc;int saved;
     if(!ops->layout(w,context,&l))return;
-    r=hit==HTSYSMENU?l.system:hit==HTMINBUTTON?l.minimize:l.maximize;
+    r=l.buttons[style_caption_role(hit)];
     if(IsRectEmpty(&r))return;
     dc=GetWindowDC(w);if(!dc)return;saved=SaveDC(dc);
     if(saved){if(IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)!=ERROR){

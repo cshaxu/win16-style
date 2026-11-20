@@ -32,6 +32,8 @@ typedef struct classic_theme_source {
     classic_dialog_metrics dialog_metrics;
     classic_dialog_policy dialog_policy;
     unsigned host_options;
+    style_caption_presentation caption_presentation;
+    style_border_presentation border_presentation;
 } classic_theme_source;
 
 static const classic_theme_source classic_sources[]={
@@ -53,7 +55,10 @@ static const classic_theme_source classic_sources[]={
         RGB(255,255,255),true,
         {.file={0}},
         {CLASSIC_DIALOG_WIN16,CLASSIC_DIALOG_WIN16,CLASSIC_DIALOG_WIN16,CLASSIC_DIALOG_WIN16},
-        MSSTYLES_HOST_ALL
+        MSSTYLES_HOST_ALL,
+        {STYLE_CAPTION_TEXT_CENTER_CLIP,STYLE_CAPTION_SEPARATOR_AFTER,STYLE_CAPTION_BUTTON_INDEXED,
+            STYLE_CAPTION_BUTTON_EDGE_OUTLINE},
+        WIN16_FRAME_BORDER
     },
     {
         "Win2K","Windows 2000",
@@ -73,7 +78,10 @@ static const classic_theme_source classic_sources[]={
         RGB(212,208,200),false,
         WIN2000_DIALOG_METRICS,
         {CLASSIC_DIALOG_WIN2K,CLASSIC_DIALOG_WIN2K,CLASSIC_DIALOG_WIN2K,CLASSIC_DIALOG_WIN2K},
-        0
+        0,
+        {STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,STYLE_CAPTION_SEPARATOR_INSIDE,STYLE_CAPTION_BUTTON_SYSTEM,
+            STYLE_CAPTION_BUTTON_NO_OUTLINE},
+        WIN2000_FRAME_BORDER
     }
 };
 
