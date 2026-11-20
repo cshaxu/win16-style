@@ -15,6 +15,6 @@
 *.cmake text eol=lf
 *.exe binary
 *.dll binary
-assets/themes/**/*.theme -text whitespace=trailing-space,space-before-tab,cr-at-eol
+assets/**/*.theme -text whitespace=trailing-space,space-before-tab,cr-at-eol
 *.msstyles binary
 *.manifest text eol=lf
