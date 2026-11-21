@@ -1,6 +1,6 @@
 #include "modern_frame.h"
+#include "lib-win32-style/application/menu/native_system_menu.h"
 #include "caption.h"
-#include "system_menu.h"
 #include "lib-win32-style/application/adapters/surface.h"
 #include "lib-win32-style/application/window/window_icon.h"
 #include <stdlib.h>
@@ -17,7 +17,7 @@ typedef struct modern_frame {
     HFONT font;
     classic_theme theme;
     classic_caption_art art;
-    win2k_menu_style menu_style;
+    style_native_menu menu_style;
     style_uwp_frame_action_entry actions[];
 } modern_frame;
 
@@ -153,7 +153,7 @@ static BOOL menu(void *context,HWND window,UINT message,WPARAM a,LPARAM b,BOOL o
     modern_frame *s=context;
     if(message==WM_INITMENUPOPUP && s->frame.tracking && (HMENU)a==GetSystemMenu(s->frame.host.owner,FALSE))
         b=MAKELPARAM(LOWORD(b),TRUE);
-    return style_menu_owner_message(&s->frame.menu,window,message,a,b,&win2k_system_menu_operations,
+    return style_menu_owner_message(&s->frame.menu,window,message,a,b,&style_native_system_menu_ops,
         active_theme(s)?&s->menu_style:NULL,result);
 }
 
@@ -183,7 +183,7 @@ BOOL win2k_uwp_frame_apply(HWND owner,HWND title,const style_uwp_frame_action *a
 #endif
     {
         s->theme=source->model;
-        win2k_menu_style_read(&s->menu_style,source);
+        classic_theme_native_menu(&s->menu_style,source);
         if(source->resources)
             (void)classic_caption_art_read(source->resources,&s->theme.caption_images,&s->art);
     }

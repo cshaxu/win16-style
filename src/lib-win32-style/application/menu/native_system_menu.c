@@ -1,4 +1,4 @@
-#include "system_menu.h"
+#include "native_system_menu.h"
 #include "lib-win32-style/application/menu/menu_snapshot.h"
 #include "lib-win32-style/application/menu/popup.h"
 #include "lib-win32-style/application/menu/row_text.h"
@@ -8,7 +8,7 @@
 #include <commctrl.h>
 #include <stdlib.h>
 
-classic_menu_colors win2k_menu_colors(const classic_menu_colors *defined)
+classic_menu_colors style_menu_system_colors(const classic_menu_colors *defined)
 {
     if(defined && defined->present)return *defined;
     return (classic_menu_colors){GetSysColor(COLOR_MENU),GetSysColor(COLOR_HIGHLIGHT),
@@ -16,16 +16,8 @@ classic_menu_colors win2k_menu_colors(const classic_menu_colors *defined)
         GetSysColor(COLOR_GRAYTEXT),GetSysColor(COLOR_3DSHADOW),TRUE};
 }
 
-void win2k_menu_style_read(win2k_menu_style *style,const classic_theme_mapping *source)
-{
-    *style=(win2k_menu_style){.font=source->model.menu_font,.colors=source->model.menu_popup,
-        .metrics=source->model.menu_metrics};
-    if(source->resources)
-        (void)style_menu_art_read(source->resources,source->model.menu_images,&style->art);
-}
-
-BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinates,
-    const win2k_menu_style *style)
+BOOL style_native_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinates,
+    const style_native_menu *style)
 {
     MENUBARINFO info={.cbSize=sizeof(info)};
     if(!popup || !menu || !dc || !GetMenuBarInfo(popup,OBJID_CLIENT,0,&info) || info.hMenu!=menu)return FALSE;
@@ -40,9 +32,9 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     if(!saved){free(rows);return FALSE;}
     UINT dpi=GetDpiForWindow(popup);if(!dpi)dpi=96;
     int unit=max(1,MulDiv(1,(int)dpi,96));
-    const msstyles_font *defined=style?&style->font:NULL;
-    const classic_menu_colors colors=win2k_menu_colors(style?&style->colors:NULL);
-    const classic_menu_metrics metrics=style?style->metrics:(classic_menu_metrics){0};
+    const style_font_descriptor *defined=style?&style->font:NULL;
+    const classic_menu_colors colors=style_menu_system_colors(style?&style->colors:NULL);
+    const style_menu_metrics metrics=style?style->metrics:(style_menu_metrics){0};
     const style_menu_popup_columns columns=style_menu_popup_spacing(dpi,metrics.check_column,
         metrics.shortcut_gap,metrics.arrow_column,metrics.plain_column);
     HFONT font=style_menu_font_acquire(dpi,defined,false);
@@ -87,7 +79,7 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
 
 typedef struct menu_presentation {
     HMENU menu;
-    win2k_menu_style style;
+    style_native_menu style;
 } menu_presentation;
 static BOOL accept_popup(void *context,HWND window)
 {
@@ -113,18 +105,18 @@ static BOOL popup_paint(style_menu_popup *popup,HDC target,BOOL window_coordinat
     if(!target && GetClientRect(window,&client)){
         style_present_buffer buffer;
         BOOL ready=style_present_buffer_begin(&buffer,dc,&client,TRUE);
-        if(ready)painted=win2k_system_menu_paint(window,s->menu,buffer.memory,FALSE,&s->style);
+        if(ready)painted=style_native_system_menu_paint(window,s->menu,buffer.memory,FALSE,&s->style);
         BOOL committed=style_present_buffer_end(&buffer,ready && painted && style_menu_popup_live(popup));
         painted=painted && committed;
     }
-    if(!painted && style_menu_popup_live(popup))painted=win2k_system_menu_paint(window,s->menu,dc,window_coordinates,&s->style);
+    if(!painted && style_menu_popup_live(popup))painted=style_native_system_menu_paint(window,s->menu,dc,window_coordinates,&s->style);
     if(!target)ReleaseDC(window,dc);
     return painted;
 }
 static const style_menu_popup_ops popup_ops={accept_popup,NULL,popup_paint,selected_item,free,FALSE,TRUE};
 static style_menu_popup_scope *begin_menu(void *context,HWND owner)
 {
-    const win2k_menu_style *style=context;
+    const style_native_menu *style=context;
     menu_presentation *s=calloc(1,sizeof(*s));if(!s)return NULL;
     if(style)s->style=*style;
     style_menu_popup_scope *scope=style_menu_popup_begin(owner,&popup_ops,s);
@@ -136,4 +128,4 @@ static void set_system(void *context,style_menu_popup_scope *scope,HMENU menu)
     (void)context;menu_presentation *s=style_menu_popup_scope_context(scope);
     if(s)s->menu=menu;
 }
-const style_menu_owner_ops win2k_system_menu_operations={.begin=begin_menu,.system=set_system};
+const style_menu_owner_ops style_native_system_menu_ops={.begin=begin_menu,.system=set_system};

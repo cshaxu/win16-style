@@ -5,7 +5,7 @@
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 
 #ifdef NTWSHK_UNIFIED
-#include "ntw2ks-dll/window.h"
+#include "ntwshk-dll/observed.h"
 #else
 #include "lib-win32-style/access/runtime/companion.h"
 #endif
@@ -16,7 +16,7 @@ static const style_global_window_ops full_client_ops={
 };
 #ifdef NTWSHK_UNIFIED
 static const style_global_window_ops nonclient_ops={
-    Ntw2ksWindowAttached,Ntw2ksWindowAttach,Ntw2ksWindowRemove,
+    ntwshk_observed_window_attached,ntwshk_observed_window_attach,ntwshk_observed_window_remove,
     ntw16s_global_policy_active,NTW16S_GLOBAL_CONTROL,NTW16S_GLOBAL_QUERY,NTW16S_GLOBAL_ATTACHED
 };
 #else

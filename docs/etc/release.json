@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P38",
-  "stage": "published development candidate with neutral client menu assembly",
+  "delivery": "M0 T29 S23 P39",
+  "stage": "published development candidate with native system menu and neutral window ABI routing",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P37 620bfaef2865",
-  "source_snapshot_sha256": "22ea3b19c82e6ea26625405ccfeead910d28bcfa1ba4c03694618bf39a06e530",
+  "last_verified_remote_delivery": "M0 T29 S23 P38 abbfd569f130",
+  "source_snapshot_sha256": "a6c039a8214b2671bbe70514843f95a1cc8391a6d8399b9bfe0ebc56826d3445",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "8744ff17cd767f1bd9da7b76061f6b0866a86bf18a56fa2f63f0d50f5ae81d3c",
+      "sha256": "d7f95546f5df43994301395dc8f8c6a03b5515965f129318951c94bee604c6ad",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "146b8c8dc63290401d8ed1e4f4e9b27b96c4e0606ccb5da497c39b02e066137f",
+      "sha256": "f8bed0e0ac9657d6fdfd01b33009e068691d6d936e414e50f36f7b5cb535b1cb",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "87331371e866ca1abd24549a197a1c242747e7dc2defe5a96718ecb8e8b0c894",
+      "sha256": "b99df627042c2ba54ef03ab6d75bcd6786404915c4aad94644cd51cf7c8246ca",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,30 +106,42 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 22,
+    "passed": 34,
     "selected_cases": [
-      "x86 theme menu layouts and pixels",
-      "x86 theme MDI menu policy",
-      "x86 owned menu resources and reentry",
-      "x86 window static link",
-      "x86 standalone compatibility ABI",
-      "x86 native-string",
-      "x86 win2k-default",
-      "x86 native-cancel",
-      "x86 custom",
-      "x86 win2k-glyph",
-      "x86 win2k-cancel",
-      "x64 theme menu layouts and pixels",
-      "x64 theme MDI menu policy",
-      "x64 owned menu resources and reentry",
-      "x64 window static link",
-      "x64 standalone compatibility ABI",
-      "x64 native-string",
-      "x64 win2k-default",
-      "x64 native-cancel",
-      "x64 custom",
-      "x64 win2k-glyph",
-      "x64 win2k-cancel"
+      "x86 core-win2k-frame-lifecycle",
+      "x86 core-global-style-bridge",
+      "x86 core-abi",
+      "x86 winnt frame",
+      "x86 winnt caption-added",
+      "x86 winnt resize",
+      "x86 winnt style-transition",
+      "x86 winnt win2k-default",
+      "x86 winnt win2k-cancel",
+      "x86 winnt native-string",
+      "x86 assets frame",
+      "x86 assets caption-added",
+      "x86 assets resize",
+      "x86 assets style-transition",
+      "x86 assets win2k-default",
+      "x86 assets win2k-cancel",
+      "x86 assets native-string",
+      "x64 core-win2k-frame-lifecycle",
+      "x64 core-global-style-bridge",
+      "x64 core-abi",
+      "x64 winnt frame",
+      "x64 winnt caption-added",
+      "x64 winnt resize",
+      "x64 winnt style-transition",
+      "x64 winnt win2k-default",
+      "x64 winnt win2k-cancel",
+      "x64 winnt native-string",
+      "x64 assets frame",
+      "x64 assets caption-added",
+      "x64 assets resize",
+      "x64 assets style-transition",
+      "x64 assets win2k-default",
+      "x64 assets win2k-cancel",
+      "x64 assets native-string"
     ],
     "skipped": [],
     "commit_scope_dialog_retest": "Isolated the Find/Replace assertions from pre-existing edits and verified the scoped script against the installed seven files, including temporary resource cleanup.",
@@ -528,13 +540,28 @@
         "physical input",
         "full package matrix"
       ]
+    },
+    "native_menu_window_delivery": {
+      "test_invocations_passed": 34,
+      "incremental_passed": 16,
+      "menu_label_pixel_matches_to_p38": 8,
+      "retired_appearance_objects_per_width": 1,
+      "retired_direct_old_objects_per_width": 1,
+      "matching_archive_members_per_width": 45,
+      "direct_old_product_objects_per_width": 21,
+      "scope": "Actual launches from both installed paths. Two themes, native system menu text and cancellation, Win32 runtime caption creation, natural resizing and style restoration. Both widths also tested the same-build standalone compatibility DLL and all six self-owned style transitions.",
+      "not_retested": [
+        "physical input",
+        "interactive administrative tray",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P38 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P39 inputs, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2005,
-    "cache_misses": 107
+    "cache_hits": 1974,
+    "cache_misses": 134
   }
 }

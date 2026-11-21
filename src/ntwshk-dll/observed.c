@@ -5,6 +5,9 @@
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/window/window_identity.h"
 #include <wchar.h>
+#ifdef NTWSHK_UNIFIED
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
+#endif
 
 static void attach_frame(HWND window)
 {if(window && !style_global_window_managed(window))win2k_frame_attach(window);}
@@ -45,6 +48,18 @@ BOOL ntwshk_observed_control_remove(HWND window)
     if(!ntwshk_observed_control_attached(window)){SetLastError(ERROR_NOT_FOUND);return FALSE;}
     style_theme_remove(window,&control_owner,ntwshk_observed_native_theme);return TRUE;
 }
+
+static BOOL is_child(HWND window){return (GetWindowLongPtrW(window,GWL_STYLE)&WS_CHILD)!=0;}
+BOOL __cdecl ntwshk_observed_window_attach(HWND window)
+{
+#ifdef NTWSHK_UNIFIED
+    if(!win32_style_window_current_thread(window)){SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;}
+    if(!classic_theme_require_layout(CLASSIC_WINDOW_PROVIDER_NONCLIENT))return FALSE;
+#endif
+    return is_child(window)?ntwshk_observed_control_attach(window):win2k_frame_attach(window);
+}
+BOOL __cdecl ntwshk_observed_window_attached(HWND window){return ntwshk_observed_control_attached(window) || (!is_child(window) && win2k_frame_attached(window));}
+BOOL __cdecl ntwshk_observed_window_remove(HWND window){return is_child(window) || ntwshk_observed_control_attached(window)?ntwshk_observed_control_remove(window):win2k_frame_remove(window);}
 
 void ntwshk_observed_window_created(HWND window,DWORD style)
 {

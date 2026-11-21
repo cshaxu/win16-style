@@ -2,6 +2,10 @@
 #define NTWSHK_OBSERVED_H
 #include <windows.h>
 
+BOOL __cdecl ntwshk_observed_window_attach(HWND window);
+BOOL __cdecl ntwshk_observed_window_attached(HWND window);
+BOOL __cdecl ntwshk_observed_window_remove(HWND window);
+
 BOOL ntwshk_observed_control_attach(HWND window);
 BOOL ntwshk_observed_control_attached(HWND window);
 BOOL ntwshk_observed_control_remove(HWND window);

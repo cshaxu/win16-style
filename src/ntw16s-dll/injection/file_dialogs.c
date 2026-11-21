@@ -6,7 +6,6 @@
 #include "ntw16s-dll/global/window.h"
 #include "ntw16s-dll/attachment.h"
 #ifdef NTWSHK_UNIFIED
-#include "ntw2ks-dll/window.h"
 #include "ntwshk-dll/observed.h"
 #endif
 #include "lib-win32-style/application/lifecycle/global_window.h"
@@ -124,7 +123,7 @@ static BOOL observed_dialog_attached(HWND window)
 {
     if(Ntw16sWindowAttached(window))return TRUE;
 #ifdef NTWSHK_UNIFIED
-    return Ntw2ksWindowAttached(window);
+    return ntwshk_observed_window_attached(window);
 #else
     classic_theme_selection selection;
     DWORD encoded;

@@ -1,5 +1,6 @@
 #define COBJMACROS
 #include "classic_theme.h"
+#include "lib-win32-style/application/menu/native_system_menu.h"
 #include "v4_png.h"
 
 HRESULT style_menu_art_read(HMODULE module,const WORD images[2],style_menu_art *art)
@@ -30,4 +31,12 @@ HRESULT style_menu_art_read(HMODULE module,const WORD images[2],style_menu_art *
         *art=value;
     }
     return result;
+}
+
+void classic_theme_native_menu(style_native_menu *style,const classic_theme_mapping *source)
+{
+    *style=(style_native_menu){.font=source->model.menu_font,.colors=source->model.menu_popup,
+        .metrics=source->model.menu_metrics};
+    if(source->resources)
+        (void)style_menu_art_read(source->resources,source->model.menu_images,&style->art);
 }

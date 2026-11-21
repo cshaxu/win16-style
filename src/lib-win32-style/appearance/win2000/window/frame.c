@@ -1,9 +1,9 @@
 #include "frame.h"
+#include "lib-win32-style/application/menu/native_system_menu.h"
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include <stdlib.h>
 #include "caption.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
-#include "system_menu.h"
 #include "../control/scroll.h"
 #include "lib-win32-style/application/menu/menu_input.h"
 #include "lib-win32-style/application/menu/tracking.h"
@@ -42,7 +42,7 @@ typedef struct frame_window {
     BOOL themed;
     classic_theme theme;
     classic_caption_art art;
-    win2k_menu_style menu_style;
+    style_native_menu menu_style;
 } frame_window;
 static LRESULT CALLBACK frame_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static frame_window *frame_state(HWND window)
@@ -151,7 +151,7 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
         if(ClientToScreen(window,&right))area.right=max(area.right,right.x-outer->left);
     }
     frame_window *frame=frame_state(window);
-    const classic_menu_colors colors=win2k_menu_colors(frame && frame->themed?&frame->theme.menu_bar:NULL);
+    const classic_menu_colors colors=style_menu_system_colors(frame && frame->themed?&frame->theme.menu_bar:NULL);
     HBRUSH face=CreateSolidBrush(colors.background);if(!face)return;
     FillRect(dc,&area,face);DeleteObject(face);
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
@@ -536,7 +536,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
     if(message==WM_NCDESTROY)style_menu_owner_stop(&frame->menu);
     else if(style_menu_owner_message(&frame->menu,window,message,wp,
         message==WM_INITMENUPOPUP && frame->system_popup && (HMENU)wp==GetSystemMenu(window,FALSE)?
-            MAKELPARAM(LOWORD(lp),TRUE):lp,&win2k_system_menu_operations,
+            MAKELPARAM(LOWORD(lp),TRUE):lp,&style_native_system_menu_ops,
         frame->themed?&frame->menu_style:NULL,&menu_result)){
         SetLastError(incoming);return menu_result;
     }
@@ -726,7 +726,7 @@ BOOL win2k_frame_attach(HWND window)
     if(source.resources){
         frame->theme=source.model;
         frame->themed=TRUE;
-        win2k_menu_style_read(&frame->menu_style,&source);
+        classic_theme_native_menu(&frame->menu_style,&source);
         frame->system_slot=win2k_caption_system_side(&frame->theme.title_buttons,&frame->system_on_right);
         (void)classic_caption_art_read(source.resources,&frame->theme.caption_images,&frame->art);
         classic_theme_close(&source);

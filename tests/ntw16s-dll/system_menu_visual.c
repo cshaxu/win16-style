@@ -6,12 +6,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
-#include "lib-win32-style/appearance/win2000/window/system_menu.h"
-#include "lib-win32-style/application/menu/row_text.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
+#include "lib-win32-style/application/menu/native_system_menu.h"
 static HMENU system_menu;static HWND popup;static UINT before_type,seen_type;static ULONG_PTR before_data,seen_data;static BOOL seen,checked,selected,custom;static COLORREF sample=CLR_INVALID,live_sample=CLR_INVALID;static unsigned idles,custom_draws;static BOOL hover,hover_checked,hover_preserved,win2k_paint,win2k_live,win2k_glyph,win2k_default;static unsigned glyph_rows;static BOOL default_changed;
 static BOOL cancel_test,cancel_sent,cancel_timed_out,native_string;
 static BOOL win2k_switch,switch_done,win2k_keyboard,key_sent,win2k_context;static int sampled_index=-1,first_index=-1;static COLORREF first_live=CLR_INVALID;
-static win2k_menu_style mixed_art;
+static style_native_menu mixed_art;
 static unsigned long long row_pixels(HDC dc,RECT row,RECT window)
 {
     unsigned long long hash=14695981039346656037ULL;
@@ -31,13 +31,13 @@ static BOOL mixed_marks(HDC dc,RECT window)
     UINT dpi=GetDpiForWindow(popup);
     check.right=check.left+MulDiv(16,(int)dpi,96);
     arrow.left=arrow.right-MulDiv(11,(int)dpi,96);
-    if(!win2k_system_menu_paint(popup,system_menu,dc,TRUE,&mixed_art))return FALSE;
+    if(!style_native_system_menu_paint(popup,system_menu,dc,TRUE,&mixed_art))return FALSE;
     GdiFlush();
     unsigned long long check_before=row_pixels(dc,check,window),arrow_before=row_pixels(dc,arrow,window);
-    win2k_menu_style blank=mixed_art;
+    style_native_menu blank=mixed_art;
     memset(blank.art.check,'1',sizeof(blank.art.check));
     memset(blank.art.arrow,'1',sizeof(blank.art.arrow));
-    if(!win2k_system_menu_paint(popup,system_menu,dc,TRUE,&blank))return FALSE;
+    if(!style_native_system_menu_paint(popup,system_menu,dc,TRUE,&blank))return FALSE;
     GdiFlush();
     BOOL checked=check_before!=row_pixels(dc,check,window),expanded=arrow_before!=row_pixels(dc,arrow,window);
     printf("SYSTEM MENU THEME ART check=%d arrow=%d\n",checked,expanded);
@@ -48,12 +48,12 @@ static BOOL default_weight(HDC dc,RECT window)
     RECT row;
     UINT pos=GetMenuDefaultItem(system_menu,TRUE,GMDI_USEDISABLED);
     if(pos==(UINT)-1 || !GetMenuItemRect(NULL,system_menu,pos,&row))return FALSE;
-    if(!win2k_system_menu_paint(popup,system_menu,dc,TRUE,NULL))return FALSE;
+    if(!style_native_system_menu_paint(popup,system_menu,dc,TRUE,NULL))return FALSE;
     GdiFlush();
     unsigned long long bold=row_pixels(dc,row,window);
-    const win2k_menu_style normal={.metrics={22,0,16,16,
+    const style_native_menu normal={.metrics={22,0,16,16,
         STYLE_MENU_TEXT_DEFINED|STYLE_MENU_TEXT_SHORTCUT_RIGHT|STYLE_MENU_COMMAND_GLYPHS}};
-    if(!win2k_system_menu_paint(popup,system_menu,dc,TRUE,&normal))return FALSE;
+    if(!style_native_system_menu_paint(popup,system_menu,dc,TRUE,&normal))return FALSE;
     GdiFlush();
     BOOL changed=bold!=row_pixels(dc,row,window);
     printf("SYSTEM MENU THEME WEIGHT changed=%d\n",changed);
@@ -65,12 +65,12 @@ static BOOL command_glyph(HDC dc,RECT window)
     RECT row;
     if(pos==(UINT)-1 || !GetMenuItemRect(NULL,system_menu,pos,&row))return FALSE;
     row.right=row.left+MulDiv(16,(int)GetDpiForWindow(popup),96);
-    if(!win2k_system_menu_paint(popup,system_menu,dc,TRUE,NULL))return FALSE;
+    if(!style_native_system_menu_paint(popup,system_menu,dc,TRUE,NULL))return FALSE;
     GdiFlush();
     unsigned long long with=row_pixels(dc,row,window);
-    const win2k_menu_style without={.metrics={22,0,16,16,
+    const style_native_menu without={.metrics={22,0,16,16,
         STYLE_MENU_TEXT_DEFINED|STYLE_MENU_TEXT_SHORTCUT_RIGHT|STYLE_MENU_TEXT_BOLD_DEFAULT}};
-    if(!win2k_system_menu_paint(popup,system_menu,dc,TRUE,&without))return FALSE;
+    if(!style_native_system_menu_paint(popup,system_menu,dc,TRUE,&without))return FALSE;
     GdiFlush();
     BOOL changed=with!=row_pixels(dc,row,window);
     printf("SYSTEM MENU COMMAND ART changed=%d\n",changed);
@@ -92,16 +92,16 @@ static BOOL sample_menu(void){
     if(screen)ReleaseDC(NULL,screen);
     if(!prev||prev==HGDI_ERROR){if(bitmap)DeleteObject(bitmap);if(dc)DeleteDC(dc);return FALSE;}
     SendMessageW(popup,WM_PRINT,(WPARAM)dc,PRF_NONCLIENT|PRF_CLIENT|PRF_ERASEBKGND);
-    if(win2k_paint && !win2k_system_menu_paint(popup,system_menu,dc,TRUE,NULL)){SelectObject(dc,prev);DeleteObject(bitmap);DeleteDC(dc);return FALSE;}
+    if(win2k_paint && !style_native_system_menu_paint(popup,system_menu,dc,TRUE,NULL)){SelectObject(dc,prev);DeleteObject(bitmap);DeleteDC(dc);return FALSE;}
     GdiFlush();
     sample=GetPixel(dc,row.left-window.left+4,(row.top+row.bottom)/2-window.top);
     RECT label=row;label.left+=MulDiv(24,(int)GetDpiForWindow(popup),96);
     label.right-=MulDiv(12,(int)GetDpiForWindow(popup),96);
     if(!IsRectEmpty(&label))printf("SYSTEM MENU LABEL HASH %016llx\n",row_pixels(dc,label,window));
     if(win2k_paint){
-        const win2k_menu_style shifted={.metrics={42,0,16,16,0}};
+        const style_native_menu shifted={.metrics={42,0,16,16,0}};
         unsigned long long original=row_pixels(dc,row,window);
-        BOOL painted=win2k_system_menu_paint(popup,system_menu,dc,TRUE,&shifted);
+        BOOL painted=style_native_system_menu_paint(popup,system_menu,dc,TRUE,&shifted);
         GdiFlush();
         BOOL changed=painted && original!=row_pixels(dc,row,window);
         printf("SYSTEM MENU THEME COLUMNS changed=%d\n",changed);
@@ -250,7 +250,7 @@ int wmain(int argc,WCHAR **argv){
     if(argc==3){
         classic_theme_mapping source={0};
         if(FAILED(classic_theme_open(argv[2],&source)))return 10;
-        win2k_menu_style_read(&mixed_art,&source);
+        classic_theme_native_menu(&mixed_art,&source);
         classic_theme_close(&source);
         HMENU nested=CreatePopupMenu();
         if(!mixed_art.art.available || !nested || !AppendMenuW(nested,MF_STRING,12345,L"Child") ||

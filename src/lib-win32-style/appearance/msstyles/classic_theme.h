@@ -273,6 +273,9 @@ typedef struct classic_theme_mapping {
     WCHAR compatibility_folder[MSSTYLES_THEME_TOKEN_CAPACITY];
 } classic_theme_mapping;
 
+struct style_native_menu;
+void classic_theme_native_menu(struct style_native_menu *style,const classic_theme_mapping *source);
+
 /* Opens a packaged .theme descriptor from an absolute path outside loader
  * lock. Pass an empty destination. The source owns the data mapping that
  * resolves image and dialog IDs until classic_theme_close. */

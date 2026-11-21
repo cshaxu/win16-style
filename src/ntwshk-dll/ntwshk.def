@@ -80,6 +80,6 @@ EXPORTS
     Ntw16sGlobalThread=ntw16s_global_thread_worker
     Ntw16sUwpFrameHook
     Ntw16sWindowThreadHook
-    Ntw2ksWindowAttach
-    Ntw2ksWindowAttached
-    Ntw2ksWindowRemove
+    Ntw2ksWindowAttach=ntwshk_observed_window_attach
+    Ntw2ksWindowAttached=ntwshk_observed_window_attached
+    Ntw2ksWindowRemove=ntwshk_observed_window_remove
