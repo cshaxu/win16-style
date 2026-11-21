@@ -1854,3 +1854,24 @@ core/control-present 失败，列表框完成一次缓冲提交，但旧探针
 ApplicationFrameHost 的外框，已有孩子窗口正例依旧通过。
 这一结果验证识别边界，真实 Calculator、Scan 的宿主挂载与
 撤销仍未覆盖。生产文件与 P1 七件摘要保持一致。
+
+### 真实 UWP 原生宿主拓扑复查
+
+在活动 console 会话 2 的 Default 输入桌面，用系统激活器启动
+Calculator 11.2607.0.0 与 Scan 6.3.9654.17133。两者原生激活
+均返回 S_OK，各采样四次，覆盖约 7.5 秒。样本的 CoreWindow
+具有可见窗口标志，同时 DWM 报告 DWM_CLOAKED_SHELL。每个
+CoreWindow 都是自己的根与根所有者，未设置顶层所有者，父类为
+桌面窗口。当前桌面共有三个 ApplicationFrameWindow，均未承载
+这两个新实例。采样时系统 Shell 在场，前台窗口查询为空。
+
+此轮未加载正式 DLL 或启动器。正常关闭超时后，按映像和创建时间
+核验的两个测试进程均已结束。证据定位到原生宿主分配阶段，当前
+样本仍无法用于证明真实样式挂载与撤销，也未确定 Shell 设置
+隐藏状态的原因。S23 保持开放。
+
+另行核对本来排除的五类宿主和错误入口，确认使用模拟回调、自有
+窗口或测试创建的单个子进程。x86 与 x64 的 uwp-host-start、
+style-uwp-hook、style-window-hook、style-dialog-hook 与
+style-uwp-global 共 10/10 通过，无跳过。覆盖宿主创建失败清理、
+回调重入、对话框异常展开和模拟应用／移除重试。正式产物未变。

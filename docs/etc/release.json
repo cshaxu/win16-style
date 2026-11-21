@@ -177,6 +177,21 @@
       "WinUI": "not tested in this batch",
       "native_activation_control": "Direct IApplicationActivationManager without run16s launched both applications in the same session. Each visible CoreWindow remained its own root for 12 s. The two owned instances exited. An ApplicationFrameWindow is absent before styling."
     },
+    "current_native_uwp_topology": {
+      "input_desktop": "Default",
+      "session": "console 2, Active",
+      "samples_per_app": 4,
+      "elapsed_sample_window_seconds": 7.5,
+      "apps": ["Calculator 11.2607.0.0", "Scan 6.3.9654.17133"],
+      "result": "Native activation succeeded. Both CoreWindow handles were their own root and root owner with DWM_CLOAKED_SHELL set. Three ApplicationFrameWindow roots existed on the desktop; none contained either fresh instance.",
+      "cleanup": "Both freshly created instances were ended after the bounded graceful close did not exit."
+    },
+    "modern_host_failure_contracts": {
+      "x86_passed": 5,
+      "x64_passed": 5,
+      "skipped": [],
+      "scope": "Owned or simulated windows. Host start and failure cleanup, window and UWP callback reentrancy, dialog unwind, and simulated UWP apply/remove retries."
+    },
     "unverified": [
       "full matrix",
       "real modern host attachment and removal on this snapshot",
