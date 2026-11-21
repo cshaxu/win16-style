@@ -184,6 +184,7 @@
       "elapsed_sample_window_seconds": 7.5,
       "apps": ["Calculator 11.2607.0.0", "Scan 6.3.9654.17133"],
       "result": "Native activation succeeded. Both CoreWindow handles were their own root and root owner with DWM_CLOAKED_SHELL set. Three ApplicationFrameWindow roots existed on the desktop; none contained either fresh instance.",
+      "shell_start_comparison": "A separate shell:AppsFolder activation produced zero eligible outer frames in eight observations. The first Calculator sample preceded CoreWindow creation. All seven CoreWindow observations were standalone and DWM_CLOAKED_SHELL.",
       "cleanup": "Both freshly created instances were ended after the bounded graceful close did not exit."
     },
     "modern_host_failure_contracts": {

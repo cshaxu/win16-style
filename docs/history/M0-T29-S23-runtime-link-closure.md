@@ -1875,3 +1875,14 @@ CoreWindow 都是自己的根与根所有者，未设置顶层所有者，父类
 style-uwp-hook、style-window-hook、style-dialog-hook 与
 style-uwp-global 共 10/10 通过，无跳过。覆盖宿主创建失败清理、
 回调重入、对话框异常展开和模拟应用／移除重试。正式产物未变。
+
+### 通过系统 AppsFolder 启动的原生对照
+
+从开始菜单注册项核对两应用的 AUMID，再用 Shell 的 AppsFolder
+路径激活。两个新进程均按安装映像路径和创建时间确认。各采样四次，
+Calculator 首次尚未创建 CoreWindow。另七次均得到独立顶层
+CoreWindow，DWM 报告 Shell 隐藏。同一桌面有三个
+ApplicationFrameWindow，八次采样均无匹配外框。
+未加载产品运行件。正常关闭超时后，两个自有样本均已结束。
+这条启动路径与直接调用系统激活器得到一致结果。真实挂载与撤销
+需要一个能为相同应用分配可见宿主的 Windows 会话。
