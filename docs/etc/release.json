@@ -230,6 +230,23 @@
       "pixel_sampling": "Both points hit the live overlay. Desktop DC and overlay window DC returned CLR_INVALID. PrintWindow returned FALSE. Real composited pixel verification remains skipped.",
       "cleanup": "Calculator and probe exited. All five probe scratch files were removed."
     },
+    "installed_control_theme_matrix": {
+      "x86_passed": 13,
+      "x64_passed": 13,
+      "skipped": [],
+      "scope": "A disjoint supplement to the previous 43 package cases. Verified seven installed hashes before and after, using the installed launcher and owned dual-width fixtures for the existing theme assertions.",
+      "per_architecture": [
+        "Win16 and Win2K trackbar",
+        "Win16 up-down art",
+        "Win2K report and tree",
+        "Win16 and Win2K header",
+        "Win16 and Win2K tab",
+        "Win2K bars",
+        "Win16 flat status",
+        "Win2K dates",
+        "Win2K static startup v5 and v6"
+      ]
+    },
     "unverified": [
       "full matrix",
       "real Win2K UWP and WinUI screen pixels",
