@@ -21,6 +21,12 @@ int main(void)
     CHECK(!style_uwp_target_find(0,&target) && GetLastError()==ERROR_INVALID_PARAMETER);
     CHECK(!style_uwp_target_window(NULL,&target));
     CHECK(!style_uwp_target_window(core,&target));
+    HWND standalone=CreateWindowW(core_class.lpszClassName,L"Owned standalone CoreWindow",
+        WS_POPUP|WS_VISIBLE,80,80,180,100,NULL,NULL,instance,NULL);
+    CHECK(standalone && GetAncestor(standalone,GA_ROOT)==standalone);
+    CHECK(!style_uwp_target_window(standalone,&target));
+    CHECK(!style_uwp_target_find(GetCurrentProcessId(),&found));
+    CHECK(DestroyWindow(standalone));
     ShowWindow(frame,SW_SHOWNOACTIVATE);UpdateWindow(frame);DwmFlush();
     CHECK(style_uwp_target_window(core,&target));
     CHECK(target.core==core && target.frame==frame && target.pid==GetCurrentProcessId());
@@ -32,5 +38,5 @@ int main(void)
     CHECK(DestroyWindow(core));CHECK(!style_uwp_target_valid(&target));
     CHECK(DestroyWindow(frame));CHECK(UnregisterClassW(core_class.lpszClassName,instance));
     CHECK(UnregisterClassW(frame_class.lpszClassName,instance));
-    puts("UWP_TARGET_PASS hidden discovery identity mismatch destroyed");return 0;
+    puts("UWP_TARGET_PASS hidden discovery identity mismatch destroyed standalone_rejected=1");return 0;
 }

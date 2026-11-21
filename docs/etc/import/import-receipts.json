@@ -1571,7 +1571,7 @@
       "path": "tests/ntw16s-dll/win16_style_control_present.c",
       "source": "tests/app/win16_style_control_present.c",
       "source_blob": "a44a8cf711985ae62d847021b037b8bb308f8cc7",
-      "sha256": "037095e38c7acc0a863a4e32a6cb2efd26b039ee8f5980890d2a6c709f4f2032",
+      "sha256": "f210c0131fa7ea4812c871aa570134fcd6960521d1a37c38dcb893b725c73b8f",
       "disposition": "adapt",
       "review": "T6 S1 remaining painter/menu/private clipboard/native scroll contract audit; docs/history/M0-T6-S1-package.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 S3 fixed64 full-workload USER cache warmup; strict assertions unchanged; T21 S22 retain GDI instrumentation after painter extraction; T21 S22 standard button and static presentation view extraction; T21 S22 sizebox, progress border and calendar arrow presentation extraction; T21 S22 buffered control presentation extraction; T26 S2 mechanical path/include relocation; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture",
       "notice": "Project-authored fixed-source fixture; original comments retained"
@@ -6503,7 +6503,7 @@
       "path": "tests/lib-win32-style/application/adapters/uwp/target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "04bd3317e3cdd0835eab56e8d249f76e2f48ca3dfd28db80fd9f0c09e5d090f6",
+      "sha256": "1763ca942d8a25c0f01640f0c0ac316a90614bd38c6195007326ec1510e111df",
       "disposition": "authored",
       "review": "T26 S1 extract style-neutral UWP target discovery from existing product coordinator; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored C; no imported artwork"

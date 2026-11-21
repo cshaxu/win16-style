@@ -154,6 +154,14 @@
     ],
     "skipped": [],
     "commit_scope_dialog_retest": "Isolated the Find/Replace assertions from pre-existing edits and verified the scoped script against the installed seven files, including temporary resource cleanup.",
+    "current_desktop_core_matrix": {
+      "registered": { "x86": 371, "x64": 438 },
+      "selected": { "x86": 225, "x64": 227 },
+      "initial_failures": { "x86": "core/control-present", "x64": "core/control-present" },
+      "result_after_targeted_retest": { "x86": 225, "x64": 227 },
+      "additional_assertions": "Both deliberate painter leak checks and both standalone CoreWindow rejection checks passed.",
+      "scope": "Selected self-owned window and theme fixtures plus ABI. Review excluded desktop or physical-input paths, global and propagation scenarios, and unrelated groups. This is not a full run of all registered tests."
+    },
     "real_winui_paint": {
       "version": "11.2609.441.0",
       "installation": "O:/winnt",
