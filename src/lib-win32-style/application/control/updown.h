@@ -39,6 +39,8 @@ void style_control_updown_dc_created(HDC,HDC,const void *,BOOL (*)(HDC,HWND *));
 void style_control_updown_dc_deleted(HDC);
 BOOL style_control_updown_draw_frame(HDC,RECT *,UINT,UINT,const void *,BOOL (*)(HDC,HWND *));
 BOOL style_control_updown_draw_theme(HTHEME,HDC,int,int,const RECT *,const RECT *,const void *,BOOL (*)(HDC,HWND *));
+BOOL style_control_updown_indexed_supported(HWND);
+LRESULT style_control_updown_indexed_message(HWND,UINT,WPARAM,LPARAM);
 BOOL style_control_updown_recolor_supported(HWND);
 LRESULT style_control_updown_message(HWND,style_instance *,UINT,WPARAM,LPARAM,const style_relief_palette *);
 #endif

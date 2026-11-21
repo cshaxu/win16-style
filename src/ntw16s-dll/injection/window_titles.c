@@ -660,6 +660,9 @@ static BOOL WINAPI hook_DrawFrameControl(HDC dc,LPRECT rect,UINT type,UINT state
 {
     DWORD entry=GetLastError();BOOL drawn=style_control_updown_draw_frame(dc,rect,type,state,__builtin_return_address(0),style_runtime_text_native_target);
     if(drawn){SetLastError(entry);return TRUE;}
+    if(startup_window_created && !InterlockedCompareExchange(&style_ready,0,0)){
+        SetLastError(entry);return real_DrawFrameControl(dc,rect,type,state);
+    }
     RECT spin_original={0};if(rect)spin_original=*rect;
     RECT original;BOOL graphical=win16_style_graphical_frame_prepare(dc,rect,type,state,__builtin_return_address(0),&original);
     SetLastError(entry);BOOL result=real_DrawFrameControl(dc,rect,type,state);DWORD error=GetLastError();
@@ -687,7 +690,13 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
 }
 static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int state,const RECT *rect,const RECT *clip)
 {
-    DWORD entry=GetLastError();style_theme_track_ticket ticket=style_theme_track_begin(theme,STYLE_THEME_BUTTON);
+    DWORD entry=GetLastError();
+    if(startup_window_created && !InterlockedCompareExchange(&style_ready,0,0)){
+        BOOL drawn=style_control_updown_draw_theme(theme,dc,part,state,rect,clip,
+            __builtin_return_address(0),style_runtime_text_native_target);
+        SetLastError(entry);return drawn?S_OK:real_DrawThemeBackground(theme,dc,part,state,rect,clip);
+    }
+    style_theme_track_ticket ticket=style_theme_track_begin(theme,STYLE_THEME_BUTTON);
     style_theme_track_ticket combo={0};if(ntw16s_inplace_paint(dc))combo=style_theme_track_begin(theme,STYLE_THEME_COMBOBOX);
     style_theme_track_ticket glow=style_theme_track_begin(theme,STYLE_THEME_TEXTGLOW);
     BOOL textglow=part==1 && state==0 && glow.eligible;
@@ -711,12 +720,16 @@ static HRESULT WINAPI hook_DrawThemeBackground(HTHEME theme,HDC dc,int part,int 
 static HDC WINAPI hook_CreateCompatibleDC(HDC source)
 {
     HDC result=real_CreateCompatibleDC(source);DWORD error=GetLastError();
-    ntw16s_modern_spin_dc_created(source,result);
+    if(!startup_window_created || InterlockedCompareExchange(&style_ready,0,0))ntw16s_modern_spin_dc_created(source,result);
     style_control_updown_dc_created(source,result,__builtin_return_address(0),style_runtime_text_native_target);SetLastError(error);return result;
 }
 static BOOL WINAPI hook_DeleteDC(HDC dc)
 {
-    BOOL result=real_DeleteDC(dc);DWORD error=GetLastError();if(result){ntw16s_modern_spin_dc_deleted(dc);style_control_updown_dc_deleted(dc);}
+    BOOL result=real_DeleteDC(dc);DWORD error=GetLastError();
+    if(result){
+        if(!startup_window_created || InterlockedCompareExchange(&style_ready,0,0))ntw16s_modern_spin_dc_deleted(dc);
+        style_control_updown_dc_deleted(dc);
+    }
     SetLastError(error);return result;
 }
 
@@ -808,11 +821,22 @@ static LONG attach_window_theme(DWORD (*attach)(void *,void *))
     return (LONG)attach(&real_set_theme,(void *)hook_set_theme);
 }
 
+static LONG attach_updown_draw(DWORD (*attach)(void *,void *))
+{
+    real_DrawFrameControl=DrawFrameControl;real_DrawThemeBackground=DrawThemeBackground;
+    real_CreateCompatibleDC=CreateCompatibleDC;real_DeleteDC=DeleteDC;
+    LONG error=(LONG)attach(&real_DrawFrameControl,(void *)hook_DrawFrameControl);
+    if(!error)error=(LONG)attach(&real_DrawThemeBackground,(void *)hook_DrawThemeBackground);
+    if(!error)error=(LONG)attach(&real_CreateCompatibleDC,(void *)hook_CreateCompatibleDC);
+    return error?error:(LONG)attach(&real_DeleteDC,(void *)hook_DeleteDC);
+}
+
 #ifdef NTWSHK_UNIFIED
 LONG ntw16s_attach_startup_windows_using(DWORD (*attach)(void *,void *),void (*created)(HWND,DWORD))
 {
     LONG error=attach_window_creation(attach);
     if(!error)error=attach_window_theme(attach);
+    if(!error)error=attach_updown_draw(attach);
     if(!error)startup_window_created=created;
     return error;
 }
@@ -838,6 +862,7 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
     if(!error)error=(LONG)attach(&real_show_scroll,(void *)hook_show_scroll);
     if(!error)error=(LONG)attach(&real_enable_scroll,(void *)hook_enable_scroll);
     if(!error && !startup_window_created)error=attach_window_theme(attach);
+    if(!error && !startup_window_created)error=attach_updown_draw(attach);
 #define ATTACH(NAME) do { real_##NAME=NAME; if(!error)error=(LONG)attach(&real_##NAME,(void *)hook_##NAME); } while(0)
     ATTACH(OpenThemeData);ATTACH(OpenThemeDataEx);ATTACH(CloseThemeData);
     FARPROC dpi_symbol=GetProcAddress(GetModuleHandleW(L"uxtheme.dll"),"OpenThemeDataForDpi");
@@ -857,7 +882,7 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
     ATTACH(DefWindowProcW);ATTACH(CallWindowProcA);ATTACH(CallWindowProcW);ATTACH(DrawTextW);ATTACH(DrawTextExW);
-    ATTACH(Polyline);ATTACH(BitBlt);ATTACH(StretchBlt);ATTACH(DrawFrameControl);ATTACH(DrawEdge);ATTACH(DrawThemeBackground);ATTACH(DrawThemeText);ATTACH(DrawThemeTextEx);ATTACH(DrawIconEx);ATTACH(CreateCompatibleDC);ATTACH(DeleteDC);ATTACH(SelectObject);ATTACH(DeleteObject);
+    ATTACH(Polyline);ATTACH(BitBlt);ATTACH(StretchBlt);ATTACH(DrawEdge);ATTACH(DrawThemeText);ATTACH(DrawThemeTextEx);ATTACH(DrawIconEx);ATTACH(SelectObject);ATTACH(DeleteObject);
 #undef ATTACH
     return error;
 }

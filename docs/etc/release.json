@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P30",
-  "stage": "published development candidate with shared UpDown painting verified",
+  "delivery": "M0 T29 S23 P31",
+  "stage": "published development candidate with UpDown indexed rendering parity on both Win32 adapters",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P29 02cf83bf2b51",
-  "source_snapshot_sha256": "68292d1c5842e3c1b1093fc0aac4840acd7c463beba4dcd4714d03d18a670948",
+  "last_verified_remote_delivery": "M0 T29 S23 P30 bf3ffdd9933c",
+  "source_snapshot_sha256": "a7b7670b14214bba43dcf4a775c267a93d00096138ebe8cc6db8b4dd094340b2",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "38cc164380629378d52734441359e95c41954b3720abef70c3b5f82e6c962237",
+      "sha256": "28c3468d9e98c8572151de9b0f438e79b7730ba5bf422a6085c578778b7d3d01",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "edf8552899daabafc4b8e922057579b5bebb6b1057d9ae033d8e560add92ef35",
+      "sha256": "276354497f302c9245d32e23aed1316707541c83e7a05e255938218e80d14265",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "5bdb9fc19e3d563804ee989244abdbcdcf8fc52a019dac21349f1648e3f59e46",
+      "sha256": "532c6ebad11aab0647d90d1ac09c48c105e5c427760e679d886f8bacc6ccf7fd",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -285,7 +285,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P30 fresh results are in updown_delivery.",
+    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P31 results are in indexed_updown_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -442,13 +442,31 @@
       "remaining": "The observed/nonclient regular startup does not supply native draw callbacks required for indexed UpDown art.",
       "no_console_repeat_passed": 10,
       "environment_diagnostic": "The first run inherited a console, producing two Terminal attachment diagnostics (1306). Running the same tests with CREATE_NO_WINDOW yielded all ten passes without this diagnostic. Terminal behavior is outside the UpDown result."
+    },
+    "indexed_updown_delivery": {
+      "test_invocations_passed": 14,
+      "mixed_provider_invocations": 4,
+      "pixel_and_interaction_checks": 8,
+      "stock_control_invocations": 4,
+      "owner_invocations": 2,
+      "win32_provider_invocations": 4,
+      "axis_hashes": {
+        "0": "bbb535c4",
+        "1": "a5319536"
+      },
+      "scope": "Standard Win32 startup with the indexed UpDown theme. Theme fixtures differ in one window-provider byte; both providers preserve native notifications, native position and detach. Startup reuses the existing GDI callbacks inside styled processes.",
+      "not_retested": [
+        "physical input",
+        "global late attach indexed UpDown",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P30 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P31 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1976,
-    "cache_misses": 146
+    "cache_hits": 2084,
+    "cache_misses": 38
   }
 }

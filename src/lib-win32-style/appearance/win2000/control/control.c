@@ -60,6 +60,8 @@ typedef struct win2k_control {
     win2k_scroll scroll;
     style_control_native_state native;
     BOOL tab_control,header_control,track_control,updown_control;
+    style_control_updown updown_binding;
+    style_control_updown_art updown_art;
     BOOL progress_control,legacy_progress;
     win2k_report_role report;
     win2k_bar_role bar;
@@ -166,6 +168,7 @@ static void close_date_popup(win2k_control *control)
 static style_control_retired release_theme(HWND window,void *context,BOOL terminal)
 {
     win2k_control *control=context;
+    style_control_updown_retire(&control->updown_binding);
     win2k_scroll_retire(window,&control->scroll,TRUE);
     BOOL list_removed=style_control_combo_list_retire(&control->combo,&control->instance,
         lookup_state,win2k_control_remove);
@@ -330,7 +333,8 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
         const style_control_edit_ops ops={.context=control,.border=edit_border};
         result=style_control_edit_message(window,&control->instance,&control->state,NULL,message,a,b,&ops);
     }else if(control->updown_control){
-        result=style_control_updown_message(window,&control->instance,message,a,b,&control->palette);
+        result=control->updown_binding.window?style_control_updown_indexed_message(window,message,a,b):
+            style_control_updown_message(window,&control->instance,message,a,b,&control->palette);
     }else if(control->tab_control || control->progress_control){
         const style_control_draw draw={control,render};
         result=style_control_native_message(window,&control->instance,&control->native,kind,message,a,b,
@@ -532,6 +536,12 @@ static BOOL setup(HWND window,void *context)
         win2k_edit_class(window)==WIN2K_EDIT_STANDARD) &&
        !style_control_notify_bind(window,&control->parent_binding,parent_proc,control))return FALSE;
     if(!style_theme_capture(window) || !style_theme_suppress(window,control,control->native_theme))return FALSE;
+    if(control->updown_control && control->controls.updown_mode==CLASSIC_UPDOWN_ART){
+        HMODULE module=style_control_protocol_updown_module(window);
+        if(!module){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+        style_control_updown_bind_art(&control->updown_binding,window,module,&control->updown_art,
+            &control->instance,style_instance_acquire_owned,style_instance_return_owned);
+    }
     if(control->date_control){
         control->date=(style_control_native_combo_state){.candidate=TRUE,.parent=GetParent(window),
             .owner=(HMODULE)GetClassLongPtrW(window,GCLP_HMODULE),.native_legacy_date=TRUE};
@@ -601,7 +611,9 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     if(source.resources){
         const classic_theme *theme=&source.model;
         DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
-        if((control->updown_control && theme->controls.updown_mode!=CLASSIC_UPDOWN_RECOLOR) ||
+        BOOL indexed=control->updown_control && theme->controls.updown_mode==CLASSIC_UPDOWN_ART;
+        if((control->updown_control && !theme->controls.updown_mode) ||
+            (indexed && (!style_control_updown_api_enabled() || !style_control_updown_indexed_supported(window))) ||
             (!theme->controls.separator && style_control_is_separator(window)) ||
            (!theme->controls.tab && control->tab_control) ||
            (!theme->controls.header && control->header_control) ||
@@ -618,6 +630,22 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
         }
         control->themed=TRUE;
         control->palette=classic_theme_relief_palette(theme);
+        if(indexed){
+            if(!control->protocol)control->protocol=style_control_protocol_bind(window);
+            if(!control->protocol || !style_control_protocol_updown_module(window)){
+                error=GetLastError();
+                if(native_requested)*native_requested=TRUE;
+                classic_theme_close(&source);
+                dispose(control);
+                SetLastError(error==ERROR_NOT_ENOUGH_MEMORY?error:ERROR_NOT_SUPPORTED);
+                return FALSE;
+            }
+            const classic_frame_colors *frame=&theme->frame;
+            style_relief_palette colors=control->palette;
+            if(frame->present)colors=(style_relief_palette){.face=frame->face,.light=frame->light,.highlight=frame->light,
+                .shadow=frame->shadow,.dark=frame->edge,.text=frame->edge};
+            control->updown_art=(style_control_updown_art){colors,&control->scroll.arrow_art,theme->controls.updown};
+        }
         control->push=theme->push;
         control->choice=theme->choice;
         if(class_is(window,L"Button") && classic_choice_has_art(&theme->choice)){

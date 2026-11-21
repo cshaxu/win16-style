@@ -3,6 +3,7 @@
 #include "staging.h"
 #include "observed.h"
 #include "lib-win32-style/access/startup/startup.h"
+#include "lib-win32-style/application/control/updown.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "ntw16s-dll/global/session.h"
 
@@ -70,7 +71,9 @@ static DWORD bootstrap(void)
     /* A global child gets appearance only from its active session. */
     if(styled && !global)classic_theme_set_process_profile(selection.id,selection.family);
     if(layout==CLASSIC_WINDOW_PROVIDER_FULL_CLIENT)ntw16s_process_context=context;
-    return win32_style_startup(prepare_startup,&layout);
+    error=win32_style_startup(prepare_startup,&layout);
+    if(!error && styled)style_control_updown_api_enable();
+    return error;
 }
 
 BOOL WINAPI DllMain(HINSTANCE instance,DWORD reason,LPVOID reserved)

@@ -22,6 +22,7 @@ typedef struct style_runtime_text_ops {
  * published first, text observation before role selection (including barrier
  * roles with NULL window). End each begun scope once, in LIFO order; use the
  * existing dispatch/unwind cleanup when forwarding native calls can throw. */
+void style_runtime_native_paint_begin(style_runtime_text_scope *,HWND,UINT,HDC);
 void style_runtime_text_begin(style_runtime_text_scope *,HWND,UINT,void *,const style_runtime_text_ops *);
 void style_runtime_text_end(style_runtime_text_scope *);
 const style_runtime_text_scope *style_runtime_text_current(void);

@@ -1,12 +1,17 @@
 #include "runtime_text.h"
 #include "../../control/report.h"
 static _Thread_local style_runtime_text_scope *current,*native_current;
-void style_runtime_text_begin(style_runtime_text_scope *scope,HWND w,UINT message,void *context,const style_runtime_text_ops *ops)
+void style_runtime_native_paint_begin(style_runtime_text_scope *scope,HWND w,UINT message,HDC dc)
 {
     *scope=(style_runtime_text_scope){0};
     if(message==WM_PAINT || message==WM_PRINT || message==WM_PRINTCLIENT || message==WM_ERASEBKGND){
-        scope->native_previous=native_current;scope->native_window=w;scope->native_active=TRUE;native_current=scope;
+        scope->native_previous=native_current;scope->native_window=w;scope->native_dc=dc;
+        scope->native_active=TRUE;native_current=scope;
     }
+}
+void style_runtime_text_begin(style_runtime_text_scope *scope,HWND w,UINT message,void *context,const style_runtime_text_ops *ops)
+{
+    style_runtime_native_paint_begin(scope,w,message,NULL);
     if(!ops->include_text(w,message))return;
     scope->previous=current;scope->active=TRUE;scope->context=context;current=scope;
     const style_runtime_text_role role=ops->role(w,ops->context);scope->window=role.window;scope->label_only=role.label_only;

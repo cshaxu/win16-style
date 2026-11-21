@@ -42,7 +42,8 @@ int wmain(int argc,WCHAR **argv)
 {
     BOOL theme_symbol=argc==2 && !wcscmp(argv[1],L"--theme-symbol");
     BOOL native_metrics=argc==2 && !wcscmp(argv[1],L"--native-metrics");
-    BOOL theme_metrics=native_metrics || (argc==2 && !wcscmp(argv[1],L"--theme-metrics"));
+    BOOL indexed=argc==2 && !wcscmp(argv[1],L"--theme-indexed");
+    BOOL theme_metrics=indexed || native_metrics || (argc==2 && !wcscmp(argv[1],L"--theme-metrics"));
     BOOL theme_art=theme_metrics || theme_symbol || (argc==2 && !wcscmp(argv[1],L"--theme-art"));
     CHECK(argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
@@ -50,12 +51,17 @@ int wmain(int argc,WCHAR **argv)
     const INITCOMMONCONTROLSEX icc={sizeof(icc),ICC_UPDOWN_CLASS};
     CHECK(InitCommonControlsEx(&icc));
     HMODULE dll=NULL;
-    window_op attach=NULL,attached=NULL,observed=NULL,remove=NULL;
+    window_op attach=NULL,attached=NULL,observed=NULL,remove=NULL,remove_full=NULL;
     if(theme_metrics){
         HMODULE runtime=GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll");
         attached=runtime?(void *)GetProcAddress(runtime,"Ntw16sWindowAttached"):NULL;
         observed=runtime?(void *)GetProcAddress(runtime,"Ntw2ksWindowAttached"):NULL;
         CHECK(attached && observed);
+        if(indexed){
+            remove_full=(void *)GetProcAddress(runtime,"Ntw16sWindowRemove");
+            remove=(void *)GetProcAddress(runtime,"Ntw2ksWindowRemove");
+            CHECK(remove_full && remove);
+        }
     }else if(!theme_art){
         dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
         CHECK(dll);
@@ -95,6 +101,21 @@ int wmain(int argc,WCHAR **argv)
             for(int y=r.top;y<r.bottom;++y)
                 for(int x=r.left;x<r.right;++x)hash=(hash^GetPixel(dc,x,y))*16777619u;
             printf("THEME_UPDOWN_METRICS axis=%d pixels=%08lx\n",axis,hash);
+            if(indexed){
+                POINT click={axis?r.right/4:r.right/2,axis?r.bottom/2:r.bottom/4};
+                LPARAM location=MAKELPARAM(click.x,click.y);
+                notices=0;cancel_step=TRUE;
+                SendMessageW(spin,WM_LBUTTONDOWN,MK_LBUTTON,location);
+                SendMessageW(spin,WM_LBUTTONUP,0,location);
+                CHECK(notices && SendMessageW(spin,UDM_GETPOS32,0,0)==20);
+                cancel_step=FALSE;
+                SendMessageW(spin,WM_LBUTTONDOWN,MK_LBUTTON,location);
+                SendMessageW(spin,WM_LBUTTONUP,0,location);
+                LRESULT value=SendMessageW(spin,UDM_GETPOS32,0,0);
+                CHECK(notices>=2 && value!=20 && (observed(spin)?remove(spin):remove_full(spin)));
+                CHECK(!observed(spin) && !attached(spin) && SendMessageW(spin,UDM_GETPOS32,0,0)==value);
+                printf("THEME_UPDOWN_INDEXED axis=%d cancel=1 step=1 restored=1\n",axis);
+            }
             CHECK(DestroyWindow(spin));
             continue;
         }

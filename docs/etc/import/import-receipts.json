@@ -1382,7 +1382,7 @@
       "path": "src/ntw16s-dll/injection/window_titles.c",
       "source": "src/nthook32-dll/window_titles.cpp",
       "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
-      "sha256": "0c60dc830bca95d1d1c111a699de833f6e3d4214a0cb0cff83859b627bfad224",
+      "sha256": "89278fac118d3e059475b0232a25006dea3f39ca0888ec0db98a0bf4d5fa9238",
       "disposition": "adapt",
       "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T20 S1 common find/replace creation scope; T21 S13 unified late style hooks and stop semantics; T24 S1 unify simple common dialog scope hooks; T25 S2 shared runtime extraction; T26 S1 shared menu owner identity extraction; T26 S1 shared extended print bridge caller; T26 S1 common classic dialog controls; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 explicit theme interception; T26 S1 shared ordinary dialog hook lifecycle; T26 S1 shared color dialog identification; T26 S2 mechanical path/include relocation; T26 S10 checklist native protocol extraction, existing behavior and resources retained; T26 S10 native caller classification moved to common runtime text; original identity predicates retained; T26 S13 complete generic font/glyph and snapshot cache ownership; profile eligibility and native borrow/resource contracts retained; S13 complete glyph translation temporary ownership and real consumer retained",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
@@ -6116,7 +6116,7 @@
       "path": "src/ntwshk-dll/dllmain.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0ba266f9ca2eabea6df2684a994db82086ad58c5605238970eb566f0731b0a29",
+      "sha256": "c5f78763605802ebd4454bd220e07b6ec077a882c98b4d27c0158d00e33cac77",
       "disposition": "authored",
       "review": "T25 S2 shared runtime and native verification",
       "notice": "Project-authored; no imported artwork"
@@ -9302,7 +9302,7 @@
       "path": "src/lib-win32-style/application/control/updown.c",
       "source": null,
       "source_blob": null,
-      "sha256": "297b13920c09c54ec260299d3de4de5456be42a092b8173e5818f8fb79a3634c",
+      "sha256": "9e23d7b9f28cc16d9c80e9ccafe4ad11e9fbeba3389241f258429716406e5751",
       "disposition": "authored",
       "review": "T26 S10 native updown registry/DC lifecycle extracted; T27 S11 native print recoloring; T29 S23 consolidated the shared recoloring implementation",
       "notice": "Project-authored native C; no imported artwork"
@@ -9311,7 +9311,7 @@
       "path": "src/lib-win32-style/application/control/updown.h",
       "source": null,
       "source_blob": null,
-      "sha256": "80b2b977dfb6c98eaf4d8f0d5270ef17307761a124b8e0ce6b89c424075bd689",
+      "sha256": "817ecfac36a241097ca480456a5557af0808329bb2ace6302df4f3ffbd8f4e95",
       "disposition": "authored",
       "review": "T26 S10 native updown registry/DC lifecycle extracted; T27 S11 native print recoloring; T29 S23 consolidated the shared recoloring implementation",
       "notice": "Project-authored native C; no imported artwork"
@@ -9329,7 +9329,7 @@
       "path": "src/lib-win32-style/application/adapters/win32/runtime_text.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4ced87a750fa83ffe617012f52a18037f301964003e779f08906e975c1ea3565",
+      "sha256": "23575da5f0cad6149c7c545fa48d434b59bc5f4914fcf4b04e8d0ebc451f15f7",
       "disposition": "authored",
       "review": "T26 S10 native/report text scopes and public bounded theme class recognition; profile owns font/glyph leases; T26 S10 native caller classification moved to common runtime text; original identity predicates retained; T26 S10 complete runtime message transaction and native report prepare migration, original phase/resource order preserved",
       "notice": "Project-authored native C; no imported artwork"
@@ -9338,7 +9338,7 @@
       "path": "src/lib-win32-style/application/adapters/win32/runtime_text.h",
       "source": null,
       "source_blob": null,
-      "sha256": "cd3b25c676178c35df20bf221c8abf757ba80f7b2f56725ea5b11153eb1fe706",
+      "sha256": "5dde483b995cb5584378120f73eabf49679f61bd0ea1e4fe6c4ca668105e84a1",
       "disposition": "authored",
       "review": "T26 S10 native/report text scopes and public bounded theme class recognition; profile owns font/glyph leases; T26 S10 native caller classification moved to common runtime text; original identity predicates retained; T26 S10 complete runtime message transaction and native report prepare migration, original phase/resource order preserved",
       "notice": "Project-authored native C; no imported artwork"
@@ -9800,7 +9800,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "f9c9c65a5296d1d9b481013527fa1a3923c7624ffd96b5ae37d2db6faeec63fa"
+      "sha256": "7092b700dbe9247a7ca3a4bc467e0a04569897471f490cb10cf2f6ce89acd446"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -10112,7 +10112,7 @@
       "path": "tests/lib-win32-style/appearance/win2000/control/updown_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8ebec3b479696fd82211982ab91df3ec749886c0985aabe53e87fc346697e929",
+      "sha256": "ee12dbbff77ad1e3aa6b0ecd82d8691fdbaee2c973a97e5504f7427122c8064a",
       "disposition": "authored",
       "review": "T27 S11 TrackBar and UpDown native painting profiles",
       "notice": "Project-authored C; no external implementation or artwork imported"

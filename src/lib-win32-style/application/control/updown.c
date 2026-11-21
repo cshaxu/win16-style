@@ -1,5 +1,7 @@
 #include "updown.h"
 #include "native.h"
+#include "../adapters/win32/runtime_text.h"
+#include "../lifecycle/dispatch.h"
 #include <commctrl.h>
 #include <vssym32.h>
 #include "../graphics/bitmap.h"
@@ -21,6 +23,21 @@ static BOOL indexed_styles(DWORD style,DWORD ex)
         UDS_HORZ|UDS_NOTHOUSANDS|UDS_HOTTRACK;
     return !(style&(0xffffu&~allowed)) && !(style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION|WS_HSCROLL|WS_VSCROLL)) &&
         !(ex&(WS_EX_CLIENTEDGE|WS_EX_STATICEDGE|WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
+}
+BOOL style_control_updown_indexed_supported(HWND window)
+{
+    return indexed_styles((DWORD)GetWindowLongPtrW(window,GWL_STYLE),(DWORD)GetWindowLongPtrW(window,GWL_EXSTYLE));
+}
+static void indexed_paint_end(void *context,BOOL completed)
+{(void)completed;style_runtime_text_end(context);}
+LRESULT style_control_updown_indexed_message(HWND window,UINT message,WPARAM a,LPARAM b)
+{
+    if(message!=WM_PAINT && message!=WM_PRINTCLIENT && message!=WM_PRINT && message!=WM_ERASEBKGND)
+        return DefSubclassProc(window,message,a,b);
+    style_runtime_text_scope scope;
+    style_runtime_native_paint_begin(&scope,window,message,message==WM_PAINT?NULL:(HDC)a);
+    const style_dispatch_ops ops={NULL,&scope,NULL,indexed_paint_end};
+    return style_dispatch_message(window,message,a,b,&ops);
 }
 static BOOL indexed_paint(HWND window,void *context,HDC dc,const RECT *bounds,const RECT *clip,
     unsigned direction,BOOL pressed,BOOL disabled)
