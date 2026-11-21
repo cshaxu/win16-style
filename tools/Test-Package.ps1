@@ -97,17 +97,17 @@ try{
         (Case 'style-edit-protocol-x86' (Join-Path $x86 'core-style-edit-message.exe') @() @('EDIT native text/undo/selection','EDIT_NATIVE_ONLY_OK null_scroll=1 optional_ops=1 mixed_native_nc=1 borrowed_dc=1') 15),
         (Case 'ntw2ks-edit-x86' (Join-Path $x86 'core-win2k-edit.exe') @((Join-Path $legacy 'ntw2ks32.dll')) @('WIN2K_EDIT_OK bits=32 aware=0 hooked=0','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','parent_retire=2 reparent=1 gdi_cycles=32') 20),
         (Case 'ntw2ks-edit-aware-x86' (Join-Path $x86 'core-win2k-edit.exe') @((Join-Path $legacy 'ntw2ks32.dll'),'aware') @('WIN2K_EDIT_OK bits=32 aware=1 hooked=0','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','parent_retire=2 reparent=1 gdi_cycles=32') 20),
-        (Case 'ntw2ks-edit-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-edit.exe'),(Join-Path $legacy 'ntw2ks32.dll'),'hooked') @('WIN2K_EDIT_OK bits=32 aware=0 hooked=1','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','initialized_children=2') 25),
+        (Case 'ntw2ks-edit-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-edit.exe'),$shared32,'hooked') @('WIN2K_EDIT_OK bits=32 aware=0 hooked=1','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','initialized_children=2') 25),
         (Case 'ntw2ks-edit-v6-x86' (Join-Path $x86 'core-win2k-edit-v6.exe') @((Join-Path $legacy 'ntw2ks32.dll')) @('WIN2K_EDIT_OK bits=32 aware=0 hooked=0','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','parent_retire=2 reparent=1 gdi_cycles=32') 20),
         (Case 'ntw2ks-edit-v6-aware-x86' (Join-Path $x86 'core-win2k-edit-v6.exe') @((Join-Path $legacy 'ntw2ks32.dll'),'aware') @('WIN2K_EDIT_OK bits=32 aware=1 hooked=0','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','parent_retire=2 reparent=1 gdi_cycles=32') 20),
-        (Case 'ntw2ks-edit-v6-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-edit-v6.exe'),(Join-Path $legacy 'ntw2ks32.dll'),'hooked') @('WIN2K_EDIT_OK bits=32 aware=0 hooked=1','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','initialized_children=2') 25),
+        (Case 'ntw2ks-edit-v6-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-edit-v6.exe'),$shared32,'hooked') @('WIN2K_EDIT_OK bits=32 aware=0 hooked=1','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','initialized_children=2') 25),
         (Case 'style-edit-protocol-x64' (Join-Path $x64 'core-style-edit-message.exe') @() @('EDIT native text/undo/selection','EDIT_NATIVE_ONLY_OK null_scroll=1 optional_ops=1 mixed_native_nc=1 borrowed_dc=1') 15),
         (Case 'ntw2ks-edit-x64' (Join-Path $x64 'core-win2k-edit.exe') @((Join-Path $legacy 'ntw2ks64.dll')) @('WIN2K_EDIT_OK bits=64 aware=0 hooked=0','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','parent_retire=2 reparent=1 gdi_cycles=32') 20),
         (Case 'ntw2ks-edit-aware-x64' (Join-Path $x64 'core-win2k-edit.exe') @((Join-Path $legacy 'ntw2ks64.dll'),'aware') @('WIN2K_EDIT_OK bits=64 aware=1 hooked=0','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','parent_retire=2 reparent=1 gdi_cycles=32') 20),
-        (Case 'ntw2ks-edit-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-edit.exe'),(Join-Path $legacy 'ntw2ks64.dll'),'hooked') @('WIN2K_EDIT_OK bits=64 aware=0 hooked=1','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','initialized_children=2') 25),
+        (Case 'ntw2ks-edit-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-edit.exe'),$shared64,'hooked') @('WIN2K_EDIT_OK bits=64 aware=0 hooked=1','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','initialized_children=2') 25),
         (Case 'ntw2ks-edit-v6-x64' (Join-Path $x64 'core-win2k-edit-v6.exe') @((Join-Path $legacy 'ntw2ks64.dll')) @('WIN2K_EDIT_OK bits=64 aware=0 hooked=0','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','parent_retire=2 reparent=1 gdi_cycles=32') 20),
         (Case 'ntw2ks-edit-v6-aware-x64' (Join-Path $x64 'core-win2k-edit-v6.exe') @((Join-Path $legacy 'ntw2ks64.dll'),'aware') @('WIN2K_EDIT_OK bits=64 aware=1 hooked=0','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','parent_retire=2 reparent=1 gdi_cycles=32') 20),
-        (Case 'ntw2ks-edit-v6-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-edit-v6.exe'),(Join-Path $legacy 'ntw2ks64.dll'),'hooked') @('WIN2K_EDIT_OK bits=64 aware=0 hooked=1','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','initialized_children=2') 25),
+        (Case 'ntw2ks-edit-v6-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-edit-v6.exe'),$shared64,'hooked') @('WIN2K_EDIT_OK bits=64 aware=0 hooked=1','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','initialized_children=2') 25),
         (Case 'win2k-paint-x86' (Join-Path $x86 'core-win2k-paint.exe') @() @('WIN2K_GLYPH_REFERENCE_OK samples=4 original_exact=4 old_dark_negative=4','WIN2K_PAINT_OK') 15),
         (Case 'win2k-paint-x64' (Join-Path $x64 'core-win2k-paint.exe') @() @('WIN2K_GLYPH_REFERENCE_OK samples=4 original_exact=4 old_dark_negative=4','WIN2K_PAINT_OK') 15),
         (Case 'ntw2ks-button-x86' (Join-Path $x86 'core-ntw2ks-button.exe') @((Join-Path $legacy 'ntw2ks32.dll')) @('NTW2KS_BUTTON_OK bits=32 states=5 source_scheme=1 caller_rect=1') 15),
@@ -921,12 +921,13 @@ try{
     $cases+=Pair {
         param($bits,$tree,$dll)
         $win2k=Join-Path $legacy "ntw2ks$bits.dll"
+        $publishedDll=Join-Path $Package "ntwshk$bits.dll"
         $scroll=Join-Path $tree 'core-win2k-scroll.exe'
         $scrollScope='axes=2 native_frame=1 native_list=1 native_edit=1 custom_track=1 thumb_32bit=1 sizegrip=1'
         Case "ntw2ks-scroll-layout-$bits" (Join-Path $tree 'core-win2k-scroll-layout.exe') @() @('WIN2K_SCROLL_LAYOUT_OK') 20
         Case "ntw2ks-scroll-$bits" $scroll @($win2k) @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=0",$scrollScope) 20
         Case "ntw2ks-scroll-aware-$bits" $scroll @($win2k,'aware') @("WIN2K_SCROLL_OK bits=$bits aware=1 hooked=0",$scrollScope) 20
-        Case "ntw2ks-scroll-startup-$bits" $run @('Win2K',$scroll,$win2k,'hooked') @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=1",$scrollScope) 25
+        Case "ntw2ks-scroll-startup-$bits" $run @('Win2K',$scroll,$publishedDll,'hooked') @("WIN2K_SCROLL_OK bits=$bits aware=0 hooked=1",$scrollScope) 25
         $themedTrack=Join-Path $tree 'core-win2k-trackbar-v6.exe'
         $trackScope='THEME_TRACKBAR_OK axes=2 position_preserved=1'
         Case "theme-trackbar-win16-$bits" $run @('Win16',$themedTrack,'000000','theme-edge') @($trackScope) 20
@@ -971,7 +972,7 @@ try{
                 $probe=Join-Path $tree "core-win2k-$kind$suffix.exe"
                 Case "ntw2ks-$kind$suffix-$bits" $probe @($win2k) @($scope) 20
                 Case "ntw2ks-$kind$suffix-aware-$bits" $probe @($win2k,'aware') @($scope) 20
-                Case "ntw2ks-$kind$suffix-startup-$bits" $run @('Win2K',$probe,$win2k,'hooked') @($scope) 25
+                Case "ntw2ks-$kind$suffix-startup-$bits" $run @('Win2K',$probe,$publishedDll,'hooked') @($scope) 25
             }
         }
         Case "ntw2ks-progress-paint-$bits" (Join-Path $tree 'core-win2k-progress-paint.exe') @() @('WIN2K_PROGRESS_PAINT_OK') 20
@@ -980,28 +981,28 @@ try{
             $scope='WIN2K_PROGRESS_OK variants=4 native_values=1 caller_colors=1'
             Case "ntw2ks-progress$suffix-$bits" $probe @($win2k) @($scope) 20
             Case "ntw2ks-progress$suffix-aware-$bits" $probe @($win2k,'aware') @($scope) 20
-            Case "ntw2ks-progress$suffix-startup-$bits" $run @('Win2K',$probe,$win2k,'hooked') @($scope) 25
+            Case "ntw2ks-progress$suffix-startup-$bits" $run @('Win2K',$probe,$publishedDll,'hooked') @($scope) 25
         }
         foreach($suffix in @('','-v6')){
             $probe=Join-Path $tree "core-win2k-report-tree$suffix.exe"
             $scope='WIN2K_REPORT_TREE_OK views=4 tree_glyphs=2'
             Case "ntw2ks-report-tree$suffix-$bits" $probe @($win2k) @($scope) 20
             Case "ntw2ks-report-tree$suffix-aware-$bits" $probe @($win2k,'aware') @($scope) 20
-            Case "ntw2ks-report-tree$suffix-startup-$bits" $run @('Win2K',$probe,$win2k,'hooked') @($scope) 25
+            Case "ntw2ks-report-tree$suffix-startup-$bits" $run @('Win2K',$probe,$publishedDll,'hooked') @($scope) 25
         }
         foreach($suffix in @('','-v6')){
             $probe=Join-Path $tree "core-win2k-tab-header$suffix.exe"
             $scope='WIN2K_TAB_HEADER_CONTRACTS_OK'
             Case "ntw2ks-tab-header$suffix-$bits" $probe @($win2k) @($scope) 20
             Case "ntw2ks-tab-header$suffix-aware-$bits" $probe @($win2k,'aware') @($scope) 20
-            Case "ntw2ks-tab-header$suffix-startup-$bits" $run @('Win2K',$probe,$win2k,'hooked') @($scope) 25
+            Case "ntw2ks-tab-header$suffix-startup-$bits" $run @('Win2K',$probe,$publishedDll,'hooked') @($scope) 25
         }
         foreach($suffix in @('','-v6')){
             $probe=Join-Path $tree "core-win2k-list-combo$suffix.exe"
             $scope='list_modes=5 combo_modes=3 child_retire=3 native_tabs=1 owner_draw=1'
             Case "ntw2ks-list-combo$suffix-$bits" $probe @($win2k) @("WIN2K_LIST_COMBO_OK bits=$bits aware=0 hooked=0",$scope) 20
             Case "ntw2ks-list-combo$suffix-aware-$bits" $probe @($win2k,'aware') @("WIN2K_LIST_COMBO_OK bits=$bits aware=1 hooked=0",$scope) 20
-            Case "ntw2ks-list-combo$suffix-startup-$bits" $run @('Win2K',$probe,$win2k,'hooked') @("WIN2K_LIST_COMBO_OK bits=$bits aware=0 hooked=1",$scope) 25
+            Case "ntw2ks-list-combo$suffix-startup-$bits" $run @('Win2K',$probe,$publishedDll,'hooked') @("WIN2K_LIST_COMBO_OK bits=$bits aware=0 hooked=1",$scope) 25
         }
     }
     $cases+=Pair { param($bits,$tree,$dll) Case "tree-v5-${bits}" (Join-Path $tree 'core-tree-v5.exe') @($run) @("TREE_CONTROL_OK bits=${bits} styled=1",'TREE_CALLBACK_RETIRE_OK','TREE_INPUT_STATE_OK ctrl_preserved=1 neutral_moves=1 focus=1 control=0000 shift=0000 alt=0000 restored=1','TREE_CLEANUP_OK') }
