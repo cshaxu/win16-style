@@ -303,7 +303,9 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
     };
     theme_field header[]={
         COLOR_FIELD(class_header,HP_HEADERITEM,HIS_NORMAL,TMT_FILLCOLOR),
-        COLOR_FIELD(class_header,HP_HEADERITEM,HIS_PRESSED,TMT_FILLCOLOR)
+        COLOR_FIELD(class_header,HP_HEADERITEM,HIS_PRESSED,TMT_FILLCOLOR),
+        COLOR_FIELD(class_header,HP_HEADERITEM,HIS_NORMAL,TMT_TEXTCOLOR),
+        COLOR_FIELD(class_header,HP_HEADERITEM,HIS_PRESSED,TMT_TEXTCOLOR)
     };
     const unsigned progress_bar[]={PP_BAR,PP_BARVERT};
     const unsigned progress_fill[]={PP_FILL,PP_FILLVERT};
@@ -527,7 +529,11 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
     theme->has_date_button_face=date_button.present;
     theme->date_button_face=date_button.value;
     if(header[0].present && header[1].present)
-        theme->header=(classic_header_colors){header[0].value,header[1].value,TRUE};
+        theme->header=(style_header_colors){.normal=header[0].value,.pressed=header[1].value,.present=TRUE};
+    for(unsigned i=0;i<ARRAYSIZE(theme->header.text);++i){
+        theme->header.text[i]=header[2+i].value;
+        theme->header.has_text[i]=header[2+i].present;
+    }
     for(size_t i=0;i<ARRAYSIZE(progress);++i){
         const theme_field *p=progress[i];
         if(p[0].present && p[1].present)

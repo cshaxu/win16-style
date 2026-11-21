@@ -47,7 +47,7 @@ typedef struct win2k_control {
     classic_bar_colors bar_colors;
     classic_combo_colors combo_colors;
     style_tab_colors tab_colors;
-    classic_header_colors header_colors;
+    style_header_colors header_colors;
     classic_progress_colors progress_colors[2];
     classic_trackbar_colors trackbar_colors[2];
     classic_group_colors group;

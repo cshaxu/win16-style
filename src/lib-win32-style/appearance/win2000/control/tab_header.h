@@ -7,7 +7,7 @@
 BOOL win2k_header_supported(HWND);
 typedef struct win2k_header_draw {
     const style_instance *instance;
-    const classic_header_colors *colors;
+    const style_header_colors *colors;
     style_relief_palette palette;
     style_line_profile profile;
 } win2k_header_draw;

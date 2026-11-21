@@ -2213,7 +2213,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "T15 S6 finite verified native header public protocol and string-only painter; native geometry/font/notifications retained; fixed item formats use original painter; callback/lifetime/OOM tests; no external code copied or original resource changes; T21 S22 library migration and palette include; T26 S2 mechanical path/include relocation; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained",
-      "sha256": "6dc3609614a2eabf7bbe26eb8611b4a13c87bf5f5a4e3a1aff24d46cdcc9fc69"
+      "sha256": "359b1d883612a3d9ebeb865fdc565f540aee6c2c81bda3c01919128ddd4b79b6"
     },
     {
       "path": "src/lib-win32-style/appearance/win3x/control/header_paint.h",
@@ -2222,7 +2222,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "T15 S6 finite verified native header public protocol and string-only painter; native geometry/font/notifications retained; fixed item formats use original painter; callback/lifetime/OOM tests; no external code copied or original resource changes; T21 S22 library migration and palette include; T26 S2 mechanical path/include relocation; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained",
-      "sha256": "07d5ec97bc0793f16ca637607f23d6c9c0465f99aebdeedc7c6e7197bb86e0cd"
+      "sha256": "e49fb42dfe9fcf2148e898b175174b0f61f264375a5028d80eccc5ec9af354ad"
     },
     {
       "path": "tests/ntw16s-dll/header_controls.c",
@@ -4379,7 +4379,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/control_state.h",
       "source": null,
       "source_blob": null,
-      "sha256": "1923c2a17b0a70c4c3eca97e5e1e3e8c2e76598b1c98a7e3a65867d740034bae",
+      "sha256": "1e1ebef55b4aa4fd9fc88eb4b0af8711593465f6875b2a3e65f6549e5a7f74d8",
       "disposition": "authored",
       "review": "T21 S24 extract control presentation state and resource ownership; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T26 S9 common native list/scroll surface snapshots and base resource preparation; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained; T26 S10 shared custom-draw state/binding/protocol and native dispatch unwind; private duplicate removed; T26 S10 complete control message borrow/font/native observation transaction moved to public message; profile consumes full operation object; T26 S13 complete-instance present/print contract and direct renderer consumer; original fallback/order preserved",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -7556,7 +7556,7 @@
       "path": "src/lib-win32-style/application/graphics/paint_frame.h",
       "source": null,
       "source_blob": null,
-      "sha256": "645135d5217725d15dabf73de30ffdf764e5086efb31c1ccad0745f89daf8427",
+      "sha256": "15102a43027aa43b7b4e0b7af8f8a35e88d3c727c8214adfc5e8e1e1aee89f69",
       "disposition": "authored",
       "review": "T26 S1 shared solid rectangular frame painter; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored C interface; no imported artwork"
@@ -8726,7 +8726,7 @@
       "path": "src/lib-win32-style/application/control/header_snapshot.c",
       "source": null,
       "source_blob": null,
-      "sha256": "80394999a97d31f094844d5c63b2cdafddc6c262f77b9320d52f1da4f96b9161",
+      "sha256": "380a02a3e8c7a46438eafd1b93862e97dc55da02cc0929eb0ba52b1d0846b396",
       "disposition": "authored",
       "review": "T26 S10 native control state/messages and owned native header/progress snapshots with pure C independent contract tests",
       "notice": "Project-authored pure C; no imported artwork"
@@ -8735,7 +8735,7 @@
       "path": "src/lib-win32-style/application/control/header_snapshot.h",
       "source": null,
       "source_blob": null,
-      "sha256": "5c8e5d8af66c11eedab55a94cd1ddb80dc49606e64222b35b52db7cab3a11b65",
+      "sha256": "3187b60efd9193ce69b910926784488652dff71d6193e138560cb50c9ab289ed",
       "disposition": "authored",
       "review": "T26 S10 native control state/messages and owned native header/progress snapshots with pure C independent contract tests",
       "notice": "Project-authored pure C; no imported artwork"
@@ -9818,7 +9818,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "65f074efd91ff292ee578ffb146fe42f58ff2b541b60d5431f513d5cbabef954"
+      "sha256": "ea2666369e71b047e15572876b6c612435673a807c70dc507c91b89df26354bf"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -10013,7 +10013,7 @@
       "path": "src/lib-win32-style/appearance/win2000/control/header_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5f3b50a70eb795b483b6771584f8f58af982b78ec0cbba365aa0be55e21b511e",
+      "sha256": "c1045c97f34d39f7457ed2bf512f24aa040ad99b7232df509c085de2ff0adde9",
       "disposition": "authored",
       "review": "T27 S8 original Header edge and text roles via native custom draw; T27 S9 native report, tree and shared notification integration",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10022,7 +10022,7 @@
       "path": "src/lib-win32-style/appearance/win2000/control/tab_header.h",
       "source": null,
       "source_blob": null,
-      "sha256": "e1b34a338a1dce06d6dfb642528563c3783dcd81e430e3b2509756ab932c8d52",
+      "sha256": "f9c3d7f351c64558866b3596f50917616e7de15f59c8860f42dd9383a446ff85",
       "disposition": "authored",
       "review": "T27 S8 local tab and header appearance declarations",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10031,7 +10031,7 @@
       "path": "tests/lib-win32-style/appearance/win2000/control/tab_header.c",
       "source": null,
       "source_blob": null,
-      "sha256": "044b1a5e388e13bab90b9c9956d9b879c635296d1b558d382871c1c2e60bd621",
+      "sha256": "7a8db528b0cf77fc8872aaf6543a63011feafe70efdd91f581d18d37d2b0249b",
       "disposition": "authored",
       "review": "T27 S8 native v5/v6 tab and header consumer verification",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10535,7 +10535,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ec9e2d251132e4bce9db82b798acb3b7cb24a5a8ecba792fb26b02ec018c74d6",
+      "sha256": "9a2cfbacb05b1d56daa17f0fcb1cfae641c378bfcf62014849ec956ac5e53d1c",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10544,7 +10544,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "6a91899abcee8106242a55ae5f355adb783d6f4f305209ba38a6425eaeb831f3",
+      "sha256": "5394a1224539c5fb65b7fd7c62776bae7539bdce2ccd89580d14e7f9712e150f",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"

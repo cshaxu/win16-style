@@ -4,7 +4,7 @@
 #include "lib-win32-style/application/control/native.h"
 #include "lib-win32-style/application/graphics/paint_frame.h"
 BOOL win16_style_header_supported(HWND);
-struct classic_header_colors;
+struct style_header_colors;
 BOOL win16_style_header_paint(HWND,HDC,const win16_style_palette *,HFONT,const style_instance *,
-    const style_control_native_state *,const struct classic_header_colors *,style_line_profile);
+    const style_control_native_state *,const struct style_header_colors *,style_line_profile);
 #endif

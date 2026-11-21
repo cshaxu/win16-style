@@ -70,10 +70,6 @@ static inline COLORREF classic_bar_color(const classic_bar_colors *colors,enum c
     return colors->present&(1u<<role)?colors->values[role]:fallback;
 }
 
-typedef struct classic_header_colors {
-    COLORREF normal,pressed;
-    BOOL present;
-} classic_header_colors;
 
 typedef struct classic_trackbar_colors {
     COLORREF channel,thumb,edge;
@@ -198,7 +194,7 @@ typedef struct classic_theme {
     BOOL has_date_button_face;
     classic_combo_colors combo;
     style_tab_colors tab;
-    classic_header_colors header;
+    style_header_colors header;
     classic_progress_colors progress[2]; /* horizontal, vertical */
     classic_trackbar_colors trackbar[2]; /* horizontal, vertical */
     msstyles_font caption_font, small_caption_font, menu_font;

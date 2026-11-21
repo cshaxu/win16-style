@@ -1,12 +1,10 @@
 /* Windows 2000 comctl32 header.c: retain the native custom-draw transaction. */
 #include "tab_header.h"
 #include "../common/palette.h"
+#include "lib-win32-style/application/control/header_snapshot.h"
 
 BOOL win2k_header_supported(HWND window)
-{
-    DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
-    return !(style&(HDS_FILTERBAR|HDS_CHECKBOXES|HDS_OVERFLOW|HDS_HIDDEN|HDS_HOTTRACK));
-}
+{return style_header_supported(window,HDS_HOTTRACK);}
 
 BOOL win2k_header_paint(HWND window,const NMCUSTOMDRAW *draw,const void *context)
 {
@@ -29,7 +27,7 @@ BOOL win2k_header_paint(HWND window,const NMCUSTOMDRAW *draw,const void *context
     int saved=SaveDC(dc);
     if(!saved)return FALSE;
     BOOL pressed=(style&HDS_BUTTONS) && (draw->uItemState&CDIS_SELECTED);
-    const classic_header_colors *colors=parameters->colors;
+    const style_header_colors *colors=parameters->colors;
     COLORREF face=colors->present?(pressed?colors->pressed:colors->normal):p->face;
     int unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
     BOOL painted=IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)!=ERROR &&
@@ -38,13 +36,7 @@ BOOL win2k_header_paint(HWND window,const NMCUSTOMDRAW *draw,const void *context
     if(painted && *text){
         InflateRect(&r,-6,0);
         if(pressed)OffsetRect(&r,1,1);
-        UINT flags=DT_VCENTER|DT_SINGLELINE|DT_NOPREFIX|DT_END_ELLIPSIS;
-        UINT alignment=item.fmt&HDF_JUSTIFYMASK;
-        flags|=alignment==HDF_RIGHT?DT_RIGHT:alignment==HDF_CENTER?DT_CENTER:DT_LEFT;
-        if(item.fmt&HDF_RTLREADING)flags|=DT_RTLREADING;
-        SetBkMode(dc,TRANSPARENT);
-        SetTextColor(dc,p->text);
-        DrawTextW(dc,text,-1,&r,flags);
+        style_header_draw_text(dc,r,text,item.fmt,IsWindowEnabled(window)?colors:NULL,pressed,p->text);
     }
     return RestoreDC(dc,saved) && painted;
 }

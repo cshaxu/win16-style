@@ -6,12 +6,12 @@
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 
 BOOL win16_style_header_supported(HWND w)
-{return !(GetWindowLongPtrW(w,GWL_STYLE)&(HDS_FILTERBAR|HDS_CHECKBOXES|HDS_OVERFLOW|HDS_HIDDEN));}
+{return style_header_supported(w,0);}
 
 static void fill(HDC dc,RECT r,COLORREF color)
 {SetDCBrushColor(dc,color);FillRect(dc,&r,GetStockObject(DC_BRUSH));}
 BOOL win16_style_header_paint(HWND w,HDC dc,const win16_style_palette *p,HFONT font,
-    const style_instance *instance,const style_control_native_state *state,const classic_header_colors *colors,
+    const style_instance *instance,const style_control_native_state *state,const style_header_colors *colors,
     style_line_profile profile)
 {
     BOOL painted=FALSE;int saved=0;style_header_snapshot snapshot;
@@ -20,8 +20,8 @@ BOOL win16_style_header_paint(HWND w,HDC dc,const win16_style_palette *p,HFONT f
     saved=SaveDC(dc);if(!saved)goto done;
     IntersectClipRect(dc,client.left,client.top,client.right,client.bottom);
     COLORREF normal=colors && colors->present?colors->normal:p->face;
-    fill(dc,client,normal);SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));SetBkMode(dc,TRANSPARENT);
-    SetTextColor(dc,IsWindowEnabled(w)?p->edge:p->shadow);
+    fill(dc,client,normal);SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));
+    BOOL enabled=IsWindowEnabled(w);
     int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
     RECT bottom=client;bottom.top=max(bottom.top,bottom.bottom-u);fill(dc,bottom,p->edge);
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
@@ -46,11 +46,10 @@ BOOL win16_style_header_paint(HWND w,HDC dc,const win16_style_palette *p,HFONT f
             goto done;
         }
         InflateRect(&r,-3*u,0);
-        UINT flags=DT_VCENTER|DT_SINGLELINE|DT_NOPREFIX|DT_END_ELLIPSIS;
-        int alignment=items[i].format&HDF_JUSTIFYMASK;
-        flags|=alignment==HDF_RIGHT?DT_RIGHT:alignment==HDF_CENTER?DT_CENTER:DT_LEFT;
-        if((items[i].format&HDF_RTLREADING) || (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_RTLREADING))flags|=DT_RTLREADING;
-        DrawTextW(dc,items[i].text,-1,&r,flags);RestoreDC(dc,inner);
+        int format=items[i].format;
+        if(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_RTLREADING)format|=HDF_RTLREADING;
+        style_header_draw_text(dc,r,items[i].text,format,enabled?colors:NULL,pressed,enabled?p->edge:p->shadow);
+        RestoreDC(dc,inner);
     }
     painted=style_control_native_current(w,instance,state,snapshot.epoch);
 done:

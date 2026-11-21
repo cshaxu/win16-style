@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P24",
-  "stage": "published development candidate; dual-width shared tab rendering and mixed-theme pixels verified",
+  "delivery": "M0 T29 S23 P25",
+  "stage": "published development candidate; dual-width header themed text and stock pixels verified",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P23 4521db79bc04",
-  "source_snapshot_sha256": "146d12ef9648d72e90e7526042aa8ff4816d89358c87ae420d4dd7eb8a37cf04",
+  "last_verified_remote_delivery": "M0 T29 S23 P24 3da476a44d7a",
+  "source_snapshot_sha256": "8d2c215f2f5437b1fe13f59da9f47de8b68144bc411afde965531408d333cf8c",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "f157382cffc2c16d9c1d7e1dfb92bbf4e12b36393621d56ae5ccb75ad80cb100",
+      "sha256": "c0786de3cacc82982fa67f4eed45d0a55779782cbb75f038bcceaf3aed09d1d3",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "4aba33c4bc4aa336c69b07ed21a37de45ee5cfdfdf0b653f2164537be867554a",
+      "sha256": "393235abce925d1c2aff72b9462973e28db5145a904cabe6950f299a1c92badb",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "766396e112bb04bb6818169f9f53d05c138e07cc8ea0b6fa3670f8619115ea61",
+      "sha256": "5471143a8c92dd887fa565373dfd7530c3711fe7c11dd2ea211aea279985986d",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -285,7 +285,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "Earlier P8, P22 and P23 observations apply to their tested binaries. P24 fresh results are listed in shared_tab_delivery.",
+    "prior_evidence_scope": "Earlier delivery observations apply to their tested binaries. P25 fresh results are listed in shared_header_text_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -380,13 +380,25 @@
         "physical input",
         "full package matrix"
       ]
+    },
+    "shared_header_text_delivery": {
+      "test_invocations_passed": 18,
+      "mixed_header_text_pixel_and_click_cases": 4,
+      "stock_header_edge_and_click_cases": 4,
+      "stock_against_previous_pixel_comparisons": 4,
+      "shared_header_snapshot_cases": 2,
+      "scope": "Both header providers use standard Header.HeaderItem(Normal/Pressed).TextColor. Owned v6 controls yielded both explicit colors and preserved their native click notifications. Stock tab, header and trackbar hashes match P24.",
+      "not_retested": [
+        "physical input",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P24 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P25 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1974,
-    "cache_misses": 150
+    "cache_hits": 1971,
+    "cache_misses": 153
   }
 }

@@ -23,6 +23,12 @@ typedef struct style_relief_palette {
     COLORREF face,light,highlight,shadow,dark,text,gray,window;
     COLORREF selection,selection_text;
 } style_relief_palette;
+typedef struct style_header_colors {
+    COLORREF normal,pressed;
+    BOOL present;
+    COLORREF text[2];
+    BOOL has_text[2];
+} style_header_colors;
 typedef enum style_tab_text {
     STYLE_TAB_TEXT_DEFAULT,STYLE_TAB_TEXT_LITERAL,STYLE_TAB_TEXT_MNEMONIC
 } style_tab_text;

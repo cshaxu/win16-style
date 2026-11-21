@@ -2,6 +2,24 @@
 #include <commctrl.h>
 #include <stdlib.h>
 #include <wchar.h>
+BOOL style_header_supported(HWND window,DWORD extra_exclusions)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
+    return !(style&(HDS_FILTERBAR|HDS_CHECKBOXES|HDS_OVERFLOW|HDS_HIDDEN|extra_exclusions));
+}
+void style_header_draw_text(HDC dc,RECT rect,PCWSTR text,int format,
+    const style_header_colors *colors,BOOL pressed,COLORREF fallback)
+{
+    unsigned state=pressed!=FALSE;
+    SetBkMode(dc,TRANSPARENT);
+    SetTextColor(dc,colors && colors->has_text[state]?colors->text[state]:fallback);
+    int alignment=format&HDF_JUSTIFYMASK;
+    UINT flags=DT_VCENTER|DT_SINGLELINE|DT_NOPREFIX|DT_END_ELLIPSIS;
+    flags|=alignment==HDF_RIGHT?DT_RIGHT:alignment==HDF_CENTER?DT_CENTER:DT_LEFT;
+    if(format&HDF_RTLREADING)flags|=DT_RTLREADING;
+    DrawTextW(dc,text,-1,&rect,flags);
+}
+
 void style_header_snapshot_clear(style_header_snapshot *snapshot)
 {
     for(int i=0;i<snapshot->count;++i)free(snapshot->items[i].text);

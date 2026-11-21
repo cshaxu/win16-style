@@ -45,9 +45,10 @@ int wmain(int argc,WCHAR **argv)
 {
     BOOL fingerprints=argc==2 && !wcscmp(argv[1],L"--control-fingerprints");
     BOOL themed_header=argc==3 && !wcscmp(argv[1],L"--header-edge");
+    BOOL header_text=argc==4 && !wcscmp(argv[1],L"--header-text");
     BOOL themed_tab=argc==4 && !wcscmp(argv[1],L"--tab-edge");
     BOOL tab_label=argc==3 && !wcscmp(argv[1],L"--tab-label");
-    BOOL themed=themed_header || themed_tab || fingerprints || tab_label;
+    BOOL themed=themed_header || themed_tab || fingerprints || tab_label || header_text;
     CHECK(themed || argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
@@ -136,7 +137,7 @@ int wmain(int argc,WCHAR **argv)
         return 0;
     }
 
-    if(themed_header){
+    if(themed_header || header_text){
         WCHAR *end;
         unsigned long value=wcstoul(argv[2],&end,16);
         CHECK(end!=argv[2] && !*end && value<=0xffffff);
@@ -148,7 +149,26 @@ int wmain(int argc,WCHAR **argv)
         print_client(header_control,dc);
         COLORREF edge=GetPixel(dc,4,0);
         printf("THEME_HEADER_EDGE pixel=%06lx\n",edge);
-        CHECK(edge==(COLORREF)value);
+        if(themed_header)CHECK(edge==(COLORREF)value);
+        if(header_text){
+            unsigned long pressed=wcstoul(argv[3],&end,16);
+            CHECK(end!=argv[3] && !*end && pressed<=0xffffff && pressed!=value);
+            for(unsigned i=0;i<2;++i){
+                BOOL found=FALSE;
+                if(i){
+                    SendMessageW(header_control,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(25,9));
+                    print_client(header_control,dc);
+                }
+                for(int y=3;y<21;++y)for(int x=8;x<65;++x)
+                    if(GetPixel(dc,x,y)==(COLORREF)(i?pressed:value))found=TRUE;
+                CHECK(found);
+            }
+            SendMessageW(header_control,WM_LBUTTONUP,0,MAKELPARAM(25,9));
+            CHECK(header_clicks==1 && DestroyWindow(root));
+            SelectObject(dc,old);CHECK(DeleteObject(bitmap) && DeleteDC(dc));
+            puts("THEME_HEADER_TEXT_OK normal=1 pressed=1 click=1");
+            return 0;
+        }
         SendMessageW(header_control,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(25,9));
         SendMessageW(header_control,WM_LBUTTONUP,0,MAKELPARAM(25,9));
         CHECK(header_clicks==1 && DestroyWindow(root));
