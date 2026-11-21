@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P43",
-  "stage": "published development candidate with common native caption projection",
+  "delivery": "M0 T29 S23 P44",
+  "stage": "published development candidate with shared native nonclient frame and scrollbar",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P42 813d22670aa7",
-  "source_snapshot_sha256": "002da27bc56edaa8f2e0867c461d94d62b29fb4c80f5734db73ed9de40a1f425",
+  "last_verified_remote_delivery": "M0 T29 S23 P43 f4671b4e4dfc",
+  "source_snapshot_sha256": "28e3e0e0f9e57963ee876287158fee2c73ec00975c357bc9b22f760bf097d918",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "e8c4c8dfe5d74d04975e45f0457da10aa4a2812d1a191b6e2f9eb0e5dc32e462",
+      "sha256": "fb6a2c25a0ef7d44682bf09661e9df7994d49474f79bf1db4901c0b12eb255e5",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "e7c2e2813d33d7e826a1aaca15919ebe43ce47e71e10ef4fa12284571706063b",
+      "sha256": "0229cabd85bbca45b8c992a0b23836764c6f5af6e1c4843388f136d5ed1edab6",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "5e78d8c83b79229144b3785af2b570e4deb2bbf0221f84371fe11562a282fb06",
+      "sha256": "d63f82d546a311619d6d2e076708bd9dbc3eef9b55820402b11963dcd3afc4f5",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,513 +106,52 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 24,
+    "passed": 32,
     "selected_cases": [
-      "x86 core-win2k-caption",
-      "x86 core-style-classic-theme",
-      "x86 core-win2k-frame-lifecycle",
-      "x86 core-uwp-theme-renderer",
-      "x86 winnt native-string",
-      "x86 winnt win2k-default",
-      "x86 winnt --caption-added",
-      "x86 winnt --resize-natural",
-      "x86 assets native-string",
-      "x86 assets win2k-default",
-      "x86 assets --caption-added",
-      "x86 assets --resize-natural",
-      "x64 core-win2k-caption",
-      "x64 core-style-classic-theme",
-      "x64 core-win2k-frame-lifecycle",
-      "x64 core-uwp-theme-renderer",
-      "x64 winnt native-string",
-      "x64 winnt win2k-default",
-      "x64 winnt --caption-added",
-      "x64 winnt --resize-natural",
-      "x64 assets native-string",
-      "x64 assets win2k-default",
-      "x64 assets --caption-added",
-      "x64 assets --resize-natural"
+      "x86 lifetime",
+      "x86 remove",
+      "x86 remove-global",
+      "x86 style-switch",
+      "x86 assets-theme-pixels",
+      "x86 assets-modern-model",
+      "x86 assets-resize",
+      "x86 assets-caption-added",
+      "x86 assets-menu16",
+      "x86 assets-menu2k",
+      "x86 winnt-theme-pixels",
+      "x86 winnt-modern-model",
+      "x86 winnt-resize",
+      "x86 winnt-caption-added",
+      "x86 winnt-menu16",
+      "x86 winnt-menu2k",
+      "x64 lifetime",
+      "x64 remove",
+      "x64 remove-global",
+      "x64 style-switch",
+      "x64 assets-theme-pixels",
+      "x64 assets-modern-model",
+      "x64 assets-resize",
+      "x64 assets-caption-added",
+      "x64 assets-menu16",
+      "x64 assets-menu2k",
+      "x64 winnt-theme-pixels",
+      "x64 winnt-modern-model",
+      "x64 winnt-resize",
+      "x64 winnt-caption-added",
+      "x64 winnt-menu16",
+      "x64 winnt-menu2k"
     ],
     "skipped": [],
-    "commit_scope_dialog_retest": "Isolated the Find/Replace assertions from pre-existing edits and verified the scoped script against the installed seven files, including temporary resource cleanup.",
-    "current_desktop_core_matrix": {
-      "registered": {
-        "x86": 371,
-        "x64": 438
-      },
-      "selected": {
-        "x86": 225,
-        "x64": 227
-      },
-      "initial_failures": {
-        "x86": "core/control-present",
-        "x64": "core/control-present"
-      },
-      "result_after_targeted_retest": {
-        "x86": 225,
-        "x64": 227
-      },
-      "additional_assertions": "Both deliberate painter leak checks and both standalone CoreWindow rejection checks passed.",
-      "scope": "Selected self-owned window and theme fixtures plus ABI. Review excluded desktop or physical-input paths, global and propagation scenarios, and unrelated groups. This is not a full run of all registered tests.",
-      "package_snapshot": "c8dcde6cced9e39adc95840ec2d44c60227d814398d186dcdeca29b70417528d"
-    },
-    "real_winui_paint": {
-      "version": "11.2609.441.0",
-      "installation": "O:/winnt",
-      "native_baseline": "XAML bridge present, no ntwshk, native non-client DWM rendering enabled",
-      "themes": "Win16 and Win2K loaded the installed DLL, preserved the XAML bridge and disabled native DWM non-client rendering",
-      "caption_commands": "Both themed instances passed maximize, minimize and two restores, then exited normally",
-      "live_removal": "Both themes restored native DWM rendering, outer, client and visible frame rectangles, and preserved the same XAML bridge in a fresh process at 96 DPI.",
-      "unverified": "Pixel parity",
-      "package_snapshot": "c8dcde6cced9e39adc95840ec2d44c60227d814398d186dcdeca29b70417528d"
-    },
-    "real_modern_hosts_previous_snapshot": {
-      "Calculator from O:/winnt": "Both theme launches timed out (1460) with distinct ApplicationFrameWindow absent.",
-      "Scan using the same published DLL and themes": "Both theme launches timed out (1460) with distinct ApplicationFrameWindow absent.",
-      "session": "Foreground window was present before testing. The host-assignment timeout cause is unconfirmed.",
-      "WinUI": "not tested in this batch",
-      "native_activation_control": "Direct IApplicationActivationManager without run16s launched both applications in the same session. Each visible CoreWindow remained its own root for 12 s. The two owned instances exited. An ApplicationFrameWindow is absent before styling."
-    },
-    "current_native_uwp_topology": {
-      "input_desktop": "Default",
-      "session": "console 2, Active",
-      "samples_per_app": 4,
-      "elapsed_sample_window_seconds": 7.5,
-      "apps": [
-        "Calculator 11.2607.0.0",
-        "Scan 6.3.9654.17133"
-      ],
-      "result": "Native activation succeeded. Both CoreWindow handles were their own root and root owner with DWM_CLOAKED_SHELL set. Three ApplicationFrameWindow roots existed on the desktop; none contained either fresh instance.",
-      "shell_start_comparison": "A separate shell:AppsFolder activation produced zero eligible outer frames in eight observations. The first Calculator sample preceded CoreWindow creation. All seven CoreWindow observations were standalone and DWM_CLOAKED_SHELL.",
-      "cleanup": "Both freshly created instances were ended after the bounded graceful close did not exit."
-    },
-    "modern_host_failure_contracts": {
-      "x86_passed": 5,
-      "x64_passed": 5,
-      "skipped": [],
-      "scope": "Owned or simulated windows. Host start and failure cleanup, window and UWP callback reentrancy, dialog unwind, and simulated UWP apply/remove retries."
-    },
-    "rdp_live_uwp_on_p1": {
-      "package_snapshot": "c8dcde6cced9e39adc95840ec2d44c60227d814398d186dcdeca29b70417528d",
-      "dpi": 96,
-      "calculator": {
-        "Win16": "passed on retest",
-        "Win2K": "functional checks passed; screen pixel sampling unavailable"
-      },
-      "scan": {
-        "Win16": "passed",
-        "Win2K": "functional checks passed; screen pixel sampling unavailable"
-      },
-      "functional_checks": "Each pair attached to a real hosted window, preserved window commands and the outer window rectangle, and removed the frame surface.",
-      "first_calculator_win16_attempt": "The installed launcher returned 1460. The probe subsequently observed a separate root without a styled surface. A bounded retry passed all functional checks."
-    },
-    "rdp_live_calculator_win2k_on_p8": {
-      "functional_checks": "Installed standard command exited 0. The owned native Calculator attached and passed maximize, restore, minimize, live removal and exact outer-rectangle restoration.",
-      "pixel_sampling": "Both points hit the live overlay. Desktop DC and overlay window DC returned CLR_INVALID. PrintWindow returned FALSE. Real composited pixel verification remains skipped.",
-      "cleanup": "Calculator and probe exited. All five probe scratch files were removed."
-    },
-    "installed_control_theme_matrix": {
-      "x86_passed": 13,
-      "x64_passed": 13,
-      "skipped": [],
-      "scope": "A disjoint supplement to the previous 43 package cases. Verified seven installed hashes before and after, using the installed launcher and owned dual-width fixtures for the existing theme assertions.",
-      "per_architecture": [
-        "Win16 and Win2K trackbar",
-        "Win16 up-down art",
-        "Win2K report and tree",
-        "Win16 and Win2K header",
-        "Win16 and Win2K tab",
-        "Win2K bars",
-        "Win16 flat status",
-        "Win2K dates",
-        "Win2K static startup v5 and v6"
-      ]
-    },
-    "installed_caption_command_matrix": {
-      "x86_passed": 13,
-      "x64_passed": 13,
-      "skipped": [],
-      "scope": "Eight Win2K caption and window command cases plus five Win16 and Win2K system menu cases per architecture. Installed seven-file hashes verified before and after. Owned windows, native messages, no physical input."
-    },
-    "installed_dialog_api_matrix": {
-      "x86_passed": 16,
-      "x64_passed": 16,
-      "skipped": [],
-      "scope": "Installed Win2K Win32 dialog contracts and Win16 COM event, navigation, redirect and veto contracts. Owned windows with dialog-test-driver --direct. Printed no jobs. Verified all seven hashes before and after."
-    },
-    "rdp_actual_uwp_surface_pixels": {
-      "apps": [
-        "Calculator",
-        "Scan"
-      ],
-      "dpi": 96,
-      "active_caption_sample": [
-        "4a5ab2",
-        "5b6ebd",
-        "84a1d9"
-      ],
-      "result": "Exact match to the Win2K theme interpolation on both real UWP style surfaces. Maximize, minimize, restore and live removal with geometry preservation passed. Desktop composition and WinUI screen pixels remain unverified."
-    },
-    "unverified": [
-      "full matrix",
-      "real Win2K UWP and WinUI screen pixels",
-      "actual high contrast",
-      "physical input"
-    ],
-    "layout_retirement_delivery": {
-      "focused_runner_passed": 41,
-      "installed_win2k_frame_passed": 2,
-      "previous_vs_current_frame_checks_passed": 4,
-      "clean_layout_tests_passed": 4,
-      "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
-    },
-    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P38 results are in client_menu_delivery.",
-    "paint_composition_delivery": {
-      "installed_frame_cases_passed": 8,
-      "per_architecture": [
-        "composed caption lifecycle and hit test",
-        "ordinary window commands",
-        "24 natural resize cycles",
-        "provider removal and restore"
-      ],
-      "real_paint": "Installed Win2K on Microsoft Paint 11.2609.441.0 at 96 DPI, sampled three actual desktop pixels per state on the owned window. Caption and close hit tests passed in each sampled state. Minimize and restore passed and the owned instance exited.",
-      "initial_capture": "Concurrent first attempt returned CLR_INVALID for all three points. Sequential retry passed.",
-      "real_paint_samples": {
-        "initial": {
-          "rgb": [
-            "4757b0",
-            "5c70be",
-            "7189cc"
-          ],
-          "title_y": [
-            24,
-            43
-          ],
-          "client_bridge_y": 51
-        },
-        "max": {
-          "rgb": [
-            "4c5cb3",
-            "6176c1",
-            "768fcf"
-          ],
-          "title_y": [
-            0,
-            19
-          ],
-          "client_bridge_y": 23
-        },
-        "normal": {
-          "rgb": [
-            "4757b0",
-            "5c70be",
-            "7189cc"
-          ],
-          "title_y": [
-            24,
-            43
-          ],
-          "client_bridge_y": 51
-        },
-        "restore": {
-          "rgb": [
-            "969696",
-            "9d9d9d",
-            "a4a4a4"
-          ],
-          "title_y": [
-            24,
-            43
-          ],
-          "client_bridge_y": 51
-        }
-      },
-      "scope_not_retested": [
-        "full package matrix",
-        "real UWP screen composition",
-        "actual high contrast",
-        "physical input"
-      ]
-    },
-    "tab_theme_delivery": {
-      "installed_cases_passed": 14,
-      "per_architecture": [
-        "Win16 and Win2K stock tab rendering",
-        "both stock theme files omit the optional hot text property",
-        "both provider themes read independent hot text values from modified theme files, including black",
-        "shared tab snapshot, native-style eligibility, and no-hottrack behavior"
-      ],
-      "not_retested": [
-        "physical hover pixels for a modified theme",
-        "full package matrix"
-      ]
-    },
-    "shared_tab_delivery": {
-      "test_invocations_passed": 28,
-      "stock_label_pixel_cases": 4,
-      "mixed_label_pixel_cases": 4,
-      "previous_theme_label_cases": 4,
-      "stock_baseline_pixel_comparisons": 4,
-      "stock_edge_tests": 4,
-      "native_snapshot_tests": 2,
-      "theme_record_tests": 2,
-      "scope": "Same P24 runtime renders literal ampersands or mnemonic text using one changed external tab-label record. Stock tab, header and trackbar hashes match P23 on both widths. Previous theme files remain usable.",
-      "not_retested": [
-        "physical input",
-        "full package matrix"
-      ]
-    },
-    "shared_header_text_delivery": {
-      "test_invocations_passed": 18,
-      "mixed_header_text_pixel_and_click_cases": 4,
-      "stock_header_edge_and_click_cases": 4,
-      "stock_against_previous_pixel_comparisons": 4,
-      "shared_header_snapshot_cases": 2,
-      "scope": "Both header providers use standard Header.HeaderItem(Normal/Pressed).TextColor. Owned v6 controls yielded both explicit colors and preserved their native click notifications. Stock tab, header and trackbar hashes match P24.",
-      "not_retested": [
-        "physical input",
-        "full package matrix"
-      ]
-    },
-    "menu_font_delivery": {
-      "test_invocations_passed": 30,
-      "font_realization_cases": 8,
-      "stock_legacy_and_mixed_popup_pixel_invocations": 20,
-      "theme_record_tests": 2,
-      "scope": "Both stock and former themes produced P25 menu pixel hashes on both widths. Two altered themes per adapter use the same declared Arial description and vary only CLASSIC_STYLE realization. Actual system-menu label pixels changed on both widths. Logical 480-DPI realization verified.",
-      "not_retested": [
-        "physical input",
-        "full package matrix"
-      ]
-    },
-    "push_text_delivery": {
-      "test_invocations_passed": 12,
-      "mixed_runtime_cases": 4,
-      "explicit_label_state_checks": 16,
-      "stock_pixel_comparisons": 4,
-      "scope": "Standard Button.PushButton state TextColor values reached actual GDI glyph pixels with both adapters. Stock push button and group box image hashes match P27.",
-      "not_retested": [
-        "full package matrix",
-        "physical input"
-      ]
-    },
-    "caption_corners_delivery": {
-      "test_invocations_passed": 10,
-      "full_client_geometry_cases": 2,
-      "nonclient_external_renderer_cases": 2,
-      "installed_uwp_switch_restore_cases": 2,
-      "installed_win32_provider_cases": 4,
-      "scope": "Both modern geometry adapters use the ordinary caption button width from Window.MinButton.Width. Mixed 23- and 25-DIP test layouts checked the two pixels straddling the resize corner. Native owned fixtures verify both installed runtime providers.",
-      "not_retested": [
-        "physical resize drag",
-        "real UWP screen composition",
-        "full package matrix"
-      ]
-    },
-    "updown_delivery": {
-      "test_invocations_passed": 10,
-      "stock_art_cases": 2,
-      "stock_recolor_cases": 2,
-      "mixed_mode_comparisons": 2,
-      "ownership_cases": 2,
-      "scope": "Both adapters use the shared UpDown recolor and native fallback. Both widths verified that changing only CLASSIC_STYLE record 28 from indexed art to recolor on the full-client adapter changes actual horizontal and vertical pixels and preserves the native position.",
-      "not_retested": [
-        "physical input",
-        "full package matrix"
-      ],
-      "remaining": "The observed/nonclient regular startup does not supply native draw callbacks required for indexed UpDown art.",
-      "no_console_repeat_passed": 10,
-      "environment_diagnostic": "The first run inherited a console, producing two Terminal attachment diagnostics (1306). Running the same tests with CREATE_NO_WINDOW yielded all ten passes without this diagnostic. Terminal behavior is outside the UpDown result."
-    },
-    "indexed_updown_delivery": {
-      "test_invocations_passed": 14,
-      "mixed_provider_invocations": 4,
-      "pixel_and_interaction_checks": 8,
-      "stock_control_invocations": 4,
-      "owner_invocations": 2,
-      "win32_provider_invocations": 4,
-      "axis_hashes": {
-        "0": "bbb535c4",
-        "1": "a5319536"
-      },
-      "scope": "Standard Win32 startup with the indexed UpDown theme. Theme fixtures differ in one window-provider byte; both providers preserve native notifications, native position and detach. Startup reuses the existing GDI callbacks inside styled processes.",
-      "not_retested": [
-        "physical input",
-        "global late attach indexed UpDown",
-        "full package matrix"
-      ]
-    },
-    "native_roles_delivery": {
-      "test_invocations_passed": 12,
-      "stock_provider_invocations": 4,
-      "mixed_native_provider_invocations": 4,
-      "unit_invocations": 4,
-      "actual_control_attachment_assertions": 56,
-      "scope": "Seven owned Win32 controls per provider, width and theme mode. Both stock profiles attach; otherwise identical external themes with presentation records omitted leave the controls native. Shared pure policy and real class identification checked independently.",
-      "not_retested": [
-        "native fallback pixel equality",
-        "physical input",
-        "full package matrix"
-      ]
-    },
-    "common_link_delivery": {
-      "test_invocations_passed": 16,
-      "installed_palette_abi_invocations": 2,
-      "compatibility_dll_abi_invocations": 2,
-      "installed_win32_attach_remove_invocations": 4,
-      "architecture_link_checks": 2,
-      "remaining_dated_archives_per_width": 7,
-      "matching_archive_members_per_width": 62,
-      "direct_old_product_objects_per_width": 22,
-      "scope": "Neutral full-client layout and native window palette are one object apiece in style-window; the former common archive is absent from both formal link commands. The old PE name resolves and returns the same eight host colors in each width.",
-      "not_retested": [
-        "physical input",
-        "enabled system high contrast",
-        "full package matrix"
-      ]
-    },
-    "raster_font_delivery": {
-      "test_invocations_passed": 16,
-      "menu_label_pixel_matches": 4,
-      "installed_control_font_draw_restore_invocations": 2,
-      "compatibility_focused_invocations": 4,
-      "scope": "Dual-architecture registered face identity, native font borrowing and last release, both themed menu creation modes, installed system menu pixel hashes, and installed edit paint/removal.",
-      "scope_limit": "Owned Win32 fixtures. No physical input or full package matrix. The separately rebuilt standalone compatibility target does not participate in either formal runtime link."
-    },
-    "progress_control_delivery": {
-      "test_invocations_passed": 12,
-      "compatibility_focused_invocations": 4,
-      "retired_appearance_objects_per_width": 2,
-      "remaining_dated_archives_per_width": 7,
-      "matching_archive_members_per_width": 60,
-      "scope": "Two attachment paths share the reentrancy-checked native snapshot and drawing, retaining native class and edge eligibility. Owned fixtures test both themes and Common Controls generations.",
-      "not_retested": [
-        "physical input",
-        "full package matrix"
-      ]
-    },
-    "header_trackbar_delivery": {
-      "test_invocations_passed": 14,
-      "retired_appearance_objects_per_width": 4,
-      "remaining_dated_archives_per_width": 7,
-      "matching_archive_members_per_width": 56,
-      "direct_old_product_objects_per_width": 22,
-      "scope": "Trackbar custom draw and header item framing/text share theme-driven presentation. Client and native header each keep their window lifecycle. VCL app callbacks, nested drawing, clipping, removal and GDI counts tested.",
-      "not_retested": [
-        "physical input",
-        "full package matrix"
-      ]
-    },
-    "native_dialog_delivery": {
-      "test_invocations_passed": 15,
-      "mixed_policy_markers": 38,
-      "retired_appearance_objects_per_width": 5,
-      "remaining_dated_archives_per_width": 4,
-      "matching_archive_members_per_width": 51,
-      "direct_old_product_objects_per_width": 22,
-      "scope": "Caller-provided dialog geometry and refcounted print resources; both themed stock and mixed policy paths; actual General Cancel and Apply with both widths.",
-      "not_retested": [
-        "real directory printer selection",
-        "driver-specific preferences",
-        "full package matrix",
-        "physical input"
-      ]
-    },
-    "client_menu_delivery": {
-      "test_invocations_passed": 22,
-      "menu_label_pixel_matches_to_p37": 4,
-      "retired_appearance_objects_per_width": 5,
-      "remaining_dated_archives_per_width": 4,
-      "matching_archive_members_per_width": 46,
-      "direct_old_product_objects_per_width": 22,
-      "scope": "Neutral client-area menu measurement, menu bar and MDI, owned popup rows, and nested popup scope. Both adapters share ink and mark rendering. Preserves compatibility exports and observed/native menu geometry.",
-      "not_retested": [
-        "physical input",
-        "full package matrix"
-      ]
-    },
-    "native_menu_window_delivery": {
-      "test_invocations_passed": 34,
-      "incremental_passed": 16,
-      "menu_label_pixel_matches_to_p38": 8,
-      "retired_appearance_objects_per_width": 1,
-      "retired_direct_old_objects_per_width": 1,
-      "matching_archive_members_per_width": 45,
-      "direct_old_product_objects_per_width": 21,
-      "scope": "Actual launches from both installed paths. Two themes, native system menu text and cancellation, Win32 runtime caption creation, natural resizing and style restoration. Both widths also tested the same-build standalone compatibility DLL and all six self-owned style transitions.",
-      "not_retested": [
-        "physical input",
-        "interactive administrative tray",
-        "full package matrix"
-      ]
-    },
-    "client_frame_delivery": {
-      "test_invocations_passed": 20,
-      "incremental_passed": 16,
-      "menu_label_pixel_matches": 8,
-      "retired_appearance_objects_per_width": 3,
-      "matching_archive_members_per_width": 42,
-      "direct_old_product_objects_per_width": 21,
-      "scope": "Native default and explicit bitmap font, Win32 full-client renderer, Win32 and owned modern overlay teardown, both real system-menu paths, borrowed DC failure, and standalone compatibility ABI.",
-      "not_retested": [
-        "physical input",
-        "interactive administrative tray",
-        "full package matrix"
-      ]
-    },
-    "caption_inset_delivery": {
-      "test_invocations_passed": 20,
-      "incremental_passed": 16,
-      "theme_resource_counts_unchanged": [
-        38,
-        12
-      ],
-      "menu_label_pixel_matches": 8,
-      "retired_appearance_objects_per_width": 1,
-      "matching_archive_members_per_width": 41,
-      "direct_old_product_objects_per_width": 21,
-      "scope": "Owned Win32 and modern frame DCs and real menus, both named themes, zero and nonzero insets, old metrics fallback, invalid format and DC/resource lifetime. Only CLASSIC_STYLE record 37 added to themes.",
-      "not_retested": [
-        "physical input",
-        "interactive administrative tray",
-        "full package matrix"
-      ]
-    },
-    "client_host_delivery": {
-      "test_invocations_passed": 22,
-      "incremental_passed": 18,
-      "menu_label_pixel_matches": 8,
-      "retired_appearance_objects_per_width": 4,
-      "retired_appearance_archives": 1,
-      "matching_archive_members_per_width": 37,
-      "direct_old_product_objects_per_width": 21,
-      "scope": "Owned Win32 attach/detach, native owned menu and input message routing, font lease cleanup on provider failure, double-width style switches, and modeled modern composed frame teardown. Compatibility-only palette edit absent in formal symbols.",
-      "not_retested": [
-        "physical input",
-        "interactive administrative tray",
-        "full package matrix"
-      ]
-    },
-    "native_caption_delivery": {
-      "test_invocations_passed": 24,
-      "incremental_passed": 16,
-      "menu_label_pixel_matches": 8,
-      "retired_appearance_objects_per_width": 1,
-      "matching_archive_members_per_width": 36,
-      "direct_old_product_objects_per_width": 21,
-      "scope": "Common caption model projection, owned Win32 foreground, synthetic modern frame, independent role geometry and button pixels, installed caption addition and natural resizing, both real menu styles.",
-      "not_retested": [
-        "physical input",
-        "interactive administrative tray",
-        "full package matrix"
-      ]
-    }
+    "limitations": [
+      "Owned native fixtures only",
+      "Physical input, interactive administrator tray, actual UWP application and full package matrix not run"
+    ]
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P43 inputs, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P44 inputs, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2009,
-    "cache_misses": 105
+    "cache_hits": 1986,
+    "cache_misses": 128
   }
 }

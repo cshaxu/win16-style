@@ -23,6 +23,14 @@ typedef struct style_relief_palette {
     COLORREF face,light,highlight,shadow,dark,text,gray,window;
     COLORREF selection,selection_text;
 } style_relief_palette;
+
+static inline style_relief_palette style_relief_native_palette(void)
+{
+    return (style_relief_palette){
+        GetSysColor(COLOR_3DFACE),GetSysColor(COLOR_3DLIGHT),GetSysColor(COLOR_3DHIGHLIGHT),
+        GetSysColor(COLOR_3DSHADOW),GetSysColor(COLOR_3DDKSHADOW),GetSysColor(COLOR_WINDOWTEXT),
+        GetSysColor(COLOR_GRAYTEXT),GetSysColor(COLOR_WINDOW),GetSysColor(COLOR_HIGHLIGHT),GetSysColor(COLOR_HIGHLIGHTTEXT)};
+}
 typedef struct style_header_colors {
     COLORREF normal,pressed;
     BOOL present;

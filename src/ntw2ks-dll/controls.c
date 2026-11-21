@@ -8,7 +8,7 @@
 #include <wchar.h>
 #include "lib-win32/process-hook/startup_hooks.h"
 #include "lib-win32/process-hook/unwind.h"
-#include "lib-win32-style/appearance/win2000/window/frame.h"
+#include "lib-win32-style/application/window/observed_frame.h"
 #include "lib-win32-style/application/dialog/explorer_file.h"
 #include "lib-win32-style/application/dialog/print_general.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
@@ -81,7 +81,7 @@ MESSAGE_HOOK(MessageBoxIndirectW,(const MSGBOXPARAMSW *parameters),(parameters))
 
 extern IMAGE_DOS_HEADER __ImageBase;
 static HMODULE dialog_resources(void){return (HMODULE)&__ImageBase;}
-static const style_dialog_windows dialog_windows={ntwshk_observed_dialog_initialize,win2k_frame_attached,
+static const style_dialog_windows dialog_windows={ntwshk_observed_dialog_initialize,style_observed_frame_attached,
     dialog_resources,classic_theme_dialog_metrics};
 #define STOCK_ENTRY(NAME,TYPE,CALL) \
 static __typeof__(&NAME) real_##NAME; \

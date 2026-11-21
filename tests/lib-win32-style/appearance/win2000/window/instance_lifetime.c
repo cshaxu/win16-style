@@ -16,10 +16,23 @@ static void release(void *value){if(value)++releases;free(value);}
 #define calloc allocate
 #define free release
 #define DwmSetWindowAttribute set_policy
-#include "lib-win32-style/appearance/win2000/window/frame.c"
+#include "lib-win32-style/application/window/observed_frame.c"
 #undef DwmSetWindowAttribute
 #undef calloc
 #undef free
+
+static DWORD native_theme(style_observed_frame_theme *theme,style_native_scroll *scroll)
+{(void)theme;(void)scroll;return ERROR_SUCCESS;}
+static HFONT native_font(const style_font_descriptor *font,UINT dpi,BOOL tool)
+{
+    (void)font;
+    NONCLIENTMETRICSW metrics={.cbSize=sizeof(metrics)};
+    if(!SystemParametersInfoForDpi(SPI_GETNONCLIENTMETRICS,sizeof(metrics),&metrics,0,dpi))return NULL;
+    return CreateFontIndirectW(tool?&metrics.lfSmCaptionFont:&metrics.lfCaptionFont);
+}
+static const style_observed_frame_provider provider={L"Win2kStyle.Frame",L"Win2kStyle.RecalculateFrame",native_theme,native_font};
+static BOOL attach(HWND window)
+{return style_observed_frame_attach(window,&provider);}
 
 #define CHECK(x) do { if(!(x)){fprintf(stderr,"WIN2K_INSTANCE_FAIL line=%d allocations=%u releases=%u error=%lu\n",__LINE__,allocations,releases,GetLastError());return 1;} } while(0)
 static BOOL reentrant_removed,reentrant_attached,retained_during_callback;
@@ -41,13 +54,13 @@ static LRESULT CALLBACK native(HWND window,UINT message,WPARAM wp,LPARAM lp)
         remove_on_caption=FALSE;
         style_instance *instance=style_instance_lookup(window,frame_proc);
         caption_retained=instance && instance->calls>=2;
-        caption_removed=win2k_frame_remove(window);
+        caption_removed=style_observed_frame_remove(window);
     }
     if(message==WM_APP){
         unsigned before=releases;
-        reentrant_removed=win2k_frame_remove(window);
+        reentrant_removed=style_observed_frame_remove(window);
         retained_during_callback=releases==before;
-        reentrant_attached=win2k_frame_attach(window);
+        reentrant_attached=attach(window);
     }
     return DefWindowProcW(window,message,wp,lp);
 }
@@ -67,49 +80,49 @@ int main(void)
     CHECK(RegisterClassW(&cls));
     for(unsigned i=0;i<8;++i){
         HWND window=CreateWindowW(cls.lpszClassName,L"",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,cls.hInstance,NULL);
-        CHECK(window && win2k_frame_attach(window) && win2k_frame_attached(window));
-        CHECK(win2k_frame_remove(window) && !win2k_frame_attached(window) && allocations==releases);
-        CHECK(win2k_frame_attach(window));
+        CHECK(window && attach(window) && style_observed_frame_attached(window));
+        CHECK(style_observed_frame_remove(window) && !style_observed_frame_attached(window) && allocations==releases);
+        CHECK(attach(window));
         CHECK(DestroyWindow(window) && allocations==releases);
     }
     HWND window=CreateWindowW(cls.lpszClassName,L"",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,cls.hInstance,NULL);
-    CHECK(window && win2k_frame_attach(window));
+    CHECK(window && attach(window));
     unsigned before=releases;
     SendMessageW(window,WM_APP,0,0);
     CHECK(reentrant_removed && reentrant_attached && retained_during_callback && releases==before+1);
-    CHECK(win2k_frame_attached(window) && DestroyWindow(window) && allocations==releases);
+    CHECK(style_observed_frame_attached(window) && DestroyWindow(window) && allocations==releases);
 
     window=CreateWindowW(cls.lpszClassName,L"",WS_POPUP,0,0,200,100,NULL,NULL,cls.hInstance,NULL);
-    CHECK(window && win2k_frame_attach(window) && !win2k_frame_attached(window));
+    CHECK(window && attach(window) && !style_observed_frame_attached(window));
     unsigned pending_allocations=allocations;
-    CHECK(win2k_frame_attach(window) && allocations==pending_allocations && !win2k_frame_attached(window));
-    CHECK(win2k_frame_remove(window) && allocations==releases);
-    CHECK(win2k_frame_attach(window));
+    CHECK(attach(window) && allocations==pending_allocations && !style_observed_frame_attached(window));
+    CHECK(style_observed_frame_remove(window) && allocations==releases);
+    CHECK(attach(window));
     LONG_PTR previous=GetWindowLongPtrW(window,GWL_STYLE);
     LONG_PTR returned=SetWindowLongPtrW(window,GWL_STYLE,WS_OVERLAPPEDWINDOW);
     printf("WIN2K_STYLE_VALUES previous=%llx returned=%llx\n",(unsigned long long)(UINT_PTR)previous,(unsigned long long)(UINT_PTR)returned);
     CHECK((DWORD)returned==(DWORD)previous);
-    CHECK(win2k_frame_attached(window) && DestroyWindow(window) && allocations==releases);
+    CHECK(style_observed_frame_attached(window) && DestroyWindow(window) && allocations==releases);
 
     window=CreateWindowW(cls.lpszClassName,L"",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,cls.hInstance,NULL);
     CHECK(window);
     deny_allocation=TRUE;
-    CHECK(!win2k_frame_attach(window) && GetLastError()==ERROR_NOT_ENOUGH_MEMORY && allocations==releases);
+    CHECK(!attach(window) && GetLastError()==ERROR_NOT_ENOUGH_MEMORY && allocations==releases);
     deny_allocation=FALSE;
     deny_policy=TRUE;
-    CHECK(!win2k_frame_attach(window) && GetLastError()==ERROR_ACCESS_DENIED && allocations==releases && !win2k_frame_attached(window));
+    CHECK(!attach(window) && GetLastError()==ERROR_ACCESS_DENIED && allocations==releases && !style_observed_frame_attached(window));
     CHECK(!GetPropW(window,L"Win2kStyle.Frame"));deny_policy=FALSE;
     style_instance foreign={0};
     CHECK(SetWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc,(DWORD_PTR)&foreign));
-    CHECK(!win2k_frame_attach(window) && GetLastError()==ERROR_ALREADY_EXISTS && allocations==releases);
+    CHECK(!attach(window) && GetLastError()==ERROR_ALREADY_EXISTS && allocations==releases);
     CHECK(RemoveWindowSubclass(window,frame_proc,(UINT_PTR)frame_proc) && DestroyWindow(window));
     window=CreateWindowW(cls.lpszClassName,L"Caption reentry",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,cls.hInstance,NULL);
-    CHECK(window && win2k_frame_attach(window));
+    CHECK(window && attach(window));
     remove_on_caption=TRUE;paint(window);
-    CHECK(caption_removed && caption_retained && allocations==releases && !win2k_frame_attached(window));
+    CHECK(caption_removed && caption_retained && allocations==releases && !style_observed_frame_attached(window));
     CHECK(DestroyWindow(window));
     window=CreateWindowW(cls.lpszClassName,L"Caption commands",WS_OVERLAPPEDWINDOW,20,20,300,180,NULL,NULL,cls.hInstance,NULL);
-    CHECK(window && win2k_frame_attach(window));testing_buttons=TRUE;
+    CHECK(window && attach(window));testing_buttons=TRUE;
     const UINT hits[]={HTMINBUTTON,HTMAXBUTTON,HTCLOSE},expected[]={SC_MINIMIZE,SC_MAXIMIZE,SC_CLOSE};
     const unsigned indices[]={2,3,5};
     for(unsigned i=0;i<3;++i){
@@ -117,7 +130,7 @@ int main(void)
         SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
         CHECK(!(info.rgstate[indices[i]]&(STATE_SYSTEM_INVISIBLE|STATE_SYSTEM_UNAVAILABLE)));
         SendMessageW(window,WM_NCLBUTTONDOWN,hits[i],0);
-        CHECK(GetCapture()==window && !win2k_frame_remove(window) && GetLastError()==ERROR_BUSY);
+        CHECK(GetCapture()==window && !style_observed_frame_remove(window) && GetLastError()==ERROR_BUSY);
         SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
         CHECK(info.rgstate[indices[i]]&STATE_SYSTEM_PRESSED);
         RECT bounds=info.rgrect[indices[i]];POINT point={(bounds.left+bounds.right)/2,(bounds.top+bounds.bottom)/2};
@@ -127,7 +140,7 @@ int main(void)
     }
     SendMessageW(window,WM_NCLBUTTONDOWN,HTMINBUTTON,0);CHECK(GetCapture()==window);
     SendMessageW(window,WM_CANCELMODE,0,0);
-    CHECK(GetCapture()!=window && commands==3 && win2k_frame_remove(window));
+    CHECK(GetCapture()!=window && commands==3 && style_observed_frame_remove(window));
     testing_buttons=FALSE;CHECK(DestroyWindow(window) && allocations==releases);
 
     WNDCLASSW bridge={.lpfnWndProc=DefWindowProcW,.hInstance=cls.hInstance,
@@ -139,7 +152,7 @@ int main(void)
     HWND child=CreateWindowW(bridge.lpszClassName,L"",WS_CHILD,0,0,100,30,window,NULL,cls.hInstance,NULL);
     RECT original_outer;
     CHECK(GetWindowRect(window,&original_outer));
-    CHECK(window && child && win2k_frame_attach(window));
+    CHECK(window && child && attach(window));
     frame_window *frame=frame_state(window);
     CHECK(frame && frame->native.refresh_pending);
     SendMessageW(window,frame->native.refresh_message,0,0);
@@ -162,7 +175,7 @@ int main(void)
     ReleaseDC(window,dc);
     HWND timer=frame->composed_repaint.timer;
     CHECK(frame->composed_repaint.pending && IsWindow(timer));
-    CHECK(win2k_frame_remove(window) && !IsWindow(timer) && allocations==releases);
+    CHECK(style_observed_frame_remove(window) && !IsWindow(timer) && allocations==releases);
     CHECK(GetWindowRect(window,&outer));
     style_client_screen(window,&client);
     CHECK(EqualRect(&outer,&client) && EqualRect(&outer,&original_outer));

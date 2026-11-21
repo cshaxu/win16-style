@@ -12,17 +12,13 @@ static inline style_native_caption_colors classic_theme_caption_palette(BOOL act
 
 static inline int classic_theme_caption_height(UINT dpi,BOOL tool,const classic_theme *theme)
 {
-    int height=theme?(tool?theme->caption_metrics.tool_height:theme->caption_metrics.height):0;
-    int pixels=height>0?MulDiv(height,(int)dpi,96):style_native_caption_height(dpi,tool);
-    return theme?max(pixels,theme->border_presentation.geometry.caption_floor):pixels;
+    return style_native_caption_measure_height(dpi,tool,theme?&theme->caption_metrics:NULL,
+        theme?theme->border_presentation.geometry.caption_floor:0);
 }
 
 static inline void classic_theme_frame_border_paint(HDC dc,int width,int height,int thickness,const classic_theme *theme,BOOL active,BOOL dialog)
 {
-    if(!theme || !theme->border_presentation.fill)return;
-    const classic_frame_colors frame=style_native_frame_colors(&theme->frame);
-    const style_border_palette palette={frame.face,frame.edge,frame.light,frame.shadow,
-        classic_theme_caption_palette(active,theme).left};
-    style_frame_border_paint(dc,(RECT){0,0,width,height},thickness,1,dialog,NULL,&theme->border_presentation,&palette);
+    if(theme)style_native_frame_border_paint(dc,(RECT){0,0,width,height},thickness,&theme->border_presentation,
+        &theme->frame,classic_theme_caption_palette(active,theme).left,dialog);
 }
 #endif

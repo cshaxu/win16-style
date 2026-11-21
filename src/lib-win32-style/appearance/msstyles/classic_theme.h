@@ -2,6 +2,7 @@
 #define STYLE_MSSTYLES_CLASSIC_THEME_H
 
 #include "classic_style.h"
+#include "lib-win32-style/application/control/scroll_palette.h"
 #include "lib-win32-style/application/window/palette.h"
 #include "v4_font.h"
 #include "theme_file.h"
@@ -153,16 +154,8 @@ static inline COLORREF classic_push_text_color(const classic_push_colors *colors
     return colors->text_states&(1u<<state)?colors->text[state]:CLR_INVALID;
 }
 
-typedef struct classic_scroll_surface {
-    COLORREF face, light, highlight, shadow, dark;
-} classic_scroll_surface;
-
-typedef struct classic_scroll_colors {
-    classic_scroll_surface thumb[2], track[2]; /* horizontal, vertical */
-    classic_scroll_surface sizebox;
-    BOOL tracks_and_thumbs;
-    BOOL own_sizebox;
-} classic_scroll_colors;
+typedef style_scroll_surface_colors classic_scroll_surface;
+typedef style_native_scroll_colors classic_scroll_colors;
 
 typedef struct classic_caption_images {
     WORD id[CLASSIC_IMAGE_ROLE_COUNT][2]; /* normal, pressed */

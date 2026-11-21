@@ -21,6 +21,8 @@ typedef struct style_native_caption_layout {
 } style_native_caption_layout;
 
 int style_native_caption_height(UINT dpi,BOOL tool);
+int style_native_caption_measure_height(UINT dpi,BOOL tool,const classic_caption_metrics *,int floor);
+void style_native_frame_border_paint(HDC,RECT,int,const style_border_presentation *,const style_frame_colors *,COLORREF,BOOL dialog);
 BOOL style_native_caption_buttons_with_system(const RECT *title,UINT dpi,BOOL tool,
     const BOOL present[4],const classic_button_group *group,const classic_caption_metrics *metrics,
     RECT bounds[4],RECT *system);

@@ -1,3 +1,4 @@
+#include "lib-win32-style/application/control/scroll_extent.h"
 #include "classic_theme.h"
 #include <commctrl.h>
 #include "v4_endian.h"
@@ -1093,19 +1094,13 @@ classic_dialog_metrics classic_theme_dialog_metrics(HMODULE module)
 int classic_scroll_nominal(classic_scroll_metrics metrics,enum classic_scroll_extent_source fallback,
     const RECT *bar,BOOL vertical,UINT dpi)
 {
-    unsigned source=metrics.source?metrics.source:fallback;
-    if(source==CLASSIC_SCROLL_EXTENT_FIXED)return max(1,MulDiv(metrics.logical_extent,(int)dpi,96));
-    if(source==CLASSIC_SCROLL_EXTENT_CROSS_AXIS)return vertical?bar->right-bar->left:bar->bottom-bar->top;
-    return GetSystemMetricsForDpi(vertical?SM_CYVSCROLL:SM_CXHSCROLL,dpi);
+    return style_scroll_nominal(metrics,(enum style_scroll_extent_source)fallback,bar,vertical,dpi);
 }
 
 style_relief_palette classic_relief_palette(const classic_frame_colors *frame,
     const classic_list_colors *list,const classic_text_colors *label)
 {
-    style_relief_palette palette={
-        GetSysColor(COLOR_3DFACE),GetSysColor(COLOR_3DLIGHT),GetSysColor(COLOR_3DHIGHLIGHT),
-        GetSysColor(COLOR_3DSHADOW),GetSysColor(COLOR_3DDKSHADOW),GetSysColor(COLOR_WINDOWTEXT),
-        GetSysColor(COLOR_GRAYTEXT),GetSysColor(COLOR_WINDOW),GetSysColor(COLOR_HIGHLIGHT),GetSysColor(COLOR_HIGHLIGHTTEXT)};
+    style_relief_palette palette=style_relief_native_palette();
     if(frame && frame->present){
         palette.face=palette.light=frame->face;
         palette.highlight=frame->light;

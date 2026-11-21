@@ -20,17 +20,12 @@ enum classic_style_result {
 };
 
 enum classic_scroll_extent_source {
-    CLASSIC_SCROLL_EXTENT_DEFAULT, CLASSIC_SCROLL_EXTENT_CROSS_AXIS,
-    CLASSIC_SCROLL_EXTENT_SYSTEM, CLASSIC_SCROLL_EXTENT_FIXED
+    CLASSIC_SCROLL_EXTENT_DEFAULT=STYLE_SCROLL_EXTENT_DEFAULT,
+    CLASSIC_SCROLL_EXTENT_CROSS_AXIS=STYLE_SCROLL_EXTENT_CROSS_AXIS,
+    CLASSIC_SCROLL_EXTENT_SYSTEM=STYLE_SCROLL_EXTENT_SYSTEM,
+    CLASSIC_SCROLL_EXTENT_FIXED=STYLE_SCROLL_EXTENT_FIXED
 };
-
-typedef struct classic_scroll_metrics {
-    uint16_t source;
-    uint16_t logical_extent;
-    style_scroll_thumb thumb;
-    uint16_t initial_repeat_ms, repeat_ms;
-    style_scroll_drag drag;
-} classic_scroll_metrics;
+typedef style_scroll_metrics classic_scroll_metrics;
 
 typedef style_menu_metrics classic_menu_metrics;
 

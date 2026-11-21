@@ -1,10 +1,7 @@
-#include "frame.h"
+#include "observed_frame.h"
 #include "lib-win32-style/application/menu/native_system_menu.h"
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include <stdlib.h>
-#include "lib-win32-style/appearance/msstyles/native_caption_style.h"
-#include "lib-win32-style/appearance/msstyles/classic_theme.h"
-#include "../control/scroll.h"
 #include "lib-win32-style/application/menu/menu_input.h"
 #include "lib-win32-style/application/menu/tracking.h"
 #include "lib-win32-style/application/menu/bar_controller.h"
@@ -26,23 +23,19 @@
 #include <stdint.h>
 #include <windowsx.h>
 
-static const WCHAR frame_property[]=L"Win2kStyle.Frame";
-extern IMAGE_DOS_HEADER __ImageBase;
 typedef struct frame_window {
     style_instance instance;
     style_native_frame native;
     style_caption_button button;
     style_menu_owner menu;
-    win2k_scroll scroll;
+    style_native_scroll scroll;
     style_uwp_repaint composed_repaint;
     style_bitmap caption_bitmap;
     HWND caption_surface;
     BOOL painting;
     BOOL composed_icon_update,system_slot,system_on_right,system_popup;
-    BOOL themed;
-    classic_theme theme;
-    classic_caption_art art;
-    style_native_menu menu_style;
+    style_observed_frame_theme theme;
+    const style_observed_frame_provider *provider;
 } frame_window;
 static LRESULT CALLBACK frame_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static frame_window *frame_state(HWND window)
@@ -53,13 +46,15 @@ static int caption_height(HWND window)
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
     frame_window *frame=frame_state(window);
-    return classic_theme_caption_height(dpi,tool,frame && frame->themed?&frame->theme:NULL);
+    if(!frame || !frame->theme.present)return style_native_caption_height(dpi,tool);
+    return style_native_caption_measure_height(dpi,tool,&frame->theme.caption_metrics,
+        frame->theme.border_presentation.geometry.caption_floor);
 }
 
 static int caption_client_height(HWND window,UINT dpi)
 {
     const frame_window *frame=frame_state(window);
-    unsigned separator=frame && frame->themed?frame->theme.border_presentation.geometry.separator_units:0;
+    unsigned separator=frame && frame->theme.present?frame->theme.border_presentation.geometry.separator_units:0;
     return caption_height(window)+(int)separator*max(1,MulDiv(1,(int)dpi,96));
 }
 
@@ -95,7 +90,7 @@ static int frame_shift(HWND window,BOOL horizontal)
     if((style&WS_CAPTION)!=WS_CAPTION || IsZoomed(window) || !compact_enabled(window))return 0;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     const frame_window *frame=frame_state(window);
-    const style_frame_geometry *geometry=frame && frame->themed?&frame->theme.border_presentation.geometry:NULL;
+    const style_frame_geometry *geometry=frame && frame->theme.present?&frame->theme.border_presentation.geometry:NULL;
     if(!geometry || !geometry->scale)return 0;
     enum style_frame_border_kind kind=(style&WS_THICKFRAME)?STYLE_FRAME_SIZEABLE:
         (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_DLGMODALFRAME)?STYLE_FRAME_DIALOG:STYLE_FRAME_FIXED;
@@ -151,12 +146,12 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
         if(ClientToScreen(window,&right))area.right=max(area.right,right.x-outer->left);
     }
     frame_window *frame=frame_state(window);
-    const classic_menu_colors colors=style_menu_system_colors(frame && frame->themed?&frame->theme.menu_bar:NULL);
+    const classic_menu_colors colors=style_menu_system_colors(frame && frame->theme.present?&frame->theme.menu_bar:NULL);
     HBRUSH face=CreateSolidBrush(colors.background);if(!face)return;
     FillRect(dc,&area,face);DeleteObject(face);
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    HFONT font=style_menu_font_acquire(dpi,frame && frame->themed?&frame->theme.menu_font:NULL,false);
-    unsigned text_flags=frame && frame->themed?frame->theme.menu_metrics.text_flags:0;
+    HFONT font=style_menu_font_acquire(dpi,frame && frame->theme.present?&frame->theme.menu_font:NULL,false);
+    unsigned text_flags=frame && frame->theme.present?frame->theme.menu_text_flags:0;
     BOOL centered=!text_flags || (text_flags&STYLE_MENU_TEXT_CENTER_BAR);
     int saved=SaveDC(dc);if(saved){
         if(font)SelectObject(dc,font);
@@ -197,7 +192,7 @@ _Static_assert(CLASSIC_BUTTON_SYSTEM==1 && CLASSIC_BUTTON_MINIMIZE==2 &&
 static void classic_buttons(HWND window,const frame_window *frame,TITLEBARINFOEX *info)
 {
     LONG_PTR ex=GetWindowLongPtrW(window,GWL_EXSTYLE);
-    if(!frame->themed || (ex&WS_EX_LAYOUTRTL))return;
+    if(!frame->theme.present || (ex&WS_EX_LAYOUTRTL))return;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     BOOL present[4];RECT bounds[4],system={0};
     for(unsigned i=0;i<ARRAYSIZE(bounds);++i){
@@ -270,8 +265,8 @@ static void paint(HWND window)
     BOOL composed=(extended&WS_EX_NOREDIRECTIONBITMAP) && IsWindowVisible(window) &&
         style_frame_xaml_bridge(window,FALSE);
     HDC dc=GetWindowDC(window);if(!dc && !composed)goto done;
-    const classic_theme *theme=frame->themed?&frame->theme:NULL;
-    const classic_frame_colors *frame_colors=theme?&theme->frame:NULL;
+    const style_observed_frame_theme *theme=frame->theme.present?&frame->theme:NULL;
+    const style_frame_colors *frame_colors=theme?&theme->colors:NULL;
     BOOL maximized=IsZoomed(window);
     if(dc && !maximized){
         int border_saved=SaveDC(dc);MENUBARINFO system={.cbSize=sizeof(system)};
@@ -288,7 +283,8 @@ static void paint(HWND window)
                 border_ready=ExcludeClipRect(dc,client.left,client.top,client.right,client.bottom)!=ERROR;
             }
         }
-        if(border_ready)classic_theme_frame_border_paint(dc,width,height,caption.top,theme,frame->native.active,
+        if(border_ready && theme)style_native_frame_border_paint(dc,(RECT){0,0,width,height},caption.top,
+            &theme->border_presentation,frame_colors,frame->native.active?theme->active.left:theme->inactive.left,
             (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_DLGMODALFRAME)!=0);
         if(border_saved)RestoreDC(dc,border_saved);
     }
@@ -317,11 +313,11 @@ static void paint(HWND window)
         }
         UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
         BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
-        const msstyles_font *defined=frame->themed?
+        const style_font_descriptor *defined=frame->theme.present?
             (tool?&frame->theme.small_caption_font:&frame->theme.caption_font):NULL;
-        HFONT font=msstyles_font_create(defined,dpi,tool?MSSTYLES_FONT_SMALL_CAPTION:MSSTYLES_FONT_CAPTION);
-        style_native_caption_colors colors=classic_theme_caption_palette(frame->native.active,
-            frame->themed?&frame->theme:NULL);
+        HFONT font=frame->provider->caption_font(defined,dpi,tool);
+        const style_native_caption_colors colors=theme?(frame->native.active?theme->active:theme->inactive):
+            style_native_caption_palette(frame->native.active);
         HDC target=dc;
         POINT origin;
         if(composed && !frame->instance.detached){
@@ -335,7 +331,7 @@ static void paint(HWND window)
         }
         if(target && !frame->instance.detached)
             style_native_caption_render(target,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
-                dpi,colors,frame_colors,frame->themed?&frame->theme.caption_presentation:NULL,maximized,flags,&frame->art);
+                dpi,colors,frame_colors,frame->theme.present?&frame->theme.caption_presentation:NULL,maximized,flags,&frame->theme.art);
         if(target && target!=dc){
             SetViewportOrgEx(target,origin.x,origin.y,NULL);
             RECT bounds=caption,hole={0};OffsetRect(&bounds,outer.left,outer.top);
@@ -488,7 +484,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
             return icon_result;
     }
     if(!(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL)){
-        const style_scroll_ops scroll=win2k_scroll_operations(&frame->scroll);
+        const style_scroll_ops scroll=style_native_scroll_operations(&frame->scroll);
         if(style_scroll_embedded_input(window,instance,NULL,&frame->scroll.controller,&scroll,message,wp,lp)){
             SetLastError(incoming);
             return 0;
@@ -515,7 +511,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
             DeleteObject(region);
             if(!instance->detached && IsWindow(window)){
                 paint(window);
-                win2k_scroll_paint_nc(window,&frame->scroll,NULL);
+                style_native_scroll_paint_nc(window,&frame->scroll,NULL);
                 if(IsWindow(window) && compact_enabled(window))style_invalidate_native_menu_overlap(window);
             }
             SetLastError(error);return 0;}
@@ -537,7 +533,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
     else if(style_menu_owner_message(&frame->menu,window,message,wp,
         message==WM_INITMENUPOPUP && frame->system_popup && (HMENU)wp==GetSystemMenu(window,FALSE)?
             MAKELPARAM(LOWORD(lp),TRUE):lp,&style_native_system_menu_ops,
-        frame->themed?&frame->menu_style:NULL,&menu_result)){
+        frame->theme.present?&frame->theme.menu:NULL,&menu_result)){
         SetLastError(incoming);return menu_result;
     }
     const style_menu_bar_target menu=menu_target(window,frame);
@@ -556,9 +552,9 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
         if(native->hover!=hit){native->hover=hit;repaint=TRUE;}
     }else if(message==WM_NCMOUSELEAVE){((frame_window *)instance)->native.hover=0;repaint=TRUE;}
     if(message==WM_NCDESTROY){
-        RemovePropW(window,frame_property);
+        RemovePropW(window,frame->provider->attachment_property);
         style_uwp_repaint_cancel(&frame->composed_repaint);
-        if(style_instance_detach(instance))win2k_scroll_retire(window,&frame->scroll,TRUE);
+        if(style_instance_detach(instance))style_native_scroll_retire(window,&frame->scroll,TRUE);
     }
     RECT *calculated=message==WM_NCCALCSIZE && lp?
         (wp?&((NCCALCSIZE_PARAMS *)lp)->rgrc[0]:(RECT *)lp):NULL;
@@ -652,10 +648,10 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
     if(message==WM_NCPAINT || message==WM_NCACTIVATE || message==WM_SIZE ||
        message==WM_STYLECHANGED || message==WM_ENABLE || message==WM_VSCROLL ||
        message==WM_HSCROLL || message==WM_MOUSEWHEEL || message==WM_MOUSEHWHEEL)
-        win2k_scroll_paint_nc(window,&frame->scroll,NULL);
+        style_native_scroll_paint_nc(window,&frame->scroll,NULL);
     else if(message==WM_PRINT && wp && (lp&PRF_NONCLIENT) &&
         (!(lp&PRF_CHECKVISIBLE) || IsWindowVisible(window)))
-        win2k_scroll_paint_nc(window,&frame->scroll,(HDC)wp);
+        style_native_scroll_paint_nc(window,&frame->scroll,(HDC)wp);
     if((message==WM_NCPAINT || message==WM_NCACTIVATE) && IsWindow(window) && compact_enabled(window))
         style_invalidate_native_menu_overlap(window);
     SetLastError(outcome);
@@ -679,7 +675,7 @@ static LRESULT CALLBACK pending_frame_proc(HWND window,UINT message,WPARAM wp,LP
     if(message==WM_STYLECHANGED && wp==(WPARAM)GWL_STYLE && IsWindow(window)){
         LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
         if(!(style&WS_CHILD) && (style&WS_CAPTION)==WS_CAPTION){
-            if(style_instance_detach(instance))win2k_frame_attach(window);
+            if(style_instance_detach(instance))style_observed_frame_attach(window,((const frame_window *)instance)->provider);
         }
     }
     style_instance_release(instance);SetLastError(error);return result;
@@ -689,19 +685,19 @@ static BOOL setup_frame(HWND window,void *context)
 {
     frame_window *frame=context;
     /* Keep the existing externally observed attachment marker, not state. */
-    if(!SetPropW(window,frame_property,(HANDLE)1))return FALSE;
+    if(!SetPropW(window,frame->provider->attachment_property,(HANDLE)1))return FALSE;
     frame->native.active=GetActiveWindow()==window;
     style_native_frame_capture(&frame->native,window,DwmGetWindowAttribute,TRUE);
     enum DWMNCRENDERINGPOLICY policy=DWMNCRP_DISABLED;
     HRESULT status=style_dwm_policy(window,DwmSetWindowAttribute,policy);
     if(FAILED(status)){SetLastError(HRESULT_CODE(status));return FALSE;}
     /* Avoid sending WM_SIZE before the creator can finish initializing its window. */
-    UINT message=RegisterWindowMessageW(L"Win2kStyle.RecalculateFrame");
+    UINT message=RegisterWindowMessageW(frame->provider->recalculate_message);
     style_native_frame_queue(&frame->native,window,message);
     return TRUE;
 }
 static void rollback_frame(HWND window,void *context)
-{frame_window *frame=context;RemovePropW(window,frame_property);style_instance_detach(&frame->instance);}
+{frame_window *frame=context;RemovePropW(window,frame->provider->attachment_property);style_instance_detach(&frame->instance);}
 static void dispose_frame(void *context)
 {
     frame_window *frame=context;
@@ -709,7 +705,7 @@ static void dispose_frame(void *context)
     style_bitmap_dispose(&frame->caption_bitmap);
     style_menu_owner_stop(&frame->menu);free(frame);
 }
-BOOL win2k_frame_attach(HWND window)
+BOOL style_observed_frame_attach(HWND window,const style_observed_frame_provider *provider)
 {
     if(!window || !win32_style_window_current_thread(window))return FALSE;
     LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
@@ -719,28 +715,20 @@ BOOL win2k_frame_attach(HWND window)
     if(pending && style_instance_lookup(window,pending_frame_proc))return TRUE;
     frame_window *frame=calloc(1,sizeof(*frame));
     if(!frame){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    classic_theme_mapping source={0};
-    DWORD theme_error=pending?ERROR_SUCCESS:
-        classic_theme_attachment_layout((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_NONCLIENT,&source);
+    frame->provider=provider;
+    style_native_scroll_init(&frame->scroll,&frame->instance);
+    DWORD theme_error=pending?ERROR_SUCCESS:provider->load(&frame->theme,&frame->scroll);
     if(theme_error){free(frame);SetLastError(theme_error);return FALSE;}
-    if(source.resources){
-        frame->theme=source.model;
-        frame->themed=TRUE;
-        classic_theme_native_menu(&frame->menu_style,&source);
+    if(frame->theme.present)
         frame->system_slot=style_native_caption_system_side(&frame->theme.title_buttons,&frame->system_on_right);
-        (void)classic_caption_art_read(source.resources,&frame->theme.caption_images,&frame->art);
-        classic_theme_close(&source);
-    }
     frame->menu.bar.selected=frame->menu.bar.highlighted=-1;
     style_instance_init(&frame->instance,frame,dispose_frame);
-    win2k_scroll_init(&frame->scroll,&frame->instance);
-    if(frame->themed)win2k_scroll_theme(&frame->scroll,&frame->theme);
     frame->scroll.controller.resources.frame=TRUE;
     const style_instance_install_ops ops={.context=frame,.setup=pending?NULL:setup_frame,.rollback=rollback_frame};
     return style_instance_install(&frame->instance,window,pending?pending_frame_proc:frame_proc,NULL,&ops);
 }
 
-BOOL win2k_frame_attached(HWND window)
+BOOL style_observed_frame_attached(HWND window)
 {
     if(!window || !win32_style_window_current_thread(window)){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
@@ -748,7 +736,7 @@ BOOL win2k_frame_attached(HWND window)
     return frame_state(window)!=NULL;
 }
 
-BOOL win2k_frame_remove(HWND window)
+BOOL style_observed_frame_remove(HWND window)
 {
     if(!window || !win32_style_window_current_thread(window)){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
@@ -770,10 +758,10 @@ BOOL win2k_frame_remove(HWND window)
     style_instance_retain(instance);
     if(!style_instance_detach(instance)){style_instance_release(instance);return FALSE;}
 
-    RemovePropW(window,frame_property);
     frame_window *frame=(frame_window *)instance;
+    RemovePropW(window,frame->provider->attachment_property);
     style_uwp_repaint_cancel(&frame->composed_repaint);
-    win2k_scroll_retire(window,&frame->scroll,TRUE);
+    style_native_scroll_retire(window,&frame->scroll,TRUE);
     if(frame->menu.bar.keyboard){const style_menu_bar_target menu=menu_target(window,frame);style_menu_bar_finish(&menu,TRUE);}
     style_menu_owner_stop(&frame->menu);
     HRESULT status=style_native_frame_restore_policy(window,&frame->native,DwmSetWindowAttribute);

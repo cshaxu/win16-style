@@ -16,6 +16,13 @@ int style_native_caption_height(UINT dpi,BOOL tool)
     return GetSystemMetricsForDpi(tool?SM_CYSMCAPTION:SM_CYCAPTION,dpi);
 }
 
+int style_native_caption_measure_height(UINT dpi,BOOL tool,const classic_caption_metrics *metrics,int floor)
+{
+    int height=metrics?(tool?metrics->tool_height:metrics->height):0;
+    int pixels=height>0?MulDiv(height,(int)dpi,96):style_native_caption_height(dpi,tool);
+    return max(pixels,floor);
+}
+
 BOOL style_native_caption_buttons_with_system(const RECT *title,UINT dpi,BOOL tool,
     const BOOL present[STYLE_NATIVE_CAPTION_BUTTONS],const classic_button_group *group,
     const classic_caption_metrics *metrics,RECT bounds[STYLE_NATIVE_CAPTION_BUTTONS],RECT *system)
@@ -61,6 +68,15 @@ style_frame_colors style_native_frame_colors(const style_frame_colors *defined)
     if(defined && defined->present)return *defined;
     return (style_frame_colors){GetSysColor(COLOR_3DFACE),GetSysColor(COLOR_3DHIGHLIGHT),
         GetSysColor(COLOR_3DSHADOW),GetSysColor(COLOR_3DDKSHADOW),TRUE};
+}
+
+void style_native_frame_border_paint(HDC dc,RECT bounds,int thickness,const style_border_presentation *border,
+    const style_frame_colors *colors,COLORREF title,BOOL dialog)
+{
+    if(!border->fill)return;
+    const style_frame_colors frame=style_native_frame_colors(colors);
+    const style_border_palette palette={frame.face,frame.edge,frame.light,frame.shadow,title};
+    style_frame_border_paint(dc,bounds,thickness,1,dialog,NULL,border,&palette);
 }
 
 void style_native_caption_render(HDC dc,const style_native_caption_layout *layout,PCWSTR title,HICON icon,

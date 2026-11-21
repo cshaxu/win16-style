@@ -69,10 +69,13 @@ add_library(style-global-window STATIC src/lib-win32-style/application/lifecycle
 target_include_directories(style-global-window PUBLIC src)
 target_compile_definitions(style-global-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-global-window PUBLIC user32 comctl32)
-add_library(win2k-window STATIC src/lib-win32-style/appearance/win2000/window/caption_compat.c src/lib-win32-style/appearance/win2000/window/frame.c)
+add_library(win2k-window STATIC src/lib-win32-style/appearance/win2000/window/caption_compat.c)
 target_include_directories(win2k-window PUBLIC src)
 target_compile_definitions(win2k-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-window PUBLIC style-menu-native style-caption-slots style-menu-owner style-window style-instance style-bitmap style-present style-uwp-native style-font-variant user32 gdi32 msimg32 comctl32 dwmapi shcore)
+add_library(style-frame-observed STATIC src/lib-win32-style/application/window/observed_frame.c)
+target_link_libraries(style-frame-observed PUBLIC style-menu-native style-menu-owner style-window style-control-common style-uwp-native style-uwp-repaint style-font-variant dwmapi comctl32)
+target_compile_definitions(style-frame-observed PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 set(observed_modern_frame src/lib-win32-style/appearance/win2000/window/modern_frame.c)
 add_library(win2k-window-uwp STATIC ${observed_modern_frame})
 target_compile_definitions(win2k-window-uwp PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -83,7 +86,6 @@ add_library(win2k-control STATIC
   src/lib-win32-style/appearance/win2000/control/rebar_paint.c
   src/lib-win32-style/appearance/win2000/control/status_paint.c
   src/lib-win32-style/appearance/win2000/control/date_paint.c
-  src/lib-win32-style/appearance/win2000/control/scroll.c
   src/lib-win32-style/appearance/win2000/control/list_combo.c
   src/lib-win32-style/appearance/win2000/control/background.c
   src/lib-win32-style/appearance/win2000/control/edit_paint.c
@@ -95,7 +97,6 @@ target_compile_definitions(win2k-control PRIVATE UNICODE _UNICODE _WIN32_WINNT=0
 # Theme state is supplied by the existing shared ntwshk runtime. Do not link
 # a second static theme-state owner into this profile.
 target_link_libraries(win2k-control PUBLIC style-control-common style-instance style-present user32 gdi32 comctl32 msimg32)
-target_link_libraries(win2k-window PUBLIC win2k-control)
 add_library(lib-tray STATIC src/lib-win32/tray/tray.c)
 target_compile_definitions(lib-tray PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_include_directories(lib-tray PUBLIC src/lib-win32/tray)
@@ -168,6 +169,7 @@ add_custom_target(style-subclass DEPENDS "${subclass_import}")
 add_dependencies(style-instance style-subclass)
 target_link_libraries(style-instance PUBLIC "${subclass_import}" user32 comctl32)
 add_library(style-control-common STATIC
+  src/lib-win32-style/application/control/native_scroll.c
   src/lib-win32-style/application/control/message.c
   src/lib-win32-style/application/adapters/win32/attachment.c
   src/lib-win32-style/application/adapters/win32/message.c
@@ -364,6 +366,7 @@ else()
 endif()
 target_link_libraries(ntw2ks PRIVATE style-dialog-native user32 uxtheme)
 target_include_directories(ntw2ks PRIVATE src ${CMAKE_SOURCE_DIR})
+target_compile_definitions(ntw2ks PRIVATE _WIN32_WINNT=0x0A00)
 target_link_options(ntw2ks PRIVATE -Wl,--kill-at)
 add_library(ntw16s SHARED ${core_sources} src/ntw16s-dll/control_scope.c src/ntw16s-dll/dllmain.c src/ntw16s-dll/compat_font.c src/ntw16s-dll/compat_menu.c
   src/ntw16s-dll/${dll_name}.def src/ntw16s-dll/version.rc "${theme_object_Win16}")
@@ -470,14 +473,14 @@ target_compile_definitions(style-runtime-process PRIVATE UNICODE _UNICODE _WIN32
 # Like startup assembly, this consumes the caller's existing hook provider.
 target_link_libraries(ntw16s PRIVATE style-runtime-process)
 add_dependencies(ntw2ks style-subclass)
-target_link_libraries(ntw2ks PRIVATE style-startup win2k-window win2k-control style-global-window "$<LINK_GROUP:RESCAN,style-menu-native,style-menu-owner,ntwshk>" "${subclass_import}")
+target_link_libraries(ntw2ks PRIVATE style-startup style-frame-observed win2k-control style-global-window "$<LINK_GROUP:RESCAN,style-menu-native,style-menu-owner,ntwshk>" "${subclass_import}")
 set(win16_intercepts ${injection_root}/window_titles.c ${injection_root}/file_dialogs.c ${injection_root}/folder_dialogs.c ${injection_root}/modern_dialogs.c ${injection_root}/com_dialogs.c
   ${injection_root}/create_process.c ${injection_root}/late_process.c)
 target_sources(ntw16s PRIVATE ${injection_root}/entry.c ${win16_intercepts})
 target_sources(ntwshk PRIVATE ${win16_intercepts})
 add_dependencies(ntwshk style-subclass)
 target_link_libraries(ntwshk PRIVATE style-runtime-process style-creation style-uwp-hook style-global-window
-  style-frame-client style-frame-font win16-control win2k-window win2k-control
+  style-frame-client style-frame-font win16-control style-frame-observed win2k-control
   style-dialog-native style-dialog-common style-theme-track style-companion module-import process-global
   "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}" user32 gdi32 comctl32 comdlg32
   shell32 ole32 oleaut32 uuid dwmapi uxtheme advapi32)
@@ -540,7 +543,7 @@ if(BUILD_TESTING)
   add_executable(core-win2k-caption tests/lib-win32-style/appearance/win2000/window/caption.c)
   add_executable(core-win2k-instance-lifetime tests/lib-win32-style/appearance/win2000/window/instance_lifetime.c)
   target_compile_definitions(core-win2k-instance-lifetime PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-win2k-instance-lifetime PRIVATE "win2k-window" "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>")
+  target_link_libraries(core-win2k-instance-lifetime PRIVATE style-frame-observed "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>")
   add_test(NAME core/win2k-instance-lifetime COMMAND $<TARGET_FILE:core-win2k-instance-lifetime>)
   add_executable(core-win2k-frame-lifecycle tests/lib-win32-style/appearance/win2000/window/frame_lifecycle.c)
   add_dependencies(core-win2k-frame-lifecycle style-subclass)

@@ -3,7 +3,7 @@
 #include "static_paint.h"
 #include "edit_paint.h"
 #include "list_combo.h"
-#include "scroll.h"
+#include "lib-win32-style/appearance/msstyles/native_scroll_style.h"
 #include "lib-win32-style/application/control/header_snapshot.h"
 #include "report_paint.h"
 #include "lib-win32-style/application/control/progress_paint.h"
@@ -57,7 +57,7 @@ typedef struct win2k_control {
     style_control_notify_state parent_binding;
     style_control_combo combo;
     HWND combo_parent;
-    win2k_scroll scroll;
+    style_native_scroll scroll;
     style_control_native_state native;
     BOOL tab_control,header_control,track_control,updown_control;
     style_control_updown updown_binding;
@@ -169,7 +169,7 @@ static style_control_retired release_theme(HWND window,void *context,BOOL termin
 {
     win2k_control *control=context;
     style_control_updown_retire(&control->updown_binding);
-    win2k_scroll_retire(window,&control->scroll,TRUE);
+    style_native_scroll_retire(window,&control->scroll,TRUE);
     BOOL list_removed=style_control_combo_list_retire(&control->combo,&control->instance,
         lookup_state,win2k_control_remove);
     style_control_notify_unbind(&control->parent_binding,parent_proc,control);
@@ -185,7 +185,7 @@ static style_control_retired release_theme(HWND window,void *context,BOOL termin
 static void finish_input(HWND window,void *context)
 {
     win2k_control *control=context;
-    win2k_scroll_retire(window,&control->scroll,FALSE);
+    style_native_scroll_retire(window,&control->scroll,FALSE);
 }
 static BOOL retire(HWND window,win2k_control *control,BOOL terminal)
 {
@@ -290,7 +290,7 @@ static void edit_border(HWND window,void *context,HDC dc)
 static BOOL embedded_input(HWND window,void *context,UINT message,WPARAM a,LPARAM b)
 {
     win2k_control *control=context;
-    const style_scroll_ops ops=win2k_scroll_operations(&control->scroll);
+    const style_scroll_ops ops=style_native_scroll_operations(&control->scroll);
     if(message==WM_ENABLE && !a)
         style_scroll_finish(window,&control->instance,&control->scroll.controller,&ops,TRUE);
     return control->instance.detached || style_scroll_embedded_input(window,&control->instance,&control->state,
@@ -299,7 +299,7 @@ static BOOL embedded_input(HWND window,void *context,UINT message,WPARAM a,LPARA
 static void embedded_paint(HWND window,void *context,HDC dc)
 {
     win2k_control *control=context;
-    win2k_scroll_paint_nc(window,&control->scroll,dc);
+    style_native_scroll_paint_nc(window,&control->scroll,dc);
 }
 static BOOL control_supported(HWND window,const win2k_control *control)
 {
@@ -342,10 +342,10 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
         result=DefSubclassProc(window,message,a,b);
     }else if(class_is(window,L"SCROLLBAR")){
         if(GetWindowLongPtrW(window,GWL_STYLE)&(SBS_SIZEBOX|SBS_SIZEGRIP)){
-            const style_control_draw draw={&control->scroll,win2k_scroll_sizebox};
+            const style_control_draw draw={&control->scroll,style_native_scroll_sizebox};
             result=style_scroll_sizebox_message(window,message,a,b,&draw);
         }else{
-            const style_scroll_ops ops=win2k_scroll_operations(&control->scroll);
+            const style_scroll_ops ops=style_native_scroll_operations(&control->scroll);
             result=style_scroll_control_message(window,&control->instance,&control->scroll.controller,&message,&a,&b,&ops);
         }
     }else if(control->scroll.controller.resources.list){
@@ -598,7 +598,7 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     control->progress_control=progress;control->legacy_progress=legacy;
     control->report=report;
     style_control_native_init(&control->native);
-    win2k_scroll_init(&control->scroll,&control->instance);
+    style_native_scroll_init(&control->scroll,&control->instance);
     for(unsigned i=0;i<CLASSIC_PUSH_STATE_COUNT;++i)
         control->push.state[i]=(classic_surface_colors){control->palette.face,control->palette.dark};
     classic_theme_mapping source={0};
@@ -664,7 +664,7 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
                 control->bar==WIN2K_BAR_REBAR?CLASSIC_BAR_REBAR:CLASSIC_BAR_STATUS;
             control->bar_colors=theme->bars[role];
         }
-        win2k_scroll_theme(&control->scroll,theme);
+        classic_theme_native_scroll(&control->scroll,theme);
     }
     control->controls=source.model.controls;
     classic_theme_close(&source);

@@ -23,6 +23,19 @@ typedef struct style_scroll_drag {
     uint8_t scale, first, second; /* X/Y units or cross/along multipliers. */
 } style_scroll_drag;
 
+enum style_scroll_extent_source {
+    STYLE_SCROLL_EXTENT_DEFAULT, STYLE_SCROLL_EXTENT_CROSS_AXIS,
+    STYLE_SCROLL_EXTENT_SYSTEM, STYLE_SCROLL_EXTENT_FIXED
+};
+
+typedef struct style_scroll_metrics {
+    uint16_t source;
+    uint16_t logical_extent;
+    style_scroll_thumb thumb;
+    uint16_t initial_repeat_ms, repeat_ms;
+    style_scroll_drag drag;
+} style_scroll_metrics;
+
 typedef struct style_scroll_fixed_metrics { int arrow,thumb,border; } style_scroll_fixed_metrics;
 BOOL style_scroll_measure_fixed(const RECT *,BOOL,const style_scroll_fixed_metrics *,LONG,LONG,LONG,style_scroll_layout *);
 BOOL style_scroll_measure_page(const RECT *,BOOL,int,const SCROLLINFO *,style_scroll_layout *);

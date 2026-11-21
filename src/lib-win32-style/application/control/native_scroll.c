@@ -1,6 +1,5 @@
-#include "scroll.h"
-#include "lib-win32-style/application/control/scroll_geometry.h"
-#include "../common/palette.h"
+#include "native_scroll.h"
+#include "scroll_extent.h"
 #include "lib-win32-style/application/control/scroll_surface.h"
 
 static BOOL read_info(HWND window,int bar,SCROLLINFO *info)
@@ -14,13 +13,13 @@ static BOOL vertical_axis(HWND window,LONG object)
         (object==OBJID_CLIENT && (GetWindowLongPtrW(window,GWL_STYLE)&SBS_VERT));
 }
 
-static BOOL measure(HWND window,const win2k_scroll *scroll,LONG object,const RECT *bar,style_scroll_layout *out)
+static BOOL measure(HWND window,const style_native_scroll *scroll,LONG object,const RECT *bar,style_scroll_layout *out)
 {
     BOOL vertical=vertical_axis(window,object);
     UINT dpi=GetDpiForWindow(window);
     SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
     if(!dpi)dpi=96;
-    int metric=classic_scroll_nominal(scroll->metrics,CLASSIC_SCROLL_EXTENT_SYSTEM,bar,vertical,dpi);
+    int metric=style_scroll_nominal(scroll->metrics,STYLE_SCROLL_EXTENT_SYSTEM,bar,vertical,dpi);
     int axis=object==OBJID_CLIENT?SB_CTL:vertical?SB_VERT:SB_HORZ;
     style_scroll_thumb thumb=scroll->metrics.thumb?scroll->metrics.thumb:STYLE_SCROLL_THUMB_PAGE;
     return read_info(window,axis,&info) &&
@@ -35,10 +34,10 @@ static BOOL layout(HWND window,void *context,LONG object,style_scroll_layout *ou
     return measure(window,context,object,&surface.bar,out);
 }
 
-static void arrow(HDC dc,RECT r,UINT state,const win2k_scroll *scroll)
+static void arrow(HDC dc,RECT r,UINT state,const style_native_scroll *scroll)
 {
     if(IsRectEmpty(&r))return;
-    const win2k_palette *p=&scroll->arrow_palette;
+    const style_relief_palette *p=&scroll->arrow_palette;
     if(!style_paint_scroll_arrow(dc,&r,state,p,&scroll->arrow_art)){
         UINT edge=(state&DFCS_PUSHED)?EDGE_SUNKEN:EDGE_RAISED;
         style_paint_relief(dc,&r,edge,BF_RECT|BF_ADJUST,p);
@@ -55,7 +54,7 @@ static HBRUSH track_brush(HWND window,HDC dc)
     return brush!=standard && GetObjectType(brush)==OBJ_BRUSH?brush:NULL;
 }
 
-static void paint_track(HDC dc,RECT r,BOOL vertical,HBRUSH brush,const win2k_palette *p)
+static void paint_track(HDC dc,RECT r,BOOL vertical,HBRUSH brush,const style_relief_palette *p)
 {
     if(IsRectEmpty(&r))return;
     if(!brush){style_paint_dither(dc,&r,p);return;}
@@ -80,9 +79,9 @@ static void paint_track(HDC dc,RECT r,BOOL vertical,HBRUSH brush,const win2k_pal
     }
 }
 
-static win2k_palette surface_palette(const classic_scroll_surface *surface)
+static style_relief_palette surface_palette(const style_scroll_surface_colors *surface)
 {
-    win2k_palette palette=classic_theme_relief_palette(NULL);
+    style_relief_palette palette=style_relief_native_palette();
     if(surface){
         palette.face=surface->face;
         palette.light=surface->light;
@@ -95,15 +94,15 @@ static win2k_palette surface_palette(const classic_scroll_surface *surface)
 
 static void draw(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
 {
-    win2k_scroll *scroll=context;
+    style_native_scroll *scroll=context;
     style_scroll_surface surface;
     style_scroll_layout l;
     if(!dc || scroll->instance->detached || !style_scroll_surface_read(window,object,&surface) ||
         !measure(window,scroll,object,&surface.target,&l) || scroll->instance->detached)return;
     int saved=SaveDC(dc);
     if(!saved)return;
-    const classic_scroll_colors *colors=&scroll->colors;
-    win2k_palette track_colors=surface_palette(colors->tracks_and_thumbs?&colors->track[!!vertical]:NULL);
+    const style_native_scroll_colors *colors=&scroll->colors;
+    style_relief_palette track_colors=surface_palette(colors->tracks_and_thumbs?&colors->track[!!vertical]:NULL);
     HBRUSH brush=object==OBJID_CLIENT?track_brush(window,dc):NULL;
     if(scroll->instance->detached){RestoreDC(dc,saved);return;}
     IntersectClipRect(dc,l.bar.left,l.bar.top,l.bar.right,l.bar.bottom);
@@ -126,7 +125,7 @@ static void draw(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
     }
     paint_track(dc,groove,vertical,brush,&track_colors);
     if(l.thumb_fits && disabled!=ESB_DISABLE_BOTH){
-        win2k_palette thumb_colors=surface_palette(colors->tracks_and_thumbs?&colors->thumb[!!vertical]:NULL);
+        style_relief_palette thumb_colors=surface_palette(colors->tracks_and_thumbs?&colors->thumb[!!vertical]:NULL);
         RECT thumb=l.thumb;
         if(tracking && track->part==STYLE_SCROLL_THUMB){
             if(vertical)OffsetRect(&thumb,0,surface.origin.y+track->pixel-thumb.top);
@@ -148,9 +147,9 @@ static void draw(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
     RestoreDC(dc,saved);
 }
 
-static void sizebox(HDC dc,RECT r,BOOL grip,const win2k_scroll *scroll)
+static void sizebox(HDC dc,RECT r,BOOL grip,const style_native_scroll *scroll)
 {
-    win2k_palette palette=surface_palette(scroll->colors.own_sizebox?&scroll->colors.sizebox:NULL);
+    style_relief_palette palette=surface_palette(scroll->colors.own_sizebox?&scroll->colors.sizebox:NULL);
     style_paint_color(dc,&r,palette.face);
     if(!grip)return;
     int size=min(r.right-r.left,r.bottom-r.top);
@@ -175,7 +174,7 @@ static void sizebox(HDC dc,RECT r,BOOL grip,const win2k_scroll *scroll)
     if(font)DeleteObject(font);
 }
 
-void win2k_scroll_sizebox(HWND window,void *context,HDC dc,BOOL buffered)
+void style_native_scroll_sizebox(HWND window,void *context,HDC dc,BOOL buffered)
 {
     (void)buffered;
     RECT bounds;
@@ -183,7 +182,7 @@ void win2k_scroll_sizebox(HWND window,void *context,HDC dc,BOOL buffered)
         sizebox(dc,bounds,(GetWindowLongPtrW(window,GWL_STYLE)&SBS_SIZEGRIP)!=0,context);
 }
 
-void win2k_scroll_paint_nc(HWND window,win2k_scroll *scroll,HDC borrowed)
+void style_native_scroll_paint_nc(HWND window,style_native_scroll *scroll,HDC borrowed)
 {
     if(scroll->instance->detached || (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL) ||
         !(GetWindowLongPtrW(window,GWL_STYLE)&(WS_HSCROLL|WS_VSCROLL)))return;
@@ -203,12 +202,12 @@ void win2k_scroll_paint_nc(HWND window,win2k_scroll *scroll,HDC borrowed)
 
 static void nonclient(HWND window,void *context,HDC dc)
 {
-    win2k_scroll_paint_nc(window,context,dc);
+    style_native_scroll_paint_nc(window,context,dc);
 }
 
 static void caret(HWND window,void *context)
 {
-    win2k_scroll *scroll=context;
+    style_native_scroll *scroll=context;
     style_scroll_controller *c=&scroll->controller;
     if(c->resources.edit || c->resources.list || c->resources.frame)return;
     style_scroll_layout l;
@@ -223,34 +222,33 @@ static void caret(HWND window,void *context)
     style_scroll_caret_sync(window,&c->resources,show?&r:NULL,c->track.active);
 }
 
-void win2k_scroll_init(win2k_scroll *scroll,style_instance *instance)
+void style_native_scroll_init(style_native_scroll *scroll,style_instance *instance)
 {
     scroll->instance=instance;
-    scroll->arrow_palette=classic_theme_relief_palette(NULL);
+    scroll->arrow_palette=style_relief_native_palette();
     scroll->arrow_art=(style_scroll_arrow_art){0};
-    scroll->colors=(classic_scroll_colors){0};
+    scroll->colors=(style_native_scroll_colors){0};
     scroll->policy=(style_scroll_policy){.hit=style_scroll_hit};
     style_scroll_repeat_configure(&scroll->policy,0,0);
 }
 
-void win2k_scroll_theme(win2k_scroll *scroll,const classic_theme *theme)
+void style_native_scroll_configure(style_native_scroll *scroll,style_relief_palette arrows,
+    const style_scroll_arrow_art *art,const style_native_scroll_colors *colors,style_scroll_metrics metrics)
 {
-    scroll->arrow_palette=classic_theme_relief_palette(theme);
-    scroll->arrow_palette.face=theme->scroll_arrow.face;
-    scroll->arrow_palette.dark=theme->scroll_arrow.edge;
-    scroll->arrow_art=theme->scroll_art;
-    scroll->colors=theme->scroll;
-    scroll->metrics=theme->scroll_metrics;
+    scroll->arrow_palette=arrows;
+    scroll->arrow_art=*art;
+    scroll->colors=*colors;
+    scroll->metrics=metrics;
     scroll->policy.drag=scroll->metrics.drag;
     style_scroll_repeat_configure(&scroll->policy,scroll->metrics.initial_repeat_ms,scroll->metrics.repeat_ms);
 }
 
-style_scroll_ops win2k_scroll_operations(win2k_scroll *scroll)
+style_scroll_ops style_native_scroll_operations(style_native_scroll *scroll)
 {
     return (style_scroll_ops){scroll,&scroll->policy,read_info,layout,draw,nonclient,caret};
 }
 
-void win2k_scroll_retire(HWND window,win2k_scroll *scroll,BOOL terminal)
+void style_native_scroll_retire(HWND window,style_native_scroll *scroll,BOOL terminal)
 {
     style_scroll_controller *c=&scroll->controller;
     if(terminal){
@@ -258,7 +256,7 @@ void win2k_scroll_retire(HWND window,win2k_scroll *scroll,BOOL terminal)
         if(c->track.active)style_scroll_release_capture(window,&c->resources.previous_capture,
             c->resources.edit || c->resources.list || c->resources.frame);
     }else{
-        const style_scroll_ops ops=win2k_scroll_operations(scroll);
+        const style_scroll_ops ops=style_native_scroll_operations(scroll);
         style_scroll_finish(window,scroll->instance,c,&ops,TRUE);
     }
     style_scroll_caret_destroy(window,&c->resources);
