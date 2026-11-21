@@ -149,17 +149,17 @@ int wmain(int argc,WCHAR **argv)
         const style_frame_geometry joined={STYLE_FRAME_LOGICAL,4,3,6,1,20,1,1};
         CHECK(style_full_client_measure(outer.right-outer.left,outer.bottom-outer.top,96,
             (DWORD)GetWindowLongPtrW(owner,GWL_STYLE),(DWORD)GetWindowLongPtrW(owner,GWL_EXSTYLE),FALSE,NULL,NULL,&joined,96,&base));
-        CHECK(win16_control_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,NULL,NULL,&joined,0,NULL,&measured));
+        CHECK(style_client_frame_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,NULL,NULL,&joined,0,NULL,&measured));
         CHECK(fixture.calls && fixture.fonts.dpi==144 &&
             fixture.fonts.menu==GetStockObject(DEFAULT_GUI_FONT) &&
             measured.client.right==base.client.right-GetSystemMetricsForDpi(SM_CXVSCROLL,144)+base.unit);
         style_frame_geometry separate=joined;
         separate.scroll_shared_units=0;
         fixture.fonts=(style_font_pair){.menu=(HFONT)GetStockObject(SYSTEM_FONT),.dpi=96};
-        CHECK(win16_control_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,NULL,NULL,&separate,0,NULL,&measured));
+        CHECK(style_client_frame_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,NULL,NULL,&separate,0,NULL,&measured));
         CHECK(measured.client.right==base.client.right-GetSystemMetricsForDpi(SM_CXVSCROLL,144));
         fixture.retire=TRUE;fixture.calls=0;fixture.fonts.dpi=96;
-        CHECK(!win16_control_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,NULL,NULL,NULL,0,NULL,&measured) &&
+        CHECK(!style_client_frame_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,NULL,NULL,NULL,0,NULL,&measured) &&
             fixture.calls && fixture.instance.detached);
         CHECK(DestroyWindow(owner) && UnregisterClassW(cls.lpszClassName,wc.hInstance));
         puts("PASS frame measurement reentry: live whole font pair DPI and instance retirement after native owner-draw callback");

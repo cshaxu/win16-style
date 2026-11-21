@@ -1,7 +1,6 @@
 #include "lib-win32-style/application/window/frame.h"
 #include "frame_lifecycle.h"
 #include "lib-win32-style/application/lifecycle/install.h"
-#include "frame_layout.h"
 #include "frame_dispatch.h"
 #include "lib-win32-style/appearance/msstyles/frame_font.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"

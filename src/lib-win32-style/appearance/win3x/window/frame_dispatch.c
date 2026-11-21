@@ -1,6 +1,5 @@
 #include "lib-win32-style/application/window/frame.h"
 #include "frame_dispatch.h"
-#include "frame_layout.h"
 #include "lib-win32-style/application/menu/menu_input.h"
 #include <commctrl.h>
 #include <windowsx.h>

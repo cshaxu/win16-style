@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P40",
-  "stage": "published development candidate with neutral full-client rendering and declared frame fonts",
+  "delivery": "M0 T29 S23 P41",
+  "stage": "published development candidate with theme-declared caption text inset and neutral layout",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P39 9c8525550fdb",
-  "source_snapshot_sha256": "5ca32df1c0e21e18b36c996bceb4f02f291a63a7752f257e1d7f5f27e216c1df",
+  "last_verified_remote_delivery": "M0 T29 S23 P40 7f48bb7ad72e",
+  "source_snapshot_sha256": "fbc42914943504e38542efa4c047e5f34cba6d848284d329576ecf77b8047e54",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "879ce0a8c42fe5c35303c36b38124ef1e0f5e47e9940ed0424821a5b72fd1ae2",
+      "sha256": "604954364f35b836e1245c09f246338457c2b7ec3d57545677c662ba528789bc",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "e8ec9a3f5187ea8b41679104ce2df9d6b18408be6ea82f23e770f9a1b5623070",
+      "sha256": "f235a1c57f6cfd855fb217b4bbab09fc553270cac4dbc4fe83b0ce46b6733f0e",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "51d0eeab74a7cce3840a2c3071b795e48ce26c6eb5a729ba7d42cfe54a037342",
+      "sha256": "58fc0f351080ff1b98238bd62fe7cb4b123bbbf66a19a6214dcbcc733c9212d5",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -79,9 +79,9 @@
     }
   },
   "theme_artifacts": {
-    "Win16/Win16.msstyles": "eb3e949c73e5036c247d82aaa886b6c888c77ee2a50843a60b24b2733084b043",
+    "Win16/Win16.msstyles": "5d774e3db3b3f1e071d36eaf6e23970a865a2e0bfbe462a26c83ec588553bdce",
     "Win16/Win16.theme": "818f62aa9e16bff14d40a93e9f5f0894d2f9098ff2aa3b0684e4f61cdc45b2b2",
-    "Win2K/Win2K.msstyles": "393f0ed8fa08a13a4fa94c5e5c8bfc41f4f358a87861a9b89e894e92dbb6621a",
+    "Win2K/Win2K.msstyles": "e07110269b170fd7b26c4af974cd390dcf1a09a35766b270274ff1f8b4d1a003",
     "Win2K/Win2K.theme": "b6fefdb99613cedf8061ef3971f4116b053e4319e09226df7bc2d11439939b80"
   },
   "publication": {
@@ -108,22 +108,22 @@
     "coverage": "focused",
     "passed": 20,
     "selected_cases": [
-      "x86 core-style-classic-theme",
-      "x86 core-win16-control-link",
-      "x86 core-dc-failure",
-      "x86 core-frames",
-      "x86 core-uwp-client-theme-renderer",
-      "x86 core-abi",
+      "x86 core-style-classic-extension fixture",
+      "x86 core-style-classic-extension packaged",
+      "x86 core-style-classic-theme packaged",
+      "x86 core-win16-control-link fixture",
+      "x86 core-dc-failure fixture",
+      "x86 core-uwp-client-theme-renderer packaged",
       "x86 winnt native-string",
       "x86 winnt win2k-default",
       "x86 assets native-string",
       "x86 assets win2k-default",
-      "x64 core-style-classic-theme",
-      "x64 core-win16-control-link",
-      "x64 core-dc-failure",
-      "x64 core-frames",
-      "x64 core-uwp-client-theme-renderer",
-      "x64 core-abi",
+      "x64 core-style-classic-extension fixture",
+      "x64 core-style-classic-extension packaged",
+      "x64 core-style-classic-theme packaged",
+      "x64 core-win16-control-link fixture",
+      "x64 core-dc-failure fixture",
+      "x64 core-uwp-client-theme-renderer packaged",
       "x64 winnt native-string",
       "x64 winnt win2k-default",
       "x64 assets native-string",
@@ -555,13 +555,31 @@
         "interactive administrative tray",
         "full package matrix"
       ]
+    },
+    "caption_inset_delivery": {
+      "test_invocations_passed": 20,
+      "incremental_passed": 16,
+      "theme_resource_counts_unchanged": [
+        38,
+        12
+      ],
+      "menu_label_pixel_matches": 8,
+      "retired_appearance_objects_per_width": 1,
+      "matching_archive_members_per_width": 41,
+      "direct_old_product_objects_per_width": 21,
+      "scope": "Owned Win32 and modern frame DCs and real menus, both named themes, zero and nonzero insets, old metrics fallback, invalid format and DC/resource lifetime. Only CLASSIC_STYLE record 37 added to themes.",
+      "not_retested": [
+        "physical input",
+        "interactive administrative tray",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P40 inputs, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P41 inputs, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2103,
-    "cache_misses": 11
+    "cache_hits": 2011,
+    "cache_misses": 103
   }
 }

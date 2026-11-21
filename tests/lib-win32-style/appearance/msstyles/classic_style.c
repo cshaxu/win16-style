@@ -235,6 +235,27 @@ static int fixtures(void)
     bytes[length+10]=STYLE_CAPTION_BUTTON_SYSTEM;
     CHECK(classic_style_read(bytes,length+12,&group,NULL,NULL,NULL,NULL,&decoded,NULL,NULL)==CLASSIC_STYLE_INVALID &&
         !memcmp(&decoded,&caption,sizeof(caption)));
+    caption.text_inset_plus_one=1;
+    size_t with_inset=classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,NULL,&caption,NULL,NULL);
+    CHECK(with_inset==length+21 && bytes[6]==35 && bytes[with_inset-9]==37 && bytes[with_inset-1]==0);
+    CHECK(classic_style_read(bytes,with_inset,&group,NULL,NULL,NULL,NULL,&decoded,NULL,NULL)==CLASSIC_STYLE_OK &&
+        !memcmp(&decoded,&caption,sizeof(caption)));
+    bytes[with_inset-1]=32;
+    CHECK(classic_style_read(bytes,with_inset,&group,NULL,NULL,NULL,NULL,&decoded,NULL,NULL)==CLASSIC_STYLE_OK &&
+        decoded.text_inset_plus_one==33);
+    bytes[with_inset-1]=33;
+    CHECK(classic_style_read(bytes,with_inset,&group,NULL,NULL,NULL,NULL,&decoded,NULL,NULL)==CLASSIC_STYLE_INVALID &&
+        decoded.text_inset_plus_one==33);
+    bytes[with_inset-1]=0;
+    memcpy(bytes+with_inset,bytes+with_inset-9,9);
+    bytes[8]=(unsigned char)(with_inset+9);bytes[12]=4;
+    CHECK(classic_style_read(bytes,with_inset+9,&group,NULL,NULL,NULL,NULL,&decoded,NULL,NULL)==CLASSIC_STYLE_INVALID);
+    memcpy(bytes+length,bytes+with_inset-9,9);
+    bytes[8]=(unsigned char)(length+9);bytes[12]=2;
+    CHECK(classic_style_read(bytes,length+9,&group,NULL,NULL,NULL,NULL,&decoded,NULL,NULL)==CLASSIC_STYLE_INVALID);
+    caption.text_inset_plus_one=34;
+    CHECK(!classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,NULL,&caption,NULL,NULL));
+    caption.text_inset_plus_one=0;
     const style_border_presentation border={STYLE_BORDER_CLIPPED,STYLE_BORDER_TITLE,
         {STYLE_BORDER_OUTER,STYLE_BORDER_EDGE,STYLE_BORDER_EDGE},
         {STYLE_BORDER_NEXT,STYLE_BORDER_LIGHT,STYLE_BORDER_SHADOW},STYLE_BORDER_KEEP,STYLE_BORDER_EDGE,{0}};
@@ -430,7 +451,7 @@ static int packaged(PCWSTR root,PCWSTR name,unsigned expected_count,unsigned exp
     CHECK(!memcmp(&policy,&expected,sizeof(policy)));
     if(measure==CLASSIC_SCROLL_EXTENT_CROSS_AXIS){
         CHECK(caption.text_mode==STYLE_CAPTION_TEXT_CENTER_CLIP && caption.separator==STYLE_CAPTION_SEPARATOR_AFTER &&
-            caption.icon_mode==STYLE_CAPTION_ICON_HIDDEN);
+            caption.icon_mode==STYLE_CAPTION_ICON_HIDDEN && caption.text_inset_plus_one==1);
         CHECK(caption.button_source==STYLE_CAPTION_BUTTON_INDEXED && caption.button_outline==STYLE_CAPTION_BUTTON_EDGE_OUTLINE);
         CHECK(border.fill==STYLE_BORDER_CLIPPED && border.dialog_fill==STYLE_BORDER_TITLE &&
             border.outer.leading==STYLE_BORDER_EDGE && border.outer.trailing==STYLE_BORDER_EDGE &&
@@ -445,7 +466,7 @@ static int packaged(PCWSTR root,PCWSTR name,unsigned expected_count,unsigned exp
             columns.mdi_inactive==(CLASSIC_MDI_DEFINED|CLASSIC_MDI_MINIMIZE|CLASSIC_MDI_CLOSE) && columns.text_flags==(STYLE_MENU_TEXT_DEFINED|STYLE_MENU_TEXT_STIPPLE_DISABLED));
     }else{
         CHECK(caption.text_mode==STYLE_CAPTION_TEXT_LEFT_ELLIPSIS && caption.separator==STYLE_CAPTION_SEPARATOR_INSIDE &&
-            caption.icon_mode==STYLE_CAPTION_ICON_NATIVE);
+            caption.icon_mode==STYLE_CAPTION_ICON_NATIVE && caption.text_inset_plus_one==3);
         CHECK(caption.button_source==STYLE_CAPTION_BUTTON_SYSTEM && caption.button_outline==STYLE_CAPTION_BUTTON_NO_OUTLINE);
         CHECK(border.fill==STYLE_BORDER_PERIMETER && border.inner.anchor==STYLE_BORDER_NEXT &&
             border.inner.leading==STYLE_BORDER_LIGHT && border.inner.trailing==STYLE_BORDER_SHADOW &&

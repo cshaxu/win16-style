@@ -192,7 +192,9 @@ void style_caption_render(HDC dc,PCWSTR title,HFONT font,const style_caption_ren
     RECT band=caption_band(dc,model->band,model->text.right,model->start,model->end,
         model->gradient,presentation->separator,model->unit,separator);
     RECT text=model->text;
-    if(presentation->text_mode!=STYLE_CAPTION_TEXT_CENTER_CLIP)text.left+=2;
+    const int inset=presentation->text_inset_plus_one?presentation->text_inset_plus_one-1:
+        (presentation->text_mode==STYLE_CAPTION_TEXT_CENTER_CLIP?0:2);
+    text.left+=inset;
     text.bottom=min(text.bottom,band.bottom);
     style_caption_title(dc,text,title,font,model->ink,presentation->text_mode);
     for(enum classic_button_role role=CLASSIC_BUTTON_SYSTEM;role<=CLASSIC_BUTTON_CLOSE;++role){

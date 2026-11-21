@@ -1,4 +1,4 @@
-#include "frame_layout.h"
+#include "client_frame_layout.h"
 #include "lib-win32-style/application/menu/menu_input.h"
 #include "lib-win32-style/application/window/dwm.h"
 #include "lib-win32-style/application/window/frame.h"
@@ -6,7 +6,7 @@
 #include "lib-win32-style/application/menu/client_bar.h"
 #include <windowsx.h>
 
-BOOL win16_control_frame_hit_test(HWND w,const style_full_client_layout *l,LPARAM lp,LRESULT *result)
+BOOL style_client_frame_hit_test(HWND w,const style_full_client_layout *l,LPARAM lp,LRESULT *result)
 {
     RECT r;POINT point;
     POINT screen={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
@@ -17,7 +17,7 @@ BOOL win16_control_frame_hit_test(HWND w,const style_full_client_layout *l,LPARA
     return TRUE;
 }
 
-BOOL win16_control_measure_window(HWND w,const style_instance *instance,const style_font_pair *fonts,
+BOOL style_client_frame_measure_window(HWND w,const style_instance *instance,const style_font_pair *fonts,
     const RECT *outer,const classic_button_group *buttons,const classic_caption_metrics *metrics,
     const style_frame_geometry *frame,unsigned icon_mode,const style_menu_metrics *menu,style_full_client_layout *l)
 {

@@ -111,6 +111,6 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
     const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border,
     const classic_control_presentation *controls);
 
-enum { CLASSIC_STYLE_RESOURCE_CAPACITY=419 };
+enum { CLASSIC_STYLE_RESOURCE_CAPACITY=428 };
 
 #endif

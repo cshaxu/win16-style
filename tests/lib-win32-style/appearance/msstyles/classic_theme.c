@@ -183,7 +183,9 @@ static BOOL draw_caption_presentation(HDC dc,BOOL win2000)
     HFONT font=(HFONT)GetStockObject(ANSI_FIXED_FONT);
     const style_caption_presentation variants[]={
         {.text_mode=STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,.separator=STYLE_CAPTION_SEPARATOR_INSIDE},
-        {.text_mode=STYLE_CAPTION_TEXT_CENTER_CLIP,.separator=STYLE_CAPTION_SEPARATOR_AFTER}
+        {.text_mode=STYLE_CAPTION_TEXT_CENTER_CLIP,.separator=STYLE_CAPTION_SEPARATOR_AFTER},
+        {.text_mode=STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,.separator=STYLE_CAPTION_SEPARATOR_INSIDE,.text_inset_plus_one=1},
+        {.text_mode=STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,.separator=STYLE_CAPTION_SEPARATOR_INSIDE,.text_inset_plus_one=13}
     };
     int first_ink[ARRAYSIZE(variants)];
     for(unsigned i=0;i<ARRAYSIZE(variants);++i){
@@ -206,10 +208,12 @@ static BOOL draw_caption_presentation(HDC dc,BOOL win2000)
         for(int x=band.left;x<first_ink[i];++x)
             for(int y=band.top;y<band.bottom-1;++y)
                 if(GetPixel(dc,x,y)!=background){first_ink[i]=x;break;}
-        if(GetPixel(dc,200,21)!=(i?background:line) || GetPixel(dc,200,22)!=(i?line:background))
+        BOOL after=variants[i].separator==STYLE_CAPTION_SEPARATOR_AFTER;
+        if(GetPixel(dc,200,21)!=(after?background:line) || GetPixel(dc,200,22)!=(after?line:background))
             return FALSE;
     }
-    return first_ink[0]<15 && first_ink[1]>65 && first_ink[1]<band.right;
+    return first_ink[0]<15 && first_ink[1]>65 && first_ink[1]<band.right && first_ink[0]==first_ink[2]+2 &&
+        first_ink[3]==first_ink[2]+12;
 }
 
 static BOOL shared_caption_band(HDC dc,const DWORD *pixels)
@@ -349,7 +353,7 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
     DWORD signature[ARRAYSIZE(sources)]={0};
     for(unsigned i=0;i<ARRAYSIZE(sources);++i){
         style_caption_presentation paint={STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,
-            STYLE_CAPTION_SEPARATOR_NONE,sources[i],STYLE_CAPTION_BUTTON_NO_OUTLINE,STYLE_CAPTION_ICON_DEFAULT};
+            STYLE_CAPTION_SEPARATOR_NONE,sources[i],STYLE_CAPTION_BUTTON_NO_OUTLINE,STYLE_CAPTION_ICON_DEFAULT,0};
         style_client_frame_paint_state state={.active=TRUE,.button={HTMINBUTTON,TRUE},.art=art,.presentation=paint};
         style_client_frame_caption(dc,&layout,&palette,&state,NULL,FALSE,FALSE);
         GdiFlush();memcpy(reference,pixels,sizeof(reference));

@@ -25,6 +25,7 @@ enum style_caption_icon_mode {
 };
 typedef struct style_caption_presentation {
     uint8_t text_mode,separator,button_source,button_outline,icon_mode;
+    uint8_t text_inset_plus_one; /* Device pixels. Zero selects legacy alignment padding. */
 } style_caption_presentation;
 
 /* An explicit system button takes priority over the application icon. */

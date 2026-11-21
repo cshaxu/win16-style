@@ -11,7 +11,7 @@
 #include "lib-win32-style/application/window/messages.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_dispatch.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_input.h"
-#include "../lib-win32-style/appearance/win3x/window/frame_layout.h"
+#include "../lib-win32-style/application/window/client_frame_layout.h"
 #include "lib-win32-style/appearance/msstyles/frame_font.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/window/frame.h"
@@ -47,7 +47,7 @@ static BOOL local_window(HWND w)
 static BOOL layout(HWND w,style_window *s,style_full_client_layout *l)
 {
     RECT r;
-    return GetWindowRect(w,&r) && win16_control_measure_window(w,&s->instance,&s->fonts,&r,
+    return GetWindowRect(w,&r) && style_client_frame_measure_window(w,&s->instance,&s->fonts,&r,
         &s->title_buttons,&s->caption_metrics,&s->border_presentation.geometry,s->caption_presentation.icon_mode,&s->menu_metrics,l);
 }
 
@@ -57,7 +57,7 @@ BOOL win16_style_hit_test(HWND w,LPARAM lp,LRESULT *result)
     if(!result || !local_window(w))return FALSE;
     s=state(w);
     if(!s || !layout(w,s,&l))return FALSE;
-    return win16_control_frame_hit_test(w,&l,lp,result);
+    return style_client_frame_hit_test(w,&l,lp,result);
 }
 
 static BOOL paint_layout(HWND w,void *context,style_full_client_layout *result)
@@ -181,7 +181,7 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,UINT_PTR 
 static BOOL measure_client(HWND w,void *context,const RECT *outer,RECT *client)
 {
     style_window *s=context;style_full_client_layout layout;
-    if(!win16_control_measure_window(w,&s->instance,&s->fonts,outer,&s->title_buttons,&s->caption_metrics,
+    if(!style_client_frame_measure_window(w,&s->instance,&s->fonts,outer,&s->title_buttons,&s->caption_metrics,
         &s->border_presentation.geometry,s->caption_presentation.icon_mode,&s->menu_metrics,&layout))
         return FALSE;
     *client=layout.client;return TRUE;

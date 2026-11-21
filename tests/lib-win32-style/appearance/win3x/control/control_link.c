@@ -9,7 +9,7 @@
 #include "lib-win32-style/appearance/win3x/control/special_paint.h"
 #include "lib-win32-style/application/menu/client_bar.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
-#include "lib-win32-style/appearance/win3x/window/frame_layout.h"
+#include "lib-win32-style/application/window/client_frame_layout.h"
 #include "lib-win32-style/appearance/msstyles/frame_font.h"
 #include "lib-win32-style/application/window/client_frame_renderer.h"
 #include "lib-win32-style/application/window/frame.h"
@@ -341,7 +341,7 @@ int main(void)
     RECT outer;style_full_client_layout layout={0};LRESULT hit=0;
     BOOL got_rect=GetWindowRect(window,&outer);
     SetRect(&layout.menu,0,0,20,20);
-    BOOL got_hit=got_rect && win16_control_frame_hit_test(window,&layout,MAKELPARAM(outer.left+5,outer.top+5),&hit);
+    BOOL got_hit=got_rect && style_client_frame_hit_test(window,&layout,MAKELPARAM(outer.left+5,outer.top+5),&hit);
     BOOL close=TRUE;
     if(style_menu_client_item_screen(window,&layout,bar_font,bar_dpi,MAKELPARAM(outer.left+5,outer.top+5),&close)!=-1 || close){DestroyWindow(window);return 25;}
     RECT old_client,new_client;style_client_screen(window,&old_client);

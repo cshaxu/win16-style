@@ -24,12 +24,12 @@
 | 03 | 外观 | 标题文字颜色及字体描述 | S | S | TMT_CAPTIONFONT、TMT_TEXTCOLOR；字体可用性另计 | [1](../../src/lib-win32-style/application/window/client_frame_renderer.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
 | 04 | 外观 | 控件与菜单的标准字体描述 | S | S | LOGFONT 对应的系统字体属性，应用借用与替代另计 | [1](../../src/lib-win32-style/appearance/msstyles/raster_font.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
 | 05 | 外观 | Win16 System 原位图字体的字符字形及 advance | E | — | 标准 LOGFONT 可引用字体，不能随文件定义 CP1252 栅格与每字 advance；需授权的附加数据 | [1](../../src/lib-win32-style/appearance/msstyles/raster_font.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
-| 06 | 外观 | 普通与最大化外框边缘的绘制数据 | S | S | WINDOW 边框、标题状态与图像切片 | [1](../../src/lib-win32-style/appearance/win3x/window/frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
-| 07 | 外观 | 标题栏和窗口边框的基本度量 | S | S | 标题栏及边框系统度量，按 DPI 的定位规则另计 | [1](../../src/lib-win32-style/appearance/win3x/window/frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
+| 06 | 外观 | 普通与最大化外框边缘的绘制数据 | S | S | WINDOW 边框、标题状态与图像切片 | [1](../../src/lib-win32-style/application/window/client_frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
+| 07 | 外观 | 标题栏和窗口边框的基本度量 | S | S | 标题栏及边框系统度量，按 DPI 的定位规则另计 | [1](../../src/lib-win32-style/application/window/client_frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
 | 08 | 外观 | 标题按钮各状态的图形与内边距 | S | S | WINDOW 标准按钮部件、状态和图像边距；保留现有栅格来源 | [1](../../src/lib-win32-style/application/window/client_frame_renderer.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
 | 09 | 外观 | 系统按钮的可见图形 | S | S | 公开 WP_SYSBUTTON 部件可表示；本机 Aero 该部件没有可绘制数据 | [1](../../src/lib-win32-style/application/window/client_frame_renderer.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
-| 10 | 外观 | 标题按钮组排列、间隔和 Win16 左侧按钮几何 | E | E | 每个部件尺寸可标准化；成组关系和环境分支需项目布局字段 | [1](../../src/lib-win32-style/appearance/win3x/window/frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
-| 11 | 外观 | 最大化、不可调整、无图标等组合布局选择 | E | E | 部件与度量有标准槽；当前组合选择需显式规则参数 | [1](../../src/lib-win32-style/appearance/win3x/window/frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
+| 10 | 外观 | 标题按钮组排列、间隔和 Win16 左侧按钮几何 | E | E | 每个部件尺寸可标准化；成组关系和环境分支需项目布局字段 | [1](../../src/lib-win32-style/application/window/client_frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
+| 11 | 外观 | 最大化、不可调整、无图标等组合布局选择 | E | E | 部件与度量有标准槽；当前组合选择需显式规则参数 | [1](../../src/lib-win32-style/application/window/client_frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
 | 12 | 外观 | 菜单栏与弹出菜单背景、项目、禁用与选中配色 | S | S | MENU 菜单栏／弹出部件及状态 | [1](../../src/lib-win32-style/application/menu/row_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
 | 13 | 外观 | 菜单勾选、子菜单箭头和分隔部件图像 | S | S | MENU 对应部件状态；图像负载须保留来源 | [1](../../src/lib-win32-style/appearance/win3x/resources/frame_buttons.h) [2](../../src/lib-win32-style/appearance/win3x/resources/control_glyphs.h) [3](../../src/lib-win32-style/appearance/win3x/resources/combo_glyph.h) [4](../../src/lib-win32-style/appearance/win3x/resources/menu_glyphs.h) [5](../../src/lib-win32-style/appearance/win3x/resources/scroll_glyphs.h) |
 | 14 | 外观 | Win16 弹出菜单标签、快捷键和箭头的列间距 | E | — | 组件专属列宽参数；实际测量和跟踪另计 | [1](../../src/lib-win32-style/application/menu/row_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
@@ -63,7 +63,7 @@
 | 42 | 外观 | 消息框中历史图标、按钮边距与字体样式 | S | S | 映射标题/边距与标准 BUTTON 属性，图标按原有来源借用 | [1](../history/M0-T20-closure-audit.md) [2](../history/M0-T28-S3-common-dialogs.md) |
 | 43 | 外观 | 现代宿主与普通外框最终同像素的完整覆盖 | ? | ? | T28 合成对照是有限宿主和 DPI，尚无主题数据候选 | [1](../../src/lib-win32-style/appearance/win3x/window/modern_frame.c) [2](../../src/lib-win32-style/appearance/win2000/window/modern_frame.c) |
 | 44 | 行为 | 原主题观察、抑制与还原事务 | R | R | 状态及句柄生命周期 | [1](../../src/lib-win32-style/application/lifecycle/theme_track.c) [2](../../src/lib-win32-style/application/window/frame.h) |
-| 45 | 行为 | 窗口尺寸求解、非客户区和命中测试 | R | R | 使用已解析数据与实际客户区、窗口状态 | [1](../../src/lib-win32-style/appearance/win3x/window/frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
+| 45 | 行为 | 窗口尺寸求解、非客户区和命中测试 | R | R | 使用已解析数据与实际客户区、窗口状态 | [1](../../src/lib-win32-style/application/window/client_frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
 | 46 | 行为 | UWP/WinUI 宿主坐标、重绘及合成提交 | R | R | 由宿主适配器执行 | [1](../../src/lib-win32-style/appearance/win3x/window/modern_frame.c) [2](../../src/lib-win32-style/appearance/win2000/window/modern_frame.c) |
 | 47 | 行为 | 菜单焦点、跟踪、键盘、取消及 owner 通知 | R | R | 状态机与 HWND 消息 | [1](../../src/lib-win32-style/application/menu/row_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
 | 48 | 行为 | 控件真实状态、应用返回值及回调所有权 | R | R | 原生处理、子窗和重入 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |

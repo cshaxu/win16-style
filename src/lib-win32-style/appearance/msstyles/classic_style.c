@@ -21,7 +21,8 @@ enum {
     caption_icon_type=24, caption_icon_size=1, choice_fallback_type=25, choice_fallback_size=1,
     choice_metrics_type=26, choice_metrics_size=4, updown_type=27, updown_size=3, updown_mode_type=28, updown_mode_size=1, menu_row_type=29, menu_row_size=2, control_font_type=30, control_font_size=1,
     scroll_repeat_type=31, scroll_repeat_size=4, scroll_drag_type=32, scroll_drag_size=3, mdi_inactive_type=33, mdi_inactive_size=1, frame_scroll_type=34, frame_scroll_size=1,
-    tab_text_type=35, tab_text_size=1, menu_font_type=36, menu_font_size=1, max_bar_padding=64, required_flag=1
+    tab_text_type=35, tab_text_size=1, menu_font_type=36, menu_font_size=1, caption_text_inset_type=37, caption_text_inset_size=1,
+    max_caption_text_inset=32, max_bar_padding=64, required_flag=1
 };
 
 _Static_assert(offsetof(style_border_presentation,geometry)+offsetof(style_frame_geometry,scroll_shared_units)==
@@ -35,7 +36,7 @@ _Static_assert(header_size+13*record_size+group_header_size+slot_size*CLASSIC_BU
     scroll_metrics_size+menu_metrics_size+dialog_metrics_size+dialog_policy_size+
     caption_presentation_size+border_presentation_size+menu_text_size+separator_size+thumb_size+push_size+control_lines_size+
     progress_size+trackbar_size+header_frame_size+tab_frame_size+11*record_size+stock_dialog_size+menu_bar_size+native_edge_size+caption_icon_size+choice_fallback_size+choice_metrics_size+updown_size+updown_mode_size+record_size+menu_row_size+record_size+control_font_size+record_size+scroll_repeat_size+record_size+scroll_drag_size+record_size+mdi_inactive_size+record_size+frame_scroll_size+record_size+tab_text_size==
-    CLASSIC_STYLE_RESOURCE_CAPACITY-(record_size+menu_font_size),"classic resource capacity");
+    CLASSIC_STYLE_RESOURCE_CAPACITY-(record_size+menu_font_size)-(record_size+caption_text_inset_size),"classic resource capacity");
 
 static uint16_t read_half(const unsigned char *bytes)
 {
@@ -163,6 +164,7 @@ static bool valid_caption(style_caption_presentation caption)
         caption.separator<=STYLE_CAPTION_SEPARATOR_AFTER &&
         caption.button_source<=STYLE_CAPTION_BUTTON_SYSTEM &&
         caption.button_outline<=STYLE_CAPTION_BUTTON_EDGE_OUTLINE && caption.icon_mode<=STYLE_CAPTION_ICON_NATIVE &&
+        caption.text_inset_plus_one<=max_caption_text_inset+1 &&
         (!caption.button_outline || caption.button_source==STYLE_CAPTION_BUTTON_INDEXED);
 }
 
@@ -373,12 +375,16 @@ enum classic_style_result classic_style_read(const unsigned char *bytes,size_t l
             menu_font=record[record_size];
             if(menu_font!=STYLE_MENU_FONT_LOGICAL && menu_font!=STYLE_MENU_FONT_SYSTEM_BITMAP)
                 return CLASSIC_STYLE_INVALID;
+        }else if(type==caption_text_inset_type){
+            if(presentation.text_inset_plus_one || flags || payload!=caption_text_inset_size ||
+               record[record_size]>max_caption_text_inset)return CLASSIC_STYLE_INVALID;
+            presentation.text_inset_plus_one=record[record_size]+1;
         }else if(flags&required_flag)return CLASSIC_STYLE_REQUIRED_RECORD;
         record+=record_size+payload;
         remaining-=record_size+payload;
     }
     if(remaining || ((menu_text || mdi_inactive || menu_font) && !columns.check_column) || ((thumb || metrics.initial_repeat_ms || metrics.drag.scale) && !metrics.source) ||
-       (stock_dialog_seen && !routes.window_provider) || (presentation.icon_mode && !presentation.text_mode) ||
+       (stock_dialog_seen && !routes.window_provider) || ((presentation.icon_mode || presentation.text_inset_plus_one) && !presentation.text_mode) ||
        (scroll_shared && !strokes.geometry.scale) || (control_presentation.tab_text && !control_presentation.tab))
         return CLASSIC_STYLE_INVALID;
     metrics.thumb=thumb;
@@ -414,6 +420,7 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
     style_line_profile native_edge=controls?controls->native_edge:STYLE_LINE_DEFAULT;
     bool stock=policy && (policy->color || policy->font || policy->find);
     bool icon=caption && caption->icon_mode;
+    bool inset=caption && caption->text_inset_plus_one;
     bool choice=controls && controls->choice_fallback;
     style_choice_metrics metrics=controls?controls->choice_metrics:(style_choice_metrics){0};
     bool geometry=metrics.width || metrics.height || metrics.gap || metrics.flags;
@@ -464,15 +471,15 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
         (updown_mode?record_size+updown_mode_size:0)+(menu_row?record_size+menu_row_size:0)+
         (control_font?record_size+control_font_size:0)+(scroll_repeat?record_size+scroll_repeat_size:0)+(scroll_drag?record_size+scroll_drag_size:0)+
         (mdi_inactive?record_size+mdi_inactive_size:0)+(frame_scroll?record_size+frame_scroll_size:0)+
-        (menu_font?record_size+menu_font_size:0);
+        (menu_font?record_size+menu_font_size:0)+(inset?record_size+caption_text_inset_size:0);
     if(capacity<length)return 0;
     memcpy(bytes,"CSTY",4);
     write_half(bytes+4,1);
-    write_half(bytes+6,menu_font?34:tab_text?33:frame_scroll?32:mdi_inactive?31:scroll_drag?30:scroll_repeat?29:group->layout?28:control_font?27:menu_row?26:updown_mode?25:arrow_button?24:geometry?23:choice?22:icon?21:native_edge?20:menu_bar?19:stock?18:tab?17:header?16:trackbar?15:progress?14:lines?13:push?12:thumb?11:separator?10:menu_text?9:border_size==border_presentation_size?8:caption_size==caption_presentation_size?7:
+    write_half(bytes+6,inset?35:menu_font?34:tab_text?33:frame_scroll?32:mdi_inactive?31:scroll_drag?30:scroll_repeat?29:group->layout?28:control_font?27:menu_row?26:updown_mode?25:arrow_button?24:geometry?23:choice?22:icon?21:native_edge?20:menu_bar?19:stock?18:tab?17:header?16:trackbar?15:progress?14:lines?13:push?12:thumb?11:separator?10:menu_text?9:border_size==border_presentation_size?8:caption_size==caption_presentation_size?7:
         border?6:caption?5:policy?4:dialog?3:menu?2:scroll?1:0);
     msstyles_v4_write_word(bytes+8,(uint32_t)length);
     msstyles_v4_write_word(bytes+12,1+(scroll!=NULL)+(menu!=NULL)+menu_text+(dialog!=NULL)+(policy!=NULL)+
-        (caption!=NULL)+(border!=NULL)+(separator!=0)+thumb+(push!=0)+lines+progress+trackbar+(header!=0)+(tab!=0)+(tab_text!=0)+stock+(menu_bar!=0)+(native_edge!=0)+icon+choice+geometry+arrow_button+(updown_mode!=0)+menu_row+(control_font!=0)+scroll_repeat+scroll_drag+mdi_inactive+frame_scroll+(menu_font!=0));
+        (caption!=NULL)+(border!=NULL)+(separator!=0)+thumb+(push!=0)+lines+progress+trackbar+(header!=0)+(tab!=0)+(tab_text!=0)+stock+(menu_bar!=0)+(native_edge!=0)+icon+choice+geometry+arrow_button+(updown_mode!=0)+menu_row+(control_font!=0)+scroll_repeat+scroll_drag+mdi_inactive+frame_scroll+(menu_font!=0)+inset);
     write_half(bytes+16,button_group_type);
     write_half(bytes+18,required_flag);
     msstyles_v4_write_word(bytes+20,(uint32_t)payload);
@@ -730,6 +737,13 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
         write_half(slot+2,0);
         msstyles_v4_write_word(slot+4,menu_font_size);
         slot[record_size]=(unsigned char)menu_font;
+        slot+=record_size+menu_font_size;
+    }
+    if(inset){
+        write_half(slot,caption_text_inset_type);
+        write_half(slot+2,0);
+        msstyles_v4_write_word(slot+4,caption_text_inset_size);
+        slot[record_size]=caption->text_inset_plus_one-1;
     }
     return length;
 }

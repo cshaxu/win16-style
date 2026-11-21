@@ -136,11 +136,12 @@ add_library(style-frame-font STATIC ${frame_font_source})
 target_link_libraries(style-frame-font PUBLIC style-font-variant)
 target_compile_definitions(style-frame-font PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_library(style-frame-client STATIC
-  src/lib-win32-style/application/window/client_frame_paint.c src/lib-win32-style/application/window/client_frame_renderer.c)
+  src/lib-win32-style/application/window/client_frame_paint.c src/lib-win32-style/application/window/client_frame_renderer.c
+  src/lib-win32-style/application/window/client_frame_layout.c)
 target_link_libraries(style-frame-client PUBLIC style-menu-client style-window style-present)
 target_compile_definitions(style-frame-client PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_library(win16-window STATIC
-  src/lib-win32-style/appearance/win3x/window/frame_layout.c src/lib-win32-style/appearance/win3x/window/frame_dispatch.c
+  src/lib-win32-style/appearance/win3x/window/frame_dispatch.c
   src/lib-win32-style/appearance/win3x/window/frame_input.c src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c
   src/lib-win32-style/appearance/win3x/window/frame_state.c)
 target_include_directories(win16-window PUBLIC src/lib-win32-style/appearance/win3x/window PRIVATE src)
