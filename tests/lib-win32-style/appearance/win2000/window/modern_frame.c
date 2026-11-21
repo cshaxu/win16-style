@@ -70,13 +70,13 @@ static int mixed_profile(HWND root,HWND core,HMODULE module,PCWSTR folder)
     const style_frame_geometry *geometry=&source.model.border_presentation.geometry;
     const int x=style_frame_window_border_width(root,geometry,STYLE_FRAME_SIZEABLE,TRUE,dpi);
     const int y=style_frame_window_border_width(root,geometry,STYLE_FRAME_SIZEABLE,FALSE,dpi);
-    RECT band={x,y,rect.right-rect.left-x,y+win2k_caption_theme_height(dpi,FALSE,&source.model)};
-    RECT buttons[WIN2K_CAPTION_PARTS];
+    RECT band={x,y,rect.right-rect.left-x,y+classic_theme_caption_height(dpi,FALSE,&source.model)};
+    RECT buttons[STYLE_NATIVE_CAPTION_BUTTONS];
     const BOOL present[]={TRUE,TRUE,FALSE,TRUE};
     CHECK(win2k_caption_buttons_with_group(&band,dpi,FALSE,present,&source.model.title_buttons,
         &source.model.caption_metrics,buttons));
     classic_theme_close(&source);
-    const RECT item=buttons[WIN2K_CLOSE];
+    const RECT item=buttons[STYLE_NATIVE_CAPTION_CLOSE];
     LPARAM point=MAKELPARAM(item.left+1,(item.top+item.bottom)/2);
     command=0;
     SendMessageW(surface,WM_LBUTTONDOWN,MK_LBUTTON,point);
@@ -190,14 +190,14 @@ static int indexed_provider(HWND root,HWND title,PCWSTR descriptor,const classic
     const style_frame_geometry *profile=&theme.border_presentation.geometry;
     const int x=style_frame_window_border_width(root,profile,STYLE_FRAME_SIZEABLE,TRUE,dpi);
     const int y=style_frame_window_border_width(root,profile,STYLE_FRAME_SIZEABLE,FALSE,dpi);
-    RECT band={x,y,actual->size.cx-x,y+win2k_caption_theme_height(dpi,FALSE,&theme)};
-    RECT buttons[WIN2K_CAPTION_PARTS];
+    RECT band={x,y,actual->size.cx-x,y+classic_theme_caption_height(dpi,FALSE,&theme)};
+    RECT buttons[STYLE_NATIVE_CAPTION_BUTTONS];
     const BOOL present[]={TRUE,TRUE,FALSE,TRUE};
     RECT system;
-    CHECK(win2k_caption_buttons_with_system(&band,dpi,FALSE,present,
+    CHECK(style_native_caption_buttons_with_system(&band,dpi,FALSE,present,
         &theme.title_buttons,&theme.caption_metrics,buttons,&system));
     CHECK(!IsRectEmpty(&system));
-    RECT item=buttons[WIN2K_MINIMIZE];
+    RECT item=buttons[STYLE_NATIVE_CAPTION_MINIMIZE];
     SIZE size={item.right-item.left,item.bottom-item.top};
     style_bitmap expected={0};
     CHECK(style_bitmap_ensure(&expected,NULL,size));
@@ -266,7 +266,7 @@ static int external_icon(HWND root,HWND title,PCWSTR path,const classic_theme *g
         const style_frame_geometry *profile=&source.model.border_presentation.geometry;
         int x=style_frame_window_border_width(root,profile,STYLE_FRAME_SIZEABLE,TRUE,dpi);
         int y=style_frame_window_border_width(root,profile,STYLE_FRAME_SIZEABLE,FALSE,dpi);
-        RECT band={x,y,frame->bitmap.size.cx-x,y+win2k_caption_theme_height(dpi,FALSE,&source.model)};
+        RECT band={x,y,frame->bitmap.size.cx-x,y+classic_theme_caption_height(dpi,FALSE,&source.model)};
         RECT slot;
         CHECK(style_caption_icon_bounds(band,band.right,dpi,&slot));
         POINT center={(slot.left+slot.right)/2,(slot.top+slot.bottom)/2};
@@ -368,7 +368,7 @@ int wmain(int argc,WCHAR **argv)
             GetSystemMetricsForDpi(SM_CXSIZEFRAME,dpi)+pad;
         const int y=theme?style_frame_window_border_width(root,profile,STYLE_FRAME_SIZEABLE,FALSE,dpi):
             GetSystemMetricsForDpi(SM_CYSIZEFRAME,dpi)+pad;
-        RECT band={x,y,outer.right-outer.left-x,y+win2k_caption_theme_height(dpi,FALSE,theme)},buttons[4];
+        RECT band={x,y,outer.right-outer.left-x,y+classic_theme_caption_height(dpi,FALSE,theme)},buttons[4];
         BOOL present[]={TRUE,TRUE,FALSE,TRUE};
         if(theme){
             CHECK(win2k_caption_buttons_with_group(&band,dpi,FALSE,present,

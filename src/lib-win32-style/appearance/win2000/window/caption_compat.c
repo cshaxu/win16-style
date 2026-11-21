@@ -2,7 +2,7 @@
 #include "caption.h"
 
 BOOL win2k_caption_system_buttons(const RECT *title,UINT dpi,BOOL tool,
-    const BOOL present[WIN2K_CAPTION_PARTS],RECT bounds[WIN2K_CAPTION_PARTS])
+    const BOOL present[STYLE_NATIVE_CAPTION_BUTTONS],RECT bounds[STYLE_NATIVE_CAPTION_BUTTONS])
 {
     static const classic_button_group group={4,0,0,{
         {CLASSIC_BUTTON_MINIMIZE,CLASSIC_BUTTON_RIGHT,0},
@@ -13,14 +13,14 @@ BOOL win2k_caption_system_buttons(const RECT *title,UINT dpi,BOOL tool,
 }
 
 BOOL win2k_caption_buttons_with_group(const RECT *title,UINT dpi,BOOL tool,
-    const BOOL present[WIN2K_CAPTION_PARTS],const classic_button_group *group,
-    const classic_caption_metrics *metrics,RECT bounds[WIN2K_CAPTION_PARTS])
+    const BOOL present[STYLE_NATIVE_CAPTION_BUTTONS],const classic_button_group *group,
+    const classic_caption_metrics *metrics,RECT bounds[STYLE_NATIVE_CAPTION_BUTTONS])
 {
-    return win2k_caption_buttons_with_system(title,dpi,tool,present,group,metrics,bounds,NULL);
+    return style_native_caption_buttons_with_system(title,dpi,tool,present,group,metrics,bounds,NULL);
 }
 
 BOOL win2k_caption_paint(HDC dc,const RECT *bounds,PCWSTR title,HFONT font,
-                         const win2k_caption_colors *colors)
+                         const style_native_caption_colors *colors)
 {
     if(!dc || !bounds || !title || !font || !colors ||
        bounds->right<=bounds->left || bounds->bottom<=bounds->top)return FALSE;
@@ -31,10 +31,10 @@ BOOL win2k_caption_paint(HDC dc,const RECT *bounds,PCWSTR title,HFONT font,
     return ok;
 }
 
-void win2k_caption_render(HDC dc,const win2k_caption_layout *layout,PCWSTR title,HICON icon,
+void win2k_caption_render(HDC dc,const style_native_caption_layout *layout,PCWSTR title,HICON icon,
                          HFONT font,UINT dpi,BOOL active,BOOL maximized,
-                         const UINT button_flags[WIN2K_CAPTION_PARTS])
+                         const UINT button_flags[STYLE_NATIVE_CAPTION_BUTTONS])
 {
-    win2k_caption_render_with_colors(dc,layout,title,icon,font,dpi,win2k_caption_palette(active),
+    style_native_caption_render(dc,layout,title,icon,font,dpi,style_native_caption_palette(active),
         NULL,NULL,maximized,button_flags,NULL);
 }

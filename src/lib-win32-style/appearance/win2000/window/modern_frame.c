@@ -1,6 +1,9 @@
 #include "modern_frame.h"
 #include "lib-win32-style/application/menu/native_system_menu.h"
+#include "lib-win32-style/appearance/msstyles/native_caption_style.h"
+#ifndef STYLE_THEME_EXTERNAL_ONLY
 #include "caption.h"
+#endif
 #include "lib-win32-style/application/adapters/surface.h"
 #include "lib-win32-style/application/window/window_icon.h"
 #include <stdlib.h>
@@ -8,7 +11,7 @@
 typedef struct modern_frame {
     style_uwp_frame frame;
     RECT bounds,client;
-    win2k_caption_layout caption;
+    style_native_caption_layout caption;
     UINT dpi;
     BOOL maximized,sizeable;
 #ifndef STYLE_THEME_EXTERNAL_ONLY
@@ -49,7 +52,7 @@ static BOOL geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
         ex&WS_EX_DLGMODALFRAME?STYLE_FRAME_DIALOG:STYLE_FRAME_FIXED;
     int x=s->maximized?0:style_frame_window_border_width(owner,profile,kind,TRUE,dpi);
     int y=s->maximized?0:style_frame_window_border_width(owner,profile,kind,FALSE,dpi);
-    int height=win2k_caption_theme_height(dpi,FALSE,theme);
+    int height=classic_theme_caption_height(dpi,FALSE,theme);
     s->caption.band=(RECT){x,y,s->bounds.right-x,y+height};
     int separator=profile?profile->separator_units*max(1,MulDiv(1,(int)dpi,96)):0;
     if(s->caption.band.bottom+separator>=s->client.top || s->caption.band.right<=s->caption.band.left)return FALSE;
@@ -62,13 +65,13 @@ static BOOL geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
     if(!theme)measured=win2k_caption_system_buttons(&s->caption.band,dpi,FALSE,present,s->caption.buttons);
     else
 #endif
-    measured=win2k_caption_buttons_with_system(&s->caption.band,dpi,FALSE,present,
+    measured=style_native_caption_buttons_with_system(&s->caption.band,dpi,FALSE,present,
         &theme->title_buttons,&theme->caption_metrics,s->caption.buttons,system?&s->caption.system:NULL);
     if(!measured)return FALSE;
-    s->caption.left_buttons=theme?win2k_caption_left_buttons(&theme->title_buttons):0;
+    s->caption.left_buttons=theme?style_native_caption_left_buttons(&theme->title_buttons):0;
     s->caption.system_on_right=FALSE;
     if(!IsRectEmpty(&s->caption.system))
-        (void)win2k_caption_system_side(&theme->title_buttons,&s->caption.system_on_right);
+        (void)style_native_caption_system_side(&theme->title_buttons,&s->caption.system_on_right);
     SetRectEmpty(&s->caption.icon);
     if(style_caption_icon_visible(theme?theme->caption_presentation.icon_mode:0,
         !IsRectEmpty(&s->caption.system),style,ex)){
@@ -99,13 +102,13 @@ static void paint(void *context,HDC dc)
     if(!saved)return;
     const classic_theme *theme=active_theme(s);
     const classic_frame_colors *colors=theme?&theme->frame:NULL;
-    SetDCBrushColor(dc,win2k_window_frame_colors(colors).face);
+    SetDCBrushColor(dc,style_native_frame_colors(colors).face);
     FillRect(dc,&s->bounds,GetStockObject(DC_BRUSH));
-    if(!s->maximized)win2k_window_border_paint(dc,s->bounds.right,s->bounds.bottom,s->caption.band.top,
+    if(!s->maximized)classic_theme_frame_border_paint(dc,s->bounds.right,s->bounds.bottom,s->caption.band.top,
         theme,s->frame.active,(GetWindowLongPtrW(owner,GWL_EXSTYLE)&WS_EX_DLGMODALFRAME)!=0);
-    UINT flags[WIN2K_CAPTION_PARTS]={0};
-    if(!IsRectEmpty(&s->caption.buttons[WIN2K_CLOSE]) && !style_caption_button_enabled(owner,HTCLOSE))
-        flags[WIN2K_CLOSE]|=DFCS_INACTIVE;
+    UINT flags[STYLE_NATIVE_CAPTION_BUTTONS]={0};
+    if(!IsRectEmpty(&s->caption.buttons[STYLE_NATIVE_CAPTION_CLOSE]) && !style_caption_button_enabled(owner,HTCLOSE))
+        flags[STYLE_NATIVE_CAPTION_CLOSE]|=DFCS_INACTIVE;
     if(s->frame.hot){
         unsigned index=style_caption_role(s->frame.pressed)-CLASSIC_BUTTON_MINIMIZE;
         if(index<ARRAYSIZE(flags))flags[index]|=DFCS_PUSHED;
@@ -115,8 +118,8 @@ static void paint(void *context,HDC dc)
     HICON icon=!s->frame.host.instance.detached && !IsRectEmpty(&s->caption.icon)?
         style_window_caption_icon(owner):NULL;
     if(!s->frame.host.instance.detached)
-        win2k_caption_render_with_colors(dc,&s->caption,title,icon,s->font,s->dpi,
-            win2k_caption_theme_palette(s->frame.active,theme),colors,
+        style_native_caption_render(dc,&s->caption,title,icon,s->font,s->dpi,
+            classic_theme_caption_palette(s->frame.active,theme),colors,
             theme?&theme->caption_presentation:NULL,s->maximized,flags,&s->art);
     RestoreDC(dc,saved);
 }
@@ -144,7 +147,7 @@ static LRESULT hit(void *context,POINT point)
 static BOOL can_maximize(void *context)
 {
     modern_frame *s=context;
-    return !IsRectEmpty(&s->caption.buttons[WIN2K_MAXIMIZE]);
+    return !IsRectEmpty(&s->caption.buttons[STYLE_NATIVE_CAPTION_MAXIMIZE]);
 }
 
 static BOOL menu(void *context,HWND window,UINT message,WPARAM a,LPARAM b,BOOL owner,LRESULT *result)

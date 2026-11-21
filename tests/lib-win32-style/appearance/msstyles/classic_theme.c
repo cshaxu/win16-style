@@ -35,7 +35,7 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
 {
     classic_caption_colors colors=active?theme->active:theme->inactive;
     if(win2000){
-        RECT r={0,0,240,win2k_caption_theme_height(dpi,FALSE,theme)};
+        RECT r={0,0,240,classic_theme_caption_height(dpi,FALSE,theme)};
         const BOOL present[]={TRUE,TRUE,FALSE,TRUE};
         RECT actual[4],reference[4],alternate[4];
         classic_button_group changed=theme->title_buttons;
@@ -46,10 +46,10 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
            !win2k_caption_buttons_with_group(&r,dpi,FALSE,present,&theme->title_buttons,&theme->caption_metrics,actual) ||
            !win2k_caption_buttons_with_group(&r,dpi,FALSE,present,&changed,&theme->caption_metrics,alternate) ||
            memcmp(actual,reference,sizeof(actual)) ||
-           !EqualRect(&actual[WIN2K_CLOSE],&alternate[WIN2K_CLOSE]) ||
-           actual[WIN2K_MAXIMIZE].left-alternate[WIN2K_MAXIMIZE].left!=MulDiv(4,(int)dpi,96)-MulDiv(2,(int)dpi,96))
+           !EqualRect(&actual[STYLE_NATIVE_CAPTION_CLOSE],&alternate[STYLE_NATIVE_CAPTION_CLOSE]) ||
+           actual[STYLE_NATIVE_CAPTION_MAXIMIZE].left-alternate[STYLE_NATIVE_CAPTION_MAXIMIZE].left!=MulDiv(4,(int)dpi,96)-MulDiv(2,(int)dpi,96))
             return FALSE;
-        win2k_caption_colors fill=win2k_caption_theme_palette(active,theme);
+        style_native_caption_colors fill=classic_theme_caption_palette(active,theme);
         return win2k_caption_paint(dc,&r,L"",(HFONT)GetStockObject(DEFAULT_GUI_FONT),&fill) &&
             GetPixel(dc,0,5)==colors.start && GetPixel(dc,239,5)!=colors.start;
     }
@@ -98,21 +98,21 @@ static BOOL draw_win2k_border(HDC dc,const classic_theme *theme)
 {
     const COLORREF untouched=RGB(17,43,169);
     if(!style_caption_fill(dc,(RECT){0,0,240,64},untouched,untouched,FALSE))return FALSE;
-    win2k_window_border_paint(dc,240,64,4,NULL,TRUE,FALSE);
+    classic_theme_frame_border_paint(dc,240,64,4,NULL,TRUE,FALSE);
     if(GetPixel(dc,0,32)!=untouched || GetPixel(dc,239,32)!=untouched)return FALSE;
-    win2k_window_border_paint(dc,240,64,4,theme,TRUE,FALSE);
+    classic_theme_frame_border_paint(dc,240,64,4,theme,TRUE,FALSE);
     if(GetPixel(dc,0,32)!=theme->frame.face || GetPixel(dc,239,32)!=theme->frame.edge)return FALSE;
     const classic_frame_colors variant={RGB(10,74,95),RGB(26,193,180),
         RGB(89,26,175),RGB(187,64,28),TRUE};
     classic_theme recolored=*theme;
     recolored.frame=variant;
-    win2k_window_border_paint(dc,240,64,4,&recolored,TRUE,FALSE);
+    classic_theme_frame_border_paint(dc,240,64,4,&recolored,TRUE,FALSE);
     if(GetPixel(dc,0,32)!=variant.face || GetPixel(dc,1,32)!=variant.light ||
        GetPixel(dc,238,32)!=variant.shadow || GetPixel(dc,239,32)!=variant.edge)return FALSE;
-    win2k_caption_layout caption={.band={4,4,236,23}};
-    const UINT flags[WIN2K_CAPTION_PARTS]={0};
-    win2k_caption_render_with_colors(dc,&caption,L"",NULL,(HFONT)GetStockObject(DEFAULT_GUI_FONT),
-        96,win2k_caption_theme_palette(TRUE,theme),&variant,&theme->caption_presentation,TRUE,flags,NULL);
+    style_native_caption_layout caption={.band={4,4,236,23}};
+    const UINT flags[STYLE_NATIVE_CAPTION_BUTTONS]={0};
+    style_native_caption_render(dc,&caption,L"",NULL,(HFONT)GetStockObject(DEFAULT_GUI_FONT),
+        96,classic_theme_caption_palette(TRUE,theme),&variant,&theme->caption_presentation,TRUE,flags,NULL);
     if(GetPixel(dc,100,22)!=variant.face || GetPixel(dc,4,4)!=theme->active.start)return FALSE;
     /* Give the same adapter a clipped fill and choose different stroke positions. */
     recolored.border_presentation=(style_border_presentation){STYLE_BORDER_CLIPPED,STYLE_BORDER_TITLE,
@@ -124,7 +124,7 @@ static BOOL draw_win2k_border(HDC dc,const classic_theme *theme)
     int saved=SaveDC(dc);
     if(!saved)return FALSE;
     ExcludeClipRect(dc,4,4,236,60);
-    win2k_window_border_paint(dc,240,64,4,&recolored,FALSE,TRUE);
+    classic_theme_frame_border_paint(dc,240,64,4,&recolored,FALSE,TRUE);
     RestoreDC(dc,saved);
     return GetPixel(dc,0,32)==variant.edge && GetPixel(dc,3,32)==variant.light &&
         GetPixel(dc,2,32)==theme->inactive.start && GetPixel(dc,4,32)==client;
@@ -179,7 +179,7 @@ static BOOL draw_caption_presentation(HDC dc,BOOL win2000)
 {
     const RECT band={2,2,202,22};
     const COLORREF background=RGB(255,255,255),line=RGB(50,70,100);
-    const UINT flags[WIN2K_CAPTION_PARTS]={0};
+    const UINT flags[STYLE_NATIVE_CAPTION_BUTTONS]={0};
     HFONT font=(HFONT)GetStockObject(ANSI_FIXED_FONT);
     const style_caption_presentation variants[]={
         {.text_mode=STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,.separator=STYLE_CAPTION_SEPARATOR_INSIDE},
@@ -192,10 +192,10 @@ static BOOL draw_caption_presentation(HDC dc,BOOL win2000)
         RECT clean={0,0,240,64};
         if(!style_caption_fill(dc,clean,background,background,FALSE))return FALSE;
         if(win2000){
-            const win2k_caption_layout layout={.band=band};
+            const style_native_caption_layout layout={.band=band};
             const classic_frame_colors frame={.face=line,.edge=line,.present=TRUE};
-            win2k_caption_colors colors={background,background,RGB(0,0,0),FALSE};
-            win2k_caption_render_with_colors(dc,&layout,L"Test",NULL,font,96,colors,&frame,
+            style_native_caption_colors colors={background,background,RGB(0,0,0),FALSE};
+            style_native_caption_render(dc,&layout,L"Test",NULL,font,96,colors,&frame,
                 &variants[i],FALSE,flags,NULL);
         }else{
             const style_full_client_layout layout={.caption=band,.title=band,.unit=1};
@@ -225,13 +225,13 @@ static BOOL shared_caption_band(HDC dc,const DWORD *pixels)
     style_full_client_layout client={.caption=band,.title={29,2,175,22},.unit=1};
     client.buttons[CLASSIC_BUTTON_MINIMIZE]=left;
     client.buttons[CLASSIC_BUTTON_CLOSE]=right;
-    win2k_caption_layout native={.band=band,.left_buttons=1u<<CLASSIC_BUTTON_MINIMIZE};
-    native.buttons[WIN2K_MINIMIZE]=left;
-    native.buttons[WIN2K_CLOSE]=right;
-    const UINT flags[WIN2K_CAPTION_PARTS]={0};
+    style_native_caption_layout native={.band=band,.left_buttons=1u<<CLASSIC_BUTTON_MINIMIZE};
+    native.buttons[STYLE_NATIVE_CAPTION_MINIMIZE]=left;
+    native.buttons[STYLE_NATIVE_CAPTION_CLOSE]=right;
+    const UINT flags[STYLE_NATIVE_CAPTION_BUTTONS]={0};
     const win16_style_palette palette={.active=start,.active_text=RGB(255,255,255),
         .edge=colors.edge,.light=colors.light,.shadow=colors.shadow,.face=colors.face};
-    const win2k_caption_colors native_colors={start,end,palette.active_text,TRUE};
+    const style_native_caption_colors native_colors={start,end,palette.active_text,TRUE};
     DWORD reference[240*64];
     for(unsigned separator=STYLE_CAPTION_SEPARATOR_INSIDE;separator<=STYLE_CAPTION_SEPARATOR_AFTER;++separator){
         const style_caption_presentation appearance={.text_mode=STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,.separator=separator};
@@ -242,7 +242,7 @@ static BOOL shared_caption_band(HDC dc,const DWORD *pixels)
         GdiFlush();
         memcpy(reference,pixels,sizeof(reference));
         style_caption_fill(dc,clear,0,0,FALSE);
-        win2k_caption_render_with_colors(dc,&native,L"Shared",NULL,fonts.title,96,native_colors,&colors,
+        style_native_caption_render(dc,&native,L"Shared",NULL,fonts.title,96,native_colors,&colors,
             &appearance,FALSE,flags,NULL);
         GdiFlush();
         if(memcmp(reference,pixels,sizeof(reference)) || GetPixel(dc,200,4)!=end ||
@@ -344,11 +344,11 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
         }
     if(!has_icon || !has_difference)return FALSE;
     RECT changed=layout.buttons[CLASSIC_BUTTON_MINIMIZE];
-    win2k_caption_layout other={.band=layout.caption,.buttons={[WIN2K_MINIMIZE]=changed}};
+    style_native_caption_layout other={.band=layout.caption,.buttons={[STYLE_NATIVE_CAPTION_MINIMIZE]=changed}};
     classic_frame_colors frame={palette.face,palette.light,palette.shadow,palette.edge,TRUE};
     COLORREF band_color=palette.active;
-    win2k_caption_colors colors={band_color,band_color,RGB(0,0,0),FALSE};
-    const UINT flags[WIN2K_CAPTION_PARTS]={[WIN2K_MINIMIZE]=DFCS_PUSHED};
+    style_native_caption_colors colors={band_color,band_color,RGB(0,0,0),FALSE};
+    const UINT flags[STYLE_NATIVE_CAPTION_BUTTONS]={[STYLE_NATIVE_CAPTION_MINIMIZE]=DFCS_PUSHED};
     const unsigned sources[]={STYLE_CAPTION_BUTTON_DEFAULT,STYLE_CAPTION_BUTTON_INDEXED,STYLE_CAPTION_BUTTON_SYSTEM};
     DWORD signature[ARRAYSIZE(sources)]={0};
     for(unsigned i=0;i<ARRAYSIZE(sources);++i){
@@ -357,7 +357,7 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
         style_client_frame_paint_state state={.active=TRUE,.button={HTMINBUTTON,TRUE},.art=art,.presentation=paint};
         style_client_frame_caption(dc,&layout,&palette,&state,NULL,FALSE,FALSE);
         GdiFlush();memcpy(reference,pixels,sizeof(reference));
-        win2k_caption_render_with_colors(dc,&other,L"",NULL,GetStockObject(DEFAULT_GUI_FONT),
+        style_native_caption_render(dc,&other,L"",NULL,GetStockObject(DEFAULT_GUI_FONT),
             dpi,colors,&frame,&paint,FALSE,flags,art);
         GdiFlush();
         for(LONG y=changed.top;y<changed.bottom;++y)

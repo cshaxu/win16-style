@@ -29,7 +29,7 @@ run16s.exe 的直接链接通过 ninja -t query run16s.exe 核对，有 15 个�
 | 启动器目标与同一入口 | [main](../../src/run16s-exe/main.c)、[UWP 请求](../../src/ntw16s-dll/uwp/target.c) 按年代分流启动及已支持宿主。 | S16，主题引用与宿主能力分别建模。 |
 | 主题身份、旧主题识别与跨进程载荷 | [classic_theme](../../src/lib-win32-style/appearance/msstyles/classic_theme.c) 的预设目录和角色猜测，profile 低位与 [startup context](../../src/lib-win32-style/access/startup/context.c) 年代标志。 | S16 拆分身份和能力，S23 移除运行时旧格式识别。 |
 | DLL 普通启动与全局 | [bootstrap](../../src/ntwshk-dll/dllmain.c)、[全局窗口](../../src/ntw16s-dll/global/window.c) 用不同 provider 分派与切换。 | S16 迁接入和身份，S17/S18 消费通用布局，S23 退出旧 provider。 |
-| 标题栏、外框、原生菜单按钮 | [Win3.x](../../src/lib-win32-style/application/window/client_frame_renderer.c)、[Win2000](../../src/lib-win32-style/appearance/win2000/window/caption.c) 绘制、边框与回退常量。 | S17，共享布局、命中和渲染原语。 |
+| 标题栏、外框、原生菜单按钮 | [Win3.x](../../src/lib-win32-style/application/window/client_frame_renderer.c)、[Win2000](../../src/lib-win32-style/application/window/native_caption.c) 绘制、边框与回退常量。 | S17，共享布局、命中和渲染原语。 |
 | UWP/WinUI 外框 | [宿主 DLL 入口](../../src/ntw16s-dll/uwp/hook.c) 按 profile 低位区分 surface 应用。 | S18 使用 S17 描述，保留宿主本身的合成与标题输入。 |
 | 菜单及字体 | [Win3.x 菜单](../../src/lib-win32-style/application/menu/client_bar.c) 与 [公用数据读取](../../src/lib-win32-style/appearance/msstyles/classic_theme.c) 的时代配方。 | S19，迁菜单度量和字体行为声明。 |
 | 标准、复合及框架控件 | [Win3.x 控件](../../src/lib-win32-style/appearance/win3x/control/control_install.c)、[Win2000 控件](../../src/lib-win32-style/appearance/win2000/control/control.c) 和产品状态桥接。 | S20 基础控件，S21 复合和适配角色。 |

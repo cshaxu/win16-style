@@ -3776,7 +3776,7 @@
       "path": "src/lib-win32-style/application/window/palette.h",
       "source": null,
       "source_blob": null,
-      "sha256": "a887794ddf1778a1ebbe5753380c701ee14af316cc5aac49a6ee2374512d7496",
+      "sha256": "d55d8a0ca99514b6965e9657efcd31d751051b8fe1924f7b093fbbac000bf3e4",
       "disposition": "authored",
       "review": "T29 S23 native system-color palette and DC roles moved out of the concrete-style assembly",
       "notice": "Project-authored C interface; no imported code or artwork"
@@ -5567,7 +5567,7 @@
       "path": "tests/run16s-exe/uwp.c",
       "source": null,
       "source_blob": null,
-      "sha256": "abaf36bf7bb32970160f03f8b19bfbcf3345b84965567ebff2adbf29ac788b83",
+      "sha256": "6304f9e5aff0c5212ec867f12c98f926f530844103408a5f4fc50b20375e8269",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 maximized surface clipping and matched native resource preconditioning; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T22 S1 P25 explicit native fixture target identity; T22 S1 P27 optional real pointer sampling, fresh CURSORINFO per call and bounded restoration; T22 S1 P28 real published launcher wait/close fixture with bounded owned-target cleanup; T22 S1 P29 reactivate after removal, distinguish reuse/new PID and observe hidden surface after close; T22 S1 P30 await actual asynchronous overlay destruction, not just hidden state; T26 S2 mechanical path/include relocation; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6185,10 +6185,10 @@
       "notice": "Project-authored test helper"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/window/caption.c",
+      "path": "src/lib-win32-style/application/window/native_caption.c",
       "source": null,
       "source_blob": null,
-      "sha256": "11ad8f56f0d8bfc9f55361be76bd00a3ac4c8d70f4c1e004c9baa532865524aa",
+      "sha256": "fcc6d562e8146538b3e2ed878670774ea06f6de6671fa84260fff0665ed155d5",
       "disposition": "authored",
       "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T28 S1 shared classic caption and UWP appearance model; T28 S2 shared buttons rasterized at final dimensions using the original Win32 path",
       "notice": "Project-authored implementation; historical source observed only"
@@ -6197,7 +6197,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/caption_compat.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2ace604ddc30a5f58966562380a28eadfe7b84be0a1e082c0db41437c22e558c",
+      "sha256": "fdcf24754a4d53fd2724288c2467b837e29d47c31e796a1d3ea1708dbdb4a104",
       "disposition": "authored",
       "review": "T29 S23 extracted untouched fallback and fixture entry points from caption.c; formal strict runtime does not link them",
       "notice": "Project-authored implementation; historical source observed only"
@@ -6206,7 +6206,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/caption.h",
       "source": null,
       "source_blob": null,
-      "sha256": "f7b157f8b40b6c65ce0e5a3911b1ff5b1fb2b36a0229b134131578484f037c2e",
+      "sha256": "f927f523497f25c3a7d276099f883f7c5a6906136cb3bdf16b87e4500088e739",
       "disposition": "authored",
       "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T28 S1 shared classic caption and UWP appearance model; T28 S2 shared renderer no longer accepts a button raster template selector",
       "notice": "Project-authored implementation; historical source observed only"
@@ -6215,7 +6215,7 @@
       "path": "tests/lib-win32-style/appearance/win2000/window/caption.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1040595a31cb38880c9b248a77d4ea4071b8423610cab62f1b6ff5f6e41c0232",
+      "sha256": "fa6d97f2255a8233f8924e70ce71b7a4530358d58684037e0707f2d61272b3e5",
       "disposition": "authored",
       "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T28 S1 shared classic caption and UWP appearance model; T28 S2 compare original Win32 button pixels at 96, 144 and 192 DPI",
       "notice": "Project-authored implementation; historical source observed only"
@@ -6224,7 +6224,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "fa9a78f9b21e4f23d6d00db3db83dfe564fb2142d8c6f1ae353a70cdf52f5d60",
+      "sha256": "510c6eda0b0bdf0d4bf87359f011420c1a2b2a83452054579b0f465c97a69caf",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal; T26 S1 shared frame change and client restore; T26 S1 share DIB buffer across UWP and Win2000; T26 S1 shared window thread identity; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T28 S1 shared classic caption and UWP appearance model; T28 S2 reuse composed redraw and reserve caption space for the extended client",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -10157,7 +10157,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/modern_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e4d5c3cf73c4dd96914ef1c535ca973b3efbb8208d4d11e9c44db1fabdf51b0c",
+      "sha256": "948a08c20ec1b2ccc8bc2b07fbdce5d737d20e740f1ee67ccbf8e11c63a67504",
       "disposition": "authored",
       "review": "T28 S1 shared classic caption and UWP appearance model; T28 S1 shared classic caption and UWP appearance model; T28 S2 use the same final-size button painter",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10175,7 +10175,7 @@
       "path": "tests/lib-win32-style/appearance/win2000/window/modern_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "299527310822166d7ba52d594d302551bfbd96aa56c1f01b7799dbe836778e5a",
+      "sha256": "488812f1bb41988353a8514b97fc101d4a4f0bf61d029f8239958e311843c1ce",
       "disposition": "authored",
       "review": "T28 S1 shared classic caption and UWP appearance model; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10463,7 +10463,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "7830645b8817fc040a6abfec9f15060fa00781caea1f5082701a44dfddb87fb5",
+      "sha256": "f7eea7e201b4f5388a7dc10823b6a3194c222d6f9cfebb84537384ca550bcdb5",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10472,7 +10472,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6644576d2405ddd0c4b706b96c085ef14a1b7c8bd5bd6fc599acdcdc716cc10b",
+      "sha256": "a983e77d7ed6baa614956694d7df81f95d08f9f599167dc437e1dc13a36401f0",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10646,6 +10646,24 @@
       "sha256": "84ce06d2d5b69d42169354b87352b852ff1b7185094b11621136d3eb797faa6a",
       "disposition": "authored",
       "review": "T29 S23 shared realized font descriptor and menu font lease contract",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/native_caption_style.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3609b7c5b897dfa117de8b7440efb6ff051fba2cb92994c8d94aea05f48bf99b",
+      "disposition": "authored",
+      "review": "T29 S23 shared native caption renderer and separate theme projection",
+      "notice": "Project-authored C; no external source or artwork copied"
+    },
+    {
+      "path": "src/lib-win32-style/application/window/native_caption.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3bcb326d7106eb2b702467464f06252cf0f5f3f9a3a52d76e6f47ed907fd496f",
+      "disposition": "authored",
+      "review": "T29 S23 shared native caption renderer and separate theme projection",
       "notice": "Project-authored C; no external source or artwork copied"
     }
   ]

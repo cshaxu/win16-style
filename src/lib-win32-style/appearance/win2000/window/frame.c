@@ -2,7 +2,7 @@
 #include "lib-win32-style/application/menu/native_system_menu.h"
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include <stdlib.h>
-#include "caption.h"
+#include "lib-win32-style/appearance/msstyles/native_caption_style.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "../control/scroll.h"
 #include "lib-win32-style/application/menu/menu_input.h"
@@ -53,7 +53,7 @@ static int caption_height(HWND window)
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
     frame_window *frame=frame_state(window);
-    return win2k_caption_theme_height(dpi,tool,frame && frame->themed?&frame->theme:NULL);
+    return classic_theme_caption_height(dpi,tool,frame && frame->themed?&frame->theme:NULL);
 }
 
 static int caption_client_height(HWND window,UINT dpi)
@@ -213,7 +213,7 @@ static void classic_buttons(HWND window,const frame_window *frame,TITLEBARINFOEX
         SetRectEmpty(&info->rgrect[CLASSIC_BUTTON_SYSTEM]);
         info->rgstate[CLASSIC_BUTTON_SYSTEM]|=STATE_SYSTEM_INVISIBLE;
     }
-    if(win2k_caption_buttons_with_system(&info->rcTitleBar,dpi,tool,present,
+    if(style_native_caption_buttons_with_system(&info->rcTitleBar,dpi,tool,present,
         &frame->theme.title_buttons,&frame->theme.caption_metrics,bounds,synthetic?&system:NULL)){
         if(!IsRectEmpty(&system)){
             info->rgrect[CLASSIC_BUTTON_SYSTEM]=system;
@@ -288,7 +288,7 @@ static void paint(HWND window)
                 border_ready=ExcludeClipRect(dc,client.left,client.top,client.right,client.bottom)!=ERROR;
             }
         }
-        if(border_ready)win2k_window_border_paint(dc,width,height,caption.top,theme,frame->native.active,
+        if(border_ready)classic_theme_frame_border_paint(dc,width,height,caption.top,theme,frame->native.active,
             (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_DLGMODALFRAME)!=0);
         if(border_saved)RestoreDC(dc,border_saved);
     }
@@ -296,8 +296,8 @@ static void paint(HWND window)
     GetWindowTextW(window,title,ARRAYSIZE(title));
     HICON image=has_icon && !frame->instance.detached?style_window_caption_icon(window):NULL;
     if(!frame->instance.detached){
-        win2k_caption_layout layout={.band=caption,.icon=has_icon?icon:(RECT){0},
-            .left_buttons=theme?win2k_caption_left_buttons(&theme->title_buttons):0};
+        style_native_caption_layout layout={.band=caption,.icon=has_icon?icon:(RECT){0},
+            .left_buttons=theme?style_native_caption_left_buttons(&theme->title_buttons):0};
         if(synthetic){
             layout.system=system;
             OffsetRect(&layout.system,-outer.left,-outer.top);
@@ -305,8 +305,8 @@ static void paint(HWND window)
             if(frame->system_popup || (frame->button.pressed==CLASSIC_BUTTON_SYSTEM && frame->button.hot))
                 layout.system_flags=DFCS_PUSHED;
         }
-        UINT flags[WIN2K_CAPTION_PARTS]={0};
-        for(unsigned i=0;i<WIN2K_CAPTION_PARTS;++i){
+        UINT flags[STYLE_NATIVE_CAPTION_BUTTONS]={0};
+        for(unsigned i=0;i<STYLE_NATIVE_CAPTION_BUTTONS;++i){
             unsigned index=i+2;
             if(info.rgstate[index]&STATE_SYSTEM_INVISIBLE)continue;
             layout.buttons[i]=info.rgrect[index];
@@ -320,7 +320,7 @@ static void paint(HWND window)
         const msstyles_font *defined=frame->themed?
             (tool?&frame->theme.small_caption_font:&frame->theme.caption_font):NULL;
         HFONT font=msstyles_font_create(defined,dpi,tool?MSSTYLES_FONT_SMALL_CAPTION:MSSTYLES_FONT_CAPTION);
-        win2k_caption_colors colors=win2k_caption_theme_palette(frame->native.active,
+        style_native_caption_colors colors=classic_theme_caption_palette(frame->native.active,
             frame->themed?&frame->theme:NULL);
         HDC target=dc;
         POINT origin;
@@ -334,7 +334,7 @@ static void paint(HWND window)
                 target=frame->caption_bitmap.dc;
         }
         if(target && !frame->instance.detached)
-            win2k_caption_render_with_colors(target,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
+            style_native_caption_render(target,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
                 dpi,colors,frame_colors,frame->themed?&frame->theme.caption_presentation:NULL,maximized,flags,&frame->art);
         if(target && target!=dc){
             SetViewportOrgEx(target,origin.x,origin.y,NULL);
@@ -727,7 +727,7 @@ BOOL win2k_frame_attach(HWND window)
         frame->theme=source.model;
         frame->themed=TRUE;
         classic_theme_native_menu(&frame->menu_style,&source);
-        frame->system_slot=win2k_caption_system_side(&frame->theme.title_buttons,&frame->system_on_right);
+        frame->system_slot=style_native_caption_system_side(&frame->theme.title_buttons,&frame->system_on_right);
         (void)classic_caption_art_read(source.resources,&frame->theme.caption_images,&frame->art);
         classic_theme_close(&source);
     }

@@ -21,13 +21,13 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 01 | 外观 | 外框与控件基础配色 | S | S | SysMetrics 色槽与部件色值 | [1](../../src/lib-win32-style/application/window/palette.c) [2](../../src/lib-win32-style/appearance/msstyles/classic_theme.h) |
 | 02 | 外观 | 活动／非活动标题底色与 Win2000 渐变端点 | S | S | WINDOW 状态和 TMT_GRADIENTCOLOR1/2 或对应背景图 | [1](../../src/lib-win32-style/application/window/palette.c) [2](../../src/lib-win32-style/appearance/msstyles/classic_theme.h) |
-| 03 | 外观 | 标题文字颜色及字体描述 | S | S | TMT_CAPTIONFONT、TMT_TEXTCOLOR；字体可用性另计 | [1](../../src/lib-win32-style/application/window/client_frame_renderer.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
-| 04 | 外观 | 控件与菜单的标准字体描述 | S | S | LOGFONT 对应的系统字体属性，应用借用与替代另计 | [1](../../src/lib-win32-style/appearance/msstyles/raster_font.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
-| 05 | 外观 | Win16 System 原位图字体的字符字形及 advance | E | — | 标准 LOGFONT 可引用字体，不能随文件定义 CP1252 栅格与每字 advance；需授权的附加数据 | [1](../../src/lib-win32-style/appearance/msstyles/raster_font.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
+| 03 | 外观 | 标题文字颜色及字体描述 | S | S | TMT_CAPTIONFONT、TMT_TEXTCOLOR；字体可用性另计 | [1](../../src/lib-win32-style/application/window/client_frame_renderer.c) [2](../../src/lib-win32-style/application/window/native_caption.c) |
+| 04 | 外观 | 控件与菜单的标准字体描述 | S | S | LOGFONT 对应的系统字体属性，应用借用与替代另计 | [1](../../src/lib-win32-style/appearance/msstyles/raster_font.c) [2](../../src/lib-win32-style/application/window/native_caption.c) |
+| 05 | 外观 | Win16 System 原位图字体的字符字形及 advance | E | — | 标准 LOGFONT 可引用字体，不能随文件定义 CP1252 栅格与每字 advance；需授权的附加数据 | [1](../../src/lib-win32-style/appearance/msstyles/raster_font.c) [2](../../src/lib-win32-style/application/window/native_caption.c) |
 | 06 | 外观 | 普通与最大化外框边缘的绘制数据 | S | S | WINDOW 边框、标题状态与图像切片 | [1](../../src/lib-win32-style/application/window/client_frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
 | 07 | 外观 | 标题栏和窗口边框的基本度量 | S | S | 标题栏及边框系统度量，按 DPI 的定位规则另计 | [1](../../src/lib-win32-style/application/window/client_frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
-| 08 | 外观 | 标题按钮各状态的图形与内边距 | S | S | WINDOW 标准按钮部件、状态和图像边距；保留现有栅格来源 | [1](../../src/lib-win32-style/application/window/client_frame_renderer.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
-| 09 | 外观 | 系统按钮的可见图形 | S | S | 公开 WP_SYSBUTTON 部件可表示；本机 Aero 该部件没有可绘制数据 | [1](../../src/lib-win32-style/application/window/client_frame_renderer.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
+| 08 | 外观 | 标题按钮各状态的图形与内边距 | S | S | WINDOW 标准按钮部件、状态和图像边距；保留现有栅格来源 | [1](../../src/lib-win32-style/application/window/client_frame_renderer.c) [2](../../src/lib-win32-style/application/window/native_caption.c) |
+| 09 | 外观 | 系统按钮的可见图形 | S | S | 公开 WP_SYSBUTTON 部件可表示；本机 Aero 该部件没有可绘制数据 | [1](../../src/lib-win32-style/application/window/client_frame_renderer.c) [2](../../src/lib-win32-style/application/window/native_caption.c) |
 | 10 | 外观 | 标题按钮组排列、间隔和 Win16 左侧按钮几何 | E | E | 每个部件尺寸可标准化；成组关系和环境分支需项目布局字段 | [1](../../src/lib-win32-style/application/window/client_frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
 | 11 | 外观 | 最大化、不可调整、无图标等组合布局选择 | E | E | 部件与度量有标准槽；当前组合选择需显式规则参数 | [1](../../src/lib-win32-style/application/window/client_frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
 | 12 | 外观 | 菜单栏与弹出菜单背景、项目、禁用与选中配色 | S | S | MENU 菜单栏／弹出部件及状态 | [1](../../src/lib-win32-style/application/menu/row_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
@@ -68,7 +68,7 @@
 | 47 | 行为 | 菜单焦点、跟踪、键盘、取消及 owner 通知 | R | R | 状态机与 HWND 消息 | [1](../../src/lib-win32-style/application/menu/row_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
 | 48 | 行为 | 控件真实状态、应用返回值及回调所有权 | R | R | 原生处理、子窗和重入 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
 | 49 | 行为 | 滚动范围计算、捕获、拖拽与通知 | R | R | 交互算法和消息 | [1](../../src/lib-win32-style/appearance/win3x/control/scroll_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/scroll.c) |
-| 50 | 行为 | 应用字体借用、位图字形适配及释放 | R | R | 运行期字体对象及恢复 | [1](../../src/lib-win32-style/appearance/msstyles/raster_font.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
+| 50 | 行为 | 应用字体借用、位图字形适配及释放 | R | R | 运行期字体对象及恢复 | [1](../../src/lib-win32-style/appearance/msstyles/raster_font.c) [2](../../src/lib-win32-style/application/window/native_caption.c) |
 | 51 | 行为 | Win32 文件参数转换和选定结果回写 | R | R | 调用契约及错误码 | [1](../history/M0-T20-closure-audit.md) [2](../history/M0-T28-S3-common-dialogs.md) |
 | 52 | 行为 | Shell 目录树 PIDL 与 COM 对象代理、选择和释放 | R | R | 接口标识和签名不写入主题 | [1](../../src/lib-win32-style/application/dialog/classic_com_show.c) [2](../../src/ntw16s-dll/injection/folder_dialogs.c) |
 | 53 | 行为 | 查找／替换的通知及字体、颜色回调 | R | R | 模型无关消息、A/W 原生数据和调用方所有权 | [1](../../src/ntw16s-dll/injection/window_titles.c) [2](../../src/ntw2ks-dll/controls.c) |

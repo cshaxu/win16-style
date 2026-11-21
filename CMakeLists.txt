@@ -21,6 +21,7 @@ include(tools/build_cache.cmake)
 add_library(style-instance STATIC src/lib-win32-style/application/lifecycle/install.c src/lib-win32-style/application/lifecycle/instance.c)
 target_include_directories(style-instance PUBLIC src)
 add_library(style-window STATIC src/lib-win32-style/application/window/messages.c
+  src/lib-win32-style/application/window/native_caption.c
   src/lib-win32-style/application/window/caption_paint.c
   src/lib-win32-style/application/window/frame_border.c
   src/lib-win32-style/application/window/full_client_layout.c
@@ -68,7 +69,7 @@ add_library(style-global-window STATIC src/lib-win32-style/application/lifecycle
 target_include_directories(style-global-window PUBLIC src)
 target_compile_definitions(style-global-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-global-window PUBLIC user32 comctl32)
-add_library(win2k-window STATIC src/lib-win32-style/appearance/win2000/window/caption.c src/lib-win32-style/appearance/win2000/window/caption_compat.c src/lib-win32-style/appearance/win2000/window/frame.c)
+add_library(win2k-window STATIC src/lib-win32-style/appearance/win2000/window/caption_compat.c src/lib-win32-style/appearance/win2000/window/frame.c)
 target_include_directories(win2k-window PUBLIC src)
 target_compile_definitions(win2k-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-window PUBLIC style-menu-native style-caption-slots style-menu-owner style-window style-instance style-bitmap style-present style-uwp-native style-font-variant user32 gdi32 msimg32 comctl32 dwmapi shcore)

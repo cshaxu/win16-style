@@ -18,10 +18,7 @@ typedef struct classic_surface_colors {
     COLORREF face, edge;
 } classic_surface_colors;
 
-typedef struct classic_frame_colors {
-    COLORREF face, light, shadow, edge;
-    BOOL present;
-} classic_frame_colors;
+typedef style_frame_colors classic_frame_colors;
 
 typedef struct classic_text_colors {
     COLORREF normal, disabled;

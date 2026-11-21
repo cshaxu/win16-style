@@ -107,7 +107,7 @@ static BOOL button(int hit,BOOL win2k)
     RECT r;
     if(win2k){
         int border=IsZoomed(frame)?0:4;
-        RECT caption={border,border,size.cx-border,border+win2k_caption_theme_height(dpi,FALSE,&stock_win2k)},buttons[4];
+        RECT caption={border,border,size.cx-border,border+classic_theme_caption_height(dpi,FALSE,&stock_win2k)},buttons[4];
         BOOL present[]={!!(style&WS_MINIMIZEBOX),!!(style&WS_MAXIMIZEBOX),FALSE,TRUE};
         if(!win2k_caption_buttons_with_group(&caption,dpi,FALSE,present,&stock_win2k.title_buttons,&stock_win2k.caption_metrics,buttons))return FALSE;
         r=buttons[hit==HTMAXBUTTON?1:0];
@@ -169,7 +169,7 @@ static BOOL classic_pixels(void)
     const style_frame_geometry *geometry=&rendered_theme.border_presentation.geometry;
     int x=maximized?0:style_frame_window_border_width(frame,geometry,kind,TRUE,dpi);
     int y=maximized?0:style_frame_window_border_width(frame,geometry,kind,FALSE,dpi);
-    RECT band={x,y,bounds.right-bounds.left-x,y+win2k_caption_theme_height(dpi,FALSE,&rendered_theme)},buttons[4];
+    RECT band={x,y,bounds.right-bounds.left-x,y+classic_theme_caption_height(dpi,FALSE,&rendered_theme)},buttons[4];
     BOOL present[]={!!(style&WS_MINIMIZEBOX),!!(style&WS_MAXIMIZEBOX),FALSE,TRUE};
     if(!win2k_caption_buttons_with_group(&band,dpi,FALSE,present,&rendered_theme.title_buttons,&rendered_theme.caption_metrics,buttons))return FALSE;
     for(unsigned i=0;i<ARRAYSIZE(buttons);++i)
