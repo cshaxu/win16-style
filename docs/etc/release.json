@@ -253,6 +253,12 @@
       "skipped": [],
       "scope": "Eight Win2K caption and window command cases plus five Win16 and Win2K system menu cases per architecture. Installed seven-file hashes verified before and after. Owned windows, native messages, no physical input."
     },
+    "installed_dialog_api_matrix": {
+      "x86_passed": 16,
+      "x64_passed": 16,
+      "skipped": [],
+      "scope": "Installed Win2K Win32 dialog contracts and Win16 COM event, navigation, redirect and veto contracts. Owned windows with dialog-test-driver --direct. Printed no jobs. Verified all seven hashes before and after."
+    },
     "unverified": [
       "full matrix",
       "real Win2K UWP and WinUI screen pixels",
