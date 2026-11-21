@@ -42,5 +42,7 @@ int style_frame_window_border_width(HWND window,const style_frame_geometry *geom
     enum style_frame_border_kind kind,BOOL horizontal,UINT dpi);
 int style_frame_caption_height(int logical_height,UINT dpi,int minimum);
 SIZE style_frame_monitor_dpi(HWND window,UINT fallback);
+void style_frame_solid_fill(HDC,RECT,COLORREF);
+void style_frame_solid_outline(HDC,RECT,int,COLORREF);
 
 #endif

@@ -11,8 +11,8 @@
 #include "lib-win32-style/appearance/win2000/control/static_paint.h"
 #include "lib-win32-style/application/dialog/explorer_file_layout.h"
 #include "lib-win32-style/appearance/win3x/window/frame_paint.h"
-#include "lib-win32-style/appearance/win3x/menu/menu_bar.h"
-#include "lib-win32-style/appearance/win3x/menu/menu_items.h"
+#include "lib-win32-style/application/menu/client_bar.h"
+#include "lib-win32-style/application/menu/owned_rows.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/appearance/win3x/control/basic_paint.h"
 #include "lib-win32-style/appearance/win3x/control/choice_view.h"
@@ -145,11 +145,11 @@ static BOOL draw_win16_border(HDC dc,const DWORD *pixels,const classic_theme *th
         int saved=SaveDC(dc);
         if(!saved)return FALSE;
         ExcludeClipRect(dc,thickness,thickness,240-thickness,64-thickness);
-        win16_control_fill(dc,bounds,dialog?palette.title:palette.face);
-        win16_control_outline(dc,bounds,unit,palette.edge);
+        style_frame_solid_fill(dc,bounds,dialog?palette.title:palette.face);
+        style_frame_solid_outline(dc,bounds,unit,palette.edge);
         RECT inner=bounds;
         InflateRect(&inner,-thickness+unit,-thickness+unit);
-        win16_control_outline(dc,inner,unit,dialog?palette.light:palette.edge);
+        style_frame_solid_outline(dc,inner,unit,dialog?palette.light:palette.edge);
         GdiFlush();
         memcpy(reference,pixels,sizeof(reference));
         RestoreDC(dc,saved);
@@ -295,14 +295,14 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
         BOOL system=(flags&1)!=0,pressed=(flags&2)!=0;
         RECT bounds={0,0,MulDiv(19,(int)dpi,96),MulDiv(18,(int)dpi,96)};
         int unit=max(1,MulDiv(1,(int)dpi,96));
-        win16_style_merged_control(dc,bounds,system?CLASSIC_MDI_SYSTEM:CLASSIC_MDI_RESTORE,pressed?DFCS_PUSHED:0,unit,&palette,&original,&theme->caption_presentation);
+        style_menu_mdi_paint(dc,bounds,system?CLASSIC_MDI_SYSTEM:CLASSIC_MDI_RESTORE,pressed?DFCS_PUSHED:0,unit,&palette,&original,&theme->caption_presentation);
         GdiFlush();
         memcpy(reference,pixels,sizeof(reference));
-        win16_style_merged_control(dc,bounds,system?CLASSIC_MDI_SYSTEM:CLASSIC_MDI_RESTORE,pressed?DFCS_PUSHED:0,unit,&palette,art,&theme->caption_presentation);
+        style_menu_mdi_paint(dc,bounds,system?CLASSIC_MDI_SYSTEM:CLASSIC_MDI_RESTORE,pressed?DFCS_PUSHED:0,unit,&palette,art,&theme->caption_presentation);
         GdiFlush();
         if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
         const style_caption_presentation alternate={.button_source=STYLE_CAPTION_BUTTON_SYSTEM};
-        win16_style_merged_control(dc,bounds,system?CLASSIC_MDI_SYSTEM:CLASSIC_MDI_RESTORE,
+        style_menu_mdi_paint(dc,bounds,system?CLASSIC_MDI_SYSTEM:CLASSIC_MDI_RESTORE,
             pressed?DFCS_PUSHED:0,unit,&palette,art,&alternate);
         GdiFlush();
         if(!memcmp(reference,pixels,sizeof(reference)))return FALSE;
@@ -311,15 +311,15 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
     style_menu_bar_item mdi_item={.state=MFS_DISABLED,.control=HBMMENU_MBAR_RESTORE};
     const style_menu_bar_snapshot mdi={.count=1,.rects=&mdi_bounds,.items=&mdi_item};
     const style_caption_presentation system_glyph={.button_source=STYLE_CAPTION_BUTTON_SYSTEM};
-    win16_style_bar_paint(&mdi,dc,NULL,96,&palette,NULL,&theme->menu_metrics,art,&system_glyph);
+    style_menu_client_bar_paint(&mdi,dc,NULL,96,&palette,NULL,&theme->menu_metrics,art,&system_glyph);
     GdiFlush();
     memcpy(reference,pixels,sizeof(reference));
-    win16_style_merged_control(dc,mdi_bounds,CLASSIC_MDI_RESTORE,0,1,&palette,art,&system_glyph);
+    style_menu_mdi_paint(dc,mdi_bounds,CLASSIC_MDI_RESTORE,0,1,&palette,art,&system_glyph);
     GdiFlush();
     if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
     classic_menu_metrics disabled=theme->menu_metrics;
     disabled.mdi_inactive|=CLASSIC_MDI_RESTORE;
-    win16_style_bar_paint(&mdi,dc,NULL,96,&palette,NULL,&disabled,art,&system_glyph);
+    style_menu_client_bar_paint(&mdi,dc,NULL,96,&palette,NULL,&disabled,art,&system_glyph);
     GdiFlush();
     if(!memcmp(reference,pixels,sizeof(reference)))return FALSE;
     win16_frame_paint_state no_art={.active=TRUE,.presentation=theme->caption_presentation};
@@ -699,20 +699,20 @@ static BOOL draw_popup(HDC dc,const DWORD *pixels,const classic_theme *theme,con
     const classic_menu_metrics *metrics[]={&theme->menu_metrics,&variant};
     unsigned widths[2],heights[2];
     int label[2],shortcut[2],arrow[2];
-    win16_style_menu_columns columns={0};
-    if(!win16_style_menu_columns_read(dc,font,dpi,text,&columns))return FALSE;
+    style_menu_columns columns={0};
+    if(!style_menu_columns_read(dc,font,dpi,text,&columns))return FALSE;
     for(unsigned i=0;i<ARRAYSIZE(metrics);++i){
         MEASUREITEMSTRUCT measure={.CtlType=ODT_MENU,.itemData=(ULONG_PTR)&item};
-        if(!win16_style_menu_size(&item,&measure,font,dpi,metrics[i]))return FALSE;
+        if(!style_menu_owned_measure(&item,&measure,font,dpi,metrics[i]))return FALSE;
         widths[i]=measure.itemWidth;
         heights[i]=measure.itemHeight;
-        int width=win16_style_menu_columns_width(&columns,dpi,TRUE,metrics[i]);
+        int width=style_menu_columns_width(&columns,dpi,TRUE,metrics[i]);
         int label_x=MulDiv(metrics[i]->check_column,(int)dpi,96);
         int shortcut_x=label_x+columns.label+MulDiv(metrics[i]->shortcut_gap,(int)dpi,96);
         int arrow_x=width-MulDiv(11,(int)dpi,96);
         DRAWITEMSTRUCT draw={.CtlType=ODT_MENU,.itemData=(ULONG_PTR)&item,.hDC=dc,
             .rcItem={0,0,width,(LONG)heights[i]},.itemState=ODS_SELECTED};
-        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],art))return FALSE;
+        if(!style_menu_owned_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],art))return FALSE;
         COLORREF background=theme->menu_popup.selection;
         if(GetPixel(dc,0,0)!=background)return FALSE;
         label[i]=first_ink(dc,0,shortcut_x,(int)heights[i],background);
@@ -721,51 +721,51 @@ static BOOL draw_popup(HDC dc,const DWORD *pixels,const classic_theme *theme,con
         if(label[i]<label_x || shortcut[i]<shortcut_x || arrow[i]<arrow_x)return FALSE;
         draw.itemState|=ODS_CHECKED;
         DWORD reference[240*64];
-        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],&original))return FALSE;
+        if(!style_menu_owned_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],&original))return FALSE;
         GdiFlush();
         memcpy(reference,pixels,sizeof(reference));
-        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],art))return FALSE;
+        if(!style_menu_owned_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],art))return FALSE;
         GdiFlush();
         if(memcmp(reference,pixels,sizeof(reference)) ||
            first_ink(dc,0,label_x,(int)heights[i],background)<0)return FALSE;
-        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],NULL))return FALSE;
+        if(!style_menu_owned_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],NULL))return FALSE;
         GdiFlush();
         if(!memcmp(reference,pixels,sizeof(reference)) ||
            first_ink(dc,0,label_x,(int)heights[i],background)<0)return FALSE;
         style_menu_art blank=*art;
         memset(blank.check,'1',sizeof(blank.check));
         memset(blank.arrow,'1',sizeof(blank.arrow));
-        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],&blank) ||
+        if(!style_menu_owned_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],&blank) ||
            first_ink(dc,0,label_x,(int)heights[i],background)>=0 ||
            first_ink(dc,arrow_x,width,(int)heights[i],background)>=0)return FALSE;
     }
     classic_menu_metrics configured=theme->menu_metrics;
-    RECT bounds={0,0,win16_style_menu_columns_width(&columns,dpi,FALSE,&configured)+MulDiv(16,(int)dpi,96),
+    RECT bounds={0,0,style_menu_columns_width(&columns,dpi,FALSE,&configured)+MulDiv(16,(int)dpi,96),
         (LONG)heights[0]};
     int shortcut_left=MulDiv(configured.check_column,(int)dpi,96)+columns.label+
         MulDiv(configured.shortcut_gap,(int)dpi,96);
     COLORREF background=theme->menu_popup.background;
-    if(!win16_style_menu_text_columns(dc,&bounds,font,dpi,&palette,text,0,WIN16_STYLE_MENU_ROW,
+    if(!style_menu_paint_row(dc,&bounds,font,dpi,&palette,text,0,STYLE_MENU_ROW,
         FALSE,&columns,&theme->menu_popup,&configured,art,NULL))return FALSE;
     int left=first_ink(dc,shortcut_left,bounds.right,bounds.bottom,background);
     configured.text_flags|=STYLE_MENU_TEXT_SHORTCUT_RIGHT;
-    if(!win16_style_menu_text_columns(dc,&bounds,font,dpi,&palette,text,0,WIN16_STYLE_MENU_ROW,
+    if(!style_menu_paint_row(dc,&bounds,font,dpi,&palette,text,0,STYLE_MENU_ROW,
         FALSE,&columns,&theme->menu_popup,&configured,art,NULL))return FALSE;
     int right=first_ink(dc,shortcut_left,bounds.right,bounds.bottom,background);
     if(left<shortcut_left || right-left<MulDiv(16,(int)dpi,96))return FALSE;
-    if(!win16_style_menu_text_columns(dc,&bounds,font,dpi,&palette,text,ODS_DISABLED,WIN16_STYLE_MENU_ROW,
+    if(!style_menu_paint_row(dc,&bounds,font,dpi,&palette,text,ODS_DISABLED,STYLE_MENU_ROW,
         FALSE,&columns,&theme->menu_popup,&configured,art,NULL))return FALSE;
     DWORD stippled[240*64];
     GdiFlush();
     memcpy(stippled,pixels,sizeof(stippled));
     configured.text_flags&=~STYLE_MENU_TEXT_STIPPLE_DISABLED;
-    if(!win16_style_menu_text_columns(dc,&bounds,font,dpi,&palette,text,ODS_DISABLED,WIN16_STYLE_MENU_ROW,
+    if(!style_menu_paint_row(dc,&bounds,font,dpi,&palette,text,ODS_DISABLED,STYLE_MENU_ROW,
         FALSE,&columns,&theme->menu_popup,&configured,art,NULL))return FALSE;
     GdiFlush();
     if(!memcmp(stippled,pixels,sizeof(stippled)))return FALSE;
     variant.row_padding+=2;
     MEASUREITEMSTRUCT expanded={.CtlType=ODT_MENU,.itemData=(ULONG_PTR)&item};
-    if(!win16_style_menu_size(&item,&expanded,font,dpi,&variant) ||
+    if(!style_menu_owned_measure(&item,&expanded,font,dpi,&variant) ||
        expanded.itemHeight-heights[1]!=(unsigned)(2*(MulDiv(variant.row_padding,(int)dpi,96)-
            MulDiv(theme->menu_metrics.row_padding,(int)dpi,96))))return FALSE;
     int step=MulDiv(4,(int)dpi,96);
@@ -781,16 +781,16 @@ static BOOL draw_menu_text_options(HDC dc,const DWORD *pixels,const classic_them
     win16_style_palette palette;
     style_window_palette_default(&palette);
     const classic_menu_colors *colors=&theme->menu_bar;
-    if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,text,0,WIN16_STYLE_MENU_BAR,
+    if(!style_menu_paint_row(dc,&area,font,dpi,&palette,text,0,STYLE_MENU_BAR,
         FALSE,NULL,colors,&metrics,NULL,NULL))return FALSE;
     int left=first_ink(dc,0,area.right,area.bottom,colors->background);
     if(metrics.bar_padding){
         SIZE original,expanded;
         unsigned padding=metrics.bar_padding;
-        if(left<0 || !win16_style_menu_bar_measure(dc,font,dpi,text,&metrics,&original))return FALSE;
+        if(left<0 || !style_menu_bar_measure(dc,font,dpi,text,&metrics,&original))return FALSE;
         metrics.bar_padding+=4;
-        if(!win16_style_menu_bar_measure(dc,font,dpi,text,&metrics,&expanded) ||
-           !win16_style_menu_text_columns(dc,&area,font,dpi,&palette,text,0,WIN16_STYLE_MENU_BAR,
+        if(!style_menu_bar_measure(dc,font,dpi,text,&metrics,&expanded) ||
+           !style_menu_paint_row(dc,&area,font,dpi,&palette,text,0,STYLE_MENU_BAR,
             FALSE,NULL,colors,&metrics,NULL,NULL))return FALSE;
         int shifted=first_ink(dc,0,area.right,area.bottom,colors->background);
         if(shifted-left!=MulDiv(metrics.bar_padding,(int)dpi,96)-MulDiv((int)padding,(int)dpi,96) ||
@@ -799,35 +799,35 @@ static BOOL draw_menu_text_options(HDC dc,const DWORD *pixels,const classic_them
         metrics.bar_padding=(uint16_t)padding;
     }
     metrics.text_flags|=STYLE_MENU_TEXT_CENTER_BAR;
-    if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,text,0,WIN16_STYLE_MENU_BAR,
+    if(!style_menu_paint_row(dc,&area,font,dpi,&palette,text,0,STYLE_MENU_BAR,
         FALSE,NULL,colors,&metrics,NULL,NULL))return FALSE;
     if(left<0 || first_ink(dc,0,area.right,area.bottom,colors->background)<=left)return FALSE;
-    if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,text,ODS_DEFAULT,WIN16_STYLE_MENU_ROW,
+    if(!style_menu_paint_row(dc,&area,font,dpi,&palette,text,ODS_DEFAULT,STYLE_MENU_ROW,
         FALSE,NULL,colors,&metrics,NULL,NULL))return FALSE;
     DWORD normal[240*64];
     GdiFlush();
     memcpy(normal,pixels,sizeof(normal));
     metrics.text_flags|=STYLE_MENU_TEXT_BOLD_DEFAULT;
-    if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,text,ODS_DEFAULT,WIN16_STYLE_MENU_ROW,
+    if(!style_menu_paint_row(dc,&area,font,dpi,&palette,text,ODS_DEFAULT,STYLE_MENU_ROW,
         FALSE,NULL,colors,&metrics,NULL,NULL))return FALSE;
     GdiFlush();
     if(!memcmp(normal,pixels,sizeof(normal)))return FALSE;
     if(first_ink(dc,0,16,area.bottom,colors->background)>=0)return FALSE;
     metrics.text_flags|=STYLE_MENU_COMMAND_GLYPHS;
-    if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,text,ODS_DEFAULT,WIN16_STYLE_MENU_ROW,
+    if(!style_menu_paint_row(dc,&area,font,dpi,&palette,text,ODS_DEFAULT,STYLE_MENU_ROW,
         FALSE,NULL,colors,&metrics,NULL,HBMMENU_POPUP_CLOSE) ||
         first_ink(dc,0,16,area.bottom,colors->background)<0)return FALSE;
 
     static const WCHAR shortcut[]=L"&Close\tAlt+F4";
     const UINT disabled_default=ODS_DEFAULT|ODS_DISABLED;
     metrics.text_flags=0;
-    if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,shortcut,disabled_default,WIN16_STYLE_MENU_ROW,
+    if(!style_menu_paint_row(dc,&area,font,dpi,&palette,shortcut,disabled_default,STYLE_MENU_ROW,
         FALSE,NULL,colors,&metrics,NULL,HBMMENU_POPUP_CLOSE))return FALSE;
     GdiFlush();
     memcpy(normal,pixels,sizeof(normal));
     metrics.text_flags=STYLE_MENU_TEXT_DEFINED|STYLE_MENU_TEXT_SHORTCUT_RIGHT|
         STYLE_MENU_TEXT_BOLD_DEFAULT|STYLE_MENU_COMMAND_GLYPHS;
-    if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,shortcut,disabled_default,WIN16_STYLE_MENU_ROW,
+    if(!style_menu_paint_row(dc,&area,font,dpi,&palette,shortcut,disabled_default,STYLE_MENU_ROW,
         FALSE,NULL,colors,&metrics,NULL,HBMMENU_POPUP_CLOSE))return FALSE;
     GdiFlush();
     return !memcmp(normal,pixels,sizeof(normal));
@@ -1102,7 +1102,7 @@ static int check_mdi_menu(void)
     for(unsigned i=0;i<ARRAYSIZE(masks);++i){
         const style_full_client_layout layout={.button_size={23,19},.menu_metrics={.mdi_buttons=masks[i]}};
         style_menu_bar_snapshot bar;
-        CHECK(win16_style_bar_read_for_window(NULL,menu,GetStockObject(DEFAULT_GUI_FONT),96,
+        CHECK(style_menu_client_bar_read(NULL,menu,GetStockObject(DEFAULT_GUI_FONT),96,
             &layout,(POINT){0,0},320,&bar) && bar.count==counts[i]);
         for(UINT j=0;j<bar.count;++j){
             CHECK(bar.rects[j].right-bar.rects[j].left==23 && bar.rects[j].bottom-bar.rects[j].top==19);

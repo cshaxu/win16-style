@@ -12,11 +12,6 @@ typedef struct classic_caption_colors {
     COLORREF start, end, text;
 } classic_caption_colors;
 
-typedef struct classic_menu_colors {
-    COLORREF background, selection, text, selected_text, disabled_text, separator;
-    BOOL present;
-} classic_menu_colors;
-
 HRESULT style_menu_art_read(HMODULE module,const WORD images[2],style_menu_art *art);
 
 typedef struct classic_surface_colors {

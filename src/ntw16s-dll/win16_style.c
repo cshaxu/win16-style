@@ -16,9 +16,9 @@
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/window/frame.h"
 #include "lib-win32-style/application/window/window_identity.h"
-#include "../lib-win32-style/appearance/win3x/menu/menu_bar.h"
-#include "../lib-win32-style/appearance/win3x/menu/menu_items.h"
-#include "../lib-win32-style/appearance/win3x/menu/menu_scope.h"
+#include "lib-win32-style/application/menu/client_bar.h"
+#include "lib-win32-style/application/menu/owned_rows.h"
+#include "lib-win32-style/application/menu/client_popup.h"
 #include "controls.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/application/lifecycle/dispatch.h"
@@ -100,7 +100,7 @@ static BOOL bar_read(const style_menu_bar_target *target,style_menu_bar_snapshot
 {
     style_window *s=target->context;style_full_client_layout l;RECT outer;
     if(!layout(target->window,s,&l) || !GetWindowRect(target->window,&outer))return FALSE;
-    if(!win16_style_bar_read_for_window(target->window,GetMenu(target->window),s->fonts.menu,s->fonts.dpi,
+    if(!style_menu_client_bar_read(target->window,GetMenu(target->window),s->fonts.menu,s->fonts.dpi,
         &l,(POINT){l.menu.left,l.menu.top},l.menu.right-l.menu.left,bar))return FALSE;
     for(UINT i=0;i<bar->count;++i)OffsetRect(&bar->rects[i],outer.left,outer.top);
     return TRUE;
@@ -109,7 +109,7 @@ static int bar_hit(const style_menu_bar_target *target,POINT point)
 {
     style_window *s=target->context;style_full_client_layout l;
     if(s->instance.detached || !layout(target->window,s,&l))return STYLE_MENU_NO_ITEM;
-    return win16_control_menu_bar_hit_screen(target->window,&l,s->fonts.menu,s->fonts.dpi,point);
+    return style_menu_client_hit_screen(target->window,&l,s->fonts.menu,s->fonts.dpi,point);
 }
 static void bar_paint(const style_menu_bar_target *target)
 {paint_menu_state(target->window,target->context);}

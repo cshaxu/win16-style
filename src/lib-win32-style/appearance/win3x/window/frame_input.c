@@ -1,5 +1,5 @@
 #include "frame_input.h"
-#include "../menu/menu_bar.h"
+#include "lib-win32-style/application/menu/client_bar.h"
 #include "lib-win32-style/application/menu/menu_input.h"
 #include <commctrl.h>
 #include <windowsx.h>
@@ -22,7 +22,7 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
     case WM_NCLBUTTONDBLCLK:
         if(wp==HTMENU && v->layout(w,s,&l)){
             BOOL close=FALSE;
-            (void)win16_control_menu_bar_item_screen(w,&l,s->fonts.menu,s->fonts.dpi,lp,&close);
+            (void)style_menu_client_item_screen(w,&l,s->fonts.menu,s->fonts.dpi,lp,&close);
             if(close)PostMessageW(w,WM_COMMAND,SC_CLOSE,0);
             return TRUE;
         }

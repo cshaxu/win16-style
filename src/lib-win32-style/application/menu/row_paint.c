@@ -1,13 +1,13 @@
 /* Authored GDI presentation. Original reference: owner Win3.1 menu captures;
  * black single separators, flat selection and stippled disabled text.
  * This does not import USER's private menu structures or tracking state. */
-#include "menu_paint.h"
+#include "row_paint.h"
 #include "lib-win32-style/application/menu/menu_metrics.h"
 #include "lib-win32-style/application/menu/row_text.h"
 #include <wchar.h>
 
-BOOL win16_style_menu_columns_read(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
-    win16_style_menu_columns *columns)
+BOOL style_menu_columns_read(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
+    style_menu_columns *columns)
 {
     int saved;RECT label={0},shortcut={0};const WCHAR *tab;TEXTMETRICW metric;
     if(!dc || !font || !text || !columns || dpi<48 || dpi>768)return FALSE;
@@ -23,25 +23,25 @@ BOOL win16_style_menu_columns_read(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
     RestoreDC(dc,saved);return TRUE;
 }
 
-static style_menu_popup_columns spacing(const classic_menu_metrics *metrics,UINT dpi)
+static style_menu_popup_columns spacing(const style_menu_metrics *metrics,UINT dpi)
 {
-    const classic_menu_metrics declared=metrics?*metrics:(classic_menu_metrics){0};
+    const style_menu_metrics declared=metrics?*metrics:(style_menu_metrics){0};
     return style_menu_popup_spacing(dpi,declared.check_column,declared.shortcut_gap,
         declared.arrow_column,declared.plain_column);
 }
 
-int win16_style_menu_columns_width(const win16_style_menu_columns *c,UINT dpi,BOOL arrows,
-    const classic_menu_metrics *metrics)
+int style_menu_columns_width(const style_menu_columns *c,UINT dpi,BOOL arrows,
+    const style_menu_metrics *metrics)
 {
     const style_menu_popup_columns m=spacing(metrics,dpi);
     return m.check+c->label+(c->shortcut?m.gap+c->shortcut:0)+(arrows?m.arrow:m.plain);
 }
 
-BOOL win16_style_menu_bar_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
-    const classic_menu_metrics *metrics,SIZE *size)
+BOOL style_menu_bar_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
+    const style_menu_metrics *metrics,SIZE *size)
 {
-    win16_style_menu_columns c={0};
-    if(!size || !win16_style_menu_columns_read(dc,font,dpi,text,&c))return FALSE;
+    style_menu_columns c={0};
+    if(!size || !style_menu_columns_read(dc,font,dpi,text,&c))return FALSE;
     unsigned padding=metrics?metrics->bar_padding:0;
     int extra=padding?MulDiv(2*(int)padding,(int)dpi,96):style_menu_native_text_margin(dc,dpi);
     *size=(SIZE){c.label+extra,style_menu_row_height(dpi,c.height,
@@ -49,9 +49,9 @@ BOOL win16_style_menu_bar_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
     return TRUE;
 }
 
-BOOL win16_style_menu_text_columns(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
-    const win16_style_palette *p,const WCHAR *text,UINT state,win16_style_menu_kind kind,BOOL submenu,
-    const win16_style_menu_columns *columns,const classic_menu_colors *colors,const classic_menu_metrics *metrics,
+BOOL style_menu_paint_row(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
+    const style_window_palette *p,const WCHAR *text,UINT state,style_menu_kind kind,BOOL submenu,
+    const style_menu_columns *columns,const classic_menu_colors *colors,const style_menu_metrics *metrics,
     const style_menu_art *art,HBITMAP command)
 {
     int saved,u,padding;RECT r;COLORREF background,foreground;
@@ -59,50 +59,48 @@ BOOL win16_style_menu_text_columns(HDC dc,const RECT *bounds,HFONT font,UINT dpi
     HFONT bold=NULL;
     if(!dc || !bounds || !font || !p || !text || dpi<48 || dpi>768 ||
        bounds->right<=bounds->left || bounds->bottom<=bounds->top ||
-       kind<WIN16_STYLE_MENU_ROW || kind>WIN16_STYLE_MENU_BAR)return FALSE;
+       kind<STYLE_MENU_ROW || kind>STYLE_MENU_BAR)return FALSE;
     saved=SaveDC(dc);if(!saved)return FALSE;
     IntersectClipRect(dc,bounds->left,bounds->top,bounds->right,bounds->bottom);
     const style_menu_popup_columns m=spacing(metrics,dpi);
     u=max(1,MulDiv(1,(int)dpi,96));padding=m.check;
-    if(kind==WIN16_STYLE_MENU_BAR)
+    if(kind==STYLE_MENU_BAR)
         padding=metrics && metrics->bar_padding?MulDiv(metrics->bar_padding,(int)dpi,96):
             style_menu_native_text_margin(dc,dpi)/2;
     BOOL selected=(state&ODS_SELECTED)!=0;
     disabled=(state&(ODS_DISABLED|ODS_GRAYED))!=0;
     BOOL themed=colors && colors->present;
     background=themed?(selected?colors->selection:colors->background):(selected?p->active:p->light);
-    foreground=themed?(disabled?colors->disabled_text:selected?colors->selected_text:colors->text):
+    foreground=themed?style_menu_ink(colors,disabled,selected):
         (selected?p->active_text:p->edge);
     SetDCBrushColor(dc,background);FillRect(dc,bounds,(HBRUSH)GetStockObject(DC_BRUSH));
-    if(kind==WIN16_STYLE_MENU_SEPARATOR){
+    if(kind==STYLE_MENU_SEPARATOR){
         r=*bounds;r.top=(r.top+r.bottom)/2;r.bottom=r.top+u;
         SetDCBrushColor(dc,themed?colors->separator:p->edge);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
     }else{
         const unsigned text_flags=style_menu_text_options(metrics?metrics->text_flags:0);
-        if(kind==WIN16_STYLE_MENU_ROW && (state&ODS_DEFAULT) && (text_flags&STYLE_MENU_TEXT_BOLD_DEFAULT))
+        if(kind==STYLE_MENU_ROW && (state&ODS_DEFAULT) && (text_flags&STYLE_MENU_TEXT_BOLD_DEFAULT))
             bold=style_menu_bold_font(font);
         SelectObject(dc,bold?bold:font);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,foreground);
         BOOL right=(text_flags&STYLE_MENU_TEXT_SHORTCUT_RIGHT)!=0;
         style_menu_text_layout layout={.label=*bounds,.shortcut=*bounds,.shortcut_right=right,
-            .label_center=kind==WIN16_STYLE_MENU_BAR && (text_flags&STYLE_MENU_TEXT_CENTER_BAR)};
+            .label_center=kind==STYLE_MENU_BAR && (text_flags&STYLE_MENU_TEXT_CENTER_BAR)};
         layout.label.left+=padding;
-        layout.label.right-=kind==WIN16_STYLE_MENU_BAR?padding:submenu?m.arrow:m.plain;
-        if(columns && kind==WIN16_STYLE_MENU_ROW)layout.label.right=layout.label.left+columns->label;
+        layout.label.right-=kind==STYLE_MENU_BAR?padding:submenu?m.arrow:m.plain;
+        if(columns && kind==STYLE_MENU_ROW)layout.label.right=layout.label.left+columns->label;
         if(columns && !right){
             layout.shortcut.left+=padding+columns->label+m.gap;
             layout.shortcut.right=layout.shortcut.left+columns->shortcut;
         }else{
             layout.shortcut.left+=padding+(right && columns?columns->label+m.gap:0);
-            layout.shortcut.right-=kind==WIN16_STYLE_MENU_BAR || !columns?padding:submenu?m.arrow:m.plain;
+            layout.shortcut.right-=kind==STYLE_MENU_BAR || !columns?padding:submenu?m.arrow:m.plain;
         }
         BOOL stipple=disabled && (text_flags&STYLE_MENU_TEXT_STIPPLE_DISABLED);
         result=style_menu_draw_labels(dc,text,&layout,stipple,foreground);
-        if(kind==WIN16_STYLE_MENU_ROW && (text_flags&STYLE_MENU_COMMAND_GLYPHS))
+        if(kind==STYLE_MENU_ROW && (text_flags&STYLE_MENU_COMMAND_GLYPHS))
             style_menu_draw_command(dc,bounds,command,u,foreground);
-        if(kind==WIN16_STYLE_MENU_ROW && (state&ODS_CHECKED))
-            style_menu_draw_mark(dc,bounds,FALSE,dpi,foreground,art && art->available?&art->check[0][0]:NULL);
-        if(kind==WIN16_STYLE_MENU_ROW && submenu)
-            style_menu_draw_mark(dc,bounds,TRUE,dpi,foreground,art && art->available?&art->arrow[0][0]:NULL);
+        if(kind==STYLE_MENU_ROW)
+            style_menu_popup_marks(dc,bounds,dpi,foreground,(state&ODS_CHECKED)!=0,submenu,art);
     }
     RestoreDC(dc,saved);
     if(bold)DeleteObject(bold);

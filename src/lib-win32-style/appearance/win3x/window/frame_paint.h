@@ -21,8 +21,6 @@ typedef struct win16_frame_paint_state {
     HICON icon;
 } win16_frame_paint_state;
 typedef void (*win16_frame_state_read)(void *,win16_frame_paint_state *);
-void win16_control_fill(HDC dc,RECT r,COLORREF color);
-void win16_control_outline(HDC dc,RECT r,int unit,COLORREF color);
 void win16_control_frame_caption(HDC dc,const style_full_client_layout *layout,const win16_style_palette *palette,
     const win16_frame_paint_state *state,PCWSTR title,BOOL child,BOOL zoomed);
 #endif

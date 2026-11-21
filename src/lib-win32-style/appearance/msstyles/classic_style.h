@@ -32,10 +32,6 @@ typedef struct classic_scroll_metrics {
     style_scroll_drag drag;
 } classic_scroll_metrics;
 
-enum classic_mdi_buttons {
-    CLASSIC_MDI_SYSTEM=1, CLASSIC_MDI_RESTORE=2, CLASSIC_MDI_MINIMIZE=4, CLASSIC_MDI_CLOSE=8,
-    CLASSIC_MDI_ALL=15, CLASSIC_MDI_DEFINED=128
-};
 typedef style_menu_metrics classic_menu_metrics;
 
 /* Record 9 has four independent fields with stable wire values. */

@@ -7,8 +7,8 @@
 #include "lib-win32-style/application/window/native_frame.h"
 #include "lib-win32-style/application/window/caption_button.h"
 #include "lib-win32-style/application/window/caption_slots.h"
-#include "../menu/menu_scope.h"
-#include "../menu/menu_items.h"
+#include "lib-win32-style/application/menu/client_popup.h"
+#include "lib-win32-style/application/menu/owned_rows.h"
 #include "lib-win32-style/application/adapters/repaint.h"
 typedef struct style_window {
     style_instance instance;

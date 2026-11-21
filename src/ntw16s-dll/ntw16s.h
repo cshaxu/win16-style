@@ -9,7 +9,7 @@ extern "C" {
 #include "win16_style.h"
 #include "controls.h"
 #include "../lib-win32-style/appearance/win3x/common/font.h"
-#include "../lib-win32-style/appearance/win3x/menu/menu_paint.h"
+#include "compat_menu.h"
 #ifdef __cplusplus
 }
 #endif

@@ -3,7 +3,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "../../src/lib-win32-style/appearance/win3x/menu/menu_paint.h"
+#include "ntw16s-dll/compat_menu.h"
 #include "lib-win32-style/application/menu/classic_menu_layout.h"
 #include <limits.h>
 static int save_calls, fail_save;
@@ -207,7 +207,7 @@ int wmain(int argc,WCHAR **argv)
         SelectClipRgn(dc,NULL);GetClipBox(dc,&before);
         for(i=0;i<5;++i){
             CHECK(win16_style_menu_text(dc,&row,font,96,&s.palette,labels[i],states[i],
-                i==3?WIN16_STYLE_MENU_SEPARATOR:WIN16_STYLE_MENU_ROW,i==1));
+                i==3?STYLE_MENU_SEPARATOR:STYLE_MENU_ROW,i==1));
             CHECK(GetClipBox(dc,&after)!=ERROR && EqualRect(&before,&after));
             CHECK(GetTextColor(dc)==RGB(7,8,9));
             CHECK(GetCurrentObject(dc,OBJ_BITMAP)==bm);
@@ -215,13 +215,13 @@ int wmain(int argc,WCHAR **argv)
             OffsetRect(&row,0,40);
         }
         CHECK(GetPixel(dc,1,140)==s.palette.edge);
-        CHECK(!win16_style_menu_text(dc,&row,font,0,&s.palette,L"invalid",0,WIN16_STYLE_MENU_ROW,FALSE));
+        CHECK(!win16_style_menu_text(dc,&row,font,0,&s.palette,L"invalid",0,STYLE_MENU_ROW,FALSE));
         {SIZE bar,popup;RECT bounds={0,0,60,25};
-            CHECK(win16_style_menu_measure(dc,font,96,L"&File",WIN16_STYLE_MENU_BAR,&bar));
-            CHECK(win16_style_menu_measure(dc,font,96,L"&File",WIN16_STYLE_MENU_ROW,&popup));
+            CHECK(win16_style_menu_measure(dc,font,96,L"&File",STYLE_MENU_BAR,&bar));
+            CHECK(win16_style_menu_measure(dc,font,96,L"&File",STYLE_MENU_ROW,&popup));
             /* Public row helper reserves check18 + arrow12; bar margins6+6. */
             CHECK(popup.cx-bar.cx==18 && popup.cy==bar.cy);
-            CHECK(win16_style_menu_text(dc,&bounds,font,96,&s.palette,L"&File",ODS_SELECTED,WIN16_STYLE_MENU_BAR,FALSE));
+            CHECK(win16_style_menu_text(dc,&bounds,font,96,&s.palette,L"&File",ODS_SELECTED,STYLE_MENU_BAR,FALSE));
             CHECK(GetPixel(dc,1,1)==s.palette.active);
             CHECK(GetClipBox(dc,&after)!=ERROR && EqualRect(&before,&after));}
         if(argc==2){
@@ -236,11 +236,11 @@ int wmain(int argc,WCHAR **argv)
         }
         printf("PASS menu text state/clip/separator cases (not interactive menu acceptance)\n");
     }
-    {win16_style_menu_scope *outer=win16_style_menu_begin(NULL,NULL,NULL,NULL),*inner;
-        CHECK(outer);inner=win16_style_menu_begin(NULL,NULL,NULL,NULL);CHECK(inner);
+    {style_menu_popup_scope *outer=style_menu_client_popup_begin(NULL,NULL,NULL,NULL),*inner;
+        CHECK(outer);inner=style_menu_client_popup_begin(NULL,NULL,NULL,NULL);CHECK(inner);
         CHECK(style_menu_popup_end(outer)); /* detached owner during inner loop */
         CHECK(style_menu_popup_end(inner));
-        outer=win16_style_menu_begin(NULL,NULL,NULL,NULL);CHECK(outer);CHECK(style_menu_popup_end(outer));
+        outer=style_menu_client_popup_begin(NULL,NULL,NULL,NULL);CHECK(outer);CHECK(style_menu_popup_end(outer));
         printf("PASS nested menu scope outer-owner teardown and restart\n");}
     {style_window *installed;HMENU outer=CreatePopupMenu(),inner=CreatePopupMenu();MENUITEMINFOW info={.cbSize=sizeof(info)};
         CHECK(outer && inner && AppendMenuW(outer,MF_STRING,1,L"&Outer") && AppendMenuW(inner,MF_STRING,2,L"&Inner"));

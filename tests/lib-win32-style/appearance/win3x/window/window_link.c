@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "lib-win32-style/appearance/win3x/window/frame_state.h"
-#include "lib-win32-style/appearance/win3x/menu/menu_bar.h"
+#include "lib-win32-style/application/menu/client_bar.h"
 
 int main(void)
 {

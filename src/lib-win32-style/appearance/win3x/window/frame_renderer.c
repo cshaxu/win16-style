@@ -1,6 +1,6 @@
 #include "frame_renderer.h"
 #include "frame_paint.h"
-#include "../menu/menu_bar.h"
+#include "lib-win32-style/application/menu/client_bar.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/window/window_text.h"
 #include "lib-win32-style/application/window/window_icon.h"
@@ -67,21 +67,21 @@ void win16_control_paint_frame(HWND w,style_instance *instance,void *context,con
     const style_border_palette palette={p.face,p.edge,p.light,p.shadow,state.active?p.active:p.inactive};
     if(state.border.fill)style_frame_border_paint(dc,l.outer,l.border,l.unit,l.dialog_frame,
         l.sizeable?&l.corner:NULL,&state.border,&palette);
-    else win16_control_fill(dc,l.outer,p.face);
+    else style_frame_solid_fill(dc,l.outer,p.face);
     if(!IsRectEmpty(&l.menu)){
         style_menu_bar_snapshot bar;POINT origin={l.menu.left,l.menu.top};
         const classic_menu_colors *menu=state.menu_bar && state.menu_bar->present &&
             !style_window_high_contrast()?state.menu_bar:NULL;
-        win16_control_fill(dc,l.menu,menu?menu->background:p.light);
-        if(win16_style_bar_read_for_window(w,GetMenu(w),state.fonts->menu,state.fonts->dpi,&l,origin,l.menu.right-l.menu.left,&bar)){
+        style_frame_solid_fill(dc,l.menu,menu?menu->background:p.light);
+        if(style_menu_client_bar_read(w,GetMenu(w),state.fonts->menu,state.fonts->dpi,&l,origin,l.menu.right-l.menu.left,&bar)){
             ops->state(context,&state);
             if(state.bar_selected>=0 && (UINT)state.bar_selected<bar.count)
                 bar.items[state.bar_selected].state|=MFS_HILITE;
-            win16_style_bar_paint(&bar,dc,state.fonts->menu,state.fonts->dpi,&p,menu,state.menu_metrics,state.art,&state.presentation);
+            style_menu_client_bar_paint(&bar,dc,state.fonts->menu,state.fonts->dpi,&p,menu,state.menu_metrics,state.art,&state.presentation);
             style_menu_bar_free(&bar);
             if(instance->detached){RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);return;}
         }
-        r=l.menu;r.top=r.bottom-l.unit;win16_control_fill(dc,r,p.edge);
+        r=l.menu;r.top=r.bottom-l.unit;style_frame_solid_fill(dc,r,p.edge);
     }
     ops->scrollbars(w,dc,&p);
     if(IsRectEmpty(&l.caption)){

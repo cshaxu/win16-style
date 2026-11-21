@@ -66,7 +66,7 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
         }
         if((rows[i].state&MFS_DEFAULT) && bold)SelectObject(dc,bold);
         else if(normal)SelectObject(dc,normal);
-        COLORREF text=(rows[i].state&MFS_DISABLED)?colors.disabled_text:selected?colors.selected_text:colors.text;
+        COLORREF text=style_menu_ink(&colors,(rows[i].state&MFS_DISABLED)!=0,selected);
         SetTextColor(dc,text);
         if(text_flags&STYLE_MENU_COMMAND_GLYPHS)
             style_menu_draw_command(dc,&r,rows[i].bitmap,unit,text);
@@ -79,9 +79,8 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
         if(!right)layout.shortcut.left+=style_menu_label_width(dc,rows[i].text);
         BOOL stipple=(rows[i].state&MFS_DISABLED) && (text_flags&STYLE_MENU_TEXT_STIPPLE_DISABLED);
         (void)style_menu_draw_labels(dc,rows[i].text,&layout,stipple,text);
-        const style_menu_art *art=style && style->art.available?&style->art:NULL;
-        if(rows[i].state&MFS_CHECKED)style_menu_draw_mark(dc,&r,FALSE,dpi,text,art?&art->check[0][0]:NULL);
-        if(rows[i].submenu)style_menu_draw_mark(dc,&r,TRUE,dpi,text,art?&art->arrow[0][0]:NULL);
+        style_menu_popup_marks(dc,&r,dpi,text,(rows[i].state&MFS_CHECKED)!=0,rows[i].submenu,
+            style?&style->art:NULL);
     }
     RestoreDC(dc,saved);if(bold)DeleteObject(bold);style_menu_font_release(font);free(rows);return valid;
 }

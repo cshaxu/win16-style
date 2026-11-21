@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P37",
-  "stage": "published development candidate with shared native dialog execution",
+  "delivery": "M0 T29 S23 P38",
+  "stage": "published development candidate with neutral client menu assembly",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P36 15e197a6b43a",
-  "source_snapshot_sha256": "262bae8b404e902fe17907d994b15c334273ab519cf7ae1304c308ebd8ed05de",
+  "last_verified_remote_delivery": "M0 T29 S23 P37 620bfaef2865",
+  "source_snapshot_sha256": "22ea3b19c82e6ea26625405ccfeead910d28bcfa1ba4c03694618bf39a06e530",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "118d7710218d7dd857558e2c24f86c41f9053a9532ae0bb1975d94511428e07c",
+      "sha256": "8744ff17cd767f1bd9da7b76061f6b0866a86bf18a56fa2f63f0d50f5ae81d3c",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "0b1d4df3e81f71265e7474b9ab0bf7f6f5a246fc58b24ed0c3120f2809c3b087",
+      "sha256": "146b8c8dc63290401d8ed1e4f4e9b27b96c4e0606ccb5da497c39b02e066137f",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "1b06ea3fd7aff9613a69158bc91640c7e17ee301b51010b584e374fa3e223312",
+      "sha256": "87331371e866ca1abd24549a197a1c242747e7dc2defe5a96718ecb8e8b0c894",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,23 +106,30 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 15,
+    "passed": 22,
     "selected_cases": [
-      "x86 core-style-file-controller",
-      "x86 core-style-print-resources",
-      "x86 core-style-print-extended",
-      "x86 core-style-classic-print",
-      "x86 print-ranges-unit",
-      "x86 General a cancel",
-      "x86 General w apply",
-      "x64 core-style-file-controller",
-      "x64 core-style-print-resources",
-      "x64 core-style-print-extended",
-      "x64 core-style-classic-print",
-      "x64 print-ranges-unit",
-      "x64 General a cancel",
-      "x64 General w apply",
-      "mixed policy both widths"
+      "x86 theme menu layouts and pixels",
+      "x86 theme MDI menu policy",
+      "x86 owned menu resources and reentry",
+      "x86 window static link",
+      "x86 standalone compatibility ABI",
+      "x86 native-string",
+      "x86 win2k-default",
+      "x86 native-cancel",
+      "x86 custom",
+      "x86 win2k-glyph",
+      "x86 win2k-cancel",
+      "x64 theme menu layouts and pixels",
+      "x64 theme MDI menu policy",
+      "x64 owned menu resources and reentry",
+      "x64 window static link",
+      "x64 standalone compatibility ABI",
+      "x64 native-string",
+      "x64 win2k-default",
+      "x64 native-cancel",
+      "x64 custom",
+      "x64 win2k-glyph",
+      "x64 win2k-cancel"
     ],
     "skipped": [],
     "commit_scope_dialog_retest": "Isolated the Find/Replace assertions from pre-existing edits and verified the scoped script against the installed seven files, including temporary resource cleanup.",
@@ -257,7 +264,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P37 results are in native_dialog_delivery.",
+    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P38 results are in client_menu_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -508,13 +515,26 @@
         "full package matrix",
         "physical input"
       ]
+    },
+    "client_menu_delivery": {
+      "test_invocations_passed": 22,
+      "menu_label_pixel_matches_to_p37": 4,
+      "retired_appearance_objects_per_width": 5,
+      "remaining_dated_archives_per_width": 4,
+      "matching_archive_members_per_width": 46,
+      "direct_old_product_objects_per_width": 22,
+      "scope": "Neutral client-area menu measurement, menu bar and MDI, owned popup rows, and nested popup scope. Both adapters share ink and mark rendering. Preserves compatibility exports and observed/native menu geometry.",
+      "not_retested": [
+        "physical input",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P37 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P38 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1996,
-    "cache_misses": 116
+    "cache_hits": 2005,
+    "cache_misses": 107
   }
 }

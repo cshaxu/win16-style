@@ -105,9 +105,9 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     case WM_EXITMENULOOP:
     case WM_ENTERMENULOOP: {
         menu_selection selection={s,v->paint_button};
-        win16_style_menu_theme theme={&s->palette,s->fonts.menu,s->fonts.dpi,&selection,menu_button,
+        style_menu_client_theme theme={&s->palette,s->fonts.menu,s->fonts.dpi,&selection,menu_button,
             &s->menu_popup,&s->menu_metrics,&s->menu_art};
-        if(style_menu_owner_message(&s->menu,w,msg,wp,lp,&win16_style_menu_operations,&theme,&result))break;
+        if(style_menu_owner_message(&s->menu,w,msg,wp,lp,&style_menu_client_operations,&theme,&result))break;
         goto forward;
     }
     case WM_KEYDOWN:

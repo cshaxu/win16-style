@@ -50,3 +50,11 @@ void style_menu_draw_command(HDC dc,const RECT *row,HBITMAP bitmap,int unit,COLO
     if(old_pen && old_pen!=HGDI_ERROR)SelectObject(dc,old_pen);
     DeleteObject(pen);
 }
+
+void style_menu_popup_marks(HDC dc,const RECT *row,UINT dpi,COLORREF ink,
+    BOOL checked,BOOL submenu,const style_menu_art *art)
+{
+    if(art && !art->available)art=NULL;
+    if(checked)style_menu_draw_mark(dc,row,FALSE,dpi,ink,art?&art->check[0][0]:NULL);
+    if(submenu)style_menu_draw_mark(dc,row,TRUE,dpi,ink,art?&art->arrow[0][0]:NULL);
+}

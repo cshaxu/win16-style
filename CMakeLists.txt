@@ -118,10 +118,14 @@ add_library(style-menu-items STATIC src/lib-win32-style/application/menu/menu_it
 target_include_directories(style-menu-items PUBLIC src)
 target_compile_definitions(style-menu-items PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-menu-items PUBLIC user32 gdi32)
+add_library(style-menu-client STATIC
+  src/lib-win32-style/application/menu/row_paint.c
+  src/lib-win32-style/application/menu/client_bar.c src/lib-win32-style/application/menu/client_bar_paint.c
+  src/lib-win32-style/application/menu/owned_rows.c src/lib-win32-style/application/menu/client_popup.c)
+target_include_directories(style-menu-client PUBLIC src)
+target_compile_definitions(style-menu-client PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_link_libraries(style-menu-client PUBLIC style-menu-owner style-menu-popup style-window style-present)
 add_library(win16-window STATIC
-  src/lib-win32-style/appearance/win3x/menu/menu_paint.c
-  src/lib-win32-style/appearance/win3x/menu/menu_bar.c src/lib-win32-style/appearance/win3x/menu/menu_bar_paint.c
-  src/lib-win32-style/appearance/win3x/menu/menu_items.c src/lib-win32-style/appearance/win3x/menu/menu_scope.c
   src/lib-win32-style/appearance/win3x/window/frame_paint.c src/lib-win32-style/appearance/win3x/window/frame_renderer.c
   src/lib-win32-style/appearance/win3x/window/frame_layout.c src/lib-win32-style/appearance/win3x/window/frame_dispatch.c
   src/lib-win32-style/appearance/win3x/window/frame_input.c src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c
@@ -129,7 +133,7 @@ add_library(win16-window STATIC
   src/lib-win32-style/appearance/win3x/window/frame_state.c)
 target_include_directories(win16-window PUBLIC src/lib-win32-style/appearance/win3x/window PRIVATE src)
 target_compile_definitions(win16-window PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-window PUBLIC style-menu-owner style-window style-instance style-menu-items style-uwp-repaint style-font-variant user32 gdi32 comctl32 uxtheme PRIVATE ole32 uuid)
+target_link_libraries(win16-window PUBLIC style-menu-client style-menu-owner style-window style-instance style-menu-items style-uwp-repaint style-font-variant user32 gdi32 comctl32 uxtheme PRIVATE ole32 uuid)
 set(client_modern_frame src/lib-win32-style/appearance/win3x/window/modern_frame.c)
 set(client_modern_layout src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c)
 add_library(win16-window-uwp STATIC ${client_modern_frame} ${client_modern_layout})

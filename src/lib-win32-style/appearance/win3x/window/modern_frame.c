@@ -4,7 +4,7 @@
 #include "lib-win32-style/appearance/win3x/window/frame_renderer.h"
 #include "lib-win32-style/appearance/win3x/window/frame_font.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
-#include "lib-win32-style/appearance/win3x/menu/menu_items.h"
+#include "lib-win32-style/application/menu/owned_rows.h"
 #include <stdlib.h>
 
 extern IMAGE_DOS_HEADER __ImageBase;
@@ -80,10 +80,10 @@ static BOOL can_maximize(void *context)
 static BOOL menu_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,BOOL owner,LRESULT *result)
 {
     uwp_frame *s=context;
-    win16_style_menu_theme theme={&s->palette,s->fonts.menu,s->fonts.dpi,
+    style_menu_client_theme theme={&s->palette,s->fonts.menu,s->fonts.dpi,
         owner?&s->frame:NULL,owner?style_uwp_frame_menu_selection:NULL,
         &s->theme.menu_popup,&s->theme.menu_metrics,&s->menu_art};
-    return style_menu_owner_message(&s->frame.menu,w,message,a,b,&win16_style_menu_operations,&theme,result);
+    return style_menu_owner_message(&s->frame.menu,w,message,a,b,&style_menu_client_operations,&theme,result);
 }
 static const style_uwp_frame_ops operations={refresh_geometry,refresh_paint,input_hit,can_maximize,menu_message,dispose};
 static BOOL apply_actions(HWND w,HWND title,const style_uwp_frame_action *actions,unsigned count,

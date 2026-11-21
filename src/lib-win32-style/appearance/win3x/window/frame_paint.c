@@ -1,38 +1,4 @@
 #include "frame_paint.h"
-#include "../menu/menu_bar.h"
-
-void win16_control_fill(HDC dc,RECT r,COLORREF c)
-{
-    SetDCBrushColor(dc,c);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
-}
-
-void win16_control_outline(HDC dc,RECT r,int u,COLORREF c)
-{
-    RECT q=r;SetDCBrushColor(dc,c);HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
-    q.bottom=q.top+u;FillRect(dc,&q,brush);
-    q=r;q.top=q.bottom-u;FillRect(dc,&q,brush);
-    q=r;q.right=q.left+u;FillRect(dc,&q,brush);
-    q=r;q.left=q.right-u;FillRect(dc,&q,brush);
-}
-
-static void paint_button(HDC dc,RECT r,enum classic_button_role role,UINT flags,BOOL zoom,BOOL child,int u,
-    const win16_style_palette *p,const classic_caption_art *art,const style_caption_presentation *presentation)
-{
-    const COLORREF palette[]={p->edge,p->light,p->shadow,p->face};
-    const style_caption_raster raster=style_caption_button_raster(art,role,zoom,child,flags);
-    style_caption_button_paint(dc,r,role,zoom,flags,u,presentation,&raster,palette);
-}
-
-void win16_style_merged_control(HDC dc,RECT bounds,unsigned role,UINT flags,int unit,
-    const win16_style_palette *palette,const classic_caption_art *art,
-    const style_caption_presentation *presentation)
-{
-    BOOL system=role==CLASSIC_MDI_SYSTEM;
-    enum classic_button_role button=system?CLASSIC_BUTTON_SYSTEM:role==CLASSIC_MDI_CLOSE?CLASSIC_BUTTON_CLOSE:
-        role==CLASSIC_MDI_MINIMIZE?CLASSIC_BUTTON_MINIMIZE:CLASSIC_BUTTON_MAXIMIZE;
-    paint_button(dc,bounds,button,flags,role==CLASSIC_MDI_RESTORE,system,unit,palette,art,presentation);
-}
-
 
 void win16_control_frame_caption(HDC dc,const style_full_client_layout *layout,const win16_style_palette *palette,
     const win16_frame_paint_state *snapshot,PCWSTR title,BOOL child,BOOL zoomed)

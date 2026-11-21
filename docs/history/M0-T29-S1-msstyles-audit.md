@@ -30,9 +30,9 @@
 | 09 | 外观 | 系统按钮的可见图形 | S | S | 公开 WP_SYSBUTTON 部件可表示；本机 Aero 该部件没有可绘制数据 | [1](../../src/lib-win32-style/appearance/win3x/window/frame_renderer.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
 | 10 | 外观 | 标题按钮组排列、间隔和 Win16 左侧按钮几何 | E | E | 每个部件尺寸可标准化；成组关系和环境分支需项目布局字段 | [1](../../src/lib-win32-style/appearance/win3x/window/frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
 | 11 | 外观 | 最大化、不可调整、无图标等组合布局选择 | E | E | 部件与度量有标准槽；当前组合选择需显式规则参数 | [1](../../src/lib-win32-style/appearance/win3x/window/frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
-| 12 | 外观 | 菜单栏与弹出菜单背景、项目、禁用与选中配色 | S | S | MENU 菜单栏／弹出部件及状态 | [1](../../src/lib-win32-style/appearance/win3x/menu/menu_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
+| 12 | 外观 | 菜单栏与弹出菜单背景、项目、禁用与选中配色 | S | S | MENU 菜单栏／弹出部件及状态 | [1](../../src/lib-win32-style/application/menu/row_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
 | 13 | 外观 | 菜单勾选、子菜单箭头和分隔部件图像 | S | S | MENU 对应部件状态；图像负载须保留来源 | [1](../../src/lib-win32-style/appearance/win3x/resources/frame_buttons.h) [2](../../src/lib-win32-style/appearance/win3x/resources/control_glyphs.h) [3](../../src/lib-win32-style/appearance/win3x/resources/combo_glyph.h) [4](../../src/lib-win32-style/appearance/win3x/resources/menu_glyphs.h) [5](../../src/lib-win32-style/appearance/win3x/resources/scroll_glyphs.h) |
-| 14 | 外观 | Win16 弹出菜单标签、快捷键和箭头的列间距 | E | — | 组件专属列宽参数；实际测量和跟踪另计 | [1](../../src/lib-win32-style/appearance/win3x/menu/menu_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
+| 14 | 外观 | Win16 弹出菜单标签、快捷键和箭头的列间距 | E | — | 组件专属列宽参数；实际测量和跟踪另计 | [1](../../src/lib-win32-style/application/menu/row_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
 | 15 | 外观 | 普通按钮、默认边缘、按下和禁用绘制 | S | S | BUTTON.BP_PUSHBUTTON 对应状态 | [1](../../src/lib-win32-style/appearance/win3x/control/basic_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/button_paint.c) |
 | 16 | 外观 | 复选、半选与单选的标记和状态 | S | S | BUTTON.BP_CHECKBOX/BP_RADIOBUTTON；状态选择留代码 | [1](../../src/lib-win32-style/appearance/win3x/control/choice_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/button_paint.c) |
 | 17 | 外观 | 静态文字、蚀刻边和框线色值 | S | S | 颜色及 BORDERFILL/IMAGE 数据；绘制角色另由匹配器识别 | [1](../../src/lib-win32-style/appearance/win3x/control/basic_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/static_paint.c) |
@@ -65,7 +65,7 @@
 | 44 | 行为 | 原主题观察、抑制与还原事务 | R | R | 状态及句柄生命周期 | [1](../../src/lib-win32-style/application/lifecycle/theme_track.c) [2](../../src/lib-win32-style/application/window/frame.h) |
 | 45 | 行为 | 窗口尺寸求解、非客户区和命中测试 | R | R | 使用已解析数据与实际客户区、窗口状态 | [1](../../src/lib-win32-style/appearance/win3x/window/frame_layout.c) [2](../../src/lib-win32-style/appearance/win2000/window/frame.c) |
 | 46 | 行为 | UWP/WinUI 宿主坐标、重绘及合成提交 | R | R | 由宿主适配器执行 | [1](../../src/lib-win32-style/appearance/win3x/window/modern_frame.c) [2](../../src/lib-win32-style/appearance/win2000/window/modern_frame.c) |
-| 47 | 行为 | 菜单焦点、跟踪、键盘、取消及 owner 通知 | R | R | 状态机与 HWND 消息 | [1](../../src/lib-win32-style/appearance/win3x/menu/menu_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
+| 47 | 行为 | 菜单焦点、跟踪、键盘、取消及 owner 通知 | R | R | 状态机与 HWND 消息 | [1](../../src/lib-win32-style/application/menu/row_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
 | 48 | 行为 | 控件真实状态、应用返回值及回调所有权 | R | R | 原生处理、子窗和重入 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
 | 49 | 行为 | 滚动范围计算、捕获、拖拽与通知 | R | R | 交互算法和消息 | [1](../../src/lib-win32-style/appearance/win3x/control/scroll_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/scroll.c) |
 | 50 | 行为 | 应用字体借用、位图字形适配及释放 | R | R | 运行期字体对象及恢复 | [1](../../src/lib-win32-style/appearance/msstyles/raster_font.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |

@@ -3,7 +3,7 @@
 #include "lib-win32-style/application/window/dwm.h"
 #include "lib-win32-style/application/window/frame.h"
 #include <dwmapi.h>
-#include "../menu/menu_bar.h"
+#include "lib-win32-style/application/menu/client_bar.h"
 #include <windowsx.h>
 
 BOOL win16_control_frame_hit_test(HWND w,const style_full_client_layout *l,LPARAM lp,LRESULT *result)
@@ -42,7 +42,7 @@ BOOL win16_control_measure_window(HWND w,const style_instance *instance,const st
         OffsetRect(&l->buttons[role],dx,dy);
     if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD) && GetMenu(w)){
         style_menu_bar_snapshot bar;POINT origin={l->client.left,l->client.top};
-        if(!win16_style_bar_read_for_window(w,GetMenu(w),fonts->menu?fonts->menu:(HFONT)GetStockObject(SYSTEM_FONT),
+        if(!style_menu_client_bar_read(w,GetMenu(w),fonts->menu?fonts->menu:(HFONT)GetStockObject(SYSTEM_FONT),
             fonts->dpi,l,origin,l->client.right-l->client.left,&bar))return FALSE;
         if(instance->detached){style_menu_bar_free(&bar);return FALSE;}
         if(bar.height){l->menu=l->client;l->menu.bottom=min(l->client.bottom,l->client.top+bar.height+l->unit);

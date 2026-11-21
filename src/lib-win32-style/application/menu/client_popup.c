@@ -1,15 +1,15 @@
-#include "menu_scope.h"
-#include "menu_paint.h"
-#include "../window/frame_paint.h"
+#include "client_popup.h"
+#include "row_paint.h"
+#include "../window/frame_border.h"
 #include "lib-win32-style/application/menu/menu_snapshot.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/menu/row_text.h"
 #include <stdlib.h>
 
 typedef struct menu_presentation {
-    win16_style_palette palette;
+    style_window_palette palette;
     classic_menu_colors colors;
-    classic_menu_metrics metrics;
+    style_menu_metrics metrics;
     style_menu_art art;
     HMENU system;
     HFONT font;
@@ -27,9 +27,9 @@ static void paint_border(style_menu_popup *p,HDC target)
     OffsetRect(&client,-outer.left,-outer.top);
     SetRect(&r,0,0,outer.right-outer.left,outer.bottom-outer.top);
     ExcludeClipRect(dc,client.left,client.top,client.right,client.bottom);
-    win16_control_fill(dc,r,view->colors.present?view->colors.background:view->palette.light);
+    style_frame_solid_fill(dc,r,view->colors.present?view->colors.background:view->palette.light);
     u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    win16_control_outline(dc,r,u,view->palette.edge);
+    style_frame_solid_outline(dc,r,u,view->palette.edge);
 done:
     RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);
 }
@@ -44,12 +44,12 @@ static BOOL paint_system(style_menu_popup *p,HDC target,BOOL window_coordinates)
     int count=GetMenuItemCount(menu);if(!style_menu_popup_live(p)||count<1||count>64){return FALSE;}
     style_menu_row *rows=calloc((size_t)count,sizeof(*rows));if(!rows){return FALSE;}
     HDC dc=target?target:GetDC(w);if(!dc){free(rows);return FALSE;}
-    int saved=SaveDC(dc);win16_style_menu_columns columns={0};BOOL valid=saved!=0,arrows=FALSE;
+    int saved=SaveDC(dc);style_menu_columns columns={0};BOOL valid=saved!=0,arrows=FALSE;
     POINT delta={0,0};if(valid&&!style_menu_client_offset(w,window_coordinates,&delta))valid=FALSE;
     HFONT bold=(style_menu_text_options(s->metrics.text_flags)&STYLE_MENU_TEXT_BOLD_DEFAULT)?style_menu_bold_font(font):NULL;
     for(int i=0;valid&&i<count;++i){
         if(!style_menu_read_row(menu,(UINT)i,&rows[i],NULL)||!style_menu_popup_live(p))valid=FALSE;
-        else if(!(rows[i].type&MFT_SEPARATOR) && !win16_style_menu_columns_read(dc,
+        else if(!(rows[i].type&MFT_SEPARATOR) && !style_menu_columns_read(dc,
             bold&&(rows[i].state&MFS_DEFAULT)?bold:font,dpi,rows[i].text,&columns))valid=FALSE;
         if(valid)arrows|=rows[i].submenu;
     }
@@ -61,18 +61,18 @@ static BOOL paint_system(style_menu_popup *p,HDC target,BOOL window_coordinates)
         attempted=TRUE;
         if(style_present_buffer_begin(&buffer,dc,&client,TRUE))dc=buffer.memory;
     }
-    int theme_width=win16_style_menu_columns_width(&columns,dpi,arrows,&s->metrics);
+    int theme_width=style_menu_columns_width(&columns,dpi,arrows,&s->metrics);
     for(int i=0;valid&&i<count&&style_menu_popup_live(p);++i){RECT r=rows[i].rect;
         MapWindowPoints(NULL,w,(POINT *)&r,2);OffsetRect(&r,delta.x,delta.y);
-        classic_menu_metrics metrics=s->metrics;
+        style_menu_metrics metrics=s->metrics;
         if(metrics.check_column && theme_width>r.right-r.left && columns.shortcut){
             int deficit=MulDiv(theme_width-(r.right-r.left),96,(int)dpi);
             metrics.shortcut_gap=max(0,metrics.shortcut_gap-deficit);
         }
         UINT state=0;if(rows[i].state&MFS_HILITE)state|=ODS_SELECTED;if(rows[i].state&MFS_DISABLED)state|=ODS_DISABLED;if(rows[i].state&MFS_CHECKED)state|=ODS_CHECKED;
         if(rows[i].state&MFS_DEFAULT)state|=ODS_DEFAULT;
-        (void)win16_style_menu_text_columns(dc,&r,font,dpi,&s->palette,rows[i].text,state,
-            (rows[i].type&MFT_SEPARATOR)?WIN16_STYLE_MENU_SEPARATOR:WIN16_STYLE_MENU_ROW,
+        (void)style_menu_paint_row(dc,&r,font,dpi,&s->palette,rows[i].text,state,
+            (rows[i].type&MFT_SEPARATOR)?STYLE_MENU_SEPARATOR:STYLE_MENU_ROW,
             rows[i].submenu,&columns,&s->colors,&metrics,&s->art,rows[i].bitmap);
     }
     if(attempted)(void)style_present_buffer_end(&buffer,dc==buffer.memory&&style_menu_popup_live(p));
@@ -101,13 +101,13 @@ static BOOL accept_popup(void *context,HWND window)
 {(void)context;(void)window;return TRUE;}
 static const style_menu_popup_ops popup_ops={accept_popup,paint_border,paint_system,system_selection,free,TRUE,FALSE};
 
-void win16_style_menu_system(win16_style_menu_scope *scope,HMENU menu,HFONT font,UINT dpi)
+void style_menu_client_popup_system(style_menu_popup_scope *scope,HMENU menu,HFONT font,UINT dpi)
 {
     menu_presentation *s=style_menu_popup_scope_context(scope);
     if(s){s->system=menu;s->font=font;s->dpi=dpi;}
 }
-win16_style_menu_scope *win16_style_menu_begin(const win16_style_palette *palette,
-    const classic_menu_colors *colors,const classic_menu_metrics *metrics,const style_menu_art *art)
+style_menu_popup_scope *style_menu_client_popup_begin(const style_window_palette *palette,
+    const classic_menu_colors *colors,const style_menu_metrics *metrics,const style_menu_art *art)
 {
     menu_presentation *s=calloc(1,sizeof(*s));if(!s)return NULL;
     if(palette)s->palette=*palette;else style_window_palette_default(&s->palette);

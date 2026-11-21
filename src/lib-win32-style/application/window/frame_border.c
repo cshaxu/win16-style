@@ -1,6 +1,21 @@
 #include "frame_border.h"
 #include <shellscalingapi.h>
 
+void style_frame_solid_fill(HDC dc,RECT r,COLORREF c)
+{
+    SetDCBrushColor(dc,c);FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
+}
+
+void style_frame_solid_outline(HDC dc,RECT r,int u,COLORREF c)
+{
+    RECT q=r;SetDCBrushColor(dc,c);HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);
+    q.bottom=q.top+u;FillRect(dc,&q,brush);
+    q=r;q.top=q.bottom-u;FillRect(dc,&q,brush);
+    q=r;q.right=q.left+u;FillRect(dc,&q,brush);
+    q=r;q.left=q.right-u;FillRect(dc,&q,brush);
+}
+
+
 SIZE style_frame_monitor_dpi(HWND window,UINT fallback)
 {
     UINT x=fallback,y=fallback;

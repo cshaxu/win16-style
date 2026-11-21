@@ -10,5 +10,6 @@ typedef struct style_menu_art {
 
 void style_menu_draw_mark(HDC dc,const RECT *row,BOOL submenu,UINT dpi,COLORREF color,const CHAR *mask);
 void style_menu_draw_command(HDC dc,const RECT *row,HBITMAP bitmap,int unit,COLORREF color);
+void style_menu_popup_marks(HDC,const RECT *,UINT,COLORREF,BOOL checked,BOOL submenu,const style_menu_art *);
 
 #endif
