@@ -5,7 +5,7 @@
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S22 P1",
+  "last_verified_remote_delivery": "M0 T29 S23 P1 a003142e279a",
   "source_snapshot_sha256": "c8dcde6cced9e39adc95840ec2d44c60227d814398d186dcdeca29b70417528d",
   "artifacts": {
     "run16s.exe": {
@@ -173,8 +173,7 @@
       "full matrix",
       "real modern host attachment and removal on this snapshot",
       "actual high contrast",
-      "physical input",
-      "remote package verification"
+      "physical input"
     ]
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
