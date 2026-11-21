@@ -90,6 +90,7 @@ typedef struct classic_control_presentation {
     style_trackbar_profile trackbar;
     style_line_profile header;
     style_line_profile tab,native_edge;
+    style_tab_text tab_text;
     enum classic_choice_fallback choice_fallback;
     style_choice_metrics choice_metrics;
     style_arrow_button_metrics updown;
@@ -116,6 +117,6 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
     const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border,
     const classic_control_presentation *controls);
 
-enum { CLASSIC_STYLE_RESOURCE_CAPACITY=401 };
+enum { CLASSIC_STYLE_RESOURCE_CAPACITY=410 };
 
 #endif

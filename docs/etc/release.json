@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P23",
-  "stage": "published development candidate; installed dual-width tab and external theme property checks passed",
+  "delivery": "M0 T29 S23 P24",
+  "stage": "published development candidate; dual-width shared tab rendering and mixed-theme pixels verified",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P22 422d01f920b9",
-  "source_snapshot_sha256": "f14949a02288c27232b2404aec070cb1e2a126e0d65af6e2003eccebb5579984",
+  "last_verified_remote_delivery": "M0 T29 S23 P23 4521db79bc04",
+  "source_snapshot_sha256": "146d12ef9648d72e90e7526042aa8ff4816d89358c87ae420d4dd7eb8a37cf04",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "a12720db68bcde542b8c54a078e95263a8ea26486dc6b65b60d7897b6132f385",
+      "sha256": "f157382cffc2c16d9c1d7e1dfb92bbf4e12b36393621d56ae5ccb75ad80cb100",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "3d89197f1bda75e53b549cc4f94c2f0cb578e321b147f4e8382acfc55287d912",
+      "sha256": "4aba33c4bc4aa336c69b07ed21a37de45ee5cfdfdf0b653f2164537be867554a",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "b6c94daacc615602a9d64e272f6e9aab93eeadb5611bf719c5a5874c13fc5aa4",
+      "sha256": "766396e112bb04bb6818169f9f53d05c138e07cc8ea0b6fa3670f8619115ea61",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -79,9 +79,9 @@
     }
   },
   "theme_artifacts": {
-    "Win16/Win16.msstyles": "59f11d9ed4eb832548afe578ddf7a44626db127744a1535b0167b17436ed6418",
+    "Win16/Win16.msstyles": "d1dc226521d6de28480d1f99db800df289cacebb86dad474ed6876a026cf761f",
     "Win16/Win16.theme": "818f62aa9e16bff14d40a93e9f5f0894d2f9098ff2aa3b0684e4f61cdc45b2b2",
-    "Win2K/Win2K.msstyles": "96c8069fdf9c397016688d46210cd5489fb3d0d51fd7a6671c608703299d085a",
+    "Win2K/Win2K.msstyles": "549acfc9dd5c000dc431dffe72ec2c43d13108a1c3f5c53963041d9fa359e2fc",
     "Win2K/Win2K.theme": "b6fefdb99613cedf8061ef3971f4116b053e4319e09226df7bc2d11439939b80"
   },
   "publication": {
@@ -285,7 +285,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "P8 evidence and P22 Paint checks apply to their original binaries. P23 fresh results are listed in tab_theme_delivery.",
+    "prior_evidence_scope": "Earlier P8, P22 and P23 observations apply to their tested binaries. P24 fresh results are listed in shared_tab_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -365,13 +365,28 @@
         "physical hover pixels for a modified theme",
         "full package matrix"
       ]
+    },
+    "shared_tab_delivery": {
+      "test_invocations_passed": 28,
+      "stock_label_pixel_cases": 4,
+      "mixed_label_pixel_cases": 4,
+      "previous_theme_label_cases": 4,
+      "stock_baseline_pixel_comparisons": 4,
+      "stock_edge_tests": 4,
+      "native_snapshot_tests": 2,
+      "theme_record_tests": 2,
+      "scope": "Same P24 runtime renders literal ampersands or mnemonic text using one changed external tab-label record. Stock tab, header and trackbar hashes match P23 on both widths. Previous theme files remain usable.",
+      "not_retested": [
+        "physical input",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P23 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P24 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2000,
-    "cache_misses": 128
+    "cache_hits": 1974,
+    "cache_misses": 150
   }
 }

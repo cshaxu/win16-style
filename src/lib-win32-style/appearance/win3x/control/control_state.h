@@ -22,7 +22,7 @@ typedef struct control_style {
     classic_list_colors list_colors;
     classic_combo_colors combo_colors;
     classic_combo_arrow_art combo_arrow;
-    classic_tab_colors tab_colors;
+    style_tab_colors tab_colors;
     classic_header_colors header_colors;
     classic_progress_colors progress_colors[2];
     classic_trackbar_colors trackbar_colors[2];

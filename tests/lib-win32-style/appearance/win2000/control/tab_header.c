@@ -46,7 +46,8 @@ int wmain(int argc,WCHAR **argv)
     BOOL fingerprints=argc==2 && !wcscmp(argv[1],L"--control-fingerprints");
     BOOL themed_header=argc==3 && !wcscmp(argv[1],L"--header-edge");
     BOOL themed_tab=argc==4 && !wcscmp(argv[1],L"--tab-edge");
-    BOOL themed=themed_header || themed_tab || fingerprints;
+    BOOL tab_label=argc==3 && !wcscmp(argv[1],L"--tab-label");
+    BOOL themed=themed_header || themed_tab || fingerprints || tab_label;
     CHECK(themed || argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
@@ -75,6 +76,35 @@ int wmain(int argc,WCHAR **argv)
     CHECK(dc && bitmap);
     HGDIOBJ old=SelectObject(dc,bitmap);
     CHECK(old && old!=HGDI_ERROR);
+
+    if(tab_label){
+        HWND tab=CreateWindowW(WC_TABCONTROLW,NULL,WS_CHILD|WS_VISIBLE|TCS_FIXEDWIDTH,
+            0,0,250,120,root,NULL,module,NULL);
+        CHECK(tab);
+        TCITEMW item={.mask=TCIF_TEXT,.pszText=L"A"};
+        CHECK(SendMessageW(tab,TCM_INSERTITEMW,0,(LPARAM)&item)==0);
+        SendMessageW(tab,TCM_SETITEMSIZE,0,MAKELPARAM(120,28));
+        SendMessageW(root,WM_CHANGEUISTATE,MAKEWPARAM(UIS_SET,UISF_HIDEACCEL|UISF_HIDEFOCUS),0);
+        CHECK(SendMessageW(tab,WM_QUERYUISTATE,0,0)&UISF_HIDEACCEL);
+        RECT before,after;
+        CHECK(SendMessageW(tab,TCM_GETITEMRECT,0,(LPARAM)&before));
+        unsigned long hashes[2]={0};
+        for(unsigned i=0;i<ARRAYSIZE(hashes);++i){
+            item.pszText=i?L"&A":L"A";
+            CHECK(SendMessageW(tab,TCM_SETITEMW,0,(LPARAM)&item));
+            CHECK(SendMessageW(tab,TCM_GETITEMRECT,0,(LPARAM)&after) && EqualRect(&before,&after));
+            print_client(tab,dc);
+            hashes[i]=2166136261u;
+            for(int y=0;y<before.bottom;++y)for(int x=0;x<before.right;++x)
+                hashes[i]=(hashes[i]^GetPixel(dc,x,y))*16777619u;
+        }
+        BOOL literal=hashes[0]!=hashes[1];
+        CHECK(literal==(!wcscmp(argv[2],L"literal")));
+        CHECK(DestroyWindow(root));
+        SelectObject(dc,old);CHECK(DeleteObject(bitmap) && DeleteDC(dc));
+        printf("TAB LABEL literal=%d hashes=%08lx/%08lx\n",literal,hashes[0],hashes[1]);
+        return 0;
+    }
 
     if(fingerprints){
         const WCHAR *types[]={WC_TABCONTROLW,WC_HEADERW,TRACKBAR_CLASSW};

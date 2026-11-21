@@ -290,10 +290,17 @@ static int fixtures(void)
     const classic_control_presentation tab={.tab=STYLE_LINE_RELIEF};
     CHECK(classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,NULL,NULL,NULL,&tab)==length+9);
     CHECK(bytes[6]==17 && classic_style_read(bytes,length+9,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_OK &&
-        controls.tab==STYLE_LINE_RELIEF && !controls.header);
+        controls.tab==STYLE_LINE_RELIEF && controls.tab_text==STYLE_TAB_TEXT_DEFAULT && !controls.header);
     bytes[length+8]=0;
     CHECK(classic_style_read(bytes,length+9,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_INVALID &&
         controls.tab==STYLE_LINE_RELIEF);
+    const classic_control_presentation tab_text={.tab=STYLE_LINE_RELIEF,.tab_text=STYLE_TAB_TEXT_LITERAL};
+    CHECK(classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,NULL,NULL,NULL,&tab_text)==length+18);
+    CHECK(classic_style_read(bytes,length+18,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_OK &&
+        controls.tab==STYLE_LINE_RELIEF && controls.tab_text==STYLE_TAB_TEXT_LITERAL);
+    bytes[length+17]=255;
+    CHECK(classic_style_read(bytes,length+18,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_INVALID &&
+        controls.tab_text==STYLE_TAB_TEXT_LITERAL);
     const classic_control_presentation native_edge={.native_edge=STYLE_LINE_FLAT};
     CHECK(classic_style_write(bytes,sizeof(bytes),&original,NULL,NULL,NULL,NULL,NULL,NULL,&native_edge)==length+9);
     CHECK(bytes[6]==20 && classic_style_read(bytes,length+9,&group,NULL,NULL,NULL,NULL,NULL,NULL,&controls)==CLASSIC_STYLE_OK &&

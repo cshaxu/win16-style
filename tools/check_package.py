@@ -263,6 +263,7 @@ def verify_runtime_symbols(path, tree, architecture, standalone):
         'compatibility_dialog_policy', 'classic_sources',
         'win16_style_measure', 'win2k_caption_system_buttons', 'win2k_caption_render',
         'win16_style_tab_supported', 'win2k_tab_supported',
+        'win16_style_tab_paint', 'win2k_tab_paint',
     } | standalone
     if path.suffix.lower() == '.exe':
         retired |= {'style_caption_render', 'style_caption_button_paint'}

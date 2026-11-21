@@ -46,7 +46,7 @@ typedef struct win2k_control {
     classic_report_item_colors report_colors[CLASSIC_REPORT_STATE_COUNT];
     classic_bar_colors bar_colors;
     classic_combo_colors combo_colors;
-    classic_tab_colors tab_colors;
+    style_tab_colors tab_colors;
     classic_header_colors header_colors;
     classic_progress_colors progress_colors[2];
     classic_trackbar_colors trackbar_colors[2];
@@ -210,7 +210,8 @@ static void paint(HWND window,void *context,HDC dc)
         unsigned epoch=control->native.epoch;
         HFONT font=(HFONT)SendMessageW(window,WM_GETFONT,0,0);
         painted=style_control_native_current(window,&control->instance,&control->native,epoch) &&
-            win2k_tab_paint(window,dc,font,&control->instance,&control->native,&control->tab_colors,control->controls.tab,&control->palette);
+            style_control_tab_present(window,dc,font,&control->instance,&control->native,&control->tab_colors,
+                control->controls.tab,control->controls.tab_text,&control->palette);
     }else if(control->combo_parent || class_is(window,L"LISTBOX")){
         HWND parent=control->combo_parent?control->combo_parent:GetParent(window);
         win2k_palette palette=control->palette;

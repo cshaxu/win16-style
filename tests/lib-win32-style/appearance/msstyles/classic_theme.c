@@ -1257,7 +1257,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc==4 && !wcscmp(argv[1],L"--tab-hot")){
         classic_theme_mapping source={0};
         CHECK(classic_theme_open(argv[2],&source)==S_OK);
-        const classic_tab_colors *tab=&source.model.tab;
+        const style_tab_colors *tab=&source.model.tab;
         BOOL present=wcscmp(argv[3],L"absent")!=0;
         CHECK(tab->has_hot_text==present &&
             (!present || tab->hot_text==wcstoul(argv[3],NULL,16)));

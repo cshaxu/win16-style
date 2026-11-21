@@ -5,8 +5,6 @@
 #include <commctrl.h>
 
 BOOL win2k_header_supported(HWND);
-BOOL win2k_tab_paint(HWND,HDC,HFONT,const style_instance *,const style_control_native_state *,
-    const classic_tab_colors *,style_line_profile,const style_relief_palette *);
 typedef struct win2k_header_draw {
     const style_instance *instance;
     const classic_header_colors *colors;

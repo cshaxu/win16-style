@@ -1,6 +1,7 @@
 #ifndef STYLE_CONTROL_TAB_SNAPSHOT_H
 #define STYLE_CONTROL_TAB_SNAPSHOT_H
 #include "native.h"
+#include "lib-win32-style/application/graphics/paint_frame.h"
 #include <commctrl.h>
 typedef struct style_control_tab_snapshot {
     RECT client,page;
@@ -31,4 +32,6 @@ typedef struct style_control_tab_painter {
 BOOL style_control_tab_paint(HWND,HDC,const style_instance *,const style_control_native_state *,const style_control_tab_painter *);
 BOOL style_control_tab_supported(HWND);
 int style_control_tab_hot_item(HWND);
+BOOL style_control_tab_present(HWND,HDC,HFONT,const style_instance *,const style_control_native_state *,
+    const style_tab_colors *,style_line_profile,style_tab_text,const style_relief_palette *);
 #endif

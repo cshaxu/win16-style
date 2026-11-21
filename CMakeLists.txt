@@ -69,7 +69,6 @@ add_library(win2k-window-uwp STATIC ${observed_modern_frame})
 target_compile_definitions(win2k-window-uwp PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-window-uwp PUBLIC win2k-window style-uwp-native style-menu-items)
 add_library(win2k-control STATIC
-  src/lib-win32-style/appearance/win2000/control/tab_paint.c
   src/lib-win32-style/appearance/win2000/control/header_paint.c
   src/lib-win32-style/appearance/win2000/control/report_paint.c
   src/lib-win32-style/appearance/win2000/control/progress_paint.c
@@ -214,9 +213,8 @@ add_library(style-control-common STATIC
 target_include_directories(style-control-common PUBLIC src)
 target_compile_definitions(style-control-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_dependencies(style-control-common style-subclass)
-target_link_libraries(style-control-common PUBLIC module-import style-bitmap win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme msimg32)
+target_link_libraries(style-control-common PUBLIC module-import style-bitmap style-present win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme msimg32)
 add_library(win16-control STATIC
-  src/lib-win32-style/appearance/win3x/control/tab_paint.c
   src/lib-win32-style/appearance/win3x/control/header_paint.c
   src/lib-win32-style/appearance/win3x/control/progress_paint.c src/lib-win32-style/appearance/win3x/control/trackbar_paint.c
   src/lib-win32-style/appearance/win3x/control/toolbar_paint.c src/lib-win32-style/appearance/win3x/control/control_scope.c

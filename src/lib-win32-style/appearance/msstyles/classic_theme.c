@@ -515,7 +515,7 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
         theme->combo=(classic_combo_colors){{combo[0].value,combo[1].value,combo[2].value},
             combo[3].value,combo[4].value,TRUE};
     if(tab[0].present && tab[1].present && tab[2].present && tab[3].present)
-        theme->tab=(classic_tab_colors){.pane=tab[0].value,.normal=tab[1].value,
+        theme->tab=(style_tab_colors){.pane=tab[0].value,.normal=tab[1].value,
             .selected=tab[2].value,.border=tab[3].value,.present=TRUE};
     theme->tab.hot_text=tab[4].value;
     theme->tab.has_hot_text=tab[4].present;

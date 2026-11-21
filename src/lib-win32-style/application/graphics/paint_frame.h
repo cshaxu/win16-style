@@ -23,6 +23,15 @@ typedef struct style_relief_palette {
     COLORREF face,light,highlight,shadow,dark,text,gray,window;
     COLORREF selection,selection_text;
 } style_relief_palette;
+typedef enum style_tab_text {
+    STYLE_TAB_TEXT_DEFAULT,STYLE_TAB_TEXT_LITERAL,STYLE_TAB_TEXT_MNEMONIC
+} style_tab_text;
+typedef struct style_tab_colors {
+    COLORREF pane,normal,selected,border;
+    BOOL present;
+    COLORREF hot_text;
+    BOOL has_hot_text;
+} style_tab_colors;
 /* Source image, text and DC remain borrowed. Temporary brushes own the
  * disabled emboss and monochrome color layers. */
 BOOL style_paint_content(HDC,LPARAM,WPARAM,int,int,int,int,UINT,DRAWSTATEPROC,BOOL,BOOL,const style_relief_palette *);

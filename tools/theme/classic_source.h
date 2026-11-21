@@ -90,6 +90,7 @@ static const classic_theme_source classic_sources[]={
             STYLE_CAPTION_BUTTON_EDGE_OUTLINE,STYLE_CAPTION_ICON_HIDDEN},
         WIN16_FRAME_BORDER,{.separator=STYLE_LINE_FLAT,.group=STYLE_LINE_FLAT,.edit=STYLE_LINE_FLAT,.push=STYLE_PUSH_STEPPED,
             .progress=STYLE_PROGRESS_OUTLINED,.trackbar=STYLE_TRACKBAR_OUTLINED,.header=STYLE_LINE_FLAT,.tab=STYLE_LINE_FLAT,
+            .tab_text=STYLE_TAB_TEXT_LITERAL,
             .choice_metrics={14,13,4,STYLE_CHOICE_DPI},.updown={1,1,3},.updown_mode=CLASSIC_UPDOWN_ART,.control_font_points=12},
         STYLE_SCROLL_ARROW_INDEXED,RGB(128,128,128),78,12
     },
@@ -117,6 +118,7 @@ static const classic_theme_source classic_sources[]={
             STYLE_CAPTION_BUTTON_NO_OUTLINE,STYLE_CAPTION_ICON_NATIVE},
         WIN2000_FRAME_BORDER,{.separator=STYLE_LINE_RELIEF,.group=STYLE_LINE_RELIEF,.edit=STYLE_LINE_RELIEF,.push=STYLE_PUSH_RELIEF,
             .progress=STYLE_PROGRESS_INSET,.trackbar=STYLE_TRACKBAR_RELIEF,.header=STYLE_LINE_RELIEF,.tab=STYLE_LINE_RELIEF,
+            .tab_text=STYLE_TAB_TEXT_MNEMONIC,
             .native_edge=STYLE_LINE_RELIEF,.choice_fallback=CLASSIC_CHOICE_SYMBOLS,
             .choice_metrics={13,13,0,STYLE_CHOICE_FONT_GAP|STYLE_CHOICE_ALIGN},.updown_mode=CLASSIC_UPDOWN_RECOLOR},
         STYLE_SCROLL_ARROW_SYMBOL,RGB(212,208,200),0,0

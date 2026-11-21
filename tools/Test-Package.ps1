@@ -945,6 +945,8 @@ try{
             'THEME_TAB_OK selection=1 client_clip=1') 20
         Case "theme-tab-win2k-$bits" $run @('Win2K',$themedHeader,'--tab-edge','ffffff','2') @(
             'THEME_TAB_OK selection=1 client_clip=1') 20
+        Case "theme-tab-label-win16-$bits" $run @('Win16',$themedHeader,'--tab-label','literal') @('TAB LABEL literal=1') 20
+        Case "theme-tab-label-win2k-$bits" $run @('Win2K',$themedHeader,'--tab-label','mnemonic') @('TAB LABEL literal=0') 20
         $themedBars=Join-Path $tree 'core-win2k-bars-v6.exe'
         Case "theme-bars-win2k-$bits" $run @('Win2K',$themedBars,'--theme-colors','ffffff','ffffff','808080') @(
             'THEME_BARS_OK toolbar=ffffff rebar=ffffff status=808080') 20

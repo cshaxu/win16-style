@@ -78,3 +78,116 @@ BOOL style_control_tab_paint(HWND w,HDC dc,const style_instance *instance,const 
 done:
     RestoreDC(dc,saved);return painted;
 }
+
+typedef struct tab_view {
+    style_relief_palette palette;
+    COLORREF normal,selected,hot_color;
+    HFONT font;
+    style_line_profile edge;
+    BOOL literal;
+    int unit,hot;
+    RECT page;
+} tab_view;
+
+static void draw_page(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
+{
+    tab_view *view=context;
+    view->unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
+    view->page=style_paint_tab_page(dc,snapshot->client,snapshot->page,view->unit,view->edge,&view->palette);
+}
+
+static void select_font(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
+{
+    (void)window;(void)snapshot;
+    const tab_view *view=context;
+    SelectObject(dc,view->font?view->font:GetStockObject(view->literal?SYSTEM_FONT:DEFAULT_GUI_FONT));
+    SetBkMode(dc,TRANSPARENT);
+}
+
+static void draw_image(HDC dc,const style_control_tab_item *item,const RECT *content,
+    const tab_view *view,BOOL enabled,BOOL highlighted)
+{
+    int y=content->top+(content->bottom-content->top-item->image_size.cy)/2;
+    int saved=view->literal?SaveDC(dc):0;
+    if(view->literal){
+        if(!saved)return;
+        IntersectClipRect(dc,content->left,content->top,content->right,content->bottom);
+    }
+    COLORREF ink=view->literal?view->palette.gray:highlighted?view->palette.selection:CLR_DEFAULT;
+    BOOL blend=view->literal?!enabled:highlighted;
+    ImageList_DrawEx(item->images,item->native.iImage,dc,content->left,y,
+        view->literal?item->image_size.cx:0,view->literal?item->image_size.cy:0,
+        CLR_NONE,ink,blend?ILD_BLEND50:ILD_NORMAL);
+    if(saved)RestoreDC(dc,saved);
+}
+
+static void draw_tab(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot,
+    const style_control_tab_item *item)
+{
+    const tab_view *view=context;
+    const style_relief_palette *ink=&view->palette;
+    BOOL enabled=IsWindowEnabled(window);
+    BOOL highlighted=(item->native.dwState&TCIS_HIGHLIGHTED)!=0;
+    int saved=SaveDC(dc);
+    if(!saved)return;
+    COLORREF face=view->literal && highlighted?ink->selection:item->active?view->selected:view->normal;
+    RECT frame=style_paint_tab_item(dc,item->rect,view->page,item->active,view->unit,view->edge,face,ink);
+    RECT content=view->literal?frame:item->rect;
+    int unit=view->literal?view->unit:1;
+    InflateRect(&content,-2*unit,view->literal?-unit:0);
+    if(!view->literal){
+        if(item->active)OffsetRect(&content,0,-2);
+        IntersectClipRect(dc,frame.left,frame.top,frame.right,frame.bottom);
+    }
+    SIZE size={0};
+    if(view->literal)GetTextExtentPoint32W(dc,item->text,(int)wcslen(item->text),&size);
+    else{
+        RECT measured={0};
+        DrawTextW(dc,item->text,-1,&measured,DT_CALCRECT|DT_SINGLELINE);
+        size=(SIZE){measured.right,measured.bottom};
+    }
+    int image_width=item->image?item->image_size.cx+(*item->text?3*unit:0):0;
+    content.left+=max(0,(content.right-content.left-size.cx-image_width)/2);
+    if(item->image){draw_image(dc,item,&content,view,enabled,highlighted);content.left+=image_width;}
+    RECT label=content;
+    label.right=min(label.right,label.left+size.cx);
+    label.top+=(label.bottom-label.top-size.cy)/2;
+    label.bottom=label.top+size.cy;
+    if(!view->literal && highlighted)style_paint_color(dc,&label,ink->selection);
+    SetTextColor(dc,view->literal && !enabled?ink->gray:highlighted?ink->selection_text:
+        item->index==view->hot?view->hot_color:ink->text);
+    UINT flags=DT_LEFT|DT_VCENTER|DT_SINGLELINE;
+    if(view->literal){
+        flags|=DT_NOPREFIX|DT_END_ELLIPSIS;
+        if(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_RTLREADING)flags|=DT_RTLREADING;
+    }else if(snapshot->cues&UISF_HIDEACCEL)flags|=DT_HIDEPREFIX;
+    DrawTextW(dc,item->text,-1,&content,flags);
+    if((view->literal || enabled) && GetFocus()==window &&
+        item->index==snapshot->focus && !(snapshot->cues&UISF_HIDEFOCUS)){
+        if(!view->literal)InflateRect(&label,1,1);
+        DrawFocusRect(dc,&label);
+    }
+    RestoreDC(dc,saved);
+}
+
+BOOL style_control_tab_present(HWND window,HDC dc,HFONT font,const style_instance *instance,
+    const style_control_native_state *state,const style_tab_colors *colors,style_line_profile edge,
+    style_tab_text text,const style_relief_palette *palette)
+{
+    if(!dc || !edge || !style_control_tab_supported(window))return FALSE;
+    unsigned epoch=state->epoch;
+    BOOL literal=text==STYLE_TAB_TEXT_LITERAL;
+    tab_view view={.font=font,.edge=edge,.literal=literal,.palette=*palette,
+        .normal=palette->face,.selected=literal?palette->highlight:palette->face,
+        .hot_color=colors->has_hot_text?colors->hot_text:GetSysColor(COLOR_HOTLIGHT),
+        .hot=(!literal || colors->has_hot_text)?style_control_tab_hot_item(window):-1};
+    if(!style_control_native_current(window,instance,state,epoch))return FALSE;
+    if(colors->present){
+        view.palette.face=colors->pane;
+        view.palette.dark=colors->border;
+        view.normal=colors->normal;
+        view.selected=colors->selected;
+    }
+    const style_control_tab_painter painter={&view,draw_page,select_font,draw_tab};
+    return style_control_tab_paint(window,dc,instance,state,&painter);
+}

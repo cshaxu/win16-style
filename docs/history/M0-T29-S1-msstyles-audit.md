@@ -43,7 +43,7 @@
 | 22 | 外观 | 横纵滚动条箭头、滑块、轨道和尺寸框 | S | S | SCROLLBAR 箭头、方向、状态图和 size box | [1](../../src/lib-win32-style/appearance/win3x/control/scroll_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/scroll.c) |
 | 23 | 外观 | 滚动条的基本厚度和尺寸 | S | S | SysMetrics 滚动条度量或部件大小 | [1](../../src/lib-win32-style/appearance/win3x/control/scroll_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/scroll.c) |
 | 24 | 外观 | 极短条及非标准厚度的裁决参数 | E | E | 标准部件大小可存；保留当前极值规则需额外参数，实际求解另计 | [1](../../src/lib-win32-style/appearance/win3x/control/scroll_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/scroll.c) |
-| 25 | 外观 | 标签页状态及边缘 | S | S | TAB 项目和 pane；复杂自绘仍由应用 | [1](../../src/lib-win32-style/appearance/win3x/control/tab_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/tab_paint.c) |
+| 25 | 外观 | 标签页状态及边缘 | S | S | TAB 项目和 pane；复杂自绘仍由应用 | [当前共享绘制](../../src/lib-win32-style/application/control/tab_snapshot.c) |
 | 26 | 外观 | 表头边框、普通与按压表面 | S | S | HEADER 部件和状态 | [1](../../src/lib-win32-style/appearance/win3x/control/header_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/header_paint.c) |
 | 27 | 外观 | 普通列表视图与树视图的边缘和选择色 | S | S | LISTVIEW/TREEVIEW 及系统色；只计已支持表面 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
 | 28 | 外观 | 进度条槽、普通分段或平滑可见面 | S | S | PROGRESS 底槽与填充部件；进度数据留原生 | [1](../../src/lib-win32-style/appearance/win3x/control/progress_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/progress_paint.c) |
