@@ -6,6 +6,7 @@
 #include "header_paint.h"
 #include "progress_paint.h"
 #include "lib-win32-style/application/control/control_class.h"
+#include "lib-win32-style/application/control/tab_snapshot.h"
 #include "../../../application/control/control_protocol.h"
 #include <commctrl.h>
 #include "lib-win32-style/application/graphics/present.h"
@@ -142,7 +143,7 @@ LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPA
         native_render render={s,kind};
         const style_control_draw draw={&render,native_draw};
         result=style_control_native_message(w,&s->instance,state,kind,m,a,b,
-            tab?win16_style_tab_supported:header?win16_style_header_supported:win16_style_progress_supported,&draw);
+            tab?style_control_tab_supported:header?win16_style_header_supported:win16_style_progress_supported,&draw);
     }
     else if(style_control_class_is(w,UPDOWN_CLASSW)){
         if(s->controls.updown_mode==CLASSIC_UPDOWN_RECOLOR){

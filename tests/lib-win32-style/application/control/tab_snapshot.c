@@ -48,6 +48,11 @@ int main(void)
     INITCOMMONCONTROLSEX init={sizeof(init),ICC_TAB_CLASSES};CHECK(InitCommonControlsEx(&init));
     HWND parent=CreateWindowW(L"STATIC",L"",WS_POPUP|WS_VISIBLE,-10000,-10000,600,150,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(parent);
     HWND tab=CreateWindowW(WC_TABCONTROLW,L"",WS_CHILD|WS_VISIBLE|TCS_FIXEDWIDTH,0,0,550,140,parent,NULL,GetModuleHandleW(NULL),NULL);CHECK(tab);
+    CHECK(style_control_tab_supported(tab) && style_control_tab_hot_item(tab)==-1);
+    LONG_PTR style=GetWindowLongPtrW(tab,GWL_STYLE);
+    SetWindowLongPtrW(tab,GWL_STYLE,style|TCS_OWNERDRAWFIXED);
+    CHECK(!style_control_tab_supported(tab));
+    SetWindowLongPtrW(tab,GWL_STYLE,style);
     child=CreateWindowW(L"STATIC",L"",WS_CHILD|WS_VISIBLE,0,0,8,8,tab,NULL,GetModuleHandleW(NULL),NULL);CHECK(child);
     images=ImageList_Create(8,8,ILC_COLOR32,1,1);CHECK(images);
     HBITMAP bitmap=CreateBitmap(8,8,1,32,NULL);CHECK(bitmap && ImageList_Add(images,bitmap,NULL)==0);CHECK(DeleteObject(bitmap));

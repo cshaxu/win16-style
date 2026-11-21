@@ -73,6 +73,8 @@ static inline COLORREF classic_bar_color(const classic_bar_colors *colors,enum c
 typedef struct classic_tab_colors {
     COLORREF pane,normal,selected,border;
     BOOL present;
+    COLORREF hot_text;
+    BOOL has_hot_text;
 } classic_tab_colors;
 
 typedef struct classic_header_colors {

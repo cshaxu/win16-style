@@ -4,20 +4,13 @@
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include <wchar.h>
 
-BOOL win16_style_tab_supported(HWND w)
-{
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-    return !(style&(TCS_VERTICAL|TCS_BOTTOM|TCS_BUTTONS|TCS_OWNERDRAWFIXED|TCS_SCROLLOPPOSITE|
-        TCS_FORCEICONLEFT|TCS_FORCELABELLEFT));
-}
-
 typedef struct tab_paint {
     const win16_style_palette *palette;
     classic_tab_colors colors;
     style_relief_palette frame;
     style_line_profile profile;
     HFONT font;
-    int unit;
+    int unit,hot;
     RECT body;
 } tab_paint;
 static void surface(HWND w,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
@@ -48,7 +41,8 @@ static void paint_item(HWND w,void *context,HDC dc,const style_control_tab_snaps
             RestoreDC(dc,image_dc);}
         left+=cx+gap;
     }
-    content.left=left;SetTextColor(dc,!IsWindowEnabled(w)?p->shadow:highlighted?p->active_text:p->edge);
+    content.left=left;SetTextColor(dc,!IsWindowEnabled(w)?p->shadow:highlighted?p->active_text:
+        item->index==paint->hot?paint->colors.hot_text:p->edge);
     UINT flags=DT_LEFT|DT_VCENTER|DT_SINGLELINE|DT_NOPREFIX|DT_END_ELLIPSIS;
     if(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_RTLREADING)flags|=DT_RTLREADING;
     DrawTextW(dc,text,-1,&content,flags);
@@ -61,9 +55,15 @@ static void paint_item(HWND w,void *context,HDC dc,const style_control_tab_snaps
 BOOL win16_style_tab_paint(HWND w,HDC dc,const win16_style_palette *p,HFONT font,
     const style_instance *instance,const style_control_native_state *state,const classic_tab_colors *colors,style_line_profile profile)
 {
-    if(!dc || !profile || !win16_style_tab_supported(w))return FALSE;
-    tab_paint paint={.palette=p,.font=font,.profile=profile,
-        .colors=colors->present?*colors:(classic_tab_colors){p->face,p->face,p->light,p->edge,FALSE}};
+    if(!dc || !profile || !style_control_tab_supported(w))return FALSE;
+    const unsigned epoch=state->epoch;
+    tab_paint paint={.palette=p,.font=font,.profile=profile,.colors=*colors,
+        .hot=colors->has_hot_text?style_control_tab_hot_item(w):-1};
+    if(!style_control_native_current(w,instance,state,epoch))return FALSE;
+    if(!colors->present){
+        paint.colors.pane=p->face;paint.colors.normal=p->face;
+        paint.colors.selected=p->light;paint.colors.border=p->edge;
+    }
     paint.frame=(style_relief_palette){.face=paint.colors.pane,.dark=paint.colors.border,
         .light=p->face,.highlight=p->light,.shadow=p->shadow};
     const style_control_tab_painter painter={&paint,surface,prepare,paint_item};

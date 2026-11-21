@@ -1,7 +1,7 @@
 #include "control_guard.h"
 #include "control_class.h"
 #include "../../../application/control/control_protocol.h"
-#include "tab_paint.h"
+#include "lib-win32-style/application/control/tab_snapshot.h"
 #include "header_paint.h"
 #include "progress_paint.h"
 #include <commctrl.h>
@@ -18,7 +18,7 @@ BOOL win16_control_supported(HWND w,HWND common_dialog_combo_pending)
         !ntw16s_vb_plain_choice(w) && !ntw16s_vb_graphical_choice(w))return FALSE;
     if(style_control_is_scroll(w))return !(style&SBS_SIZEGRIP);
     if(style_control_is_link(w))return TRUE;
-    if(style_control_is_tab(w))return win16_style_tab_supported(w);
+    if(style_control_is_tab(w))return style_control_tab_supported(w);
     if(style_control_is_header(w))return win16_style_header_supported(w);
     if(style_control_class_is(w,PROGRESS_CLASSW))return win16_style_progress_supported(w);
     if(style_control_is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&

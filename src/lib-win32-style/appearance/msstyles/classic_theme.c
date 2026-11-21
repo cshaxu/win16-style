@@ -298,7 +298,8 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
         COLOR_FIELD(class_tab,TABP_PANE,0,TMT_FILLCOLOR),
         COLOR_FIELD(class_tab,TABP_TABITEM,TIS_NORMAL,TMT_FILLCOLOR),
         COLOR_FIELD(class_tab,TABP_TABITEM,TIS_SELECTED,TMT_FILLCOLOR),
-        COLOR_FIELD(class_tab,TABP_PANE,0,TMT_BORDERCOLOR)
+        COLOR_FIELD(class_tab,TABP_PANE,0,TMT_BORDERCOLOR),
+        COLOR_FIELD(class_tab,TABP_TABITEM,TIS_HOT,TMT_TEXTCOLOR)
     };
     theme_field header[]={
         COLOR_FIELD(class_header,HP_HEADERITEM,HIS_NORMAL,TMT_FILLCOLOR),
@@ -514,7 +515,10 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
         theme->combo=(classic_combo_colors){{combo[0].value,combo[1].value,combo[2].value},
             combo[3].value,combo[4].value,TRUE};
     if(tab[0].present && tab[1].present && tab[2].present && tab[3].present)
-        theme->tab=(classic_tab_colors){tab[0].value,tab[1].value,tab[2].value,tab[3].value,TRUE};
+        theme->tab=(classic_tab_colors){.pane=tab[0].value,.normal=tab[1].value,
+            .selected=tab[2].value,.border=tab[3].value,.present=TRUE};
+    theme->tab.hot_text=tab[4].value;
+    theme->tab.has_hot_text=tab[4].present;
     for(size_t role=0;role<ARRAYSIZE(calendar);++role)
         if(calendar[role].present){
             theme->calendar.present|=1u<<role;

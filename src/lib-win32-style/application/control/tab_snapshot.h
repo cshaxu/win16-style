@@ -29,4 +29,6 @@ typedef struct style_control_tab_painter {
     void (*item)(HWND,void *,HDC,const style_control_tab_snapshot *,const style_control_tab_item *);
 } style_control_tab_painter;
 BOOL style_control_tab_paint(HWND,HDC,const style_instance *,const style_control_native_state *,const style_control_tab_painter *);
+BOOL style_control_tab_supported(HWND);
+int style_control_tab_hot_item(HWND);
 #endif

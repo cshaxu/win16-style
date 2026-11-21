@@ -2,6 +2,21 @@
 #include <stdlib.h>
 #include <wchar.h>
 
+BOOL style_control_tab_supported(HWND window)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
+    return !(style&(TCS_VERTICAL|TCS_BOTTOM|TCS_BUTTONS|TCS_OWNERDRAWFIXED|TCS_SCROLLOPPOSITE|
+        TCS_FORCEICONLEFT|TCS_FORCELABELLEFT));
+}
+
+int style_control_tab_hot_item(HWND window)
+{
+    TCHITTESTINFO hit={0};
+    if(!(GetWindowLongPtrW(window,GWL_STYLE)&TCS_HOTTRACK) || !IsWindowEnabled(window) ||
+       !GetCursorPos(&hit.pt) || WindowFromPoint(hit.pt)!=window || !ScreenToClient(window,&hit.pt))return -1;
+    return (int)SendMessageW(window,TCM_HITTEST,0,(LPARAM)&hit);
+}
+
 static WCHAR *item_text(HWND w,int index,TCITEMW *item,const style_instance *instance,const style_control_native_state *state,unsigned epoch)
 {
     for(int capacity=128;capacity<=32768;capacity*=2){

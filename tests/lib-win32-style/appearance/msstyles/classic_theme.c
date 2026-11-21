@@ -1254,6 +1254,17 @@ static int check_icon_layout(void)
 
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==4 && !wcscmp(argv[1],L"--tab-hot")){
+        classic_theme_mapping source={0};
+        CHECK(classic_theme_open(argv[2],&source)==S_OK);
+        const classic_tab_colors *tab=&source.model.tab;
+        BOOL present=wcscmp(argv[3],L"absent")!=0;
+        CHECK(tab->has_hot_text==present &&
+            (!present || tab->hot_text==wcstoul(argv[3],NULL,16)));
+        printf("TAB HOT MODEL present=%d color=%06lx\n",tab->has_hot_text,(unsigned long)tab->hot_text);
+        classic_theme_close(&source);
+        return 0;
+    }
     if(argc==5 && !wcscmp(argv[1],L"--calendar-font")){
         classic_theme_mapping source={0};
         CHECK(SUCCEEDED(classic_theme_open(argv[2],&source)));

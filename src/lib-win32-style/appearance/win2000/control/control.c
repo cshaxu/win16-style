@@ -19,6 +19,7 @@
 #include "lib-win32-style/application/control/retire.h"
 #include "lib-win32-style/application/control/native_overlay.h"
 #include "lib-win32-style/application/control/control_class.h"
+#include "lib-win32-style/application/control/tab_snapshot.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/lifecycle/install.h"
 #include "lib-win32-style/application/lifecycle/dispatch.h"
@@ -112,7 +113,7 @@ BOOL win2k_control_supported(HWND window)
     if(!(style&WS_CHILD) || (GetWindowLongPtrW(window,GWL_EXSTYLE)&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) ||
        !GetClassNameW(window,name,ARRAYSIZE(name)))return FALSE;
     if(matches(window,name,L"LISTBOX"))return list_style(style);
-    if(matches(window,name,WC_TABCONTROLW))return win2k_tab_supported(window);
+    if(matches(window,name,WC_TABCONTROLW))return style_control_tab_supported(window);
     if(matches(window,name,WC_HEADERW))return win2k_header_supported(window);
     if(matches(window,name,WC_LISTVIEWW))return win2k_listview_supported(window);
     if(matches(window,name,WC_TREEVIEWW))return win2k_treeview_supported(window);
@@ -337,7 +338,7 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
     }else if(control->tab_control || control->progress_control){
         const style_control_draw draw={control,render};
         result=style_control_native_message(window,&control->instance,&control->native,kind,message,a,b,
-            control->progress_control?win2k_progress_supported:win2k_tab_supported,&draw);
+            control->progress_control?win2k_progress_supported:style_control_tab_supported,&draw);
     }else if(control->bar==WIN2K_BAR_STATUS){
         const style_control_draw draw={control,status_render};
         result=style_control_native_message(window,&control->instance,&control->native,STYLE_CONTROL_STATUS,

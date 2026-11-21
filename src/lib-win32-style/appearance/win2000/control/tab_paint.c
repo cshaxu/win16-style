@@ -7,18 +7,11 @@ typedef struct tab_paint {
     HFONT font;
     int hot;
     win2k_palette palette;
-    COLORREF normal,selected;
+    COLORREF normal,selected,hot_text;
     style_line_profile profile;
     RECT page;
     int unit;
 } tab_paint;
-
-BOOL win2k_tab_supported(HWND window)
-{
-    DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
-    return !(style&(TCS_VERTICAL|TCS_BOTTOM|TCS_BUTTONS|TCS_OWNERDRAWFIXED|TCS_SCROLLOPPOSITE|
-        TCS_FORCEICONLEFT|TCS_FORCELABELLEFT));
-}
 
 static void surface(HWND window,void *context,HDC dc,const style_control_tab_snapshot *snapshot)
 {
@@ -68,7 +61,7 @@ static void paint_item(HWND window,void *context,HDC dc,const style_control_tab_
     label.bottom=label.top+measured.bottom;
     if(highlight)style_paint_color(dc,&label,palette->selection);
     SetTextColor(dc,highlight?palette->selection_text:
-        item->index==paint->hot?GetSysColor(COLOR_HOTLIGHT):palette->text);
+        item->index==paint->hot?paint->hot_text:palette->text);
     UINT flags=DT_LEFT|DT_VCENTER|DT_SINGLELINE;
     if(snapshot->cues&UISF_HIDEACCEL)flags|=DT_HIDEPREFIX;
     DrawTextW(dc,item->text,-1,&content,flags);
@@ -84,8 +77,9 @@ BOOL win2k_tab_paint(HWND window,HDC dc,HFONT font,const style_instance *instanc
 {
     if(!profile)return FALSE;
     const unsigned epoch=state->epoch;
-    tab_paint paint={.font=font,.hot=-1,.palette=*palette,
+    tab_paint paint={.font=font,.hot=style_control_tab_hot_item(window),.palette=*palette,
         .normal=palette->face,.selected=palette->face,
+        .hot_text=colors->has_hot_text?colors->hot_text:GetSysColor(COLOR_HOTLIGHT),
         .profile=profile};
     if(colors->present){
         paint.palette.face=colors->pane;
@@ -93,10 +87,6 @@ BOOL win2k_tab_paint(HWND window,HDC dc,HFONT font,const style_instance *instanc
         paint.normal=colors->normal;
         paint.selected=colors->selected;
     }
-    TCHITTESTINFO hit={0};
-    if((GetWindowLongPtrW(window,GWL_STYLE)&TCS_HOTTRACK) && IsWindowEnabled(window) &&
-       GetCursorPos(&hit.pt) && WindowFromPoint(hit.pt)==window && ScreenToClient(window,&hit.pt))
-        paint.hot=(int)SendMessageW(window,TCM_HITTEST,0,(LPARAM)&hit);
     if(!style_control_native_current(window,instance,state,epoch))return FALSE;
     const style_control_tab_painter painter={&paint,surface,prepare,paint_item};
     return style_control_tab_paint(window,dc,instance,state,&painter);
