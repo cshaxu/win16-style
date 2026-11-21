@@ -19,6 +19,7 @@
 #include "lib-win32-style/application/window/window_identity.h"
 #include "lib-win32-style/application/window/window_icon.h"
 #include "lib-win32-style/application/adapters/repaint.h"
+#include "lib-win32-style/application/adapters/surface.h"
 #include <commctrl.h>
 #include <dwmapi.h>
 #include <oleacc.h>
@@ -34,6 +35,9 @@ typedef struct frame_window {
     style_menu_owner menu;
     win2k_scroll scroll;
     style_uwp_repaint composed_repaint;
+    style_bitmap caption_bitmap;
+    HWND caption_surface;
+    BOOL painting;
     BOOL composed_icon_update,system_slot,system_on_right,system_popup;
     BOOL themed;
     classic_theme theme;
@@ -237,10 +241,13 @@ static BOOL caption_icon_rect(HWND window,const RECT *outer,RECT *icon)
 
 static void paint(HWND window)
 {
-    frame_window *frame=frame_state(window);if(!frame)return;
+    frame_window *frame=frame_state(window);if(!frame || frame->painting)return;
     style_instance_retain(&frame->instance);
+    frame->painting=TRUE;
+    BOOL presented=FALSE;
     RECT outer;TITLEBARINFOEX info={0};WCHAR title[1024];
-    if(IsIconic(window) || !GetWindowRect(window,&outer))goto done;
+    if(IsIconic(window) || (frame->caption_surface && !IsWindowVisible(window)) ||
+       !GetWindowRect(window,&outer))goto done;
     info.cbSize=sizeof(info);
     SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
     if(frame->instance.detached)goto done;
@@ -260,11 +267,13 @@ static void paint(HWND window)
     if(icon_region && icon.left<caption.left)caption.left=icon.left;
     int width=outer.right-outer.left,height=outer.bottom-outer.top;
     if(caption.left<0 || caption.top<0 || caption.right>width || caption.bottom>height)goto done;
-    HDC dc=GetWindowDC(window);if(!dc)goto done;
+    BOOL composed=(extended&WS_EX_NOREDIRECTIONBITMAP) && IsWindowVisible(window) &&
+        style_frame_xaml_bridge(window,FALSE);
+    HDC dc=GetWindowDC(window);if(!dc && !composed)goto done;
     const classic_theme *theme=frame->themed?&frame->theme:NULL;
     const classic_frame_colors *frame_colors=theme?&theme->frame:NULL;
     BOOL maximized=IsZoomed(window);
-    if(!maximized){
+    if(dc && !maximized){
         int border_saved=SaveDC(dc);MENUBARINFO system={.cbSize=sizeof(system)};
         if(border_saved && !synthetic && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
             RECT icon=system.rcBar;OffsetRect(&icon,-outer.left-frame_shift(window,TRUE),-outer.top-frame_shift(window,FALSE));
@@ -283,7 +292,7 @@ static void paint(HWND window)
             (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_DLGMODALFRAME)!=0);
         if(border_saved)RestoreDC(dc,border_saved);
     }
-    paint_menu(window,dc,&outer);
+    if(dc)paint_menu(window,dc,&outer);
     GetWindowTextW(window,title,ARRAYSIZE(title));
     HICON image=has_icon && !frame->instance.detached?style_window_caption_icon(window):NULL;
     if(!frame->instance.detached){
@@ -313,12 +322,32 @@ static void paint(HWND window)
         HFONT font=msstyles_font_create(defined,dpi,tool?MSSTYLES_FONT_SMALL_CAPTION:MSSTYLES_FONT_CAPTION);
         win2k_caption_colors colors=win2k_caption_theme_palette(frame->native.active,
             frame->themed?&frame->theme:NULL);
-        win2k_caption_render_with_colors(dc,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
-            dpi,colors,frame_colors,frame->themed?&frame->theme.caption_presentation:NULL,maximized,flags,&frame->art);
+        HDC target=dc;
+        POINT origin;
+        if(composed && !frame->instance.detached){
+            if(!frame->caption_surface)
+                frame->caption_surface=CreateWindowExW(WS_EX_LAYERED|WS_EX_TRANSPARENT|WS_EX_NOACTIVATE|WS_EX_TOOLWINDOW,
+                    L"STATIC",L"",WS_POPUP,0,0,1,1,window,NULL,GetModuleHandleW(NULL),NULL);
+            SIZE size={caption.right-caption.left,caption.bottom-caption.top};
+            if(!frame->instance.detached && frame->caption_surface && style_bitmap_ensure(&frame->caption_bitmap,NULL,size) &&
+               SetViewportOrgEx(frame->caption_bitmap.dc,-caption.left,-caption.top,&origin))
+                target=frame->caption_bitmap.dc;
+        }
+        if(target && !frame->instance.detached)
+            win2k_caption_render_with_colors(target,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
+                dpi,colors,frame_colors,frame->themed?&frame->theme.caption_presentation:NULL,maximized,flags,&frame->art);
+        if(target && target!=dc){
+            SetViewportOrgEx(target,origin.x,origin.y,NULL);
+            RECT bounds=caption,hole={0};OffsetRect(&bounds,outer.left,outer.top);
+            presented=style_uwp_surface_present(window,frame->caption_surface,&bounds,&hole,
+                &frame->caption_bitmap,&frame->instance.detached);
+        }
         if(font)DeleteObject(font);
     }
-    ReleaseDC(window,dc);
+    if(dc)ReleaseDC(window,dc);
 done:
+    if(frame->caption_surface && !presented)ShowWindow(frame->caption_surface,SW_HIDE);
+    frame->painting=FALSE;
     style_instance_release(&frame->instance);
 }
 
@@ -617,7 +646,8 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
     }
     if(message==WM_NCPAINT || message==WM_NCACTIVATE || message==WM_SETTEXT || message==WM_SIZE ||
        message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONUP || message==WM_SETICON ||
-       message==WM_STYLECHANGED || message==WM_THEMECHANGED || message==WM_DPICHANGED || repaint)
+       message==WM_STYLECHANGED || message==WM_THEMECHANGED || message==WM_DPICHANGED || repaint ||
+       (frame->caption_surface && (message==WM_WINDOWPOSCHANGED || message==WM_SHOWWINDOW)))
         if(IsWindow(window))paint(window);
     if(message==WM_NCPAINT || message==WM_NCACTIVATE || message==WM_SIZE ||
        message==WM_STYLECHANGED || message==WM_ENABLE || message==WM_VSCROLL ||
@@ -674,7 +704,10 @@ static void rollback_frame(HWND window,void *context)
 {frame_window *frame=context;RemovePropW(window,frame_property);style_instance_detach(&frame->instance);}
 static void dispose_frame(void *context)
 {
-    frame_window *frame=context;style_menu_owner_stop(&frame->menu);free(frame);
+    frame_window *frame=context;
+    if(frame->caption_surface)DestroyWindow(frame->caption_surface);
+    style_bitmap_dispose(&frame->caption_bitmap);
+    style_menu_owner_stop(&frame->menu);free(frame);
 }
 BOOL win2k_frame_attach(HWND window)
 {

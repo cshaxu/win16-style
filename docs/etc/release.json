@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P8",
-  "stage": "published development candidate; focused actual-package and installed frame checks passed",
+  "delivery": "M0 T29 S23 P22",
+  "stage": "published development candidate; installed dual-width frame and real Paint checks passed",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
   "last_verified_remote_delivery": "M0 T29 S23 P8 9c5e4805b47b",
-  "source_snapshot_sha256": "c999ccdaf58362b6368ca1474eebc8bc9f5ee2fac37572b07a4c84c24575db83",
+  "source_snapshot_sha256": "476dc03498ce7e571326943dcd15133bd8dc2211af39d79774924cc5523eb464",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "7ddbc6b140eef28620b9ff2b7e02fd8d64782c4139127b40c8a973a8828ddb64",
+      "sha256": "14d48d22abaee0a5fbde9169ae8941fb13755c5f4f65f4ca334e31d935c85462",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "7cda147134d5062aae92c5d3b4fb7bc84914a25aa188a4a792701d73228a2f96",
+      "sha256": "ddce7340f09e051c9e1ae6f6e8434b28eb95873a0ed3c075d6dc8dcf7a4b7306",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "58f6902e2fc851af173310b1d27d22c07c76dd96fe37fd37de055b8d75e79ea0",
+      "sha256": "7c2c6b92c43ed1fd809dc56583d7b0f256efb0d06dfd80e14f4724771fd9928c",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -260,9 +260,16 @@
       "scope": "Installed Win2K Win32 dialog contracts and Win16 COM event, navigation, redirect and veto contracts. Owned windows with dialog-test-driver --direct. Printed no jobs. Verified all seven hashes before and after."
     },
     "rdp_actual_uwp_surface_pixels": {
-      "apps": ["Calculator", "Scan"],
+      "apps": [
+        "Calculator",
+        "Scan"
+      ],
       "dpi": 96,
-      "active_caption_sample": ["4a5ab2", "5b6ebd", "84a1d9"],
+      "active_caption_sample": [
+        "4a5ab2",
+        "5b6ebd",
+        "84a1d9"
+      ],
       "result": "Exact match to the Win2K theme interpolation on both real UWP style surfaces. Maximize, minimize, restore and live removal with geometry preservation passed. Desktop composition and WinUI screen pixels remain unverified."
     },
     "unverified": [
@@ -277,13 +284,81 @@
       "previous_vs_current_frame_checks_passed": 4,
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
+    },
+    "prior_evidence_scope": "Prior P8 and supplemental results remain evidence for their original binaries. P22 fresh results are listed in paint_composition_delivery.",
+    "paint_composition_delivery": {
+      "installed_frame_cases_passed": 8,
+      "per_architecture": [
+        "composed caption lifecycle and hit test",
+        "ordinary window commands",
+        "24 natural resize cycles",
+        "provider removal and restore"
+      ],
+      "real_paint": "Installed Win2K on Microsoft Paint 11.2609.441.0 at 96 DPI, sampled three actual desktop pixels per state on the owned window. Caption and close hit tests passed in each sampled state. Minimize and restore passed and the owned instance exited.",
+      "initial_capture": "Concurrent first attempt returned CLR_INVALID for all three points. Sequential retry passed.",
+      "real_paint_samples": {
+        "initial": {
+          "rgb": [
+            "4757b0",
+            "5c70be",
+            "7189cc"
+          ],
+          "title_y": [
+            24,
+            43
+          ],
+          "client_bridge_y": 51
+        },
+        "max": {
+          "rgb": [
+            "4c5cb3",
+            "6176c1",
+            "768fcf"
+          ],
+          "title_y": [
+            0,
+            19
+          ],
+          "client_bridge_y": 23
+        },
+        "normal": {
+          "rgb": [
+            "4757b0",
+            "5c70be",
+            "7189cc"
+          ],
+          "title_y": [
+            24,
+            43
+          ],
+          "client_bridge_y": 51
+        },
+        "restore": {
+          "rgb": [
+            "969696",
+            "9d9d9d",
+            "a4a4a4"
+          ],
+          "title_y": [
+            24,
+            43
+          ],
+          "client_bridge_y": 51
+        }
+      },
+      "scope_not_retested": [
+        "full package matrix",
+        "real UWP screen composition",
+        "actual high contrast",
+        "physical input"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 -Task 29 -RunName s23-layout-closure-delivery",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P22 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2109,
-    "cache_misses": 19
+    "cache_hits": 2120,
+    "cache_misses": 8
   }
 }

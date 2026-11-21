@@ -142,6 +142,8 @@ try{
         (Case 'ntw2ks-control-launch-x64' $run @('Win2K',(Join-Path $x64 'ntw2ks-control-target.exe'),'--disabled') @('NTW2KS CONTROL theme=disabled') 20),
         (Case 'ntw2ks-frame-x86' $dialogDriver @('--direct',$run,'Win2K',(Join-Path $x86 'ntw2ks-frame-target.exe')) @('WIN2K FRAME bits=32 attached=1','DIALOG_DRIVER exit=0') 20),
         (Case 'ntw2ks-frame-x64' $dialogDriver @('--direct',$run,'Win2K',(Join-Path $x64 'ntw2ks-frame-target.exe')) @('WIN2K FRAME bits=64 attached=1','DIALOG_DRIVER exit=0') 20),
+        (Case 'ntw2ks-composed-caption-x86' $dialogDriver @('--direct',$run,'Win2K',(Join-Path $x86 'ntw2ks-frame-target.exe'),'--composed-caption') @('COMPOSED CAPTION bits=32 created=1 moved=1 hit=1 hidden=1 resumed=1 removed=1','DIALOG_DRIVER exit=0') 20),
+        (Case 'ntw2ks-composed-caption-x64' $dialogDriver @('--direct',$run,'Win2K',(Join-Path $x64 'ntw2ks-frame-target.exe'),'--composed-caption') @('COMPOSED CAPTION bits=64 created=1 moved=1 hit=1 hidden=1 resumed=1 removed=1','DIALOG_DRIVER exit=0') 20),
         (Case 'ntw2ks-startup-size-x86' $dialogDriver @('--direct',$run,'Win2K',(Join-Path $x86 'ntw2ks-frame-target.exe'),'--startup-size') @('WIN2K STARTUP SIZE bits=32 early=0 late=1','DIALOG_DRIVER exit=0') 20),
         (Case 'ntw2ks-startup-size-x64' $dialogDriver @('--direct',$run,'Win2K',(Join-Path $x64 'ntw2ks-frame-target.exe'),'--startup-size') @('WIN2K STARTUP SIZE bits=64 early=0 late=1','DIALOG_DRIVER exit=0') 20),
         (Case 'ntw2ks-style-transition-x86' $dialogDriver @('--direct',$run,'Win2K',(Join-Path $x86 'ntw2ks-frame-target.exe'),'--style-transition') @('WIN2K STYLE TRANSITION bits=32 initial=1 changed=1 client_hit=1 reset=1 restored=1','DIALOG_DRIVER exit=0') 20),
@@ -1112,7 +1114,7 @@ try{
     # Dialog tests that do not compare actual screen pixels run on a private
     # desktop, so they cannot consume the user's physical keyboard input.
     foreach($case in $cases){
-        if($case.command -eq $dialogDriver -and $case.name -notmatch '^ntw2ks-(?:frame-x(?:86|64)$|com-explorer-)' -and $case.name -ne 'desktop-cleanup' -and $case.name -notmatch '^(scroll-|neutral-provider-exports-)' -and $case.name -notmatch '^dialog-folder-x(86|64)-controls$' -and $case.arguments[0] -ne '--low-private'){
+        if($case.command -eq $dialogDriver -and $case.name -notmatch '^ntw2ks-(?:(?:frame|composed-caption)-x(?:86|64)$|com-explorer-)' -and $case.name -ne 'desktop-cleanup' -and $case.name -notmatch '^(scroll-|neutral-provider-exports-)' -and $case.name -notmatch '^dialog-folder-x(86|64)-controls$' -and $case.arguments[0] -ne '--low-private'){
             $case.arguments=@('--private')+@($case.arguments)
         }
     }

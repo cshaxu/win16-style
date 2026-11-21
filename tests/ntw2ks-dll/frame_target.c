@@ -712,6 +712,60 @@ static int provider_exports(BOOL nonclient)
     return initial && rejected && applied && restored && destroyed && leaves==15 && creation?0:3;
 }
 
+typedef struct caption_probe {
+    HWND owner,surface;
+    unsigned count;
+} caption_probe;
+
+static BOOL CALLBACK find_caption_surface(HWND window,LPARAM value)
+{
+    caption_probe *probe=(caption_probe *)value;
+    DWORD extended=(DWORD)GetWindowLongPtrW(window,GWL_EXSTYLE);
+    const DWORD surface_style=WS_EX_LAYERED|WS_EX_TRANSPARENT|WS_EX_NOACTIVATE;
+    if(GetWindow(window,GW_OWNER)==probe->owner && (extended&surface_style)==surface_style){
+        probe->surface=window;
+        ++probe->count;
+    }
+    return TRUE;
+}
+
+static int composed_caption(void)
+{
+    typedef BOOL (__cdecl *window_op)(HWND);
+    HMODULE renderer=GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll");
+    window_op remove=renderer?(window_op)(uintptr_t)GetProcAddress(renderer,"Ntw2ksWindowRemove"):NULL;
+    HINSTANCE module=GetModuleHandleW(NULL);
+    WNDCLASSW root={.lpfnWndProc=DefWindowProcW,.hInstance=module,
+        .lpszClassName=L"ComposedCaptionFixture"};
+    WNDCLASSW bridge={.lpfnWndProc=DefWindowProcW,.hInstance=module,
+        .lpszClassName=L"Microsoft.UI.Content.DesktopChildSiteBridge"};
+    if(!remove || !RegisterClassW(&root) || !RegisterClassW(&bridge))return 2;
+    HWND window=CreateWindowExW(WS_EX_NOREDIRECTIONBITMAP,root.lpszClassName,L"Caption witness",WS_OVERLAPPEDWINDOW,
+        30,30,360,220,NULL,NULL,module,NULL);
+    HWND child=window?CreateWindowW(bridge.lpszClassName,L"",WS_CHILD|WS_VISIBLE,
+        10,10,100,100,window,NULL,module,NULL):NULL;
+    if(!child){if(window)DestroyWindow(window);return 2;}
+    ShowWindow(window,SW_SHOWNOACTIVATE);SendMessageW(window,WM_NCPAINT,1,0);
+    caption_probe probe={.owner=window};
+    EnumThreadWindows(GetCurrentThreadId(),find_caption_surface,(LPARAM)&probe);
+    HWND surface=probe.surface;
+    RECT before={0},after={0};
+    BOOL created=probe.count==1 && IsWindowVisible(surface) && GetWindowRect(surface,&before);
+    BOOL moved=created && SetWindowPos(window,NULL,52,65,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE) &&
+        GetWindowRect(surface,&after) && (after.left!=before.left || after.top!=before.top);
+    BOOL hit=moved && SendMessageW(window,WM_NCHITTEST,0,
+        MAKELPARAM((after.left+after.right)/2,(after.top+after.bottom)/2))==HTCAPTION;
+    ShowWindow(window,SW_HIDE);
+    BOOL hidden=created && !IsWindowVisible(surface);
+    ShowWindow(window,SW_SHOWNOACTIVATE);
+    BOOL resumed=created && IsWindowVisible(surface) && IsWindowVisible(child);
+    BOOL removed=remove(window) && !IsWindow(surface) && IsWindowVisible(child);
+    DestroyWindow(window);UnregisterClassW(bridge.lpszClassName,module);
+    printf("COMPOSED CAPTION bits=%u created=%d moved=%d hit=%d hidden=%d resumed=%d removed=%d\n",
+        (unsigned)(sizeof(void *)*8),created,moved,hit,hidden,resumed,removed);
+    return created && moved && hit && hidden && resumed && removed?0:3;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
     if(argc>=4 && !lstrcmpW(argv[1],L"--late")){
@@ -729,6 +783,7 @@ int wmain(int argc,WCHAR **argv)
         if(!wcscmp(argv[2],L"nonclient"))return provider_exports(TRUE);
         return 2;
     }
+    if(argc==2 && !wcscmp(argv[1],L"--composed-caption"))return composed_caption();
     HINSTANCE instance=GetModuleHandleW(NULL);
     if(argc==2 && !wcscmp(argv[1],L"--theme-frame-insets")){
         WNDCLASSW window_class={.lpfnWndProc=DefWindowProcW,.hInstance=instance,
