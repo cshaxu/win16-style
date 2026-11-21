@@ -259,6 +259,12 @@
       "skipped": [],
       "scope": "Installed Win2K Win32 dialog contracts and Win16 COM event, navigation, redirect and veto contracts. Owned windows with dialog-test-driver --direct. Printed no jobs. Verified all seven hashes before and after."
     },
+    "rdp_actual_uwp_surface_pixels": {
+      "apps": ["Calculator", "Scan"],
+      "dpi": 96,
+      "active_caption_sample": ["4a5ab2", "5b6ebd", "84a1d9"],
+      "result": "Exact match to the Win2K theme interpolation on both real UWP style surfaces. Maximize, minimize, restore and live removal with geometry preservation passed. Desktop composition and WinUI screen pixels remain unverified."
+    },
     "unverified": [
       "full matrix",
       "real Win2K UWP and WinUI screen pixels",
