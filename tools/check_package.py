@@ -320,12 +320,12 @@ def main():
         raw = path.read_bytes()
         version(path, args.task)
         assert license_bytes in raw, 'project license missing from '+name
+        for symbol, data in glyph_tables.items():
+            compiled = b''.join(row.encode('ascii')+b'\0' for row in data)
+            assert compiled not in raw, 'original resource table linked into '+name+':'+symbol
         if name.endswith('.dll'):
             assert minhook_license in raw, 'MinHook/HDE license missing from '+name
             assert provenance in raw, 'original resource provenance missing from '+name
-            for symbol, data in glyph_tables.items():
-                compiled = b''.join(row.encode('ascii')+b'\0' for row in data)
-                assert compiled not in raw, 'original resource table linked into '+name+':'+symbol
             machine, public, imports, digest, ordinals, live = core.inspect(path)
             pe = struct.unpack_from('<I', raw, 60)[0]
             assert struct.unpack_from('<H', raw, pe+22)[0] & 0x2000, 'DLL flag missing'
@@ -366,7 +366,7 @@ def main():
     images, masks = verify_original_theme_art(package/'Win16/Win16.msstyles', glyph_tables)
     print(json.dumps(dict(status='PACKAGE PASS', artifacts=result, theme_artifacts=theme_artifacts,
                           original_theme_images=images, original_theme_masks=masks,
-                          original_resource_tables_per_ntwshk_dll=0), indent=2))
+                          original_resource_tables_per_ntwshk_dll=0, original_resource_tables_in_launcher=0), indent=2))
 
 
 if __name__ == '__main__':
