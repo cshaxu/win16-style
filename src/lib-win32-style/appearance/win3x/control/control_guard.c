@@ -2,7 +2,7 @@
 #include "control_class.h"
 #include "../../../application/control/control_protocol.h"
 #include "lib-win32-style/application/control/tab_snapshot.h"
-#include "header_paint.h"
+#include "lib-win32-style/application/control/header_snapshot.h"
 #include "lib-win32-style/application/control/progress_snapshot.h"
 #include <commctrl.h>
 
@@ -19,7 +19,7 @@ BOOL win16_control_supported(HWND w,HWND common_dialog_combo_pending)
     if(style_control_is_scroll(w))return !(style&SBS_SIZEGRIP);
     if(style_control_is_link(w))return TRUE;
     if(style_control_is_tab(w))return style_control_tab_supported(w);
-    if(style_control_is_header(w))return win16_style_header_supported(w);
+    if(style_control_is_header(w))return style_header_client_supported(w);
     if(style_control_class_is(w,PROGRESS_CLASSW))return style_progress_bound_supported(w);
     if(style_control_is_combo(w))return ((style&3)==CBS_DROPDOWNLIST || (style&3)==CBS_DROPDOWN || (style&3)==CBS_SIMPLE) &&
         !(style&(CBS_OWNERDRAWFIXED|CBS_OWNERDRAWVARIABLE));

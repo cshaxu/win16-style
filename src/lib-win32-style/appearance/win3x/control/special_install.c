@@ -2,7 +2,7 @@
 #include "special_install.h"
 #include "control_class.h"
 #include "../../../application/control/control_protocol.h"
-#include "trackbar_paint.h"
+#include "lib-win32-style/application/control/trackbar_paint.h"
 #include "lib-win32-style/application/control/progress_snapshot.h"
 
 
@@ -32,7 +32,7 @@ BOOL win16_control_special_updown_install(HWND w,const win16_style_palette *pale
 }
 BOOL win16_control_special_trackbar_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
-    if(!win16_style_trackbar_supported(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!style_trackbar_bound_supported(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
     style_instance_retain(&s->instance);
     BOOL okay=style_control_notify_bind(w,&s->bindings.track,v->trackbar_notify,s);

@@ -72,11 +72,6 @@ static inline COLORREF classic_bar_color(const classic_bar_colors *colors,enum c
 }
 
 
-typedef struct classic_trackbar_colors {
-    COLORREF channel,thumb,edge;
-    BOOL present;
-} classic_trackbar_colors;
-
 enum classic_combo_state {
     CLASSIC_COMBO_NORMAL, CLASSIC_COMBO_PRESSED, CLASSIC_COMBO_DISABLED, CLASSIC_COMBO_STATE_COUNT
 };

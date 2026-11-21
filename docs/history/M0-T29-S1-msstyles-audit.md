@@ -44,10 +44,10 @@
 | 23 | 外观 | 滚动条的基本厚度和尺寸 | S | S | SysMetrics 滚动条度量或部件大小 | [1](../../src/lib-win32-style/appearance/win3x/control/scroll_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/scroll.c) |
 | 24 | 外观 | 极短条及非标准厚度的裁决参数 | E | E | 标准部件大小可存；保留当前极值规则需额外参数，实际求解另计 | [1](../../src/lib-win32-style/appearance/win3x/control/scroll_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/scroll.c) |
 | 25 | 外观 | 标签页状态及边缘 | S | S | TAB 项目和 pane；复杂自绘仍由应用 | [当前共享绘制](../../src/lib-win32-style/application/control/tab_snapshot.c) |
-| 26 | 外观 | 表头边框、普通与按压表面 | S | S | HEADER 部件和状态 | [1](../../src/lib-win32-style/appearance/win3x/control/header_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/header_paint.c) |
+| 26 | 外观 | 表头边框、普通与按压表面 | S | S | HEADER 部件和状态 | [1](../../src/lib-win32-style/application/control/header_snapshot.c) [2](../../src/lib-win32-style/application/control/header_snapshot.c) |
 | 27 | 外观 | 普通列表视图与树视图的边缘和选择色 | S | S | LISTVIEW/TREEVIEW 及系统色；只计已支持表面 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
 | 28 | 外观 | 进度条槽、普通分段或平滑可见面 | S | S | PROGRESS 底槽与填充部件；进度数据留原生 | [1](../../src/lib-win32-style/application/control/progress_paint.c) [2](../../src/lib-win32-style/application/control/progress_paint.c) |
-| 29 | 外观 | 滑杆轨道、滑块和刻度 | S | S | TRACKBAR 标准部件与状态 | [1](../../src/lib-win32-style/appearance/win3x/control/trackbar_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/trackbar_paint.c) |
+| 29 | 外观 | 滑杆轨道、滑块和刻度 | S | S | TRACKBAR 标准部件与状态 | [1](../../src/lib-win32-style/application/control/trackbar_paint.c) [2](../../src/lib-win32-style/application/control/trackbar_paint.c) |
 | 30 | 外观 | 微调箭头及边线 | S | S | SPIN 对应状态与方向 | [UpDown](../../src/lib-win32-style/application/control/updown.c)（原 Win3x 独立绘制已并入此文件） |
 | 31 | 外观 | 工具栏普通按钮和分隔线 | S | S | TOOLBAR 状态、图形与分隔部件 | [1](../../src/lib-win32-style/appearance/win3x/control/toolbar_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/toolbar_paint.c) |
 | 32 | 外观 | 状态栏普通面、分隔和尺寸柄 | S | S | STATUS 部件及边距 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |

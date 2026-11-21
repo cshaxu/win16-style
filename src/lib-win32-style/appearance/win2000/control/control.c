@@ -4,10 +4,10 @@
 #include "edit_paint.h"
 #include "list_combo.h"
 #include "scroll.h"
-#include "tab_header.h"
+#include "lib-win32-style/application/control/header_snapshot.h"
 #include "report_paint.h"
 #include "lib-win32-style/application/control/progress_paint.h"
-#include "trackbar_paint.h"
+#include "lib-win32-style/application/control/trackbar_paint.h"
 #include "lib-win32-style/application/control/updown.h"
 #include "bars.h"
 #include "date_paint.h"
@@ -116,11 +116,11 @@ BOOL win2k_control_supported(HWND window)
        !GetClassNameW(window,name,ARRAYSIZE(name)))return FALSE;
     if(matches(window,name,L"LISTBOX"))return list_style(style);
     if(matches(window,name,WC_TABCONTROLW))return style_control_tab_supported(window);
-    if(matches(window,name,WC_HEADERW))return win2k_header_supported(window);
+    if(matches(window,name,WC_HEADERW))return style_header_native_supported(window);
     if(matches(window,name,WC_LISTVIEWW))return win2k_listview_supported(window);
     if(matches(window,name,WC_TREEVIEWW))return win2k_treeview_supported(window);
     if(matches(window,name,PROGRESS_CLASSW))return style_progress_native_supported(window);
-    if(matches(window,name,TRACKBAR_CLASSW))return win2k_trackbar_supported(window);
+    if(matches(window,name,TRACKBAR_CLASSW))return style_trackbar_native_supported(window);
     if(matches(window,name,UPDOWN_CLASSW))return style_control_updown_recolor_supported(window);
     if(!lstrcmpiW(name,DATETIMEPICK_CLASSW))return win2k_date_supported(window);
     if(!lstrcmpiW(name,MONTHCAL_CLASSW))return win2k_month_supported(window);
@@ -465,13 +465,14 @@ static LRESULT parent_dispatch(void *context,HWND parent,UINT message,WPARAM a,L
         style_control_notify_ops toolbar=win2k_toolbar_notify;
         toolbar.context=&bar;
         const style_control_notify_ops rebar={.context=&bar,.supported=win2k_rebar_supported,.finish_item=win2k_rebar_grip};
-        win2k_header_draw header_draw={.instance=&control->instance,.colors=&control->header_colors,
+        style_header_notification header_draw={.instance=&control->instance,.colors=&control->header_colors,
             .profile=control->controls.header};
         if(control->header_control)header_draw.palette=control->palette;
-        const style_control_notify_ops header={.context=(void *)&header_draw,.supported=win2k_header_supported,.part=win2k_header_paint};
-        const win2k_trackbar_presentation presentation={control->trackbar_colors,control->controls.trackbar,&control->palette};
-        const style_control_notify_ops track={.context=&presentation,
-            .supported=win2k_trackbar_supported,.part=win2k_trackbar_part};
+        const style_control_notify_ops header={.context=(void *)&header_draw,.supported=style_header_native_supported,.part=style_header_native_part};
+        const style_trackbar_parts track_parts={.axes=control->trackbar_colors,
+            .profile=control->controls.trackbar,.palette=control->palette};
+        const style_control_notify_ops track={.context=&track_parts,
+            .supported=style_trackbar_native_supported,.part=style_trackbar_notify_part};
         win2k_report_draw report={.instance=&control->instance,.colors=control->report_colors};
         if(control->report)report.palette=control->palette;
         const style_control_notify_ops list={.context=&report,.supported=win2k_listview_plain,.prepare_item=win2k_listview_colors};

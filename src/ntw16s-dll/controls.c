@@ -34,8 +34,7 @@ BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *,style_scroll_arrow_art *)
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "native_api.h"
 #include "theme.h"
-#include "lib-win32-style/appearance/win3x/control/header_paint.h"
-#include "lib-win32-style/appearance/win3x/control/trackbar_paint.h"
+#include "lib-win32-style/application/control/trackbar_paint.h"
 #include "lib-win32-style/appearance/win3x/control/toolbar_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/vb_text.h"
 #include "../lib-win32/process-hook/unwind.h"
@@ -60,8 +59,12 @@ static const style_control_combo_ops combo_operations={style_raster_font_acquire
 static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;
-    const style_control_notify_ops ops={.context=s,.supported=win16_style_trackbar_supported,
-        .part=win16_style_trackbar_part,.runtime_border=win16_style_trackbar_runtime_border};
+    const win16_style_palette *palette=&s->palette;
+    const style_trackbar_parts parts={.axes=s->trackbar_colors,.profile=s->controls.trackbar,
+        .palette={.face=palette->face,.light=palette->light,.highlight=palette->light,.shadow=palette->shadow,.dark=palette->edge},
+        .supported=style_trackbar_bound_supported};
+    const style_control_notify_ops ops={.context=&parts,.supported=style_trackbar_bound_supported,
+        .part=style_trackbar_notify_part,.runtime_border=style_trackbar_notify_runtime_border};
     return style_control_notify_message(parent,m,p,l,id,&s->instance,&s->bindings.track,trackbar_notify,&track_calls,&ops);
 }
 static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)

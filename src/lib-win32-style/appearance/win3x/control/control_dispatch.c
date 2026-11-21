@@ -2,7 +2,7 @@
 #include "control_guard.h"
 #include "control_class.h"
 #include "special_paint.h"
-#include "header_paint.h"
+#include "lib-win32-style/application/control/header_snapshot.h"
 #include "lib-win32-style/application/control/progress_paint.h"
 #include "lib-win32-style/application/control/control_class.h"
 #include "lib-win32-style/application/control/tab_snapshot.h"
@@ -62,8 +62,13 @@ static BOOL native_policy_paint(HWND window,void *context,HDC dc,HFONT font)
         return style_control_tab_present(window,dc,font,&s->instance,&s->bindings.tab,&s->tab_colors,
             s->controls.tab,text,&palette);
     }
-    if(render->kind==STYLE_CONTROL_HEADER)return win16_style_header_paint(window,dc,&s->palette,font,
-        &s->instance,&s->bindings.header,&s->header_colors,s->controls.header);
+    if(render->kind==STYLE_CONTROL_HEADER){
+        const win16_style_palette *p=&s->palette;
+        const style_relief_palette palette={.face=p->face,.light=p->face,.highlight=p->light,
+            .shadow=p->shadow,.dark=p->edge,.text=p->edge,.gray=p->shadow};
+        return style_header_client_paint(window,dc,&palette,font,&s->instance,&s->bindings.header,
+            &s->header_colors,s->controls.header);
+    }
     if(!style_progress_bound_supported(window))return FALSE;
     const win16_style_palette *p=&s->palette;
     COLORREF disabled=s->label_colors.present?s->label_colors.disabled:p->shadow;
@@ -149,7 +154,7 @@ LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPA
         native_render render={s,kind};
         const style_control_draw draw={&render,native_draw};
         result=style_control_native_message(w,&s->instance,state,kind,m,a,b,
-            tab?style_control_tab_supported:header?win16_style_header_supported:style_progress_bound_supported,&draw);
+            tab?style_control_tab_supported:header?style_header_client_supported:style_progress_bound_supported,&draw);
     }
     else if(style_control_class_is(w,UPDOWN_CLASSW)){
         if(s->controls.updown_mode==CLASSIC_UPDOWN_RECOLOR && (m==WM_PAINT || m==WM_PRINTCLIENT)){

@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P35",
-  "stage": "published development candidate with shared progress control presentation",
+  "delivery": "M0 T29 S23 P36",
+  "stage": "published development candidate with shared header and trackbar presentation",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P34 71e8cd477617",
-  "source_snapshot_sha256": "4e5d13360aa14b44162ee72e29f096a4ae9509b36b73f1846c614a781fbc7c72",
+  "last_verified_remote_delivery": "M0 T29 S23 P35 d0b7866876b2",
+  "source_snapshot_sha256": "66a7e06d597f5d285e438591381962ee135d7765d967f46d04851c15d7f49afa",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "7df2f88c0acd6d868814c0611ebb0c4e777bcb89040226c0e0d2a9b8196a8771",
+      "sha256": "a8b65360052f5eee0e2b1c3fef4b6f8676781456e8e5b40cf3dcf3c055500901",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "d0f9959ca66c5e236154199cbc4bee14ed43a02fccb26a1e84fef961241d1198",
+      "sha256": "e8c06a43f4322faeaa96cdf7747ce06764ba0a79cdc893873fcf30ee6bc86733",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "e3871399a4153c23287d7a03b1bdf171c5f025b553199abf6a071a7726b83687",
+      "sha256": "3d69eba191ef59c28dac6d133ec6be80b38c8f456d8a1b5fd829e57ce4fbbfda",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,20 +106,22 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 12,
+    "passed": 14,
     "selected_cases": [
-      "x86-progress-snapshot-and-host-boundaries",
-      "x86-progress-offscreen-paint",
-      "x86-win16-v5-edge",
-      "x86-win16-v6-states",
-      "x86-win2k-v5-progress",
-      "x86-win2k-v6-progress",
-      "x64-progress-snapshot-and-host-boundaries",
-      "x64-progress-offscreen-paint",
-      "x64-win16-v5-edge",
-      "x64-win16-v6-states",
-      "x64-win2k-v5-progress",
-      "x64-win2k-v6-progress"
+      "x86-header-snapshot",
+      "x86-header-owner",
+      "x86-win16-trackbar-edge",
+      "x86-win16-header-edge",
+      "x86-win2k-trackbar-edge",
+      "x86-win2k-header-edge",
+      "x86-vcl-trackbar-native-notifications",
+      "x64-header-snapshot",
+      "x64-header-owner",
+      "x64-win16-trackbar-edge",
+      "x64-win16-header-edge",
+      "x64-win2k-trackbar-edge",
+      "x64-win2k-header-edge",
+      "x64-vcl-trackbar-native-notifications"
     ],
     "skipped": [],
     "commit_scope_dialog_retest": "Isolated the Find/Replace assertions from pre-existing edits and verified the scoped script against the installed seven files, including temporary resource cleanup.",
@@ -254,7 +256,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P35 results are in progress_control_delivery.",
+    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P36 results are in header_trackbar_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -478,13 +480,25 @@
         "physical input",
         "full package matrix"
       ]
+    },
+    "header_trackbar_delivery": {
+      "test_invocations_passed": 14,
+      "retired_appearance_objects_per_width": 4,
+      "remaining_dated_archives_per_width": 7,
+      "matching_archive_members_per_width": 56,
+      "direct_old_product_objects_per_width": 22,
+      "scope": "Trackbar custom draw and header item framing/text share theme-driven presentation. Client and native header each keep their window lifecycle. VCL app callbacks, nested drawing, clipping, removal and GDI counts tested.",
+      "not_retested": [
+        "physical input",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P35 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P36 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2004,
+    "cache_hits": 1998,
     "cache_misses": 114
   }
 }

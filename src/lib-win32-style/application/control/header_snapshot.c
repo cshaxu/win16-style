@@ -56,3 +56,103 @@ BOOL style_header_snapshot_read(HWND w,const style_instance *instance,const styl
 failed:
     style_header_snapshot_clear(snapshot);return FALSE;
 }
+
+static const UINT header_formats=HDF_STRING|HDF_JUSTIFYMASK|HDF_RTLREADING;
+
+static BOOL paint_item(HDC dc,RECT frame,RECT label,PCWSTR text,int format,
+    BOOL button,BOOL bordered,BOOL pressed,int unit,style_line_profile profile,
+    const style_relief_palette *palette,const style_header_colors *colors,COLORREF ink)
+{
+    if(!style_paint_header_edge(dc,frame,button,bordered,pressed,unit,profile,palette))return FALSE;
+    if(*text)style_header_draw_text(dc,label,text,format,colors,pressed,ink);
+    return TRUE;
+}
+
+BOOL style_header_client_supported(HWND w)
+{return style_header_supported(w,0);}
+
+static void fill(HDC dc,RECT r,COLORREF color)
+{SetDCBrushColor(dc,color);FillRect(dc,&r,GetStockObject(DC_BRUSH));}
+BOOL style_header_client_paint(HWND w,HDC dc,const style_relief_palette *p,HFONT font,
+    const style_instance *instance,const style_control_native_state *state,const style_header_colors *colors,
+    style_line_profile profile)
+{
+    BOOL painted=FALSE;int saved=0;style_header_snapshot snapshot;
+    if(!dc || !profile || !style_header_client_supported(w) || !style_header_snapshot_read(w,instance,state,header_formats,&snapshot))return FALSE;
+    RECT client=snapshot.client;int count=snapshot.count;style_header_item *items=snapshot.items;
+    saved=SaveDC(dc);if(!saved)goto done;
+    IntersectClipRect(dc,client.left,client.top,client.right,client.bottom);
+    COLORREF normal=colors && colors->present?colors->normal:p->face;
+    fill(dc,client,normal);SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));
+    BOOL enabled=IsWindowEnabled(w);
+    int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
+    RECT bottom=client;bottom.top=max(bottom.top,bottom.bottom-u);fill(dc,bottom,p->dark);
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+    BOOL button=(style&HDS_BUTTONS)!=0,captured=button && GetCapture()==w;
+    const style_relief_palette edge={.face=normal,.light=p->light,.highlight=p->highlight,.shadow=p->shadow,.dark=p->dark};
+    for(int i=0;i<count;++i){
+        RECT r=items[i].rect,visible;if(!IntersectRect(&visible,&client,&r))continue;
+        int inner=SaveDC(dc);if(!inner)goto done;
+        IntersectClipRect(dc,r.left,r.top,r.right,r.bottom);
+        BOOL pressed=captured && i==state->pressed;
+        RECT frame=r;
+        for(int n=0;n<u && !IsRectEmpty(&r);++n)InflateRect(&r,-1,-1);
+        if(pressed){
+            if(colors && colors->present && colors->pressed!=normal){
+                RECT interior=r;interior.bottom=min(interior.bottom,bottom.top);
+                fill(dc,interior,colors->pressed);
+            }
+            OffsetRect(&r,u,u);
+        }
+        InflateRect(&r,-3*u,0);
+        int format=items[i].format;
+        if(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_RTLREADING)format|=HDF_RTLREADING;
+        if(!paint_item(dc,frame,r,items[i].text,format,button,(style&WS_BORDER)!=0,
+            pressed,u,profile,&edge,enabled?colors:NULL,enabled?p->text:p->gray)){
+            RestoreDC(dc,inner);
+            goto done;
+        }
+        RestoreDC(dc,inner);
+    }
+    painted=style_control_native_current(w,instance,state,snapshot.epoch);
+done:
+    if(saved)RestoreDC(dc,saved);
+    style_header_snapshot_clear(&snapshot);return painted;
+}
+
+BOOL style_header_native_supported(HWND window)
+{return style_header_supported(window,HDS_HOTTRACK);}
+
+BOOL style_header_native_part(HWND window,const NMCUSTOMDRAW *draw,const void *context)
+{
+    const style_header_notification *parameters=context;
+    if(!parameters->profile)return FALSE;
+    const style_instance *instance=parameters->instance;
+    DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
+    const style_relief_palette *p=&parameters->palette;
+    WCHAR text[256]={0};
+    HDITEMW item={.mask=HDI_FORMAT,.pszText=text,.cchTextMax=ARRAYSIZE(text)};
+    LRESULT index=(LRESULT)draw->dwItemSpec;
+    if(index<0 || !SendMessageW(window,HDM_GETITEMW,index,(LPARAM)&item) || instance->detached ||
+       (item.fmt&~header_formats))return FALSE;
+    item.mask=HDI_TEXT;
+    if((item.fmt&HDF_STRING) && (!SendMessageW(window,HDM_GETITEMW,index,(LPARAM)&item) || instance->detached ||
+       item.pszText!=text || text[ARRAYSIZE(text)-2]))return FALSE;
+    HDC dc=draw->hdc;
+    RECT r=draw->rc;
+    if(IsRectEmpty(&r))return TRUE;
+    int saved=SaveDC(dc);
+    if(!saved)return FALSE;
+    BOOL pressed=(style&HDS_BUTTONS) && (draw->uItemState&CDIS_SELECTED);
+    const style_header_colors *colors=parameters->colors;
+    COLORREF face=colors->present?(pressed?colors->pressed:colors->normal):p->face;
+    int unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
+    RECT label=r;
+    InflateRect(&label,-6,0);
+    if(pressed)OffsetRect(&label,1,1);
+    BOOL painted=IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)!=ERROR &&
+        style_paint_color(dc,&r,face) &&
+        paint_item(dc,r,label,text,item.fmt,(style&HDS_BUTTONS)!=0,(style&WS_BORDER)!=0,
+            pressed,unit,parameters->profile,p,IsWindowEnabled(window)?colors:NULL,p->text);
+    return RestoreDC(dc,saved) && painted;
+}
