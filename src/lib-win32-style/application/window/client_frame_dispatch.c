@@ -1,23 +1,25 @@
 #include "lib-win32-style/application/window/frame.h"
-#include "frame_dispatch.h"
+#include "client_frame_dispatch.h"
 #include "lib-win32-style/application/menu/menu_input.h"
+#include "lib-win32-style/application/menu/owned_rows.h"
+#include "lib-win32-style/application/menu/tracking.h"
 #include <commctrl.h>
 #include <windowsx.h>
-static void repaint_retain(void *context){style_instance_retain(&((style_window *)context)->instance);}
+static void repaint_retain(void *context){style_instance_retain(&((style_client_frame *)context)->instance);}
 static void repaint_release(void *context)
-{style_window *s=context;style_instance_release(&s->instance);}
+{style_client_frame *s=context;style_instance_release(&s->instance);}
 static void repaint_activate(HWND owner,void *context)
 {
-    style_window *s=context;s->native.pending=FALSE;
+    style_client_frame *s=context;s->native.pending=FALSE;
     RECT client;BOOL normal=!IsIconic(owner)&&!IsZoomed(owner);
     style_client_screen(owner,&client);s->xaml_activate(owner,s,&client,normal);
 }
 static const style_uwp_repaint_services repaint_services={repaint_retain,repaint_release,repaint_activate};
-typedef struct menu_selection { style_window *state;win16_control_menu_button_painter paint; } menu_selection;
+typedef struct menu_selection { style_client_frame *state;style_client_frame_menu_button_painter paint; } menu_selection;
 static void menu_button(HWND window,void *context,BOOL selected)
 {menu_selection *s=context;(void)selected;s->paint(window,s->state,HTSYSMENU);}
-LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM lp,
-    const win16_control_frame_dispatch_services *v)
+LRESULT style_client_frame_dispatch(HWND w,style_client_frame *s,UINT msg,WPARAM wp,LPARAM lp,
+    const style_client_frame_dispatch_services *v)
 {
 
     LRESULT result=0;style_full_client_layout l;POINT point;RECT r;
@@ -121,11 +123,11 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     case WM_LBUTTONUP:
     case WM_CANCELMODE:
     case WM_CAPTURECHANGED: {
-        if(win16_control_frame_input(w,s,msg,wp,lp,v->input,&result))break;
+        if(style_client_frame_input(w,s,msg,wp,lp,v->input,&result))break;
         goto forward;
     }
     case WM_SYSCOMMAND:
-        if(win16_control_frame_input(w,s,msg,wp,lp,v->input,&result))break;
+        if(style_client_frame_input(w,s,msg,wp,lp,v->input,&result))break;
         goto forward;
     case WM_MENUSELECT:
         style_menu_tracking_update(w,msg,wp,lp);

@@ -9,11 +9,6 @@ HFONT style_frame_menu_font_acquire(UINT dpi,const msstyles_font *defined)
 #endif
 }
 
-void style_frame_fonts_release(const style_font_pair *fonts)
-{
-    if(fonts->title)DeleteObject(fonts->title);
-    style_menu_font_release(fonts->menu);
-}
 BOOL style_frame_fonts_refresh(HWND w,style_font_pair *current,const msstyles_font *defined,
     const msstyles_font *menu_font)
 {

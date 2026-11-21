@@ -1,10 +1,10 @@
-#include "frame_input.h"
+#include "client_frame_input.h"
 #include "lib-win32-style/application/menu/client_bar.h"
 #include "lib-win32-style/application/menu/menu_input.h"
 #include <commctrl.h>
 #include <windowsx.h>
 
-BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM lp,const win16_control_frame_input_services *v,LRESULT *result)
+BOOL style_client_frame_input(HWND w,style_client_frame *s,UINT msg,WPARAM wp,LPARAM lp,const style_client_frame_input_services *v,LRESULT *result)
 {
     style_full_client_layout l;const style_menu_bar_target menu_target=v->menu(w,s);
     if(style_menu_bar_input(&menu_target,msg,wp,lp))return TRUE;

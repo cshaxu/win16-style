@@ -137,22 +137,19 @@ target_link_libraries(style-frame-font PUBLIC style-font-variant)
 target_compile_definitions(style-frame-font PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_library(style-frame-client STATIC
   src/lib-win32-style/application/window/client_frame_paint.c src/lib-win32-style/application/window/client_frame_renderer.c
-  src/lib-win32-style/application/window/client_frame_layout.c)
-target_link_libraries(style-frame-client PUBLIC style-menu-client style-window style-present)
+  src/lib-win32-style/application/window/client_frame_layout.c
+  src/lib-win32-style/application/window/client_frame_dispatch.c
+  src/lib-win32-style/application/window/client_frame_input.c
+  src/lib-win32-style/application/window/client_frame_lifecycle.c
+  src/lib-win32-style/application/window/client_frame_state.c)
+target_link_libraries(style-frame-client PUBLIC style-menu-client style-window style-present style-uwp-repaint style-font-variant)
 target_compile_definitions(style-frame-client PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-add_library(win16-window STATIC
-  src/lib-win32-style/appearance/win3x/window/frame_dispatch.c
-  src/lib-win32-style/appearance/win3x/window/frame_input.c src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c
-  src/lib-win32-style/appearance/win3x/window/frame_state.c)
-target_include_directories(win16-window PUBLIC src/lib-win32-style/appearance/win3x/window PRIVATE src)
-target_compile_definitions(win16-window PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-window PUBLIC style-frame-client style-frame-font style-menu-client style-menu-owner style-window style-instance style-menu-items style-uwp-repaint style-font-variant user32 gdi32 comctl32 uxtheme PRIVATE ole32 uuid)
 set(client_modern_frame src/lib-win32-style/appearance/win3x/window/modern_frame.c)
 set(client_modern_layout src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c)
 add_library(win16-window-uwp STATIC ${client_modern_frame} ${client_modern_layout})
 target_include_directories(win16-window-uwp PUBLIC src)
 target_compile_definitions(win16-window-uwp PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-window-uwp PUBLIC style-uwp-native win16-window)
+target_link_libraries(win16-window-uwp PUBLIC style-uwp-native style-frame-client style-frame-font)
 get_filename_component(gcc_bin "${CMAKE_C_COMPILER}" DIRECTORY)
 execute_process(COMMAND "${CMAKE_C_COMPILER}" -print-prog-name=as
   OUTPUT_VARIABLE gcc_assembler OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
@@ -306,7 +303,6 @@ target_include_directories(style-msstyles PUBLIC src)
 target_compile_definitions(style-msstyles PRIVATE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-msstyles PRIVATE ole32 uuid user32 gdi32)
 target_link_libraries(win2k-window PRIVATE style-msstyles)
-target_link_libraries(win16-window PRIVATE style-msstyles)
 target_link_libraries(win16-control PRIVATE style-msstyles ole32 uuid)
 target_link_libraries(win2k-control PRIVATE style-msstyles)
 add_executable(classic-theme-compiler EXCLUDE_FROM_ALL tools/theme/classic_build.c tools/theme/legacy_image.c)
@@ -374,7 +370,7 @@ set_target_properties(ntw16s PROPERTIES OUTPUT_NAME ${dll_name} PREFIX "")
 target_include_directories(ntw16s PRIVATE src ${CMAKE_SOURCE_DIR})
 target_compile_definitions(ntw16s PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_dependencies(ntw16s style-subclass)
-target_link_libraries(ntw16s PRIVATE style-creation style-uwp-hook style-global-window win16-window-uwp win2k-window-uwp win16-window win16-control style-dialog-common "${subclass_import}" user32 gdi32 comctl32 comdlg32 shell32 ole32 oleaut32 uuid dwmapi uxtheme advapi32)
+target_link_libraries(ntw16s PRIVATE style-creation style-uwp-hook style-global-window win16-window-uwp win2k-window-uwp style-frame-client style-frame-font win16-control style-dialog-common "${subclass_import}" user32 gdi32 comctl32 comdlg32 shell32 ole32 oleaut32 uuid dwmapi uxtheme advapi32)
 target_link_libraries(ntw16s PRIVATE style-dialog-native)
 add_library(module-import STATIC src/lib-win32/module-import/import_scan.c src/lib-win32/module-import/import_patch.c)
 target_include_directories(module-import PUBLIC src)
@@ -480,7 +476,7 @@ target_sources(ntw16s PRIVATE ${injection_root}/entry.c ${win16_intercepts})
 target_sources(ntwshk PRIVATE ${win16_intercepts})
 add_dependencies(ntwshk style-subclass)
 target_link_libraries(ntwshk PRIVATE style-runtime-process style-creation style-uwp-hook style-global-window
-  win16-window win16-control win2k-window win2k-control
+  style-frame-client style-frame-font win16-control win2k-window win2k-control
   style-dialog-native style-dialog-common style-theme-track style-companion module-import process-global
   "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}" user32 gdi32 comctl32 comdlg32
   shell32 ole32 oleaut32 uuid dwmapi uxtheme advapi32)
@@ -858,7 +854,7 @@ if(BUILD_TESTING)
     src/lib-win32-style/appearance/win3x/resources/scroll_assets.c ${classic_theme_source} ${frame_font_source})
   target_include_directories(core-style-classic-theme PRIVATE src)
   target_compile_definitions(core-style-classic-theme PRIVATE NTW16S_STATIC STYLE_THEME_EXTERNAL_ONLY _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-style-classic-theme PRIVATE style-msstyles win16-window win2k-window win16-control
+  target_link_libraries(core-style-classic-theme PRIVATE style-msstyles style-frame-client style-frame-font win2k-window win16-control
     win2k-control "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>")
   target_link_options(core-style-classic-theme PRIVATE -municode)
   add_executable(ntw2ks-frame-target tests/ntw2ks-dll/frame_target.c tests/ntw2ks-dll/frame_target.rc)
@@ -2647,7 +2643,7 @@ if(BUILD_TESTING)
   add_dependencies(core-win16-window-link style-subclass)
   target_include_directories(core-win16-window-link PRIVATE src)
   target_compile_definitions(core-win16-window-link PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-win16-window-link PRIVATE "-Wl,--whole-archive" win16-window "-Wl,--no-whole-archive" "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}")
+  target_link_libraries(core-win16-window-link PRIVATE "-Wl,--whole-archive" style-frame-client "-Wl,--no-whole-archive" "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}")
   add_test(NAME core/win16-window-link COMMAND ${test_driver} --name core/win16-window-link -- $<TARGET_FILE:core-win16-window-link>)
   add_executable(core-win16-control-scope tests/lib-win32-style/appearance/win3x/control/control_scope.c)
   add_executable(core-uwp-surface-present tests/lib-win32-style/application/adapters/surface_present.c)
@@ -2701,7 +2697,7 @@ if(BUILD_TESTING)
   add_dependencies(core-win16-control-link style-subclass)
   target_include_directories(core-win16-control-link PRIVATE src)
   target_compile_definitions(core-win16-control-link PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-win16-control-link PRIVATE "-Wl,--whole-archive" win16-control win16-window "-Wl,--no-whole-archive" "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" style-theme-state "${subclass_import}")
+  target_link_libraries(core-win16-control-link PRIVATE "-Wl,--whole-archive" win16-control style-frame-client "-Wl,--no-whole-archive" style-frame-font "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" style-theme-state "${subclass_import}")
   add_test(NAME core/win16-control-link COMMAND ${test_driver} --name core/win16-control-link -- $<TARGET_FILE:core-win16-control-link>)
 
   component_test(core-win16-dialog-chrome tests/lib-win32-style/application/dialog/classic_dialog_chrome.c core/win16-dialog-chrome style-dialog-common)

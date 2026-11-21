@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P41",
-  "stage": "published development candidate with theme-declared caption text inset and neutral layout",
+  "delivery": "M0 T29 S23 P42",
+  "stage": "published development candidate with neutral full-client window lifecycle",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P40 7f48bb7ad72e",
-  "source_snapshot_sha256": "fbc42914943504e38542efa4c047e5f34cba6d848284d329576ecf77b8047e54",
+  "last_verified_remote_delivery": "M0 T29 S23 P41 f9bedf7f6735",
+  "source_snapshot_sha256": "e5f16171bdf2f85ea209fb873c821d4c116a24c455db3282620011023ff215ce",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "604954364f35b836e1245c09f246338457c2b7ec3d57545677c662ba528789bc",
+      "sha256": "13ead3107c88895d5968824cb880bc80f0f79e953d742e8cc2c820714a10ffa9",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "f235a1c57f6cfd855fb217b4bbab09fc553270cac4dbc4fe83b0ce46b6733f0e",
+      "sha256": "562876ca1fcccf1abb1d961d8cfc1aa446603cb8b8536100ca66ddc9ac0cfcaf",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "58fc0f351080ff1b98238bd62fe7cb4b123bbbf66a19a6214dcbcc733c9212d5",
+      "sha256": "a5244e926b9e597d6913ad311db5a0940eab8399ea9704d400f49687e26ba2b8",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,24 +106,26 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 20,
+    "passed": 22,
     "selected_cases": [
-      "x86 core-style-classic-extension fixture",
-      "x86 core-style-classic-extension packaged",
-      "x86 core-style-classic-theme packaged",
-      "x86 core-win16-control-link fixture",
-      "x86 core-dc-failure fixture",
-      "x86 core-uwp-client-theme-renderer packaged",
+      "x86 core-win16-window-link",
+      "x86 core-win16-control-link",
+      "x86 core-dc-failure",
+      "x86 core-frames",
+      "x86 core-win2k-frame-lifecycle",
+      "x86 core-global-style-bridge",
+      "x86 core-uwp-client-theme-renderer",
       "x86 winnt native-string",
       "x86 winnt win2k-default",
       "x86 assets native-string",
       "x86 assets win2k-default",
-      "x64 core-style-classic-extension fixture",
-      "x64 core-style-classic-extension packaged",
-      "x64 core-style-classic-theme packaged",
-      "x64 core-win16-control-link fixture",
-      "x64 core-dc-failure fixture",
-      "x64 core-uwp-client-theme-renderer packaged",
+      "x64 core-win16-window-link",
+      "x64 core-win16-control-link",
+      "x64 core-dc-failure",
+      "x64 core-frames",
+      "x64 core-win2k-frame-lifecycle",
+      "x64 core-global-style-bridge",
+      "x64 core-uwp-client-theme-renderer",
       "x64 winnt native-string",
       "x64 winnt win2k-default",
       "x64 assets native-string",
@@ -573,13 +575,28 @@
         "interactive administrative tray",
         "full package matrix"
       ]
+    },
+    "client_host_delivery": {
+      "test_invocations_passed": 22,
+      "incremental_passed": 18,
+      "menu_label_pixel_matches": 8,
+      "retired_appearance_objects_per_width": 4,
+      "retired_appearance_archives": 1,
+      "matching_archive_members_per_width": 37,
+      "direct_old_product_objects_per_width": 21,
+      "scope": "Owned Win32 attach/detach, native owned menu and input message routing, font lease cleanup on provider failure, double-width style switches, and modeled modern composed frame teardown. Compatibility-only palette edit absent in formal symbols.",
+      "not_retested": [
+        "physical input",
+        "interactive administrative tray",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P41 inputs, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P42 inputs, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2011,
-    "cache_misses": 103
+    "cache_hits": 2109,
+    "cache_misses": 5
   }
 }

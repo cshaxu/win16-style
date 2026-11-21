@@ -1,12 +1,19 @@
 #ifndef STYLE_GRAPHICS_FONT_PAIR_H
 #define STYLE_GRAPHICS_FONT_PAIR_H
-#include <windows.h>
+#include "font_descriptor.h"
 
 /* The provider owns role-specific font/lease release. This object owns the
  * installed pair and DPI; next transfers independently acquired leases. A
  * failed replacement never destroys the old pair. */
 typedef struct style_font_pair {HFONT title,menu;UINT dpi;} style_font_pair;
 typedef void (*style_font_pair_release)(const style_font_pair *);
+
+/* The title is owned by its frame, while the menu font is a shared lease. */
+static inline void style_frame_fonts_release(const style_font_pair *fonts)
+{
+    if(fonts->title)DeleteObject(fonts->title);
+    style_menu_font_release(fonts->menu);
+}
 static inline BOOL style_font_pair_commit(style_font_pair *current,style_font_pair next,style_font_pair_release release)
 {
     if(!next.title || !next.menu){release(&next);return FALSE;}

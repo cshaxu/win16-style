@@ -41,7 +41,7 @@ static LRESULT CALLBACK menu_exception(HWND w,UINT m,WPARAM a,LPARAM b)
 static unsigned title_callbacks;
 static LRESULT CALLBACK reentrant_title(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)
 {
-    (void)id;style_window *state=(style_window *)data;
+    (void)id;style_client_frame *state=(style_client_frame *)data;
     if(m==WM_GETTEXT){++title_callbacks;state->native.active=TRUE;
         state->fonts.title=(HFONT)GetStockObject(DEFAULT_GUI_FONT);}
     return DefSubclassProc(w,m,a,b);
@@ -65,7 +65,7 @@ static LRESULT CALLBACK measure_reentry(HWND w,UINT m,WPARAM a,LPARAM b)
 }
 int wmain(int argc,WCHAR **argv)
 {
-    WNDCLASSW wc={0};HWND w;HDC dc;HBITMAP bm,old;style_window s={0};
+    WNDCLASSW wc={0};HWND w;HDC dc;HBITMAP bm,old;style_client_frame s={0};
     BITMAPINFO bi={0};DWORD *pixels;RECT before,after;int i,mode;
     /* Current desktop only; native menu callbacks have bounded cancellation. */
     wc.lpfnWndProc=DefWindowProcW;wc.hInstance=GetModuleHandleW(NULL);wc.lpszClassName=L"StyleDCFailure";
@@ -130,7 +130,7 @@ int wmain(int argc,WCHAR **argv)
         CHECK(RegisterClassW(&owner_class));
         HWND menu_window=CreateWindowW(owner_class.lpszClassName,L"",WS_POPUP,0,0,100,100,NULL,NULL,wc.hInstance,NULL);CHECK(menu_window);
         CHECK(win16_style_menu_owner_install_created(menu_window,NULL,NULL));
-        style_window *menu_state=state(menu_window);CHECK(menu_state && menu_state->menu_only && !menu_state->instance.calls);
+        style_client_frame *menu_state=state(menu_window);CHECK(menu_state && menu_state->menu_only && !menu_state->instance.calls);
         CHECK(test_unwind(menu_window,WM_APP+21,0,0));
         CHECK(state(menu_window)==menu_state && !menu_state->instance.calls);
         CHECK(SendMessageW(menu_window,WM_APP+22,0,0)==73 && GetLastError()==0x63ab && !menu_state->instance.calls);
@@ -171,7 +171,7 @@ int wmain(int argc,WCHAR **argv)
     bm=CreateDIBSection(dc,&bi,DIB_RGB_COLORS,(void **)&pixels,NULL,0);CHECK(bm);
     old=(HBITMAP)SelectObject(dc,bm);
     {
-        style_window title_state={0};style_full_client_layout title_layout={0};
+        style_client_frame title_state={0};style_full_client_layout title_layout={0};
         title_state.fonts.title=(HFONT)GetStockObject(SYSTEM_FONT);
         win16_style_palette palette=s.palette;palette.active_text=RGB(12,34,56);palette.inactive_text=RGB(65,43,21);
         SetRect(&title_layout.caption,0,0,320,30);title_layout.title=title_layout.caption;title_layout.unit=1;
@@ -242,7 +242,7 @@ int wmain(int argc,WCHAR **argv)
         CHECK(style_menu_popup_end(inner));
         outer=style_menu_client_popup_begin(NULL,NULL,NULL,NULL);CHECK(outer);CHECK(style_menu_popup_end(outer));
         printf("PASS nested menu scope outer-owner teardown and restart\n");}
-    {style_window *installed;HMENU outer=CreatePopupMenu(),inner=CreatePopupMenu();MENUITEMINFOW info={.cbSize=sizeof(info)};
+    {style_client_frame *installed;HMENU outer=CreatePopupMenu(),inner=CreatePopupMenu();MENUITEMINFOW info={.cbSize=sizeof(info)};
         CHECK(outer && inner && AppendMenuW(outer,MF_STRING,1,L"&Outer") && AppendMenuW(inner,MF_STRING,2,L"&Inner"));
         CHECK(win16_style_install(w,NULL));installed=state(w);CHECK(installed);
         {HMENU bar=CreateMenu();style_full_client_layout frame;RECT window;
