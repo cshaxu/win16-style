@@ -4,7 +4,6 @@
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include "lib-win32-style/application/control/control_state.h"
 #include "lib-win32-style/application/control/bindings.h"
-#include "updown_paint.h"
 #include "choice_paint.h"
 #include "lib-win32-style/application/control/message.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
@@ -40,9 +39,10 @@ typedef struct control_style {
     BOOL combo_passthrough,common_dialog_combo;
     HWND common_dialog_parent;
     style_control_bindings bindings;
-    win16_control_updown updown;
+    style_control_updown_art updown;
     BOOL legacy_progress_border;
 } control_style;
+void win16_control_updown_colors(control_style *);
 control_style *win16_control_state_create(void);
 void win16_control_state_dispose(void *context);
 BOOL win16_control_state_prepare_font(HWND,void *,style_control_message *);

@@ -111,17 +111,13 @@ static void edit_border(HWND window,void *context,HDC dc)
         (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_CLIENTEDGE))
         render->services->edit->border(window,render->state,dc);
 }
-static void updown_recolor(HWND window,void *context,HDC dc,BOOL buffered)
+static style_relief_palette updown_palette(const control_style *state)
 {
-    (void)buffered;
-    control_style *state=context;
     const win16_style_palette *p=&state->palette;
     const classic_frame_colors override={p->face,p->light,p->shadow,p->edge,TRUE};
     const classic_text_colors text={.normal=p->edge,.present=TRUE};
-    const style_relief_palette colors=classic_relief_palette(state->themed?&state->frame_colors:&override,
+    return classic_relief_palette(state->themed?&state->frame_colors:&override,
         &state->list_colors,state->themed?&state->label_colors:&text);
-    if(!style_control_updown_recolor(window,&state->instance,dc,&colors) && !state->instance.detached)
-        DefSubclassProc(window,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
 }
 static void edit_client_border(HWND window,void *context,HDC dc)
 {const control_render *render=context;render->services->edit->client_border(window,render->state,dc);}
@@ -151,10 +147,9 @@ LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPA
             tab?style_control_tab_supported:header?win16_style_header_supported:win16_style_progress_supported,&draw);
     }
     else if(style_control_class_is(w,UPDOWN_CLASSW)){
-        if(s->controls.updown_mode==CLASSIC_UPDOWN_RECOLOR){
-            const style_control_draw draw={s,updown_recolor};
-            result=style_control_native_message(w,&s->instance,NULL,STYLE_CONTROL_UPDOWN,m,a,b,
-                style_control_updown_recolor_supported,&draw);
+        if(s->controls.updown_mode==CLASSIC_UPDOWN_RECOLOR && (m==WM_PAINT || m==WM_PRINTCLIENT)){
+            const style_relief_palette colors=updown_palette(s);
+            result=style_control_updown_message(w,&s->instance,m,a,b,&colors);
         }else result=DefSubclassProc(w,m,a,b);
     }
     else if(style_control_class_is(w,TRACKBAR_CLASSW) || style_control_protocol_is(w,TRACKBAR_CLASSW)){

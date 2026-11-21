@@ -1,20 +1,19 @@
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
-#include "../../src/lib-win32-style/appearance/win3x/control/updown_paint.h"
+#include "lib-win32-style/application/control/updown.h"
 #include "lib-win32-style/appearance/win3x/resources/scroll_glyphs.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
-#include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"UPDOWN_OWNER_FAIL line=%u error=%lu %s\n",__LINE__,GetLastError(),#x);return 1;}}while(0)
 static _Thread_local HWND scope_window;static _Thread_local HDC scope_dc;
 BOOL ntw16s_native_paint_target(HDC dc,HWND *w){*w=scope_window;return dc&&scope_dc==dc;}
-typedef struct owner {win16_control_updown paint;style_control_updown binding;HWND window;unsigned refs,attempts,errors;BOOL alive,retire;} owner;
+typedef struct owner {style_control_updown_art paint;style_control_updown binding;HWND window;unsigned refs,attempts,errors;BOOL alive,retire;} owner;
 static BOOL acquire(void *value){owner *s=value;++s->attempts;if(!s->alive || !IsWindow(s->window) || GetWindowThreadProcessId(s->window,NULL)!=GetCurrentThreadId())return FALSE;++s->refs;return TRUE;}
 static void release(void *value){owner *s=value;if(!s->refs){++s->errors;return;}--s->refs;if(s->retire&&!s->refs){s->alive=FALSE;style_control_updown_retire(&s->binding);}}
 static const char (*const glyphs[])[17][18]={&scroll_uparrow,&scroll_dnarrow,&scroll_lfarrow,&scroll_rgarrow,&scroll_uparrowd,&scroll_dnarrowd,&scroll_lfarrowd,&scroll_rgarrowd,&scroll_uparrowi,&scroll_dnarrowi,&scroll_lfarrowi,&scroll_rgarrowi};
 static style_scroll_arrow_art art={.source=STYLE_SCROLL_ARROW_INDEXED};
 static void anchor(void){}
-static void owner_bind(owner *s,HWND w,const win16_style_palette *p){ZeroMemory(s,sizeof(*s));s->window=w;s->alive=TRUE;s->paint.art=&art;win16_control_updown_register(&s->paint,&s->binding,w,GetModuleHandleW(NULL),p,s,acquire,release);}
+static void owner_bind(owner *s,HWND w,const style_relief_palette *p){ZeroMemory(s,sizeof(*s));s->window=w;s->alive=TRUE;s->paint=(style_control_updown_art){.palette=*p,.art=&art};style_control_updown_bind_art(&s->binding,w,GetModuleHandleW(NULL),&s->paint,s,acquire,release);}
 static BOOL draw(HDC dc){RECT r={0,0,17,17};return style_control_updown_draw_frame(dc,&r,DFC_SCROLL,DFCS_SCROLLUP,(void*)(UINT_PTR)anchor,ntw16s_native_paint_target);}
 static DWORD WINAPI foreign_thread(void *dc){return draw((HDC)dc)?1:0;}
 static int worker(int argc,WCHAR **argv)
@@ -28,19 +27,19 @@ static int worker(int argc,WCHAR **argv)
     }
     (void)argc;(void)argv;WNDCLASSW cls={.lpfnWndProc=DefWindowProcW,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"UpDownOwnerFixture"};CHECK(RegisterClassW(&cls));HWND root=CreateWindowW(cls.lpszClassName,L"owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,cls.hInstance,NULL);CHECK(root);
     HWND w=CreateWindowW(cls.lpszClassName,L"",WS_CHILD,0,0,17,34,root,(HMENU)1,cls.hInstance,NULL),other=CreateWindowW(cls.lpszClassName,L"",WS_CHILD,20,0,17,34,root,(HMENU)2,cls.hInstance,NULL);CHECK(w&&other);HDC source=GetDC(w);CHECK(source);
-    win16_style_palette palette={.face=RGB(192,192,192),.light=RGB(255,255,255),.shadow=RGB(128,128,128),.edge=0};owner first,second;CHECK(!style_control_updown_api_enabled());style_control_updown_api_enable();CHECK(style_control_updown_api_enabled());owner_bind(&first,w,&palette);
+    style_relief_palette palette={.face=RGB(192,192,192),.light=RGB(255,255,255),.shadow=RGB(128,128,128),.highlight=RGB(255,255,255)};owner first,second;CHECK(!style_control_updown_api_enabled());style_control_updown_api_enable();CHECK(style_control_updown_api_enabled());owner_bind(&first,w,&palette);
     RECT rect={0,0,17,17};CHECK(draw(source));CHECK(!first.refs&&!first.errors);CHECK(!style_control_updown_draw_frame(source,&rect,DFC_SCROLL,DFCS_SCROLLUP,(void*)(UINT_PTR)GetCurrentProcessId,ntw16s_native_paint_target));CHECK(!first.refs);
     const classic_frame_colors frame={RGB(31,88,147),RGB(214,235,249),RGB(90,83,75),RGB(17,26,31),TRUE};
     HDC themed=CreateCompatibleDC(source);CHECK(themed);
     HBITMAP bitmap=CreateBitmap(17,17,1,32,NULL);CHECK(bitmap);
     HGDIOBJ prior=SelectObject(themed,bitmap);CHECK(prior && prior!=HGDI_ERROR);
-    first.paint.frame=&frame;
+    first.paint.palette=(style_relief_palette){.face=frame.face,.light=frame.light,.shadow=frame.shadow,.highlight=frame.light,.dark=frame.edge,.text=frame.edge};
     style_control_updown_dc_created(source,themed,(void*)(UINT_PTR)anchor,ntw16s_native_paint_target);
     CHECK(draw(themed) && GetPixel(themed,0,0)==frame.edge);
     unsigned face=0;
     for(int y=2;y<15;++y)for(int x=2;x<15;++x)face+=GetPixel(themed,x,y)==frame.face;
     CHECK(face && !first.refs);
-    first.paint.frame=NULL;
+    first.paint.palette=palette;
     CHECK(SelectObject(themed,prior)==bitmap && DeleteObject(bitmap) && DeleteDC(themed));
     style_control_updown_dc_deleted(themed);
     /* Real native DC handles; repeated delete events must actually recover
@@ -66,4 +65,4 @@ static int worker(int argc,WCHAR **argv)
     CHECK(ReleaseDC(w,source)&&DestroyWindow(w)&&DestroyWindow(other)&&DestroyWindow(root));
     printf("UPDOWN_OWNER_OK bits=%u exact_refs_zero=1 retire_clears=1 nested_barrier=1 foreign_caller_thread_rejected=1 owned_dc_handles_released=165\n",(unsigned)sizeof(void*)*8);return 0;
 }
-int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}
+int wmain(int argc,WCHAR **argv){return worker(argc,argv);}

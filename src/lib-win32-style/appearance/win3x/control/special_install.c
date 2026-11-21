@@ -24,10 +24,10 @@ BOOL win16_control_special_updown_install(HWND w,const win16_style_palette *pale
         SetLastError(ERROR_NOT_SUPPORTED);
         return style_instance_setup_finish(w,&s->instance,FALSE,owner,v->remove_owned);
     }
-    s->updown.frame=&s->frame_colors;
-    s->updown.art=&s->scroll_art;
-    s->updown.metrics=s->controls.updown;
-    win16_control_updown_register(&s->updown,&s->bindings.updown,w,native,&s->palette,&s->instance,style_instance_acquire_owned,style_instance_return_owned);
+    s->updown=(style_control_updown_art){.art=&s->scroll_art,.metrics=s->controls.updown};
+    win16_control_updown_colors(s);
+    style_control_updown_bind_art(&s->bindings.updown,w,native,&s->updown,&s->instance,
+        style_instance_acquire_owned,style_instance_return_owned);
     return TRUE;
 }
 BOOL win16_control_special_trackbar_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)

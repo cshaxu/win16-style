@@ -18,6 +18,14 @@ typedef struct style_control_updown {
     void *owner;BOOL (*acquire)(void *);void (*release)(void *);
     style_control_updown_ops ops;
 } style_control_updown;
+typedef struct style_control_updown_art {
+    style_relief_palette palette;
+    const style_scroll_arrow_art *art;
+    style_arrow_button_metrics metrics;
+} style_control_updown_art;
+/* The binding borrows the rendering model for its entire registered lifetime. */
+void style_control_updown_bind_art(style_control_updown *,HWND,HMODULE,style_control_updown_art *,
+    void *,BOOL (*)(void *),void (*)(void *));
 void style_control_updown_api_enable(void);
 BOOL style_control_updown_api_enabled(void);
 void style_control_updown_register(style_control_updown *,HWND,HMODULE,void *,BOOL (*)(void *),void (*)(void *),const style_control_updown_ops *);
@@ -32,5 +40,5 @@ void style_control_updown_dc_deleted(HDC);
 BOOL style_control_updown_draw_frame(HDC,RECT *,UINT,UINT,const void *,BOOL (*)(HDC,HWND *));
 BOOL style_control_updown_draw_theme(HTHEME,HDC,int,int,const RECT *,const RECT *,const void *,BOOL (*)(HDC,HWND *));
 BOOL style_control_updown_recolor_supported(HWND);
-BOOL style_control_updown_recolor(HWND,style_instance *,HDC,const style_relief_palette *);
+LRESULT style_control_updown_message(HWND,style_instance *,UINT,WPARAM,LPARAM,const style_relief_palette *);
 #endif

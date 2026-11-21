@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P29",
-  "stage": "published development candidate with theme-driven modern resize corners verified",
+  "delivery": "M0 T29 S23 P30",
+  "stage": "published development candidate with shared UpDown painting verified",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P28 93135a0f2b81",
-  "source_snapshot_sha256": "381798c564a5b7c0eebbcb3ba72bf15408820fec0bec9b214993b038efb1e03f",
+  "last_verified_remote_delivery": "M0 T29 S23 P29 02cf83bf2b51",
+  "source_snapshot_sha256": "68292d1c5842e3c1b1093fc0aac4840acd7c463beba4dcd4714d03d18a670948",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "4dc6efbc3eb9007c579cd95eaf5b64ac219057ce45524be5211294d7f29a68b5",
+      "sha256": "38cc164380629378d52734441359e95c41954b3720abef70c3b5f82e6c962237",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "9f5086cd78b8a17fb9fe6eb1e912f7b593d10605bd72a3bb28674a4c7d133933",
+      "sha256": "edf8552899daabafc4b8e922057579b5bebb6b1057d9ae033d8e560add92ef35",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "ff2f3d824a199dbbb668dbd4d2bdb2229822ed51c7e36ab2dba6dbc709f744c8",
+      "sha256": "5bdb9fc19e3d563804ee989244abdbcdcf8fc52a019dac21349f1648e3f59e46",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -285,7 +285,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P29 fresh results are in caption_corners_delivery.",
+    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P30 fresh results are in updown_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -427,13 +427,28 @@
         "real UWP screen composition",
         "full package matrix"
       ]
+    },
+    "updown_delivery": {
+      "test_invocations_passed": 10,
+      "stock_art_cases": 2,
+      "stock_recolor_cases": 2,
+      "mixed_mode_comparisons": 2,
+      "ownership_cases": 2,
+      "scope": "Both adapters use the shared UpDown recolor and native fallback. Both widths verified that changing only CLASSIC_STYLE record 28 from indexed art to recolor on the full-client adapter changes actual horizontal and vertical pixels and preserves the native position.",
+      "not_retested": [
+        "physical input",
+        "full package matrix"
+      ],
+      "remaining": "The observed/nonclient regular startup does not supply native draw callbacks required for indexed UpDown art.",
+      "no_console_repeat_passed": 10,
+      "environment_diagnostic": "The first run inherited a console, producing two Terminal attachment diagnostics (1306). Running the same tests with CREATE_NO_WINDOW yielded all ten passes without this diagnostic. Terminal behavior is outside the UpDown result."
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P29 snapshot, snapshot-local ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P30 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 266,
-    "cache_misses": 1858
+    "cache_hits": 1976,
+    "cache_misses": 146
   }
 }

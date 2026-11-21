@@ -223,7 +223,7 @@ add_library(win16-control STATIC
   src/lib-win32-style/appearance/win3x/control/header_paint.c
   src/lib-win32-style/appearance/win3x/control/progress_paint.c src/lib-win32-style/appearance/win3x/control/trackbar_paint.c
   src/lib-win32-style/appearance/win3x/control/toolbar_paint.c src/lib-win32-style/appearance/win3x/control/control_scope.c
-  src/lib-win32-style/appearance/win3x/control/basic_paint.c src/lib-win32-style/appearance/win3x/control/updown_paint.c
+  src/lib-win32-style/appearance/win3x/control/basic_paint.c
   src/lib-win32-style/appearance/win3x/control/choice_paint.c
   src/lib-win32-style/appearance/win3x/control/other_paint.c src/lib-win32-style/appearance/win3x/control/list_paint.c
   src/lib-win32-style/appearance/win3x/control/combo_paint.c src/lib-win32-style/appearance/win3x/control/scroll_paint.c
@@ -1999,7 +1999,7 @@ if(BUILD_TESTING)
   # registration APIs and remains outside CTest for the same reason as the
   # optional host probe above.
   native_test(core-ocx-catalog tests/ntw16s-dll/ocx_catalog.c ole32 oleaut32)
-  native_test(core-updown-owner tests/ntw16s-dll/updown_owner.c win16-control user32 gdi32)
+  native_test(core-updown-owner tests/ntw16s-dll/updown_owner.c style-control-common)
   target_include_directories(core-updown-owner PRIVATE src)
   add_test(NAME core/updown-owner COMMAND ${test_driver} --name core/updown-owner -- $<TARGET_FILE:core-updown-owner>)
   native_test(core-pending-frame-owner tests/ntw16s-dll/pending_frame_owner.c user32 gdi32 imm32)

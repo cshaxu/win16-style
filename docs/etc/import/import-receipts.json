@@ -2384,7 +2384,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T26 S2 mechanical path/include relocation",
-      "sha256": "9d28cfd928d885118ff91396029f1ae378ad1cf14c2e8be8a0b8072d444b11cc"
+      "sha256": "65e93764e913006aec0448c50b63536492bd0b06fd94793a476f8bbb05787c78"
     },
     {
       "path": "src/demo-exe/catalog.c",
@@ -3683,24 +3683,6 @@
       "review": "T21 S22 extraction from existing project-authored control presentation; T26 S1 shared solid frame painter; T26 S1 direct shared painter include; T26 S2 mechanical path/include relocation"
     },
     {
-      "path": "src/lib-win32-style/appearance/win3x/control/updown_paint.c",
-      "source": null,
-      "source_blob": null,
-      "disposition": "authored",
-      "notice": "Project-authored C17; project MIT license",
-      "sha256": "008736297ba53a9dca75da731a44df7f03db721efb9531ef0300eb7f12820998",
-      "review": "T21 S22 extraction of existing up/down painter; T26 S2 mechanical path/include relocation"
-    },
-    {
-      "path": "src/lib-win32-style/appearance/win3x/control/updown_paint.h",
-      "source": null,
-      "source_blob": null,
-      "disposition": "authored",
-      "notice": "Project-authored C17; project MIT license",
-      "sha256": "4d8f0eaf9422eb8c69e37f10202116e8181383fd64195090b929318bfa578ff8",
-      "review": "T21 S22 extraction of existing up/down painter; T26 S2 mechanical path/include relocation"
-    },
-    {
       "path": "src/lib-win32-style/appearance/win3x/control/choice_paint.c",
       "source": null,
       "source_blob": null,
@@ -4271,7 +4253,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/scroll_native.c",
       "source": null,
       "source_blob": null,
-      "sha256": "728120dcea6cbea3f68067d2836545b1a91db4000aa45ba4255da57a1d41c12c",
+      "sha256": "7a97a7569a7b966a1d94a3e229fe53874e91082d6a5416fc4f9f69e67626ca6c",
       "disposition": "authored",
       "review": "T21 S24 extract existing native scroll metrics and range adaptation; T26 S1 shared native scrollbar state; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture",
       "notice": "Project-authored C implementation; no imported artwork"
@@ -4370,7 +4352,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/control_state.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1e28fea281876b1bd6ec301e4738d6ef40597641339ed8cd5d3554bf8eea8628",
+      "sha256": "8475434d8ab877d2198d360d3b42f4d59033382899c8689c7ef96a6f0ccb3b42",
       "disposition": "authored",
       "review": "T21 S24 extract control presentation state and resource ownership; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained; T26 S10 complete control message borrow/font/native observation transaction moved to public message; profile consumes full operation object",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4379,7 +4361,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/control_state.h",
       "source": null,
       "source_blob": null,
-      "sha256": "1e1ebef55b4aa4fd9fc88eb4b0af8711593465f6875b2a3e65f6549e5a7f74d8",
+      "sha256": "2e55c52b9c0362fb538f1bd2427cbfcef983eddd4fc948c65ec5dd71842aeae6",
       "disposition": "authored",
       "review": "T21 S24 extract control presentation state and resource ownership; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T26 S9 common native list/scroll surface snapshots and base resource preparation; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained; T26 S10 shared custom-draw state/binding/protocol and native dispatch unwind; private duplicate removed; T26 S10 complete control message borrow/font/native observation transaction moved to public message; profile consumes full operation object; T26 S13 complete-instance present/print contract and direct renderer consumer; original fallback/order preserved",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4460,7 +4442,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/control_dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d1c92c6f53be61637bfe5b828920b4b3e3c87f887069a8d1a49246bd8a1c8629",
+      "sha256": "2245cc142d39bd86057958fe8e0cec69833b3d76737dd30842b9383ffd297942",
       "disposition": "authored",
       "review": "T21 S24 extract in-process control style message dispatch; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 list controller and actual render adapter; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T26 S9 common native list/scroll surface snapshots and base resource preparation; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained; T26 S10 shared custom-draw state/binding/protocol and native dispatch unwind; private duplicate removed; T26 S13 complete-instance present/print contract and direct renderer consumer; original fallback/order preserved",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4748,7 +4730,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/special_install.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5c8344906b478dafde52461362abc37a406979a58c5d7da4ed7fdcd74aef3d8f",
+      "sha256": "c7ec18a6fce90b93e6aee8ded985af98fa56c38c778afb7b6ad945d6f9f75c04",
       "disposition": "authored",
       "review": "T21 S24 extract specialized control installation; T24 S1 quality refactor; T24 S1 share list and combo list classification; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 common native list/scroll surface snapshots and base resource preparation; T26 S10 shared custom-draw state/binding/protocol and native dispatch unwind; private duplicate removed; T26 S10 existing bindings setup now owns optional list-theme capture/owned-publication/enable/final-cancel in exact former grid order; normal default options unchanged",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -9320,7 +9302,7 @@
       "path": "src/lib-win32-style/application/control/updown.c",
       "source": null,
       "source_blob": null,
-      "sha256": "83305661ee845c0b58324160ad1233012956512b4f02cc169fbc4fd3fb48a5a2",
+      "sha256": "297b13920c09c54ec260299d3de4de5456be42a092b8173e5818f8fb79a3634c",
       "disposition": "authored",
       "review": "T26 S10 native updown registry/DC lifecycle extracted; T27 S11 native print recoloring; T29 S23 consolidated the shared recoloring implementation",
       "notice": "Project-authored native C; no imported artwork"
@@ -9329,7 +9311,7 @@
       "path": "src/lib-win32-style/application/control/updown.h",
       "source": null,
       "source_blob": null,
-      "sha256": "c6d121d2c9ab09a18b68ef47076a12b2a6cc60ad04b801def26281b663450ffc",
+      "sha256": "80b2b977dfb6c98eaf4d8f0d5270ef17307761a124b8e0ce6b89c424075bd689",
       "disposition": "authored",
       "review": "T26 S10 native updown registry/DC lifecycle extracted; T27 S11 native print recoloring; T29 S23 consolidated the shared recoloring implementation",
       "notice": "Project-authored native C; no imported artwork"
@@ -9818,7 +9800,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "ea2666369e71b047e15572876b6c612435673a807c70dc507c91b89df26354bf"
+      "sha256": "f9c9c65a5296d1d9b481013527fa1a3923c7624ffd96b5ae37d2db6faeec63fa"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",

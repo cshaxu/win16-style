@@ -40,6 +40,7 @@ void win16_control_managed_frame_scrollbars_palette_owned(HWND w,const win16_sty
         control_style *s=binding.instance->context;
         s->palette=*palette;
         s->themed=FALSE;
+        if(s->bindings.updown.window)win16_control_updown_colors(s);
     }
 }
 void win16_control_managed_frame_scrollbars_palette(HWND w,const win16_style_palette *palette,const style_scroll_managed_ops *ops)
@@ -49,6 +50,7 @@ void win16_control_managed_frame_scrollbars_palette(HWND w,const win16_style_pal
         control_style *s=binding.instance->context;
         s->palette=*palette;
         s->themed=FALSE;
+        if(s->bindings.updown.window)win16_control_updown_colors(s);
     }
 }
 

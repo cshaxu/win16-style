@@ -12,6 +12,15 @@ static HFONT acquire_font(HWND w,HFONT source,BOOL native,unsigned points)
 }
 static const style_control_fonts font_operations={win16_style_system_source,acquire_font,win16_style_system_retain,win16_style_system_release};
 
+void win16_control_updown_colors(control_style *s)
+{
+    const win16_style_palette *p=&s->palette;
+    const classic_frame_colors *f=&s->frame_colors;
+    COLORREF light=f->present?f->light:p->light,edge=f->present?f->edge:p->edge;
+    s->updown.palette=(style_relief_palette){.face=f->present?f->face:p->face,.light=light,.highlight=light,
+        .shadow=f->present?f->shadow:p->shadow,.dark=edge,.text=edge};
+}
+
 control_style *win16_control_state_create(void)
 {
     control_style *s=calloc(1,sizeof(*s));if(!s)return NULL;

@@ -1,4 +1,5 @@
 #include "updown.h"
+#include "native.h"
 #include <commctrl.h>
 #include <vssym32.h>
 #include "../graphics/bitmap.h"
@@ -13,6 +14,34 @@ void style_control_updown_register(style_control_updown *s,HWND w,HMODULE native
 {
     s->window=w;s->native=native;s->owner=owner;s->acquire=acquire;s->release=release;s->ops=*ops;
     s->next=windows;windows=s;
+}
+static BOOL indexed_styles(DWORD style,DWORD ex)
+{
+    DWORD allowed=UDS_WRAP|UDS_SETBUDDYINT|UDS_ALIGNRIGHT|UDS_ALIGNLEFT|UDS_AUTOBUDDY|UDS_ARROWKEYS|
+        UDS_HORZ|UDS_NOTHOUSANDS|UDS_HOTTRACK;
+    return !(style&(0xffffu&~allowed)) && !(style&(WS_BORDER|WS_THICKFRAME|WS_CAPTION|WS_HSCROLL|WS_VSCROLL)) &&
+        !(ex&(WS_EX_CLIENTEDGE|WS_EX_STATICEDGE|WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
+}
+static BOOL indexed_paint(HWND window,void *context,HDC dc,const RECT *bounds,const RECT *clip,
+    unsigned direction,BOOL pressed,BOOL disabled)
+{
+    const style_control_updown_art *model=context;
+    RECT client,r=*bounds;
+    if(!GetClientRect(window,&client) || r.left<0 || r.top<0 || r.right>client.right || r.bottom>client.bottom ||
+        IsRectEmpty(&r) || r.right>32767 || r.bottom>32767)return FALSE;
+    int saved=SaveDC(dc);
+    if(!saved)return FALSE;
+    if(clip)IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom);
+    IntersectClipRect(dc,r.left,r.top,r.right,r.bottom);
+    UINT state=direction|(pressed?DFCS_PUSHED:0)|(disabled?DFCS_INACTIVE:0);
+    BOOL painted=style_paint_arrow_button(dc,r,state,GetDpiForWindow(window),&model->palette,model->art,model->metrics);
+    return RestoreDC(dc,saved) && painted;
+}
+void style_control_updown_bind_art(style_control_updown *binding,HWND window,HMODULE native,
+    style_control_updown_art *model,void *owner,BOOL (*acquire)(void *),void (*release)(void *))
+{
+    const style_control_updown_ops ops={model,indexed_styles,indexed_paint};
+    style_control_updown_register(binding,window,native,owner,acquire,release,&ops);
 }
 void style_control_updown_retire(style_control_updown *s)
 {
@@ -83,7 +112,7 @@ static DWORD dib_color(COLORREF color)
     return ((DWORD)GetRValue(color)<<16)|((DWORD)GetGValue(color)<<8)|GetBValue(color);
 }
 
-BOOL style_control_updown_recolor(HWND window,style_instance *instance,HDC target,const style_relief_palette *p)
+static BOOL recolor(HWND window,style_instance *instance,HDC target,const style_relief_palette *p)
 {
     const COLORREF key=RGB(253,11,239);
     const int indices[]={COLOR_BTNFACE,COLOR_3DLIGHT,COLOR_3DSHADOW,COLOR_3DDKSHADOW,COLOR_3DHIGHLIGHT,COLOR_BTNTEXT};
@@ -118,4 +147,25 @@ BOOL style_control_updown_recolor(HWND window,style_instance *instance,HDC targe
 done:
     style_bitmap_dispose(&surface);
     return painted;
+}
+
+typedef struct updown_recolor {
+    style_instance *instance;
+    const style_relief_palette *palette;
+} updown_recolor;
+static void recolor_render(HWND window,void *context,HDC dc,BOOL buffered)
+{
+    (void)buffered;
+    const updown_recolor *paint=context;
+    if(recolor(window,paint->instance,dc,paint->palette) || paint->instance->detached)return;
+    int saved=SaveDC(dc);
+    if(saved){DefSubclassProc(window,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);RestoreDC(dc,saved);}
+}
+LRESULT style_control_updown_message(HWND window,style_instance *instance,UINT message,WPARAM a,LPARAM b,
+    const style_relief_palette *palette)
+{
+    updown_recolor paint={instance,palette};
+    const style_control_draw draw={&paint,recolor_render};
+    return style_control_native_message(window,instance,NULL,STYLE_CONTROL_UPDOWN,
+        message,a,b,style_control_updown_recolor_supported,&draw);
 }

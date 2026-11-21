@@ -193,10 +193,7 @@ static void paint(HWND window,void *context,HDC dc)
 {
     win2k_control *control=context;
     BOOL painted=TRUE;
-    if(control->updown_control){
-        win2k_palette palette=control->palette;
-        painted=style_control_updown_recolor(window,&control->instance,dc,&palette);
-    }else if(control->progress_control){
+    if(control->progress_control){
         style_progress_snapshot snapshot;
         painted=style_progress_snapshot_read(window,&control->instance,&control->native,win2k_progress_supported,&snapshot);
         if(painted){
@@ -243,7 +240,7 @@ static BOOL is_group(HWND window,void *context)
 static void render(HWND window,void *context,HDC dc,BOOL buffered)
 {
     win2k_control *control=context;
-    if(buffered && !control->updown_control){const style_present_ops ops={paint,is_group};
+    if(buffered){const style_present_ops ops={paint,is_group};
         style_present(window,&control->instance,control,control->palette.face,&ops,dc);}
     else paint(window,control,dc);
 }
@@ -333,9 +330,7 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
         const style_control_edit_ops ops={.context=control,.border=edit_border};
         result=style_control_edit_message(window,&control->instance,&control->state,NULL,message,a,b,&ops);
     }else if(control->updown_control){
-        const style_control_draw draw={control,render};
-        result=style_control_native_message(window,&control->instance,&control->native,STYLE_CONTROL_UPDOWN,
-            message,a,b,style_control_updown_recolor_supported,&draw);
+        result=style_control_updown_message(window,&control->instance,message,a,b,&control->palette);
     }else if(control->tab_control || control->progress_control){
         const style_control_draw draw={control,render};
         result=style_control_native_message(window,&control->instance,&control->native,kind,message,a,b,
