@@ -247,6 +247,12 @@
         "Win2K static startup v5 and v6"
       ]
     },
+    "installed_caption_command_matrix": {
+      "x86_passed": 13,
+      "x64_passed": 13,
+      "skipped": [],
+      "scope": "Eight Win2K caption and window command cases plus five Win16 and Win2K system menu cases per architecture. Installed seven-file hashes verified before and after. Owned windows, native messages, no physical input."
+    },
     "unverified": [
       "full matrix",
       "real Win2K UWP and WinUI screen pixels",
