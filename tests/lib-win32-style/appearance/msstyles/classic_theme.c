@@ -694,7 +694,8 @@ static BOOL draw_popup(HDC dc,const DWORD *pixels,const classic_theme *theme,con
     style_menu_art original={.available=TRUE};
     memcpy(original.check,menu_check,sizeof(original.check));
     memcpy(original.arrow,menu_arrow,sizeof(original.arrow));
-    classic_menu_metrics variant={22,12,16,6,0,0,0,theme->menu_metrics.row_minimum,theme->menu_metrics.row_padding,0};
+    classic_menu_metrics variant={.check_column=22,.shortcut_gap=12,.arrow_column=16,.plain_column=6,
+        .row_minimum=theme->menu_metrics.row_minimum,.row_padding=theme->menu_metrics.row_padding};
     const classic_menu_metrics *metrics[]={&theme->menu_metrics,&variant};
     unsigned widths[2],heights[2];
     int label[2],shortcut[2],arrow[2];
@@ -843,6 +844,7 @@ static BOOL draw_themed_popup(HDC dc,const DWORD *pixels,const classic_theme *th
     alternate.points=9;
     alternate.logical.lfWeight=FW_NORMAL;
     alternate.logical.lfItalic=TRUE;
+    alternate.menu_mode=STYLE_MENU_FONT_LOGICAL;
     lstrcpyW(alternate.logical.lfFaceName,L"Arial");
     HFONT logical=win16_style_menu_font_acquire(dpi,&alternate);
     BOOL ok=font && fallback && fallback!=font && smaller && smaller!=font && logical && logical!=font;
@@ -1254,6 +1256,31 @@ static int check_icon_layout(void)
 
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==4 && !wcscmp(argv[1],L"--menu-mode")){
+        classic_theme_mapping source={0};
+        CHECK(classic_theme_open(argv[2],&source)==S_OK);
+        BOOL bitmap=!wcscmp(argv[3],L"bitmap");
+        CHECK(source.model.menu_font.menu_mode==
+            (bitmap?STYLE_MENU_FONT_SYSTEM_BITMAP:STYLE_MENU_FONT_LOGICAL));
+        for(unsigned legacy=0;legacy<2;++legacy){
+            HFONT font=style_menu_font_acquire(96,&source.model.menu_font,legacy!=0);
+            LOGFONTW realized={0};
+            CHECK(font && GetObjectW(font,sizeof(realized),&realized)==sizeof(realized));
+            BOOL sampled=!wcsncmp(realized.lfFaceName,L"Win16 System ",13);
+            style_menu_font_release(font);
+            CHECK(sampled==bitmap);
+        }
+        if(!bitmap){
+            HFONT font=style_menu_font_acquire(480,&source.model.menu_font,false);
+            LOGFONTW realized={0};
+            CHECK(font && GetObjectW(font,sizeof(realized),&realized)==sizeof(realized));
+            style_menu_font_release(font);
+            CHECK(realized.lfHeight==-MulDiv((int)source.model.menu_font.points,480,72));
+        }
+        classic_theme_close(&source);
+        printf("MENU FONT MODE bitmap=%d both_defaults=1\n",bitmap);
+        return 0;
+    }
     if(argc==4 && !wcscmp(argv[1],L"--tab-hot")){
         classic_theme_mapping source={0};
         CHECK(classic_theme_open(argv[2],&source)==S_OK);

@@ -634,7 +634,13 @@ HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme
             value.calendar_font_points=original?12:calendar.bytes[2];
         }
     }
-    if(SUCCEEDED(result))*theme=value;
+    if(SUCCEEDED(result)){
+        value.menu_font.menu_mode=(enum style_menu_font_mode)value.menu_metrics.font_mode;
+        if(value.menu_font.menu_mode==STYLE_MENU_FONT_SYSTEM_BITMAP &&
+           (!value.menu_font.points || value.menu_font.points>48))
+            return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+        *theme=value;
+    }
     return result;
 }
 

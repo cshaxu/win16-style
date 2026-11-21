@@ -13,7 +13,7 @@ static BOOL same_menu(const classic_menu_metrics *a,const classic_menu_metrics *
         a->arrow_column==b->arrow_column && a->plain_column==b->plain_column &&
         a->text_flags==b->text_flags && a->bar_padding==b->bar_padding &&
         a->mdi_buttons==b->mdi_buttons && a->row_minimum==b->row_minimum &&
-        a->row_padding==b->row_padding && a->mdi_inactive==b->mdi_inactive;
+        a->row_padding==b->row_padding && a->mdi_inactive==b->mdi_inactive && a->font_mode==b->font_mode;
 }
 
 static int fixtures(void)
@@ -107,7 +107,7 @@ static int fixtures(void)
     bytes[length+20]=0;
     CHECK(classic_style_read(bytes,length+21,&group,&metrics,NULL,NULL,NULL,NULL,NULL,NULL)==CLASSIC_STYLE_INVALID &&
         metrics.thumb==STYLE_SCROLL_THUMB_PAGE);
-    const classic_menu_metrics menu={22,10,15,5,0,0,0,0,0,0};
+    const classic_menu_metrics menu={.check_column=22,.shortcut_gap=10,.arrow_column=15,.plain_column=5};
     classic_menu_metrics columns={0};
     CHECK(classic_style_write(bytes,sizeof(bytes),&original,&fixed,&menu,NULL,NULL,NULL,NULL,NULL)==length+28);
     CHECK(classic_style_read(bytes,length+28,&group,&metrics,&columns,NULL,NULL,NULL,NULL,NULL)==CLASSIC_STYLE_OK &&
@@ -115,6 +115,14 @@ static int fixtures(void)
     bytes[length+24]=5;
     CHECK(classic_style_read(bytes,length+28,&group,&metrics,&columns,NULL,NULL,NULL,NULL,NULL)==CLASSIC_STYLE_INVALID &&
         same_menu(&columns,&menu));
+    classic_menu_metrics sampled=menu;
+    sampled.font_mode=STYLE_MENU_FONT_SYSTEM_BITMAP;
+    CHECK(classic_style_write(bytes,sizeof(bytes),&original,&fixed,&sampled,NULL,NULL,NULL,NULL,NULL)==length+37);
+    CHECK(bytes[6]==34 && classic_style_read(bytes,length+37,&group,&metrics,&columns,NULL,NULL,NULL,NULL,NULL)==CLASSIC_STYLE_OK &&
+        same_menu(&columns,&sampled));
+    bytes[length+36]=255;
+    CHECK(classic_style_read(bytes,length+37,&group,&metrics,&columns,NULL,NULL,NULL,NULL,NULL)==CLASSIC_STYLE_INVALID &&
+        same_menu(&columns,&sampled));
     classic_menu_metrics inactive=menu;
     inactive.mdi_inactive=CLASSIC_MDI_DEFINED|CLASSIC_MDI_RESTORE;
     CHECK(classic_style_write(bytes,sizeof(bytes),&original,&fixed,&inactive,NULL,NULL,NULL,NULL,NULL)==length+37);

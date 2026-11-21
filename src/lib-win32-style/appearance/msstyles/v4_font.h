@@ -4,9 +4,13 @@
 #include <stdbool.h>
 #include <windows.h>
 
+enum style_menu_font_mode {
+    STYLE_MENU_FONT_DEFAULT,STYLE_MENU_FONT_LOGICAL,STYLE_MENU_FONT_SYSTEM_BITMAP
+};
 typedef struct msstyles_font {
     LOGFONTW logical;
     unsigned points;
+    enum style_menu_font_mode menu_mode;
 } msstyles_font;
 
 /* Reads a referenced RT_STRING into an owned descriptor. On failure the
@@ -27,5 +31,9 @@ enum msstyles_font_role {
 /* A declared font takes precedence. Missing declarations use native
  * non-client metrics. The caller owns the returned handle. */
 HFONT msstyles_font_create(const msstyles_font *defined,UINT dpi,enum msstyles_font_role role);
+/* Realized menu font is a thread-owned lease. The legacy option applies
+ * only to a theme that omitted the menu realization record. */
+HFONT style_menu_font_acquire(UINT dpi,const msstyles_font *defined,bool legacy_bitmap);
+void style_menu_font_release(HFONT font);
 
 #endif

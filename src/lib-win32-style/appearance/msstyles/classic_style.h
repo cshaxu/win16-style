@@ -2,6 +2,7 @@
 #define STYLE_MSSTYLES_CLASSIC_STYLE_H
 
 #include <stddef.h>
+#include "v4_font.h"
 #include "lib-win32-style/application/control/progress_paint.h"
 #include "lib-win32-style/application/control/trackbar_paint.h"
 #include "lib-win32-style/application/control/scroll_geometry.h"
@@ -36,6 +37,7 @@ typedef struct classic_menu_metrics {
     uint16_t check_column, shortcut_gap, arrow_column, plain_column;
     uint16_t text_flags, bar_padding;
     uint8_t mdi_buttons, row_minimum, row_padding, mdi_inactive;
+    uint8_t font_mode;
 } classic_menu_metrics;
 
 typedef struct classic_file_metrics {
@@ -117,6 +119,6 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
     const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border,
     const classic_control_presentation *controls);
 
-enum { CLASSIC_STYLE_RESOURCE_CAPACITY=410 };
+enum { CLASSIC_STYLE_RESOURCE_CAPACITY=419 };
 
 #endif

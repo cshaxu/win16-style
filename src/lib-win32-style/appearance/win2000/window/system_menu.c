@@ -45,7 +45,7 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     const classic_menu_metrics metrics=style?style->metrics:(classic_menu_metrics){0};
     const style_menu_popup_columns columns=style_menu_popup_spacing(dpi,metrics.check_column,
         metrics.shortcut_gap,metrics.arrow_column,metrics.plain_column);
-    HFONT font=msstyles_font_create(defined,dpi,MSSTYLES_FONT_MENU);
+    HFONT font=style_menu_font_acquire(dpi,defined,false);
     HFONT normal=font?font:(HFONT)GetCurrentObject(dc,OBJ_FONT);
     const unsigned text_flags=style_menu_text_options(metrics.text_flags);
     HFONT bold=(text_flags&STYLE_MENU_TEXT_BOLD_DEFAULT)?style_menu_bold_font(normal):NULL;
@@ -83,7 +83,7 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
         if(rows[i].state&MFS_CHECKED)style_menu_draw_mark(dc,&r,FALSE,dpi,text,art?&art->check[0][0]:NULL);
         if(rows[i].submenu)style_menu_draw_mark(dc,&r,TRUE,dpi,text,art?&art->arrow[0][0]:NULL);
     }
-    RestoreDC(dc,saved);if(bold)DeleteObject(bold);if(font)DeleteObject(font);free(rows);return valid;
+    RestoreDC(dc,saved);if(bold)DeleteObject(bold);style_menu_font_release(font);free(rows);return valid;
 }
 
 typedef struct menu_presentation {

@@ -95,6 +95,9 @@ static BOOL sample_menu(void){
     if(win2k_paint && !win2k_system_menu_paint(popup,system_menu,dc,TRUE,NULL)){SelectObject(dc,prev);DeleteObject(bitmap);DeleteDC(dc);return FALSE;}
     GdiFlush();
     sample=GetPixel(dc,row.left-window.left+4,(row.top+row.bottom)/2-window.top);
+    RECT label=row;label.left+=MulDiv(24,(int)GetDpiForWindow(popup),96);
+    label.right-=MulDiv(12,(int)GetDpiForWindow(popup),96);
+    if(!IsRectEmpty(&label))printf("SYSTEM MENU LABEL HASH %016llx\n",row_pixels(dc,label,window));
     if(win2k_paint){
         const win2k_menu_style shifted={.metrics={42,0,16,16,0}};
         unsigned long long original=row_pixels(dc,row,window);

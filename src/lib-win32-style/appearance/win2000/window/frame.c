@@ -155,7 +155,7 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
     HBRUSH face=CreateSolidBrush(colors.background);if(!face)return;
     FillRect(dc,&area,face);DeleteObject(face);
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    HFONT font=msstyles_font_create(frame && frame->themed?&frame->theme.menu_font:NULL,dpi,MSSTYLES_FONT_MENU);
+    HFONT font=style_menu_font_acquire(dpi,frame && frame->themed?&frame->theme.menu_font:NULL,false);
     unsigned text_flags=frame && frame->themed?frame->theme.menu_metrics.text_flags:0;
     BOOL centered=!text_flags || (text_flags&STYLE_MENU_TEXT_CENTER_BAR);
     int saved=SaveDC(dc);if(saved){
@@ -179,7 +179,7 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
         }
         RestoreDC(dc,saved);
     }
-    if(font)DeleteObject(font);
+    style_menu_font_release(font);
 }
 
 static void repaint_menu(HWND window)

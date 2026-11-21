@@ -38,6 +38,10 @@ add_library(style-font-cache STATIC src/lib-win32-style/application/graphics/fon
 target_include_directories(style-font-cache PUBLIC src)
 target_compile_definitions(style-font-cache PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-font-cache PUBLIC gdi32)
+add_library(style-font-variant STATIC src/lib-win32-style/appearance/win3x/common/font.c)
+target_include_directories(style-font-variant PUBLIC src)
+target_compile_definitions(style-font-variant PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_link_libraries(style-font-variant PUBLIC style-font-cache style-bitmap style-msstyles user32 gdi32)
 add_library(style-present STATIC src/lib-win32-style/application/graphics/present.c
   src/lib-win32-style/application/control/progress_paint.c
   src/lib-win32-style/application/control/trackbar_paint.c
@@ -63,7 +67,7 @@ target_link_libraries(style-global-window PUBLIC user32 comctl32)
 add_library(win2k-window STATIC src/lib-win32-style/appearance/win2000/window/caption.c src/lib-win32-style/appearance/win2000/window/caption_compat.c src/lib-win32-style/appearance/win2000/window/frame.c src/lib-win32-style/appearance/win2000/window/system_menu.c)
 target_include_directories(win2k-window PUBLIC src)
 target_compile_definitions(win2k-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win2k-window PUBLIC style-caption-slots style-menu-owner style-window style-instance style-bitmap style-present style-uwp-native user32 gdi32 msimg32 comctl32 dwmapi shcore)
+target_link_libraries(win2k-window PUBLIC style-caption-slots style-menu-owner style-window style-instance style-bitmap style-present style-uwp-native style-font-variant user32 gdi32 msimg32 comctl32 dwmapi shcore)
 set(observed_modern_frame src/lib-win32-style/appearance/win2000/window/modern_frame.c)
 add_library(win2k-window-uwp STATIC ${observed_modern_frame})
 target_compile_definitions(win2k-window-uwp PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -96,10 +100,10 @@ target_include_directories(lib-tray PUBLIC src/lib-win32/tray)
 target_link_libraries(lib-tray PUBLIC user32 shell32)
 add_library(win16-common STATIC
   src/lib-win32-style/appearance/win3x/common/layout.c
-  src/lib-win32-style/appearance/win3x/common/font.c src/lib-win32-style/appearance/win3x/common/palette.c)
+  src/lib-win32-style/appearance/win3x/common/palette.c)
 target_include_directories(win16-common PUBLIC src src/lib-win32-style/appearance/win3x/common)
 target_compile_definitions(win16-common PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-common PUBLIC style-caption-slots style-window style-font-cache style-bitmap style-menu-items style-present user32 gdi32 comctl32 uxtheme)
+target_link_libraries(win16-common PUBLIC style-caption-slots style-window style-font-variant style-bitmap style-menu-items style-present user32 gdi32 comctl32 uxtheme)
 add_library(style-uwp-hook STATIC src/lib-win32-style/access/runtime/uwp_hook.c)
 target_include_directories(style-uwp-hook PUBLIC src)
 target_compile_definitions(style-uwp-hook PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)

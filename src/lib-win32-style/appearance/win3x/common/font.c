@@ -126,19 +126,27 @@ static HFONT logical_menu_create(HFONT source,UINT dpi,void *context,style_font_
     return entry->lease.font;
 }
 
-HFONT win16_style_menu_font_acquire(UINT dpi,const msstyles_font *defined)
+HFONT style_menu_font_acquire(UINT dpi,const msstyles_font *defined,bool legacy_bitmap)
 {
-    if(dpi<48 || dpi>384)return NULL;
-    /* Only an explicitly declared, supported System face uses the bitmap lease. */
-    if(!defined || !defined->points || defined->points>48 ||
-       _wcsicmp(defined->logical.lfFaceName,L"System") || defined->logical.lfWeight!=FW_BOLD ||
-       defined->logical.lfItalic || defined->logical.lfUnderline || defined->logical.lfStrikeOut){
+    bool legacy=legacy_bitmap && (!defined || defined->menu_mode==STYLE_MENU_FONT_DEFAULT);
+    BOOL bitmap=defined && defined->menu_mode==STYLE_MENU_FONT_SYSTEM_BITMAP;
+    if(legacy && defined)
+        bitmap=!_wcsicmp(defined->logical.lfFaceName,L"System") && defined->logical.lfWeight==FW_BOLD &&
+            !defined->logical.lfItalic && !defined->logical.lfUnderline && !defined->logical.lfStrikeOut;
+    if(!dpi || ((bitmap || legacy) && (dpi<48 || dpi>384)))return NULL;
+    if(!bitmap || !defined->points || defined->points>48){
         msstyles_font request=defined?*defined:(msstyles_font){0};
         return style_font_pool_get(&variants,NULL,dpi,TRUE,logical_menu_create,&request);
     }
     UINT key=(dpi<<1)|(defined->points<<(1+menu_dpi_bits));
     return style_font_pool_get(&variants,NULL,key,FALSE,system_create,NULL);
 }
+
+HFONT win16_style_menu_font_acquire(UINT dpi,const msstyles_font *defined)
+{return style_menu_font_acquire(dpi,defined,true);}
+
+void style_menu_font_release(HFONT font)
+{style_font_pool_release(&variants,font);}
 
 /* Scale the stock bitmap at the declared sampling density. The calendar
  * caller independently limits the native path to the witnessed window DPI. */
