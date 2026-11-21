@@ -17,28 +17,30 @@ static style_runtime_text_role text_role(HWND w,void *context)
         (style_control_vb_class(w,L"ThunderRT6FormDC") || style_control_vb5_class(w,L"ThunderRT5Form"))?w:NULL;
     return (style_runtime_text_role){target,label_only};
 }
-void win16_control_vb_paint_begin(style_runtime_text_scope *scope,HWND w,UINT message,style_font_cache *fonts,BOOL (*user_label_target)(HWND))
+void win16_control_vb_paint_begin(style_runtime_text_scope *scope,HWND w,UINT message,style_font_cache *fonts,unsigned points,BOOL (*user_label_target)(HWND))
 {
     const style_runtime_text_ops ops={&user_label_target,include_text,text_role};
     style_runtime_text_begin(scope,w,message,fonts,&ops);
+    scope->font_recipe=points;
 }
 HFONT win16_control_vb_paint_font(HDC dc)
 {
     const style_runtime_text_scope *scope=style_runtime_text_current();HFONT source;
     /* The scope also covers a runtime-owned memory DC during WM_PRINT or
      * double buffering. Never change a DC belonging to another HWND. */
-    if(!style_runtime_text_active() || (scope->report && dc!=scope->report_dc) || (WindowFromDC(dc) && WindowFromDC(dc)!=scope->window))return NULL;
+    if(!style_runtime_text_active() || !scope->context || !scope->font_recipe || (scope->report && dc!=scope->report_dc) || (WindowFromDC(dc) && WindowFromDC(dc)!=scope->window))return NULL;
     style_font_cache *fonts=scope->context;
     source=(HFONT)GetCurrentObject(dc,OBJ_FONT);
     if(!source)return NULL;
     if(scope->report){LOGFONTW lf;
         if(GetObjectW(source,sizeof(lf),&lf)!=sizeof(lf) || lf.lfEscapement || lf.lfOrientation)return NULL;}
-    return style_font_cache_get(fonts,source,&font_operations);
+    return style_font_cache_get(fonts,source,scope->font_recipe,&font_operations);
 }
 
 BOOL win16_control_vb_decode_glyphs(HDC dc,const WCHAR *input,UINT count,WCHAR *decoded)
 {
-    if(!style_runtime_text_current() || !style_runtime_text_current()->window)return FALSE;
-    return style_font_cache_decode(style_runtime_text_current()->context,dc,input,count,decoded,
+    const style_runtime_text_scope *scope=style_runtime_text_current();
+    if(!scope || !scope->window || !scope->context || !scope->font_recipe)return FALSE;
+    return style_font_cache_decode(scope->context,dc,input,count,decoded,
         (style_font_glyph_range){1252,32,224});
 }

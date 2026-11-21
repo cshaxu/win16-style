@@ -42,9 +42,9 @@ bool msstyles_theme_file_write(FILE *output,const char *display_name,const char 
     for(const unsigned char *p=(const unsigned char *)stem;*p;++p)
         if(!token(*p))return false;
 
-    return fprintf(output,"[Theme]\r\nDisplayName=%s\r\n\r\n"
+    return fprintf(output,"[Theme]\r\nDisplayName=%s\r\nCompatibilityFolder=%s\r\n\r\n"
                "[Control Panel\\Desktop]\r\nTileWallpaper=0\r\n\r\n"
-               "[VisualStyles]\r\nPath=%s.msstyles\r\nColorStyle=",display_name,stem)>=0 &&
+               "[VisualStyles]\r\nPath=%s.msstyles\r\nColorStyle=",display_name,stem,stem)>=0 &&
         write_token(output,variant->color) &&
         fputs("\r\nSize=",output)!=EOF && write_token(output,variant->size) &&
         fprintf(output,"\r\n\r\n[WindowAttachment]\r\nVersion=1\r\n"
@@ -125,6 +125,8 @@ bool msstyles_theme_file_read(FILE *input,msstyles_theme_descriptor *descriptor)
             if(display_seen)parsed.display_name[0]=0;
             else read_display_name(parsed.display_name,line+12);
             display_seen=true;
+        }else if(theme && !strncmp(line,"CompatibilityFolder=",20)){
+            if(!copy_token(parsed.compatibility_folder,line+20,""))return false;
         }else if(visual){
             char *value=strchr(line,'=');
             if(value){

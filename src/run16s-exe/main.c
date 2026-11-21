@@ -88,8 +88,8 @@ int wmain(int argc,WCHAR **argv)
     if(FAILED(loaded))return diagnostic(6,HRESULT_CODE(loaded),L"theme load");
     unsigned hosts=source.hosts.enabled;
     classic_theme_close(&source);
-    BOOL win2k=family==CLASSIC_THEME_WIN2K;
     unsigned theme_id=classic_theme_folder_id(theme);
+    const classic_theme_selection selection={theme_id,family};
     WCHAR resolved_folder[MAX_PATH];
     loaded=classic_theme_profile_folder(launcher,theme_id,resolved_folder);
     if(FAILED(loaded))return diagnostic(6,HRESULT_CODE(loaded),L"theme identity");
@@ -107,7 +107,7 @@ int wmain(int argc,WCHAR **argv)
         return diagnostic(10,ERROR_NOT_SUPPORTED,L"theme window attachment for this target");
     BOOL uwp_handled=FALSE;
     error=run16s_uwp_command(image,win32_process_next_argument(raw),FALSE,
-        (classic_theme_selection){theme_id,family},&uwp_handled);
+        selection,&uwp_handled);
     if(error||uwp_handled)return error?diagnostic(10,error,L"UWP frame activation"):0;
     error=win32_process_image_validate_ex(image,IMAGE_FILE_MACHINE_AMD64,FALSE,&subsystem);
     if(error==ERROR_BAD_EXE_FORMAT)error=win32_process_image_validate_ex(image,IMAGE_FILE_MACHINE_I386,FALSE,&subsystem);
@@ -125,8 +125,8 @@ int wmain(int argc,WCHAR **argv)
     BOOL wait=subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI;
     error=style_startup_paths(&context,NULL);if(error)return diagnostic(6,error,L"package directory");
     wcscpy(context.module,L"ntwshk");
-    if(win2k)context.flags|=STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE;
-    context.flags|=theme_id<<STYLE_STARTUP_PROFILE_SHIFT;
+    context.flags=style_startup_with_selection(context.flags,
+        (style_startup_selection){selection.id,(unsigned)selection.family});
     command=_wcsdup(raw);if(!command)return diagnostic(5,ERROR_NOT_ENOUGH_MEMORY,L"command allocation");
     if(win32_process_create(image,command,NULL,NULL,FALSE,CREATE_SUSPENDED,NULL,NULL,&startup,&child))error=ERROR_SUCCESS;
     else{error=GetLastError();if(!error)error=ERROR_GEN_FAILURE;}
@@ -160,8 +160,8 @@ int wmain(int argc,WCHAR **argv)
         if(attached && attached!=ERROR_NOT_FOUND && attached!=ERROR_PROCESS_ABORTED)
             diagnostic(0,attached,L"console window attachment");
     }
-    else if((hosts&MSSTYLES_HOST_CONSOLE) && subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI){
-        DWORD attached=run16s_console_host_attach_current(context.directory);
+    else if((hosts&(MSSTYLES_HOST_CONSOLE|MSSTYLES_HOST_TERMINAL)) && subsystem==IMAGE_SUBSYSTEM_WINDOWS_CUI){
+        DWORD attached=run16s_console_host_attach_current(context.directory,hosts);
         if(attached && attached!=ERROR_NOT_FOUND)
             diagnostic(0,attached,L"terminal window attachment");
     }

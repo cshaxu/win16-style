@@ -5,11 +5,11 @@
 
 typedef struct style_font_glyph_map {WCHAR chars[224];WORD glyphs[224];BOOL valid;} style_font_glyph_map;
 
-HFONT style_font_cache_get(style_font_cache *cache,HFONT source,const style_font_ops *ops)
+HFONT style_font_cache_get(style_font_cache *cache,HFONT source,unsigned recipe,const style_font_ops *ops)
 {
     for(unsigned i=0;i<cache->count;++i)if(cache->source[i]==source)return cache->font[i];
     if(cache->count==ARRAYSIZE(cache->font))return NULL;
-    HFONT font=ops->acquire(source);
+    HFONT font=ops->acquire(source,recipe);
     if(font){cache->ops=ops;cache->source[cache->count]=source;cache->font[cache->count++]=font;}
     return font;
 }
@@ -41,7 +41,7 @@ BOOL style_font_cache_decode(style_font_cache *cache,HDC dc,const WCHAR *input,U
     return TRUE;
 }
 
-HFONT style_font_snapshot_borrow(style_font_snapshot_cache *cache,HDC dc,void *owner,void **token,const style_font_ops *ops)
+HFONT style_font_snapshot_borrow(style_font_snapshot_cache *cache,HDC dc,void *owner,void **token,unsigned recipe,const style_font_ops *ops)
 {
     HFONT source;LOGFONTW log={0};TEXTMETRICW tm={0};int widths[96]={0};
     source=(HFONT)GetCurrentObject(dc,OBJ_FONT);
@@ -55,7 +55,7 @@ HFONT style_font_snapshot_borrow(style_font_snapshot_cache *cache,HDC dc,void *o
     if(changed){
         if(cache->borrows)return NULL;
         ops->release(cache->font);cache->font=NULL;cache->source=NULL;
-        cache->invalid=FALSE;HFONT replacement=ops->acquire(source);if(!replacement)return NULL;
+        cache->invalid=FALSE;HFONT replacement=ops->acquire(source,recipe);if(!replacement)return NULL;
         cache->source=source;cache->font=replacement;cache->log=log;cache->metrics=tm;memcpy(cache->widths,widths,sizeof(widths));
     }
     if(!cache->font || cache->borrows==UINT_MAX)return NULL;

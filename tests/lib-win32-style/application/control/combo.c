@@ -11,13 +11,13 @@ static HWND list;
 static lease *find(HFONT font)
 {for(unsigned i=acquired;i>0;--i)if(fonts[i-1].font==font)return &fonts[i-1];return NULL;}
 static HFONT source(HFONT font){lease *item=find(font);return item?item->source:font;}
-static HFONT acquire(HFONT original)
-{
+static HFONT acquire(HFONT original,unsigned recipe)
+{(void)recipe;
     if(acquired==ARRAYSIZE(fonts))return NULL;
     HFONT font=CreateFontW(-12-(int)acquired,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,0,0,0,0,L"Arial");if(!font)return NULL;
     fonts[acquired++]=(lease){font,original,1};++live;return font;
 }
-static HFONT acquire_root(HWND w,HFONT font,BOOL native){(void)w;(void)native;return acquire(font);}
+static HFONT acquire_root(HWND w,HFONT font,BOOL native,unsigned recipe){(void)recipe;(void)w;(void)native;return acquire(font,0);}
 static void retain(HFONT font){lease *item=find(font);if(item)++item->refs;}
 static void release(HFONT font)
 {lease *item=find(font);if(item){if(!item->refs){invalid_release=TRUE;return;}if(!--item->refs){DeleteObject(item->font);--live;}}}

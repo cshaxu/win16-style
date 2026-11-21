@@ -2,7 +2,7 @@
 
 void win16_style_bar_paint(const style_menu_bar_snapshot *bar,HDC dc,HFONT font,UINT dpi,
     const win16_style_palette *palette,const classic_menu_colors *colors,const classic_menu_metrics *metrics,
-    const classic_caption_art *art)
+    const classic_caption_art *art,const style_caption_presentation *presentation)
 {
     UINT i;
     for(i=0;i<bar->count;++i){
@@ -12,8 +12,14 @@ void win16_style_bar_paint(const style_menu_bar_snapshot *bar,HDC dc,HFONT font,
         if(bar->items[i].owner_draw){
             if(!style_menu_bar_draw_owned(bar,i,dc))return;
         }
-        else if(bar->items[i].control)win16_style_merged_control(dc,bar->rects[i],bar->items[i].control==HBMMENU_SYSTEM,
-            (state&ODS_SELECTED)!=0,max(1,MulDiv(1,(int)dpi,96)),palette,art);
+        else if(bar->items[i].control){
+            unsigned role=win16_menu_mdi_role(bar->items[i].control);
+            unsigned inactive=metrics && metrics->mdi_inactive?metrics->mdi_inactive:CLASSIC_MDI_ALL;
+            UINT flags=(state&ODS_SELECTED)?DFCS_PUSHED:0;
+            if((state&ODS_DISABLED) && (inactive&role))flags|=DFCS_INACTIVE;
+            win16_style_merged_control(dc,bar->rects[i],role,flags,
+                max(1,MulDiv(1,(int)dpi,96)),palette,art,presentation);
+        }
         else {
             win16_style_menu_columns columns={0};
             if(win16_style_menu_columns_read(dc,font,dpi,bar->items[i].text,&columns))

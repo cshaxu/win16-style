@@ -26,5 +26,4 @@ extern const style_global_start_config ntw16s_global_start_config;
 extern const style_global_attach_config ntw16s_global_attach_config;
 extern const style_global_manager_config ntw16s_global_manager_config;
 BOOL ntw16s_global_policy_active(DWORD cookie);
-BOOL ntw16s_global_policy_style(DWORD cookie,DWORD style);
 #endif

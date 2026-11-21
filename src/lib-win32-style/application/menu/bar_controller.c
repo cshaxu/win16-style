@@ -196,7 +196,7 @@ BOOL style_menu_bar_input(const style_menu_bar_target *t,UINT message,WPARAM wp,
     }
     return FALSE;
 }
-LRESULT style_menu_bar_system(const style_menu_bar_target *t,RECT button,BOOL navigate,UINT message,WPARAM wp,LPARAM lp)
+static LRESULT system_menu(const style_menu_bar_target *t,RECT button,BOOL navigate,WPARAM wp,LPARAM lp)
 {
     style_menu_tracking tracking={.window=t->window,.button=button,.armed=TRUE};
     if(navigate){
@@ -204,7 +204,7 @@ LRESULT style_menu_bar_system(const style_menu_bar_target *t,RECT button,BOOL na
         tracking.context=(void *)t;tracking.hit=hit;tracking.selected=STYLE_MENU_SYSTEM_ITEM;tracking.target=STYLE_MENU_NO_ITEM;
     }
     BOOL linked=style_menu_tracking_begin(&tracking,WH_GETMESSAGE,style_menu_tracking_input);
-    LRESULT result=DefSubclassProc(t->window,message,wp,lp);
+    LRESULT result=DefSubclassProc(t->window,WM_SYSCOMMAND,wp,lp);
     if(linked)style_menu_tracking_end(&tracking);
     if(tracking.root){
         t->owner->bar.direction=tracking.direction;t->owner->bar.hover=tracking.target;
@@ -212,4 +212,21 @@ LRESULT style_menu_bar_system(const style_menu_bar_target *t,RECT button,BOOL na
     }
     if(tracking.double_click && live(t))PostMessageW(t->window,WM_NCLBUTTONDBLCLK,HTSYSMENU,tracking.point);
     return result;
+}
+
+BOOL style_menu_bar_needs_system_button(HWND window)
+{
+    MENUBARINFO menu={.cbSize=sizeof(menu)};
+    return GetMenuBarInfo(window,OBJID_SYSMENU,0,&menu) && IsRectEmpty(&menu.rcBar);
+}
+
+BOOL style_menu_bar_caption_key(const style_menu_bar_target *t,RECT button,WPARAM wp,LPARAM lp,LRESULT *result)
+{
+    const style_menu_bar_state *state=&t->owner->bar;
+    BOOL navigate=state->keyboard && state->selected==STYLE_MENU_SYSTEM_ITEM;
+    RECT outer;
+    if(IsRectEmpty(&button) || (!navigate && !style_menu_bar_needs_system_button(t->window)) ||
+       !GetWindowRect(t->window,&outer))return FALSE;
+    OffsetRect(&button,outer.left,outer.top);
+    *result=system_menu(t,button,navigate,wp,lp);return TRUE;
 }

@@ -16,6 +16,17 @@ static UINT command(style_scroll_part part)
     }
 }
 
+void style_scroll_repeat_configure(style_scroll_policy *policy,UINT initial_ms,UINT repeat_ms)
+{
+    if(!initial_ms){
+        UINT system=GetDoubleClickTime()*4/5;
+        initial_ms=max(1,system);
+        repeat_ms=max(1,system/8);
+    }
+    policy->initial_repeat_ms=initial_ms;
+    policy->repeat_ms=repeat_ms;
+}
+
 BOOL style_scroll_begin(style_scroll_track *t,const style_scroll_layout *l,
     UINT disabled,POINT point,const RECT *limit,style_scroll_actions *a,const style_scroll_policy *policy)
 {

@@ -1,5 +1,4 @@
 #include "session.h"
-#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 /* Product namespace/protocol binding. active/style adapt the callback
  * signatures used by appearance and startup policy; no session state or
  * lifecycle algorithm is owned here. */
@@ -17,10 +16,3 @@ const style_global_start_config ntw16s_global_start_config={
 };
 BOOL ntw16s_global_policy_active(DWORD cookie)
 {return style_global_policy_active(&ntw16s_global_namespace,cookie);}
-BOOL ntw16s_global_policy_style(DWORD cookie,DWORD style)
-{
-    DWORD current;
-    classic_theme_selection selection;
-    return style_global_policy_current(&ntw16s_global_namespace,cookie,&current) &&
-        classic_theme_decode_selection(current,&selection) && (DWORD)selection.family==style;
-}

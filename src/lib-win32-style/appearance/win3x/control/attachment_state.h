@@ -21,12 +21,15 @@ typedef struct attachment {
     win16_runtime_push push;
     classic_bar_colors grip;
     COLORREF calendar_selection;
+    unsigned calendar_font_dpi,calendar_font_points;
+    unsigned control_font_points;
     COLORREF status_edge;
     COLORREF date_button_face;
     HFONT month_cached_font;style_font_snapshot_cache status_font;
     style_font_cache fonts;
     /* Appended only to attachments whose native role is a rich month control. */
-    style_scroll_arrow_art month_arrows[];
+    classic_combo_arrow_art combo_arrow;
+    style_scroll_arrow_art arrows[];
 } attachment;
 typedef struct win16_attachment_guard_services {
     BOOL (*host_attached)(HWND);

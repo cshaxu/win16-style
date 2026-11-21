@@ -10,7 +10,9 @@ import re
 from pathlib import Path
 import stat
 import struct
+import subprocess
 import sys
+import zlib
 
 sys.dont_write_bytecode = True
 
@@ -118,6 +120,155 @@ def verify_theme(path):
         assert "PACKTHEM_VERSION".encode("utf-16-le") in raw, path
 
 
+def png_pixels(data, width, height):
+    assert data[:8] == b'\x89PNG\r\n\x1a\n'
+    assert struct.unpack_from('>I4sIIBBBBB', data, 8) == (13, b'IHDR', width, height, 8, 2, 0, 0, 0)
+    chunks = []
+    offset = 8
+    while offset < len(data):
+        length, kind = struct.unpack_from('>I4s', data, offset)
+        end = offset+8+length
+        assert end+4 <= len(data)
+        checksum, = struct.unpack_from('>I', data, end)
+        assert zlib.crc32(data[offset+4:end]) == checksum
+        if kind == b'IDAT':
+            chunks.append(data[offset+8:end])
+        offset = end+4
+        if kind == b'IEND':
+            assert not length and offset == len(data)
+            break
+    else:
+        raise AssertionError('PNG lacks IEND')
+    stride = width*3
+    size = (stride+1)*height
+    inflater = zlib.decompressobj()
+    decoded = inflater.decompress(b''.join(chunks), size+1)
+    assert len(decoded) == size and inflater.eof and not inflater.unused_data
+    last = bytearray(stride)
+    pixels = bytearray()
+    for offset in range(0, len(decoded), stride+1):
+        mode = decoded[offset]
+        assert 0 <= mode <= 4
+        row = bytearray(decoded[offset+1:offset+1+stride])
+        for x in range(stride):
+            left = row[x-3] if x >= 3 else 0
+            up = last[x]
+            corner = last[x-3] if x >= 3 else 0
+            predictor = 0
+            if mode == 1:
+                predictor = left
+            elif mode == 2:
+                predictor = up
+            elif mode == 3:
+                predictor = (left+up)//2
+            elif mode == 4:
+                estimate = left+up-corner
+                predictor = min((left, up, corner), key=lambda value: abs(estimate-value))
+            row[x] = (row[x]+predictor) & 255
+        pixels.extend(row)
+        last = row
+    return pixels
+
+
+def verify_original_theme_art(path, tables):
+    # Map the PE as data. These bytes are the resources the renderer consumes.
+    api = ctypes.WinDLL('kernel32', use_last_error=True)
+    pointer, word = ctypes.c_void_p, ctypes.c_uint32
+    functions = (
+        ('LoadLibraryExW', pointer, [ctypes.c_wchar_p, pointer, word]),
+        ('FindResourceW', pointer, [pointer, pointer, pointer]),
+        ('LoadResource', pointer, [pointer, pointer]),
+        ('SizeofResource', word, [pointer, pointer]),
+        ('LockResource', pointer, [pointer]),
+        ('FreeLibrary', ctypes.c_int, [pointer]),
+    )
+    for name, result, arguments in functions:
+        function = getattr(api, name)
+        function.restype, function.argtypes = result, arguments
+
+    module = api.LoadLibraryExW(str(path), None, 0x22)
+    assert module, path
+
+    def key(value):
+        if isinstance(value, int):
+            return pointer(value)
+        return ctypes.cast(ctypes.c_wchar_p(value), pointer)
+
+    def resource(kind, name):
+        entry = api.FindResourceW(module, key(name), key(kind))
+        assert entry, f'missing {kind}:{name} in {path}'
+        data = api.LoadResource(module, entry)
+        length = api.SizeofResource(module, entry)
+        assert data and length, name
+        address = api.LockResource(data)
+        assert address, name
+        return ctypes.string_at(address, length)
+
+    def image(image_id, rows, palette):
+        height, width = len(rows), len(rows[0])
+        expected = bytes(palette[int(role)] for row in rows for role in row for _ in range(3))
+        assert png_pixels(resource('IMAGE', image_id), width, height) == expected, f'IMAGE:{image_id}'
+
+    try:
+        normal, pressed = (0, 255, 128, 192), (255, 0, 192, 128)
+        frame = tables['frame_buttons']
+        for index in range(6):
+            image(501+index, frame[18*index:18*(index+1)], normal)
+        system = tables['system_menu_bitmap']
+        for index in range(2):
+            rows = [row[18*index:18*(index+1)] for row in system]
+            normal_id, pressed_id = ((507, 508), ('CLASSIC_CHILD_SYSTEM', 'CLASSIC_CHILD_SYSTEM_PRESSED'))[index]
+            image(normal_id, rows, normal)
+            image(pressed_id, rows, pressed)
+        image(511, tables['menu_check'], normal)
+        image(512, tables['menu_arrow'], normal)
+        checks = tables['control_checks']
+        for index in range(12):
+            top, left = (index//4)*13, (index%4)*14
+            image(513+index, [row[left:left+14] for row in checks[top:top+13]], normal)
+
+        combo = bytes(sum((value == '0') << x for x, value in enumerate(row))
+                      for row in tables['combo_arrow'])
+        assert resource(10, 'CLASSIC_COMBO_ARROW') == b'CAR\x01'+combo
+        arrows = resource(10, 'CLASSIC_SCROLL_ARROWS')
+        assert arrows[:5] == b'SAR\x01\x01' and len(arrows) == 5+12*73
+        for index, suffix in enumerate(stem+state for state in ('', 'd', 'i')
+                                       for stem in ('uparrow', 'dnarrow', 'lfarrow', 'rgarrow')):
+            expected = ''.join(tables['scroll_'+suffix])
+            packed = arrows[5+index*73:5+(index+1)*73]
+            actual = ''.join(str((packed[pixel//4] >> (2*(pixel%4))) & 3)
+                             for pixel in range(17*17))
+            assert actual == expected and packed[-1] <= 3, suffix
+    finally:
+        assert api.FreeLibrary(module)
+    return 24, 13
+
+
+def verify_runtime_symbols(path, tree, architecture, standalone):
+    cache = (tree/'CMakeCache.txt').read_text(encoding='utf-8')
+    match = re.search(r'^CMAKE_NM:FILEPATH=(.+)$', cache, re.M)
+    assert match, f'missing build symbol reader for {tree}'
+    output = subprocess.check_output([match[1], '--defined-only', str(path)], text=True)
+    symbols = {line.split()[-1] for line in output.splitlines() if line.strip()}
+    if architecture == 'x86':
+        symbols = {re.sub(r'@[0-9]+$', '', symbol.removeprefix('_')) for symbol in symbols}
+    # GCC can keep a retired static function as a specialized local clone.
+    symbols = {symbol.split('.', 1)[0] for symbol in symbols}
+    required = {'classic_theme_read', 'classic_theme_open_folder'}
+    missing = required - symbols
+    assert not missing, f'missing external theme loader in {path}: {sorted(missing)}'
+    retired = {
+        'classic_theme_open_packaged', 'legacy_common_control_profiles', 'legacy_profile',
+        'open_embedded', 'open_legacy_packaged', 'open_frame_profile',
+        'compatibility_dialog_policy', 'classic_sources',
+        'win2k_caption_system_buttons', 'win2k_caption_render',
+    } | standalone
+    if path.suffix.lower() == '.exe':
+        retired |= {'style_caption_render', 'style_caption_button_paint'}
+    found = retired & symbols
+    assert not found, f'retired implementation linked into {path}: {sorted(found)}'
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('package', type=Path)
@@ -132,6 +283,7 @@ def main():
                 for component in contract['components'] for artifact in component['artifacts']}
     assert expected == {'run16s.exe': 'x64', 'ntwshk32.dll': 'x86', 'ntwshk64.dll': 'x64'}
     themes = set(contract['themes'])
+    standalone = set(contract['standalone_only_exports'])
     assert themes == {f'{name}/{name}.{extension}'
                       for name in ('Win16', 'Win2K') for extension in ('theme', 'msstyles')}
     assert args.task > 0
@@ -141,8 +293,8 @@ def main():
     spec.loader.exec_module(core)
     license_bytes = (root/'LICENSE').read_bytes()
     minhook_license = (root/'src/lib-win32/process-hook/minhook/LICENSE.txt').read_bytes()
-    # Independently read the retained C atlas rows and require those exact
-    # compiled tables, plus provenance, in both DLLs. No visual substitute.
+    # The original atlas is shipped through the theme resources. Provenance
+    # remains in the runtime's legal notices resource.
     glyph_tables = {}
     glyph_paths = {
         'frame_buttons.h': 'src/lib-win32-style/appearance/win3x/resources/frame_buttons.h',
@@ -158,7 +310,7 @@ def main():
         for symbol, body in arrays:
             rows = re.findall(r'"([0-3]+)"', body)
             assert rows and symbol not in glyph_tables
-            glyph_tables[symbol] = b''.join(row.encode('ascii')+b'\0' for row in rows)
+            glyph_tables[symbol] = rows
     assert len(glyph_tables) == 18, 'incomplete original resource atlas'
     provenance = (root/'src/ntw16s-dll/resources.md').read_bytes()
     result = {}
@@ -172,7 +324,8 @@ def main():
             assert minhook_license in raw, 'MinHook/HDE license missing from '+name
             assert provenance in raw, 'original resource provenance missing from '+name
             for symbol, data in glyph_tables.items():
-                assert data in raw, 'original resource table missing/changed: '+name+':'+symbol
+                compiled = b''.join(row.encode('ascii')+b'\0' for row in data)
+                assert compiled not in raw, 'original resource table linked into '+name+':'+symbol
             machine, public, imports, digest, ordinals, live = core.inspect(path)
             pe = struct.unpack_from('<I', raw, 60)[0]
             assert struct.unpack_from('<H', raw, pe+22)[0] & 0x2000, 'DLL flag missing'
@@ -183,6 +336,8 @@ def main():
                        for definition in definitions
                        for line in (root/'src'/definition).read_text().splitlines()
                        if line.startswith('    ') and 'NONAME' not in line}
+            assert standalone <= exports
+            exports.difference_update(standalone)
             if arch == 'x64': exports.add('process_hook_unwind_handler')
             assert set(public) == exports and live-set(ordinals.values()) == {1}
             assert {n.lower() for n in imports if not core.system_crt(n)} == {
@@ -198,6 +353,7 @@ def main():
             digest = hashlib.sha256(raw).hexdigest()
         if args.built_root:
             assert hashlib.sha256((args.built_root/arch/name).read_bytes()).hexdigest() == digest, 'mixed build'
+            verify_runtime_symbols(path, args.built_root/arch, arch, standalone)
         result[name] = dict(architecture=arch, version='M0 T'+str(args.task), sha256=digest, imports=imports)
     theme_artifacts = {}
     for name in sorted(themes):
@@ -207,8 +363,10 @@ def main():
         if args.built_root:
             assert hashlib.sha256((args.built_root/'x64'/name).read_bytes()).hexdigest() == digest, 'mixed theme build'
         theme_artifacts[name] = digest
+    images, masks = verify_original_theme_art(package/'Win16/Win16.msstyles', glyph_tables)
     print(json.dumps(dict(status='PACKAGE PASS', artifacts=result, theme_artifacts=theme_artifacts,
-                          original_resource_tables_per_ntwshk_dll=len(glyph_tables)), indent=2))
+                          original_theme_images=images, original_theme_masks=masks,
+                          original_resource_tables_per_ntwshk_dll=0), indent=2))
 
 
 if __name__ == '__main__':

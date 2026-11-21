@@ -9,6 +9,7 @@ typedef struct style_runtime_text_scope {
     struct style_runtime_text_scope *previous,*native_previous;
     HWND native_window;HDC native_dc;BOOL native_active;
     HWND window;void *context;BOOL active,report,label_only;
+    unsigned font_recipe;
     HDC report_dc;HMODULE report_module;const BOOL *cancelled;
 } style_runtime_text_scope;
 typedef struct style_runtime_text_role {HWND window;BOOL label_only;} style_runtime_text_role;

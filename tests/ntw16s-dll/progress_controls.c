@@ -40,11 +40,15 @@ static void save_progress(HWND w,unsigned aware,unsigned state)
 }
 static unsigned count_color(const DWORD *bits,RECT r,COLORREF color)
 {unsigned found=0;DWORD rgb=((color&255)<<16)|(color&0xff00)|((color>>16)&255);for(int y=r.top;y<r.bottom;++y)for(int x=r.left;x<r.right;++x)found+=(bits[y*320+x]&0xffffff)==rgb;return found;}
-static int child(BOOL styled,BOOL aware)
+static int child(BOOL styled,BOOL aware,int theme_edge)
 {
     CHECK(ImmDisableIME(0));if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
     INITCOMMONCONTROLSEX init={sizeof(init),ICC_PROGRESS_CLASS};CHECK(InitCommonControlsEx(&init));
     HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");CHECK(styled?dll!=NULL:dll==NULL);
+    if(theme_edge){
+        dll=GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll");CHECK(dll);
+        styled=TRUE;
+    }
     attached=dll?(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL;remove_style=dll?(void*)GetProcAddress(dll,"Ntw16sWindowRemove"):NULL;if(styled)CHECK(attached && remove_style);
     WNDCLASSW parent={.lpfnWndProc=DefWindowProcW,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"ProgressProtocolParent"};CHECK(RegisterClassW(&parent));
     HWND root=CreateWindowW(parent.lpszClassName,L"progress protocol",WS_OVERLAPPEDWINDOW,0,0,640,280,NULL,NULL,parent.hInstance,NULL);CHECK(root);ShowWindow(root,SW_SHOWNORMAL);
@@ -52,6 +56,29 @@ static int child(BOOL styled,BOOL aware)
     dc=CreateCompatibleDC(NULL);BITMAPINFO info={0};info.bmiHeader.biSize=40;info.bmiHeader.biWidth=320;info.bmiHeader.biHeight=-96;info.bmiHeader.biPlanes=1;info.bmiHeader.biBitCount=32;bitmap=CreateDIBSection(dc,&info,DIB_RGB_COLORS,(void**)&pixels,NULL,0);CHECK(dc&&bitmap);previous=SelectObject(dc,bitmap);
     if(styled){WCHAR module_path[32768];CHECK(attached(root) && GetModuleFileNameW(dll,module_path,32768));
         printf("PROGRESS_MODULE bits=%u pid=%lu path=%ls bootstrap_frame_attached=1\n",(unsigned)sizeof(void*)*8,GetCurrentProcessId(),module_path);}
+    if(theme_edge){
+        HWND edge=CreateWindowExW(WS_EX_STATICEDGE,L"TProgressBar",L"",WS_CHILD|WS_VISIBLE|PBS_SMOOTH,
+            0,0,300,30,root,NULL,parent.hInstance,NULL);
+        CHECK(edge && SendMessageW(edge,PBM_GETSTATE,0,0)==0);
+        CHECK(attached(edge)==(theme_edge==1));
+        SendMessageW(edge,PBM_SETRANGE32,0,100);
+        SendMessageW(edge,PBM_SETPOS,42,0);
+        capture(edge,classic_pixels,TRUE);
+        if(theme_edge==1)CHECK(remove_style(edge) && !attached(edge));
+        capture(edge,native_pixels,TRUE);
+        RECT outer,client;POINT origin={0,0};
+        CHECK(GetWindowRect(edge,&outer) && GetClientRect(edge,&client) && ClientToScreen(edge,&origin));
+        int left=origin.x-outer.left,top=origin.y-outer.top;
+        unsigned border_diff=0,client_diff=0;
+        for(int y=0;y<outer.bottom-outer.top;++y)for(int x=0;x<outer.right-outer.left;++x){
+            if((native_pixels[y*320+x]&0xffffff)==(classic_pixels[y*320+x]&0xffffff))continue;
+            if(x>=left && x<left+client.right && y>=top && y<top+client.bottom)++client_diff;
+            else ++border_diff;
+        }
+        CHECK(!client_diff && (!!border_diff==(theme_edge==1)) && SendMessageW(edge,PBM_GETPOS,0,0)==42);
+        printf("PROGRESS_THEME_EDGE bits=%u border=%u client=%u position=42\n",(unsigned)sizeof(void*)*8,border_diff,client_diff);
+        CHECK(DestroyWindow(root)&&SelectObject(dc,previous)&&DeleteObject(bitmap)&&DeleteDC(dc));return 0;
+    }
     unsigned supported=0,fallback=0;const WCHAR *classes[]={PROGRESS_CLASSW,L"TProgressBar"};
     for(unsigned kind=0;kind<2;++kind)for(unsigned vertical=0;vertical<2;++vertical)for(unsigned smooth=0;smooth<2;++smooth){
         DWORD style=WS_CHILD|WS_VISIBLE|(vertical?PBS_VERTICAL:0)|(smooth?PBS_SMOOTH:0)|((kind&&smooth)?PBS_SMOOTHREVERSE:0);int width=vertical?36:300,height=vertical?80:30;
@@ -134,4 +161,12 @@ static int worker(int argc,WCHAR **argv)
     puts("PROGRESS_CLEANUP_OK");return 0;
 }
 int wmain(int argc,WCHAR **argv)
-{if(argc==3 && !wcscmp(argv[1],L"--child"))return child(!wcsncmp(argv[2],L"styled",6),wcsstr(argv[2],L"aware")!=NULL);return isolated_process(argc,argv,worker);}
+{
+    if(argc==3 && !wcscmp(argv[1],L"--theme-edge")){
+        if(!wcscmp(argv[2],L"outline"))return child(FALSE,FALSE,1);
+        if(!wcscmp(argv[2],L"native"))return child(FALSE,FALSE,2);
+        return 2;
+    }
+    if(argc==3 && !wcscmp(argv[1],L"--child"))return child(!wcsncmp(argv[2],L"styled",6),wcsstr(argv[2],L"aware")!=NULL,0);
+    return isolated_process(argc,argv,worker);
+}

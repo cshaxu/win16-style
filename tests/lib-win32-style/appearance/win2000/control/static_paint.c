@@ -34,8 +34,40 @@ static INT_PTR CALLBACK dialog_proc(HWND window,UINT message,WPARAM a,LPARAM b)
         if(modal)EndDialog(window,73);else DestroyWindow(window);return TRUE;}
     return FALSE;
 }
+static int separator_fingerprints(void)
+{
+    HINSTANCE instance=GetModuleHandleW(NULL);
+    WNDCLASSW cls={.lpfnWndProc=parent_proc,.hInstance=instance,.lpszClassName=L"OwnedSeparatorThemeTest"};
+    CHECK(RegisterClassW(&cls));
+    HWND parent=CreateWindowExW(WS_EX_TOOLWINDOW|WS_EX_NOACTIVATE,cls.lpszClassName,L"",
+        WS_OVERLAPPEDWINDOW|WS_VISIBLE,-10000,-10000,300,180,NULL,NULL,instance,NULL);
+    CHECK(parent);
+    HDC dc=CreateCompatibleDC(NULL);
+    void *pixels;
+    BITMAPINFO info={.bmiHeader={sizeof(BITMAPINFOHEADER),100,-32,1,32,BI_RGB}};
+    HBITMAP bitmap=CreateDIBSection(dc,&info,DIB_RGB_COLORS,&pixels,NULL,0);
+    CHECK(dc && bitmap);
+    HGDIOBJ old=SelectObject(dc,bitmap);
+    CHECK(old && old!=HGDI_ERROR);
+    const DWORD types[]={SS_ETCHEDHORZ,SS_ETCHEDVERT,SS_ETCHEDFRAME};
+    for(unsigned i=0;i<ARRAYSIZE(types);++i){
+        HWND window=CreateWindowW(L"STATIC",L"",WS_CHILD|WS_VISIBLE|types[i],
+            0,0,100,32,parent,(HMENU)(UINT_PTR)(10+i),instance,NULL);
+        RECT client,outer;
+        CHECK(window && GetClientRect(window,&client) && GetWindowRect(window,&outer));
+        PatBlt(dc,0,0,100,32,BLACKNESS);
+        SendMessageW(window,WM_PRINT,(WPARAM)dc,PRF_CLIENT|PRF_NONCLIENT);
+        printf("SEPARATOR_THEME type=%lu client=%ldx%ld outer=%ldx%ld pixels=%08lx\n",
+            types[i],client.right,client.bottom,outer.right-outer.left,outer.bottom-outer.top,hash(dc));
+        CHECK(DestroyWindow(window));
+    }
+    CHECK(DestroyWindow(parent) && SelectObject(dc,old) && DeleteObject(bitmap) && DeleteDC(dc));
+    return 0;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==2 && !wcscmp(argv[1],L"--separator-fingerprints"))return separator_fingerprints();
     CHECK(argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware")||!wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3&&!wcscmp(argv[2],L"aware");hooked=argc==3&&!wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));

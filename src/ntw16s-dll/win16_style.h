@@ -15,6 +15,10 @@
  */
 NTW16S_API void win16_style_default_palette(win16_style_palette *palette);
 NTW16S_API BOOL win16_style_install(HWND window, const win16_style_palette *palette);
+#ifdef NTWSHK_UNIFIED
+/* Compatibility callers select a theme before installing a leaf. */
+BOOL ntw16s_explicit_install_allowed(HWND window,const win16_style_palette *palette);
+#endif
 /* DLL-private automatic-creation entry. Hidden normal frames must not force
  * WM_SIZE before their creator has returned and initialized client state. */
 BOOL win16_style_install_created(HWND window,const win16_style_palette *palette,const void *owner,const BOOL *cancelled);

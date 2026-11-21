@@ -43,8 +43,7 @@ BOOL win16_style_trackbar_part(HWND w,const NMCUSTOMDRAW *draw,const void *conte
         .face=colors->present?colors->thumb:palette->face,.light=palette->light,
         .highlight=palette->light,.shadow=palette->shadow,.dark=colors->present?colors->edge:palette->edge
     };
-    style_trackbar_profile profile=control->controls.trackbar?control->controls.trackbar:STYLE_TRACKBAR_OUTLINED;
     return style_trackbar_paint(draw->hdc,r,style,GetDpiForWindow(w),draw->dwItemSpec==TBCD_CHANNEL,
-        (draw->uItemState&CDIS_SELECTED)!=0,!IsWindowEnabled(w),profile,
+        (draw->uItemState&CDIS_SELECTED)!=0,!IsWindowEnabled(w),control->controls.trackbar,
         colors->present?colors->channel:palette->light,&paint);
 }

@@ -53,9 +53,11 @@ int main(void)
     CHECK(SendMessageW(owner,WM_APP,0,0)==42 && f.messages==1);
     SendMessageW(owner,WM_SIZE,0,0);CHECK(f.refreshed==1 && f.messages==2 && f.host.instance.calls==1);
     SendMessageW(title,WM_SHOWWINDOW,TRUE,0);CHECK(f.refreshed==2 && f.host.instance.calls==1);
+    SendMessageW(owner,WM_SETTINGCHANGE,SPI_SETHIGHCONTRAST,0);CHECK(f.refreshed==3);
+    SendMessageW(owner,WM_SYSCOLORCHANGE,0,0);CHECK(f.refreshed==4);
     style_instance_retain(&f.host.instance);
     f.detach_on_refresh=TRUE;SendMessageW(title,WM_SHOWWINDOW,TRUE,0);
-    CHECK(f.host.instance.detached && f.refreshed==3 && f.order && f.before==1 && f.after==1 && !IsWindow(surface));
+    CHECK(f.host.instance.detached && f.refreshed==5 && f.order && f.before==1 && f.after==1 && !IsWindow(surface));
     CHECK(style_uwp_host_detach(&f.host) && f.before==1 && f.after==1);
     style_instance_release(&f.host.instance);CHECK(!f.disposed);
     style_instance_release(&f.host.instance);CHECK(f.disposed==1);

@@ -4,12 +4,14 @@
 #include "control_class.h"
 #include <commctrl.h>
 #include <stdlib.h>
-static HFONT acquire_font(HWND w,HFONT source,BOOL native)
+static HFONT acquire_font(HWND w,HFONT source,BOOL native,unsigned points)
 {
+    if(!points)return source;
     BOOL vb=!native && (style_control_vb_frame(w) || style_control_vb_edit(w) || style_control_vb_button(w) || style_control_vb_combo(w) || style_control_vb_list(w));
-    return vb?win16_style_vb_font_acquire(source):win16_style_system_acquire(source);
+    return vb?win16_style_vb_font_acquire(source,points):win16_style_system_acquire(source,points);
 }
 static const style_control_fonts font_operations={win16_style_system_source,acquire_font,win16_style_system_retain,win16_style_system_release};
+
 control_style *win16_control_state_create(void)
 {
     control_style *s=calloc(1,sizeof(*s));if(!s)return NULL;

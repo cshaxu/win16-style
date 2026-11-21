@@ -80,11 +80,6 @@ typedef struct classic_header_colors {
     BOOL present;
 } classic_header_colors;
 
-typedef struct classic_progress_colors {
-    COLORREF trough,fill,border,error,paused;
-    BOOL present,extra_states;
-} classic_progress_colors;
-
 typedef struct classic_trackbar_colors {
     COLORREF channel,thumb,edge;
     BOOL present;
@@ -180,24 +175,18 @@ typedef struct classic_scroll_colors {
     BOOL own_sizebox;
 } classic_scroll_colors;
 
-enum classic_caption_image_role {
-    CLASSIC_IMAGE_MINIMIZE, CLASSIC_IMAGE_MAXIMIZE, CLASSIC_IMAGE_RESTORE,
-    CLASSIC_IMAGE_SYSTEM, CLASSIC_IMAGE_ROLE_COUNT
-};
-
 typedef struct classic_caption_images {
     WORD id[CLASSIC_IMAGE_ROLE_COUNT][2]; /* normal, pressed */
 } classic_caption_images;
 
-enum { CLASSIC_CAPTION_ART_WIDTH=19, CLASSIC_SYSTEM_ART_WIDTH=18, CLASSIC_CAPTION_ART_HEIGHT=18 };
-
-typedef struct classic_caption_art {
-    BYTE roles[CLASSIC_IMAGE_ROLE_COUNT+1][2][CLASSIC_CAPTION_ART_WIDTH*CLASSIC_CAPTION_ART_HEIGHT];
-    BOOL available;
-} classic_caption_art;
-
 /* Copies palette roles out of the mapped resource. Call outside loader lock. */
 HRESULT classic_caption_art_read(HMODULE module,const classic_caption_images *images,classic_caption_art *art);
+
+enum { CLASSIC_COMBO_ARROW_WIDTH=7, CLASSIC_COMBO_ARROW_HEIGHT=9 };
+typedef struct classic_combo_arrow_art {
+    BYTE rows[CLASSIC_COMBO_ARROW_HEIGHT];
+    BOOL present;
+} classic_combo_arrow_art;
 
 typedef struct classic_theme {
     classic_caption_colors active, inactive;
@@ -209,6 +198,7 @@ typedef struct classic_theme {
     classic_report_item_colors report[CLASSIC_REPORT_ROLE_COUNT][CLASSIC_REPORT_STATE_COUNT];
     classic_bar_colors bars[CLASSIC_BAR_ROLE_COUNT];
     classic_calendar_colors calendar;
+    unsigned calendar_font_dpi,calendar_font_points;
     COLORREF date_button_face;
     BOOL has_date_button_face;
     classic_combo_colors combo;
@@ -225,6 +215,7 @@ typedef struct classic_theme {
     classic_choice_colors choice;
     classic_surface_colors scroll_arrow;
     style_scroll_arrow_art scroll_art;
+    classic_combo_arrow_art combo_arrow;
     classic_button_group title_buttons;
     classic_dialog_policy dialog_policy;
     classic_caption_metrics caption_metrics;
@@ -237,11 +228,17 @@ typedef struct classic_theme {
     BOOL gradient;
 } classic_theme;
 
+style_relief_palette classic_relief_palette(const classic_frame_colors *,const classic_list_colors *,const classic_text_colors *);
+static inline style_relief_palette classic_theme_relief_palette(const classic_theme *theme)
+{
+    return theme?classic_relief_palette(&theme->frame,&theme->list,&theme->label):classic_relief_palette(NULL,NULL,NULL);
+}
+
 int classic_scroll_nominal(classic_scroll_metrics metrics,enum classic_scroll_extent_source fallback,
     const RECT *bar,BOOL vertical,UINT dpi);
 /* Reads the selected variant from an already mapped resource module. */
 HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme *theme);
-classic_dialog_metrics classic_theme_dialog_metrics(HMODULE module,classic_dialog_metrics fallback);
+classic_dialog_metrics classic_theme_dialog_metrics(HMODULE module);
 
 /* Reads the selected variant of a v4 classic theme as data only. All output
  * values are owned by the caller and the output is unchanged on failure. */
@@ -252,12 +249,21 @@ typedef struct classic_theme_selection {
     unsigned id;
     classic_theme_family family;
 } classic_theme_selection;
+
+/* The validated folder selection carries the layout's stable wire tag. */
+static inline enum classic_window_provider classic_theme_selection_layout(classic_theme_selection selection)
+{
+    const unsigned layout=(unsigned)selection.family+CLASSIC_WINDOW_PROVIDER_FULL_CLIENT;
+    return layout>=CLASSIC_WINDOW_PROVIDER_FULL_CLIENT && layout<=CLASSIC_WINDOW_PROVIDER_NONCLIENT?
+        (enum classic_window_provider)layout:CLASSIC_WINDOW_PROVIDER_UNSPECIFIED;
+}
 typedef struct classic_theme_mapping {
     HMODULE resources;
     classic_theme model;
     WCHAR display_name[MSSTYLES_THEME_TOKEN_CAPACITY];
     msstyles_host_options hosts;
     classic_theme_family family;
+    WCHAR compatibility_folder[MSSTYLES_THEME_TOKEN_CAPACITY];
 } classic_theme_mapping;
 
 /* Opens a packaged .theme descriptor from an absolute path outside loader
@@ -277,8 +283,23 @@ void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void
 unsigned classic_theme_folder_id(PCWSTR folder);
 HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH]);
 HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_theme_mapping *);
-classic_dialog_policy classic_theme_dialog_policy_for_profile(HMODULE renderer,unsigned profile);
 HRESULT classic_theme_open_selected(HMODULE renderer,classic_theme_selection selection,classic_theme_mapping *);
+/* S_FALSE means no active theme. On S_OK, the selection includes the adapter. */
+HRESULT classic_theme_active_selection(classic_theme_selection *);
+static inline BOOL classic_theme_require_layout(enum classic_window_provider layout)
+{
+    classic_theme_selection selection;
+    HRESULT active=classic_theme_active_selection(&selection);
+    if(active!=S_OK){
+        SetLastError(active==S_FALSE?ERROR_RESOURCE_DATA_NOT_FOUND:HRESULT_CODE(active));
+        return FALSE;
+    }
+    if(classic_theme_selection_layout(selection)!=layout){
+        SetLastError(ERROR_NOT_SUPPORTED);
+        return FALSE;
+    }
+    return TRUE;
+}
 HRESULT classic_theme_open_dialog(HMODULE renderer,classic_theme_mapping *source);
 enum { CLASSIC_THEME_PROFILE_CAP = 0x10000000u, CLASSIC_THEME_PROFILE_FIRST_CUSTOM = 8,
     CLASSIC_THEME_FOLDER_ID_MARKER = 6 };
@@ -296,26 +317,33 @@ static inline unsigned classic_theme_encode_selection(classic_theme_selection se
 static inline BOOL classic_theme_decode_selection(unsigned value,classic_theme_selection *selection)
 {
     unsigned id=value&(CLASSIC_THEME_PROFILE_CAP-1u),adapter=value/CLASSIC_THEME_PROFILE_CAP;
+#ifdef STYLE_THEME_EXTERNAL_ONLY
+    if(!classic_theme_is_folder_id(id) || adapter>1u)return FALSE;
+#else
     if(classic_theme_is_folder_id(id)){
         if(adapter>1u)return FALSE;
     }else{
         if(adapter || (id>1 && id<CLASSIC_THEME_PROFILE_FIRST_CUSTOM))return FALSE;
         adapter=(unsigned)classic_theme_profile_family(id);
     }
+#endif
     *selection=(classic_theme_selection){id,(classic_theme_family)adapter};
     return TRUE;
 }
 void classic_theme_set_process_profile(unsigned profile,classic_theme_family family);
 void classic_theme_set_global_profile_reader(BOOL (*read)(unsigned *));
 unsigned classic_theme_process_profile(void);
-classic_theme_family classic_theme_process_family(void);
 unsigned classic_theme_enter_profile(classic_theme_selection selection);
 void classic_theme_leave_profile(unsigned previous);
 
-/* Resolves a packaged theme beside its renderer. If the package directory
- * is absent, an embedded fallback can use resources in that same renderer. */
+HRESULT classic_theme_open_active(HMODULE renderer,classic_theme_mapping *source);
+#ifndef STYLE_THEME_EXTERNAL_ONLY
+/* Unselected or preset callers of the standalone compatibility builds. */
 HRESULT classic_theme_open_packaged(HMODULE renderer,classic_theme_family family,
     BOOL embedded,classic_theme_mapping *source);
-DWORD classic_theme_validate_packaged(HMODULE renderer,classic_theme_family family);
+#endif
+/* The active theme owns the lookup. Standalone compatibility builds use the
+ * layout to select a fallback only when an active directory is unavailable. */
+DWORD classic_theme_attachment_layout(HMODULE renderer,enum classic_window_provider layout,classic_theme_mapping *source);
 
 #endif

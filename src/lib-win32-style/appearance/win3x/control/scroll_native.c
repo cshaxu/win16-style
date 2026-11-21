@@ -1,7 +1,5 @@
 #include "scroll_native.h"
 #include "lib-win32-style/application/control/scroll_state.h"
-/* Pinned USER18 initial/repeat delay and 4*CXBORDER/CYBORDER drag tolerance. */
-const style_scroll_policy win16_scroll_policy={200,50,4,1,style_scroll_hit,NULL};
 RECT win16_scroll_caret_rectangle(HWND window,const style_scroll_layout *layout,const style_scroll_track *track)
 {
     RECT rectangle=layout->thumb;
@@ -61,11 +59,11 @@ void win16_control_scrollbars_paint(HWND w,HDC target,const win16_style_palette 
     if(palette)s.palette=*palette;else win16_style_default_palette(&s.palette);
     if(GetWindowSubclass(w,proc,(UINT_PTR)proc,&attached)){
         control_style *owner=(control_style *)attached;
+        s.scroll_art=owner->scroll_art;
         if(!palette){
             s.palette=owner->palette;
             s.themed=owner->themed;
             s.scroll_arrow_colors=owner->scroll_arrow_colors;
-            s.scroll_art=owner->scroll_art;
             s.scroll_colors=owner->scroll_colors;
         }
         s.bindings.scroll.resources.list=owner->bindings.scroll.resources.list;s.bindings.scroll.resources.edit=owner->bindings.scroll.resources.edit;s.bindings.scroll.track=owner->bindings.scroll.track;

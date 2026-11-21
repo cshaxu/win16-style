@@ -22,7 +22,7 @@ typedef enum style_menu_bar_inclusion {
     STYLE_MENU_BAR_UNSUPPORTED=-1,STYLE_MENU_BAR_SKIP,STYLE_MENU_BAR_INCLUDE
 } style_menu_bar_inclusion;
 typedef struct style_menu_bar_profile {
-    style_menu_bar_inclusion (*include)(const MENUITEMINFOW *,UINT *);
+    style_menu_bar_inclusion (*include)(void *,const MENUITEMINFOW *,UINT *);
     BOOL (*measure)(void *,HDC,const MENUITEMINFOW *,SIZE *);
     BOOL native_rects;
 } style_menu_bar_profile;

@@ -9,6 +9,7 @@
 static inline void win2k_color_restore_expanded_client(const CWPRETSTRUCT *message,const classic_dialog_metrics *metrics)
 {
     enum { define_custom=719, add_custom=712, red_edit=706 };
+    if(!metrics->color_width)return;
     HWND dialog=message->hwnd;
     if(message->message!=WM_COMMAND || LOWORD(message->wParam)!=define_custom ||
        HIWORD(message->wParam)!=BN_CLICKED)return;

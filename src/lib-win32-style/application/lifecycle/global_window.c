@@ -5,6 +5,7 @@
 
 typedef struct global_window {
     unsigned calls;
+    DWORD profile;
     BOOL detached,removing,installed;
     const style_global_window_ops *ops;
 } global_window;
@@ -63,29 +64,35 @@ BOOL style_global_window_attached(HWND window,const style_global_window_ops *ops
     global_window *state=lookup(window);
     return state && state->ops==ops && !state->detached && state->installed;
 }
-BOOL style_global_window_apply(HWND window,const style_global_window_ops *ops)
+static BOOL valid_ops(const style_global_window_ops *ops)
+{return ops && ops->attached && ops->apply && ops->remove && ops->active && ops->control;}
+
+static BOOL apply_window(HWND window,const style_global_window_ops *ops,DWORD profile,
+    style_global_window_apply_profile apply_profile)
 {
     if(!local(window))return FALSE;
-    if(!ops || !ops->attached || !ops->apply || !ops->remove || !ops->active || !ops->control){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    if(!valid_ops(ops)){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
     global_window *state=lookup(window);
     if(state){if(state->ops==ops && !state->detached && state->installed)return TRUE;SetLastError(ERROR_BUSY);return FALSE;}
     if(style_global_window_managed(window)){SetLastError(ERROR_BUSY);return FALSE;}
     BOOL already=ops->attached(window);state=(global_window *)calloc(1,sizeof(*state));
     if(!state){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    state->calls=1;state->ops=ops;
+    state->calls=1;state->ops=ops;state->profile=profile;
     if(!SetWindowSubclass(window,global_proc,(UINT_PTR)global_proc,(DWORD_PTR)state)){
         DWORD error=GetLastError();free(state);SetLastError(error);return FALSE;
     }
     if(!SetPropW(window,managed_property,(HANDLE)state)){
         DWORD error=GetLastError();detach(window,state);release(state);SetLastError(error);return FALSE;
     }
-    BOOL installed=already || ops->apply(window);
+    BOOL installed=already || (apply_profile?apply_profile(window,ops->apply,profile):ops->apply(window));
     if(installed)state->installed=TRUE;
     DWORD error=installed?ERROR_SUCCESS:GetLastError();
     if(state->detached){installed=FALSE;error=ERROR_INVALID_WINDOW_HANDLE;}
     if(!installed && !state->detached)detach(window,state);
     release(state);SetLastError(error);return installed;
 }
+BOOL style_global_window_apply(HWND window,const style_global_window_ops *ops)
+{return apply_window(window,ops,0,NULL);}
 BOOL style_global_window_remove(HWND window,const style_global_window_ops *ops)
 {
     if(!local(window))return FALSE;
@@ -100,15 +107,47 @@ BOOL style_global_window_remove(HWND window,const style_global_window_ops *ops)
     if(!state->detached)state->removing=FALSE;
     release(state);SetLastError(error);return removed;
 }
-BOOL style_global_window_transition(HWND window,const style_global_window_ops *selected,const style_global_window_ops *other)
+DWORD style_global_window_profile(HWND window)
+{
+    if(!local(window))return 0;
+    global_window *state=lookup(window);
+    return state && state->installed && !state->detached?state->profile:0;
+}
+BOOL style_global_window_remove_current(HWND window)
 {
     if(!local(window))return FALSE;
-    if(!selected || (other && (!other->attached || !other->apply || !other->remove))){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
-    BOOL previous=other && other!=selected && other->attached(window);
-    BOOL managed=previous && style_global_window_attached(window,other);
-    if(previous && !style_global_window_remove(window,other))return FALSE;
-    if(style_global_window_apply(window,selected))return TRUE;
+    global_window *state=lookup(window);
+    if(!state){SetLastError(ERROR_NOT_FOUND);return FALSE;}
+    return style_global_window_remove(window,state->ops);
+}
+BOOL style_global_window_transition(HWND window,const style_global_window_ops *selected,
+    const style_global_window_ops *unmanaged_other,DWORD profile,BOOL refresh_direct,
+    style_global_window_apply_profile apply_profile)
+{
+    if(!local(window))return FALSE;
+    if(!valid_ops(selected) || (unmanaged_other && (!unmanaged_other->attached || !unmanaged_other->apply || !unmanaged_other->remove))){
+        SetLastError(ERROR_INVALID_PARAMETER);return FALSE;
+    }
+    global_window *state=lookup(window);
+    BOOL managed=state!=NULL;
+    DWORD prior=managed?state->profile:0;
+    const style_global_window_ops *previous=NULL;
+    if(managed){
+        if(state->ops!=selected || (prior!=profile && (prior || refresh_direct)))
+            previous=state->ops;
+    }else{
+        if(refresh_direct && selected->attached(window) && !style_global_window_remove(window,selected))return FALSE;
+        if(unmanaged_other && unmanaged_other!=selected && unmanaged_other->attached(window))previous=unmanaged_other;
+    }
+
+    if(previous && !style_global_window_remove(window,previous))return FALSE;
+    if(apply_window(window,selected,profile,apply_profile)){
+        state=lookup(window);
+        if(state)state->profile=profile;
+        return TRUE;
+    }
     DWORD error=GetLastError();
-    if(previous){if(managed)(void)style_global_window_apply(window,other);else (void)other->apply(window);}
+    if(managed && previous)(void)apply_window(window,previous,prior,apply_profile);
+    else if(previous)(void)previous->apply(window);
     SetLastError(error);return FALSE;
 }

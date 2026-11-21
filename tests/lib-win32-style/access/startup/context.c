@@ -39,6 +39,12 @@ int main(void)
     memcpy(copy+h.directory_offset,raw+sizeof(h),sizeof(directory)+sizeof(module));
     CHECK(!style_startup_packet_parse(copy,h.bytes,machine,&context));
     CHECK(context.flags==(h.flags|(14u<<STYLE_STARTUP_PROFILE_SHIFT)|STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE));
+    style_startup_selection decoded=style_startup_get_selection(context.flags);
+    CHECK(decoded.theme_id==14 && decoded.adapter==1);
+    const DWORD policy=STYLE_STARTUP_POLICY_STYLE|STYLE_STARTUP_POLICY_PROPAGATE|STYLE_STARTUP_POLICY_GLOBAL_SESSION;
+    DWORD updated=style_startup_with_selection(policy|context.flags,(style_startup_selection){15u,0u});
+    decoded=style_startup_get_selection(updated);
+    CHECK(decoded.theme_id==15 && decoded.adapter==0 && (updated&STYLE_STARTUP_POLICY_MASK)==policy);
     ((DWORD *)copy)[9]=0;
     CHECK(!style_startup_packet_parse(copy,h.bytes,machine,&context));
     CHECK(context.flags==(h.flags|(14u<<STYLE_STARTUP_PROFILE_SHIFT)));

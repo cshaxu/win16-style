@@ -24,11 +24,18 @@ typedef struct classic_scroll_metrics {
     uint16_t source;
     uint16_t logical_extent;
     style_scroll_thumb thumb;
+    uint16_t initial_repeat_ms, repeat_ms;
+    style_scroll_drag drag;
 } classic_scroll_metrics;
 
+enum classic_mdi_buttons {
+    CLASSIC_MDI_SYSTEM=1, CLASSIC_MDI_RESTORE=2, CLASSIC_MDI_MINIMIZE=4, CLASSIC_MDI_CLOSE=8,
+    CLASSIC_MDI_ALL=15, CLASSIC_MDI_DEFINED=128
+};
 typedef struct classic_menu_metrics {
     uint16_t check_column, shortcut_gap, arrow_column, plain_column;
-    uint16_t text_flags;
+    uint16_t text_flags, bar_padding;
+    uint8_t mdi_buttons, row_minimum, row_padding, mdi_inactive;
 } classic_menu_metrics;
 
 typedef struct classic_file_metrics {
@@ -68,14 +75,35 @@ typedef struct classic_dialog_policy {
     uint8_t color, font, find;
 } classic_dialog_policy;
 
+enum classic_choice_fallback {
+    CLASSIC_CHOICE_NATIVE, CLASSIC_CHOICE_SYMBOLS
+};
+
+enum classic_updown_mode {
+    CLASSIC_UPDOWN_NATIVE, CLASSIC_UPDOWN_ART, CLASSIC_UPDOWN_RECOLOR
+};
+
 typedef struct classic_control_presentation {
     style_line_profile separator,group,edit;
     style_push_profile push;
     style_progress_layout progress;
     style_trackbar_profile trackbar;
     style_line_profile header;
-    style_line_profile tab;
+    style_line_profile tab,native_edge;
+    enum classic_choice_fallback choice_fallback;
+    style_choice_metrics choice_metrics;
+    style_arrow_button_metrics updown;
+    enum classic_updown_mode updown_mode;
+    uint8_t control_font_points;
 } classic_control_presentation;
+
+static inline BOOL classic_button_presentation_enabled(const classic_control_presentation *controls,UINT type,DWORD style)
+{
+    if(type==BS_GROUPBOX)return controls->group!=STYLE_LINE_DEFAULT;
+    if(type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE))
+        return controls->push!=STYLE_PUSH_DEFAULT;
+    return TRUE;
+}
 
 /* Parse project RCDATA CLASSIC_STYLE v1. The caller's output changes only on success. */
 enum classic_style_result classic_style_read(const unsigned char *bytes,size_t length,
@@ -88,6 +116,6 @@ size_t classic_style_write(unsigned char *bytes,size_t capacity,const classic_bu
     const classic_dialog_policy *policy,const style_caption_presentation *caption,const style_border_presentation *border,
     const classic_control_presentation *controls);
 
-enum { CLASSIC_STYLE_RESOURCE_CAPACITY=272 };
+enum { CLASSIC_STYLE_RESOURCE_CAPACITY=401 };
 
 #endif

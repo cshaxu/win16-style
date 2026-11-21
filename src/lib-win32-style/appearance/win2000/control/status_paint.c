@@ -1,7 +1,7 @@
 /* DrawStatusTextEx in Win2000 status.c uses one edge per ordinary pane.
  * Let native painting finish first, including any owner draw and icon. */
 #include "bars.h"
-#include "../common/paint.h"
+#include "../common/palette.h"
 #include "lib-win32-style/application/graphics/bitmap.h"
 
 static DWORD pixel(COLORREF color)

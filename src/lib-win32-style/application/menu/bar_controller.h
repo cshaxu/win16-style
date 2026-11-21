@@ -31,5 +31,7 @@ void style_menu_bar_finish(const style_menu_bar_target *,BOOL);
 /* Common bar key/mnemonic/pointer protocol. System-caption geometry and
  * caption-button behavior remain the window adapter's responsibility. */
 BOOL style_menu_bar_input(const style_menu_bar_target *,UINT,WPARAM,LPARAM);
-LRESULT style_menu_bar_system(const style_menu_bar_target *,RECT,BOOL,UINT,WPARAM,LPARAM);
+/* Use an actual caption slot when USER reports no native system button. */
+BOOL style_menu_bar_needs_system_button(HWND);
+BOOL style_menu_bar_caption_key(const style_menu_bar_target *,RECT,WPARAM,LPARAM,LRESULT *);
 #endif

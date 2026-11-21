@@ -1,5 +1,6 @@
 #include "ntw16s-dll/injection/intercept.h"
 #include "lib-win32-style/access/startup/propagate.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include <shellapi.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +19,13 @@ DWORD style_startup_propagate(DWORD (*a)(void *,void *),const style_startup_prop
 void style_startup_propagation_discard(const style_startup_propagation *o){(void)o;}
 DWORD process_hook_startup_attach(void *a,void *b){(void)a;(void)b;return 0;}
 BOOL ntw16s_global_policy_active(DWORD c){(void)c;return FALSE;}
-BOOL ntw16s_global_policy_style(DWORD c,DWORD style){(void)c;(void)style;return FALSE;}
+unsigned classic_theme_process_profile(void){return 0x126;}
+HRESULT classic_theme_profile_folder(HMODULE module,unsigned profile,WCHAR folder[MAX_PATH])
+{
+    if(!module || profile!=0x126)return E_INVALIDARG;
+    wcscpy(folder,L"Test Skin");
+    return S_OK;
+}
 BOOL ntwshk_system_print_host_w(LPCWSTR a,LPWSTR b){(void)a;(void)b;return FALSE;}
 BOOL ntwshk_system_print_host_a(LPCSTR a,LPSTR b){(void)a;(void)b;return FALSE;}
 DWORD ntwshk_install(HANDLE h,const ntwshk_context *c,ntwshk_create_w f){(void)h;(void)c;(void)f;return 0;}
@@ -30,7 +37,7 @@ int wmain(void){
  CHECK(!hooked(&p) && GetLastError()==ERROR_CANCELLED && p.hInstApp==(HINSTANCE)(INT_PTR)42);
  CHECK(!wcscmp(actual_file,L"C:\\package\\run16s.exe"));
  CHECK(actual_mask==p.fMask && actual_owner==p.hwnd && actual_show==p.nShow && !wcscmp(actual_directory,p.lpDirectory));
- CHECK(swprintf(expected,32768,L"--elevated \"Win16\" \"%ls\" \"a b\" tail\\",self)>0 && !wcscmp(actual_args,expected));
+ CHECK(swprintf(expected,32768,L"--elevated \"Test Skin\" \"%ls\" \"a b\" tail\\",self)>0 && !wcscmp(actual_args,expected));
  fake_result=TRUE;fake_error=ERROR_ALREADY_EXISTS;p.hInstApp=NULL;
  CHECK(hooked(&p) && GetLastError()==ERROR_ALREADY_EXISTS && p.hInstApp==(HINSTANCE)(INT_PTR)42);
  CHECK(!wcscmp(actual_file,L"C:\\package\\run16s.exe") && !wcscmp(actual_args,expected));
@@ -41,7 +48,7 @@ int wmain(void){
  p.fMask=SEE_MASK_FLAG_NO_UI;p.lpFile=L"C:\\unrelated.exe";CHECK(!hooked(&p) && !wcscmp(actual_file,p.lpFile));
  p.lpFile=self;p.lpVerb=L"open";CHECK(!hooked(&p) && !wcscmp(actual_file,self));
  p.lpVerb=L"runas";p.lpParameters=NULL;CHECK(!hooked(&p) && !wcscmp(actual_file,L"C:\\package\\run16s.exe"));
- CHECK(swprintf(expected,32768,L"--elevated \"Win16\" \"%ls\"",self)>0 && !wcscmp(actual_args,expected));
+ CHECK(swprintf(expected,32768,L"--elevated \"Test Skin\" \"%ls\"",self)>0 && !wcscmp(actual_args,expected));
  WCHAR *long_tail=calloc(32768,sizeof(WCHAR));CHECK(long_tail);wmemset(long_tail,L'x',32767);p.lpParameters=long_tail;
  CHECK(!hooked(&p) && !wcscmp(actual_file,self));free(long_tail);p.lpParameters=NULL;
  p.lpVerb=L"runas";ntw16s_process_context.flags|=NTWSHK_POLICY_GLOBAL_SESSION;CHECK(!hooked(&p) && !wcscmp(actual_file,self));

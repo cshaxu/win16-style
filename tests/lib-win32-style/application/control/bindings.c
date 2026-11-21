@@ -9,7 +9,7 @@ static char events[16];static unsigned count;
 static void event(char code){if(count<sizeof(events))events[count++]=code;else ++bad;}
 static void dispose(void *context){++((fixture *)context)->disposed;}
 static HFONT source(HFONT font){++normalized;return font;}
-static HFONT acquire(HWND w,HFONT font,BOOL native){(void)w;if(!native)++bad;return font;}
+static HFONT acquire(HWND w,HFONT font,BOOL native,unsigned recipe){(void)recipe;(void)w;if(!native)++bad;return font;}
 static void font_noop(HFONT font){(void)font;}
 static const style_control_fonts fonts={source,acquire,font_noop,font_noop};
 static LRESULT CALLBACK passive(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id,DWORD_PTR data)

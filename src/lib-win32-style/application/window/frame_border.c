@@ -24,6 +24,26 @@ int style_frame_border_width(const style_frame_geometry *geometry,enum style_fra
     return width?max(1,MulDiv(width,(int)coordinate_dpi,(int)source)):0;
 }
 
+int style_frame_native_border_width(enum style_frame_border_kind kind,BOOL horizontal,UINT dpi)
+{
+    if(kind==STYLE_FRAME_LINE)return GetSystemMetricsForDpi(horizontal?SM_CXBORDER:SM_CYBORDER,dpi);
+    if(kind==STYLE_FRAME_SIZEABLE)return GetSystemMetricsForDpi(horizontal?SM_CXSIZEFRAME:SM_CYSIZEFRAME,dpi)+
+        GetSystemMetricsForDpi(SM_CXPADDEDBORDER,dpi);
+    return GetSystemMetricsForDpi(horizontal?SM_CXFIXEDFRAME:SM_CYFIXEDFRAME,dpi);
+}
+
+int style_frame_window_border_width(HWND window,const style_frame_geometry *geometry,
+    enum style_frame_border_kind kind,BOOL horizontal,UINT dpi)
+{
+    if(!geometry || !geometry->scale)return style_frame_native_border_width(kind,horizontal,dpi);
+    UINT source=dpi;
+    if(geometry->scale==STYLE_FRAME_MONITOR_PIXELS){
+        SIZE monitor=style_frame_monitor_dpi(window,dpi);
+        source=(UINT)(horizontal?monitor.cx:monitor.cy);
+    }
+    return style_frame_border_width(geometry,kind,dpi,source);
+}
+
 int style_frame_caption_height(int logical_height,UINT dpi,int minimum)
 {
     return max(minimum,MulDiv(logical_height,(int)dpi,96));

@@ -48,7 +48,7 @@ static BOOL layout(HWND w,style_window *s,win16_style_layout *l)
 {
     RECT r;
     return GetWindowRect(w,&r) && win16_control_measure_window(w,&s->instance,&s->fonts,&r,
-        &s->title_buttons,&s->caption_metrics,&s->border_presentation.geometry,l);
+        &s->title_buttons,&s->caption_metrics,&s->border_presentation.geometry,s->caption_presentation.icon_mode,&s->menu_metrics,l);
 }
 
 BOOL win16_style_hit_test(HWND w,LPARAM lp,LRESULT *result)
@@ -78,7 +78,7 @@ static void paint_state(void *context,win16_frame_paint_state *result)
     *result=(win16_frame_paint_state){&s->fonts,s->native.active,s->menu.system,
         s->menu.bar.keyboard,s->menu.bar.selected,s->button,&s->art,&s->menu_bar,
         s->caption_presentation,s->caption_gradient,s->native.active?s->active_end:s->inactive_end,
-        s->border_presentation,&s->menu_metrics};
+        s->border_presentation,&s->menu_metrics,FALSE,NULL};
 }
 static const win16_frame_renderer_ops renderer={paint_layout,paint_state,paint_colors,win16_style_scrollbars_paint};
 static void paint(HWND w,void *context,HDC target)
@@ -101,7 +101,7 @@ static BOOL bar_read(const style_menu_bar_target *target,style_menu_bar_snapshot
     style_window *s=target->context;win16_style_layout l;RECT outer;
     if(!layout(target->window,s,&l) || !GetWindowRect(target->window,&outer))return FALSE;
     if(!win16_style_bar_read_for_window(target->window,GetMenu(target->window),s->fonts.menu,s->fonts.dpi,
-        (POINT){l.menu.left,l.menu.top},l.menu.right-l.menu.left,bar))return FALSE;
+        &l,(POINT){l.menu.left,l.menu.top},l.menu.right-l.menu.left,bar))return FALSE;
     for(UINT i=0;i<bar->count;++i)OffsetRect(&bar->rects[i],outer.left,outer.top);
     return TRUE;
 }
@@ -139,16 +139,31 @@ static const win16_control_frame_lifecycle_services frame_lifecycle={style_proc,
     win16_style_remove,leave_bar,paint};
 BOOL win16_style_menu_owner_install_created(HWND w,const void *owner,const BOOL *cancelled)
 {return win16_control_menu_owner_install(w,owner,cancelled,&frame_lifecycle);}
+#ifdef NTWSHK_UNIFIED
+BOOL ntw16s_explicit_install_allowed(HWND window,const win16_style_palette *palette)
+{
+    if(!local_window(window))return FALSE;
+    if(palette){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+    return classic_theme_require_layout(CLASSIC_WINDOW_PROVIDER_FULL_CLIENT);
+}
+#endif
 BOOL win16_style_install(HWND w,const win16_style_palette *p)
-{return win16_control_frame_install(w,p,FALSE,NULL,NULL,&frame_lifecycle);}
+{
+#ifdef NTWSHK_UNIFIED
+    if(!ntw16s_explicit_install_allowed(w,p))return FALSE;
+#endif
+    return win16_control_frame_install(w,p,FALSE,NULL,NULL,&frame_lifecycle);
+}
 BOOL win16_style_install_created(HWND w,const win16_style_palette *p,const void *owner,const BOOL *cancelled)
 {return win16_control_frame_install(w,p,TRUE,owner,cancelled,&frame_lifecycle);}
 BOOL win16_style_frame_remove_owned(HWND w,const void *owner)
 {return win16_control_frame_remove_owned(w,owner,&frame_lifecycle);}
 BOOL win16_style_remove(HWND w)
 {return win16_control_frame_remove(w,&frame_lifecycle);}
+#ifndef NTWSHK_UNIFIED
 BOOL win16_style_set_palette(HWND w,const win16_style_palette *p)
 {return win16_control_frame_set_palette(w,p,&frame_lifecycle);}
+#endif
 BOOL win16_style_frame_terminal(HWND w)
 {return win16_control_frame_terminal(w,&frame_lifecycle);}
 
@@ -167,7 +182,7 @@ static BOOL measure_client(HWND w,void *context,const RECT *outer,RECT *client)
 {
     style_window *s=context;win16_style_layout layout;
     if(!win16_control_measure_window(w,&s->instance,&s->fonts,outer,&s->title_buttons,&s->caption_metrics,
-        &s->border_presentation.geometry,&layout))
+        &s->border_presentation.geometry,s->caption_presentation.icon_mode,&s->menu_metrics,&layout))
         return FALSE;
     *client=layout.client;return TRUE;
 }

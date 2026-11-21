@@ -7,7 +7,6 @@
 #include "lib-win32-style/appearance/win3x/control/basic_paint.h"
 #include "lib-win32-style/appearance/win3x/control/other_paint.h"
 #include "lib-win32-style/appearance/win3x/control/special_paint.h"
-#include "lib-win32-style/appearance/win3x/resources/scroll_assets.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_bar.h"
 #include "lib-win32-style/appearance/win3x/common/font.h"
 #include "lib-win32-style/appearance/win3x/window/frame_layout.h"
@@ -196,7 +195,7 @@ int main(void)
        win16_control_vb_glyph_allowed(policy_dc,ETO_GLYPH_INDEX,4097))return 103;
     SetTextAlign(policy_dc,TA_RTLREADING);
     if(win16_control_report_wide_text(policy_dc,L"a",1,TRUE) || win16_control_report_ansi_text(policy_dc,"a",1,TRUE))return 83;
-    if(win16_control_static_text_font(policy_dc,L"a",1,DT_CALCRECT,(const void *)main,NULL,GetModuleHandleW(NULL)))return 84;
+    if(win16_control_static_text_font(policy_dc,L"a",1,DT_CALCRECT,(const void *)main,NULL,GetModuleHandleW(NULL),12))return 84;
     DeleteDC(policy_dc);
 
     control_style *control=win16_control_state_create();
@@ -227,10 +226,7 @@ int main(void)
     if(style_control_custom_draw_after(NULL,&custom,&custom_active,TRUE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=CDRF_SKIPDEFAULT || draw_parts!=1)return 29;
     custom.dwDrawStage=CDDS_POSTPAINT;
     if(style_control_custom_draw_after(NULL,&custom,&custom_active,TRUE,CDRF_DODEFAULT,&palette,custom_supported,custom_part)!=CDRF_DODEFAULT || custom_active)return 30;
-    if(palette.face!=RGB(192,192,192) || palette.edge!=RGB(0,0,0))return 1;
-    for(int i=WIN16_SCROLL_UP;i<=WIN16_SCROLL_RIGHT_DISABLED;++i)
-        if(!win16_control_scroll_glyph((enum win16_control_scroll_asset)i))return 2;
-    if(win16_control_scroll_glyph((enum win16_control_scroll_asset)-1))return 3;
+    if(palette.face!=GetSysColor(COLOR_BTNFACE) || palette.edge!=GetSysColor(COLOR_WINDOWTEXT))return 1;
     HDC dc=CreateCompatibleDC(NULL);
     HBITMAP bitmap=dc?CreateCompatibleBitmap(dc,20,20):NULL;
     HGDIOBJ previous=bitmap?SelectObject(dc,bitmap):NULL;
@@ -238,7 +234,8 @@ int main(void)
     if(win16_control_dialog_colors(dc,&palette)!=(LRESULT)GetStockObject(DC_BRUSH) ||
        GetBkColor(dc)!=palette.light || GetTextColor(dc)!=palette.edge || GetDCBrushColor(dc)!=palette.light)return 19;
     RECT bounds={0,0,17,17};
-    win16_control_scroll_arrow(dc,bounds,win16_control_scroll_glyph(WIN16_SCROLL_UP),&palette);
+    const style_scroll_arrow_art art={.source=STYLE_SCROLL_ARROW_INDEXED};
+    win16_control_scroll_arrow_art(dc,bounds,DFCS_SCROLLUP,&palette,&art);
     BOOL valid=GetPixel(dc,0,0)==palette.edge;
     SelectObject(dc,previous);DeleteObject(bitmap);DeleteDC(dc);
     if(!valid)return 5;
@@ -270,8 +267,11 @@ int main(void)
     style_menu_tracking_input(&input,&message);
     if(!input.escape || message.message!=WM_KEYDOWN)return 15;
     style_font_pair fonts={0};LOGFONTW info={0};
-    if(!win16_control_refresh_frame_fonts(NULL,&fonts,NULL,NULL) || fonts.dpi!=96 || !fonts.title || !fonts.menu ||
-       GetObjectW(fonts.title,sizeof(info),&info)!=sizeof(info) || info.lfHeight!=-MulDiv(10,96,72) || info.lfWeight!=FW_BOLD){
+    NONCLIENTMETRICSW metrics={.cbSize=sizeof(metrics)};
+    if(!SystemParametersInfoForDpi(SPI_GETNONCLIENTMETRICS,sizeof(metrics),&metrics,0,96) ||
+       !win16_control_refresh_frame_fonts(NULL,&fonts,NULL,NULL) || fonts.dpi!=96 || !fonts.title || !fonts.menu ||
+       GetObjectW(fonts.title,sizeof(info),&info)!=sizeof(info) || info.lfHeight!=metrics.lfCaptionFont.lfHeight ||
+       info.lfWeight!=metrics.lfCaptionFont.lfWeight || wcscmp(info.lfFaceName,metrics.lfCaptionFont.lfFaceName)){
         style_font_pair_dispose(&fonts,win16_control_release_frame_fonts);return 8;
     }
     style_font_pair_dispose(&fonts,win16_control_release_frame_fonts);
@@ -350,6 +350,6 @@ int main(void)
     BOOL restored=EqualRect(&old_client,&new_client);
     DestroyWindow(window);
     if(!got_hit || hit!=HTBORDER || !restored)return 11;
-    puts("WIN16_CONTROL_STANDALONE_LINK_OK palette=1 glyphs=12 pixel=1");
+    puts("WIN16_CONTROL_STANDALONE_LINK_OK palette=1 indexed_pixel=1");
     return 0;
 }

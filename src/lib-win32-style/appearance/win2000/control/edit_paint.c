@@ -1,7 +1,7 @@
 /* Win2000 kernel/drawfrm.c + caption.c NC edge ordering and ECGetBrush
  * color roles. RichEdit and HotKey keep their native client implementations. */
 #include "edit_paint.h"
-#include "../common/paint.h"
+#include "../common/palette.h"
 #include "lib-win32-style/application/control/control_class.h"
 win2k_edit_kind win2k_edit_class(HWND window)
 {

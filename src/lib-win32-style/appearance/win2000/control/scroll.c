@@ -1,6 +1,6 @@
 #include "scroll.h"
 #include "lib-win32-style/application/control/scroll_geometry.h"
-#include "../common/paint.h"
+#include "../common/palette.h"
 #include "lib-win32-style/application/control/scroll_surface.h"
 
 static BOOL read_info(HWND window,int bar,SCROLLINFO *info)
@@ -82,7 +82,7 @@ static void paint_track(HDC dc,RECT r,BOOL vertical,HBRUSH brush,const win2k_pal
 
 static win2k_palette surface_palette(const classic_scroll_surface *surface)
 {
-    win2k_palette palette=win2k_standard_palette;
+    win2k_palette palette=classic_theme_relief_palette(NULL);
     if(surface){
         palette.face=surface->face;
         palette.light=surface->light;
@@ -223,34 +223,26 @@ static void caret(HWND window,void *context)
     style_scroll_caret_sync(window,&c->resources,show?&r:NULL,c->track.active);
 }
 
-static RECT drag_bounds(HWND window,const style_scroll_layout *l)
-{
-    UINT dpi=GetDpiForWindow(window);
-    int nominal=GetSystemMetricsForDpi(l->vertical?SM_CYVTHUMB:SM_CXHTHUMB,dpi?dpi:96);
-    int across=l->vertical?l->bar.right-l->bar.left:l->bar.bottom-l->bar.top;
-    RECT bounds=l->bar;
-    InflateRect(&bounds,l->vertical?8*across:2*nominal,l->vertical?2*nominal:8*across);
-    return bounds;
-}
-
 void win2k_scroll_init(win2k_scroll *scroll,style_instance *instance)
 {
     scroll->instance=instance;
-    scroll->arrow_palette=win2k_standard_palette;
+    scroll->arrow_palette=classic_theme_relief_palette(NULL);
     scroll->arrow_art=(style_scroll_arrow_art){0};
     scroll->colors=(classic_scroll_colors){0};
-    UINT delay=GetDoubleClickTime()*4/5;
-    scroll->policy=(style_scroll_policy){.initial_repeat_ms=max(1,delay),.repeat_ms=max(1,delay/8),
-        .hit=style_scroll_hit,.drag_bounds=drag_bounds};
+    scroll->policy=(style_scroll_policy){.hit=style_scroll_hit};
+    style_scroll_repeat_configure(&scroll->policy,0,0);
 }
 
 void win2k_scroll_theme(win2k_scroll *scroll,const classic_theme *theme)
 {
+    scroll->arrow_palette=classic_theme_relief_palette(theme);
     scroll->arrow_palette.face=theme->scroll_arrow.face;
     scroll->arrow_palette.dark=theme->scroll_arrow.edge;
     scroll->arrow_art=theme->scroll_art;
     scroll->colors=theme->scroll;
     scroll->metrics=theme->scroll_metrics;
+    scroll->policy.drag=scroll->metrics.drag;
+    style_scroll_repeat_configure(&scroll->policy,scroll->metrics.initial_repeat_ms,scroll->metrics.repeat_ms);
 }
 
 style_scroll_ops win2k_scroll_operations(win2k_scroll *scroll)

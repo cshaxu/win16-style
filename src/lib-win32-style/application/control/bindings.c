@@ -14,7 +14,7 @@ BOOL style_control_bindings_setup(HWND w,style_instance *instance,style_control_
         !style_control_combo_setup(w,instance,&b->combo,options->combo,options->children)){result=FALSE;goto installed;}
     if(!options->frame_bars){
         if(options->combo_passthrough && ((DWORD)GetWindowLongPtrW(w,GWL_STYLE)&3)==CBS_DROPDOWNLIST){
-            HFONT replacement=state->fonts->acquire(w,state->original_font,TRUE);state->font=replacement?replacement:state->original_font;}
+            HFONT replacement=state->fonts->acquire(w,state->original_font,TRUE,state->font_recipe);state->font=replacement?replacement:state->original_font;}
         if(!options->combo_passthrough)SendMessageW(w,WM_SETFONT,(WPARAM)state->original_font,FALSE);
         if(!instance->detached && style_control_is_separator(w))SetWindowPos(w,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
         if(!instance->detached)RedrawWindow(w,NULL,NULL,RDW_INVALIDATE|RDW_FRAME);

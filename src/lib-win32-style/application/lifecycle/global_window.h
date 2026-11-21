@@ -18,7 +18,16 @@ BOOL style_global_window_attached(HWND window,const style_global_window_ops *ops
 BOOL style_global_window_managed(HWND window);
 BOOL style_global_window_apply(HWND window,const style_global_window_ops *ops);
 BOOL style_global_window_remove(HWND window,const style_global_window_ops *ops);
-BOOL style_global_window_transition(HWND window,const style_global_window_ops *selected,const style_global_window_ops *other);
+/* A nonzero profile belongs to the installed record. A zero value denotes
+ * compatibility attachments without a recorded profile. */
+DWORD style_global_window_profile(HWND window);
+BOOL style_global_window_remove_current(HWND window);
+/* The caller may scope each renderer invocation to the recorded profile.
+ * Unmarked direct attachments have profile zero. */
+typedef BOOL (*style_global_window_apply_profile)(HWND window,BOOL (*apply)(HWND),DWORD profile);
+BOOL style_global_window_transition(HWND window,const style_global_window_ops *selected,
+    const style_global_window_ops *unmanaged_other,DWORD profile,BOOL refresh_direct,
+    style_global_window_apply_profile apply_profile);
 /* Enumerate descendants owned by this GUI thread. A NULL parent follows
  * EnumChildWindows semantics. The visitor chooses policy and may stop. */
 BOOL style_global_window_visit_children(HWND parent,BOOL (*visit)(HWND,void *),void *context);

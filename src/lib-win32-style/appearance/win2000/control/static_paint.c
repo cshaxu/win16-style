@@ -1,7 +1,7 @@
 /* Win2000 statctl.c xxxStaticPaint / StaticCallback. Images keep their
  * original native painter and ownership through the common basic protocol. */
 #include "static_paint.h"
-#include "../common/paint.h"
+#include "../common/palette.h"
 #include "lib-win32-style/application/control/button_snapshot.h"
 #include <wchar.h>
 typedef struct static_text {const WCHAR *text;UINT flags;} static_text;
@@ -20,6 +20,7 @@ BOOL win2k_static_paint(HWND window,style_instance *instance,HDC dc,const win2k_
     BOOL result=FALSE;RECT client;HWND parent=GetParent(window);
     const style_control_button_reader reader={NULL,role,font};style_control_button_snapshot snapshot={0};
     DWORD initial=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);UINT type=initial&SS_TYPEMASK;
+    if(type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME && !separator)goto done;
     BOOL textual=type==SS_LEFT||type==SS_CENTER||type==SS_RIGHT||type==SS_SIMPLE||type==SS_LEFTNOWORDWRAP;
     if(textual){
         if(!style_control_button_snapshot_read(window,instance,&reader,&snapshot))goto done;
@@ -44,7 +45,7 @@ BOOL win2k_static_paint(HWND window,style_instance *instance,HDC dc,const win2k_
         if(snapshot.style&SS_CENTERIMAGE)flags|=DT_VCENTER|DT_SINGLELINE;
         if(cues&UISF_HIDEACCEL)flags|=DT_HIDEPREFIX;
         static_text text={snapshot.text,flags};
-        result=!*snapshot.text || win2k_draw_content(dc,(LPARAM)&text,0,client.left,client.top,client.right-client.left,client.bottom-client.top,
+        result=!*snapshot.text || style_paint_content(dc,(LPARAM)&text,0,client.left,client.top,client.right-client.left,client.bottom-client.top,
             DST_COMPLEX,draw_text,(snapshot.style&WS_DISABLED)!=0,FALSE,p);
     }else if(type==SS_SIMPLE){
         if(snapshot.style&SS_NOPREFIX)result=ExtTextOutW(dc,client.left,client.top,ETO_OPAQUE|ETO_CLIPPED,&client,snapshot.text,(UINT)wcslen(snapshot.text),NULL);
@@ -55,7 +56,7 @@ BOOL win2k_static_paint(HWND window,style_instance *instance,HDC dc,const win2k_
         else {HBRUSH frame=CreateSolidBrush(value);if(frame){result=FrameRect(dc,&client,frame)!=0;DeleteObject(frame);}}
     }else if(type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME){
         int unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
-        result=style_paint_separator(dc,client,type,separator?separator:STYLE_LINE_RELIEF,
+        result=style_paint_separator(dc,client,type,separator,
             unit,p->dark,p->shadow,p->highlight);
     }
 done:

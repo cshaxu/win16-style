@@ -17,7 +17,7 @@ void win16_control_other(HWND w,style_instance *instance,const win16_style_palet
     if(instance->detached)return;
     SelectObject(dc,font);GetTextMetricsW(dc,&tm);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,(*palette).edge);
     if(label && type>=SS_ETCHEDHORZ && type<=SS_ETCHEDFRAME){
-        style_paint_separator(dc,r,type,controls.separator?controls.separator:STYLE_LINE_FLAT,
+        style_paint_separator(dc,r,type,controls.separator,
             u,palette->edge,palette->shadow,palette->light);
         return;
     }
@@ -31,8 +31,7 @@ void win16_control_other(HWND w,style_instance *instance,const win16_style_palet
         RECT title=r;title.left+=8*u;DrawTextW(dc,text,-1,&title,DT_CALCRECT|DT_SINGLELINE);
         bounds.top+=tm.tmHeight/2;
         style_relief_palette colors=win16_control_push_palette(palette);
-        style_line_profile profile=controls.group?controls.group:STYLE_LINE_FLAT;
-        style_paint_line_frame(dc,&bounds,EDGE_ETCHED,0,u,palette->shadow,profile,&colors);
+        style_paint_line_frame(dc,&bounds,EDGE_ETCHED,0,u,palette->shadow,controls.group,&colors);
         InflateRect(&title,u,0);SetDCBrushColor(dc,(*palette).light);FillRect(dc,&title,(HBRUSH)GetStockObject(DC_BRUSH));
         title.left+=u;DrawTextW(dc,text,-1,&title,DT_SINGLELINE);return;
     }
@@ -43,8 +42,7 @@ void win16_control_other(HWND w,style_instance *instance,const win16_style_palet
         if(style&BS_FLAT)state|=DFCS_FLAT|DFCS_MONO;
         if(!IsWindowEnabled(w))state|=DFCS_INACTIVE;
         style_relief_palette colors=win16_control_push_palette(palette);
-        style_push_profile profile=controls.push?controls.push:STYLE_PUSH_STEPPED;
-        if(!style_paint_push_frame(dc,&bounds,state,type==BS_DEFPUSHBUTTON,u,profile,&colors))return;
+        if(!style_paint_push_frame(dc,&bounds,state,type==BS_DEFPUSHBUTTON,u,controls.push,&colors))return;
         InflateRect(&bounds,-3*u,fit?-u:-3*u);if(pushed)OffsetRect(&bounds,u,u);
         flags=DT_CENTER|DT_VCENTER|DT_SINGLELINE;
     }else {flags=type==SS_CENTER?DT_CENTER:type==SS_RIGHT?DT_RIGHT:DT_LEFT;

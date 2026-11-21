@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static const style_scroll_policy win16_scroll_policy={200,50,{STYLE_SCROLL_DRAG_LOGICAL,4,1},style_scroll_hit};
 static unsigned checks;
 static int fake_max=100;static int fake_min=0;static UINT fake_page=1;
 static BOOL fake_info(HWND w,int bar,LPSCROLLINFO info)
@@ -26,6 +27,12 @@ static void tracking_tests(void)
 {
     const style_scroll_fixed_metrics metrics={17,17,1};RECT bar={0,0,17,200},limit={-4,-1,21,201};
     style_scroll_layout l,from_native;style_scroll_track t={0};style_scroll_actions a;
+    style_scroll_policy repeat=win16_scroll_policy;
+    style_scroll_repeat_configure(&repeat,317,67);
+    CHECK(repeat.initial_repeat_ms==317 && repeat.repeat_ms==67);
+    style_scroll_repeat_configure(&repeat,0,0);
+    UINT system=GetDoubleClickTime()*4/5;
+    CHECK(repeat.initial_repeat_ms==max(1,system) && repeat.repeat_ms==max(1,system/8));
     style_scroll_resources caret={.caret_shown=TRUE};
     style_scroll_caret_destroy(NULL,&caret);CHECK(!caret.caret && !caret.caret_shown);
     CHECK(style_scroll_horizontal_thumb_messages(NULL,fake_info));
@@ -72,7 +79,7 @@ static void tracking_tests(void)
     CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,(classic_scroll_metrics){0},&from_native));
     CHECK(from_native.maximum==100 && from_native.position==50 && from_native.first.bottom==17);
     CHECK(from_native.thumb.bottom-from_native.thumb.top==17);
-    const classic_scroll_metrics mixed={CLASSIC_SCROLL_EXTENT_CROSS_AXIS,0,STYLE_SCROLL_THUMB_PAGE};
+    const classic_scroll_metrics mixed={CLASSIC_SCROLL_EXTENT_CROSS_AXIS,0,STYLE_SCROLL_THUMB_PAGE,0,0,{0}};
     CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,mixed,&l));
     CHECK(l.maximum==from_native.maximum && l.thumb.bottom-l.thumb.top==15 && l.minimum_pixel==17);
     CHECK(style_scroll_hit(&l,(POINT){8,l.thumb.top},0)==STYLE_SCROLL_THUMB);

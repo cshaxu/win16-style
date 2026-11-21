@@ -1,15 +1,27 @@
 #include "run16s-exe/uwp.h"
-#include "ntw16s-dll/uwp/hook.h"
+#include "ntw16s-dll/uwp/target.h"
 #include "lib-win32-style/appearance/win3x/window/modern_frame_layout.h"
 #include "lib-win32-style/appearance/win2000/window/caption.h"
+#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include <stdio.h>
-#include <stdint.h>
 #include <dwmapi.h>
 #include <tlhelp32.h>
 #include <wchar.h>
 static DWORD pid;
 static HWND frame,core,surface;
 static PCWSTR target_image=L"CalculatorApp.exe";
+static classic_theme rendered_theme;
+static BOOL invalid_screen_sample,valid_screen_sample;
+static const classic_theme stock_win2k={
+    .title_buttons=WIN2000_TITLE_BUTTON_GROUP,.caption_metrics={19,16,{16,14},{15,15}}
+};
+static const classic_button_group stock_win16_buttons={3,0,0,{
+    {CLASSIC_BUTTON_SYSTEM,CLASSIC_BUTTON_LEFT,0},
+    {CLASSIC_BUTTON_MINIMIZE,CLASSIC_BUTTON_RIGHT,0},
+    {CLASSIC_BUTTON_MAXIMIZE,CLASSIC_BUTTON_RIGHT,0}
+},0};
+static const classic_caption_metrics stock_win16_metrics={.height=18,.button={19,18}};
+static const style_frame_geometry stock_win16_frame={STYLE_FRAME_LOGICAL,4,3,6,1,20,1,1};
 static BOOL resize_pointer(void)
 {
     RECT r;POINT previous;
@@ -71,8 +83,12 @@ static DWORD target_pid(void)
 {
     HANDLE snapshot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);if(snapshot==INVALID_HANDLE_VALUE)return MAXDWORD;
     PROCESSENTRY32W entry={.dwSize=sizeof(entry)};DWORD found=0;
-    for(BOOL next=Process32FirstW(snapshot,&entry);next;next=Process32NextW(snapshot,&entry))
-        if(!_wcsicmp(entry.szExeFile,target_image)){found=entry.th32ProcessID;break;}
+    for(BOOL next=Process32FirstW(snapshot,&entry);next;next=Process32NextW(snapshot,&entry)){
+        if(!_wcsicmp(entry.szExeFile,target_image)){
+            if(found){found=MAXDWORD;break;}
+            found=entry.th32ProcessID;
+        }
+    }
     CloseHandle(snapshot);return found;
 }
 static BOOL button(int hit,BOOL win2k)
@@ -91,13 +107,14 @@ static BOOL button(int hit,BOOL win2k)
     RECT r;
     if(win2k){
         int border=IsZoomed(frame)?0:4;
-        RECT caption={border,border,size.cx-border,border+win2k_caption_height(dpi,FALSE)},buttons[4];
+        RECT caption={border,border,size.cx-border,border+win2k_caption_theme_height(dpi,FALSE,&stock_win2k)},buttons[4];
         BOOL present[]={!!(style&WS_MINIMIZEBOX),!!(style&WS_MAXIMIZEBOX),FALSE,TRUE};
-        if(!win2k_caption_buttons(&caption,dpi,FALSE,present,buttons))return FALSE;
+        if(!win2k_caption_buttons_with_group(&caption,dpi,FALSE,present,&stock_win2k.title_buttons,&stock_win2k.caption_metrics,buttons))return FALSE;
         r=buttons[hit==HTMAXBUTTON?1:0];
     }else{
         win16_style_layout layout;
-        if(!win16_uwp_frame_layout(size,dpi,style,IsZoomed(frame),client,NULL,NULL,NULL,&layout))return FALSE;
+        if(!win16_uwp_frame_layout(size,dpi,style,(DWORD)GetWindowLongPtrW(frame,GWL_EXSTYLE),IsZoomed(frame),client,
+            &stock_win16_buttons,&stock_win16_metrics,&stock_win16_frame,&layout))return FALSE;
         r=hit==HTMAXBUTTON?layout.buttons[CLASSIC_BUTTON_MAXIMIZE]:layout.buttons[CLASSIC_BUTTON_MINIMIZE];
     }
     LPARAM point=MAKELPARAM((r.left+r.right)/2,(r.top+r.bottom)/2);DWORD_PTR ignored;
@@ -123,16 +140,38 @@ static BOOL await_state(BOOL minimized,BOOL maximized)
     }while(GetTickCount64()<deadline);
     return FALSE;
 }
+static HRESULT read_rendered_theme(PCWSTR launcher,PCWSTR folder)
+{
+    WCHAR path[32768],*leaf=NULL;
+    DWORD length=launcher?GetFullPathNameW(launcher,ARRAYSIZE(path),path,&leaf):
+        GetModuleFileNameW(NULL,path,ARRAYSIZE(path));
+    if(!length || length>=ARRAYSIZE(path))return HRESULT_FROM_WIN32(ERROR_INVALID_NAME);
+    if(!leaf){
+        WCHAR *slash=wcsrchr(path,L'\\');
+        leaf=slash?slash+1:NULL;
+    }
+    if(!leaf || swprintf_s(leaf,ARRAYSIZE(path)-(size_t)(leaf-path),L"%ls\\%ls.theme",folder,folder)<0)
+        return HRESULT_FROM_WIN32(ERROR_INVALID_NAME);
+    classic_theme_mapping source={0};
+    HRESULT loaded=classic_theme_open(path,&source);
+    if(SUCCEEDED(loaded))rendered_theme=source.model;
+    classic_theme_close(&source);
+    return loaded;
+}
 static BOOL classic_pixels(void)
 {
     RECT bounds;
     UINT dpi=GetDpiForWindow(frame);
-    int border=IsZoomed(frame)?0:4;
     if(!dpi || !GetWindowRect(surface,&bounds))return FALSE;
-    RECT band={border,border,bounds.right-bounds.left-border,border+win2k_caption_height(dpi,FALSE)},buttons[4];
     DWORD style=(DWORD)GetWindowLongPtrW(frame,GWL_STYLE);
+    BOOL maximized=IsZoomed(frame);
+    enum style_frame_border_kind kind=style&WS_THICKFRAME?STYLE_FRAME_SIZEABLE:STYLE_FRAME_FIXED;
+    const style_frame_geometry *geometry=&rendered_theme.border_presentation.geometry;
+    int x=maximized?0:style_frame_window_border_width(frame,geometry,kind,TRUE,dpi);
+    int y=maximized?0:style_frame_window_border_width(frame,geometry,kind,FALSE,dpi);
+    RECT band={x,y,bounds.right-bounds.left-x,y+win2k_caption_theme_height(dpi,FALSE,&rendered_theme)},buttons[4];
     BOOL present[]={!!(style&WS_MINIMIZEBOX),!!(style&WS_MAXIMIZEBOX),FALSE,TRUE};
-    if(!win2k_caption_buttons(&band,dpi,FALSE,present,buttons))return FALSE;
+    if(!win2k_caption_buttons_with_group(&band,dpi,FALSE,present,&rendered_theme.title_buttons,&rendered_theme.caption_metrics,buttons))return FALSE;
     for(unsigned i=0;i<ARRAYSIZE(buttons);++i)
         if(present[i])band.right=min(band.right,buttons[i].left);
     int width=band.right-band.left;
@@ -149,13 +188,16 @@ static BOOL classic_pixels(void)
         sampled[i]=GetPixel(dc,at.x,at.y);
     }
     ReleaseDC(NULL,dc);
+    if(sampled[0]==CLR_INVALID || sampled[1]==CLR_INVALID){invalid_screen_sample=TRUE;return FALSE;}
+    valid_screen_sample=TRUE;
     BOOL matched=FALSE;
     for(unsigned active=0;visible && active<2;++active){
-        win2k_caption_colors c=win2k_caption_palette(active!=0);
+        classic_caption_colors c=active?rendered_theme.active:rendered_theme.inactive;
+        if(!rendered_theme.gradient)c.end=c.start;
         BOOL match=TRUE;
         for(unsigned i=0;i<ARRAYSIZE(sampled);++i)
             for(unsigned shift=0;shift<24;shift+=8){
-                int left=(c.left>>shift)&255,right=(c.right>>shift)&255;
+                int left=(c.start>>shift)&255,right=(c.end>>shift)&255;
                 int expected=left+MulDiv(right-left,offsets[i],width);
                 int actual=(sampled[i]>>shift)&255;
                 if(actual<expected-4 || actual>expected+4)match=FALSE;
@@ -260,30 +302,41 @@ int wmain(int argc,WCHAR **argv)
     HDESK desktop=OpenInputDesktop(0,FALSE,DESKTOP_READOBJECTS);WCHAR name[80]={0};DWORD needed;
     if(desktop){GetUserObjectInformationW(desktop,UOI_NAME,name,sizeof(name),&needed);CloseDesktop(desktop);}
     if((!api_only&&wcscmp(name,L"Default"))||target_pid()){puts("SKIP desktop or existing target");return 77;}
-    if(api_only)puts("DISPLAY_UNVERIFIED API-only activation; no physical input or screenshot assertions");
+    if(api_only)puts("DISPLAY_UNVERIFIED activation starts without physical input");
+    if(win2k){
+        HRESULT loaded=read_rendered_theme(command_mode?argv[2]:NULL,L"Win2K");
+        if(FAILED(loaded)){printf("THEME_READ error=%08lx\n",(unsigned long)loaded);return 1;}
+    }
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     DWORD error=0;
+    PCWSTR theme_folder=win2k?L"Win2K":L"Win16";
+    const classic_theme_selection selection={classic_theme_folder_id(theme_folder),
+        win2k?CLASSIC_THEME_WIN2K:CLASSIC_THEME_WIN16};
+    FILETIME started;GetSystemTimeAsFileTime(&started);
     if(command_mode){
         WCHAR command_line[2048];STARTUPINFOW startup={.cb=sizeof(startup)};PROCESS_INFORMATION child_process={0};
-        int n=swprintf(command_line,ARRAYSIZE(command_line),L"\"%ls\" %ls calc.exe",argv[2],win2k?L"Win2K":L"Win16");
-        FILETIME started;GetSystemTimeAsFileTime(&started);
+        int n=swprintf(command_line,ARRAYSIZE(command_line),L"\"%ls\" %ls calc.exe",argv[2],theme_folder);
         if(n<=0||(size_t)n>=ARRAYSIZE(command_line)||!CreateProcessW(argv[2],command_line,NULL,NULL,FALSE,0,NULL,NULL,&startup,&child_process))return 1;
         CloseHandle(child_process.hThread);DWORD code=~0u;
         if(WaitForSingleObject(child_process.hProcess,15000)==WAIT_OBJECT_0)GetExitCodeProcess(child_process.hProcess,&code);
         else {TerminateProcess(child_process.hProcess,1);WaitForSingleObject(child_process.hProcess,1000);}
         CloseHandle(child_process.hProcess);printf("CALC_COMMAND exit=%lu\n",code);
         pid=target_pid();
-        HANDLE candidate=pid&&pid!=MAXDWORD?OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION,FALSE,pid):NULL;
-        FILETIME created,exited,kernel,user;
-        BOOL fresh=candidate&&GetProcessTimes(candidate,&created,&exited,&kernel,&user)&&CompareFileTime(&created,&started)>=0;
-        if(candidate)CloseHandle(candidate);
-        if(!fresh){puts("FAIL no new owned calculator candidate");return 1;}
         error=code;
-    }else error=run16s_uwp_activate(app_id,win2k,&pid);
+    }else{
+        error=run16s_uwp_activate(app_id,selection,&pid);
+    }
     printf("ACTIVATE error=%lu own_pid=%lu\n",error,pid);fflush(stdout);
-    HANDLE process=pid?OpenProcess(SYNCHRONIZE|PROCESS_TERMINATE|PROCESS_QUERY_LIMITED_INFORMATION,FALSE,pid):NULL;
+    HANDLE process=pid && pid!=MAXDWORD && target_pid()==pid?
+        OpenProcess(SYNCHRONIZE|PROCESS_TERMINATE|PROCESS_QUERY_LIMITED_INFORMATION,FALSE,pid):NULL;
+    FILETIME created,exited,kernel,user;
+    if(!process || !GetProcessTimes(process,&created,&exited,&kernel,&user) || CompareFileTime(&created,&started)<0){
+        if(process)CloseHandle(process);
+        puts("FAIL no uniquely identified new test process");return 1;
+    }
     EnumWindows(top,0);EnumWindows(owned,0);BOOL ok=!error&&core&&frame&&surface;
     printf("TARGET core=%p frame=%p surface=%p dpi=%u\n",(void*)core,(void*)frame,(void*)surface,frame?GetDpiForWindow(frame):0);
+    BOOL visual_missing=FALSE;
     if(ok){
         BOOL pointer_ok=!pointer_mode||resize_pointer();
         titles("before");
@@ -298,30 +351,29 @@ int wmain(int argc,WCHAR **argv)
         BOOL appearance=!win2k || (actions && settled_classic_pixels());
         if(appearance && interactions)appearance=menu_and_resize();
         WCHAR renderer[32768];WCHAR *filename=NULL;
-        DWORD length=command_mode?GetFullPathNameW(argv[2],ARRAYSIZE(renderer),renderer,&filename):0;
-        HMODULE module=command_mode?
-            (length && length<ARRAYSIZE(renderer) && filename &&
-                !wcscpy_s(filename,ARRAYSIZE(renderer)-(size_t)(filename-renderer),L"ntwshk64.dll")?
-                LoadLibraryW(renderer):NULL):GetModuleHandleW(L"ntwshk64.dll");
-        RECT before,after;GetWindowRect(frame,&before);
-        HOOKPROC callback=module?(HOOKPROC)(uintptr_t)GetProcAddress(module,"Ntw16sUwpFrameHook"):NULL;
-        HHOOK hook=callback?SetWindowsHookExW(WH_CALLWNDPROC,callback,module,GetWindowThreadProcessId(frame,NULL)):NULL;
-        DWORD_PTR ignored=0;UINT message=RegisterWindowMessageW(NTW16S_UWP_MESSAGE);
-        WPARAM remove=win2k?NTW16S_UWP_REMOVE_2K:NTW16S_UWP_REMOVE;
-        if(command_mode)remove|=(WPARAM)classic_theme_folder_id(win2k?L"Win2K":L"Win16")<<NTW16S_UWP_PROFILE_SHIFT;
-        ok=hook&&SendMessageTimeoutW(frame,message,remove,(LPARAM)core,SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,3000,&ignored)&&
-            (uintptr_t)GetPropW(frame,NTW16S_UWP_RESULT)==1;
-        printf("REMOVE status=%llu\n",(unsigned long long)(uintptr_t)GetPropW(frame,NTW16S_UWP_RESULT));
-        RemovePropW(frame,NTW16S_UWP_RESULT);GetWindowRect(frame,&after);
-        ok=ok&&!IsWindow(surface)&&EqualRect(&before,&after);
-        if(hook)ok=UnhookWindowsHookEx(hook)&&ok;
-        if(module && command_mode)FreeLibrary(module);
+        DWORD length=command_mode?GetFullPathNameW(argv[2],ARRAYSIZE(renderer),renderer,&filename):
+            GetModuleFileNameW(NULL,renderer,ARRAYSIZE(renderer));
+        if(!command_mode && length && length<ARRAYSIZE(renderer)){
+            PWSTR slash=wcsrchr(renderer,L'\\');
+            filename=slash?slash+1:NULL;
+        }
+        const style_uwp_target target={pid,core,frame};
+        RECT before,after;
+        DWORD removed=ERROR_INVALID_NAME;
+        if(length && length<ARRAYSIZE(renderer) && filename &&
+           !wcscpy_s(filename,ARRAYSIZE(renderer)-(size_t)(filename-renderer),L"ntwshk64.dll")){
+            removed=GetWindowRect(frame,&before)?
+                ntw16s_uwp_target_change(&target,renderer,FALSE,selection):GetLastError();
+        }
+        printf("REMOVE error=%lu\n",removed);
+        ok=!removed && GetWindowRect(frame,&after) && !IsWindow(surface) && EqualRect(&before,&after);
         printf("REMOVE_AND_GEOMETRY=%d\n",ok);
+        visual_missing=ok && actions && pointer_ok && !appearance && invalid_screen_sample && !valid_screen_sample;
         ok=ok&&actions&&pointer_ok&&appearance;
     }
     if(ok&&repeat_mode){
         DWORD first_pid=pid,fresh=0;HWND first_frame=frame,first_core=core;
-        error=run16s_uwp_activate(app_id,FALSE,&fresh);
+        error=run16s_uwp_activate(app_id,selection,&fresh);
         if(fresh&&fresh!=pid){
             PostMessageW(frame,WM_CLOSE,0,0);
             if(process){if(WaitForSingleObject(process,3000)!=WAIT_OBJECT_0){TerminateProcess(process,0);WaitForSingleObject(process,1000);}CloseHandle(process);}
@@ -342,5 +394,6 @@ int wmain(int argc,WCHAR **argv)
         printf("REACTIVATE_CLEANUP surface_destroyed=%d\n",destroyed);
         ok=ok&&destroyed;
     }
+    if(visual_missing){puts("UWP_LAUNCH_REAL_SKIP_SCREEN activation=1 actions=1 removal=1");return 77;}
     printf("UWP_LAUNCH_REAL_%s\n",ok?"PASS":"FAIL");return ok?0:1;
 }

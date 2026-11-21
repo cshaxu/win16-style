@@ -1,5 +1,6 @@
 [Theme]
 DisplayName=Windows 3.x
+CompatibilityFolder=Win16
 
 [Control Panel\Desktop]
 TileWallpaper=0

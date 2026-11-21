@@ -4,5 +4,5 @@
 BOOL win16_control_report_wide_text(HDC,const WCHAR *,int,BOOL);
 BOOL win16_control_report_ansi_text(HDC,const char *,int,BOOL);
 BOOL win16_control_vb_glyph_allowed(HDC,UINT options,UINT count);
-HFONT win16_control_static_text_font(HDC,LPCWSTR,int,UINT,const void *,HWND,HMODULE);
+HFONT win16_control_static_text_font(HDC,LPCWSTR,int,UINT,const void *,HWND,HMODULE,unsigned);
 #endif

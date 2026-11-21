@@ -11,12 +11,7 @@ BOOL win16_control_refresh_frame_fonts(HWND w,style_font_pair *current,const mss
     HFONT title,menu;
     /* USER virtualizes legacy windows separately; convert points once. */
     UINT dpi=GetDpiForWindow(w);if(!dpi)dpi=96;
-    if(defined && defined->points){
-        LOGFONTW logical=msstyles_font_at_dpi(defined,dpi);
-        title=CreateFontIndirectW(&logical);
-    }else title=CreateFontW(-MulDiv(10,(int)dpi,72),0,0,0,FW_BOLD,FALSE,FALSE,FALSE,
-        DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,
-        DEFAULT_PITCH,L"MS Sans Serif");
+    title=msstyles_font_create(defined,dpi,MSSTYLES_FONT_CAPTION);
     menu=win16_style_menu_font_acquire(dpi,menu_font);
     /* Sandboxed helper processes may be unable to register a memory font.
      * A stock font keeps window creation working in that environment. */

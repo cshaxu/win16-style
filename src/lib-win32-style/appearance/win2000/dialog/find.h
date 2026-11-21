@@ -10,6 +10,7 @@
  * units for its optional wrap control. Keep the native state and controls. */
 static inline void win2k_find_compact(HWND dialog,const classic_dialog_metrics *metrics)
 {
+    if(!metrics->find_width)return;
     RECT client,modern={0,0,metrics->find_width,metrics->find_native_height},
         classic={0,0,metrics->find_width,metrics->find_classic_height};
     HWND wrap=GetDlgItem(dialog,chx3);

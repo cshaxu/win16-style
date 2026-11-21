@@ -35,7 +35,7 @@ BOOL style_menu_bar_read(HWND owner,HMENU menu,POINT origin,int width,
         MENUITEMINFOW info={.cbSize=sizeof(info),.fMask=MIIM_STRING|MIIM_FTYPE|MIIM_STATE|MIIM_ID|MIIM_SUBMENU|MIIM_BITMAP|MIIM_DATA};
         if(!GetMenuItemInfoW(menu,i,TRUE,&info))goto done;
         UINT layout_flags=info.fType;
-        style_menu_bar_inclusion included=profile->include?profile->include(&info,&layout_flags):STYLE_MENU_BAR_INCLUDE;
+        style_menu_bar_inclusion included=profile->include?profile->include(context,&info,&layout_flags):STYLE_MENU_BAR_INCLUDE;
         if(included==STYLE_MENU_BAR_UNSUPPORTED)goto done;
         if(included==STYLE_MENU_BAR_SKIP)continue;
         BOOL app_draw=(info.fType&MFT_OWNERDRAW) && !info.hbmpItem;

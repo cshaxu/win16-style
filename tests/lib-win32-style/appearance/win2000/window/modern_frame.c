@@ -5,11 +5,13 @@
 #include <commctrl.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 #include <wchar.h>
 
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"WIN2K UWP FRAME FAIL line=%d error=%lu: %s\n", +    __LINE__,(unsigned long)GetLastError(),#x);return 1;}}while(0)
 
 static UINT command;
+static HICON fixture_icon;
 static BOOL CALLBACK find_surface(HWND candidate,LPARAM parameter)
 {
     HWND *match=(HWND *)parameter;
@@ -33,6 +35,7 @@ static BOOL request(HWND root,HWND core,WPARAM action)
 }
 static LRESULT CALLBACK owner_proc(HWND window,UINT message,WPARAM a,LPARAM b)
 {
+    if(message==WM_GETICON && fixture_icon)return (LRESULT)fixture_icon;
     if(message==WM_SYSCOMMAND && (a&0xfff0)==SC_CLOSE){command=SC_CLOSE;return 0;}
     if(message==WM_SIZE && a!=SIZE_MINIMIZED){
         HWND title=GetDlgItem(window,100);
@@ -59,14 +62,15 @@ static int mixed_profile(HWND root,HWND core,HMODULE module,PCWSTR folder)
     CHECK(source.model.caption_presentation.button_source==STYLE_CAPTION_BUTTON_INDEXED &&
         source.model.title_buttons.right_margin==30);
     const WPARAM profile=(WPARAM)classic_theme_folder_id(folder)<<NTW16S_UWP_PROFILE_SHIFT;
-    CHECK(request(root,core,profile|NTW16S_UWP_APPLY_2K));
+    CHECK(request(root,core,profile|NTW16S_UWP_DIRECTORY|NTW16S_UWP_APPLY));
     HWND surface=surface_of(root);
     RECT rect;
     CHECK(surface && GetWindowRect(surface,&rect));
     UINT dpi=GetDpiForWindow(root);
-    const int border=style_frame_border_width(&source.model.border_presentation.geometry,
-        STYLE_FRAME_SIZEABLE,dpi,dpi);
-    RECT band={border,border,rect.right-rect.left-border,border+win2k_caption_theme_height(dpi,FALSE,&source.model)};
+    const style_frame_geometry *geometry=&source.model.border_presentation.geometry;
+    const int x=style_frame_window_border_width(root,geometry,STYLE_FRAME_SIZEABLE,TRUE,dpi);
+    const int y=style_frame_window_border_width(root,geometry,STYLE_FRAME_SIZEABLE,FALSE,dpi);
+    RECT band={x,y,rect.right-rect.left-x,y+win2k_caption_theme_height(dpi,FALSE,&source.model)};
     RECT buttons[WIN2K_CAPTION_PARTS];
     const BOOL present[]={TRUE,TRUE,FALSE,TRUE};
     CHECK(win2k_caption_buttons_with_group(&band,dpi,FALSE,present,&source.model.title_buttons,
@@ -95,33 +99,49 @@ static int product_modes(HWND root,HWND core,PCWSTR renderer,PCWSTR win16,PCWSTR
     CHECK(callback);
     HHOOK observer=SetWindowsHookExW(WH_CALLWNDPROC,callback,NULL,GetCurrentThreadId());
     CHECK(observer);
-    CHECK(request(root,core,NTW16S_UWP_APPLY_2K));
+    BOOL unified=GetProcAddress(module,"ntwshk_context_read")!=NULL;
+    WPARAM first=0,second=0;
+    if(unified){
+        first=((WPARAM)classic_theme_folder_id(L"Win16")<<NTW16S_UWP_PROFILE_SHIFT)|NTW16S_UWP_DIRECTORY;
+        second=((WPARAM)classic_theme_folder_id(L"Win2K")<<NTW16S_UWP_PROFILE_SHIFT)|NTW16S_UWP_DIRECTORY;
+        CHECK(!request(root,core,NTW16S_UWP_APPLY) && !request(root,core,NTW16S_UWP_APPLY_2K));
+        CHECK(!surface_of(root));
+    }
+    WPARAM apply_first=first|NTW16S_UWP_APPLY;
+    WPARAM remove_first=first|NTW16S_UWP_REMOVE;
+    WPARAM apply_second=second|(unified?NTW16S_UWP_APPLY:NTW16S_UWP_APPLY_2K);
+    WPARAM remove_second=second|(unified?NTW16S_UWP_REMOVE:NTW16S_UWP_REMOVE_2K);
+    CHECK(request(root,core,apply_second));
     HWND classic=surface_of(root);
-    CHECK(classic && request(root,core,NTW16S_UWP_APPLY_2K) && surface_of(root)==classic);
-    if(win16)CHECK(missing_theme_retains(root,core,win16,NTW16S_UWP_APPLY,classic));
-    CHECK(request(root,core,NTW16S_UWP_APPLY) && !IsWindow(classic));
+    CHECK(classic && request(root,core,apply_second) && surface_of(root)==classic);
+    if(win16)CHECK(missing_theme_retains(root,core,win16,apply_first,classic));
+    CHECK(request(root,core,apply_first) && !IsWindow(classic));
     HWND legacy=surface_of(root);
-    if(win2k)CHECK(legacy && missing_theme_retains(root,core,win2k,NTW16S_UWP_APPLY_2K,legacy));
-    CHECK(legacy && request(root,core,NTW16S_UWP_APPLY_2K) && !IsWindow(legacy));
+    if(win2k)CHECK(legacy && missing_theme_retains(root,core,win2k,apply_second,legacy));
+    CHECK(legacy && request(root,core,apply_second) && !IsWindow(legacy));
     classic=surface_of(root);
-    CHECK(classic && request(root,core,NTW16S_UWP_REMOVE) && surface_of(root)==classic);
-    CHECK(request(root,core,NTW16S_UWP_REMOVE_2K) && !IsWindow(classic) && !surface_of(root));
-    CHECK(request(root,core,NTW16S_UWP_APPLY));
+    CHECK(classic && request(root,core,remove_first) && surface_of(root)==classic);
+    CHECK(request(root,core,remove_second) && !IsWindow(classic) && !surface_of(root));
+    CHECK(request(root,core,apply_first));
     legacy=surface_of(root);
-    CHECK(legacy && request(root,core,NTW16S_UWP_REMOVE) && !IsWindow(legacy) && !surface_of(root));
+    CHECK(legacy && request(root,core,remove_first) && !IsWindow(legacy) && !surface_of(root));
     if(win16 && win2k){
         WPARAM first=(WPARAM)classic_theme_folder_id(L"Win16")<<NTW16S_UWP_PROFILE_SHIFT;
         WPARAM second=(WPARAM)classic_theme_folder_id(L"Win2K")<<NTW16S_UWP_PROFILE_SHIFT;
-        CHECK(request(root,core,first|NTW16S_UWP_APPLY));
+        CHECK(!request(root,core,NTW16S_UWP_DIRECTORY|NTW16S_UWP_APPLY));
+        CHECK(!request(root,core,second|NTW16S_UWP_DIRECTORY|NTW16S_UWP_APPLY_2K));
+        CHECK(request(root,core,first|NTW16S_UWP_DIRECTORY|NTW16S_UWP_APPLY));
         legacy=surface_of(root);
         CHECK(legacy && !request(root,core,first|NTW16S_UWP_APPLY_2K) && surface_of(root)==legacy);
-        CHECK(missing_theme_retains(root,core,win2k,second|NTW16S_UWP_APPLY_2K,legacy));
-        CHECK(request(root,core,second|NTW16S_UWP_APPLY_2K) && !IsWindow(legacy));
+        CHECK(missing_theme_retains(root,core,win16,first|NTW16S_UWP_DIRECTORY|NTW16S_UWP_APPLY,legacy));
+        CHECK(request(root,core,first|NTW16S_UWP_DIRECTORY|NTW16S_UWP_APPLY) && surface_of(root)==legacy);
+        CHECK(missing_theme_retains(root,core,win2k,second|NTW16S_UWP_DIRECTORY|NTW16S_UWP_APPLY,legacy));
+        CHECK(request(root,core,second|NTW16S_UWP_DIRECTORY|NTW16S_UWP_APPLY) && !IsWindow(legacy));
         classic=surface_of(root);
-        CHECK(classic && request(root,core,first|NTW16S_UWP_REMOVE) && surface_of(root)==classic);
+        CHECK(classic && request(root,core,first|NTW16S_UWP_DIRECTORY|NTW16S_UWP_REMOVE) && surface_of(root)==classic);
         WCHAR backup[MAX_PATH];
         CHECK(swprintf_s(backup,ARRAYSIZE(backup),L"%ls.fixture",win2k)>0 && MoveFileW(win2k,backup));
-        BOOL removed=request(root,core,second|NTW16S_UWP_REMOVE_2K);
+        BOOL removed=request(root,core,second|NTW16S_UWP_DIRECTORY|NTW16S_UWP_REMOVE);
         CHECK(MoveFileW(backup,win2k));
         CHECK(removed && !IsWindow(classic) && !surface_of(root));
         puts("UWP THEME ID PASS selected identity, mismatch preserves surface, removal without descriptor");
@@ -133,7 +153,7 @@ static int product_modes(HWND root,HWND core,PCWSTR renderer,PCWSTR win16,PCWSTR
     return 0;
 }
 
-static int indexed_provider(HWND root,HWND title,PCWSTR descriptor,const classic_theme *original)
+static int indexed_provider(HWND root,HWND title,PCWSTR descriptor,const classic_theme *original,BOOL input)
 {
     WCHAR path[MAX_PATH];
     CHECK(wcscpy_s(path,ARRAYSIZE(path),descriptor)==0);
@@ -148,6 +168,11 @@ static int indexed_provider(HWND root,HWND title,PCWSTR descriptor,const classic
     classic_theme theme=*original;
     theme.frame=donor.frame;
     theme.caption_images=donor.caption_images;
+    CHECK(theme.title_buttons.count<ARRAYSIZE(theme.title_buttons.slots));
+    memmove(theme.title_buttons.slots+1,theme.title_buttons.slots,
+        theme.title_buttons.count*sizeof(theme.title_buttons.slots[0]));
+    theme.title_buttons.slots[0]=(classic_button_slot){CLASSIC_BUTTON_SYSTEM,CLASSIC_BUTTON_LEFT,0};
+    ++theme.title_buttons.count;
     theme.caption_presentation=donor.caption_presentation;
     theme.caption_presentation.button_source=STYLE_CAPTION_BUTTON_INDEXED;
     theme.caption_presentation.button_outline=STYLE_CAPTION_BUTTON_NO_OUTLINE;
@@ -162,11 +187,16 @@ static int indexed_provider(HWND root,HWND title,PCWSTR descriptor,const classic
         (UINT_PTR)style_uwp_host_surface_proc,&data));
     const style_bitmap *actual=&((const style_uwp_frame *)data)->bitmap;
     UINT dpi=GetDpiForWindow(root);
-    RECT band={2,2,actual->size.cx-2,2+win2k_caption_theme_height(dpi,FALSE,&theme)};
+    const style_frame_geometry *profile=&theme.border_presentation.geometry;
+    const int x=style_frame_window_border_width(root,profile,STYLE_FRAME_SIZEABLE,TRUE,dpi);
+    const int y=style_frame_window_border_width(root,profile,STYLE_FRAME_SIZEABLE,FALSE,dpi);
+    RECT band={x,y,actual->size.cx-x,y+win2k_caption_theme_height(dpi,FALSE,&theme)};
     RECT buttons[WIN2K_CAPTION_PARTS];
     const BOOL present[]={TRUE,TRUE,FALSE,TRUE};
-    CHECK(win2k_caption_buttons_with_group(&band,dpi,FALSE,present,
-        &theme.title_buttons,&theme.caption_metrics,buttons));
+    RECT system;
+    CHECK(win2k_caption_buttons_with_system(&band,dpi,FALSE,present,
+        &theme.title_buttons,&theme.caption_metrics,buttons,&system));
+    CHECK(!IsRectEmpty(&system));
     RECT item=buttons[WIN2K_MINIMIZE];
     SIZE size={item.right-item.left,item.bottom-item.top};
     style_bitmap expected={0};
@@ -182,15 +212,94 @@ static int indexed_provider(HWND root,HWND title,PCWSTR descriptor,const classic
         for(LONG x=0;x<size.cx;++x)
             CHECK((observed[(item.top+y)*actual->size.cx+item.left+x]&0xffffff)==(wanted[y*size.cx+x]&0xffffff));
     style_bitmap_dispose(&expected);
+    size=(SIZE){system.right-system.left,system.bottom-system.top};
+    CHECK(style_bitmap_ensure(&expected,NULL,size));
+    const style_caption_raster menu_raster={art.roles[CLASSIC_IMAGE_SYSTEM][0],
+        CLASSIC_SYSTEM_ART_WIDTH,CLASSIC_CAPTION_ART_HEIGHT,CLASSIC_SYSTEM_ART_WIDTH};
+    CHECK(style_caption_button_paint(expected.dc,(RECT){0,0,size.cx,size.cy},CLASSIC_BUTTON_SYSTEM,
+        FALSE,0,1,&theme.caption_presentation,&menu_raster,colors));
+    GdiFlush();
+    wanted=(const DWORD *)expected.pixels;
+    for(LONG y=0;y<size.cy;++y)
+        for(LONG x=0;x<size.cx;++x)
+            CHECK((observed[(system.top+y)*actual->size.cx+system.left+x]&0xffffff)==(wanted[y*size.cx+x]&0xffffff));
+    style_bitmap_dispose(&expected);
+    if(input){
+        LPARAM button=MAKELPARAM(system.left+1,system.top+1);
+        SendMessageW(surface,WM_LBUTTONDOWN,MK_LBUTTON,button);
+        CHECK(GetCapture()==surface);
+        SendMessageW(surface,WM_CANCELMODE,0,0);
+        CHECK(GetCapture()!=surface);
+        puts("UWP INDEXED SYSTEM PASS painted and hit");
+    }
     CHECK(style_uwp_frame_remove(root) && !IsWindow(surface) && IsWindowVisible(title) &&
         SetWindowTextW(root,L"Hosted sample"));
     puts("UWP INDEXED CAPTION PASS shared pixels, copied resource, restored title");
     return 0;
 }
 
+static int external_icon(HWND root,HWND title,PCWSTR path,const classic_theme *geometry)
+{
+    classic_theme_mapping source={0};
+    CHECK(classic_theme_open(path,&source)==S_OK);
+    source.model.title_buttons=geometry->title_buttons;
+    source.model.caption_metrics=geometry->caption_metrics;
+    source.model.border_presentation.geometry=geometry->border_presentation.geometry;
+    source.model.active=geometry->active;
+    source.model.inactive=geometry->inactive;
+    CHECK(SetWindowTextW(root,L""));
+    BYTE mask[32]={0},pixels[32];
+    FillMemory(pixels,sizeof(pixels),255);
+    HICON icon=CreateIcon(GetModuleHandleW(NULL),16,16,1,1,mask,pixels);
+    CHECK(icon);
+    fixture_icon=icon;
+    for(unsigned mode=STYLE_CAPTION_ICON_DEFAULT;mode<=STYLE_CAPTION_ICON_NATIVE;++mode){
+        const BOOL native=mode!=STYLE_CAPTION_ICON_HIDDEN;
+        source.model.caption_presentation.icon_mode=(uint8_t)mode;
+        CHECK(win2k_uwp_frame_apply(root,title,NULL,0,&source));
+        HWND surface=style_uwp_frame_surface(root);
+        DWORD_PTR data=0;
+        CHECK(surface && GetWindowSubclass(surface,style_uwp_host_surface_proc,
+            (UINT_PTR)style_uwp_host_surface_proc,&data));
+        const style_uwp_frame *frame=(const style_uwp_frame *)data;
+        UINT dpi=GetDpiForWindow(root);
+        const style_frame_geometry *profile=&source.model.border_presentation.geometry;
+        int x=style_frame_window_border_width(root,profile,STYLE_FRAME_SIZEABLE,TRUE,dpi);
+        int y=style_frame_window_border_width(root,profile,STYLE_FRAME_SIZEABLE,FALSE,dpi);
+        RECT band={x,y,frame->bitmap.size.cx-x,y+win2k_caption_theme_height(dpi,FALSE,&source.model)};
+        RECT slot;
+        CHECK(style_caption_icon_bounds(band,band.right,dpi,&slot));
+        POINT center={(slot.left+slot.right)/2,(slot.top+slot.bottom)/2};
+        CHECK(frame->ops->hit(frame->context,center)==(native?HTSYSMENU:HTCAPTION));
+        GdiFlush();
+        const DWORD *observed=(const DWORD *)frame->bitmap.pixels;
+        DWORD pixel=observed[center.y*frame->bitmap.size.cx+center.x]&0xffffff;
+        printf("UWP ICON PIXEL mode=%u rgb=%06lx\n",mode,(unsigned long)pixel);
+        CHECK((pixel==0xffffff)==native);
+        if(native){
+            HICON replacement=CreateIcon(GetModuleHandleW(NULL),16,16,1,1,mask,mask);
+            CHECK(replacement);
+            fixture_icon=replacement;
+            SendMessageW(root,WM_SETICON,ICON_SMALL,0);
+            GdiFlush();
+            observed=(const DWORD *)frame->bitmap.pixels;
+            CHECK((observed[center.y*frame->bitmap.size.cx+center.x]&0xffffff)==0);
+            fixture_icon=icon;
+            CHECK(DestroyIcon(replacement));
+        }
+        CHECK(style_uwp_frame_remove(root));
+    }
+    fixture_icon=NULL;
+    CHECK(DestroyIcon(icon));
+    classic_theme_close(&source);
+    puts("UWP APPLICATION ICON PASS declared pixels, hit and live replacement");
+    return 0;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
-    if(argc!=1 && argc!=2 && argc!=4 && argc!=5)return 2;
+    BOOL external=argc==3 && !wcscmp(argv[1],L"--external-renderer");
+    if(!external && argc!=1 && argc!=2 && argc!=4 && argc!=5)return 2;
     PCWSTR renderer=argc>=2?argv[1]:sizeof(void *)==8?L"ntw16s64.dll":L"ntw16s32.dll";
     HINSTANCE module=GetModuleHandleW(NULL);
     WNDCLASSW cls={.lpfnWndProc=owner_proc,.hInstance=module,.lpszClassName=L"ApplicationFrameWindow"};
@@ -199,8 +308,9 @@ int wmain(int argc,WCHAR **argv)
     CHECK(RegisterClassW(&child));
     child.lpszClassName=L"Windows.UI.Core.CoreWindow";
     CHECK(RegisterClassW(&child));
+    int origin=external?-10000:80;
     HWND root=CreateWindowW(cls.lpszClassName,L"Hosted sample",WS_OVERLAPPEDWINDOW,
-        80,80,400,300,NULL,NULL,module,NULL);
+        origin,origin,400,300,NULL,NULL,module,NULL);
     CHECK(root);
     RECT client;CHECK(GetClientRect(root,&client));
     HWND title=CreateWindowW(L"ApplicationFrameTitleBarWindow",L"Native title",WS_VISIBLE|WS_CHILD,
@@ -211,7 +321,7 @@ int wmain(int argc,WCHAR **argv)
     CHECK(content);
     /* Keep the fixture's initial layered restack within its own windows. */
     HWND anchor=CreateWindowExW(WS_EX_NOACTIVATE|WS_EX_TOOLWINDOW,L"STATIC",L"",
-        WS_POPUP,80,80,1,1,NULL,NULL,module,NULL);
+        WS_POPUP,origin,origin,1,1,NULL,NULL,module,NULL);
     CHECK(anchor);
     ShowWindow(root,SW_SHOWNOACTIVATE);
     ShowWindow(anchor,SW_SHOWNOACTIVATE);
@@ -221,11 +331,21 @@ int wmain(int argc,WCHAR **argv)
     const classic_theme modified={
         .title_buttons=WIN2000_TITLE_BUTTON_GROUP,
         .caption_metrics={.height=25,.button={25,16}},
-        .border_presentation.geometry={STYLE_FRAME_MONITOR_PIXELS,2,2,2,1,20,0},
+        .border_presentation.geometry={STYLE_FRAME_MONITOR_PIXELS,2,2,2,1,20,0,0},
         .active={RGB(32,64,96),RGB(32,64,96),RGB(255,255,255)},
         .inactive={RGB(64,32,96),RGB(64,32,96),RGB(255,255,255)}
     };
     const classic_theme_mapping selection={.model=modified};
+    if(external){
+        CHECK(!win2k_uwp_frame_apply(root,title,NULL,0,NULL) && GetLastError()==ERROR_RESOURCE_DATA_NOT_FOUND);
+        CHECK(!win2k_uwp_frame_apply(root,title,NULL,0,&selection) && GetLastError()==ERROR_RESOURCE_DATA_NOT_FOUND);
+        CHECK(!style_uwp_frame_surface(root) && IsWindowVisible(title));
+        CHECK(!indexed_provider(root,title,argv[2],&modified,FALSE));
+        CHECK(!external_icon(root,title,argv[2],&modified));
+        CHECK(GetWindowRect(content,&after) && EqualRect(&after,&before) && DestroyWindow(root) && DestroyWindow(anchor));
+        puts("UWP EXTERNAL RENDERER PASS missing=2 external_pixels=2 title_restored=1");
+        return 0;
+    }
     for(unsigned i=0;i<3;++i){
         const classic_theme *theme=i==1?&modified:NULL;
         CHECK(win2k_uwp_frame_apply(root,title,NULL,0,theme?&selection:NULL));
@@ -238,14 +358,19 @@ int wmain(int argc,WCHAR **argv)
         DeleteObject(region);
 
         UINT dpi=GetDpiForWindow(root);
-        int border=theme?2:4;
-        RECT band={border,border,outer.right-outer.left-border,border+win2k_caption_theme_height(dpi,FALSE,theme)},buttons[4];
+        const style_frame_geometry *profile=theme?&theme->border_presentation.geometry:NULL;
+        const int pad=GetSystemMetricsForDpi(SM_CXPADDEDBORDER,dpi);
+        const int x=theme?style_frame_window_border_width(root,profile,STYLE_FRAME_SIZEABLE,TRUE,dpi):
+            GetSystemMetricsForDpi(SM_CXSIZEFRAME,dpi)+pad;
+        const int y=theme?style_frame_window_border_width(root,profile,STYLE_FRAME_SIZEABLE,FALSE,dpi):
+            GetSystemMetricsForDpi(SM_CYSIZEFRAME,dpi)+pad;
+        RECT band={x,y,outer.right-outer.left-x,y+win2k_caption_theme_height(dpi,FALSE,theme)},buttons[4];
         BOOL present[]={TRUE,TRUE,FALSE,TRUE};
         if(theme){
             CHECK(win2k_caption_buttons_with_group(&band,dpi,FALSE,present,
                 &theme->title_buttons,&theme->caption_metrics,buttons));
             CHECK(buttons[3].right-buttons[3].left==MulDiv(25,(int)dpi,96));
-        }else CHECK(win2k_caption_buttons(&band,dpi,FALSE,present,buttons));
+        }else CHECK(win2k_caption_system_buttons(&band,dpi,FALSE,present,buttons));
         LPARAM close=MAKELPARAM(buttons[3].left+1,(buttons[3].top+buttons[3].bottom)/2);
         SendMessageW(surface,WM_LBUTTONDOWN,MK_LBUTTON,close);
         CHECK(GetCapture()==surface);
@@ -270,7 +395,7 @@ int wmain(int argc,WCHAR **argv)
         CHECK(style_uwp_frame_remove(root) && !IsWindow(surface));
         CHECK(IsWindowVisible(title) && GetWindowRect(title,&after) && EqualRect(&title_screen,&after));
     }
-    if(argc>=4)CHECK(!indexed_provider(root,title,argv[2],&modified));
+    if(argc>=4)CHECK(!indexed_provider(root,title,argv[2],&modified,TRUE));
     CHECK(!product_modes(root,content,renderer,argc>=4?argv[2]:NULL,argc>=4?argv[3]:NULL,argc==5?argv[4]:NULL));
     CHECK(win2k_uwp_frame_apply(root,title,NULL,0,NULL));
     HWND surface=style_uwp_frame_surface(root);

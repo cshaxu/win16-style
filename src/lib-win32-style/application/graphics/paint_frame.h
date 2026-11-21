@@ -23,6 +23,9 @@ typedef struct style_relief_palette {
     COLORREF face,light,highlight,shadow,dark,text,gray,window;
     COLORREF selection,selection_text;
 } style_relief_palette;
+/* Source image, text and DC remain borrowed. Temporary brushes own the
+ * disabled emboss and monochrome color layers. */
+BOOL style_paint_content(HDC,LPARAM,WPARAM,int,int,int,int,UINT,DRAWSTATEPROC,BOOL,BOOL,const style_relief_palette *);
 BOOL style_paint_color(HDC,const RECT *,COLORREF);
 RECT style_paint_outlined_face(HDC,RECT,int,BOOL,BOOL,COLORREF,const style_relief_palette *);
 BOOL style_paint_relief(HDC,RECT *,UINT,UINT,const style_relief_palette *);
@@ -30,6 +33,13 @@ BOOL style_paint_line_frame(HDC,RECT *,UINT,UINT,int,COLORREF,style_line_profile
 BOOL style_paint_header_edge(HDC,RECT,BOOL,BOOL,BOOL,int,style_line_profile,const style_relief_palette *);
 RECT style_paint_tab_page(HDC,RECT,RECT,int,style_line_profile,const style_relief_palette *);
 RECT style_paint_tab_item(HDC,RECT,RECT,BOOL,int,style_line_profile,COLORREF,const style_relief_palette *);
+enum { STYLE_CHOICE_DPI=1, STYLE_CHOICE_FONT_GAP=2, STYLE_CHOICE_ALIGN=4 };
+typedef struct style_choice_metrics {
+    BYTE width,height,gap,flags;
+} style_choice_metrics;
+/* The caller selects the label font into dc. */
+BOOL style_choice_layout(HDC dc,RECT client,UINT dpi,DWORD style,style_choice_metrics,RECT *glyph,RECT *label);
+BOOL style_paint_choice_symbols(HDC,const RECT *,UINT,const style_relief_palette *,const COLORREF surface[2]);
 BOOL style_paint_dither(HDC,const RECT *,const style_relief_palette *);
 RECT style_paint_stepped_border(HDC,RECT,const style_relief_palette *,int,int,BOOL);
 BOOL style_paint_push_frame(HDC,RECT *,UINT,BOOL,int,style_push_profile,const style_relief_palette *);
@@ -45,9 +55,14 @@ typedef struct style_scroll_arrow_art {
     style_scroll_arrow_source source;
     BYTE cells[STYLE_SCROLL_ARROW_STATES][STYLE_SCROLL_ARROW_DIRECTIONS][STYLE_SCROLL_ARROW_BYTES];
 } style_scroll_arrow_art;
+const BYTE *style_scroll_arrow_cell(const style_scroll_arrow_art *,UINT state);
 BOOL style_paint_scroll_system_arrow(HDC,const RECT *,UINT,const style_relief_palette *);
 BOOL style_paint_scroll_arrow(HDC,const RECT *,UINT,const style_relief_palette *,const style_scroll_arrow_art *);
-BOOL style_paint_scroll_arrow_crop(HDC,const RECT *,UINT,const style_relief_palette *,const style_scroll_arrow_art *);
+typedef struct style_arrow_button_metrics {
+    BYTE outline,padding,crop;
+} style_arrow_button_metrics;
+BOOL style_paint_arrow_button(HDC,RECT,UINT,UINT dpi,const style_relief_palette *,const style_scroll_arrow_art *,
+    style_arrow_button_metrics);
 
 static inline BOOL style_paint_checker(HDC dc,const RECT *rect,COLORREF zero,COLORREF one)
 {

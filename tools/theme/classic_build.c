@@ -3,6 +3,7 @@
 #include "lib-win32-style/appearance/msstyles/v4_endian.h"
 #include "lib-win32-style/appearance/msstyles/v4_property.h"
 #include "lib-win32-style/appearance/win3x/resources/scroll_glyphs.h"
+#include "lib-win32-style/appearance/win3x/resources/combo_glyph.h"
 #include "classic_source.h"
 #include "legacy_image.h"
 #include <vsstyle.h>
@@ -386,6 +387,25 @@ static bool write_scroll_arrows(FILE *output,const classic_theme_source *source)
     return true;
 }
 
+static bool write_combo_arrow(FILE *output,const classic_theme_source *source)
+{
+    if(!source->legacy_caption_images)return true;
+    unsigned char data[4+CLASSIC_COMBO_ARROW_HEIGHT]={'C','A','R',1};
+    for(unsigned y=0;y<CLASSIC_COMBO_ARROW_HEIGHT;++y)
+        for(unsigned x=0;x<CLASSIC_COMBO_ARROW_WIDTH;++x)
+            if(combo_arrow[y][x]=='0')data[4+y]|=(unsigned char)(1u<<x);
+    return bytes(output,data,sizeof(data));
+}
+
+static bool write_calendar_font(FILE *output,const classic_theme_source *source)
+{
+    if(!source->calendar_font_dpi)return true;
+    if(source->calendar_font_dpi<48 || source->calendar_font_dpi>96 ||
+       !source->calendar_font_points || source->calendar_font_points>48)return false;
+    const unsigned char data[]={2,(unsigned char)source->calendar_font_dpi,(unsigned char)source->calendar_font_points};
+    return bytes(output,data,sizeof(data));
+}
+
 static const struct {
     const char *filename;
     bool (*write)(FILE *,const classic_theme_source *);
@@ -393,7 +413,8 @@ static const struct {
     {"cmap.bin",write_classes},{"bcmap.bin",write_base_classes},
     {"vmap.bin",write_variant},{"rmap.bin",write_metadata},
     {"normal.bin",write_properties},{"classic.bin",write_extension},{"fonts.rcinc",write_fonts},
-    {"arrows.bin",write_scroll_arrows},
+    {"arrows.bin",write_scroll_arrows},{"combo-arrow.bin",write_combo_arrow},
+    {"calendar-font.bin",write_calendar_font},
     {NULL,write_description}
 };
 

@@ -21,6 +21,7 @@ typedef struct control_style {
     classic_edit_border edit_colors[CLASSIC_EDIT_STATE_COUNT];
     classic_list_colors list_colors;
     classic_combo_colors combo_colors;
+    classic_combo_arrow_art combo_arrow;
     classic_tab_colors tab_colors;
     classic_header_colors header_colors;
     classic_progress_colors progress_colors[2];
@@ -32,6 +33,7 @@ typedef struct control_style {
     style_scroll_arrow_art scroll_art;
     classic_scroll_colors scroll_colors;
     classic_scroll_metrics scroll_metrics;
+    style_scroll_policy scroll_policy;
     BOOL themed;
     BOOL file_owner;
     BOOL edit_border;

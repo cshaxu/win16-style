@@ -19,8 +19,8 @@
 
 | 序号 | 分组 | 审计单元 | Win16 | Win2000 | 映射与边界 | 生产及范围证据 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 01 | 外观 | 外框与控件基础配色 | S | S | SysMetrics 色槽与部件色值 | [1](../../src/lib-win32-style/appearance/win3x/common/palette.c) [2](../../src/lib-win32-style/appearance/win2000/common/palette.c) |
-| 02 | 外观 | 活动／非活动标题底色与 Win2000 渐变端点 | S | S | WINDOW 状态和 TMT_GRADIENTCOLOR1/2 或对应背景图 | [1](../../src/lib-win32-style/appearance/win3x/common/palette.c) [2](../../src/lib-win32-style/appearance/win2000/common/palette.c) |
+| 01 | 外观 | 外框与控件基础配色 | S | S | SysMetrics 色槽与部件色值 | [1](../../src/lib-win32-style/appearance/win3x/common/palette.c) [2](../../src/lib-win32-style/appearance/msstyles/classic_theme.h) |
+| 02 | 外观 | 活动／非活动标题底色与 Win2000 渐变端点 | S | S | WINDOW 状态和 TMT_GRADIENTCOLOR1/2 或对应背景图 | [1](../../src/lib-win32-style/appearance/win3x/common/palette.c) [2](../../src/lib-win32-style/appearance/msstyles/classic_theme.h) |
 | 03 | 外观 | 标题文字颜色及字体描述 | S | S | TMT_CAPTIONFONT、TMT_TEXTCOLOR；字体可用性另计 | [1](../../src/lib-win32-style/appearance/win3x/window/frame_renderer.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
 | 04 | 外观 | 控件与菜单的标准字体描述 | S | S | LOGFONT 对应的系统字体属性，应用借用与替代另计 | [1](../../src/lib-win32-style/appearance/win3x/common/font.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
 | 05 | 外观 | Win16 System 原位图字体的字符字形及 advance | E | — | 标准 LOGFONT 可引用字体，不能随文件定义 CP1252 栅格与每字 advance；需授权的附加数据 | [1](../../src/lib-win32-style/appearance/win3x/common/font.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
@@ -48,7 +48,7 @@
 | 27 | 外观 | 普通列表视图与树视图的边缘和选择色 | S | S | LISTVIEW/TREEVIEW 及系统色；只计已支持表面 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
 | 28 | 外观 | 进度条槽、普通分段或平滑可见面 | S | S | PROGRESS 底槽与填充部件；进度数据留原生 | [1](../../src/lib-win32-style/appearance/win3x/control/progress_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/progress_paint.c) |
 | 29 | 外观 | 滑杆轨道、滑块和刻度 | S | S | TRACKBAR 标准部件与状态 | [1](../../src/lib-win32-style/appearance/win3x/control/trackbar_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/trackbar_paint.c) |
-| 30 | 外观 | 微调箭头及边线 | S | S | SPIN 对应状态与方向 | [1](../../src/lib-win32-style/appearance/win3x/control/updown_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/updown_paint.c) |
+| 30 | 外观 | 微调箭头及边线 | S | S | SPIN 对应状态与方向 | [1](../../src/lib-win32-style/appearance/win3x/control/updown_paint.c) [2](../../src/lib-win32-style/application/control/updown.c) |
 | 31 | 外观 | 工具栏普通按钮和分隔线 | S | S | TOOLBAR 状态、图形与分隔部件 | [1](../../src/lib-win32-style/appearance/win3x/control/toolbar_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/toolbar_paint.c) |
 | 32 | 外观 | 状态栏普通面、分隔和尺寸柄 | S | S | STATUS 部件及边距 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
 | 33 | 外观 | Rebar 普通抓手 | S | S | REBAR.RP_GRIPPER；只计现有支持状态 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |

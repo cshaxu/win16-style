@@ -17,7 +17,7 @@ static inline BOOL win2k_file_stock(DWORD flags,DWORD extended)
 static inline win2k_file_layout win2k_file_layout_for(int width,int height,DWORD flags,DWORD extended,
     const classic_file_metrics *metrics)
 {
-    if(!win2k_file_stock(flags,extended))return WIN2K_FILE_NATIVE;
+    if(!metrics->compact_width || !win2k_file_stock(flags,extended))return WIN2K_FILE_NATIVE;
     if(width<metrics->compact_width || height<metrics->compact_height)return WIN2K_FILE_NATIVE;
     if(width<metrics->places_width || height<metrics->places_height)return WIN2K_FILE_COMPACT;
     return extended&OFN_EX_NOPLACESBAR?WIN2K_FILE_NATIVE:WIN2K_FILE_PLACES;

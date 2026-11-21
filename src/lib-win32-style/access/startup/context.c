@@ -33,8 +33,7 @@ DWORD style_startup_packet_parse(const void *data,DWORD bytes,DWORD machine,styl
             return ERROR_INVALID_DATA;
         /* The exported context retains its layout. Its selection bits are
          * storage for the two independent values in the new packet. */
-        flags|=selection.theme_id<<STYLE_STARTUP_PROFILE_SHIFT;
-        if(selection.adapter)flags|=STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE;
+        flags=style_startup_with_selection(flags,selection);
     }else{
         DWORD profile=flags>>STYLE_STARTUP_PROFILE_SHIFT;
         if(h.version!=(profile?3u:2u) ||

@@ -19,4 +19,13 @@ static inline LOGFONTW msstyles_font_at_dpi(const msstyles_font *font,UINT dpi)
     return logical;
 }
 
+enum msstyles_font_role {
+    MSSTYLES_FONT_CAPTION,
+    MSSTYLES_FONT_SMALL_CAPTION,
+    MSSTYLES_FONT_MENU
+};
+/* A declared font takes precedence. Missing declarations use native
+ * non-client metrics. The caller owns the returned handle. */
+HFONT msstyles_font_create(const msstyles_font *defined,UINT dpi,enum msstyles_font_role role);
+
 #endif

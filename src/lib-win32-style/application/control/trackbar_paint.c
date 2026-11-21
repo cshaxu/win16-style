@@ -56,6 +56,7 @@ static BOOL pointed_thumb(HDC dc,RECT rect,DWORD style,BOOL patterned,const styl
 BOOL style_trackbar_paint(HDC dc,RECT r,DWORD style,UINT dpi,BOOL channel,BOOL pressed,
     BOOL disabled,style_trackbar_profile profile,COLORREF trough,const style_relief_palette *palette)
 {
+    if(profile!=STYLE_TRACKBAR_OUTLINED && profile!=STYLE_TRACKBAR_RELIEF)return FALSE;
     int saved=SaveDC(dc);
     if(!saved)return FALSE;
     BOOL painted=TRUE;

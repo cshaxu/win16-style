@@ -15,7 +15,7 @@ BOOL win16_style_header_paint(HWND w,HDC dc,const win16_style_palette *p,HFONT f
     style_line_profile profile)
 {
     BOOL painted=FALSE;int saved=0;style_header_snapshot snapshot;
-    if(!dc || !win16_style_header_supported(w) || !style_header_snapshot_read(w,instance,state,HDF_STRING|HDF_JUSTIFYMASK|HDF_RTLREADING,&snapshot))return FALSE;
+    if(!dc || !profile || !win16_style_header_supported(w) || !style_header_snapshot_read(w,instance,state,HDF_STRING|HDF_JUSTIFYMASK|HDF_RTLREADING,&snapshot))return FALSE;
     RECT client=snapshot.client;int count=snapshot.count;style_header_item *items=snapshot.items;
     saved=SaveDC(dc);if(!saved)goto done;
     IntersectClipRect(dc,client.left,client.top,client.right,client.bottom);
@@ -27,7 +27,6 @@ BOOL win16_style_header_paint(HWND w,HDC dc,const win16_style_palette *p,HFONT f
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
     BOOL button=(style&HDS_BUTTONS)!=0,captured=button && GetCapture()==w;
     const style_relief_palette edge={.face=normal,.light=p->face,.highlight=p->light,.shadow=p->shadow,.dark=p->edge};
-    if(!profile)profile=STYLE_LINE_FLAT;
     for(int i=0;i<count;++i){
         RECT r=items[i].rect,visible;if(!IntersectRect(&visible,&client,&r))continue;
         int inner=SaveDC(dc);if(!inner)goto done;

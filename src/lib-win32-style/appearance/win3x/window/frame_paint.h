@@ -17,6 +17,8 @@ typedef struct win16_frame_paint_state {
     COLORREF end;
     style_border_presentation border;
     const classic_menu_metrics *menu_metrics;
+    BOOL close_disabled;
+    HICON icon;
 } win16_frame_paint_state;
 typedef void (*win16_frame_state_read)(void *,win16_frame_paint_state *);
 void win16_control_fill(HDC dc,RECT r,COLORREF color);

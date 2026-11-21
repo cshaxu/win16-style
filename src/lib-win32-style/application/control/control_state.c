@@ -37,7 +37,7 @@ BOOL style_control_font_message(HWND window,style_instance *instance,style_contr
     if(mode==STYLE_CONTROL_FONT_OBSERVE){
         HFONT source=(HFONT)SendMessageW(window,WM_GETFONT,0,0);
         if(!instance->detached && source!=state->original_font){
-            HFONT replacement=state->fonts->acquire(window,source,native);
+            HFONT replacement=state->fonts->acquire(window,source,native,state->font_recipe);
             *previous=state->font;state->original_font=source;state->font=replacement?replacement:source;
         }
     }
@@ -46,7 +46,7 @@ BOOL style_control_font_message(HWND window,style_instance *instance,style_contr
         HFONT source=state->fonts->source((HFONT)*parameter);state->original_font=source;
         *parameter=(WPARAM)source;
         if(mode!=STYLE_CONTROL_FONT_NORMALIZE){
-            HFONT replacement=state->fonts->acquire(window,source,mode==STYLE_CONTROL_FONT_CACHE);
+            HFONT replacement=state->fonts->acquire(window,source,mode==STYLE_CONTROL_FONT_CACHE,state->font_recipe);
             *previous=state->font;state->font=replacement?replacement:source;
             if(mode==STYLE_CONTROL_FONT_REPLACE){
                 *outbound=state->font;state->fonts->retain(*outbound);

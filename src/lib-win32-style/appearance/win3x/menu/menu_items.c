@@ -9,7 +9,7 @@ static BOOL columns_read(style_menu_item *items,HMENU menu,HDC dc,HFONT font,UIN
     *columns=(win16_style_menu_columns){0};*arrows=FALSE;
     MENUITEMINFOW default_item={.cbSize=sizeof(default_item),.fMask=MIIM_DATA};
     HFONT bold=NULL;
-    if(metrics && (metrics->text_flags&STYLE_MENU_TEXT_BOLD_DEFAULT)){
+    if(style_menu_text_options(metrics?metrics->text_flags:0)&STYLE_MENU_TEXT_BOLD_DEFAULT){
         UINT pos=GetMenuDefaultItem(menu,TRUE,GMDI_USEDISABLED);
         if(pos!=(UINT)-1 && GetMenuItemInfoW(menu,pos,TRUE,&default_item))
             bold=style_menu_bold_font(font);
@@ -46,7 +46,8 @@ BOOL win16_style_menu_size(style_menu_item *items,MEASUREITEMSTRUCT *measure,HFO
     ok=columns_read(items,item->menu,dc,font,dpi,metrics,&columns,&arrows);
     int margin=ok?style_menu_native_text_margin(dc,dpi):0;
     DeleteDC(dc);if(ok){measure->itemWidth=max(1,win16_style_menu_columns_width(&columns,dpi,arrows,metrics)-margin);
-        measure->itemHeight=(item->type&MFT_SEPARATOR)?2*max(1,MulDiv(1,(int)dpi,96)):columns.height;}return ok;
+        measure->itemHeight=(item->type&MFT_SEPARATOR)?2*max(1,MulDiv(1,(int)dpi,96)):
+            style_menu_row_height(dpi,columns.height,metrics?metrics->row_minimum:0,metrics?metrics->row_padding:0);}return ok;
 }
 
 static style_menu_popup_scope *begin_menu(void *context,HWND owner)

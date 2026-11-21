@@ -8,6 +8,12 @@ enum style_menu_text_flags {
     STYLE_MENU_TEXT_DEFINED=0x8000
 };
 
+static inline unsigned style_menu_text_options(unsigned declared)
+{
+    return declared?declared:
+        STYLE_MENU_TEXT_SHORTCUT_RIGHT|STYLE_MENU_TEXT_BOLD_DEFAULT|STYLE_MENU_COMMAND_GLYPHS;
+}
+
 typedef struct style_menu_text_layout {
     RECT label, shortcut;
     BOOL shortcut_right, shortcut_first, label_center;

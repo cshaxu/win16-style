@@ -5,7 +5,7 @@
 static LRESULT CALLBACK edit_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static HFONT edit_font(style_control_combo *combo,HFONT source)
 {
-    HFONT font=combo->ops->acquire(source);if(!font)return source;
+    HFONT font=combo->ops->acquire(source,combo->state->font_recipe);if(!font)return source;
     for(unsigned i=0;i<combo->font_count;++i)if(combo->fonts[i]==font){combo->state->fonts->release(font);return font;}
     if(combo->font_count==ARRAYSIZE(combo->fonts)){combo->state->fonts->release(font);return source;}
     combo->fonts[combo->font_count++]=font;return font;

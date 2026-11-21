@@ -50,11 +50,11 @@ static SIZE text_size(HWND w,HFONT f)
  if(!GetWindowTextW(w,text,128))lstrcpyW(text,L"Representative text");
  CHECK(DrawTextW(dc,text,-1,&r,DT_CALCRECT|DT_SINGLELINE));
  SelectObject(dc,old);ReleaseDC(w,dc);return (SIZE){r.right,r.bottom};}
-static HFONT system_font(HWND w,HFONT original)
+static HFONT system_font(HWND w,HFONT original,unsigned points)
 {
     HFONT font=(HFONT)SendMessageW(w,WM_GETFONT,0,0);HDC dc=CreateCompatibleDC(NULL),expected=CreateCompatibleDC(NULL);
     HBITMAP a=CreateBitmap(128,64,1,1,NULL),b=CreateBitmap(128,64,1,1,NULL);
-    HFONT base=CreateFontW(16,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_RASTER_PRECIS,0,NONANTIALIASED_QUALITY,0,L"System");
+    HFONT base=CreateFontW(MulDiv((int)points,96,72),0,0,0,FW_BOLD,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_RASTER_PRECIS,0,NONANTIALIASED_QUALITY,0,L"System");
     CHECK(dc && expected && a && b && base);HGDIOBJ oa=SelectObject(dc,a),ob=SelectObject(expected,b);
     HGDIOBJ of=SelectObject(dc,original?original:GetStockObject(SYSTEM_FONT));TEXTMETRICW before,after,sys;
     CHECK(GetTextMetricsW(dc,&before));SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));
@@ -202,7 +202,7 @@ static void dialog_case(void)
         CHECK(sizes[i].cx+26<=bounds[i].right-bounds[i].left && sizes[i].cy<=bounds[i].bottom-bounds[i].top);}
     CHECK(install_frame(w,NULL));
     for(unsigned refresh=0;refresh<3;++refresh)SendMessageW(w,WM_SETTINGCHANGE,0,0);
-    for(unsigned i=0;i<4;++i){HWND child=GetDlgItem(w,100+i);CHECK(install_control(child,NULL));unchanged(child,w,system_font(child,fonts[i]),bounds[i],sizes[i]);CHECK(remove_control(child));unchanged(child,w,fonts[i],bounds[i],sizes[i]);}
+    for(unsigned i=0;i<4;++i){HWND child=GetDlgItem(w,100+i);CHECK(install_control(child,NULL));unchanged(child,w,system_font(child,fonts[i],12),bounds[i],sizes[i]);CHECK(remove_control(child));unchanged(child,w,fonts[i],bounds[i],sizes[i]);}
     printf("FONT LAYOUT DIALOG PASS dpi=%u native DS_SETFONT DLU labels fit; repeated frame font refresh\n",GetDpiForWindow(w));
     CHECK(remove_frame(w) && DestroyWindow(w));
 }
@@ -219,8 +219,8 @@ static void controls_case(unsigned scale,unsigned bold)
         HWND w=CreateWindowW(classes[i],labels[i],WS_CHILD|WS_VISIBLE|styles[i],10,(int)i*80,600,60,root,NULL,GetModuleHandleW(NULL),NULL);CHECK(w);
         SendMessageW(w,WM_SETFONT,(WPARAM)font,FALSE);RECT before=rect(w,root);SIZE size=text_size(w,font);
         CHECK(size.cx+32<=before.right-before.left && size.cy<=before.bottom-before.top);
-        CHECK(i==4?install_edit(w,FALSE,NULL):install_control(w,NULL));unchanged(w,root,system_font(w,font),before,size);
-        SendMessageW(w,WM_SETFONT,(WPARAM)next,FALSE);system_font(w,next);
+        CHECK(i==4?install_edit(w,FALSE,NULL):install_control(w,NULL));unchanged(w,root,system_font(w,font,12),before,size);
+        SendMessageW(w,WM_SETFONT,(WPARAM)next,FALSE);system_font(w,next,12);
         CHECK(remove_control(w));CHECK((HFONT)SendMessageW(w,WM_GETFONT,0,0)==next);
         CHECK(i==4?install_edit(w,FALSE,NULL):install_control(w,NULL));SendMessageW(w,WM_SETFONT,0,FALSE);CHECK(!SendMessageW(w,WM_GETFONT,0,0));CHECK(remove_control(w));CHECK(!SendMessageW(w,WM_GETFONT,0,0));
         CHECK(DestroyWindow(w));
@@ -264,4 +264,46 @@ static int worker(int argc,WCHAR **argv)
     }
     CHECK(FreeLibrary(dll));if(menu_only){puts("FONT MENU ONLY PASS: proportional bar/popup subset, not the full control matrix");return 0;}puts("FONT LAYOUT PASS 2 contexts 12 font variants native dialog and 84 control scenarios; repeated after warmup; actual candidate DLL");return 0;
 }
-int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}
+static int theme_control_font(unsigned points)
+{
+    HMODULE renderer=GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll");
+    CHECK(renderer);
+    remove_fn attached=(remove_fn)(void *)GetProcAddress(renderer,"Ntw16sWindowAttached");
+    remove_fn remove=(remove_fn)(void *)GetProcAddress(renderer,"Ntw16sWindowRemove");
+    CHECK(attached && remove);
+    HINSTANCE module=GetModuleHandleW(NULL);
+    WNDCLASSW owner={.lpfnWndProc=DefWindowProcW,.hInstance=module,.lpszClassName=L"ThemeControlFontOwner"};
+    CHECK(RegisterClassW(&owner));
+    HWND parent=CreateWindowW(owner.lpszClassName,L"Theme control font",WS_OVERLAPPEDWINDOW,
+        40,40,320,180,NULL,NULL,module,NULL);
+    CHECK(parent);
+    ShowWindow(parent,SW_SHOWNA);
+    HWND edit=CreateWindowW(L"EDIT",L"Editable text",WS_CHILD|WS_VISIBLE|WS_BORDER,
+        12,12,200,42,parent,NULL,module,NULL);
+    CHECK(edit && attached(edit));
+    HFONT source=CreateFontW(-18,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,0,0,0,0,L"Arial");
+    CHECK(source);
+    RECT before=rect(edit,parent);
+    SendMessageW(edit,WM_SETFONT,(WPARAM)source,FALSE);
+    HFONT current=(HFONT)SendMessageW(edit,WM_GETFONT,0,0);
+    CHECK(current && (current!=source)==(points!=0));
+    if(points){verify_pixels=TRUE;(void)system_font(edit,source,points);}
+    CHECK(remove(edit) && !attached(edit) && (HFONT)SendMessageW(edit,WM_GETFONT,0,0)==source);
+    RECT after=rect(edit,parent);
+    CHECK(EqualRect(&before,&after));
+    CHECK(DestroyWindow(parent) && DeleteObject(source));
+    printf("CONTROL FONT THEME bits=%u points=%u original=1 restored=1\n",
+        (unsigned)(8*sizeof(void *)),points);
+    return 0;
+}
+
+int wmain(int argc,WCHAR **argv)
+{
+    if(argc==3 && !wcscmp(argv[1],L"--theme-control-font")){
+        if(!wcscmp(argv[2],L"sample"))return theme_control_font(12);
+        if(!wcscmp(argv[2],L"alternate"))return theme_control_font(9);
+        if(!wcscmp(argv[2],L"native"))return theme_control_font(0);
+        return 2;
+    }
+    return isolated_process(argc,argv,worker);
+}

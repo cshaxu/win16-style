@@ -16,7 +16,7 @@ HBRUSH win2k_control_color_brush(HWND window,HWND parent,style_instance *instanc
     if(!LPtoDP(dc,&origin,1)||!SetBrushOrgEx(dc,origin.x,origin.y,NULL))return NULL;
     if(brush==GetSysColorBrush(COLOR_BTNFACE) || brush==GetSysColorBrush(COLOR_WINDOW)){
         COLORREF color=brush==GetSysColorBrush(COLOR_BTNFACE)?p->face:p->window;
-        if(p->text!=win2k_standard_palette.text && GetTextColor(dc)==GetSysColor(COLOR_WINDOWTEXT))
+        if(GetTextColor(dc)==GetSysColor(COLOR_WINDOWTEXT))
             SetTextColor(dc,p->text);
         SetBkColor(dc,color);SetDCBrushColor(dc,color);brush=(HBRUSH)GetStockObject(DC_BRUSH);
     }

@@ -1,7 +1,6 @@
 #define _WIN32_WINNT 0x0A00
 #include "file_call.h"
 #include "file.h"
-#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/dialog/classic_file_contract.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
@@ -23,7 +22,7 @@ static _Thread_local file_observation *observing;
 static classic_file_metrics file_metrics(const style_dialog_windows *windows)
 {
     HMODULE module=windows->resources?windows->resources():NULL;
-    return classic_theme_dialog_metrics(module,(classic_dialog_metrics)WIN2000_DIALOG_METRICS).file;
+    return classic_theme_dialog_metrics(module).file;
 }
 
 static UINT_PTR CALLBACK places_hook(HWND window,UINT message,WPARAM wp,LPARAM lp)

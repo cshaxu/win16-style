@@ -9,10 +9,21 @@ int main(void)
     HDC dc;
     win16_style_default_palette(NULL);
     win16_style_default_palette(&source);
-    CHECK(source.active==RGB(164,200,240) && source.inactive==RGB(255,255,255));
-    CHECK(source.active_text==RGB(0,0,0) && source.inactive_text==RGB(0,0,0));
-    CHECK(source.face==RGB(192,192,192) && source.light==RGB(255,255,255));
-    CHECK(source.shadow==RGB(128,128,128) && source.edge==RGB(0,0,0));
+    const COLORREF native[]={
+        GetSysColor(COLOR_ACTIVECAPTION),GetSysColor(COLOR_INACTIVECAPTION),
+        GetSysColor(COLOR_CAPTIONTEXT),GetSysColor(COLOR_INACTIVECAPTIONTEXT),
+        GetSysColor(COLOR_BTNFACE),GetSysColor(COLOR_BTNHIGHLIGHT),
+        GetSysColor(COLOR_BTNSHADOW),GetSysColor(COLOR_WINDOWTEXT)};
+    CHECK(sizeof(source)==sizeof(native) && memcmp(&source,native,sizeof(native))==0);
+    const classic_theme configured={
+        .active={RGB(40,50,60),RGB(40,50,60),RGB(4,5,6)},
+        .inactive={RGB(70,80,90),RGB(70,80,90),RGB(7,8,9)},
+        .frame={RGB(100,110,120),RGB(130,140,150),RGB(160,170,180),RGB(190,200,210),TRUE}};
+    win16_style_theme_palette(&source,&configured);
+    CHECK(source.active==configured.active.start && source.inactive==configured.inactive.start &&
+          source.active_text==configured.active.text && source.inactive_text==configured.inactive.text &&
+          source.face==configured.frame.face && source.light==configured.frame.light &&
+          source.shadow==configured.frame.shadow && source.edge==configured.frame.edge);
     expected=source;
     BOOL high=SystemParametersInfoW(SPI_GETHIGHCONTRAST,sizeof(hc),&hc,0) &&
         (hc.dwFlags&HCF_HIGHCONTRASTON);

@@ -8,6 +8,7 @@ typedef struct win16_control_month_view {
     const win16_style_palette *palette;
     const style_scroll_arrow_art *arrows;
     COLORREF selection;
+    unsigned font_dpi,font_points;
 } win16_control_month_view;
 COLORREF win16_control_month_selected_color(const classic_theme *,COLORREF);
 void win16_control_month_arrow(const win16_control_month_view *,HTHEME,HDC,int,int,const RECT *,const RECT *,const void *);

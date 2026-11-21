@@ -21,7 +21,7 @@ static HFONT choice_font(HWND window,void *context)
 
 void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC dc)
 {
-    RECT r,glyph,label,focus;int saved,x,y,row,column,height;
+    RECT r,glyph,label,focus;int saved,x,y;
     UINT dpi=GetDpiForWindow(w);style_control_button_snapshot snapshot;
     const style_control_button_reader reader={(void *)view,choice_role,choice_font};
     if(!style_control_button_snapshot_read(w,view->instance,&reader,&snapshot))return;
@@ -29,6 +29,12 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
     WCHAR *text=snapshot.text;HFONT font=snapshot.font;TEXTMETRICW tm;
     BOOL radio=type==BS_RADIOBUTTON || type==BS_AUTORADIOBUTTON;
     BOOL label_control=snapshot.role.label;
+    UINT static_type=style&SS_TYPEMASK;
+    if(label_control ? (static_type>=SS_ETCHEDHORZ && static_type<=SS_ETCHEDFRAME && !view->controls.separator) :
+       !classic_button_presentation_enabled(&view->controls,type,style)){
+        style_control_button_snapshot_clear(&snapshot);
+        return;
+    }
     if(label_control && (style&SS_TYPEMASK)==SS_ICON){
         /* statctl.c retains image ownership/sizing in native STATIC. The
          * painter borrows its current handle, never reads image data as text.
@@ -57,7 +63,6 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
     }
     if(label_control || type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX || (style&BS_PUSHLIKE)){
         win16_style_palette palette=*view->palette;
-        UINT static_type=style&SS_TYPEMASK;
         BOOL static_shape=(static_type>=SS_BLACKRECT && static_type<=SS_WHITEFRAME) ||
             (static_type>=SS_ETCHEDHORZ && static_type<=SS_ETCHEDFRAME);
         if(label_control && static_shape && view->frame && view->frame->present){
@@ -81,25 +86,37 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
         win16_control_other(w,view->instance,&palette,dc,r,font,text,label_control,view->button_type,view->group_push,view->controls);
         RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;
     }
-    height=MulDiv(13,(int)dpi,96);glyph=r;glyph.top+=(r.bottom-height)/2;
-    glyph.bottom=glyph.top+height;glyph.right=glyph.left+MulDiv(14,(int)dpi,96);
-    if(style&BS_LEFTTEXT)OffsetRect(&glyph,r.right-glyph.right,0);
-    row=radio?1:check==BST_INDETERMINATE?2:0;
-    column=(check!=BST_UNCHECKED?1:0)+((state&BST_PUSHED)?2:0);
+    SelectObject(dc,font);
+    const style_choice_metrics metrics=view->controls.choice_metrics;
+    if(!style_choice_layout(dc,r,dpi,style,metrics,&glyph,&label)){
+        RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;
+    }
+    UINT glyph_flags=radio?DFCS_BUTTONRADIO:check==BST_INDETERMINATE?DFCS_BUTTON3STATE:DFCS_BUTTONCHECK;
+    if(check!=BST_UNCHECKED)glyph_flags|=DFCS_CHECKED;
+    if(state&BST_PUSHED)glyph_flags|=DFCS_PUSHED;
+    if(style&WS_DISABLED)glyph_flags|=DFCS_INACTIVE;
     win16_style_palette tile=*view->palette;
     const classic_choice_surface *entry=classic_choice_entry(view->choice,radio,check,
         (style&WS_DISABLED)!=0,state);
-    const classic_surface_colors *colors=classic_choice_color(entry);
+    const classic_surface_colors *colors=view->choice_palette?classic_choice_color(entry):NULL;
     if(colors){
         tile.light=colors->face;
         tile.edge=colors->edge;
     }
     const char *image=entry?classic_choice_art_get(view->module,entry->image,view->art):NULL;
     if(view->instance->detached){RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;}
-    win16_control_choice_glyph(dc,glyph,dpi,row,column,&tile,image);
-    label=r;if(style&BS_LEFTTEXT)label.right=glyph.left-MulDiv(4,(int)dpi,96);
-    else label.left=glyph.right+MulDiv(4,(int)dpi,96);
-    SelectObject(dc,font);GetTextMetricsW(dc,&tm);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,view->palette->edge);
+    if(!image && view->controls.choice_fallback==CLASSIC_CHOICE_SYMBOLS){
+        const style_relief_palette palette={.face=tile.face,.light=tile.light,.highlight=tile.light,
+            .shadow=tile.shadow,.dark=tile.edge,.text=tile.edge,.window=tile.light};
+        const COLORREF ink[2]={tile.light,tile.edge};
+        if(!style_paint_choice_symbols(dc,&glyph,glyph_flags,&palette,colors?ink:NULL))
+            win16_control_choice_glyph(dc,glyph,0,glyph_flags,&tile,NULL);
+    }else{
+        UINT art_dpi=((metrics.flags&STYLE_CHOICE_DPI) && metrics.width==CLASSIC_CHOICE_WIDTH &&
+            metrics.height==CLASSIC_CHOICE_HEIGHT)?dpi:0;
+        win16_control_choice_glyph(dc,glyph,art_dpi,glyph_flags,&tile,image);
+    }
+    GetTextMetricsW(dc,&tm);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,view->palette->edge);
     label.top+=(r.bottom-tm.tmHeight)/2;label.bottom=label.top+tm.tmHeight;
     if(IsWindowEnabled(w))DrawTextW(dc,text,-1,&label,DT_LEFT|DT_SINGLELINE);
     else {HBRUSH brush=CreateSolidBrush(view->palette->edge);

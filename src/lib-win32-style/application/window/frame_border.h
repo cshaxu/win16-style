@@ -16,7 +16,7 @@ typedef struct style_border_stroke {
 enum style_frame_scale { STYLE_FRAME_LOGICAL=1, STYLE_FRAME_MONITOR_PIXELS };
 enum style_frame_border_kind { STYLE_FRAME_SIZEABLE, STYLE_FRAME_FIXED, STYLE_FRAME_DIALOG, STYLE_FRAME_LINE };
 typedef struct style_frame_geometry {
-    uint8_t scale, sizeable, fixed, dialog, line, caption_floor, separator_units;
+    uint8_t scale, sizeable, fixed, dialog, line, caption_floor, separator_units, scroll_shared_units;
 } style_frame_geometry;
 typedef struct style_border_presentation {
     uint8_t fill,dialog_fill;
@@ -37,6 +37,9 @@ void style_frame_border_paint(HDC dc,RECT bounds,int border,int unit,BOOL dialog
  * monitor DPI as the source scale, even for DPI-virtualized windows. */
 int style_frame_border_width(const style_frame_geometry *geometry,enum style_frame_border_kind kind,
     UINT coordinate_dpi,UINT monitor_dpi);
+int style_frame_native_border_width(enum style_frame_border_kind kind,BOOL horizontal,UINT dpi);
+int style_frame_window_border_width(HWND window,const style_frame_geometry *geometry,
+    enum style_frame_border_kind kind,BOOL horizontal,UINT dpi);
 int style_frame_caption_height(int logical_height,UINT dpi,int minimum);
 SIZE style_frame_monitor_dpi(HWND window,UINT fallback);
 

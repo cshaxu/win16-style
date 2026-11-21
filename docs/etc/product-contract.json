@@ -24,6 +24,18 @@
     "Win2K/Win2K.theme",
     "Win2K/Win2K.msstyles"
   ],
+  "standalone_only_exports": [
+    "Ntw2ksDrawButton",
+    "win16_style_font_acquire",
+    "win16_style_font_release",
+    "win16_style_menu_measure",
+    "win16_style_menu_text",
+    "win16_style_controls_begin",
+    "win16_style_controls_end",
+    "win16_style_frame_scrollbars_palette",
+    "win16_style_set_palette",
+    "win16_style_tabbed_list_install"
+  ],
   "retired": [
     "demo.exe",
     "ntw16s32.dll",

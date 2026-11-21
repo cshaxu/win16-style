@@ -9,6 +9,7 @@ typedef struct win16_control_vcl_paint_view {
     style_runtime_child_state *state;
     const win16_style_palette *palette;
     const struct win16_runtime_push *push;
+    const classic_combo_arrow_art *combo_arrow;
 } win16_control_vcl_paint_view;
 void win16_control_vcl_inplace_draw(const win16_control_vcl_paint_view *,HDC,int,int,const RECT *,const RECT *,const void *,BOOL);
 void win16_control_vcl_nav_draw(const win16_control_vcl_paint_view *,HDC,int,int,const RECT *,const RECT *,const void *);

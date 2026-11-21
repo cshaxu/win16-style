@@ -5,6 +5,7 @@
 #include "lib-win32-style/appearance/win3x/resources/frame_buttons.h"
 #include "lib-win32-style/appearance/win3x/resources/menu_glyphs.h"
 #include "lib-win32-style/appearance/win3x/resources/control_glyphs.h"
+#include "lib-win32-style/appearance/win3x/resources/combo_glyph.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -217,6 +218,22 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect
     return true;
 }
 
+static bool combo_resource(HMODULE module,bool expected)
+{
+    DWORD length=0;
+    const unsigned char *data=resource(module,MAKEINTRESOURCEW(10),L"CLASSIC_COMBO_ARROW",&length);
+    if(!expected)return data==NULL;
+    const unsigned char header[]={'C','A','R',1};
+    CHECK(data && length==sizeof(header)+ARRAYSIZE(combo_arrow) && !memcmp(data,header,sizeof(header)));
+    for(unsigned y=0;y<ARRAYSIZE(combo_arrow);++y){
+        unsigned char mask=0;
+        for(unsigned x=0;x<sizeof(combo_arrow[y])-1;++x)
+            if(combo_arrow[y][x]=='0')mask|=(unsigned char)(1u<<x);
+        CHECK(data[sizeof(header)+y]==mask);
+    }
+    return true;
+}
+
 static bool check_pair(PCWSTR root,PCWSTR stem,PCWSTR label,uint32_t caption,uint32_t face,bool expect_image)
 {
     WCHAR descriptor[MAX_PATH],carrier[MAX_PATH],filename[48];
@@ -229,7 +246,7 @@ static bool check_pair(PCWSTR root,PCWSTR stem,PCWSTR label,uint32_t caption,uin
     CHECK(field(descriptor,L"MasterThemeSelector",L"MTSM",L"DABJDKT"));
     HMODULE module=LoadLibraryExW(carrier,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
     CHECK(module);
-    bool valid=variant_fields(module,descriptor) && style_data(module,caption,face,expect_image);
+    bool valid=variant_fields(module,descriptor) && style_data(module,caption,face,expect_image) && combo_resource(module,expect_image);
     FreeLibrary(module);
     return valid;
 }

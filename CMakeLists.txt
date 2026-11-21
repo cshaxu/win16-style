@@ -33,7 +33,7 @@ target_link_libraries(style-bitmap PUBLIC gdi32)
 add_library(style-uwp-native STATIC src/lib-win32-style/application/adapters/uwp/native.c src/lib-win32-style/application/adapters/uwp/target.c src/lib-win32-style/application/adapters/surface.c src/lib-win32-style/application/adapters/host.c src/lib-win32-style/application/adapters/frame.c src/lib-win32-style/application/adapters/input.c)
 target_include_directories(style-uwp-native PUBLIC src)
 target_compile_definitions(style-uwp-native PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(style-uwp-native PUBLIC "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" style-instance style-bitmap user32 gdi32 ole32 oleaut32 uuid dwmapi comctl32)
+target_link_libraries(style-uwp-native PUBLIC "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" style-instance style-bitmap style-caption-slots user32 gdi32 ole32 oleaut32 uuid dwmapi comctl32)
 add_library(style-font-cache STATIC src/lib-win32-style/application/graphics/font_cache.c)
 target_include_directories(style-font-cache PUBLIC src)
 target_compile_definitions(style-font-cache PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -60,26 +60,20 @@ add_library(style-global-window STATIC src/lib-win32-style/application/lifecycle
 target_include_directories(style-global-window PUBLIC src)
 target_compile_definitions(style-global-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-global-window PUBLIC user32 comctl32)
-add_library(win2k-window STATIC src/lib-win32-style/appearance/win2000/window/caption.c src/lib-win32-style/appearance/win2000/window/frame.c src/lib-win32-style/appearance/win2000/window/system_menu.c)
+add_library(win2k-window STATIC src/lib-win32-style/appearance/win2000/window/caption.c src/lib-win32-style/appearance/win2000/window/caption_compat.c src/lib-win32-style/appearance/win2000/window/frame.c src/lib-win32-style/appearance/win2000/window/system_menu.c)
 target_include_directories(win2k-window PUBLIC src)
 target_compile_definitions(win2k-window PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-window PUBLIC style-caption-slots style-menu-owner style-window style-instance style-bitmap style-present user32 gdi32 msimg32 comctl32 dwmapi shcore)
-add_library(win2k-window-uwp STATIC src/lib-win32-style/appearance/win2000/window/modern_frame.c)
+set(observed_modern_frame src/lib-win32-style/appearance/win2000/window/modern_frame.c)
+add_library(win2k-window-uwp STATIC ${observed_modern_frame})
 target_compile_definitions(win2k-window-uwp PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-window-uwp PUBLIC win2k-window style-uwp-native style-menu-items)
-add_library(win2k-common STATIC
-  src/lib-win32-style/appearance/win2000/common/palette.c
-  src/lib-win32-style/appearance/win2000/common/paint.c)
-target_include_directories(win2k-common PUBLIC src)
-target_compile_definitions(win2k-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win2k-common PUBLIC style-present user32 gdi32)
 add_library(win2k-control STATIC
   src/lib-win32-style/appearance/win2000/control/tab_paint.c
   src/lib-win32-style/appearance/win2000/control/header_paint.c
   src/lib-win32-style/appearance/win2000/control/report_paint.c
   src/lib-win32-style/appearance/win2000/control/progress_paint.c
   src/lib-win32-style/appearance/win2000/control/trackbar_paint.c
-  src/lib-win32-style/appearance/win2000/control/updown_paint.c
   src/lib-win32-style/appearance/win2000/control/toolbar_paint.c
   src/lib-win32-style/appearance/win2000/control/rebar_paint.c
   src/lib-win32-style/appearance/win2000/control/status_paint.c
@@ -95,7 +89,7 @@ target_include_directories(win2k-control PUBLIC src)
 target_compile_definitions(win2k-control PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 # Theme state is supplied by the existing shared ntwshk runtime. Do not link
 # a second static theme-state owner into this profile.
-target_link_libraries(win2k-control PUBLIC win2k-common style-control-common style-instance style-present user32 gdi32 comctl32 msimg32)
+target_link_libraries(win2k-control PUBLIC style-control-common style-instance style-present user32 gdi32 comctl32 msimg32)
 target_link_libraries(win2k-window PUBLIC win2k-control)
 add_library(lib-tray STATIC src/lib-win32/tray/tray.c)
 target_compile_definitions(lib-tray PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -116,7 +110,7 @@ target_include_directories(style-uwp-repaint PUBLIC src)
 target_compile_definitions(style-uwp-repaint PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-uwp-repaint PUBLIC user32 comctl32)
 target_link_libraries(win2k-window PUBLIC style-uwp-repaint)
-add_library(style-menu-owner STATIC src/lib-win32-style/application/menu/owner.c src/lib-win32-style/application/menu/bar_state.c src/lib-win32-style/application/menu/tracking_input.c src/lib-win32-style/application/menu/bar_controller.c)
+add_library(style-menu-owner STATIC src/lib-win32-style/application/menu/owner.c src/lib-win32-style/application/menu/bar_state.c src/lib-win32-style/application/menu/tracking_input.c src/lib-win32-style/application/menu/bar_controller.c src/lib-win32-style/application/menu/host_menu.c)
 target_include_directories(style-menu-owner PUBLIC src)
 target_compile_definitions(style-menu-owner PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-menu-owner PUBLIC style-menu-items style-instance user32 comctl32)
@@ -139,9 +133,9 @@ add_library(win16-window STATIC
 target_include_directories(win16-window PUBLIC src/lib-win32-style/appearance/win3x/window PRIVATE src)
 target_compile_definitions(win16-window PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win16-window PUBLIC style-menu-owner style-window style-instance style-menu-items style-uwp-repaint win16-common user32 gdi32 comctl32 uxtheme PRIVATE ole32 uuid)
-add_library(win16-window-uwp STATIC
-  src/lib-win32-style/appearance/win3x/window/modern_frame.c
-  src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c)
+set(client_modern_frame src/lib-win32-style/appearance/win3x/window/modern_frame.c)
+set(client_modern_layout src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c)
+add_library(win16-window-uwp STATIC ${client_modern_frame} ${client_modern_layout})
 target_include_directories(win16-window-uwp PUBLIC src)
 target_compile_definitions(win16-window-uwp PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win16-window-uwp PUBLIC style-uwp-native win16-window)
@@ -220,14 +214,14 @@ add_library(style-control-common STATIC
 target_include_directories(style-control-common PUBLIC src)
 target_compile_definitions(style-control-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_dependencies(style-control-common style-subclass)
-target_link_libraries(style-control-common PUBLIC module-import style-bitmap win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme)
+target_link_libraries(style-control-common PUBLIC module-import style-bitmap win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme msimg32)
 add_library(win16-control STATIC
   src/lib-win32-style/appearance/win3x/control/tab_paint.c
   src/lib-win32-style/appearance/win3x/control/header_paint.c
   src/lib-win32-style/appearance/win3x/control/progress_paint.c src/lib-win32-style/appearance/win3x/control/trackbar_paint.c
   src/lib-win32-style/appearance/win3x/control/toolbar_paint.c src/lib-win32-style/appearance/win3x/control/control_scope.c
   src/lib-win32-style/appearance/win3x/control/basic_paint.c src/lib-win32-style/appearance/win3x/control/updown_paint.c
-  src/lib-win32-style/appearance/win3x/control/choice_paint.c src/lib-win32-style/appearance/win3x/resources/scroll_assets.c
+  src/lib-win32-style/appearance/win3x/control/choice_paint.c
   src/lib-win32-style/appearance/win3x/control/other_paint.c src/lib-win32-style/appearance/win3x/control/list_paint.c
   src/lib-win32-style/appearance/win3x/control/combo_paint.c src/lib-win32-style/appearance/win3x/control/scroll_paint.c
   src/lib-win32-style/appearance/win3x/control/choice_view.c src/lib-win32-style/appearance/win3x/control/vb_text.c
@@ -255,7 +249,7 @@ target_compile_definitions(style-dialog-common PRIVATE UNICODE _UNICODE _WIN32_W
 target_link_libraries(style-dialog-common PUBLIC style-creation win32-unwind shell32 ole32 uuid user32 gdi32 comdlg32)
 set(WIN16STYLE_X86_BUILD "${CMAKE_SOURCE_DIR}/build/.ninja/x86" CACHE PATH "Matching x86 fixture build")
 set(core_sources
-  attachment.c control_scope.c controls.c dllmain.c global/window.c global/session.c global/hook.c global/policy.c global/vb_text.c
+  attachment.c controls.c global/window.c global/session.c global/hook.c global/policy.c global/vb_text.c
   native_api.c theme.c win16_style.c uwp/hook.c uwp/target.c)
 list(TRANSFORM core_sources PREPEND "src/ntw16s-dll/")
 if(WIN16STYLE_ARCH STREQUAL "x86")
@@ -263,8 +257,19 @@ if(WIN16STYLE_ARCH STREQUAL "x86")
 else()
   set(dll_name ntw16s64)
 endif()
-set(win2k_providers src/ntw2ks-dll/button.c src/ntw2ks-dll/controls.c src/ntw2ks-dll/window.c)
-add_library(ntw2ks SHARED src/ntw2ks-dll/dllmain.c ${win2k_providers} src/ntw2ks-dll/version.rc src/ntw2ks-dll/ntw2ks.def)
+set(observed_provider src/ntwshk-dll/observed.c src/ntw2ks-dll/window.c)
+set(win2k_export_source "${CMAKE_SOURCE_DIR}/src/ntw2ks-dll/ntw2ks.def")
+set(win2k_def "${win2k_export_source}")
+if(WIN16STYLE_ARCH STREQUAL "x86")
+  file(READ "${win2k_export_source}" win2k_exports)
+  # Bind the local stdcall symbols explicitly. The neutral import library
+  # also provides the undecorated public button symbol.
+  string(REPLACE "Ntw2ksFinishHelper @1" "Ntw2ksFinishHelper=Ntw2ksFinishHelper@16 @1" win2k_exports "${win2k_exports}")
+  string(REPLACE "Ntw2ksDrawButton @2" "Ntw2ksDrawButton=Ntw2ksDrawButton@12 @2" win2k_exports "${win2k_exports}")
+  set(win2k_def "${CMAKE_CURRENT_BINARY_DIR}/ntw2ks-compat.def")
+  file(WRITE "${win2k_def}" "${win2k_exports}")
+endif()
+add_library(ntw2ks SHARED src/ntw2ks-dll/dllmain.c src/ntw2ks-dll/button.c src/ntw2ks-dll/controls.c ${observed_provider} src/ntw2ks-dll/version.rc "${win2k_def}")
 set_property(SOURCE src/ntw2ks-dll/version.rc APPEND PROPERTY OBJECT_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general_full.rcinc")
 add_library(win2k-print STATIC src/lib-win32-style/appearance/win2000/dialog/print_general.c
@@ -272,18 +277,21 @@ add_library(win2k-print STATIC src/lib-win32-style/appearance/win2000/dialog/pri
   src/lib-win32-style/appearance/win2000/dialog/print_directory.c)
 target_link_libraries(win2k-print PUBLIC style-dialog-common comctl32 winspool activeds adsiid oleaut32)
 target_link_libraries(win2k-print PRIVATE style-msstyles)
+set(classic_theme_source src/lib-win32-style/appearance/msstyles/classic_theme.c)
 add_library(style-msstyles STATIC
   src/lib-win32-style/appearance/msstyles/classic_style.c
-  src/lib-win32-style/appearance/msstyles/classic_theme.c
+  ${classic_theme_source}
   src/lib-win32-style/appearance/msstyles/menu_art.c
   src/lib-win32-style/appearance/msstyles/theme_file.c
   src/lib-win32-style/appearance/msstyles/v4_font.c
+  src/lib-win32-style/appearance/msstyles/v4_font_create.c
   src/lib-win32-style/appearance/msstyles/v4_png.c
   src/lib-win32-style/appearance/msstyles/v4_property.c
   src/lib-win32-style/appearance/msstyles/v4_tables.c)
 target_include_directories(style-msstyles PUBLIC src)
 target_compile_definitions(style-msstyles PRIVATE _WIN32_WINNT=0x0A00)
-target_link_libraries(style-msstyles PRIVATE ole32 uuid)
+target_link_libraries(style-msstyles PRIVATE ole32 uuid user32 gdi32)
+target_link_libraries(win16-common PRIVATE style-msstyles)
 target_link_libraries(win2k-window PRIVATE style-msstyles)
 target_link_libraries(win16-window PRIVATE style-msstyles)
 target_link_libraries(win16-control PRIVATE style-msstyles ole32 uuid)
@@ -317,7 +325,7 @@ foreach(stem IN ITEMS Win16 Win2K)
   add_custom_command(
     OUTPUT "${theme_object}" "${out}/${stem}.theme"
     BYPRODUCTS "${out}/cmap.bin" "${out}/bcmap.bin" "${out}/vmap.bin"
-      "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" "${out}/fonts.rcinc" "${out}/arrows.bin" ${image_files}
+      "${out}/rmap.bin" "${out}/normal.bin" "${out}/classic.bin" "${out}/fonts.rcinc" "${out}/arrows.bin" "${out}/combo-arrow.bin" "${out}/calendar-font.bin" ${image_files}
     COMMAND "$<TARGET_FILE:classic-theme-compiler>" "${stem}"
     COMMAND "${CMAKE_RC_COMPILER}" ${image_flag} -I "${out}" -I "${CMAKE_CURRENT_SOURCE_DIR}/src" -i "${classic_theme_rc}" -O coff -o theme.res.o
     DEPENDS classic-theme-compiler "${classic_theme_rc}" ${dialog_resources}
@@ -352,7 +360,7 @@ endif()
 target_link_libraries(ntw2ks PRIVATE win2k-print win2k-file win2k-stock user32 uxtheme)
 target_include_directories(ntw2ks PRIVATE src ${CMAKE_SOURCE_DIR})
 target_link_options(ntw2ks PRIVATE -Wl,--kill-at)
-add_library(ntw16s SHARED ${core_sources}
+add_library(ntw16s SHARED ${core_sources} src/ntw16s-dll/control_scope.c src/ntw16s-dll/dllmain.c src/ntw16s-dll/compat_font.c src/ntw16s-dll/compat_menu.c
   src/ntw16s-dll/${dll_name}.def src/ntw16s-dll/version.rc "${theme_object_Win16}")
 set_target_properties(ntw16s PROPERTIES OUTPUT_NAME ${dll_name} PREFIX "")
 target_include_directories(ntw16s PRIVATE src ${CMAKE_SOURCE_DIR})
@@ -414,21 +422,16 @@ target_include_directories(process-hook PUBLIC src)
 target_link_libraries(process-hook PUBLIC win32-unwind advapi32)
 target_compile_definitions(process-hook PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 set(ntwshk_export_source "${CMAKE_SOURCE_DIR}/src/ntwshk-dll/ntwshk.def")
-set(win16_export_source "${CMAKE_SOURCE_DIR}/src/ntw16s-dll/${dll_name}.def")
-set(win2k_export_source "${CMAKE_SOURCE_DIR}/src/ntw2ks-dll/ntw2ks.def")
-set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
-  "${ntwshk_export_source}" "${win16_export_source}" "${win2k_export_source}")
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${ntwshk_export_source}")
 file(READ "${ntwshk_export_source}" ntwshk_exports)
-foreach(provider IN ITEMS "${win16_export_source}" "${win2k_export_source}")
-  file(STRINGS "${provider}" provider_exports REGEX "^ +[^ ]+ +@[0-9]+$")
-  foreach(entry IN LISTS provider_exports)
-    string(REGEX REPLACE " +@[0-9]+$" "" entry "${entry}")
-    if(WIN16STYLE_ARCH STREQUAL "x86" AND entry MATCHES "Ntw2ksDrawButton$")
-      string(APPEND entry "=Ntw2ksDrawButton@12")
-    endif()
-    string(APPEND ntwshk_exports "${entry}\n")
+if(WIN16STYLE_ARCH STREQUAL "x86")
+  foreach(symbol IN ITEMS Ntw16sGlobalHook Ntw16sUwpFrameHook Ntw16sWindowThreadHook)
+    string(REPLACE "\n    ${symbol}\n" "\n    ${symbol}=${symbol}@12\n" ntwshk_exports "${ntwshk_exports}")
   endforeach()
-endforeach()
+  string(REPLACE "Ntw16sGlobalHost\n" "Ntw16sGlobalHost=Ntw16sGlobalHost@16\n" ntwshk_exports "${ntwshk_exports}")
+  string(REPLACE "Ntw16sGlobalThread=ntw16s_global_thread_worker\n"
+    "Ntw16sGlobalThread=ntw16s_global_thread_worker@4\n" ntwshk_exports "${ntwshk_exports}")
+endif()
 if(WIN16STYLE_ARCH STREQUAL "x64")
   string(APPEND ntwshk_exports "    process_hook_unwind_handler\n    NtwshkFinishHelper @1 NONAME\n")
 else()
@@ -437,14 +440,15 @@ endif()
 set(ntwshk_def "${CMAKE_CURRENT_BINARY_DIR}/ntwshk-provider.def")
 file(WRITE "${ntwshk_def}" "${ntwshk_exports}")
 add_library(ntwshk SHARED src/ntwshk-dll/dllmain.c "${ntwshk_def}" src/ntwshk-dll/version.rc
-  src/ntwshk-dll/startup.c ${core_sources} ${win2k_providers} src/ntw2ks-dll/dllmain.c)
+  src/ntwshk-dll/startup.c ${core_sources} ${observed_provider})
 if(WIN16STYLE_ARCH STREQUAL "x86")
   set_target_properties(ntwshk PROPERTIES OUTPUT_NAME ntwshk32 PREFIX "")
 else()
   set_target_properties(ntwshk PROPERTIES OUTPUT_NAME ntwshk64 PREFIX "")
 endif()
 target_include_directories(ntwshk PRIVATE src ${CMAKE_SOURCE_DIR})
-target_compile_definitions(ntwshk PRIVATE NTW16S_STATIC NTWSHK_UNIFIED UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_sources(ntwshk PRIVATE ${classic_theme_source} ${observed_modern_frame} ${client_modern_frame} ${client_modern_layout})
+target_compile_definitions(ntwshk PRIVATE NTW16S_STATIC NTWSHK_UNIFIED STYLE_THEME_EXTERNAL_ONLY UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(ntwshk PRIVATE process-hook process-image win32-handle style-theme-state style-menu-popup)
 add_library(style-startup STATIC
   src/lib-win32-style/access/startup/context.c src/lib-win32-style/access/startup/install.c
@@ -462,13 +466,13 @@ target_compile_definitions(style-runtime-process PRIVATE UNICODE _UNICODE _WIN32
 target_link_libraries(ntw16s PRIVATE style-runtime-process)
 add_dependencies(ntw2ks style-subclass)
 target_link_libraries(ntw2ks PRIVATE style-startup win2k-window win2k-control style-global-window "$<LINK_GROUP:RESCAN,style-menu-owner,ntwshk>" "${subclass_import}")
-set(win16_intercepts ${injection_root}/entry.c ${injection_root}/window_titles.c ${injection_root}/file_dialogs.c ${injection_root}/folder_dialogs.c ${injection_root}/modern_dialogs.c ${injection_root}/com_dialogs.c
+set(win16_intercepts ${injection_root}/window_titles.c ${injection_root}/file_dialogs.c ${injection_root}/folder_dialogs.c ${injection_root}/modern_dialogs.c ${injection_root}/com_dialogs.c
   ${injection_root}/create_process.c ${injection_root}/late_process.c)
-target_sources(ntw16s PRIVATE ${win16_intercepts})
+target_sources(ntw16s PRIVATE ${injection_root}/entry.c ${win16_intercepts})
 target_sources(ntwshk PRIVATE ${win16_intercepts})
 add_dependencies(ntwshk style-subclass)
 target_link_libraries(ntwshk PRIVATE style-runtime-process style-creation style-uwp-hook style-global-window
-  win16-window-uwp win2k-window-uwp win16-window win16-control win2k-window win2k-control
+  win16-window win16-control win2k-window win2k-control
   win2k-print win2k-file win2k-stock style-dialog-common style-theme-track style-companion module-import process-global
   "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}" user32 gdi32 comctl32 comdlg32
   shell32 ole32 oleaut32 uuid dwmapi uxtheme advapi32)
@@ -500,7 +504,8 @@ if(WIN16STYLE_ARCH STREQUAL "x64")
   target_sources(run16s PRIVATE src/run16s-exe/uwp.c src/run16s-exe/explorer.c src/run16s-exe/window_target.c src/run16s-exe/console_host.c src/ntw16s-dll/uwp/target.c)
   target_link_libraries(run16s PRIVATE oleaut32 style-msstyles)
   target_link_libraries(run16s PRIVATE uuid dwmapi)
-  target_compile_definitions(run16s PRIVATE NTWSHK_LAUNCHER UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_sources(run16s PRIVATE ${classic_theme_source})
+  target_compile_definitions(run16s PRIVATE NTWSHK_LAUNCHER STYLE_THEME_EXTERNAL_ONLY UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 
   target_link_libraries(run16s PRIVATE lib-tray style-companion style-startup ntwshk process-global process-launch win32-security shell32 ole32 advapi32 user32)
   target_include_directories(run16s PRIVATE ${CMAKE_SOURCE_DIR})
@@ -590,7 +595,7 @@ if(BUILD_TESTING)
   add_dependencies(core-ntw2ks-control-theme ntwshk ntw16s ntw2ks)
   add_test(NAME core/ntw2ks-control-theme COMMAND $<TARGET_FILE:core-ntw2ks-control-theme>)
   add_executable(core-win2k-paint tests/lib-win32-style/appearance/win2000/common/paint.c)
-  target_link_libraries(core-win2k-paint PRIVATE win2k-common)
+  target_link_libraries(core-win2k-paint PRIVATE style-present)
   add_test(NAME core/win2k-paint COMMAND $<TARGET_FILE:core-win2k-paint>)
   add_executable(core-win2k-button tests/lib-win32-style/appearance/win2000/control/button_paint.c)
   target_compile_definitions(core-win2k-button PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -841,9 +846,10 @@ if(BUILD_TESTING)
   target_link_libraries(core-style-classic-extension PRIVATE style-msstyles)
   target_link_options(core-style-classic-extension PRIVATE -municode)
   add_test(NAME core/style-classic-extension COMMAND $<TARGET_FILE:core-style-classic-extension>)
-  add_executable(core-style-classic-theme EXCLUDE_FROM_ALL tests/lib-win32-style/appearance/msstyles/classic_theme.c)
+  add_executable(core-style-classic-theme EXCLUDE_FROM_ALL tests/lib-win32-style/appearance/msstyles/classic_theme.c
+    src/lib-win32-style/appearance/win3x/resources/scroll_assets.c ${classic_theme_source})
   target_include_directories(core-style-classic-theme PRIVATE src)
-  target_compile_definitions(core-style-classic-theme PRIVATE NTW16S_STATIC)
+  target_compile_definitions(core-style-classic-theme PRIVATE NTW16S_STATIC STYLE_THEME_EXTERNAL_ONLY _WIN32_WINNT=0x0A00)
   target_link_libraries(core-style-classic-theme PRIVATE style-msstyles win16-window win2k-window win16-control
     win2k-control "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>")
   target_link_options(core-style-classic-theme PRIVATE -municode)
@@ -1076,6 +1082,10 @@ if(BUILD_TESTING)
       COMMAND "$<TARGET_FILE:core-classic-themes>" "${CMAKE_BINARY_DIR}"
       COMMAND "$<TARGET_FILE:core-style-classic-extension>" "${CMAKE_BINARY_DIR}"
       COMMAND "$<TARGET_FILE:core-style-classic-theme>" "${CMAKE_BINARY_DIR}"
+      COMMAND "$<TARGET_FILE:core-style-classic-theme>" --host-options Win16 7
+      COMMAND "$<TARGET_FILE:core-style-classic-theme>" --host-options Win2K 0
+      COMMAND "$<TARGET_FILE:core-style-classic-theme>" --profile-domain
+      COMMAND "$<TARGET_FILE:core-style-classic-theme>" --caption-icon
       DEPENDS classic-themes core-classic-themes core-style-classic-extension core-style-classic-theme
       VERBATIM)
   endif()
@@ -1113,7 +1123,7 @@ if(BUILD_TESTING)
   add_executable(uac-self-elevate-unit tests/run16s-exe/self_elevate_unit.c src/ntw16s-dll/injection/create_process.c)
   target_include_directories(uac-self-elevate-unit PRIVATE src)
   target_link_options(uac-self-elevate-unit PRIVATE -municode)
-  target_link_libraries(uac-self-elevate-unit PRIVATE style-msstyles shell32)
+  target_link_libraries(uac-self-elevate-unit PRIVATE shell32)
   add_test(NAME launch/self-elevate-unit COMMAND ${test_driver} --name launch/self-elevate-unit -- $<TARGET_FILE:uac-self-elevate-unit>)
   set_tests_properties(launch/self-elevate-unit PROPERTIES TIMEOUT 20)
   plain_test(window-band-fixture tests/run16s-exe/window_band.c user32 gdi32)
@@ -1661,7 +1671,7 @@ if(BUILD_TESTING)
   add_executable(core-style-uwp-global tests/lib-win32-style/access/global/uwp_global.c)
   add_executable(core-style-uwp-menu tests/lib-win32-style/application/menu/host_menu.c)
   target_include_directories(core-style-uwp-menu PRIVATE src)
-  target_link_libraries(core-style-uwp-menu PRIVATE user32)
+  target_link_libraries(core-style-uwp-menu PRIVATE style-menu-owner)
   add_test(NAME core/style-uwp-menu COMMAND $<TARGET_FILE:core-style-uwp-menu>)
   add_test(NAME core/style-uwp-menu-popup COMMAND $<TARGET_FILE:core-style-uwp-menu> --popup)
   set_tests_properties(core/style-uwp-menu-popup PROPERTIES TIMEOUT 10 RUN_SERIAL TRUE)
@@ -1819,7 +1829,7 @@ if(BUILD_TESTING)
 
   add_test(NAME core/abi COMMAND ${test_driver} --name core/abi -- $<TARGET_FILE:core-abi> $<TARGET_FILE:ntw16s>)
   set_tests_properties(core/abi PROPERTIES TIMEOUT 20)
-  native_test(core-window-thread tests/ntw16s-dll/window_thread.c user32)
+  native_test(core-window-thread tests/ntw16s-dll/window_thread.c style-msstyles user32)
   target_include_directories(core-window-thread PRIVATE src)
   add_test(NAME core/window-thread COMMAND ${test_driver} --name core/window-thread -- $<TARGET_FILE:core-window-thread> $<TARGET_FILE:ntw16s>)
   set_tests_properties(core/window-thread PROPERTIES TIMEOUT 20)
@@ -1882,8 +1892,9 @@ if(BUILD_TESTING)
   add_test(NAME core/edit-clipboard COMMAND ${test_driver} --name core/edit-clipboard -- $<TARGET_FILE:core-edit-clipboard>)
   set_tests_properties(core/edit-clipboard PROPERTIES SKIP_RETURN_CODE 77)
   set(test_common_sources ${core_sources})
-  list(REMOVE_ITEM test_common_sources src/ntw16s-dll/dllmain.c src/ntw16s-dll/controls.c src/ntw16s-dll/win16_style.c)
-  add_library(test-painter-common STATIC ${test_common_sources} ${process_hook_root}/unwind.c)
+  list(REMOVE_ITEM test_common_sources src/ntw16s-dll/controls.c src/ntw16s-dll/win16_style.c)
+  add_library(test-painter-common STATIC ${test_common_sources} ${process_hook_root}/unwind.c
+    src/ntw16s-dll/compat_menu.c src/ntw16s-dll/compat_font.c)
   target_link_libraries(test-painter-common PUBLIC style-creation style-companion style-theme-state win16-window-uwp win16-control "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>")
   target_include_directories(test-painter-common PRIVATE src)
   target_compile_definitions(test-painter-common PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -2007,6 +2018,7 @@ if(BUILD_TESTING)
     add_test(NAME core/dialog-show COMMAND ${test_driver} --name core/dialog-show -- $<TARGET_FILE:core-dialog-show> $<TARGET_FILE:run16s>)
   endif()
 
+  native_test(core-progress-theme-edge tests/ntw16s-dll/progress_controls.c user32 gdi32 comctl32 imm32)
   native_test(core-progress-color-v5 tests/ntw16s-dll/progress_v5_color_witness.c user32 comctl32)
 
   # The package test launches this isolated, same-width target through run16s.
@@ -2128,10 +2140,10 @@ if(BUILD_TESTING)
   target_compile_definitions(core-vcl-status-font-alias PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   add_executable(core-status-font-isolation tests/ntw16s-dll/status_font_isolation.c src/lib-win32-style/appearance/win3x/common/font.c)
   target_compile_definitions(core-status-font-isolation PRIVATE NTW16S_BUILD _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-status-font-isolation PRIVATE style-font-cache style-bitmap user32 gdi32)
+  target_link_libraries(core-status-font-isolation PRIVATE style-font-cache style-bitmap style-msstyles user32 gdi32)
   add_executable(core-status-font-stock tests/ntw16s-dll/status_font_stock.c)
   target_compile_definitions(core-status-font-stock PRIVATE NTW16S_BUILD _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-status-font-stock PRIVATE style-bitmap user32 gdi32)
+  target_link_libraries(core-status-font-stock PRIVATE style-bitmap style-msstyles user32 gdi32)
   manifest_test(core-status-font-stock-live tests/ntw16s-dll/status_font_stock_live.c user32 gdi32 comctl32)
   target_compile_definitions(core-status-font-stock-live PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 
@@ -2194,7 +2206,7 @@ if(BUILD_TESTING)
   plain_test(core-vcl-combo-simple-module tests/ntw16s-dll/vcl_combo_simple_module.c user32 gdi32)
   add_executable(core-vcl-combo-list-module tests/ntw16s-dll/vcl_combo_list_module.c src/lib-win32-style/appearance/win3x/common/font.c)
   target_compile_definitions(core-vcl-combo-list-module PRIVATE NTW16S_BUILD)
-  target_link_libraries(core-vcl-combo-list-module PRIVATE style-font-cache style-bitmap user32 gdi32)
+  target_link_libraries(core-vcl-combo-list-module PRIVATE style-font-cache style-bitmap style-msstyles user32 gdi32)
   target_link_options(core-vcl-combo-list-module PRIVATE -municode)
 
   add_control_fixture(vcl-group-frame-fixture tests/ntw16s-dll/vcl_group_frame_fixture.c user32 gdi32 uxtheme)
@@ -2369,7 +2381,7 @@ if(BUILD_TESTING)
   add_executable(core-global-vb-text tests/ntw16s-dll/global_vb_text.c src/ntw16s-dll/global/vb_text.c src/lib-win32-style/appearance/win3x/control/vb_text.c src/lib-win32-style/appearance/win3x/common/font.c)
   target_include_directories(core-global-vb-text PRIVATE src)
   target_compile_definitions(core-global-vb-text PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-global-vb-text PRIVATE style-font-cache style-control-common style-bitmap user32 gdi32)
+  target_link_libraries(core-global-vb-text PRIVATE style-font-cache style-control-common style-bitmap style-msstyles user32 gdi32)
   target_link_options(core-global-vb-text PRIVATE -municode)
   add_dependencies(core-global-vb-text vb-global-runtime)
   add_test(NAME core/global-vb-text COMMAND ${test_driver} --name core/global-vb-text -- $<TARGET_FILE:core-global-vb-text> $<TARGET_FILE:vb-global-runtime>)
@@ -2378,7 +2390,7 @@ if(BUILD_TESTING)
   add_executable(core-vb-font src/lib-win32-style/application/graphics/font_cache.c tests/ntw16s-dll/vb_font.c src/lib-win32-style/appearance/win3x/common/font.c src/lib-win32-style/appearance/win3x/control/vb_text.c)
   target_include_directories(core-vb-font PRIVATE src)
   target_compile_definitions(core-vb-font PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-  target_link_libraries(core-vb-font PRIVATE style-control-common style-bitmap user32 gdi32)
+  target_link_libraries(core-vb-font PRIVATE style-control-common style-bitmap style-msstyles user32 gdi32)
   target_compile_options(core-vb-font PRIVATE -include "${CMAKE_SOURCE_DIR}/tests/ntw16s-dll/vb_alloc.h")
   target_link_options(core-vb-font PRIVATE -municode)
   add_test(NAME core/vb-font COMMAND ${test_driver} --name core/vb-font -- $<TARGET_FILE:core-vb-font> $<TARGET_FILE:vb-runtime>)
@@ -2571,6 +2583,19 @@ if(BUILD_TESTING)
     add_executable(core-uwp-${case} tests/lib-win32-style/appearance/win3x/window/modern_${case}.c)
     if(case STREQUAL "frame")
       target_link_options(core-uwp-${case} PRIVATE -municode)
+      set(uwp_frame_fixture "${CMAKE_CURRENT_BINARY_DIR}/uwp-frame-fixture")
+      set_target_properties(core-uwp-frame PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${uwp_frame_fixture}")
+      set(uwp_frame_theme "${uwp_frame_fixture}/Win16")
+      set(uwp_frame_theme_inputs "${uwp_frame_theme}/Win16.theme" "${uwp_frame_theme}/Win16.msstyles")
+      add_custom_command(OUTPUT ${uwp_frame_theme_inputs}
+        COMMAND "${CMAKE_COMMAND}" -E make_directory "${uwp_frame_theme}"
+        COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${CMAKE_BINARY_DIR}/Win16/Win16.theme" "${uwp_frame_theme}"
+        COMMAND "${CMAKE_C_COMPILER}" -shared -nostdlib -Wl,--entry,0,--no-insert-timestamp
+          -o "${uwp_frame_theme}/Win16.msstyles" "${theme_object_Win16}"
+        DEPENDS "${theme_object_Win16}" "${CMAKE_BINARY_DIR}/Win16/Win16.theme"
+        VERBATIM)
+      add_custom_target(core-uwp-frame-theme DEPENDS ${uwp_frame_theme_inputs})
+      add_dependencies(core-uwp-frame core-uwp-frame-theme)
     endif()
     add_dependencies(core-uwp-${case} style-subclass)
     target_include_directories(core-uwp-${case} PRIVATE src tests/ntw16s-dll)
@@ -2582,12 +2607,35 @@ if(BUILD_TESTING)
   add_dependencies(core-uwp-frame-hidden style-subclass)
   target_link_libraries(core-uwp-frame-hidden PRIVATE win16-window-uwp "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}")
   add_test(NAME core/uwp-frame-hidden COMMAND $<TARGET_FILE:core-uwp-frame-hidden>)
+  add_executable(core-uwp-client-theme-renderer tests/lib-win32-style/appearance/win3x/window/modern_frame_hidden.c
+    ${classic_theme_source} ${client_modern_frame} ${client_modern_layout})
+  add_dependencies(core-uwp-client-theme-renderer style-subclass)
+  target_compile_definitions(core-uwp-client-theme-renderer PRIVATE NTW16S_STATIC STYLE_THEME_EXTERNAL_ONLY UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_options(core-uwp-client-theme-renderer PRIVATE -municode)
+  target_link_libraries(core-uwp-client-theme-renderer PRIVATE win16-window-uwp "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}")
+  if(TARGET classic-themes)
+    add_dependencies(core-uwp-client-theme-renderer classic-themes)
+    add_test(NAME core/uwp-client-theme-renderer COMMAND $<TARGET_FILE:core-uwp-client-theme-renderer>
+      "${CMAKE_BINARY_DIR}/Win16/Win16.theme")
+    set_tests_properties(core/uwp-client-theme-renderer PROPERTIES TIMEOUT 15)
+  endif()
   add_executable(core-win2k-uwp-frame tests/lib-win32-style/appearance/win2000/window/modern_frame.c)
   add_dependencies(core-win2k-uwp-frame style-subclass ntw16s)
   target_compile_definitions(core-win2k-uwp-frame PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_options(core-win2k-uwp-frame PRIVATE -municode)
   target_link_libraries(core-win2k-uwp-frame PRIVATE win2k-window-uwp "${subclass_import}")
   add_test(NAME core/win2k-uwp-frame COMMAND $<TARGET_FILE:core-win2k-uwp-frame>)
+  add_executable(core-uwp-theme-renderer tests/lib-win32-style/appearance/win2000/window/modern_frame.c ${observed_modern_frame})
+  add_dependencies(core-uwp-theme-renderer style-subclass)
+  target_compile_definitions(core-uwp-theme-renderer PRIVATE STYLE_THEME_EXTERNAL_ONLY UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+  target_link_options(core-uwp-theme-renderer PRIVATE -municode)
+  target_link_libraries(core-uwp-theme-renderer PRIVATE win2k-window-uwp "${subclass_import}")
+  if(TARGET classic-themes)
+    add_dependencies(core-uwp-theme-renderer classic-themes)
+    add_test(NAME core/uwp-theme-renderer COMMAND $<TARGET_FILE:core-uwp-theme-renderer>
+      --external-renderer "${CMAKE_BINARY_DIR}/Win16/Win16.theme")
+    set_tests_properties(core/uwp-theme-renderer PROPERTIES TIMEOUT 15)
+  endif()
   add_dependencies(core-win16-window-link style-subclass)
   target_include_directories(core-win16-window-link PRIVATE src)
   target_compile_definitions(core-win16-window-link PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)

@@ -2,10 +2,24 @@
 
 static RECT drag_bounds(HWND window,const style_scroll_layout *layout,const style_scroll_policy *policy)
 {
-    if(policy->drag_bounds)return policy->drag_bounds(window,layout);
     RECT bounds=layout->bar;
-    int unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
-    InflateRect(&bounds,policy->tolerance_x*unit,policy->tolerance_y*unit);
+    UINT dpi=GetDpiForWindow(window);
+    if(!dpi)dpi=96;
+    const style_scroll_drag drag=policy->drag;
+    int x,y;
+    if(drag.scale==STYLE_SCROLL_DRAG_LOGICAL){
+        int unit=max(1,MulDiv(1,(int)dpi,96));
+        x=drag.first*unit;y=drag.second*unit;
+    }else if(drag.scale==STYLE_SCROLL_DRAG_BAR){
+        int cross=layout->vertical?bounds.right-bounds.left:bounds.bottom-bounds.top;
+        int along=GetSystemMetricsForDpi(layout->vertical?SM_CYVTHUMB:SM_CXHTHUMB,dpi);
+        x=layout->vertical?drag.first*cross:drag.second*along;
+        y=layout->vertical?drag.second*along:drag.first*cross;
+    }else{
+        x=GetSystemMetricsForDpi(SM_CXDRAG,dpi);
+        y=GetSystemMetricsForDpi(SM_CYDRAG,dpi);
+    }
+    InflateRect(&bounds,x,y);
     return bounds;
 }
 

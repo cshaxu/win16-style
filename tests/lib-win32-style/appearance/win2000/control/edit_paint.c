@@ -57,8 +57,109 @@ static INT_PTR CALLBACK dialog_proc(HWND window,UINT message,WPARAM a,LPARAM b)
     if(message==WM_APP+9){EnumChildWindows(window,initialized_child,0);EndDialog(window,73);return TRUE;}
     return FALSE;
 }
+static int edit_fingerprints(BOOL native_client)
+{
+    HINSTANCE instance=GetModuleHandleW(NULL);
+    WNDCLASSW cls={.lpfnWndProc=parent_proc,.hInstance=instance,.lpszClassName=L"OwnedEditPresentation"};
+    CHECK(RegisterClassW(&cls));
+    HWND parent=CreateWindowExW(WS_EX_NOACTIVATE|WS_EX_TOOLWINDOW,cls.lpszClassName,L"",
+        WS_OVERLAPPEDWINDOW|WS_VISIBLE,-10000,-10000,300,180,NULL,NULL,instance,NULL);
+    CHECK(parent);
+    HDC dc=CreateCompatibleDC(NULL);
+    void *pixels;
+    BITMAPINFO info={.bmiHeader={sizeof(BITMAPINFOHEADER),200,-80,1,32,BI_RGB}};
+    HBITMAP bitmap=CreateDIBSection(dc,&info,DIB_RGB_COLORS,&pixels,NULL,0);
+    CHECK(dc && bitmap);
+    HGDIOBJ old=SelectObject(dc,bitmap);
+    CHECK(old && old!=HGDI_ERROR);
+    if(native_client){
+        const INITCOMMONCONTROLSEX common={sizeof(common),ICC_HOTKEY_CLASS};
+        CHECK(InitCommonControlsEx(&common));
+    }
+    HMODULE rich=native_client?LoadLibraryW(L"msftedit.dll"):NULL;
+    CHECK(!native_client || rich);
+    const DWORD styles[]={WS_BORDER|ES_AUTOHSCROLL,ES_READONLY,ES_MULTILINE|ES_AUTOVSCROLL|WS_VSCROLL};
+    const WCHAR *native_classes[]={L"RICHEDIT50W",HOTKEY_CLASSW};
+    unsigned count=native_client?ARRAYSIZE(native_classes):ARRAYSIZE(styles);
+    for(unsigned i=0;i<count;++i){
+        HWND edit=CreateWindowExW(native_client || i?WS_EX_CLIENTEDGE:0,
+            native_client?native_classes[i]:L"EDIT",L"alpha",WS_CHILD|WS_VISIBLE|(native_client?0:styles[i]),
+            0,0,160,48,parent,(HMENU)(UINT_PTR)(1+i),instance,NULL);
+        RECT client;
+        CHECK(edit && GetClientRect(edit,&client));
+        if(!native_client){
+            SendMessageW(edit,EM_SETSEL,1,3);
+            CHECK(SendMessageW(edit,EM_GETSEL,0,0)==MAKELONG(1,3) && GetWindowTextLengthW(edit)==5);
+        }
+        capture(edit,dc,TRUE);
+        unsigned long hash=2166136261u;
+        for(int y=0;y<48;++y)
+            for(int x=0;x<160;++x)hash=(hash^GetPixel(dc,x,y))*16777619u;
+        printf("EDIT_THEME kind=%u client=%ldx%ld pixels=%08lx\n",i,client.right,client.bottom,hash);
+        CHECK(DestroyWindow(edit));
+    }
+    CHECK(DestroyWindow(parent) && SelectObject(dc,old) && DeleteObject(bitmap) && DeleteDC(dc));
+    if(rich)CHECK(FreeLibrary(rich));
+    return 0;
+}
+
+static int shared_edge_fingerprints(void)
+{
+    const INITCOMMONCONTROLSEX common={sizeof(common),ICC_PROGRESS_CLASS};
+    CHECK(InitCommonControlsEx(&common));
+    HINSTANCE instance=GetModuleHandleW(NULL);
+    WNDCLASSW cls={.lpfnWndProc=parent_proc,.hInstance=instance,.lpszClassName=L"OwnedSharedEdge"};
+    CHECK(RegisterClassW(&cls));
+    HWND parent=CreateWindowExW(WS_EX_NOACTIVATE|WS_EX_TOOLWINDOW,cls.lpszClassName,L"",
+        WS_OVERLAPPEDWINDOW|WS_VISIBLE,-10000,-10000,300,180,NULL,NULL,instance,NULL);
+    CHECK(parent);
+    HDC dc=CreateCompatibleDC(NULL);
+    void *pixels;
+    BITMAPINFO info={.bmiHeader={sizeof(BITMAPINFOHEADER),200,-80,1,32,BI_RGB}};
+    HBITMAP bitmap=CreateDIBSection(dc,&info,DIB_RGB_COLORS,&pixels,NULL,0);
+    CHECK(dc && bitmap);
+    HGDIOBJ old=SelectObject(dc,bitmap);
+    CHECK(old && old!=HGDI_ERROR);
+    for(unsigned i=0;i<2;++i){
+        HWND control=CreateWindowExW(i?WS_EX_STATICEDGE:WS_EX_CLIENTEDGE,i?PROGRESS_CLASSW:L"LISTBOX",L"",
+            WS_CHILD|WS_VISIBLE|(i?PBS_SMOOTH:LBS_NOTIFY|LBS_NOINTEGRALHEIGHT),0,0,160,48,parent,NULL,instance,NULL);
+        RECT client,outer;
+        POINT origin={0};
+        CHECK(control && GetClientRect(control,&client) && GetWindowRect(control,&outer) && ClientToScreen(control,&origin));
+        if(i){
+            SendMessageW(control,PBM_SETRANGE32,0,100);
+            SendMessageW(control,PBM_SETPOS,40,0);
+            CHECK(SendMessageW(control,PBM_GETPOS,0,0)==40);
+        }else{
+            CHECK(SendMessageW(control,LB_ADDSTRING,0,(LPARAM)L"Alpha")==0);
+            CHECK(SendMessageW(control,LB_ADDSTRING,0,(LPARAM)L"Beta")==1);
+            CHECK(SendMessageW(control,LB_SETCURSEL,1,0)==1);
+            CHECK(SendMessageW(control,LB_GETCURSEL,0,0)==1);
+        }
+        capture(control,dc,FALSE);
+        unsigned long content=2166136261u;
+        for(int y=0;y<client.bottom;++y)
+            for(int x=0;x<client.right;++x)content=(content^GetPixel(dc,x,y))*16777619u;
+        PatBlt(dc,0,0,200,80,BLACKNESS);
+        SendMessageW(control,WM_PRINT,(WPARAM)dc,PRF_NONCLIENT);
+        OffsetRect(&client,origin.x-outer.left,origin.y-outer.top);
+        unsigned long edge=2166136261u;
+        for(int y=0;y<outer.bottom-outer.top;++y)
+            for(int x=0;x<outer.right-outer.left;++x)
+                if(!PtInRect(&client,(POINT){x,y}))edge=(edge^GetPixel(dc,x,y))*16777619u;
+        printf("SHARED_EDGE kind=%u client=%ldx%ld edge=%08lx content=%08lx\n",i,
+            client.right-client.left,client.bottom-client.top,edge,content);
+        CHECK(DestroyWindow(control));
+    }
+    CHECK(DestroyWindow(parent) && SelectObject(dc,old) && DeleteObject(bitmap) && DeleteDC(dc));
+    return 0;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==2 && !wcscmp(argv[1],L"--shared-edge-fingerprints"))return shared_edge_fingerprints();
+    if(argc==2 && !wcscmp(argv[1],L"--edit-fingerprints"))return edit_fingerprints(FALSE);
+    if(argc==2 && !wcscmp(argv[1],L"--native-edge-fingerprints"))return edit_fingerprints(TRUE);
     CHECK(argc==2||(argc==3&&(!wcscmp(argv[2],L"aware")||!wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3&&!wcscmp(argv[2],L"aware");hooked=argc==3&&!wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));

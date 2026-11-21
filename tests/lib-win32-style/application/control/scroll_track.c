@@ -14,7 +14,7 @@ int main(void)
 {
     style_scroll_layout layout={.bar={0,0,20,200},.first={0,0,20,20},.last={0,180,20,200},.thumb={0,80,20,100},
         .minimum_pixel=20,.travel=120,.minimum=0,.maximum=100,.position=50,.vertical=TRUE,.thumb_fits=TRUE,.thumb_draggable=TRUE};
-    style_scroll_policy policy={150,27,6,2,hit,NULL},other={310,41,1,1,page_hit,NULL};
+    style_scroll_policy policy={150,27,{STYLE_SCROLL_DRAG_LOGICAL,6,2},hit},other={310,41,{STYLE_SCROLL_DRAG_LOGICAL,1,1},page_hit};
     style_scroll_track track={0};style_scroll_actions actions;RECT limit={-6,-2,26,202};POINT point={10,10};
     CHECK(style_scroll_begin(&track,&layout,0,point,&limit,&actions,&policy));
     CHECK(track.active && actions.count==1 && actions.notices[0].command==SB_LINEUP && actions.timer_ms==150);

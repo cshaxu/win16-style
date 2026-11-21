@@ -1,6 +1,6 @@
 #include "list_combo.h"
 #include "background.h"
-#include "../common/paint.h"
+#include "../common/palette.h"
 #include "lib-win32-style/application/control/combo_snapshot.h"
 #include "lib-win32-style/application/control/list_snapshot.h"
 #include <oleacc.h>

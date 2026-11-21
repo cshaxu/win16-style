@@ -4,7 +4,7 @@
 #include "lib-win32-style/application/menu/row_text.h"
 #include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "lib-win32-style/appearance/win2000/window/caption.h"
-#include "lib-win32-style/appearance/win2000/common/paint.h"
+#include "lib-win32-style/appearance/win2000/common/palette.h"
 #include "lib-win32-style/appearance/win2000/control/button_paint.h"
 #include "lib-win32-style/appearance/win2000/control/edit_paint.h"
 #include "lib-win32-style/appearance/win2000/control/list_combo.h"
@@ -20,6 +20,10 @@
 #include "lib-win32-style/appearance/win3x/control/control_state.h"
 #include "lib-win32-style/appearance/win3x/control/list_paint.h"
 #include "lib-win32-style/appearance/win3x/resources/scroll_assets.h"
+#include "lib-win32-style/appearance/win3x/resources/frame_buttons.h"
+#include "lib-win32-style/appearance/win3x/resources/menu_glyphs.h"
+#include "lib-win32-style/appearance/win3x/resources/control_glyphs.h"
+#include "lib-win32-style/appearance/win3x/resources/combo_glyph.h"
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
@@ -35,7 +39,9 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
         RECT actual[4],reference[4],alternate[4];
         classic_button_group changed=theme->title_buttons;
         changed.slots[3].gap_before+=2;
-        if(!win2k_caption_buttons(&r,dpi,FALSE,present,reference) ||
+        const classic_button_group stock=WIN2000_TITLE_BUTTON_GROUP;
+        const classic_caption_metrics stock_metrics={19,16,{16,14},{15,15}};
+        if(!win2k_caption_buttons_with_group(&r,dpi,FALSE,present,&stock,&stock_metrics,reference) ||
            !win2k_caption_buttons_with_group(&r,dpi,FALSE,present,&theme->title_buttons,&theme->caption_metrics,actual) ||
            !win2k_caption_buttons_with_group(&r,dpi,FALSE,present,&changed,&theme->caption_metrics,alternate) ||
            memcmp(actual,reference,sizeof(actual)) ||
@@ -49,11 +55,17 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
     win16_style_layout layout,reference,alternate;
     classic_button_group changed=theme->title_buttons;
     changed.slots[2].gap_before=4;
-    if(!win16_style_measure(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&reference) ||
+    const style_frame_geometry stock={STYLE_FRAME_LOGICAL,4,3,6,1,20,1,1};
+    const classic_button_group stock_buttons={3,0,0,{{CLASSIC_BUTTON_SYSTEM,CLASSIC_BUTTON_LEFT,0},
+            {CLASSIC_BUTTON_MINIMIZE,CLASSIC_BUTTON_RIGHT,0},
+            {CLASSIC_BUTTON_MAXIMIZE,CLASSIC_BUTTON_RIGHT,0}},0};
+    const classic_caption_metrics stock_metrics={.height=18,.button={19,18}};
+    if(!win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
+        &stock_buttons,&stock_metrics,&stock,dpi,&reference) ||
        !win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&theme->title_buttons,&theme->caption_metrics,
            &theme->border_presentation.geometry,dpi,&layout) ||
        !win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&changed,&theme->caption_metrics,
-           NULL,dpi,&alternate) ||
+           &theme->border_presentation.geometry,dpi,&alternate) ||
        !EqualRect(&reference.title,&layout.title) || !EqualRect(&reference.buttons[CLASSIC_BUTTON_MINIMIZE],&layout.buttons[CLASSIC_BUTTON_MINIMIZE]) ||
        !EqualRect(&reference.buttons[CLASSIC_BUTTON_MAXIMIZE],&layout.buttons[CLASSIC_BUTTON_MAXIMIZE]) || !EqualRect(&reference.buttons[CLASSIC_BUTTON_SYSTEM],&layout.buttons[CLASSIC_BUTTON_SYSTEM]) ||
        !EqualRect(&alternate.buttons[CLASSIC_BUTTON_MAXIMIZE],&layout.buttons[CLASSIC_BUTTON_MAXIMIZE]) ||
@@ -64,7 +76,7 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
     changed=theme->title_buttons;
     changed.slots[0].side=CLASSIC_BUTTON_RIGHT;
     if(!win16_style_measure_with_buttons(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
-        &changed,&theme->caption_metrics,NULL,dpi,&alternate))return FALSE;
+        &changed,&theme->caption_metrics,&theme->border_presentation.geometry,dpi,&alternate))return FALSE;
     RECT old_system=layout.buttons[CLASSIC_BUTTON_SYSTEM],new_system=alternate.buttons[CLASSIC_BUTTON_SYSTEM];
     POINT old_point={old_system.left,old_system.top},new_point={new_system.left,new_system.top};
     if(win16_style_hit(&layout,old_point)!=HTSYSMENU || win16_style_hit(&alternate,old_point)!=HTCAPTION ||
@@ -81,15 +93,14 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
     return win16_style_hit(&layout,center)==HTCAPTION && GetPixel(dc,center.x,center.y)==colors.start;
 }
 
-static BOOL draw_win2k_border(HDC dc,const DWORD *pixels,const classic_theme *theme)
+static BOOL draw_win2k_border(HDC dc,const classic_theme *theme)
 {
-    DWORD reference[240*64];
+    const COLORREF untouched=RGB(17,43,169);
+    if(!style_caption_fill(dc,(RECT){0,0,240,64},untouched,untouched,FALSE))return FALSE;
     win2k_window_border_paint(dc,240,64,4,NULL,TRUE,FALSE);
-    GdiFlush();
-    memcpy(reference,pixels,sizeof(reference));
+    if(GetPixel(dc,0,32)!=untouched || GetPixel(dc,239,32)!=untouched)return FALSE;
     win2k_window_border_paint(dc,240,64,4,theme,TRUE,FALSE);
-    GdiFlush();
-    if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
+    if(GetPixel(dc,0,32)!=theme->frame.face || GetPixel(dc,239,32)!=theme->frame.edge)return FALSE;
     const classic_frame_colors variant={RGB(10,74,95),RGB(26,193,180),
         RGB(89,26,175),RGB(187,64,28),TRUE};
     classic_theme recolored=*theme;
@@ -100,7 +111,7 @@ static BOOL draw_win2k_border(HDC dc,const DWORD *pixels,const classic_theme *th
     win2k_caption_layout caption={.band={4,4,236,23}};
     const UINT flags[WIN2K_CAPTION_PARTS]={0};
     win2k_caption_render_with_colors(dc,&caption,L"",NULL,(HFONT)GetStockObject(DEFAULT_GUI_FONT),
-        96,win2k_caption_palette(TRUE),&variant,&theme->caption_presentation,TRUE,flags,NULL);
+        96,win2k_caption_theme_palette(TRUE,theme),&variant,&theme->caption_presentation,TRUE,flags,NULL);
     if(GetPixel(dc,100,22)!=variant.face || GetPixel(dc,4,4)!=theme->active.start)return FALSE;
     /* Give the same adapter a clipped fill and choose different stroke positions. */
     recolored.border_presentation=(style_border_presentation){STYLE_BORDER_CLIPPED,STYLE_BORDER_TITLE,
@@ -124,8 +135,8 @@ static BOOL draw_win16_border(HDC dc,const DWORD *pixels,const classic_theme *th
     const COLORREF client=RGB(19,201,87);
     const style_border_palette palette={theme->frame.face,theme->frame.edge,
         theme->frame.light,theme->frame.shadow,theme->active.start};
-    const style_border_presentation fallback=WIN16_FRAME_BORDER;
-    const style_border_presentation *border=theme->border_presentation.fill?&theme->border_presentation:&fallback;
+    const style_border_presentation *border=&theme->border_presentation;
+    if(!border->fill)return FALSE;
     DWORD reference[240*64];
     for(unsigned i=0;i<4;++i){
         BOOL dialog=(i&1u)!=0;
@@ -179,7 +190,7 @@ static BOOL draw_caption_presentation(HDC dc,BOOL win2000)
         if(!style_caption_fill(dc,clean,background,background,FALSE))return FALSE;
         if(win2000){
             const win2k_caption_layout layout={.band=band};
-            const classic_frame_colors frame={.face=line,.present=TRUE};
+            const classic_frame_colors frame={.face=line,.edge=line,.present=TRUE};
             win2k_caption_colors colors={background,background,RGB(0,0,0),FALSE};
             win2k_caption_render_with_colors(dc,&layout,L"Test",NULL,font,96,colors,&frame,
                 &variants[i],FALSE,flags,NULL);
@@ -187,7 +198,7 @@ static BOOL draw_caption_presentation(HDC dc,BOOL win2000)
             const win16_style_layout layout={.caption=band,.title=band,.unit=1};
             style_font_pair fonts={.title=font};
             win16_frame_paint_state state={.fonts=&fonts,.active=TRUE,.presentation=variants[i]};
-            win16_style_palette colors={.active=background,.edge=line};
+            win16_style_palette colors={.active=background,.edge=line,.face=line};
             win16_control_frame_caption(dc,&layout,&colors,&state,L"Test",FALSE,FALSE);
         }
         first_ink[i]=band.right;
@@ -198,6 +209,42 @@ static BOOL draw_caption_presentation(HDC dc,BOOL win2000)
             return FALSE;
     }
     return first_ink[0]<15 && first_ink[1]>65 && first_ink[1]<band.right;
+}
+
+static BOOL shared_caption_band(HDC dc,const DWORD *pixels)
+{
+    const RECT band={2,2,202,22},left={8,4,29,20},right={175,4,196,20};
+    const COLORREF start=RGB(10,40,100),end=RGB(34,130,200);
+    const classic_frame_colors colors={RGB(200,190,180),RGB(230,220,210),RGB(70,80,90),RGB(15,25,35),TRUE};
+    style_font_pair fonts={.title=(HFONT)GetStockObject(ANSI_FIXED_FONT)};
+    win16_style_layout client={.caption=band,.title={29,2,175,22},.unit=1};
+    client.buttons[CLASSIC_BUTTON_MINIMIZE]=left;
+    client.buttons[CLASSIC_BUTTON_CLOSE]=right;
+    win2k_caption_layout native={.band=band,.left_buttons=1u<<CLASSIC_BUTTON_MINIMIZE};
+    native.buttons[WIN2K_MINIMIZE]=left;
+    native.buttons[WIN2K_CLOSE]=right;
+    const UINT flags[WIN2K_CAPTION_PARTS]={0};
+    const win16_style_palette palette={.active=start,.active_text=RGB(255,255,255),
+        .edge=colors.edge,.light=colors.light,.shadow=colors.shadow,.face=colors.face};
+    const win2k_caption_colors native_colors={start,end,palette.active_text,TRUE};
+    DWORD reference[240*64];
+    for(unsigned separator=STYLE_CAPTION_SEPARATOR_INSIDE;separator<=STYLE_CAPTION_SEPARATOR_AFTER;++separator){
+        const style_caption_presentation appearance={.text_mode=STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,.separator=separator};
+        const win16_frame_paint_state state={.fonts=&fonts,.active=TRUE,.gradient=TRUE,.end=end,.presentation=appearance};
+        RECT clear={0,0,240,64};
+        style_caption_fill(dc,clear,0,0,FALSE);
+        win16_control_frame_caption(dc,&client,&palette,&state,L"Shared",FALSE,FALSE);
+        GdiFlush();
+        memcpy(reference,pixels,sizeof(reference));
+        style_caption_fill(dc,clear,0,0,FALSE);
+        win2k_caption_render_with_colors(dc,&native,L"Shared",NULL,fonts.title,96,native_colors,&colors,
+            &appearance,FALSE,flags,NULL);
+        GdiFlush();
+        if(memcmp(reference,pixels,sizeof(reference)) || GetPixel(dc,200,4)!=end ||
+           GetPixel(dc,200,separator==STYLE_CAPTION_SEPARATOR_INSIDE?21:22)!=
+               (separator==STYLE_CAPTION_SEPARATOR_INSIDE?colors.face:colors.edge))return FALSE;
+    }
+    return TRUE;
 }
 
 static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *theme,const classic_caption_art *art,UINT dpi)
@@ -212,14 +259,29 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
     palette.light=RGB(29,60,91);
     palette.shadow=RGB(93,55,64);
     palette.face=RGB(117,39,46);
+    classic_caption_art original={.available=TRUE};
+    const BYTE pressed_roles[]={1,0,3,2};
+    for(unsigned role=0;role<=CLASSIC_IMAGE_ROLE_COUNT;++role){
+        BOOL system=role>=CLASSIC_IMAGE_SYSTEM;
+        unsigned width=system?CLASSIC_SYSTEM_ART_WIDTH:CLASSIC_CAPTION_ART_WIDTH;
+        for(unsigned state=0;state<2;++state)
+            for(unsigned y=0;y<CLASSIC_CAPTION_ART_HEIGHT;++y){
+                const char *row=system?system_menu_bitmap[y]+(role==CLASSIC_IMAGE_SYSTEM?0:width):
+                    frame_buttons[role+3*state][y];
+                for(unsigned x=0;x<width;++x){
+                    BYTE shade=(BYTE)(row[x]-'0');
+                    original.roles[role][state][y*width+x]=system && state?pressed_roles[shade]:shade;
+                }
+            }
+    }
     const int hits[]={HTMINBUTTON,HTMAXBUTTON,HTSYSMENU};
     DWORD reference[240*64];
     for(unsigned flags=0;flags<8;++flags){
-        win16_frame_paint_state state={0};
+        win16_frame_paint_state state={.presentation=theme->caption_presentation};
         BOOL pressed=(flags&1)!=0,child=(flags&2)!=0,zoomed=(flags&4)!=0;
         for(unsigned i=0;i<ARRAYSIZE(hits);++i){
             state.button=(style_caption_button){pressed?hits[i]:0,pressed};
-            state.art=NULL;
+            state.art=&original;
             win16_control_frame_caption(dc,&layout,&palette,&state,NULL,child,zoomed);
             GdiFlush();
             memcpy(reference,pixels,sizeof(reference));
@@ -233,24 +295,60 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
         BOOL system=(flags&1)!=0,pressed=(flags&2)!=0;
         RECT bounds={0,0,MulDiv(19,(int)dpi,96),MulDiv(18,(int)dpi,96)};
         int unit=max(1,MulDiv(1,(int)dpi,96));
-        win16_style_merged_control(dc,bounds,system,pressed,unit,&palette,NULL);
+        win16_style_merged_control(dc,bounds,system?CLASSIC_MDI_SYSTEM:CLASSIC_MDI_RESTORE,pressed?DFCS_PUSHED:0,unit,&palette,&original,&theme->caption_presentation);
         GdiFlush();
         memcpy(reference,pixels,sizeof(reference));
-        win16_style_merged_control(dc,bounds,system,pressed,unit,&palette,art);
+        win16_style_merged_control(dc,bounds,system?CLASSIC_MDI_SYSTEM:CLASSIC_MDI_RESTORE,pressed?DFCS_PUSHED:0,unit,&palette,art,&theme->caption_presentation);
         GdiFlush();
         if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
+        const style_caption_presentation alternate={.button_source=STYLE_CAPTION_BUTTON_SYSTEM};
+        win16_style_merged_control(dc,bounds,system?CLASSIC_MDI_SYSTEM:CLASSIC_MDI_RESTORE,
+            pressed?DFCS_PUSHED:0,unit,&palette,art,&alternate);
+        GdiFlush();
+        if(!memcmp(reference,pixels,sizeof(reference)))return FALSE;
     }
+    RECT mdi_bounds={0,0,19,18};
+    style_menu_bar_item mdi_item={.state=MFS_DISABLED,.control=HBMMENU_MBAR_RESTORE};
+    const style_menu_bar_snapshot mdi={.count=1,.rects=&mdi_bounds,.items=&mdi_item};
+    const style_caption_presentation system_glyph={.button_source=STYLE_CAPTION_BUTTON_SYSTEM};
+    win16_style_bar_paint(&mdi,dc,NULL,96,&palette,NULL,&theme->menu_metrics,art,&system_glyph);
+    GdiFlush();
+    memcpy(reference,pixels,sizeof(reference));
+    win16_style_merged_control(dc,mdi_bounds,CLASSIC_MDI_RESTORE,0,1,&palette,art,&system_glyph);
+    GdiFlush();
+    if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
+    classic_menu_metrics disabled=theme->menu_metrics;
+    disabled.mdi_inactive|=CLASSIC_MDI_RESTORE;
+    win16_style_bar_paint(&mdi,dc,NULL,96,&palette,NULL,&disabled,art,&system_glyph);
+    GdiFlush();
+    if(!memcmp(reference,pixels,sizeof(reference)))return FALSE;
+    win16_frame_paint_state no_art={.active=TRUE,.presentation=theme->caption_presentation};
+    win16_control_frame_caption(dc,&layout,&palette,&no_art,NULL,FALSE,FALSE);
+    GdiFlush();
+    memcpy(reference,pixels,sizeof(reference));
+    no_art.art=art;
+    win16_control_frame_caption(dc,&layout,&palette,&no_art,NULL,FALSE,FALSE);
+    GdiFlush();
+    RECT system=layout.buttons[CLASSIC_BUTTON_SYSTEM];
+    BOOL has_icon=FALSE,has_difference=FALSE;
+    for(LONG y=system.top;y<system.bottom;++y)
+        for(LONG x=system.left;x<system.right;++x){
+            unsigned index=(unsigned)y*240+(unsigned)x;
+            has_icon|=reference[index]!=reference[(unsigned)system.top*240+(unsigned)system.left];
+            has_difference|=reference[index]!=pixels[index];
+        }
+    if(!has_icon || !has_difference)return FALSE;
     RECT changed=layout.buttons[CLASSIC_BUTTON_MINIMIZE];
     win2k_caption_layout other={.band=layout.caption,.buttons={[WIN2K_MINIMIZE]=changed}};
     classic_frame_colors frame={palette.face,palette.light,palette.shadow,palette.edge,TRUE};
     COLORREF band_color=palette.active;
     win2k_caption_colors colors={band_color,band_color,RGB(0,0,0),FALSE};
     const UINT flags[WIN2K_CAPTION_PARTS]={[WIN2K_MINIMIZE]=DFCS_PUSHED};
-    const unsigned sources[]={STYLE_CAPTION_BUTTON_INDEXED,STYLE_CAPTION_BUTTON_SYSTEM};
+    const unsigned sources[]={STYLE_CAPTION_BUTTON_DEFAULT,STYLE_CAPTION_BUTTON_INDEXED,STYLE_CAPTION_BUTTON_SYSTEM};
     DWORD signature[ARRAYSIZE(sources)]={0};
     for(unsigned i=0;i<ARRAYSIZE(sources);++i){
         style_caption_presentation paint={STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,
-            STYLE_CAPTION_SEPARATOR_NONE,sources[i],STYLE_CAPTION_BUTTON_NO_OUTLINE};
+            STYLE_CAPTION_SEPARATOR_NONE,sources[i],STYLE_CAPTION_BUTTON_NO_OUTLINE,STYLE_CAPTION_ICON_DEFAULT};
         win16_frame_paint_state state={.active=TRUE,.button={HTMINBUTTON,TRUE},.art=art,.presentation=paint};
         win16_control_frame_caption(dc,&layout,&palette,&state,NULL,FALSE,FALSE);
         GdiFlush();memcpy(reference,pixels,sizeof(reference));
@@ -264,7 +362,7 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
                 signature[i]=signature[i]*31u+pixels[index];
             }
     }
-    return signature[0]!=signature[1];
+    return signature[0]==signature[1] && signature[1]!=signature[2];
 }
 
 static UINT button_type(HWND window,DWORD style)
@@ -280,17 +378,22 @@ static BOOL button_fit(HWND window)
 }
 
 static BOOL paint_native_button(HDC dc,HWND window,BOOL win2000,const classic_push_colors *push,
-    const classic_choice_colors *choice,HMODULE module,style_push_profile profile)
+    const classic_choice_colors *choice,HMODULE module,style_push_profile profile,const classic_theme *theme)
 {
     style_instance instance={0};
     classic_choice_art art={0};
-    if(win2000)return win2k_button_paint(window,&instance,dc,push,choice,NULL,module,&art,
-        (classic_control_presentation){.push=profile});
+    classic_control_presentation controls=theme->controls;
+    controls.push=profile;
+    if(win2000){
+        const win2k_palette base=classic_theme_relief_palette(theme);
+        return win2k_button_paint(window,&instance,dc,push,choice,NULL,module,&art,controls,&base);
+    }
     win16_style_palette palette;
     win16_style_default_palette(&palette);
+    win16_style_theme_palette(&palette,theme);
     style_control_state control={0};
     const win16_control_choice_view view={&instance,&control,&palette,push,choice,button_type,
-        button_fit,button_fit,button_fit,button_fit,button_fit,module,&art,NULL,NULL,NULL,{.push=profile}};
+        button_fit,button_fit,button_fit,button_fit,button_fit,module,&art,NULL,NULL,NULL,controls,TRUE};
     win16_control_draw_choice(window,&view,dc);
     return TRUE;
 }
@@ -303,7 +406,7 @@ static BOOL draw_button(HDC dc,HWND window,const classic_theme *theme,BOOL win20
     SendMessageW(window,BM_SETSTATE,pressed,0);
     if(((SendMessageW(window,BM_GETSTATE,0,0)&BST_PUSHED)!=0)!=pressed ||
        IsWindowEnabled(window)==disabled)return FALSE;
-    return paint_native_button(dc,window,win2000,&theme->push,&theme->choice,NULL,theme->controls.push) &&
+    return paint_native_button(dc,window,win2000,&theme->push,&theme->choice,NULL,theme->controls.push,theme) &&
         GetPixel(dc,40,14)==theme->push.state[expected].face;
 }
 
@@ -331,16 +434,17 @@ static BOOL draw_control_lines(HDC dc,const classic_theme *theme,BOOL win2000)
     style_instance instance={0};
     win16_style_palette palette;
     win16_style_default_palette(&palette);
+    win16_style_theme_palette(&palette,theme);
     style_control_state native={0};
-    win2k_palette relief=win2k_standard_palette;
+    win2k_palette relief=classic_theme_relief_palette(theme);
     for(style_line_profile profile=STYLE_LINE_FLAT;passed && profile<=STYLE_LINE_RELIEF;++profile){
         classic_control_presentation controls=theme->controls;
         controls.group=controls.edit=profile;
         if(win2000){
-            passed=win2k_button_paint(group,&instance,dc,NULL,NULL,&theme->group,NULL,NULL,controls);
+            passed=win2k_button_paint(group,&instance,dc,NULL,NULL,&theme->group,NULL,NULL,controls,&relief);
         }else{
             win16_control_choice_view view={&instance,&native,&palette,NULL,NULL,button_type,
-                button_fit,button_fit,button_fit,button_fit,button_fit,NULL,NULL,NULL,&theme->group,NULL,controls};
+                button_fit,button_fit,button_fit,button_fit,button_fit,NULL,NULL,NULL,&theme->group,NULL,controls,FALSE};
             win16_control_draw_choice(group,&view,dc);
         }
         passed=passed && GetPixel(dc,10,27)==(profile==STYLE_LINE_FLAT?theme->group.shadow:RGB(255,255,255));
@@ -369,18 +473,35 @@ static BOOL draw_choice_role(HDC dc,const DWORD *pixels,HWND window,const classi
             SendMessageW(window,BM_SETCHECK,check,0);
             SendMessageW(window,BM_SETSTATE,mode==2,0);
             if(SendMessageW(window,BM_GETCHECK,0,0)!=(LRESULT)check ||
-               !paint_native_button(dc,window,win2000,NULL,NULL,NULL,STYLE_PUSH_DEFAULT))return FALSE;
+               !paint_native_button(dc,window,win2000,NULL,NULL,NULL,STYLE_PUSH_DEFAULT,theme))return FALSE;
             GdiFlush();
             memcpy(reference,pixels,sizeof(reference));
-            if(!paint_native_button(dc,window,win2000,NULL,&theme->choice,module,STYLE_PUSH_DEFAULT))return FALSE;
+            if(!paint_native_button(dc,window,win2000,NULL,&theme->choice,module,STYLE_PUSH_DEFAULT,theme))return FALSE;
             GdiFlush();
-            if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
+            if(win2000 && memcmp(reference,pixels,sizeof(reference)))return FALSE;
+            if(!win2000){
+                const classic_choice_surface *source=(radio?theme->choice.radio:theme->choice.check)+4*check+mode;
+                const classic_surface_colors *colors=classic_choice_color(source);
+                RECT client;
+                UINT dpi=GetDpiForWindow(window);
+                if(!colors || !dpi || !GetClientRect(window,&client))return FALSE;
+                int top=(client.bottom-MulDiv(CLASSIC_CHOICE_HEIGHT,(int)dpi,96))/2;
+                unsigned row=radio?1:check==BST_INDETERMINATE?2:0;
+                unsigned column=(check!=BST_UNCHECKED)+2*(mode==2);
+                for(unsigned y=0;y<CLASSIC_CHOICE_HEIGHT;++y)
+                    for(unsigned x=0;x<CLASSIC_CHOICE_WIDTH;++x){
+                        char shade=control_checks[row*CLASSIC_CHOICE_HEIGHT+y][column*CLASSIC_CHOICE_WIDTH+x];
+                        COLORREF expected=shade=='0'?colors->edge:colors->face;
+                        if(GetPixel(dc,MulDiv((int)x,(int)dpi,96),top+MulDiv((int)y,(int)dpi,96))!=expected)
+                            return FALSE;
+                    }
+            }
             classic_choice_colors altered=theme->choice;
             classic_choice_surface *entry=(radio?altered.radio:altered.check)+4*check+mode;
             if(!entry->fields)return FALSE;
             entry->colors.face=RGB(89,37,102);
             entry->colors.edge=RGB(17,165,123);
-            if(!paint_native_button(dc,window,win2000,NULL,&altered,module,STYLE_PUSH_DEFAULT))return FALSE;
+            if(!paint_native_button(dc,window,win2000,NULL,&altered,module,STYLE_PUSH_DEFAULT,theme))return FALSE;
             BOOL saw_face=FALSE,saw_ink=FALSE;
             for(int y=0;y<28;++y)for(int x=0;x<24;++x){
                 COLORREF c=GetPixel(dc,x,y);
@@ -415,14 +536,16 @@ static BOOL draw_mixed_choice_art(HDC dc,HWND window,const classic_theme *theme,
     const classic_choice_surface *entry=classic_choice_entry(&theme->choice,radio,BST_CHECKED,FALSE,0);
     const classic_surface_colors *colors=classic_choice_color(entry);
     if(!colors || !classic_choice_art_get(module,entry->image,&art))return FALSE;
-    if(!paint_native_button(dc,window,TRUE,NULL,&theme->choice,module,STYLE_PUSH_DEFAULT))return FALSE;
-    const int side=13,top=(28-side)/2;
+    enum { width=19,height=17,top=(28-height)/2 };
+    classic_theme mixed=*theme;
+    mixed.controls.choice_metrics=(style_choice_metrics){width,height,4,0};
+    if(!paint_native_button(dc,window,TRUE,NULL,&mixed.choice,module,STYLE_PUSH_DEFAULT,&mixed))return FALSE;
     for(int y=0;y<CLASSIC_CHOICE_HEIGHT;++y){
         for(int x=0;x<CLASSIC_CHOICE_WIDTH;++x){
-            int left=MulDiv(x,side,CLASSIC_CHOICE_WIDTH);
-            int right=MulDiv(x+1,side,CLASSIC_CHOICE_WIDTH);
+            const int left=MulDiv(x,width,CLASSIC_CHOICE_WIDTH);
+            const int row=top+MulDiv(y,height,CLASSIC_CHOICE_HEIGHT);
             COLORREF expected=art.cell[y*CLASSIC_CHOICE_WIDTH+x]=='0'?colors->edge:colors->face;
-            if(left<right && GetPixel(dc,left,top+y)!=expected)return FALSE;
+            if(GetPixel(dc,left,row)!=expected)return FALSE;
         }
     }
     return TRUE;
@@ -450,7 +573,7 @@ static BOOL draw_separator(HDC dc,const classic_theme *theme,BOOL relief)
     HWND control=CreateWindowW(L"STATIC",L"",WS_CHILD|SS_ETCHEDFRAME,0,0,32,32,HWND_MESSAGE,NULL,NULL,NULL);
     if(!control)return FALSE;
     style_instance instance={0};
-    win2k_palette palette=win2k_standard_palette;
+    win2k_palette palette=classic_theme_relief_palette(theme);
     palette.dark=RGB(31,48,65);palette.shadow=RGB(82,99,116);palette.highlight=RGB(133,150,167);
     COLORREF untouched=RGB(219,220,221);
     RECT bounds={0,0,32,32};
@@ -464,6 +587,25 @@ static BOOL draw_separator(HDC dc,const classic_theme *theme,BOOL relief)
     return passed;
 }
 
+static BOOL draw_combo_arrow(HDC dc,const classic_combo_arrow_art *art,UINT dpi)
+{
+    RECT canvas={0,0,32,32};
+    const COLORREF background=RGB(102,146,190),ink=RGB(21,43,65);
+    if(!art->present || !style_paint_color(dc,&canvas,background))return FALSE;
+    SetDCBrushColor(dc,ink);
+    win16_control_combo_arrow(dc,2,3,(int)dpi,art);
+    for(unsigned y=0;y<ARRAYSIZE(combo_arrow);++y)
+        for(unsigned x=0;x<sizeof(combo_arrow[y])-1;++x){
+            COLORREF expected=combo_arrow[y][x]=='0'?ink:background;
+            if(GetPixel(dc,2+MulDiv((int)x,(int)dpi,96),3+MulDiv((int)y,(int)dpi,96))!=expected)return FALSE;
+        }
+    if(!style_paint_color(dc,&canvas,background))return FALSE;
+    SetDCBrushColor(dc,ink);
+    win16_control_combo_arrow(dc,2,3,(int)dpi,NULL);
+    return GetPixel(dc,2+MulDiv(3,(int)dpi,96),3+MulDiv(4,(int)dpi,96))==ink &&
+        GetPixel(dc,2+MulDiv(3,(int)dpi,96),3)==background;
+}
+
 static BOOL draw_combo_surface(HDC dc,const classic_theme *theme,BOOL win2000)
 {
     HWND parent=CreateWindowW(L"STATIC",L"",WS_POPUP,0,0,160,80,NULL,NULL,NULL,NULL);
@@ -474,13 +616,15 @@ static BOOL draw_combo_surface(HDC dc,const classic_theme *theme,BOOL win2000)
     COLORREF background=RGB(37,79,117);
     BOOL passed=combo && GetComboBoxInfo(combo,&info) && style_paint_color(dc,&bounds,RGB(97,33,51));
     if(passed && win2000){
-        win2k_palette palette=win2k_standard_palette;
+        win2k_palette palette=classic_theme_relief_palette(theme);
         palette.window=background;
         style_instance instance={0};
         passed=win2k_combo_paint(combo,&instance,dc,&palette,&theme->combo);
     }else if(passed){
-        control_style state={.combo_colors=theme->combo,.list_colors=theme->list,.label_colors=theme->label};
+        control_style state={.combo_colors=theme->combo,.list_colors=theme->list,.label_colors=theme->label,
+            .combo_arrow=theme->combo_arrow};
         win16_style_default_palette(&state.palette);
+        win16_style_theme_palette(&state.palette,theme);
         state.list_colors.background=background;
         win16_control_draw_combo(combo,&state,dc,win2k_combo_info,button_fit,button_fit);
     }
@@ -500,7 +644,7 @@ static BOOL draw_scroll(HDC dc,const classic_theme *theme,UINT dpi,unsigned stat
     POINT p={bar.right/2,geometry.first.bottom/2};
     if(style_scroll_hit(&geometry,p,state==2?ESB_DISABLE_UP:0)!=
        (state==2?STYLE_SCROLL_NONE:STYLE_SCROLL_LINE_BEFORE))return FALSE;
-    win2k_palette palette=win2k_standard_palette;
+    win2k_palette palette=classic_theme_relief_palette(theme);
     palette.face=theme->scroll_arrow.face;
     palette.dark=theme->scroll_arrow.edge;
     const UINT flags[]={0,DFCS_PUSHED,DFCS_INACTIVE};
@@ -546,7 +690,11 @@ static BOOL draw_popup(HDC dc,const DWORD *pixels,const classic_theme *theme,con
     style_menu_item item={.text=text,.submenu=TRUE};
     win16_style_palette palette;
     win16_style_default_palette(&palette);
-    const classic_menu_metrics variant={22,12,16,6,0};
+    win16_style_theme_palette(&palette,theme);
+    style_menu_art original={.available=TRUE};
+    memcpy(original.check,menu_check,sizeof(original.check));
+    memcpy(original.arrow,menu_arrow,sizeof(original.arrow));
+    classic_menu_metrics variant={22,12,16,6,0,0,0,theme->menu_metrics.row_minimum,theme->menu_metrics.row_padding,0};
     const classic_menu_metrics *metrics[]={&theme->menu_metrics,&variant};
     unsigned widths[2],heights[2];
     int label[2],shortcut[2],arrow[2];
@@ -572,12 +720,16 @@ static BOOL draw_popup(HDC dc,const DWORD *pixels,const classic_theme *theme,con
         if(label[i]<label_x || shortcut[i]<shortcut_x || arrow[i]<arrow_x)return FALSE;
         draw.itemState|=ODS_CHECKED;
         DWORD reference[240*64];
-        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],NULL))return FALSE;
+        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],&original))return FALSE;
         GdiFlush();
         memcpy(reference,pixels,sizeof(reference));
         if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],art))return FALSE;
         GdiFlush();
         if(memcmp(reference,pixels,sizeof(reference)) ||
+           first_ink(dc,0,label_x,(int)heights[i],background)<0)return FALSE;
+        if(!win16_style_menu_draw(&item,&draw,font,dpi,&palette,&theme->menu_popup,metrics[i],NULL))return FALSE;
+        GdiFlush();
+        if(!memcmp(reference,pixels,sizeof(reference)) ||
            first_ink(dc,0,label_x,(int)heights[i],background)<0)return FALSE;
         style_menu_art blank=*art;
         memset(blank.check,'1',sizeof(blank.check));
@@ -588,17 +740,17 @@ static BOOL draw_popup(HDC dc,const DWORD *pixels,const classic_theme *theme,con
     }
     classic_menu_metrics configured=theme->menu_metrics;
     RECT bounds={0,0,win16_style_menu_columns_width(&columns,dpi,FALSE,&configured)+MulDiv(16,(int)dpi,96),
-        columns.height};
+        (LONG)heights[0]};
     int shortcut_left=MulDiv(configured.check_column,(int)dpi,96)+columns.label+
         MulDiv(configured.shortcut_gap,(int)dpi,96);
     COLORREF background=theme->menu_popup.background;
     if(!win16_style_menu_text_columns(dc,&bounds,font,dpi,&palette,text,0,WIN16_STYLE_MENU_ROW,
         FALSE,&columns,&theme->menu_popup,&configured,art,NULL))return FALSE;
-    int left=first_ink(dc,shortcut_left,bounds.right,columns.height,background);
+    int left=first_ink(dc,shortcut_left,bounds.right,bounds.bottom,background);
     configured.text_flags|=STYLE_MENU_TEXT_SHORTCUT_RIGHT;
     if(!win16_style_menu_text_columns(dc,&bounds,font,dpi,&palette,text,0,WIN16_STYLE_MENU_ROW,
         FALSE,&columns,&theme->menu_popup,&configured,art,NULL))return FALSE;
-    int right=first_ink(dc,shortcut_left,bounds.right,columns.height,background);
+    int right=first_ink(dc,shortcut_left,bounds.right,bounds.bottom,background);
     if(left<shortcut_left || right-left<MulDiv(16,(int)dpi,96))return FALSE;
     if(!win16_style_menu_text_columns(dc,&bounds,font,dpi,&palette,text,ODS_DISABLED,WIN16_STYLE_MENU_ROW,
         FALSE,&columns,&theme->menu_popup,&configured,art,NULL))return FALSE;
@@ -610,6 +762,11 @@ static BOOL draw_popup(HDC dc,const DWORD *pixels,const classic_theme *theme,con
         FALSE,&columns,&theme->menu_popup,&configured,art,NULL))return FALSE;
     GdiFlush();
     if(!memcmp(stippled,pixels,sizeof(stippled)))return FALSE;
+    variant.row_padding+=2;
+    MEASUREITEMSTRUCT expanded={.CtlType=ODT_MENU,.itemData=(ULONG_PTR)&item};
+    if(!win16_style_menu_size(&item,&expanded,font,dpi,&variant) ||
+       expanded.itemHeight-heights[1]!=(unsigned)(2*(MulDiv(variant.row_padding,(int)dpi,96)-
+           MulDiv(theme->menu_metrics.row_padding,(int)dpi,96))))return FALSE;
     int step=MulDiv(4,(int)dpi,96);
     return widths[1]-widths[0]==(unsigned)(3*step) && heights[1]==heights[0] &&
         label[1]-label[0]==step && shortcut[1]-shortcut[0]==2*step && arrow[1]-arrow[0]==3*step;
@@ -626,6 +783,20 @@ static BOOL draw_menu_text_options(HDC dc,const DWORD *pixels,const classic_them
     if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,text,0,WIN16_STYLE_MENU_BAR,
         FALSE,NULL,colors,&metrics,NULL,NULL))return FALSE;
     int left=first_ink(dc,0,area.right,area.bottom,colors->background);
+    if(metrics.bar_padding){
+        SIZE original,expanded;
+        unsigned padding=metrics.bar_padding;
+        if(left<0 || !win16_style_menu_bar_measure(dc,font,dpi,text,&metrics,&original))return FALSE;
+        metrics.bar_padding+=4;
+        if(!win16_style_menu_bar_measure(dc,font,dpi,text,&metrics,&expanded) ||
+           !win16_style_menu_text_columns(dc,&area,font,dpi,&palette,text,0,WIN16_STYLE_MENU_BAR,
+            FALSE,NULL,colors,&metrics,NULL,NULL))return FALSE;
+        int shifted=first_ink(dc,0,area.right,area.bottom,colors->background);
+        if(shifted-left!=MulDiv(metrics.bar_padding,(int)dpi,96)-MulDiv((int)padding,(int)dpi,96) ||
+           expanded.cx-original.cx!=MulDiv(2*metrics.bar_padding,(int)dpi,96)-MulDiv(2*(int)padding,(int)dpi,96) ||
+           expanded.cy!=original.cy)return FALSE;
+        metrics.bar_padding=(uint16_t)padding;
+    }
     metrics.text_flags|=STYLE_MENU_TEXT_CENTER_BAR;
     if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,text,0,WIN16_STYLE_MENU_BAR,
         FALSE,NULL,colors,&metrics,NULL,NULL))return FALSE;
@@ -642,9 +813,23 @@ static BOOL draw_menu_text_options(HDC dc,const DWORD *pixels,const classic_them
     if(!memcmp(normal,pixels,sizeof(normal)))return FALSE;
     if(first_ink(dc,0,16,area.bottom,colors->background)>=0)return FALSE;
     metrics.text_flags|=STYLE_MENU_COMMAND_GLYPHS;
-    return win16_style_menu_text_columns(dc,&area,font,dpi,&palette,text,ODS_DEFAULT,WIN16_STYLE_MENU_ROW,
-        FALSE,NULL,colors,&metrics,NULL,HBMMENU_POPUP_CLOSE) &&
-        first_ink(dc,0,16,area.bottom,colors->background)>=0;
+    if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,text,ODS_DEFAULT,WIN16_STYLE_MENU_ROW,
+        FALSE,NULL,colors,&metrics,NULL,HBMMENU_POPUP_CLOSE) ||
+        first_ink(dc,0,16,area.bottom,colors->background)<0)return FALSE;
+
+    static const WCHAR shortcut[]=L"&Close\tAlt+F4";
+    const UINT disabled_default=ODS_DEFAULT|ODS_DISABLED;
+    metrics.text_flags=0;
+    if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,shortcut,disabled_default,WIN16_STYLE_MENU_ROW,
+        FALSE,NULL,colors,&metrics,NULL,HBMMENU_POPUP_CLOSE))return FALSE;
+    GdiFlush();
+    memcpy(normal,pixels,sizeof(normal));
+    metrics.text_flags=STYLE_MENU_TEXT_DEFINED|STYLE_MENU_TEXT_SHORTCUT_RIGHT|
+        STYLE_MENU_TEXT_BOLD_DEFAULT|STYLE_MENU_COMMAND_GLYPHS;
+    if(!win16_style_menu_text_columns(dc,&area,font,dpi,&palette,shortcut,disabled_default,WIN16_STYLE_MENU_ROW,
+        FALSE,NULL,colors,&metrics,NULL,HBMMENU_POPUP_CLOSE))return FALSE;
+    GdiFlush();
+    return !memcmp(normal,pixels,sizeof(normal));
 }
 
 static BOOL draw_themed_popup(HDC dc,const DWORD *pixels,const classic_theme *theme,
@@ -653,14 +838,23 @@ static BOOL draw_themed_popup(HDC dc,const DWORD *pixels,const classic_theme *th
     msstyles_font alternate=theme->menu_font;
     alternate.points=24;
     HFONT font=win16_style_menu_font_acquire(dpi,&theme->menu_font);
-    HFONT legacy=win16_style_menu_font_acquire(dpi,NULL);
+    HFONT fallback=win16_style_menu_font_acquire(dpi,NULL);
     HFONT smaller=win16_style_menu_font_acquire(dpi,&alternate);
     alternate.points=9;
     alternate.logical.lfWeight=FW_NORMAL;
     alternate.logical.lfItalic=TRUE;
     lstrcpyW(alternate.logical.lfFaceName,L"Arial");
     HFONT logical=win16_style_menu_font_acquire(dpi,&alternate);
-    BOOL ok=font && legacy==font && smaller && smaller!=font && logical && logical!=font;
+    BOOL ok=font && fallback && fallback!=font && smaller && smaller!=font && logical && logical!=font;
+    if(ok){
+        NONCLIENTMETRICSW native={.cbSize=sizeof(native)};
+        LOGFONTW observed={0};
+        ok=SystemParametersInfoForDpi(SPI_GETNONCLIENTMETRICS,sizeof(native),&native,0,dpi) &&
+            GetObjectW(fallback,sizeof(observed),&observed)==sizeof(observed) &&
+            observed.lfHeight==native.lfMenuFont.lfHeight &&
+            observed.lfWeight==native.lfMenuFont.lfWeight &&
+            !wcscmp(observed.lfFaceName,native.lfMenuFont.lfFaceName);
+    }
     if(ok){
         LOGFONTW before={0},after={0},requested={0};
         ok=GetObjectW(font,sizeof(before),&before)==sizeof(before) &&
@@ -680,7 +874,7 @@ static BOOL draw_themed_popup(HDC dc,const DWORD *pixels,const classic_theme *th
         ok=FALSE;
     }
     win16_style_system_release(smaller);
-    win16_style_system_release(legacy);
+    win16_style_system_release(fallback);
     win16_style_system_release(font);
     return ok;
 }
@@ -702,8 +896,8 @@ static BOOL render(const classic_theme *theme,BOOL win2000,const classic_caption
     BOOL passed=saved && saved!=HGDI_ERROR &&
         draw_band(dc,theme,win2000,TRUE,96) && draw_band(dc,theme,win2000,FALSE,96) &&
         draw_band(dc,theme,win2000,TRUE,144) && draw_band(dc,theme,win2000,FALSE,144) &&
-        draw_caption_presentation(dc,win2000) &&
-        (win2000?draw_win2k_border(dc,bits,theme):draw_win16_border(dc,bits,theme)) &&
+        draw_caption_presentation(dc,win2000) && shared_caption_band(dc,bits) &&
+        (win2000?draw_win2k_border(dc,theme):draw_win16_border(dc,bits,theme)) &&
         (win2000 || (draw_caption_art(dc,bits,theme,art,96) && draw_caption_art(dc,bits,theme,art,144))) &&
         window && draw_button(dc,window,&altered,win2000,FALSE,FALSE,FALSE,CLASSIC_PUSH_NORMAL) &&
         draw_button(dc,window,&altered,win2000,FALSE,TRUE,FALSE,CLASSIC_PUSH_PRESSED) &&
@@ -714,6 +908,7 @@ static BOOL render(const classic_theme *theme,BOOL win2000,const classic_caption
         draw_control_lines(dc,theme,win2000) &&
         draw_choices(dc,bits,theme,win2000,module) && draw_separator(dc,theme,win2000) &&
         draw_combo_surface(dc,theme,win2000) &&
+        (win2000 || (draw_combo_arrow(dc,&theme->combo_arrow,96) && draw_combo_arrow(dc,&theme->combo_arrow,144))) &&
         (win2000 || mixed_choice_art(dc,theme,module));
     for(unsigned state=0;passed && state<3;++state)
         passed=draw_scroll(dc,theme,96,state) && draw_scroll(dc,theme,144,state);
@@ -749,6 +944,8 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
         CHECK(!memcmp(&source.model,&theme,sizeof(theme)));
     }
     CHECK(theme.gradient==gradient);
+    CHECK(theme.calendar_font_dpi==(gradient?0u:78u));
+    CHECK(theme.calendar_font_points==(gradient?0u:12u));
     CHECK(theme.scroll_art.source==(gradient?STYLE_SCROLL_ARROW_SYMBOL:STYLE_SCROLL_ARROW_INDEXED));
     CHECK(theme.menu_bar.present && theme.menu_popup.present);
     CHECK(theme.menu_bar.background==(gradient?RGB(212,208,200):RGB(255,255,255)) &&
@@ -759,6 +956,14 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
         CHECK(title.lfHeight==-MulDiv(gradient?8:10,(int)dpi,72) && title.lfWeight==FW_BOLD &&
               title.lfQuality==(gradient?DEFAULT_QUALITY:NONANTIALIASED_QUALITY) &&
               !wcscmp(title.lfFaceName,gradient?L"Tahoma":L"MS Sans Serif"));
+        HFONT caption=msstyles_font_create(&theme.caption_font,dpi,MSSTYLES_FONT_CAPTION);
+        CHECK(caption);
+        LOGFONTW realized={0};
+        int bytes=GetObjectW(caption,sizeof(realized),&realized);
+        DeleteObject(caption);
+        CHECK(bytes==sizeof(realized) && realized.lfHeight==title.lfHeight &&
+            realized.lfWeight==title.lfWeight && realized.lfQuality==title.lfQuality &&
+            !wcscmp(realized.lfFaceName,title.lfFaceName));
         LOGFONTW menu=msstyles_font_at_dpi(&theme.menu_font,dpi);
         if(gradient){
             LOGFONTW small=msstyles_font_at_dpi(&theme.small_caption_font,dpi);
@@ -880,9 +1085,47 @@ static int check(PCWSTR root,PCWSTR name,BOOL gradient,BOOL recolored)
     return 0;
 }
 
+static int check_mdi_menu(void)
+{
+    HMENU menu=CreateMenu();
+    CHECK(menu);
+    const HBITMAP bitmaps[]={HBMMENU_SYSTEM,HBMMENU_MBAR_RESTORE,HBMMENU_MBAR_MINIMIZE_D,HBMMENU_MBAR_CLOSE};
+    for(UINT i=0;i<ARRAYSIZE(bitmaps);++i){
+        MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_ID|MIIM_BITMAP,.wID=100+i,.hbmpItem=bitmaps[i]};
+        CHECK(InsertMenuItemW(menu,i,TRUE,&item));
+    }
+    const unsigned masks[]={CLASSIC_MDI_DEFINED|CLASSIC_MDI_SYSTEM|CLASSIC_MDI_RESTORE,
+        CLASSIC_MDI_DEFINED|CLASSIC_MDI_CLOSE,CLASSIC_MDI_DEFINED,0};
+    const unsigned counts[]={2,1,0,4};
+    for(unsigned i=0;i<ARRAYSIZE(masks);++i){
+        const win16_style_layout layout={.button_size={23,19},.menu_metrics={.mdi_buttons=masks[i]}};
+        style_menu_bar_snapshot bar;
+        CHECK(win16_style_bar_read_for_window(NULL,menu,GetStockObject(DEFAULT_GUI_FONT),96,
+            &layout,(POINT){0,0},320,&bar) && bar.count==counts[i]);
+        for(UINT j=0;j<bar.count;++j){
+            CHECK(bar.rects[j].right-bar.rects[j].left==23 && bar.rects[j].bottom-bar.rects[j].top==19);
+            CHECK(bar.items[j].id==100+bar.items[j].position);
+        }
+        if(i==1)CHECK(bar.items[0].position==3 && bar.rects[0].right==320);
+        if(i==3)CHECK(bar.items[2].state&MFS_DISABLED);
+        style_menu_bar_free(&bar);
+        CHECK(GetMenuItemCount(menu)==4);
+    }
+    CHECK(DestroyMenu(menu));
+    puts("MDI MENU system/restore, close, empty, native fallback and disabled command PASS");
+    return 0;
+}
+
 static BOOL print_folder(PCWSTR folder,PCWSTR display_name,classic_theme_family family,void *context)
 {
     (void)context;wprintf(L"CLASSIC THEME FOLDER %ls family=%u display=%ls\n",folder,(unsigned)family,display_name);
+    return TRUE;
+}
+
+static unsigned observed_selection;
+static BOOL read_observed_selection(unsigned *value)
+{
+    *value=observed_selection;
     return TRUE;
 }
 
@@ -897,9 +1140,45 @@ static int check_identity(PCWSTR folder,classic_theme_family selected)
     CHECK(SUCCEEDED(classic_theme_open_profile(module,id,&source)) && source.family==selected);
     classic_theme_close(&source);
     classic_theme_set_process_profile(id,selected);
-    CHECK(SUCCEEDED(classic_theme_open_packaged(module,selected,FALSE,&source)) && source.family==selected);
+    CHECK(SUCCEEDED(classic_theme_open_active(module,&source)) && source.family==selected);
     classic_theme_close(&source);
-    printf("CLASSIC THEME ID id=%u adapter=%u\n",id,(unsigned)selected);
+    const classic_theme_family other=selected==CLASSIC_THEME_WIN16?CLASSIC_THEME_WIN2K:CLASSIC_THEME_WIN16;
+    const enum classic_window_provider alternate=other==CLASSIC_THEME_WIN16?
+        CLASSIC_WINDOW_PROVIDER_FULL_CLIENT:CLASSIC_WINDOW_PROVIDER_NONCLIENT;
+    CHECK(classic_theme_attachment_layout(module,alternate,&source)==ERROR_SUCCESS && source.family==selected);
+    classic_theme_close(&source);
+    unsigned previous=classic_theme_enter_profile((classic_theme_selection){id,other});
+    CHECK(classic_theme_open_active(module,&source)==HRESULT_FROM_WIN32(ERROR_INVALID_DATA));
+    CHECK(!source.resources);
+    CHECK(classic_theme_attachment_layout(module,alternate,&source)==ERROR_RESOURCE_DATA_NOT_FOUND && !source.resources);
+    classic_theme_leave_profile(previous);
+    for(unsigned family=CLASSIC_THEME_WIN16;family<=CLASSIC_THEME_WIN2K;++family){
+        previous=classic_theme_enter_profile((classic_theme_selection){family,(classic_theme_family)family});
+        CHECK(classic_theme_attachment_layout(module,alternate,&source)==ERROR_RESOURCE_DATA_NOT_FOUND);
+        CHECK(!source.resources);
+        classic_theme_leave_profile(previous);
+    }
+    CHECK(SUCCEEDED(classic_theme_open_dialog(module,&source)) && source.family==selected);
+    classic_theme_close(&source);
+    const unsigned global_id=classic_theme_folder_id(other==CLASSIC_THEME_WIN16?L"Win16":L"Win2K");
+    classic_theme_selection active;
+    observed_selection=classic_theme_encode_selection((classic_theme_selection){global_id,other});
+    classic_theme_set_global_profile_reader(read_observed_selection);
+    CHECK(classic_theme_active_selection(&active)==S_OK && active.id==global_id && active.family==other);
+    CHECK(classic_theme_open_dialog(module,&source)==S_OK && source.family==other);
+    classic_theme_close(&source);
+    previous=classic_theme_enter_profile((classic_theme_selection){id,selected});
+    CHECK(classic_theme_active_selection(&active)==S_OK && active.id==id && active.family==selected);
+    CHECK(classic_theme_open_dialog(module,&source)==S_OK && source.family==selected);
+    classic_theme_close(&source);
+    classic_theme_leave_profile(previous);
+    CHECK(classic_theme_active_selection(&active)==S_OK && active.id==global_id && active.family==other);
+    observed_selection=2u*CLASSIC_THEME_PROFILE_CAP|global_id;
+    CHECK(classic_theme_active_selection(&active)==E_INVALIDARG);
+    CHECK(classic_theme_open_dialog(module,&source)==E_INVALIDARG && !source.resources);
+    classic_theme_set_global_profile_reader(NULL);
+    CHECK(classic_theme_active_selection(&active)==S_OK && active.id==id && active.family==selected);
+    printf("CLASSIC THEME ID id=%u adapter=%u active_selection=1\n",id,(unsigned)selected);
     return 0;
 }
 
@@ -911,14 +1190,16 @@ static int check_dialog_layout(PCWSTR folder,BOOL expect_compact)
     CHECK(classic_theme_open_folder(module,folder,&source,&provider)==S_OK);
     classic_theme_close(&source);
     classic_theme_set_process_profile(classic_theme_folder_id(folder),provider);
-    const classic_dialog_metrics metrics=classic_theme_dialog_metrics(module,(classic_dialog_metrics){0});
+    const classic_dialog_metrics metrics=classic_theme_dialog_metrics(module);
     CHECK(metrics.file.places_width==4096 && metrics.print_width==4096);
     win2k_file_layout layout=win2k_file_layout_for(600,380,OFN_EXPLORER,0,&metrics.file);
     CHECK(layout==(expect_compact?WIN2K_FILE_COMPACT:WIN2K_FILE_NATIVE));
+    const classic_file_metrics omitted={0};
+    CHECK(win2k_file_layout_for(2000,1100,OFN_EXPLORER,0,&omitted)==WIN2K_FILE_NATIVE);
     unsigned previous=classic_theme_enter_profile((classic_theme_selection){1,CLASSIC_THEME_WIN2K});
-    const classic_dialog_metrics scoped=classic_theme_dialog_metrics(module,(classic_dialog_metrics){0});
+    const classic_dialog_metrics scoped=classic_theme_dialog_metrics(module);
     classic_theme_leave_profile(previous);
-    const classic_dialog_metrics restored=classic_theme_dialog_metrics(module,(classic_dialog_metrics){0});
+    const classic_dialog_metrics restored=classic_theme_dialog_metrics(module);
     CHECK(scoped.file.compact_width==427 && scoped.print_width==500 &&
         restored.file.compact_width==metrics.file.compact_width && restored.print_width==metrics.print_width);
     printf("DIALOG_LAYOUT compact_width=%u places_width=%u result=%d\n",
@@ -926,8 +1207,89 @@ static int check_dialog_layout(PCWSTR folder,BOOL expect_compact)
     return 0;
 }
 
+static int check_host_options(PCWSTR folder,PCWSTR expected)
+{
+    classic_theme_mapping source={0};
+    classic_theme_family family;
+    HRESULT result=classic_theme_open_folder(GetModuleHandleW(NULL),folder,&source,&family);
+    if(!wcscmp(expected,L"unsupported")){
+        CHECK(result==HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED) && !source.resources);
+    }else{
+        CHECK(result==S_OK && source.hosts.enabled==(unsigned)wcstoul(expected,NULL,10));
+        classic_theme_close(&source);
+    }
+    wprintf(L"CLASSIC HOST OPTIONS %ls %ls\n",folder,expected);
+    return 0;
+}
+
+static int check_icon_layout(void)
+{
+    const DWORD style=WS_OVERLAPPEDWINDOW;
+    for(UINT dpi=96;dpi<=192;dpi+=48){
+        win16_style_layout layout;
+        CHECK(win16_style_measure(360,180,dpi,style,0,FALSE,&layout));
+        win16_style_measure_caption_icon(&layout,dpi,style,0,STYLE_CAPTION_ICON_HIDDEN);
+        CHECK(IsRectEmpty(&layout.icon));
+        POINT point={layout.caption.left+1,layout.caption.top+1};
+        CHECK(win16_style_hit(&layout,point)==HTCAPTION);
+        CHECK(style_caption_icon_visible(STYLE_CAPTION_ICON_NATIVE,FALSE,style,0));
+        CHECK(style_caption_icon_visible(STYLE_CAPTION_ICON_DEFAULT,FALSE,style,0));
+        CHECK(!style_caption_icon_visible(STYLE_CAPTION_ICON_DEFAULT,TRUE,style,0));
+        win16_style_measure_caption_icon(&layout,dpi,style,0,STYLE_CAPTION_ICON_NATIVE);
+        CHECK(!IsRectEmpty(&layout.icon) && layout.title.left>=layout.icon.right);
+        CHECK(win16_style_hit(&layout,point)==HTSYSMENU);
+        CHECK(!style_caption_icon_visible(STYLE_CAPTION_ICON_HIDDEN,FALSE,style,0));
+        CHECK(!style_caption_icon_visible(STYLE_CAPTION_ICON_NATIVE,TRUE,style,0));
+        CHECK(!style_caption_icon_visible(STYLE_CAPTION_ICON_NATIVE,FALSE,style,WS_EX_TOOLWINDOW));
+        CHECK(win16_style_measure(360,180,dpi,style,0,FALSE,&layout));
+        layout.buttons[CLASSIC_BUTTON_MINIMIZE]=layout.caption;
+        layout.buttons[CLASSIC_BUTTON_MINIMIZE].right=layout.caption.left+24;
+        layout.title.left=layout.buttons[CLASSIC_BUTTON_MINIMIZE].right;
+        win16_style_measure_caption_icon(&layout,dpi,style,0,STYLE_CAPTION_ICON_DEFAULT);
+        CHECK(!IsRectEmpty(&layout.icon) && layout.icon.left==layout.buttons[CLASSIC_BUTTON_MINIMIZE].right);
+    }
+    puts("CLASSIC CAPTION ICON PASS modes, hit and title bounds at three DPIs");
+    return 0;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==5 && !wcscmp(argv[1],L"--calendar-font")){
+        classic_theme_mapping source={0};
+        CHECK(SUCCEEDED(classic_theme_open(argv[2],&source)));
+        CHECK(source.model.calendar_font_dpi==wcstoul(argv[3],NULL,10) &&
+            source.model.calendar_font_points==wcstoul(argv[4],NULL,10));
+        printf("CALENDAR FONT MODEL dpi=%u points=%u\n",source.model.calendar_font_dpi,source.model.calendar_font_points);
+        classic_theme_close(&source);
+        return 0;
+    }
+    if(argc==2 && !wcscmp(argv[1],L"--caption-icon"))return check_icon_layout();
+    if(argc==2 && !wcscmp(argv[1],L"--profile-domain")){
+        HMODULE module=GetModuleHandleW(NULL);
+        WCHAR folder[MAX_PATH];
+        CHECK(classic_theme_profile_folder(module,0,folder)==E_INVALIDARG);
+        CHECK(classic_theme_profile_folder(module,1,folder)==E_INVALIDARG);
+        CHECK(classic_theme_profile_folder(module,203796696u,folder)==E_INVALIDARG);
+        unsigned id=classic_theme_folder_id(L"Win16");
+        CHECK(classic_theme_profile_folder(module,id,folder)==S_OK && !wcscmp(folder,L"Win16"));
+        classic_theme_selection decoded={id,CLASSIC_THEME_WIN16};
+        CHECK(!classic_theme_decode_selection(0,&decoded) && !classic_theme_decode_selection(1,&decoded) &&
+            !classic_theme_decode_selection(203796696u,&decoded) &&
+            !classic_theme_decode_selection(id+2u*CLASSIC_THEME_PROFILE_CAP,&decoded) &&
+            decoded.id==id && decoded.family==CLASSIC_THEME_WIN16);
+        const unsigned selected=classic_theme_encode_selection((classic_theme_selection){id,CLASSIC_THEME_WIN2K});
+        CHECK(classic_theme_decode_selection(selected,&decoded) && decoded.id==id &&
+            classic_theme_selection_layout(decoded)==CLASSIC_WINDOW_PROVIDER_NONCLIENT);
+        unsigned previous=classic_theme_enter_profile((classic_theme_selection){1,CLASSIC_THEME_WIN2K});
+        CHECK(classic_theme_active_selection(&decoded)==E_INVALIDARG);
+        classic_theme_leave_profile(previous);
+        classic_theme_mapping source={0};
+        CHECK(classic_theme_attachment_layout(module,CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,&source)==ERROR_RESOURCE_DATA_NOT_FOUND &&
+            !source.resources);
+        puts("CLASSIC_PROFILE_DOMAIN_OK numeric_presets_rejected=2 opaque_id=1 legacy_hash_rejected=1");
+        return 0;
+    }
+    if(argc==4 && !wcscmp(argv[1],L"--host-options"))return check_host_options(argv[2],argv[3]);
     if(argc==2 && !wcscmp(argv[1],L"--discover")){
         classic_theme_visit_folders(GetModuleHandleW(NULL),print_folder,NULL);
         return 0;
@@ -939,6 +1301,7 @@ int wmain(int argc,WCHAR **argv)
     }
     if(argc==4 && !wcscmp(argv[1],L"--dialog-layout"))
         return check_dialog_layout(argv[2],!wcscmp(argv[3],L"compact"));
+    if(argc==2 && !wcscmp(argv[1],L"--mdi-menu"))return check_mdi_menu();
     BOOL recolored=argc==3 && !wcscmp(argv[2],L"--recolor");
     if(argc!=2 && !recolored)return 2;
     return check(argv[1],L"Win16",FALSE,recolored) || check(argv[1],L"Win2K",TRUE,recolored);

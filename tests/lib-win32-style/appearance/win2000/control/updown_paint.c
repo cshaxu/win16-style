@@ -41,15 +41,22 @@ static void print(HWND window,HDC dc,RECT r)
 int wmain(int argc,WCHAR **argv)
 {
     BOOL theme_symbol=argc==2 && !wcscmp(argv[1],L"--theme-symbol");
-    BOOL theme_art=theme_symbol || (argc==2 && !wcscmp(argv[1],L"--theme-art"));
+    BOOL native_metrics=argc==2 && !wcscmp(argv[1],L"--native-metrics");
+    BOOL theme_metrics=native_metrics || (argc==2 && !wcscmp(argv[1],L"--theme-metrics"));
+    BOOL theme_art=theme_metrics || theme_symbol || (argc==2 && !wcscmp(argv[1],L"--theme-art"));
     CHECK(argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
     const INITCOMMONCONTROLSEX icc={sizeof(icc),ICC_UPDOWN_CLASS};
     CHECK(InitCommonControlsEx(&icc));
     HMODULE dll=NULL;
-    window_op attach=NULL,attached=NULL,remove=NULL;
-    if(!theme_art){
+    window_op attach=NULL,attached=NULL,observed=NULL,remove=NULL;
+    if(theme_metrics){
+        HMODULE runtime=GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll");
+        attached=runtime?(void *)GetProcAddress(runtime,"Ntw16sWindowAttached"):NULL;
+        observed=runtime?(void *)GetProcAddress(runtime,"Ntw2ksWindowAttached"):NULL;
+        CHECK(attached && observed);
+    }else if(!theme_art){
         dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
         CHECK(dll);
         attach=(void *)GetProcAddress(dll,"Ntw2ksWindowAttach");
@@ -82,6 +89,15 @@ int wmain(int argc,WCHAR **argv)
         CHECK(GetClientRect(spin,&r));
         SetTextColor(dc,RGB(5,21,69));
         print(spin,dc,r);
+        if(theme_metrics){
+            CHECK((!native_metrics==(attached(spin) || observed(spin))) && SendMessageW(spin,UDM_GETPOS32,0,0)==20);
+            DWORD hash=2166136261u;
+            for(int y=r.top;y<r.bottom;++y)
+                for(int x=r.left;x<r.right;++x)hash=(hash^GetPixel(dc,x,y))*16777619u;
+            printf("THEME_UPDOWN_METRICS axis=%d pixels=%08lx\n",axis,hash);
+            CHECK(DestroyWindow(spin));
+            continue;
+        }
         if(theme_art){
             RECT interior={4,4,15,15};
             COLORREF edge=theme_symbol?RGB(255,255,255):RGB(0,0,0);

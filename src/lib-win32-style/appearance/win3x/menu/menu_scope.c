@@ -3,7 +3,6 @@
 #include "../window/frame_paint.h"
 #include "lib-win32-style/application/menu/menu_snapshot.h"
 #include "lib-win32-style/application/graphics/present.h"
-#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "lib-win32-style/application/menu/row_text.h"
 #include <stdlib.h>
 
@@ -47,7 +46,7 @@ static BOOL paint_system(style_menu_popup *p,HDC target,BOOL window_coordinates)
     HDC dc=target?target:GetDC(w);if(!dc){free(rows);return FALSE;}
     int saved=SaveDC(dc);win16_style_menu_columns columns={0};BOOL valid=saved!=0,arrows=FALSE;
     POINT delta={0,0};if(valid&&!style_menu_client_offset(w,window_coordinates,&delta))valid=FALSE;
-    HFONT bold=s->metrics.text_flags&STYLE_MENU_TEXT_BOLD_DEFAULT?style_menu_bold_font(font):NULL;
+    HFONT bold=(style_menu_text_options(s->metrics.text_flags)&STYLE_MENU_TEXT_BOLD_DEFAULT)?style_menu_bold_font(font):NULL;
     for(int i=0;valid&&i<count;++i){
         if(!style_menu_read_row(menu,(UINT)i,&rows[i],NULL)||!style_menu_popup_live(p))valid=FALSE;
         else if(!(rows[i].type&MFT_SEPARATOR) && !win16_style_menu_columns_read(dc,
@@ -66,9 +65,9 @@ static BOOL paint_system(style_menu_popup *p,HDC target,BOOL window_coordinates)
     for(int i=0;valid&&i<count&&style_menu_popup_live(p);++i){RECT r=rows[i].rect;
         MapWindowPoints(NULL,w,(POINT *)&r,2);OffsetRect(&r,delta.x,delta.y);
         classic_menu_metrics metrics=s->metrics;
-        if(theme_width>r.right-r.left){
-            metrics=(classic_menu_metrics)WIN16_POPUP_MENU_METRICS;
-            metrics.text_flags=s->metrics.text_flags;
+        if(metrics.check_column && theme_width>r.right-r.left && columns.shortcut){
+            int deficit=MulDiv(theme_width-(r.right-r.left),96,(int)dpi);
+            metrics.shortcut_gap=max(0,metrics.shortcut_gap-deficit);
         }
         UINT state=0;if(rows[i].state&MFS_HILITE)state|=ODS_SELECTED;if(rows[i].state&MFS_DISABLED)state|=ODS_DISABLED;if(rows[i].state&MFS_CHECKED)state|=ODS_CHECKED;
         if(rows[i].state&MFS_DEFAULT)state|=ODS_DEFAULT;

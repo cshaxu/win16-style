@@ -29,6 +29,7 @@ typedef struct msstyles_theme_descriptor {
     char color[MSSTYLES_THEME_TOKEN_CAPACITY];
     char display_name[MSSTYLES_THEME_TOKEN_CAPACITY];
     msstyles_host_options hosts;
+    char compatibility_folder[MSSTYLES_THEME_TOKEN_CAPACITY];
 } msstyles_theme_descriptor;
 
 /* Reads the packaged ASCII profile. The style file must be a simple sibling

@@ -45,7 +45,9 @@ LRESULT CALLBACK style_uwp_host_owner_proc(HWND window,UINT message,WPARAM wp,LP
             if(!host->instance.detached)host->refresh(host->instance.context);
             break;
         case WM_WINDOWPOSCHANGED:case WM_SIZE:case WM_SHOWWINDOW:
-        case WM_DPICHANGED:case WM_SETTEXT:case WM_THEMECHANGED:host->refresh(host->instance.context);break;
+        case WM_DPICHANGED:case WM_SETTEXT:case WM_SETICON:case WM_THEMECHANGED:
+        case WM_SETTINGCHANGE:case WM_SYSCOLORCHANGE:
+            host->refresh(host->instance.context);break;
         default:break;
         }
     }

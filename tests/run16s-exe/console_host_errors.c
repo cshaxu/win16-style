@@ -2,7 +2,8 @@
 #include <tlhelp32.h>
 #include <stdio.h>
 
-static unsigned mode,closes,time_calls;
+static unsigned mode,closes,time_calls,classic_queries;
+static BOOL classic_console;
 static HANDLE WINAPI test_snapshot(DWORD flags,DWORD pid)
 {(void)flags;(void)pid;return (HANDLE)(ULONG_PTR)1;}
 static BOOL WINAPI test_first(HANDLE snapshot,LPPROCESSENTRY32W entry)
@@ -18,10 +19,12 @@ static BOOL WINAPI test_close(HANDLE handle)
 static HWND WINAPI test_console(void){return (HWND)(ULONG_PTR)1;}
 static int WINAPI test_class(HWND window,LPWSTR name,int size)
 {
-    const WCHAR *value=window==(HWND)(ULONG_PTR)1?L"PseudoConsoleWindow":
+    const WCHAR *value=window==(HWND)(ULONG_PTR)1?(classic_console?L"ConsoleWindowClass":L"PseudoConsoleWindow"):
         window==(HWND)(ULONG_PTR)3?L"ConsoleWindowClass":L"CASCADIA_HOSTING_WINDOW_CLASS";
     return lstrcpynW(name,value,size)?lstrlenW(name):0;
 }
+static HMODULE WINAPI test_module(PCWSTR name)
+{(void)name;++classic_queries;return NULL;}
 static HWND WINAPI test_ancestor(HWND window,UINT flags)
 {(void)window;(void)flags;return (HWND)(ULONG_PTR)2;}
 static DWORD WINAPI test_thread(HWND window,LPDWORD pid)
@@ -51,6 +54,7 @@ static BOOL WINAPI test_times(HANDLE process,LPFILETIME creation,LPFILETIME exit
 #define GetConsoleWindow test_console
 #define GetClassNameW test_class
 #define GetAncestor test_ancestor
+#define GetModuleHandleW test_module
 #define GetWindowThreadProcessId test_thread
 #define OpenProcess test_open
 #define QueryFullProcessImageNameW test_image
@@ -77,12 +81,21 @@ int main(void)
     }
     puts("CONSOLE_SCAN_ERRORS_OK empty=1 first=1 next=1 exhausted=1 cleanup=1");
     for(mode=4;mode<=5;++mode){
-        closes=0;DWORD error=run16s_console_host_attach_current(L".");
+        closes=0;DWORD error=run16s_console_host_attach_current(L".",MSSTYLES_HOST_TERMINAL);
         if(error!=(mode==4?ERROR_ACCESS_DENIED:ERROR_NOT_FOUND) || closes!=1){
             fprintf(stderr,"console image mode=%u error=%lu closes=%u\n",mode,error,closes);return 1;
         }
     }
     puts("CONSOLE_IMAGE_ERROR_OK denied=1 exited=1 cleanup=1");
+    closes=0;
+    if(run16s_console_host_attach_current(L".",MSSTYLES_HOST_CONSOLE)!=ERROR_NOT_FOUND || closes)return 1;
+    classic_console=TRUE;
+    if(run16s_console_host_attach_current(L".",MSSTYLES_HOST_TERMINAL)!=ERROR_NOT_FOUND || classic_queries)
+        return 1;
+    if(run16s_console_host_attach_current(L".",MSSTYLES_HOST_CONSOLE)!=ERROR_NOT_FOUND || classic_queries!=1)
+        return 1;
+    classic_console=FALSE;
+    puts("CONSOLE_HOST_POLICY_OK terminal_only=1 classic_only=1");
     for(mode=6;mode<=7;++mode){
         console_search result={0};closes=0;DWORD error=find_client(99,&result);
         if(error!=(mode==6?ERROR_SUCCESS:ERROR_PARTIAL_COPY) || result.client!=20 ||

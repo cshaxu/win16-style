@@ -7,13 +7,15 @@ BOOL __cdecl Ntw16sWindowAttach(HWND window);
 /* GUI-thread only. Idempotent within a live attachment; unsupported windows
  * remain native. Existing run16s attachments remain independently owned.
  * No process-wide startup hooks are modified. */
+#ifndef NTWSHK_UNIFIED
 BOOL ntw16s_global_window_apply(HWND window);
 BOOL ntw16s_global_window_remove(HWND window);
+HMODULE ntw16s_global_win2k_resources(void);
+BOOL ntw16s_global_win2k_attached(HWND window);
+#endif
 BOOL ntw16s_global_window_attached(HWND window);
 BOOL ntw16s_global_window_apply_style(HWND window,DWORD style);
 BOOL ntw16s_global_window_remove_style(HWND window,DWORD style);
 BOOL ntw16s_global_window_eligible(HWND window);
-HMODULE ntw16s_global_win2k_resources(void);
-BOOL ntw16s_global_win2k_attached(HWND window);
 void ntw16s_global_window_children(HWND window,BOOL apply,DWORD style);
 #endif

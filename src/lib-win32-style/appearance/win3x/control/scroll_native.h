@@ -7,7 +7,6 @@
 BOOL win16_scroll_measure_native(const RECT *bar,BOOL vertical,UINT dpi,
     const SCROLLINFO *info,classic_scroll_metrics theme,style_scroll_layout *layout);
 RECT win16_scroll_caret_rectangle(HWND window,const style_scroll_layout *layout,const style_scroll_track *track);
-extern const style_scroll_policy win16_scroll_policy;
 
 typedef BOOL (*win16_scroll_info_fn)(HWND,int,LPSCROLLINFO);
 BOOL win16_scroll_control_layout(HWND window,win16_scroll_info_fn get_info,

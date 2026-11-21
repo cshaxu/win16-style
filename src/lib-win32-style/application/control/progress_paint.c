@@ -14,9 +14,23 @@ static BOOL paint_run(HDC dc,RECT lane,BOOL vertical,int start,int end,COLORREF 
 }
 
 BOOL style_progress_paint(HDC dc,const style_progress_snapshot *model,DWORD style,UINT dpi,
-    const style_progress_layout *layout,style_progress_ink ink)
+    const style_progress_layout *layout,const classic_progress_colors *colors,
+    style_progress_ink ink,COLORREF disabled_fill)
 {
-    if(!dc || !layout->block_whole)return FALSE;
+    if(!dc || !layout || !(layout->flags&STYLE_PROGRESS_DEFINED) || !layout->block_whole)return FALSE;
+    BOOL extra=colors && colors->extra_states;
+    if(model->state!=PBST_NORMAL &&
+       (!extra || (model->state!=PBST_ERROR && model->state!=PBST_PAUSED)))return FALSE;
+    if(colors && colors->present){
+        ink.background=colors->trough;
+        ink.fill=colors->fill;
+    }
+    if(extra)ink.border=colors->border;
+    if(model->background!=CLR_DEFAULT)ink.background=model->background;
+    if(model->bar!=CLR_DEFAULT)ink.fill=model->bar;
+    if(model->state==PBST_ERROR)ink.fill=colors->error;
+    if(model->state==PBST_PAUSED)ink.fill=colors->paused;
+    if(disabled_fill!=CLR_DEFAULT)ink.fill=disabled_fill;
     int unit=(layout->flags&STYLE_PROGRESS_SCALE_DPI)?max(1,MulDiv(1,(int)dpi,96)):1;
     int inset=unit*layout->inset;
     RECT lane=model->client;

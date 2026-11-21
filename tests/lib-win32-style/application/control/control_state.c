@@ -12,8 +12,8 @@ static LRESULT CALLBACK procedure(HWND window,UINT message,WPARAM wp,LPARAM lp)
     return DefWindowProcW(window,message,wp,lp);
 }
 static HFONT source(HFONT font){return font==variant?application:font;}
-static HFONT acquire(HWND window,HFONT font,BOOL native)
-{(void)window;(void)font;++acquisitions;last_native=native;if(fail_acquire)return NULL;++leases;return variant;}
+static HFONT acquire(HWND window,HFONT font,BOOL native,unsigned recipe)
+{(void)recipe;(void)window;(void)font;++acquisitions;last_native=native;if(fail_acquire)return NULL;++leases;return variant;}
 static void retain(HFONT font){if(font==variant)++leases;}
 static void release(HFONT font){if(font==variant){if(leases)--leases;else invalid_release=TRUE;}}
 static const style_control_fonts operations={source,acquire,retain,release};

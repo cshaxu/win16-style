@@ -8,6 +8,13 @@
 #include <string.h>
 #include <wchar.h>
 static BOOL (__cdecl *attached)(HWND);static int initialized;static BOOL frame;
+static BOOL (__cdecl *client_frame_attached)(HWND);
+static BOOL (__cdecl *nonclient_frame_attached)(HWND);
+static BOOL __cdecl theme_frame_attached(HWND window)
+{
+    return (client_frame_attached && client_frame_attached(window)) ||
+        (nonclient_frame_attached && nonclient_frame_attached(window));
+}
 static DWORD main_thread;
 static BOOL classic_test,classic_found,classic_accept;
 static int extended_case,extended_step;
@@ -195,6 +202,12 @@ int wmain(int argc,WCHAR **argv)
     HMODULE m=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");
     attached=m?(BOOL (__cdecl *)(HWND))(void *)GetProcAddress(m,"Ntw16sWindowAttached"):NULL;
     if(!attached && GetModuleHandleW(sizeof(void*)==4?L"ntw2ks32.dll":L"ntw2ks64.dll"))attached=win2k_frame_attached;
+    m=GetModuleHandleW(sizeof(void*)==4?L"ntwshk32.dll":L"ntwshk64.dll");
+    if(m){
+        client_frame_attached=(BOOL (__cdecl *)(HWND))(void *)GetProcAddress(m,"Ntw16sWindowAttached");
+        nonclient_frame_attached=(BOOL (__cdecl *)(HWND))(void *)GetProcAddress(m,"Ntw2ksWindowAttached");
+        attached=theme_frame_attached;
+    }
     if(!lstrcmpW(argv[1],L"ex-device-choice"))return test_device_choice(ansi);
     BOOL result;HGLOBAL devmode=NULL,devnames=NULL;
     if(!wcsncmp(argv[1],L"current-",8)){

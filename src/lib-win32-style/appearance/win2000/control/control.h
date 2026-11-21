@@ -7,7 +7,8 @@
  * original native image painter and borrowed handles.
  * Other control families keep their existing product path until implemented. */
 BOOL win2k_control_supported(HWND);
-BOOL win2k_control_attach(HWND,style_native_theme_fn);
+/* A theme may leave the control native, including its visual-style state. */
+BOOL win2k_control_attach(HWND,style_native_theme_fn,BOOL *native_requested);
 BOOL win2k_control_attached(HWND);
 BOOL win2k_control_remove(HWND);
 #endif

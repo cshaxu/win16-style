@@ -22,7 +22,7 @@ static int font_pixels(void)
             OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");CHECK(source);
         HGDIOBJ old=SelectObject(dc,source);TEXTMETRICW native,adapted;SIZE before,after;
         CHECK(GetTextMetricsW(dc,&native) && GetTextExtentPoint32W(dc,L"0123456789",10,&before));
-        HFONT font=win16_style_vb_font_acquire(source);CHECK(font);
+        HFONT font=win16_style_vb_font_acquire(source,12);CHECK(font);
         SelectObject(dc,font);CHECK(GetTextMetricsW(dc,&adapted) && GetTextExtentPoint32W(dc,L"0123456789",10,&after));
         CHECK(adapted.tmHeight==native.tmHeight && adapted.tmAscent==native.tmAscent && before.cx==after.cx);
         RECT r={0,0,128,64};FillRect(dc,&r,GetStockObject(WHITE_BRUSH));
@@ -71,7 +71,7 @@ static int ownership(const WCHAR *runtime_path)
     HDC dc=CreateCompatibleDC(NULL);CHECK(dc);HFONT sources[33]={0},leases[32]={0};HGDIOBJ old=GetCurrentObject(dc,OBJ_FONT);
     style_font_cache fonts={0},barrier_fonts={0};style_runtime_text_scope scope,nested;
     unsigned baseline=live_allocations;
-    win16_control_vb_paint_begin(&scope,window,WM_PRINTCLIENT,&fonts,ntw16s_vb_user_label_target);CHECK(style_runtime_text_active());
+    win16_control_vb_paint_begin(&scope,window,WM_PRINTCLIENT,&fonts,12,ntw16s_vb_user_label_target);CHECK(style_runtime_text_active());
     for(unsigned i=0;i<33;++i){
         sources[i]=CreateFontW(-12-(int)i,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,
             OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");CHECK(sources[i]);
@@ -87,7 +87,7 @@ static int ownership(const WCHAR *runtime_path)
         CHECK(GetGlyphIndicesW(dc,L"\x03a9",1,&omega,GGI_MARK_NONEXISTING_GLYPHS)!=GDI_ERROR && omega!=0xffff);
         CHECK(!win16_control_vb_decode_glyphs(dc,(const WCHAR *)&omega,1,decoded));
         CHECK(GetCurrentObject(dc,OBJ_FONT)==sources[i]);
-        win16_control_vb_paint_begin(&nested,barrier,WM_PRINTCLIENT,&barrier_fonts,ntw16s_vb_user_label_target);
+        win16_control_vb_paint_begin(&nested,barrier,WM_PRINTCLIENT,&barrier_fonts,12,ntw16s_vb_user_label_target);
         CHECK(!style_runtime_text_active() && !win16_control_vb_paint_font(dc));style_runtime_text_end(&nested);
         CHECK(style_runtime_text_active());
     }
@@ -106,16 +106,16 @@ static int report_ownership(void)
     HFONT source=CreateFontW(-16,0,0,0,FW_NORMAL,0,0,0,ANSI_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,L"Arial");CHECK(source);
     HGDIOBJ old=SelectObject(dc,source);style_font_cache fonts={0},barrier={0};style_runtime_text_scope scope,nested;BOOL cancelled=FALSE;
     unsigned baseline=live_allocations;
-    win16_control_vb_paint_begin(&scope,w,WM_PRINTCLIENT,&fonts,ntw16s_vb_user_label_target);
+    win16_control_vb_paint_begin(&scope,w,WM_PRINTCLIENT,&fonts,12,ntw16s_vb_user_label_target);
     style_runtime_text_report_enable(&scope,w,GetModuleHandleW(L"USER32.dll"),&cancelled,ntw16s_vb_graphical_button);
     CHECK(style_runtime_text_report_active() && style_runtime_text_report_caller(GetModuleHandleW(NULL)));
     CHECK(!style_runtime_text_report_caller(GetModuleHandleW(L"KERNEL32.dll")));
     CHECK(!win16_control_vb_paint_font(dc));style_runtime_text_report_bind(NULL,dc);CHECK(!win16_control_vb_paint_font(dc));
     style_runtime_text_report_bind(w,dc);fail_next=1;CHECK(!win16_control_vb_paint_font(dc) && !fonts.count && live_allocations==baseline);
     HFONT font=win16_control_vb_paint_font(dc);CHECK(font && fonts.count==1 && !win16_control_vb_paint_font(other));
-    HFONT standard=win16_style_vb_font_acquire(source);CHECK(standard==font);win16_style_system_release(standard);
+    HFONT standard=win16_style_vb_font_acquire(source,12);CHECK(standard==font);win16_style_system_release(standard);
     CHECK(GetCurrentObject(dc,OBJ_FONT)==source);
-    win16_control_vb_paint_begin(&nested,w,WM_PRINTCLIENT,&barrier,ntw16s_vb_user_label_target);CHECK(!win16_control_vb_paint_font(dc));style_runtime_text_end(&nested);
+    win16_control_vb_paint_begin(&nested,w,WM_PRINTCLIENT,&barrier,12,ntw16s_vb_user_label_target);CHECK(!win16_control_vb_paint_font(dc));style_runtime_text_end(&nested);
     CHECK(win16_control_vb_paint_font(dc)==font);cancelled=TRUE;
     CHECK(!style_runtime_text_active() && !win16_control_vb_paint_font(dc));
     LOGFONTW lf;CHECK(GetObjectW(font,sizeof(lf),&lf)==sizeof(lf));

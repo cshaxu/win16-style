@@ -3,7 +3,6 @@
 #include "special_paint.h"
 #include "basic_paint.h"
 #include "../../../application/graphics/paint_frame.h"
-#include "../resources/scroll_assets.h"
 #include "../../../application/control/control_protocol.h"
 #include "../../../application/graphics/bitmap.h"
 #include "control_class.h"
@@ -133,9 +132,9 @@ void win16_control_legacy_progress_border(HWND w,const win16_style_palette *pale
 done: SetLastError(saved_error);
 }
 
-static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds,const win16_style_palette *palette);
+static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds,const win16_style_palette *palette,const style_scroll_arrow_art *art);
 
-void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller,BOOL (*attached_palette)(HWND,win16_style_palette *))
+void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller,BOOL (*attached_palette)(HWND,win16_style_palette *,style_scroll_arrow_art *))
 {
     HWND w=WindowFromDC(dc);RECT client;POINT origin,viewport;BITMAP bitmap={0};HMODULE owner=NULL;
     if(!w || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
@@ -146,10 +145,11 @@ void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int heig
        !GetViewportOrgEx(dc,&viewport) || viewport.x || viewport.y ||
        !GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap) || bitmap.bmWidth!=sw || bitmap.bmHeight!=sh)return;
     win16_style_palette palette;
-    if(attached_palette(w,&palette))vb_data_arrow(w,dc,x,y,width,source,&client,&palette);
+    style_scroll_arrow_art art;
+    if(attached_palette(w,&palette,&art))vb_data_arrow(w,dc,x,y,width,source,&client,&palette,&art);
 }
 
-static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds,const win16_style_palette *palette)
+static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds,const win16_style_palette *palette,const style_scroll_arrow_art *art)
 {
     RECT client=*client_bounds;
     int n=-1;const int xs[4]={4,24,client.right-33,client.right-15};
@@ -157,14 +157,16 @@ static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const R
     int base_y=(client.bottom-13)/2;
     for(int i=0;i<4;++i)if(x==xs[i]+(y-base_y) && width==(i==0 || i==3?11:8)){n=i;break;}
     if(n<0)return;
-    BOOL disabled=!IsWindowEnabled(w),pressed=(y==base_y+1);const char (*bits)[18]=n<2?
-        (disabled?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_DISABLED):pressed?win16_control_scroll_glyph(WIN16_SCROLL_LEFT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_LEFT)):
-        (disabled?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_DISABLED):pressed?win16_control_scroll_glyph(WIN16_SCROLL_RIGHT_PRESSED):win16_control_scroll_glyph(WIN16_SCROLL_RIGHT));
+    BOOL disabled=!IsWindowEnabled(w),pressed=(y==base_y+1);
+    UINT state=(n<2?DFCS_SCROLLLEFT:DFCS_SCROLLRIGHT)|(disabled?DFCS_INACTIVE:pressed?DFCS_PUSHED:0);
+    const BYTE *cell=style_scroll_arrow_cell(art,state);
+    if(!cell)return;
     COLORREF colors[4]={palette->edge,palette->light,palette->shadow,palette->face};DWORD pixels[18*29];
     int extra=client.bottom-17,mid=extra/2;
     for(int j=0;j<client.bottom;++j){int by=j<2?j:j>=client.bottom-2?j-extra:j<2+mid?2:j<15+mid?j-mid:14;
         for(int i=0;i<widths[n];++i){int bx=i<2?i:i>=widths[n]-2?i-(widths[n]-17):i;if(bx>14)bx=14;
-            COLORREF c=colors[bits[by][bx]-'0'];pixels[j*widths[n]+i]=((DWORD)GetRValue(c)<<16)|((DWORD)GetGValue(c)<<8)|GetBValue(c);}}
+            unsigned index=(unsigned)(by*STYLE_SCROLL_ARROW_SIDE+bx);
+            COLORREF c=colors[(cell[index/4]>>(2*(index%4)))&3];pixels[j*widths[n]+i]=((DWORD)GetRValue(c)<<16)|((DWORD)GetGValue(c)<<8)|GetBValue(c);}}
     if(n==0 || n==3){int column=n==0?1:8;unsigned mark=0;
         for(int j=0;j<13;++j)for(int i=0;i<2;++i)if(GetPixel(source,column+i,j)==RGB(0,0,0)){
             int px=x+column+i-starts[n],py=y+j;if(px>=0 && px<widths[n] && py>=0 && py<client.bottom){COLORREF c=disabled?palette->shadow:palette->edge;
@@ -178,17 +180,14 @@ static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const R
 static BOOL runtime_push_frame(HWND w,HDC dc,RECT bounds,UINT state,const win16_style_palette *palette,
     const win16_runtime_push *theme)
 {
+    if(!theme->profile)return FALSE;
     int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
     style_relief_palette colors=win16_control_push_palette(palette);
-    style_push_profile profile=STYLE_PUSH_STEPPED;
-    if(theme->profile){
-        const classic_surface_colors part=classic_push_color(&theme->colors,(state&DFCS_INACTIVE)!=0,
-            (state&(DFCS_PUSHED|DFCS_CHECKED))!=0,FALSE);
-        colors.face=colors.light=part.face;
-        colors.dark=part.edge;
-        profile=theme->profile;
-    }
-    return style_paint_push_frame(dc,&bounds,state,FALSE,unit,profile,&colors);
+    const classic_surface_colors part=classic_push_color(&theme->colors,(state&DFCS_INACTIVE)!=0,
+        (state&(DFCS_PUSHED|DFCS_CHECKED))!=0,FALSE);
+    colors.face=colors.light=part.face;
+    colors.dark=part.edge;
+    return style_paint_push_frame(dc,&bounds,state,FALSE,unit,theme->profile,&colors);
 }
 
 BOOL win16_style_bitbtn_face(HWND w,HDC dc,const RECT *rect,const RECT *clip,UINT state,
@@ -241,8 +240,7 @@ BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,
         palette.light=s->frame_colors.light;
         palette.shadow=s->frame_colors.shadow;
     }
-    const win16_runtime_push theme={s->push_colors,s->themed?
-        (s->controls.push?s->controls.push:STYLE_PUSH_STEPPED):STYLE_PUSH_DEFAULT};
+    const win16_runtime_push theme={s->push_colors,s->controls.push};
     int saved=SaveDC(dc);
     if(!saved)return FALSE;
     BOOL painted=runtime_push_frame(w,dc,*rect,flags,&palette,&theme);

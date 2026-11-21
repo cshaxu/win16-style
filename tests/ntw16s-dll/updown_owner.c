@@ -11,13 +11,21 @@ BOOL ntw16s_native_paint_target(HDC dc,HWND *w){*w=scope_window;return dc&&scope
 typedef struct owner {win16_control_updown paint;style_control_updown binding;HWND window;unsigned refs,attempts,errors;BOOL alive,retire;} owner;
 static BOOL acquire(void *value){owner *s=value;++s->attempts;if(!s->alive || !IsWindow(s->window) || GetWindowThreadProcessId(s->window,NULL)!=GetCurrentThreadId())return FALSE;++s->refs;return TRUE;}
 static void release(void *value){owner *s=value;if(!s->refs){++s->errors;return;}--s->refs;if(s->retire&&!s->refs){s->alive=FALSE;style_control_updown_retire(&s->binding);}}
-static ntw16s_updown_glyph *const glyphs[]={&scroll_uparrow,&scroll_dnarrow,&scroll_lfarrow,&scroll_rgarrow,&scroll_uparrowd,&scroll_dnarrowd,&scroll_lfarrowd,&scroll_rgarrowd,&scroll_uparrowi,&scroll_dnarrowi,&scroll_lfarrowi,&scroll_rgarrowi};
+static const char (*const glyphs[])[17][18]={&scroll_uparrow,&scroll_dnarrow,&scroll_lfarrow,&scroll_rgarrow,&scroll_uparrowd,&scroll_dnarrowd,&scroll_lfarrowd,&scroll_rgarrowd,&scroll_uparrowi,&scroll_dnarrowi,&scroll_lfarrowi,&scroll_rgarrowi};
+static style_scroll_arrow_art art={.source=STYLE_SCROLL_ARROW_INDEXED};
 static void anchor(void){}
-static void owner_bind(owner *s,HWND w,const win16_style_palette *p){ZeroMemory(s,sizeof(*s));s->window=w;s->alive=TRUE;win16_control_updown_register(&s->paint,&s->binding,w,GetModuleHandleW(NULL),p,glyphs,s,acquire,release);}
+static void owner_bind(owner *s,HWND w,const win16_style_palette *p){ZeroMemory(s,sizeof(*s));s->window=w;s->alive=TRUE;s->paint.art=&art;win16_control_updown_register(&s->paint,&s->binding,w,GetModuleHandleW(NULL),p,s,acquire,release);}
 static BOOL draw(HDC dc){RECT r={0,0,17,17};return style_control_updown_draw_frame(dc,&r,DFC_SCROLL,DFCS_SCROLLUP,(void*)(UINT_PTR)anchor,ntw16s_native_paint_target);}
 static DWORD WINAPI foreign_thread(void *dc){return draw((HDC)dc)?1:0;}
 static int worker(int argc,WCHAR **argv)
 {
+    for(unsigned asset=0;asset<ARRAYSIZE(glyphs);++asset){
+        BYTE *cell=art.cells[asset/STYLE_SCROLL_ARROW_DIRECTIONS][asset%STYLE_SCROLL_ARROW_DIRECTIONS];
+        for(unsigned y=0;y<STYLE_SCROLL_ARROW_SIDE;++y)for(unsigned x=0;x<STYLE_SCROLL_ARROW_SIDE;++x){
+            unsigned offset=y*STYLE_SCROLL_ARROW_SIDE+x;
+            cell[offset/4]|=(BYTE)(((*glyphs[asset])[y][x]-'0')<<(2*(offset%4)));
+        }
+    }
     (void)argc;(void)argv;WNDCLASSW cls={.lpfnWndProc=DefWindowProcW,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"UpDownOwnerFixture"};CHECK(RegisterClassW(&cls));HWND root=CreateWindowW(cls.lpszClassName,L"owner",WS_OVERLAPPEDWINDOW,0,0,200,100,NULL,NULL,cls.hInstance,NULL);CHECK(root);
     HWND w=CreateWindowW(cls.lpszClassName,L"",WS_CHILD,0,0,17,34,root,(HMENU)1,cls.hInstance,NULL),other=CreateWindowW(cls.lpszClassName,L"",WS_CHILD,20,0,17,34,root,(HMENU)2,cls.hInstance,NULL);CHECK(w&&other);HDC source=GetDC(w);CHECK(source);
     win16_style_palette palette={.face=RGB(192,192,192),.light=RGB(255,255,255),.shadow=RGB(128,128,128),.edge=0};owner first,second;CHECK(!style_control_updown_api_enabled());style_control_updown_api_enable();CHECK(style_control_updown_api_enabled());owner_bind(&first,w,&palette);

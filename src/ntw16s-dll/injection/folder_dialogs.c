@@ -23,29 +23,11 @@ static PIDLIST_ABSOLUTE WINAPI browse_a(LPBROWSEINFOA info)
 {return style_classic_browse_a(info,native_browse_a,ntw16s_dialog_policy().folder==CLASSIC_FOLDER_LEGACY_TREE);}
 static PIDLIST_ABSOLUTE WINAPI browse_w(LPBROWSEINFOW info)
 {return style_classic_browse_w(info,native_browse_w,ntw16s_dialog_policy().folder==CLASSIC_FOLDER_LEGACY_TREE);}
-static LONG attach_dialogs(DWORD (*attach)(void *,void *))
+LONG ntw16s_register_folder_dialogs(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;
     native_browse_a=SHBrowseForFolderA;native_browse_w=SHBrowseForFolderW;
     LONG error=(LONG)attach(&native_browse_a,(void *)browse_a);
     if(!error)error=(LONG)attach(&native_browse_w,(void *)browse_w);
     return error;
-}
-
-#ifdef NTWSHK_UNIFIED
-static BOOL win2k_startup_hooks;
-LONG ntw16s_attach_win2k_folder_dialogs_using(DWORD (*attach)(void *,void *))
-{
-    LONG error=attach_dialogs(attach);
-    if(!error)win2k_startup_hooks=TRUE;
-    return error;
-}
-#endif
-LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *))
-{
-    if(!attach)return ERROR_INVALID_PARAMETER;
-#ifdef NTWSHK_UNIFIED
-    if(win2k_startup_hooks)return NO_ERROR;
-#endif
-    return (ntw16s_process_context.flags&NTWSHK_POLICY_STYLE)?attach_dialogs(attach):NO_ERROR;
 }

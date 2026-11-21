@@ -1,5 +1,6 @@
 #include "console_host.h"
 #include "window_target.h"
+#include "lib-win32-style/appearance/msstyles/theme_file.h"
 #include "ntw16s-dll/window_thread.h"
 #include <stdint.h>
 #include <tlhelp32.h>
@@ -21,14 +22,15 @@ static DWORD query_process_image(HANDLE process,WCHAR *image,DWORD *length)
     return WaitForSingleObject(process,0)==WAIT_OBJECT_0?ERROR_NOT_FOUND:error;
 }
 
-DWORD run16s_console_host_attach_current(PCWSTR directory)
+DWORD run16s_console_host_attach_current(PCWSTR directory,unsigned hosts)
 {
     if(!directory)return ERROR_INVALID_PARAMETER;
     HWND console=GetConsoleWindow();WCHAR name[64];
     if(!console || !GetClassNameW(console,name,ARRAYSIZE(name)))
         return ERROR_NOT_FOUND;
-    if(!wcscmp(name,L"ConsoleWindowClass"))return attach_current_conhost(console,directory);
-    if(wcscmp(name,L"PseudoConsoleWindow"))return ERROR_NOT_FOUND;
+    if(!wcscmp(name,L"ConsoleWindowClass"))
+        return hosts&MSSTYLES_HOST_CONSOLE?attach_current_conhost(console,directory):ERROR_NOT_FOUND;
+    if(!(hosts&MSSTYLES_HOST_TERMINAL) || wcscmp(name,L"PseudoConsoleWindow"))return ERROR_NOT_FOUND;
     HWND root=GetAncestor(console,GA_ROOTOWNER);DWORD pid=0;
     DWORD thread=root?GetWindowThreadProcessId(root,&pid):0;
     if(!thread || !pid || !GetClassNameW(root,name,ARRAYSIZE(name)) ||

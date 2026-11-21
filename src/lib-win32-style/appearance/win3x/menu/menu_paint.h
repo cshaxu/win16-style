@@ -16,6 +16,8 @@ NTW16S_API BOOL win16_style_menu_text(HDC dc,const RECT *bounds,HFONT font,UINT 
     const win16_style_palette *palette,const WCHAR *text,UINT state,win16_style_menu_kind kind,BOOL submenu);
 NTW16S_API BOOL win16_style_menu_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
     win16_style_menu_kind kind,SIZE *size);
+BOOL win16_style_menu_bar_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
+    const classic_menu_metrics *metrics,SIZE *size);
 /* Private shared popup column geometry; measurement and painting use the
  * same maxima across all adapted string rows of a native popup. */
 typedef struct win16_style_menu_columns {

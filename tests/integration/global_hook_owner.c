@@ -55,25 +55,28 @@ static BOOL switch_styles(DWORD pid,ntw16s_global_session *session,unsigned init
         InterlockedExchange(&session->phase,apply?NTW16S_GLOBAL_ACTIVE:NTW16S_GLOBAL_STOPPING);
         ULONGLONG until=GetTickCount64()+1000;
         DWORD_PTR observed=MAXDWORD;
-        UINT_PTR selection=0,wanted=apply?(UINT_PTR)session->style+1u:0;
+        DWORD_PTR acknowledgement=0;
+        BOOL managed=FALSE;
         do {
             DWORD_PTR ignored;DWORD current_pid=0;
             GetWindowThreadProcessId(owned.window,&current_pid);
             if(current_pid!=owned.pid || !SendMessageTimeoutW(owned.window,control,session->cookie,
                 apply?NTW16S_GLOBAL_APPLY:NTW16S_GLOBAL_REMOVE,SMTO_ABORTIFHUNG,300,&ignored) ||
-               !SendMessageTimeoutW(owned.window,WM_APP+113,0,0,SMTO_ABORTIFHUNG,300,&observed))break;
-            selection=(UINT_PTR)GetPropW(owned.window,L"Win16Style.Global.Profile");
-            if(observed==expected[i] && selection==wanted)break;
+               !SendMessageTimeoutW(owned.window,WM_APP+113,0,0,SMTO_ABORTIFHUNG,300,&observed) ||
+               !SendMessageTimeoutW(owned.window,control,session->cookie,NTW16S_GLOBAL_QUERY,
+                   SMTO_ABORTIFHUNG,300,&acknowledgement))break;
+            managed=acknowledgement==NTW16S_GLOBAL_ATTACHED;
+            if(observed==expected[i] && managed==apply)break;
             Sleep(20);
         } while(GetTickCount64()<until);
-        passed=observed==expected[i] && selection==wanted;
-        printf("OWNED GLOBAL SWITCH step=%u expected=%u observed=%llu selection=%llu wanted=%llu\n",
-            i+1,expected[i],(unsigned long long)observed,(unsigned long long)selection,(unsigned long long)wanted);
+        passed=observed==expected[i] && managed==apply;
+        printf("OWNED GLOBAL SWITCH step=%u expected=%u observed=%llu managed=%d\n",
+            i+1,expected[i],(unsigned long long)observed,managed);
     }
     DWORD current_pid=0;
     if(GetWindowThreadProcessId(owned.window,&current_pid) && current_pid==owned.pid)
         PostMessageW(owned.window,WM_CLOSE,0,0);
-    if(passed)puts("OWNED GLOBAL THEME ID PASS");
+    if(passed)puts("OWNED GLOBAL LAYOUT PASS");
     return passed;
 }
 

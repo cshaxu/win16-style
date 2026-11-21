@@ -15,7 +15,7 @@ BOOL ntw16s_vb_user_edge_dormant(HWND);
 #include "../lib-win32-style/appearance/win3x/control/combo_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/scroll_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/special_paint.h"
-BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *);
+BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *,style_scroll_arrow_art *);
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/control/scroll_state.h"
 #include "lib-win32-style/application/control/control_scope.h"
@@ -30,7 +30,6 @@ BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *);
 #include "../lib-win32-style/appearance/win3x/control/control_install.h"
 #include "../lib-win32-style/appearance/win3x/control/special_install.h"
 
-#include "../lib-win32-style/appearance/win3x/resources/scroll_assets.h"
 #include "lib-win32-style/application/control/scroll_track.h"
 #include "../lib-win32-style/appearance/win3x/common/font.h"
 #include "native_api.h"
@@ -92,10 +91,10 @@ static void draw(HWND w,control_style *s,HDC dc)
     BOOL themed=s->themed && style_control_class_is(w,L"BUTTON");
     BOOL label=s->themed && style_control_class_is(w,L"STATIC");
     const win16_control_choice_view view={&s->instance,&s->state,&s->palette,
-        themed?&s->push_colors:NULL,themed?&s->choice_colors:NULL,
+        themed?&s->push_colors:NULL,&s->choice_colors,
         style_control_button_type,style_control_is_static,style_control_vb_frame,style_control_vb_button,
         ntw16s_group_choice_button,ntw16s_group_push_button,s->choice_module,&s->choice_art,
-        label?&s->label_colors:NULL,themed?&s->group_colors:NULL,label?&s->frame_colors:NULL,s->controls};
+        label?&s->label_colors:NULL,themed?&s->group_colors:NULL,label?&s->frame_colors:NULL,s->controls,themed};
     win16_control_draw_choice(w,&view,dc);
 }
 
@@ -144,7 +143,7 @@ static void draw_scroll(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical
     }
     const win16_control_scroll_view view={&s->palette,&s->bindings.scroll,scroll_layout,
         embedded_scroll_layout,edit_thumb_messages,list_axis_owned,&arrows,
-        s->themed?&s->scroll_colors:NULL,s->themed?&s->scroll_art:NULL};
+        s->themed?&s->scroll_colors:NULL,&s->scroll_art};
     win16_control_draw_scroll(w,&view,dc,object,vertical);
 }
 
@@ -176,7 +175,7 @@ static BOOL scroll_measure_callback(HWND w,void *context,LONG object,style_scrol
 }
 static style_scroll_ops scroll_operations(control_style *s)
 {
-    return (style_scroll_ops){s,&win16_scroll_policy,ntw16s_native_get_scroll_info,scroll_measure_callback,
+    return (style_scroll_ops){s,&s->scroll_policy,ntw16s_native_get_scroll_info,scroll_measure_callback,
         scroll_draw_callback,scroll_nonclient_callback,scroll_caret_callback};
 }
 static void scroll_finish(HWND w,control_style *s,BOOL cancel)
@@ -208,11 +207,12 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     return style_control_message_dispatch(w,&s->instance,&s->state,&s->bindings,m,a,b,&ops);
 }
 
+static BOOL install_plain_control(HWND,const win16_style_palette *);
 static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL original_border,BOOL frame_bars,
     int tab_count,const int *tabs,const void *creation_owner,const BOOL *cancelled)
 {
     const win16_control_install_services services={control_proc,&combo_operations,ntw16s_vcl_combo_candidate,
-        ntw16s_native_get_combo_info,win16_style_control_install,win16_style_control_remove};
+        ntw16s_native_get_combo_info,install_plain_control,win16_style_control_remove};
     return win16_control_install(w,palette,edit,original_border,frame_bars,tab_count,tabs,creation_owner,cancelled,
         style_control_dialog_combo_pending(),&services);
 }
@@ -236,15 +236,29 @@ BOOL win16_style_common_dialog_combo_install(HWND window,const void *owner)
     const style_dialog_combo_ops ops={dialog_combo_apply,ntw16s_native_get_combo_info};
     return style_control_dialog_combo_install(window,owner,&ops);
 }
-BOOL win16_style_control_install(HWND w,const win16_style_palette *palette)
+static BOOL install_plain_control(HWND w,const win16_style_palette *palette)
 {return install(w,palette,FALSE,FALSE,FALSE,-1,NULL,NULL,NULL);}
+BOOL win16_style_control_install(HWND w,const win16_style_palette *palette)
+{
+#ifdef NTWSHK_UNIFIED
+    if(!ntw16s_explicit_install_allowed(w,palette))return FALSE;
+#endif
+    return install_plain_control(w,palette);
+}
 BOOL win16_style_control_install_created(HWND w,BOOL edit,BOOL original_border,BOOL tabbed,
     const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
 {return install(w,palette,edit,original_border,FALSE,tabbed?0:-1,NULL,owner,cancelled);}
+#ifndef NTWSHK_UNIFIED
 BOOL win16_style_tabbed_list_install(HWND w,const win16_style_palette *palette,int count,const int *pixels)
 {if(count<0){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}return install(w,palette,FALSE,FALSE,FALSE,count,pixels,NULL,NULL);}
+#endif
 BOOL win16_style_frame_scrollbars_install(HWND w,const win16_style_palette *palette)
-{return install(w,palette,FALSE,FALSE,TRUE,-1,NULL,NULL,NULL);}
+{
+#ifdef NTWSHK_UNIFIED
+    if(!ntw16s_explicit_install_allowed(w,palette))return FALSE;
+#endif
+    return install(w,palette,FALSE,FALSE,TRUE,-1,NULL,NULL,NULL);
+}
 BOOL win16_style_frame_scrollbars_install_owned(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled)
 {
     if(cancelled && *cancelled){SetLastError(ERROR_CANCELLED);return FALSE;}
@@ -283,8 +297,10 @@ BOOL win16_style_picture_install_created(HWND w,const win16_style_palette *p,con
 
 void win16_style_frame_scrollbars_remove(HWND w)
 {style_scroll_managed_frame_remove(w,&managed_services);}
+#ifndef NTWSHK_UNIFIED
 void win16_style_frame_scrollbars_palette(HWND w,const win16_style_palette *palette)
 {win16_control_managed_frame_scrollbars_palette(w,palette,&managed_services);}
+#endif
 BOOL ntw16s_managed_scrollbars_active(HWND w)
 {return style_scroll_managed_active(w,&managed_services);}
 BOOL win16_style_get_scroll_info(HWND w,int bar,LPSCROLLINFO info)
@@ -294,7 +310,12 @@ int win16_style_set_scroll_info(HWND w,int bar,LPCSCROLLINFO info,BOOL redraw)
 BOOL win16_style_list_scrollbar_enable(HWND w)
 {return style_scroll_managed_enable(w,STYLE_SCROLL_LIST,&managed_services);}
 BOOL win16_style_edit_install(HWND w,BOOL original_border,const win16_style_palette *palette)
-{return install(w,palette,TRUE,original_border,FALSE,-1,NULL,NULL,NULL);}
+{
+#ifdef NTWSHK_UNIFIED
+    if(!ntw16s_explicit_install_allowed(w,palette))return FALSE;
+#endif
+    return install(w,palette,TRUE,original_border,FALSE,-1,NULL,NULL,NULL);
+}
 BOOL win16_style_edit_scrollbars_enable(HWND w)
 {return style_scroll_managed_enable(w,STYLE_SCROLL_EDIT,&managed_services);}
 static const win16_control_remove_services control_remove_services={control_proc,scroll_finish,trackbar_notify,toolbar_notify,

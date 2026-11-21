@@ -2,7 +2,6 @@
 #include "print_general.h"
 #include "print_directory.h"
 #include "print_shell.h"
-#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/dialog/print_ranges.h"
 #include "lib-win32-style/application/dialog/print_resources.h"
@@ -342,6 +341,7 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
 static UINT general_template(HWND owner,DWORD flags,const classic_dialog_metrics *metrics)
 {
     MONITORINFO monitor={.cbSize=sizeof(monitor)};
+    if(!metrics->print_width)return WIN2K_PRINT_GENERAL;
     UINT dpi=GetDpiForWindow(owner);
     if(!dpi || !GetMonitorInfoW(MonitorFromWindow(owner,MONITOR_DEFAULTTONEAREST),&monitor))return WIN2K_PRINT_GENERAL;
     if(monitor.rcWork.right-monitor.rcWork.left<MulDiv(metrics->print_width,(int)dpi,96))return WIN2K_PRINT_GENERAL;
@@ -356,9 +356,7 @@ static HRESULT show_sheet(HINSTANCE module,HWND owner,general_page *page)
     classic_theme_mapping source={0};
     HRESULT loaded=classic_theme_open_dialog(module,&source);
     if(FAILED(loaded))return loaded;
-    const classic_dialog_metrics fallback=WIN2000_DIALOG_METRICS;
-    const classic_dialog_metrics *metrics=source.model.dialog_metrics.print_width?&source.model.dialog_metrics:&fallback;
-    UINT layout=general_template(owner,page->flags,metrics);
+    UINT layout=general_template(owner,page->flags,&source.model.dialog_metrics);
     if(!FindResourceW(source.resources,MAKEINTRESOURCEW(layout),MAKEINTRESOURCEW(5))){
         classic_theme_close(&source);
         return S_FALSE;

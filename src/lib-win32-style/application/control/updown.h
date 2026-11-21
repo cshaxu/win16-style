@@ -2,6 +2,8 @@
 #define STYLE_CONTROL_UPDOWN_H
 #include <windows.h>
 #include <uxtheme.h>
+#include "../lifecycle/instance.h"
+#include "../graphics/paint_frame.h"
 /* One linked module owns a process-wide API-ready flag and a GUI-thread local
  * registry. Caller pins each registered object, its native module and ops.
  * Registry borrows windows/DCs; it neither deletes GDI handles nor installs
@@ -29,4 +31,6 @@ void style_control_updown_dc_created(HDC,HDC,const void *,BOOL (*)(HDC,HWND *));
 void style_control_updown_dc_deleted(HDC);
 BOOL style_control_updown_draw_frame(HDC,RECT *,UINT,UINT,const void *,BOOL (*)(HDC,HWND *));
 BOOL style_control_updown_draw_theme(HTHEME,HDC,int,int,const RECT *,const RECT *,const void *,BOOL (*)(HDC,HWND *));
+BOOL style_control_updown_recolor_supported(HWND);
+BOOL style_control_updown_recolor(HWND,style_instance *,HDC,const style_relief_palette *);
 #endif

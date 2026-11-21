@@ -41,9 +41,11 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
     if(!error){second_set_theme=SetWindowTheme;error=(LONG)attach(&second_set_theme,(void *)second_theme);}
     return error;
 }
-LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
-LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
-LONG ntw16s_attach_folder_dialogs_using(DWORD (*attach)(void *,void *)){if(attach){InterlockedIncrement(&style_registrations);return NO_ERROR;}return ERROR_INVALID_PARAMETER;}
+LONG ntw16s_attach_shell_dialogs_using(DWORD (*attach)(void *,void *),BOOL observed_startup)
+{
+    if(!attach || observed_startup)return ERROR_INVALID_PARAMETER;
+    InterlockedIncrement(&style_registrations);return NO_ERROR;
+}
 static DWORD WINAPI background(void *p)
 {(void)p;while(InterlockedCompareExchange(&running,0,0)){InterlockedIncrement(&ticks);Sleep(1);}return 0;}
 static process_hook_late_patch first_hooks[5];
@@ -115,7 +117,7 @@ int wmain(int argc,WCHAR **argv)
         BOOL chained=window && first_windows==1 && second_windows==1;
         printf("LATE PREEXISTING bits=%u initial=0 status=%lu unchanged=%d create=%d original_install=%ld style=%ld chained=%d theme_chain=%d rollback=%d\n",
                (unsigned)(sizeof(void *)*8),status,unchanged,created,first_installs,style_registrations,chained,theme_chained,rollback);
-        return !status && unchanged && created && first_installs==1 && style_registrations==4 && chained && theme_chained && rollback?0:1;
+        return !status && unchanged && created && first_installs==1 && style_registrations==2 && chained && theme_chained && rollback?0:1;
     }
     if(argc==2 && !wcscmp(argv[1],L"existing")){
         BYTE before_w[16],before_a[16];memcpy(before_w,(const void *)CreateProcessW,sizeof(before_w));memcpy(before_a,(const void *)CreateProcessA,sizeof(before_a));

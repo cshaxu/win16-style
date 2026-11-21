@@ -105,6 +105,18 @@ static void edit_border(HWND window,void *context,HDC dc)
         (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_CLIENTEDGE))
         render->services->edit->border(window,render->state,dc);
 }
+static void updown_recolor(HWND window,void *context,HDC dc,BOOL buffered)
+{
+    (void)buffered;
+    control_style *state=context;
+    const win16_style_palette *p=&state->palette;
+    const classic_frame_colors override={p->face,p->light,p->shadow,p->edge,TRUE};
+    const classic_text_colors text={.normal=p->edge,.present=TRUE};
+    const style_relief_palette colors=classic_relief_palette(state->themed?&state->frame_colors:&override,
+        &state->list_colors,state->themed?&state->label_colors:&text);
+    if(!style_control_updown_recolor(window,&state->instance,dc,&colors) && !state->instance.detached)
+        DefSubclassProc(window,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
+}
 static void edit_client_border(HWND window,void *context,HDC dc)
 {const control_render *render=context;render->services->edit->client_border(window,render->state,dc);}
 static void frame_border(HWND window,void *context,HDC dc)
@@ -132,7 +144,13 @@ LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPA
         result=style_control_native_message(w,&s->instance,state,kind,m,a,b,
             tab?win16_style_tab_supported:header?win16_style_header_supported:win16_style_progress_supported,&draw);
     }
-    else if(style_control_class_is(w,UPDOWN_CLASSW)){result=DefSubclassProc(w,m,a,b);}
+    else if(style_control_class_is(w,UPDOWN_CLASSW)){
+        if(s->controls.updown_mode==CLASSIC_UPDOWN_RECOLOR){
+            const style_control_draw draw={s,updown_recolor};
+            result=style_control_native_message(w,&s->instance,NULL,STYLE_CONTROL_UPDOWN,m,a,b,
+                style_control_updown_recolor_supported,&draw);
+        }else result=DefSubclassProc(w,m,a,b);
+    }
     else if(style_control_class_is(w,TRACKBAR_CLASSW) || style_control_protocol_is(w,TRACKBAR_CLASSW)){
         result=style_control_track_message(w,&s->instance,&s->bindings.track,m,a,b,v->track_notify,s,v->track_calls);
     }
@@ -169,7 +187,17 @@ LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPA
         const style_control_edit_ops operations={&render,TRUE,edit_input,edit_scrollbars,edit_border,edit_client_border};
         result=style_control_edit_message(w,&s->instance,&s->state,&s->bindings.scroll.resources,m,a,b,&operations);
     }
-    else {control_render render={s,v,NULL};const style_control_draw draw={&render,draw_basic};
-        result=style_control_basic_message(w,&s->instance,&s->state,m,a,b,win16_control_basic_kind(w),&draw);}
+    else {
+        style_control_basic_kind kind=win16_control_basic_kind(w);
+        DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+        if((kind==STYLE_CONTROL_SEPARATOR && !s->controls.separator) ||
+           ((kind==STYLE_CONTROL_BUTTON || kind==STYLE_CONTROL_NATIVE_OVERLAY) &&
+            !classic_button_presentation_enabled(&s->controls,style_control_button_type(w,style),style)))
+            result=DefSubclassProc(w,m,a,b);
+        else {
+            control_render render={s,v,NULL};const style_control_draw draw={&render,draw_basic};
+            result=style_control_basic_message(w,&s->instance,&s->state,m,a,b,kind,&draw);
+        }
+    }
     *message=m;*wparam=a;*lparam=b;return result;
 }

@@ -1,6 +1,7 @@
 #include "updown.h"
 #include <commctrl.h>
 #include <vssym32.h>
+#include "../graphics/bitmap.h"
 
 static LONG enabled;
 void style_control_updown_api_enable(void){InterlockedExchange(&enabled,1);}
@@ -64,4 +65,57 @@ BOOL style_control_updown_draw_theme(HTHEME theme,HDC dc,int part,int state,cons
     style_control_updown *s=target(dc,caller,TRUE,resolve);if(!s)return FALSE;
     unsigned direction=part==SPNP_UP?0:part==SPNP_DOWN?1:part==SPNP_UPHORZ?3:2;
     BOOL result=s->ops.render(s->window,s->ops.context,dc,rect,clip,direction,state==UPS_PRESSED,state==UPS_DISABLED);s->release(s->owner);return result;
+}
+
+/* Preserve the native scroll-arrow frames and map their palette roles.
+ * An odd split can leave a one-pixel unpainted seam. */
+BOOL style_control_updown_recolor_supported(HWND window)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(window,GWL_EXSTYLE);
+    DWORD allowed=UDS_WRAP|UDS_SETBUDDYINT|UDS_ALIGNRIGHT|UDS_ALIGNLEFT|UDS_AUTOBUDDY|UDS_ARROWKEYS|
+        UDS_HORZ|UDS_NOTHOUSANDS|UDS_HOTTRACK;
+    return !(style&(0xffffu&~allowed)) && !(style&(WS_BORDER|WS_HSCROLL|WS_VSCROLL)) &&
+        !(ex&(WS_EX_CLIENTEDGE|WS_EX_STATICEDGE|WS_EX_LAYOUTRTL|WS_EX_RTLREADING));
+}
+
+static DWORD dib_color(COLORREF color)
+{
+    return ((DWORD)GetRValue(color)<<16)|((DWORD)GetGValue(color)<<8)|GetBValue(color);
+}
+
+BOOL style_control_updown_recolor(HWND window,style_instance *instance,HDC target,const style_relief_palette *p)
+{
+    const COLORREF key=RGB(253,11,239);
+    const int indices[]={COLOR_BTNFACE,COLOR_3DLIGHT,COLOR_3DSHADOW,COLOR_3DDKSHADOW,COLOR_3DHIGHLIGHT,COLOR_BTNTEXT};
+    const COLORREF colors[]={p->face,p->light,p->shadow,p->dark,p->highlight,p->text};
+    DWORD input[ARRAYSIZE(indices)],output[ARRAYSIZE(indices)];
+    for(unsigned i=0;i<ARRAYSIZE(indices);++i){
+        input[i]=dib_color(GetSysColor(indices[i]));
+        output[i]=dib_color(colors[i]);
+        if(input[i]==dib_color(key))return FALSE;
+        for(unsigned j=0;j<i;++j)if(input[i]==input[j] && output[i]!=output[j])return FALSE;
+    }
+    RECT client;
+    if(!target || !GetClientRect(window,&client) || client.right<1 || client.bottom<1 ||
+        client.right>512 || client.bottom>512)return FALSE;
+    style_bitmap surface={0};
+    SIZE size={client.right,client.bottom};
+    if(!style_bitmap_ensure(&surface,target,size))return FALSE;
+    BOOL painted=FALSE;
+    if(SetDCBrushColor(surface.dc,key)==CLR_INVALID || !FillRect(surface.dc,&client,GetStockObject(DC_BRUSH)))goto done;
+    DefSubclassProc(window,WM_PRINTCLIENT,(WPARAM)surface.dc,PRF_CLIENT);
+    if(instance->detached || !GdiFlush())goto done;
+    DWORD *pixels=(DWORD *)surface.pixels;
+    size_t count=(size_t)size.cx*(size_t)size.cy;
+    BOOL mapped=FALSE;
+    for(size_t n=0;n<count;++n){
+        DWORD pixel=pixels[n]&0xffffffu;
+        for(unsigned i=0;i<ARRAYSIZE(input);++i){
+            if(pixel==input[i]){pixels[n]=output[i];mapped=TRUE;break;}
+        }
+    }
+    if(mapped)painted=TransparentBlt(target,0,0,size.cx,size.cy,surface.dc,0,0,size.cx,size.cy,key);
+done:
+    style_bitmap_dispose(&surface);
+    return painted;
 }

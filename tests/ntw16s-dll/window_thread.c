@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ntw16s-dll/window_thread.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 
 typedef BOOL (__cdecl *query_fn)(HWND);
 #define CHECK(x) do { if(!(x)) { \
@@ -26,16 +27,21 @@ static LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM wp,LPARAM lp
 
 int wmain(int argc,WCHAR **argv)
 {
-    BOOL direct=argc>=3 && (!lstrcmpW(argv[2],L"--direct") || !lstrcmpW(argv[2],L"--direct-composed"));
+    BOOL switching=argc==6 && !lstrcmpW(argv[2],L"--switch");
+    BOOL direct=switching || (argc>=3 && (!lstrcmpW(argv[2],L"--direct") || !lstrcmpW(argv[2],L"--direct-composed")));
     BOOL composed=argc>=3 && (!lstrcmpW(argv[2],L"--composed") || !lstrcmpW(argv[2],L"--direct-composed"));
-    CHECK(argc==2 || ((argc==3 || argc==4) && (direct || composed)));
-    WPARAM identity=argc==4?(WPARAM)wcstoul(argv[3],NULL,10):0;
+    CHECK(switching || argc==2 || ((argc==3 || argc==4) && (direct || composed)));
+    WPARAM identity=switching?classic_theme_folder_id(argv[3]):argc==4?(WPARAM)wcstoul(argv[3],NULL,10):0;
+    WPARAM other_identity=switching?classic_theme_folder_id(argv[4]):0;
+    WPARAM missing=switching?classic_theme_folder_id(argv[5]):0;
     CHECK(argc!=4 || identity);
     HMODULE dll=LoadLibraryW(argv[1]);
     CHECK(dll);
     HOOKPROC callback=(HOOKPROC)(uintptr_t)GetProcAddress(dll,"Ntw16sWindowThreadHook");
     query_fn attached=(query_fn)(uintptr_t)GetProcAddress(dll,"Ntw16sWindowAttached");
     CHECK(callback && attached);
+    query_fn observed=(query_fn)(uintptr_t)GetProcAddress(dll,"Ntw2ksWindowAttached");
+    CHECK(!switching || (observed && identity && other_identity && missing));
     WNDCLASSW wc={.lpfnWndProc=window_proc,.hInstance=GetModuleHandleW(NULL),
         .lpszClassName=composed?L"Chrome_WidgetWin_1":L"S3ThreadHookFixture"};
     CHECK(RegisterClassW(&wc));
@@ -44,6 +50,9 @@ int wmain(int argc,WCHAR **argv)
     HWND other=CreateWindowW(wc.lpszClassName,L"two",WS_OVERLAPPEDWINDOW,
         0,0,400,300,NULL,NULL,wc.hInstance,NULL);
     CHECK(first && other && !attached(first) && !attached(other));
+    RECT original={0};
+    LONG_PTR style=GetWindowLongPtrW(first,GWL_STYLE),extended=GetWindowLongPtrW(first,GWL_EXSTYLE);
+    CHECK(GetClientRect(first,&original));
     HHOOK hook=direct?NULL:SetWindowsHookExW(WH_CALLWNDPROC,callback,dll,GetCurrentThreadId());
     CHECK(direct || hook);
     UINT message=RegisterWindowMessageW(NTW16S_WINDOW_THREAD_MESSAGE);
@@ -54,7 +63,15 @@ int wmain(int argc,WCHAR **argv)
     DISPATCH();
     CHECK(!attached(first) && !attached(other));
     CHECK(!GetPropW(first,NTW16S_WINDOW_THREAD_RESULT));
-    event.lParam=(LPARAM)first;DISPATCH();
+    event.lParam=(LPARAM)first;
+    if(switching){
+        WPARAM valid_request=event.wParam;
+        event.wParam=NTW16S_WINDOW_THREAD_ATTACH;
+        DISPATCH();
+        CHECK(!GetPropW(first,NTW16S_WINDOW_THREAD_RESULT) && !attached(first) && !observed(first));
+        event.wParam=valid_request;
+    }
+    DISPATCH();
     CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)==1);
     CHECK(attached(first) && !attached(other));
     RemovePropW(first,NTW16S_WINDOW_THREAD_RESULT);
@@ -67,12 +84,32 @@ int wmain(int argc,WCHAR **argv)
         CHECK(EnumThreadWindows(GetCurrentThreadId(),find_surface,(LPARAM)&surface));
         CHECK(surface.count==1 && IsWindowVisible(surface.surface));
     }
+    if(switching){
+        event.wParam=NTW16S_WINDOW_THREAD_ATTACH|(other_identity<<NTW16S_WINDOW_THREAD_PROFILE_SHIFT);
+        DISPATCH();
+        CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)==1 && observed(first) && !attached(first));
+        RemovePropW(first,NTW16S_WINDOW_THREAD_RESULT);
+        event.wParam=NTW16S_WINDOW_THREAD_ATTACH|(missing<<NTW16S_WINDOW_THREAD_PROFILE_SHIFT);
+        DISPATCH();
+        CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)>1 && observed(first) && !attached(first));
+        RemovePropW(first,NTW16S_WINDOW_THREAD_RESULT);
+        event.wParam=NTW16S_WINDOW_THREAD_ATTACH|(identity<<NTW16S_WINDOW_THREAD_PROFILE_SHIFT);
+        DISPATCH();
+        CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)==1 && attached(first) && !observed(first));
+        RemovePropW(first,NTW16S_WINDOW_THREAD_RESULT);
+    }
     event.wParam=NTW16S_WINDOW_THREAD_REMOVE;DISPATCH();
     CHECK((uintptr_t)GetPropW(first,NTW16S_WINDOW_THREAD_RESULT)==1);
     CHECK(!attached(first) && !attached(other));
     if(composed){
         CHECK(!IsWindow(surface.surface));
         CHECK(GetWindowLongPtrW(first,GWL_EXSTYLE)&WS_EX_NOREDIRECTIONBITMAP);
+    }
+    if(switching){
+        RECT restored={0};
+        CHECK(!observed(first) && GetClientRect(first,&restored) && EqualRect(&restored,&original));
+        CHECK(GetWindowLongPtrW(first,GWL_STYLE)==style && GetWindowLongPtrW(first,GWL_EXSTYLE)==extended);
+        puts("WINDOW THREAD DIRECTORY PASS numeric_rejected=1 switched_both_ways=1 missing_keeps_current=1 restored=1");
     }
     if(hook)CHECK(UnhookWindowsHookEx(hook));
     DestroyWindow(first);

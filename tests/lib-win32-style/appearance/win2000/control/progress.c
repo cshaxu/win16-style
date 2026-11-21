@@ -31,16 +31,25 @@ static BOOL has_color(HDC dc,const RECT *r,COLORREF desired)
 int wmain(int argc,WCHAR **argv)
 {
     CHECK(argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
+    BOOL production=argc==2 && !wcscmp(argv[1],L"--theme-launch");
+#ifdef WIN2K_PROGRESS_V6
+    BOOL outlined=argc==2 && !wcscmp(argv[1],L"--outlined-theme-launch");
+    production=production || outlined;
+#endif
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
     const INITCOMMONCONTROLSEX icc={sizeof(icc),ICC_PROGRESS_CLASS};
     CHECK(InitCommonControlsEx(&icc));
-    HMODULE dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
-    CHECK(dll);
-    window_op attach=(void *)GetProcAddress(dll,"Ntw2ksWindowAttach");
-    window_op attached=(void *)GetProcAddress(dll,"Ntw2ksWindowAttached");
-    window_op remove=(void *)GetProcAddress(dll,"Ntw2ksWindowRemove");
-    CHECK(attach && attached && remove);
+    HMODULE dll=NULL;
+    window_op attach=NULL,attached=NULL,remove=NULL;
+    if(!production){
+        dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);
+        CHECK(dll);
+        attach=(void *)GetProcAddress(dll,"Ntw2ksWindowAttach");
+        attached=(void *)GetProcAddress(dll,"Ntw2ksWindowAttached");
+        remove=(void *)GetProcAddress(dll,"Ntw2ksWindowRemove");
+        CHECK(attach && attached && remove);
+    }
     HWND root=CreateWindowExW(WS_EX_TOOLWINDOW|WS_EX_NOACTIVATE,L"STATIC",L"Owned Win2000 progress",
         WS_POPUP|WS_VISIBLE,-10000,-10000,260,260,NULL,NULL,NULL,NULL);
     CHECK(root);
@@ -65,7 +74,7 @@ int wmain(int argc,WCHAR **argv)
         SendMessageW(bar,PBM_SETBARCOLOR,0,(LPARAM)app_ink);
         SendMessageW(bar,PBM_SETBKCOLOR,0,(LPARAM)app_face);
 #endif
-        CHECK(attach(bar));
+        CHECK(production || attach(bar));
         SendMessageW(bar,PBM_SETRANGE32,(WPARAM)(INT_PTR)-200,600);
         CHECK(SendMessageW(bar,PBM_SETPOS,0,0)==0);
         SendMessageW(bar,PBM_SETSTEP,100,0);
@@ -76,6 +85,21 @@ int wmain(int argc,WCHAR **argv)
         SetTextColor(dc,RGB(24,63,16));
         print(bar,dc,WM_PRINTCLIENT,PRF_CLIENT|PRF_ERASEBKGND);
 #ifdef WIN2K_PROGRESS_V6
+        if(outlined){
+            int unit=max(1,MulDiv(1,(int)GetDpiForWindow(bar),96));
+            int x=vertical?client.right/2:unit,y=vertical?client.bottom-unit-1:client.bottom/2;
+            CHECK(GetPixel(dc,0,0)==RGB(0,0,0));
+            SendMessageW(bar,PBM_SETBARCOLOR,0,(LPARAM)app_ink);
+            const COLORREF state_colors[]={app_ink,RGB(192,0,0),RGB(192,192,0)};
+            for(unsigned state=PBST_NORMAL;state<=PBST_PAUSED;++state){
+                SendMessageW(bar,PBM_SETSTATE,state,0);
+                print(bar,dc,WM_PRINTCLIENT,PRF_CLIENT|PRF_ERASEBKGND);
+                CHECK(SendMessageW(bar,PBM_GETSTATE,0,0)==(LRESULT)state);
+                CHECK(GetPixel(dc,x,y)==state_colors[state-PBST_NORMAL]);
+            }
+            CHECK(DestroyWindow(bar));
+            continue;
+        }
         int start_x=vertical?client.right/2:1,start_y=vertical?client.bottom-2:client.bottom/2;
         CHECK(GetPixel(dc,0,0)==face && GetPixel(dc,start_x,start_y)==ink);
         CHECK(GetTextColor(dc)==RGB(24,63,16));
@@ -95,7 +119,8 @@ int wmain(int argc,WCHAR **argv)
 #endif
         print(bar,dc,WM_PRINT,PRF_NONCLIENT);
         CHECK(GetPixel(dc,0,6)==RGB(128,128,128) && GetPixel(dc,6,0)==RGB(128,128,128));
-        CHECK(remove(bar) && !attached(bar) && SendMessageW(bar,PBM_GETPOS,0,0)==100);
+        CHECK(production || (remove(bar) && !attached(bar)));
+        CHECK(SendMessageW(bar,PBM_GETPOS,0,0)==100);
         print(bar,dc,WM_PRINTCLIENT,PRF_CLIENT|PRF_ERASEBKGND);
 #ifdef WIN2K_PROGRESS_V6
         CHECK(SendMessageW(bar,PBM_GETBARCOLOR,0,0)==app_ink &&
@@ -106,9 +131,18 @@ int wmain(int argc,WCHAR **argv)
         CHECK(DestroyWindow(bar));
     }
     HWND special=CreateWindowW(PROGRESS_CLASSW,NULL,WS_CHILD|PBS_MARQUEE,0,0,100,20,root,NULL,NULL,NULL);
-    CHECK(special && !attached(special) && !attach(special) && GetLastError()==ERROR_NOT_SUPPORTED);
+    CHECK(special);
+    if(!production)CHECK(!attached(special) && !attach(special) && GetLastError()==ERROR_NOT_SUPPORTED);
     CHECK(DestroyWindow(root));
-    SelectObject(dc,old);DeleteObject(bmp);DeleteDC(dc);FreeLibrary(dll);
-    puts("WIN2K_PROGRESS_OK variants=4 native_values=1 caller_colors=1 edge=1 detach=4 marquee_native=1");
+    SelectObject(dc,old);DeleteObject(bmp);DeleteDC(dc);
+    if(dll)FreeLibrary(dll);
+#ifdef WIN2K_PROGRESS_V6
+    if(outlined){
+        puts("OUTLINED_PROGRESS_THEME_LAUNCH_OK variants=4 native_values=1 states=3 edge=1");
+        return 0;
+    }
+#endif
+    if(production)puts("WIN2K_PROGRESS_THEME_LAUNCH_OK variants=4 native_values=1 caller_colors=1 edge=1");
+    else puts("WIN2K_PROGRESS_OK variants=4 native_values=1 caller_colors=1 edge=1 detach=4 marquee_native=1");
     return 0;
 }

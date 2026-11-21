@@ -6,9 +6,7 @@ static DWORD prepare(DWORD (*attach)(void *,void *),BOOL reuse,DWORD flags,void 
 {
     (void)context;DWORD error=reuse?ERROR_SUCCESS:(DWORD)ntw16s_attach_processes_using(attach);
     if(!error && (flags&NTWSHK_POLICY_STYLE))error=(DWORD)ntw16s_attach_titles_using(attach);
-    if(!error && (flags&NTWSHK_POLICY_STYLE))error=(DWORD)ntw16s_attach_file_dialogs_using(attach);
-    if(!error && (flags&NTWSHK_POLICY_STYLE))error=(DWORD)ntw16s_attach_com_dialogs_using(attach);
-    if(!error && (flags&NTWSHK_POLICY_STYLE))error=(DWORD)ntw16s_attach_folder_dialogs_using(attach);
+    if(!error && (flags&NTWSHK_POLICY_STYLE))error=(DWORD)ntw16s_attach_shell_dialogs_using(attach,FALSE);
     return error;
 }
 static void discard(void *context){(void)context;ntw16s_discard_processes();}

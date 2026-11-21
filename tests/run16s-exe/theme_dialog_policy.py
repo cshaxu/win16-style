@@ -66,7 +66,42 @@ def set_policy(path, declaration, record=9):
         raise ctypes.WinError(error)
 
 
-def verify(package, driver, targets, print_targets):
+def verify_find_routes(driver, root, targets):
+    # Keep Color and Font native in every case. Vary the Find byte within
+    # each frame provider, leaving the frame and geometry records intact.
+    for stock in ("Win16", "Win2K"):
+        for route, label in ((1, "native"), (2, "owner"), (3, "compact")):
+            folder = f"{stock} Find {label}"
+            shutil.copytree(root / stock, root / folder)
+            set_policy(root / folder / f"{stock}.msstyles",
+                       bytes((1, 1, route)), record=21)
+            for bits, target in zip((32, 64), targets):
+                result = subprocess.run(
+                    [driver, "--direct", root / "run16s.exe", folder, target,
+                     "--find-route-probe"],
+                    capture_output=True, text=True, errors="replace", timeout=16,
+                    creationflags=subprocess.CREATE_NO_WINDOW)
+                rows = [line for line in result.stdout.splitlines()
+                        if line.startswith("FIND ROUTE ")]
+                if result.returncode or len(rows) != 4:
+                    raise AssertionError((folder, bits, result.returncode,
+                                          result.stdout, result.stderr))
+                full = int(route != 1 and stock == "Win16")
+                observed = int(route != 1 and stock == "Win2K")
+                compact_checked = 0
+                for row, (ansi, replace) in zip(rows, ((0, 0), (0, 1), (1, 0), (1, 1))):
+                    eligible = " wrap_hidden=1 " in row and not replace
+                    compact = int(route == 3 and eligible)
+                    marker = (f"FIND ROUTE ansi={ansi} replace={replace} full={full} "
+                              f"observed={observed} compact={compact} ")
+                    if not row.startswith(marker):
+                        raise AssertionError((folder, bits, marker, row))
+                    compact_checked += compact
+                print(f"DIALOG FIND ROUTES bits={bits} theme={folder} "
+                      f"requests=4 compact={compact_checked}")
+
+
+def verify(package, driver, targets, print_targets, root):
     settings = (
         ("Mixed Classic", "Win16", bytes((1, 2, 0, 0)),
          (("open", "explorer-themed", "COM_EXPLORER_LAYOUT bridged=1"),
@@ -76,78 +111,85 @@ def verify(package, driver, targets, print_targets):
         ("Native Files", "Win2K", bytes((2, 0, 1, 2)),
          (("open", "native", "old=0"), ("folder", None, "COM_FOLDER_LAYOUT tree=1"))),
     )
-    with tempfile.TemporaryDirectory(prefix="style-dialog-policy-") as temporary:
-        root = Path(temporary)
-        for binary in ("run16s.exe", "ntwshk32.dll", "ntwshk64.dll"):
-            shutil.copyfile(package / binary, root / binary)
-        for stock in ("Win16", "Win2K"):
-            shutil.copytree(package / stock, root / stock)
-        for folder, stock, declaration, checks in settings:
-            shutil.copytree(package / stock, root / folder)
-            set_policy(root / folder / f"{stock}.msstyles", declaration)
-            for bits, target, printer in zip((32, 64), targets, print_targets):
-                for operation, option, marker in checks:
-                    command = [driver, "--direct", root / "run16s.exe", folder, target,
-                               operation, "cancel"]
-                    if option:
-                        command.append(option)
-                    result = subprocess.run(command, capture_output=True, text=True,
-                                            errors="replace", timeout=16)
-                    if result.returncode or marker not in result.stdout or "hr=800704c7" not in result.stdout:
-                        raise AssertionError((folder, bits, operation, result.returncode,
-                                              result.stdout, result.stderr))
-                    print(f"DIALOG POLICY bits={bits} theme={folder} operation={operation} {marker}")
-                expected = declaration[3]
-                arguments, markers = {
-                    0: (("--print-ex-default",), ("settings=1 dc=0 pass=1",)),
-                    1: (("--print-ex-policy", "1"), ("expected=1 observed=1",)),
-                    2: (("--print-ex-frame",), ("attached=1 result=00000000 action=0",)),
-                }[expected]
-                result = subprocess.run(
-                    [driver, "--direct", root / "run16s.exe", folder, printer, *arguments],
-                    capture_output=True, text=True, errors="replace", timeout=16)
-                if result.returncode == 77 and "SKIP no_default_printer" in result.stdout:
-                    print(f"DIALOG POLICY PRINT SKIP bits={bits} theme={folder} no_default_printer")
-                    continue
-                if result.returncode or not all(marker in result.stdout for marker in markers):
-                    raise AssertionError((folder, bits, "print", result.returncode,
+    for binary in ("run16s.exe", "ntwshk32.dll", "ntwshk64.dll"):
+        shutil.copyfile(package / binary, root / binary)
+    for stock in ("Win16", "Win2K"):
+        shutil.copytree(package / stock, root / stock)
+    for folder, stock, declaration, checks in settings:
+        shutil.copytree(package / stock, root / folder)
+        set_policy(root / folder / f"{stock}.msstyles", declaration)
+        for bits, target, printer in zip((32, 64), targets, print_targets):
+            for operation, option, marker in checks:
+                command = [driver, "--direct", root / "run16s.exe", folder, target,
+                           operation, "cancel"]
+                if option:
+                    command.append(option)
+                result = subprocess.run(command, capture_output=True, text=True,
+                                        errors="replace", timeout=16)
+                if result.returncode or marker not in result.stdout or "hr=800704c7" not in result.stdout:
+                    raise AssertionError((folder, bits, operation, result.returncode,
                                           result.stdout, result.stderr))
-                print(f"DIALOG POLICY PRINT bits={bits} theme={folder} mode={expected} ANSI and Unicode")
-        stock_settings = (
-            ("Native Color and Find", bytes((1, 3, 1)), "--color-native-policy", "--find-native-policy"),
-            ("Native Font", bytes((3, 1, 3)), "--font-native-policy", "--find-frame"),
-        )
-        font_clients = {}
-        for folder, declaration, common, find_mode in stock_settings:
-            shutil.copytree(package / "Win2K", root / folder)
-            set_policy(root / folder / "Win2K.msstyles", declaration, record=21)
-            for bits, target in zip((32, 64), print_targets):
-                for mode in (common, find_mode):
-                    result = subprocess.run(
-                        [driver, "--direct", root / "run16s.exe", folder, target, mode],
-                        capture_output=True, text=True, errors="replace", timeout=16)
-                    marker = "WIN2K COMMON" if mode == common else "WIN2K FIND"
-                    lines = [line for line in result.stdout.splitlines()
-                             if line.startswith(marker + " bits=")]
-                    if result.returncode or len(lines) != 4:
-                        raise AssertionError((folder, bits, mode, result.returncode, result.stdout, result.stderr))
-                    if mode == common:
-                        geometry = [line.split()[3] for line in result.stdout.splitlines()
-                                    if line.startswith("WIN2K COMMON GEOMETRY ")]
-                        if len(geometry) != len(lines):
-                            raise AssertionError((folder, bits, "missing common dialog geometry", result.stdout))
-                        font_clients[bits, declaration[1]] = [size for size, call in zip(geometry, lines)
-                                                               if " font=1 " in call]
-                    print(f"DIALOG STOCK POLICY bits={bits} theme={folder} {mode} ANSI and Unicode")
-        for bits in (32, 64):
-            native, observed = font_clients[bits, 1], font_clients[bits, 3]
-            if len(native) != 2 or len(observed) != 2 or any(a == b for a, b in zip(native, observed)):
-                raise AssertionError((bits, "font route client dimensions", native, observed))
-            print(f"DIALOG FONT CLIENT bits={bits} plain={native} observed={observed}")
-    print("DIALOG POLICY PASS")
+                print(f"DIALOG POLICY bits={bits} theme={folder} operation={operation} {marker}")
+            expected = declaration[3]
+            arguments, markers = {
+                0: (("--print-ex-default",), ("settings=1 dc=0 pass=1",)),
+                1: (("--print-ex-policy", "1"), ("expected=1 observed=1",)),
+                2: (("--print-ex-frame",), ("attached=1 result=00000000 action=0",)),
+            }[expected]
+            result = subprocess.run(
+                [driver, "--direct", root / "run16s.exe", folder, printer, *arguments],
+                capture_output=True, text=True, errors="replace", timeout=16)
+            if result.returncode == 77 and "SKIP no_default_printer" in result.stdout:
+                print(f"DIALOG POLICY PRINT SKIP bits={bits} theme={folder} no_default_printer")
+                continue
+            if result.returncode or not all(marker in result.stdout for marker in markers):
+                raise AssertionError((folder, bits, "print", result.returncode,
+                                      result.stdout, result.stderr))
+            print(f"DIALOG POLICY PRINT bits={bits} theme={folder} mode={expected} ANSI and Unicode")
+    stock_settings = (
+        ("Native Color and Find", bytes((1, 3, 1)), "--color-native-policy", "--find-native-policy"),
+        ("Native Font", bytes((3, 1, 3)), "--font-native-policy", "--find-frame"),
+    )
+    font_clients = {}
+    for folder, declaration, common, find_mode in stock_settings:
+        shutil.copytree(package / "Win2K", root / folder)
+        set_policy(root / folder / "Win2K.msstyles", declaration, record=21)
+        for bits, target in zip((32, 64), print_targets):
+            for mode in (common, find_mode):
+                result = subprocess.run(
+                    [driver, "--direct", root / "run16s.exe", folder, target, mode],
+                    capture_output=True, text=True, errors="replace", timeout=16)
+                marker = "WIN2K COMMON" if mode == common else "WIN2K FIND"
+                lines = [line for line in result.stdout.splitlines()
+                         if line.startswith(marker + " bits=")]
+                if result.returncode or len(lines) != 4:
+                    raise AssertionError((folder, bits, mode, result.returncode, result.stdout, result.stderr))
+                if mode == common:
+                    geometry = [line.split()[3] for line in result.stdout.splitlines()
+                                if line.startswith("WIN2K COMMON GEOMETRY ")]
+                    if len(geometry) != len(lines):
+                        raise AssertionError((folder, bits, "missing common dialog geometry", result.stdout))
+                    font_clients[bits, declaration[1]] = [size for size, call in zip(geometry, lines)
+                                                           if " font=1 " in call]
+                print(f"DIALOG STOCK POLICY bits={bits} theme={folder} {mode} ANSI and Unicode")
+    for bits in (32, 64):
+        native, observed = font_clients[bits, 1], font_clients[bits, 3]
+        if len(native) != 2 or len(observed) != 2 or any(a == b for a, b in zip(native, observed)):
+            raise AssertionError((bits, "font route client dimensions", native, observed))
+        print(f"DIALOG FONT CLIENT bits={bits} plain={native} observed={observed}")
+    verify_find_routes(driver, root, print_targets)
 
 
 if __name__ == "__main__":
-    package, driver, x86, x64, print_x86, print_x64 = (
-        Path(arg).resolve() for arg in sys.argv[1:])
-    verify(package, driver, (x86, x64), (print_x86, print_x64))
+    if sys.argv[1:2] == ["--worker"]:
+        root = Path(sys.argv[2])
+        package, driver, x86, x64, print_x86, print_x64 = (
+            Path(arg).resolve() for arg in sys.argv[3:])
+        verify(package, driver, (x86, x64), (print_x86, print_x64), root)
+    else:
+        # Release Windows resource mappings when the worker exits before cleanup.
+        with tempfile.TemporaryDirectory(prefix="style-dialog-policy-") as temporary:
+            subprocess.run([sys.executable, "-B", __file__, "--worker", temporary, *sys.argv[1:]],
+                           check=True, timeout=155, stdout=sys.stdout, stderr=sys.stderr,
+                           creationflags=subprocess.CREATE_NO_WINDOW)
+        print("DIALOG POLICY PASS")

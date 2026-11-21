@@ -14,7 +14,6 @@ static BOOL WINAPI redirect_self_elevation(SHELLEXECUTEINFOW *info)
 {
     if(!info || info->cbSize!=sizeof(*info) || info->fMask!=SEE_MASK_FLAG_NO_UI ||
        !info->lpVerb || _wcsicmp(info->lpVerb,L"runas") || !info->lpFile ||
-       !ntw16s_process_session_active() ||
        (__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&STYLE_STARTUP_POLICY_MASK)!=(NTWSHK_POLICY_STYLE|NTWSHK_POLICY_PROPAGATE))
         return shell_execute_w(info);
     WCHAR *paths=calloc(3u*NTWSHK_PATH_CAP,sizeof(*paths));
@@ -43,8 +42,6 @@ static BOOL WINAPI redirect_self_elevation(SHELLEXECUTEINFOW *info)
     BOOL result=shell_execute_w(&request);DWORD error=GetLastError();
     info->hInstApp=request.hInstApp;free(parameters);free(paths);SetLastError(error);return result;
 }
-BOOL ntw16s_process_session_active(void)
-{return !(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTWSHK_POLICY_GLOBAL_SESSION) || ntw16s_global_policy_style(__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE),NTW16S_GLOBAL_STYLE_16);}
 static BOOL active(void *unused)
 {(void)unused;return !(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTWSHK_POLICY_GLOBAL_SESSION) || ntw16s_global_policy_active(__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE));}
 static const style_startup_propagation propagation={&ntw16s_process_context,L"ntwshk",active,NULL};
@@ -59,4 +56,14 @@ LONG ntw16s_attach_processes_using(DWORD (*attach)(void *,void *))
     }
     return (LONG)error;
 }
-LONG ntw16s_attach_processes(void){return ntw16s_attach_processes_using(process_hook_startup_attach);}
+#ifdef NTWSHK_UNIFIED
+LONG ntw16s_attach_startup_processes(const ntwshk_context *unscoped)
+{
+    if(!unscoped)return ntw16s_attach_processes_using(process_hook_startup_attach);
+    /* The ordinary observation adapter keeps its original launch context
+     * if a global session later binds a separate context in this process. */
+    static style_startup_propagation observed;
+    observed=(style_startup_propagation){unscoped,L"ntwshk",NULL,NULL};
+    return (LONG)style_startup_propagate(process_hook_startup_attach,&observed);
+}
+#endif

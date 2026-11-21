@@ -1,6 +1,6 @@
 /* Classic top tabs follow the Windows 2000 comctl32 tab.c geometry. */
 #include "tab_header.h"
-#include "../common/paint.h"
+#include "../common/palette.h"
 #include "lib-win32-style/application/control/tab_snapshot.h"
 
 typedef struct tab_paint {
@@ -80,12 +80,13 @@ static void paint_item(HWND window,void *context,HDC dc,const style_control_tab_
 }
 
 BOOL win2k_tab_paint(HWND window,HDC dc,HFONT font,const style_instance *instance,
-    const style_control_native_state *state,const classic_tab_colors *colors,style_line_profile profile)
+    const style_control_native_state *state,const classic_tab_colors *colors,style_line_profile profile,const win2k_palette *palette)
 {
+    if(!profile)return FALSE;
     const unsigned epoch=state->epoch;
-    tab_paint paint={.font=font,.hot=-1,.palette=win2k_standard_palette,
-        .normal=win2k_standard_palette.face,.selected=win2k_standard_palette.face,
-        .profile=profile?profile:STYLE_LINE_RELIEF};
+    tab_paint paint={.font=font,.hot=-1,.palette=*palette,
+        .normal=palette->face,.selected=palette->face,
+        .profile=profile};
     if(colors->present){
         paint.palette.face=colors->pane;
         paint.palette.dark=colors->border;

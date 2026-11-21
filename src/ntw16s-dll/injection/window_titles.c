@@ -7,6 +7,7 @@
 #include "lib-win32-style/application/lifecycle/creation_call.h"
 #include "lib-win32-style/application/dialog/observation.h"
 #include "intercept.h"
+#include "ntwshk-dll/observed.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "../../lib-win32/process-hook/startup_hooks.h"
 #include "../../lib-win32/process-hook/unwind.h"
@@ -16,6 +17,7 @@
 #include "lib-win32-style/appearance/win2000/dialog/print_general.h"
 #include "lib-win32-style/appearance/win2000/dialog/stock_call.h"
 #include "ntw16s-dll/global/window.h"
+#include "ntw16s-dll/global/session.h"
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/attachment.h"
 #include "ntw16s-dll/native_api.h"
@@ -76,8 +78,18 @@ static BOOL CALLBACK bind_titles(PINIT_ONCE once,void *parameter,void **context)
     ntw16s_status_hooks_enable();
     InterlockedExchange(&style_ready,1);return TRUE;
 }
+static BOOL creation_active(void)
+{
+    if(!(__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE)&NTWSHK_POLICY_GLOBAL_SESSION))
+        return TRUE;
+    DWORD cookie=__atomic_load_n(&ntw16s_process_context.session_cookie,__ATOMIC_ACQUIRE),style;
+    classic_theme_selection selection;
+    return style_global_policy_current(&ntw16s_global_namespace,cookie,&style) &&
+        classic_theme_decode_selection(style,&selection) &&
+        classic_theme_selection_layout(selection)==CLASSIC_WINDOW_PROVIDER_FULL_CLIENT;
+}
 static style_creation_context title_context={.once=INIT_ONCE_STATIC_INIT,.prepare=bind_titles,
-    .active=ntw16s_process_session_active,.operations=&ntw16s_creation_ops};
+    .active=creation_active,.operations=&ntw16s_creation_ops};
 static const WCHAR menu_owner_property[]=L"Win16Style.T18.MenuOwner";
 static int menu_owner_marker;
 static void mark_menu_owner(HWND w,const void *caller)
@@ -98,10 +110,24 @@ HRESULT ntw16s_dialog_style_scope(HRESULT (*callback)(void *),void *context)
     return style_creation_call_invoke(&title_context,callback,context);
 }
 
+/* The observed route attaches after USER returns. The creation route keeps
+ * its existing pre-create transaction. Both routes own the same trampolines. */
+static void (*startup_window_created)(HWND,DWORD);
+
+HRESULT ntwshk_observed_native_theme(HWND window,LPCWSTR application,LPCWSTR ids)
+{
+    return startup_window_created?real_set_theme(window,application,ids):SetWindowTheme(window,application,ids);
+}
+
 #define WINDOW_HOOK(S,T) \
 static __typeof__(&CreateWindowEx##S) create_##S; \
 static PROCESS_HOOK_UNWIND_FUNCTION HWND WINAPI window_##S(DWORD ex,T cls,T text,DWORD style,int x,int y,int cx,int cy,HWND parent,HMENU menu,HINSTANCE instance,void *param) \
 { process_hook_unwind_scope unwind;title_scope scope;HWND result=NULL;DWORD error=ERROR_SUCCESS; \
+  if(startup_window_created){ \
+    result=create_##S(ex,cls,text,style,x,y,cx,cy,parent,menu,instance,param);error=GetLastError(); \
+    if(result)startup_window_created(result,style); \
+    SetLastError(error);return result; \
+  } \
   if(!begin_titles(&scope,FALSE))return NULL; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { result=create_##S(ex,cls,text,style,x,y,cx,cy,parent,menu,instance,param);error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
@@ -126,14 +152,50 @@ static PROCESS_HOOK_UNWIND_FUNCTION HWND WINAPI window_band(DWORD ex,LPCWSTR cls
     SetLastError(error);return result;
 }
 
+static BOOL startup_observes_dialogs;
+
+static LRESULT CALLBACK startup_dialog_return(int code,WPARAM wp,LPARAM lp)
+{
+    DWORD incoming=GetLastError();
+    const CWPRETSTRUCT *event=style_message_dialog_initialized(code,lp);
+    if(event)ntw16s_observed_dialog_initialize(event->hwnd);
+    SetLastError(incoming);
+    return CallNextHookEx(NULL,code,wp,lp);
+}
+
+static BOOL begin_standard_dialog(style_dialog_observation *scope,DWORD incoming)
+{
+    (void)incoming;
+    if(startup_observes_dialogs)
+        return style_dialog_observation_begin(scope,NULL,startup_dialog_return,FALSE);
+    return begin_titles(&scope->creation,TRUE);
+}
+
+static void prepare_standard_dialog(style_dialog_observation *scope,DWORD incoming)
+{
+    (void)scope;
+    if(startup_observes_dialogs)SetLastError(incoming);
+}
+
+static void end_standard_dialog(void *data)
+{
+    style_dialog_observation *scope=data;
+    if(startup_observes_dialogs)style_dialog_observation_end(scope);
+    else end_titles(&scope->creation);
+}
+
 #define TITLE_DIALOG_BEGIN(state,incoming) ((void)(incoming),begin_titles((state),TRUE))
 #define TITLE_DIALOG_PREPARE(state,incoming) ((void)(state),(void)(incoming))
-#define TITLE_DIALOG_FINISH(state,modal,result,error,fail) do { \
-    if((state)->failure){if(!(modal) && (result))DestroyWindow((HWND)(result)); \
-        (result)=(fail);(error)=(state)->failure;} \
+#define STANDARD_DIALOG_FINISH(state,modal,result,error,fail) do { \
+    if(startup_observes_dialogs){ \
+        if(!(modal) && (result))ntw16s_observed_dialog_initialize((HWND)(INT_PTR)(result)); \
+    }else if((state)->creation.failure){ \
+        if(!(modal) && (result))DestroyWindow((HWND)(INT_PTR)(result)); \
+        (result)=(fail);(error)=(state)->creation.failure; \
+    } \
 } while(0)
 #define DIALOG_HOOK(NAME,TYPE,RET,MODAL,FAIL) \
-    STYLE_DIALOG_HOOK(NAME,(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param),(instance,name,parent,proc,param),RET,FAIL,MODAL,title_scope,TITLE_DIALOG_BEGIN,TITLE_DIALOG_PREPARE,end_titles,TITLE_DIALOG_FINISH)
+    STYLE_DIALOG_HOOK(NAME,(HINSTANCE instance,TYPE name,HWND parent,DLGPROC proc,LPARAM param),(instance,name,parent,proc,param),RET,FAIL,MODAL,style_dialog_observation,begin_standard_dialog,prepare_standard_dialog,end_standard_dialog,STANDARD_DIALOG_FINISH)
 DIALOG_HOOK(CreateDialogParamA,LPCSTR,HWND,FALSE,NULL)
 DIALOG_HOOK(CreateDialogParamW,LPCWSTR,HWND,FALSE,NULL)
 DIALOG_HOOK(CreateDialogIndirectParamA,LPCDLGTEMPLATEA,HWND,FALSE,NULL)
@@ -208,39 +270,55 @@ OBSERVED_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA,color,color_dialog_return,TRUE,wi
 OBSERVED_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW,color,color_dialog_return,TRUE,win2k_color_w)
 #undef OBSERVED_DIALOG_HOOK
 
+/* An already-installed observation provider owns these six entries when
+ * a later attachment also installs the general window hooks. */
+static BOOL startup_observes_print;
+
 /* A no-op print hook selects the system's traditional PrintDlg layout.
  * Preserve caller-owned customization and less common flag contracts unchanged. */
 #define PRINT_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{ process_hook_unwind_scope unwind;title_scope scope;BOOL result=FALSE;DWORD error=ERROR_SUCCESS; \
+{ process_hook_unwind_scope unwind;style_dialog_observation scope;BOOL result=FALSE; \
+  DWORD incoming=GetLastError(),error=ERROR_SUCCESS; \
   enum classic_print_route route=ntw16s_dialog_policy().print; \
   if(route==CLASSIC_PRINT_NATIVE)return real_##NAME(parameters); \
   if(route==CLASSIC_PRINT_GENERAL_PAGE)return win2k_print_##SUFFIX(parameters,real_##NAME,&ntw16s_observed_dialog_windows); \
-  if(!begin_titles(&scope,TRUE))return FALSE; \
-  PROCESS_HOOK_UNWIND_BEGIN(unwind,end_titles,&scope); { \
+  if(!begin_standard_dialog(&scope,incoming))return FALSE; \
+  PROCESS_HOOK_UNWIND_BEGIN(unwind,end_standard_dialog,&scope); { \
+    prepare_standard_dialog(&scope,incoming); \
     result=style_classic_print_call_##SUFFIX(parameters,real_##NAME);error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
-  if(scope.failure){result=FALSE;error=scope.failure;}SetLastError(error);return result; }
+  STANDARD_DIALOG_FINISH(&scope,TRUE,result,error,FALSE);SetLastError(error);return result; }
 PRINT_HOOK(PrintDlgA,PRINTDLGA,a)
 PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
 #undef PRINT_HOOK
 
 /* Synchronous common dialogs also create their own internal windows. */
-SIMPLE_DIALOG_HOOK(PageSetupDlgA,PAGESETUPDLGA *,BOOL,FALSE,(void)0,
-    enum classic_print_route route=ntw16s_dialog_policy().print;
-    if(route==CLASSIC_PRINT_NATIVE)return real_PageSetupDlgA(parameters);
-    if(route==CLASSIC_PRINT_GENERAL_PAGE)return win2k_page_setup_a(parameters,real_PageSetupDlgA,&ntw16s_observed_dialog_windows))
-SIMPLE_DIALOG_HOOK(PageSetupDlgW,PAGESETUPDLGW *,BOOL,FALSE,(void)0,
-    enum classic_print_route route=ntw16s_dialog_policy().print;
-    if(route==CLASSIC_PRINT_NATIVE)return real_PageSetupDlgW(parameters);
-    if(route==CLASSIC_PRINT_GENERAL_PAGE)return win2k_page_setup_w(parameters,real_PageSetupDlgW,&ntw16s_observed_dialog_windows))
+#define PAGE_SETUP_HOOK(NAME,TYPE,SUFFIX) \
+    STYLE_DIALOG_HOOK_ROUTED(NAME,(TYPE *parameters),(parameters),BOOL,FALSE,TRUE,style_dialog_observation, \
+        begin_standard_dialog,prepare_standard_dialog,end_standard_dialog,STANDARD_DIALOG_FINISH, \
+        enum classic_print_route route=ntw16s_dialog_policy().print; \
+        if(route==CLASSIC_PRINT_NATIVE)return real_##NAME(parameters); \
+        if(route==CLASSIC_PRINT_GENERAL_PAGE)return win2k_page_setup_##SUFFIX(parameters,real_##NAME,&ntw16s_observed_dialog_windows))
+PAGE_SETUP_HOOK(PageSetupDlgA,PAGESETUPDLGA,a)
+PAGE_SETUP_HOOK(PageSetupDlgW,PAGESETUPDLGW,w)
+#undef PAGE_SETUP_HOOK
 #define PRINT_EXTENDED_HOOK(NAME,TYPE,GENERAL,BRIDGE,PRINT) \
 static __typeof__(&NAME) real_##NAME; \
 static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters) \
 { DWORD incoming=GetLastError();enum classic_print_route route=ntw16s_dialog_policy().print;HRESULT result=E_FAIL; \
   SetLastError(incoming); \
   if(route==CLASSIC_PRINT_NATIVE)return real_##NAME(parameters); \
+  if(startup_observes_print){ \
+    style_dialog_observation observation;process_hook_unwind_scope observe_unwind;DWORD outgoing; \
+    if(!style_dialog_observation_begin(&observation,NULL,startup_dialog_return,FALSE))return E_FAIL; \
+    PROCESS_HOOK_UNWIND_BEGIN(observe_unwind,style_dialog_observation_end,&observation); \
+    SetLastError(incoming); \
+    if((route!=CLASSIC_PRINT_GENERAL_PAGE || !GENERAL(ntw16s_observed_dialog_windows.resources(),parameters,&result)) && \
+       !BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
+    outgoing=GetLastError();PROCESS_HOOK_UNWIND_END(observe_unwind);SetLastError(outgoing);return result; \
+  } \
   if(route==CLASSIC_PRINT_GENERAL_PAGE){ \
     HMODULE resources=ntw16s_observed_dialog_windows.resources(); \
     if((resources && GENERAL(resources,parameters,&result)) || BRIDGE(parameters,PRINT,&result))return result; \
@@ -284,7 +362,7 @@ TASK_DIALOG_HOOK(TaskDialogIndirect,(const TASKDIALOGCONFIG *config,int *button,
  * calling an exported DialogBox entry. Keep its API/return contract and use
  * the same bounded creation scope as the other modal entry points. */
 #define MESSAGE_HOOK(NAME,PARAMETERS,ARGUMENTS) \
-    STYLE_DIALOG_HOOK(NAME,PARAMETERS,ARGUMENTS,int,0,(void)0,title_scope,TITLE_DIALOG_BEGIN,TITLE_DIALOG_PREPARE,end_titles,TITLE_PARAM_FINISH)
+    STYLE_DIALOG_HOOK(NAME,PARAMETERS,ARGUMENTS,int,0,TRUE,style_dialog_observation,begin_standard_dialog,prepare_standard_dialog,end_standard_dialog,STANDARD_DIALOG_FINISH)
 MESSAGE_HOOK(MessageBoxA,(HWND owner,LPCSTR text,LPCSTR caption,UINT type),(owner,text,caption,type))
 MESSAGE_HOOK(MessageBoxW,(HWND owner,LPCWSTR text,LPCWSTR caption,UINT type),(owner,text,caption,type))
 MESSAGE_HOOK(MessageBoxExA,(HWND owner,LPCSTR text,LPCSTR caption,UINT type,WORD language),(owner,text,caption,type,language))
@@ -292,6 +370,7 @@ MESSAGE_HOOK(MessageBoxExW,(HWND owner,LPCWSTR text,LPCWSTR caption,UINT type,WO
 MESSAGE_HOOK(MessageBoxIndirectA,(const MSGBOXPARAMSA *parameters),(parameters))
 MESSAGE_HOOK(MessageBoxIndirectW,(const MSGBOXPARAMSW *parameters),(parameters))
 #undef MESSAGE_HOOK
+#undef STANDARD_DIALOG_FINISH
 
 /* The DLL uses the three original native leaves bound at load, so application
  * reentry is never accidentally bypassed by an ambient recursion guard. */
@@ -301,6 +380,7 @@ static __typeof__(&ShowScrollBar) real_show_scroll;
 static __typeof__(&EnableScrollBar) real_enable_scroll;
 static HRESULT WINAPI hook_set_theme(HWND w,LPCWSTR application,LPCWSTR ids)
 {
+    if(startup_window_created)return style_theme_intercept(w,application,ids,ntwshk_observed_native_theme);
     if(!InterlockedCompareExchange(&style_ready,0,0))return real_set_theme(w,application,ids);
     return style_theme_intercept(w,application,ids,ntw16s_native_set_window_theme);
 }
@@ -652,7 +732,8 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_TrackPopupMenu(HMENU m,UINT
  PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result;
 }
 
-LONG ntw16s_attach_stock_dialogs_using(DWORD (*attach)(void *,void *))
+static BOOL startup_stock_dialogs;
+static LONG attach_stock_dialogs(DWORD (*attach)(void *,void *))
 {
     LONG error=NO_ERROR;
 #define ATTACH(NAME) do { if(!error){real_##NAME=NAME;error=(LONG)attach(&real_##NAME,(void *)hook_##NAME);} } while(0)
@@ -662,17 +743,91 @@ LONG ntw16s_attach_stock_dialogs_using(DWORD (*attach)(void *,void *))
     return error;
 }
 
+#ifdef NTWSHK_UNIFIED
+LONG ntw16s_attach_startup_stock_using(DWORD (*attach)(void *,void *))
+{
+    LONG error=attach_stock_dialogs(attach);
+    if(!error)startup_stock_dialogs=TRUE;
+    return error;
+}
+#endif
+
+static LONG attach_standard_dialogs(DWORD (*attach)(void *,void *))
+{
+    LONG error=NO_ERROR;
+#define ATTACH(NAME) do { if(!error){real_##NAME=NAME;error=(LONG)attach(&real_##NAME,(void *)hook_##NAME);} } while(0)
+    ATTACH(CreateDialogParamA);ATTACH(CreateDialogParamW);
+    ATTACH(CreateDialogIndirectParamA);ATTACH(CreateDialogIndirectParamW);
+    ATTACH(DialogBoxParamA);ATTACH(DialogBoxParamW);
+    ATTACH(DialogBoxIndirectParamA);ATTACH(DialogBoxIndirectParamW);
+    ATTACH(MessageBoxA);ATTACH(MessageBoxW);
+    ATTACH(MessageBoxExA);ATTACH(MessageBoxExW);
+    ATTACH(MessageBoxIndirectA);ATTACH(MessageBoxIndirectW);
+#undef ATTACH
+    return error;
+}
+
+#ifdef NTWSHK_UNIFIED
+LONG ntw16s_attach_startup_dialogs_using(DWORD (*attach)(void *,void *))
+{
+    LONG error=attach_standard_dialogs(attach);
+    if(!error)startup_observes_dialogs=TRUE;
+    return error;
+}
+#endif
+
+static LONG attach_print_dialogs(DWORD (*attach)(void *,void *))
+{
+    LONG error=NO_ERROR;
+#define ATTACH(NAME) do { if(!error){real_##NAME=NAME;error=(LONG)attach(&real_##NAME,(void *)hook_##NAME);} } while(0)
+    ATTACH(PrintDlgA);ATTACH(PrintDlgW);ATTACH(PageSetupDlgA);ATTACH(PageSetupDlgW);
+    ATTACH(PrintDlgExA);ATTACH(PrintDlgExW);
+#undef ATTACH
+    return error;
+}
+
+#ifdef NTWSHK_UNIFIED
+LONG ntw16s_attach_startup_print_using(DWORD (*attach)(void *,void *))
+{
+    LONG error=attach_print_dialogs(attach);
+    if(!error)startup_observes_print=TRUE;
+    return error;
+}
+#endif
+
+static LONG attach_window_creation(DWORD (*attach)(void *,void *))
+{
+    create_A=CreateWindowExA;create_W=CreateWindowExW;
+    LONG error=(LONG)attach(&create_A,(void *)window_A);
+    return error?error:(LONG)attach(&create_W,(void *)window_W);
+}
+
+static LONG attach_window_theme(DWORD (*attach)(void *,void *))
+{
+    real_set_theme=SetWindowTheme;
+    return (LONG)attach(&real_set_theme,(void *)hook_set_theme);
+}
+
+#ifdef NTWSHK_UNIFIED
+LONG ntw16s_attach_startup_windows_using(DWORD (*attach)(void *,void *),void (*created)(HWND,DWORD))
+{
+    LONG error=attach_window_creation(attach);
+    if(!error)error=attach_window_theme(attach);
+    if(!error)startup_window_created=created;
+    return error;
+}
+
+#endif
+
 LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;
     LONG error=NO_ERROR;
     if(!(ntw16s_process_context.flags&NTWSHK_POLICY_STYLE))return error;
-    create_A=CreateWindowExA;create_W=CreateWindowExW;
-    real_get_scroll=GetScrollInfo;real_set_scroll=SetScrollInfo;real_set_theme=SetWindowTheme;
+    real_get_scroll=GetScrollInfo;real_set_scroll=SetScrollInfo;
     real_set_pos=SetScrollPos;real_set_range=SetScrollRange;
     real_show_scroll=ShowScrollBar;real_enable_scroll=EnableScrollBar;
-    error=(LONG)attach(&create_A,(void *)window_A);
-    if(!error)error=(LONG)attach(&create_W,(void *)window_W);
+    if(!startup_window_created)error=attach_window_creation(attach);
     FARPROC band_symbol=GetProcAddress(GetModuleHandleW(L"user32.dll"),"CreateWindowInBand");
     memcpy(&create_band,&band_symbol,sizeof(band_symbol));
     if(create_band && !error)error=(LONG)attach(&create_band,(void *)window_band);
@@ -682,21 +837,15 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
     if(!error)error=(LONG)attach(&real_set_range,(void *)hook_set_range);
     if(!error)error=(LONG)attach(&real_show_scroll,(void *)hook_show_scroll);
     if(!error)error=(LONG)attach(&real_enable_scroll,(void *)hook_enable_scroll);
-    if(!error)error=(LONG)attach(&real_set_theme,(void *)hook_set_theme);
+    if(!error && !startup_window_created)error=attach_window_theme(attach);
 #define ATTACH(NAME) do { real_##NAME=NAME; if(!error)error=(LONG)attach(&real_##NAME,(void *)hook_##NAME); } while(0)
     ATTACH(OpenThemeData);ATTACH(OpenThemeDataEx);ATTACH(CloseThemeData);
     FARPROC dpi_symbol=GetProcAddress(GetModuleHandleW(L"uxtheme.dll"),"OpenThemeDataForDpi");
     memcpy(&real_OpenThemeDataForDpi,&dpi_symbol,sizeof(dpi_symbol));
     if(real_OpenThemeDataForDpi && !error)error=(LONG)attach(&real_OpenThemeDataForDpi,(void *)hook_OpenThemeDataForDpi);
     ATTACH(TrackPopupMenu);
-    if(!error)error=ntw16s_attach_stock_dialogs_using(attach);
-#ifdef NTWSHK_UNIFIED
-    if(classic_theme_process_family()!=CLASSIC_THEME_WIN2K)
-#endif
-    {
-        ATTACH(PrintDlgA);ATTACH(PrintDlgW);ATTACH(PageSetupDlgA);ATTACH(PageSetupDlgW);
-        ATTACH(PrintDlgExA);ATTACH(PrintDlgExW);
-    }
+    if(!error && !startup_stock_dialogs)error=attach_stock_dialogs(attach);
+    if(!error && !startup_observes_print)error=attach_print_dialogs(attach);
     ATTACH(PropertySheetA);ATTACH(PropertySheetW);
     FARPROC task_symbol=GetProcAddress(GetModuleHandleW(L"comctl32.dll"),"TaskDialog");
     memcpy(&real_TaskDialog,&task_symbol,sizeof(task_symbol));
@@ -704,13 +853,7 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
     task_symbol=GetProcAddress(GetModuleHandleW(L"comctl32.dll"),"TaskDialogIndirect");
     memcpy(&real_TaskDialogIndirect,&task_symbol,sizeof(task_symbol));
     if(real_TaskDialogIndirect && !error)error=(LONG)attach(&real_TaskDialogIndirect,(void *)hook_TaskDialogIndirect);
-    ATTACH(CreateDialogParamA);ATTACH(CreateDialogParamW);
-    ATTACH(CreateDialogIndirectParamA);ATTACH(CreateDialogIndirectParamW);
-    ATTACH(DialogBoxParamA);ATTACH(DialogBoxParamW);
-    ATTACH(DialogBoxIndirectParamA);ATTACH(DialogBoxIndirectParamW);
-    ATTACH(MessageBoxA);ATTACH(MessageBoxW);
-    ATTACH(MessageBoxExA);ATTACH(MessageBoxExW);
-    ATTACH(MessageBoxIndirectA);ATTACH(MessageBoxIndirectW);
+    if(!error && !startup_observes_dialogs)error=attach_standard_dialogs(attach);
     ATTACH(DrawTextA);ATTACH(DrawTextExA);ATTACH(TextOutA);ATTACH(ExtTextOutA);
     ATTACH(TextOutW);ATTACH(ExtTextOutW);
     ATTACH(DefWindowProcW);ATTACH(CallWindowProcA);ATTACH(CallWindowProcW);ATTACH(DrawTextW);ATTACH(DrawTextExW);
@@ -718,5 +861,3 @@ LONG ntw16s_attach_titles_using(DWORD (*attach)(void *,void *))
 #undef ATTACH
     return error;
 }
-
-LONG ntw16s_attach_titles(void){return ntw16s_attach_titles_using(process_hook_startup_attach);}

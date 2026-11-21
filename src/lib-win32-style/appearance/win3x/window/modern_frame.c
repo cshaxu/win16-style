@@ -33,8 +33,10 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
     SIZE size={outer->right-outer->left,outer->bottom-outer->top};
     UINT dpi=GetDpiForWindow(s->frame.host.owner);
     DWORD style=(DWORD)GetWindowLongPtrW(s->frame.host.owner,GWL_STYLE);
-    if(!win16_uwp_frame_layout(size,dpi,style,zoomed,content,
+    DWORD ex_style=(DWORD)GetWindowLongPtrW(s->frame.host.owner,GWL_EXSTYLE);
+    if(!win16_uwp_frame_layout(size,dpi,style,ex_style,zoomed,content,
         &s->theme.title_buttons,&s->theme.caption_metrics,&s->theme.border_presentation.geometry,&s->layout))return FALSE;
+    win16_style_measure_caption_icon(&s->layout,dpi,style,ex_style,s->theme.caption_presentation.icon_mode);
     if(dpi!=s->fonts.dpi && !win16_control_refresh_frame_fonts(s->frame.host.owner,&s->fonts,
         &s->theme.caption_font,&s->theme.menu_font))return FALSE;
     return !s->frame.host.instance.detached;
@@ -42,14 +44,17 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
 static BOOL cached_layout(HWND w,void *context,win16_style_layout *layout)
 {(void)w;*layout=((uwp_frame *)context)->layout;return TRUE;}
 static void colors(void *context,win16_style_palette *palette)
-{*palette=((uwp_frame *)context)->palette;}
+{win16_control_resolve_palette(&((uwp_frame *)context)->palette,palette);}
 static void no_scrollbars(HWND w,HDC dc,const win16_style_palette *palette)
 {(void)w;(void)dc;(void)palette;}
 static BOOL refresh_geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
 {
     uwp_frame *s=context;
     if(!geometry(s,outer))return FALSE;
-    *hole=s->layout.client;*anchor=(POINT){s->layout.buttons[CLASSIC_BUTTON_SYSTEM].left,s->layout.buttons[CLASSIC_BUTTON_SYSTEM].bottom};return TRUE;
+    RECT button=s->layout.buttons[CLASSIC_BUTTON_SYSTEM];
+    if(IsRectEmpty(&button))button=s->layout.icon;
+    if(IsRectEmpty(&button))button=s->layout.caption;
+    *hole=s->layout.client;*anchor=(POINT){button.left,button.bottom};return TRUE;
 }
 static void paint_state(void *context,win16_frame_paint_state *result)
 {
@@ -57,7 +62,7 @@ static void paint_state(void *context,win16_frame_paint_state *result)
     *result=(win16_frame_paint_state){&s->fonts,s->frame.active,s->frame.no_menu,FALSE,-1,
         {s->frame.pressed,s->frame.hot},&s->caption_art,&s->theme.menu_bar,
         s->theme.caption_presentation,s->theme.gradient,s->frame.active?s->theme.active.end:s->theme.inactive.end,
-        s->theme.border_presentation,&s->theme.menu_metrics};
+        s->theme.border_presentation,&s->theme.menu_metrics,FALSE,NULL};
 }
 static const win16_frame_renderer_ops renderer={cached_layout,paint_state,colors,no_scrollbars};
 static void refresh_paint(void *context,HDC dc)
@@ -67,15 +72,10 @@ static void refresh_paint(void *context,HDC dc)
 }
 static LRESULT input_hit(void *context,POINT point)
 {return win16_uwp_frame_hit(&((uwp_frame *)context)->layout,point);}
-static BOOL input_button(void *context,int hit)
-{(void)context;return hit==HTSYSMENU || hit==HTMINBUTTON || hit==HTMAXBUTTON;}
-static void input_invoke(void *context,int hit,UINT message)
+static BOOL can_maximize(void *context)
 {
     uwp_frame *s=context;
-    HWND owner=s->frame.host.owner;
-    UINT command=style_caption_gesture(hit,message,IsZoomed(owner),
-        (GetWindowLongPtrW(owner,GWL_STYLE)&WS_MAXIMIZEBOX)!=0,TRUE);
-    if(command)PostMessageW(owner,WM_SYSCOMMAND,command,command==SC_KEYMENU?L' ':0);
+    return (GetWindowLongPtrW(s->frame.host.owner,GWL_STYLE)&WS_MAXIMIZEBOX)!=0;
 }
 static BOOL menu_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,BOOL owner,LRESULT *result)
 {
@@ -85,33 +85,49 @@ static BOOL menu_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,BOO
         &s->theme.menu_popup,&s->theme.menu_metrics,&s->menu_art};
     return style_menu_owner_message(&s->frame.menu,w,message,a,b,&win16_style_menu_operations,&theme,result);
 }
-static const style_uwp_frame_ops operations={refresh_geometry,refresh_paint,input_hit,input_button,input_invoke,menu_message,dispose};
-BOOL win16_uwp_frame_uses(HWND w)
-{return style_uwp_frame_uses(w,&operations);}
+static const style_uwp_frame_ops operations={refresh_geometry,refresh_paint,input_hit,can_maximize,menu_message,dispose};
 static BOOL apply_actions(HWND w,HWND title,const style_uwp_frame_action *actions,unsigned count,
     const classic_theme_mapping *source)
 {
     if(!style_uwp_frame_validate(w,title,actions,count))return FALSE;
+#ifdef STYLE_THEME_EXTERNAL_ONLY
+    if(!source || !source->resources){SetLastError(ERROR_RESOURCE_DATA_NOT_FOUND);return FALSE;}
+#endif
     uwp_frame *s=calloc(1,sizeof(*s)+(size_t)count*sizeof(*s->actions));
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     win16_style_default_palette(&s->palette);
-    classic_theme_mapping packaged={0};
-    if(!source && SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN16,TRUE,&packaged)))
-        source=&packaged;
-    if(source){
+#ifndef STYLE_THEME_EXTERNAL_ONLY
+    if(source)
+#endif
+    {
         s->theme=source->model;
         win16_style_theme_palette(&s->palette,&s->theme);
         (void)style_menu_art_read(source->resources,s->theme.menu_images,&s->menu_art);
         (void)classic_caption_art_read(source->resources,&s->theme.caption_images,&s->caption_art);
     }
-    if(packaged.resources)classic_theme_close(&packaged);
     return style_uwp_frame_start(&s->frame,w,title,&operations,s,actions,count,s->actions);
 }
+
+static BOOL apply_current_theme(HWND w,HWND title,const style_uwp_frame_action *actions,unsigned count)
+{
+    classic_theme_mapping source={0};
+    DWORD error=classic_theme_attachment_layout((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,&source);
+    if(error){SetLastError(error);return FALSE;}
+    BOOL result=apply_actions(w,title,actions,count,source.resources?&source:NULL);
+    error=GetLastError();
+    classic_theme_close(&source);
+    SetLastError(error);
+    return result;
+}
+
 BOOL win16_uwp_frame_apply_actions(HWND w,HWND title,const style_uwp_frame_action *actions,unsigned count,
     const classic_theme_mapping *source)
 {
     if(!title){SetLastError(ERROR_INVALID_PARAMETER);return FALSE;}
+#ifndef STYLE_THEME_EXTERNAL_ONLY
+    if(!source)return apply_current_theme(w,title,actions,count);
+#endif
     return apply_actions(w,title,actions,count,source);
 }
 BOOL win16_uwp_frame_apply_nonclient(HWND w)
-{return apply_actions(w,NULL,NULL,0,NULL);}
+{return apply_current_theme(w,NULL,NULL,0);}

@@ -48,7 +48,10 @@ BOOL win16_style_toolbar_part(HWND w,const NMCUSTOMDRAW *draw,const void *contex
     inner=style_paint_outlined_face(draw->hdc,rect,unit,FALSE,FALSE,pushed?pressed:palette.face,&frame);
     if(draw->uItemState&(CDIS_SELECTED|CDIS_CHECKED))OffsetRect(&inner,unit,unit);
     InflateRect(&inner,-2*unit,-unit);
-    source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);font=win16_style_system_acquire(source);old=SelectObject(draw->hdc,font?font:GetStockObject(SYSTEM_FONT));
+    source=(HFONT)SendMessageW(w,WM_GETFONT,0,0);
+    font=control->controls.control_font_points?win16_style_system_acquire(source,control->controls.control_font_points):NULL;
+    if(control->controls.control_font_points)source=NULL;
+    old=SelectObject(draw->hdc,font?font:source?source:GetStockObject(SYSTEM_FONT));
     SetBkMode(draw->hdc,TRANSPARENT);SetTextColor(draw->hdc,(draw->uItemState&CDIS_DISABLED)?palette.shadow:ink);
     DrawTextW(draw->hdc,item.text,-1,&inner,DT_CENTER|DT_VCENTER|DT_SINGLELINE|DT_END_ELLIPSIS|DT_NOPREFIX);
     SelectObject(draw->hdc,old);win16_style_system_release(font);RestoreDC(draw->hdc,saved);return TRUE;

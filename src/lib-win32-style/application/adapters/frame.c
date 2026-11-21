@@ -47,11 +47,11 @@ static void system_menu(style_uwp_frame *s)
     if(!menu || !GetWindowRect(s->host.surface,&surface))return;
     s->tracking=TRUE;
     SendMessageW(s->host.owner,WM_INITMENU,(WPARAM)menu,0);
-    if(s->host.instance.detached){s->tracking=FALSE;return;}
+    if(s->host.instance.detached || GetSystemMenu(s->host.owner,FALSE)!=menu){s->tracking=FALSE;return;}
     /* TrackPopupMenu does not apply the root window's system-command states.
      * Add only temporary restrictions; retain application-disabled commands. */
-    style_uwp_menu_state menu_state;
-    style_uwp_menu_restrict(s->host.owner,menu,&menu_state);
+    style_system_menu_session session;
+    style_system_menu_begin(&session,s->host.owner,menu);
     BOOL actions_ready=TRUE;
     for(unsigned i=0;i<s->action_count;++i){
         style_uwp_frame_action_entry *action=&s->actions[i];
@@ -62,15 +62,14 @@ static void system_menu(style_uwp_frame *s)
     /* Never present a replacement menu with a required action missing. */
     if(actions_ready){
         s->no_menu=TRUE;refresh(s);
-        if(!s->host.instance.detached)command=TrackPopupMenuEx(menu,TPM_LEFTALIGN|TPM_TOPALIGN|TPM_RETURNCMD|TPM_NOANIMATION,
-            surface.left+s->menu_anchor.x,surface.top+s->menu_anchor.y,
-            s->host.surface,NULL);
+        if(!s->host.instance.detached)command=style_system_menu_track(&session,s->host.surface,
+            (POINT){surface.left+s->menu_anchor.x,surface.top+s->menu_anchor.y});
     }
     if(s->menu_window){
         style_uwp_menu_unpresent(s->menu_window,menu);
         s->menu_window=NULL;
     }
-    if(!s->host.instance.detached && GetSystemMenu(s->host.owner,FALSE)==menu)style_uwp_menu_restore(menu,&menu_state);
+    style_system_menu_end(&session);
     for(unsigned i=0;i<s->action_count;++i){
         style_uwp_frame_action_entry *action=&s->actions[i];
         if(!action->command)continue;
@@ -146,11 +145,19 @@ HWND style_uwp_frame_surface(HWND w)
     if(!local(w))return NULL;
     style_uwp_host *s=lookup(w);return s&&!s->instance.detached?s->surface:NULL;
 }
-BOOL style_uwp_frame_uses(HWND w,const style_uwp_frame_ops *ops)
+static style_uwp_frame *installed_frame(HWND w)
 {
-    if(!local(w))return FALSE;
+    if(!local(w))return NULL;
     style_uwp_host *host=lookup(w);
-    if(!host || host->instance.detached)return FALSE;
-    const style_uwp_frame *frame=host->instance.context;
-    return frame->ops==ops;
+    return host && !host->instance.detached?host->instance.context:NULL;
+}
+unsigned style_uwp_frame_profile(HWND w)
+{
+    const style_uwp_frame *frame=installed_frame(w);
+    return frame?frame->profile_key:0;
+}
+void style_uwp_frame_set_profile(HWND w,unsigned profile)
+{
+    style_uwp_frame *frame=installed_frame(w);
+    if(frame)frame->profile_key=profile;
 }

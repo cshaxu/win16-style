@@ -4,5 +4,5 @@
 
 BOOL run16s_console_host_image(PCWSTR image);
 DWORD run16s_console_host_attach(HANDLE process, PCWSTR directory);
-DWORD run16s_console_host_attach_current(PCWSTR directory);
+DWORD run16s_console_host_attach_current(PCWSTR directory,unsigned hosts);
 #endif

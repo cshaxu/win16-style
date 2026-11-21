@@ -1,20 +1,21 @@
 #include "modern_frame_layout.h"
 #include "lib-win32-style/application/adapters/surface.h"
 
-BOOL win16_uwp_frame_layout(SIZE outer,UINT dpi,DWORD style,BOOL maximized,
+BOOL win16_uwp_frame_layout(SIZE outer,UINT dpi,DWORD style,DWORD ex_style,BOOL maximized,
     RECT content,const classic_button_group *buttons,const classic_caption_metrics *metrics,
     const style_frame_geometry *frame,win16_style_layout *l)
 {
     if(!l || content.left<0 || content.top<0 || content.right>outer.cx ||
        content.bottom>outer.cy || content.left>=content.right || content.top>=content.bottom ||
        (style&WS_CAPTION)!=WS_CAPTION)return FALSE;
-    BOOL measured=buttons && buttons->count?
-        win16_style_measure_with_buttons(outer.cx,outer.cy,dpi,style,0,maximized,buttons,metrics,frame,dpi,l):
-        win16_style_measure(outer.cx,outer.cy,dpi,style,0,maximized,l);
+    BOOL measured=win16_style_measure_with_buttons(outer.cx,outer.cy,dpi,style,ex_style&WS_EX_CONTEXTHELP,maximized,
+        buttons,metrics,frame,dpi,l);
     if(!measured)return FALSE;
     if(content.top<l->client.top)return FALSE;
     int pitch=l->corner.cx-l->border;
-    int count=!!(style&WS_SYSMENU)+!!(style&WS_MAXIMIZEBOX)+!!(style&WS_MINIMIZEBOX);
+    int count=0;
+    for(unsigned role=CLASSIC_BUTTON_SYSTEM;role<=CLASSIC_BUTTON_CLOSE;++role)
+        if(!IsRectEmpty(&l->buttons[role]))++count;
     if(l->outer.right-2*l->border<(count+1)*pitch)return FALSE;
     l->client=content;
     return TRUE;

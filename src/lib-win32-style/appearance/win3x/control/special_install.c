@@ -2,7 +2,6 @@
 #include "special_install.h"
 #include "control_class.h"
 #include "../../../application/control/control_protocol.h"
-#include "../resources/scroll_assets.h"
 #include "trackbar_paint.h"
 #include "progress_paint.h"
 
@@ -17,11 +16,18 @@ static control_style *install_frame(HWND w,const win16_style_palette *palette,co
 BOOL win16_control_special_updown_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
     HMODULE native=style_control_protocol_updown_module(w);
-    if(!native || !style_control_updown_api_enabled()){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!native){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
+    if(s->controls.updown_mode==CLASSIC_UPDOWN_RECOLOR)return TRUE;
+    if(!style_control_updown_api_enabled()){
+        style_instance_retain(&s->instance);
+        SetLastError(ERROR_NOT_SUPPORTED);
+        return style_instance_setup_finish(w,&s->instance,FALSE,owner,v->remove_owned);
+    }
     s->updown.frame=&s->frame_colors;
     s->updown.art=&s->scroll_art;
-    win16_control_updown_register(&s->updown,&s->bindings.updown,w,native,&s->palette,win16_control_scroll_glyphs(),&s->instance,style_instance_acquire_owned,style_instance_return_owned);
+    s->updown.metrics=s->controls.updown;
+    win16_control_updown_register(&s->updown,&s->bindings.updown,w,native,&s->palette,&s->instance,style_instance_acquire_owned,style_instance_return_owned);
     return TRUE;
 }
 BOOL win16_control_special_trackbar_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)

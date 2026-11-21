@@ -2,29 +2,18 @@
 #include "lib-win32-style/application/menu/menu_snapshot.h"
 #include "lib-win32-style/application/menu/popup.h"
 #include "lib-win32-style/application/menu/row_text.h"
-#include "lib-win32-style/appearance/msstyles/classic_presets.h"
+#include "lib-win32-style/application/menu/menu_metrics.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include <oleacc.h>
 #include <commctrl.h>
 #include <stdlib.h>
 
-HFONT win2k_menu_font(UINT dpi,const msstyles_font *defined)
+classic_menu_colors win2k_menu_colors(const classic_menu_colors *defined)
 {
-    if(defined && defined->points){
-        LOGFONTW logical=msstyles_font_at_dpi(defined,dpi);
-        return CreateFontIndirectW(&logical);
-    }
-    return CreateFontW(-MulDiv(8,(int)dpi,72),0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,
-        DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");
-}
-
-const classic_menu_colors *win2k_menu_colors(const classic_menu_colors *defined)
-{
-    static const classic_menu_colors fallback={
-        RGB(212,208,200),RGB(0,0,128),RGB(0,0,0),RGB(255,255,255),
-        RGB(128,128,128),RGB(128,128,128),TRUE
-    };
-    return defined && defined->present?defined:&fallback;
+    if(defined && defined->present)return *defined;
+    return (classic_menu_colors){GetSysColor(COLOR_MENU),GetSysColor(COLOR_HIGHLIGHT),
+        GetSysColor(COLOR_MENUTEXT),GetSysColor(COLOR_HIGHLIGHTTEXT),
+        GetSysColor(COLOR_GRAYTEXT),GetSysColor(COLOR_3DSHADOW),TRUE};
 }
 
 void win2k_menu_style_read(win2k_menu_style *style,const classic_theme_mapping *source)
@@ -52,13 +41,14 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     UINT dpi=GetDpiForWindow(popup);if(!dpi)dpi=96;
     int unit=max(1,MulDiv(1,(int)dpi,96));
     const msstyles_font *defined=style?&style->font:NULL;
-    const classic_menu_colors *colors=win2k_menu_colors(style?&style->colors:NULL);
-    static const classic_menu_metrics legacy=WIN2000_POPUP_MENU_METRICS;
-    const classic_menu_metrics *metrics=style && style->metrics.check_column?&style->metrics:&legacy;
-    HFONT font=win2k_menu_font(dpi,defined);
+    const classic_menu_colors colors=win2k_menu_colors(style?&style->colors:NULL);
+    const classic_menu_metrics metrics=style?style->metrics:(classic_menu_metrics){0};
+    const style_menu_popup_columns columns=style_menu_popup_spacing(dpi,metrics.check_column,
+        metrics.shortcut_gap,metrics.arrow_column,metrics.plain_column);
+    HFONT font=msstyles_font_create(defined,dpi,MSSTYLES_FONT_MENU);
     HFONT normal=font?font:(HFONT)GetCurrentObject(dc,OBJ_FONT);
-    unsigned text_flags=metrics->text_flags;
-    HFONT bold=(!text_flags || (text_flags&STYLE_MENU_TEXT_BOLD_DEFAULT))?style_menu_bold_font(normal):NULL;
+    const unsigned text_flags=style_menu_text_options(metrics.text_flags);
+    HFONT bold=(text_flags&STYLE_MENU_TEXT_BOLD_DEFAULT)?style_menu_bold_font(normal):NULL;
     if(normal)SelectObject(dc,normal);
     SetBkMode(dc,TRANSPARENT);
     POINT origin={0,0};
@@ -66,38 +56,32 @@ BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinate
     for(int i=0;valid && i<count;++i){
         RECT r=rows[i].rect;MapWindowPoints(NULL,popup,(POINT *)&r,2);OffsetRect(&r,origin.x,origin.y);
         BOOL selected=(rows[i].state&MFS_HILITE)!=0;
-        HBRUSH background=CreateSolidBrush(selected?colors->selection:colors->background);
+        HBRUSH background=CreateSolidBrush(selected?colors.selection:colors.background);
         if(!background){valid=FALSE;break;}
         FillRect(dc,&r,background);DeleteObject(background);
         if(rows[i].type&MFT_SEPARATOR){
             RECT line={r.left+unit,r.top+(r.bottom-r.top)/2,r.right-unit,r.top+(r.bottom-r.top)/2+unit};
-            HBRUSH shadow=CreateSolidBrush(colors->separator);
+            HBRUSH shadow=CreateSolidBrush(colors.separator);
             if(shadow){FillRect(dc,&line,shadow);DeleteObject(shadow);}continue;
         }
         if((rows[i].state&MFS_DEFAULT) && bold)SelectObject(dc,bold);
         else if(normal)SelectObject(dc,normal);
-        COLORREF text=(rows[i].state&MFS_DISABLED)?colors->disabled_text:selected?colors->selected_text:colors->text;
+        COLORREF text=(rows[i].state&MFS_DISABLED)?colors.disabled_text:selected?colors.selected_text:colors.text;
         SetTextColor(dc,text);
-        if(!text_flags || (text_flags&STYLE_MENU_COMMAND_GLYPHS))
+        if(text_flags&STYLE_MENU_COMMAND_GLYPHS)
             style_menu_draw_command(dc,&r,rows[i].bitmap,unit,text);
         RECT label=r;
-        label.left+=MulDiv(metrics->check_column,(int)dpi,96);
-        label.right-=MulDiv(rows[i].submenu?metrics->arrow_column:metrics->plain_column,(int)dpi,96);
-        BOOL right=!text_flags || (text_flags&STYLE_MENU_TEXT_SHORTCUT_RIGHT);
+        label.left+=columns.check;
+        label.right-=rows[i].submenu?columns.arrow:columns.plain;
+        BOOL right=(text_flags&STYLE_MENU_TEXT_SHORTCUT_RIGHT)!=0;
         style_menu_text_layout layout={.label=label,.shortcut=label,.shortcut_right=right,.shortcut_first=right};
-        layout.shortcut.left+=MulDiv(metrics->shortcut_gap,(int)dpi,96);
+        layout.shortcut.left+=columns.gap;
         if(!right)layout.shortcut.left+=style_menu_label_width(dc,rows[i].text);
         BOOL stipple=(rows[i].state&MFS_DISABLED) && (text_flags&STYLE_MENU_TEXT_STIPPLE_DISABLED);
         (void)style_menu_draw_labels(dc,rows[i].text,&layout,stipple,text);
-        if(style && style->art.available){
-            if(rows[i].state&MFS_CHECKED)style_menu_draw_mark(dc,&r,FALSE,dpi,text,&style->art.check[0][0]);
-            if(rows[i].submenu)style_menu_draw_mark(dc,&r,TRUE,dpi,text,&style->art.arrow[0][0]);
-        }else{
-            if(rows[i].state&MFS_CHECKED){RECT mark=r;mark.left+=unit;mark.right=mark.left+MulDiv(13,(int)dpi,96);
-                DrawFrameControl(dc,&mark,DFC_MENU,DFCS_MENUCHECK);}
-            if(rows[i].submenu){RECT arrow=r;arrow.left=arrow.right-MulDiv(13,(int)dpi,96);arrow.right-=unit;
-                DrawFrameControl(dc,&arrow,DFC_MENU,DFCS_MENUARROW);}
-        }
+        const style_menu_art *art=style && style->art.available?&style->art:NULL;
+        if(rows[i].state&MFS_CHECKED)style_menu_draw_mark(dc,&r,FALSE,dpi,text,art?&art->check[0][0]:NULL);
+        if(rows[i].submenu)style_menu_draw_mark(dc,&r,TRUE,dpi,text,art?&art->arrow[0][0]:NULL);
     }
     RestoreDC(dc,saved);if(bold)DeleteObject(bold);if(font)DeleteObject(font);free(rows);return valid;
 }

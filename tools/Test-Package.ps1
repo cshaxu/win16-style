@@ -84,16 +84,16 @@ try{
         (Case 'process-lifecycle-x64' (Join-Path $x64 'core-process-lifecycle.exe') @() @('PROCESS_LIFECYCLE_PASS success=1 prepare_failure=1 resume_failure=1 exited=1') 15),
         (Case 'ntw2ks-static-x86' (Join-Path $x86 'core-win2k-static.exe') @((Join-Path $legacy 'ntw2ks32.dll')) @('WIN2K_STATIC_OK bits=32 aware=0 hooked=0','static_roles=16 group=1','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 20),
         (Case 'ntw2ks-static-aware-x86' (Join-Path $x86 'core-win2k-static.exe') @((Join-Path $legacy 'ntw2ks32.dll'),'aware') @('WIN2K_STATIC_OK bits=32 aware=1 hooked=0','static_roles=16 group=1','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 20),
-        (Case 'ntw2ks-static-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-static.exe'),(Join-Path $legacy 'ntw2ks32.dll'),'hooked') @('WIN2K_STATIC_OK bits=32 aware=0 hooked=1','dialogs=2 initialized_children=8','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 25),
+        (Case 'ntw2ks-static-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-static.exe'),$shared32,'hooked') @('WIN2K_STATIC_OK bits=32 aware=0 hooked=1','dialogs=2 initialized_children=8','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 25),
         (Case 'ntw2ks-static-v6-x86' (Join-Path $x86 'core-win2k-static-v6.exe') @((Join-Path $legacy 'ntw2ks32.dll')) @('WIN2K_STATIC_OK bits=32 aware=0 hooked=0','static_roles=16 group=1','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 20),
         (Case 'ntw2ks-static-v6-aware-x86' (Join-Path $x86 'core-win2k-static-v6.exe') @((Join-Path $legacy 'ntw2ks32.dll'),'aware') @('WIN2K_STATIC_OK bits=32 aware=1 hooked=0','static_roles=16 group=1','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 20),
-        (Case 'ntw2ks-static-v6-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-static-v6.exe'),(Join-Path $legacy 'ntw2ks32.dll'),'hooked') @('WIN2K_STATIC_OK bits=32 aware=0 hooked=1','dialogs=2 initialized_children=8','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 25),
+        (Case 'ntw2ks-static-v6-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-static-v6.exe'),$shared32,'hooked') @('WIN2K_STATIC_OK bits=32 aware=0 hooked=1','dialogs=2 initialized_children=8','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 25),
         (Case 'ntw2ks-static-x64' (Join-Path $x64 'core-win2k-static.exe') @((Join-Path $legacy 'ntw2ks64.dll')) @('WIN2K_STATIC_OK bits=64 aware=0 hooked=0','static_roles=16 group=1','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 20),
         (Case 'ntw2ks-static-aware-x64' (Join-Path $x64 'core-win2k-static.exe') @((Join-Path $legacy 'ntw2ks64.dll'),'aware') @('WIN2K_STATIC_OK bits=64 aware=1 hooked=0','static_roles=16 group=1','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 20),
-        (Case 'ntw2ks-static-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-static.exe'),(Join-Path $legacy 'ntw2ks64.dll'),'hooked') @('WIN2K_STATIC_OK bits=64 aware=0 hooked=1','dialogs=2 initialized_children=8','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 25),
+        (Case 'ntw2ks-static-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-static.exe'),$shared64,'hooked') @('WIN2K_STATIC_OK bits=64 aware=0 hooked=1','dialogs=2 initialized_children=8','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 25),
         (Case 'ntw2ks-static-v6-x64' (Join-Path $x64 'core-win2k-static-v6.exe') @((Join-Path $legacy 'ntw2ks64.dll')) @('WIN2K_STATIC_OK bits=64 aware=0 hooked=0','static_roles=16 group=1','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 20),
         (Case 'ntw2ks-static-v6-aware-x64' (Join-Path $x64 'core-win2k-static-v6.exe') @((Join-Path $legacy 'ntw2ks64.dll'),'aware') @('WIN2K_STATIC_OK bits=64 aware=1 hooked=0','static_roles=16 group=1','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 20),
-        (Case 'ntw2ks-static-v6-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-static-v6.exe'),(Join-Path $legacy 'ntw2ks64.dll'),'hooked') @('WIN2K_STATIC_OK bits=64 aware=0 hooked=1','dialogs=2 initialized_children=8','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 25),
+        (Case 'ntw2ks-static-v6-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-static-v6.exe'),$shared64,'hooked') @('WIN2K_STATIC_OK bits=64 aware=0 hooked=1','dialogs=2 initialized_children=8','WIN2K_STATIC_CONTRACTS_OK group_alignment=3 flat=1 pattern_phase=1') 25),
         (Case 'style-edit-protocol-x86' (Join-Path $x86 'core-style-edit-message.exe') @() @('EDIT native text/undo/selection','EDIT_NATIVE_ONLY_OK null_scroll=1 optional_ops=1 mixed_native_nc=1 borrowed_dc=1') 15),
         (Case 'ntw2ks-edit-x86' (Join-Path $x86 'core-win2k-edit.exe') @((Join-Path $legacy 'ntw2ks32.dll')) @('WIN2K_EDIT_OK bits=32 aware=0 hooked=0','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','parent_retire=2 reparent=1 gdi_cycles=32') 20),
         (Case 'ntw2ks-edit-aware-x86' (Join-Path $x86 'core-win2k-edit.exe') @((Join-Path $legacy 'ntw2ks32.dll'),'aware') @('WIN2K_EDIT_OK bits=32 aware=1 hooked=0','edit_roles=7 rich_hotkey=4 source_edge=1 standard_face=1','parent_retire=2 reparent=1 gdi_cycles=32') 20),
@@ -114,16 +114,16 @@ try{
         (Case 'ntw2ks-button-x64' (Join-Path $x64 'core-ntw2ks-button.exe') @((Join-Path $legacy 'ntw2ks64.dll')) @('NTW2KS_BUTTON_OK bits=64 states=5 source_scheme=1 caller_rect=1') 15),
         (Case 'ntw2ks-control-buttons-x86' (Join-Path $x86 'core-win2k-button.exe') @((Join-Path $legacy 'ntw2ks32.dll')) @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=32 aware=0 hooked=0','ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1') 15),
         (Case 'ntw2ks-control-buttons-aware-x86' (Join-Path $x86 'core-win2k-button.exe') @((Join-Path $legacy 'ntw2ks32.dll'),'aware') @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=32 aware=1 hooked=0','ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1') 15),
-        (Case 'ntw2ks-control-buttons-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-button.exe'),(Join-Path $legacy 'ntw2ks32.dll'),'hooked') @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=32 aware=0 hooked=1','ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1') 20),
+        (Case 'ntw2ks-control-buttons-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-button.exe'),$shared32,'hooked') @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=32 aware=0 hooked=1','ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1') 20),
         (Case 'ntw2ks-control-theme-x86' (Join-Path $x86 'core-ntw2ks-control-theme.exe') @() @('WIN2K CONTROL THEME bits=','foreign=1 rejected=1 apply=1 attached=1 retained=1 wrong_thread=0','remove=1 released=1 repeat=1') 15),
         (Case 'ntw2ks-control-buttons-x64' (Join-Path $x64 'core-win2k-button.exe') @((Join-Path $legacy 'ntw2ks64.dll')) @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=64 aware=0 hooked=0','ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1') 15),
         (Case 'ntw2ks-control-buttons-aware-x64' (Join-Path $x64 'core-win2k-button.exe') @((Join-Path $legacy 'ntw2ks64.dll'),'aware') @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=64 aware=1 hooked=0','ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1') 15),
-        (Case 'ntw2ks-control-buttons-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-button.exe'),(Join-Path $legacy 'ntw2ks64.dll'),'hooked') @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=64 aware=0 hooked=1','ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1') 20),
+        (Case 'ntw2ks-control-buttons-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-button.exe'),$shared64,'hooked') @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=64 aware=0 hooked=1','ansi_cycles=64 gdi_balanced=1 reentrant_remove=1 reentrant_destroy=1') 20),
         (Case 'ntw2ks-control-theme-x64' (Join-Path $x64 'core-ntw2ks-control-theme.exe') @() @('WIN2K CONTROL THEME bits=','foreign=1 rejected=1 apply=1 attached=1 retained=1 wrong_thread=0','remove=1 released=1 repeat=1') 15),
         (Case 'ntw2ks-control-buttons-v6-x86' (Join-Path $x86 'core-win2k-button-v6.exe') @((Join-Path $legacy 'ntw2ks32.dll')) @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=32','WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1') 15),
-        (Case 'ntw2ks-control-buttons-v6-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-button-v6.exe'),(Join-Path $legacy 'ntw2ks32.dll'),'hooked') @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=32 aware=0 hooked=1','WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1') 20),
+        (Case 'ntw2ks-control-buttons-v6-startup-x86' $run @('Win2K',(Join-Path $x86 'core-win2k-button-v6.exe'),$shared32,'hooked') @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=32 aware=0 hooked=1','WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1') 20),
         (Case 'ntw2ks-control-buttons-v6-x64' (Join-Path $x64 'core-win2k-button-v6.exe') @((Join-Path $legacy 'ntw2ks64.dll')) @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=64','WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1') 15),
-        (Case 'ntw2ks-control-buttons-v6-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-button-v6.exe'),(Join-Path $legacy 'ntw2ks64.dll'),'hooked') @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=64 aware=0 hooked=1','WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1') 20),
+        (Case 'ntw2ks-control-buttons-v6-startup-x64' $run @('Win2K',(Join-Path $x64 'core-win2k-button-v6.exe'),$shared64,'hooked') @('WIN2K_CHOICES_OK types=6 check_values=14 renders=84','WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3','WIN2K_BUTTON_OK bits=64 aware=0 hooked=1','WIN2K_BUTTON_V6 image_list_native_preserved=1 dc_restored=1') 20),
         (Case 'ntw2ks-staging-x86-x86' (Join-Path $x86 'ntw2ks-staging.exe') @((Join-Path $x86 'ntw2ks-staging-target.exe'),$Package) @('NTW2KS STAGING PASS selected=win2k win16_absent=1') 20),
         (Case 'ntw2ks-staging-x86-x64' (Join-Path $x86 'ntw2ks-staging.exe') @((Join-Path $x64 'ntw2ks-staging-target.exe'),$Package) @('NTW2KS STAGING PASS selected=win2k win16_absent=1') 20),
         (Case 'ntw2ks-staging-x64-x86' (Join-Path $x64 'ntw2ks-staging.exe') @((Join-Path $x86 'ntw2ks-staging-target.exe'),$Package) @('NTW2KS STAGING PASS selected=win2k win16_absent=1') 20),
@@ -419,6 +419,16 @@ try{
     $uwpIdentity=Join-Path $scratch 'uwp-theme-identity'
     $cases+=Pair { param($bits,$tree,$dll)
         $shared=if($bits -eq 32){$shared32}else{$shared64}
+        foreach($provider in @(@('Win16','full',0),@('Win2K','nonclient',1))){
+            $fixture=Join-Path $tree 'ntw2ks-frame-target.exe'
+            Case "neutral-provider-exports-$bits-$($provider[1])" $dialogDriver @('--direct',$run,$provider[0],$fixture,
+                '--provider-exports',$provider[1]) @(
+                "PROVIDER EXPORTS bits=$bits nonclient=$($provider[2]) initial=1 rejected=1 applied=1 restored=1 leaf_guard=15 creation_guard=1",
+                'DIALOG_DRIVER exit=0') 20
+        }
+        Case "neutral-window-directory-$bits" (Join-Path $tree 'core-window-thread.exe') @(
+            $shared,'--switch','Win16','Win2K','Missing Fixture Theme') @(
+            'WINDOW THREAD DIRECTORY PASS numeric_rejected=1 switched_both_ways=1 missing_keeps_current=1 restored=1') 20
         Case "neutral-uwp-frame-$bits" (Join-Path $tree 'core-win2k-uwp-frame.exe') @($shared) @(
             'UWP PRODUCT MODE PASS','WIN2K UWP FRAME PASS') 20
         $fixture=Join-Path $uwpIdentity $bits
@@ -429,14 +439,14 @@ try{
         Case "neutral-global-switch-$bits" (Join-Path $owned 'run16s.exe') @(
             (Join-Path $tree 'global-propagation-probe.exe'),(Join-Path $owned "ntwshk$bits.dll"),'--owned-switch') @(
             'OWNED GLOBAL INITIAL expected=0 observed=0','OWNED GLOBAL SWITCH step=6 expected=0 observed=0',
-            'OWNED GLOBAL THEME ID PASS','LOCAL GLOBAL HOOK target_exit=0') 25
+            'OWNED GLOBAL LAYOUT PASS','LOCAL GLOBAL HOOK target_exit=0') 25
         foreach($initial in '16','2k'){
             $expected=if($initial -eq '16'){1}else{2}
             Case "neutral-global-switch-$bits-from-$initial" (Join-Path $owned 'run16s.exe') @(
                 (Join-Path $tree 'global-propagation-probe.exe'),(Join-Path $owned "ntwshk$bits.dll"),'--owned-switch',
                 (Join-Path $owned 'candidate.exe'),$initial) @(
                 "OWNED GLOBAL INITIAL expected=$expected observed=$expected",
-                'OWNED GLOBAL THEME ID PASS','LOCAL GLOBAL HOOK target_exit=0') 25
+                'OWNED GLOBAL LAYOUT PASS','LOCAL GLOBAL HOOK target_exit=0') 25
         }
     }
     foreach($parent in @('x86','x64')){foreach($child in @('x86','x64')){foreach($encoding in @('a','w')){
@@ -1102,7 +1112,7 @@ try{
     # Dialog tests that do not compare actual screen pixels run on a private
     # desktop, so they cannot consume the user's physical keyboard input.
     foreach($case in $cases){
-        if($case.command -eq $dialogDriver -and $case.name -notmatch '^ntw2ks-(?:frame-x(?:86|64)$|com-explorer-)' -and $case.name -ne 'desktop-cleanup' -and $case.name -notmatch '^scroll-' -and $case.name -notmatch '^dialog-folder-x(86|64)-controls$' -and $case.arguments[0] -ne '--low-private'){
+        if($case.command -eq $dialogDriver -and $case.name -notmatch '^ntw2ks-(?:frame-x(?:86|64)$|com-explorer-)' -and $case.name -ne 'desktop-cleanup' -and $case.name -notmatch '^(scroll-|neutral-provider-exports-)' -and $case.name -notmatch '^dialog-folder-x(86|64)-controls$' -and $case.arguments[0] -ne '--low-private'){
             $case.arguments=@('--private')+@($case.arguments)
         }
     }

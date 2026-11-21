@@ -1,7 +1,7 @@
 /* Win2000 monthcal.c owns both native registrations. MCPaint uses active
  * caption roles and DPDrawDropdownButton uses the normal scroll-down frame. */
 #include "date_paint.h"
-#include "../common/paint.h"
+#include "../common/palette.h"
 
 BOOL win2k_date_supported(HWND window)
 {

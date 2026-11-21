@@ -9,7 +9,7 @@ typedef enum style_classic_com_route {
  * The installer only binds the three existing COM entries through the caller's
  * transaction; it does not own a hook backend or add rollback/unload behavior. */
 typedef struct style_classic_com_options {
-    BOOL (*session_active)(void);
+    BOOL (*session_active)(void); /* Required only without a route callback. */
     HRESULT (*scope)(HRESULT (*)(void *),void *);
     PCWSTR property,folder_message,hidden_message;
     BOOL experimental_events,experimental_hidden;

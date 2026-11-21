@@ -20,7 +20,14 @@ void win16_control_month_arrow(const win16_control_month_view *v,HTHEME theme,HD
 static BOOL month_text_allowed(const win16_control_month_view *s,HTHEME theme,HDC dc,int part,int state,DWORD flags,DWORD flags2,const RECT *r,const void *address)
 {return s && r && (part==MC_GRIDCELL || part==MC_GRIDCELLUPPER) && state>=0 && state<=7 && flags2==0 && (flags==0x925 || flags==0x926 || flags==0x924) && IsWindowEnabled(s->native.window) && style_control_month_draw_identity(&s->native,theme,dc,address);}
 HFONT win16_control_month_text_borrow(const win16_control_month_view *v,HTHEME theme,HDC dc,int part,int state,DWORD flags,DWORD flags2,const RECT *r,const void *address)
-{const win16_control_month_view *s=v;if(!month_text_allowed(s,theme,dc,part,state,flags,flags2,r,address))return NULL;if(GetDpiForWindow(s->native.window)!=96)return NULL;if(!*s->cached_font)*s->cached_font=win16_style_calendar_font_acquire();if(!s->native.current(s->native.context) || !month_text_allowed(s,theme,dc,part,state,flags,flags2,r,address) || !*s->cached_font || !win16_style_system_try_retain(*s->cached_font))return NULL;return *s->cached_font;}
+{
+    if(!v || !v->font_dpi || !month_text_allowed(v,theme,dc,part,state,flags,flags2,r,address) ||
+       GetDpiForWindow(v->native.window)!=96)return NULL;
+    if(!*v->cached_font)*v->cached_font=win16_style_calendar_font_acquire(v->font_dpi,v->font_points);
+    if(!v->native.current(v->native.context) || !month_text_allowed(v,theme,dc,part,state,flags,flags2,r,address) ||
+       !*v->cached_font || !win16_style_system_try_retain(*v->cached_font))return NULL;
+    return *v->cached_font;
+}
 BOOL win16_control_month_text_room(const win16_control_month_view *v,HTHEME theme,HDC dc,int part,int state,DWORD flags,DWORD flags2,const RECT *r,int width,const void *address)
 {const win16_control_month_view *s=v;if(!month_text_allowed(s,theme,dc,part,state,flags,flags2,r,address) || !s->native.state->header_known)return FALSE;
  if(EqualRect(r,&s->native.state->header))return s->native.state->nav_valid && style_control_month_title_fits(r,&s->native.state->prev,&s->native.state->next,width);

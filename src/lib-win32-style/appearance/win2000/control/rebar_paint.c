@@ -1,7 +1,7 @@
 /* The horizontal grabber in Win2000 rebar.c is a one-layer raised edge.
  * Confirm the native band exposes a grabber before drawing into its header. */
 #include "bars.h"
-#include "../common/paint.h"
+#include "../common/palette.h"
 
 BOOL win2k_rebar_supported(HWND window)
 {

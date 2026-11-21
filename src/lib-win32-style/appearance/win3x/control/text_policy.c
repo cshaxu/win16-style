@@ -22,7 +22,7 @@ BOOL win16_control_report_ansi_text(HDC dc,const char *text,int count,BOOL activ
 BOOL win16_control_vb_glyph_allowed(HDC dc,UINT options,UINT count)
 {return count<=4096 && !(options&ETO_RTLREADING) && !(GetTextAlign(dc)&TA_RTLREADING);}
 
-HFONT win16_control_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,const void *address,HWND window,HMODULE native_module)
+HFONT win16_control_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,const void *address,HWND window,HMODULE native_module,unsigned points)
 {
     HMODULE caller=NULL;HWND from;HFONT source;
     if(!dc || !text || (flags&(DT_CALCRECT|DT_RTLREADING|DT_MODIFYSTRING)) ||
@@ -33,5 +33,5 @@ HFONT win16_control_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,co
     if(count==-1){count=0;while(count<4096 && text[count])++count;if(count==4096)return NULL;}
     if(count>4096)return NULL;
     for(int i=0;i<count;++i)if(text[i]>0x7f)return NULL;
-    source=(HFONT)GetCurrentObject(dc,OBJ_FONT);return source?win16_style_system_acquire(source):NULL;
+    source=(HFONT)GetCurrentObject(dc,OBJ_FONT);return source?win16_style_system_acquire(source,points):NULL;
 }

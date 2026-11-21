@@ -38,8 +38,10 @@ static void change(HWND window,DWORD style,BOOL apply,void *context)
     if(apply){
         classic_theme_selection selection;
         if(!classic_theme_decode_selection(style,&selection))return;
-        BOOL attached=ntw16s_global_window_apply_style(window,style),text_changed=FALSE;
-        if(selection.family==CLASSIC_THEME_WIN16 && attached && !ntw16s_global_vb_text(window,&text_changed) && text_changed)
+        BOOL text_changed=FALSE;
+        if(ntw16s_global_window_apply_style(window,style) &&
+           ntw16s_global_window_attached(window) &&
+           !ntw16s_global_vb_text(window,&text_changed) && text_changed)
             RedrawWindow(window,NULL,NULL,RDW_INVALIDATE|RDW_ALLCHILDREN);
         ntw16s_global_window_children(window,TRUE,style);
     }else{

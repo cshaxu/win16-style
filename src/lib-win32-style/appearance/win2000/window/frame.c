@@ -2,13 +2,13 @@
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include <stdlib.h>
 #include "caption.h"
-#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "system_menu.h"
 #include "../control/scroll.h"
 #include "lib-win32-style/application/menu/menu_input.h"
 #include "lib-win32-style/application/menu/tracking.h"
 #include "lib-win32-style/application/menu/bar_controller.h"
+#include "lib-win32-style/application/menu/host_menu.h"
 #include "lib-win32-style/application/menu/row_text.h"
 #include "lib-win32-style/application/window/native_frame.h"
 #include "lib-win32-style/application/window/messages.h"
@@ -34,7 +34,7 @@ typedef struct frame_window {
     style_menu_owner menu;
     win2k_scroll scroll;
     style_uwp_repaint composed_repaint;
-    BOOL composed_icon_update;
+    BOOL composed_icon_update,system_slot,system_on_right,system_popup;
     BOOL themed;
     classic_theme theme;
     classic_caption_art art;
@@ -85,29 +85,18 @@ static BOOL compact_enabled(HWND window)
     return !IsIconic(window) && !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL) && compact_menu(window);
 }
 
-static int frame_metric(BOOL sizeable,BOOL horizontal,UINT dpi)
-{
-    int metric=GetSystemMetricsForDpi(sizeable?(horizontal?SM_CXSIZEFRAME:SM_CYSIZEFRAME):
-        (horizontal?SM_CXFIXEDFRAME:SM_CYFIXEDFRAME),dpi);
-    return sizeable?metric+GetSystemMetricsForDpi(SM_CXPADDEDBORDER,dpi):metric;
-}
-
 static int frame_shift(HWND window,BOOL horizontal)
 {
     LONG_PTR style=GetWindowLongPtrW(window,GWL_STYLE);
     if((style&WS_CAPTION)!=WS_CAPTION || IsZoomed(window) || !compact_enabled(window))return 0;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     const frame_window *frame=frame_state(window);
-    static const style_frame_geometry fallback=WIN2000_FRAME_GEOMETRY;
-    const style_frame_geometry *geometry=frame && frame->themed && frame->theme.border_presentation.geometry.scale?
-        &frame->theme.border_presentation.geometry:&fallback;
-    SIZE monitor=geometry->scale==STYLE_FRAME_MONITOR_PIXELS?style_frame_monitor_dpi(window,dpi):(SIZE){dpi,dpi};
-    BOOL sizeable=(style&WS_THICKFRAME)!=0;
-    enum style_frame_border_kind kind=sizeable?STYLE_FRAME_SIZEABLE:
+    const style_frame_geometry *geometry=frame && frame->themed?&frame->theme.border_presentation.geometry:NULL;
+    if(!geometry || !geometry->scale)return 0;
+    enum style_frame_border_kind kind=(style&WS_THICKFRAME)?STYLE_FRAME_SIZEABLE:
         (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_DLGMODALFRAME)?STYLE_FRAME_DIALOG:STYLE_FRAME_FIXED;
-    int target=style_frame_border_width(geometry,kind,
-        dpi,(UINT)(horizontal?monitor.cx:monitor.cy));
-    return max(0,frame_metric(sizeable,horizontal,dpi)-target);
+    int target=style_frame_window_border_width(window,geometry,kind,horizontal,dpi);
+    return max(0,style_frame_native_border_width(kind,horizontal,dpi)-target);
 }
 
 static void offset_menu(HWND window,RECT *rect)
@@ -115,8 +104,9 @@ static void offset_menu(HWND window,RECT *rect)
     OffsetRect(rect,-frame_shift(window,TRUE),-menu_shift(window)-frame_shift(window,FALSE));
 }
 
-static style_menu_bar_inclusion compact_item(const MENUITEMINFOW *item,UINT *flags)
+static style_menu_bar_inclusion compact_item(void *context,const MENUITEMINFOW *item,UINT *flags)
 {
+    (void)context;
     (void)flags;
     return (item->fType&(MFT_OWNERDRAW|MFT_MENUBREAK|MFT_MENUBARBREAK|MFT_SEPARATOR|MFT_RIGHTJUSTIFY)) || item->hbmpItem?
         STYLE_MENU_BAR_UNSUPPORTED:STYLE_MENU_BAR_INCLUDE;
@@ -157,11 +147,11 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
         if(ClientToScreen(window,&right))area.right=max(area.right,right.x-outer->left);
     }
     frame_window *frame=frame_state(window);
-    const classic_menu_colors *colors=win2k_menu_colors(frame && frame->themed?&frame->theme.menu_bar:NULL);
-    HBRUSH face=CreateSolidBrush(colors->background);if(!face)return;
+    const classic_menu_colors colors=win2k_menu_colors(frame && frame->themed?&frame->theme.menu_bar:NULL);
+    HBRUSH face=CreateSolidBrush(colors.background);if(!face)return;
     FillRect(dc,&area,face);DeleteObject(face);
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    HFONT font=win2k_menu_font(dpi,frame && frame->themed?&frame->theme.menu_font:NULL);
+    HFONT font=msstyles_font_create(frame && frame->themed?&frame->theme.menu_font:NULL,dpi,MSSTYLES_FONT_MENU);
     unsigned text_flags=frame && frame->themed?frame->theme.menu_metrics.text_flags:0;
     BOOL centered=!text_flags || (text_flags&STYLE_MENU_TEXT_CENTER_BAR);
     int saved=SaveDC(dc);if(saved){
@@ -174,9 +164,9 @@ static void paint_menu(HWND window,HDC dc,const RECT *outer)
                 const style_menu_bar_item *item=&snapshot.items[i];RECT r=snapshot.rects[i];
                 offset_menu(window,&r);OffsetRect(&r,-outer->left,-outer->top);
                 BOOL highlighted=selected==(int)item->position;
-                if(highlighted){HBRUSH active=CreateSolidBrush(colors->selection);if(active){FillRect(dc,&r,active);DeleteObject(active);}}
+                if(highlighted){HBRUSH active=CreateSolidBrush(colors.selection);if(active){FillRect(dc,&r,active);DeleteObject(active);}}
                 BOOL disabled=inactive || (item->state&MFS_DISABLED);
-                COLORREF text=disabled?colors->disabled_text:highlighted?colors->selected_text:colors->text;
+                COLORREF text=disabled?colors.disabled_text:highlighted?colors.selected_text:colors.text;
                 SetTextColor(dc,text);
                 (void)style_menu_draw_label(dc,item->text,&r,centered,
                     disabled && (text_flags&STYLE_MENU_TEXT_STIPPLE_DISABLED),text);
@@ -203,19 +193,34 @@ _Static_assert(CLASSIC_BUTTON_SYSTEM==1 && CLASSIC_BUTTON_MINIMIZE==2 &&
 static void classic_buttons(HWND window,const frame_window *frame,TITLEBARINFOEX *info)
 {
     LONG_PTR ex=GetWindowLongPtrW(window,GWL_EXSTYLE);
-    if(ex&WS_EX_LAYOUTRTL)return;
+    if(!frame->themed || (ex&WS_EX_LAYOUTRTL))return;
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
-    BOOL present[4];RECT bounds[4];
+    BOOL present[4];RECT bounds[4],system={0};
     for(unsigned i=0;i<ARRAYSIZE(bounds);++i){
         RECT r=info->rgrect[i+2];
         present[i]=!(info->rgstate[i+2]&STATE_SYSTEM_INVISIBLE) && r.right>r.left;
     }
     BOOL tool=(ex&WS_EX_TOOLWINDOW)!=0;
-    BOOL result=frame->themed?win2k_caption_buttons_with_group(&info->rcTitleBar,dpi,tool,present,
-        &frame->theme.title_buttons,&frame->theme.caption_metrics,bounds):
-        win2k_caption_buttons(&info->rcTitleBar,dpi,tool,present,bounds);
-    if(result)
-        for(unsigned i=0;i<ARRAYSIZE(bounds);++i)if(present[i])info->rgrect[i+2]=bounds[i];
+    BOOL synthetic=frame->system_slot && (GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU);
+    if(synthetic){
+        MENUBARINFO native={.cbSize=sizeof(native)};
+        if(GetMenuBarInfo(window,OBJID_SYSMENU,0,&native) && !IsRectEmpty(&native.rcBar))
+            info->rcTitleBar.left=min(info->rcTitleBar.left,native.rcBar.left-frame_shift(window,TRUE));
+        SetRectEmpty(&info->rgrect[CLASSIC_BUTTON_SYSTEM]);
+        info->rgstate[CLASSIC_BUTTON_SYSTEM]|=STATE_SYSTEM_INVISIBLE;
+    }
+    if(win2k_caption_buttons_with_system(&info->rcTitleBar,dpi,tool,present,
+        &frame->theme.title_buttons,&frame->theme.caption_metrics,bounds,synthetic?&system:NULL)){
+        if(!IsRectEmpty(&system)){
+            info->rgrect[CLASSIC_BUTTON_SYSTEM]=system;
+            info->rgstate[CLASSIC_BUTTON_SYSTEM]&=~STATE_SYSTEM_INVISIBLE;
+        }
+        for(unsigned i=0;i<ARRAYSIZE(bounds);++i){
+            if(!present[i])continue;
+            info->rgrect[i+2]=bounds[i];
+            if(IsRectEmpty(&bounds[i]))info->rgstate[i+2]|=STATE_SYSTEM_INVISIBLE;
+        }
+    }
 }
 
 static BOOL caption_icon_rect(HWND window,const RECT *outer,RECT *icon)
@@ -242,9 +247,17 @@ static void paint(HWND window)
     if(info.rcTitleBar.right<=info.rcTitleBar.left || info.rcTitleBar.bottom<=info.rcTitleBar.top)goto done;
     RECT caption=info.rcTitleBar;
     OffsetRect(&caption,-outer.left,-outer.top);
-    RECT icon={0};BOOL has_icon=(GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) &&
-        !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW) && caption_icon_rect(window,&outer,&icon);
-    if(has_icon && icon.left<caption.left)caption.left=icon.left;
+    RECT system=info.rgrect[CLASSIC_BUTTON_SYSTEM];
+    BOOL synthetic=frame->system_slot && (GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) &&
+        !(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL) &&
+        !(info.rgstate[CLASSIC_BUTTON_SYSTEM]&STATE_SYSTEM_INVISIBLE) && !IsRectEmpty(&system);
+    DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE),extended=(DWORD)GetWindowLongPtrW(window,GWL_EXSTYLE);
+    RECT icon={0};
+    BOOL icon_region=!synthetic && (style&WS_SYSMENU) && !(extended&WS_EX_TOOLWINDOW) &&
+        caption_icon_rect(window,&outer,&icon);
+    BOOL has_icon=icon_region && style_caption_icon_visible(frame->theme.caption_presentation.icon_mode,
+        synthetic,style,extended);
+    if(icon_region && icon.left<caption.left)caption.left=icon.left;
     int width=outer.right-outer.left,height=outer.bottom-outer.top;
     if(caption.left<0 || caption.top<0 || caption.right>width || caption.bottom>height)goto done;
     HDC dc=GetWindowDC(window);if(!dc)goto done;
@@ -253,7 +266,7 @@ static void paint(HWND window)
     BOOL maximized=IsZoomed(window);
     if(!maximized){
         int border_saved=SaveDC(dc);MENUBARINFO system={.cbSize=sizeof(system)};
-        if(border_saved && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
+        if(border_saved && !synthetic && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
             RECT icon=system.rcBar;OffsetRect(&icon,-outer.left-frame_shift(window,TRUE),-outer.top-frame_shift(window,FALSE));
             ExcludeClipRect(dc,icon.left,icon.top,icon.right,icon.bottom);
         }
@@ -274,7 +287,15 @@ static void paint(HWND window)
     GetWindowTextW(window,title,ARRAYSIZE(title));
     HICON image=has_icon && !frame->instance.detached?style_window_caption_icon(window):NULL;
     if(!frame->instance.detached){
-        win2k_caption_layout layout={.band=caption,.icon=has_icon?icon:(RECT){0}};
+        win2k_caption_layout layout={.band=caption,.icon=has_icon?icon:(RECT){0},
+            .left_buttons=theme?win2k_caption_left_buttons(&theme->title_buttons):0};
+        if(synthetic){
+            layout.system=system;
+            OffsetRect(&layout.system,-outer.left,-outer.top);
+            layout.system_on_right=frame->system_on_right;
+            if(frame->system_popup || (frame->button.pressed==CLASSIC_BUTTON_SYSTEM && frame->button.hot))
+                layout.system_flags=DFCS_PUSHED;
+        }
         UINT flags[WIN2K_CAPTION_PARTS]={0};
         for(unsigned i=0;i<WIN2K_CAPTION_PARTS;++i){
             unsigned index=i+2;
@@ -289,7 +310,7 @@ static void paint(HWND window)
         BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
         const msstyles_font *defined=frame->themed?
             (tool?&frame->theme.small_caption_font:&frame->theme.caption_font):NULL;
-        HFONT font=win2k_caption_font(dpi,tool,defined);
+        HFONT font=msstyles_font_create(defined,dpi,tool?MSSTYLES_FONT_SMALL_CAPTION:MSSTYLES_FONT_CAPTION);
         win2k_caption_colors colors=win2k_caption_theme_palette(frame->native.active,
             frame->themed?&frame->theme:NULL);
         win2k_caption_render_with_colors(dc,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
@@ -318,13 +339,49 @@ static const style_menu_bar_ops bar_ops={.read=bar_read,.hit=bar_hit,.paint=bar_
 static style_menu_bar_target menu_target(HWND w,frame_window *frame)
 {return (style_menu_bar_target){w,&frame->instance,&frame->menu,frame,&bar_ops};}
 
+static BOOL system_slot_rect(HWND window,const frame_window *frame,RECT *rect)
+{
+    if(!frame->system_slot || IsIconic(window) || !(GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) ||
+       (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_LAYOUTRTL))return FALSE;
+    TITLEBARINFOEX info={.cbSize=sizeof(info)};
+    SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+    *rect=info.rgrect[CLASSIC_BUTTON_SYSTEM];
+    return !frame->instance.detached && !(info.rgstate[CLASSIC_BUTTON_SYSTEM]&STATE_SYSTEM_INVISIBLE) &&
+        !IsRectEmpty(rect);
+}
+
+static void open_system_slot(HWND window,frame_window *frame,RECT rect)
+{
+    HMENU menu=GetSystemMenu(window,FALSE);
+    if(!menu || frame->system_popup)return;
+    frame->system_popup=TRUE;
+    style_system_menu_session session;
+    style_system_menu_begin(&session,window,menu);
+    paint(window);
+    UINT command=frame->instance.detached?0:
+        style_system_menu_track(&session,window,(POINT){rect.left,rect.bottom});
+    style_system_menu_end(&session);
+    frame->system_popup=FALSE;
+    if(!frame->instance.detached){
+        paint(window);
+        if(command && !frame->instance.detached)PostMessageW(window,WM_SYSCOMMAND,command,0);
+    }
+}
+
 static BOOL button_input(HWND window,frame_window *frame,UINT message,WPARAM wp,LPARAM lp)
 {
     style_caption_button *tracked=&frame->button;
     if((message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONDBLCLK) && !tracked->pressed){
         if(IsIconic(window))return FALSE;
         enum classic_button_role index=style_caption_role((int)wp);
-        if(index<CLASSIC_BUTTON_MINIMIZE)return FALSE;
+        if(!index)return FALSE;
+        if(index==CLASSIC_BUTTON_SYSTEM){
+            RECT rect;if(!system_slot_rect(window,frame,&rect))return FALSE;
+            if(message==WM_NCLBUTTONDBLCLK){
+                if(style_caption_button_enabled(window,HTCLOSE))PostMessageW(window,WM_SYSCOMMAND,SC_CLOSE,0);
+                return TRUE;
+            }
+        }
         TITLEBARINFOEX info={.cbSize=sizeof(info)};
         SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
         if(info.rgstate[index]&(STATE_SYSTEM_INVISIBLE|STATE_SYSTEM_UNAVAILABLE))return FALSE;
@@ -343,7 +400,8 @@ static BOOL button_input(HWND window,frame_window *frame,UINT message,WPARAM wp,
             if(inside && IsWindow(window)){
                 UINT command=style_caption_command((enum classic_button_role)index,IsZoomed(window));
                 HMENU system=GetSystemMenu(window,FALSE);
-                if(command==SC_CONTEXTHELP || !(GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) ||
+                if(index==CLASSIC_BUTTON_SYSTEM)open_system_slot(window,frame,info.rgrect[index]);
+                else if(command==SC_CONTEXTHELP || !(GetWindowLongPtrW(window,GWL_STYLE)&WS_SYSMENU) ||
                    (system && !(GetMenuState(system,command,MF_BYCOMMAND)&MFS_DISABLED)))
                     SendMessageW(window,WM_SYSCOMMAND,command,MAKELPARAM(point.x,point.y));
             }
@@ -410,7 +468,8 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
             style_scroll_finish(window,instance,&frame->scroll.controller,&scroll,TRUE);
         if(instance->detached)return 0;
     }
-    if(compact_enabled(window) && style_frame_suppress_native_theme(message,IsIconic(window),GetMenu(window)!=NULL)){
+    if(compact_enabled(window) && (message!=STYLE_NCUAHDRAWFRAME || frame->theme.border_presentation.fill) &&
+       style_frame_suppress_native_theme(message,IsIconic(window),GetMenu(window)!=NULL)){
         SetLastError(incoming);return 0;
     }
     if(message==WM_SETTEXT || message==WM_THEMECHANGED || message==WM_DPICHANGED ||
@@ -444,8 +503,11 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
         }
     }
     LRESULT menu_result=0;
+    if(message==WM_CANCELMODE && frame->system_popup)EndMenu();
     if(message==WM_NCDESTROY)style_menu_owner_stop(&frame->menu);
-    else if(style_menu_owner_message(&frame->menu,window,message,wp,lp,&win2k_system_menu_operations,
+    else if(style_menu_owner_message(&frame->menu,window,message,wp,
+        message==WM_INITMENUPOPUP && frame->system_popup && (HMENU)wp==GetSystemMenu(window,FALSE)?
+            MAKELPARAM(LOWORD(lp),TRUE):lp,&win2k_system_menu_operations,
         frame->themed?&frame->menu_style:NULL,&menu_result)){
         SetLastError(incoming);return menu_result;
     }
@@ -453,6 +515,10 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
     if(message==WM_COMMAND && !lp && frame->menu.bar.keyboard)style_menu_bar_finish(&menu,TRUE);
     style_menu_tracking_update(window,message,wp,lp);
     if(style_menu_bar_input(&menu,message,wp,lp)){SetLastError(incoming);return 0;}
+    if(message==WM_SYSCOMMAND && (wp&0xfff0)==SC_KEYMENU && lp==L' '){
+        RECT rect;
+        if(system_slot_rect(window,frame,&rect)){open_system_slot(window,frame,rect);SetLastError(incoming);return 0;}
+    }
     if(button_input(window,(frame_window *)instance,message,wp,lp)){SetLastError(incoming);return 0;}
     BOOL repaint=FALSE;
     if(message==WM_NCACTIVATE)((frame_window *)instance)->native.active=(BOOL)wp;
@@ -494,7 +560,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
              * only the caption row and let the application lay out its children. */
             frame->native.keep_outer=TRUE;
             BOOL sizeable=(GetWindowLongPtrW(window,GWL_STYLE)&WS_THICKFRAME)!=0;
-            LONG caption_end=proposed_top+frame_metric(sizeable,FALSE,dpi)-dy+reserved;
+            LONG caption_end=proposed_top+style_frame_native_border_width(sizeable?STYLE_FRAME_SIZEABLE:STYLE_FRAME_FIXED,FALSE,dpi)-dy+reserved;
             if(caption_end<client.bottom)client.top=max(client.top,caption_end);
         }else{
             client.left-=dx;client.right+=dx;client.top-=max(0,difference)+dy;client.bottom+=dy;
@@ -535,14 +601,19 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
         if(button)result=button;
         MENUBARINFO system={.cbSize=sizeof(system)};int dx=frame_shift(window,TRUE),dy=frame_shift(window,FALSE);
         BOOL icon=FALSE;
-        if((dx || dy) && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
+        BOOL system_slot=frame->system_slot && !(info.rgstate[CLASSIC_BUTTON_SYSTEM]&STATE_SYSTEM_INVISIBLE);
+        BOOL show_icon=style_caption_icon_visible(frame->theme.caption_presentation.icon_mode,system_slot,
+            (DWORD)GetWindowLongPtrW(window,GWL_STYLE),(DWORD)GetWindowLongPtrW(window,GWL_EXSTYLE));
+        if(show_icon && (dx || dy) && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
             OffsetRect(&system.rcBar,-dx,-dy);
             system.rcBar.top=max(system.rcBar.top,info.rcTitleBar.top);
             system.rcBar.bottom=min(system.rcBar.bottom,info.rcTitleBar.bottom);
             icon=PtInRect(&system.rcBar,point);
         }
-        if(!button && (icon || (!(info.rgstate[1]&STATE_SYSTEM_INVISIBLE) && PtInRect(&info.rgrect[1],point))))result=HTSYSMENU;
-        else if(!button && PtInRect(&info.rcTitleBar,point))result=HTCAPTION;
+        if(!button && (icon || ((system_slot || show_icon) &&
+            !(info.rgstate[1]&STATE_SYSTEM_INVISIBLE) && PtInRect(&info.rgrect[1],point))))result=HTSYSMENU;
+        else if(!button && (PtInRect(&info.rcTitleBar,point) || (!show_icon && !system_slot && result==HTSYSMENU)))
+            result=HTCAPTION;
     }
     if(message==WM_NCPAINT || message==WM_NCACTIVATE || message==WM_SETTEXT || message==WM_SIZE ||
        message==WM_NCLBUTTONDOWN || message==WM_NCLBUTTONUP || message==WM_SETICON ||
@@ -616,12 +687,15 @@ BOOL win2k_frame_attach(HWND window)
     frame_window *frame=calloc(1,sizeof(*frame));
     if(!frame){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     classic_theme_mapping source={0};
-    if(!pending && SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN2K,TRUE,&source))){
+    DWORD theme_error=pending?ERROR_SUCCESS:
+        classic_theme_attachment_layout((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_NONCLIENT,&source);
+    if(theme_error){free(frame);SetLastError(theme_error);return FALSE;}
+    if(source.resources){
         frame->theme=source.model;
         frame->themed=TRUE;
         win2k_menu_style_read(&frame->menu_style,&source);
-        if(frame->theme.caption_presentation.button_source==STYLE_CAPTION_BUTTON_INDEXED)
-            (void)classic_caption_art_read(source.resources,&frame->theme.caption_images,&frame->art);
+        frame->system_slot=win2k_caption_system_side(&frame->theme.title_buttons,&frame->system_on_right);
+        (void)classic_caption_art_read(source.resources,&frame->theme.caption_images,&frame->art);
         classic_theme_close(&source);
     }
     frame->menu.bar.selected=frame->menu.bar.highlighted=-1;
@@ -654,7 +728,8 @@ BOOL win2k_frame_remove(HWND window)
     style_instance *instance=style_instance_lookup(window,frame_proc);
     if(!instance)return FALSE;
     style_menu_tracking *tracking=style_menu_tracking_current();
-    if((tracking && tracking->window==window) || ((frame_window *)instance)->button.pressed){
+    if((tracking && tracking->window==window) || ((frame_window *)instance)->button.pressed ||
+       ((frame_window *)instance)->system_popup){
         SetLastError(ERROR_BUSY);return FALSE;
     }
     RECT client;BOOL normal=!IsIconic(window) && !IsZoomed(window);

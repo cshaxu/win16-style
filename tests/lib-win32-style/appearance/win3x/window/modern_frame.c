@@ -78,6 +78,11 @@ static int worker(int argc,WCHAR **argv)
 {
     (void)argc;(void)argv;
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    classic_theme_mapping source={0};
+    classic_theme_family family;
+    CHECK(SUCCEEDED(classic_theme_open_folder(GetModuleHandleW(NULL),L"Win16",&source,&family)));
+    classic_theme_set_process_profile(classic_theme_folder_id(L"Win16"),family);
+    const classic_theme *theme=&source.model;
     /* Keep the layered restack within windows owned by this fixture. */
     HWND anchor=CreateWindowExW(WS_EX_NOACTIVATE|WS_EX_TOOLWINDOW,L"STATIC",L"",
         WS_POPUP,20,20,1,1,NULL,NULL,NULL,NULL);
@@ -101,6 +106,13 @@ static int worker(int argc,WCHAR **argv)
         CHECK(SetWindowPos(nonclient,NULL,monitor.rcWork.left,monitor.rcWork.top,
             monitor.rcWork.right-monitor.rcWork.left,monitor.rcWork.bottom-monitor.rcWork.top+80,
             SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED));pump();
+        RECT maximized={0},client_area={0};
+        GetWindowRect(nonclient,&maximized);
+        GetClientRect(nonclient,&client_area);
+        printf("UWP EXPANDED CLIENT zoomed=%d surface=%d outer=%ld,%ld,%ld,%ld client=%ld,%ld work=%ld,%ld,%ld,%ld\n",
+            IsZoomed(nonclient),IsWindowVisible(nonclient_surface),maximized.left,maximized.top,maximized.right,
+            maximized.bottom,client_area.right,client_area.bottom,monitor.rcWork.left,monitor.rcWork.top,
+            monitor.rcWork.right,monitor.rcWork.bottom);
         CHECK(IsZoomed(nonclient));CHECK(IsWindowVisible(nonclient_surface));
         CHECK(RemoveWindowSubclass(nonclient,expanded_maximized_client,2));
         CHECK(style_uwp_frame_remove(nonclient));
@@ -132,7 +144,9 @@ static int worker(int argc,WCHAR **argv)
         RECT band;GetWindowRect(title,&band);POINT origin={0,0};ClientToScreen(w,&origin);
         RECT hole={origin.x-before.left,band.bottom-before.top,origin.x-before.left+client.right,origin.y-before.top+client.bottom};
         SIZE size={before.right-before.left,before.bottom-before.top};win16_style_layout layout;
-        CHECK(win16_uwp_frame_layout(size,GetDpiForWindow(w),(DWORD)style,FALSE,hole,NULL,NULL,NULL,&layout));
+        CHECK(win16_uwp_frame_layout(size,GetDpiForWindow(w),(DWORD)style,0,FALSE,hole,
+            &theme->title_buttons,&theme->caption_metrics,&theme->border_presentation.geometry,&layout));
+        CHECK(!IsRectEmpty(&layout.buttons[CLASSIC_BUTTON_MINIMIZE]));
         LPARAM click=MAKELPARAM(layout.buttons[CLASSIC_BUTTON_MINIMIZE].left+2,layout.buttons[CLASSIC_BUTTON_MINIMIZE].top+2);
         command=0;SendMessageW(surface,WM_LBUTTONDOWN,MK_LBUTTON,click);
         SendMessageW(surface,WM_LBUTTONUP,0,click);pump();CHECK(command==SC_MINIMIZE);
@@ -159,7 +173,11 @@ static int worker(int argc,WCHAR **argv)
         CHECK(styled.fType==native.fType&&styled.dwItemData==native.dwItemData);
         if(!i){
             tracked_menu=FALSE;menu_notifications=0;CHECK(SetTimer(w,1,200,cancel_menu));
-            SendMessageW(w,WM_SYSCOMMAND,SC_KEYMENU,L' ');KillTimer(w,1);
+            const RECT system=layout.buttons[CLASSIC_BUTTON_SYSTEM];
+            CHECK(!IsRectEmpty(&system));
+            LPARAM button=MAKELPARAM((system.left+system.right)/2,(system.top+system.bottom)/2);
+            SendMessageW(surface,WM_LBUTTONDOWN,MK_LBUTTON,button);
+            SendMessageW(surface,WM_LBUTTONUP,0,button);pump();KillTimer(w,1);
             CHECK(tracked_menu);CHECK(menu_states_ok);CHECK(menu_notifications==1);
             CHECK(GetMenuItemInfoW(menu,SC_CLOSE,FALSE,&styled));
             CHECK(styled.fType==native.fType&&styled.dwItemData==native.dwItemData);
@@ -267,6 +285,7 @@ static int worker(int argc,WCHAR **argv)
     title=CreateWindowExW(0,L"STATIC",L"Native title",WS_CHILD|WS_VISIBLE,0,0,client.right,48,w,NULL,NULL,NULL);CHECK(title);
     CHECK(win16_uwp_frame_apply_actions(w,title,NULL,0,NULL));surface=style_uwp_frame_surface(w);
     CHECK(DestroyWindow(w));CHECK(!IsWindow(surface));CHECK(DestroyWindow(anchor));
+    classic_theme_close(&source);
     puts("UWP_FRAME_LIFECYCLE_PASS repeat=3 owner-destroy=1");return 0;
 }
 int wmain(int argc,WCHAR **argv){return isolated_process(argc,argv,worker);}

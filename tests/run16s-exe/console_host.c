@@ -16,7 +16,7 @@ int wmain(void)
     CHECK(!run16s_console_host_image(L"C:\\other\\conhost.exe"));
     CHECK(!run16s_console_host_image(L"C:\\Windows\\System32\\cmd.exe"));
     CHECK(run16s_console_host_attach(NULL,NULL)==ERROR_INVALID_PARAMETER);
-    CHECK(run16s_console_host_attach_current(NULL)==ERROR_INVALID_PARAMETER);
+    CHECK(run16s_console_host_attach_current(NULL,0)==ERROR_INVALID_PARAMETER);
     WCHAR directory[32768];DWORD size=GetModuleFileNameW(NULL,directory,ARRAYSIZE(directory));
     CHECK(size && size<ARRAYSIZE(directory));WCHAR *slash=wcsrchr(directory,L'\\');CHECK(slash);slash[1]=0;
     HMODULE module=NULL;HOOKPROC callback=NULL;

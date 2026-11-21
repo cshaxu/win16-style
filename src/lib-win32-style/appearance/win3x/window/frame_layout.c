@@ -19,7 +19,7 @@ BOOL win16_control_frame_hit_test(HWND w,const win16_style_layout *l,LPARAM lp,L
 
 BOOL win16_control_measure_window(HWND w,const style_instance *instance,const style_font_pair *fonts,
     const RECT *outer,const classic_button_group *buttons,const classic_caption_metrics *metrics,
-    const style_frame_geometry *frame,win16_style_layout *l)
+    const style_frame_geometry *frame,unsigned icon_mode,const classic_menu_metrics *menu,win16_style_layout *l)
 {
     RECT visible=*outer;BOOL zoom=IsZoomed(w);int dx,dy;
     if(zoom)(void)style_frame_work_area(w,outer,&visible);
@@ -27,37 +27,35 @@ BOOL win16_control_measure_window(HWND w,const style_instance *instance,const st
     int width=visible.right-visible.left,height=visible.bottom-visible.top;
     UINT monitor=frame && frame->scale==STYLE_FRAME_MONITOR_PIXELS?
         (UINT)style_frame_monitor_dpi(w,fonts->dpi).cy:fonts->dpi;
-    BOOL measured=buttons && buttons->count?
-        win16_style_measure_with_buttons(width,height,fonts->dpi,style,ex,zoom,buttons,metrics,frame,monitor,l):
-        win16_style_measure(width,height,fonts->dpi,style,ex,zoom,l);
+    BOOL measured=win16_style_measure_with_buttons(width,height,fonts->dpi,style,ex,zoom,
+        buttons,metrics,frame,monitor,l);
     if(!measured)return FALSE;
+    win16_style_measure_caption_icon(l,fonts->dpi,style,ex,icon_mode);
+    if(menu)l->menu_metrics=*menu;
     /* Native maximized resize borders can lie outside the work area. Keep
      * Windows' geometry, but place every custom non-client element and the
      * actual client inside its visible part using one layout calculation. */
     dx=visible.left-outer->left;dy=visible.top-outer->top;
     OffsetRect(&l->outer,dx,dy);OffsetRect(&l->client,dx,dy);
-    OffsetRect(&l->caption,dx,dy);OffsetRect(&l->title,dx,dy);
+    OffsetRect(&l->caption,dx,dy);OffsetRect(&l->title,dx,dy);OffsetRect(&l->icon,dx,dy);
     for(unsigned role=CLASSIC_BUTTON_SYSTEM;role<=CLASSIC_BUTTON_CLOSE;++role)
         OffsetRect(&l->buttons[role],dx,dy);
     if(!(GetWindowLongPtr(w,GWL_STYLE)&WS_CHILD) && GetMenu(w)){
         style_menu_bar_snapshot bar;POINT origin={l->client.left,l->client.top};
         if(!win16_style_bar_read_for_window(w,GetMenu(w),fonts->menu?fonts->menu:(HFONT)GetStockObject(SYSTEM_FONT),
-            fonts->dpi,origin,l->client.right-l->client.left,&bar))return FALSE;
+            fonts->dpi,l,origin,l->client.right-l->client.left,&bar))return FALSE;
         if(instance->detached){style_menu_bar_free(&bar);return FALSE;}
         if(bar.height){l->menu=l->client;l->menu.bottom=min(l->client.bottom,l->client.top+bar.height+l->unit);
             l->client.top=l->menu.bottom;}
         style_menu_bar_free(&bar);
     }
     {DWORD flags=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-        /* USER18:0F5F uses the inner sizing band N=F-B for the bars' outer
-         * edges: the bar shares the frame's inner border. Native bar geometry
-         * starts at rcClient, so reserve thickness minus that shared unit.
-         * Fixed/dialog and host-only left-bar profiles remain separate. */
-        int shared=l->sizeable && !l->dialog_frame &&
-            !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LEFTSCROLLBAR)?l->unit:0;
+        BOOL left_bar=(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LEFTSCROLLBAR)!=0;
+        int shared=frame && l->sizeable && !l->dialog_frame && !left_bar?
+            frame->scroll_shared_units*l->unit:0;
         if(flags&WS_VSCROLL){int cx=GetSystemMetricsForDpi(SM_CXVSCROLL,fonts->dpi)-shared;
             if(l->client.right-l->client.left>=cx){
-                if(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_LEFTSCROLLBAR)l->client.left+=cx;
+                if(left_bar)l->client.left+=cx;
                 else l->client.right-=cx;}}
         if(flags&WS_HSCROLL){int cy=GetSystemMetricsForDpi(SM_CYHSCROLL,fonts->dpi)-shared;
             if(l->client.bottom-l->client.top>cy)l->client.bottom-=cy;}

@@ -12,6 +12,84 @@ BOOL style_paint_color(HDC dc,const RECT *rect,COLORREF color)
     return result;
 }
 
+BOOL style_choice_layout(HDC dc,RECT client,UINT dpi,DWORD style,style_choice_metrics metrics,RECT *glyph,RECT *label)
+{
+    if(!dpi)return FALSE;
+    int width=metrics.width,height=metrics.height,gap=metrics.gap;
+    if(!width || !height){
+        width=GetSystemMetricsForDpi(SM_CXMENUCHECK,dpi);
+        height=GetSystemMetricsForDpi(SM_CYMENUCHECK,dpi);
+        metrics.flags=STYLE_CHOICE_FONT_GAP|STYLE_CHOICE_ALIGN;
+    }else if(metrics.flags&STYLE_CHOICE_DPI){
+        width=max(1,MulDiv(width,(int)dpi,96));
+        height=max(1,MulDiv(height,(int)dpi,96));
+        gap=MulDiv(gap,(int)dpi,96);
+    }
+    SIZE zero={0};
+    UINT vertical=(metrics.flags&STYLE_CHOICE_ALIGN)?style&BS_VCENTER:0;
+    if(((metrics.flags&STYLE_CHOICE_FONT_GAP) || vertical==BS_TOP || vertical==BS_BOTTOM) &&
+       !GetTextExtentPoint32W(dc,L"0",1,&zero))return FALSE;
+    if(metrics.flags&STYLE_CHOICE_FONT_GAP)gap=zero.cx/2;
+    int top=(client.top+client.bottom-height)/2;
+    if(vertical==BS_TOP || vertical==BS_BOTTOM){
+        int row=zero.cy+zero.cy/4,offset=(row-height)/2;
+        top=vertical==BS_TOP?client.top+offset:client.bottom-row+offset;
+    }
+    const BOOL right=(style&BS_LEFTTEXT)!=0;
+    int left=right?client.right-width:client.left;
+    *glyph=(RECT){left,top,left+width,top+height};
+    *label=client;
+    if(right)label->right=left-gap;
+    else label->left=glyph->right+gap;
+    return TRUE;
+}
+
+/* The system symbol face supplies the outline independently of the palette. */
+BOOL style_paint_choice_symbols(HDC dc,const RECT *rect,UINT state,const style_relief_palette *p,
+    const COLORREF surface[2])
+{
+    if(!dc||!rect||!p||IsRectEmpty(rect))return FALSE;
+    UINT kind=state&0xff;
+    if((kind!=DFCS_BUTTONCHECK && kind!=DFCS_BUTTONRADIO && kind!=DFCS_BUTTON3STATE) ||
+       (state&~(0xffu|DFCS_CHECKED|DFCS_PUSHED|DFCS_INACTIVE|DFCS_FLAT|DFCS_MONO)))return FALSE;
+    int saved=SaveDC(dc);if(!saved)return FALSE;
+    int size=min(rect->right-rect->left,rect->bottom-rect->top);BOOL result=FALSE;
+    HFONT font=CreateFontW(size,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,SYMBOL_CHARSET,
+        OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,0,L"Marlett");
+    WCHAR family[32];
+    if(!font)goto done;
+    HGDIOBJ previous=SelectObject(dc,font);
+    if(!previous||previous==HGDI_ERROR||!GetTextFaceW(dc,ARRAYSIZE(family),family)||lstrcmpiW(family,L"Marlett"))goto done;
+    if(!SetBkMode(dc,TRANSPARENT)||SetTextAlign(dc,TA_TOP|TA_LEFT)==GDI_ERROR||
+       IntersectClipRect(dc,rect->left,rect->top,rect->right,rect->bottom)==ERROR)goto done;
+    BOOL flat=(state&(DFCS_FLAT|DFCS_MONO))!=0;
+    BOOL mixed=kind==DFCS_BUTTON3STATE && (state&DFCS_CHECKED) && !(state&(DFCS_PUSHED|DFCS_INACTIVE));
+    COLORREF colors[6]={
+        (state&(DFCS_PUSHED|DFCS_INACTIVE))?p->face:mixed?p->highlight:p->window,
+        flat?p->text:p->light,flat?p->text:p->dark,flat?p->text:p->highlight,flat?p->text:p->shadow,
+        (state&(DFCS_BUTTON3STATE|DFCS_INACTIVE))?p->shadow:p->text
+    };
+    if(surface){
+        colors[0]=surface[0];
+        colors[5]=surface[1];
+    }
+    const WCHAR *layers=kind==DFCS_BUTTONRADIO?L"nmlkji":L"gfedcb";
+    unsigned first=0;
+    if(mixed && colors[0]==RGB(255,255,255) && p->highlight==RGB(255,255,255)){
+        if(!style_paint_dither(dc,rect,p))goto done;
+        first=1;
+    }
+    for(unsigned layer_index=first;layer_index<5u+!!(state&DFCS_CHECKED);++layer_index){
+        if(SetTextColor(dc,colors[layer_index])==CLR_INVALID ||
+           !TextOutW(dc,rect->left,rect->top,layers+layer_index,1))goto done;
+    }
+    result=TRUE;
+done:
+    if(!RestoreDC(dc,saved))result=FALSE;
+    if(font && !DeleteObject(font))result=FALSE;
+    return result;
+}
+
 /* Preserve the full-width inner bands, including their corner order. */
 RECT style_paint_outlined_face(HDC dc,RECT r,int unit,BOOL bevel,BOOL pressed,COLORREF face,
     const style_relief_palette *palette)
@@ -245,13 +323,19 @@ done:
     return result;
 }
 
+const BYTE *style_scroll_arrow_cell(const style_scroll_arrow_art *art,UINT state)
+{
+    unsigned direction=state&0xffu;
+    if(!art || art->source!=STYLE_SCROLL_ARROW_INDEXED || direction>=STYLE_SCROLL_ARROW_DIRECTIONS)return NULL;
+    unsigned status=(state&DFCS_INACTIVE)?2u:(state&DFCS_PUSHED)?1u:0u;
+    return art->cells[status][direction];
+}
+
 static BOOL paint_indexed_arrow(HDC dc,const RECT *r,UINT state,const style_relief_palette *palette,
     const style_scroll_arrow_art *art,int inset)
 {
-    unsigned direction=state&0xffu;
-    if(!dc || !r || !palette || IsRectEmpty(r) || direction>=STYLE_SCROLL_ARROW_DIRECTIONS)return FALSE;
-    unsigned status=(state&DFCS_INACTIVE)?2u:(state&DFCS_PUSHED)?1u:0u;
-    const BYTE *packed=art->cells[status][direction];
+    const BYTE *packed=style_scroll_arrow_cell(art,state);
+    if(!packed || !dc || !r || !palette || IsRectEmpty(r))return FALSE;
     char pixels[STYLE_SCROLL_ARROW_SIDE*STYLE_SCROLL_ARROW_SIDE];
     for(unsigned i=0;i<ARRAYSIZE(pixels);++i)pixels[i]=(char)('0'+((packed[i/4]>>(2*(i%4)))&3));
     const COLORREF colors[]={palette->dark,palette->highlight,palette->shadow,palette->face};
@@ -272,8 +356,35 @@ BOOL style_paint_scroll_arrow(HDC dc,const RECT *r,UINT state,const style_relief
     return paint_indexed_arrow(dc,r,state,palette,art,0);
 }
 
-BOOL style_paint_scroll_arrow_crop(HDC dc,const RECT *r,UINT state,const style_relief_palette *palette,
-    const style_scroll_arrow_art *art)
+BOOL style_paint_arrow_button(HDC dc,RECT bounds,UINT state,UINT dpi,const style_relief_palette *palette,
+    const style_scroll_arrow_art *art,style_arrow_button_metrics metrics)
 {
-    return art && art->source==STYLE_SCROLL_ARROW_INDEXED && paint_indexed_arrow(dc,r,state,palette,art,3);
+    if(!dc || !palette || IsRectEmpty(&bounds))return FALSE;
+    if(!art || art->source!=STYLE_SCROLL_ARROW_INDEXED || !(metrics.outline || metrics.padding || metrics.crop))
+        return style_paint_scroll_arrow(dc,&bounds,state,palette,art);
+    if(!dpi || metrics.crop>=(STYLE_SCROLL_ARROW_SIDE+1)/2)return FALSE;
+    int unit=max(1,MulDiv(1,(int)dpi,96));
+    if(metrics.outline)bounds=style_paint_outlined_face(dc,bounds,unit*(int)metrics.outline,
+        TRUE,(state&DFCS_PUSHED)!=0,palette->face,palette);
+    InflateRect(&bounds,-unit*(int)metrics.padding,-unit*(int)metrics.padding);
+    int side=min(MulDiv(STYLE_SCROLL_ARROW_SIDE-2*metrics.crop,(int)dpi,96),
+        min(bounds.right-bounds.left,bounds.bottom-bounds.top));
+    if(side<=0)return metrics.outline!=0;
+    LONG left=bounds.left+(bounds.right-bounds.left-side)/2;
+    LONG top=bounds.top+(bounds.bottom-bounds.top-side)/2;
+    const RECT cell={left,top,left+side,top+side};
+    return paint_indexed_arrow(dc,&cell,state,palette,art,metrics.crop);
+}
+
+BOOL style_paint_content(HDC dc,LPARAM value,WPARAM length,int x,int y,int width,int height,
+    UINT type,DRAWSTATEPROC draw,BOOL disabled,BOOL monochrome,const style_relief_palette *p)
+{
+    if(!disabled && !monochrome)return DrawStateW(dc,NULL,draw,value,length,x,y,width,height,type);
+    HBRUSH light=disabled?CreateSolidBrush(p->highlight):NULL,gray=CreateSolidBrush(p->gray);
+    BOOL result=gray && (!disabled || light);
+    if(result && disabled)result=DrawStateW(dc,light,draw,value,length,x+1,y+1,width,height,type|DSS_MONO);
+    if(result)result=DrawStateW(dc,gray,draw,value,length,x,y,width,height,type|DSS_MONO);
+    if(light)DeleteObject(light);
+    if(gray)DeleteObject(gray);
+    return result;
 }

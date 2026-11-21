@@ -59,7 +59,10 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     case WM_GETICON:
     case WM_SETICON: {
         if(style_frame_xaml_icon(w,msg,wp,lp,&s->xaml_icon_update,&s->instance.detached,&result))break;
-        goto forward;
+        if(msg!=WM_SETICON || !v->input->layout(w,s,&l) || IsRectEmpty(&l.icon))goto forward;
+        result=DefSubclassProc(w,msg,wp,lp);
+        if(!s->instance.detached)v->message->paint(w,v->message->context,NULL);
+        break;
     }
     case WM_ERASEBKGND:
         result=DefSubclassProc(w,msg,wp,lp);

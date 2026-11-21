@@ -61,8 +61,8 @@ static void paint_item(HWND w,void *context,HDC dc,const style_control_tab_snaps
 BOOL win16_style_tab_paint(HWND w,HDC dc,const win16_style_palette *p,HFONT font,
     const style_instance *instance,const style_control_native_state *state,const classic_tab_colors *colors,style_line_profile profile)
 {
-    if(!dc || !win16_style_tab_supported(w))return FALSE;
-    tab_paint paint={.palette=p,.font=font,.profile=profile?profile:STYLE_LINE_FLAT,
+    if(!dc || !profile || !win16_style_tab_supported(w))return FALSE;
+    tab_paint paint={.palette=p,.font=font,.profile=profile,
         .colors=colors->present?*colors:(classic_tab_colors){p->face,p->face,p->light,p->edge,FALSE}};
     paint.frame=(style_relief_palette){.face=paint.colors.pane,.dark=paint.colors.border,
         .light=p->face,.highlight=p->light,.shadow=p->shadow};

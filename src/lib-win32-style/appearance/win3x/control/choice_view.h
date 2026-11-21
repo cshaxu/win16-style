@@ -20,6 +20,7 @@ typedef struct win16_control_choice_view {
     const classic_group_colors *group;
     const classic_frame_colors *frame;
     classic_control_presentation controls;
+    BOOL choice_palette;
 } win16_control_choice_view;
 void win16_control_draw_choice(HWND window,const win16_control_choice_view *view,HDC dc);
 #endif

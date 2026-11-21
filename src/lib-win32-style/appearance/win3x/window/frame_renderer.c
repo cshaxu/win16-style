@@ -3,7 +3,7 @@
 #include "../menu/menu_bar.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/window/window_text.h"
-#include "lib-win32-style/appearance/msstyles/classic_presets.h"
+#include "lib-win32-style/application/window/window_icon.h"
 #include <stdlib.h>
 #include <windowsx.h>
 
@@ -20,7 +20,7 @@ BOOL win16_control_frame_button_motion(HWND w,const win16_control_frame_button_v
     GetWindowRect(w,&r);point.x-=r.left;point.y-=r.top;
     BOOL invoke=style_caption_button_move(w,s->state,win16_style_hit(&l,point)==pressed,msg==WM_LBUTTONUP,TRUE);
     if(msg==WM_LBUTTONUP){
-        if(invoke)PostMessageW(w,WM_SYSCOMMAND,style_caption_command(style_caption_role(pressed),IsZoomed(w)),
+        if(invoke && style_caption_button_enabled(w,pressed))PostMessageW(w,WM_SYSCOMMAND,style_caption_command(style_caption_role(pressed),IsZoomed(w)),
             pressed==HTSYSMENU?L' ':0);
     }
     if(!s->instance->detached && (msg==WM_LBUTTONUP || was_hot!=s->state->hot))s->paint(w,s->context,pressed);
@@ -41,8 +41,11 @@ static void render_caption(HWND window,const style_instance *instance,HDC dc,
     WCHAR *title=style_window_text_copy(window);
     if(!instance->detached){
         win16_frame_paint_state state;read(context,&state);
+        if(!IsRectEmpty(&layout->buttons[CLASSIC_BUTTON_CLOSE]))
+            state.close_disabled=!style_caption_button_enabled(window,HTCLOSE);
         BOOL child=(GetWindowLongPtrW(window,GWL_STYLE)&WS_CHILD)!=0;
-        win16_control_frame_caption(dc,layout,palette,&state,title,child,IsZoomed(window));
+        state.icon=IsRectEmpty(&layout->icon)?NULL:style_window_caption_icon(window);
+        if(!instance->detached)win16_control_frame_caption(dc,layout,palette,&state,title,child,IsZoomed(window));
     }
     free(title);
 }
@@ -61,20 +64,20 @@ void win16_control_paint_frame(HWND w,style_instance *instance,void *context,con
      * saved. This is failure containment, not a menu-animation workaround. */
     if(!saved){if(!target)ReleaseDC(w,dc);return;}
     ExcludeClipRect(dc,l.client.left,l.client.top,l.client.right,l.client.bottom);
-    static const style_border_presentation fallback=WIN16_FRAME_BORDER;
     const style_border_palette palette={p.face,p.edge,p.light,p.shadow,state.active?p.active:p.inactive};
-    style_frame_border_paint(dc,l.outer,l.border,l.unit,l.dialog_frame,l.sizeable?&l.corner:NULL,
-        state.border.fill?&state.border:&fallback,&palette);
+    if(state.border.fill)style_frame_border_paint(dc,l.outer,l.border,l.unit,l.dialog_frame,
+        l.sizeable?&l.corner:NULL,&state.border,&palette);
+    else win16_control_fill(dc,l.outer,p.face);
     if(!IsRectEmpty(&l.menu)){
         style_menu_bar_snapshot bar;POINT origin={l.menu.left,l.menu.top};
         const classic_menu_colors *menu=state.menu_bar && state.menu_bar->present &&
             !win16_control_high_contrast()?state.menu_bar:NULL;
         win16_control_fill(dc,l.menu,menu?menu->background:p.light);
-        if(win16_style_bar_read_for_window(w,GetMenu(w),state.fonts->menu,state.fonts->dpi,origin,l.menu.right-l.menu.left,&bar)){
+        if(win16_style_bar_read_for_window(w,GetMenu(w),state.fonts->menu,state.fonts->dpi,&l,origin,l.menu.right-l.menu.left,&bar)){
             ops->state(context,&state);
             if(state.bar_selected>=0 && (UINT)state.bar_selected<bar.count)
                 bar.items[state.bar_selected].state|=MFS_HILITE;
-            win16_style_bar_paint(&bar,dc,state.fonts->menu,state.fonts->dpi,&p,menu,state.menu_metrics,state.art);
+            win16_style_bar_paint(&bar,dc,state.fonts->menu,state.fonts->dpi,&p,menu,state.menu_metrics,state.art,&state.presentation);
             style_menu_bar_free(&bar);
             if(instance->detached){RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);return;}
         }

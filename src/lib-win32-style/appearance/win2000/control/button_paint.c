@@ -2,7 +2,7 @@
  * xxxButtonDrawCheck. Pixel references and the finite contract are in T27. */
 #include "button_paint.h"
 #include "background.h"
-#include "../common/paint.h"
+#include "../common/palette.h"
 #include "lib-win32-style/application/control/button_snapshot.h"
 #include "lib-win32-style/application/control/control_class.h"
 #include "lib-win32-style/application/graphics/pixel_grid.h"
@@ -56,7 +56,7 @@ static BOOL label(HWND window,style_instance *instance,HDC dc,const style_contro
     int x=horizontal==BS_LEFT?bounds.left+2:horizontal==BS_RIGHT?bounds.right-width-2:(bounds.left+bounds.right-width)/2;
     int y=vertical==BS_TOP?bounds.top+1:vertical==BS_BOTTOM?bounds.bottom-height-1:(bounds.top+bounds.bottom-height)/2;
     if(push && (s->state&BST_PUSHED)){++x;++y;}
-    BOOL result=win2k_draw_content(dc,value,length,x,y,width,height,type,draw,(s->style&WS_DISABLED)!=0,
+    BOOL result=style_paint_content(dc,value,length,x,y,width,height,type,draw,(s->style&WS_DISABLED)!=0,
         push && s->check==BST_INDETERMINATE,p);
     if(result && (s->state&BST_FOCUS) && !(cues&UISF_HIDEFOCUS)){
         if(push)InflateRect(&bounds,-1,-1);
@@ -70,9 +70,9 @@ static BOOL label(HWND window,style_instance *instance,HDC dc,const style_contro
 }
 BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classic_push_colors *colors,
     const classic_choice_colors *choice,const classic_group_colors *group_colors,HMODULE module,classic_choice_art *art,
-    classic_control_presentation controls)
+    classic_control_presentation controls,const win2k_palette *base)
 {
-    win2k_palette palette=win2k_standard_palette;
+    win2k_palette palette=*base;
     const win2k_palette *p=&palette;
     int saved=SaveDC(dc);if(!saved)return FALSE;
     BOOL result=FALSE;RECT client,bounds,glyph;HBRUSH brush=NULL;
@@ -85,6 +85,7 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
     }
     if(!GetClientRect(window,&client))goto done;
     UINT type=style_control_button_type(window,initial_style);
+    if(!classic_button_presentation_enabled(&controls,type,initial_style))goto done;
     BOOL group=type==BS_GROUPBOX;
     if(group && group_colors && group_colors->text.present){
         palette.text=group_colors->text.normal;
@@ -106,9 +107,8 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
         SIZE zero;TEXTMETRICW system;RECT text={0};HGDIOBJ old=SelectObject(dc,GetStockObject(SYSTEM_FONT));
         if(!old||old==HGDI_ERROR||!GetTextMetricsW(dc,&system)||!SelectObject(dc,old)||!GetTextExtentPoint32W(dc,L"0",1,&zero))goto done;
         bounds=client;bounds.top+=zero.cy/2;
-        style_line_profile profile=controls.group?controls.group:STYLE_LINE_RELIEF;
         if(!style_paint_line_frame(dc,&bounds,EDGE_ETCHED,(snapshot.style&BS_FLAT)?BF_FLAT|BF_MONO:0,
-            1,p->shadow,profile,p))goto done;
+            1,p->shadow,controls.group,p))goto done;
         if(*snapshot.text){
             if(!DrawTextW(dc,snapshot.text,-1,&text,DT_CALCRECT|DT_SINGLELINE))goto done;
             int width=text.right-text.left+4;bounds=client;
@@ -135,23 +135,12 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
         SetBkMode(dc,TRANSPARENT);SetTextColor(dc,p->text);SetBkColor(dc,p->face);
         if(snapshot.check)state|=DFCS_CHECKED;
         if(snapshot.style&WS_DISABLED)state|=DFCS_INACTIVE;
-        style_push_profile profile=controls.push?controls.push:STYLE_PUSH_RELIEF;
         int unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
-        if(!style_paint_push_frame(dc,&bounds,state|DFCS_ADJUSTRECT,snapshot.role.type==BS_DEFPUSHBUTTON,unit,profile,p))
+        if(!style_paint_push_frame(dc,&bounds,state|DFCS_ADJUSTRECT,snapshot.role.type==BS_DEFPUSHBUTTON,unit,controls.push,p))
             goto done;
         IntersectClipRect(dc,bounds.left,bounds.top,bounds.right,bounds.bottom);
-    }else{
-        SIZE zero;if(!GetTextExtentPoint32W(dc,L"0",1,&zero))goto done;
-        glyph=client;UINT vertical=snapshot.style&BS_VCENTER;
-        if(vertical==BS_TOP || vertical==BS_BOTTOM){
-            int row=zero.cy+zero.cy/4,offset=(row-WIN2K_CHOICE_SIZE)/2;
-            glyph.top=vertical==BS_TOP?client.top+offset:client.bottom-row+offset;
-        }else glyph.top=(client.top+client.bottom-WIN2K_CHOICE_SIZE)/2;
-        glyph.left=(snapshot.style&BS_LEFTTEXT)?client.right-WIN2K_CHOICE_SIZE:client.left;
-        glyph.right=glyph.left+WIN2K_CHOICE_SIZE;glyph.bottom=glyph.top+WIN2K_CHOICE_SIZE;
-        if(snapshot.style&BS_LEFTTEXT)bounds.right-=WIN2K_CHOICE_SIZE+zero.cx/2;
-        else bounds.left+=WIN2K_CHOICE_SIZE+zero.cx/2;
-    }
+    }else if(!style_choice_layout(dc,client,GetDpiForWindow(window),snapshot.style,controls.choice_metrics,&glyph,&bounds))
+        goto done;
     result=label(window,instance,dc,&snapshot,bounds,&client,push,cues,p);
     if(result && !push){
         BOOL radio=snapshot.role.type==BS_RADIOBUTTON || snapshot.role.type==BS_AUTORADIOBUTTON;
@@ -169,7 +158,10 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
                 -1,ink,{glyph.left,glyph.top},{glyph.right-glyph.left,glyph.bottom-glyph.top},
                 {CLASSIC_CHOICE_WIDTH,CLASSIC_CHOICE_HEIGHT}};
             style_paint_pixel_grid(dc,&grid);
-        }else result=win2k_choice_glyph(dc,&glyph,state,p,surface);
+        }else if(controls.choice_fallback==CLASSIC_CHOICE_SYMBOLS){
+            const COLORREF ink[2]={surface?surface->face:p->window,surface?surface->edge:p->text};
+            result=style_paint_choice_symbols(dc,&glyph,state,p,surface?ink:NULL);
+        }else result=DrawFrameControl(dc,&glyph,DFC_BUTTON,state);
     }
 done:
     if(!RestoreDC(dc,saved))result=FALSE;

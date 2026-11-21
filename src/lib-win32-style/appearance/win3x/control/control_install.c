@@ -22,7 +22,7 @@ static BOOL install_combo_list(HWND window,void *context)
 static BOOL setup_combo_edit(HWND window,HWND child,void *context)
 {
     const control_install *install=context;control_style *s=install->state;
-    BOOL native_edit=style_control_vb_combo(window) && child!=window && style_control_combo_edit(child,style_control_vb_combo);
+    BOOL native_edit=s->controls.control_font_points && style_control_vb_combo(window) && child!=window && style_control_combo_edit(child,style_control_vb_combo);
     if(s->instance.detached)return TRUE;
     return !native_edit || style_control_combo_bind(&s->bindings.combo,&s->instance,&s->state,window,child,install->services->combo);
 }
@@ -60,15 +60,45 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
         DWORD error=GetLastError();win16_control_state_dispose(s);SetLastError(error);return FALSE;}
     if(palette)s->palette=*palette;else win16_style_default_palette(&s->palette);
     classic_theme_mapping source={0};
-    BOOL have_theme=SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN16,TRUE,&source));
+    DWORD theme_error=classic_theme_attachment_layout((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,&source);
+    if(theme_error){win16_control_state_dispose(s);SetLastError(theme_error);return FALSE;}
+    BOOL have_theme=source.resources!=NULL;
     const classic_theme *theme=&source.model;
-    if(have_theme)s->scroll_metrics=theme->scroll_metrics;
+    DWORD current_style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+    if(have_theme &&
+       ((frame_bars && style_control_protocol_legacy_progress(w) &&
+          !(theme->controls.progress.flags&STYLE_PROGRESS_BORDER)) ||
+        (!theme->controls.updown_mode && style_control_class_is(w,UPDOWN_CLASSW)) ||
+        (!theme->controls.trackbar && style_control_class_is(w,TRACKBAR_CLASSW)) ||
+        (!frame_bars && ((edit && !theme->controls.edit) ||
+         (!theme->controls.separator && style_control_is_separator(w)) ||
+         (!theme->controls.tab && style_control_is_tab(w)) ||
+         (!theme->controls.header && style_control_is_header(w)) ||
+         (style_control_class_is(w,L"BUTTON") &&
+          !classic_button_presentation_enabled(&theme->controls,style_control_button_type(w,current_style),current_style)))))){
+        classic_theme_close(&source);
+        win16_control_state_dispose(s);
+        SetLastError(ERROR_NOT_SUPPORTED);
+        return FALSE;
+    }
+    if(have_theme){
+        s->scroll_metrics=theme->scroll_metrics;
+        s->scroll_art=theme->scroll_art;
+        s->combo_arrow=theme->combo_arrow;
+        s->choice_colors=theme->choice;
+        if(classic_choice_has_art(&s->choice_colors)){
+            s->choice_module=source.resources;
+            source.resources=NULL;
+        }
+    }
+    s->scroll_policy=(style_scroll_policy){.drag=theme->scroll_metrics.drag,.hit=style_scroll_hit};
+    style_scroll_repeat_configure(&s->scroll_policy,theme->scroll_metrics.initial_repeat_ms,theme->scroll_metrics.repeat_ms);
+    s->controls=theme->controls;
+    s->state.font_recipe=s->controls.control_font_points;
     s->themed=!palette && have_theme;
     if(s->themed){
+        win16_style_theme_palette(&s->palette,theme);
         s->push_colors=theme->push;
-        s->choice_colors=theme->choice;
-        s->choice_module=source.resources;
-        source.resources=NULL;
         s->label_colors=theme->label;
         memcpy(s->edit_colors,theme->edit,sizeof(s->edit_colors));
         s->list_colors=theme->list;
@@ -80,9 +110,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
         s->group_colors=theme->group;
         s->frame_colors=theme->frame;
         s->toolbar_colors=theme->bars[CLASSIC_BAR_TOOLBAR];
-        s->controls=theme->controls;
         s->scroll_arrow_colors=theme->scroll_arrow;
-        s->scroll_art=theme->scroll_art;
         s->scroll_colors=theme->scroll;
     }
     classic_theme_close(&source);

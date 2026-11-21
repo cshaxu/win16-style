@@ -105,7 +105,7 @@ int wmain(int argc,WCHAR **argv)
 {
     BOOL list=argc>1 && !lstrcmpW(argv[1],L"list"),edit=argc>1 && !lstrcmpW(argv[1],L"edit");
     BOOL behavior=argc>2 && !lstrcmpW(argv[2],L"behavior");
-    HMODULE dll=GetModuleHandleW(sizeof(void*)==4?L"ntw16s32.dll":L"ntw16s64.dll");if(!dll)return 2;
+    HMODULE dll=GetModuleHandleW(sizeof(void*)==4?L"ntwshk32.dll":L"ntwshk64.dll");if(!dll)return 2;
     FARPROC address=GetProcAddress(dll,"win16_style_frame_scrollbars_install");install_fn install=NULL;memcpy(&install,&address,sizeof(install));
     address=GetProcAddress(dll,"win16_style_scrollbars_paint");paint_fn paint=NULL;memcpy(&paint,&address,sizeof(paint));
     address=GetProcAddress(dll,"Ntw16sWindowAttached");attached_fn attached=NULL;memcpy(&attached,&address,sizeof(attached));

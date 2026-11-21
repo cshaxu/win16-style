@@ -2,6 +2,19 @@
 
 void style_menu_draw_mark(HDC dc,const RECT *row,BOOL submenu,UINT dpi,COLORREF color,const CHAR *mask)
 {
+    if(!mask){
+        int unit=max(1,MulDiv(1,(int)dpi,96)),extent=MulDiv(13,(int)dpi,96);
+        RECT bounds=*row;
+        if(submenu){
+            bounds.left=bounds.right-extent;
+            bounds.right-=unit;
+        }else{
+            bounds.left+=unit;
+            bounds.right=bounds.left+extent;
+        }
+        DrawFrameControl(dc,&bounds,DFC_MENU,submenu?DFCS_MENUARROW:DFCS_MENUCHECK);
+        return;
+    }
     int width=submenu?7:14,height=submenu?11:14;
     int left=submenu?row->right-MulDiv(11,(int)dpi,96):row->left+MulDiv(2,(int)dpi,96);
     int top=(row->top+row->bottom-MulDiv(height,(int)dpi,96))/2;

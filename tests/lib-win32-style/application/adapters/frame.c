@@ -27,15 +27,13 @@ static void paint(void *context,HDC dc)
 }
 static LRESULT hit(void *context,POINT point)
 {(void)context;return point.x<20?HTMINBUTTON:HTCAPTION;}
-static BOOL button(void *context,int part)
-{(void)context;return part==HTMINBUTTON;}
-static void invoke(void *context,int part,UINT message)
-{(void)context;(void)part;(void)message;}
+static BOOL can_maximize(void *context)
+{(void)context;return FALSE;}
 static BOOL menu_message(void *context,HWND w,UINT m,WPARAM a,LPARAM b,BOOL owner,LRESULT *r)
 {(void)context;(void)w;(void)m;(void)a;(void)b;(void)owner;(void)r;return FALSE;}
 static void dispose(void *context)
 {++disposed;free(context);}
-static const style_uwp_frame_ops operations={geometry,paint,hit,button,invoke,menu_message,dispose};
+static const style_uwp_frame_ops operations={geometry,paint,hit,can_maximize,menu_message,dispose};
 static void action(HWND w,void *context)
 {(void)w;(void)context;}
 static BOOL start(HWND owner,HWND title,int mode,const style_uwp_frame_action *actions,unsigned count,fixture **live)

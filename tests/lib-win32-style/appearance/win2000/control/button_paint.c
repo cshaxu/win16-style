@@ -125,8 +125,36 @@ static int choices(HWND parent,HINSTANCE instance,HFONT font,HDC dc,BOOL hooked)
     puts("WIN2K_CHOICE_CONTRACTS_OK right_top_bottom=3 role_change=1 focus_cue_messages=1 space_messages=1 flat=1 multiline=1 custom_parent_brush=1 parent_remove=1 parent_destroy=1");
     printf("WIN2K_CHOICES_OK types=6 check_values=14 renders=%u source_glyphs=1 native_auto3=1 native_radio_group=1 dirty_phase=1 borrowed_font=1\n",renders);return 0;
 }
+static int standard_fingerprints(void)
+{
+    WNDCLASSW cls={.lpfnWndProc=parent_proc,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"OwnedBasicThemeTest"};
+    CHECK(RegisterClassW(&cls));
+    HWND parent=CreateWindowExW(WS_EX_TOOLWINDOW|WS_EX_NOACTIVATE,cls.lpszClassName,L"",
+        WS_OVERLAPPEDWINDOW|WS_VISIBLE,-10000,-10000,300,180,NULL,NULL,cls.hInstance,NULL);
+    CHECK(parent);
+    HDC dc=CreateCompatibleDC(NULL);void *pixels;
+    BITMAPINFO info={.bmiHeader={sizeof(BITMAPINFOHEADER),100,-32,1,32,BI_RGB}};
+    HBITMAP bitmap=CreateDIBSection(dc,&info,DIB_RGB_COLORS,&pixels,NULL,0);
+    CHECK(dc && bitmap);
+    HGDIOBJ old=SelectObject(dc,bitmap);CHECK(old && old!=HGDI_ERROR);
+    const DWORD types[]={BS_PUSHBUTTON,BS_GROUPBOX};
+    for(unsigned i=0;i<ARRAYSIZE(types);++i){
+        HWND button=CreateWindowW(L"BUTTON",L"",WS_CHILD|WS_VISIBLE|types[i],
+            0,0,100,32,parent,(HMENU)(UINT_PTR)(10+i),cls.hInstance,NULL);
+        CHECK(button);
+        capture(button,dc);
+        unsigned long hash=2166136261u;
+        for(int y=0;y<32;++y)for(int x=0;x<100;++x)hash=(hash^GetPixel(dc,x,y))*16777619u;
+        printf("BASIC_THEME type=%lu pixels=%08lx\n",types[i],hash);
+        CHECK(DestroyWindow(button));
+    }
+    CHECK(DestroyWindow(parent) && SelectObject(dc,old) && DeleteObject(bitmap) && DeleteDC(dc));
+    return 0;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==2 && !wcscmp(argv[1],L"--standard-fingerprints"))return standard_fingerprints();
     CHECK(argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));

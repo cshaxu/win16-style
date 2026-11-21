@@ -3,7 +3,7 @@
 #include "basic.h"
 
 typedef struct style_control_combo_ops {
-    HFONT (*acquire)(HFONT);
+    HFONT (*acquire)(HFONT,unsigned);
     style_control_state *(*lookup)(HWND);
 } style_control_combo_ops;
 typedef struct style_control_combo {

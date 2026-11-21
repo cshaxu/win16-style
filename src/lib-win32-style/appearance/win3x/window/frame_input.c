@@ -16,17 +16,9 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
         /* Minimized frames remain native; classic buttons have no hover art. */
         return !IsIconic(w);
     case WM_SYSCOMMAND:
-        if((wp&0xfff0)==SC_KEYMENU && lp==L' ' && v->layout(w,s,&l)){
-            MENUBARINFO menu={.cbSize=sizeof(menu)};
-            if((s->menu.bar.keyboard && s->menu.bar.selected==-2) ||
-                (GetMenuBarInfo(w,OBJID_SYSMENU,0,&menu) && IsRectEmpty(&menu.rcBar))){
-                RECT outer,button=l.buttons[CLASSIC_BUTTON_SYSTEM];GetWindowRect(w,&outer);OffsetRect(&button,outer.left,outer.top);
-                *result=style_menu_bar_system(&menu_target,button,
-                    s->menu.bar.keyboard && s->menu.bar.selected==STYLE_MENU_SYSTEM_ITEM,msg,wp,lp);
-                return TRUE;
-            }
-        }
-        return FALSE;
+        return (wp&0xfff0)==SC_KEYMENU && lp==L' ' && v->layout(w,s,&l) &&
+            style_menu_bar_caption_key(&menu_target,IsRectEmpty(&l.buttons[CLASSIC_BUTTON_SYSTEM])?
+                l.icon:l.buttons[CLASSIC_BUTTON_SYSTEM],wp,lp,result);
     case WM_NCLBUTTONDBLCLK:
         if(wp==HTMENU && v->layout(w,s,&l)){
             BOOL close=FALSE;
@@ -36,16 +28,14 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
         }
         return FALSE;
     case WM_NCLBUTTONDOWN:
-        if(wp==HTSYSMENU){
-            MENUBARINFO menu={.cbSize=sizeof(menu)};
-            if(GetMenuBarInfo(w,OBJID_SYSMENU,0,&menu) && IsRectEmpty(&menu.rcBar)){
+        if(style_caption_role((int)wp) && (wp!=HTSYSMENU || style_menu_bar_needs_system_button(w))){
+            if((wp==HTHELP || wp==HTCLOSE) &&
+               (!v->layout(w,s,&l) || IsRectEmpty(&l.buttons[style_caption_role((int)wp)])))return FALSE;
+            if(style_caption_button_enabled(w,(int)wp)){
                 const win16_control_frame_button_view view=v->button_view(s);
-                win16_control_frame_button_press(w,&view,HTSYSMENU);return TRUE;
+                win16_control_frame_button_press(w,&view,(int)wp);
             }
-        }
-        if(wp==HTMINBUTTON || wp==HTMAXBUTTON){
-            const win16_control_frame_button_view view=v->button_view(s);
-            win16_control_frame_button_press(w,&view,(int)wp);return TRUE;
+            return TRUE;
         }
         return FALSE;
     case WM_MOUSEMOVE:

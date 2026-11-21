@@ -5,25 +5,52 @@
 #include "ntw16s-dll/global/session.h"
 #include "ntw16s-dll/global/window.h"
 #include "ntw16s-dll/attachment.h"
+#ifdef NTWSHK_UNIFIED
+#include "ntw2ks-dll/window.h"
+#include "ntwshk-dll/observed.h"
+#endif
 #include "lib-win32-style/application/lifecycle/global_window.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 extern IMAGE_DOS_HEADER __ImageBase;
 
-static classic_dialog_policy read_policy(unsigned profile)
+#ifndef NTWSHK_UNIFIED
+/* Only the retired standalone provider fixtures can run without a theme. */
+static classic_dialog_policy compatibility_dialog_policy(classic_theme_family family)
+{
+    if(family==CLASSIC_THEME_WIN2K)return (classic_dialog_policy){CLASSIC_WINDOW_PROVIDER_NONCLIENT,
+        CLASSIC_FILE_EXPLORER_LAYOUT,CLASSIC_FOLDER_OBSERVED_NATIVE,CLASSIC_PRINT_GENERAL_PAGE,
+        CLASSIC_STOCK_OBSERVED_LAYOUT,CLASSIC_STOCK_OBSERVED_LAYOUT,CLASSIC_STOCK_OBSERVED_LAYOUT};
+    return (classic_dialog_policy){CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,
+        CLASSIC_FILE_LEGACY_LAYOUT,CLASSIC_FOLDER_LEGACY_TREE,CLASSIC_PRINT_LEGACY_BRIDGE,
+        CLASSIC_STOCK_OWNER_CHROME,CLASSIC_STOCK_OWNER_CHROME,CLASSIC_STOCK_OWNER_CHROME};
+}
+#endif
+
+static classic_dialog_policy read_policy(classic_theme_selection selection)
 {
     static SRWLOCK lock=SRWLOCK_INIT;
-    static unsigned cached_profile=UINT_MAX;
+    static unsigned cached_selection=UINT_MAX;
+    const unsigned key=classic_theme_encode_selection(selection);
     static classic_dialog_policy cached;
     AcquireSRWLockShared(&lock);
-    BOOL match=cached_profile==profile;
+    BOOL match=cached_selection==key;
     classic_dialog_policy policy=cached;
     ReleaseSRWLockShared(&lock);
     if(match)return policy;
 
-    policy=classic_theme_dialog_policy_for_profile((HMODULE)&__ImageBase,profile);
+    classic_theme_mapping source={0};
+    HRESULT opened=classic_theme_open_selected((HMODULE)&__ImageBase,selection,&source);
+    policy=source.model.dialog_policy;
+    classic_theme_close(&source);
+#ifndef NTWSHK_UNIFIED
+    if(selection.id<CLASSIC_THEME_PROFILE_FIRST_CUSTOM &&
+       (opened==HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND) || opened==HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)))
+        policy=compatibility_dialog_policy(selection.family);
+#endif
+    if(FAILED(opened))return policy;
 
     AcquireSRWLockExclusive(&lock);
-    cached=policy;cached_profile=profile;
+    cached=policy;cached_selection=key;
     ReleaseSRWLockExclusive(&lock);
     return policy;
 }
@@ -37,8 +64,14 @@ static BOOL dialog_selection(classic_theme_selection *selection,DWORD *encoded,B
         return style_global_policy_current(&ntw16s_global_namespace,cookie,encoded) &&
             classic_theme_decode_selection(*encoded,selection);
     }
-    *selection=(classic_theme_selection){classic_theme_process_profile(),classic_theme_process_family()};
-    return TRUE;
+    HRESULT active=classic_theme_active_selection(selection);
+#ifndef NTWSHK_UNIFIED
+    if(active==S_FALSE){
+        *selection=(classic_theme_selection){0,CLASSIC_THEME_WIN16};
+        return TRUE;
+    }
+#endif
+    return active==S_OK;
 }
 
 classic_dialog_policy ntw16s_dialog_policy(void)
@@ -47,7 +80,7 @@ classic_dialog_policy ntw16s_dialog_policy(void)
     BOOL global;
     classic_theme_selection selection;
     classic_dialog_policy policy={0};
-    if(dialog_selection(&selection,&encoded,&global))policy=read_policy(selection.id);
+    if(dialog_selection(&selection,&encoded,&global))policy=read_policy(selection);
     SetLastError(incoming);
     return policy;
 }
@@ -76,10 +109,12 @@ void ntw16s_observed_dialog_initialize(HWND window)
         return;
     }
 #ifdef NTWSHK_UNIFIED
-    if(selection.family==CLASSIC_THEME_WIN2K){
-        ntw2ks_dialog_initialize(window);
+    unsigned layout=read_policy(selection).window_provider;
+    if(layout==CLASSIC_WINDOW_PROVIDER_NONCLIENT){
+        ntwshk_observed_dialog_initialize(window);
         return;
     }
+    if(layout!=CLASSIC_WINDOW_PROVIDER_FULL_CLIENT)return;
 #endif
     if(!Ntw16sWindowAttached(window))(void)Ntw16sWindowAttach(window);
     (void)style_global_window_visit_children(window,attach_dialog_child,NULL);
@@ -88,11 +123,15 @@ void ntw16s_observed_dialog_initialize(HWND window)
 static BOOL observed_dialog_attached(HWND window)
 {
     if(Ntw16sWindowAttached(window))return TRUE;
+#ifdef NTWSHK_UNIFIED
+    return Ntw2ksWindowAttached(window);
+#else
     classic_theme_selection selection;
     DWORD encoded;
     BOOL global;
     return dialog_selection(&selection,&encoded,&global) && selection.family==CLASSIC_THEME_WIN2K &&
         ntw16s_global_win2k_attached(window);
+#endif
 }
 
 static HMODULE observed_dialog_resources(void)
@@ -108,7 +147,7 @@ const style_dialog_windows ntw16s_observed_dialog_windows={
     ntw16s_observed_dialog_initialize,observed_dialog_attached,observed_dialog_resources
 };
 
-static LONG attach_dialogs(DWORD (*attach)(void *,void *))
+LONG ntw16s_register_file_dialogs(DWORD (*attach)(void *,void *))
 {
     if(!attach)return ERROR_INVALID_PARAMETER;
     const style_classic_file_options options={.active=file_legacy_layout,
@@ -120,22 +159,4 @@ static LONG attach_dialogs(DWORD (*attach)(void *,void *))
 #endif
     };
     return (LONG)style_classic_file_attach(attach,&options);
-}
-
-#ifdef NTWSHK_UNIFIED
-static BOOL win2k_startup_hooks;
-LONG ntw16s_attach_win2k_file_dialogs_using(DWORD (*attach)(void *,void *))
-{
-    LONG error=attach_dialogs(attach);
-    if(!error)win2k_startup_hooks=TRUE;
-    return error;
-}
-#endif
-LONG ntw16s_attach_file_dialogs_using(DWORD (*attach)(void *,void *))
-{
-    if(!attach)return ERROR_INVALID_PARAMETER;
-#ifdef NTWSHK_UNIFIED
-    if(win2k_startup_hooks)return NO_ERROR;
-#endif
-    return (ntw16s_process_context.flags&NTWSHK_POLICY_STYLE)?attach_dialogs(attach):NO_ERROR;
 }

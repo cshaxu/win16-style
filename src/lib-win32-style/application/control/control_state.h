@@ -7,13 +7,13 @@
  * application font are no-ops. Operations remain valid until state disposal. */
 typedef struct style_control_fonts {
     HFONT (*source)(HFONT);
-    HFONT (*acquire)(HWND,HFONT,BOOL);
+    HFONT (*acquire)(HWND,HFONT,BOOL,unsigned);
     void (*retain)(HFONT);
     void (*release)(HFONT);
 } style_control_fonts;
 typedef struct style_control_state {
     BOOL removing,redraw_off;
-    unsigned suppression,native_paints;
+    unsigned suppression,native_paints,font_recipe;
     style_control_protocol *protocol;
     style_instance *owner; /* borrowed parent identity for owned native children */
     HFONT font,original_font;

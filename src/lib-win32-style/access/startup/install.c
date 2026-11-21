@@ -33,8 +33,7 @@ DWORD style_startup_install(HANDLE child,const style_startup_context *context,PC
     work=HeapAlloc(GetProcessHeap(),0,sizeof(*work));if(!work)return ERROR_NOT_ENOUGH_MEMORY;
     header.bytes=(DWORD)(header_bytes+(length+module_length+2)*sizeof(WCHAR));
     DWORD flags=__atomic_load_n(&context->flags,__ATOMIC_ACQUIRE);
-    style_startup_selection selection={flags>>STYLE_STARTUP_PROFILE_SHIFT,
-        !!(flags&STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE)};
+    style_startup_selection selection=style_startup_get_selection(flags);
     header.machine=machine;header.flags=flags&(STYLE_STARTUP_POLICY_MASK&~STYLE_STARTUP_POLICY_ALTERNATE_APPEARANCE);
     header.directory_offset=header_bytes;
     header.version=STYLE_STARTUP_PACKET_VERSION;

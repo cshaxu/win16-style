@@ -95,6 +95,8 @@ static int exercise(BOOL save)
     CHECK(SUCCEEDED(create(cls,NULL,CLSCTX_INPROC_SERVER,&IID_IFileDialog,(void **)&dialog)) && proxy_identity((IUnknown *)dialog,save,FALSE));
     IFileDialog_Release(dialog);active=TRUE;return 0;
 }
+static style_classic_com_route theme_route(BOOL folder)
+{return folder?STYLE_COM_NATIVE:explorer?STYLE_COM_EXPLORER:STYLE_COM_CLASSIC;}
 int main(void)
 {
     style_classic_com_options options={.session_active=session,.scope=scope,
@@ -121,6 +123,13 @@ int main(void)
     CHECK(IFileDialog_Show(retained,NULL)==E_ABORT);
     explorer=TRUE;
     CHECK(IFileDialog_Show(retained,NULL)==E_ACCESSDENIED && IFileDialog_Release(retained)==0);
+    attaches=0;options.session_active=NULL;options.explorer_active=NULL;options.route=theme_route;
+    CHECK(!style_classic_com_attach(capture,&options) && attaches==3);
+    retained=NULL;
+    CHECK(SUCCEEDED(create(&CLSID_FileOpenDialog,NULL,CLSCTX_INPROC_SERVER,&IID_IFileDialog,(void **)&retained)));
+    CHECK(proxy_identity((IUnknown *)retained,FALSE,TRUE) && IFileDialog_Show(retained,NULL)==E_ACCESSDENIED);
+    explorer=FALSE;
+    CHECK(IFileDialog_Show(retained,NULL)==E_ABORT && IFileDialog_Release(retained)==0);
     CoUninitialize();
     printf("COM_CONTROLLER_OK bits=%u direct=1 multi_qi=1 factory=1 scope=1 events_refs=1 inactive=1 experimental=1 attach_failure=1 retained=1\n",(unsigned)(sizeof(void *)*8));return 0;
 }

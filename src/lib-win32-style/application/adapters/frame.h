@@ -18,8 +18,7 @@ typedef struct style_uwp_frame_ops {
     BOOL (*geometry)(void *,RECT *outer,RECT *hole,POINT *menu_anchor);
     void (*paint)(void *,HDC);
     LRESULT (*hit)(void *,POINT);
-    BOOL (*button)(void *,int);
-    void (*invoke)(void *,int,UINT);
+    BOOL (*can_maximize)(void *);
     BOOL (*menu_message)(void *,HWND,UINT,WPARAM,LPARAM,BOOL owner,LRESULT *);
     void (*dispose)(void *);
 } style_uwp_frame_ops;
@@ -36,7 +35,7 @@ typedef struct style_uwp_frame {
     int pressed;
     HWND menu_window;
     POINT menu_anchor;
-    unsigned action_count;
+    unsigned action_count,profile_key;
     style_uwp_frame_action_entry *actions;
     const style_uwp_frame_ops *ops;
     void *context;
@@ -54,7 +53,9 @@ BOOL style_uwp_frame_start(style_uwp_frame *,HWND,HWND,const style_uwp_frame_ops
     const style_uwp_frame_action *,unsigned,style_uwp_frame_action_entry *storage);
 BOOL style_uwp_frame_remove(HWND);
 HWND style_uwp_frame_surface(HWND);
-BOOL style_uwp_frame_uses(HWND,const style_uwp_frame_ops *);
+/* An optional opaque key belongs to the installed surface and expires with it. */
+unsigned style_uwp_frame_profile(HWND);
+void style_uwp_frame_set_profile(HWND,unsigned);
 /* Menu renderer selection notification; context is the complete frame. */
 void style_uwp_frame_menu_selection(HWND,void *,BOOL);
 #endif

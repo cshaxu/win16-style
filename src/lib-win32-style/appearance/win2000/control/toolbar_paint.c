@@ -1,7 +1,7 @@
 /* Ordinary Toolbar drawing roles from Win2000 toolbar.c. Native rendering
  * still owns the bitmap list, the label, and the placement of both. */
 #include "bars.h"
-#include "../common/paint.h"
+#include "../common/palette.h"
 
 static BOOL supported(HWND window)
 {

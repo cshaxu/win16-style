@@ -12,8 +12,7 @@ typedef struct win2k_menu_style {
 
 void win2k_menu_style_read(win2k_menu_style *style,const classic_theme_mapping *source);
 /* Paint native system-menu rows; leaves application-owned menus untouched. */
-HFONT win2k_menu_font(UINT dpi,const msstyles_font *defined);
-const classic_menu_colors *win2k_menu_colors(const classic_menu_colors *defined);
+classic_menu_colors win2k_menu_colors(const classic_menu_colors *defined);
 BOOL win2k_system_menu_paint(HWND popup,HMENU menu,HDC dc,BOOL window_coordinates,
     const win2k_menu_style *style);
 extern const style_menu_owner_ops win2k_system_menu_operations;

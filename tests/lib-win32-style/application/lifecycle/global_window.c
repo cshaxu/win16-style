@@ -10,6 +10,13 @@ static BOOL apply(HWND window){marker_on_apply=style_global_window_managed(windo
 static BOOL remove_style(HWND window){marker_on_remove=style_global_window_managed(window);return RemovePropW(window,property)!=NULL;}
 static BOOL fail_apply(HWND window){(void)window;SetLastError(ERROR_ACCESS_DENIED);return FALSE;}
 static BOOL active(DWORD cookie){return cookie==42;}
+static DWORD invoked_profile;
+static BOOL apply_profile(HWND w,BOOL (*attach)(HWND),DWORD profile)
+{
+    invoked_profile=profile;
+    if(profile==88){SetLastError(ERROR_INVALID_DATA);return FALSE;}
+    return attach(w);
+}
 static const style_global_window_ops ops={attached,apply,remove_style,active,L"StyleGlobalWindowTest.Control",3,1234};
 static const style_global_window_ops other={attached,apply,remove_style,active,L"StyleGlobalWindowTest.Control",3,1234};
 static const style_global_window_ops failing={attached,fail_apply,remove_style,active,L"StyleGlobalWindowTest.Control",3,1234};
@@ -81,13 +88,25 @@ int main(void)
     BOOL mismatch=!style_global_window_apply(window,&other) && GetLastError()==ERROR_BUSY;
     BOOL removed=style_global_window_remove(window,&ops) && !attached(window) && !style_global_window_attached(window,&ops) && !style_global_window_managed(window);
     BOOL repeated=!style_global_window_remove(window,&ops) && GetLastError()==ERROR_NOT_FOUND;
-    BOOL reattached=style_global_window_apply(window,&other) && style_global_window_remove(window,&other);
+    BOOL reattached=style_global_window_apply(window,&other) &&
+        style_global_window_attached(window,&other) && !style_global_window_attached(window,&ops) &&
+        style_global_window_remove(window,&other);
     BOOL failed=!style_global_window_apply(window,&failing) && GetLastError()==ERROR_ACCESS_DENIED && !style_global_window_managed(window);
-    BOOL rollback=style_global_window_apply(window,&ops) &&
-                  !style_global_window_transition(window,&failing,&ops) && GetLastError()==ERROR_ACCESS_DENIED &&
-                  attached(window) && style_global_window_attached(window,&ops) && style_global_window_remove(window,&ops);
+    BOOL rollback=style_global_window_transition(window,&ops,NULL,77,FALSE,apply_profile) &&
+                  style_global_window_profile(window)==77 &&
+                  !style_global_window_transition(window,&failing,NULL,99,FALSE,apply_profile) && GetLastError()==ERROR_ACCESS_DENIED &&
+                  attached(window) && style_global_window_attached(window,&ops) &&
+                  style_global_window_profile(window)==77 && invoked_profile==77 &&
+                  !style_global_window_transition(window,&ops,NULL,88,FALSE,apply_profile) &&
+                  GetLastError()==ERROR_INVALID_DATA && invoked_profile==77 &&
+                  style_global_window_profile(window)==77 && style_global_window_remove_current(window) &&
+                  !style_global_window_profile(window);
+    BOOL callbacks_owned=marker_on_apply && marker_on_remove;
+    BOOL unmanaged=apply(window) &&
+        !style_global_window_transition(window,&failing,&ops,99,FALSE,apply_profile) && GetLastError()==ERROR_ACCESS_DENIED &&
+        attached(window) && !style_global_window_managed(window) && remove_style(window);
     DestroyWindow(window);UnregisterClassW(cls.lpszClassName,instance);
-    printf("STYLE GLOBAL WINDOW bits=%u installed=%d query=%d mismatch=%d removed=%d repeated=%d reattached=%d marker=%d failed_cleanup=%d rollback=%d children=%d stop=%d invalid=%d foreign=%d cleanup=%d\n",
-           (unsigned)(sizeof(void *)*8),installed,query,mismatch,removed,repeated,reattached,marker_on_apply && marker_on_remove,failed,rollback,walked,stopped,rejected,foreign_ready,foreign_closed);
-    return installed && query && mismatch && removed && repeated && reattached && marker_on_apply && marker_on_remove && failed && rollback && walked && stopped && rejected && foreign_ready && foreign_closed?0:3;
+    printf("STYLE GLOBAL WINDOW bits=%u installed=%d query=%d mismatch=%d removed=%d repeated=%d reattached=%d marker=%d failed_cleanup=%d rollback=%d unmanaged=%d children=%d stop=%d invalid=%d foreign=%d cleanup=%d\n",
+           (unsigned)(sizeof(void *)*8),installed,query,mismatch,removed,repeated,reattached,callbacks_owned,failed,rollback,unmanaged,walked,stopped,rejected,foreign_ready,foreign_closed);
+    return installed && query && mismatch && removed && repeated && reattached && callbacks_owned && failed && rollback && unmanaged && walked && stopped && rejected && foreign_ready && foreign_closed?0:3;
 }

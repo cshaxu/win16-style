@@ -39,12 +39,15 @@ static int worker(int argc,WCHAR **argv){CHECK(argc==2);INITCOMMONCONTROLSEX ic=
 static int theme_faces(PCWSTR path,PCWSTR normal,PCWSTR pressed,PCWSTR rim)
 {
     WCHAR *end;
-    unsigned long colors[]={wcstoul(normal,&end,16),0};
-    CHECK(end!=normal && !*end && colors[0]<=0xffffff);
-    colors[1]=wcstoul(pressed,&end,16);
-    CHECK(end!=pressed && !*end && colors[1]<=0xffffff);
-    unsigned long border=wcstoul(rim,&end,16);
-    CHECK(end!=rim && !*end && border<=0xffffff);
+    unsigned long colors[2]={0},border=0;
+    if(normal){
+        colors[0]=wcstoul(normal,&end,16);
+        CHECK(end!=normal && !*end && colors[0]<=0xffffff);
+        colors[1]=wcstoul(pressed,&end,16);
+        CHECK(end!=pressed && !*end && colors[1]<=0xffffff);
+        border=wcstoul(rim,&end,16);
+        CHECK(end!=rim && !*end && border<=0xffffff);
+    }
     DWORD expected_rim=(DWORD)GetRValue(border)<<16 | (DWORD)GetGValue(border)<<8 | GetBValue(border);
     HMODULE fixture=LoadLibraryW(path);
     CHECK(fixture);
@@ -66,18 +69,23 @@ static int theme_faces(PCWSTR path,PCWSTR normal,PCWSTR pressed,PCWSTR rim)
         CHECK(capture(target,pixels,180,40,&clip));
         DWORD expected=(DWORD)GetRValue(colors[state])<<16 | (DWORD)GetGValue(colors[state])<<8 |
             GetBValue(colors[state]);
-        unsigned face=0,glyph=0,outside=0;
+        unsigned face=0,glyph=0,outside=0,hash=2166136261u;
         for(int y=0;y<40;++y)for(int x=0;x<180;++x){
             DWORD pixel=pixels[y*180+x];
             if(x>=clip.right)outside+=pixel!=0x55555555;
             else{
                 face+=(pixel&0xffffff)==expected;
                 glyph+=(pixel&0xffffff)==RGB(25,40,220);
+                hash=(hash^(pixel&0xffffff))*16777619u;
             }
         }
         printf("THEME_VCL_PUSH_FACE state=%u face=%u glyph=%u outside=%u\n",state,face,glyph,outside);
-        CHECK(face>100 && glyph==100 && !outside);
-        if(!state)CHECK((pixels[12]&0xffffff)==expected_rim);
+        CHECK(glyph==100 && !outside);
+        if(normal){
+            CHECK(face>100);
+            if(!state)CHECK((pixels[12]&0xffffff)==expected_rim);
+        }
+        printf("VCL_PUSH_CAPTURE state=%u hash=%08x\n",state,hash);
     }
     SendMessageW(target,BM_SETSTATE,0,0);
     SendMessageW(target,BM_CLICK,0,0);
@@ -89,5 +97,6 @@ static int theme_faces(PCWSTR path,PCWSTR normal,PCWSTR pressed,PCWSTR rim)
 int wmain(int argc,WCHAR **argv)
 {
     if(argc==6 && !wcscmp(argv[1],L"--theme-faces"))return theme_faces(argv[2],argv[3],argv[4],argv[5]);
+    if(argc==3 && !wcscmp(argv[1],L"--capture-faces"))return theme_faces(argv[2],NULL,NULL,NULL);
     return isolated_process(argc,argv,worker);
 }

@@ -25,7 +25,7 @@ void win16_control_draw_list(HWND window,control_style *style,HDC dc)
 void win16_control_edit_border(HWND w,const control_style *style,HDC target)
 {
     HDC dc;RECT bounds;int saved;
-    if(!style->edit_border)return;
+    if(!style->edit_border || !style->controls.edit)return;
     const classic_edit_border *border=&style->edit_colors[classic_edit_state_for(w)];
     COLORREF edge=border->present?border->line:style->palette.edge;
     dc=target?target:GetDC(w);if(!dc)return;
@@ -35,9 +35,8 @@ void win16_control_edit_border(HWND w,const control_style *style,HDC target)
             colors.shadow=style->frame_colors.shadow;
             colors.highlight=style->frame_colors.light;
         }
-        style_line_profile profile=style->controls.edit?style->controls.edit:STYLE_LINE_FLAT;
         if(GetClientRect(w,&bounds))style_paint_line_frame(dc,&bounds,BDR_SUNKENOUTER,0,
-            max(1,MulDiv(1,(int)GetDpiForWindow(w),96)),edge,profile,&colors);
+            max(1,MulDiv(1,(int)GetDpiForWindow(w),96)),edge,style->controls.edit,&colors);
         RestoreDC(dc,saved);
     }
     if(!target)ReleaseDC(w,dc);

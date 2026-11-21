@@ -6,7 +6,7 @@
  * release accepts NULL and borrowed native fonts; retain is required for
  * snapshot replacements distinct from their source. No operation reports UI. */
 typedef struct style_font_ops {
-    HFONT (*acquire)(HFONT source);
+    HFONT (*acquire)(HFONT source,unsigned recipe);
     BOOL (*retain)(HFONT);
     void (*release)(HFONT);
 } style_font_ops;
@@ -18,7 +18,7 @@ typedef struct style_font_glyph_range {
 
 /* Zero-initialized GUI-thread-owned cache. Source handles are borrowed;
  * replacement leases and lazy glyph maps are owned until dispose. Use the
- * same immutable ops and range throughout a cache lifetime. The existing
+ * same immutable ops, recipe and range throughout a cache lifetime. The existing
  * finite capacities are 32 source fonts and 224 single-byte glyphs per map. */
 typedef struct style_font_cache {
     HFONT source[32],font[32];
@@ -26,7 +26,7 @@ typedef struct style_font_cache {
     unsigned count;
     const style_font_ops *ops;
 } style_font_cache;
-HFONT style_font_cache_get(style_font_cache *,HFONT,const style_font_ops *);
+HFONT style_font_cache_get(style_font_cache *,HFONT,unsigned,const style_font_ops *);
 BOOL style_font_cache_decode(style_font_cache *,HDC,const WCHAR *,UINT,WCHAR *,style_font_glyph_range);
 void style_font_cache_dispose(style_font_cache *);
 
@@ -44,7 +44,7 @@ typedef struct style_font_snapshot_cache {
     BOOL invalid;
     const style_font_ops *ops;
 } style_font_snapshot_cache;
-HFONT style_font_snapshot_borrow(style_font_snapshot_cache *,HDC,void *owner,void **token,const style_font_ops *);
+HFONT style_font_snapshot_borrow(style_font_snapshot_cache *,HDC,void *owner,void **token,unsigned,const style_font_ops *);
 void style_font_snapshot_return(style_font_snapshot_cache *,HFONT);
 /* Dispose only after borrowers have restored their DC and returned leases. */
 void style_font_snapshot_dispose(style_font_snapshot_cache *);

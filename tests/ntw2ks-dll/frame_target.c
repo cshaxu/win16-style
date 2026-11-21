@@ -649,6 +649,69 @@ static DWORD WINAPI drag_thread(void *parameter)
     PostMessageW(w,WM_APP+1,0,0);return 0;
 }
 
+static unsigned rejected_explicit_leaves(HMODULE module,HWND window,BOOL nonclient)
+{
+    typedef BOOL (__cdecl *install_fn)(HWND,const void *);
+    typedef BOOL (__cdecl *edit_fn)(HWND,BOOL,const void *);
+    static const char *const names[]={"win16_style_install","win16_style_control_install",
+        "win16_style_frame_scrollbars_install"};
+    const COLORREF supplied_palette[8]={0};
+    const void *palette=nonclient?NULL:supplied_palette;
+    DWORD expected=nonclient?ERROR_NOT_SUPPORTED:ERROR_INVALID_PARAMETER;
+    unsigned rejected=0;
+    for(unsigned i=0;i<ARRAYSIZE(names);++i){
+        install_fn install=(install_fn)(uintptr_t)GetProcAddress(module,names[i]);
+        if(install && !install(window,palette) && GetLastError()==expected)rejected|=1u<<i;
+    }
+    edit_fn edit=(edit_fn)(uintptr_t)GetProcAddress(module,"win16_style_edit_install");
+    if(edit && !edit(window,FALSE,palette) && GetLastError()==expected)rejected|=8u;
+    return rejected;
+}
+
+static BOOL creation_provider_allowed(HMODULE module,BOOL nonclient)
+{
+    typedef void *(__cdecl *begin_fn)(BOOL);
+    typedef BOOL (__cdecl *end_fn)(void *,void *);
+    begin_fn begin=(begin_fn)(uintptr_t)GetProcAddress(module,"Ntw16sCreationBegin");
+    end_fn end=(end_fn)(uintptr_t)GetProcAddress(module,"Ntw16sCreationEnd");
+    if(!begin || !end)return FALSE;
+    void *scope=begin(TRUE);
+    BOOL allowed=scope!=NULL,error=GetLastError()==ERROR_NOT_SUPPORTED;
+    if(scope && !end(scope,NULL))return FALSE;
+    return nonclient?!allowed && error:allowed;
+}
+
+static int provider_exports(BOOL nonclient)
+{
+    typedef BOOL (__cdecl *window_op)(HWND);
+    HMODULE module=GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll");
+    if(!module)return 2;
+    const char *attach_names[]={"Ntw16sWindowAttach","Ntw2ksWindowAttach"};
+    const char *query_names[]={"Ntw16sWindowAttached","Ntw2ksWindowAttached"};
+    const char *remove_names[]={"Ntw16sWindowRemove","Ntw2ksWindowRemove"};
+    window_op correct=(window_op)(uintptr_t)GetProcAddress(module,attach_names[nonclient]);
+    window_op wrong=(window_op)(uintptr_t)GetProcAddress(module,attach_names[!nonclient]);
+    window_op query=(window_op)(uintptr_t)GetProcAddress(module,query_names[nonclient]);
+    window_op absent=(window_op)(uintptr_t)GetProcAddress(module,query_names[!nonclient]);
+    window_op remove=(window_op)(uintptr_t)GetProcAddress(module,remove_names[nonclient]);
+    if(!correct || !wrong || !query || !absent || !remove)return 2;
+    HWND window=CreateWindowW(L"STATIC",L"Adapter contract",WS_OVERLAPPEDWINDOW,
+        0,0,320,200,NULL,NULL,GetModuleHandleW(NULL),NULL);
+    if(!window)return 2;
+    BOOL initial=query(window) && !absent(window);
+    BOOL cleared=initial && remove(window) && !query(window);
+    BOOL rejected=cleared && !wrong(window) && GetLastError()==ERROR_NOT_SUPPORTED &&
+        !absent(window) && !query(window);
+    unsigned leaves=cleared?rejected_explicit_leaves(module,window,nonclient):0;
+    BOOL applied=cleared && correct(window) && query(window) && !absent(window);
+    BOOL restored=applied && remove(window) && !query(window) && !absent(window);
+    BOOL destroyed=DestroyWindow(window);
+    BOOL creation=creation_provider_allowed(module,nonclient);
+    printf("PROVIDER EXPORTS bits=%u nonclient=%d initial=%d rejected=%d applied=%d restored=%d leaf_guard=%u creation_guard=%d\n",
+        (unsigned)(8*sizeof(void *)),nonclient,initial,rejected,applied,restored,leaves,creation);
+    return initial && rejected && applied && restored && destroyed && leaves==15 && creation?0:3;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
     if(argc>=4 && !lstrcmpW(argv[1],L"--late")){
@@ -660,6 +723,11 @@ int wmain(int argc,WCHAR **argv)
             printf("WIN2K DPI AWARE SKIP error=%lu\n",GetLastError());return 77;
         }
         --argc;++argv;
+    }
+    if(argc==3 && !wcscmp(argv[1],L"--provider-exports")){
+        if(!wcscmp(argv[2],L"full"))return provider_exports(FALSE);
+        if(!wcscmp(argv[2],L"nonclient"))return provider_exports(TRUE);
+        return 2;
     }
     HINSTANCE instance=GetModuleHandleW(NULL);
     if(argc==2 && !wcscmp(argv[1],L"--theme-frame-insets")){
@@ -870,10 +938,11 @@ int wmain(int argc,WCHAR **argv)
     }
     if(argc==2 && (!lstrcmpW(argv[1],L"--color-font-frame") || !lstrcmpW(argv[1],L"--font-accept") ||
         !lstrcmpW(argv[1],L"--font-native") || !lstrcmpW(argv[1],L"--color-native-policy") ||
-        !lstrcmpW(argv[1],L"--font-native-policy"))){
+        !lstrcmpW(argv[1],L"--font-native-policy") || !lstrcmpW(argv[1],L"--stock-native-policy"))){
         BOOL native=!lstrcmpW(argv[1],L"--font-native");
-        BOOL native_color=!lstrcmpW(argv[1],L"--color-native-policy");
-        BOOL native_font=!lstrcmpW(argv[1],L"--font-native-policy");
+        BOOL native_stock=!lstrcmpW(argv[1],L"--stock-native-policy");
+        BOOL native_color=native_stock || !lstrcmpW(argv[1],L"--color-native-policy");
+        BOOL native_font=native_stock || !lstrcmpW(argv[1],L"--font-native-policy");
         measure_common=native_color || native_font;
         BOOL all=TRUE,accept=native || !lstrcmpW(argv[1],L"--font-accept");
         check_stock_font=accept;
@@ -993,8 +1062,13 @@ int wmain(int argc,WCHAR **argv)
         }
         return all?0:3;
     }
-    if(argc==2 && (!lstrcmpW(argv[1],L"--find-frame") || !lstrcmpW(argv[1],L"--find-native-policy"))){
+    if(argc==2 && (!lstrcmpW(argv[1],L"--find-frame") || !lstrcmpW(argv[1],L"--find-native-policy") ||
+                   !lstrcmpW(argv[1],L"--find-route-probe"))){
         BOOL native_find=!lstrcmpW(argv[1],L"--find-native-policy");
+        BOOL route_probe=!lstrcmpW(argv[1],L"--find-route-probe");
+        typedef BOOL (__cdecl *attached_fn)(HWND);
+        HMODULE runtime=GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll");
+        attached_fn full=runtime?(attached_fn)(uintptr_t)GetProcAddress(runtime,"Ntw16sWindowAttached"):NULL;
         find_message=RegisterWindowMessageW(FINDMSGSTRINGW);
         WNDCLASSW owner_class={.lpfnWndProc=find_owner_proc,.hInstance=instance,.lpszClassName=L"Win2kFindFixture"};
         if(!find_message || !RegisterClassW(&owner_class))return 2;
@@ -1009,7 +1083,16 @@ int wmain(int argc,WCHAR **argv)
             HWND dialog=ansi?(replace?ReplaceTextA(&a):FindTextA(&a)):(replace?ReplaceTextW(&w):FindTextW(&w));
             BOOL attached=dialog && GetPropW(dialog,L"Win2kStyle.Frame")!=NULL;
             BOOL layout=TRUE;
-            if(dialog && !replace && !native_find){
+            if(route_probe && dialog){
+                HWND wrap=GetDlgItem(dialog,chx3);
+                RECT client={0},reference={0,0,236,62};
+                BOOL measured=GetClientRect(dialog,&client) && MapDialogRect(dialog,&reference);
+                if(!measured)all=FALSE;
+                printf("FIND ROUTE ansi=%d replace=%d full=%d observed=%d compact=%d wrap_hidden=%d client=%ldx%ld\n",
+                    ansi,replace,full && full(dialog),attached,
+                    measured && client.right==reference.right && client.bottom==reference.bottom,
+                    wrap && !(GetWindowLongPtrW(wrap,GWL_STYLE)&WS_VISIBLE),client.right,client.bottom);
+            }else if(dialog && !replace && !native_find){
                 HWND wrap=GetDlgItem(dialog,chx3);
                 if(wrap && !(GetWindowLongPtrW(wrap,GWL_STYLE)&WS_VISIBLE)){
                     RECT client={0},reference={0,0,236,62};
@@ -1028,7 +1111,8 @@ int wmain(int argc,WCHAR **argv)
                 SendMessageW(dialog,WM_CLOSE,0,0);pump_messages();
             }
             DWORD expected=FR_FINDNEXT|(replace?(FR_REPLACE|FR_REPLACEALL):0);
-            BOOL gone=dialog && !IsWindow(dialog);BOOL pass=attached==!native_find && gone && find_terms==1 && layout && find_actions==expected;
+            BOOL gone=dialog && !IsWindow(dialog);
+            BOOL pass=(route_probe || attached==!native_find) && gone && find_terms==1 && layout && find_actions==expected;
             printf("WIN2K FIND bits=%u ansi=%d replace=%d attached=%d gone=%d terms=%u layout=%d actions=%lx\n",
                 (unsigned)(sizeof(void*)*8),ansi,replace,attached,gone,find_terms,layout,(unsigned long)find_actions);
             if(!pass)all=FALSE;
@@ -1610,6 +1694,41 @@ int wmain(int argc,WCHAR **argv)
         printf("WIN2K CUSTOM HIT bits=%u preserved=%d\n",(unsigned)(sizeof(void*)*8),passed);
         DestroyWindow(w);return passed?0:3;
     }
+    if(argc==3 && !lstrcmpW(argv[1],L"--caption-icon-policy")){
+        BOOL native=!lstrcmpW(argv[2],L"native");
+        if(!native && lstrcmpW(argv[2],L"hidden"))return 2;
+        BYTE mask[32]={0},pixels[32];
+        FillMemory(pixels,sizeof(pixels),255);
+        HICON image=CreateIcon(instance,16,16,1,1,mask,pixels);
+        if(!image)return 2;
+        HWND w=CreateWindowExW(WS_EX_NOACTIVATE,wc.lpszClassName,L"",WS_OVERLAPPEDWINDOW,
+            80,80,300,160,NULL,NULL,instance,NULL);
+        if(!w){DestroyIcon(image);return 2;}
+        SendMessageW(w,WM_SETICON,ICON_SMALL,(LPARAM)image);
+        ShowWindow(w,SW_SHOWNOACTIVATE);
+        TITLEBARINFOEX info={.cbSize=sizeof(info)};
+        SendMessageW(w,WM_GETTITLEBARINFOEX,0,(LPARAM)&info);
+        RECT outer;
+        MENUBARINFO system={.cbSize=sizeof(system)};
+        if(!GetWindowRect(w,&outer) || !GetMenuBarInfo(w,OBJID_SYSMENU,0,&system)){
+            DestroyWindow(w);DestroyIcon(image);return 2;
+        }
+        RECT icon=system.rcBar;
+        int border=(int)(info.rcTitleBar.top-outer.top);
+        OffsetRect(&icon,(int)(outer.left+border-icon.left),(int)(outer.top+border-icon.top));
+        POINT point={(icon.left+icon.right)/2,(icon.top+icon.bottom)/2};
+        LRESULT hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(point.x,point.y));
+        BOOL styled=GetPropW(w,L"Win2kStyle.Frame")!=NULL;
+        SendMessageW(w,WM_NCACTIVATE,TRUE,0);
+        HDC dc=GetWindowDC(w);
+        COLORREF pixel=dc?GetPixel(dc,point.x-outer.left,point.y-outer.top):CLR_INVALID;
+        if(dc)ReleaseDC(w,dc);
+        BOOL painted=pixel!=CLR_INVALID && (pixel==RGB(255,255,255))==native;
+        printf("CAPTION ICON POLICY bits=%u styled=%d native=%d hit=%lld rgb=%08lx painted=%d\n",
+            (unsigned)(sizeof(void*)*8),styled,native,(long long)hit,(unsigned long)pixel,painted);
+        DestroyWindow(w);DestroyIcon(image);
+        return styled && hit==(native?HTSYSMENU:HTCAPTION) && painted?0:3;
+    }
     if(argc==2 && !lstrcmpW(argv[1],L"--system-icon")){
         HWND w=CreateWindowExW(0,wc.lpszClassName,L"System icon",WS_OVERLAPPEDWINDOW,
                                 80,80,420,260,NULL,NULL,instance,NULL);
@@ -1967,15 +2086,25 @@ int wmain(int argc,WCHAR **argv)
     uint64_t normal_button=button_signature(w,3);
     SendMessageW(w,WM_SYSCOMMAND,SC_MAXIMIZE,0);
     uint64_t zoom_button=button_signature(w,3);
-    BOOL maximized=IsZoomed(w) && blue_caption(w) && normal_button && zoom_button && normal_button!=zoom_button;
+    /* A background window can become inactive during the native transition. */
+    BOOL zoomed=IsZoomed(w);
+    COLORREF zoom_caption=caption_pixel(w);
+    BOOL maximized=zoomed && classic_caption_pixel(zoom_caption) && normal_button && zoom_button && normal_button!=zoom_button;
     SendMessageW(w,WM_SYSCOMMAND,SC_RESTORE,0);
     uint64_t restore_button=button_signature(w,3);
-    BOOL restored=!IsZoomed(w) && GetPropW(w,L"Win2kStyle.Frame")!=NULL && blue_caption(w) && restore_button==normal_button;
+    BOOL unzoomed=!IsZoomed(w);
+    COLORREF restore_caption=caption_pixel(w);
+    BOOL restored=unzoomed && GetPropW(w,L"Win2kStyle.Frame")!=NULL && classic_caption_pixel(restore_caption) && restore_button==normal_button;
     printf("WIN2K FRAME bits=%u attached=%d title=%ldx%ld button_size=%d button_hits=%d frame_width=%d button_top=%ld button_edge=%06lx pixels=%06lx/%06lx end=%06lx inactive=%06lx/%06lx frame=%06lx button_gray=%u close_disabled=%d close_changed=%u icon_pixels=%u icon_changed=%u text_pixels=%u hit=%lld\n",
         (unsigned)(sizeof(void*)*8),attached,info.rcTitleBar.right-info.rcTitleBar.left,
         info.rcTitleBar.bottom-info.rcTitleBar.top,button_size,button_hits,frame_width,info.rgrect[5].top-window.top,(unsigned long)button_top,(unsigned long)pixel,(unsigned long)pixel2,(unsigned long)endpoint,(unsigned long)inactive,(unsigned long)inactive_end,(unsigned long)frame_face,classic_button_pixels,close_disabled,close_changed,icon_pixels,icon_changed,changed,(long long)hit);
     SendMessageW(w,WM_SYSCOMMAND,SC_CLOSE,0);
     BOOL closed=!IsWindow(w);if(!closed)DestroyWindow(w);
+    printf("WIN2K FRAME TRANSITIONS separator=%06lx resized=%d maximized=%d restored=%d closed=%d "
+           "zoomed=%d unzoomed=%d caption=%06lx/%06lx maximize_button=%016llx/%016llx/%016llx\n",
+        (unsigned long)separator,resized,maximized,restored,closed,zoomed,unzoomed,
+        (unsigned long)zoom_caption,(unsigned long)restore_caption,
+        (unsigned long long)normal_button,(unsigned long long)zoom_button,(unsigned long long)restore_button);
     return attached && button_size && button_hits && separator==RGB(212,208,200) && pixel!=CLR_INVALID && pixel2!=CLR_INVALID && pixel!=pixel2 && inactive!=CLR_INVALID &&
            GetBValue(pixel)>GetRValue(pixel) && GetRValue(endpoint)>=150 && GetGValue(endpoint)>=180 && GetBValue(endpoint)>=220 && (frame_width<=4 || frame_face==RGB(212,208,200)) && button_top==RGB(255,255,255) && classic_button_pixels>20 && close_disabled && close_changed>0 &&
            GetRValue(inactive)==GetGValue(inactive) && GetGValue(inactive)==GetBValue(inactive) && GetRValue(inactive_end)>=175 && GetRValue(inactive_end)<=181 && icon_pixels>0 && icon_changed>0 && changed>0 &&

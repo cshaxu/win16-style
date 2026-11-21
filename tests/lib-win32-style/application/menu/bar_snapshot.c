@@ -21,8 +21,9 @@ static LRESULT CALLBACK procedure(HWND w,UINT m,WPARAM a,LPARAM b)
 }
 static BOOL measure(void *context,HDC dc,const MENUITEMINFOW *item,SIZE *size)
 {(void)dc;(void)item;*size=(SIZE){*(int *)context,20};return TRUE;}
-static style_menu_bar_inclusion include(const MENUITEMINFOW *item,UINT *flags)
-{(void)flags;return item->wID==3?STYLE_MENU_BAR_SKIP:STYLE_MENU_BAR_INCLUDE;}
+static style_menu_bar_inclusion include(void *context,const MENUITEMINFOW *item,UINT *flags)
+{
+    (void)context;(void)flags;return item->wID==3?STYLE_MENU_BAR_SKIP:STYLE_MENU_BAR_INCLUDE;}
 int main(void)
 {
     WNDCLASSW cls={.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"PublicBarSnapshot",.lpfnWndProc=procedure};CHECK(RegisterClassW(&cls));

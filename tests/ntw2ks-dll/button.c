@@ -21,8 +21,13 @@ int wmain(int argc,WCHAR **argv)
         COLORREF edge=(states[i]&DFCS_FLAT)?RGB(128,128,128):
             (states[i]&(DFCS_PUSHED|DFCS_CHECKED))?RGB(64,64,64):RGB(255,255,255);
         COLORREF center=GetPixel(dc,15,15);
-        if(GetPixel(dc,1,15)!=edge ||
-           (center!=RGB(212,208,200) && !((states[i]&DFCS_CHECKED)&&center==RGB(255,255,255))))return 8;
+        COLORREF drawn_edge=GetPixel(dc,1,15);
+        if(drawn_edge!=edge ||
+           (center!=RGB(212,208,200) && !((states[i]&DFCS_CHECKED)&&center==RGB(255,255,255)))){
+            fprintf(stderr,"button state=%x edge=%06lx expected=%06lx center=%06lx\n",
+                states[i],(unsigned long)drawn_edge,(unsigned long)edge,(unsigned long)center);
+            return 8;
+        }
     }
     RECT adjusted={0,0,32,32};
     if(!draw(dc,&adjusted,DFCS_ADJUSTRECT) || adjusted.left!=2 || adjusted.top!=2 || adjusted.right!=30 || adjusted.bottom!=30)return 9;

@@ -60,7 +60,7 @@ void win16_control_draw_combo(HWND w,control_style *style,HDC dc,BOOL (*get_info
     left=(button.left+button.right-7*u)/2;top=(button.top+button.bottom-9*u)/2;
     if(pressed){left+=u;top+=u;}
     SetDCBrushColor(dc,IsWindowEnabled(w)?(*palette).edge:(*palette).shadow);
-    win16_control_combo_arrow(dc,left,top,96*u);
+    win16_control_combo_arrow(dc,left,top,96*u,&style->combo_arrow);
     if(editable || is_vb_drive(w) || common_dialog_combo){RestoreDC(dc,saved);style_control_combo_snapshot_clear(&snapshot);return;}
     text=info.rcItem;selected=GetFocus()==w && !pressed;
     COLORREF selection=list_themed?list->selection:palette->active;
@@ -75,7 +75,7 @@ void win16_control_draw_combo(HWND w,control_style *style,HDC dc,BOOL (*get_info
 }
 
 
-void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC dc,const RECT *dirty,const style_control_native_button *button,const win16_style_palette *theme)
+void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC dc,const RECT *dirty,const style_control_native_button *button,const win16_style_palette *theme,const classic_combo_arrow_art *art)
 {
     RECT r=button->bounds;BOOL pressed=button->pressed;
     win16_style_palette palette;
@@ -93,6 +93,6 @@ void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC
     r=style_paint_outlined_face(dc,r,u,TRUE,pressed,palette.face,&frame);
     int left=(r.left+r.right-gw)/2+(pressed?u:0),top=(r.top+r.bottom-gh)/2+(pressed?u:0);
     SetDCBrushColor(dc,IsWindowEnabled(w)?palette.edge:palette.shadow);
-    win16_control_combo_arrow(dc,left,top,dpi);
+    win16_control_combo_arrow(dc,left,top,dpi,art);
     RestoreDC(dc,saved);
 }

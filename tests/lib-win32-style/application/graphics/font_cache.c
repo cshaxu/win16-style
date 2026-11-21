@@ -64,8 +64,8 @@ typedef struct lease {HFONT font;unsigned refs;} lease;
 static lease leases[64];
 static unsigned creates,retains,releases;
 static BOOL fail_create,fail_retain;
-static HFONT acquire(HFONT source)
-{
+static HFONT acquire(HFONT source,unsigned recipe)
+{(void)recipe;
     ++creates;if(fail_create)return NULL;
     LOGFONTW log;if(GetObjectW(source,sizeof(log),&log)!=sizeof(log))return NULL;
     HFONT font=CreateFontIndirectW(&log);if(!font)return NULL;
@@ -84,7 +84,7 @@ static void release(HFONT font)
         ++releases;if(!--leases[i].refs){DeleteObject(font);leases[i].font=NULL;}return;
     }
 }
-static HFONT borrowed(HFONT source){return source;}
+static HFONT borrowed(HFONT source,unsigned recipe){(void)recipe;return source;}
 static const style_font_ops operations={acquire,retain,release},borrowed_operations={borrowed,retain,release};
 static BOOL alive(HFONT font)
 {LOGFONTW log;return GetObjectW(font,sizeof(log),&log)==sizeof(log);}
@@ -114,11 +114,11 @@ int main(void)
     for(unsigned i=0;i<ARRAYSIZE(sources);++i){
         sources[i]=CreateFontW(-8-(int)i,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,ANSI_CHARSET,
             OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");CHECK(sources[i]);
-        if(!i){fail_create=TRUE;CHECK(!style_font_cache_get(&cache,sources[i],&operations) && !cache.count);fail_create=FALSE;}
-        unsigned before=creates;HFONT font=style_font_cache_get(&cache,sources[i],&operations);
+        if(!i){fail_create=TRUE;CHECK(!style_font_cache_get(&cache,sources[i],0,&operations) && !cache.count);fail_create=FALSE;}
+        unsigned before=creates;HFONT font=style_font_cache_get(&cache,sources[i],0,&operations);
         if(i==32){CHECK(!font && cache.count==32 && creates==before);continue;}
         cached[i]=font;CHECK(font && cache.count==i+1 && alive(sources[i]));
-        CHECK(style_font_cache_get(&cache,sources[i],&operations)==font && creates==before+1);
+        CHECK(style_font_cache_get(&cache,sources[i],0,&operations)==font && creates==before+1);
     }
     CHECK(SelectObject(dc,sources[0]));
     WORD glyphs[5];WCHAR decoded[5];
@@ -134,24 +134,24 @@ int main(void)
 
     style_font_snapshot_cache snapshot={0};void *token=NULL;int owner;
     CHECK(SelectObject(dc,sources[0]));
-    HFONT first=style_font_snapshot_borrow(&snapshot,dc,&owner,&token,&operations);
+    HFONT first=style_font_snapshot_borrow(&snapshot,dc,&owner,&token,0,&operations);
     CHECK(first && token==&owner && snapshot.borrows==1);
-    CHECK(style_font_snapshot_borrow(&snapshot,dc,&owner,&token,&operations)==first && snapshot.borrows==2);
-    snapshot.invalid=TRUE;CHECK(!style_font_snapshot_borrow(&snapshot,dc,&owner,&token,&operations));
+    CHECK(style_font_snapshot_borrow(&snapshot,dc,&owner,&token,0,&operations)==first && snapshot.borrows==2);
+    snapshot.invalid=TRUE;CHECK(!style_font_snapshot_borrow(&snapshot,dc,&owner,&token,0,&operations));
     style_font_snapshot_return(&snapshot,first);CHECK(snapshot.borrows==1 && alive(first));
     style_font_snapshot_return(&snapshot,first);CHECK(!snapshot.borrows && !snapshot.font && !alive(first));
-    first=style_font_snapshot_borrow(&snapshot,dc,&owner,&token,&operations);CHECK(first);
+    first=style_font_snapshot_borrow(&snapshot,dc,&owner,&token,0,&operations);CHECK(first);
     style_font_snapshot_return(&snapshot,first);
     CHECK(SelectObject(dc,sources[1]));fail_create=TRUE;
-    CHECK(!style_font_snapshot_borrow(&snapshot,dc,&owner,&token,&operations) && !snapshot.font && !alive(first));
+    CHECK(!style_font_snapshot_borrow(&snapshot,dc,&owner,&token,0,&operations) && !snapshot.font && !alive(first));
     fail_create=FALSE;fail_retain=TRUE;
-    CHECK(!style_font_snapshot_borrow(&snapshot,dc,&owner,&token,&operations) && snapshot.font && !snapshot.borrows);
+    CHECK(!style_font_snapshot_borrow(&snapshot,dc,&owner,&token,0,&operations) && snapshot.font && !snapshot.borrows);
     HFONT pending=snapshot.font;fail_retain=FALSE;
-    CHECK(style_font_snapshot_borrow(&snapshot,dc,&owner,&token,&operations)==pending);
+    CHECK(style_font_snapshot_borrow(&snapshot,dc,&owner,&token,0,&operations)==pending);
     style_font_snapshot_return(&snapshot,pending);style_font_snapshot_dispose(&snapshot);
     CHECK(!alive(pending) && !snapshot.ops);
     unsigned before_retains=retains;
-    CHECK(style_font_snapshot_borrow(&snapshot,dc,&owner,&token,&borrowed_operations)==sources[1] && retains==before_retains);
+    CHECK(style_font_snapshot_borrow(&snapshot,dc,&owner,&token,0,&borrowed_operations)==sources[1] && retains==before_retains);
     style_font_snapshot_return(&snapshot,sources[1]);style_font_snapshot_dispose(&snapshot);CHECK(alive(sources[1]));
 
     style_font_pool pool={0};fail_create=TRUE;

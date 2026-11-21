@@ -30,6 +30,10 @@
 #include "lib-win32-style/access/runtime/window_hook.h"
 #include "lib-win32-style/application/window/window_identity.h"
 #include "lib-win32-style/application/lifecycle/creation.h"
+#ifdef NTWSHK_UNIFIED
+#include "lib-win32-style/application/lifecycle/global_window.h"
+#include "global/window.h"
+#endif
 #include "../lib-win32/process-hook/unwind.h"
 #include "status_theme.h"
 #include "../lib-win32-style/appearance/win3x/control/month_text.h"
@@ -97,7 +101,7 @@ static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *cli
     style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return;
     const attachment *a=s->observation.owner;
     const win16_control_vcl_paint_view v={s->observation.window,s->observation.instance,
-        &s->observation.runtime->roles.inplace,&a->palette,&a->push};
+        &s->observation.runtime->roles.inplace,&a->palette,&a->push,&a->combo_arrow};
     win16_control_vcl_inplace_draw(&v,dc,part,state,r,clip,address,drop);
 }
 void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
@@ -105,7 +109,7 @@ void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,c
     style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return;
     const attachment *a=s->observation.owner;
     const win16_control_vcl_paint_view v={s->observation.window,s->observation.instance,
-        &s->observation.runtime->roles.nav,&a->palette,&a->push};
+        &s->observation.runtime->roles.nav,&a->palette,&a->push,NULL};
     win16_control_vcl_nav_draw(&v,dc,part,state,r,clip,address);
 }
 BOOL ntw16s_inplace_paint(HDC dc)
@@ -129,7 +133,8 @@ HFONT ntw16s_status_simple_font(HDC dc,LPCWSTR text,int count,UINT flags,const v
     style_control_status_scope *s=paint_runtime.status;if(!s){if(token)*token=NULL;return NULL;}
     if(token)*token=NULL;
     if(!token || !style_control_status_text_matches(s,paint_runtime.status_themes.current,dc,text,count,flags,address,win16_control_status_text_supported))return NULL;
-    attachment *a=s->context;return style_font_snapshot_borrow(&a->status_font,dc,a,token,&win16_status_font_operations);
+    attachment *a=s->context;
+    return a->control_font_points?style_font_snapshot_borrow(&a->status_font,dc,a,token,a->control_font_points,&win16_status_font_operations):NULL;
 }
 void ntw16s_status_simple_return(void *token,HFONT font)
 {attachment *a=token;if(a)style_font_snapshot_return(&a->status_font,font);}
@@ -169,11 +174,12 @@ BOOL ntw16s_group_choice_button(HWND w)
 
 static BOOL data_current(HWND w)
 {return win16_attachment_vb_data_valid(w,lookup(w));}
-BOOL ntw16s_vb_data_palette(HWND w,win16_style_palette *palette)
+BOOL ntw16s_vb_data_palette(HWND w,win16_style_palette *palette,style_scroll_arrow_art *art)
 {
     attachment *a=lookup(w);
     if(!win16_attachment_vb_data_attached(w,a))return FALSE;
     *palette=a->palette;
+    *art=a->arrows[0];
     return TRUE;
 }
 
@@ -200,7 +206,8 @@ BOOL ntw16s_static_call_begin(style_runtime_native_call *scope,WNDPROC proc,HWND
 HFONT ntw16s_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,const void *address)
 {
     const style_runtime_native_call *s=style_runtime_native_current(&paint_runtime.native_calls,current_observation());
-    return s?win16_control_static_text_font(dc,text,count,flags,address,s->window,s->native_module):NULL;
+    const attachment *a=s?s->instance->context:NULL;
+    return a && a->control_font_points?win16_control_static_text_font(dc,text,count,flags,address,s->window,s->native_module,a->control_font_points):NULL;
 }
 #define class_is style_control_class_is
 static BOOL vcl_frame_owned(HWND w,void *owner){return lookup(w)==owner;}
@@ -250,7 +257,7 @@ static win16_control_month_view month_view(style_runtime_paint_scope *s)
         .native={.context=s,.window=s->observation.window,.instance=&a->base.instance,.rich=&a->base.runtime.rich,
             .state=&s->month,.rejected_styles=MCS_MULTISELECT,.current=month_view_current},
         .cached_font=&a->month_cached_font,.palette=&a->palette,
-        .arrows=a->base.runtime.rich.month?a->month_arrows:NULL,.selection=a->calendar_selection};
+        .arrows=a->base.runtime.rich.month?a->arrows:NULL,.selection=a->calendar_selection,.font_dpi=a->calendar_font_dpi,.font_points=a->calendar_font_points};
 }
 
 void ntw16s_month_arrow(HTHEME t,HDC dc,int p,int state,const RECT *r,const RECT *clip,const void *addr)
@@ -322,7 +329,7 @@ static void message_prepare(const style_runtime_observation *observation,UINT m,
     const win16_attachment_guard_services guards={mdi_host_attached,cool_identity,Ntw16sWindowRemove};
     win16_attachment_guard_roles(w,m,a,&guards);
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
-    win16_control_vb_paint_begin(paint,w,m,&a->fonts,ntw16s_vb_user_label_target);
+    win16_control_vb_paint_begin(paint,w,m,a->control_font_points?&a->fonts:NULL,a->control_font_points,ntw16s_vb_user_label_target);
     if(a->file_owner || a->picture || a->button_owner || a->base.runtime.user.candidate)paint->cancelled=&a->base.instance.detached;
     style_runtime_text_prepare_report(paint,w,p,&a->base.instance,&a->base.runtime,a->file_owner,report_notify,a,ntw16s_vb_graphical_button);
 }
@@ -332,7 +339,7 @@ static void date_button(HWND w,const style_instance *instance,HDC dc,const RECT 
     const attachment *a=instance->context;
     win16_style_palette palette=a->palette;
     palette.face=a->date_button_face;
-    win16_control_native_combo_button(w,instance,dc,dirty,button,a->base.runtime.date.installed?&palette:NULL);
+    win16_control_native_combo_button(w,instance,dc,dirty,button,a->base.runtime.date.installed?&palette:NULL,&a->combo_arrow);
 }
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
@@ -349,7 +356,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
 }
 static void report_text_prepare(style_runtime_text_scope *paint,HWND window,void *owner)
 {
-    attachment *a=owner;win16_control_vb_paint_begin(paint,window,WM_PRINTCLIENT,&a->fonts,ntw16s_vb_user_label_target);
+    attachment *a=owner;win16_control_vb_paint_begin(paint,window,WM_PRINTCLIENT,a->control_font_points?&a->fonts:NULL,a->control_font_points,ntw16s_vb_user_label_target);
 }
 /* Application owner/custom-draw result and payload stay authoritative. */
 static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
@@ -427,9 +434,12 @@ static BOOL install_created(HWND w,DWORD original_style)
     BOOL vcl_mdi_probe=style_control_vcl_mdi_identity(w,GetParent(w),GetParent(GetParent(w)),owner,mdi_host_attached);
     int rejected=win16_attachment_eligibility(original_style,picture,checklist,status,spin,vcl_mdi_probe,&initial,&candidates,&extra);
     if(rejected){if(rejected==1)style_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
-    size_t arrow_bytes=extra.rich_month?sizeof(style_scroll_arrow_art):0;
+    classic_theme_mapping source={0};
+    DWORD theme_error=classic_theme_attachment_layout((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,&source);
+    if(theme_error){style_control_protocol_release(protocol);SetLastError(theme_error);return FALSE;}
+    size_t arrow_bytes=(extra.rich_month || extra.vb_data_edge)?sizeof(style_scroll_arrow_art):0;
     a=calloc(1,sizeof(*a)+arrow_bytes);
-    if(!a){style_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
+    if(!a){classic_theme_close(&source);style_control_protocol_release(protocol);SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
     style_instance_init(&a->base.instance,a,attachment_dispose);
     owner_selection selection={a,picture,checklist};
     const style_runtime_attachment_seed seed={&candidates,&extra,owner,protocol,report,tree,status,spin,
@@ -440,27 +450,20 @@ static BOOL install_created(HWND w,DWORD original_style)
     a->calendar_selection=a->palette.active;
     a->status_edge=a->palette.edge;
     a->date_button_face=a->palette.face;
-    if(status || candidates.status_candidate || candidates.date_candidate || extra.rich_month || extra.vb_data_edge || spin ||
-       candidates.bit_candidate || candidates.inplace_candidate || candidates.nav_candidate || extra.controlbar_candidate ||
-       candidates.group_frame_candidate || candidates.panel_frame_candidate || cool_candidate){
-        classic_theme_mapping source={0};
-        if(SUCCEEDED(classic_theme_open_packaged((HMODULE)&__ImageBase,CLASSIC_THEME_WIN16,TRUE,&source))){
-            const classic_theme *theme=&source.model;
-            if(theme->frame.present){
-                a->palette.face=theme->frame.face;
-                a->palette.light=theme->frame.light;
-                a->palette.shadow=theme->frame.shadow;
-                a->palette.edge=theme->frame.edge;
-            }
-            a->palette.active=theme->active.start;
-            a->push=(win16_runtime_push){theme->push,theme->controls.push?theme->controls.push:STYLE_PUSH_STEPPED};
-            if(cool_candidate)a->grip=theme->bars[CLASSIC_BAR_REBAR];
-            a->calendar_selection=win16_control_month_selected_color(theme,a->calendar_selection);
-            a->status_edge=classic_bar_color(&theme->bars[CLASSIC_BAR_STATUS],CLASSIC_BAR_EDGE,a->palette.edge);
-            a->date_button_face=theme->has_date_button_face?theme->date_button_face:a->palette.face;
-            if(extra.rich_month)a->month_arrows[0]=theme->scroll_art;
-            classic_theme_close(&source);
-        }
+    a->control_font_points=source.model.controls.control_font_points;
+    if(source.resources){
+        const classic_theme *theme=&source.model;
+        win16_style_theme_palette(&a->palette,theme);
+        a->push=(win16_runtime_push){theme->push,theme->controls.push};
+        if(cool_candidate)a->grip=theme->bars[CLASSIC_BAR_REBAR];
+        a->calendar_selection=win16_control_month_selected_color(theme,a->palette.active);
+        a->calendar_font_dpi=theme->calendar_font_dpi;
+        a->calendar_font_points=theme->calendar_font_points;
+        a->status_edge=classic_bar_color(&theme->bars[CLASSIC_BAR_STATUS],CLASSIC_BAR_EDGE,a->palette.edge);
+        a->date_button_face=theme->has_date_button_face?theme->date_button_face:a->palette.face;
+        if(arrow_bytes)a->arrows[0]=theme->scroll_art;
+        a->combo_arrow=theme->combo_arrow;
+        classic_theme_close(&source);
     }
     if(!style_runtime_attachment_publish(w,&a->base,attachment_proc,free))return FALSE;
     if((report || tree || a->file_owner || a->button_owner || a->checklist || a->base.runtime.roles.bit.candidate) && (!a->base.runtime.report.parent || !SetWindowSubclass(a->base.runtime.report.parent,report_notify,(UINT_PTR)w,(DWORD_PTR)a))){
@@ -502,6 +505,9 @@ BOOL __cdecl Ntw16sWindowAttach(HWND w)
     if(!w || !win32_style_window_current_thread(w)){
         SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
     }
+#ifdef NTWSHK_UNIFIED
+    if(!classic_theme_require_layout(CLASSIC_WINDOW_PROVIDER_FULL_CLIENT))return FALSE;
+#endif
     if(lookup(w)){SetLastError(ERROR_ALREADY_EXISTS);return FALSE;}
     if(!install_created(w,(DWORD)GetWindowLongPtrW(w,GWL_STYLE)))return FALSE;
     if(!lookup(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
@@ -511,12 +517,17 @@ static BOOL window_thread_accept(const CWPSTRUCT *message,void *context)
 {
     (void)context;
     WPARAM action=message->wParam&15u,profile=message->wParam>>NTW16S_WINDOW_THREAD_PROFILE_SHIFT;
-    return (HWND)message->lParam==message->hwnd &&
-        ((action==NTW16S_WINDOW_THREAD_REMOVE && !profile) ||
-         (action==NTW16S_WINDOW_THREAD_ATTACH && (!profile ||
+    if((HWND)message->lParam!=message->hwnd)return FALSE;
+    if(action==NTW16S_WINDOW_THREAD_REMOVE)return !profile;
+#ifdef NTWSHK_UNIFIED
+    return action==NTW16S_WINDOW_THREAD_ATTACH &&
+        profile<CLASSIC_THEME_PROFILE_CAP && classic_theme_is_folder_id((unsigned)profile);
+#else
+    return action==NTW16S_WINDOW_THREAD_ATTACH && (!profile ||
            (profile>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM && profile<CLASSIC_THEME_PROFILE_CAP &&
             (classic_theme_is_folder_id((unsigned)profile) ||
-             classic_theme_profile_family((unsigned)profile)==CLASSIC_THEME_WIN16)))));
+             classic_theme_profile_family((unsigned)profile)==CLASSIC_THEME_WIN16)));
+#endif
 }
 static DWORD window_thread_perform(const CWPSTRUCT *message,void *context)
 {
@@ -525,6 +536,21 @@ static DWORD window_thread_perform(const CWPSTRUCT *message,void *context)
     if(!win32_style_window_current_thread(message->hwnd))
         return ERROR_INVALID_THREAD_ID;
     SetLastError(0);
+#ifdef NTWSHK_UNIFIED
+    if(message->wParam==NTW16S_WINDOW_THREAD_REMOVE){
+        ok=style_global_window_remove_current(message->hwnd);
+    }else{
+        unsigned profile=(unsigned)(message->wParam>>NTW16S_WINDOW_THREAD_PROFILE_SHIFT);
+        classic_theme_mapping source={0};
+        HRESULT loaded=classic_theme_open_profile((HMODULE)&__ImageBase,profile,&source);
+        if(FAILED(loaded))return HRESULT_CODE(loaded);
+        classic_theme_selection selection={profile,source.family};
+        classic_theme_close(&source);
+        ok=GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,
+            (PCWSTR)(uintptr_t)Ntw16sWindowThreadHook,&pinned) &&
+            ntw16s_global_window_apply_style(message->hwnd,classic_theme_encode_selection(selection));
+    }
+#else
     static const WCHAR property[]=L"Win16Style.WindowThread.Profile";
     if(message->wParam==NTW16S_WINDOW_THREAD_REMOVE){
         ok=Ntw16sWindowRemove(message->hwnd);
@@ -551,6 +577,7 @@ static DWORD window_thread_perform(const CWPSTRUCT *message,void *context)
         }
         if(ok)(void)SetPropW(message->hwnd,property,wanted);
     }
+#endif
     if(!ok)error=GetLastError()?GetLastError():ERROR_GEN_FAILURE;
     return error;
 }
@@ -572,7 +599,13 @@ static BOOL creation_prepare(HWND window,DWORD style)
     return !(style&WS_CHILD) || style_theme_stage(window);
 }
 static BOOL creation_install(HWND window,DWORD style)
-{return style_theme_commit(window) && install_created(window,style);}
+{
+    if(!style_theme_commit(window))return FALSE;
+    if(install_created(window,style))return TRUE;
+    /* Appearance data is optional to USER's creation of the application window. */
+    if(GetLastError()==ERROR_RESOURCE_DATA_NOT_FOUND)SetLastError(ERROR_NOT_SUPPORTED);
+    return FALSE;
+}
 static BOOL creation_attached(HWND window){return lookup(window)!=NULL;}
 static void creation_unsupported(HWND window)
 {
@@ -591,6 +624,11 @@ const style_creation_ops ntw16s_creation_ops={creation_prepare,creation_install,
 #endif
 };
 ntw16s_creation_scope *__cdecl Ntw16sCreationBegin(BOOL enabled)
-{return style_creation_begin(enabled,FALSE,&ntw16s_creation_ops);}
+{
+#ifdef NTWSHK_UNIFIED
+    if(enabled && !classic_theme_require_layout(CLASSIC_WINDOW_PROVIDER_FULL_CLIENT))return NULL;
+#endif
+    return style_creation_begin(enabled,FALSE,&ntw16s_creation_ops);
+}
 BOOL __cdecl Ntw16sCreationEnd(ntw16s_creation_scope *scope,ntw16s_creation_result *result)
 {return style_creation_end(scope,result);}

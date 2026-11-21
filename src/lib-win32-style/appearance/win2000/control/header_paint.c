@@ -1,6 +1,6 @@
 /* Windows 2000 comctl32 header.c: retain the native custom-draw transaction. */
 #include "tab_header.h"
-#include "../common/paint.h"
+#include "../common/palette.h"
 
 BOOL win2k_header_supported(HWND window)
 {
@@ -11,6 +11,7 @@ BOOL win2k_header_supported(HWND window)
 BOOL win2k_header_paint(HWND window,const NMCUSTOMDRAW *draw,const void *context)
 {
     const win2k_header_draw *parameters=context;
+    if(!parameters->profile)return FALSE;
     const style_instance *instance=parameters->instance;
     DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
     const style_relief_palette *p=&parameters->palette;
@@ -30,11 +31,10 @@ BOOL win2k_header_paint(HWND window,const NMCUSTOMDRAW *draw,const void *context
     BOOL pressed=(style&HDS_BUTTONS) && (draw->uItemState&CDIS_SELECTED);
     const classic_header_colors *colors=parameters->colors;
     COLORREF face=colors->present?(pressed?colors->pressed:colors->normal):p->face;
-    style_line_profile profile=parameters->profile?parameters->profile:STYLE_LINE_RELIEF;
     int unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
     BOOL painted=IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)!=ERROR &&
         style_paint_color(dc,&r,face) &&
-        style_paint_header_edge(dc,r,(style&HDS_BUTTONS)!=0,(style&WS_BORDER)!=0,pressed,unit,profile,p);
+        style_paint_header_edge(dc,r,(style&HDS_BUTTONS)!=0,(style&WS_BORDER)!=0,pressed,unit,parameters->profile,p);
     if(painted && *text){
         InflateRect(&r,-6,0);
         if(pressed)OffsetRect(&r,1,1);

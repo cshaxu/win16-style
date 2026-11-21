@@ -113,7 +113,9 @@ static int worker(int argc,WCHAR **argv)
     CHECK(argc==1 || (argc==2 && !wcscmp(argv[1],L"aware")));
     if(argc==2)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
 #endif
-    HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");CHECK(dll);
+    HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
+    if(!dll)dll=GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll");
+    CHECK(dll);
     BOOL (__cdecl *attached)(HWND)=(void *)GetProcAddress(dll,"Ntw16sWindowAttached");
     remove_style=(void *)GetProcAddress(dll,"Ntw16sWindowRemove");CHECK(attached&&remove_style);
     INITCOMMONCONTROLSEX ic={sizeof(ic),ICC_BAR_CLASSES};CHECK(InitCommonControlsEx(&ic));

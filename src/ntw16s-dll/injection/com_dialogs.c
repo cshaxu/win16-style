@@ -19,47 +19,34 @@ static style_classic_com_route dialog_route(BOOL folder)
     return STYLE_COM_NATIVE;
 }
 
-#ifdef NTWSHK_UNIFIED
-static BOOL win2k_startup_bridge;
-static BOOL global_win16(void)
-{
-    DWORD flags=__atomic_load_n(&ntw16s_process_context.flags,__ATOMIC_ACQUIRE);
-    return (flags&NTWSHK_POLICY_GLOBAL_SESSION) && ntw16s_process_session_active();
-}
-
-DWORD ntw16s_attach_win2k_com_dialogs_using(DWORD (*attach)(void *,void *))
-{
-    const style_classic_com_options options={
-        .session_active=global_win16,.scope=ntw16s_dialog_style_scope,
-        .route=dialog_route,.explorer_scope=observed_scope,
-        .property=L"Win2kStyle.ComDialog",.folder_message=L"Win2kStyle.ComSetFolder",
-        .hidden_message=L"Win2kStyle.HiddenFilesRefresh"
-    };
-    DWORD error=style_classic_com_attach(attach,&options);
-    if(!error)win2k_startup_bridge=TRUE;
-    return error;
-}
-#endif
-
-LONG ntw16s_attach_com_dialogs_using(DWORD (*attach)(void *,void *))
+/* Only observed startup owns a permanent registration before late attachment.
+ * A late transaction is free to retry after rollback. */
+static BOOL startup_shell_dialogs;
+LONG ntw16s_attach_shell_dialogs_using(DWORD (*attach)(void *,void *),BOOL observed_startup)
 {
     if(!attach)return ERROR_INVALID_PARAMETER;
-#ifdef NTWSHK_UNIFIED
-    /* Startup already installed the bridge and its original-call slots. */
-    if(win2k_startup_bridge)return NO_ERROR;
-#endif
-    if(!(ntw16s_process_context.flags & NTWSHK_POLICY_STYLE))return NO_ERROR;
+    if(startup_shell_dialogs)return NO_ERROR;
+    if(!observed_startup && !(ntw16s_process_context.flags&NTWSHK_POLICY_STYLE))return NO_ERROR;
     const style_classic_com_options options={
-        .session_active=ntw16s_process_session_active,.scope=ntw16s_dialog_style_scope,
+        .scope=ntw16s_dialog_style_scope,
         .route=dialog_route,.explorer_scope=observed_scope,
+#ifdef NTWSHK_UNIFIED
+        .property=L"Ntwshk.ComDialog",.folder_message=L"Ntwshk.ComSetFolder",
+        .hidden_message=L"Ntwshk.HiddenFilesRefresh",
+#else
         .property=L"Win16Style.T20.ComDialog",.folder_message=L"Win16Style.T20.ComSetFolder",
         .hidden_message=L"Win16Style.T20.HiddenFilesRefresh",
+#endif
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_EVENTS
-        .experimental_events=TRUE,
+        .experimental_events=!observed_startup,
 #endif
 #ifdef NTW16S_EXPERIMENTAL_CLASSIC_HIDDEN
-        .experimental_hidden=TRUE,
+        .experimental_hidden=!observed_startup,
 #endif
     };
-    return (LONG)style_classic_com_attach(attach,&options);
+    LONG error=ntw16s_register_file_dialogs(attach);
+    if(!error)error=(LONG)style_classic_com_attach(attach,&options);
+    if(!error)error=ntw16s_register_folder_dialogs(attach);
+    if(!error && observed_startup)startup_shell_dialogs=TRUE;
+    return error;
 }

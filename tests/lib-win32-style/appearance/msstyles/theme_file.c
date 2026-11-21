@@ -32,6 +32,7 @@ static bool check_file(PCWSTR path)
     if(fclose(file)!=0 || !valid)return false;
     return !strcmp(parsed.display_name,"Windows 3.x") && !strcmp(parsed.file,"Win16.msstyles") && !strcmp(parsed.size,"NormalSize") &&
         !strcmp(parsed.color,"NormalColor") && parsed.hosts.declared && parsed.hosts.enabled==hosts &&
+        !strcmp(parsed.compatibility_folder,"Win16") && has_key(path,L"Theme",L"CompatibilityFolder",L"Win16") &&
         has_key(path,L"Theme",L"DisplayName",L"Windows 3.x") &&
         has_key(path,L"Control Panel\\Desktop",L"TileWallpaper",L"0") &&
         has_key(path,L"VisualStyles",L"Path",L"Win16.msstyles") &&
@@ -59,7 +60,7 @@ static bool reject(PCWSTR path,const char *text)
 {
     FILE *file=_wfopen(path,L"w+b");
     if(!file)return false;
-    msstyles_theme_descriptor original={"before.msstyles","BeforeSize","BeforeColor","BeforeName",{0}};
+    msstyles_theme_descriptor original={.file="before.msstyles",.size="BeforeSize",.color="BeforeColor",.display_name="BeforeName"};
     msstyles_theme_descriptor parsed=original;
     bool passed=fputs(text,file)!=EOF && fseek(file,0,SEEK_SET)==0 &&
         !msstyles_theme_file_read(file,&parsed) && !memcmp(&original,&parsed,sizeof(original));

@@ -303,7 +303,7 @@ static HRESULT WINAPI bridge_class_object(REFCLSID clsid,DWORD context,LPVOID se
 }
 DWORD style_classic_com_attach(DWORD (*attach)(void *,void *),const style_classic_com_options *options)
 {
-    if(!attach || !options || !options->session_active || !options->scope ||
+    if(!attach || !options || (!options->route && !options->session_active) || !options->scope ||
        !options->property || !options->folder_message || !options->hidden_message)return ERROR_INVALID_PARAMETER;
     if((options->explorer_active || options->route) && !options->explorer_scope)return ERROR_INVALID_PARAMETER;
     configuration=*options;

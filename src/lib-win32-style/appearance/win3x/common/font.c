@@ -7,78 +7,9 @@
 #include <limits.h>
 #include <wchar.h>
 
-static _Thread_local style_memory_font shared;
-
-static BOOL create_font(void *context,style_memory_font *result)
-{
-    (void)context;
-    /* FNT v2 is the public bitmap-resource form already exercised by the
-     * standalone font probe. Only newly rasterized host glyphs go into it.
-     * The original USER/font loader is not imported or reconstructed. */
-    BYTE *data=(BYTE *)calloc(65536,1);char face[32];
-    unsigned cursor=118+225*4,n,maxwidth=0,sum=0;
-    DWORD count=0;HANDLE resource=NULL;HFONT base=NULL,font=NULL;
-    HDC src=NULL,scaled=NULL;HBITMAP a=NULL,b=NULL;HGDIOBJ olda=NULL,oldb=NULL,oldfont=NULL;
-    TEXTMETRICW tm;SIZE extent;RECT clear={0,0,128,64};BOOL ok=FALSE;
-    if(!data)return FALSE;
-    wsprintfA(face,"Win16 System20 %08lX",GetCurrentThreadId());
-    src=CreateCompatibleDC(NULL);scaled=CreateCompatibleDC(NULL);
-    a=CreateBitmap(128,64,1,1,NULL);b=CreateBitmap(128,20,1,1,NULL);
-    base=CreateFontW(16,0,0,0,FW_BOLD,FALSE,FALSE,FALSE,ANSI_CHARSET,
-        OUT_RASTER_PRECIS,CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,L"System");
-    if(!src || !scaled || !a || !b || !base)goto done;
-    olda=SelectObject(src,a);oldb=SelectObject(scaled,b);oldfont=SelectObject(src,base);
-    if(!olda || !oldb || !oldfont || !GetTextMetricsW(src,&tm) ||
-        tm.tmHeight<1 || tm.tmHeight>64 || tm.tmCharSet!=ANSI_CHARSET)goto done;
-    SetBkColor(src,RGB(255,255,255));SetTextColor(src,RGB(0,0,0));
-    SetStretchBltMode(scaled,COLORONCOLOR);
-    for(n=0;n<224;++n){char ch=(char)(n+32);WCHAR wc;unsigned x,y,w,bytes;
-        if(MultiByteToWideChar(1252,0,&ch,1,&wc,1)!=1 ||
-            !GetTextExtentPoint32W(src,&wc,1,&extent) || extent.cx<0 || extent.cx>128)goto done;
-        w=(unsigned)MulDiv(extent.cx,20,tm.tmHeight);if(w>128)goto done;
-        bytes=((w+7)/8)*20;if(cursor+bytes+sizeof(face)>65535)goto done;
-        style_bitmap_font_word(data,118+4*n,w);style_bitmap_font_word(data,120+4*n,cursor);
-        if(!FillRect(src,&clear,(HBRUSH)GetStockObject(WHITE_BRUSH)) || !TextOutW(src,0,0,&wc,1))goto done;
-        if(w && !StretchBlt(scaled,0,0,(int)w,20,src,0,0,extent.cx,tm.tmHeight,SRCCOPY))goto done;
-        for(x=0;x<w;++x)for(y=0;y<20;++y){COLORREF pixel=GetPixel(scaled,(int)x,(int)y);
-            if(pixel==CLR_INVALID)goto done;
-            if(pixel==RGB(0,0,0))data[cursor+(x/8)*20+y]|=(BYTE)(0x80>>(x%8));}
-        cursor+=bytes;sum+=w;if(w>maxwidth)maxwidth=w;
-    }
-    style_bitmap_font_metrics metrics={20,(unsigned)MulDiv(tm.tmAscent,20,tm.tmHeight),
-        (unsigned)MulDiv(tm.tmInternalLeading,20,tm.tmHeight),0,(unsigned)tm.tmWeight,15,sum,maxwidth};
-    cursor=style_bitmap_font_finish(data,cursor,face,&metrics);
-    resource=AddFontMemResourceEx(data,cursor,NULL,&count);if(!resource || count!=1)goto done;
-    font=CreateFontA(20,0,0,0,tm.tmWeight,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_RASTER_PRECIS,
-        CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,face);
-    if(font){char actual[32];HGDIOBJ old=SelectObject(scaled,font);
-        ok=old && GetTextMetricsW(scaled,&tm) && tm.tmHeight==20 &&
-            GetTextFaceA(scaled,32,actual)>0 && !strcmp(actual,face);
-        if(old)SelectObject(scaled,old);}
-done:
-    if(oldfont)SelectObject(src,oldfont);
-    if(olda)SelectObject(src,olda);
-    if(oldb)SelectObject(scaled,oldb);
-    if(base)DeleteObject(base);
-    if(a)DeleteObject(a);
-    if(b)DeleteObject(b);
-    if(src)DeleteDC(src);
-    if(scaled)DeleteDC(scaled);
-    free(data);
-    if(ok){result->font=font;result->resource=resource;return TRUE;}
-    if(font)DeleteObject(font);
-    if(resource)RemoveFontMemResourceEx(resource);
-    return FALSE;
-}
-
-HFONT win16_style_font_acquire(void)
-{return style_memory_font_acquire(&shared,create_font,NULL);}
-void win16_style_font_release(HFONT font)
-{style_memory_font_release(&shared,font);}
-
 static _Thread_local style_font_pool variants;
 static LONG variant_serial;
-enum { menu_dpi_bits=9, menu_dpi_mask=(1u<<menu_dpi_bits)-1, default_menu_points=12 };
+enum { menu_dpi_bits=9, menu_dpi_mask=(1u<<menu_dpi_bits)-1 };
 
 HFONT win16_style_system_source(HFONT font)
 {return style_font_pool_source(&variants,font);}
@@ -87,7 +18,6 @@ static HFONT system_create(HFONT source,UINT key,void *context,style_font_pool_e
 {
     UINT menu_dpi=(key>>1)&menu_dpi_mask;
     unsigned points=key>>(1+menu_dpi_bits);
-    if(!points)points=default_menu_points;
     BOOL preserve_strokes=(key&1)!=0;(void)context;
     HDC original=NULL,src=NULL,dst=NULL;HFONT base=NULL,font=NULL;
     HBITMAP a=NULL;HGDIOBJ oa=NULL,of=NULL,oo=NULL;style_bitmap rendered={0};
@@ -169,25 +99,28 @@ done:
     return NULL;
 }
 
-static HFONT system_acquire(HFONT source,UINT menu_dpi,BOOL preserve_strokes,BOOL isolated)
-{return style_font_pool_get(&variants,source,((UINT)menu_dpi<<1)|!!preserve_strokes,isolated,system_create,NULL);}
+static HFONT system_acquire(HFONT source,unsigned points,UINT menu_dpi,BOOL preserve_strokes,BOOL isolated)
+{
+    if(!points || points>48)return NULL;
+    UINT key=(points<<(1+menu_dpi_bits))|(menu_dpi<<1)|!!preserve_strokes;
+    return style_font_pool_get(&variants,source,key,isolated,system_create,NULL);
+}
 
-HFONT win16_style_system_acquire(HFONT source)
-{return system_acquire(source,0,FALSE,FALSE);}
+HFONT win16_style_system_acquire(HFONT source,unsigned points)
+{return system_acquire(source,points,0,FALSE,FALSE);}
 
-HFONT win16_style_system_acquire_isolated(HFONT source)
-{return system_acquire(source,0,FALSE,TRUE);}
+HFONT win16_style_system_acquire_isolated(HFONT source,unsigned points)
+{return system_acquire(source,points,0,FALSE,TRUE);}
 
-HFONT win16_style_vb_font_acquire(HFONT source)
-{return system_acquire(source,0,TRUE,FALSE);}
+HFONT win16_style_vb_font_acquire(HFONT source,unsigned points)
+{return system_acquire(source,points,0,TRUE,FALSE);}
 
 static HFONT logical_menu_create(HFONT source,UINT dpi,void *context,style_font_pool_entry **owned)
 {
     (void)source;
-    LOGFONTW logical=msstyles_font_at_dpi(context,dpi);
     style_font_pool_entry *entry=calloc(1,sizeof(*entry));
     if(!entry)return NULL;
-    entry->lease.font=CreateFontIndirectW(&logical);
+    entry->lease.font=msstyles_font_create(context,dpi,MSSTYLES_FONT_MENU);
     if(!entry->lease.font){free(entry);return NULL;}
     *owned=entry;
     return entry->lease.font;
@@ -196,25 +129,21 @@ static HFONT logical_menu_create(HFONT source,UINT dpi,void *context,style_font_
 HFONT win16_style_menu_font_acquire(UINT dpi,const msstyles_font *defined)
 {
     if(dpi<48 || dpi>384)return NULL;
-    unsigned points=default_menu_points;
-    /* Preserve the original host raster path for the System recipe. */
-    if(defined && defined->points){
-        if(defined->points>48 || _wcsicmp(defined->logical.lfFaceName,L"System") ||
-           defined->logical.lfWeight!=FW_BOLD || defined->logical.lfItalic ||
-           defined->logical.lfUnderline || defined->logical.lfStrikeOut){
-            msstyles_font request=*defined;
-            return style_font_pool_get(&variants,NULL,dpi,TRUE,logical_menu_create,&request);
-        }
-        points=defined->points;
+    /* Only an explicitly declared, supported System face uses the bitmap lease. */
+    if(!defined || !defined->points || defined->points>48 ||
+       _wcsicmp(defined->logical.lfFaceName,L"System") || defined->logical.lfWeight!=FW_BOLD ||
+       defined->logical.lfItalic || defined->logical.lfUnderline || defined->logical.lfStrikeOut){
+        msstyles_font request=defined?*defined:(msstyles_font){0};
+        return style_font_pool_get(&variants,NULL,dpi,TRUE,logical_menu_create,&request);
     }
-    UINT key=(dpi<<1)|((points==default_menu_points?0:points)<<(1+menu_dpi_bits));
+    UINT key=(dpi<<1)|(defined->points<<(1+menu_dpi_bits));
     return style_font_pool_get(&variants,NULL,key,FALSE,system_create,NULL);
 }
 
-/* 13/16 of the stock System bitmap, preserving the glyph aspect ratio.
- * The calendar caller currently admits only its witnessed 96-DPI case. */
-HFONT win16_style_calendar_font_acquire(void)
-{return system_acquire(NULL,78,FALSE,FALSE);}
+/* Scale the stock bitmap at the declared sampling density. The calendar
+ * caller independently limits the native path to the witnessed window DPI. */
+HFONT win16_style_calendar_font_acquire(unsigned raster_dpi,unsigned points)
+{return raster_dpi>=48 && raster_dpi<=96?system_acquire(NULL,points,raster_dpi,FALSE,FALSE):NULL;}
 
 void win16_style_system_release(HFONT font)
 {style_font_pool_release(&variants,font);}

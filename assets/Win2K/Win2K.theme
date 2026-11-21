@@ -1,5 +1,6 @@
 [Theme]
 DisplayName=Windows 2000
+CompatibilityFolder=Win2K
 
 [Control Panel\Desktop]
 TileWallpaper=0

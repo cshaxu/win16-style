@@ -79,11 +79,8 @@ static DWORD activate(PCWSTR app_id,PCWSTR arguments,BOOL wait,classic_theme_sel
     if(process)CloseHandle(process);
     CoUninitialize();return error;
 }
-DWORD run16s_uwp_activate(PCWSTR app_id,BOOL win2k,DWORD *created_pid)
-{
-    classic_theme_family family=win2k?CLASSIC_THEME_WIN2K:CLASSIC_THEME_WIN16;
-    return activate(app_id,NULL,FALSE,(classic_theme_selection){(unsigned)family,family},created_pid);
-}
+DWORD run16s_uwp_activate(PCWSTR app_id,classic_theme_selection selection,DWORD *created_pid)
+{return activate(app_id,NULL,FALSE,selection,created_pid);}
 DWORD run16s_uwp_command(PCWSTR image,PCWSTR arguments,BOOL wait,classic_theme_selection selection,BOOL *handled)
 {
     if(!handled)return ERROR_INVALID_PARAMETER;

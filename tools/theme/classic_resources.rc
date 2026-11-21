@@ -15,6 +15,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #include "lib-win32-style/appearance/win2000/dialog/print_general.rcinc"
 LANGUAGE 0, 0
 #ifdef PACK_ORIGINAL_CAPTION
+CLASSIC_COMBO_ARROW RCDATA "combo-arrow.bin"
+CLASSIC_CALENDAR_FONT RCDATA "calendar-font.bin"
 #include "legacy_image.h"
 CLASSIC_MINIMIZE_IMAGE_ID IMAGE "caption501.png"
 CLASSIC_MAXIMIZE_IMAGE_ID IMAGE "caption502.png"

@@ -1,6 +1,24 @@
 #include "caption_paint.h"
 #include "../graphics/bitmap.h"
 
+style_caption_raster style_caption_button_raster(const classic_caption_art *art,
+    enum classic_button_role role,BOOL maximized,BOOL child,UINT flags)
+{
+    if(!art || !art->available || (flags&DFCS_INACTIVE))return (style_caption_raster){0};
+    unsigned image,width=CLASSIC_CAPTION_ART_WIDTH;
+    switch(role){
+    case CLASSIC_BUTTON_SYSTEM:
+        image=child?CLASSIC_IMAGE_ROLE_COUNT:CLASSIC_IMAGE_SYSTEM;
+        width=CLASSIC_SYSTEM_ART_WIDTH;
+        break;
+    case CLASSIC_BUTTON_MINIMIZE:image=CLASSIC_IMAGE_MINIMIZE;break;
+    case CLASSIC_BUTTON_MAXIMIZE:image=maximized?CLASSIC_IMAGE_RESTORE:CLASSIC_IMAGE_MAXIMIZE;break;
+    default:return (style_caption_raster){0};
+    }
+    return (style_caption_raster){art->roles[image][(flags&DFCS_PUSHED)!=0],
+        width,CLASSIC_CAPTION_ART_HEIGHT,width};
+}
+
 static DWORD pixel(COLORREF color)
 {return (DWORD)GetRValue(color)<<16 | (DWORD)GetGValue(color)<<8 | GetBValue(color);}
 
@@ -12,7 +30,7 @@ void style_caption_raster_paint(HDC dc,RECT bounds,const style_caption_raster *r
         return;
     for(unsigned y=0;y<raster->height;++y){
         for(unsigned x=0;x<raster->width;++x){
-            unsigned role=raster->roles[y*raster->stride+x]-raster->first_role;
+            unsigned role=raster->roles[y*raster->stride+x];
             if(role>=4)return;
             pixels[y*raster->width+x]=pixel(colors[role]);
         }
@@ -54,7 +72,7 @@ BOOL style_caption_button_paint(HDC dc,RECT bounds,enum classic_button_role role
 {
     if(IsRectEmpty(&bounds))return TRUE;
     if(raster && raster->roles && (role==CLASSIC_BUTTON_SYSTEM ||
-       presentation->button_source==STYLE_CAPTION_BUTTON_INDEXED)){
+       presentation->button_source!=STYLE_CAPTION_BUTTON_SYSTEM)){
         RECT image=bounds;
         if(presentation->button_outline==STYLE_CAPTION_BUTTON_EDGE_OUTLINE){
             COLORREF face=role==CLASSIC_BUTTON_SYSTEM && (flags&DFCS_PUSHED)?colors[2]:colors[3];
@@ -70,8 +88,14 @@ BOOL style_caption_button_paint(HDC dc,RECT bounds,enum classic_button_role role
             for(unsigned i=0;i<ARRAYSIZE(strokes);++i)FillRect(dc,&strokes[i],brush);
             if(role==CLASSIC_BUTTON_SYSTEM)image.right-=unit;
         }
-        style_caption_raster_paint(dc,image,raster,raster->palette_override?raster->palette_override:colors);
+        style_caption_raster_paint(dc,image,raster,colors);
         return TRUE;
+    }
+    if(role==CLASSIC_BUTTON_SYSTEM){
+        HICON icon=LoadIcon(NULL,IDI_APPLICATION);
+        int size=min(bounds.right-bounds.left,bounds.bottom-bounds.top);
+        return icon && DrawIconEx(dc,(bounds.left+bounds.right-size)/2,
+            (bounds.top+bounds.bottom-size)/2,icon,size,size,0,NULL,DI_NORMAL);
     }
     UINT glyph;
     switch(role){
@@ -106,7 +130,7 @@ BOOL style_caption_fill(HDC dc,RECT bounds,COLORREF start,COLORREF end,BOOL grad
     return GradientFill(dc,vertices,2,&range,1,GRADIENT_FILL_RECT_H);
 }
 
-RECT style_caption_band(HDC dc,RECT band,int fill_right,COLORREF start,COLORREF end,
+static RECT caption_band(HDC dc,RECT band,int fill_right,COLORREF start,COLORREF end,
     BOOL gradient,unsigned separator,int unit,COLORREF line)
 {
     RECT border=band;
@@ -142,4 +166,48 @@ BOOL style_caption_title(HDC dc,RECT bounds,PCWSTR title,HFONT font,COLORREF col
                 ETO_CLIPPED,&bounds,title,(UINT)length,NULL);
     }
     return DrawTextW(dc,title,-1,&bounds,DT_SINGLELINE|DT_VCENTER|DT_END_ELLIPSIS|DT_NOPREFIX)!=0;
+}
+
+BOOL style_caption_icon_visible(unsigned mode,BOOL system_button,DWORD style,DWORD extended)
+{
+    return !system_button && (style&WS_SYSMENU) && !(extended&WS_EX_TOOLWINDOW) &&
+        (mode==STYLE_CAPTION_ICON_NATIVE || mode==STYLE_CAPTION_ICON_DEFAULT);
+}
+
+BOOL style_caption_icon_bounds(RECT band,int limit,UINT dpi,RECT *icon)
+{
+    if(IsRectEmpty(&band))return FALSE;
+    int width=GetSystemMetricsForDpi(SM_CXSMICON,dpi)+MulDiv(4,(int)dpi,96);
+    if(width<=0 || width>=limit-band.left)return FALSE;
+    *icon=band;
+    icon->right=band.left+width;
+    return TRUE;
+}
+
+void style_caption_render(HDC dc,PCWSTR title,HFONT font,const style_caption_render_model *model,
+    const style_caption_presentation *presentation,const classic_caption_art *art)
+{
+    const COLORREF *colors=model->button_colors;
+    COLORREF separator=presentation->separator==STYLE_CAPTION_SEPARATOR_AFTER?colors[0]:colors[3];
+    RECT band=caption_band(dc,model->band,model->text.right,model->start,model->end,
+        model->gradient,presentation->separator,model->unit,separator);
+    RECT text=model->text;
+    if(presentation->text_mode!=STYLE_CAPTION_TEXT_CENTER_CLIP)text.left+=2;
+    text.bottom=min(text.bottom,band.bottom);
+    style_caption_title(dc,text,title,font,model->ink,presentation->text_mode);
+    for(enum classic_button_role role=CLASSIC_BUTTON_SYSTEM;role<=CLASSIC_BUTTON_CLOSE;++role){
+        if(IsRectEmpty(&model->buttons[role]))continue;
+        UINT flags=model->flags[role];
+        style_caption_raster raster=style_caption_button_raster(art,role,model->maximized,model->child,flags);
+        style_caption_button_paint(dc,model->buttons[role],role,model->maximized,flags,
+            model->unit,presentation,&raster,colors);
+    }
+    if(model->icon && !IsRectEmpty(&model->icon_bounds)){
+        RECT bounds=model->icon_bounds;
+        int width=min(bounds.right-bounds.left,model->icon_size.cx);
+        int height=min(bounds.bottom-bounds.top,model->icon_size.cy);
+        if(width>0 && height>0)
+            DrawIconEx(dc,bounds.left+(bounds.right-bounds.left-width)/2,
+                bounds.top+(bounds.bottom-bounds.top-height)/2,model->icon,width,height,0,NULL,DI_NORMAL);
+    }
 }

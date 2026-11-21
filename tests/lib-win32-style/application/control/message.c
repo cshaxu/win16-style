@@ -11,7 +11,7 @@ static fixture *from_font(HFONT font){for(unsigned i=0;i<2;++i)if(fixtures[i].fo
 static void retain(HFONT font){if(font){fixture *f=from_font(font);if(f)++f->leases;else ++bad;}}
 static void release(HFONT font){if(font){fixture *f=from_font(font);if(!f || !f->leases)++bad;else --f->leases;}}
 static HFONT source(HFONT font){return font;}
-static HFONT acquire(HWND w,HFONT font,BOOL native){(void)w;(void)native;retain(font);return font;}
+static HFONT acquire(HWND w,HFONT font,BOOL native,unsigned recipe){(void)recipe;(void)w;(void)native;retain(font);return font;}
 static const style_control_fonts fonts={source,acquire,retain,release};
 static void dispose(void *owner)
 {

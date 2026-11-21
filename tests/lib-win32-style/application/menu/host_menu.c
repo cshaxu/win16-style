@@ -30,7 +30,10 @@ static BOOL test_popup(HWND owner,HMENU menu)
     UINT_PTR timer=SetTimer(owner,1,500,stop_menu);
     if(timer){
         ShowWindow(owner,SW_SHOWNOACTIVATE);
-        TrackPopupMenuEx(menu,TPM_RETURNCMD|TPM_NOANIMATION,0,0,owner,NULL);
+        style_system_menu_session session;
+        style_system_menu_begin(&session,owner,menu);
+        style_system_menu_track(&session,owner,(POINT){0,0});
+        style_system_menu_end(&session);
         KillTimer(owner,timer);
     }
     UnhookWindowsHookEx(hook);return timer && popup_seen && popup_restored;
@@ -48,11 +51,17 @@ int main(int argc,char **argv)
     CHECK(!presented && GetWindowLongPtrW(w,GWL_EXSTYLE)==ex);
     style_uwp_menu_unpresent(w,menu);
     CHECK(GetWindowLongPtrW(w,GWL_EXSTYLE)==ex);
-    UINT before=GetMenuState(system,SC_RESTORE,MF_BYCOMMAND);style_uwp_menu_state state;
-    style_uwp_menu_restrict(w,system,&state);
+    UINT before=GetMenuState(system,SC_RESTORE,MF_BYCOMMAND);style_system_menu_session session;
+    style_system_menu_begin(&session,w,system);
     CHECK((GetMenuState(system,SC_RESTORE,MF_BYCOMMAND)&MF_GRAYED)!=0);
-    style_uwp_menu_restore(system,&state);
+    style_system_menu_end(&session);
     CHECK((GetMenuState(system,SC_RESTORE,MF_BYCOMMAND)&(MF_DISABLED|MF_GRAYED))==(before&(MF_DISABLED|MF_GRAYED)));
+    CHECK(!session.menu && !style_system_menu_track(&session,w,(POINT){0,0}));
+    style_system_menu_begin(&session,w,system);
+    GetSystemMenu(w,TRUE);
+    CHECK(!style_system_menu_track(&session,w,(POINT){0,0}));
+    style_system_menu_end(&session);
+    CHECK(!session.menu && GetSystemMenu(w,FALSE)!=NULL);
     CHECK(AppendMenuW(menu,MF_STRING,0xeff0,L"Existing"));int owner=1,other=2;
     UINT id=style_uwp_menu_add(menu,L"Action",&owner);CHECK(id==0xefe0);
     style_uwp_menu_remove(menu,id,&other);CHECK(GetMenuState(menu,id,MF_BYCOMMAND)!=(UINT)-1);

@@ -51,3 +51,35 @@ EXPORTS
     style_menu_tracking_end
     style_menu_tracking_current
     style_menu_tracking_update
+    Ntw16sCreationBegin
+    Ntw16sCreationEnd
+    Ntw16sGetAbiVersion
+    Ntw16sScrollChanged
+    Ntw16sSetWindowTheme
+    Ntw16sWindowAttached
+    Ntw16sWindowRemove
+    Ntw16sWindowTerminal
+    win16_style_control_install
+    win16_style_control_remove
+    win16_style_default_palette
+    win16_style_edit_install
+    win16_style_edit_scrollbars_enable
+    win16_style_frame_scrollbars_install
+    win16_style_frame_scrollbars_remove
+    win16_style_get_scroll_info
+    win16_style_hit_test
+    win16_style_install
+    win16_style_list_scrollbar_enable
+    win16_style_remove
+    win16_style_scrollbars_paint
+    win16_style_set_scroll_info
+    Ntw16sShowModernFileDialog
+    Ntw16sGlobalHook
+    Ntw16sGlobalHost
+    Ntw16sWindowAttach
+    Ntw16sGlobalThread=ntw16s_global_thread_worker
+    Ntw16sUwpFrameHook
+    Ntw16sWindowThreadHook
+    Ntw2ksWindowAttach
+    Ntw2ksWindowAttached
+    Ntw2ksWindowRemove

@@ -18,6 +18,14 @@ enum classic_button_role style_caption_role(int hit)
     return 0;
 }
 
+BOOL style_caption_button_enabled(HWND window,int hit)
+{
+    if(hit!=HTCLOSE)return style_caption_role(hit)!=0;
+    HMENU menu=GetSystemMenu(window,FALSE);
+    UINT state=menu?GetMenuState(menu,SC_CLOSE,MF_BYCOMMAND):(UINT)-1;
+    return state!=(UINT)-1 && !(state&(MF_GRAYED|MF_DISABLED));
+}
+
 UINT style_caption_command(enum classic_button_role role,BOOL maximized)
 {
     switch(role){
@@ -47,6 +55,10 @@ BOOL style_caption_slots(const classic_button_group *group,const RECT *band,UINT
     if(!group || !band || !bounds || group->count>CLASSIC_BUTTON_CLOSE || !dpi || dpi>INT_MAX ||
        dimensions.cx<=0 || dimensions.cy<=0 || (int64_t)band->bottom-band->top<dimensions.cy)
         return FALSE;
+    if(group->layout&CLASSIC_BUTTON_LAYOUT_EXPLICIT){
+        clip_right=(group->layout&CLASSIC_BUTTON_LAYOUT_CLIP)!=0;
+        if(group->layout&CLASSIC_BUTTON_LAYOUT_FILL)dimensions.cy=band->bottom-band->top;
+    }
     RECT result[CLASSIC_BUTTON_CLOSE+1]={0};
     int64_t top=band->top+((int64_t)band->bottom-band->top-dimensions.cy)/2;
     int left_margin=MulDiv(group->left_margin,(int)dpi,96),right_margin=MulDiv(group->right_margin,(int)dpi,96);
@@ -87,7 +99,6 @@ BOOL style_caption_slots(const classic_button_group *group,const RECT *band,UINT
             previous=TRUE;
         }
     }
-    if(placed!=present)return FALSE;
     memcpy(bounds,result,sizeof(result));
     return TRUE;
 }

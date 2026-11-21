@@ -43,13 +43,14 @@ static void print_client(HWND window,HDC dc)
 
 int wmain(int argc,WCHAR **argv)
 {
+    BOOL fingerprints=argc==2 && !wcscmp(argv[1],L"--control-fingerprints");
     BOOL themed_header=argc==3 && !wcscmp(argv[1],L"--header-edge");
     BOOL themed_tab=argc==4 && !wcscmp(argv[1],L"--tab-edge");
-    BOOL themed=themed_header || themed_tab;
+    BOOL themed=themed_header || themed_tab || fingerprints;
     CHECK(themed || argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
-    const INITCOMMONCONTROLSEX classes={sizeof(classes),ICC_TAB_CLASSES|ICC_LISTVIEW_CLASSES};
+    const INITCOMMONCONTROLSEX classes={sizeof(classes),ICC_TAB_CLASSES|ICC_LISTVIEW_CLASSES|ICC_BAR_CLASSES};
     CHECK(InitCommonControlsEx(&classes));
     HMODULE dll=NULL;
     window_op attach=NULL,attached=NULL,remove=NULL;
@@ -74,6 +75,36 @@ int wmain(int argc,WCHAR **argv)
     CHECK(dc && bitmap);
     HGDIOBJ old=SelectObject(dc,bitmap);
     CHECK(old && old!=HGDI_ERROR);
+
+    if(fingerprints){
+        const WCHAR *types[]={WC_TABCONTROLW,WC_HEADERW,TRACKBAR_CLASSW};
+        const DWORD styles[]={0,HDS_BUTTONS,TBS_AUTOTICKS};
+        const int heights[]={120,24,36};
+        for(unsigned i=0;i<ARRAYSIZE(types);++i){
+            HWND control=CreateWindowW(types[i],NULL,WS_CHILD|WS_VISIBLE|styles[i],
+                0,0,250,heights[i],root,NULL,module,NULL);
+            CHECK(control);
+            if(i==0){
+                TCITEMW item={.mask=TCIF_TEXT,.pszText=L"Tab"};
+                CHECK(SendMessageW(control,TCM_INSERTITEMW,0,(LPARAM)&item)==0);
+            }else if(i==1){
+                HDITEMW item={.mask=HDI_WIDTH|HDI_FORMAT|HDI_TEXT,.cxy=90,.fmt=HDF_STRING,.pszText=L"Name"};
+                CHECK(SendMessageW(control,HDM_INSERTITEMW,0,(LPARAM)&item)==0);
+            }else{
+                SendMessageW(control,TBM_SETRANGE,FALSE,MAKELPARAM(0,100));
+                SendMessageW(control,TBM_SETPOS,FALSE,40);
+                CHECK(SendMessageW(control,TBM_GETPOS,0,0)==40);
+            }
+            print_client(control,dc);
+            unsigned long hash=2166136261u;
+            for(int y=0;y<heights[i];++y)
+                for(int x=0;x<250;++x)hash=(hash^GetPixel(dc,x,y))*16777619u;
+            printf("CONTROL_THEME type=%u pixels=%08lx\n",i,hash);
+            CHECK(DestroyWindow(control));
+        }
+        CHECK(DestroyWindow(root) && SelectObject(dc,old) && DeleteObject(bitmap) && DeleteDC(dc));
+        return 0;
+    }
 
     if(themed_header){
         WCHAR *end;

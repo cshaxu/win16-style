@@ -18,7 +18,7 @@ static int child(const WCHAR *path,BOOL styled) {
  HMODULE runtime=LoadLibraryW(path); CHECK(runtime && runtime==GetModuleHandleW(L"MSVBVM60.DLL"));
  BOOL (WINAPI *reg)(void)=(void*)GetProcAddress(runtime,"VbDataRegister"), (WINAPI *release)(void)=(void*)GetProcAddress(runtime,"VbDataRelease");
  BOOL (WINAPI *inspect)(HWND,BOOL*,unsigned*,unsigned*)=(void*)GetProcAddress(runtime,"VbDataInspect"); CHECK(reg && release && inspect && reg());
- HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll"); BOOL (__cdecl *attached)(HWND)=dll?(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL; CHECK(styled?attached!=NULL:dll==NULL);
+ HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll"); BOOL (__cdecl *attached)(HWND)=dll?(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL; CHECK(styled?attached!=NULL:dll==NULL);
  HINSTANCE self=GetModuleHandleW(NULL); WNDCLASSW c={.hInstance=self,.lpfnWndProc=parent_proc,.lpszClassName=L"VBDataTestParent"}; CHECK(RegisterClassW(&c));
  HWND root=CreateWindowW(c.lpszClassName,L"",WS_POPUP|WS_VISIBLE,0,0,280,150,NULL,NULL,self,NULL); CHECK(root);
  HWND w=CreateWindowExW(WS_EX_CLIENTEDGE|WS_EX_NOPARENTNOTIFY,L"ThunderRT6Data",L"",WS_CHILD|WS_VISIBLE|WS_BORDER,0,0,W+6,H+6,root,(HMENU)1,runtime,NULL); CHECK(w);

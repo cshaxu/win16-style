@@ -43,7 +43,7 @@ static int child(BOOL styled,BOOL aware)
     WNDCLASSW parent={0};parent.hInstance=instance;parent.lpszClassName=L"ChecklistParent";parent.lpfnWndProc=parent_proc;CHECK(RegisterClassW(&parent));
     HWND root=CreateWindowW(parent.lpszClassName,L"Checklist",WS_OVERLAPPEDWINDOW,0,0,300,200,NULL,NULL,instance,NULL);CHECK(root);
     target=CreateWindowW(c.lpszClassName,L"",WS_CHILD|WS_VISIBLE|LBS_OWNERDRAWFIXED|LBS_HASSTRINGS,10,10,180,70,root,(HMENU)42,instance,NULL);CHECK(target);
-    HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
+    HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll");
     BOOL (__cdecl *attached)(HWND)=dll?(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL;
     BOOL (__cdecl *remove_control)(HWND)=dll?(void*)GetProcAddress(dll,"Ntw16sWindowRemove"):NULL;
     if(styled)CHECK(attached && remove_control && attached(target));else CHECK(!dll);

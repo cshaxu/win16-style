@@ -1,6 +1,5 @@
 #include "updown_paint.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
-#include "lib-win32-style/application/graphics/pixel_grid.h"
 #include <commctrl.h>
 
 static BOOL updown_paint(HWND window,const win16_style_palette *palette,const win16_control_updown *s,
@@ -14,28 +13,7 @@ static BOOL updown_paint(HWND window,const win16_style_palette *palette,const wi
     const style_relief_palette p={.face=palette->face,.light=palette->light,.highlight=palette->light,
         .shadow=palette->shadow,.dark=palette->edge,.text=palette->edge};
     UINT state=direction|(pressed?DFCS_PUSHED:0)|(disabled?DFCS_INACTIVE:0);
-    BOOL painted=TRUE;
-    if(s->art && s->art->source==STYLE_SCROLL_ARROW_SYMBOL){
-        painted=style_paint_scroll_arrow(dc,&r,state,&p,s->art);
-    }else{
-        int dpi=(int)GetDpiForWindow(window),unit=max(1,MulDiv(1,dpi,96));
-        r=style_paint_outlined_face(dc,r,unit,TRUE,pressed,p.face,&p);
-        InflateRect(&r,-unit,-unit);
-        enum { inset=3, image=STYLE_SCROLL_ARROW_SIDE-2*inset };
-        int side=min(MulDiv(image,dpi,96),min(r.right-r.left,r.bottom-r.top));
-        if(side>0){
-            /* Center the square glyph inside the native button rectangle. */
-            LONG left=r.left+(r.right-r.left-side)/2,top=r.top+(r.bottom-r.top-side)/2;
-            RECT box={left,top,left+side,top+side};
-            if(!style_paint_scroll_arrow_crop(dc,&box,state,&p,s->art)){
-                const char (*bits)[18]=*s->glyphs[direction+(disabled?8:pressed?4:0)];
-                const COLORREF colors[]={p.dark,p.highlight,p.shadow,p.face};
-                const style_pixel_grid grid={&bits[inset][inset],image,image,sizeof(*bits),-1,colors,
-                    {left,top},{side,side},{image,image}};
-                style_paint_pixel_grid(dc,&grid);
-            }
-        }
-    }
+    BOOL painted=style_paint_arrow_button(dc,r,state,GetDpiForWindow(window),&p,s->art,s->metrics);
     return RestoreDC(dc,saved) && painted;
 }
 
@@ -56,9 +34,9 @@ static BOOL updown_render(HWND w,void *context,HDC dc,const RECT *rect,const REC
     }
     return updown_paint(w,&palette,s,dc,rect,clip,direction,pressed,disabled);
 }
-void win16_control_updown_register(win16_control_updown *s,style_control_updown *binding,HWND w,HMODULE native,const win16_style_palette *palette,ntw16s_updown_glyph *const *glyphs,void *owner,BOOL (*acquire)(void *),void (*release)(void *))
+void win16_control_updown_register(win16_control_updown *s,style_control_updown *binding,HWND w,HMODULE native,const win16_style_palette *palette,void *owner,BOOL (*acquire)(void *),void (*release)(void *))
 {
-    s->palette=palette;s->glyphs=glyphs;
+    s->palette=palette;
     const style_control_updown_ops ops={s,updown_supported,updown_render};
     style_control_updown_register(binding,w,native,owner,acquire,release,&ops);
 }

@@ -1,6 +1,5 @@
 #define _WIN32_WINNT 0x0A00
 #include "stock_call.h"
-#include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "color.h"
 #include "find.h"
@@ -22,7 +21,7 @@ static _Thread_local stock_scope *active_stock;
 static classic_dialog_metrics stock_metrics(const style_dialog_windows *windows)
 {
     HMODULE module=windows->resources?windows->resources():NULL;
-    return classic_theme_dialog_metrics(module,(classic_dialog_metrics)WIN2000_DIALOG_METRICS);
+    return classic_theme_dialog_metrics(module);
 }
 
 static LRESULT CALLBACK observe_stock(int code,WPARAM wp,LPARAM lp)
@@ -39,8 +38,9 @@ static LRESULT CALLBACK observe_stock(int code,WPARAM wp,LPARAM lp)
                 event->lParam && (((const WINDOWPOS *)event->lParam)->flags&SWP_SHOWWINDOW) &&
                 active_stock->windows->attached(window) && style_classic_font_template(window)){
             BOOL callback=active_stock->layout==STOCK_FONT_WITH_CALLBACK;
-            win2k_restore_stock_dialog_client(window,callback?active_stock->metrics.font_width:0,
-                callback?active_stock->metrics.font_height:0);
+            if(!callback || active_stock->metrics.font_width)
+                win2k_restore_stock_dialog_client(window,callback?active_stock->metrics.font_width:0,
+                    callback?active_stock->metrics.font_height:0);
         }
     }
     SetLastError(incoming);

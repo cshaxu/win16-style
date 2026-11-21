@@ -23,10 +23,11 @@ typedef struct style_scroll_track {
 
 typedef struct style_scroll_policy {
     UINT initial_repeat_ms,repeat_ms;
-    int tolerance_x,tolerance_y; /* logical pixels; scaled once by controller */
+    style_scroll_drag drag;
     style_scroll_part (*hit)(const style_scroll_layout *,POINT,UINT);
-    RECT (*drag_bounds)(HWND,const style_scroll_layout *);
 } style_scroll_policy;
+
+void style_scroll_repeat_configure(style_scroll_policy *,UINT initial_ms,UINT repeat_ms);
 
 BOOL style_scroll_begin(style_scroll_track *track,const style_scroll_layout *layout,
     UINT disabled,POINT point,const RECT *drag_limit,style_scroll_actions *actions,const style_scroll_policy *policy);
