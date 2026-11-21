@@ -232,10 +232,11 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
         COLOR_FIELD(class_window,WP_CAPTION,CS_INACTIVE,TMT_GRADIENTCOLOR2)
     };
     const unsigned push_states[]={PBS_NORMAL,PBS_PRESSED,PBS_DISABLED,PBS_DEFAULTED};
-    theme_field push[CLASSIC_PUSH_STATE_COUNT*2];
+    theme_field push[CLASSIC_PUSH_STATE_COUNT*2],push_text[CLASSIC_PUSH_STATE_COUNT];
     for(size_t i=0;i<ARRAYSIZE(push_states);++i){
         push[2*i]=(theme_field)COLOR_FIELD(class_button,BP_PUSHBUTTON,push_states[i],TMT_FILLCOLOR);
         push[2*i+1]=(theme_field)COLOR_FIELD(class_button,BP_PUSHBUTTON,push_states[i],TMT_BORDERCOLOR);
+        push_text[i]=(theme_field)COLOR_FIELD(class_button,BP_PUSHBUTTON,push_states[i],TMT_TEXTCOLOR);
     }
     const unsigned scroll_parts[]={SBP_THUMBBTNHORZ,SBP_THUMBBTNVERT,SBP_LOWERTRACKHORZ,
         SBP_LOWERTRACKVERT,SBP_SIZEBOX};
@@ -439,6 +440,8 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
         if(item.class_id==indices[class_button]){
             result=read_fields(&item,indices,push,ARRAYSIZE(push));
             if(FAILED(result))return result;
+            result=read_fields(&item,indices,push_text,ARRAYSIZE(push_text));
+            if(FAILED(result))return result;
             result=read_fields(&item,indices,group_colors,ARRAYSIZE(group_colors));
             if(FAILED(result))return result;
             if(!read_choice(&item,&theme->choice))return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
@@ -575,10 +578,15 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
         theme->inactive.start=fields[first_gradient+2].value;
         theme->inactive.end=fields[first_gradient+3].value;
     }
-    for(size_t i=0;i<CLASSIC_PUSH_STATE_COUNT;++i)
+    for(size_t i=0;i<CLASSIC_PUSH_STATE_COUNT;++i){
         theme->push.state[i]=(classic_surface_colors){
             push[2*i].present?push[2*i].value:fields[button_face].value,
             push[2*i+1].present?push[2*i+1].value:fields[button_edge].value};
+        if(push_text[i].present){
+            theme->push.text_states|=1u<<i;
+            theme->push.text[i]=push_text[i].value;
+        }
+    }
     theme->scroll_arrow=(classic_surface_colors){fields[scroll_face].value,fields[scroll_edge].value};
     BOOL has_thumb,has_track;
     if(!scroll_colors(scroll,scroll_track_pairs,theme->scroll.thumb,&has_thumb) ||

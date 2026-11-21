@@ -63,6 +63,7 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
     }
     if(label_control || type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX || (style&BS_PUSHLIKE)){
         win16_style_palette palette=*view->palette;
+        COLORREF text_color=CLR_INVALID;
         BOOL static_shape=(static_type>=SS_BLACKRECT && static_type<=SS_WHITEFRAME) ||
             (static_type>=SS_ETCHEDHORZ && static_type<=SS_ETCHEDFRAME);
         if(label_control && static_shape && view->frame && view->frame->present){
@@ -78,12 +79,14 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
         }
         if(view->push && !label_control && (type<=BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE))){
             BOOL pressed=(state&BST_PUSHED) || ((style&BS_PUSHLIKE) && check!=BST_UNCHECKED);
-            classic_surface_colors colors=classic_push_color(view->push,(style&WS_DISABLED)!=0,pressed,
+            enum classic_push_state role=classic_push_state_from_button((style&WS_DISABLED)!=0,pressed,
                 type==BS_DEFPUSHBUTTON);
+            classic_surface_colors colors=view->push->state[role];
             palette.face=colors.face;
             palette.edge=colors.edge;
+            text_color=classic_push_text_color(view->push,role);
         }
-        win16_control_other(w,view->instance,&palette,dc,r,font,text,label_control,view->button_type,view->group_push,view->controls);
+        win16_control_other(w,view->instance,&palette,dc,r,font,text,label_control,view->button_type,view->group_push,view->controls,text_color);
         RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;
     }
     SelectObject(dc,font);

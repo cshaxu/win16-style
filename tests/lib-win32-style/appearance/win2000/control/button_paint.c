@@ -155,6 +155,42 @@ static int standard_fingerprints(void)
 int wmain(int argc,WCHAR **argv)
 {
     if(argc==2 && !wcscmp(argv[1],L"--standard-fingerprints"))return standard_fingerprints();
+    if(argc==6 && !wcscmp(argv[1],L"--theme-push-text")){
+        HINSTANCE module=GetModuleHandleW(NULL);
+        WNDCLASSW cls={.lpfnWndProc=parent_proc,.hInstance=module,.lpszClassName=L"OwnedPushText"};
+        CHECK(RegisterClassW(&cls));
+        HWND parent=CreateWindowW(cls.lpszClassName,L"",WS_OVERLAPPEDWINDOW,40,40,220,130,NULL,NULL,module,NULL);
+        CHECK(parent);
+        HWND button=CreateWindowW(L"BUTTON",L"Text",WS_CHILD|BS_PUSHBUTTON,0,0,100,32,parent,NULL,module,NULL);
+        CHECK(button);
+        HDC dc=CreateCompatibleDC(NULL);void *pixels;
+        BITMAPINFO info={.bmiHeader={sizeof(BITMAPINFOHEADER),100,-32,1,32,BI_RGB}};
+        HBITMAP bitmap=CreateDIBSection(dc,&info,DIB_RGB_COLORS,&pixels,NULL,0);
+        CHECK(dc && bitmap);
+        HGDIOBJ old=SelectObject(dc,bitmap);
+        CHECK(old && old!=HGDI_ERROR);
+        HFONT font=CreateFontW(-13,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,
+            CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,DEFAULT_PITCH,L"Tahoma");
+        CHECK(font);
+        SendMessageW(button,WM_SETFONT,(WPARAM)font,FALSE);
+        for(unsigned state=0;state<4;++state){
+            if(state==1)SendMessageW(button,BM_SETSTATE,TRUE,0);
+            if(state==2){SendMessageW(button,BM_SETSTATE,FALSE,0);EnableWindow(button,FALSE);}
+            if(state==3){EnableWindow(button,TRUE);SendMessageW(button,BM_SETSTYLE,BS_DEFPUSHBUTTON,FALSE);}
+            WCHAR *end;
+            unsigned long expected=wcstoul(argv[state+2],&end,16);
+            CHECK(end!=argv[state+2] && !*end && expected<=0xffffff);
+            capture(button,dc);
+            unsigned count=0;
+            for(int y=5;y<27;++y)for(int x=17;x<83;++x)
+                if(GetPixel(dc,x,y)==(COLORREF)expected)++count;
+            printf("PUSH LABEL state=%u rgb=%06lx pixels=%u\n",state,expected,count);
+            CHECK(count>0);
+        }
+        CHECK(DestroyWindow(parent) && SelectObject(dc,old) && DeleteObject(bitmap) && DeleteDC(dc) && DeleteObject(font));
+        puts("PUSH LABEL PASS normal=1 pressed=1 disabled=1 defaulted=1");
+        return 0;
+    }
     CHECK(argc==2 || (argc==3 && (!wcscmp(argv[2],L"aware") || !wcscmp(argv[2],L"hooked"))));
     BOOL aware=argc==3 && !wcscmp(argv[2],L"aware"),hooked=argc==3 && !wcscmp(argv[2],L"hooked");
     if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));

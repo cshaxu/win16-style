@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P27",
-  "stage": "published development candidate; dual-width menu font realization and mixed-theme pixels verified",
+  "delivery": "M0 T29 S23 P28",
+  "stage": "published development candidate with button label state colors verified on both widths",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P26 9eebe0fd1219 (binary delivery P25)",
-  "source_snapshot_sha256": "1058acdac86a696222ae6e17f5e735530e2ad746fa050a1e34573c5978e43eeb",
+  "last_verified_remote_delivery": "M0 T29 S23 P27 70bb248f3452",
+  "source_snapshot_sha256": "5e19c930f950957a58942c6a42e27d454094a8efea2b4dfe81010cd6f3e13dba",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "54dd2f979e7776327476875bab8060ae977169a1837e3d37dca3a1ed81570717",
+      "sha256": "407f786ea5bd9fb6281d09e613ff43e9b51613c671a77dc9382c2c60a31e7e1c",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "88eef6c0d6e44f24ba4278660b218eb3974e3294ca51915041041590b442924d",
+      "sha256": "099878a6db1d3164be61cb518821a4d141568bd46da3380df5979116a57ccdaa",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "ce716f7f1259e8225c761469b38483a53b44c585b9d2bd4cd1c46fad6e7bf897",
+      "sha256": "7392bc26ed053a7bbe1911463fdd637b1232b0dc22c6e2d0709600302761b592",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -285,7 +285,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P27 fresh results are listed in menu_font_delivery.",
+    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P28 results are recorded in push_text_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -403,13 +403,24 @@
         "physical input",
         "full package matrix"
       ]
+    },
+    "push_text_delivery": {
+      "test_invocations_passed": 12,
+      "mixed_runtime_cases": 4,
+      "explicit_label_state_checks": 16,
+      "stock_pixel_comparisons": 4,
+      "scope": "Standard Button.PushButton state TextColor values reached actual GDI glyph pixels with both adapters. Stock push button and group box image hashes match P27.",
+      "not_retested": [
+        "full package matrix",
+        "physical input"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P27 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P28 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1957,
-    "cache_misses": 167
+    "cache_hits": 1996,
+    "cache_misses": 128
   }
 }

@@ -62,7 +62,7 @@ static BOOL actual_fitted_button(void)
     if(ok){
         style_instance instance={0};win16_style_palette palette;win16_style_default_palette(&palette);
         int saved=SaveDC(dc);RECT bounds={0,0,80,40};
-        win16_control_other(w,&instance,&palette,dc,bounds,font,L"A deliberately long caption",FALSE,fit_button_type,fit_group_push,(classic_control_presentation){0});
+        win16_control_other(w,&instance,&palette,dc,bounds,font,L"A deliberately long caption",FALSE,fit_button_type,fit_group_push,(classic_control_presentation){0},CLR_INVALID);
         int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
         for(int y=4*unit;y<40-4*unit;++y)for(int x=6*unit;x<80-6*unit;++x)
             if(GetPixel(dc,x,y)==palette.edge)++ink;

@@ -3742,7 +3742,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "da54adf54b10c6cab627719fe8702fcab9e34cf21f3fa1bfe09e0723f3193af1",
+      "sha256": "3b6a35b470da39f4030d2a64992f9fcc000a251fff9b04d7ed60e415a12aa2c5",
       "review": "T21 S22 extraction of existing button and static presentation; T26 S1 shared solid frame painter; T26 S1 direct shared painter include; T26 S1 shared icon size and resource cleanup; T26 S2 mechanical path/include relocation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction; S13 complete text-fit resource operation and actual-native test mapping"
     },
     {
@@ -3751,7 +3751,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "eba2d36b3241a2cecc001205d720e1e0e948824c1fcc2825f37add2f709a64fe",
+      "sha256": "b692ec015919281e956bd056a2736c3e12bb420318075825e951090aeea3898f",
       "review": "T21 S22 extraction of existing button and static presentation; T26 S2 mechanical path/include relocation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction"
     },
     {
@@ -3841,7 +3841,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "6c4f2d87251aee41b42ef9bb7bd71ae97e6599d7f8074b6ffaee6ca6f14a5668",
+      "sha256": "92f111a3efa2b3c147f13be3d8616bae29164255f19628669344a826038b4fe6",
       "review": "T21 S22 extraction of standard button and static presentation; T26 S1 shared icon size and resource cleanup; T26 S1 shared window text snapshot; T26 S2 mechanical path/include relocation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction"
     },
     {
@@ -3859,7 +3859,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "8f0bd794c2dd4b3357a05a84daa64bbe8172c3b5a59365fbc5728d62a5193cbd",
+      "sha256": "333442fd2b03419ae1e7d93d57302d22a963b9b47bb1374df00aefb958e567cc",
       "review": "T21 S22 standalone whole-archive linkage and original glyph smoke test; T26 S1 shared classic dialog combo eligibility; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common basic control resource lifecycle and real consumers; T26 S10 native caller classification moved to common runtime text; original identity predicates retained; T26 S10 public attachment root/lifecycle consumed; private state/consumer accesses migrated, normal/terminal cleanup contract retained; T26 S10 complete control message borrow/font/native observation transaction moved to public message; profile consumes full operation object; T26 S10 native runtime initialization/selection moved to public attachment/runtime, complete owner-policy phase and original query/reference order preserved; S13 complete text-fit resource operation and actual-native test mapping; S13 complete glyph translation temporary ownership and real consumer retained"
     },
     {
@@ -9800,7 +9800,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "450d8af11e76748b7510574eba97a8f26996a7960ab6f72d449aa2295e22bf57"
+      "sha256": "b0ea2d2cb289de1afae6792cdf3f750fd019a9f5fe2d508aea33774118d80ad9"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/button_paint.h",
@@ -9854,7 +9854,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "5a8002c6e6a2db39f8395cdd304dec1b69e4b5da9fb45a7f977e2d0c5e44514e"
+      "sha256": "6315c1aa87789e9ab5c204dee8801cf4f12e83271202fd22fbd43bf964006689"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/background.c",
@@ -10535,7 +10535,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "648fd4ff83997df25b45147356973aef4ca5c7919f8fbb92a31dae1d2fdc097f",
+      "sha256": "ebe34d0e31d7ee219731db58cb92de983ed98bc68e245fd5eb164511892e35a5",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10544,7 +10544,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "5394a1224539c5fb65b7fd7c62776bae7539bdce2ccd89580d14e7f9712e150f",
+      "sha256": "99f5b5afddf9d1791f1cabf7380564c934dda7f0278447febbcf451de3f456e7",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"

@@ -127,10 +127,16 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
     if(snapshot.style&BS_FLAT)state|=DFCS_FLAT|DFCS_MONO;
     if(push){
         if(colors){
-            classic_surface_colors surface=classic_push_color(colors,(snapshot.style&WS_DISABLED)!=0,
+            enum classic_push_state role=classic_push_state_from_button((snapshot.style&WS_DISABLED)!=0,
                 (state&DFCS_PUSHED) || snapshot.check!=BST_UNCHECKED,snapshot.role.type==BS_DEFPUSHBUTTON);
+            classic_surface_colors surface=colors->state[role];
             palette.face=surface.face;
             palette.dark=surface.edge;
+            COLORREF ink=classic_push_text_color(colors,role);
+            if(ink!=CLR_INVALID && !(snapshot.style&(BS_BITMAP|BS_ICON))){
+                palette.text=ink;
+                palette.gray=ink;
+            }
         }
         SetBkMode(dc,TRANSPARENT);SetTextColor(dc,p->text);SetBkColor(dc,p->face);
         if(snapshot.check)state|=DFCS_CHECKED;

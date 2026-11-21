@@ -5,7 +5,7 @@
 #include "../../../application/graphics/paint_frame.h"
 #include <commctrl.h>
 
-void win16_control_other(HWND w,style_instance *instance,const win16_style_palette *palette,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label,UINT (*button_type)(HWND,DWORD),BOOL (*group_push)(HWND),classic_control_presentation controls)
+void win16_control_other(HWND w,style_instance *instance,const win16_style_palette *palette,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label,UINT (*button_type)(HWND,DWORD),BOOL (*group_push)(HWND),classic_control_presentation controls,COLORREF text_color)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);UINT type=(label?(style&SS_TYPEMASK):button_type(w,style));
     int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));RECT bounds=r;TEXTMETRICW tm;
@@ -51,7 +51,8 @@ void win16_control_other(HWND w,style_instance *instance,const win16_style_palet
          * is the distinct single-line, always-enabled original fast path. */
         flags|=type==SS_SIMPLE?DT_SINGLELINE:DT_EXPANDTABS|(type==SS_LEFTNOWORDWRAP?0:DT_WORDBREAK);
         if(style&SS_NOPREFIX)flags|=DT_NOPREFIX;}
-    if(!IsWindowEnabled(w) && !(label && type==SS_SIMPLE))SetTextColor(dc,(*palette).shadow);
+    if(text_color==CLR_INVALID)text_color=!IsWindowEnabled(w) && !(label && type==SS_SIMPLE)?palette->shadow:palette->edge;
+    SetTextColor(dc,text_color);
     if(!label && (style&(BS_ICON|BS_BITMAP))){
         UINT image_type=(style&BS_ICON)?IMAGE_ICON:IMAGE_BITMAP;
         style_control_button_image snapshot;
@@ -88,7 +89,7 @@ void win16_control_other(HWND w,style_instance *instance,const win16_style_palet
         if(GetFocus()==w){RECT focus=bounds;InflateRect(&focus,-u,-u);DrawFocusRect(dc,&focus);}
         return;
     }
-    BOOL fitted_text=fit && style_text_fit(dc,font,text,&bounds,(*palette).face,IsWindowEnabled(w)?(*palette).edge:(*palette).shadow,(SIZE){4096,256},&fitted);
+    BOOL fitted_text=fit && style_text_fit(dc,font,text,&bounds,palette->face,text_color,(SIZE){4096,256},&fitted);
     if(!fitted_text)DrawTextW(dc,text,-1,&bounds,flags);
     if(!label && GetFocus()==w){
         /* USER 25:15DE..1694 bounds focus around the measured label, not

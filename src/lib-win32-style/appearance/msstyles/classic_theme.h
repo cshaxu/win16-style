@@ -117,6 +117,8 @@ enum classic_push_state {
 
 typedef struct classic_push_colors {
     classic_surface_colors state[CLASSIC_PUSH_STATE_COUNT];
+    COLORREF text[CLASSIC_PUSH_STATE_COUNT];
+    unsigned text_states;
 } classic_push_colors;
 
 enum { CLASSIC_CHECK_STATES=12, CLASSIC_RADIO_STATES=8 };
@@ -148,11 +150,19 @@ static inline const classic_surface_colors *classic_choice_color(const classic_c
     return entry && entry->fields==3?&entry->colors:NULL;
 }
 
+static inline enum classic_push_state classic_push_state_from_button(BOOL disabled,BOOL pressed,BOOL defaulted)
+{
+    return disabled?CLASSIC_PUSH_DISABLED:pressed?CLASSIC_PUSH_PRESSED:
+        defaulted?CLASSIC_PUSH_DEFAULTED:CLASSIC_PUSH_NORMAL;
+}
 static inline classic_surface_colors classic_push_color(const classic_push_colors *colors,
     BOOL disabled,BOOL pressed,BOOL defaulted)
 {
-    return colors->state[disabled?CLASSIC_PUSH_DISABLED:pressed?CLASSIC_PUSH_PRESSED:
-        defaulted?CLASSIC_PUSH_DEFAULTED:CLASSIC_PUSH_NORMAL];
+    return colors->state[classic_push_state_from_button(disabled,pressed,defaulted)];
+}
+static inline COLORREF classic_push_text_color(const classic_push_colors *colors,enum classic_push_state state)
+{
+    return colors->text_states&(1u<<state)?colors->text[state]:CLR_INVALID;
 }
 
 typedef struct classic_scroll_surface {

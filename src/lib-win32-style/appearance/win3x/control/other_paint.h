@@ -5,5 +5,5 @@
 #include "lib-win32-style/application/lifecycle/instance.h"
 void win16_control_other(HWND window,style_instance *instance,const win16_style_palette *palette,
     HDC dc,RECT bounds,HFONT font,const WCHAR *text,BOOL label,
-    UINT (*button_type)(HWND,DWORD),BOOL (*group_push)(HWND),classic_control_presentation controls);
+    UINT (*button_type)(HWND,DWORD),BOOL (*group_push)(HWND),classic_control_presentation controls,COLORREF text_color);
 #endif
