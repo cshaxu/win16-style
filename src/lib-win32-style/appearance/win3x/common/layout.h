@@ -14,8 +14,6 @@ typedef struct win16_style_layout {
     classic_menu_metrics menu_metrics;
     BOOL sizeable, dialog_frame;
 } win16_style_layout;
-BOOL win16_style_measure(int width, int height, UINT dpi, DWORD style, DWORD ex_style,
-    BOOL maximized, win16_style_layout *layout);
 BOOL win16_style_measure_with_buttons(int width,int height,UINT dpi,DWORD style,DWORD ex_style,
     BOOL maximized,const classic_button_group *group,const classic_caption_metrics *metrics,
     const style_frame_geometry *frame,UINT monitor_dpi,win16_style_layout *layout);

@@ -1987,8 +1987,14 @@ int wmain(int argc,WCHAR **argv)
         return tool_ok?0:3;
     }
     if(argc!=1)return 2;
+    MONITORINFO monitor={.cbSize=sizeof(monitor)};
+    if(!GetMonitorInfoW(MonitorFromPoint((POINT){0,0},MONITOR_DEFAULTTOPRIMARY),&monitor))return 2;
+    const RECT work=monitor.rcWork;
+    const int width=min(420,work.right-work.left);
+    const int height=min(260,work.bottom-work.top);
+    const int left=min(work.left+80,work.right-width),top=min(work.top+80,work.bottom-height);
     HWND w=CreateWindowExW(0,wc.lpszClassName,L"Classic frame",WS_OVERLAPPEDWINDOW,
-                            80,80,420,260,NULL,NULL,instance,NULL);
+                            left,top,width,height,NULL,NULL,instance,NULL);
     if(!w)return 2;
     BOOL attached=GetPropW(w,L"Win2kStyle.Frame")!=NULL;
     ShowWindow(w,SW_SHOW);UpdateWindow(w);
@@ -2082,7 +2088,10 @@ int wmain(int argc,WCHAR **argv)
     if(dc)ReleaseDC(w,dc);
     LRESULT hit=SendMessageW(w,WM_NCHITTEST,0,MAKELPARAM(info.rcTitleBar.left+50,(info.rcTitleBar.top+info.rcTitleBar.bottom)/2));
     SendMessageW(w,WM_NCACTIVATE,TRUE,0);
-    BOOL resized=SetWindowPos(w,NULL,0,0,520,320,SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE) && blue_caption(w);
+    const int resized_width=min(520,work.right-window.left),resized_height=min(320,work.bottom-window.top);
+    RECT resized_window={0};
+    BOOL resized=SetWindowPos(w,NULL,0,0,resized_width,resized_height,SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE) &&
+        GetWindowRect(w,&resized_window) && !EqualRect(&window,&resized_window) && blue_caption(w);
     uint64_t normal_button=button_signature(w,3);
     SendMessageW(w,WM_SYSCOMMAND,SC_MAXIMIZE,0);
     uint64_t zoom_button=button_signature(w,3);

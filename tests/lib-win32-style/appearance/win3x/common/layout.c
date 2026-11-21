@@ -6,11 +6,11 @@ int main(void)
 {
     win16_style_layout layout;
     DWORD style=WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX|WS_MAXIMIZEBOX|WS_THICKFRAME;
-    CHECK(!win16_style_measure(0,200,96,style,0,FALSE,&layout));
-    CHECK(!win16_style_measure(320,200,47,style,0,FALSE,&layout));
-    CHECK(!win16_style_measure(320,200,769,style,0,FALSE,&layout));
-    CHECK(!win16_style_measure(320,200,96,style,0,FALSE,NULL));
-    CHECK(win16_style_measure(320,200,96,style,0,FALSE,&layout));
+    CHECK(!win16_style_measure_with_buttons(0,200,96,style,0,FALSE,NULL,NULL,NULL,96,&layout));
+    CHECK(!win16_style_measure_with_buttons(320,200,47,style,0,FALSE,NULL,NULL,NULL,47,&layout));
+    CHECK(!win16_style_measure_with_buttons(320,200,769,style,0,FALSE,NULL,NULL,NULL,769,&layout));
+    CHECK(!win16_style_measure_with_buttons(320,200,96,style,0,FALSE,NULL,NULL,NULL,96,NULL));
+    CHECK(win16_style_measure_with_buttons(320,200,96,style,0,FALSE,NULL,NULL,NULL,96,&layout));
     int native_width=GetSystemMetricsForDpi(SM_CYSIZEFRAME,96)+GetSystemMetricsForDpi(SM_CXPADDEDBORDER,96);
     CHECK(layout.border==native_width && layout.client.left==native_width &&
         layout.caption.bottom==layout.client.top);
@@ -38,9 +38,9 @@ int main(void)
     CHECK(win16_style_hit(&layout,(POINT){319,199})==HTBOTTOMRIGHT);
     CHECK(win16_style_measure_with_buttons(320,200,144,style,0,FALSE,&buttons,&stock_metrics,&stock,144,&layout));
     CHECK(layout.unit==2 && layout.border==6);
-    CHECK(win16_style_measure(320,200,96,style,0,TRUE,&layout) && !layout.sizeable);
+    CHECK(win16_style_measure_with_buttons(320,200,96,style,0,TRUE,NULL,NULL,NULL,96,&layout) && !layout.sizeable);
     CHECK(win16_style_hit(&layout,(POINT){0,0})==HTBORDER);
-    CHECK(win16_style_measure(320,200,96,WS_BORDER,0,FALSE,&layout));
+    CHECK(win16_style_measure_with_buttons(320,200,96,WS_BORDER,0,FALSE,NULL,NULL,NULL,96,&layout));
     CHECK(layout.border==1 && IsRectEmpty(&layout.caption) && layout.client.left==1);
     style_frame_geometry frame={STYLE_FRAME_LOGICAL,8,5,7,2,30,0,0};
     CHECK(win16_style_measure_with_buttons(320,200,96,style,0,FALSE,&buttons,NULL,&frame,192,&layout));

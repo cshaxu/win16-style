@@ -261,7 +261,7 @@ def verify_runtime_symbols(path, tree, architecture, standalone):
         'classic_theme_open_packaged', 'legacy_common_control_profiles', 'legacy_profile',
         'open_embedded', 'open_legacy_packaged', 'open_frame_profile',
         'compatibility_dialog_policy', 'classic_sources',
-        'win2k_caption_system_buttons', 'win2k_caption_render',
+        'win16_style_measure', 'win2k_caption_system_buttons', 'win2k_caption_render',
     } | standalone
     if path.suffix.lower() == '.exe':
         retired |= {'style_caption_render', 'style_caption_button_paint'}

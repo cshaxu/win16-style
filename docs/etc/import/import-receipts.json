@@ -887,7 +887,7 @@
       "path": "src/lib-win32-style/appearance/win3x/common/layout.c",
       "source": "src/ntw16s-dll/layout.c",
       "source_blob": "a9ba79fb962c41bbb5d8ffab0bbb3632213d282e",
-      "sha256": "0aeed8413d955ecf6aacafed80a4f7a4a62a7f1d6652ea36e788543a86d6e413",
+      "sha256": "583864cd4a69fd23f18c25cfc19af6e30ec9f30b4ac325980ab37d3240ad7670",
       "disposition": "adapt",
       "review": "T29 S4 shared title-button group layout with original frame behavior",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -896,7 +896,7 @@
       "path": "src/lib-win32-style/appearance/win3x/common/layout.h",
       "source": "src/ntw16s-dll/layout.h",
       "source_blob": "397587ca491a9aef181ae8bca9404ddf0e9d0672",
-      "sha256": "e4329b6f41335638afa41ea308a4eb55273e6015deacb0571e06dd70bd6e7d93",
+      "sha256": "f70da6582549c4dc3582cc272ebd7da86b7608bb9f44425a17040f0d996c6ff1",
       "disposition": "adapt",
       "review": "T29 S4 shared title-button group layout with original frame behavior",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -5603,7 +5603,7 @@
       "path": "tests/lib-win32-style/appearance/win3x/window/modern_frame_layout.c",
       "source": null,
       "source_blob": null,
-      "sha256": "669b22c29ad9d28e1b0805a1b06d17e3cab344d09cbcfb213c461e73db1e7266",
+      "sha256": "213e0e77fb0e00a397c74cc63ec297d8a329f39cc78b24ca45e4d599c2f4f6b6",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 P24 DPI and non-client/client boundary regression; T26 S2 mechanical path/include relocation",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6296,7 +6296,7 @@
       "path": "tests/ntw2ks-dll/frame_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4dc3e326aeba2e4094ca453d8d5c40dff8e72ff10e593ee0bfb120571d26364a",
+      "sha256": "b9bc4161549a36f89683c351d723f5baa1be200b0c3370a8e685c23f551794b3",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S4 caption state and icon; T25 S4 original caption region and state; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T28 S3 expanded stock color contract fixture; T28 S3 Color size and message contract assertions; T28 S3 file results, filtering and working directory assertions; T28 S3 short file buffer and required size fixture; T28 S3 measured compact Explorer bounds and caller flags; T28 S3 actual-work-area Places geometry assertions; T28 S3 verify PrintDlgEx default settings on native, Win16 and Win2000 paths; T28 S3 distinguish actual DPI and measured Places geometry",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -7547,7 +7547,7 @@
       "path": "tests/lib-win32-style/appearance/win3x/common/layout.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6fc9ae88574fb5c0861cdba7eab3f7b616a47751d0a5dd027e80b955060b4397",
+      "sha256": "4135fc662a1ba01e066077cb56ff1e7cc16fbc7c6f310affaf4e677a9a16c35f",
       "disposition": "authored",
       "review": "T26 S1 ordered audit: Win16 frame geometry and hit testing; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored native C; no imported artwork"
@@ -10580,7 +10580,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c2abcc0112a8e36cb714251ce81403e4ee075fafb2519f9fc67a0689ab2f332d",
+      "sha256": "b3bdcd581c9716d6475ee9b0c63188a5ba8bd8d01cf905b7d5a99db9895171e5",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"

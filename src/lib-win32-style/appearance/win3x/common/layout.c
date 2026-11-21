@@ -2,12 +2,6 @@
 #include "lib-win32-style/application/window/caption_paint.h"
 #include <string.h>
 
-BOOL win16_style_measure(int width,int height,UINT dpi,DWORD style,DWORD ex_style,
-    BOOL maximized,win16_style_layout *l)
-{
-    return win16_style_measure_with_buttons(width,height,dpi,style,ex_style,maximized,NULL,NULL,NULL,dpi,l);
-}
-
 BOOL win16_style_measure_with_buttons(int width,int height,UINT dpi,DWORD style,DWORD ex_style,
     BOOL maximized,const classic_button_group *group,const classic_caption_metrics *metrics,
     const style_frame_geometry *frame,UINT monitor_dpi,win16_style_layout *l)

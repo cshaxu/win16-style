@@ -1227,7 +1227,7 @@ static int check_icon_layout(void)
     const DWORD style=WS_OVERLAPPEDWINDOW;
     for(UINT dpi=96;dpi<=192;dpi+=48){
         win16_style_layout layout;
-        CHECK(win16_style_measure(360,180,dpi,style,0,FALSE,&layout));
+        CHECK(win16_style_measure_with_buttons(360,180,dpi,style,0,FALSE,NULL,NULL,NULL,dpi,&layout));
         win16_style_measure_caption_icon(&layout,dpi,style,0,STYLE_CAPTION_ICON_HIDDEN);
         CHECK(IsRectEmpty(&layout.icon));
         POINT point={layout.caption.left+1,layout.caption.top+1};
@@ -1241,7 +1241,7 @@ static int check_icon_layout(void)
         CHECK(!style_caption_icon_visible(STYLE_CAPTION_ICON_HIDDEN,FALSE,style,0));
         CHECK(!style_caption_icon_visible(STYLE_CAPTION_ICON_NATIVE,TRUE,style,0));
         CHECK(!style_caption_icon_visible(STYLE_CAPTION_ICON_NATIVE,FALSE,style,WS_EX_TOOLWINDOW));
-        CHECK(win16_style_measure(360,180,dpi,style,0,FALSE,&layout));
+        CHECK(win16_style_measure_with_buttons(360,180,dpi,style,0,FALSE,NULL,NULL,NULL,dpi,&layout));
         layout.buttons[CLASSIC_BUTTON_MINIMIZE]=layout.caption;
         layout.buttons[CLASSIC_BUTTON_MINIMIZE].right=layout.caption.left+24;
         layout.title.left=layout.buttons[CLASSIC_BUTTON_MINIMIZE].right;

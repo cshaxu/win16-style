@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P1",
-  "stage": "published development candidate; focused actual-package checks passed",
+  "delivery": "M0 T29 S23 P8",
+  "stage": "published development candidate; focused actual-package and installed frame checks passed",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
   "last_verified_remote_delivery": "M0 T29 S23 P1 a003142e279a",
-  "source_snapshot_sha256": "c8dcde6cced9e39adc95840ec2d44c60227d814398d186dcdeca29b70417528d",
+  "source_snapshot_sha256": "c999ccdaf58362b6368ca1474eebc8bc9f5ee2fac37572b07a4c84c24575db83",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "4b40eedf949ff624c59b8e06f044357927f8f973e23449876e0fc076cdfb9546",
+      "sha256": "7ddbc6b140eef28620b9ff2b7e02fd8d64782c4139127b40c8a973a8828ddb64",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "491446b27e0fad792700bc7056561129a79be2174d9cd227be21609f348fdeb1",
+      "sha256": "7cda147134d5062aae92c5d3b4fb7bc84914a25aa188a4a792701d73228a2f96",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "4c074de237ba8c40904d72025fa9e6fbd5743260ebab3716fdf855f689ea0c4f",
+      "sha256": "58f6902e2fc851af173310b1d27d22c07c76dd96fe37fd37de055b8d75e79ea0",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -155,12 +155,25 @@
     "skipped": [],
     "commit_scope_dialog_retest": "Isolated the Find/Replace assertions from pre-existing edits and verified the scoped script against the installed seven files, including temporary resource cleanup.",
     "current_desktop_core_matrix": {
-      "registered": { "x86": 371, "x64": 438 },
-      "selected": { "x86": 225, "x64": 227 },
-      "initial_failures": { "x86": "core/control-present", "x64": "core/control-present" },
-      "result_after_targeted_retest": { "x86": 225, "x64": 227 },
+      "registered": {
+        "x86": 371,
+        "x64": 438
+      },
+      "selected": {
+        "x86": 225,
+        "x64": 227
+      },
+      "initial_failures": {
+        "x86": "core/control-present",
+        "x64": "core/control-present"
+      },
+      "result_after_targeted_retest": {
+        "x86": 225,
+        "x64": 227
+      },
       "additional_assertions": "Both deliberate painter leak checks and both standalone CoreWindow rejection checks passed.",
-      "scope": "Selected self-owned window and theme fixtures plus ABI. Review excluded desktop or physical-input paths, global and propagation scenarios, and unrelated groups. This is not a full run of all registered tests."
+      "scope": "Selected self-owned window and theme fixtures plus ABI. Review excluded desktop or physical-input paths, global and propagation scenarios, and unrelated groups. This is not a full run of all registered tests.",
+      "package_snapshot": "c8dcde6cced9e39adc95840ec2d44c60227d814398d186dcdeca29b70417528d"
     },
     "real_winui_paint": {
       "version": "11.2609.441.0",
@@ -169,7 +182,8 @@
       "themes": "Win16 and Win2K loaded the installed DLL, preserved the XAML bridge and disabled native DWM non-client rendering",
       "caption_commands": "Both themed instances passed maximize, minimize and two restores, then exited normally",
       "live_removal": "Both themes restored native DWM rendering, outer, client and visible frame rectangles, and preserved the same XAML bridge in a fresh process at 96 DPI.",
-      "unverified": "Pixel parity"
+      "unverified": "Pixel parity",
+      "package_snapshot": "c8dcde6cced9e39adc95840ec2d44c60227d814398d186dcdeca29b70417528d"
     },
     "real_modern_hosts_previous_snapshot": {
       "Calculator from O:/winnt": "Both theme launches timed out (1460) with distinct ApplicationFrameWindow absent.",
@@ -183,7 +197,10 @@
       "session": "console 2, Active",
       "samples_per_app": 4,
       "elapsed_sample_window_seconds": 7.5,
-      "apps": ["Calculator 11.2607.0.0", "Scan 6.3.9654.17133"],
+      "apps": [
+        "Calculator 11.2607.0.0",
+        "Scan 6.3.9654.17133"
+      ],
       "result": "Native activation succeeded. Both CoreWindow handles were their own root and root owner with DWM_CLOAKED_SHELL set. Three ApplicationFrameWindow roots existed on the desktop; none contained either fresh instance.",
       "shell_start_comparison": "A separate shell:AppsFolder activation produced zero eligible outer frames in eight observations. The first Calculator sample preceded CoreWindow creation. All seven CoreWindow observations were standalone and DWM_CLOAKED_SHELL.",
       "cleanup": "Both freshly created instances were ended after the bounded graceful close did not exit."
@@ -197,8 +214,14 @@
     "rdp_live_uwp_on_p1": {
       "package_snapshot": "c8dcde6cced9e39adc95840ec2d44c60227d814398d186dcdeca29b70417528d",
       "dpi": 96,
-      "calculator": { "Win16": "passed on retest", "Win2K": "functional checks passed; screen pixel sampling unavailable" },
-      "scan": { "Win16": "passed", "Win2K": "functional checks passed; screen pixel sampling unavailable" },
+      "calculator": {
+        "Win16": "passed on retest",
+        "Win2K": "functional checks passed; screen pixel sampling unavailable"
+      },
+      "scan": {
+        "Win16": "passed",
+        "Win2K": "functional checks passed; screen pixel sampling unavailable"
+      },
       "functional_checks": "Each pair attached to a real hosted window, preserved window commands and the outer window rectangle, and removed the frame surface.",
       "first_calculator_win16_attempt": "The installed launcher returned 1460. The probe subsequently observed a separate root without a styled surface. A bounded retry passed all functional checks."
     },
@@ -207,13 +230,20 @@
       "real Win2K UWP and WinUI screen pixels",
       "actual high contrast",
       "physical input"
-    ]
+    ],
+    "layout_retirement_delivery": {
+      "focused_runner_passed": 41,
+      "installed_win2k_frame_passed": 2,
+      "previous_vs_current_frame_checks_passed": 4,
+      "clean_layout_tests_passed": 4,
+      "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
+    }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 -Task 29 -RunName s23-neutral-symbols-delivery",
+    "command": "tools/Build-Package.ps1 -Task 29 -RunName s23-layout-closure-delivery",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2120,
-    "cache_misses": 8
+    "cache_hits": 2109,
+    "cache_misses": 19
   }
 }

@@ -9,7 +9,8 @@ int main(void)
         SIZE outer={MulDiv(500,dpi,96),MulDiv(400,dpi,96)};
         RECT content={MulDiv(8,dpi,96),MulDiv(40,dpi,96),outer.cx-MulDiv(8,dpi,96),outer.cy-MulDiv(8,dpi,96)};
         win16_style_layout l,native;RECT overlap;
-        CHECK(win16_style_measure(outer.cx,outer.cy,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,&native));
+        CHECK(win16_style_measure_with_buttons(outer.cx,outer.cy,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
+            NULL,NULL,NULL,dpi,&native));
         CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,content,NULL,NULL,NULL,&l));
         CHECK(EqualRect(&content,&l.client));
         CHECK(EqualRect(&native.caption,&l.caption) && EqualRect(&native.title,&l.title) &&
