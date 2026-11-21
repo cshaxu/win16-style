@@ -193,9 +193,17 @@
       "skipped": [],
       "scope": "Owned or simulated windows. Host start and failure cleanup, window and UWP callback reentrancy, dialog unwind, and simulated UWP apply/remove retries."
     },
+    "rdp_live_uwp_on_p1": {
+      "package_snapshot": "c8dcde6cced9e39adc95840ec2d44c60227d814398d186dcdeca29b70417528d",
+      "dpi": 96,
+      "calculator": { "Win16": "passed on retest", "Win2K": "functional checks passed; screen pixel sampling unavailable" },
+      "scan": { "Win16": "passed", "Win2K": "functional checks passed; screen pixel sampling unavailable" },
+      "functional_checks": "Each pair attached to a real hosted window, preserved window commands and the outer window rectangle, and removed the frame surface.",
+      "first_calculator_win16_attempt": "The installed launcher returned 1460. The probe subsequently observed a separate root without a styled surface. A bounded retry passed all functional checks."
+    },
     "unverified": [
       "full matrix",
-      "real modern host attachment and removal on this snapshot",
+      "real Win2K UWP screen pixels and live WinUI removal",
       "actual high contrast",
       "physical input"
     ]
