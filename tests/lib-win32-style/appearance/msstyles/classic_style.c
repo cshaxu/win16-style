@@ -18,6 +18,17 @@ static BOOL same_menu(const classic_menu_metrics *a,const classic_menu_metrics *
 
 static int fixtures(void)
 {
+    const classic_control_presentation native={0};
+    const classic_control_presentation styled={.separator=STYLE_LINE_FLAT,.group=STYLE_LINE_RELIEF,
+        .push=STYLE_PUSH_STEPPED,.edit=STYLE_LINE_FLAT,.progress=STYLE_PROGRESS_OUTLINED,
+        .trackbar=STYLE_TRACKBAR_RELIEF,.header=STYLE_LINE_FLAT,.tab=STYLE_LINE_RELIEF,
+        .native_edge=STYLE_LINE_FLAT,.updown_mode=CLASSIC_UPDOWN_ART};
+    CHECK(classic_control_native_roles(&native)==(2u*STYLE_ROLE_UPDOWN-1u));
+    CHECK(classic_control_native_roles(&styled)==0);
+    CHECK(!classic_button_presentation_enabled(&native,BS_GROUPBOX,0) &&
+        !classic_button_presentation_enabled(&native,BS_AUTOCHECKBOX,BS_PUSHLIKE) &&
+        classic_button_presentation_enabled(&native,BS_AUTOCHECKBOX,0) &&
+        classic_button_presentation_enabled(&styled,BS_DEFPUSHBUTTON,0));
     const classic_button_group original={2,1,3,{{CLASSIC_BUTTON_SYSTEM,CLASSIC_BUTTON_LEFT,0},
         {CLASSIC_BUTTON_CLOSE,CLASSIC_BUTTON_RIGHT,2}},0};
     classic_button_group group={0};

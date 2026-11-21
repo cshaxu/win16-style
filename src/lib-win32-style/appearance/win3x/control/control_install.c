@@ -64,18 +64,11 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     if(theme_error){win16_control_state_dispose(s);SetLastError(theme_error);return FALSE;}
     BOOL have_theme=source.resources!=NULL;
     const classic_theme *theme=&source.model;
-    DWORD current_style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
-    if(have_theme &&
-       ((frame_bars && style_control_protocol_legacy_progress(w) &&
-          !(theme->controls.progress.flags&STYLE_PROGRESS_BORDER)) ||
-        (!theme->controls.updown_mode && style_control_class_is(w,UPDOWN_CLASSW)) ||
-        (!theme->controls.trackbar && style_control_class_is(w,TRACKBAR_CLASSW)) ||
-        (!frame_bars && ((edit && !theme->controls.edit) ||
-         (!theme->controls.separator && style_control_is_separator(w)) ||
-         (!theme->controls.tab && style_control_is_tab(w)) ||
-         (!theme->controls.header && style_control_is_header(w)) ||
-         (style_control_class_is(w,L"BUTTON") &&
-          !classic_button_presentation_enabled(&theme->controls,style_control_button_type(w,current_style),current_style)))))){
+    const unsigned native=have_theme?classic_control_native_roles(&theme->controls):0;
+    const unsigned roles=frame_bars?native&(STYLE_ROLE_UPDOWN|STYLE_ROLE_TRACKBAR):native;
+    if(((native&STYLE_ROLE_PROGRESS_BORDER) && frame_bars && style_control_protocol_legacy_progress(w)) ||
+       ((native&STYLE_ROLE_EDIT) && !frame_bars && edit) ||
+       style_control_role_native(w,roles,style_control_class_is)){
         classic_theme_close(&source);
         win16_control_state_dispose(s);
         SetLastError(ERROR_NOT_SUPPORTED);

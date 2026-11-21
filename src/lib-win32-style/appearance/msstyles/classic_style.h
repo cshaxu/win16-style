@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include "v4_font.h"
+#include "lib-win32-style/application/control/roles.h"
 #include "lib-win32-style/application/control/progress_paint.h"
 #include "lib-win32-style/application/control/trackbar_paint.h"
 #include "lib-win32-style/application/control/scroll_geometry.h"
@@ -100,12 +101,23 @@ typedef struct classic_control_presentation {
     uint8_t control_font_points;
 } classic_control_presentation;
 
-static inline BOOL classic_button_presentation_enabled(const classic_control_presentation *controls,UINT type,DWORD style)
+static inline unsigned classic_button_native_roles(const classic_control_presentation *p)
 {
-    if(type==BS_GROUPBOX)return controls->group!=STYLE_LINE_DEFAULT;
-    if(type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || (style&BS_PUSHLIKE))
-        return controls->push!=STYLE_PUSH_DEFAULT;
-    return TRUE;
+    return (!p->group?STYLE_ROLE_GROUP:0) | (!p->push?STYLE_ROLE_PUSH:0);
+}
+
+/* A missing style record leaves the corresponding native drawing intact. */
+static inline unsigned classic_control_native_roles(const classic_control_presentation *p)
+{
+    return classic_button_native_roles(p) | (!p->separator?STYLE_ROLE_SEPARATOR:0) | (!p->edit?STYLE_ROLE_EDIT:0) |
+        (!(p->progress.flags&STYLE_PROGRESS_BORDER)?STYLE_ROLE_PROGRESS_BORDER:0) |
+        (!p->trackbar?STYLE_ROLE_TRACKBAR:0) | (!p->header?STYLE_ROLE_HEADER:0) |
+        (!p->tab?STYLE_ROLE_TAB:0) | (!p->native_edge?STYLE_ROLE_NATIVE_EDGE:0) |
+        (!p->updown_mode?STYLE_ROLE_UPDOWN:0);
+}
+static inline BOOL classic_button_presentation_enabled(const classic_control_presentation *p,UINT type,DWORD style)
+{
+    return !(classic_button_native_roles(p)&style_control_button_paint_role(type,style));
 }
 
 /* Parse project RCDATA CLASSIC_STYLE v1. The caller's output changes only on success. */

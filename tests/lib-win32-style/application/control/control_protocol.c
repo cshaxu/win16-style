@@ -1,7 +1,39 @@
 #include "lib-win32-style/application/control/control_protocol.h"
 #include "lib-win32-style/application/control/control_class.h"
+#include "lib-win32-style/application/control/roles.h"
+#include <stdio.h>
+#include <string.h>
+
+static int styled_roles(BOOL styled)
+{
+    HMODULE runtime=GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll");
+    typedef BOOL (__cdecl *attached_fn)(HWND);
+    attached_fn full=runtime?(void *)GetProcAddress(runtime,"Ntw16sWindowAttached"):NULL;
+    attached_fn nonclient=runtime?(void *)GetProcAddress(runtime,"Ntw2ksWindowAttached"):NULL;
+    const INITCOMMONCONTROLSEX cc={sizeof(cc),ICC_UPDOWN_CLASS|ICC_BAR_CLASSES|ICC_TAB_CLASSES|ICC_LISTVIEW_CLASSES};
+    if(!full || !nonclient || !InitCommonControlsEx(&cc))return 1;
+    HINSTANCE instance=GetModuleHandleW(NULL);
+    HWND parent=CreateWindowW(L"STATIC",L"",WS_OVERLAPPEDWINDOW,0,0,240,180,NULL,NULL,instance,NULL);
+    if(!parent)return 2;
+    static const struct {const WCHAR *name;DWORD style;} roles[]={
+        {L"STATIC",SS_ETCHEDHORZ},{L"BUTTON",BS_GROUPBOX},{L"BUTTON",BS_DEFPUSHBUTTON},
+        {UPDOWN_CLASSW,0},{TRACKBAR_CLASSW,0},{WC_TABCONTROLW,0},{WC_HEADERW,0}
+    };
+    unsigned count=0;
+    for(unsigned i=0;i<ARRAYSIZE(roles);++i){
+        HWND child=CreateWindowW(roles[i].name,L"",WS_CHILD|roles[i].style,
+            0,0,120,35,parent,(HMENU)(UINT_PTR)(i+1),instance,NULL);
+        if(child && ((!!full(child) || !!nonclient(child))==styled))++count;
+        else fprintf(stderr,"THEME_ROLE_FAIL index=%u styled=%d error=%lu\n",i,styled,GetLastError());
+    }
+    DestroyWindow(parent);
+    printf("THEME_ROLES styled=%d matched=%u\n",styled,count);
+    return count==ARRAYSIZE(roles)?0:3;
+}
 int main(int argc,char **argv)
 {
+    if(argc==2 && !strcmp(argv[1],"--theme-roles-styled"))return styled_roles(TRUE);
+    if(argc==2 && !strcmp(argv[1],"--theme-roles-native"))return styled_roles(FALSE);
     HINSTANCE instance=GetModuleHandleW(NULL);
     WNDCLASSEXW native={.cbSize=sizeof(native)};
     if(!GetClassInfoExW(NULL,L"EDIT",&native))return 4;
@@ -19,6 +51,12 @@ int main(int argc,char **argv)
         !style_control_native_superclass(edit,L"BUTTON") &&
         style_control_is_edit(edit) && !style_control_is_combo(edit) &&
         style_control_is_static(child) && !style_control_is_edit(child);
+    HWND button=CreateWindowW(L"BUTTON",L"",WS_CHILD|BS_GROUPBOX,0,0,20,20,parent,NULL,instance,NULL);
+    HWND separator=CreateWindowW(L"STATIC",L"",WS_CHILD|SS_ETCHEDHORZ,0,0,20,20,parent,NULL,instance,NULL);
+    ok=ok && button && separator && style_control_role_native(button,STYLE_ROLE_GROUP,style_control_class_is) &&
+        !style_control_role_native(button,STYLE_ROLE_PUSH,style_control_class_is) &&
+        style_control_role_native(separator,STYLE_ROLE_SEPARATOR,style_control_class_is) &&
+        !style_control_role_native(child,STYLE_ROLE_SEPARATOR,style_control_class_is);
     WNDCLASSW fake={.hInstance=instance,.lpfnWndProc=DefWindowProcW,.lpszClassName=L"ThunderRT6ComboBox"};
     ATOM registered=RegisterClassW(&fake);
     HWND impostor=registered?CreateWindowW(fake.lpszClassName,L"",WS_CHILD,0,0,20,20,parent,NULL,instance,NULL):NULL;

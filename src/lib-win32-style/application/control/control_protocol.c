@@ -1,4 +1,6 @@
 #include "control_protocol.h"
+#include "control_class.h"
+#include "roles.h"
 #include "lib-win32-style/application/window/window_identity.h"
 #include <commctrl.h>
 #include <shlwapi.h>
@@ -373,3 +375,19 @@ style_control_protocol *style_control_protocol_bind_verified_report(HWND w,HMODU
 {return owner?bind_protocol(w,owner,tree?6:5):NULL;}
 style_control_protocol *style_control_protocol_bind_verified_trackbar(HWND w,HMODULE owner)
 {return owner?bind_protocol(w,owner,8):NULL;}
+
+/* Match only roles requested by the theme fallback policy. Host adapters
+ * supply their established class witness (exact/protocol or observed). */
+BOOL style_control_role_native(HWND w,unsigned roles,BOOL (*matches)(HWND,const WCHAR *))
+{
+    if((roles&STYLE_ROLE_SEPARATOR) && style_control_is_separator(w))return TRUE;
+    if((roles&STYLE_ROLE_UPDOWN) && matches(w,UPDOWN_CLASSW))return TRUE;
+    if((roles&STYLE_ROLE_TRACKBAR) && matches(w,TRACKBAR_CLASSW))return TRUE;
+    if((roles&STYLE_ROLE_TAB) && matches(w,WC_TABCONTROLW))return TRUE;
+    if((roles&STYLE_ROLE_HEADER) && matches(w,WC_HEADERW))return TRUE;
+    if((roles&(STYLE_ROLE_GROUP|STYLE_ROLE_PUSH)) && matches(w,L"BUTTON")){
+        DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+        return (roles&style_control_button_paint_role(style_control_button_type(w,style),style))!=0;
+    }
+    return FALSE;
+}

@@ -610,18 +610,12 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,HWND combo_par
     if(error){dispose(control);SetLastError(error);return FALSE;}
     if(source.resources){
         const classic_theme *theme=&source.model;
-        DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
         BOOL indexed=control->updown_control && theme->controls.updown_mode==CLASSIC_UPDOWN_ART;
-        if((control->updown_control && !theme->controls.updown_mode) ||
-            (indexed && (!style_control_updown_api_enabled() || !style_control_updown_indexed_supported(window))) ||
-            (!theme->controls.separator && style_control_is_separator(window)) ||
-           (!theme->controls.tab && control->tab_control) ||
-           (!theme->controls.header && control->header_control) ||
-           (!theme->controls.trackbar && control->track_control) ||
-           (!theme->controls.edit && win2k_edit_class(window)==WIN2K_EDIT_STANDARD) ||
-           (!theme->controls.native_edge && win2k_edit_class(window)==WIN2K_EDIT_NATIVE_CLIENT) ||
-           (class_is(window,L"Button") &&
-            !classic_button_presentation_enabled(&theme->controls,style_control_button_type(window,style),style))){
+        const unsigned native=classic_control_native_roles(&theme->controls);
+        if((indexed && (!style_control_updown_api_enabled() || !style_control_updown_indexed_supported(window))) ||
+           ((native&STYLE_ROLE_EDIT) && win2k_edit_class(window)==WIN2K_EDIT_STANDARD) ||
+           ((native&STYLE_ROLE_NATIVE_EDGE) && win2k_edit_class(window)==WIN2K_EDIT_NATIVE_CLIENT) ||
+           style_control_role_native(window,native,class_is)){
             if(native_requested)*native_requested=TRUE;
             classic_theme_close(&source);
             dispose(control);
