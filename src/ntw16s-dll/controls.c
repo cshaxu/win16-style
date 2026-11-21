@@ -35,7 +35,6 @@ BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *,style_scroll_arrow_art *)
 #include "native_api.h"
 #include "theme.h"
 #include "lib-win32-style/appearance/win3x/control/header_paint.h"
-#include "lib-win32-style/appearance/win3x/control/progress_paint.h"
 #include "lib-win32-style/appearance/win3x/control/trackbar_paint.h"
 #include "lib-win32-style/appearance/win3x/control/toolbar_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/vb_text.h"

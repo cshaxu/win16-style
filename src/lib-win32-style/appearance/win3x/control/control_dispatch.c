@@ -3,7 +3,7 @@
 #include "control_class.h"
 #include "special_paint.h"
 #include "header_paint.h"
-#include "progress_paint.h"
+#include "lib-win32-style/application/control/progress_paint.h"
 #include "lib-win32-style/application/control/control_class.h"
 #include "lib-win32-style/application/control/tab_snapshot.h"
 #include "../../../application/control/control_protocol.h"
@@ -64,7 +64,12 @@ static BOOL native_policy_paint(HWND window,void *context,HDC dc,HFONT font)
     }
     if(render->kind==STYLE_CONTROL_HEADER)return win16_style_header_paint(window,dc,&s->palette,font,
         &s->instance,&s->bindings.header,&s->header_colors,s->controls.header);
-    return win16_style_progress_paint(window,dc,s);
+    if(!style_progress_bound_supported(window))return FALSE;
+    const win16_style_palette *p=&s->palette;
+    COLORREF disabled=s->label_colors.present?s->label_colors.disabled:p->shadow;
+    return style_progress_present(window,dc,&s->instance,&s->bindings.progress,
+        style_progress_bound_supported,&s->controls.progress,s->progress_colors,
+        (style_progress_ink){p->light,p->active,p->edge},disabled);
 }
 static void native_paint(HWND window,void *context,HDC dc)
 {
@@ -144,7 +149,7 @@ LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPA
         native_render render={s,kind};
         const style_control_draw draw={&render,native_draw};
         result=style_control_native_message(w,&s->instance,state,kind,m,a,b,
-            tab?style_control_tab_supported:header?win16_style_header_supported:win16_style_progress_supported,&draw);
+            tab?style_control_tab_supported:header?win16_style_header_supported:style_progress_bound_supported,&draw);
     }
     else if(style_control_class_is(w,UPDOWN_CLASSW)){
         if(s->controls.updown_mode==CLASSIC_UPDOWN_RECOLOR && (m==WM_PAINT || m==WM_PRINTCLIENT)){

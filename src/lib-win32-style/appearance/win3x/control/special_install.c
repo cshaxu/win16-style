@@ -3,7 +3,7 @@
 #include "control_class.h"
 #include "../../../application/control/control_protocol.h"
 #include "trackbar_paint.h"
-#include "progress_paint.h"
+#include "lib-win32-style/application/control/progress_snapshot.h"
 
 
 static control_style *install_frame(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
@@ -51,7 +51,7 @@ BOOL win16_control_special_toolbar_install(HWND w,const win16_style_palette *pal
 }
 BOOL win16_control_special_progress_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
-    if(!win16_style_progress_supported(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!style_progress_bound_supported(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     /* No text or font property belongs to this painter. Reuse the owned
      * passive-font leaf; the progress branch owns its paint, not bar input. */
     return v->frame_install(w,palette,owner,cancelled);

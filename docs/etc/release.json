@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P34",
-  "stage": "published development candidate with shared raster font identity",
+  "delivery": "M0 T29 S23 P35",
+  "stage": "published development candidate with shared progress control presentation",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P33 855ef410eb05",
-  "source_snapshot_sha256": "2adc606937bd1b1735500d44f1309fe09c0ab3299e2fb518e089e832189e1667",
+  "last_verified_remote_delivery": "M0 T29 S23 P34 71e8cd477617",
+  "source_snapshot_sha256": "4e5d13360aa14b44162ee72e29f096a4ae9509b36b73f1846c614a781fbc7c72",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "92a2c925574a14d778988cad8e5ae445829a8dfe836d85ba7ec3f7d5ec955138",
+      "sha256": "7df2f88c0acd6d868814c0611ebb0c4e777bcb89040226c0e0d2a9b8196a8771",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "0260f73b07537385c3a412a76b6cd891bd49bc76b022c4c6664efe62df6aee78",
+      "sha256": "d0f9959ca66c5e236154199cbc4bee14ed43a02fccb26a1e84fef961241d1198",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "3e61bc4f8eb5430c8ad3671e8e8701d93b0b99f553ea7600495ee0c269895495",
+      "sha256": "e3871399a4153c23287d7a03b1bdf171c5f025b553199abf6a071a7726b83687",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,24 +106,20 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 16,
+    "passed": 12,
     "selected_cases": [
-      "x86-stock-and-face-lease",
-      "x86-raster-font-isolation",
-      "x86-font-cache",
-      "x86-win16-menu-mode",
-      "x86-win16-system-menu-pixels",
-      "x86-win2k-menu-mode",
-      "x86-win2k-system-menu-pixels",
-      "x86-win16-edit-font-draw-remove",
-      "x64-stock-and-face-lease",
-      "x64-raster-font-isolation",
-      "x64-font-cache",
-      "x64-win16-menu-mode",
-      "x64-win16-system-menu-pixels",
-      "x64-win2k-menu-mode",
-      "x64-win2k-system-menu-pixels",
-      "x64-win16-edit-font-draw-remove"
+      "x86-progress-snapshot-and-host-boundaries",
+      "x86-progress-offscreen-paint",
+      "x86-win16-v5-edge",
+      "x86-win16-v6-states",
+      "x86-win2k-v5-progress",
+      "x86-win2k-v6-progress",
+      "x64-progress-snapshot-and-host-boundaries",
+      "x64-progress-offscreen-paint",
+      "x64-win16-v5-edge",
+      "x64-win16-v6-states",
+      "x64-win2k-v5-progress",
+      "x64-win2k-v6-progress"
     ],
     "skipped": [],
     "commit_scope_dialog_retest": "Isolated the Find/Replace assertions from pre-existing edits and verified the scoped script against the installed seven files, including temporary resource cleanup.",
@@ -258,7 +254,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P34 results are in raster_font_delivery.",
+    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P35 results are in progress_control_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -470,13 +466,25 @@
       "compatibility_focused_invocations": 4,
       "scope": "Dual-architecture registered face identity, native font borrowing and last release, both themed menu creation modes, installed system menu pixel hashes, and installed edit paint/removal.",
       "scope_limit": "Owned Win32 fixtures. No physical input or full package matrix. The separately rebuilt standalone compatibility target does not participate in either formal runtime link."
+    },
+    "progress_control_delivery": {
+      "test_invocations_passed": 12,
+      "compatibility_focused_invocations": 4,
+      "retired_appearance_objects_per_width": 2,
+      "remaining_dated_archives_per_width": 7,
+      "matching_archive_members_per_width": 60,
+      "scope": "Two attachment paths share the reentrancy-checked native snapshot and drawing, retaining native class and edge eligibility. Owned fixtures test both themes and Common Controls generations.",
+      "not_retested": [
+        "physical input",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P34 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P35 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2122,
-    "cache_misses": 0
+    "cache_hits": 2004,
+    "cache_misses": 114
   }
 }

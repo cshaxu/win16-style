@@ -1,4 +1,5 @@
 #include "lib-win32-style/application/control/progress_snapshot.h"
+#include "lib-win32-style/application/control/control_protocol.h"
 #include <stdio.h>
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"PROGRESS SNAPSHOT FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
 static style_instance instance;
@@ -28,5 +29,22 @@ int main(void)
     action=0;allow=FALSE;CHECK(!style_progress_snapshot_read(progress,&instance,&state,supported,&snapshot));
     allow=TRUE;CHECK(style_progress_snapshot_read(progress,&instance,&state,supported,&snapshot) && queries==4);
     CHECK(SendMessageW(progress,PBM_GETPOS,0,0)==75 && SendMessageW(progress,PBM_GETSTATE,0,0)==PBST_PAUSED);
-    CHECK(DestroyWindow(root));puts("PROGRESS SNAPSHOT PASS values=1 colors=1 epoch=1 retire=1 eligibility=1 native_unchanged=1 cleanup=1");return 0;
+    CHECK(style_progress_native_supported(progress) && !style_progress_bound_supported(progress));
+    style_control_protocol *protocol=style_control_protocol_bind(progress);
+    CHECK(protocol && style_progress_bound_supported(progress));
+    SetWindowLongPtrW(progress,GWL_STYLE,WS_CHILD|PBS_SMOOTH|PBS_SMOOTHREVERSE);
+    CHECK(style_progress_bound_supported(progress) && !style_progress_native_supported(progress));
+    SetWindowLongPtrW(progress,GWL_STYLE,WS_CHILD|PBS_MARQUEE);
+    CHECK(!style_progress_bound_supported(progress) && !style_progress_native_supported(progress));
+    SetWindowLongPtrW(progress,GWL_STYLE,WS_CHILD);
+    SetWindowLongPtrW(progress,GWL_EXSTYLE,WS_EX_STATICEDGE);
+    CHECK(!style_progress_bound_supported(progress) && style_progress_native_supported(progress));
+    SetWindowLongPtrW(progress,GWL_EXSTYLE,WS_EX_WINDOWEDGE|WS_EX_DLGMODALFRAME);
+    CHECK(style_progress_bound_supported(progress) && !style_progress_native_supported(progress));
+    SetWindowLongPtrW(progress,GWL_EXSTYLE,WS_EX_LAYOUTRTL);
+    CHECK(!style_progress_bound_supported(progress) && !style_progress_native_supported(progress));
+    style_control_protocol_release(protocol);
+
+    CHECK(DestroyWindow(root));puts("PROGRESS SNAPSHOT PASS values=1 colors=1 epoch=1 retire=1 eligibility=1 native_unchanged=1 cleanup=1");
+    return 0;
 }

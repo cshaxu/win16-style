@@ -6,7 +6,7 @@
 #include "scroll.h"
 #include "tab_header.h"
 #include "report_paint.h"
-#include "progress_paint.h"
+#include "lib-win32-style/application/control/progress_paint.h"
 #include "trackbar_paint.h"
 #include "lib-win32-style/application/control/updown.h"
 #include "bars.h"
@@ -119,7 +119,7 @@ BOOL win2k_control_supported(HWND window)
     if(matches(window,name,WC_HEADERW))return win2k_header_supported(window);
     if(matches(window,name,WC_LISTVIEWW))return win2k_listview_supported(window);
     if(matches(window,name,WC_TREEVIEWW))return win2k_treeview_supported(window);
-    if(matches(window,name,PROGRESS_CLASSW))return win2k_progress_supported(window);
+    if(matches(window,name,PROGRESS_CLASSW))return style_progress_native_supported(window);
     if(matches(window,name,TRACKBAR_CLASSW))return win2k_trackbar_supported(window);
     if(matches(window,name,UPDOWN_CLASSW))return style_control_updown_recolor_supported(window);
     if(!lstrcmpiW(name,DATETIMEPICK_CLASSW))return win2k_date_supported(window);
@@ -197,15 +197,10 @@ static void paint(HWND window,void *context,HDC dc)
     win2k_control *control=context;
     BOOL painted=TRUE;
     if(control->progress_control){
-        style_progress_snapshot snapshot;
-        painted=style_progress_snapshot_read(window,&control->instance,&control->native,win2k_progress_supported,&snapshot);
-        if(painted){
-            DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
-            const classic_progress_colors *colors=&control->progress_colors[(style&PBS_VERTICAL)!=0];
-            const win2k_palette *palette=&control->palette;
-            painted=style_progress_paint(dc,&snapshot,style,GetDpiForWindow(window),&control->controls.progress,
-                colors,(style_progress_ink){palette->face,palette->selection,palette->dark},CLR_DEFAULT);
-        }
+        const win2k_palette *palette=&control->palette;
+        painted=style_progress_present(window,dc,&control->instance,&control->native,
+            style_progress_native_supported,&control->controls.progress,control->progress_colors,
+            (style_progress_ink){palette->face,palette->selection,palette->dark},CLR_DEFAULT);
     }else if(control->tab_control){
         unsigned epoch=control->native.epoch;
         HFONT font=(HFONT)SendMessageW(window,WM_GETFONT,0,0);
@@ -338,7 +333,7 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
     }else if(control->tab_control || control->progress_control){
         const style_control_draw draw={control,render};
         result=style_control_native_message(window,&control->instance,&control->native,kind,message,a,b,
-            control->progress_control?win2k_progress_supported:style_control_tab_supported,&draw);
+            control->progress_control?style_progress_native_supported:style_control_tab_supported,&draw);
     }else if(control->bar==WIN2K_BAR_STATUS){
         const style_control_draw draw={control,status_render};
         result=style_control_native_message(window,&control->instance,&control->native,STYLE_CONTROL_STATUS,

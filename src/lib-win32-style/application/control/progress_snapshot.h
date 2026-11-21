@@ -2,6 +2,8 @@
 #define STYLE_CONTROL_PROGRESS_SNAPSHOT_H
 #include "native.h"
 #include <commctrl.h>
+BOOL style_progress_bound_supported(HWND);
+BOOL style_progress_native_supported(HWND);
 typedef struct style_progress_snapshot {
     RECT client;
     PBRANGE range;

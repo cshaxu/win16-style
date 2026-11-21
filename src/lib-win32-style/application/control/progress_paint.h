@@ -25,4 +25,9 @@ typedef struct classic_progress_colors {
 /* Unknown or undeclared states leave the DC untouched for native fallback. */
 BOOL style_progress_paint(HDC,const style_progress_snapshot *,DWORD,UINT,const style_progress_layout *,
     const classic_progress_colors *,style_progress_ink fallback,COLORREF disabled_fill);
+/* Apply the selected layout to a reentrancy-checked native snapshot.
+ * colors is indexed by horizontal/vertical; CLR_DEFAULT preserves native disabled ink. */
+BOOL style_progress_present(HWND,HDC,const style_instance *,const style_control_native_state *,
+    BOOL (*supported)(HWND),const style_progress_layout *,const classic_progress_colors colors[2],
+    style_progress_ink fallback,COLORREF disabled_fill);
 #endif

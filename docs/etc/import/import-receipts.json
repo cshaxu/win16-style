@@ -824,7 +824,7 @@
       "path": "src/ntw16s-dll/controls.c",
       "source": "src/ntw16s-dll/controls.c",
       "source_blob": "9bc3331d0f9fc3e3104059ab792670ab1579d65c",
-      "sha256": "0b599c2a5bb077581f65425b1b8ae5b540a6f0b63222740b783f9b5f712b2cd8",
+      "sha256": "43c8296db8dce55050b00496b79fb9dc9272358adb8ec5c7c7a44cbf6175f2dd",
       "disposition": "adapt",
       "review": "T1 frozen disposition; T2 core import, see docs/history/M0-T2-S1-import.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T6 S4 square scrollbar cross-axis geometry / 17px demo / actual focus, capture and modal lifecycle native probes; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S2: native superclass classification/early child theme capture and private client-edge adaptation; notices retained; T15 S3: only begin transient native redraw brackets on WS_VISIBLE controls, preserving hidden state; font/render algorithms unchanged; T15 S4 verified initialized public control roles and native image/PushLike/client-edge support; original notices and resources preserved; BCM_GETIMAGELIST borrowed images, state pixels, explicit COMCTL6 and native disabled notification comparison; T15 S5 verified initialized native/TPageControl tab protocol, native geometry and borrowed image/font painting, pending-install exact ownership and cancellation cleanup; no external code copied, original notices/resources retained; T15 S6 finite verified native header public protocol and string-only painter; native geometry/font/notifications retained; fixed item formats use original painter; callback/lifetime/OOM tests; no external code copied or original resource changes; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T15 S10 initialized trackbar public protocol, exact native custom-draw rectangles/states with original application-requested stages preserved; private extra default-only part stages and per-window native cache invalidation; no font/data/input changes, no external code or original resources changed; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S3 exact runtime-owned plain VB6 CheckBox; reuse existing glyph/font painter, preserve native Value/events; unsupported graphical variants and live transition retire to native; independent C non-superclass regression and optional actual Actor observer; no external code or original resources changed; S3 self-review: forward native message before retirement, pinned callback can destroy HWND without late forwarding; native destruction fixture; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S5 exact runtime50/60 Combo/List/Scroll aliases, public combo native EDIT identity and bounded private-font binding with reentrant retirement, original application font restoration; no external implementation or original resource changes; T17 S7 exact VB5 file-list roles and bounded owner-draw DC ownership; self-contained dual-width text/image/input/resource tests and optional authentic sample witness; no external implementation or original resources changed; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S23 bounded v5 TProgressBar static edge, native client and colors retained; dual-width public-protocol and fallback model; T18 S54 scoped runtime grid nonclient border/scrollbars with actual public scroll check, guarded retirement and self-owned dual-width model; original resources retained; T18 S57 witnessed VCL toolbar print forwarding, unique zero-command text-only painting and native fallback, dual-width self-owned tests; original graphics retained; T18 S60 witnessed runtime TTabControl native WM_PAINT forwarding, existing public tab protocol and parent lifetime guard; resources preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 disabled checkbox list state and matching source offsets; T18 S64 reentrant window state and parent revalidation, disable/style negative and reparent lifecycle model; T18 S64 P19 scoped VB6 checkbox list text and retirement witness; T18 S64 P23 real VB5 checkbox list; T18 S64 P36 bounded VB6 UserControl client-edge renderer, pending paint and role retirement, no external code or graphic changes; T18 S64 P47 limited VB6 Data border; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64 P52 observed VB6 Data 144 DPI; T18 S64 P55 observed VB6 checklist 144 DPI; T18 S64 P57 observed VB5 checklist 144 DPI; T18 S64: witnessed Delphi scrollbar role and disabled direct-key native semantics; disabled direct mouse forwarding follows real VCL native baseline; T18 S64 witnessed Delphi SysLink protocol and native typography; no graphics or external code changed; T18 S64 preserve witnessed SpinEdit text reservation on font change; T18 S64 P111 scoped runtime-owned Delphi push button; T18 S64 P112 runtime-owned Delphi checkbox and parent-background regression; T18 S64 P113 Delphi radio parent-background preservation; T18 S64 P114 witnessed runtime-owned editable Delphi combo; T18 S64 P115 verified Delphi dropdown-list combo ownership, role and font lifecycle; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P125 native month calendar arrows; T18 S64 multiline nonclient frame; T19 S1 retire native ordinary BUTTON on live owner-draw transition, preserving parent painting; T21 S22 basic presentation extracted; T21 S22 button and static presentation extracted with same-thread callbacks; T21 S22 list and edit presentation extracted with live state references; T21 S22 combo presentation extracted with live state and native-info callbacks; T21 S22 buffered scrollbar presentation extracted with live state and native layout callbacks; T21 S22 standard button and static presentation view extraction; T21 S22 sizebox, progress border and calendar arrow presentation extraction; T21 S22 VB data arrow pixel presentation extracted; T21 S22 buffered control presentation extraction; T21 S22 graphical and bitmap-button face presentation extraction; T24 S1 share list and combo list classification; T26 S1 shared owned subclass removal; T26 S1 remove unused basic message include; T26 S1 remove unused choice paint include; T26 ordered audit shared VB frame button type; T26 ordered audit VCL spin edit layout lifecycle; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 list controller and actual render adapter; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T26 S9 common native list/scroll surface snapshots and base resource preparation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained; T26 S10 shared custom-draw state/binding/protocol and native dispatch unwind; private duplicate removed; T26 S10 complete control message borrow/font/native observation transaction moved to public message; profile consumes full operation object; T26 S10 complete common runtime-current ordered validation, six private/product guards removed; provider VB policy and fresh-lookup semantics preserved; T26 S13 complete-instance present/print contract and direct renderer consumer; original fallback/order preserved; T27 S9 common selection roles and native draw preparation; T27 S12 工具栏、可重排栏与状态栏",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -2304,24 +2304,6 @@
       "notice": "Project-authored C17; project MIT license",
       "review": "; T15 S8 verified initialized native tree protocol and bounded existing System paint scope, native item/font/image/geometry/notifications preserved; exact pending frame ownership and cancellation; ASCII test-thread IME isolation after native no-DLL MSCTF teardown evidence; no external code or original graphics modified",
       "sha256": "b27bf304f919321b0a330c35f629fa527def0b5c81a2f5d52e0502f10cb59e32"
-    },
-    {
-      "path": "src/lib-win32-style/appearance/win3x/control/progress_paint.c",
-      "source": null,
-      "source_blob": null,
-      "disposition": "authored",
-      "notice": "Project-authored C17; project MIT license",
-      "review": "; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T21 S22 library migration and palette include; T26 S2 mechanical path/include relocation; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained",
-      "sha256": "90036a4e4101fa4966ace76549dce83492c7f5fdf9aaa509093cb01ecc4d0905"
-    },
-    {
-      "path": "src/lib-win32-style/appearance/win3x/control/progress_paint.h",
-      "source": null,
-      "source_blob": null,
-      "disposition": "authored",
-      "notice": "Project-authored C17; project MIT license",
-      "review": "; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T21 S22 library migration and palette include; T26 S2 mechanical path/include relocation; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained",
-      "sha256": "7f3ed3846d67239260713aa68ea445ffb622f655eb62a7e609d0fc5580b9dc81"
     },
     {
       "path": "tests/ntw16s-dll/progress_controls.c",
@@ -4460,7 +4442,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/control_dispatch.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2245cc142d39bd86057958fe8e0cec69833b3d76737dd30842b9383ffd297942",
+      "sha256": "4e268d968b09ce76cd1a562a636dde03b2599fca110293bc5a75f89ff917bbe9",
       "disposition": "authored",
       "review": "T21 S24 extract in-process control style message dispatch; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 common basic control resource lifecycle and real consumers; T26 S9 list controller and actual render adapter; T26 S9 edit/combo messages and shared native scroll-role state; T26 S9 scroll controller/native management composition; current-desktop native API fixture; T26 S9 common native list/scroll surface snapshots and base resource preparation; T26 S10 common native message/state and header/progress snapshot ownership, existing rendering retained; T26 S10 shared custom-draw state/binding/protocol and native dispatch unwind; private duplicate removed; T26 S13 complete-instance present/print contract and direct renderer consumer; original fallback/order preserved",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4604,7 +4586,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/control_guard.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f7ed2b80b861bfff069122d061dc61cd8ca4611135e5691d8c8c0ff84fd2263f",
+      "sha256": "1a8cf3bd02114c9894f37d950745c6c5be0621c456765cf64f4f82e59050e89d",
       "disposition": "authored",
       "review": "T21 S24 extract control style eligibility and native fallback; T24 S1 share list and combo list classification; T26 S1 shared classic dialog combo eligibility; T26 ordered audit shared VB frame button type; T26 ordered audit neutral guard callback field names; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T26 S9 common basic control resource lifecycle and real consumers",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -4748,7 +4730,7 @@
       "path": "src/lib-win32-style/appearance/win3x/control/special_install.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c7ec18a6fce90b93e6aee8ded985af98fa56c38c778afb7b6ad945d6f9f75c04",
+      "sha256": "ec84ae34d2ff97d2f009c3da679d2441948abbbe4e50a20a1cec2048aa08bd3d",
       "disposition": "authored",
       "review": "T21 S24 extract specialized control installation; T24 S1 quality refactor; T24 S1 share list and combo list classification; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S9 common native list/scroll surface snapshots and base resource preparation; T26 S10 shared custom-draw state/binding/protocol and native dispatch unwind; private duplicate removed; T26 S10 existing bindings setup now owns optional list-theme capture/owned-publication/enable/final-cancel in exact former grid order; normal default options unchanged",
       "notice": "Project-authored C implementation; original notices preserved"
@@ -8762,7 +8744,7 @@
       "path": "src/lib-win32-style/application/control/progress_paint.h",
       "source": null,
       "source_blob": null,
-      "sha256": "9f1cee06d4640a6dd0697b4e1fcb615c20b739e1b3522193bd285f77bb4faf1a",
+      "sha256": "50bb6d808777f7c8ac56ccf642e831019fa236db4e41359ced5cd5556b6f487f",
       "disposition": "authored",
       "review": "T29 S21 shared progress geometry from the existing reviewed control adapters",
       "notice": "Project-authored pure C; no imported artwork"
@@ -8789,16 +8771,16 @@
       "path": "src/lib-win32-style/application/control/progress_snapshot.c",
       "source": null,
       "source_blob": null,
-      "sha256": "00e15aabb0fa322052cba363345ce5cd108c157eaac3ea1f2f0fdc81cec9f0e6",
+      "sha256": "c4b307c1f451cb594ec0ad8301515a7734a879ceea0a90599d154ef659750dd5",
       "disposition": "authored",
-      "review": "T26 S10 native control state/messages and owned native header/progress snapshots with pure C independent contract tests",
+      "review": "T26 S10 native control state/messages and owned native header/progress snapshots with pure C independent contract tests; T29 S23 merges the in-tree protocol-bound and native progress window adapters, formerly in the two progress_paint.c appearance paths.",
       "notice": "Project-authored pure C; no imported artwork"
     },
     {
       "path": "src/lib-win32-style/application/control/progress_snapshot.h",
       "source": null,
       "source_blob": null,
-      "sha256": "5099312f06812fb7a63c18f5926d1acd4214631f64c9db1d6bcecbb40047a36e",
+      "sha256": "67bee4e34fb09eca3b869ef215684f90410a4b322442a4b76cbf4b341679fcc5",
       "disposition": "authored",
       "review": "T26 S10 native control state/messages and owned native header/progress snapshots with pure C independent contract tests",
       "notice": "Project-authored pure C; no imported artwork"
@@ -8825,7 +8807,7 @@
       "path": "tests/lib-win32-style/application/control/progress_snapshot.c",
       "source": null,
       "source_blob": null,
-      "sha256": "5d582f14a79f6c892abce052a8ad0652bd7e747b16d843d4dde71c3e3d905bdb",
+      "sha256": "18d632e4dd98c2529118dc06fe15263d5647f35b73d606233ad3b3b570a657f2",
       "disposition": "authored",
       "review": "T26 S10 native control state/messages and owned native header/progress snapshots with pure C independent contract tests",
       "notice": "Project-authored pure C; no imported artwork"
@@ -9827,7 +9809,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "d7c48b8cc4ff2f869c9b34dac7313321f11f807f59305b9032fb79339f9b5ab3"
+      "sha256": "621d5917dbefc0bb2af07f807b587f564027f94060f1e56e567f43b925377f48"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/control/control.h",
@@ -10070,24 +10052,6 @@
       "sha256": "26f5998af2236d2a3b11a1298b8e72a24b7a4fe9e4ccf3c1c5f4dfba400ddd40",
       "disposition": "authored",
       "review": "T27 S9 native report/tree consumer and ownership probe",
-      "notice": "Project-authored C; no external implementation or artwork imported"
-    },
-    {
-      "path": "src/lib-win32-style/appearance/win2000/control/progress_paint.c",
-      "source": null,
-      "source_blob": null,
-      "sha256": "1b7f9ec40fcc69bc624036c4f59cb433d95c5d765a4789d73512215a43b4e3f0",
-      "disposition": "authored",
-      "review": "T27 S10 classic block/smooth progress painter",
-      "notice": "Project-authored C; no external implementation or artwork imported"
-    },
-    {
-      "path": "src/lib-win32-style/appearance/win2000/control/progress_paint.h",
-      "source": null,
-      "source_blob": null,
-      "sha256": "ed79c57b074aad5b47f8630b6207fa32f223a2d8cba6567db8ced7f306d75797",
-      "disposition": "authored",
-      "review": "T27 S10 renderer input declaration",
       "notice": "Project-authored C; no external implementation or artwork imported"
     },
     {
