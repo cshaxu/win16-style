@@ -1,5 +1,5 @@
-#include "frame_renderer.h"
-#include "frame_paint.h"
+#include "client_frame_renderer.h"
+#include "client_frame_paint.h"
 #include "lib-win32-style/application/menu/client_bar.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/window/window_text.h"
@@ -7,11 +7,11 @@
 #include <stdlib.h>
 #include <windowsx.h>
 
-void win16_control_frame_button_press(HWND w,const win16_control_frame_button_view *s,int hit)
+void style_client_frame_button_press(HWND w,const style_client_frame_button_view *s,int hit)
 {
     (void)style_caption_button_begin(w,s->state,hit,FALSE);s->paint(w,s->context,hit);
 }
-BOOL win16_control_frame_button_motion(HWND w,const win16_control_frame_button_view *s,UINT msg,LPARAM lp)
+BOOL style_client_frame_button_motion(HWND w,const style_client_frame_button_view *s,UINT msg,LPARAM lp)
 {
     style_full_client_layout l;RECT r;POINT point;
     if(!s->state->pressed || !s->layout(w,s->context,&l))return FALSE;
@@ -26,7 +26,7 @@ BOOL win16_control_frame_button_motion(HWND w,const win16_control_frame_button_v
     if(!s->instance->detached && (msg==WM_LBUTTONUP || was_hot!=s->state->hot))s->paint(w,s->context,pressed);
     return TRUE;
 }
-BOOL win16_control_frame_button_cancel(HWND w,const win16_control_frame_button_view *s,UINT msg)
+BOOL style_client_frame_button_cancel(HWND w,const style_client_frame_button_view *s,UINT msg)
 {
     if(!s->state->pressed)return FALSE;
     int pressed=style_caption_button_cancel(w,s->state,msg);
@@ -35,25 +35,25 @@ BOOL win16_control_frame_button_cancel(HWND w,const win16_control_frame_button_v
 }
 
 static void render_caption(HWND window,const style_instance *instance,HDC dc,
-    const style_full_client_layout *layout,const win16_style_palette *palette,
-    void *context,win16_frame_state_read read)
+    const style_full_client_layout *layout,const style_window_palette *palette,
+    void *context,style_client_frame_state_read read)
 {
     WCHAR *title=style_window_text_copy(window);
     if(!instance->detached){
-        win16_frame_paint_state state;read(context,&state);
+        style_client_frame_paint_state state;read(context,&state);
         if(!IsRectEmpty(&layout->buttons[CLASSIC_BUTTON_CLOSE]))
             state.close_disabled=!style_caption_button_enabled(window,HTCLOSE);
         BOOL child=(GetWindowLongPtrW(window,GWL_STYLE)&WS_CHILD)!=0;
         state.icon=IsRectEmpty(&layout->icon)?NULL:style_window_caption_icon(window);
-        if(!instance->detached)win16_control_frame_caption(dc,layout,palette,&state,title,child,IsZoomed(window));
+        if(!instance->detached)style_client_frame_caption(dc,layout,palette,&state,title,child,IsZoomed(window));
     }
     free(title);
 }
 
-void win16_control_paint_frame(HWND w,style_instance *instance,void *context,const win16_frame_renderer_ops *ops,HDC target)
+void style_client_frame_paint(HWND w,style_instance *instance,void *context,const style_client_frame_renderer_ops *ops,HDC target)
 {
     style_full_client_layout l;
-    win16_style_palette p;win16_frame_paint_state state;
+    style_window_palette p;style_client_frame_paint_state state;
     HDC dc=target?target:GetWindowDC(w);
     RECT r;int saved;
     if(!dc)return;
@@ -98,28 +98,28 @@ void win16_control_paint_frame(HWND w,style_instance *instance,void *context,con
 typedef struct frame_paint_call {
     style_instance *instance;
     void *context;
-    const win16_frame_renderer_ops *ops;
+    const style_client_frame_renderer_ops *ops;
 } frame_paint_call;
 static void paint_callback(HWND w,void *context,HDC dc)
 {
     const frame_paint_call *call=context;
-    win16_control_paint_frame(w,call->instance,call->context,call->ops,dc);
+    style_client_frame_paint(w,call->instance,call->context,call->ops,dc);
 }
-static void paint_buffered(HWND w,style_instance *instance,void *context,const win16_frame_renderer_ops *ops,HDC dc,const RECT *bounds)
+static void paint_buffered(HWND w,style_instance *instance,void *context,const style_client_frame_renderer_ops *ops,HDC dc,const RECT *bounds)
 {
     frame_paint_call call={instance,context,ops};
     style_present_buffered(w,instance,&call,paint_callback,dc,bounds);
 }
 
-void win16_control_frame_buffered(HWND w,style_instance *instance,void *context,const win16_frame_renderer_ops *ops,HDC dc)
+void style_client_frame_buffered(HWND w,style_instance *instance,void *context,const style_client_frame_renderer_ops *ops,HDC dc)
 {
     style_full_client_layout l;RECT bounds;int saved=SaveDC(dc);
-    if(!saved){win16_control_paint_frame(w,instance,context,ops,dc);return;}
+    if(!saved){style_client_frame_paint(w,instance,context,ops,dc);return;}
     if(ops->layout(w,context,&l) && !instance->detached &&
         ExcludeClipRect(dc,l.client.left,l.client.top,l.client.right,l.client.bottom)!=ERROR &&
         GetClipBox(dc,&bounds)!=ERROR && bounds.right>bounds.left && bounds.bottom>bounds.top)
         paint_buffered(w,instance,context,ops,dc,&bounds);
-    else if(!instance->detached)win16_control_paint_frame(w,instance,context,ops,dc);
+    else if(!instance->detached)style_client_frame_paint(w,instance,context,ops,dc);
     RestoreDC(dc,saved);
 }
 
@@ -128,7 +128,7 @@ void win16_control_frame_buffered(HWND w,style_instance *instance,void *context,
  * unless its attachment remains live. */
 /* Menu selection changes no caption, sizing band or scrollbar pixels.
  * Reuse the frame painter with a bounded clip instead of clearing the frame. */
-void win16_control_frame_menu_state(HWND w,style_instance *instance,void *context,const win16_frame_renderer_ops *ops)
+void style_client_frame_menu_state(HWND w,style_instance *instance,void *context,const style_client_frame_renderer_ops *ops)
 {
     style_full_client_layout l;HDC dc;HRGN clip,system;int saved;RECT bounds;
     if(!ops->layout(w,context,&l))return;
@@ -146,7 +146,7 @@ void win16_control_frame_menu_state(HWND w,style_instance *instance,void *contex
 }
 
 /* Press tracking changes one button, not the sizing band or other controls. */
-void win16_control_frame_button_state(HWND w,style_instance *instance,void *context,const win16_frame_renderer_ops *ops,int hit)
+void style_client_frame_button_state(HWND w,style_instance *instance,void *context,const style_client_frame_renderer_ops *ops,int hit)
 {
     style_full_client_layout l;RECT r;HDC dc;int saved;
     if(!ops->layout(w,context,&l))return;

@@ -41,7 +41,8 @@ add_library(style-font-cache STATIC src/lib-win32-style/application/graphics/fon
 target_include_directories(style-font-cache PUBLIC src)
 target_compile_definitions(style-font-cache PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-font-cache PUBLIC gdi32)
-add_library(style-font-variant STATIC src/lib-win32-style/appearance/msstyles/raster_font.c)
+set(raster_font_source src/lib-win32-style/appearance/msstyles/raster_font.c)
+add_library(style-font-variant STATIC ${raster_font_source})
 target_include_directories(style-font-variant PUBLIC src)
 target_compile_definitions(style-font-variant PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-font-variant PUBLIC style-font-cache style-bitmap style-msstyles user32 gdi32)
@@ -130,15 +131,21 @@ add_library(style-menu-client STATIC
 target_include_directories(style-menu-client PUBLIC src)
 target_compile_definitions(style-menu-client PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-menu-client PUBLIC style-menu-owner style-menu-popup style-window style-present)
+set(frame_font_source src/lib-win32-style/appearance/msstyles/frame_font.c)
+add_library(style-frame-font STATIC ${frame_font_source})
+target_link_libraries(style-frame-font PUBLIC style-font-variant)
+target_compile_definitions(style-frame-font PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+add_library(style-frame-client STATIC
+  src/lib-win32-style/application/window/client_frame_paint.c src/lib-win32-style/application/window/client_frame_renderer.c)
+target_link_libraries(style-frame-client PUBLIC style-menu-client style-window style-present)
+target_compile_definitions(style-frame-client PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_library(win16-window STATIC
-  src/lib-win32-style/appearance/win3x/window/frame_paint.c src/lib-win32-style/appearance/win3x/window/frame_renderer.c
   src/lib-win32-style/appearance/win3x/window/frame_layout.c src/lib-win32-style/appearance/win3x/window/frame_dispatch.c
   src/lib-win32-style/appearance/win3x/window/frame_input.c src/lib-win32-style/appearance/win3x/window/frame_lifecycle.c
-  src/lib-win32-style/appearance/win3x/window/frame_font.c
   src/lib-win32-style/appearance/win3x/window/frame_state.c)
 target_include_directories(win16-window PUBLIC src/lib-win32-style/appearance/win3x/window PRIVATE src)
 target_compile_definitions(win16-window PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-window PUBLIC style-menu-client style-menu-owner style-window style-instance style-menu-items style-uwp-repaint style-font-variant user32 gdi32 comctl32 uxtheme PRIVATE ole32 uuid)
+target_link_libraries(win16-window PUBLIC style-frame-client style-frame-font style-menu-client style-menu-owner style-window style-instance style-menu-items style-uwp-repaint style-font-variant user32 gdi32 comctl32 uxtheme PRIVATE ole32 uuid)
 set(client_modern_frame src/lib-win32-style/appearance/win3x/window/modern_frame.c)
 set(client_modern_layout src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c)
 add_library(win16-window-uwp STATIC ${client_modern_frame} ${client_modern_layout})
@@ -447,7 +454,7 @@ else()
   set_target_properties(ntwshk PROPERTIES OUTPUT_NAME ntwshk64 PREFIX "")
 endif()
 target_include_directories(ntwshk PRIVATE src ${CMAKE_SOURCE_DIR})
-target_sources(ntwshk PRIVATE ${classic_theme_source} ${observed_modern_frame} ${client_modern_frame} ${client_modern_layout})
+target_sources(ntwshk PRIVATE ${raster_font_source} ${frame_font_source} ${classic_theme_source} ${observed_modern_frame} ${client_modern_frame} ${client_modern_layout})
 target_compile_definitions(ntwshk PRIVATE NTW16S_STATIC NTWSHK_UNIFIED STYLE_THEME_EXTERNAL_ONLY UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(ntwshk PRIVATE process-hook process-image win32-handle style-theme-state style-menu-popup)
 add_library(style-startup STATIC
@@ -847,7 +854,7 @@ if(BUILD_TESTING)
   target_link_options(core-style-classic-extension PRIVATE -municode)
   add_test(NAME core/style-classic-extension COMMAND $<TARGET_FILE:core-style-classic-extension>)
   add_executable(core-style-classic-theme EXCLUDE_FROM_ALL tests/lib-win32-style/appearance/msstyles/classic_theme.c
-    src/lib-win32-style/appearance/win3x/resources/scroll_assets.c ${classic_theme_source})
+    src/lib-win32-style/appearance/win3x/resources/scroll_assets.c ${classic_theme_source} ${frame_font_source})
   target_include_directories(core-style-classic-theme PRIVATE src)
   target_compile_definitions(core-style-classic-theme PRIVATE NTW16S_STATIC STYLE_THEME_EXTERNAL_ONLY _WIN32_WINNT=0x0A00)
   target_link_libraries(core-style-classic-theme PRIVATE style-msstyles win16-window win2k-window win16-control
@@ -2608,7 +2615,7 @@ if(BUILD_TESTING)
   target_link_libraries(core-uwp-frame-hidden PRIVATE win16-window-uwp "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}")
   add_test(NAME core/uwp-frame-hidden COMMAND $<TARGET_FILE:core-uwp-frame-hidden>)
   add_executable(core-uwp-client-theme-renderer tests/lib-win32-style/appearance/win3x/window/modern_frame_hidden.c
-    ${classic_theme_source} ${client_modern_frame} ${client_modern_layout})
+    ${frame_font_source} ${classic_theme_source} ${client_modern_frame} ${client_modern_layout})
   add_dependencies(core-uwp-client-theme-renderer style-subclass)
   target_compile_definitions(core-uwp-client-theme-renderer PRIVATE NTW16S_STATIC STYLE_THEME_EXTERNAL_ONLY UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_options(core-uwp-client-theme-renderer PRIVATE -municode)

@@ -10,8 +10,8 @@
 #include "lib-win32-style/application/menu/client_bar.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/appearance/win3x/window/frame_layout.h"
-#include "lib-win32-style/appearance/win3x/window/frame_font.h"
-#include "lib-win32-style/appearance/win3x/window/frame_renderer.h"
+#include "lib-win32-style/appearance/msstyles/frame_font.h"
+#include "lib-win32-style/application/window/client_frame_renderer.h"
 #include "lib-win32-style/application/window/frame.h"
 #include "lib-win32-style/appearance/win3x/window/frame_state.h"
 #include "lib-win32-style/appearance/win3x/control/control_state.h"
@@ -269,12 +269,12 @@ int main(void)
     style_font_pair fonts={0};LOGFONTW info={0};
     NONCLIENTMETRICSW metrics={.cbSize=sizeof(metrics)};
     if(!SystemParametersInfoForDpi(SPI_GETNONCLIENTMETRICS,sizeof(metrics),&metrics,0,96) ||
-       !win16_control_refresh_frame_fonts(NULL,&fonts,NULL,NULL) || fonts.dpi!=96 || !fonts.title || !fonts.menu ||
+       !style_frame_fonts_refresh(NULL,&fonts,NULL,NULL) || fonts.dpi!=96 || !fonts.title || !fonts.menu ||
        GetObjectW(fonts.title,sizeof(info),&info)!=sizeof(info) || info.lfHeight!=metrics.lfCaptionFont.lfHeight ||
        info.lfWeight!=metrics.lfCaptionFont.lfWeight || wcscmp(info.lfFaceName,metrics.lfCaptionFont.lfFaceName)){
-        style_font_pair_dispose(&fonts,win16_control_release_frame_fonts);return 8;
+        style_font_pair_dispose(&fonts,style_frame_fonts_release);return 8;
     }
-    style_font_pair_dispose(&fonts,win16_control_release_frame_fonts);
+    style_font_pair_dispose(&fonts,style_frame_fonts_release);
     HWND window=CreateWindowExW(0,L"STATIC",L"",WS_OVERLAPPED,20,20,100,100,NULL,NULL,GetModuleHandleW(NULL),NULL);
     if(!window)return 10;
     const DWORD separator_styles[]={SS_ETCHEDHORZ,SS_ETCHEDVERT,SS_ETCHEDFRAME,SS_LEFT};
@@ -308,9 +308,9 @@ int main(void)
     win16_control_state_dispose(font_state);
     int pressed=HTMINBUTTON;BOOL hot=FALSE;style_instance button_instance={0};
     style_caption_button button_state={pressed,hot};
-    const win16_control_frame_button_view button_view={NULL,&button_state,&button_instance,test_button_layout,test_button_paint};
-    if(!win16_control_frame_button_motion(window,&button_view,WM_MOUSEMOVE,MAKELPARAM(0,0)) || !button_state.hot || button_paints!=1 ||
-       !win16_control_frame_button_cancel(window,&button_view,WM_CAPTURECHANGED) || button_state.pressed || button_state.hot || button_paints!=2){DestroyWindow(window);return 24;}
+    const style_client_frame_button_view button_view={NULL,&button_state,&button_instance,test_button_layout,test_button_paint};
+    if(!style_client_frame_button_motion(window,&button_view,WM_MOUSEMOVE,MAKELPARAM(0,0)) || !button_state.hot || button_paints!=1 ||
+       !style_client_frame_button_cancel(window,&button_view,WM_CAPTURECHANGED) || button_state.pressed || button_state.hot || button_paints!=2){DestroyWindow(window);return 24;}
     style_instance tabs_instance={0};style_control_state tabs_state={.font=(HFONT)GetStockObject(SYSTEM_FONT)};
     int stops[]={4,8};
     if(!style_control_tabs_set(window,&tabs_instance,&tabs_state,2,(LPARAM)stops,test_forward_tabs) || tabs_state.tab_count!=2 ||

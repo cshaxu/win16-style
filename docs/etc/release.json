@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P39",
-  "stage": "published development candidate with native system menu and neutral window ABI routing",
+  "delivery": "M0 T29 S23 P40",
+  "stage": "published development candidate with neutral full-client rendering and declared frame fonts",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P38 abbfd569f130",
-  "source_snapshot_sha256": "a6c039a8214b2671bbe70514843f95a1cc8391a6d8399b9bfe0ebc56826d3445",
+  "last_verified_remote_delivery": "M0 T29 S23 P39 9c8525550fdb",
+  "source_snapshot_sha256": "5ca32df1c0e21e18b36c996bceb4f02f291a63a7752f257e1d7f5f27e216c1df",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "d7f95546f5df43994301395dc8f8c6a03b5515965f129318951c94bee604c6ad",
+      "sha256": "879ce0a8c42fe5c35303c36b38124ef1e0f5e47e9940ed0424821a5b72fd1ae2",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "f8bed0e0ac9657d6fdfd01b33009e068691d6d936e414e50f36f7b5cb535b1cb",
+      "sha256": "e8ec9a3f5187ea8b41679104ce2df9d6b18408be6ea82f23e770f9a1b5623070",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "b99df627042c2ba54ef03ab6d75bcd6786404915c4aad94644cd51cf7c8246ca",
+      "sha256": "51d0eeab74a7cce3840a2c3071b795e48ce26c6eb5a729ba7d42cfe54a037342",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,42 +106,28 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 34,
+    "passed": 20,
     "selected_cases": [
-      "x86 core-win2k-frame-lifecycle",
-      "x86 core-global-style-bridge",
+      "x86 core-style-classic-theme",
+      "x86 core-win16-control-link",
+      "x86 core-dc-failure",
+      "x86 core-frames",
+      "x86 core-uwp-client-theme-renderer",
       "x86 core-abi",
-      "x86 winnt frame",
-      "x86 winnt caption-added",
-      "x86 winnt resize",
-      "x86 winnt style-transition",
-      "x86 winnt win2k-default",
-      "x86 winnt win2k-cancel",
       "x86 winnt native-string",
-      "x86 assets frame",
-      "x86 assets caption-added",
-      "x86 assets resize",
-      "x86 assets style-transition",
-      "x86 assets win2k-default",
-      "x86 assets win2k-cancel",
+      "x86 winnt win2k-default",
       "x86 assets native-string",
-      "x64 core-win2k-frame-lifecycle",
-      "x64 core-global-style-bridge",
+      "x86 assets win2k-default",
+      "x64 core-style-classic-theme",
+      "x64 core-win16-control-link",
+      "x64 core-dc-failure",
+      "x64 core-frames",
+      "x64 core-uwp-client-theme-renderer",
       "x64 core-abi",
-      "x64 winnt frame",
-      "x64 winnt caption-added",
-      "x64 winnt resize",
-      "x64 winnt style-transition",
-      "x64 winnt win2k-default",
-      "x64 winnt win2k-cancel",
       "x64 winnt native-string",
-      "x64 assets frame",
-      "x64 assets caption-added",
-      "x64 assets resize",
-      "x64 assets style-transition",
-      "x64 assets win2k-default",
-      "x64 assets win2k-cancel",
-      "x64 assets native-string"
+      "x64 winnt win2k-default",
+      "x64 assets native-string",
+      "x64 assets win2k-default"
     ],
     "skipped": [],
     "commit_scope_dialog_retest": "Isolated the Find/Replace assertions from pre-existing edits and verified the scoped script against the installed seven files, including temporary resource cleanup.",
@@ -555,13 +541,27 @@
         "interactive administrative tray",
         "full package matrix"
       ]
+    },
+    "client_frame_delivery": {
+      "test_invocations_passed": 20,
+      "incremental_passed": 16,
+      "menu_label_pixel_matches": 8,
+      "retired_appearance_objects_per_width": 3,
+      "matching_archive_members_per_width": 42,
+      "direct_old_product_objects_per_width": 21,
+      "scope": "Native default and explicit bitmap font, Win32 full-client renderer, Win32 and owned modern overlay teardown, both real system-menu paths, borrowed DC failure, and standalone compatibility ABI.",
+      "not_retested": [
+        "physical input",
+        "interactive administrative tray",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P39 inputs, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P40 inputs, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1974,
-    "cache_misses": 134
+    "cache_hits": 2103,
+    "cache_misses": 11
   }
 }

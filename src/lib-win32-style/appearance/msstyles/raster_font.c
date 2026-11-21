@@ -133,12 +133,17 @@ static HFONT logical_menu_create(HFONT source,UINT dpi,void *context,style_font_
 
 HFONT style_menu_font_acquire(UINT dpi,const msstyles_font *defined,bool legacy_bitmap)
 {
-    bool legacy=legacy_bitmap && (!defined || defined->menu_mode==STYLE_MENU_FONT_DEFAULT);
     BOOL bitmap=defined && defined->menu_mode==STYLE_MENU_FONT_SYSTEM_BITMAP;
+#ifdef STYLE_THEME_EXTERNAL_ONLY
+    (void)legacy_bitmap;
+    if(!dpi || (bitmap && (dpi<48 || dpi>384)))return NULL;
+#else
+    bool legacy=legacy_bitmap && (!defined || defined->menu_mode==STYLE_MENU_FONT_DEFAULT);
     if(legacy && defined)
         bitmap=!_wcsicmp(defined->logical.lfFaceName,L"System") && defined->logical.lfWeight==FW_BOLD &&
             !defined->logical.lfItalic && !defined->logical.lfUnderline && !defined->logical.lfStrikeOut;
     if(!dpi || ((bitmap || legacy) && (dpi<48 || dpi>384)))return NULL;
+#endif
     if(!bitmap || !defined->points || defined->points>48){
         msstyles_font request=defined?*defined:(msstyles_font){0};
         return style_font_pool_get(&variants,NULL,dpi,TRUE,logical_menu_create,&request);
@@ -147,8 +152,10 @@ HFONT style_menu_font_acquire(UINT dpi,const msstyles_font *defined,bool legacy_
     return style_font_pool_get(&variants,NULL,key,FALSE,system_create,NULL);
 }
 
+#ifndef STYLE_THEME_EXTERNAL_ONLY
 HFONT style_menu_font_acquire_with_bitmap_default(UINT dpi,const msstyles_font *defined)
 {return style_menu_font_acquire(dpi,defined,true);}
+#endif
 
 void style_menu_font_release(HFONT font)
 {style_font_pool_release(&variants,font);}

@@ -1,5 +1,6 @@
 #define _WIN32_WINNT 0x0A00
 #include "lib-win32-style/application/control/scroll_geometry.h"
+#include "lib-win32-style/appearance/msstyles/frame_font.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/menu/row_text.h"
 #include "lib-win32-style/appearance/msstyles/classic_presets.h"
@@ -10,7 +11,7 @@
 #include "lib-win32-style/appearance/win2000/control/list_combo.h"
 #include "lib-win32-style/appearance/win2000/control/static_paint.h"
 #include "lib-win32-style/application/dialog/explorer_file_layout.h"
-#include "lib-win32-style/appearance/win3x/window/frame_paint.h"
+#include "lib-win32-style/application/window/client_frame_paint.h"
 #include "lib-win32-style/application/menu/client_bar.h"
 #include "lib-win32-style/application/menu/owned_rows.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
@@ -87,9 +88,9 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
     win16_style_palette palette;
     style_window_palette_default(&palette);
     classic_theme_window_palette(&palette,theme);
-    win16_frame_paint_state state={.active=active,.presentation=theme->caption_presentation};
+    style_client_frame_paint_state state={.active=active,.presentation=theme->caption_presentation};
     POINT center={120,layout.caption.top+1};
-    win16_control_frame_caption(dc,&layout,&palette,&state,NULL,FALSE,FALSE);
+    style_client_frame_caption(dc,&layout,&palette,&state,NULL,FALSE,FALSE);
     return style_full_client_hit(&layout,center)==HTCAPTION && GetPixel(dc,center.x,center.y)==colors.start;
 }
 
@@ -197,9 +198,9 @@ static BOOL draw_caption_presentation(HDC dc,BOOL win2000)
         }else{
             const style_full_client_layout layout={.caption=band,.title=band,.unit=1};
             style_font_pair fonts={.title=font};
-            win16_frame_paint_state state={.fonts=&fonts,.active=TRUE,.presentation=variants[i]};
+            style_client_frame_paint_state state={.fonts=&fonts,.active=TRUE,.presentation=variants[i]};
             win16_style_palette colors={.active=background,.edge=line,.face=line};
-            win16_control_frame_caption(dc,&layout,&colors,&state,L"Test",FALSE,FALSE);
+            style_client_frame_caption(dc,&layout,&colors,&state,L"Test",FALSE,FALSE);
         }
         first_ink[i]=band.right;
         for(int x=band.left;x<first_ink[i];++x)
@@ -230,10 +231,10 @@ static BOOL shared_caption_band(HDC dc,const DWORD *pixels)
     DWORD reference[240*64];
     for(unsigned separator=STYLE_CAPTION_SEPARATOR_INSIDE;separator<=STYLE_CAPTION_SEPARATOR_AFTER;++separator){
         const style_caption_presentation appearance={.text_mode=STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,.separator=separator};
-        const win16_frame_paint_state state={.fonts=&fonts,.active=TRUE,.gradient=TRUE,.end=end,.presentation=appearance};
+        const style_client_frame_paint_state state={.fonts=&fonts,.active=TRUE,.gradient=TRUE,.end=end,.presentation=appearance};
         RECT clear={0,0,240,64};
         style_caption_fill(dc,clear,0,0,FALSE);
-        win16_control_frame_caption(dc,&client,&palette,&state,L"Shared",FALSE,FALSE);
+        style_client_frame_caption(dc,&client,&palette,&state,L"Shared",FALSE,FALSE);
         GdiFlush();
         memcpy(reference,pixels,sizeof(reference));
         style_caption_fill(dc,clear,0,0,FALSE);
@@ -277,16 +278,16 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
     const int hits[]={HTMINBUTTON,HTMAXBUTTON,HTSYSMENU};
     DWORD reference[240*64];
     for(unsigned flags=0;flags<8;++flags){
-        win16_frame_paint_state state={.presentation=theme->caption_presentation};
+        style_client_frame_paint_state state={.presentation=theme->caption_presentation};
         BOOL pressed=(flags&1)!=0,child=(flags&2)!=0,zoomed=(flags&4)!=0;
         for(unsigned i=0;i<ARRAYSIZE(hits);++i){
             state.button=(style_caption_button){pressed?hits[i]:0,pressed};
             state.art=&original;
-            win16_control_frame_caption(dc,&layout,&palette,&state,NULL,child,zoomed);
+            style_client_frame_caption(dc,&layout,&palette,&state,NULL,child,zoomed);
             GdiFlush();
             memcpy(reference,pixels,sizeof(reference));
             state.art=art;
-            win16_control_frame_caption(dc,&layout,&palette,&state,NULL,child,zoomed);
+            style_client_frame_caption(dc,&layout,&palette,&state,NULL,child,zoomed);
             GdiFlush();
             if(memcmp(reference,pixels,sizeof(reference)))return FALSE;
         }
@@ -322,12 +323,12 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
     style_menu_client_bar_paint(&mdi,dc,NULL,96,&palette,NULL,&disabled,art,&system_glyph);
     GdiFlush();
     if(!memcmp(reference,pixels,sizeof(reference)))return FALSE;
-    win16_frame_paint_state no_art={.active=TRUE,.presentation=theme->caption_presentation};
-    win16_control_frame_caption(dc,&layout,&palette,&no_art,NULL,FALSE,FALSE);
+    style_client_frame_paint_state no_art={.active=TRUE,.presentation=theme->caption_presentation};
+    style_client_frame_caption(dc,&layout,&palette,&no_art,NULL,FALSE,FALSE);
     GdiFlush();
     memcpy(reference,pixels,sizeof(reference));
     no_art.art=art;
-    win16_control_frame_caption(dc,&layout,&palette,&no_art,NULL,FALSE,FALSE);
+    style_client_frame_caption(dc,&layout,&palette,&no_art,NULL,FALSE,FALSE);
     GdiFlush();
     RECT system=layout.buttons[CLASSIC_BUTTON_SYSTEM];
     BOOL has_icon=FALSE,has_difference=FALSE;
@@ -349,8 +350,8 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
     for(unsigned i=0;i<ARRAYSIZE(sources);++i){
         style_caption_presentation paint={STYLE_CAPTION_TEXT_LEFT_ELLIPSIS,
             STYLE_CAPTION_SEPARATOR_NONE,sources[i],STYLE_CAPTION_BUTTON_NO_OUTLINE,STYLE_CAPTION_ICON_DEFAULT};
-        win16_frame_paint_state state={.active=TRUE,.button={HTMINBUTTON,TRUE},.art=art,.presentation=paint};
-        win16_control_frame_caption(dc,&layout,&palette,&state,NULL,FALSE,FALSE);
+        style_client_frame_paint_state state={.active=TRUE,.button={HTMINBUTTON,TRUE},.art=art,.presentation=paint};
+        style_client_frame_caption(dc,&layout,&palette,&state,NULL,FALSE,FALSE);
         GdiFlush();memcpy(reference,pixels,sizeof(reference));
         win2k_caption_render_with_colors(dc,&other,L"",NULL,GetStockObject(DEFAULT_GUI_FONT),
             dpi,colors,&frame,&paint,FALSE,flags,art);
@@ -1256,6 +1257,19 @@ static int check_icon_layout(void)
 
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==2 && !wcscmp(argv[1],L"--frame-menu-font")){
+        msstyles_font definition={.logical={.lfWeight=FW_BOLD,.lfFaceName=L"System"},.points=10};
+        for(unsigned bit=0;bit<2;++bit){
+            definition.menu_mode=bit?STYLE_MENU_FONT_SYSTEM_BITMAP:STYLE_MENU_FONT_DEFAULT;
+            HFONT font=style_frame_menu_font_acquire(96,&definition);
+            LOGFONTW realized={0};
+            CHECK(font && GetObjectW(font,sizeof(realized),&realized)==sizeof(realized));
+            style_menu_font_release(font);
+            CHECK((!wcsncmp(realized.lfFaceName,L"Style Raster ",13))==(bit!=0));
+        }
+        puts("FRAME MENU FONT PASS native default and explicit bitmap");
+        return 0;
+    }
     if(argc==4 && !wcscmp(argv[1],L"--menu-mode")){
         classic_theme_mapping source={0};
         CHECK(classic_theme_open(argv[2],&source)==S_OK);

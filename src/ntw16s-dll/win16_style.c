@@ -3,8 +3,8 @@
  */
 #include "win16_style.h"
 #include "lib-win32-style/application/window/full_client_layout.h"
-#include "../lib-win32-style/appearance/win3x/window/frame_paint.h"
-#include "../lib-win32-style/appearance/win3x/window/frame_renderer.h"
+#include "../lib-win32-style/application/window/client_frame_paint.h"
+#include "../lib-win32-style/application/window/client_frame_renderer.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_state.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_lifecycle.h"
 #include "lib-win32-style/application/menu/bar_controller.h"
@@ -12,7 +12,7 @@
 #include "../lib-win32-style/appearance/win3x/window/frame_dispatch.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_input.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_layout.h"
-#include "../lib-win32-style/appearance/win3x/window/frame_font.h"
+#include "lib-win32-style/appearance/msstyles/frame_font.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/window/frame.h"
 #include "lib-win32-style/application/window/window_identity.h"
@@ -72,27 +72,27 @@ COLORREF win16_style_dialog_edge(HWND window)
     else style_window_palette_default(&palette);
     return palette.edge;
 }
-static void paint_state(void *context,win16_frame_paint_state *result)
+static void paint_state(void *context,style_client_frame_paint_state *result)
 {
     style_window *s=context;
-    *result=(win16_frame_paint_state){&s->fonts,s->native.active,s->menu.system,
+    *result=(style_client_frame_paint_state){&s->fonts,s->native.active,s->menu.system,
         s->menu.bar.keyboard,s->menu.bar.selected,s->button,&s->art,&s->menu_bar,
         s->caption_presentation,s->caption_gradient,s->native.active?s->active_end:s->inactive_end,
         s->border_presentation,&s->menu_metrics,FALSE,NULL};
 }
-static const win16_frame_renderer_ops renderer={paint_layout,paint_state,paint_colors,win16_style_scrollbars_paint};
+static const style_client_frame_renderer_ops renderer={paint_layout,paint_state,paint_colors,win16_style_scrollbars_paint};
 static void paint(HWND w,void *context,HDC target)
-{style_window *s=context;win16_control_paint_frame(w,&s->instance,s,&renderer,target);}
+{style_window *s=context;style_client_frame_paint(w,&s->instance,s,&renderer,target);}
 static void paint_buffered_callback(HWND w,void *context,HDC dc)
-{style_window *s=context;win16_control_frame_buffered(w,&s->instance,s,&renderer,dc);}
+{style_window *s=context;style_client_frame_buffered(w,&s->instance,s,&renderer,dc);}
 static void paint_menu_state(HWND w,style_window *s)
-{win16_control_frame_menu_state(w,&s->instance,s,&renderer);}
+{style_client_frame_menu_state(w,&s->instance,s,&renderer);}
 static void paint_button_state(HWND w,style_window *s,int hit)
-{win16_control_frame_button_state(w,&s->instance,s,&renderer,hit);}
+{style_client_frame_button_state(w,&s->instance,s,&renderer,hit);}
 static void button_paint_callback(HWND w,void *context,int hit){paint_button_state(w,(style_window *)context,hit);}
-static win16_control_frame_button_view button_view(style_window *s)
+static style_client_frame_button_view button_view(style_window *s)
 {
-    const win16_control_frame_button_view view={s,&s->button,&s->instance,paint_layout,button_paint_callback};
+    const style_client_frame_button_view view={s,&s->button,&s->instance,paint_layout,button_paint_callback};
     return view;
 }
 
@@ -125,7 +125,7 @@ static style_menu_bar_target menu_target(HWND w,style_window *s)
 static void leave_bar(HWND w,style_window *s,BOOL restore_focus)
 {const style_menu_bar_target t=menu_target(w,s);style_menu_bar_finish(&t,restore_focus);}
 static BOOL refresh_font(HWND w,void *context)
-{style_window *s=context;return win16_control_refresh_frame_fonts(w,&s->fonts,&s->caption_font,&s->menu_font);}
+{style_window *s=context;return style_frame_fonts_refresh(w,&s->fonts,&s->caption_font,&s->menu_font);}
 
 static void activate_frame(HWND w,void *context,const RECT *client,BOOL normal)
 {

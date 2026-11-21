@@ -1,7 +1,7 @@
-#include "frame_paint.h"
+#include "client_frame_paint.h"
 
-void win16_control_frame_caption(HDC dc,const style_full_client_layout *layout,const win16_style_palette *palette,
-    const win16_frame_paint_state *snapshot,PCWSTR title,BOOL child,BOOL zoomed)
+void style_client_frame_caption(HDC dc,const style_full_client_layout *layout,const style_window_palette *palette,
+    const style_client_frame_paint_state *snapshot,PCWSTR title,BOOL child,BOOL zoomed)
 {
     BOOL gradient=snapshot->gradient && !style_window_high_contrast();
     COLORREF start=snapshot->active?palette->active:palette->inactive;

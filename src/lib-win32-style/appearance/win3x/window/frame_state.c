@@ -1,5 +1,5 @@
 #include "frame_state.h"
-#include "frame_font.h"
+#include "lib-win32-style/appearance/msstyles/frame_font.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include <stdlib.h>
 style_window *win16_control_frame_state_create(void)
@@ -8,6 +8,6 @@ void win16_control_frame_state_dispose(void *context)
 {
     style_window *s=context;
     style_menu_owner_stop(&s->menu);
-    style_font_pair_dispose(&s->fonts,win16_control_release_frame_fonts);
+    style_font_pair_dispose(&s->fonts,style_frame_fonts_release);
     free(s);
 }

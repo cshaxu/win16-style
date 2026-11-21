@@ -14,7 +14,7 @@ static int WINAPI test_save_dc(HDC dc)
 }
 #define SaveDC test_save_dc
 #include "ntw16s-dll/win16_style.c"
-#include "lib-win32-style/appearance/win3x/window/frame_renderer.c"
+#include "lib-win32-style/application/window/client_frame_renderer.c"
 #undef SaveDC
 #define CHECK(x) do { if(!(x)){fprintf(stderr,"DC FAIL line %d\n",__LINE__);return 1;} } while(0)
 static UINT lifetime_message;

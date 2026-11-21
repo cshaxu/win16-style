@@ -32,21 +32,21 @@ BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM 
             if((wp==HTHELP || wp==HTCLOSE) &&
                (!v->layout(w,s,&l) || IsRectEmpty(&l.buttons[style_caption_role((int)wp)])))return FALSE;
             if(style_caption_button_enabled(w,(int)wp)){
-                const win16_control_frame_button_view view=v->button_view(s);
-                win16_control_frame_button_press(w,&view,(int)wp);
+                const style_client_frame_button_view view=v->button_view(s);
+                style_client_frame_button_press(w,&view,(int)wp);
             }
             return TRUE;
         }
         return FALSE;
     case WM_MOUSEMOVE:
     case WM_LBUTTONUP: {
-        const win16_control_frame_button_view view=v->button_view(s);
-        return win16_control_frame_button_motion(w,&view,msg,lp);
+        const style_client_frame_button_view view=v->button_view(s);
+        return style_client_frame_button_motion(w,&view,msg,lp);
     }
     case WM_CANCELMODE:
     case WM_CAPTURECHANGED: {
-        const win16_control_frame_button_view view=v->button_view(s);
-        (void)win16_control_frame_button_cancel(w,&view,msg);return FALSE;
+        const style_client_frame_button_view view=v->button_view(s);
+        (void)style_client_frame_button_cancel(w,&view,msg);return FALSE;
     }
     default:return FALSE;
     }
