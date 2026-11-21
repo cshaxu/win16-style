@@ -295,6 +295,5 @@ int wmain(int argc,WCHAR **argv)
             printf("PASS menu callback lifetime message=%x action=%d\n",messages[k],action);
         }}
     SelectObject(dc,old);DeleteObject(bm);DeleteDC(dc);DestroyWindow(w);
-    win16_style_font_release(s.fonts.title);
     return 0;
 }

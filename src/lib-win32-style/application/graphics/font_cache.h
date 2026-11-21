@@ -56,7 +56,13 @@ typedef struct style_memory_font {
     HFONT font;
     HANDLE resource;
     unsigned references;
+    struct style_memory_font *next_face;
+    char face[LF_FACESIZE];
 } style_memory_font;
+/* Register the verified GDI face once, before publication. Last release
+ * retires the entry. A match does not acquire a reference. */
+void style_memory_font_register_face(style_memory_font *,const char *);
+BOOL style_memory_font_has_face(const char *);
 HFONT style_memory_font_acquire(style_memory_font *,BOOL (*create)(void *,style_memory_font *),void *);
 void style_memory_font_release(style_memory_font *,HFONT);
 

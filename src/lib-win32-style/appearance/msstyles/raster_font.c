@@ -1,4 +1,4 @@
-#include "font.h"
+#include "raster_font.h"
 #include "lib-win32-style/application/graphics/font_cache.h"
 #include "lib-win32-style/application/graphics/bitmap.h"
 #include "lib-win32-style/application/graphics/bitmap_font.h"
@@ -11,7 +11,7 @@ static _Thread_local style_font_pool variants;
 static LONG variant_serial;
 enum { menu_dpi_bits=9, menu_dpi_mask=(1u<<menu_dpi_bits)-1 };
 
-HFONT win16_style_system_source(HFONT font)
+HFONT style_raster_font_source(HFONT font)
 {return style_font_pool_source(&variants,font);}
 
 static HFONT system_create(HFONT source,UINT key,void *context,style_font_pool_entry **owned)
@@ -27,14 +27,13 @@ static HFONT system_create(HFONT source,UINT key,void *context,style_font_pool_e
     original=CreateCompatibleDC(NULL);if(!original)goto done;
     oo=SelectObject(original,source?source:GetStockObject(SYSTEM_FONT));
     if(!oo || !GetTextMetricsW(original,&tm) || !GetTextFaceA(original,32,actual))goto done;
-    /* Already-System fonts, including the explicit legacy bitmap API, need
-     * no new resource. NULL remains the native default System font. */
-    if(!menu_dpi && (!strcmp(actual,"System") || !strncmp(actual,"Win16 System",12))){
+    /* Borrow the stock face or a face already registered by a live lease. */
+    if(!menu_dpi && (!strcmp(actual,"System") || style_memory_font_has_face(actual))){
         font=source;ok=TRUE;goto done;
     }
     if(tm.tmHeight<1 || tm.tmHeight>64)goto done;
     data=calloc(65536,1);v=calloc(1,sizeof(*v));if(!data || !v)goto done;
-    wsprintfA(face,"Win16 System %08lX",(DWORD)InterlockedIncrement(&variant_serial));
+    wsprintfA(face,"Style Raster %08lX",(DWORD)InterlockedIncrement(&variant_serial));
     src=CreateCompatibleDC(NULL);
     a=CreateBitmap(128,64,1,1,NULL);
     SIZE dimensions={128,64};
@@ -91,7 +90,13 @@ done:
     if(src)DeleteDC(src);
     style_bitmap_dispose(&rendered);
     free(data);
-    if(ok && resource){v->lease.font=font;v->lease.resource=resource;*owned=v;return font;}
+    if(ok && resource){
+        v->lease.font=font;
+        v->lease.resource=resource;
+        style_memory_font_register_face(&v->lease,face);
+        *owned=v;
+        return font;
+    }
     free(v);
     if(ok)return font;
     if(font)DeleteObject(font);
@@ -106,13 +111,13 @@ static HFONT system_acquire(HFONT source,unsigned points,UINT menu_dpi,BOOL pres
     return style_font_pool_get(&variants,source,key,isolated,system_create,NULL);
 }
 
-HFONT win16_style_system_acquire(HFONT source,unsigned points)
+HFONT style_raster_font_acquire(HFONT source,unsigned points)
 {return system_acquire(source,points,0,FALSE,FALSE);}
 
-HFONT win16_style_system_acquire_isolated(HFONT source,unsigned points)
+HFONT style_raster_font_acquire_isolated(HFONT source,unsigned points)
 {return system_acquire(source,points,0,FALSE,TRUE);}
 
-HFONT win16_style_vb_font_acquire(HFONT source,unsigned points)
+HFONT style_raster_font_acquire_stroke_fit(HFONT source,unsigned points)
 {return system_acquire(source,points,0,TRUE,FALSE);}
 
 static HFONT logical_menu_create(HFONT source,UINT dpi,void *context,style_font_pool_entry **owned)
@@ -142,7 +147,7 @@ HFONT style_menu_font_acquire(UINT dpi,const msstyles_font *defined,bool legacy_
     return style_font_pool_get(&variants,NULL,key,FALSE,system_create,NULL);
 }
 
-HFONT win16_style_menu_font_acquire(UINT dpi,const msstyles_font *defined)
+HFONT style_menu_font_acquire_with_bitmap_default(UINT dpi,const msstyles_font *defined)
 {return style_menu_font_acquire(dpi,defined,true);}
 
 void style_menu_font_release(HFONT font)
@@ -150,12 +155,12 @@ void style_menu_font_release(HFONT font)
 
 /* Scale the stock bitmap at the declared sampling density. The calendar
  * caller independently limits the native path to the witnessed window DPI. */
-HFONT win16_style_calendar_font_acquire(unsigned raster_dpi,unsigned points)
+HFONT style_raster_font_acquire_at_density(unsigned raster_dpi,unsigned points)
 {return raster_dpi>=48 && raster_dpi<=96?system_acquire(NULL,points,raster_dpi,FALSE,FALSE):NULL;}
 
-void win16_style_system_release(HFONT font)
+void style_raster_font_release(HFONT font)
 {style_font_pool_release(&variants,font);}
-BOOL win16_style_system_try_retain(HFONT font)
+BOOL style_raster_font_try_retain(HFONT font)
 {return style_font_pool_try_retain(&variants,font);}
-void win16_style_system_retain(HFONT font)
+void style_raster_font_retain(HFONT font)
 {style_font_pool_retain(&variants,font);}

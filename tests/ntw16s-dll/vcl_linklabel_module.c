@@ -35,7 +35,7 @@ static int run(int argc,WCHAR **argv)
   CHECK(RedrawWindow(link,NULL,NULL,RDW_INVALIDATE|RDW_FRAME|RDW_UPDATENOW));
   if(mode<2)CHECK(!attached(link));
   else{
-   CHECK(attached(link));LOGFONTW lf={0};HFONT font=(HFONT)SendMessageW(link,WM_GETFONT,0,0);CHECK(font&&GetObjectW(font,sizeof(lf),&lf)&&wcsstr(lf.lfFaceName,L"Win16 System"));
+   CHECK(attached(link));LOGFONTW lf={0};HFONT font=(HFONT)SendMessageW(link,WM_GETFONT,0,0);CHECK(font&&GetObjectW(font,sizeof(lf),&lf)&&wcsstr(lf.lfFaceName,L"Style Raster "));
    item.mask=LIF_ITEMINDEX|LIF_STATE;item.stateMask=LIS_VISITED;item.state=LIS_VISITED;CHECK(SendMessageW(link,LM_SETITEM,0,(LPARAM)&item));item.state=0;CHECK(SendMessageW(link,LM_GETITEM,0,(LPARAM)&item)&&(item.state&LIS_VISITED));
    SetFocus(link);SendMessageW(link,WM_LBUTTONDOWN,MK_LBUTTON,MAKELPARAM(5,8));SendMessageW(link,WM_LBUTTONUP,0,MAKELPARAM(5,8));
    SendMessageW(link,WM_KEYDOWN,VK_RETURN,0);SendMessageW(link,WM_KEYUP,VK_RETURN,0);

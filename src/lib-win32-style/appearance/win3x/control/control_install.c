@@ -3,7 +3,7 @@
 #include "control_state.h"
 #include "control_guard.h"
 #include "control_class.h"
-#include "../common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include <string.h>
 
 extern IMAGE_DOS_HEADER __ImageBase;

@@ -1,6 +1,6 @@
 #include "lib-win32-style/application/control/control_redraw.h"
 #include "control_state.h"
-#include "../common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "control_class.h"
 #include <commctrl.h>
 #include <stdlib.h>
@@ -8,9 +8,9 @@ static HFONT acquire_font(HWND w,HFONT source,BOOL native,unsigned points)
 {
     if(!points)return source;
     BOOL vb=!native && (style_control_vb_frame(w) || style_control_vb_edit(w) || style_control_vb_button(w) || style_control_vb_combo(w) || style_control_vb_list(w));
-    return vb?win16_style_vb_font_acquire(source,points):win16_style_system_acquire(source,points);
+    return vb?style_raster_font_acquire_stroke_fit(source,points):style_raster_font_acquire(source,points);
 }
-static const style_control_fonts font_operations={win16_style_system_source,acquire_font,win16_style_system_retain,win16_style_system_release};
+static const style_control_fonts font_operations={style_raster_font_source,acquire_font,style_raster_font_retain,style_raster_font_release};
 
 void win16_control_updown_colors(control_style *s)
 {

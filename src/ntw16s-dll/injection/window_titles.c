@@ -32,7 +32,7 @@
 #include <commdlg.h>
 #include <commctrl.h>
 #include <vssym32.h>
-#include "../../lib-win32-style/appearance/win3x/common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/application/graphics/font_scope.h"
 #include "lib-win32-style/application/graphics/font_cache.h"
 #include "../../lib-win32-style/appearance/win3x/control/month_text.h"
@@ -46,7 +46,7 @@ typedef struct month_text_room_context {HTHEME theme;HDC dc;int part,state;DWORD
 static BOOL month_text_room(void *value,int width)
 {month_text_room_context *c=value;return ntw16s_month_text_room(c->theme,c->dc,c->part,c->state,c->flags,c->flags2,c->rect,width,c->caller);}
 static void release_system_font(void *context,HFONT font)
-{(void)context;win16_style_system_release(font);}
+{(void)context;style_raster_font_release(font);}
 
 /* Private, synchronous coordinator scope; not part of the public ABI. */
 void ntw16s_status_frame(HDC,const RECT *,const RECT *,const void *);

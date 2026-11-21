@@ -3,7 +3,7 @@
 #include "lib-win32-style/application/adapters/surface.h"
 #include "lib-win32-style/appearance/win3x/window/frame_renderer.h"
 #include "lib-win32-style/appearance/win3x/window/frame_font.h"
-#include "lib-win32-style/appearance/win3x/common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_items.h"
 #include <stdlib.h>
 

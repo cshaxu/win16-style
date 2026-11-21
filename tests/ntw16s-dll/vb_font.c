@@ -1,6 +1,6 @@
 #undef calloc
 #undef free
-#include "../../src/lib-win32-style/appearance/win3x/common/font.h"
+#include "../../src/lib-win32-style/appearance/msstyles/raster_font.h"
 #include <stdio.h>
 #include <wchar.h>
 #include "lib-win32-style/appearance/win3x/control/vb_text.h"
@@ -22,7 +22,7 @@ static int font_pixels(void)
             OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Tahoma");CHECK(source);
         HGDIOBJ old=SelectObject(dc,source);TEXTMETRICW native,adapted;SIZE before,after;
         CHECK(GetTextMetricsW(dc,&native) && GetTextExtentPoint32W(dc,L"0123456789",10,&before));
-        HFONT font=win16_style_vb_font_acquire(source,12);CHECK(font);
+        HFONT font=style_raster_font_acquire_stroke_fit(source,12);CHECK(font);
         SelectObject(dc,font);CHECK(GetTextMetricsW(dc,&adapted) && GetTextExtentPoint32W(dc,L"0123456789",10,&after));
         CHECK(adapted.tmHeight==native.tmHeight && adapted.tmAscent==native.tmAscent && before.cx==after.cx);
         RECT r={0,0,128,64};FillRect(dc,&r,GetStockObject(WHITE_BRUSH));
@@ -37,7 +37,7 @@ static int font_pixels(void)
          * at height14 used to delete that cap and turn the digit into U. */
         CHECK(GetPixel(dc,(left+right)/2,top)==RGB(0,0,0));
         CHECK(GetPixel(dc,(left+right)/2,bottom)==RGB(0,0,0));
-        SelectObject(dc,old);win16_style_system_release(font);DeleteObject(source);
+        SelectObject(dc,old);style_raster_font_release(font);DeleteObject(source);
         printf("VB_FONT_ZERO_OK requested=%d cell=%ld advance=%ld top=%d bottom=%d\n",height,adapted.tmHeight,after.cx,top,bottom);
     }
     SelectObject(dc,oldbitmap);DeleteObject(bitmap);DeleteDC(dc);return 0;
@@ -113,7 +113,7 @@ static int report_ownership(void)
     CHECK(!win16_control_vb_paint_font(dc));style_runtime_text_report_bind(NULL,dc);CHECK(!win16_control_vb_paint_font(dc));
     style_runtime_text_report_bind(w,dc);fail_next=1;CHECK(!win16_control_vb_paint_font(dc) && !fonts.count && live_allocations==baseline);
     HFONT font=win16_control_vb_paint_font(dc);CHECK(font && fonts.count==1 && !win16_control_vb_paint_font(other));
-    HFONT standard=win16_style_vb_font_acquire(source,12);CHECK(standard==font);win16_style_system_release(standard);
+    HFONT standard=style_raster_font_acquire_stroke_fit(source,12);CHECK(standard==font);style_raster_font_release(standard);
     CHECK(GetCurrentObject(dc,OBJ_FONT)==source);
     win16_control_vb_paint_begin(&nested,w,WM_PRINTCLIENT,&barrier,12,ntw16s_vb_user_label_target);CHECK(!win16_control_vb_paint_font(dc));style_runtime_text_end(&nested);
     CHECK(win16_control_vb_paint_font(dc)==font);cancelled=TRUE;

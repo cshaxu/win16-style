@@ -27,7 +27,7 @@ static HGDIOBJ WINAPI observe_select(HDC dc,HGDIOBJ object)
             result && result!=HGDI_ERROR && GetObjectType(object)==OBJ_FONT && GetCurrentObject(dc,OBJ_FONT)==object &&
             (!window || (GetDCOrgEx(dc,&origin) && ClientToScreen(state->window,&client) && origin.x==client.x && origin.y==client.y))){
         WCHAR face[80];if(GetTextFaceW(dc,80,face)>0){
-            if(!wcsncmp(face,L"Win16 System",12)){state->paint_system_font=(HFONT)object;if(!state->paint_system_callsite)state->paint_system_callsite=(ULONG_PTR)__builtin_return_address(0);if(window)++state->paint_system;else ++state->paint_system_memory;}
+            if(!wcsncmp(face,L"Style Raster ",13)){state->paint_system_font=(HFONT)object;if(!state->paint_system_callsite)state->paint_system_callsite=(ULONG_PTR)__builtin_return_address(0);if(window)++state->paint_system;else ++state->paint_system_memory;}
             else {if(window)++state->paint_native;else ++state->paint_native_memory;}
         }
     }
@@ -195,7 +195,7 @@ static int CALLBACK font_record(HDC dc,HANDLETABLE *table,const ENHMETARECORD *r
     if(record->iType==EMR_EXTCREATEFONTINDIRECTW){
         const EMREXTCREATEFONTINDIRECTW *font=(const void *)record;
         ++state->font_records;
-        BOOL system=!wcsncmp(font->elfw.elfLogFont.lfFaceName,L"Win16 System",12);
+        BOOL system=!wcsncmp(font->elfw.elfLogFont.lfFaceName,L"Style Raster ",13);
         if(system)++state->system_fonts;
         if(font->ihFont<1024){trace->fonts[font->ihFont]=TRUE;trace->system[font->ihFont]=system;}
     }else if(record->iType==EMR_SELECTOBJECT){

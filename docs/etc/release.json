@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P33",
-  "stage": "published development candidate with obsolete common link assembly retired",
+  "delivery": "M0 T29 S23 P34",
+  "stage": "published development candidate with shared raster font identity",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P32 02e4f6edf316",
-  "source_snapshot_sha256": "9092e2babcbae6ec2b4415ac8213f4fc9aeac88056496da4b57df553d0cd30c5",
+  "last_verified_remote_delivery": "M0 T29 S23 P33 855ef410eb05",
+  "source_snapshot_sha256": "2adc606937bd1b1735500d44f1309fe09c0ab3299e2fb518e089e832189e1667",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "cc468cf56c21cd5a4cc2f413cf2a752eed7b8e6179704bc5ac5b0332f0bdbb3a",
+      "sha256": "92a2c925574a14d778988cad8e5ae445829a8dfe836d85ba7ec3f7d5ec955138",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "8ae4e2c343a9388c1d247273b1f5f5e50a36400add1e7075f369baa155986716",
+      "sha256": "0260f73b07537385c3a412a76b6cd891bd49bc76b022c4c6664efe62df6aee78",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "63c0b813b9c6bd9bcfc93fc5130ba5233dcca406b89bfa54b590ea174eca9281",
+      "sha256": "3e61bc4f8eb5430c8ad3671e8e8701d93b0b99f553ea7600495ee0c269895495",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,51 +106,24 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 43,
+    "passed": 16,
     "selected_cases": [
-      "ntw2ks-control-buttons-startup-x86",
-      "ntw2ks-control-buttons-startup-x64",
-      "ntw2ks-control-buttons-v6-startup-x86",
-      "ntw2ks-control-buttons-v6-startup-x64",
-      "ntw2ks-frame-x86",
-      "ntw2ks-frame-x64",
-      "progress-sharing",
-      "plan-selection",
-      "abi-x86",
-      "abi-x64",
-      "demo-boundary",
-      "demo-pair",
-      "theme-dialog-policy",
-      "cli",
-      "automatic",
-      "propagation",
-      "cli-failures",
-      "ntw2ks-com-explorer-open-cancel-32",
-      "ntw2ks-com-explorer-open-cancel-64",
-      "neutral-provider-exports-32-full",
-      "neutral-provider-exports-32-nonclient",
-      "neutral-window-directory-32",
-      "neutral-uwp-frame-32",
-      "neutral-uwp-theme-id-32",
-      "neutral-global-switch-32",
-      "neutral-global-switch-32-from-16",
-      "neutral-global-switch-32-from-2k",
-      "neutral-provider-exports-64-full",
-      "neutral-provider-exports-64-nonclient",
-      "neutral-window-directory-64",
-      "neutral-uwp-frame-64",
-      "neutral-uwp-theme-id-64",
-      "neutral-global-switch-64",
-      "neutral-global-switch-64-from-16",
-      "neutral-global-switch-64-from-2k",
-      "scroll-behavior-frame-x86",
-      "scroll-behavior-list-x86",
-      "scroll-behavior-edit-x86",
-      "scroll-behavior-frame-x64",
-      "scroll-behavior-list-x64",
-      "scroll-behavior-edit-x64",
-      "ntw2ks-scroll-layout-32",
-      "ntw2ks-scroll-layout-64"
+      "x86-stock-and-face-lease",
+      "x86-raster-font-isolation",
+      "x86-font-cache",
+      "x86-win16-menu-mode",
+      "x86-win16-system-menu-pixels",
+      "x86-win2k-menu-mode",
+      "x86-win2k-system-menu-pixels",
+      "x86-win16-edit-font-draw-remove",
+      "x64-stock-and-face-lease",
+      "x64-raster-font-isolation",
+      "x64-font-cache",
+      "x64-win16-menu-mode",
+      "x64-win16-system-menu-pixels",
+      "x64-win2k-menu-mode",
+      "x64-win2k-system-menu-pixels",
+      "x64-win16-edit-font-draw-remove"
     ],
     "skipped": [],
     "commit_scope_dialog_retest": "Isolated the Find/Replace assertions from pre-existing edits and verified the scoped script against the installed seven files, including temporary resource cleanup.",
@@ -285,7 +258,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P33 results are in common_link_delivery.",
+    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P34 results are in raster_font_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -489,13 +462,21 @@
         "enabled system high contrast",
         "full package matrix"
       ]
+    },
+    "raster_font_delivery": {
+      "test_invocations_passed": 16,
+      "menu_label_pixel_matches": 4,
+      "installed_control_font_draw_restore_invocations": 2,
+      "compatibility_focused_invocations": 4,
+      "scope": "Dual-architecture registered face identity, native font borrowing and last release, both themed menu creation modes, installed system menu pixel hashes, and installed edit paint/removal.",
+      "scope_limit": "Owned Win32 fixtures. No physical input or full package matrix. The separately rebuilt standalone compatibility target does not participate in either formal runtime link."
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P33 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P34 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2011,
-    "cache_misses": 111
+    "cache_hits": 2122,
+    "cache_misses": 0
   }
 }

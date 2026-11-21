@@ -3,7 +3,7 @@
 #include "lib-win32-style/application/lifecycle/install.h"
 #include "frame_layout.h"
 #include "frame_dispatch.h"
-#include "../common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/window/dwm.h"
 #include <dwmapi.h>
@@ -111,7 +111,7 @@ BOOL win16_control_menu_owner_install(HWND w,const void *owner,const BOOL *cance
   (void)style_menu_art_read(source.resources,source.model.menu_images,&s->menu_art);
   classic_theme_close(&source);
  }
- s->fonts.menu=win16_style_menu_font_acquire(s->fonts.dpi,&s->menu_font);
+ s->fonts.menu=style_menu_font_acquire_with_bitmap_default(s->fonts.dpi,&s->menu_font);
  if(!s->fonts.menu || (cancelled&&*cancelled)){
   DWORD error=cancelled&&*cancelled?ERROR_CANCELLED:ERROR_INVALID_DATA;
   win16_control_frame_state_dispose(s);SetLastError(error);return FALSE;

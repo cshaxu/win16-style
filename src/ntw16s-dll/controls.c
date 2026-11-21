@@ -31,7 +31,7 @@ BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *,style_scroll_arrow_art *)
 #include "../lib-win32-style/appearance/win3x/control/special_install.h"
 
 #include "lib-win32-style/application/control/scroll_track.h"
-#include "../lib-win32-style/appearance/win3x/common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "native_api.h"
 #include "theme.h"
 #include "lib-win32-style/appearance/win3x/control/header_paint.h"
@@ -57,7 +57,7 @@ static style_control_state *lookup_control(HWND window)
     style_instance *instance=style_instance_lookup(window,control_proc);
     return instance?&((control_style *)instance)->state:NULL;
 }
-static const style_control_combo_ops combo_operations={win16_style_vb_font_acquire,lookup_control};
+static const style_control_combo_ops combo_operations={style_raster_font_acquire_stroke_fit,lookup_control};
 static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;

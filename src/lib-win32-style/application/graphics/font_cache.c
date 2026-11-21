@@ -74,6 +74,28 @@ void style_font_snapshot_dispose(style_font_snapshot_cache *cache)
     ZeroMemory(cache,sizeof(*cache));
 }
 
+static SRWLOCK face_lock=SRWLOCK_INIT;
+static style_memory_font *registered_faces;
+
+void style_memory_font_register_face(style_memory_font *lease,const char *face)
+{
+    lstrcpynA(lease->face,face,ARRAYSIZE(lease->face));
+    AcquireSRWLockExclusive(&face_lock);
+    lease->next_face=registered_faces;
+    registered_faces=lease;
+    ReleaseSRWLockExclusive(&face_lock);
+}
+
+BOOL style_memory_font_has_face(const char *face)
+{
+    AcquireSRWLockShared(&face_lock);
+    const style_memory_font *entry=registered_faces;
+    while(entry && strcmp(entry->face,face))entry=entry->next_face;
+    BOOL found=entry!=NULL;
+    ReleaseSRWLockShared(&face_lock);
+    return found;
+}
+
 HFONT style_memory_font_acquire(style_memory_font *lease,BOOL (*create)(void *,style_memory_font *),void *context)
 {
     if(!lease->references && !create(context,lease))return NULL;
@@ -84,6 +106,13 @@ void style_memory_font_release(style_memory_font *lease,HFONT font)
 {
     if(!lease->references || font!=lease->font)return;
     if(!--lease->references){
+        if(lease->face[0]){
+            AcquireSRWLockExclusive(&face_lock);
+            style_memory_font **entry=&registered_faces;
+            while(*entry!=lease)entry=&(*entry)->next_face;
+            *entry=lease->next_face;
+            ReleaseSRWLockExclusive(&face_lock);
+        }
         DeleteObject(lease->font);
         if(lease->resource)RemoveFontMemResourceEx(lease->resource);
         *lease=(style_memory_font){0};

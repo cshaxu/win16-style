@@ -20,7 +20,7 @@
 #include "../lib-win32-style/appearance/win3x/menu/menu_items.h"
 #include "../lib-win32-style/appearance/win3x/menu/menu_scope.h"
 #include "controls.h"
-#include "../lib-win32-style/appearance/win3x/common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/application/lifecycle/dispatch.h"
 #include <commctrl.h>
 #include <dwmapi.h>

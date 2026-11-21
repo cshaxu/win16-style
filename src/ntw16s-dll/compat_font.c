@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static _Thread_local style_memory_font shared;
+static _Thread_local style_memory_font *shared;
 
 static BOOL create_font(void *context,style_memory_font *result)
 {
@@ -62,13 +62,34 @@ done:
     if(src)DeleteDC(src);
     if(scaled)DeleteDC(scaled);
     free(data);
-    if(ok){result->font=font;result->resource=resource;return TRUE;}
+    if(ok){
+        result->font=font;
+        result->resource=resource;
+        style_memory_font_register_face(result,face);
+        return TRUE;
+    }
     if(font)DeleteObject(font);
     if(resource)RemoveFontMemResourceEx(resource);
     return FALSE;
 }
 
 HFONT win16_style_font_acquire(void)
-{return style_memory_font_acquire(&shared,create_font,NULL);}
+{
+    if(shared)return style_memory_font_acquire(shared,create_font,NULL);
+    style_memory_font *lease=calloc(1,sizeof(*lease));
+    if(!lease)return NULL;
+    HFONT font=style_memory_font_acquire(lease,create_font,NULL);
+    if(font)shared=lease;
+    else free(lease);
+    return font;
+}
+
 void win16_style_font_release(HFONT font)
-{style_memory_font_release(&shared,font);}
+{
+    if(!shared)return;
+    style_memory_font_release(shared,font);
+    if(!shared->references){
+        free(shared);
+        shared=NULL;
+    }
+}

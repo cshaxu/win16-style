@@ -13,7 +13,7 @@
 #include "lib-win32-style/appearance/win3x/window/frame_paint.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_bar.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_items.h"
-#include "lib-win32-style/appearance/win3x/common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/appearance/win3x/control/basic_paint.h"
 #include "lib-win32-style/appearance/win3x/control/choice_view.h"
 #include "lib-win32-style/appearance/win3x/control/combo_paint.h"
@@ -838,15 +838,15 @@ static BOOL draw_themed_popup(HDC dc,const DWORD *pixels,const classic_theme *th
 {
     msstyles_font alternate=theme->menu_font;
     alternate.points=24;
-    HFONT font=win16_style_menu_font_acquire(dpi,&theme->menu_font);
-    HFONT fallback=win16_style_menu_font_acquire(dpi,NULL);
-    HFONT smaller=win16_style_menu_font_acquire(dpi,&alternate);
+    HFONT font=style_menu_font_acquire_with_bitmap_default(dpi,&theme->menu_font);
+    HFONT fallback=style_menu_font_acquire_with_bitmap_default(dpi,NULL);
+    HFONT smaller=style_menu_font_acquire_with_bitmap_default(dpi,&alternate);
     alternate.points=9;
     alternate.logical.lfWeight=FW_NORMAL;
     alternate.logical.lfItalic=TRUE;
     alternate.menu_mode=STYLE_MENU_FONT_LOGICAL;
     lstrcpyW(alternate.logical.lfFaceName,L"Arial");
-    HFONT logical=win16_style_menu_font_acquire(dpi,&alternate);
+    HFONT logical=style_menu_font_acquire_with_bitmap_default(dpi,&alternate);
     BOOL ok=font && fallback && fallback!=font && smaller && smaller!=font && logical && logical!=font;
     if(ok){
         NONCLIENTMETRICSW native={.cbSize=sizeof(native)};
@@ -869,15 +869,15 @@ static BOOL draw_themed_popup(HDC dc,const DWORD *pixels,const classic_theme *th
         if(!ok)fprintf(stderr,"Win16 popup DPI %u base height %ld alternate %ld\n",
             dpi,(long)before.lfHeight,(long)after.lfHeight);
     }
-    win16_style_system_release(logical);
+    style_raster_font_release(logical);
     LOGFONTW released;
     if(logical && GetObjectW(logical,sizeof(released),&released)){
         fprintf(stderr,"Menu font lease remains live after release at DPI %u\n",dpi);
         ok=FALSE;
     }
-    win16_style_system_release(smaller);
-    win16_style_system_release(fallback);
-    win16_style_system_release(font);
+    style_raster_font_release(smaller);
+    style_raster_font_release(fallback);
+    style_raster_font_release(font);
     return ok;
 }
 
@@ -1266,7 +1266,7 @@ int wmain(int argc,WCHAR **argv)
             HFONT font=style_menu_font_acquire(96,&source.model.menu_font,legacy!=0);
             LOGFONTW realized={0};
             CHECK(font && GetObjectW(font,sizeof(realized),&realized)==sizeof(realized));
-            BOOL sampled=!wcsncmp(realized.lfFaceName,L"Win16 System ",13);
+            BOOL sampled=!wcsncmp(realized.lfFaceName,L"Style Raster ",13);
             style_menu_font_release(font);
             CHECK(sampled==bitmap);
         }

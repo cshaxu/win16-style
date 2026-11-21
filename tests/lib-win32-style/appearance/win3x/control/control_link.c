@@ -8,7 +8,7 @@
 #include "lib-win32-style/appearance/win3x/control/other_paint.h"
 #include "lib-win32-style/appearance/win3x/control/special_paint.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_bar.h"
-#include "lib-win32-style/appearance/win3x/common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/appearance/win3x/window/frame_layout.h"
 #include "lib-win32-style/appearance/win3x/window/frame_font.h"
 #include "lib-win32-style/appearance/win3x/window/frame_renderer.h"
@@ -201,8 +201,8 @@ int main(void)
     control_style *control=win16_control_state_create();
     if(!control || control->state.font || control->state.protocol || control->state.tab_positions || control->instance.calls)return 38;
     control->state.tab_positions=malloc(2*sizeof(*control->state.tab_positions));
-    control->state.font=win16_style_menu_font_acquire(96,NULL);
-    control->bindings.combo.fonts[0]=win16_style_menu_font_acquire(96,NULL);control->bindings.combo.font_count=1;
+    control->state.font=style_menu_font_acquire_with_bitmap_default(96,NULL);
+    control->bindings.combo.fonts[0]=style_menu_font_acquire_with_bitmap_default(96,NULL);control->bindings.combo.font_count=1;
     if(!control->state.tab_positions || !control->state.font || !control->bindings.combo.fonts[0]){win16_control_state_dispose(control);return 39;}
     win16_control_state_dispose(control);
     style_window *owned=win16_control_frame_state_create();
@@ -210,7 +210,7 @@ int main(void)
     /* Failed inner-entry ownership is covered through the public menu owner
      * contract test; this component test retains its actual font disposal. */
     owned->fonts.title=CreateFontW(-12,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,DEFAULT_PITCH,L"Arial");
-    owned->fonts.menu=win16_style_menu_font_acquire(96,NULL);
+    owned->fonts.menu=style_menu_font_acquire_with_bitmap_default(96,NULL);
     if(!owned->fonts.title || !owned->fonts.menu){win16_control_frame_state_dispose(owned);return 35;}
     HFONT former_title=owned->fonts.title;win16_control_frame_state_dispose(owned);
     LOGFONTW disposed;if(GetObjectW(former_title,sizeof(disposed),&disposed))return 36;
@@ -301,7 +301,7 @@ int main(void)
        font_state->state.original_font!=application_font || font_call.parameter!=(WPARAM)application_font || !font_call.outbound){
         if(font_state)win16_control_state_dispose(font_state);
         DestroyWindow(window);return 40;}
-    win16_style_system_release(font_call.outbound);win16_style_system_release(font_call.previous);
+    style_raster_font_release(font_call.outbound);style_raster_font_release(font_call.previous);
     font_state->instance.detached=TRUE;font_call=(style_control_message){.message=WM_SETFONT,.parameter=(WPARAM)application_font};
     if(win16_control_state_prepare_font(window,font_state,&font_call)){
         win16_control_state_dispose(font_state);DestroyWindow(window);return 41;}

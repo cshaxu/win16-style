@@ -1,4 +1,5 @@
 #include "lib-win32-style/application/adapters/win32/message.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/application/adapters/win32/paint_dispatch.h"
 #include "lib-win32-style/application/control/control_vcl_identity.h"
 #include "../lib-win32-style/appearance/win3x/control/vb_text.h"
@@ -276,7 +277,7 @@ static void release(attachment *a);
 static void attachment_dispose(void *context)
 {
     attachment *a=context;style_runtime_references references=a->base.runtime.roles.references;
-    win16_style_system_release(a->month_cached_font);style_font_snapshot_dispose(&a->status_font);
+    style_raster_font_release(a->month_cached_font);style_font_snapshot_dispose(&a->status_font);
     style_font_cache_dispose(&a->fonts);free(a);style_runtime_references_release(&references);
 }
 static void release(attachment *a){style_instance_release(&a->base.instance);}

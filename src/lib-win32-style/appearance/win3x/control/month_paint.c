@@ -1,7 +1,7 @@
 #include "month_paint.h"
 #include "month_text.h"
 #include "special_paint.h"
-#include "../common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include <vssym32.h>
 #include <commctrl.h>
 
@@ -23,9 +23,9 @@ HFONT win16_control_month_text_borrow(const win16_control_month_view *v,HTHEME t
 {
     if(!v || !v->font_dpi || !month_text_allowed(v,theme,dc,part,state,flags,flags2,r,address) ||
        GetDpiForWindow(v->native.window)!=96)return NULL;
-    if(!*v->cached_font)*v->cached_font=win16_style_calendar_font_acquire(v->font_dpi,v->font_points);
+    if(!*v->cached_font)*v->cached_font=style_raster_font_acquire_at_density(v->font_dpi,v->font_points);
     if(!v->native.current(v->native.context) || !month_text_allowed(v,theme,dc,part,state,flags,flags2,r,address) ||
-       !*v->cached_font || !win16_style_system_try_retain(*v->cached_font))return NULL;
+       !*v->cached_font || !style_raster_font_try_retain(*v->cached_font))return NULL;
     return *v->cached_font;
 }
 BOOL win16_control_month_text_room(const win16_control_month_view *v,HTHEME theme,HDC dc,int part,int state,DWORD flags,DWORD flags2,const RECT *r,int width,const void *address)

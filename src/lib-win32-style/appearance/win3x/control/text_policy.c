@@ -1,5 +1,5 @@
 #include "text_policy.h"
-#include "../common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 
 BOOL win16_control_report_wide_text(HDC dc,const WCHAR *text,int count,BOOL active)
 {
@@ -33,5 +33,5 @@ HFONT win16_control_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,co
     if(count==-1){count=0;while(count<4096 && text[count])++count;if(count==4096)return NULL;}
     if(count>4096)return NULL;
     for(int i=0;i<count;++i)if(text[i]>0x7f)return NULL;
-    source=(HFONT)GetCurrentObject(dc,OBJ_FONT);return source?win16_style_system_acquire(source,points):NULL;
+    source=(HFONT)GetCurrentObject(dc,OBJ_FONT);return source?style_raster_font_acquire(source,points):NULL;
 }

@@ -58,7 +58,7 @@ static HFONT system_font(HWND w,HFONT original,unsigned points)
     CHECK(dc && expected && a && b && base);HGDIOBJ oa=SelectObject(dc,a),ob=SelectObject(expected,b);
     HGDIOBJ of=SelectObject(dc,original?original:GetStockObject(SYSTEM_FONT));TEXTMETRICW before,after,sys;
     CHECK(GetTextMetricsW(dc,&before));SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));
-    char face[32];CHECK(GetTextFaceA(dc,32,face)>0 && (!strcmp(face,"System") || !strncmp(face,"Win16 System",12)));
+    char face[32];CHECK(GetTextFaceA(dc,32,face)>0 && (!strcmp(face,"System") || !strncmp(face,"Style Raster ",13)));
     CHECK(GetTextMetricsW(dc,&after) && after.tmHeight==before.tmHeight &&
         after.tmAscent==before.tmAscent && after.tmInternalLeading==before.tmInternalLeading &&
         after.tmExternalLeading==before.tmExternalLeading);

@@ -1,8 +1,8 @@
 #include "vb_text.h"
 #include "control_class.h"
-#include "../common/font.h"
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 
-static const style_font_ops font_operations={.acquire=win16_style_vb_font_acquire,.release=win16_style_system_release};
+static const style_font_ops font_operations={.acquire=style_raster_font_acquire_stroke_fit,.release=style_raster_font_release};
 static BOOL include_text(HWND w,UINT message)
 {
     BOOL edit=style_control_vb_edit(w);
