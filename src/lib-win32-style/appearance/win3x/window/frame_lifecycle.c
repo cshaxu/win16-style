@@ -58,7 +58,7 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
     s->menu.bar.selected=-1;s->instance.owner=owner;
     s->native.pending=creating && normal && !(style&WS_VISIBLE);
     {WCHAR name[32];s->dialog=GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpW(name,L"#32770");}
-    if(p)s->palette=*p;else win16_style_default_palette(&s->palette);
+    if(p)s->palette=*p;else style_window_palette_default(&s->palette);
     classic_theme_mapping source={0};
     DWORD theme_error=classic_theme_attachment_layout((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,&source);
     if(theme_error){win16_control_frame_state_dispose(s);SetLastError(theme_error);return FALSE;}
@@ -79,14 +79,14 @@ BOOL win16_control_frame_install(HWND w,const win16_style_palette *p,BOOL creati
         if(!p){
             s->menu_bar=theme->menu_bar;
             s->menu_popup=theme->menu_popup;
-            win16_style_theme_palette(&s->palette,theme);
+            classic_theme_window_palette(&s->palette,theme);
         }
         classic_theme_close(&source);
     }
     s->native.active=(ex&WS_EX_MDICHILD)?
         (HWND)SendMessageW(GetParent(w),WM_MDIGETACTIVE,0,0)==w:GetActiveWindow()==w;
     if(!v->refresh_font(w,s)){win16_control_frame_state_dispose(s);SetLastError(ERROR_INVALID_DATA);return FALSE;}
-    {win16_style_layout checked;
+    {style_full_client_layout checked;
         if(!v->layout(w,s,&checked)){win16_control_frame_state_dispose(s);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}}
     style_client_screen(w,&client);
     style_native_frame_capture(&s->native,w,v->get_window_attribute,FALSE);
@@ -100,12 +100,12 @@ BOOL win16_control_menu_owner_install(HWND w,const void *owner,const BOOL *cance
  if(v->state(w)){SetLastError(ERROR_INVALID_STATE);return FALSE;}
  style_window *s=win16_control_frame_state_create();if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
  s->instance.owner=owner;s->menu_only=TRUE;s->fonts.dpi=GetDpiForWindow(w);if(!s->fonts.dpi)s->fonts.dpi=96;
- win16_style_default_palette(&s->palette);
+ style_window_palette_default(&s->palette);
  classic_theme_mapping source={0};
  DWORD theme_error=classic_theme_attachment_layout((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,&source);
  if(theme_error){win16_control_frame_state_dispose(s);SetLastError(theme_error);return FALSE;}
  if(source.resources){
-  win16_style_theme_palette(&s->palette,&source.model);
+  classic_theme_window_palette(&s->palette,&source.model);
   s->menu_popup=source.model.menu_popup;s->menu_metrics=source.model.menu_metrics;
   s->menu_font=source.model.menu_font;
   (void)style_menu_art_read(source.resources,source.model.menu_images,&s->menu_art);

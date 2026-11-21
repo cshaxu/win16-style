@@ -88,7 +88,7 @@ void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC
        (dirty && IntersectClipRect(dc,dirty->left,dirty->top,dirty->right,dirty->bottom)==ERROR)){
         RestoreDC(dc,saved);return;
     }
-    if(theme)palette=*theme;else win16_style_default_palette(&palette);
+    if(theme)palette=*theme;else style_window_palette_default(&palette);
     style_relief_palette frame=win16_control_push_palette(&palette);
     r=style_paint_outlined_face(dc,r,u,TRUE,pressed,palette.face,&frame);
     int left=(r.left+r.right-gw)/2+(pressed?u:0),top=(r.top+r.bottom-gh)/2+(pressed?u:0);

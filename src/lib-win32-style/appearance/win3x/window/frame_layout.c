@@ -6,20 +6,20 @@
 #include "../menu/menu_bar.h"
 #include <windowsx.h>
 
-BOOL win16_control_frame_hit_test(HWND w,const win16_style_layout *l,LPARAM lp,LRESULT *result)
+BOOL win16_control_frame_hit_test(HWND w,const style_full_client_layout *l,LPARAM lp,LRESULT *result)
 {
     RECT r;POINT point;
     POINT screen={GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
     if(style_frame_scrollbar_hit(w,screen,result))return TRUE;
     if(!GetWindowRect(w,&r))return FALSE;
     point.x=screen.x-r.left;point.y=screen.y-r.top;
-    *result=style_menu_neutral_hit(PtInRect(&l->menu,point)?HTMENU:win16_style_hit(l,point));
+    *result=style_menu_neutral_hit(PtInRect(&l->menu,point)?HTMENU:style_full_client_hit(l,point));
     return TRUE;
 }
 
 BOOL win16_control_measure_window(HWND w,const style_instance *instance,const style_font_pair *fonts,
     const RECT *outer,const classic_button_group *buttons,const classic_caption_metrics *metrics,
-    const style_frame_geometry *frame,unsigned icon_mode,const classic_menu_metrics *menu,win16_style_layout *l)
+    const style_frame_geometry *frame,unsigned icon_mode,const style_menu_metrics *menu,style_full_client_layout *l)
 {
     RECT visible=*outer;BOOL zoom=IsZoomed(w);int dx,dy;
     if(zoom)(void)style_frame_work_area(w,outer,&visible);
@@ -27,10 +27,10 @@ BOOL win16_control_measure_window(HWND w,const style_instance *instance,const st
     int width=visible.right-visible.left,height=visible.bottom-visible.top;
     UINT monitor=frame && frame->scale==STYLE_FRAME_MONITOR_PIXELS?
         (UINT)style_frame_monitor_dpi(w,fonts->dpi).cy:fonts->dpi;
-    BOOL measured=win16_style_measure_with_buttons(width,height,fonts->dpi,style,ex,zoom,
+    BOOL measured=style_full_client_measure(width,height,fonts->dpi,style,ex,zoom,
         buttons,metrics,frame,monitor,l);
     if(!measured)return FALSE;
-    win16_style_measure_caption_icon(l,fonts->dpi,style,ex,icon_mode);
+    style_full_client_caption_icon(l,fonts->dpi,style,ex,icon_mode);
     if(menu)l->menu_metrics=*menu;
     /* Native maximized resize borders can lie outside the work area. Keep
      * Windows' geometry, but place every custom non-client element and the

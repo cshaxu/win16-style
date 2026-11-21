@@ -12,7 +12,7 @@ extern IMAGE_DOS_HEADER __ImageBase;
 typedef struct uwp_frame {
     style_uwp_frame frame;
     style_font_pair fonts;
-    win16_style_layout layout;
+    style_full_client_layout layout;
     classic_theme theme;
     win16_style_palette palette;
     style_menu_art menu_art;
@@ -36,15 +36,15 @@ static BOOL geometry(uwp_frame *s,RECT *outer)
     DWORD ex_style=(DWORD)GetWindowLongPtrW(s->frame.host.owner,GWL_EXSTYLE);
     if(!win16_uwp_frame_layout(size,dpi,style,ex_style,zoomed,content,
         &s->theme.title_buttons,&s->theme.caption_metrics,&s->theme.border_presentation.geometry,&s->layout))return FALSE;
-    win16_style_measure_caption_icon(&s->layout,dpi,style,ex_style,s->theme.caption_presentation.icon_mode);
+    style_full_client_caption_icon(&s->layout,dpi,style,ex_style,s->theme.caption_presentation.icon_mode);
     if(dpi!=s->fonts.dpi && !win16_control_refresh_frame_fonts(s->frame.host.owner,&s->fonts,
         &s->theme.caption_font,&s->theme.menu_font))return FALSE;
     return !s->frame.host.instance.detached;
 }
-static BOOL cached_layout(HWND w,void *context,win16_style_layout *layout)
+static BOOL cached_layout(HWND w,void *context,style_full_client_layout *layout)
 {(void)w;*layout=((uwp_frame *)context)->layout;return TRUE;}
 static void colors(void *context,win16_style_palette *palette)
-{win16_control_resolve_palette(&((uwp_frame *)context)->palette,palette);}
+{style_window_palette_resolve(&((uwp_frame *)context)->palette,palette);}
 static void no_scrollbars(HWND w,HDC dc,const win16_style_palette *palette)
 {(void)w;(void)dc;(void)palette;}
 static BOOL refresh_geometry(void *context,RECT *outer,RECT *hole,POINT *anchor)
@@ -95,13 +95,13 @@ static BOOL apply_actions(HWND w,HWND title,const style_uwp_frame_action *action
 #endif
     uwp_frame *s=calloc(1,sizeof(*s)+(size_t)count*sizeof(*s->actions));
     if(!s){SetLastError(ERROR_NOT_ENOUGH_MEMORY);return FALSE;}
-    win16_style_default_palette(&s->palette);
+    style_window_palette_default(&s->palette);
 #ifndef STYLE_THEME_EXTERNAL_ONLY
     if(source)
 #endif
     {
         s->theme=source->model;
-        win16_style_theme_palette(&s->palette,&s->theme);
+        classic_theme_window_palette(&s->palette,&s->theme);
         (void)style_menu_art_read(source->resources,s->theme.menu_images,&s->menu_art);
         (void)classic_caption_art_read(source->resources,&s->theme.caption_images,&s->caption_art);
     }

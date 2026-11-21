@@ -110,8 +110,8 @@ win16_style_menu_scope *win16_style_menu_begin(const win16_style_palette *palett
     const classic_menu_colors *colors,const classic_menu_metrics *metrics,const style_menu_art *art)
 {
     menu_presentation *s=calloc(1,sizeof(*s));if(!s)return NULL;
-    if(palette)s->palette=*palette;else win16_style_default_palette(&s->palette);
-    if(colors && !win16_control_high_contrast())s->colors=*colors;
+    if(palette)s->palette=*palette;else style_window_palette_default(&s->palette);
+    if(colors && !style_window_high_contrast())s->colors=*colors;
     if(metrics)s->metrics=*metrics;
     if(art)s->art=*art;
     style_menu_popup_scope *scope=style_menu_popup_begin(NULL,&popup_ops,s);

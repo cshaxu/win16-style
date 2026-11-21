@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "lib-win32-style/appearance/win3x/common/font.h"
-#include "lib-win32-style/appearance/win3x/common/layout.h"
+#include "lib-win32-style/application/window/full_client_layout.h"
 #include "lib-win32-style/application/menu/classic_menu_layout.h"
 #include "lib-win32-style/appearance/win3x/common/palette.h"
 
@@ -9,7 +9,7 @@ int main(void)
     win16_style_palette palette;
     HFONT font;
     SIZE size={30,16};UINT flags=0;RECT item={0};int height=0;
-    win16_style_default_palette(&palette);
+    style_window_palette_default(&palette);
     if(palette.face!=GetSysColor(COLOR_BTNFACE) || palette.edge!=GetSysColor(COLOR_WINDOWTEXT))return 10;
     font=win16_style_menu_font_acquire(96,NULL);
     if(!font)return 11;

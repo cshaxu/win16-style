@@ -50,8 +50,10 @@ T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及�
 ## 现代外框的当前源码位置与迁移边界
 
 公共宿主、输入、表面和重绘机制位于 `src/lib-win32-style/application/adapters/`；
-原生标题和目标观察位于其 `uwp/` 子目录。Win3.x 的几何、命中和呈现目前位于
-`appearance/win3x/window/modern_frame{,_layout}.{c,h}`，菜单、输入与表面状态由公共`adapters/frame`完整对象拥有；年代保留几何、命中和呈现。
+原生标题和目标观察位于其 `uwp/` 子目录。全客户区的共享几何、命中计算
+及宿主调色位于 `application/window`。现代全客户区适配器位于
+`appearance/win3x/window/modern_frame{,_layout}.{c,h}`，提供宿主边界与呈现数据，
+由公共 `adapters/frame` 对象维护菜单、输入和表面状态。
 对应测试按相同组件放在 `tests/lib-win32-style/`；实际产品组合验证保留明确标记，不能把它们冒称为独立公共库测试。
 
 接入协调位于 `access/runtime/uwp_dispatch` 和 `access/global/uwp_global`；产品仍有导出、

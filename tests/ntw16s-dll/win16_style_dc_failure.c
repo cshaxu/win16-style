@@ -145,9 +145,9 @@ int wmain(int argc,WCHAR **argv)
         HMENU menu=CreateMenu();CHECK(owner && menu && AppendMenuW(menu,MF_OWNERDRAW,1,(LPCWSTR)(UINT_PTR)7));
         measure_fixture fixture={0};SetWindowLongPtrW(owner,GWLP_USERDATA,(LONG_PTR)&fixture);CHECK(SetMenu(owner,menu));
         fixture.fonts=(style_font_pair){.menu=(HFONT)GetStockObject(SYSTEM_FONT),.dpi=96};fixture.calls=0;
-        RECT outer;win16_style_layout measured,base;CHECK(GetWindowRect(owner,&outer));
+        RECT outer;style_full_client_layout measured,base;CHECK(GetWindowRect(owner,&outer));
         const style_frame_geometry joined={STYLE_FRAME_LOGICAL,4,3,6,1,20,1,1};
-        CHECK(win16_style_measure_with_buttons(outer.right-outer.left,outer.bottom-outer.top,96,
+        CHECK(style_full_client_measure(outer.right-outer.left,outer.bottom-outer.top,96,
             (DWORD)GetWindowLongPtrW(owner,GWL_STYLE),(DWORD)GetWindowLongPtrW(owner,GWL_EXSTYLE),FALSE,NULL,NULL,&joined,96,&base));
         CHECK(win16_control_measure_window(owner,&fixture.instance,&fixture.fonts,&outer,NULL,NULL,&joined,0,NULL,&measured));
         CHECK(fixture.calls && fixture.fonts.dpi==144 &&
@@ -164,14 +164,14 @@ int wmain(int argc,WCHAR **argv)
         CHECK(DestroyWindow(owner) && UnregisterClassW(cls.lpszClassName,wc.hInstance));
         puts("PASS frame measurement reentry: live whole font pair DPI and instance retirement after native owner-draw callback");
     }
-    CHECK(w);CHECK(refresh_font(w,&s));win16_style_default_palette(&s.palette);
+    CHECK(w);CHECK(refresh_font(w,&s));style_window_palette_default(&s.palette);
     dc=CreateCompatibleDC(NULL);CHECK(dc);
     bi.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);bi.bmiHeader.biWidth=320;bi.bmiHeader.biHeight=-200;
     bi.bmiHeader.biPlanes=1;bi.bmiHeader.biBitCount=32;
     bm=CreateDIBSection(dc,&bi,DIB_RGB_COLORS,(void **)&pixels,NULL,0);CHECK(bm);
     old=(HBITMAP)SelectObject(dc,bm);
     {
-        style_window title_state={0};win16_style_layout title_layout={0};
+        style_window title_state={0};style_full_client_layout title_layout={0};
         title_state.fonts.title=(HFONT)GetStockObject(SYSTEM_FONT);
         win16_style_palette palette=s.palette;palette.active_text=RGB(12,34,56);palette.inactive_text=RGB(65,43,21);
         SetRect(&title_layout.caption,0,0,320,30);title_layout.title=title_layout.caption;title_layout.unit=1;
@@ -245,7 +245,7 @@ int wmain(int argc,WCHAR **argv)
     {style_window *installed;HMENU outer=CreatePopupMenu(),inner=CreatePopupMenu();MENUITEMINFOW info={.cbSize=sizeof(info)};
         CHECK(outer && inner && AppendMenuW(outer,MF_STRING,1,L"&Outer") && AppendMenuW(inner,MF_STRING,2,L"&Inner"));
         CHECK(win16_style_install(w,NULL));installed=state(w);CHECK(installed);
-        {HMENU bar=CreateMenu();win16_style_layout frame;RECT window;
+        {HMENU bar=CreateMenu();style_full_client_layout frame;RECT window;
             CHECK(bar && AppendMenuW(bar,MF_STRING,42,L"&Action") && SetMenu(w,bar));
             style_frame_changed(w);CHECK(layout(w,installed,&frame) && GetWindowRect(w,&window));
             installed->menu.bar.keyboard=TRUE;installed->menu.bar.selected=-1;

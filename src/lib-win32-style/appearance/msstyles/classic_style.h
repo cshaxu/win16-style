@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include "v4_font.h"
+#include "lib-win32-style/application/menu/row_text.h"
 #include "lib-win32-style/application/control/roles.h"
 #include "lib-win32-style/application/control/progress_paint.h"
 #include "lib-win32-style/application/control/trackbar_paint.h"
@@ -34,12 +35,7 @@ enum classic_mdi_buttons {
     CLASSIC_MDI_SYSTEM=1, CLASSIC_MDI_RESTORE=2, CLASSIC_MDI_MINIMIZE=4, CLASSIC_MDI_CLOSE=8,
     CLASSIC_MDI_ALL=15, CLASSIC_MDI_DEFINED=128
 };
-typedef struct classic_menu_metrics {
-    uint16_t check_column, shortcut_gap, arrow_column, plain_column;
-    uint16_t text_flags, bar_padding;
-    uint8_t mdi_buttons, row_minimum, row_padding, mdi_inactive;
-    uint8_t font_mode;
-} classic_menu_metrics;
+typedef style_menu_metrics classic_menu_metrics;
 
 typedef struct classic_file_metrics {
     uint16_t compact_width, compact_height, places_width, places_height;

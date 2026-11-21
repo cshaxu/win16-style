@@ -58,7 +58,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     s->file_owner=!frame_bars && (ntw16s_vb_owner_file(w) || s->common_dialog_combo);s->combo_passthrough=services->combo_candidate(w);
     if(!frame_bars && !style_control_font_read(w,&s->state,services->control_proc,cancelled)){
         DWORD error=GetLastError();win16_control_state_dispose(s);SetLastError(error);return FALSE;}
-    if(palette)s->palette=*palette;else win16_style_default_palette(&s->palette);
+    if(palette)s->palette=*palette;else style_window_palette_default(&s->palette);
     classic_theme_mapping source={0};
     DWORD theme_error=classic_theme_attachment_layout((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,&source);
     if(theme_error){win16_control_state_dispose(s);SetLastError(theme_error);return FALSE;}
@@ -90,7 +90,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     s->state.font_recipe=s->controls.control_font_points;
     s->themed=!palette && have_theme;
     if(s->themed){
-        win16_style_theme_palette(&s->palette,theme);
+        classic_theme_window_palette(&s->palette,theme);
         s->push_colors=theme->push;
         s->label_colors=theme->label;
         memcpy(s->edit_colors,theme->edit,sizeof(s->edit_colors));

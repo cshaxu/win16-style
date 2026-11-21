@@ -2,6 +2,7 @@
 #define STYLE_MSSTYLES_CLASSIC_THEME_H
 
 #include "classic_style.h"
+#include "lib-win32-style/application/window/palette.h"
 #include "v4_font.h"
 #include "theme_file.h"
 #include "lib-win32-style/application/menu/menu_art.h"
@@ -228,6 +229,20 @@ typedef struct classic_theme {
     classic_scroll_metrics scroll_metrics;
     BOOL gradient;
 } classic_theme;
+
+static inline void classic_theme_window_palette(style_window_palette *p,const classic_theme *theme)
+{
+    p->active=theme->active.start;
+    p->inactive=theme->inactive.start;
+    p->active_text=theme->active.text;
+    p->inactive_text=theme->inactive.text;
+    if(theme->frame.present){
+        p->face=theme->frame.face;
+        p->light=theme->frame.light;
+        p->shadow=theme->frame.shadow;
+        p->edge=theme->frame.edge;
+    }
+}
 
 style_relief_palette classic_relief_palette(const classic_frame_colors *,const classic_list_colors *,const classic_text_colors *);
 static inline style_relief_palette classic_theme_relief_palette(const classic_theme *theme)

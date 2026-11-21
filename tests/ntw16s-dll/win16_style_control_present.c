@@ -128,7 +128,7 @@ int main(int argc,char **argv)
      bi.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);bi.bmiHeader.biWidth=300;bi.bmiHeader.biHeight=-100;
      bi.bmiHeader.biPlanes=1;bi.bmiHeader.biBitCount=32;
      bitmap=CreateDIBSection(dc,&bi,DIB_RGB_COLORS,&pixels,NULL,0);CHECK(bitmap);old=SelectObject(dc,bitmap);
-     FillRect(dc,&r,(HBRUSH)GetStockObject(BLACK_BRUSH));win16_style_default_palette(&state.palette);
+     FillRect(dc,&r,(HBRUSH)GetStockObject(BLACK_BRUSH));style_window_palette_default(&state.palette);
      control_render render={&state,NULL,draw};render_control(group,&render,dc,draw,TRUE);
      CHECK(GetPixel(dc,100,70)==RGB(37,83,119));CHECK(GetPixel(dc,25,35)==RGB(0,0,0));
      CHECK(!owned_live && !owned_overflow);SelectObject(dc,old);DeleteObject(bitmap);DeleteDC(dc);
@@ -140,7 +140,7 @@ int main(int argc,char **argv)
      CHECK(target && bitmap);old=(HBITMAP)SelectObject(target,bitmap);CHECK(old);
      CHECK(ReleaseDC(root,screen));SetRect(&area,0,0,17,120);
      w=CreateWindowW(L"SCROLLBAR",L"",WS_CHILD|WS_VISIBLE|SBS_VERT,10,10,17,120,root,NULL,wc.hInstance,NULL);CHECK(w);
-     SetScrollInfo(w,SB_CTL,&range,FALSE);win16_style_default_palette(&state.palette);
+     SetScrollInfo(w,SB_CTL,&range,FALSE);style_window_palette_default(&state.palette);
      for(mode=0;mode<2;++mode){
         SetDCBrushColor(target,RGB(17,39,61));FillRect(target,&area,(HBRUSH)GetStockObject(DC_BRUSH));
         fail_next_save=mode==0;fail_next_pattern=mode==1;scroll_copies=0;observe_scroll=TRUE;
@@ -160,7 +160,7 @@ int main(int argc,char **argv)
      CHECK(old_first && old_second && ReleaseDC(root,screen));
      w=CreateWindowW(L"LISTBOX",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,160,120,root,NULL,wc.hInstance,NULL);CHECK(w);
      SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=0,.nMax=100,.nPage=10,.nPos=25};
-     SetScrollInfo(w,SB_VERT,&range,TRUE);control_style state={0};win16_style_default_palette(&state.palette);
+     SetScrollInfo(w,SB_VERT,&range,TRUE);control_style state={0};style_window_palette_default(&state.palette);
      const win16_control_scroll_view view={&state.palette,&state.bindings.scroll,scroll_layout,
         embedded_scroll_layout,edit_thumb_messages,list_axis_owned,NULL,NULL,NULL};
      SCROLLBARINFO info={.cbSize=sizeof(info)};RECT outer;

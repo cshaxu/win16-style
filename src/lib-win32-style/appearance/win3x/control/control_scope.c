@@ -14,6 +14,6 @@ win16_style_control_scope *win16_control_scope_begin(HWND root,const win16_style
     win16_style_control_scope *scope=style_control_scope_begin(root,sizeof(win16_style_palette),manager,observer);
     if(!scope)return NULL;
     win16_style_palette *data=style_control_scope_data(scope);
-    if(palette)*data=*palette;else win16_style_default_palette(data);
+    if(palette)*data=*palette;else style_window_palette_default(data);
     return scope;
 }

@@ -112,7 +112,7 @@ static BOOL button(int hit,BOOL win2k)
         if(!win2k_caption_buttons_with_group(&caption,dpi,FALSE,present,&stock_win2k.title_buttons,&stock_win2k.caption_metrics,buttons))return FALSE;
         r=buttons[hit==HTMAXBUTTON?1:0];
     }else{
-        win16_style_layout layout;
+        style_full_client_layout layout;
         if(!win16_uwp_frame_layout(size,dpi,style,(DWORD)GetWindowLongPtrW(frame,GWL_EXSTYLE),IsZoomed(frame),client,
             &stock_win16_buttons,&stock_win16_metrics,&stock_win16_frame,&layout))return FALSE;
         r=hit==HTMAXBUTTON?layout.buttons[CLASSIC_BUTTON_MAXIMIZE]:layout.buttons[CLASSIC_BUTTON_MINIMIZE];

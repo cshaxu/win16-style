@@ -41,7 +41,7 @@ static BOOL custom_part(HWND w,const NMCUSTOMDRAW *draw,const void *p)
 static HRESULT test_native_theme(HWND w,LPCWSTR app,LPCWSTR ids)
 {if(!w && app && ids && !lstrcmpW(app,L"Test") && !lstrcmpW(ids,L"Demo"))++theme_calls;return S_FALSE;}
 static int button_paints;
-static BOOL test_button_layout(HWND w,void *context,win16_style_layout *layout)
+static BOOL test_button_layout(HWND w,void *context,style_full_client_layout *layout)
 {(void)w;(void)context;ZeroMemory(layout,sizeof(*layout));SetRect(&layout->outer,0,0,200,200);layout->buttons[CLASSIC_BUTTON_MINIMIZE]=layout->outer;return TRUE;}
 static void test_button_paint(HWND w,void *context,int hit)
 {(void)w;(void)context;if(hit==HTMINBUTTON)++button_paints;}
@@ -60,7 +60,7 @@ static BOOL actual_fitted_button(void)
         CLIP_DEFAULT_PRECIS,NONANTIALIASED_QUALITY,FIXED_PITCH,L"Courier New");
     BOOL ok=w && dc && old && old!=HGDI_ERROR && font;unsigned ink=0;
     if(ok){
-        style_instance instance={0};win16_style_palette palette;win16_style_default_palette(&palette);
+        style_instance instance={0};win16_style_palette palette;style_window_palette_default(&palette);
         int saved=SaveDC(dc);RECT bounds={0,0,80,40};
         win16_control_other(w,&instance,&palette,dc,bounds,font,L"A deliberately long caption",FALSE,fit_button_type,fit_group_push,(classic_control_presentation){0},CLR_INVALID);
         int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
@@ -216,7 +216,7 @@ int main(void)
     LOGFONTW disposed;if(GetObjectW(former_title,sizeof(disposed),&disposed))return 36;
     if(style_theme_set(NULL,L"Test",L"Demo",test_native_theme)!=S_FALSE || theme_calls!=1)return 23;
     win16_style_palette palette;
-    win16_style_default_palette(&palette);
+    style_window_palette_default(&palette);
     NMCUSTOMDRAW custom={0};BOOL custom_active=FALSE;
     custom.dwDrawStage=CDDS_PREPAINT;
     if(style_control_custom_draw_after(NULL,&custom,&custom_active,FALSE,CDRF_SKIPDEFAULT,&palette,custom_supported,custom_part)!=CDRF_SKIPDEFAULT || custom_active)return 26;
@@ -231,7 +231,7 @@ int main(void)
     HBITMAP bitmap=dc?CreateCompatibleBitmap(dc,20,20):NULL;
     HGDIOBJ previous=bitmap?SelectObject(dc,bitmap):NULL;
     if(!dc || !bitmap || !previous || previous==HGDI_ERROR)return 4;
-    if(win16_control_dialog_colors(dc,&palette)!=(LRESULT)GetStockObject(DC_BRUSH) ||
+    if(style_window_dialog_colors(dc,&palette)!=(LRESULT)GetStockObject(DC_BRUSH) ||
        GetBkColor(dc)!=palette.light || GetTextColor(dc)!=palette.edge || GetDCBrushColor(dc)!=palette.light)return 19;
     RECT bounds={0,0,17,17};
     const style_scroll_arrow_art art={.source=STYLE_SCROLL_ARROW_INDEXED};
@@ -338,7 +338,7 @@ int main(void)
     if(bar_owner.bar.keyboard || bar_owner.bar.selected!=-1){DestroyWindow(window);return 12;}
     bar_owner.detached=TRUE;
     if(style_menu_bar_select(&bar_owner,window,0)){DestroyWindow(window);return 13;}
-    RECT outer;win16_style_layout layout={0};LRESULT hit=0;
+    RECT outer;style_full_client_layout layout={0};LRESULT hit=0;
     BOOL got_rect=GetWindowRect(window,&outer);
     SetRect(&layout.menu,0,0,20,20);
     BOOL got_hit=got_rect && win16_control_frame_hit_test(window,&layout,MAKELPARAM(outer.left+5,outer.top+5),&hit);

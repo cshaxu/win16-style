@@ -58,7 +58,7 @@ void win16_control_scrollbars_paint(HWND w,HDC target,const win16_style_palette 
     void (*paint)(HWND,control_style *,HDC))
 {
     control_style s={0};DWORD_PTR attached;
-    if(palette)s.palette=*palette;else win16_style_default_palette(&s.palette);
+    if(palette)s.palette=*palette;else style_window_palette_default(&s.palette);
     if(GetWindowSubclass(w,proc,(UINT_PTR)proc,&attached)){
         control_style *owner=(control_style *)attached;
         s.scroll_art=owner->scroll_art;

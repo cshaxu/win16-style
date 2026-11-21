@@ -143,7 +143,7 @@ static int worker(int argc,WCHAR **argv)
         CHECK(!PtInRegion(region,p.x,p.y));DeleteObject(region);
         RECT band;GetWindowRect(title,&band);POINT origin={0,0};ClientToScreen(w,&origin);
         RECT hole={origin.x-before.left,band.bottom-before.top,origin.x-before.left+client.right,origin.y-before.top+client.bottom};
-        SIZE size={before.right-before.left,before.bottom-before.top};win16_style_layout layout;
+        SIZE size={before.right-before.left,before.bottom-before.top};style_full_client_layout layout;
         CHECK(win16_uwp_frame_layout(size,GetDpiForWindow(w),(DWORD)style,0,FALSE,hole,
             &theme->title_buttons,&theme->caption_metrics,&theme->border_presentation.geometry,&layout));
         CHECK(!IsRectEmpty(&layout.buttons[CLASSIC_BUTTON_MINIMIZE]));

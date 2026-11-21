@@ -13,7 +13,7 @@ EXPORTS
     win16_style_control_remove @11
     win16_style_controls_begin @12
     win16_style_controls_end @13
-    win16_style_default_palette @14
+    win16_style_default_palette=style_window_palette_default @14
     win16_style_edit_install @15
     win16_style_edit_scrollbars_enable @16
     win16_style_font_acquire @17

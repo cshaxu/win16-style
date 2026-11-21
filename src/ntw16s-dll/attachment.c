@@ -446,14 +446,14 @@ static BOOL install_created(HWND w,DWORD original_style)
         vcl_mdi_probe,lookup_popup_candidate,popup_source,popup_source_parent,
         popup_source_attachment?&popup_source_attachment->base.instance:NULL,attachment_proc,initialize_owner_roles,&selection};
     style_runtime_attachment_initialize(w,original_style,&a->base,&seed);
-    win16_style_default_palette(&a->palette);
+    style_window_palette_default(&a->palette);
     a->calendar_selection=a->palette.active;
     a->status_edge=a->palette.edge;
     a->date_button_face=a->palette.face;
     a->control_font_points=source.model.controls.control_font_points;
     if(source.resources){
         const classic_theme *theme=&source.model;
-        win16_style_theme_palette(&a->palette,theme);
+        classic_theme_window_palette(&a->palette,theme);
         a->push=(win16_runtime_push){theme->push,theme->controls.push};
         if(cool_candidate)a->grip=theme->bars[CLASSIC_BAR_REBAR];
         a->calendar_selection=win16_control_month_selected_color(theme,a->palette.active);

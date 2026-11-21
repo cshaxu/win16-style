@@ -2,7 +2,7 @@
 #include "lib-win32-style/application/menu/menu_input.h"
 #include <windowsx.h>
 
-int win16_control_menu_bar_item_screen(HWND w,const win16_style_layout *l,HFONT font,UINT dpi,LPARAM lp,BOOL *close)
+int win16_control_menu_bar_item_screen(HWND w,const style_full_client_layout *l,HFONT font,UINT dpi,LPARAM lp,BOOL *close)
 {
     style_menu_bar_snapshot bar;POINT origin={l->menu.left,l->menu.top},point;RECT r;int item=-1;
     if(close)*close=FALSE;
@@ -17,7 +17,7 @@ int win16_control_menu_bar_item_screen(HWND w,const win16_style_layout *l,HFONT 
     }
     return item;
 }
-int win16_control_menu_bar_hit_screen(HWND w,const win16_style_layout *layout,
+int win16_control_menu_bar_hit_screen(HWND w,const style_full_client_layout *layout,
     HFONT font,UINT dpi,POINT point)
 {
     style_menu_bar_snapshot bar;RECT outer;POINT origin;int hit;
@@ -30,7 +30,7 @@ int win16_control_menu_bar_hit_screen(HWND w,const win16_style_layout *layout,
     hit=style_classic_menu_hit(bar.rects,bar.count,point);style_menu_bar_free(&bar);
     return hit<0?-3:hit;
 }
-typedef struct bar_measure {HFONT font;UINT dpi;const win16_style_layout *layout;} bar_measure;
+typedef struct bar_measure {HFONT font;UINT dpi;const style_full_client_layout *layout;} bar_measure;
 
 unsigned win16_menu_mdi_role(HBITMAP bitmap)
 {
@@ -60,7 +60,7 @@ static BOOL measure_item(void *context,HDC dc,const MENUITEMINFOW *item,SIZE *si
     return win16_style_menu_bar_measure(dc,measure->font,measure->dpi,item->dwTypeData,&measure->layout->menu_metrics,size);
 }
 BOOL win16_style_bar_read_for_window(HWND owner,HMENU menu,HFONT font,UINT dpi,
-    const win16_style_layout *layout,POINT origin,int width,style_menu_bar_snapshot *bar)
+    const style_full_client_layout *layout,POINT origin,int width,style_menu_bar_snapshot *bar)
 {
     const style_menu_bar_profile profile={include_item,measure_item,FALSE};
     bar_measure measure={font,dpi,layout};

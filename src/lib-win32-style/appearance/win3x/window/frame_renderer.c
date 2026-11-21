@@ -13,12 +13,12 @@ void win16_control_frame_button_press(HWND w,const win16_control_frame_button_vi
 }
 BOOL win16_control_frame_button_motion(HWND w,const win16_control_frame_button_view *s,UINT msg,LPARAM lp)
 {
-    win16_style_layout l;RECT r;POINT point;
+    style_full_client_layout l;RECT r;POINT point;
     if(!s->state->pressed || !s->layout(w,s->context,&l))return FALSE;
     int pressed=s->state->pressed;BOOL was_hot=s->state->hot;
     point.x=GET_X_LPARAM(lp);point.y=GET_Y_LPARAM(lp);ClientToScreen(w,&point);
     GetWindowRect(w,&r);point.x-=r.left;point.y-=r.top;
-    BOOL invoke=style_caption_button_move(w,s->state,win16_style_hit(&l,point)==pressed,msg==WM_LBUTTONUP,TRUE);
+    BOOL invoke=style_caption_button_move(w,s->state,style_full_client_hit(&l,point)==pressed,msg==WM_LBUTTONUP,TRUE);
     if(msg==WM_LBUTTONUP){
         if(invoke && style_caption_button_enabled(w,pressed))PostMessageW(w,WM_SYSCOMMAND,style_caption_command(style_caption_role(pressed),IsZoomed(w)),
             pressed==HTSYSMENU?L' ':0);
@@ -35,7 +35,7 @@ BOOL win16_control_frame_button_cancel(HWND w,const win16_control_frame_button_v
 }
 
 static void render_caption(HWND window,const style_instance *instance,HDC dc,
-    const win16_style_layout *layout,const win16_style_palette *palette,
+    const style_full_client_layout *layout,const win16_style_palette *palette,
     void *context,win16_frame_state_read read)
 {
     WCHAR *title=style_window_text_copy(window);
@@ -52,7 +52,7 @@ static void render_caption(HWND window,const style_instance *instance,HDC dc,
 
 void win16_control_paint_frame(HWND w,style_instance *instance,void *context,const win16_frame_renderer_ops *ops,HDC target)
 {
-    win16_style_layout l;
+    style_full_client_layout l;
     win16_style_palette p;win16_frame_paint_state state;
     HDC dc=target?target:GetWindowDC(w);
     RECT r;int saved;
@@ -71,7 +71,7 @@ void win16_control_paint_frame(HWND w,style_instance *instance,void *context,con
     if(!IsRectEmpty(&l.menu)){
         style_menu_bar_snapshot bar;POINT origin={l.menu.left,l.menu.top};
         const classic_menu_colors *menu=state.menu_bar && state.menu_bar->present &&
-            !win16_control_high_contrast()?state.menu_bar:NULL;
+            !style_window_high_contrast()?state.menu_bar:NULL;
         win16_control_fill(dc,l.menu,menu?menu->background:p.light);
         if(win16_style_bar_read_for_window(w,GetMenu(w),state.fonts->menu,state.fonts->dpi,&l,origin,l.menu.right-l.menu.left,&bar)){
             ops->state(context,&state);
@@ -113,7 +113,7 @@ static void paint_buffered(HWND w,style_instance *instance,void *context,const w
 
 void win16_control_frame_buffered(HWND w,style_instance *instance,void *context,const win16_frame_renderer_ops *ops,HDC dc)
 {
-    win16_style_layout l;RECT bounds;int saved=SaveDC(dc);
+    style_full_client_layout l;RECT bounds;int saved=SaveDC(dc);
     if(!saved){win16_control_paint_frame(w,instance,context,ops,dc);return;}
     if(ops->layout(w,context,&l) && !instance->detached &&
         ExcludeClipRect(dc,l.client.left,l.client.top,l.client.right,l.client.bottom)!=ERROR &&
@@ -130,7 +130,7 @@ void win16_control_frame_buffered(HWND w,style_instance *instance,void *context,
  * Reuse the frame painter with a bounded clip instead of clearing the frame. */
 void win16_control_frame_menu_state(HWND w,style_instance *instance,void *context,const win16_frame_renderer_ops *ops)
 {
-    win16_style_layout l;HDC dc;HRGN clip,system;int saved;RECT bounds;
+    style_full_client_layout l;HDC dc;HRGN clip,system;int saved;RECT bounds;
     if(!ops->layout(w,context,&l))return;
     dc=GetWindowDC(w);if(!dc)return;saved=SaveDC(dc);
     if(!saved){ReleaseDC(w,dc);return;}
@@ -148,7 +148,7 @@ void win16_control_frame_menu_state(HWND w,style_instance *instance,void *contex
 /* Press tracking changes one button, not the sizing band or other controls. */
 void win16_control_frame_button_state(HWND w,style_instance *instance,void *context,const win16_frame_renderer_ops *ops,int hit)
 {
-    win16_style_layout l;RECT r;HDC dc;int saved;
+    style_full_client_layout l;RECT r;HDC dc;int saved;
     if(!ops->layout(w,context,&l))return;
     r=l.buttons[style_caption_role(hit)];
     if(IsRectEmpty(&r))return;

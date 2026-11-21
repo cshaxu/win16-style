@@ -6,7 +6,7 @@
 
 BOOL win16_control_frame_input(HWND w,style_window *s,UINT msg,WPARAM wp,LPARAM lp,const win16_control_frame_input_services *v,LRESULT *result)
 {
-    win16_style_layout l;const style_menu_bar_target menu_target=v->menu(w,s);
+    style_full_client_layout l;const style_menu_bar_target menu_target=v->menu(w,s);
     if(style_menu_bar_input(&menu_target,msg,wp,lp))return TRUE;
     switch(msg){
     case WM_NCMOUSEMOVE:

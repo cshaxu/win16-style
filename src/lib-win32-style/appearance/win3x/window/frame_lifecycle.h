@@ -1,7 +1,7 @@
 #ifndef WIN16_CONTROL_FRAME_LIFECYCLE_H
 #define WIN16_CONTROL_FRAME_LIFECYCLE_H
 #include "frame_state.h"
-#include "../common/layout.h"
+#include "lib-win32-style/application/window/full_client_layout.h"
 #include <commctrl.h>
 typedef struct win16_control_frame_lifecycle_services {
     SUBCLASSPROC style_proc;
@@ -10,7 +10,7 @@ typedef struct win16_control_frame_lifecycle_services {
     BOOL (*local_window)(HWND);
     style_window *(*state)(HWND);
     BOOL (*refresh_font)(HWND,void *);
-    BOOL (*layout)(HWND,style_window *,win16_style_layout *);
+    BOOL (*layout)(HWND,style_window *,style_full_client_layout *);
     void (*activate_frame)(HWND,void *,const RECT *,BOOL);
     BOOL (*scrollbars_install)(HWND,const win16_style_palette *,const void *,const BOOL *);
     void (*scrollbars_palette)(HWND,const win16_style_palette *,const void *);

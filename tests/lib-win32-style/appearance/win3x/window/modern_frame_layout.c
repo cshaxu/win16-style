@@ -8,8 +8,8 @@ int main(void)
         UINT dpi=scales[scale];
         SIZE outer={MulDiv(500,dpi,96),MulDiv(400,dpi,96)};
         RECT content={MulDiv(8,dpi,96),MulDiv(40,dpi,96),outer.cx-MulDiv(8,dpi,96),outer.cy-MulDiv(8,dpi,96)};
-        win16_style_layout l,native;RECT overlap;
-        CHECK(win16_style_measure_with_buttons(outer.cx,outer.cy,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
+        style_full_client_layout l,native;RECT overlap;
+        CHECK(style_full_client_measure(outer.cx,outer.cy,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
             NULL,NULL,NULL,dpi,&native));
         CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,content,NULL,NULL,NULL,&l));
         CHECK(EqualRect(&content,&l.client));
@@ -53,7 +53,7 @@ int main(void)
             {CLASSIC_BUTTON_MAXIMIZE,CLASSIC_BUTTON_RIGHT,0}},0};
         const classic_caption_metrics metrics={.height=22,.button={23,22}};
         const style_frame_geometry frame={STYLE_FRAME_MONITOR_PIXELS,2,2,2,1,20,1,0};
-        CHECK(win16_style_measure_with_buttons(outer.cx,outer.cy,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
+        CHECK(style_full_client_measure(outer.cx,outer.cy,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
             &group,&metrics,&frame,dpi,&native));
         CHECK(win16_uwp_frame_layout(outer,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,content,&group,&metrics,&frame,&l));
         CHECK(l.border==2 && EqualRect(&content,&l.client) && EqualRect(&native.caption,&l.caption) &&
@@ -68,7 +68,7 @@ int main(void)
         const classic_button_group mixed={3,0,0,{{CLASSIC_BUTTON_SYSTEM,CLASSIC_BUTTON_LEFT,0},
             {CLASSIC_BUTTON_HELP,CLASSIC_BUTTON_RIGHT,0},{CLASSIC_BUTTON_CLOSE,CLASSIC_BUTTON_RIGHT,2}},0};
         const DWORD dialog=WS_CAPTION|WS_SYSMENU|WS_THICKFRAME;
-        CHECK(win16_style_measure_with_buttons(outer.cx,outer.cy,dpi,dialog,WS_EX_CONTEXTHELP,FALSE,
+        CHECK(style_full_client_measure(outer.cx,outer.cy,dpi,dialog,WS_EX_CONTEXTHELP,FALSE,
             &mixed,&metrics,&frame,dpi,&native));
         CHECK(win16_uwp_frame_layout(outer,dpi,dialog,WS_EX_CONTEXTHELP,FALSE,content,&mixed,&metrics,&frame,&l));
         for(enum classic_button_role role=CLASSIC_BUTTON_HELP;role<=CLASSIC_BUTTON_CLOSE;++role){

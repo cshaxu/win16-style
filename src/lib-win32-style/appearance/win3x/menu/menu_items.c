@@ -59,9 +59,9 @@ static BOOL measure_item(void *context,style_menu_item *items,MEASUREITEMSTRUCT 
 static BOOL draw_item(void *context,style_menu_item *items,const DRAWITEMSTRUCT *draw)
 {
     win16_style_menu_theme *t=context;win16_style_palette palette;
-    win16_control_resolve_palette(t->palette,&palette);
+    style_window_palette_resolve(t->palette,&palette);
     return win16_style_menu_draw(items,draw,t->font,t->dpi,&palette,
-        win16_control_high_contrast()?NULL:t->colors,t->metrics,t->art);
+        style_window_high_contrast()?NULL:t->colors,t->metrics,t->art);
 }
 static void select_system(void *context,HWND owner,BOOL selected)
 {win16_style_menu_theme *t=context;if(t->selection)t->selection(owner,t->context,selected);}

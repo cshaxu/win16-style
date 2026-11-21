@@ -92,7 +92,7 @@ static int theme_colors(PCWSTR descriptor,PCWSTR selection,PCWSTR arrow)
     classic_theme_mapping source={0};
     CHECK(classic_theme_open(descriptor,&source)==S_OK);
     win16_style_palette palette;
-    win16_style_theme_palette(&palette,&source.model);
+    classic_theme_window_palette(&palette,&source.model);
     COLORREF cell=win16_control_month_selected_color(&source.model,palette.active);
     CHECK(cell==(COLORREF)selected);
     const RECT back={0,0,17,17},next={19,0,36,17},highlight={0,19,17,36};

@@ -61,7 +61,7 @@ EXPORTS
     Ntw16sWindowTerminal
     win16_style_control_install
     win16_style_control_remove
-    win16_style_default_palette
+    win16_style_default_palette=style_window_palette_default
     win16_style_edit_install
     win16_style_edit_scrollbars_enable
     win16_style_frame_scrollbars_install

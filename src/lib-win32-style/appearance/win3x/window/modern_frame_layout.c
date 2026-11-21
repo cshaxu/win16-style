@@ -3,12 +3,12 @@
 
 BOOL win16_uwp_frame_layout(SIZE outer,UINT dpi,DWORD style,DWORD ex_style,BOOL maximized,
     RECT content,const classic_button_group *buttons,const classic_caption_metrics *metrics,
-    const style_frame_geometry *frame,win16_style_layout *l)
+    const style_frame_geometry *frame,style_full_client_layout *l)
 {
     if(!l || content.left<0 || content.top<0 || content.right>outer.cx ||
        content.bottom>outer.cy || content.left>=content.right || content.top>=content.bottom ||
        (style&WS_CAPTION)!=WS_CAPTION)return FALSE;
-    BOOL measured=win16_style_measure_with_buttons(outer.cx,outer.cy,dpi,style,ex_style&WS_EX_CONTEXTHELP,maximized,
+    BOOL measured=style_full_client_measure(outer.cx,outer.cy,dpi,style,ex_style&WS_EX_CONTEXTHELP,maximized,
         buttons,metrics,frame,dpi,l);
     if(!measured)return FALSE;
     if(content.top<l->client.top)return FALSE;
@@ -21,8 +21,8 @@ BOOL win16_uwp_frame_layout(SIZE outer,UINT dpi,DWORD style,DWORD ex_style,BOOL 
     return TRUE;
 }
 
-LRESULT win16_uwp_frame_hit(const win16_style_layout *l,POINT p)
+LRESULT win16_uwp_frame_hit(const style_full_client_layout *l,POINT p)
 {
-    LRESULT hit=win16_style_hit(l,p);
+    LRESULT hit=style_full_client_hit(l,p);
     return l?style_uwp_resize_margin_hit(hit,p,&l->outer,&l->client,l->corner,l->sizeable):hit;
 }

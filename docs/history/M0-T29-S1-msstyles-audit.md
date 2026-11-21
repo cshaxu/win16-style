@@ -19,8 +19,8 @@
 
 | 序号 | 分组 | 审计单元 | Win16 | Win2000 | 映射与边界 | 生产及范围证据 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 01 | 外观 | 外框与控件基础配色 | S | S | SysMetrics 色槽与部件色值 | [1](../../src/lib-win32-style/appearance/win3x/common/palette.c) [2](../../src/lib-win32-style/appearance/msstyles/classic_theme.h) |
-| 02 | 外观 | 活动／非活动标题底色与 Win2000 渐变端点 | S | S | WINDOW 状态和 TMT_GRADIENTCOLOR1/2 或对应背景图 | [1](../../src/lib-win32-style/appearance/win3x/common/palette.c) [2](../../src/lib-win32-style/appearance/msstyles/classic_theme.h) |
+| 01 | 外观 | 外框与控件基础配色 | S | S | SysMetrics 色槽与部件色值 | [1](../../src/lib-win32-style/application/window/palette.c) [2](../../src/lib-win32-style/appearance/msstyles/classic_theme.h) |
+| 02 | 外观 | 活动／非活动标题底色与 Win2000 渐变端点 | S | S | WINDOW 状态和 TMT_GRADIENTCOLOR1/2 或对应背景图 | [1](../../src/lib-win32-style/application/window/palette.c) [2](../../src/lib-win32-style/appearance/msstyles/classic_theme.h) |
 | 03 | 外观 | 标题文字颜色及字体描述 | S | S | TMT_CAPTIONFONT、TMT_TEXTCOLOR；字体可用性另计 | [1](../../src/lib-win32-style/appearance/win3x/window/frame_renderer.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
 | 04 | 外观 | 控件与菜单的标准字体描述 | S | S | LOGFONT 对应的系统字体属性，应用借用与替代另计 | [1](../../src/lib-win32-style/appearance/win3x/common/font.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |
 | 05 | 外观 | Win16 System 原位图字体的字符字形及 advance | E | — | 标准 LOGFONT 可引用字体，不能随文件定义 CP1252 栅格与每字 advance；需授权的附加数据 | [1](../../src/lib-win32-style/appearance/win3x/common/font.c) [2](../../src/lib-win32-style/appearance/win2000/window/caption.c) |

@@ -34,10 +34,10 @@ void win16_style_merged_control(HDC dc,RECT bounds,unsigned role,UINT flags,int 
 }
 
 
-void win16_control_frame_caption(HDC dc,const win16_style_layout *layout,const win16_style_palette *palette,
+void win16_control_frame_caption(HDC dc,const style_full_client_layout *layout,const win16_style_palette *palette,
     const win16_frame_paint_state *snapshot,PCWSTR title,BOOL child,BOOL zoomed)
 {
-    BOOL gradient=snapshot->gradient && !win16_control_high_contrast();
+    BOOL gradient=snapshot->gradient && !style_window_high_contrast();
     COLORREF start=snapshot->active?palette->active:palette->inactive;
     style_caption_render_model model={
         .band=layout->caption,.text=layout->title,.start=start,.end=gradient?snapshot->end:start,

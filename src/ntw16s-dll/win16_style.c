@@ -2,7 +2,7 @@
  * See T445 S1 provenance/design: original NTUSER server is a stopping boundary.
  */
 #include "win16_style.h"
-#include "lib-win32-style/appearance/win3x/common/layout.h"
+#include "lib-win32-style/application/window/full_client_layout.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_paint.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_renderer.h"
 #include "../lib-win32-style/appearance/win3x/window/frame_state.h"
@@ -44,7 +44,7 @@ static BOOL local_window(HWND w)
     return TRUE;
 }
 
-static BOOL layout(HWND w,style_window *s,win16_style_layout *l)
+static BOOL layout(HWND w,style_window *s,style_full_client_layout *l)
 {
     RECT r;
     return GetWindowRect(w,&r) && win16_control_measure_window(w,&s->instance,&s->fonts,&r,
@@ -53,23 +53,23 @@ static BOOL layout(HWND w,style_window *s,win16_style_layout *l)
 
 BOOL win16_style_hit_test(HWND w,LPARAM lp,LRESULT *result)
 {
-    style_window *s;win16_style_layout l;
+    style_window *s;style_full_client_layout l;
     if(!result || !local_window(w))return FALSE;
     s=state(w);
     if(!s || !layout(w,s,&l))return FALSE;
     return win16_control_frame_hit_test(w,&l,lp,result);
 }
 
-static BOOL paint_layout(HWND w,void *context,win16_style_layout *result)
+static BOOL paint_layout(HWND w,void *context,style_full_client_layout *result)
 {return layout(w,(style_window *)context,result);}
 static void paint_colors(void *context,win16_style_palette *palette)
-{win16_control_resolve_palette(&((style_window *)context)->palette,palette);}
+{style_window_palette_resolve(&((style_window *)context)->palette,palette);}
 COLORREF win16_style_dialog_edge(HWND window)
 {
     style_window *frame=state(window);
     win16_style_palette palette;
     if(frame && !frame->instance.detached)paint_colors(frame,&palette);
-    else win16_style_default_palette(&palette);
+    else style_window_palette_default(&palette);
     return palette.edge;
 }
 static void paint_state(void *context,win16_frame_paint_state *result)
@@ -98,7 +98,7 @@ static win16_control_frame_button_view button_view(style_window *s)
 
 static BOOL bar_read(const style_menu_bar_target *target,style_menu_bar_snapshot *bar)
 {
-    style_window *s=target->context;win16_style_layout l;RECT outer;
+    style_window *s=target->context;style_full_client_layout l;RECT outer;
     if(!layout(target->window,s,&l) || !GetWindowRect(target->window,&outer))return FALSE;
     if(!win16_style_bar_read_for_window(target->window,GetMenu(target->window),s->fonts.menu,s->fonts.dpi,
         &l,(POINT){l.menu.left,l.menu.top},l.menu.right-l.menu.left,bar))return FALSE;
@@ -107,7 +107,7 @@ static BOOL bar_read(const style_menu_bar_target *target,style_menu_bar_snapshot
 }
 static int bar_hit(const style_menu_bar_target *target,POINT point)
 {
-    style_window *s=target->context;win16_style_layout l;
+    style_window *s=target->context;style_full_client_layout l;
     if(s->instance.detached || !layout(target->window,s,&l))return STYLE_MENU_NO_ITEM;
     return win16_control_menu_bar_hit_screen(target->window,&l,s->fonts.menu,s->fonts.dpi,point);
 }
@@ -129,7 +129,7 @@ static BOOL refresh_font(HWND w,void *context)
 
 static void activate_frame(HWND w,void *context,const RECT *client,BOOL normal)
 {
-    style_window *s=context;win16_style_layout l;
+    style_window *s=context;style_full_client_layout l;
     s->native.keep_outer=normal && client && layout(w,s,&l) && !s->instance.detached && style_frame_keep_outer(w,client,&l.client);
     if(!s->instance.detached)style_native_frame_activate(w,&s->native,&s->instance.detached,client,normal,DwmSetWindowAttribute);
 }
@@ -180,7 +180,7 @@ static LRESULT CALLBACK style_proc(HWND w,UINT msg,WPARAM wp,LPARAM lp,UINT_PTR 
 }
 static BOOL measure_client(HWND w,void *context,const RECT *outer,RECT *client)
 {
-    style_window *s=context;win16_style_layout layout;
+    style_window *s=context;style_full_client_layout layout;
     if(!win16_control_measure_window(w,&s->instance,&s->fonts,outer,&s->title_buttons,&s->caption_metrics,
         &s->border_presentation.geometry,s->caption_presentation.icon_mode,&s->menu_metrics,&layout))
         return FALSE;

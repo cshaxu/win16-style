@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P32",
-  "stage": "published development candidate with shared native control admission verified",
+  "delivery": "M0 T29 S23 P33",
+  "stage": "published development candidate with obsolete common link assembly retired",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P31 848796a72684",
-  "source_snapshot_sha256": "1e3e17e594c1958821812fbd7de29eac4eec0b9e9f623b947331855d602d623e",
+  "last_verified_remote_delivery": "M0 T29 S23 P32 02e4f6edf316",
+  "source_snapshot_sha256": "9092e2babcbae6ec2b4415ac8213f4fc9aeac88056496da4b57df553d0cd30c5",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "dc49806572ba730aaa28502ce959800b8ed8eefe29bab24369617e687fe96f69",
+      "sha256": "cc468cf56c21cd5a4cc2f413cf2a752eed7b8e6179704bc5ac5b0332f0bdbb3a",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "693c9c5c187add7c13a86f5776fe876cd3cca8265ee793f77d68125243805122",
+      "sha256": "8ae4e2c343a9388c1d247273b1f5f5e50a36400add1e7075f369baa155986716",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "92838a0579bbd0947adad2c76f9c00036844610960291fbe936383d7c53ec241",
+      "sha256": "63c0b813b9c6bd9bcfc93fc5130ba5233dcca406b89bfa54b590ea174eca9281",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -285,7 +285,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P32 results are in native_roles_delivery.",
+    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P33 results are in common_link_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -473,13 +473,29 @@
         "physical input",
         "full package matrix"
       ]
+    },
+    "common_link_delivery": {
+      "test_invocations_passed": 16,
+      "installed_palette_abi_invocations": 2,
+      "compatibility_dll_abi_invocations": 2,
+      "installed_win32_attach_remove_invocations": 4,
+      "architecture_link_checks": 2,
+      "remaining_dated_archives_per_width": 7,
+      "matching_archive_members_per_width": 62,
+      "direct_old_product_objects_per_width": 22,
+      "scope": "Neutral full-client layout and native window palette are one object apiece in style-window; the former common archive is absent from both formal link commands. The old PE name resolves and returns the same eight host colors in each width.",
+      "not_retested": [
+        "physical input",
+        "enabled system high contrast",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P32 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P33 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1966,
-    "cache_misses": 156
+    "cache_hits": 2011,
+    "cache_misses": 111
   }
 }

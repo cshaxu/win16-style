@@ -1,6 +1,14 @@
 #ifndef STYLE_MENU_ROW_TEXT_H
 #define STYLE_MENU_ROW_TEXT_H
 #include <windows.h>
+#include <stdint.h>
+
+typedef struct style_menu_metrics {
+    uint16_t check_column, shortcut_gap, arrow_column, plain_column;
+    uint16_t text_flags, bar_padding;
+    uint8_t mdi_buttons, row_minimum, row_padding, mdi_inactive;
+    uint8_t font_mode;
+} style_menu_metrics;
 
 enum style_menu_text_flags {
     STYLE_MENU_TEXT_STIPPLE_DISABLED=1, STYLE_MENU_TEXT_SHORTCUT_RIGHT=2,

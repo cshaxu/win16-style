@@ -21,7 +21,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     const win16_control_frame_dispatch_services *v)
 {
 
-    LRESULT result=0;win16_style_layout l;POINT point;RECT r;
+    LRESULT result=0;style_full_client_layout l;POINT point;RECT r;
     style_instance_retain(&s->instance);
     if(s->menu_only && msg!=WM_ENTERMENULOOP && msg!=WM_EXITMENULOOP && msg!=WM_INITMENUPOPUP && msg!=WM_MENUCHAR && msg!=WM_MEASUREITEM && msg!=WM_DRAWITEM && msg!=WM_NCDESTROY)goto forward;
     /* Maximized MDI children merge their controls into the frame menu.
@@ -76,7 +76,7 @@ LRESULT win16_control_frame_dispatch(HWND w,style_window *s,UINT msg,WPARAM wp,L
     case WM_CTLCOLORDLG:
     case WM_CTLCOLORSTATIC:
         if(!s->dialog)goto forward;
-        result=win16_control_dialog_colors((HDC)wp,&s->palette);break;
+        result=style_window_dialog_colors((HDC)wp,&s->palette);break;
     case WM_SHOWWINDOW:
     case WM_NCCALCSIZE:
     case WM_NCPAINT:

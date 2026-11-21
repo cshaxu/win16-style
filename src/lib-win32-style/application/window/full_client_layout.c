@@ -1,10 +1,10 @@
-#include "layout.h"
+#include "full_client_layout.h"
 #include "lib-win32-style/application/window/caption_paint.h"
 #include <string.h>
 
-BOOL win16_style_measure_with_buttons(int width,int height,UINT dpi,DWORD style,DWORD ex_style,
+BOOL style_full_client_measure(int width,int height,UINT dpi,DWORD style,DWORD ex_style,
     BOOL maximized,const classic_button_group *group,const classic_caption_metrics *metrics,
-    const style_frame_geometry *frame,UINT monitor_dpi,win16_style_layout *l)
+    const style_frame_geometry *frame,UINT monitor_dpi,style_full_client_layout *l)
 {
     const BOOL caption=(style&WS_CAPTION)==WS_CAPTION;
     if(!l || width<1 || height<1 || dpi<48 || dpi>768)return FALSE;
@@ -60,7 +60,7 @@ BOOL win16_style_measure_with_buttons(int width,int height,UINT dpi,DWORD style,
     return TRUE;
 }
 
-void win16_style_measure_caption_icon(win16_style_layout *l,UINT dpi,DWORD style,DWORD extended,unsigned mode)
+void style_full_client_caption_icon(style_full_client_layout *l,UINT dpi,DWORD style,DWORD extended,unsigned mode)
 {
     RECT band=l->caption;
     band.left=l->title.left;
@@ -69,7 +69,7 @@ void win16_style_measure_caption_icon(win16_style_layout *l,UINT dpi,DWORD style
         l->title.left=max(l->title.left,l->icon.right);
 }
 
-LRESULT win16_style_hit(const win16_style_layout *l,POINT p)
+LRESULT style_full_client_hit(const style_full_client_layout *l,POINT p)
 {
     BOOL left,right,top,bottom;
     if(!l || !PtInRect(&l->outer,p))return HTNOWHERE;
@@ -83,7 +83,7 @@ LRESULT win16_style_hit(const win16_style_layout *l,POINT p)
     top=p.y<l->border;bottom=p.y>=l->outer.bottom-l->border;
     if(top)return left?HTTOPLEFT:right?HTTOPRIGHT:HTTOP;
     if(bottom)return left?HTBOTTOMLEFT:right?HTBOTTOMRIGHT:HTBOTTOM;
-    /* USER 1:67BB..6859 extends corner hits along both adjacent bands.
+    /* Corner hits extend along both adjacent bands.
      * Left/top include the dividing stroke; right/bottom start after it. */
     top=p.y<l->corner.cy;bottom=p.y>=l->outer.bottom-l->corner.cy+l->unit;
     if(p.x<l->border)return top?HTTOPLEFT:bottom?HTBOTTOMLEFT:HTLEFT;

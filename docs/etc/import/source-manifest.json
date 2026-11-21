@@ -456,7 +456,7 @@
       "size": 3363,
       "sha256": "83cd34e01d35e27fc40c54e82460cab945b45d3a986b3d5ee2ec8ac9ab5c4ede",
       "action": "adapt",
-      "destination": "src/lib-win32-style/appearance/win3x/common/layout.c",
+      "destination": "src/lib-win32-style/application/window/full_client_layout.c",
       "notice": "project-authored-review",
       "reason": "T29 S4 uses shared title-button group layout, retaining the existing frame geometry and hit-test policy",
       "receiver": "style-core"
@@ -468,7 +468,7 @@
       "size": 580,
       "sha256": "a55b5d4bad75fda24a46828966f0b8024c85dd52648ac8166e77ae94c541d2d3",
       "action": "adapt",
-      "destination": "src/lib-win32-style/appearance/win3x/common/layout.h",
+      "destination": "src/lib-win32-style/application/window/full_client_layout.h",
       "notice": "project-authored-review",
       "reason": "T29 S4 uses shared title-button group layout, retaining the existing frame geometry and hit-test policy",
       "receiver": "style-core"
