@@ -5,7 +5,7 @@
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P1 a003142e279a",
+  "last_verified_remote_delivery": "M0 T29 S23 P8 9c5e4805b47b",
   "source_snapshot_sha256": "c999ccdaf58362b6368ca1474eebc8bc9f5ee2fac37572b07a4c84c24575db83",
   "artifacts": {
     "run16s.exe": {
@@ -224,6 +224,11 @@
       },
       "functional_checks": "Each pair attached to a real hosted window, preserved window commands and the outer window rectangle, and removed the frame surface.",
       "first_calculator_win16_attempt": "The installed launcher returned 1460. The probe subsequently observed a separate root without a styled surface. A bounded retry passed all functional checks."
+    },
+    "rdp_live_calculator_win2k_on_p8": {
+      "functional_checks": "Installed standard command exited 0. The owned native Calculator attached and passed maximize, restore, minimize, live removal and exact outer-rectangle restoration.",
+      "pixel_sampling": "Both points hit the live overlay. Desktop DC and overlay window DC returned CLR_INVALID. PrintWindow returned FALSE. Real composited pixel verification remains skipped.",
+      "cleanup": "Calculator and probe exited. All five probe scratch files were removed."
     },
     "unverified": [
       "full matrix",
