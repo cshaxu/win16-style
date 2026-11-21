@@ -9,7 +9,7 @@
 #include "lib-win32-style/appearance/win2000/control/edit_paint.h"
 #include "lib-win32-style/appearance/win2000/control/list_combo.h"
 #include "lib-win32-style/appearance/win2000/control/static_paint.h"
-#include "lib-win32-style/appearance/win2000/dialog/file.h"
+#include "lib-win32-style/application/dialog/explorer_file_layout.h"
 #include "lib-win32-style/appearance/win3x/window/frame_paint.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_bar.h"
 #include "lib-win32-style/appearance/win3x/menu/menu_items.h"
@@ -1194,10 +1194,10 @@ static int check_dialog_layout(PCWSTR folder,BOOL expect_compact)
     classic_theme_set_process_profile(classic_theme_folder_id(folder),provider);
     const classic_dialog_metrics metrics=classic_theme_dialog_metrics(module);
     CHECK(metrics.file.places_width==4096 && metrics.print_width==4096);
-    win2k_file_layout layout=win2k_file_layout_for(600,380,OFN_EXPLORER,0,&metrics.file);
-    CHECK(layout==(expect_compact?WIN2K_FILE_COMPACT:WIN2K_FILE_NATIVE));
+    style_explorer_file_layout layout=style_explorer_file_layout_for(600,380,OFN_EXPLORER,0,&metrics.file);
+    CHECK(layout==(expect_compact?STYLE_EXPLORER_FILE_COMPACT:STYLE_EXPLORER_FILE_NATIVE));
     const classic_file_metrics omitted={0};
-    CHECK(win2k_file_layout_for(2000,1100,OFN_EXPLORER,0,&omitted)==WIN2K_FILE_NATIVE);
+    CHECK(style_explorer_file_layout_for(2000,1100,OFN_EXPLORER,0,&omitted)==STYLE_EXPLORER_FILE_NATIVE);
     unsigned previous=classic_theme_enter_profile((classic_theme_selection){1,CLASSIC_THEME_WIN2K});
     const classic_dialog_metrics scoped=classic_theme_dialog_metrics(module);
     classic_theme_leave_profile(previous);

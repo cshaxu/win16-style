@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
-#include "lib-win32-style/appearance/win2000/dialog/print_general.h"
+#include "lib-win32-style/application/dialog/print_general.h"
 
 static HWND owner,sheet_window;
 static UINT ticks;
@@ -80,7 +80,7 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
     (void)unused;
     if(GetWindow(window,GW_OWNER)!=owner || !IsWindowVisible(window))return TRUE;
     HWND page=PropSheet_GetCurrentPageHwnd(window);
-    HWND list=page?GetDlgItem(page,WIN2K_PRINT_DEVICE):NULL;
+    HWND list=page?GetDlgItem(page,STYLE_PRINT_DEVICE):NULL;
     if(!list)return TRUE;
     WCHAR class_name[16];
     full=GetClassNameW(list,class_name,ARRAYSIZE(class_name)) && !lstrcmpiW(class_name,L"ListBox");
@@ -91,11 +91,11 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
         EnumChildWindows(page,find_printer_list,(LPARAM)&visible);
         if(visible)list=visible;
     }
-    device_details=!full || (GetWindowTextLengthW(GetDlgItem(page,WIN2K_PRINT_DEVICE_STATUS))>0 &&
-        GetDlgItem(page,WIN2K_PRINT_DEVICE_LOCATION) && GetDlgItem(page,WIN2K_PRINT_DEVICE_COMMENT));
+    device_details=!full || (GetWindowTextLengthW(GetDlgItem(page,STYLE_PRINT_DEVICE_STATUS))>0 &&
+        GetDlgItem(page,STYLE_PRINT_DEVICE_LOCATION) && GetDlgItem(page,STYLE_PRINT_DEVICE_COMMENT));
     ready=TRUE;
     sheet_window=window;
-    initial_ok=GetDlgItemInt(page,WIN2K_PRINT_COPIES,NULL,FALSE)==expected_copies;
+    initial_ok=GetDlgItemInt(page,STYLE_PRINT_COPIES,NULL,FALSE)==expected_copies;
     styled=GetPropW(window,L"Win2kStyle.Frame")!=NULL;
     MONITORINFO monitor={.cbSize=sizeof(monitor)};
     RECT bounds={0};
@@ -133,7 +133,7 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
         }
     }
     if(test_preferences || test_directory){
-        UINT command=test_directory?WIN2K_PRINT_FIND_DEVICE:WIN2K_PRINT_PREFERENCES;
+        UINT command=test_directory?STYLE_PRINT_FIND_DEVICE:STYLE_PRINT_PREFERENCES;
         HWND button=GetDlgItem(page,command);
         if(button && IsWindowEnabled(button)){
             secondary_pending=TRUE;
@@ -154,23 +154,23 @@ static BOOL CALLBACK sheet(HWND window,LPARAM unused)
         if(two){
             device_message(list,CB_SETCURSEL,LB_SETCURSEL,(WPARAM)next,0);
             device_message(list,CB_GETLBTEXT,LB_GETTEXT,(WPARAM)next,(LPARAM)choice);
-            if(!shell_list)SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_DEVICE,full?LBN_SELCHANGE:CBN_SELCHANGE),(LPARAM)list);
+            if(!shell_list)SendMessageW(page,WM_COMMAND,MAKEWPARAM(STYLE_PRINT_DEVICE,full?LBN_SELCHANGE:CBN_SELCHANGE),(LPARAM)list);
         }
-        SetDlgItemInt(page,WIN2K_PRINT_COPIES,3,FALSE);
+        SetDlgItemInt(page,STYLE_PRINT_COPIES,3,FALSE);
         if(output_flags){
-            UINT option=output_flags&PD_SELECTION?WIN2K_PRINT_SELECTION:WIN2K_PRINT_CURRENT;
+            UINT option=output_flags&PD_SELECTION?STYLE_PRINT_SELECTION:STYLE_PRINT_CURRENT;
             HWND radio=GetDlgItem(page,option);
             SendMessageW(radio,BM_CLICK,0,0);
-            UINT output=output_flags&PD_PRINTTOFILE?WIN2K_PRINT_FILE:WIN2K_PRINT_COLLATE;
+            UINT output=output_flags&PD_PRINTTOFILE?STYLE_PRINT_FILE:STYLE_PRINT_COLLATE;
             SendMessageW(GetDlgItem(page,output),BM_CLICK,0,0);
-        }else SetDlgItemTextW(page,WIN2K_PRINT_RANGE,L"2,4-5");
+        }else SetDlgItemTextW(page,STYLE_PRINT_RANGE,L"2,4-5");
         if(action==PD_RESULT_APPLY){
             applied=PropSheet_Apply(window);
             if(two){
                 device_message(list,CB_SETCURSEL,LB_SETCURSEL,(WPARAM)current,0);
-                if(!shell_list)SendMessageW(page,WM_COMMAND,MAKEWPARAM(WIN2K_PRINT_DEVICE,full?LBN_SELCHANGE:CBN_SELCHANGE),(LPARAM)list);
+                if(!shell_list)SendMessageW(page,WM_COMMAND,MAKEWPARAM(STYLE_PRINT_DEVICE,full?LBN_SELCHANGE:CBN_SELCHANGE),(LPARAM)list);
             }
-            SetDlgItemInt(page,WIN2K_PRINT_COPIES,5,FALSE);
+            SetDlgItemInt(page,STYLE_PRINT_COPIES,5,FALSE);
         }
     }
     PostMessageW(window,PSM_PRESSBUTTON,action==PD_RESULT_PRINT && !no_context_device?PSBTN_OK:PSBTN_CANCEL,0);

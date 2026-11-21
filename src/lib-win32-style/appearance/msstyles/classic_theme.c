@@ -1066,6 +1066,17 @@ HRESULT classic_theme_open_dialog(HMODULE renderer,classic_theme_mapping *source
 #endif
 }
 
+HRESULT classic_theme_dialog_resources(HMODULE module,HMODULE *resources,classic_dialog_metrics *metrics)
+{
+    classic_theme_mapping source={0};
+    HRESULT result=classic_theme_open_dialog(module,&source);
+    if(result==S_OK){
+        *resources=source.resources;
+        *metrics=source.model.dialog_metrics;
+    }else classic_theme_close(&source);
+    return result;
+}
+
 classic_dialog_metrics classic_theme_dialog_metrics(HMODULE module)
 {
     DWORD prior=GetLastError();

@@ -9,14 +9,15 @@
 #include "lib-win32/process-hook/startup_hooks.h"
 #include "lib-win32/process-hook/unwind.h"
 #include "lib-win32-style/appearance/win2000/window/frame.h"
-#include "lib-win32-style/appearance/win2000/dialog/file_call.h"
-#include "lib-win32-style/appearance/win2000/dialog/print_general.h"
+#include "lib-win32-style/application/dialog/explorer_file.h"
+#include "lib-win32-style/application/dialog/print_general.h"
+#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
 #include "lib-win32-style/application/dialog/observation.h"
 #include "lib-win32-style/application/dialog/dialog_hook.h"
 #include "lib-win32-style/application/dialog/classic_com_controller.h"
 #include "lib-win32-style/appearance/msstyles/classic_style.h"
-#include "lib-win32-style/appearance/win2000/dialog/stock_call.h"
+#include "lib-win32-style/application/dialog/stock_dialog.h"
 #include "lib-win32-style/application/dialog/print_extended.h"
 #include "lib-win32-style/application/dialog/classic_print_contract.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
@@ -80,15 +81,16 @@ MESSAGE_HOOK(MessageBoxIndirectW,(const MSGBOXPARAMSW *parameters),(parameters))
 
 extern IMAGE_DOS_HEADER __ImageBase;
 static HMODULE dialog_resources(void){return (HMODULE)&__ImageBase;}
-static const style_dialog_windows dialog_windows={ntwshk_observed_dialog_initialize,win2k_frame_attached,dialog_resources};
+static const style_dialog_windows dialog_windows={ntwshk_observed_dialog_initialize,win2k_frame_attached,
+    dialog_resources,classic_theme_dialog_metrics};
 #define STOCK_ENTRY(NAME,TYPE,CALL) \
 static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
 {return CALL(parameters,real_##NAME,&dialog_windows);}
-STOCK_ENTRY(ChooseFontA,CHOOSEFONTA,win2k_font_a)
-STOCK_ENTRY(ChooseFontW,CHOOSEFONTW,win2k_font_w)
-STOCK_ENTRY(ChooseColorA,CHOOSECOLORA,win2k_color_a)
-STOCK_ENTRY(ChooseColorW,CHOOSECOLORW,win2k_color_w)
+STOCK_ENTRY(ChooseFontA,CHOOSEFONTA,style_observed_font_a)
+STOCK_ENTRY(ChooseFontW,CHOOSEFONTW,style_observed_font_w)
+STOCK_ENTRY(ChooseColorA,CHOOSECOLORA,style_observed_color_a)
+STOCK_ENTRY(ChooseColorW,CHOOSECOLORW,style_observed_color_w)
 #undef STOCK_ENTRY
 
 static enum classic_print_route print_route(void)
@@ -98,14 +100,14 @@ static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
 { \
     enum classic_print_route route=print_route(); \
-    if(route==CLASSIC_PRINT_GENERAL_PAGE)return win2k_print_##SUFFIX(parameters,real_##NAME,&dialog_windows); \
+    if(route==CLASSIC_PRINT_GENERAL_PAGE)return style_observed_print_##SUFFIX(parameters,real_##NAME,&dialog_windows); \
     if(route==CLASSIC_PRINT_LEGACY_BRIDGE)return style_classic_print_call_##SUFFIX(parameters,real_##NAME); \
     return real_##NAME(parameters); \
 }
 #define PAGE_ENTRY(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{return print_route()==CLASSIC_PRINT_GENERAL_PAGE?win2k_page_setup_##SUFFIX(parameters,real_##NAME,&dialog_windows):real_##NAME(parameters);}
+{return print_route()==CLASSIC_PRINT_GENERAL_PAGE?style_observed_page_setup_##SUFFIX(parameters,real_##NAME,&dialog_windows):real_##NAME(parameters);}
 PRINT_ENTRY(PrintDlgA,PRINTDLGA,a)
 PRINT_ENTRY(PrintDlgW,PRINTDLGW,w)
 PAGE_ENTRY(PageSetupDlgA,PAGESETUPDLGA,a)
@@ -116,16 +118,16 @@ PAGE_ENTRY(PageSetupDlgW,PAGESETUPDLGW,w)
 static __typeof__(&NAME) real_##NAME; \
 static HWND WINAPI hook_##NAME(TYPE *parameters) \
 {return CALL(parameters,real_##NAME,&dialog_windows,COMPACT);}
-FIND_ENTRY(FindTextA,FINDREPLACEA,win2k_find_a,TRUE)
-FIND_ENTRY(FindTextW,FINDREPLACEW,win2k_find_w,TRUE)
-FIND_ENTRY(ReplaceTextA,FINDREPLACEA,win2k_find_a,FALSE)
-FIND_ENTRY(ReplaceTextW,FINDREPLACEW,win2k_find_w,FALSE)
+FIND_ENTRY(FindTextA,FINDREPLACEA,style_observed_find_a,TRUE)
+FIND_ENTRY(FindTextW,FINDREPLACEW,style_observed_find_w,TRUE)
+FIND_ENTRY(ReplaceTextA,FINDREPLACEA,style_observed_find_a,FALSE)
+FIND_ENTRY(ReplaceTextW,FINDREPLACEW,style_observed_find_w,FALSE)
 #undef FIND_ENTRY
 
 #define FILE_HOOK(NAME,TYPE,SUFFIX) \
 static __typeof__(&NAME) real_##NAME; \
 static BOOL WINAPI hook_##NAME(TYPE *parameters) \
-{return win2k_file_call_##SUFFIX(parameters,real_##NAME,&dialog_windows);}
+{return style_explorer_file_##SUFFIX(parameters,real_##NAME,&dialog_windows);}
 FILE_HOOK(GetOpenFileNameA,OPENFILENAMEA,a)
 FILE_HOOK(GetOpenFileNameW,OPENFILENAMEW,w)
 FILE_HOOK(GetSaveFileNameA,OPENFILENAMEA,a)
@@ -142,10 +144,10 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters)
   if(route==CLASSIC_PRINT_NATIVE)return real_##NAME(parameters); \
   if(!style_dialog_observation_begin(&scope,NULL,dialog_created,FALSE))return E_FAIL; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); \
-  SetLastError(incoming);if((route!=CLASSIC_PRINT_GENERAL_PAGE || !GENERAL((HINSTANCE)&__ImageBase,parameters,&result)) && !BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
+  SetLastError(incoming);if((route!=CLASSIC_PRINT_GENERAL_PAGE || !GENERAL((HINSTANCE)&__ImageBase,parameters,&result,classic_theme_dialog_resources)) && !BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
   error=GetLastError();PROCESS_HOOK_UNWIND_END(unwind);SetLastError(error);return result; }
-PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,win2k_print_general_a,style_print_extended_a,real_PrintDlgA)
-PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,win2k_print_general_w,style_print_extended_w,real_PrintDlgW)
+PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,style_print_general_a,style_print_extended_a,real_PrintDlgA)
+PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,style_print_general_w,style_print_extended_w,real_PrintDlgW)
 #undef PRINT_EXTENDED_HOOK
 
 DWORD ntw2ks_controls_attach(void)

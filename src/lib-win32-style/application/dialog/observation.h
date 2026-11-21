@@ -1,10 +1,12 @@
 #ifndef STYLE_DIALOG_OBSERVATION_H
 #define STYLE_DIALOG_OBSERVATION_H
 #include "../lifecycle/creation_call.h"
+#include "metrics.h"
 typedef struct style_dialog_windows {
     void (*initialized)(HWND);
     BOOL (*attached)(HWND);
     HMODULE (*resources)(void);
+    classic_dialog_metrics (*metrics)(HMODULE);
 } style_dialog_windows;
 
 /* Strictly nested on the same GUI thread. Observer code outlives its hook.

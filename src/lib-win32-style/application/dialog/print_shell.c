@@ -6,7 +6,7 @@
 #include <shdispid.h>
 #include <stdlib.h>
 
-struct win2k_print_shell {
+struct style_print_shell {
     IServiceProvider services;
     ICommDlgBrowser commands;
     IExplorerBrowserEvents events;
@@ -23,7 +23,7 @@ struct win2k_print_shell {
     BOOL advised;
 };
 
-static HRESULT provide(win2k_print_shell *shell,REFIID id,void **object)
+static HRESULT provide(style_print_shell *shell,REFIID id,void **object)
 {
     *object=NULL;
     if(IsEqualIID(id,&IID_IUnknown) || IsEqualIID(id,&IID_IServiceProvider))*object=&shell->services;
@@ -34,18 +34,18 @@ static HRESULT provide(win2k_print_shell *shell,REFIID id,void **object)
     ++shell->refs;
     return S_OK;
 }
-static ULONG release(win2k_print_shell *shell)
+static ULONG release(style_print_shell *shell)
 {
     ULONG refs=--shell->refs;
     if(!refs)free(shell);
     return refs;
 }
 static HRESULT STDMETHODCALLTYPE services_query(IServiceProvider *self,REFIID id,void **object)
-{return provide(CONTAINING_RECORD(self,win2k_print_shell,services),id,object);}
+{return provide(CONTAINING_RECORD(self,style_print_shell,services),id,object);}
 static ULONG STDMETHODCALLTYPE services_add(IServiceProvider *self)
-{return ++CONTAINING_RECORD(self,win2k_print_shell,services)->refs;}
+{return ++CONTAINING_RECORD(self,style_print_shell,services)->refs;}
 static ULONG STDMETHODCALLTYPE services_release(IServiceProvider *self)
-{return release(CONTAINING_RECORD(self,win2k_print_shell,services));}
+{return release(CONTAINING_RECORD(self,style_print_shell,services));}
 static HRESULT STDMETHODCALLTYPE services_get(IServiceProvider *self,REFGUID service,REFIID id,void **object)
 {
     *object=NULL;
@@ -53,17 +53,17 @@ static HRESULT STDMETHODCALLTYPE services_get(IServiceProvider *self,REFGUID ser
     return services_query(self,id,object);
 }
 static HRESULT STDMETHODCALLTYPE commands_query(ICommDlgBrowser *self,REFIID id,void **object)
-{return provide(CONTAINING_RECORD(self,win2k_print_shell,commands),id,object);}
+{return provide(CONTAINING_RECORD(self,style_print_shell,commands),id,object);}
 static ULONG STDMETHODCALLTYPE commands_add(ICommDlgBrowser *self)
-{return ++CONTAINING_RECORD(self,win2k_print_shell,commands)->refs;}
+{return ++CONTAINING_RECORD(self,style_print_shell,commands)->refs;}
 static ULONG STDMETHODCALLTYPE commands_release(ICommDlgBrowser *self)
-{return release(CONTAINING_RECORD(self,win2k_print_shell,commands));}
+{return release(CONTAINING_RECORD(self,style_print_shell,commands));}
 static HRESULT STDMETHODCALLTYPE commands_default(ICommDlgBrowser *self,IShellView *view)
 {(void)self;(void)view;return S_OK;}
 static HRESULT STDMETHODCALLTYPE commands_changed(ICommDlgBrowser *self,IShellView *view,ULONG state)
 {
     (void)view;
-    win2k_print_shell *shell=CONTAINING_RECORD(self,win2k_print_shell,commands);
+    style_print_shell *shell=CONTAINING_RECORD(self,style_print_shell,commands);
     if(state==CDBOSC_SELCHANGE && shell->page)PostMessageW(shell->page,shell->change,0,0);
     return S_OK;
 }
@@ -73,11 +73,11 @@ static IServiceProviderVtbl services={services_query,services_add,services_relea
 static ICommDlgBrowserVtbl commands={commands_query,commands_add,commands_release,commands_default,commands_changed,commands_include};
 
 static HRESULT STDMETHODCALLTYPE view_query(IDispatch *self,REFIID id,void **object)
-{return provide(CONTAINING_RECORD(self,win2k_print_shell,view_events),id,object);}
+{return provide(CONTAINING_RECORD(self,style_print_shell,view_events),id,object);}
 static ULONG STDMETHODCALLTYPE view_add(IDispatch *self)
-{return ++CONTAINING_RECORD(self,win2k_print_shell,view_events)->refs;}
+{return ++CONTAINING_RECORD(self,style_print_shell,view_events)->refs;}
 static ULONG STDMETHODCALLTYPE view_release(IDispatch *self)
-{return release(CONTAINING_RECORD(self,win2k_print_shell,view_events));}
+{return release(CONTAINING_RECORD(self,style_print_shell,view_events));}
 static HRESULT STDMETHODCALLTYPE view_type_count(IDispatch *self,UINT *count)
 {(void)self;*count=0;return S_OK;}
 static HRESULT STDMETHODCALLTYPE view_type(IDispatch *self,UINT index,LCID locale,ITypeInfo **info)
@@ -88,23 +88,23 @@ static HRESULT STDMETHODCALLTYPE view_invoke(IDispatch *self,DISPID member,REFII
     DISPPARAMS *args,VARIANT *result,EXCEPINFO *exception,UINT *invalid)
 {
     (void)id;(void)locale;(void)flags;(void)args;(void)result;(void)exception;(void)invalid;
-    win2k_print_shell *shell=CONTAINING_RECORD(self,win2k_print_shell,view_events);
+    style_print_shell *shell=CONTAINING_RECORD(self,style_print_shell,view_events);
     if(member==DISPID_FILELISTENUMDONE && shell->page)PostMessageW(shell->page,shell->ready,TRUE,0);
     return S_OK;
 }
 static IDispatchVtbl view_events={view_query,view_add,view_release,view_type_count,view_type,view_ids,view_invoke};
 
 static HRESULT STDMETHODCALLTYPE events_query(IExplorerBrowserEvents *self,REFIID id,void **object)
-{return provide(CONTAINING_RECORD(self,win2k_print_shell,events),id,object);}
+{return provide(CONTAINING_RECORD(self,style_print_shell,events),id,object);}
 static ULONG STDMETHODCALLTYPE events_add(IExplorerBrowserEvents *self)
-{return ++CONTAINING_RECORD(self,win2k_print_shell,events)->refs;}
+{return ++CONTAINING_RECORD(self,style_print_shell,events)->refs;}
 static ULONG STDMETHODCALLTYPE events_release(IExplorerBrowserEvents *self)
-{return release(CONTAINING_RECORD(self,win2k_print_shell,events));}
+{return release(CONTAINING_RECORD(self,style_print_shell,events));}
 static HRESULT STDMETHODCALLTYPE navigation_pending(IExplorerBrowserEvents *self,PCIDLIST_ABSOLUTE location)
 {(void)self;(void)location;return S_OK;}
 static HRESULT STDMETHODCALLTYPE view_created(IExplorerBrowserEvents *self,IShellView *view)
 {
-    win2k_print_shell *shell=CONTAINING_RECORD(self,win2k_print_shell,events);
+    style_print_shell *shell=CONTAINING_RECORD(self,style_print_shell,events);
     if(shell->view_source)return S_OK;
     IDispatch *automation=NULL;
     IConnectionPointContainer *connections=NULL;
@@ -121,14 +121,14 @@ static HRESULT STDMETHODCALLTYPE view_created(IExplorerBrowserEvents *self,IShel
 }
 static HRESULT navigation_done(IExplorerBrowserEvents *self,BOOL success)
 {
-    win2k_print_shell *shell=CONTAINING_RECORD(self,win2k_print_shell,events);
+    style_print_shell *shell=CONTAINING_RECORD(self,style_print_shell,events);
     if(shell->page)PostMessageW(shell->page,shell->ready,success,0);
     return S_OK;
 }
 static HRESULT STDMETHODCALLTYPE navigation_complete(IExplorerBrowserEvents *self,PCIDLIST_ABSOLUTE location)
 {
     (void)location;
-    win2k_print_shell *shell=CONTAINING_RECORD(self,win2k_print_shell,events);
+    style_print_shell *shell=CONTAINING_RECORD(self,style_print_shell,events);
     return shell->view_source?S_OK:navigation_done(self,TRUE);
 }
 static HRESULT STDMETHODCALLTYPE navigation_failed(IExplorerBrowserEvents *self,PCIDLIST_ABSOLUTE location)
@@ -136,7 +136,7 @@ static HRESULT STDMETHODCALLTYPE navigation_failed(IExplorerBrowserEvents *self,
 static IExplorerBrowserEventsVtbl events={events_query,events_add,events_release,navigation_pending,
     view_created,navigation_complete,navigation_failed};
 
-static PWSTR item_name(win2k_print_shell *shell,PCUITEMID_CHILD child)
+static PWSTR item_name(style_print_shell *shell,PCUITEMID_CHILD child)
 {
     PIDLIST_ABSOLUTE item=ILCombine(shell->folder,child);
     PWSTR name=NULL;
@@ -145,7 +145,7 @@ static PWSTR item_name(win2k_print_shell *shell,PCUITEMID_CHILD child)
     return name;
 }
 
-PWSTR win2k_print_shell_selected(win2k_print_shell *shell)
+PWSTR style_print_shell_selected(style_print_shell *shell)
 {
     IFolderView *view=NULL;
     if(FAILED(IExplorerBrowser_GetCurrentView(shell->browser,&IID_IFolderView,(void **)&view)))return NULL;
@@ -161,7 +161,7 @@ PWSTR win2k_print_shell_selected(win2k_print_shell *shell)
     return name;
 }
 
-BOOL win2k_print_shell_select(win2k_print_shell *shell,PCWSTR name)
+BOOL style_print_shell_select(style_print_shell *shell,PCWSTR name)
 {
     IFolderView *view=NULL;
     if(FAILED(IExplorerBrowser_GetCurrentView(shell->browser,&IID_IFolderView,(void **)&view)))return FALSE;
@@ -192,7 +192,7 @@ static HRESULT set_site(IExplorerBrowser *browser,IUnknown *client)
     return result;
 }
 
-void win2k_print_shell_close(win2k_print_shell *shell)
+void style_print_shell_close(style_print_shell *shell)
 {
     if(!shell)return;
     shell->page=NULL;
@@ -212,21 +212,21 @@ void win2k_print_shell_close(win2k_print_shell *shell)
     CoUninitialize();
 }
 
-BOOL win2k_print_shell_show(win2k_print_shell *shell,HWND placeholder,PCWSTR initial)
+BOOL style_print_shell_show(style_print_shell *shell,HWND placeholder,PCWSTR initial)
 {
-    if(!win2k_print_shell_select(shell,initial))return FALSE;
+    if(!style_print_shell_select(shell,initial))return FALSE;
     ShowWindow(placeholder,SW_HIDE);
     ShowWindow(shell->host,SW_SHOWNOACTIVATE);
     return TRUE;
 }
 
-win2k_print_shell *win2k_print_shell_open(HWND page,HWND placeholder,UINT change,UINT ready)
+style_print_shell *style_print_shell_open(HWND page,HWND placeholder,UINT change,UINT ready)
 {
     RECT bounds;
     if(!GetWindowRect(placeholder,&bounds))return NULL;
     MapWindowPoints(NULL,page,(POINT *)&bounds,2);
     if(FAILED(CoInitializeEx(NULL,COINIT_APARTMENTTHREADED)))return NULL;
-    win2k_print_shell *shell=calloc(1,sizeof(*shell));
+    style_print_shell *shell=calloc(1,sizeof(*shell));
     if(!shell){CoUninitialize();return NULL;}
     shell->services.lpVtbl=&services;
     shell->commands.lpVtbl=&commands;
@@ -238,7 +238,7 @@ win2k_print_shell *win2k_print_shell_open(HWND page,HWND placeholder,UINT change
     shell->ready=ready;
     shell->host=CreateWindowExW(WS_EX_CONTROLPARENT,L"STATIC",NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,
         bounds.left,bounds.top,bounds.right-bounds.left,bounds.bottom-bounds.top,page,NULL,NULL,NULL);
-    if(!shell->host){win2k_print_shell_close(shell);return NULL;}
+    if(!shell->host){style_print_shell_close(shell);return NULL;}
     SetWindowPos(shell->host,placeholder,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
     OffsetRect(&bounds,-bounds.left,-bounds.top);
     FOLDERSETTINGS settings={FVM_LIST,FWF_SINGLESEL|FWF_ALIGNLEFT|FWF_SHOWSELALWAYS|FWF_NOCLIENTEDGE};
@@ -255,6 +255,6 @@ win2k_print_shell *win2k_print_shell_open(HWND page,HWND placeholder,UINT change
         shell->advised=SUCCEEDED(result);
     }
     if(SUCCEEDED(result))result=IExplorerBrowser_BrowseToIDList(shell->browser,shell->folder,SBSP_ABSOLUTE);
-    if(FAILED(result)){win2k_print_shell_close(shell);return NULL;}
+    if(FAILED(result)){style_print_shell_close(shell);return NULL;}
     return shell;
 }

@@ -76,7 +76,7 @@ static HRESULT selected_queue(IDataObject *data,PWSTR *queue)
     return result;
 }
 
-HRESULT win2k_print_directory_select(HWND owner,PWSTR *queue)
+HRESULT style_print_directory_select(HWND owner,PWSTR *queue)
 {
     *queue=NULL;
     HRESULT apartment=CoInitializeEx(NULL,COINIT_APARTMENTTHREADED);

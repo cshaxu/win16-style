@@ -1,7 +1,7 @@
 /* Product activation and appearance policy; native call state is shared. */
 #include "intercept.h"
 #include "lib-win32-style/application/dialog/classic_file_controller.h"
-#include "lib-win32-style/appearance/win2000/dialog/file_call.h"
+#include "lib-win32-style/application/dialog/explorer_file.h"
 #include "ntw16s-dll/global/session.h"
 #include "ntw16s-dll/global/window.h"
 #include "ntw16s-dll/attachment.h"
@@ -144,7 +144,7 @@ static HMODULE observed_dialog_resources(void)
 }
 
 const style_dialog_windows ntw16s_observed_dialog_windows={
-    ntw16s_observed_dialog_initialize,observed_dialog_attached,observed_dialog_resources
+    ntw16s_observed_dialog_initialize,observed_dialog_attached,observed_dialog_resources,classic_theme_dialog_metrics
 };
 
 LONG ntw16s_register_file_dialogs(DWORD (*attach)(void *,void *))
@@ -152,8 +152,8 @@ LONG ntw16s_register_file_dialogs(DWORD (*attach)(void *,void *))
     if(!attach)return ERROR_INVALID_PARAMETER;
     const style_classic_file_options options={.active=file_legacy_layout,
         .scope=ntw16s_dialog_style_scope,.chrome=ntw16s_old_dialog_chrome,
-        .alternate_active=file_explorer_layout,.alternate_a=win2k_file_call_a,
-        .alternate_w=win2k_file_call_w,.alternate_windows=ntw16s_observed_dialog_windows,
+        .alternate_active=file_explorer_layout,.alternate_a=style_explorer_file_a,
+        .alternate_w=style_explorer_file_w,.alternate_windows=ntw16s_observed_dialog_windows,
 #ifdef NTW16S_EXPERIMENTAL_CREATION_SUBCLASS
         .subclass_observer=TRUE,
 #endif

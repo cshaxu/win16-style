@@ -2,6 +2,15 @@
   "schema": 1,
   "files": [
     {
+      "path": "src/lib-win32-style/application/dialog/metrics.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "65a3eec35eb88548eda959c763685929788d457c23a2130f65a389109ebad795",
+      "disposition": "authored",
+      "review": "T29 S23: move theme-neutral dialog geometry types to their consumer boundary.",
+      "notice": "Existing project-authored metric layout; wire size and property semantics retained."
+    },
+    {
       "path": "src/lib-win32-style/appearance/win3x/common/palette.h",
       "source": null,
       "source_blob": null,
@@ -1391,7 +1400,7 @@
       "path": "src/ntw16s-dll/injection/window_titles.c",
       "source": "src/nthook32-dll/window_titles.cpp",
       "source_blob": "0a3d1cd942345edb25e879b9377311929551a0ec",
-      "sha256": "bfa68f01a1a53cd7c2687f557720a0cfe3aa2b3fd8b4a9513fe2bac509c03316",
+      "sha256": "60844dd52a39960ec012c0ecf93d06345da38a92077d80515411c9c39d6070da",
       "disposition": "adapt",
       "review": "T3 S2 same-DLL delayed binding and read-only native-target diagnostics; docs/proposals/launcher-injection.md; T6 S1 pure-C native facade and unwind scope, GCC x86/x64 object compilation, full runtime migration pending; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T15 S7 bounded initialized public report-list text scope, exact native custom-draw DC and unchanged app callbacks, independent host System bitmap and ownership/late-view tests; no external code copied or original resources modified; T15 S11 initialized native UpDown and exact main-EXE TUpDown; actual COMCTL DrawFrameControl/DrawThemeBackground states and exact window/print/native-compatible DC ownership; bounded weak DC map and deletion/retirement, passive API guard and 40-slot startup transaction; native UDN/buddy/input/font/data retained; own C17 tests and no external code or original graphics changes; T17 S4 actual original-author VB5/6 intrinsic observations: exact runtime50 Command/Check/Option/Frame/Edit and runtime60 Option, existing glyph/font/DC scope; own native observer and C grouping/wrong-runtime negatives; no external implementation or resources copied; T17 S9 exact runtime PictureBox label-only scope and owned native test witness; no external code/resources copied; T17 S10 exact runtime graphical CommandButton ODT_BUTTON/DC primitive scope, preserved native API semantics and self-contained C/optional real observations; no external code/resources copied; T18 S21 scoped observed checklist owner-draw frame, public state and original graphic, no external code or resource changes; T18 S27 exact observed TSpinButton frame scope, native primitive semantics retained, no external code or original graphics changed; T18 S31 verified native STATIC drawing scope, source font and application printing preserved; T18 S64 VB6 checklist scoped 96 DPI bitmap rendering and additional BitBlt hook; native fallbacks retained; T18 S64 P50 bounded VB6 Data navigation graphics; T18 S64: scoped ordinary Delphi group paint witness and native theme text entry, original notices retained; T18 S64 scoped observed Delphi TPopupMenu owner, native callbacks and item restoration; private cleanup, no external code or graphics changed; T18 S64 observed paired Delphi TPanel outer bevel paint scope, caller/parent/clip and native pen preserved; project-authored native tests; no external code or resources copied; T18 S64 P110 modern SpinButton bounded theme, bitmap and paint handling; T18 S64 P117 verified simple Delphi status scoped typography; T18 S64 P117 isolated font lease and lifecycle verification; T18 S64 P119 bounded multi-pane status font; T18 S64 P121 ANSI RichEdit witness and native chrome; T18 S64 P122 Unicode witness and abnormal paint cleanup; T18 S64 P123 scroll box witness; T18 S64 P125 native month calendar arrows; T18 S64 P126 selected-date color; T18 S64 P127 bounded native calendar title and query guards; T18 S64 P128 bounded calendar text; T18 S64 P129 witnessed TValueListEditor in-place button; T18 S64 P130 witnessed combo theme and dropdown arrow; T18 S64 witnessed VCL control bar frame; T18 S64 control bar observed bevel variants; T18 S64 app-owned ANSI DBEdit forwarding witness and negative model; T18 S64 bounded ANSI data combo forwarding witness; T18 S64 P160: bounded same-owner TDBNavigator button backgrounds; T20 S1 common find/replace creation scope; T21 S13 unified late style hooks and stop semantics; T24 S1 unify simple common dialog scope hooks; T25 S2 shared runtime extraction; T26 S1 shared menu owner identity extraction; T26 S1 shared extended print bridge caller; T26 S1 common classic dialog controls; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 explicit theme interception; T26 S1 shared ordinary dialog hook lifecycle; T26 S1 shared color dialog identification; T26 S2 mechanical path/include relocation; T26 S10 checklist native protocol extraction, existing behavior and resources retained; T26 S10 native caller classification moved to common runtime text; original identity predicates retained; T26 S13 complete generic font/glyph and snapshot cache ownership; profile eligibility and native borrow/resource contracts retained; S13 complete glyph translation temporary ownership and real consumer retained",
       "notice": "Project-authored source adaptation or new native fixture; original notices preserved"
@@ -2957,7 +2966,7 @@
       "path": "src/ntw16s-dll/injection/file_dialogs.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6ebbbe8646773d38cc175036aed0e0075097e7568d6a25ba91666954788f2f55",
+      "sha256": "d01ad0c546ae7c6636271aa0b10f38f15fda97ba9feccad41f6aff07383122e0",
       "disposition": "authored",
       "review": "M0 T20 S1 native common-dialog bridge or owned integration fixture; T21 S13 unified late style hooks and stop semantics; T25 S2 shared runtime extraction; T26 S1 shared classic dialog message dispatch; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored C; Windows SDK interfaces; no external dialog resources copied"
@@ -6017,7 +6026,7 @@
       "path": "src/ntw2ks-dll/controls.c",
       "source": null,
       "source_blob": null,
-      "sha256": "bfbed348d863db5643102551c1d9ca367e322df3913c9a3832a662209c5eef8d",
+      "sha256": "1e7f25e6c82396119690d2e61a68fc7fb9a1ee42b73b3c743e2d754836b04a12",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T25 S3 Win2000 frame; T26 S1 shared dialog thread observer; T26 S1 neutral message-observer naming; T26 S1 share initialized-dialog observation; T26 S1 shared control theme lifecycle; T26 S1 Win2000 native theme interception; T26 S1 control thread ownership; T26 S1 shared ordinary dialog hook lifecycle; T26 S2 mechanical path/include relocation; T27 S2 Win2000 source-based button presentation and existing common lifecycle integration; T27 S14 VB、VCL 与复合控件; T28 S3 observe stock Color foldout completion; T28 S3 native compact Explorer launch integration; T28 S3 native Places launch and resize integration; T28 S3 restore stock font client after native show; T28 S3 clamp compact Explorer in physical pixels; T28 S3 preview the Windows 2000 General print sheet",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -6221,12 +6230,12 @@
       "notice": "Project-authored C; no external source or artwork copied"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/find.h",
+      "path": "src/lib-win32-style/application/dialog/stock_find.h",
       "source": null,
       "source_blob": null,
-      "sha256": "b5ae14cb98db36762c56dd5a823579d7870577933a611a22a07e079cf08e6c6c",
+      "sha256": "570b47f1e92ac4176bbe8063c3d9adbfa24399fdb0bd52feb2ac32c5be535fb7",
       "disposition": "authored",
-      "review": "T28 S3 compact unused stock Find layout space using original Windows 2000 and live common-dialog dimensions",
+      "review": "T28 S3 compact unused stock Find layout space using original Windows 2000 and live common-dialog dimensions T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored C; no imported template, text or artwork"
     },
     {
@@ -9617,7 +9626,7 @@
       "path": "src/lib-win32-style/application/dialog/observation.h",
       "source": null,
       "source_blob": null,
-      "sha256": "193682e9641ad93278d0cfbaeda0105cfd6327ee0379c99e34f77039a77e4be1",
+      "sha256": "06b73056078de10064ee9ff8646ff8962c477407e63902daf9de53269f953e2b",
       "disposition": "authored",
       "review": "T26 S11 common dialog observation ownership extraction; preserves creation/unwind, nesting, inactive identity and advisory observer hook failure.",
       "notice": "Project-authored pure C; no imported graphics."
@@ -10172,102 +10181,102 @@
       "notice": "Project-authored C; no external implementation or artwork imported"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/color.h",
+      "path": "src/lib-win32-style/application/dialog/stock_color.h",
       "source": null,
       "source_blob": null,
-      "sha256": "76bccb1e0510aa2ed31e5b50d0eb160836e9838923b3e67f2e9baf19d2536120",
+      "sha256": "941d98e77d094195cc73104e04677a64aa182253571119391e6355f072aaef36",
       "disposition": "authored",
-      "review": "T28 S3 stock expanded Color client restoration based on measured native layout; T28 S3 share stock client geometry with font",
+      "review": "T28 S3 stock expanded Color client restoration based on measured native layout; T28 S3 share stock client geometry with font T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored C implementation; Windows 2000 SP2 dialog metrics used as reference"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/file.h",
+      "path": "src/lib-win32-style/application/dialog/explorer_file_layout.h",
       "source": null,
       "source_blob": null,
-      "sha256": "2924b31bf7e7b7e5e617394fa381d69fafb0f14342cfac27a7bd06144ec4b33a",
+      "sha256": "4a0e46920e7a642da3642c725de37e4a2e78e90d40ad0dafb38aed3f1bf7f5e2",
       "disposition": "authored",
-      "review": "T28 S3 adaptive stock Explorer sizing and appearance policy; T28 S3 native Places layout based on SP2 template dimensions",
+      "review": "T28 S3 adaptive stock Explorer sizing and appearance policy; T28 S3 native Places layout based on SP2 template dimensions T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored C implementation; Windows 2000 SP2 dialog variants used as reference"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/stock.h",
+      "path": "src/lib-win32-style/application/dialog/stock_client.h",
       "source": null,
       "source_blob": null,
-      "sha256": "ea3584d8e7a0c23ee340c3bb5e267b0a69a90a66e8406bb589dc4d724126404a",
+      "sha256": "57ebbc66c7482bf2fabbc7f7f8c74e218a2f718c5944cb9d61b08db660efa256",
       "disposition": "authored",
-      "review": "T28 S3 share fixed stock native-dialog client recovery",
+      "review": "T28 S3 share fixed stock native-dialog client recovery T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored C; stock Windows 2000 dialog-unit metrics used as reference"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/print_general.c",
+      "path": "src/lib-win32-style/application/dialog/print_general.c",
       "source": null,
       "source_blob": null,
-      "sha256": "60eb4b5e68560e103650beccdbaa746c808f44a582d422e0a72985933180c5a8",
+      "sha256": "c1d70df3714f67c73754cc93b4ded32758ea05a13bbb62f4bd2f81aa0ffae48c",
       "disposition": "authored",
-      "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
+      "review": "T28 S3 Windows 2000 General print sheet and native entry verification T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored; no imported source or resources"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/print_general.h",
+      "path": "src/lib-win32-style/application/dialog/print_general.h",
       "source": null,
       "source_blob": null,
-      "sha256": "b91cab661cdd39f8e4fc20ea48e9b225f1cd11c307da24a894c49d13f5ae4cec",
+      "sha256": "d85e90db67d294f452497fed0c9b2b999aaf1ec9b012307a341001c81d7260d9",
       "disposition": "authored",
-      "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
+      "review": "T28 S3 Windows 2000 General print sheet and native entry verification T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored; no imported source or resources"
     },
     {
       "path": "tests/ntw2ks-dll/print_general_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6e11c9a2416ae69142593997490e830c54da95fffb6372b41313fbe14fb6c82f",
+      "sha256": "2cf9656575a9015cf18cae9919f45e96025f4a79c2dc5912102e32640027c88e",
       "disposition": "authored",
       "review": "T28 S3 Windows 2000 General print sheet and native entry verification",
       "notice": "Project-authored; no imported source or resources"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/print_shell.c",
+      "path": "src/lib-win32-style/application/dialog/print_shell.c",
       "source": null,
       "source_blob": null,
-      "sha256": "1097e5c08cc66e6d20b2e43e5b6b7095bfa388ded99588ccfa3c88fbff3bb71c",
+      "sha256": "73e17e4a1bbe397ad900b935ce014ddcc8020e7efeea356b98028c121de75960",
       "disposition": "authored",
-      "review": "T28 S3 native Shell printer view for the complete General page",
+      "review": "T28 S3 native Shell printer view for the complete General page T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored using Windows SDK; no imported source or resources"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/print_shell.h",
+      "path": "src/lib-win32-style/application/dialog/print_shell.h",
       "source": null,
       "source_blob": null,
-      "sha256": "c1dab2cf13ef0d9306425f55c806cd70a65b314f92cf8e05fa7311bbe1eb1d25",
+      "sha256": "97f590c61b247fcb144922525a20088311e3cdd23ce73085beae7e06f54c1738",
       "disposition": "authored",
-      "review": "T28 S3 native Shell printer view for the complete General page",
+      "review": "T28 S3 native Shell printer view for the complete General page T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored using Windows SDK; no imported source or resources"
     },
     {
       "path": "src/lib-win32-style/appearance/win2000/dialog/print_general_full.rcinc",
       "source": null,
       "source_blob": null,
-      "sha256": "e9372a1dcff575f66d3ae2662139b266ec5d07a52b411cd94a7e2a562d75586f",
+      "sha256": "d602b55b82d8735be33f6b819b36558462bcb921b6b8a8373d83926c0a077bcc",
       "disposition": "authored",
       "review": "T28 S3 shared full and large Win2000 General format",
       "notice": "Project-authored resource geometry; no imported Windows artwork or templates"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/print_directory.c",
+      "path": "src/lib-win32-style/application/dialog/print_directory.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4588d818c63b0eb40886b36653f16b9332f06b90d9bb00b099b490cab6cbd1d8",
+      "sha256": "a2333b60631c8c74a3eea495679b97ef952b9075d160ace524a79f1432bf32da",
       "disposition": "authored",
-      "review": "T28 S3 native directory printer selection for the Windows 2000 General page",
+      "review": "T28 S3 native directory printer selection for the Windows 2000 General page T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored using Windows SDK; no imported source or resources"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/print_directory.h",
+      "path": "src/lib-win32-style/application/dialog/print_directory.h",
       "source": null,
       "source_blob": null,
-      "sha256": "7ecd8fa05f37a6b75f068f81f7f9e201587045727575175580d876d1e3743b24",
+      "sha256": "b85f3bc0355209634dcdd4f823efeed962870ad50443da080c2e905b3a8ca9c9",
       "disposition": "authored",
-      "review": "T28 S3 native directory printer selection for the Windows 2000 General page",
+      "review": "T28 S3 native directory printer selection for the Windows 2000 General page T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored using Windows SDK; no imported source or resources"
     },
     {
@@ -10280,21 +10289,21 @@
       "notice": "Project-authored; no imported source or resources"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/file_call.c",
+      "path": "src/lib-win32-style/application/dialog/explorer_file.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4a333b0a0b95436e1ca8e5ba4d335a2744c1e7affef613125c64ef500d63106a",
+      "sha256": "b19c831e80dc116eb9c67eb9165748e93be28d5efcee91a1a45d2727400cde84",
       "disposition": "authored",
-      "review": "T28 S3 shared Windows 2000 Explorer file call presentation",
+      "review": "T28 S3 shared Windows 2000 Explorer file call presentation T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored; no imported source or resources"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/file_call.h",
+      "path": "src/lib-win32-style/application/dialog/explorer_file.h",
       "source": null,
       "source_blob": null,
-      "sha256": "3aa46d7c8d5fa95eece8bd86fb9d132892af32155ed2d82beb447fdd2fa47477",
+      "sha256": "2121b0e43a1b54bb46709613d4758112432e3ba7c5ac2501758053253955e098",
       "disposition": "authored",
-      "review": "T28 S3 shared Windows 2000 Explorer file call presentation",
+      "review": "T28 S3 shared Windows 2000 Explorer file call presentation T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored; no imported source or resources"
     },
     {
@@ -10307,21 +10316,21 @@
       "notice": "Project-authored; no imported source or resources"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/stock_call.c",
+      "path": "src/lib-win32-style/application/dialog/stock_dialog.c",
       "source": null,
       "source_blob": null,
-      "sha256": "6b56c068c9401be5635d799ae0de8f878eb9e96dfc39f4deb6c4b00dc672f2cf",
+      "sha256": "75b57fc0a4a32877d40a14af2f0400ef301fc48fc2664b79ffba9ac316ead3f8",
       "disposition": "authored",
-      "review": "T28 S3 shared Windows 2000 stock dialog calls and presentation",
+      "review": "T28 S3 shared Windows 2000 stock dialog calls and presentation T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored; no imported source or resources"
     },
     {
-      "path": "src/lib-win32-style/appearance/win2000/dialog/stock_call.h",
+      "path": "src/lib-win32-style/application/dialog/stock_dialog.h",
       "source": null,
       "source_blob": null,
-      "sha256": "c51d406038b852947c068f316038ef66cdf7b1db5a83f8ddca9116ded7df54d2",
+      "sha256": "6579be30916907d7b33c107aa20fc6538bb9d4ab3d806d210461c4b4f4ded3ac",
       "disposition": "authored",
-      "review": "T28 S3 shared Windows 2000 stock dialog calls and presentation",
+      "review": "T28 S3 shared Windows 2000 stock dialog calls and presentation T29 S23: move the in-tree implementation to shared native dialog presentation with caller-provided theme resources.",
       "notice": "Project-authored; no imported source or resources"
     },
     {
@@ -10427,7 +10436,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_style.h",
       "source": null,
       "source_blob": null,
-      "sha256": "86220e07947e4ea214df82d53254ab863a5fd5271ac60bddb7be9a773e749e43",
+      "sha256": "8e19ab5dca2cf184b6bc7866bc787029dc6cab55bb17f4511d15c8b5fc403cf1",
       "disposition": "authored",
       "review": "T29 S3 versioned project-style extension and packaged tests",
       "notice": "Project-authored; no imported source or resources"
@@ -10445,7 +10454,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ebe34d0e31d7ee219731db58cb92de983ed98bc68e245fd5eb164511892e35a5",
+      "sha256": "d8241ea7a3b2c469aefe5c603774ba03cb6ae74a587c463a51659ba425597e18",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10454,7 +10463,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "b7e1de4401053bc81d3e1531567a8d3b9f6adade43a0bf0b7251b9d8b01cae4e",
+      "sha256": "8fcdbc1dcdb025235e9b5101420ca54b8a541d5f72cdd1c562730a87fce1a9bc",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10463,7 +10472,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "4eb7c7ff845a04641450247b22145670d7b47eefa9b37f25494253b3208d9752",
+      "sha256": "ccf71c34c870c532c80c9132a173e300cfabb2039ecff1222807639a605b4897",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10562,7 +10571,7 @@
       "path": "src/lib-win32-style/appearance/win2000/dialog/print_general.rcinc",
       "source": null,
       "source_blob": null,
-      "sha256": "992d783cc6e3836a6f3ab25f3e938774e69c069caac8b6dbda4ce6204396e12d",
+      "sha256": "e453cbcb79000b2d4e876fadc485388c6df289769a876dbbadfa71565f4b4443",
       "disposition": "authored",
       "review": "M0 T29 S8: move project-authored T28 General resource declarations from src/ntw2ks-dll/version.rc into the shared Win2K theme resource inputs",
       "notice": "Project-authored resource geometry; no imported Windows artwork or templates"

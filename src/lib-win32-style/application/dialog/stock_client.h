@@ -1,11 +1,11 @@
-#ifndef WIN2K_DIALOG_STOCK_H
-#define WIN2K_DIALOG_STOCK_H
+#ifndef STYLE_STOCK_CLIENT_H
+#define STYLE_STOCK_CLIENT_H
 #include "lib-win32-style/application/window/frame.h"
 
 /* The native dialog chose its outer rectangle before the classic frame
  * changed its insets. With no expected size, retain the native client
  * even when Windows selected a different stock layout. */
-static inline void win2k_restore_stock_dialog_client(HWND dialog,LONG width,LONG height)
+static inline void style_restore_stock_dialog_client(HWND dialog,LONG width,LONG height)
 {
     RECT stock={0,0,width,height},outer,client;
     if((width && !MapDialogRect(dialog,&stock)) || !GetWindowRect(dialog,&outer))return;

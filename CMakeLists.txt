@@ -267,11 +267,13 @@ endif()
 add_library(ntw2ks SHARED src/ntw2ks-dll/dllmain.c src/ntw2ks-dll/button.c src/ntw2ks-dll/controls.c ${observed_provider} src/ntw2ks-dll/version.rc "${win2k_def}")
 set_property(SOURCE src/ntw2ks-dll/version.rc APPEND PROPERTY OBJECT_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general_full.rcinc")
-add_library(win2k-print STATIC src/lib-win32-style/appearance/win2000/dialog/print_general.c
-  src/lib-win32-style/appearance/win2000/dialog/print_shell.c
-  src/lib-win32-style/appearance/win2000/dialog/print_directory.c)
-target_link_libraries(win2k-print PUBLIC style-dialog-common comctl32 winspool activeds adsiid oleaut32)
-target_link_libraries(win2k-print PRIVATE style-msstyles)
+add_library(style-dialog-native STATIC
+  src/lib-win32-style/application/dialog/explorer_file.c
+  src/lib-win32-style/application/dialog/stock_dialog.c
+  src/lib-win32-style/application/dialog/print_general.c
+  src/lib-win32-style/application/dialog/print_shell.c
+  src/lib-win32-style/application/dialog/print_directory.c)
+target_link_libraries(style-dialog-native PUBLIC style-dialog-common style-window comctl32 winspool activeds adsiid oleaut32)
 set(classic_theme_source src/lib-win32-style/appearance/msstyles/classic_theme.c)
 add_library(style-msstyles STATIC
   src/lib-win32-style/appearance/msstyles/classic_style.c
@@ -300,7 +302,7 @@ foreach(stem IN ITEMS Win16 Win2K)
   unset(image_flag)
   unset(image_files)
   set(dialog_resources
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/application/dialog/print_general.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general.rcinc"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/lib-win32-style/appearance/win2000/dialog/print_general_full.rcinc")
   if(stem STREQUAL "Win16")
@@ -341,17 +343,12 @@ if(classic_theme_artifacts)
   add_custom_target(classic-themes DEPENDS ${classic_theme_artifacts})
 endif()
 target_sources(ntw2ks PRIVATE "${theme_object_Win2K}")
-add_library(win2k-file STATIC src/lib-win32-style/appearance/win2000/dialog/file_call.c)
-target_link_libraries(win2k-file PUBLIC style-dialog-common PRIVATE style-msstyles)
-add_library(win2k-stock STATIC src/lib-win32-style/appearance/win2000/dialog/stock_call.c)
-target_link_libraries(win2k-stock PUBLIC style-dialog-common style-window)
-target_link_libraries(win2k-stock PRIVATE style-msstyles)
 if(WIN16STYLE_ARCH STREQUAL "x86")
   set_target_properties(ntw2ks PROPERTIES OUTPUT_NAME ntw2ks32 PREFIX "")
 else()
   set_target_properties(ntw2ks PROPERTIES OUTPUT_NAME ntw2ks64 PREFIX "")
 endif()
-target_link_libraries(ntw2ks PRIVATE win2k-print win2k-file win2k-stock user32 uxtheme)
+target_link_libraries(ntw2ks PRIVATE style-dialog-native user32 uxtheme)
 target_include_directories(ntw2ks PRIVATE src ${CMAKE_SOURCE_DIR})
 target_link_options(ntw2ks PRIVATE -Wl,--kill-at)
 add_library(ntw16s SHARED ${core_sources} src/ntw16s-dll/control_scope.c src/ntw16s-dll/dllmain.c src/ntw16s-dll/compat_font.c src/ntw16s-dll/compat_menu.c
@@ -361,7 +358,7 @@ target_include_directories(ntw16s PRIVATE src ${CMAKE_SOURCE_DIR})
 target_compile_definitions(ntw16s PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_dependencies(ntw16s style-subclass)
 target_link_libraries(ntw16s PRIVATE style-creation style-uwp-hook style-global-window win16-window-uwp win2k-window-uwp win16-window win16-control style-dialog-common "${subclass_import}" user32 gdi32 comctl32 comdlg32 shell32 ole32 oleaut32 uuid dwmapi uxtheme advapi32)
-target_link_libraries(ntw16s PRIVATE win2k-print win2k-file win2k-stock)
+target_link_libraries(ntw16s PRIVATE style-dialog-native)
 add_library(module-import STATIC src/lib-win32/module-import/import_scan.c src/lib-win32/module-import/import_patch.c)
 target_include_directories(module-import PUBLIC src)
 target_compile_definitions(module-import PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -467,7 +464,7 @@ target_sources(ntwshk PRIVATE ${win16_intercepts})
 add_dependencies(ntwshk style-subclass)
 target_link_libraries(ntwshk PRIVATE style-runtime-process style-creation style-uwp-hook style-global-window
   win16-window win16-control win2k-window win2k-control
-  win2k-print win2k-file win2k-stock style-dialog-common style-theme-track style-companion module-import process-global
+  style-dialog-native style-dialog-common style-theme-track style-companion module-import process-global
   "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}" user32 gdi32 comctl32 comdlg32
   shell32 ole32 oleaut32 uuid dwmapi uxtheme advapi32)
 target_link_libraries(ntw16s PRIVATE style-theme-track)

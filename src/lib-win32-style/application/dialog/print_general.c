@@ -2,7 +2,6 @@
 #include "print_general.h"
 #include "print_directory.h"
 #include "print_shell.h"
-#include "lib-win32-style/appearance/msstyles/classic_theme.h"
 #include "lib-win32-style/application/dialog/print_ranges.h"
 #include "lib-win32-style/application/dialog/print_resources.h"
 #include <commctrl.h>
@@ -25,7 +24,7 @@ typedef struct general_page {
     DWORD device_count;
     HGLOBAL live_mode,live_names;
     style_print_snapshot saved;
-    win2k_print_shell *shell;
+    style_print_shell *shell;
     BOOL initialized,shell_visible;
 } general_page;
 
@@ -102,20 +101,20 @@ static BOOL load_device(general_page *page,PCWSTR device,HWND preferences,HGLOBA
 static BOOL read_snapshot(HWND window,general_page *page,BOOL confirm)
 {
     BOOL numeric=FALSE;
-    DWORD copies=GetDlgItemInt(window,WIN2K_PRINT_COPIES,&numeric,FALSE);
+    DWORD copies=GetDlgItemInt(window,STYLE_PRINT_COPIES,&numeric,FALSE);
     if(!numeric || !copies || copies>32767)return FALSE;
     DWORD flags=page->flags&~(DWORD)(PD_CURRENTPAGE|PD_SELECTION|PD_PAGENUMS|PD_COLLATE|PD_PRINTTOFILE);
     PRINTPAGERANGE ranges[range_limit];
     DWORD count=0;
-    if(IsDlgButtonChecked(window,WIN2K_PRINT_PAGES)==BST_CHECKED){
+    if(IsDlgButtonChecked(window,STYLE_PRINT_PAGES)==BST_CHECKED){
         WCHAR input[ARRAYSIZE(page->range_text)];
-        if(!GetDlgItemTextW(window,WIN2K_PRINT_RANGE,input,ARRAYSIZE(input)) ||
+        if(!GetDlgItemTextW(window,STYLE_PRINT_RANGE,input,ARRAYSIZE(input)) ||
            !style_print_ranges_parse(input,page->minimum,page->maximum,ranges,page->capacity,&count))return FALSE;
         flags|=PD_PAGENUMS;
-    }else if(IsDlgButtonChecked(window,WIN2K_PRINT_SELECTION)==BST_CHECKED)flags|=PD_SELECTION;
-    else if(IsDlgButtonChecked(window,WIN2K_PRINT_CURRENT)==BST_CHECKED)flags|=PD_CURRENTPAGE;
-    if(IsDlgButtonChecked(window,WIN2K_PRINT_COLLATE)==BST_CHECKED)flags|=PD_COLLATE;
-    if(IsDlgButtonChecked(window,WIN2K_PRINT_FILE)==BST_CHECKED)flags|=PD_PRINTTOFILE;
+    }else if(IsDlgButtonChecked(window,STYLE_PRINT_SELECTION)==BST_CHECKED)flags|=PD_SELECTION;
+    else if(IsDlgButtonChecked(window,STYLE_PRINT_CURRENT)==BST_CHECKED)flags|=PD_CURRENTPAGE;
+    if(IsDlgButtonChecked(window,STYLE_PRINT_COLLATE)==BST_CHECKED)flags|=PD_COLLATE;
+    if(IsDlgButtonChecked(window,STYLE_PRINT_FILE)==BST_CHECKED)flags|=PD_PRINTTOFILE;
     style_print_snapshot snapshot;
     if(!style_print_snapshot_create(page->live_mode,page->live_names,page->ansi,copies,flags,&snapshot))return FALSE;
     style_print_snapshot_dispose(&page->saved);
@@ -145,9 +144,9 @@ static void present_device(HWND window,PCWSTR device)
         }
         ClosePrinter(printer);
     }
-    SetDlgItemTextW(window,WIN2K_PRINT_DEVICE_STATUS,status);
-    SetDlgItemTextW(window,WIN2K_PRINT_DEVICE_LOCATION,location);
-    SetDlgItemTextW(window,WIN2K_PRINT_DEVICE_COMMENT,comment);
+    SetDlgItemTextW(window,STYLE_PRINT_DEVICE_STATUS,status);
+    SetDlgItemTextW(window,STYLE_PRINT_DEVICE_LOCATION,location);
+    SetDlgItemTextW(window,STYLE_PRINT_DEVICE_COMMENT,comment);
     free(info);
 }
 
@@ -156,31 +155,31 @@ static void initialize_page(HWND window,const general_page *page)
     const device_messages *messages=&device_controls[page->full];
     for(DWORD i=0;i<page->device_count;++i){
         PCWSTR name=page->devices[i].pPrinterName;
-        LRESULT index=SendDlgItemMessageW(window,WIN2K_PRINT_DEVICE,messages->add,0,(LPARAM)name);
+        LRESULT index=SendDlgItemMessageW(window,STYLE_PRINT_DEVICE,messages->add,0,(LPARAM)name);
         if(index<0)continue;
-        SendDlgItemMessageW(window,WIN2K_PRINT_DEVICE,messages->set_data,(WPARAM)index,(LPARAM)name);
-        if(name==page->selected)SendDlgItemMessageW(window,WIN2K_PRINT_DEVICE,messages->select,(WPARAM)index,0);
+        SendDlgItemMessageW(window,STYLE_PRINT_DEVICE,messages->set_data,(WPARAM)index,(LPARAM)name);
+        if(name==page->selected)SendDlgItemMessageW(window,STYLE_PRINT_DEVICE,messages->select,(WPARAM)index,0);
     }
     if(page->full){
         present_device(window,page->selected);
-        EnableWindow(GetDlgItem(window,WIN2K_PRINT_FIND_DEVICE),!SHRestricted(REST_NOPRINTERADD));
+        EnableWindow(GetDlgItem(window,STYLE_PRINT_FIND_DEVICE),!SHRestricted(REST_NOPRINTERADD));
     }
-    int checked=WIN2K_PRINT_ALL;
-    if(page->flags&PD_SELECTION)checked=WIN2K_PRINT_SELECTION;
-    if(page->flags&PD_CURRENTPAGE)checked=WIN2K_PRINT_CURRENT;
-    if(page->flags&PD_PAGENUMS)checked=WIN2K_PRINT_PAGES;
-    CheckRadioButton(window,WIN2K_PRINT_ALL,WIN2K_PRINT_PAGES,checked);
-    EnableWindow(GetDlgItem(window,WIN2K_PRINT_SELECTION),!(page->flags&PD_NOSELECTION));
-    EnableWindow(GetDlgItem(window,WIN2K_PRINT_CURRENT),!(page->flags&PD_NOCURRENTPAGE));
-    EnableWindow(GetDlgItem(window,WIN2K_PRINT_PAGES),!(page->flags&PD_NOPAGENUMS));
-    EnableWindow(GetDlgItem(window,WIN2K_PRINT_RANGE),!(page->flags&PD_NOPAGENUMS));
-    SendDlgItemMessageW(window,WIN2K_PRINT_RANGE,EM_SETLIMITTEXT,ARRAYSIZE(page->range_text)-1,0);
-    SendDlgItemMessageW(window,WIN2K_PRINT_COPIES,EM_SETLIMITTEXT,5,0);
-    SetDlgItemTextW(window,WIN2K_PRINT_RANGE,page->range_text);
-    SetDlgItemInt(window,WIN2K_PRINT_COPIES,page->copies,FALSE);
-    CheckDlgButton(window,WIN2K_PRINT_COLLATE,page->flags&PD_COLLATE?BST_CHECKED:BST_UNCHECKED);
-    CheckDlgButton(window,WIN2K_PRINT_FILE,page->flags&PD_PRINTTOFILE?BST_CHECKED:BST_UNCHECKED);
-    HWND file=GetDlgItem(window,WIN2K_PRINT_FILE);
+    int checked=STYLE_PRINT_ALL;
+    if(page->flags&PD_SELECTION)checked=STYLE_PRINT_SELECTION;
+    if(page->flags&PD_CURRENTPAGE)checked=STYLE_PRINT_CURRENT;
+    if(page->flags&PD_PAGENUMS)checked=STYLE_PRINT_PAGES;
+    CheckRadioButton(window,STYLE_PRINT_ALL,STYLE_PRINT_PAGES,checked);
+    EnableWindow(GetDlgItem(window,STYLE_PRINT_SELECTION),!(page->flags&PD_NOSELECTION));
+    EnableWindow(GetDlgItem(window,STYLE_PRINT_CURRENT),!(page->flags&PD_NOCURRENTPAGE));
+    EnableWindow(GetDlgItem(window,STYLE_PRINT_PAGES),!(page->flags&PD_NOPAGENUMS));
+    EnableWindow(GetDlgItem(window,STYLE_PRINT_RANGE),!(page->flags&PD_NOPAGENUMS));
+    SendDlgItemMessageW(window,STYLE_PRINT_RANGE,EM_SETLIMITTEXT,ARRAYSIZE(page->range_text)-1,0);
+    SendDlgItemMessageW(window,STYLE_PRINT_COPIES,EM_SETLIMITTEXT,5,0);
+    SetDlgItemTextW(window,STYLE_PRINT_RANGE,page->range_text);
+    SetDlgItemInt(window,STYLE_PRINT_COPIES,page->copies,FALSE);
+    CheckDlgButton(window,STYLE_PRINT_COLLATE,page->flags&PD_COLLATE?BST_CHECKED:BST_UNCHECKED);
+    CheckDlgButton(window,STYLE_PRINT_FILE,page->flags&PD_PRINTTOFILE?BST_CHECKED:BST_UNCHECKED);
+    HWND file=GetDlgItem(window,STYLE_PRINT_FILE);
     EnableWindow(file,!(page->flags&PD_DISABLEPRINTTOFILE));
     if(page->flags&PD_HIDEPRINTTOFILE)ShowWindow(file,SW_HIDE);
 }
@@ -202,7 +201,7 @@ static void fit_sheet(HWND window)
 
 static BOOL select_shell_printer(HWND window,general_page *page)
 {
-    PWSTR name=win2k_print_shell_selected(page->shell);
+    PWSTR name=style_print_shell_selected(page->shell);
     PCWSTR device=NULL;
     for(DWORD i=0;name && i<page->device_count;++i){
         if(!lstrcmpiW(name,page->devices[i].pPrinterName)){device=page->devices[i].pPrinterName;break;}
@@ -211,23 +210,23 @@ static BOOL select_shell_printer(HWND window,general_page *page)
     if(device==page->selected)return TRUE;
     if(device && load_device(page,device,NULL,NULL)){
         present_device(window,device);
-        SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"");
+        SetDlgItemTextW(window,STYLE_PRINT_STATUS,L"");
         PropSheet_Changed(GetParent(window),window);
         return TRUE;
     }
-    win2k_print_shell_select(page->shell,page->selected);
-    SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"Could not read settings for the selected printer.");
+    style_print_shell_select(page->shell,page->selected);
+    SetDlgItemTextW(window,STYLE_PRINT_STATUS,L"Could not read settings for the selected printer.");
     return FALSE;
 }
 
 static BOOL add_directory_printer(HWND window,general_page *page,PCWSTR device)
 {
-    HWND list=GetDlgItem(window,WIN2K_PRINT_DEVICE);
+    HWND list=GetDlgItem(window,STYLE_PRINT_DEVICE);
     LRESULT index=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)device);
     if(index>=0){
         LRESULT existing=SendMessageW(list,LB_GETITEMDATA,(WPARAM)index,0);
         if(!existing || existing==LB_ERR || !load_device(page,(PCWSTR)existing,NULL,NULL))return FALSE;
-        if(page->shell_visible && win2k_print_shell_select(page->shell,page->selected))return TRUE;
+        if(page->shell_visible && style_print_shell_select(page->shell,page->selected))return TRUE;
     }else{
         index=SendMessageW(list,LB_ADDSTRING,0,(LPARAM)device);
         if(index<0)return FALSE;
@@ -244,7 +243,7 @@ static BOOL add_directory_printer(HWND window,general_page *page,PCWSTR device)
         page->directory_device=(PWSTR)device;
         index=SendMessageW(list,LB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)device);
     }
-    win2k_print_shell_close(page->shell);
+    style_print_shell_close(page->shell);
     page->shell=NULL;
     page->shell_visible=FALSE;
     ShowWindow(list,SW_SHOW);
@@ -256,11 +255,11 @@ static BOOL find_directory_printer(HWND window,general_page *page)
 {
     if(!page->full || SHRestricted(REST_NOPRINTERADD))return FALSE;
     PWSTR device=NULL;
-    HRESULT result=win2k_print_directory_select(window,&device);
+    HRESULT result=style_print_directory_select(window,&device);
     BOOL selected=result==S_OK && add_directory_printer(window,page,device);
     if(device!=page->directory_device)CoTaskMemFree(device);
     if(selected)present_device(window,page->selected);
-    else if(result!=S_FALSE)SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"Could not select a directory printer.");
+    else if(result!=S_FALSE)SetDlgItemTextW(window,STYLE_PRINT_STATUS,L"Could not select a directory printer.");
     return selected;
 }
 
@@ -271,7 +270,7 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
         initialize_page(window,page);
         SetDlgItemTextW(GetParent(window),IDOK,L"Print");
         SetWindowLongPtrW(window,DWLP_USER,(LONG_PTR)page);
-        if(page->full)page->shell=win2k_print_shell_open(window,GetDlgItem(window,WIN2K_PRINT_DEVICE),
+        if(page->full)page->shell=style_print_shell_open(window,GetDlgItem(window,STYLE_PRINT_DEVICE),
             select_printer_message,printer_view_message);
         page->initialized=TRUE;
         PostMessageW(window,fit_page_message,0,0);
@@ -281,14 +280,14 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
     if(!page)return FALSE;
     if(message==WM_DESTROY){
         SetWindowLongPtrW(window,DWLP_USER,0);
-        win2k_print_shell_close(page->shell);
+        style_print_shell_close(page->shell);
         page->shell=NULL;
         return FALSE;
     }
     if(message==printer_view_message){
         if(page->shell && !page->shell_visible){
-            page->shell_visible=wp && win2k_print_shell_show(page->shell,GetDlgItem(window,WIN2K_PRINT_DEVICE),page->selected);
-            if(!page->shell_visible){win2k_print_shell_close(page->shell);page->shell=NULL;}
+            page->shell_visible=wp && style_print_shell_show(page->shell,GetDlgItem(window,STYLE_PRINT_DEVICE),page->selected);
+            if(!page->shell_visible){style_print_shell_close(page->shell);page->shell=NULL;}
         }
         return TRUE;
     }
@@ -305,33 +304,33 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
     if(message==WM_COMMAND){
         UINT control=LOWORD(wp),notice=HIWORD(wp);
         const device_messages *messages=&device_controls[page->full];
-        if(!page->shell_visible && control==WIN2K_PRINT_DEVICE && notice==messages->changed){
+        if(!page->shell_visible && control==STYLE_PRINT_DEVICE && notice==messages->changed){
             LRESULT index=SendDlgItemMessageW(window,control,messages->current,0,0);
             LRESULT device=index>=0?SendDlgItemMessageW(window,control,messages->data,(WPARAM)index,0):0;
             if(!device || device==-1 || !load_device(page,(PCWSTR)device,NULL,NULL)){
                 LRESULT old=SendDlgItemMessageW(window,control,messages->find,(WPARAM)-1,(LPARAM)page->selected);
                 SendDlgItemMessageW(window,control,messages->select,(WPARAM)old,0);
-                SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"Could not read settings for the selected printer.");
+                SetDlgItemTextW(window,STYLE_PRINT_STATUS,L"Could not read settings for the selected printer.");
                 return TRUE;
             }
             if(page->full)present_device(window,page->selected);
-        }else if(control==WIN2K_PRINT_FIND_DEVICE && notice==BN_CLICKED){
+        }else if(control==STYLE_PRINT_FIND_DEVICE && notice==BN_CLICKED){
             if(!find_directory_printer(window,page))return TRUE;
-        }else if(control==WIN2K_PRINT_PREFERENCES && notice==BN_CLICKED){
+        }else if(control==STYLE_PRINT_PREFERENCES && notice==BN_CLICKED){
             if(page->shell_visible && !select_shell_printer(window,page))return TRUE;
             if(!load_device(page,page->selected,window,page->live_mode))return TRUE;
-        }else if(notice==EN_CHANGE && control==WIN2K_PRINT_RANGE){
-            CheckRadioButton(window,WIN2K_PRINT_ALL,WIN2K_PRINT_PAGES,WIN2K_PRINT_PAGES);
-        }else if(!(notice==EN_CHANGE && control==WIN2K_PRINT_COPIES) &&
-                 !(notice==BN_CLICKED && control>=WIN2K_PRINT_ALL && control<=WIN2K_PRINT_FILE))return FALSE;
-        SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"");
+        }else if(notice==EN_CHANGE && control==STYLE_PRINT_RANGE){
+            CheckRadioButton(window,STYLE_PRINT_ALL,STYLE_PRINT_PAGES,STYLE_PRINT_PAGES);
+        }else if(!(notice==EN_CHANGE && control==STYLE_PRINT_COPIES) &&
+                 !(notice==BN_CLICKED && control>=STYLE_PRINT_ALL && control<=STYLE_PRINT_FILE))return FALSE;
+        SetDlgItemTextW(window,STYLE_PRINT_STATUS,L"");
         PropSheet_Changed(GetParent(window),window);
         return TRUE;
     }
     if(message==WM_NOTIFY && ((NMHDR *)lp)->code==PSN_APPLY){
         BOOL selected=!page->shell_visible || select_shell_printer(window,page);
         BOOL ok=selected && read_snapshot(window,page,((PSHNOTIFY *)lp)->lParam!=0);
-        if(selected && !ok)SetDlgItemTextW(window,WIN2K_PRINT_STATUS,L"Check the page range, copy count, or printer settings.");
+        if(selected && !ok)SetDlgItemTextW(window,STYLE_PRINT_STATUS,L"Check the page range, copy count, or printer settings.");
         SetWindowLongPtrW(window,DWLP_MSGRESULT,ok?PSNRET_NOERROR:PSNRET_INVALID);
         return TRUE;
     }
@@ -341,34 +340,35 @@ static INT_PTR CALLBACK general_proc(HWND window,UINT message,WPARAM wp,LPARAM l
 static UINT general_template(HWND owner,DWORD flags,const classic_dialog_metrics *metrics)
 {
     MONITORINFO monitor={.cbSize=sizeof(monitor)};
-    if(!metrics->print_width)return WIN2K_PRINT_GENERAL;
+    if(!metrics->print_width)return STYLE_PRINT_GENERAL;
     UINT dpi=GetDpiForWindow(owner);
-    if(!dpi || !GetMonitorInfoW(MonitorFromWindow(owner,MONITOR_DEFAULTTONEAREST),&monitor))return WIN2K_PRINT_GENERAL;
-    if(monitor.rcWork.right-monitor.rcWork.left<MulDiv(metrics->print_width,(int)dpi,96))return WIN2K_PRINT_GENERAL;
+    if(!dpi || !GetMonitorInfoW(MonitorFromWindow(owner,MONITOR_DEFAULTTONEAREST),&monitor))return STYLE_PRINT_GENERAL;
+    if(monitor.rcWork.right-monitor.rcWork.left<MulDiv(metrics->print_width,(int)dpi,96))return STYLE_PRINT_GENERAL;
     /* Leave room for the native tab, action buttons and frame around the page. */
     LONG height=monitor.rcWork.bottom-monitor.rcWork.top;
-    if((flags&PD_USELARGETEMPLATE) && height>=MulDiv(metrics->print_large_height,(int)dpi,96))return WIN2K_PRINT_GENERAL_LARGE;
-    return height>=MulDiv(metrics->print_full_height,(int)dpi,96)?WIN2K_PRINT_GENERAL_FULL:WIN2K_PRINT_GENERAL;
+    if((flags&PD_USELARGETEMPLATE) && height>=MulDiv(metrics->print_large_height,(int)dpi,96))return STYLE_PRINT_GENERAL_LARGE;
+    return height>=MulDiv(metrics->print_full_height,(int)dpi,96)?STYLE_PRINT_GENERAL_FULL:STYLE_PRINT_GENERAL;
 }
 
-static HRESULT show_sheet(HINSTANCE module,HWND owner,general_page *page)
+static HRESULT show_sheet(HINSTANCE module,HWND owner,general_page *page,style_print_general_theme load)
 {
-    classic_theme_mapping source={0};
-    HRESULT loaded=classic_theme_open_dialog(module,&source);
-    if(FAILED(loaded))return loaded;
-    UINT layout=general_template(owner,page->flags,&source.model.dialog_metrics);
-    if(!FindResourceW(source.resources,MAKEINTRESOURCEW(layout),MAKEINTRESOURCEW(5))){
-        classic_theme_close(&source);
+    HMODULE resources=NULL;
+    classic_dialog_metrics metrics;
+    HRESULT loaded=load(module,&resources,&metrics);
+    if(loaded!=S_OK)return loaded;
+    UINT layout=general_template(owner,page->flags,&metrics);
+    if(!FindResourceW(resources,MAKEINTRESOURCEW(layout),MAKEINTRESOURCEW(5))){
+        FreeLibrary(resources);
         return S_FALSE;
     }
-    page->full=layout!=WIN2K_PRINT_GENERAL;
-    PROPSHEETPAGEW details={.dwSize=sizeof(details),.dwFlags=PSP_USETITLE,.hInstance=source.resources,
+    page->full=layout!=STYLE_PRINT_GENERAL;
+    PROPSHEETPAGEW details={.dwSize=sizeof(details),.dwFlags=PSP_USETITLE,.hInstance=resources,
         .pszTemplate=MAKEINTRESOURCEW(layout),.pszTitle=L"General",
         .pfnDlgProc=general_proc,.lParam=(LPARAM)page};
     PROPSHEETHEADERW sheet={.dwSize=sizeof(sheet),.dwFlags=PSH_PROPSHEETPAGE,.hwndParent=owner,
         .hInstance=module,.pszCaption=L"Print",.nPages=1,.ppsp=&details};
     INT_PTR result=PropertySheetW(&sheet);
-    classic_theme_close(&source);
+    FreeLibrary(resources);
     return result<0 || !page->initialized?E_FAIL:S_OK;
 }
 
@@ -470,7 +470,7 @@ static BOOL supports_flags(DWORD flags,DWORD count,DWORD capacity,DWORD minimum,
 }
 
 #define PRINT_GENERAL(NAME,TYPE,ANSI) \
-BOOL NAME(HINSTANCE resources,TYPE *p,HRESULT *result) \
+BOOL NAME(HINSTANCE resources,TYPE *p,HRESULT *result,style_print_general_theme load) \
 { \
     if(!resources || !p || p->lStructSize!=sizeof(*p) || !p->hwndOwner || !IsWindow(p->hwndOwner) || \
        p->Flags2 || p->ExclusionFlags || p->hDC || (!!p->hDevMode!=!!p->hDevNames) || \
@@ -484,7 +484,7 @@ BOOL NAME(HINSTANCE resources,TYPE *p,HRESULT *result) \
     if(p->nPageRanges && !style_print_ranges_format(p->lpPageRanges,p->nPageRanges,p->nMinPage,p->nMaxPage, \
        page.range_text,ARRAYSIZE(page.range_text)))return FALSE; \
     if(!prepare_devices(&page,p->hDevMode,p->hDevNames)){dispose_page(&page);return FALSE;} \
-    *result=show_sheet(resources,p->hwndOwner,&page); \
+    *result=show_sheet(resources,p->hwndOwner,&page,load); \
     if(*result==S_FALSE){dispose_page(&page);return FALSE;} \
     if(SUCCEEDED(*result) && page.saved.mode && (!style_print_global_available(p->hDevMode) || \
        !style_print_global_available(p->hDevNames)))*result=E_FAIL; \
@@ -502,6 +502,6 @@ BOOL NAME(HINSTANCE resources,TYPE *p,HRESULT *result) \
     dispose_page(&page); \
     return TRUE; \
 }
-PRINT_GENERAL(win2k_print_general_a,PRINTDLGEXA,TRUE)
-PRINT_GENERAL(win2k_print_general_w,PRINTDLGEXW,FALSE)
+PRINT_GENERAL(style_print_general_a,PRINTDLGEXA,TRUE)
+PRINT_GENERAL(style_print_general_w,PRINTDLGEXW,FALSE)
 #undef PRINT_GENERAL

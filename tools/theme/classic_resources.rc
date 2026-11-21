@@ -10,7 +10,7 @@ CLASSIC_STYLE RCDATA "classic.bin"
 CLASSIC_SCROLL_ARROWS RCDATA "arrows.bin"
 #include <fonts.rcinc>
 #include <windows.h>
-#include "lib-win32-style/appearance/win2000/dialog/print_general.h"
+#include "lib-win32-style/application/dialog/print_general.h"
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #include "lib-win32-style/appearance/win2000/dialog/print_general.rcinc"
 LANGUAGE 0, 0

@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P36",
-  "stage": "published development candidate with shared header and trackbar presentation",
+  "delivery": "M0 T29 S23 P37",
+  "stage": "published development candidate with shared native dialog execution",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P35 d0b7866876b2",
-  "source_snapshot_sha256": "66a7e06d597f5d285e438591381962ee135d7765d967f46d04851c15d7f49afa",
+  "last_verified_remote_delivery": "M0 T29 S23 P36 15e197a6b43a",
+  "source_snapshot_sha256": "262bae8b404e902fe17907d994b15c334273ab519cf7ae1304c308ebd8ed05de",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "a8b65360052f5eee0e2b1c3fef4b6f8676781456e8e5b40cf3dcf3c055500901",
+      "sha256": "118d7710218d7dd857558e2c24f86c41f9053a9532ae0bb1975d94511428e07c",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "e8c06a43f4322faeaa96cdf7747ce06764ba0a79cdc893873fcf30ee6bc86733",
+      "sha256": "0b1d4df3e81f71265e7474b9ab0bf7f6f5a246fc58b24ed0c3120f2809c3b087",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "3d69eba191ef59c28dac6d133ec6be80b38c8f456d8a1b5fd829e57ce4fbbfda",
+      "sha256": "1b06ea3fd7aff9613a69158bc91640c7e17ee301b51010b584e374fa3e223312",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,22 +106,23 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 14,
+    "passed": 15,
     "selected_cases": [
-      "x86-header-snapshot",
-      "x86-header-owner",
-      "x86-win16-trackbar-edge",
-      "x86-win16-header-edge",
-      "x86-win2k-trackbar-edge",
-      "x86-win2k-header-edge",
-      "x86-vcl-trackbar-native-notifications",
-      "x64-header-snapshot",
-      "x64-header-owner",
-      "x64-win16-trackbar-edge",
-      "x64-win16-header-edge",
-      "x64-win2k-trackbar-edge",
-      "x64-win2k-header-edge",
-      "x64-vcl-trackbar-native-notifications"
+      "x86 core-style-file-controller",
+      "x86 core-style-print-resources",
+      "x86 core-style-print-extended",
+      "x86 core-style-classic-print",
+      "x86 print-ranges-unit",
+      "x86 General a cancel",
+      "x86 General w apply",
+      "x64 core-style-file-controller",
+      "x64 core-style-print-resources",
+      "x64 core-style-print-extended",
+      "x64 core-style-classic-print",
+      "x64 print-ranges-unit",
+      "x64 General a cancel",
+      "x64 General w apply",
+      "mixed policy both widths"
     ],
     "skipped": [],
     "commit_scope_dialog_retest": "Isolated the Find/Replace assertions from pre-existing edits and verified the scoped script against the installed seven files, including temporary resource cleanup.",
@@ -256,7 +257,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P36 results are in header_trackbar_delivery.",
+    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P37 results are in native_dialog_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -492,13 +493,28 @@
         "physical input",
         "full package matrix"
       ]
+    },
+    "native_dialog_delivery": {
+      "test_invocations_passed": 15,
+      "mixed_policy_markers": 38,
+      "retired_appearance_objects_per_width": 5,
+      "remaining_dated_archives_per_width": 4,
+      "matching_archive_members_per_width": 51,
+      "direct_old_product_objects_per_width": 22,
+      "scope": "Caller-provided dialog geometry and refcounted print resources; both themed stock and mixed policy paths; actual General Cancel and Apply with both widths.",
+      "not_retested": [
+        "real directory printer selection",
+        "driver-specific preferences",
+        "full package matrix",
+        "physical input"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P36 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P37 snapshot, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1998,
-    "cache_misses": 114
+    "cache_hits": 1996,
+    "cache_misses": 116
   }
 }

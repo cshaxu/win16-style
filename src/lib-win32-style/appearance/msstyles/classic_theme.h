@@ -250,6 +250,7 @@ int classic_scroll_nominal(classic_scroll_metrics metrics,enum classic_scroll_ex
 /* Reads the selected variant from an already mapped resource module. */
 HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme *theme);
 classic_dialog_metrics classic_theme_dialog_metrics(HMODULE module);
+HRESULT classic_theme_dialog_resources(HMODULE,HMODULE *,classic_dialog_metrics *);
 
 /* Reads the selected variant of a v4 classic theme as data only. All output
  * values are owned by the caller and the output is unchanged on failure. */

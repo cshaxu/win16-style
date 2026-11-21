@@ -14,8 +14,8 @@
 #include "lib-win32-style/application/lifecycle/theme_track.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/dialog/print_extended.h"
-#include "lib-win32-style/appearance/win2000/dialog/print_general.h"
-#include "lib-win32-style/appearance/win2000/dialog/stock_call.h"
+#include "lib-win32-style/application/dialog/print_general.h"
+#include "lib-win32-style/application/dialog/stock_dialog.h"
 #include "ntw16s-dll/global/window.h"
 #include "ntw16s-dll/global/session.h"
 #include "ntw16s-dll/ntw16s.h"
@@ -219,10 +219,10 @@ DIALOG_HOOK(DialogBoxIndirectParamW,LPCDLGTEMPLATEW,INT_PTR,TRUE,-1)
         if(policy.find<=CLASSIC_STOCK_NATIVE)return real_##NAME(parameters); \
         if(policy.find==CLASSIC_STOCK_OBSERVED_LAYOUT || policy.window_provider==CLASSIC_WINDOW_PROVIDER_NONCLIENT) \
             return CALL(parameters,real_##NAME,&ntw16s_observed_dialog_windows,COMPACT && policy.find==CLASSIC_STOCK_OBSERVED_LAYOUT))
-FIND_DIALOG_HOOK(FindTextA,FINDREPLACEA,win2k_find_a,TRUE)
-FIND_DIALOG_HOOK(FindTextW,FINDREPLACEW,win2k_find_w,TRUE)
-FIND_DIALOG_HOOK(ReplaceTextA,FINDREPLACEA,win2k_find_a,FALSE)
-FIND_DIALOG_HOOK(ReplaceTextW,FINDREPLACEW,win2k_find_w,FALSE)
+FIND_DIALOG_HOOK(FindTextA,FINDREPLACEA,style_observed_find_a,TRUE)
+FIND_DIALOG_HOOK(FindTextW,FINDREPLACEW,style_observed_find_w,TRUE)
+FIND_DIALOG_HOOK(ReplaceTextA,FINDREPLACEA,style_observed_find_a,FALSE)
+FIND_DIALOG_HOOK(ReplaceTextW,FINDREPLACEW,style_observed_find_w,FALSE)
 #undef FIND_DIALOG_HOOK
 
 /* Font selection uses owner-drawn system combos.  Observe only the current
@@ -264,10 +264,10 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,style_dialog_observation_end,&scope); { result=real_##NAME(parameters);error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.creation.failure){result=FALSE;error=scope.creation.failure;}SetLastError(error);return result; }
-OBSERVED_DIALOG_HOOK(ChooseFontA,CHOOSEFONTA,font,font_dialog_return,FALSE,win2k_font_a)
-OBSERVED_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW,font,font_dialog_return,FALSE,win2k_font_w)
-OBSERVED_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA,color,color_dialog_return,TRUE,win2k_color_a)
-OBSERVED_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW,color,color_dialog_return,TRUE,win2k_color_w)
+OBSERVED_DIALOG_HOOK(ChooseFontA,CHOOSEFONTA,font,font_dialog_return,FALSE,style_observed_font_a)
+OBSERVED_DIALOG_HOOK(ChooseFontW,CHOOSEFONTW,font,font_dialog_return,FALSE,style_observed_font_w)
+OBSERVED_DIALOG_HOOK(ChooseColorA,CHOOSECOLORA,color,color_dialog_return,TRUE,style_observed_color_a)
+OBSERVED_DIALOG_HOOK(ChooseColorW,CHOOSECOLORW,color,color_dialog_return,TRUE,style_observed_color_w)
 #undef OBSERVED_DIALOG_HOOK
 
 /* An already-installed observation provider owns these six entries when
@@ -283,7 +283,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION BOOL WINAPI hook_##NAME(TYPE *parameters) \
   DWORD incoming=GetLastError(),error=ERROR_SUCCESS; \
   enum classic_print_route route=ntw16s_dialog_policy().print; \
   if(route==CLASSIC_PRINT_NATIVE)return real_##NAME(parameters); \
-  if(route==CLASSIC_PRINT_GENERAL_PAGE)return win2k_print_##SUFFIX(parameters,real_##NAME,&ntw16s_observed_dialog_windows); \
+  if(route==CLASSIC_PRINT_GENERAL_PAGE)return style_observed_print_##SUFFIX(parameters,real_##NAME,&ntw16s_observed_dialog_windows); \
   if(!begin_standard_dialog(&scope,incoming))return FALSE; \
   PROCESS_HOOK_UNWIND_BEGIN(unwind,end_standard_dialog,&scope); { \
     prepare_standard_dialog(&scope,incoming); \
@@ -300,7 +300,7 @@ PRINT_HOOK(PrintDlgW,PRINTDLGW,w)
         begin_standard_dialog,prepare_standard_dialog,end_standard_dialog,STANDARD_DIALOG_FINISH, \
         enum classic_print_route route=ntw16s_dialog_policy().print; \
         if(route==CLASSIC_PRINT_NATIVE)return real_##NAME(parameters); \
-        if(route==CLASSIC_PRINT_GENERAL_PAGE)return win2k_page_setup_##SUFFIX(parameters,real_##NAME,&ntw16s_observed_dialog_windows))
+        if(route==CLASSIC_PRINT_GENERAL_PAGE)return style_observed_page_setup_##SUFFIX(parameters,real_##NAME,&ntw16s_observed_dialog_windows))
 PAGE_SETUP_HOOK(PageSetupDlgA,PAGESETUPDLGA,a)
 PAGE_SETUP_HOOK(PageSetupDlgW,PAGESETUPDLGW,w)
 #undef PAGE_SETUP_HOOK
@@ -315,13 +315,13 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters)
     if(!style_dialog_observation_begin(&observation,NULL,startup_dialog_return,FALSE))return E_FAIL; \
     PROCESS_HOOK_UNWIND_BEGIN(observe_unwind,style_dialog_observation_end,&observation); \
     SetLastError(incoming); \
-    if((route!=CLASSIC_PRINT_GENERAL_PAGE || !GENERAL(ntw16s_observed_dialog_windows.resources(),parameters,&result)) && \
+    if((route!=CLASSIC_PRINT_GENERAL_PAGE || !GENERAL(ntw16s_observed_dialog_windows.resources(),parameters,&result,classic_theme_dialog_resources)) && \
        !BRIDGE(parameters,PRINT,&result))result=real_##NAME(parameters); \
     outgoing=GetLastError();PROCESS_HOOK_UNWIND_END(observe_unwind);SetLastError(outgoing);return result; \
   } \
   if(route==CLASSIC_PRINT_GENERAL_PAGE){ \
     HMODULE resources=ntw16s_observed_dialog_windows.resources(); \
-    if((resources && GENERAL(resources,parameters,&result)) || BRIDGE(parameters,PRINT,&result))return result; \
+    if((resources && GENERAL(resources,parameters,&result,classic_theme_dialog_resources)) || BRIDGE(parameters,PRINT,&result))return result; \
     SetLastError(incoming);return real_##NAME(parameters); \
   } \
   process_hook_unwind_scope unwind;title_scope scope;DWORD error=ERROR_SUCCESS; \
@@ -330,8 +330,8 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_##NAME(TYPE *parameters)
     if(!BRIDGE(parameters,PRINT,&result)){result=real_##NAME(parameters);}error=GetLastError(); \
   } PROCESS_HOOK_UNWIND_END(unwind); \
   if(scope.failure){result=HRESULT_FROM_WIN32(scope.failure);error=scope.failure;}SetLastError(error);return result; }
-PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,win2k_print_general_a,style_print_extended_a,real_PrintDlgA)
-PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,win2k_print_general_w,style_print_extended_w,real_PrintDlgW)
+PRINT_EXTENDED_HOOK(PrintDlgExA,PRINTDLGEXA,style_print_general_a,style_print_extended_a,real_PrintDlgA)
+PRINT_EXTENDED_HOOK(PrintDlgExW,PRINTDLGEXW,style_print_general_w,style_print_extended_w,real_PrintDlgW)
 #undef PRINT_EXTENDED_HOOK
 
 /* Property sheets may create internal pages without public DialogBox calls. */

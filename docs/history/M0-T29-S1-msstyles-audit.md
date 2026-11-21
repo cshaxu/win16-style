@@ -58,7 +58,7 @@
 | 37 | 外观 | VB/VCL 私有复合控件的完整可见状态映射 | ? | ? | 已有局部原生角色对照，完整自绘状态不足以定标准部件 | [1](../history/M0-T18-S64-control-inventory.md) [2](../history/M0-T27-S16-final-audit.md) |
 | 38 | 外观 | 公共对话框外框及标准子控件可见面 | S | S | WINDOW.WP_DIALOG 加对应标准控件部件 | [1](../history/M0-T20-closure-audit.md) [2](../history/M0-T28-S3-common-dialogs.md) |
 | 39 | 外观 | 文件夹／文件对话框的历史控件布局与模板标识 | E | E | 坐标表、模板引用和触发条件需项目配置；API 转接另计 | [1](../history/M0-T20-closure-audit.md) [2](../history/M0-T28-S3-common-dialogs.md) |
-| 40 | 外观 | 打印扩展 General 页的历史内容布局 | — | E | Win2000 的紧凑／标准／大模板为独立模板数据 | [1](../../src/lib-win32-style/application/dialog/print_extended.c) [2](../../src/lib-win32-style/appearance/win2000/dialog/print_general.c) |
+| 40 | 外观 | 打印扩展 General 页的历史内容布局 | — | E | Win2000 的紧凑／标准／大模板为独立模板数据 | [1](../../src/lib-win32-style/application/dialog/print_extended.c) [2](../../src/lib-win32-style/application/dialog/print_general.c) |
 | 41 | 外观 | 色板和查找框的历史展开、压缩几何参数 | E | E | 资源角色与逻辑尺寸可入扩展，实际重排另计 | [1](../../src/ntw16s-dll/injection/window_titles.c) [2](../../src/ntw2ks-dll/controls.c) |
 | 42 | 外观 | 消息框中历史图标、按钮边距与字体样式 | S | S | 映射标题/边距与标准 BUTTON 属性，图标按原有来源借用 | [1](../history/M0-T20-closure-audit.md) [2](../history/M0-T28-S3-common-dialogs.md) |
 | 43 | 外观 | 现代宿主与普通外框最终同像素的完整覆盖 | ? | ? | T28 合成对照是有限宿主和 DPI，尚无主题数据候选 | [1](../../src/lib-win32-style/appearance/win3x/window/modern_frame.c) [2](../../src/lib-win32-style/appearance/win2000/window/modern_frame.c) |
@@ -72,7 +72,7 @@
 | 51 | 行为 | Win32 文件参数转换和选定结果回写 | R | R | 调用契约及错误码 | [1](../history/M0-T20-closure-audit.md) [2](../history/M0-T28-S3-common-dialogs.md) |
 | 52 | 行为 | Shell 目录树 PIDL 与 COM 对象代理、选择和释放 | R | R | 接口标识和签名不写入主题 | [1](../../src/lib-win32-style/application/dialog/classic_com_show.c) [2](../../src/ntw16s-dll/injection/folder_dialogs.c) |
 | 53 | 行为 | 查找／替换的通知及字体、颜色回调 | R | R | 模型无关消息、A/W 原生数据和调用方所有权 | [1](../../src/ntw16s-dll/injection/window_titles.c) [2](../../src/ntw2ks-dll/controls.c) |
-| 54 | 行为 | 打印结果事务、驱动、设置句柄与对话框回退 | R | R | PrintDlgEx／PageSetup 等应用契约 | [1](../../src/lib-win32-style/application/dialog/print_extended.c) [2](../../src/lib-win32-style/appearance/win2000/dialog/print_general.c) |
+| 54 | 行为 | 打印结果事务、驱动、设置句柄与对话框回退 | R | R | PrintDlgEx／PageSetup 等应用契约 | [1](../../src/lib-win32-style/application/dialog/print_extended.c) [2](../../src/lib-win32-style/application/dialog/print_general.c) |
 | 55 | 行为 | 消息框按钮命令、帮助及返回值 | R | R | 调用原生 API 并返回应用 | [1](../../src/ntw16s-dll/injection/window_titles.c) [2](../../src/ntw2ks-dll/controls.c) |
 | 56 | 行为 | VB/VCL 角色发现、应用自绘判定和原生退路 | R | R | 共享适配器运行路径 | [1](../history/M0-T18-S64-control-inventory.md) [2](../history/M0-T27-S16-final-audit.md) |
 | 57 | 行为 | CLI 模式、会话选择和挂载恢复编排 | R | R | 公共产品装配，与配色资源无关 | [1](../../src/run16s-exe/main.c) [2](../../src/run16s-exe/global.c) |
