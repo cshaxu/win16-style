@@ -11,7 +11,7 @@ BOOL win16_style_measure_with_buttons(int width,int height,UINT dpi,DWORD style,
     const BOOL themed_frame=frame && frame->scale;
     memset(l,0,sizeof(*l));
     l->button_size=(SIZE){
-        metrics && metrics->button.cx?MulDiv(metrics->button.cx,(int)dpi,96):GetSystemMetricsForDpi(SM_CXSIZE,dpi),
+        style_caption_button_width(metrics,dpi,FALSE),
         metrics && metrics->button.cy?MulDiv(metrics->button.cy,(int)dpi,96):GetSystemMetricsForDpi(SM_CYSIZE,dpi)};
     int button=l->button_size.cx;
     /* Round the one-pixel stroke like the scaled OEM separator, not down.

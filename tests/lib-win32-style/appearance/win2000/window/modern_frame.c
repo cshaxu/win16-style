@@ -271,6 +271,10 @@ static int external_icon(HWND root,HWND title,PCWSTR path,const classic_theme *g
         CHECK(style_caption_icon_bounds(band,band.right,dpi,&slot));
         POINT center={(slot.left+slot.right)/2,(slot.top+slot.bottom)/2};
         CHECK(frame->ops->hit(frame->context,center)==(native?HTSYSMENU:HTCAPTION));
+        const int corner=band.left+MulDiv(geometry->caption_metrics.button.cx,(int)dpi,96);
+        const int bottom=frame->bitmap.size.cy-1;
+        CHECK(frame->ops->hit(frame->context,(POINT){corner-1,bottom})==HTBOTTOMLEFT);
+        CHECK(frame->ops->hit(frame->context,(POINT){corner,bottom})==HTBOTTOM);
         GdiFlush();
         const DWORD *observed=(const DWORD *)frame->bitmap.pixels;
         DWORD pixel=observed[center.y*frame->bitmap.size.cx+center.x]&0xffffff;

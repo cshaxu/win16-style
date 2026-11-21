@@ -4,6 +4,12 @@
 
 static const int hits[]={0,HTSYSMENU,HTMINBUTTON,HTMAXBUTTON,HTHELP,HTCLOSE};
 
+int style_caption_button_width(const classic_caption_metrics *metrics,UINT dpi,BOOL tool)
+{
+    int width=metrics?(tool?metrics->tool_button.cx:metrics->button.cx):0;
+    return width>0?MulDiv(width,(int)dpi,96):GetSystemMetricsForDpi(tool?SM_CXSMSIZE:SM_CXSIZE,dpi);
+}
+
 int style_caption_hit(const RECT *bounds,enum classic_button_role first,unsigned visible,POINT point)
 {
     for(unsigned role=first;role<=CLASSIC_BUTTON_CLOSE;++role)

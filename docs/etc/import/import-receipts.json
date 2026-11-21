@@ -887,7 +887,7 @@
       "path": "src/lib-win32-style/appearance/win3x/common/layout.c",
       "source": "src/ntw16s-dll/layout.c",
       "source_blob": "a9ba79fb962c41bbb5d8ffab0bbb3632213d282e",
-      "sha256": "583864cd4a69fd23f18c25cfc19af6e30ec9f30b4ac325980ab37d3240ad7670",
+      "sha256": "ad0a9fc7fcdb079ca48527a4dd478b8057c8afef6c9ae51f540d66041d2f6867",
       "disposition": "adapt",
       "review": "T29 S4 shared title-button group layout with original frame behavior",
       "notice": "Project-authored source per fixed component README; original file notices preserved"
@@ -5585,7 +5585,7 @@
       "path": "tests/lib-win32-style/appearance/win3x/window/modern_frame_layout.c",
       "source": null,
       "source_blob": null,
-      "sha256": "213e0e77fb0e00a397c74cc63ec297d8a329f39cc78b24ca45e4d599c2f4f6b6",
+      "sha256": "4766bf9d6771a52f9bfb3d1aaa3910e9844999ab9ced4347210f24fc69162815",
       "disposition": "authored",
       "review": "T22 S1 original C runtime frame adaptation and native tests; reuses existing renderer; no external code copied; T22 S1 window-only library extraction, activation and thread hook remain product-owned; T22 S1 P24 DPI and non-client/client boundary regression; T26 S2 mechanical path/include relocation",
       "notice": "Project MIT; existing graphic resources and their notices unchanged"
@@ -6215,7 +6215,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/caption.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8f92daf2941b3ddc0766abdacf53467d4fc5383216886dbc93aa7572a681ae85",
+      "sha256": "11ad8f56f0d8bfc9f55361be76bd00a3ac4c8d70f4c1e004c9baa532865524aa",
       "disposition": "authored",
       "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T28 S1 shared classic caption and UWP appearance model; T28 S2 shared buttons rasterized at final dimensions using the original Win32 path",
       "notice": "Project-authored implementation; historical source observed only"
@@ -10238,7 +10238,7 @@
       "path": "src/lib-win32-style/appearance/win2000/window/modern_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "8ab46fc421c44665304363849da265687a74ce677ee88e7bf45f94985987782d",
+      "sha256": "b14ce9171bb29934d04a73367b9f0633c1f2fdd5b17b3d5b1b02f453adb205c6",
       "disposition": "authored",
       "review": "T28 S1 shared classic caption and UWP appearance model; T28 S1 shared classic caption and UWP appearance model; T28 S2 use the same final-size button painter",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10256,7 +10256,7 @@
       "path": "tests/lib-win32-style/appearance/win2000/window/modern_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "cddf81587d5147bd59c864bf79bb6c558c369c457447a1b8adc0244f3192b1b3",
+      "sha256": "299527310822166d7ba52d594d302551bfbd96aa56c1f01b7799dbe836778e5a",
       "disposition": "authored",
       "review": "T28 S1 shared classic caption and UWP appearance model; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10571,7 +10571,7 @@
       "path": "src/lib-win32-style/application/window/caption_slots.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c004dbf6c8a4762a6599be82220a6b5414f44e77a8bff50e7dfe055fb44320a0",
+      "sha256": "83773edb624ac218374a1a2823fee218d5434bb5e9a46aac93ae6f2beb54a8fa",
       "disposition": "authored",
       "review": "T29 S4 shared title-button slots and preserved classic geometry",
       "notice": "Project-authored; no imported source or resources"
@@ -10580,7 +10580,7 @@
       "path": "src/lib-win32-style/application/window/caption_slots.h",
       "source": null,
       "source_blob": null,
-      "sha256": "371981a5900bec1c1276a0221b3e504112ea7b1b282645446109dfa99cef860e",
+      "sha256": "8f0aa4bfa7682a73e81e29ec12c34acf22993c6ca549ed38fc4d4200b85942fe",
       "disposition": "authored",
       "review": "T29 S4 shared title-button slots and preserved classic geometry",
       "notice": "Project-authored; no imported source or resources"

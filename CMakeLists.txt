@@ -24,6 +24,7 @@ add_library(style-window STATIC src/lib-win32-style/application/window/messages.
   src/lib-win32-style/application/window/caption_paint.c
   src/lib-win32-style/application/window/frame_border.c)
 add_library(style-caption-slots STATIC src/lib-win32-style/application/window/caption_slots.c)
+target_compile_definitions(style-caption-slots PRIVATE _WIN32_WINNT=0x0A00)
 target_include_directories(style-window PUBLIC src)
 target_compile_definitions(style-window PRIVATE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-window PUBLIC style-instance style-present style-bitmap user32 gdi32 msimg32 shcore)

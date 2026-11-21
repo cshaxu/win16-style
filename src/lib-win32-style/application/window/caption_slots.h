@@ -30,6 +30,9 @@ typedef struct classic_caption_metrics {
     SIZE button, tool_button;
 } classic_caption_metrics;
 
+/* Width before slot clipping, also used by the frame's resize corners. */
+int style_caption_button_width(const classic_caption_metrics *metrics,UINT dpi,BOOL tool);
+
 /* Only declared roles allowed by the mask (1u << role) receive rectangles.
  * The clipping policy lets a right slot shrink on very narrow captions. */
 BOOL style_caption_slots(const classic_button_group *group,const RECT *band,UINT dpi,

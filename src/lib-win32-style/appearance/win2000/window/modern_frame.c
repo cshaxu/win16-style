@@ -132,7 +132,12 @@ static LRESULT hit(void *context,POINT point)
     if(PtInRect(&s->caption.band,point))return HTCAPTION;
     if(s->sizeable && point.y<s->caption.band.top && point.x>=s->client.left && point.x<s->client.right)
         return HTTOP;
-    SIZE corner={s->caption.band.left+MulDiv(16,(int)s->dpi,96),s->client.top};
+    const classic_theme *theme=active_theme(s);
+    int width=style_caption_button_width(theme?&theme->caption_metrics:NULL,s->dpi,FALSE);
+#ifndef STYLE_THEME_EXTERNAL_ONLY
+    if(!theme)width=MulDiv(16,(int)s->dpi,96);
+#endif
+    SIZE corner={s->caption.band.left+width,s->client.top};
     return style_uwp_resize_margin_hit(HTBORDER,point,&s->bounds,&s->client,corner,s->sizeable);
 }
 

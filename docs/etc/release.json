@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P28",
-  "stage": "published development candidate with button label state colors verified on both widths",
+  "delivery": "M0 T29 S23 P29",
+  "stage": "published development candidate with theme-driven modern resize corners verified",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P27 70bb248f3452",
-  "source_snapshot_sha256": "5e19c930f950957a58942c6a42e27d454094a8efea2b4dfe81010cd6f3e13dba",
+  "last_verified_remote_delivery": "M0 T29 S23 P28 93135a0f2b81",
+  "source_snapshot_sha256": "381798c564a5b7c0eebbcb3ba72bf15408820fec0bec9b214993b038efb1e03f",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "407f786ea5bd9fb6281d09e613ff43e9b51613c671a77dc9382c2c60a31e7e1c",
+      "sha256": "4dc6efbc3eb9007c579cd95eaf5b64ac219057ce45524be5211294d7f29a68b5",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "099878a6db1d3164be61cb518821a4d141568bd46da3380df5979116a57ccdaa",
+      "sha256": "9f5086cd78b8a17fb9fe6eb1e912f7b593d10605bd72a3bb28674a4c7d133933",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "7392bc26ed053a7bbe1911463fdd637b1232b0dc22c6e2d0709600302761b592",
+      "sha256": "ff2f3d824a199dbbb668dbd4d2bdb2229822ed51c7e36ab2dba6dbc709f744c8",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -285,7 +285,7 @@
       "clean_layout_tests_passed": 4,
       "first_run_failure": "Original fixture placed its right edge beyond the narrow RDP working area; old and new both reproduced it. Updated fixture fits the window to the working area and keeps the original pixel assertions."
     },
-    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P28 results are recorded in push_text_delivery.",
+    "prior_evidence_scope": "Earlier observations apply to their tested binaries. P29 fresh results are in caption_corners_delivery.",
     "paint_composition_delivery": {
       "installed_frame_cases_passed": 8,
       "per_architecture": [
@@ -414,13 +414,26 @@
         "full package matrix",
         "physical input"
       ]
+    },
+    "caption_corners_delivery": {
+      "test_invocations_passed": 10,
+      "full_client_geometry_cases": 2,
+      "nonclient_external_renderer_cases": 2,
+      "installed_uwp_switch_restore_cases": 2,
+      "installed_win32_provider_cases": 4,
+      "scope": "Both modern geometry adapters use the ordinary caption button width from Window.MinButton.Width. Mixed 23- and 25-DIP test layouts checked the two pixels straddling the resize corner. Native owned fixtures verify both installed runtime providers.",
+      "not_retested": [
+        "physical resize drag",
+        "real UWP screen composition",
+        "full package matrix"
+      ]
     }
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P28 snapshot, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus P29 snapshot, snapshot-local ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1996,
-    "cache_misses": 128
+    "cache_hits": 266,
+    "cache_misses": 1858
   }
 }

@@ -59,6 +59,9 @@ int main(void)
         CHECK(l.border==2 && EqualRect(&content,&l.client) && EqualRect(&native.caption,&l.caption) &&
             EqualRect(&native.buttons[CLASSIC_BUTTON_SYSTEM],&l.buttons[CLASSIC_BUTTON_SYSTEM]) && EqualRect(&native.buttons[CLASSIC_BUTTON_MINIMIZE],&l.buttons[CLASSIC_BUTTON_MINIMIZE]) &&
             EqualRect(&native.buttons[CLASSIC_BUTTON_MAXIMIZE],&l.buttons[CLASSIC_BUTTON_MAXIMIZE]));
+        const int corner=l.border+MulDiv(23,(int)dpi,96);
+        CHECK(win16_uwp_frame_hit(&l,(POINT){corner-1,outer.cy-1})==HTBOTTOMLEFT);
+        CHECK(win16_uwp_frame_hit(&l,(POINT){corner,outer.cy-1})==HTBOTTOM);
         CHECK(l.buttons[CLASSIC_BUTTON_MAXIMIZE].right-l.buttons[CLASSIC_BUTTON_MAXIMIZE].left==MulDiv(23,(int)dpi,96));
         p=(POINT){l.buttons[CLASSIC_BUTTON_MAXIMIZE].left+1,l.buttons[CLASSIC_BUTTON_MAXIMIZE].top+1};
         CHECK(win16_uwp_frame_hit(&l,p)==HTMAXBUTTON);

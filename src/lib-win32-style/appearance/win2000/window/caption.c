@@ -37,7 +37,7 @@ BOOL win2k_caption_buttons_with_system(const RECT *title,UINT dpi,BOOL tool,
     if(!title)return FALSE;
     SIZE defined=metrics?(tool?metrics->tool_button:metrics->button):(SIZE){0};
     SIZE size={
-        defined.cx>0?MulDiv(defined.cx,(int)dpi,96):GetSystemMetricsForDpi(tool?SM_CXSMSIZE:SM_CXSIZE,dpi),
+        style_caption_button_width(metrics,dpi,tool),
         defined.cy>0?MulDiv(defined.cy,(int)dpi,96):
             min(title->bottom-title->top,GetSystemMetricsForDpi(tool?SM_CYSMSIZE:SM_CYSIZE,dpi))};
     unsigned mask=system?1u<<CLASSIC_BUTTON_SYSTEM:0;
