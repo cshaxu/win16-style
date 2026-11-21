@@ -168,7 +168,8 @@
       "native_baseline": "XAML bridge present, no ntwshk, native non-client DWM rendering enabled",
       "themes": "Win16 and Win2K loaded the installed DLL, preserved the XAML bridge and disabled native DWM non-client rendering",
       "caption_commands": "Both themed instances passed maximize, minimize and two restores, then exited normally",
-      "unverified": "Pixel parity and in-process style removal"
+      "live_removal": "Both themes restored native DWM rendering, outer, client and visible frame rectangles, and preserved the same XAML bridge in a fresh process at 96 DPI.",
+      "unverified": "Pixel parity"
     },
     "real_modern_hosts_previous_snapshot": {
       "Calculator from O:/winnt": "Both theme launches timed out (1460) with distinct ApplicationFrameWindow absent.",
@@ -203,7 +204,7 @@
     },
     "unverified": [
       "full matrix",
-      "real Win2K UWP screen pixels and live WinUI removal",
+      "real Win2K UWP and WinUI screen pixels",
       "actual high contrast",
       "physical input"
     ]
