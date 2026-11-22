@@ -360,8 +360,8 @@ try{
         (Case 'global-style-cycle-x86' (Join-Path $scratch 'style-cycle-x86/core-global-style-bridge.exe') @() @('GLOBAL STYLE BRIDGE bits=32','GLOBAL STYLE CYCLE PASS edges=6 frame=1 children=2 state=1 draw_restore=1','GLOBAL COLOR local initial=1 styled=1 restored=1','GLOBAL COLOR bits=32 selected=1 rgb=1 error=0 pass=1') 30),
         (Case 'global-style-cycle-x64' (Join-Path $scratch 'style-cycle-x64/core-global-style-bridge.exe') @() @('GLOBAL STYLE BRIDGE bits=64','GLOBAL STYLE CYCLE PASS edges=6 frame=1 children=2 state=1 draw_restore=1','GLOBAL COLOR local initial=1 styled=1 restored=1','GLOBAL COLOR bits=64 selected=1 rgb=1 error=0 pass=1') 30),
         (Case 'wait-contract' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/wait.py'),$run,(Join-Path $x86 'wait-target.exe'),(Join-Path $x64 'wait-target.exe'),(Join-Path $x64 'wait-gui-target.exe')) @('WAIT CONTRACT PASS 3 cases') 190),
-        (Case 'font-layout-x86' (Join-Path $x86 'core-font-layout.exe') @($d32) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
-        (Case 'font-layout-x64' (Join-Path $x64 'core-font-layout.exe') @($d64) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants') 180),
+        (Case 'font-layout-x86' $dialogDriver @('--direct',$run,'Win16',(Join-Path $x86 'core-font-layout.exe'),'--private-worker',$shared32) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants','DIALOG_DRIVER exit=0') 180),
+        (Case 'font-layout-x64' $dialogDriver @('--direct',$run,'Win16',(Join-Path $x64 'core-font-layout.exe'),'--private-worker',$shared64) @('FONT WARMUP SELFTEST PASS transient=1 rising=1 real_gdi_leak=1 cleanup=1','FONT LAYOUT PASS 2 contexts 12 font variants','DIALOG_DRIVER exit=0') 180),
         (Case 'menu-cancel-x86' (Join-Path $x86 'core-menu-cancel.exe') @($d32) @('MENU CANCEL PASS 15 scenarios','MENU FRAME CLIP WITNESS dpi=96 pixel=775325','MENU FRAME CLIP WITNESS dpi=144 pixel=775325','MENU FRAME FULL PAINT dpi=96 pixel=f0c8a4','MENU FRAME FULL PAINT dpi=144 pixel=f0c8a4','MENU SHADOW SCOPE PASS aware=0','MENU SHADOW SCOPE PASS aware=1') 35),
         (Case 'menu-cancel-x64' (Join-Path $x64 'core-menu-cancel.exe') @($d64) @('MENU CANCEL PASS 15 scenarios','MENU FRAME CLIP WITNESS dpi=96 pixel=775325','MENU FRAME CLIP WITNESS dpi=144 pixel=775325','MENU FRAME FULL PAINT dpi=96 pixel=f0c8a4','MENU FRAME FULL PAINT dpi=144 pixel=f0c8a4','MENU SHADOW SCOPE PASS aware=0','MENU SHADOW SCOPE PASS aware=1') 35),
         (Case 'startup-errors' (Join-Path $x64 'startup-errors.exe') @($run) @('STARTUP ERRORS PASS 2 formats Windows-Shell/private-console/shared-cmd/hidden-console one_error_channel exit4 jobs_empty') 100),
@@ -445,6 +445,9 @@ try{
             'MENU FRAME INACTIVE dpi=144 pixel=ffffff','MENU FRAME FULL PAINT dpi=96 pixel=f0c8a4',
             'MENU FRAME FULL PAINT dpi=144 pixel=f0c8a4','MENU SHADOW SCOPE PASS aware=0',
             'MENU SHADOW SCOPE PASS aware=1','DIALOG_DRIVER exit=0') 50
+        Case "neutral-default-button-$bits" $dialogDriver @('--direct',$run,'Win16',
+            (Join-Path $tree 'core-default.exe'),$shared,'--launched') @(
+            'DEFAULT PASS continuous1/2-unit frame','DIALOG_DRIVER exit=0') 100
         Case "neutral-global-switch-$bits" (Join-Path $owned 'run16s.exe') @(
             (Join-Path $tree 'global-propagation-probe.exe'),(Join-Path $owned "ntwshk$bits.dll"),'--owned-switch') @(
             'OWNED GLOBAL INITIAL expected=0 observed=0','OWNED GLOBAL SWITCH step=6 expected=0 observed=0',
@@ -1124,7 +1127,7 @@ try{
     # Dialog tests that do not compare actual screen pixels run on a private
     # desktop, so they cannot consume the user's physical keyboard input.
     foreach($case in $cases){
-        if($case.command -eq $dialogDriver -and $case.name -notmatch '^ntw2ks-(?:(?:frame|composed-caption)-x(?:86|64)$|com-explorer-)' -and $case.name -ne 'desktop-cleanup' -and $case.name -notmatch '^(scroll-|neutral-(provider-exports|menu-cancel)-)' -and $case.name -notmatch '^dialog-folder-x(86|64)-controls$' -and $case.arguments[0] -ne '--low-private'){
+        if($case.command -eq $dialogDriver -and $case.name -notmatch '^ntw2ks-(?:(?:frame|composed-caption)-x(?:86|64)$|com-explorer-)' -and $case.name -ne 'desktop-cleanup' -and $case.name -notmatch '^(scroll-|font-layout-|neutral-(provider-exports|menu-cancel|default-button)-)' -and $case.name -notmatch '^dialog-folder-x(86|64)-controls$' -and $case.arguments[0] -ne '--low-private'){
             $case.arguments=@('--private')+@($case.arguments)
         }
     }

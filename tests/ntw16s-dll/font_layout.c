@@ -8,6 +8,11 @@ typedef BOOL (__cdecl *install_fn)(HWND,const win16_style_palette *);
 typedef BOOL (__cdecl *remove_fn)(HWND);
 static install_fn install_frame,install_control;
 static BOOL (__cdecl *install_edit)(HWND,BOOL,const win16_style_palette *);
+static remove_fn attached_window,detach_window;
+static void restore_native(HWND window)
+{
+    if(attached_window(window))CHECK(detach_window(window) && !attached_window(window));
+}
 static remove_fn remove_frame,remove_control;
 static BOOL verify_pixels;
 typedef struct warm_stability {DWORD previous;unsigned samples,nonincreases;} warm_stability;
@@ -107,6 +112,7 @@ static void reentrant_case(void)
 {
     HWND root=CreateWindowW(L"STATIC",L"Font lifetime",WS_OVERLAPPEDWINDOW,0,0,400,200,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(root);
     HWND child=CreateWindowW(L"BUTTON",L"Nested",WS_CHILD,0,0,200,40,root,NULL,GetModuleHandleW(NULL),NULL);CHECK(child);
+    restore_native(child);
     HFONT first=CreateFontW(-11,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,0,0,0,0,L"Tahoma");
     HFONT next=CreateFontW(-13,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,0,0,0,0,L"Arial");CHECK(first && next);
     SendMessageW(child,WM_SETFONT,(WPARAM)first,FALSE);reentrant_font state={.next=next};
@@ -135,6 +141,7 @@ static void menu_oracle(HDC dst,HDC src,const WCHAR *text,int x,int y,int height
 static void menu_case(void)
 {
     HWND w=CreateWindowW(L"STATIC",L"Typography",WS_OVERLAPPEDWINDOW,0,0,900,700,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(w);
+    restore_native(w);
     UINT dpi=GetDpiForWindow(w);HMENU popup=CreatePopupMenu(),child=CreatePopupMenu(),bar=CreateMenu();CHECK(popup && child && bar);
     CHECK(AppendMenuW(popup,MF_STRING,101,L"GQag012\tF2") && AppendMenuW(popup,MF_STRING,102,L"WMi\tCtrl+Shift+W") &&
         AppendMenuW(popup,MF_POPUP,(UINT_PTR)child,L"Nested") && AppendMenuW(child,MF_STRING,103,L"Command"));
@@ -198,7 +205,8 @@ static HWND native_dialog(void)
 static void dialog_case(void)
 {
     HWND w=native_dialog();CHECK(w);HFONT fonts[4];RECT bounds[4];SIZE sizes[4];
-    for(unsigned i=0;i<4;++i){HWND child=GetDlgItem(w,100+i);CHECK(child);fonts[i]=(HFONT)SendMessageW(child,WM_GETFONT,0,0);bounds[i]=rect(child,w);sizes[i]=text_size(child,fonts[i]);
+    restore_native(w);
+    for(unsigned i=0;i<4;++i){HWND child=GetDlgItem(w,100+i);CHECK(child);restore_native(child);fonts[i]=(HFONT)SendMessageW(child,WM_GETFONT,0,0);bounds[i]=rect(child,w);sizes[i]=text_size(child,fonts[i]);
         CHECK(sizes[i].cx+26<=bounds[i].right-bounds[i].left && sizes[i].cy<=bounds[i].bottom-bounds[i].top);}
     CHECK(install_frame(w,NULL));
     for(unsigned refresh=0;refresh<3;++refresh)SendMessageW(w,WM_SETTINGCHANGE,0,0);
@@ -217,6 +225,7 @@ static void controls_case(unsigned scale,unsigned bold)
     const WCHAR *labels[]={L"Outline dragging",L"Standard scoring",L"Draw",L"Timed game",L"Editable text",L"List",L"Combo"};
     for(unsigned i=0;i<7;++i){
         HWND w=CreateWindowW(classes[i],labels[i],WS_CHILD|WS_VISIBLE|styles[i],10,(int)i*80,600,60,root,NULL,GetModuleHandleW(NULL),NULL);CHECK(w);
+        restore_native(w);
         SendMessageW(w,WM_SETFONT,(WPARAM)font,FALSE);RECT before=rect(w,root);SIZE size=text_size(w,font);
         CHECK(size.cx+32<=before.right-before.left && size.cy<=before.bottom-before.top);
         CHECK(i==4?install_edit(w,FALSE,NULL):install_control(w,NULL));unchanged(w,root,system_font(w,font,12),before,size);
@@ -234,6 +243,8 @@ static int worker(int argc,WCHAR **argv)
 {
     BOOL menu_only=argc==3 && !wcscmp(argv[2],L"--menu-only"),stress=argc==3 && !wcscmp(argv[2],L"--stress");
     CHECK(argc==2 || menu_only || stress);HMODULE dll=LoadLibraryExW(argv[1],NULL,LOAD_WITH_ALTERED_SEARCH_PATH);CHECK(dll);
+    attached_window=(remove_fn)(void *)GetProcAddress(dll,"Ntw16sWindowAttached");
+    detach_window=(remove_fn)(void *)GetProcAddress(dll,"Ntw16sWindowRemove");CHECK(attached_window && detach_window);
     install_frame=(install_fn)(void *)GetProcAddress(dll,"win16_style_install");remove_frame=(remove_fn)(void *)GetProcAddress(dll,"win16_style_remove");
     install_control=(install_fn)(void *)GetProcAddress(dll,"win16_style_control_install");remove_control=(remove_fn)(void *)GetProcAddress(dll,"win16_style_control_remove");CHECK(install_frame && remove_frame && install_control && remove_control);
     install_edit=(void *)GetProcAddress(dll,"win16_style_edit_install");CHECK(install_edit);

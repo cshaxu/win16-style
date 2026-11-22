@@ -23,13 +23,17 @@ static void border(HWND w,HDC dc,int u,BOOL def,BOOL pressed)
 int wmain(int argc,WCHAR **argv)
 {
     struct {DLGTEMPLATE d;WORD menu,cls,title;} t={0};
-    HDESK desktop,original;HMODULE dll;install_fn install;remove_fn remove;
+    HDESK desktop=NULL,original=NULL;HMODULE dll;install_fn install;remove_fn remove;
     HWND w,button,other,edit;HDC dc;HBITMAP bitmap,old;MSG msg={0};int u;
-    DWORD before,after;WCHAR name[64];int iteration;BOOL diagnostic;
-    CHECK(argc==2 || (argc==3 && !wcscmp(argv[2],L"--font-recreation")));
-    diagnostic=argc==3;SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-    original=GetThreadDesktop(GetCurrentThreadId());swprintf_s(name,64,L"DefaultButton-%lu",GetCurrentProcessId());
-    desktop=CreateDesktopW(name,NULL,NULL,0,GENERIC_ALL,NULL);CHECK(desktop && SetThreadDesktop(desktop));
+    DWORD before,after;WCHAR name[64];int iteration;
+    const BOOL diagnostic=argc==3 && !wcscmp(argv[2],L"--font-recreation");
+    const BOOL launched=argc==3 && !wcscmp(argv[2],L"--launched");
+    CHECK(argc==2 || diagnostic || launched);
+    SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    if(!launched){
+        original=GetThreadDesktop(GetCurrentThreadId());swprintf_s(name,64,L"DefaultButton-%lu",GetCurrentProcessId());
+        desktop=CreateDesktopW(name,NULL,NULL,0,GENERIC_ALL,NULL);CHECK(desktop && SetThreadDesktop(desktop));
+    }
     dll=LoadLibraryExW(argv[1],NULL,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_SYSTEM32);CHECK(dll);
     install=(install_fn)(void *)GetProcAddress(dll,"win16_style_control_install");
     remove=(remove_fn)(void *)GetProcAddress(dll,"win16_style_control_remove");CHECK(install && remove);
@@ -40,7 +44,10 @@ int wmain(int argc,WCHAR **argv)
     edit=CreateWindowW(L"EDIT",L"Input",WS_CHILD|WS_VISIBLE|WS_TABSTOP,10,80,160,30,w,(HMENU)103,NULL,NULL);
     CHECK(button && other && edit);u=max(1,MulDiv(1,(int)GetDpiForWindow(button),96));
     dc=CreateCompatibleDC(NULL);bitmap=CreateBitmap(160,50,1,32,NULL);CHECK(dc && bitmap);old=SelectObject(dc,bitmap);
-    CHECK(install(button,NULL) && install(other,NULL));
+    if(launched){
+        remove_fn attached=(remove_fn)(void *)GetProcAddress(dll,"Ntw16sWindowAttached");
+        CHECK(attached && attached(button) && attached(other));
+    }else CHECK(install(button,NULL) && install(other,NULL));
     if(diagnostic)goto lifetime;
     SetFocus(edit);CHECK(GetFocus()==edit);border(button,dc,u,TRUE,FALSE);border(other,dc,u,FALSE,FALSE);
     SendMessageW(button,BM_SETSTATE,TRUE,0);CHECK(SendMessageW(button,BM_GETSTATE,0,0)&BST_PUSHED);
@@ -78,7 +85,7 @@ lifetime:
     fprintf(stderr,"LIFETIME GDI=%lu/%lu\n",before,after);
     if(!diagnostic){CHECK(after==before);CHECK(remove(other));}
     CHECK(DestroyWindow(w));SelectObject(dc,old);CHECK(DeleteObject(bitmap) && DeleteDC(dc));
-    CHECK(FreeLibrary(dll));CHECK(SetThreadDesktop(original) && CloseDesktop(desktop));
+    CHECK(FreeLibrary(dll));if(desktop)CHECK(SetThreadDesktop(original) && CloseDesktop(desktop));
     if(diagnostic)printf("FONT RECREATION DIAGNOSTIC (not a default-button pass) GDI=%lu/%lu\n",before,after);
     else printf("DEFAULT PASS continuous1/2-unit frame, corners, pressed relief, disabled, focus, BM_SETSTYLE, DM_SETDEFID, Enter, detach/reinstall/unload GDI=%lu/%lu\n",before,after);
     return 0;

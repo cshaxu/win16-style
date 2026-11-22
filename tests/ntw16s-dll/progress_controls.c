@@ -44,11 +44,11 @@ static int child(BOOL styled,BOOL aware,int theme_edge)
 {
     CHECK(ImmDisableIME(0));if(aware)CHECK(SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2));
     INITCOMMONCONTROLSEX init={sizeof(init),ICC_PROGRESS_CLASS};CHECK(InitCommonControlsEx(&init));
-    HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");CHECK(styled?dll!=NULL:dll==NULL);
-    if(theme_edge){
-        dll=GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll");CHECK(dll);
-        styled=TRUE;
-    }
+    HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll");
+    if(theme_edge)CHECK(dll);
+    else if(!dll)dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");
+    styled=styled || theme_edge;
+    CHECK(styled?dll!=NULL:dll==NULL);
     attached=dll?(void*)GetProcAddress(dll,"Ntw16sWindowAttached"):NULL;remove_style=dll?(void*)GetProcAddress(dll,"Ntw16sWindowRemove"):NULL;if(styled)CHECK(attached && remove_style);
     WNDCLASSW parent={.lpfnWndProc=DefWindowProcW,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"ProgressProtocolParent"};CHECK(RegisterClassW(&parent));
     HWND root=CreateWindowW(parent.lpszClassName,L"progress protocol",WS_OVERLAPPEDWINDOW,0,0,640,280,NULL,NULL,parent.hInstance,NULL);CHECK(root);ShowWindow(root,SW_SHOWNORMAL);
