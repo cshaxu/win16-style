@@ -21,7 +21,7 @@
 #include "ntw16s-dll/ntw16s.h"
 #include "ntw16s-dll/attachment.h"
 #include "ntw16s-dll/native_api.h"
-#include "lib-win32-style/appearance/win3x/control/vb_text.h"
+#include "lib-win32-style/application/adapters/win32/runtime_text.h"
 #include "lib-win32-style/application/control/updown.h"
 #include "ntw16s-dll/controls.h"
 #include "lib-win32-style/application/adapters/win32/runtime_native.h"
@@ -448,7 +448,7 @@ static BOOL report_ansi_text(HDC dc,const char *text,int count)
 static __typeof__(&NAME) real_##NAME; \
 static TYPE WINAPI hook_##NAME PARAMS \
 { style_font_scope scope;DWORD entry=GetLastError(),error;TYPE result; \
-  if(style_font_gate_begin(&vb_text_gate,&scope,dc) && (ALLOW) && style_runtime_text_active() && style_runtime_text_caller(__builtin_return_address(0)))style_font_scope_select(&scope,win16_control_vb_paint_font(dc)); \
+  if(style_font_gate_begin(&vb_text_gate,&scope,dc) && (ALLOW) && style_runtime_text_active() && style_runtime_text_caller(__builtin_return_address(0)))style_font_scope_select(&scope,style_runtime_vb_paint_font(dc)); \
   SetLastError(entry);result=real_##NAME ARGS;error=GetLastError(); \
   style_font_scope_end(&scope);style_font_gate_end(&vb_text_gate);SetLastError(error);return result; }
 VB_TEXT_HOOK(DrawTextA,int,(HDC dc,LPCSTR text,int count,LPRECT rect,UINT format),(dc,text,count,rect,format),((!style_runtime_text_report_active() && style_runtime_text_direct_allowed()) || !(format&DT_CALCRECT)) && style_runtime_text_label_caller(__builtin_return_address(0)) && report_ansi_text(dc,text,count))
@@ -518,10 +518,10 @@ static BOOL WINAPI hook_ExtTextOutW(HDC dc,int x,int y,UINT options,const RECT *
 {
     DWORD entry=GetLastError(),error;HFONT font=NULL;style_font_scope scope;style_glyph_text glyphs={0};BOOL result;LPCWSTR original_text=text;UINT original_options=options;
     if(style_font_gate_begin(&vb_text_gate,&scope,dc) && style_runtime_text_direct_allowed() && style_runtime_text_active() && style_runtime_text_caller(__builtin_return_address(0))){
-        font=win16_control_vb_paint_font(dc);
+        font=style_runtime_vb_paint_font(dc);
         if(font && (options&ETO_GLYPH_INDEX)){
             if(!style_text_glyph_run_allowed(dc,options,count) ||
-                !style_glyph_text_prepare(&glyphs,dc,text,count,1252,win16_control_vb_decode_glyphs))font=NULL;
+                !style_glyph_text_prepare(&glyphs,dc,text,count,1252,style_runtime_vb_decode_glyphs))font=NULL;
             else{text=glyphs.decoded;options&=~ETO_GLYPH_INDEX;}
         }
         if(font && !(options&ETO_GLYPH_INDEX) &&

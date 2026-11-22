@@ -36,3 +36,27 @@ void style_control_outline_scroll_arrow(HDC dc,RECT bounds,UINT state,const styl
     const style_relief_palette colors=style_control_outline_palette(palette);
     (void)style_paint_scroll_arrow(dc,&bounds,state,&colors,art);
 }
+
+BOOL style_control_push_frame(HWND w,HDC dc,RECT bounds,UINT state,const style_window_palette *palette,
+    const style_control_push_appearance *theme)
+{
+    if(!theme->profile)return FALSE;
+    int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
+    style_relief_palette colors=style_control_outline_palette(palette);
+    const classic_surface_colors part=classic_push_color(&theme->colors,(state&DFCS_INACTIVE)!=0,
+        (state&(DFCS_PUSHED|DFCS_CHECKED))!=0,FALSE);
+    colors.face=colors.light=part.face;
+    colors.dark=part.edge;
+    return style_paint_push_frame(dc,&bounds,state,FALSE,unit,theme->profile,&colors);
+}
+
+BOOL style_control_bit_button_face(HWND w,HDC dc,const RECT *rect,const RECT *clip,UINT state,
+    const style_window_palette *palette,const style_control_push_appearance *theme)
+{
+    if(!w || !dc || !rect || rect->right-rect->left<4 || rect->bottom-rect->top<4)return FALSE;
+    int saved=SaveDC(dc);if(!saved)return FALSE;
+    if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return FALSE;}
+    UINT flags=((state&ODS_SELECTED)?DFCS_PUSHED:0)|((state&ODS_DISABLED)?DFCS_INACTIVE:0);
+    BOOL painted=style_control_push_frame(w,dc,*rect,flags,palette,theme);
+    RestoreDC(dc,saved);return painted;
+}

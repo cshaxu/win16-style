@@ -32,12 +32,12 @@ static int picture(const WCHAR *path)
     CHECK(reg && release && version && reg());unsigned v=version();CHECK(v==5 || v==6);
     HWND root=CreateWindowW(L"STATIC",L"",WS_OVERLAPPED,0,0,200,100,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(root);
     HWND p=CreateWindowW(v==5?L"ThunderRT5PictureBox":L"ThunderRT6PictureBoxDC",L"",WS_CHILD,0,0,80,40,root,NULL,runtime,NULL);CHECK(p);
-    CHECK(ntw16s_vb_picture(p));
+    CHECK(style_control_vb_picture(p));
     SetWindowLongPtrW(p,GWL_STYLE,GetWindowLongPtrW(p,GWL_STYLE)|WS_THICKFRAME);
-    CHECK(!ntw16s_vb_picture(p));
+    CHECK(!style_control_vb_picture(p));
     SetWindowLongPtrW(p,GWL_STYLE,GetWindowLongPtrW(p,GWL_STYLE)&~WS_THICKFRAME);
     SetWindowLongPtrW(p,GWL_EXSTYLE,GetWindowLongPtrW(p,GWL_EXSTYLE)|WS_EX_RTLREADING);
-    CHECK(!ntw16s_vb_picture(p));
+    CHECK(!style_control_vb_picture(p));
     CHECK(DestroyWindow(root) && release() && FreeLibrary(runtime));
     printf("CONTROL_CLASS_PICTURE_OK vb=%u frame=1 rtl=1\n",v);return 0;
 }

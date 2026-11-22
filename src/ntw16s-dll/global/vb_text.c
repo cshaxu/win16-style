@@ -1,6 +1,6 @@
 #include "ntw16s-dll/global/vb_text.h"
 #include "lib-win32-style/application/adapters/win32/runtime_text_imports.h"
-#include "lib-win32-style/appearance/win3x/control/vb_text.h"
+#include "lib-win32-style/application/adapters/win32/runtime_text.h"
 
 DWORD ntw16s_global_vb_text(HWND window,BOOL *changed)
 {
@@ -11,7 +11,7 @@ DWORD ntw16s_global_vb_text(HWND window,BOOL *changed)
        !GetClassNameW(window,name,ARRAYSIZE(name)) || lstrcmpW(name,L"ThunderRT6FormDC"))return ERROR_NOT_SUPPORTED;
     if(!GetModuleHandleExW(0,L"MSVBVM60.DLL",&runtime))return ERROR_NOT_SUPPORTED;
     if((HMODULE)GetClassLongPtrW(window,GCLP_HMODULE)!=runtime)goto done;
-    error=style_runtime_text_imports(runtime,win16_control_vb_paint_font,changed);
+    error=style_runtime_text_imports(runtime,style_runtime_vb_paint_font,changed);
 
 done:
     FreeLibrary(runtime);return error;

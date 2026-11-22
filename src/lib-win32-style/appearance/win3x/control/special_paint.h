@@ -6,12 +6,6 @@
 void win16_control_draw_sizebox(HWND window,HDC dc,const COLORREF *face);
 void win16_control_legacy_progress_border(HWND window,const win16_style_palette *palette,HDC dc);
 void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller,BOOL (*attached_palette)(HWND,win16_style_palette *,style_scroll_arrow_art *));
-typedef struct win16_runtime_push {
-    classic_push_colors colors;
-    style_push_profile profile;
-} win16_runtime_push;
-BOOL win16_style_bitbtn_face(HWND window,HDC dc,const RECT *bounds,const RECT *clip,UINT state,
-    const win16_style_palette *,const win16_runtime_push *);
 BOOL win16_control_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy,SUBCLASSPROC proc);
 BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,SUBCLASSPROC proc);
 BOOL win16_control_cool_grip_identity(HWND,void *,const NMCUSTOMDRAW *,WNDPROC,BOOL (*)(HWND,void *));

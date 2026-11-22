@@ -1,10 +1,11 @@
 #define _WIN32_WINNT 0x0A00
+#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include <windows.h>
 #include <stdio.h>
 #include <stdint.h>
 #include "ntw16s-dll/global/vb_text.h"
 #include "lib-win32/module-import/import_scan.h"
-#include "lib-win32-style/appearance/win3x/control/vb_text.h"
+#include "lib-win32-style/application/adapters/win32/runtime_text.h"
 #include "isolated_process.h"
 
 #define CHECK(x) do{if(!(x)){printf("GLOBAL_VB_TEXT FAIL line=%d error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
@@ -32,7 +33,7 @@ static uint64_t draw_hash(HDC dc,void *pixels,draw_fn draw,unsigned mode,HWND fo
 {
     RECT bounds={0,0,200,40};FillRect(dc,&bounds,(HBRUSH)GetStockObject(WHITE_BRUSH));
     SetBkMode(dc,TRANSPARENT);SetTextColor(dc,RGB(0,0,0));
-    style_runtime_text_scope paint;if(scoped)win16_control_vb_paint_begin(&paint,form,WM_PAINT,fonts,12,ntw16s_vb_user_label_target);
+    style_runtime_text_scope paint;if(scoped)style_runtime_vb_paint_begin(&paint,form,WM_PAINT,fonts,12,&style_raster_font_stroke_operations,ntw16s_vb_user_label_target);
     SetLastError(0x2345);BOOL ok=draw(dc,mode);*last=GetLastError();
     if(scoped)style_runtime_text_end(&paint);
     if(!ok || !GdiFlush())return 0;

@@ -67,4 +67,11 @@ static inline UINT style_control_button_type(HWND w,DWORD style)
 {return style_control_vb_frame(w)?BS_GROUPBOX:(style&BS_TYPEMASK);}
 static inline BOOL style_control_vb_edit(HWND w)
 {return style_control_vb_class(w,L"ThunderRT6TextBox") || style_control_vb5_class(w,L"ThunderRT5TextBox");}
+static inline BOOL style_control_vb_picture(HWND w)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    return (style&WS_CHILD) && (style&WS_CAPTION)!=WS_CAPTION && !(style&WS_THICKFRAME) &&
+        !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
+        (style_control_vb_class(w,L"ThunderRT6PictureBoxDC") || style_control_vb5_class(w,L"ThunderRT5PictureBox"));
+}
 #endif

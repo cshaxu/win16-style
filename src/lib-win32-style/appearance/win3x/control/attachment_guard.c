@@ -9,7 +9,7 @@ void win16_attachment_guard_cool(HWND w,UINT m,attachment *a,const win16_attachm
 void win16_attachment_guard_roles(HWND w,UINT m,attachment *a,const win16_attachment_guard_services *v)
 {
     if(m!=WM_DESTROY && m!=WM_NCDESTROY){
-        if(a->picture && !a->base.instance.detached && !ntw16s_vb_picture(w))
+        if(a->picture && !a->base.instance.detached && !style_control_vb_picture(w))
             (void)v->remove(w);
         if(a->button_owner && !a->base.instance.detached && !ntw16s_vb_graphical_button(w))
             (void)v->remove(w);

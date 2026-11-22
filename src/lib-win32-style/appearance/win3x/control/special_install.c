@@ -85,7 +85,7 @@ BOOL win16_control_special_grid_install(HWND w,const win16_style_palette *palett
 }
 BOOL win16_control_special_picture_install(HWND w,const win16_style_palette *palette,const void *owner,const BOOL *cancelled,const win16_control_special_services *v)
 {
-    if(!ntw16s_vb_picture(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
+    if(!style_control_vb_picture(w)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     control_style *s=install_frame(w,palette,owner,cancelled,v);if(!s)return FALSE;
     s->bindings.scroll.resources.native_border=TRUE;
     return TRUE;

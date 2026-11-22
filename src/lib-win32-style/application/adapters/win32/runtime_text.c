@@ -1,5 +1,6 @@
 #include "runtime_text.h"
 #include "../../control/report.h"
+#include "../../control/control_class.h"
 static _Thread_local style_runtime_text_scope *current,*native_current;
 void style_runtime_native_paint_begin(style_runtime_text_scope *scope,HWND w,UINT message,HDC dc)
 {
@@ -75,4 +76,46 @@ void style_runtime_text_prepare_report(style_runtime_text_scope *paint,HWND w,WP
             !instance->detached && (DWORD)GetWindowLongPtrW(w,GWL_STYLE)==style)) && !instance->detached)
             style_runtime_text_report_enable(paint,w,runtime->report.module,&instance->detached,label);
     }
+}
+
+static BOOL include_text(HWND w,UINT message)
+{
+    BOOL edit=style_control_vb_edit(w);
+    if(message!=WM_PAINT && message!=WM_PRINT && message!=WM_PRINTCLIENT && !edit)return FALSE;
+    return message!=WM_NCDESTROY && message!=WM_DESTROY;
+}
+static style_runtime_text_role text_role(HWND w,void *context)
+{
+    BOOL (*user_label_target)(HWND)=*(BOOL (**)(HWND))context;
+    BOOL label_only=style_control_vb_picture(w) || user_label_target(w);
+    HWND target=style_control_vb_frame(w) || style_control_vb_edit(w) || label_only ||
+        (style_control_vb_class(w,L"ThunderRT6FormDC") || style_control_vb5_class(w,L"ThunderRT5Form"))?w:NULL;
+    return (style_runtime_text_role){target,label_only};
+}
+void style_runtime_vb_paint_begin(style_runtime_text_scope *scope,HWND w,UINT message,style_font_cache *fonts,unsigned points,const style_font_ops *font_ops,BOOL (*user_label_target)(HWND))
+{
+    const style_runtime_text_ops ops={&user_label_target,include_text,text_role};
+    style_runtime_text_begin(scope,w,message,fonts,&ops);
+    scope->font_recipe=points;scope->font_ops=font_ops;
+}
+HFONT style_runtime_vb_paint_font(HDC dc)
+{
+    const style_runtime_text_scope *scope=style_runtime_text_current();HFONT source;
+    /* The scope also covers a runtime-owned memory DC during WM_PRINT or
+     * double buffering. Never change a DC belonging to another HWND. */
+    if(!style_runtime_text_active() || !scope->context || !scope->font_recipe || (scope->report && dc!=scope->report_dc) || (WindowFromDC(dc) && WindowFromDC(dc)!=scope->window))return NULL;
+    style_font_cache *fonts=scope->context;
+    source=(HFONT)GetCurrentObject(dc,OBJ_FONT);
+    if(!source)return NULL;
+    if(scope->report){LOGFONTW lf;
+        if(GetObjectW(source,sizeof(lf),&lf)!=sizeof(lf) || lf.lfEscapement || lf.lfOrientation)return NULL;}
+    return style_font_cache_get(fonts,source,scope->font_recipe,scope->font_ops);
+}
+
+BOOL style_runtime_vb_decode_glyphs(HDC dc,const WCHAR *input,UINT count,WCHAR *decoded)
+{
+    const style_runtime_text_scope *scope=style_runtime_text_current();
+    if(!scope || !scope->window || !scope->context || !scope->font_recipe)return FALSE;
+    return style_font_cache_decode(scope->context,dc,input,count,decoded,
+        (style_font_glyph_range){1252,32,224});
 }

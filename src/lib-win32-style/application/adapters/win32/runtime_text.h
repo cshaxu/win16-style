@@ -2,6 +2,7 @@
 #define STYLE_RUNTIME_TEXT_H
 #include <windows.h>
 #include <commctrl.h>
+#include "../../graphics/font_cache.h"
 /* Synchronous GUI-thread observations. Scope owns its two nested links and
  * copied metadata; context/windows/modules/DC/cancel are borrowed and pinned
  * by the caller. No font, renderer, hook or window attachment is owned here. */
@@ -10,6 +11,7 @@ typedef struct style_runtime_text_scope {
     HWND native_window;HDC native_dc;BOOL native_active;
     HWND window;void *context;BOOL active,report,label_only;
     unsigned font_recipe;
+    const style_font_ops *font_ops;
     HDC report_dc;HMODULE report_module;const BOOL *cancelled;
 } style_runtime_text_scope;
 typedef struct style_runtime_text_role {HWND window;BOOL label_only;} style_runtime_text_role;
@@ -41,4 +43,9 @@ struct style_instance;struct style_control_runtime;
 /* Native report eligibility and binding; caller pins the complete instance and
  * runtime through synchronous native queries. File-owner paint stays native. */
 void style_runtime_text_prepare_report(style_runtime_text_scope *,HWND,WPARAM,struct style_instance *,struct style_control_runtime *,BOOL,SUBCLASSPROC,void *,BOOL (*)(HWND));
+
+/* Observe VB text and borrow the caller-selected font provider for this scope. */
+void style_runtime_vb_paint_begin(style_runtime_text_scope *,HWND,UINT,style_font_cache *,unsigned,const style_font_ops *,BOOL (*)(HWND));
+HFONT style_runtime_vb_paint_font(HDC);
+BOOL style_runtime_vb_decode_glyphs(HDC,const WCHAR *,UINT,WCHAR *);
 #endif

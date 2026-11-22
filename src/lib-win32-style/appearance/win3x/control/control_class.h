@@ -48,13 +48,6 @@ static inline BOOL ntw16s_vb_graphical_choice(HWND w)
         (type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_3STATE || type==BS_AUTO3STATE);
 }
 
-static inline BOOL ntw16s_vb_picture(HWND w)
-{
-    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
-    return (style&WS_CHILD) && (style&WS_CAPTION)!=WS_CAPTION && !(style&WS_THICKFRAME) &&
-        !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
-        (style_control_vb_class(w,L"ThunderRT6PictureBoxDC") || style_control_vb5_class(w,L"ThunderRT5PictureBox"));
-}
 static inline BOOL ntw16s_vb_graphical_button(HWND w)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);

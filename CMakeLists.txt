@@ -179,6 +179,7 @@ add_library(style-control-common STATIC
   src/lib-win32-style/application/control/outline_combo.c
   src/lib-win32-style/application/control/outline_list.c
   src/lib-win32-style/application/control/control_chrome.c
+  src/lib-win32-style/application/control/control_vcl_paint.c
   src/lib-win32-style/application/control/scroll_outline.c
   src/lib-win32-style/application/control/choice_glyph.c
   src/lib-win32-style/application/control/native_scroll.c
@@ -242,13 +243,11 @@ add_library(style-control-common STATIC
 target_include_directories(style-control-common PUBLIC src)
 target_compile_definitions(style-control-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_dependencies(style-control-common style-subclass)
-target_link_libraries(style-control-common PUBLIC module-import style-bitmap style-present style-window win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme msimg32)
+target_link_libraries(style-control-common PUBLIC style-font-cache module-import style-bitmap style-present style-window win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme msimg32)
 add_library(win16-control STATIC
-   src/lib-win32-style/appearance/win3x/control/vb_text.c
   src/lib-win32-style/appearance/win3x/control/special_paint.c
   src/lib-win32-style/appearance/win3x/control/control_state.c
   src/lib-win32-style/appearance/win3x/control/control_dispatch.c
-  src/lib-win32-style/appearance/win3x/control/vcl_native_paint.c
   src/lib-win32-style/appearance/win3x/control/control_guard.c
   src/lib-win32-style/appearance/win3x/control/control_install.c
   src/lib-win32-style/appearance/win3x/control/special_install.c
@@ -2390,7 +2389,7 @@ if(BUILD_TESTING)
   target_compile_definitions(vb-global-runtime PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   set_target_properties(vb-global-runtime PROPERTIES PREFIX "" OUTPUT_NAME "MSVBVM60" ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/vb-global-fixture" LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/vb-global-fixture" RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/vb-global-fixture")
   add_dependencies(global-common-target vb-global-runtime)
-  add_executable(core-global-vb-text tests/ntw16s-dll/global_vb_text.c src/ntw16s-dll/global/vb_text.c src/lib-win32-style/appearance/win3x/control/vb_text.c src/lib-win32-style/appearance/msstyles/raster_font.c)
+  add_executable(core-global-vb-text tests/ntw16s-dll/global_vb_text.c src/ntw16s-dll/global/vb_text.c src/lib-win32-style/appearance/msstyles/raster_font.c)
   target_include_directories(core-global-vb-text PRIVATE src)
   target_compile_definitions(core-global-vb-text PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-global-vb-text PRIVATE style-font-cache style-control-common style-bitmap style-msstyles user32 gdi32)
@@ -2399,7 +2398,7 @@ if(BUILD_TESTING)
   add_test(NAME core/global-vb-text COMMAND ${test_driver} --name core/global-vb-text -- $<TARGET_FILE:core-global-vb-text> $<TARGET_FILE:vb-global-runtime>)
   set_tests_properties(core/global-vb-text PROPERTIES TIMEOUT 15)
 
-  add_executable(core-vb-font src/lib-win32-style/application/graphics/font_cache.c tests/ntw16s-dll/vb_font.c src/lib-win32-style/appearance/msstyles/raster_font.c src/lib-win32-style/appearance/win3x/control/vb_text.c)
+  add_executable(core-vb-font src/lib-win32-style/application/graphics/font_cache.c tests/ntw16s-dll/vb_font.c src/lib-win32-style/appearance/msstyles/raster_font.c)
   target_include_directories(core-vb-font PRIVATE src)
   target_compile_definitions(core-vb-font PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_libraries(core-vb-font PRIVATE style-control-common style-bitmap style-msstyles user32 gdi32)

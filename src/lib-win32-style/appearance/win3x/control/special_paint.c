@@ -7,7 +7,7 @@
 #include "../../../application/graphics/bitmap.h"
 #include "control_class.h"
 #include "control_state.h"
-#include "vb_text.h"
+#include "lib-win32-style/application/adapters/win32/runtime_text.h"
 #include <commctrl.h>
 
 BOOL win16_control_color_frame(HDC dc,const RECT *bounds,const RECT *clip,COLORREF color)
@@ -137,30 +137,6 @@ static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const R
     (void)SetDIBitsToDevice(dc,starts[n],0,widths[n],client.bottom,0,0,0,client.bottom,pixels,&info,DIB_RGB_COLORS);
 }
 
-static BOOL runtime_push_frame(HWND w,HDC dc,RECT bounds,UINT state,const win16_style_palette *palette,
-    const win16_runtime_push *theme)
-{
-    if(!theme->profile)return FALSE;
-    int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    style_relief_palette colors=style_control_outline_palette(palette);
-    const classic_surface_colors part=classic_push_color(&theme->colors,(state&DFCS_INACTIVE)!=0,
-        (state&(DFCS_PUSHED|DFCS_CHECKED))!=0,FALSE);
-    colors.face=colors.light=part.face;
-    colors.dark=part.edge;
-    return style_paint_push_frame(dc,&bounds,state,FALSE,unit,theme->profile,&colors);
-}
-
-BOOL win16_style_bitbtn_face(HWND w,HDC dc,const RECT *rect,const RECT *clip,UINT state,
-    const win16_style_palette *palette,const win16_runtime_push *theme)
-{
-    if(!w || !dc || !rect || rect->right-rect->left<4 || rect->bottom-rect->top<4)return FALSE;
-    int saved=SaveDC(dc);if(!saved)return FALSE;
-    if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return FALSE;}
-    UINT flags=((state&ODS_SELECTED)?DFCS_PUSHED:0)|((state&ODS_DISABLED)?DFCS_INACTIVE:0);
-    BOOL painted=runtime_push_frame(w,dc,*rect,flags,palette,theme);
-    RestoreDC(dc,saved);return painted;
-}
-
 static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *address,HWND *w,SUBCLASSPROC proc)
 {
     DWORD_PTR value;HMODULE caller=NULL;
@@ -193,10 +169,10 @@ BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,
         palette.light=s->frame_colors.light;
         palette.shadow=s->frame_colors.shadow;
     }
-    const win16_runtime_push theme={s->push_colors,s->controls.push};
+    const style_control_push_appearance theme={s->push_colors,s->controls.push};
     int saved=SaveDC(dc);
     if(!saved)return FALSE;
-    BOOL painted=runtime_push_frame(w,dc,*rect,flags,&palette,&theme);
+    BOOL painted=style_control_push_frame(w,dc,*rect,flags,&palette,&theme);
     RestoreDC(dc,saved);return painted;
 }
 

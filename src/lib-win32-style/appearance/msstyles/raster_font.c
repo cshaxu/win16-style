@@ -12,6 +12,11 @@ const style_font_ops style_raster_font_isolated_operations={
     .release=style_raster_font_release
 };
 
+const style_font_ops style_raster_font_stroke_operations={
+    .acquire=style_raster_font_acquire_stroke_fit,
+    .release=style_raster_font_release
+};
+
 static _Thread_local style_font_pool variants;
 static LONG variant_serial;
 enum { menu_dpi_bits=9, menu_dpi_mask=(1u<<menu_dpi_bits)-1 };

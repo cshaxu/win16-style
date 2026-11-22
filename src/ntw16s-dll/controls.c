@@ -38,7 +38,7 @@ BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *,style_scroll_arrow_art *)
 #include "theme.h"
 #include "lib-win32-style/application/control/trackbar_paint.h"
 #include "lib-win32-style/application/control/toolbar_text.h"
-#include "../lib-win32-style/appearance/win3x/control/vb_text.h"
+#include "lib-win32-style/application/adapters/win32/runtime_text.h"
 #include "../lib-win32/process-hook/unwind.h"
 #include <commctrl.h>
 #include <uxtheme.h>

@@ -10,15 +10,16 @@
 #include "lib-win32-style/application/control/control_native_combo.h"
 #include "../../../application/control/control_protocol.h"
 #include "../../../application/graphics/clip.h"
-#include "vb_text.h"
+#include "lib-win32-style/application/adapters/win32/runtime_text.h"
 #include "lib-win32-style/application/adapters/win32/paint_dispatch.h"
 #include "lib-win32-style/application/control/control_vcl_identity.h"
 #include "special_paint.h"
+#include "lib-win32-style/application/control/control_chrome.h"
 typedef struct attachment {
     style_runtime_attachment base;
     BOOL file_owner,picture,button_owner,checklist;
     win16_style_palette palette;
-    win16_runtime_push push;
+    style_control_push_appearance push;
     classic_bar_colors grip;
     COLORREF calendar_selection;
     unsigned calendar_font_dpi,calendar_font_points;

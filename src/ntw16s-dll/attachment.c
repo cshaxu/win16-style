@@ -3,7 +3,7 @@
 #include "lib-win32-style/appearance/msstyles/control_theme_style.h"
 #include "lib-win32-style/application/adapters/win32/paint_dispatch.h"
 #include "lib-win32-style/application/control/control_vcl_identity.h"
-#include "../lib-win32-style/appearance/win3x/control/vb_text.h"
+#include "lib-win32-style/application/adapters/win32/runtime_text.h"
 #include "../lib-win32-style/appearance/win3x/control/control_class.h"
 #include "ntw16s.h"
 #include "native_api.h"
@@ -14,7 +14,7 @@
 #include "lib-win32-style/application/control/report.h"
 #include "lib-win32-style/application/control/outline_combo.h"
 #include "lib-win32-style/application/control/control_custom_draw.h"
-#include "../lib-win32-style/appearance/win3x/control/vcl_native_paint.h"
+#include "lib-win32-style/application/control/control_vcl_paint.h"
 #include "lib-win32-style/application/graphics/text_metrics.h"
 #include "lib-win32-style/application/adapters/win32/frame_paint.h"
 #include "lib-win32-style/application/adapters/win32/runtime_observer.h"
@@ -73,7 +73,7 @@ void ntw16s_modern_spin_theme(HDC dc,int part,int state,const RECT *r,const RECT
 static BOOL spin_face(HWND w,HDC dc,const RECT *r,const RECT *clip,UINT state)
 {
     const attachment *a=paint_runtime.spin->instance->context;
-    return win16_style_bitbtn_face(w,dc,r,clip,state,&a->palette,&a->push);
+    return style_control_bit_button_face(w,dc,r,clip,state,&a->palette,&a->push);
 }
 void ntw16s_modern_spin_blit(HDC dst,int x,int y,int w,int h,HDC src,int sx,int sy,DWORD rop)
 {style_control_spin_blit(paint_runtime.spin,dst,x,y,w,h,src,sx,sy,rop,spin_face);}
@@ -88,7 +88,7 @@ void ntw16s_spin_frame(HDC dc,const RECT *r,UINT type,UINT flags,const void *cal
 static BOOL bit_face(HWND w,HDC dc,const RECT *r,const RECT *clip,UINT state)
 {
     const attachment *a=paint_runtime.bit->observation.owner;
-    return win16_style_bitbtn_face(w,dc,r,clip,state,&a->palette,&a->push);
+    return style_control_bit_button_face(w,dc,r,clip,state,&a->palette,&a->push);
 }
 void ntw16s_bit_theme_frame(HDC dc,int part,const RECT *rect,const RECT *clip,const void *address)
 {
@@ -100,17 +100,17 @@ static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *cli
 {
     style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return;
     const attachment *a=s->observation.owner;
-    const win16_control_vcl_paint_view v={s->observation.window,s->observation.instance,
+    const style_control_vcl_paint_view v={s->observation.window,s->observation.instance,
         &s->observation.runtime->roles.inplace,&a->palette,&a->push,&a->combo_arrow};
-    win16_control_vcl_inplace_draw(&v,dc,part,state,r,clip,address,drop);
+    style_control_vcl_inplace_draw(&v,dc,part,state,r,clip,address,drop);
 }
 void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {
     style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return;
     const attachment *a=s->observation.owner;
-    const win16_control_vcl_paint_view v={s->observation.window,s->observation.instance,
+    const style_control_vcl_paint_view v={s->observation.window,s->observation.instance,
         &s->observation.runtime->roles.nav,&a->palette,&a->push,NULL};
-    win16_control_vcl_nav_draw(&v,dc,part,state,r,clip,address);
+    style_control_vcl_nav_draw(&v,dc,part,state,r,clip,address);
 }
 BOOL ntw16s_inplace_paint(HDC dc)
 {style_runtime_paint_scope *s=paint_runtime.paint;return win16_attachment_inplace_paint(s?s->observation.owner:NULL,s?s->observation.window:NULL,dc);}
@@ -332,7 +332,7 @@ static void message_prepare(const style_runtime_observation *observation,UINT m,
     const win16_attachment_guard_services guards={mdi_host_attached,cool_identity,Ntw16sWindowRemove};
     win16_attachment_guard_roles(w,m,a,&guards);
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
-    win16_control_vb_paint_begin(paint,w,m,a->control_font_points?&a->fonts:NULL,a->control_font_points,ntw16s_vb_user_label_target);
+    style_runtime_vb_paint_begin(paint,w,m,a->control_font_points?&a->fonts:NULL,a->control_font_points,&style_raster_font_stroke_operations,ntw16s_vb_user_label_target);
     if(a->file_owner || a->picture || a->button_owner || a->base.runtime.user.candidate)paint->cancelled=&a->base.instance.detached;
     style_runtime_text_prepare_report(paint,w,p,&a->base.instance,&a->base.runtime,a->file_owner,report_notify,a,ntw16s_vb_graphical_button);
 }
@@ -359,7 +359,7 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
 }
 static void report_text_prepare(style_runtime_text_scope *paint,HWND window,void *owner)
 {
-    attachment *a=owner;win16_control_vb_paint_begin(paint,window,WM_PRINTCLIENT,a->control_font_points?&a->fonts:NULL,a->control_font_points,ntw16s_vb_user_label_target);
+    attachment *a=owner;style_runtime_vb_paint_begin(paint,window,WM_PRINTCLIENT,a->control_font_points?&a->fonts:NULL,a->control_font_points,&style_raster_font_stroke_operations,ntw16s_vb_user_label_target);
 }
 /* Application owner/custom-draw result and payload stay authoritative. */
 static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
@@ -414,7 +414,7 @@ static style_runtime_owner_roles initialize_owner_roles(HWND window,void *contex
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=ntw16s_vb_picture(w),checklist=style_control_vcl_checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (style_control_vcl_spin_identity(w)||style_control_vcl_modern_spin_shape(w));HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=style_control_vb_picture(w),checklist=style_control_vcl_checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (style_control_vcl_spin_identity(w)||style_control_vcl_modern_spin_shape(w));HWND parent;HMODULE owner;attachment *a;DWORD error;
     style_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -457,7 +457,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     if(source.resources){
         const classic_theme *theme=&source.model;
         classic_theme_window_palette(&a->palette,theme);
-        a->push=(win16_runtime_push){theme->push,theme->controls.push};
+        a->push=(style_control_push_appearance){theme->push,theme->controls.push};
         if(cool_candidate)a->grip=theme->bars[CLASSIC_BAR_REBAR];
         a->calendar_selection=classic_control_month_selected_color(theme,a->palette.active);
         a->calendar_font_dpi=theme->calendar_font_dpi;
