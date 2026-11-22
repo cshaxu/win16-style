@@ -5,7 +5,7 @@
   "version": "0.35.0.0",
   "version_contract": "M0 T35",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T34 S1 P1 090eee1eccc6",
+  "last_verified_remote_delivery": "M0 T35 S1 P1 b861b475795e",
   "source_snapshot_sha256": "b358970e5779a03d85e267a0476e2d1880f825f826ec510430c920b6bacb4ca8",
   "artifacts": {
     "run16s.exe": {

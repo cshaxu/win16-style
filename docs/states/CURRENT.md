@@ -213,7 +213,7 @@ M0 T35 S1 已发布待试用。按原版 Luna 属性选择标题栏三枚字形�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T34 S1 P1 090eee1e，两处、七件远端和 1,284 项构建输入已复核。
+- Last verified remote delivery: M0 T35 S1 P1 b861b475，两处、七件远端和 1,284 项源码清单已复核。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 25
