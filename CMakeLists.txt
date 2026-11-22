@@ -80,23 +80,23 @@ set(observed_modern_frame src/lib-win32-style/appearance/win2000/window/modern_f
 add_library(win2k-window-uwp STATIC ${observed_modern_frame})
 target_compile_definitions(win2k-window-uwp PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(win2k-window-uwp PUBLIC win2k-window style-frame-uwp style-menu-items)
-add_library(win2k-control STATIC
-  src/lib-win32-style/appearance/win2000/control/report_paint.c
-  src/lib-win32-style/appearance/win2000/control/toolbar_paint.c
-  src/lib-win32-style/appearance/win2000/control/rebar_paint.c
-  src/lib-win32-style/appearance/win2000/control/status_paint.c
-  src/lib-win32-style/appearance/win2000/control/date_paint.c
-  src/lib-win32-style/appearance/win2000/control/list_combo.c
-  src/lib-win32-style/appearance/win2000/control/background.c
-  src/lib-win32-style/appearance/win2000/control/edit_paint.c
-  src/lib-win32-style/appearance/win2000/control/static_paint.c
-  src/lib-win32-style/appearance/win2000/control/button_paint.c
-  src/lib-win32-style/appearance/win2000/control/control.c)
-target_include_directories(win2k-control PUBLIC src)
-target_compile_definitions(win2k-control PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+add_library(style-control-observed STATIC
+  src/lib-win32-style/application/control/observed/report_paint.c
+  src/lib-win32-style/application/control/observed/toolbar_paint.c
+  src/lib-win32-style/application/control/observed/rebar_paint.c
+  src/lib-win32-style/application/control/observed/status_paint.c
+  src/lib-win32-style/application/control/observed/date_paint.c
+  src/lib-win32-style/application/control/observed/list_combo.c
+  src/lib-win32-style/application/control/observed/background.c
+  src/lib-win32-style/application/control/observed/edit_paint.c
+  src/lib-win32-style/application/control/observed/static_paint.c
+  src/lib-win32-style/application/control/observed/button_paint.c
+  src/lib-win32-style/application/control/observed/control.c)
+target_include_directories(style-control-observed PUBLIC src)
+target_compile_definitions(style-control-observed PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 # Theme state is supplied by the existing shared ntwshk runtime. Do not link
 # a second static theme-state owner into this profile.
-target_link_libraries(win2k-control PUBLIC style-control-common style-instance style-present user32 gdi32 comctl32 msimg32)
+target_link_libraries(style-control-observed PUBLIC style-control-common style-instance style-present user32 gdi32 comctl32 msimg32)
 add_library(lib-tray STATIC src/lib-win32/tray/tray.c)
 target_compile_definitions(lib-tray PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_include_directories(lib-tray PUBLIC src/lib-win32/tray)
@@ -312,7 +312,6 @@ target_compile_definitions(style-msstyles PRIVATE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-msstyles PRIVATE ole32 uuid user32 gdi32)
 target_link_libraries(win2k-window PRIVATE style-msstyles)
 target_link_libraries(win16-control PRIVATE style-msstyles ole32 uuid)
-target_link_libraries(win2k-control PRIVATE style-msstyles)
 add_executable(classic-theme-compiler EXCLUDE_FROM_ALL tools/theme/classic_build.c tools/theme/legacy_image.c)
 target_include_directories(classic-theme-compiler PRIVATE src)
 target_link_libraries(classic-theme-compiler PRIVATE style-msstyles windowscodecs ole32 uuid)
@@ -478,14 +477,14 @@ target_compile_definitions(style-runtime-process PRIVATE UNICODE _UNICODE _WIN32
 # Like startup assembly, this consumes the caller's existing hook provider.
 target_link_libraries(ntw16s PRIVATE style-runtime-process)
 add_dependencies(ntw2ks style-subclass)
-target_link_libraries(ntw2ks PRIVATE style-startup style-frame-observed win2k-control style-global-window "$<LINK_GROUP:RESCAN,style-menu-native,style-menu-owner,ntwshk>" "${subclass_import}")
+target_link_libraries(ntw2ks PRIVATE style-startup style-frame-observed style-control-observed style-global-window "$<LINK_GROUP:RESCAN,style-menu-native,style-menu-owner,ntwshk>" "${subclass_import}")
 set(win16_intercepts ${injection_root}/window_titles.c ${injection_root}/file_dialogs.c ${injection_root}/folder_dialogs.c ${injection_root}/modern_dialogs.c ${injection_root}/com_dialogs.c
   ${injection_root}/create_process.c ${injection_root}/late_process.c)
 target_sources(ntw16s PRIVATE ${injection_root}/entry.c ${win16_intercepts})
 target_sources(ntwshk PRIVATE ${win16_intercepts})
 add_dependencies(ntwshk style-subclass)
 target_link_libraries(ntwshk PRIVATE style-runtime-process style-creation style-uwp-hook style-global-window
-  style-frame-client style-frame-font style-frame-uwp win16-control style-frame-observed win2k-control
+  style-frame-client style-frame-font style-frame-uwp win16-control style-frame-observed style-control-observed
   style-dialog-native style-dialog-common style-theme-track style-companion module-import process-global
   "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}" user32 gdi32 comctl32 comdlg32
   shell32 ole32 oleaut32 uuid dwmapi uxtheme advapi32)
@@ -669,10 +668,10 @@ if(BUILD_TESTING)
   target_include_directories(core-win2k-list-combo-v6 PRIVATE src)
   target_link_options(core-win2k-list-combo-v6 PRIVATE ${explicit_manifest_options})
   add_executable(core-win2k-scroll-layout tests/lib-win32-style/appearance/win2000/control/scroll_layout.c)
-  target_link_libraries(core-win2k-scroll-layout PRIVATE win2k-control)
+  target_link_libraries(core-win2k-scroll-layout PRIVATE style-control-observed)
   add_test(NAME core/win2k-scroll-layout COMMAND $<TARGET_FILE:core-win2k-scroll-layout>)
   add_executable(core-win2k-progress-paint tests/lib-win32-style/appearance/win2000/control/progress_paint.c)
-  target_link_libraries(core-win2k-progress-paint PRIVATE win2k-control)
+  target_link_libraries(core-win2k-progress-paint PRIVATE style-control-observed)
   add_test(NAME core/win2k-progress-paint COMMAND $<TARGET_FILE:core-win2k-progress-paint>)
   foreach(target core-win2k-progress core-win2k-progress-v6)
     add_executable(${target} tests/lib-win32-style/appearance/win2000/control/progress.c)
@@ -864,7 +863,7 @@ if(BUILD_TESTING)
   target_include_directories(core-style-classic-theme PRIVATE src)
   target_compile_definitions(core-style-classic-theme PRIVATE NTW16S_STATIC STYLE_THEME_EXTERNAL_ONLY _WIN32_WINNT=0x0A00)
   target_link_libraries(core-style-classic-theme PRIVATE style-msstyles style-frame-client style-frame-font win2k-window win16-control
-    win2k-control "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>")
+    style-control-observed "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>")
   target_link_options(core-style-classic-theme PRIVATE -municode)
   add_executable(ntw2ks-frame-target tests/ntw2ks-dll/frame_target.c tests/ntw2ks-dll/frame_target.rc)
   target_link_libraries(ntw2ks-frame-target PRIVATE user32 gdi32 comdlg32 ole32 shcore)

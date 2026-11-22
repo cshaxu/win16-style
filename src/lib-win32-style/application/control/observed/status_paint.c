@@ -1,7 +1,7 @@
-/* DrawStatusTextEx in Win2000 status.c uses one edge per ordinary pane.
+/* DrawStatusTextEx in status.c uses one edge per ordinary pane.
  * Let native painting finish first, including any owner draw and icon. */
 #include "bars.h"
-#include "../common/palette.h"
+#include "lib-win32-style/application/graphics/paint_frame.h"
 #include "lib-win32-style/application/graphics/bitmap.h"
 
 static DWORD pixel(COLORREF color)
@@ -36,8 +36,8 @@ static void tint_grip(HWND window,HDC dc,const RECT *client,int pane_end,const s
     style_bitmap_dispose(&grip);
 }
 
-void win2k_status_panes(HWND window,HDC dc,const style_instance *instance,
-    const style_control_status_state *state,const win2k_palette *palette,const classic_bar_colors *colors)
+void style_observed_status_panes(HWND window,HDC dc,const style_instance *instance,
+    const style_control_status_state *state,const style_relief_palette *palette,const classic_bar_colors *colors)
 {
     if(!dc || instance->detached || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL))return;
     unsigned epoch=state->epoch;
@@ -48,7 +48,7 @@ void win2k_status_panes(HWND window,HDC dc,const style_instance *instance,
     RECT client,panes[64];
     UINT flags[64];
     if(!GetClientRect(window,&client))return;
-    win2k_palette edge=*palette;
+    style_relief_palette edge=*palette;
     edge.highlight=classic_bar_color(colors,CLASSIC_BAR_HIGHLIGHT,edge.highlight);
     edge.shadow=classic_bar_color(colors,CLASSIC_BAR_SHADOW,edge.shadow);
     for(LRESULT i=0;i<count;++i){

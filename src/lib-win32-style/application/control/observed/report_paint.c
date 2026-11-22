@@ -1,21 +1,21 @@
 #include "report_paint.h"
 
-BOOL win2k_listview_supported(HWND window)
+BOOL style_observed_listview_supported(HWND window)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
     return !(style&(LVS_OWNERDATA|LVS_OWNERDRAWFIXED));
 }
 
-BOOL win2k_listview_plain(HWND window)
+BOOL style_observed_listview_plain(HWND window)
 {
-    if(!win2k_listview_supported(window) || SendMessageW(window,LVM_ISGROUPVIEWENABLED,0,0))return FALSE;
+    if(!style_observed_listview_supported(window) || SendMessageW(window,LVM_ISGROUPVIEWENABLED,0,0))return FALSE;
     WCHAR source[1]={0};
     LVBKIMAGEW background={.pszImage=source,.cchImageMax=ARRAYSIZE(source)};
     SendMessageW(window,LVM_GETBKIMAGEW,0,(LPARAM)&background);
     return (background.ulFlags&LVBKIF_SOURCE_MASK)==LVBKIF_SOURCE_NONE;
 }
 
-BOOL win2k_treeview_supported(HWND window)
+BOOL style_observed_treeview_supported(HWND window)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
     return !(style&TVS_RTLREADING);
@@ -24,10 +24,10 @@ BOOL win2k_treeview_supported(HWND window)
 /* comctl32 tvpaint.c TV_DrawItem and lvrept.c ListView_RDrawItem own layout,
  * app text/image access and custom-draw decisions. Supply standard selection
  * colors only at default item-draw stages, with the native renderer still active. */
-static void selection_colors(HWND window,const NMCUSTOMDRAW *draw,const win2k_report_draw *parameters,
+static void selection_colors(HWND window,const NMCUSTOMDRAW *draw,const style_observed_report_draw *parameters,
     COLORREF *text,COLORREF *background)
 {
-    const win2k_palette *p=&parameters->palette;
+    const style_relief_palette *p=&parameters->palette;
     enum classic_report_state state;
     if(!IsWindowEnabled(window)){
         state=CLASSIC_REPORT_DISABLED;
@@ -49,9 +49,9 @@ static void selection_colors(HWND window,const NMCUSTOMDRAW *draw,const win2k_re
     if(colors->has_background)*background=colors->background;
 }
 
-void win2k_listview_colors(HWND window,NMCUSTOMDRAW *draw,const void *context)
+void style_observed_listview_colors(HWND window,NMCUSTOMDRAW *draw,const void *context)
 {
-    const win2k_report_draw *parameters=context;
+    const style_observed_report_draw *parameters=context;
     const style_instance *instance=parameters->instance;
     NMLVCUSTOMDRAW *item=(NMLVCUSTOMDRAW *)draw;
     if((draw->uItemState&CDIS_SELECTED) && !(draw->uItemState&CDIS_DROPHILITED)){
@@ -70,9 +70,9 @@ void win2k_listview_colors(HWND window,NMCUSTOMDRAW *draw,const void *context)
     selection_colors(window,draw,parameters,&item->clrText,&item->clrTextBk);
 }
 
-void win2k_treeview_colors(HWND window,NMCUSTOMDRAW *draw,const void *context)
+void style_observed_treeview_colors(HWND window,NMCUSTOMDRAW *draw,const void *context)
 {
-    const win2k_report_draw *parameters=context;
+    const style_observed_report_draw *parameters=context;
     NMTVCUSTOMDRAW *item=(NMTVCUSTOMDRAW *)draw;
     selection_colors(window,draw,parameters,&item->clrText,&item->clrTextBk);
 }

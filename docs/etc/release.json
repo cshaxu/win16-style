@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P45",
-  "stage": "published development candidate with shared modern frame adapters",
+  "delivery": "M0 T29 S23 P46",
+  "stage": "published development candidate with stylesheet-neutral observed controls",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P44 872bb9087e45",
-  "source_snapshot_sha256": "1a21a578226260cb505e48a17c4ad5ad99c9d2be4dae5adfc7b0ff1eab32480e",
+  "last_verified_remote_delivery": "M0 T29 S23 P45 f6af1b17855b",
+  "source_snapshot_sha256": "2014691e2899208a0cb6be7ad545a2a819c6396284c9c46b28cef427f1c8394e",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "7382a155e9c108d9c121ad2831b3ae429559707d725fee23d95995bafa4af39d",
+      "sha256": "ef4cea62d8324179505e9af7ef2fbc0b7d5131deff204ec134d86d00416da87a",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "3194097baada80d2d435dcf66bade6d5a3eff3760f10db3d997daf3b1a58d1e3",
+      "sha256": "4c1e59b7208632d26a7aec5a9bc1baf2e687d8510cf6a7537394cc8600df5f4d",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "6aa85866eceafde8d4f1c77374b7143e84653e82e31dee6b7f9e9be1420af037",
+      "sha256": "c8e76e150038b56b4975b849cec4ca4bb701a49f5a586ce492e8805891da4abe",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,34 +106,35 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 14,
+    "passed": 118,
     "selected_cases": [
-      "x86 compat-hidden",
-      "x86 client-renderer",
-      "x86 same-hash-negative-and-switch",
-      "x86 assets-observed-theme-pixels",
-      "x86 assets-installed-switch",
-      "x86 winnt-observed-theme-pixels",
-      "x86 winnt-installed-switch",
-      "x64 compat-hidden",
-      "x64 client-renderer",
-      "x64 same-hash-negative-and-switch",
-      "x64 assets-observed-theme-pixels",
-      "x64 assets-installed-switch",
-      "x64 winnt-observed-theme-pixels",
-      "x64 winnt-installed-switch"
+      "x86 compatibility-control-matrix (53)",
+      "x86 assets-paint-model (1)",
+      "x86 assets-runtime-start (1)",
+      "x86 assets-runtime-start-v6 (1)",
+      "x86 winnt-paint-model (1)",
+      "x86 winnt-runtime-start (1)",
+      "x86 winnt-runtime-start-v6 (1)",
+      "x64 compatibility-control-matrix (53)",
+      "x64 assets-paint-model (1)",
+      "x64 assets-runtime-start (1)",
+      "x64 assets-runtime-start-v6 (1)",
+      "x64 winnt-paint-model (1)",
+      "x64 winnt-runtime-start (1)",
+      "x64 winnt-runtime-start-v6 (1)"
     ],
     "skipped": [],
     "limitations": [
+      "106 same-snapshot compatibility cases, 12 installed-package or resource cases",
       "Owned native fixtures only",
       "Physical input, interactive administrator tray, actual UWP application and full package matrix not run"
     ]
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P45 inputs, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P46 inputs, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2102,
-    "cache_misses": 8
+    "cache_hits": 1998,
+    "cache_misses": 112
   }
 }

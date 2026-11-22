@@ -1,6 +1,6 @@
 #include "observed.h"
 #include "lib-win32-style/application/window/observed_frame.h"
-#include "lib-win32-style/appearance/win2000/control/control.h"
+#include "lib-win32-style/appearance/msstyles/observed_control_style.h"
 #include "lib-win32-style/application/lifecycle/global_window.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/window/window_identity.h"
@@ -39,6 +39,8 @@ static const style_observed_frame_provider frame_provider={
 static void attach_frame(HWND window)
 {if(window && !style_global_window_managed(window))style_observed_frame_attach(window,&frame_provider);}
 static int control_owner;
+static DWORD load_control_theme(style_observed_control_theme *theme)
+{return classic_observed_control_load((HMODULE)&__ImageBase,theme);}
 
 static BOOL control_local(HWND window)
 {
@@ -46,14 +48,14 @@ static BOOL control_local(HWND window)
     SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;
 }
 BOOL ntwshk_observed_control_attached(HWND window)
-{return control_local(window) && (win2k_control_attached(window) || style_theme_owned(window,&control_owner));}
+{return control_local(window) && (style_observed_control_attached(window) || style_theme_owned(window,&control_owner));}
 BOOL ntwshk_observed_control_attach(HWND window)
 {
     if(!control_local(window))return FALSE;
     if(!(GetWindowLongPtrW(window,GWL_STYLE)&WS_CHILD)){SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     if(ntwshk_observed_control_attached(window))return TRUE;
     BOOL native_requested;
-    if(win2k_control_attach(window,ntwshk_observed_native_theme,&native_requested))return TRUE;
+    if(style_observed_control_attach(window,ntwshk_observed_native_theme,load_control_theme,&native_requested))return TRUE;
     if(native_requested || GetLastError()!=ERROR_NOT_SUPPORTED)return FALSE;
     if(style_theme_retained(window)){SetLastError(ERROR_BUSY);return FALSE;}
     WCHAR name[32];
@@ -71,7 +73,7 @@ BOOL ntwshk_observed_control_attach(HWND window)
 BOOL ntwshk_observed_control_remove(HWND window)
 {
     if(!control_local(window))return FALSE;
-    if(win2k_control_attached(window))return win2k_control_remove(window);
+    if(style_observed_control_attached(window))return style_observed_control_remove(window);
     if(!ntwshk_observed_control_attached(window)){SetLastError(ERROR_NOT_FOUND);return FALSE;}
     style_theme_remove(window,&control_owner,ntwshk_observed_native_theme);return TRUE;
 }

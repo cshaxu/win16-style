@@ -1,8 +1,8 @@
-/* Win2000 USER: btnctl.c xxxBNInitDC/BNCalcRect/xxxBNDrawText and
+/* USER: btnctl.c xxxBNInitDC/BNCalcRect/xxxBNDrawText and
  * xxxButtonDrawCheck. Pixel references and the finite contract are in T27. */
 #include "button_paint.h"
 #include "background.h"
-#include "../common/palette.h"
+#include "lib-win32-style/application/graphics/paint_frame.h"
 #include "lib-win32-style/application/control/button_snapshot.h"
 #include "lib-win32-style/application/control/control_class.h"
 #include "lib-win32-style/application/graphics/pixel_grid.h"
@@ -25,7 +25,7 @@ static BOOL CALLBACK multiline(HDC dc,LPARAM value,WPARAM length,int width,int h
     return DrawTextW(dc,text->value,-1,&r,text->format)!=0;
 }
 static BOOL label(HWND window,style_instance *instance,HDC dc,const style_control_button_snapshot *s,
-    RECT bounds,const RECT *client,BOOL push,UINT cues,const win2k_palette *p)
+    RECT bounds,const RECT *client,BOOL push,UINT cues,const style_relief_palette *p)
 {
     int width=0,height=0;UINT type;LPARAM value;WPARAM length=0;DRAWSTATEPROC draw=NULL;
     button_text text={s->text,DT_WORDBREAK|DT_EDITCONTROL};style_control_button_image image;
@@ -68,12 +68,12 @@ static BOOL label(HWND window,style_instance *instance,HDC dc,const style_contro
     }
     return result;
 }
-BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classic_push_colors *colors,
-    const classic_choice_colors *choice,const classic_group_colors *group_colors,HMODULE module,classic_choice_art *art,
-    classic_control_presentation controls,const win2k_palette *base)
+BOOL style_observed_button_paint(HWND window,style_instance *instance,HDC dc,const classic_push_colors *colors,
+    const classic_choice_colors *choice,const classic_group_colors *group_colors,style_choice_art_read_fn read_art,HMODULE module,classic_choice_art *art,
+    classic_control_presentation controls,const style_relief_palette *base)
 {
-    win2k_palette palette=*base;
-    const win2k_palette *p=&palette;
+    style_relief_palette palette=*base;
+    const style_relief_palette *p=&palette;
     int saved=SaveDC(dc);if(!saved)return FALSE;
     BOOL result=FALSE;RECT client,bounds,glyph;HBRUSH brush=NULL;
     DWORD initial_style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);HWND parent=GetParent(window);
@@ -94,7 +94,7 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
         palette.highlight=group_colors->highlight;
     }
     if(!push_style(type,initial_style)){
-        brush=win2k_control_brush(window,instance,dc,p);if(!brush)goto done;
+        brush=style_observed_control_brush(window,instance,dc,p);if(!brush)goto done;
         if(!group && !FillRect(dc,&client,brush))goto done;
     }
     if(!style_control_button_snapshot_read(window,instance,&reader,&snapshot))goto done;
@@ -156,7 +156,7 @@ BOOL win2k_button_paint(HWND window,style_instance *instance,HDC dc,const classi
         const classic_choice_surface *entry=classic_choice_entry(choice,radio,snapshot.check,
             (snapshot.style&WS_DISABLED)!=0,snapshot.state);
         const classic_surface_colors *surface=classic_choice_color(entry);
-        const char *image=entry?classic_choice_art_get(module,entry->image,art):NULL;
+        const char *image=entry && read_art?read_art(module,entry->image,art):NULL;
         if(instance->detached){result=FALSE;goto done;}
         if(image){
             const COLORREF ink[2]={surface?surface->edge:p->text,surface?surface->face:p->window};

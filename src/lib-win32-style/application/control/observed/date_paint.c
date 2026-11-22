@@ -1,20 +1,20 @@
-/* Win2000 monthcal.c owns both native registrations. MCPaint uses active
+/* monthcal.c owns both native registrations. MCPaint uses active
  * caption roles and DPDrawDropdownButton uses the normal scroll-down frame. */
 #include "date_paint.h"
-#include "../common/palette.h"
+#include "lib-win32-style/application/graphics/paint_frame.h"
 
-BOOL win2k_date_supported(HWND window)
+BOOL style_observed_date_supported(HWND window)
 {
     return !(GetWindowLongPtrW(window,GWL_STYLE)&(DTS_UPDOWN|DTS_SHOWNONE|DTS_APPCANPARSE));
 }
 
-BOOL win2k_month_supported(HWND window)
+BOOL style_observed_month_supported(HWND window)
 {
     return !(GetWindowLongPtrW(window,GWL_STYLE)&MCS_MULTISELECT);
 }
 
-void win2k_date_colors(HWND window,const style_instance *instance,style_calendar_colors *colors,BOOL picker,
-    const win2k_palette *p,const classic_calendar_colors *theme)
+void style_observed_date_colors(HWND window,const style_instance *instance,style_calendar_colors *colors,BOOL picker,
+    const style_relief_palette *p,const classic_calendar_colors *theme)
 {
     COLORREF roles[STYLE_CALENDAR_COLOR_COUNT]={p->window,p->text,p->selection,p->selection_text,p->window,p->gray};
     static const unsigned native_role[CLASSIC_CALENDAR_ROLE_COUNT]={
@@ -27,8 +27,8 @@ void win2k_date_colors(HWND window,const style_instance *instance,style_calendar
     style_calendar_colors_apply(window,instance,colors,picker,roles);
 }
 
-void win2k_date_button(HWND window,const style_instance *instance,HDC dc,const RECT *dirty,
-    const style_control_native_button *button,const win2k_palette *palette,const style_scroll_arrow_art *art)
+void style_observed_date_button(HWND window,const style_instance *instance,HDC dc,const RECT *dirty,
+    const style_control_native_button *button,const style_relief_palette *palette,const style_scroll_arrow_art *art)
 {
     if(instance->detached || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL))return;
     UINT state=DFCS_SCROLLDOWN;

@@ -1,7 +1,7 @@
-/* Ordinary Toolbar drawing roles from Win2000 toolbar.c. Native rendering
+/* Ordinary Toolbar drawing roles from toolbar.c. Native rendering
  * still owns the bitmap list, the label, and the placement of both. */
 #include "bars.h"
-#include "../common/palette.h"
+#include "lib-win32-style/application/graphics/paint_frame.h"
 
 static BOOL supported(HWND window)
 {
@@ -12,9 +12,9 @@ static BOOL supported(HWND window)
 static void prepare(HWND window,NMCUSTOMDRAW *draw,const void *context)
 {
     (void)window;
-    const win2k_bar_draw *parameters=context;
+    const style_observed_bar_draw *parameters=context;
     NMTBCUSTOMDRAW *item=(NMTBCUSTOMDRAW *)draw;
-    const win2k_palette *palette=&parameters->palette;
+    const style_relief_palette *palette=&parameters->palette;
     if(item->clrBtnFace==GetSysColor(COLOR_BTNFACE))
         item->clrBtnFace=(draw->uItemState&(CDIS_SELECTED|CDIS_CHECKED))?parameters->pressed_face:palette->face;
     if(item->clrBtnHighlight==GetSysColor(COLOR_BTNHIGHLIGHT))item->clrBtnHighlight=palette->highlight;
@@ -23,8 +23,8 @@ static void prepare(HWND window,NMCUSTOMDRAW *draw,const void *context)
 
 static void paint(HWND window,const NMCUSTOMDRAW *draw,const void *context)
 {
-    const win2k_bar_draw *parameters=context;
-    const win2k_palette *palette=&parameters->palette;
+    const style_observed_bar_draw *parameters=context;
+    const style_relief_palette *palette=&parameters->palette;
     const style_instance *instance=parameters->instance;
     RECT bounds=draw->rc;
     UINT edge,flags=BF_RECT;
@@ -48,7 +48,7 @@ static void paint(HWND window,const NMCUSTOMDRAW *draw,const void *context)
 
 static void separators(HWND window,const NMCUSTOMDRAW *draw,const void *context)
 {
-    const win2k_bar_draw *parameters=context;
+    const style_observed_bar_draw *parameters=context;
     const style_instance *instance=parameters->instance;
     if(!(GetWindowLongPtrW(window,GWL_STYLE)&TBSTYLE_FLAT) || !draw->hdc)return;
     int inset=GetSystemMetricsForDpi(SM_CYEDGE,GetDpiForWindow(window));
@@ -66,6 +66,6 @@ static void separators(HWND window,const NMCUSTOMDRAW *draw,const void *context)
     }
 }
 
-const style_control_notify_ops win2k_toolbar_notify={
+const style_control_notify_ops style_observed_toolbar_notify={
     .supported=supported,.prepare_item=prepare,.finish_item=paint,.finish_paint=separators
 };

@@ -1,6 +1,6 @@
 #include "list_combo.h"
 #include "background.h"
-#include "../common/palette.h"
+#include "lib-win32-style/application/graphics/paint_frame.h"
 #include "lib-win32-style/application/control/combo_snapshot.h"
 #include "lib-win32-style/application/control/list_snapshot.h"
 #include <oleacc.h>
@@ -16,11 +16,11 @@ static void select_font(HDC dc,HFONT font)
     SelectObject(dc,font?font:GetStockObject(SYSTEM_FONT));
 }
 
-void win2k_list_paint(HWND window,style_instance *instance,HWND parent,HDC dc,const win2k_palette *p)
+void style_observed_list_paint(HWND window,style_instance *instance,HWND parent,HDC dc,const style_relief_palette *p)
 {
     int saved=SaveDC(dc);
     if(!saved)return;
-    HBRUSH brush=win2k_control_color_brush(window,parent,instance,dc,WM_CTLCOLORLISTBOX,p,p->window);
+    HBRUSH brush=style_observed_control_color_brush(window,parent,instance,dc,WM_CTLCOLORLISTBOX,p,p->window);
     if(!instance->detached && !brush){
         SetDCBrushColor(dc,p->window);
         brush=(HBRUSH)GetStockObject(DC_BRUSH);
@@ -35,14 +35,14 @@ void win2k_list_paint(HWND window,style_instance *instance,HWND parent,HDC dc,co
     RestoreDC(dc,saved);
 }
 
-BOOL win2k_combo_info(HWND window,PCOMBOBOXINFO info)
+BOOL style_observed_combo_info(HWND window,PCOMBOBOXINFO info)
 {
     return GetComboBoxInfo(window,info);
 }
 
-BOOL win2k_combo_paint(HWND window,style_instance *instance,HDC dc,const win2k_palette *p,const classic_combo_colors *colors)
+BOOL style_observed_combo_paint(HWND window,style_instance *instance,HDC dc,const style_relief_palette *p,const classic_combo_colors *colors)
 {
-    const style_control_combo_reader reader={NULL,win2k_combo_info,native_font};
+    const style_control_combo_reader reader={NULL,style_observed_combo_info,native_font};
     style_control_combo_snapshot snapshot;
     int saved=SaveDC(dc);
     if(!saved)return FALSE;
@@ -59,13 +59,13 @@ BOOL win2k_combo_paint(HWND window,style_instance *instance,HDC dc,const win2k_p
     BOOL enabled=IsWindowEnabled(window);
     BOOL read_only=snapshot.editable &&
         (GetWindowLongPtrW(snapshot.info.hwndItem,GWL_STYLE)&ES_READONLY);
-    HBRUSH brush=win2k_control_color_brush(window,GetParent(window),instance,dc,
+    HBRUSH brush=style_observed_control_color_brush(window,GetParent(window),instance,dc,
         enabled && !read_only?WM_CTLCOLOREDIT:WM_CTLCOLORSTATIC,p,enabled && !read_only?p->window:p->face);
     BOOL painted=FALSE;
     if(instance->detached)goto done;
     if(brush)FillRect(dc,&frame,brush);
     else style_paint_color(dc,&frame,enabled && !read_only?p->window:p->face);
-    win2k_palette chrome=*p;
+    style_relief_palette chrome=*p;
     if(colors->present)chrome.dark=enabled?colors->border:colors->disabled_border;
     painted=style_paint_relief(dc,&frame,EDGE_SUNKEN,BF_RECT|BF_ADJUST,&chrome);
     if(!snapshot.simple){

@@ -128,22 +128,6 @@ typedef struct theme_field {
 
 enum { choice_face=1, choice_ink=2 };
 
-BOOL classic_choice_has_art(const classic_choice_colors *colors)
-{
-    for(unsigned i=0;i<ARRAYSIZE(colors->check);++i)if(colors->check[i].image)return TRUE;
-    for(unsigned i=0;i<ARRAYSIZE(colors->radio);++i)if(colors->radio[i].image)return TRUE;
-    return FALSE;
-}
-
-const classic_choice_surface *classic_choice_entry(const classic_choice_colors *colors,
-    BOOL radio,LRESULT check,BOOL disabled,LRESULT button_state)
-{
-    if(!colors)return NULL;
-    unsigned value=check==BST_UNCHECKED?0:(!radio && check==BST_INDETERMINATE?2:1);
-    unsigned state=4*value+(disabled?3:(button_state&BST_PUSHED)?2:(button_state&BST_HOT)?1:0);
-    return radio?&colors->radio[state]:&colors->check[state];
-}
-
 static BOOL read_choice(const msstyles_v4_property *item,classic_choice_colors *colors)
 {
     BOOL radio=item->part_id==BP_RADIOBUTTON;

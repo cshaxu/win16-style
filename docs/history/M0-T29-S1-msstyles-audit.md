@@ -33,28 +33,28 @@
 | 12 | 外观 | 菜单栏与弹出菜单背景、项目、禁用与选中配色 | S | S | MENU 菜单栏／弹出部件及状态 | [1](../../src/lib-win32-style/application/menu/row_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
 | 13 | 外观 | 菜单勾选、子菜单箭头和分隔部件图像 | S | S | MENU 对应部件状态；图像负载须保留来源 | [1](../../src/lib-win32-style/appearance/win3x/resources/frame_buttons.h) [2](../../src/lib-win32-style/appearance/win3x/resources/control_glyphs.h) [3](../../src/lib-win32-style/appearance/win3x/resources/combo_glyph.h) [4](../../src/lib-win32-style/appearance/win3x/resources/menu_glyphs.h) [5](../../src/lib-win32-style/appearance/win3x/resources/scroll_glyphs.h) |
 | 14 | 外观 | Win16 弹出菜单标签、快捷键和箭头的列间距 | E | — | 组件专属列宽参数；实际测量和跟踪另计 | [1](../../src/lib-win32-style/application/menu/row_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
-| 15 | 外观 | 普通按钮、默认边缘、按下和禁用绘制 | S | S | BUTTON.BP_PUSHBUTTON 对应状态 | [1](../../src/lib-win32-style/appearance/win3x/control/basic_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/button_paint.c) |
-| 16 | 外观 | 复选、半选与单选的标记和状态 | S | S | BUTTON.BP_CHECKBOX/BP_RADIOBUTTON；状态选择留代码 | [1](../../src/lib-win32-style/appearance/win3x/control/choice_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/button_paint.c) |
-| 17 | 外观 | 静态文字、蚀刻边和框线色值 | S | S | 颜色及 BORDERFILL/IMAGE 数据；绘制角色另由匹配器识别 | [1](../../src/lib-win32-style/appearance/win3x/control/basic_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/static_paint.c) |
-| 18 | 外观 | 分组框背景、边和标题字样 | S | S | BUTTON.BP_GROUPBOX 及颜色、背景属性 | [1](../../src/lib-win32-style/appearance/win3x/control/basic_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/static_paint.c) |
-| 19 | 外观 | 普通、只读、禁用编辑框的边缘及颜色 | S | S | EDIT 部件状态及系统颜色 | [1](../../src/lib-win32-style/appearance/win3x/control/basic_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/edit_paint.c) |
-| 20 | 外观 | 普通列表选中、背景色与边缘 | S | S | LISTBOX 和系统色值；内容仍由列表提供 | [1](../../src/lib-win32-style/appearance/win3x/control/list_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/list_combo.c) |
-| 21 | 外观 | 组合框下拉按钮、边缘与禁用外观 | S | S | COMBOBOX 各部件和状态；子窗口归属另计 | [1](../../src/lib-win32-style/appearance/win3x/control/combo_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/list_combo.c) |
+| 15 | 外观 | 普通按钮、默认边缘、按下和禁用绘制 | S | S | BUTTON.BP_PUSHBUTTON 对应状态 | [1](../../src/lib-win32-style/appearance/win3x/control/basic_paint.c) [2](../../src/lib-win32-style/application/control/observed/button_paint.c) |
+| 16 | 外观 | 复选、半选与单选的标记和状态 | S | S | BUTTON.BP_CHECKBOX/BP_RADIOBUTTON；状态选择留代码 | [1](../../src/lib-win32-style/appearance/win3x/control/choice_paint.c) [2](../../src/lib-win32-style/application/control/observed/button_paint.c) |
+| 17 | 外观 | 静态文字、蚀刻边和框线色值 | S | S | 颜色及 BORDERFILL/IMAGE 数据；绘制角色另由匹配器识别 | [1](../../src/lib-win32-style/appearance/win3x/control/basic_paint.c) [2](../../src/lib-win32-style/application/control/observed/static_paint.c) |
+| 18 | 外观 | 分组框背景、边和标题字样 | S | S | BUTTON.BP_GROUPBOX 及颜色、背景属性 | [1](../../src/lib-win32-style/appearance/win3x/control/basic_paint.c) [2](../../src/lib-win32-style/application/control/observed/static_paint.c) |
+| 19 | 外观 | 普通、只读、禁用编辑框的边缘及颜色 | S | S | EDIT 部件状态及系统颜色 | [1](../../src/lib-win32-style/appearance/win3x/control/basic_paint.c) [2](../../src/lib-win32-style/application/control/observed/edit_paint.c) |
+| 20 | 外观 | 普通列表选中、背景色与边缘 | S | S | LISTBOX 和系统色值；内容仍由列表提供 | [1](../../src/lib-win32-style/appearance/win3x/control/list_paint.c) [2](../../src/lib-win32-style/application/control/observed/list_combo.c) |
+| 21 | 外观 | 组合框下拉按钮、边缘与禁用外观 | S | S | COMBOBOX 各部件和状态；子窗口归属另计 | [1](../../src/lib-win32-style/appearance/win3x/control/combo_paint.c) [2](../../src/lib-win32-style/application/control/observed/list_combo.c) |
 | 22 | 外观 | 横纵滚动条箭头、滑块、轨道和尺寸框 | S | S | SCROLLBAR 箭头、方向、状态图和 size box | [1](../../src/lib-win32-style/appearance/win3x/control/scroll_paint.c) [2](../../src/lib-win32-style/application/control/native_scroll.c) |
 | 23 | 外观 | 滚动条的基本厚度和尺寸 | S | S | SysMetrics 滚动条度量或部件大小 | [1](../../src/lib-win32-style/appearance/win3x/control/scroll_paint.c) [2](../../src/lib-win32-style/application/control/native_scroll.c) |
 | 24 | 外观 | 极短条及非标准厚度的裁决参数 | E | E | 标准部件大小可存；保留当前极值规则需额外参数，实际求解另计 | [1](../../src/lib-win32-style/appearance/win3x/control/scroll_paint.c) [2](../../src/lib-win32-style/application/control/native_scroll.c) |
 | 25 | 外观 | 标签页状态及边缘 | S | S | TAB 项目和 pane；复杂自绘仍由应用 | [当前共享绘制](../../src/lib-win32-style/application/control/tab_snapshot.c) |
 | 26 | 外观 | 表头边框、普通与按压表面 | S | S | HEADER 部件和状态 | [1](../../src/lib-win32-style/application/control/header_snapshot.c) [2](../../src/lib-win32-style/application/control/header_snapshot.c) |
-| 27 | 外观 | 普通列表视图与树视图的边缘和选择色 | S | S | LISTVIEW/TREEVIEW 及系统色；只计已支持表面 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
+| 27 | 外观 | 普通列表视图与树视图的边缘和选择色 | S | S | LISTVIEW/TREEVIEW 及系统色；只计已支持表面 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/application/control/observed/control.c) |
 | 28 | 外观 | 进度条槽、普通分段或平滑可见面 | S | S | PROGRESS 底槽与填充部件；进度数据留原生 | [1](../../src/lib-win32-style/application/control/progress_paint.c) [2](../../src/lib-win32-style/application/control/progress_paint.c) |
 | 29 | 外观 | 滑杆轨道、滑块和刻度 | S | S | TRACKBAR 标准部件与状态 | [1](../../src/lib-win32-style/application/control/trackbar_paint.c) [2](../../src/lib-win32-style/application/control/trackbar_paint.c) |
 | 30 | 外观 | 微调箭头及边线 | S | S | SPIN 对应状态与方向 | [UpDown](../../src/lib-win32-style/application/control/updown.c)（原 Win3x 独立绘制已并入此文件） |
-| 31 | 外观 | 工具栏普通按钮和分隔线 | S | S | TOOLBAR 状态、图形与分隔部件 | [1](../../src/lib-win32-style/appearance/win3x/control/toolbar_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/toolbar_paint.c) |
-| 32 | 外观 | 状态栏普通面、分隔和尺寸柄 | S | S | STATUS 部件及边距 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
-| 33 | 外观 | Rebar 普通抓手 | S | S | REBAR.RP_GRIPPER；只计现有支持状态 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
-| 34 | 外观 | 日期选择器的边及下拉按钮 | S | S | DATEPICKER 部件及状态 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
-| 35 | 外观 | 月历普通标题、日期与选中面 | S | S | MONTHCAL 或标准文本/颜色属性，以 v4 为研究范围 | [1](../../src/lib-win32-style/appearance/win3x/control/month_paint.c) [2](../../src/lib-win32-style/appearance/win2000/control/date_paint.c) |
-| 36 | 外观 | RichEdit 和热键的经典边缘 | S | S | 只迁移边缘画笔或切片，不计富文本内容 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
+| 31 | 外观 | 工具栏普通按钮和分隔线 | S | S | TOOLBAR 状态、图形与分隔部件 | [1](../../src/lib-win32-style/appearance/win3x/control/toolbar_paint.c) [2](../../src/lib-win32-style/application/control/observed/toolbar_paint.c) |
+| 32 | 外观 | 状态栏普通面、分隔和尺寸柄 | S | S | STATUS 部件及边距 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/application/control/observed/control.c) |
+| 33 | 外观 | Rebar 普通抓手 | S | S | REBAR.RP_GRIPPER；只计现有支持状态 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/application/control/observed/control.c) |
+| 34 | 外观 | 日期选择器的边及下拉按钮 | S | S | DATEPICKER 部件及状态 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/application/control/observed/control.c) |
+| 35 | 外观 | 月历普通标题、日期与选中面 | S | S | MONTHCAL 或标准文本/颜色属性，以 v4 为研究范围 | [1](../../src/lib-win32-style/appearance/win3x/control/month_paint.c) [2](../../src/lib-win32-style/application/control/observed/date_paint.c) |
+| 36 | 外观 | RichEdit 和热键的经典边缘 | S | S | 只迁移边缘画笔或切片，不计富文本内容 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/application/control/observed/control.c) |
 | 37 | 外观 | VB/VCL 私有复合控件的完整可见状态映射 | ? | ? | 已有局部原生角色对照，完整自绘状态不足以定标准部件 | [1](../history/M0-T18-S64-control-inventory.md) [2](../history/M0-T27-S16-final-audit.md) |
 | 38 | 外观 | 公共对话框外框及标准子控件可见面 | S | S | WINDOW.WP_DIALOG 加对应标准控件部件 | [1](../history/M0-T20-closure-audit.md) [2](../history/M0-T28-S3-common-dialogs.md) |
 | 39 | 外观 | 文件夹／文件对话框的历史控件布局与模板标识 | E | E | 坐标表、模板引用和触发条件需项目配置；API 转接另计 | [1](../history/M0-T20-closure-audit.md) [2](../history/M0-T28-S3-common-dialogs.md) |
@@ -66,7 +66,7 @@
 | 45 | 行为 | 窗口尺寸求解、非客户区和命中测试 | R | R | 使用已解析数据与实际客户区、窗口状态 | [1](../../src/lib-win32-style/application/window/client_frame_layout.c) [2](../../src/lib-win32-style/application/window/observed_frame.c) |
 | 46 | 行为 | UWP/WinUI 宿主坐标、重绘及合成提交 | R | R | 由宿主适配器执行 | [1](../../src/lib-win32-style/appearance/win3x/window/modern_frame.c) [2](../../src/lib-win32-style/appearance/win2000/window/modern_frame.c) |
 | 47 | 行为 | 菜单焦点、跟踪、键盘、取消及 owner 通知 | R | R | 状态机与 HWND 消息 | [1](../../src/lib-win32-style/application/menu/row_paint.c) [2](../../src/lib-win32-style/application/menu/bar_controller.c) |
-| 48 | 行为 | 控件真实状态、应用返回值及回调所有权 | R | R | 原生处理、子窗和重入 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/appearance/win2000/control/control.c) |
+| 48 | 行为 | 控件真实状态、应用返回值及回调所有权 | R | R | 原生处理、子窗和重入 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/application/control/observed/control.c) |
 | 49 | 行为 | 滚动范围计算、捕获、拖拽与通知 | R | R | 交互算法和消息 | [1](../../src/lib-win32-style/appearance/win3x/control/scroll_paint.c) [2](../../src/lib-win32-style/application/control/native_scroll.c) |
 | 50 | 行为 | 应用字体借用、位图字形适配及释放 | R | R | 运行期字体对象及恢复 | [1](../../src/lib-win32-style/appearance/msstyles/raster_font.c) [2](../../src/lib-win32-style/application/window/native_caption.c) |
 | 51 | 行为 | Win32 文件参数转换和选定结果回写 | R | R | 调用契约及错误码 | [1](../history/M0-T20-closure-audit.md) [2](../history/M0-T28-S3-common-dialogs.md) |

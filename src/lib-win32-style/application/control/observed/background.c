@@ -1,11 +1,11 @@
-/* Win2000 GetControlBrush / PaintRect query and parent brush alignment. */
+/* GetControlBrush / PaintRect query and parent brush alignment. */
 #include "background.h"
-HBRUSH win2k_control_brush(HWND window,style_instance *instance,HDC dc,const win2k_palette *p)
+HBRUSH style_observed_control_brush(HWND window,style_instance *instance,HDC dc,const style_relief_palette *p)
 {
-    return win2k_control_color_brush(window,GetParent(window),instance,dc,WM_CTLCOLORSTATIC,p,p->face);
+    return style_observed_control_color_brush(window,GetParent(window),instance,dc,WM_CTLCOLORSTATIC,p,p->face);
 }
-HBRUSH win2k_control_color_brush(HWND window,HWND parent,style_instance *instance,HDC dc,UINT message,
-    const win2k_palette *p,COLORREF background)
+HBRUSH style_observed_control_color_brush(HWND window,HWND parent,style_instance *instance,HDC dc,UINT message,
+    const style_relief_palette *p,COLORREF background)
 {
     if(!parent)return NULL;
     HWND relation=GetParent(window);

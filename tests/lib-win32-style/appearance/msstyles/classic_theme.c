@@ -6,10 +6,10 @@
 #include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "lib-win32-style/appearance/win2000/window/caption.h"
 #include "lib-win32-style/appearance/win2000/common/palette.h"
-#include "lib-win32-style/appearance/win2000/control/button_paint.h"
-#include "lib-win32-style/appearance/win2000/control/edit_paint.h"
-#include "lib-win32-style/appearance/win2000/control/list_combo.h"
-#include "lib-win32-style/appearance/win2000/control/static_paint.h"
+#include "lib-win32-style/application/control/observed/button_paint.h"
+#include "lib-win32-style/application/control/observed/edit_paint.h"
+#include "lib-win32-style/application/control/observed/list_combo.h"
+#include "lib-win32-style/application/control/observed/static_paint.h"
 #include "lib-win32-style/application/dialog/explorer_file_layout.h"
 #include "lib-win32-style/application/window/client_frame_paint.h"
 #include "lib-win32-style/application/menu/client_bar.h"
@@ -391,7 +391,7 @@ static BOOL paint_native_button(HDC dc,HWND window,BOOL win2000,const classic_pu
     controls.push=profile;
     if(win2000){
         const win2k_palette base=classic_theme_relief_palette(theme);
-        return win2k_button_paint(window,&instance,dc,push,choice,NULL,module,&art,controls,&base);
+        return style_observed_button_paint(window,&instance,dc,push,choice,NULL,classic_choice_art_get,module,&art,controls,&base);
     }
     win16_style_palette palette;
     style_window_palette_default(&palette);
@@ -446,14 +446,14 @@ static BOOL draw_control_lines(HDC dc,const classic_theme *theme,BOOL win2000)
         classic_control_presentation controls=theme->controls;
         controls.group=controls.edit=profile;
         if(win2000){
-            passed=win2k_button_paint(group,&instance,dc,NULL,NULL,&theme->group,NULL,NULL,controls,&relief);
+            passed=style_observed_button_paint(group,&instance,dc,NULL,NULL,&theme->group,NULL,NULL,NULL,controls,&relief);
         }else{
             win16_control_choice_view view={&instance,&native,&palette,NULL,NULL,button_type,
                 button_fit,button_fit,button_fit,button_fit,button_fit,NULL,NULL,NULL,&theme->group,NULL,controls,FALSE};
             win16_control_draw_choice(group,&view,dc);
         }
         passed=passed && GetPixel(dc,10,27)==(profile==STYLE_LINE_FLAT?theme->group.shadow:RGB(255,255,255));
-        if(win2000)passed=passed && win2k_edit_border(edit,dc,&relief,profile);
+        if(win2000)passed=passed && style_observed_edit_border(edit,dc,&relief,profile);
         else{
             control_style state={.palette=palette,.controls=controls,.edit_border=TRUE};
             memcpy(state.edit_colors,theme->edit,sizeof(state.edit_colors));
@@ -584,7 +584,7 @@ static BOOL draw_separator(HDC dc,const classic_theme *theme,BOOL relief)
     RECT bounds={0,0,32,32};
     int unit=max(1,MulDiv(1,(int)GetDpiForWindow(control),96));
     BOOL passed=style_paint_color(dc,&bounds,untouched) &&
-        win2k_static_paint(control,&instance,dc,&palette,theme->controls.separator) &&
+        style_observed_static_paint(control,&instance,dc,&palette,theme->controls.separator) &&
         GetPixel(dc,0,5)==(relief?palette.shadow:palette.dark) &&
         GetPixel(dc,relief?1:unit,5)==(relief?palette.highlight:untouched) &&
         GetPixel(dc,5,5)==untouched;
@@ -624,14 +624,14 @@ static BOOL draw_combo_surface(HDC dc,const classic_theme *theme,BOOL win2000)
         win2k_palette palette=classic_theme_relief_palette(theme);
         palette.window=background;
         style_instance instance={0};
-        passed=win2k_combo_paint(combo,&instance,dc,&palette,&theme->combo);
+        passed=style_observed_combo_paint(combo,&instance,dc,&palette,&theme->combo);
     }else if(passed){
         control_style state={.combo_colors=theme->combo,.list_colors=theme->list,.label_colors=theme->label,
             .combo_arrow=theme->combo_arrow};
         style_window_palette_default(&state.palette);
         classic_theme_window_palette(&state.palette,theme);
         state.list_colors.background=background;
-        win16_control_draw_combo(combo,&state,dc,win2k_combo_info,button_fit,button_fit);
+        win16_control_draw_combo(combo,&state,dc,style_observed_combo_info,button_fit,button_fit);
     }
     if(passed)passed=GetPixel(dc,info.rcItem.right-4,(info.rcItem.top+info.rcItem.bottom)/2)==background;
     DestroyWindow(parent);

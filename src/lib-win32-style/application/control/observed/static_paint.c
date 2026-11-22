@@ -1,7 +1,7 @@
-/* Win2000 statctl.c xxxStaticPaint / StaticCallback. Images keep their
+/* statctl.c xxxStaticPaint / StaticCallback. Images keep their
  * original native painter and ownership through the common basic protocol. */
 #include "static_paint.h"
-#include "../common/palette.h"
+#include "lib-win32-style/application/graphics/paint_frame.h"
 #include "lib-win32-style/application/control/button_snapshot.h"
 #include <wchar.h>
 typedef struct static_text {const WCHAR *text;UINT flags;} static_text;
@@ -14,7 +14,7 @@ static style_control_button_role role(HWND window,void *context,DWORD style)
 {(void)window;(void)context;return (style_control_button_role){style&SS_TYPEMASK,TRUE};}
 static HFONT font(HWND window,void *context)
 {(void)context;HFONT value=(HFONT)SendMessageW(window,WM_GETFONT,0,0);return value?value:(HFONT)GetStockObject(SYSTEM_FONT);}
-BOOL win2k_static_paint(HWND window,style_instance *instance,HDC dc,const win2k_palette *p,style_line_profile separator)
+BOOL style_observed_static_paint(HWND window,style_instance *instance,HDC dc,const style_relief_palette *p,style_line_profile separator)
 {
     int saved=SaveDC(dc);if(!saved)return FALSE;
     BOOL result=FALSE;RECT client;HWND parent=GetParent(window);
@@ -27,7 +27,7 @@ BOOL win2k_static_paint(HWND window,style_instance *instance,HDC dc,const win2k_
         HGDIOBJ old=SelectObject(dc,snapshot.font);if(!old||old==HGDI_ERROR)goto done;
     }else{snapshot.style=initial;snapshot.role=role(window,NULL,initial);}
     if(!GetClientRect(window,&client))goto done;
-    HBRUSH brush=win2k_control_brush(window,instance,dc,p);if(!brush)goto done;
+    HBRUSH brush=style_observed_control_brush(window,instance,dc,p);if(!brush)goto done;
     UINT cues=textual?(UINT)SendMessageW(window,WM_QUERYUISTATE,0,0):0;
     if(instance->detached||!IsWindow(window)||GetParent(window)!=parent||
        (DWORD)GetWindowLongPtrW(window,GWL_STYLE)!=snapshot.style||

@@ -47,6 +47,13 @@ T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及�
 本机双架构 SDK/DLL/TLS 实测已通过，结果及证明局限见
 [工具链记录](../etc/import/TOOLCHAIN.md)，不等于产品构建成功。
 
+## 控件运行时和主题数据
+
+原生观察式控件的生命周期、输入与绘制在 `application/control/observed`。
+`application/control/control_colors.h` 和 `presentation.h` 定义已解析的数据，
+`appearance/msstyles/observed_control_style.h` 将主题映射投影到这些类型。
+控件绘制借用调用方的图像解码器，实例保管持续绘制所需的映射。
+
 ## 现代外框的当前源码位置与迁移边界
 
 公共宿主、输入、表面和重绘机制位于 `src/lib-win32-style/application/adapters/`；
