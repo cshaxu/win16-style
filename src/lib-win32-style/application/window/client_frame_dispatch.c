@@ -107,7 +107,7 @@ LRESULT style_client_frame_dispatch(HWND w,style_client_frame *s,UINT msg,WPARAM
     case WM_ENTERMENULOOP: {
         menu_selection selection={s,v->paint_button};
         style_menu_client_theme theme={&s->palette,s->fonts.menu,s->fonts.dpi,&selection,menu_button,
-            &s->menu_popup,&s->menu_metrics,&s->menu_art};
+            &s->menu_popup,&s->menu_metrics,&s->menu_art,&s->menu};
         if(style_menu_owner_message(&s->menu,w,msg,wp,lp,&style_menu_client_operations,&theme,&result))break;
         goto forward;
     }

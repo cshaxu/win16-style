@@ -16,6 +16,7 @@ typedef struct style_menu_client_theme {
     const classic_menu_colors *colors;
     const style_menu_metrics *metrics;
     const style_menu_art *art;
+    const style_menu_owner *owner;
 } style_menu_client_theme;
 extern const style_menu_owner_ops style_menu_client_operations;
 #endif

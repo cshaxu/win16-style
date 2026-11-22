@@ -16,7 +16,7 @@ void style_menu_draw_mark(HDC dc,const RECT *row,BOOL submenu,UINT dpi,COLORREF 
         return;
     }
     int width=submenu?7:14,height=submenu?11:14;
-    int left=submenu?row->right-MulDiv(11,(int)dpi,96):row->left+MulDiv(2,(int)dpi,96);
+    int left=submenu?row->right-style_menu_arrow_extent(dpi):row->left+MulDiv(2,(int)dpi,96);
     int top=(row->top+row->bottom-MulDiv(height,(int)dpi,96))/2;
     SetDCBrushColor(dc,color);
     HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);

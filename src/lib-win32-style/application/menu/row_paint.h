@@ -16,6 +16,8 @@ typedef struct style_menu_columns {
 BOOL style_menu_columns_read(HDC,HFONT,UINT,const WCHAR *,style_menu_columns *);
 int style_menu_columns_width(const style_menu_columns *,UINT,BOOL,const style_menu_metrics *);
 BOOL style_menu_bar_measure(HDC,HFONT,UINT,const WCHAR *,const style_menu_metrics *,SIZE *);
+void style_menu_row_colors(const style_window_palette *,const classic_menu_colors *,UINT,
+    COLORREF *background,COLORREF *foreground);
 BOOL style_menu_paint_row(HDC,const RECT *,HFONT,UINT,const style_window_palette *,const WCHAR *,UINT,
     style_menu_kind,BOOL,const style_menu_columns *,const classic_menu_colors *,const style_menu_metrics *,
     const style_menu_art *,HBITMAP);

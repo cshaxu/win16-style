@@ -51,7 +51,10 @@ BOOL style_menu_owned_measure(style_menu_item *items,MEASUREITEMSTRUCT *measure,
 }
 
 static style_menu_popup_scope *begin_menu(void *context,HWND owner)
-{style_menu_client_theme *t=context;(void)owner;return style_menu_client_popup_begin(t->palette,t->colors,t->metrics,t->art);}
+{
+    style_menu_client_theme *t=context;(void)owner;
+    return style_menu_client_popup_begin(t->palette,t->colors,t->metrics,t->art,t->owner,t->dpi);
+}
 static void set_system(void *context,style_menu_popup_scope *scope,HMENU menu)
 {style_menu_client_theme *t=context;if(scope)style_menu_client_popup_system(scope,menu,t->font,t->dpi);}
 static BOOL measure_item(void *context,style_menu_item *items,MEASUREITEMSTRUCT *measure)

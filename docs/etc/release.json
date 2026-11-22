@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S24 P13",
-  "stage": "published development candidate with theme-defined choice glyph fallback",
+  "delivery": "M0 T29 S24 P21",
+  "stage": "published development candidate with themed submenu arrow compositing",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P54 563a62c4",
-  "source_snapshot_sha256": "5ef22f3335538e9c0f18e4c7709d46ac00e82ad03d0c2c0535b8735d0eb58bf4",
+  "last_verified_remote_delivery": "M0 T29 S24 P13 0cc58c14",
+  "source_snapshot_sha256": "410bc90c3fdaac07979850a47ac1827cbea11f0651eb748445bc87701220f7c6",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "a0cc7d8e2b9e8f78833670a181ab3c9ac843cfbfe0c448cf065855a5db76a267",
+      "sha256": "1294af481409f0b1394d805f57a2c0f82249291aa1349a150c02cfd9aea43f77",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "2728599c4cee1d6e4d79f5bd3a3a5c9d17645c66d21f9a1c9bfd70e9f76188e9",
+      "sha256": "bafd829514f6f0971e8b57ae0e32760cc7aed3f3b032763ef96aa2ab6936eb29",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "6b228af03e4ca69136e73403a28c4004cc73c94282f4e5254a6f1e6b808eb497",
+      "sha256": "930c973be7f995e27f5802d92a307d3be6983d28e65544811e373860ff8fdf76",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,44 +106,36 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 24,
+    "passed": 16,
     "selected_cases": [
-      "32-winnt-Win16-provider",
-      "32-winnt-Win2K-provider",
-      "32-assets-Win16-provider",
-      "32-assets-Win2K-provider",
-      "64-winnt-Win16-provider",
-      "64-winnt-Win2K-provider",
-      "64-assets-Win16-provider",
-      "64-assets-Win2K-provider",
-      "32-choice-96-Win16",
-      "32-choice-96-Remap",
-      "32-choice-96-WrongSize",
-      "32-choice-96-BadPng",
-      "32-choice-144-Win16",
-      "32-choice-144-Remap",
-      "32-choice-144-WrongSize",
-      "32-choice-144-BadPng",
-      "64-choice-96-Win16",
-      "64-choice-96-Remap",
-      "64-choice-96-WrongSize",
-      "64-choice-96-BadPng",
-      "64-choice-144-Win16",
-      "64-choice-144-Remap",
-      "64-choice-144-WrongSize",
-      "64-choice-144-BadPng"
+      "x86-menu-cancel",
+      "x86-win2k-glyph",
+      "x86-win2k-custom",
+      "x86-win2k-default",
+      "x64-menu-cancel",
+      "x64-win2k-glyph",
+      "x64-win2k-custom",
+      "x64-win2k-default",
+      "x86-96-submenu-stock",
+      "x86-96-submenu-blank",
+      "x86-144-submenu-stock",
+      "x86-144-submenu-blank",
+      "x64-96-submenu-stock",
+      "x64-96-submenu-blank",
+      "x64-144-submenu-stock",
+      "x64-144-submenu-blank"
     ],
     "skipped": [],
     "limitations": [
-      "Eight installed-package provider cases and sixteen choice glyph cases with independent corrupt PNG and wrong-size references",
-      "Owned native fixtures only. Physical input, interactive administrator tray, actual UWP applications and full matrix not run"
+      "Live screen readback unavailable. Native popup WM_PRINT, owned-window message tests and source closure were verified.",
+      "The x86 auxiliary DC test has the same line-223 default menu metrics failure with the previous shipped snapshot."
     ]
   },
-  "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
+  "evidence": "../history/M0-T29-S24-final-package-acceptance.md",
   "build": {
-    "command": "isolated tracked snapshot with scoped P13 inputs, MinGW/Ninja with shared build/.ccache",
+    "command": "isolated tracked snapshot with scoped S24 P21 changes, MinGW/Ninja and ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1860,
-    "cache_misses": 226
+    "cache_hits": 261,
+    "cache_misses": 1825
   }
 }

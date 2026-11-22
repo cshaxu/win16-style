@@ -14,6 +14,7 @@ typedef struct menu_presentation {
     HMENU system;
     HFONT font;
     UINT dpi;
+    const style_menu_owner *owner;
 } menu_presentation;
 
 static void paint_border(style_menu_popup *p,HDC target)
@@ -32,6 +33,12 @@ static void paint_border(style_menu_popup *p,HDC target)
     style_frame_solid_outline(dc,r,u,view->palette.edge);
 done:
     RestoreDC(dc,saved);if(!target)ReleaseDC(w,dc);
+}
+
+static UINT item_draw_state(UINT state)
+{
+    return ((state&MFS_HILITE)?ODS_SELECTED:0) | ((state&MFS_DISABLED)?ODS_DISABLED:0) |
+        ((state&MFS_CHECKED)?ODS_CHECKED:0) | ((state&MFS_DEFAULT)?ODS_DEFAULT:0);
 }
 
 static BOOL paint_system(style_menu_popup *p,HDC target,BOOL window_coordinates)
@@ -69,9 +76,7 @@ static BOOL paint_system(style_menu_popup *p,HDC target,BOOL window_coordinates)
             int deficit=MulDiv(theme_width-(r.right-r.left),96,(int)dpi);
             metrics.shortcut_gap=max(0,metrics.shortcut_gap-deficit);
         }
-        UINT state=0;if(rows[i].state&MFS_HILITE)state|=ODS_SELECTED;if(rows[i].state&MFS_DISABLED)state|=ODS_DISABLED;if(rows[i].state&MFS_CHECKED)state|=ODS_CHECKED;
-        if(rows[i].state&MFS_DEFAULT)state|=ODS_DEFAULT;
-        (void)style_menu_paint_row(dc,&r,font,dpi,&s->palette,rows[i].text,state,
+        (void)style_menu_paint_row(dc,&r,font,dpi,&s->palette,rows[i].text,item_draw_state(rows[i].state),
             (rows[i].type&MFT_SEPARATOR)?STYLE_MENU_SEPARATOR:STYLE_MENU_ROW,
             rows[i].submenu,&columns,&s->colors,&metrics,&s->art,rows[i].bitmap);
     }
@@ -82,12 +87,60 @@ static BOOL paint_system(style_menu_popup *p,HDC target,BOOL window_coordinates)
     return valid && style_menu_popup_live(p);
 }
 
-static BOOL system_selection(style_menu_popup *p,ULONGLONG *selected)
+static BOOL paint_owned_arrows(style_menu_popup *p,HDC target,BOOL window_coordinates)
+{
+    HWND window=style_menu_popup_window(p);
+    menu_presentation *s=style_menu_popup_context(p);
+    if(!s->owner || !s->art.available || !s->dpi)return FALSE;
+
+    MENUBARINFO info={.cbSize=sizeof(info)};
+    POINT delta={0,0};
+    if(!GetMenuBarInfo(window,OBJID_CLIENT,0,&info) || !style_menu_popup_live(p) ||
+       !info.hMenu || !style_menu_client_offset(window,window_coordinates,&delta))return FALSE;
+    int count=GetMenuItemCount(info.hMenu);
+    if(count<=0)return FALSE;
+
+    HDC dc=target?target:GetDC(window);
+    if(!dc)return FALSE;
+    int saved=SaveDC(dc);
+    BOOL painted=FALSE;
+    int extent=style_menu_arrow_extent(s->dpi);
+    /* USER may draw a submenu arrow after WM_DRAWITEM. Replace the reserved
+     * column only for a row that this owner converted to themed owner-draw. */
+    for(int i=0;saved && i<count && style_menu_popup_live(p);++i){
+        MENUITEMINFOW data={.cbSize=sizeof(data),.fMask=MIIM_DATA|MIIM_SUBMENU|MIIM_STATE|MIIM_FTYPE};
+        if(!GetMenuItemInfoW(info.hMenu,(UINT)i,TRUE,&data) || !style_menu_popup_live(p) ||
+           !data.hSubMenu || !(data.fType&MFT_OWNERDRAW))continue;
+        const style_menu_item *item=style_menu_item_find(s->owner->items,data.dwItemData);
+        if(!item || item->menu!=info.hMenu || !item->submenu || (item->type&MFT_SEPARATOR))continue;
+        RECT row;
+        if(!GetMenuItemRect(NULL,info.hMenu,(UINT)i,&row))continue;
+        MapWindowPoints(NULL,window,(POINT *)&row,2);
+        OffsetRect(&row,delta.x,delta.y);
+        if(row.right-row.left<extent || row.bottom-row.top<extent || !style_menu_popup_live(p))continue;
+        RECT gutter={row.right-extent,row.top,row.right,row.bottom};
+        COLORREF background,foreground;
+        style_menu_row_colors(&s->palette,&s->colors,item_draw_state(data.fState),&background,&foreground);
+        SetDCBrushColor(dc,background);FillRect(dc,&gutter,(HBRUSH)GetStockObject(DC_BRUSH));
+        style_menu_draw_mark(dc,&row,TRUE,s->dpi,foreground,&s->art.arrow[0][0]);
+        painted=TRUE;
+    }
+    if(saved)RestoreDC(dc,saved);
+    if(!target)ReleaseDC(window,dc);
+    return painted;
+}
+
+static BOOL paint_popup(style_menu_popup *p,HDC dc,BOOL window_coordinates)
+{
+    return paint_system(p,dc,window_coordinates) || paint_owned_arrows(p,dc,window_coordinates);
+}
+
+static BOOL popup_selection(style_menu_popup *p,ULONGLONG *selected)
 {
     HWND w=style_menu_popup_window(p);menu_presentation *s=style_menu_popup_context(p);
     MENUBARINFO info={.cbSize=sizeof(info)};
-    if(!s->system||!GetMenuBarInfo(w,OBJID_CLIENT,0,&info)||
-        info.hMenu!=s->system)return FALSE;
+    if(!GetMenuBarInfo(w,OBJID_CLIENT,0,&info) || !style_menu_popup_live(p) ||
+       !info.hMenu || (info.hMenu!=s->system && (!s->owner || !s->art.available)))return FALSE;
     int count=GetMenuItemCount(info.hMenu);if(count<1||count>64)return FALSE;
     *selected=0;
     for(int i=0;i<count;++i){MENUITEMINFOW item={.cbSize=sizeof(item),.fMask=MIIM_STATE};
@@ -99,7 +152,7 @@ static BOOL system_selection(style_menu_popup *p,ULONGLONG *selected)
 
 static BOOL accept_popup(void *context,HWND window)
 {(void)context;(void)window;return TRUE;}
-static const style_menu_popup_ops popup_ops={accept_popup,paint_border,paint_system,system_selection,free,TRUE,FALSE};
+static const style_menu_popup_ops popup_ops={accept_popup,paint_border,paint_popup,popup_selection,free,TRUE,TRUE};
 
 void style_menu_client_popup_system(style_menu_popup_scope *scope,HMENU menu,HFONT font,UINT dpi)
 {
@@ -107,10 +160,12 @@ void style_menu_client_popup_system(style_menu_popup_scope *scope,HMENU menu,HFO
     if(s){s->system=menu;s->font=font;s->dpi=dpi;}
 }
 style_menu_popup_scope *style_menu_client_popup_begin(const style_window_palette *palette,
-    const classic_menu_colors *colors,const style_menu_metrics *metrics,const style_menu_art *art)
+    const classic_menu_colors *colors,const style_menu_metrics *metrics,const style_menu_art *art,
+    const style_menu_owner *owner,UINT dpi)
 {
     menu_presentation *s=calloc(1,sizeof(*s));if(!s)return NULL;
-    if(palette)s->palette=*palette;else style_window_palette_default(&s->palette);
+    if(palette)style_window_palette_resolve(palette,&s->palette);else style_window_palette_default(&s->palette);
+    s->owner=owner;s->dpi=dpi;
     if(colors && !style_window_high_contrast())s->colors=*colors;
     if(metrics)s->metrics=*metrics;
     if(art)s->art=*art;

@@ -49,6 +49,15 @@ BOOL style_menu_bar_measure(HDC dc,HFONT font,UINT dpi,const WCHAR *text,
     return TRUE;
 }
 
+void style_menu_row_colors(const style_window_palette *p,const classic_menu_colors *colors,
+    UINT state,COLORREF *background,COLORREF *foreground)
+{
+    BOOL selected=(state&ODS_SELECTED)!=0,disabled=(state&(ODS_DISABLED|ODS_GRAYED))!=0;
+    BOOL themed=colors && colors->present;
+    *background=themed?(selected?colors->selection:colors->background):(selected?p->active:p->light);
+    *foreground=themed?style_menu_ink(colors,disabled,selected):(selected?p->active_text:p->edge);
+}
+
 BOOL style_menu_paint_row(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
     const style_window_palette *p,const WCHAR *text,UINT state,style_menu_kind kind,BOOL submenu,
     const style_menu_columns *columns,const classic_menu_colors *colors,const style_menu_metrics *metrics,
@@ -67,12 +76,9 @@ BOOL style_menu_paint_row(HDC dc,const RECT *bounds,HFONT font,UINT dpi,
     if(kind==STYLE_MENU_BAR)
         padding=metrics && metrics->bar_padding?MulDiv(metrics->bar_padding,(int)dpi,96):
             style_menu_native_text_margin(dc,dpi)/2;
-    BOOL selected=(state&ODS_SELECTED)!=0;
     disabled=(state&(ODS_DISABLED|ODS_GRAYED))!=0;
     BOOL themed=colors && colors->present;
-    background=themed?(selected?colors->selection:colors->background):(selected?p->active:p->light);
-    foreground=themed?style_menu_ink(colors,disabled,selected):
-        (selected?p->active_text:p->edge);
+    style_menu_row_colors(p,colors,state,&background,&foreground);
     SetDCBrushColor(dc,background);FillRect(dc,bounds,(HBRUSH)GetStockObject(DC_BRUSH));
     if(kind==STYLE_MENU_SEPARATOR){
         r=*bounds;r.top=(r.top+r.bottom)/2;r.bottom=r.top+u;

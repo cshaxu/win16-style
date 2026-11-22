@@ -75,7 +75,7 @@ static BOOL menu_message(void *context,HWND w,UINT message,WPARAM a,LPARAM b,BOO
     uwp_frame *s=context;
     style_menu_client_theme theme={&s->theme.palette,s->fonts.menu,s->fonts.dpi,
         owner?&s->frame:NULL,owner?style_uwp_frame_menu_selection:NULL,
-        &s->theme.menu_popup,&s->theme.menu_metrics,&s->theme.menu_art};
+        &s->theme.menu_popup,&s->theme.menu_metrics,&s->theme.menu_art,&s->frame.menu};
     return style_menu_owner_message(&s->frame.menu,w,message,a,b,&style_menu_client_operations,&theme,result);
 }
 static const style_uwp_frame_ops operations={refresh_geometry,refresh_paint,input_hit,can_maximize,menu_message,dispose};
