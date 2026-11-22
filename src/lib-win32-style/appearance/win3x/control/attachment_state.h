@@ -4,7 +4,7 @@
 #include "lib-win32-style/application/adapters/win32/attachment.h"
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include <commctrl.h>
-#include "status_font.h"
+#include "lib-win32-style/application/graphics/font_cache.h"
 #include "lib-win32-style/application/control/runtime.h"
 #include "lib-win32-style/application/control/control_status.h"
 #include "lib-win32-style/application/control/control_native_combo.h"

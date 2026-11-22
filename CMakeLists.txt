@@ -249,10 +249,9 @@ add_library(win16-control STATIC
   src/lib-win32-style/appearance/win3x/control/special_paint.c
   src/lib-win32-style/appearance/win3x/control/control_state.c
   src/lib-win32-style/appearance/win3x/control/control_dispatch.c
-  src/lib-win32-style/appearance/win3x/control/vcl_native_paint.c src/lib-win32-style/appearance/win3x/control/text_policy.c
+  src/lib-win32-style/appearance/win3x/control/vcl_native_paint.c
   src/lib-win32-style/appearance/win3x/control/control_guard.c
   src/lib-win32-style/appearance/win3x/control/control_install.c
-  src/lib-win32-style/appearance/win3x/control/status_font.c
   src/lib-win32-style/appearance/win3x/control/month_paint.c src/lib-win32-style/appearance/win3x/control/special_install.c
   src/lib-win32-style/appearance/win3x/control/attachment_guard.c)
 target_include_directories(win16-control PUBLIC src/lib-win32-style/appearance/win3x/control)

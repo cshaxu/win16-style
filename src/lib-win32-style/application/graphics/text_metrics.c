@@ -31,3 +31,43 @@ BOOL style_text_fit(HDC target,HFONT font,const WCHAR *text,const RECT *bounds,C
     DeleteObject(bitmap);DeleteDC(memory);
     if(ok){drawn->cx=out_width;drawn->cy=out_height;}return ok;
 }
+
+BOOL style_text_ascii(LPCWSTR text,int count)
+{
+    for(int i=0;i<count;++i)if(text[i]>0x7f)return FALSE;
+    return TRUE;
+}
+
+BOOL style_text_single_byte_wide(HDC dc,const WCHAR *text,int count,BOOL active,UINT code_page)
+{
+    if(!active)return TRUE;
+    if(count<0 || count>4096 || (GetTextAlign(dc)&TA_RTLREADING))return FALSE;
+    if(!count)return TRUE;
+    BOOL used=FALSE;char buffer[4096];
+    return text && WideCharToMultiByte(code_page,WC_NO_BEST_FIT_CHARS,text,count,buffer,sizeof(buffer),NULL,&used)==count && !used;
+}
+BOOL style_text_single_byte_ansi(HDC dc,const char *text,int count,BOOL active,UINT code_page)
+{
+    if(!active)return TRUE;
+    if(!text || (GetTextAlign(dc)&TA_RTLREADING))return FALSE;
+    if(count==-1){count=0;while(count<=4096 && text[count])++count;}
+    if(count<0 || count>4096)return FALSE;
+    if(GetACP()!=code_page)for(int i=0;i<count;++i)if((unsigned char)text[i]>=128)return FALSE;
+    return TRUE;
+}
+
+BOOL style_text_glyph_run_allowed(HDC dc,UINT options,UINT count)
+{return count<=4096 && !(options&ETO_RTLREADING) && !(GetTextAlign(dc)&TA_RTLREADING);}
+
+HFONT style_text_static_source(HDC dc,LPCWSTR text,int count,UINT flags,const void *address,HWND window,HMODULE native_module)
+{
+    HMODULE caller=NULL;HWND from;
+    if(!dc || !text || (flags&(DT_CALCRECT|DT_RTLREADING|DT_MODIFYSTRING)) ||
+       (GetLayout(dc)&LAYOUT_RTL) || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|
+       GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=native_module)return NULL;
+    from=WindowFromDC(dc);if(from && from!=window)return NULL;
+    if(count< -1)return NULL;
+    if(count==-1){count=0;while(count<4096 && text[count])++count;if(count==4096)return NULL;}
+    if(count>4096)return NULL;
+    return style_text_ascii(text,count)?(HFONT)GetCurrentObject(dc,OBJ_FONT):NULL;
+}

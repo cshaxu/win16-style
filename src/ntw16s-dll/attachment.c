@@ -14,14 +14,13 @@
 #include "lib-win32-style/application/control/outline_combo.h"
 #include "lib-win32-style/application/control/control_custom_draw.h"
 #include "../lib-win32-style/appearance/win3x/control/vcl_native_paint.h"
-#include "../lib-win32-style/appearance/win3x/control/text_policy.h"
+#include "lib-win32-style/application/graphics/text_metrics.h"
 #include "lib-win32-style/application/adapters/win32/frame_paint.h"
 #include "lib-win32-style/application/adapters/win32/runtime_observer.h"
 #include "../lib-win32-style/appearance/win3x/control/special_paint.h"
 #include "lib-win32-style/application/control/control_vcl_spin.h"
 #include "lib-win32-style/application/control/spin.h"
 #include "lib-win32-style/application/control/status_paint.h"
-#include "../lib-win32-style/appearance/win3x/control/status_font.h"
 #include "lib-win32-style/application/control/control_status.h"
 #include "../lib-win32-style/appearance/win3x/control/attachment_state.h"
 #include "../lib-win32-style/appearance/win3x/control/month_paint.h"
@@ -123,7 +122,7 @@ static BOOL status_identity(HWND w,attachment *a,HMODULE *native)
 
 BOOL ntw16s_status_theme_begin(style_control_status_theme *t,HDC dc,int part,int state,LPCWSTR text,int count,DWORD flags,const RECT *rect,const void *address)
 {
-    return style_control_status_theme_begin(&paint_runtime.status_themes,t,paint_runtime.status,dc,part,state,text,count,flags,rect,address,win16_control_status_text_supported);
+    return style_control_status_theme_begin(&paint_runtime.status_themes,t,paint_runtime.status,dc,part,state,text,count,flags,rect,address,style_text_ascii);
 }
 void ntw16s_status_theme_end(void *data)
 {style_control_status_theme_end(&paint_runtime.status_themes,data);}
@@ -132,9 +131,9 @@ HFONT ntw16s_status_simple_font(HDC dc,LPCWSTR text,int count,UINT flags,const v
 {
     style_control_status_scope *s=paint_runtime.status;if(!s){if(token)*token=NULL;return NULL;}
     if(token)*token=NULL;
-    if(!token || !style_control_status_text_matches(s,paint_runtime.status_themes.current,dc,text,count,flags,address,win16_control_status_text_supported))return NULL;
+    if(!token || !style_control_status_text_matches(s,paint_runtime.status_themes.current,dc,text,count,flags,address,style_text_ascii))return NULL;
     attachment *a=s->context;
-    return a->control_font_points?style_font_snapshot_borrow(&a->status_font,dc,a,token,a->control_font_points,&win16_status_font_operations):NULL;
+    return a->control_font_points?style_font_snapshot_borrow(&a->status_font,dc,a,token,a->control_font_points,&style_raster_font_isolated_operations):NULL;
 }
 void ntw16s_status_simple_return(void *token,HFONT font)
 {attachment *a=token;if(a)style_font_snapshot_return(&a->status_font,font);}
@@ -207,7 +206,9 @@ HFONT ntw16s_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,const voi
 {
     const style_runtime_native_call *s=style_runtime_native_current(&paint_runtime.native_calls,current_observation());
     const attachment *a=s?s->instance->context:NULL;
-    return a && a->control_font_points?win16_control_static_text_font(dc,text,count,flags,address,s->window,s->native_module,a->control_font_points):NULL;
+    if(!a || !a->control_font_points)return NULL;
+    HFONT source=style_text_static_source(dc,text,count,flags,address,s->window,s->native_module);
+    return source?style_raster_font_acquire(source,a->control_font_points):NULL;
 }
 #define class_is style_control_class_is
 static BOOL vcl_frame_owned(HWND w,void *owner){return lookup(w)==owner;}

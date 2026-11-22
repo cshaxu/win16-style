@@ -1,11 +1,16 @@
 #include "raster_font.h"
-#include "lib-win32-style/application/graphics/font_cache.h"
 #include "lib-win32-style/application/graphics/bitmap.h"
 #include "lib-win32-style/application/graphics/bitmap_font.h"
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 #include <wchar.h>
+
+const style_font_ops style_raster_font_isolated_operations={
+    .acquire=style_raster_font_acquire_isolated,
+    .retain=style_raster_font_try_retain,
+    .release=style_raster_font_release
+};
 
 static _Thread_local style_font_pool variants;
 static LONG variant_serial;

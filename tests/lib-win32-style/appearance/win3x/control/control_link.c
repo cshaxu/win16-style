@@ -20,7 +20,7 @@
 #include "lib-win32-style/application/control/outline_list.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/control/control_custom_draw.h"
-#include "lib-win32-style/appearance/win3x/control/text_policy.h"
+#include "lib-win32-style/application/graphics/text_metrics.h"
 #include <dwmapi.h>
 #include <stdlib.h>
 
@@ -177,25 +177,28 @@ int main(void)
     if(style_runtime_dispatch_kind(NULL,&dispatch.base.instance,&dispatch.base.runtime,WM_USER,0,0,FALSE,FALSE,FALSE,TRUE)!=STYLE_RUNTIME_DISPATCH_STATIC)return 98;
     puts("ATTACH_DISPATCH_OK priority=1 detached=1 nested=1 spin=1");
     HDC policy_dc=CreateCompatibleDC(NULL);if(!policy_dc)return 81;
-    if(!win16_control_report_wide_text(policy_dc,L"abc",3,TRUE) ||
-       win16_control_report_wide_text(policy_dc,L"\x4e2d",1,TRUE) ||
-       !win16_control_report_wide_text(policy_dc,NULL,1,FALSE) ||
-       win16_control_report_wide_text(policy_dc,L"a",4097,TRUE) ||
-       !win16_control_report_ansi_text(policy_dc,"abc",-1,TRUE) ||
-       win16_control_report_ansi_text(policy_dc,NULL,0,TRUE) ||
-       !win16_control_report_ansi_text(policy_dc,NULL,0,FALSE))return 82;
+    if(!style_text_single_byte_wide(policy_dc,L"abc",3,TRUE,1252) ||
+       style_text_single_byte_wide(policy_dc,L"\x4e2d",1,TRUE,1252) ||
+       style_text_single_byte_wide(policy_dc,L"\x0416",1,TRUE,1252) ||
+       !style_text_single_byte_wide(policy_dc,L"\x0416",1,TRUE,1251) ||
+       !style_text_ascii(L"Ready",5) || style_text_ascii(L"\x0416",1) ||
+       !style_text_single_byte_wide(policy_dc,NULL,1,FALSE,1252) ||
+       style_text_single_byte_wide(policy_dc,L"a",4097,TRUE,1252) ||
+       !style_text_single_byte_ansi(policy_dc,"abc",-1,TRUE,1252) ||
+       style_text_single_byte_ansi(policy_dc,NULL,0,TRUE,1252) ||
+       !style_text_single_byte_ansi(policy_dc,NULL,0,FALSE,1252))return 82;
     style_glyph_text run={0};
-    if(!win16_control_vb_glyph_allowed(policy_dc,ETO_GLYPH_INDEX,2) ||
+    if(!style_text_glyph_run_allowed(policy_dc,ETO_GLYPH_INDEX,2) ||
        !style_glyph_text_prepare(&run,policy_dc,L"AB",2,1252,test_decode) ||
        !run.decoded || !run.encoded || run.encoded[0]!='A' || run.encoded[1]!='B')return 101;
     style_glyph_text_end(&run);
     if(style_glyph_text_prepare(&run,policy_dc,L"\x4e2d",1,1252,test_decode))return 102;
     style_glyph_text_end(&run);
-    if(win16_control_vb_glyph_allowed(policy_dc,ETO_GLYPH_INDEX|ETO_RTLREADING,1) ||
-       win16_control_vb_glyph_allowed(policy_dc,ETO_GLYPH_INDEX,4097))return 103;
+    if(style_text_glyph_run_allowed(policy_dc,ETO_GLYPH_INDEX|ETO_RTLREADING,1) ||
+       style_text_glyph_run_allowed(policy_dc,ETO_GLYPH_INDEX,4097))return 103;
     SetTextAlign(policy_dc,TA_RTLREADING);
-    if(win16_control_report_wide_text(policy_dc,L"a",1,TRUE) || win16_control_report_ansi_text(policy_dc,"a",1,TRUE))return 83;
-    if(win16_control_static_text_font(policy_dc,L"a",1,DT_CALCRECT,(const void *)main,NULL,GetModuleHandleW(NULL),12))return 84;
+    if(style_text_single_byte_wide(policy_dc,L"a",1,TRUE,1252) || style_text_single_byte_ansi(policy_dc,"a",1,TRUE,1252))return 83;
+    if(style_text_static_source(policy_dc,L"a",1,DT_CALCRECT,(const void *)main,NULL,GetModuleHandleW(NULL)))return 84;
     DeleteDC(policy_dc);
 
     control_style *control=win16_control_state_create();

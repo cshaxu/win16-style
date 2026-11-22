@@ -1,4 +1,4 @@
-#include "../../lib-win32-style/appearance/win3x/control/text_policy.h"
+#include "lib-win32-style/application/graphics/text_metrics.h"
 #include "lib-win32-style/application/menu/menu_owner.h"
 #include "lib-win32-style/application/dialog/classic_print_contract.h"
 #include "lib-win32-style/application/dialog/classic_dialog_controls.h"
@@ -441,9 +441,9 @@ static _Thread_local style_font_gate vb_text_gate;
 /* The report adapter promises only whole, reversible CP1252 runs. Keep
  * measurements and unsupported language/RTL runs on the native font. */
 static BOOL report_wide_text(HDC dc,const WCHAR *text,int count)
-{return win16_control_report_wide_text(dc,text,count,style_runtime_text_report_active());}
+{return style_text_single_byte_wide(dc,text,count,style_runtime_text_report_active(),1252);}
 static BOOL report_ansi_text(HDC dc,const char *text,int count)
-{return win16_control_report_ansi_text(dc,text,count,style_runtime_text_report_active());}
+{return style_text_single_byte_ansi(dc,text,count,style_runtime_text_report_active(),1252);}
 #define VB_TEXT_HOOK(NAME,TYPE,PARAMS,ARGS,ALLOW) \
 static __typeof__(&NAME) real_##NAME; \
 static TYPE WINAPI hook_##NAME PARAMS \
@@ -520,7 +520,7 @@ static BOOL WINAPI hook_ExtTextOutW(HDC dc,int x,int y,UINT options,const RECT *
     if(style_font_gate_begin(&vb_text_gate,&scope,dc) && style_runtime_text_direct_allowed() && style_runtime_text_active() && style_runtime_text_caller(__builtin_return_address(0))){
         font=win16_control_vb_paint_font(dc);
         if(font && (options&ETO_GLYPH_INDEX)){
-            if(!win16_control_vb_glyph_allowed(dc,options,count) ||
+            if(!style_text_glyph_run_allowed(dc,options,count) ||
                 !style_glyph_text_prepare(&glyphs,dc,text,count,1252,win16_control_vb_decode_glyphs))font=NULL;
             else{text=glyphs.decoded;options&=~ETO_GLYPH_INDEX;}
         }

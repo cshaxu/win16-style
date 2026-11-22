@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P49",
-  "stage": "published development candidate with shared outline control renderers and runtime identity checks",
+  "delivery": "M0 T29 S23 P50",
+  "stage": "published development candidate with shared text eligibility and isolated font leases",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P48 18176cb5038e",
-  "source_snapshot_sha256": "d1294a1dadcfbebd1f13ba4224e66da911968b1c6401c57ae87f340ccc5e8d7d",
+  "last_verified_remote_delivery": "M0 T29 S23 P49 1572e1690ed5",
+  "source_snapshot_sha256": "fd96a76a753ba71e61dc41d86c085bf12ca727e1a5589f34e8d516c27f394a2a",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "80a4293d51eb69971680c94e232dd55534c9a8bc573f3bf21c4600843caf897a",
+      "sha256": "939dd4947d0eaeda73df7f637fd8ae260a5c1f85cbc7464faf4fdc7fde4d39d6",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "516bb528d770d72421699aa0b3992c98c8d42a707244ffc4ba94500e0f6421b8",
+      "sha256": "74452894fab6ffbb3c2b0a048a73abb6290533f40bc2ecf4b789c787ee5c9976",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "eb8beb1dd079d74ca9e8b59bc8406d183e17fd602830186e65bf15433a6321c4",
+      "sha256": "e412bff3787dbde0d7a590b2154a7e609bb967113f5086e830828c9879933ccd",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,47 +106,45 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 26,
+    "passed": 24,
     "selected_cases": [
       "x86 link",
-      "x86 vcl-identity",
-      "x86 gdi-full",
+      "x86 font-cache",
+      "x86 text-metrics",
+      "x86 control-gdi",
       "x86 assets-theme",
-      "x86 assets-month",
-      "x86 assets-combo",
-      "x86 assets-combo-simple",
-      "x86 assets-combo-list",
+      "x86 assets-status-module",
+      "x86 assets-status-simple",
+      "x86 assets-status-stock",
       "x86 winnt-theme",
-      "x86 winnt-month",
-      "x86 winnt-combo",
-      "x86 winnt-combo-simple",
-      "x86 winnt-combo-list",
+      "x86 winnt-status-module",
+      "x86 winnt-status-simple",
+      "x86 winnt-status-stock",
       "x64 link",
-      "x64 vcl-identity",
-      "x64 gdi-full",
+      "x64 font-cache",
+      "x64 text-metrics",
+      "x64 control-gdi",
       "x64 assets-theme",
-      "x64 assets-month",
-      "x64 assets-combo",
-      "x64 assets-combo-simple",
-      "x64 assets-combo-list",
+      "x64 assets-status-module",
+      "x64 assets-status-simple",
+      "x64 assets-status-stock",
       "x64 winnt-theme",
-      "x64 winnt-month",
-      "x64 winnt-combo",
-      "x64 winnt-combo-simple",
-      "x64 winnt-combo-list"
+      "x64 winnt-status-module",
+      "x64 winnt-status-simple",
+      "x64 winnt-status-stock"
     ],
     "skipped": [],
     "limitations": [
-      "6 clean-snapshot link, VCL identity and GDI cases, 8 installed-package theme and month cases, and 12 installed-package combo cases with incrementally rebuilt test-only drivers",
+      "8 same-snapshot graphics and link cases, 16 theme or live status-bar cases against both installations",
       "Owned native fixtures only",
       "Physical input, interactive administrator tray, actual UWP application and full package matrix not run"
     ]
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "isolated HEAD plus scoped P49 product inputs, MinGW/Ninja and shared build/.ccache",
+    "command": "isolated HEAD plus scoped P50 source and tests, MinGW/Ninja and shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2074,
-    "cache_misses": 30
+    "cache_hits": 2072,
+    "cache_misses": 28
   }
 }
