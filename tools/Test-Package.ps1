@@ -1124,7 +1124,7 @@ try{
     # Dialog tests that do not compare actual screen pixels run on a private
     # desktop, so they cannot consume the user's physical keyboard input.
     foreach($case in $cases){
-        if($case.command -eq $dialogDriver -and $case.name -notmatch '^ntw2ks-(?:(?:frame|composed-caption)-x(?:86|64)$|com-explorer-)' -and $case.name -ne 'desktop-cleanup' -and $case.name -notmatch '^(scroll-|neutral-provider-exports-)' -and $case.name -notmatch '^dialog-folder-x(86|64)-controls$' -and $case.arguments[0] -ne '--low-private'){
+        if($case.command -eq $dialogDriver -and $case.name -notmatch '^ntw2ks-(?:(?:frame|composed-caption)-x(?:86|64)$|com-explorer-)' -and $case.name -ne 'desktop-cleanup' -and $case.name -notmatch '^(scroll-|neutral-(provider-exports|menu-cancel)-)' -and $case.name -notmatch '^dialog-folder-x(86|64)-controls$' -and $case.arguments[0] -ne '--low-private'){
             $case.arguments=@('--private')+@($case.arguments)
         }
     }

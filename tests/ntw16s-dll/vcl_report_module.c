@@ -8,7 +8,7 @@ typedef BOOL (WINAPI *reg_fn)(BOOL,BOOL);typedef BOOL (WINAPI *unreg_fn)(void);t
 static int run(int argc,WCHAR **argv)
 {
  CHECK(argc==2);INITCOMMONCONTROLSEX ic={sizeof(ic),ICC_TREEVIEW_CLASSES|ICC_LISTVIEW_CLASSES};CHECK(InitCommonControlsEx(&ic));
- HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll"),f=LoadLibraryW(argv[1]);CHECK(dll&&f);
+ HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll"),f=LoadLibraryW(argv[1]);CHECK(dll&&f);
  window_fn attached=(void*)GetProcAddress(dll,"Ntw16sWindowAttached"),remove=(void*)GetProcAddress(dll,"Ntw16sWindowRemove");reg_fn reg=(void*)GetProcAddress(f,"FixtureRegister");unreg_fn unreg=(void*)GetProcAddress(f,"FixtureUnregister");create_fn create=(void*)GetProcAddress(f,"FixtureCreate");CHECK(attached&&remove&&reg&&unreg&&create);
  HWND root=CreateWindowW(L"STATIC",L"",WS_OVERLAPPEDWINDOW,0,0,400,240,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(root);ShowWindow(root,SW_SHOWNA);
  for(int is_tree=0;is_tree<2;is_tree++)for(int mode=0;mode<(is_tree?2:8);mode++){

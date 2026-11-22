@@ -30,7 +30,7 @@ static BOOL parent_background(HWND w)
 static int run(int argc,WCHAR **argv)
 {
     CHECK(argc==2);
-    HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll"),fixture=LoadLibraryW(argv[1]);
+    HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll"),fixture=LoadLibraryW(argv[1]);
     CHECK(dll && fixture);
     window_fn attached=(void*)GetProcAddress(dll,"Ntw16sWindowAttached"),remove=(void*)GetProcAddress(dll,"Ntw16sWindowRemove");
     reg_fn reg=(void*)GetProcAddress(fixture,"FixtureRegister");unreg_fn unreg=(void*)GetProcAddress(fixture,"FixtureUnregister");

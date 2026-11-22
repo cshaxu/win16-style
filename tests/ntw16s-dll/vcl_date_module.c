@@ -66,7 +66,7 @@ static int run(int argc,WCHAR **argv)
     CHECK(argc==2);HMODULE fixture=LoadLibraryW(argv[1]);CHECK(fixture);
     reg_fn reg=(void*)GetProcAddress(fixture,"FixtureRegister");create_fn create=(void*)GetProcAddress(fixture,"FixtureCreate");
     unreg_fn unreg=(void*)GetProcAddress(fixture,"FixtureUnregister");raise_print=(void*)GetProcAddress(fixture,"FixtureRaiseNextPrint");reenter_info=(void*)GetProcAddress(fixture,"FixtureReenterInfo");CHECK(reg && create && unreg && raise_print && reenter_info);
-    HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntw16s64.dll":L"ntw16s32.dll");CHECK(dll);
+    HMODULE dll=GetModuleHandleW(sizeof(void*)==8?L"ntwshk64.dll":L"ntwshk32.dll");CHECK(dll);
     window_fn attached=(void*)GetProcAddress(dll,"Ntw16sWindowAttached");remove_style=(void*)GetProcAddress(dll,"Ntw16sWindowRemove");CHECK(attached && remove_style);
     HWND startup=CreateWindowW(L"STATIC",L"",WS_POPUP,0,0,1,1,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(startup);CHECK(DestroyWindow(startup));
     WNDCLASSW cls={.hInstance=GetModuleHandleW(NULL),.lpfnWndProc=parent_proc,.lpszClassName=L"VclModuleDateParent"};CHECK(RegisterClassW(&cls));
