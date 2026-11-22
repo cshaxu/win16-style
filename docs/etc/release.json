@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P53",
-  "stage": "published development candidate with common outline eligibility, state, installation and dispatch",
+  "delivery": "M0 T29 S23 P54",
+  "stage": "published development candidate with directory-based selection in window transitions and UWP routing",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P52 6f9c83fa",
-  "source_snapshot_sha256": "294f8575fea98dcb775e64ab81627dc13b7cb20b49beae2c1276273ce9be0a9c",
+  "last_verified_remote_delivery": "M0 T29 S23 P53 25a7231f",
+  "source_snapshot_sha256": "49dad832a96d21d6fea7570db029ede296f4ef43e2c860167d57e35926dd84ae",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "36a1ab14eb51130b10fd0f27fd9559aa5366f5999ff936ac7906e4779125068d",
+      "sha256": "75562f9a5c50994c50888b865de59852b75c5e2c9bc49211c743c4cb164fef7d",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "bceea650338bf39eedc723161442e34c0dd27a85438fef75e1bb70926c6aa6a3",
+      "sha256": "759780147d6951f358285a8d3bb5dc50752260f95baded2f3f1329878400df55",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "0ae9fb2accda14e8a136af6912645fa016b6fbea7b6841a658e7f400e4b41e61",
+      "sha256": "730d8d8fa684060bff2f6bf651177f67353216c802a36f4c4eb1da764404d34e",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,53 +106,41 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 32,
+    "passed": 20,
     "selected_cases": [
-      "x86 link",
-      "x86 protocol",
-      "x86 attachment",
-      "x86 guard",
-      "x86 state",
-      "x86 runtime",
-      "x86 retire",
-      "x86 classes",
-      "x86 vb-font",
-      "x86 gdi",
-      "x86 assets-toolbar",
-      "x86 assets-bitbtn",
-      "x86 assets-inplace",
-      "x86 winnt-toolbar",
-      "x86 winnt-bitbtn",
-      "x86 winnt-inplace",
-      "x64 link",
-      "x64 protocol",
-      "x64 attachment",
-      "x64 guard",
-      "x64 state",
-      "x64 runtime",
-      "x64 retire",
-      "x64 classes",
-      "x64 vb-font",
-      "x64 gdi",
-      "x64 assets-toolbar",
-      "x64 assets-bitbtn",
-      "x64 assets-inplace",
-      "x64 winnt-toolbar",
-      "x64 winnt-bitbtn",
-      "x64 winnt-inplace"
+      "x86 global-window",
+      "x86 uwp-dispatch",
+      "x86 assets-window-thread",
+      "x86 assets-uwp-frame",
+      "x86 assets-win16-provider",
+      "x86 assets-win2k-provider",
+      "x86 winnt-window-thread",
+      "x86 winnt-uwp-frame",
+      "x86 winnt-win16-provider",
+      "x86 winnt-win2k-provider",
+      "x64 global-window",
+      "x64 uwp-dispatch",
+      "x64 assets-window-thread",
+      "x64 assets-uwp-frame",
+      "x64 assets-win16-provider",
+      "x64 assets-win2k-provider",
+      "x64 winnt-window-thread",
+      "x64 winnt-uwp-frame",
+      "x64 winnt-win16-provider",
+      "x64 winnt-win2k-provider"
     ],
     "skipped": [],
     "limitations": [
-      "20 same-snapshot native eligibility, lifecycle, ABI and GDI cases, plus 12 installed-package toolbar and VCL recovery cases",
+      "4 same-snapshot global window and UWP dispatch cases, 16 installed-package owned frame and provider cases",
       "Owned native fixtures only",
       "Physical input, interactive administrator tray, actual UWP application and full package matrix not run"
     ]
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "isolated HEAD plus scoped P53 inputs, MinGW/Ninja with shared build/.ccache",
+    "command": "isolated HEAD plus scoped P54 inputs, MinGW/Ninja with shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1981,
-    "cache_misses": 105
+    "cache_hits": 2078,
+    "cache_misses": 8
   }
 }

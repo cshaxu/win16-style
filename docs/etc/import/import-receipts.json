@@ -446,7 +446,7 @@
       "path": "src/ntw16s-dll/global/window.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e63d6e6e6a74580b96d72b42c1c6b106d4199580f43acdb7e304b2fcb58bc923",
+      "sha256": "4d92a3857f763fc34ee16bc58899f51c8b7fe35e5a955b18c3b2bd3ba2c317b5",
       "disposition": "authored",
       "review": "T21 S2 same-thread global window lifecycle foundation; T21 S3 global controller and independent ordinary-mode ownership; T21 S5 shared creation and late-attachment classifier; T21 S13 unified late style hooks and stop semantics; T21 S13 attached-window acknowledgement candidate; T21 S13 hidden ordinary-window global stop regression; T21 S42 product adapter directory cleanup; T26 S1 shared global child dispatch; T26 S1 shared same-thread child visitation; T26 S2 mechanical path/include relocation",
       "notice": "Project-authored source; no imported code or resources"
@@ -5432,7 +5432,7 @@
       "path": "src/ntw16s-dll/uwp/target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e00e1e07842c5dc13e8924d9d46ca82bcb73b024cfd92fb7ff14ba5a43ee0a20",
+      "sha256": "2a2609cfd7754bb5fb16d2efb8e014a1e7715c798db187bc8ef3c9705a4e3272",
       "disposition": "authored",
       "review": "T22 S1 P32 product UWP coordination; no third-party import; T26 S2 mechanical path/include relocation; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project-authored C; original resource bytes unchanged"

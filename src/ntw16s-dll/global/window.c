@@ -88,8 +88,12 @@ BOOL ntw16s_global_window_apply_style(HWND window,DWORD style)
         if(!other)return FALSE;
     }
 #endif
-    return style_global_window_transition(window,selected,other,style+1u,
-        selection.id>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM,apply_profile);
+#ifdef STYLE_THEME_EXTERNAL_ONLY
+    const BOOL track_profile=classic_theme_is_folder_id(selection.id);
+#else
+    const BOOL track_profile=selection.id>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM;
+#endif
+    return style_global_window_transition(window,selected,other,style+1u,track_profile,apply_profile);
 }
 BOOL ntw16s_global_window_remove_style(HWND window,DWORD style)
 {

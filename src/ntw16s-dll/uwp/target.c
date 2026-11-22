@@ -13,14 +13,17 @@ static DWORD select_action(const style_uwp_target *app,BOOL apply,WPARAM *action
         if(FAILED(capability))return (DWORD)capability;
         operation=capability==S_OK?NTW16S_UWP_APPLY_FULLSCREEN:NTW16S_UWP_APPLY;
     }
-    if(classic_theme_is_folder_id(selection->id))operation|=NTW16S_UWP_DIRECTORY;
+    if(classic_theme_is_folder_id(selection->id)){
+        operation|=NTW16S_UWP_DIRECTORY|((WPARAM)selection->id<<NTW16S_UWP_PROFILE_SHIFT);
+    }else{
 #ifdef STYLE_THEME_EXTERNAL_ONLY
-    else return ERROR_INVALID_PARAMETER;
+        return ERROR_INVALID_PARAMETER;
 #else
-    else if(selection->family==CLASSIC_THEME_WIN2K)operation+=NTW16S_UWP_APPLY_2K-NTW16S_UWP_APPLY;
+        if(selection->family==CLASSIC_THEME_WIN2K)operation+=NTW16S_UWP_APPLY_2K-NTW16S_UWP_APPLY;
+        if(selection->id>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM)
+            operation|=(WPARAM)selection->id<<NTW16S_UWP_PROFILE_SHIFT;
 #endif
-    if(selection->id>=CLASSIC_THEME_PROFILE_FIRST_CUSTOM)
-        operation|=(WPARAM)selection->id<<NTW16S_UWP_PROFILE_SHIFT;
+    }
     *action=operation;
     return ERROR_SUCCESS;
 }
