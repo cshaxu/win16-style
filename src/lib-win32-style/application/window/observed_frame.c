@@ -186,6 +186,26 @@ static void repaint_menu(HWND window)
     paint_menu(window,dc,&outer);ReleaseDC(window,dc);
 }
 
+static BOOL anchored_caption_buttons(HWND window,const style_frame_sprites *sprites,
+    const RECT *caption,const BOOL present[STYLE_NATIVE_CAPTION_BUTTONS],UINT dpi,
+    RECT bounds[STYLE_NATIVE_CAPTION_BUTTONS])
+{
+    RECT outer;
+    if(!GetWindowRect(window,&outer))return FALSE;
+    RECT extent={max(outer.left,caption->left),outer.top,outer.right,min(caption->bottom,outer.bottom)};
+    for(unsigned i=0;i<STYLE_NATIVE_CAPTION_BUTTONS;++i){
+        if(!present[i])continue;
+        const style_frame_sprite_button *button=&sprites->buttons[CLASSIC_BUTTON_MINIMIZE+i];
+        if(!button->anchored)return FALSE;
+        LONG x=outer.right+MulDiv(button->top_right.x,(int)dpi,96);
+        LONG y=outer.top+MulDiv(button->top_right.y,(int)dpi,96);
+        RECT button_rect={x,y,x+MulDiv((int)button->face.width,(int)dpi,96),
+            y+MulDiv((int)button->face.height,(int)dpi,96)};
+        IntersectRect(&bounds[i],&button_rect,&extent);
+    }
+    return TRUE;
+}
+
 /* TITLEBARINFOEX uses the same order as the shared roles, starting at index 1. */
 _Static_assert(CLASSIC_BUTTON_SYSTEM==1 && CLASSIC_BUTTON_MINIMIZE==2 &&
     CLASSIC_BUTTON_MAXIMIZE==3 && CLASSIC_BUTTON_HELP==4 && CLASSIC_BUTTON_CLOSE==CCHILDREN_TITLEBAR,
@@ -210,7 +230,9 @@ static void classic_buttons(HWND window,const frame_window *frame,TITLEBARINFOEX
         SetRectEmpty(&info->rgrect[CLASSIC_BUTTON_SYSTEM]);
         info->rgstate[CLASSIC_BUTTON_SYSTEM]|=STATE_SYSTEM_INVISIBLE;
     }
-    if(style_native_caption_buttons_with_system(&info->rcTitleBar,dpi,tool,present,
+    BOOL anchored=frame->theme.sprite_resources && !tool && !synthetic && !IsZoomed(window) &&
+        anchored_caption_buttons(window,&frame->theme.sprites,&info->rcTitleBar,present,dpi,bounds);
+    if(anchored || style_native_caption_buttons_with_system(&info->rcTitleBar,dpi,tool,present,
         &frame->theme.title_buttons,&frame->theme.caption_metrics,bounds,synthetic?&system:NULL)){
         if(!IsRectEmpty(&system)){
             info->rgrect[CLASSIC_BUTTON_SYSTEM]=system;

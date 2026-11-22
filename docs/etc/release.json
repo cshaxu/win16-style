@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T33 S1 P1",
-  "stage": "published Luna caption border and mouse-state repair",
-  "version": "0.33.0.0",
-  "version_contract": "M0 T33",
+  "delivery": "M0 T34 S1 P1",
+  "stage": "published original Luna caption button offsets",
+  "version": "0.34.0.0",
+  "version_contract": "M0 T34",
   "package_directory": "assets",
   "last_verified_remote_delivery": "M0 T33 S1 P1 997cdb7b2087",
-  "source_snapshot_sha256": "24e6e036a4982ab98d7943ddfe5a8ca2aed2efd08470a525c4a1e02cae828f58",
+  "source_snapshot_sha256": "497e8e86d45385a33479cb9bdf135598c8c63b229f2a25207fd865a119c7c623",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
-      "version": "M0 T33",
-      "sha256": "5d121c29da9113bdeef3896d99e6137280dfa03dfb20d4414c140523b1a9bab9",
+      "version": "M0 T34",
+      "sha256": "0e390e1defc340feac747b0f813027e77d95cc5f19b7516a9003fbc4bbea0eab",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -26,8 +26,8 @@
     },
     "ntwshk32.dll": {
       "architecture": "x86",
-      "version": "M0 T33",
-      "sha256": "91b96438bd082eab28c8151513e9f7c9a778dff7cfa7e144b454d45b32d97dbc",
+      "version": "M0 T34",
+      "sha256": "a2287c896765cf7863dd98fecd3bfeea441010a68b18030612537154fe6baf11",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -55,8 +55,8 @@
     },
     "ntwshk64.dll": {
       "architecture": "x64",
-      "version": "M0 T33",
-      "sha256": "7aac9b5f1042e3da53125e039e4523ccf0583d01c647cfb9d65eb060d860f10c",
+      "version": "M0 T34",
+      "sha256": "75f75795647b562f012766406a86e446974c11fb21a64a9ad8d2fdf0b6074bfb",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -124,22 +124,34 @@
     ],
     "skipped": [],
     "supplemental_native": {
-      "luna_published_direct_launches": 12,
-      "three_buttons_per_window": 3,
-      "both_window_activation_states": true,
-      "independent_top_border_resource_colors": 6,
-      "original_resource_digest_verified": true
+      "luna_installed_windows": 12,
+      "original_schemes_and_sizes_read": 9,
+      "anchor_offsets_at_96_dpi": [
+        [
+          -73,
+          5
+        ],
+        [
+          -49,
+          5
+        ],
+        [
+          -25,
+          5
+        ]
+      ],
+      "buttons_per_window": 3
     },
     "limitations": [
-      "Owned Win32 window message and pixel probes verified the caption and blocked native hover.",
-      "Physical pointer and compositor refresh timing were not measured."
+      "Geometry was verified for ordinary restored Win32 windows at the current 144 DPI.",
+      "Tool windows and maximized window variants retain their previous geometry."
     ]
   },
-  "evidence": "../history/M0-T33-S1-luna-caption.md",
+  "evidence": "../history/M0-T34-S1-luna-caption-geometry.md",
   "build": {
-    "command": "Build-Package worker on the scoped T33 clean snapshot",
+    "command": "Build-Package worker on the scoped T34 clean snapshot",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, shared ccache",
-    "cache_hits": 1948,
-    "cache_misses": 150
+    "cache_hits": 1950,
+    "cache_misses": 148
   }
 }

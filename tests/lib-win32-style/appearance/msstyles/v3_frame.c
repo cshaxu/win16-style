@@ -86,8 +86,15 @@ static int check_caption_input(HWND window)
     SendMessageW(window,WM_NCMOUSELEAVE,0,0);
     native_hover_messages=0;
     CHECK(read_caption(window,&normal,&info));
+    RECT outer;
+    CHECK(GetWindowRect(window,&outer));
+    const int dpi=(int)GetDpiForWindow(window);
+    static const int offsets[]={-73,-49,-25};
     for(unsigned i=0;i<ARRAYSIZE(slots);++i){
         RECT button=info.rgrect[slots[i]];
+        CHECK(button.left==outer.right+MulDiv(offsets[i],dpi,96) &&
+            button.top==outer.top+MulDiv(5,dpi,96));
+        CHECK(button.right-button.left==MulDiv(21,dpi,96) && button.bottom-button.top==MulDiv(21,dpi,96));
         POINT center={(button.left+button.right)/2,(button.top+button.bottom)/2};
         LPARAM point=MAKELPARAM(center.x,center.y);
         CHECK(!(normal.states[i]&mouse_states));
@@ -112,7 +119,7 @@ static int check_caption_input(HWND window)
     CHECK(read_caption(window,&inactive,&info) && inactive.outer!=normal.outer);
     SendMessageW(window,WM_NCACTIVATE,TRUE,0);
     CHECK(read_caption(window,&restored,&info) && restored.outer==normal.outer);
-    printf("LUNA CAPTION INPUT PASS bits=%u dpi=%u outer=%06lx/%06lx three_buttons native_hover=0\n",
+    printf("LUNA CAPTION INPUT PASS bits=%u dpi=%u outer=%06lx/%06lx three_buttons native_hover=0 original_offsets=3\n",
         (unsigned)(sizeof(void *)*8),GetDpiForWindow(window),normal.outer,inactive.outer);
     return 0;
 }

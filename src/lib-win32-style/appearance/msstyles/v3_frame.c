@@ -84,6 +84,14 @@ BOOL msstyles_v3_push_image(const msstyles_v3_theme *theme,style_push_sprite *sp
 static BOOL button(const msstyles_v3_theme *theme,PCWSTR section,style_frame_sprite_button *button)
 {
     if(!strip(theme,section,&button->face) || button->face.count<4)return FALSE;
+    msstyles_v3_text anchor;
+    int offset[2];
+    if(msstyles_v3_property(theme,section,L"OffsetType",&anchor) && is(anchor,L"TopRight") &&
+       vector(theme,section,L"Offset",offset,2,-255) &&
+       offset[0]<=-(int)button->face.width && offset[1]>=0){
+        button->top_right=(POINT){offset[0],offset[1]};
+        button->anchored=TRUE;
+    }
     int m[4];
     if(numbers(theme,section,L"ContentMargins",m,4))
         button->content=(RECT){m[0],m[2],m[1],m[3]};

@@ -69,6 +69,8 @@ BOOL style_caption_button_paint(HDC dc,RECT bounds,enum classic_button_role role
 typedef struct style_frame_sprite_button {
     style_dib_strip face,glyphs[5];
     RECT content;
+    POINT top_right;
+    BOOL anchored;
 } style_frame_sprite_button;
 
 typedef struct style_frame_sprites {
