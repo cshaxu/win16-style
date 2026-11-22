@@ -5,7 +5,7 @@
   "version": "0.30.0.0",
   "version_contract": "M0 T30",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S25 P1 b274f019",
+  "last_verified_remote_delivery": "M0 T30 S1 P1 58ff278ded7c",
   "source_snapshot_sha256": "0a8487c5d6b9ea603a58acba7f2f65a4453e461b9e0da120aa2c47a239fb926c",
   "artifacts": {
     "run16s.exe": {
