@@ -139,11 +139,15 @@ void classic_theme_close(classic_theme_mapping *source);
 typedef BOOL (*classic_theme_visit)(PCWSTR folder,const classic_theme_mapping *theme,void *context);
 HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_mapping *,
     classic_theme_family *family);
+HRESULT classic_theme_open_folder_color(HMODULE renderer,PCWSTR folder,PCWSTR color,
+    classic_theme_mapping *,classic_theme_family *family);
 void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void *context);
 /* A stable, pointer-free directory ID used by all three entry paths. */
 unsigned classic_theme_folder_id(PCWSTR folder);
 unsigned classic_theme_color_id(PCWSTR folder,PCWSTR color);
 HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH]);
+enum { CLASSIC_THEME_SPEC_CAP=MAX_PATH+MSSTYLES_THEME_TOKEN_CAPACITY };
+HRESULT classic_theme_profile_spec(HMODULE renderer,unsigned profile,WCHAR spec[CLASSIC_THEME_SPEC_CAP]);
 HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_theme_mapping *);
 HRESULT classic_theme_open_selected(HMODULE renderer,classic_theme_selection selection,classic_theme_mapping *);
 /* S_FALSE means no active theme. On S_OK, the selection includes the adapter. */

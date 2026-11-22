@@ -1274,10 +1274,16 @@ static int check_color_profiles(PCWSTR folder)
     static const PCWSTR tokens[]={L"NormalColor",L"Metallic",L"HomeStead"};
     static const PCWSTR references[]={L"NORMALBLUE_INI",L"NORMALMETALLIC_INI",L"NORMALHOMESTEAD_INI"};
     CHECK(!wcscmp(default_theme.v3.variant_name,references[0]));
+    WCHAR spec[CLASSIC_THEME_SPEC_CAP];
+    CHECK(classic_theme_profile_spec(launcher,classic_theme_folder_id(folder),spec)==S_OK &&
+        !wcscmp(spec,folder));
     unsigned ids[ARRAYSIZE(tokens)];
     for(size_t i=0;i<ARRAYSIZE(tokens);++i){
         ids[i]=classic_theme_color_id(folder,tokens[i]);
         CHECK(classic_theme_is_folder_id(ids[i]) && ids[i]!=classic_theme_folder_id(folder));
+        WCHAR expected[CLASSIC_THEME_SPEC_CAP];
+        CHECK(swprintf(expected,ARRAYSIZE(expected),L"%ls:%ls",folder,tokens[i])>0);
+        CHECK(classic_theme_profile_spec(launcher,ids[i],spec)==S_OK && !wcscmp(spec,expected));
         for(size_t j=0;j<i;++j)CHECK(ids[i]!=ids[j]);
         observed_selection=classic_theme_encode_selection((classic_theme_selection){ids[i],family});
         classic_theme_set_global_profile_reader(read_observed_selection);

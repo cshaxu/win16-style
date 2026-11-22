@@ -13,7 +13,11 @@ bad=scratch/'not-a-native-image.exe'
 bad.write_bytes(b'MZ\0not a PE')
 cases=[(['--global'],2),(['--help'],2),(['--wait'],2),(['notepad.exe'],2),
        (['notepad.exe',' /?'],6),(['no-such-theme-run16s','notepad.exe'],6),
-       (['--global','unexpected'],2),(['--global','Win16'],2)]
+       (['--global','unexpected'],2),(['--global','Win16'],2),
+       ([':Metallic','notepad.exe'],2),(['Win2K:','notepad.exe'],2),
+       (['Win2K:x:y','notepad.exe'],2),(['Win2K:../x','notepad.exe'],2),
+       (['Win2K:x y','notepad.exe'],2),(['Win2K:'+('x'*64),'notepad.exe'],2),
+       (['Win2K:NormalColor','notepad.exe'],6)]
 for theme in ('Win16','win2k'):
     cases += [([theme],2),([theme,''],2),([theme,'--global'],2),
               ([theme,'--wait','notepad.exe'],2),([theme,'--app','x'],2),

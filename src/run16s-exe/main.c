@@ -30,7 +30,7 @@ static int diagnostic(int code,DWORD error,PCWSTR phase)
 }
 static int usage(void)
 {
-    fwprintf(stderr,L"Usage: run16s.exe\n       run16s.exe <theme-folder> <application> [arguments]\n");
+    fwprintf(stderr,L"Usage: run16s.exe\n       run16s.exe <theme-folder[:color-id]> <application> [arguments]\n");
     return 2;
 }
 int wmain(int argc,WCHAR **argv)
@@ -68,7 +68,19 @@ int wmain(int argc,WCHAR **argv)
     int theme_index=reentered?2:1, target_index=theme_index+1;
     if(argc<=target_index || !argv[theme_index][0] || !wcsncmp(argv[theme_index],L"--",2) ||
        !argv[target_index][0] || !wcsncmp(argv[target_index],L"--",2))return usage();
-    PCWSTR theme=argv[theme_index];
+    PCWSTR theme=argv[theme_index],separator=wcschr(theme,L':');
+    PCWSTR color=separator?separator+1:NULL;
+    WCHAR folder[MAX_PATH];
+    size_t length=separator?(size_t)(separator-theme):wcslen(theme);
+    if(!length || length>=ARRAYSIZE(folder))return usage();
+    if(color){
+        size_t units=wcslen(color);
+        if(!units || units>=MSSTYLES_THEME_TOKEN_CAPACITY ||
+           wcsspn(color,L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-")!=units)
+            return usage();
+    }
+    wmemcpy(folder,theme,length);
+    folder[length]=0;
     BOOL private_console=run16s_private_console();
     DWORD error,exit_code=0;WORD subsystem=0;
     WCHAR image[STYLE_STARTUP_PATH_CAP];style_startup_context context;
@@ -81,20 +93,20 @@ int wmain(int argc,WCHAR **argv)
     classic_theme_family family;
     classic_theme_mapping source={0};
     HMODULE launcher=GetModuleHandleW(NULL);
-    HRESULT loaded=classic_theme_open_folder(launcher,theme,&source,&family);
+    HRESULT loaded=classic_theme_open_folder_color(launcher,folder,color,&source,&family);
     if(FAILED(loaded))return diagnostic(6,HRESULT_CODE(loaded),L"theme load");
     unsigned hosts=source.hosts.enabled;
     classic_theme_close(&source);
-    unsigned theme_id=classic_theme_folder_id(theme);
+    unsigned theme_id=color?classic_theme_color_id(folder,color):classic_theme_folder_id(folder);
     const classic_theme_selection selection={theme_id,family};
     WCHAR resolved_folder[MAX_PATH];
     loaded=classic_theme_profile_folder(launcher,theme_id,resolved_folder);
     if(FAILED(loaded))return diagnostic(6,HRESULT_CODE(loaded),L"theme identity");
-    if(_wcsicmp(theme,resolved_folder))return diagnostic(6,ERROR_INVALID_DATA,L"theme identity");
+    if(_wcsicmp(folder,resolved_folder))return diagnostic(6,ERROR_INVALID_DATA,L"theme identity");
     if(hosts)run16s_window_set_profile(theme_id);
     raw=win32_process_next_argument(raw);
-    DWORD length=SearchPathW(NULL,argv[target_index],L".exe",STYLE_STARTUP_PATH_CAP,image,NULL);
-    if(!length || length>=STYLE_STARTUP_PATH_CAP)return diagnostic(3,length?ERROR_FILENAME_EXCED_RANGE:GetLastError(),L"target resolution");
+    DWORD target_length=SearchPathW(NULL,argv[target_index],L".exe",STYLE_STARTUP_PATH_CAP,image,NULL);
+    if(!target_length || target_length>=STYLE_STARTUP_PATH_CAP)return diagnostic(3,target_length?ERROR_FILENAME_EXCED_RANGE:GetLastError(),L"target resolution");
     BOOL explorer=run16s_explorer_default(image,win32_process_next_argument(raw));
     BOOL terminal=!explorer && run16s_terminal_image(image);
     BOOL console=run16s_console_host_image(image);

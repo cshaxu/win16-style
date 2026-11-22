@@ -164,10 +164,33 @@ M0 T31 S1 与 T31 已收口。托盘对已支持的 v3 多配色主题列出原�
 同目录配色切换与再次选择撤销通过双宽控制器验证。真实 HMENU、两处普通启动、
 13 项聚焦实包回归和实际远端已复核。见 [交付记录](../history/M0-T31-S1-tray-color-schemes.md)。
 
+## M0 T32 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New |
+| Admission And Approval | 用户批准主题与配色用冒号分隔，省略冒号时使用默认配色。 |
+| Objective | 单程序启动接受主题目录及可选配色标识，且仅覆盖本次启动的配色。 |
+| Non-goals | 不改变托盘、Win32 接入、控制台语义或主题文件。 |
+| Reference Baseline | T31 收口 59acd455 与本机可选原版 Luna。 |
+| Candidate Proposal | [实现与验收](../history/M0-T32-S1-cli-color-schemes.md)。 |
+| Files And ABI Surface | 启动参数、现有主题标识和自提升重入；既有 DWORD 和序号。 |
+| Applicable Rules | C17、MinGW 双宽，正式七件，发布后验证。 |
+| Verification | 原版三配色、无冒号时描述默认、畸形参数、重入及透传，双宽及聚焦回归。 |
+| Expected Markers | CLI COLOR PASS、COLOR PROFILES PASS、shell redirect unit pass。 |
+| Asset Needs | 可选的本机原版 Luna 两文件，只读引用。 |
+| Reporting Requirements | 记录两处安装和真实渲染及错误示例。 |
+| Stop Conditions | 只测试自有窗口，禁止私有桌面和 Computer Use。 |
+| Exit Criteria | 实际配色选择和未指定时的默认正确，两宽同批文件两处及远端复核。 |
+| Original Owner Request | 采用冒号，没有冒号就用默认配色方案。 |
+| Similar-Issue Sweep | 启动器主题解析、主题标识、启动载荷、提升重入和自提升重定向。 |
+
+两处发布、原版 Luna 实画和聚焦回归已完成，待实际远端复核。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 31
+- Last allocated T: 32
 - Last allocated Td S: 21
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
@@ -181,7 +204,8 @@ M0 T31 S1 与 T31 已收口。托盘对已支持的 v3 多配色主题列出原�
 - Last allocated T29 S: 25
 - Last allocated T30 S: 1
 - Last allocated T31 S: 1
-- Open task: 无活动任务包。
+- Last allocated T32 S: 1
+- Open task: M0 T32 S1，命令行配色选择。
 
 ## Technical Baseline
 

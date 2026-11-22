@@ -810,7 +810,7 @@ unsigned classic_theme_enter_profile(classic_theme_selection selection)
 void classic_theme_leave_profile(unsigned previous)
 {thread_profile=previous;}
 
-static HRESULT open_folder(HMODULE renderer,PCWSTR folder,PCWSTR color,classic_theme_mapping *source,
+HRESULT classic_theme_open_folder_color(HMODULE renderer,PCWSTR folder,PCWSTR color,classic_theme_mapping *source,
     classic_theme_family *family)
 {
     if(!renderer || !folder_name(folder) || !source || source->resources || !family)
@@ -843,6 +843,10 @@ static HRESULT open_folder(HMODULE renderer,PCWSTR folder,PCWSTR color,classic_t
     classic_theme_mapping candidate={0};
     HRESULT result=open_descriptor(path,color,&candidate);
     if(FAILED(result))return result;
+    if(color && !candidate.v3.resources){
+        classic_theme_close(&candidate);
+        return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
+    }
     unsigned provider=candidate.model.dialog_policy.window_provider;
     if(!provider){
         classic_theme_close(&candidate);
@@ -861,7 +865,7 @@ static HRESULT open_folder(HMODULE renderer,PCWSTR folder,PCWSTR color,classic_t
 
 HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_mapping *source,
     classic_theme_family *family)
-{return open_folder(renderer,folder,NULL,source,family);}
+{return classic_theme_open_folder_color(renderer,folder,NULL,source,family);}
 
 void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void *context)
 {
@@ -964,6 +968,19 @@ HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR fol
     return profile_folder(renderer,profile,folder,color);
 }
 
+HRESULT classic_theme_profile_spec(HMODULE renderer,unsigned profile,WCHAR spec[CLASSIC_THEME_SPEC_CAP])
+{
+    WCHAR folder[MAX_PATH],color[MSSTYLES_THEME_TOKEN_CAPACITY];
+    HRESULT result=profile_folder(renderer,profile,folder,color);
+    if(FAILED(result))return result;
+    wcscpy(spec,folder);
+    if(color[0]){
+        wcscat(spec,L":");
+        wcscat(spec,color);
+    }
+    return S_OK;
+}
+
 HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_theme_mapping *source)
 {
     WCHAR folder[MAX_PATH];
@@ -972,10 +989,10 @@ HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_the
     if(FAILED(result))return result;
 #ifdef STYLE_THEME_EXTERNAL_ONLY
     classic_theme_family layout;
-    return open_folder(renderer,folder,color[0]?color:NULL,source,&layout);
+    return classic_theme_open_folder_color(renderer,folder,color[0]?color:NULL,source,&layout);
 #else
     classic_theme_family family=classic_theme_profile_family(profile),found;
-    result=open_folder(renderer,folder,color[0]?color:NULL,source,&found);
+    result=classic_theme_open_folder_color(renderer,folder,color[0]?color:NULL,source,&found);
     if(SUCCEEDED(result) && !classic_theme_is_folder_id(profile) && found!=family){
         classic_theme_close(source);return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
     }

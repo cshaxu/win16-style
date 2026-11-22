@@ -19,11 +19,12 @@ DWORD style_startup_propagate(DWORD (*a)(void *,void *),const style_startup_prop
 void style_startup_propagation_discard(const style_startup_propagation *o){(void)o;}
 DWORD process_hook_startup_attach(void *a,void *b){(void)a;(void)b;return 0;}
 BOOL ntw16s_global_policy_active(DWORD c){(void)c;return FALSE;}
-unsigned classic_theme_process_profile(void){return 0x126;}
-HRESULT classic_theme_profile_folder(HMODULE module,unsigned profile,WCHAR folder[MAX_PATH])
+static unsigned selected_profile=0x126;
+unsigned classic_theme_process_profile(void){return selected_profile;}
+HRESULT classic_theme_profile_spec(HMODULE module,unsigned profile,WCHAR spec[CLASSIC_THEME_SPEC_CAP])
 {
-    if(!module || profile!=0x126)return E_INVALIDARG;
-    wcscpy(folder,L"Test Skin");
+    if(!module || (profile!=0x126 && profile!=0x136))return E_INVALIDARG;
+    wcscpy(spec,profile==0x126?L"Test Skin":L"Test Skin:Metallic");
     return S_OK;
 }
 BOOL ntwshk_system_print_host_w(LPCWSTR a,LPWSTR b){(void)a;(void)b;return FALSE;}
@@ -49,6 +50,10 @@ int wmain(void){
  p.lpFile=self;p.lpVerb=L"open";CHECK(!hooked(&p) && !wcscmp(actual_file,self));
  p.lpVerb=L"runas";p.lpParameters=NULL;CHECK(!hooked(&p) && !wcscmp(actual_file,L"C:\\package\\run16s.exe"));
  CHECK(swprintf(expected,32768,L"--elevated \"Test Skin\" \"%ls\"",self)>0 && !wcscmp(actual_args,expected));
+ selected_profile=0x136;
+ CHECK(!hooked(&p) && !wcscmp(actual_file,L"C:\\package\\run16s.exe"));
+ CHECK(swprintf(expected,32768,L"--elevated \"Test Skin:Metallic\" \"%ls\"",self)>0 && !wcscmp(actual_args,expected));
+ selected_profile=0x126;
  WCHAR *long_tail=calloc(32768,sizeof(WCHAR));CHECK(long_tail);wmemset(long_tail,L'x',32767);p.lpParameters=long_tail;
  CHECK(!hooked(&p) && !wcscmp(actual_file,self));free(long_tail);p.lpParameters=NULL;
  p.lpVerb=L"runas";ntw16s_process_context.flags|=NTWSHK_POLICY_GLOBAL_SESSION;CHECK(!hooked(&p) && !wcscmp(actual_file,self));

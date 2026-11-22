@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T31 S1 P1",
-  "stage": "published tray submenus for v3 theme color schemes",
-  "version": "0.31.0.0",
-  "version_contract": "M0 T31",
+  "delivery": "M0 T32 S1 P1",
+  "stage": "published per-launch CLI color selection",
+  "version": "0.32.0.0",
+  "version_contract": "M0 T32",
   "package_directory": "assets",
   "last_verified_remote_delivery": "M0 T31 S1 P1 b7b95b856036",
-  "source_snapshot_sha256": "0013ffb8e637e9fee129c5702e9b5da19ccd251d8cdfdcf79e3f1ea93467b1b9",
+  "source_snapshot_sha256": "c6c0f2a24abbd2fb515cac6cc96ab8e441b4c2471b62c74df05c09381b4588e8",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
-      "version": "M0 T31",
-      "sha256": "dc3de771ba4a95ac3e3430b35a6382024099dfc0acc8f7201df149c407805598",
+      "version": "M0 T32",
+      "sha256": "eed920fbaf81d4352c9cab37c41a6300f8d9ed03e01f7df7a5d951c25c6b4bf1",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -26,8 +26,8 @@
     },
     "ntwshk32.dll": {
       "architecture": "x86",
-      "version": "M0 T31",
-      "sha256": "574a170641215c2e2affdcc2b980a138da639fd1cd294813720a499febda15b3",
+      "version": "M0 T32",
+      "sha256": "742e13252e68c76652ced8a5d872164b17f9e5b14f435215447f3da5e3908491",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -55,8 +55,8 @@
     },
     "ntwshk64.dll": {
       "architecture": "x64",
-      "version": "M0 T31",
-      "sha256": "99453c4106c296b7c42ac93b6db3710918c101f41c8522d37c99cb8baae60195",
+      "version": "M0 T32",
+      "sha256": "225edecaa8827096abeb6b0476f38cff3e182e7c5756008c9aec3788c254191c",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -108,8 +108,6 @@
     "coverage": "focused",
     "passed": 13,
     "selected_cases": [
-      "win2k-paint-x86",
-      "win2k-paint-x64",
       "progress-sharing",
       "plan-selection",
       "abi-x86",
@@ -120,27 +118,29 @@
       "cli",
       "automatic",
       "propagation",
-      "cli-failures"
+      "cli-failures",
+      "uac-unit-32",
+      "uac-unit-64"
     ],
     "skipped": [],
     "supplemental_native": {
-      "color_name_parser_architectures": 2,
-      "active_profile_architectures": 2,
-      "same_folder_controller_architectures": 2,
-      "x64_native_menu_with_stock_luna": 1,
-      "default_launch_both_destinations": 4
+      "luna_published_direct_launches": 16,
+      "alternate_descriptor_launches": 6,
+      "invalid_spec_checks": 10,
+      "color_profile_roundtrip_architectures": 2,
+      "elevation_and_self_launch_units": 4
     },
     "limitations": [
-      "Native popup inspection and controlled worker transitions cover menu and selection.",
-      "Explorer pointer input and a desktop-wide administrator style switch were not exercised.",
-      "Multi-scheme enumeration uses the supported msstyles v3 format."
+      "Elevation shell request and self-elevation redirection were verified with native test doubles.",
+      "The Windows consent dialog was not exercised.",
+      "Native explicit scheme selection is for supported v3 themes."
     ]
   },
-  "evidence": "../history/M0-T31-S1-tray-color-schemes.md",
+  "evidence": "../history/M0-T32-S1-cli-color-schemes.md",
   "build": {
-    "command": "Build-Package worker on the scoped T31 clean snapshot",
+    "command": "Build-Package worker on the scoped T32 clean snapshot",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, shared ccache",
-    "cache_hits": 1951,
-    "cache_misses": 147
+    "cache_hits": 1972,
+    "cache_misses": 126
   }
 }

@@ -1,6 +1,6 @@
 # Product UI
 
-run16s.exe 是启动器，普通命令为 `run16s.exe <theme> <application> [arguments]`。
+run16s.exe 是启动器，普通命令为 `run16s.exe <theme[:color-id]> <application> [arguments]`。
 主题名对应启动器旁的目录。不带参数的 `run16s.exe` 打开托盘并扫描可用主题。原 `--global` 参数已退役。
 托盘显示主题描述里的名称和目录。两者相同时只显示目录，缺少可用名称时也使用目录。同名主题可按目录区分，名称中的 & 作为普通文字显示。
 启动器保持Console子系统，让交互式cmd自然等待。Console目标等待并返回目标
@@ -12,7 +12,8 @@ run16s.exe 是启动器，普通命令为 `run16s.exe <theme> <application> [arg
 
 使用原版 XP Luna 时，在启动器旁的 `Luna` 目录放置 `Luna.theme` 和
 `Luna.msstyles`，然后运行 `run16s Luna <application>`。
-在 `Luna.theme` 的 `[VisualStyles]` 节设置 `ColorStyle` 即可切换同一主题的配色。
+无冒号时读取 `Luna.theme` 中 `[VisualStyles]` 的 `ColorStyle`。
+用 `run16s Luna:Metallic <application>` 可以只为这次启动选银灰配色。
 `NormalColor` 是默认蓝色，`Metallic` 是银灰，`HomeStead` 是橄榄绿。
 `Size` 可设为 `NormalSize`、`LargeFonts` 或 `ExtraLargeFonts`。
 已打开的程序需重新以该主题启动才能读取修改后的描述。

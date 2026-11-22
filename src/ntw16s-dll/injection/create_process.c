@@ -29,8 +29,8 @@ static BOOL WINAPI redirect_self_elevation(SHELLEXECUTEINFOW *info)
     }
     PCWSTR tail=info->lpParameters?info->lpParameters:L"";
     extern IMAGE_DOS_HEADER __ImageBase;
-    WCHAR theme[MAX_PATH];
-    if(FAILED(classic_theme_profile_folder((HMODULE)&__ImageBase,classic_theme_process_profile(),theme))){
+    WCHAR theme[CLASSIC_THEME_SPEC_CAP];
+    if(FAILED(classic_theme_profile_spec((HMODULE)&__ImageBase,classic_theme_process_profile(),theme))){
         free(paths);return shell_execute_w(info);
     }
     size_t count=wcslen(self)+wcslen(tail)+wcslen(theme)+24;
