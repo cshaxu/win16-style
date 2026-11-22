@@ -1128,9 +1128,9 @@ static int check_mdi_menu(void)
     return 0;
 }
 
-static BOOL print_folder(PCWSTR folder,PCWSTR display_name,classic_theme_family family,void *context)
+static BOOL print_folder(PCWSTR folder,const classic_theme_mapping *source,void *context)
 {
-    (void)context;wprintf(L"CLASSIC THEME FOLDER %ls family=%u display=%ls\n",folder,(unsigned)family,display_name);
+    (void)context;wprintf(L"CLASSIC THEME FOLDER %ls family=%u display=%ls\n",folder,(unsigned)source->family,source->display_name);
     return TRUE;
 }
 
@@ -1264,8 +1264,38 @@ static int check_icon_layout(void)
     return 0;
 }
 
+static int check_color_profiles(PCWSTR folder)
+{
+    HMODULE launcher=GetModuleHandleW(NULL);
+    classic_theme_mapping default_theme={0};
+    classic_theme_family family;
+    CHECK(classic_theme_open_folder(launcher,folder,&default_theme,&family)==S_OK);
+    CHECK(default_theme.v3.resources);
+    static const PCWSTR tokens[]={L"NormalColor",L"Metallic",L"HomeStead"};
+    static const PCWSTR references[]={L"NORMALBLUE_INI",L"NORMALMETALLIC_INI",L"NORMALHOMESTEAD_INI"};
+    CHECK(!wcscmp(default_theme.v3.variant_name,references[0]));
+    unsigned ids[ARRAYSIZE(tokens)];
+    for(size_t i=0;i<ARRAYSIZE(tokens);++i){
+        ids[i]=classic_theme_color_id(folder,tokens[i]);
+        CHECK(classic_theme_is_folder_id(ids[i]) && ids[i]!=classic_theme_folder_id(folder));
+        for(size_t j=0;j<i;++j)CHECK(ids[i]!=ids[j]);
+        observed_selection=classic_theme_encode_selection((classic_theme_selection){ids[i],family});
+        classic_theme_set_global_profile_reader(read_observed_selection);
+        classic_theme_mapping loaded={0};
+        CHECK(classic_theme_open_active(launcher,&loaded)==S_OK);
+        CHECK(loaded.v3.resources && !wcscmp(loaded.v3.variant_name,references[i]));
+        classic_theme_close(&loaded);
+        CHECK(!loaded.resources);
+    }
+    classic_theme_set_global_profile_reader(NULL);
+    classic_theme_close(&default_theme);
+    puts("COLOR PROFILES PASS three_distinct_same_folder_ids active_mapping default_unchanged");
+    return 0;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
+    if(argc==3 && !wcscmp(argv[1],L"--color-profiles"))return check_color_profiles(argv[2]);
     if(argc==2 && !wcscmp(argv[1],L"--frame-menu-font")){
         msstyles_font definition={.logical={.lfWeight=FW_BOLD,.lfFaceName=L"System"},.points=10};
         for(unsigned bit=0;bit<2;++bit){

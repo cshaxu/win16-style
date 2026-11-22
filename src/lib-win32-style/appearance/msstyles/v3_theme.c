@@ -1,5 +1,6 @@
 #include "v3_theme.h"
 #include <stdint.h>
+#include <stdio.h>
 #include <wchar.h>
 
 static const void *resource(HMODULE module,PCWSTR name,PCWSTR type,DWORD *length)
@@ -76,6 +77,28 @@ HRESULT msstyles_v3_read(HMODULE resources,PCWSTR size,PCWSTR color,msstyles_v3_
     msstyles_v3_text ini=text_resource(resources,variant,L"TEXTFILE");
     if(!ini.length)return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
     *theme=(msstyles_v3_theme){resources,variant,ini};
+    return S_OK;
+}
+
+HRESULT msstyles_v3_color_at(const msstyles_v3_theme *theme,size_t index,PCWSTR *token,
+    msstyles_v3_text *label)
+{
+    if(!theme || !theme->resources || !token || !label)return E_INVALIDARG;
+    size_t count;
+    PCWSTR name=NULL;
+    HRESULT status=table(text_resource(theme->resources,MAKEINTRESOURCEW(1),L"COLORNAMES"),
+        NULL,index,&count,NULL,&name);
+    if(FAILED(status))return status;
+    if(index>=count)return S_FALSE;
+    msstyles_v3_theme metadata={.properties=text_resource(theme->resources,L"THEMES_INI",L"TEXTFILE")};
+    WCHAR section[80];
+    if(swprintf(section,ARRAYSIZE(section),L"ColorScheme.%ls",name)<0)
+        return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+    *token=name;
+    *label=(msstyles_v3_text){name,wcslen(name)};
+    msstyles_v3_text declared;
+    if(msstyles_v3_property(&metadata,section,L"DisplayName",&declared) && declared.length)
+        *label=declared;
     return S_OK;
 }
 

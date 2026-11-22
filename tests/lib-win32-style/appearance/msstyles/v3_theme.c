@@ -42,6 +42,17 @@ int wmain(int argc,WCHAR **argv)
     CHECK(msstyles_v3_read(module,chosen_size,chosen_color,&chosen)==S_OK);
     wprintf(L"V3 DESCRIPTOR %ls %ls %ls\n",chosen_size,chosen_color,chosen.variant_name);
     static const PCWSTR colors[]={L"NormalColor",L"Metallic",L"HomeStead"};
+    static const PCWSTR color_names[]={L"Default (blue)",L"Silver",L"Olive Green"};
+    for(size_t i=0;i<ARRAYSIZE(colors);++i){
+        PCWSTR token;
+        msstyles_v3_text label;
+        CHECK(msstyles_v3_color_at(&chosen,i,&token,&label)==S_OK);
+        CHECK(!wcscmp(token,colors[i]) && value_is(label,color_names[i]));
+    }
+    PCWSTR token;
+    msstyles_v3_text label;
+    CHECK(msstyles_v3_color_at(&chosen,ARRAYSIZE(colors),&token,&label)==S_FALSE);
+    puts("V3 COLOR NAMES PASS Default (blue), Silver, Olive Green");
     static const PCWSTR sizes[]={L"NormalSize",L"LargeFonts",L"ExtraLargeFonts"};
     static const PCWSTR names[][3]={
         {L"NORMALBLUE_INI",L"LARGEFONTSBLUE_INI",L"EXTRALARGEBLUE_INI"},

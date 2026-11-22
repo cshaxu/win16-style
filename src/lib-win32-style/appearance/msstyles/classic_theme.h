@@ -135,14 +135,14 @@ HRESULT classic_theme_open(PCWSTR descriptor,classic_theme_mapping *source);
 void classic_theme_close(classic_theme_mapping *source);
 
 /* A folder contains one .theme descriptor. Its resources determine the
- * renderer. The callback borrows the folder and optional display name for
- * that invocation only. */
-typedef BOOL (*classic_theme_visit)(PCWSTR folder,PCWSTR display_name,classic_theme_family family,void *context);
+ * renderer. The callback borrows the folder and mapped theme for that invocation only. */
+typedef BOOL (*classic_theme_visit)(PCWSTR folder,const classic_theme_mapping *theme,void *context);
 HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_mapping *,
     classic_theme_family *family);
 void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void *context);
 /* A stable, pointer-free directory ID used by all three entry paths. */
 unsigned classic_theme_folder_id(PCWSTR folder);
+unsigned classic_theme_color_id(PCWSTR folder,PCWSTR color);
 HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH]);
 HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_theme_mapping *);
 HRESULT classic_theme_open_selected(HMODULE renderer,classic_theme_selection selection,classic_theme_mapping *);

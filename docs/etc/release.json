@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T30 S1 P1",
-  "stage": "published XP Luna v3 Win32 theme loading",
-  "version": "0.30.0.0",
-  "version_contract": "M0 T30",
+  "delivery": "M0 T31 S1 P1",
+  "stage": "published tray submenus for v3 theme color schemes",
+  "version": "0.31.0.0",
+  "version_contract": "M0 T31",
   "package_directory": "assets",
   "last_verified_remote_delivery": "M0 T30 S1 P1 58ff278ded7c",
-  "source_snapshot_sha256": "0a8487c5d6b9ea603a58acba7f2f65a4453e461b9e0da120aa2c47a239fb926c",
+  "source_snapshot_sha256": "0013ffb8e637e9fee129c5702e9b5da19ccd251d8cdfdcf79e3f1ea93467b1b9",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
-      "version": "M0 T30",
-      "sha256": "2f66c43fd819e3ddaff344f2e16f9cea6f6f27e50dd1e45882fa3f9118e322a8",
+      "version": "M0 T31",
+      "sha256": "dc3de771ba4a95ac3e3430b35a6382024099dfc0acc8f7201df149c407805598",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -26,8 +26,8 @@
     },
     "ntwshk32.dll": {
       "architecture": "x86",
-      "version": "M0 T30",
-      "sha256": "0da738675371df4ee861eacdf62600b51af72630bd682aa56be81bb0ba18668c",
+      "version": "M0 T31",
+      "sha256": "574a170641215c2e2affdcc2b980a138da639fd1cd294813720a499febda15b3",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -55,8 +55,8 @@
     },
     "ntwshk64.dll": {
       "architecture": "x64",
-      "version": "M0 T30",
-      "sha256": "7ff7eab9ec5606f0f059256d0e137738dda52135fc2b957d6d0ebd3f4e100736",
+      "version": "M0 T31",
+      "sha256": "99453c4106c296b7c42ac93b6db3710918c101f41c8522d37c99cb8baae60195",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,7 +106,7 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 14,
+    "passed": 13,
     "selected_cases": [
       "win2k-paint-x86",
       "win2k-paint-x64",
@@ -117,7 +117,6 @@
       "demo-boundary",
       "demo-pair",
       "wait-contract",
-      "theme-dialog-policy",
       "cli",
       "automatic",
       "propagation",
@@ -125,32 +124,23 @@
     ],
     "skipped": [],
     "supplemental_native": {
-      "luna_package_matrix": 18,
-      "launch_from_each_destination": 8,
-      "native_parser_and_descriptor": 8,
-      "x86_x64_abi": 2,
-      "measured_caption_144_dpi_px": {
-        "win2000": 29,
-        "luna": [
-          38,
-          44,
-          53
-        ]
-      },
-      "win16_original_theme_images": 24,
-      "win16_original_theme_masks": 13
+      "color_name_parser_architectures": 2,
+      "active_profile_architectures": 2,
+      "same_folder_controller_architectures": 2,
+      "x64_native_menu_with_stock_luna": 1,
+      "default_launch_both_destinations": 4
     },
     "limitations": [
-      "Stock XP files are optional local input, outside the seven deliverables.",
-      "Actual Luna validation covers ordinary Win32 captions, frame pixels, close hit testing and push buttons.",
-      "Luna UWP, WinUI, tray-wide switching, maximized title tiling and additional XP control parts were not certified."
+      "Native popup inspection and controlled worker transitions cover menu and selection.",
+      "Explorer pointer input and a desktop-wide administrator style switch were not exercised.",
+      "Multi-scheme enumeration uses the supported msstyles v3 format."
     ]
   },
-  "evidence": "../history/M0-T30-S1-luna-source.md",
+  "evidence": "../history/M0-T31-S1-tray-color-schemes.md",
   "build": {
-    "command": "Build-Package scoped clean snapshot, Build-Core both widths and final incremental resource/link corrections within that snapshot",
-    "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache version 4.13.6",
-    "cache_hits": 1942,
-    "cache_misses": 165
+    "command": "Build-Package worker on the scoped T31 clean snapshot",
+    "toolchain": "C17, MinGW GCC 16.1.0, Ninja, shared ccache",
+    "cache_hits": 1951,
+    "cache_misses": 147
   }
 }

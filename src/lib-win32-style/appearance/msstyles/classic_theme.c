@@ -672,7 +672,7 @@ HRESULT classic_theme_load(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme *t
     return result;
 }
 
-HRESULT classic_theme_open(PCWSTR descriptor,classic_theme_mapping *source)
+static HRESULT open_descriptor(PCWSTR descriptor,PCWSTR chosen_color,classic_theme_mapping *source)
 {
     if(!descriptor || !source || source->resources)return E_INVALIDARG;
     if(!descriptor[0] || !descriptor[1])return E_INVALIDARG;
@@ -701,7 +701,7 @@ HRESULT classic_theme_open(PCWSTR descriptor,classic_theme_mapping *source)
        !MultiByteToWideChar(CP_UTF8,0,parsed.size,-1,size,ARRAYSIZE(size)) ||
        !MultiByteToWideChar(CP_UTF8,0,parsed.color,-1,color,ARRAYSIZE(color)))
         return HRESULT_FROM_WIN32(GetLastError());
-    HRESULT result=map_theme(path,size,color,source);
+    HRESULT result=map_theme(path,size,chosen_color?chosen_color:color,source);
     if(SUCCEEDED(result)){
         source->hosts=parsed.hosts;
         if(parsed.compatibility_folder[0])
@@ -714,6 +714,9 @@ HRESULT classic_theme_open(PCWSTR descriptor,classic_theme_mapping *source)
         source->display_name[0]=0;
     return result;
 }
+
+HRESULT classic_theme_open(PCWSTR descriptor,classic_theme_mapping *source)
+{return open_descriptor(descriptor,NULL,source);}
 
 void classic_theme_close(classic_theme_mapping *source)
 {
@@ -770,6 +773,21 @@ unsigned classic_theme_folder_id(PCWSTR folder)
     return (hash&(CLASSIC_THEME_PROFILE_CAP-1u))|8u|CLASSIC_THEME_FOLDER_ID_MARKER;
 }
 
+/* Default folder IDs set bit 3. Explicit color IDs leave it clear,
+ * while sharing the existing folder-profile namespace and DWORD transport. */
+unsigned classic_theme_color_id(PCWSTR folder,PCWSTR color)
+{
+    unsigned folder_hash,color_hash;
+    if(!folder_name(folder) || !color || !*color ||
+       !hash_folder(folder,&folder_hash) || !hash_folder(color,&color_hash))
+        return CLASSIC_THEME_PROFILE_CAP;
+    unsigned combined=(folder_hash^color_hash)*16777619u;
+    return (combined&(CLASSIC_THEME_PROFILE_CAP-1u)&~8u)|16u|CLASSIC_THEME_FOLDER_ID_MARKER;
+}
+
+static BOOL color_profile(unsigned id)
+{return classic_theme_is_folder_id(id) && !(id&8u);}
+
 void classic_theme_set_process_profile(unsigned profile,classic_theme_family family)
 {InterlockedExchange(&process_profile,(LONG)classic_theme_encode_selection((classic_theme_selection){profile,family}));}
 
@@ -792,7 +810,7 @@ unsigned classic_theme_enter_profile(classic_theme_selection selection)
 void classic_theme_leave_profile(unsigned previous)
 {thread_profile=previous;}
 
-HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_mapping *source,
+static HRESULT open_folder(HMODULE renderer,PCWSTR folder,PCWSTR color,classic_theme_mapping *source,
     classic_theme_family *family)
 {
     if(!renderer || !folder_name(folder) || !source || source->resources || !family)
@@ -823,7 +841,7 @@ HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_m
     if(swprintf_s(filename,capacity,L"%ls\\%ls",folder,descriptor)<0)
         return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
     classic_theme_mapping candidate={0};
-    HRESULT result=classic_theme_open(path,&candidate);
+    HRESULT result=open_descriptor(path,color,&candidate);
     if(FAILED(result))return result;
     unsigned provider=candidate.model.dialog_policy.window_provider;
     if(!provider){
@@ -841,6 +859,10 @@ HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_m
     *family=selected;*source=candidate;return S_OK;
 }
 
+HRESULT classic_theme_open_folder(HMODULE renderer,PCWSTR folder,classic_theme_mapping *source,
+    classic_theme_family *family)
+{return open_folder(renderer,folder,NULL,source,family);}
+
 void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void *context)
 {
     if(!renderer || !visit)return;
@@ -855,14 +877,36 @@ void classic_theme_visit_folders(HMODULE renderer,classic_theme_visit visit,void
            (entry.dwFileAttributes&FILE_ATTRIBUTE_REPARSE_POINT) || !folder_name(entry.cFileName))continue;
         classic_theme_mapping candidate={0};classic_theme_family family;
         if(FAILED(classic_theme_open_folder(renderer,entry.cFileName,&candidate,&family)))continue;
-        BOOL more=visit(entry.cFileName,candidate.display_name,family,context);
+        BOOL more=visit(entry.cFileName,&candidate,context);
         classic_theme_close(&candidate);
         if(!more)break;
     }while(FindNextFileW(search,&entry));
     FindClose(search);
 }
 
-HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH])
+static HRESULT match_color(HMODULE renderer,PCWSTR folder,unsigned profile,
+    WCHAR *color,size_t capacity)
+{
+    classic_theme_mapping source={0};
+    classic_theme_family family;
+    if(FAILED(classic_theme_open_folder(renderer,folder,&source,&family)))return S_FALSE;
+    HRESULT result=S_FALSE;
+    if(source.v3.resources){
+        PCWSTR token;
+        msstyles_v3_text label;
+        for(size_t i=0;msstyles_v3_color_at(&source.v3,i,&token,&label)==S_OK;++i){
+            if(classic_theme_color_id(folder,token)!=profile)continue;
+            if(result==S_OK){result=HRESULT_FROM_WIN32(ERROR_DUP_NAME);break;}
+            wcscpy_s(color,capacity,token);
+            result=S_OK;
+        }
+    }
+    classic_theme_close(&source);
+    return result;
+}
+
+static HRESULT profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH],
+    WCHAR color[MSSTYLES_THEME_TOKEN_CAPACITY])
 {
 #ifdef STYLE_THEME_EXTERNAL_ONLY
     if(!classic_theme_is_folder_id(profile))return E_INVALIDARG;
@@ -874,7 +918,7 @@ HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR fol
     if(!filename)return HRESULT_FROM_WIN32(GetLastError());
     if(wcscpy_s(filename,ARRAYSIZE(path)-(size_t)(filename-path),L"*"))
         return HRESULT_FROM_WIN32(ERROR_FILENAME_EXCED_RANGE);
-    WIN32_FIND_DATAW entry;folder[0]=0;
+    WIN32_FIND_DATAW entry;folder[0]=0;color[0]=0;
     HANDLE search=FindFirstFileW(path,&entry);
     if(search==INVALID_HANDLE_VALUE)return HRESULT_FROM_WIN32(GetLastError());
 #ifndef STYLE_THEME_EXTERNAL_ONLY
@@ -883,6 +927,13 @@ HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR fol
     do{
         if(!(entry.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY) ||
            (entry.dwFileAttributes&FILE_ATTRIBUTE_REPARSE_POINT) || !folder_name(entry.cFileName))continue;
+        if(color_profile(profile)){
+            WCHAR token[MSSTYLES_THEME_TOKEN_CAPACITY];
+            HRESULT match=match_color(renderer,entry.cFileName,profile,token,ARRAYSIZE(token));
+            if(FAILED(match)){FindClose(search);return match;}
+            if(match==S_FALSE)continue;
+            wcscpy(color,token);
+        }else
 #ifndef STYLE_THEME_EXTERNAL_ONLY
         if(profile<2){
             classic_theme_mapping source={0};classic_theme_family family;
@@ -907,17 +958,24 @@ HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR fol
     return folder[0]?S_OK:HRESULT_FROM_WIN32(ERROR_PATH_NOT_FOUND);
 }
 
+HRESULT classic_theme_profile_folder(HMODULE renderer,unsigned profile,WCHAR folder[MAX_PATH])
+{
+    WCHAR color[MSSTYLES_THEME_TOKEN_CAPACITY];
+    return profile_folder(renderer,profile,folder,color);
+}
+
 HRESULT classic_theme_open_profile(HMODULE renderer,unsigned profile,classic_theme_mapping *source)
 {
     WCHAR folder[MAX_PATH];
-    HRESULT result=classic_theme_profile_folder(renderer,profile,folder);
+    WCHAR color[MSSTYLES_THEME_TOKEN_CAPACITY];
+    HRESULT result=profile_folder(renderer,profile,folder,color);
     if(FAILED(result))return result;
 #ifdef STYLE_THEME_EXTERNAL_ONLY
     classic_theme_family layout;
-    return classic_theme_open_folder(renderer,folder,source,&layout);
+    return open_folder(renderer,folder,color[0]?color:NULL,source,&layout);
 #else
     classic_theme_family family=classic_theme_profile_family(profile),found;
-    result=classic_theme_open_folder(renderer,folder,source,&found);
+    result=open_folder(renderer,folder,color[0]?color:NULL,source,&found);
     if(SUCCEEDED(result) && !classic_theme_is_folder_id(profile) && found!=family){
         classic_theme_close(source);return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
     }
