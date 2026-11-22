@@ -14,7 +14,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/v3_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "64177577ddc1c50f7b979ebbbac600a2525e6dec55abc7254db0991bb4061249",
+      "sha256": "17ff1ae80aa0667db1d0df359f457e38f8bd4dc6b0efedce2c3632a9aeb4ace0",
       "disposition": "authored",
       "review": "T30 S1: load and verify v3 frame and push-button appearance.",
       "notice": "Project-authored code. No XP source or binaries are embedded."
@@ -32,7 +32,7 @@
       "path": "src/lib-win32-style/application/graphics/dib_strip.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3292cb8897535cd970c308ee858f1b70568e413b24afb4915d510f00daa75b0f",
+      "sha256": "2ab0523833aa23042eb1c9328639568ef4f718950dee6c81fabb441f24e25620",
       "disposition": "authored",
       "review": "T30 S1: load and verify v3 frame and push-button appearance.",
       "notice": "Project-authored code. No XP source or binaries are embedded."
@@ -41,7 +41,7 @@
       "path": "src/lib-win32-style/application/graphics/dib_strip_read.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0301a8213a3bd4eb69266ab8b61008808bed7be2fc09b13aab2063af5f3a2ed7",
+      "sha256": "b84f956800853504c9061e681ccbe73d2b0e6c9821525df356a14c748a15b110",
       "disposition": "authored",
       "review": "T30 S1: separate read-only DIB validation from GDI drawing.",
       "notice": "Project-authored code. No XP source or binaries are embedded."
@@ -59,7 +59,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/v3_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "476d9034f653811ae5571bb0d1046bce43eb8f32c73144bbce62fce927c1ad44",
+      "sha256": "5af4341bbe5991849d46b29b25f0e1672bb7b7ceab44d367a5bb0647a5669004",
       "disposition": "authored",
       "review": "T30 S1: load and verify v3 frame and push-button appearance.",
       "notice": "Project-authored code. No XP source or binaries are embedded."
@@ -68,7 +68,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/v3_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "744e72b1ee32041dc94ef50f7c831ad193e4557f9f8c34e0265d7c9de0ccbbeb",
+      "sha256": "08a0d2a2b7da95ba24ff19f1767931edc81b7635ed593d064aba26fcd219d3e6",
       "disposition": "authored",
       "review": "T30 S1: read and verify v3 theme resources.",
       "notice": "Project-authored code. External XP samples are reviewed separately."
@@ -1292,7 +1292,7 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "9477b82bc194e4e59f5ddd9b1da3482fb81de29ddab421d8141d04e71e4b62f0",
+      "sha256": "2d64408fbeb340797209138f9e03c7b60c18320c40a9cab1470c1499c8e756bd",
       "disposition": "authored",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL TEdit/TListBox wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration; T27 product build version; T28 S1 Win2000 UWP exterior and verification",
       "notice": "Project-authored, repository MIT"
@@ -1436,7 +1436,7 @@
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "c4427219a24b46733bbc9f5ad7c14a0de8d53c106c7f02f39b2db50f9cb95ed2",
+      "sha256": "af816863ad2db72a66776d79a6eb865f320c8744f6c993b7c9fb6380747d4770",
       "disposition": "authored",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration; T27 product build version; T28 S1 Win2000 UWP exterior and verification",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1652,7 +1652,7 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "11346c419d0a4946c12603583ed2f67eede20aa8f572094bee4aa5b5fc94e7e4",
+      "sha256": "ff7b136b25dc9d5dfc2a43ffa5a1434c60067611fe13f87f5692a2541a9bbf4f",
       "disposition": "authored",
       "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration; T27 product build version; T28 S1 Win2000 UWP exterior and verification",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
@@ -5963,7 +5963,7 @@
       "path": "src/ntw2ks-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "0dc50e12d4bcedef674d8f0dcd0467789bb14e941b82907cdfe8b2b593918327",
+      "sha256": "f400a9f522c01c581e6584e510e6835123c04639b548d93969227110a5ffd301",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T27 product build version; T28 S1 Win2000 UWP exterior and verification; T28 S3 preview the Windows 2000 General print sheet",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -6026,7 +6026,7 @@
       "path": "src/ntwshk-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "a1e42cc5aa10ead383f6688379f3430e514db3ee87ac7176090f68dbcf142a3b",
+      "sha256": "28c778935a6d5e43aef7192bc929cea48949f1159bd3c23caaebbc97870883ee",
       "disposition": "authored",
       "review": "T25 S2 shared runtime and native verification; T27 product build version; T28 S1 Win2000 UWP exterior and verification",
       "notice": "Project-authored; no imported artwork"
@@ -6125,7 +6125,7 @@
       "path": "src/lib-win32-style/application/window/observed_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d302dddcf2d2cf37f756665981f672540086deb376542df2f7e956116f7459a0",
+      "sha256": "9e14d369e759228faff34c22b463a041b12baba24eda9b6ab414771f04410101",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal; T26 S1 shared frame change and client restore; T26 S1 share DIB buffer across UWP and Win2000; T26 S1 shared window thread identity; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T28 S1 shared classic caption and UWP appearance model; T28 S2 reuse composed redraw and reserve caption space for the extended client",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -10481,7 +10481,7 @@
       "path": "src/lib-win32-style/application/window/caption_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "55f987184d1be15dcd06c00ca206b6934d95e2779a7092caf8191f0d182be396",
+      "sha256": "e4c29db4c404d9584a1c7e509bd7fe90f183cc8b0b33507b2ea738ff2d74e1de",
       "disposition": "authored",
       "review": "T29 S17 shared caption band and title painting from project implementations",
       "notice": "Project-authored native C; no imported artwork"
@@ -10490,7 +10490,7 @@
       "path": "src/lib-win32-style/application/window/caption_paint.h",
       "source": null,
       "source_blob": null,
-      "sha256": "56f0632e8f394d2fd3de492c0bd0ed100d02afac8afddc7094b299e6eaee56b8",
+      "sha256": "f4b5588b08924ef64e1505729174c3b10d89e2065ede654af410f24294a8ae23",
       "disposition": "authored",
       "review": "T29 S17 shared caption band and title painting from project implementations",
       "notice": "Project-authored native C; no imported artwork"

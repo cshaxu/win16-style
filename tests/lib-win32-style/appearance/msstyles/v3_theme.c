@@ -1,5 +1,6 @@
 #include "lib-win32-style/appearance/msstyles/v3_theme.h"
 #include "lib-win32-style/appearance/msstyles/theme_file.h"
+#include "lib-win32-style/appearance/msstyles/v3_frame.h"
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
@@ -22,9 +23,67 @@ static BOOL check_properties(void)
         value_is(value,L"255 255 255") && !msstyles_v3_property(&view,L"Globals",L"TextColor",&value);
 }
 
+static BOOL check_caption_glyphs(const msstyles_v3_theme *view)
+{
+    static const enum classic_button_role roles[]={
+        CLASSIC_BUTTON_MINIMIZE,CLASSIC_BUTTON_MAXIMIZE,CLASSIC_BUTTON_CLOSE
+    };
+    style_frame_sprites sprites;
+    if(!msstyles_v3_frame_images(view,&sprites))return FALSE;
+    for(unsigned i=0;i<ARRAYSIZE(roles);++i){
+        const style_frame_sprite_button *button=&sprites.buttons[roles[i]];
+        if(button->selection!=STYLE_GLYPH_SIZE || button->face.width!=21 ||
+           style_caption_glyph(button,(SIZE){17,17},96)!=&button->variants[2].image ||
+           style_caption_glyph(button,(SIZE){17,17},144)!=&button->variants[2].image ||
+           style_caption_glyph(button,(SIZE){22,23},144)!=&button->variants[3].image ||
+           style_caption_glyph(button,(SIZE){26,26},144)!=&button->variants[4].image){
+            fprintf(stderr,"glyph role=%u mode=%u face=%u variant widths=%u/%u/%u/%u/%u\n",
+                (unsigned)roles[i],(unsigned)button->selection,button->face.width,
+                button->variants[0].image.width,button->variants[1].image.width,
+                button->variants[2].image.width,button->variants[3].image.width,
+                button->variants[4].image.width);
+            return FALSE;
+        }
+        if(button->variants[2].image.width!=13 || button->variants[3].image.width!=19 ||
+           button->variants[4].image.width!=23)return FALSE;
+    }
+    return TRUE;
+}
+
+static BOOL check_indexed_strip(void)
+{
+    const struct {
+        BITMAPINFOHEADER header;
+        RGBQUAD palette[4];
+        BYTE row[4];
+    } source={
+        .header={.biSize=sizeof(BITMAPINFOHEADER),.biWidth=6,.biHeight=1,
+            .biPlanes=1,.biBitCount=4,.biClrUsed=4},
+        .palette={{0,0,0,0},{0,0,255,0},{0,255,0,0},{255,0,0,0}},
+        .row={0x01,0x23,0x21,0}
+    };
+    style_dib_strip strip;
+    if(!style_dib_strip_read(&source,sizeof(source),2,TRUE,&strip))return FALSE;
+    BITMAPINFO format={.bmiHeader={.biSize=sizeof(BITMAPINFOHEADER),.biWidth=3,.biHeight=1,
+        .biPlanes=1,.biBitCount=32}};
+    void *pixels=NULL;
+    HDC dc=CreateCompatibleDC(NULL);
+    HBITMAP bitmap=CreateDIBSection(dc,&format,DIB_RGB_COLORS,&pixels,NULL,0);
+    HGDIOBJ before=dc && bitmap?SelectObject(dc,bitmap):NULL;
+    BOOL ok=before && before!=HGDI_ERROR &&
+        style_dib_strip_draw(dc,(RECT){0,0,3,1},&strip,1,96) &&
+        GetPixel(dc,0,0)==RGB(0,0,255) && GetPixel(dc,1,0)==RGB(0,255,0) &&
+        GetPixel(dc,2,0)==RGB(255,0,0);
+    if(before && before!=HGDI_ERROR)SelectObject(dc,before);
+    if(bitmap)DeleteObject(bitmap);
+    if(dc)DeleteDC(dc);
+    return ok;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
     CHECK(check_properties());
+    CHECK(check_indexed_strip());
     if(argc==1){puts("V3 PROPERTY PASS exact section, whitespace and comments");return 0;}
     CHECK(argc==4);
     FILE *description=_wfopen(argv[1],L"rb");
@@ -64,6 +123,7 @@ int wmain(int argc,WCHAR **argv)
             msstyles_v3_theme view={0};
             CHECK(msstyles_v3_read(module,sizes[s],colors[c],&view)==S_OK);
             CHECK(!wcscmp(view.variant_name,names[c][s]));
+            CHECK(check_caption_glyphs(&view));
             msstyles_v3_text prop;
             const void *dib=NULL;
             DWORD length=0;

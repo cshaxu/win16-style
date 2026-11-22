@@ -184,6 +184,19 @@ BOOL style_caption_icon_bounds(RECT band,int limit,UINT dpi,RECT *icon)
     return TRUE;
 }
 
+const style_dib_strip *style_caption_glyph(const style_frame_sprite_button *button,SIZE content,UINT dpi)
+{
+    for(size_t i=ARRAYSIZE(button->variants);button->selection && i>0;--i){
+        const style_frame_glyph *variant=&button->variants[i-1];
+        if(!variant->image.bits)continue;
+        if(button->selection==STYLE_GLYPH_SIZE && variant->minimum.cx<=content.cx &&
+           variant->minimum.cy<=content.cy)return &variant->image;
+        if(button->selection==STYLE_GLYPH_DPI && variant->minimum_dpi>0 &&
+           dpi>=(UINT)variant->minimum_dpi)return &variant->image;
+    }
+    return button->glyph.bits?&button->glyph:NULL;
+}
+
 static BOOL paint_sprite_button(HDC dc,const style_caption_render_model *model,enum classic_button_role role)
 {
     if(!model->sprites)return FALSE;
@@ -200,16 +213,13 @@ static BOOL paint_sprite_button(HDC dc,const style_caption_render_model *model,e
     bounds.top+=MulDiv(item->content.top,dpi,96);
     bounds.right-=MulDiv(item->content.right,dpi,96);
     bounds.bottom-=MulDiv(item->content.bottom,dpi,96);
-    int width=bounds.right-bounds.left,height=bounds.bottom-bounds.top;
-    for(size_t i=ARRAYSIZE(item->glyphs);i>0;--i){
-        const style_dib_strip *glyph=&item->glyphs[i-1];
-        if(!glyph->bits || (int)glyph->width>width || (int)glyph->height>height)continue;
-        RECT centered={bounds.left+(width-(int)glyph->width)/2,bounds.top+(height-(int)glyph->height)/2,0,0};
-        centered.right=centered.left+(int)glyph->width;
-        centered.bottom=centered.top+(int)glyph->height;
-        (void)style_dib_strip_draw(dc,centered,glyph,state,model->dpi);
-        break;
-    }
+    SIZE content={bounds.right-bounds.left,bounds.bottom-bounds.top};
+    const style_dib_strip *glyph=style_caption_glyph(item,content,model->dpi);
+    if(!glyph || IsRectEmpty(&bounds))return TRUE;
+    LONG left=bounds.left+(content.cx-(LONG)glyph->width)/2;
+    LONG top=bounds.top+(content.cy-(LONG)glyph->height)/2;
+    RECT centered={left,top,left+(LONG)glyph->width,top+(LONG)glyph->height};
+    (void)style_dib_strip_draw(dc,centered,glyph,state,model->dpi);
     return TRUE;
 }
 

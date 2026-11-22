@@ -66,12 +66,24 @@ BOOL style_caption_button_paint(HDC dc,RECT bounds,enum classic_button_role role
     BOOL maximized,UINT flags,int unit,const style_caption_presentation *presentation,
     const style_caption_raster *raster,const COLORREF colors[4]);
 
+typedef struct style_frame_glyph {
+    style_dib_strip image;
+    SIZE minimum;
+    int minimum_dpi;
+} style_frame_glyph;
+
+enum style_frame_glyph_selection {
+    STYLE_GLYPH_FIXED, STYLE_GLYPH_SIZE, STYLE_GLYPH_DPI
+};
+
 typedef struct style_frame_sprite_button {
-    style_dib_strip face,glyphs[5];
+    style_dib_strip face,glyph;
+    style_frame_glyph variants[5];
     RECT content;
-    POINT top_right;
-    BOOL anchored;
+    enum style_frame_glyph_selection selection;
 } style_frame_sprite_button;
+
+const style_dib_strip *style_caption_glyph(const style_frame_sprite_button *button,SIZE content,UINT dpi);
 
 typedef struct style_frame_sprites {
     style_dib_strip caption,maximized,left,right,bottom;

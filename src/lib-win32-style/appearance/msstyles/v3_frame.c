@@ -84,25 +84,36 @@ BOOL msstyles_v3_push_image(const msstyles_v3_theme *theme,style_push_sprite *sp
 static BOOL button(const msstyles_v3_theme *theme,PCWSTR section,style_frame_sprite_button *button)
 {
     if(!strip(theme,section,&button->face) || button->face.count<4)return FALSE;
-    msstyles_v3_text anchor;
-    int offset[2];
-    if(msstyles_v3_property(theme,section,L"OffsetType",&anchor) && is(anchor,L"TopRight") &&
-       vector(theme,section,L"Offset",offset,2,-255) &&
-       offset[0]<=-(int)button->face.width && offset[1]>=0){
-        button->top_right=(POINT){offset[0],offset[1]};
-        button->anchored=TRUE;
-    }
     int m[4];
     if(numbers(theme,section,L"ContentMargins",m,4))
         button->content=(RECT){m[0],m[2],m[1],m[3]};
-    for(unsigned i=0;i<ARRAYSIZE(button->glyphs);++i){
-        WCHAR key[]=L"ImageFile1";
-        key[ARRAYSIZE(key)-2]+=(WCHAR)i;
-        style_dib_strip *glyph=&button->glyphs[i];
-        if(!image(theme,section,key,button->face.count,button->face.horizontal,glyph))continue;
-        glyph->transparent=image_true(theme,section,L"GlyphTransparent");
-        glyph->color_key=RGB(255,0,255);
-        (void)color(theme,section,L"GlyphTransparentColor",&glyph->color_key);
+    msstyles_v3_text type;
+    if(!msstyles_v3_property(theme,section,L"GlyphType",&type) || !is(type,L"ImageGlyph"))return TRUE;
+    msstyles_v3_text selection;
+    if(msstyles_v3_property(theme,section,L"ImageSelectType",&selection)){
+        if(is(selection,L"Size"))button->selection=STYLE_GLYPH_SIZE;
+        if(is(selection,L"Dpi"))button->selection=STYLE_GLYPH_DPI;
+    }
+    BOOL transparent=image_true(theme,section,L"GlyphTransparent");
+    COLORREF key=RGB(255,0,255);
+    (void)color(theme,section,L"GlyphTransparentColor",&key);
+    (void)image(theme,section,L"GlyphImageFile",button->face.count,button->face.horizontal,&button->glyph);
+    button->glyph.transparent=transparent;
+    button->glyph.color_key=key;
+    for(unsigned i=0;i<ARRAYSIZE(button->variants);++i){
+        WCHAR file[]=L"ImageFile1",size[]=L"MinSize1",dpi[]=L"MinDpi1";
+        file[ARRAYSIZE(file)-2]+=(WCHAR)i;
+        size[ARRAYSIZE(size)-2]+=(WCHAR)i;
+        dpi[ARRAYSIZE(dpi)-2]+=(WCHAR)i;
+        style_frame_glyph *glyph=&button->variants[i];
+        if(!image(theme,section,file,button->face.count,button->face.horizontal,&glyph->image))continue;
+        glyph->image.transparent=transparent;
+        glyph->image.color_key=key;
+        glyph->minimum=(SIZE){(LONG)glyph->image.width,(LONG)glyph->image.height};
+        int minimum[2];
+        if(numbers(theme,section,size,minimum,2))
+            glyph->minimum=(SIZE){minimum[0],minimum[1]};
+        (void)numbers(theme,section,dpi,&glyph->minimum_dpi,1);
     }
     return TRUE;
 }

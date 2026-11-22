@@ -19,16 +19,19 @@ static BOOL decode(const style_dib_strip *strip,unsigned state,BOOL alpha,style_
     unsigned left=strip->horizontal?state*strip->width:0,top=strip->horizontal?0:state*strip->height;
     for(unsigned y=0;y<strip->height;++y){
         unsigned row=strip->top_down?top+y:height-1-top-y;
-        const BYTE *source=strip->bits+(size_t)row*strip->stride+left*(strip->depth/8u);
+        const BYTE *source=strip->bits+(size_t)row*strip->stride;
         BYTE *target=bitmap->pixels+(size_t)y*strip->width*4u;
         for(unsigned x=0;x<strip->width;++x){
             RGBQUAD color;
-            if(strip->depth==8){
-                if(*source>=strip->colors)return FALSE;
-                color=strip->palette[*source++];
+            unsigned column=left+x;
+            if(strip->depth<=8){
+                unsigned index=strip->depth==4?
+                    (source[column/2]>>(column%2?0:4))&15u:source[column];
+                if(index>=strip->colors)return FALSE;
+                color=strip->palette[index];
             }else{
-                color=(RGBQUAD){source[0],source[1],source[2],alpha?source[3]:255};
-                source+=strip->depth/8u;
+                const BYTE *pixel=source+column*(strip->depth/8u);
+                color=(RGBQUAD){pixel[0],pixel[1],pixel[2],alpha?pixel[3]:255};
             }
             unsigned opacity=alpha?color.rgbReserved:255;
             if(strip->transparent && RGB(color.rgbRed,color.rgbGreen,color.rgbBlue)==strip->color_key)

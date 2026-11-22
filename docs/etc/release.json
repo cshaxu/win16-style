@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T34 S1 P1",
-  "stage": "published original Luna caption button offsets",
-  "version": "0.34.0.0",
-  "version_contract": "M0 T34",
+  "delivery": "M0 T35 S1 P1",
+  "stage": "published Luna caption glyph and geometry correction",
+  "version": "0.35.0.0",
+  "version_contract": "M0 T35",
   "package_directory": "assets",
   "last_verified_remote_delivery": "M0 T34 S1 P1 090eee1eccc6",
-  "source_snapshot_sha256": "497e8e86d45385a33479cb9bdf135598c8c63b229f2a25207fd865a119c7c623",
+  "source_snapshot_sha256": "b358970e5779a03d85e267a0476e2d1880f825f826ec510430c920b6bacb4ca8",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
-      "version": "M0 T34",
-      "sha256": "0e390e1defc340feac747b0f813027e77d95cc5f19b7516a9003fbc4bbea0eab",
+      "version": "M0 T35",
+      "sha256": "34c3ddbd923ff98572a72cb6fdca380a5ed8ee7f7244f74d8141a63b3aefbdf1",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -26,8 +26,8 @@
     },
     "ntwshk32.dll": {
       "architecture": "x86",
-      "version": "M0 T34",
-      "sha256": "a2287c896765cf7863dd98fecd3bfeea441010a68b18030612537154fe6baf11",
+      "version": "M0 T35",
+      "sha256": "7553f1f2499c44fe09373e7b659ecc6fc8a2b7b2a0dba27bace0a838847213e4",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -55,8 +55,8 @@
     },
     "ntwshk64.dll": {
       "architecture": "x64",
-      "version": "M0 T34",
-      "sha256": "75f75795647b562f012766406a86e446974c11fb21a64a9ad8d2fdf0b6074bfb",
+      "version": "M0 T35",
+      "sha256": "8a5774bbdb423232bbc03c6a807f57e8526088f9b459b0fc8b40c1187384a2b5",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -124,34 +124,25 @@
     ],
     "skipped": [],
     "supplemental_native": {
-      "luna_installed_windows": 12,
+      "luna_installed_windows": 24,
       "original_schemes_and_sizes_read": 9,
-      "anchor_offsets_at_96_dpi": [
-        [
-          -73,
-          5
-        ],
-        [
-          -49,
-          5
-        ],
-        [
-          -25,
-          5
-        ]
-      ],
-      "buttons_per_window": 3
+      "blue_right_inset_at_96_dpi": {
+        "xp": 6,
+        "t34": 4,
+        "t35": 6
+      },
+      "frame_fixture_sha256": "17ff1ae80aa0667db1d0df359f457e38f8bd4dc6b0efedce2c3632a9aeb4ace0"
     },
     "limitations": [
-      "Geometry was verified for ordinary restored Win32 windows at the current 144 DPI.",
-      "Tool windows and maximized window variants retain their previous geometry."
+      "Original XP visual reference measured at 96 DPI; higher-DPI host checks are project-only.",
+      "Manual visual acceptance is pending."
     ]
   },
-  "evidence": "../history/M0-T34-S1-luna-caption-geometry.md",
+  "evidence": "../history/M0-T35-S1-luna-glyphs.md",
   "build": {
-    "command": "Build-Package worker on the scoped T34 clean snapshot",
+    "command": "Build-Package worker on scoped T35 clean snapshot",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, shared ccache",
-    "cache_hits": 1950,
-    "cache_misses": 148
+    "cache_hits": 2094,
+    "cache_misses": 4
   }
 }

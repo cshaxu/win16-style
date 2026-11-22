@@ -47,7 +47,8 @@ static BOOL read_caption(HWND window,caption_witness *sample,TITLEBARINFOEX *inf
     if(!GetWindowRect(window,&window_rect))return FALSE;
     HDC dc=GetWindowDC(window);
     if(!dc)return FALSE;
-    sample->outer=GetPixel(dc,(window_rect.right-window_rect.left)/2,2);
+    /* The silver strip uses the same white on row 2 for both activation states. */
+    sample->outer=GetPixel(dc,(window_rect.right-window_rect.left)/2,1);
     BOOL valid=sample->outer!=CLR_INVALID;
     for(unsigned i=0;i<ARRAYSIZE(slots);++i){
         RECT face=info->rgrect[slots[i]];
@@ -89,12 +90,14 @@ static int check_caption_input(HWND window)
     RECT outer;
     CHECK(GetWindowRect(window,&outer));
     const int dpi=(int)GetDpiForWindow(window);
-    static const int offsets[]={-73,-49,-25};
+    const int size=MulDiv(21,dpi,96),frame=MulDiv(4,dpi,96);
+    const int edge_x=GetSystemMetricsForDpi(SM_CXEDGE,(UINT)dpi);
+    const int edge_y=GetSystemMetricsForDpi(SM_CYEDGE,(UINT)dpi);
     for(unsigned i=0;i<ARRAYSIZE(slots);++i){
         RECT button=info.rgrect[slots[i]];
-        CHECK(button.left==outer.right+MulDiv(offsets[i],dpi,96) &&
-            button.top==outer.top+MulDiv(5,dpi,96));
-        CHECK(button.right-button.left==MulDiv(21,dpi,96) && button.bottom-button.top==MulDiv(21,dpi,96));
+        CHECK(button.right==outer.right-frame-edge_x-(int)(2-i)*(size+edge_x) &&
+            button.top==outer.top+frame+edge_y);
+        CHECK(button.right-button.left==size && button.bottom-button.top==size);
         POINT center={(button.left+button.right)/2,(button.top+button.bottom)/2};
         LPARAM point=MAKELPARAM(center.x,center.y);
         CHECK(!(normal.states[i]&mouse_states));
@@ -119,22 +122,26 @@ static int check_caption_input(HWND window)
     CHECK(read_caption(window,&inactive,&info) && inactive.outer!=normal.outer);
     SendMessageW(window,WM_NCACTIVATE,TRUE,0);
     CHECK(read_caption(window,&restored,&info) && restored.outer==normal.outer);
-    printf("LUNA CAPTION INPUT PASS bits=%u dpi=%u outer=%06lx/%06lx three_buttons native_hover=0 original_offsets=3\n",
-        (unsigned)(sizeof(void *)*8),GetDpiForWindow(window),normal.outer,inactive.outer);
+    printf("LUNA CAPTION INPUT PASS bits=%u dpi=%u outer=%06lx/%06lx three_buttons native_hover=0 "
+        "right_inset=%d top_inset=%d gap=%d size=%d\n",
+        (unsigned)(sizeof(void *)*8),GetDpiForWindow(window),normal.outer,inactive.outer,
+        frame+edge_x,frame+edge_y,edge_x,size);
     return 0;
 }
 
 int wmain(int argc,WCHAR **argv)
 {
     BOOL classic=argc==2 && !lstrcmpW(argv[1],L"--classic");
-    BOOL input=argc==2 && !lstrcmpW(argv[1],L"--caption-input");
+    BOOL input_96=argc==2 && !lstrcmpW(argv[1],L"--caption-input-96");
+    BOOL input=input_96 || (argc==2 && !lstrcmpW(argv[1],L"--caption-input"));
     int expected=25;
     if(argc==2 && !classic && !input){
         if(!lstrcmpW(argv[1],L"LargeFonts"))expected=29;
         else if(!lstrcmpW(argv[1],L"ExtraLargeFonts"))expected=35;
         else CHECK(!lstrcmpW(argv[1],L"NormalSize"));
     }else CHECK(argc==1 || classic || input);
-    SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    SetProcessDpiAwarenessContext(input_96?DPI_AWARENESS_CONTEXT_UNAWARE:
+        DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     const WCHAR class_name[]=L"Run16s.LunaFrameProbe";
     WNDCLASSW type={.lpfnWndProc=input?witness_proc:DefWindowProcW,.hInstance=GetModuleHandleW(NULL),
         .hbrBackground=(HBRUSH)(COLOR_WINDOW+1),.lpszClassName=class_name};
@@ -147,6 +154,11 @@ int wmain(int argc,WCHAR **argv)
     HWND check=CreateWindowExW(0,L"Button",L"Native checkbox",WS_CHILD|WS_VISIBLE|BS_CHECKBOX,
         36,118,160,36,window,NULL,type.hInstance,NULL);
     CHECK(push && check);
+    if(input){
+        RECT work;
+        CHECK(SystemParametersInfoW(SPI_GETWORKAREA,0,&work,0));
+        CHECK(SetWindowPos(window,HWND_TOPMOST,work.left+8,work.top+8,0,0,SWP_NOSIZE|SWP_NOACTIVATE));
+    }
     ShowWindow(window,SW_SHOWNORMAL);
     for(unsigned i=0;i<10;++i){
         MSG message;
@@ -157,6 +169,7 @@ int wmain(int argc,WCHAR **argv)
     SendMessageW(window,WM_NCACTIVATE,TRUE,0);
     CHECK(GetPropW(window,L"Win2kStyle.Frame"));
     if(input){
+        CHECK(!input_96 || GetDpiForWindow(window)==96);
         int result=check_caption_input(window);
         CHECK(DestroyWindow(window));
         return result;
