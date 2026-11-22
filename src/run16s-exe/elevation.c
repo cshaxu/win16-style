@@ -26,19 +26,19 @@ BOOL run16s_global_interactive_console(void)
     return error && error!=INVALID_HANDLE_VALUE && GetFileType(error)==FILE_TYPE_CHAR &&
         GetConsoleMode(error,&mode) && GetConsoleProcessList(pids,1)>0;
 }
-DWORD run16s_elevate_global(DWORD parent_pid,run16s_shell_execute execute,DWORD *exit_code)
+DWORD run16s_elevate_global(DWORD parent_pid,BOOL detached,run16s_shell_execute execute,DWORD *exit_code)
 {
     WCHAR self[32768],directory[32768],parameters[80];DWORD n,error=ERROR_SUCCESS;
     if(!parent_pid || !execute || !exit_code)return ERROR_INVALID_PARAMETER;
     n=GetModuleFileNameW(NULL,self,ARRAYSIZE(self));if(!n || n>=ARRAYSIZE(self))return n?ERROR_FILENAME_EXCED_RANGE:GetLastError();
     n=GetCurrentDirectoryW(ARRAYSIZE(directory),directory);if(!n || n>=ARRAYSIZE(directory))return n?ERROR_FILENAME_EXCED_RANGE:GetLastError();
-    if(swprintf(parameters,ARRAYSIZE(parameters),L"--global-elevated %lu",parent_pid)<0)return ERROR_INSUFFICIENT_BUFFER;
+    if(swprintf(parameters,ARRAYSIZE(parameters),L"--global-elevated %lu%ls",parent_pid,detached?L" --detached":L"")<0)return ERROR_INSUFFICIENT_BUFFER;
     SHELLEXECUTEINFOW info={.cbSize=sizeof(info),.fMask=SEE_MASK_NOCLOSEPROCESS|SEE_MASK_NOASYNC|SEE_MASK_NO_CONSOLE,
         .lpVerb=L"runas",.lpFile=self,.lpParameters=parameters,.lpDirectory=directory,.nShow=SW_HIDE};
-    error=win32_security_shell_wait(&info,execute,TRUE,exit_code);
+    error=win32_security_shell_wait(&info,execute,!detached,exit_code);
     return error;
 }
-DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,PCWSTR theme,
+DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,PCWSTR theme,BOOL console_target,
     run16s_shell_execute execute,DWORD *exit_code)
 {
     WCHAR self[32768],directory[32768];DWORD n=GetModuleFileNameW(NULL,self,32768);
@@ -56,7 +56,7 @@ DWORD run16s_elevate(PCWSTR image,PCWSTR arguments,PCWSTR theme,
     SHELLEXECUTEINFOW info={.cbSize=sizeof(info),
         .fMask=SEE_MASK_NOCLOSEPROCESS|SEE_MASK_NOASYNC|SEE_MASK_FLAG_NO_UI,
         .lpVerb=L"runas",.lpFile=self,.lpParameters=parameters,
-        .lpDirectory=directory,.nShow=SW_SHOWNORMAL};
+        .lpDirectory=directory,.nShow=console_target?SW_SHOWNORMAL:SW_HIDE};
     DWORD error=win32_security_shell_wait(&info,execute,FALSE,exit_code);
     free(parameters);return error;
 }

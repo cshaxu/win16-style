@@ -24,7 +24,7 @@ int wmain(int argc,WCHAR **argv)
  if(!style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name))||swprintf(request,ARRAYSIZE(request),L"%ls.request",name)<0)return 4;
  PROCESS_INFORMATION first={0},second={0},manager={0},duplicate={0},restarted={0};HWND w1=NULL,w2=NULL;HANDLE mapping=NULL,host=NULL,event=NULL;ntw16s_global_session *session=NULL;BOOL pass=FALSE;DWORD duplicate_code=99;
  if(!launch(argv[2],L"LifeBefore",&first)||!(w1=find(L"LifeBefore",&first)))goto done;
- if(!launch(argv[1],L"--global",&manager))goto done;
+ if(!launch(argv[1],L"",&manager))goto done;
  for(unsigned i=0;i<200;++i){mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);if(mapping){session=MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*session));if(session&&session->owner_pid==manager.dwProcessId&&session->phase==NTW16S_GLOBAL_ACTIVE)break;if(session)UnmapViewOfFile(session);session=NULL;CloseHandle(mapping);mapping=NULL;}if(WaitForSingleObject(manager.hProcess,0)==WAIT_OBJECT_0)break;Sleep(50);}
  if(!session||session->phase!=NTW16S_GLOBAL_ACTIVE)goto done;
  for(unsigned i=0;i<100&&state(w1)!=1;++i)Sleep(30);
@@ -35,12 +35,12 @@ int wmain(int argc,WCHAR **argv)
   if(WaitForSingleObject(manager.hProcess,3000)!=WAIT_OBJECT_0 || !GetExitCodeProcess(manager.hProcess,&code) || code!=10){printf("GLOBAL HOST FAILURE manager_wait_or_exit=%lu\n",code);goto done;}
   printf("GLOBAL HOST FAILURE PASS host=78 controller_exit=10 existing_alive=%d\n",WaitForSingleObject(first.hProcess,0)==WAIT_TIMEOUT);pass=TRUE;goto done;
  }
- if(!launch(argv[1],L"--global",&duplicate)||WaitForSingleObject(duplicate.hProcess,5000)!=WAIT_OBJECT_0||!GetExitCodeProcess(duplicate.hProcess,&duplicate_code)||duplicate_code!=10)goto done;
+ if(!launch(argv[1],L"",&duplicate)||WaitForSingleObject(duplicate.hProcess,5000)!=WAIT_OBJECT_0||!GetExitCodeProcess(duplicate.hProcess,&duplicate_code)||duplicate_code!=10)goto done;
  if(!TerminateProcess(manager.hProcess,77)||WaitForSingleObject(manager.hProcess,5000)!=WAIT_OBJECT_0||WaitForSingleObject(host,5000)!=WAIT_OBJECT_0)goto done;
  if(!launch(argv[2],L"LifeAfterCrash",&second)||!(w2=find(L"LifeAfterCrash",&second)))goto done;
  if(state(w2)!=0||WaitForSingleObject(first.hProcess,0)!=WAIT_TIMEOUT)goto done;
  UnmapViewOfFile(session);session=NULL;CloseHandle(mapping);mapping=NULL;
- if(!launch(argv[1],L"--global",&restarted))goto done;
+ if(!launch(argv[1],L"",&restarted))goto done;
  for(unsigned i=0;i<200;++i){mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);if(mapping){session=MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*session));if(session&&session->owner_pid==restarted.dwProcessId&&session->phase==NTW16S_GLOBAL_ACTIVE)break;if(session)UnmapViewOfFile(session);session=NULL;CloseHandle(mapping);mapping=NULL;}if(WaitForSingleObject(restarted.hProcess,0)==WAIT_OBJECT_0)break;Sleep(30);}
  if(!session||session->owner_pid!=restarted.dwProcessId||session->phase!=NTW16S_GLOBAL_ACTIVE){printf("GLOBAL LIFECYCLE restart_not_active error=%lu\n",GetLastError());goto done;}
  if(!wait_state(w1,1)||!wait_state(w2,1)){printf("GLOBAL LIFECYCLE restart_attach old=%d new=%d module=%d\n",state(w1),state(w2),has_style_module(second.dwProcessId));goto done;}

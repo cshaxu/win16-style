@@ -77,7 +77,7 @@
       "path": "tests/integration/tray_global.c",
       "source": null,
       "source_blob": null,
-      "sha256": "738fa98dae2aafabc5cff703437b5955f371de585a632d74c98648e485eb8970",
+      "sha256": "5c69388d2f669b5da1e72f2a8c9b15f535999008c670fa8e01452348b336fb47",
       "disposition": "authored",
       "review": "T21 S19 private-desktop tray switch integration test; T21 S20 tray library split",
       "notice": "Project-authored native test; uses only isolated test instances"
@@ -104,7 +104,7 @@
       "path": "src/run16s-exe/tray_controller.c",
       "source": null,
       "source_blob": null,
-      "sha256": "733d77b45056a0ad72c0be3955a777f87748e5db211636452b2b921e832dc818",
+      "sha256": "8e11cf71ce8311242bb7559031b10a7120345c436f2860e5c3ec53108cb5e3c2",
       "disposition": "authored",
       "review": "T21 S19 tray control using existing global session; T21 S20 tray library split; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored C orchestration; no imported hook implementation"
@@ -113,7 +113,7 @@
       "path": "src/run16s-exe/tray.h",
       "source": null,
       "source_blob": null,
-      "sha256": "8b198469b5337fc60aae4d7e5c724568e347474f4be18adee104b78ba514ad13",
+      "sha256": "21fcdfed4f97a777a012277c54aab84c9e88bda0e876f22097b541cc98221659",
       "disposition": "authored",
       "review": "T21 S19 internal tray interface; T21 S20 tray library split",
       "notice": "Project-authored C interface"
@@ -131,7 +131,7 @@
       "path": "tests/integration/global_cross_origin.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f12c76d38d1ccbd9a294b25f0bee73225ac260ee585d0d4435208d67cc442877",
+      "sha256": "fd78edf7ace4ecd8f44972ff64e82b7f68b5da102fef1e88522d92c1ef913ca6",
       "disposition": "authored",
       "review": "T21 S13 cross-desktop uninstrumented parent window discovery regression; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -140,7 +140,7 @@
       "path": "tests/integration/global_startup_break.c",
       "source": null,
       "source_blob": null,
-      "sha256": "357eb26b56f32dc62473f3f1e408bc01558835e7410a82f10061a38f4ecc0029",
+      "sha256": "6c3c474c14aa9da9639c4923fbcda3859cafb4b005a87a42127c1999e82fdd96",
       "disposition": "authored",
       "review": "T21 S13 startup console break and host cleanup regression; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -149,7 +149,7 @@
       "path": "tests/integration/global_headless_existing.c",
       "source": null,
       "source_blob": null,
-      "sha256": "921c523ba24ee29505e8a575f43e8904ac7fb9f6f2f28ed01e485f3f7773cb63",
+      "sha256": "d198fe86709e01f9ea13662307b0e20bd9870557cd03cac853a67f3c3e955ee9",
       "disposition": "authored",
       "review": "T21 S13 startup-discovered headless process propagation and stop regression; T21 S42 direct public calls and product-side cleanup; T25 S2 shared runtime extraction; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -167,7 +167,7 @@
       "path": "tests/integration/global_propagation_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "67d5dfd20278a7cbbcf611a8b6bf2b45f6ccfca0a20b83d60861489356b09a57",
+      "sha256": "444e8ddc3bd850926d9bf310cb0bccd94c3a32ad1864fd88326514808c6e0c63",
       "disposition": "authored",
       "review": "T21 S13 experimental global process propagation integration and owned regression; T21 S13 unified late style hooks and stop semantics; T21 S13 ordinary-mode repeated global lifecycle regression; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -311,7 +311,7 @@
       "path": "tests/integration/global_threads.c",
       "source": null,
       "source_blob": null,
-      "sha256": "0b7252ab00ee3ec41d3faed2cd879ac95e21fd93bff957f599d6148477078882",
+      "sha256": "62792b04b81bdb2db1433a47e6e7efd3edf2f23ee20adb379f4fbc9fc4f2f46d",
       "disposition": "authored",
       "review": "T21 S6 dual-width multithread and bounded lifecycle probe; T21 S13 later regression coverage; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -329,7 +329,7 @@
       "path": "tests/integration/global_common.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c7260ef6025490425f013c32b9c5ae0bff052be2f91fbe577b628fe1455ab2f1",
+      "sha256": "4c787f18d2490dde1a1961301f2bae5c228773e6211b193eb2b7daaf2e5bf9d2",
       "disposition": "authored",
       "review": "T21 S5 dual-width common control attachment regression; T21 S12 dynamic child controls regression; T21 S13 scoped VB6 text and end-to-end verification; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -338,7 +338,7 @@
       "path": "tests/integration/global_relay.c",
       "source": null,
       "source_blob": null,
-      "sha256": "624fe0f49a22361292b7593628870fc682906d0d4612d452bdeab66caeeb0bc3",
+      "sha256": "22c23dd90099bcca19c180d1c4e4ab6b4a70d6b156934fd9c091b22d926ff8fc",
       "disposition": "authored",
       "review": "T21 S5 private-desktop global menu relay probe; T21 S13 truthful global readiness and pre-subclass menu drawing witness; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -347,7 +347,7 @@
       "path": "tests/integration/global_lifecycle.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c4bbcc4d56a29f08e50848a78afa46eedbaeef6f0eac5de2e22640c49314dac5",
+      "sha256": "02729a6fcf6e507f0e71baf8c8f16706806c54b2a91cb3977e1dd544adb824fb",
       "disposition": "authored",
       "review": "T21 S4 native isolated desktop real application and lifecycle probe; T21 S4 host failure detection and regression; T21 S11 bounded timeout retry and restart probe; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -356,7 +356,7 @@
       "path": "tests/integration/global_real.c",
       "source": null,
       "source_blob": null,
-      "sha256": "55e01999d6a20926b0e7515002aecb2f3e93e70ccff10558c5da4c152e9078d1",
+      "sha256": "9a1e8cb3d09955f35b945eb7ae016573a6ad72ca6e42d2b74551ec10e7b6b0ed",
       "disposition": "authored",
       "review": "T21 S4 native isolated desktop real application and lifecycle probe; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -374,7 +374,7 @@
       "path": "tests/integration/global_mode.c",
       "source": null,
       "source_blob": null,
-      "sha256": "05f3d30b5a5c4c9b9f7bdf523805aae02197a5aa6cd986292fceef2e3d55eea5",
+      "sha256": "e62e62455d16501811f760eb4ca6e13ee63322be532d3475b61511a69e5875cc",
       "disposition": "authored",
       "review": "T21 S3 global controller and private-desktop integration; T21 S4 dual-width and lifecycle validation; T21 S7 per-monitor DPI and controlled input; T21 S8 DPI-unaware 96 virtualization fixture; T21 S13 unified late style hooks and stop semantics; T21 S13 unified session stop semantics; T21 S13 hidden ordinary-window global stop regression; T21 S13 verify hidden windows shown after stop; T21 S13 cross-directory compatible module reuse; T21 S42 product adapter directory cleanup; T26 S6 shared global coordination/configuration and callback-context migration",
       "notice": "Project-authored source; no imported code or resources"
@@ -1337,7 +1337,7 @@
       "path": "src/run16s-exe/main.c",
       "source": null,
       "source_blob": null,
-      "sha256": "9d6704b69fe4445d4babf4f51f75ec49908dd8fcefb7baa5e639a071e7999c61",
+      "sha256": "79cf93919cf75f4367bc38ab3dd5d394ff7c348c91cbaf2d5549f5ff76aff57a",
       "disposition": "authored",
       "review": "T21 S36 process launch source and launcher ownership; see fixed source record; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T22 S1 P22 system calculator entry and activation reuse; P19 shared-frame lifetime regression retained; T23 S4 console and Terminal window adaptation and native tests; T24 S1 directly use process-image interface; M0 T25 S1: style selection and experimental Windows 2000 integration; T25 S2 shared runtime extraction; T25 S3 Win2000 frame; T26 S4 startup assembly extraction, parameterized dependency and preserved ABI; see M0-T26-S4-startup.md; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project MIT; upstream ntvdm64 source identity recorded"
@@ -1355,7 +1355,7 @@
       "path": "src/run16s-exe/README.md",
       "source": null,
       "source_blob": null,
-      "sha256": "f7082af71727fda9b04e6935ff1191fd67889ff6a0ed455e7b7dd53a8c67a069",
+      "sha256": "c03003734ab87a490329bde7ea29da33953c9b3254166081103f52da40156dd0",
       "disposition": "authored",
       "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes; T21 S13 clarify ordinary and global launch boundary; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 standard Notepad propagation documentation",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1382,7 +1382,7 @@
       "path": "tests/run16s-exe/cli.py",
       "source": null,
       "source_blob": null,
-      "sha256": "82c16257306b7f301e5aec4ac27d2c26eec26f8b136f3a14ea093f6eaec26509",
+      "sha256": "47f0807829bf6d513c90c2b39f0a787fb694a42ae628f1ed5739a19a7161238d",
       "disposition": "authored",
       "review": "T3 S1 standalone installer/context or new CLI/fixtures; docs/proposals/launcher-injection.md; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1958,7 +1958,7 @@
       "path": "src/run16s-exe/elevation.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f5cf88113f09df0f2f5d055f1ec7367676ed8b88d167ccd5d7b1d1d5faa9b474",
+      "sha256": "98963325eb33dcf657e96879059823db47bb13c61a31241907d8fb1ad5b0ca9e",
       "disposition": "authored",
       "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied; T21 S31 security and console extraction; T21 S32 remaining common mechanism extraction; T21 S34 returned stderr rebind to launcher; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored source; project MIT license"
@@ -1967,7 +1967,7 @@
       "path": "src/run16s-exe/elevation.h",
       "source": null,
       "source_blob": null,
-      "sha256": "65aeba9c36d2e421af5b4885c053452e22bd7bb7677f83383a573679e0c7037f",
+      "sha256": "1760d603960fcf115cd47f5450e2494c9ba86ccd08f030499193e185d492b561",
       "disposition": "authored",
       "review": "T11 S1: project-authored C17 on-demand runas coordinator/private interface/asInvoker manifest; no third-party code copied; M0 T25 S1: style selection and experimental Windows 2000 integration",
       "notice": "Project-authored source; project MIT license"
@@ -1985,7 +1985,7 @@
       "path": "tests/run16s-exe/legacy_rejection.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ee931c0390948de1446acb4827804041a04329625d372d5bca6b5366d8348233",
+      "sha256": "a44cc03c087cad9fbc8f90ce03af050ae3818f66ffab9ff99eae00ae97f15b36",
       "disposition": "authored",
       "review": "T14 S2 pure C native initial-rejection stderr/no-retry regression; T15 S4 P2: correct pre-existing CRLF worktree receipt to already committed LF bytes; C tokens/Git source unchanged, strict validator/resources unchanged",
       "notice": "Project-authored C17, repository MIT"
@@ -2023,7 +2023,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "9dee61cce6f1824be1d2fdfcd283e5f5e201326ade05ac3b165ac4d94f6680d0",
+      "sha256": "191d3e82d5a39855dbe5189955c14d0ba750f57869cc0e4e5fcb63c4463efd4c",
       "review": "T14 S3: console-sensitive original-error routing and native regression; no renderer/UAC/resource changes"
     },
     {
@@ -5459,7 +5459,7 @@
       "path": "tests/integration/uwp_tray.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ff1c25508b94e222c1a1a2e17fe1d0088be9cd475c64c9b838b94633f53274dc",
+      "sha256": "0d53acf1d31aadadedda5b40fcc1191fed07fc02e96bbb1358f74896e39489cf",
       "disposition": "authored",
       "review": "T22 S1 P38 opt-in published tray controller UWP integration; native menu input and owned targets; T26 S6 shared global coordination/configuration and callback-context migration; T28 opt-in UWP both styles and restoration via the published tray",
       "notice": "Project-authored pure C test; no imported artwork"
@@ -6224,7 +6224,7 @@
       "path": "tests/integration/tray_styles_current.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2f10f1cd2ce35a7a4e3d5c5ae5061e5cb0d5e1c28e819f62808d4fd33a44eb60",
+      "sha256": "4dda514ce330a2c49648ae9ad8cfc32576e1f0ff6941f50ee86dfa85545d2bc0",
       "disposition": "authored",
       "review": "T25 S8 current-desktop global style verification",
       "notice": "Project-authored native C; no imported artwork"

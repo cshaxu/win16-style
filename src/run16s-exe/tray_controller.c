@@ -136,7 +136,7 @@ static LRESULT test_control(WPARAM request,void *value)
     return 0;
 }
 #endif
-int run16s_tray_global(HANDLE parent)
+int run16s_tray_global(HANDLE parent,BOOL release_console)
 {
     controller state={0};
     if(!style_global_control_init(&state.control,parent,STYLE_NONE,STYLE_NONE,
@@ -156,6 +156,7 @@ int run16s_tray_global(HANDLE parent)
 #ifdef RUN16S_TRAY_TEST
     tray_test_set_control(state.tray,test_control);
 #endif
+    if(release_console)FreeConsole();
     int result=10;
     for(;;){
         HANDLE waits[2];DWORD count=0;if(state.control.worker)waits[count++]=state.control.worker;if(parent)waits[count++]=parent;

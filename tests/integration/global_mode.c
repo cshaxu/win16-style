@@ -85,7 +85,7 @@ int wmain(int argc,WCHAR **argv)
        !launch(&targets[2],argv[3],ordinary_launcher,titles[2]) || !launch(&targets[3],argv[2],ordinary_launcher,titles[3]))goto done;
     if(!wait_style(targets[0].window,0)||!wait_style(targets[1].window,0)||!wait_style(targets[2].window,1)||!wait_style(targets[3].window,1))goto done;
     if(!check_input(targets[0].window)||!check_input(targets[1].window))goto done;
-    if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --global",argv[1])<0)goto done;
+    if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[1])<0)goto done;
     STARTUPINFOW startup={.cb=sizeof(startup)};
     if(!CreateProcessW(argv[1],command,NULL,NULL,TRUE,0,NULL,NULL,&startup,&manager))goto done;
     for(unsigned i=0;i<200;++i){mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);if(mapping){session=MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*session));

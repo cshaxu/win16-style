@@ -1,7 +1,7 @@
 # run16s launcher
 
 Use `run16s.exe <theme-folder> <application> [arguments]` to launch an
-application, or `run16s.exe --global` to open the tray and select a discovered
+application, or `run16s.exe` without arguments to open the tray and select a discovered
 theme. The tray discovers supported themes beside the launcher at startup.
 
 The launcher is x64. The target must be an x86/x64 Windows native GUI/console PE.

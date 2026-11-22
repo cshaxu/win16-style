@@ -30,42 +30,39 @@ static int diagnostic(int code,DWORD error,PCWSTR phase)
 }
 static int usage(void)
 {
-    fwprintf(stderr,L"Usage: run16s.exe --global\n       run16s.exe <theme-folder> <application> [arguments]\n");
+    fwprintf(stderr,L"Usage: run16s.exe\n       run16s.exe <theme-folder> <application> [arguments]\n");
     return 2;
 }
 int wmain(int argc,WCHAR **argv)
 {
     if(argc>=2 && !wcscmp(argv[1],L"--global-elevated")){
         WCHAR *end=NULL;DWORD error=0;errno=0;
-        unsigned long parent=argc==3?wcstoul(argv[2],&end,10):0;
-        if(argc!=3 || argv[2][0]<L'0' || argv[2][0]>L'9' || !parent || errno || !end || *end)
+        BOOL detached=argc==4 && !wcscmp(argv[3],L"--detached");
+        unsigned long parent=argc==3 || detached?wcstoul(argv[2],&end,10):0;
+        if((argc!=3 && !detached) || argv[2][0]<L'0' || argv[2][0]>L'9' || !parent || errno || !end || *end)
             return diagnostic(9,ERROR_INVALID_PARAMETER,L"global elevation");
         if(!win32_security_is_elevated(&error))return diagnostic(9,error?error:ERROR_ACCESS_DENIED,L"global elevation");
         HANDLE owner=OpenProcess(SYNCHRONIZE,FALSE,(DWORD)parent);
         if(!owner)return diagnostic(9,GetLastError(),L"global parent");
         if(!FreeConsole() && GetLastError()!=ERROR_INVALID_HANDLE){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console detach");}
-        if(!AttachConsole((DWORD)parent)){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console attach");}
-        run16s_rebind_console_stderr();
-        if(!SetConsoleCtrlHandler(NULL,FALSE)){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console handler");}
-        int result=run16s_tray_global(owner);CloseHandle(owner);return result;
+        if(!detached){
+            if(!AttachConsole((DWORD)parent)){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console attach");}
+            run16s_rebind_console_stderr();
+            if(!SetConsoleCtrlHandler(NULL,FALSE)){error=GetLastError();CloseHandle(owner);return diagnostic(9,error,L"global console handler");}
+        }
+        int result=run16s_tray_global(owner,FALSE);CloseHandle(owner);return result;
     }
-    if(argc>=2 && !wcscmp(argv[1],L"--global")){
-        if(argc!=2)return usage();
+    if(argc==1){
         DWORD error=0,code=0;
         BOOL elevated=win32_security_is_elevated(&error);
         if(error)return diagnostic(9,error,L"global token");
-        /* Only hide a console belonging exclusively to this launcher. An
-         * existing cmd/terminal console must remain visible and untouched. */
-        HWND private_window=run16s_private_console()?GetConsoleWindow():NULL;
-        if(private_window)ShowWindow(private_window,SW_HIDE);
+        BOOL private_console=run16s_private_console();
         if(!elevated && run16s_global_interactive_console()){
-            error=run16s_elevate_global(GetCurrentProcessId(),ShellExecuteExW,&code);
-            if(private_window && (error || code))ShowWindow(private_window,SW_SHOW);
+            if(private_console && !FreeConsole())return diagnostic(9,GetLastError(),L"global console detach");
+            error=run16s_elevate_global(GetCurrentProcessId(),private_console,ShellExecuteExW,&code);
             return error?diagnostic(9,error,L"global elevation"):(int)code;
         }
-        int result=run16s_tray_global(NULL);
-        if(private_window && result)ShowWindow(private_window,SW_SHOW);
-        return result;
+        return run16s_tray_global(NULL,private_console);
     }
     BOOL reentered=argc>=2 && !wcscmp(argv[1],L"--elevated");
     int theme_index=reentered?2:1, target_index=theme_index+1;
@@ -108,7 +105,11 @@ int wmain(int argc,WCHAR **argv)
     BOOL uwp_handled=FALSE;
     error=run16s_uwp_command(image,win32_process_next_argument(raw),FALSE,
         selection,&uwp_handled);
-    if(error||uwp_handled)return error?diagnostic(10,error,L"UWP frame activation"):0;
+    if(error)return diagnostic(10,error,L"UWP frame activation");
+    if(uwp_handled){
+        if(private_console)FreeConsole();
+        return 0;
+    }
     error=win32_process_image_validate_ex(image,IMAGE_FILE_MACHINE_AMD64,FALSE,&subsystem);
     if(error==ERROR_BAD_EXE_FORMAT)error=win32_process_image_validate_ex(image,IMAGE_FILE_MACHINE_I386,FALSE,&subsystem);
     if(error){
@@ -136,7 +137,10 @@ int wmain(int argc,WCHAR **argv)
             DWORD token_error=0;BOOL elevated=win32_security_is_elevated(&token_error);
             if(token_error)return diagnostic(9,token_error,L"launcher token");
             if(!elevated){
-                error=run16s_elevate(image,win32_process_next_argument(raw),theme,ShellExecuteExW,&exit_code);
+                HWND private_window=private_console && !wait?GetConsoleWindow():NULL;
+                if(private_window)ShowWindow(private_window,SW_HIDE);
+                error=run16s_elevate(image,win32_process_next_argument(raw),theme,wait,ShellExecuteExW,&exit_code);
+                if(private_window && (error || exit_code))ShowWindow(private_window,SW_SHOW);
                 if(error)return diagnostic(error==ERROR_CANCELLED?ERROR_CANCELLED:9,error,L"UAC elevation");
                 return (int)exit_code;
             }
@@ -148,6 +152,9 @@ int wmain(int argc,WCHAR **argv)
     if((explorer || terminal) && !folders)diagnostic(0,GetLastError(),L"window snapshot");
     free(command);unsigned phase=0;error=win32_process_activate(&child,prepare_target,&context,&phase);
     if(error){run16s_explorer_snapshot_free(folders);return diagnostic(phase==WIN32_PROCESS_PREPARE_FAILED?6:7,error,L"installation/resume");}
+    /* The launcher may still be attaching a window after its target starts.
+     * Release only its own console. A CUI target needs the inherited console. */
+    if(private_console && !wait)FreeConsole();
     if(folders){
         /* The Shell may forward this launch into an existing Explorer process.
          * Only a new, unambiguous folder window can be attached. */

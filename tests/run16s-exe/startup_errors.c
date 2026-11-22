@@ -75,8 +75,8 @@ static int matrix(int argc,WCHAR **argv)
                 JOBOBJECT_ASSOCIATE_COMPLETION_PORT association={.CompletionKey=job,.CompletionPort=port};
                 CHECK(job&&port&&empty&&SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits))&&
                     SetInformationJobObject(job,JobObjectAssociateCompletionPortInformation,&association,sizeof(association)));
-                if(mode==2)CHECK(swprintf_s(command,32768,L"\"%ls\" /d /s /c \"\"%ls\" \"%ls\"\"",shell,launcher,image)>0);
-                else CHECK(swprintf_s(command,32768,L"\"%ls\" \"%ls\"",launcher,image)>0);
+                if(mode==2)CHECK(swprintf_s(command,32768,L"\"%ls\" /d /s /c \"\"%ls\" Win16 \"%ls\"\"",shell,launcher,image)>0);
+                else CHECK(swprintf_s(command,32768,L"\"%ls\" Win16 \"%ls\"",launcher,image)>0);
                 STARTUPINFOW startup={.cb=sizeof(startup),.dwFlags=STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW,.wShowWindow=mode==3?SW_HIDE:SW_SHOWNORMAL,.hStdInput=null,.hStdOutput=null,.hStdError=output};
                 CHECK(CreateProcessW(mode==2?shell:launcher,command,NULL,NULL,TRUE,CREATE_SUSPENDED|CREATE_NEW_CONSOLE,NULL,NULL,&startup,&p));
                 if(!AssignProcessToJobObject(job,p.hProcess)){TerminateProcess(p.hProcess,1);CHECK(FALSE);}

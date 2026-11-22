@@ -56,7 +56,7 @@ int wmain(int argc,WCHAR **argv)
         .hStdInput=GetStdHandle(STD_INPUT_HANDLE),.hStdOutput=GetStdHandle(STD_OUTPUT_HANDLE),.hStdError=GetStdHandle(STD_ERROR_HANDLE)};
     if(FindWindowW(L"LibTrayWindow",L"Win16 Style")){puts("SKIP existing tray controller");return 77;}
     if(!launch(&targets[0],argv[2],0) || !launch(&targets[1],argv[3],1))goto done;
-    if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --global",argv[1])<0 ||
+    if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[1])<0 ||
        !CreateProcessW(argv[1],command,NULL,NULL,TRUE,CREATE_NO_WINDOW,NULL,NULL,&startup,&manager))goto done;
     ULONGLONG end=GetTickCount64()+12000;
     do{DWORD pid=0;tray=FindWindowW(L"LibTrayWindow",L"Win16 Style");

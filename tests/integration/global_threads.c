@@ -26,7 +26,7 @@ int wmain(int argc,WCHAR **argv)
  if(!launch(argv[2],argc==5?L"Threads32 visible":L"Threads32",&targets[0])||!launch(argv[3],argc==5?L"Threads64 visible":L"Threads64",&targets[1]))goto done;
  for(unsigned p=0;p<2;++p)for(unsigned i=0;i<2;++i){WCHAR title[100];swprintf(title,ARRAYSIZE(title),L"Threads%u-%u",p?64:32,i);windows[p*4+i]=find(title);if(!windows[p*4+i]||!wait_mask(windows[p*4+i],0))goto done;}
  for(unsigned cycle=0;cycle<3;++cycle){
-  if(!launch(argv[1],L"--global",&manager))goto done;
+  if(!launch(argv[1],L"",&manager))goto done;
   for(unsigned i=0;i<200;++i){mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);if(mapping){session=MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*session));if(session&&session->owner_pid==manager.dwProcessId&&session->phase==NTW16S_GLOBAL_ACTIVE)break;if(session)UnmapViewOfFile(session);session=NULL;CloseHandle(mapping);mapping=NULL;}if(WaitForSingleObject(manager.hProcess,0)==WAIT_OBJECT_0)break;Sleep(30);}
   if(!session||session->phase!=NTW16S_GLOBAL_ACTIVE)goto done;
   for(unsigned p=0;p<2;++p)for(unsigned i=0;i<2;++i)if(!wait_mask(windows[p*4+i],3)){printf("GLOBAL THREADS root_failed cycle=%u p=%u i=%u state=%d\n",cycle,p,i,query(windows[p*4+i],QUERY));goto done;}

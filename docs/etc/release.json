@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S24 P21",
-  "stage": "published development candidate with themed submenu arrow compositing",
+  "delivery": "M0 T29 S25 P1",
+  "stage": "published no-argument tray and console-lifetime update",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S24 P13 0cc58c14",
-  "source_snapshot_sha256": "410bc90c3fdaac07979850a47ac1827cbea11f0651eb748445bc87701220f7c6",
+  "last_verified_remote_delivery": "M0 T29 S24 P26 5ed5e33f",
+  "source_snapshot_sha256": "ca2dddb2c46982dcabcd1504083bc5facc5a4314719142e569f8f64024337fc2",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "1294af481409f0b1394d805f57a2c0f82249291aa1349a150c02cfd9aea43f77",
+      "sha256": "fe097b2f1d7871288d458198579f0a4c56c9a16a452cadbb1ae4cd6a2131e71f",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "bafd829514f6f0971e8b57ae0e32760cc7aed3f3b032763ef96aa2ab6936eb29",
+      "sha256": "e4b86438adc3bdc9dac7c8b650f789906ceeae818044ba387ad92c2e04d8900f",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "930c973be7f995e27f5802d92a307d3be6983d28e65544811e373860ff8fdf76",
+      "sha256": "30fc5504a41fc49771bb757fddcb84954a2de2900ff8ad3047fea3c6d6d98052",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,36 +106,41 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 16,
+    "passed": 13,
     "selected_cases": [
-      "x86-menu-cancel",
-      "x86-win2k-glyph",
-      "x86-win2k-custom",
-      "x86-win2k-default",
-      "x64-menu-cancel",
-      "x64-win2k-glyph",
-      "x64-win2k-custom",
-      "x64-win2k-default",
-      "x86-96-submenu-stock",
-      "x86-96-submenu-blank",
-      "x86-144-submenu-stock",
-      "x86-144-submenu-blank",
-      "x64-96-submenu-stock",
-      "x64-96-submenu-blank",
-      "x64-144-submenu-stock",
-      "x64-144-submenu-blank"
+      "cli",
+      "wait-contract",
+      "cli-failures",
+      "uac-unit-32",
+      "console-rebind-unit-32",
+      "startup-error-unit-32",
+      "core-process-lifecycle-32",
+      "uac-unit-64",
+      "console-rebind-unit-64",
+      "startup-error-unit-64",
+      "core-process-lifecycle-64",
+      "legacy-rejection",
+      "startup-errors"
     ],
     "skipped": [],
+    "supplemental_native": {
+      "tray_private_console": "no arguments, registered, no attached console",
+      "tray_shared_console": "same visible console as owned cmd.exe",
+      "direct_x86_console": "same console, waited, child and launcher exit 42",
+      "direct_x64_console": "same console, waited, child and launcher exit 42",
+      "direct_gui": "no child console, launcher returned 0 while the target was still alive",
+      "removed_global_switch": "exit 2"
+    },
     "limitations": [
-      "Live screen readback unavailable. Native popup WM_PRINT, owned-window message tests and source closure were verified.",
-      "The x86 auxiliary DC test has the same line-223 default menu metrics failure with the previous shipped snapshot."
+      "Actual UAC prompt/confirmation not exercised. Both architectures checked Shell request metadata.",
+      "Two updated legacy error fixtures were rebuilt and retested separately after the product snapshot."
     ]
   },
-  "evidence": "../history/M0-T29-S24-final-package-acceptance.md",
+  "evidence": "../history/M0-T29-S25-launch-console.md",
   "build": {
-    "command": "isolated tracked snapshot with scoped S24 P21 changes, MinGW/Ninja and ccache",
-    "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 261,
-    "cache_misses": 1825
+    "command": "scoped clean T29 snapshot, Build-Package Worker with the existing common ccache",
+    "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache version 4.13.6",
+    "cache_hits": 2072,
+    "cache_misses": 14
   }
 }

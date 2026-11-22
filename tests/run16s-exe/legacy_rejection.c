@@ -64,8 +64,8 @@ static int matrix(int argc,WCHAR **argv)
             JOBOBJECT_ASSOCIATE_COMPLETION_PORT association={.CompletionKey=job,.CompletionPort=completion};
             CHECK(job&&completion&&SetInformationJobObject(job,JobObjectExtendedLimitInformation,&limits,sizeof(limits))&&
                 SetInformationJobObject(job,JobObjectAssociateCompletionPortInformation,&association,sizeof(association)));
-            if(via_cmd)CHECK(swprintf_s(command,32768,L"\"%ls\" /d /s /c \"\"%ls\" \"%ls\"\"",shell,argv[1],image)>0);
-            else CHECK(swprintf_s(command,32768,L"\"%ls\" \"%ls\"",argv[1],image)>0);
+            if(via_cmd)CHECK(swprintf_s(command,32768,L"\"%ls\" /d /s /c \"\"%ls\" Win16 \"%ls\"\"",shell,argv[1],image)>0);
+            else CHECK(swprintf_s(command,32768,L"\"%ls\" Win16 \"%ls\"",argv[1],image)>0);
             STARTUPINFOW startup={.cb=sizeof(startup),.dwFlags=STARTF_USESTDHANDLES,.hStdInput=null,.hStdOutput=null,.hStdError=output};
             PROCESS_INFORMATION process={0};
             CHECK(CreateProcessW(via_cmd?shell:argv[1],command,NULL,NULL,TRUE,CREATE_SUSPENDED|CREATE_NO_WINDOW,NULL,NULL,&startup,&process));

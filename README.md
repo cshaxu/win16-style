@@ -41,7 +41,7 @@ follow a 64-bit parent, or vice versa. There is no extra `--win16-style-all` fla
 
 ### Manual global mode
 
-Run `run16s.exe --global` on its own to open the tray with styling off.
+Run `run16s.exe` without arguments to open the tray with styling off.
 The tray scans the launcher's subdirectories and offers the supported themes
 whose descriptors and visual style files are valid. Press Ctrl+C to stop.
 The controller uses both DLLs and the Windows x86 host; no additional

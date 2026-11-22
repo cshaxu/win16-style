@@ -32,7 +32,7 @@ int wmain(int argc,WCHAR **argv)
  PROCESS_INFORMATION old={0},fresh={0},manager={0};HWND a=NULL,b=NULL;HANDLE map=NULL,event=NULL;ntw16s_global_session *session=NULL;BOOL pass=FALSE;uint64_t before=0,styled=0,after=0;
  if(!launch(argv[2],NULL,&old)||!(a=wait_window(&old)))goto done;
  before=screenshot(a,argv[3],L"before");
- if(!launch(argv[1],L"--global",&manager))goto done;
+ if(!launch(argv[1],L"",&manager))goto done;
  for(unsigned i=0;i<200;++i){map=OpenFileMappingW(FILE_MAP_READ,FALSE,name);if(map){session=MapViewOfFile(map,FILE_MAP_READ,0,0,sizeof(*session));if(session&&session->owner_pid==manager.dwProcessId&&session->phase==NTW16S_GLOBAL_ACTIVE)break;if(session)UnmapViewOfFile(session);session=NULL;CloseHandle(map);map=NULL;}if(WaitForSingleObject(manager.hProcess,0)==WAIT_OBJECT_0)break;Sleep(50);}
  if(!session||session->phase!=NTW16S_GLOBAL_ACTIVE)goto done;
  for(unsigned i=0;i<100;++i){styled=screenshot(a,argv[3],L"styled");if(styled&&styled!=before)break;Sleep(30);}

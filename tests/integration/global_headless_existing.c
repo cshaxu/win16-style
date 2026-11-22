@@ -61,7 +61,7 @@ int wmain(int argc,WCHAR **argv)
     if(!go || !after || !ready || !started || !GetModuleFileNameW(NULL,self,ARRAYSIZE(self)))goto done;
     swprintf(cmd,ARRAYSIZE(cmd),L"target %ls %ls",goname,aftername);
     if(!launch(self,cmd,&target) || WaitForSingleObject(started,3000)!=WAIT_OBJECT_0 ||
-       !launch(argv[1],L"--global",&manager))goto done;
+       !launch(argv[1],L"",&manager))goto done;
     printf("EXISTING before_global_ready=1 pid=%lu\n",target.dwProcessId);
     for(unsigned i=0;i<200;i++){
         map=OpenFileMappingW(FILE_MAP_READ,FALSE,name);

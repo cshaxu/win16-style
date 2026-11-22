@@ -52,7 +52,7 @@ int wmain(int argc,WCHAR **argv)
     target targets[3]={0};PROCESS_INFORMATION manager={0};HWND tray=NULL;BOOL passed=FALSE;DWORD code=99;
     if(!target_start(&targets[0],argv[2],0) || !target_start(&targets[1],argv[3],1) ||
        !wait_value(targets[0].window,QUERY_STYLE,0,0) || !wait_value(targets[1].window,QUERY_STYLE,0,0))goto done;
-    if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --global",argv[1])<0)goto done;
+    if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[1])<0)goto done;
     STARTUPINFOW startup={.cb=sizeof(startup)};
     if(!CreateProcessW(argv[1],command,NULL,NULL,TRUE,0,NULL,NULL,&startup,&manager))goto done;
     for(unsigned i=0;i<200;++i){DWORD pid=0;tray=FindWindowW(L"LibTrayWindow",L"Win16 Style");

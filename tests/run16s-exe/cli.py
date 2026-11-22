@@ -11,7 +11,7 @@ exe=Path(sys.argv[1]).resolve()
 scratch=Path(os.environ['WIN16STYLE_CAPTURE_DIR'])
 bad=scratch/'not-a-native-image.exe'
 bad.write_bytes(b'MZ\0not a PE')
-cases=[([],2),(['--help'],2),(['--wait'],2),(['notepad.exe'],2),
+cases=[(['--global'],2),(['--help'],2),(['--wait'],2),(['notepad.exe'],2),
        (['notepad.exe',' /?'],6),(['no-such-theme-run16s','notepad.exe'],6),
        (['--global','unexpected'],2),(['--global','Win16'],2)]
 for theme in ('Win16','win2k'):

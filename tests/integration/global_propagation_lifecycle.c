@@ -16,7 +16,7 @@ static int run(const WCHAR *launcher,const WCHAR *target,const WCHAR *request,BO
  for(unsigned i=0;i<100&&!window;++i){window=FindWindowW(L"GlobalPropagationProbe",L"Owned propagation root");if(!window)Sleep(30);}
  if(!window || query(window,WM_APP+110,1000)!=(ordinary?1:0))goto done;
  for(unsigned cycle=0;cycle<2;++cycle){
-  if(!launch(launcher,L"--global",&manager))goto done;
+  if(!launch(launcher,L"",&manager))goto done;
   int attached=0;for(unsigned i=0;i<200&&!attached;++i){attached=query(window,WM_APP+110,1000)==1;if(!attached)Sleep(30);}
   if(!attached)goto done;
   int active_child=query(window,WM_APP+111,8000);

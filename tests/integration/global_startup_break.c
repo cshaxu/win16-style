@@ -11,7 +11,7 @@ int wmain(int argc,WCHAR **argv)
     if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_NAME,desktop,sizeof(desktop),&bytes) ||
        wcsncmp(desktop,L"Win16S-Dialog-",14) || !style_global_session_name(&ntw16s_global_namespace,name,ARRAYSIZE(name)))return 3;
     BOOL allocated=FALSE;if(!GetConsoleCP()){if(!AllocConsole()){printf("BREAK console_error=%lu\n",GetLastError());return 4;}allocated=TRUE;}
-    if(swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" --global",argv[1])<0)return 5;
+    if(swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\"",argv[1])<0)return 5;
     STARTUPINFOW si={.cb=sizeof(si)};PROCESS_INFORMATION manager={0};
     if(!CreateProcessW(argv[1],cmd,NULL,NULL,TRUE,CREATE_NEW_PROCESS_GROUP,NULL,NULL,&si,&manager))return 6;
     HANDLE map=NULL;ntw16s_global_session *s=NULL;DWORD phase=0,ready=0,host=0,code=99;BOOL sent=FALSE,passed=FALSE;

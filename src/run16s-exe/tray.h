@@ -2,5 +2,5 @@
 #define RUN16S_TRAY_H
 #include <windows.h>
 
-int run16s_tray_global(HANDLE parent);
+int run16s_tray_global(HANDLE parent,BOOL release_console);
 #endif

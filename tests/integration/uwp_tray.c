@@ -362,7 +362,7 @@ int wmain(int argc,WCHAR **argv)
     if(styles && (!frame_wait(&frames_test[0],WM_APP+71,0)||!frame_wait(&frames_test[1],WM_APP+71,0)||
                   !frame_wait(&frames_test[0],WM_APP+81,0)||!frame_wait(&frames_test[1],WM_APP+81,0)))goto done;
     if(!menu_only&&!styles&&(!activate(&apps[0],L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App")||styled(&apps[0])))goto done;
-    WCHAR command[33000];if(swprintf(command,ARRAYSIZE(command),L"\"%ls\" --global",argv[1])<0)goto done;
+    WCHAR command[33000];if(swprintf(command,ARRAYSIZE(command),L"\"%ls\"",argv[1])<0)goto done;
     WCHAR log_path[32768];if(swprintf(log_path,ARRAYSIZE(log_path),L"%ls.controller.log",argv[2])<0)goto done;
     SECURITY_ATTRIBUTES security={.nLength=sizeof(security),.bInheritHandle=TRUE};
     output=CreateFileW(log_path,GENERIC_WRITE,FILE_SHARE_READ,&security,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);

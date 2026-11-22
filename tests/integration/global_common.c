@@ -33,7 +33,7 @@ int wmain(int argc,WCHAR **argv)
  if(!launch(&t[0],argv[2],L"Old32",vb?argv[4]:NULL)||!launch(&t[1],argv[3],L"Old64",vb?argv[5]:NULL))goto done;
  if(!wait_mask(t[0].window,0)||!wait_mask(t[1].window,0))goto done;
  if(vb)for(unsigned i=0;i<2;++i){native[i]=query(t[i].window,VB_HASH);if(native[i]<=0 || query(t[i].window,VB_ATTACHED)!=0)goto done;}
- STARTUPINFOW startup={.cb=sizeof(startup)};if(swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" --global",argv[1])<0||!CreateProcessW(argv[1],cmd,NULL,NULL,TRUE,0,NULL,NULL,&startup,&manager))goto done;
+ STARTUPINFOW startup={.cb=sizeof(startup)};if(swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\"",argv[1])<0||!CreateProcessW(argv[1],cmd,NULL,NULL,TRUE,0,NULL,NULL,&startup,&manager))goto done;
  for(unsigned i=0;i<200;++i){mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);if(mapping){session=MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*session));if(session&&session->owner_pid==manager.dwProcessId&&session->phase==NTW16S_GLOBAL_ACTIVE)break;if(session)UnmapViewOfFile(session);session=NULL;CloseHandle(mapping);mapping=NULL;}if(WaitForSingleObject(manager.hProcess,0)==WAIT_OBJECT_0)break;Sleep(50);}
  if(!session||session->phase!=NTW16S_GLOBAL_ACTIVE)goto done;
  for(unsigned i=0;i<2;++i)if(!wait_mask(t[i].window,31)){printf("GLOBAL COMMON existing=%u mask=%d\n",i,query(t[i].window,QUERY));goto done;}

@@ -151,6 +151,10 @@ Notepad 验证两套主题外框与撤销，冻结 113 单元覆盖批准范围�
 同包两处安装及实际远端逐件复核。已知 UWP 宿主变化和私有控件超范围事项
 留在 TODO。详见[终审](../history/M0-T29-S24-final-package-acceptance.md)。
 
+M0 T29 S25 已收口。无参数启动托盘，移除公开的旧全局参数。
+同批七件在两处发布，已发布包 13 组聚焦回归、真实托盘独占／共享控制台
+及独立 GUI／双宽 CUI 验证通过。见[交付记录](../history/M0-T29-S25-launch-console.md)。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)
@@ -162,10 +166,10 @@ Notepad 验证两套主题外框与撤销，冻结 113 单元覆盖批准范围�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S24 P21 `d8cee107`，两处七件正式文件和远端摘要已复核。
+- Last verified remote delivery: M0 T29 S25 P1，两处七件正式文件和远端摘要已复核。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 24
+- Last allocated T29 S: 25
 - Open task: 无活动任务包。T29 已收口。
 
 ## Technical Baseline

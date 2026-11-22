@@ -92,7 +92,7 @@ int wmain(int argc,WCHAR **argv)
     if(argc==6 && swprintf(token,ARRAYSIZE(token),L" medium %ls",argv[5])<0)goto done;
     swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" broker \"%ls\" %ls \"%ls\" %ls%ls",self,desktop,event_name,argv[2],argv[3],token);
     if(!launch(self,cmd,other,&broker))goto done;
-    swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\" --global",argv[1]);if(!launch(argv[1],cmd,NULL,&manager))goto done;
+    swprintf(cmd,ARRAYSIZE(cmd),L"\"%ls\"",argv[1]);if(!launch(argv[1],cmd,NULL,&manager))goto done;
     for(unsigned i=0;i<250;i++){
         if(!mapping)mapping=OpenFileMappingW(FILE_MAP_READ,FALSE,name);
         if(mapping && !session)session=MapViewOfFile(mapping,FILE_MAP_READ,0,0,sizeof(*session));
