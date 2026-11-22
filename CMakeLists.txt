@@ -244,7 +244,6 @@ target_compile_definitions(style-control-common PRIVATE UNICODE _UNICODE _WIN32_
 add_dependencies(style-control-common style-subclass)
 target_link_libraries(style-control-common PUBLIC module-import style-bitmap style-present style-window win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme msimg32)
 add_library(win16-control STATIC
-  src/lib-win32-style/appearance/win3x/control/toolbar_paint.c
    src/lib-win32-style/appearance/win3x/control/vb_text.c
   src/lib-win32-style/appearance/win3x/control/special_paint.c
   src/lib-win32-style/appearance/win3x/control/control_state.c
@@ -252,7 +251,7 @@ add_library(win16-control STATIC
   src/lib-win32-style/appearance/win3x/control/vcl_native_paint.c
   src/lib-win32-style/appearance/win3x/control/control_guard.c
   src/lib-win32-style/appearance/win3x/control/control_install.c
-  src/lib-win32-style/appearance/win3x/control/month_paint.c src/lib-win32-style/appearance/win3x/control/special_install.c
+  src/lib-win32-style/appearance/win3x/control/special_install.c
   src/lib-win32-style/appearance/win3x/control/attachment_guard.c)
 target_include_directories(win16-control PUBLIC src/lib-win32-style/appearance/win3x/control)
 target_compile_definitions(win16-control PRIVATE NTW16S_BUILD UNICODE _UNICODE _WIN32_WINNT=0x0A00)

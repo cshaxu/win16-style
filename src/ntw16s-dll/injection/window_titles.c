@@ -565,7 +565,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_DrawThemeText(HTHEME the
         int n=0;BOOL supported=style_control_month_text_length(text,count,&n);
         HFONT font=supported?ntw16s_month_text_borrow(theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)):NULL;
         if(font){style_font_scope borrow={.dc=dc,.font=font,.saved=SaveDC(dc),.release=release_system_font};BOOL done=FALSE;process_hook_unwind_scope cleanup;PROCESS_HOOK_UNWIND_BEGIN(cleanup,style_font_scope_end,&borrow);
-          if(borrow.saved){month_text_room_context room={theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)};done=win16_control_month_text(theme,dc,part,state,font,text,n,flags,rect,real_DrawTextW,month_text_room,&room);}
+          if(borrow.saved){month_text_room_context room={theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)};done=style_control_month_text(theme,dc,part,state,font,text,n,flags,rect,real_DrawTextW,month_text_room,&room);}
           PROCESS_HOOK_UNWIND_END(cleanup);if(done){SetLastError(saved);return S_OK;}}}
     if(!entered){SetLastError(saved);return real_DrawThemeText(theme,dc,part,state,text,count,flags,flags2,rect);}
     PROCESS_HOOK_UNWIND_BEGIN(unwind,ntw16s_status_theme_end,&scope);

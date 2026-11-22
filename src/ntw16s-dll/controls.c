@@ -37,7 +37,7 @@ BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *,style_scroll_arrow_art *)
 #include "native_api.h"
 #include "theme.h"
 #include "lib-win32-style/application/control/trackbar_paint.h"
-#include "lib-win32-style/appearance/win3x/control/toolbar_paint.h"
+#include "lib-win32-style/application/control/toolbar_text.h"
 #include "../lib-win32-style/appearance/win3x/control/vb_text.h"
 #include "../lib-win32/process-hook/unwind.h"
 #include <commctrl.h>
@@ -74,8 +74,13 @@ static LRESULT CALLBACK trackbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UIN
 static LRESULT CALLBACK toolbar_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
     control_style *s=(control_style *)data;
-    const style_control_notify_ops ops={.context=s,.supported=win16_style_toolbar_supported,
-        .part=win16_style_toolbar_part};
+    const style_toolbar_outline_view toolbar={
+        .palette=&s->palette,.frame=&s->frame_colors,.colors=&s->toolbar_colors,
+        .font_points=s->controls.control_font_points,.acquire_font=style_raster_font_acquire,
+        .release_font=style_raster_font_release
+    };
+    const style_control_notify_ops ops={.context=&toolbar,.supported=style_toolbar_outline_supported,
+        .part=style_toolbar_outline_part};
     return style_control_notify_message(parent,m,p,l,id,&s->instance,&s->bindings.toolbar,toolbar_notify,NULL,&ops);
 }
 static BOOL is_exact_native_button(HWND w)

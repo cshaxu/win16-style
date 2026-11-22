@@ -49,11 +49,11 @@
 | 28 | 外观 | 进度条槽、普通分段或平滑可见面 | S | S | PROGRESS 底槽与填充部件；进度数据留原生 | [1](../../src/lib-win32-style/application/control/progress_paint.c) [2](../../src/lib-win32-style/application/control/progress_paint.c) |
 | 29 | 外观 | 滑杆轨道、滑块和刻度 | S | S | TRACKBAR 标准部件与状态 | [1](../../src/lib-win32-style/application/control/trackbar_paint.c) [2](../../src/lib-win32-style/application/control/trackbar_paint.c) |
 | 30 | 外观 | 微调箭头及边线 | S | S | SPIN 对应状态与方向 | [UpDown](../../src/lib-win32-style/application/control/updown.c)（原 Win3x 独立绘制已并入此文件） |
-| 31 | 外观 | 工具栏普通按钮和分隔线 | S | S | TOOLBAR 状态、图形与分隔部件 | [1](../../src/lib-win32-style/appearance/win3x/control/toolbar_paint.c) [2](../../src/lib-win32-style/application/control/observed/toolbar_paint.c) |
+| 31 | 外观 | 工具栏普通按钮和分隔线 | S | S | TOOLBAR 状态、图形与分隔部件 | [1](../../src/lib-win32-style/application/control/toolbar_text.c) [2](../../src/lib-win32-style/application/control/observed/toolbar_paint.c) |
 | 32 | 外观 | 状态栏普通面、分隔和尺寸柄 | S | S | STATUS 部件及边距 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/application/control/observed/control.c) |
 | 33 | 外观 | Rebar 普通抓手 | S | S | REBAR.RP_GRIPPER；只计现有支持状态 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/application/control/observed/control.c) |
 | 34 | 外观 | 日期选择器的边及下拉按钮 | S | S | DATEPICKER 部件及状态 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/application/control/observed/control.c) |
-| 35 | 外观 | 月历普通标题、日期与选中面 | S | S | MONTHCAL 或标准文本/颜色属性，以 v4 为研究范围 | [1](../../src/lib-win32-style/appearance/win3x/control/month_paint.c) [2](../../src/lib-win32-style/application/control/observed/date_paint.c) |
+| 35 | 外观 | 月历普通标题、日期与选中面 | S | S | MONTHCAL 或标准文本/颜色属性，以 v4 为研究范围 | [1](../../src/lib-win32-style/application/control/month.c) [2](../../src/lib-win32-style/application/control/observed/date_paint.c) |
 | 36 | 外观 | RichEdit 和热键的经典边缘 | S | S | 只迁移边缘画笔或切片，不计富文本内容 | [1](../../src/lib-win32-style/appearance/win3x/control/control_dispatch.c) [2](../../src/lib-win32-style/application/control/observed/control.c) |
 | 37 | 外观 | VB/VCL 私有复合控件的完整可见状态映射 | ? | ? | 已有局部原生角色对照，完整自绘状态不足以定标准部件 | [1](../history/M0-T18-S64-control-inventory.md) [2](../history/M0-T27-S16-final-audit.md) |
 | 38 | 外观 | 公共对话框外框及标准子控件可见面 | S | S | WINDOW.WP_DIALOG 加对应标准控件部件 | [1](../history/M0-T20-closure-audit.md) [2](../history/M0-T28-S3-common-dialogs.md) |

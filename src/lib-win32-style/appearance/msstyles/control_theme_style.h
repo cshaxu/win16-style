@@ -36,6 +36,13 @@ static inline DWORD classic_control_theme_load(HMODULE module,enum classic_windo
     memcpy(target->trackbar,m->trackbar,sizeof(target->trackbar));
     return ERROR_SUCCESS;
 }
+static inline COLORREF classic_control_month_selected_color(const classic_theme *theme,COLORREF fallback)
+{
+    if(theme->calendar.present&(1u<<CLASSIC_CALENDAR_SELECTED))
+        return theme->calendar.values[CLASSIC_CALENDAR_SELECTED];
+    return theme->list.present?theme->list.selection:fallback;
+}
+
 static inline BOOL classic_control_checklist_read(HMODULE module,UINT flags,style_check_glyph *glyph)
 {
     classic_theme_mapping source={0};

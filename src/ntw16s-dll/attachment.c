@@ -1,5 +1,6 @@
 #include "lib-win32-style/application/adapters/win32/message.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
+#include "lib-win32-style/appearance/msstyles/control_theme_style.h"
 #include "lib-win32-style/application/adapters/win32/paint_dispatch.h"
 #include "lib-win32-style/application/control/control_vcl_identity.h"
 #include "../lib-win32-style/appearance/win3x/control/vb_text.h"
@@ -23,7 +24,7 @@
 #include "lib-win32-style/application/control/status_paint.h"
 #include "lib-win32-style/application/control/control_status.h"
 #include "../lib-win32-style/appearance/win3x/control/attachment_state.h"
-#include "../lib-win32-style/appearance/win3x/control/month_paint.h"
+#include "lib-win32-style/application/control/month.h"
 #include "lib-win32-style/appearance/msstyles/modern_frame_style.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
 #include "lib-win32-style/access/runtime/window_hook.h"
@@ -243,36 +244,37 @@ void ntw16s_controlbar_edge(HDC dc,const RECT *rect,UINT edge,UINT flags,const v
     style_runtime_box_scope *s=paint_runtime.box;if(!s || !s->observation.owner)return;attachment *a=s->observation.owner;
     style_runtime_controlbar_edge(s->observation.window,&a->base.instance,&a->base.runtime.controlbar,dc,rect,edge,flags,address,controlbar_frame);
 }
-static win16_control_month_view month_view(style_runtime_paint_scope *s);
+static style_control_month_view month_view(style_runtime_paint_scope *s);
 void ntw16s_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address,BOOL wide)
 {
     style_runtime_paint_scope *scope=paint_runtime.paint;
     if(scope && style_runtime_observe_rich(proc,w,msg,address,wide,current_observation(),MCS_MULTISELECT) && scope->observation.runtime->rich.month)
-        {const win16_control_month_view view=month_view(scope);style_control_month_query(&view.native,&paint_runtime.month_queries);}
+        {const style_control_month_view view=month_view(scope);style_control_month_query(&view.native,&paint_runtime.month_queries);}
 }
 static BOOL month_view_current(void *scope){return paint_runtime.paint==scope;}
-static win16_control_month_view month_view(style_runtime_paint_scope *s)
+static style_control_month_view month_view(style_runtime_paint_scope *s)
 {
     attachment *a=s->observation.owner;
-    return (win16_control_month_view){
+    return (style_control_month_view){
         .native={.context=s,.window=s->observation.window,.instance=&a->base.instance,.rich=&a->base.runtime.rich,
             .state=&s->month,.rejected_styles=MCS_MULTISELECT,.current=month_view_current},
         .cached_font=&a->month_cached_font,.palette=&a->palette,
-        .arrows=a->base.runtime.rich.month?a->arrows:NULL,.selection=a->calendar_selection,.font_dpi=a->calendar_font_dpi,.font_points=a->calendar_font_points};
+        .arrows=a->base.runtime.rich.month?a->arrows:NULL,.selection=a->calendar_selection,.font_dpi=a->calendar_font_dpi,.font_points=a->calendar_font_points,
+        .acquire_font=style_raster_font_acquire_at_density,.retain_font=style_raster_font_try_retain};
 }
 
 void ntw16s_month_arrow(HTHEME t,HDC dc,int p,int state,const RECT *r,const RECT *clip,const void *addr)
-{style_runtime_paint_scope *s=paint_runtime.paint;if(s){const win16_control_month_view v=month_view(s);win16_control_month_arrow(&v,t,dc,p,state,r,clip,addr);}}
+{style_runtime_paint_scope *s=paint_runtime.paint;if(s){const style_control_month_view v=month_view(s);style_control_month_arrow(&v,t,dc,p,state,r,clip,addr);}}
 HFONT ntw16s_month_text_borrow(HTHEME t,HDC dc,int p,int state,DWORD f,DWORD f2,const RECT *r,const void *addr)
-{style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return NULL;const win16_control_month_view v=month_view(s);return win16_control_month_text_borrow(&v,t,dc,p,state,f,f2,r,addr);}
+{style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return NULL;const style_control_month_view v=month_view(s);return style_control_month_text_borrow(&v,t,dc,p,state,f,f2,r,addr);}
 BOOL ntw16s_month_text_room(HTHEME t,HDC dc,int p,int state,DWORD f,DWORD f2,const RECT *r,int width,const void *addr)
-{style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return FALSE;const win16_control_month_view v=month_view(s);return win16_control_month_text_room(&v,t,dc,p,state,f,f2,r,width,addr);}
+{style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return FALSE;const style_control_month_view v=month_view(s);return style_control_month_text_room(&v,t,dc,p,state,f,f2,r,width,addr);}
 void ntw16s_month_header_text(HTHEME t,HDC dc,int p,int state,const RECT *r,DWORD f,const void *addr)
-{style_runtime_paint_scope *s=paint_runtime.paint;if(s){const win16_control_month_view v=month_view(s);win16_control_month_header_text(&v,t,dc,p,state,r,f,addr);}}
+{style_runtime_paint_scope *s=paint_runtime.paint;if(s){const style_control_month_view v=month_view(s);style_control_month_header_text(&v,t,dc,p,state,r,f,addr);}}
 void ntw16s_month_selection_background(HTHEME t,HDC dc,int p,int state,const RECT *r,const RECT *clip,const void *addr)
-{style_runtime_paint_scope *s=paint_runtime.paint;if(s){const win16_control_month_view v=month_view(s);style_control_month_selection_begin(&v.native,t,dc,p,state,r,clip,addr);}}
+{style_runtime_paint_scope *s=paint_runtime.paint;if(s){const style_control_month_view v=month_view(s);style_control_month_selection_begin(&v.native,t,dc,p,state,r,clip,addr);}}
 void ntw16s_month_selection_text(HTHEME t,HDC dc,int p,int state,const RECT *r,DWORD f,const void *addr)
-{style_runtime_paint_scope *s=paint_runtime.paint;if(s){const win16_control_month_view v=month_view(s);win16_control_month_selection_text(&v,t,dc,p,state,r,f,addr);}}
+{style_runtime_paint_scope *s=paint_runtime.paint;if(s){const style_control_month_view v=month_view(s);style_control_month_selection_text(&v,t,dc,p,state,r,f,addr);}}
 static void release(attachment *a);
 static void attachment_dispose(void *context)
 {
@@ -457,7 +459,7 @@ static BOOL install_created(HWND w,DWORD original_style)
         classic_theme_window_palette(&a->palette,theme);
         a->push=(win16_runtime_push){theme->push,theme->controls.push};
         if(cool_candidate)a->grip=theme->bars[CLASSIC_BAR_REBAR];
-        a->calendar_selection=win16_control_month_selected_color(theme,a->palette.active);
+        a->calendar_selection=classic_control_month_selected_color(theme,a->palette.active);
         a->calendar_font_dpi=theme->calendar_font_dpi;
         a->calendar_font_points=theme->calendar_font_points;
         a->status_edge=classic_bar_color(&theme->bars[CLASSIC_BAR_STATUS],CLASSIC_BAR_EDGE,a->palette.edge);

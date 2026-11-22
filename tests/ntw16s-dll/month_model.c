@@ -77,8 +77,7 @@ HWND multiple=multi(p);CHECK(multiple&&redraw(multiple)&&!attached(multiple)&&De
 HWND fail_select=create(p,FALSE);CHECK(fail_select&&redraw(fail_select)&&attached(fail_select));inject_select_failure=TRUE;CHECK(compare_client(fail_select,remove,FALSE,TRUE,FALSE)==0);inject_select_failure=FALSE;CHECK(DestroyWindow(fail_select));
 HWND first_shared=create(p,FALSE),second_shared=create(p,FALSE);CHECK(first_shared&&second_shared);captured_font=NULL;CHECK(redraw(first_shared)&&attached(first_shared));HFONT shared_font=captured_font;CHECK(shared_font&&GetObjectW(shared_font,sizeof(verified_log),&verified_log));captured_font=NULL;CHECK(redraw(second_shared)&&attached(second_shared)&&captured_font==shared_font);CHECK(remove(first_shared)&&GetObjectW(shared_font,sizeof(verified_log),&verified_log));CHECK(remove(second_shared)&&!GetObjectW(shared_font,sizeof(verified_log),&verified_log));CHECK(DestroyWindow(first_shared)&&DestroyWindow(second_shared));
 HWND exceptional=create(p,FALSE);CHECK(exceptional&&redraw(exceptional)&&attached(exceptional));inject_exception=TRUE;CHECK(InvalidateRect(exceptional,NULL,FALSE));CHECK(test_unwind(exceptional,WM_PAINT,0,0));CHECK(redraw(exceptional));CHECK(compare_client(exceptional,remove,FALSE,TRUE,TRUE)==0);CHECK(DestroyWindow(exceptional));HWND nested=create(p,TRUE);CHECK(nested&&redraw(nested)&&!attached(nested));set_fake(FALSE);query(3,NULL);CHECK(redraw(nested)&&attached(nested));CHECK(compare_client(nested,remove,FALSE,TRUE,TRUE)==0);CHECK(DestroyWindow(nested));HWND w=create(p,FALSE);CHECK(w&&redraw(w)&&attached(w));SYSTEMTIME a={0},b={0};CHECK(SendMessageW(w,MCM_GETCURSEL,0,(LPARAM)&a));a.wDay=(a.wDay==1?2:1);CHECK(SendMessageW(w,MCM_SETCURSEL,0,(LPARAM)&a));CHECK(SendMessageW(w,MCM_GETCURSEL,0,(LPARAM)&a));CHECK(redraw(w));HTHEME original_theme=GetWindowTheme(w);CHECK(original_theme);COLORREF colors[6];for(int i=0;i<6;i++)colors[i]=(COLORREF)SendMessageW(w,MCM_GETCOLOR,i,0);COLORREF changed=RGB(12,34,56);CHECK((COLORREF)SendMessageW(w,MCM_SETCOLOR,MCSC_TITLEBK,changed)==colors[MCSC_TITLEBK]);colors[MCSC_TITLEBK]=changed;CHECK(compare_client(w,remove,TRUE,TRUE,TRUE)==0);CHECK(GetWindowTheme(w)==original_theme);for(int i=0;i<6;i++)CHECK((COLORREF)SendMessageW(w,MCM_GETCOLOR,i,0)==colors[i]);CHECK(SendMessageW(w,MCM_GETCURSEL,0,(LPARAM)&b)&&a.wYear==b.wYear&&a.wMonth==b.wMonth&&a.wDay==b.wDay);CHECK(DestroyWindow(w));HWND today=create(p,FALSE);CHECK(today&&redraw(today)&&attached(today));SYSTEMTIME now={0};CHECK(SendMessageW(today,MCM_GETTODAY,0,(LPARAM)&now));CHECK(SendMessageW(today,MCM_SETCURSEL,0,(LPARAM)&now));CHECK(redraw(today));CHECK(compare_client(today,remove,FALSE,TRUE,TRUE)==0);CHECK(DestroyWindow(today));HWND disabled=create(p,FALSE);CHECK(disabled&&redraw(disabled)&&attached(disabled));SYSTEMTIME dd={0};CHECK(SendMessageW(disabled,MCM_GETCURSEL,0,(LPARAM)&dd));dd.wDay=(dd.wDay==1?2:1);CHECK(SendMessageW(disabled,MCM_SETCURSEL,0,(LPARAM)&dd));EnableWindow(disabled,FALSE);CHECK(redraw(disabled));CHECK(compare_client(disabled,remove,FALSE,FALSE,FALSE)==0);CHECK(DestroyWindow(disabled));CHECK(restore_import(&dpi_slot));CHECK(restore_import(&observer_slot));CHECK(DestroyWindow(p)&&DestroyWindow(root)&&unreg()&&FreeLibrary(f));puts("MONTH_MODEL_OK multi=1 owner=1 fake=1 caller=1 witness=1 unwind=1 stale=1 query=1 date=1 layout=1 colors=1 theme=1 selection=1 header=1 font=1 fontbounds=1 fontlease=1 dpi=1 selectfail=1 text=1 fallback=1 pixels=1 cleanup=1");return 0;}
-#include "lib-win32-style/appearance/win3x/control/month_paint.h"
-#include "lib-win32-style/appearance/win3x/control/special_paint.h"
+#include "lib-win32-style/appearance/msstyles/control_theme_style.h"
 #include <vssym32.h>
 
 static int theme_colors(PCWSTR descriptor,PCWSTR selection,PCWSTR arrow)
@@ -90,9 +89,9 @@ static int theme_colors(PCWSTR descriptor,PCWSTR selection,PCWSTR arrow)
     CHECK(end!=arrow && !*end && ink<=0xffffff);
     classic_theme_mapping source={0};
     CHECK(classic_theme_open(descriptor,&source)==S_OK);
-    win16_style_palette palette;
+    style_window_palette palette;
     classic_theme_window_palette(&palette,&source.model);
-    COLORREF cell=win16_control_month_selected_color(&source.model,palette.active);
+    COLORREF cell=classic_control_month_selected_color(&source.model,palette.active);
     CHECK(cell==(COLORREF)selected);
     const RECT back={0,0,17,17},next={19,0,36,17},highlight={0,19,17,36};
     HDC dc=CreateCompatibleDC(NULL);
@@ -101,9 +100,9 @@ static int theme_colors(PCWSTR descriptor,PCWSTR selection,PCWSTR arrow)
     HBITMAP bitmap=CreateDIBSection(dc,&info,DIB_RGB_COLORS,&pixels,NULL,0);
     HGDIOBJ old=dc && bitmap?SelectObject(dc,bitmap):NULL;
     CHECK(old && old!=HGDI_ERROR);
-    win16_style_month_arrow(dc,&back,NULL,MC_NAVPREV,MCNP_NORMAL,&palette,&source.model.scroll_art);
-    win16_style_month_arrow(dc,&next,NULL,MC_NAVNEXT,MCNN_NORMAL,&palette,&source.model.scroll_art);
-    win16_control_month_fill(dc,&highlight,NULL,cell);
+    style_control_month_paint_arrow(dc,&back,NULL,MC_NAVPREV,MCNP_NORMAL,&palette,&source.model.scroll_art);
+    style_control_month_paint_arrow(dc,&next,NULL,MC_NAVNEXT,MCNN_NORMAL,&palette,&source.model.scroll_art);
+    style_control_month_fill(dc,&highlight,NULL,cell);
     unsigned counts[2]={0};
     for(int y=0;y<17;++y)for(int x=0;x<17;++x){
         counts[0]+=GetPixel(dc,x,y)==ink;

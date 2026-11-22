@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P50",
-  "stage": "published development candidate with shared text eligibility and isolated font leases",
+  "delivery": "M0 T29 S23 P51",
+  "stage": "published development candidate with shared text toolbar and calendar painting",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P49 1572e1690ed5",
-  "source_snapshot_sha256": "fd96a76a753ba71e61dc41d86c085bf12ca727e1a5589f34e8d516c27f394a2a",
+  "last_verified_remote_delivery": "M0 T29 S23 P50 651186c6709c",
+  "source_snapshot_sha256": "54af380bc16992773fc2997feafda20d71f2db0546d3adac9b3a3828eefdc390",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "939dd4947d0eaeda73df7f637fd8ae260a5c1f85cbc7464faf4fdc7fde4d39d6",
+      "sha256": "b84720d51c30812590dca6c7bb26755a43381952f113f482a8fd6f55a422329b",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "74452894fab6ffbb3c2b0a048a73abb6290533f40bc2ecf4b789c787ee5c9976",
+      "sha256": "02bd5b92a7b8ac9059abf60a3b66f8bba0921c49a031244481fa9cf75c0e74ef",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "e412bff3787dbde0d7a590b2154a7e609bb967113f5086e830828c9879933ccd",
+      "sha256": "f0180e05771c509031434b693ecd737bccd562b7c2bfe6aa04d3deb5042db6cc",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,45 +106,43 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 24,
+    "passed": 22,
     "selected_cases": [
       "x86 link",
-      "x86 font-cache",
-      "x86 text-metrics",
-      "x86 control-gdi",
-      "x86 assets-theme",
-      "x86 assets-status-module",
-      "x86 assets-status-simple",
-      "x86 assets-status-stock",
-      "x86 winnt-theme",
-      "x86 winnt-status-module",
-      "x86 winnt-status-simple",
-      "x86 winnt-status-stock",
+      "x86 month-scope",
+      "x86 toolbar-bounds",
+      "x86 toolbar-bounds-v6",
+      "x86 gdi",
+      "x86 assets-toolbar",
+      "x86 assets-month",
+      "x86 assets-month-pixels",
+      "x86 winnt-toolbar",
+      "x86 winnt-month",
+      "x86 winnt-month-pixels",
       "x64 link",
-      "x64 font-cache",
-      "x64 text-metrics",
-      "x64 control-gdi",
-      "x64 assets-theme",
-      "x64 assets-status-module",
-      "x64 assets-status-simple",
-      "x64 assets-status-stock",
-      "x64 winnt-theme",
-      "x64 winnt-status-module",
-      "x64 winnt-status-simple",
-      "x64 winnt-status-stock"
+      "x64 month-scope",
+      "x64 toolbar-bounds",
+      "x64 toolbar-bounds-v6",
+      "x64 gdi",
+      "x64 assets-toolbar",
+      "x64 assets-month",
+      "x64 assets-month-pixels",
+      "x64 winnt-toolbar",
+      "x64 winnt-month",
+      "x64 winnt-month-pixels"
     ],
     "skipped": [],
     "limitations": [
-      "8 same-snapshot graphics and link cases, 16 theme or live status-bar cases against both installations",
+      "10 same-snapshot link, native scope, toolbar boundaries and GDI cases, plus 12 installed-package toolbar and calendar cases",
       "Owned native fixtures only",
       "Physical input, interactive administrator tray, actual UWP application and full package matrix not run"
     ]
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "isolated HEAD plus scoped P50 source and tests, MinGW/Ninja and shared build/.ccache",
+    "command": "isolated HEAD plus scoped P51 inputs, MinGW/Ninja and shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2072,
-    "cache_misses": 28
+    "cache_hits": 2084,
+    "cache_misses": 12
   }
 }

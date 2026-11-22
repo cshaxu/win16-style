@@ -9,7 +9,6 @@
 #include "control_state.h"
 #include "vb_text.h"
 #include <commctrl.h>
-#include <vssym32.h>
 
 BOOL win16_control_color_frame(HDC dc,const RECT *bounds,const RECT *clip,COLORREF color)
 {
@@ -45,29 +44,6 @@ void win16_control_panel_shadow(HDC dc,const POINT *points,BOOL (WINAPI *draw)(H
     RestoreDC(dc,saved);
 }
 
-void win16_control_month_fill(HDC dc,const RECT *bounds,const RECT *clip,COLORREF color)
-{
-    int saved=SaveDC(dc);if(!saved)return;
-    if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return;}
-    HBRUSH brush=(HBRUSH)GetStockObject(DC_BRUSH);SetDCBrushColor(dc,color);
-    FillRect(dc,bounds,brush);RestoreDC(dc,saved);
-}
-
-BOOL win16_control_month_text(HTHEME theme,HDC dc,int part,int state,HFONT font,LPCWSTR text,int count,DWORD flags,const RECT *bounds,
-    int (WINAPI *draw)(HDC,LPCWSTR,int,LPRECT,UINT),BOOL (*room)(void *,int),void *context)
-{
-    RECT output=*bounds,measure=*bounds;COLORREF color;HGDIOBJ previous=SelectObject(dc,font);
-    if(SUCCEEDED(GetThemeColor(theme,part,state,TMT_TEXTCOLOR,&color)) && previous && previous!=HGDI_ERROR){
-        SetTextColor(dc,color);SetBkMode(dc,TRANSPARENT);
-        int height=draw(dc,text,count,&measure,flags|DT_CALCRECT);
-        if(height>0 && measure.right-measure.left<=bounds->right-bounds->left &&
-           measure.bottom-measure.top<=bounds->bottom-bounds->top && room(context,measure.right-measure.left) &&
-           IntersectClipRect(dc,bounds->left,bounds->top,bounds->right,bounds->bottom)!=ERROR)
-            return draw(dc,text,count,&output,flags)!=0;
-    }
-    return FALSE;
-}
-
 BOOL win16_control_cool_grip(HDC dc,const RECT *bounds,const classic_bar_colors *colors)
 {
     RECT r=*bounds;
@@ -77,21 +53,6 @@ BOOL win16_control_cool_grip(HDC dc,const RECT *bounds,const classic_bar_colors 
         .shadow=classic_bar_color(colors,CLASSIC_BAR_SHADOW,GetSysColor(COLOR_BTNSHADOW))
     };
     return style_paint_relief(dc,&r,BDR_RAISEDINNER,BF_RECT|BF_MIDDLE,&palette);
-}
-
-void win16_style_month_arrow(HDC dc,const RECT *r,const RECT *clip,int part,int state,const win16_style_palette *palette,
-    const style_scroll_arrow_art *art)
-{
-    if(!dc || !r || IsRectEmpty(r) || r->right-r->left>128 || r->right-r->left!=r->bottom-r->top)return;
-    int saved=SaveDC(dc);
-    if(!saved)return;
-    BOOL previous=part==MC_NAVPREV;
-    UINT flags=previous?DFCS_SCROLLLEFT:DFCS_SCROLLRIGHT;
-    if(state==(previous?MCNP_DISABLED:MCNN_DISABLED))flags|=DFCS_INACTIVE;
-    else if(state==(previous?MCNP_PRESSED:MCNN_PRESSED))flags|=DFCS_PUSHED;
-    if(!clip || IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)!=ERROR)
-        style_control_outline_scroll_arrow(dc,*r,flags,palette,art);
-    RestoreDC(dc,saved);
 }
 
 /* USER18:0208..027F: scrollbar-class size box shares the inner border
