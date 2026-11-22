@@ -176,31 +176,9 @@ M0 T34 S1 与 T34 已收口。Luna 常态 Win32 窗口的三个标题按钮使�
 原版右上角锚点。九组原版资源、两处三配色双宽实窗和聚焦回归通过。
 详见 [交付记录](../history/M0-T34-S1-luna-caption-geometry.md)。
 
-## M0 T35 S1 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New |
-| Admission And Approval | 用户要求修复、同 DPI 对照并发布试用。 |
-| Objective | 普通 Win32 Luna 窗口的三个标题按钮按原版选图并校准边距。 |
-| Non-goals | 工具、最大化及其他风格的窗口几何。 |
-| Reference Baseline | 96 DPI XP 原尺寸截图、XP SP3 测量、原版 Luna 三配色资源。 |
-| Candidate Proposal | 解码 4 位 DIB，按资源字形规则选择，按原生窗口度量布局。 |
-| Files And ABI Surface | 共享标题绘制、窗口布局、位图读取及 v3 资源，产品 ABI 不变。 |
-| Applicable Rules | C17、双宽七件、先发布后测、无私有桌面。 |
-| Verification | 双宽原版资源与普通窗口、标题交互和经典风格聚焦回归。 |
-| Expected Markers | V3 LUNA PASS、LUNA CAPTION INPUT PASS、PUBLISH PASS。 |
-| Asset Needs | 本机已安装 Luna 原版主题，测试截图仅作为参考输入。 |
-| Reporting Requirements | 分开报告原版 96 DPI 和宿主实际 DPI 验证。 |
-| Stop Conditions | 用自建窗口，测试有限等待。 |
-| Exit Criteria | 同 DPI 度量一致，两处发布和远端复核，用户可试用。 |
-| Original Owner Request | 按原版选图，先核实同 DPI 的右侧蓝边再调整位置。 |
-| Similar-Issue Sweep | 检查 DIB 解码、v3 选图、标题窗口绘制和命中路径。 |
-
-M0 T35 S1 已发布待试用。按原版 Luna 属性选择标题栏三枚字形，以 96 DPI
-原版截图和 XP SP3 原生测量核对普通可调整大小窗口的右边距与间距。
-[正式七件](../etc/release.json)已发布至两处。24 次双宽实窗及 13 项聚焦回归通过。
-[范围与验证](../history/M0-T35-S1-luna-glyphs.md)。
+M0 T35 S1 与 T35 已通过用户验收并收口。Luna 普通 Win32 窗口的标题按钮按
+原版资源选图，96 DPI 的右侧蓝边实测 6 像素。正式七件已在两处发布并复核远端，
+24 次双宽实窗及 13 项聚焦回归通过。见[收口记录](../history/M0-T35-S1-luna-glyphs.md)。
 
 ## Identifier State
 
@@ -223,7 +201,7 @@ M0 T35 S1 已发布待试用。按原版 Luna 属性选择标题栏三枚字形�
 - Last allocated T33 S: 1
 - Last allocated T34 S: 1
 - Last allocated T35 S: 1
-- Open task: T35 S1，Luna 标题按钮字形及原版边距，待用户试用。
+- Open task: 无活动任务包。
 
 ## Technical Baseline
 

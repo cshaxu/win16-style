@@ -133,9 +133,9 @@
       },
       "frame_fixture_sha256": "17ff1ae80aa0667db1d0df359f457e38f8bd4dc6b0efedce2c3632a9aeb4ace0"
     },
+    "manual_visual_acceptance": "passed-owner-confirmed",
     "limitations": [
-      "Original XP visual reference measured at 96 DPI; higher-DPI host checks are project-only.",
-      "Manual visual acceptance is pending."
+      "Original XP visual reference measured at 96 DPI. Higher-DPI host checks cover the project build."
     ]
   },
   "evidence": "../history/M0-T35-S1-luna-glyphs.md",
