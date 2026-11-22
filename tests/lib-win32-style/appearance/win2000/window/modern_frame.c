@@ -65,7 +65,8 @@ static int mixed_profile(HWND root,HWND core,HMODULE module,PCWSTR folder)
     CHECK(source.model.caption_presentation.button_source==STYLE_CAPTION_BUTTON_INDEXED &&
         source.model.title_buttons.right_margin==30);
     const WPARAM profile=(WPARAM)classic_theme_folder_id(folder)<<NTW16S_UWP_PROFILE_SHIFT;
-    CHECK(request(root,core,profile|NTW16S_UWP_DIRECTORY|NTW16S_UWP_APPLY));
+    const WPARAM directory=profile|NTW16S_UWP_DIRECTORY;
+    CHECK(request(root,core,directory|NTW16S_UWP_APPLY));
     HWND surface=surface_of(root);
     RECT rect;
     CHECK(surface && GetWindowRect(surface,&rect));
@@ -89,7 +90,8 @@ static int mixed_profile(HWND root,HWND core,HMODULE module,PCWSTR folder)
     CHECK(PeekMessageW(&message,root,WM_SYSCOMMAND,WM_SYSCOMMAND,PM_REMOVE));
     DispatchMessageW(&message);
     CHECK(command==SC_CLOSE && !GetCapture());
-    CHECK(request(root,core,profile|NTW16S_UWP_REMOVE_2K) && !IsWindow(surface));
+    CHECK(!request(root,core,profile|NTW16S_UWP_REMOVE_2K) && surface_of(root)==surface);
+    CHECK(request(root,core,directory|NTW16S_UWP_REMOVE) && !IsWindow(surface) && !surface_of(root));
     puts("UWP MIXED PROFILE PASS indexed source, relocated close command, restore");
     return 0;
 }

@@ -145,26 +145,26 @@ M0 T29 S22 已收口。P1 076779b0a999 的双宽正式七件先发布两处，�
 实包 37/37，无跳过。已从实际远端复核七件、九个退役路径和 1,291 项
 构建输入。补测与未覆盖项见 [S22 台账](../history/M0-T29-S22-dialog-routes.md)。
 
-## M0 T29 S23 Packet
+## M0 T29 S24 Packet
 
 | Field | Required record |
 | --- | --- |
 | Identifier Mode | Continuation |
-| Admission And Approval | 沿用户批准的 T29 终态顺序继续。S22 实包和远端验收已完成。 |
-| Objective | 从正式启动器和双位宽中性运行时的真实链接闭包移除年代专属制式、配方、选择分支及旧生产装配。 |
-| Non-goals | 多增发行文件、改变已有接入权限、扩张主题覆盖或准入下一 T。 |
-| Reference Baseline | S22 P1 076779b0a9992b5a30fcf45e4b64b9568cbd85c6。 |
-| Candidate Proposal | [T29 实施顺序](../proposals/msstyles-classic-runtime.md)及[S23 链接台账](../history/M0-T29-S23-runtime-link-closure.md)。 |
-| Files And ABI Surface | run16s、ntwshk、两套旧装配、主题加载器、Win32 和现代框架及相应归档。保留逐项证实所需的薄 ABI。 |
-| Applicable Rules | 纯 C17，双宽 MinGW/Ninja/ccache。合批干净构建且同批七件先发布后测试。 |
-| Verification | 双宽真实链接输入、归档成员、PE 资源、导入导出与调用闭包。以原主题和混搭主题验证已交付的宿主、控件、对话框能力及还原。 |
-| Expected Markers | 只换同目录主题文件即可改变风格，正式运行件隐藏及公开分派均不绑定 Win16 或 Win2000。 |
-| Asset Needs | 现有两组主题与原图、模板、来源证据。只在自有夹具临时生成混搭数据。 |
-| Reporting Requirements | 逐项区分产品装配、通用机制、主题数据、已退役旧路径、经验证的兼容 ABI 与剩余未验证项。 |
-| Stop Conditions | 禁止 computer-use 和私有桌面，只运行有界自有夹具。 |
-| Exit Criteria | 双宽链接闭包和实际运行验证满足终态，正式七件两处发布后测试、提交推送、实际远端复核完成。 |
-| Original Owner Request | EXE 和 DLL 完全遵循主题文件，当前 Win16 和 Win2000 效果及能力保留。 |
-| Similar-Issue Sweep | 启动、全局托盘、传播、窗口宿主和对话框，核对名称、年代枚举、嵌入表、链接与退役路径。 |
+| Admission And Approval | 按已批准的 T29 顺序，S23 P54 验证推送并读取远端后收口，准入 S24。 |
+| Objective | 固定同批三件运行文件，通过正式入口验收原两套主题和只改主题文件的混搭，逐项核对历史已交付能力、原生恢复与负例。 |
+| Non-goals | 新增主题格式、扩大历史原生适用面、改系统安全设置或增加发行文件。 |
+| Reference Baseline | S23 P54 `563a62c4` 的七件正式包与 [S12 终审](../history/M0-T29-S12-final-audit.md)的 113 单元，另含 S13 目录入口、S14 策略及后续运行时改动。 |
+| Candidate Proposal | [T29 终态验收](../proposals/msstyles-classic-runtime.md)、[S23 链接台账](../history/M0-T29-S23-runtime-link-closure.md)与[S24 实包证据](../history/M0-T29-S24-final-package-acceptance.md)。 |
+| Files And ABI Surface | run16s.exe、ntwshk32.dll、ntwshk64.dll、两对主题及自有验证夹具。 |
+| Applicable Rules | 同批正式包先发布再对照。测试从可核验的已安装包取件，三件运行文件保持同一摘要。 |
+| Verification | 双宽覆盖普通启动、已有窗口和自有全局接收者，验证 Win32 与现代宿主适用场景、DPI、像素、布局、命中、命令、对话框回写和原样恢复。 |
+| Expected Markers | 原两个目录和改名混搭目录均由声明确定外观及策略。非法或丢失主题拒绝、回退或保留当前样式符合相应契约。 |
+| Asset Needs | P54 正式七件、同源原始资源，自有主题副本与已提交的测试夹具。 |
+| Reporting Requirements | 逐项对应 S12、S13/S14 和后续能力的证据，区分真实原生、合成、未覆盖及已批准跳过的范围。 |
+| Stop Conditions | 不用 computer-use，不创建或切换私有桌面，不操作外部应用。原生探针有界且目标由测试拥有。 |
+| Exit Criteria | T29 终态矩阵和逐项审计通过，固定三件运行文件及两处安装和远端摘要复核完成，未覆盖项目按既有批准记录。 |
+| Original Owner Request | EXE 和 DLL 移除年代专属逻辑，只换主题文件就能复现已经交付的 Win16、Win2000 外观与行为。 |
+| Similar-Issue Sweep | 启动、主题解析、运行中切换、三种宿主、全局、控件、菜单、对话框、还原与错误路径。 |
 
 ## Identifier State
 
@@ -177,11 +177,11 @@ M0 T29 S22 已收口。P1 076779b0a999 的双宽正式七件先发布两处，�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S23 P53 `25a7231f`，两处七件正式文件和远端摘要已复核。
+- Last verified remote delivery: M0 T29 S23 P54 `563a62c4`，两处七件正式文件和远端摘要已复核。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
-- Last allocated T29 S: 23
-- Open task: M0 T29 S23，正式运行件旧产物和年代链接退出。
+- Last allocated T29 S: 24
+- Open task: M0 T29 S24，固定七件包的主题切换与能力终审。
 
 ## Technical Baseline
 

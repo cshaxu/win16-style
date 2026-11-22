@@ -27,9 +27,13 @@ static void window_check(void)
     WNDCLASSW cls={0};HWND root,button;
     typedef BOOL (__cdecl *attached_fn)(HWND);
     HMODULE dll=GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll");CHECK(dll);
-    attached_fn attached=(attached_fn)(void *)GetProcAddress(dll,"Ntw16sWindowAttached");CHECK(attached);
+    attached_fn full_client=(attached_fn)(void *)GetProcAddress(dll,"Ntw16sWindowAttached");
+    attached_fn nonclient=(attached_fn)(void *)GetProcAddress(dll,"Ntw2ksWindowAttached");CHECK(full_client && nonclient);
     cls.lpfnWndProc=owner;cls.lpszClassName=L"PropagatedNativeWindow";cls.hInstance=GetModuleHandleW(NULL);CHECK(RegisterClassW(&cls));
-    root=CreateWindowW(cls.lpszClassName,L"Inherited native window",WS_OVERLAPPEDWINDOW,0,0,360,240,NULL,NULL,cls.hInstance,NULL);CHECK(root && attached(root));
+    root=CreateWindowW(cls.lpszClassName,L"Inherited native window",WS_OVERLAPPEDWINDOW,0,0,360,240,NULL,NULL,cls.hInstance,NULL);CHECK(root);
+    BOOL full=full_client(root),observed=nonclient(root);CHECK(full!=observed);
+    attached_fn attached=full?full_client:nonclient;
+    report("provider",full?1u:2u);
     button=CreateWindowW(L"BUTTON",L"Native child",WS_CHILD|BS_AUTOCHECKBOX,10,10,150,30,root,NULL,cls.hInstance,NULL);CHECK(button && attached(button));
     CHECK(!SendMessageW(button,WM_GETFONT,0,0)); /* Native NULL/default font retained. */
     SendMessageW(button,BM_SETCHECK,BST_CHECKED,0);CHECK(SendMessageW(button,BM_GETCHECK,0,0)==BST_CHECKED);
