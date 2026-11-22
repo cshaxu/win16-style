@@ -1,7 +1,9 @@
 #ifndef WIN16_STYLE_CONTROLS_H
 #define WIN16_STYLE_CONTROLS_H
 #include "win16_style.h"
-#include "../lib-win32-style/appearance/win3x/control/control_scope.h"
+#include "lib-win32-style/application/control/control_scope.h"
+typedef style_control_scope win16_style_control_scope;
+typedef style_control_scope_counts win16_style_control_counts;
 /* Same-thread presentation attachment. Standard push/check/radio/group BUTTON
  * and text/box STATIC forms, ordinary string LISTBOX client rows;
  * plain EDIT border presentation retains native
@@ -20,6 +22,7 @@ BOOL win16_style_control_remove_owned(HWND window,const void *owner);
  * inside its parent's verified DRAWITEM DC may reuse the button chrome. */
 BOOL win16_style_graphical_frame(HDC,const RECT *,UINT,UINT,const void *);
 BOOL win16_style_graphical_frame_prepare(HDC,const RECT *,UINT,UINT,const void *,RECT *);
+BOOL win16_style_checklist_glyph(HDC,const RECT *,UINT);
 BOOL win16_style_checklist_frame(HDC,const RECT *,UINT,UINT,const void *);
 void win16_style_vb_data_arrow(HDC,int,int,int,int,HDC,int,int,int,int,DWORD,const void *);
 /* Internal coordinator scope for the currently dispatched checklist DRAWITEM. */

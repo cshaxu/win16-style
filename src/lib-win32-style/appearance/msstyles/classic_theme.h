@@ -31,12 +31,6 @@ typedef struct classic_caption_images {
 /* Copies palette roles out of the mapped resource. Call outside loader lock. */
 HRESULT classic_caption_art_read(HMODULE module,const classic_caption_images *images,classic_caption_art *art);
 
-enum { CLASSIC_COMBO_ARROW_WIDTH=7, CLASSIC_COMBO_ARROW_HEIGHT=9 };
-typedef struct classic_combo_arrow_art {
-    BYTE rows[CLASSIC_COMBO_ARROW_HEIGHT];
-    BOOL present;
-} classic_combo_arrow_art;
-
 typedef struct classic_theme {
     classic_caption_colors active, inactive;
     classic_frame_colors frame;

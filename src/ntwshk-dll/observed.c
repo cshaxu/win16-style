@@ -1,6 +1,7 @@
 #include "observed.h"
 #include "lib-win32-style/application/window/observed_frame.h"
-#include "lib-win32-style/appearance/msstyles/observed_control_style.h"
+#include "lib-win32-style/appearance/msstyles/control_theme_style.h"
+#include "lib-win32-style/application/control/observed/control.h"
 #include "lib-win32-style/application/lifecycle/global_window.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/window/window_identity.h"
@@ -39,8 +40,8 @@ static const style_observed_frame_provider frame_provider={
 static void attach_frame(HWND window)
 {if(window && !style_global_window_managed(window))style_observed_frame_attach(window,&frame_provider);}
 static int control_owner;
-static DWORD load_control_theme(style_observed_control_theme *theme)
-{return classic_observed_control_load((HMODULE)&__ImageBase,theme);}
+static DWORD load_control_theme(style_control_theme *theme)
+{return classic_control_theme_load((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_NONCLIENT,theme);}
 
 static BOOL control_local(HWND window)
 {

@@ -398,7 +398,7 @@ static BOOL paint_native_button(HDC dc,HWND window,BOOL win2000,const classic_pu
     classic_theme_window_palette(&palette,theme);
     style_control_state control={0};
     const win16_control_choice_view view={&instance,&control,&palette,push,choice,button_type,
-        button_fit,button_fit,button_fit,button_fit,button_fit,module,&art,NULL,NULL,NULL,controls,TRUE};
+        button_fit,button_fit,button_fit,button_fit,button_fit,module,&art,classic_choice_art_get,NULL,NULL,NULL,controls,TRUE};
     win16_control_draw_choice(window,&view,dc);
     return TRUE;
 }
@@ -449,7 +449,7 @@ static BOOL draw_control_lines(HDC dc,const classic_theme *theme,BOOL win2000)
             passed=style_observed_button_paint(group,&instance,dc,NULL,NULL,&theme->group,NULL,NULL,NULL,controls,&relief);
         }else{
             win16_control_choice_view view={&instance,&native,&palette,NULL,NULL,button_type,
-                button_fit,button_fit,button_fit,button_fit,button_fit,NULL,NULL,NULL,&theme->group,NULL,controls,FALSE};
+                button_fit,button_fit,button_fit,button_fit,button_fit,NULL,NULL,NULL,NULL,&theme->group,NULL,controls,FALSE};
             win16_control_draw_choice(group,&view,dc);
         }
         passed=passed && GetPixel(dc,10,27)==(profile==STYLE_LINE_FLAT?theme->group.shadow:RGB(255,255,255));

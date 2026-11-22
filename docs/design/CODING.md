@@ -50,9 +50,9 @@ T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及�
 ## 控件运行时和主题数据
 
 原生观察式控件的生命周期、输入与绘制在 `application/control/observed`。
-`application/control/control_colors.h` 和 `presentation.h` 定义已解析的数据，
-`appearance/msstyles/observed_control_style.h` 将主题映射投影到这些类型。
-控件绘制借用调用方的图像解码器，实例保管持续绘制所需的映射。
+`application/control/control_theme.h` 定义两条控件路径共用的已解析数据，
+`appearance/msstyles/control_theme_style.h` 从选定主题填充模型。公共作用域和复选绘制
+位于 `application/control`。控件绘制借用调用方的图像解码器，实例保管持续绘制所需的映射。
 
 ## 现代外框的当前源码位置与迁移边界
 

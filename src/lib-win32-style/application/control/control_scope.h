@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <stddef.h>
+#include "lib-win32-style/application/window/palette.h"
 
 static inline BOOL style_control_subclass_owned(HWND window,SUBCLASSPROC proc,UINT_PTR id,const void *owner)
 {
@@ -33,4 +34,11 @@ void *style_control_scope_data(style_control_scope *);
  * controls. Installation is counted after the callback, including reentry. */
 void style_control_scope_observe(style_control_scope_manager *,const CWPRETSTRUCT *,
     BOOL (*install)(style_control_scope *,const CWPRETSTRUCT *,BOOL edit,void *),void *);
+
+typedef struct style_control_palette_scope_services {
+    BOOL (*edit_install)(HWND,BOOL,const style_window_palette *);
+    BOOL (*control_install)(HWND,const style_window_palette *);
+} style_control_palette_scope_services;
+BOOL style_control_palette_scope_install(style_control_scope *,const CWPRETSTRUCT *,BOOL edit,void *services);
+style_control_scope *style_control_palette_scope_begin(HWND,const style_window_palette *,style_control_scope_manager *,HOOKPROC);
 #endif

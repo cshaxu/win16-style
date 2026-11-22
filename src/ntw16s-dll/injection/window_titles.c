@@ -37,7 +37,6 @@
 #include "lib-win32-style/application/graphics/font_cache.h"
 #include "../../lib-win32-style/appearance/win3x/control/month_text.h"
 #include "lib-win32-style/appearance/win3x/control/special_paint.h"
-#include "lib-win32-style/appearance/win3x/control/choice_paint.h"
 #include "lib-win32-style/application/adapters/win32/checklist.h"
 #include "lib-win32-style/application/adapters/win32/frame_paint.h"
 HFONT ntw16s_month_text_borrow(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,const void *);
@@ -629,7 +628,7 @@ static BOOL WINAPI hook_BitBlt(HDC dc,int x,int y,int width,int height,HDC sourc
 {
     BOOL result=real_BitBlt(dc,x,y,width,height,source,sx,sy,rop);DWORD error=GetLastError();
     if(result)ntw16s_modern_spin_blit(dc,x,y,width,height,source,sx,sy,rop);
-    if(result)style_runtime_vb_checklist(dc,x,y,width,height,source,sx,sy,rop,__builtin_return_address(0),win16_control_checklist_glyph);
+    if(result)style_runtime_vb_checklist(dc,x,y,width,height,source,sx,sy,rop,__builtin_return_address(0),win16_style_checklist_glyph);
     SetLastError(error);return result;
 }
 void ntw16s_panel_polyline(HDC,const POINT *,int,const void *,BOOL (WINAPI *)(HDC,const POINT *,int));

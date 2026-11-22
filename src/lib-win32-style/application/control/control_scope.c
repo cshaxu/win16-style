@@ -65,3 +65,21 @@ done:
         if(!--scope->calls && scope->detached)free(scope);
     }
 }
+
+BOOL style_control_palette_scope_install(style_control_scope *scope,const CWPRETSTRUCT *message,BOOL edit,void *context)
+{
+    const style_control_palette_scope_services *services=context;
+    const CREATESTRUCTW *create=(const CREATESTRUCTW *)message->lParam;
+    const style_window_palette *palette=style_control_scope_data(scope);
+    return edit?services->edit_install(message->hwnd,(create->style&WS_BORDER)!=0,palette):
+        services->control_install(message->hwnd,palette);
+}
+style_control_scope *style_control_palette_scope_begin(HWND root,const style_window_palette *palette,
+    style_control_scope_manager *manager,HOOKPROC observer)
+{
+    style_control_scope *scope=style_control_scope_begin(root,sizeof(style_window_palette),manager,observer);
+    if(!scope)return NULL;
+    style_window_palette *data=style_control_scope_data(scope);
+    if(palette)*data=*palette;else style_window_palette_default(data);
+    return scope;
+}

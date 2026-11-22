@@ -32,6 +32,7 @@ BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *,style_scroll_arrow_art *)
 
 #include "lib-win32-style/application/control/scroll_track.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
+#include "lib-win32-style/appearance/msstyles/control_theme_style.h"
 #include "native_api.h"
 #include "theme.h"
 #include "lib-win32-style/application/control/trackbar_paint.h"
@@ -44,6 +45,8 @@ BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *,style_scroll_arrow_art *)
 #include <oleacc.h>
 #include <stdlib.h>
 #include <limits.h>
+
+extern IMAGE_DOS_HEADER __ImageBase;
 
 static _Thread_local style_control_track_calls track_calls;
 static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
@@ -78,8 +81,18 @@ static BOOL is_exact_native_button(HWND w)
 {WCHAR name[32];return GetClassNameW(w,name,ARRAYSIZE(name)) && !lstrcmpiW(name,L"BUTTON");}
 
 
+static BOOL read_check_glyph(UINT flags,style_check_glyph *glyph)
+{return classic_control_checklist_read((HMODULE)&__ImageBase,flags,glyph);}
+
+BOOL win16_style_checklist_glyph(HDC dc,const RECT *rect,UINT flags)
+{return style_control_checklist_glyph(dc,rect,flags,read_check_glyph);}
+
 BOOL win16_style_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address)
-{return win16_control_checklist_frame(dc,rect,type,flags,address,ntw16s_checklist_draw_target);}
+{
+    const UINT allowed=DFCS_CHECKED|DFCS_PUSHED;
+    return type==DFC_BUTTON && (flags&15u)==DFCS_BUTTONCHECK && !(flags&~allowed) &&
+        ntw16s_checklist_draw_target(dc,rect,address) && win16_style_checklist_glyph(dc,rect,flags);
+}
 BOOL win16_style_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy)
 {return win16_control_graphical_frame_prepare(dc,rect,type,flags,address,copy,control_proc);}
 BOOL win16_style_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address)
@@ -94,7 +107,7 @@ static void draw(HWND w,control_style *s,HDC dc)
     const win16_control_choice_view view={&s->instance,&s->state,&s->palette,
         themed?&s->push_colors:NULL,&s->choice_colors,
         style_control_button_type,style_control_is_static,style_control_vb_frame,style_control_vb_button,
-        ntw16s_group_choice_button,ntw16s_group_push_button,s->choice_module,&s->choice_art,
+        ntw16s_group_choice_button,ntw16s_group_push_button,s->choice_module,&s->choice_art,s->read_choice_art,
         label?&s->label_colors:NULL,themed?&s->group_colors:NULL,label?&s->frame_colors:NULL,s->controls,themed};
     win16_control_draw_choice(w,&view,dc);
 }
@@ -208,12 +221,15 @@ static LRESULT CALLBACK control_proc(HWND w,UINT m,WPARAM a,LPARAM b,UINT_PTR id
     return style_control_message_dispatch(w,&s->instance,&s->state,&s->bindings,m,a,b,&ops);
 }
 
+static DWORD load_control_theme(style_control_theme *theme)
+{return classic_control_theme_load((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,theme);}
+
 static BOOL install_plain_control(HWND,const win16_style_palette *);
 static BOOL install(HWND w,const win16_style_palette *palette,BOOL edit,BOOL original_border,BOOL frame_bars,
     int tab_count,const int *tabs,const void *creation_owner,const BOOL *cancelled)
 {
     const win16_control_install_services services={control_proc,&combo_operations,ntw16s_vcl_combo_candidate,
-        ntw16s_native_get_combo_info,install_plain_control,win16_style_control_remove};
+        ntw16s_native_get_combo_info,install_plain_control,win16_style_control_remove,load_control_theme};
     return win16_control_install(w,palette,edit,original_border,frame_bars,tab_count,tabs,creation_owner,cancelled,
         style_control_dialog_combo_pending(),&services);
 }

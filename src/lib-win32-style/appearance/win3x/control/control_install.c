@@ -3,10 +3,7 @@
 #include "control_state.h"
 #include "control_guard.h"
 #include "control_class.h"
-#include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include <string.h>
-
-extern IMAGE_DOS_HEADER __ImageBase;
 
 typedef struct control_install {
     control_style *state;
@@ -58,18 +55,17 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     s->file_owner=!frame_bars && (ntw16s_vb_owner_file(w) || s->common_dialog_combo);s->combo_passthrough=services->combo_candidate(w);
     if(!frame_bars && !style_control_font_read(w,&s->state,services->control_proc,cancelled)){
         DWORD error=GetLastError();win16_control_state_dispose(s);SetLastError(error);return FALSE;}
-    if(palette)s->palette=*palette;else style_window_palette_default(&s->palette);
-    classic_theme_mapping source={0};
-    DWORD theme_error=classic_theme_attachment_layout((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,&source);
+    style_control_theme source={0};
+    DWORD theme_error=services->load_theme(&source);
     if(theme_error){win16_control_state_dispose(s);SetLastError(theme_error);return FALSE;}
     BOOL have_theme=source.resources!=NULL;
-    const classic_theme *theme=&source.model;
+    const style_control_theme *theme=&source;
     const unsigned native=have_theme?classic_control_native_roles(&theme->controls):0;
     const unsigned roles=frame_bars?native&(STYLE_ROLE_UPDOWN|STYLE_ROLE_TRACKBAR):native;
     if(((native&STYLE_ROLE_PROGRESS_BORDER) && frame_bars && style_control_protocol_legacy_progress(w)) ||
        ((native&STYLE_ROLE_EDIT) && !frame_bars && edit) ||
        style_control_role_native(w,roles,style_control_class_is)){
-        classic_theme_close(&source);
+        if(source.resources)FreeLibrary(source.resources);
         win16_control_state_dispose(s);
         SetLastError(ERROR_NOT_SUPPORTED);
         return FALSE;
@@ -81,6 +77,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
         s->choice_colors=theme->choice;
         if(classic_choice_has_art(&s->choice_colors)){
             s->choice_module=source.resources;
+            s->read_choice_art=source.read_choice_art;
             source.resources=NULL;
         }
     }
@@ -89,8 +86,10 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
     s->controls=theme->controls;
     s->state.font_recipe=s->controls.control_font_points;
     s->themed=!palette && have_theme;
+    if(palette)s->palette=*palette;
+    else if(!s->themed)style_window_palette_default(&s->palette);
     if(s->themed){
-        classic_theme_window_palette(&s->palette,theme);
+        s->palette=theme->window_palette;
         s->push_colors=theme->push;
         s->label_colors=theme->label;
         memcpy(s->edit_colors,theme->edit,sizeof(s->edit_colors));
@@ -106,7 +105,7 @@ BOOL win16_control_install(HWND w,const win16_style_palette *palette,BOOL edit,B
         s->scroll_arrow_colors=theme->scroll_arrow;
         s->scroll_colors=theme->scroll;
     }
-    classic_theme_close(&source);
+    if(source.resources)FreeLibrary(source.resources);
     control_install install={s,services,palette,frame_bars};
     const style_instance_install_ops ops={&install,cancelled,setup_control,NULL};
     return style_instance_install(&s->instance,w,services->control_proc,creation_owner,&ops);

@@ -153,4 +153,10 @@ static inline COLORREF classic_push_text_color(const classic_push_colors *colors
     return colors->text_states&(1u<<state)?colors->text[state]:CLR_INVALID;
 }
 
+enum { CLASSIC_COMBO_ARROW_WIDTH=7, CLASSIC_COMBO_ARROW_HEIGHT=9 };
+typedef struct classic_combo_arrow_art {
+    BYTE rows[CLASSIC_COMBO_ARROW_HEIGHT];
+    BOOL present;
+} classic_combo_arrow_art;
+
 #endif

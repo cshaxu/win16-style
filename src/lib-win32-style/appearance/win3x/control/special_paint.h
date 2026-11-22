@@ -14,7 +14,6 @@ typedef struct win16_runtime_push {
 } win16_runtime_push;
 BOOL win16_style_bitbtn_face(HWND window,HDC dc,const RECT *bounds,const RECT *clip,UINT state,
     const win16_style_palette *,const win16_runtime_push *);
-BOOL win16_control_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,BOOL (*target)(HDC,const RECT *,const void *));
 BOOL win16_control_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy,SUBCLASSPROC proc);
 BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,SUBCLASSPROC proc);
 BOOL win16_control_cool_grip_identity(HWND,void *,const NMCUSTOMDRAW *,WNDPROC,BOOL (*)(HWND,void *));

@@ -32,7 +32,7 @@ typedef struct style_observed_control {
     style_instance instance;
     style_control_state state;
     style_native_theme_fn native_theme;
-    style_observed_control_theme_load load_theme;
+    style_control_theme_load load_theme;
     style_choice_art_read_fn read_choice_art;
     BOOL frame_owned,themed;
     classic_push_colors push;
@@ -78,7 +78,7 @@ static LRESULT CALLBACK control_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR)
 static LRESULT CALLBACK parent_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 static style_observed_control *lookup(HWND window)
 {return (style_observed_control *)style_instance_lookup(window,control_proc);}
-static BOOL attach(HWND,style_native_theme_fn,style_observed_control_theme_load,HWND,BOOL *);
+static BOOL attach(HWND,style_native_theme_fn,style_control_theme_load,HWND,BOOL *);
 static BOOL matches(HWND window,const WCHAR *name,const WCHAR *expected)
 {
     if(!lstrcmpiW(name,expected))return TRUE;
@@ -557,7 +557,7 @@ static BOOL setup(HWND window,void *context)
 }
 static void rollback(HWND window,void *context)
 {(void)retire(window,context,FALSE);}
-static BOOL attach(HWND window,style_native_theme_fn native_theme,style_observed_control_theme_load load_theme,
+static BOOL attach(HWND window,style_native_theme_fn native_theme,style_control_theme_load load_theme,
     HWND combo_parent,BOOL *native_requested)
 {
     if(!win32_style_window_current_thread(window)){SetLastError(ERROR_INVALID_THREAD_ID);return FALSE;}
@@ -601,11 +601,11 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,style_observed
     style_native_scroll_init(&control->scroll,&control->instance);
     for(unsigned i=0;i<CLASSIC_PUSH_STATE_COUNT;++i)
         control->push.state[i]=(classic_surface_colors){control->palette.face,control->palette.dark};
-    style_observed_control_theme source={0};
+    style_control_theme source={0};
     error=load_theme(&source);
     if(error){dispose(control);SetLastError(error);return FALSE;}
     if(source.resources){
-        style_observed_control_theme *theme=&source;
+        style_control_theme *theme=&source;
         BOOL indexed=control->updown_control && theme->controls.updown_mode==CLASSIC_UPDOWN_ART;
         const unsigned native=classic_control_native_roles(&theme->controls);
         if((indexed && (!style_control_updown_api_enabled() || !style_control_updown_indexed_supported(window))) ||
@@ -685,7 +685,7 @@ rejected:
     SetLastError(error);
     return FALSE;
 }
-BOOL style_observed_control_attach(HWND window,style_native_theme_fn native_theme,style_observed_control_theme_load load_theme,
+BOOL style_observed_control_attach(HWND window,style_native_theme_fn native_theme,style_control_theme_load load_theme,
     BOOL *native_requested)
 {
     *native_requested=FALSE;

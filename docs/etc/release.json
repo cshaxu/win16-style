@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P46",
-  "stage": "published development candidate with stylesheet-neutral observed controls",
+  "delivery": "M0 T29 S23 P47",
+  "stage": "published development candidate with shared control theme projection",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P45 f6af1b17855b",
-  "source_snapshot_sha256": "2014691e2899208a0cb6be7ad545a2a819c6396284c9c46b28cef427f1c8394e",
+  "last_verified_remote_delivery": "M0 T29 S23 P46 462d0bb23582",
+  "source_snapshot_sha256": "9468d6fca5876e88319a8b27ea324953c07c009f3ad2616734c9796c544bdc72",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "ef4cea62d8324179505e9af7ef2fbc0b7d5131deff204ec134d86d00416da87a",
+      "sha256": "762b3e3ab2a15791d5cdc8b5cb83131463b774c3ae0f4cddfbae9ad7edbabb4b",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "4c1e59b7208632d26a7aec5a9bc1baf2e687d8510cf6a7537394cc8600df5f4d",
+      "sha256": "6747045e83078e49e0032a372976c761f1c4cf53b99c3132aa162b7aeabf1e9a",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "c8e76e150038b56b4975b849cec4ca4bb701a49f5a586ce492e8805891da4abe",
+      "sha256": "ee3219c97b3459956bceb83c7f44b653f914361ccef205fe9eab08ba10c5f1bc",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,35 +106,53 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 118,
+    "passed": 32,
     "selected_cases": [
-      "x86 compatibility-control-matrix (53)",
-      "x86 assets-paint-model (1)",
-      "x86 assets-runtime-start (1)",
-      "x86 assets-runtime-start-v6 (1)",
-      "x86 winnt-paint-model (1)",
-      "x86 winnt-runtime-start (1)",
-      "x86 winnt-runtime-start-v6 (1)",
-      "x64 compatibility-control-matrix (53)",
-      "x64 assets-paint-model (1)",
-      "x64 assets-runtime-start (1)",
-      "x64 assets-runtime-start-v6 (1)",
-      "x64 winnt-paint-model (1)",
-      "x64 winnt-runtime-start (1)",
-      "x64 winnt-runtime-start-v6 (1)"
+      "x86 link",
+      "x86 palette-scope",
+      "x86 scope",
+      "x86 gdi-scroll",
+      "x86 assets-paint-model",
+      "x86 assets-checklist",
+      "x86 assets-vb50-checklist",
+      "x86 assets-vb60-checklist",
+      "x86 assets-observed-start",
+      "x86 assets-observed-start-v6",
+      "x86 winnt-paint-model",
+      "x86 winnt-checklist",
+      "x86 winnt-vb50-checklist",
+      "x86 winnt-vb60-checklist",
+      "x86 winnt-observed-start",
+      "x86 winnt-observed-start-v6",
+      "x64 link",
+      "x64 palette-scope",
+      "x64 scope",
+      "x64 gdi-scroll",
+      "x64 assets-paint-model",
+      "x64 assets-checklist",
+      "x64 assets-vb50-checklist",
+      "x64 assets-vb60-checklist",
+      "x64 assets-observed-start",
+      "x64 assets-observed-start-v6",
+      "x64 winnt-paint-model",
+      "x64 winnt-checklist",
+      "x64 winnt-vb50-checklist",
+      "x64 winnt-vb60-checklist",
+      "x64 winnt-observed-start",
+      "x64 winnt-observed-start-v6"
     ],
     "skipped": [],
     "limitations": [
-      "106 same-snapshot compatibility cases, 12 installed-package or resource cases",
+      "8 same-snapshot scope, scrollbar GDI and link cases, 24 installed-package or theme pixel cases",
       "Owned native fixtures only",
       "Physical input, interactive administrator tray, actual UWP application and full package matrix not run"
     ]
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P46 inputs, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P47 inputs, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1998,
-    "cache_misses": 112
+    "cache_hits": 2029,
+    "cache_misses": 79
   }
 }

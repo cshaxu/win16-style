@@ -70,7 +70,7 @@ static BOOL WINAPI observed_blt(HDC dc,int x,int y,int cx,int cy,HDC from,int sx
 /* Instrument the same library implementations used by the product, so the
  * failure and GDI ownership checks still cover the extracted painters. */
 #include "lib-win32-style/appearance/win3x/control/basic_paint.c"
-#include "lib-win32-style/appearance/win3x/control/choice_paint.c"
+#include "lib-win32-style/application/control/choice_glyph.c"
 #include "lib-win32-style/appearance/win3x/control/choice_view.c"
 #include "lib-win32-style/appearance/win3x/control/other_paint.c"
 #include "lib-win32-style/appearance/win3x/control/list_paint.c"

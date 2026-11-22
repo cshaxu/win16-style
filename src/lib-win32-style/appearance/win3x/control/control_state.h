@@ -4,7 +4,6 @@
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include "lib-win32-style/application/control/control_state.h"
 #include "lib-win32-style/application/control/bindings.h"
-#include "choice_paint.h"
 #include "lib-win32-style/application/control/message.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 typedef struct control_style {
@@ -15,6 +14,7 @@ typedef struct control_style {
     classic_choice_colors choice_colors;
     classic_choice_art choice_art;
     HMODULE choice_module;
+    style_choice_art_read_fn read_choice_art;
     classic_text_colors label_colors;
     classic_group_colors group_colors;
     classic_edit_border edit_colors[CLASSIC_EDIT_STATE_COUNT];

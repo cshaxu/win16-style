@@ -1,5 +1,5 @@
 #include "choice_view.h"
-#include "choice_paint.h"
+#include "lib-win32-style/application/control/choice_glyph.h"
 #include "other_paint.h"
 #include "../../../application/control/control_protocol.h"
 #include "../../../application/graphics/icon_size.h"
@@ -106,18 +106,18 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
         tile.light=colors->face;
         tile.edge=colors->edge;
     }
-    const char *image=entry?classic_choice_art_get(view->module,entry->image,view->art):NULL;
+    const char *image=entry && view->read_art?view->read_art(view->module,entry->image,view->art):NULL;
     if(view->instance->detached){RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;}
     if(!image && view->controls.choice_fallback==CLASSIC_CHOICE_SYMBOLS){
         const style_relief_palette palette={.face=tile.face,.light=tile.light,.highlight=tile.light,
             .shadow=tile.shadow,.dark=tile.edge,.text=tile.edge,.window=tile.light};
         const COLORREF ink[2]={tile.light,tile.edge};
         if(!style_paint_choice_symbols(dc,&glyph,glyph_flags,&palette,colors?ink:NULL))
-            win16_control_choice_glyph(dc,glyph,0,glyph_flags,&tile,NULL);
+            style_control_choice_glyph(dc,glyph,0,glyph_flags,&tile,NULL);
     }else{
         UINT art_dpi=((metrics.flags&STYLE_CHOICE_DPI) && metrics.width==CLASSIC_CHOICE_WIDTH &&
             metrics.height==CLASSIC_CHOICE_HEIGHT)?dpi:0;
-        win16_control_choice_glyph(dc,glyph,art_dpi,glyph_flags,&tile,image);
+        style_control_choice_glyph(dc,glyph,art_dpi,glyph_flags,&tile,image);
     }
     GetTextMetricsW(dc,&tm);SetBkMode(dc,TRANSPARENT);SetTextColor(dc,view->palette->edge);
     label.top+=(r.bottom-tm.tmHeight)/2;label.bottom=label.top+tm.tmHeight;

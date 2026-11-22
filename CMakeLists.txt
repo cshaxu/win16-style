@@ -174,6 +174,7 @@ add_custom_target(style-subclass DEPENDS "${subclass_import}")
 add_dependencies(style-instance style-subclass)
 target_link_libraries(style-instance PUBLIC "${subclass_import}" user32 comctl32)
 add_library(style-control-common STATIC
+  src/lib-win32-style/application/control/choice_glyph.c
   src/lib-win32-style/application/control/native_scroll.c
   src/lib-win32-style/application/control/message.c
   src/lib-win32-style/application/adapters/win32/attachment.c
@@ -234,11 +235,10 @@ add_library(style-control-common STATIC
 target_include_directories(style-control-common PUBLIC src)
 target_compile_definitions(style-control-common PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 add_dependencies(style-control-common style-subclass)
-target_link_libraries(style-control-common PUBLIC module-import style-bitmap style-present win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme msimg32)
+target_link_libraries(style-control-common PUBLIC module-import style-bitmap style-present style-window win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme msimg32)
 add_library(win16-control STATIC
-  src/lib-win32-style/appearance/win3x/control/toolbar_paint.c src/lib-win32-style/appearance/win3x/control/control_scope.c
+  src/lib-win32-style/appearance/win3x/control/toolbar_paint.c
   src/lib-win32-style/appearance/win3x/control/basic_paint.c
-  src/lib-win32-style/appearance/win3x/control/choice_paint.c
   src/lib-win32-style/appearance/win3x/control/other_paint.c src/lib-win32-style/appearance/win3x/control/list_paint.c
   src/lib-win32-style/appearance/win3x/control/combo_paint.c src/lib-win32-style/appearance/win3x/control/scroll_paint.c
   src/lib-win32-style/appearance/win3x/control/choice_view.c src/lib-win32-style/appearance/win3x/control/vb_text.c

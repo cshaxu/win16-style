@@ -7,7 +7,6 @@
 #include "../../../application/graphics/bitmap.h"
 #include "control_class.h"
 #include "control_state.h"
-#include "choice_paint.h"
 #include "vb_text.h"
 #include <commctrl.h>
 #include <vssym32.h>
@@ -201,13 +200,6 @@ BOOL win16_style_bitbtn_face(HWND w,HDC dc,const RECT *rect,const RECT *clip,UIN
     RestoreDC(dc,saved);return painted;
 }
 
-BOOL win16_control_checklist_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,BOOL (*target)(HDC,const RECT *,const void *))
-{
-    const UINT allowed=DFCS_CHECKED|DFCS_PUSHED;
-    if(type!=DFC_BUTTON || (flags&15u)!=DFCS_BUTTONCHECK || (flags&~allowed) ||
-        !target(dc,rect,address))return FALSE;
-    return win16_control_checklist_glyph(dc,rect,flags);
-}
 static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *address,HWND *w,SUBCLASSPROC proc)
 {
     DWORD_PTR value;HMODULE caller=NULL;
