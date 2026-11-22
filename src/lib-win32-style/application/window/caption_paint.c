@@ -184,6 +184,35 @@ BOOL style_caption_icon_bounds(RECT band,int limit,UINT dpi,RECT *icon)
     return TRUE;
 }
 
+static BOOL paint_sprite_button(HDC dc,const style_caption_render_model *model,enum classic_button_role role)
+{
+    if(!model->sprites)return FALSE;
+    const style_frame_sprite_button *item=role==CLASSIC_BUTTON_MAXIMIZE && model->maximized?
+        &model->sprites->restore:&model->sprites->buttons[role];
+    if(!item->face.bits)return FALSE;
+    UINT flags=model->flags[role];
+    unsigned state=flags&DFCS_INACTIVE?3u:flags&DFCS_PUSHED?2u:flags&DFCS_HOT?1u:0u;
+    if(!model->active && item->face.count>=8)state+=4;
+    RECT bounds=model->buttons[role];
+    if(!style_dib_strip_draw(dc,bounds,&item->face,state,model->dpi))return FALSE;
+    int dpi=(int)model->dpi;
+    bounds.left+=MulDiv(item->content.left,dpi,96);
+    bounds.top+=MulDiv(item->content.top,dpi,96);
+    bounds.right-=MulDiv(item->content.right,dpi,96);
+    bounds.bottom-=MulDiv(item->content.bottom,dpi,96);
+    int width=bounds.right-bounds.left,height=bounds.bottom-bounds.top;
+    for(size_t i=ARRAYSIZE(item->glyphs);i>0;--i){
+        const style_dib_strip *glyph=&item->glyphs[i-1];
+        if(!glyph->bits || (int)glyph->width>width || (int)glyph->height>height)continue;
+        RECT centered={bounds.left+(width-(int)glyph->width)/2,bounds.top+(height-(int)glyph->height)/2,0,0};
+        centered.right=centered.left+(int)glyph->width;
+        centered.bottom=centered.top+(int)glyph->height;
+        (void)style_dib_strip_draw(dc,centered,glyph,state,model->dpi);
+        break;
+    }
+    return TRUE;
+}
+
 void style_caption_render(HDC dc,PCWSTR title,HFONT font,const style_caption_render_model *model,
     const style_caption_presentation *presentation,const classic_caption_art *art)
 {
@@ -191,6 +220,10 @@ void style_caption_render(HDC dc,PCWSTR title,HFONT font,const style_caption_ren
     COLORREF separator=presentation->separator==STYLE_CAPTION_SEPARATOR_AFTER?colors[0]:colors[3];
     RECT band=caption_band(dc,model->band,model->text.right,model->start,model->end,
         model->gradient,presentation->separator,model->unit,separator);
+    if(model->sprites){
+        const style_dib_strip *caption=model->maximized?&model->sprites->maximized:&model->sprites->caption;
+        (void)style_dib_strip_draw(dc,model->band,caption,model->active?0u:1u,model->dpi);
+    }
     RECT text=model->text;
     const int inset=presentation->text_inset_plus_one?presentation->text_inset_plus_one-1:
         (presentation->text_mode==STYLE_CAPTION_TEXT_CENTER_CLIP?0:2);
@@ -199,6 +232,7 @@ void style_caption_render(HDC dc,PCWSTR title,HFONT font,const style_caption_ren
     style_caption_title(dc,text,title,font,model->ink,presentation->text_mode);
     for(enum classic_button_role role=CLASSIC_BUTTON_SYSTEM;role<=CLASSIC_BUTTON_CLOSE;++role){
         if(IsRectEmpty(&model->buttons[role]))continue;
+        if(paint_sprite_button(dc,model,role))continue;
         UINT flags=model->flags[role];
         style_caption_raster raster=style_caption_button_raster(art,role,model->maximized,model->child,flags);
         style_caption_button_paint(dc,model->buttons[role],role,model->maximized,flags,

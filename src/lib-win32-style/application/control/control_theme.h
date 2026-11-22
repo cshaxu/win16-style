@@ -10,6 +10,7 @@
 /* Format-neutral recipe. An owned resource mapping transfers on successful
  * load; the instance retains it only when choice artwork is needed. */
 typedef struct style_control_theme {
+    BOOL preserve_native;
     HMODULE resources; /* An owned mapping transfers to the caller on success. */
     style_choice_art_read_fn read_choice_art;
     style_relief_palette palette,scroll_palette;
@@ -18,6 +19,7 @@ typedef struct style_control_theme {
     classic_combo_arrow_art combo_arrow;
     classic_control_presentation controls;
     classic_push_colors push;
+    style_push_sprite push_sprite;
     classic_choice_colors choice;
     classic_text_colors label;
     classic_edit_border edit[CLASSIC_EDIT_STATE_COUNT];

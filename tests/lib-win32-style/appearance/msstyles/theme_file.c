@@ -56,6 +56,17 @@ static bool optional_name(PCWSTR path,const char *input,const char *name)
     return fclose(file)==0 && valid && !strcmp(parsed.display_name,name) && !parsed.hosts.declared;
 }
 
+static bool original_style_path(PCWSTR path)
+{
+    FILE *file=_wfopen(path,L"w+b");
+    if(!file)return false;
+    msstyles_theme_descriptor parsed={0};
+    bool valid=fputs("[VisualStyles]\nPath=%ResourceDir%\\Themes\\Luna\\luna.msstyles\n"
+        "Size=NormalSize\nColorStyle=NormalColor\n",file)!=EOF &&
+        !fseek(file,0,SEEK_SET) && msstyles_theme_file_read(file,&parsed);
+    return fclose(file)==0 && valid && !strcmp(parsed.file,"luna.msstyles");
+}
+
 static bool reject(PCWSTR path,const char *text)
 {
     FILE *file=_wfopen(path,L"w+b");
@@ -76,7 +87,9 @@ int main(void)
     DWORD length=GetTempPathW(ARRAYSIZE(folder),folder);
     if(!length || length>=ARRAYSIZE(folder) || !GetTempFileNameW(folder,L"wst",0,path))
         return 1;
-    bool passed=check_file(path) &&
+    bool passed=check_file(path) && original_style_path(path) &&
+        reject(path,"[VisualStyles]\nPath=%ResourceDir%\\Themes\\..\\Luna.msstyles\nSize=S\nColorStyle=C\n") &&
+        reject(path,"[VisualStyles]\nPath=%ResourceDir%\\Themes\\Luna\\..\\Luna.msstyles\nSize=S\nColorStyle=C\n") &&
         optional_name(path,"[Theme]\nDisplayName=Clair & Nuit\n","Clair & Nuit") &&
         optional_name(path,"[Theme]\nDisplayName=@themeui.dll,-1\n","") &&
         optional_name(path,"[Theme]\nDisplayName=One\nDisplayName=Two\n","") &&

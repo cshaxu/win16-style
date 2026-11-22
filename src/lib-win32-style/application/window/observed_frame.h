@@ -17,6 +17,8 @@ typedef struct style_observed_frame_theme {
     unsigned menu_text_flags;
     style_native_menu menu;
     classic_caption_art art;
+    style_frame_sprites sprites;
+    HMODULE sprite_resources; /* Owns the bitmap views when present. */
 } style_observed_frame_theme;
 
 typedef struct style_observed_frame_provider {

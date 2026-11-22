@@ -94,7 +94,7 @@ void style_native_caption_render(HDC dc,const style_native_caption_layout *layou
     style_caption_render_model model={
         .band=band,.text=band,.start=colors.left,.end=colors.right,.ink=colors.text,
         .button_colors={resolved.edge,resolved.light,resolved.shadow,resolved.face},
-        .gradient=colors.gradient,.maximized=maximized,.unit=max(1,MulDiv(1,(int)dpi,96))
+        .gradient=colors.gradient,.maximized=maximized,.sprites=layout->sprites,.dpi=dpi,.active=layout->active,.unit=max(1,MulDiv(1,(int)dpi,96))
     };
     model.text.left=max(model.text.left,layout->icon.right);
     if(icon && !IsRectEmpty(&layout->icon)){

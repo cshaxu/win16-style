@@ -8,5 +8,6 @@
 /* Synchronous native BUTTON snapshot. Caller pins instance and owns the DC;
  * application font/images are borrowed and its input protocol stays native. */
 BOOL style_observed_button_paint(HWND,style_instance *,HDC,const classic_push_colors *,const classic_choice_colors *,
-    const classic_group_colors *,style_choice_art_read_fn,HMODULE,classic_choice_art *,classic_control_presentation,const style_relief_palette *);
+    const classic_group_colors *,style_choice_art_read_fn,HMODULE,classic_choice_art *,classic_control_presentation,const style_relief_palette *,
+    const style_push_sprite *);
 #endif

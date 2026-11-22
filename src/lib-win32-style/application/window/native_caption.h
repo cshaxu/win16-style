@@ -18,6 +18,8 @@ typedef struct style_native_caption_layout {
     RECT band, icon, buttons[STYLE_NATIVE_CAPTION_BUTTONS],system;
     UINT system_flags,left_buttons;
     BOOL system_on_right;
+    const style_frame_sprites *sprites;
+    BOOL active;
 } style_native_caption_layout;
 
 int style_native_caption_height(UINT dpi,BOOL tool);

@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S25 P1",
-  "stage": "published no-argument tray and console-lifetime update",
-  "version": "0.29.0.0",
-  "version_contract": "M0 T29",
+  "delivery": "M0 T30 S1 P1",
+  "stage": "published XP Luna v3 Win32 theme loading",
+  "version": "0.30.0.0",
+  "version_contract": "M0 T30",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S24 P26 5ed5e33f",
-  "source_snapshot_sha256": "ca2dddb2c46982dcabcd1504083bc5facc5a4314719142e569f8f64024337fc2",
+  "last_verified_remote_delivery": "M0 T29 S25 P1 b274f019",
+  "source_snapshot_sha256": "0a8487c5d6b9ea603a58acba7f2f65a4453e461b9e0da120aa2c47a239fb926c",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
-      "version": "M0 T29",
-      "sha256": "fe097b2f1d7871288d458198579f0a4c56c9a16a452cadbb1ae4cd6a2131e71f",
+      "version": "M0 T30",
+      "sha256": "2f66c43fd819e3ddaff344f2e16f9cea6f6f27e50dd1e45882fa3f9118e322a8",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -26,8 +26,8 @@
     },
     "ntwshk32.dll": {
       "architecture": "x86",
-      "version": "M0 T29",
-      "sha256": "e4b86438adc3bdc9dac7c8b650f789906ceeae818044ba387ad92c2e04d8900f",
+      "version": "M0 T30",
+      "sha256": "0da738675371df4ee861eacdf62600b51af72630bd682aa56be81bb0ba18668c",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -55,8 +55,8 @@
     },
     "ntwshk64.dll": {
       "architecture": "x64",
-      "version": "M0 T29",
-      "sha256": "30fc5504a41fc49771bb757fddcb84954a2de2900ff8ad3047fea3c6d6d98052",
+      "version": "M0 T30",
+      "sha256": "7ff7eab9ec5606f0f059256d0e137738dda52135fc2b957d6d0ebd3f4e100736",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,41 +106,51 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 13,
+    "passed": 14,
     "selected_cases": [
-      "cli",
+      "win2k-paint-x86",
+      "win2k-paint-x64",
+      "progress-sharing",
+      "plan-selection",
+      "abi-x86",
+      "abi-x64",
+      "demo-boundary",
+      "demo-pair",
       "wait-contract",
-      "cli-failures",
-      "uac-unit-32",
-      "console-rebind-unit-32",
-      "startup-error-unit-32",
-      "core-process-lifecycle-32",
-      "uac-unit-64",
-      "console-rebind-unit-64",
-      "startup-error-unit-64",
-      "core-process-lifecycle-64",
-      "legacy-rejection",
-      "startup-errors"
+      "theme-dialog-policy",
+      "cli",
+      "automatic",
+      "propagation",
+      "cli-failures"
     ],
     "skipped": [],
     "supplemental_native": {
-      "tray_private_console": "no arguments, registered, no attached console",
-      "tray_shared_console": "same visible console as owned cmd.exe",
-      "direct_x86_console": "same console, waited, child and launcher exit 42",
-      "direct_x64_console": "same console, waited, child and launcher exit 42",
-      "direct_gui": "no child console, launcher returned 0 while the target was still alive",
-      "removed_global_switch": "exit 2"
+      "luna_package_matrix": 18,
+      "launch_from_each_destination": 8,
+      "native_parser_and_descriptor": 8,
+      "x86_x64_abi": 2,
+      "measured_caption_144_dpi_px": {
+        "win2000": 29,
+        "luna": [
+          38,
+          44,
+          53
+        ]
+      },
+      "win16_original_theme_images": 24,
+      "win16_original_theme_masks": 13
     },
     "limitations": [
-      "Actual UAC prompt/confirmation not exercised. Both architectures checked Shell request metadata.",
-      "Two updated legacy error fixtures were rebuilt and retested separately after the product snapshot."
+      "Stock XP files are optional local input, outside the seven deliverables.",
+      "Actual Luna validation covers ordinary Win32 captions, frame pixels, close hit testing and push buttons.",
+      "Luna UWP, WinUI, tray-wide switching, maximized title tiling and additional XP control parts were not certified."
     ]
   },
-  "evidence": "../history/M0-T29-S25-launch-console.md",
+  "evidence": "../history/M0-T30-S1-luna-source.md",
   "build": {
-    "command": "scoped clean T29 snapshot, Build-Package Worker with the existing common ccache",
+    "command": "Build-Package scoped clean snapshot, Build-Core both widths and final incremental resource/link corrections within that snapshot",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache version 4.13.6",
-    "cache_hits": 2072,
-    "cache_misses": 14
+    "cache_hits": 1942,
+    "cache_misses": 165
   }
 }

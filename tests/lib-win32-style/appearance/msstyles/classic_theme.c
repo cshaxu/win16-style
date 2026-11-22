@@ -391,7 +391,7 @@ static BOOL paint_native_button(HDC dc,HWND window,BOOL win2000,const classic_pu
     controls.push=profile;
     if(win2000){
         const win2k_palette base=classic_theme_relief_palette(theme);
-        return style_observed_button_paint(window,&instance,dc,push,choice,NULL,classic_choice_art_get,module,&art,controls,&base);
+        return style_observed_button_paint(window,&instance,dc,push,choice,NULL,classic_choice_art_get,module,&art,controls,&base,NULL);
     }
     style_window_palette palette;
     style_window_palette_default(&palette);
@@ -446,7 +446,7 @@ static BOOL draw_control_lines(HDC dc,const classic_theme *theme,BOOL win2000)
         classic_control_presentation controls=theme->controls;
         controls.group=controls.edit=profile;
         if(win2000){
-            passed=style_observed_button_paint(group,&instance,dc,NULL,NULL,&theme->group,NULL,NULL,NULL,controls,&relief);
+            passed=style_observed_button_paint(group,&instance,dc,NULL,NULL,&theme->group,NULL,NULL,NULL,controls,&relief,NULL);
         }else{
             style_outline_choice_view view={&instance,&native,&palette,NULL,NULL,button_type,
                 button_fit,button_fit,button_fit,button_fit,button_fit,NULL,NULL,NULL,NULL,&theme->group,NULL,controls,FALSE};

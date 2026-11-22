@@ -66,6 +66,20 @@ static bool copy_token(char *target,const char *value,const char *extension)
     return true;
 }
 
+static bool read_style_path(char *target,const char *value)
+{
+    static const char root[]="%ResourceDir%\\Themes\\";
+    if(!strncmp(value,root,sizeof(root)-1)){
+        const char *folder=value+sizeof(root)-1;
+        const char *slash=strchr(folder,'\\');
+        if(!slash || slash==folder || slash-folder>=MSSTYLES_THEME_TOKEN_CAPACITY)return false;
+        for(const char *p=folder;p<slash;++p)
+            if(!token((unsigned char)*p))return false;
+        value=slash+1;
+    }
+    return copy_token(target,value,".msstyles");
+}
+
 static void read_display_name(char *target,const char *value)
 {
     size_t length=strlen(value);
@@ -131,7 +145,7 @@ bool msstyles_theme_file_read(FILE *input,msstyles_theme_descriptor *descriptor)
             char *value=strchr(line,'=');
             if(value){
                 *value++=0;
-                if(!strcmp(line,"Path") && !copy_token(parsed.file,value,".msstyles"))return false;
+                if(!strcmp(line,"Path") && !read_style_path(parsed.file,value))return false;
                 if(!strcmp(line,"Size") && !copy_token(parsed.size,value,""))return false;
                 if(!strcmp(line,"ColorStyle") && !copy_token(parsed.color,value,""))return false;
             }

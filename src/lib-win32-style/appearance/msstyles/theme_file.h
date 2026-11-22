@@ -32,8 +32,8 @@ typedef struct msstyles_theme_descriptor {
     char compatibility_folder[MSSTYLES_THEME_TOKEN_CAPACITY];
 } msstyles_theme_descriptor;
 
-/* Reads the packaged ASCII profile. The style file must be a simple sibling
- * name. The optional display name is a literal UTF-8 label. It is empty for
+/* Reads the packaged ASCII profile. The style file resolves to a sibling name.
+ * An original system theme path contributes its basename only. The optional display name is a literal UTF-8 label. It is empty for
  * absent, indirect or ambiguous display metadata. A malformed or incomplete
  * visual style descriptor leaves the output unchanged. */
 bool msstyles_theme_file_read(FILE *input,msstyles_theme_descriptor *descriptor);

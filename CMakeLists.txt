@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(win16_style VERSION 0.29.0 LANGUAGES C RC)
+project(win16_style VERSION 0.30.0 LANGUAGES C RC)
 if(NOT MINGW OR NOT CMAKE_C_COMPILER_ID STREQUAL "GNU")
   message(FATAL_ERROR "The product profile requires native MinGW-w64 GCC C17")
 endif()
@@ -31,9 +31,11 @@ target_compile_definitions(style-caption-slots PRIVATE _WIN32_WINNT=0x0A00)
 target_include_directories(style-window PUBLIC src)
 target_compile_definitions(style-window PRIVATE _WIN32_WINNT=0x0A00)
 target_link_libraries(style-window PUBLIC style-caption-slots style-instance style-present style-bitmap user32 gdi32 msimg32 shcore)
-add_library(style-bitmap STATIC src/lib-win32-style/application/graphics/bitmap.c)
+add_library(style-bitmap STATIC src/lib-win32-style/application/graphics/bitmap.c
+  src/lib-win32-style/application/graphics/dib_strip.c
+  src/lib-win32-style/application/graphics/dib_strip_read.c)
 target_include_directories(style-bitmap PUBLIC src)
-target_link_libraries(style-bitmap PUBLIC gdi32)
+target_link_libraries(style-bitmap PUBLIC gdi32 msimg32)
 add_library(style-uwp-native STATIC src/lib-win32-style/application/adapters/uwp/native.c src/lib-win32-style/application/adapters/uwp/target.c src/lib-win32-style/application/adapters/surface.c src/lib-win32-style/application/adapters/host.c src/lib-win32-style/application/adapters/frame.c src/lib-win32-style/application/adapters/input.c)
 target_include_directories(style-uwp-native PUBLIC src)
 target_compile_definitions(style-uwp-native PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
@@ -298,11 +300,13 @@ add_library(style-msstyles STATIC
   src/lib-win32-style/appearance/msstyles/v4_font.c
   src/lib-win32-style/appearance/msstyles/v4_font_create.c
   src/lib-win32-style/appearance/msstyles/v4_png.c
+  src/lib-win32-style/appearance/msstyles/v3_theme.c
+  src/lib-win32-style/appearance/msstyles/v3_frame.c
   src/lib-win32-style/appearance/msstyles/v4_property.c
   src/lib-win32-style/appearance/msstyles/v4_tables.c)
 target_include_directories(style-msstyles PUBLIC src)
 target_compile_definitions(style-msstyles PRIVATE _WIN32_WINNT=0x0A00)
-target_link_libraries(style-msstyles PRIVATE ole32 uuid user32 gdi32)
+target_link_libraries(style-msstyles PRIVATE style-bitmap ole32 uuid user32 gdi32)
 target_link_libraries(win2k-window PRIVATE style-msstyles)
 add_executable(classic-theme-compiler EXCLUDE_FROM_ALL tools/theme/classic_build.c tools/theme/legacy_image.c)
 target_include_directories(classic-theme-compiler PRIVATE src)
@@ -836,6 +840,14 @@ if(BUILD_TESTING)
   add_test(NAME core/style-menu-input COMMAND $<TARGET_FILE:core-style-menu-input>)
   target_link_libraries(core-win2k-caption PRIVATE win2k-window)
   add_test(NAME core/win2k-caption COMMAND $<TARGET_FILE:core-win2k-caption>)
+  add_executable(core-style-msstyles-v3 tests/lib-win32-style/appearance/msstyles/v3_theme.c)
+  target_link_libraries(core-style-msstyles-v3 PRIVATE style-msstyles)
+  target_link_options(core-style-msstyles-v3 PRIVATE -municode)
+  add_test(NAME core/style-msstyles-v3 COMMAND $<TARGET_FILE:core-style-msstyles-v3>)
+  add_executable(luna-frame-target tests/lib-win32-style/appearance/msstyles/v3_frame.c)
+  target_compile_definitions(luna-frame-target PRIVATE _WIN32_WINNT=0x0A00)
+  target_link_libraries(luna-frame-target PRIVATE user32 gdi32)
+  target_link_options(luna-frame-target PRIVATE -municode)
   add_executable(core-style-msstyles-v4 tests/lib-win32-style/appearance/msstyles/v4_property.c)
   target_include_directories(core-style-msstyles-v4 PRIVATE src)
   target_link_libraries(core-style-msstyles-v4 PRIVATE style-msstyles)

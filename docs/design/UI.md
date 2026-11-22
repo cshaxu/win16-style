@@ -10,6 +10,13 @@ run16s.exe 是启动器，普通命令为 `run16s.exe <theme> <application> [arg
 缺失目标、目标不支持、DLL 缺失/位宽不符、注入失败须返回可辨别的非零状态
 并输出明确诊断。目标参数按原命令行语义转交。运行不修改系统全局颜色、主题或 DPI 设置。
 
+使用原版 XP Luna 时，在启动器旁的 `Luna` 目录放置 `Luna.theme` 和
+`Luna.msstyles`，然后运行 `run16s Luna <application>`。
+在 `Luna.theme` 的 `[VisualStyles]` 节设置 `ColorStyle` 即可切换同一主题的配色。
+`NormalColor` 是默认蓝色，`Metallic` 是银灰，`HomeStead` 是橄榄绿。
+`Size` 可设为 `NormalSize`、`LargeFonts` 或 `ExtraLargeFonts`。
+已打开的程序需重新以该主题启动才能读取修改后的描述。
+
 demo.exe 展示标题、菜单、常见标准控件及窗口操作。直接运行保持系统原生外观，
 不根据自身参数或环境变量切换成自绘样式；通过启动器注入才出现样式。
 demo 不包含自动截图、故障注入、测试计数或专门验收开关。

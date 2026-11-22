@@ -7,6 +7,7 @@
 #include "lib-win32-style/application/window/window_identity.h"
 #include <wchar.h>
 #include "lib-win32-style/appearance/msstyles/native_caption_style.h"
+#include "lib-win32-style/appearance/msstyles/v3_frame.h"
 #include "lib-win32-style/appearance/msstyles/native_scroll_style.h"
 
 extern IMAGE_DOS_HEADER __ImageBase;
@@ -27,6 +28,11 @@ static DWORD load_frame(style_observed_frame_theme *frame,style_native_scroll *s
     classic_theme_native_menu(&frame->menu,&source);
     (void)classic_caption_art_read(source.resources,&theme->caption_images,&frame->art);
     classic_theme_native_scroll(scroll,theme);
+    if(source.v3.resources){
+        if(!msstyles_v3_frame_images(&source.v3,&frame->sprites)){classic_theme_close(&source);return ERROR_INVALID_DATA;}
+        frame->sprite_resources=source.resources;
+        source.resources=NULL;
+    }
     classic_theme_close(&source);
     return ERROR_SUCCESS;
 }

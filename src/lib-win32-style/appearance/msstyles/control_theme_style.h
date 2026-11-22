@@ -1,6 +1,7 @@
 #ifndef STYLE_MSSTYLES_CONTROL_THEME_STYLE_H
 #define STYLE_MSSTYLES_CONTROL_THEME_STYLE_H
 #include "native_scroll_style.h"
+#include "v3_frame.h"
 #include "raster_font.h"
 #include "lib-win32-style/application/control/control_class.h"
 #include "lib-win32-style/application/control/control_state.h"
@@ -16,6 +17,7 @@ static inline DWORD classic_control_theme_load(HMODULE module,enum classic_windo
     if(error){classic_theme_close(&source);return error;}
     const classic_theme *m=&source.model;
     *target=(style_control_theme){
+        .preserve_native=source.v3.resources!=NULL,
         .resources=source.resources,.read_choice_art=classic_choice_art_get,
         .controls=m->controls,.push=m->push,.choice=m->choice,.label=m->label,.list=m->list,
         .combo=m->combo,.tab=m->tab,.header=m->header,.group=m->group,.frame=m->frame,.calendar=m->calendar,
@@ -23,6 +25,7 @@ static inline DWORD classic_control_theme_load(HMODULE module,enum classic_windo
         .scroll_art=m->scroll_art,.scroll=m->scroll,.scroll_metrics=m->scroll_metrics,
         .scroll_arrow=m->scroll_arrow,.combo_arrow=m->combo_arrow
     };
+    if(source.v3.resources)(void)msstyles_v3_push_image(&source.v3,&target->push_sprite);
     if(source.resources){
         if(layout==CLASSIC_WINDOW_PROVIDER_FULL_CLIENT){
             style_window_palette_default(&target->window_palette);

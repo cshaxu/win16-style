@@ -11,6 +11,8 @@ CURRENT 是唯一活动工作权威；本文件拥有顺序，各 proposal 拥�
 | --- | --- | --- | --- |
 | — | 当前无已排序候选 | — | — |
 
+[Windows XP Luna 主题加载](../proposals/windows-xp-luna.md)已准入，活动范围见 [CURRENT](CURRENT.md)。
+
 [MSStyles 经典风格与共享运行时](../proposals/msstyles-classic-runtime.md)已按用户要求准入，当前调研范围见 [CURRENT](CURRENT.md)。
 
 [MSStyles 与主题文件构建契约](../proposals/msstyles-build-contract.md)从属于前述实施任务，当前活动范围见 [CURRENT](CURRENT.md)。

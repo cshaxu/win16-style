@@ -1,5 +1,6 @@
 #include "lib-win32-style/application/control/scroll_extent.h"
 #include "classic_theme.h"
+#include "v3_frame.h"
 #include <commctrl.h>
 #include "v4_endian.h"
 #include "v4_property.h"
@@ -597,10 +598,18 @@ static HRESULT palette(HMODULE module,theme_resource map,theme_resource variant,
     return S_OK;
 }
 
-HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme *theme)
+static HRESULT read_theme(HMODULE module,PCWSTR size,PCWSTR color,classic_theme *theme,msstyles_v3_theme *v3)
 {
     if(!module || !size || !color || !theme)return E_INVALIDARG;
     theme_resource version=resource(module,L"PACKTHEM_VERSION",MAKEINTRESOURCEW(1));
+    if(version.bytes && version.size==2 && version.bytes[0]==3 && !version.bytes[1]){
+        msstyles_v3_theme variant={0};
+        HRESULT status=msstyles_v3_read(module,size,color,&variant);
+        if(FAILED(status))return status;
+        if(!msstyles_v3_frame_model(&variant,theme))return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+        if(v3)*v3=variant;
+        return S_OK;
+    }
     theme_resource extension=resource(module,MAKEINTRESOURCEW(10),L"CLASSIC_STYLE");
     theme_resource variant;
     classic_theme value={0};
@@ -639,12 +648,15 @@ HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme
     return result;
 }
 
+HRESULT classic_theme_read(HMODULE module,PCWSTR size,PCWSTR color,classic_theme *theme)
+{return read_theme(module,size,color,theme,NULL);}
+
 static HRESULT map_theme(PCWSTR path,PCWSTR size,PCWSTR color,classic_theme_mapping *source)
 {
     HMODULE module=LoadLibraryExW(path,NULL,LOAD_LIBRARY_AS_DATAFILE|LOAD_LIBRARY_AS_IMAGE_RESOURCE);
     if(!module)return HRESULT_FROM_WIN32(GetLastError());
     classic_theme_mapping candidate={.resources=module};
-    HRESULT result=classic_theme_read(module,size,color,&candidate.model);
+    HRESULT result=read_theme(module,size,color,&candidate.model,&candidate.v3);
     if(SUCCEEDED(result))*source=candidate;
     else FreeLibrary(module);
     return result;

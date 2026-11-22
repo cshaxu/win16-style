@@ -155,10 +155,33 @@ M0 T29 S25 已收口。无参数启动托盘，移除公开的旧全局参数。
 同批七件在两处发布，已发布包 13 组聚焦回归、真实托盘独占／共享控制台
 及独立 GUI／双宽 CUI 验证通过。见[交付记录](../history/M0-T29-S25-launch-console.md)。
 
+## M0 T30 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New |
+| Admission And Approval | 用户确认 T29 收口，准入 XP Luna 加载。 |
+| Objective | 固定 XP SP3 原版主题来源，接入双位宽 v3 读取与首轮 Win32 外框和普通按钮。 |
+| Non-goals | Aero、全局系统主题更改、修改／再分发微软原版文件。 |
+| Reference Baseline | T29 S25 P1 b274f019 及实际 Windows XP SP3 镜像。 |
+| Candidate Proposal | [Windows XP Luna 主题加载](../proposals/windows-xp-luna.md)。 |
+| Files And ABI Surface | .theme 描述、同目录 .msstyles、v3 变体与资源视图及 C 测试。 |
+| Applicable Rules | C17、双位宽，只从文件映射读取；Win16、Win2000 和现有正式七件契约继续回归。 |
+| Verification | 原版九个变体，真实位图与数值读取，缺失资源和错误变体、路径越界及 v4 旧入口回归。 |
+| Expected Markers | 对应颜色／字号选择唯一属性文本，Luna 图像来源可核验，原版描述解析为同目录引用。 |
+| Asset Needs | 指定镜像的 I386/LUNA.MS_、I386/LUNA.TH_。用户测试用原版两件已放 assets/Luna；原版参考保留在 build/t30-luna/reference。 |
+| Reporting Requirements | 记录版本、表资源、所有权、来源摘要和适用样本。区分读取、正式加载和外观。 |
+| Stop Conditions | 不挂载或安装系统主题，不改系统设置，不用 computer-use 或私有桌面。 |
+| Exit Criteria | 九个变体和负例通过，x86／x64 运行，已有描述和主题读回回归通过，完成同批 Win32 启动、真实绘制、基础按钮与撤销验证，并复核两处发布及实际远端。 |
+| Original Owner Request | 准入新 T，加载 XP 原版 Luna。 |
+| Similar-Issue Sweep | 使用原版系统路径的描述、v3/v4 识别、主题变体、同目录资源限制与既有风格回归。 |
+
+[同批交付证据](../history/M0-T30-S1-luna-source.md)已记录双位宽九组合、两处 8 次直接启动及 14 项聚焦实包回归。七件正式包已完成本地发布与验证，待实际远端复核。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 29
+- Last allocated T: 30
 - Last allocated Td S: 21
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
@@ -170,7 +193,8 @@ M0 T29 S25 已收口。无参数启动托盘，移除公开的旧全局参数。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 25
-- Open task: 无活动任务包。T29 已收口。
+- Last allocated T30 S: 1
+- Open task: M0 T30 S1，原版 XP Luna 和 v3 只读加载。
 
 ## Technical Baseline
 

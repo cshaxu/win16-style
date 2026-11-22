@@ -70,7 +70,7 @@ static BOOL label(HWND window,style_instance *instance,HDC dc,const style_contro
 }
 BOOL style_observed_button_paint(HWND window,style_instance *instance,HDC dc,const classic_push_colors *colors,
     const classic_choice_colors *choice,const classic_group_colors *group_colors,style_choice_art_read_fn read_art,HMODULE module,classic_choice_art *art,
-    classic_control_presentation controls,const style_relief_palette *base)
+    classic_control_presentation controls,const style_relief_palette *base,const style_push_sprite *sprite)
 {
     style_relief_palette palette=*base;
     const style_relief_palette *p=&palette;
@@ -85,7 +85,7 @@ BOOL style_observed_button_paint(HWND window,style_instance *instance,HDC dc,con
     }
     if(!GetClientRect(window,&client))goto done;
     UINT type=style_control_button_type(window,initial_style);
-    if(!classic_button_presentation_enabled(&controls,type,initial_style))goto done;
+    if(sprite?type>BS_DEFPUSHBUTTON:!classic_button_presentation_enabled(&controls,type,initial_style))goto done;
     BOOL group=type==BS_GROUPBOX;
     if(group && group_colors && group_colors->text.present){
         palette.text=group_colors->text.normal;
@@ -142,8 +142,20 @@ BOOL style_observed_button_paint(HWND window,style_instance *instance,HDC dc,con
         if(snapshot.check)state|=DFCS_CHECKED;
         if(snapshot.style&WS_DISABLED)state|=DFCS_INACTIVE;
         int unit=max(1,MulDiv(1,(int)GetDpiForWindow(window),96));
-        if(!style_paint_push_frame(dc,&bounds,state|DFCS_ADJUSTRECT,snapshot.role.type==BS_DEFPUSHBUTTON,unit,controls.push,p))
-            goto done;
+        if(sprite){
+            HBRUSH background=style_observed_control_brush(window,instance,dc,p);
+            if(!background || instance->detached || !FillRect(dc,&bounds,background))goto done;
+            UINT dpi=GetDpiForWindow(window);
+            if(!dpi)dpi=96;
+            unsigned index=(state&DFCS_INACTIVE)?3u:(state&DFCS_PUSHED)?2u:
+                (snapshot.state&BST_HOT)?1u:snapshot.role.type==BS_DEFPUSHBUTTON?4u:0u;
+            if(!style_dib_strip_draw(dc,bounds,&sprite->image,index,dpi))goto done;
+            bounds.left+=MulDiv(sprite->margins.left,(int)dpi,96);
+            bounds.top+=MulDiv(sprite->margins.top,(int)dpi,96);
+            bounds.right-=MulDiv(sprite->margins.right,(int)dpi,96);
+            bounds.bottom-=MulDiv(sprite->margins.bottom,(int)dpi,96);
+        }else if(!style_paint_push_frame(dc,&bounds,state|DFCS_ADJUSTRECT,
+            snapshot.role.type==BS_DEFPUSHBUTTON,unit,controls.push,p))goto done;
         IntersectClipRect(dc,bounds.left,bounds.top,bounds.right,bounds.bottom);
     }else if(!style_choice_layout(dc,client,GetDpiForWindow(window),snapshot.style,controls.choice_metrics,&glyph,&bounds))
         goto done;

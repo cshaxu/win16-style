@@ -2,6 +2,87 @@
   "schema": 1,
   "files": [
     {
+      "path": "tests/lib-win32-style/appearance/msstyles/v3_frame.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "d608cc46bb1b313a265a825fc4290715caf47ff801b8371972d40b3c2768a33d",
+      "disposition": "authored",
+      "review": "T30 S1: load and verify v3 frame and push-button appearance.",
+      "notice": "Project-authored code. No XP source or binaries are embedded."
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/dib_strip.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "01c828fe2396c50b1f897a5373a7110149b66d21732b927154a61a3c66f493c8",
+      "disposition": "authored",
+      "review": "T30 S1: load and verify v3 frame and push-button appearance.",
+      "notice": "Project-authored code. No XP source or binaries are embedded."
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/dib_strip.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "3292cb8897535cd970c308ee858f1b70568e413b24afb4915d510f00daa75b0f",
+      "disposition": "authored",
+      "review": "T30 S1: load and verify v3 frame and push-button appearance.",
+      "notice": "Project-authored code. No XP source or binaries are embedded."
+    },
+    {
+      "path": "src/lib-win32-style/application/graphics/dib_strip_read.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "0301a8213a3bd4eb69266ab8b61008808bed7be2fc09b13aab2063af5f3a2ed7",
+      "disposition": "authored",
+      "review": "T30 S1: separate read-only DIB validation from GDI drawing.",
+      "notice": "Project-authored code. No XP source or binaries are embedded."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/v3_frame.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "f3d5b58283e29811e6173139b598e53bfdb0280e6a24bca6fc300d4a13b2f4dc",
+      "disposition": "authored",
+      "review": "T30 S1: load and verify v3 frame and push-button appearance.",
+      "notice": "Project-authored code. No XP source or binaries are embedded."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/v3_frame.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "a9aa35f8cf89742c3f43a9a718cf1be479c942588e5fe4deff85645dc2af6c78",
+      "disposition": "authored",
+      "review": "T30 S1: load and verify v3 frame and push-button appearance.",
+      "notice": "Project-authored code. No XP source or binaries are embedded."
+    },
+    {
+      "path": "tests/lib-win32-style/appearance/msstyles/v3_theme.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "dbcee204cf2a8f46e0d4a8a8dee40c435423add01f144c5c67c0c2c0715ee2d9",
+      "disposition": "authored",
+      "review": "T30 S1: read and verify v3 theme resources.",
+      "notice": "Project-authored code. External XP samples are reviewed separately."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/v3_theme.h",
+      "source": null,
+      "source_blob": null,
+      "sha256": "1eb1c4a3e7d40887997ea83da76efdfc73209e4ae044cee7c57a702590fda4c6",
+      "disposition": "authored",
+      "review": "T30 S1: read and verify v3 theme resources.",
+      "notice": "Project-authored code. External XP samples are reviewed separately."
+    },
+    {
+      "path": "src/lib-win32-style/appearance/msstyles/v3_theme.c",
+      "source": null,
+      "source_blob": null,
+      "sha256": "bb028b200c983d4fe0b8522b6694799fec01d2ac2a449b9f0bba2686e068343a",
+      "disposition": "authored",
+      "review": "T30 S1: read and verify v3 theme resources.",
+      "notice": "Project-authored code. External XP samples are reviewed separately."
+    },
+    {
       "path": "src/lib-win32-style/application/menu/row_paint.h",
       "source": null,
       "source_blob": null,
@@ -1202,7 +1283,7 @@
       "path": "src/ntw16s-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "72a93136bae60359b9c721669f596cc1cf5d3b0adc8eeed769287f62b120fecf",
+      "sha256": "b5a2057388d73fb4626ff8fca77228433b2c5f48bb15ffd383f6865790cbf6e1",
       "disposition": "authored",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T6 S2 restores original resource descriptions and embeds original provenance as RCDATA5; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL TEdit/TListBox wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration; T27 product build version; T28 S1 Win2000 UWP exterior and verification",
       "notice": "Project-authored, repository MIT"
@@ -1346,7 +1427,7 @@
       "path": "src/run16s-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "215ee04d4d6ef1634957805f1b2b3fc3df3793d90350eadd564288cce58a3f9d",
+      "sha256": "ef1967efbeb5b04fb5e4e7a126cbe60384384dd229fcab764c8155985f840724",
       "disposition": "authored",
       "review": "T4 S1 native descendant policy/entry/version and ownership; docs/history/M0-T4-S1-propagation.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 final integration delta: native C/CRT argument preservation, private SDK staging, explicit resource/import contract or diagnostic-only phase output; original assertions and notices preserved; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration; T27 product build version; T28 S1 Win2000 UWP exterior and verification",
       "notice": "Project-authored adaptation, repository MIT; no source service/RPC implementation imported"
@@ -1562,7 +1643,7 @@
       "path": "src/demo-exe/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "76ff2cedae31a575bd7dc8432f94cba1dff710415265251430e735ff8ada0b6e",
+      "sha256": "8e9d4ef96245bfba5e91105cf843dff6fbcb3e873b5034394b4ca5046276b6df",
       "disposition": "authored",
       "review": "T5 S1 native sample selection and removal of all style consumption; docs/history/M0-T5-S1-demo.md; T6 S1 same-batch product string 0.6.0.0 and full original MinHook/HDE license resource in DLLs; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T7 menu cancellation state/ownership correction or T7 version metadata; original resources unchanged; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20; T9 S1 minimal external-import compatibility, real initialization/bounds tests or task version 0.9.0.0; no UI/resource implementation changes; T11 S1: on-demand UAC launcher retry or version/documentation update; existing resource bytes and notices retained; T12 S1 bounded missing-IAT directory completion, native OFT/zero-OFT and malformed-range regression, or 0.12 version metadata as applicable; original notices/resources and ABI retained; T14 S1: Windows Shell legacy error UX or version update, native PE injection/UAC and resource bytes retained; T15 S1: scoped VB6 intrinsic classification/client painting and native compatibility regression; original notices retained; T17 S2 native demo gallery, exact system RichEdit load, owned native controls/fonts/images/modeless sheets and external observer; no renderer or original resources changed; T18 S4 public-protocol VCL wrapper support and 0.18 product metadata; original resources/ABI retained; T20 S1 common-dialog bridge and version; T22 S1 runtime UWP frame adapter, additive ordinal38 and M0 T22 version; T23 S1 native Notepad delivery; M0 T25 S1: style selection and experimental Windows 2000 integration; T27 product build version; T28 S1 Win2000 UWP exterior and verification",
       "notice": "Project-authored source per frozen W16Style README; no third-party artwork"
@@ -5828,7 +5909,7 @@
       "path": "src/ntwshk-dll/observed.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c7946c519abe755e3ec40f2e3c07c0341e40a3d6c2c45e419fe02cc5e2a3189b",
+      "sha256": "31e08a7e5e1a6572530eb5f08603736051bb4a84aa93b95c8a28fd9f47007aba",
       "disposition": "authored",
       "review": "M0 T29 S23 shared observation and control lifetime extracted from the standalone Windows 2000 assembly",
       "notice": "Project-authored C source; no imported Windows code or artwork"
@@ -5873,7 +5954,7 @@
       "path": "src/ntw2ks-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "becac7002bec6377a139efeb88f8f020775b47340baca4e4b54cd271d7209d24",
+      "sha256": "c45ebae2383293470542e5daa89f6b32d1ea4fdf2ec35c712a2afe2188554fb6",
       "disposition": "authored",
       "review": "M0 T25 S1: experimental Windows 2000 integration and native probes; T27 product build version; T28 S1 Win2000 UWP exterior and verification; T28 S3 preview the Windows 2000 General print sheet",
       "notice": "Project-authored source; no imported Windows 2000 code or artwork"
@@ -5936,7 +6017,7 @@
       "path": "src/ntwshk-dll/version.rc",
       "source": null,
       "source_blob": null,
-      "sha256": "c6b3896b0b8a759dfdde1e6b8304bca0784234380e2cda69afe93cb2309a7cb5",
+      "sha256": "803a1e2a1b037f62df24fdfadbb3db7b0c40871ca37108fac01f9aee9c02207d",
       "disposition": "authored",
       "review": "T25 S2 shared runtime and native verification; T27 product build version; T28 S1 Win2000 UWP exterior and verification",
       "notice": "Project-authored; no imported artwork"
@@ -5999,7 +6080,7 @@
       "path": "src/lib-win32-style/application/window/native_caption.c",
       "source": null,
       "source_blob": null,
-      "sha256": "83be2669117f0efa33fcd25d2d5bc641450470acd1afbbab54ffeced2a5f41c0",
+      "sha256": "7ffdc35e059497d6fc9cd7da6f086ef2310369c2c3ec52e3df25be78042a19b5",
       "disposition": "authored",
       "review": "T25 S3 caption drawing primitive and test; T26 S2 mechanical path/include relocation; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T28 S1 shared classic caption and UWP appearance model; T28 S2 shared buttons rasterized at final dimensions using the original Win32 path",
       "notice": "Project-authored implementation; historical source observed only"
@@ -6035,7 +6116,7 @@
       "path": "src/lib-win32-style/application/window/observed_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "ff84129e84e530610dc03992ff68ea037d0c9962b3672e90d961474cf45654cb",
+      "sha256": "bca5e3fd0641ff9117980d797e79032d28c1251aee61d6bb21e16ae3f7e2bcc6",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S3 Win2000 frame; T25 S4 caption state and icon; T25 S4 original caption region and state; T25 S8 paired frame removal; T26 S1 shared frame change and client restore; T26 S1 share DIB buffer across UWP and Win2000; T26 S1 shared window thread identity; T26 S2 mechanical path/include relocation; T26 S3 GUI instance identity and lifetime ownership migration; rendering unchanged; T26 S7 window state/messages/install/font-pair ownership and native consumers; era rendering and resource policy retained; T26 S8 common menu owner protocol, direct modern owner state and explicit popup provider; T26 S8 shared tracking runtime, native input and owner bar state; private hook/state views removed; T26 S8 public menu snapshot/controller and full owner protocol consumption, original presentation/resources preserved; T26 S9 public control state/resources/font/tabstop transactions and shared GUI instance installation; native test desktop setup removed without reducing assertions; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T28 S1 shared classic caption and UWP appearance model; T28 S2 reuse composed redraw and reserve caption space for the extended client",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -6044,7 +6125,7 @@
       "path": "src/lib-win32-style/application/window/observed_frame.h",
       "source": null,
       "source_blob": null,
-      "sha256": "eb4a619eddfa1f34aa222f5dd5501ae7b0ebac752dffdd4b4fd2d621e05939fc",
+      "sha256": "bee545eba7d28f6feed4b29acc2fe21ea25176613420310b3e0bec48961ec3c1",
       "disposition": "authored",
       "review": "T25 S3 native Win2000 frame and fixture; T25 S8 paired frame removal; T26 S2 mechanical path/include relocation; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -9584,7 +9665,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "dd3fb53a55f9abcda5c47d0d572a1375012d7dedc87171a0b46a70b660e88c2b"
+      "sha256": "7d031041eb3299c5b571367f7ee573b78bcb2deae9ccbeb08aa495a888ca41b3"
     },
     {
       "path": "src/lib-win32-style/application/control/observed/button_paint.h",
@@ -9593,7 +9674,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "e35e9fafa498d3e32f6dc0ee37e254f2130fefd54571a5c8a7c2f0d0b9cd3a0e"
+      "sha256": "027593b81f7fbe32754f1bd1ba78f44639961061d33b22fd6c6dd79c9b13430f"
     },
     {
       "path": "src/lib-win32-style/application/control/observed/control.c",
@@ -9602,7 +9683,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S8 tab native messages and header native custom-draw integration; T27 S9 common selection roles and native draw preparation; T27 S10 control binding, shared v6 snapshot and native v5 edge; T27 S11 TrackBar and UpDown native painting profiles; T27 S12 工具栏、可重排栏与状态栏; T27 S13 日期与月历; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "99d57e8fb9d0a50efe9c594c48d18b371ecad77ec8f75079d70a9aa92c8a8ff2"
+      "sha256": "65f5126c58788daff95cc62f57217eb02381b4bbc134a9cfde5d290db2109fc2"
     },
     {
       "path": "src/lib-win32-style/application/control/observed/control.h",
@@ -10202,7 +10283,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/theme_file.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b20f8e10c1ee6e68be28210e3302e910139f64afd89e9ef79db6d3a9f8e1be0a",
+      "sha256": "f5f6f0c6f0902b662bb8de2aa72698c76193a61fa51759ac19aad33d5338d431",
       "disposition": "authored",
       "review": "T29 S3 companion theme description and native INI checks",
       "notice": "Project-authored; no imported source or resources"
@@ -10211,7 +10292,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/theme_file.h",
       "source": null,
       "source_blob": null,
-      "sha256": "9a7466a64ffbb587f01e5f068026b595a461442575736c5ab8ab30bcac47c1b5",
+      "sha256": "ba838dd1f9dd63655b51e310bde277867ff2d570cf8d928916d2a4dc60f5c21a",
       "disposition": "authored",
       "review": "T29 S3 companion theme description and native INI checks",
       "notice": "Project-authored; no imported source or resources"
@@ -10220,7 +10301,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/theme_file.c",
       "source": null,
       "source_blob": null,
-      "sha256": "37b312250f23fbce87a35daad95b097d565745eca450f478dcfc78b0f08803ee",
+      "sha256": "c4117c56e802f822feeb87124a78c49bc825b8af9ad8aceeff2403e1e0a8289d",
       "disposition": "authored",
       "review": "T29 S3 companion theme description and native INI checks",
       "notice": "Project-authored; no imported source or resources"
@@ -10265,7 +10346,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "b92ba03c14f507dd17b201363e3d5d8b1476970ae16b3e6adf58cad66d4fa10d",
+      "sha256": "697dd8f111b0553b1be4dabb39e73ad013bf678f8055d28810eeba7226a0a2ea",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10274,7 +10355,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "b6c050a5c9d01497a27e48b442800a93618b4e6806641ce53e8e84f2bee107c5",
+      "sha256": "7dfc401e2ac0f4721c563eb910683baf820eb8a013ee99575bd92dac610d6337",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10283,7 +10364,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "a248d15f3f46821340d1642cf90bb3893339a01deb6fa7c17dd3a60a393326dc",
+      "sha256": "8bfee885984c68bdeb9c153a6b48f7ed7778534a410548309eea090057f4a4af",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10391,7 +10472,7 @@
       "path": "src/lib-win32-style/application/window/caption_paint.c",
       "source": null,
       "source_blob": null,
-      "sha256": "41a52736679b4cc7f2ec704f548592e65be062d63acdcd771db9982c73558956",
+      "sha256": "9dba90c4846cdb267d3db91dcf75ca7e91a3c425a8d602360b780d991639aa59",
       "disposition": "authored",
       "review": "T29 S17 shared caption band and title painting from project implementations",
       "notice": "Project-authored native C; no imported artwork"
@@ -10400,7 +10481,7 @@
       "path": "src/lib-win32-style/application/window/caption_paint.h",
       "source": null,
       "source_blob": null,
-      "sha256": "67ded03e63dec063f41a07083e966f552d67df5b31c20090b5f942786ad03735",
+      "sha256": "50136d069f0220181cd9ed06914f315dd28919aeac6c3b5648bb4752a95f5dbb",
       "disposition": "authored",
       "review": "T29 S17 shared caption band and title painting from project implementations",
       "notice": "Project-authored native C; no imported artwork"
@@ -10472,7 +10553,7 @@
       "path": "src/lib-win32-style/application/window/native_caption.h",
       "source": null,
       "source_blob": null,
-      "sha256": "3fea74c6c54af143094aa2c70046b99a53d9ab9184661fac1f75ca4d873f06d1",
+      "sha256": "ff201d08475247bc185715d555dff718dbf66e859b4e51743e78710a4f742ada",
       "disposition": "authored",
       "review": "T29 S23 shared native caption renderer and separate theme projection",
       "notice": "Project-authored C; no external source or artwork copied"
@@ -10553,7 +10634,7 @@
       "path": "src/lib-win32-style/application/control/control_colors.h",
       "source": null,
       "source_blob": null,
-      "sha256": "64a1910aa3334982d0fc9ababa91b40ba049f848c5dc6aa2a3c0748ac7b85fdb",
+      "sha256": "4496496ca6f1c5ad54b4343547be11dfe98b8442f997f08c8108839275547580",
       "disposition": "authored",
       "review": "T29 S23: separate native control execution from parsed theme and stylesheet mapping.",
       "notice": "Project-authored C data and projection; original resources and notices retained."
@@ -10571,7 +10652,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/control_theme_style.h",
       "source": null,
       "source_blob": null,
-      "sha256": "b153dd7afa717eb8ddf6b9a48df6dbab6988c4e4c0d6aa00bb108cec02396073",
+      "sha256": "33a4a7c0f3c983baa94ef1eb687fa1b6bceb9e2ca3d03e132c937240d46751ea",
       "disposition": "authored",
       "review": "T29 S23: separate native control execution from parsed theme and stylesheet mapping.",
       "notice": "Project-authored C data and projection; original resources and notices retained."
@@ -10580,7 +10661,7 @@
       "path": "src/lib-win32-style/application/control/control_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "8767157cb5168c228512be0eca051e6186b77af10bab543c600dc4df3f87d7f1",
+      "sha256": "89ca88fadc87fcad7a85a669014ce52c5c189a75300da0125caac2730ac4f926",
       "disposition": "authored",
       "review": "T29 S23 shared theme projection for both native control paths",
       "notice": "Project-authored C data interface; original graphics and associated notices retained."

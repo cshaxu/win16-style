@@ -76,7 +76,9 @@ static int menu_shift(HWND window)
 {
     UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     int metric=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)?SM_CYSMCAPTION:SM_CYCAPTION;
-    return max(0,GetSystemMetricsForDpi(metric,dpi)-caption_client_height(window,dpi));
+    int difference=GetSystemMetricsForDpi(metric,dpi)-caption_client_height(window,dpi);
+    const frame_window *frame=frame_state(window);
+    return frame && frame->theme.sprite_resources?difference:max(0,difference);
 }
 
 static BOOL compact_enabled(HWND window)
@@ -234,6 +236,18 @@ static BOOL caption_icon_rect(HWND window,const RECT *outer,RECT *icon)
     return icon->right>icon->left && icon->bottom>icon->top;
 }
 
+static void paint_frame_sprites(HDC dc,RECT caption,int width,int height,UINT dpi,
+    const style_frame_sprites *sprites,BOOL active)
+{
+    int bottom=MulDiv((int)sprites->bottom.height,(int)dpi,96);
+    int left=MulDiv((int)sprites->left.width,(int)dpi,96);
+    int right=MulDiv((int)sprites->right.width,(int)dpi,96);
+    unsigned state=active?0u:1u;
+    style_dib_strip_draw(dc,(RECT){0,caption.bottom,left,height-bottom},&sprites->left,state,dpi);
+    style_dib_strip_draw(dc,(RECT){width-right,caption.bottom,width,height-bottom},&sprites->right,state,dpi);
+    style_dib_strip_draw(dc,(RECT){0,height-bottom,width,height},&sprites->bottom,state,dpi);
+}
+
 static void paint(HWND window)
 {
     frame_window *frame=frame_state(window);if(!frame || frame->painting)return;
@@ -268,6 +282,7 @@ static void paint(HWND window)
     const style_observed_frame_theme *theme=frame->theme.present?&frame->theme:NULL;
     const style_frame_colors *frame_colors=theme?&theme->colors:NULL;
     BOOL maximized=IsZoomed(window);
+    UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
     if(dc && !maximized){
         int border_saved=SaveDC(dc);MENUBARINFO system={.cbSize=sizeof(system)};
         if(border_saved && !synthetic && GetMenuBarInfo(window,OBJID_SYSMENU,0,&system)){
@@ -275,7 +290,7 @@ static void paint(HWND window)
             ExcludeClipRect(dc,icon.left,icon.top,icon.right,icon.bottom);
         }
         BOOL border_ready=TRUE;
-        if(theme && theme->border_presentation.fill==STYLE_BORDER_CLIPPED){
+        if(theme && (theme->sprite_resources || theme->border_presentation.fill==STYLE_BORDER_CLIPPED)){
             RECT client;POINT origin={0};
             border_ready=border_saved && GetClientRect(window,&client) && ClientToScreen(window,&origin);
             if(border_ready){
@@ -286,6 +301,8 @@ static void paint(HWND window)
         if(border_ready && theme)style_native_frame_border_paint(dc,(RECT){0,0,width,height},caption.top,
             &theme->border_presentation,frame_colors,frame->native.active?theme->active.left:theme->inactive.left,
             (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_DLGMODALFRAME)!=0);
+        if(border_ready && theme && theme->sprite_resources)
+            paint_frame_sprites(dc,caption,width,height,dpi,&theme->sprites,frame->native.active);
         if(border_saved)RestoreDC(dc,border_saved);
     }
     if(dc)paint_menu(window,dc,&outer);
@@ -293,7 +310,8 @@ static void paint(HWND window)
     HICON image=has_icon && !frame->instance.detached?style_window_caption_icon(window):NULL;
     if(!frame->instance.detached){
         style_native_caption_layout layout={.band=caption,.icon=has_icon?icon:(RECT){0},
-            .left_buttons=theme?style_native_caption_left_buttons(&theme->title_buttons):0};
+            .left_buttons=theme?style_native_caption_left_buttons(&theme->title_buttons):0,
+            .sprites=theme && theme->sprite_resources?&theme->sprites:NULL,.active=frame->native.active};
         if(synthetic){
             layout.system=system;
             OffsetRect(&layout.system,-outer.left,-outer.top);
@@ -308,10 +326,10 @@ static void paint(HWND window)
             layout.buttons[i]=info.rgrect[index];
             OffsetRect(&layout.buttons[i],-outer.left,-outer.top);
             if(info.rgstate[index]&STATE_SYSTEM_UNAVAILABLE)flags[i]|=DFCS_INACTIVE;
+            if(info.rgstate[index]&STATE_SYSTEM_HOTTRACKED)flags[i]|=DFCS_HOT;
             if(((unsigned)frame->button.pressed==index && frame->button.hot) ||
                (info.rgstate[index]&STATE_SYSTEM_PRESSED))flags[i]|=DFCS_PUSHED;
         }
-        UINT dpi=GetDpiForWindow(window);if(!dpi)dpi=96;
         BOOL tool=(GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_TOOLWINDOW)!=0;
         const style_font_descriptor *defined=frame->theme.present?
             (tool?&frame->theme.small_caption_font:&frame->theme.caption_font):NULL;
@@ -588,7 +606,8 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
             LONG caption_end=proposed_top+style_frame_native_border_width(sizeable?STYLE_FRAME_SIZEABLE:STYLE_FRAME_FIXED,FALSE,dpi)-dy+reserved;
             if(caption_end<client.bottom)client.top=max(client.top,caption_end);
         }else{
-            client.left-=dx;client.right+=dx;client.top-=max(0,difference)+dy;client.bottom+=dy;
+            int shift=frame->theme.sprite_resources?difference:max(0,difference);
+            client.left-=dx;client.right+=dx;client.top-=shift+dy;client.bottom+=dy;
         }
         if(!EqualRect(calculated,&client))result=style_frame_set_client(wp,lp,&client,result);
     }
@@ -602,7 +621,7 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
             OffsetRect(&info->rgrect[1],-dx,-dy);
             int height=caption_height(window);
             if(compact_enabled(window) &&
-               height>0 && info->rcTitleBar.bottom-info->rcTitleBar.top>height)
+               height>0 && (frame->theme.sprite_resources || info->rcTitleBar.bottom-info->rcTitleBar.top>height))
                 info->rcTitleBar.bottom=info->rcTitleBar.top+height;
             classic_buttons(window,frame,info);
             if(tracked->pressed>=2 && tracked->pressed<=CCHILDREN_TITLEBAR && tracked->hot)info->rgstate[tracked->pressed]|=STATE_SYSTEM_PRESSED;
@@ -703,7 +722,9 @@ static void dispose_frame(void *context)
     frame_window *frame=context;
     if(frame->caption_surface)DestroyWindow(frame->caption_surface);
     style_bitmap_dispose(&frame->caption_bitmap);
-    style_menu_owner_stop(&frame->menu);free(frame);
+    style_menu_owner_stop(&frame->menu);
+    if(frame->theme.sprite_resources)FreeLibrary(frame->theme.sprite_resources);
+    free(frame);
 }
 BOOL style_observed_frame_attach(HWND window,const style_observed_frame_provider *provider)
 {

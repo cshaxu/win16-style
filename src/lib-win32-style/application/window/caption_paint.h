@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <windows.h>
 #include "caption_slots.h"
+#include "lib-win32-style/application/graphics/dib_strip.h"
 
 enum style_caption_text_mode {
     STYLE_CAPTION_TEXT_CENTER_CLIP=1,
@@ -65,6 +66,16 @@ BOOL style_caption_button_paint(HDC dc,RECT bounds,enum classic_button_role role
     BOOL maximized,UINT flags,int unit,const style_caption_presentation *presentation,
     const style_caption_raster *raster,const COLORREF colors[4]);
 
+typedef struct style_frame_sprite_button {
+    style_dib_strip face,glyphs[5];
+    RECT content;
+} style_frame_sprite_button;
+
+typedef struct style_frame_sprites {
+    style_dib_strip caption,maximized,left,right,bottom;
+    style_frame_sprite_button buttons[CLASSIC_BUTTON_CLOSE+1],restore;
+} style_frame_sprites;
+
 typedef struct style_caption_render_model {
     RECT band,text,icon_bounds;
     HICON icon;
@@ -75,6 +86,9 @@ typedef struct style_caption_render_model {
     COLORREF button_colors[4]; /* edge, light, shadow, face */
     BOOL gradient,maximized,child;
     int unit;
+    const style_frame_sprites *sprites;
+    UINT dpi;
+    BOOL active;
 } style_caption_render_model;
 
 void style_caption_render(HDC dc,PCWSTR title,HFONT font,const style_caption_render_model *model,

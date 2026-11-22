@@ -1,6 +1,7 @@
 #ifndef STYLE_CONTROL_COLORS_H
 #define STYLE_CONTROL_COLORS_H
 #include <windows.h>
+#include "lib-win32-style/application/graphics/dib_strip.h"
 #include <commctrl.h>
 
 typedef struct classic_surface_colors {
@@ -95,6 +96,11 @@ typedef struct classic_push_colors {
     COLORREF text[CLASSIC_PUSH_STATE_COUNT];
     unsigned text_states;
 } classic_push_colors;
+
+typedef struct style_push_sprite {
+    style_dib_strip image;
+    RECT margins;
+} style_push_sprite;
 
 enum { CLASSIC_CHECK_STATES=12, CLASSIC_RADIO_STATES=8 };
 typedef struct classic_choice_surface {

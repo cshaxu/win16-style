@@ -7,6 +7,7 @@
 #include "lib-win32-style/application/window/palette.h"
 #include "v4_font.h"
 #include "theme_file.h"
+#include "v3_theme.h"
 #include "lib-win32-style/application/menu/menu_art.h"
 #include <windows.h>
 
@@ -117,6 +118,7 @@ static inline enum classic_window_provider classic_theme_selection_layout(classi
 typedef struct classic_theme_mapping {
     HMODULE resources;
     classic_theme model;
+    msstyles_v3_theme v3;
     WCHAR display_name[MSSTYLES_THEME_TOKEN_CAPACITY];
     msstyles_host_options hosts;
     classic_theme_family family;

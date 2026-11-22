@@ -36,9 +36,10 @@ typedef struct style_observed_control {
     style_choice_art_read_fn read_choice_art;
     BOOL frame_owned,themed;
     classic_push_colors push;
+    style_push_sprite push_sprite;
     classic_choice_colors choice;
     classic_choice_art choice_art;
-    HMODULE choice_module;
+    HMODULE art_module;
     classic_text_colors label;
     classic_edit_border edit[CLASSIC_EDIT_STATE_COUNT];
     classic_list_colors list;
@@ -154,7 +155,7 @@ static void dispose(void *context)
     style_observed_control *control=context;
     style_control_protocol_release(control->protocol);
     style_control_state_dispose(&control->state);
-    if(control->choice_module)FreeLibrary(control->choice_module);
+    if(control->art_module)FreeLibrary(control->art_module);
     free(control);
 }
 static void close_date_popup(style_observed_control *control)
@@ -225,7 +226,8 @@ static void paint(HWND window,void *context,HDC dc)
         }
         painted=style_observed_static_paint(window,&control->instance,dc,&palette,control->controls.separator);
     }else painted=style_observed_button_paint(window,&control->instance,dc,&control->push,&control->choice,&control->group,
-        control->read_choice_art,control->choice_module,&control->choice_art,control->controls,&control->palette);
+        control->read_choice_art,control->art_module,&control->choice_art,control->controls,&control->palette,
+        control->push_sprite.image.bits?&control->push_sprite:NULL);
     if(!painted &&
        !control->instance.detached){
         int saved=SaveDC(dc);
@@ -366,9 +368,11 @@ static LRESULT dispatch(void *context,HWND window,UINT message,WPARAM a,LPARAM b
     }else{
         style_control_basic_kind kind=basic_kind(window);
         DWORD style=(DWORD)GetWindowLongPtrW(window,GWL_STYLE);
+        UINT type=kind==STYLE_CONTROL_BUTTON?style_control_button_type(window,style):0;
+        BOOL image_button=control->push_sprite.image.bits && type<=BS_DEFPUSHBUTTON;
         if(control->themed && ((kind==STYLE_CONTROL_SEPARATOR && !control->controls.separator) ||
-           (kind==STYLE_CONTROL_BUTTON &&
-            !classic_button_presentation_enabled(&control->controls,style_control_button_type(window,style),style))))
+           (kind==STYLE_CONTROL_BUTTON && !image_button &&
+            !classic_button_presentation_enabled(&control->controls,type,style))))
             result=DefSubclassProc(window,message,a,b);
         else {
             const style_control_draw draw={control,render};
@@ -607,8 +611,10 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,style_control_
     if(source.resources){
         style_control_theme *theme=&source;
         BOOL indexed=control->updown_control && theme->controls.updown_mode==CLASSIC_UPDOWN_ART;
-        const unsigned native=classic_control_native_roles(&theme->controls);
-        if((indexed && (!style_control_updown_api_enabled() || !style_control_updown_indexed_supported(window))) ||
+        BOOL sprite_button=theme->push_sprite.image.bits && class_is(window,L"Button") &&
+            style_control_button_type(window,(DWORD)GetWindowLongPtrW(window,GWL_STYLE))<=BS_DEFPUSHBUTTON;
+        const unsigned native=classic_control_native_roles(&theme->controls)&~(sprite_button?STYLE_ROLE_PUSH:0);
+        if((theme->preserve_native && !sprite_button) || (indexed && (!style_control_updown_api_enabled() || !style_control_updown_indexed_supported(window))) ||
            ((native&STYLE_ROLE_EDIT) && style_observed_edit_class(window)==STYLE_OBSERVED_EDIT_STANDARD) ||
            ((native&STYLE_ROLE_NATIVE_EDGE) && style_observed_edit_class(window)==STYLE_OBSERVED_EDIT_NATIVE_CLIENT) ||
            style_control_role_native(window,native,class_is)){
@@ -639,8 +645,9 @@ static BOOL attach(HWND window,style_native_theme_fn native_theme,style_control_
         control->push=theme->push;
         control->choice=theme->choice;
         control->read_choice_art=theme->read_choice_art;
-        if(class_is(window,L"Button") && classic_choice_has_art(&theme->choice)){
-            control->choice_module=source.resources;
+        if(sprite_button)control->push_sprite=theme->push_sprite;
+        if(sprite_button || (class_is(window,L"Button") && classic_choice_has_art(&theme->choice))){
+            control->art_module=source.resources;
             source.resources=NULL;
         }
         control->label=theme->label;
