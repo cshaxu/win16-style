@@ -5,7 +5,7 @@
   "version": "0.31.0.0",
   "version_contract": "M0 T31",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T30 S1 P1 58ff278ded7c",
+  "last_verified_remote_delivery": "M0 T31 S1 P1 b7b95b856036",
   "source_snapshot_sha256": "0013ffb8e637e9fee129c5702e9b5da19ccd251d8cdfdcf79e3f1ea93467b1b9",
   "artifacts": {
     "run16s.exe": {

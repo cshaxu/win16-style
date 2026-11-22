@@ -160,28 +160,9 @@ M0 T30 已按原版 XP Luna 的 Win32 有限范围收口。S1 合并执行读取
 两宽三配色三字号、真实标题和普通按钮、撤销及 14 项聚焦回归通过。
 正式七件及可选 Luna 样本已放两处，七件从实际远端复核。
 
-## M0 T31 S1 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New |
-| Admission And Approval | 用户要求自行设定目标实现多配色托盘子菜单，并采用主题内定义的名称。 |
-| Objective | 托盘列出已支持的 v3 主题声明的配色，识别目录与配色，沿用现有切换和撤销。 |
-| Non-goals | 不新增 UWP、WinUI 或主题格式；不更改接入范围、权限或主题文件。 |
-| Reference Baseline | T30 收口 6b514aea，原版 Luna 为本机可选样本。 |
-| Candidate Proposal | [实现与验收范围](../history/M0-T31-S1-tray-color-schemes.md)。 |
-| Files And ABI Surface | v3 外观读取、目录选择和托盘菜单，内部 DWORD 与公开 DLL 序号保持原形状。 |
-| Applicable Rules | C17、MinGW 对双位宽，正式七件，发布后实测，原图和许可保持。 |
-| Verification | 原版三项名称；单配色原菜单；同目录互斥切换、重复选择关闭；双宽解析、颜色覆盖和默认项回归。 |
-| Expected Markers | V3 COLOR NAMES PASS、COLOR PROFILES PASS、TRAY COLOR MENU PASS。 |
-| Asset Needs | 本机已有的可选 Luna 样本，七件包不增加内容。 |
-| Reporting Requirements | 记录每项本机实测、实际发布身份与未覆盖模式。 |
-| Stop Conditions | 只使用自有夹具及普通桌面，不使用 Computer Use 或私有桌面。 |
-| Exit Criteria | 精确显示原版名称、同目录切换与还原通过，七件两处和实际远端复核。 |
-| Original Owner Request | 自行设定目标实现，配色方案采用 theme 内定义的名称。 |
-| Similar-Issue Sweep | 搜索目录标识、全局会话标识、所有主题目录访问者及单配色测试。 |
-
-本地已发布并完成双位宽和正式包回归。待推送复核。
+M0 T31 S1 与 T31 已收口。托盘对已支持的 v3 多配色主题列出原版资源名称，
+同目录配色切换与再次选择撤销通过双宽控制器验证。真实 HMENU、两处普通启动、
+13 项聚焦实包回归和实际远端已复核。见 [交付记录](../history/M0-T31-S1-tray-color-schemes.md)。
 
 ## Identifier State
 
@@ -194,13 +175,13 @@ M0 T30 已按原版 XP Luna 的 Win32 有限范围收口。S1 合并执行读取
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T30 S1 P1 58ff278d，两处、七件远端和 1,284 项构建输入已复核。
+- Last verified remote delivery: M0 T31 S1 P1 b7b95b85，两处、七件远端和 1,284 项构建输入已复核。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 25
 - Last allocated T30 S: 1
 - Last allocated T31 S: 1
-- Open task: M0 T31 S1，多配色托盘子菜单。
+- Open task: 无活动任务包。
 
 ## Technical Baseline
 
