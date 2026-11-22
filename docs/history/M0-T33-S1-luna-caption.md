@@ -17,3 +17,14 @@
   SHA-256 为 24e6e036a4982ab98d7943ddfe5a8ca2aed2efd08470a525c4a1e02cae828f58。先向 assets、O:/winnt 发布，再验证。
 - 正式包聚焦回归 13/13，包含 Win2000 绘制、普通启动和参数、
   经典真实示例以及共享窗口兼容路径。原版 Luna.msstyles 摘要保持。
+
+## 远端复核与收口
+
+首次发布因旧会话占用正式 ntwshk64.dll 回滚。核对会话拥有者的 PID、
+绝对映像路径和启动时间，发出该产品已有的停止请求，文件占用随后解除。
+复试发布两处通过。
+
+从 origin/main 取回 P1 提交 997cdb7b2087eb3ee630014f31ef866ddbda04d4，复核 1,284 项构建输入及两处
+七件文件的摘要。清理本次正式构建、测试目录、探针与发布备份，
+共 483,110,138 字节。保留公共 Ninja 和 ccache 目录。
+旧发布备份仍被系统映射，保留至宿主退出： O:\repos.hobby\win16style\build\t33-package\caption-live\before-3、O:\repos.hobby\win16style\build\t33-package\caption-live\before-4、O:\repos.hobby\win16style\build\t33-package\caption-live\before-5、O:\repos.hobby\win16style\build\t33-package\caption-live\result.json
