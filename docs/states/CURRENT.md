@@ -168,10 +168,33 @@ M0 T32 S1 与 T32 已收口。单程序启动可用主题目录加冒号和配�
 省略冒号时按 .theme 的默认配色。正式七件两处及远端已复核，经过 22 次
 双宽实窗、提升请求及聚焦实包回归。见 [交付记录](../history/M0-T32-S1-cli-color-schemes.md)。
 
+## M0 T33 S1 Packet
+
+| Field | Required record |
+| --- | --- |
+| Identifier Mode | New |
+| Admission And Approval | 用户报告 Luna 标题栏边框、按钮和悬停绘制缺陷，授权修正。 |
+| Objective | 使用原版 Luna 位图覆盖标题顶沿，恢复三个按钮的实时状态。 |
+| Non-goals | 不更动主题文件、窗口尺寸或系统设置。 |
+| Reference Baseline | T32 收口 10481609 和用户截图。 |
+| Candidate Proposal | [问题和验证范围](../history/M0-T33-S1-luna-caption.md)。 |
+| Files And ABI Surface | 观察式窗口绘制及内部标题布局，既有公开 ABI。 |
+| Applicable Rules | 纯 C、双宽、正式七件、发布后验证。 |
+| Verification | 蓝、银灰和橄榄绿的顶沿和正常、悬停、按下、取消，经典回归。 |
+| Expected Markers | LUNA CAPTION INPUT PASS，自有双宽窗口。 |
+| Asset Needs | 可选的原版 Luna 资源，保持原字节。 |
+| Reporting Requirements | 记录基线、资源对照、改后状态和发布结果。 |
+| Stop Conditions | 只用自有普通桌面的窗口和探针。 |
+| Exit Criteria | 双宽三配色实窗、两处发布、远端摘要。 |
+| Original Owner Request | 修正标题栏边框颜色、三按钮凹陷和鼠标经过时闪烁。 |
+| Similar-Issue Sweep | 原版位图、WM_GETTITLEBARINFOEX、非客户区绘制和按钮输入。 |
+
+两处发布、双宽原版 Luna 顶沿和三按钮验证及聚焦回归已完成，待实际远端复核。
+
 ## Identifier State
 
 - Milestone: M0 (fixed)
-- Last allocated T: 32
+- Last allocated T: 33
 - Last allocated Td S: 21
 - Last allocated T18 S: 64
 - Last allocated T19 S: 3
@@ -186,7 +209,8 @@ M0 T32 S1 与 T32 已收口。单程序启动可用主题目录加冒号和配�
 - Last allocated T30 S: 1
 - Last allocated T31 S: 1
 - Last allocated T32 S: 1
-- Open task: 无活动任务包。
+- Last allocated T33 S: 1
+- Open task: M0 T33 S1，Luna 标题栏。
 
 ## Technical Baseline
 

@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <oleacc.h>
 #include <stdio.h>
 #include <inttypes.h>
 
@@ -31,18 +32,104 @@ static uint64_t sample(HWND window,RECT area,POINT point,COLORREF *center)
     return hash;
 }
 
+typedef struct caption_witness {
+    DWORD states[3];
+    uint64_t faces[3];
+    COLORREF outer;
+} caption_witness;
+
+static BOOL read_caption(HWND window,caption_witness *sample,TITLEBARINFOEX *info)
+{
+    static const unsigned slots[]={2,3,5};
+    *info=(TITLEBARINFOEX){.cbSize=sizeof(*info)};
+    SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)info);
+    RECT window_rect;
+    if(!GetWindowRect(window,&window_rect))return FALSE;
+    HDC dc=GetWindowDC(window);
+    if(!dc)return FALSE;
+    sample->outer=GetPixel(dc,(window_rect.right-window_rect.left)/2,2);
+    BOOL valid=sample->outer!=CLR_INVALID;
+    for(unsigned i=0;i<ARRAYSIZE(slots);++i){
+        RECT face=info->rgrect[slots[i]];
+        OffsetRect(&face,-window_rect.left,-window_rect.top);
+        if(IsRectEmpty(&face)){valid=FALSE;break;}
+        uint64_t hash=UINT64_C(1469598103934665603);
+        for(LONG y=face.top;y<face.bottom;++y){
+            for(LONG x=face.left;x<face.right;++x){
+                COLORREF pixel=GetPixel(dc,x,y);
+                if(pixel==CLR_INVALID)valid=FALSE;
+                hash=(hash^pixel)*UINT64_C(1099511628211);
+            }
+        }
+        sample->states[i]=info->rgstate[slots[i]];
+        sample->faces[i]=hash;
+    }
+    ReleaseDC(window,dc);
+    return valid;
+}
+
+static unsigned native_hover_messages;
+
+static LRESULT CALLBACK witness_proc(HWND window,UINT message,WPARAM wp,LPARAM lp)
+{
+    if(message==WM_NCMOUSEMOVE || message==WM_NCMOUSELEAVE)++native_hover_messages;
+    return DefWindowProcW(window,message,wp,lp);
+}
+
+static int check_caption_input(HWND window)
+{
+    static const unsigned slots[]={2,3,5};
+    static const WPARAM hit[]={HTMINBUTTON,HTMAXBUTTON,HTCLOSE};
+    const DWORD mouse_states=STATE_SYSTEM_PRESSED|STATE_SYSTEM_HOTTRACKED;
+    caption_witness normal,hover,pressed,restored,inactive;
+    TITLEBARINFOEX info;
+    SendMessageW(window,WM_NCMOUSELEAVE,0,0);
+    native_hover_messages=0;
+    CHECK(read_caption(window,&normal,&info));
+    for(unsigned i=0;i<ARRAYSIZE(slots);++i){
+        RECT button=info.rgrect[slots[i]];
+        POINT center={(button.left+button.right)/2,(button.top+button.bottom)/2};
+        LPARAM point=MAKELPARAM(center.x,center.y);
+        CHECK(!(normal.states[i]&mouse_states));
+        CHECK(SendMessageW(window,WM_NCHITTEST,0,point)==(LRESULT)hit[i]);
+        SendMessageW(window,WM_NCMOUSEMOVE,hit[i],point);
+        CHECK(read_caption(window,&hover,&info));
+        CHECK((hover.states[i]&mouse_states)==STATE_SYSTEM_HOTTRACKED);
+        CHECK(hover.faces[i]!=normal.faces[i]);
+        SendMessageW(window,WM_NCLBUTTONDOWN,hit[i],point);
+        CHECK(read_caption(window,&pressed,&info));
+        CHECK(GetCapture()==window && (pressed.states[i]&mouse_states)==STATE_SYSTEM_PRESSED);
+        CHECK(pressed.faces[i]!=hover.faces[i] && pressed.faces[i]!=normal.faces[i]);
+        for(unsigned j=0;j<ARRAYSIZE(slots);++j)
+            if(j!=i)CHECK(!(pressed.states[j]&mouse_states) && pressed.faces[j]==normal.faces[j]);
+        SendMessageW(window,WM_CANCELMODE,0,0);
+        SendMessageW(window,WM_NCMOUSELEAVE,0,0);
+        CHECK(read_caption(window,&restored,&info));
+        CHECK(!GetCapture() && !(restored.states[i]&mouse_states) && restored.faces[i]==normal.faces[i]);
+    }
+    CHECK(native_hover_messages==0);
+    SendMessageW(window,WM_NCACTIVATE,FALSE,0);
+    CHECK(read_caption(window,&inactive,&info) && inactive.outer!=normal.outer);
+    SendMessageW(window,WM_NCACTIVATE,TRUE,0);
+    CHECK(read_caption(window,&restored,&info) && restored.outer==normal.outer);
+    printf("LUNA CAPTION INPUT PASS bits=%u dpi=%u outer=%06lx/%06lx three_buttons native_hover=0\n",
+        (unsigned)(sizeof(void *)*8),GetDpiForWindow(window),normal.outer,inactive.outer);
+    return 0;
+}
+
 int wmain(int argc,WCHAR **argv)
 {
     BOOL classic=argc==2 && !lstrcmpW(argv[1],L"--classic");
+    BOOL input=argc==2 && !lstrcmpW(argv[1],L"--caption-input");
     int expected=25;
-    if(argc==2 && !classic){
+    if(argc==2 && !classic && !input){
         if(!lstrcmpW(argv[1],L"LargeFonts"))expected=29;
         else if(!lstrcmpW(argv[1],L"ExtraLargeFonts"))expected=35;
         else CHECK(!lstrcmpW(argv[1],L"NormalSize"));
-    }else CHECK(argc==1 || classic);
+    }else CHECK(argc==1 || classic || input);
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     const WCHAR class_name[]=L"Run16s.LunaFrameProbe";
-    WNDCLASSW type={.lpfnWndProc=DefWindowProcW,.hInstance=GetModuleHandleW(NULL),
+    WNDCLASSW type={.lpfnWndProc=input?witness_proc:DefWindowProcW,.hInstance=GetModuleHandleW(NULL),
         .hbrBackground=(HBRUSH)(COLOR_WINDOW+1),.lpszClassName=class_name};
     CHECK(RegisterClassW(&type));
     HWND window=CreateWindowExW(0,class_name,L"Luna frame probe",WS_OVERLAPPEDWINDOW,
@@ -62,6 +149,11 @@ int wmain(int argc,WCHAR **argv)
     SetForegroundWindow(window);
     SendMessageW(window,WM_NCACTIVATE,TRUE,0);
     CHECK(GetPropW(window,L"Win2kStyle.Frame"));
+    if(input){
+        int result=check_caption_input(window);
+        CHECK(DestroyWindow(window));
+        return result;
+    }
     TITLEBARINFOEX title={.cbSize=sizeof(title)};
     SendMessageW(window,WM_GETTITLEBARINFOEX,0,(LPARAM)&title);
     RECT bounds;CHECK(GetWindowRect(window,&bounds));

@@ -312,6 +312,8 @@ static void paint(HWND window)
         style_native_caption_layout layout={.band=caption,.icon=has_icon?icon:(RECT){0},
             .left_buttons=theme?style_native_caption_left_buttons(&theme->title_buttons):0,
             .sprites=theme && theme->sprite_resources?&theme->sprites:NULL,.active=frame->native.active};
+        if(layout.sprites && !maximized && !composed)
+            layout.sprite_band=(RECT){0,0,width,caption.bottom};
         if(synthetic){
             layout.system=system;
             OffsetRect(&layout.system,-outer.left,-outer.top);
@@ -337,12 +339,18 @@ static void paint(HWND window)
         const style_native_caption_colors colors=theme?(frame->native.active?theme->active:theme->inactive):
             style_native_caption_palette(frame->native.active);
         HDC target=dc;
+        RECT surface=IsRectEmpty(&layout.sprite_band)?caption:layout.sprite_band;
+        SIZE size={surface.right-surface.left,surface.bottom-surface.top};
         POINT origin;
+        BOOL buffered=dc && layout.sprites && !composed &&
+            style_bitmap_ensure(&frame->caption_bitmap,dc,size) &&
+            BitBlt(frame->caption_bitmap.dc,0,0,size.cx,size.cy,dc,surface.left,surface.top,SRCCOPY) &&
+            SetViewportOrgEx(frame->caption_bitmap.dc,-surface.left,-surface.top,&origin);
+        if(buffered)target=frame->caption_bitmap.dc;
         if(composed && !frame->instance.detached){
             if(!frame->caption_surface)
                 frame->caption_surface=CreateWindowExW(WS_EX_LAYERED|WS_EX_TRANSPARENT|WS_EX_NOACTIVATE|WS_EX_TOOLWINDOW,
                     L"STATIC",L"",WS_POPUP,0,0,1,1,window,NULL,GetModuleHandleW(NULL),NULL);
-            SIZE size={caption.right-caption.left,caption.bottom-caption.top};
             if(!frame->instance.detached && frame->caption_surface && style_bitmap_ensure(&frame->caption_bitmap,NULL,size) &&
                SetViewportOrgEx(frame->caption_bitmap.dc,-caption.left,-caption.top,&origin))
                 target=frame->caption_bitmap.dc;
@@ -350,7 +358,10 @@ static void paint(HWND window)
         if(target && !frame->instance.detached)
             style_native_caption_render(target,&layout,title,image,font?font:GetStockObject(DEFAULT_GUI_FONT),
                 dpi,colors,frame_colors,frame->theme.present?&frame->theme.caption_presentation:NULL,maximized,flags,&frame->theme.art);
-        if(target && target!=dc){
+        if(buffered){
+            SetViewportOrgEx(target,origin.x,origin.y,NULL);
+            BitBlt(dc,surface.left,surface.top,size.cx,size.cy,target,0,0,SRCCOPY);
+        }else if(target && target!=dc){
             SetViewportOrgEx(target,origin.x,origin.y,NULL);
             RECT bounds=caption,hole={0};OffsetRect(&bounds,outer.left,outer.top);
             presented=style_uwp_surface_present(window,frame->caption_surface,&bounds,&hole,
@@ -460,6 +471,29 @@ static BOOL button_input(HWND window,frame_window *frame,UINT message,WPARAM wp,
     return FALSE;
 }
 
+/* The bitmap caption owns hover painting. Resize edges and menus keep
+ * their existing native paths. */
+static BOOL sprite_caption_hover(HWND window,frame_window *frame,UINT message,WPARAM hit)
+{
+    if(message==WM_NCMOUSEMOVE &&
+       (hit==HTCAPTION || style_caption_role((int)hit)>=CLASSIC_BUTTON_MINIMIZE)){
+        WPARAM hover=hit+1;
+        if(frame->native.hover!=hover){
+            TRACKMOUSEEVENT track={.cbSize=sizeof(track),.dwFlags=TME_LEAVE|TME_NONCLIENT,.hwndTrack=window};
+            TrackMouseEvent(&track);
+            frame->native.hover=hover;
+            paint(window);
+        }
+        return TRUE;
+    }
+    if(message==WM_NCMOUSELEAVE && frame->native.hover){
+        frame->native.hover=0;
+        paint(window);
+        return TRUE;
+    }
+    return FALSE;
+}
+
 static void recalculate_frame(HWND window)
 {
     SetWindowPos(window,NULL,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
@@ -511,7 +545,8 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
             style_scroll_finish(window,instance,&frame->scroll.controller,&scroll,TRUE);
         if(instance->detached)return 0;
     }
-    if(compact_enabled(window) && (message!=STYLE_NCUAHDRAWFRAME || frame->theme.border_presentation.fill) &&
+    if(compact_enabled(window) && (message!=STYLE_NCUAHDRAWFRAME || frame->theme.border_presentation.fill ||
+       frame->theme.sprite_resources) &&
        style_frame_suppress_native_theme(message,IsIconic(window),GetMenu(window)!=NULL)){
         SetLastError(incoming);return 0;
     }
@@ -563,6 +598,10 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
         if(system_slot_rect(window,frame,&rect)){open_system_slot(window,frame,rect);SetLastError(incoming);return 0;}
     }
     if(button_input(window,(frame_window *)instance,message,wp,lp)){SetLastError(incoming);return 0;}
+    if(frame->theme.sprite_resources && (message==WM_NCMOUSEMOVE || message==WM_NCMOUSELEAVE) &&
+       compact_enabled(window) && sprite_caption_hover(window,frame,message,wp)){
+        SetLastError(incoming);return 0;
+    }
     BOOL repaint=FALSE;
     if(message==WM_NCACTIVATE)((frame_window *)instance)->native.active=(BOOL)wp;
     if(message==WM_NCMOUSEMOVE){
@@ -624,6 +663,14 @@ static LRESULT frame_body(HWND window,UINT message,WPARAM wp,LPARAM lp,style_ins
                height>0 && (frame->theme.sprite_resources || info->rcTitleBar.bottom-info->rcTitleBar.top>height))
                 info->rcTitleBar.bottom=info->rcTitleBar.top+height;
             classic_buttons(window,frame,info);
+            if(frame->theme.sprite_resources){
+                for(unsigned i=CLASSIC_BUTTON_MINIMIZE;i<=CLASSIC_BUTTON_CLOSE;++i)
+                    info->rgstate[i]&=~(STATE_SYSTEM_PRESSED|STATE_SYSTEM_HOTTRACKED);
+                if(frame->native.hover && !tracked->pressed){
+                    enum classic_button_role role=style_caption_role((int)(frame->native.hover-1));
+                    if(role>=CLASSIC_BUTTON_MINIMIZE)info->rgstate[role]|=STATE_SYSTEM_HOTTRACKED;
+                }
+            }
             if(tracked->pressed>=2 && tracked->pressed<=CCHILDREN_TITLEBAR && tracked->hot)info->rgstate[tracked->pressed]|=STATE_SYSTEM_PRESSED;
         }
     }

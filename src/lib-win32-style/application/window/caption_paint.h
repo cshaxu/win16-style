@@ -89,6 +89,7 @@ typedef struct style_caption_render_model {
     const style_frame_sprites *sprites;
     UINT dpi;
     BOOL active;
+    RECT sprite_band;
 } style_caption_render_model;
 
 void style_caption_render(HDC dc,PCWSTR title,HFONT font,const style_caption_render_model *model,

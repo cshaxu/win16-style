@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T32 S1 P1",
-  "stage": "published per-launch CLI color selection",
-  "version": "0.32.0.0",
-  "version_contract": "M0 T32",
+  "delivery": "M0 T33 S1 P1",
+  "stage": "published Luna caption border and mouse-state repair",
+  "version": "0.33.0.0",
+  "version_contract": "M0 T33",
   "package_directory": "assets",
   "last_verified_remote_delivery": "M0 T32 S1 P1 637fb131f7fd",
-  "source_snapshot_sha256": "c6c0f2a24abbd2fb515cac6cc96ab8e441b4c2471b62c74df05c09381b4588e8",
+  "source_snapshot_sha256": "24e6e036a4982ab98d7943ddfe5a8ca2aed2efd08470a525c4a1e02cae828f58",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
-      "version": "M0 T32",
-      "sha256": "eed920fbaf81d4352c9cab37c41a6300f8d9ed03e01f7df7a5d951c25c6b4bf1",
+      "version": "M0 T33",
+      "sha256": "5d121c29da9113bdeef3896d99e6137280dfa03dfb20d4414c140523b1a9bab9",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -26,8 +26,8 @@
     },
     "ntwshk32.dll": {
       "architecture": "x86",
-      "version": "M0 T32",
-      "sha256": "742e13252e68c76652ced8a5d872164b17f9e5b14f435215447f3da5e3908491",
+      "version": "M0 T33",
+      "sha256": "91b96438bd082eab28c8151513e9f7c9a778dff7cfa7e144b454d45b32d97dbc",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -55,8 +55,8 @@
     },
     "ntwshk64.dll": {
       "architecture": "x64",
-      "version": "M0 T32",
-      "sha256": "225edecaa8827096abeb6b0476f38cff3e182e7c5756008c9aec3788c254191c",
+      "version": "M0 T33",
+      "sha256": "7aac9b5f1042e3da53125e039e4523ccf0583d01c647cfb9d65eb060d860f10c",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -108,6 +108,8 @@
     "coverage": "focused",
     "passed": 13,
     "selected_cases": [
+      "win2k-paint-x86",
+      "win2k-paint-x64",
       "progress-sharing",
       "plan-selection",
       "abi-x86",
@@ -118,29 +120,26 @@
       "cli",
       "automatic",
       "propagation",
-      "cli-failures",
-      "uac-unit-32",
-      "uac-unit-64"
+      "cli-failures"
     ],
     "skipped": [],
     "supplemental_native": {
-      "luna_published_direct_launches": 16,
-      "alternate_descriptor_launches": 6,
-      "invalid_spec_checks": 10,
-      "color_profile_roundtrip_architectures": 2,
-      "elevation_and_self_launch_units": 4
+      "luna_published_direct_launches": 12,
+      "three_buttons_per_window": 3,
+      "both_window_activation_states": true,
+      "independent_top_border_resource_colors": 6,
+      "original_resource_digest_verified": true
     },
     "limitations": [
-      "Elevation shell request and self-elevation redirection were verified with native test doubles.",
-      "The Windows consent dialog was not exercised.",
-      "Native explicit scheme selection is for supported v3 themes."
+      "Owned Win32 window message and pixel probes verified the caption and blocked native hover.",
+      "Physical pointer and compositor refresh timing were not measured."
     ]
   },
-  "evidence": "../history/M0-T32-S1-cli-color-schemes.md",
+  "evidence": "../history/M0-T33-S1-luna-caption.md",
   "build": {
-    "command": "Build-Package worker on the scoped T32 clean snapshot",
+    "command": "Build-Package worker on the scoped T33 clean snapshot",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, shared ccache",
-    "cache_hits": 1972,
-    "cache_misses": 126
+    "cache_hits": 1948,
+    "cache_misses": 150
   }
 }

@@ -20,6 +20,7 @@ typedef struct style_native_caption_layout {
     BOOL system_on_right;
     const style_frame_sprites *sprites;
     BOOL active;
+    RECT sprite_band;
 } style_native_caption_layout;
 
 int style_native_caption_height(UINT dpi,BOOL tool);

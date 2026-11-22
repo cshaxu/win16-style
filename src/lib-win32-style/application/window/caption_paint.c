@@ -222,7 +222,8 @@ void style_caption_render(HDC dc,PCWSTR title,HFONT font,const style_caption_ren
         model->gradient,presentation->separator,model->unit,separator);
     if(model->sprites){
         const style_dib_strip *caption=model->maximized?&model->sprites->maximized:&model->sprites->caption;
-        (void)style_dib_strip_draw(dc,model->band,caption,model->active?0u:1u,model->dpi);
+        RECT image=IsRectEmpty(&model->sprite_band)?model->band:model->sprite_band;
+        (void)style_dib_strip_draw(dc,image,caption,model->active?0u:1u,model->dpi);
     }
     RECT text=model->text;
     const int inset=presentation->text_inset_plus_one?presentation->text_inset_plus_one-1:
