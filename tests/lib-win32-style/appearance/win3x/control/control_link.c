@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "lib-win32-style/appearance/win3x/common/palette.h"
 #include "lib-win32-style/application/control/control_chrome.h"
-#include "lib-win32-style/appearance/win3x/control/other_paint.h"
+#include "lib-win32-style/application/control/outline_basic.h"
 #include "lib-win32-style/appearance/win3x/control/special_paint.h"
 #include "lib-win32-style/application/menu/client_bar.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
@@ -17,7 +17,7 @@
 #include "lib-win32-style/appearance/win3x/control/control_state.h"
 #include "lib-win32-style/appearance/win3x/control/control_class.h"
 #include "lib-win32-style/appearance/win3x/control/attachment_state.h"
-#include "lib-win32-style/appearance/win3x/control/list_paint.h"
+#include "lib-win32-style/application/control/outline_list.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/control/control_custom_draw.h"
 #include "lib-win32-style/appearance/win3x/control/text_policy.h"
@@ -62,7 +62,7 @@ static BOOL actual_fitted_button(void)
     if(ok){
         style_instance instance={0};win16_style_palette palette;style_window_palette_default(&palette);
         int saved=SaveDC(dc);RECT bounds={0,0,80,40};
-        win16_control_other(w,&instance,&palette,dc,bounds,font,L"A deliberately long caption",FALSE,fit_button_type,fit_group_push,(classic_control_presentation){0},CLR_INVALID);
+        style_outline_draw_basic(w,&instance,&palette,dc,bounds,font,L"A deliberately long caption",FALSE,fit_button_type,fit_group_push,(classic_control_presentation){0},CLR_INVALID);
         int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
         for(int y=4*unit;y<40-4*unit;++y)for(int x=6*unit;x<80-6*unit;++x)
             if(GetPixel(dc,x,y)==palette.edge)++ink;

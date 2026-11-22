@@ -12,7 +12,7 @@
 #include "../../../application/graphics/clip.h"
 #include "vb_text.h"
 #include "lib-win32-style/application/adapters/win32/paint_dispatch.h"
-#include "vcl_identity.h"
+#include "lib-win32-style/application/control/control_vcl_identity.h"
 #include "special_paint.h"
 typedef struct attachment {
     style_runtime_attachment base;

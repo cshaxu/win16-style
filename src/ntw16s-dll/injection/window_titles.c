@@ -35,7 +35,7 @@
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/application/graphics/font_scope.h"
 #include "lib-win32-style/application/graphics/font_cache.h"
-#include "../../lib-win32-style/appearance/win3x/control/month_text.h"
+#include "lib-win32-style/application/control/month.h"
 #include "lib-win32-style/appearance/win3x/control/special_paint.h"
 #include "lib-win32-style/application/adapters/win32/checklist.h"
 #include "lib-win32-style/application/adapters/win32/frame_paint.h"
@@ -562,7 +562,7 @@ static PROCESS_HOOK_UNWIND_FUNCTION HRESULT WINAPI hook_DrawThemeText(HTHEME the
     ntw16s_status_text_frame(dc,rect,flags,__builtin_return_address(0));
     BOOL entered=ntw16s_status_theme_begin(&scope,dc,part,state,text,count,flags,rect,__builtin_return_address(0));
     if(!entered && text){
-        int n=0;BOOL supported=ntw16s_month_text_length(text,count,&n);
+        int n=0;BOOL supported=style_control_month_text_length(text,count,&n);
         HFONT font=supported?ntw16s_month_text_borrow(theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)):NULL;
         if(font){style_font_scope borrow={.dc=dc,.font=font,.saved=SaveDC(dc),.release=release_system_font};BOOL done=FALSE;process_hook_unwind_scope cleanup;PROCESS_HOOK_UNWIND_BEGIN(cleanup,style_font_scope_end,&borrow);
           if(borrow.saved){month_text_room_context room={theme,dc,part,state,flags,flags2,rect,__builtin_return_address(0)};done=win16_control_month_text(theme,dc,part,state,font,text,n,flags,rect,real_DrawTextW,month_text_room,&room);}

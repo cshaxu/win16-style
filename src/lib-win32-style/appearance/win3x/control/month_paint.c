@@ -1,5 +1,4 @@
 #include "month_paint.h"
-#include "month_text.h"
 #include "special_paint.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include <vssym32.h>

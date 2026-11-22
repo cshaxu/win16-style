@@ -16,10 +16,10 @@
 #include "lib-win32-style/application/menu/owned_rows.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/application/control/control_chrome.h"
-#include "lib-win32-style/appearance/win3x/control/choice_view.h"
-#include "lib-win32-style/appearance/win3x/control/combo_paint.h"
+#include "lib-win32-style/application/control/outline_choice.h"
+#include "lib-win32-style/application/control/outline_combo.h"
 #include "lib-win32-style/appearance/win3x/control/control_state.h"
-#include "lib-win32-style/appearance/win3x/control/list_paint.h"
+#include "lib-win32-style/application/control/outline_list.h"
 #include "lib-win32-style/appearance/win3x/resources/scroll_assets.h"
 #include "lib-win32-style/appearance/win3x/resources/frame_buttons.h"
 #include "lib-win32-style/appearance/win3x/resources/menu_glyphs.h"
@@ -397,9 +397,9 @@ static BOOL paint_native_button(HDC dc,HWND window,BOOL win2000,const classic_pu
     style_window_palette_default(&palette);
     classic_theme_window_palette(&palette,theme);
     style_control_state control={0};
-    const win16_control_choice_view view={&instance,&control,&palette,push,choice,button_type,
+    const style_outline_choice_view view={&instance,&control,&palette,push,choice,button_type,
         button_fit,button_fit,button_fit,button_fit,button_fit,module,&art,classic_choice_art_get,NULL,NULL,NULL,controls,TRUE};
-    win16_control_draw_choice(window,&view,dc);
+    style_outline_draw_choice(window,&view,dc);
     return TRUE;
 }
 
@@ -448,16 +448,16 @@ static BOOL draw_control_lines(HDC dc,const classic_theme *theme,BOOL win2000)
         if(win2000){
             passed=style_observed_button_paint(group,&instance,dc,NULL,NULL,&theme->group,NULL,NULL,NULL,controls,&relief);
         }else{
-            win16_control_choice_view view={&instance,&native,&palette,NULL,NULL,button_type,
+            style_outline_choice_view view={&instance,&native,&palette,NULL,NULL,button_type,
                 button_fit,button_fit,button_fit,button_fit,button_fit,NULL,NULL,NULL,NULL,&theme->group,NULL,controls,FALSE};
-            win16_control_draw_choice(group,&view,dc);
+            style_outline_draw_choice(group,&view,dc);
         }
         passed=passed && GetPixel(dc,10,27)==(profile==STYLE_LINE_FLAT?theme->group.shadow:RGB(255,255,255));
         if(win2000)passed=passed && style_observed_edit_border(edit,dc,&relief,profile);
         else{
             control_style state={.palette=palette,.controls=controls,.edit_border=TRUE};
             memcpy(state.edit_colors,theme->edit,sizeof(state.edit_colors));
-            win16_control_edit_border(edit,&state,dc);
+            style_outline_edit_border(edit,dc,&state.palette,&state.frame_colors,state.edit_colors,state.controls.edit);
         }
         passed=passed && GetPixel(dc,0,10)==(profile==STYLE_LINE_FLAT?RGB(0,0,0):relief.shadow) &&
             GetClientRect(edit,&after) && EqualRect(&before,&after);
@@ -631,7 +631,9 @@ static BOOL draw_combo_surface(HDC dc,const classic_theme *theme,BOOL win2000)
         style_window_palette_default(&state.palette);
         classic_theme_window_palette(&state.palette,theme);
         state.list_colors.background=background;
-        win16_control_draw_combo(combo,&state,dc,style_observed_combo_info,button_fit,button_fit);
+        const style_outline_combo_view view={&state.instance,&state.state,&state.palette,
+            &state.combo_colors,&state.list_colors,&state.label_colors,&state.combo_arrow,state.common_dialog_combo};
+        style_outline_draw_combo(combo,&view,dc,style_observed_combo_info,button_fit,button_fit);
     }
     if(passed)passed=GetPixel(dc,info.rcItem.right-4,(info.rcItem.top+info.rcItem.bottom)/2)==background;
     DestroyWindow(parent);

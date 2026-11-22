@@ -11,7 +11,7 @@
 #include "../lib-win32-style/application/control/control_chrome.h"
 #include "lib-win32-style/application/control/native_overlay.h"
 #include "lib-win32-style/application/control/report.h"
-#include "lib-win32-style/appearance/win3x/control/combo_paint.h"
+#include "lib-win32-style/application/control/outline_combo.h"
 #include "lib-win32-style/application/control/control_custom_draw.h"
 #include "../lib-win32-style/appearance/win3x/control/vcl_native_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/text_policy.h"
@@ -23,7 +23,6 @@
 #include "lib-win32-style/application/control/status_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/status_font.h"
 #include "lib-win32-style/application/control/control_status.h"
-#include "../lib-win32-style/appearance/win3x/control/vcl_identity.h"
 #include "../lib-win32-style/appearance/win3x/control/attachment_state.h"
 #include "../lib-win32-style/appearance/win3x/control/month_paint.h"
 #include "lib-win32-style/appearance/msstyles/modern_frame_style.h"
@@ -37,7 +36,7 @@
 #endif
 #include "../lib-win32/process-hook/unwind.h"
 #include "status_theme.h"
-#include "../lib-win32-style/appearance/win3x/control/month_text.h"
+#include "lib-win32-style/application/control/month.h"
 #include <commctrl.h>
 #include <uxtheme.h>
 #include <vssym32.h>
@@ -314,7 +313,7 @@ static BOOL runtime_control_render(HWND w,style_control_runtime_kind kind,void *
 static BOOL runtime_edge_eligible(HWND w,HWND parent,style_control_edge_kind kind,void *context)
 {
     (void)context;
-    return kind==STYLE_EDGE_DATA?win16_control_vb_data_role(w,parent):win16_control_vb_user_edge_identity(w,parent);
+    return kind==STYLE_EDGE_DATA?style_control_vb_data_role(w,parent):style_control_vb_user_edge_identity(w,parent);
 }
 static BOOL runtime_edge_install(HWND w,void *context,const BOOL *cancelled)
 {return win16_style_grid_install_created(w,NULL,context,cancelled);}
@@ -340,7 +339,7 @@ static void date_button(HWND w,const style_instance *instance,HDC dc,const RECT 
     const attachment *a=instance->context;
     win16_style_palette palette=a->palette;
     palette.face=a->date_button_face;
-    win16_control_native_combo_button(w,instance,dc,dirty,button,a->base.runtime.date.installed?&palette:NULL,&a->combo_arrow);
+    style_outline_native_combo_button(w,instance,dc,dirty,button,a->base.runtime.date.installed?&palette:NULL,&a->combo_arrow);
 }
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
@@ -430,7 +429,7 @@ static BOOL install_created(HWND w,DWORD original_style)
     attachment *popup_source_attachment=popup_source?lookup(popup_source):NULL;
     BOOL lookup_popup_candidate=ready && popup_source_attachment && style_control_vcl_lookup_popup_identity(w,popup_source,popup_source_parent,owner);
     style_control_runtime_extras extra;
-    win16_control_vcl_classify_extra(w,original_style,ready,owner,&extra);
+    style_control_vcl_classify_extra(w,original_style,ready,owner,&extra);
     BOOL cool_candidate=extra.cool_candidate;
     BOOL vcl_mdi_probe=style_control_vcl_mdi_identity(w,GetParent(w),GetParent(GetParent(w)),owner,mdi_host_attached);
     int rejected=win16_attachment_eligibility(original_style,picture,checklist,status,spin,vcl_mdi_probe,&initial,&candidates,&extra);

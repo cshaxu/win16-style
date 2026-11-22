@@ -1,10 +1,10 @@
-#include "combo_paint.h"
+#include "outline_combo.h"
 #include "lib-win32-style/application/control/control_chrome.h"
 #include "control_state.h"
 #include "lib-win32-style/application/control/control_class.h"
-#include "../../../application/graphics/paint_frame.h"
-#include "../../../application/control/control_protocol.h"
-#include "../../../application/graphics/dc_geometry.h"
+#include "../graphics/paint_frame.h"
+#include "control_protocol.h"
+#include "../graphics/dc_geometry.h"
 #include "lib-win32-style/application/control/combo_snapshot.h"
 
 typedef struct combo_reader_context {
@@ -17,20 +17,20 @@ static HFONT combo_font(HWND window,void *context)
     return reader->state->font && (reader->is_vb_combo(window) || style_control_protocol_is(window,L"COMBOBOX"))?
         reader->state->font:(HFONT)SendMessageW(window,WM_GETFONT,0,0);
 }
-void win16_control_draw_combo(HWND w,control_style *style,HDC dc,BOOL (*get_info)(HWND,PCOMBOBOXINFO),BOOL (*is_vb_combo)(HWND),BOOL (*is_vb_drive)(HWND))
+void style_outline_draw_combo(HWND w,const style_outline_combo_view *view,HDC dc,BOOL (*get_info)(HWND,PCOMBOBOXINFO),BOOL (*is_vb_combo)(HWND),BOOL (*is_vb_drive)(HWND))
 {
     RECT client,button,text,pixel;int saved,left,top,u;BOOL selected;
     if(!dc)return;
-    combo_reader_context context={&style->state,is_vb_combo};const style_control_combo_reader reader={&context,get_info,combo_font};
-    style_control_combo_snapshot snapshot;if(!style_control_combo_snapshot_read(w,&style->instance,&reader,&snapshot))return;
+    combo_reader_context context={view->state,is_vb_combo};const style_control_combo_reader reader={&context,get_info,combo_font};
+    style_control_combo_snapshot snapshot;if(!style_control_combo_snapshot_read(w,view->instance,&reader,&snapshot))return;
     COMBOBOXINFO info=snapshot.info;WCHAR *label=snapshot.text;HFONT font=snapshot.font;
     BOOL pressed=snapshot.pressed,simple=snapshot.simple,editable=snapshot.editable;
-    BOOL enabled=IsWindowEnabled(w),common_dialog_combo=style->common_dialog_combo;
-    const win16_style_palette *palette=&style->palette;
-    const classic_combo_colors *colors=&style->combo_colors;
+    BOOL enabled=IsWindowEnabled(w),common_dialog_combo=view->dialog_combo;
+    const style_window_palette *palette=view->palette;
+    const classic_combo_colors *colors=view->button;
     BOOL themed=colors->present && !common_dialog_combo && style_control_is_combo(w);
-    const classic_list_colors *list=&style->list_colors;
-    const classic_text_colors *ink=&style->label_colors;
+    const classic_list_colors *list=view->list;
+    const classic_text_colors *ink=view->text;
     BOOL list_themed=themed && list->present,text_themed=themed && ink->present;
     COLORREF background=list_themed?list->background:palette->light;
     COLORREF border=themed?(enabled?colors->border:colors->disabled_border):palette->edge;
@@ -57,10 +57,10 @@ void win16_control_draw_combo(HWND w,control_style *style,HDC dc,BOOL (*get_info
     SetDCBrushColor(dc,pressed?(*palette).light:(*palette).shadow);pixel=button;pixel.top=pixel.bottom-u;
     FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));pixel=button;pixel.left=pixel.right-u;
     FillRect(dc,&pixel,(HBRUSH)GetStockObject(DC_BRUSH));
-    left=(button.left+button.right-7*u)/2;top=(button.top+button.bottom-9*u)/2;
+    left=(button.left+button.right-CLASSIC_COMBO_ARROW_WIDTH*u)/2;top=(button.top+button.bottom-CLASSIC_COMBO_ARROW_HEIGHT*u)/2;
     if(pressed){left+=u;top+=u;}
     SetDCBrushColor(dc,IsWindowEnabled(w)?(*palette).edge:(*palette).shadow);
-    style_control_combo_arrow(dc,left,top,96*u,&style->combo_arrow);
+    style_control_combo_arrow(dc,left,top,96*u,view->arrow);
     if(editable || is_vb_drive(w) || common_dialog_combo){RestoreDC(dc,saved);style_control_combo_snapshot_clear(&snapshot);return;}
     text=info.rcItem;selected=GetFocus()==w && !pressed;
     COLORREF selection=list_themed?list->selection:palette->active;
@@ -75,13 +75,13 @@ void win16_control_draw_combo(HWND w,control_style *style,HDC dc,BOOL (*get_info
 }
 
 
-void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC dc,const RECT *dirty,const style_control_native_button *button,const win16_style_palette *theme,const classic_combo_arrow_art *art)
+void style_outline_native_combo_button(HWND w,const style_instance *instance,HDC dc,const RECT *dirty,const style_control_native_button *button,const style_window_palette *theme,const classic_combo_arrow_art *art)
 {
     RECT r=button->bounds;BOOL pressed=button->pressed;
-    win16_style_palette palette;
+    style_window_palette palette;
     if(!dc || !style_dc_unmirrored_origin_pixels(dc))return;
     int dpi=(int)GetDpiForWindow(w);if(dpi<=0 || dpi>768)return;
-    int u=max(1,MulDiv(1,dpi,96)),gw=MulDiv(7,dpi,96),gh=MulDiv(9,dpi,96);
+    int u=max(1,MulDiv(1,dpi,96)),gw=MulDiv(CLASSIC_COMBO_ARROW_WIDTH,dpi,96),gh=MulDiv(CLASSIC_COMBO_ARROW_HEIGHT,dpi,96);
     if(r.right-r.left<gw+2*u || r.bottom-r.top<gh+2*u || instance->detached || !IsWindow(w))return;
     int saved=SaveDC(dc);if(!saved)return;
     if(IntersectClipRect(dc,r.left,r.top,r.right,r.bottom)==ERROR ||

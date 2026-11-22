@@ -22,6 +22,10 @@ typedef struct style_control_runtime_extras {
     BOOL rich_month,rich_hotkey,rich_popup,rich_unicode,rich_candidate;
     BOOL vb_user_edge,vb_data_edge,vb_mdi_child;
 } style_control_runtime_extras;
+
+void style_control_vcl_classify(HWND,DWORD,BOOL,HMODULE,style_control_runtime_candidates *);
+void style_control_vcl_classify_extra(HWND,DWORD,BOOL,HMODULE,style_control_runtime_extras *);
+
 typedef enum style_control_runtime_kind {
     STYLE_RUNTIME_GROUP,STYLE_RUNTIME_SCROLL,STYLE_RUNTIME_TAB,STYLE_RUNTIME_TRACK,STYLE_RUNTIME_TOOLBAR,STYLE_RUNTIME_EDIT
 } style_control_runtime_kind;

@@ -1,7 +1,6 @@
 #include "lib-win32-style/application/control/control_vcl_identity.h"
 #include "attachment_state.h"
 #include "control_class.h"
-#include "vcl_identity.h"
 
 void win16_attachment_guard_cool(HWND w,UINT m,attachment *a,const win16_attachment_guard_services *v)
 {
@@ -72,7 +71,7 @@ void win16_attachment_classify_vcl(HWND w,DWORD original_style,BOOL ready,BOOL p
 {
     *v=(style_control_runtime_candidates){0};
     if(!i->control && !i->report && !i->tree && !picture && !checklist && !i->legacy_progress && !status && !spin &&
-       (original_style&WS_CHILD) && i->owner)win16_control_vcl_classify(w,original_style,ready,i->owner,v);
+       (original_style&WS_CHILD) && i->owner)style_control_vcl_classify(w,original_style,ready,i->owner,v);
 }
 int win16_attachment_eligibility(DWORD original_style,BOOL picture,BOOL checklist,BOOL status,BOOL spin,BOOL vcl_mdi_probe,
     const win16_attachment_initial_classification *i,const style_control_runtime_candidates *v,const style_control_runtime_extras *e)
@@ -113,13 +112,13 @@ BOOL win16_attachment_group_choice_button(HWND w,attachment *a)
 BOOL win16_attachment_vb_data_valid(HWND w,attachment *a)
 {
 
-    return !a || a->base.instance.detached || !a->base.runtime.data.installed || win16_control_vb_data_role(w,a->base.runtime.data.parent);
+    return !a || a->base.instance.detached || !a->base.runtime.data.installed || style_control_vb_data_role(w,a->base.runtime.data.parent);
 }
 
 BOOL win16_attachment_vb_data_attached(HWND w,attachment *a)
 {
 
-    return a && !a->base.instance.detached && a->base.runtime.data.installed && win16_control_vb_data_role(w,a->base.runtime.data.parent);
+    return a && !a->base.instance.detached && a->base.runtime.data.installed && style_control_vb_data_role(w,a->base.runtime.data.parent);
 }
 
 BOOL win16_attachment_vb_user_label_target(HWND w,attachment *a)
@@ -127,20 +126,20 @@ BOOL win16_attachment_vb_user_label_target(HWND w,attachment *a)
 
     if(!a || a->base.instance.detached || !a->base.runtime.user.candidate)return FALSE;
     HWND parent=GetParent(w);
-    return win16_control_vb_user_edge_role(w,parent) && (!a->base.runtime.user.parent || a->base.runtime.user.parent==parent);
+    return style_control_vb_user_edge_role(w,parent) && (!a->base.runtime.user.parent || a->base.runtime.user.parent==parent);
 }
 
 BOOL win16_attachment_vb_user_edge_dormant(HWND w,attachment *a)
 {
 
-    return a && !a->base.instance.detached && a->base.runtime.user.installed && win16_control_vb_user_edge_role(w,a->base.runtime.user.parent) &&
+    return a && !a->base.instance.detached && a->base.runtime.user.installed && style_control_vb_user_edge_role(w,a->base.runtime.user.parent) &&
         !(GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_CLIENTEDGE);
 }
 
 BOOL win16_attachment_vb_user_edge_valid(HWND w,attachment *a)
 {
 
-    return !a || a->base.instance.detached || !a->base.runtime.user.installed || win16_control_vb_user_edge_identity(w,a->base.runtime.user.parent);
+    return !a || a->base.instance.detached || !a->base.runtime.user.installed || style_control_vb_user_edge_identity(w,a->base.runtime.user.parent);
 }
 
 

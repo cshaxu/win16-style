@@ -1,25 +1,25 @@
-#include "choice_view.h"
+#include "outline_choice.h"
 #include "lib-win32-style/application/control/choice_glyph.h"
-#include "other_paint.h"
-#include "../../../application/control/control_protocol.h"
-#include "../../../application/graphics/icon_size.h"
+#include "outline_basic.h"
+#include "control_protocol.h"
+#include "../graphics/icon_size.h"
 #include "lib-win32-style/application/control/button_snapshot.h"
 #include <uxtheme.h>
 
 static style_control_button_role choice_role(HWND window,void *context,DWORD style)
 {
-    const win16_control_choice_view *view=context;
+    const style_outline_choice_view *view=context;
     UINT type=view->button_type(window,style);BOOL label=view->is_static(window);
     return (style_control_button_role){type,label};
 }
 static HFONT choice_font(HWND window,void *context)
 {
-    const win16_control_choice_view *view=context;
+    const style_outline_choice_view *view=context;
     return view->state->font && (view->vb_frame(window) || view->vb_button(window) || style_control_protocol_is(window,L"BUTTON"))?
         view->state->font:(HFONT)SendMessageW(window,WM_GETFONT,0,0);
 }
 
-void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC dc)
+void style_outline_draw_choice(HWND w,const style_outline_choice_view *view,HDC dc)
 {
     RECT r,glyph,label,focus;int saved,x,y;
     UINT dpi=GetDpiForWindow(w);style_control_button_snapshot snapshot;
@@ -62,7 +62,7 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
         if(!parent_painted)FillRect(dc,&r,(HBRUSH)GetStockObject(DC_BRUSH));
     }
     if(label_control || type==BS_PUSHBUTTON || type==BS_DEFPUSHBUTTON || type==BS_GROUPBOX || (style&BS_PUSHLIKE)){
-        win16_style_palette palette=*view->palette;
+        style_window_palette palette=*view->palette;
         COLORREF text_color=CLR_INVALID;
         BOOL static_shape=(static_type>=SS_BLACKRECT && static_type<=SS_WHITEFRAME) ||
             (static_type>=SS_ETCHEDHORZ && static_type<=SS_ETCHEDFRAME);
@@ -86,7 +86,7 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
             palette.edge=colors.edge;
             text_color=classic_push_text_color(view->push,role);
         }
-        win16_control_other(w,view->instance,&palette,dc,r,font,text,label_control,view->button_type,view->group_push,view->controls,text_color);
+        style_outline_draw_basic(w,view->instance,&palette,dc,r,font,text,label_control,view->button_type,view->group_push,view->controls,text_color);
         RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;
     }
     SelectObject(dc,font);
@@ -98,7 +98,7 @@ void win16_control_draw_choice(HWND w,const win16_control_choice_view *view,HDC 
     if(check!=BST_UNCHECKED)glyph_flags|=DFCS_CHECKED;
     if(state&BST_PUSHED)glyph_flags|=DFCS_PUSHED;
     if(style&WS_DISABLED)glyph_flags|=DFCS_INACTIVE;
-    win16_style_palette tile=*view->palette;
+    style_window_palette tile=*view->palette;
     const classic_choice_surface *entry=classic_choice_entry(view->choice,radio,check,
         (style&WS_DISABLED)!=0,state);
     const classic_surface_colors *colors=view->choice_palette?classic_choice_color(entry):NULL;

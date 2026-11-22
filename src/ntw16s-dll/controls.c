@@ -10,16 +10,17 @@ BOOL ntw16s_group_choice_button(HWND);
 BOOL ntw16s_vb_user_edge_dormant(HWND);
 #include "controls.h"
 #include "../lib-win32-style/application/control/control_chrome.h"
-#include "../lib-win32-style/appearance/win3x/control/other_paint.h"
-#include "../lib-win32-style/appearance/win3x/control/list_paint.h"
-#include "../lib-win32-style/appearance/win3x/control/combo_paint.h"
+#include "../lib-win32-style/application/control/outline_basic.h"
+#include "../lib-win32-style/application/control/outline_list.h"
+#include "../lib-win32-style/application/control/outline_combo.h"
 #include "../lib-win32-style/application/control/scroll_outline.h"
 #include "../lib-win32-style/appearance/win3x/control/special_paint.h"
 BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *,style_scroll_arrow_art *);
 #include "lib-win32-style/application/graphics/present.h"
 #include "lib-win32-style/application/control/scroll_state.h"
+#include "lib-win32-style/application/control/list_snapshot.h"
 #include "lib-win32-style/application/control/control_scope.h"
-#include "../lib-win32-style/appearance/win3x/control/choice_view.h"
+#include "../lib-win32-style/application/control/outline_choice.h"
 #include "lib-win32-style/application/control/control_vcl_spin.h"
 #include "../lib-win32-style/appearance/win3x/control/control_state.h"
 #include "lib-win32-style/application/control/notify.h"
@@ -104,27 +105,46 @@ static void draw(HWND w,control_style *s,HDC dc)
 {
     BOOL themed=s->themed && style_control_class_is(w,L"BUTTON");
     BOOL label=s->themed && style_control_class_is(w,L"STATIC");
-    const win16_control_choice_view view={&s->instance,&s->state,&s->palette,
+    const style_outline_choice_view view={&s->instance,&s->state,&s->palette,
         themed?&s->push_colors:NULL,&s->choice_colors,
         style_control_button_type,style_control_is_static,style_control_vb_frame,style_control_vb_button,
         ntw16s_group_choice_button,ntw16s_group_push_button,s->choice_module,&s->choice_art,s->read_choice_art,
         label?&s->label_colors:NULL,themed?&s->group_colors:NULL,label?&s->frame_colors:NULL,s->controls,themed};
-    win16_control_draw_choice(w,&view,dc);
+    style_outline_draw_choice(w,&view,dc);
 }
 
 /* The native list owns strings, sorting, selection and scrolling. Query only
  * visible rows; never replace item data or convert application owner-draw. */
-static void draw_list(HWND w,control_style *s,HDC dc)
-{win16_control_draw_list(w,s,dc);}
+static void draw_list(HWND window,control_style *style,HDC dc)
+{
+    const classic_list_colors *list=&style->list_colors;
+    const classic_text_colors *label=&style->label_colors;
+    const win16_style_palette *palette=&style->palette;
+    const style_list_appearance appearance={
+        .font_override=style->state.font && style_control_vb_list(window)?style->state.font:NULL,
+        .background=list->present?list->background:palette->light,
+        .selection=list->present?list->selection:palette->active,
+        .text=label->present?label->normal:palette->edge,
+        .selected_text=list->present?list->selection_text:palette->active_text,
+        .disabled_text=label->present?label->disabled:palette->shadow,
+        .tabs=style->state.tab_positions,.tab_count=style->state.tab_count,.use_tabs=TRUE
+    };
+    style_control_list_strings(window,&style->instance,dc,&appearance);
+}
 static void edit_border(HWND w,control_style *s,HDC target)
-{win16_control_edit_border(w,s,target);}
+{
+    if(s->edit_border && s->controls.edit)
+        style_outline_edit_border(w,target,&s->palette,&s->frame_colors,s->edit_colors,s->controls.edit);
+}
 static void list_border(HWND w,control_style *s,HDC target)
-{win16_control_list_border(w,s,target);}
+{style_outline_list_border(w,target,&s->palette,&s->frame_colors);}
 
 static void draw_combo(HWND w,control_style *s,HDC dc)
-{win16_control_draw_combo(w,s,dc,
-    ntw16s_native_get_combo_info,style_control_vb_combo,style_control_vb_drive);}
-
+{
+    const style_outline_combo_view view={&s->instance,&s->state,&s->palette,
+        &s->combo_colors,&s->list_colors,&s->label_colors,&s->combo_arrow,s->common_dialog_combo};
+    style_outline_draw_combo(w,&view,dc,ntw16s_native_get_combo_info,style_control_vb_combo,style_control_vb_drive);
+}
 
 /* The runtime owns navigation and paints its native bitmap first. This
  * bounded overlay accepts only observed 96/144-DPI public-DC geometry. */

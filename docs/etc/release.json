@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P48",
-  "stage": "published development candidate with shared scrollbar geometry and outline painting",
+  "delivery": "M0 T29 S23 P49",
+  "stage": "published development candidate with shared outline control renderers and runtime identity checks",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P47 5251dbaf6e25",
-  "source_snapshot_sha256": "8c1b58592ae401c7cfa7512c86a9c474ca63fed0b7e364ba0df489e4b03e07ff",
+  "last_verified_remote_delivery": "M0 T29 S23 P48 18176cb5038e",
+  "source_snapshot_sha256": "d1294a1dadcfbebd1f13ba4224e66da911968b1c6401c57ae87f340ccc5e8d7d",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "cde62030734681b42a3821b8c6212de9c0f38921af9e9ec02bf70a13eaf9e2f4",
+      "sha256": "80a4293d51eb69971680c94e232dd55534c9a8bc573f3bf21c4600843caf897a",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "04060cd4b599d3efe39616ba48e017f5b0a68cb44155aa346f5d3c7c54db7e57",
+      "sha256": "516bb528d770d72421699aa0b3992c98c8d42a707244ffc4ba94500e0f6421b8",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "ebe0c4bbc9a2ec224e95a3d6fad9670094caf2eab0f856c37245b887bc5c7b0d",
+      "sha256": "eb8beb1dd079d74ca9e8b59bc8406d183e17fd602830186e65bf15433a6321c4",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,51 +106,47 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 30,
+    "passed": 26,
     "selected_cases": [
-      "x86 core-geometry",
-      "x86 core-style-scroll-surface",
-      "x86 core-style-scroll-track",
-      "x86 core-style-scroll-controller",
-      "x86 core-win16-control-link",
-      "x86 scroll-pixels-and-gdi",
-      "x86 observed-compat-scroll",
-      "x86 assets-theme-pixels",
-      "x86 assets-outline-start",
-      "x86 assets-observed-start",
-      "x86 assets-observed-frame",
-      "x86 winnt-theme-pixels",
-      "x86 winnt-outline-start",
-      "x86 winnt-observed-start",
-      "x86 winnt-observed-frame",
-      "x64 core-geometry",
-      "x64 core-style-scroll-surface",
-      "x64 core-style-scroll-track",
-      "x64 core-style-scroll-controller",
-      "x64 core-win16-control-link",
-      "x64 scroll-pixels-and-gdi",
-      "x64 observed-compat-scroll",
-      "x64 assets-theme-pixels",
-      "x64 assets-outline-start",
-      "x64 assets-observed-start",
-      "x64 assets-observed-frame",
-      "x64 winnt-theme-pixels",
-      "x64 winnt-outline-start",
-      "x64 winnt-observed-start",
-      "x64 winnt-observed-frame"
+      "x86 link",
+      "x86 vcl-identity",
+      "x86 gdi-full",
+      "x86 assets-theme",
+      "x86 assets-month",
+      "x86 assets-combo",
+      "x86 assets-combo-simple",
+      "x86 assets-combo-list",
+      "x86 winnt-theme",
+      "x86 winnt-month",
+      "x86 winnt-combo",
+      "x86 winnt-combo-simple",
+      "x86 winnt-combo-list",
+      "x64 link",
+      "x64 vcl-identity",
+      "x64 gdi-full",
+      "x64 assets-theme",
+      "x64 assets-month",
+      "x64 assets-combo",
+      "x64 assets-combo-simple",
+      "x64 assets-combo-list",
+      "x64 winnt-theme",
+      "x64 winnt-month",
+      "x64 winnt-combo",
+      "x64 winnt-combo-simple",
+      "x64 winnt-combo-list"
     ],
     "skipped": [],
     "limitations": [
-      "14 same-snapshot geometry, GDI, link and compatibility cases, 16 installed-package or theme pixel cases",
+      "6 clean-snapshot link, VCL identity and GDI cases, 8 installed-package theme and month cases, and 12 installed-package combo cases with incrementally rebuilt test-only drivers",
       "Owned native fixtures only",
       "Physical input, interactive administrator tray, actual UWP application and full package matrix not run"
     ]
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P48 inputs, shared build/.ccache",
+    "command": "isolated HEAD plus scoped P49 product inputs, MinGW/Ninja and shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1997,
-    "cache_misses": 111
+    "cache_hits": 2074,
+    "cache_misses": 30
   }
 }

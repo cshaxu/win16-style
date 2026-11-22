@@ -38,8 +38,8 @@
 | 17 | 外观 | 静态文字、蚀刻边和框线色值 | S | S | 颜色及 BORDERFILL/IMAGE 数据；绘制角色另由匹配器识别 | [1](../../src/lib-win32-style/application/control/control_chrome.c) [2](../../src/lib-win32-style/application/control/observed/static_paint.c) |
 | 18 | 外观 | 分组框背景、边和标题字样 | S | S | BUTTON.BP_GROUPBOX 及颜色、背景属性 | [1](../../src/lib-win32-style/application/control/control_chrome.c) [2](../../src/lib-win32-style/application/control/observed/static_paint.c) |
 | 19 | 外观 | 普通、只读、禁用编辑框的边缘及颜色 | S | S | EDIT 部件状态及系统颜色 | [1](../../src/lib-win32-style/application/control/control_chrome.c) [2](../../src/lib-win32-style/application/control/observed/edit_paint.c) |
-| 20 | 外观 | 普通列表选中、背景色与边缘 | S | S | LISTBOX 和系统色值；内容仍由列表提供 | [1](../../src/lib-win32-style/appearance/win3x/control/list_paint.c) [2](../../src/lib-win32-style/application/control/observed/list_combo.c) |
-| 21 | 外观 | 组合框下拉按钮、边缘与禁用外观 | S | S | COMBOBOX 各部件和状态；子窗口归属另计 | [1](../../src/lib-win32-style/appearance/win3x/control/combo_paint.c) [2](../../src/lib-win32-style/application/control/observed/list_combo.c) |
+| 20 | 外观 | 普通列表选中、背景色与边缘 | S | S | LISTBOX 和系统色值；内容仍由列表提供 | [1](../../src/lib-win32-style/application/control/outline_list.c) [2](../../src/lib-win32-style/application/control/observed/list_combo.c) |
+| 21 | 外观 | 组合框下拉按钮、边缘与禁用外观 | S | S | COMBOBOX 各部件和状态；子窗口归属另计 | [1](../../src/lib-win32-style/application/control/outline_combo.c) [2](../../src/lib-win32-style/application/control/observed/list_combo.c) |
 | 22 | 外观 | 横纵滚动条箭头、滑块、轨道和尺寸框 | S | S | SCROLLBAR 箭头、方向、状态图和 size box | [1](../../src/lib-win32-style/application/control/scroll_outline.c) [2](../../src/lib-win32-style/application/control/native_scroll.c) |
 | 23 | 外观 | 滚动条的基本厚度和尺寸 | S | S | SysMetrics 滚动条度量或部件大小 | [1](../../src/lib-win32-style/application/control/scroll_outline.c) [2](../../src/lib-win32-style/application/control/native_scroll.c) |
 | 24 | 外观 | 极短条及非标准厚度的裁决参数 | E | E | 标准部件大小可存；保留当前极值规则需额外参数，实际求解另计 | [1](../../src/lib-win32-style/application/control/scroll_outline.c) [2](../../src/lib-win32-style/application/control/native_scroll.c) |

@@ -1,11 +1,11 @@
-#include "other_paint.h"
+#include "outline_basic.h"
 #include "lib-win32-style/application/control/control_chrome.h"
 #include "lib-win32-style/application/graphics/text_metrics.h"
 #include "lib-win32-style/application/control/button_snapshot.h"
-#include "../../../application/graphics/paint_frame.h"
+#include "../graphics/paint_frame.h"
 #include <commctrl.h>
 
-void win16_control_other(HWND w,style_instance *instance,const win16_style_palette *palette,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label,UINT (*button_type)(HWND,DWORD),BOOL (*group_push)(HWND),classic_control_presentation controls,COLORREF text_color)
+void style_outline_draw_basic(HWND w,style_instance *instance,const style_window_palette *palette,HDC dc,RECT r,HFONT font,const WCHAR *text,BOOL label,UINT (*button_type)(HWND,DWORD),BOOL (*group_push)(HWND),classic_control_presentation controls,COLORREF text_color)
 {
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);UINT type=(label?(style&SS_TYPEMASK):button_type(w,style));
     int u=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));RECT bounds=r;TEXTMETRICW tm;

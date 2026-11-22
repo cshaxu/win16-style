@@ -14,4 +14,7 @@ BOOL style_control_vcl_bit_identity(HWND w,HMODULE owner);
 BOOL style_control_vcl_checklist_identity(HWND w);
 BOOL style_control_vcl_mdi_identity(HWND w,HWND parent,HWND host,HMODULE owner,BOOL (*host_attached)(HWND));
 BOOL style_control_vcl_cool_identity(HWND w,HWND parent,HMODULE owner,BOOL (*current)(HWND,void *),void *context);
+BOOL style_control_vb_data_role(HWND,HWND);
+BOOL style_control_vb_user_edge_role(HWND,HWND);
+BOOL style_control_vb_user_edge_identity(HWND,HWND);
 #endif

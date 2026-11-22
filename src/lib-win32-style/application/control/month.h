@@ -23,4 +23,5 @@ BOOL style_control_month_draw_identity(const style_control_month_scope *,HTHEME,
 void style_control_month_selection_begin(const style_control_month_scope *,HTHEME,HDC,int,int,const RECT *,const RECT *,const void *);
 BOOL style_control_month_selection_take(const style_control_month_scope *,HTHEME,HDC,int,int,const RECT *,DWORD,const void *,style_control_month_selection *);
 BOOL style_control_month_title_fits(const RECT *,const RECT *,const RECT *,int);
+BOOL style_control_month_text_length(LPCWSTR,int,int *);
 #endif
