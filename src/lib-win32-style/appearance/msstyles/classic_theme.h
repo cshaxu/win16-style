@@ -2,7 +2,7 @@
 #define STYLE_MSSTYLES_CLASSIC_THEME_H
 
 #include "classic_style.h"
-#include "lib-win32-style/application/control/control_colors.h"
+#include "lib-win32-style/application/control/control_chrome.h"
 #include "lib-win32-style/application/control/scroll_palette.h"
 #include "lib-win32-style/application/window/palette.h"
 #include "v4_font.h"
@@ -85,10 +85,9 @@ static inline void classic_theme_window_palette(style_window_palette *p,const cl
     }
 }
 
-style_relief_palette classic_relief_palette(const classic_frame_colors *,const classic_list_colors *,const classic_text_colors *);
 static inline style_relief_palette classic_theme_relief_palette(const classic_theme *theme)
 {
-    return theme?classic_relief_palette(&theme->frame,&theme->list,&theme->label):classic_relief_palette(NULL,NULL,NULL);
+    return theme?style_control_relief_palette(&theme->frame,&theme->list,&theme->label):style_control_relief_palette(NULL,NULL,NULL);
 }
 
 int classic_scroll_nominal(classic_scroll_metrics metrics,enum classic_scroll_extent_source fallback,

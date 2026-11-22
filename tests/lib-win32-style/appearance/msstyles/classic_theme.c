@@ -18,7 +18,7 @@
 #include "lib-win32-style/application/control/control_chrome.h"
 #include "lib-win32-style/application/control/outline_choice.h"
 #include "lib-win32-style/application/control/outline_combo.h"
-#include "lib-win32-style/appearance/win3x/control/control_state.h"
+#include "lib-win32-style/application/control/outline_state.h"
 #include "lib-win32-style/application/control/outline_list.h"
 #include "lib-win32-style/appearance/win3x/resources/scroll_assets.h"
 #include "lib-win32-style/appearance/win3x/resources/frame_buttons.h"
@@ -85,7 +85,7 @@ static BOOL draw_band(HDC dc,const classic_theme *theme,BOOL win2000,BOOL active
        style_caption_hit(alternate.buttons+CLASSIC_BUTTON_SYSTEM,CLASSIC_BUTTON_SYSTEM,0,new_point)!=HTNOWHERE ||
        style_caption_command(style_caption_role(HTSYSMENU),FALSE)!=SC_KEYMENU ||
        style_caption_command(style_caption_role(HTMAXBUTTON),TRUE)!=SC_RESTORE)return FALSE;
-    win16_style_palette palette;
+    style_window_palette palette;
     style_window_palette_default(&palette);
     classic_theme_window_palette(&palette,theme);
     style_client_frame_paint_state state={.active=active,.presentation=theme->caption_presentation};
@@ -201,7 +201,7 @@ static BOOL draw_caption_presentation(HDC dc,BOOL win2000)
             const style_full_client_layout layout={.caption=band,.title=band,.unit=1};
             style_font_pair fonts={.title=font};
             style_client_frame_paint_state state={.fonts=&fonts,.active=TRUE,.presentation=variants[i]};
-            win16_style_palette colors={.active=background,.edge=line,.face=line};
+            style_window_palette colors={.active=background,.edge=line,.face=line};
             style_client_frame_caption(dc,&layout,&colors,&state,L"Test",FALSE,FALSE);
         }
         first_ink[i]=band.right;
@@ -229,7 +229,7 @@ static BOOL shared_caption_band(HDC dc,const DWORD *pixels)
     native.buttons[STYLE_NATIVE_CAPTION_MINIMIZE]=left;
     native.buttons[STYLE_NATIVE_CAPTION_CLOSE]=right;
     const UINT flags[STYLE_NATIVE_CAPTION_BUTTONS]={0};
-    const win16_style_palette palette={.active=start,.active_text=RGB(255,255,255),
+    const style_window_palette palette={.active=start,.active_text=RGB(255,255,255),
         .edge=colors.edge,.light=colors.light,.shadow=colors.shadow,.face=colors.face};
     const style_native_caption_colors native_colors={start,end,palette.active_text,TRUE};
     DWORD reference[240*64];
@@ -258,7 +258,7 @@ static BOOL draw_caption_art(HDC dc,const DWORD *pixels,const classic_theme *the
     if(!style_full_client_measure(240,64,dpi,WS_OVERLAPPEDWINDOW,0,FALSE,
         &theme->title_buttons,&theme->caption_metrics,&theme->border_presentation.geometry,dpi,&layout))return FALSE;
 
-    win16_style_palette palette;
+    style_window_palette palette;
     style_window_palette_default(&palette);
     palette.edge=RGB(5,20,34);
     palette.light=RGB(29,60,91);
@@ -393,7 +393,7 @@ static BOOL paint_native_button(HDC dc,HWND window,BOOL win2000,const classic_pu
         const win2k_palette base=classic_theme_relief_palette(theme);
         return style_observed_button_paint(window,&instance,dc,push,choice,NULL,classic_choice_art_get,module,&art,controls,&base);
     }
-    win16_style_palette palette;
+    style_window_palette palette;
     style_window_palette_default(&palette);
     classic_theme_window_palette(&palette,theme);
     style_control_state control={0};
@@ -437,7 +437,7 @@ static BOOL draw_control_lines(HDC dc,const classic_theme *theme,BOOL win2000)
     RECT before,after;
     BOOL passed=group && edit && GetClientRect(edit,&before);
     style_instance instance={0};
-    win16_style_palette palette;
+    style_window_palette palette;
     style_window_palette_default(&palette);
     classic_theme_window_palette(&palette,theme);
     style_control_state native={0};
@@ -455,7 +455,7 @@ static BOOL draw_control_lines(HDC dc,const classic_theme *theme,BOOL win2000)
         passed=passed && GetPixel(dc,10,27)==(profile==STYLE_LINE_FLAT?theme->group.shadow:RGB(255,255,255));
         if(win2000)passed=passed && style_observed_edit_border(edit,dc,&relief,profile);
         else{
-            control_style state={.palette=palette,.controls=controls,.edit_border=TRUE};
+            style_outline_control state={.palette=palette,.controls=controls,.edit_border=TRUE};
             memcpy(state.edit_colors,theme->edit,sizeof(state.edit_colors));
             style_outline_edit_border(edit,dc,&state.palette,&state.frame_colors,state.edit_colors,state.controls.edit);
         }
@@ -626,7 +626,7 @@ static BOOL draw_combo_surface(HDC dc,const classic_theme *theme,BOOL win2000)
         style_instance instance={0};
         passed=style_observed_combo_paint(combo,&instance,dc,&palette,&theme->combo);
     }else if(passed){
-        control_style state={.combo_colors=theme->combo,.list_colors=theme->list,.label_colors=theme->label,
+        style_outline_control state={.combo_colors=theme->combo,.list_colors=theme->list,.label_colors=theme->label,
             .combo_arrow=theme->combo_arrow};
         style_window_palette_default(&state.palette);
         classic_theme_window_palette(&state.palette,theme);
@@ -695,7 +695,7 @@ static BOOL draw_popup(HDC dc,const DWORD *pixels,const classic_theme *theme,con
 {
     WCHAR text[]=L"MMMM\tF10";
     style_menu_item item={.text=text,.submenu=TRUE};
-    win16_style_palette palette;
+    style_window_palette palette;
     style_window_palette_default(&palette);
     classic_theme_window_palette(&palette,theme);
     style_menu_art original={.available=TRUE};
@@ -785,7 +785,7 @@ static BOOL draw_menu_text_options(HDC dc,const DWORD *pixels,const classic_them
     static const WCHAR text[]=L"&Menu";
     RECT area={0,0,200,40};
     classic_menu_metrics metrics=theme->menu_metrics;
-    win16_style_palette palette;
+    style_window_palette palette;
     style_window_palette_default(&palette);
     const classic_menu_colors *colors=&theme->menu_bar;
     if(!style_menu_paint_row(dc,&area,font,dpi,&palette,text,0,STYLE_MENU_BAR,

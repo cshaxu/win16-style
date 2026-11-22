@@ -177,7 +177,7 @@ M0 T29 S22 已收口。P1 076779b0a999 的双宽正式七件先发布两处，�
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T29 S23 P51 `f3d0c9de`，两处七件正式文件和远端摘要已复核。
+- Last verified remote delivery: M0 T29 S23 P52 `6f9c83fa`，两处七件正式文件和远端摘要已复核。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 23

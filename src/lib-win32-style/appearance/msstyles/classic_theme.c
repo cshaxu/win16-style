@@ -1080,26 +1080,3 @@ int classic_scroll_nominal(classic_scroll_metrics metrics,enum classic_scroll_ex
 {
     return style_scroll_nominal(metrics,(enum style_scroll_extent_source)fallback,bar,vertical,dpi);
 }
-
-style_relief_palette classic_relief_palette(const classic_frame_colors *frame,
-    const classic_list_colors *list,const classic_text_colors *label)
-{
-    style_relief_palette palette=style_relief_native_palette();
-    if(frame && frame->present){
-        palette.face=palette.light=frame->face;
-        palette.highlight=frame->light;
-        palette.shadow=frame->shadow;
-        palette.dark=frame->edge;
-    }
-    if(list && list->present){
-        palette.dark=list->dark;
-        palette.window=list->background;
-        palette.selection=list->selection;
-        palette.selection_text=list->selection_text;
-    }
-    if(label && label->present){
-        palette.text=label->normal;
-        palette.gray=label->disabled;
-    }
-    return palette;
-}

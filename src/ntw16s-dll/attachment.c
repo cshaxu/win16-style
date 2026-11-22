@@ -4,7 +4,7 @@
 #include "lib-win32-style/application/adapters/win32/paint_dispatch.h"
 #include "lib-win32-style/application/control/control_vcl_identity.h"
 #include "lib-win32-style/application/adapters/win32/runtime_text.h"
-#include "../lib-win32-style/appearance/win3x/control/control_class.h"
+#include "lib-win32-style/application/control/control_class.h"
 #include "ntw16s.h"
 #include "native_api.h"
 #include "theme.h"
@@ -18,12 +18,12 @@
 #include "lib-win32-style/application/graphics/text_metrics.h"
 #include "lib-win32-style/application/adapters/win32/frame_paint.h"
 #include "lib-win32-style/application/adapters/win32/runtime_observer.h"
-#include "../lib-win32-style/appearance/win3x/control/special_paint.h"
+#include "lib-win32-style/application/control/outline_special.h"
 #include "lib-win32-style/application/control/control_vcl_spin.h"
 #include "lib-win32-style/application/control/spin.h"
 #include "lib-win32-style/application/control/status_paint.h"
 #include "lib-win32-style/application/control/control_status.h"
-#include "../lib-win32-style/appearance/win3x/control/attachment_state.h"
+#include "lib-win32-style/application/adapters/win32/outline_attachment.h"
 #include "lib-win32-style/application/control/month.h"
 #include "lib-win32-style/appearance/msstyles/modern_frame_style.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
@@ -72,34 +72,34 @@ void ntw16s_modern_spin_theme(HDC dc,int part,int state,const RECT *r,const RECT
 {style_control_spin_theme(paint_runtime.spin,dc,part,state,r,clip,caller);}
 static BOOL spin_face(HWND w,HDC dc,const RECT *r,const RECT *clip,UINT state)
 {
-    const attachment *a=paint_runtime.spin->instance->context;
+    const style_outline_attachment *a=paint_runtime.spin->instance->context;
     return style_control_bit_button_face(w,dc,r,clip,state,&a->palette,&a->push);
 }
 void ntw16s_modern_spin_blit(HDC dst,int x,int y,int w,int h,HDC src,int sx,int sy,DWORD rop)
 {style_control_spin_blit(paint_runtime.spin,dst,x,y,w,h,src,sx,sy,rop,spin_face);}
 static BOOL spin_frame(HDC dc,const RECT *bounds,const RECT *clip)
 {
-    const attachment *a=paint_runtime.spin->instance->context;
-    return win16_control_color_frame(dc,bounds,clip,a->palette.edge);
+    const style_outline_attachment *a=paint_runtime.spin->instance->context;
+    return style_outline_control_color_frame(dc,bounds,clip,a->palette.edge);
 }
 void ntw16s_spin_frame(HDC dc,const RECT *r,UINT type,UINT flags,const void *caller)
 {style_control_spin_frame(paint_runtime.spin,dc,r,type,flags,caller,spin_frame);}
 
 static BOOL bit_face(HWND w,HDC dc,const RECT *r,const RECT *clip,UINT state)
 {
-    const attachment *a=paint_runtime.bit->observation.owner;
+    const style_outline_attachment *a=paint_runtime.bit->observation.owner;
     return style_control_bit_button_face(w,dc,r,clip,state,&a->palette,&a->push);
 }
 void ntw16s_bit_theme_frame(HDC dc,int part,const RECT *rect,const RECT *clip,const void *address)
 {
-    style_runtime_bit_scope *s=paint_runtime.bit;if(!s || !s->observation.owner)return;attachment *a=s->observation.owner;
+    style_runtime_bit_scope *s=paint_runtime.bit;if(!s || !s->observation.owner)return;style_outline_attachment *a=s->observation.owner;
     const style_runtime_bit_frame_paint v={s->observation.window,s->dc,s->item,s->state,&a->base.instance,&a->base.runtime.roles.bit,&a->base.runtime.report};
     style_runtime_bit_frame(&v,dc,part,rect,clip,address,bit_face);
 }
 static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address,BOOL drop)
 {
     style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return;
-    const attachment *a=s->observation.owner;
+    const style_outline_attachment *a=s->observation.owner;
     const style_control_vcl_paint_view v={s->observation.window,s->observation.instance,
         &s->observation.runtime->roles.inplace,&a->palette,&a->push,&a->combo_arrow};
     style_control_vcl_inplace_draw(&v,dc,part,state,r,clip,address,drop);
@@ -107,16 +107,16 @@ static void inplace_draw(HDC dc,int part,int state,const RECT *r,const RECT *cli
 void ntw16s_nav_theme(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {
     style_runtime_paint_scope *s=paint_runtime.paint;if(!s)return;
-    const attachment *a=s->observation.owner;
+    const style_outline_attachment *a=s->observation.owner;
     const style_control_vcl_paint_view v={s->observation.window,s->observation.instance,
         &s->observation.runtime->roles.nav,&a->palette,&a->push,NULL};
     style_control_vcl_nav_draw(&v,dc,part,state,r,clip,address);
 }
 BOOL ntw16s_inplace_paint(HDC dc)
-{style_runtime_paint_scope *s=paint_runtime.paint;return win16_attachment_inplace_paint(s?s->observation.owner:NULL,s?s->observation.window:NULL,dc);}
+{style_runtime_paint_scope *s=paint_runtime.paint;return style_outline_attachment_inplace_paint(s?s->observation.owner:NULL,s?s->observation.window:NULL,dc);}
 void ntw16s_inplace_button(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address){inplace_draw(dc,part,state,r,clip,address,FALSE);}
 void ntw16s_inplace_dropdown(HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address){inplace_draw(dc,part,state,r,clip,address,TRUE);}
-static BOOL status_identity(HWND w,attachment *a,HMODULE *native)
+static BOOL status_identity(HWND w,style_outline_attachment *a,HMODULE *native)
 {
     return style_control_status_identity(w,a?&a->base.instance:NULL,a?&a->base.runtime.status:NULL,L"TStatusBar",native);
 }
@@ -133,17 +133,17 @@ HFONT ntw16s_status_simple_font(HDC dc,LPCWSTR text,int count,UINT flags,const v
     style_control_status_scope *s=paint_runtime.status;if(!s){if(token)*token=NULL;return NULL;}
     if(token)*token=NULL;
     if(!token || !style_control_status_text_matches(s,paint_runtime.status_themes.current,dc,text,count,flags,address,style_text_ascii))return NULL;
-    attachment *a=s->context;
+    style_outline_attachment *a=s->context;
     return a->control_font_points?style_font_snapshot_borrow(&a->status_font,dc,a,token,a->control_font_points,&style_raster_font_isolated_operations):NULL;
 }
 void ntw16s_status_simple_return(void *token,HFONT font)
-{attachment *a=token;if(a)style_font_snapshot_return(&a->status_font,font);}
+{style_outline_attachment *a=token;if(a)style_font_snapshot_return(&a->status_font,font);}
 
 
 static void draw_status_edge(const style_control_status_scope *scope,HDC dc,const RECT *pane,const RECT *clip)
 {
-    const attachment *a=scope->context;
-    win16_control_color_frame(dc,pane,clip,a->status_edge);
+    const style_outline_attachment *a=scope->context;
+    style_outline_control_color_frame(dc,pane,clip,a->status_edge);
 }
 void ntw16s_status_text_frame(HDC dc,const RECT *text,UINT flags,const void *address)
 {RECT pane;const style_control_status_scope *scope=paint_runtime.status;if(style_control_status_text_frame(scope,dc,text,flags,address,&pane))draw_status_edge(scope,dc,&pane,NULL);}
@@ -160,24 +160,24 @@ static LRESULT CALLBACK attachment_proc(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_P
 static BOOL report_install(HWND,BOOL,void *,const BOOL *);
 static LRESULT CALLBACK report_notify(HWND,UINT,WPARAM,LPARAM,UINT_PTR,DWORD_PTR);
 
-static attachment *lookup(HWND w)
+static style_outline_attachment *lookup(HWND w)
 {
-    return (attachment *)style_instance_lookup(w,attachment_proc);
+    return (style_outline_attachment *)style_instance_lookup(w,attachment_proc);
 }
 static BOOL mdi_host_attached(HWND host){return lookup(host)!=NULL;}
 BOOL ntw16s_vcl_combo_candidate(HWND w)
-{return win16_attachment_vcl_combo_candidate(w,lookup(w));}
+{return style_outline_attachment_vcl_combo_candidate(w,lookup(w));}
 BOOL ntw16s_group_push_button(HWND w)
-{return win16_attachment_group_push_button(w,lookup(w));}
+{return style_outline_attachment_group_push_button(w,lookup(w));}
 BOOL ntw16s_group_choice_button(HWND w)
-{return win16_attachment_group_choice_button(w,lookup(w));}
+{return style_outline_attachment_group_choice_button(w,lookup(w));}
 
 static BOOL data_current(HWND w)
-{return win16_attachment_vb_data_valid(w,lookup(w));}
+{return style_outline_attachment_vb_data_valid(w,lookup(w));}
 BOOL ntw16s_vb_data_palette(HWND w,win16_style_palette *palette,style_scroll_arrow_art *art)
 {
-    attachment *a=lookup(w);
-    if(!win16_attachment_vb_data_attached(w,a))return FALSE;
+    style_outline_attachment *a=lookup(w);
+    if(!style_outline_attachment_vb_data_attached(w,a))return FALSE;
     *palette=a->palette;
     *art=a->arrows[0];
     return TRUE;
@@ -185,11 +185,11 @@ BOOL ntw16s_vb_data_palette(HWND w,win16_style_palette *palette,style_scroll_arr
 
 
 BOOL ntw16s_vb_user_label_target(HWND w)
-{return win16_attachment_vb_user_label_target(w,lookup(w));}
+{return style_outline_attachment_vb_user_label_target(w,lookup(w));}
 BOOL ntw16s_vb_user_edge_dormant(HWND w)
-{return win16_attachment_vb_user_edge_dormant(w,lookup(w));}
+{return style_outline_attachment_vb_user_edge_dormant(w,lookup(w));}
 static BOOL user_current(HWND w)
-{return win16_attachment_vb_user_edge_valid(w,lookup(w));}
+{return style_outline_attachment_vb_user_edge_valid(w,lookup(w));}
 BOOL ntw16s_control_role_valid(HWND w)
 {
     const style_runtime_attachment_policy policy={data_current,user_current,MCS_MULTISELECT};
@@ -206,7 +206,7 @@ BOOL ntw16s_static_call_begin(style_runtime_native_call *scope,WNDPROC proc,HWND
 HFONT ntw16s_static_text_font(HDC dc,LPCWSTR text,int count,UINT flags,const void *address)
 {
     const style_runtime_native_call *s=style_runtime_native_current(&paint_runtime.native_calls,current_observation());
-    const attachment *a=s?s->instance->context:NULL;
+    const style_outline_attachment *a=s?s->instance->context:NULL;
     if(!a || !a->control_font_points)return NULL;
     HFONT source=style_text_static_source(dc,text,count,flags,address,s->window,s->native_module);
     return source?style_raster_font_acquire(source,a->control_font_points):NULL;
@@ -216,16 +216,16 @@ static BOOL vcl_frame_owned(HWND w,void *owner){return lookup(w)==owner;}
 static BOOL vcl_frame_current(style_runtime_frame_scope *scope){return paint_runtime.paint && &paint_runtime.paint->frame==scope;}
 void ntw16s_group_frame(HDC dc,int part,int state,const RECT *rect,const RECT *clip,LPCWSTR text,int count,DWORD flags,const void *caller,BOOL is_text)
 {
-    style_runtime_paint_scope *scope=paint_runtime.paint;if(!scope || !scope->observation.owner)return;attachment *a=scope->observation.owner;
+    style_runtime_paint_scope *scope=paint_runtime.paint;if(!scope || !scope->observation.owner)return;style_outline_attachment *a=scope->observation.owner;
     const style_runtime_frame_paint v={&scope->frame,&a->base.instance,&a->base.runtime.group_frame,a,scope->observation.window,vcl_frame_owned,vcl_frame_current};
-    const style_runtime_frame_renderer frame_renderer={win16_control_group_frame,win16_control_panel_shadow,a->palette.edge};
+    const style_runtime_frame_renderer frame_renderer={style_outline_control_group_frame,style_outline_control_panel_shadow,a->palette.edge};
     style_runtime_group_frame(&v,&frame_renderer,dc,part,state,rect,clip,text,count,flags,caller,is_text);
 }
 void ntw16s_panel_polyline(HDC dc,const POINT *points,int count,const void *caller,BOOL (WINAPI *draw)(HDC,const POINT*,int))
 {
-    style_runtime_paint_scope *scope=paint_runtime.paint;if(!scope)return;if(!scope->observation.owner){scope->frame.panel_first=FALSE;return;}attachment *a=scope->observation.owner;
+    style_runtime_paint_scope *scope=paint_runtime.paint;if(!scope)return;if(!scope->observation.owner){scope->frame.panel_first=FALSE;return;}style_outline_attachment *a=scope->observation.owner;
     const style_runtime_frame_paint v={&scope->frame,&a->base.instance,&a->base.runtime.panel_frame,a,scope->observation.window,vcl_frame_owned,vcl_frame_current};
-    const style_runtime_frame_renderer frame_renderer={win16_control_group_frame,win16_control_panel_shadow,a->palette.edge};
+    const style_runtime_frame_renderer frame_renderer={style_outline_control_group_frame,style_outline_control_panel_shadow,a->palette.edge};
     style_runtime_panel_polyline(&v,&frame_renderer,dc,points,count,caller,draw);
 }
 
@@ -236,12 +236,12 @@ BOOL ntw16s_controlbar_edge_active(void)
 {return paint_runtime.box && paint_runtime.box->observation.runtime->controlbar.candidate && !paint_runtime.box->observation.instance->detached;}
 static BOOL controlbar_frame(HDC dc,const RECT *bounds,const RECT *clip)
 {
-    const attachment *a=paint_runtime.box->observation.owner;
-    return win16_control_color_frame(dc,bounds,clip,a->palette.edge);
+    const style_outline_attachment *a=paint_runtime.box->observation.owner;
+    return style_outline_control_color_frame(dc,bounds,clip,a->palette.edge);
 }
 void ntw16s_controlbar_edge(HDC dc,const RECT *rect,UINT edge,UINT flags,const void *address)
 {
-    style_runtime_box_scope *s=paint_runtime.box;if(!s || !s->observation.owner)return;attachment *a=s->observation.owner;
+    style_runtime_box_scope *s=paint_runtime.box;if(!s || !s->observation.owner)return;style_outline_attachment *a=s->observation.owner;
     style_runtime_controlbar_edge(s->observation.window,&a->base.instance,&a->base.runtime.controlbar,dc,rect,edge,flags,address,controlbar_frame);
 }
 static style_control_month_view month_view(style_runtime_paint_scope *s);
@@ -254,7 +254,7 @@ void ntw16s_rich_witness(WNDPROC proc,HWND w,UINT msg,const void *address,BOOL w
 static BOOL month_view_current(void *scope){return paint_runtime.paint==scope;}
 static style_control_month_view month_view(style_runtime_paint_scope *s)
 {
-    attachment *a=s->observation.owner;
+    style_outline_attachment *a=s->observation.owner;
     return (style_control_month_view){
         .native={.context=s,.window=s->observation.window,.instance=&a->base.instance,.rich=&a->base.runtime.rich,
             .state=&s->month,.rejected_styles=MCS_MULTISELECT,.current=month_view_current},
@@ -275,38 +275,38 @@ void ntw16s_month_selection_background(HTHEME t,HDC dc,int p,int state,const REC
 {style_runtime_paint_scope *s=paint_runtime.paint;if(s){const style_control_month_view v=month_view(s);style_control_month_selection_begin(&v.native,t,dc,p,state,r,clip,addr);}}
 void ntw16s_month_selection_text(HTHEME t,HDC dc,int p,int state,const RECT *r,DWORD f,const void *addr)
 {style_runtime_paint_scope *s=paint_runtime.paint;if(s){const style_control_month_view v=month_view(s);style_control_month_selection_text(&v,t,dc,p,state,r,f,addr);}}
-static void release(attachment *a);
+static void release(style_outline_attachment *a);
 static void attachment_dispose(void *context)
 {
-    attachment *a=context;style_runtime_references references=a->base.runtime.roles.references;
+    style_outline_attachment *a=context;style_runtime_references references=a->base.runtime.roles.references;
     style_raster_font_release(a->month_cached_font);style_font_snapshot_dispose(&a->status_font);
     style_font_cache_dispose(&a->fonts);free(a);style_runtime_references_release(&references);
 }
-static void release(attachment *a){style_instance_release(&a->base.instance);}
-static BOOL cool_identity(HWND w,attachment *a)
+static void release(style_outline_attachment *a){style_instance_release(&a->base.instance);}
+static BOOL cool_identity(HWND w,style_outline_attachment *a)
 {return !a->base.instance.detached && style_control_vcl_cool_identity(w,a->base.runtime.cool.notify.parent,a->base.runtime.cool.owner,vcl_frame_owned,a);}
 static BOOL cool_identity_callback(HWND w,void *owner)
-{return cool_identity(w,(attachment *)owner);}
-static BOOL cool_grip(HWND w,attachment *a,const NMCUSTOMDRAW *n)
+{return cool_identity(w,(style_outline_attachment *)owner);}
+static BOOL cool_grip(HWND w,style_outline_attachment *a,const NMCUSTOMDRAW *n)
 {
     const style_runtime_observation *o=paint_runtime.cool?&paint_runtime.cool->observation:NULL;
     WNDPROC native=o && o->owner==a && o->window==w?o->native:NULL;
-    return win16_control_cool_grip_identity(w,a,n,native,cool_identity_callback);
+    return style_outline_control_cool_grip_identity(w,a,n,native,cool_identity_callback);
 }
 static BOOL cool_grip_callback(HWND w,void *owner,const NMCUSTOMDRAW *draw)
 {
-    attachment *a=owner;
-    return cool_grip(w,a,draw) && win16_control_cool_grip(draw->hdc,&draw->rc,&a->grip);
+    style_outline_attachment *a=owner;
+    return cool_grip(w,a,draw) && style_outline_control_cool_grip(draw->hdc,&draw->rc,&a->grip);
 }
 static LRESULT CALLBACK cool_notify(HWND parent,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
-    (void)id;attachment *a=(attachment *)data;style_runtime_cool_scope *s=paint_runtime.cool;
+    (void)id;style_outline_attachment *a=(style_outline_attachment *)data;style_runtime_cool_scope *s=paint_runtime.cool;
     return style_control_custom_draw_post(parent,m,p,l,a,s && s->observation.owner==a?s->observation.window:NULL,
         s && s->observation.owner==a?&s->ours:NULL,&a->base.runtime.cool.verified,cool_identity_callback,cool_grip_callback);
 }
 static BOOL runtime_control_render(HWND w,style_control_runtime_kind kind,void *context,const BOOL *cancelled)
 {
-    attachment *a=context;
+    style_outline_attachment *a=context;
     if(kind==STYLE_RUNTIME_TOOLBAR)return win16_style_toolbar_install_created(w,NULL,a,cancelled);
     if(kind==STYLE_RUNTIME_TRACK)return win16_style_trackbar_install_created(w,NULL,a,cancelled);
     if(kind==STYLE_RUNTIME_EDIT)return win16_style_control_install_created(w,!a->base.runtime.link && !a->base.runtime.combo,
@@ -322,31 +322,31 @@ static BOOL runtime_edge_install(HWND w,void *context,const BOOL *cancelled)
 {return win16_style_grid_install_created(w,NULL,context,cancelled);}
 static void message_guard(const style_runtime_observation *observation,UINT m)
 {
-    attachment *a=observation->owner;const win16_attachment_guard_services guards={mdi_host_attached,cool_identity,Ntw16sWindowRemove};
-    win16_attachment_guard_cool(observation->window,m,a,&guards);
+    style_outline_attachment *a=observation->owner;const style_outline_attachment_guard_services guards={mdi_host_attached,cool_identity,Ntw16sWindowRemove};
+    style_outline_attachment_guard_cool(observation->window,m,a,&guards);
     if(a->base.runtime.status.present)style_control_status_invalidate(m,&a->status_font.invalid,&a->base.runtime.status);
 }
 static void message_prepare(const style_runtime_observation *observation,UINT m,WPARAM p,style_runtime_text_scope *paint)
 {
-    attachment *a=observation->owner;HWND w=observation->window;
-    const win16_attachment_guard_services guards={mdi_host_attached,cool_identity,Ntw16sWindowRemove};
-    win16_attachment_guard_roles(w,m,a,&guards);
+    style_outline_attachment *a=observation->owner;HWND w=observation->window;
+    const style_outline_attachment_guard_services guards={mdi_host_attached,cool_identity,Ntw16sWindowRemove};
+    style_outline_attachment_guard_roles(w,m,a,&guards);
     if(m==WM_NCDESTROY)(void)Ntw16sWindowTerminal(w);
     style_runtime_vb_paint_begin(paint,w,m,a->control_font_points?&a->fonts:NULL,a->control_font_points,&style_raster_font_stroke_operations,ntw16s_vb_user_label_target);
     if(a->file_owner || a->picture || a->button_owner || a->base.runtime.user.candidate)paint->cancelled=&a->base.instance.detached;
-    style_runtime_text_prepare_report(paint,w,p,&a->base.instance,&a->base.runtime,a->file_owner,report_notify,a,ntw16s_vb_graphical_button);
+    style_runtime_text_prepare_report(paint,w,p,&a->base.instance,&a->base.runtime,a->file_owner,report_notify,a,style_control_vb_graphical_button);
 }
 static void date_button(HWND w,const style_instance *instance,HDC dc,const RECT *dirty,
     const style_control_native_button *button)
 {
-    const attachment *a=instance->context;
+    const style_outline_attachment *a=instance->context;
     win16_style_palette palette=a->palette;
     palette.face=a->date_button_face;
     style_outline_native_combo_button(w,instance,dc,dirty,button,a->base.runtime.date.installed?&palette:NULL,&a->combo_arrow);
 }
 static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
-    (void)id;attachment *a=(attachment *)data;
+    (void)id;style_outline_attachment *a=(style_outline_attachment *)data;
     const style_runtime_observation observation={.instance=&a->base.instance,.runtime=&a->base.runtime,.owner=a,.window=w,.current=vcl_frame_owned};
     style_runtime_attachment_controls controls={&a->base,runtime_control_render,win16_style_control_remove_owned,
         ntw16s_theme_enable,win16_style_edit_scrollbars_enable,ntw16s_theme_remove};
@@ -359,19 +359,19 @@ static LRESULT CALLBACK attachment_proc(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR
 }
 static void report_text_prepare(style_runtime_text_scope *paint,HWND window,void *owner)
 {
-    attachment *a=owner;style_runtime_vb_paint_begin(paint,window,WM_PRINTCLIENT,a->control_font_points?&a->fonts:NULL,a->control_font_points,&style_raster_font_stroke_operations,ntw16s_vb_user_label_target);
+    style_outline_attachment *a=owner;style_runtime_vb_paint_begin(paint,window,WM_PRINTCLIENT,a->control_font_points?&a->fonts:NULL,a->control_font_points,&style_raster_font_stroke_operations,ntw16s_vb_user_label_target);
 }
 /* Application owner/custom-draw result and payload stay authoritative. */
 static LRESULT CALLBACK report_notify(HWND w,UINT m,WPARAM p,LPARAM l,UINT_PTR id,DWORD_PTR data)
 {
-    attachment *a=(attachment *)data;
+    style_outline_attachment *a=(style_outline_attachment *)data;
     const style_runtime_observation observation={.instance=&a->base.instance,.runtime=&a->base.runtime,.owner=a,.window=a->base.runtime.report.window};
     const style_runtime_report_notify_ops ops={report_notify,a->file_owner,a->button_owner,a->checklist,
-        ntw16s_vb_owner_file,ntw16s_vb_graphical_button,report_text_prepare};
+        style_control_vb_owner_file,style_control_vb_graphical_button,report_text_prepare};
     return style_runtime_report_notify(&paint_runtime,&observation,w,m,p,l,id,&ops);
 }
 /* Some frameworks set the report view after native WM_CREATE. This is still
- * our exact newly created attachment, on its GUI thread, after initialization.
+ * our exact newly created style_outline_attachment, on its GUI thread, after initialization.
  * A failed public protocol remains native; there is no existing-window scan. */
 static BOOL report_install(HWND w,BOOL tree,void *context,const BOOL *cancelled)
 {
@@ -403,18 +403,18 @@ BOOL __cdecl Ntw16sWindowRemove(HWND w)
 BOOL __cdecl Ntw16sWindowTerminal(HWND w)
 {return style_runtime_attachment_terminal(w,attachment_proc,&lifecycle_ops);}
 
-typedef struct owner_selection {attachment *owner;BOOL picture,checklist;} owner_selection;
+typedef struct owner_selection {style_outline_attachment *owner;BOOL picture,checklist;} owner_selection;
 static style_runtime_owner_roles initialize_owner_roles(HWND window,void *context)
 {
-    const owner_selection *selection=context;attachment *a=selection->owner;
-    a->file_owner=ntw16s_vb_owner_file(window);a->picture=selection->picture;
-    a->button_owner=ntw16s_vb_graphical_button(window);a->checklist=selection->checklist;
+    const owner_selection *selection=context;style_outline_attachment *a=selection->owner;
+    a->file_owner=style_control_vb_owner_file(window);a->picture=selection->picture;
+    a->button_owner=style_control_vb_graphical_button(window);a->checklist=selection->checklist;
     return (style_runtime_owner_roles){a->file_owner,a->button_owner,a->checklist};
 }
 static BOOL install_created(HWND w,DWORD original_style)
 {
     BOOL ready=InterlockedCompareExchange(&status_hooks_ready,0,0)!=0;
-    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=style_control_vb_picture(w),checklist=style_control_vcl_checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (style_control_vcl_spin_identity(w)||style_control_vcl_modern_spin_shape(w));HWND parent;HMODULE owner;attachment *a;DWORD error;
+    BOOL control,edit,installed,report=FALSE,tree=FALSE,legacy_progress=FALSE,picture=style_control_vb_picture(w),checklist=style_control_vcl_checklist_identity(w),status=ready && status_identity(w,NULL,NULL),spin=ready && (style_control_vcl_spin_identity(w)||style_control_vcl_modern_spin_shape(w));HWND parent;HMODULE owner;style_outline_attachment *a;DWORD error;
     style_control_protocol *protocol=NULL;
     if(lookup(w))return TRUE;
     /* COMBOBOX installs its own internal list when construction finishes.
@@ -422,20 +422,20 @@ static BOOL install_created(HWND w,DWORD original_style)
     for(parent=GetParent(w);parent;parent=GetParent(parent))
         if(class_is(parent,L"COMBOBOX"))return TRUE;
     if(class_is(w,L"ComboLBox") || class_is(w,L"#32768"))return TRUE;
-    win16_attachment_initial_classification initial;
-    if(!win16_attachment_classify_initial(w,original_style,ready,checklist,status,spin,&initial))return FALSE;
+    style_outline_attachment_initial_classification initial;
+    if(!style_outline_attachment_classify_initial(w,original_style,ready,checklist,status,spin,&initial))return FALSE;
     edit=initial.edit;control=initial.control;report=initial.report;tree=initial.tree;
     legacy_progress=initial.legacy_progress;protocol=initial.protocol;owner=initial.owner;
     style_control_runtime_candidates candidates;
-    win16_attachment_classify_vcl(w,original_style,ready,picture,checklist,status,spin,&initial,&candidates);
+    style_outline_attachment_classify_vcl(w,original_style,ready,picture,checklist,status,spin,&initial,&candidates);
     HWND popup_source=paint_runtime.lookup_popup,popup_source_parent=popup_source?GetParent(popup_source):NULL;
-    attachment *popup_source_attachment=popup_source?lookup(popup_source):NULL;
+    style_outline_attachment *popup_source_attachment=popup_source?lookup(popup_source):NULL;
     BOOL lookup_popup_candidate=ready && popup_source_attachment && style_control_vcl_lookup_popup_identity(w,popup_source,popup_source_parent,owner);
     style_control_runtime_extras extra;
     style_control_vcl_classify_extra(w,original_style,ready,owner,&extra);
     BOOL cool_candidate=extra.cool_candidate;
     BOOL vcl_mdi_probe=style_control_vcl_mdi_identity(w,GetParent(w),GetParent(GetParent(w)),owner,mdi_host_attached);
-    int rejected=win16_attachment_eligibility(original_style,picture,checklist,status,spin,vcl_mdi_probe,&initial,&candidates,&extra);
+    int rejected=style_outline_attachment_eligibility(original_style,picture,checklist,status,spin,vcl_mdi_probe,&initial,&candidates,&extra);
     if(rejected){if(rejected==1)style_control_protocol_release(protocol);SetLastError(ERROR_NOT_SUPPORTED);return FALSE;}
     classic_theme_mapping source={0};
     DWORD theme_error=classic_theme_attachment_layout((HMODULE)&__ImageBase,CLASSIC_WINDOW_PROVIDER_FULL_CLIENT,&source);
@@ -482,12 +482,12 @@ static BOOL install_created(HWND w,DWORD original_style)
             Ntw16sWindowRemove(info.hwndItem);
     }
     if(a->base.instance.detached){release(a);SetLastError(ERROR_CANCELLED);return FALSE;}
-    const win16_attachment_install_services install_services={win16_style_legacy_progress_border_install_created,
+    const style_outline_attachment_install_services install_services={win16_style_legacy_progress_border_install_created,
         win16_style_toolbar_install_created,win16_style_updown_install_created,win16_style_trackbar_install_created,
         win16_style_progress_install_created,win16_style_tree_install_created,win16_style_picture_install_created,
         win16_style_grid_install_created,win16_style_frame_scrollbars_install_owned,win16_style_control_install_created,
         win16_style_install_created};
-    installed=win16_attachment_install_render(w,a,protocol,original_style,legacy_progress,tree,picture,control,edit,report,&install_services);
+    installed=style_outline_attachment_install_render(w,a,protocol,original_style,legacy_progress,tree,picture,control,edit,report,&install_services);
     const style_runtime_attachment_install_ops settlement={ntw16s_native_get_combo_info,ntw16s_theme_enable,
         win16_style_list_scrollbar_enable,win16_style_edit_scrollbars_enable,ntw16s_theme_remove,Ntw16sWindowRemove};
     installed=style_runtime_attachment_install_finish(w,&a->base,original_style,control,edit,a->file_owner,installed,&error,&settlement);

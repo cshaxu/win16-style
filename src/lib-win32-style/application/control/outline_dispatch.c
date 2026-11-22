@@ -1,19 +1,18 @@
-#include "control_dispatch.h"
-#include "control_guard.h"
-#include "control_class.h"
-#include "special_paint.h"
+#include "outline_dispatch.h"
+#include "lib-win32-style/application/control/guard.h"
+#include "lib-win32-style/application/control/control_class.h"
+#include "lib-win32-style/application/control/outline_special.h"
 #include "lib-win32-style/application/control/header_snapshot.h"
 #include "lib-win32-style/application/control/progress_paint.h"
-#include "lib-win32-style/application/control/control_class.h"
 #include "lib-win32-style/application/control/tab_snapshot.h"
-#include "../../../application/control/control_protocol.h"
+#include "lib-win32-style/application/control/control_protocol.h"
 #include <commctrl.h>
 #include "lib-win32-style/application/graphics/present.h"
 
 typedef struct control_render {
-    control_style *state;
-    const win16_control_dispatch_services *services;
-    win16_control_state_painter painter;
+    style_outline_control *state;
+    const style_outline_control_dispatch_services *services;
+    style_outline_control_state_painter painter;
 } control_render;
 /* Screen painting owns a transient common buffer; print calls keep their
  * borrowed DC. The enclosing message invocation pins the same instance. */
@@ -26,7 +25,7 @@ static BOOL group_control(HWND window,void *context)
         (GetWindowLongPtrW(window,GWL_STYLE)&BS_TYPEMASK)==BS_GROUPBOX;
 }
 static void render_control(HWND window,const control_render *render,HDC dc,
-    win16_control_state_painter painter,BOOL buffered)
+    style_outline_control_state_painter painter,BOOL buffered)
 {
     if(!buffered){painter(window,render->state,dc);return;}
     control_render call=*render;call.painter=painter;
@@ -34,11 +33,11 @@ static void render_control(HWND window,const control_render *render,HDC dc,
     style_present(window,&call.state->instance,&call,call.state->palette.light,&ops,dc);
 }
 static BOOL owner_input(HWND w,void *context,UINT m,WPARAM a,LPARAM b)
-{const control_render *r=context;return ntw16s_vb_owner_file(w) && style_control_vb_directory(w) && r->services->fileowner->scroll_input(w,r->state,m,a,b);}
+{const control_render *r=context;return style_control_vb_owner_file(w) && style_control_vb_directory(w) && r->services->fileowner->scroll_input(w,r->state,m,a,b);}
 static style_control_owner_action owner_select(HWND w,void *context,UINT m,LPARAM b)
 {
-    const control_render *r=context;control_style *s=r->state;
-    if(!(ntw16s_vb_owner_file(w) || (s->common_dialog_combo && style_control_dialog_combo_valid(w,s->common_dialog_parent,style_control_is_combo))))return STYLE_CONTROL_OWNER_NONE;
+    const control_render *r=context;style_outline_control *s=r->state;
+    if(!(style_control_vb_owner_file(w) || (s->common_dialog_combo && style_control_dialog_combo_valid(w,s->common_dialog_parent,style_control_is_combo))))return STYLE_CONTROL_OWNER_NONE;
     if(m==WM_PAINT)return style_control_vb_drive(w) || s->common_dialog_combo?STYLE_CONTROL_OWNER_PAINT:STYLE_CONTROL_OWNER_FRAME;
     if(m==WM_PRINTCLIENT && (style_control_vb_drive(w) || s->common_dialog_combo))return STYLE_CONTROL_OWNER_PRINT;
     if((m==WM_NCPAINT || (m==WM_PRINT && (b&PRF_NONCLIENT))) && style_control_vb_directory(w))return STYLE_CONTROL_OWNER_FRAME;
@@ -46,16 +45,16 @@ static style_control_owner_action owner_select(HWND w,void *context,UINT m,LPARA
 }
 static void owner_draw(HWND w,void *context,HDC dc,style_control_owner_action action)
 {
-    const control_render *r=context;const win16_control_fileowner_services *ops=r->services->fileowner;
+    const control_render *r=context;const style_outline_control_fileowner_services *ops=r->services->fileowner;
     if(action==STYLE_CONTROL_OWNER_FRAME){ops->border(w,r->state,dc);ops->scrollbars(w,r->state,dc);}
     else ops->combo(w,r->state,dc);
 }
-typedef struct native_render {control_style *state;style_control_native_kind kind;} native_render;
+typedef struct native_render {style_outline_control *state;style_control_native_kind kind;} native_render;
 static BOOL native_policy_paint(HWND window,void *context,HDC dc,HFONT font)
 {
-    const native_render *render=context;control_style *s=render->state;
+    const native_render *render=context;style_outline_control *s=render->state;
     if(render->kind==STYLE_CONTROL_TAB){
-        const win16_style_palette *p=&s->palette;
+        const style_window_palette *p=&s->palette;
         const style_relief_palette palette={.face=p->face,.light=p->face,.highlight=p->light,.shadow=p->shadow,
             .dark=p->edge,.text=p->edge,.gray=p->shadow,.selection=p->active,.selection_text=p->active_text};
         const style_tab_text text=s->controls.tab_text?s->controls.tab_text:STYLE_TAB_TEXT_LITERAL;
@@ -63,14 +62,14 @@ static BOOL native_policy_paint(HWND window,void *context,HDC dc,HFONT font)
             s->controls.tab,text,&palette);
     }
     if(render->kind==STYLE_CONTROL_HEADER){
-        const win16_style_palette *p=&s->palette;
+        const style_window_palette *p=&s->palette;
         const style_relief_palette palette={.face=p->face,.light=p->face,.highlight=p->light,
             .shadow=p->shadow,.dark=p->edge,.text=p->edge,.gray=p->shadow};
         return style_header_client_paint(window,dc,&palette,font,&s->instance,&s->bindings.header,
             &s->header_colors,s->controls.header);
     }
     if(!style_progress_bound_supported(window))return FALSE;
-    const win16_style_palette *p=&s->palette;
+    const style_window_palette *p=&s->palette;
     COLORREF disabled=s->label_colors.present?s->label_colors.disabled:p->shadow;
     return style_progress_present(window,dc,&s->instance,&s->bindings.progress,
         style_progress_bound_supported,&s->controls.progress,s->progress_colors,
@@ -78,13 +77,13 @@ static BOOL native_policy_paint(HWND window,void *context,HDC dc,HFONT font)
 }
 static void native_paint(HWND window,void *context,HDC dc)
 {
-    native_render *render=context;control_style *s=render->state;
+    native_render *render=context;style_outline_control *s=render->state;
     style_control_native_paint(window,&s->instance,render->kind==STYLE_CONTROL_PROGRESS?NULL:&s->state,
         render,native_policy_paint,dc);
 }
 static void native_draw(HWND window,void *context,HDC dc,BOOL buffered)
 {
-    native_render *render=context;control_style *s=render->state;
+    native_render *render=context;style_outline_control *s=render->state;
     if(buffered){const style_present_ops ops={native_paint,group_control};
         style_present(window,&s->instance,render,s->palette.light,&ops,dc);}
     else native_paint(window,render,dc);
@@ -98,7 +97,7 @@ static BOOL list_input(HWND window,void *context,UINT message,WPARAM parameter,L
 {const control_render *render=context;return render->services->list->scroll_input(window,render->state,message,parameter,value);}
 static void list_draw(HWND window,void *context,HDC dc,BOOL buffered)
 {
-    const control_render *render=context;const win16_control_list_services *list=render->services->list;
+    const control_render *render=context;const style_outline_control_list_services *list=render->services->list;
     render_control(window,render,dc,list->paint,buffered);
 }
 static void list_border(HWND window,void *context,HDC dc)
@@ -121,12 +120,12 @@ static void edit_border(HWND window,void *context,HDC dc)
         (GetWindowLongPtrW(window,GWL_EXSTYLE)&WS_EX_CLIENTEDGE))
         render->services->edit->border(window,render->state,dc);
 }
-static style_relief_palette updown_palette(const control_style *state)
+static style_relief_palette updown_palette(const style_outline_control *state)
 {
-    const win16_style_palette *p=&state->palette;
-    const classic_frame_colors override={p->face,p->light,p->shadow,p->edge,TRUE};
+    const style_window_palette *p=&state->palette;
+    const style_frame_colors override={p->face,p->light,p->shadow,p->edge,TRUE};
     const classic_text_colors text={.normal=p->edge,.present=TRUE};
-    return classic_relief_palette(state->themed?&state->frame_colors:&override,
+    return style_control_relief_palette(state->themed?&state->frame_colors:&override,
         &state->list_colors,state->themed?&state->label_colors:&text);
 }
 static void edit_client_border(HWND window,void *context,HDC dc)
@@ -136,14 +135,14 @@ static void frame_border(HWND window,void *context,HDC dc)
 static void frame_overlay(HWND window,void *context,HDC dc)
 {
     const control_render *render=context;
-    if(render->state->legacy_progress_border)win16_control_legacy_progress_border(window,&render->state->palette,dc);
+    if(render->state->legacy_progress_border)style_outline_control_legacy_progress_border(window,&render->state->palette,dc);
 }
 static void sizebox_draw(HWND window,void *context,HDC dc,BOOL buffered)
 {
     const control_render *render=context;
     render_control(window,render,dc,render->services->sizebox,buffered);
 }
-LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPARAM *wparam,LPARAM *lparam,BOOL tab,BOOL header,BOOL progress,const win16_control_dispatch_services *v)
+LRESULT style_outline_control_dispatch_message(HWND w,style_outline_control *s,UINT *message,WPARAM *wparam,LPARAM *lparam,BOOL tab,BOOL header,BOOL progress,const style_outline_control_dispatch_services *v)
 {
     UINT m=*message;WPARAM a=*wparam;LPARAM b=*lparam;LRESULT result;
     if(m==WM_NCDESTROY){(void)v->terminal(w);
@@ -199,7 +198,7 @@ LRESULT win16_control_dispatch_message(HWND w,control_style *s,UINT *message,WPA
         result=style_control_edit_message(w,&s->instance,&s->state,&s->bindings.scroll.resources,m,a,b,&operations);
     }
     else {
-        style_control_basic_kind kind=win16_control_basic_kind(w);
+        style_control_basic_kind kind=style_control_outline_basic_kind(w);
         DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
         if((kind==STYLE_CONTROL_SEPARATOR && !s->controls.separator) ||
            ((kind==STYLE_CONTROL_BUTTON || kind==STYLE_CONTROL_NATIVE_OVERLAY) &&

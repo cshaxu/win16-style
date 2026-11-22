@@ -36,7 +36,7 @@
 #include "lib-win32-style/application/graphics/font_scope.h"
 #include "lib-win32-style/application/graphics/font_cache.h"
 #include "lib-win32-style/application/control/month.h"
-#include "lib-win32-style/appearance/win3x/control/special_paint.h"
+#include "lib-win32-style/application/control/outline_special.h"
 #include "lib-win32-style/application/adapters/win32/checklist.h"
 #include "lib-win32-style/application/adapters/win32/frame_paint.h"
 HFONT ntw16s_month_text_borrow(HTHEME,HDC,int,int,DWORD,DWORD,const RECT *,const void *);
@@ -682,7 +682,7 @@ static BOOL WINAPI hook_DrawEdge(HDC dc,LPRECT rect,UINT edge,UINT flags)
     }
     if(eligible || controlbar || color)original=*rect;
     SetLastError(incoming);BOOL result=real_DrawEdge(dc,rect,edge,flags);DWORD error=GetLastError();
-    if(result&&color)win16_control_color_swatch_frame(dc,rect,&original,win16_style_dialog_edge(dialog));
+    if(result&&color)style_outline_control_color_swatch_frame(dc,rect,&original,win16_style_dialog_edge(dialog));
     if(result && eligible)ntw16s_status_frame(dc,&original,NULL,__builtin_return_address(0));
     if(result && controlbar)ntw16s_controlbar_edge(dc,&original,edge,flags,__builtin_return_address(0));
     SetLastError(error);return result;

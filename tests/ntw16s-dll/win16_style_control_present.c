@@ -77,12 +77,12 @@ static BOOL WINAPI observed_blt(HDC dc,int x,int y,int cx,int cy,HDC from,int sx
 #include "lib-win32-style/application/control/list_snapshot.c"
 #include "lib-win32-style/application/control/outline_combo.c"
 #include "lib-win32-style/application/control/scroll_outline.c"
-#include "lib-win32-style/appearance/win3x/control/special_paint.c"
+#include "lib-win32-style/application/control/outline_special.c"
 /* Observe the actual profile renderer after removal of the product
  * presentation trampoline; isolate only same-TU test-local helper names. */
 #define list_border dispatch_list_border
 #define edit_border dispatch_edit_border
-#include "lib-win32-style/appearance/win3x/control/control_dispatch.c"
+#include "lib-win32-style/application/control/outline_dispatch.c"
 #undef list_border
 #undef edit_border
 #include "lib-win32-style/application/graphics/present.c"
@@ -122,7 +122,7 @@ int main(int argc,char **argv)
         CHECK(DestroyWindow(w));
     }
     {HWND group,sibling;HDC dc=CreateCompatibleDC(NULL);HBITMAP bitmap,old;BITMAPINFO bi={0};void *pixels;
-     control_style state={0};RECT r={0,0,300,100};
+     style_outline_control state={0};RECT r={0,0,300,100};
      group=CreateWindowW(L"BUTTON",L"Group",WS_CHILD|WS_VISIBLE|BS_GROUPBOX,10,10,300,100,root,NULL,wc.hInstance,NULL);
      sibling=CreateWindowW(L"STATIC",L"Sibling",WS_CHILD|WS_VISIBLE,30,40,50,20,root,NULL,wc.hInstance,NULL);CHECK(group && sibling && dc);
      bi.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);bi.bmiHeader.biWidth=300;bi.bmiHeader.biHeight=-100;
@@ -134,7 +134,7 @@ int main(int argc,char **argv)
      CHECK(!owned_live && !owned_overflow);SelectObject(dc,old);DeleteObject(bitmap);DeleteDC(dc);
      CHECK(DestroyWindow(sibling) && DestroyWindow(group));
      puts("GROUP BACKGROUND PASS fresh black target restored from parent; sibling pixels preserved");}
-    {HDC screen=GetDC(root),target;HBITMAP bitmap,old;control_style state={0};RECT area;
+    {HDC screen=GetDC(root),target;HBITMAP bitmap,old;style_outline_control state={0};RECT area;
      SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=0,.nMax=100,.nPage=10,.nPos=25};int mode,x,y;
      CHECK(screen);target=CreateCompatibleDC(screen);bitmap=CreateCompatibleBitmap(screen,17,120);
      CHECK(target && bitmap);old=(HBITMAP)SelectObject(target,bitmap);CHECK(old);
@@ -160,7 +160,7 @@ int main(int argc,char **argv)
      CHECK(old_first && old_second && ReleaseDC(root,screen));
      w=CreateWindowW(L"LISTBOX",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,160,120,root,NULL,wc.hInstance,NULL);CHECK(w);
      SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=0,.nMax=100,.nPage=10,.nPos=25};
-     SetScrollInfo(w,SB_VERT,&range,TRUE);control_style state={0};style_window_palette_default(&state.palette);
+     SetScrollInfo(w,SB_VERT,&range,TRUE);style_outline_control state={0};style_window_palette_default(&state.palette);
      const style_scroll_outline_view view={&state.palette,&state.bindings.scroll,scroll_layout,
         embedded_scroll_layout,edit_thumb_messages,list_axis_owned,NULL,NULL,NULL};
      SCROLLBARINFO info={.cbSize=sizeof(info)};RECT outer;

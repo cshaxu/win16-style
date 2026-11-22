@@ -74,4 +74,39 @@ static inline BOOL style_control_vb_picture(HWND w)
         !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
         (style_control_vb_class(w,L"ThunderRT6PictureBoxDC") || style_control_vb5_class(w,L"ThunderRT5PictureBox"));
 }
+
+/* Native VB owner-draw and button variants with known protocols. */
+BOOL style_control_vb_checklist_owner(HWND);
+BOOL style_control_vb_owner_file(HWND);
+
+static inline BOOL style_control_vb_choice_type(HWND w,DWORD type)
+{
+    if(style_control_vb_option(w))return type==BS_RADIOBUTTON || type==BS_AUTORADIOBUTTON;
+    return style_control_vb_checkbox(w) &&
+        (type==BS_CHECKBOX || type==BS_AUTOCHECKBOX || type==BS_3STATE || type==BS_AUTO3STATE);
+}
+
+static inline BOOL style_control_vb_plain_choice(HWND w)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+    return !(style&(BS_PUSHLIKE|BS_ICON|BS_BITMAP)) && style_control_vb_choice_type(w,style&BS_TYPEMASK);
+}
+
+/* The native VB runtime still owns input, grouping and borrowed images. */
+static inline BOOL style_control_vb_graphical_choice(HWND w)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE);
+    return (style&BS_PUSHLIKE) && style_control_vb_choice_type(w,style&BS_TYPEMASK);
+}
+
+static inline BOOL style_control_vb_graphical_button(HWND w)
+{
+    DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
+    return (style&WS_CHILD) && (style&BS_TYPEMASK)==BS_OWNERDRAW &&
+        !(ex&(WS_EX_LAYOUTRTL|WS_EX_RTLREADING)) &&
+        (style_control_vb_class(w,L"ThunderRT6CommandButton") || style_control_vb5_class(w,L"ThunderRT5CommandButton") ||
+         (style_control_vb_class(w,L"ThunderRT6OptionButton") || style_control_vb_class(w,L"ThunderRT6CheckBox") ||
+          style_control_vb5_class(w,L"ThunderRT5CheckBox") || style_control_vb5_class(w,L"ThunderRT5OptionButton")));
+}
+
 #endif

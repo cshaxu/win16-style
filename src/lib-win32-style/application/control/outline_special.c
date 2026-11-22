@@ -1,16 +1,16 @@
 #include "lib-win32-style/application/control/rebar.h"
 #include "lib-win32-style/application/graphics/dc_geometry.h"
-#include "special_paint.h"
+#include "lib-win32-style/application/control/outline_special.h"
 #include "lib-win32-style/application/control/control_chrome.h"
-#include "../../../application/graphics/paint_frame.h"
-#include "../../../application/control/control_protocol.h"
-#include "../../../application/graphics/bitmap.h"
-#include "control_class.h"
-#include "control_state.h"
+#include "lib-win32-style/application/graphics/paint_frame.h"
+#include "lib-win32-style/application/control/control_protocol.h"
+#include "lib-win32-style/application/graphics/bitmap.h"
+#include "lib-win32-style/application/control/control_class.h"
+#include "lib-win32-style/application/control/outline_state.h"
 #include "lib-win32-style/application/adapters/win32/runtime_text.h"
 #include <commctrl.h>
 
-BOOL win16_control_color_frame(HDC dc,const RECT *bounds,const RECT *clip,COLORREF color)
+BOOL style_outline_control_color_frame(HDC dc,const RECT *bounds,const RECT *clip,COLORREF color)
 {
     int saved=SaveDC(dc);if(!saved)return FALSE;
     BOOL drew=FALSE;
@@ -19,13 +19,13 @@ BOOL win16_control_color_frame(HDC dc,const RECT *bounds,const RECT *clip,COLORR
         drew=FrameRect(dc,bounds,(HBRUSH)GetStockObject(DC_BRUSH));
     RestoreDC(dc,saved);return drew;
 }
-BOOL win16_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original,COLORREF color)
+BOOL style_outline_control_color_swatch_frame(HDC dc,RECT *bounds,const RECT *original,COLORREF color)
 {
-    if(!win16_control_color_frame(dc,original,NULL,color))return FALSE;
+    if(!style_outline_control_color_frame(dc,original,NULL,color))return FALSE;
     *bounds=*original;InflateRect(bounds,-1,-1);return TRUE;
 }
 
-void win16_control_group_frame(HDC dc,const RECT *bounds,const RECT *clip,const RECT *exclude,
+void style_outline_control_group_frame(HDC dc,const RECT *bounds,const RECT *clip,const RECT *exclude,
     COLORREF color,void (*drawn)(void *),void *context)
 {
     int saved=SaveDC(dc);if(!saved)return;
@@ -35,7 +35,7 @@ void win16_control_group_frame(HDC dc,const RECT *bounds,const RECT *clip,const 
     RestoreDC(dc,saved);
 }
 
-void win16_control_panel_shadow(HDC dc,const POINT *points,BOOL (WINAPI *draw)(HDC,const POINT *,int),
+void style_outline_control_panel_shadow(HDC dc,const POINT *points,BOOL (WINAPI *draw)(HDC,const POINT *,int),
     COLORREF color,void (*drawn)(void *),void *context)
 {
     int saved=SaveDC(dc);if(!saved)return;
@@ -44,7 +44,7 @@ void win16_control_panel_shadow(HDC dc,const POINT *points,BOOL (WINAPI *draw)(H
     RestoreDC(dc,saved);
 }
 
-BOOL win16_control_cool_grip(HDC dc,const RECT *bounds,const classic_bar_colors *colors)
+BOOL style_outline_control_cool_grip(HDC dc,const RECT *bounds,const classic_bar_colors *colors)
 {
     RECT r=*bounds;
     const style_relief_palette palette={
@@ -58,7 +58,7 @@ BOOL win16_control_cool_grip(HDC dc,const RECT *bounds,const classic_bar_colors 
 /* USER18:0208..027F: scrollbar-class size box shares the inner border
  * and fills with the system scrollbar brush, not a later sizing-grip image.
  * Native creation/alignment and parent size/maximize commands stay native. */
-void win16_control_draw_sizebox(HWND w,HDC dc,const COLORREF *face)
+void style_outline_control_draw_sizebox(HWND w,HDC dc,const COLORREF *face)
 {
     RECT outer,client,r;UINT dpi=GetDpiForWindow(w);int saved,cx,cy,bx,by;
     if(!dc || !GetWindowRect(w,&outer) || !GetClientRect(w,&client))return;
@@ -75,7 +75,7 @@ void win16_control_draw_sizebox(HWND w,HDC dc,const COLORREF *face)
     }
     FillRect(dc,&r,brush);RestoreDC(dc,saved);
 }
-void win16_control_legacy_progress_border(HWND w,const win16_style_palette *palette,HDC target)
+void style_outline_control_legacy_progress_border(HWND w,const style_window_palette *palette,HDC target)
 {
     RECT outer,client;POINT origin={0,0};DWORD saved_error=GetLastError();
     DWORD style=(DWORD)GetWindowLongPtrW(w,GWL_STYLE),ex=(DWORD)GetWindowLongPtrW(w,GWL_EXSTYLE);
@@ -92,9 +92,9 @@ void win16_control_legacy_progress_border(HWND w,const win16_style_palette *pale
 done: SetLastError(saved_error);
 }
 
-static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds,const win16_style_palette *palette,const style_scroll_arrow_art *art);
+static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds,const style_window_palette *palette,const style_scroll_arrow_art *art);
 
-void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller,BOOL (*attached_palette)(HWND,win16_style_palette *,style_scroll_arrow_art *))
+void style_outline_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int height,HDC source,int sx,int sy,int sw,int sh,DWORD rop,const void *caller,BOOL (*attached_palette)(HWND,style_window_palette *,style_scroll_arrow_art *))
 {
     HWND w=WindowFromDC(dc);RECT client;POINT origin,viewport;BITMAP bitmap={0};HMODULE owner=NULL;
     if(!w || GetWindowThreadProcessId(w,NULL)!=GetCurrentThreadId() ||
@@ -104,12 +104,12 @@ void win16_control_vb_data_arrow_candidate(HDC dc,int x,int y,int width,int heig
        GetMapMode(dc)!=MM_TEXT || GetLayout(dc)!=0 || !GetWindowOrgEx(dc,&origin) || origin.x || origin.y ||
        !GetViewportOrgEx(dc,&viewport) || viewport.x || viewport.y ||
        !GetObjectW(GetCurrentObject(source,OBJ_BITMAP),sizeof(bitmap),&bitmap) || bitmap.bmWidth!=sw || bitmap.bmHeight!=sh)return;
-    win16_style_palette palette;
+    style_window_palette palette;
     style_scroll_arrow_art art;
     if(attached_palette(w,&palette,&art))vb_data_arrow(w,dc,x,y,width,source,&client,&palette,&art);
 }
 
-static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds,const win16_style_palette *palette,const style_scroll_arrow_art *art)
+static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const RECT *client_bounds,const style_window_palette *palette,const style_scroll_arrow_art *art)
 {
     RECT client=*client_bounds;
     int n=-1;const int xs[4]={4,24,client.right-33,client.right-15};
@@ -137,21 +137,21 @@ static void vb_data_arrow(HWND w,HDC dc,int x,int y,int width,HDC source,const R
     (void)SetDIBitsToDevice(dc,starts[n],0,widths[n],client.bottom,0,0,0,client.bottom,pixels,&info,DIB_RGB_COLORS);
 }
 
-static control_style *graphical_target(HDC dc,UINT type,UINT flags,const void *address,HWND *w,SUBCLASSPROC proc)
+static style_outline_control *graphical_target(HDC dc,UINT type,UINT flags,const void *address,HWND *w,SUBCLASSPROC proc)
 {
     DWORD_PTR value;HMODULE caller=NULL;
     const UINT allowed=DFCS_BUTTONPUSH|DFCS_PUSHED|DFCS_INACTIVE|DFCS_ADJUSTRECT|DFCS_CHECKED;
     if(type!=DFC_BUTTON || !(flags&DFCS_BUTTONPUSH) || (flags&~allowed) ||
-            !style_runtime_text_report_target(dc,w) || !ntw16s_vb_graphical_button(*w) ||
+            !style_runtime_text_report_target(dc,w) || !style_control_vb_graphical_button(*w) ||
             ((flags&DFCS_CHECKED) && !style_control_vb_class(*w,L"ThunderRT6OptionButton") &&
              !style_control_vb_class(*w,L"ThunderRT6CheckBox") && !style_control_vb5_class(*w,L"ThunderRT5CheckBox") &&
              !style_control_vb5_class(*w,L"ThunderRT5OptionButton")) ||
             !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(const WCHAR *)address,&caller) ||
             caller!=(HMODULE)GetClassLongPtrW(*w,GCLP_HMODULE) ||
             !GetWindowSubclass(*w,proc,(UINT_PTR)proc,&value))return NULL;
-    control_style *s=(void *)value;return !s->instance.detached && s->bindings.scroll.resources.frame?s:NULL;
+    style_outline_control *s=(void *)value;return !s->instance.detached && s->bindings.scroll.resources.frame?s:NULL;
 }
-BOOL win16_control_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy,SUBCLASSPROC proc)
+BOOL style_outline_control_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,RECT *copy,SUBCLASSPROC proc)
 {
     HWND w;
     /* Ordinary API calls remain untouched, including parameter validation.
@@ -159,12 +159,12 @@ BOOL win16_control_graphical_frame_prepare(HDC dc,const RECT *rect,UINT type,UIN
     if(!rect || !copy || !graphical_target(dc,type,flags,address,&w,proc))return FALSE;
     *copy=*rect;return TRUE;
 }
-BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,SUBCLASSPROC proc)
+BOOL style_outline_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,const void *address,SUBCLASSPROC proc)
 {
-    HWND w;RECT client;control_style *s=graphical_target(dc,type,flags,address,&w,proc);
+    HWND w;RECT client;style_outline_control *s=graphical_target(dc,type,flags,address,&w,proc);
     if(!s || !rect || !GetClientRect(w,&client) || !EqualRect(rect,&client) ||
             !style_dc_pixel_viewport(dc))return FALSE;
-    win16_style_palette palette=s->palette;
+    style_window_palette palette=s->palette;
     if(s->frame_colors.present){
         palette.light=s->frame_colors.light;
         palette.shadow=s->frame_colors.shadow;
@@ -176,7 +176,7 @@ BOOL win16_control_graphical_frame(HDC dc,const RECT *rect,UINT type,UINT flags,
     RestoreDC(dc,saved);return painted;
 }
 
-BOOL win16_control_cool_grip_identity(HWND w,void *owner,const NMCUSTOMDRAW *n,WNDPROC native,BOOL (*valid)(HWND,void *))
+BOOL style_outline_control_cool_grip_identity(HWND w,void *owner,const NMCUSTOMDRAW *n,WNDPROC native,BOOL (*valid)(HWND,void *))
 {
     const style_control_rebar_scope scope={w,owner,native,valid};style_control_rebar_probe p;RECT overlap,r=n->rc;
     if(!style_control_rebar_read(&scope,n,CCS_VERT,&p) ||

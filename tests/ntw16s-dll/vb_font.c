@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <wchar.h>
 #include "lib-win32-style/application/adapters/win32/runtime_text.h"
-#include "lib-win32-style/appearance/win3x/control/control_class.h"
+#include "lib-win32-style/application/control/control_class.h"
 #include "isolated_process.h"
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"VB FONT FAIL %u error=%lu\n",__LINE__,GetLastError());return 1;}}while(0)
 /* This standalone font test does not link the window attachment module. */
@@ -107,7 +107,7 @@ static int report_ownership(void)
     HGDIOBJ old=SelectObject(dc,source);style_font_cache fonts={0},barrier={0};style_runtime_text_scope scope,nested;BOOL cancelled=FALSE;
     unsigned baseline=live_allocations;
     style_runtime_vb_paint_begin(&scope,w,WM_PRINTCLIENT,&fonts,12,&style_raster_font_stroke_operations,ntw16s_vb_user_label_target);
-    style_runtime_text_report_enable(&scope,w,GetModuleHandleW(L"USER32.dll"),&cancelled,ntw16s_vb_graphical_button);
+    style_runtime_text_report_enable(&scope,w,GetModuleHandleW(L"USER32.dll"),&cancelled,style_control_vb_graphical_button);
     CHECK(style_runtime_text_report_active() && style_runtime_text_report_caller(GetModuleHandleW(NULL)));
     CHECK(!style_runtime_text_report_caller(GetModuleHandleW(L"KERNEL32.dll")));
     CHECK(!style_runtime_vb_paint_font(dc));style_runtime_text_report_bind(NULL,dc);CHECK(!style_runtime_vb_paint_font(dc));

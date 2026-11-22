@@ -1,3 +1,4 @@
+#include "lib-win32-style/appearance/msstyles/control_theme_style.h"
 #include "lib-win32-style/application/menu/tracking.h"
 #include "lib-win32-style/application/graphics/font_cache.h"
 #include "lib-win32-style/application/window/native_frame.h"
@@ -6,7 +7,7 @@
 #include "lib-win32-style/appearance/win3x/common/palette.h"
 #include "lib-win32-style/application/control/control_chrome.h"
 #include "lib-win32-style/application/control/outline_basic.h"
-#include "lib-win32-style/appearance/win3x/control/special_paint.h"
+#include "lib-win32-style/application/control/outline_special.h"
 #include "lib-win32-style/application/menu/client_bar.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
 #include "lib-win32-style/application/window/client_frame_layout.h"
@@ -14,9 +15,9 @@
 #include "lib-win32-style/application/window/client_frame_renderer.h"
 #include "lib-win32-style/application/window/frame.h"
 #include "lib-win32-style/application/window/client_frame_state.h"
-#include "lib-win32-style/appearance/win3x/control/control_state.h"
-#include "lib-win32-style/appearance/win3x/control/control_class.h"
-#include "lib-win32-style/appearance/win3x/control/attachment_state.h"
+#include "lib-win32-style/application/control/outline_state.h"
+#include "lib-win32-style/application/control/control_class.h"
+#include "lib-win32-style/application/adapters/win32/outline_attachment.h"
 #include "lib-win32-style/application/control/outline_list.h"
 #include "lib-win32-style/application/lifecycle/theme_state.h"
 #include "lib-win32-style/application/control/control_custom_draw.h"
@@ -95,8 +96,8 @@ static BOOL runtime_frame_pixels(COLORREF edge,const classic_bar_colors *grip)
         unsigned drawn=0;
         HGDIOBJ pen=GetCurrentObject(dc,OBJ_PEN);
         COLORREF brush=GetDCBrushColor(dc),pen_color=GetDCPenColor(dc);
-        win16_control_group_frame(dc,&group,&clip,&label,edge,frame_drawn,&drawn);
-        win16_control_panel_shadow(dc,shadow,Polyline,edge,frame_drawn,&drawn);
+        style_outline_control_group_frame(dc,&group,&clip,&label,edge,frame_drawn,&drawn);
+        style_outline_control_panel_shadow(dc,shadow,Polyline,edge,frame_drawn,&drawn);
         ok=drawn==2 && GetPixel(dc,4,2)==edge && GetPixel(dc,5,18)==edge &&
             GetPixel(dc,8,2)==RGB(255,255,255) && GetPixel(dc,23,8)==RGB(255,255,255) &&
             GetCurrentObject(dc,OBJ_PEN)==pen && GetDCBrushColor(dc)==brush && GetDCPenColor(dc)==pen_color;
@@ -108,7 +109,7 @@ static BOOL runtime_frame_pixels(COLORREF edge,const classic_bar_colors *grip)
             COLORREF light=classic_bar_color(grip,CLASSIC_BAR_HIGHLIGHT,GetSysColor(COLOR_BTNHIGHLIGHT));
             COLORREF shadow_color=classic_bar_color(grip,CLASSIC_BAR_SHADOW,GetSysColor(COLOR_BTNSHADOW));
             ok=ok && IntersectClipRect(dc,25,3,32,14)!=ERROR &&
-                win16_control_cool_grip(dc,&grip_bounds,grip);
+                style_outline_control_cool_grip(dc,&grip_bounds,grip);
             RestoreDC(dc,saved);
             ok=ok && GetPixel(dc,28,9)==face && GetPixel(dc,26,9)==light &&
                 GetPixel(dc,30,9)==shadow_color && GetPixel(dc,30,15)==RGB(255,255,255) &&
@@ -146,22 +147,22 @@ int main(void)
     if(!actual_fitted_button())return 93;
     puts("WIN16_FITTED_BUTTON_OK actual_renderer=1 shared_text_fit=1");
 
-    win16_attachment_initial_classification initial={0};
+    style_outline_attachment_initial_classification initial={0};
     style_control_runtime_candidates vcl={0};style_control_runtime_extras extra={0};
     initial.owner=(HMODULE)(UINT_PTR)1;
-    if(win16_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=1)return 85;
+    if(style_outline_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=1)return 85;
     initial.owner=GetModuleHandleW(NULL);
-    if(win16_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=2)return 86;
+    if(style_outline_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=2)return 86;
     initial.tree=TRUE;initial.owner=(HMODULE)(UINT_PTR)1;
-    if(win16_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=2)return 87;
+    if(style_outline_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=2)return 87;
     initial.tree=FALSE;vcl.tab_candidate=TRUE;
-    if(win16_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=0)return 88;
+    if(style_outline_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=0)return 88;
     vcl.tab_candidate=FALSE;extra.vb_user_edge=TRUE;
-    if(win16_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=0)return 89;
+    if(style_outline_attachment_eligibility(WS_CHILD,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=0)return 89;
     extra.vb_user_edge=FALSE;
-    if(win16_attachment_eligibility(WS_CAPTION,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=0)return 90;
+    if(style_outline_attachment_eligibility(WS_CAPTION,FALSE,FALSE,FALSE,FALSE,FALSE,&initial,&vcl,&extra)!=0)return 90;
     puts("ATTACH_ELIGIBILITY_OK distinct_release=1 tree=1 vcl=1 edge=1 frame=1");
-    attachment dispatch={0};
+    style_outline_attachment dispatch={0};
     if(style_runtime_dispatch_kind(NULL,&dispatch.base.instance,&dispatch.base.runtime,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=STYLE_RUNTIME_DISPATCH_NATIVE)return 91;
     dispatch.base.runtime.roles.text.candidate=TRUE;
     if(style_runtime_dispatch_kind(NULL,&dispatch.base.instance,&dispatch.base.runtime,WM_PAINT,0,0,FALSE,FALSE,FALSE,FALSE)!=STYLE_RUNTIME_DISPATCH_STATIC)return 92;
@@ -201,13 +202,13 @@ int main(void)
     if(style_text_static_source(policy_dc,L"a",1,DT_CALCRECT,(const void *)main,NULL,GetModuleHandleW(NULL)))return 84;
     DeleteDC(policy_dc);
 
-    control_style *control=win16_control_state_create();
+    style_outline_control *control=style_outline_control_state_create(classic_control_outline_font_operations());
     if(!control || control->state.font || control->state.protocol || control->state.tab_positions || control->instance.calls)return 38;
     control->state.tab_positions=malloc(2*sizeof(*control->state.tab_positions));
     control->state.font=style_menu_font_acquire_with_bitmap_default(96,NULL);
     control->bindings.combo.fonts[0]=style_menu_font_acquire_with_bitmap_default(96,NULL);control->bindings.combo.font_count=1;
-    if(!control->state.tab_positions || !control->state.font || !control->bindings.combo.fonts[0]){win16_control_state_dispose(control);return 39;}
-    win16_control_state_dispose(control);
+    if(!control->state.tab_positions || !control->state.font || !control->bindings.combo.fonts[0]){style_outline_control_state_dispose(control);return 39;}
+    style_outline_control_state_dispose(control);
     style_client_frame *owned=style_client_frame_state_create();
     if(!owned || owned->menu.loops || owned->fonts.title || owned->fonts.menu || owned->instance.calls)return 34;
     /* Failed inner-entry ownership is covered through the public menu owner
@@ -297,18 +298,18 @@ int main(void)
     SetWindowLongPtrW(classic_combo,GWLP_ID,1135);
     if(style_control_dialog_combo_valid(classic_combo,window,style_control_is_combo)){DestroyWindow(window);return 43;}
     DestroyWindow(classic_combo);
-    control_style *font_state=win16_control_state_create();
+    style_outline_control *font_state=style_outline_control_state_create(classic_control_outline_font_operations());
     HFONT application_font=(HFONT)GetStockObject(SYSTEM_FONT);
     style_control_message font_call={.message=WM_SETFONT,.parameter=(WPARAM)application_font,.native_font=TRUE};
-    if(!font_state || !win16_control_state_prepare_font(window,font_state,&font_call) ||
+    if(!font_state || !style_outline_control_state_prepare_font(window,font_state,&font_call) ||
        font_state->state.original_font!=application_font || font_call.parameter!=(WPARAM)application_font || !font_call.outbound){
-        if(font_state)win16_control_state_dispose(font_state);
+        if(font_state)style_outline_control_state_dispose(font_state);
         DestroyWindow(window);return 40;}
     style_raster_font_release(font_call.outbound);style_raster_font_release(font_call.previous);
     font_state->instance.detached=TRUE;font_call=(style_control_message){.message=WM_SETFONT,.parameter=(WPARAM)application_font};
-    if(win16_control_state_prepare_font(window,font_state,&font_call)){
-        win16_control_state_dispose(font_state);DestroyWindow(window);return 41;}
-    win16_control_state_dispose(font_state);
+    if(style_outline_control_state_prepare_font(window,font_state,&font_call)){
+        style_outline_control_state_dispose(font_state);DestroyWindow(window);return 41;}
+    style_outline_control_state_dispose(font_state);
     int pressed=HTMINBUTTON;BOOL hot=FALSE;style_instance button_instance={0};
     style_caption_button button_state={pressed,hot};
     const style_client_frame_button_view button_view={NULL,&button_state,&button_instance,test_button_layout,test_button_paint};

@@ -1,6 +1,9 @@
 #ifndef STYLE_MSSTYLES_CONTROL_THEME_STYLE_H
 #define STYLE_MSSTYLES_CONTROL_THEME_STYLE_H
 #include "native_scroll_style.h"
+#include "raster_font.h"
+#include "lib-win32-style/application/control/control_class.h"
+#include "lib-win32-style/application/control/control_state.h"
 #include "lib-win32-style/application/control/control_theme.h"
 #include "lib-win32-style/application/control/choice_glyph.h"
 #include <string.h>
@@ -57,4 +60,19 @@ static inline BOOL classic_control_checklist_read(HMODULE module,UINT flags,styl
     classic_theme_close(&source);
     return decoded;
 }
+
+static inline HFONT classic_control_outline_acquire_font(HWND w,HFONT source,BOOL native,unsigned points)
+{
+    if(!points)return source;
+    BOOL vb=!native && (style_control_vb_frame(w) || style_control_vb_edit(w) || style_control_vb_button(w) || style_control_vb_combo(w) || style_control_vb_list(w));
+    return vb?style_raster_font_acquire_stroke_fit(source,points):style_raster_font_acquire(source,points);
+}
+static inline const style_control_fonts *classic_control_outline_font_operations(void)
+{
+    static const style_control_fonts fonts={
+        style_raster_font_source,classic_control_outline_acquire_font,style_raster_font_retain,style_raster_font_release
+    };
+    return &fonts;
+}
+
 #endif
