@@ -374,6 +374,7 @@ try{
         (Case 'cli'  $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli.py'),$run) @('CLI PASS')),
         (Case 'automatic' (Join-Path $x64 'launch-automatic.exe') (@('--private-worker')+$pair) @('LAUNCH MATRIX PASS')),
         (Case 'propagation' (Join-Path $x64 'propagate-basic.exe') (@('--private-worker')+$tree) @('PROPAGATION BASIC PASS') 320),
+        (Case 'propagation-win2k' (Join-Path $x64 'propagate-basic.exe') (@('--private-worker')+$tree+@('Win2K')) @('PROPAGATION BASIC PASS') 320),
         (Case 'cmd-nested' (Join-Path $x64 'cmd-nested.exe') @('--core',$legacy) @('CMD NESTED PASS core four native PE edges') 180),
         (Case 'long-path' $python @('-B',(Join-Path $SourceRoot 'tests/run16s-exe/long_path.py'),$run,$d32,$d64,(Join-Path $x86 'launch-failures.exe'),(Join-Path $x64 'launch-failures.exe')) @('LONG PATH PASS width=32','LONG PATH PASS width=64')),
         (Case 'cli-failures' $python (@('-B',(Join-Path $SourceRoot 'tests/run16s-exe/cli_failures.py'))+$pair) @('Win16 ROLLBACK PASS width=32','Win2K ROLLBACK PASS width=32','no target process','CLI IO/EXIT PASS width=32','CLI IO/EXIT PASS width=64'))
@@ -438,6 +439,12 @@ try{
             (Join-Path $fixture "ntwshk$bits.dll"),(Join-Path $fixture 'Win16/Win16.theme'),
             (Join-Path $fixture 'Win2K/Win2K.theme')) @(
             'UWP THEME ID PASS','UWP MISSING THEME PASS','WIN2K UWP FRAME PASS') 20
+        Case "neutral-menu-cancel-$bits" $dialogDriver @('--direct',$run,'Win16',
+            (Join-Path $tree 'core-menu-cancel.exe'),'--private-worker',$shared) @(
+            'MENU CANCEL PASS 15 scenarios','MENU FRAME INACTIVE dpi=96 pixel=ffffff',
+            'MENU FRAME INACTIVE dpi=144 pixel=ffffff','MENU FRAME FULL PAINT dpi=96 pixel=f0c8a4',
+            'MENU FRAME FULL PAINT dpi=144 pixel=f0c8a4','MENU SHADOW SCOPE PASS aware=0',
+            'MENU SHADOW SCOPE PASS aware=1','DIALOG_DRIVER exit=0') 50
         Case "neutral-global-switch-$bits" (Join-Path $owned 'run16s.exe') @(
             (Join-Path $tree 'global-propagation-probe.exe'),(Join-Path $owned "ntwshk$bits.dll"),'--owned-switch') @(
             'OWNED GLOBAL INITIAL expected=0 observed=0','OWNED GLOBAL SWITCH step=6 expected=0 observed=0',

@@ -147,9 +147,11 @@ static LRESULT CALLBACK witness(HWND w,UINT m,WPARAM a,LPARAM b)
 }
 static void drain(void)
 {MSG m;while(PeekMessageW(&m,NULL,0,0,PM_REMOVE)){TranslateMessage(&m);DispatchMessageW(&m);}}
-static void native_popup(void)
+typedef BOOL (__cdecl *window_op)(HWND);
+static void native_popup(window_op attached,window_op detach)
 {
     HWND w=CreateWindowW(L"MenuCancelProbe",L"Native shadow witness",WS_OVERLAPPEDWINDOW,30,30,400,200,NULL,NULL,GetModuleHandleW(NULL),NULL);CHECK(w);
+    if(attached(w))CHECK(detach(w) && !attached(w));
     HMENU menu=CreatePopupMenu();CHECK(menu && AppendMenuW(menu,MF_STRING,3,L"Unstyled native menu"));
     native_case=TRUE;timed_out=FALSE;ShowWindow(w,SW_SHOWNORMAL);CHECK(SetTimer(w,99,2500,NULL));
     TrackPopupMenuEx(menu,TPM_RETURNCMD|TPM_NONOTIFY,40,100,w,NULL);
@@ -163,14 +165,16 @@ static int matrix(int argc,WCHAR **argv)
     observe_only=argc==3 && !wcscmp(argv[2],L"--observe");outline_only=argc==3 && !wcscmp(argv[2],L"--outline-only");
     HMODULE dll=LoadLibraryExW(argv[1],NULL,LOAD_WITH_ALTERED_SEARCH_PATH);CHECK(dll);
     BOOL (__cdecl *install)(HWND,const win16_style_palette *)=(void *)GetProcAddress(dll,"win16_style_install");
-    BOOL (__cdecl *remove_style)(HWND)=(void *)GetProcAddress(dll,"win16_style_remove");CHECK(install && remove_style);
+    window_op remove_style=(void *)GetProcAddress(dll,"win16_style_remove");
+    window_op attached=(void *)GetProcAddress(dll,"Ntw16sWindowAttached");
+    window_op detach=(void *)GetProcAddress(dll,"Ntw16sWindowRemove");CHECK(install && remove_style && attached && detach);
     WNDCLASSW cls={.lpfnWndProc=witness,.hInstance=GetModuleHandleW(NULL),.lpszClassName=L"MenuCancelProbe"};
     CHECK(RegisterClassW(&cls));
     BOOL shadow_setting=FALSE,after_setting=FALSE;WNDCLASSW menu_class,after_class;
     CHECK(SystemParametersInfoW(SPI_GETDROPSHADOW,0,&shadow_setting,0) && GetClassInfoW(NULL,L"#32768",&menu_class));
     for(unsigned context=0;context<2;++context){
     CHECK(SetThreadDpiAwarenessContext(context?DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2:DPI_AWARENESS_CONTEXT_UNAWARE));
-    native_popup();border_checks=hidden_shadows=0;
+    native_popup(attached,detach);border_checks=hidden_shadows=0;
     /* Keep an owned active window between cases. Destroying the active window
      * leaves USER to resolve activation against another desktop window and can
      * add seconds to every subsequent case. All case assertions precede the
@@ -200,7 +204,7 @@ static int matrix(int argc,WCHAR **argv)
         HWND edit=CreateWindowW(L"EDIT",L"Focus witness",WS_CHILD|WS_VISIBLE|WS_TABSTOP,20,50,200,30,w,NULL,cls.hInstance,NULL);CHECK(edit);
         other=CreateWindowW(cls.lpszClassName,L"Other owned window",WS_OVERLAPPEDWINDOW,700,30,200,150,NULL,NULL,cls.hInstance,NULL);CHECK(other);
         other_edit=CreateWindowW(L"EDIT",L"Other focus",WS_CHILD|WS_VISIBLE,0,0,100,30,other,NULL,cls.hInstance,NULL);CHECK(other_edit);
-        ShowWindow(w,SW_SHOWNORMAL);ShowWindow(other,SW_SHOWNOACTIVATE);CHECK(install(w,NULL));
+        ShowWindow(w,SW_SHOWNORMAL);ShowWindow(other,SW_SHOWNOACTIVATE);CHECK(attached(w) || install(w,NULL));
         SetActiveWindow(w);SetFocus(edit);drain();
         UINT dpi=GetDpiForWindow(w);POINT origin={0,0};CHECK(ClientToScreen(w,&origin));
         first.x=origin.x+MulDiv(8,(int)dpi,96);first.y=origin.y-MulDiv(8,(int)dpi,96);
@@ -208,7 +212,16 @@ static int matrix(int argc,WCHAR **argv)
         RECT client_bounds;CHECK(GetClientRect(w,&client_bounds));
         outside.x=origin.x+client_bounds.right-20;outside.y=origin.y+client_bounds.bottom-20;
         int witness_x=MulDiv(140,(int)dpi,96),witness_y=MulDiv(10,(int)dpi,96);
-        if(scenario==0){HDC dc=GetWindowDC(w);CHECK(dc);
+        if(scenario==0){
+            /* A background worker can own thread focus without foreground activation. */
+            SendMessageW(w,WM_NCACTIVATE,FALSE,0);
+            SendMessageW(w,WM_NCPAINT,1,0);
+            HDC dc=GetWindowDC(w);CHECK(dc);
+            COLORREF inactive=GetPixel(dc,witness_x,witness_y);CHECK(ReleaseDC(w,dc));
+            printf("MENU FRAME INACTIVE dpi=%u pixel=%06lx\n",dpi,inactive);
+            CHECK(inactive==RGB(255,255,255));
+            SendMessageW(w,WM_NCACTIVATE,TRUE,0);
+            dc=GetWindowDC(w);CHECK(dc);
             CHECK(SetPixel(dc,witness_x,witness_y,RGB(37,83,119))!=CLR_INVALID);CHECK(ReleaseDC(w,dc));
             RECT outer;CHECK(GetWindowRect(w,&outer));
             HRGN dirty=CreateRectRgn(outer.left,outer.top,outer.left+MulDiv(20,(int)dpi,96),outer.top+MulDiv(20,(int)dpi,96));CHECK(dirty);
@@ -258,7 +271,7 @@ static int matrix(int argc,WCHAR **argv)
     /* Destroying the active anchor can block in USER after the final case.
      * It is private to this worker; process exit destroys it before the
      * parent closes the private desktop. The next native popup still runs. */
-    CHECK(border_checks && hidden_shadows);native_popup();
+    CHECK(border_checks && hidden_shadows);native_popup(attached,detach);
     printf("MENU SHADOW SCOPE PASS aware=%u border-checks=%u hidden-associated=%u\n",context,border_checks,hidden_shadows);
     }
     CHECK(SystemParametersInfoW(SPI_GETDROPSHADOW,0,&after_setting,0) && GetClassInfoW(NULL,L"#32768",&after_class));
