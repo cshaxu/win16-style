@@ -4,6 +4,7 @@
 #include "lib-win32-style/application/lifecycle/instance.h"
 #include "lib-win32-style/application/control/control_state.h"
 #include "lib-win32-style/application/control/bindings.h"
+#include "lib-win32-style/application/control/scroll_managed.h"
 #include "lib-win32-style/application/control/message.h"
 #include "lib-win32-style/appearance/msstyles/classic_theme.h"
 typedef struct control_style {
@@ -58,4 +59,7 @@ typedef void (*win16_control_state_painter)(HWND,control_style *,HDC);typedef st
 } win16_control_remove_services;
 BOOL win16_control_remove(HWND,const win16_control_remove_services *);
 BOOL win16_control_terminal(HWND,const win16_control_remove_services *);
+void win16_control_managed_frame_scrollbars_palette_owned(HWND,const win16_style_palette *,const void *,const style_scroll_managed_ops *);
+void win16_control_managed_frame_scrollbars_palette(HWND,const win16_style_palette *,const style_scroll_managed_ops *);
+void win16_control_scrollbars_paint(HWND,HDC,const win16_style_palette *,SUBCLASSPROC,void (*)(HWND,control_style *,HDC));
 #endif

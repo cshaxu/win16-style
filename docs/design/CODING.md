@@ -53,6 +53,8 @@ T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及�
 `application/control/control_theme.h` 定义两条控件路径共用的已解析数据，
 `appearance/msstyles/control_theme_style.h` 从选定主题填充模型。公共作用域和复选绘制
 位于 `application/control`。控件绘制借用调用方的图像解码器，实例保管持续绘制所需的映射。
+滚动条共用度量、原生状态读取和滑块定位。轮廓绘制与非客户区绘制各自接收
+选定主题的几何和颜色，窗口适配器负责传入缺省规则并持有实例状态。
 
 ## 现代外框的当前源码位置与迁移边界
 

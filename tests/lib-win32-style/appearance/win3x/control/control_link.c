@@ -4,7 +4,7 @@
 #include "lib-win32-style/application/menu/menu_input.h"
 #include <stdio.h>
 #include "lib-win32-style/appearance/win3x/common/palette.h"
-#include "lib-win32-style/appearance/win3x/control/basic_paint.h"
+#include "lib-win32-style/application/control/control_chrome.h"
 #include "lib-win32-style/appearance/win3x/control/other_paint.h"
 #include "lib-win32-style/appearance/win3x/control/special_paint.h"
 #include "lib-win32-style/application/menu/client_bar.h"
@@ -235,7 +235,7 @@ int main(void)
        GetBkColor(dc)!=palette.light || GetTextColor(dc)!=palette.edge || GetDCBrushColor(dc)!=palette.light)return 19;
     RECT bounds={0,0,17,17};
     const style_scroll_arrow_art art={.source=STYLE_SCROLL_ARROW_INDEXED};
-    win16_control_scroll_arrow_art(dc,bounds,DFCS_SCROLLUP,&palette,&art);
+    style_control_outline_scroll_arrow(dc,bounds,DFCS_SCROLLUP,&palette,&art);
     BOOL valid=GetPixel(dc,0,0)==palette.edge;
     SelectObject(dc,previous);DeleteObject(bitmap);DeleteDC(dc);
     if(!valid)return 5;

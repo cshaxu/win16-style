@@ -1,4 +1,4 @@
-#include "scroll_geometry.h"
+#include "scroll_extent.h"
 #include <limits.h>
 #include <stdint.h>
 #include <string.h>
@@ -125,4 +125,22 @@ BOOL style_scroll_measure(const RECT *bar,BOOL vertical,int nominal,int border,c
     int64_t maximum=(int64_t)info->nMax-(info->nPage?info->nPage-1:0);
     if(maximum<info->nMin)maximum=info->nMin;
     return style_scroll_measure_fixed(bar,vertical,&metrics,info->nMin,(LONG)maximum,info->nPos,layout);
+}
+
+
+BOOL style_scroll_measure_metrics(const RECT *bar,BOOL vertical,UINT dpi,const SCROLLINFO *info,style_scroll_metrics metrics,
+    style_scroll_defaults defaults,style_scroll_layout *layout)
+{
+    if(!bar || !info)return FALSE;
+    int extent=style_scroll_nominal(metrics,defaults.extent,bar,vertical,dpi);
+    style_scroll_thumb thumb=metrics.thumb?metrics.thumb:defaults.thumb;
+    return style_scroll_measure(bar,vertical,extent,max(1,MulDiv(1,(int)dpi,96)),info,thumb,layout);
+}
+
+RECT style_scroll_thumb_at_pixel(const style_scroll_layout *layout,int pixel)
+{
+    RECT thumb=layout->thumb;
+    if(layout->vertical)OffsetRect(&thumb,0,pixel-thumb.top);
+    else OffsetRect(&thumb,pixel-thumb.left,0);
+    return thumb;
 }

@@ -15,7 +15,7 @@
 #include "lib-win32-style/application/menu/client_bar.h"
 #include "lib-win32-style/application/menu/owned_rows.h"
 #include "lib-win32-style/appearance/msstyles/raster_font.h"
-#include "lib-win32-style/appearance/win3x/control/basic_paint.h"
+#include "lib-win32-style/application/control/control_chrome.h"
 #include "lib-win32-style/appearance/win3x/control/choice_view.h"
 #include "lib-win32-style/appearance/win3x/control/combo_paint.h"
 #include "lib-win32-style/appearance/win3x/control/control_state.h"
@@ -598,7 +598,7 @@ static BOOL draw_combo_arrow(HDC dc,const classic_combo_arrow_art *art,UINT dpi)
     const COLORREF background=RGB(102,146,190),ink=RGB(21,43,65);
     if(!art->present || !style_paint_color(dc,&canvas,background))return FALSE;
     SetDCBrushColor(dc,ink);
-    win16_control_combo_arrow(dc,2,3,(int)dpi,art);
+    style_control_combo_arrow(dc,2,3,(int)dpi,art);
     for(unsigned y=0;y<ARRAYSIZE(combo_arrow);++y)
         for(unsigned x=0;x<sizeof(combo_arrow[y])-1;++x){
             COLORREF expected=combo_arrow[y][x]=='0'?ink:background;
@@ -606,7 +606,7 @@ static BOOL draw_combo_arrow(HDC dc,const classic_combo_arrow_art *art,UINT dpi)
         }
     if(!style_paint_color(dc,&canvas,background))return FALSE;
     SetDCBrushColor(dc,ink);
-    win16_control_combo_arrow(dc,2,3,(int)dpi,NULL);
+    style_control_combo_arrow(dc,2,3,(int)dpi,NULL);
     return GetPixel(dc,2+MulDiv(3,(int)dpi,96),3+MulDiv(4,(int)dpi,96))==ink &&
         GetPixel(dc,2+MulDiv(3,(int)dpi,96),3)==background;
 }

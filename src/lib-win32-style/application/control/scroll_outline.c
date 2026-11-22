@@ -1,19 +1,19 @@
-#include "scroll_paint.h"
-#include "basic_paint.h"
-#include "../../../application/graphics/paint_frame.h"
+#include "lib-win32-style/application/control/scroll_outline.h"
+#include "lib-win32-style/application/control/control_chrome.h"
+#include "../graphics/paint_frame.h"
 #include "lib-win32-style/application/graphics/present.h"
 #include <oleacc.h>
 #include "lib-win32-style/application/control/scroll_surface.h"
 
-static void paint_arrow(HDC dc,RECT bounds,UINT direction,DWORD native,const win16_style_palette *palette,
+static void paint_arrow(HDC dc,RECT bounds,UINT direction,DWORD native,const style_window_palette *palette,
     const style_scroll_arrow_art *art)
 {
     UINT state=direction|((native&STATE_SYSTEM_UNAVAILABLE)?DFCS_INACTIVE:
         (native&STATE_SYSTEM_PRESSED)?DFCS_PUSHED|DFCS_FLAT:0);
-    win16_control_scroll_arrow_art(dc,bounds,state,palette,art);
+    style_control_outline_scroll_arrow(dc,bounds,state,palette,art);
 }
 
-static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG object,BOOL vertical)
+static BOOL paint_pixels(HWND w,const style_scroll_outline_view *v,HDC dc,LONG object,BOOL vertical)
 {
     style_scroll_surface surface;RECT r,first,last,thumb,pixel;int saved;
     if(!dc || !style_scroll_surface_read(w,object,&surface))return FALSE;
@@ -21,10 +21,10 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
     saved=SaveDC(dc);if(!saved)return FALSE;
     if(object!=OBJID_CLIENT)OffsetViewportOrgEx(dc,surface.origin.x,surface.origin.y,NULL);
     IntersectClipRect(dc,r.left,r.top,r.right,r.bottom);
-    const classic_scroll_colors *colors=v->colors;
-    win16_style_palette track=*v->palette,thumb_colors=*v->palette;
+    const style_native_scroll_colors *colors=v->colors;
+    style_window_palette track=*v->palette,thumb_colors=*v->palette;
     if(colors && colors->tracks_and_thumbs){
-        const classic_scroll_surface *groove=&colors->track[!!vertical],*thumb=&colors->thumb[!!vertical];
+        const style_scroll_surface_colors *groove=&colors->track[!!vertical],*thumb=&colors->thumb[!!vertical];
         track.face=groove->face;
         track.light=groove->highlight;
         track.edge=groove->dark;
@@ -47,9 +47,8 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
         v->list_axis_owned(w,object))){style_scroll_layout layout;POINT origin;
         if(object==OBJID_CLIENT?v->scroll_layout(w,&layout):v->embedded_scroll_layout(w,object,&layout,&origin)){
             first=layout.first;last=layout.last;thumb=layout.thumb;
-            if(v->scroll->track.active && (object==OBJID_CLIENT || object==v->scroll->object) && v->scroll->track.part==STYLE_SCROLL_THUMB){
-                if(vertical)OffsetRect(&thumb,0,v->scroll->track.pixel-thumb.top);
-                else OffsetRect(&thumb,v->scroll->track.pixel-thumb.left,0);}
+            if(v->scroll->track.active && (object==OBJID_CLIENT || object==v->scroll->object) && v->scroll->track.part==STYLE_SCROLL_THUMB)
+                thumb=style_scroll_thumb_at_pixel(&layout,v->scroll->track.pixel);
             info.xyThumbBottom=layout.thumb_fits?1:0;info.xyThumbTop=0;
             info.rgstate[1]&=~STATE_SYSTEM_PRESSED;info.rgstate[5]&=~STATE_SYSTEM_PRESSED;
             if(v->scroll->track.active && (object==OBJID_CLIENT || object==v->scroll->object) && v->scroll->track.inside){
@@ -58,7 +57,7 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
         }
     }
     style_paint_solid_frame(dc,r,track.edge,1);
-    const win16_style_palette *arrow_palette=v->arrow_palette?v->arrow_palette:v->palette;
+    const style_window_palette *arrow_palette=v->arrow_palette?v->arrow_palette:v->palette;
     paint_arrow(dc,first,vertical?DFCS_SCROLLUP:DFCS_SCROLLLEFT,info.rgstate[1],arrow_palette,v->art);
     paint_arrow(dc,last,vertical?DFCS_SCROLLDOWN:DFCS_SCROLLRIGHT,info.rgstate[5],arrow_palette,v->art);
     if(info.xyThumbBottom>info.xyThumbTop){
@@ -72,7 +71,7 @@ static BOOL paint_pixels(HWND w,const win16_control_scroll_view *v,HDC dc,LONG o
     RestoreDC(dc,saved);return TRUE;
 }
 
-void win16_control_draw_scroll(HWND w,const win16_control_scroll_view *v,HDC dc,LONG object,BOOL vertical)
+void style_scroll_outline_paint(HWND w,const style_scroll_outline_view *v,HDC dc,LONG object,BOOL vertical)
 {
     style_scroll_surface surface;style_present_buffer buffer;POINT brush,device;BOOL painted;
     if(!dc || !style_scroll_surface_read(w,object,&surface))return;

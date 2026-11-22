@@ -40,5 +40,9 @@ typedef struct style_scroll_fixed_metrics { int arrow,thumb,border; } style_scro
 BOOL style_scroll_measure_fixed(const RECT *,BOOL,const style_scroll_fixed_metrics *,LONG,LONG,LONG,style_scroll_layout *);
 BOOL style_scroll_measure_page(const RECT *,BOOL,int,const SCROLLINFO *,style_scroll_layout *);
 BOOL style_scroll_measure(const RECT *,BOOL,int,int,const SCROLLINFO *,style_scroll_thumb,style_scroll_layout *);
+typedef struct style_scroll_defaults {enum style_scroll_extent_source extent;style_scroll_thumb thumb;} style_scroll_defaults;
+BOOL style_scroll_measure_metrics(const RECT *,BOOL,UINT,const SCROLLINFO *,style_scroll_metrics,
+    style_scroll_defaults,style_scroll_layout *);
+RECT style_scroll_thumb_at_pixel(const style_scroll_layout *,int pixel);
 style_scroll_part style_scroll_hit(const style_scroll_layout *,POINT,UINT);
 #endif

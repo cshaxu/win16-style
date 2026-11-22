@@ -174,6 +174,8 @@ add_custom_target(style-subclass DEPENDS "${subclass_import}")
 add_dependencies(style-instance style-subclass)
 target_link_libraries(style-instance PUBLIC "${subclass_import}" user32 comctl32)
 add_library(style-control-common STATIC
+  src/lib-win32-style/application/control/control_chrome.c
+  src/lib-win32-style/application/control/scroll_outline.c
   src/lib-win32-style/application/control/choice_glyph.c
   src/lib-win32-style/application/control/native_scroll.c
   src/lib-win32-style/application/control/message.c
@@ -218,6 +220,7 @@ add_library(style-control-common STATIC
   src/lib-win32-style/application/control/retire.c
   src/lib-win32-style/application/control/scroll_resources.c
   src/lib-win32-style/application/control/scroll_geometry.c
+  src/lib-win32-style/application/control/scroll_read.c
   src/lib-win32-style/application/control/scroll_track.c
   src/lib-win32-style/application/control/scroll_controller.c
   src/lib-win32-style/application/control/scroll_managed.c
@@ -238,12 +241,11 @@ add_dependencies(style-control-common style-subclass)
 target_link_libraries(style-control-common PUBLIC module-import style-bitmap style-present style-window win32-unwind style-instance "${subclass_import}" user32 comctl32 gdi32 uxtheme msimg32)
 add_library(win16-control STATIC
   src/lib-win32-style/appearance/win3x/control/toolbar_paint.c
-  src/lib-win32-style/appearance/win3x/control/basic_paint.c
   src/lib-win32-style/appearance/win3x/control/other_paint.c src/lib-win32-style/appearance/win3x/control/list_paint.c
-  src/lib-win32-style/appearance/win3x/control/combo_paint.c src/lib-win32-style/appearance/win3x/control/scroll_paint.c
+  src/lib-win32-style/appearance/win3x/control/combo_paint.c
   src/lib-win32-style/appearance/win3x/control/choice_view.c src/lib-win32-style/appearance/win3x/control/vb_text.c
   src/lib-win32-style/appearance/win3x/control/special_paint.c
-  src/lib-win32-style/appearance/win3x/control/month_text.c src/lib-win32-style/appearance/win3x/control/scroll_native.c
+  src/lib-win32-style/appearance/win3x/control/month_text.c
   src/lib-win32-style/appearance/win3x/control/control_state.c
   src/lib-win32-style/appearance/win3x/control/control_dispatch.c
   src/lib-win32-style/appearance/win3x/control/vcl_native_paint.c src/lib-win32-style/appearance/win3x/control/text_policy.c

@@ -2,7 +2,7 @@
 #include "vcl_native_paint.h"
 #include "lib-win32-style/application/control/control_vcl_identity.h"
 #include "lib-win32-style/application/control/control_class.h"
-#include "basic_paint.h"
+#include "lib-win32-style/application/control/control_chrome.h"
 #include "special_paint.h"
 #include "../common/palette.h"
 #include <commctrl.h>
@@ -13,7 +13,7 @@ void win16_control_vcl_inplace_draw(const win16_control_vcl_paint_view *v,HDC dc
  int saved=SaveDC(dc);if(!saved)return;int u=max(1,MulDiv(1,(int)GetDpiForWindow(v->window),96));int left=(r->left+r->right-7*u)/2,top=(r->top+r->bottom-9*u)/2;
  if(drop && (left<r->left+u || top<r->top+u || left+7*u>r->right-u || top+9*u>r->bottom-u)){RestoreDC(dc,saved);return;}
  if(clip && IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)==ERROR){RestoreDC(dc,saved);return;}
- if(win16_style_bitbtn_face(v->window,dc,r,clip,state==3?ODS_SELECTED:0,v->palette,v->push) && !v->instance->detached){if(drop){SetDCBrushColor(dc,v->palette->edge);win16_control_combo_arrow(dc,left,top,96*u,v->combo_arrow);}v->state->verified=TRUE;}RestoreDC(dc,saved);}
+ if(win16_style_bitbtn_face(v->window,dc,r,clip,state==3?ODS_SELECTED:0,v->palette,v->push) && !v->instance->detached){if(drop){SetDCBrushColor(dc,v->palette->edge);style_control_combo_arrow(dc,left,top,96*u,v->combo_arrow);}v->state->verified=TRUE;}RestoreDC(dc,saved);}
 void win16_control_vcl_nav_draw(const win16_control_vcl_paint_view *v,HDC dc,int part,int state,const RECT *r,const RECT *clip,const void *address)
 {RECT client;POINT wo,vo;HMODULE caller=NULL;BOOL media;
  if(!v->state->candidate || v->instance->detached || !dc || !r || part!=1 || !style_control_vcl_nav_identity(v->window,v->state->owner,v->state->parent) || WindowFromDC(dc)!=v->window || GetMapMode(dc)!=MM_TEXT || (GetLayout(dc)&LAYOUT_RTL) || !GetWindowOrgEx(dc,&wo) || !GetViewportOrgEx(dc,&vo) || wo.y || vo.x || vo.y || !GetClientRect(v->window,&client) || r->top || r->bottom!=client.bottom || !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,(LPCWSTR)address,&caller) || caller!=v->state->owner)return;

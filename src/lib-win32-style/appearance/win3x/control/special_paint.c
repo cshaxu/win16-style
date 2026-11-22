@@ -1,7 +1,7 @@
 #include "lib-win32-style/application/control/rebar.h"
 #include "lib-win32-style/application/graphics/dc_geometry.h"
 #include "special_paint.h"
-#include "basic_paint.h"
+#include "lib-win32-style/application/control/control_chrome.h"
 #include "../../../application/graphics/paint_frame.h"
 #include "../../../application/control/control_protocol.h"
 #include "../../../application/graphics/bitmap.h"
@@ -90,7 +90,7 @@ void win16_style_month_arrow(HDC dc,const RECT *r,const RECT *clip,int part,int 
     if(state==(previous?MCNP_DISABLED:MCNN_DISABLED))flags|=DFCS_INACTIVE;
     else if(state==(previous?MCNP_PRESSED:MCNN_PRESSED))flags|=DFCS_PUSHED;
     if(!clip || IntersectClipRect(dc,clip->left,clip->top,clip->right,clip->bottom)!=ERROR)
-        win16_control_scroll_arrow_art(dc,*r,flags,palette,art);
+        style_control_outline_scroll_arrow(dc,*r,flags,palette,art);
     RestoreDC(dc,saved);
 }
 
@@ -181,7 +181,7 @@ static BOOL runtime_push_frame(HWND w,HDC dc,RECT bounds,UINT state,const win16_
 {
     if(!theme->profile)return FALSE;
     int unit=max(1,MulDiv(1,(int)GetDpiForWindow(w),96));
-    style_relief_palette colors=win16_control_push_palette(palette);
+    style_relief_palette colors=style_control_outline_palette(palette);
     const classic_surface_colors part=classic_push_color(&theme->colors,(state&DFCS_INACTIVE)!=0,
         (state&(DFCS_PUSHED|DFCS_CHECKED))!=0,FALSE);
     colors.face=colors.light=part.face;

@@ -1,5 +1,5 @@
 #include "list_paint.h"
-#include "basic_paint.h"
+#include "lib-win32-style/application/control/control_chrome.h"
 #include "control_state.h"
 #include "../../../application/graphics/paint_frame.h"
 #include "lib-win32-style/application/control/list_snapshot.h"
@@ -30,7 +30,7 @@ void win16_control_edit_border(HWND w,const control_style *style,HDC target)
     COLORREF edge=border->present?border->line:style->palette.edge;
     dc=target?target:GetDC(w);if(!dc)return;
     saved=SaveDC(dc);if(saved){
-        style_relief_palette colors=win16_control_push_palette(&style->palette);
+        style_relief_palette colors=style_control_outline_palette(&style->palette);
         if(style->frame_colors.present){
             colors.shadow=style->frame_colors.shadow;
             colors.highlight=style->frame_colors.light;

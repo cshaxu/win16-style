@@ -1,5 +1,5 @@
 #include "other_paint.h"
-#include "basic_paint.h"
+#include "lib-win32-style/application/control/control_chrome.h"
 #include "lib-win32-style/application/graphics/text_metrics.h"
 #include "lib-win32-style/application/control/button_snapshot.h"
 #include "../../../application/graphics/paint_frame.h"
@@ -30,7 +30,7 @@ void win16_control_other(HWND w,style_instance *instance,const win16_style_palet
     if(!label && type==BS_GROUPBOX){
         RECT title=r;title.left+=8*u;DrawTextW(dc,text,-1,&title,DT_CALCRECT|DT_SINGLELINE);
         bounds.top+=tm.tmHeight/2;
-        style_relief_palette colors=win16_control_push_palette(palette);
+        style_relief_palette colors=style_control_outline_palette(palette);
         style_paint_line_frame(dc,&bounds,EDGE_ETCHED,0,u,palette->shadow,controls.group,&colors);
         InflateRect(&title,u,0);SetDCBrushColor(dc,(*palette).light);FillRect(dc,&title,(HBRUSH)GetStockObject(DC_BRUSH));
         title.left+=u;DrawTextW(dc,text,-1,&title,DT_SINGLELINE);return;
@@ -41,7 +41,7 @@ void win16_control_other(HWND w,style_instance *instance,const win16_style_palet
         if(checked)state|=DFCS_CHECKED;
         if(style&BS_FLAT)state|=DFCS_FLAT|DFCS_MONO;
         if(!IsWindowEnabled(w))state|=DFCS_INACTIVE;
-        style_relief_palette colors=win16_control_push_palette(palette);
+        style_relief_palette colors=style_control_outline_palette(palette);
         if(!style_paint_push_frame(dc,&bounds,state,type==BS_DEFPUSHBUTTON,u,controls.push,&colors))return;
         InflateRect(&bounds,-3*u,fit?-u:-3*u);if(pushed)OffsetRect(&bounds,u,u);
         flags=DT_CENTER|DT_VCENTER|DT_SINGLELINE;

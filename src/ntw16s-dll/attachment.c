@@ -8,7 +8,7 @@
 #include "native_api.h"
 #include "theme.h"
 #include "lib-win32-style/application/adapters/win32/runtime_native.h"
-#include "../lib-win32-style/appearance/win3x/control/basic_paint.h"
+#include "../lib-win32-style/application/control/control_chrome.h"
 #include "lib-win32-style/application/control/native_overlay.h"
 #include "lib-win32-style/application/control/report.h"
 #include "lib-win32-style/appearance/win3x/control/combo_paint.h"

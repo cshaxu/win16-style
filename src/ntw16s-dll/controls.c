@@ -1,6 +1,6 @@
 #include "lib-win32-style/application/control/guard.h"
 #include "../lib-win32-style/appearance/win3x/control/control_class.h"
-#include "lib-win32-style/appearance/win3x/control/scroll_native.h"
+#include "lib-win32-style/application/control/scroll_read.h"
 #include "attachment.h"
 /* Product policies and shared runtime-role check. */
 BOOL ntw16s_control_role_valid(HWND);
@@ -9,11 +9,11 @@ BOOL ntw16s_group_push_button(HWND);
 BOOL ntw16s_group_choice_button(HWND);
 BOOL ntw16s_vb_user_edge_dormant(HWND);
 #include "controls.h"
-#include "../lib-win32-style/appearance/win3x/control/basic_paint.h"
+#include "../lib-win32-style/application/control/control_chrome.h"
 #include "../lib-win32-style/appearance/win3x/control/other_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/list_paint.h"
 #include "../lib-win32-style/appearance/win3x/control/combo_paint.h"
-#include "../lib-win32-style/appearance/win3x/control/scroll_paint.h"
+#include "../lib-win32-style/application/control/scroll_outline.h"
 #include "../lib-win32-style/appearance/win3x/control/special_paint.h"
 BOOL ntw16s_vb_data_palette(HWND,win16_style_palette *,style_scroll_arrow_art *);
 #include "lib-win32-style/application/graphics/present.h"
@@ -138,10 +138,11 @@ static classic_scroll_metrics scroll_metrics(HWND window)
     const style_instance *instance=style_instance_lookup(window,control_proc);
     return instance?((const control_style *)instance->context)->scroll_metrics:(classic_scroll_metrics){0};
 }
+static const style_scroll_defaults scroll_defaults={STYLE_SCROLL_EXTENT_CROSS_AXIS,STYLE_SCROLL_THUMB_FIXED};
 static BOOL scroll_layout(HWND w,style_scroll_layout *layout)
-{return win16_scroll_control_layout(w,ntw16s_native_get_scroll_info,scroll_metrics(w),layout);}
+{return style_scroll_read_control_layout(w,ntw16s_native_get_scroll_info,scroll_metrics(w),scroll_defaults,layout);}
 static BOOL embedded_scroll_layout(HWND w,LONG object,style_scroll_layout *layout,POINT *screen_origin)
-{return win16_scroll_embedded_layout(w,object,ntw16s_native_get_scroll_info,scroll_metrics(w),layout,screen_origin);}
+{return style_scroll_read_embedded_layout(w,object,ntw16s_native_get_scroll_info,scroll_metrics(w),scroll_defaults,layout,screen_origin);}
 
 static BOOL list_axis_owned(HWND w,LONG object)
 {return style_scroll_list_axis_owned(w,object,ntw16s_native_get_scroll_info);}
@@ -155,10 +156,10 @@ static void draw_scroll(HWND w,control_style *s,HDC dc,LONG object,BOOL vertical
         arrows.face=s->scroll_arrow_colors.face;
         arrows.edge=s->scroll_arrow_colors.edge;
     }
-    const win16_control_scroll_view view={&s->palette,&s->bindings.scroll,scroll_layout,
+    const style_scroll_outline_view view={&s->palette,&s->bindings.scroll,scroll_layout,
         embedded_scroll_layout,edit_thumb_messages,list_axis_owned,&arrows,
         s->themed?&s->scroll_colors:NULL,&s->scroll_art};
-    win16_control_draw_scroll(w,&view,dc,object,vertical);
+    style_scroll_outline_paint(w,&view,dc,object,vertical);
 }
 
 static void scroll_draw_callback(HWND w,void *context,HDC dc,LONG object,BOOL vertical)
@@ -175,7 +176,7 @@ static void scroll_caret_sync(HWND w,control_style *s)
     if(s->instance.detached || !style_control_is_scroll(w))return;
     if(GetFocus()!=w || !IsWindowEnabled(w) || !scroll_layout(w,&layout) || !layout.thumb_fits){
         style_scroll_caret_destroy(w,&s->bindings.scroll.resources);return;}
-    rectangle=win16_scroll_caret_rectangle(w,&layout,&s->bindings.scroll.track);
+    rectangle=style_scroll_caret_rectangle(&layout,&s->bindings.scroll.track,max(1,MulDiv(2,(int)GetDpiForWindow(w),96)));
     style_scroll_caret_sync(w,&s->bindings.scroll.resources,&rectangle,s->bindings.scroll.track.active);
 }
 static void scroll_nonclient_callback(HWND w,void *context,HDC dc)

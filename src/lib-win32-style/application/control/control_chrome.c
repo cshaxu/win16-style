@@ -1,8 +1,8 @@
-#include "basic_paint.h"
-#include "../../../application/graphics/paint_frame.h"
-#include "../../../application/graphics/pixel_grid.h"
+#include "lib-win32-style/application/control/control_chrome.h"
+#include "../graphics/paint_frame.h"
+#include "../graphics/pixel_grid.h"
 
-void win16_control_combo_arrow(HDC dc,int left,int top,int dpi,const classic_combo_arrow_art *art)
+void style_control_combo_arrow(HDC dc,int left,int top,int dpi,const classic_combo_arrow_art *art)
 {
     if(art && art->present){
         char pixels[CLASSIC_COMBO_ARROW_HEIGHT*CLASSIC_COMBO_ARROW_WIDTH];
@@ -24,15 +24,15 @@ void win16_control_combo_arrow(HDC dc,int left,int top,int dpi,const classic_com
     if(pen)SelectObject(dc,pen);
 }
 
-style_relief_palette win16_control_push_palette(const win16_style_palette *palette)
+style_relief_palette style_control_outline_palette(const style_window_palette *palette)
 {
     return (style_relief_palette){.face=palette->face,.light=palette->face,.highlight=palette->light,
         .shadow=palette->shadow,.dark=palette->edge,.text=palette->edge,.window=palette->light};
 }
 
-void win16_control_scroll_arrow_art(HDC dc,RECT bounds,UINT state,const win16_style_palette *palette,
+void style_control_outline_scroll_arrow(HDC dc,RECT bounds,UINT state,const style_window_palette *palette,
     const style_scroll_arrow_art *art)
 {
-    const style_relief_palette colors=win16_control_push_palette(palette);
+    const style_relief_palette colors=style_control_outline_palette(palette);
     (void)style_paint_scroll_arrow(dc,&bounds,state,&colors,art);
 }

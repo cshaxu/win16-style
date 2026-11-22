@@ -69,14 +69,14 @@ static BOOL WINAPI observed_blt(HDC dc,int x,int y,int cx,int cy,HDC from,int sx
 #include "ntw16s-dll/controls.c"
 /* Instrument the same library implementations used by the product, so the
  * failure and GDI ownership checks still cover the extracted painters. */
-#include "lib-win32-style/appearance/win3x/control/basic_paint.c"
+#include "lib-win32-style/application/control/control_chrome.c"
 #include "lib-win32-style/application/control/choice_glyph.c"
 #include "lib-win32-style/appearance/win3x/control/choice_view.c"
 #include "lib-win32-style/appearance/win3x/control/other_paint.c"
 #include "lib-win32-style/appearance/win3x/control/list_paint.c"
 #include "lib-win32-style/application/control/list_snapshot.c"
 #include "lib-win32-style/appearance/win3x/control/combo_paint.c"
-#include "lib-win32-style/appearance/win3x/control/scroll_paint.c"
+#include "lib-win32-style/application/control/scroll_outline.c"
 #include "lib-win32-style/appearance/win3x/control/special_paint.c"
 /* Observe the actual profile renderer after removal of the product
  * presentation trampoline; isolate only same-TU test-local helper names. */
@@ -161,7 +161,7 @@ int main(int argc,char **argv)
      w=CreateWindowW(L"LISTBOX",L"",WS_CHILD|WS_VISIBLE|WS_VSCROLL,0,0,160,120,root,NULL,wc.hInstance,NULL);CHECK(w);
      SCROLLINFO range={.cbSize=sizeof(range),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS,.nMin=0,.nMax=100,.nPage=10,.nPos=25};
      SetScrollInfo(w,SB_VERT,&range,TRUE);control_style state={0};style_window_palette_default(&state.palette);
-     const win16_control_scroll_view view={&state.palette,&state.bindings.scroll,scroll_layout,
+     const style_scroll_outline_view view={&state.palette,&state.bindings.scroll,scroll_layout,
         embedded_scroll_layout,edit_thumb_messages,list_axis_owned,NULL,NULL,NULL};
      SCROLLBARINFO info={.cbSize=sizeof(info)};RECT outer;
      CHECK(GetScrollBarInfo(w,OBJID_VSCROLL,&info) && !(info.rgstate[0]&STATE_SYSTEM_INVISIBLE) && GetWindowRect(w,&outer));
@@ -169,7 +169,7 @@ int main(int argc,char **argv)
      CHECK(bar.left>0 && bar.right<=200 && bar.bottom<=160);
      SetBrushOrgEx(direct,3,5,NULL);SetBrushOrgEx(buffered,3,5,NULL);
      CHECK(paint_pixels(w,&view,direct,OBJID_VSCROLL,TRUE));
-     win16_control_draw_scroll(w,&view,buffered,OBJID_VSCROLL,TRUE);
+     style_scroll_outline_paint(w,&view,buffered,OBJID_VSCROLL,TRUE);
      for(int y=bar.top;y<bar.bottom;++y)for(int x=bar.left;x<bar.right;++x)
         CHECK(GetPixel(direct,x,y)==GetPixel(buffered,x,y));
      SelectObject(direct,old_first);SelectObject(buffered,old_second);

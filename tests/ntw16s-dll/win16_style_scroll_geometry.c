@@ -1,5 +1,5 @@
 #include "lib-win32-style/application/control/scroll_geometry.h"
-#include "lib-win32-style/appearance/win3x/control/scroll_native.h"
+#include "lib-win32-style/application/control/scroll_read.h"
 #include "lib-win32-style/application/control/scroll_track.h"
 #include "lib-win32-style/application/control/scroll_state.h"
 #include "lib-win32-style/application/control/scroll_resources.h"
@@ -9,6 +9,7 @@
 #include <stdlib.h>
 
 static const style_scroll_policy win16_scroll_policy={200,50,{STYLE_SCROLL_DRAG_LOGICAL,4,1},style_scroll_hit};
+static const style_scroll_defaults outline_defaults={STYLE_SCROLL_EXTENT_CROSS_AXIS,STYLE_SCROLL_THUMB_FIXED};
 static unsigned checks;
 static int fake_max=100;static int fake_min=0;static UINT fake_page=1;
 static BOOL fake_info(HWND w,int bar,LPSCROLLINFO info)
@@ -51,7 +52,7 @@ static void tracking_tests(void)
     CHECK(parent && child);
     EnableWindow(child,FALSE);CHECK(style_scroll_disabled(child,OBJID_CLIENT)==ESB_DISABLE_BOTH);
     EnableWindow(child,TRUE);
-    CHECK(win16_scroll_control_layout(child,fake_info,(classic_scroll_metrics){0},&from_native));
+    CHECK(style_scroll_read_control_layout(child,fake_info,(style_scroll_metrics){0},outline_defaults,&from_native));
     CHECK(from_native.vertical && from_native.first.bottom-from_native.first.top==20);
     style_instance instance={0};style_control_state owner={0};
     style_scroll_controller controller={.epoch=5,.report=77,.object=OBJID_CLIENT};
@@ -76,16 +77,27 @@ static void tracking_tests(void)
     DestroyWindow(child);DestroyWindow(parent);CHECK(UnregisterClassW(cls.lpszClassName,cls.hInstance));
     POINT point={8,100};
     SCROLLINFO native={.cbSize=sizeof(native),.nMin=0,.nMax=109,.nPage=10,.nPos=50};
-    CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,(classic_scroll_metrics){0},&from_native));
+    CHECK(style_scroll_measure_metrics(&bar,TRUE,96,&native,(style_scroll_metrics){0},outline_defaults,&from_native));
     CHECK(from_native.maximum==100 && from_native.position==50 && from_native.first.bottom==17);
     CHECK(from_native.thumb.bottom-from_native.thumb.top==17);
-    const classic_scroll_metrics mixed={CLASSIC_SCROLL_EXTENT_CROSS_AXIS,0,STYLE_SCROLL_THUMB_PAGE,0,0,{0}};
-    CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,mixed,&l));
+    const style_scroll_metrics mixed={STYLE_SCROLL_EXTENT_CROSS_AXIS,0,STYLE_SCROLL_THUMB_PAGE,0,0,{0}};
+    CHECK(style_scroll_measure_metrics(&bar,TRUE,96,&native,mixed,outline_defaults,&l));
     CHECK(l.maximum==from_native.maximum && l.thumb.bottom-l.thumb.top==15 && l.minimum_pixel==17);
     CHECK(style_scroll_hit(&l,(POINT){8,l.thumb.top},0)==STYLE_SCROLL_THUMB);
-    native.nPage=200;CHECK(win16_scroll_measure_native(&bar,TRUE,96,&native,(classic_scroll_metrics){0},&from_native) && from_native.maximum==0);
-    CHECK(!win16_scroll_measure_native(NULL,TRUE,96,&native,(classic_scroll_metrics){0},&from_native));
-    CHECK(!win16_scroll_measure_native(&bar,TRUE,96,NULL,(classic_scroll_metrics){0},&from_native));
+    const style_scroll_defaults native_defaults={STYLE_SCROLL_EXTENT_SYSTEM,STYLE_SCROLL_THUMB_PAGE};
+    style_scroll_layout expected;
+    CHECK(style_scroll_measure_page(&bar,TRUE,GetSystemMetricsForDpi(SM_CYVSCROLL,96),&native,&expected));
+    CHECK(style_scroll_measure_metrics(&bar,TRUE,96,&native,(style_scroll_metrics){0},native_defaults,&l));
+    CHECK(EqualRect(&l.first,&expected.first) && EqualRect(&l.thumb,&expected.thumb));
+    RECT dragged=style_scroll_thumb_at_pixel(&l,l.thumb.top+13);
+    CHECK(dragged.top==l.thumb.top+13 && dragged.bottom==l.thumb.bottom+13 && dragged.left==l.thumb.left);
+    RECT horizontal={0,0,200,17};
+    CHECK(style_scroll_measure_metrics(&horizontal,FALSE,96,&native,(style_scroll_metrics){0},outline_defaults,&l));
+    dragged=style_scroll_thumb_at_pixel(&l,l.thumb.left+11);
+    CHECK(dragged.left==l.thumb.left+11 && dragged.right==l.thumb.right+11 && dragged.top==l.thumb.top);
+    native.nPage=200;CHECK(style_scroll_measure_metrics(&bar,TRUE,96,&native,(style_scroll_metrics){0},outline_defaults,&from_native) && from_native.maximum==0);
+    CHECK(!style_scroll_measure_metrics(NULL,TRUE,96,&native,(style_scroll_metrics){0},outline_defaults,&from_native));
+    CHECK(!style_scroll_measure_metrics(&bar,TRUE,96,NULL,(style_scroll_metrics){0},outline_defaults,&from_native));
     CHECK(style_scroll_measure_fixed(&bar,TRUE,&metrics,0,100,50,&l));
     CHECK(style_scroll_begin(&t,&l,0,point,&limit,&a,&win16_scroll_policy));
     CHECK(t.active && t.part==STYLE_SCROLL_THUMB && t.grab_offset==8 && t.pixel==92);

@@ -1,5 +1,5 @@
 #include "combo_paint.h"
-#include "basic_paint.h"
+#include "lib-win32-style/application/control/control_chrome.h"
 #include "control_state.h"
 #include "lib-win32-style/application/control/control_class.h"
 #include "../../../application/graphics/paint_frame.h"
@@ -60,7 +60,7 @@ void win16_control_draw_combo(HWND w,control_style *style,HDC dc,BOOL (*get_info
     left=(button.left+button.right-7*u)/2;top=(button.top+button.bottom-9*u)/2;
     if(pressed){left+=u;top+=u;}
     SetDCBrushColor(dc,IsWindowEnabled(w)?(*palette).edge:(*palette).shadow);
-    win16_control_combo_arrow(dc,left,top,96*u,&style->combo_arrow);
+    style_control_combo_arrow(dc,left,top,96*u,&style->combo_arrow);
     if(editable || is_vb_drive(w) || common_dialog_combo){RestoreDC(dc,saved);style_control_combo_snapshot_clear(&snapshot);return;}
     text=info.rcItem;selected=GetFocus()==w && !pressed;
     COLORREF selection=list_themed?list->selection:palette->active;
@@ -89,10 +89,10 @@ void win16_control_native_combo_button(HWND w,const style_instance *instance,HDC
         RestoreDC(dc,saved);return;
     }
     if(theme)palette=*theme;else style_window_palette_default(&palette);
-    style_relief_palette frame=win16_control_push_palette(&palette);
+    style_relief_palette frame=style_control_outline_palette(&palette);
     r=style_paint_outlined_face(dc,r,u,TRUE,pressed,palette.face,&frame);
     int left=(r.left+r.right-gw)/2+(pressed?u:0),top=(r.top+r.bottom-gh)/2+(pressed?u:0);
     SetDCBrushColor(dc,IsWindowEnabled(w)?palette.edge:palette.shadow);
-    win16_control_combo_arrow(dc,left,top,dpi,art);
+    style_control_combo_arrow(dc,left,top,dpi,art);
     RestoreDC(dc,saved);
 }

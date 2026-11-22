@@ -1,5 +1,4 @@
 #include "native_scroll.h"
-#include "scroll_extent.h"
 #include "lib-win32-style/application/control/scroll_surface.h"
 
 static BOOL read_info(HWND window,int bar,SCROLLINFO *info)
@@ -19,11 +18,10 @@ static BOOL measure(HWND window,const style_native_scroll *scroll,LONG object,co
     UINT dpi=GetDpiForWindow(window);
     SCROLLINFO info={.cbSize=sizeof(info),.fMask=SIF_RANGE|SIF_PAGE|SIF_POS};
     if(!dpi)dpi=96;
-    int metric=style_scroll_nominal(scroll->metrics,STYLE_SCROLL_EXTENT_SYSTEM,bar,vertical,dpi);
     int axis=object==OBJID_CLIENT?SB_CTL:vertical?SB_VERT:SB_HORZ;
-    style_scroll_thumb thumb=scroll->metrics.thumb?scroll->metrics.thumb:STYLE_SCROLL_THUMB_PAGE;
     return read_info(window,axis,&info) &&
-        style_scroll_measure(bar,vertical,metric,max(1,MulDiv(1,(int)dpi,96)),&info,thumb,out);
+        style_scroll_measure_metrics(bar,vertical,dpi,&info,scroll->metrics,
+            (style_scroll_defaults){STYLE_SCROLL_EXTENT_SYSTEM,STYLE_SCROLL_THUMB_PAGE},out);
 }
 
 static BOOL layout(HWND window,void *context,LONG object,style_scroll_layout *out,POINT *origin)
@@ -127,10 +125,8 @@ static void draw(HWND window,void *context,HDC dc,LONG object,BOOL vertical)
     if(l.thumb_fits && disabled!=ESB_DISABLE_BOTH){
         style_relief_palette thumb_colors=surface_palette(colors->tracks_and_thumbs?&colors->thumb[!!vertical]:NULL);
         RECT thumb=l.thumb;
-        if(tracking && track->part==STYLE_SCROLL_THUMB){
-            if(vertical)OffsetRect(&thumb,0,surface.origin.y+track->pixel-thumb.top);
-            else OffsetRect(&thumb,surface.origin.x+track->pixel-thumb.left,0);
-        }
+        if(tracking && track->part==STYLE_SCROLL_THUMB)
+            thumb=style_scroll_thumb_at_pixel(&l,(vertical?surface.origin.y:surface.origin.x)+track->pixel);
         RECT page=groove;
         if(part==STYLE_SCROLL_PAGE_BEFORE){
             if(vertical)page.bottom=thumb.top;else page.right=thumb.left;
