@@ -70,8 +70,8 @@ static bool original_image(HMODULE module,uint32_t image_id)
     IWICBitmapFrameDecode *frame=NULL;
     IWICFormatConverter *converter=NULL;
     bool system=image_id>=507,child=image_id>=509,menu=image_id>=511,check=image_id==511;
-    bool choice=image_id>=513 && image_id<=524;
-    unsigned cell=choice?image_id-513:0;
+    bool choice=image_id>=513 && image_id<=536;
+    unsigned cell=choice?(image_id-513)%12:0;
     const UINT width=choice?14:menu?(check?14:7):system?18:19;
     const UINT height=choice?13:menu?(check?14:11):18,stride=width*3;
     BYTE bits[18*19*3];
@@ -142,7 +142,7 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect
         {15,0,501},{17,0,502},{21,0,503},{15,3,504},
         {17,3,505},{21,3,506},{13,0,507},{13,3,508}
     };
-    unsigned found_images=0,found_fonts=0,found_menu=0,found_choice=0;
+    unsigned found_images=0,found_fonts=0,found_menu=0,found_choice[2]={0};
     data=resource(module,L"VARIANT",L"NORMAL",&size);
     CHECK(data);
     while(size){
@@ -167,18 +167,21 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect
                 found_fonts|=1u<<role;
                 continue;
             }
-            CHECK(expect_image && item[0]==3001 && item[1]==206 && item[7]==16);
+            CHECK(expect_image && item[1]==206 && item[7]==16);
             if(item[2]+1==indices[0]){
+                CHECK(item[0]==3001 || item[0]==3002);
+                unsigned fallback=item[0]==3002;
                 bool radio=item[3]==BP_RADIOBUTTON;
                 CHECK((radio || item[3]==BP_CHECKBOX) && item[4] && item[4]<=(radio?8:12));
                 unsigned state=item[4]-1;
                 unsigned bit=1u<<(state+(radio?12:0));
                 unsigned row=state>=8?2:radio;
                 unsigned column=(state>=4)+2*(state%4==2);
-                CHECK(!(found_choice&bit) && item[5]==513+row*4+column);
-                found_choice|=bit;
+                CHECK(!(found_choice[fallback]&bit) && item[5]==513+row*4+column+12*fallback);
+                found_choice[fallback]|=bit;
                 continue;
             }
+            CHECK(item[0]==3001);
             if(item[2]+1==menu){
                 CHECK((item[3]==MENU_POPUPCHECK || item[3]==MENU_POPUPSUBMENU) && !item[4]);
                 unsigned role=item[3]==MENU_POPUPSUBMENU;
@@ -212,9 +215,9 @@ static bool style_data(HMODULE module,uint32_t caption,uint32_t face,bool expect
     CHECK(found_fonts==(expect_image?5:7));
     CHECK(found_images==(expect_image?(1u<<ARRAYSIZE(image_props))-1:0));
     CHECK(found_menu==(expect_image?3:0));
-    CHECK(found_choice==(expect_image?0xfffff:0));
+    for(unsigned i=0;i<ARRAYSIZE(found_choice);++i)CHECK(found_choice[i]==(expect_image?0xfffff:0));
     if(expect_image)CHECK(original_image(module,509) && original_image(module,510));
-    if(expect_image)for(unsigned id=513;id<=524;++id)CHECK(original_image(module,id));
+    if(expect_image)for(unsigned id=513;id<=536;++id)CHECK(original_image(module,id));
     return true;
 }
 

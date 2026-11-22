@@ -540,7 +540,10 @@ static BOOL draw_mixed_choice_art(HDC dc,HWND window,const classic_theme *theme,
     classic_choice_art art={0};
     const classic_choice_surface *entry=classic_choice_entry(&theme->choice,radio,BST_CHECKED,FALSE,0);
     const classic_surface_colors *colors=classic_choice_color(entry);
-    if(!colors || !classic_choice_art_get(module,entry->image,&art))return FALSE;
+    if(!colors || !entry->fallback_image || !classic_choice_art_get(module,entry->image,entry->fallback_image,&art))return FALSE;
+    classic_choice_art fallback={0};
+    if(!classic_choice_art_get(module,501,entry->fallback_image,&fallback) ||
+       memcmp(fallback.cell,art.cell,sizeof(art.cell)))return FALSE;
     enum { width=19,height=17,top=(28-height)/2 };
     classic_theme mixed=*theme;
     mixed.controls.choice_metrics=(style_choice_metrics){width,height,4,0};

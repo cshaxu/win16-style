@@ -134,10 +134,12 @@ static BOOL read_choice(const msstyles_v4_property *item,classic_choice_colors *
     if(!radio && item->part_id!=BP_CHECKBOX)return TRUE;
     if(item->state_id==0 || item->state_id>(radio?CLASSIC_RADIO_STATES:CLASSIC_CHECK_STATES))return TRUE;
     classic_choice_surface *surface=(radio?colors->radio:colors->check)+item->state_id-1;
-    if(item->name_id==TMT_IMAGEFILE){
-        if(surface->image || item->type_id!=TMT_FILENAME || item->data || item->declared_size!=16 ||
+    /* A theme can supply an independent replacement if its primary PNG is invalid. */
+    if(item->name_id==TMT_IMAGEFILE || item->name_id==TMT_IMAGEFILE1){
+        WORD *image=item->name_id==TMT_IMAGEFILE?&surface->image:&surface->fallback_image;
+        if(*image || item->type_id!=TMT_FILENAME || item->data || item->declared_size!=16 ||
            !item->short_value || item->short_value>UINT16_MAX)return FALSE;
-        surface->image=(WORD)item->short_value;
+        *image=(WORD)item->short_value;
         return TRUE;
     }
     unsigned field=item->name_id==TMT_FILLCOLOR?choice_face:

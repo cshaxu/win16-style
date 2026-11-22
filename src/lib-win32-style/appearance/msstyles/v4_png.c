@@ -50,25 +50,34 @@ HRESULT msstyles_png_roles(IWICImagingFactory *factory,HMODULE module,PCWSTR nam
     return S_OK;
 }
 
-const char *classic_choice_art_get(HMODULE module,WORD image,classic_choice_art *art)
+const char *classic_choice_art_get(HMODULE module,WORD image,WORD fallback_image,classic_choice_art *art)
 {
-    if(!module || !image || !art)return NULL;
-    if(art->image==image)return art->available?art->cell:NULL;
+    if(!module || (!image && !fallback_image) || !art)return NULL;
+    if(art->image==image && art->fallback_image==fallback_image)
+        return art->available?art->cell:NULL;
     HRESULT apartment=CoInitializeEx(NULL,COINIT_MULTITHREADED);
     if(FAILED(apartment) && apartment!=RPC_E_CHANGED_MODE)return NULL;
     IWICImagingFactory *factory=NULL;
     HRESULT result=CoCreateInstance(&CLSID_WICImagingFactory,NULL,CLSCTX_INPROC_SERVER,
         &IID_IWICImagingFactory,(void **)&factory);
     BYTE roles[CLASSIC_CHOICE_WIDTH*CLASSIC_CHOICE_HEIGHT];
-    if(SUCCEEDED(result))result=msstyles_png_roles(factory,module,MAKEINTRESOURCEW(image),
-        CLASSIC_CHOICE_WIDTH,CLASSIC_CHOICE_HEIGHT,roles);
+    classic_choice_art value={.image=image,.fallback_image=fallback_image};
+    if(SUCCEEDED(result)){
+        const WORD candidates[]={image,fallback_image};
+        result=WINCODEC_ERR_BADIMAGE;
+        for(unsigned i=0;i<ARRAYSIZE(candidates);++i){
+            if(!candidates[i] || (i && candidates[i]==image))continue;
+            result=msstyles_png_roles(factory,module,MAKEINTRESOURCEW(candidates[i]),
+                CLASSIC_CHOICE_WIDTH,CLASSIC_CHOICE_HEIGHT,roles);
+            for(unsigned j=0;SUCCEEDED(result) && j<ARRAYSIZE(roles);++j){
+                if(roles[j]>1)result=WINCODEC_ERR_BADIMAGE;
+                else value.cell[j]=(char)('0'+roles[j]);
+            }
+            if(SUCCEEDED(result))break;
+        }
+    }
     if(factory)IWICImagingFactory_Release(factory);
     if(SUCCEEDED(apartment))CoUninitialize();
-    classic_choice_art value={.image=image};
-    for(unsigned i=0;SUCCEEDED(result) && i<ARRAYSIZE(roles);++i){
-        if(roles[i]>1){result=WINCODEC_ERR_BADIMAGE;break;}
-        value.cell[i]=(char)('0'+roles[i]);
-    }
     value.available=SUCCEEDED(result);
     *art=value;
     return art->available?art->cell:NULL;

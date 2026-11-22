@@ -53,7 +53,7 @@ static inline BOOL classic_control_checklist_read(HMODULE module,UINT flags,styl
     if(error || !source.resources){classic_theme_close(&source);return FALSE;}
     const classic_choice_surface *entry=classic_choice_entry(&source.model.choice,FALSE,
         flags&DFCS_CHECKED?BST_CHECKED:BST_UNCHECKED,FALSE,flags&DFCS_PUSHED?BST_PUSHED:0);
-    BOOL decoded=classic_choice_art_get(source.resources,entry->image,&glyph->art)!=NULL;
+    BOOL decoded=classic_choice_art_get(source.resources,entry->image,entry->fallback_image,&glyph->art)!=NULL;
     const classic_surface_colors *colors=classic_choice_color(entry);
     glyph->ink=colors?colors->edge:GetSysColor(COLOR_WINDOWTEXT);
     glyph->paper=colors?colors->face:GetSysColor(COLOR_WINDOW);

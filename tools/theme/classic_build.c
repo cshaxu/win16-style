@@ -96,8 +96,11 @@ static bool choice_buttons(FILE *output,const classic_theme_source *source)
                 unsigned row=state>=8?2:i;
                 unsigned column=(state>=4)+2*(state%4==2);
                 unsigned id=CLASSIC_CHOICE_FIRST_IMAGE_ID+4*row+column;
+                unsigned backup=CLASSIC_CHOICE_FALLBACK_FIRST_IMAGE_ID+4*row+column;
                 if(!short_property(output,(msstyles_v4_property){TMT_IMAGEFILE,TMT_FILENAME,button_class,
-                    parts[i],state+1,id,16,NULL}))return false;
+                    parts[i],state+1,id,16,NULL}) ||
+                   !short_property(output,(msstyles_v4_property){TMT_IMAGEFILE1,TMT_FILENAME,button_class,
+                    parts[i],state+1,backup,16,NULL}))return false;
             }
         }
     }

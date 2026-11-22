@@ -19,7 +19,7 @@ HRESULT style_menu_art_read(HMODULE module,const WORD images[2],style_menu_art *
 typedef style_frame_colors classic_frame_colors;
 
 /* A one-entry cache for a caller-owned mapping. Decoded pixels are copied. */
-const char *classic_choice_art_get(HMODULE module,WORD image,classic_choice_art *art);
+const char *classic_choice_art_get(HMODULE module,WORD image,WORD fallback_image,classic_choice_art *art);
 
 typedef style_scroll_surface_colors classic_scroll_surface;
 typedef style_native_scroll_colors classic_scroll_colors;

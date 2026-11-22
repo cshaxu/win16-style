@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P54",
-  "stage": "published development candidate with directory-based selection in window transitions and UWP routing",
+  "delivery": "M0 T29 S24 P13",
+  "stage": "published development candidate with theme-defined choice glyph fallback",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P53 25a7231f",
-  "source_snapshot_sha256": "49dad832a96d21d6fea7570db029ede296f4ef43e2c860167d57e35926dd84ae",
+  "last_verified_remote_delivery": "M0 T29 S23 P54 563a62c4",
+  "source_snapshot_sha256": "5ef22f3335538e9c0f18e4c7709d46ac00e82ad03d0c2c0535b8735d0eb58bf4",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "75562f9a5c50994c50888b865de59852b75c5e2c9bc49211c743c4cb164fef7d",
+      "sha256": "a0cc7d8e2b9e8f78833670a181ab3c9ac843cfbfe0c448cf065855a5db76a267",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "759780147d6951f358285a8d3bb5dc50752260f95baded2f3f1329878400df55",
+      "sha256": "2728599c4cee1d6e4d79f5bd3a3a5c9d17645c66d21f9a1c9bfd70e9f76188e9",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "730d8d8fa684060bff2f6bf651177f67353216c802a36f4c4eb1da764404d34e",
+      "sha256": "6b228af03e4ca69136e73403a28c4004cc73c94282f4e5254a6f1e6b808eb497",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -79,7 +79,7 @@
     }
   },
   "theme_artifacts": {
-    "Win16/Win16.msstyles": "5d774e3db3b3f1e071d36eaf6e23970a865a2e0bfbe462a26c83ec588553bdce",
+    "Win16/Win16.msstyles": "d8e74e18a8db263c85fa046d2e0961e34367452641da75beeb5792a0adb8fd80",
     "Win16/Win16.theme": "818f62aa9e16bff14d40a93e9f5f0894d2f9098ff2aa3b0684e4f61cdc45b2b2",
     "Win2K/Win2K.msstyles": "e07110269b170fd7b26c4af974cd390dcf1a09a35766b270274ff1f8b4d1a003",
     "Win2K/Win2K.theme": "b6fefdb99613cedf8061ef3971f4116b053e4319e09226df7bc2d11439939b80"
@@ -106,41 +106,44 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 20,
+    "passed": 24,
     "selected_cases": [
-      "x86 global-window",
-      "x86 uwp-dispatch",
-      "x86 assets-window-thread",
-      "x86 assets-uwp-frame",
-      "x86 assets-win16-provider",
-      "x86 assets-win2k-provider",
-      "x86 winnt-window-thread",
-      "x86 winnt-uwp-frame",
-      "x86 winnt-win16-provider",
-      "x86 winnt-win2k-provider",
-      "x64 global-window",
-      "x64 uwp-dispatch",
-      "x64 assets-window-thread",
-      "x64 assets-uwp-frame",
-      "x64 assets-win16-provider",
-      "x64 assets-win2k-provider",
-      "x64 winnt-window-thread",
-      "x64 winnt-uwp-frame",
-      "x64 winnt-win16-provider",
-      "x64 winnt-win2k-provider"
+      "32-winnt-Win16-provider",
+      "32-winnt-Win2K-provider",
+      "32-assets-Win16-provider",
+      "32-assets-Win2K-provider",
+      "64-winnt-Win16-provider",
+      "64-winnt-Win2K-provider",
+      "64-assets-Win16-provider",
+      "64-assets-Win2K-provider",
+      "32-choice-96-Win16",
+      "32-choice-96-Remap",
+      "32-choice-96-WrongSize",
+      "32-choice-96-BadPng",
+      "32-choice-144-Win16",
+      "32-choice-144-Remap",
+      "32-choice-144-WrongSize",
+      "32-choice-144-BadPng",
+      "64-choice-96-Win16",
+      "64-choice-96-Remap",
+      "64-choice-96-WrongSize",
+      "64-choice-96-BadPng",
+      "64-choice-144-Win16",
+      "64-choice-144-Remap",
+      "64-choice-144-WrongSize",
+      "64-choice-144-BadPng"
     ],
     "skipped": [],
     "limitations": [
-      "4 same-snapshot global window and UWP dispatch cases, 16 installed-package owned frame and provider cases",
-      "Owned native fixtures only",
-      "Physical input, interactive administrator tray, actual UWP application and full package matrix not run"
+      "Eight installed-package provider cases and sixteen choice glyph cases with independent corrupt PNG and wrong-size references",
+      "Owned native fixtures only. Physical input, interactive administrator tray, actual UWP applications and full matrix not run"
     ]
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "isolated HEAD plus scoped P54 inputs, MinGW/Ninja with shared build/.ccache",
+    "command": "isolated tracked snapshot with scoped P13 inputs, MinGW/Ninja with shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 2078,
-    "cache_misses": 8
+    "cache_hits": 1860,
+    "cache_misses": 226
   }
 }

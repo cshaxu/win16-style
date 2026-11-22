@@ -100,7 +100,7 @@ enum { CLASSIC_CHECK_STATES=12, CLASSIC_RADIO_STATES=8 };
 typedef struct classic_choice_surface {
     classic_surface_colors colors;
     unsigned fields;
-    WORD image;
+    WORD image,fallback_image;
 } classic_choice_surface;
 
 typedef struct classic_choice_colors {
@@ -109,18 +109,18 @@ typedef struct classic_choice_colors {
 
 enum { CLASSIC_CHOICE_WIDTH=14, CLASSIC_CHOICE_HEIGHT=13 };
 typedef struct classic_choice_art {
-    WORD image;
+    WORD image,fallback_image;
     BOOL available;
     char cell[CLASSIC_CHOICE_WIDTH*CLASSIC_CHOICE_HEIGHT];
 } classic_choice_art;
 
 /* The decoder borrows a caller-owned mapping and writes into the caller's cache. */
-typedef const char *(*style_choice_art_read_fn)(HMODULE,WORD,classic_choice_art *);
+typedef const char *(*style_choice_art_read_fn)(HMODULE,WORD,WORD,classic_choice_art *);
 
 static inline BOOL classic_choice_has_art(const classic_choice_colors *colors)
 {
-    for(unsigned i=0;i<ARRAYSIZE(colors->check);++i)if(colors->check[i].image)return TRUE;
-    for(unsigned i=0;i<ARRAYSIZE(colors->radio);++i)if(colors->radio[i].image)return TRUE;
+    for(unsigned i=0;i<ARRAYSIZE(colors->check);++i)if(colors->check[i].image || colors->check[i].fallback_image)return TRUE;
+    for(unsigned i=0;i<ARRAYSIZE(colors->radio);++i)if(colors->radio[i].image || colors->radio[i].fallback_image)return TRUE;
     return FALSE;
 }
 

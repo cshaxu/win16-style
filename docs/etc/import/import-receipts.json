@@ -491,7 +491,7 @@
       "path": "tests/ntw16s-dll/vcl_report_module.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3207b1460f72b62d6d1e1603b074bd20ca0e3cdd74e3e5b4add4cd5982e454a4",
+      "sha256": "8486aaf5cc6f09214aab39758a407d3a0c84d3415e3655475bb2dcdecc96eb88",
       "disposition": "authored",
       "review": "T18 S64 external-owner tree/report native protocol, fake paint and lifetime model; based on existing project-authored native fixtures; T18 S64 bounded witnessed list view modes, app-owned images and native state preserved",
       "notice": "Project-authored test; no imported code or resources"
@@ -680,7 +680,7 @@
       "path": "tests/ntw16s-dll/vcl_status_pane_font.c",
       "source": null,
       "source_blob": null,
-      "sha256": "16b4476798561f83e51b14dff53b0c75b80cebbcc08d1bd8a9447faef66ec958",
+      "sha256": "1990529ca1c92f14d88c35c5133decb595c6997b1db70d508d4e29db5848fec0",
       "disposition": "authored",
       "review": "T18 S64 P119 bounded multi-pane status font and regression; T18 S64 P120 ordinary no-border pane text; T24 S1 shared exception probe",
       "notice": "Project-authored source; no imported code or resources"
@@ -779,7 +779,7 @@
       "path": "tests/ntw16s-dll/vcl_push_module.c",
       "source": null,
       "source_blob": null,
-      "sha256": "658d0cc804ff548f14690c3d3a3a143822f5682f21193a34cc45d3c824d78c4c",
+      "sha256": "d1f982a1cb7bf6c865276d88e7fce49fdaaf225a9161122d5f0ebc72044c9b8f",
       "disposition": "authored",
       "review": "T18 S64 P111 project-authored runtime-owned push button regression; T18 S64 P112 runtime-owned Delphi checkbox and parent-background regression",
       "notice": "Project-authored source; no imported code or resources"
@@ -1238,7 +1238,7 @@
       "path": "tests/ntw16s-dll/win16_style_default_button.c",
       "source": "tests/app/win16_style_default_button.c",
       "source_blob": "2d28d1590dcd10a67134fb76f58c3ece46d73b05",
-      "sha256": "f4d35fcccda6065108c2bad2ddbd5339fd7f6b0386189c3f44000a5f477227fb",
+      "sha256": "cfbf918a5c91f9fee03071d0d9689ea80a8c662ed665a45a6bf87334f372a447",
       "disposition": "adapt",
       "review": "T2 S2 local real-DLL focused regression registration/isolation; docs/history/M0-T2-S2-runtime.md; T8 default-button transaction now borrows font; fixed64x30 warm transactions and message drain before exact GDI equality",
       "notice": "Project-authored source fixture, original notices preserved"
@@ -1481,7 +1481,7 @@
       "path": "tests/integration/propagate_target.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f9944c5160409f4da8a7e36e69e7f481479fdde0b4935aed323392c32ebef1e1",
+      "sha256": "b225bad64996c2fad98aa5626880173dfc09274e40aa9e82508f41ea78c87015",
       "disposition": "authored",
       "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T8 preserve application control font and metrics, role-specific DPI frame fonts; regression uses attachment/unchanged font semantics rather than legacy forced20",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
@@ -1490,7 +1490,7 @@
       "path": "tests/integration/propagate_basic.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d386b1f1e5169247527953f6cb4b96eb168d5abd8987fc25371fe6b8f385c18f",
+      "sha256": "63bb8242cf439349c9d519fbb9a958369b370196807fd2e98b89e44b2d7902da",
       "disposition": "authored",
       "review": "T4 S1 A/W native creation only, no source service/VDM routing; docs/history/M0-T4-S1-propagation.md; T6 S1 C17/GCC portability: explicit TLS, designated initialization, independent statement layout, printf argument types, native staging/helper or explicit C fixture cleanup as applicable; original notices retained, final regression pending; T25 S2 shared runtime extraction",
       "notice": "Project-authored source adaptation or new native fixture, repository MIT"
@@ -1922,7 +1922,7 @@
       "path": "tests/ntw16s-dll/win16_style_menu_cancel.c",
       "source": null,
       "source_blob": null,
-      "sha256": "2e6fe7dc73d8e03275da7adbd2b11c2db1e27c8fe81133163a250e837648b520",
+      "sha256": "fd0363cc29619668f4c00e5fc0d29ac8dda2e820a4897b8fc362aa014bb48f2c",
       "disposition": "authored",
       "review": "T7 native private-desktop actual DLL menu-loop cancellation, focus/capture/hover/item-state regression; no physical input claim; T8 S3 scoped USER SysShadow suppression and actual popup border/shadow regression; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved; T18 S64 private-desktop owned focus cleanup; T18 S64: retain private focus anchors until worker exit to avoid USER teardown hang; preserve all scenario assertions",
       "notice": "Project-authored C17 fixture, MIT"
@@ -1931,7 +1931,7 @@
       "path": "tests/ntw16s-dll/font_layout.c",
       "source": null,
       "source_blob": null,
-      "sha256": "af73d0a1bbf32c3994bad98ffa16d226150ec5a0f324a6eab0f261d9605adfbd",
+      "sha256": "52e10e1651fb5aa0c0d35c9697cac46dcdb77925edc447116c279854adb99768",
       "disposition": "authored",
       "review": "T8 actual candidate native DS_SETFONT dialog and app font/rect/metrics updates across awareness contexts and nominal sizes; no physical-input claim; T8 S2 System glyph variants preserve source metrics, explicit ownership and native pixel oracle; T8 S4 proportional menu System/DPI, shared popup columns and independent native raster/open-menu probes; controls/title policy preserved T18 S17 batches font selection while retaining each single-character extent assertion.; T18 S30 bounded GDI stability warmup and real leak witness, full font oracles retained",
       "notice": "Project-authored C17 native probe, MIT"
@@ -2285,7 +2285,7 @@
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
       "review": "; T15 S9 bounded initialized native-v6 progress painter with unchanged public range/position/step/colors/font; old-v5/emulated-state and special-style native fallback; epoch/cancellation guard and existing passive-font ownership; controlled test-thread keyboard state and native positive/negative proofs; no copied external code or original resource changes; T18 S23 bounded v5 TProgressBar static edge, native client and colors retained; dual-width public-protocol and fallback model; T24 S1 shared native control test matrix",
-      "sha256": "7a0d2dcf76414985b43cab22278b47435ff1f479cba966f1c2624555d34e0547"
+      "sha256": "bcdd99229360a18b5788eaedb47631c3f5090fb23b1377584e527a82ab1d3b98"
     },
     {
       "path": "src/lib-win32-style/application/control/trackbar_notify.c",
@@ -2471,7 +2471,7 @@
       "path": "tests/ntw16s-dll/vcl_edit_module.c",
       "source": null,
       "source_blob": null,
-      "sha256": "275f4ef7380aa472e4d7ee39b155af98f995cf766c4bf22af3110146050e2c0b",
+      "sha256": "e83d566a89422f96b42c3709c625668e67d1bdc9b46dcef1422d001c43f7d82b",
       "disposition": "authored",
       "review": "T18 S34 self-owned module edit forwarding and impostor regression; synthetic delayed native initialization is explicitly bounded; T18 S64 multiline nonclient frame",
       "notice": "Project-authored C17; project MIT license"
@@ -2516,7 +2516,7 @@
       "path": "tests/ntw16s-dll/vcl_date_module.c",
       "source": null,
       "source_blob": null,
-      "sha256": "e7ced267a5e194aa7b7feac6ffb1d0df3a4982e5255d0d69569da0182a9af969",
+      "sha256": "0645df32cbb30200dd232ae47a8b78760be78546dc0c7440707b56ff5f642013",
       "disposition": "authored",
       "review": "T18 S42 self-owned module date picker rendering, interaction and exception regression; real Delphi verification is separate",
       "notice": "Project-authored C17; project MIT license"
@@ -2552,7 +2552,7 @@
       "path": "tests/ntw16s-dll/vcl_group_module.c",
       "source": null,
       "source_blob": null,
-      "sha256": "c5bf6ca6732a7eab9f59161cede52c8affebc46482a08c19096bb940f79da48d",
+      "sha256": "e0b1af303c47d34f5081b774047f5f45294006f427d9a0633d8082ca88dad769",
       "disposition": "authored",
       "review": "T18 S51 self-owned VCL radio group public protocol, selection and font lifecycle model; real Delphi verification separate; T18 S64 P113 Delphi radio parent-background preservation",
       "notice": "Project-authored C17; project MIT license"
@@ -2795,7 +2795,7 @@
       "path": "tests/ntw16s-dll/vcl_scroll_module.c",
       "source": null,
       "source_blob": null,
-      "sha256": "f0ecf6dd7aa15b3a38c93dc2a3f8e3b01fe40a7940c763c8498655e7b14f0a3c",
+      "sha256": "c9cebe2efaf628c4292cd41383a4d9924c86d5abefd85018d26edcab7129cd24",
       "disposition": "authored",
       "review": "T18 S64 project-authored Delphi scrollbar witness and negative models",
       "notice": "Project-authored source; no imported code or resources"
@@ -3769,7 +3769,7 @@
       "source_blob": null,
       "disposition": "authored",
       "notice": "Project-authored C17; project MIT license",
-      "sha256": "dedc9f79a00a2a0665db815576df8634b326fcb6867fca2ac0cdb871e09ba221",
+      "sha256": "cd2a389a82089372eabb863aac9ae2daacf52536dc66666936c7a48327c5a23c",
       "review": "T21 S22 extraction of standard button and static presentation; T26 S1 shared icon size and resource cleanup; T26 S1 shared window text snapshot; T26 S2 mechanical path/include relocation; T26 S9 button/static/combo snapshots, borrowed image metadata and shared child setup transaction; T29 S23 parameterized native control outline rendering"
     },
     {
@@ -9584,7 +9584,7 @@
       "disposition": "authored",
       "review": "T27 S2 independently authored Win2000 behavior/actual-consumer validation; source and original-image identities from T27 S1, no imported artwork; T27 S3 source-derived common drawing and choice state integration; exact original image glyph reference and dark-shadow64 correction; T27 S14 VB、VCL 与复合控件",
       "notice": "Project-authored implementation/test; original Win2000 reference is read-only, no code/font/bitmap package dependency",
-      "sha256": "2f550b1b7bee42edd3d35d656dd37fbd1749692d28244d5b43ac3cfaeafa7df4"
+      "sha256": "dd3fb53a55f9abcda5c47d0d572a1375012d7dedc87171a0b46a70b660e88c2b"
     },
     {
       "path": "src/lib-win32-style/application/control/observed/button_paint.h",
@@ -9986,7 +9986,7 @@
       "path": "tests/lib-win32-style/appearance/win2000/window/modern_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "178f0cedca3cbf6a69b13fba149d76c3f58e686182671b7b825c28cba9dd3886",
+      "sha256": "460cd63c607ab8a4e7865b17612119ba3b3fb437e5ac58995b53487649e28afa",
       "disposition": "authored",
       "review": "T28 S1 shared classic caption and UWP appearance model; T28 S1 shared classic caption and UWP appearance model",
       "notice": "Project-authored C; no external implementation or artwork imported"
@@ -10229,7 +10229,7 @@
       "path": "tests/tooling/classic_themes.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3619a397bf19eb32c72c1909c64fbb5383ce20b77512908db13290850834a0fc",
+      "sha256": "bbaa84ef57e94b9485e2572d5bde4590552c661488e739f95f610a75b33fc032",
       "disposition": "authored",
       "review": "T29 S3 dual classic theme build and independent resource checks",
       "notice": "Project-authored; no imported source or resources"
@@ -10265,7 +10265,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "bba53801e09c474ca113d481ce6f91c10ab33cdecee6c76a53627b045468e97d",
+      "sha256": "b92ba03c14f507dd17b201363e3d5d8b1476970ae16b3e6adf58cad66d4fa10d",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10274,7 +10274,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/classic_theme.h",
       "source": null,
       "source_blob": null,
-      "sha256": "0a9fa3e9d072108adf569a1d83d2b4d04d2cae74517f00c4a6f9ec83b543fa24",
+      "sha256": "b6c050a5c9d01497a27e48b442800a93618b4e6806641ce53e8e84f2bee107c5",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10283,7 +10283,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/classic_theme.c",
       "source": null,
       "source_blob": null,
-      "sha256": "d6498954ac5f1d8defbab954c0e214dddb86b35db152e7faf226b00ee5b16c42",
+      "sha256": "a248d15f3f46821340d1642cf90bb3893339a01deb6fa7c17dd3a60a393326dc",
       "disposition": "authored",
       "review": "T29 S4 typed classic theme loading and renderer data witness",
       "notice": "Project-authored; no imported source or resources"
@@ -10364,7 +10364,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/v4_png.c",
       "source": null,
       "source_blob": null,
-      "sha256": "3756ce862e112ac40997dc83875688e873ddc6f45d5412c605efff09c6f9bd9f",
+      "sha256": "2d024e2bc19b27741eba931022f73226b7e1b10f1b8572d82949012217438031",
       "disposition": "authored",
       "review": "T29 S6 shared bounded MSStyles PNG palette-role decoder",
       "notice": "Project-authored; no imported source or resources"
@@ -10553,7 +10553,7 @@
       "path": "src/lib-win32-style/application/control/control_colors.h",
       "source": null,
       "source_blob": null,
-      "sha256": "2d8d53faf3c11aad3aa67d33ed93304acce6853dab22b7faabb5f4080fe103f7",
+      "sha256": "64a1910aa3334982d0fc9ababa91b40ba049f848c5dc6aa2a3c0748ac7b85fdb",
       "disposition": "authored",
       "review": "T29 S23: separate native control execution from parsed theme and stylesheet mapping.",
       "notice": "Project-authored C data and projection; original resources and notices retained."
@@ -10571,7 +10571,7 @@
       "path": "src/lib-win32-style/appearance/msstyles/control_theme_style.h",
       "source": null,
       "source_blob": null,
-      "sha256": "8bda2b2e3bf1cd71fcdf66311503658a96ebe95f49130bbed2b15cd5825ad035",
+      "sha256": "b153dd7afa717eb8ddf6b9a48df6dbab6988c4e4c0d6aa00bb108cec02396073",
       "disposition": "authored",
       "review": "T29 S23: separate native control execution from parsed theme and stylesheet mapping.",
       "notice": "Project-authored C data and projection; original resources and notices retained."

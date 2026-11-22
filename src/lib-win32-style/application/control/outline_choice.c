@@ -106,7 +106,7 @@ void style_outline_draw_choice(HWND w,const style_outline_choice_view *view,HDC 
         tile.light=colors->face;
         tile.edge=colors->edge;
     }
-    const char *image=entry && view->read_art?view->read_art(view->module,entry->image,view->art):NULL;
+    const char *image=entry && view->read_art?view->read_art(view->module,entry->image,entry->fallback_image,view->art):NULL;
     if(view->instance->detached){RestoreDC(dc,saved);style_control_button_snapshot_clear(&snapshot);return;}
     if(!image && view->controls.choice_fallback==CLASSIC_CHOICE_SYMBOLS){
         const style_relief_palette palette={.face=tile.face,.light=tile.light,.highlight=tile.light,

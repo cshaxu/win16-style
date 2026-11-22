@@ -156,7 +156,7 @@ BOOL style_observed_button_paint(HWND window,style_instance *instance,HDC dc,con
         const classic_choice_surface *entry=classic_choice_entry(choice,radio,snapshot.check,
             (snapshot.style&WS_DISABLED)!=0,snapshot.state);
         const classic_surface_colors *surface=classic_choice_color(entry);
-        const char *image=entry && read_art?read_art(module,entry->image,art):NULL;
+        const char *image=entry && read_art?read_art(module,entry->image,entry->fallback_image,art):NULL;
         if(instance->detached){result=FALSE;goto done;}
         if(image){
             const COLORREF ink[2]={surface?surface->edge:p->text,surface?surface->face:p->window};
