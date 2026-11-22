@@ -16,3 +16,8 @@
 正式七件双宽干净构建，先发布两处，再执行聚焦回归 13/13。
 前两次经典示例回归分别遇到取消结果与 GDI 稳态断言。独立执行同一原生探针时，上一版 T33 和本版 T34 都通过。整套复测仅将示例的工作目录设为独立对照使用的仓库根目录，断言及发布输入保持。
 快照 SHA-256 为 497e8e86d45385a33479cb9bdf135598c8c63b229f2a25207fd865a119c7c623，Luna 原版位图文件 SHA-256 保持。
+
+## 远端及清理
+
+从 origin/main 复核 P1 090eee1eccc6b0793bb503854fdace3d020ce9ce 的 1,284 项构建输入及七件文件。清理本次临时文件 702,154,366 字节。
+宿主仍映射的备份暂存于 O:\repos.hobby\win16style\build\t34-package\offsets-release\before-4、O:\repos.hobby\win16style\build\t34-package\offsets-release\before-5、O:\repos.hobby\win16style\build\t34-package\offsets-release\result.json。

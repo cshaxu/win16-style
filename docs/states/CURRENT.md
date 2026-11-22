@@ -172,28 +172,9 @@ M0 T33 S1 与 T33 已收口。Luna 原版标题位图覆盖完整顶沿，自管
 和按下状态。正式两处、双宽三配色 12 次实窗和 13 项实包聚焦回归通过。
 详见 [交付记录](../history/M0-T33-S1-luna-caption.md)。
 
-## M0 T34 S1 Packet
-
-| Field | Required record |
-| --- | --- |
-| Identifier Mode | New |
-| Admission And Approval | 用户报告 Luna 右上三个按钮位置偏差，提供本机与原版风格截图。 |
-| Objective | 普通 Luna 顶层窗口使用原版资源中的右上锚点、偏移与尺寸。 |
-| Non-goals | 不改变窗口、面板或字体度量，不改变经典主题的分组布局。 |
-| Reference Baseline | T33 收口 7c39ee89、原版 Luna 资源和两张截图。 |
-| Candidate Proposal | [证据与验收范围](../history/M0-T34-S1-luna-caption-geometry.md)。 |
-| Files And ABI Surface | v3 位图部件模型、普通窗口标题按钮布局与对应测试。 |
-| Applicable Rules | C17、双宽、正式七件、发布后复验。 |
-| Verification | 三配色双宽实窗几何、点击命中、悬停和按下回归；Win2000 保持。 |
-| Expected Markers | LUNA CAPTION INPUT PASS original_offsets=3。 |
-| Asset Needs | 本机可选原版 Luna，保留原字节。 |
-| Reporting Requirements | 区分原版资源、截图估算和实窗度量。 |
-| Stop Conditions | 自有普通桌面原生探针。 |
-| Exit Criteria | 普通窗口所有按钮坐标按资源给出，两处和远端复核。 |
-| Original Owner Request | 修正 Luna 标题栏右上角三个按钮的位置。 |
-| Similar-Issue Sweep | 原版 Window OffsetType 与 Offset、普通标题布局、命中矩形。 |
-
-正式七件已发布两处，实窗按钮几何与聚焦回归通过，等待远端复核。
+M0 T34 S1 与 T34 已收口。Luna 常态 Win32 窗口的三个标题按钮使用
+原版右上角锚点。九组原版资源、两处三配色双宽实窗和聚焦回归通过。
+详见 [交付记录](../history/M0-T34-S1-luna-caption-geometry.md)。
 
 ## Identifier State
 
@@ -206,7 +187,7 @@ M0 T33 S1 与 T33 已收口。Luna 原版标题位图覆盖完整顶沿，自管
 - Last allocated T21 S: 44
 - Last allocated T25 S: 8
 - Last allocated T26 S: 14
-- Last verified remote delivery: M0 T33 S1 P1 997cdb7b，两处、七件远端和 1,284 项构建输入已复核。
+- Last verified remote delivery: M0 T34 S1 P1 090eee1e，两处、七件远端和 1,284 项构建输入已复核。
 - Last allocated T27 S: 16
 - Last allocated T28 S: 3
 - Last allocated T29 S: 25
@@ -215,7 +196,7 @@ M0 T33 S1 与 T33 已收口。Luna 原版标题位图覆盖完整顶沿，自管
 - Last allocated T32 S: 1
 - Last allocated T33 S: 1
 - Last allocated T34 S: 1
-- Open task: M0 T34 S1，Luna 标题按钮位置。
+- Open task: 无活动任务包。
 
 ## Technical Baseline
 
