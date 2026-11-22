@@ -26,7 +26,7 @@
 #include "../lib-win32-style/appearance/win3x/control/vcl_identity.h"
 #include "../lib-win32-style/appearance/win3x/control/attachment_state.h"
 #include "../lib-win32-style/appearance/win3x/control/month_paint.h"
-#include "../lib-win32-style/appearance/win3x/window/modern_frame.h"
+#include "lib-win32-style/appearance/msstyles/modern_frame_style.h"
 #include "lib-win32-style/application/dialog/message_observer.h"
 #include "lib-win32-style/access/runtime/window_hook.h"
 #include "lib-win32-style/application/window/window_identity.h"
@@ -495,7 +495,7 @@ static BOOL install_created(HWND w,DWORD original_style)
         (composed_frame_class(w) &&
          (GetWindowLongPtrW(w,GWL_STYLE)&WS_CAPTION)==WS_CAPTION)) &&
        (GetWindowLongPtrW(w,GWL_EXSTYLE)&WS_EX_NOREDIRECTIONBITMAP) &&
-       !win16_uwp_frame_apply_nonclient(w)){
+       !classic_modern_client_current((HMODULE)&__ImageBase,w,NULL,NULL,0)){
         error=GetLastError();Ntw16sWindowRemove(w);installed=FALSE;
     }
     if(!installed)SetLastError(error?error:ERROR_GEN_FAILURE);

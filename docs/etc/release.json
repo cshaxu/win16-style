@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "delivery": "M0 T29 S23 P44",
-  "stage": "published development candidate with shared native nonclient frame and scrollbar",
+  "delivery": "M0 T29 S23 P45",
+  "stage": "published development candidate with shared modern frame adapters",
   "version": "0.29.0.0",
   "version_contract": "M0 T29",
   "package_directory": "assets",
-  "last_verified_remote_delivery": "M0 T29 S23 P43 f4671b4e4dfc",
-  "source_snapshot_sha256": "28e3e0e0f9e57963ee876287158fee2c73ec00975c357bc9b22f760bf097d918",
+  "last_verified_remote_delivery": "M0 T29 S23 P44 872bb9087e45",
+  "source_snapshot_sha256": "1a21a578226260cb505e48a17c4ad5ad99c9d2be4dae5adfc7b0ff1eab32480e",
   "artifacts": {
     "run16s.exe": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "fb6a2c25a0ef7d44682bf09661e9df7994d49474f79bf1db4901c0b12eb255e5",
+      "sha256": "7382a155e9c108d9c121ad2831b3ae429559707d725fee23d95995bafa4af39d",
       "imports": [
         "advapi32.dll",
         "dwmapi.dll",
@@ -27,7 +27,7 @@
     "ntwshk32.dll": {
       "architecture": "x86",
       "version": "M0 T29",
-      "sha256": "0229cabd85bbca45b8c992a0b23836764c6f5af6e1c4843388f136d5ed1edab6",
+      "sha256": "3194097baada80d2d435dcf66bade6d5a3eff3760f10db3d997daf3b1a58d1e3",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -56,7 +56,7 @@
     "ntwshk64.dll": {
       "architecture": "x64",
       "version": "M0 T29",
-      "sha256": "d63f82d546a311619d6d2e076708bd9dbc3eef9b55820402b11963dcd3afc4f5",
+      "sha256": "6aa85866eceafde8d4f1c77374b7143e84653e82e31dee6b7f9e9be1420af037",
       "imports": [
         "ACTIVEDS.dll",
         "ADVAPI32.dll",
@@ -106,40 +106,22 @@
   "actual_package_test": {
     "status": "passed-focused",
     "coverage": "focused",
-    "passed": 32,
+    "passed": 14,
     "selected_cases": [
-      "x86 lifetime",
-      "x86 remove",
-      "x86 remove-global",
-      "x86 style-switch",
-      "x86 assets-theme-pixels",
-      "x86 assets-modern-model",
-      "x86 assets-resize",
-      "x86 assets-caption-added",
-      "x86 assets-menu16",
-      "x86 assets-menu2k",
-      "x86 winnt-theme-pixels",
-      "x86 winnt-modern-model",
-      "x86 winnt-resize",
-      "x86 winnt-caption-added",
-      "x86 winnt-menu16",
-      "x86 winnt-menu2k",
-      "x64 lifetime",
-      "x64 remove",
-      "x64 remove-global",
-      "x64 style-switch",
-      "x64 assets-theme-pixels",
-      "x64 assets-modern-model",
-      "x64 assets-resize",
-      "x64 assets-caption-added",
-      "x64 assets-menu16",
-      "x64 assets-menu2k",
-      "x64 winnt-theme-pixels",
-      "x64 winnt-modern-model",
-      "x64 winnt-resize",
-      "x64 winnt-caption-added",
-      "x64 winnt-menu16",
-      "x64 winnt-menu2k"
+      "x86 compat-hidden",
+      "x86 client-renderer",
+      "x86 same-hash-negative-and-switch",
+      "x86 assets-observed-theme-pixels",
+      "x86 assets-installed-switch",
+      "x86 winnt-observed-theme-pixels",
+      "x86 winnt-installed-switch",
+      "x64 compat-hidden",
+      "x64 client-renderer",
+      "x64 same-hash-negative-and-switch",
+      "x64 assets-observed-theme-pixels",
+      "x64 assets-installed-switch",
+      "x64 winnt-observed-theme-pixels",
+      "x64 winnt-installed-switch"
     ],
     "skipped": [],
     "limitations": [
@@ -149,9 +131,9 @@
   },
   "evidence": "../history/M0-T29-S23-runtime-link-closure.md",
   "build": {
-    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P44 inputs, shared build/.ccache",
+    "command": "tools/Build-Package.ps1 worker on isolated HEAD plus scoped P45 inputs, shared build/.ccache",
     "toolchain": "C17, MinGW GCC 16.1.0, Ninja, ccache 4.13.6",
-    "cache_hits": 1986,
-    "cache_misses": 128
+    "cache_hits": 2102,
+    "cache_misses": 8
   }
 }

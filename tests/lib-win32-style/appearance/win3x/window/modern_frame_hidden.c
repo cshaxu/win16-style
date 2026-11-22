@@ -1,6 +1,9 @@
 #include <windows.h>
 #include <stdio.h>
 #include "lib-win32-style/appearance/win3x/window/modern_frame.h"
+#ifdef STYLE_THEME_EXTERNAL_ONLY
+#include "lib-win32-style/appearance/msstyles/modern_frame_style.h"
+#endif
 #define CHECK(x) do{if(!(x)){fprintf(stderr,"UWP HIDDEN FRAME FAIL line=%d error=%lu\n",__LINE__,(unsigned long)GetLastError());return 1;}}while(0)
 #ifdef STYLE_THEME_EXTERNAL_ONLY
 int wmain(int argc,WCHAR **argv)
@@ -23,6 +26,13 @@ int main(void)
     CHECK(!win16_uwp_frame_apply_actions(owner,title,NULL,0,NULL) && GetLastError()==ERROR_RESOURCE_DATA_NOT_FOUND);
     CHECK(!win16_uwp_frame_apply_actions(owner,title,NULL,0,&incomplete) && GetLastError()==ERROR_RESOURCE_DATA_NOT_FOUND);
     CHECK(!style_uwp_frame_surface(owner));
+    const unsigned provider=theme.model.dialog_policy.window_provider;
+    theme.model.dialog_policy.window_provider=0xff;
+    CHECK(!classic_modern_frame_apply(owner,title,NULL,0,&theme) && GetLastError()==ERROR_NOT_SUPPORTED);
+    CHECK(!style_uwp_frame_surface(owner));
+    theme.model.dialog_policy.window_provider=provider;
+    CHECK(classic_modern_frame_apply(owner,title,NULL,0,&theme));
+    CHECK(style_uwp_frame_surface(owner) && style_uwp_frame_remove(owner));
 #endif
     for(int i=0;i<3;++i){
         CHECK(win16_uwp_frame_apply_actions(owner,title,NULL,0,source));

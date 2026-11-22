@@ -51,14 +51,15 @@ T1曾以独立MSVC C17/C++17、/MT双架构探针验证旧基线；该探针及�
 
 公共宿主、输入、表面和重绘机制位于 `src/lib-win32-style/application/adapters/`；
 原生标题和目标观察位于其 `uwp/` 子目录。全客户区的共享几何、命中计算
-及宿主调色位于 `application/window`。现代全客户区适配器位于
-`appearance/win3x/window/modern_frame{,_layout}.{c,h}`，提供宿主边界与呈现数据，
-由公共 `adapters/frame` 对象维护菜单、输入和表面状态。
+及宿主调色位于 `application/window`。现代全客户区和非客户区适配器位于
+`application/adapters/uwp`，由公共 `adapters/frame` 对象维护菜单、输入和表面状态。
+`appearance/msstyles/modern_frame_style.h` 将已解析的主题投影为宿主布局、字体、
+颜色和资源数据，同时按主题声明选择适配器。两个年代目录里的入口用于兼容构建。
 对应测试按相同组件放在 `tests/lib-win32-style/`；实际产品组合验证保留明确标记，不能把它们冒称为独立公共库测试。
 
 接入协调位于 `access/runtime/uwp_dispatch` 和 `access/global/uwp_global`；产品仍有导出、
-消息协议和装配；接入协调、宿主状态/消息/表面和图形资源使用共同根；appearance保留年代几何、命中和呈现。不能为 Win2000 或未来风格复制宿主，
-应由公共适配器接受各风格几何、资源和绘制策略。
+消息协议和装配。接入协调、宿主状态、表面、命中和绘制使用公共机制，
+适配器接收主题提供的布局、资源和绘制参数。
 
 现有契约保持：调用者提供根窗口及原生标题 HWND，在所属 GUI 线程应用或移除，
 并持有模块直到移除后全部回调返回。标题动作复制数组，借用标签和上下文；临时菜单命令

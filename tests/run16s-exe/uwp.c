@@ -1,6 +1,6 @@
 #include "run16s-exe/uwp.h"
 #include "ntw16s-dll/uwp/target.h"
-#include "lib-win32-style/appearance/win3x/window/modern_frame_layout.h"
+#include "lib-win32-style/application/adapters/uwp/client_frame_layout.h"
 #include "lib-win32-style/appearance/win2000/window/caption.h"
 #include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include <stdio.h>
@@ -113,7 +113,7 @@ static BOOL button(int hit,BOOL win2k)
         r=buttons[hit==HTMAXBUTTON?1:0];
     }else{
         style_full_client_layout layout;
-        if(!win16_uwp_frame_layout(size,dpi,style,(DWORD)GetWindowLongPtrW(frame,GWL_EXSTYLE),IsZoomed(frame),client,
+        if(!style_uwp_client_frame_layout(size,dpi,style,(DWORD)GetWindowLongPtrW(frame,GWL_EXSTYLE),IsZoomed(frame),client,
             &stock_win16_buttons,&stock_win16_metrics,&stock_win16_frame,&layout))return FALSE;
         r=hit==HTMAXBUTTON?layout.buttons[CLASSIC_BUTTON_MAXIMIZE]:layout.buttons[CLASSIC_BUTTON_MINIMIZE];
     }

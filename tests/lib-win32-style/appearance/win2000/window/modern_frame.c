@@ -1,4 +1,7 @@
 #include "lib-win32-style/appearance/win2000/window/modern_frame.h"
+#ifdef STYLE_THEME_EXTERNAL_ONLY
+#include "lib-win32-style/appearance/msstyles/modern_frame_style.h"
+#endif
 #include "lib-win32-style/appearance/win2000/window/caption.h"
 #include "lib-win32-style/appearance/msstyles/classic_presets.h"
 #include "ntw16s-dll/uwp/hook.h"
@@ -176,8 +179,13 @@ static int indexed_provider(HWND root,HWND title,PCWSTR descriptor,const classic
     theme.caption_presentation=donor.caption_presentation;
     theme.caption_presentation.button_source=STYLE_CAPTION_BUTTON_INDEXED;
     theme.caption_presentation.button_outline=STYLE_CAPTION_BUTTON_NO_OUTLINE;
-    const classic_theme_mapping selection={.model=theme,.resources=resources};
+    classic_theme_mapping selection={.model=theme,.resources=resources};
+#ifdef STYLE_THEME_EXTERNAL_ONLY
+    selection.model.dialog_policy.window_provider=CLASSIC_WINDOW_PROVIDER_NONCLIENT;
+    CHECK(classic_modern_frame_apply(root,title,NULL,0,&selection));
+#else
     CHECK(win2k_uwp_frame_apply(root,title,NULL,0,&selection));
+#endif
     CHECK(FreeLibrary(resources));
 
     HWND surface=style_uwp_frame_surface(root);

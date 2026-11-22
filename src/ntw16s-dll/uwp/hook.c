@@ -1,8 +1,12 @@
 #include "hook.h"
 #include "lib-win32-style/application/adapters/uwp/native.h"
 #include "lib-win32-style/access/runtime/uwp_hook.h"
+#ifdef NTWSHK_UNIFIED
+#include "lib-win32-style/appearance/msstyles/modern_frame_style.h"
+#else
 #include "lib-win32-style/appearance/win3x/window/modern_frame.h"
 #include "lib-win32-style/appearance/win2000/window/modern_frame.h"
+#endif
 #include <stdint.h>
 #include <wchar.h>
 static _Thread_local BOOL busy;
@@ -45,19 +49,7 @@ static BOOL render_profile(HWND frame,HWND title,const style_uwp_frame_action *a
     unsigned previous=classic_theme_enter_profile(selection);
     const classic_theme_mapping *theme=loaded==S_OK?source:NULL;
 #ifdef NTWSHK_UNIFIED
-    BOOL ok;
-    switch(source->model.dialog_policy.window_provider){
-    case CLASSIC_WINDOW_PROVIDER_FULL_CLIENT:
-        ok=win16_uwp_frame_apply_actions(frame,title,actions,count,theme);
-        break;
-    case CLASSIC_WINDOW_PROVIDER_NONCLIENT:
-        ok=win2k_uwp_frame_apply(frame,title,actions,count,theme);
-        break;
-    default:
-        SetLastError(ERROR_NOT_SUPPORTED);
-        ok=FALSE;
-        break;
-    }
+    BOOL ok=classic_modern_frame_apply(frame,title,actions,count,theme);
 #else
     BOOL ok=selection.family==CLASSIC_THEME_WIN2K?win2k_uwp_frame_apply(frame,title,actions,count,theme):
         win16_uwp_frame_apply_actions(frame,title,actions,count,theme);

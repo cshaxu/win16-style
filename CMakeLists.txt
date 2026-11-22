@@ -79,7 +79,7 @@ target_compile_definitions(style-frame-observed PRIVATE UNICODE _UNICODE _WIN32_
 set(observed_modern_frame src/lib-win32-style/appearance/win2000/window/modern_frame.c)
 add_library(win2k-window-uwp STATIC ${observed_modern_frame})
 target_compile_definitions(win2k-window-uwp PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win2k-window-uwp PUBLIC win2k-window style-uwp-native style-menu-items)
+target_link_libraries(win2k-window-uwp PUBLIC win2k-window style-frame-uwp style-menu-items)
 add_library(win2k-control STATIC
   src/lib-win32-style/appearance/win2000/control/report_paint.c
   src/lib-win32-style/appearance/win2000/control/toolbar_paint.c
@@ -147,11 +147,16 @@ add_library(style-frame-client STATIC
 target_link_libraries(style-frame-client PUBLIC style-menu-client style-window style-present style-uwp-repaint style-font-variant)
 target_compile_definitions(style-frame-client PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 set(client_modern_frame src/lib-win32-style/appearance/win3x/window/modern_frame.c)
-set(client_modern_layout src/lib-win32-style/appearance/win3x/window/modern_frame_layout.c)
-add_library(win16-window-uwp STATIC ${client_modern_frame} ${client_modern_layout})
+add_library(style-frame-uwp STATIC
+  src/lib-win32-style/application/adapters/uwp/client_frame.c
+  src/lib-win32-style/application/adapters/uwp/client_frame_layout.c
+  src/lib-win32-style/application/adapters/uwp/observed_frame.c)
+target_compile_definitions(style-frame-uwp PRIVATE UNICODE _UNICODE _WIN32_WINNT=0x0A00)
+target_link_libraries(style-frame-uwp PUBLIC style-uwp-native style-frame-client style-menu-native)
+add_library(win16-window-uwp STATIC ${client_modern_frame})
 target_include_directories(win16-window-uwp PUBLIC src)
 target_compile_definitions(win16-window-uwp PRIVATE NTW16S_STATIC UNICODE _UNICODE _WIN32_WINNT=0x0A00)
-target_link_libraries(win16-window-uwp PUBLIC style-uwp-native style-frame-client style-frame-font)
+target_link_libraries(win16-window-uwp PUBLIC style-frame-uwp style-frame-font)
 get_filename_component(gcc_bin "${CMAKE_C_COMPILER}" DIRECTORY)
 execute_process(COMMAND "${CMAKE_C_COMPILER}" -print-prog-name=as
   OUTPUT_VARIABLE gcc_assembler OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
@@ -455,7 +460,7 @@ else()
   set_target_properties(ntwshk PROPERTIES OUTPUT_NAME ntwshk64 PREFIX "")
 endif()
 target_include_directories(ntwshk PRIVATE src ${CMAKE_SOURCE_DIR})
-target_sources(ntwshk PRIVATE ${raster_font_source} ${frame_font_source} ${classic_theme_source} ${observed_modern_frame} ${client_modern_frame} ${client_modern_layout})
+target_sources(ntwshk PRIVATE ${raster_font_source} ${frame_font_source} ${classic_theme_source})
 target_compile_definitions(ntwshk PRIVATE NTW16S_STATIC NTWSHK_UNIFIED STYLE_THEME_EXTERNAL_ONLY UNICODE _UNICODE _WIN32_WINNT=0x0A00)
 target_link_libraries(ntwshk PRIVATE process-hook process-image win32-handle style-theme-state style-menu-popup)
 add_library(style-startup STATIC
@@ -480,7 +485,7 @@ target_sources(ntw16s PRIVATE ${injection_root}/entry.c ${win16_intercepts})
 target_sources(ntwshk PRIVATE ${win16_intercepts})
 add_dependencies(ntwshk style-subclass)
 target_link_libraries(ntwshk PRIVATE style-runtime-process style-creation style-uwp-hook style-global-window
-  style-frame-client style-frame-font win16-control style-frame-observed win2k-control
+  style-frame-client style-frame-font style-frame-uwp win16-control style-frame-observed win2k-control
   style-dialog-native style-dialog-common style-theme-track style-companion module-import process-global
   "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}" user32 gdi32 comctl32 comdlg32
   shell32 ole32 oleaut32 uuid dwmapi uxtheme advapi32)
@@ -2616,7 +2621,7 @@ if(BUILD_TESTING)
   target_link_libraries(core-uwp-frame-hidden PRIVATE win16-window-uwp "$<LINK_GROUP:RESCAN,style-menu-owner,style-menu-popup>" "${subclass_import}")
   add_test(NAME core/uwp-frame-hidden COMMAND $<TARGET_FILE:core-uwp-frame-hidden>)
   add_executable(core-uwp-client-theme-renderer tests/lib-win32-style/appearance/win3x/window/modern_frame_hidden.c
-    ${frame_font_source} ${classic_theme_source} ${client_modern_frame} ${client_modern_layout})
+    ${frame_font_source} ${classic_theme_source} ${client_modern_frame})
   add_dependencies(core-uwp-client-theme-renderer style-subclass)
   target_compile_definitions(core-uwp-client-theme-renderer PRIVATE NTW16S_STATIC STYLE_THEME_EXTERNAL_ONLY UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_options(core-uwp-client-theme-renderer PRIVATE -municode)
@@ -2637,7 +2642,7 @@ if(BUILD_TESTING)
   add_dependencies(core-uwp-theme-renderer style-subclass)
   target_compile_definitions(core-uwp-theme-renderer PRIVATE STYLE_THEME_EXTERNAL_ONLY UNICODE _UNICODE _WIN32_WINNT=0x0A00)
   target_link_options(core-uwp-theme-renderer PRIVATE -municode)
-  target_link_libraries(core-uwp-theme-renderer PRIVATE win2k-window-uwp "${subclass_import}")
+  target_link_libraries(core-uwp-theme-renderer PRIVATE win2k-window-uwp style-frame-font "${subclass_import}")
   if(TARGET classic-themes)
     add_dependencies(core-uwp-theme-renderer classic-themes)
     add_test(NAME core/uwp-theme-renderer COMMAND $<TARGET_FILE:core-uwp-theme-renderer>

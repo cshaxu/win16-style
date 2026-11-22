@@ -1,7 +1,7 @@
-#include "modern_frame_layout.h"
+#include "client_frame_layout.h"
 #include "lib-win32-style/application/adapters/surface.h"
 
-BOOL win16_uwp_frame_layout(SIZE outer,UINT dpi,DWORD style,DWORD ex_style,BOOL maximized,
+BOOL style_uwp_client_frame_layout(SIZE outer,UINT dpi,DWORD style,DWORD ex_style,BOOL maximized,
     RECT content,const classic_button_group *buttons,const classic_caption_metrics *metrics,
     const style_frame_geometry *frame,style_full_client_layout *l)
 {
@@ -21,7 +21,7 @@ BOOL win16_uwp_frame_layout(SIZE outer,UINT dpi,DWORD style,DWORD ex_style,BOOL 
     return TRUE;
 }
 
-LRESULT win16_uwp_frame_hit(const style_full_client_layout *l,POINT p)
+LRESULT style_uwp_client_frame_hit(const style_full_client_layout *l,POINT p)
 {
     LRESULT hit=style_full_client_hit(l,p);
     return l?style_uwp_resize_margin_hit(hit,p,&l->outer,&l->client,l->corner,l->sizeable):hit;
