@@ -14,7 +14,7 @@
       "path": "tests/lib-win32-style/appearance/msstyles/v3_frame.c",
       "source": null,
       "source_blob": null,
-      "sha256": "17ff1ae80aa0667db1d0df359f457e38f8bd4dc6b0efedce2c3632a9aeb4ace0",
+      "sha256": "40d961cc53d013c099ebea9f6ae7e6351b1a45d5d8921c7c772d257e9c5f3afb",
       "disposition": "authored",
       "review": "T30 S1: load and verify v3 frame and push-button appearance.",
       "notice": "Project-authored code. No XP source or binaries are embedded."

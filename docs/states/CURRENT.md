@@ -180,29 +180,29 @@ M0 T35 S1 与 T35 已通过用户验收并收口。Luna 普通 Win32 窗口的�
 原版资源选图，96 DPI 的右侧蓝边实测 6 像素。正式七件已在两处发布并复核远端，
 24 次双宽实窗及 13 项聚焦回归通过。见[收口记录](../history/M0-T35-S1-luna-glyphs.md)。
 
-## M0 T36 S1 Packet
+M0 T36 S1 的 XP Luna v3 基线已完成。用户验收三配色标题栏，双宽各九个变体读回，
+修正采样后的两轮实窗复验 30/30。见 [S1 收口记录](../history/M0-T36-S1-luna-v3-baseline.md)。
+
+## M0 T36 S2 Packet
 
 | Field | Required record |
 | --- | --- |
-| Identifier Mode | New |
-| Admission And Approval | 用户准入 MSStyles v3/v4 主题加载与应用任务，确认 XP Luna 三配色窗口标题实测通过。 |
-| Objective | 核实原版 Luna v3 的现有支持范围，为 Vista 和 Win7 Aero 建立可回归的基线。 |
-| Non-goals | 在 S1 重做已验收的 Luna 标题、扩充整个 XP 控件库或实现 Aero 玻璃。 |
-| Reference Baseline | T30 S1 原版 XP SP3 样本与 T35 双宽正式七件。 |
+| Identifier Mode | Continuation |
+| Admission And Approval | 用户准入 T36 并要求继续，S1 的 XP Luna 基线已验证。 |
+| Objective | 固定 Vista 与 Win7 Aero 原版样本，验证并补齐 v4 的主题装载及资源读取。 |
+| Non-goals | 静态窗口应用和实时玻璃在后续阶段验证。 |
+| Reference Baseline | T35 正式七件及 S1 双宽 Luna v3 回归。 |
 | Candidate Proposal | [T36 实施顺序](../proposals/msstyles-v3-v4.md)。 |
-| Files And ABI Surface | S1 核对现有 v3 读取、外框与普通按钮调用，复用已发布 ABI。 |
+| Files And ABI Surface | 复用公共 MSStyles 读取组件与产品主题入口，按样本确定 v4 缺口。 |
 | Applicable Rules | M0 固定，按双位宽验证，保留原版样本摘要和正式七件契约。 |
-| Verification | 原版 Luna 九个配色与字号组合，双宽已发布 Win32 路径及标题用户验收。 |
-| Expected Markers | V3 LUNA PASS、LUNA FRAME PASS、LUNA PUSH PASS。 |
-| Asset Needs | 已安装的原版 Luna 主题文件用于 S1，Vista/Win7 Aero 样本由后续 S 固定。 |
-| Reporting Requirements | 区分已验证的读取、实际绘制、撤销和未覆盖的宿主及部件。 |
-| Stop Conditions | 样本摘要不符或实际回归失败时记录具体边界并定位。 |
-| Exit Criteria | 记录当前 v3 支持矩阵、实际证据和后续 Aero 回归边界。 |
-| Original Owner Request | 准入本 T，确认当前 v3 主题妥善支持，XP Luna 三配色窗口标题已由用户实测通过。 |
-| Similar-Issue Sweep | 核对 v3 分派与变体、外框与普通按钮消费、T30 到 T35 回归证据。 |
-
-[S1 基线复核](../history/M0-T36-S1-luna-v3-baseline.md)记录三配色标题用户验收和
-双宽各九个变体读回。补测仍有标题按下像素和普通按钮按下／撤销断言未通过，待定位。
+| Verification | 双宽核对原版 v4 元数据、属性、资源和错误输入，回归 Luna 与经典主题。 |
+| Expected Markers | V3 LUNA PASS，Vista 与 Win7 Aero 样本独立的 v4 读回结果。 |
+| Asset Needs | 本地已定位 Vista 及 Win7 安装镜像，提取后固定来源及文件摘要。 |
+| Reporting Requirements | 区分样本来源、可解析属性、已消费资源和后续应用范围。 |
+| Stop Conditions | 样本身份或可用性不明时先核验来源。 |
+| Exit Criteria | 两代 Aero 的双宽装载和资源读取有实际证据，已有主题回归通过。 |
+| Original Owner Request | 准入 MSStyles v3/v4 主题加载与应用，并确认 v3 基线。 |
+| Similar-Issue Sweep | 盘点现有 v4 表、属性及图像读取，并与原版样本对照。 |
 
 ## Identifier State
 
@@ -225,8 +225,8 @@ M0 T35 S1 与 T35 已通过用户验收并收口。Luna 普通 Win32 窗口的�
 - Last allocated T33 S: 1
 - Last allocated T34 S: 1
 - Last allocated T35 S: 1
-- Last allocated T36 S: 1
-- Open task: M0 T36 S1，XP Luna v3 支持基线。
+- Last allocated T36 S: 2
+- Open task: M0 T36 S2，Vista 与 Win7 Aero 原版样本和 v4 读取。
 
 ## Technical Baseline
 

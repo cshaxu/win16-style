@@ -7,7 +7,7 @@
 
 typedef BOOL (__cdecl *remove_frame)(HWND);
 
-static uint64_t sample(HWND window,RECT area,POINT point,COLORREF *center)
+static uint64_t sample(HWND window,RECT area,POINT point,COLORREF *center,BOOL client_only)
 {
     RECT bounds;
     if(!GetWindowRect(window,&bounds))return 0;
@@ -17,14 +17,21 @@ static uint64_t sample(HWND window,RECT area,POINT point,COLORREF *center)
     HBITMAP bitmap=dc?CreateCompatibleBitmap(display,bounds.right-bounds.left,bounds.bottom-bounds.top):NULL;
     HGDIOBJ before=bitmap?SelectObject(dc,bitmap):NULL;
     uint64_t hash=0;
-    if(before && before!=HGDI_ERROR && PrintWindow(window,dc,2)){
+    if(before && before!=HGDI_ERROR){
+        const COLORREF untouched=RGB(255,0,255);
+        SetDCBrushColor(dc,untouched);
+        RECT canvas={0,0,bounds.right-bounds.left,bounds.bottom-bounds.top};
+        FillRect(dc,&canvas,GetStockObject(DC_BRUSH));
+        if(client_only)SendMessageW(window,WM_PRINTCLIENT,(WPARAM)dc,PRF_CLIENT);
+        else if(!PrintWindow(window,dc,2))goto done;
         hash=UINT64_C(1469598103934665603);
         for(LONG y=area.top;y<area.bottom;++y)
             for(LONG x=area.left;x<area.right;++x)
                 hash=(hash^GetPixel(dc,x,y))*UINT64_C(1099511628211);
         *center=GetPixel(dc,point.x,point.y);
-        if(*center==CLR_INVALID)hash=0;
+        if(*center==CLR_INVALID || *center==untouched)hash=0;
     }
+done:
     if(before && before!=HGDI_ERROR)SelectObject(dc,before);
     if(bitmap)DeleteObject(bitmap);
     if(dc)DeleteDC(dc);
@@ -154,11 +161,9 @@ int wmain(int argc,WCHAR **argv)
     HWND check=CreateWindowExW(0,L"Button",L"Native checkbox",WS_CHILD|WS_VISIBLE|BS_CHECKBOX,
         36,118,160,36,window,NULL,type.hInstance,NULL);
     CHECK(push && check);
-    if(input){
-        RECT work;
-        CHECK(SystemParametersInfoW(SPI_GETWORKAREA,0,&work,0));
-        CHECK(SetWindowPos(window,HWND_TOPMOST,work.left+8,work.top+8,0,0,SWP_NOSIZE|SWP_NOACTIVATE));
-    }
+    RECT work;
+    CHECK(SystemParametersInfoW(SPI_GETWORKAREA,0,&work,0));
+    CHECK(SetWindowPos(window,HWND_TOPMOST,work.left+8,work.top+8,0,0,SWP_NOSIZE|SWP_NOACTIVATE));
     ShowWindow(window,SW_SHOWNORMAL);
     for(unsigned i=0;i<10;++i){
         MSG message;
@@ -198,7 +203,8 @@ int wmain(int argc,WCHAR **argv)
     RECT strip={band.left+100,band.top+3,band.left+230,band.bottom-3};
     POINT center={(strip.left+strip.right)/2,strip.top+5};
     COLORREF caption=CLR_INVALID,button=CLR_INVALID,restored=CLR_INVALID;
-    uint64_t before=sample(window,strip,center,&caption),button_pattern=sample(window,close,inside_close,&button);
+    uint64_t before=sample(window,strip,center,&caption,FALSE);
+    uint64_t button_pattern=sample(window,close,inside_close,&button,FALSE);
     CHECK(before && button_pattern);
     HMODULE runtime=GetModuleHandleW(sizeof(void *)==8?L"ntwshk64.dll":L"ntwshk32.dll");
     CHECK(runtime);
@@ -208,19 +214,21 @@ int wmain(int argc,WCHAR **argv)
     RECT push_region={3,3,112,32};
     POINT push_sample={14,16};
     COLORREF push_center=CLR_INVALID,pressed_center=CLR_INVALID;
-    uint64_t push_normal=sample(push,push_region,push_sample,&push_center);
+    uint64_t push_normal=sample(push,push_region,push_sample,&push_center,TRUE);
     SendMessageW(push,BM_SETSTATE,TRUE,0);
-    uint64_t push_pressed=sample(push,push_region,push_sample,&pressed_center);
+    CHECK(SendMessageW(push,BM_GETSTATE,0,0)&BST_PUSHED);
+    uint64_t push_pressed=sample(push,push_region,push_sample,&pressed_center,TRUE);
     SendMessageW(push,BM_SETSTATE,FALSE,0);
+    CHECK(!(SendMessageW(push,BM_GETSTATE,0,0)&BST_PUSHED));
     CHECK(push_normal && push_pressed && push_normal!=push_pressed);
     CHECK(remove && remove(push) && !attached(push));
     COLORREF push_restored=CLR_INVALID;
-    uint64_t native_button=sample(push,push_region,push_sample,&push_restored);
+    uint64_t native_button=sample(push,push_region,push_sample,&push_restored,TRUE);
     CHECK(native_button && native_button!=push_normal);
     CHECK(remove(window) && !GetPropW(window,L"Win2kStyle.Frame"));
     printf("LUNA PUSH PASS normal=%016" PRIx64 " pressed=%016" PRIx64 " restored=%016" PRIx64
         " native_checkbox=1\n",push_normal,push_pressed,native_button);
-    uint64_t after=sample(window,strip,center,&restored);
+    uint64_t after=sample(window,strip,center,&restored,FALSE);
     CHECK(after && before!=after);
     printf("LUNA FRAME PASS bits=%u dpi=%u height=%ld sample=%06lx close=%06lx caption=%016" PRIx64
         " button=%016" PRIx64 " restored=%016" PRIx64 "\n",(unsigned)(sizeof(void *)*8),dpi,
